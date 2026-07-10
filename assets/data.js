@@ -203,7 +203,7 @@ const DEFAULT_DB = {
   /* ---- 1st–2nd Year core IT ---- */
   {code:'IT-DIGLIT12', title:'Digital Literacy & Productivity Tools', units:3, hours:54, year:'1st Yr', sem:'2nd Sem', prereq:[], cls:'Major', instructor:'Dave Medrano', sections:['BSIT 1A','BSIT 1B','BSIT 1C','BSIT 1D','BSIT 1E','BSIT 1F'],
    desc:'Hands-on mastery of word processing, spreadsheets, presentations, and cloud collaboration tools for academic and workplace productivity.',
-   specs:['Departmental PC lab required.','Deliverables submitted as real DOCX/XLSX/PPTX files.'],
+   specs:['Departmental PC lab required.','Deliverables submitted as real DOCX/PPTX/PDF files.'],
    refs:['Vermaat, M. E., et al. (2023). <i>Discovering Computers & Microsoft Office</i>. Cengage.']},
   {code:'CC-DBMS21', title:'Database Management Systems', units:3, hours:90, year:'2nd Yr', sem:'1st Sem', prereq:['CC-INTCOM11'], cls:'Major', instructor:'Wilfredo Maskay', sections:['BSIT 2A','BSIT 2B','BSIT 2C','BSIT 2D'],
    desc:'Relational modeling, normalization, and SQL for designing and querying databases that back real applications.',

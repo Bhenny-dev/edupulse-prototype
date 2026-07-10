@@ -94,7 +94,7 @@ Based on the official sample syllabus (GE EELECT-IT, "Living in the IT Era") wee
 
 ## Testing checklist
 1. Student → Dashboard → Start quiz → hover choices (each reveals individually; try selecting/copying — blocked) → alt-tab three times → attempt auto-submits.
-2. Instructor → Course Content → Generate Topic 4 → one generated section per planned item (varied pack), including Document (DOCX/XLSX/PDF) sections via EduPulse-DOC v1.
+2. Instructor → Course Content → Generate Topic 4 → one generated section per planned item (varied pack), including Document (DOCX/PDF) sections via EduPulse-DOC v1.
 3. Instructor → Score Visualization → per-activity columns grouped by term (Midterm/Finals) with Hi / Lo / Class Average footers and Completed/Missed marks — **read-only**; a new quiz submission appears automatically.
 4. Instructor → Syllabus Builder → Edit Topic 3 → Save → Consistency Checker findings → three actions.
 5. Instructor → Score Visualization → switch subject/section tabs → student rows show total and running average.

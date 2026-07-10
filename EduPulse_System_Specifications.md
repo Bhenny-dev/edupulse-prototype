@@ -15,7 +15,7 @@ Curriculum → Syllabus → AI-generated content → Instructor control → Secu
 1. The **CIT Dean** maintains the curriculum (subjects, units, **prerequisites**), assigns instructors their **subject loads**, organizes students into block sections through **section rosters**, and configures the college-wide **grading term scheme (Midterm and Finals) — labels/grouping only; no term-grade computation** (1.2, 1.5, IPO figure).
 2. Each **Instructor** (one or more subjects, multiple sections) builds a **KCP-format syllabus** organized as **topics with subtopics** — each topic has a flexible timeframe and a **varied** list of planned lessons/activities (1.2, 1.4).
 3. The **AI** parses each topic and generates a labeled **content pack** — one section per planned item (1.4):
-   - *document* → reading materials as **DOCX, XLSX, or PDF** via the fixed **EduPulse-DOC v1** prompt
+   - *document* → reading materials as **DOCX or PDF** via the fixed **EduPulse-DOC v1** prompt
    - *presentation* → PPT slide deck via **EduPulse-PPT v1**
    - *quiz* → **MCQ-only** quiz via **EduPulse-QUIZ v1** (per-item explanation + topic tag)
 4. Instructors **edit / add / remove / upload**; nothing is published without instructor review (1.4; Fig 2).
@@ -36,7 +36,7 @@ Curriculum → Syllabus → AI-generated content → Instructor control → Secu
 
 ## 3. Activity & Content Types (narrowed set — paper 1.4)
 
-AI-generated: **Document (DOCX/XLSX/PDF reading materials) · Presentation (PPT) · Quiz (MCQ)**. Manual instructor uploads: File · URL · Label.
+AI-generated: **Document (DOCX/PDF reading materials) · Presentation (PPT) · Quiz (MCQ)**. Manual instructor uploads: File · URL · Label.
 Per-activity settings: open/close dates, timer (quiz), attempts, completion prerequisite, shuffle, score release, per-section visibility. College-level setting: term scheme labels (Midterm and Finals). Anti-cheat policy is fixed (individually hidden hover-reveal choices + copy disabled + 3 violations = auto-submit).
 
 ## 4. Architecture (deliberately simple 3-tier — paper 2.3)
