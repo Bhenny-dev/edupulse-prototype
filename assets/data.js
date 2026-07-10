@@ -663,6 +663,12 @@ const DEFAULT_DB = {
       preview:'Subnet the 192.168.10.0/24 network into four equal subnets and list each subnet\'s network address, usable host range, and broadcast address.\nCorrectness of subnet addresses — 40 pts\nUsable host ranges — 30 pts\nBroadcast addresses — 20 pts\nNeatness and labeling — 10 pts'},
      {t:'quiz', label:'Quiz — IP Addressing & Subnetting (3 items)', sub:'MCQ · timer 20 min', pub:false, quizId:'net2',
       preview:'3 MCQ items · topic-tagged (Masks, Host counts, Private ranges) · shuffle on'}
+   ]},
+   3:{gen:true, topicPub:true, secs:[
+     {t:'doc', format:'word', label:'Lecture Notes — Routing & Switching Basics', sub:'Document (.docx) · mapped: T3 · 3 subtopics', pub:true,
+      preview:'Overview — This lecture explains how switches and routers move traffic within and between networks.\nSwitching — A switch learns which MAC address sits on which port by watching traffic, then forwards frames only to the right port instead of flooding the whole LAN.\nRouting — A router picks a path between networks using its routing table, forwarding packets toward the correct next hop and default gateway.\nStatic vs dynamic routing — Static routes are entered manually; dynamic routing protocols learn and update routes automatically as the network changes.'},
+     {t:'doc', format:'word', label:'Topology-building Activity + Rubric', sub:'Document (.docx) · Packet Tracer · mapped: T3', pub:true,
+      preview:'Build and test a small LAN topology in Packet Tracer (at least 2 switches, 1 router, 4 end devices), applying static or dynamic routing so every device can reach every other device.\nCorrect device connections & addressing — 40 pts\nWorking static/dynamic routes — 30 pts\nConnectivity test (ping) evidence — 20 pts\nLabeling and neatness — 10 pts\nSubmission — export and submit your Packet Tracer file (.pkt) by the posted due date.'}
    ]}
   },
   'IT-SWENG31':{
@@ -767,7 +773,7 @@ OUTPUT: JSON array of items {stem, alt, topic, opts[4], ans, exp, elab}.`,
   q1:{title:'Short Quiz — Introduction to ICT', course:'GE EELECT-IT · Topic 1', mins:15, restrict:{maxViol:3,policy:'autosubmit',deductPerViolation:1}, items:[
     {stem:'Which of the following BEST defines Information and Communication Technology (ICT)?', alt:'Which statement gives the MOST complete definition of ICT?', topic:'Definition of ICT',
      opts:['Technologies used to handle communications, process information, and share it','Any electrical appliance found at home','Only the internet and social media','Computer hardware exclusively'], ans:0,
-     exp:'ICT covers all technologies for handling telecommunications, broadcast media, and information processing and sharing.', elab:'ICT is an umbrella term: it bundles telecommunications (radio, TV, mobile networks), computing hardware and software, and the processes people use to create, store, and exchange information. Appliances, single websites, or hardware alone are only pieces of that bigger system — which is why only option A is a complete definition.'},
+     exp:'ICT covers all technologies for handling telecommunications, broadcast media, and information processing and sharing.', elab:'ICT is an umbrella term: it bundles telecommunications (radio, TV, mobile networks), computing hardware and software, and the processes people use to create, store, and exchange information. Appliances, single websites, or hardware alone are only pieces of that bigger system — which is why only the full definition above captures ICT completely.'},
     {stem:'Which is a COMPONENT of ICT?', alt:'Which set below lists valid components of an ICT system?', topic:'Components of ICT',
      opts:['Hardware, software, data, people, and processes','Only application software','Paper-based filing systems','Furniture and fixtures'], ans:0,
      exp:'ICT components include hardware, software, data, people, and procedures working together.', elab:'A working ICT system always needs five interacting components: hardware (devices), software (instructions), data (raw facts), people (users and operators), and processes (procedures). Remove any one and the system fails — an enrollment system without clear processes produces wrong records even with good hardware.'},
@@ -779,7 +785,7 @@ OUTPUT: JSON array of items {stem, alt, topic, opts[4], ans, exp, elab}.`,
      exp:'ICT speeds up access to information; it does not eliminate errors or crime by itself.', elab:'ICT’s core benefit is speed of access: records, payments, and communication that once took days now take seconds. But ICT does not remove errors, power requirements, or crime — those remain human and infrastructural problems, which is why the other options overstate what ICT can do.'},
     {stem:'A common DISADVANTAGE associated with heavy ICT use is:', alt:'Which problem is commonly linked to heavy reliance on ICT?', topic:'Advantages & Disadvantages',
      opts:['Digital divide and privacy risks','Slower communication','Reduced access to information','Elimination of online services'], ans:0,
-     exp:'The digital divide and privacy/security risks are recognized disadvantages of ICT adoption.', elab:'The digital divide means people without devices, signal, or skills get left behind, and going digital exposes personal data to privacy and security risks. Options B–D describe the opposite of what ICT actually does, so they cannot be disadvantages associated with its use.'}
+     exp:'The digital divide and privacy/security risks are recognized disadvantages of ICT adoption.', elab:'The digital divide means people without devices, signal, or skills get left behind, and going digital exposes personal data to privacy and security risks. The other choices each describe the opposite of what ICT actually does, so they cannot be disadvantages associated with its use.'}
   ]},
   q3:{title:'Quiz — Computer Hardware & Software', course:'GE EELECT-IT · Topic 3', mins:20, restrict:{maxViol:3,policy:'autosubmit',deductPerViolation:1}, items:[
     {stem:'Which device is an INPUT device?', alt:'Which of these devices sends data INTO the computer?', topic:'Hardware', opts:['Keyboard','Monitor','Speaker','Projector'], ans:0, exp:'Input devices feed data into the system.', elab:'Devices are classified by data direction: input devices (keyboard, mouse, scanner) send data INTO the system, while output devices (monitor, speaker, projector) present results OUT. A simple test: if you use it to give the computer information, it is an input device.'},
@@ -816,10 +822,21 @@ OUTPUT: JSON array of items {stem, alt, topic, opts[4], ans, exp, elab}.`,
  students: SEED_STUDENTS,
  /* practice growth log — ungraded, personal-only. Linked by quizId (not
     title-matching) to the quiz and to the subject's own `reviews` entry for
-    the graded attempt, so the numbers never drift out of sync. */
+    the graded attempt, so the numbers never drift out of sync. Each entry in
+    `attempts` is one full ungraded retake (items reshuffled/rephrased at
+    start time — see shufflePracticeItems in quiz-engine.js); `correct` marks
+    each item by its ORIGINAL (unshuffled) index so per-item progress is
+    comparable attempt to attempt regardless of the order shown that time. */
  growth:[
-  {quizId:'sweng1', quiz:'Short Quiz — Software Processes & Agile (T1)', subject:'IT-SWENG31', baseScore:2, baseMax:3, bestScore:3, bestMax:3, tries:2},
-  {quizId:'net1', quiz:'Short Quiz — Networking Fundamentals (T1)', subject:'IT-NET31', baseScore:3, baseMax:4, bestScore:4, bestMax:4, tries:1}
+  {quizId:'sweng1', quiz:'Short Quiz — Software Processes & Agile (T1)', subject:'IT-SWENG31', baseScore:2, baseMax:3,
+   attempts:[
+    {score:2, max:3, correct:[true,false,true]},
+    {score:3, max:3, correct:[true,true,true]}
+   ]},
+  {quizId:'net1', quiz:'Short Quiz — Networking Fundamentals (T1)', subject:'IT-NET31', baseScore:3, baseMax:4,
+   attempts:[
+    {score:4, max:4, correct:[true,true,true,true]}
+   ]}
  ],
  cols:{
   Midterm:{cs:[{k:'Q1',max:10},{k:'A1',max:15},{k:'Q2',max:10},{k:'PE1',max:20}], ex:[{k:'ME',max:50}], csKey:'cs', exKey:'ex'},

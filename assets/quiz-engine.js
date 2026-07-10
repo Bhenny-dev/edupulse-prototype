@@ -27,8 +27,29 @@ function preQuiz(qid){
     <button class="btn btn-p" onclick="closeModal();closeSheet();startQuiz('${qid}')">I understand — Start attempt</button></div>
   </div>`);
 }
+function shuffle(arr){
+  const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+/* Ungraded retakes never show the same fixed run twice: item order is
+   reshuffled, each item's own choice order is independently reshuffled
+   (tracking the new correct index), and the stem randomly alternates
+   between its original phrasing and its rephrased `alt` (when one exists)
+   — so memorizing "2nd item, option C" from a prior try no longer helps.
+   `origIdx` tags each item back to its position in the canonical quiz so
+   per-item correctness stays comparable across attempts (growth log). */
+function shufflePracticeItems(items){
+  return shuffle(items.map((it,origIdx)=>origIdx)).map(origIdx=>{
+    const it=items[origIdx];
+    const stem=(it.alt && Math.random()<0.5)?it.alt:it.stem;
+    const order=shuffle(it.opts.map((_,i)=>i));
+    return {...it, stem, alt:undefined, opts:order.map(k=>it.opts[k]), ans:order.indexOf(it.ans), origIdx};
+  });
+}
 function startQuiz(qid,practice){
-  const q=DB.quizzes[qid];
+  const q0=DB.quizzes[qid];
+  const q=practice?{...q0, items:shufflePracticeItems(q0.items)}:q0;
   const restrict={...DEFAULT_RESTRICT, ...(q.restrict||{})};
   SE={qid,q,idx:0,ans:{},viol:0,left:q.mins*60,timer:null,active:true,practice:!!practice,locked:new Set(),restrict};
   $('secureEnv').classList.remove('hidden');
@@ -157,15 +178,18 @@ function showQuizResults(){
   q.items.forEach((it,i)=>{topics[it.topic]=topics[it.topic]||{c:0,t:0};topics[it.topic].t++;if(ans[i]===it.ans)topics[it.topic].c++;});
   const weak=Object.entries(topics).filter(([k,v])=>v.c<v.t);
   if(practice){
+    const correctByOrig=new Array(n);
+    q.items.forEach((it,i)=>{correctByOrig[it.origIdx]=ans[i]===it.ans;});
+    const attempt={score,max:n,correct:correctByOrig};
     const g=DB.growth.find(x=>x.quizId===qid);
-    if(g){ g.tries++; if(score>g.bestScore){ g.bestScore=score; g.bestMax=n; } }
+    if(g){ g.attempts.push(attempt); }
     else{
       const subjCode=q.course.split(' · ')[0];
       const s=DB.stuSubjects.find(x=>x.code===subjCode);
       const gradedRv=s&&s.reviews.find(r=>r.quizId===qid);
       DB.growth.push({quizId:qid, quiz:q.title, subject:subjCode,
         baseScore:gradedRv?gradedRv.score:null, baseMax:gradedRv?gradedRv.max:null,
-        bestScore:score, bestMax:n, tries:1});
+        attempts:[attempt]});
     }
     saveDB();
   } else {
@@ -224,10 +248,4 @@ function practiceModal(qid){
     <button class="btn btn-o" onclick="closeModal()">Not now</button>
     <button class="btn btn-ai" onclick="closeModal();closeSheet();startQuiz('${qid}',true)">Start practice retake</button></div>
   </div>`);
-}
-function practiceFromTopic(code,tw){
-  const map={'IT-NET31':{'T1':'net1','T2':'net2'},'IT-SWENG31':{'T1':'sweng1'},'IT-SEC31':{'T1':'sec1'}};
-  const qid=(map[code]||{})[tw];
-  if(qid) practiceModal(qid);
-  else toast('AI drafted rephrased practice items for this topic — available once its quiz is released.');
 }

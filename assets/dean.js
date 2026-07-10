@@ -82,12 +82,12 @@ function deanCurr(){
     <table class="tb"><tr><th>Code</th><th>Title</th><th>Year/Sem</th><th>Units</th><th>Prerequisites</th><th>Class.</th><th></th></tr>
     ${DB.curriculum.map((c,i)=>`<tr><td><b>${c.code}</b></td><td>${c.title}</td><td>${c.year} · ${c.sem}</td><td>${c.units}</td>
       <td>${c.prereq.length?c.prereq.map(p=>chip(p,'c-teal')).join(' '):chip('None','c-mut')}</td><td>${c.cls}</td>
-      <td><button class="btn btn-o btn-s" onclick="event.stopPropagation();currPop(${i},event)">Manage ▾</button></td></tr>`).join('')}
+      <td><button class="btn btn-o btn-s" onclick="event.stopPropagation();currPop(${i})">Manage ▾</button></td></tr>`).join('')}
     </table>
     <div class="note" style="margin-top:12px"><b>Prerequisite rule:</b> enrollment and assignment are gated by prerequisites.</div>
   </div>`;
 }
-function currPop(i,evt){
+function currPop(i){
   const c=DB.curriculum[i];
   openPop(`<h4>${c.code} ${sylChip(c.code)}</h4>
   <div class="kv"><b>Title</b>${c.title}</div>
@@ -95,38 +95,53 @@ function currPop(i,evt){
   <div class="kv"><b>Instructor / sections</b>${c.instructor} · ${c.sections.join(', ')||'—'}</div>
   <div class="pop-acts">
     <button class="btn btn-p btn-s" onclick="closePop();currModal(${i})">✎ Edit subject</button>
-    <button class="btn btn-o btn-s" onclick="closePop();courseInfoPopFor('${c.code}',event)">ℹ️ Course info</button>
     <button class="btn btn-o btn-s" onclick="closePop();assignModal('${c.code}')">Assign instructor</button>
     ${DB.syllabi[c.code]?`<button class="btn btn-o btn-s" onclick="closePop();openSyllabusSheet('${c.code}',true)">Open syllabus (Dean edit)</button>`:''}
     <button class="btn btn-d btn-s" onclick="closePop();archiveSubjectModal('${c.code}')">Archive</button>
-  </div>`,evt,380);
-}
-function courseInfoPopFor(code,evt){
-  const c=DB.curriculum.find(k=>k.code===code);
-  openPop(`<h4>Course info — ${code}</h4>
-  <div class="kv"><b>Course description</b>${c.desc||'Not yet documented for this subject.'}</div>
-  <div class="kv"><b>Specifications</b><ul style="margin:4px 0 0 16px;padding:0">${(c.specs||['Not yet documented for this subject.']).map(s=>`<li style="margin-bottom:3px">${s}</li>`).join('')}</ul></div>
-  <div class="kv"><b>Grading formula <span class="chip c-mut">official KCP syllabus · not computed in EduPulse</span></b><span style="white-space:pre-line">${DB.policy.grading}</span></div>
-  <div class="kv"><b>Course policy <span class="chip c-mut">college-wide</span></b><ul style="margin:4px 0 0 16px;padding:0">${DB.policy.rules.map(r=>`<li style="margin-bottom:3px">${r}</li>`).join('')}</ul></div>
-  <div class="kv"><b>References</b>${(c.refs||['Not yet documented for this subject.']).map(r=>`<div style="margin-bottom:2px">${r}</div>`).join('')}</div>
-  `,evt,460);
+  </div>`,null,380);
 }
 function currModal(i){
-  const c = i!==undefined?DB.curriculum[i]:{code:'',title:'',units:3,hours:54,year:'1st Yr',sem:'1st Sem',prereq:[],cls:'Major'};
+  const c = i!==undefined?DB.curriculum[i]:{code:'',title:'',units:3,hours:54,year:'1st Yr',sem:'1st Sem',prereq:[],cls:'Major',desc:'',specs:[],refs:[]};
   openModal(`<h3>${i!==undefined?'Edit':'Add'} curriculum subject</h3>
   <div class="frm">
-    <div class="row"><div><label>Subject code</label><input value="${c.code}" style="width:100%"></div>
-    <div><label>Classification</label><select style="width:100%"><option${c.cls==='Major'?' selected':''}>Major</option><option${c.cls==='Minor'?' selected':''}>Minor</option></select></div></div>
-    <div><label>Title</label><input value="${c.title}" style="width:100%"></div>
-    <div class="row"><div><label>Units</label><input type="number" value="${c.units}" style="width:100%"></div><div><label>Hours</label><input type="number" value="${c.hours}" style="width:100%"></div></div>
-    <div class="row"><div><label>Year level</label><select style="width:100%"><option>1st Yr</option><option>2nd Yr</option><option>3rd Yr</option><option>4th Yr</option></select></div>
-    <div><label>Semester</label><select style="width:100%"><option>1st Sem</option><option>2nd Sem</option></select></div></div>
+    <div class="item-grp-h">Subject details</div>
+    <div class="row"><div><label>Subject code${i!==undefined?' <span class="chip c-mut">fixed once created</span>':''}</label><input id="cmCode" value="${c.code}" style="width:100%"${i!==undefined?' disabled':''}></div>
+    <div><label>Classification</label><select id="cmCls" style="width:100%"><option${c.cls==='Major'?' selected':''}>Major</option><option${c.cls==='Minor'?' selected':''}>Minor</option></select></div></div>
+    <div><label>Title</label><input id="cmTitle" value="${c.title}" style="width:100%"></div>
+    <div class="row"><div><label>Units</label><input id="cmUnits" type="number" value="${c.units}" style="width:100%"></div><div><label>Hours</label><input id="cmHours" type="number" value="${c.hours}" style="width:100%"></div></div>
+    <div class="row"><div><label>Year level</label><select id="cmYear" style="width:100%">${['1st Yr','2nd Yr','3rd Yr','4th Yr'].map(y=>`<option${c.year===y?' selected':''}>${y}</option>`).join('')}</select></div>
+    <div><label>Semester</label><select id="cmSem" style="width:100%">${['1st Sem','2nd Sem'].map(s=>`<option${c.sem===s?' selected':''}>${s}</option>`).join('')}</select></div></div>
     <div><label>Prerequisite subjects (Dean-controlled gate)</label>
-      <select multiple style="width:100%;height:88px">${DB.curriculum.map(x=>`<option${c.prereq.includes(x.code)?' selected':''}>${x.code} — ${x.title}</option>`).join('')}</select></div>
+      <select id="cmPrereq" multiple style="width:100%;height:88px">${DB.curriculum.filter(x=>x.code!==c.code).map(x=>`<option value="${x.code}"${c.prereq.includes(x.code)?' selected':''}>${x.code} — ${x.title}</option>`).join('')}</select></div>
+
+    <div class="item-grp-h">Course info <span class="chip c-mut">shown to students &amp; instructors</span></div>
+    <div><label>Course description</label><textarea id="cmDesc" rows="3" style="width:100%" placeholder="Not yet documented for this subject.">${c.desc||''}</textarea></div>
+    <div><label>Specifications <span class="chip c-mut">one per line</span></label><textarea id="cmSpecs" rows="3" style="width:100%" placeholder="One specification per line…">${(c.specs||[]).join('\n')}</textarea></div>
+    <div><label>References <span class="chip c-mut">one per line</span></label><textarea id="cmRefs" rows="3" style="width:100%" placeholder="One reference per line…">${(c.refs||[]).join('\n')}</textarea></div>
+    <div class="kv"><b>Grading formula <span class="chip c-mut">official KCP syllabus · college-wide · not computed in EduPulse</span></b><span style="white-space:pre-line">${DB.policy.grading}</span></div>
+    <div class="kv"><b>Course policy <span class="chip c-mut">college-wide · set once for all subjects</span></b><ul style="margin:4px 0 0 16px;padding:0">${DB.policy.rules.map(r=>`<li style="margin-bottom:3px">${r}</li>`).join('')}</ul></div>
+
     <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:6px">
       <button class="btn btn-o" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-p" onclick="closeModal();toast('Curriculum saved (versioned).')">Save (versioned)</button></div>
+      <button class="btn btn-p" onclick="saveCurrModal(${i})">Save (versioned)</button></div>
   </div>`);
+}
+function saveCurrModal(i){
+  const code=$('cmCode').value.trim();
+  if(!code){ toast('Subject code is required.'); return; }
+  const specs=$('cmSpecs').value.split('\n').map(s=>s.trim()).filter(Boolean);
+  const refs=$('cmRefs').value.split('\n').map(s=>s.trim()).filter(Boolean);
+  const fields={
+    code, title:$('cmTitle').value.trim(),
+    units:Math.max(0,parseInt($('cmUnits').value,10)||0), hours:Math.max(0,parseInt($('cmHours').value,10)||0),
+    year:$('cmYear').value, sem:$('cmSem').value, cls:$('cmCls').value,
+    prereq:[...$('cmPrereq').selectedOptions].map(o=>o.value),
+    desc:$('cmDesc').value.trim(), specs, refs
+  };
+  if(i!==undefined) Object.assign(DB.curriculum[i],fields);
+  else DB.curriculum.push({...fields, instructor:'— unassigned —', sections:[]});
+  saveDB(); closeModal(); deanCurr();
+  toast('Curriculum saved (versioned).');
 }
 /* Faculty-roster-rooted Instructor Assignment: tap a faculty member to see
    their current subject load and assign them a new subject. A subject's

@@ -120,7 +120,7 @@ function myScoreTable(code,sec){
   const cell=(a)=>{
     if(actMissed(me,a)) return `<td>${chip('Missed','c-bad')}</td>`;
     const auto=a.key==='cs'&&a.i===0;
-    return `<td><span title="${auto?'Auto-recorded from a submitted quiz':'Recorded from the posted activity'}">${actVal(me,a)}${auto?` <small style="color:var(--ai)">⚡</small>`:''}</span></td>`;
+    return `<td><span title="${auto?'Auto-recorded from a submitted quiz':'Recorded from the posted activity'}">${actVal(me,a)}</span></td>`;
   };
   return `<div class="gr-tb"><table>
     <tr><th></th><th class="nm"></th>${terms.map(t=>`<th colspan="${t.span}" style="text-align:center;border-bottom:2px solid var(--pri)">${t.term}</th>`).join('')}<th></th><th></th></tr>
@@ -141,7 +141,7 @@ function scoresSheet(i){
    <h3 style="font-size:14px;margin:18px 0 8px;color:var(--navy)">Per-activity detail & score-based suggestions</h3>
    ${s.records.map((r,ri)=>`<div class="sec-item click" onclick="recordPop(${i},${ri},event)">
      <div class="tic" style="background:${r.score/r.max>=.75?'var(--ok-l)':'var(--warn-l)'}">${r.comp.startsWith('Exam')?'🎓':'🧾'}</div>
-     <div><b>${r.label}</b><small>${r.comp} · recorded ${r.auto?'automatically ⚡':'by instructor'}</small></div>
+     <div><b>${r.label}</b><small>${r.comp} · recorded ${r.auto?'automatically':'by instructor'}</small></div>
      <div class="acts"><span class="chip c-mut">Detail ▾</span></div></div>`).join('')}
    ${s.missing.map(m=>`<div class="sec-item">
      <div class="tic" style="background:var(--bad-l,var(--warn-l))">⚠️</div>
@@ -152,7 +152,7 @@ function scoresSheet(i){
 function recordPop(si,ri,evt){
   const s=DB.stuSubjects[si]; const r=s.records[ri];
   openPop(`<h4>${r.label} ${chip(r.score+' / '+r.max, r.score/r.max>=.75?'c-ok':'c-warn')}</h4>
-  <div class="kv"><b>Activity · status</b>${r.comp} · ${(r.score/r.max*100).toFixed(0)}% · ${chip('Completed','c-ok')} · recorded ${r.auto?'automatically on submission ⚡':'by '+s.instr}</div>
+  <div class="kv"><b>Activity · status</b>${r.comp} · ${(r.score/r.max*100).toFixed(0)}% · ${chip('Completed','c-ok')} · recorded ${r.auto?'automatically on submission':'by '+s.instr}</div>
   <div class="kv"><b>Score-based suggestion</b>${r.presc}</div>
   <div class="pop-acts">
     ${r.reviewId?`<button class="btn btn-p btn-s" onclick="closePop();closeSheet();reviewSheet(${si},'${r.reviewId}')">🔍 Review my answers</button>`:`<button class="btn btn-o btn-s" onclick="closePop();toast('Prototype: opens your graded submission.')">View graded work</button>`}
@@ -183,15 +183,24 @@ function reviewListSheet(i){
     const q=DB.quizzes[r.quizId];
     const g=DB.growth.find(x=>x.quizId===r.quizId);
     const gradedPct=Math.round(r.score/r.max*100);
-    const bestPct=g?Math.round(g.bestScore/g.bestMax*100):null;
     return `<div class="sec-item click" style="flex-wrap:wrap" onclick="reviewSheet(${i},'${r.quizId}')">
      <div class="tic" style="background:var(--ok-l)">✅</div>
      <div style="min-width:220px"><b>${q.title}</b><small>${q.course} · answered · released for review</small></div>
      <div class="acts">${chip('Score: '+r.score+'/'+r.max+' ('+gradedPct+'%)','c-teal')}<span class="chip c-mut">Review →</span></div>
      ${g?`<div style="flex-basis:100%;margin-top:10px;padding-top:10px;border-top:1px solid var(--line)">
-       <div class="topic-row" style="margin-bottom:3px"><div class="tn" style="width:110px;font-size:11px">Graded attempt</div><div class="bar"><i style="width:${gradedPct}%;background:var(--pri)"></i></div><div class="pv">${gradedPct}%</div></div>
-       <div class="topic-row" style="margin-bottom:0"><div class="tn" style="width:110px;font-size:11px">Best practice</div><div class="bar"><i style="width:${bestPct}%;background:var(--ai)"></i></div><div class="pv">${bestPct}%</div></div>
-       <div class="lock-note" style="margin-top:5px">${g.tries} ungraded practice retake(s) — rephrased items, personal log only, never recorded to the scoring sheet.</div>
+       <div class="topic-row" style="margin-bottom:6px"><div class="tn" style="width:110px;font-size:11px">Graded attempt</div><div class="bar"><i style="width:${gradedPct}%;background:var(--pri)"></i></div><div class="pv">${gradedPct}%</div></div>
+       ${g.attempts.map((a,ai)=>{
+         const pct=Math.round(a.score/a.max*100);
+         const prevPct=ai===0?gradedPct:Math.round(g.attempts[ai-1].score/g.attempts[ai-1].max*100);
+         const delta=pct-prevPct;
+         const deltaChip=delta>0?chip('+'+delta+'% vs previous','c-ok'):delta<0?chip(delta+'% vs previous','c-bad'):chip('±0% vs previous','c-mut');
+         return `<div class="topic-row" style="margin-bottom:4px"><div class="tn" style="width:110px;font-size:11px">Practice ${ai+1}</div><div class="bar"><i style="width:${pct}%;background:var(--ai)"></i></div><div class="pv">${pct}%</div></div>
+         <div style="display:flex;align-items:center;gap:5px;margin:0 0 10px 118px">
+           ${a.correct.map(c=>`<span title="${c?'Correct':'Incorrect'}" style="width:9px;height:9px;border-radius:50%;flex-shrink:0;background:${c?'var(--ok)':'var(--bad)'}"></span>`).join('')}
+           ${deltaChip}
+         </div>`;
+       }).join('')}
+       <div class="lock-note" style="margin-top:2px">${g.attempts.length} ungraded practice retake(s) — items reshuffled and rephrased on every attempt, personal log only, never recorded to the scoring sheet.</div>
      </div>`:''}
     </div>`;}).join(''):'<div class="lock-note">No released reviews yet.</div>'}`);
 }
@@ -241,9 +250,8 @@ function stuInsights(){
      <div style="${si?'margin-top:14px;padding-top:14px;border-top:1px solid var(--line)':''}">
      <div class="item-grp-h">${s.code} — ${s.title}</div>
      ${s.mastery.map(t=>`<div style="margin-bottom:10px">
-      <div class="topic-row" style="margin-bottom:${t.m<75?'4px':'0'}"><div class="tn">${t.t} <small style="color:var(--mut)">(${t.w})</small></div>
+      <div class="topic-row" style="margin-bottom:0"><div class="tn">${t.t} <small style="color:var(--mut)">(${t.w})</small></div>
       <div class="bar"><i style="width:${t.m}%;background:${t.m<60?'var(--bad)':t.m<75?'var(--warn)':'var(--ok)'}"></i></div><div class="pv">${t.m}%</div></div>
-      ${t.m<75?`<button class="btn btn-o btn-s" style="margin-left:2px" onclick="practiceFromTopic('${s.code}','${t.w}')">✅ Practice (ungraded)</button>`:''}
      </div>`).join('')}
      </div>`).join('')}
   </div>`;
