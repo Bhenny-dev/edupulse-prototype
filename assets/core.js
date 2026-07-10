@@ -168,7 +168,7 @@ function shellHtml(role,navKey){
       <div id="view"></div>
     </main>
   </div>
-  <div id="sheetBg" class="sheet-bg hidden"><div class="sheet"><div class="sheet-h"><div class="wno" id="sheetIcon"></div><div style="min-width:0"><h3 id="sheetTitle"></h3><small id="sheetSub"></small></div><button class="sheet-x" onclick="closeSheet()">✕</button></div><div class="sheet-b" id="sheetBody"></div></div></div>
+  <div id="sheetBg" class="sheet-bg hidden"><div class="sheet"><div class="sheet-h"><div class="wno" id="sheetIcon"></div><div style="min-width:0;flex:1"><h3 id="sheetTitle"></h3><small id="sheetSub"></small></div><button class="sheet-x" onclick="closeSheet()">✕</button></div><div class="sheet-b" id="sheetBody"></div></div></div>
   <div id="popBg" class="pop-bg hidden" onclick="closePop()"></div><div id="pop" class="pop hidden"></div>
   <div id="modalBg" class="modal-bg hidden"><div class="modal"><div id="modalBox"></div></div></div>
   <div id="violOverlay" class="hidden">
