@@ -255,8 +255,7 @@ function activityTable(code,sec){
     <tr style="border-top:2px solid var(--line)"><td></td><td style="text-align:left"><b>Highest score</b></td>${stats.map(st=>`<td><b style="color:var(--ok)">${st.hi}</b></td>`).join('')}<td></td><td></td></tr>
     <tr><td></td><td style="text-align:left"><b>Lowest score</b></td>${stats.map(st=>`<td><b style="color:var(--bad)">${st.lo}</b></td>`).join('')}<td></td><td></td></tr>
     <tr><td></td><td style="text-align:left"><b>Class average</b></td>${stats.map(st=>`<td><b>${st.avg.toFixed(1)}</b></td>`).join('')}<td></td><td></td></tr>
-  </table></div>
-  <div class="note" style="margin-top:10px">⚡ = auto-recorded from a submitted quiz. <b>Every cell is editable</b> — type a score to override an auto-recorded value, or to enter the result of an activity done outside the system (e.g., a rubric-guided exercise whose submission bin is set to "not applicable"). A blank <b>missed</b> cell counts as 0 until a score is entered. Activity columns are grouped under the <b>${schemeLabel()}</b> term labels (grouping only — EduPulse does not compute term grades). Highest / lowest / class average and totals recompute automatically; students see their own row only, each score linked to the answered activity.</div></div>`;
+  </table></div></div>`;
 }
 /* Instructor edit/override of any score cell. The score lives directly in the
    student record (s[a.key][a.i]), so writing it back persists and every stat

@@ -7,10 +7,16 @@ let CC_CODE=null, CC_FOCUS_TOPIC=null;
 /* Build a real, topic-specific quiz for a generated/added quiz section.
    Items are placeholder MCQs tagged to the topic's own subtopics so the
    quiz maps correctly (title, course, per-item topic tags) and is fully
-   takeable in the secure environment, practice mode, and results review. */
-function buildGeneratedQuiz(code,topic,itemName){
+   takeable in the secure environment, practice mode, and results review.
+   `cfg` (mins/count/maxViol) comes from the planned item's own Quiz
+   configuration (topic-system.js itemModal) when set — same shape as
+   DEFAULT_RESTRICT/q.mins, so it flows straight into the generated quiz
+   and stays editable afterward from Course Content's Restrictions modal. */
+function buildGeneratedQuiz(code,topic,itemName,cfg){
   const subs=topicSubtopics(topic);
-  const tags=(subs.length?subs.map(s=>s.n):[topic.title]).slice(0,3);
+  const pool=subs.length?subs.map(s=>s.n):[topic.title];
+  const count=Math.max(1,(cfg&&cfg.count)||Math.min(pool.length,3));
+  const tags=Array.from({length:count},(_,i)=>pool[i%pool.length]);
   const items=tags.map(tag=>({
     stem:`Which statement best reflects the key idea of “${tag}”?`,
     alt:`In your own words, which option most accurately describes “${tag}”?`,
@@ -20,7 +26,7 @@ function buildGeneratedQuiz(code,topic,itemName){
     exp:`The correct option matches how “${tag}” is defined in ${topic.title}.`,
     elab:`This item is auto-drafted from the syllabus scope of Topic ${topic.no} (“${topic.title}”). Your instructor reviews and refines the wording before it counts toward a grade; the concept tag (${tag}) is fixed by the syllabus.`
   }));
-  return {title:`${itemName} — ${topic.title}`, course:`${code} · Topic ${topic.no}`, mins:15, restrict:{...DEFAULT_RESTRICT}, items};
+  return {title:`${itemName} — ${topic.title}`, course:`${code} · Topic ${topic.no}`, mins:(cfg&&cfg.mins)||15, restrict:{...DEFAULT_RESTRICT,...(cfg&&cfg.maxViol?{maxViol:cfg.maxViol}:{})}, items};
 }
 /* Cards first (one per assigned subject, with at-a-glance generation/publish
    status), matching My Subjects & Syllabi's card → page-modal pattern. Tapping
@@ -162,7 +168,8 @@ function addSectionModal(tno,type,label){
   openModal(`<h3>Add ${label} — Topic ${tno}</h3>
   <div class="frm">
     <div><label>Title / label</label><input id="asTitle" placeholder="e.g. ${type==='quiz'?'Recap Quiz — Networking':'Supplementary — '+label}" style="width:100%"></div>
-    ${type==='quiz'?`<div class="row"><div><label>Items (MCQ only)</label><input type="number" value="3" style="width:100%"></div><div><label>Timer (minutes)</label><input type="number" value="15" style="width:100%"></div></div>
+    ${type==='quiz'?`<div class="row"><div><label>Number of question items</label><input id="asQCount" type="number" min="1" value="3" style="width:100%"></div><div><label>Time limit (minutes)</label><input id="asQMins" type="number" min="1" value="15" style="width:100%"></div></div>
+    <div><label>Window-switch / alt-tab attempts allowed before auto-submit</label><input id="asQMaxViol" type="number" min="1" value="3" style="width:100%"></div>
     <div><label>Source</label><div class="seg"><button class="on" type="button">⚡ AI-draft from this topic</button><button type="button">Write items manually</button></div></div>`
     :type==='url'?`<div><label>Link</label><input id="asContent" placeholder="https://…" style="width:100%"></div>`
     :type==='file'?`<div><label>File</label><input type="file" style="width:100%"></div>
@@ -188,7 +195,12 @@ function saveAddSection(tno,type,label){
   if(type==='doc'||type==='file') sec.format=formatEl?formatEl.value:(type==='file'?'pdf':'word');
   if(type==='quiz'){
     const quizId=`gen_${CC_CODE.replace(/\s+/g,'')}_T${tno}_add${Date.now()}`;
-    DB.quizzes[quizId]=buildGeneratedQuiz(CC_CODE,t,title);
+    const cfg={
+      count:Math.max(1,parseInt($('asQCount').value,10)||3),
+      mins:Math.max(1,parseInt($('asQMins').value,10)||15),
+      maxViol:Math.max(1,parseInt($('asQMaxViol').value,10)||3)
+    };
+    DB.quizzes[quizId]=buildGeneratedQuiz(CC_CODE,t,title,cfg);
     sec.quizId=quizId; sec.label=`${title} (${DB.quizzes[quizId].items.length} items)`;
   } else if(type==='url'){
     sec.url=content||'https://example.org';
@@ -311,7 +323,7 @@ function genTopic(no,btn){
         let quizId=null;
         if(g.cat==='quiz'){
           quizId=`gen_${CC_CODE.replace(/\s+/g,'')}_T${no}_${ix}`;
-          DB.quizzes[quizId]=buildGeneratedQuiz(CC_CODE,t,it.n);
+          DB.quizzes[quizId]=buildGeneratedQuiz(CC_CODE,t,it.n,it.quizCfg);
         }
         const preview=g.cat==='quiz' ? 'Secure MCQ quiz — opens in the in-app secure answering environment.' : genPreviewText(it,t,g.cat,g.format);
         return {t:g.cat, ...(g.format?{format:g.format}:{}), label:`${g.label} — ${t.title}${quizId?' ('+DB.quizzes[quizId].items.length+' items)':''}`, sub:`${it.n} · mapped: T${no}`, pub:false,

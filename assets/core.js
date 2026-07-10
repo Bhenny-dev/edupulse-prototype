@@ -87,7 +87,7 @@ function topicPlan(t){return t.items.filter(x=>x.k!=='subtopic');}
 function topicHasGenPub(pack){return !!(pack&&pack.gen&&pack.topicPub);}
 
 /* ---- overlay helpers (unchanged conceptually from the single-file prototype) ---- */
-function openModal(html){$('modalBox').innerHTML=html;$('modalBg').classList.remove('hidden');}
+function openModal(html){$('modalBox').innerHTML='<button class="modal-x" onclick="closeModal()" aria-label="Close">✕</button>'+html;$('modalBg').classList.remove('hidden');}
 function closeModal(){$('modalBg').classList.add('hidden');}
 function openSheet(icon,title,sub,html){
   $('sheetIcon').textContent=icon; $('sheetTitle').textContent=title; $('sheetSub').textContent=sub;

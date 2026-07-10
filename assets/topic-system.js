@@ -160,14 +160,14 @@ function subtopicPop(ti,subIdx){
   ${b.sub.d?`<div class="kv"><b>Scope / notes</b>${b.sub.d}</div>`:''}
   <div class="kv"><b>Materials & assessments — ⠿ drag to sequence · tap one for its full detail</b></div>
   <div class="st-drag">${b.items.length?b.items.map((it,bi)=>`
-    <div class="sec-item click" draggable="true" ondragstart="subItemDragStart(event,${bi})" ondragend="subItemDragEnd(event)" ondragover="event.preventDefault()" ondragenter="event.currentTarget.classList.add('drag-over')" ondragleave="event.currentTarget.classList.remove('drag-over')" ondrop="subItemDrop(event,${ti},${subIdx},${bi})" onclick="itemModal(${ti},${it.idx})">
+    <div class="sec-item click" draggable="true" ondragstart="subItemDragStart(event,${bi})" ondragend="subItemDragEnd(event)" ondragover="event.preventDefault()" ondragenter="event.currentTarget.classList.add('drag-over')" ondragleave="event.currentTarget.classList.remove('drag-over')" ondrop="subItemDrop(event,${ti},${subIdx},${bi})" onclick="closePop();itemModal(${ti},${it.idx})">
       <div class="drag-handle" title="Drag to reorder" onclick="event.stopPropagation()">⠿</div>
       <div class="tic" style="background:rgba(23,26,63,.06)">${PLAN_ICON[it.k]||'•'}</div>
       <div style="flex:1"><b>${it.n}</b><small>${PLAN_LABEL[it.k]||''}${it.bin==='na'?' · manual':''}</small></div>
     </div>`).join(''):'<span class="lock-note">None yet — use “+ Add material / assessment” below.</span>'}</div>
   <div class="pop-acts">
     <button class="btn btn-o btn-s" onclick="closePop();topicPop(${ti})">← Back to T${t.no}</button>
-    <button class="btn btn-p btn-s" onclick="closePop();itemModalAt(${ti},${insertAt})">+ Add material / assessment</button>
+    <button class="btn btn-p btn-s" onclick="closePop();itemModalAt(${ti},${insertAt},${subIdx})">+ Add material / assessment</button>
     <button class="btn btn-o btn-s" onclick="closePop();subtopicModal(${ti},${subIdx})">✎ Edit subtopic</button>
   </div>`,null,640);
 }
@@ -248,25 +248,57 @@ function saveSubtopicModal(ti,subIdx){
   }
 }
 let INSERT_AT=null;
-function itemModalAt(ti,insertAt){ INSERT_AT=insertAt; itemModal(ti,undefined,'lecture'); }
+function itemModalAt(ti,insertAt,subIdx){ INSERT_AT=insertAt; itemModal(ti,undefined,'lecture',subIdx); }
 /* ---- Single item modal: name + category + description edited together —
    for categorized content (materials/assessments) only. The category
    picker offers just the two real category sets; a subtopic is never a
    selectable category here (see subtopicModal). ---- */
 function itemCategorySelect(id,selK){
   const groups=PLAN_TYPES.filter(g=>g.grp!=='Content Scope');
-  return `<select id="${id}" style="width:100%">${groups.map(g=>`<optgroup label="${g.grp}">${g.opts.map(o=>`<option value="${o.k}" ${o.k===selK?'selected':''}>${o.ic} ${o.label}</option>`).join('')}</optgroup>`).join('')}</select>`;
+  return `<select id="${id}" style="width:100%" onchange="itemCategoryChanged(this.value)">${groups.map(g=>`<optgroup label="${g.grp}">${g.opts.map(o=>`<option value="${o.k}" ${o.k===selK?'selected':''}>${o.ic} ${o.label}</option>`).join('')}</optgroup>`).join('')}</select>`;
 }
-function itemModal(ti,ii,defK){
+/* A category is either MCQ (quiz) or a Word/PDF document (everything
+   except quiz and ppt — ppt gets neither block, it's neither submitted
+   nor timed/counted the way these two are). No cross-file GEN lookup
+   needed: PLAN_TYPES' own category keys already say which is which. */
+function isQuizCat(k){ return k==='quiz'; }
+function isDocCat(k){ return k!=='quiz'&&k!=='ppt'; }
+function itemCategoryChanged(k){
+  $('itQuizCfg').classList.toggle('hidden',!isQuizCat(k));
+  $('itBinWrap').classList.toggle('hidden',!isDocCat(k));
+}
+function itemContextChecklist(ti,it,siblings){
+  const refs=new Set(it.ctxRefs||[]);
+  if(!siblings.length) return '<div class="lock-note">No other materials/assessments in this subtopic yet.</div>';
+  return `<div class="frm" style="gap:5px">${siblings.map((s,si)=>`
+    <label style="display:flex;align-items:center;gap:8px;font-weight:400;font-size:13px;color:#2A3055;cursor:pointer">
+      <input type="checkbox" class="itCtxChk" value="${(s.n||'').replace(/"/g,'&quot;')}" ${refs.has(s.n)?'checked':''}> ${PLAN_ICON[s.k]||'•'} ${s.n}
+    </label>`).join('')}</div>`;
+}
+function itemModal(ti,ii,defK,subIdxHint){
   const t=DB.syllabi[SYL_CODE].topics[ti];
   const isNew=ii===undefined;
   const it=isNew?{n:'',d:'',k:defK||'lecture'}:t.items[ii];
+  const {blocks}=topicSubtopicBlocks(t);
+  const block=isNew?blocks.find(b=>b.sub.idx===subIdxHint):blocks.find(b=>b.items.some(x=>x.idx===ii));
+  const siblings=block?block.items.filter(x=>isNew||x.idx!==ii):[];
+  const qc={mins:15,count:3,maxViol:3,...(it.quizCfg||{})};
   openModal(`<h3>${isNew?'Add item — ':'Edit item — '}<span class="hier-crumb" style="display:block;font-weight:400">T${t.no} · ${t.title}</span>${isNew?'':it.n}</h3>
   <div class="frm">
     <div><label>Category</label>${itemCategorySelect('itK',it.k)}</div>
     <div><label>Name / label</label><input id="itN" value="${(it.n||'').replace(/"/g,'&quot;')}" placeholder="e.g. Mobile Operating Systems (Android/iOS)" style="width:100%"></div>
     <div><label>Description / guide notes (what this item should cover)</label><textarea id="itD" rows="4" style="width:100%">${it.d||''}</textarea></div>
-    <div><label>Submission bin <span class="chip c-mut">activities &amp; assessments</span></label>
+    <div><label>Context from this subtopic <span class="chip c-mut">optional — which siblings the AI should consider</span></label>
+      ${itemContextChecklist(ti,it,siblings)}</div>
+    <div><label>Additional instructions to the AI (optional)</label><textarea id="itPrompt" rows="2" style="width:100%" placeholder="Anything specific you want considered or included…">${(it.extraPrompt||'').replace(/</g,'&lt;')}</textarea></div>
+    <div id="itQuizCfg" class="${isQuizCat(it.k)?'':'hidden'}">
+      <label>Quiz configuration <span class="chip c-mut">multiple choice</span></label>
+      <div class="row"><div><label style="font-weight:400">Time limit (minutes)</label><input id="itQMins" type="number" min="1" value="${qc.mins}" style="width:100%"></div>
+      <div><label style="font-weight:400">Number of question items</label><input id="itQCount" type="number" min="1" value="${qc.count}" style="width:100%"></div></div>
+      <div style="margin-top:6px"><label style="font-weight:400">Window-switch / alt-tab attempts allowed before auto-submit</label><input id="itQMaxViol" type="number" min="1" value="${qc.maxViol}" style="width:100%"></div>
+      <div class="lock-note" style="margin-top:4px">Fine-tune further (score release, prerequisites, violation policy) from the generated quiz's own Restrictions modal in Course Content.</div>
+    </div>
+    <div id="itBinWrap" class="${isDocCat(it.k)?'':'hidden'}"><label>Submission bin <span class="chip c-mut">Word/PDF activities &amp; assessments</span></label>
       <select id="itBin" style="width:100%">
         <option value="applicable" ${it.bin!=='na'?'selected':''}>Applicable — students submit within EduPulse (collected / auto-scored)</option>
         <option value="na" ${it.bin==='na'?'selected':''}>Not applicable — rubric-guided, done outside EduPulse (score entered manually)</option>
@@ -284,9 +316,20 @@ function itemModal(ti,ii,defK){
 function saveItemModal(ti,ii){
   const t=DB.syllabi[SYL_CODE].topics[ti];
   const n=$('itN').value.trim(), d=$('itD').value, k=$('itK').value;
-  const binEl=$('itBin'); const bin=binEl?binEl.value:'applicable';
+  const extraPrompt=$('itPrompt').value.trim();
+  const ctxRefs=[...document.querySelectorAll('.itCtxChk:checked')].map(el=>el.value);
   if(!n){ toast('Name is required.'); return; }
-  const rec={n,d,k,...(bin==='na'?{bin:'na'}:{})};
+  const rec={n,d,k,...(extraPrompt?{extraPrompt}:{}),...(ctxRefs.length?{ctxRefs}:{})};
+  if(isQuizCat(k)){
+    rec.quizCfg={
+      mins:Math.max(1,parseInt($('itQMins').value,10)||15),
+      count:Math.max(1,parseInt($('itQCount').value,10)||3),
+      maxViol:Math.max(1,parseInt($('itQMaxViol').value,10)||3)
+    };
+  } else if(isDocCat(k)){
+    const bin=$('itBin').value;
+    if(bin==='na') rec.bin='na';
+  }
   if(ii===undefined){
     if(INSERT_AT!=null && INSERT_AT<=t.items.length){ t.items.splice(INSERT_AT,0,rec); }
     else t.items.push(rec);
