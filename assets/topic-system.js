@@ -1,11 +1,17 @@
 /* ============================================================
    EduPulse — topic-system.js
-   Syllabus Builder: subject list → syllabus sheet → topic popover
-   → single-item modal. One unified list per topic (`items[]`) —
-   every subtopic AND every planned lesson/activity is edited as
-   ONE thing (name + category + description together), never two
-   separate flows. Used by Instructor pages AND by the Dean's
-   "Open syllabus (Dean edit)" action.
+   Syllabus Builder: three strict hierarchy levels, each with its own
+   add/edit flow and its own drag-to-reorder — never flattened together:
+     Topic (topicModal)
+       → Subtopic (subtopicModal) — a container, not a content category
+         → Categorized content: material/assessment (itemModal) — only
+           the two real category sets (Teaching & Learning Materials,
+           Activities & Assessments) are selectable here.
+   Storage stays one flat `items[]` per topic (a subtopic marker followed
+   by the items that belong to it, until the next marker) — topicPop /
+   subtopicPop group it into that hierarchy for display and reordering.
+   Used by Instructor pages AND by the Dean's "Open syllabus (Dean edit)"
+   action.
 ============================================================ */
 function insSyl(){
   view().innerHTML=`
@@ -81,11 +87,11 @@ function openSyllabusSheet(code,deanMode){
   SYL_CODE=code; SYL_DEAN=!!deanMode;
   const sy=DB.syllabi[code]; const c=DB.curriculum.find(k=>k.code===code);
   openSheet('📘', code+' — '+c.title, `Individual syllabus · ${sy.period} · owner: ${sy.owner}${deanMode?' · DEAN EDIT MODE':''}`, `
-   <div class="note" style="margin-top:0">KCP official format — course info, VMO, and program outcomes auto-filled from the curriculum entry. <b>Tap a time-framed topic</b> to open its subtopics (⠿ drag to reorder); <b>tap a subtopic</b> for its Teaching &amp; Learning Material and Activities &amp; Assessments categories and their contents. Term scheme: <b>${schemeLabel()}</b> ${chip('fixed by Dean','c-teal')}
-     <div style="margin-top:8px"><button class="btn btn-o btn-s" onclick="courseInfoPop(event)">ℹ️ Course description, grading & policy, references</button></div></div>
+   <div class="note" style="margin-top:0">KCP official format — course info, VMO, and program outcomes auto-filled from the curriculum entry. <b>Tap a time-framed topic</b> to open its subtopics (⠿ drag to reorder); <b>tap a subtopic</b> for its materials &amp; assessments, sequenced in one drag-reorderable list. Term scheme: <b>${schemeLabel()}</b> ${chip('fixed by Dean','c-teal')}
+     <div style="margin-top:8px"><button class="btn btn-o btn-s" onclick="courseInfoPop()">ℹ️ Course description, grading & policy, references</button></div></div>
    <div class="lock-note" style="margin:2px 0 10px">⠿ Drag a topic by its handle to reorder — timeframes recompute automatically.</div>
    ${sy.topics.map((t,i)=>`
-   <div class="sec-item click" draggable="true" ondragstart="topicDragStart(event,${i})" ondragend="topicDragEnd(event)" ondragover="event.preventDefault()" ondragenter="event.currentTarget.classList.add('drag-over')" ondragleave="event.currentTarget.classList.remove('drag-over')" ondrop="topicDrop(event,${i})" onclick="topicPop(${i},event)">
+   <div class="sec-item click" draggable="true" ondragstart="topicDragStart(event,${i})" ondragend="topicDragEnd(event)" ondragover="event.preventDefault()" ondragenter="event.currentTarget.classList.add('drag-over')" ondragleave="event.currentTarget.classList.remove('drag-over')" ondrop="topicDrop(event,${i})" onclick="topicPop(${i})">
      <div class="drag-handle" title="Drag to reorder" onclick="event.stopPropagation()">⠿</div>
      <div class="tic" style="background:linear-gradient(150deg,#26327B,#1B2559);color:#fff;font-weight:800;font-size:11px">T${t.no}</div>
      <div><b>${t.title}</b><small>${t.weeks} · ${topicSubtopics(t).length} subtopics · ${topicPlan(t).length} planned item(s) · ${t.ilo}</small></div>
@@ -93,12 +99,11 @@ function openSyllabusSheet(code,deanMode){
    </div>`).join('')}
    <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
      <button class="btn btn-p" onclick="topicModal()">+ Add topic</button>
-     <button class="btn btn-o" onclick="toast('Prototype: exports the KCP-format printable syllabus.')">Export official syllabus</button>
      ${deanMode?''
        :`<button class="btn btn-ai" onclick="closeSheet();location.href='content.html?code='+encodeURIComponent(SYL_CODE)">⚡ Generate content from this syllabus</button>`}
    </div>`);
 }
-function courseInfoPop(evt){
+function courseInfoPop(){
   const c=DB.curriculum.find(k=>k.code===SYL_CODE);
   openPop(`<h4>Course info — ${SYL_CODE}</h4>
   <div class="kv"><b>Course description</b>${c.desc||'Not yet documented for this subject — add it from Curriculum (Dean) or request the official syllabus copy.'}</div>
@@ -106,14 +111,7 @@ function courseInfoPop(evt){
   <div class="kv"><b>Grading formula <span class="chip c-mut">official KCP syllabus · not computed in EduPulse</span></b><span style="white-space:pre-line">${DB.policy.grading}</span></div>
   <div class="kv"><b>Course policy <span class="chip c-mut">college-wide</span></b><ul style="margin:4px 0 0 16px;padding:0">${DB.policy.rules.map(r=>`<li style="margin-bottom:3px">${r}</li>`).join('')}</ul></div>
   <div class="kv"><b>References</b>${(c.refs||['Not yet documented for this subject.']).map(r=>`<div style="margin-bottom:2px">${r}</div>`).join('')}</div>
-  `,evt,460);
-}
-/* ---- Topic popover: a compact overview (ILO + one tappable pill per
-   category group); each group opens its OWN individual popover listing
-   just that group's items, instead of every item being dumped into one
-   combined popup — used by Instructor pages AND Dean edit mode alike. ---- */
-function topicGroups(t){
-  return PLAN_TYPES.map(g=>({grp:g.grp, items:t.items.map((it,ii)=>({...it,ii})).filter(it=>g.opts.some(o=>o.k===it.k))}));
+  `,null,520);
 }
 /* ---- New setting pipeline (v2.6): tap a time-framed TOPIC → its SUBTOPICS
    appear (⠿ draggable to reorder); tap a subtopic → the two category sets
@@ -129,14 +127,14 @@ function topicSubtopicBlocks(t){
   });
   return {blocks, lead};
 }
-function topicPop(i,evt){
+function topicPop(i){
   const t=DB.syllabi[SYL_CODE].topics[i];
   const {blocks,lead}=topicSubtopicBlocks(t);
   openPop(`<h4>T${t.no} · ${t.title} <span class="chip c-mut">${t.weeks}</span></h4>
   <div class="kv"><b>Intended Learning Outcome</b>${t.ilo}</div>
-  <div class="kv"><b>Subtopics — ⠿ drag to reorder · tap one to open its categories & contents</b></div>
+  <div class="kv"><b>Subtopics — ⠿ drag to reorder · tap one to open its sequenced contents</b></div>
   <div class="st-drag">${blocks.length?blocks.map((b,bi)=>`
-    <div class="sec-item click" draggable="true" ondragstart="subDragStart(event,${i},${bi})" ondragend="subDragEnd(event)" ondragover="event.preventDefault()" ondragenter="event.currentTarget.classList.add('drag-over')" ondragleave="event.currentTarget.classList.remove('drag-over')" ondrop="subDrop(event,${i},${bi})" onclick="subtopicPop(${i},${b.sub.idx},event)">
+    <div class="sec-item click" draggable="true" ondragstart="subDragStart(event,${i},${bi})" ondragend="subDragEnd(event)" ondragover="event.preventDefault()" ondragenter="event.currentTarget.classList.add('drag-over')" ondragleave="event.currentTarget.classList.remove('drag-over')" ondrop="subDrop(event,${i},${bi})" onclick="subtopicPop(${i},${b.sub.idx})">
       <div class="drag-handle" title="Drag to reorder" onclick="event.stopPropagation()">⠿</div>
       <div class="tic" style="background:linear-gradient(150deg,#26327B,#1B2559);color:#fff;font-weight:800;font-size:10px">S${bi+1}</div>
       <div style="flex:1"><b>${b.sub.n}</b><small>${b.items.length} item(s)${b.items.length?' · '+b.items.map(x=>PLAN_ICON[x.k]||'•').join(' '):''}</small></div>
@@ -144,32 +142,44 @@ function topicPop(i,evt){
     </div>`).join(''):'<span class="lock-note">No subtopics yet — add one below.</span>'}</div>
   ${lead.length?`<div class="lock-note" style="margin-top:6px">${lead.length} item(s) not under any subtopic — use “Edit topic” to assign them.</div>`:''}
   <div class="pop-acts">
-    <button class="btn btn-p btn-s" onclick="closePop();addSubtopicModal(${i})">+ Add subtopic</button>
-    <button class="btn btn-o btn-s" onclick="closePop();topicModal(${i})">✎ Edit topic (all items)</button>
+    <button class="btn btn-p btn-s" onclick="closePop();subtopicModal(${i})">+ Add subtopic</button>
+    <button class="btn btn-o btn-s" onclick="closePop();topicModal(${i})">✎ Edit topic details</button>
     ${t.title.includes('EXAM')?'':`<button class="btn btn-d btn-s" onclick="closePop();removeTopicModal(${i})">Remove</button>`}
-  </div>`,evt,440);
+  </div>`,null,640);
 }
-/* Tap a subtopic → its two category sets and the contents within each. */
-function subtopicPop(ti,subIdx,evt){
+/* Tap a subtopic → its materials & assessments, sequenced in one list
+   (not split into fixed category sections) — ⠿ drag to change the order
+   they're taught/assigned in, regardless of category. */
+function subtopicPop(ti,subIdx){
   const t=DB.syllabi[SYL_CODE].topics[ti];
   const {blocks}=topicSubtopicBlocks(t);
   const b=blocks.find(x=>x.sub.idx===subIdx);
-  if(!b){ topicPop(ti,evt); return; }
-  const catGroups=PLAN_TYPES.filter(g=>g.grp!=='Content Scope');
+  if(!b){ topicPop(ti); return; }
   const insertAt=(b.items.length?b.items[b.items.length-1].idx:subIdx)+1;
   openPop(`<h4>📚 ${b.sub.n} <span class="chip c-mut">T${t.no} · ${t.title}</span></h4>
   ${b.sub.d?`<div class="kv"><b>Scope / notes</b>${b.sub.d}</div>`:''}
-  ${catGroups.map(g=>{const items=b.items.filter(it=>g.opts.some(o=>o.k===it.k));
-    return `<div class="kv" style="margin-top:8px"><b>${g.grp}</b></div>
-    <div class="subtopics">${items.length?items.map(it=>`<span class="st click" onclick="itemModal(${ti},${it.idx})" title="${PLAN_LABEL[it.k]||''}">${PLAN_ICON[it.k]||'•'} ${it.n}${it.bin==='na'?' '+chip('manual','c-mut'):''}</span>`).join(''):'<span class="lock-note">None yet</span>'}</div>`;}).join('')}
+  <div class="kv"><b>Materials & assessments — ⠿ drag to sequence · tap one for its full detail</b></div>
+  <div class="st-drag">${b.items.length?b.items.map((it,bi)=>`
+    <div class="sec-item click" draggable="true" ondragstart="subItemDragStart(event,${bi})" ondragend="subItemDragEnd(event)" ondragover="event.preventDefault()" ondragenter="event.currentTarget.classList.add('drag-over')" ondragleave="event.currentTarget.classList.remove('drag-over')" ondrop="subItemDrop(event,${ti},${subIdx},${bi})" onclick="itemModal(${ti},${it.idx})">
+      <div class="drag-handle" title="Drag to reorder" onclick="event.stopPropagation()">⠿</div>
+      <div class="tic" style="background:rgba(23,26,63,.06)">${PLAN_ICON[it.k]||'•'}</div>
+      <div style="flex:1"><b>${it.n}</b><small>${PLAN_LABEL[it.k]||''}${it.bin==='na'?' · manual':''}</small></div>
+    </div>`).join(''):'<span class="lock-note">None yet — use “+ Add material / assessment” below.</span>'}</div>
   <div class="pop-acts">
     <button class="btn btn-o btn-s" onclick="closePop();topicPop(${ti})">← Back to T${t.no}</button>
     <button class="btn btn-p btn-s" onclick="closePop();itemModalAt(${ti},${insertAt})">+ Add material / assessment</button>
-    <button class="btn btn-o btn-s" onclick="closePop();itemModal(${ti},${subIdx})">✎ Edit subtopic</button>
-  </div>`,evt,430);
+    <button class="btn btn-o btn-s" onclick="closePop();subtopicModal(${ti},${subIdx})">✎ Edit subtopic</button>
+  </div>`,null,640);
 }
 /* ---- Subtopic drag-and-drop reorder — moves the whole block (the subtopic
    plus the items that belong to it) within `items[]`, then re-renders. ---- */
+function rebuildTopicItems(lead,blocks){
+  const rebuilt=[];
+  lead.forEach(it=>rebuilt.push({n:it.n,d:it.d,k:it.k,...(it.bin?{bin:it.bin}:{})}));
+  blocks.forEach(b=>{ rebuilt.push({n:b.sub.n,d:b.sub.d,k:'subtopic'});
+    b.items.forEach(it=>rebuilt.push({n:it.n,d:it.d,k:it.k,...(it.bin?{bin:it.bin}:{})})); });
+  return rebuilt;
+}
 let SUB_DRAG=null;
 function subDragStart(e,ti,bi){SUB_DRAG=bi;e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',String(bi));e.currentTarget.classList.add('dragging');}
 function subDragEnd(e){e.currentTarget.classList.remove('dragging');}
@@ -180,54 +190,77 @@ function subDrop(e,ti,bi){
   const {blocks,lead}=topicSubtopicBlocks(t);
   const moved=blocks.splice(SUB_DRAG,1)[0];
   blocks.splice(bi,0,moved);
-  const rebuilt=[];
-  lead.forEach(it=>rebuilt.push({n:it.n,d:it.d,k:it.k,...(it.bin?{bin:it.bin}:{})}));
-  blocks.forEach(b=>{ rebuilt.push({n:b.sub.n,d:b.sub.d,k:'subtopic'});
-    b.items.forEach(it=>rebuilt.push({n:it.n,d:it.d,k:it.k,...(it.bin?{bin:it.bin}:{})})); });
-  t.items=rebuilt;
+  t.items=rebuildTopicItems(lead,blocks);
   saveDB(); SUB_DRAG=null;
   topicPop(ti);
   toast('Subtopics reordered.');
 }
-function addSubtopicModal(ti){
+/* ---- Material/assessment drag-and-drop reorder — same mechanic as above,
+   but reorders items *within* one subtopic's own block (sequencing which
+   material/assessment comes first), regardless of their category. ---- */
+let SUBITEM_DRAG=null;
+function subItemDragStart(e,bi){SUBITEM_DRAG=bi;e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',String(bi));e.currentTarget.classList.add('dragging');}
+function subItemDragEnd(e){e.currentTarget.classList.remove('dragging');}
+function subItemDrop(e,ti,subIdx,bi){
+  e.preventDefault(); e.currentTarget.classList.remove('drag-over');
+  if(SUBITEM_DRAG===null||SUBITEM_DRAG===bi){SUBITEM_DRAG=null;return;}
   const t=DB.syllabi[SYL_CODE].topics[ti];
-  openModal(`<h3>Add subtopic — <span class="hier-crumb" style="display:block;font-weight:400">T${t.no} · ${t.title}</span></h3><div class="frm">
-    <div><label>Subtopic name</label><input id="stName" placeholder="e.g. Mobile Operating Systems (Android/iOS)" style="width:100%"></div>
-    <div><label>Scope / notes (optional)</label><textarea id="stDesc" rows="3" style="width:100%"></textarea></div>
-    <div class="note-ai note">The new subtopic is added to this topic; open it to add its materials and assessments.</div>
-    <div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn btn-o" onclick="closeModal()">Cancel</button>
-    <button class="btn btn-p" onclick="saveNewSubtopic(${ti})">Add subtopic</button></div></div>`);
+  const {blocks,lead}=topicSubtopicBlocks(t);
+  const b=blocks.find(x=>x.sub.idx===subIdx);
+  if(!b){SUBITEM_DRAG=null;return;}
+  const moved=b.items.splice(SUBITEM_DRAG,1)[0];
+  b.items.splice(bi,0,moved);
+  t.items=rebuildTopicItems(lead,blocks);
+  saveDB(); SUBITEM_DRAG=null;
+  subtopicPop(ti,subIdx);
+  toast('Sequence updated.');
 }
-function saveNewSubtopic(ti){
+/* ---- Subtopic modal: name + scope/notes only — a subtopic is the
+   container for categorized content, never a category itself, so unlike
+   itemModal it has no category picker and no submission bin. ---- */
+function subtopicModal(ti,subIdx){
+  const t=DB.syllabi[SYL_CODE].topics[ti];
+  const isNew=subIdx===undefined;
+  const sub=isNew?{n:'',d:''}:t.items[subIdx];
+  openModal(`<h3>${isNew?'Add subtopic — ':'Edit subtopic — '}<span class="hier-crumb" style="display:block;font-weight:400">T${t.no} · ${t.title}</span>${isNew?'':sub.n}</h3><div class="frm">
+    <div><label>Subtopic name</label><input id="stName" value="${(sub.n||'').replace(/"/g,'&quot;')}" placeholder="e.g. Mobile Operating Systems (Android/iOS)" style="width:100%"></div>
+    <div><label>Scope / notes (optional)</label><textarea id="stDesc" rows="3" style="width:100%">${sub.d||''}</textarea></div>
+    <div class="note-ai note">${isNew?'The new subtopic is added to this topic; open it to add its materials and assessments.':'Its materials & assessments stay grouped under it — manage them from the subtopic popover.'}</div>
+    <div style="display:flex;gap:8px;justify-content:${isNew?'flex-end':'space-between'}">
+      ${isNew?'':`<button class="btn btn-d btn-s" onclick="deleteItemModal(${ti},${subIdx})">Delete subtopic</button>`}
+      <div style="display:flex;gap:8px">
+      <button class="btn btn-o" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-p" onclick="saveSubtopicModal(${ti},${isNew?'undefined':subIdx})">${isNew?'Add subtopic':'Save'}</button></div>
+    </div></div>`);
+}
+function saveSubtopicModal(ti,subIdx){
   const n=($('stName').value||'').trim(); if(!n){toast('Name is required.');return;}
   const t=DB.syllabi[SYL_CODE].topics[ti];
-  t.items.push({n,d:$('stDesc').value||'',k:'subtopic'});
-  saveDB(); closeModal(); openSyllabusSheet(SYL_CODE,SYL_DEAN);
-  toast('Subtopic added.');
+  const d=$('stDesc').value||'';
+  if(subIdx===undefined){
+    t.items.push({n,d,k:'subtopic'});
+    saveDB(); closeModal(); openSyllabusSheet(SYL_CODE,SYL_DEAN);
+    toast('Subtopic added.');
+  } else {
+    t.items[subIdx]={...t.items[subIdx],n,d};
+    saveDB(); closeModal(); subtopicPop(ti,subIdx);
+    toast('Subtopic saved.');
+  }
 }
 let INSERT_AT=null;
 function itemModalAt(ti,insertAt){ INSERT_AT=insertAt; itemModal(ti,undefined,'lecture'); }
-/* ---- Individual group popover: one category's items only, opened from
-   its pill in topicPop(); tapping an item still opens its full-detail modal. ---- */
-function groupPop(i,grp,evt){
-  const t=DB.syllabi[SYL_CODE].topics[i];
-  const g=topicGroups(t).find(x=>x.grp===grp);
-  openPop(`<h4>${grp} <span class="chip c-mut">T${t.no} · ${t.title}</span></h4>
-  <div class="kv"><b>Tap one for its full detail</b></div>
-  <div class="subtopics">${g.items.length?g.items.map(it=>`<span class="st click" onclick="itemModal(${i},${it.ii})" title="${PLAN_LABEL[it.k]||''}">${PLAN_ICON[it.k]||'•'} ${it.n}</span>`).join(''):'<span class="lock-note">None yet — use “+ Add item” below.</span>'}</div>
-  <div class="pop-acts">
-    <button class="btn btn-o btn-s" onclick="closePop();topicPop(${i})">← Back to T${t.no}</button>
-    <button class="btn btn-p btn-s" onclick="closePop();itemModal(${i})">+ Add item</button>
-  </div>`,evt,380);
-}
-/* ---- Single item modal: name + category + description edited together ---- */
+/* ---- Single item modal: name + category + description edited together —
+   for categorized content (materials/assessments) only. The category
+   picker offers just the two real category sets; a subtopic is never a
+   selectable category here (see subtopicModal). ---- */
 function itemCategorySelect(id,selK){
-  return `<select id="${id}" style="width:100%">${PLAN_TYPES.map(g=>`<optgroup label="${g.grp}">${g.opts.map(o=>`<option value="${o.k}" ${o.k===selK?'selected':''}>${o.ic} ${o.label}</option>`).join('')}</optgroup>`).join('')}</select>`;
+  const groups=PLAN_TYPES.filter(g=>g.grp!=='Content Scope');
+  return `<select id="${id}" style="width:100%">${groups.map(g=>`<optgroup label="${g.grp}">${g.opts.map(o=>`<option value="${o.k}" ${o.k===selK?'selected':''}>${o.ic} ${o.label}</option>`).join('')}</optgroup>`).join('')}</select>`;
 }
 function itemModal(ti,ii,defK){
   const t=DB.syllabi[SYL_CODE].topics[ti];
   const isNew=ii===undefined;
-  const it=isNew?{n:'',d:'',k:defK||'subtopic'}:t.items[ii];
+  const it=isNew?{n:'',d:'',k:defK||'lecture'}:t.items[ii];
   openModal(`<h3>${isNew?'Add item — ':'Edit item — '}<span class="hier-crumb" style="display:block;font-weight:400">T${t.no} · ${t.title}</span>${isNew?'':it.n}</h3>
   <div class="frm">
     <div><label>Category</label>${itemCategorySelect('itK',it.k)}</div>
@@ -270,24 +303,14 @@ function deleteItemModal(ti,ii){
   closeModal(); openSyllabusSheet(SYL_CODE,SYL_DEAN);
   toast('Item removed — consistency check queued.');
 }
-/* ---- Bulk topic editor: title/weeks/ILO + the full item list (dropdown-driven) ---- */
-let TM_I, ITEM_DRAFT=[];
+/* ---- Topic modal: title/duration/ILO only — a topic's subtopics and
+   their categorized content are a separate hierarchy level, managed
+   exclusively from the topic popover (topicPop → subtopicModal/itemModal)
+   so every add/edit stays properly nested under the right subtopic. ---- */
+let TM_I;
 function tmSourceTopic(){
   return TM_I!==undefined?DB.syllabi[SYL_CODE].topics[TM_I]:{no:(DB.syllabi[SYL_CODE]?DB.syllabi[SYL_CODE].topics.length:0)+1,title:'',weeks:'',ilo:'',items:[]};
 }
-function itemRowsHtml(){
-  return (ITEM_DRAFT.map((it,pi)=>`
-   <div style="display:flex;gap:6px;align-items:flex-start;margin-bottom:8px;flex-wrap:wrap;border:1px solid var(--line);border-radius:12px;padding:8px;background:rgba(255,255,255,.6)">
-     <div style="display:flex;gap:6px;flex-wrap:wrap;flex:1;min-width:260px">
-       <div style="min-width:210px;flex:1"><select onchange="ITEM_DRAFT[${pi}].k=this.value">${PLAN_TYPES.map(g=>`<optgroup label="${g.grp}">${g.opts.map(o=>`<option value="${o.k}" ${o.k===it.k?'selected':''}>${o.ic} ${o.label}</option>`).join('')}</optgroup>`).join('')}</select></div>
-       <input value="${(it.n||'').replace(/"/g,'&quot;')}" placeholder="Name — e.g. Short quiz on Ch. 3" style="flex:2;min-width:180px" oninput="ITEM_DRAFT[${pi}].n=this.value">
-     </div>
-     <input value="${(it.d||'').replace(/"/g,'&quot;')}" placeholder="Description / guide notes (optional)" style="flex:2;min-width:220px" oninput="ITEM_DRAFT[${pi}].d=this.value">
-     <button type="button" class="btn btn-o btn-s" onclick="removeItemRow(${pi})">✕</button>
-   </div>`).join(''))||'<div class="lock-note" style="margin-bottom:8px">No items yet — add one below.</div>';
-}
-function addItemRow(){ITEM_DRAFT.push({k:'subtopic',n:'',d:''});renderTopicModal();}
-function removeItemRow(pi){ITEM_DRAFT.splice(pi,1);renderTopicModal();}
 function updateWeeksPreview(){
   const dur=Math.max(1,parseInt($('tmDur').value,10)||1);
   const start=computeStartWeek(TM_I);
@@ -296,23 +319,19 @@ function updateWeeksPreview(){
 }
 function renderTopicModal(){
   const t=tmSourceTopic(); const i=TM_I;
-  openModal(`<h3>${i!==undefined?'Edit topic — '+t.title:'Add syllabus topic'}</h3><div class="frm">
+  openModal(`<h3>${i!==undefined?'Edit topic details — '+t.title:'Add syllabus topic'}</h3><div class="frm">
     <div class="row"><div><label>Topic title</label><input id="tmTitle" value="${t.title}" style="width:100%"></div>
     <div><label>Duration (weeks) <span class="chip c-mut">auto-scheduled</span></label><input id="tmDur" type="number" min="1" value="${topicDur(t)}" oninput="updateWeeksPreview()" style="width:100%"></div></div>
     <div class="lock-note" id="tmWeeksPreview" style="margin-top:-6px"></div>
     <div><label>Intended Learning Outcome(s)</label><textarea id="tmIlo" rows="2" style="width:100%">${t.ilo}</textarea></div>
-    <div><label>Subtopics & planned lessons/activities <span class="chip c-mut">pick a category, name it, describe it — one unified list</span></label>
-    <div id="itemRows">${itemRowsHtml()}</div>
-    <button type="button" class="btn btn-o btn-s" onclick="addItemRow()">+ Add item</button></div>
-    <div class="note-ai note">On save, the <b>AI Consistency Checker</b> diffs this topic against its generated content and reports anything left inconsistent.</div>
+    <div class="note-ai note">${i!==undefined?'Subtopics and their materials/assessments are managed from the topic popover — tap the topic after saving to add, edit, remove, or drag-reorder them, each staying grouped under its own subtopic.':'After adding, tap the new topic to add its subtopics and their materials/assessments.'} On save, the <b>AI Consistency Checker</b> diffs this topic against its generated content and reports anything left inconsistent.</div>
     <div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn btn-o" onclick="closeModal()">Cancel</button>
-    <button class="btn btn-p" onclick="saveTopicModal()">Save & run consistency check</button></div>
+    <button class="btn btn-p" onclick="saveTopicModal()">${i!==undefined?'Save':'Add topic'} & run consistency check</button></div>
   </div>`);
   updateWeeksPreview();
 }
 function topicModal(i){
   TM_I=i;
-  ITEM_DRAFT=tmSourceTopic().items.map(it=>({...it}));
   renderTopicModal();
 }
 function saveTopicModal(){
@@ -323,19 +342,18 @@ function saveTopicModal(){
   const title=$('tmTitle').value.trim()||'Untitled topic';
   const dur=Math.max(1,parseInt($('tmDur').value,10)||1);
   const ilo=$('tmIlo').value.trim();
-  const items=ITEM_DRAFT.filter(it=>it.n&&it.n.trim()).map(it=>({n:it.n.trim(),d:it.d||'',k:it.k}));
   if(TM_I!==undefined){
     const t=sy.topics[TM_I];
-    t.title=title; t.dur=dur; t.ilo=ilo; t.items=items;
+    t.title=title; t.dur=dur; t.ilo=ilo;
   } else {
     const nextNo=(sy.topics.length?Math.max(...sy.topics.map(t=>t.no)):0)+1;
-    sy.topics.push({no:nextNo,title,dur,ilo,items});
+    sy.topics.push({no:nextNo,title,dur,ilo,items:[]});
   }
   recomputeTimeframes(sy);
   saveDB();
   closeModal();
   openSyllabusSheet(SYL_CODE,SYL_DEAN);
-  toast('Saved — timeframe recalculated, consistency check running…');
+  toast(TM_I!==undefined?'Saved — timeframe recalculated, consistency check running…':'Topic added — tap it to add subtopics.');
   if(wasChecked && !SYL_DEAN) setTimeout(()=>{closeSheet();location.href='checker.html';},900);
 }
 function removeTopicModal(i){

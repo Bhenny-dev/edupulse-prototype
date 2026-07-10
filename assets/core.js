@@ -94,13 +94,20 @@ function openSheet(icon,title,sub,html){
   $('sheetBody').innerHTML=html; $('sheetBg').classList.remove('hidden'); $('sheetBg').scrollTop=0;
 }
 function closeSheet(){$('sheetBg').classList.add('hidden');}
+/* evt anchors the popover next to the click (used everywhere a small,
+   contextual popover is opened from a specific row/button); omitting evt
+   instead centers it in the viewport, both axes — used for popovers that
+   need to read like a standalone dialog (e.g. topicPop) rather than a
+   tooltip pinned to whatever was clicked. */
 function openPop(html,evt,w){
-  const pop=$('pop'); pop.style.width=(w||360)+'px';
-  pop.innerHTML=html; pop.classList.remove('hidden'); $('popBg').classList.remove('hidden');
+  const pop=$('pop'); pop.style.width=Math.min(w||360,innerWidth-24)+'px';
+  pop.innerHTML='<button class="pop-x" onclick="closePop()" aria-label="Close">✕</button>'+html;
+  pop.classList.remove('hidden'); $('popBg').classList.remove('hidden');
   const r=pop.getBoundingClientRect();
-  let x=(evt?evt.clientX:innerWidth/2)-r.width/2, y=(evt?evt.clientY:120)+16;
+  let x=(evt?evt.clientX:innerWidth/2)-r.width/2, y=evt?evt.clientY+16:(innerHeight-r.height)/2;
   x=Math.max(12,Math.min(x,innerWidth-r.width-12));
-  if(y+r.height>innerHeight-12) y=Math.max(12,(evt?evt.clientY:120)-r.height-16);
+  if(evt&&y+r.height>innerHeight-12) y=Math.max(12,evt.clientY-r.height-16);
+  y=Math.max(12,Math.min(y,innerHeight-r.height-12));
   pop.style.left=x+'px'; pop.style.top=y+'px';
 }
 function closePop(){$('pop').classList.add('hidden');$('popBg').classList.add('hidden');}
@@ -124,7 +131,7 @@ function showPrompt(kind){
   <div style="display:flex;justify-content:flex-end;margin-top:12px"><button class="btn btn-p" onclick="closeModal()">Close</button></div>`);
 }
 
-/* ---- real Document (.docx/.xlsx)/Presentation (.pptx) file generation lives
+/* ---- real Document (.docx)/Presentation (.pptx) file generation lives
    in filegen.js (openSection, exportSectionPdf) — loaded after this file on
    any page that opens Course Content sections. ---- */
 

@@ -1,8 +1,8 @@
 /* ============================================================
    EduPulse — filegen.js
    Turns a section's own `preview` text into a REAL, valid file —
-   .docx / .xlsx (Documents) or .pptx (Presentation) — built client-side
-   from the vendored libraries in assets/vendor/. No server, no network
+   .docx (Documents, with a one-click .pdf export) or .pptx (Presentation)
+   — built client-side from the vendored libraries in assets/vendor/. No server, no network
    at demo time; no HTML mimic in a new tab.
 
    Single source of truth: `preview`. Editing a section's preview
@@ -49,13 +49,6 @@ function paragraphsViewHtml(paras){
     :`<p style="font-size:13.5px;line-height:1.6;margin:8px 0;color:#2A3055">${escapeHtml(p.body)}</p>`
   ).join('');
 }
-function rubricViewHtml(rows){
-  if(!rows.length) return '';
-  const total=rows.reduce((s,r)=>s+r.points,0);
-  return `<table class="tb" style="margin-top:6px"><tr><th>Criteria</th><th>Points</th></tr>
-    ${rows.map(r=>`<tr><td>${escapeHtml(r.criteria)}</td><td>${r.points}</td></tr>`).join('')}
-    <tr><td><b>Total</b></td><td><b>${total}</b></td></tr></table>`;
-}
 function slidesViewHtml(titles){
   return `<div class="grid g2" style="margin-top:8px">
     ${titles.map((t,i)=>`<div class="card" style="text-align:center;padding:22px 14px"><div class="lock-note" style="margin-bottom:6px">Slide ${i+1}</div><b style="font-size:14px">${escapeHtml(t)}</b></div>`).join('')}
@@ -78,28 +71,6 @@ async function buildDocxBlob({title,courseCode,courseTitle,topicNo,topicTitle,do
   ];
   const doc=new Document({sections:[{children}]});
   return Packer.toBlob(doc);
-}
-function buildXlsxBlob({title,courseCode,courseTitle,topicNo,topicTitle,docType,preview}){
-  const rubric=parsePreviewToRubricRows(preview);
-  const paras=parsePreviewToParagraphs(preview);
-  const rows=[
-    [`${courseCode} — ${courseTitle}`],
-    [`Topic ${topicNo}: ${topicTitle} · ${docType||'Document'}`],
-    [title],
-    []
-  ];
-  if(rubric.length){
-    rows.push(['Criteria','Points']);
-    rubric.forEach(r=>rows.push([r.criteria,r.points]));
-    rows.push([],['Notes']);
-  }
-  paras.forEach(p=>rows.push([p.heading||'',p.body]));
-  const wb=XLSX.utils.book_new();
-  const ws=XLSX.utils.aoa_to_sheet(rows);
-  ws['!cols']=[{wch:34},{wch:60}];
-  XLSX.utils.book_append_sheet(wb,ws,'Sheet1');
-  const arr=XLSX.write(wb,{type:'array',bookType:'xlsx'});
-  return Promise.resolve(new Blob([arr],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}));
 }
 function buildPdfBlob({title,courseCode,courseTitle,topicNo,topicTitle,docType,preview}){
   const {jsPDF}=window.jspdf;
@@ -159,9 +130,9 @@ function slugify(s){return (s||'file').replace(/[^\w\- ]+/g,'').trim().replace(/
    Content and student My Subjects (replaces the old HTML-mimic opener).
    Opens an in-app viewer screen (openFileViewer, below) so the content can
    be scanned right away; a Download button on that screen is what actually
-   saves the real .docx/.xlsx/.pptx/.pdf — the same Blob already built for
+   saves the real .docx/.pptx/.pdf — the same Blob already built for
    the preview, not rebuilt on click. ---- */
-const DOC_BUILDERS={word:{build:buildDocxBlob,ext:'docx'}, excel:{build:buildXlsxBlob,ext:'xlsx'}, pdf:{build:buildPdfBlob,ext:'pdf'}};
+const DOC_BUILDERS={word:{build:buildDocxBlob,ext:'docx'}, pdf:{build:buildPdfBlob,ext:'pdf'}};
 function sectionFileCtx(s,ctx){
   const docType=s.t==='file'?'Instructor Upload':(CONTENT_CATS[s.t]||'Document');
   return {title:s.label, courseCode:ctx.courseCode, courseTitle:ctx.courseTitle, topicNo:ctx.topicNo, topicTitle:ctx.topicTitle, docType, preview:s.preview};
@@ -213,10 +184,6 @@ async function openSection(s,ctx,evt){
       let bodyHtml;
       if(fmt==='pdf'){
         bodyHtml=`<div class="note-ai note" style="margin-top:0">Viewing the real generated <b>.pdf</b> directly — no download needed to scan it.</div>${pdfViewerHtml(blob)}`;
-      } else if(fmt==='excel'){
-        const rubric=parsePreviewToRubricRows(s.preview), paras=parsePreviewToParagraphs(s.preview);
-        bodyHtml=`<div class="note-ai note" style="margin-top:0">Viewing the generated content directly — no download needed to scan it. The real, downloadable <b>.xlsx</b> holds this as real spreadsheet cells.</div>
-          ${rubricViewHtml(rubric)}${paragraphsViewHtml(paras)}`;
       } else {
         bodyHtml=`<div class="note-ai note" style="margin-top:0">Viewing the generated content directly — no download needed to scan it. The real, downloadable <b>.docx</b> holds this exact text.</div>
           ${paragraphsViewHtml(parsePreviewToParagraphs(s.preview))}`;

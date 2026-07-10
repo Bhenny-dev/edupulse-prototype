@@ -95,7 +95,7 @@ function insCheck(){
       ${f.resolved?'':`
       <div style="font-size:13px;margin-bottom:4px"><b>Issue:</b> ${f.issue}</div>
       <div style="font-size:13px;margin-bottom:10px"><b>AI prescription:</b> ${f.rx}</div>
-      ${f.sev==='warning'?`<button class="btn btn-p btn-s" onclick="checkerViewPop(${i},event)">👁 View & resolve</button>`:''}`}
+      ${f.sev==='warning'?`<button class="btn btn-p btn-s" onclick="checkerViewPop(${i})">👁 View & resolve</button>`:''}`}
     </div>`).join('')}
     <div class="lock-note">Every decision is logged to the audit trail. The AI never changes published content on its own.</div>
   </div>`;
@@ -105,9 +105,9 @@ function insCheck(){
    filegen.js uses, so this is never a mocked-up snippet) with the specific
    flagged part marked in place, and the AI suggestion + resolution actions
    right after it — one popover, one pass, nothing to click through first. */
-function checkerViewPop(i,evt){
+async function checkerViewPop(i){
   const f=DB.checkFindings.findings[i];
-  let contentHtml;
+  let contentHtml, fileHtml='';
   if(f.quizId){
     const q=DB.quizzes[f.quizId];
     contentHtml=`<div class="lock-note" style="margin:2px 0 8px">${q.course} · ${q.items.length} items · real quiz content (✓ marks the correct option)</div>
@@ -131,17 +131,32 @@ function checkerViewPop(i,evt){
         ${paras.map(p=>`<div class="kv" style="margin-top:8px">${p.heading?`<b>${p.heading}</b>`:''}${p.body}</div>`).join('')}
         <div class="note-warn note" style="margin-top:10px">⚑ ${f.issue}</div>`;
     }
+    /* Build the SAME real file this section opens as from Course Content
+       (filegen.js — single source of truth is `sec.preview`), so the
+       Checker offers actual proof, not just an HTML approximation. */
+    try{
+      const c=DB.curriculum.find(x=>x.code===f.code);
+      const topic=DB.syllabi[f.code].topics.find(x=>x.no===f.tno);
+      const fctx=sectionFileCtx(sec,{courseCode:f.code,courseTitle:c.title,topicNo:f.tno,topicTitle:topic.title});
+      let blob,ext;
+      if(sec.t==='ppt'){ blob=await buildPptxBlob(fctx); ext='pptx'; }
+      else { const fmt=DOC_BUILDERS[sec.format]?sec.format:'word'; blob=await DOC_BUILDERS[fmt].build(fctx); ext=DOC_BUILDERS[fmt].ext; }
+      setDownloadHandler(blob,slugify(sec.label)+'.'+ext);
+      fileHtml=`<div class="note-ai note" style="margin-top:10px">This is the real, downloadable <b>.${ext}</b> this section opens as in Course Content — not a mock-up.</div>
+        <div class="pop-acts" style="margin-top:8px"><button class="btn btn-o btn-s" onclick="__filegenDownload()">⬇ Download real file (.${ext})</button></div>`;
+    }catch(e){ console.error(e); }
   } else {
     contentHtml=`<div class="lock-note">This finding is about the syllabus plan only — no generated file to view.</div>`;
   }
   openPop(`<h4>${f.item}</h4>
   <div style="max-height:42vh;overflow:auto;margin:6px 0">${contentHtml}</div>
+  ${fileHtml}
   <div class="note-ai note" style="margin-top:12px"><b>AI suggestion:</b> ${f.rx}</div>
   <div class="pop-acts">
     <button class="btn btn-p btn-s" onclick="closePop();resolveFinding(${i},'Accepted — AI prescription applied ✓')">✓ Accept suggestion</button>
     <button class="btn btn-o btn-s" onclick="closePop();manualEditModal(${i})">✎ Edit manually</button>
     <button class="btn btn-o btn-s" onclick="closePop();resolveFinding(${i},'Kept as is — no changes')">Keep as is</button>
-  </div>`,evt,560);
+  </div>`,null,640);
 }
 function manualEditModal(i){
   const f=DB.checkFindings.findings[i];

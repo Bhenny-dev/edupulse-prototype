@@ -68,9 +68,9 @@ const SEED_STUDENTS=(function(){
  }));
  /* Fixed named 3rd-years in BSIT 3A: Rivera (all-max), Botay (demo user), De Vera. */
  const a=out['BSIT 3A'];
- a[0]=mk('2023-3A01','Rivera, Bhenny Benlor D.',1.0,{perfect:true});
+ a[0]=mk('2023-3A01','Rivera, Bhenny Benlor D.',0.74);
  a[1]=mk('2023-3A02','Botay, Yesha Nicka D.',0.84);
- a[2]=mk('2023-3A03','De Vera, Renand D.',0.74);
+ a[2]=mk('2023-3A03','De Vera, Renand D.',1.0,{perfect:true});
  /* one filler surfaces the Completed/Missed demo (missed the Finals practical PE2) */
  if(a[5]) a[5]={...a[5], missed:['PE2']};
  return out;
@@ -615,7 +615,7 @@ const DEFAULT_DB = {
       preview:'Four periods of computing — pre-mechanical, mechanical, electromechanical, and electronic, each with representative devices.\nCommunication milestones — from the telegraph and telephone to the internet and mobile broadband.'},
      {t:'ppt', label:'Presentation — Four Periods of Computing (16 slides)', sub:'Presentation (.pptx) · EduPulse-PPT v1 · mapped: T2', pub:true,
       preview:'S1 Title · S2 Objectives · S3 Pre-mechanical era · S4 Mechanical era (abacus to Pascaline) · S5 Electromechanical era · S6 Electronic era · S7 Communication milestones · … · S15 Summary · S16 Assessment preview'},
-     {t:'doc', format:'excel', label:'Timeline Activity + Reflection Paper Brief', sub:'Document (.xlsx) · rubric included · mapped: T2', pub:true,
+     {t:'doc', format:'word', label:'Timeline Activity + Reflection Paper Brief', sub:'Document (.docx) · rubric included · mapped: T2', pub:true,
       preview:'Build a 10-event ICT timeline in pairs, then write a 300-word reflection paper.\nAccuracy — 40 pts\nInsight — 40 pts\nForm — 20 pts'},
      {t:'file', format:'pdf', label:'Instructor upload — ICT_Milestones_Reading.pdf', sub:'Instructor upload · Topic 2 resources', pub:true,
       preview:'Instructor-uploaded supplementary reading for Topic 2 (Evolution of ICT) — an 8-page handout covering the milestones referenced in the lecture notes.'}
@@ -626,7 +626,7 @@ const DEFAULT_DB = {
      {t:'ppt', label:'Presentation — Hardware & Software Fundamentals (15 slides)', sub:'Presentation (.pptx) · EduPulse-PPT v1 · mapped: T3', pub:false,
       preview:'S1 Title · S2 Objectives · S3 Hardware overview · S4 Input devices · S5 Output devices · S6 Storage & processing · S7 System vs application software · … · S14 Summary · S15 Assessment preview'},
      {t:'quiz', label:'Quiz — Computer Hardware & Software (3 items)', sub:'MCQ · opens after T3 notes viewed', pub:false, quizId:'q3', preview:'3 MCQ items · topic-tagged (Hardware, Software, OS) · shuffle on'},
-     {t:'doc', format:'excel', label:'Group Identification Activity — Label the System', sub:'Document (.xlsx) · demonstration companion', pub:false,
+     {t:'doc', format:'word', label:'Group Identification Activity — Label the System', sub:'Document (.docx) · demonstration companion', pub:false,
       preview:'Teams label the parts of a demo unit on an identification sheet.\nCorrect labels — 6 pts\nGroup cooperation — 4 pts'}
    ]}
   },
@@ -659,7 +659,7 @@ const DEFAULT_DB = {
    2:{gen:true, topicPub:true, secs:[
      {t:'doc', format:'word', label:'Lecture Notes — IP Addressing & Subnetting', sub:'Document (.docx) · mapped: T2 · 3 subtopics', pub:true,
       preview:'Overview — This lecture explains how IPv4 addresses identify hosts and how a single address block is divided into smaller subnets.\nIPv4 structure — An IPv4 address is 32 bits written in dotted-decimal form; ranges such as 192.168.0.0/16 are reserved for private networks.\nSubnet masks and CIDR — The mask marks which bits are the network and which are the host; CIDR notation such as /24 states the number of network bits directly.\nSubnetting — Borrowing host bits creates multiple subnets, each with its own network address, usable host range, and broadcast address.'},
-     {t:'doc', format:'excel', label:'Subnetting Practical Exercise + Rubric', sub:'Document (.xlsx) · rubric included · mapped: T2', pub:true,
+     {t:'doc', format:'word', label:'Subnetting Practical Exercise + Rubric', sub:'Document (.docx) · rubric included · mapped: T2', pub:true,
       preview:'Subnet the 192.168.10.0/24 network into four equal subnets and list each subnet\'s network address, usable host range, and broadcast address.\nCorrectness of subnet addresses — 40 pts\nUsable host ranges — 30 pts\nBroadcast addresses — 20 pts\nNeatness and labeling — 10 pts'},
      {t:'quiz', label:'Quiz — IP Addressing & Subnetting (3 items)', sub:'MCQ · timer 20 min', pub:false, quizId:'net2',
       preview:'3 MCQ items · topic-tagged (Masks, Host counts, Private ranges) · shuffle on'}

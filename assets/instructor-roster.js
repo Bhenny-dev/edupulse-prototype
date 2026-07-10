@@ -30,7 +30,7 @@ function instSubjectRosterSheet(code){
   ${x.sections.length?x.sections.map(sec=>{
     const list=DB.students[sec]||[];
     return `<div class="card" style="margin-bottom:14px"><h3>🧑‍🤝‍🧑 ${sec} — Block Section <span class="chip c-teal">${list.length} student(s)</span></h3>
-     ${list.map(st=>`<div class="sec-item click" onclick="instStuPop('${st.id}','${(st.name||'').replace(/'/g,"\\'")}',event)">
+     ${list.map(st=>`<div class="sec-item click" onclick="instStuPop('${st.id}','${(st.name||'').replace(/'/g,"\\'")}','${sec}','${code}')">
        <div class="tic" style="background:var(--pri-l)">🎓</div>
        <div><b>${st.name}</b><small>${st.id} · ${sec}</small></div>
        <div class="acts"><span class="chip c-mut">View ▾</span></div></div>`).join('')||'<div class="lock-note">No students rostered in this section yet.</div>'}
@@ -91,10 +91,30 @@ function saveInstEnroll(code){
   closeModal(); instSubjectRosterSheet(code);
   toast(student.name+' enrolled to '+code+' ('+sec+').');
 }
-function instStuPop(id,name,evt){
+function instStuPop(id,name,sec,code){
   openPop(`<h4>${name} <span class="chip c-mut">${id}</span></h4>
   <div class="kv"><b>Standing</b>Enrolled in your section</div>
   <div class="pop-acts">
-    <button class="btn btn-o btn-s" onclick="closePop();toast('Read-only academic record opened (prototype).')">View record</button>
-  </div>`,evt,320);
+    <button class="btn btn-o btn-s" onclick="closePop();instViewRecordPop('${id}','${name.replace(/'/g,"\\'")}','${sec}','${code}')">View record</button>
+  </div>`,null,360);
+}
+/* Read-only academic record for this instructor's own subject only — pulled
+   from the SAME scoring-sheet data the instructor's Score Visualization page
+   computes (gradeRows/studentOverall/actMissed), so the two always agree.
+   Mirrors the Dean's cross-subject viewRecordPop but scoped to just `code`,
+   since instructors stay scoped to their own subjects (see file header). */
+function instViewRecordPop(id,name,sec,code){
+  const c=DB.curriculum.find(k=>k.code===code);
+  const acts=gradedActivities();
+  const row=gradeRows(code,sec).find(s=>s.id===id);
+  const r=row?{recorded:true,o:studentOverall(row),missedCount:acts.filter(a=>actMissed(row,a)).length,total:acts.length}:{recorded:false};
+  openPop(`<h4>${name} — Academic record <span class="chip c-mut">${id}</span></h4>
+  <div class="kv"><b>Standing</b>Enrolled · ${sec} · ${DB.config.sem}</div>
+  <div class="kv"><b>Scoring-sheet record — ${code} <span class="chip c-mut">read-only · same as your Score Visualization</span></b></div>
+  <div class="sec-item" style="margin-bottom:8px">
+    <div class="tic" style="background:${r.recorded?(r.o.pct<75?'var(--warn-l)':'var(--ok-l)'):'rgba(23,26,63,.06)'}">${r.recorded?(r.o.pct<75?'⚠️':'✅'):'—'}</div>
+    <div><b>${code} — ${c.title}</b><small>${r.recorded?`${r.o.tot}/${r.o.max} (${r.o.pct.toFixed(1)}%) · ${r.total-r.missedCount}/${r.total} activities completed`:'No recorded activities yet'}</small></div>
+  </div>
+  <div class="pop-acts"><button class="btn btn-o btn-s" onclick="closePop()">Close</button></div>
+  `,null,440);
 }

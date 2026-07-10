@@ -74,7 +74,7 @@ function matPop(si,tno,mi,evt){
   const s=DB.stuSubjects[si]; const m=DB.packs[s.code][tno].secs[mi];
   const kind={doc:'Document',ppt:'Presentation',quiz:'Quiz',file:'File'}[m.t]||'Material';
   const openable=m.t==='doc'||m.t==='ppt'||m.t==='file';
-  const openLabel=m.t==='ppt'?'📽️ Open presentation (.pptx)':m.format==='excel'?'📄 Open document (.xlsx)':m.format==='pdf'?'📄 Open document (.pdf)':'📄 Open document (.docx)';
+  const openLabel=m.t==='ppt'?'📽️ Open presentation (.pptx)':m.format==='pdf'?'📄 Open document (.pdf)':'📄 Open document (.docx)';
   openPop(`<h4>${TICON[m.t][0]} ${m.label}</h4>
   <div class="kv"><b>Type</b>${kind} · ${m.sub}</div>
   <div class="kv"><b>Preview</b><span style="white-space:pre-line;font-size:12px;color:#3A4160">${(m.preview||'—').slice(0,240)}${m.preview&&m.preview.length>240?'…':''}</span></div>

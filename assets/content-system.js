@@ -69,7 +69,7 @@ function openContentSheet(code,focusTopic,resetFocus){
     <div class="week-b ${expand?'':'hidden'}">
       <div class="subtopics">${subs.map(s=>`<span class="st">${s.n}</span>`).join('')}</div>
       ${p&&p.gen? p.secs.map((s,si)=>`
-        <div class="sec-item click" onclick="secPop(${t.no},${si},event)">
+        <div class="sec-item click" onclick="secPop(${t.no},${si})">
           <div class="tic" style="background:${TICON[s.t][1]}">${TICON[s.t][0]}</div>
           <div><b>${s.label}</b><small>${s.sub}</small></div>
           <div class="acts">${CONTENT_CATS[s.t]?chip(CONTENT_CATS[s.t],'c-teal'):''}${s.pub?chip('Published','c-ok'):chip('Draft','c-mut')}<span class="chip c-mut">Actions ▾</span></div></div>`).join('')
@@ -78,7 +78,7 @@ function openContentSheet(code,focusTopic,resetFocus){
              return `<span class="st click" onclick="uploadModal(${t.no},'${s.n.replace(/'/g,"\\'")}')" title="Upload notes/documents for this subtopic">⤴ ${s.n}${n?' ('+n+')':''}</span>`;}).join('')
              :'<span class="lock-note">No subtopics to attach uploads to.</span>'}</div>
            <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
-           <button class="btn btn-o btn-s" onclick="addSectionPop(${t.no},event)">+ Add section ▾</button>
+           <button class="btn btn-o btn-s" onclick="addSectionPop(${t.no})">+ Add section ▾</button>
            <button class="btn ${p.topicPub?'btn-o':'btn-p'} btn-s" onclick="toggleTopicPub(${t.no})">${p.topicPub?'🔒 Hide topic from students':'✅ Publish topic to students'}</button></div>`
       : `<div class="note">No content yet. The AI will parse this topic — ${subs.length} subtopic(s) + ${plan.length} planned item(s) (<i>${plan.map(x=>x.n).join(', ')}</i>) — and generate one labeled section per planned item for your review.</div>
          <button class="btn btn-ai" onclick="genTopic(${t.no},this)">⚡ Generate Topic ${t.no} pack with AI</button>`}
@@ -95,7 +95,7 @@ function secCtx(tno){
   const c=DB.curriculum.find(x=>x.code===CC_CODE); const t=DB.syllabi[CC_CODE].topics.find(x=>x.no===tno);
   return {courseCode:CC_CODE, courseTitle:c.title, topicNo:tno, topicTitle:t.title};
 }
-function secPop(tno,si,evt){
+function secPop(tno,si){
   CC_FOCUS_TOPIC=tno;
   const s=DB.packs[CC_CODE][tno].secs[si];
   const openable=s.t==='doc'||s.t==='ppt'||s.t==='file';
@@ -112,7 +112,7 @@ function secPop(tno,si,evt){
     ${s.quizId?`<button class="btn btn-o btn-s" onclick="closePop();restrictModal('${s.quizId}')">⚙ Restrictions</button>`:''}
     <button class="btn btn-o btn-s" onclick="closePop();publishOneModal(${tno},${si})">${s.pub?'Unpublish…':'Publish…'}</button>
     <button class="btn btn-d btn-s" onclick="closePop();removeSecModal(${tno},${si})">✕ Remove</button>
-  </div>`,evt,420);
+  </div>`,null,480);
 }
 function editSecModal(tno,si){
   const s=DB.packs[CC_CODE][tno].secs[si];
@@ -150,13 +150,13 @@ function regenModal(tno,si){
       <button class="btn btn-ai" onclick="closeModal();toast('Regenerating via fixed template… draft replaced for your review.')">↻ Regenerate draft</button></div>
   </div>`);
 }
-function addSectionPop(tno,evt){
+function addSectionPop(tno){
   CC_FOCUS_TOPIC=tno;
   openPop(`<h4>Add section to Topic ${tno}</h4>
   <div class="kv"><b>Choose a type</b>(opens a form modal)</div>
   <div class="pop-acts">
     ${[['doc','📄 Document'],['ppt','📽️ Presentation'],['quiz','✅ Quiz (MCQ)'],['file','📎 File'],['url','🔗 URL'],['label','🏷️ Label']].map(x=>`<button class="btn btn-o btn-s" onclick="closePop();addSectionModal(${tno},'${x[0]}','${x[1].replace(/'/g,'')}')">${x[1]}</button>`).join('')}
-  </div>`,evt,380);
+  </div>`,null,420);
 }
 function addSectionModal(tno,type,label){
   openModal(`<h3>Add ${label} — Topic ${tno}</h3>
@@ -262,9 +262,9 @@ function setSectionPub(tno,si,val){
   toast(val?'Published to selected sections.':'Unpublished.');
 }
 /* Every planned-item kind maps to exactly one of the paper's three AI
-   categories (doc/ppt/quiz); "format" picks Word vs Excel for Documents
-   (auto by content nature — tabular/scored items get Excel, narrative
-   guides get Word; PDF is always offered as a one-click export). */
+   categories (doc/ppt/quiz). Documents are generated as Word (.docx),
+   with a one-click PDF export always available — Excel/.xlsx is no
+   longer used, so all document categories are Word/PDF only. */
 const GEN={
  lecture:{cat:'doc',label:'Lecture / Discussion Notes',format:'word'},
  ppt:{cat:'ppt',label:'Presentation'},
@@ -285,7 +285,6 @@ function genPreviewText(it,topic,cat,format){
     const lastNo=3+picks.length;
     return `S1 Title · S2 Objectives${mid?' · '+mid:''} · S${lastNo} Summary · S${lastNo+1} Assessment preview`;
   }
-  if(format==='excel') return `${own}\nAccuracy — 40 pts\nCompleteness — 40 pts\nPresentation — 20 pts`;
   const extra=topicSubtopics(topic).slice(0,2).map(s=>`${s.n} — ${s.d||('Coverage of "'+s.n+'" within Topic '+topic.no+'.')}`);
   return [own,...extra].join('\n');
 }
