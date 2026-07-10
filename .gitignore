@@ -1,0 +1,4 @@
+_backup*/
+*.backup-*
+*.backup
+err.txt

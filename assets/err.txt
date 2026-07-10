@@ -1,9 +1,0 @@
-/sessions/dreamy-friendly-brown/mnt/prototype/assets/topic-system.js:181
-  toast('Topic removed �
-        ^^^^^^^^^^^^^^^^
-
-SyntaxError: Invalid or unexpected token
-    at wrapSafe (node:internal/modules/cjs/loader:1713:18)
-    at checkSyntax (node:internal/main/check_syntax:78:3)
-
-Node.js v22.22.3

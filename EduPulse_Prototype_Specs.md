@@ -1,6 +1,6 @@
 # EduPulse — Prototype Specification (v2.5)
 
-> **Implementation status (2026-07-09):** the v2.5 alignment described below is now **implemented in the live modular prototype** — `prototype/index.html` plus the role pages (`dean/`, `instructor/`, `student/`) and shared `assets/*.js` (login title reads "Prototype v3.0"). The v2.5 renames (grading→scoring / Score Visualization, Analytics→Performance), the fourth fixed template (EduPulse-DOC v1), Completed/Missed status, Dean Midterm/Finals term labels, and the read-only scoring sheet all now render in the code. The single-file `EduPulse_Prototype.html` is the **legacy v2.2** build and is intentionally left unchanged. **Open `index.html` to run the current prototype.**
+> **Implementation status (2026-07-10):** the codebase now holds a **single live version** — `index.html` plus the role pages (`dean/`, `instructor/`, `student/`) and shared `assets/*.js` (login title reads "Prototype v3.0"). The legacy single-file `EduPulse_Prototype.html` (v2.2) and all `_backup-*` snapshots have been removed; going forward, updates are made directly to this codebase in place rather than as separate versioned copies. **Open `index.html` to run the current prototype.**
 
 ## v2.6 changes — syllabus category model + submission bins + editable scoring sheet (July 2026)
 
