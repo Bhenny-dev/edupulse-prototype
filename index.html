@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EduPulse — AI-Driven LMS · KCP–CIT (Prototype v3.0)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div id="login">
+  <div class="login-card">
+    <div class="logo"><div class="logo-mark">EP</div><h1>EduPulse</h1></div>
+    <div class="tagline">An AI-Driven Learning Management System · College of Information Technology, King's College of the Philippines–Benguet</div>
+    <button class="role-btn" onclick="loginAs('dean')"><div class="ic" style="background:var(--pri-l)">🏛️</div><div><b>CIT Dean</b><small>Curriculum · assignments · academic settings · enrollment</small></div></button>
+    <button class="role-btn" onclick="loginAs('instructor')"><div class="ic" style="background:var(--ai-l)">👨‍🏫</div><div><b>Instructor</b><small>Assigned subjects · syllabus · AI content · scoring</small></div></button>
+    <button class="role-btn" onclick="loginAs('student')"><div class="ic" style="background:var(--ok-l)">🎓</div><div><b>Student</b><small>Enrolled subjects · activities · scores · performance</small></div></button>
+    <div class="note" style="margin-top:16px">Interactive prototype — AI responses are simulated for design validation.</div>
+  </div>
+</div>
+<script>
+  const HOME_PAGE={dean:'dean/dashboard.html',instructor:'instructor/dashboard.html',student:'student/dashboard.html'};
+  function loginAs(role){
+    localStorage.setItem('edupulse_role',role);
+    location.href=HOME_PAGE[role];
+  }
+  /* if already logged in, skip straight to the role's dashboard */
+  (function(){
+    const r=localStorage.getItem('edupulse_role');
+    if(r && HOME_PAGE[r]) location.href=HOME_PAGE[r];
+  })();
+</script>
+</body>
+</html>
