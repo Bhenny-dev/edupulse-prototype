@@ -230,7 +230,7 @@ function openGradingSheet(code){
   window._gsec=sec;
   openSheet('📊', gsub+' — '+c.title, sub, gradeLegendHtml()+`
   <div class="tabs">${secList.map(x=>`<button class="tab ${x===sec?'on':''}" onclick="window._gsec='${x}';openGradingSheet()">${x}</button>`).join('')}</div>
-  ${activityTable(gsub,sec)}`);
+  ${activityTable(gsub,sec)}`, 1320);
 }
 function activityTable(code,sec){
   const acts=gradedActivities();
@@ -242,7 +242,7 @@ function activityTable(code,sec){
     const auto = a.key==='cs'&&a.i===0; // first quiz column originates from a submitted quiz (auto-recorded, still editable)
     const miss = actMissed(s,a);
     const tip = miss?'Missed — type a score to record it manually (e.g., a rubric-guided activity submitted outside the system)':(auto?'Auto-recorded from a submitted quiz — you can override it':'Recorded from the posted activity — editable');
-    return `<td class="${miss?'miss-cell':''}"><input class="score-cell" style="width:54px;text-align:center" type="number" min="0" max="${a.max}" step="0.5" value="${miss?'':actVal(s,a)}" placeholder="${miss?'—':''}" title="${tip}" onchange="editScore('${code}','${sec}','${s.id}','${a.key}',${a.i},${a.max},this)">${auto?'<small style="color:var(--ai)" title="auto-recorded">⚡</small>':''}${miss?'<small style="color:var(--bad)"> missed</small>':''}</td>`;
+    return `<td class="${miss?'miss-cell':''}"><input class="score-cell" style="width:54px;text-align:center" type="number" min="0" max="${a.max}" step="0.5" value="${miss?'':actVal(s,a)}" placeholder="${miss?'—':''}" title="${tip}" onchange="editScore('${code}','${sec}','${s.id}','${a.key}',${a.i},${a.max},this)">${miss?'<small style="color:var(--bad)"> missed</small>':''}</td>`;
   };
   return `<div class="card"><h3>EduPulse Scoring Sheet — ${sec} · ${code} · ${DB.config.sem} ${chip('Instructor-exclusive · editable','c-teal')}</h3>
   <div class="gr-tb"><table>

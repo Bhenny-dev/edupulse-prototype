@@ -156,7 +156,7 @@ function subtopicPop(ti,subIdx){
   const b=blocks.find(x=>x.sub.idx===subIdx);
   if(!b){ topicPop(ti); return; }
   const insertAt=(b.items.length?b.items[b.items.length-1].idx:subIdx)+1;
-  openPop(`<h4>📚 ${b.sub.n} <span class="chip c-mut">T${t.no} · ${t.title}</span></h4>
+  openPop(`<h4>📚 ${b.sub.n}</h4><small class="hier-crumb">T${t.no} · ${t.title}</small>
   ${b.sub.d?`<div class="kv"><b>Scope / notes</b>${b.sub.d}</div>`:''}
   <div class="kv"><b>Materials & assessments — ⠿ drag to sequence · tap one for its full detail</b></div>
   <div class="st-drag">${b.items.length?b.items.map((it,bi)=>`
@@ -267,12 +267,16 @@ function itemCategoryChanged(k){
   $('itQuizCfg').classList.toggle('hidden',!isQuizCat(k));
   $('itBinWrap').classList.toggle('hidden',!isDocCat(k));
 }
+/* Defaults to fully checked (every sibling assumed relevant context) until the
+   instructor explicitly saves a choice — `ctxRefs` absent means "never touched",
+   an explicit (possibly empty) array means the instructor already decided. */
 function itemContextChecklist(ti,it,siblings){
+  const hasSaved=Array.isArray(it.ctxRefs);
   const refs=new Set(it.ctxRefs||[]);
   if(!siblings.length) return '<div class="lock-note">No other materials/assessments in this subtopic yet.</div>';
   return `<div class="frm" style="gap:5px">${siblings.map((s,si)=>`
     <label style="display:flex;align-items:center;gap:8px;font-weight:400;font-size:13px;color:#2A3055;cursor:pointer">
-      <input type="checkbox" class="itCtxChk" value="${(s.n||'').replace(/"/g,'&quot;')}" ${refs.has(s.n)?'checked':''}> ${PLAN_ICON[s.k]||'•'} ${s.n}
+      <input type="checkbox" class="itCtxChk" value="${(s.n||'').replace(/"/g,'&quot;')}" ${(hasSaved?refs.has(s.n):true)?'checked':''}> ${PLAN_ICON[s.k]||'•'} ${s.n}
     </label>`).join('')}</div>`;
 }
 function itemModal(ti,ii,defK,subIdxHint){
@@ -287,7 +291,7 @@ function itemModal(ti,ii,defK,subIdxHint){
   <div class="frm">
     <div><label>Category</label>${itemCategorySelect('itK',it.k)}</div>
     <div><label>Name / label</label><input id="itN" value="${(it.n||'').replace(/"/g,'&quot;')}" placeholder="e.g. Mobile Operating Systems (Android/iOS)" style="width:100%"></div>
-    <div><label>Description / guide notes (what this item should cover)</label><textarea id="itD" rows="4" style="width:100%">${it.d||''}</textarea></div>
+    <div><label>Description / guide notes</label><textarea id="itD" rows="4" style="width:100%">${it.d||''}</textarea></div>
     <div><label>Context from this subtopic <span class="chip c-mut">optional — which siblings the AI should consider</span></label>
       ${itemContextChecklist(ti,it,siblings)}</div>
     <div><label>Additional instructions to the AI (optional)</label><textarea id="itPrompt" rows="2" style="width:100%" placeholder="Anything specific you want considered or included…">${(it.extraPrompt||'').replace(/</g,'&lt;')}</textarea></div>
@@ -317,9 +321,10 @@ function saveItemModal(ti,ii){
   const t=DB.syllabi[SYL_CODE].topics[ti];
   const n=$('itN').value.trim(), d=$('itD').value, k=$('itK').value;
   const extraPrompt=$('itPrompt').value.trim();
-  const ctxRefs=[...document.querySelectorAll('.itCtxChk:checked')].map(el=>el.value);
+  const ctxChks=[...document.querySelectorAll('.itCtxChk')];
+  const ctxRefs=ctxChks.filter(el=>el.checked).map(el=>el.value);
   if(!n){ toast('Name is required.'); return; }
-  const rec={n,d,k,...(extraPrompt?{extraPrompt}:{}),...(ctxRefs.length?{ctxRefs}:{})};
+  const rec={n,d,k,...(extraPrompt?{extraPrompt}:{}),...(ctxChks.length?{ctxRefs}:{})};
   if(isQuizCat(k)){
     rec.quizCfg={
       mins:Math.max(1,parseInt($('itQMins').value,10)||15),

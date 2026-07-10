@@ -89,9 +89,10 @@ function topicHasGenPub(pack){return !!(pack&&pack.gen&&pack.topicPub);}
 /* ---- overlay helpers (unchanged conceptually from the single-file prototype) ---- */
 function openModal(html){$('modalBox').innerHTML='<button class="modal-x" onclick="closeModal()" aria-label="Close">✕</button>'+html;$('modalBg').classList.remove('hidden');}
 function closeModal(){$('modalBg').classList.add('hidden');}
-function openSheet(icon,title,sub,html){
+function openSheet(icon,title,sub,html,w){
   $('sheetIcon').textContent=icon; $('sheetTitle').textContent=title; $('sheetSub').textContent=sub;
   $('sheetBody').innerHTML=html; $('sheetBg').classList.remove('hidden'); $('sheetBg').scrollTop=0;
+  $('sheetPanel').style.maxWidth=w?w+'px':'';
 }
 function closeSheet(){$('sheetBg').classList.add('hidden');}
 /* evt anchors the popover next to the click (used everywhere a small,
@@ -168,7 +169,7 @@ function shellHtml(role,navKey){
       <div id="view"></div>
     </main>
   </div>
-  <div id="sheetBg" class="sheet-bg hidden"><div class="sheet"><div class="sheet-h"><div class="wno" id="sheetIcon"></div><div style="min-width:0;flex:1"><h3 id="sheetTitle"></h3><small id="sheetSub"></small></div><button class="sheet-x" onclick="closeSheet()">✕</button></div><div class="sheet-b" id="sheetBody"></div></div></div>
+  <div id="sheetBg" class="sheet-bg hidden"><div class="sheet" id="sheetPanel"><div class="sheet-h"><div class="wno" id="sheetIcon"></div><div style="min-width:0;flex:1"><h3 id="sheetTitle"></h3><small id="sheetSub"></small></div><button class="sheet-x" onclick="closeSheet()">✕</button></div><div class="sheet-b" id="sheetBody"></div></div></div>
   <div id="popBg" class="pop-bg hidden" onclick="closePop()"></div><div id="pop" class="pop hidden"></div>
   <div id="modalBg" class="modal-bg hidden"><div class="modal"><div id="modalBox"></div></div></div>
   <div id="violOverlay" class="hidden">

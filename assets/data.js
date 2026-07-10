@@ -322,124 +322,124 @@ const DEFAULT_DB = {
      {n:'Definition & components of ICT', d:'ICT as technologies for communication, processing, and sharing of information; components: hardware, software, data, people, processes.', k:'subtopic'},
      {n:'ICT in everyday life', d:'Daily Philippine applications: GCash payments, e-government portals, ride-hailing, online enrollment.', k:'subtopic'},
      {n:'Advantages & disadvantages of ICT', d:'Speed and access vs. digital divide, privacy/security risks, and overdependence.', k:'subtopic'},
-     {n:'Lecture–discussion + orientation', d:'', k:'lecture'},
-     {n:'Presentation: ICT in Modern Society', d:'', k:'ppt'},
-     {n:'Recitation', d:'', k:'recit'},
-     {n:'Short quiz', d:'', k:'quiz'}
+     {n:'Lecture–discussion + orientation', d:'Course orientation followed by an interactive lecture introducing ICT\'s scope, referencing the definitions and everyday examples covered in this topic\'s subtopics.', k:'lecture'},
+     {n:'Presentation: ICT in Modern Society', d:'Slide deck summarizing ICT\'s definition, components, and everyday Philippine applications for visual reinforcement of the lecture.', k:'ppt'},
+     {n:'Recitation', d:'Open recitation where students name an ICT tool they used today and explain which component (hardware/software/data/people/process) it represents.', k:'recit'},
+     {n:'Short quiz', d:'Short multiple-choice check on ICT\'s definition, components, and everyday applications covered in this topic.', k:'quiz', quizCfg:{mins:15,count:5,maxViol:3}}
     ]},
     {no:2, title:'Evolution of ICT', weeks:'Wk 2', ilo:'Describe the historical development of computing and communication technologies.', items:[
      {n:'Pre-mechanical → electronic periods', d:'Four periods of computing with representative devices per period.', k:'subtopic'},
      {n:'Milestones in communication technology', d:'From telegraph and telephone to the internet and mobile broadband.', k:'subtopic'},
-     {n:'Multimedia presentation', d:'', k:'ppt'},
-     {n:'Timeline activity', d:'', k:'seat'},
-     {n:'Reflection paper', d:'', k:'seat'}
+     {n:'Multimedia presentation', d:'Slide deck tracing the four computing periods and communication milestones with representative devices and dates.', k:'ppt'},
+     {n:'Timeline activity', d:'Students build a visual timeline placing major computing and communication milestones in chronological order.', k:'seat'},
+     {n:'Reflection paper', d:'Short written reflection on how one historical ICT milestone still shapes a tool students use today.', k:'seat'}
     ]},
     {no:3, title:'Components of a Computer System', weeks:'Wk 3', ilo:'Explain the fundamentals of computer hardware and software.', items:[
      {n:'Hardware: input, output, storage, processing', d:'Device categories with examples; the IPO-S model of a computer system.', k:'subtopic'},
      {n:'System & application software', d:'Distinction, examples, and licensing basics.', k:'subtopic'},
      {n:'Operating systems overview', d:'Roles of an OS; desktop examples (Windows, Linux, macOS).', k:'subtopic'},
-     {n:'Demonstration', d:'', k:'lecture'},
-     {n:'Group identification activity', d:'', k:'seat'},
-     {n:'Quiz', d:'', k:'quiz'}
+     {n:'Demonstration', d:'Live walkthrough of a desktop unit\'s hardware, pointing out input, output, storage, and processing components as they\'re introduced.', k:'lecture'},
+     {n:'Group identification activity', d:'Teams label the hardware parts of a computer system on a diagram or physical unit.', k:'seat'},
+     {n:'Quiz', d:'Short multiple-choice check on hardware categories, system vs application software, and operating system basics.', k:'quiz', quizCfg:{mins:20,count:3,maxViol:3}}
     ]},
     {no:4, title:'Networking and the Internet', weeks:'Wk 4', ilo:'Differentiate various types of networks and the internet.', items:[
      {n:'Network types: LAN · WAN · MAN · PAN', d:'Scope, scale, and typical use of each network type.', k:'subtopic'},
      {n:'Network devices & topologies', d:'Router, switch, access point; star, bus, ring, mesh topologies.', k:'subtopic'},
      {n:'Internet & WWW basics', d:'IP addresses, DNS, browsers, and the client–server model.', k:'subtopic'},
-     {n:'Interactive lecture', d:'', k:'lecture'},
-     {n:'Diagram drawing', d:'', k:'seat'},
-     {n:'Seatwork', d:'', k:'seat'},
-     {n:'Short quiz', d:'', k:'quiz'}
+     {n:'Interactive lecture', d:'Lecture on network types and the internet, pausing for quick polls on which network type (LAN/WAN/MAN/PAN) fits a given scenario.', k:'lecture'},
+     {n:'Diagram drawing', d:'Students sketch a simple network topology (star, bus, ring, or mesh) and label its devices.', k:'seat'},
+     {n:'Seatwork', d:'Written exercise applying the client–server model and DNS/IP concepts to a familiar scenario (e.g., loading a website).', k:'seat'},
+     {n:'Short quiz', d:'Short multiple-choice check on network types, devices/topologies, and internet basics.', k:'quiz'}
     ]},
     {no:5, title:'Productivity & Cloud Tools', weeks:'Wk 5–6', ilo:'Apply productivity and cloud collaboration tools for business and personal use.', items:[
      {n:'Word · Excel · PowerPoint/Canva', d:'Business reports, sales/inventory sheets, and marketing decks.', k:'subtopic'},
      {n:'Cloud collaboration', d:'Google Workspace, Microsoft 365, Dropbox; sharing and co-editing.', k:'subtopic'},
-     {n:'Hands-on laboratory exercises', d:'', k:'prac'},
-     {n:'Cloud group activity', d:'', k:'seat'},
-     {n:'Practical exercise', d:'', k:'prac'},
-     {n:'Output submission', d:'', k:'prac'}
+     {n:'Hands-on laboratory exercises', d:'Guided lab building a business report, sales/inventory sheet, and marketing deck using Word, Excel, and PowerPoint/Canva.', k:'prac'},
+     {n:'Cloud group activity', d:'Teams co-edit a shared document/sheet in Google Workspace or Microsoft 365 to practice real-time collaboration.', k:'seat'},
+     {n:'Practical exercise', d:'Individually produce one productivity-tool output (report, sheet, or deck) applying this topic\'s techniques.', k:'prac'},
+     {n:'Output submission', d:'Submission of the completed productivity/cloud output for instructor review and scoring.', k:'prac'}
     ]},
     {no:6, title:'Digital Marketing & E-Commerce Tools', weeks:'Wk 7', ilo:'Discuss the role of ICT in e-commerce and digital marketing.', items:[
      {n:'Social media platforms for business', d:'Using Facebook/Instagram/TikTok pages for reach, engagement, and selling.', k:'subtopic'},
      {n:'Online booking & delivery apps', d:'Grab, Booking.com-style flows; how ICT mediates local service transactions.', k:'subtopic'},
      {n:'POS & CRM systems overview', d:'Point-of-sale and customer-relationship-management basics for small business.', k:'subtopic'},
-     {n:'Case studies + role-play activity', d:'', k:'seat'},
-     {n:'Group presentation', d:'', k:'prac'}
+     {n:'Case studies + role-play activity', d:'Small-group case study on a local business\'s social media presence, followed by a role-play pitching a simple marketing plan.', k:'seat'},
+     {n:'Group presentation', d:'Groups present their marketing plan or POS/CRM workflow proposal to the class.', k:'prac'}
     ]},
     {no:7, title:'ICT Ethics, Security & Privacy', weeks:'Wk 8', ilo:'Recognize security threats and apply basic online safety measures.', items:[
      {n:'Common cybersecurity threats', d:'Phishing, malware, social engineering with local case examples.', k:'subtopic'},
      {n:'Data privacy principles', d:'RA 10173 basics: consent, proportionality, security of personal data.', k:'subtopic'},
      {n:'Responsible ICT use', d:'Digital citizenship, etiquette, and footprint awareness.', k:'subtopic'},
-     {n:'Lecture + scenario analysis', d:'', k:'lecture'},
-     {n:'Presentation: Staying Safe Online', d:'', k:'ppt'},
-     {n:'Quiz', d:'', k:'quiz'}
+     {n:'Lecture + scenario analysis', d:'Lecture on common cybersecurity threats and data privacy principles, working through short scenario analyses as a class.', k:'lecture'},
+     {n:'Presentation: Staying Safe Online', d:'Slide deck on cybersecurity threats, RA 10173 basics, and responsible ICT use, with practical safety tips.', k:'ppt'},
+     {n:'Quiz', d:'Short multiple-choice check on cybersecurity threats, data privacy principles, and responsible ICT use.', k:'quiz'}
     ]},
     {no:8, title:'MIDTERM EXAMINATION', weeks:'Wk 9', ilo:'—', items:[
-     {n:'Midterm Exam', d:'', k:'exam'}
+     {n:'Midterm Exam', d:'Comprehensive midterm covering Topics 1–7 (ICT fundamentals through ethics, security & privacy).', k:'exam'}
     ]},
     {no:9, title:'ICT Ethics, Security & Privacy (cont’d)', weeks:'Wk 10', ilo:'Recognize security threats and apply basic online safety measures.', items:[
      {n:'Common cybersecurity threats', d:'Phishing, malware, social engineering with local case examples.', k:'subtopic'},
      {n:'Data privacy principles', d:'RA 10173 basics: consent, proportionality, security of personal data.', k:'subtopic'},
      {n:'Responsible ICT use', d:'Digital citizenship, etiquette, and footprint awareness.', k:'subtopic'},
-     {n:'Lecture + scenario analysis', d:'', k:'lecture'},
-     {n:'Quiz', d:'', k:'quiz'}
+     {n:'Lecture + scenario analysis', d:'Continuation of the ethics/security lecture with deeper scenario analysis on privacy and responsible use.', k:'lecture'},
+     {n:'Quiz', d:'Follow-up multiple-choice check reinforcing cybersecurity threats, data privacy, and responsible ICT use.', k:'quiz'}
     ]},
     {no:10, title:'Emerging Technologies', weeks:'Wk 11', ilo:'Explain the impact of emerging technologies on society.', items:[
      {n:'Artificial Intelligence (AI)', d:'Everyday and industry applications; capabilities and limits.', k:'subtopic'},
      {n:'Internet of Things (IoT)', d:'Connected devices in homes, farms, and cities.', k:'subtopic'},
      {n:'Virtual & Augmented Reality (VR/AR)', d:'Immersive tech in education, training, and entertainment.', k:'subtopic'},
      {n:'Blockchain technology', d:'Distributed ledgers beyond cryptocurrency: provenance, contracts, records.', k:'subtopic'},
-     {n:'Video presentation', d:'', k:'ppt'},
-     {n:'Class discussion', d:'', k:'seat'},
-     {n:'Reaction paper', d:'', k:'seat'}
+     {n:'Video presentation', d:'Short video-based presentation showcasing real-world AI, IoT, VR/AR, and blockchain applications.', k:'ppt'},
+     {n:'Class discussion', d:'Open discussion on which emerging technology students think will affect their future careers most, and why.', k:'seat'},
+     {n:'Reaction paper', d:'Short written reaction to one emerging technology\'s likely impact on society.', k:'seat'}
     ]},
     {no:11, title:'Social Media in Communication & Business', weeks:'Wk 12', ilo:'Evaluate the benefits and challenges of social media in different sectors.', items:[
      {n:'Social media platforms & functions', d:'Overview of major platforms and how each is typically used.', k:'subtopic'},
      {n:'Social media marketing', d:'Organic reach, paid ads, influencer partnerships.', k:'subtopic'},
      {n:'Issues in social media use', d:'Misinformation, addiction, privacy, and online harassment.', k:'subtopic'},
-     {n:'Debate', d:'', k:'recit'},
-     {n:'Content analysis', d:'', k:'seat'},
-     {n:'Debate rubric', d:'', k:'prac'}
+     {n:'Debate', d:'Structured debate on a social media issue (e.g., regulation vs free expression) drawing on this topic\'s subtopics.', k:'recit'},
+     {n:'Content analysis', d:'Students analyze a real social media post or ad campaign for its marketing techniques and target audience.', k:'seat'},
+     {n:'Debate rubric', d:'Scored rubric output evaluating each side\'s arguments, evidence, and delivery in the debate.', k:'prac'}
     ]},
     {no:12, title:'Digital Citizenship & Responsibility', weeks:'Wk 13', ilo:'Apply principles of digital citizenship in real-world scenarios.', items:[
      {n:'Nine elements of digital citizenship', d:'Access, commerce, communication, literacy, etiquette, law, rights & responsibilities, health & wellness, security.', k:'subtopic'},
      {n:'Online etiquette', d:'Netiquette across chat, email, forums, and social platforms.', k:'subtopic'},
      {n:'Digital footprint awareness', d:'What persists online and how it affects reputation and opportunity.', k:'subtopic'},
-     {n:'Workshop', d:'', k:'prac'},
-     {n:'Case study discussion', d:'', k:'seat'},
-     {n:'Workshop output', d:'', k:'prac'}
+     {n:'Workshop', d:'Hands-on workshop applying the nine elements of digital citizenship to students\' own social media habits.', k:'prac'},
+     {n:'Case study discussion', d:'Group discussion of a digital-footprint case study and its real consequences.', k:'seat'},
+     {n:'Workshop output', d:'Submission of the workshop\'s personal digital-citizenship action plan.', k:'prac'}
     ]},
     {no:13, title:'ICT Applications in Various Sectors', weeks:'Wk 14', ilo:'Describe ICT’s role in governance, health, and education.', items:[
      {n:'E-Government', d:'Online public services: permits, payments, records.', k:'subtopic'},
      {n:'E-Health', d:'Telemedicine, health records, appointment systems.', k:'subtopic'},
      {n:'E-Education', d:'LMS platforms, online enrollment, and remote instruction.', k:'subtopic'},
-     {n:'Career talk / interview with ICT professionals', d:'', k:'lecture'},
-     {n:'Reflection essay', d:'', k:'seat'}
+     {n:'Career talk / interview with ICT professionals', d:'Guest talk or recorded interview with an ICT professional describing e-government, e-health, or e-education work.', k:'lecture'},
+     {n:'Reflection essay', d:'Short essay reflecting on which ICT-enabled sector (government, health, or education) students find most impactful.', k:'seat'}
     ]},
     {no:14, title:'ICT for Lifelong Learning', weeks:'Wk 15', ilo:'Apply strategies for lifelong learning using ICT.', items:[
      {n:'Online learning platforms', d:'Coursera, edX, and similar platforms for continuing education.', k:'subtopic'},
      {n:'Self-paced learning resources', d:'Curating and evaluating open educational resources.', k:'subtopic'},
      {n:'MOOCs & webinars', d:'Structured self-study and live online learning formats.', k:'subtopic'},
-     {n:'Guided research', d:'', k:'seat'},
-     {n:'Online learning activity', d:'', k:'seat'},
-     {n:'Activity output', d:'', k:'prac'}
+     {n:'Guided research', d:'Students research and shortlist an online learning platform or MOOC relevant to their intended career path.', k:'seat'},
+     {n:'Online learning activity', d:'Hands-on exploration of one self-paced learning resource or MOOC, noting its structure and quality.', k:'seat'},
+     {n:'Activity output', d:'Submission of the shortlisted learning resource with a short justification for its relevance.', k:'prac'}
     ]},
     {no:15, title:'Future of ICT', weeks:'Wk 16', ilo:'Discuss future trends and directions in ICT.', items:[
      {n:'ICT in the next decade', d:'Near-term projections across consumer and enterprise tech.', k:'subtopic'},
      {n:'Technological convergence', d:'Devices and services merging (comms, media, computing).', k:'subtopic'},
      {n:'Ethical issues in future tech', d:'Bias, surveillance, and accountability as tech advances.', k:'subtopic'},
-     {n:'Brainstorming + trend analysis', d:'', k:'recit'},
-     {n:'Short quiz', d:'', k:'quiz'}
+     {n:'Brainstorming + trend analysis', d:'Open brainstorming on near-term ICT trends, followed by a short group trend analysis.', k:'recit'},
+     {n:'Short quiz', d:'Short multiple-choice check on future ICT trends, technological convergence, and related ethical issues.', k:'quiz'}
     ]},
     {no:16, title:'Integration & Review (Capstone)', weeks:'Wk 17', ilo:'Integrate all learned concepts in a capstone output.', items:[
      {n:'Capstone project guidelines', d:'Scope, deliverables, and timeline for the term capstone.', k:'subtopic'},
      {n:'Presentation skills', d:'Structuring and delivering a professional project presentation.', k:'subtopic'},
      {n:'Peer feedback sessions', d:'Structured peer review before final submission.', k:'subtopic'},
-     {n:'Capstone project presentation', d:'', k:'prac'},
-     {n:'Project rubric', d:'', k:'prac'}
+     {n:'Capstone project presentation', d:'Final presentation of the term capstone project integrating concepts from across the course.', k:'prac'},
+     {n:'Project rubric', d:'Scored rubric output evaluating the capstone project\'s content, delivery, and adherence to guidelines.', k:'prac'}
     ]},
     {no:17, title:'FINAL EXAMINATION', weeks:'Wk 18', ilo:'—', items:[
-     {n:'Final Exam', d:'', k:'exam'}
+     {n:'Final Exam', d:'Comprehensive final examination covering Topics 9–16 (post-midterm coverage).', k:'exam'}
     ]}
    ]},
   'CC-COMPROG11':{ owner:'Steve Sudaypan', period:'1st Semester, AY 2025–2026',
@@ -447,15 +447,15 @@ const DEFAULT_DB = {
     {no:1, title:'Introduction to Programming', weeks:'Wk 1–2', ilo:'Explain how programs are built and executed.', items:[
      {n:'Algorithms & flowcharts', d:'Problem decomposition; flowchart symbols and pseudocode.', k:'subtopic'},
      {n:'The C compilation process', d:'Source → compile → link → run.', k:'subtopic'},
-     {n:'Lecture–discussion', d:'', k:'lecture'},
-     {n:'Short quiz', d:'', k:'quiz'}
+     {n:'Lecture–discussion', d:'Lecture walking through algorithms, flowcharts, and the C compilation process with live examples.', k:'lecture'},
+     {n:'Short quiz', d:'Short multiple-choice check on algorithms, flowcharts, and the compile-link-run pipeline.', k:'quiz', quizCfg:{mins:15,count:2,maxViol:3}}
     ]},
     {no:2, title:'Variables, Types & Operators', weeks:'Wk 3–4', ilo:'Use variables, data types, and operators correctly.', items:[
      {n:'Primitive types', d:'int, float, char, bool; sizes and ranges.', k:'subtopic'},
      {n:'Expressions & precedence', d:'Arithmetic, relational, logical operators.', k:'subtopic'},
-     {n:'Laboratory exercise', d:'', k:'prac'},
-     {n:'Seatwork', d:'', k:'seat'},
-     {n:'Quiz', d:'', k:'quiz'}
+     {n:'Laboratory exercise', d:'Hands-on lab writing small C programs that declare variables and use operators correctly.', k:'prac'},
+     {n:'Seatwork', d:'Written exercise evaluating expressions and predicting operator precedence outcomes.', k:'seat'},
+     {n:'Quiz', d:'Short multiple-choice check on primitive types, expressions, and operator precedence.', k:'quiz'}
     ]}
    ]},
   'CC-INTCOM11':{ owner:'Dave Medrano', period:'1st Semester, AY 2025–2026',
@@ -463,22 +463,22 @@ const DEFAULT_DB = {
     {no:1, title:'Computing Fundamentals', weeks:'Wk 1–2', ilo:'Describe how computers represent and process information.', items:[
      {n:'History of computing', d:'From mechanical calculators to modern computers; key generations.', k:'subtopic'},
      {n:'Data vs information', d:'Raw facts vs processed, meaningful output; examples from school records.', k:'subtopic'},
-     {n:'Lecture–discussion', d:'', k:'lecture'},
-     {n:'Presentation: How Computers Think', d:'', k:'ppt'},
-     {n:'Short quiz', d:'', k:'quiz'}
+     {n:'Lecture–discussion', d:'Lecture on the history of computing and the distinction between data and information, with classroom examples.', k:'lecture'},
+     {n:'Presentation: How Computers Think', d:'Slide deck summarizing computing history and the data-vs-information distinction.', k:'ppt'},
+     {n:'Short quiz', d:'Short multiple-choice check on computing history and data vs information.', k:'quiz'}
     ]},
     {no:2, title:'Number Systems & Data Representation', weeks:'Wk 3–4', ilo:'Convert between binary, octal, decimal, and hexadecimal.', items:[
      {n:'Binary · octal · hex conversions', d:'Positional notation; conversion methods with worked examples.', k:'subtopic'},
      {n:'ASCII & Unicode', d:'How text becomes numbers; why Unicode matters for Filipino text.', k:'subtopic'},
-     {n:'Interactive lecture', d:'', k:'lecture'},
-     {n:'Conversion seatwork', d:'', k:'seat'},
-     {n:'Quiz', d:'', k:'quiz'}
+     {n:'Interactive lecture', d:'Lecture with worked conversions between binary, octal, decimal, and hexadecimal.', k:'lecture'},
+     {n:'Conversion seatwork', d:'Practice set converting numbers across binary, octal, decimal, and hex, plus ASCII/Unicode lookups.', k:'seat'},
+     {n:'Quiz', d:'Short multiple-choice check on number-system conversions and ASCII/Unicode.', k:'quiz'}
     ]},
     {no:3, title:'Inside the Computer', weeks:'Wk 5–6', ilo:'Explain the roles of CPU, memory, and storage.', items:[
      {n:'CPU & the fetch–execute cycle', d:'Instruction cycle basics.', k:'subtopic'},
      {n:'Memory hierarchy', d:'Registers, cache, RAM, storage — speed vs capacity.', k:'subtopic'},
-     {n:'Demonstration', d:'', k:'lecture'},
-     {n:'Label-the-parts activity', d:'', k:'seat'}
+     {n:'Demonstration', d:'Live walkthrough of the fetch–execute cycle and the memory hierarchy using a diagram or simulator.', k:'lecture'},
+     {n:'Label-the-parts activity', d:'Students label CPU and memory-hierarchy components on a diagram.', k:'seat'}
     ]}
    ]},
   'IT-WST21':{ owner:'Marielle Fianza', period:'1st Semester, AY 2025–2026',
@@ -486,15 +486,15 @@ const DEFAULT_DB = {
     {no:1, title:'The Web & HTTP Basics', weeks:'Wk 1–2', ilo:'Explain how browsers and servers exchange information.', items:[
      {n:'Client–server model', d:'Requests, responses, and where code runs.', k:'subtopic'},
      {n:'HTTP request cycle', d:'Methods, status codes, and headers at an introductory level.', k:'subtopic'},
-     {n:'Lecture–discussion', d:'', k:'lecture'},
-     {n:'Presentation: How the Web Works', d:'', k:'ppt'}
+     {n:'Lecture–discussion', d:'Lecture on the client–server model and the HTTP request cycle with live browser dev-tools examples.', k:'lecture'},
+     {n:'Presentation: How the Web Works', d:'Slide deck illustrating the client–server model and a step-by-step HTTP request cycle.', k:'ppt'}
     ]},
     {no:2, title:'HTML & CSS Foundations', weeks:'Wk 3–5', ilo:'Build structured, styled web pages.', items:[
      {n:'Semantic HTML structure', d:'Headings, sections, forms; accessibility basics.', k:'subtopic'},
      {n:'CSS selectors & layout', d:'Box model, flexbox introduction.', k:'subtopic'},
-     {n:'Hands-on laboratory', d:'', k:'prac'},
-     {n:'Practical exercise', d:'', k:'prac'},
-     {n:'Short quiz', d:'', k:'quiz'}
+     {n:'Hands-on laboratory', d:'Guided lab building a semantic HTML page and styling it with CSS selectors and a flexbox layout.', k:'prac'},
+     {n:'Practical exercise', d:'Individually build and style a small structured web page applying this topic\'s HTML/CSS techniques.', k:'prac'},
+     {n:'Short quiz', d:'Short multiple-choice check on semantic HTML structure and CSS selectors/layout.', k:'quiz'}
     ]}
    ]},
   'IT-NET31':{ owner:'Ralphy Luzada', period:'1st Semester, AY 2025–2026',
@@ -503,31 +503,31 @@ const DEFAULT_DB = {
      {n:'What a network is; LAN/WAN/MAN/PAN', d:'Scope, scale, and typical use of each network type, with campus and ISP examples.', k:'subtopic'},
      {n:'The OSI and TCP/IP models', d:'The seven OSI layers, the four TCP/IP layers, and how they map to one another.', k:'subtopic'},
      {n:'Encapsulation & protocol data units', d:'How data is wrapped layer by layer into frames, packets, and segments.', k:'subtopic'},
-     {n:'Lecture–discussion', d:'', k:'lecture'},
-     {n:'Presentation: How Data Travels', d:'', k:'ppt'},
-     {n:'Short quiz', d:'', k:'quiz'}
+     {n:'Lecture–discussion', d:'Lecture unpacking network types and the OSI/TCP-IP models, building on this topic\'s subtopics.', k:'lecture'},
+     {n:'Presentation: How Data Travels', d:'Slide deck visualizing the OSI/TCP-IP models and encapsulation as data moves across a network.', k:'ppt'},
+     {n:'Short quiz', d:'Short multiple-choice check on network types, the OSI/TCP-IP models, and encapsulation.', k:'quiz', quizCfg:{mins:15,count:4,maxViol:3}}
     ]},
     {no:2, title:'IP Addressing & Subnetting', weeks:'Wk 3–4', ilo:'Compute IPv4 addresses, masks, and subnets.', items:[
      {n:'IPv4 structure & address classes', d:'32-bit addresses, dotted-decimal notation, public vs private ranges.', k:'subtopic'},
      {n:'Subnet masks & CIDR', d:'Network vs host bits; CIDR notation and prefix lengths.', k:'subtopic'},
      {n:'Subnetting a network', d:'Dividing an address block into subnets and computing usable host ranges.', k:'subtopic'},
-     {n:'Interactive lecture', d:'', k:'lecture'},
-     {n:'Subnetting seatwork', d:'', k:'seat'},
-     {n:'Practical exercise + rubric', d:'', k:'prac'},
-     {n:'Quiz', d:'', k:'quiz'}
+     {n:'Interactive lecture', d:'Lecture working through IPv4 structure, subnet masks, CIDR, and subnetting with live calculations.', k:'lecture'},
+     {n:'Subnetting seatwork', d:'Practice set computing subnet masks, CIDR prefixes, and usable host ranges.', k:'seat'},
+     {n:'Practical exercise + rubric', d:'Scored exercise subnetting a given address block and defending the chosen scheme.', k:'prac'},
+     {n:'Quiz', d:'Short multiple-choice check on IPv4 addressing, CIDR, and subnetting.', k:'quiz', quizCfg:{mins:20,count:3,maxViol:3}}
     ]},
     {no:3, title:'Routing & Switching Basics', weeks:'Wk 5–6', ilo:'Describe how routers and switches move traffic.', items:[
      {n:'Switching & the MAC address table', d:'How a switch learns and forwards frames within a LAN.', k:'subtopic'},
      {n:'Routing & the routing table', d:'How a router chooses a path between networks; default gateways.', k:'subtopic'},
      {n:'Static vs dynamic routing', d:'Manual routes versus routing protocols at an introductory level.', k:'subtopic'},
-     {n:'Packet Tracer demonstration', d:'', k:'lecture'},
-     {n:'Topology-building activity', d:'', k:'seat'}
+     {n:'Packet Tracer demonstration', d:'Cisco Packet Tracer walkthrough showing how switches learn MAC addresses and routers build routing tables.', k:'lecture'},
+     {n:'Topology-building activity', d:'Students build and test a small LAN topology in Packet Tracer, applying static or dynamic routing.', k:'seat'}
     ]},
     {no:4, title:'Application-Layer Protocols & the Internet', weeks:'Wk 7', ilo:'Relate everyday services to their protocols.', items:[
      {n:'DNS, HTTP/HTTPS, and the client–server model', d:'Name resolution and the request–response cycle behind browsing.', k:'subtopic'},
      {n:'Email and file-transfer protocols', d:'SMTP/IMAP and FTP/SFTP at an introductory level.', k:'subtopic'},
-     {n:'Presentation: Protocols You Use Daily', d:'', k:'ppt'},
-     {n:'Quiz', d:'', k:'quiz'}
+     {n:'Presentation: Protocols You Use Daily', d:'Slide deck mapping everyday actions (browsing, email, file transfer) to DNS, HTTP/HTTPS, SMTP/IMAP, and FTP/SFTP.', k:'ppt'},
+     {n:'Quiz', d:'Short multiple-choice check on DNS, HTTP/HTTPS, and email/file-transfer protocols.', k:'quiz'}
     ]}
    ]},
   'IT-SWENG31':{ owner:'Ralphy Luzada', period:'1st Semester, AY 2025–2026',
@@ -536,31 +536,31 @@ const DEFAULT_DB = {
      {n:'The software development life cycle', d:'Phases from requirements to maintenance and why process matters.', k:'subtopic'},
      {n:'Plan-driven vs agile models', d:'Waterfall and iterative models versus Scrum and Kanban.', k:'subtopic'},
      {n:'Roles & ceremonies in Scrum', d:'Product owner, scrum master, team; sprints, standups, reviews.', k:'subtopic'},
-     {n:'Lecture–discussion', d:'', k:'lecture'},
-     {n:'Presentation: Choosing a Process', d:'', k:'ppt'},
-     {n:'Short quiz', d:'', k:'quiz'}
+     {n:'Lecture–discussion', d:'Lecture comparing plan-driven and agile process models, with a walkthrough of Scrum roles and ceremonies.', k:'lecture'},
+     {n:'Presentation: Choosing a Process', d:'Slide deck contrasting the SDLC, plan-driven, and agile models to help decide which fits a given project.', k:'ppt'},
+     {n:'Short quiz', d:'Short multiple-choice check on the SDLC, plan-driven vs agile models, and Scrum roles/ceremonies.', k:'quiz', quizCfg:{mins:15,count:3,maxViol:3}}
     ]},
     {no:2, title:'Requirements Engineering', weeks:'Wk 3–4', ilo:'Elicit and document clear software requirements.', items:[
      {n:'Functional vs non-functional requirements', d:'What the system does versus its quality constraints.', k:'subtopic'},
      {n:'Eliciting requirements', d:'Interviews, observation, and user stories with acceptance criteria.', k:'subtopic'},
      {n:'Writing an SRS', d:'Structuring a software requirements specification the team can build from.', k:'subtopic'},
-     {n:'Requirements workshop', d:'', k:'prac'},
-     {n:'SRS output submission', d:'', k:'prac'},
-     {n:'Quiz', d:'', k:'quiz'}
+     {n:'Requirements workshop', d:'Hands-on workshop eliciting requirements through interviews/observation and drafting user stories with acceptance criteria.', k:'prac'},
+     {n:'SRS output submission', d:'Submission of a short software requirements specification drafted from the workshop\'s user stories.', k:'prac'},
+     {n:'Quiz', d:'Short multiple-choice check on functional vs non-functional requirements and requirements elicitation.', k:'quiz'}
     ]},
     {no:3, title:'Design & Architecture', weeks:'Wk 5–6', ilo:'Apply design principles to structure a system.', items:[
      {n:'Modularity, cohesion & coupling', d:'Splitting a system into parts that are easy to change.', k:'subtopic'},
      {n:'Common architectural styles', d:'Layered, client–server, and MVC at an introductory level.', k:'subtopic'},
      {n:'Design documentation', d:'Diagrams and notes that let another developer implement the design.', k:'subtopic'},
-     {n:'Design demonstration', d:'', k:'lecture'},
-     {n:'Design-document output', d:'', k:'prac'}
+     {n:'Design demonstration', d:'Walkthrough of a sample system design showing modularity, cohesion/coupling, and an architectural style in practice.', k:'lecture'},
+     {n:'Design-document output', d:'Submission of a design document (diagrams + notes) detailed enough for a teammate to implement from.', k:'prac'}
     ]},
     {no:4, title:'Version Control, Testing & Teamwork', weeks:'Wk 7', ilo:'Collaborate using Git and basic testing.', items:[
      {n:'Git branching & pull requests', d:'Feature branches, merges, and reviewing a teammate’s change.', k:'subtopic'},
      {n:'Levels of testing', d:'Unit, integration, and system testing and when each applies.', k:'subtopic'},
      {n:'Team collaboration & peer review', d:'Working agreements, boards, and constructive peer evaluation.', k:'subtopic'},
-     {n:'Practical exercise + rubric', d:'', k:'prac'},
-     {n:'Quiz', d:'', k:'quiz'}
+     {n:'Practical exercise + rubric', d:'Scored exercise creating a feature branch, opening a pull request, and reviewing a teammate\'s change in Git.', k:'prac'},
+     {n:'Quiz', d:'Short multiple-choice check on Git branching/pull requests and levels of testing.', k:'quiz'}
     ]}
    ]},
   'IT-SEC31':{ owner:'Libby Teofilo', period:'1st Semester, AY 2025–2026',
@@ -569,30 +569,30 @@ const DEFAULT_DB = {
      {n:'Confidentiality, integrity, availability', d:'The CIA triad and how each is protected or attacked.', k:'subtopic'},
      {n:'Threats, vulnerabilities & risk', d:'Distinguishing the three and how risk is assessed.', k:'subtopic'},
      {n:'Security in everyday systems', d:'Where the CIA triad shows up in banking, school, and messaging apps.', k:'subtopic'},
-     {n:'Lecture–discussion', d:'', k:'lecture'},
-     {n:'Presentation: Thinking Like a Defender', d:'', k:'ppt'},
-     {n:'Short quiz', d:'', k:'quiz'}
+     {n:'Lecture–discussion', d:'Lecture unpacking the CIA triad and how threats, vulnerabilities, and risk relate to it, with everyday-system examples.', k:'lecture'},
+     {n:'Presentation: Thinking Like a Defender', d:'Slide deck framing the CIA triad and risk assessment from a defender\'s perspective.', k:'ppt'},
+     {n:'Short quiz', d:'Short multiple-choice check on the CIA triad, threats/vulnerabilities/risk, and everyday security examples.', k:'quiz', quizCfg:{mins:15,count:4,maxViol:3}}
     ]},
     {no:2, title:'Authentication & Access Control', weeks:'Wk 3–4', ilo:'Apply authentication and access-control concepts.', items:[
      {n:'Authentication factors', d:'Something you know, have, and are; multi-factor authentication.', k:'subtopic'},
      {n:'Access-control models', d:'Least privilege, role-based access control, and permissions.', k:'subtopic'},
      {n:'Password & credential hygiene', d:'Salting/hashing at a conceptual level and safe credential practices.', k:'subtopic'},
-     {n:'Case-study analysis', d:'', k:'seat'},
-     {n:'Quiz', d:'', k:'quiz'}
+     {n:'Case-study analysis', d:'Analysis of a real authentication or access-control failure and how it could have been prevented.', k:'seat'},
+     {n:'Quiz', d:'Short multiple-choice check on authentication factors, access-control models, and credential hygiene.', k:'quiz'}
     ]},
     {no:3, title:'Cryptography Basics', weeks:'Wk 5–6', ilo:'Describe how encryption protects data.', items:[
      {n:'Symmetric vs asymmetric encryption', d:'Shared keys versus public/private key pairs and their uses.', k:'subtopic'},
      {n:'Hashing & digital signatures', d:'Integrity checks and proving authenticity.', k:'subtopic'},
      {n:'TLS in everyday browsing', d:'How HTTPS uses these building blocks to secure the web.', k:'subtopic'},
-     {n:'Demonstration', d:'', k:'lecture'},
-     {n:'Seatwork', d:'', k:'seat'}
+     {n:'Demonstration', d:'Walkthrough of a symmetric/asymmetric encryption example and how TLS uses these building blocks for HTTPS.', k:'lecture'},
+     {n:'Seatwork', d:'Written exercise distinguishing symmetric vs asymmetric encryption use cases and identifying hashing vs signing.', k:'seat'}
     ]},
     {no:4, title:'Threats, Attacks & Data Privacy', weeks:'Wk 7', ilo:'Recognize common attacks and privacy obligations.', items:[
      {n:'Phishing, malware & social engineering', d:'How common attacks work and how to resist them.', k:'subtopic'},
      {n:'The Data Privacy Act (RA 10173)', d:'Consent, proportionality, and security of personal data in the Philippines.', k:'subtopic'},
      {n:'Responsible disclosure & ethics', d:'Lawful, ethical handling of vulnerabilities.', k:'subtopic'},
-     {n:'Presentation: Staying Safe Online', d:'', k:'ppt'},
-     {n:'Quiz', d:'', k:'quiz'}
+     {n:'Presentation: Staying Safe Online', d:'Slide deck on common attacks, the Data Privacy Act (RA 10173), and responsible disclosure.', k:'ppt'},
+     {n:'Quiz', d:'Short multiple-choice check on phishing/malware/social engineering, RA 10173, and responsible disclosure.', k:'quiz'}
     ]}
    ]}
  },
