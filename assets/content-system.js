@@ -53,7 +53,7 @@ function openContentSheet(code,focusTopic,resetFocus){
   const sy=DB.syllabi[CC_CODE]; const packs=DB.packs[CC_CODE]||{};
   const c=DB.curriculum.find(k=>k.code===CC_CODE);
   openSheet('🗂️', CC_CODE+' — '+c.title, `Course Content · sections ${myAssignments().find(x=>x.code===CC_CODE).sections.join(' · ')}`, `
-  <div class="note-ai note" style="margin-top:0"><b>AI generation is syllabus-mapped:</b> one generated section per non-subtopic item of each topic, always one of exactly three categories — <b>Presentation</b> (.pptx), <b>Documents</b> (.docx / .xlsx / .pdf), or <b>Quiz</b> (MCQ) — each opened as a real, downloadable file.
+  <div class="note-ai note" style="margin-top:0"><b>AI generation is syllabus-mapped:</b> one generated section per non-subtopic item of each topic, always one of exactly three categories — <b>Presentation</b> (.pptx), <b>Documents</b> (.docx / .pdf), or <b>Quiz</b> (MCQ) — each opened as a real, downloadable file.
    <a href="#" onclick="showPrompt('ppt');return false" style="color:var(--ai);font-weight:700">PPT prompt</a> ·
    <a href="#" onclick="showPrompt('doc');return false" style="color:var(--ai);font-weight:700">DOC prompt</a> ·
    <a href="#" onclick="showPrompt('quiz');return false" style="color:var(--ai);font-weight:700">QUIZ prompt</a></div>
@@ -99,7 +99,7 @@ function secPop(tno,si,evt){
   CC_FOCUS_TOPIC=tno;
   const s=DB.packs[CC_CODE][tno].secs[si];
   const openable=s.t==='doc'||s.t==='ppt'||s.t==='file';
-  const openLabel=s.t==='ppt'?'📽️ Open presentation (.pptx)':s.format==='excel'?'📄 Open document (.xlsx)':s.format==='pdf'?'📄 Open document (.pdf)':'📄 Open document (.docx)';
+  const openLabel=s.t==='ppt'?'📽️ Open presentation (.pptx)':s.format==='pdf'?'📄 Open document (.pdf)':'📄 Open document (.docx)';
   openPop(`<h4>${TICON[s.t][0]} ${s.label}</h4>
   <div class="kv"><b>Category</b>${CONTENT_CATS[s.t]||(s.t==='file'?'Instructor Upload':s.t)}</div>
   <div class="kv"><b>Mapping</b>${s.sub}</div>
@@ -166,9 +166,9 @@ function addSectionModal(tno,type,label){
     <div><label>Source</label><div class="seg"><button class="on" type="button">⚡ AI-draft from this topic</button><button type="button">Write items manually</button></div></div>`
     :type==='url'?`<div><label>Link</label><input id="asContent" placeholder="https://…" style="width:100%"></div>`
     :type==='file'?`<div><label>File</label><input type="file" style="width:100%"></div>
-    <div><label>Format</label><select id="asFormat" style="width:100%"><option value="pdf" selected>PDF</option><option value="word">Word (.docx)</option><option value="excel">Excel (.xlsx)</option></select></div>`
+    <div><label>Format</label><select id="asFormat" style="width:100%"><option value="pdf" selected>PDF</option><option value="word">Word (.docx)</option></select></div>`
     :`<div><label>Content ${type==='ppt'?'(or ⚡ AI-draft below)':''}</label><textarea id="asContent" rows="4" style="width:100%" placeholder="Write content or generate a draft…"></textarea></div>
-    ${type==='doc'?`<div><label>Format</label><select id="asFormat" style="width:100%"><option value="word" selected>Word (.docx)</option><option value="excel">Excel (.xlsx)</option></select></div>`:''}
+    ${type==='doc'?`<div><label>Format</label><select id="asFormat" style="width:100%"><option value="word" selected>Word (.docx)</option><option value="pdf">PDF</option></select></div>`:''}
     ${type!=='label'?`<div><label>Source</label><div class="seg"><button class="on" type="button">⚡ AI-draft from this topic</button><button type="button">Write manually</button></div></div>`:''}`}
     <div><label>Syllabus mapping</label><input value="${CC_CODE} · Topic ${tno}" disabled style="width:100%"></div>
     <div style="display:flex;gap:8px;justify-content:flex-end">
@@ -266,28 +266,15 @@ function setSectionPub(tno,si,val){
    (auto by content nature — tabular/scored items get Excel, narrative
    guides get Word; PDF is always offered as a one-click export). */
 const GEN={
- lecture:{cat:'doc',label:'Lecture Notes',format:'word'},
+ lecture:{cat:'doc',label:'Lecture / Discussion Notes',format:'word'},
  ppt:{cat:'ppt',label:'Presentation'},
- demo:{cat:'doc',label:'Demonstration Guide',format:'word'},
- video:{cat:'doc',label:'Video Discussion Guide',format:'word'},
- quiz:{cat:'quiz',label:'MCQ Quiz'},
  recit:{cat:'doc',label:'Recitation Guide',format:'word'},
- act:{cat:'doc',label:'Activity Document',format:'word'},
- case:{cat:'doc',label:'Case Study Brief',format:'word'},
- debate:{cat:'doc',label:'Debate Guide',format:'word'},
- workshop:{cat:'doc',label:'Workshop Guide',format:'word'},
- career:{cat:'doc',label:'Career Talk Guide',format:'word'},
- research:{cat:'doc',label:'Guided Research Brief',format:'word'},
- brainstorm:{cat:'doc',label:'Brainstorming Guide',format:'word'},
- paper:{cat:'doc',label:'Paper Brief',format:'word'},
- seat:{cat:'doc',label:'Seatwork Sheet',format:'excel'},
- lab:{cat:'doc',label:'Laboratory Guide',format:'word'},
- prac:{cat:'doc',label:'Practical Exercise + Rubric',format:'excel'},
- out:{cat:'doc',label:'Output Submission Brief',format:'word'},
- rubric:{cat:'doc',label:'Rubric Sheet',format:'excel'},
- capstone:{cat:'doc',label:'Capstone Project Brief',format:'excel'}
+ quiz:{cat:'quiz',label:'Short Quiz (MCQ)'},
+ seat:{cat:'doc',label:'Seatwork Sheet',format:'word'},
+ prac:{cat:'doc',label:'Practical Exercise + Rubric',format:'word'},
+ exam:{cat:'doc',label:'Examination',format:'word'}
 };
-const GEN_FALLBACK={cat:'doc',label:'Activity Document',format:'word'};
+const GEN_FALLBACK={cat:'doc',label:'Document',format:'word'};
 /* Builds the section's `preview` text — the single source of truth filegen.js
    later parses into real paragraphs/slides/rubric rows when the file is opened. */
 function genPreviewText(it,topic,cat,format){

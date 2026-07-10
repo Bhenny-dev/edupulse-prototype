@@ -2,6 +2,19 @@
 
 > **Implementation status (2026-07-09):** the v2.5 alignment described below is now **implemented in the live modular prototype** — `prototype/index.html` plus the role pages (`dean/`, `instructor/`, `student/`) and shared `assets/*.js` (login title reads "Prototype v3.0"). The v2.5 renames (grading→scoring / Score Visualization, Analytics→Performance), the fourth fixed template (EduPulse-DOC v1), Completed/Missed status, Dean Midterm/Finals term labels, and the read-only scoring sheet all now render in the code. The single-file `EduPulse_Prototype.html` is the **legacy v2.2** build and is intentionally left unchanged. **Open `index.html` to run the current prototype.**
 
+## v2.6 changes — syllabus category model + submission bins + editable scoring sheet (July 2026)
+
+Aligns the prototype with the revised paper. New syllabus-builder **setting pipeline**: **time-framed Topic → Subtopics (⠿ draggable to reorder) → tap a Subtopic → its two category sets and their contents.**
+
+- **Fixed category set (replaces the old open activity list).** Every subtopic groups its entries under two sets:
+  - **Teaching and Learning Material Categories:** Lecture / Discussion (Word/PDF) · Presentation (PPT).
+  - **Activities & Assessments Category:** Recitation (Word/PDF) · Short Quiz (Multiple Choice) · Seatwork (Word/PDF) · Practical Exercise (Word/PDF) · Examination (Word/PDF/Multiple Choice).
+  - Removed categories (Demonstration, Video, Group Activity, Case Study, Laboratory, Debate, Workshop, Career Talk, Guided Research, Brainstorming, Output Submission, Reflection Paper, Rubric-graded, Capstone) are remapped into the set above; seed data updated so nothing renders blank.
+- **AI generation = 3 generators + 1 check.** Documents are **Word/PDF only (XLSX dropped)**; the three fixed content generators are Document (Word/PDF), Presentation (PPT), Short Quiz/Examination (MCQ), plus EduPulse-CHECK. Format selectors and the "Documents (.docx / .xlsx / .pdf)" labels are now Word/PDF.
+- **Submission bin per activity (instructor-configured).** Each activity/assessment carries a submission bin set **Applicable** (students submit within EduPulse) or **Not applicable** — rubric-guided work students complete outside the system; its score is then **entered manually** in the scoring sheet.
+- **Editable scoring sheet (reverses the v2.5 read-only rule).** Every score cell is an editable input: the instructor can **override any auto-recorded score** or enter a score for an offline/rubric-guided activity; entering a score clears a *Missed* flag, and Hi / Lo / Class Average and per-student totals recompute automatically.
+- **Draggable subtopics** (in addition to the existing draggable, auto-timeframed topics).
+
 ## v2.5 changes — paper-final alignment (Chapter 1 & 2, July 2026)
 
 All terminology, features, and flows now trace to the final paper; section references are given so panels can verify.

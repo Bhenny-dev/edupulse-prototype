@@ -188,7 +188,7 @@ function gradeLegendHtml(){
    within the subject instead of a second row of top-level tabs. */
 function insGrading(){
   view().innerHTML=`
-  <div class="note" style="margin-top:0"><b>EduPulse scoring sheet — ${DB.config.sem}, AY ${DB.config.ay}.</b> Records the scores students obtain in the activities you post within EduPulse, grouped by term (${schemeLabel()}) and <b>read-only</b>. Open a subject to view its sheet.</div>
+  <div class="note" style="margin-top:0"><b>EduPulse scoring sheet — ${DB.config.sem}, AY ${DB.config.ay}.</b> Records the scores students obtain in the activities you post within EduPulse, grouped by term (${schemeLabel()}); auto-recorded scores are pre-filled and <b>every score is editable by the instructor</b> (override auto-scores or enter results from activities done outside the system). Open a subject to view its sheet.</div>
   ${myAssignments().map(x=>{
     const c=DB.curriculum.find(k=>k.code===x.code);
     const secList=gradeSections(x.code);
@@ -224,11 +224,12 @@ function activityTable(code,sec){
   // term-group header (Midterm / Finals labels only — no term-grade computation)
   const terms=[]; acts.forEach(a=>{const last=terms[terms.length-1]; if(last&&last.term===a.term) last.span++; else terms.push({term:a.term,span:1});});
   const cell=(s,a,ai)=>{
-    if(actMissed(s,a)) return `<td>${chip('Missed','c-bad')}</td>`;
-    const auto = a.key==='cs'&&a.i===0; // first quiz column is auto-recorded from a submitted quiz
-    return `<td><span title="${auto?'Auto-recorded from a submitted quiz':'Recorded from the posted activity'}">${actVal(s,a)}${auto?` <small style="color:var(--ai)">⚡</small>`:''}</span></td>`;
+    const auto = a.key==='cs'&&a.i===0; // first quiz column originates from a submitted quiz (auto-recorded, still editable)
+    const miss = actMissed(s,a);
+    const tip = miss?'Missed — type a score to record it manually (e.g., a rubric-guided activity submitted outside the system)':(auto?'Auto-recorded from a submitted quiz — you can override it':'Recorded from the posted activity — editable');
+    return `<td class="${miss?'miss-cell':''}"><input class="score-cell" style="width:54px;text-align:center" type="number" min="0" max="${a.max}" step="0.5" value="${miss?'':actVal(s,a)}" placeholder="${miss?'—':''}" title="${tip}" onchange="editScore('${code}','${sec}','${s.id}','${a.key}',${a.i},${a.max},this)">${auto?'<small style="color:var(--ai)" title="auto-recorded">⚡</small>':''}${miss?'<small style="color:var(--bad)"> missed</small>':''}</td>`;
   };
-  return `<div class="card"><h3>EduPulse Scoring Sheet — ${sec} · ${code} · ${DB.config.sem} ${chip('Instructor-exclusive · read-only','c-teal')}</h3>
+  return `<div class="card"><h3>EduPulse Scoring Sheet — ${sec} · ${code} · ${DB.config.sem} ${chip('Instructor-exclusive · editable','c-teal')}</h3>
   <div class="gr-tb"><table>
     <tr><th></th><th class="nm"></th>${terms.map(t=>`<th colspan="${t.span}" style="text-align:center;border-bottom:2px solid var(--pri)">${t.term}</th>`).join('')}<th></th><th></th></tr>
     <tr><th>Student ID</th><th class="nm">Name</th>${acts.map(a=>`<th>${a.k}<br><small>/${a.max}</small></th>`).join('')}<th>Total<br><small>/${acts.reduce((t,a)=>t+a.max,0)}</small></th><th>%</th></tr>
@@ -240,5 +241,27 @@ function activityTable(code,sec){
     <tr><td></td><td style="text-align:left"><b>Lowest score</b></td>${stats.map(st=>`<td><b style="color:var(--bad)">${st.lo}</b></td>`).join('')}<td></td><td></td></tr>
     <tr><td></td><td style="text-align:left"><b>Class average</b></td>${stats.map(st=>`<td><b>${st.avg.toFixed(1)}</b></td>`).join('')}<td></td><td></td></tr>
   </table></div>
-  <div class="note" style="margin-top:10px">⚡ = auto-recorded from a submitted quiz. Activity columns are grouped under the <b>${schemeLabel()}</b> term labels (grouping only — EduPulse does not compute term grades). A red <b>Missed</b> marks an activity a student did not answer within its timeframe and counts as 0 in the total. Highest / lowest / class average recompute automatically; students see their own row only, each score linked to the answered activity.</div></div>`;
+  <div class="note" style="margin-top:10px">⚡ = auto-recorded from a submitted quiz. <b>Every cell is editable</b> — type a score to override an auto-recorded value, or to enter the result of an activity done outside the system (e.g., a rubric-guided exercise whose submission bin is set to "not applicable"). A blank <b>missed</b> cell counts as 0 until a score is entered. Activity columns are grouped under the <b>${schemeLabel()}</b> term labels (grouping only — EduPulse does not compute term grades). Highest / lowest / class average and totals recompute automatically; students see their own row only, each score linked to the answered activity.</div></div>`;
+}
+/* Instructor edit/override of any score cell. The score lives directly in the
+   student record (s[a.key][a.i]), so writing it back persists and every stat
+   (Hi/Lo/Avg, per-student total & %) recomputes on the next render. Entering a
+   score for a Missed activity also clears its Missed flag (now recorded — e.g.,
+   a rubric-guided activity scored manually outside the system). */
+function editScore(code,sec,sid,akey,ai,max,el){
+  const rows=gradeRows(code,sec);
+  const s=rows.find(x=>String(x.id)===String(sid));
+  if(!s){ return; }
+  let v=parseFloat(el.value);
+  if(el.value===''||isNaN(v)){ return; }
+  v=Math.max(0,Math.min(max,Math.round(v*2)/2));
+  if(!Array.isArray(s[akey])) s[akey]=[];
+  s[akey][ai]=v;
+  if(Array.isArray(s.missed)){
+    const act=gradedActivities().find(a=>a.key===akey&&a.i===ai);
+    if(act) s.missed=s.missed.filter(m=>m!==act.k);
+  }
+  saveDB();
+  openGradingSheet();
+  toast('Score updated — statistics recomputed.');
 }

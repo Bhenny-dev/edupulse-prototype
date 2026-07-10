@@ -13,37 +13,23 @@ const PLAN_TYPES=[
  {grp:'Content Scope', opts:[
    {k:'subtopic',label:'Subtopic / Content Scope',ic:'📚'}
  ]},
- {grp:'Teaching–Learning Activity', opts:[
-   {k:'lecture',label:'Lecture / Discussion',ic:'📖'},
-   {k:'ppt',label:'Presentation (PPT / Multimedia)',ic:'📽️'},
-   {k:'demo',label:'Demonstration',ic:'🔬'},
-   {k:'video',label:'Video Presentation',ic:'🎬'},
-   {k:'act',label:'Group / Class Activity',ic:'🧩'},
-   {k:'case',label:'Case Study / Role-play',ic:'🎭'},
-   {k:'lab',label:'Laboratory Exercise',ic:'💻'},
-   {k:'debate',label:'Debate / Content Analysis',ic:'⚖️'},
-   {k:'workshop',label:'Workshop',ic:'🧵'},
-   {k:'career',label:'Career Talk / Guest Interview',ic:'🎤'},
-   {k:'research',label:'Guided Research / Online Learning',ic:'🔎'},
-   {k:'brainstorm',label:'Brainstorming / Trend Analysis',ic:'💡'}
+ {grp:'Teaching and Learning Material Categories', opts:[
+   {k:'lecture',label:'Lecture / Discussion (Word/PDF)',ic:'📖'},
+   {k:'ppt',label:'Presentation (PPT)',ic:'📽️'}
  ]},
- {grp:'Assessment', opts:[
-   {k:'recit',label:'Recitation',ic:'🗣️'},
-   {k:'quiz',label:'Quiz',ic:'✅'},
-   {k:'seat',label:'Seatwork',ic:'✍️'},
-   {k:'prac',label:'Practical Exercise',ic:'🛠️'},
-   {k:'out',label:'Output Submission',ic:'📤'},
-   {k:'paper',label:'Reflection Paper / Essay',ic:'📝'},
-   {k:'rubric',label:'Rubric-graded Output',ic:'📊'},
-   {k:'capstone',label:'Capstone Project',ic:'🏆'},
-   {k:'exam',label:'Major Examination',ic:'🎓'}
+ {grp:'Activities & Assessments Category', opts:[
+   {k:'recit',label:'Recitation (Word/PDF)',ic:'🗣️'},
+   {k:'quiz',label:'Short Quiz (Multiple Choice)',ic:'✅'},
+   {k:'seat',label:'Seatwork (Word/PDF)',ic:'✍️'},
+   {k:'prac',label:'Practical Exercise (Word/PDF)',ic:'🛠️'},
+   {k:'exam',label:'Examination (Word/PDF/Multiple Choice)',ic:'🎓'}
  ]}
 ];
 const PLAN_ICON=Object.fromEntries(PLAN_TYPES.flatMap(g=>g.opts).map(o=>[o.k,o.ic]));
 const PLAN_LABEL=Object.fromEntries(PLAN_TYPES.flatMap(g=>g.opts).map(o=>[o.k,o.label]));
 const TICON={doc:['📄','var(--pri-l)'],ppt:['📽️','var(--ai-l)'],quiz:['✅','var(--ok-l)'],file:['📎','rgba(23,26,63,.06)'],url:['🔗','rgba(23,26,63,.06)'],label:['🏷️','rgba(23,26,63,.06)']};
 /* The exactly-three AI-generated content categories (paper 1.4): Document
-   (Word/Excel/PDF), Presentation (PPT), Quiz (MCQ). File/URL/Label stay
+   (Word/PDF), Presentation (PPT), Quiz (MCQ). File/URL/Label stay
    manual, instructor-origin, non-AI. */
 const CONTENT_CATS={doc:'Document',ppt:'Presentation',quiz:'Quiz'};
 
@@ -99,7 +85,7 @@ const GRADE_LEGEND=[
  {abbr:'EX#', full:'Examination N', note:'A major examination you posted in EduPulse.'},
  {abbr:'Hi / Lo / Avg', full:'Highest · Lowest · Class Average', note:'Computed per activity as soon as scores come in.'},
  {abbr:'Completed / Missed', full:'Activity status', note:'Marked per student per activity by whether it was answered within the set timeframe; Missed counts as 0.'},
- {abbr:'⚡', full:'Auto-recorded', note:'Recorded automatically when the student submitted — the scoring sheet is read-only.'}
+ {abbr:'⚡', full:'Auto-recorded', note:'Recorded automatically when the student submitted; the instructor can edit or override any score.'}
 ];
 
 /* Secure Answering Environment — configurable violation policies (Restrictions & anti-cheat) */
@@ -345,15 +331,15 @@ const DEFAULT_DB = {
      {n:'Pre-mechanical → electronic periods', d:'Four periods of computing with representative devices per period.', k:'subtopic'},
      {n:'Milestones in communication technology', d:'From telegraph and telephone to the internet and mobile broadband.', k:'subtopic'},
      {n:'Multimedia presentation', d:'', k:'ppt'},
-     {n:'Timeline activity', d:'', k:'act'},
-     {n:'Reflection paper', d:'', k:'paper'}
+     {n:'Timeline activity', d:'', k:'seat'},
+     {n:'Reflection paper', d:'', k:'seat'}
     ]},
     {no:3, title:'Components of a Computer System', weeks:'Wk 3', ilo:'Explain the fundamentals of computer hardware and software.', items:[
      {n:'Hardware: input, output, storage, processing', d:'Device categories with examples; the IPO-S model of a computer system.', k:'subtopic'},
      {n:'System & application software', d:'Distinction, examples, and licensing basics.', k:'subtopic'},
      {n:'Operating systems overview', d:'Roles of an OS; desktop examples (Windows, Linux, macOS).', k:'subtopic'},
-     {n:'Demonstration', d:'', k:'demo'},
-     {n:'Group identification activity', d:'', k:'act'},
+     {n:'Demonstration', d:'', k:'lecture'},
+     {n:'Group identification activity', d:'', k:'seat'},
      {n:'Quiz', d:'', k:'quiz'}
     ]},
     {no:4, title:'Networking and the Internet', weeks:'Wk 4', ilo:'Differentiate various types of networks and the internet.', items:[
@@ -361,24 +347,24 @@ const DEFAULT_DB = {
      {n:'Network devices & topologies', d:'Router, switch, access point; star, bus, ring, mesh topologies.', k:'subtopic'},
      {n:'Internet & WWW basics', d:'IP addresses, DNS, browsers, and the client–server model.', k:'subtopic'},
      {n:'Interactive lecture', d:'', k:'lecture'},
-     {n:'Diagram drawing', d:'', k:'act'},
+     {n:'Diagram drawing', d:'', k:'seat'},
      {n:'Seatwork', d:'', k:'seat'},
      {n:'Short quiz', d:'', k:'quiz'}
     ]},
     {no:5, title:'Productivity & Cloud Tools', weeks:'Wk 5–6', ilo:'Apply productivity and cloud collaboration tools for business and personal use.', items:[
      {n:'Word · Excel · PowerPoint/Canva', d:'Business reports, sales/inventory sheets, and marketing decks.', k:'subtopic'},
      {n:'Cloud collaboration', d:'Google Workspace, Microsoft 365, Dropbox; sharing and co-editing.', k:'subtopic'},
-     {n:'Hands-on laboratory exercises', d:'', k:'lab'},
-     {n:'Cloud group activity', d:'', k:'act'},
+     {n:'Hands-on laboratory exercises', d:'', k:'prac'},
+     {n:'Cloud group activity', d:'', k:'seat'},
      {n:'Practical exercise', d:'', k:'prac'},
-     {n:'Output submission', d:'', k:'out'}
+     {n:'Output submission', d:'', k:'prac'}
     ]},
     {no:6, title:'Digital Marketing & E-Commerce Tools', weeks:'Wk 7', ilo:'Discuss the role of ICT in e-commerce and digital marketing.', items:[
      {n:'Social media platforms for business', d:'Using Facebook/Instagram/TikTok pages for reach, engagement, and selling.', k:'subtopic'},
      {n:'Online booking & delivery apps', d:'Grab, Booking.com-style flows; how ICT mediates local service transactions.', k:'subtopic'},
      {n:'POS & CRM systems overview', d:'Point-of-sale and customer-relationship-management basics for small business.', k:'subtopic'},
-     {n:'Case studies + role-play activity', d:'', k:'case'},
-     {n:'Group presentation', d:'', k:'out'}
+     {n:'Case studies + role-play activity', d:'', k:'seat'},
+     {n:'Group presentation', d:'', k:'prac'}
     ]},
     {no:7, title:'ICT Ethics, Security & Privacy', weeks:'Wk 8', ilo:'Recognize security threats and apply basic online safety measures.', items:[
      {n:'Common cybersecurity threats', d:'Phishing, malware, social engineering with local case examples.', k:'subtopic'},
@@ -403,54 +389,54 @@ const DEFAULT_DB = {
      {n:'Internet of Things (IoT)', d:'Connected devices in homes, farms, and cities.', k:'subtopic'},
      {n:'Virtual & Augmented Reality (VR/AR)', d:'Immersive tech in education, training, and entertainment.', k:'subtopic'},
      {n:'Blockchain technology', d:'Distributed ledgers beyond cryptocurrency: provenance, contracts, records.', k:'subtopic'},
-     {n:'Video presentation', d:'', k:'video'},
-     {n:'Class discussion', d:'', k:'act'},
-     {n:'Reaction paper', d:'', k:'paper'}
+     {n:'Video presentation', d:'', k:'ppt'},
+     {n:'Class discussion', d:'', k:'seat'},
+     {n:'Reaction paper', d:'', k:'seat'}
     ]},
     {no:11, title:'Social Media in Communication & Business', weeks:'Wk 12', ilo:'Evaluate the benefits and challenges of social media in different sectors.', items:[
      {n:'Social media platforms & functions', d:'Overview of major platforms and how each is typically used.', k:'subtopic'},
      {n:'Social media marketing', d:'Organic reach, paid ads, influencer partnerships.', k:'subtopic'},
      {n:'Issues in social media use', d:'Misinformation, addiction, privacy, and online harassment.', k:'subtopic'},
-     {n:'Debate', d:'', k:'debate'},
-     {n:'Content analysis', d:'', k:'act'},
-     {n:'Debate rubric', d:'', k:'rubric'}
+     {n:'Debate', d:'', k:'recit'},
+     {n:'Content analysis', d:'', k:'seat'},
+     {n:'Debate rubric', d:'', k:'prac'}
     ]},
     {no:12, title:'Digital Citizenship & Responsibility', weeks:'Wk 13', ilo:'Apply principles of digital citizenship in real-world scenarios.', items:[
      {n:'Nine elements of digital citizenship', d:'Access, commerce, communication, literacy, etiquette, law, rights & responsibilities, health & wellness, security.', k:'subtopic'},
      {n:'Online etiquette', d:'Netiquette across chat, email, forums, and social platforms.', k:'subtopic'},
      {n:'Digital footprint awareness', d:'What persists online and how it affects reputation and opportunity.', k:'subtopic'},
-     {n:'Workshop', d:'', k:'workshop'},
-     {n:'Case study discussion', d:'', k:'case'},
-     {n:'Workshop output', d:'', k:'out'}
+     {n:'Workshop', d:'', k:'prac'},
+     {n:'Case study discussion', d:'', k:'seat'},
+     {n:'Workshop output', d:'', k:'prac'}
     ]},
     {no:13, title:'ICT Applications in Various Sectors', weeks:'Wk 14', ilo:'Describe ICT’s role in governance, health, and education.', items:[
      {n:'E-Government', d:'Online public services: permits, payments, records.', k:'subtopic'},
      {n:'E-Health', d:'Telemedicine, health records, appointment systems.', k:'subtopic'},
      {n:'E-Education', d:'LMS platforms, online enrollment, and remote instruction.', k:'subtopic'},
-     {n:'Career talk / interview with ICT professionals', d:'', k:'career'},
-     {n:'Reflection essay', d:'', k:'paper'}
+     {n:'Career talk / interview with ICT professionals', d:'', k:'lecture'},
+     {n:'Reflection essay', d:'', k:'seat'}
     ]},
     {no:14, title:'ICT for Lifelong Learning', weeks:'Wk 15', ilo:'Apply strategies for lifelong learning using ICT.', items:[
      {n:'Online learning platforms', d:'Coursera, edX, and similar platforms for continuing education.', k:'subtopic'},
      {n:'Self-paced learning resources', d:'Curating and evaluating open educational resources.', k:'subtopic'},
      {n:'MOOCs & webinars', d:'Structured self-study and live online learning formats.', k:'subtopic'},
-     {n:'Guided research', d:'', k:'research'},
-     {n:'Online learning activity', d:'', k:'act'},
-     {n:'Activity output', d:'', k:'out'}
+     {n:'Guided research', d:'', k:'seat'},
+     {n:'Online learning activity', d:'', k:'seat'},
+     {n:'Activity output', d:'', k:'prac'}
     ]},
     {no:15, title:'Future of ICT', weeks:'Wk 16', ilo:'Discuss future trends and directions in ICT.', items:[
      {n:'ICT in the next decade', d:'Near-term projections across consumer and enterprise tech.', k:'subtopic'},
      {n:'Technological convergence', d:'Devices and services merging (comms, media, computing).', k:'subtopic'},
      {n:'Ethical issues in future tech', d:'Bias, surveillance, and accountability as tech advances.', k:'subtopic'},
-     {n:'Brainstorming + trend analysis', d:'', k:'brainstorm'},
+     {n:'Brainstorming + trend analysis', d:'', k:'recit'},
      {n:'Short quiz', d:'', k:'quiz'}
     ]},
     {no:16, title:'Integration & Review (Capstone)', weeks:'Wk 17', ilo:'Integrate all learned concepts in a capstone output.', items:[
      {n:'Capstone project guidelines', d:'Scope, deliverables, and timeline for the term capstone.', k:'subtopic'},
      {n:'Presentation skills', d:'Structuring and delivering a professional project presentation.', k:'subtopic'},
      {n:'Peer feedback sessions', d:'Structured peer review before final submission.', k:'subtopic'},
-     {n:'Capstone project presentation', d:'', k:'capstone'},
-     {n:'Project rubric', d:'', k:'rubric'}
+     {n:'Capstone project presentation', d:'', k:'prac'},
+     {n:'Project rubric', d:'', k:'prac'}
     ]},
     {no:17, title:'FINAL EXAMINATION', weeks:'Wk 18', ilo:'—', items:[
      {n:'Final Exam', d:'', k:'exam'}
@@ -467,7 +453,7 @@ const DEFAULT_DB = {
     {no:2, title:'Variables, Types & Operators', weeks:'Wk 3–4', ilo:'Use variables, data types, and operators correctly.', items:[
      {n:'Primitive types', d:'int, float, char, bool; sizes and ranges.', k:'subtopic'},
      {n:'Expressions & precedence', d:'Arithmetic, relational, logical operators.', k:'subtopic'},
-     {n:'Laboratory exercise', d:'', k:'lab'},
+     {n:'Laboratory exercise', d:'', k:'prac'},
      {n:'Seatwork', d:'', k:'seat'},
      {n:'Quiz', d:'', k:'quiz'}
     ]}
@@ -491,8 +477,8 @@ const DEFAULT_DB = {
     {no:3, title:'Inside the Computer', weeks:'Wk 5–6', ilo:'Explain the roles of CPU, memory, and storage.', items:[
      {n:'CPU & the fetch–execute cycle', d:'Instruction cycle basics.', k:'subtopic'},
      {n:'Memory hierarchy', d:'Registers, cache, RAM, storage — speed vs capacity.', k:'subtopic'},
-     {n:'Demonstration', d:'', k:'demo'},
-     {n:'Label-the-parts activity', d:'', k:'act'}
+     {n:'Demonstration', d:'', k:'lecture'},
+     {n:'Label-the-parts activity', d:'', k:'seat'}
     ]}
    ]},
   'IT-WST21':{ owner:'Marielle Fianza', period:'1st Semester, AY 2025–2026',
@@ -506,7 +492,7 @@ const DEFAULT_DB = {
     {no:2, title:'HTML & CSS Foundations', weeks:'Wk 3–5', ilo:'Build structured, styled web pages.', items:[
      {n:'Semantic HTML structure', d:'Headings, sections, forms; accessibility basics.', k:'subtopic'},
      {n:'CSS selectors & layout', d:'Box model, flexbox introduction.', k:'subtopic'},
-     {n:'Hands-on laboratory', d:'', k:'lab'},
+     {n:'Hands-on laboratory', d:'', k:'prac'},
      {n:'Practical exercise', d:'', k:'prac'},
      {n:'Short quiz', d:'', k:'quiz'}
     ]}
@@ -534,8 +520,8 @@ const DEFAULT_DB = {
      {n:'Switching & the MAC address table', d:'How a switch learns and forwards frames within a LAN.', k:'subtopic'},
      {n:'Routing & the routing table', d:'How a router chooses a path between networks; default gateways.', k:'subtopic'},
      {n:'Static vs dynamic routing', d:'Manual routes versus routing protocols at an introductory level.', k:'subtopic'},
-     {n:'Packet Tracer demonstration', d:'', k:'demo'},
-     {n:'Topology-building activity', d:'', k:'act'}
+     {n:'Packet Tracer demonstration', d:'', k:'lecture'},
+     {n:'Topology-building activity', d:'', k:'seat'}
     ]},
     {no:4, title:'Application-Layer Protocols & the Internet', weeks:'Wk 7', ilo:'Relate everyday services to their protocols.', items:[
      {n:'DNS, HTTP/HTTPS, and the client–server model', d:'Name resolution and the request–response cycle behind browsing.', k:'subtopic'},
@@ -558,16 +544,16 @@ const DEFAULT_DB = {
      {n:'Functional vs non-functional requirements', d:'What the system does versus its quality constraints.', k:'subtopic'},
      {n:'Eliciting requirements', d:'Interviews, observation, and user stories with acceptance criteria.', k:'subtopic'},
      {n:'Writing an SRS', d:'Structuring a software requirements specification the team can build from.', k:'subtopic'},
-     {n:'Requirements workshop', d:'', k:'workshop'},
-     {n:'SRS output submission', d:'', k:'out'},
+     {n:'Requirements workshop', d:'', k:'prac'},
+     {n:'SRS output submission', d:'', k:'prac'},
      {n:'Quiz', d:'', k:'quiz'}
     ]},
     {no:3, title:'Design & Architecture', weeks:'Wk 5–6', ilo:'Apply design principles to structure a system.', items:[
      {n:'Modularity, cohesion & coupling', d:'Splitting a system into parts that are easy to change.', k:'subtopic'},
      {n:'Common architectural styles', d:'Layered, client–server, and MVC at an introductory level.', k:'subtopic'},
      {n:'Design documentation', d:'Diagrams and notes that let another developer implement the design.', k:'subtopic'},
-     {n:'Design demonstration', d:'', k:'demo'},
-     {n:'Design-document output', d:'', k:'out'}
+     {n:'Design demonstration', d:'', k:'lecture'},
+     {n:'Design-document output', d:'', k:'prac'}
     ]},
     {no:4, title:'Version Control, Testing & Teamwork', weeks:'Wk 7', ilo:'Collaborate using Git and basic testing.', items:[
      {n:'Git branching & pull requests', d:'Feature branches, merges, and reviewing a teammate’s change.', k:'subtopic'},
@@ -591,14 +577,14 @@ const DEFAULT_DB = {
      {n:'Authentication factors', d:'Something you know, have, and are; multi-factor authentication.', k:'subtopic'},
      {n:'Access-control models', d:'Least privilege, role-based access control, and permissions.', k:'subtopic'},
      {n:'Password & credential hygiene', d:'Salting/hashing at a conceptual level and safe credential practices.', k:'subtopic'},
-     {n:'Case-study analysis', d:'', k:'case'},
+     {n:'Case-study analysis', d:'', k:'seat'},
      {n:'Quiz', d:'', k:'quiz'}
     ]},
     {no:3, title:'Cryptography Basics', weeks:'Wk 5–6', ilo:'Describe how encryption protects data.', items:[
      {n:'Symmetric vs asymmetric encryption', d:'Shared keys versus public/private key pairs and their uses.', k:'subtopic'},
      {n:'Hashing & digital signatures', d:'Integrity checks and proving authenticity.', k:'subtopic'},
      {n:'TLS in everyday browsing', d:'How HTTPS uses these building blocks to secure the web.', k:'subtopic'},
-     {n:'Demonstration', d:'', k:'demo'},
+     {n:'Demonstration', d:'', k:'lecture'},
      {n:'Seatwork', d:'', k:'seat'}
     ]},
     {no:4, title:'Threats, Attacks & Data Privacy', weeks:'Wk 7', ilo:'Recognize common attacks and privacy obligations.', items:[
