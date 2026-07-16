@@ -1,7 +1,8 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { HashRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { ToastProvider } from './context/ToastContext'
 import { ContentStoreProvider } from './context/ContentStoreContext'
+import { ThemeProvider } from './context/ThemeContext'
 import Layout from './components/layout/Layout'
 import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
@@ -85,14 +86,16 @@ function AppRoutes() {
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <AuthProvider>
-        <ToastProvider>
-          <ContentStoreProvider>
-            <AppRoutes />
-          </ContentStoreProvider>
-        </ToastProvider>
+        <ThemeProvider>
+          <ToastProvider>
+            <ContentStoreProvider>
+              <AppRoutes />
+            </ContentStoreProvider>
+          </ToastProvider>
+        </ThemeProvider>
       </AuthProvider>
-    </BrowserRouter>
+    </HashRouter>
   )
 }

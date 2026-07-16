@@ -332,7 +332,7 @@ function OnboardingChecklist() {
                 }}
                   style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', borderRadius: 10,
                     border: done ? '1.5px solid var(--success)' : '1.5px solid var(--gray-200)',
-                    background: done ? '#ECFDF5' : '#fff', cursor: 'pointer', textAlign: 'left', transition: 'all 0.2s',
+                    background: done ? 'var(--green-100)' : 'var(--white)', cursor: 'pointer', textAlign: 'left', transition: 'all 0.2s',
                     opacity: done ? 0.8 : 1 }}>
                   <div style={{ width: 28, height: 28, borderRadius: 8,
                     background: done ? 'var(--success)' : 'var(--sky-100)',

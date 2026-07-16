@@ -1146,12 +1146,221 @@ textarea:focus-visible {
 
 /* ─── DARK MODE ─── */
 .dark-mode {
-  --white: #1e293b;
+  /* Surfaces */
+  --white: #0f172a;
   --gray-50: #0f172a;
   --gray-100: #1e293b;
   --gray-200: #334155;
-  --gray-800: #f1f5f9;
-  --gray-900: #f8fafc;
+
+  /* Text */
+  --gray-300: #94a3b8;
+  --gray-400: #64748b;
+  --gray-500: #64748b;
+  --gray-600: #94a3b8;
+  --gray-700: #cbd5e1;
+  --gray-800: #e2e8f0;
+  --gray-900: #f1f5f9;
+
+  /* Sky (accent) — brighten for dark bg contrast */
+  --sky-50: #0c4a6e;
+  --sky-100: #0e3a5e;
+  --sky-200: #075985;
+  --sky-300: #38bdf8;
+  --sky-400: #38bdf8;
+  --sky-500: #0ea5e9;
+  --sky-600: #7dd3fc;
+  --sky-700: #bae6fd;
+
+  /* Semantic backgrounds — dark-toned for dark mode */
+  --red-100: #450a0a;
+  --green-100: #052e16;
+  --amber-100: #451a03;
+  --purple-100: #3b0764;
+
+  /* Semantic text — lighter for contrast on dark backgrounds */
+  --red-500: #fca5a5;
+  --green-500: #86efac;
+  --amber-500: #fcd34d;
+  --purple-500: #d8b4fe;
+
+  /* Shadows — darker for dark surfaces */
+  --shadow-3d:
+    0 2px 4px rgba(0, 0, 0, 0.2),
+    0 4px 12px rgba(0, 0, 0, 0.25),
+    0 8px 24px rgba(0, 0, 0, 0.3);
+  --shadow-3d-hover:
+    0 4px 8px rgba(0, 0, 0, 0.25),
+    0 8px 20px rgba(0, 0, 0, 0.3),
+    0 12px 32px rgba(0, 0, 0, 0.35);
+  --shadow-3d-active:
+    0 1px 2px rgba(0, 0, 0, 0.15),
+    0 2px 6px rgba(0, 0, 0, 0.2),
+    0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+/* ─── Dark mode: component-level overrides ─── */
+.dark-mode body {
+  color: var(--gray-800);
+}
+
+.dark-mode h1, .dark-mode h2, .dark-mode h3, .dark-mode h4, .dark-mode h5, .dark-mode h6 {
+  color: var(--gray-900);
+}
+
+.dark-mode .text-muted {
+  color: var(--gray-400);
+}
+
+.dark-mode .card-body {
+  color: var(--gray-600);
+}
+
+.dark-mode .form-label {
+  color: var(--gray-700);
+}
+
+.dark-mode .overlay-backdrop {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.dark-mode .error-banner {
+  background: var(--red-100);
+  border-color: #7f1d1d;
+  color: #fca5a5;
+}
+
+.dark-mode .warning-banner {
+  background: var(--amber-100);
+  border-color: #78350f;
+  color: #fcd34d;
+}
+
+.dark-mode .btn-secondary {
+  background: var(--gray-100);
+  color: var(--sky-300);
+  border-color: var(--sky-700);
+}
+
+.dark-mode .chat-user {
+  background: var(--gray-100);
+  color: var(--sky-300);
+  border-color: var(--sky-700);
+}
+
+.dark-mode .modal-close {
+  background: var(--gray-200);
+}
+
+.dark-mode .modal-close:hover {
+  background: var(--red-100);
+  color: var(--red-500);
+}
+
+.dark-mode .tab.active {
+  background: var(--gray-100);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode .toggle {
+  background: var(--gray-200);
+}
+
+.dark-mode .toggle-knob {
+  background: var(--gray-300);
+}
+
+.dark-mode .data-table th {
+  border-bottom-color: var(--gray-200);
+}
+
+.dark-mode .data-table td {
+  border-bottom-color: var(--gray-200);
+}
+
+.dark-mode .data-table tbody tr {
+  background: transparent;
+}
+
+.dark-mode .data-table tbody tr:hover td {
+  background: var(--gray-100);
+}
+
+.dark-mode .pagination-btn {
+  background: var(--gray-100);
+  border-color: var(--gray-200);
+  color: var(--gray-600);
+}
+
+.dark-mode .upload-zone {
+  background: var(--sky-50);
+  border-color: var(--sky-700);
+}
+
+.dark-mode .upload-zone-icon {
+  background: linear-gradient(135deg, var(--sky-700), var(--sky-600));
+}
+
+.dark-mode select.form-input {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+}
+
+.dark-mode .bulk-action-bar {
+  background: var(--gray-100);
+  border-bottom-color: var(--gray-200);
+}
+
+.dark-mode .sticky-action-bar {
+  background: var(--gray-100);
+  border-top-color: var(--gray-200);
+}
+
+.dark-mode .scroll-to-top {
+  background: var(--sky-600);
+}
+
+.dark-mode .floating-help-btn {
+  background: var(--sky-600);
+}
+
+.dark-mode .skip-to-content {
+  background: var(--sky-600);
+}
+
+.dark-mode .btn-primary {
+  box-shadow: 0 2px 4px rgba(14, 165, 233, 0.15), 0 4px 12px rgba(14, 165, 233, 0.2);
+}
+
+.dark-mode header {
+  background: rgba(15, 23, 42, 0.9) !important;
+  border-bottom-color: var(--gray-200) !important;
+}
+
+.dark-mode .card {
+  border-color: var(--gray-200);
+}
+
+.dark-mode .popover-content,
+.dark-mode .modal-content {
+  border-color: var(--gray-200);
+}
+
+.dark-mode .form-input {
+  background: var(--gray-100);
+  border-color: var(--gray-200);
+  color: var(--gray-800);
+}
+
+.dark-mode .form-input::placeholder {
+  color: var(--gray-400);
+}
+
+.dark-mode .btn-ghost {
+  color: var(--gray-400);
+}
+
+.dark-mode .btn-ghost:hover {
+  background: var(--gray-100);
+  color: var(--sky-300);
 }
 
 /* ─── High contrast mode ─── */

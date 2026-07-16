@@ -1114,7 +1114,7 @@ export default function Pulse() {
                       {s5Attachments.map((a, i) => (
                         <div key={i} style={{
                           display: 'flex', alignItems: 'center', gap: '3px', padding: '2px 5px',
-                          border: '1px solid var(--gray-200)', borderRadius: 'var(--radius-sm)', fontSize: '0.625rem', background: '#fff',
+                          border: '1px solid var(--gray-200)', borderRadius: 'var(--radius-sm)', fontSize: '0.625rem', background: 'var(--white)',
                         }}>
                           {a.type === 'file' ? <FileText size={9} style={{ color: 'var(--sky-500)' }} /> : <Link2 size={9} style={{ color: 'var(--green-500, #22c55e)' }} />}
                           <input
@@ -1146,12 +1146,12 @@ export default function Pulse() {
                     />
                     <button onClick={() => s5AddAttachment('file')} title="Add file" style={{
                       width: '28px', height: '28px', borderRadius: 'var(--radius-full)', border: '1px solid var(--gray-200)',
-                      background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      background: 'var(--white)', display: 'flex', alignItems: 'center', justifyContent: 'center',
                       cursor: 'pointer', color: 'var(--sky-500)', flexShrink: 0,
                     }}><FileText size={13} /></button>
                     <button onClick={() => s5AddAttachment('link')} title="Add link" style={{
                       width: '28px', height: '28px', borderRadius: 'var(--radius-full)', border: '1px solid var(--gray-200)',
-                      background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      background: 'var(--white)', display: 'flex', alignItems: 'center', justifyContent: 'center',
                       cursor: 'pointer', color: 'var(--green-500, #22c55e)', flexShrink: 0,
                     }}><Link2 size={13} /></button>
                     <button
@@ -1269,7 +1269,7 @@ export default function Pulse() {
         .pulse-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
         .pulse-actions button {
           font-size: 0.75rem; font-weight: 600; padding: 5px 10px; border-radius: var(--radius-full);
-          border: 1px solid var(--sky-200); background: #fff; color: var(--sky-600); cursor: pointer;
+          border: 1px solid var(--sky-200); background: var(--white); color: var(--sky-600); cursor: pointer;
         }
         .pulse-actions button:hover { background: var(--sky-50); }
         .pulse-input-row { display: flex; gap: 8px; padding: 10px 12px; border-top: 1px solid var(--gray-100); }
@@ -1279,7 +1279,7 @@ export default function Pulse() {
         .pulse-input-row button:disabled { opacity: 0.4; cursor: default; }
 
         .pulse-step-nav { display: flex; gap: 6px; padding: 10px 12px; border-top: 1px solid var(--gray-100); }
-        .pulse-step-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 4px; font-size: 0.75rem; font-weight: 600; padding: 7px 8px; border-radius: var(--radius-md); border: 1px solid var(--gray-200); background: #fff; color: var(--gray-600); cursor: pointer; }
+        .pulse-step-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 4px; font-size: 0.75rem; font-weight: 600; padding: 7px 8px; border-radius: var(--radius-md); border: 1px solid var(--gray-200); background: var(--white); color: var(--gray-600); cursor: pointer; }
         .pulse-step-btn:disabled { opacity: 0.35; cursor: default; }
         .pulse-step-btn:not(:disabled):hover { background: var(--gray-50); }
         .pulse-step-primary { background: var(--sky-500); border-color: var(--sky-500); color: #fff; }

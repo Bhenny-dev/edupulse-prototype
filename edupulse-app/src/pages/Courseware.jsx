@@ -582,7 +582,7 @@ export default function Courseware() {
                           <div key={item.id} style={{
                             display: 'flex', alignItems: 'center', gap: '10px',
                             padding: '10px 12px', borderRadius: 'var(--radius-md)',
-                            border: '1px solid var(--gray-200)', background: '#fff', marginBottom: 6,
+                            border: '1px solid var(--gray-200)', background: 'var(--white)', marginBottom: 6,
                           }}>
                             <FileText size={16} style={{ color: 'var(--sky-500)', flexShrink: 0 }} />
                             <div style={{ flex: 1 }}>

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
+import { useTheme } from '../context/ThemeContext'
 import { exportCSV, timestampedFilename } from '../utils/exportUtils'
 import {
   Shield, Palette, Bell, Check, Cpu, Server, KeyRound, Download,
@@ -32,7 +33,7 @@ function AccountSettings() {
 /* ───────────────────────── Appearance (FR-SET-03, NFR-ACC-05) ───────────────────────── */
 
 function AppearanceSettings() {
-  const [darkMode, setDarkMode] = useState(false)
+  const { dark: darkMode, toggleDark } = useTheme()
   const [fontScale, setFontScale] = useState('medium')
   const { addToast } = useToast()
 
@@ -44,9 +45,9 @@ function AppearanceSettings() {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', borderRadius: 'var(--radius-md)', border: '1px solid var(--sky-100)' }}>
             <div>
               <div style={{ fontWeight: 600 }}>Dark Mode</div>
-              <div className="text-sm text-muted">Switch to dark theme (prototype toggle also available in the top bar)</div>
+              <div className="text-sm text-muted">Switch to dark theme (also available in the top bar)</div>
             </div>
-            <div className={`toggle ${darkMode ? 'active' : ''}`} onClick={() => { setDarkMode(!darkMode); addToast('Theme updated', 'success') }}><div className="toggle-knob" /></div>
+            <div className={`toggle ${darkMode ? 'active' : ''}`} onClick={() => { toggleDark(); addToast('Theme updated', 'success') }}><div className="toggle-knob" /></div>
           </div>
           <div style={{ padding: '14px 16px', borderRadius: 'var(--radius-md)', border: '1px solid var(--sky-100)' }}>
             <div style={{ fontWeight: 600, marginBottom: '4px' }}>Font Size</div>

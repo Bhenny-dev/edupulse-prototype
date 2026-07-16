@@ -233,7 +233,7 @@ export default function AssessmentEditor({ content, onBack, isStudent = false, o
         .assessment-page {
           max-width: 850px;
           margin: 0 auto;
-          background: #fff;
+          background: var(--white);
           border-radius: var(--radius-lg);
           box-shadow: 0 2px 12px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04);
           overflow: hidden;

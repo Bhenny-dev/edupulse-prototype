@@ -228,7 +228,7 @@ export default function CourseOutlineViewer({
                               border: `1px solid ${status === 'published' ? 'var(--green-200, #bbf7d0)' : status === 'hidden' ? 'var(--gray-200)' : 'var(--gray-200)'}`,
                               cursor: 'pointer',
                               transition: 'all 0.15s',
-                              background: status === 'published' ? 'var(--green-50, #f0fdf4)' : status === 'hidden' ? 'var(--gray-50)' : '#fff',
+                              background: status === 'published' ? 'var(--green-50, #f0fdf4)' : status === 'hidden' ? 'var(--gray-50)' : 'var(--white)',
                               opacity: status === 'hidden' ? 0.6 : 1,
                             }}
                             onClick={() => openItem(item)}

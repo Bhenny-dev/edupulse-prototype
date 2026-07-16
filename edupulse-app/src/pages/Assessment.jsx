@@ -59,7 +59,7 @@ function QuestionRenderer({ question, answer, onAnswer, disabled }) {
         {question.options.map((opt, i) => (
           <label key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', borderRadius: 10,
             border: answer === i ? '2px solid var(--sky-500)' : '1.5px solid var(--gray-200)',
-            background: answer === i ? 'var(--sky-50)' : '#fff', cursor: disabled ? 'default' : 'pointer', transition: 'all 0.2s' }}>
+            background: answer === i ? 'var(--sky-50)' : 'var(--white)', cursor: disabled ? 'default' : 'pointer', transition: 'all 0.2s' }}>
             <input type="radio" name={question.id} checked={answer === i} onChange={() => onAnswer(i)} disabled={disabled}
               style={{ accentColor: 'var(--sky-500)' }} />
             <span style={{ fontSize: '0.875rem' }}>{opt}</span>
@@ -74,7 +74,7 @@ function QuestionRenderer({ question, answer, onAnswer, disabled }) {
         {[{ label: 'True', val: true }, { label: 'False', val: false }].map(opt => (
           <label key={opt.label} style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, padding: '12px', borderRadius: 10,
             border: answer === opt.val ? '2px solid var(--sky-500)' : '1.5px solid var(--gray-200)',
-            background: answer === opt.val ? 'var(--sky-50)' : '#fff', cursor: disabled ? 'default' : 'pointer', transition: 'all 0.2s', fontWeight: 600 }}>
+            background: answer === opt.val ? 'var(--sky-50)' : 'var(--white)', cursor: disabled ? 'default' : 'pointer', transition: 'all 0.2s', fontWeight: 600 }}>
             <input type="radio" name={question.id} checked={answer === opt.val} onChange={() => onAnswer(opt.val)} disabled={disabled}
               style={{ accentColor: 'var(--sky-500)' }} />
             {opt.label}
@@ -149,7 +149,7 @@ export default function Assessment() {
     const { score, max } = calcScore()
     return (
       <div style={{ padding: '24px', maxWidth: 800, margin: '0 auto' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, padding: '12px 16px', background: '#fff', borderRadius: 12, boxShadow: 'var(--shadow-3d)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, padding: '12px 16px', background: 'var(--white)', borderRadius: 12, boxShadow: 'var(--shadow-3d)' }}>
           <div>
             <h2 style={{ fontSize: '1.1rem', fontWeight: 700, margin: 0 }}>{selectedAssessment.title}</h2>
             <span style={{ fontSize: '0.8rem', color: 'var(--gray-500)' }}>{selectedAssessment.course} · Question {currentQuestion + 1} of {selectedAssessment.questions.length}</span>
@@ -167,7 +167,7 @@ export default function Assessment() {
         </div>
 
         {showResults ? (
-          <div style={{ background: '#fff', borderRadius: 16, padding: 24, boxShadow: 'var(--shadow-3d)' }}>
+          <div style={{ background: 'var(--white)', borderRadius: 16, padding: 24, boxShadow: 'var(--shadow-3d)' }}>
             <div style={{ textAlign: 'center', marginBottom: 24 }}>
               <div style={{ width: 80, height: 80, borderRadius: '50%', border: `4px solid ${score / max >= 0.75 ? 'var(--success)' : score / max >= 0.5 ? 'var(--warning)' : 'var(--danger)'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px', fontSize: '1.5rem', fontWeight: 800 }}>
                 {score}/{max}
@@ -200,7 +200,7 @@ export default function Assessment() {
             </div>
           </div>
         ) : (
-          <div style={{ background: '#fff', borderRadius: 16, padding: 24, boxShadow: 'var(--shadow-3d)' }}>
+          <div style={{ background: 'var(--white)', borderRadius: 16, padding: 24, boxShadow: 'var(--shadow-3d)' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
               <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--sky-500)' }}>Question {currentQuestion + 1} · {q.points} pts</span>
               <span style={{ fontSize: '0.75rem', color: 'var(--gray-400)', textTransform: 'capitalize' }}>{q.type.replace('_', ' ')}</span>
@@ -256,7 +256,7 @@ export default function Assessment() {
           const attempt = MOCK_ATTEMPTS.find(a => a.assessmentId === assess.id)
           const isOverdue = new Date(assess.dueDate) < new Date()
           return (
-            <div key={assess.id} style={{ background: '#fff', borderRadius: 16, padding: 20, boxShadow: 'var(--shadow-3d)', borderLeft: `4px solid ${isOverdue ? 'var(--danger)' : 'var(--sky-500)'}` }}>
+            <div key={assess.id} style={{ background: 'var(--white)', borderRadius: 16, padding: 20, boxShadow: 'var(--shadow-3d)', borderLeft: `4px solid ${isOverdue ? 'var(--danger)' : 'var(--sky-500)'}` }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div style={{ flex: 1 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>

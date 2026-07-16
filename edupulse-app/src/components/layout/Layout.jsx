@@ -1,6 +1,7 @@
 import { NavLink, Outlet, useNavigate, useLocation, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useLanguage } from '../../context/LanguageContext'
+import { useTheme } from '../../context/ThemeContext'
 import {
   LayoutDashboard, BookOpen, FileText, BarChart3, LogOut,
   ChevronDown, Bell, Search, Menu, X, Moon, Sun, HelpCircle,
@@ -295,7 +296,7 @@ export default function Layout() {
   const [showRoleSwitch, setShowRoleSwitch] = useState(false)
   const [showMobileMenu, setShowMobileMenu] = useState(false)
   const [showLangMenu, setShowLangMenu] = useState(false)
-  const [darkMode, setDarkMode] = useState(false)
+  const { dark: darkMode, toggleDark } = useTheme()
   const [fontScale, setFontScale] = useState('medium')
   const [showShortcuts, setShowShortcuts] = useState(false)
 
@@ -320,12 +321,11 @@ export default function Layout() {
   return (
     <div style={{
       minHeight: '100vh', display: 'flex', flexDirection: 'column',
-      ...(darkMode ? { background: 'var(--gray-900)', color: 'var(--gray-100)' } : {}),
       fontSize: fontScale === 'small' ? '14px' : fontScale === 'large' ? '18px' : '16px',
     }}>
       <header role="banner" style={{
         position: 'sticky', top: 0, zIndex: 100,
-        background: darkMode ? 'rgba(15, 23, 42, 0.9)' : 'rgba(255, 255, 255, 0.85)',
+        background: 'rgba(255, 255, 255, 0.85)',
         backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)',
         borderBottom: '1px solid var(--sky-100)',
         padding: '0 24px', height: '64px',
@@ -394,7 +394,7 @@ export default function Layout() {
             <Search size={16} />
           </button>
 
-          <button onClick={() => setDarkMode(!darkMode)} title={darkMode ? 'Light mode' : 'Dark mode'} style={{
+          <button onClick={toggleDark} title={darkMode ? 'Light mode' : 'Dark mode'} style={{
             width: 36, height: 36, borderRadius: 'var(--radius-full)',
             background: darkMode ? 'var(--sky-100)' : 'var(--gray-100)', border: 'none',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
