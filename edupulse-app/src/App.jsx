@@ -28,9 +28,10 @@ import Terms from './pages/Terms'
 // Dean review route: the syllabus signatory chain (Dean → CAO → EVP) happens
 // OUTSIDE the system on the downloaded file. Do not add a route without a
 // corresponding step in the flow.
-function ProtectedRoute({ children }) {
+function ProtectedRoute({ children, allowedRoles }) {
   const { user } = useAuth()
   if (!user) return <Navigate to="/login" replace />
+  if (allowedRoles && !allowedRoles.includes(user.role)) return <Navigate to="/dashboard" replace />
   return children
 }
 
@@ -63,18 +64,18 @@ function AppRoutes() {
         }
       >
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/syllabus" element={<Syllabus />} />
+        <Route path="/syllabus" element={<ProtectedRoute allowedRoles={['instructor']}><Syllabus /></ProtectedRoute>} />
         <Route path="/courseware" element={<Courseware />} />
-        <Route path="/assessment" element={<Assessment />} />
+        <Route path="/assessment" element={<ProtectedRoute allowedRoles={['student']}><Assessment /></ProtectedRoute>} />
         <Route path="/performance" element={<Performance />} />
-        <Route path="/records" element={<Records />} />
+        <Route path="/records" element={<ProtectedRoute allowedRoles={['admin']}><Records /></ProtectedRoute>} />
         {/* Old bookmark — Curriculum was absorbed into Records (Phase 0 intake). */}
         <Route path="/curriculum" element={<Navigate to="/records" replace />} />
-        <Route path="/course-loading" element={<CourseLoading />} />
-        <Route path="/monitor" element={<MonitorProgress />} />
-        <Route path="/student-monitoring" element={<StudentMonitoring />} />
-        <Route path="/scoring-sheet" element={<StudentMonitoring />} />
-        <Route path="/content-editor/:itemId?" element={<ContentEditor />} />
+        <Route path="/course-loading" element={<ProtectedRoute allowedRoles={['admin']}><CourseLoading /></ProtectedRoute>} />
+        <Route path="/monitor" element={<ProtectedRoute allowedRoles={['admin']}><MonitorProgress /></ProtectedRoute>} />
+        <Route path="/student-monitoring" element={<ProtectedRoute allowedRoles={['instructor']}><StudentMonitoring /></ProtectedRoute>} />
+        <Route path="/scoring-sheet" element={<ProtectedRoute allowedRoles={['instructor']}><StudentMonitoring /></ProtectedRoute>} />
+        <Route path="/content-editor/:itemId?" element={<ProtectedRoute allowedRoles={['instructor']}><ContentEditor /></ProtectedRoute>} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/notifications" element={<NotificationCenter />} />
         <Route path="/help" element={<HelpSupport />} />

@@ -1,244 +1,336 @@
 import { useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useSearchParams, Navigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
-import { CURRICULUM_COURSES, INSTRUCTORS, DEFAULT_SYLLABI } from '../data/mockData'
+import { CURRICULUM_COURSES, INSTRUCTORS, DEFAULT_SYLLABI, EUSUITE_COURSE_ASSIGNMENTS, BLOCK_SECTION_REGISTRATIONS } from '../data/mockData'
 import {
-  Search, Check, X, AlertTriangle, GraduationCap, Sparkles, Info,
+  Search, GraduationCap, BookOpen,
+  FileText, CheckCircle, Clock, XCircle,
 } from 'lucide-react'
 
-// Course Loading — FLOW_SPEC Phase 1. The Dean / Associate Dean loads each
-// released course to an instructor. Business rule for who gets a course:
-//   priority 1 — holder of a master's degree
-//   priority 2 — specialization or forte in the course
-// AI has two modes: Assist (per-course ranked suggestions) and Auto (propose
-// the complete assignment in place). EITHER WAY the admin confirms every
-// assignment before it takes effect — AI never finalizes loading.
+// Course Loading — FLOW_SPEC Phase 1 (read-only monitoring view).
+// Course assignments happen in EduSuite (not in EduPulse). The Dean /
+// Associate Dean monitors which courses have been loaded, which instructors
+// are assigned, and which syllabi exist. No manual assignment in EduPulse.
 
-const SPECIALIZATION_KEYWORDS = {
-  'Web & Mobile Development': ['web', 'mobile', 'react', 'javascript', 'html', 'css', 'wmad', 'application'],
-  'Database Systems': ['database', 'information management', 'data management', 'sql'],
-  'Software Engineering': ['software', 'engineering', 'programming', 'integrative', 'system integration'],
-  'Networking & Security': ['network', 'security', 'assurance', 'platform'],
-  'Data Structures & Algorithms': ['data structures', 'algorithm', 'discrete', 'quantitative', 'logic'],
-  'Mobile Development': ['mobile', 'game', 'iot', 'internet of things'],
-  'Web Development': ['web', 'javascript', 'html', 'css', 'frontend'],
-}
-
-// Rank every instructor for a course by the business rule. Returns
-// [{ ...instructor, specMatch, score, reason }] sorted best-first.
-function rankCandidates(course) {
-  const titleLower = course.title.toLowerCase()
-  return INSTRUCTORS.map(inst => {
-    const keywords = SPECIALIZATION_KEYWORDS[inst.specialization] || []
-    const specMatch = keywords.filter(kw => titleLower.includes(kw)).length
-    // Master's degree dominates (priority 1); specialization breaks ties (priority 2).
-    const score = (inst.hasMasters ? 100 : 0) + specMatch
-    const reason = [
-      inst.hasMasters ? "Master's degree holder" : "No master's degree",
-      specMatch > 0 ? `specialization match (${inst.specialization})` : 'no specialization match',
-    ].join(' · ')
-    return { ...inst, specMatch, score, reason }
-  }).sort((a, b) => b.score - a.score)
-}
-
-/* ───────────────────────── Load Courses tab ───────────────────────── */
-function AssignTab() {
-  const { addToast } = useToast()
-  // Existing syllabi count as already-confirmed loads.
-  const [assignments, setAssignments] = useState(() => {
-    const existing = {}
-    DEFAULT_SYLLABI.forEach(syl => {
-      if (!existing[syl.courseCode]) {
-        existing[syl.courseCode] = { instructorId: syl.instructorId, confirmed: true, aiProposed: false }
-      }
-    })
-    return existing
-  })
+/* ───────────────────────── Monitoring tab (read-only) ───────────────────────── */
+function MonitoringTab() {
   const [search, setSearch] = useState('')
+  const [selectedAssignment, setSelectedAssignment] = useState(null)
 
-  const filteredCourses = CURRICULUM_COURSES.filter(s =>
-    s.code.toLowerCase().includes(search.toLowerCase()) ||
-    s.title.toLowerCase().includes(search.toLowerCase())
-  )
+  // Merge course assignments with syllabus data
+  const monitoringData = EUSUITE_COURSE_ASSIGNMENTS.map(assignment => {
+    const syllabi = DEFAULT_SYLLABI.filter(s => s.courseCode === assignment.courseCode)
+    const activeSyllabi = syllabi.filter(s => s.status === 'active')
+    const hasActiveSyllabus = activeSyllabi.length > 0
+    const hasAnySyllabus = syllabi.length > 0
 
-  // Manual pick = the admin's own decision, confirmed by the act of choosing.
-  const assignManually = (courseCode, instructorId) => {
-    if (!instructorId) {
-      setAssignments(prev => { const next = { ...prev }; delete next[courseCode]; return next })
-      return
+    // Get block section registrations for this course
+    const registrations = BLOCK_SECTION_REGISTRATIONS.filter(r => r.courseCode === assignment.courseCode)
+    const totalStudents = registrations.reduce((sum, r) => sum + r.studentCount, 0)
+
+    // Determine course status
+    let courseStatus = 'no_data'
+    if (hasActiveSyllabus && registrations.length > 0) {
+      courseStatus = 'active'
+    } else if (hasAnySyllabus) {
+      courseStatus = 'syllabus_only'
+    } else if (registrations.length > 0) {
+      courseStatus = 'data_only'
     }
-    setAssignments(prev => ({ ...prev, [courseCode]: { instructorId, confirmed: true, aiProposed: false } }))
-    addToast('Course loaded — assignment confirmed', 'success')
+
+    return {
+      ...assignment,
+      syllabi,
+      activeSyllabi,
+      registrations,
+      totalStudents,
+      courseStatus,
+    }
+  })
+
+  const filteredData = monitoringData.filter(item => {
+    if (!search) return true
+    const searchLower = search.toLowerCase()
+    return (
+      item.courseCode.toLowerCase().includes(searchLower) ||
+      item.courseTitle.toLowerCase().includes(searchLower) ||
+      item.instructorIds.some(id => {
+        const inst = INSTRUCTORS.find(i => i.id === id)
+        return inst?.name.toLowerCase().includes(searchLower)
+      })
+    )
+  })
+
+  const getStatusIcon = (status) => {
+    switch (status) {
+      case 'active': return <CheckCircle size={14} style={{ color: 'var(--green-600, #16a34a)' }} />
+      case 'syllabus_only': return <BookOpen size={14} style={{ color: 'var(--sky-600, #0284c7)' }} />
+      case 'data_only': return <FileText size={14} style={{ color: 'var(--amber-600, #d97706)' }} />
+      default: return <XCircle size={14} style={{ color: 'var(--gray-400)' }} />
+    }
   }
 
-  // Auto mode: AI proposes in place; every proposal still needs a confirm.
-  const autoProposeAll = () => {
-    const next = { ...assignments }
-    const unassigned = CURRICULUM_COURSES.filter(s => !next[s.code])
-    unassigned.forEach(course => {
-      const best = rankCandidates(course)[0]
-      next[course.code] = { instructorId: best.id, confirmed: false, aiProposed: true }
-    })
-    setAssignments(next)
-    addToast(`AI proposed assignments for ${unassigned.length} courses — review and confirm each one`, 'info')
+  const getStatusLabel = (status) => {
+    switch (status) {
+      case 'active': return 'Active'
+      case 'syllabus_only': return 'Syllabus Only'
+      case 'data_only': return 'Data Uploaded'
+      default: return 'No Data'
+    }
   }
 
-  const confirmOne = (courseCode) => {
-    setAssignments(prev => ({ ...prev, [courseCode]: { ...prev[courseCode], confirmed: true } }))
-    addToast('Assignment confirmed', 'success')
-  }
-  const rejectOne = (courseCode) => {
-    setAssignments(prev => { const next = { ...prev }; delete next[courseCode]; return next })
-    addToast('Proposal discarded — assign manually or re-run AI', 'info')
-  }
-  const confirmAllProposals = () => {
-    const pending = Object.entries(assignments).filter(([, a]) => a.aiProposed && !a.confirmed)
-    setAssignments(prev => {
-      const next = { ...prev }
-      pending.forEach(([code]) => { next[code] = { ...next[code], confirmed: true } })
-      return next
-    })
-    addToast(`${pending.length} AI-proposed assignments confirmed`, 'success')
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'active': return 'var(--green-100, #dcfce7)'
+      case 'syllabus_only': return 'var(--sky-100, #e0f2fe)'
+      case 'data_only': return 'var(--amber-100, #fef3c7)'
+      default: return 'var(--gray-100, #f3f4f6)'
+    }
   }
 
-  const confirmedCount = Object.values(assignments).filter(a => a.confirmed).length
-  const proposedCount = Object.values(assignments).filter(a => a.aiProposed && !a.confirmed).length
-  const unassignedCount = CURRICULUM_COURSES.length - Object.keys(assignments).length
+  const getStatusTextColor = (status) => {
+    switch (status) {
+      case 'active': return 'var(--green-700, #15803d)'
+      case 'syllabus_only': return 'var(--sky-700, #0369a1)'
+      case 'data_only': return 'var(--amber-700, #b45309)'
+      default: return 'var(--gray-500)'
+    }
+  }
+
+  // Summary stats
+  const stats = {
+    total: monitoringData.length,
+    active: monitoringData.filter(d => d.courseStatus === 'active').length,
+    syllabusOnly: monitoringData.filter(d => d.courseStatus === 'syllabus_only').length,
+    dataOnly: monitoringData.filter(d => d.courseStatus === 'data_only').length,
+    noData: monitoringData.filter(d => d.courseStatus === 'no_data').length,
+  }
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16, flexWrap: 'wrap', gap: 12 }}>
-        <div>
-          <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.25rem', fontWeight: 700, marginBottom: 8 }}>Load Courses to Instructors</h2>
-          <p style={{ fontSize: '0.875rem', color: 'var(--gray-500)' }}>
-            {confirmedCount} confirmed · {proposedCount} AI-proposed (awaiting your confirmation) · {unassignedCount} unassigned · {CURRICULUM_COURSES.length} released courses
-          </p>
+      <div style={{ marginBottom: '20px' }}>
+        <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.25rem', fontWeight: 700, marginBottom: '8px' }}>
+          Course Loading Monitor
+        </h2>
+        <p style={{ fontSize: '0.875rem', color: 'var(--gray-500)', marginBottom: '16px' }}>
+          Read-only view of courses loaded in EduSuite. Course assignments happen in EduSuite, not in EduPulse.
+        </p>
+
+        {/* Summary Cards */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '12px', marginBottom: '20px' }}>
+          <div style={{ padding: '12px', borderRadius: 'var(--radius-md)', background: 'var(--gray-50)', border: '1px solid var(--gray-200)' }}>
+            <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--gray-900)' }}>{stats.total}</div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--gray-500)' }}>Total Courses</div>
+          </div>
+          <div style={{ padding: '12px', borderRadius: 'var(--radius-md)', background: 'var(--green-100, #dcfce7)', border: '1px solid var(--green-200, #bbf7d0)' }}>
+            <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--green-700, #15803d)' }}>{stats.active}</div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--green-600, #16a34a)' }}>Active</div>
+          </div>
+          <div style={{ padding: '12px', borderRadius: 'var(--radius-md)', background: 'var(--sky-100, #e0f2fe)', border: '1px solid var(--sky-200, #bae6fd)' }}>
+            <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--sky-700, #0369a1)' }}>{stats.syllabusOnly}</div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--sky-600, #0284c7)' }}>Syllabus Only</div>
+          </div>
+          <div style={{ padding: '12px', borderRadius: 'var(--radius-md)', background: 'var(--amber-100, #fef3c7)', border: '1px solid var(--amber-200, #fde68a)' }}>
+            <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--amber-700, #b45309)' }}>{stats.dataOnly}</div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--amber-600, #d97706)' }}>Data Uploaded</div>
+          </div>
+          <div style={{ padding: '12px', borderRadius: 'var(--radius-md)', background: 'var(--gray-100, #f3f4f6)', border: '1px solid var(--gray-200, #e5e7eb)' }}>
+            <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--gray-500)' }}>{stats.noData}</div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--gray-500)' }}>No Data</div>
+          </div>
         </div>
-        <div style={{ display: 'flex', gap: 8 }}>
-          {proposedCount > 0 && (
-            <button onClick={confirmAllProposals} className="btn btn-primary" style={{ fontSize: '0.8125rem' }}>
-              <Check size={16} /> Confirm All Proposals ({proposedCount})
-            </button>
-          )}
-          <button
-            onClick={autoProposeAll}
-            disabled={unassignedCount === 0}
-            style={{
-              display: 'flex', alignItems: 'center', gap: 8, padding: '10px 16px',
-              borderRadius: 'var(--radius-md)', border: 'none',
-              background: unassignedCount === 0 ? 'var(--gray-200)' : 'linear-gradient(135deg, var(--sky-400), var(--sky-500))',
-              color: unassignedCount === 0 ? 'var(--gray-400)' : 'white',
-              cursor: unassignedCount === 0 ? 'not-allowed' : 'pointer',
-              fontWeight: 600, fontSize: '0.8125rem', boxShadow: 'var(--shadow-3d)',
-            }}
-          >
-            <Sparkles size={16} /> AI Auto-Propose
-          </button>
+
+        {/* Search */}
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 14px',
+          border: '1px solid var(--gray-200)', borderRadius: 'var(--radius-md)',
+          background: 'var(--white)', marginBottom: '16px',
+        }}>
+          <Search size={16} style={{ color: 'var(--gray-400)' }} />
+          <input
+            placeholder="Search courses or instructors..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            style={{ flex: 1, border: 'none', outline: 'none', fontSize: '0.875rem', fontFamily: 'var(--font-body)', background: 'transparent' }}
+          />
         </div>
       </div>
 
-      <div style={{
-        display: 'flex', alignItems: 'flex-start', gap: 8, padding: '10px 14px',
-        borderRadius: 'var(--radius-md)', background: 'var(--sky-50)', border: '1px solid var(--sky-100)',
-        marginBottom: 16, fontSize: '0.8125rem', color: 'var(--gray-600)',
-      }}>
-        <Info size={15} style={{ color: 'var(--sky-500)', flexShrink: 0, marginTop: 2 }} />
-        <span>
-          AI ranks candidates by the loading rule — <strong>priority 1: master's degree holder</strong>,
-          <strong> priority 2: specialization or forte in the course</strong>. Whether you assign manually with AI
-          suggestions or run AI Auto-Propose, <strong>no assignment takes effect until you confirm it</strong>.
-        </span>
-      </div>
-
-      <div style={{
-        display: 'flex', alignItems: 'center', gap: 8, padding: '10px 14px',
-        border: '1px solid var(--gray-200)', borderRadius: 'var(--radius-md)',
-        background: 'var(--white)', marginBottom: 20,
-      }}>
-        <Search size={16} style={{ color: 'var(--gray-400)' }} />
-        <input
-          placeholder="Search courses..."
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          style={{ flex: 1, border: 'none', outline: 'none', fontSize: '0.875rem', fontFamily: 'var(--font-body)', background: 'transparent' }}
-        />
-      </div>
-
+      {/* Course Table */}
       <div style={{ overflowX: 'auto' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8125rem' }}>
           <thead>
             <tr style={{ borderBottom: '2px solid var(--gray-200)' }}>
               <th style={{ textAlign: 'left', padding: '12px 16px', fontWeight: 700, color: 'var(--gray-600)', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Course</th>
               <th style={{ textAlign: 'left', padding: '12px 16px', fontWeight: 700, color: 'var(--gray-600)', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Year / Sem</th>
-              <th style={{ textAlign: 'left', padding: '12px 16px', fontWeight: 700, color: 'var(--gray-600)', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>AI Suggestion</th>
-              <th style={{ textAlign: 'left', padding: '12px 16px', fontWeight: 700, color: 'var(--gray-600)', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Assigned Instructor</th>
+              <th style={{ textAlign: 'left', padding: '12px 16px', fontWeight: 700, color: 'var(--gray-600)', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Assigned Instructor(s)</th>
+              <th style={{ textAlign: 'left', padding: '12px 16px', fontWeight: 700, color: 'var(--gray-600)', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Syllabus</th>
               <th style={{ textAlign: 'center', padding: '12px 16px', fontWeight: 700, color: 'var(--gray-600)', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Status</th>
             </tr>
           </thead>
           <tbody>
-            {filteredCourses.map(course => {
-              const assign = assignments[course.code]
-              const isPendingProposal = assign?.aiProposed && !assign?.confirmed
-              const suggestion = rankCandidates(course)[0]
-              return (
-                <tr key={course.code} style={{
-                  borderBottom: '1px solid var(--gray-100)',
-                  background: isPendingProposal ? 'var(--amber-50, #fffbeb)' : undefined,
-                }}>
-                  <td style={{ padding: '12px 16px' }}>
-                    <div style={{ fontWeight: 600, color: 'var(--gray-900)' }}>{course.code}</div>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--gray-500)' }}>{course.title} · {course.units} units</div>
-                  </td>
-                  <td style={{ padding: '12px 16px', color: 'var(--gray-600)', whiteSpace: 'nowrap' }}>
-                    Yr {course.yearLevel} · {course.semester === 'summer' ? 'Summer' : `Sem ${course.semester}`}
-                  </td>
-                  <td style={{ padding: '12px 16px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                      <Sparkles size={12} style={{ color: 'var(--purple-500)', flexShrink: 0 }} />
-                      <div>
-                        <div style={{ fontWeight: 600, fontSize: '0.75rem' }}>{suggestion.name}</div>
-                        <div style={{ fontSize: '0.6875rem', color: 'var(--gray-400)' }}>{suggestion.reason}</div>
-                      </div>
+            {filteredData.map(item => (
+              <tr key={item.courseCode} style={{
+                borderBottom: '1px solid var(--gray-100)',
+                background: selectedAssignment === item.courseCode ? 'var(--sky-50)' : undefined,
+                cursor: 'pointer',
+              }} onClick={() => setSelectedAssignment(selectedAssignment === item.courseCode ? null : item.courseCode)}>
+                <td style={{ padding: '12px 16px' }}>
+                  <div style={{ fontWeight: 600, color: 'var(--gray-900)' }}>{item.courseCode}</div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--gray-500)' }}>{item.courseTitle}</div>
+                </td>
+                <td style={{ padding: '12px 16px', color: 'var(--gray-600)', whiteSpace: 'nowrap' }}>
+                  Yr {item.yearLevel} · {item.semester === 'summer' ? 'Summer' : `Sem ${item.semester}`}
+                </td>
+                <td style={{ padding: '12px 16px' }}>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+                    {item.instructorIds.map(id => {
+                      const inst = INSTRUCTORS.find(i => i.id === id)
+                      return inst ? (
+                        <span key={id} style={{
+                          display: 'inline-flex', alignItems: 'center', gap: '4px',
+                          padding: '2px 8px', borderRadius: 'var(--radius-full)',
+                          background: 'var(--sky-100)', color: 'var(--sky-700)',
+                          fontSize: '0.6875rem', fontWeight: 600,
+                        }}>
+                          {inst.name.split(' ').pop()}
+                          {inst.hasMasters && <GraduationCap size={10} style={{ color: 'var(--purple-500)' }} />}
+                        </span>
+                      ) : null
+                    })}
+                  </div>
+                </td>
+                <td style={{ padding: '12px 16px' }}>
+                  {item.syllabi.length > 0 ? (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <BookOpen size={14} style={{ color: 'var(--sky-500)' }} />
+                      <span style={{ fontSize: '0.75rem', color: 'var(--gray-600)' }}>
+                        {item.syllabi.length} version{item.syllabi.length > 1 ? 's' : ''}
+                        {item.activeSyllabi.length > 0 && (
+                          <span style={{ color: 'var(--green-600, #16a34a)', marginLeft: '4px' }}>(active)</span>
+                        )}
+                      </span>
                     </div>
-                  </td>
-                  <td style={{ padding: '12px 16px' }}>
-                    <select
-                      value={assign?.instructorId || ''}
-                      onChange={e => assignManually(course.code, Number(e.target.value))}
-                      style={{
-                        padding: '6px 10px', borderRadius: 'var(--radius-md)',
-                        border: isPendingProposal ? '1px solid var(--amber-300, #fcd34d)' : '1px solid var(--gray-200)',
-                        fontSize: '0.8125rem', background: 'var(--white)', cursor: 'pointer', minWidth: 200,
-                      }}
-                    >
-                      <option value="">— Unassigned —</option>
-                      {rankCandidates(course).map(i => (
-                        <option key={i.id} value={i.id}>{i.name}{i.hasMasters ? " · Master's" : ''}{i.specMatch > 0 ? ' · forte' : ''}</option>
-                      ))}
-                    </select>
-                  </td>
-                  <td style={{ padding: '12px 16px', textAlign: 'center', whiteSpace: 'nowrap' }}>
-                    {!assign ? (
-                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '3px 8px', borderRadius: 'var(--radius-full)', background: 'var(--gray-100)', color: 'var(--gray-500)', fontWeight: 600, fontSize: '0.6875rem' }}>
-                        <AlertTriangle size={12} /> Unassigned
-                      </span>
-                    ) : isPendingProposal ? (
-                      <span style={{ display: 'inline-flex', gap: 4 }}>
-                        <button className="btn btn-primary btn-sm" style={{ padding: '3px 8px', fontSize: '0.6875rem' }} onClick={() => confirmOne(course.code)}><Check size={12} /> Confirm</button>
-                        <button className="btn btn-ghost btn-sm" style={{ padding: '3px 8px', fontSize: '0.6875rem', color: 'var(--red-500)' }} onClick={() => rejectOne(course.code)}><X size={12} /></button>
-                      </span>
-                    ) : (
-                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '3px 8px', borderRadius: 'var(--radius-full)', background: 'var(--green-100)', color: 'var(--green-700)', fontWeight: 600, fontSize: '0.6875rem' }}>
-                        <Check size={12} /> Confirmed{assign.aiProposed ? ' (AI-proposed)' : ''}
-                      </span>
-                    )}
-                  </td>
-                </tr>
-              )
-            })}
+                  ) : (
+                    <span style={{ fontSize: '0.75rem', color: 'var(--gray-400)', fontStyle: 'italic' }}>None</span>
+                  )}
+                </td>
+                <td style={{ padding: '12px 16px', textAlign: 'center' }}>
+                  <span style={{
+                    display: 'inline-flex', alignItems: 'center', gap: '4px',
+                    padding: '4px 10px', borderRadius: 'var(--radius-full)',
+                    background: getStatusColor(item.courseStatus),
+                    color: getStatusTextColor(item.courseStatus),
+                    fontWeight: 600, fontSize: '0.6875rem',
+                  }}>
+                    {getStatusIcon(item.courseStatus)}
+                    {getStatusLabel(item.courseStatus)}
+                  </span>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
+
+      {/* Expanded Details */}
+      {selectedAssignment && (
+        <div style={{
+          marginTop: '16px', padding: '16px 20px', borderRadius: 'var(--radius-lg)',
+          border: '1px solid var(--sky-200)', background: 'var(--sky-50)',
+        }}>
+          {(() => {
+            const item = monitoringData.find(d => d.courseCode === selectedAssignment)
+            if (!item) return null
+
+            return (
+              <div>
+                <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '1rem', marginBottom: '12px' }}>
+                  {item.courseCode} — {item.courseTitle}
+                </h3>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
+                  {/* Block Sections */}
+                  <div>
+                    <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '8px' }}>
+                      Block Sections ({item.blockSections.length})
+                    </div>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+                      {item.blockSections.map(bs => (
+                        <span key={bs} style={{
+                          padding: '3px 8px', borderRadius: 'var(--radius-sm)',
+                          background: 'var(--white)', border: '1px solid var(--sky-200)',
+                          fontSize: '0.75rem', fontWeight: 600,
+                        }}>
+                          {bs}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Syllabi */}
+                  <div>
+                    <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '8px' }}>
+                      Syllabi ({item.syllabi.length})
+                    </div>
+                    {item.syllabi.length > 0 ? (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                        {item.syllabi.map(syl => (
+                          <div key={syl.id} style={{
+                            padding: '6px 10px', borderRadius: 'var(--radius-sm)',
+                            background: 'var(--white)', border: '1px solid var(--sky-200)',
+                            fontSize: '0.75rem',
+                          }}>
+                            <span style={{ fontWeight: 600 }}>v{syl.version}</span>
+                            <span style={{ color: 'var(--gray-500)', marginLeft: '8px' }}>{syl.status}</span>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div style={{ fontSize: '0.75rem', color: 'var(--gray-400)', fontStyle: 'italic' }}>
+                        No syllabi uploaded yet
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Block Section Registrations */}
+                  <div>
+                    <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '8px' }}>
+                      EduSuite Data ({item.registrations.length})
+                    </div>
+                    {item.registrations.length > 0 ? (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                        {item.registrations.map(reg => (
+                          <div key={reg.id} style={{
+                            padding: '6px 10px', borderRadius: 'var(--radius-sm)',
+                            background: 'var(--white)', border: '1px solid var(--sky-200)',
+                            fontSize: '0.75rem',
+                          }}>
+                            <span style={{ fontWeight: 600 }}>{reg.blockSection}</span>
+                            <span style={{ color: 'var(--gray-500)', marginLeft: '8px' }}>{reg.studentCount} students</span>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div style={{ fontSize: '0.75rem', color: 'var(--gray-400)', fontStyle: 'italic' }}>
+                        No student data uploaded yet
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )
+          })()}
+        </div>
+      )}
+
+      {filteredData.length === 0 && (
+        <div style={{ padding: '40px', textAlign: 'center', color: 'var(--gray-400)' }}>
+          <BookOpen size={32} style={{ margin: '0 auto 12px', opacity: 0.4 }} />
+          <p>No courses found matching your search.</p>
+        </div>
+      )}
     </div>
   )
 }
@@ -337,7 +429,7 @@ function InstructorsTab() {
 
   return (
     <div>
-      <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.25rem', fontWeight: 700, marginBottom: 8 }}>Instructor Roster</h2>
+      <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.25rem', fontWeight: 700, marginBottom: 8 }}>Instructor Class List</h2>
       <p style={{ fontSize: '0.875rem', color: 'var(--gray-500)', marginBottom: 24 }}>
         {INSTRUCTORS.length} instructors · Master's degree and specialization drive the loading rule · Click a card to view loaded courses
       </p>
@@ -393,12 +485,47 @@ function InstructorsTab() {
 
 /* ───────────────────────── Main Component ───────────────────────── */
 export default function CourseLoading() {
-  const [searchParams] = useSearchParams()
-  const activeTab = searchParams.get('tab') || 'assign'
+  const { user } = useAuth()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const activeTab = searchParams.get('tab') || 'monitoring'
+
+  if (user?.role !== 'admin') return <Navigate to="/dashboard" replace />
+
+  const switchTab = (tab) => {
+    const p = new URLSearchParams(searchParams)
+    p.set('tab', tab)
+    setSearchParams(p)
+  }
 
   return (
     <div style={{ padding: '24px 32px' }} data-pulse-zone="course-loading">
-      {activeTab === 'assign' && <AssignTab />}
+      {/* Tabs */}
+      <div style={{ display: 'flex', gap: '0', borderBottom: '2px solid var(--gray-200)', marginBottom: '20px' }}>
+        <button
+          onClick={() => switchTab('monitoring')}
+          style={{
+            padding: '10px 20px', border: 'none', background: 'none', cursor: 'pointer', fontWeight: 600,
+            fontSize: '0.875rem', color: activeTab === 'monitoring' ? 'var(--sky-600)' : 'var(--gray-500)',
+            borderBottom: activeTab === 'monitoring' ? '2px solid var(--sky-500)' : '2px solid transparent',
+            marginBottom: '-2px', transition: 'all 0.15s',
+          }}
+        >
+          Course Monitoring
+        </button>
+        <button
+          onClick={() => switchTab('instructors')}
+          style={{
+            padding: '10px 20px', border: 'none', background: 'none', cursor: 'pointer', fontWeight: 600,
+            fontSize: '0.875rem', color: activeTab === 'instructors' ? 'var(--sky-600)' : 'var(--gray-500)',
+            borderBottom: activeTab === 'instructors' ? '2px solid var(--sky-500)' : '2px solid transparent',
+            marginBottom: '-2px', transition: 'all 0.15s',
+          }}
+        >
+          Instructors
+        </button>
+      </div>
+
+      {activeTab === 'monitoring' && <MonitoringTab />}
       {activeTab === 'instructors' && <InstructorsTab />}
     </div>
   )

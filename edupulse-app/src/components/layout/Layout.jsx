@@ -5,7 +5,7 @@ import { useTheme } from '../../context/ThemeContext'
 import {
   LayoutDashboard, BookOpen, FileText, BarChart3, LogOut,
   ChevronDown, Bell, Search, Menu, X, Moon, Sun, HelpCircle,
-  ChevronRight, Globe, Keyboard, Layers, ClipboardCheck,
+  ChevronRight, Globe, Keyboard, ClipboardCheck,
 } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import KeyboardShortcutsModal from '../ui/KeyboardShortcutsModal'
@@ -14,8 +14,6 @@ import Pulse from '../pulse/Pulse'
 // Navigation architecture — one top-bar station per FLOW_SPEC phase, max 5
 // primary sections per role; anything below that altitude lives in the
 // contextual left sidebar, addressed by `?tab=`.
-// Admin (Dean / Associate Dean, one shared role): Dashboard → Records (Phase 0)
-//   → Course Loading (Phase 1) → Monitor (Phase 5).
 // Instructor: Dashboard → Syllabus (Phase 2) → Courseware (Phase 3) →
 //   Student Monitoring + Performance (Phase 5).
 // Student: Dashboard → My Courses (Phase 4) → My Performance.
@@ -23,14 +21,6 @@ const SECTIONS = [
   { key: 'dashboard', path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: 'all' },
 
   // ── Dean / Associate Dean (shared `admin` role) ───────────────────────
-  {
-    key: 'records', path: '/records', label: 'Records', icon: Layers, roles: ['admin'],
-    sidebar: [
-      { key: 'import', label: 'Import EduSuite Files', tab: 'import' },
-      { key: 'sections', label: 'Blocks & Rosters', tab: 'sections' },
-      { key: 'courses', label: 'Course Catalog', tab: 'courses' },
-    ],
-  },
   {
     key: 'course-loading', path: '/course-loading', label: 'Course Loading', icon: ClipboardCheck, roles: ['admin'],
     sidebar: [
@@ -198,7 +188,7 @@ function SearchOverlay({ onClose }) {
   const [query, setQuery] = useState('')
   const suggestions = [
     'IT 102 Syllabus', 'Computer Programming 1', 'WMAD 303-1 Advanced Web Systems Technologies',
-    'Week 4 — Conditional Statements: Seatwork & Quiz', 'Student Monitoring — IT 102', 'BSIT-3A Block Roster',
+    'Week 4 — Conditional Statements: Seatwork & Quiz', 'Student Monitoring — IT 102', 'BSIT-3A Block Class List',
   ]
   const filtered = suggestions.filter(s => s.toLowerCase().includes(query.toLowerCase()))
 
@@ -251,7 +241,7 @@ function RoleSwitchPopover({ onClose }) {
   // Dean and Associate Dean are one shared role (`admin`) with identical
   // permissions — two personas here only so both people can be demoed.
   const roles = [
-    { key: 'dean', label: 'Dean', desc: 'Shared admin role — records, loading, monitoring' },
+    { key: 'dean', label: 'Dean', desc: 'Shared admin role — loading, monitoring' },
     { key: 'associate_dean', label: 'Associate Dean', desc: 'Shared admin role — same UI and permissions as the Dean' },
     { key: 'instructor', label: 'Instructor', desc: 'Syllabus, courseware, student monitoring' },
     { key: 'student', label: 'Student', desc: 'Open materials, answer assessments' },

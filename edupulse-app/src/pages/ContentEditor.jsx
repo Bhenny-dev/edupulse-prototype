@@ -174,7 +174,7 @@ export default function ContentEditor() {
             Auto-saved {lastSaved.toLocaleTimeString()}
           </span>
           <button className="btn btn-secondary btn-sm" onClick={() => addToast('Draft saved', 'success')}><Save size={14} /> Save</button>
-          <button className="btn btn-primary btn-sm" onClick={() => addToast('Item finalized — ready to publish', 'success')}>Finalize</button>
+          <button className="btn btn-primary btn-sm" onClick={() => addToast('Item checked — ready to publish', 'success')}>Check</button>
         </div>
       </div>
 

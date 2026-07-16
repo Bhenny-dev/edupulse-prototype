@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useSearchParams, Navigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 import { DEFAULT_SYLLABI, INSTRUCTORS, BLOCK_SECTIONS, CURRICULUM_COURSES, STUDENT_RECORDS, COURSEWARE_ITEMS, SYLLABUS_STATUS_META } from '../data/mockData'
 import {
   TrendingUp, AlertTriangle, Users, BookOpen, FileText,
@@ -186,12 +187,12 @@ function DeliveryTab() {
   const activeCourses = DEFAULT_SYLLABI.filter(s => s.status === 'active').map(syl => {
     const items = COURSEWARE_ITEMS.filter(c => c.syllabusId === syl.id)
     const published = items.filter(c => c.status === 'published')
-    const finalized = items.filter(c => c.status === 'finalized')
+    const checkedItems = items.filter(c => c.status === 'checked')
     const drafts = items.filter(c => c.status === 'draft')
     const inst = INSTRUCTORS.find(i => i.id === syl.instructorId)
     const weeks = syl.courseOutline?.length || 0
     const weeksCovered = new Set(published.map(c => c.week).filter(Boolean)).size
-    return { syl, inst, items, published, finalized, drafts, weeks, weeksCovered }
+    return { syl, inst, items, published, checkedItems, drafts, weeks, weeksCovered }
   })
 
   const totalPublishedMaterials = activeCourses.reduce((s, c) => s + c.published.filter(i => i.type !== 'assessment').length, 0)
@@ -229,7 +230,7 @@ function DeliveryTab() {
         {activeCourses.length === 0 && (
           <p className="text-sm text-muted">No active syllabi yet — delivery starts once an approved syllabus's outline is extracted.</p>
         )}
-        {activeCourses.map(({ syl, inst, published, finalized, drafts, weeks, weeksCovered }) => {
+        {activeCourses.map(({ syl, inst, published, checkedItems, drafts, weeks, weeksCovered }) => {
           const isExpanded = expanded === syl.id
           const coverage = weeks > 0 ? Math.round((weeksCovered / weeks) * 100) : 0
           return (
@@ -256,7 +257,7 @@ function DeliveryTab() {
                 <div style={{ flex: 1 }}>
                   <div style={{ fontWeight: 700, fontSize: '0.875rem' }}>{syl.courseCode} — {syl.courseTitle}</div>
                   <div style={{ fontSize: '0.75rem', color: 'var(--gray-500)' }}>
-                    {inst?.name} · {published.length} published · {finalized.length} finalized · {drafts.length} drafts · {weeksCovered}/{weeks} outline weeks covered
+                    {inst?.name} · {published.length} published · {checkedItems.length} checked · {drafts.length} drafts · {weeksCovered}/{weeks} outline weeks covered
                   </div>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -318,7 +319,7 @@ function StudentsTab() {
     <div>
       <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.25rem', fontWeight: 700, marginBottom: 8 }}>Student Oversight</h2>
       <p style={{ fontSize: '0.875rem', color: 'var(--gray-500)', marginBottom: 24 }}>
-        Students within the courses each instructor handles, by block (from the EduSuite rosters).
+        Students within the courses each instructor handles, by block (from the EduSuite class lists).
         Score details live in each instructor's Student Monitoring page — this view is structure and coverage only.
       </p>
 
@@ -363,7 +364,7 @@ function StudentsTab() {
                     </tbody>
                   </table>
                   {students.length > 10 && (
-                    <p style={{ fontSize: '0.75rem', color: 'var(--gray-400)', marginTop: 8 }}>Showing 10 of {students.length} — full roster in Records → Blocks &amp; Rosters.</p>
+                    <p style={{ fontSize: '0.75rem', color: 'var(--gray-400)', marginTop: 8 }}>Showing 10 of {students.length} — full class list in Blocks &amp; Class Lists.</p>
                   )}
                 </div>
               )}
@@ -424,8 +425,11 @@ function AlertsTab() {
 
 /* ───────────────────── Main Component ───────────────────── */
 export default function MonitorProgress() {
+  const { user } = useAuth()
   const [searchParams] = useSearchParams()
   const activeTab = searchParams.get('tab') || 'syllabi'
+
+  if (user?.role !== 'admin') return <Navigate to="/dashboard" replace />
 
   return (
     <div style={{ padding: '24px 32px' }} data-pulse-zone="monitor">

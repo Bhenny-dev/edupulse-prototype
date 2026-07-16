@@ -30,7 +30,7 @@ export default defineAgent({
     {
       key: 'students', label: 'Student oversight summary',
       steps: [
-        { title: 'Open Student Oversight', body: 'Students within the courses each instructor handles, grouped by block, straight from the EduSuite roster.' },
+        { title: 'Open Student Oversight', body: 'Students within the courses each instructor handles, grouped by block, straight from the EduSuite class list.' },
         { title: 'For scores', body: 'That detail lives in each instructor\'s Scoring Sheet — this view is structure and coverage only.' },
       ],
     },

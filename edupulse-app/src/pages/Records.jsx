@@ -12,12 +12,12 @@ import {
 
 // Records — FLOW_SPEC Phase 0 (records intake), Dean / Associate Dean only.
 // EduSuite is the system of record: EduPulse receives its exported files
-// (course records, course loads, student rosters/blocks), parses them, shows
+// (course records, course loads, student class lists/blocks), parses them, shows
 // what it understood, and the admin confirms. No live integration. Blocks are
 // CONSUMED from EduSuite — EduPulse never creates or edits them.
 const ALL_TABS = [
   { key: 'import', label: 'Import EduSuite Files' },
-  { key: 'sections', label: 'Blocks & Rosters' },
+  { key: 'sections', label: 'Blocks & Class Lists' },
   { key: 'courses', label: 'Course Catalog' },
 ]
 
@@ -225,7 +225,7 @@ function ImportTab({ user }) {
   const subTabs = [
     { id: 'records', label: 'Course Records' },
     { id: 'loads', label: 'Course Loads' },
-    { id: 'roster', label: 'Student Rosters' },
+    { id: 'roster', label: 'Student Class Lists' },
     { id: 'templates', label: 'Templates' },
     { id: 'history', label: 'History' },
   ]
@@ -234,7 +234,7 @@ function ImportTab({ user }) {
     <div>
       <p className="text-sm text-muted mb-16">
         EduSuite is the system of record. Upload its exported files — course records (per the CMO-based curriculum),
-        course loads, and student rosters (blocks/sections with schedules). The system parses each file and shows
+        course loads, and student class lists (blocks/sections with schedules). The system parses each file and shows
         what it understood; nothing is saved until you confirm. There is no live EduSuite integration.
       </p>
       <div className="tabs mb-24" style={{ overflowX: 'auto', flexWrap: 'nowrap' }}>
@@ -264,7 +264,7 @@ function ImportTab({ user }) {
       )}
       {subTab === 'roster' && (
         <div style={{ display: 'grid', gap: '20px' }}>
-          <UploadZone title="Student Rosters" description="EduSuite block/section rosters (StudentID, Name, Email, YearLevel, Block, Schedule, Status). Students enroll in EduSuite and are blocked first come, first served — up to 35 per block. EduPulse consumes this structure; it never creates it." acceptedTypes={['.csv', '.xlsx']} icon={Users} onImported={recordImport('Student Rosters')} />
+          <UploadZone title="Student Class Lists" description="EduSuite block/section class lists (StudentID, Name, Email, YearLevel, Block, Schedule, Status). Students enroll in EduSuite and are blocked first come, first served — up to 35 per block. EduPulse consumes this structure; it never creates it." acceptedTypes={['.csv', '.xlsx']} icon={Users} onImported={recordImport('Student Class Lists')} />
           <ImportTemplates />
         </div>
       )}
@@ -274,13 +274,13 @@ function ImportTab({ user }) {
   )
 }
 
-/* ─────────────── Blocks & Rosters tab — read-only (consumed from EduSuite) ─────────────── */
+/* ─────────────── Blocks & Class Lists tab — read-only (consumed from EduSuite) ─────────────── */
 
-function StudentRosterTable({ section }) {
+function StudentClassListTable({ section }) {
   const students = STUDENT_RECORDS.filter(s => s.section === section.code)
   return (
     <div className="card">
-      <div className="card-header"><h3><Users size={16} /> Student Roster — {section.code}</h3></div>
+      <div className="card-header"><h3><Users size={16} /> Student Class List — {section.code}</h3></div>
       <div className="card-body" style={{ overflowX: 'auto' }}>
         <table className="data-table">
           <thead><tr><th>Student ID</th><th>Name</th><th>Status</th><th></th></tr></thead>
@@ -309,7 +309,7 @@ function BlockCoursesPanel({ section }) {
     <div className="card">
       <div className="card-header"><h3><BookOpen size={16} /> Enlisted Courses — {section.code}</h3></div>
       <div className="card-body">
-        <p className="text-sm text-muted mb-16">Every student in this block takes these courses on the block's shared schedule (from the EduSuite roster export).</p>
+        <p className="text-sm text-muted mb-16">Every student in this block takes these courses on the block's shared schedule (from the EduSuite class list export).</p>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '10px' }}>
           {blockCourses.map(course => (
             <div key={course.code} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 12px', borderRadius: 'var(--radius-md)', border: '1px solid var(--sky-100)', background: 'var(--sky-50)' }}>
@@ -360,7 +360,7 @@ function SectionsTab() {
   return (
     <div>
       <p className="text-sm text-muted" style={{ marginBottom: '16px' }}>
-        Blocks and rosters as imported from EduSuite. Students are blocked into sections first come, first served
+        Blocks and class lists as imported from EduSuite. Students are blocked into sections first come, first served
         (up to 35 per block); a block enlists the same courses on a shared schedule. EduPulse consumes this
         structure — to change it, re-export from EduSuite and re-import here.
       </p>
@@ -379,7 +379,7 @@ function SectionsTab() {
       {view === 'students' && viewingStudents && (
         <div>
           <button className="btn btn-secondary btn-sm mb-16" onClick={() => setView('list')}><ChevronLeft size={14} /> Back to Blocks</button>
-          <StudentRosterTable section={viewingStudents} />
+          <StudentClassListTable section={viewingStudents} />
         </div>
       )}
 
@@ -476,7 +476,7 @@ export default function Records() {
       <div className="page-header">
         <div>
           <h1><Layers size={24} style={{ verticalAlign: 'middle', marginRight: '8px' }} /> Records</h1>
-          <p className="text-sm text-muted mt-8">EduSuite records intake — course records, course loads, student rosters (blocks)</p>
+          <p className="text-sm text-muted mt-8">EduSuite records intake — course records, course loads, student class lists (blocks)</p>
         </div>
       </div>
 

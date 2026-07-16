@@ -25,21 +25,21 @@ export default defineAgent({
       steps: [
         { title: 'Open the Review Queue tab', body: 'Everything waiting on your decision, newest first.' },
         { title: 'Check the grounding note on each item', body: 'It tells you which outline week and topic it drew from.' },
-        { title: 'Finalize, or regenerate', body: 'Regenerating only redoes that one item — the rest of your batch is untouched. Finalized items are ready to publish.' },
+        { title: 'Check, or regenerate', body: 'Regenerating only redoes that one item — the rest of your batch is untouched. Checked items are ready to publish.' },
       ],
     },
     {
       key: 'itembank', label: 'Find something in the item bank', roles: ['instructor'],
       steps: [
-        { title: 'Search or filter by course', body: 'The item bank holds every finalized and published item, reusable for a new assessment or block.' },
+        { title: 'Search or filter by course', body: 'The item bank holds every checked and published item, reusable for a new assessment or block.' },
         { title: 'Preview before reusing', body: 'Check it still fits the outline row you\'re working from.' },
       ],
     },
     {
       key: 'explain', label: 'Explain what I\'m looking at', roles: ['student', 'admin'],
       steps: [
-        { title: 'Published materials', body: 'Everything your instructor has finalized and published to your block.' },
-        { title: 'How it\'s grounded', body: 'Each item is generated from the approved syllabus, reviewed and finalized by your instructor before you ever see it.' },
+{ title: 'Published materials', body: 'Everything your instructor has checked and published to your block.' },
+{ title: 'How it\'s grounded', body: 'Each item is generated from the approved syllabus, reviewed and checked by your instructor before you ever see it.' },
       ],
     },
   ],

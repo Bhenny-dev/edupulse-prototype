@@ -323,3 +323,41 @@ export function generateAllCourseContent(syllabus) {
 
   return weeks
 }
+
+export function generateWeekContent(syllabus, weekNumber) {
+  const outline = syllabus.courseOutline || []
+  const row = outline.find(r => r.week === weekNumber)
+  if (!row) return { week: weekNumber, isExam: false, items: [] }
+
+  if (!row.ilos && /examination/i.test(row.assessments || '')) {
+    return { week: weekNumber, isExam: true, examType: row.assessments, items: [] }
+  }
+
+  const items = []
+
+  if (row.contents?.length && row.ilos) {
+    items.push({
+      id: `gen-mat-${syllabus.id}-w${weekNumber}`,
+      type: 'material',
+      content: generateMaterialContent(syllabus, row),
+    })
+  }
+
+  if (row.activities) {
+    items.push({
+      id: `gen-act-${syllabus.id}-w${weekNumber}`,
+      type: 'activity',
+      content: generateActivityContent(syllabus, row),
+    })
+  }
+
+  if (row.assessments && !/examination/i.test(row.assessments)) {
+    items.push({
+      id: `gen-assess-${syllabus.id}-w${weekNumber}`,
+      type: 'assessment',
+      content: generateAssessmentContent(syllabus, row),
+    })
+  }
+
+  return { week: weekNumber, isExam: false, items }
+}

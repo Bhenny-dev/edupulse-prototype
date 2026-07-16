@@ -391,7 +391,7 @@ export const CURRICULUM_COURSES = [
 ]
 
 // Ids are referenced by DEFAULT_SYLLABI and BLOCK_SECTIONS below — names were
-// swapped in place to match the real CIT roster without touching those
+// swapped in place to match the real CIT class list without touching those
 // cross-references. `hasMasters` drives the course-loading business rule
 // (FLOW_SPEC Phase 1): priority 1 = master's degree holder, priority 2 =
 // specialization/forte in the course.
@@ -1128,25 +1128,188 @@ export const DEFAULT_SYLLABI = [
     },
     references: { books: [], onlineReferences: [] },
   },
+
+  // ─── CP 2 — Capstone Project 2 (active, for yearLevel 4 students) ───
+  {
+    id: 'syl-9',
+    courseCode: 'CP 2',
+    courseTitle: 'Capstone Project 2',
+    instructorId: 1,
+    status: 'active',
+    version: 1,
+    lastUpdated: '2026-07-10',
+    curriculumRefs: ['CHED-IT-25'],
+    topics: [
+      {
+        id: 't33', title: 'Project Planning & Design', subtopics: [
+          { id: 'st65', title: 'Requirements Gathering', items: ['Stakeholder Analysis', 'User Stories', 'Use Case Diagrams'] },
+          { id: 'st66', title: 'System Design', items: ['Architecture Design', 'Database Schema', 'UI/UX Prototyping'] },
+        ],
+        ilos: ['ILO-1', 'ILO-2'], difficulty: 'advanced', estimatedTime: '3 weeks', curriculumCode: 'CHED-IT-25-A'
+      },
+      {
+        id: 't34', title: 'Implementation & Testing', subtopics: [
+          { id: 'st67', title: 'Development', items: ['Agile Sprints', 'Version Control', 'Code Reviews'] },
+          { id: 'st68', title: 'Quality Assurance', items: ['Unit Testing', 'Integration Testing', 'User Acceptance Testing'] },
+        ],
+        ilos: ['ILO-2', 'ILO-3'], difficulty: 'advanced', estimatedTime: '4 weeks', curriculumCode: 'CHED-IT-25-B'
+      },
+      {
+        id: 't35', title: 'Deployment & Presentation', subtopics: [
+          { id: 'st69', title: 'Deployment', items: ['Cloud Hosting', 'Domain Setup', 'SSL Configuration'] },
+          { id: 'st70', title: 'Documentation', items: ['Technical Documentation', 'User Manual', 'Presentation Materials'] },
+        ],
+        ilos: ['ILO-3', 'ILO-4'], difficulty: 'advanced', estimatedTime: '3 weeks', curriculumCode: 'CHED-IT-25-C'
+      },
+    ],
+    courseInfo: { courseCode: 'CP 2', courseTitle: 'Capstone Project 2', periodOffered: '1st Semester', academicYear: '2025-2026', creditUnits: 3, classification: 'Major', noOfHours: 54, prerequisites: ['CP 1'] },
+    courseDescription: 'Completion of the capstone project started in CP 1. Focuses on full implementation, testing, deployment, and presentation of the software solution.',
+    programOutcomes: ['Deliver a complete, tested, and deployed software solution', 'Present and defend technical decisions effectively'],
+    courseOutline: [
+      { week: 1, ilos: 'Define project requirements and gather stakeholder input.', contents: ['Stakeholder Analysis', 'User Stories', 'Use Case Diagrams'], activities: 'Lecture-discussion, project brainstorming', assessments: 'Recitation, project proposal' },
+      { week: 2, ilos: 'Design system architecture and database schema.', contents: ['Architecture Design', 'Database Schema', 'UI/UX Prototyping'], activities: 'Design workshop, wireframing', assessments: 'Design document submission' },
+      { week: 3, ilos: 'Implement core functionality using agile methodology.', contents: ['Agile Sprints', 'Version Control', 'Code Reviews'], activities: 'Hands-on laboratory exercise', assessments: 'Sprint demo' },
+      { week: 4, ilos: 'Apply testing strategies to ensure software quality.', contents: ['Unit Testing', 'Integration Testing', 'User Acceptance Testing'], activities: 'Test-driven development workshop', assessments: 'Test report' },
+      { week: 5, ilos: 'Deploy the application to a production environment.', contents: ['Cloud Hosting', 'Domain Setup', 'SSL Configuration'], activities: 'Deployment exercise', assessments: 'Deployment verification' },
+      { week: 6, ilos: 'Prepare comprehensive technical documentation.', contents: ['Technical Documentation', 'User Manual', 'Presentation Materials'], activities: 'Documentation workshop', assessments: 'Document submission' },
+      { week: 7, ilos: 'Present and defend the project solution effectively.', contents: ['Presentation Skills', 'Q&A Handling', 'Peer Review'], activities: 'Project presentation', assessments: 'Project rubric' },
+      { week: 8, ilos: '', contents: ['Final Evaluation'], activities: '', assessments: 'Final Evaluation' },
+    ],
+    requirementsAndPolicies: {
+      courseRequirements: ['Attendance', 'Project Milestones', 'Technical Documentation', 'Final Presentation'],
+      gradingSystem: 'MG = 60% CS + 40% Exam\nTFG = 60% CS + 40% Exam\nFG = (MG + TFG) / 2',
+      coursePolicy: ['Students are expected to attend all scheduled classes.', 'Project milestones must be submitted on time.', 'All team members must participate in the final presentation.'],
+    },
+    references: {
+      books: [
+        { title: 'Software Engineering: A Practitioner\'s Approach', authors: 'Pressman, R.', year: 2024, publisher: 'McGraw-Hill' },
+      ],
+      onlineReferences: [
+        { title: 'IEEE Software Engineering Standards', url: 'https://standards.ieee.org/' },
+      ],
+    },
+  },
 ]
 
 // Courseware items are generated per extracted Course Outline row (FLOW_SPEC
 // Phase 3): Contents + ILO → learning material, Assessments column → assessment
-// item, TLA → activity type. Status: draft → finalized → published. Only
+// item, TLA → activity type. Status: draft → checked → published. Only
 // published items are visible to students. `aiGenerated` keeps the AI label on
-// until a human finalizes the item.
-export const COURSEWARE_ITEMS = [
-  // syl-1 · IT 102 Computer Programming 1 (active — outline extracted)
-  { id: 'cw-1', syllabusId: 'syl-1', topicId: 't1', week: 1, title: 'Week 1 — What is Programming: Lecture Notes', type: 'material', status: 'published', aiGenerated: true, generatedAt: '2026-07-10' },
-  { id: 'cw-2', syllabusId: 'syl-1', topicId: 't1', week: 1, title: 'Week 1 — Recitation & Short Quiz: Programming Basics', type: 'assessment', status: 'published', aiGenerated: true, generatedAt: '2026-07-10' },
-  { id: 'cw-3', syllabusId: 'syl-1', topicId: 't2', week: 3, title: 'Week 3 — Variables & Data Types: Guided Practice', type: 'activity', status: 'published', aiGenerated: true, generatedAt: '2026-07-11' },
-  { id: 'cw-4', syllabusId: 'syl-1', topicId: 't3', week: 4, title: 'Week 4 — Conditional Statements: Seatwork & Quiz', type: 'assessment', status: 'finalized', aiGenerated: true, generatedAt: '2026-07-12' },
-  { id: 'cw-5', syllabusId: 'syl-1', topicId: 't3', week: 5, title: 'Week 5 — Loop Structures: Lab Exercise', type: 'activity', status: 'draft', aiGenerated: true, generatedAt: '2026-07-13' },
-  // syl-2 · IT 106 Computer Programming 2 (active — outline extracted)
-  { id: 'cw-6', syllabusId: 'syl-2', topicId: 't6', week: 1, title: 'Week 1 — OOP Principles: Lecture Notes', type: 'material', status: 'published', aiGenerated: true, generatedAt: '2026-07-11' },
-  { id: 'cw-7', syllabusId: 'syl-2', topicId: 't6', week: 2, title: 'Week 2 — Encapsulation: Lab Exercise', type: 'activity', status: 'draft', aiGenerated: true, generatedAt: '2026-07-14' },
-  { id: 'cw-8', syllabusId: 'syl-2', topicId: 't7', week: 3, title: 'Week 3 — Inheritance Hierarchies: Quiz', type: 'assessment', status: 'draft', aiGenerated: true, generatedAt: '2026-07-14' },
-]
+// until a human checks the item.
+// ─── COURSEWARE_ITEMS ────────────────────────────────────────────────────────
+// Comprehensive seeded courseware across all 4 active syllabi.
+// Each non-exam week produces a material, activity, and assessment entry.
+// Activities are flagged with `viewMode` to distinguish presentations from
+// documents — mirrors the logic in courseContentGenerator.js.
+// Status distribution: first weeks published → middle checked → later draft.
+function _detectActivityCategory(activitiesText) {
+  const t = (activitiesText || '').toLowerCase()
+  if (/lab|hands.?on|practical|exercise/i.test(t)) return 'Hands-on Lab'
+  if (/case|analysis|scenario|investigate/i.test(t)) return 'Case Study Analysis'
+  if (/group|project|collaborative|team/i.test(t)) return 'Group Project'
+  if (/written|exercise|worksheet|quiz|short answer/i.test(t)) return 'Written Exercise'
+  return 'Lecture-Discussion'
+}
+const _PRESENTATION_CATS = new Set(['Lecture-Discussion', 'Case Study Analysis'])
+
+function _isExamRow(row) {
+  return !row.ilos && /examination/i.test(row.assessments || '')
+}
+
+// Status assignment: weeks 1‑4 → published, 5‑8 → checked, 9+ → draft
+// (Exam weeks are skipped entirely.)
+function _weekStatus(week) {
+  if (week <= 4) return 'published'
+  if (week <= 8) return 'checked'
+  return 'draft'
+}
+
+export const COURSEWARE_ITEMS = (() => {
+  const items = []
+  let cw = 0
+  for (const syl of DEFAULT_SYLLABI) {
+    if (syl.status !== 'active' || !syl.courseOutline?.length) continue
+    const topicIds = (syl.topics || []).map(t => t.id)
+    for (const row of syl.courseOutline) {
+      if (_isExamRow(row)) continue
+      const st = _weekStatus(row.week)
+      const topicId = topicIds[Math.min(row.week - 1, topicIds.length - 1)] || topicIds[0]
+      const topicLabel = row.contents?.[0] || `Week ${row.week}`
+
+      // Material
+      if (row.contents?.length && row.ilos) {
+        cw++
+        items.push({
+          id: `cw-${cw}`, syllabusId: syl.id, topicId, week: row.week,
+          title: `Week ${row.week} — ${topicLabel}: Lecture Notes`,
+          type: 'material', status: st, aiGenerated: true, generatedAt: '2026-07-10',
+        })
+      }
+
+      // Activity
+      if (row.activities) {
+        cw++
+        const cat = _detectActivityCategory(row.activities)
+        const isPres = _PRESENTATION_CATS.has(cat)
+        items.push({
+          id: `cw-${cw}`, syllabusId: syl.id, topicId, week: row.week,
+          title: `Week ${row.week} — ${topicLabel}: ${isPres ? 'Presentation' : 'Lab Exercise'}`,
+          type: 'activity', viewMode: isPres ? 'presentation' : 'document',
+          status: st, aiGenerated: true, generatedAt: '2026-07-10',
+        })
+      }
+
+      // Assessment
+      if (row.assessments && !/examination/i.test(row.assessments)) {
+        cw++
+        items.push({
+          id: `cw-${cw}`, syllabusId: syl.id, topicId, week: row.week,
+          title: `Week ${row.week} — ${topicLabel}: ${row.assessments.split(',')[0].trim()}`,
+          type: 'assessment', status: st, aiGenerated: true, generatedAt: '2026-07-10',
+        })
+      }
+    }
+  }
+  return items
+})()
+
+// ─── INITIAL CONTENT STORE (pre-seeded for student/instructor viewing) ──────
+// The Course Outline Viewer generates content on-the-fly via generateAllCourseContent()
+// but filters students to only items whose contentStore status === 'published'.
+// This function builds matching store entries so published items are immediately visible.
+export function buildInitialContentStore() {
+  const store = {}
+  for (const syl of DEFAULT_SYLLABI) {
+    if (syl.status !== 'active' || !syl.courseOutline?.length) continue
+    for (const row of syl.courseOutline) {
+      if (_isExamRow(row)) continue
+      const st = _weekStatus(row.week)
+      const genDate = '2026-07-10'
+
+      if (row.contents?.length && row.ilos) {
+        store[`gen-mat-${syl.id}-w${row.week}`] = {
+          status: st, type: 'material', week: row.week, syllabusId: syl.id,
+          title: `Week ${row.week} — ${row.contents[0]}: Lecture Notes`, generatedAt: genDate,
+        }
+      }
+      if (row.activities) {
+        store[`gen-act-${syl.id}-w${row.week}`] = {
+          status: st, type: 'activity', week: row.week, syllabusId: syl.id,
+          title: `Week ${row.week} — ${row.contents?.[0] || 'Activity'}: ${row.activities.split(',')[0].trim()}`,
+          generatedAt: genDate,
+        }
+      }
+      if (row.assessments && !/examination/i.test(row.assessments)) {
+        store[`gen-assess-${syl.id}-w${row.week}`] = {
+          status: st, type: 'assessment', week: row.week, syllabusId: syl.id,
+          title: `Week ${row.week} — ${row.contents?.[0] || 'Assessment'}: ${row.assessments.split(',')[0].trim()}`,
+          generatedAt: genDate,
+        }
+      }
+    }
+  }
+  return store
+}
 
 // ─────────────────────────────────────────────────────────────────────────
 // STUDENT_RECORDS generator — produces the full 387-student roster across all
@@ -1214,10 +1377,21 @@ function courseCodeForSection(section) {
     default: return 'IT 102'
   }
 }
-// BSIT-3A mirrors syl-1's real topic ids (t1-t4); everyone else gets a
-// generic 3-key breakdown since no syllabus exists yet for their course.
+// Returns the topic IDs from the primary syllabus for each section's course.
+// BSIT-3A → WMAD 303-1 (syl-4, topics t14-t17)
+// yearLevel 1 → IT 102 (syl-1, topics t1-t5)
+// yearLevel 2 → IT 201 (syl-5, topics t18-t20)
+// yearLevel 3 → WMAD 301 (syl-8, topics t26-t27)
+// yearLevel 4 → CP 2 (syl-9, topics t33-t35)
 function topicKeysForSection(section) {
-  return section.code === 'BSIT-3A' ? ['t1', 't2', 't3', 't4'] : ['t1', 't2', 't3']
+  if (section.code === 'BSIT-3A') return ['t14', 't15', 't16', 't17']
+  switch (section.yearLevel) {
+    case 1: return ['t1', 't2', 't3', 't4', 't5']
+    case 2: return ['t18', 't19', 't20']
+    case 3: return ['t26', 't27']
+    case 4: return ['t33', 't34', 't35']
+    default: return ['t1', 't2', 't3']
+  }
 }
 
 function buildGeneratedStudent(id, section) {
@@ -1247,9 +1421,9 @@ function buildGeneratedStudent(id, section) {
 // (do not run through the RNG). Bhenny is also src/context/AuthContext.jsx's
 // DEMO_USERS.student, so her email must match that file exactly.
 const FIXED_TEST_STUDENTS = [
-  { name: 'Bhenny Benlor D. Rivera', email: 'bhenny.rivera@kcp.edu.ph', scores: { prelim: 90, midterm: 92, finals: null }, topics: { t1: 94, t2: 88, t3: 90, t4: 91 } },
-  { name: 'Yesha Nicka D. Botay', email: 'yesha.botay@kcp.edu.ph', scores: { prelim: 84, midterm: 87, finals: null }, topics: { t1: 89, t2: 83, t3: 85, t4: 86 } },
-  { name: 'Renand D. De Vera', email: 'renand.devera@kcp.edu.ph', scores: { prelim: 78, midterm: 80, finals: null }, topics: { t1: 82, t2: 76, t3: 79, t4: 81 } },
+  { name: 'Bhenny Benlor D. Rivera', email: 'bhenny.rivera@kcp.edu.ph', scores: { prelim: 90, midterm: 92, finals: null }, topics: { t14: 94, t15: 88, t16: 90, t17: 91 } },
+  { name: 'Yesha Nicka D. Botay', email: 'yesha.botay@kcp.edu.ph', scores: { prelim: 84, midterm: 87, finals: null }, topics: { t14: 89, t15: 83, t16: 85, t17: 86 } },
+  { name: 'Renand D. De Vera', email: 'renand.devera@kcp.edu.ph', scores: { prelim: 78, midterm: 80, finals: null }, topics: { t14: 82, t15: 76, t16: 79, t17: 81 } },
 ]
 
 function buildStudentRoster() {
@@ -1353,16 +1527,16 @@ export const SYLLABUS_VERSIONS = [
 
 // EduSuite records intake (FLOW_SPEC Phase 0). EduSuite is the system of record;
 // EduPulse only receives exported files — course records, course loads, student
-// rosters (blocks) — parses them, shows what it understood, and the Dean /
+// class lists (blocks) — parses them, shows what it understood, and the Dean /
 // Associate Dean confirms. No live integration (explicit non-goal).
 export const FILE_IMPORT_CONFIG = {
   templates: [
     { id: 'course-records', name: 'Course Records Template', description: 'CSV template for EduSuite course records per the CMO-based curriculum (CourseCode, CourseTitle, Units, Classification, Hours, Prerequisites, YearLevel, Semester)', fields: ['CourseCode', 'CourseTitle', 'Units', 'Classification', 'Hours', 'Prerequisites', 'YearLevel', 'Semester'], downloadName: 'course_records_template.csv' },
     { id: 'course-loads', name: 'Course Loads Template', description: 'CSV template for EduSuite course-load exports (InstructorID, InstructorName, Email, CourseCode, Block, Semester)', fields: ['InstructorID', 'InstructorName', 'Email', 'CourseCode', 'Block', 'Semester'], downloadName: 'course_loads_template.csv' },
-    { id: 'student-roster', name: 'Student Roster Template', description: 'CSV template for EduSuite block/section rosters (StudentID, Name, Email, YearLevel, Block, Schedule, Status)', fields: ['StudentID', 'Name', 'Email', 'YearLevel', 'Block', 'Schedule', 'Status'], downloadName: 'student_roster_template.csv' },
+    { id: 'student-roster', name: 'Student Class List Template', description: 'CSV template for EduSuite block/section class lists (StudentID, Name, Email, YearLevel, Block, Schedule, Status)', fields: ['StudentID', 'Name', 'Email', 'YearLevel', 'Block', 'Schedule', 'Status'], downloadName: 'student_class_list_template.csv' },
   ],
   uploadHistory: [
-    { id: 'uh-1', filename: 'EduSuite_Rosters_1stSem_2026.csv', type: 'Student Rosters', uploadedBy: 'Marielle Angela Fianza-Buya', uploadedAt: '2026-07-10T14:30:00', status: 'completed', records: 387, created: 387, updated: 0, errors: 0, duration: '2.1s' },
+    { id: 'uh-1', filename: 'EduSuite_Rosters_1stSem_2026.csv', type: 'Student Class Lists', uploadedBy: 'Marielle Angela Fianza-Buya', uploadedAt: '2026-07-10T14:30:00', status: 'completed', records: 387, created: 387, updated: 0, errors: 0, duration: '2.1s' },
     { id: 'uh-2', filename: 'EduSuite_CourseLoads_SY2026.csv', type: 'Course Loads', uploadedBy: 'Ginard S. Guaki', uploadedAt: '2026-07-08T10:15:00', status: 'completed', records: 28, created: 25, updated: 3, errors: 0, duration: '1.8s' },
     { id: 'uh-3', filename: 'EduSuite_CourseRecords_BSIT.csv', type: 'Course Records', uploadedBy: 'Marielle Angela Fianza-Buya', uploadedAt: '2026-07-05T09:00:00', status: 'completed', records: 55, created: 55, updated: 0, errors: 0, duration: '1.2s' },
   ],
@@ -1384,6 +1558,248 @@ export const RAG_GROUNDING_PASSAGES = [
   { id: 'gp-2', docId: 'curriculum-cmo25', docName: 'BSIT Curriculum Reference — CHED CMO No. 25 s. 2015', version: 1, chunkIndex: 2, offset: 'p5', text: 'BSIT Web & Mobile Application Development graduates must demonstrate proficiency in frontend frameworks, cross-platform mobile development, and modern deployment practices.', similarity: 0.91, source: 'curriculum', courseCode: 'WMAD 303-1', sensitive: false, lastModified: '2026-01-15' },
   { id: 'gp-3', docId: 'instructor-notes-guisdan', docName: 'Sir Guisdan — Advanced Web Lecture Notes', version: 2, chunkIndex: 1, offset: 'p3', text: 'React component composition follows the principle of single responsibility. Use functional components with hooks for state and side effects.', similarity: 0.89, source: 'instructor', courseCode: 'WMAD 303-1', sensitive: false, lastModified: '2026-07-01' },
   { id: 'gp-4', docId: 'syllabus-it102', docName: 'IT 102 Approved Syllabus (extracted)', version: 3, chunkIndex: 0, offset: 'p1', text: 'Computer Programming 1 covers programming foundations, variables and data types, control structures, functions, and arrays across the 18-week course outline.', similarity: 0.87, source: 'syllabus', courseCode: 'IT 102', sensitive: false, lastModified: '2026-07-10' },
-  { id: 'gp-5', docId: 'student-roster-3a', docName: 'BSIT-3A Roster (EduSuite export)', version: 1, chunkIndex: 0, offset: 'p1', text: 'Student enrollment data including names, student IDs, and block assignments for BSIT-3A.', similarity: 0.32, source: 'attachment', courseCode: 'WMAD 303-1', sensitive: true, lastModified: '2026-06-01' },
+  { id: 'gp-5', docId: 'student-roster-3a', docName: 'BSIT-3A Class List (EduSuite export)', version: 1, chunkIndex: 0, offset: 'p1', text: 'Student enrollment data including names, student IDs, and block assignments for BSIT-3A.', similarity: 0.32, source: 'attachment', courseCode: 'WMAD 303-1', sensitive: true, lastModified: '2026-06-01' },
   { id: 'gp-6', docId: 'web-dev-textbook', docName: 'Eloquent JavaScript (instructor-provided)', version: 1, chunkIndex: 0, offset: 'p1', text: 'Modern web development uses a component-based architecture. React hooks (useState, useEffect, useContext) enable stateful logic in functional components.', similarity: 0.85, source: 'attachment', courseCode: 'WMAD 303-1', sensitive: false, lastModified: '2026-06-20' },
 ]
+
+// ─────────────────────────────────────────────────────────────────────────
+// EduSuite Course Assignments — the Dean/Associate Dean loads courses in
+// EduSuite (not in EduPulse). EduPulse only displays the assignments
+// as a read-only monitoring surface.
+// ─────────────────────────────────────────────────────────────────────────
+export const EUSUITE_COURSE_ASSIGNMENTS = [
+  // ─── 1st Year, 1st Semester ───
+  { courseCode: 'IT 102', courseTitle: 'Computer Programming 1', yearLevel: 1, semester: 1, instructorIds: [1, 3], blockSections: ['BSIT-1A', 'BSIT-1B', 'BSIT-1C'] },
+  { courseCode: 'IT 103', courseTitle: 'Quantitative Methods', yearLevel: 1, semester: 1, instructorIds: [5], blockSections: ['BSIT-1D'] },
+  { courseCode: 'IT 101', courseTitle: 'Introduction to Computing', yearLevel: 1, semester: 1, instructorIds: [4], blockSections: ['BSIT-1E', 'BSIT-1F'] },
+  // ─── 1st Year, 2nd Semester ───
+  { courseCode: 'IT 105', courseTitle: 'Discrete Mathematics', yearLevel: 1, semester: 2, instructorIds: [5], blockSections: ['BSIT-1A', 'BSIT-1B'] },
+  { courseCode: 'IT 106', courseTitle: 'Computer Programming 2', yearLevel: 1, semester: 2, instructorIds: [1], blockSections: ['BSIT-1C', 'BSIT-1D'] },
+  { courseCode: 'IT 107', courseTitle: 'Human Computer Interaction', yearLevel: 1, semester: 2, instructorIds: [1, 7], blockSections: ['BSIT-1E', 'BSIT-1F'] },
+  { courseCode: 'IT 104', courseTitle: 'Research Methods', yearLevel: 1, semester: 2, instructorIds: [4, 5], blockSections: ['BSIT-1A', 'BSIT-1B', 'BSIT-1C'] },
+  // ─── 2nd Year, 1st Semester ───
+  { courseCode: 'IT 201', courseTitle: 'Data Structures and Algorithms', yearLevel: 2, semester: 1, instructorIds: [5, 3], blockSections: ['BSIT-2A', 'BSIT-2B'] },
+  { courseCode: 'IT 202', courseTitle: 'Fundamentals of Networking', yearLevel: 2, semester: 1, instructorIds: [4], blockSections: ['BSIT-2C', 'BSIT-2D'] },
+  { courseCode: 'IT 203', courseTitle: 'Object Oriented Programming', yearLevel: 2, semester: 1, instructorIds: [3], blockSections: ['BSIT-2A'] },
+  { courseCode: 'IT 204', courseTitle: 'Platform Technologies', yearLevel: 2, semester: 1, instructorIds: [5], blockSections: ['BSIT-2B'] },
+  // ─── 2nd Year, 2nd Semester ───
+  { courseCode: 'IT 205', courseTitle: 'Information Management', yearLevel: 2, semester: 2, instructorIds: [2], blockSections: ['BSIT-2C', 'BSIT-2D'] },
+  { courseCode: 'IT 207', courseTitle: 'Integrative Programming and Technologies', yearLevel: 2, semester: 2, instructorIds: [2], blockSections: ['BSIT-2A'] },
+  { courseCode: 'IT 208', courseTitle: 'System Integration and Architecture', yearLevel: 2, semester: 2, instructorIds: [2, 3], blockSections: ['BSIT-2B'] },
+  { courseCode: 'IT 209', courseTitle: 'Web System Technologies', yearLevel: 2, semester: 2, instructorIds: [1, 7], blockSections: ['BSIT-2C', 'BSIT-2D'] },
+  { courseCode: 'IT 206-1', courseTitle: 'Information Assurance and Security', yearLevel: 2, semester: 2, instructorIds: [4], blockSections: ['BSIT-2A'] },
+  // ─── 2nd Year, Summer ───
+  { courseCode: 'IT 211', courseTitle: 'Social and Professional Issues', yearLevel: 2, semester: 'summer', instructorIds: [5, 4], blockSections: ['BSIT-2A', 'BSIT-2B'] },
+  { courseCode: 'IT 210-1', courseTitle: 'Advanced Database Management Systems', yearLevel: 2, semester: 'summer', instructorIds: [2], blockSections: ['BSIT-2C', 'BSIT-2D'] },
+  // ─── 3rd Year, 1st Semester ───
+  { courseCode: 'WMAD 301', courseTitle: 'Principles of Accounting', yearLevel: 3, semester: 1, instructorIds: [3], blockSections: ['BSIT-3A', 'BSIT-3B'] },
+  { courseCode: 'WMAD 302', courseTitle: 'Mobile Systems and Technologies', yearLevel: 3, semester: 1, instructorIds: [6, 3], blockSections: ['BSIT-3C'] },
+  { courseCode: 'WMAD 303-1', courseTitle: 'Advanced Web Systems Technologies', yearLevel: 3, semester: 1, instructorIds: [1, 7], blockSections: ['BSIT-3A'] },
+  { courseCode: 'WMAD 304', courseTitle: 'Network Management & Application Areas', yearLevel: 3, semester: 1, instructorIds: [4], blockSections: ['BSIT-3B'] },
+  { courseCode: 'WMADE 1', courseTitle: 'Web & Mobile App Dev Elective 1', yearLevel: 3, semester: 1, instructorIds: [1, 7], blockSections: ['BSIT-3C'] },
+  // ─── 3rd Year, 2nd Semester ───
+  { courseCode: 'WMAD 305', courseTitle: 'Systems Administration and Maintenance', yearLevel: 3, semester: 2, instructorIds: [2], blockSections: ['BSIT-3A'] },
+  { courseCode: 'WMAD 306', courseTitle: 'Advanced Mobile Systems and Technologies', yearLevel: 3, semester: 2, instructorIds: [6], blockSections: ['BSIT-3B'] },
+  { courseCode: 'WMAD 307', courseTitle: 'Mobile Game Development', yearLevel: 3, semester: 2, instructorIds: [6], blockSections: ['BSIT-3C'] },
+  { courseCode: 'WMAD 308', courseTitle: 'Internet of Things', yearLevel: 3, semester: 2, instructorIds: [4], blockSections: ['BSIT-3A'] },
+  { courseCode: 'WMAD 309', courseTitle: 'Application Development & Emerging Technologies', yearLevel: 3, semester: 2, instructorIds: [1, 7], blockSections: ['BSIT-3B'] },
+  // ─── 3rd Year, Summer ───
+  { courseCode: 'CP 1', courseTitle: 'Capstone Project 1', yearLevel: 3, semester: 'summer', instructorIds: [1, 2, 3], blockSections: ['BSIT-3A', 'BSIT-3B', 'BSIT-3C'] },
+  { courseCode: 'WMADE 2', courseTitle: 'Web & Mobile App Dev Elective 2', yearLevel: 3, semester: 'summer', instructorIds: [6, 3], blockSections: ['BSIT-3B'] },
+  // ─── 4th Year, 1st Semester ───
+  { courseCode: 'CP 2', courseTitle: 'Capstone Project 2', yearLevel: 4, semester: 1, instructorIds: [1, 2, 3], blockSections: ['BSIT-4A', 'BSIT-4B'] },
+  { courseCode: 'WMADE 3', courseTitle: 'Web & Mobile App Dev Elective 3', yearLevel: 4, semester: 1, instructorIds: [1, 7], blockSections: ['BSIT-4A'] },
+  { courseCode: 'WMADE 4', courseTitle: 'Web & Mobile App Dev Elective 4', yearLevel: 4, semester: 1, instructorIds: [6, 3], blockSections: ['BSIT-4B'] },
+  // ─── 4th Year, 2nd Semester ───
+  { courseCode: 'IT 401', courseTitle: 'IT Seminars and Updates', yearLevel: 4, semester: 2, instructorIds: [1, 2, 3, 4, 5], blockSections: ['BSIT-4A', 'BSIT-4B'] },
+  { courseCode: 'OJT', courseTitle: 'Practicum', yearLevel: 4, semester: 2, instructorIds: [1, 2, 3, 4, 5, 6, 7], blockSections: ['BSIT-4A', 'BSIT-4B'] },
+]
+
+// ─────────────────────────────────────────────────────────────────────────
+// Shared Syllabus Repository — approved syllabi that any instructor can
+// browse, attach to their registered courses, or clone as a starting point.
+// Each entry represents an uploaded/approved syllabus version with reuse
+// tracking so instructors know which versions others have used.
+// ─────────────────────────────────────────────────────────────────────────
+export const SHARED_SYLLABUS_REPOSITORY = [
+  // ─── IT 102 · Computer Programming 1 — two competing versions ───
+  { id: 'shared-1', syllabusId: 'syl-1', courseCode: 'IT 102', courseTitle: 'Computer Programming 1', instructorId: 1, instructorName: 'Sir Rogelio L. Guisdan', version: 3, uploadedDate: '2026-06-20', status: 'active', reuseCount: 5, lastReusedBy: 'Maam Sharmaine Pangcog', lastReusedDate: '2026-07-14' },
+  { id: 'shared-20', syllabusId: null, courseCode: 'IT 102', courseTitle: 'Computer Programming 1', instructorId: 3, instructorName: 'Sir Ralphy Luzada', version: 1, uploadedDate: '2026-07-10', status: 'approved_uploaded', reuseCount: 0, lastReusedBy: null, lastReusedDate: null },
+  // ─── IT 106 · Computer Programming 2 — single active version ───
+  { id: 'shared-2', syllabusId: 'syl-2', courseCode: 'IT 106', courseTitle: 'Computer Programming 2', instructorId: 1, instructorName: 'Sir Rogelio L. Guisdan', version: 2, uploadedDate: '2026-07-08', status: 'active', reuseCount: 1, lastReusedBy: null, lastReusedDate: null },
+  // ─── IT 209 · Web System Technologies — popular, heavily reused ───
+  { id: 'shared-3', syllabusId: 'syl-3', courseCode: 'IT 209', courseTitle: 'Web System Technologies', instructorId: 1, instructorName: 'Sir Rogelio L. Guisdan', version: 2, uploadedDate: '2026-07-05', status: 'active', reuseCount: 3, lastReusedBy: 'Maam Sharmaine Pangcog', lastReusedDate: '2026-07-12' },
+  { id: 'shared-21', syllabusId: null, courseCode: 'IT 209', courseTitle: 'Web System Technologies', instructorId: 7, instructorName: 'Maam Sharmaine Pangcog', version: 1, uploadedDate: '2026-07-14', status: 'drafted', reuseCount: 0, lastReusedBy: null, lastReusedDate: null },
+  // ─── IT 107 · Human Computer Interaction — draft in progress ───
+  { id: 'shared-8', syllabusId: 'syl-6', courseCode: 'IT 107', courseTitle: 'Human Computer Interaction', instructorId: 1, instructorName: 'Sir Rogelio L. Guisdan', version: 1, uploadedDate: '2026-07-13', status: 'drafted', reuseCount: 0, lastReusedBy: null, lastReusedDate: null },
+  // ─── IT 201 · Data Structures and Algorithms — two versions at different stages ───
+  { id: 'shared-7', syllabusId: 'syl-5', courseCode: 'IT 201', courseTitle: 'Data Structures and Algorithms', instructorId: 1, instructorName: 'Sir Rogelio L. Guisdan', version: 1, uploadedDate: '2026-07-12', status: 'downloaded_for_approval', reuseCount: 0, lastReusedBy: null, lastReusedDate: null },
+  { id: 'shared-22', syllabusId: null, courseCode: 'IT 201', courseTitle: 'Data Structures and Algorithms', instructorId: 5, instructorName: 'Maam Myriel Nginsayan', version: 1, uploadedDate: '2026-07-15', status: 'active', reuseCount: 2, lastReusedBy: 'Sir Dave Medrano', lastReusedDate: '2026-07-16' },
+  // ─── IT 205 · Information Management — checked, awaiting download ───
+  { id: 'shared-9', syllabusId: 'syl-7', courseCode: 'IT 205', courseTitle: 'Information Management', instructorId: 1, instructorName: 'Sir Rogelio L. Guisdan', version: 2, uploadedDate: '2026-07-06', status: 'checked', reuseCount: 1, lastReusedBy: 'Sir Dave Medrano', lastReusedDate: '2026-07-14' },
+  // ─── IT 207 · Integrative Programming and Technologies — checked ───
+  { id: 'shared-10', syllabusId: 'syl-10', courseCode: 'IT 207', courseTitle: 'Integrative Programming and Technologies', instructorId: 2, instructorName: 'Sir Dave Medrano', version: 1, uploadedDate: '2026-07-09', status: 'checked', reuseCount: 0, lastReusedBy: null, lastReusedDate: null },
+  // ─── IT 202 · Fundamentals of Networking — approved, version 3 ───
+  { id: 'shared-6', syllabusId: 'syl-11', courseCode: 'IT 202', courseTitle: 'Fundamentals of Networking', instructorId: 4, instructorName: 'Sir Steve Sudaypan', version: 3, uploadedDate: '2026-07-07', status: 'approved_uploaded', reuseCount: 1, lastReusedBy: null, lastReusedDate: null },
+  // ─── IT 204 · Platform Technologies — out for approval ───
+  { id: 'shared-12', syllabusId: 'syl-12', courseCode: 'IT 204', courseTitle: 'Platform Technologies', instructorId: 5, instructorName: 'Maam Myriel Nginsayan', version: 1, uploadedDate: '2026-07-11', status: 'downloaded_for_approval', reuseCount: 0, lastReusedBy: null, lastReusedDate: null },
+  // ─── WMAD 303-1 · Advanced Web Systems Technologies — active ───
+  { id: 'shared-4', syllabusId: 'syl-4', courseCode: 'WMAD 303-1', courseTitle: 'Advanced Web Systems Technologies', instructorId: 1, instructorName: 'Sir Rogelio L. Guisdan', version: 2, uploadedDate: '2026-07-11', status: 'active', reuseCount: 1, lastReusedBy: null, lastReusedDate: null },
+  // ─── WMAD 301 · Principles of Accounting — two competing versions ───
+  { id: 'shared-5', syllabusId: 'syl-8', courseCode: 'WMAD 301', courseTitle: 'Principles of Accounting', instructorId: 3, instructorName: 'Sir Ralphy Luzada', version: 2, uploadedDate: '2026-07-10', status: 'approved_uploaded', reuseCount: 0, lastReusedBy: null, lastReusedDate: null },
+  { id: 'shared-23', syllabusId: null, courseCode: 'WMAD 301', courseTitle: 'Principles of Accounting', instructorId: 6, instructorName: 'Maam Libby Teofilo', version: 1, uploadedDate: '2026-07-15', status: 'checked', reuseCount: 0, lastReusedBy: null, lastReusedDate: null },
+  // ─── WMAD 302 · Mobile Systems and Technologies — draft ───
+  { id: 'shared-11', syllabusId: 'syl-9', courseCode: 'WMAD 302', courseTitle: 'Mobile Systems and Technologies', instructorId: 3, instructorName: 'Sir Ralphy Luzada', version: 1, uploadedDate: '2026-07-12', status: 'drafted', reuseCount: 0, lastReusedBy: null, lastReusedDate: null },
+]
+
+// ─────────────────────────────────────────────────────────────────────────
+// Block Section Registrations — simulates data imported from EduSuite when
+// an instructor uploads a block section student file (CSV/Excel/PDF).
+// Each registration shows which course was registered and its current status.
+// ─────────────────────────────────────────────────────────────────────────
+export const BLOCK_SECTION_REGISTRATIONS = [
+  // ─── 1st Year, 1st Semester ───
+  { id: 'reg-1', courseCode: 'IT 102', blockSection: 'BSIT-1A', studentCount: 30, uploadedBy: 1, uploadedDate: '2026-07-10', status: 'active', fileName: 'EduSuite_Roster_BSIT1A_1stSem.csv' },
+  { id: 'reg-2', courseCode: 'IT 102', blockSection: 'BSIT-1B', studentCount: 28, uploadedBy: 1, uploadedDate: '2026-07-10', status: 'active', fileName: 'EduSuite_Roster_BSIT1B_1stSem.csv' },
+  { id: 'reg-3', courseCode: 'IT 102', blockSection: 'BSIT-1C', studentCount: 27, uploadedBy: 3, uploadedDate: '2026-07-11', status: 'active', fileName: 'EduSuite_Roster_BSIT1C_1stSem.xlsx' },
+  { id: 'reg-17', courseCode: 'IT 101', blockSection: 'BSIT-1E', studentCount: 25, uploadedBy: 4, uploadedDate: '2026-07-10', status: 'active', fileName: 'EduSuite_Roster_BSIT1E_1stSem.csv' },
+  { id: 'reg-18', courseCode: 'IT 103', blockSection: 'BSIT-1D', studentCount: 26, uploadedBy: 5, uploadedDate: '2026-07-11', status: 'active', fileName: 'EduSuite_Roster_BSIT1D_1stSem.csv' },
+  // ─── 1st Year, 2nd Semester ───
+  { id: 'reg-19', courseCode: 'IT 105', blockSection: 'BSIT-1A', studentCount: 30, uploadedBy: 5, uploadedDate: '2026-07-12', status: 'active', fileName: 'EduSuite_Roster_BSIT1A_2ndSem.csv' },
+  { id: 'reg-20', courseCode: 'IT 106', blockSection: 'BSIT-1C', studentCount: 27, uploadedBy: 1, uploadedDate: '2026-07-12', status: 'active', fileName: 'EduSuite_Roster_BSIT1C_2ndSem.xlsx' },
+  { id: 'reg-21', courseCode: 'IT 107', blockSection: 'BSIT-1E', studentCount: 25, uploadedBy: 7, uploadedDate: '2026-07-13', status: 'active', fileName: 'EduSuite_Roster_BSIT1E_2ndSem.csv' },
+  { id: 'reg-22', courseCode: 'IT 104', blockSection: 'BSIT-1A', studentCount: 30, uploadedBy: 4, uploadedDate: '2026-07-13', status: 'pending', fileName: 'EduSuite_Roster_BSIT1A_2ndSem_ResearchMethods.csv' },
+  // ─── 2nd Year, 1st Semester ───
+  { id: 'reg-23', courseCode: 'IT 201', blockSection: 'BSIT-2A', studentCount: 30, uploadedBy: 5, uploadedDate: '2026-07-08', status: 'active', fileName: 'EduSuite_Roster_BSIT2A_1stSem.csv' },
+  { id: 'reg-24', courseCode: 'IT 201', blockSection: 'BSIT-2B', studentCount: 28, uploadedBy: 3, uploadedDate: '2026-07-08', status: 'active', fileName: 'EduSuite_Roster_BSIT2B_1stSem.xlsx' },
+  { id: 'reg-25', courseCode: 'IT 202', blockSection: 'BSIT-2C', studentCount: 26, uploadedBy: 4, uploadedDate: '2026-07-09', status: 'active', fileName: 'EduSuite_Roster_BSIT2C_1stSem.csv' },
+  { id: 'reg-26', courseCode: 'IT 203', blockSection: 'BSIT-2A', studentCount: 30, uploadedBy: 3, uploadedDate: '2026-07-09', status: 'active', fileName: 'EduSuite_Roster_BSIT2A_1stSem_OOP.xlsx' },
+  { id: 'reg-27', courseCode: 'IT 204', blockSection: 'BSIT-2B', studentCount: 28, uploadedBy: 5, uploadedDate: '2026-07-10', status: 'active', fileName: 'EduSuite_Roster_BSIT2B_1stSem_PlatformTech.csv' },
+  // ─── 2nd Year, 2nd Semester ───
+  { id: 'reg-5', courseCode: 'IT 209', blockSection: 'BSIT-2C', studentCount: 26, uploadedBy: 1, uploadedDate: '2026-07-09', status: 'active', fileName: 'EduSuite_Roster_BSIT2C_2ndSem.pdf' },
+  { id: 'reg-6', courseCode: 'IT 207', blockSection: 'BSIT-2A', studentCount: 30, uploadedBy: 2, uploadedDate: '2026-07-08', status: 'active', fileName: 'EduSuite_Roster_BSIT2A_2ndSem.xlsx' },
+  { id: 'reg-28', courseCode: 'IT 205', blockSection: 'BSIT-2C', studentCount: 26, uploadedBy: 2, uploadedDate: '2026-07-11', status: 'active', fileName: 'EduSuite_Roster_BSIT2C_2ndSem_InfoMgmt.csv' },
+  { id: 'reg-29', courseCode: 'IT 208', blockSection: 'BSIT-2B', studentCount: 28, uploadedBy: 3, uploadedDate: '2026-07-11', status: 'active', fileName: 'EduSuite_Roster_BSIT2B_2ndSem_SIA.xlsx' },
+  { id: 'reg-30', courseCode: 'IT 209', blockSection: 'BSIT-2D', studentCount: 25, uploadedBy: 7, uploadedDate: '2026-07-12', status: 'active', fileName: 'EduSuite_Roster_BSIT2D_2ndSem.csv' },
+  // ─── 2nd Year, Summer ───
+  { id: 'reg-31', courseCode: 'IT 211', blockSection: 'BSIT-2A', studentCount: 30, uploadedBy: 5, uploadedDate: '2026-07-14', status: 'active', fileName: 'EduSuite_Roster_BSIT2A_Summer_SocialProf.csv' },
+  { id: 'reg-32', courseCode: 'IT 210-1', blockSection: 'BSIT-2C', studentCount: 26, uploadedBy: 2, uploadedDate: '2026-07-14', status: 'pending', fileName: 'EduSuite_Roster_BSIT2C_Summer_AdvDB.csv' },
+  // ─── 3rd Year, 1st Semester ───
+  { id: 'reg-4', courseCode: 'WMAD 303-1', blockSection: 'BSIT-3A', studentCount: 25, uploadedBy: 1, uploadedDate: '2026-07-12', status: 'active', fileName: 'EduSuite_Roster_BSIT3A_1stSem.csv' },
+  { id: 'reg-33', courseCode: 'WMAD 301', blockSection: 'BSIT-3B', studentCount: 23, uploadedBy: 3, uploadedDate: '2026-07-12', status: 'active', fileName: 'EduSuite_Roster_BSIT3B_1stSem_Acctg.xlsx' },
+  { id: 'reg-34', courseCode: 'WMAD 302', blockSection: 'BSIT-3C', studentCount: 20, uploadedBy: 6, uploadedDate: '2026-07-13', status: 'active', fileName: 'EduSuite_Roster_BSIT3C_1stSem_Mobile.csv' },
+  { id: 'reg-35', courseCode: 'WMAD 304', blockSection: 'BSIT-3B', studentCount: 23, uploadedBy: 4, uploadedDate: '2026-07-13', status: 'active', fileName: 'EduSuite_Roster_BSIT3B_1stSem_NetMgmt.csv' },
+  // ─── 3rd Year, 2nd Semester ───
+  { id: 'reg-36', courseCode: 'WMAD 305', blockSection: 'BSIT-3A', studentCount: 25, uploadedBy: 2, uploadedDate: '2026-07-14', status: 'active', fileName: 'EduSuite_Roster_BSIT3A_2ndSysAdmin.csv' },
+  { id: 'reg-37', courseCode: 'WMAD 306', blockSection: 'BSIT-3B', studentCount: 23, uploadedBy: 6, uploadedDate: '2026-07-14', status: 'pending', fileName: 'EduSuite_Roster_BSIT3B_2ndSem_AdvMobile.xlsx' },
+  { id: 'reg-38', courseCode: 'WMAD 308', blockSection: 'BSIT-3A', studentCount: 25, uploadedBy: 4, uploadedDate: '2026-07-15', status: 'active', fileName: 'EduSuite_Roster_BSIT3A_2ndSem_IoT.csv' },
+  // ─── 3rd Year, Summer ───
+  { id: 'reg-39', courseCode: 'CP 1', blockSection: 'BSIT-3A', studentCount: 25, uploadedBy: 1, uploadedDate: '2026-07-15', status: 'active', fileName: 'EduSuite_Roster_BSIT3A_Summer_Capstone1.csv' },
+  { id: 'reg-40', courseCode: 'CP 1', blockSection: 'BSIT-3B', studentCount: 23, uploadedBy: 2, uploadedDate: '2026-07-15', status: 'active', fileName: 'EduSuite_Roster_BSIT3B_Summer_Capstone1.xlsx' },
+  // ─── 4th Year, 1st Semester ───
+  { id: 'reg-41', courseCode: 'CP 2', blockSection: 'BSIT-4A', studentCount: 25, uploadedBy: 1, uploadedDate: '2026-07-15', status: 'active', fileName: 'EduSuite_Roster_BSIT4A_1stSem_Capstone2.csv' },
+  { id: 'reg-42', courseCode: 'CP 2', blockSection: 'BSIT-4B', studentCount: 20, uploadedBy: 2, uploadedDate: '2026-07-15', status: 'active', fileName: 'EduSuite_Roster_BSIT4B_1stSem_Capstone2.xlsx' },
+  // ─── 4th Year, 2nd Semester ───
+  { id: 'reg-43', courseCode: 'IT 401', blockSection: 'BSIT-4A', studentCount: 25, uploadedBy: 1, uploadedDate: '2026-07-15', status: 'active', fileName: 'EduSuite_Roster_BSIT4A_2ndSem_Seminars.csv' },
+  { id: 'reg-44', courseCode: 'OJT', blockSection: 'BSIT-4A', studentCount: 25, uploadedBy: 1, uploadedDate: '2026-07-15', status: 'active', fileName: 'EduSuite_Roster_BSIT4A_2ndSem_OJT.csv' },
+  { id: 'reg-45', courseCode: 'OJT', blockSection: 'BSIT-4B', studentCount: 20, uploadedBy: 2, uploadedDate: '2026-07-15', status: 'active', fileName: 'EduSuite_Roster_BSIT4B_2ndSem_OJT.xlsx' },
+  // ─── Remaining legacy registrations ───
+  { id: 'reg-7', courseCode: 'WMAD 301', blockSection: 'BSIT-3A', studentCount: 25, uploadedBy: 3, uploadedDate: '2026-07-13', status: 'pending', fileName: 'EduSuite_Roster_BSIT3A_1stSem_WMAD301.csv' },
+]
+
+// ─────────────────────────────────────────────────────────────────────────
+// STUDENT COURSE ENROLLMENTS — maps each student to their active courses.
+// The primary course (index 0) is the one from EduSuite course loading;
+// additional courses are electives or overloaded subjects.
+export const STUDENT_COURSES = (() => {
+  const map = {}
+  for (const s of STUDENT_RECORDS) {
+    if (s.section === 'BSIT-3A') {
+      map[s.id] = [
+        { code: 'WMAD 303-1', title: 'Advanced Web Systems Technologies', instructor: 'Sir Rogelio L. Guisdan', topics: ['t14', 't15', 't16', 't17'], topicLabels: { t14: 'Web Fundamentals', t15: 'CSS & Responsive', t16: 'Advanced JS', t17: 'React Ecosystem' } },
+        { code: 'IT 209', title: 'Web System Technologies', instructor: 'Maam Sharmaine Pangcog', topics: ['t9', 't10', 't11', 't12', 't13'], topicLabels: { t9: 'Web Dev Foundations', t10: 'CSS & Layout', t11: 'JavaScript & DOM', t12: 'Frontend Frameworks', t13: 'Backend Integration' } },
+        { code: 'WMAD 301', title: 'Principles of Accounting', instructor: 'Sir Ralphy Luzada', topics: ['t26', 't27'], topicLabels: { t26: 'Accounting Basics', t27: 'Financial Statements' } },
+      ]
+    } else {
+      const yr = s.yearLevel
+      const code = yr === 1 ? 'IT 102' : yr === 2 ? 'IT 201' : yr === 4 ? 'CP 2' : 'WMAD 301'
+      const title = code === 'IT 102' ? 'Computer Programming 1' : code === 'IT 201' ? 'Data Structures and Algorithms' : code === 'CP 2' ? 'Capstone Project 2' : 'Principles of Accounting'
+      const topicsMap = {
+        'IT 102': { topics: ['t1', 't2', 't3', 't4', 't5'], topicLabels: { t1: 'Intro to Programming', t2: 'Variables & Data Types', t3: 'Control Structures', t4: 'Functions', t5: 'Arrays & Strings' } },
+        'IT 201': { topics: ['t18', 't19', 't20'], topicLabels: { t18: 'Data Structures Intro', t19: 'Linear Structures', t20: 'Trees & Graphs' } },
+        'WMAD 301': { topics: ['t26', 't27'], topicLabels: { t26: 'Accounting Basics', t27: 'Financial Statements' } },
+        'CP 2': { topics: ['t33', 't34', 't35'], topicLabels: { t33: 'Project Planning', t34: 'Implementation & Testing', t35: 'Deployment & Presentation' } },
+      }
+      const { topics, topicLabels } = topicsMap[code] || { topics: ['t1', 't2', 't3'], topicLabels: { t1: 'Topic 1', t2: 'Topic 2', t3: 'Topic 3' } }
+      map[s.id] = [{ code, title, instructor: 'TBA', topics, topicLabels }]
+    }
+  }
+  return map
+})()
+
+// ─────────────────────────────────────────────────────────────────────────
+// STUDENT_PRACTICE_SCORES — personal growth tracking per topic per course.
+// These are practice attempts the student initiates; they are NOT recorded
+// in the instructor's scoring sheet. Each topic can have multiple attempts
+// showing score progression over time.
+export const STUDENT_PRACTICE_SCORES = (() => {
+  const scores = []
+  let id = 1
+  for (const s of STUDENT_RECORDS.slice(0, 30)) {
+    const courses = STUDENT_COURSES[s.id] || []
+    for (const course of courses) {
+      for (const topic of course.topics) {
+        const base = s.courses[0]?.topics[topic] || 70
+        const attempts = []
+        const numAttempts = 1 + Math.floor(Math.abs(Math.sin(id * 7 + topic.charCodeAt(1)) * 3))
+        for (let a = 0; a < numAttempts; a++) {
+          const delta = Math.round((Math.sin(id * 3 + a * 5) * 12))
+          attempts.push({
+            date: `2026-07-${String(8 + a * 2).padStart(2, '0')}`,
+            score: Math.min(100, Math.max(40, base + delta - a * 3 + Math.round(Math.sin(id + a) * 5))),
+          })
+        }
+        scores.push({ id: `prac-${id}`, studentId: s.id, courseCode: course.code, topicId: topic, attempts })
+        id++
+      }
+    }
+  }
+  return scores
+})()
+
+// ─────────────────────────────────────────────────────────────────────────
+// STUDENT_MATERIAL_ACCESS — tracks which courseware items each student has
+// opened, how many times, and when. Drives the materials tab radar + access
+// indicator graph.
+export const STUDENT_MATERIAL_ACCESS = (() => {
+  const access = []
+  let id = 1
+  const publishedItems = COURSEWARE_ITEMS.filter(c => c.status === 'published')
+  for (const s of STUDENT_RECORDS.slice(0, 30)) {
+    const courses = STUDENT_COURSES[s.id] || []
+    for (const course of courses) {
+      const courseSyllabus = DEFAULT_SYLLABI.find(sy => sy.courseCode === course.code)
+      if (!courseSyllabus) continue
+      const items = publishedItems.filter(c => c.syllabusId === courseSyllabus.id)
+      for (const item of items) {
+        const opened = Math.sin(id * 11 + item.id.charCodeAt(3)) > -0.3
+        if (opened) {
+          const count = 1 + Math.floor(Math.abs(Math.sin(id * 7)) * 5)
+          access.push({
+            id: `acc-${id}`,
+            studentId: s.id,
+            courseCode: course.code,
+            itemId: item.id,
+            itemTitle: item.title,
+            itemType: item.type,
+            openedAt: `2026-07-${String(8 + (id % 7)).padStart(2, '0')}T${String(9 + (id % 10)).padStart(2, '0')}:30:00`,
+            accessCount: count,
+            lastAccessedAt: `2026-07-${String(10 + (id % 6)).padStart(2, '0')}T${String(14 + (id % 8)).padStart(2, '0')}:15:00`,
+          })
+        }
+        id++
+      }
+    }
+  }
+  return access
+})()

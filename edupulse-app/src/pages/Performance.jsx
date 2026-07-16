@@ -29,7 +29,10 @@ const ALL_TABS = [
 ]
 
 function myStudentRecord(user) {
-  return STUDENT_RECORDS.find(s => s.name === user?.name) || STUDENT_RECORDS[0]
+  if (!user?.name) return null
+  const record = STUDENT_RECORDS.find(s => s.name === user.name)
+  if (!record) return null
+  return record
 }
 
 // "My students" for an instructor — every student in a block they advise.

@@ -41,7 +41,7 @@ export default function Privacy() {
               <li><strong>Educational Data:</strong> Syllabi, courseware content, grades, assessment scores, student performance metrics, and learning analytics.</li>
               <li><strong>System Usage Data:</strong> Login timestamps, pages visited, features used, AI assistant interactions, and file upload/download history.</li>
               <li><strong>AI Interaction Data:</strong> Prompts submitted to the AI assistant, generated content, confidence scores, and retrieval context used for responses.</li>
-              <li><strong>Imported Data:</strong> Student rosters, grades, curriculum data, and other educational records uploaded by authorized users.</li>
+              <li><strong>Imported Data:</strong> Student class lists, grades, curriculum data, and other educational records uploaded by authorized users.</li>
             </ul>
           </section>
 

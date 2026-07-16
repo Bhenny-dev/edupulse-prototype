@@ -40,8 +40,16 @@ export default function CourseOutlineViewer({
 
   const weeks = useMemo(() => {
     if (!syllabus) return []
-    return generateAllCourseContent(syllabus)
-  }, [syllabus])
+    const allWeeks = generateAllCourseContent(syllabus)
+    if (!isStudent) return allWeeks
+    return allWeeks.map(w => ({
+      ...w,
+      items: w.items.filter(item => {
+        const status = contentStore[item.id]?.status || 'draft'
+        return status === 'published'
+      }),
+    }))
+  }, [syllabus, isStudent, contentStore])
 
   if (!syllabus) {
     return (
@@ -115,13 +123,13 @@ export default function CourseOutlineViewer({
 
   const statusColor = (status) => {
     if (status === 'published') return 'var(--green-500, #22c55e)'
-    if (status === 'hidden') return 'var(--gray-400)'
+    if (status === 'checked') return 'var(--sky-500, #0ea5e9)'
     return 'var(--amber-500, #f59e0b)'
   }
 
   const statusLabel = (status) => {
     if (status === 'published') return 'Published'
-    if (status === 'hidden') return 'Hidden'
+    if (status === 'checked') return 'Checked'
     return 'Draft'
   }
 
@@ -212,7 +220,7 @@ export default function CourseOutlineViewer({
               {isExpanded && !weekData.isExam && (
                 <div style={{ borderTop: '1px solid var(--gray-100)', padding: '8px 16px 12px' }}>
                   {weekData.items.length === 0 ? (
-                    <p className="text-sm text-muted" style={{ padding: '8px 0' }}>No items generated for this week.</p>
+                    <p className="text-sm text-muted" style={{ padding: '8px 0' }}>{isStudent ? 'No published materials for this week.' : 'No items generated for this week.'}</p>
                   ) : (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                       {weekData.items.map(item => {

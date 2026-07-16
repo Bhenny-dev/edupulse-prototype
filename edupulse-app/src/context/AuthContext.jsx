@@ -24,7 +24,7 @@ const DEMO_USERS = {
 // file) and no grading permissions (EduPulse collates scores for visualization
 // only; MG/TFG/FG stay in the official KCP grading sheet).
 const ROLE_PERMISSIONS = {
-  admin: ['upload_edusuite_records', 'load_courses', 'confirm_ai_loading', 'manage_block_sections', 'monitor_faculty', 'monitor_delivery', 'view_student_oversight', 'export_reports'],
+  admin: ['load_courses', 'confirm_ai_loading', 'manage_block_sections', 'monitor_faculty', 'monitor_delivery', 'view_student_oversight', 'export_reports'],
   instructor: ['manage_syllabus', 'download_for_approval', 'upload_approved_syllabus', 'extract_outline', 'generate_courseware', 'review_courseware', 'publish_courseware', 'view_scoring_sheet', 'record_scores', 'notify_students'],
   student: ['view_published', 'open_materials', 'answer_assessments', 'view_own_performance'],
 }

@@ -8,7 +8,7 @@ import { pulse as pulseBus } from '../components/pulse/pulseBus'
 import {
   BookOpen, Users, AlertTriangle, CheckCircle, FileText, TrendingUp, ArrowRight,
   Clock, Target, Sparkles, BarChart3, Eye, Calendar, Download,
-  ChevronRight, Activity, Rocket, X, Bot, Upload, ClipboardCheck, Bell,
+  ChevronRight, Activity, Rocket, X, Bot, ClipboardCheck, Bell,
 } from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts'
@@ -80,12 +80,11 @@ function AdminDashboard() {
   // Delivery progress per active course: published items vs. outline weeks.
   const deliveryData = DEFAULT_SYLLABI.filter(s => s.status === 'active').map(s => {
     const published = COURSEWARE_ITEMS.filter(c => c.syllabusId === s.id && c.status === 'published').length
-    const finalized = COURSEWARE_ITEMS.filter(c => c.syllabusId === s.id && c.status === 'finalized').length
-    return { name: s.courseCode, published, finalized }
+    const checked = COURSEWARE_ITEMS.filter(c => c.syllabusId === s.id && c.status === 'checked').length
+    return { name: s.courseCode, published, checked }
   })
 
   const quickActions = [
-    { label: 'Upload EduSuite Records', icon: Upload, action: () => navigate('/records'), color: 'var(--sky-500)' },
     { label: 'Load Courses', icon: ClipboardCheck, action: () => navigate('/course-loading'), color: 'var(--green-500)' },
     { label: 'Monitor Delivery', icon: BarChart3, action: () => navigate('/monitor'), color: 'var(--purple-500)' },
     { label: 'Ask Pulse', icon: Sparkles, action: () => pulseBus.say('Hi! What would you like help with today?'), color: 'var(--amber-500)' },
@@ -96,7 +95,7 @@ function AdminDashboard() {
       <div className="page-header">
         <div>
           <h1>{user?.title} Dashboard</h1>
-          <p className="text-sm text-muted mt-8">College of Information Technology — records intake, course loading, and delivery monitoring (shared Dean / Associate Dean view)</p>
+          <p className="text-sm text-muted mt-8">College of Information Technology — course loading and delivery monitoring (shared Dean / Associate Dean view)</p>
         </div>
         <button className="btn btn-secondary btn-sm"><Download size={14} /> Export</button>
       </div>
@@ -155,7 +154,7 @@ function AdminDashboard() {
                   <YAxis type="category" dataKey="name" tick={{ fontSize: 11 }} width={70} />
                   <Tooltip />
                   <Bar dataKey="published" stackId="a" fill="#22c55e" name="Published" />
-                  <Bar dataKey="finalized" stackId="a" fill="#38bdf8" radius={[0, 4, 4, 0]} name="Finalized (unpublished)" />
+                  <Bar dataKey="checked" stackId="a" fill="#38bdf8" radius={[0, 4, 4, 0]} name="Checked (unpublished)" />
                 </BarChart>
               </ResponsiveContainer>
             )}
@@ -567,7 +566,7 @@ function StudentDashboard() {
         </div>
       </div>
 
-      {/* Block info — from the EduSuite roster */}
+      {/* Block info — from the EduSuite class list */}
       {myBlockSection && (
         <div className="card mb-24" style={{ borderLeft: '4px solid var(--sky-500)' }}>
           <div className="card-header">

@@ -11,7 +11,7 @@ const ALL_NOTIFICATIONS = {
     { id: 2, message: 'WMAD 303-1 approved file uploaded — Course Outline extraction pending', time: '1d ago', type: 'info', category: 'syllabus_status', read: true },
     { id: 3, message: 'IT 106 has no published courseware for Week 4 of its outline yet', time: '1d ago', type: 'warning', category: 'delivery_gap', read: true },
     { id: 4, message: 'Marielle Angela Fianza-Buya confirmed AI-proposed loading for 4 courses', time: '3d ago', type: 'success', category: 'course_loading', read: true },
-    { id: 5, message: 'EduSuite roster import completed — 387 records', time: '1w ago', type: 'info', category: 'records', read: true },
+    { id: 5, message: 'EduSuite class list import completed — 387 records', time: '1w ago', type: 'info', category: 'records', read: true },
   ],
   instructor: [
     { id: 1, message: 'New courseware draft ready for review: Week 5 — Loop Structures Lab', time: '1h ago', type: 'info', category: 'courseware', read: false },

@@ -293,7 +293,7 @@ select.form-input {
 .badge-out_for_approval { background: var(--sky-100); color: var(--sky-600); }
 .badge-active { background: var(--green-100); color: var(--green-500); }
 /* Courseware item station between draft and published */
-.badge-finalized { background: var(--purple-100); color: var(--purple-500); }
+.badge-checked { background: var(--purple-100); color: var(--purple-500); }
 
 /* ─── Modal / Popover ─── */
 .overlay-backdrop {
