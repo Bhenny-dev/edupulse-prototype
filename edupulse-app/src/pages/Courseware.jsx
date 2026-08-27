@@ -6,13 +6,16 @@ import { useToast } from '../context/ToastContext'
 import { useContentStore } from '../context/ContentStoreContext'
 import { pulse as pulseBus } from '../components/pulse/pulseBus'
 import CourseOutlineViewer from '../components/courseware/CourseOutlineViewer'
+import DocumentViewer from '../components/courseware/DocumentViewer'
+import PresentationViewer from '../components/courseware/PresentationViewer'
+import AssessmentEditor from '../components/courseware/AssessmentEditor'
 import { generateAllCourseContent, generateWeekContent } from '../utils/courseContentGenerator'
 import {
   Eye, Check, X, Send, FileText, Search, Clock, Sparkles, Calendar,
   Copy, Tag, MessageSquare, RotateCcw, Download,
   Info, Layers, Loader2, CircleCheck, BookOpen, Flag,
   ChevronDown, ChevronRight, MonitorPlay, ArrowLeft,
-  Circle, CheckCircle2,
+  Circle, CheckCircle2, Pencil, ClipboardCheck,
 } from 'lucide-react'
 
 // Courseware — FLOW_SPEC Phase 3. Generated from approved syllabi.
@@ -138,11 +141,15 @@ function CourseSelectionGrid({ user, contentStore, onSelectCourse }) {
 
 function CourseWorkspace({ syllabusId, contentStore, onBack, onGenerateCourse, onGenerateWeek, onCheckItem, onBulkCheck, onToggleVisibility }) {
   const { addToast } = useToast()
+  const { saveContent } = useContentStore()
   const syllabus = DEFAULT_SYLLABI.find(s => s.id === syllabusId)
   const [generatingWeek, setGeneratingWeek] = useState(null)
   const [generatingAll, setGeneratingAll] = useState(false)
   const [expandedWeeks, setExpandedWeeks] = useState(new Set())
   const [selectedItems, setSelectedItems] = useState(new Set())
+  const [viewingItem, setViewingItem] = useState(null)
+  const [viewingType, setViewingType] = useState(null)
+  const [viewMode, setViewMode] = useState(null)
 
   if (!syllabus) return null
 
@@ -233,12 +240,60 @@ function CourseWorkspace({ syllabusId, contentStore, onBack, onGenerateCourse, o
     })
   }
 
+  const openItem = (id, item) => {
+    const stored = contentStore[id]
+    const content = stored?.content || item.content
+    const enriched = { ...content, _storeId: id }
+    setViewingItem(enriched)
+    if (item.type === 'assessment') {
+      setViewingType('assessment')
+      setViewMode(null)
+    } else {
+      setViewMode(item.content?.viewMode || 'document')
+      setViewingType(null)
+    }
+  }
+
+  const handleSaveContent = (newContent) => {
+    if (viewingItem?._storeId) {
+      saveContent(viewingItem._storeId, { ...newContent })
+      addToast('Content saved', 'success')
+    }
+    setViewingItem(null)
+    setViewMode(null)
+    setViewingType(null)
+  }
+
   // Summary stats
   const allEntries = Object.entries(contentStore).filter(([_, v]) => v.syllabusId === syllabusId)
   const totalDrafts = allEntries.filter(([_, v]) => v.status === 'draft').length
   const totalChecked = allEntries.filter(([_, v]) => v.status === 'checked').length
   const totalPublished = allEntries.filter(([_, v]) => v.status === 'published').length
   const totalGenerated = totalDrafts + totalChecked + totalPublished
+
+  if (viewingItem) {
+    if (viewMode === 'presentation') {
+      return (
+        <PresentationViewer
+          content={viewingItem}
+          onBack={() => { setViewingItem(null); setViewMode(null) }}
+          isStudent={false}
+          onSave={handleSaveContent}
+        />
+      )
+    }
+    if (viewingType === 'assessment') {
+      return <AssessmentEditor content={viewingItem} onBack={() => { setViewingItem(null); setViewingType(null) }} isStudent={false} />
+    }
+    return (
+      <DocumentViewer
+        content={viewingItem}
+        onBack={() => { setViewingItem(null); setViewMode(null) }}
+        isStudent={false}
+        onSave={handleSaveContent}
+      />
+    )
+  }
 
   return (
     <div>
@@ -439,14 +494,24 @@ function CourseWorkspace({ syllabusId, contentStore, onBack, onGenerateCourse, o
                           {/* Actions */}
                           <div style={{ display: 'flex', gap: '4px', flexShrink: 0 }}>
                             {item.status === 'draft' && (
-                              <button
-                                className="btn btn-ghost btn-sm"
-                                style={{ padding: '4px 8px', fontSize: '0.6875rem' }}
-                                title="Mark as checked (you've reviewed this)"
-                                onClick={() => { onCheckItem(id); addToast('Item checked — ready to publish', 'success') }}
-                              >
-                                <Check size={12} /> Check
-                              </button>
+                              <>
+                                <button
+                                  className="btn btn-ghost btn-sm"
+                                  style={{ padding: '4px 8px', fontSize: '0.6875rem' }}
+                                  title="Open to review and edit"
+                                  onClick={() => openItem(id, item)}
+                                >
+                                  <Pencil size={12} /> Open
+                                </button>
+                                <button
+                                  className="btn btn-ghost btn-sm"
+                                  style={{ padding: '4px 8px', fontSize: '0.6875rem' }}
+                                  title="Mark as checked (you've reviewed this)"
+                                  onClick={() => { onCheckItem(id); addToast('Item checked — ready to publish', 'success') }}
+                                >
+                                  <Check size={12} /> Check
+                                </button>
+                              </>
                             )}
                             {item.status === 'checked' && (
                               <button
@@ -546,8 +611,8 @@ function MyCoursewareTab({ items, contentStore, onSelectCourse }) {
     return (
       <div className="empty-state">
         <div className="empty-state-icon"><BookOpen size={36} /></div>
-        <h3>{isStudent ? 'No published courseware yet' : 'No active syllabi yet'}</h3>
-        <p>{isStudent ? 'Your instructors haven\'t published any courseware for your courses yet. Check back later.' : 'Courseware is generated from approved syllabi with extracted Course Outcomes. Finish the syllabus approval loop first, then come back to generate courseware.'}</p>
+        <h3>{isStudent ? 'No courseware yet' : 'No active syllabi yet'}</h3>
+        <p>{isStudent ? 'Your instructors haven\'t added any courseware for your courses yet. Check back later.' : 'Courseware is generated from approved syllabi with extracted Course Outcomes. Finish the syllabus approval loop first, then come back to generate courseware.'}</p>
       </div>
     )
   }
@@ -564,7 +629,7 @@ function MyCoursewareTab({ items, contentStore, onSelectCourse }) {
         <tr>
           <th>Course</th>
           {!isStudent && <th>Status</th>}
-          <th>{isStudent ? 'Published' : 'Items'}</th>
+          <th>Items</th>
           <th>Outline Weeks</th>
           <th>Action</th>
         </tr>
@@ -579,7 +644,7 @@ function MyCoursewareTab({ items, contentStore, onSelectCourse }) {
             {!isStudent && <td>{courseStatusBadge(status)}</td>}
             <td>
               {isStudent ? (
-                <span style={{ color: published > 0 ? 'var(--green-600, #16a34a)' : 'var(--gray-400)', fontWeight: published > 0 ? 600 : 400, fontSize: '0.8125rem' }}>
+                <span style={{ color: published > 0 ? 'var(--sky-600)' : 'var(--gray-400)', fontWeight: published > 0 ? 600 : 400, fontSize: '0.8125rem' }}>
                   {published > 0 ? `${published} item${published !== 1 ? 's' : ''}` : 'No items yet'}
                 </span>
               ) : (
@@ -601,10 +666,10 @@ function MyCoursewareTab({ items, contentStore, onSelectCourse }) {
               {isStudent ? (
                 published > 0 ? (
                   <button className="btn btn-primary btn-sm" onClick={() => setViewingOutlineCourseId(syl.id)}>
-                    <Eye size={13} /> View Published
+                    <Eye size={13} /> View Courseware
                   </button>
                 ) : (
-                  <span className="text-sm text-muted">Awaiting publish</span>
+                  <span className="text-sm text-muted">No materials yet</span>
                 )
               ) : (
                 status === 'not-started' ? (
@@ -683,7 +748,7 @@ export default function Courseware() {
 
       {isStudent && (
         <p className="text-sm text-muted" style={{ marginTop: '-8px', marginBottom: '16px' }}>
-          Published learning materials and assessments for your courses.
+          Learning materials, presentations, and assessments for your courses.
         </p>
       )}
 

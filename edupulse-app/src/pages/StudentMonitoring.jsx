@@ -33,8 +33,6 @@ export default function StudentMonitoring() {
   const { user } = useAuth()
   const { addToast } = useToast()
 
-  if (user?.role !== 'instructor') return <Navigate to="/dashboard" replace />
-
   const mySyllabi = DEFAULT_SYLLABI.filter(s => s.instructorId === user?.id)
   const [syllabusId, setSyllabusId] = useState(mySyllabi.find(s => s.status === 'active')?.id || mySyllabi[0]?.id || '')
   const [activeTab, setActiveTab] = useState('assessments')
@@ -117,6 +115,8 @@ export default function StudentMonitoring() {
       notAccessed: students.length - accessed,
     }
   })
+
+  if (user?.role !== 'instructor') return <Navigate to="/dashboard" replace />
 
   // ── Summary stats ──
   const totalMissed = students.reduce((acc, stu) => acc + missedCount(stu), 0)

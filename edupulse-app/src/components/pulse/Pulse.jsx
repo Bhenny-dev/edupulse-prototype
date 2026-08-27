@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { X, Send, Sparkles, ArrowLeft, ArrowRight, LogOut, FileText, Link2, Trash2 } from 'lucide-react'
+import { X, Send, Sparkles, ArrowLeft, ArrowRight, LogOut, FileText, Link2, Trash2, Paperclip, ChevronDown } from 'lucide-react'
 import PulseAvatar from './PulseAvatar'
 import { pulse as pulseBus } from './pulseBus'
 import { useAuth } from '../../context/AuthContext'
@@ -16,6 +16,161 @@ import { getAgentForZone, intentsForRole } from '../../agents'
 //     connected as a guiding rule for the user's given task."
 const DWELL_MS = 1600
 const DRAG_THRESHOLD = 6
+
+/* ───────────────────────── AI Provider / Model config ───────────────────────── */
+
+const PULSE_PROVIDERS = {
+  local: {
+    label: 'Local Model',
+    models: [
+      { id: 'local-default', label: 'Local Default', efforts: ['balanced', 'thorough'] },
+    ],
+  },
+  anthropic: {
+    label: 'Claude (Anthropic)',
+    models: [
+      { id: 'claude-opus-4-5', label: 'Claude Opus 4.5', efforts: ['standard', 'extended-thinking'] },
+      { id: 'claude-sonnet-4-5', label: 'Claude Sonnet 4.5', efforts: ['standard', 'extended-thinking'] },
+      { id: 'claude-haiku-3-5', label: 'Claude Haiku 3.5', efforts: ['low', 'standard'] },
+      { id: 'claude-3-opus', label: 'Claude 3 Opus', efforts: ['standard', 'extended-thinking'] },
+      { id: 'claude-3-sonnet', label: 'Claude 3 Sonnet', efforts: ['low', 'standard'] },
+      { id: 'claude-3-haiku', label: 'Claude 3 Haiku', efforts: ['low', 'standard'] },
+    ],
+  },
+  openai: {
+    label: 'ChatGPT (OpenAI)',
+    models: [
+      { id: 'gpt-4o', label: 'GPT-4o', efforts: ['low', 'medium', 'high'] },
+      { id: 'gpt-4o-mini', label: 'GPT-4o mini', efforts: ['low', 'medium'] },
+      { id: 'gpt-4-turbo', label: 'GPT-4 Turbo', efforts: ['medium', 'high'] },
+      { id: 'o1', label: 'o1 (Reasoning)', efforts: ['low', 'medium', 'high'] },
+      { id: 'o1-mini', label: 'o1-mini (Reasoning)', efforts: ['low', 'medium'] },
+      { id: 'o3', label: 'o3 (Reasoning)', efforts: ['low', 'medium', 'high', 'best'] },
+      { id: 'o4-mini', label: 'o4-mini (Reasoning)', efforts: ['low', 'medium', 'high'] },
+    ],
+  },
+  google: {
+    label: 'Gemini (Google)',
+    models: [
+      { id: 'gemini-2.5-pro', label: 'Gemini 2.5 Pro', efforts: ['low', 'medium', 'high'] },
+      { id: 'gemini-2.5-flash', label: 'Gemini 2.5 Flash', efforts: ['low', 'medium', 'high'] },
+      { id: 'gemini-2.0-flash', label: 'Gemini 2.0 Flash', efforts: ['low', 'medium'] },
+    ],
+  },
+  mistral: {
+    label: 'Mistral AI',
+    models: [
+      { id: 'mistral-large', label: 'Mistral Large 2', efforts: ['low', 'medium', 'high'] },
+      { id: 'mistral-small', label: 'Mistral Small 3', efforts: ['low', 'medium'] },
+      { id: 'codestral', label: 'Codestral', efforts: ['low', 'medium'] },
+    ],
+  },
+}
+
+const EFFORT_LABELS = {
+  'low': { label: 'Low', desc: 'Faster, lighter responses', color: '#22c55e' },
+  'medium': { label: 'Balanced', desc: 'Balanced speed and quality', color: '#3b82f6' },
+  'standard': { label: 'Standard', desc: 'Default quality', color: '#3b82f6' },
+  'balanced': { label: 'Balanced', desc: 'Default quality', color: '#3b82f6' },
+  'high': { label: 'High', desc: 'Higher quality, slower', color: '#f59e0b' },
+  'thorough': { label: 'Thorough', desc: 'Full detail and depth', color: '#f59e0b' },
+  'extended-thinking': { label: 'Extended Thinking', desc: 'Deep reasoning with CoT', color: '#a855f7' },
+  'best': { label: 'Best', desc: 'Maximum quality and depth', color: '#ef4444' },
+}
+
+function PulseModelBar({ selectedProviderId, selectedModelId, selectedEffort, onProviderChange, onModelChange, onEffortChange, providers }) {
+  const [provOpen, setProvOpen] = useState(false)
+  const [modOpen, setModOpen] = useState(false)
+  const [effOpen, setEffOpen] = useState(false)
+
+  const providerKeys = providers || Object.keys(PULSE_PROVIDERS)
+  const currentProvider = PULSE_PROVIDERS[selectedProviderId] || PULSE_PROVIDERS.local
+  const currentModel = currentProvider.models.find(m => m.id === selectedModelId) || currentProvider.models[0]
+  const efforts = currentModel?.efforts || ['medium']
+  const currentEffort = efforts.includes(selectedEffort) ? selectedEffort : efforts[Math.floor(efforts.length / 2)]
+  const effortInfo = EFFORT_LABELS[currentEffort] || EFFORT_LABELS.medium
+
+  return (
+    <div className="pulse-model-bar" style={{ display: 'flex', gap: '5px', padding: '5px 10px 7px', borderTop: '1px solid var(--gray-100)', alignItems: 'center', flexWrap: 'wrap' }}>
+      {/* Provider picker */}
+      <div style={{ position: 'relative', flexShrink: 0 }}>
+        <button
+          className="pulse-model-btn"
+          onClick={() => { setProvOpen(p => !p); setModOpen(false); setEffOpen(false) }}
+          title="AI Provider"
+        >
+          <span style={{ maxWidth: '80px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{currentProvider.label}</span>
+          <ChevronDown size={10} />
+        </button>
+        {provOpen && (
+          <div className="pulse-model-dropdown">
+            {providerKeys.map(pk => (
+              <button key={pk} className={`pulse-model-option ${pk === selectedProviderId ? 'active' : ''}`}
+                onClick={() => { onProviderChange(pk); const firstModel = PULSE_PROVIDERS[pk]?.models[0]; if (firstModel) { onModelChange(firstModel.id); onEffortChange(firstModel.efforts[Math.floor(firstModel.efforts.length / 2)]) } setProvOpen(false) }}>
+                {PULSE_PROVIDERS[pk]?.label}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Model picker */}
+      <div style={{ position: 'relative', flex: 1, minWidth: 0 }}>
+        <button
+          className="pulse-model-btn"
+          style={{ width: '100%', justifyContent: 'space-between' }}
+          onClick={() => { setModOpen(p => !p); setProvOpen(false); setEffOpen(false) }}
+          title="AI Model"
+        >
+          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{currentModel?.label || 'Select model'}</span>
+          <ChevronDown size={10} style={{ flexShrink: 0 }} />
+        </button>
+        {modOpen && (
+          <div className="pulse-model-dropdown" style={{ minWidth: '200px' }}>
+            {currentProvider.models.map(m => (
+              <button key={m.id} className={`pulse-model-option ${m.id === selectedModelId ? 'active' : ''}`}
+                onClick={() => { onModelChange(m.id); const midEffort = m.efforts[Math.floor(m.efforts.length / 2)]; onEffortChange(midEffort); setModOpen(false) }}>
+                {m.label}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Effort picker */}
+      <div style={{ position: 'relative', flexShrink: 0 }}>
+        <button
+          className="pulse-model-btn"
+          style={{ borderColor: effortInfo.color, color: effortInfo.color }}
+          onClick={() => { setEffOpen(p => !p); setProvOpen(false); setModOpen(false) }}
+          title="Effort level"
+        >
+          <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: effortInfo.color, flexShrink: 0 }} />
+          <span>{effortInfo.label}</span>
+          <ChevronDown size={10} />
+        </button>
+        {effOpen && (
+          <div className="pulse-model-dropdown" style={{ right: 0, left: 'auto', minWidth: '180px' }}>
+            {efforts.map(eff => {
+              const info = EFFORT_LABELS[eff] || { label: eff, desc: '', color: '#888' }
+              return (
+                <button key={eff} className={`pulse-model-option ${eff === currentEffort ? 'active' : ''}`}
+                  onClick={() => { onEffortChange(eff); setEffOpen(false) }}
+                  style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '1px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: info.color, flexShrink: 0 }} />
+                    <span style={{ fontWeight: 600 }}>{info.label}</span>
+                  </div>
+                  <span style={{ fontSize: '0.65rem', color: 'var(--gray-400)', paddingLeft: '13px' }}>{info.desc}</span>
+                </button>
+              )
+            })}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
 
 /* ───────────────────────── Contextual response engine ───────────────────────── */
 
@@ -120,6 +275,57 @@ const SECTION_CONTEXT = {
       'online resources': 'Online resources are valid references. Include the title, site name, and URL. For tutorials, include the platform (e.g., W3Schools, GeeksforGeeks, MDN Web Docs).',
     },
   },
+}
+
+/* ───────────────────────── Navigation/Feature routing ───────────────────────── */
+
+const NAV_ROUTES = {
+  // Pages
+  dashboard: { path: '/dashboard', label: 'Dashboard', keywords: ['home', 'dashboard', 'overview', 'main page', 'landing'] },
+  syllabus: { path: '/syllabus', label: 'Syllabus Builder', keywords: ['syllabus', 'syllabus builder', 'course outline', 'draft syllabus', 'create syllabus', 'build syllabus'] },
+  courseware: { path: '/courseware', label: 'Courseware Builder', keywords: ['courseware', 'courseware builder', 'learning materials', 'course materials', 'generate courseware', 'documents', 'presentations'] },
+  assessment: { path: '/assessment', label: 'Assessments', keywords: ['assessment', 'assessments', 'quiz', 'quizzes', 'exam', 'exams', 'test', 'activity', 'activities', 'take exam', 'take quiz', 'my scores'] },
+  performance: { path: '/performance', label: 'Performance', keywords: ['performance', 'grades', 'scores', 'mastery', 'student performance', 'class performance', 'analytics', 'progress'] },
+  records: { path: '/records', label: 'Records', keywords: ['records', 'student records', 'class list', 'roster', 'enrollment', 'students list', 'student data'] },
+  'course-loading': { path: '/course-loading', label: 'Course Loading', keywords: ['course loading', 'load', 'teaching load', 'assign courses', 'course assignment'] },
+  monitor: { path: '/monitor', label: 'Monitor Progress', keywords: ['monitor', 'progress', 'delivery progress', 'syllabus progress', 'course delivery'] },
+  'student-monitoring': { path: '/student-monitoring', label: 'Student Monitoring', keywords: ['student monitoring', 'monitor students', 'flag students', 'at-risk', 'alerts'] },
+  'scoring-sheet': { path: '/scoring-sheet', label: 'Scoring Sheet', keywords: ['scoring sheet', 'score', 'grades sheet', 'enter grades', 'grade book', 'grading'] },
+  settings: { path: '/settings', label: 'Settings', keywords: ['settings', 'preferences', 'account settings', 'profile', 'theme', 'dark mode'] },
+  notifications: { path: '/notifications', label: 'Notifications', keywords: ['notifications', 'alerts', 'messages', 'inbox', 'announcements'] },
+  help: { path: '/help', label: 'Help & Support', keywords: ['help', 'support', 'documentation', 'docs', 'how to use', 'guide', 'tutorial', 'faq'] },
+}
+
+function findNavigationMatch(question) {
+  const q = question.toLowerCase()
+  // Direct navigation intent patterns
+  const navPatterns = [
+    /^(go to|open|show|navigate to|take me to|bring me to|where is|access)\s+(.+)/i,
+    /^(can i|could i|may i|may)\s+(go to|open|access|find|see|view|check|navigate)\s+(.+)/i,
+    /^(how do i|how to)\s+(go to|open|access|find|see|view|check|navigate|get to|go to)\s+(.+)/i,
+    /^where\s+(can|do|does)\s+.+\s+(find|see|view|check|go|access|navigate)\s+(.+)/i,
+    /^i (want to|need to|would like to)\s+(see|check|view|go to|open|access|find|navigate)\s+(.+)/i,
+    /^let('s| us)\s+(go to|open|check|see|view|navigate)\s+(.+)/i,
+    /^help me (find|see|view|check|open|go to|access|navigate)\s+(.+)/i,
+  ]
+  let navIntent = null
+  for (const pat of navPatterns) {
+    const m = q.match(pat)
+    if (m) { navIntent = m[2] || m[3] || ''; break }
+  }
+  const searchText = navIntent || q
+  // Score each route
+  let best = null, bestScore = 0
+  for (const [key, route] of Object.entries(NAV_ROUTES)) {
+    let score = 0
+    for (const kw of route.keywords) {
+      if (searchText.includes(kw)) {
+        score += kw.length // longer keyword match = more specific
+      }
+    }
+    if (score > bestScore) { bestScore = score; best = { key, ...route } }
+  }
+  return bestScore >= 3 ? best : null
 }
 
 /* ──────────────────── Course-specific topic knowledge ──────────────────── */
@@ -383,6 +589,8 @@ const COURSE_TOPICS = {
   'OJT': { title: 'Practicum', keywords: ['ojt', 'practicum', 'internship', 'industry', 'immersion'], suggestions: { 'default': 'For OJT, the syllabus covers: immersion objectives, weekly tasks, competency assessment, and industry evaluation. Students work in an IT company and apply classroom knowledge in a real setting.' } },
 }
 
+/* ───────────────────────── End provider config ───────────────────────── */
+
 function detectQuestionIntent(question) {
   const q = question.toLowerCase()
   if (/^(what|which|where)\s/.test(q)) return 'what'
@@ -447,19 +655,33 @@ function generateContextualResponse(question, context) {
   const intentType = detectQuestionIntent(question)
   const topicMatch = section ? findTopicMatch(question, section) : null
 
+  // Navigation/feature redirect detection
+  const navMatch = findNavigationMatch(question)
+  if (navMatch) {
+    return { text: `I can help you get to ${navMatch.label}.`, nav: { path: navMatch.path, label: navMatch.label } }
+  }
+
   // If we have a direct topic match, use it
-  if (topicMatch) return topicMatch
+  if (topicMatch) return { text: topicMatch }
 
   // Six-layer keyword detection (Section 5 specific)
   if (section === 5 || !section) {
     for (const [layer, explanation] of Object.entries(SIX_LAYER_KEYWORDS)) {
-      if (question.toLowerCase().includes(layer)) return explanation
+      if (question.toLowerCase().includes(layer)) return { text: explanation }
     }
   }
 
   // Bloom's taxonomy detection
   if (/\bbloom\b|taxonom|verb.*ilo|ilo.*verb|learning outcome.*verb/i.test(question)) {
-    return `Bloom's Taxonomy verbs by cognitive level:\n• Remember: ${BLOOM_VERBS.remember}\n• Understand: ${BLOOM_VERBS.understand}\n• Apply: ${BLOOM_VERBS.apply}\n• Analyze: ${BLOOM_VERBS.analyze}\n• Evaluate: ${BLOOM_VERBS.evaluate}\n• Create: ${BLOOM_VERBS.create}\n\nUse the highest-level verb your students can realistically achieve by the end of the course. For ILOs, "analyze" and "evaluate" are stronger than "understand" or "know."`
+    return { text: `Bloom's Taxonomy verbs by cognitive level:
+• Remember: ${BLOOM_VERBS.remember}
+• Understand: ${BLOOM_VERBS.understand}
+• Apply: ${BLOOM_VERBS.apply}
+• Analyze: ${BLOOM_VERBS.analyze}
+• Evaluate: ${BLOOM_VERBS.evaluate}
+• Create: ${BLOOM_VERBS.create}
+
+Use the highest-level verb your students can realistically achieve by the end of the course. For ILOs, "analyze" and "evaluate" are stronger than "understand" or "know."` }
   }
 
   // Course-specific knowledge lookup
@@ -468,21 +690,29 @@ function generateContextualResponse(question, context) {
     const { key, course } = courseMatch
     // Check for specific sub-question types
     if (/activit|exercise|lab|hands.?on/i.test(question)) {
-      return course.suggestions?.activities || `For ${key} (${course.title}): ${course.suggestions?.default || 'Focus on hands-on activities that align with the six-layer taxonomy for each week.'}`
+      return { text: course.suggestions?.activities || `For ${key} (${course.title}): ${course.suggestions?.default || 'Focus on hands-on activities that align with the six-layer taxonomy for each week.'}` }
     }
     if (/\bilo\b|learning outcome|objective/i.test(question)) {
-      return course.suggestions?.ilo || `For ${key} (${course.title}): Write ILOs using Bloom's verbs that are specific to this course's topics. Each ILO should be measurable and map to a program outcome.`
+      return { text: course.suggestions?.ilo || `For ${key} (${course.title}): Write ILOs using Bloom's verbs that are specific to this course's topics. Each ILO should be measurable and map to a program outcome.` }
     }
     if (/week|distribut|pacing|schedule|plan/i.test(question)) {
-      return course.suggestions?.['week distribution'] || `For ${key} (${course.title}): Distribute topics across 18 weeks. Weeks 1-8 = midterm, Weeks 10-17 = finals. Weeks 9 and 18 are exam weeks. Start with foundational topics, build to advanced.`
+      return { text: course.suggestions?.['week distribution'] || `For ${key} (${course.title}): Distribute topics across 18 weeks. Weeks 1-8 = midterm, Weeks 10-17 = finals. Weeks 9 and 18 are exam weeks. Start with foundational topics, build to advanced.` }
     }
     // Default course response
-    return `For ${key} (${course.title}): ${course.suggestions?.default || 'This course follows the standard BSIT curriculum structure.'} Want specific help with activities, ILOs, or week distribution for this course?`
+    return { text: `For ${key} (${course.title}): ${course.suggestions?.default || 'This course follows the standard BSIT curriculum structure.'} Want specific help with activities, ILOs, or week distribution for this course?` }
   }
 
   // "How to start" / "what order" detection
   if (/how.*start|where.*start|what.*order|begin|first step/i.test(question)) {
-    return `Best order to build your syllabus:\n1. **Section 1** — Pick your course (auto-fills from curriculum)\n2. **Section 5** — Generate or write your course outline (the core)\n3. **Section 4** — Review program outcomes (pre-filled, editable)\n4. **Section 6** — Adjust grading and policies (pre-filled)\n5. **Section 7** — Add or verify references\nSections 2-3 are auto-filled and rarely need changes. Start with Section 5 if you want the outline done first.`
+    return { text: `Best order to build your syllabus:
+1. **Section 1** — Pick your course (auto-fills from curriculum)
+2. **Section 5** — Generate or write your course outline (the core)
+3. **Section 4** — Review program outcomes (pre-filled, editable)
+4. **Section 6** — Adjust grading and policies (pre-filled)
+5. **Section 7** — Add or verify references
+Sections 2-3 are auto-filled and rarely need changes. Start with Section 5 if you want the outline done first.`,
+      nav: { path: '/syllabus', label: 'Open Syllabus Builder' }
+    }
   }
 
   // Section-specific responses
@@ -491,45 +721,53 @@ function generateContextualResponse(question, context) {
     const sectionName = sectionCtx?.name || `Section ${section}`
 
     if (intentType === 'what') {
-      return `In ${sectionName} (Section ${section}), ${sectionCtx?.guidance || 'this section contains course-related information.'} Could you be more specific about what aspect of ${sectionName} you'd like to understand?`
+      return { text: `In ${sectionName} (Section ${section}), ${sectionCtx?.guidance || 'this section contains course-related information.'} Could you be more specific about what aspect of ${sectionName} you'd like to understand?` }
     }
     if (intentType === 'how') {
-      return `For ${sectionName} (Section ${section}): ${sectionCtx?.guidance || 'Follow the KCP template guidelines.'} Tell me more about what you're trying to accomplish and I can give specific steps.`
+      return { text: `For ${sectionName} (Section ${section}): ${sectionCtx?.guidance || 'Follow the KCP template guidelines.'} Tell me more about what you're trying to accomplish and I can give specific steps.`,
+        nav: { path: '/syllabus', label: 'Open Syllabus Builder' }
+      }
     }
     if (intentType === 'can' || intentType === 'should') {
-      return `In ${sectionName} (Section ${section}), ${sectionCtx?.guidance || 'follow the KCP template.'} If you're asking about a specific action, let me know the details and I can advise based on the curriculum requirements.`
+      return { text: `In ${sectionName} (Section ${section}), ${sectionCtx?.guidance || 'follow the KCP template.'} If you're asking about a specific action, let me know the details and I can advise based on the curriculum requirements.` }
     }
     if (intentType === 'why') {
-      return `${sectionName} (Section ${section}) is structured this way to comply with CHED memorandum order requirements and ensure your syllabus meets accreditation standards. ${sectionCtx?.guidance || ''}`
+      return { text: `${sectionName} (Section ${section}) is structured this way to comply with CHED memorandum order requirements and ensure your syllabus meets accreditation standards. ${sectionCtx?.guidance || ''}` }
     }
   }
 
   // Walkthrough step context
   if (step) {
-    return `You're currently on "${step.title}". ${step.body} ${step.tip ? `Tip: ${step.tip}` : ''} What specific question do you have about this step?`
+    return { text: `You're currently on "${step.title}". ${step.body} ${step.tip ? `Tip: ${step.tip}` : ''} What specific question do you have about this step?` }
   }
 
   // Intent-based responses
   if (intent?.key === 'walkthrough') {
-    return `We're walking through the syllabus section by section. I can explain any section in detail, suggest content, or help you draft specific items. What would you like to know?`
+    return { text: `We're walking through the syllabus section by section. I can explain any section in detail, suggest content, or help you draft specific items. What would you like to know?`,
+      nav: { path: '/syllabus', label: 'Open Syllabus Builder' }
+    }
   }
   if (intent?.key === 'build') {
-    return `Building a new syllabus involves filling out all 7 sections. ${section ? `You're on ${SECTION_CONTEXT[section]?.name || `Section ${section}`}.` : 'Pick a section to start with.'} What specific help do you need?`
+    return { text: `Building a new syllabus involves filling out all 7 sections. ${section ? `You're on ${SECTION_CONTEXT[section]?.name || `Section ${section}`}.` : 'Pick a section to start with.'} What specific help do you need?`,
+      nav: { path: '/syllabus', label: 'Open Syllabus Builder' }
+    }
   }
   if (intent?.key === 'upload') {
-    return `Uploading an existing syllabus parses the .docx and maps content to the 7-section template. Sections 1-2 are locked to curriculum data. What would you like to know about the upload process?`
+    return { text: `Uploading an existing syllabus parses the .docx and maps content to the 7-section template. Sections 1-2 are locked to curriculum data. What would you like to know about the upload process?`,
+      nav: { path: '/syllabus', label: 'Open Syllabus Builder' }
+    }
   }
   if (intent?.key === 'explain') {
-    return `I can explain any part of the KCP syllabus template. The system uses a 7-section structure aligned with CHED requirements. What specific aspect would you like me to clarify?`
+    return { text: `I can explain any part of the KCP syllabus template. The system uses a 7-section structure aligned with CHED requirements. What specific aspect would you like me to clarify?` }
   }
 
   // General fallback with RAG grounding
   const passages = relevantPassages()
   if (passages.length > 0) {
-    return `Based on the KCP curriculum reference${section ? ` (Section ${section})` : ''}, here's what I can tell you: ${passages[0]?.docName || 'the curriculum document'} provides guidance on this. Could you rephrase your question or ask about a specific section (1-7)?`
+    return { text: `Based on the KCP curriculum reference${section ? ` (Section ${section})` : ''}, here's what I can tell you: ${passages[0]?.docName || 'the curriculum document'} provides guidance on this. Could you rephrase your question or ask about a specific section (1-7)?` }
   }
 
-  return `I can help with any of the 7 syllabus sections. For the best answer, try asking about a specific section (e.g., "Section 5 activities"), a specific course (e.g., "IT 102"), a teaching layer (e.g., "application layer"), or a specific topic (e.g., "grading formula", "Bloom's verbs"). What would you like to know?`
+  return { text: `I can help with any of the 7 syllabus sections. For the best answer, try asking about a specific section (e.g., "Section 5 activities"), a specific course (e.g., "IT 102"), a teaching layer (e.g., "application layer"), or a specific topic (e.g., "grading formula", "Bloom's verbs"). What would you like to know?` }
 }
 
 const CONTEXT_HELP = {
@@ -600,9 +838,9 @@ const CONTEXT_HELP = {
 }
 
 const GREETINGS = {
-  admin: "Need a read on where the college stands — records, course loading, or delivery — or help drafting a note to an instructor?",
-  instructor: 'Want help on a syllabus topic, or should I check on a courseware draft?',
-  student: 'Want to know what to review next, based on your recent scores?',
+  admin: "Hi! I can help you navigate to **Dashboard**, **Records**, **Course Loading**, or **Monitor Progress**. Just say where you'd like to go, or ask me anything about the system!",
+  instructor: "Hi! I can help you with the **Syllabus Builder**, **Courseware Builder**, **Student Monitoring**, or **Scoring Sheet**. Ask me anything or tell me where you'd like to go!",
+  student: "Hi! I can help you check your **Performance**, view **Assessments**, or see your **Learning Materials**. Ask me anything or tell me where you'd like to go!",
 }
 
 function useReducedMotion() {
@@ -632,6 +870,13 @@ export default function Pulse() {
   const [badge, setBadge] = useState(null) // { key, top, left }
   const [messages, setMessages] = useState([])
   const [input, setInput] = useState('')
+
+  // Model / effort / attachments (main chat drawer)
+  const [pulseProviderId, setPulseProviderId] = useState('local')
+  const [pulseModelId, setPulseModelId] = useState('local-default')
+  const [pulseEffort, setPulseEffort] = useState('balanced')
+  const [pulseAttachments, setPulseAttachments] = useState([]) // { name, type, size }
+  const pulseFileRef = useRef(null)
 
   // Drag + focused-zone conversational mode
   const [dragging, setDragging] = useState(false)
@@ -766,12 +1011,13 @@ export default function Pulse() {
     setMessages(prev => [...prev, { id: Date.now(), from: 'user', text }])
     setExpression('thinking')
     setTimeout(() => {
-      const response = generateContextualResponse(text, { section: null, step: null, intent: null })
+      const result = generateContextualResponse(text, { section: null, step: null, intent: null })
       setExpression('encouraging')
       const passages = relevantPassages()
       setMessages(prev => [...prev, {
         id: Date.now() + 1, from: 'pulse',
-        text: response,
+        text: result.text || result,
+        nav: result.nav,
         sources: passages.length > 0 ? passages.map(p => `${p.docName} — ${Math.round((p.similarity || 0.9) * 100)}% match`) : undefined,
       }])
     }, 900)
@@ -952,6 +1198,13 @@ export default function Pulse() {
                     {m.sources.map((s, i) => <li key={i}>{s}</li>)}
                   </ul>
                 )}
+                {m.nav && (
+                  <div className="pulse-actions">
+                    <button onClick={() => { exitFocus(); navigate(m.nav.path); pulseBus.say(`Heading to ${m.nav.label}.`, 'encouraging') }}>
+                      {m.nav.label} <ArrowRight size={11} style={{ display: 'inline', verticalAlign: 'middle' }} />
+                    </button>
+                  </div>
+                )}
                 {m.actions && (
                   <div className="pulse-actions">
                     {m.actions.map(a => (
@@ -963,16 +1216,76 @@ export default function Pulse() {
             ))}
           </div>
 
+          {/* Attachment preview strip */}
+          {pulseAttachments.length > 0 && (
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', padding: '5px 12px 0', borderTop: '1px solid var(--gray-100)' }}>
+              {pulseAttachments.map((a, i) => (
+                <div key={i} style={{
+                  display: 'flex', alignItems: 'center', gap: '4px', padding: '2px 7px 2px 5px',
+                  background: 'var(--sky-50)', border: '1px solid var(--sky-200)', borderRadius: 'var(--radius-full)',
+                  fontSize: '0.7rem', color: 'var(--sky-700)', maxWidth: '140px',
+                }}>
+                  <FileText size={10} style={{ flexShrink: 0 }} />
+                  <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{a.name}</span>
+                  <button onClick={() => setPulseAttachments(prev => prev.filter((_, j) => j !== i))}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--sky-400)', padding: 0, lineHeight: 1, flexShrink: 0 }}>
+                    <X size={9} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Input row: attach + text + send */}
           <div className="pulse-input-row">
+            {/* Hidden file input */}
+            <input
+              ref={pulseFileRef}
+              type="file"
+              multiple
+              accept="image/*,.pdf,.doc,.docx,.txt,.pptx,.xlsx"
+              style={{ display: 'none' }}
+              onChange={e => {
+                const files = Array.from(e.target.files || [])
+                setPulseAttachments(prev => [...prev, ...files.map(f => ({ name: f.name, size: f.size, type: f.type }))])
+                e.target.value = ''
+              }}
+            />
+            <button
+              onClick={() => pulseFileRef.current?.click()}
+              title="Attach file or media"
+              aria-label="Attach file or media"
+              style={{
+                width: '34px', height: '34px', borderRadius: 'var(--radius-full)',
+                border: '1px solid var(--gray-200)', background: 'var(--white)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                cursor: 'pointer', color: 'var(--gray-500)', flexShrink: 0,
+                transition: 'color 0.15s, border-color 0.15s',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.color = 'var(--sky-500)'; e.currentTarget.style.borderColor = 'var(--sky-300)' }}
+              onMouseLeave={e => { e.currentTarget.style.color = 'var(--gray-500)'; e.currentTarget.style.borderColor = 'var(--gray-200)' }}
+            >
+              <Paperclip size={15} />
+            </button>
             <input
               value={input}
               onChange={e => setInput(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && handleSend()}
-              placeholder="Ask Pulse anything about this course..."
+              placeholder="Ask Pulse anything or say where to go..."
               aria-label="Ask Pulse"
             />
-            <button onClick={handleSend} disabled={!input.trim()} aria-label="Send"><Send size={15} /></button>
+            <button onClick={handleSend} disabled={!input.trim() && pulseAttachments.length === 0} aria-label="Send"><Send size={15} /></button>
           </div>
+
+          {/* Model + effort bar */}
+          <PulseModelBar
+            selectedProviderId={pulseProviderId}
+            selectedModelId={pulseModelId}
+            selectedEffort={pulseEffort}
+            onProviderChange={setPulseProviderId}
+            onModelChange={setPulseModelId}
+            onEffortChange={setPulseEffort}
+          />
         </div>
       )}
 
@@ -1190,9 +1503,9 @@ export default function Pulse() {
                         setExpression('thinking')
                         setTimeout(() => {
                           const context = { section: step?.section || null, step, intent: focusIntent }
-                          const response = generateContextualResponse(q, context)
+                          const result = generateContextualResponse(q, context)
                           setExpression('encouraging')
-                          setMessages(prev => [...prev, { id: Date.now() + 1, from: 'pulse', text: response }])
+                          setMessages(prev => [...prev, { id: Date.now() + 1, from: 'pulse', text: result.text || result, nav: result.nav }])
                         }, 900)
                       }
                     }}
@@ -1207,9 +1520,9 @@ export default function Pulse() {
                     setExpression('thinking')
                     setTimeout(() => {
                       const context = { section: step?.section || null, step, intent: focusIntent }
-                      const response = generateContextualResponse(q, context)
+                      const result = generateContextualResponse(q, context)
                       setExpression('encouraging')
-                      setMessages(prev => [...prev, { id: Date.now() + 1, from: 'pulse', text: response }])
+                      setMessages(prev => [...prev, { id: Date.now() + 1, from: 'pulse', text: result.text || result, nav: result.nav }])
                     }, 900)
                   }} disabled={!input.trim()} aria-label="Send"><Send size={15} /></button>
                 </div>
@@ -1317,6 +1630,26 @@ export default function Pulse() {
         @keyframes pulse-think { 0%, 100% { opacity: 0.35; transform: translateY(0); } 50% { opacity: 1; transform: translateY(-3px); } }
         @keyframes pulse-sparkle-pop { 0%, 100% { opacity: 0.4; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.15); } }
         @keyframes pulse-shake { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-8px); } 40% { transform: translateX(8px); } 60% { transform: translateX(-6px); } 80% { transform: translateX(6px); } }
+
+        .pulse-model-btn {
+          display: inline-flex; align-items: center; gap: 4px;
+          font-size: 0.7rem; font-weight: 600; padding: 3px 7px; border-radius: var(--radius-full);
+          border: 1px solid var(--gray-200); background: var(--white); color: var(--gray-600);
+          cursor: pointer; white-space: nowrap; transition: border-color 0.15s, color 0.15s;
+        }
+        .pulse-model-btn:hover { border-color: var(--sky-300); color: var(--sky-600); }
+        .pulse-model-dropdown {
+          position: absolute; bottom: calc(100% + 4px); left: 0; z-index: 300;
+          background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--radius-md);
+          box-shadow: 0 4px 16px rgba(0,0,0,0.12); min-width: 140px; overflow: hidden;
+          animation: pulse-drawer-in 160ms cubic-bezier(0.34,1.56,0.64,1);
+        }
+        .pulse-model-option {
+          display: flex; align-items: center; gap: 6px; width: 100%; padding: 7px 10px;
+          font-size: 0.75rem; border: none; background: none; cursor: pointer; text-align: left; color: var(--gray-700);
+        }
+        .pulse-model-option:hover { background: var(--sky-50); color: var(--sky-700); }
+        .pulse-model-option.active { background: var(--sky-50); color: var(--sky-600); font-weight: 600; }
 
         .pulse-reduced-motion .pulse-dock,
         .pulse-reduced-motion .pulse-blink,

@@ -389,51 +389,6 @@ function InstructorDashboard() {
         </div>
       </div>
 
-      <div className="grid-2 mb-24">
-        <div className="card">
-          <div className="card-header">
-            <h3>My Courses — Syllabus Stations</h3>
-            <button className="btn btn-secondary btn-sm" onClick={() => navigate('/syllabus')}>Open <ArrowRight size={14} /></button>
-          </div>
-          <div className="card-body">
-            {mySyllabi.map(syl => {
-              const meta = SYLLABUS_STATUS_META[syl.status]
-              return (
-                <div key={syl.id} style={{ padding: '14px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--sky-100)', marginBottom: '10px', background: 'var(--gray-50)' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                    <strong style={{ fontSize: '0.875rem' }}>{syl.courseCode} — {syl.courseTitle}</strong>
-                    <span className={`badge badge-${meta?.badge || 'draft'}`} title={meta?.hint}>{meta?.label || syl.status}</span>
-                  </div>
-                  <div style={{ display: 'flex', gap: '12px', fontSize: '0.75rem', color: 'var(--gray-500)' }}>
-                    <span>v{syl.version}</span>
-                    <span>{syl.status === 'active' ? `${syl.courseOutline?.length || 0} outline weeks` : meta?.hint}</span>
-                  </div>
-                  <div className="progress-bar mt-8"><div className="progress-fill" style={{ width: `${(meta?.step || 0) * 20}%` }} /></div>
-                </div>
-              )
-            })}
-          </div>
-        </div>
-
-        <div className="card">
-          <div className="card-header">
-            <h3>Courseware Review Queue</h3>
-            <button className="btn btn-secondary btn-sm" onClick={() => navigate('/courseware?tab=builder&sub=review')}>View All <ArrowRight size={14} /></button>
-          </div>
-          <div className="card-body">
-            {myCourseware.map(cw => (
-              <div key={cw.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 12px', borderRadius: 'var(--radius-md)', background: 'var(--gray-50)', marginBottom: '6px' }}>
-                <div>
-                  <div style={{ fontWeight: 600, fontSize: '0.875rem' }}>{cw.title}</div>
-                  <div className="text-sm text-muted">{cw.type} · {cw.aiGenerated ? 'AI-generated · ' : ''}{cw.generatedAt}</div>
-                </div>
-                <span className={`badge badge-${cw.status}`}>{cw.status}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
       <div className="card mb-24">
         <div className="card-header"><h3><Users size={16} /> My Block Sections</h3></div>
         <div className="card-body">
@@ -493,7 +448,7 @@ function InstructorDashboard() {
         </div>
       </div>
 
-      <div className="card">
+      <div className="card mb-24">
         <div className="card-header"><h3><Activity size={16} /> Recent Activity</h3></div>
         <div className="card-body">
           {ACTIVITY_FEED.slice(0, 3).map((item, i) => (
@@ -507,6 +462,51 @@ function InstructorDashboard() {
               </div>
             </div>
           ))}
+        </div>
+      </div>
+
+      <div className="grid-2">
+        <div className="card">
+          <div className="card-header">
+            <h3>My Courses — Syllabus Stations</h3>
+            <button className="btn btn-secondary btn-sm" onClick={() => navigate('/syllabus')}>Open <ArrowRight size={14} /></button>
+          </div>
+          <div className="card-body">
+            {mySyllabi.map(syl => {
+              const meta = SYLLABUS_STATUS_META[syl.status]
+              return (
+                <div key={syl.id} style={{ padding: '14px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--sky-100)', marginBottom: '10px', background: 'var(--gray-50)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                    <strong style={{ fontSize: '0.875rem' }}>{syl.courseCode} — {syl.courseTitle}</strong>
+                    <span className={`badge badge-${meta?.badge || 'draft'}`} title={meta?.hint}>{meta?.label || syl.status}</span>
+                  </div>
+                  <div style={{ display: 'flex', gap: '12px', fontSize: '0.75rem', color: 'var(--gray-500)' }}>
+                    <span>v{syl.version}</span>
+                    <span>{syl.status === 'active' ? `${syl.courseOutline?.length || 0} outline weeks` : meta?.hint}</span>
+                  </div>
+                  <div className="progress-bar mt-8"><div className="progress-fill" style={{ width: `${(meta?.step || 0) * 20}%` }} /></div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+
+        <div className="card">
+          <div className="card-header">
+            <h3>Courseware Review Queue</h3>
+            <button className="btn btn-secondary btn-sm" onClick={() => navigate('/courseware?tab=builder&sub=review')}>View All <ArrowRight size={14} /></button>
+          </div>
+          <div className="card-body">
+            {myCourseware.map(cw => (
+              <div key={cw.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 12px', borderRadius: 'var(--radius-md)', background: 'var(--gray-50)', marginBottom: '6px' }}>
+                <div>
+                  <div style={{ fontWeight: 600, fontSize: '0.875rem' }}>{cw.title}</div>
+                  <div className="text-sm text-muted">{cw.type} · {cw.aiGenerated ? 'AI-generated · ' : ''}{cw.generatedAt}</div>
+                </div>
+                <span className={`badge badge-${cw.status}`}>{cw.status}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>

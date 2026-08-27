@@ -1615,8 +1615,6 @@ export default function Syllabus() {
   const { addToast } = useToast()
   const [searchParams, setSearchParams] = useSearchParams()
 
-  if (user?.role !== 'instructor') return <Navigate to="/dashboard" replace />
-
   const [tab, setTab] = useState(searchParams.get('tab') || 'register')
   const [selectedSyllabus, setSelectedSyllabus] = useState(null)
   const [compareSyllabus, setCompareSyllabus] = useState(null)
@@ -1634,6 +1632,8 @@ export default function Syllabus() {
     const t = searchParams.get('tab')
     if (t && t !== tab) setTab(t)
   }, [searchParams])
+
+  if (user?.role !== 'instructor') return <Navigate to="/dashboard" replace />
 
   const switchTab = (t) => {
     setTab(t)
@@ -1727,7 +1727,7 @@ export default function Syllabus() {
             marginBottom: '-2px', transition: 'all 0.15s',
           }}
         >
-          Register Course
+          My Courses
         </button>
         <button
           onClick={() => switchTab('mine')}
@@ -1738,7 +1738,7 @@ export default function Syllabus() {
             marginBottom: '-2px', transition: 'all 0.15s',
           }}
         >
-          My Courses
+          My Syllabus
         </button>
         <button
           onClick={() => switchTab('repository')}
@@ -1764,19 +1764,19 @@ export default function Syllabus() {
         </button>
       </div>
 
-      {/* Tab: Register Course (upload EduSuite block section files) */}
+      {/* Tab: My Courses (upload EduSuite block section files + registered courses list) */}
       {tab === 'register' && (
         <div>
           <div style={{ marginBottom: '20px' }}>
             <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.25rem', fontWeight: 700, marginBottom: '8px' }}>
-              Register Course with EduSuite Data
+              My Courses
             </h2>
             <p style={{ fontSize: '0.875rem', color: 'var(--gray-500)', marginBottom: '16px' }}>
-              Upload block section student files from EduSuite to register courses. This is separate from syllabus creation.
+              Upload block section student files from EduSuite to register courses. Registered courses appear in My Syllabus for syllabus creation.
             </p>
           </div>
 
-          {/* Registration Form */}
+          {/* Upload Form */}
           <div className="card" style={{ marginBottom: '20px' }}>
             <div className="card-body">
               <BlockSectionUploader
@@ -1786,7 +1786,7 @@ export default function Syllabus() {
             </div>
           </div>
 
-          {/* Existing Registrations */}
+          {/* Registered Courses List */}
           {registrations.length > 0 && (
             <div>
               <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1rem', fontWeight: 700, marginBottom: '12px' }}>
@@ -1804,7 +1804,7 @@ export default function Syllabus() {
                     </tr>
                   </thead>
                   <tbody>
-                    {registrations.map(reg => (
+                    {registrations.filter(r => r.uploadedBy === user?.id).map(reg => (
                       <tr key={reg.id} style={{ borderBottom: '1px solid var(--gray-100)' }}>
                         <td style={{ padding: '12px 16px' }}>
                           <div style={{ fontWeight: 600, color: 'var(--gray-900)' }}>{reg.courseCode}</div>
@@ -1834,7 +1834,7 @@ export default function Syllabus() {
         </div>
       )}
 
-      {/* Tab: My Courses (loaded courses with syllabus station + next action) */}
+      {/* Tab: My Syllabus (loaded courses with syllabus station + next action) */}
       {tab === 'mine' && (
         <>
           <LifecycleStrip />

@@ -10,7 +10,7 @@ Reference for the prototype. Grounded in the confirmed business process of the C
 4. Students enroll in EduSuite and are blocked into sections first come, first served: a block holds up to 35 students; when full, a new block opens. A block enlists the same courses on a shared schedule; different blocks can have different schedules. EduPulse consumes this structure, it never creates it.
 5. The Dean and the Associate Dean have the same role in the business process. One shared UI and permission set (role: `admin`, displayed as Dean / Associate Dean).
 6. The LMS (Moodle, Google Classroom) is an abiding variable of the current process, not the focus. EduPulse is not an LMS replacement pitch; it is the syllabus-centered layer: build syllabus, generate mapped courseware, deliver, monitor.
-7. Student monitoring, not grading. EduPulse tracks assessment scores and learning material access for visualization only. No institutional grades are computed (MG/TFG/FG formulas stay in the official KCP grading sheet, outside the system).
+7. Scoring sheet, not grading sheet. EduPulse collates assessment scores for visualization only. No institutional grades are computed (MG/TFG/FG formulas stay in the official KCP grading sheet, outside the system).
 8. The instructor (or the Dean/Assoc Dean for loading) is the deciding author. Nothing AI-generated reaches a downstream actor without human review and an explicit action.
 
 ## 2. Actors
@@ -19,7 +19,7 @@ Reference for the prototype. Grounded in the confirmed business process of the C
 |---|---|---|
 | Dean | Yes (`admin`) | Uploads EduSuite records, loads courses, monitors faculty and delivery |
 | Associate Dean | Yes (`admin`, same UI as Dean) | Same as Dean |
-| Instructor | Yes (`instructor`) | Builds syllabus, generates/reviews/publishes courseware, monitors students via Student Monitoring |
+| Instructor | Yes (`instructor`) | Builds syllabus, generates/reviews/publishes courseware, monitors students via scoring sheet |
 | Student | Yes (`student`) | Opens learning materials, answers assessments, gets AI guidance and reminders |
 | Chief Academic Officer | No (offline signatory) | Approves the syllabus |
 | Executive Vice President | No (offline signatory) | Notes the syllabus |
@@ -43,12 +43,6 @@ Syllabus signatory chain (occurs OUTSIDE the system, on the downloaded file): re
 ### Phase 2. Syllabus building (Instructor)
 - Instructor opens an assigned course and builds the syllabus in the official KCP 7-section format (see SYSTEM_SPEC.md §3).
 - If a ready-made syllabus exists, the instructor uploads/edits it instead of starting blank.
-- **Syllabus section locking rule:**
-  - **Section 1 (Course Information)** — Course, Course Title, Period Offered, Academic Year: auto-filled from the curriculum when the instructor selects a course. **Locked — not editable.**
-  - **Section 2 (Course Description)** — Course Description, Credit Units, Classification, No. of Hours, Prerequisites: auto-filled from the curriculum. **Locked — not editable.**
-  - **Section 4 (Program Outcomes)** — prefilled from the curriculum but **editable** — instructor can add, edit, or remove rows.
-  - Sections 3, 5, 6, 7 remain fully editable by the instructor.
-  - When the instructor selects a course in Section 1, all locked fields auto-populate from `CURRICULUM_COURSES` (classification, prerequisites, noOfHours = units × 18, description).
 - **AI role:** *Assist* (step-by-step co-writing per section) or *Auto* (generate a complete syllabus). Auto output is always saved with status `drafted`; the instructor must check and correct it before anything else can happen.
 - Approval loop (outside the system):
   1. Instructor downloads the checked syllabus file.
@@ -70,7 +64,7 @@ Syllabus signatory chain (occurs OUTSIDE the system, on the downloaded file): re
 
 ### Phase 5. Monitoring (both sides)
 - **Dean / Assoc Dean view:** per instructor and per course: does an approved syllabus exist? Are the mapped teaching materials and assessments being delivered on the outline's schedule? Graphs for visualization (coverage per week, delivery progress per course/instructor).
-- **Instructor view (Student Monitoring):** two tabs — Assessment Scores (students × assessments, Completed/Missed, class averages) and Learning Material Access (students × materials, accessed/unopened, access rates). Remind feature for missing items.
+- **Instructor view (scoring sheet):** collates all assessment scores per student per course, visualization only, explicitly distinct from the official KCP grading sheet. Shows opened/unopened materials and answered/missed assessments (Completed / Missed).
 - **Notifications:** both the instructor and the student are notified about the student's unopened materials and unanswered assessments.
 
 ## 4. AI role matrix (summary)
@@ -81,8 +75,8 @@ Syllabus signatory chain (occurs OUTSIDE the system, on the downloaded file): re
 | Syllabus building | Section-by-section co-writing | Full draft, marked `drafted` | Instructor checks before download/approval |
 | Courseware generation | Help manual creation | Generate by week / semester / whole outline | Instructor reviews and publishes |
 | Student side | Guidance, reminders, missed-activity pointers | n/a | Never reviews or answers assessments |
-| Monitoring | Summaries over the tracked data | n/a | No grading, Student Monitoring is visualization only |
+| Monitoring | Summaries over the visualized data | n/a | No grading, scoring sheet is visualization only |
 
 ## 5. One-line flow
 
-EduSuite files in → Dean/Assoc Dean load courses (AI assist/auto, human confirm) → Instructor builds syllabus (AI assist/auto, `drafted` → checked) → download → Dean review → CAO approve → EVP note → upload approved → extract course outline → generate courseware (AI assist/auto by week/semester/whole, instructor review) → publish → students open and answer (AI guide only) → Student Monitoring (assessment scores + material access tracking) + Dean/Assoc Dean delivery monitoring + notifications.
+EduSuite files in → Dean/Assoc Dean load courses (AI assist/auto, human confirm) → Instructor builds syllabus (AI assist/auto, `drafted` → checked) → download → Dean review → CAO approve → EVP note → upload approved → extract course outline → generate courseware (AI assist/auto by week/semester/whole, instructor review) → publish → students open and answer (AI guide only) → scoring sheet + Dean/Assoc Dean delivery monitoring + notifications.

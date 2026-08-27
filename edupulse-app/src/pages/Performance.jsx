@@ -1,13 +1,17 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
 import { exportCSV, timestampedFilename } from '../utils/exportUtils'
-import { STUDENT_RECORDS, DEFAULT_SYLLABI, ALERTS, BLOCK_SECTIONS } from '../data/mockData'
+import {
+  STUDENT_RECORDS, DEFAULT_SYLLABI, ALERTS, BLOCK_SECTIONS,
+  STUDENT_COURSES, STUDENT_MATERIAL_ACCESS, STUDENT_ASSESSMENT_SCORES,
+} from '../data/mockData'
 import { pulse as pulseBus } from '../components/pulse/pulseBus'
 import {
   TrendingUp, AlertTriangle, Download, Users, Target, Award,
   ChevronRight, Mail, MessageSquare, Flag, Check, Bell, Layers,
+  BookOpen, ClipboardCheck, Eye, Clock,
 } from 'lucide-react'
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -15,16 +19,16 @@ import {
   LineChart, Line, Cell,
 } from 'recharts'
 
-// Performance — FLOW_SPEC Phase 5, instructor and student sides only. The
-// Dean / Associate Dean's monitoring lives in Monitor (syllabus status,
-// delivery progress, student oversight, alerts) — this page is "which topics
-// has this student/class mastered, which need review," per SYSTEM_SPEC §1.2/1.3.
+// Performance — FLOW_SPEC Phase 5, instructor and student sides only.
+// Student view: per-course overall performance, Learning Materials sheet, Assessment Scores sheet.
 
 const COLORS = ['#0ea5e9', '#a855f7', '#22c55e', '#f59e0b', '#ef4444', '#38bdf8', '#818cf8']
 
 const ALL_TABS = [
   { key: 'overview', label: 'Overview' },
   { key: 'bytopic', label: 'By Topic' },
+  { key: 'materials', label: 'Learning Materials', roles: ['student'] },
+  { key: 'scores', label: 'Assessment Scores', roles: ['student'] },
   { key: 'alerts', label: 'Alerts', roles: ['instructor'] },
 ]
 
@@ -35,7 +39,6 @@ function myStudentRecord(user) {
   return record
 }
 
-// "My students" for an instructor — every student in a block they advise.
 function studentsForInstructor(user) {
   const mySectionCodes = BLOCK_SECTIONS.filter(bs => bs.adviserId === user?.id).map(bs => bs.code)
   return STUDENT_RECORDS.filter(s => mySectionCodes.includes(s.section))
@@ -119,11 +122,37 @@ function StudentDetailPopover({ student, onClose }) {
   )
 }
 
+/* ───────────────────────── Course Selector (students) ───────────────────────── */
+
+function CourseSelector({ courses, selectedCode, onSelect }) {
+  return (
+    <div style={{ display: 'flex', gap: '8px', marginBottom: '20px', flexWrap: 'wrap' }}>
+      {courses.map(c => (
+        <button
+          key={c.code}
+          onClick={() => onSelect(c.code)}
+          style={{
+            padding: '8px 16px', borderRadius: 'var(--radius-md)',
+            border: selectedCode === c.code ? '2px solid var(--sky-500)' : '1px solid var(--gray-200)',
+            background: selectedCode === c.code ? 'var(--sky-50)' : 'var(--white)',
+            cursor: 'pointer', transition: 'all 150ms',
+            fontWeight: selectedCode === c.code ? 700 : 500,
+            color: selectedCode === c.code ? 'var(--sky-700)' : 'var(--gray-600)',
+            fontSize: '0.8125rem',
+          }}
+        >
+          {c.code}
+        </button>
+      ))}
+    </div>
+  )
+}
+
 /* ───────────────────────── Overview tab ───────────────────────── */
 
-function StudentOverview({ user }) {
+function StudentOverview({ user, selectedCourseCode }) {
   const me = myStudentRecord(user)
-  const course = me.courses[0]
+  const course = me.courses.find(c => c.code === selectedCourseCode) || me.courses[0]
   return (
     <div>
       <div className="kpi-grid mb-24">
@@ -185,9 +214,9 @@ function InstructorOverview({ onSelectStudent, user }) {
 
 /* ───────────────────────── By Topic tab ───────────────────────── */
 
-function StudentByTopic({ user }) {
+function StudentByTopic({ user, selectedCourseCode }) {
   const me = myStudentRecord(user)
-  const course = me.courses[0]
+  const course = me.courses.find(c => c.code === selectedCourseCode) || me.courses[0]
   const trend = [
     { period: 'Prelim', score: course.scores.prelim || 0 },
     { period: 'Midterm', score: course.scores.midterm || 0 },
@@ -276,7 +305,182 @@ function ClassByTopic({ user }) {
   )
 }
 
-/* ───────────────────────── Alerts tab — score-threshold only, instructor ───────────────────────── */
+/* ───────────────────────── Learning Materials tab (student) ───────────────────────── */
+
+function StudentMaterialsTab({ user, selectedCourseCode }) {
+  const me = myStudentRecord(user)
+  const myCourses = STUDENT_COURSES[me.id] || []
+  const courseInfo = myCourses.find(c => c.code === selectedCourseCode)
+  const materialAccess = useMemo(() => {
+    return STUDENT_MATERIAL_ACCESS.filter(a => a.studentId === me.id && a.courseCode === selectedCourseCode)
+  }, [me.id, selectedCourseCode])
+
+  const syllabus = DEFAULT_SYLLABI.find(s => s.courseCode === selectedCourseCode)
+  const outline = syllabus?.courseOutline || []
+  const teachingWeeks = outline.filter(r => !/examination/i.test(r.assessments || ''))
+
+  return (
+    <div>
+      <div className="kpi-grid mb-24">
+        <div className="kpi-card"><div className="kpi-icon" style={{ background: 'var(--sky-100)' }}><BookOpen size={20} style={{ color: 'var(--sky-500)' }} /></div><div><div className="kpi-value">{materialAccess.length}</div><div className="kpi-label">Materials Accessed</div></div></div>
+        <div className="kpi-card"><div className="kpi-icon" style={{ background: 'var(--green-100)' }}><Eye size={20} style={{ color: 'var(--green-500)' }} /></div><div><div className="kpi-value">{materialAccess.reduce((a, m) => a + m.accessCount, 0)}</div><div className="kpi-label">Total Opens</div></div></div>
+        <div className="kpi-card"><div className="kpi-icon" style={{ background: 'var(--amber-100)' }}><Clock size={20} style={{ color: 'var(--amber-500)' }} /></div><div><div className="kpi-value">{teachingWeeks.length}</div><div className="kpi-label">Course Weeks</div></div></div>
+      </div>
+
+      <div className="card">
+        <div className="card-header">
+          <h3>Learning Materials — {selectedCourseCode}</h3>
+          {courseInfo && <span className="text-sm text-muted">{courseInfo.instructor}</span>}
+        </div>
+        <div className="card-body">
+          {materialAccess.length === 0 ? (
+            <div className="empty-state">
+              <div className="empty-state-icon"><BookOpen size={32} /></div>
+              <h3>No materials accessed yet</h3>
+              <p>Open learning materials from My Courses to track your access here.</p>
+            </div>
+          ) : (
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>Material</th>
+                  <th>Type</th>
+                  <th>Times Opened</th>
+                  <th>Last Accessed</th>
+                </tr>
+              </thead>
+              <tbody>
+                {materialAccess.map(m => (
+                  <tr key={m.id}>
+                    <td>
+                      <div style={{ fontWeight: 600, fontSize: '0.8125rem' }}>{m.itemTitle}</div>
+                    </td>
+                    <td>
+                      <span style={{
+                        padding: '2px 8px', borderRadius: 'var(--radius-sm)',
+                        fontSize: '0.6875rem', fontWeight: 600, textTransform: 'capitalize',
+                        background: m.itemType === 'material' ? 'var(--sky-100)' : m.itemType === 'assessment' ? 'var(--amber-100)' : 'var(--purple-100)',
+                        color: m.itemType === 'material' ? 'var(--sky-700)' : m.itemType === 'assessment' ? 'var(--amber-700)' : 'var(--purple-700)',
+                      }}>
+                        {m.itemType}
+                      </span>
+                    </td>
+                    <td><strong>{m.accessCount}</strong></td>
+                    <td className="text-sm text-muted">
+                      {new Date(m.lastAccessedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/* ───────────────────────── Assessment Scores tab (student) ───────────────────────── */
+
+function StudentScoresTab({ user, selectedCourseCode }) {
+  const me = myStudentRecord(user)
+  const scores = useMemo(() => {
+    return STUDENT_ASSESSMENT_SCORES.filter(s => s.studentId === me.id && s.courseCode === selectedCourseCode)
+      .sort((a, b) => new Date(a.submittedAt) - new Date(b.submittedAt))
+  }, [me.id, selectedCourseCode])
+
+  const totalScore = scores.reduce((a, s) => a + s.score, 0)
+  const totalMax = scores.reduce((a, s) => a + s.totalPoints, 0)
+  const overallPct = totalMax > 0 ? Math.round((totalScore / totalMax) * 100) : 0
+  const csItems = scores.filter(s => s.weight === 'Class Standing')
+  const examItems = scores.filter(s => s.weight === 'Examination')
+  const csScore = csItems.reduce((a, s) => a + s.score, 0)
+  const csMax = csItems.reduce((a, s) => a + s.totalPoints, 0)
+  const examScore = examItems.reduce((a, s) => a + s.score, 0)
+  const examMax = examItems.reduce((a, s) => a + s.totalPoints, 0)
+
+  return (
+    <div>
+      <div className="kpi-grid mb-24">
+        <div className="kpi-card"><div className="kpi-icon" style={{ background: 'var(--sky-100)' }}><ClipboardCheck size={20} style={{ color: 'var(--sky-500)' }} /></div><div><div className="kpi-value">{overallPct}%</div><div className="kpi-label">Overall Score</div></div></div>
+        <div className="kpi-card"><div className="kpi-icon" style={{ background: 'var(--green-100)' }}><Award size={20} style={{ color: 'var(--green-500)' }} /></div><div><div className="kpi-value">{csMax > 0 ? Math.round((csScore / csMax) * 100) : 0}%</div><div className="kpi-label">Class Standing</div></div></div>
+        <div className="kpi-card"><div className="kpi-icon" style={{ background: 'var(--purple-100)' }}><Target size={20} style={{ color: 'var(--purple-500)' }} /></div><div><div className="kpi-value">{examMax > 0 ? Math.round((examScore / examMax) * 100) : 0}%</div><div className="kpi-label">Examination</div></div></div>
+      </div>
+
+      <div className="card">
+        <div className="card-header"><h3>Assessment Scores — {selectedCourseCode}</h3></div>
+        <div className="card-body">
+          {scores.length === 0 ? (
+            <div className="empty-state">
+              <div className="empty-state-icon"><ClipboardCheck size={32} /></div>
+              <h3>No assessments taken yet</h3>
+              <p>Complete assessments from My Courses to see your scores here.</p>
+            </div>
+          ) : (
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>Assessment</th>
+                  <th>Type</th>
+                  <th>Weight</th>
+                  <th>Score</th>
+                  <th>Percentage</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {scores.map(s => (
+                  <tr key={s.id}>
+                    <td>
+                      <div style={{ fontWeight: 600, fontSize: '0.8125rem' }}>{s.assessmentTitle}</div>
+                      <div className="text-sm text-muted">
+                        {new Date(s.submittedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                      </div>
+                    </td>
+                    <td>
+                      <span style={{
+                        padding: '2px 8px', borderRadius: 'var(--radius-sm)',
+                        fontSize: '0.6875rem', fontWeight: 600, textTransform: 'capitalize',
+                        background: s.assessmentType === 'quiz' ? 'var(--sky-100)' : s.assessmentType === 'exam' ? 'var(--red-100)' : 'var(--purple-100)',
+                        color: s.assessmentType === 'quiz' ? 'var(--sky-700)' : s.assessmentType === 'exam' ? 'var(--red-700)' : 'var(--purple-700)',
+                      }}>
+                        {s.assessmentType}
+                      </span>
+                    </td>
+                    <td className="text-sm">{s.weight}</td>
+                    <td><strong>{s.score}/{s.totalPoints}</strong></td>
+                    <td>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <div style={{ width: '60px', height: '6px', borderRadius: '3px', background: 'var(--gray-200)', overflow: 'hidden' }}>
+                          <div style={{
+                            width: `${s.percentage}%`, height: '100%', borderRadius: '3px',
+                            background: s.percentage >= 75 ? 'var(--green-500)' : s.percentage >= 60 ? 'var(--amber-500)' : 'var(--red-500)',
+                          }} />
+                        </div>
+                        <strong style={{ color: s.percentage >= 75 ? 'var(--green-600)' : s.percentage >= 60 ? 'var(--amber-600)' : 'var(--red-600)' }}>
+                          {s.percentage}%
+                        </strong>
+                      </div>
+                    </td>
+                    <td>
+                      {s.percentage >= 75 ? (
+                        <span className="badge badge-approved">Passed</span>
+                      ) : (
+                        <span className="badge badge-error">Below Cutoff</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/* ───────────────────────── Alerts tab — instructor only ───────────────────────── */
 
 function AlertsTab({ user }) {
   const { addToast } = useToast()
@@ -337,20 +541,25 @@ export default function Performance() {
   const { addToast } = useToast()
   const [searchParams, setSearchParams] = useSearchParams()
   const [detailStudent, setDetailStudent] = useState(null)
+  const isStudent = user?.role === 'student'
+
+  const me = isStudent ? myStudentRecord(user) : null
+  const myCourses = isStudent ? (STUDENT_COURSES[me?.id] || []) : []
+  const [selectedCourseCode, setSelectedCourseCode] = useState(() => myCourses[0]?.code || '')
 
   const visibleTabs = ALL_TABS.filter(t => !t.roles || t.roles.includes(user?.role))
   const requested = searchParams.get('tab')
   const tab = visibleTabs.some(t => t.key === requested) ? requested : visibleTabs[0].key
   const setTab = (key) => setSearchParams({ tab: key })
 
-  const title = user?.role === 'instructor' ? 'Student Performance' : 'My Performance'
+  const title = isStudent ? 'My Performance' : 'Student Performance'
 
   const handleExport = () => {
     let rows, filename
-    if (user?.role === 'student') {
-      const me = myStudentRecord(user)
-      rows = Object.entries(me.courses[0].topics).map(([topic, score]) => ({ Topic: topic, Score: score, Status: score >= 75 ? 'Mastered' : 'Needs Review' }))
-      filename = 'my_performance'
+    if (isStudent) {
+      const course = me.courses.find(c => c.code === selectedCourseCode) || me.courses[0]
+      rows = Object.entries(course.topics).map(([topic, score]) => ({ Topic: topic, Score: score, Status: score >= 75 ? 'Mastered' : 'Needs Review' }))
+      filename = `my_performance_${selectedCourseCode.replace(/\s+/g, '_')}`
     } else {
       const exportStudents = studentsForInstructor(user)
       rows = exportStudents.map(s => ({ Student: s.name, Section: s.section, Midterm: s.courses[0]?.scores.midterm ?? '' }))
@@ -367,17 +576,25 @@ export default function Performance() {
         <button className="btn btn-secondary btn-sm" onClick={handleExport}><Download size={14} /> Export Report</button>
       </div>
 
+      {/* Course selector for students with multiple courses */}
+      {isStudent && myCourses.length > 1 && (
+        <CourseSelector courses={myCourses} selectedCode={selectedCourseCode} onSelect={setSelectedCourseCode} />
+      )}
+
       <div className="tabs mb-24" style={{ overflowX: 'auto', flexWrap: 'nowrap' }}>
         {visibleTabs.map(t => (
           <button key={t.key} className={`tab ${tab === t.key ? 'active' : ''}`} onClick={() => setTab(t.key)} style={{ whiteSpace: 'nowrap' }}>{t.label}</button>
         ))}
       </div>
 
-      {tab === 'overview' && user?.role === 'student' && <StudentOverview user={user} />}
+      {tab === 'overview' && isStudent && <StudentOverview user={user} selectedCourseCode={selectedCourseCode} />}
       {tab === 'overview' && user?.role === 'instructor' && <InstructorOverview onSelectStudent={setDetailStudent} user={user} />}
 
-      {tab === 'bytopic' && user?.role === 'student' && <StudentByTopic user={user} />}
+      {tab === 'bytopic' && isStudent && <StudentByTopic user={user} selectedCourseCode={selectedCourseCode} />}
       {tab === 'bytopic' && user?.role === 'instructor' && <ClassByTopic user={user} />}
+
+      {tab === 'materials' && isStudent && <StudentMaterialsTab user={user} selectedCourseCode={selectedCourseCode} />}
+      {tab === 'scores' && isStudent && <StudentScoresTab user={user} selectedCourseCode={selectedCourseCode} />}
 
       {tab === 'alerts' && user?.role === 'instructor' && <AlertsTab user={user} />}
 

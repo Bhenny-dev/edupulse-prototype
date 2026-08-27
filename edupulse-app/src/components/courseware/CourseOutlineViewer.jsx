@@ -101,7 +101,7 @@ export default function CourseOutlineViewer({
     })
   }
 
-  const openItem = (item, mode = 'document') => {
+  const openItem = (item, mode) => {
     const storeKey = item.id
     const stored = contentStore[storeKey]
     const content = stored?.content || item.content
@@ -111,7 +111,7 @@ export default function CourseOutlineViewer({
       setViewingType('assessment')
       setViewMode(null)
     } else {
-      setViewMode(mode)
+      setViewMode(mode || item.content?.viewMode || 'document')
       setViewingType(null)
     }
   }
@@ -185,7 +185,7 @@ export default function CourseOutlineViewer({
                     {weekData.isExam ? `Week ${weekData.week} — ${weekData.examType}` : `Week ${weekData.week}`}
                   </div>
                   <div style={{ fontSize: '0.75rem', color: 'var(--gray-500)' }}>
-                    {weekData.isExam ? 'Exam week — no generated content' : `${itemCount} item${itemCount !== 1 ? 's' : ''} generated`}
+                    {weekData.isExam ? 'Exam week — no generated content' : `${itemCount} item${itemCount !== 1 ? 's' : ''} available`}
                   </div>
                 </div>
 
@@ -220,7 +220,7 @@ export default function CourseOutlineViewer({
               {isExpanded && !weekData.isExam && (
                 <div style={{ borderTop: '1px solid var(--gray-100)', padding: '8px 16px 12px' }}>
                   {weekData.items.length === 0 ? (
-                    <p className="text-sm text-muted" style={{ padding: '8px 0' }}>{isStudent ? 'No published materials for this week.' : 'No items generated for this week.'}</p>
+                    <p className="text-sm text-muted" style={{ padding: '8px 0' }}>{isStudent ? 'No materials available for this week.' : 'No items generated for this week.'}</p>
                   ) : (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                       {weekData.items.map(item => {
@@ -239,7 +239,7 @@ export default function CourseOutlineViewer({
                               background: status === 'published' ? 'var(--green-50, #f0fdf4)' : status === 'hidden' ? 'var(--gray-50)' : 'var(--white)',
                               opacity: status === 'hidden' ? 0.6 : 1,
                             }}
-                            onClick={() => openItem(item)}
+                            onClick={() => openItem(item, item.content?.viewMode || 'document')}
                             onMouseEnter={e => { e.currentTarget.style.borderColor = cfg.color }}
                             onMouseLeave={e => { e.currentTarget.style.borderColor = status === 'published' ? 'var(--green-200, #bbf7d0)' : 'var(--gray-200)' }}
                           >
@@ -293,7 +293,11 @@ export default function CourseOutlineViewer({
                                 </button>
                               </div>
                             ) : (
-                              <BookOpen size={14} style={{ color: 'var(--gray-400)' }} />
+                              item.content?.viewMode === 'presentation'
+                                ? <MonitorPlay size={14} style={{ color: 'var(--gray-400)' }} />
+                                : item.type === 'assessment'
+                                  ? <ClipboardCheck size={14} style={{ color: 'var(--gray-400)' }} />
+                                  : <BookOpen size={14} style={{ color: 'var(--gray-400)' }} />
                             )}
                           </div>
                         )

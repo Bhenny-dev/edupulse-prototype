@@ -42,7 +42,8 @@ const SECTIONS = [
   {
     key: 'syllabus', path: '/syllabus', label: 'Syllabus', icon: BookOpen, roles: ['instructor'],
     sidebar: [
-      { key: 'mine', label: 'My Courses', tab: 'mine' },
+      { key: 'mine', label: 'My Courses', tab: 'register' },
+      { key: 'syllabus', label: 'My Syllabus', tab: 'mine' },
       { key: 'builder', label: 'Syllabus Builder', tab: 'builder' },
     ],
   },
@@ -76,6 +77,8 @@ const SECTIONS = [
     sidebar: [
       { key: 'overview', label: 'Overview', tab: 'overview' },
       { key: 'bytopic', label: 'By Topic', tab: 'bytopic' },
+      { key: 'materials', label: 'Learning Materials', tab: 'materials', roles: ['student'] },
+      { key: 'scores', label: 'Assessment Scores', tab: 'scores', roles: ['student'] },
       { key: 'alerts', label: 'Alerts', tab: 'alerts', roles: ['instructor'] },
     ],
   },

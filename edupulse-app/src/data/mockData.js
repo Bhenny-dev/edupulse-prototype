@@ -1421,9 +1421,27 @@ function buildGeneratedStudent(id, section) {
 // (do not run through the RNG). Bhenny is also src/context/AuthContext.jsx's
 // DEMO_USERS.student, so her email must match that file exactly.
 const FIXED_TEST_STUDENTS = [
-  { name: 'Bhenny Benlor D. Rivera', email: 'bhenny.rivera@kcp.edu.ph', scores: { prelim: 90, midterm: 92, finals: null }, topics: { t14: 94, t15: 88, t16: 90, t17: 91 } },
-  { name: 'Yesha Nicka D. Botay', email: 'yesha.botay@kcp.edu.ph', scores: { prelim: 84, midterm: 87, finals: null }, topics: { t14: 89, t15: 83, t16: 85, t17: 86 } },
-  { name: 'Renand D. De Vera', email: 'renand.devera@kcp.edu.ph', scores: { prelim: 78, midterm: 80, finals: null }, topics: { t14: 82, t15: 76, t16: 79, t17: 81 } },
+  {
+    name: 'Bhenny Benlor D. Rivera', email: 'bhenny.rivera@kcp.edu.ph',
+    courses: [
+      { code: 'WMAD 303-1', scores: { prelim: 90, midterm: 92, finals: null }, topics: { t14: 94, t15: 88, t16: 90, t17: 91 } },
+      { code: 'WMAD 301', scores: { prelim: 88, midterm: 85, finals: null }, topics: { t26: 87, t27: 83 } },
+      { code: 'IT 209', scores: { prelim: 86, midterm: 91, finals: null }, topics: { t21: 89, t22: 92, t23: 88, t24: 90, t25: 86 } },
+    ],
+  },
+  {
+    name: 'Yesha Nicka D. Botay', email: 'yesha.botay@kcp.edu.ph',
+    courses: [
+      { code: 'WMAD 303-1', scores: { prelim: 84, midterm: 87, finals: null }, topics: { t14: 89, t15: 83, t16: 85, t17: 86 } },
+      { code: 'WMAD 301', scores: { prelim: 80, midterm: 82, finals: null }, topics: { t26: 84, t27: 79 } },
+    ],
+  },
+  {
+    name: 'Renand D. De Vera', email: 'renand.devera@kcp.edu.ph',
+    courses: [
+      { code: 'WMAD 303-1', scores: { prelim: 78, midterm: 80, finals: null }, topics: { t14: 82, t15: 76, t16: 79, t17: 81 } },
+    ],
+  },
 ]
 
 function buildStudentRoster() {
@@ -1436,7 +1454,7 @@ function buildStudentRoster() {
         const fixed = FIXED_TEST_STUDENTS[i]
         roster.push({
           id, name: fixed.name, email: fixed.email, section: section.code, yearLevel: section.yearLevel,
-          courses: [{ code: 'WMAD 303-1', scores: fixed.scores, topics: fixed.topics }],
+          courses: fixed.courses,
         })
       } else {
         roster.push(buildGeneratedStudent(id, section))
@@ -1624,32 +1642,32 @@ export const EUSUITE_COURSE_ASSIGNMENTS = [
 export const SHARED_SYLLABUS_REPOSITORY = [
   // ─── IT 102 · Computer Programming 1 — two competing versions ───
   { id: 'shared-1', syllabusId: 'syl-1', courseCode: 'IT 102', courseTitle: 'Computer Programming 1', instructorId: 1, instructorName: 'Sir Rogelio L. Guisdan', version: 3, uploadedDate: '2026-06-20', status: 'active', reuseCount: 5, lastReusedBy: 'Maam Sharmaine Pangcog', lastReusedDate: '2026-07-14' },
-  { id: 'shared-20', syllabusId: null, courseCode: 'IT 102', courseTitle: 'Computer Programming 1', instructorId: 3, instructorName: 'Sir Ralphy Luzada', version: 1, uploadedDate: '2026-07-10', status: 'approved_uploaded', reuseCount: 0, lastReusedBy: null, lastReusedDate: null },
+  { id: 'shared-20', syllabusId: null, courseCode: 'IT 102', courseTitle: 'Computer Programming 1', instructorId: 3, instructorName: 'Sir Ralphy Luzada', version: 1, uploadedDate: '2026-07-10', status: 'approved_uploaded', reuseCount: 2, lastReusedBy: 'Maam Libby Teofilo', lastReusedDate: '2026-07-15' },
   // ─── IT 106 · Computer Programming 2 — single active version ───
-  { id: 'shared-2', syllabusId: 'syl-2', courseCode: 'IT 106', courseTitle: 'Computer Programming 2', instructorId: 1, instructorName: 'Sir Rogelio L. Guisdan', version: 2, uploadedDate: '2026-07-08', status: 'active', reuseCount: 1, lastReusedBy: null, lastReusedDate: null },
+  { id: 'shared-2', syllabusId: 'syl-2', courseCode: 'IT 106', courseTitle: 'Computer Programming 2', instructorId: 1, instructorName: 'Sir Rogelio L. Guisdan', version: 2, uploadedDate: '2026-07-08', status: 'active', reuseCount: 3, lastReusedBy: 'Sir Ralphy Luzada', lastReusedDate: '2026-07-13' },
   // ─── IT 209 · Web System Technologies — popular, heavily reused ───
-  { id: 'shared-3', syllabusId: 'syl-3', courseCode: 'IT 209', courseTitle: 'Web System Technologies', instructorId: 1, instructorName: 'Sir Rogelio L. Guisdan', version: 2, uploadedDate: '2026-07-05', status: 'active', reuseCount: 3, lastReusedBy: 'Maam Sharmaine Pangcog', lastReusedDate: '2026-07-12' },
-  { id: 'shared-21', syllabusId: null, courseCode: 'IT 209', courseTitle: 'Web System Technologies', instructorId: 7, instructorName: 'Maam Sharmaine Pangcog', version: 1, uploadedDate: '2026-07-14', status: 'drafted', reuseCount: 0, lastReusedBy: null, lastReusedDate: null },
+  { id: 'shared-3', syllabusId: 'syl-3', courseCode: 'IT 209', courseTitle: 'Web System Technologies', instructorId: 1, instructorName: 'Sir Rogelio L. Guisdan', version: 2, uploadedDate: '2026-07-05', status: 'active', reuseCount: 4, lastReusedBy: 'Maam Sharmaine Pangcog', lastReusedDate: '2026-07-16' },
+  { id: 'shared-21', syllabusId: null, courseCode: 'IT 209', courseTitle: 'Web System Technologies', instructorId: 7, instructorName: 'Maam Sharmaine Pangcog', version: 1, uploadedDate: '2026-07-14', status: 'drafted', reuseCount: 1, lastReusedBy: 'Sir Ralphy Luzada', lastReusedDate: '2026-07-16' },
   // ─── IT 107 · Human Computer Interaction — draft in progress ───
-  { id: 'shared-8', syllabusId: 'syl-6', courseCode: 'IT 107', courseTitle: 'Human Computer Interaction', instructorId: 1, instructorName: 'Sir Rogelio L. Guisdan', version: 1, uploadedDate: '2026-07-13', status: 'drafted', reuseCount: 0, lastReusedBy: null, lastReusedDate: null },
+  { id: 'shared-8', syllabusId: 'syl-6', courseCode: 'IT 107', courseTitle: 'Human Computer Interaction', instructorId: 1, instructorName: 'Sir Rogelio L. Guisdan', version: 1, uploadedDate: '2026-07-13', status: 'drafted', reuseCount: 1, lastReusedBy: 'Maam Sharmaine Pangcog', lastReusedDate: '2026-07-15' },
   // ─── IT 201 · Data Structures and Algorithms — two versions at different stages ───
-  { id: 'shared-7', syllabusId: 'syl-5', courseCode: 'IT 201', courseTitle: 'Data Structures and Algorithms', instructorId: 1, instructorName: 'Sir Rogelio L. Guisdan', version: 1, uploadedDate: '2026-07-12', status: 'downloaded_for_approval', reuseCount: 0, lastReusedBy: null, lastReusedDate: null },
+  { id: 'shared-7', syllabusId: 'syl-5', courseCode: 'IT 201', courseTitle: 'Data Structures and Algorithms', instructorId: 1, instructorName: 'Sir Rogelio L. Guisdan', version: 1, uploadedDate: '2026-07-12', status: 'downloaded_for_approval', reuseCount: 1, lastReusedBy: 'Sir Steve Sudaypan', lastReusedDate: '2026-07-14' },
   { id: 'shared-22', syllabusId: null, courseCode: 'IT 201', courseTitle: 'Data Structures and Algorithms', instructorId: 5, instructorName: 'Maam Myriel Nginsayan', version: 1, uploadedDate: '2026-07-15', status: 'active', reuseCount: 2, lastReusedBy: 'Sir Dave Medrano', lastReusedDate: '2026-07-16' },
   // ─── IT 205 · Information Management — checked, awaiting download ───
-  { id: 'shared-9', syllabusId: 'syl-7', courseCode: 'IT 205', courseTitle: 'Information Management', instructorId: 1, instructorName: 'Sir Rogelio L. Guisdan', version: 2, uploadedDate: '2026-07-06', status: 'checked', reuseCount: 1, lastReusedBy: 'Sir Dave Medrano', lastReusedDate: '2026-07-14' },
+  { id: 'shared-9', syllabusId: 'syl-7', courseCode: 'IT 205', courseTitle: 'Information Management', instructorId: 1, instructorName: 'Sir Rogelio L. Guisdan', version: 2, uploadedDate: '2026-07-06', status: 'checked', reuseCount: 2, lastReusedBy: 'Sir Dave Medrano', lastReusedDate: '2026-07-14' },
   // ─── IT 207 · Integrative Programming and Technologies — checked ───
-  { id: 'shared-10', syllabusId: 'syl-10', courseCode: 'IT 207', courseTitle: 'Integrative Programming and Technologies', instructorId: 2, instructorName: 'Sir Dave Medrano', version: 1, uploadedDate: '2026-07-09', status: 'checked', reuseCount: 0, lastReusedBy: null, lastReusedDate: null },
+  { id: 'shared-10', syllabusId: 'syl-10', courseCode: 'IT 207', courseTitle: 'Integrative Programming and Technologies', instructorId: 2, instructorName: 'Sir Dave Medrano', version: 1, uploadedDate: '2026-07-09', status: 'checked', reuseCount: 1, lastReusedBy: 'Sir Ralphy Luzada', lastReusedDate: '2026-07-13' },
   // ─── IT 202 · Fundamentals of Networking — approved, version 3 ───
-  { id: 'shared-6', syllabusId: 'syl-11', courseCode: 'IT 202', courseTitle: 'Fundamentals of Networking', instructorId: 4, instructorName: 'Sir Steve Sudaypan', version: 3, uploadedDate: '2026-07-07', status: 'approved_uploaded', reuseCount: 1, lastReusedBy: null, lastReusedDate: null },
+  { id: 'shared-6', syllabusId: 'syl-11', courseCode: 'IT 202', courseTitle: 'Fundamentals of Networking', instructorId: 4, instructorName: 'Sir Steve Sudaypan', version: 3, uploadedDate: '2026-07-07', status: 'approved_uploaded', reuseCount: 2, lastReusedBy: 'Maam Myriel Nginsayan', lastReusedDate: '2026-07-12' },
   // ─── IT 204 · Platform Technologies — out for approval ───
-  { id: 'shared-12', syllabusId: 'syl-12', courseCode: 'IT 204', courseTitle: 'Platform Technologies', instructorId: 5, instructorName: 'Maam Myriel Nginsayan', version: 1, uploadedDate: '2026-07-11', status: 'downloaded_for_approval', reuseCount: 0, lastReusedBy: null, lastReusedDate: null },
+  { id: 'shared-12', syllabusId: 'syl-12', courseCode: 'IT 204', courseTitle: 'Platform Technologies', instructorId: 5, instructorName: 'Maam Myriel Nginsayan', version: 1, uploadedDate: '2026-07-11', status: 'downloaded_for_approval', reuseCount: 1, lastReusedBy: 'Sir Dave Medrano', lastReusedDate: '2026-07-13' },
   // ─── WMAD 303-1 · Advanced Web Systems Technologies — active ───
-  { id: 'shared-4', syllabusId: 'syl-4', courseCode: 'WMAD 303-1', courseTitle: 'Advanced Web Systems Technologies', instructorId: 1, instructorName: 'Sir Rogelio L. Guisdan', version: 2, uploadedDate: '2026-07-11', status: 'active', reuseCount: 1, lastReusedBy: null, lastReusedDate: null },
+  { id: 'shared-4', syllabusId: 'syl-4', courseCode: 'WMAD 303-1', courseTitle: 'Advanced Web Systems Technologies', instructorId: 1, instructorName: 'Sir Rogelio L. Guisdan', version: 2, uploadedDate: '2026-07-11', status: 'active', reuseCount: 3, lastReusedBy: 'Maam Libby Teofilo', lastReusedDate: '2026-07-15' },
   // ─── WMAD 301 · Principles of Accounting — two competing versions ───
-  { id: 'shared-5', syllabusId: 'syl-8', courseCode: 'WMAD 301', courseTitle: 'Principles of Accounting', instructorId: 3, instructorName: 'Sir Ralphy Luzada', version: 2, uploadedDate: '2026-07-10', status: 'approved_uploaded', reuseCount: 0, lastReusedBy: null, lastReusedDate: null },
-  { id: 'shared-23', syllabusId: null, courseCode: 'WMAD 301', courseTitle: 'Principles of Accounting', instructorId: 6, instructorName: 'Maam Libby Teofilo', version: 1, uploadedDate: '2026-07-15', status: 'checked', reuseCount: 0, lastReusedBy: null, lastReusedDate: null },
+  { id: 'shared-5', syllabusId: 'syl-8', courseCode: 'WMAD 301', courseTitle: 'Principles of Accounting', instructorId: 3, instructorName: 'Sir Ralphy Luzada', version: 2, uploadedDate: '2026-07-10', status: 'approved_uploaded', reuseCount: 2, lastReusedBy: 'Maam Libby Teofilo', lastReusedDate: '2026-07-14' },
+  { id: 'shared-23', syllabusId: null, courseCode: 'WMAD 301', courseTitle: 'Principles of Accounting', instructorId: 6, instructorName: 'Maam Libby Teofilo', version: 1, uploadedDate: '2026-07-15', status: 'checked', reuseCount: 1, lastReusedBy: 'Sir Ralphy Luzada', lastReusedDate: '2026-07-16' },
   // ─── WMAD 302 · Mobile Systems and Technologies — draft ───
-  { id: 'shared-11', syllabusId: 'syl-9', courseCode: 'WMAD 302', courseTitle: 'Mobile Systems and Technologies', instructorId: 3, instructorName: 'Sir Ralphy Luzada', version: 1, uploadedDate: '2026-07-12', status: 'drafted', reuseCount: 0, lastReusedBy: null, lastReusedDate: null },
+  { id: 'shared-11', syllabusId: 'syl-9', courseCode: 'WMAD 302', courseTitle: 'Mobile Systems and Technologies', instructorId: 3, instructorName: 'Sir Ralphy Luzada', version: 1, uploadedDate: '2026-07-12', status: 'drafted', reuseCount: 1, lastReusedBy: 'Maam Sharmaine Pangcog', lastReusedDate: '2026-07-15' },
 ]
 
 // ─────────────────────────────────────────────────────────────────────────
@@ -1802,4 +1820,80 @@ export const STUDENT_MATERIAL_ACCESS = (() => {
     }
   }
   return access
+})()
+
+// ─────────────────────────────────────────────────────────────────────────
+// STUDENT_ASSESSMENT_SCORES — records the student's submitted assessment
+// scores per course. Drives the Assessment Score Sheet in Performance.
+// Each entry is one graded assessment attempt.
+// ─────────────────────────────────────────────────────────────────────────
+export const STUDENT_ASSESSMENT_SCORES = (() => {
+  const scores = []
+  let id = 1
+  const assessmentTemplates = {
+    'WMAD 303-1': [
+      { title: 'Week 1 — Web Fundamentals Quiz', type: 'quiz', totalPoints: 20, weight: 'Class Standing' },
+      { title: 'Week 3 — CSS & Responsive Design Activity', type: 'activity', totalPoints: 30, weight: 'Class Standing' },
+      { title: 'Week 6 — Advanced JavaScript Assessment', type: 'quiz', totalPoints: 25, weight: 'Class Standing' },
+      { title: 'Week 8 — React Framework Quiz', type: 'quiz', totalPoints: 20, weight: 'Class Standing' },
+      { title: 'Midterm Examination', type: 'exam', totalPoints: 100, weight: 'Examination' },
+      { title: 'Week 11 — API Integration Activity', type: 'activity', totalPoints: 30, weight: 'Class Standing' },
+      { title: 'Week 14 — Testing & Deployment Quiz', type: 'quiz', totalPoints: 20, weight: 'Class Standing' },
+    ],
+    'WMAD 301': [
+      { title: 'Week 1 — Accounting Basics Quiz', type: 'quiz', totalPoints: 20, weight: 'Class Standing' },
+      { title: 'Week 4 — Financial Statements Activity', type: 'activity', totalPoints: 40, weight: 'Class Standing' },
+      { title: 'Midterm Examination', type: 'exam', totalPoints: 100, weight: 'Examination' },
+    ],
+    'IT 209': [
+      { title: 'Week 1 — Web Dev Foundations Quiz', type: 'quiz', totalPoints: 15, weight: 'Class Standing' },
+      { title: 'Week 3 — CSS Layout Activity', type: 'activity', totalPoints: 25, weight: 'Class Standing' },
+      { title: 'Week 5 — JavaScript & DOM Quiz', type: 'quiz', totalPoints: 20, weight: 'Class Standing' },
+      { title: 'Week 7 — Frontend Frameworks Activity', type: 'activity', totalPoints: 30, weight: 'Class Standing' },
+      { title: 'Midterm Examination', type: 'exam', totalPoints: 100, weight: 'Examination' },
+    ],
+    'IT 102': [
+      { title: 'Week 1 — Programming Basics Quiz', type: 'quiz', totalPoints: 20, weight: 'Class Standing' },
+      { title: 'Week 3 — Variables & Data Types Activity', type: 'activity', totalPoints: 25, weight: 'Class Standing' },
+      { title: 'Week 5 — Control Structures Quiz', type: 'quiz', totalPoints: 20, weight: 'Class Standing' },
+      { title: 'Midterm Examination', type: 'exam', totalPoints: 100, weight: 'Examination' },
+    ],
+    'IT 201': [
+      { title: 'Week 1 — Data Structures Intro Quiz', type: 'quiz', totalPoints: 20, weight: 'Class Standing' },
+      { title: 'Week 4 — Linear Structures Activity', type: 'activity', totalPoints: 30, weight: 'Class Standing' },
+      { title: 'Midterm Examination', type: 'exam', totalPoints: 100, weight: 'Examination' },
+    ],
+  }
+  for (const s of STUDENT_RECORDS.slice(0, 30)) {
+    const courses = STUDENT_COURSES[s.id] || []
+    for (const course of courses) {
+      const templates = assessmentTemplates[course.code]
+      if (!templates) continue
+      const courseRecord = s.courses.find(c => c.code === course.code)
+      const baseAbility = courseRecord?.scores?.midterm || 78
+      for (const t of templates) {
+        const isExam = t.type === 'exam'
+        const variance = isExam ? 8 : 12
+        const raw = Math.round(baseAbility + Math.sin(id * 3) * variance - (isExam ? 0 : 5))
+        const score = Math.min(t.totalPoints, Math.max(Math.round(t.totalPoints * 0.3), raw > 100 ? raw - 30 : raw))
+        const percentage = Math.round((score / t.totalPoints) * 100)
+        const weekNum = parseInt(t.title.match(/Week (\d+)/)?.[1] || '0')
+        scores.push({
+          id: `ascore-${id}`,
+          studentId: s.id,
+          courseCode: course.code,
+          assessmentTitle: t.title,
+          assessmentType: t.type,
+          weight: t.weight,
+          totalPoints: t.totalPoints,
+          score,
+          percentage,
+          submittedAt: `2026-07-${String(5 + weekNum).padStart(2, '0')}T${String(10 + (id % 10)).padStart(2, '0')}:30:00`,
+          status: percentage >= 75 ? 'passed' : 'below_cutoff',
+        })
+        id++
+      }
+    }
+  }
+  return scores
 })()
