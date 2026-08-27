@@ -14,3 +14,15 @@ The React Compiler is not enabled on this template because of its impact on dev 
 ## Expanding the Oxlint configuration
 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+
+## EduPulse development
+
+```bash
+npm install
+npm run supabase:check
+npm run dev
+```
+
+Copy `.env.example` to `.env.local` and provide the browser-safe Supabase URL and publishable key before running the app. Keep `SUPABASE_SECRET_KEY` server-only; never prefix it with `VITE_` or commit it.
+
+Production deployments are managed by the Vercel Git integration for the `main` branch. GitHub Actions runs lint, typecheck, and build checks for pushes and pull requests.

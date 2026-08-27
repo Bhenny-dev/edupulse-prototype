@@ -1,15 +1,17 @@
-name: Deploy to GitHub Pages
+name: Frontend CI
 
 on:
   push:
     branches: ["main"]
+  pull_request:
+    branches: ["main"]
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  build-and-deploy:
+  verify:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -18,7 +20,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
           cache-dependency-path: edupulse-app/package-lock.json
 
@@ -26,13 +28,14 @@ jobs:
         working-directory: edupulse-app
         run: npm ci
 
-      - name: Build
+      - name: Lint
+        working-directory: edupulse-app
+        run: npm run lint
+
+      - name: Typecheck
+        working-directory: edupulse-app
+        run: npm run typecheck
+
+      - name: Production build
         working-directory: edupulse-app
         run: npm run build
-
-      - name: Deploy to gh-pages branch
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./edupulse-app/dist
-          destination_dir: ./
