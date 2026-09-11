@@ -6,6 +6,16 @@ import {
 import Reveal from '../components/ui/Reveal'
 import CountUp from '../components/ui/CountUp'
 import LoginPanel from '../components/auth/LoginPanel'
+import EduPulseMark from '../components/brand/EduPulseMark'
+
+// HashRouter reads the URL hash for routing, so a plain `href="#id"` jump
+// link would be swallowed as a (nonexistent) route and land on NotFound.
+// Intercept the click and scroll manually instead of letting the browser
+// touch location.hash.
+function scrollToId(e, id) {
+  e.preventDefault()
+  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+}
 
 const ABOUT_CARDS = [
   {
@@ -43,14 +53,14 @@ export default function Landing() {
     <div className="landing-page">
       <nav className="landing-nav">
         <div className="landing-nav-inner">
-          <a href="#top" className="landing-nav-logo">
-            <span className="landing-nav-mark">EP</span>
+          <a href="#top" className="landing-nav-logo" onClick={e => scrollToId(e, 'top')}>
+            <span className="landing-nav-mark"><EduPulseMark size={20} style={{ color: 'white' }} /></span>
             <span className="landing-nav-name">EduPulse</span>
           </a>
           <div className="landing-nav-links">
-            <a href="#about" className="landing-nav-link">About</a>
-            <a href="#stats" className="landing-nav-link">Why It Matters</a>
-            <a href="#login" className="btn btn-primary btn-sm">Sign In</a>
+            <a href="#about" className="landing-nav-link" onClick={e => scrollToId(e, 'about')}>About</a>
+            <a href="#stats" className="landing-nav-link" onClick={e => scrollToId(e, 'stats')}>Why It Matters</a>
+            <a href="#login" className="btn btn-primary btn-sm" onClick={e => scrollToId(e, 'login')}>Sign In</a>
           </div>
         </div>
       </nav>
@@ -78,10 +88,10 @@ export default function Landing() {
           </Reveal>
 
           <Reveal delay={240} className="landing-hero-actions">
-            <a href="#login" className="btn btn-primary btn-lg">
+            <a href="#login" className="btn btn-primary btn-lg" onClick={e => scrollToId(e, 'login')}>
               Get Started <ArrowRight size={18} />
             </a>
-            <a href="#about" className="btn btn-secondary btn-lg">
+            <a href="#about" className="btn btn-secondary btn-lg" onClick={e => scrollToId(e, 'about')}>
               See how it helps
             </a>
           </Reveal>

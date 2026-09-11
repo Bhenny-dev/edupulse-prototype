@@ -5,7 +5,6 @@ import { ContentStoreProvider } from './context/ContentStoreContext'
 import { ThemeProvider } from './context/ThemeContext'
 import Layout from './components/layout/Layout'
 import Landing from './pages/Landing'
-import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
 import Syllabus from './pages/Syllabus'
 import Courseware from './pages/Courseware'
@@ -31,7 +30,7 @@ import Terms from './pages/Terms'
 // corresponding step in the flow.
 function ProtectedRoute({ children, allowedRoles }) {
   const { user } = useAuth()
-  if (!user) return <Navigate to="/login" replace />
+  if (!user) return <Navigate to="/" replace />
   if (allowedRoles && !allowedRoles.includes(user.role)) return <Navigate to="/dashboard" replace />
   return children
 }
@@ -53,7 +52,6 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<Landing />} />
-      <Route path="/login" element={<Login />} />
       <Route path="/privacy" element={<Privacy />} />
       <Route path="/terms" element={<Terms />} />
       <Route path="/500" element={<ServerError />} />

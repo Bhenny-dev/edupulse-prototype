@@ -9,8 +9,8 @@ export default function Terms() {
       fontFamily: 'var(--font-body)',
     }}>
       <div style={{ maxWidth: '720px', margin: '0 auto', padding: '48px 24px' }}>
-        <Link to="/login" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: 'var(--sky-600)', fontSize: '0.875rem', marginBottom: '24px', fontWeight: 600 }}>
-          <ArrowLeft size={16} /> Back to Login
+        <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: 'var(--sky-600)', fontSize: '0.875rem', marginBottom: '24px', fontWeight: 600 }}>
+          <ArrowLeft size={16} /> Back to Home
         </Link>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>

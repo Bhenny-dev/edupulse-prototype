@@ -1785,58 +1785,6 @@ textarea:focus-visible {
 .landing-footer-links { display: flex; gap: 20px; }
 .landing-footer-links a:hover { color: var(--sky-600); }
 
-/* ─── Standalone /login page (uses the same LoginPanel) ─── */
-.login-page {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 20px;
-}
-
-.login-page-inner {
-  max-width: 460px;
-  width: 100%;
-  text-align: center;
-}
-
-.login-page-logo {
-  display: inline-flex;
-  width: 72px;
-  height: 72px;
-  border-radius: var(--radius-xl);
-  background: linear-gradient(135deg, var(--sky-400), var(--sky-500));
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 24px;
-  box-shadow: var(--shadow-3d-hover);
-  animation: float 3s ease-in-out infinite;
-}
-.login-page-logo span {
-  color: var(--white);
-  font-weight: 800;
-  font-size: 1.25rem;
-  font-family: var(--font-heading);
-}
-
-.login-page-title {
-  font-size: 2rem;
-  margin-bottom: 8px;
-}
-
-.login-page-subtitle {
-  color: var(--gray-500);
-  font-size: 0.9375rem;
-  line-height: 1.6;
-  margin-bottom: 32px;
-}
-
-.login-page-footer {
-  margin-top: 24px;
-  font-size: 0.75rem;
-  color: var(--gray-400);
-}
-
 @media (max-width: 900px) {
   .landing-about-grid { grid-template-columns: 1fr; }
   .landing-stats-grid { grid-template-columns: repeat(2, 1fr); }

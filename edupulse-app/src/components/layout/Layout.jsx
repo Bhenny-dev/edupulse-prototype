@@ -10,6 +10,7 @@ import {
 import { useState, useEffect } from 'react'
 import KeyboardShortcutsModal from '../ui/KeyboardShortcutsModal'
 import Pulse from '../pulse/Pulse'
+import EduPulseMark from '../brand/EduPulseMark'
 
 // Navigation architecture — one top-bar station per FLOW_SPEC phase, max 5
 // primary sections per role; anything below that altitude lives in the
@@ -305,7 +306,7 @@ export default function Layout() {
     return () => window.removeEventListener('keydown', handleKey)
   }, [])
 
-  const handleLogout = () => { logout(); navigate('/login') }
+  const handleLogout = () => { logout(); navigate('/') }
   const notifs = ROLE_NOTIFICATIONS[user?.role] || []
   const unreadCount = notifs.length
   const sections = SECTIONS.filter(s => canSee(s, user?.role))
@@ -344,7 +345,7 @@ export default function Layout() {
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               boxShadow: 'var(--shadow-3d)',
             }}>
-              <span style={{ color: 'white', fontWeight: 800, fontSize: '0.875rem', fontFamily: 'var(--font-heading)' }}>EP</span>
+              <EduPulseMark size={20} style={{ color: 'white' }} />
             </div>
             <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '1.125rem', color: 'var(--gray-900)' }}>EduPulse</span>
           </NavLink>
