@@ -5,5 +5,5 @@
       <stop offset="1" stop-color="#0284c7"/>
     </linearGradient>
   </defs>
-  <path d="M6,58 L18,58 L26,70 L36,30 L45,60 L56,48 L70,48 L92,20" fill="none" stroke="url(#epGradient)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M10,60 Q30,20 50,44 L50,58 L50,44 Q70,20 90,60" fill="none" stroke="url(#epGradient)" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

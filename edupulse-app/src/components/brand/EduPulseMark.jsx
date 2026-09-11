@@ -1,9 +1,9 @@
-// EduPulse's mark: a heartbeat/pulse line that resolves into an upward
-// trend — the "pulse" of academic activity, trending up. One continuous
+// EduPulse's mark: an open book — two pages curving up from the spine —
+// where the spine itself is drawn as a small pulse tick. One continuous
 // stroke, no unrelated icon set. Color comes from `currentColor` so it
 // adapts to whatever the parent's text color is (white on the gradient
 // badge, brand blue on a light background, etc).
-export default function EduPulseMark({ size = 24, strokeWidth = 12, className = '', style, ...props }) {
+export default function EduPulseMark({ size = 24, strokeWidth = 11, className = '', style, ...props }) {
   return (
     <svg
       width={size}
@@ -16,7 +16,7 @@ export default function EduPulseMark({ size = 24, strokeWidth = 12, className = 
       {...props}
     >
       <path
-        d="M6,58 L18,58 L26,70 L36,30 L45,60 L56,48 L70,48 L92,20"
+        d="M10,60 Q30,20 50,44 L50,58 L50,44 Q70,20 90,60"
         stroke="currentColor"
         strokeWidth={strokeWidth}
         strokeLinecap="round"
