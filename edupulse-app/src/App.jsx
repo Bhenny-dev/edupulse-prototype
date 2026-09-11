@@ -4,6 +4,7 @@ import { ToastProvider } from './context/ToastContext'
 import { ContentStoreProvider } from './context/ContentStoreContext'
 import { ThemeProvider } from './context/ThemeContext'
 import Layout from './components/layout/Layout'
+import Landing from './pages/Landing'
 import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
 import Syllabus from './pages/Syllabus'
@@ -51,6 +52,7 @@ function SkipToContent() {
 function AppRoutes() {
   return (
     <Routes>
+      <Route path="/" element={<Landing />} />
       <Route path="/login" element={<Login />} />
       <Route path="/privacy" element={<Privacy />} />
       <Route path="/terms" element={<Terms />} />
