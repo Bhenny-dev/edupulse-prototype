@@ -1,0 +1,6 @@
+.data
+.env.local
+node_modules
+tests
+test-results
+supabase/.temp

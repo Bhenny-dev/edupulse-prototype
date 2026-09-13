@@ -1,28 +1,18 @@
-# React + Vite
+# EduPulse 0.1.0
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+React/Vite academic workflow prototype with a connected LangChain/LangGraph AI API, local free Ollama inference, and Postgres vector retrieval.
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
-
-## EduPulse development
-
-```bash
-npm install
-npm run supabase:check
+```powershell
+npm ci
+# Start Ollama, then:
+npm run ai:setup
 npm run dev
 ```
 
-Copy `.env.example` to `.env.local` and provide the browser-safe Supabase URL and publishable key before running the app. Keep `SUPABASE_SECRET_KEY` server-only; never prefix it with `VITE_` or commit it.
+Open http://127.0.0.1:5173. Use an instructor preview locally, add a reference in Settings → AI & Knowledge, then ask Pulse or generate a courseware week. New courseware is a draft requiring instructor review. Provider secrets stay on the server; `.env.example` describes configuration.
 
-Production deployments are managed by the Vercel Git integration for the `main` branch. GitHub Actions runs lint, typecheck, and build checks for pushes and pull requests.
+`npm run verify` runs lint, typechecks, tests, build and deployment checks. `npm run test:browser` validates desktop/mobile workflows (install Chromium with `npx playwright install chromium`). `npm run ai:smoke` verifies real inference; see the runbook before using it with an active dev server.
+
+Hosted source search works without a model key. Hosted generation needs a configured provider; Vercel cannot access this computer's Ollama. Some academic modules still use prototype data, and courseware storage is device-local.
+
+See the root [feature history](../feature-documentation/README.md), [release features](../feature-documentation/versions/v0.1.0/features/connected-ai.md), [execution plan](../feature-documentation/WORKPLAN.md), and [operations runbook](../feature-documentation/versions/v0.1.0/operations/runbook.md).

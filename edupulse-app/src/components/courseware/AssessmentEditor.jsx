@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { ArrowLeft, Plus, Trash2, Check, Save, RotateCcw } from 'lucide-react'
 import { useToast } from '../../context/ToastContext'
+import DraftEvidence from '../ai/DraftEvidence'
 
 /* ─── Assessment Editor / Viewer ───
  * One-pager assessment with 1-5 multiple choice questions.
@@ -87,7 +88,7 @@ export default function AssessmentEditor({ content, onBack, isStudent = false, o
       {/* Toolbar */}
       <div style={{
         maxWidth: '850px', margin: '0 auto', padding: '0 24px',
-        display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px',
+        display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '12px', marginBottom: '16px',
       }}>
         <button className="btn btn-ghost btn-sm" onClick={onBack}>
           <ArrowLeft size={14} /> Back
@@ -111,6 +112,7 @@ export default function AssessmentEditor({ content, onBack, isStudent = false, o
 
       {/* A4 Assessment Page */}
       <div className="assessment-page">
+        {!isStudent && <DraftEvidence metadata={content.ai} />}
         {/* Header */}
         <div className="assessment-header">
           <div className="assessment-institution">King's College of the Philippines</div>
@@ -199,6 +201,10 @@ export default function AssessmentEditor({ content, onBack, isStudent = false, o
                   )
                 })}
               </div>
+              {!isStudent && <label style={{ display: 'block', marginTop: 12 }}>Answer explanation
+                <textarea className="form-input" rows={3} value={q.explanation || ''} onChange={e => updateQuestion(qIdx, 'explanation', e.target.value)} placeholder="Explain why the selected answer is correct, using course references." />
+              </label>}
+              {isStudent && submitted && q.explanation && <p>{q.explanation}</p>}
             </div>
           ))}
         </div>
@@ -419,7 +425,14 @@ export default function AssessmentEditor({ content, onBack, isStudent = false, o
           font-size: 0.6875rem;
           color: var(--gray-400);
         }
+        @media (max-width: 767px) {
+          .assessment-header, .assessment-title, .assessment-subtitle, .assessment-meta, .assessment-questions, .assessment-footer { padding-left: 20px; padding-right: 20px; }
+          .assessment-instructions, .assessment-results { margin-left: 20px; margin-right: 20px; }
+          .assessment-meta, .assessment-footer { flex-wrap: wrap; gap: 8px; }
+          .assessment-option-input { min-width: 0; }
+        }
         @media print {
+          .ai-draft-evidence { display: none; }
           .assessment-page { box-shadow: none; border-radius: 0; max-width: 100%; }
         }
       `}</style>

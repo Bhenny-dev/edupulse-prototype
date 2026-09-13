@@ -25,3 +25,6 @@ dist-ssr
 .vercel
 .env*
 !.env.example
+.data/
+test-results/
+supabase/.temp/

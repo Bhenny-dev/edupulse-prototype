@@ -1,17 +1,30 @@
 {
   "name": "edupulse-app",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "node scripts/dev.mjs",
     "build": "vite build",
     "lint": "oxlint",
     "supabase:check": "node --env-file-if-exists=.env.local scripts/check-supabase.mjs",
-    "typecheck": "tsc --project jsconfig.json --noEmit",
-    "preview": "vite preview"
+    "typecheck": "tsc --project jsconfig.json --noEmit && tsc --project tsconfig.server.json --noEmit",
+    "preview": "vite preview",
+    "test": "node --import tsx --test tests/*.test.ts",
+    "verify": "npm run lint && npm run typecheck && npm test && npm run build && npm run deployment:check",
+    "deployment:check": "node --import tsx scripts/check-deployment.ts",
+    "ai:setup": "node --env-file-if-exists=.env.local scripts/setup-ai.mjs",
+    "ai:smoke": "node --env-file-if-exists=.env.local --import tsx scripts/smoke-ai.ts",
+    "test:browser": "playwright test"
   },
   "dependencies": {
+    "@electric-sql/pglite": "0.5.8",
+    "@electric-sql/pglite-pgvector": "0.0.9",
+    "@langchain/core": "1.2.11",
+    "@langchain/google-genai": "2.3.2",
+    "@langchain/langgraph": "1.4.15",
+    "@langchain/ollama": "1.3.0",
+    "@langchain/textsplitters": "1.0.1",
     "@supabase/server": "1.4.1",
     "@supabase/supabase-js": "2.112.4",
     "lucide-react": "^1.24.0",
@@ -19,15 +32,19 @@
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-router-dom": "^7.18.1",
-    "recharts": "^3.9.2"
+    "recharts": "^3.9.2",
+    "zod": "4.6.4"
   },
   "devDependencies": {
     "@emnapi/core": "1.11.3",
     "@emnapi/runtime": "1.11.3",
+    "@playwright/test": "1.63.0",
+    "@types/node": "26.5.1",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.3",
     "oxlint": "^1.71.0",
+    "tsx": "4.23.13",
     "typescript": "^7.0.2",
     "vite": "^8.1.1"
   }

@@ -1,4 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react'
+import { supabase } from '../lib/supabaseClient'
+import { setAiAccessToken } from '../lib/aiClient'
 
 const AuthContext = createContext(null)
 
@@ -39,10 +41,41 @@ function migrateUser(saved) {
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
-    const saved = localStorage.getItem('edupulse_user')
-    return saved ? migrateUser(JSON.parse(saved)) : null
+    try {
+      const saved = JSON.parse(localStorage.getItem('edupulse_user') || 'null')
+      return saved && !saved.authenticated ? { ...migrateUser(saved), demo: true } : null
+    } catch { return null }
   })
+  const [authLoading, setAuthLoading] = useState(Boolean(supabase))
   const [roleHistory, setRoleHistory] = useState([])
+
+  useEffect(() => {
+    if (!supabase) return
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setAiAccessToken(session?.access_token)
+      if (session?.user) {
+        const account = session.user
+        const role = ['admin', 'instructor'].includes(account.app_metadata.role) ? account.app_metadata.role : 'student'
+        setUser({ id: account.id, email: account.email, name: account.user_metadata.full_name || account.email, department: account.user_metadata.department || '', role, title: role === 'admin' ? 'Dean / Associate Dean' : role === 'instructor' ? 'Instructor' : 'Student', authenticated: true, demo: false })
+      } else setUser(previous => previous?.authenticated ? null : previous)
+      setAuthLoading(false)
+    })
+    return () => subscription.unsubscribe()
+  }, [])
+
+  const signIn = useCallback(async (email, password) => {
+    if (!supabase) throw new Error('Sign-in is not configured. Use the local preview or configure Supabase.')
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    if (error) throw new Error('Sign-in failed. Check your credentials and the Supabase connection.')
+  }, [])
+
+  const updateProfile = useCallback(async (profile) => {
+    if (user?.authenticated) {
+      const { error } = await supabase.auth.updateUser({ data: { full_name: profile.name, department: profile.department }, ...(profile.password ? { password: profile.password } : {}) })
+      if (error) throw new Error('Profile could not be saved. Please try again.')
+    }
+    setUser(previous => ({ ...previous, name: profile.name, department: profile.department }))
+  }, [user])
 
   useEffect(() => {
     if (user) localStorage.setItem('edupulse_user', JSON.stringify(user))
@@ -52,18 +85,23 @@ export function AuthProvider({ children }) {
   // `persona` is a DEMO_USERS key (dean / associate_dean / instructor / student),
   // not a role — dean and associate_dean both resolve to role 'admin'.
   const login = useCallback((persona) => {
-    setUser(DEMO_USERS[persona])
+    if (!DEMO_USERS[persona] || user?.authenticated) return
+    setAiAccessToken(undefined)
+    setUser({ ...DEMO_USERS[persona], demo: true })
     setRoleHistory(prev => [...prev, { action: 'login', persona, timestamp: new Date().toISOString() }])
-  }, [])
+  }, [user])
 
-  const logout = useCallback(() => {
+  const logout = useCallback(async () => {
+    if (user?.authenticated) await supabase?.auth.signOut()
+    setAiAccessToken(undefined)
     setRoleHistory(prev => [...prev, { action: 'logout', role: user?.role, timestamp: new Date().toISOString() }])
     setUser(null)
   }, [user])
 
   const switchRole = useCallback((persona) => {
+    if (user?.authenticated || !DEMO_USERS[persona]) return
     const previous = user?.title
-    setUser(DEMO_USERS[persona])
+    setUser({ ...DEMO_USERS[persona], demo: true })
     setRoleHistory(prev => [...prev, { action: 'role_switch', from: previous, to: persona, timestamp: new Date().toISOString() }])
   }, [user])
 
@@ -79,7 +117,7 @@ export function AuthProvider({ children }) {
   }, [user])
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, switchRole, hasPermission, canAccess, roleHistory, ROLE_PERMISSIONS }}>
+    <AuthContext.Provider value={{ user, login, signIn, logout, updateProfile, authLoading, switchRole, hasPermission, canAccess, roleHistory, ROLE_PERMISSIONS }}>
       {children}
     </AuthContext.Provider>
   )

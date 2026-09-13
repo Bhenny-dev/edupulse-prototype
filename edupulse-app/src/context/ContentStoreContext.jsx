@@ -1,30 +1,48 @@
-import { createContext, useContext, useState, useCallback } from 'react'
-import { buildInitialContentStore } from '../data/mockData'
+import { createContext, useContext, useState, useCallback, useEffect } from 'react'
+import { useAuth } from './AuthContext'
+import { mergeDrafts } from '../utils/contentUpdates'
 
 /* ─── Content Store Context ───
- * Shared ephemeral store for generated courseware content.
+ * Device-persisted, account-scoped store for generated courseware content.
  * Both Courseware and StudentMonitoring read from this store.
  * Content is keyed by contentId: { content, status, type, week, syllabusId, title, generatedAt }
  * Lifecycle: draft → checked → published
- * Pre-seeded with published items for the 4 active syllabi so students
- * can immediately view courseware and instructors see their generated content.
+ * Legacy status-only preview placeholders are excluded: they are not saved content.
  */
 
 const ContentStoreContext = createContext(null)
 
 export function ContentStoreProvider({ children }) {
-  const [store, setStore] = useState(() => buildInitialContentStore())
+  const { user } = useAuth()
+  const owner = user?.authenticated ? user.id : 'preview'
+  return <ScopedContentStore key={owner} owner={owner}>{children}</ScopedContentStore>
+}
+
+function ScopedContentStore({ children, owner }) {
+  const key = `edupulse-content-v1-${owner}`
+  const [store, setStore] = useState(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem(key) || 'null')
+      if (saved && typeof saved === 'object' && !Array.isArray(saved)) return Object.fromEntries(Object.entries(saved).filter(([, item]) => item?.content && typeof item.content.title === 'string' && ['material', 'activity', 'assessment'].includes(item.type)))
+    } catch { /* Ignore corrupted local cache. */ }
+    return {}
+  })
+  const [storageError, setStorageError] = useState('')
+  useEffect(() => {
+    try { localStorage.setItem(key, JSON.stringify(store)); setStorageError('') }
+    catch { setStorageError('Courseware could not be saved on this device. Export important work before closing the page.') }
+  }, [key, store])
 
   const generateCourse = useCallback((syllabusId, courseUpdates) => {
-    setStore(prev => ({ ...prev, ...courseUpdates }))
+    setStore(prev => mergeDrafts(prev, courseUpdates))
   }, [])
 
   const generateWeek = useCallback((weekUpdates) => {
-    setStore(prev => ({ ...prev, ...weekUpdates }))
+    setStore(prev => mergeDrafts(prev, weekUpdates))
   }, [])
 
   const checkItem = useCallback((contentId) => {
-    setStore(prev => ({
+    setStore(prev => !prev[contentId] ? prev : ({
       ...prev,
       [contentId]: { ...prev[contentId], status: 'checked' },
     }))
@@ -41,21 +59,22 @@ export function ContentStoreProvider({ children }) {
   }, [])
 
   const toggleVisibility = useCallback((contentId, newStatus) => {
-    setStore(prev => ({
+    setStore(prev => !prev[contentId] || (newStatus === 'published' && !['checked', 'published'].includes(prev[contentId].status)) ? prev : ({
       ...prev,
       [contentId]: { ...prev[contentId], status: newStatus },
     }))
   }, [])
 
   const saveContent = useCallback((contentId, newContent) => {
-    setStore(prev => ({
+    setStore(prev => !prev[contentId] ? prev : ({
       ...prev,
-      [contentId]: { ...prev[contentId], content: newContent },
+      [contentId]: { ...prev[contentId], content: newContent, status: 'draft' },
     }))
   }, [])
 
   return (
     <ContentStoreContext.Provider value={{ store, generateCourse, generateWeek, checkItem, bulkCheck, toggleVisibility, saveContent }}>
+      {storageError && <p className="ai-notice" role="alert">{storageError}</p>}
       {children}
     </ContentStoreContext.Provider>
   )

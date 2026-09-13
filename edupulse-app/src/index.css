@@ -939,6 +939,16 @@ textarea:focus-visible {
 
 /* ─── MOBILE (≤767px) ─── */
 @media (max-width: 767px) {
+  .app-topbar { padding: 0 12px !important; gap: 8px; }
+  .app-brand { gap: 8px !important; min-width: 0; }
+  .app-primary-nav, .desktop-tool { display: none !important; }
+  .app-tools { gap: 4px !important; }
+  .app-tools > div:empty { display: none; }
+  .app-workspace { flex-direction: column; }
+  .app-sidebar { width: 100% !important; min-height: auto !important; border-right: 0 !important; border-bottom: 1px solid var(--gray-100); padding: 10px 12px !important; }
+  .app-sidebar nav { flex-direction: row !important; overflow-x: auto; }
+  .app-sidebar nav a { flex-shrink: 0; }
+  footer { flex-wrap: wrap; justify-content: center !important; gap: 12px; }
   /* REQ-1101: Full mobile layout */
   body { font-size: 15px; }
   

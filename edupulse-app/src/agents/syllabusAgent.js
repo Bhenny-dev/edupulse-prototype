@@ -27,15 +27,15 @@ export default defineAgent({
         { section: 5, title: 'Add your course outline', body: 'For each week, add: learning outcomes, topics, activities, assessment details, teaching materials, and assessment types. Use the six-layer dropdowns to categorize materials and assessments.' },
         { section: 6, title: 'Set requirements and grading', body: 'Review the pre-filled requirements and grading formula. Adjust for your course as needed.' },
         { section: 7, title: 'Add references', body: 'Add your textbooks and online references. Files and links from Section 5 sync automatically.' },
-        { title: 'Review and submit', body: 'Check the summary, save your draft, and submit it to your Dean for approval when ready.' },
+        { title: 'Review and download', body: 'Check the summary, save your draft, mark it checked and download it for the external signature process.' },
       ],
     },
     {
       key: 'edit', label: 'Edit an existing syllabus',
       steps: [
         { title: 'Open the syllabus', body: 'Pick it from your list — you will see its current status and version number.' },
-        { section: 5, title: 'Update the outline', body: 'Edit any week row directly — ILOs, contents, activities, assessments, teaching materials, or assessment types. Every change is versioned automatically.' },
-        { title: 'Check downstream courseware', body: 'If this topic already has generated courseware, it will be flagged as out of alignment so you know what to revisit.' },
+        { section: 5, title: 'Update the outline', body: 'Edit the intended learning outcomes, topics, activities and assessment details, then save your changes.' },
+        { title: 'Check downstream courseware', body: 'Review previously generated courseware against the updated outline. Alignment changes require instructor review.' },
         { title: 'Save and resubmit if needed', body: 'Approved syllabi that change substantially should go back to your Dean for another look.' },
       ],
     },

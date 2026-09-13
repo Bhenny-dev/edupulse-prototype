@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from 'react'
+import { useState, useMemo, useCallback, useEffect, useRef } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { COURSEWARE_ITEMS, DEFAULT_SYLLABI, INSTRUCTORS } from '../data/mockData'
@@ -9,7 +9,7 @@ import CourseOutlineViewer from '../components/courseware/CourseOutlineViewer'
 import DocumentViewer from '../components/courseware/DocumentViewer'
 import PresentationViewer from '../components/courseware/PresentationViewer'
 import AssessmentEditor from '../components/courseware/AssessmentEditor'
-import { generateAllCourseContent, generateWeekContent } from '../utils/courseContentGenerator'
+import { generateWeekDraft } from '../utils/aiCourseware'
 import {
   Eye, Check, X, Send, FileText, Search, Clock, Sparkles, Calendar,
   Copy, Tag, MessageSquare, RotateCcw, Download,
@@ -139,7 +139,11 @@ function CourseSelectionGrid({ user, contentStore, onSelectCourse }) {
 
 /* ═══════════════════════ Builder: Course Workspace ═══════════════════════ */
 
-function CourseWorkspace({ syllabusId, contentStore, onBack, onGenerateCourse, onGenerateWeek, onCheckItem, onBulkCheck, onToggleVisibility }) {
+function CourseWorkspace({ syllabusId, contentStore, onBack, onGenerateWeek, onCheckItem, onBulkCheck, onToggleVisibility }) {
+  const generationRef = useRef(null)
+  const [generationProgress, setGenerationProgress] = useState('')
+  useEffect(() => () => generationRef.current?.abort(), [])
+
   const { addToast } = useToast()
   const { saveContent } = useContentStore()
   const syllabus = DEFAULT_SYLLABI.find(s => s.id === syllabusId)
@@ -170,58 +174,44 @@ function CourseWorkspace({ syllabusId, contentStore, onBack, onGenerateCourse, o
       .filter(([_, v]) => v.syllabusId === syllabusId && v.week === weekNum)
   }
 
-  const generateAll = () => {
-    setGeneratingAll(true)
-    pulseBus.expression('thinking')
-    setTimeout(() => {
-      const weeks = generateAllCourseContent(syllabus)
-      let count = 0
-      const updates = {}
-      for (const weekData of weeks) {
-        if (weekData.isExam) continue
-        for (const item of weekData.items) {
-          updates[item.id] = {
-            content: item.content,
-            status: 'draft',
-            type: item.type,
-            week: weekData.week,
-            syllabusId: syllabus.id,
-            title: item.content.title,
-            generatedAt: new Date().toISOString().slice(0, 10),
-          }
-          count++
-        }
-      }
-      onGenerateCourse(syllabus.id, updates)
-      setGeneratingAll(false)
-      addToast(`${count} items generated for ${syllabus.courseCode} — review each week`, 'success')
-      pulseBus.celebrate(`Generated ${count} items for ${syllabus.courseCode}`)
-    }, 1200)
+  const saveWeekDraft = async (weekNum, signal) => {
+    const weekResult = await generateWeekDraft(syllabus, weekNum, signal)
+    if (signal.aborted) return 0
+    const updates = {}
+    for (const item of weekResult.items) {
+      // Reviewed/published work must not be silently overwritten by a batch.
+      if (['checked', 'published'].includes(contentStore[item.id]?.status)) continue
+      updates[item.id] = { content: item.content, status: 'draft', type: item.type,
+        week: weekNum, syllabusId: syllabus.id, title: item.content.title,
+        generatedAt: new Date().toISOString() }
+    }
+    onGenerateWeek(updates)
+    setExpandedWeeks(prev => new Set([...prev, weekNum]))
+    return Object.keys(updates).length
   }
-
-  const generateSingleWeek = (weekNum) => {
-    setGeneratingWeek(weekNum)
-    setTimeout(() => {
-      const weekResult = generateWeekContent(syllabus, weekNum)
-      const updates = {}
-      let count = 0
-      for (const item of weekResult.items) {
-        updates[item.id] = {
-          content: item.content,
-          status: 'draft',
-          type: item.type,
-          week: weekResult.week,
-          syllabusId: syllabus.id,
-          title: item.content.title,
-          generatedAt: new Date().toISOString().slice(0, 10),
-        }
-        count++
+  const generateAll = async () => {
+    if (generationRef.current) return
+    const controller = new AbortController(); generationRef.current = controller
+    setGeneratingAll(true); pulseBus.expression('thinking')
+    let count = 0
+    try {
+      const rows = (syllabus.courseOutline || []).filter(row => !isExamRow(row))
+      for (const [index, row] of rows.entries()) {
+        controller.signal.throwIfAborted()
+        setGenerationProgress(`Week ${row.week} (${index + 1}/${rows.length})`)
+        count += await saveWeekDraft(row.week, controller.signal)
       }
-      onGenerateWeek(updates)
-      setGeneratingWeek(null)
-      setExpandedWeeks(prev => new Set([...prev, weekNum]))
-      addToast(`Week ${weekNum}: ${count} items generated`, 'success')
-    }, 600)
+      addToast(`${count} AI drafts saved. Checked and published items were preserved.`, 'success')
+    } catch (err) { addToast(`${controller.signal.aborted ? 'Generation stopped.' : err.message} ${count} completed drafts were saved.`, 'info') }
+    finally { setGeneratingAll(false); setGenerationProgress(''); generationRef.current = null; pulseBus.expression('idle') }
+  }
+  const generateSingleWeek = async (weekNum) => {
+    if (generationRef.current) return
+    const controller = new AbortController(); generationRef.current = controller
+    setGeneratingWeek(weekNum); setGenerationProgress(`Generating week ${weekNum}`)
+    try { const count = await saveWeekDraft(weekNum, controller.signal); if (!controller.signal.aborted) addToast(`Week ${weekNum}: ${count} AI drafts saved for review.`, 'success') }
+    catch (err) { addToast(controller.signal.aborted ? 'Generation stopped. Existing content was preserved.' : err.message, 'error') }
+    finally { setGeneratingWeek(null); setGenerationProgress(''); generationRef.current = null }
   }
 
   const checkSelected = () => {
@@ -256,7 +246,8 @@ function CourseWorkspace({ syllabusId, contentStore, onBack, onGenerateCourse, o
 
   const handleSaveContent = (newContent) => {
     if (viewingItem?._storeId) {
-      saveContent(viewingItem._storeId, { ...newContent })
+      const { _storeId, ...existing } = viewingItem
+      saveContent(_storeId, { ...existing, [viewingType === 'assessment' ? 'questions' : 'sections']: newContent })
       addToast('Content saved', 'success')
     }
     setViewingItem(null)
@@ -283,7 +274,7 @@ function CourseWorkspace({ syllabusId, contentStore, onBack, onGenerateCourse, o
       )
     }
     if (viewingType === 'assessment') {
-      return <AssessmentEditor content={viewingItem} onBack={() => { setViewingItem(null); setViewingType(null) }} isStudent={false} />
+      return <AssessmentEditor content={viewingItem} onBack={() => { setViewingItem(null); setViewingType(null) }} isStudent={false} onSave={handleSaveContent} />
     }
     return (
       <DocumentViewer
@@ -323,6 +314,7 @@ function CourseWorkspace({ syllabusId, contentStore, onBack, onGenerateCourse, o
             <><Sparkles size={14} /> Generate All Content</>
           )}
         </button>
+        {generationProgress && <div className="ai-actions" role="status"><span>{generationProgress}</span><button className="btn btn-secondary btn-sm" onClick={() => generationRef.current?.abort()}>Stop generation</button></div>}
       </div>
 
       {/* Summary bar */}
@@ -573,6 +565,7 @@ function MyCoursewareTab({ items, contentStore, onSelectCourse }) {
   const navigate = useNavigate()
   const [viewingOutlineCourseId, setViewingOutlineCourseId] = useState(null)
   const { user } = useAuth()
+  const { saveContent, toggleVisibility } = useContentStore()
   const isStudent = user?.role === 'student'
 
   const activeSyllabi = useMemo(() => {
@@ -603,6 +596,8 @@ function MyCoursewareTab({ items, contentStore, onSelectCourse }) {
         onBack={() => setViewingOutlineCourseId(null)}
         isStudent={user?.role === 'student'}
         contentStore={contentStore}
+        onContentSave={!isStudent ? saveContent : undefined}
+        onToggleVisibility={!isStudent ? toggleVisibility : undefined}
       />
     )
   }

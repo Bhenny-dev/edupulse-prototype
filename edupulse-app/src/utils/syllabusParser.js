@@ -1,4 +1,3 @@
-import mammoth from 'mammoth'
 import { CURRICULUM_COURSES } from '../data/mockData'
 
 /**
@@ -184,6 +183,7 @@ function parseReferences(text) {
 
 export async function parseSyllabusFile(file) {
   const arrayBuffer = await file.arrayBuffer()
+  const mammoth = await import('mammoth')
   const result = await mammoth.convertToHtml({ arrayBuffer })
   const html = result.value
   const fullText = htmlToText(html)

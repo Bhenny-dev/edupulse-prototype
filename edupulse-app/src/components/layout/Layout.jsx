@@ -125,7 +125,7 @@ function Sidebar({ section, role }) {
   const activeTab = searchParams.get('tab') || items[0].tab
 
   return (
-    <aside role="navigation" aria-label={`${section.label} sections`} style={{
+    <aside className="app-sidebar" role="navigation" aria-label={`${section.label} sections`} style={{
       width: 224, flexShrink: 0, borderRight: '1px solid var(--gray-100)',
       background: 'var(--white)', padding: '20px 12px', minHeight: 'calc(100vh - 64px)',
     }}>
@@ -290,8 +290,7 @@ export default function Layout() {
   const [showRoleSwitch, setShowRoleSwitch] = useState(false)
   const [showMobileMenu, setShowMobileMenu] = useState(false)
   const [showLangMenu, setShowLangMenu] = useState(false)
-  const { dark: darkMode, toggleDark } = useTheme()
-  const [fontScale, setFontScale] = useState('medium')
+  const { dark: darkMode, toggleDark, fontScale } = useTheme()
   const [showShortcuts, setShowShortcuts] = useState(false)
 
   useEffect(() => {
@@ -312,12 +311,14 @@ export default function Layout() {
   const sections = SECTIONS.filter(s => canSee(s, user?.role))
   const current = activeSection(location.pathname, user?.role)
 
+  useEffect(() => { window.scrollTo({ top: 0, left: 0, behavior: 'instant' }) }, [location.pathname])
+
   return (
     <div style={{
       minHeight: '100vh', display: 'flex', flexDirection: 'column',
       fontSize: fontScale === 'small' ? '14px' : fontScale === 'large' ? '18px' : '16px',
     }}>
-      <header role="banner" style={{
+      <header className="app-topbar" role="banner" style={{
         position: 'sticky', top: 0, zIndex: 100,
         background: 'rgba(255, 255, 255, 0.85)',
         backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)',
@@ -325,7 +326,7 @@ export default function Layout() {
         padding: '0 24px', height: '64px',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
+        <div className="app-brand" style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
           <button
             className="mobile-menu-btn"
             onClick={() => setShowMobileMenu(!showMobileMenu)}
@@ -351,7 +352,7 @@ export default function Layout() {
           </NavLink>
 
           {/* Top bar: primary sections only — 5 max per role. See NFR-USE-01/02. */}
-          <nav style={{ display: 'flex', gap: '4px' }} role="navigation" aria-label="Main navigation">
+          <nav className="app-primary-nav" style={{ display: 'flex', gap: '4px' }} role="navigation" aria-label="Main navigation">
             {sections.map(item => {
               const isActive = current?.key === item.key
               return (
@@ -378,8 +379,8 @@ export default function Layout() {
           </nav>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <button onClick={() => setShowSearch(true)} title="Search (Ctrl+K)" style={{
+        <div className="app-tools" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <button className="desktop-tool" onClick={() => setShowSearch(true)} title="Search (Ctrl+K)" style={{
             width: 36, height: 36, borderRadius: 'var(--radius-full)',
             background: 'var(--gray-100)', border: 'none',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -397,7 +398,7 @@ export default function Layout() {
             {darkMode ? <Sun size={16} /> : <Moon size={16} />}
           </button>
 
-          <NavLink to="/help" title="Help & Support" style={{
+          <NavLink className="desktop-tool" to="/help" title="Help & Support" style={{
             width: 36, height: 36, borderRadius: 'var(--radius-full)',
             background: 'var(--gray-100)', border: 'none',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -406,7 +407,7 @@ export default function Layout() {
             <HelpCircle size={16} />
           </NavLink>
 
-          <button onClick={() => setShowShortcuts(true)} title="Keyboard shortcuts (?)" style={{
+          <button className="desktop-tool" onClick={() => setShowShortcuts(true)} title="Keyboard shortcuts (?)" style={{
             width: 36, height: 36, borderRadius: 'var(--radius-full)',
             background: 'var(--gray-100)', border: 'none',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -416,7 +417,7 @@ export default function Layout() {
           </button>
 
           <div style={{ position: 'relative' }}>
-            <button onClick={() => { setShowLangMenu(!showLangMenu); setShowNotifications(false); setShowRoleSwitch(false); setShowUserMenu(false) }}
+            <button className="desktop-tool" onClick={() => { setShowLangMenu(!showLangMenu); setShowNotifications(false); setShowRoleSwitch(false); setShowUserMenu(false) }}
               title="Language" style={{
               width: 36, height: 36, borderRadius: 'var(--radius-full)',
               background: 'var(--gray-100)', border: 'none',
@@ -495,7 +496,7 @@ export default function Layout() {
           </div>
 
           <div style={{ position: 'relative' }}>
-            <button onClick={() => { setShowRoleSwitch(!showRoleSwitch); setShowUserMenu(false); setShowNotifications(false) }} title="Switch Role (prototype only)" style={{
+            <button className="desktop-tool" onClick={() => { setShowRoleSwitch(!showRoleSwitch); setShowUserMenu(false); setShowNotifications(false) }} disabled={user?.authenticated} title={user?.authenticated ? "Roles are assigned by your administrator" : "Switch preview role"} style={{
               padding: '4px 10px', borderRadius: 'var(--radius-full)',
               background: 'var(--purple-100)', border: '1px solid var(--purple-100)',
               cursor: 'pointer', fontSize: '0.75rem', fontWeight: 700, color: 'var(--purple-500)',
@@ -587,7 +588,7 @@ export default function Layout() {
 
       <Breadcrumbs />
 
-      <div style={{ flex: 1, display: 'flex' }}>
+      <div className="app-workspace" style={{ flex: 1, display: 'flex' }}>
         <Sidebar section={current} role={user?.role} />
         <main id="main-content" style={{ flex: 1, minHeight: 'calc(100vh - 64px)', minWidth: 0 }} role="main" tabIndex={-1}>
           <Outlet />
@@ -604,7 +605,7 @@ export default function Layout() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 600 }}>EduPulse</span>
           <span>King's College of the Philippines — Benguet</span>
-          <span className="badge badge-draft" style={{ fontSize: '0.625rem' }}>Prototype v5.0</span>
+          <span className="badge badge-draft" style={{ fontSize: '0.625rem' }}>Connected AI v0.1.0</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           <NavLink to="/help" style={{ color: 'var(--gray-400)', transition: 'color 150ms' }}
@@ -616,7 +617,7 @@ export default function Layout() {
       </footer>
 
       {showSearch && <SearchOverlay onClose={() => setShowSearch(false)} />}
-      {showRoleSwitch && <RoleSwitchPopover onClose={() => setShowRoleSwitch(false)} />}
+      {showRoleSwitch && !user?.authenticated && <RoleSwitchPopover onClose={() => setShowRoleSwitch(false)} />}
       <KeyboardShortcutsModal isOpen={showShortcuts} onClose={() => setShowShortcuts(false)} />
       <Pulse />
 

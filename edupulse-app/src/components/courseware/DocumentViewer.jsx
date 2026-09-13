@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { ArrowLeft, Download, Printer, Save, Pencil, X } from 'lucide-react'
 import { useToast } from '../../context/ToastContext'
+import DraftEvidence from '../ai/DraftEvidence'
 
 /* ─── Document Viewer ───
  * Renders content as a styled A4 document with proper margins,
@@ -62,6 +63,16 @@ export default function DocumentViewer({ content, onBack, isStudent = false, onS
     setEditing(false)
   }
 
+  const downloadDocument = () => {
+    const text = [content.title, content.subtitle, ...(sections || []).flatMap(section => [section.heading, section.body])].filter(Boolean).join('\n\n')
+    const url = URL.createObjectURL(new Blob([text], { type: 'text/plain;charset=utf-8' }))
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `${content.title.replace(/[^a-z0-9 _-]/gi, '').slice(0, 80) || 'course-document'}.txt`
+    link.click()
+    setTimeout(() => URL.revokeObjectURL(url), 1000)
+  }
+
   const renderBody = (body, idx, isEditing) => {
     if (isEditing) {
       return (
@@ -101,7 +112,7 @@ export default function DocumentViewer({ content, onBack, isStudent = false, onS
       {/* Toolbar */}
       <div style={{
         maxWidth: '850px', margin: '0 auto', padding: '0 24px',
-        display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px',
+        display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '12px', marginBottom: '16px',
       }}>
         <button className="btn btn-ghost btn-sm" onClick={onBack}>
           <ArrowLeft size={14} /> Back
@@ -126,13 +137,14 @@ export default function DocumentViewer({ content, onBack, isStudent = false, onS
         <button className="btn btn-ghost btn-sm" onClick={() => window.print()}>
           <Printer size={14} /> Print
         </button>
-        <button className="btn btn-secondary btn-sm" onClick={() => addToast('Download coming soon', 'info')}>
-          <Download size={14} /> Download
+        <button className="btn btn-secondary btn-sm" onClick={downloadDocument}>
+          <Download size={14} /> Download text
         </button>
       </div>
 
       {/* A4 Document */}
       <div className="doc-viewer-page">
+        {!isStudent && <DraftEvidence metadata={content.ai} />}
         {/* Header */}
         <div className="doc-viewer-header">
           <div className="doc-viewer-institution">King's College of the Philippines</div>
@@ -296,7 +308,13 @@ export default function DocumentViewer({ content, onBack, isStudent = false, onS
           resize: vertical;
           min-height: 80px;
         }
+        @media (max-width: 767px) {
+          .doc-viewer-header, .doc-viewer-title, .doc-viewer-subtitle, .doc-viewer-body, .doc-viewer-footer { padding-left: 20px; padding-right: 20px; }
+          .doc-viewer-text { text-align: left; overflow-wrap: anywhere; }
+          .doc-viewer-footer { flex-wrap: wrap; gap: 8px; }
+        }
         @media print {
+          .ai-draft-evidence { display: none; }
           .doc-viewer-page {
             box-shadow: none;
             border-radius: 0;

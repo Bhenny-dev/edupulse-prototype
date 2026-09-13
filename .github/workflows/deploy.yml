@@ -1,4 +1,4 @@
-name: Frontend CI
+name: EduPulse verification
 
 on:
   push:
@@ -28,14 +28,18 @@ jobs:
         working-directory: edupulse-app
         run: npm ci
 
-      - name: Lint
+      - name: Lint, typecheck, tests, build and deployment validation
         working-directory: edupulse-app
-        run: npm run lint
+        run: npm run verify
 
-      - name: Typecheck
+      - name: Dependency audit
         working-directory: edupulse-app
-        run: npm run typecheck
+        run: npm audit --audit-level=high
 
-      - name: Production build
+      - name: Install browser for UI validation
         working-directory: edupulse-app
-        run: npm run build
+        run: npx playwright install --with-deps chromium
+
+      - name: Desktop and mobile workflow checks
+        working-directory: edupulse-app
+        run: npm run test:browser

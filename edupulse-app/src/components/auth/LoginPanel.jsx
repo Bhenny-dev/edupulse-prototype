@@ -16,13 +16,20 @@ const QUICK_ROLES = [
 // row below is a temporary stand-in for real sign-in and will be removed
 // once authentication is implemented.
 export default function LoginPanel({ className = '' }) {
-  const { login } = useAuth()
+  const { login, signIn } = useAuth()
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState('')
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
+    if (busy) return
+    setBusy(true); setError('')
+    try { await signIn(email, password); navigate('/dashboard') }
+    catch (err) { setError(err.message) }
+    finally { setBusy(false) }
   }
 
   const handleQuickAccess = (persona) => {
@@ -40,6 +47,7 @@ export default function LoginPanel({ className = '' }) {
             <input
               id="login-email"
               type="email"
+              required
               className="form-input"
               placeholder="you@kcp.edu.ph"
               value={email}
@@ -55,6 +63,7 @@ export default function LoginPanel({ className = '' }) {
             <input
               id="login-password"
               type="password"
+              required
               className="form-input"
               placeholder="••••••••"
               value={password}
@@ -63,11 +72,12 @@ export default function LoginPanel({ className = '' }) {
             />
           </div>
         </div>
-        <button type="submit" className="btn btn-primary w-full login-submit">
-          <LogIn size={16} /> Sign In
+        {error && <p role="alert" className="text-sm">{error}</p>}
+        <button type="submit" disabled={busy} className="btn btn-primary w-full login-submit">
+          <LogIn size={16} /> {busy ? 'Signing in…' : 'Sign In'}
         </button>
         <p className="login-note">
-          Prototype build — sign-in isn't connected yet. Use quick access below to preview a role.
+          Sign in with your provisioned EduPulse account. Preview access below uses sample data.
         </p>
       </form>
 

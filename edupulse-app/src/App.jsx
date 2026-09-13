@@ -29,7 +29,8 @@ import Terms from './pages/Terms'
 // OUTSIDE the system on the downloaded file. Do not add a route without a
 // corresponding step in the flow.
 function ProtectedRoute({ children, allowedRoles }) {
-  const { user } = useAuth()
+  const { user, authLoading } = useAuth()
+  if (authLoading) return <div role="status" className="container">Restoring your session…</div>
   if (!user) return <Navigate to="/" replace />
   if (allowedRoles && !allowedRoles.includes(user.role)) return <Navigate to="/dashboard" replace />
   return children

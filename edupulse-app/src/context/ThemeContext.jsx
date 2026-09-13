@@ -17,6 +17,13 @@ function getInitialDark() {
 
 export function ThemeProvider({ children }) {
   const [dark, setDark] = useState(getInitialDark)
+  const [fontScale, setFontScale] = useState(() => {
+    try { const value = localStorage.getItem('edupulse-font-scale'); return ['small', 'medium', 'large'].includes(value) ? value : 'medium' } catch { return 'medium' }
+  })
+  useEffect(() => {
+    document.documentElement.style.fontSize = fontScale === 'small' ? '14px' : fontScale === 'large' ? '18px' : '16px'
+    try { localStorage.setItem('edupulse-font-scale', fontScale) } catch { /* Preference remains active for this session. */ }
+  }, [fontScale])
 
   useEffect(() => {
     const root = document.documentElement
@@ -31,7 +38,7 @@ export function ThemeProvider({ children }) {
   const toggleDark = () => setDark(prev => !prev)
 
   return (
-    <ThemeContext.Provider value={{ dark, toggleDark }}>
+    <ThemeContext.Provider value={{ dark, toggleDark, fontScale, setFontScale }}>
       {children}
     </ThemeContext.Provider>
   )

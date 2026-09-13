@@ -17,7 +17,7 @@ export default defineAgent({
         { title: 'Choose scope', body: 'This week, a term (midterm/finals), or the whole Course Outline — only active syllabi (outline extracted) can generate.' },
         { title: 'Generation runs, grounded in your syllabus', body: 'It retrieves your approved syllabus and instructor-provided materials before drafting anything — you\'ll see the stages in plain language.' },
         { title: 'Review the draft', body: 'Every item shows which outline week and content it was grounded in. Edit, finalize, or regenerate just that one item.' },
-        { title: 'Publish or schedule', body: 'Publish immediately, or line it up against the outline timeframe. Only published items reach students.' },
+        { title: 'Review and publish', body: 'Mark reviewed drafts checked before publishing. Only published items appear in the student view.' },
       ],
     },
     {

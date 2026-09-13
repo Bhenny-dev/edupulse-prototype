@@ -5,7 +5,6 @@ import {
   MonitorPlay,
 } from 'lucide-react'
 import { DEFAULT_SYLLABI } from '../../data/mockData'
-import { generateAllCourseContent } from '../../utils/courseContentGenerator'
 import DocumentViewer from './DocumentViewer'
 import AssessmentEditor from './AssessmentEditor'
 import PresentationViewer from './PresentationViewer'
@@ -14,7 +13,7 @@ import PresentationViewer from './PresentationViewer'
  * Hierarchical view of generated courseware organized by week.
  * Supports document view, presentation view, and assessment view.
  * Instructors see hide/publish controls per item.
- * Content can come from contentStore (persisted) or be generated on the fly.
+ * Displays persisted content only; never fabricates missing generated items.
  */
 
 const TYPE_CONFIG = {
@@ -40,16 +39,15 @@ export default function CourseOutlineViewer({
 
   const weeks = useMemo(() => {
     if (!syllabus) return []
-    const allWeeks = generateAllCourseContent(syllabus)
-    if (!isStudent) return allWeeks
-    return allWeeks.map(w => ({
-      ...w,
-      items: w.items.filter(item => {
-        const status = contentStore[item.id]?.status || 'draft'
-        return status === 'published'
-      }),
+    return (syllabus.courseOutline || []).map(row => ({
+      week: row.week,
+      isExam: !row.ilos && /examination/i.test(row.assessments || ''),
+      examType: row.assessments,
+      items: Object.entries(contentStore)
+        .filter(([, item]) => item.content && item.syllabusId === syllabusId && item.week === row.week && (!isStudent || item.status === 'published'))
+        .map(([id, item]) => ({ ...item, id })),
     }))
-  }, [syllabus, isStudent, contentStore])
+  }, [syllabus, syllabusId, isStudent, contentStore])
 
   if (!syllabus) {
     return (
@@ -63,9 +61,12 @@ export default function CourseOutlineViewer({
   }
 
   if (viewingItem) {
-    const handleSave = (newSections) => {
+    const handleSave = (values) => {
       if (onContentSave && viewingItem._storeId) {
-        onContentSave(viewingItem._storeId, { ...viewingItem, sections: newSections })
+        const { _storeId, ...existing } = viewingItem
+        const updated = { ...existing, [viewingType === 'assessment' ? 'questions' : 'sections']: values }
+        onContentSave(_storeId, updated)
+        setViewingItem({ ...updated, _storeId })
       }
     }
 
@@ -80,7 +81,7 @@ export default function CourseOutlineViewer({
       )
     }
     if (viewingType === 'assessment') {
-      return <AssessmentEditor content={viewingItem} onBack={() => { setViewingItem(null); setViewingType(null) }} isStudent={isStudent} />
+      return <AssessmentEditor content={viewingItem} onBack={() => { setViewingItem(null); setViewingType(null) }} isStudent={isStudent} onSave={!isStudent ? handleSave : undefined} />
     }
     return (
       <DocumentViewer
@@ -266,14 +267,14 @@ export default function CourseOutlineViewer({
                             {!isStudent && onToggleVisibility ? (
                               <div style={{ display: 'flex', gap: '4px', flexShrink: 0 }}>
                                 {/* View button — shows correct viewer based on viewMode */}
-                                {item.type !== 'assessment' && (
+                                {(
                                   <button
                                     className="btn btn-ghost btn-sm"
                                     style={{ padding: '4px 6px' }}
-                                    title={item.content.viewMode === 'presentation' ? 'Open presentation' : 'Open document'}
+                                    title={item.type === 'assessment' ? 'Open assessment' : item.content.viewMode === 'presentation' ? 'Open presentation' : 'Open document'}
                                     onClick={e => { e.stopPropagation(); openItem(item, item.content.viewMode || 'document') }}
                                   >
-                                    {item.content.viewMode === 'presentation' ? <MonitorPlay size={13} /> : <BookOpen size={13} />}
+                                    {item.type === 'assessment' ? <ClipboardCheck size={13} /> : item.content.viewMode === 'presentation' ? <MonitorPlay size={13} /> : <BookOpen size={13} />}
                                   </button>
                                 )}
                                 {/* Publish / Unpublish */}
@@ -284,9 +285,10 @@ export default function CourseOutlineViewer({
                                     color: status === 'published' ? 'var(--green-500, #22c55e)' : undefined,
                                   }}
                                   title={status === 'published' ? 'Unpublish (hide from students)' : 'Publish to students'}
+                                  disabled={!['checked', 'published'].includes(status)}
                                   onClick={e => {
                                     e.stopPropagation()
-                                    onToggleVisibility(item.id, status === 'published' ? 'hidden' : 'published')
+                                    onToggleVisibility(item.id, status === 'published' ? 'checked' : 'published')
                                   }}
                                 >
                                   {status === 'published' ? <EyeOff size={13} /> : <Send size={13} />}
