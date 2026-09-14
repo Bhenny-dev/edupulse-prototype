@@ -15,6 +15,14 @@ Validated on 2026-09-13 and 2026-09-14. Release configuration: Node 24, React 19
 | Supabase | Connectivity HTTP 200; migration `20260913112259_connected_ai.sql` applied to EduPulse System. Live queries verify ownership RLS and caller-permission RPCs. Security advisors returned no findings. Isolated SQL tests verify another account cannot read, search or delete an owner's chunks. |
 | Hosted preview | Vercel preview `dpl_A7sRdPxuc6XSH3qJR7nShR7DC2FC` reached Ready. Actual health and POST chat return JSON, with public references and explicit retrieval mode. Final production commit status is appended after push. |
 
+## Production release
+
+- Implementation commit: [`dc66aed`](https://github.com/Bhenny-dev/edupulse-prototype/commit/dc66aedc34aacaf27771c3087f14b005cb651ed5), pushed to `main`.
+- [Production application](https://edupulse-prototype.vercel.app), deployment `dpl_oUvJDrRX8xDGgj8vwD1ggbhCVD2E`: Ready. API function built at 8.18 MB.
+- Actual production homepage and health endpoint: HTTP 200. POST chat: HTTP 200, real public guide sources, explicit `retrieval` mode. Desktop and mobile browser checks against production pass, with no JavaScript errors or viewport overflow.
+- [GitHub verification run](https://github.com/Bhenny-dev/edupulse-prototype/actions/runs/34786276754) could not execute any steps. GitHub's annotation says: “The job was not started because your account is locked due to a billing issue.” This is recorded as an external CI blocker, not a passing GitHub run. No billing settings were changed.
+- Vercel's build command is now `npm run verify` so hosted builds execute lint, types, tests, build and deployment contract validation independently of GitHub runner availability. Browser checks also remain configured in GitHub Actions and runnable locally.
+
 Screenshots and Playwright traces are generated under ignored `edupulse-app/test-results/`; they are reproducible with `npm run test:browser` and are not release data. The in-app browser runtime was unavailable in this session; standalone Playwright Chromium supplied browser verification.
 
 ## Issues resolved during validation

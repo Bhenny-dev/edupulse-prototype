@@ -1,4 +1,5 @@
 {
+  "buildCommand": "npm run verify",
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "functions": { "api/ai.ts": { "maxDuration": 120 } },
   "rewrites": [

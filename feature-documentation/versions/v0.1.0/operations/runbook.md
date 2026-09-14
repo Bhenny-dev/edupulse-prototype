@@ -37,7 +37,7 @@ Without `AI_API_URL`, the smoke test opens the local store directly; stop the de
 
 ## Hosting
 
-Production follows the `main` branch through the existing Vercel Git integration. Confirm the current commit's CI and Vercel status after pushing. `npm run deployment:check` tests the build/API routing; set `DEPLOYMENT_URL` to also probe an unprotected live deployment. Use `vercel curl` for protected previews.
+Production follows the `main` branch through the existing Vercel Git integration. Vercel's build command runs `npm run verify`, gating deployment on lint, typechecks, tests, build and deployment contract validation. Confirm the current commit's CI and Vercel status after pushing. `npm run deployment:check` tests the build/API routing; set `DEPLOYMENT_URL` to also probe an unprotected live deployment. Use `vercel curl` for protected previews. On this release date, GitHub Actions could not start because the repository owner's account has a billing lock; an account administrator must resolve that external issue to restore GitHub runners.
 
 Default hosted mode is `retrieval`. To use Gemini, configure server-only `AI_PROVIDER=gemini`, `GEMINI_API_KEY`, and optionally `GEMINI_MODEL` in Vercel. Verify the account's current free-tier limits and data policy. No provider key is entered in the app. Hosted semantic indexing additionally needs a reachable Ollama `all-minilm` endpoint via server-only `OLLAMA_BASE_URL` and optional `OLLAMA_API_KEY` bearer authentication. Never expose an unprotected local Ollama port to the internet; use a secured inference deployment. Keep `AI_VECTOR_STORE=supabase` for hosted persistence.
 

@@ -1,6 +1,6 @@
 # v0.1.0 — Connected AI foundation
 
-Release candidate verified locally on 2026-09-14. Remote release status is recorded in validation evidence.
+Released on 2026-09-14. [Live application](https://edupulse-prototype.vercel.app). Local and production checks pass. GitHub Actions could not start because of an account billing lock; see validation evidence.
 
 | Category | Snapshot |
 | --- | --- |

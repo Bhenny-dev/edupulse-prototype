@@ -19,8 +19,8 @@
 - [x] Wire actual sign-in and separate preview access from private knowledge.
 - [x] Run lint, meaningful typechecks, automated tests, production build, API and browser validations.
 - [x] Apply and verify additive database migration; inspect security advisors.
-- [ ] Validate Vercel deployment, commit and push; inspect CI and deployed API.
-- [x] Organize versioned feature/architecture/operations/validation snapshots; append remote release evidence after push.
+- [x] Validate Vercel deployment, commit and push; inspect CI and deployed API. GitHub runner cannot start because of an account billing lock; Vercel and local verification provide the execution gate.
+- [x] Finalize versioned feature/architecture/operations/validation snapshots with remote release evidence.
 
 ## Release gate
 
