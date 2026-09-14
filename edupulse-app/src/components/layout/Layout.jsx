@@ -605,7 +605,7 @@ export default function Layout() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 600 }}>EduPulse</span>
           <span>King's College of the Philippines — Benguet</span>
-          <span className="badge badge-draft" style={{ fontSize: '0.625rem' }}>Connected AI v0.1.0</span>
+          <span className="badge badge-draft" style={{ fontSize: '0.625rem' }}>Connected AI v0.1.1</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           <NavLink to="/help" style={{ color: 'var(--gray-400)', transition: 'color 150ms' }}

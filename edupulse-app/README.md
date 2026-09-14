@@ -1,4 +1,4 @@
-# EduPulse 0.1.0
+# EduPulse 0.1.1
 
 React/Vite academic workflow prototype with a connected LangChain/LangGraph AI API, local free Ollama inference, and Postgres vector retrieval.
 

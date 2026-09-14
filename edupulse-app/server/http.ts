@@ -54,7 +54,7 @@ export async function handleRequest(request: Request): Promise<Response> {
         try { const docs = await listDocuments(identity); database = { ready: true, message: `${docs.length} documents in your library.` } }
         catch { database = { ready: false, message: 'Private library is unavailable. Database connection or migration needs attention.' } }
       }
-      return json({ version: '0.1.0', ...health, database: { ...database, kind: config().database }, identity: { mode: identity.local ? 'local-workspace' : identity.token ? 'authenticated' : 'public-guide', role: identity.role }, limits: { maxDocuments: 50, maxDocumentCharacters: 60000, maxAttachments: 3, generationAttempts: 2 }, checkedAt: new Date().toISOString() })
+      return json({ version: '0.1.1', ...health, database: { ...database, kind: config().database }, identity: { mode: identity.local ? 'local-workspace' : identity.token ? 'authenticated' : 'public-guide', role: identity.role }, limits: { maxDocuments: 50, maxDocumentCharacters: 60000, maxAttachments: 3, generationAttempts: 2 }, checkedAt: new Date().toISOString() })
     }
     if (action === 'documents' && identity.role === 'guest') throw new ApiError(401, 'SIGN_IN_REQUIRED', 'Sign in to manage private knowledge. Preview access only includes the public guide.')
     if (action === 'documents' && request.method === 'GET') return json({ documents: await listDocuments(identity) })

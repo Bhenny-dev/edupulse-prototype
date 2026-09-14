@@ -25,3 +25,7 @@
 ## Release gate
 
 Run `npm run verify` in `edupulse-app`. Record external validation separately; credentials or infrastructure blockers must be explicit and cannot be reported as passes. Push only reviewed task files; never force-push. Check the commit's CI and deployment after pushing and correct failures through the same gate.
+
+## v0.1.1 verification correction
+
+The first Vercel verification build excluded tests through the app ignore file and reported zero tests. Include test sources in the build context and make the test runner reject an empty suite. Inspect the remote test count as well as deployment readiness. The versioned correction and its validation live in `versions/v0.1.1`.
