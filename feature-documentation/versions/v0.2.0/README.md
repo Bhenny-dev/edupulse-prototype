@@ -1,6 +1,6 @@
 # v0.2.0 — Persistent syllabus and courseware workspace
 
-Implementation date: 2026-09-15. Release date: 2026-09-16. Implementation and validation are recorded below; remote release evidence is appended after deployment.
+Implementation date: 2026-09-15. Released: 2026-09-16. Application commit: `60972ea`. [Production](https://edupulse-prototype.vercel.app) is deployed and verified; validation evidence and remaining limitations are recorded below.
 
 - [Features and workflow](features/workspace.md)
 - [Architecture and compatibility](architecture/design.md)

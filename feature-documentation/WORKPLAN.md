@@ -36,7 +36,7 @@ Run `npm run verify` in `edupulse-app`. Record external validation separately; c
 - [x] Test ownership, concurrent saves, parser accuracy, and the complete browser lifecycle.
 - [x] Apply the additive Supabase migration after local SQL validation; inspect advisors.
 - [x] Run lint, typecheck, tests, build, deployment checks, browser validation, and dependency audit.
-- [ ] Write the version snapshot, validate preview deployment, push, and verify production.
+- [x] Write the version snapshot, validate preview deployment, push, and verify production. Application commit `60972ea`; production desktop/mobile checks passed. GitHub's account billing lock still prevents its runner from starting; the Vercel verification gate passed all 21 tests.
 
 Compatibility: retain React/Vite, the existing AI API, local PGlite, Supabase authentication, and offline institutional approval. Hosted guests keep device-only preview data; authenticated instructors get a private cloud workspace. Approved DOCX attachments are bounded to 500 KB and the workspace to 3 MB. Signatures are attested by the instructor, not verified automatically. Curriculum and student analytics remain sample data until their own integrations are implemented.
 

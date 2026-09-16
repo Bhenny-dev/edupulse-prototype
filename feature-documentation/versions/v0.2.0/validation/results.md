@@ -1,6 +1,6 @@
 # Validation evidence
 
-Implementation date: 2026-09-15. Final release checks and remote identifiers will be recorded after execution.
+Implementation date: 2026-09-15. Production release verified: 2026-09-16.
 
 ## Local release gate
 
@@ -26,3 +26,13 @@ After resolving native Ollama sampling and allocation failures, the full live sm
 Corrected Vercel preview: `dpl_3oCRWSJz3pEmWfLG8j3SJYfXuEQU`, [deployment](https://edupulse-prototype-7xmx4guhf-bhenny-benlor-d-riveras-projects.vercel.app). Status **Ready**; build logs show **21 tests, 21 passed, zero failed**, then a successful build and deployment check. Vercel protects preview URLs with authentication; preview API checks use the authenticated CLI, and public browser verification runs against production after push.
 
 Hosted authenticated browser writes require an available instructor session and are not claimed from SQL policy tests alone. Final hosted checks cover public behavior and deployment configuration; the authenticated cloud path is covered locally at its SQL and API boundaries.
+
+## Production release
+
+Application commit [`60972ea`](https://github.com/Bhenny-dev/edupulse-prototype/commit/60972eaa8ce1e46dab11be05609552bcbf892790) was pushed to `main`. Vercel deployment `dpl_5LQSXDsAChfDM25jNRWQvzme1Yaj` is **Ready**: [immutable deployment](https://edupulse-prototype-fxz7yxxx7-bhenny-benlor-d-riveras-projects.vercel.app), [production alias](https://edupulse-prototype.vercel.app). Its build ran lint (80 warnings, zero errors), typechecks, **21 tests with 21 passed and zero failed**, the production build, and deployment checks.
+
+Production HTTP checks confirmed version **0.2.0**, an empty anonymous workspace, and **403** for anonymous workspace writes. Fresh desktop Chrome and iPhone 13 browser contexts completed device-preview save/reload, checked DOCX download, attested upload, extracted-outline confirmation, activation, and Pulse public retrieval with source references. Both reported zero page exceptions and no horizontal viewport overflow. Screenshot inspection confirmed the assistant controls and content remained usable. These probes used synthetic device-only data and made no private cloud writes.
+
+The production deployment deliberately reports retrieval mode because no hosted generation provider is configured. Free local Ollama generation was separately validated as described above. Some academic and administrative screens remain prototypes, as listed in the feature boundaries.
+
+[GitHub Actions run 35053287978](https://github.com/Bhenny-dev/edupulse-prototype/actions/runs/35053287978) could not start its verification job. Its annotation states: “The job was not started because your account is locked due to a billing issue.” This is an outstanding account issue; GitHub CI is **not** reported as passed. Local and Vercel verification executed successfully.
