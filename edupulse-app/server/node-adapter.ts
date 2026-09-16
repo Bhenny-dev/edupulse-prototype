@@ -1,11 +1,13 @@
 import type { IncomingMessage, ServerResponse } from 'node:http'
 import { handleRequest } from './http.js'
+import { WORKSPACE_BYTES } from './workspace.js'
 
 export async function handleNodeRequest(req: IncomingMessage, res: ServerResponse) {
   const controller = new AbortController()
   res.on('close', () => { if (!res.writableEnded) controller.abort() })
   const body: Buffer[] = []
   let size = 0
+  const limit = new URL(req.url || '/', 'http://localhost').searchParams.get('action') === 'workspace' ? WORKSPACE_BYTES : 100000
   // Vercel may already parse JSON before dispatching the function.
   const parsed = (req as IncomingMessage & { body?: unknown }).body
   if (parsed !== undefined) {
@@ -14,11 +16,11 @@ export async function handleNodeRequest(req: IncomingMessage, res: ServerRespons
   } else {
     for await (const chunk of req) {
       size += Buffer.byteLength(chunk)
-      if (size > 100000) break
+      if (size > limit) break
       body.push(Buffer.from(chunk))
     }
   }
-  if (size > 100000) { res.writeHead(413, { 'Content-Type': 'application/json' }); res.end(JSON.stringify({ error: { code: 'BODY_TOO_LARGE', message: 'Request exceeds 100 KB.' } })); return }
+  if (size > limit) { res.writeHead(413, { 'Content-Type': 'application/json' }); res.end(JSON.stringify({ error: { code: 'BODY_TOO_LARGE', message: `Request exceeds ${limit.toLocaleString()} bytes.` } })); return }
   const headers = new Headers()
   for (const [key, value] of Object.entries(req.headers)) if (value) headers.set(key, Array.isArray(value) ? value.join(',') : value)
   const protocol = process.env.VERCEL ? 'https' : 'http'

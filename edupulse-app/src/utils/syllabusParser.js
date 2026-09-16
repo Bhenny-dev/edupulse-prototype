@@ -1,302 +1,87 @@
-import { CURRICULUM_COURSES } from '../data/mockData'
+import { CURRICULUM_COURSES } from '../data/mockData.js'
 
-/**
- * Parse an uploaded .docx syllabus file and extract the 7-section structure.
- * Returns { sections, metadata, courseMatch } where:
- *   - sections: keyed by section number (1-7), each with extracted fields
- *   - metadata: title, author, date from document properties
- *   - courseMatch: matched CURRICULUM_COURSES entry if found
- */
+const lines = text => text.split('\n').map(value => value.trim()).filter(Boolean)
+const field = (text, label) => text.match(new RegExp(`^${label}[ \\t]*:[ \\t]*([^\\n]*)`, 'im'))?.[1]?.trim() || ''
+const blankRow = week => ({ week, ilos: '', contents: [], activities: '', assessments: '', teachingMaterials: [], assessmentTypes: [], resources: [] })
 
-const SECTION_PATTERNS = [
-  /section\s*1[\s.:—–-]*course\s*information/i,
-  /section\s*2[\s.:—–-]*course\s*description/i,
-  /section\s*3[\s.:—–-]*(?:institutional|vision|mission)/i,
-  /section\s*4[\s.:—–-]*program\s*outcomes/i,
-  /section\s*5[\s.:—–-]*course\s*outline/i,
-  /section\s*6[\s.:—–-]*(?:requirements|grading|policy)/i,
-  /section\s*7[\s.:—–-]*references/i,
-]
-
-function htmlToText(html) {
-  const div = document.createElement('div')
-  div.innerHTML = html
-  return div.textContent || div.innerText || ''
-}
-
-function extractTableRows(html) {
-  const div = document.createElement('div')
-  div.innerHTML = html
-  const rows = []
-  const trs = div.querySelectorAll('tr')
-  trs.forEach(tr => {
-    const cells = []
-    tr.querySelectorAll('td, th').forEach(cell => {
-      cells.push(cell.textContent.trim())
-    })
-    if (cells.length > 0) rows.push(cells)
-  })
-  return rows
-}
-
-function extractLists(html) {
-  const div = document.createElement('div')
-  div.innerHTML = html
-  const items = []
-  div.querySelectorAll('li').forEach(li => {
-    const text = li.textContent.trim()
-    if (text) items.push(text)
-  })
-  if (items.length > 0) return items
-  return html.split(/\n/).map(l => l.replace(/^[-•*]\s*/, '').trim()).filter(Boolean)
-}
-
-function findCourseMatch(text) {
-  const courseCodeMatch = text.match(/(?:course\s*code|code)[:\s]*([A-Z]{2,4}\s*\d{3}[A-Z]?)/i)
-  if (courseCodeMatch) {
-    const code = courseCodeMatch[1].trim()
-    const found = CURRICULUM_COURSES.find(c => c.code === code)
-    if (found) return found
-  }
-  for (const course of CURRICULUM_COURSES) {
-    if (text.toLowerCase().includes(course.title.toLowerCase())) {
-      return course
+// Only emit weeks that are present. A missing outline must stay missing.
+export function parseCourseOutline(text) {
+  const matches = [...text.matchAll(/^(?:week|wk)[ \t]*(\d{1,2})\b[^\n]*$/gim)]
+  return matches.map((match, index) => {
+    const block = text.slice(match.index + match[0].length, matches[index + 1]?.index ?? text.length)
+    return { ...blankRow(Number(match[1])), ilos: field(block, '(?:ILOs?|Intended Learning Outcomes?|Learning Outcomes?)'),
+      contents: [...block.matchAll(/^(?:contents?|topics?)[ \t]*:[ \t]*([^\n]*)/gim)].map(item => item[1].trim()).filter(Boolean),
+      activities: field(block, '(?:Activities|Activity|TLA)'), assessments: field(block, 'Assessments?'),
+      teachingMaterials: field(block, 'Teaching Materials').split(';').map(s => s.trim()).filter(Boolean),
+      assessmentTypes: field(block, 'Assessment Types').split(';').map(s => s.trim()).filter(Boolean),
+      resources: [...block.matchAll(/^Resource[ \t]*:[ \t]*([^\n]*)/gim)].map(item => ({ type: 'link', name: item[1].trim(), url: item[1].match(/https?:\/\/\S+/)?.[0] || '' })),
     }
-  }
-  return null
+  }).filter(row => row.week >= 1 && row.week <= 52 && (row.ilos || row.contents.length || row.activities || row.assessments))
 }
 
-function parseCourseInfo(text) {
-  const info = { courseCode: '', courseTitle: '', periodOffered: '', academicYear: '' }
-  const codeMatch = text.match(/course\s*code[:\s]*([^\n]+)/i)
-  if (codeMatch) info.courseCode = codeMatch[1].trim()
-  const titleMatch = text.match(/course\s*title[:\s]*([^\n]+)/i)
-  if (titleMatch) info.courseTitle = titleMatch[1].trim()
-  const periodMatch = text.match(/period\s*(?:offered)?[:\s]*([^\n]+)/i)
-  if (periodMatch) info.periodOffered = periodMatch[1].trim()
-  const yearMatch = text.match(/academic\s*year[:\s]*([^\n]+)/i)
-  if (yearMatch) info.academicYear = yearMatch[1].trim()
-  return info
+function tableOutline(document) {
+  for (const table of document.querySelectorAll('table')) {
+    const rows = [...table.querySelectorAll('tr')].map(row => [...row.querySelectorAll('td,th')].map(cell => cell.textContent.trim()))
+    const headerIndex = rows.findIndex(row => row.some(cell => /^(week|wk|time frame)$/i.test(cell)) && row.some(cell => /content|topic/i.test(cell)))
+    if (headerIndex < 0) continue
+    const headers = rows[headerIndex]
+    const col = pattern => headers.findIndex(cell => pattern.test(cell))
+    const week = col(/week|wk|time frame/i), ilo = col(/\bilo|learning outcome/i), content = col(/content|topic/i), activity = col(/activit|\btla/i), assessment = col(/assessment|evaluation/i)
+    const outline = rows.slice(headerIndex + 1).map(cells => {
+      const number = cells[week]?.match(/^(?:week\s*)?(\d{1,2})$/i)
+      if (!number) return null // Week ranges require instructor editing, never guess.
+      return { ...blankRow(Number(number[1])), ilos: cells[ilo] || '', contents: cells[content] ? [cells[content]] : [], activities: cells[activity] || '', assessments: cells[assessment] || '' }
+    }).filter(row => row && row.week >= 1 && row.week <= 52)
+    if (outline.length) return outline
+  }
+  return []
 }
 
-function parseCourseDescription(text) {
-  const desc = { description: '', creditUnits: '', classification: '', noOfHours: '', prerequisites: [] }
-  const descMatch = text.match(/(?:course\s*description|description)[:\s]*([\s\S]*?)(?=credit|classification|prerequisite|$)/i)
-  if (descMatch) desc.description = descMatch[1].trim()
-  const unitsMatch = text.match(/credit\s*units?[:\s]*(\d+(?:\.\d+)?)/i)
-  if (unitsMatch) desc.creditUnits = parseFloat(unitsMatch[1])
-  const classMatch = text.match(/classification[:\s]*(Major|Minor|Institutional)/i)
-  if (classMatch) desc.classification = classMatch[1]
-  const hoursMatch = text.match(/(?:no\.?\s*of\s*hours|hours)[:\s]*(\d+)/i)
-  if (hoursMatch) desc.noOfHours = parseInt(hoursMatch[1])
-  const prereqMatch = text.match(/prerequisites?[:\s]*([^\n]+)/i)
-  if (prereqMatch) {
-    desc.prerequisites = prereqMatch[1].split(/[,;]/).map(s => s.trim()).filter(Boolean)
+export function parseSyllabusText(text, outlineOverride = []) {
+  const sections = Array.from({ length: 7 }, () => ({ raw: '', parsed: {} }))
+  let index = 0
+  for (const line of text.split('\n')) {
+    const section = line.match(/^\s*section\s*([1-7])\b/i)
+    if (section) { index = Number(section[1]) - 1; continue }
+    if (/^Offline approval route$/i.test(line.trim())) break
+    sections[index].raw += `${line}\n`
   }
-  return desc
-}
-
-function parseProgramOutcomes(text) {
-  const items = []
-  const lines = text.split(/\n/)
-  for (const line of lines) {
-    const cleaned = line.replace(/^\d+[\.\)]\s*/, '').replace(/^[-•*]\s*/, '').trim()
-    if (cleaned.length > 10) items.push(cleaned)
-  }
-  return items.length > 0 ? items : ['']
-}
-
-function parseCourseOutline(text) {
-  const weeks = []
-  const defaultOutline = Array.from({ length: 18 }, (_, i) => ({
-    week: i + 1, ilos: '', contents: [''], activities: '',
-    assessments: i === 8 ? 'Midterm Examination' : i === 17 ? 'Final Examination' : '',
-    teachingMaterials: [], assessmentTypes: [], resources: [],
-  }))
-
-  const weekPattern = /(?:week|wk)\s*(\d{1,2})/gi
-  let match
-  while ((match = weekPattern.exec(text)) !== null) {
-    const weekNum = parseInt(match[1])
-    if (weekNum >= 1 && weekNum <= 18) {
-      const section = text.substring(match.index, match.index + 500)
-      const iloMatch = section.match(/(?:ILO|learning\s*outcome)[:\s]*([^\n]+)/i)
-      const contentMatch = section.match(/(?:content|topic)[:\s]*([^\n]+)/i)
-      const activityMatch = section.match(/(?:activit|TLA)[:\s]*([^\n]+)/i)
-      const assessMatch = section.match(/(?:assessment|quiz|exam)[:\s]*([^\n]+)/i)
-
-      const idx = weekNum - 1
-      if (iloMatch) defaultOutline[idx].ilos = iloMatch[1].trim()
-      if (contentMatch) defaultOutline[idx].contents = [contentMatch[1].trim()]
-      if (activityMatch) defaultOutline[idx].activities = activityMatch[1].trim()
-      if (assessMatch) defaultOutline[idx].assessments = assessMatch[1].trim()
-    }
-  }
-
-  return defaultOutline
-}
-
-function parseGradingSystem(text) {
-  const match = text.match(/(?:grading\s*system|evaluation)[:\s]*([\s\S]*?)(?=course\s*policy|requirements|section\s*7|$)/i)
-  return match ? match[1].trim() : 'MG = 60% CS + 40% Exam\nTFG = 60% CS + 40% Exam\nFG = (MG + TFG) / 2'
-}
-
-function parseCoursePolicy(text) {
-  const items = []
-  const lines = text.split(/\n/)
-  for (const line of lines) {
-    const cleaned = line.replace(/^\d+[\.\)]\s*/, '').replace(/^[-•*]\s*/, '').trim()
-    if (cleaned.length > 15 && !cleaned.match(/^section/i)) items.push(cleaned)
-  }
-  return items.length > 0 ? items : [
-    'Students are expected to attend all scheduled classes on time.',
-    'A maximum of 3 absences is allowed; exceeding this may result in a failing grade.',
-    'Active participation in discussions, group work, and activities is required.',
-    'All assignments must be submitted on or before the deadline.',
-  ]
-}
-
-function parseReferences(text) {
-  const books = []
-  const onlineRefs = []
-  const lines = text.split(/\n/)
-  for (const line of lines) {
-    const cleaned = line.replace(/^[-•*]\s*/, '').trim()
-    if (!cleaned) continue
-    if (cleaned.match(/^https?:\/\//)) {
-      onlineRefs.push({ title: cleaned.substring(0, 60), url: cleaned })
-    } else if (cleaned.match(/\d{4}/) && cleaned.length > 10) {
-      const parts = cleaned.split(/[,;]/)
-      books.push({
-        title: parts[0]?.trim() || '',
-        authors: parts[1]?.trim() || '',
-        year: parts[2]?.trim()?.match(/\d{4}/)?.[0] || '',
-        publisher: parts[3]?.trim() || '',
-      })
-    }
-  }
-  return {
-    books: books.length > 0 ? books : [{ title: '', authors: '', year: '', publisher: '' }],
-    onlineReferences: onlineRefs.length > 0 ? onlineRefs : [{ title: '', url: '' }],
-  }
+  const infoText = sections[0].raw
+  const info = { courseCode: field(infoText, 'Course Code'), courseTitle: field(infoText, 'Course Title'), periodOffered: field(infoText, 'Period Offered'), academicYear: field(infoText, 'Academic Year') }
+  const normalize = value => value.replace(/\s/g, '').toLowerCase()
+  const courseMatch = CURRICULUM_COURSES.find(course => info.courseCode ? normalize(course.code) === normalize(info.courseCode) : info.courseTitle && course.title.toLowerCase() === info.courseTitle.toLowerCase()) || null
+  const description = sections[1].raw, policy = sections[5].raw
+  const subsection = (label, stop) => policy.match(new RegExp(`${label}[ \\t]*:[ \\t]*([\\s\\S]*?)(?=${stop}|$)`, 'i'))?.[1]?.trim() || ''
+  sections[0].parsed = info
+  sections[1].parsed = { description: description.match(/Description[ \t]*:[ \t]*([\s\S]*?)(?=Credit Units:|Classification:|$)/i)?.[1]?.trim() || description.trim(), creditUnits: Number(field(description, 'Credit Units')) || '', classification: field(description, 'Classification'), noOfHours: Number(field(description, 'No\\.? of Hours')) || '', prerequisites: field(description, 'Prerequisites?').split(/[,;]/).map(s => s.trim()).filter(Boolean) }
+  sections[2].parsed = { raw: sections[2].raw }
+  sections[3].parsed = { programOutcomes: lines(sections[3].raw) }
+  sections[4].parsed = { courseOutline: outlineOverride.length ? outlineOverride : parseCourseOutline(sections[4].raw || text) }
+  sections[5].parsed = { courseRequirements: lines(subsection('Course Requirements', 'Grading System:|Course Policy:')), gradingSystem: subsection('Grading System', 'Course Policy:|Course Requirements:'), coursePolicy: lines(subsection('Course Policy', 'Grading System:|Course Requirements:')) }
+  const references = lines(sections[6].raw)
+  sections[6].parsed = { books: references.filter(line => !/^https?:\/\//i.test(line)).map(line => { const [title = '', authors = '', year = '', publisher = ''] = line.split(';').map(s => s.trim()); return { title, authors, year, publisher } }), onlineReferences: references.filter(line => /^https?:\/\//i.test(line)).map(url => ({ title: url, url })) }
+  return { sections, courseMatch }
 }
 
 export async function parseSyllabusFile(file) {
-  const arrayBuffer = await file.arrayBuffer()
+  if (!/\.docx$/i.test(file.name) || file.size > 2_000_000 || !file.size) throw new Error('Choose a DOCX file up to 2 MB.')
   const mammoth = await import('mammoth')
-  const result = await mammoth.convertToHtml({ arrayBuffer })
-  const html = result.value
-  const fullText = htmlToText(html)
-
-  const courseMatch = findCourseMatch(fullText)
-
-  const sections = Array.from({ length: 7 }, () => ({ raw: '', parsed: {} }))
-
-  const headings = html.match(/<h[1-6][^>]*>[\s\S]*?<\/h[1-6]>/gi) || []
-  let currentSection = -1
-
-  const blocks = html.split(/<h[1-6][^>]*>/i)
-  for (let i = 1; i < blocks.length; i++) {
-    const headingEnd = blocks[i].indexOf('</h')
-    const heading = headingEnd >= 0 ? blocks[i].substring(0, headingEnd) : ''
-    const body = headingEnd >= 0 ? blocks[i].substring(headingEnd + 5) : blocks[i]
-    const combined = heading + ' ' + body
-
-    for (let s = 0; s < SECTION_PATTERNS.length; s++) {
-      if (SECTION_PATTERNS[s].test(combined)) {
-        currentSection = s
-        sections[s].raw = body
-        break
-      }
-    }
-
-    if (currentSection >= 0 && !sections[currentSection].raw) {
-      sections[currentSection].raw += '\n' + body
-    }
-  }
-
-  if (sections.every(s => !s.raw)) {
-    const textParts = fullText.split(/\n\s*\n/)
-    let assigned = false
-    for (const part of textParts) {
-      const lower = part.toLowerCase()
-      if (lower.includes('course information') || lower.includes('course code')) {
-        sections[0].raw = part; assigned = true
-      } else if (lower.includes('course description')) {
-        sections[1].raw = part; assigned = true
-      } else if (lower.includes('vision') || lower.includes('mission')) {
-        sections[2].raw = part; assigned = true
-      } else if (lower.includes('program outcome')) {
-        sections[3].raw = part; assigned = true
-      } else if (lower.includes('course outline') || lower.includes('week 1')) {
-        sections[4].raw = part; assigned = true
-      } else if (lower.includes('grading') || lower.includes('requirements')) {
-        sections[5].raw = part; assigned = true
-      } else if (lower.includes('reference') || lower.includes('bibliography')) {
-        sections[6].raw = part; assigned = true
-      } else if (!assigned) {
-        sections[0].raw += '\n' + part
-      }
-    }
-  }
-
-  sections[0].parsed = parseCourseInfo(sections[0].raw || fullText.substring(0, 500))
-  sections[1].parsed = parseCourseDescription(sections[1].raw || fullText.substring(0, 1000))
-  sections[2].parsed = { raw: sections[2].raw }
-  sections[3].parsed = { programOutcomes: parseProgramOutcomes(sections[3].raw || '') }
-  sections[4].parsed = { courseOutline: parseCourseOutline(sections[4].raw || fullText) }
-  sections[5].parsed = {
-    gradingSystem: parseGradingSystem(sections[5].raw || ''),
-    coursePolicy: parseCoursePolicy(sections[5].raw || ''),
-    courseRequirements: ['Attendance', 'Regular Quizzes and Examinations', 'Laboratory Activities', 'Individual Outputs/Case Analyses', 'Final Project'],
-  }
-  sections[6].parsed = parseReferences(sections[6].raw || '')
-
-  return {
-    sections,
-    metadata: {
-      title: file.name.replace(/\.docx$/i, ''),
-      size: file.size,
-      lastModified: new Date(file.lastModified).toISOString(),
-    },
-    courseMatch,
-  }
+  const result = await mammoth.convertToHtml({ arrayBuffer: await file.arrayBuffer() }, { convertImage: mammoth.images.imgElement(() => Promise.resolve({ src: '' })) })
+  if (result.value.length > 2_000_000) throw new Error('The extracted document is too large.')
+  const document = new DOMParser().parseFromString(result.value, 'text/html')
+  const outline = tableOutline(document)
+  document.querySelectorAll('p,li,h1,h2,h3,h4,h5,h6,tr').forEach(element => element.append('\n'))
+  const parsed = parseSyllabusText(document.body.textContent || '', outline)
+  return { ...parsed, metadata: { title: file.name.replace(/\.docx$/i, ''), size: file.size, lastModified: new Date(file.lastModified || Date.now()).toISOString() } }
 }
 
-export function parsedToFormState(parsed) {
-  const { sections, courseMatch } = parsed
-  const course = courseMatch || CURRICULUM_COURSES[0]
-  const info = sections[0].parsed
-  const desc = sections[1].parsed
-  const outline = sections[4].parsed.courseOutline
-  const ref = sections[6].parsed
-  const grading = sections[5].parsed
-
-  const noOfHours = (desc.creditUnits || course.units) * 18
-  const periodOffered = course.semester === 1 ? '1st Semester' : course.semester === 2 ? '2nd Semester' : 'Summer'
-
+export function parsedToFormState({ sections, courseMatch }) {
+  const course = courseMatch || {}, info = sections[0].parsed, desc = sections[1].parsed
   return {
-    courseCode: info.courseCode || course.code,
-    courseTitle: info.courseTitle || course.title,
-    courseDescription: desc.description || course.description || '',
-    courseInfo: {
-      courseCode: info.courseCode || course.code,
-      courseTitle: info.courseTitle || course.title,
-      periodOffered: info.periodOffered || periodOffered,
-      academicYear: info.academicYear || '2026-2027',
-      creditUnits: desc.creditUnits || course.units,
-      classification: desc.classification || course.classification || 'Major',
-      noOfHours: desc.noOfHours || noOfHours,
-      prerequisites: desc.prerequisites?.length > 0 ? desc.prerequisites : course.prerequisites || [],
-    },
-    programOutcomes: sections[3].parsed.programOutcomes?.length > 0
-      ? sections[3].parsed.programOutcomes
-      : course.programOutcomes || [''],
-    courseOutline: outline,
-    courseRequirements: grading.courseRequirements,
-    gradingSystem: grading.gradingSystem,
-    coursePolicy: grading.coursePolicy,
-    books: ref.books,
-    onlineReferences: ref.onlineReferences,
+    courseCode: course.code || '', courseTitle: course.title || '', courseDescription: desc.description || '',
+    courseInfo: { courseCode: course.code || '', courseTitle: course.title || '', periodOffered: info.periodOffered || '', academicYear: info.academicYear || '', creditUnits: desc.creditUnits || course.units || 0, classification: desc.classification || course.classification || '', noOfHours: desc.noOfHours || (course.units || 0) * 18, prerequisites: desc.prerequisites || [] },
+    programOutcomes: sections[3].parsed.programOutcomes.length ? sections[3].parsed.programOutcomes : [''],
+    courseOutline: sections[4].parsed.courseOutline,
+    ...sections[5].parsed, ...sections[6].parsed,
   }
 }

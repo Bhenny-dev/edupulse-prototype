@@ -1,5 +1,11 @@
 import { test, expect } from '@playwright/test'
 
+test.beforeEach(async ({ request }) => {
+  const snapshot = await (await request.get('/api/ai?action=workspace')).json()
+  const saved = await request.put('/api/ai?action=workspace', { data: { revision: snapshot.revision, data: { syllabi: [], content: {}, registrations: [] } } })
+  expect(saved.status()).toBe(200)
+})
+
 test('preview connects to real health API and shows source-grounded chat without overflow', async ({ page }) => {
   const errors: string[] = []
   page.on('pageerror', error => errors.push(error.message))
@@ -35,17 +41,20 @@ test('profile saves, survives reload, and preview password editing is disabled',
   await expect(page.getByLabel('Full Name', { exact: true })).toHaveValue('Preview Test Instructor')
 })
 
-test('courseware edits persist, require review again, and document downloads work', async ({ page }) => {
-  await page.goto('/')
-  await page.getByRole('button', { name: 'Instructor', exact: true }).click()
-  await page.evaluate(() => {
+test('courseware edits persist, require review again, and document downloads work', async ({ page, request }) => {
+  const snapshot = await (await request.get('/api/ai?action=workspace')).json()
+  const { DEFAULT_SYLLABI } = await import(new URL('../../src/data/mockData.js', import.meta.url).href)
     const base = { status: 'checked', week: 1, syllabusId: 'syl-1' }
-    localStorage.setItem('edupulse-content-v1-preview', JSON.stringify({
+    const content = {
       'gen-mat-syl-1-w1': { ...base, type: 'material', title: 'Browser test lesson', content: { title: 'Browser test lesson', viewMode: 'document', sections: [{ heading: 'Learning outcome', body: 'Explain the difference between a JavaScript variable and a constant binding.' }, { heading: 'Practice', body: 'Use let for a binding that needs reassignment, and const when it does not.' }] } },
       'gen-assess-syl-1-w1': { ...base, type: 'assessment', title: 'Browser test assessment', content: { title: 'Browser test assessment', viewMode: 'assessment', questions: [{ id: 'q1', text: 'Which binding cannot be reassigned?', options: [{ label: 'A', text: 'const' }, { label: 'B', text: 'let' }, { label: 'C', text: 'var' }, { label: 'D', text: 'Both let and var' }], correctIndex: 0, explanation: 'A const binding cannot be reassigned.' }] } },
-    }))
-  })
-  await page.reload()
+    }
+  const seeded = await request.put('/api/ai?action=workspace', { data: { revision: snapshot.revision, data: { ...snapshot.data, syllabi: DEFAULT_SYLLABI.map((s: object) => ({ ...s, sample: true })), content } } })
+  expect(seeded.status()).toBe(200)
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Instructor', exact: true }).click()
+  await expect(page).toHaveURL(/dashboard/)
+  await expect(page.getByText('Local workspace · Saved', { exact: true })).toBeVisible()
   await page.goto('/#/courseware')
   await page.getByRole('button', { name: 'View Items', exact: true }).first().click()
   // Synthetic content tests the actual editors and storage without a model dependency.
@@ -57,13 +66,95 @@ test('courseware edits persist, require review again, and document downloads wor
   const downloadPromise = page.waitForEvent('download')
   await page.getByRole('button', { name: 'Download text' }).click()
   expect((await downloadPromise).suggestedFilename()).toMatch(/\.txt$/)
-  const saved = await page.evaluate(() => Object.values(JSON.parse(localStorage.getItem('edupulse-content-v1-preview') || '{}')) as { status: string; content: { sections?: { body: string }[] } }[])
+  const saved = await page.evaluate(() => Object.values(JSON.parse(localStorage.getItem('edupulse-workspace-v2-preview') || '{}').data.content) as { status: string; content: { sections?: { body: string }[] } }[])
   expect(saved.find(item => item.content.sections?.some(section => section.body === 'Reviewed courseware text saved by the browser workflow test.'))?.status).toBe('draft')
   await page.getByRole('button', { name: 'Back', exact: true }).click()
   await page.getByTitle('Open assessment').first().click()
   await page.getByLabel('Answer explanation').first().fill('The answer was reviewed against the course reference by the instructor.')
   await page.getByRole('button', { name: 'Save Assessment', exact: true }).click()
+  await expect(page.getByText('Local workspace · Saved', { exact: true })).toBeVisible()
   await page.reload()
-  const assessments = await page.evaluate(() => Object.values(JSON.parse(localStorage.getItem('edupulse-content-v1-preview') || '{}')) as { status: string; content: { questions?: { explanation?: string }[] } }[])
+  const assessments = await page.evaluate(() => Object.values(JSON.parse(localStorage.getItem('edupulse-workspace-v2-preview') || '{}').data.content) as { status: string; content: { questions?: { explanation?: string }[] } }[])
   expect(assessments.find(item => item.content.questions?.some(q => q.explanation === 'The answer was reviewed against the course reference by the instructor.'))?.status).toBe('draft')
+})
+
+
+test('syllabus draft survives reload and approved DOCX activates the same course in Courseware', async ({ page }) => {
+  test.setTimeout(60000)
+  const errors: string[] = []
+  page.on('pageerror', error => errors.push(error.message))
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Instructor', exact: true }).click()
+  await page.goto('/#/syllabus?tab=builder')
+  await page.getByLabel('Course', { exact: true }).selectOption('IT 102')
+  await page.getByPlaceholder('Learning outcome...', { exact: true }).first().fill('Explain variable declarations and assignment.')
+  await page.getByPlaceholder('Topic...', { exact: true }).first().fill('Variables and assignment')
+  await page.getByRole('button', { name: 'Save as Drafted', exact: true }).click()
+  await expect(page.getByText('Local workspace · Saved', { exact: true })).toBeVisible()
+  await page.reload()
+  const row = page.getByRole('row').filter({ hasText: 'IT 102' }).first()
+  await row.getByTitle('Edit in Builder').click()
+  await expect(page.getByPlaceholder('Topic...', { exact: true }).first()).toHaveValue('Variables and assignment')
+  // Keyboard focus must survive each render, not only a programmatic fill.
+  const outcome = page.getByPlaceholder('Learning outcome...', { exact: true }).first()
+  await outcome.press('Control+End'); await outcome.pressSequentially(' Review examples.')
+  await expect(outcome).toHaveValue('Explain variable declarations and assignment. Review examples.')
+  await page.getByRole('button', { name: 'Save as Drafted', exact: true }).click()
+  await row.getByRole('button', { name: 'Mark as Checked', exact: true }).click()
+  const downloadPromise = page.waitForEvent('download')
+  await row.getByRole('button', { name: 'Download for Approval', exact: true }).click()
+  const download = await downloadPromise
+  expect(download.suggestedFilename()).toMatch(/-v2-approval.docx$/)
+  const file = await download.path()
+  expect(file).toBeTruthy()
+  await row.getByRole('button', { name: 'Upload Approved File', exact: true }).click()
+  await expect(page.getByLabel('Approved DOCX', { exact: true })).toBeDisabled()
+  await page.getByRole('checkbox').check()
+  await page.getByLabel('Approved DOCX', { exact: true }).setInputFiles({ name: 'IT102-approved.docx', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', buffer: await (await import('node:fs/promises')).readFile(file!) })
+  await row.getByRole('button', { name: 'Extract Outline', exact: true }).click()
+  await expect(page.getByText('Variables and assignment', { exact: true })).toBeVisible()
+  await page.getByRole('button', { name: /Confirm Extraction/ }).click()
+  await expect(page.getByText('Local workspace · Saved', { exact: true })).toBeVisible()
+  await page.reload()
+  await expect(row.getByText('Drives courseware', { exact: true })).toBeVisible()
+  await row.getByTitle('Version History').click()
+  await expect(page.getByRole('dialog', { name: 'Syllabus history' })).toContainText('approved_uploaded')
+  const retained = page.waitForEvent('download')
+  await page.getByRole('button', { name: 'Download retained approved file' }).click()
+  const retainedFile = await (await retained).path()
+  const fs = await import('node:fs/promises')
+  expect(await fs.readFile(retainedFile!)).toEqual(await fs.readFile(file!))
+  await page.getByRole('button', { name: 'Close', exact: true }).click()
+  await page.goto('/#/courseware')
+  await expect(page.getByText('Computer Programming 1', { exact: true }).first()).toBeVisible()
+  await page.getByRole('button', { name: 'Start Generating', exact: true }).first().click()
+  await expect(page.getByText('Variables and assignment', { exact: true }).first()).toBeVisible()
+  const size = await page.evaluate(() => ({ viewport: innerWidth, width: document.documentElement.scrollWidth }))
+  expect(size.width).toBeLessThanOrEqual(size.viewport + 1)
+  expect(errors).toEqual([])
+  await page.screenshot({ path: `test-results/syllabus-courseware-${test.info().project.name}.png` })
+})
+
+test('conflicting workspace save retains pending edits until a backup is exported', async ({ page, request }) => {
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Instructor', exact: true }).click()
+  await expect(page.getByText('Local workspace · Saved', { exact: true })).toBeVisible()
+  const snapshot = await (await request.get('/api/ai?action=workspace')).json()
+  const otherSave = await request.put('/api/ai?action=workspace', { data: { revision: snapshot.revision, data: snapshot.data } })
+  expect(otherSave.status()).toBe(200)
+  await page.goto('/#/syllabus?tab=builder')
+  await page.getByLabel('Course', { exact: true }).selectOption('IT 102')
+  await page.getByPlaceholder('Topic...', { exact: true }).first().fill('Pending edits from the older tab')
+  await page.getByRole('button', { name: 'Save as Drafted', exact: true }).click()
+  await expect(page.getByRole('alert').filter({ hasText: 'newer workspace' })).toBeVisible()
+  const latest = page.getByRole('button', { name: 'Load latest after export' })
+  await expect(latest).toBeDisabled()
+  const backup = page.waitForEvent('download')
+  await page.getByRole('button', { name: 'Export backup', exact: true }).click()
+  const file = await (await backup).path()
+  const contents = JSON.parse(await (await import('node:fs/promises')).readFile(file!, 'utf8'))
+  expect(contents.syllabi[0].courseOutline[0].contents).toContain('Pending edits from the older tab')
+  await latest.click()
+  await expect(page.getByText('Local workspace · Saved', { exact: true })).toBeVisible()
+  await expect(page.getByText('No syllabi yet.', { exact: false })).toBeVisible()
 })

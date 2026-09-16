@@ -27,8 +27,8 @@ export default function UploadExistingSyllabus({ onExtract, onCancel, compact })
       setError('Only .docx files are supported')
       return
     }
-    if (f.size > 10 * 1024 * 1024) {
-      setError('File must be under 10 MB')
+    if (f.size > 2_000_000) {
+      setError('File must be under 2 MB')
       return
     }
     setFile(f)
@@ -72,7 +72,7 @@ export default function UploadExistingSyllabus({ onExtract, onCancel, compact })
       case 1: return (p.description || '').substring(0, 120) + ((p.description || '').length > 120 ? '…' : '')
       case 2: return 'KCP Vision, Mission, Objectives + CIT Mission, Objectives'
       case 3: return `${(p.programOutcomes || []).filter(o => o.trim()).length} program outcome(s) found`
-      case 4: return `${(p.courseOutline || []).filter(w => w.ilos || w.contents?.some(c => c.trim())).length} of 18 weeks with content`
+      case 4: return `${(p.courseOutline || []).filter(w => w.ilos || w.contents?.some(c => c.trim())).length} weeks with content`
       case 5: return `Grading + ${(p.coursePolicy || []).length} policy items`
       case 6: return `${(p.books || []).filter(b => b.title).length} book(s), ${(p.onlineReferences || []).filter(r => r.url).length} link(s)`
       default: return null
@@ -110,7 +110,7 @@ export default function UploadExistingSyllabus({ onExtract, onCancel, compact })
             </div>
             {!compact && <p style={{ fontWeight: 700, marginBottom: '4px' }}>Drop your syllabus .docx here or click to browse</p>}
             <p className="text-sm text-muted">The system will extract content and auto-fill the 7-section syllabus form.</p>
-            <p style={{ fontSize: '0.6875rem', color: 'var(--gray-400)', marginTop: '4px' }}>Accepted: .docx · Max 10MB</p>
+            <p style={{ fontSize: '0.6875rem', color: 'var(--gray-400)', marginTop: '4px' }}>Accepted: .docx · Max 2MB</p>
           </div>
         ) : error ? (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>

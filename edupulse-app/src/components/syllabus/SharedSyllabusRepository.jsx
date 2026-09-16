@@ -77,10 +77,10 @@ export default function SharedSyllabusRepository({ onAttach, onView }) {
     <div>
       <div style={{ marginBottom: '20px' }}>
         <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.25rem', fontWeight: 700, marginBottom: '8px' }}>
-          Shared Syllabus Repository
+          Sample syllabus library
         </h2>
         <p style={{ fontSize: '0.875rem', color: 'var(--gray-500)', marginBottom: '16px' }}>
-          Browse approved syllabi from other instructors. Attach to your registered course or clone as a starting point.
+          These are sample curriculum references. Copy one as a draft and complete your own review and offline approval route. Private account workspaces are not shared with other instructors.
         </p>
 
         {/* Search */}

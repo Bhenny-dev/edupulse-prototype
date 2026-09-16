@@ -8,7 +8,7 @@ export async function generateWeekDraft(syllabus, weekNumber, signal) {
   const result = await generateCourseDraft({
     courseCode: syllabus.courseCode, courseTitle: syllabus.courseTitle, week: weekNumber,
     topics: row.contents, outcomes: row.ilos,
-    referenceText: JSON.stringify({ outline: row, topics: syllabus.topics || [] }).slice(0, 18000),
+    referenceText: JSON.stringify({ outline: row, courseDescription: syllabus.courseDescription || '', programOutcomes: syllabus.programOutcomes || [], references: row.resources || [] }).slice(0, 18000),
   }, signal)
   const metadata = { requestId: result.requestId, provider: result.provider, model: result.model, sources: result.sources, trace: result.trace, warning: result.warning, reviewRequired: true }
   const content = result.content

@@ -1,7 +1,7 @@
 {
   "name": "edupulse-app",
   "private": true,
-  "version": "0.1.1",
+  "version": "0.2.0",
   "type": "module",
   "scripts": {
     "dev": "node scripts/dev.mjs",
@@ -27,6 +27,7 @@
     "@langchain/textsplitters": "1.0.1",
     "@supabase/server": "1.4.1",
     "@supabase/supabase-js": "2.112.4",
+    "docx": "9.7.1",
     "lucide-react": "^1.24.0",
     "mammoth": "^1.12.0",
     "react": "^19.2.7",

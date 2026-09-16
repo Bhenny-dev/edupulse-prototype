@@ -6,6 +6,7 @@ import { config } from './config.js'
 import { providerHealth } from './providers.js'
 import { deleteDocument, ingest, listDocuments } from './database.js'
 import { runChat, runCourseware } from './graph.js'
+import { readWorkspace, saveWorkspace, workspaceInput, WORKSPACE_BYTES } from './workspace.js'
 
 const buckets = new Map<string, { count: number; until: number }>()
 const active = new Set<string>()
@@ -43,10 +44,19 @@ export async function handleRequest(request: Request): Promise<Response> {
   try {
     enforceOrigin(request)
     const action = new URL(request.url).searchParams.get('action') || 'health'
-    const methods: Record<string, string[]> = { health: ['GET'], chat: ['POST'], courseware: ['POST'], documents: ['GET', 'POST', 'DELETE'] }
+    const methods: Record<string, string[]> = { health: ['GET'], chat: ['POST'], courseware: ['POST'], documents: ['GET', 'POST', 'DELETE'], workspace: ['GET', 'PUT'] }
     if (!methods[action]) throw new ApiError(404, 'NOT_FOUND', 'Unknown API action.')
     if (!methods[action].includes(request.method)) return new Response(null, { status: 405, headers: { Allow: methods[action].join(', '), 'Cache-Control': 'no-store' } })
     const identity = await authenticate(request)
+    if (action === 'workspace') {
+      if (request.method === 'GET') return json(await readWorkspace(identity))
+      if (!['instructor', 'admin'].includes(identity.role)) throw new ApiError(403, 'FORBIDDEN', 'Sign in as an instructor to save a workspace.')
+      const text = await request.text()
+      if (Buffer.byteLength(text) > WORKSPACE_BYTES) throw new ApiError(413, 'WORKSPACE_LIMIT', 'Workspace exceeds the 3 MB limit. Export a backup and remove unused attachments.')
+      let data: unknown
+      try { data = JSON.parse(text) } catch { throw new ApiError(400, 'INVALID_JSON', 'Workspace must be valid JSON.') }
+      return json(await saveWorkspace(identity, workspaceInput.parse(data)))
+    }
     if (action === 'health') {
       const health = await providerHealth()
       let database: { ready: boolean; message: string } = { ready: false, message: 'Sign in to check your private library.' }
@@ -54,7 +64,7 @@ export async function handleRequest(request: Request): Promise<Response> {
         try { const docs = await listDocuments(identity); database = { ready: true, message: `${docs.length} documents in your library.` } }
         catch { database = { ready: false, message: 'Private library is unavailable. Database connection or migration needs attention.' } }
       }
-      return json({ version: '0.1.1', ...health, database: { ...database, kind: config().database }, identity: { mode: identity.local ? 'local-workspace' : identity.token ? 'authenticated' : 'public-guide', role: identity.role }, limits: { maxDocuments: 50, maxDocumentCharacters: 60000, maxAttachments: 3, generationAttempts: 2 }, checkedAt: new Date().toISOString() })
+      return json({ version: '0.2.0', ...health, database: { ...database, kind: config().database }, identity: { mode: identity.local ? 'local-workspace' : identity.token ? 'authenticated' : 'public-guide', role: identity.role }, limits: { maxDocuments: 50, maxDocumentCharacters: 60000, maxAttachments: 3, generationAttempts: 2 }, checkedAt: new Date().toISOString() })
     }
     if (action === 'documents' && identity.role === 'guest') throw new ApiError(401, 'SIGN_IN_REQUIRED', 'Sign in to manage private knowledge. Preview access only includes the public guide.')
     if (action === 'documents' && request.method === 'GET') return json({ documents: await listDocuments(identity) })

@@ -21,6 +21,10 @@ CREATE TABLE IF NOT EXISTS ai_chunks (
 );
 CREATE INDEX IF NOT EXISTS ai_chunks_document_idx ON ai_chunks(document_id);
 CREATE INDEX IF NOT EXISTS ai_documents_owner_idx ON ai_documents(owner_id);
+CREATE TABLE IF NOT EXISTS ep_workspaces (
+ owner_id text PRIMARY KEY, revision integer NOT NULL CHECK(revision > 0),
+ data jsonb NOT NULL, updated_at timestamptz NOT NULL DEFAULT now()
+);
 `
 export async function localDb() {
   if (config().hosted) throw new ApiError(503, 'LOCAL_STORE_DISABLED', 'Local storage is unavailable on serverless hosting.')

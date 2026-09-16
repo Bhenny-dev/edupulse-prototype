@@ -1131,7 +1131,7 @@ export const DEFAULT_SYLLABI = [
 
   // ─── CP 2 — Capstone Project 2 (active, for yearLevel 4 students) ───
   {
-    id: 'syl-9',
+    id: 'syl-13',
     courseCode: 'CP 2',
     courseTitle: 'Capstone Project 2',
     instructorId: 1,

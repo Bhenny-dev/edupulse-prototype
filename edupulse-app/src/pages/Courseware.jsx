@@ -1,7 +1,8 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { COURSEWARE_ITEMS, DEFAULT_SYLLABI, INSTRUCTORS } from '../data/mockData'
+import { COURSEWARE_ITEMS, INSTRUCTORS } from '../data/mockData'
+import { useWorkspace } from '../context/WorkspaceContext'
 import { useToast } from '../context/ToastContext'
 import { useContentStore } from '../context/ContentStoreContext'
 import { pulse as pulseBus } from '../components/pulse/pulseBus'
@@ -40,9 +41,10 @@ function isExamRow(row) {
 /* ═══════════════════════ Builder: Course Selection Grid ═══════════════════════ */
 
 function CourseSelectionGrid({ user, contentStore, onSelectCourse }) {
+  const { syllabi } = useWorkspace()
   const activeSyllabi = useMemo(() => {
-    return DEFAULT_SYLLABI.filter(s => s.status === 'active' && (s.courseOutline?.length || 0) > 0)
-  }, [])
+    return syllabi.filter(s => s.status === 'active' && (s.courseOutline?.length || 0) > 0)
+  }, [syllabi])
 
   if (activeSyllabi.length === 0) {
     return (
@@ -106,7 +108,7 @@ function CourseSelectionGrid({ user, contentStore, onSelectCourse }) {
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontWeight: 700, fontSize: '0.9375rem', color: 'var(--gray-900)' }}>{syl.courseCode}</div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--gray-500)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{syl.courseTitle}</div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--gray-500)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{syl.courseTitle}{syl.sample && ' · Sample'}</div>
                 </div>
               </div>
 
@@ -140,13 +142,14 @@ function CourseSelectionGrid({ user, contentStore, onSelectCourse }) {
 /* ═══════════════════════ Builder: Course Workspace ═══════════════════════ */
 
 function CourseWorkspace({ syllabusId, contentStore, onBack, onGenerateWeek, onCheckItem, onBulkCheck, onToggleVisibility }) {
+  const { syllabi } = useWorkspace()
   const generationRef = useRef(null)
   const [generationProgress, setGenerationProgress] = useState('')
   useEffect(() => () => generationRef.current?.abort(), [])
 
   const { addToast } = useToast()
   const { saveContent } = useContentStore()
-  const syllabus = DEFAULT_SYLLABI.find(s => s.id === syllabusId)
+  const syllabus = syllabi.find(s => s.id === syllabusId)
   const [generatingWeek, setGeneratingWeek] = useState(null)
   const [generatingAll, setGeneratingAll] = useState(false)
   const [expandedWeeks, setExpandedWeeks] = useState(new Set())
@@ -289,11 +292,11 @@ function CourseWorkspace({ syllabusId, contentStore, onBack, onGenerateWeek, onC
   return (
     <div>
       {/* Course header */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
-        <button className="btn btn-ghost btn-sm" onClick={onBack} style={{ padding: '6px' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+        <button className="btn btn-ghost btn-sm" aria-label="Back to courses" onClick={onBack} style={{ padding: '6px' }}>
           <ArrowLeft size={18} />
         </button>
-        <div style={{ flex: 1 }}>
+        <div style={{ flex: '1 1 240px', minWidth: 0 }}>
           <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.125rem', fontWeight: 700, margin: 0 }}>
             {syllabus.courseCode} — {syllabus.courseTitle}
           </h2>
@@ -562,6 +565,7 @@ function CourseWorkspace({ syllabusId, contentStore, onBack, onGenerateWeek, onC
 /* ═══════════════════════ My Courseware Tab ═══════════════════════ */
 
 function MyCoursewareTab({ items, contentStore, onSelectCourse }) {
+  const { syllabi } = useWorkspace()
   const navigate = useNavigate()
   const [viewingOutlineCourseId, setViewingOutlineCourseId] = useState(null)
   const { user } = useAuth()
@@ -569,8 +573,8 @@ function MyCoursewareTab({ items, contentStore, onSelectCourse }) {
   const isStudent = user?.role === 'student'
 
   const activeSyllabi = useMemo(() => {
-    return DEFAULT_SYLLABI.filter(s => s.status === 'active' && (s.courseOutline?.length || 0) > 0)
-  }, [])
+    return syllabi.filter(s => s.status === 'active' && (s.courseOutline?.length || 0) > 0)
+  }, [syllabi])
 
   const myCoursewareList = useMemo(() => {
     return activeSyllabi.map(syl => {
@@ -634,7 +638,7 @@ function MyCoursewareTab({ items, contentStore, onSelectCourse }) {
           <tr key={syl.id}>
             <td>
               <div style={{ fontWeight: 700, fontSize: '0.875rem' }}>{syl.courseCode}</div>
-              <div className="text-sm text-muted">{syl.courseTitle}</div>
+              <div className="text-sm text-muted">{syl.courseTitle}{syl.sample && ' · Sample'}</div>
             </td>
             {!isStudent && <td>{courseStatusBadge(status)}</td>}
             <td>

@@ -2,6 +2,7 @@ import { HashRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { ToastProvider } from './context/ToastContext'
 import { ContentStoreProvider } from './context/ContentStoreContext'
+import { WorkspaceProvider } from './context/WorkspaceContext'
 import { ThemeProvider } from './context/ThemeContext'
 import Layout from './components/layout/Layout'
 import Landing from './pages/Landing'
@@ -92,9 +93,9 @@ export default function App() {
       <AuthProvider>
         <ThemeProvider>
           <ToastProvider>
-            <ContentStoreProvider>
+            <WorkspaceProvider><ContentStoreProvider>
               <AppRoutes />
-            </ContentStoreProvider>
+            </ContentStoreProvider></WorkspaceProvider>
           </ToastProvider>
         </ThemeProvider>
       </AuthProvider>

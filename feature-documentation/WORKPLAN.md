@@ -26,6 +26,20 @@
 
 Run `npm run verify` in `edupulse-app`. Record external validation separately; credentials or infrastructure blockers must be explicit and cannot be reported as passes. Push only reviewed task files; never force-push. Check the commit's CI and deployment after pushing and correct failures through the same gate.
 
+## v0.2.0 persistent academic workspace
+
+- [x] Trace syllabus saving, approval upload, parsing, courseware storage, and stale template generation.
+- [x] Implement a shared workspace API with private ownership, bounded snapshots, and revision conflict detection.
+- [x] Connect syllabus builder saves, edits, copies, archives, and real DOCX download/upload.
+- [x] Parse only document evidence; require instructor confirmation before activation; remove simulated AI outline generation.
+- [x] Share active syllabi and courseware through the same persistent workspace, with pending-edit recovery and backup export.
+- [x] Test ownership, concurrent saves, parser accuracy, and the complete browser lifecycle.
+- [x] Apply the additive Supabase migration after local SQL validation; inspect advisors.
+- [x] Run lint, typecheck, tests, build, deployment checks, browser validation, and dependency audit.
+- [ ] Write the version snapshot, validate preview deployment, push, and verify production.
+
+Compatibility: retain React/Vite, the existing AI API, local PGlite, Supabase authentication, and offline institutional approval. Hosted guests keep device-only preview data; authenticated instructors get a private cloud workspace. Approved DOCX attachments are bounded to 500 KB and the workspace to 3 MB. Signatures are attested by the instructor, not verified automatically. Curriculum and student analytics remain sample data until their own integrations are implemented.
+
 ## v0.1.1 verification correction
 
 The first Vercel verification build excluded tests through the app ignore file and reported zero tests. Include test sources in the build context and make the test runner reject an empty suite. Inspect the remote test count as well as deployment readiness. The versioned correction and its validation live in `versions/v0.1.1`.

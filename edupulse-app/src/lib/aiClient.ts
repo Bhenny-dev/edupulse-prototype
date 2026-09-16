@@ -2,6 +2,9 @@ import type { ChatInput, CourseInput, Source, Trace } from '../../server/contrac
 
 let accessToken: string | undefined
 export function setAiAccessToken(token?: string) { accessToken = token }
+export class ApiRequestError extends Error {
+  constructor(message: string, public status: number, public code?: string) { super(message) }
+}
 
 export async function aiRequest<T>(action: string, method = 'GET', body?: unknown, signal?: AbortSignal): Promise<T> {
   const response = await fetch(`/api/ai?action=${encodeURIComponent(action)}`, {
@@ -10,7 +13,7 @@ export async function aiRequest<T>(action: string, method = 'GET', body?: unknow
   })
   if (!response.headers.get('content-type')?.includes('application/json')) throw new Error('The AI API is unavailable. Start the app with npm run dev or check the deployment.')
   const data = await response.json()
-  if (!response.ok) throw new Error(data.error?.message || `Request failed (${response.status}).`)
+  if (!response.ok) throw new ApiRequestError(data.error?.message || `Request failed (${response.status}).`, response.status, data.error?.code)
   return data as T
 }
 export type AiHealth = { version: string; provider: string; model: string | null; ready: boolean; embeddings: boolean; message: string; database: { ready: boolean; kind: string; message: string }; identity: { mode: string; role: string }; checkedAt: string }

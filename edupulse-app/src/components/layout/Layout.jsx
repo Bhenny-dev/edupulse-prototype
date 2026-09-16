@@ -1,5 +1,6 @@
 import { NavLink, Outlet, useNavigate, useLocation, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
+import { WorkspaceStatus } from '../../context/WorkspaceContext'
 import { useLanguage } from '../../context/LanguageContext'
 import { useTheme } from '../../context/ThemeContext'
 import {
@@ -587,6 +588,7 @@ export default function Layout() {
       )}
 
       <Breadcrumbs />
+      <WorkspaceStatus />
 
       <div className="app-workspace" style={{ flex: 1, display: 'flex' }}>
         <Sidebar section={current} role={user?.role} />
@@ -605,7 +607,7 @@ export default function Layout() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 600 }}>EduPulse</span>
           <span>King's College of the Philippines — Benguet</span>
-          <span className="badge badge-draft" style={{ fontSize: '0.625rem' }}>Connected AI v0.1.1</span>
+          <span className="badge badge-draft" style={{ fontSize: '0.625rem' }}>Connected AI v0.2.0</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           <NavLink to="/help" style={{ color: 'var(--gray-400)', transition: 'color 150ms' }}

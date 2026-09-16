@@ -17,9 +17,14 @@ const result = await response.json()
 assert.equal(response.status, 200)
 assert.equal(result.mode, 'retrieval')
 assert(result.sources.length > 0)
+const workspace = await handleRequest(new Request('https://edupulse.test/api/ai?action=workspace'))
+assert.equal(workspace.status, 200)
+assert.deepEqual(await workspace.json(), { revision: 0, data: null, updated_at: null, mode: 'preview' })
+const deniedSave = await handleRequest(new Request('https://edupulse.test/api/ai?action=workspace', { method: 'PUT', body: JSON.stringify({ revision: 0, data: { syllabi: [], content: {} } }) }))
+assert.equal(deniedSave.status, 403)
 if (process.env.DEPLOYMENT_URL) {
   const url = process.env.DEPLOYMENT_URL
-  for (const path of ['/', '/api/ai?action=health']) {
+  for (const path of ['/', '/api/ai?action=health', '/api/ai?action=workspace']) {
     const res = await fetch(`${url}${path}`, { signal: AbortSignal.timeout(15000) })
     assert.equal(res.status, 200, `${path} status`)
     if (path.includes('api')) assert((res.headers.get('content-type') || '').includes('application/json'))

@@ -1,7 +1,7 @@
-import { useState, useEffect, useRef, useMemo } from 'react'
+import { Fragment, useState, useEffect, useRef, useMemo } from 'react'
 import { useSearchParams, Navigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { DEFAULT_SYLLABI, CURRICULUM_COURSES, INSTRUCTORS, SYLLABUS_VERSIONS, DEFAULT_INSTITUTIONAL_CONTEXT, SYLLABUS_STATUS_META, SYLLABUS_STATUS_ORDER, BLOCK_SECTION_REGISTRATIONS } from '../data/mockData'
+import { CURRICULUM_COURSES, INSTRUCTORS, DEFAULT_INSTITUTIONAL_CONTEXT, SYLLABUS_STATUS_META, SYLLABUS_STATUS_ORDER } from '../data/mockData'
 import { useToast } from '../context/ToastContext'
 import {
   Upload, Plus, Trash2, Eye, FileText, History, Copy, Archive,
@@ -9,7 +9,9 @@ import {
   GripVertical, Sparkles, AlertCircle, CheckCircle, FileUp, ScanLine,
   Lock, X, Link2, Paperclip, Clock,
 } from 'lucide-react'
-import VersionHistory from '../components/ui/VersionHistory'
+import { useWorkspace } from '../context/WorkspaceContext'
+import ApprovedSyllabusUpload from '../components/syllabus/ApprovedSyllabusUpload'
+import { meaningfulOutline, syllabusDocx, downloadBlob, downloadApprovedFile } from '../utils/syllabusFiles'
 import UploadExistingSyllabus from '../components/syllabus/UploadExistingSyllabus'
 import BlockSectionUploader from '../components/syllabus/BlockSectionUploader'
 import SharedSyllabusRepository from '../components/syllabus/SharedSyllabusRepository'
@@ -61,7 +63,7 @@ function LifecycleStrip() {
 // courseware generation). Exam weeks are flagged as milestones.
 function ExtractionModal({ syllabus, onConfirm, onClose }) {
   const outline = syllabus.courseOutline || []
-  const hasRows = outline.length > 0
+  const hasRows = meaningfulOutline(outline) && !!syllabus.approvedFile
   return (
     <div className="overlay-backdrop" onClick={onClose}>
       <div className="modal-content" style={{ maxWidth: '760px', maxHeight: '85vh', overflow: 'auto' }} onClick={e => e.stopPropagation()}>
@@ -431,11 +433,32 @@ function MultiSelectDropdown({ categories, selected = [], onChange, placeholder 
 }
 
 /* ─── Syllabus Builder — Single-Page 7-Section Form ─── */
-function SyllabusBuilder({ onComplete, onCancel }) {
+const SectionLabel = ({ num, label }) => (
+    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px', marginTop: '24px' }}>
+      <span style={{
+        display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+        width: '28px', height: '28px', borderRadius: '50%', background: 'var(--sky-500)', color: '#fff',
+        fontSize: '0.8125rem', fontWeight: 700, flexShrink: 0,
+      }}>{num}</span>
+      <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '0.9375rem', margin: 0 }}>{label}</h3>
+    </div>
+  )
+
+const FormGroup = ({ label, required, error, children, note }) => (
+    <div className="form-group" style={{ marginBottom: '12px' }}>
+      <label className="form-label">{label}{required && ' *'}</label>
+      {note && <div style={{ fontSize: '0.75rem', color: 'var(--gray-500)', fontStyle: 'italic', marginBottom: '6px' }}>{note}</div>}
+      {children}
+      {error && <span className="form-error">{error}</span>}
+    </div>
+  )
+
+
+function SyllabusBuilder({ onComplete, onCancel, initial }) {
   const { addToast } = useToast()
   const ic = DEFAULT_INSTITUTIONAL_CONTEXT
 
-  const [uploadStep, setUploadStep] = useState('pending')
+  const [uploadStep, setUploadStep] = useState(initial ? 'done' : 'pending')
 
   const defaultOutline = Array.from({ length: 18 }, (_, i) => ({
     week: i + 1, ilos: '', contents: [''], activities: '',
@@ -443,7 +466,7 @@ function SyllabusBuilder({ onComplete, onCancel }) {
     teachingMaterials: [], assessmentTypes: [], resources: [],
   }))
 
-  const [form, setForm] = useState({
+  const [form, setForm] = useState(() => ({
     courseCode: '',
     courseTitle: '',
     courseInfo: { courseCode: '', courseTitle: '', periodOffered: '1st Semester', academicYear: '2026-2027', creditUnits: 3, classification: 'Major', noOfHours: 54, prerequisites: [] },
@@ -454,18 +477,13 @@ function SyllabusBuilder({ onComplete, onCancel }) {
     },
     programOutcomes: [''],
     courseOutline: defaultOutline,
-    courseRequirements: ['Attendance', 'Reading Assignments', 'Individual Outputs/Case Analyses', 'Regular and Online Quizzes, Laboratory Activities, and Examinations per term', 'Portfolio'],
-    gradingSystem: 'MG = 60% CS + 40% Exam\nTFG = 60% CS + 40% Exam\nFG = (MG + TFG) / 2',
-    coursePolicy: [
-      'Students are expected to attend all scheduled classes on time.',
-      'A maximum of 3 absences is allowed; exceeding this may result in a failing grade in accordance with institutional policy.',
-      'Late arrivals beyond 15 minutes will be considered absent.',
-      'Active participation in discussions, group work, and activities is required.',
-      'All assignments must be submitted on or before the deadline.',
-    ],
+    courseRequirements: [''],
+    gradingSystem: '',
+    coursePolicy: [''],
     books: [{ title: '', authors: '', year: '', publisher: '' }],
     onlineReferences: [{ title: '', url: '' }],
-  })
+    ...initial,
+  }))
 
   // ── Pulse form interactions: listen for formAction events from Pulse ──
   const s5AutoGenerateRef = useRef(null)
@@ -502,7 +520,7 @@ function SyllabusBuilder({ onComplete, onCancel }) {
       }
     })
     return unsub
-  }, [])
+  })
 
   // ── Generic form helpers ──
   const set = (path, value) => {
@@ -564,7 +582,7 @@ function SyllabusBuilder({ onComplete, onCancel }) {
         programOutcomes: subj.programOutcomes?.length
           ? [...subj.programOutcomes]
           : prev.programOutcomes.some(o => o.trim()) ? prev.programOutcomes : [''],
-        courseOutline: prev.courseOutline.map((row, i) => {
+        courseOutline: prev.courseOutline.map(row => {
           if (row.week === 9 || row.week === 18) return row
           return {
             ...row,
@@ -605,48 +623,29 @@ function SyllabusBuilder({ onComplete, onCancel }) {
   const handleSave = () => {
     if (!validate()) { addToast('Please fix the highlighted fields', 'error'); return }
     addToast('Syllabus saved as Drafted — check and correct it before downloading for approval', 'success')
-    onComplete()
+    onComplete(form, 'drafted')
   }
 
   // "Checked" = the instructor has verified the draft. Next step is to
   // download the file for the offline signatory route (Dean → CAO → EVP).
   const handleMarkChecked = () => {
     if (!validate()) { addToast('Please fix the highlighted fields before marking as checked', 'error'); return }
+    if (!meaningfulOutline(form.courseOutline)) { addToast('Add weekly learning outcomes and contents before checking.', 'error'); return }
     addToast('Syllabus marked as Checked — you can now download it for the approval route', 'success')
-    onComplete()
+    onComplete(form, 'checked')
   }
 
   // AI Auto mode: generate a complete draft in one pass. Output is always
   // `drafted` — the instructor must check and correct it (FLOW_SPEC Phase 2).
   const [errors, setErrors] = useState({})
-  const [autoGenerating, setAutoGenerating] = useState(false)
+  const autoGenerating = false
   const [aiDrafted, setAiDrafted] = useState(false)
   const autoGenerateDraft = () => {
-    if (!form.courseCode) { addToast('Select a course first', 'error'); return }
-    setAutoGenerating(true)
-    setTimeout(() => {
-      const course = CURRICULUM_COURSES.find(s => s.code === form.courseCode)
-      const outline = form.courseOutline.map((row, i) => {
-        if (row.week === 9 || row.week === 18) return row
-        return {
-          ...row,
-          ilos: row.ilos || `Apply ${course?.title || 'course'} concepts covered in week ${row.week}.`,
-          contents: row.contents.some(c => c.trim()) ? row.contents : [`${course?.title || 'Course'} — week ${row.week} topic (AI-proposed from the curriculum reference)`],
-          activities: row.activities || 'Lecture-discussion, hands-on exercise',
-          assessments: row.assessments || (i % 2 === 0 ? 'Quiz' : 'Lab exercise'),
-        }
-      })
-      setForm(prev => ({
-        ...prev,
-        courseDescription: prev.courseDescription || course?.description || '',
-        courseInfo: { ...prev.courseInfo, courseDescription: prev.courseDescription || course?.description || '' },
-        programOutcomes: prev.programOutcomes.some(o => o.trim()) ? prev.programOutcomes : [`Apply ${course?.title || 'course'} principles to real-world IT problems (AI-proposed from PSG outcomes — select and edit)`],
-        courseOutline: outline,
-      }))
-      setAutoGenerating(false)
-      setAiDrafted(true)
-      addToast('Full draft generated (Auto mode). Review every section — it stays Drafted until you check it.', 'info')
-    }, 1800)
+    const course = CURRICULUM_COURSES.find(s => s.code === form.courseCode)
+    if (!course?.courseOutline?.length) { addToast('No curriculum outline is available. Import a DOCX or enter the weekly outline.', 'info'); return }
+    setForm(prev => ({ ...prev, courseOutline: course.courseOutline.map(row => ({ teachingMaterials: [], assessmentTypes: [], resources: [], ...row })) }))
+    setAiDrafted(true)
+    addToast('Curriculum reference loaded. Review and adapt it before checking.', 'info')
   }
 
   // ── Outline field editor ──
@@ -718,154 +717,7 @@ function SyllabusBuilder({ onComplete, onCancel }) {
   // ── Section 5 AI Chat (now handled inside Pulse walkthrough panel) ──
 
   // Auto-generate: fill ALL outline fields from curriculum data (called via pulseBus formAction from Pulse panel)
-  const s5AutoGenerate = () => {
-    const course = CURRICULUM_COURSES.find(s => s.code === form.courseCode)
-    if (!course) { addToast('Select a course first', 'error'); return }
-
-    setTimeout(() => {
-      // Strategy 1: Course has pre-filled courseOutline in curriculum — use it directly
-      if (course.courseOutline && course.courseOutline.length > 0) {
-        setForm(prev => {
-          const merged = prev.courseOutline.map((emptyRow, i) => {
-            const curriculumRow = course.courseOutline.find(r => r.week === emptyRow.week)
-            if (!curriculumRow) return emptyRow
-            return {
-              ...emptyRow,
-              ilos: curriculumRow.ilos || '',
-              contents: curriculumRow.contents?.length ? curriculumRow.contents : [''],
-              activities: curriculumRow.activities || '',
-              assessments: curriculumRow.assessments || '',
-              teachingMaterials: curriculumRow.teachingMaterials?.length ? curriculumRow.teachingMaterials : [],
-              assessmentTypes: curriculumRow.assessmentTypes?.length ? curriculumRow.assessmentTypes : [],
-            }
-          })
-          return { ...prev, courseOutline: merged }
-        })
-        addToast(`Loaded ${course.courseOutline.length}-week outline from curriculum`, 'success')
-        return
-      }
-
-      // Strategy 2: Course has topics array — distribute across 18 weeks
-      if (course.topics && course.topics.length > 0) {
-        const nonExamWeeks = []
-        for (let w = 1; w <= 18; w++) { if (w !== 9 && w !== 18) nonExamWeeks.push(w) }
-
-        // Flatten all subtopics and items from the topics array
-        const allSubtopics = []
-        course.topics.forEach(topic => {
-          if (topic.subtopics?.length) {
-            topic.subtopics.forEach(sub => {
-              allSubtopics.push({ topicTitle: topic.title, subtopic: sub.title, items: sub.items || [], ilos: topic.ilos || [] })
-            })
-          } else {
-            allSubtopics.push({ topicTitle: topic.title, subtopic: topic.title, items: [], ilos: topic.illos || [] })
-          }
-        })
-
-        // Distribute subtopics evenly across non-exam weeks
-        const perWeek = Math.ceil(allSubtopics.length / nonExamWeeks.length)
-
-        const activitiesByDifficulty = [
-          ['Lecture-discussion, class orientation', 'Recitation, guided practice'],
-          ['Hands-on laboratory exercise', 'Code-along, demonstration'],
-          ['Group coding activity, peer review', 'Problem-solving workshop'],
-          ['Interactive lecture, code walkthrough', 'Seatwork, short quiz'],
-          ['Hands-on laboratory exercises', 'Practical exercise, output submission'],
-          ['Demonstration, guided practice', 'Quiz, worksheets'],
-          ['Group activity, collaborative exercise', 'Lab exercise, lab report'],
-          ['Research activity, concept mapping', 'Case study analysis'],
-          ['Project-based learning, capstone work', 'Presentation, peer evaluation'],
-          ['Capstone project work, implementation', 'Project milestone, reflection essay'],
-        ]
-
-        const assessmentPool = [
-          { text: 'Quiz', types: ['Quizzes'] },
-          { text: 'Lab exercise', types: ['Lab Reports', 'Demonstrations'] },
-          { text: 'Seatwork', types: ['Worksheets'] },
-          { text: 'Short quiz', types: ['Quizzes', 'Recitations'] },
-          { text: 'Group activity output', types: ['Group Presentations', 'Oral Explanations'] },
-          { text: 'Problem set', types: ['Applied Problem-Solving'] },
-          { text: 'Case study analysis', types: ['Case Study Analyses'] },
-          { text: 'Project milestone', types: ['Projects', 'Project Reports'] },
-        ]
-
-        const materialPool = [
-          ['Lecture Notes', 'Reading Lists'],
-          ['Concept Maps', 'Case Studies'],
-          ['Lab Manuals', 'Worksheets'],
-          ['Infographics', 'Summary Guides'],
-          ['Debates', 'Comparative Charts'],
-          ['Role-Plays', 'Applied Problem-Solving Reports'],
-        ]
-
-        setForm(prev => {
-          const outline = prev.courseOutline.map((row, i) => {
-            if (row.week === 9 || row.week === 18) return row
-
-            const weekIdx = nonExamWeeks.indexOf(row.week)
-            if (weekIdx === -1) return row
-
-            const startIdx = weekIdx * perWeek
-            const endIdx = Math.min(startIdx + perWeek, allSubtopics.length)
-            const weekSubs = allSubtopics.slice(startIdx, endIdx)
-
-            // Build contents from subtopic items
-            const contents = []
-            weekSubs.forEach(s => {
-              if (s.items.length > 0) {
-                s.items.forEach(item => contents.push(item))
-              } else {
-                contents.push(s.subtopic)
-              }
-            })
-            const finalContents = contents.length > 0 ? contents.slice(0, 4) : [`Week ${row.week} topic`]
-
-            // Build ILO from topic ilos
-            const topicTitles = [...new Set(weekSubs.map(s => s.topicTitle))]
-            const iloText = `Describe and apply the concepts of ${topicTitles.join(', ')} covered in week ${row.week}.`
-
-            // Pick activities and assessments based on week position
-            const actSet = activitiesByDifficulty[weekIdx % activitiesByDifficulty.length]
-            const assess = assessmentPool[weekIdx % assessmentPool.length]
-            const mats = materialPool[weekIdx % materialPool.length]
-
-            return {
-              ...row,
-              ilos: iloText,
-              contents: finalContents,
-              activities: actSet[weekIdx % actSet.length],
-              assessments: assess.text,
-              teachingMaterials: mats,
-              assessmentTypes: assess.types,
-            }
-          })
-          return { ...prev, courseOutline: outline }
-        })
-        addToast(`Generated 18-week outline from ${course.topics.length} curriculum topics`, 'success')
-        return
-      }
-
-      // Strategy 3: No curriculum data — generate generic outline from course title
-      const courseTitle = course.courseInfo?.courseTitle || form.courseInfo?.courseTitle || 'this course'
-      setForm(prev => {
-        const outline = prev.courseOutline.map((row, i) => {
-          if (row.week === 9 || row.week === 18) return row
-          const weekIdx = i < 8 ? i : i - 1
-          return {
-            ...row,
-            ilos: `Describe and apply the concepts of ${courseTitle} covered in week ${row.week}.`,
-            contents: [`Week ${row.week} — ${courseTitle} topic`],
-            activities: weekIdx % 2 === 0 ? 'Lecture-discussion with visual aids' : 'Hands-on laboratory exercise',
-            assessments: weekIdx % 2 === 0 ? 'Quiz' : 'Lab exercise',
-            teachingMaterials: ['Lecture Notes', 'Reading Lists'],
-            assessmentTypes: ['Quizzes'],
-          }
-        })
-        return { ...prev, courseOutline: outline }
-      })
-      addToast('Generated generic outline — add curriculum data for richer content', 'success')
-    }, 1500)
-  }
+  const s5AutoGenerate = autoGenerateDraft
 
   // ── Drag-and-drop reorder for outline rows ──
   const [dragIdx, setDragIdx] = useState(null)
@@ -914,26 +766,6 @@ function SyllabusBuilder({ onComplete, onCancel }) {
     return { files, links }
   }, [form.courseOutline])
 
-  const SectionLabel = ({ num, label }) => (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px', marginTop: '24px' }}>
-      <span style={{
-        display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-        width: '28px', height: '28px', borderRadius: '50%', background: 'var(--sky-500)', color: '#fff',
-        fontSize: '0.8125rem', fontWeight: 700, flexShrink: 0,
-      }}>{num}</span>
-      <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '0.9375rem', margin: 0 }}>{label}</h3>
-    </div>
-  )
-
-  const FormGroup = ({ label, required, error, children, note }) => (
-    <div className="form-group" style={{ marginBottom: '12px' }}>
-      <label className="form-label">{label}{required && ' *'}</label>
-      {note && <div style={{ fontSize: '0.75rem', color: 'var(--gray-500)', fontStyle: 'italic', marginBottom: '6px' }}>{note}</div>}
-      {children}
-      {error && <span className="form-error">{error}</span>}
-    </div>
-  )
-
   const isExamWeek = (w) => w === 9 || w === 18
 
   return (
@@ -941,7 +773,7 @@ function SyllabusBuilder({ onComplete, onCancel }) {
       <div className="page-header" style={{ marginBottom: '8px' }}>
         <div>
           <h1 style={{ fontSize: '1.25rem' }}>Syllabus Builder</h1>
-          <p className="text-sm text-muted">Official KCP 7-section template. Upload an existing syllabus or work section by section with AI assist, or let Auto mode generate a full draft for you to check.</p>
+          <p className="text-sm text-muted">Seven-section syllabus template. Import a DOCX, load a curriculum reference, or write your own draft. Verify institutional policies before review.</p>
         </div>
         <div style={{ display: 'flex', gap: '8px' }}>
           {uploadStep === 'done' && (
@@ -949,11 +781,11 @@ function SyllabusBuilder({ onComplete, onCancel }) {
               <Upload size={14} /> Upload Different
             </button>
           )}
-          <button className="btn btn-primary" onClick={autoGenerateDraft} disabled={autoGenerating || !form.courseCode} title={!form.courseCode ? 'Select a course first' : 'Generate a complete draft grounded in the curriculum reference'}>
+          <button className="btn btn-primary" onClick={autoGenerateDraft} disabled={autoGenerating || !form.courseCode} title={!form.courseCode ? 'Select a course first' : 'Copy an available curriculum outline for review'}>
             {autoGenerating ? (
               <><span className="spinner" style={{ width: 14, height: 14, borderWidth: 2 }} /> Generating full draft…</>
             ) : (
-              <><Sparkles size={14} /> AI Auto — Full Draft</>
+              <><Sparkles size={14} /> Load curriculum outline</>
             )}
           </button>
         </div>
@@ -971,8 +803,8 @@ function SyllabusBuilder({ onComplete, onCancel }) {
         <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', padding: '10px 14px', background: 'var(--amber-50, #fffbeb)', borderRadius: 'var(--radius-md)', border: '1px solid var(--amber-200, #fde68a)', margin: '8px 0', fontSize: '0.8125rem' }}>
           <Sparkles size={16} style={{ color: 'var(--amber-500, #f59e0b)', flexShrink: 0, marginTop: '2px' }} />
           <span style={{ color: 'var(--amber-800, #92400e)' }}>
-            <strong>AI-generated draft.</strong> It will be saved with status <strong>Drafted</strong> — check and correct every
-            section before anything else can happen. Nothing AI-generated moves downstream without your explicit action.
+            <strong>Curriculum reference loaded.</strong> It will be saved with status <strong>Drafted</strong> — check and correct every
+            section before anything else can happen. Activation requires the approved file and your confirmation.
           </span>
         </div>
       )}
@@ -991,7 +823,7 @@ function SyllabusBuilder({ onComplete, onCancel }) {
           </div>
           <div className="grid-2">
             <FormGroup label="Course" required error={errors.courseCode} note="Select a course — all fields auto-fill from curriculum">
-              <select className={`form-input ${errors.courseCode ? 'form-input-error' : ''}`} value={form.courseCode} onChange={e => selectCourse(e.target.value)}>
+              <select aria-label="Course" className={`form-input ${errors.courseCode ? 'form-input-error' : ''}`} value={form.courseCode} onChange={e => selectCourse(e.target.value)}>
                 <option value="">Select a course...</option>
                 {CURRICULUM_COURSES.map(s => <option key={s.code} value={s.code}>{s.code} — {s.title}</option>)}
               </select>
@@ -1172,13 +1004,13 @@ function SyllabusBuilder({ onComplete, onCancel }) {
               </tr>
             </thead>
             <tbody>
-              {midtermWeeks.map((row, localIdx) => {
-                const wi = localIdx
+              {midtermWeeks.map(row => {
+                const wi = form.courseOutline.indexOf(row)
                 const exam = isExamWeek(row.week)
                 const resExpanded = expandedResources[wi]
                 const resourceCount = (row.resources || []).length
                 return (
-                  <>
+                  <Fragment key={row.week}>
                     <tr
                       key={wi}
                       draggable={!exam}
@@ -1301,7 +1133,7 @@ function SyllabusBuilder({ onComplete, onCancel }) {
                         </td>
                       </tr>
                     )}
-                  </>
+                  </Fragment>
                 )
               })}
             </tbody>
@@ -1328,13 +1160,13 @@ function SyllabusBuilder({ onComplete, onCancel }) {
               </tr>
             </thead>
             <tbody>
-              {finalsWeeks.map((row, localIdx) => {
-                const wi = 9 + localIdx
+              {finalsWeeks.map(row => {
+                const wi = form.courseOutline.indexOf(row)
                 const exam = isExamWeek(row.week)
                 const resExpanded = expandedResources[wi]
                 const resourceCount = (row.resources || []).length
                 return (
-                  <>
+                  <Fragment key={row.week}>
                     <tr
                       key={wi}
                       draggable={!exam}
@@ -1457,7 +1289,7 @@ function SyllabusBuilder({ onComplete, onCancel }) {
                         </td>
                       </tr>
                     )}
-                  </>
+                  </Fragment>
                 )
               })}
             </tbody>
@@ -1621,42 +1453,53 @@ export default function Syllabus() {
   const [showVersionHistory, setShowVersionHistory] = useState(false)
   const [versionHistorySyllabus, setVersionHistorySyllabus] = useState(null)
   const [extractingSyllabus, setExtractingSyllabus] = useState(null)
-  const [registrations, setRegistrations] = useState(BLOCK_SECTION_REGISTRATIONS)
-  // Local copy so the lifecycle actions below actually move syllabi through
-  // the stations during a demo session. Admin sees all; instructors see own.
-  const [syllabi, setSyllabi] = useState(() =>
-    user?.role === 'admin' ? DEFAULT_SYLLABI : DEFAULT_SYLLABI.filter(s => s.instructorId === user?.id)
-  )
+  const { registrations, setRegistrations, syllabi, setSyllabi } = useWorkspace()
+  const [editingSyllabus, setEditingSyllabus] = useState(null)
+  const [uploadingSyllabus, setUploadingSyllabus] = useState(null)
 
   useEffect(() => {
     const t = searchParams.get('tab')
     if (t && t !== tab) setTab(t)
-  }, [searchParams])
+  }, [searchParams, tab])
 
-  if (user?.role !== 'instructor') return <Navigate to="/dashboard" replace />
+  if (!['instructor', 'admin'].includes(user?.role)) return <Navigate to="/dashboard" replace />
 
   const switchTab = (t) => {
     setTab(t)
     setSearchParams(prev => { const p = new URLSearchParams(prev); p.set('tab', t); return p })
   }
 
-  const setStatus = (id, status) => setSyllabi(prev => prev.map(s => s.id === id ? { ...s, status } : s))
+  const record = (syl, status) => ({ ...syl, status, lastUpdated: new Date().toISOString(), history: [...(syl.history || []), { status, version: syl.version || 1, timestamp: new Date().toISOString(), author: user?.name || 'Instructor' }].slice(-100) })
+  const setStatus = (id, status) => setSyllabi(prev => prev.map(s => s.id === id ? record(s, status) : s))
+  const saveBuilder = (form, status) => {
+    const next = record({ ...form, id: editingSyllabus?.id || crypto.randomUUID(), instructorId: user?.id, version: (editingSyllabus?.version || 0) + 1, sample: false, approvedFile: undefined, extractedAt: undefined }, status)
+    setSyllabi(previous => editingSyllabus ? previous.map(s => s.id === next.id ? next : s) : [...previous, next])
+    setEditingSyllabus(null); switchTab('mine')
+  }
 
   // One explicit human action per station — this is the approval loop of
   // FLOW_SPEC Phase 2, with the signatory chain happening offline.
   const markChecked = (syl) => {
+    if (!meaningfulOutline(syl.courseOutline)) { addToast('Add weekly learning outcomes and contents in the builder first.', 'error'); return }
     setStatus(syl.id, 'checked')
     addToast(`${syl.courseCode} marked as Checked — download it next for the approval route`, 'success')
   }
-  const downloadForApproval = (syl) => {
-    setStatus(syl.id, 'downloaded_for_approval')
-    addToast(`${syl.courseCode} downloaded. Route the file offline: Dean review → CAO approval → EVP noting`, 'info')
+  const downloadForApproval = async (syl) => {
+    try {
+      const blob = await syllabusDocx(syl)
+      downloadBlob(blob, `${syl.courseCode.replace(/[^a-z0-9-]/gi, '_')}-v${syl.version}-approval.docx`)
+      setStatus(syl.id, 'downloaded_for_approval')
+      addToast('DOCX exported. Complete the offline approval route before uploading it.', 'info')
+    } catch (error) { addToast(`Export failed: ${error.message}`, 'error') }
   }
-  const uploadApproved = (syl) => {
-    setStatus(syl.id, 'approved_uploaded')
-    addToast(`Approved file for ${syl.courseCode} uploaded — extract the Course Outline to activate it`, 'success')
+  const uploadApproved = syl => setUploadingSyllabus(syl)
+  const saveApproved = syl => {
+    setSyllabi(previous => previous.map(item => item.id === syl.id ? record(syl, 'approved_uploaded') : item))
+    setUploadingSyllabus(null)
+    addToast('Approved file retained. Review the extracted outline before activation.', 'success')
   }
   const confirmExtraction = (syl) => {
+    if (!syl.approvedFile || !meaningfulOutline(syl.courseOutline)) { addToast('Upload an approved DOCX with a usable outline first.', 'error'); return }
     setStatus(syl.id, 'active')
     setExtractingSyllabus(null)
     addToast(`${syl.courseCode} is now Active — its Course Outline drives courseware generation`, 'success')
@@ -1668,7 +1511,7 @@ export default function Syllabus() {
       case 'drafted': return { label: 'Mark as Checked', icon: CheckCircle, onClick: () => markChecked(syl), title: 'Confirm you have checked and corrected this draft' }
       case 'checked': return { label: 'Download for Approval', icon: Download, onClick: () => downloadForApproval(syl), title: 'Download the file for the offline signatory route (Dean → CAO → EVP)' }
       case 'downloaded_for_approval': return { label: 'Upload Approved File', icon: FileUp, onClick: () => uploadApproved(syl), title: 'Upload the fully signed syllabus once the offline route is complete' }
-      case 'approved_uploaded': return { label: 'Extract Outline', icon: ScanLine, onClick: () => setExtractingSyllabus(syl), title: 'Parse Section 5 (Course Outline) from the approved file' }
+      case 'approved_uploaded': return syl.approvedFile ? { label: 'Extract Outline', icon: ScanLine, onClick: () => setExtractingSyllabus(syl), title: 'Review the outline parsed from the approved file' } : { label: 'Upload Approved File', icon: FileUp, onClick: () => uploadApproved(syl), title: 'This sample has no retained approved file' }
       default: return null
     }
   }
@@ -1688,25 +1531,9 @@ export default function Syllabus() {
 
   // Handle syllabus attachment from SharedSyllabusRepository
   const handleAttachSyllabus = (syllabus) => {
-    if (syllabus.id) {
-      // Attaching existing syllabus - add to user's syllabi if not already there
-      if (!syllabi.find(s => s.id === syllabus.id)) {
-        setSyllabi(prev => [...prev, { ...syllabus, instructorId: user?.id || syllabus.instructorId }])
-        addToast(`Attached ${syllabus.courseCode} syllabus to your courses`, 'success')
-      }
-    } else {
-      // Cloning - create new syllabus
-      const newSyllabus = {
-        ...syllabus,
-        id: `syl-${Date.now()}`,
-        instructorId: user?.id || 1,
-        status: 'drafted',
-        version: 1,
-        lastUpdated: new Date().toISOString().split('T')[0],
-      }
-      setSyllabi(prev => [...prev, newSyllabus])
-      addToast(`Cloned ${syllabus.courseCode} syllabus as a new draft`, 'success')
-    }
+    const copy = record({ ...syllabus, id: crypto.randomUUID(), instructorId: user?.id, version: 1, sample: false, approvedFile: undefined, extractedAt: undefined, history: [] }, 'drafted')
+    setSyllabi(previous => [...previous, copy])
+    addToast('Copied as a new draft. Review and complete its approval route.', 'success')
     switchTab('mine')
   }
 
@@ -1752,7 +1579,7 @@ export default function Syllabus() {
           Shared Repository
         </button>
         <button
-          onClick={() => switchTab('builder')}
+          onClick={() => { setEditingSyllabus(null); switchTab('builder') }}
           style={{
             padding: '10px 20px', border: 'none', background: 'none', cursor: 'pointer', fontWeight: 600,
             fontSize: '0.875rem', color: tab === 'builder' ? 'var(--sky-600)' : 'var(--gray-500)',
@@ -1846,7 +1673,7 @@ export default function Syllabus() {
                 <p>No syllabi yet. Register a course first, then create or attach a syllabus.</p>
               </div></div>
             ) : (
-              <table className="data-table">
+              <table className="data-table" style={{ display: 'block', overflowX: 'auto', maxWidth: '100%' }}>
                 <thead>
                   <tr>
                     <th>Course</th>
@@ -1867,9 +1694,9 @@ export default function Syllabus() {
                       <tr key={syl.id}>
                         <td>
                           <div style={{ fontWeight: 700, fontSize: '0.875rem' }}>{syl.courseCode}</div>
-                          <div className="text-sm text-muted">{syl.courseTitle}</div>
+                          <div className="text-sm text-muted">{syl.courseTitle}{syl.sample && <span> · Sample</span>}</div>
                         </td>
-                        <td className="text-sm">{inst?.name || '—'}</td>
+                        <td className="text-sm">{inst?.name || user?.name || 'Instructor'}</td>
                         <td><StatusBadge status={syl.status} /></td>
                         <td><span className="badge badge-draft">v{syl.version}</span></td>
                         <td className="text-sm">
@@ -1884,7 +1711,7 @@ export default function Syllabus() {
                             </button>
                           ) : (
                             <span className="text-sm" style={{ color: 'var(--green-600, #16a34a)', fontWeight: 600, whiteSpace: 'nowrap' }}>
-                              <CheckCircle size={13} style={{ verticalAlign: 'middle', marginRight: 4 }} />Drives courseware
+                              <CheckCircle size={13} style={{ verticalAlign: 'middle', marginRight: 4 }} />{syl.status === 'active' ? 'Drives courseware' : 'Archived'}
                             </span>
                           )}
                         </td>
@@ -1892,12 +1719,12 @@ export default function Syllabus() {
                           <div style={{ display: 'flex', gap: '4px' }}>
                             <button className="btn btn-ghost btn-sm" onClick={() => setSelectedSyllabus(syl)} title="View Syllabus"><Eye size={14} /></button>
                             <button className="btn btn-ghost btn-sm" onClick={() => { setVersionHistorySyllabus(syl); setShowVersionHistory(true) }} title="Version History"><History size={14} /></button>
-                            <button className="btn btn-ghost btn-sm" onClick={() => setCompareSyllabus(syl)} title="Compare Versions"><GitCompare size={14} /></button>
+                            <button className="btn btn-ghost btn-sm" onClick={() => { setVersionHistorySyllabus(syl); setShowVersionHistory(true) }} title="Review recorded changes"><GitCompare size={14} /></button>
                             {(syl.status === 'drafted' || syl.status === 'checked') && (
-                              <button className="btn btn-ghost btn-sm" onClick={() => { setCompareSyllabus(null); switchTab('builder') }} title="Edit in Builder"><BookOpen size={14} /></button>
+                              <button className="btn btn-ghost btn-sm" onClick={() => { setEditingSyllabus(syl); switchTab('builder') }} title="Edit in Builder"><BookOpen size={14} /></button>
                             )}
-                            <button className="btn btn-ghost btn-sm" onClick={() => addToast('Copied as a starting point for next term', 'info')} title="Copy for next term"><Copy size={14} /></button>
-                            <button className="btn btn-ghost btn-sm" onClick={() => addToast('Syllabus archived', 'info')} title="Archive"><Archive size={14} /></button>
+                            <button className="btn btn-ghost btn-sm" onClick={() => handleAttachSyllabus(syl)} title="Copy for next term"><Copy size={14} /></button>
+                            <button className="btn btn-ghost btn-sm" onClick={() => setStatus(syl.id, syl.status === 'archived' ? 'drafted' : 'archived')} title={syl.status === 'archived' ? 'Restore as draft' : 'Archive'}><Archive size={14} /></button>
                           </div>
                         </td>
                       </tr>
@@ -1921,7 +1748,7 @@ export default function Syllabus() {
       {/* Tab: Syllabus Builder */}
       {tab === 'builder' && (
         <div data-pulse-help="syllabus-field">
-          <SyllabusBuilder onComplete={() => switchTab('mine')} onCancel={() => switchTab('mine')} />
+          <SyllabusBuilder key={editingSyllabus?.id || "new"} initial={editingSyllabus} onComplete={saveBuilder} onCancel={() => { setEditingSyllabus(null); switchTab('mine') }} />
         </div>
       )}
 
@@ -1940,14 +1767,15 @@ export default function Syllabus() {
       {/* Version Compare */}
       {compareSyllabus && <VersionCompare v1={compareSyllabus} v2={compareSyllabus} onClose={() => setCompareSyllabus(null)} />}
 
-      {/* Version History */}
-      {showVersionHistory && (
-        <VersionHistory
-          versions={SYLLABUS_VERSIONS.filter(v => v.syllabusId === (versionHistorySyllabus?.id || 'syl-1'))}
-          entityType="syllabus"
-          onClose={() => { setShowVersionHistory(false); setVersionHistorySyllabus(null) }}
-        />
-      )}
+      {uploadingSyllabus && <ApprovedSyllabusUpload syllabus={uploadingSyllabus} onSave={saveApproved} onClose={() => setUploadingSyllabus(null)} />}
+      {showVersionHistory && <div className="overlay-backdrop"><section role="dialog" aria-label="Syllabus history" className="modal-content" style={{ maxHeight: '80vh', overflow: 'auto' }}>
+        <h2>Recorded syllabus changes</h2>
+        {versionHistorySyllabus?.history?.length ? <ul>{versionHistorySyllabus.history.map((entry, i) => <li key={i}>v{entry.version} · {entry.status} · {new Date(entry.timestamp).toLocaleString()} · {entry.author}</li>)}</ul> : <p>No recorded changes yet. Sample history is not a saved audit trail.</p>}
+        {versionHistorySyllabus?.approvedFile && <button className="btn btn-secondary" onClick={() => downloadApprovedFile(versionHistorySyllabus.approvedFile)}>Download retained approved file</button>}
+        {versionHistorySyllabus?.approvedFile && <button className="btn btn-ghost" onClick={() => { setSyllabi(previous => previous.map(syl => syl.id === versionHistorySyllabus.id ? record({ ...syl, approvedFile: undefined, extractedAt: undefined }, 'drafted') : syl)); setShowVersionHistory(false) }}>Remove attachment and return to draft</button>}
+        <button className="btn btn-ghost" onClick={() => setShowVersionHistory(false)}>Close</button>
+      </section></div>}
+
     </div>
   )
 }

@@ -4,7 +4,7 @@ import {
   ChevronDown, ChevronRight, Flag, Eye, EyeOff, Send, Pencil,
   MonitorPlay,
 } from 'lucide-react'
-import { DEFAULT_SYLLABI } from '../../data/mockData'
+import { useWorkspace } from '../../context/WorkspaceContext'
 import DocumentViewer from './DocumentViewer'
 import AssessmentEditor from './AssessmentEditor'
 import PresentationViewer from './PresentationViewer'
@@ -35,7 +35,8 @@ export default function CourseOutlineViewer({
   const [viewingType, setViewingType] = useState(null)
   const [viewMode, setViewMode] = useState(null) // 'document' | 'presentation' | null
 
-  const syllabus = DEFAULT_SYLLABI.find(s => s.id === syllabusId)
+  const { syllabi } = useWorkspace()
+  const syllabus = syllabi.find(s => s.id === syllabusId)
 
   const weeks = useMemo(() => {
     if (!syllabus) return []
