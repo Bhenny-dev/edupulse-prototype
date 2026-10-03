@@ -2,7 +2,7 @@
 
 **Project:** `edupulse-prototype` (team `bhenny-benlor-d-riveras-projects`) · **Production:** https://edupulse-prototype.vercel.app · **Root directory:** `edupulse-app`
 
-The settings below come from the repository (`edupulse-app/vercel.json`, `.vercelignore`, `scripts/check-deployment.ts`) and from live HTTP checks of production. The Vercel connector returned *403 — re-authenticate to this scope* on 2026-10-02, so dashboard-only values (environment variable list, domains, build logs) could not be read and are marked as such.
+The settings below come from the repository (`edupulse-app/vercel.json`, `.vercelignore`, `scripts/check-deployment.ts`), the authenticated Vercel REST API, and live HTTP checks of production. The Claude Vercel connector returned *403 — re-authenticate to this scope* on 2026-10-02; the REST API was available on 2026-10-03.
 
 ## Build
 
@@ -45,11 +45,12 @@ Names only; values stay in the Vercel dashboard and are never written to the rep
 | --- | --- |
 | `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` | Sign-in and browser-side Supabase client (public by design) |
 | `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY` | API access to Supabase as the signed-in user |
+| `SUPABASE_JWKS_URL` | Configured in Vercel but currently unused; the API validates tokens through Supabase `auth.getUser` |
 | `AI_CONNECTION_SECRET` | 64 hex characters; encrypts personal provider keys into the connection cookie. Without it, connecting a provider on the hosted site is refused. |
 | `AI_PROVIDER`, `GEMINI_API_KEY` / `GROQ_API_KEY` / `OPENROUTER_API_KEY` / `HF_TOKEN` / `OPENAI_API_KEY` / `ANTHROPIC_API_KEY` and matching `*_MODEL` | Optional server-wide generation. Without one, hosted Pulse runs in *retrieval* mode (quoted, verified source excerpts) unless a user connects their own provider. |
 | `AI_MODEL_DOWNLOAD`, `AI_MODEL_DIR`, `AI_ONNX_THREADS` | Optional model packaging overrides |
 
-*Not verified from the dashboard* (connector access was refused): which of these are set, and for which environments.
+The Vercel REST API lists the five Supabase variables above and two separate `AI_CONNECTION_SECRET` entries, scoped to production and preview. Both secrets are write-only (`type: sensitive`, `visibility: secret`); their values were generated independently and never entered into the repository. The production deployment was rebuilt after they were added. No server-wide generation provider is configured, so hosted guest sessions use retrieval. A personal provider connection with a valid key has not been tested end to end on production.
 
 ## Deployment check
 
@@ -68,7 +69,7 @@ Names only; values stay in the Vercel dashboard and are never written to the rep
 
 The status after pushing v0.4.0 is recorded in [versions/v0.4.0/validation/results.md](../versions/v0.4.0/validation/results.md).
 
-**Current production (2026-10-03):** commit `13862a2` has a successful Vercel deployment status, and the production alias serves API version 0.4.0. Live requests confirmed the CSP and `nosniff` headers, public source-grounded chat, references from all three open catalogs, sandboxed PDF extraction, and guest write denial. The [release validation record](../versions/v0.4.0/validation/results.md#production-release) lists each result and the remaining authenticated-session and dashboard-log limits.
+**Current production (2026-10-03):** commit `0c8edbe` deployed as `dpl_8PJwgNyoMNfJ8CENNcBiAo6A39nV`, passed 59 tests and the deployment check, and served API version 0.4.0. A later documentation-only deployment may supersede this build. Live requests confirmed the CSP and `nosniff` headers, public source-grounded chat with 100% citation accuracy on the checked question, references from all three open catalogs, sandboxed PDF extraction, and guest write denial. The [release validation record](../versions/v0.4.0/validation/results.md#production-release) lists each result and the remaining authenticated-session limit.
 
 ## Dashboard pages to capture for the report
 
@@ -78,4 +79,4 @@ The status after pushing v0.4.0 is recorded in [versions/v0.4.0/validation/resul
 4. *Project → Settings → Functions* (region and 120 s duration).
 5. *Project → Settings → Domains* (`edupulse-prototype.vercel.app`).
 
-To let the Vercel connector read these, re-authorise it for the `bhenny-benlor-d-riveras-projects` team in claude.ai connector settings.
+The REST API already confirmed deployment readiness, build-test counts, environment variable names and scopes, and the production domain. Dashboard screenshots are optional report artifacts. To let the Claude connector read them, re-authorise it for the `bhenny-benlor-d-riveras-projects` team in claude.ai connector settings.
