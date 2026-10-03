@@ -8,6 +8,7 @@ function emit(event) {
 }
 
 export const pulse = {
+  progress(name, detail = '') { emit({ type: 'progress', name, detail }) },
   // expression: 'idle' | 'curious' | 'thinking' | 'encouraging' | 'cheerful' | 'concern'
   expression(name) {
     emit({ type: 'expression', expression: name })
@@ -18,6 +19,11 @@ export const pulse = {
   },
   celebrate(message) {
     emit({ type: 'say', message, expression: 'cheerful' })
+  },
+  // Open Pulse and send a request, optionally scoped to library documents or a task
+  // (e.g. Compare from the knowledge library). The user sees and can stop the request.
+  ask(message, options = {}) {
+    emit({ type: 'ask', message, documentIds: options.documentIds || [], task: options.task || 'auto', label: options.label || '' })
   },
   // Dispatch a form action to the active page (e.g., syllabus builder)
   formAction(action, payload = {}) {

@@ -1,12 +1,24 @@
 import { z } from 'zod'
 
+export const tasks = ['auto', 'answer', 'summarize', 'compare', 'draft', 'references', 'general'] as const
 export const chatInput = z.object({
+  grounding: z.enum(['auto', 'sources']).default('auto'),
+  task: z.enum(tasks).default('auto'),
   message: z.string().trim().min(1).max(4000),
   history: z.array(z.object({ role: z.enum(['user', 'assistant']), content: z.string().max(5000) })).max(8).default([]),
   context: z.string().max(2000).default(''),
   attachments: z.array(z.object({ title: z.string().trim().min(1).max(160), text: z.string().trim().min(1).max(18000) })).max(3).default([]),
+  documentIds: z.array(z.string().uuid()).max(2).default([]),
 })
-export const documentInput = z.object({ title: z.string().trim().min(1).max(160), text: z.string().trim().min(40).max(60000) })
+export const DOCUMENT_CHARACTERS = 150_000
+export const sourceTypes = ['text', 'pdf', 'docx', 'pptx', 'html', 'markdown', 'csv'] as const
+export const documentInput = z.object({
+  title: z.string().trim().min(1).max(160), text: z.string().trim().min(40).max(DOCUMENT_CHARACTERS),
+  sourceType: z.enum(sourceTypes).default('text'), fileName: z.string().trim().min(1).max(255).optional(),
+})
+export const researchInput = z.object({ queries: z.array(z.string().trim().min(1).max(1000)).min(1).max(4), focus: z.string().trim().min(1).max(4000), documentIds: z.array(z.string().uuid()).max(2).default([]) })
+export const similarityInput = z.object({ left: z.array(z.string().max(800)).min(1).max(24), right: z.array(z.string().max(2000)).min(1).max(12) })
+export const referencesInput = z.object({ topic: z.string().trim().min(2).max(200) })
 export const courseInput = z.object({
   courseCode: z.string().trim().min(1).max(80), courseTitle: z.string().trim().min(1).max(200),
   week: z.number().int().min(1).max(52),
@@ -32,7 +44,6 @@ export type ChatInput = z.infer<typeof chatInput>
 export type CourseInput = z.infer<typeof courseInput>
 export type Source = { id: string; title: string; text: string; score: number; method: 'vector' | 'keyword' | 'provided' }
 export type Identity = { id: string; role: 'admin' | 'instructor' | 'student' | 'guest'; token?: string; local: boolean }
-export type Trace = { node: string; detail: string }
 export class ApiError extends Error {
   constructor(public status: number, public code: string, message: string) { super(message) }
 }

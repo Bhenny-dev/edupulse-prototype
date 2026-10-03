@@ -9,22 +9,22 @@ export default defineAgent({
   zone: 'course-loading',
   label: 'Course Loading',
   roles: ['admin'],
-  greeting: () => "Want AI to suggest candidates for a course, propose the whole load in one pass, or a read on who's carrying what?",
+  greeting: () => "Course loading currently uses sample assignments. Want to inspect the example load or instructor cards?",
   intents: [
     {
       key: 'assist', label: 'Suggest a candidate for one course',
       steps: [
-        { title: 'Find the course row', body: 'Each row already shows an AI suggestion, ranked by the loading rule.' },
+        { title: 'Find the course row', body: 'Review the displayed sample suggestion. It is not a live AI recommendation from institutional records.' },
         { title: 'Check the reasoning', body: 'Priority 1 is a master\'s degree holder; priority 2 is specialization or forte in the course.' },
-        { title: 'Assign and confirm', body: 'Pick from the dropdown — your choice becomes the confirmed assignment immediately.' },
+        { title: 'Try the preview control', body: 'A choice here changes the prototype view only. Confirm official assignments in the institution’s course-loading process.' },
       ],
     },
     {
       key: 'auto', label: 'Propose the whole load at once',
       steps: [
-        { title: 'Run AI Auto-Propose', body: 'Every unassigned course gets a suggested instructor, ranked by the same rule.' },
+        { title: 'Preview Auto-Propose', body: 'The current control demonstrates proposed assignments with sample data; it does not run connected inference or write official course loads.' },
         { title: 'Review each proposal', body: 'Proposed rows are highlighted until you act on them — nothing is final yet.' },
-        { title: 'Confirm one by one, or all at once', body: '"Confirm All Proposals" accepts every pending suggestion; you can still reject and reassign any individual row first.' },
+        { title: 'Review the prototype result', body: 'Confirming a proposal changes the preview state only. Check the institution’s system of record for actual assignments.' },
       ],
     },
     {

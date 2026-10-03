@@ -1,125 +1,55 @@
-// The Pulse character — a 2D, dimensionally-shaded chibi figure (SVG, not a
-// 3D rig; see docs/REQUIREMENTS.md FR-GUIDE-05/06). Six expression states,
-// each tied to a real product moment rather than decorative variety.
+import { useEffect, useId, useRef } from 'react'
 
-const EYES = {
-  idle: <g className="pulse-blink">
-    <ellipse cx="44" cy="66" rx="7" ry="8" fill="#1A2233" />
-    <ellipse cx="76" cy="66" rx="7" ry="8" fill="#1A2233" />
-    <circle cx="46.5" cy="63" r="2" fill="#fff" />
-    <circle cx="78.5" cy="63" r="2" fill="#fff" />
-  </g>,
-  curious: <g>
-    <ellipse cx="44" cy="64" rx="7.5" ry="9" fill="#1A2233" />
-    <ellipse cx="77" cy="67" rx="6.5" ry="7.5" fill="#1A2233" />
-    <circle cx="46.5" cy="61" r="2.1" fill="#fff" />
-    <circle cx="79" cy="64.5" r="1.9" fill="#fff" />
-    <path d="M36 52 Q44 46 52 51" stroke="#1A2233" strokeWidth="2.6" fill="none" strokeLinecap="round" />
-  </g>,
-  thinking: <g>
-    <path d="M38 66 Q44 61 50 66" stroke="#1A2233" strokeWidth="4.5" fill="none" strokeLinecap="round" />
-    <path d="M70 66 Q76 61 82 66" stroke="#1A2233" strokeWidth="4.5" fill="none" strokeLinecap="round" />
-  </g>,
-  encouraging: <g>
-    <path d="M37 68 Q44 58 51 68" stroke="#1A2233" strokeWidth="4.5" fill="none" strokeLinecap="round" />
-    <path d="M69 68 Q76 58 83 68" stroke="#1A2233" strokeWidth="4.5" fill="none" strokeLinecap="round" />
-  </g>,
-  cheerful: <g>
-    <path d="M36 64 Q44 52 52 64" stroke="#1A2233" strokeWidth="5" fill="none" strokeLinecap="round" />
-    <path d="M68 64 Q76 52 84 64" stroke="#1A2233" strokeWidth="5" fill="none" strokeLinecap="round" />
-  </g>,
-  concern: <g>
-    <ellipse cx="44" cy="68" rx="6.5" ry="7" fill="#1A2233" />
-    <ellipse cx="76" cy="68" rx="6.5" ry="7" fill="#1A2233" />
-    <path d="M37 56 Q44 60 51 57" stroke="#1A2233" strokeWidth="2.6" fill="none" strokeLinecap="round" />
-    <path d="M69 57 Q76 60 83 56" stroke="#1A2233" strokeWidth="2.6" fill="none" strokeLinecap="round" />
-  </g>,
-}
-
-const MOUTHS = {
-  idle: <path d="M52 84 Q60 89 68 84" stroke="#1A2233" strokeWidth="3" fill="none" strokeLinecap="round" />,
-  curious: <ellipse cx="60" cy="86" rx="5" ry="6" fill="#1A2233" />,
-  thinking: <circle cx="60" cy="87" r="3" fill="#1A2233" />,
-  encouraging: <path d="M48 82 Q60 96 72 82" stroke="#1A2233" strokeWidth="3.4" fill="none" strokeLinecap="round" />,
-  cheerful: <path d="M45 80 Q60 100 75 80 Q60 92 45 80 Z" fill="#7A2E2E" stroke="#1A2233" strokeWidth="2.5" strokeLinejoin="round" />,
-  concern: <path d="M52 90 Q60 85 68 90" stroke="#1A2233" strokeWidth="3" fill="none" strokeLinecap="round" />,
-}
-
-const BLUSH = <>
-  <ellipse cx="33" cy="78" rx="6" ry="3.5" fill="#FF9E9E" opacity="0.55" />
-  <ellipse cx="87" cy="78" rx="6" ry="3.5" fill="#FF9E9E" opacity="0.55" />
-</>
-
-function Extras({ expression }) {
-  if (expression === 'thinking') {
-    return (
-      <g className="pulse-think-dots">
-        <circle cx="94" cy="34" r="3" fill="var(--sky-300, #7dd3fc)" />
-        <circle cx="102" cy="24" r="4" fill="var(--sky-300, #7dd3fc)" />
-        <circle cx="112" cy="12" r="5" fill="var(--sky-300, #7dd3fc)" />
+// Cursor response is continuous. Workflow expression adds brows/mouth/arms;
+// it never replaces tracking with a collection of static character images.
+// lookAt: an element Pulse is carried over or helping with; its eyes follow it instead of the cursor.
+export default function PulseAvatar({ expression = 'idle', size = 56, className = '', dragging = false, lookAt = null }) {
+  const ref = useRef(null), id = useId().replace(/:/g, ''), lookAtRef = useRef(lookAt), aimRef = useRef(null)
+  useEffect(() => {
+    const element = ref.current, reduce = matchMedia('(prefers-reduced-motion: reduce)')
+    let frame = 0, lastX = innerWidth / 2, lastY = innerHeight / 2
+    const reset = () => { element?.style.setProperty('--look-x', '0px'); element?.style.setProperty('--look-y', '0px'); element?.style.setProperty('--body-lean', '0deg') }
+    const aim = () => {
+      if (reduce.matches || !element) return
+      cancelAnimationFrame(frame)
+      frame = requestAnimationFrame(() => {
+        const focus = lookAtRef.current?.isConnected ? lookAtRef.current.getBoundingClientRect() : null
+        const x = focus ? focus.left + focus.width / 2 : lastX, y = focus ? focus.top + focus.height / 2 : lastY
+        const r = element.getBoundingClientRect(), dx = x - r.left - r.width / 2, dy = y - r.top - r.height / 2
+        const distance = Math.max(90, Math.hypot(dx, dy))
+        element.style.setProperty('--look-x', `${(dx / distance * 4).toFixed(2)}px`)
+        element.style.setProperty('--look-y', `${(dy / distance * 3).toFixed(2)}px`)
+        element.style.setProperty('--body-lean', `${(dx / distance * 5).toFixed(2)}deg`)
+      })
+    }
+    aimRef.current = aim
+    const move = event => { lastX = event.clientX; lastY = event.clientY; aim() }
+    window.addEventListener('pointermove', move, { passive: true }); window.addEventListener('scroll', aim, { passive: true, capture: true }); document.addEventListener('pointerleave', reset); reduce.addEventListener('change', reset)
+    return () => { cancelAnimationFrame(frame); window.removeEventListener('pointermove', move); window.removeEventListener('scroll', aim, { capture: true }); document.removeEventListener('pointerleave', reset); reduce.removeEventListener('change', reset) }
+  }, [])
+  useEffect(() => { lookAtRef.current = lookAt; aimRef.current?.() }, [lookAt])
+  const happy = ['encouraging', 'cheerful'].includes(expression)
+  return <span ref={ref} className={`pulse-character expression-${expression} ${dragging ? 'is-carried' : ''} ${className}`} style={{ width: size, height: size }}>
+    <svg width={size} height={size} viewBox="0 0 120 120" role="img" aria-label={`Pulse, ${dragging ? 'being carried' : expression}`}>
+      <defs><radialGradient id={`${id}-body`} cx="32%" cy="26%" r="80%"><stop offset="0" stopColor="#a7f3d0" /><stop offset=".48" stopColor="#38bdf8" /><stop offset="1" stopColor="#0284c7" /></radialGradient></defs>
+      <ellipse cx="60" cy="111" rx="27" ry="4" fill="#075985" opacity=".12" />
+      <g className="pulse-body-motion">
+        <g className="pulse-antenna"><path d="M60 33V20M48 22h7l4-11 5 20 5-9h5" fill="none" stroke="#0284c7" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" /><circle cx="59" cy="9" r="4" fill="#fbbf24" /></g>
+        <ellipse cx="60" cy="70" rx="42" ry="38" fill={`url(#${id}-body)`} />
+        <ellipse className="pulse-arm pulse-arm-left" cx="20" cy="78" rx="9" ry="13" fill="#38bdf8" stroke="#0284c7" strokeWidth="1.5" />
+        <ellipse className="pulse-arm pulse-arm-right" cx="100" cy="78" rx="9" ry="13" fill="#38bdf8" stroke="#0284c7" strokeWidth="1.5" />
+        <ellipse cx="60" cy="72" rx="34" ry="30" fill="#f5fbff" />
+        <g className="pulse-face-motion">
+          <ellipse cx="33" cy="80" rx="6" ry="3.5" fill="#fda4af" opacity=".7" /><ellipse cx="87" cy="80" rx="6" ry="3.5" fill="#fda4af" opacity=".7" />
+          <g className="pulse-eye-blink">
+            <ellipse cx="44" cy="66" rx="9" ry="10" fill="white" /><ellipse cx="76" cy="66" rx="9" ry="10" fill="white" />
+            <g className="pulse-pupils" data-testid="pulse-pupils"><ellipse cx="44" cy="66" rx="6" ry={happy ? 6 : 8} fill="#172b46" /><ellipse cx="76" cy="66" rx="6" ry={happy ? 6 : 8} fill="#172b46" /><circle cx="46" cy="63" r="2" fill="white" /><circle cx="78" cy="63" r="2" fill="white" /></g>
+          </g>
+          <path className="pulse-brow-left" d="M37 53q7-4 14 0" fill="none" stroke="#172b46" strokeWidth="2.3" strokeLinecap="round" /><path className="pulse-brow-right" d="M69 53q7-4 14 0" fill="none" stroke="#172b46" strokeWidth="2.3" strokeLinecap="round" />
+          <path d={expression === 'concern' ? 'M52 90q8-7 16 0' : happy ? 'M48 82q12 19 24 0' : 'M52 84q8 8 16 0'} fill={happy ? '#7c3f51' : 'none'} stroke="#172b46" strokeWidth="2.8" strokeLinecap="round" />
+          {expression === 'thinking' && <g className="pulse-thinking-bubbles" fill="#0284c7"><circle cx="48" cy="94" r="2" /><circle cx="60" cy="94" r="2" /><circle cx="72" cy="94" r="2" /></g>}
+        </g>
       </g>
-    )
-  }
-  if (expression === 'cheerful') {
-    return (
-      <g className="pulse-sparkle">
-        <path d="M14 30 l3 7 7 3 -7 3 -3 7 -3 -7 -7 -3 7 -3 Z" fill="#FFD166" />
-        <path d="M104 50 l2 5 5 2 -5 2 -2 5 -2 -5 -5 -2 5 -2 Z" fill="#FFD166" />
-        <path d="M18 88 l2 4.5 4.5 2 -4.5 2 -2 4.5 -2 -4.5 -4.5 -2 4.5 -2 Z" fill="#8CE0D0" />
-      </g>
-    )
-  }
-  return null
-}
-
-export default function PulseAvatar({ expression = 'idle', size = 56, className = '' }) {
-  const armUp = expression === 'encouraging' || expression === 'cheerful'
-  return (
-    <svg
-      width={size} height={size} viewBox="0 0 120 120"
-      className={`pulse-avatar pulse-avatar-${expression} ${className}`}
-      role="img"
-      aria-label={`Pulse, looking ${expression}`}
-    >
-      <defs>
-        <radialGradient id="pulseBodyGrad" cx="38%" cy="32%" r="75%">
-          <stop offset="0%" stopColor="#8FE3D8" />
-          <stop offset="55%" stopColor="#38BDF8" />
-          <stop offset="100%" stopColor="#0284C7" />
-        </radialGradient>
-        <filter id="pulseShadow" x="-40%" y="-20%" width="180%" height="160%">
-          <feDropShadow dx="0" dy="3" stdDeviation="3" floodColor="#0f172a" floodOpacity="0.22" />
-        </filter>
-      </defs>
-
-      {/* heartbeat antenna — ties the character to the product name */}
-      <g className="pulse-antenna">
-        <path d="M60 30 V16 L52 16 L58 4 L64 16 L70 16 L60 16" fill="none" />
-        <path d="M60 30 L60 22 M52 22 L56 22 L59 14 L62 28 L65 22 L68 22"
-          stroke="#0284C7" strokeWidth="3" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-        <circle cx="60" cy="12" r="4" fill="#FFD166" />
-      </g>
-
-      <Extras expression={expression} />
-
-      {/* body */}
-      <g filter="url(#pulseShadow)">
-        <ellipse cx="60" cy="70" rx="42" ry="38" fill="url(#pulseBodyGrad)" />
-      </g>
-
-      {/* left arm */}
-      <ellipse cx="20" cy={armUp ? 62 : 82} rx="9" ry="13"
-        fill="#38BDF8" stroke="#0284C7" strokeWidth="1.5"
-        transform={armUp ? 'rotate(-25 20 62)' : ''} />
-      {/* right arm */}
-      <ellipse cx="100" cy="82" rx="9" ry="13" fill="#38BDF8" stroke="#0284C7" strokeWidth="1.5" />
-
-      {/* face plate */}
-      <ellipse cx="60" cy="72" rx="34" ry="30" fill="#F5FBFF" opacity="0.94" />
-
-      {BLUSH}
-      {EYES[expression] || EYES.idle}
-      {MOUTHS[expression] || MOUTHS.idle}
     </svg>
-  )
+  </span>
 }

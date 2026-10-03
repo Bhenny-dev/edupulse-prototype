@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { COURSEWARE_ITEMS, INSTRUCTORS } from '../data/mockData'
+import { COURSEWARE_ITEMS, INSTRUCTORS, STUDENT_RECORDS } from '../data/mockData'
 import { useWorkspace } from '../context/WorkspaceContext'
 import { useToast } from '../context/ToastContext'
 import { useContentStore } from '../context/ContentStoreContext'
@@ -113,7 +113,7 @@ function CourseSelectionGrid({ user, contentStore, onSelectCourse }) {
               </div>
 
               <div style={{ fontSize: '0.75rem', color: 'var(--gray-500)', marginBottom: '8px' }}>
-                {instructor?.name || 'TBA'} · {outline.length} weeks · {totalItems} items
+                {instructor?.name || 'TBA'} · {outline.length} week{outline.length === 1 ? '' : 's'} · {totalItems} item{totalItems === 1 ? '' : 's'}
               </div>
 
               {/* Progress bar */}
@@ -161,6 +161,7 @@ function CourseWorkspace({ syllabusId, contentStore, onBack, onGenerateWeek, onC
   if (!syllabus) return null
 
   const outline = syllabus.courseOutline || []
+  const teachingWeeks = outline.filter(r => !isExamRow(r)).length
   const instructor = INSTRUCTORS.find(i => i.id === syllabus.instructorId)
 
   const toggleWeek = (w) => {
@@ -189,6 +190,7 @@ function CourseWorkspace({ syllabusId, contentStore, onBack, onGenerateWeek, onC
         generatedAt: new Date().toISOString() }
     }
     onGenerateWeek(updates)
+    if (Object.keys(updates).length) pulseBus.progress('courseware-generated', `${syllabus.courseCode}, week ${weekNum}`)
     setExpandedWeeks(prev => new Set([...prev, weekNum]))
     return Object.keys(updates).length
   }
@@ -301,7 +303,7 @@ function CourseWorkspace({ syllabusId, contentStore, onBack, onGenerateWeek, onC
             {syllabus.courseCode} — {syllabus.courseTitle}
           </h2>
           <div style={{ fontSize: '0.75rem', color: 'var(--gray-500)', marginTop: 2 }}>
-            {instructor?.name || 'TBA'} · {outline.length} weeks · {outline.filter(r => !isExamRow(r)).length} teaching weeks
+            {instructor?.name || 'TBA'} · {outline.length} week{outline.length === 1 ? '' : 's'} · {teachingWeeks} teaching week{teachingWeeks === 1 ? '' : 's'}
           </div>
         </div>
         <button
@@ -572,9 +574,16 @@ function MyCoursewareTab({ items, contentStore, onSelectCourse }) {
   const { saveContent, toggleVisibility } = useContentStore()
   const isStudent = user?.role === 'student'
 
+  // Students see only the courses on their EduSuite enrolment, matching their dashboard.
+  const enrolledCodes = useMemo(() => {
+    if (!isStudent) return null
+    const record = STUDENT_RECORDS.find(s => s.name === user?.name)
+    return record ? new Set(record.courses.map(c => c.code)) : null
+  }, [isStudent, user?.name])
+
   const activeSyllabi = useMemo(() => {
-    return syllabi.filter(s => s.status === 'active' && (s.courseOutline?.length || 0) > 0)
-  }, [syllabi])
+    return syllabi.filter(s => s.status === 'active' && (s.courseOutline?.length || 0) > 0 && (!enrolledCodes || enrolledCodes.has(s.courseCode)))
+  }, [syllabi, enrolledCodes])
 
   const myCoursewareList = useMemo(() => {
     return activeSyllabi.map(syl => {
@@ -629,7 +638,7 @@ function MyCoursewareTab({ items, contentStore, onSelectCourse }) {
           <th>Course</th>
           {!isStudent && <th>Status</th>}
           <th>Items</th>
-          <th>Outline Weeks</th>
+          <th>Teaching Weeks</th>
           <th>Action</th>
         </tr>
       </thead>
@@ -660,7 +669,7 @@ function MyCoursewareTab({ items, contentStore, onSelectCourse }) {
                 </div>
               )}
             </td>
-            <td className="text-sm">{outlineWeeks} weeks</td>
+            <td className="text-sm">{outlineWeeks} week{outlineWeeks === 1 ? '' : 's'}</td>
             <td>
               {isStudent ? (
                 published > 0 ? (
@@ -729,10 +738,12 @@ export default function Courseware() {
 
   const handleCheckItem = useCallback((contentId) => {
     checkItem(contentId)
+    pulseBus.progress('courseware-checked', contentId)
   }, [checkItem])
 
   const handleBulkCheck = useCallback((contentIds) => {
     bulkCheck(contentIds)
+    if (contentIds.length) pulseBus.progress('courseware-checked')
   }, [bulkCheck])
 
   const handleToggleVisibility = useCallback((contentId, newStatus) => {

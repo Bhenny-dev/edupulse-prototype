@@ -1,0 +1,29 @@
+# 6 · Compare two documents and find real references
+
+**Who:** instructors (and the Dean/Associate Dean) · **Where:** Settings → *AI & Knowledge* → *Knowledge library*, and the Pulse panel · Requirements FR-RAG-11 (comparison), FR-RAG-12 (references), NFR-AI-08 (alignment is not plagiarism detection).
+
+## Compare two documents
+
+1. In the **Knowledge library**, tick exactly two indexed documents. A bar appears: *Compare **first** with **second*** and **Compare in Pulse**.
+
+   ![Select two documents](01-select-two-documents.png)
+
+2. Pulse searches **both** documents (each must contribute evidence), and the Writer answers in three parts: *Shared points*, *Points only in the first source*, *Points only in the second source*. Each statement is underlined by how well the sources support it and carries citation numbers that open the passage.
+
+   ![Comparison answer](02-comparison-answer.png)
+
+3. Below the answer, **Comparison · coverage n%** opens the Comparator's alignment table. Each row pairs a statement from one document with its closest match in the other: matched rows are shared, *Related* rows are partial matches, *Not covered* marks statements found in only one document. Coverage is the share of the first document's statements that the second covers.
+
+   ![Alignment table](03-alignment-table.png)
+
+The table measures topical coverage between two sources (for example a syllabus and a textbook, or two versions of a handout). It does not judge authorship or copying.
+
+*Changed in v0.4.0:* reference-list passages (bibliography entries, ISBNs, retrieval dates, publisher lines) are no longer compared as if they were statements about the topic. The Ranker skips passages that are mostly citations, and the Comparator ignores citation lines, so the table and the answer compare what the documents actually say.
+
+## Find references from open catalogs
+
+4. Ask Pulse for references, for example *“Find references about data structures for my syllabus”*. The **Librarian** agent queries three open catalogs only (Open Library for books, OpenAlex for scholarly works, Wikipedia), with no API key, rebuilds every link from the catalog's own identifier, and lists real books and articles with author, year, publisher and link.
+
+   ![References from open catalogs](04-open-catalog-references.png)
+
+Check each reference for fit and availability before adding it to Section 7 of your syllabus. If a catalog is unreachable, Pulse lists what the others returned and says which one failed.

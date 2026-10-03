@@ -11,6 +11,7 @@ export function config() {
     localPath: process.env.AI_DATA_DIR || '.data/ai-pgvector',
     supabaseUrl: process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '',
     supabaseKey: process.env.SUPABASE_PUBLISHABLE_KEY || process.env.VITE_SUPABASE_PUBLISHABLE_KEY || '',
-    timeoutMs: Math.min(110000, Math.max(5000, Number(process.env.AI_TIMEOUT_MS) || 110000)),
+    // Vercel stops functions at 120 s; the local app gives CPU-only models up to 10 minutes (default 5).
+    timeoutMs: Math.min(hosted ? 110000 : 600000, Math.max(5000, Number(process.env.AI_TIMEOUT_MS) || (hosted ? 110000 : 300000))),
   }
 }

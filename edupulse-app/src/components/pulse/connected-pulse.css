@@ -1,4 +1,5 @@
 .connected-pulse { position: fixed; right: 24px; bottom: 112px; z-index: 1100; width: min(440px, calc(100vw - 24px)); height: min(650px, calc(100dvh - 145px)); background: var(--white); color: var(--gray-800); border: 1px solid var(--gray-200); border-radius: 20px; box-shadow: 0 18px 70px #142f4d30; display: flex; flex-direction: column; overflow: hidden; }
+.connected-pulse.panel-left { left: 24px; right: auto; }
 .connected-pulse button { cursor: pointer; }
 .connected-pulse button:disabled { opacity: .5; cursor: not-allowed; }
 .connected-pulse-header { display: flex; align-items: center; gap: 8px; padding: 16px; border-bottom: 1px solid var(--gray-100); }
@@ -26,7 +27,53 @@
 .connected-pulse-error, .connected-pulse-warning { background: var(--amber-50, #fff7e6); color: #71491a; padding: 9px 12px; font-size: .78rem; max-height: 90px; overflow: auto; }
 .connected-pulse-attachments { padding: 6px 14px; margin: 0; list-style: none; max-height: 100px; overflow: auto; }
 .connected-pulse-attachments li { display: flex; justify-content: space-between; align-items: center; font-size: .75rem; overflow-wrap: anywhere; }
-.connected-pulse-dock { position: fixed; right: 24px; bottom: 20px; z-index: 1101; border: 0; border-radius: 24px; background: var(--white); box-shadow: 0 5px 24px #142f4d25; cursor: pointer; display: flex; align-items: center; gap: 5px; padding: 2px 15px 2px 2px; color: var(--sky-700); font-weight: 700; }
+.connected-pulse-dock { position: fixed; right: 24px; bottom: 20px; z-index: 1101; border: 0; border-radius: 24px; background: var(--white); box-shadow: 0 5px 24px #142f4d25; cursor: grab; display: flex; align-items: center; gap: 5px; padding: 2px 15px 2px 2px; color: var(--sky-700); font-weight: 700; touch-action: none; user-select: none; }
+.connected-pulse-dock.is-dragging { cursor: grabbing; box-shadow: 0 14px 40px #0284c750; }
+.connected-pulse-dock.is-perched { transition: left 260ms var(--transition-smooth), top 260ms var(--transition-smooth); box-shadow: 0 6px 26px #0284c745; }
+.connected-pulse-dock.is-rejected { animation: pulse-reject-shake 420ms ease-in-out; }
+@keyframes pulse-reject-shake { 0%, 100% { transform: translateX(0); } 20%, 60% { transform: translateX(-7px); } 40%, 80% { transform: translateX(7px); } }
+.pulse-reject-bubble { position: fixed; right: 24px; bottom: 104px; z-index: 1102; max-width: min(320px, calc(100vw - 24px)); background: var(--white); color: var(--gray-800); border: 1px solid var(--amber-500); border-radius: 14px; padding: 10px 14px; font-size: .82rem; box-shadow: 0 8px 28px #142f4d30; }
+.connected-pulse.is-left { right: auto; left: 24px; }
+.pulse-brief { margin: 2px 0 0; font-size: .8rem; color: var(--gray-700); }
+.pulse-brief span { text-transform: capitalize; font-weight: 600; color: var(--sky-700); }
+.pulse-brief-hints { margin: 0; padding-left: 18px; font-size: .76rem; color: var(--gray-500); }
+.pulse-intents .btn svg { margin-right: 4px; vertical-align: -2px; }
+.pulse-spotlight { position: fixed; z-index: 1090; border: 2px solid var(--sky-500, #0ea5e9); border-radius: 12px; box-shadow: 0 0 0 9999px #10213940; pointer-events: none; }
+.pulse-spotlight.is-dragging { box-shadow: 0 0 0 9999px #10213912; border-style: dashed; }
+.pulse-drag-hint { position: fixed; bottom: 12px; left: 50%; transform: translateX(-50%); z-index: 1102; pointer-events: none; max-width: calc(100vw - 24px); background: var(--sky-900, #0c4a6e); color: white; border-radius: 12px; padding: 10px 16px; font-size: .85rem; }
+.pulse-focus-heading { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; padding-bottom: 12px; overflow-wrap: anywhere; }
+.pulse-focus-heading p { margin: 0; font-size: .8rem; line-height: 1.45; }
+.pulse-step > strong { display: block; margin: 10px 0; }
+.pulse-step p { font-size: .85rem; line-height: 1.6; }
+.pulse-intents { display: flex; flex-wrap: wrap; }
+.connected-pulse-status .btn { margin-top: 8px; }
+.ai-provider-content { margin-top: 18px; }
+.ai-provider-content p { margin: 12px 0; line-height: 1.6; overflow-wrap: anywhere; }
+.ai-provider-content progress { width: 100%; accent-color: var(--sky-600); }
+.pulse-character { display: inline-block; flex-shrink: 0; --look-x: 0px; --look-y: 0px; --body-lean: 0deg; }
+.pulse-body-motion { transform-origin: 60px 95px; transform: rotate(var(--body-lean)); transition: transform 180ms ease-out; }
+.connected-pulse-dock:hover .pulse-body-motion { transform: rotate(var(--body-lean)) translateY(-2px) scale(1.025, .985); }
+.pulse-face-motion { transform: translate(calc(var(--look-x) * .2), calc(var(--look-y) * .2)); transition: transform 90ms ease-out; }
+.pulse-pupils { transform: translate(var(--look-x), var(--look-y)); transition: transform 80ms ease-out; }
+.pulse-eye-blink { transform-origin: 60px 66px; animation: pulse-live-blink 5.7s infinite; }
+.pulse-antenna { transform-origin: 60px 32px; animation: pulse-live-antenna 4s ease-in-out infinite; }
+.pulse-arm { transition: transform 220ms ease; }
+.pulse-arm-left { transform-origin: 20px 70px; }.pulse-arm-right { transform-origin: 100px 70px; }
+.expression-encouraging .pulse-arm-left, .expression-cheerful .pulse-arm-left { transform: translateY(-10px) rotate(25deg); }
+.expression-curious .pulse-brow-left { transform: translateY(-4px) rotate(-3deg); transform-origin: 44px 53px; }
+.expression-concern .pulse-brow-left { transform: rotate(-16deg); transform-origin: 44px 53px; }
+.expression-concern .pulse-brow-right { transform: rotate(16deg); transform-origin: 76px 53px; }
+.pulse-character.is-carried .pulse-body-motion { transform: rotate(var(--drag-tilt, 0deg)) scale(.95, 1.06); }
+.pulse-character.is-carried .pulse-arm-left { transform: rotate(30deg) translateY(-8px); }
+.pulse-character.is-carried .pulse-arm-right { transform: rotate(-30deg) translateY(-8px); }
+.pulse-thinking-bubbles { animation: pulse-live-thinking 1s ease-in-out infinite; }
+.expression-cheerful .pulse-body-motion { animation: pulse-live-celebrate 450ms ease-out 2; }
+@keyframes pulse-live-blink { 0%, 43%, 47%, 100% { transform: scaleY(1); } 45% { transform: scaleY(.1); } }
+@keyframes pulse-live-antenna { 0%, 100% { transform: rotate(-3deg); } 50% { transform: rotate(4deg); } }
+@keyframes pulse-live-thinking { 0%, 100% { opacity: .3; } 50% { opacity: 1; } }
+@keyframes pulse-live-celebrate { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px) scale(1.04,.96); } }
+.pulse-dwell-help { position: fixed; z-index: 1092; border: 1px solid var(--sky-300); border-radius: 20px; padding: 7px 12px; background: var(--white); color: var(--sky-700); box-shadow: 0 2px 12px #142f4d20; font-size: .8rem; }
+@media(prefers-reduced-motion: reduce) { .pulse-character *, .pulse-spotlight { animation: none !important; transition: none !important; } .pulse-body-motion, .pulse-face-motion, .pulse-pupils { transform: none !important; } }
 .ai-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .ai-settings-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
 .ai-status-card { padding: 20px; border: 1px solid var(--gray-200); border-radius: 14px; overflow-wrap: anywhere; }
@@ -37,4 +84,7 @@
 .ai-library textarea { min-height: 180px; resize: vertical; }
 .ai-notice { padding: 12px 16px; background: var(--sky-50); border-radius: 10px; margin: 12px 0; font-size: .85rem; color: var(--gray-700); }
 @media(max-width: 640px) { .connected-pulse { right: 12px; bottom: 96px; height: calc(100dvh - 116px); } .connected-pulse-dock { right: 12px; bottom: 12px; } .ai-settings-grid { grid-template-columns: 1fr; } }
+@media(max-width: 640px) { .connected-pulse.is-focused { height: min(390px, 48dvh); } .connected-pulse.is-focused .connected-pulse-status, .connected-pulse.is-focused .connected-pulse-footnote { display: none; } .connected-pulse.is-focused .connected-pulse-header { padding: 8px 12px; } .connected-pulse.is-focused .connected-pulse-form { padding: 6px 10px; } .connected-pulse.is-focused .connected-pulse-form textarea { max-height: 45px; } }
+@media(max-width: 640px) { .connected-pulse.panel-left { left: auto; right: 12px; } .connected-pulse.is-focused.panel-top { top: 8px; bottom: auto; } }
 @media(prefers-reduced-motion: reduce) { .connected-pulse * { scroll-behavior: auto; animation: none !important; } }
+@media(prefers-reduced-motion: reduce) { .connected-pulse-dock.is-rejected { animation: none; } .connected-pulse-dock.is-perched { transition: none; } }

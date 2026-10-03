@@ -1,65 +1,40 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { Database, RefreshCw, Upload, Trash2, Cpu } from 'lucide-react'
-import { aiRequest, getAiHealth, readReferenceFile } from '../../lib/aiClient'
+import { useCallback, useEffect, useState } from 'react'
+import { Cpu, RefreshCw, Workflow } from 'lucide-react'
+import { getAiHealth } from '../../lib/aiClient'
 import { useAuth } from '../../context/AuthContext'
+import ProviderConnection from './ProviderConnection'
+import KnowledgeLibrary from './KnowledgeLibrary'
+import { AGENT_META } from './agentMeta'
+import './ai.css'
+
+const modelState = state => ({ loaded: 'Loaded in memory', bundled: 'Bundled with the app', 'downloads on first use': 'Downloads once on first use', missing: 'Missing' })[state] || state
 
 export default function AISettings() {
   const { user } = useAuth()
-  const [health, setHealth] = useState(null), [documents, setDocuments] = useState([])
-  const [busy, setBusy] = useState(false), [error, setError] = useState(''), [notice, setNotice] = useState('')
-  const [title, setTitle] = useState(''), [text, setText] = useState('')
-  const fileRef = useRef(null)
-  const refresh = useCallback(async (signal) => {
+  const [health, setHealth] = useState(null), [busy, setBusy] = useState(false), [error, setError] = useState('')
+  const refresh = useCallback(async signal => {
     setBusy(true); setError('')
-    try {
-      const status = await getAiHealth(signal); setHealth(status)
-      setDocuments(status.database.ready ? (await aiRequest('documents', 'GET', undefined, signal)).documents : [])
-    } catch (err) { if (!signal?.aborted) setError(err.message) }
+    try { setHealth(await getAiHealth(signal)) } catch (err) { if (!signal?.aborted) setError(err.message) }
     finally { if (!signal?.aborted) setBusy(false) }
   }, [])
   useEffect(() => { const controller = new AbortController(); void refresh(controller.signal); return () => controller.abort() }, [refresh, user?.id])
-  async function ingest(event) {
-    event.preventDefault(); setBusy(true); setError(''); setNotice('')
-    try {
-      const result = await aiRequest('documents', 'POST', { title, text })
-      setNotice(result.duplicate ? 'This document is already indexed.' : `Indexed ${result.chunks} passages. Pulse can now retrieve this reference.`)
-      setTitle(''); setText(''); await refresh()
-    } catch (err) { setError(err.message) }
-    finally { setBusy(false) }
-  }
-  async function remove(document) {
-    if (!window.confirm(`Delete “${document.title}” and its indexed passages?`)) return
-    setBusy(true); setError('')
-    try { await aiRequest('documents', 'DELETE', { id: document.id }); await refresh(); setNotice('Document removed from the knowledge library.') }
-    catch (err) { setError(err.message) }
-    finally { setBusy(false) }
-  }
-  const canIngest = health?.database.ready && health?.embeddings
+  const pipeline = health?.pipeline
   return <div className="ai-library">
-    <div className="card mb-24"><div className="card-header"><h3><Cpu size={18} /> AI connection</h3><button className="btn btn-secondary btn-sm" disabled={busy} onClick={() => refresh()}><RefreshCw size={14} /> Check connection</button></div>
-      <div className="card-body"><div className="ai-settings-grid">
-        <div className="ai-status-card"><span className={`badge ${health?.ready ? 'badge-published' : 'badge-draft'}`}>{health?.ready ? 'Connected' : busy ? 'Checking…' : 'Source search only'}</span><h4>{health?.model || 'Public product guide'}</h4><p>{health?.message || 'Checking the actual API connection.'}</p></div>
-        <div className="ai-status-card"><Database size={20} /><h4>Knowledge library</h4><p>{health?.database.message || 'Checking storage…'}</p><p className="text-sm text-muted">{health?.embeddings ? 'Semantic embeddings available · all-minilm · 384 dimensions' : 'Semantic embeddings unavailable; public keyword search remains available.'}</p></div>
-      </div><p className="ai-notice">{health?.identity.mode === 'local-workspace' ? 'Local workspace: inference and your library stay on this computer. Preview roles share this local library. Local preview is not a multi-user deployment.' : user?.authenticated ? 'Documents are private to your verified account. Preview role switching cannot grant access.' : 'Preview access searches the public product guide. Sign in to manage private knowledge.'}</p>
-        <p className="text-sm text-muted">Ollama is the free local default. Hosted providers require server configuration and may have quotas or charges. Provider secrets are never entered or stored in this browser.</p>
+    <ProviderConnection />
+    <div className="card mb-24" data-pulse-target="AI pipeline status"><div className="card-header"><h3><Workflow size={18} /> Agentic RAG pipeline</h3><button className="btn btn-secondary btn-sm" disabled={busy} onClick={() => refresh()}><RefreshCw size={14} /> Check status</button></div>
+      <div className="card-body">
+        <div className="ai-pipeline-grid">
+          <div><h5><Cpu size={12} /> Generation</h5><span className={`badge ${health?.ready ? 'badge-published' : 'badge-draft'}`}>{health?.ready ? 'Connected' : busy ? 'Checking…' : 'Not connected'}</span><p>{health?.model ? `${health.provider} · ${health.model}` : 'Choose on-device AI or a provider above.'}</p><small>{health?.message}</small></div>
+          <div><h5>Embeddings (free, in-process)</h5><strong>{pipeline?.embeddings.model || 'Checking…'}</strong><p>{pipeline ? modelState(pipeline.embeddings.state) : ''}</p><small>Open model run with ONNX Runtime. No API key and no per-request fee.</small></div>
+          <div><h5>Reranker (free, in-process)</h5><strong>{pipeline?.reranker.model || 'Checking…'}</strong><p>{pipeline ? modelState(pipeline.reranker.state) : ''}</p><small>Scores each passage against the question before the Writer sees it.</small></div>
+          <div><h5>Vector database</h5><strong>{pipeline?.vectorStore || '—'}</strong><p>{health?.database.message}</p><small>{pipeline?.retrieval}</small></div>
+          <div><h5>Document sandbox</h5><strong>{pipeline?.extraction.sandbox || '—'}</strong><p>{pipeline ? `${pipeline.extraction.formats.map(f => f.toUpperCase()).join(', ')} · up to ${Math.round(pipeline.extraction.maxBytes / 1e6)} MB` : ''}</p><small>Type sniffing, archive-bomb checks and page limits run before parsing.</small></div>
+        </div>
+        <div className="ai-agent-chips" aria-label="Named agents">{Object.entries(AGENT_META).map(([name, meta]) => <span key={name} className="ai-agent-chip" style={{ '--agent-color': meta.color }} title={meta.role}>{name}</span>)}</div>
+        <p className="ai-notice">{health?.identity.mode === 'local-workspace' ? 'Local workspace: inference, embeddings and your library stay on this computer.' : user?.authenticated ? 'Documents are private to your verified account.' : 'Preview access searches the public product guide. Sign in to build a private library.'} The library adds evidence to conversation and drafting; it does not limit Pulse to search.</p>
+        {error && <p role="alert" className="ai-notice">{error}</p>}
         {health?.checkedAt && <p className="text-sm text-muted">Last checked: {new Date(health.checkedAt).toLocaleString()}</p>}
       </div></div>
-    <div className="card"><div className="card-header"><h3><Database size={18} /> Reference documents</h3></div><div className="card-body">
-      <p>Add source material for Pulse to search. Review text before indexing. Up to 50 documents, 60,000 characters each. PDF/image OCR and web-link fetching are not supported.</p>
-      <form onSubmit={ingest}>
-        <div className="form-group"><label className="form-label" htmlFor="knowledge-title">Document title</label><input id="knowledge-title" className="form-input" maxLength={160} required value={title} onChange={e => setTitle(e.target.value)} /></div>
-        <div className="form-group"><label className="form-label" htmlFor="knowledge-text">Reference text</label><textarea id="knowledge-text" className="form-input" minLength={40} maxLength={60000} required value={text} onChange={e => setText(e.target.value)} /><small>{text.length.toLocaleString()} / 60,000 characters</small></div>
-        <input ref={fileRef} type="file" hidden accept=".txt,.md,.csv,.docx" onChange={async e => {
-          const file = e.target.files?.[0]; e.target.value = ''; if (!file) return
-          setBusy(true); setError('')
-          try { const result = await readReferenceFile(file); if (result.text.length > 60000) throw new Error('Document exceeds 60,000 characters. Split it into smaller documents.'); setTitle(result.title); setText(result.text) }
-          catch (err) { setError(err.message) } finally { setBusy(false) }
-        }} />
-        <div className="ai-actions"><button type="button" className="btn btn-secondary" disabled={busy} onClick={() => fileRef.current?.click()}><Upload size={15} /> Read a file</button><button type="submit" className="btn btn-primary" disabled={busy || !canIngest || text.trim().length < 40 || !title.trim()}>{busy ? 'Working…' : 'Index document'}</button></div>
-      </form>
-      {error && <p className="ai-notice" role="alert">{error}</p>}{notice && <p className="ai-notice" role="status">{notice}</p>}
-      <ul className="ai-document-list">{documents.map(document => <li key={document.id}><div><strong>{document.title}</strong><div className="text-sm text-muted">{new Date(document.created_at).toLocaleDateString()}</div></div><button className="btn btn-secondary btn-sm" disabled={busy} onClick={() => remove(document)} aria-label={`Delete ${document.title}`}><Trash2 size={15} /></button></li>)}</ul>
-      {!documents.length && <p className="text-sm text-muted">No private documents loaded. The public product guide remains available.</p>}
-    </div></div>
+    <KnowledgeLibrary canIndex={Boolean(health?.database.ready)} onChange={() => refresh()} />
   </div>
 }

@@ -795,6 +795,10 @@ select.form-input {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+.spin { animation: spin 1s linear infinite; }
+@media (prefers-reduced-motion: reduce) { .spin { animation: none; } }
+/* Visually hidden, still announced by screen readers. */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 
 /* ─── Utilities ─── */
 .container {
@@ -997,6 +1001,8 @@ textarea:focus-visible {
     margin: 0 !important;
     border-radius: 0 !important;
     min-height: 100vh;
+    /* The Pulse dock (76px, fixed bottom-right above dialogs) must not cover the last actions. */
+    padding-bottom: 120px;
   }
   
   /* REQ-1110: Simplified charts */
@@ -1186,6 +1192,9 @@ textarea:focus-visible {
   --green-100: #052e16;
   --amber-100: #451a03;
   --purple-100: #3b0764;
+
+  /* Dashboard onboarding card */
+  --onboarding-bg: linear-gradient(135deg, #0c2a45, #0f172a, #1e1b3a);
 
   /* Semantic text — lighter for contrast on dark backgrounds */
   --red-500: #fca5a5;

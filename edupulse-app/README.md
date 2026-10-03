@@ -1,22 +1,27 @@
-# EduPulse 0.2.0
+# EduPulse 0.4.0
 
-React/Vite academic workflow prototype with a connected LangChain/LangGraph AI API, local free Ollama inference, and Postgres vector retrieval.
+React/Vite academic workflow prototype with an agentic RAG assistant (Pulse): LangChain/LangGraph named agents, free in-process embeddings and reranking, a Postgres vector database with hybrid search, sandboxed extraction of real documents, and accurate drag-and-drop guidance.
 
 ```powershell
 npm ci
-# Start Ollama, then:
+npm run models:fetch   # pinned, checksum-verified open models (~48 MB, no API key)
+# Optional free local generation: start Ollama, then
 npm run ai:setup
 npm run dev
 ```
 
-Open http://127.0.0.1:5173. Use an instructor preview locally, add a reference in Settings → AI & Knowledge, then ask Pulse or generate a courseware week. New courseware is a draft requiring instructor review. Provider secrets stay on the server; `.env.example` describes configuration.
+Open http://127.0.0.1:5173 and choose a preview persona. In Settings → AI & Knowledge, drop real PDF, DOCX, PPTX, HTML, TXT, Markdown or CSV files, review the extracted text and index it. Ask Pulse questions, compare two documents, or ask for references; drag Pulse onto any field, card or section for focused guidance. Courseware drafts show an automatic outline-coverage check and stay drafts until an instructor reviews them.
 
-`npm run verify` runs lint, typechecks, tests, build and deployment checks. `npm run test:browser` validates desktop/mobile workflows (install Chromium with `npx playwright install chromium`). `npm run ai:smoke` verifies real inference; see the runbook before using it with an active dev server.
+| Command | Purpose |
+| --- | --- |
+| `npm run verify` | Lint, typechecks, model fetch, 50+ tests (real models, real SQL), build, deployment checks |
+| `npm run test:browser` | Desktop and mobile browser workflows (`npx playwright install chromium` once) |
+| `npm run eval:rag` | Retrieval, abstention, verifier and agent evaluation on real documents (`EVAL_MODEL=qwen2.5:1.5b` adds generation) |
+| `npm run build && npm run snapshots` | Regenerates the documentation snapshots from the production build |
+| `node --import tsx scripts/render-figures.ts` | Renders evaluation charts and architecture figures |
 
-Hosted source search works without a model key. Hosted generation needs a configured provider; Vercel cannot access this computer's Ollama. Some academic modules still use prototype data.
+Generation options: free on-device WebLLM, free local Ollama, or your own key for Gemini, Groq, OpenRouter (free models), Hugging Face, OpenAI or Anthropic. Retrieval, embeddings and reranking never need a key. Hosted Vercel deployments cannot reach this computer's Ollama.
 
-Syllabi, courseware, and course registrations now share a persistent workspace. Local development uses PGlite; verified instructor accounts use private Supabase rows. Hosted preview data stays on the current device. Save conflicts retain pending edits and require a backup export before loading another tab's newer copy. DOCX approval exports, retained approved-file uploads, and reviewed outline activation are functional.
+Apply every migration in `supabase/migrations` (v0.4.0 adds `20261001090000_agentic_rag.sql`) before using the hosted private library.
 
-Apply all migrations in `supabase/migrations` to a new project. See the [v0.2.0 workspace runbook](../feature-documentation/versions/v0.2.0/operations/runbook.md) for limits and recovery.
-
-See the root [feature history](../feature-documentation/README.md), [release features](../feature-documentation/versions/v0.1.0/features/connected-ai.md), [execution plan](../feature-documentation/WORKPLAN.md), and [operations runbook](../feature-documentation/versions/v0.1.0/operations/runbook.md).
+Documentation: [System Manual](../feature-documentation/system-manual/README.md) · [System Walkthrough](../feature-documentation/system-walkthrough/README.md) · [Backend System](../feature-documentation/backend-system/README.md) · [v0.4.0 release record](../feature-documentation/versions/v0.4.0/README.md) · [results and discussion](../feature-documentation/session-generated/2026-10-02-agentic-rag/results-and-discussion.md) · [runbook](../feature-documentation/versions/v0.4.0/operations/runbook.md) · [feature history](../feature-documentation/README.md) · [execution plan](../feature-documentation/WORKPLAN.md).

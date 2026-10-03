@@ -10,7 +10,10 @@ export async function generateWeekDraft(syllabus, weekNumber, signal) {
     topics: row.contents, outcomes: row.ilos,
     referenceText: JSON.stringify({ outline: row, courseDescription: syllabus.courseDescription || '', programOutcomes: syllabus.programOutcomes || [], references: row.resources || [] }).slice(0, 18000),
   }, signal)
-  const metadata = { requestId: result.requestId, provider: result.provider, model: result.model, sources: result.sources, trace: result.trace, warning: result.warning, reviewRequired: true }
+  const metadata = { requestId: result.requestId, provider: result.provider, model: result.model, sources: result.sources, trace: result.trace, warning: result.warning, coverage: result.coverage,
+    // Summary only: metadata is saved with every item in the 3 MB workspace.
+    verification: result.verification && { supported: result.verification.supported, total: result.verification.claims.length, method: result.verification.method },
+    reviewRequired: true }
   const content = result.content
   const items = [
     { id: `gen-mat-${syllabus.id}-w${weekNumber}`, type: 'material', content: { ...content.material, subtitle: 'AI draft — instructor review required', viewMode: 'document', ai: metadata } },

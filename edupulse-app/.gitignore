@@ -28,3 +28,4 @@ dist-ssr
 .data/
 test-results/
 supabase/.temp/
+models/

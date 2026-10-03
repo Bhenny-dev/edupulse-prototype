@@ -1,6 +1,8 @@
 # EduPulse — Software Requirements Specification
 
 **Traceability baseline for the EduPulse prototype (`edupulse-app`).**
+
+**User correction — September 16, 2026.** Pulse must retain draggable, component-scoped guidance through task completion, with continuous cursor-reactive eyes and motion (FR-GUIDE-02–26). The assistant must also support conversation, reasoning, drafting and document organization, not only retrieval. Settings must connect provider APIs and discover/select their available models; an integrated downloadable local model is required alongside server-local inference. This explicitly supersedes FR-SET-01/02 and NFR-USE-03 only where they prohibit this requested provider/model choice. Keep those controls in Settings, preserve review before publishing, protect provider secrets server-side, and keep source-grounded answers traceable. Browser model caching is an inference capability, not a claim that all cloud workflows work offline. Implementation and evidence are tracked under `feature-documentation/versions/v0.3.0`.
 Every requirement below cites the section of *EduPulse Chapter 1 & 2* (Rivera, Botay, De Vera — King's College of the Philippines, CIT) it derives from. No requirement exists without a citation, and no page or component in the app should exist without a requirement. This document replaces the untraceable `REQ-012`…`REQ-3120` comment tags found in the prior build (see the UI audit, July 13 2026) — those numbers referenced no source and produced 29 out-of-scope pages.
 
 **Actors.** Four system users: **Dean**, **Associate Dean**, **Instructor**, **Student**. §1.5 (Significance of the Study) names three *beneficiary* categories, but Appendix B.2's interview with the Associate Dean describes a distinct functional role in the client's actual organizational structure — she assigns subject loads and imports EduSuite records, separate from the Dean's compliance-monitoring and approval role. This corrects an earlier version of this document that collapsed both into one "Dean" role; see the July 13 2026 audit for that decision and this note for why it changed. No System Administrator persona is in scope — account provisioning remains a one-time Cutover activity (§2.4.2), not a role. A full reconciliation of the client's organizational structure against the system's role model is future work for the thesis itself, not this prototype pass.
@@ -152,7 +154,7 @@ Every requirement below cites the section of *EduPulse Chapter 1 & 2* (Rivera, B
 | FR-REV-09 | The Review Inbox shall show, per instructor, how many topics have generated-but-unpublished courseware. | §1.2 | S |
 | FR-REV-10 | Dean-level reporting shall be reachable as an export action from Review Inbox / Performance, not a standalone "Reports" section. | §1.5 | S |
 
-### 1.8 FR-GUIDE — Pulse, the Ambient AI Guide (26)
+### 1.8 FR-GUIDE — Pulse, the Ambient AI Guide (30)
 
 | ID | Requirement | Source | Pri |
 |---|---|---|---|
@@ -182,6 +184,31 @@ Every requirement below cites the section of *EduPulse Chapter 1 & 2* (Rivera, B
 | FR-GUIDE-24 | An agent shall declare which roles it applies to and which intents are visible to each role; Pulse shall refuse a drop (per FR-GUIDE-18) if the current user's role has no matching agent for that zone. | §1.2 (role-scoped access) | M |
 | FR-GUIDE-25 | The agents directory shall be scoped to the five real EduPulse workflows (syllabus, courseware, curriculum/import, performance, review) — not to speculative subsystems (model governance, reviewer certification, licensing, forensic tooling) absent from Ch.1-2. | §1.2, §1.4 (governs scope of every agent added here) | M |
 | FR-GUIDE-26 | Dragging shall not interfere with Pulse's existing click-to-chat behavior — a click (no meaningful pointer movement) opens the normal chat drawer; only a real drag-and-drop enters the focused zone mode. | Usability — the two interaction modes must not conflict | M |
+| FR-GUIDE-27 | On a drop, Pulse shall describe the actual component from the page (kind, label, current state, required/disabled, constraints and on-page help), never reading values of password, contact or payment fields. | User request, Oct 1 2026 ("assist be accurate and correct") | M |
+| FR-GUIDE-28 | Pulse shall offer a walkthrough generated from the visible, labelled controls of the dropped component or its section; a step on a required empty field waits for the user's input. | User request, Oct 1 2026 | M |
+| FR-GUIDE-29 | A rejected drop shall show a visible reason (outside the page, role not permitted, sensitive field); a successful drop perches Pulse beside the component with the panel on the opposite side. | FR-GUIDE-17/18 refinement, user request | M |
+| FR-GUIDE-30 | When an authored walkthrough step's control cannot be found on the page, Pulse shall say so instead of silently highlighting nothing. | User request ("accurate and correct") | M |
+
+### 1.8a FR-RAG — Agentic retrieval and knowledge (14)
+
+**User correction — October 1, 2026.** The user requested a LangChain agentic workflow with named agents, real documents (no mock data), free APIs and open-source models, a vector database, and RAG covering uploading, extracting, evaluating, ranking, generating, comparing, referencing, correcting, collaborating, corroborating and planning, with stronger sandboxing. Comparison is alignment and coverage only (FR-CW-18 and NFR-AI-08 still forbid plagiarism or authorship scoring). NFR-USE-03 still applies: retrieval tuning is not user-configurable. Evidence: `feature-documentation/versions/v0.4.0`.
+
+| ID | Requirement | Source | Pri |
+|---|---|---|---|
+| FR-RAG-01 | Instructors shall upload PDF, DOCX, PPTX, HTML, TXT, Markdown and CSV files up to 4 MB; content type shall be verified from the bytes and must match the extension. | User request; NFR-AI-03 | M |
+| FR-RAG-02 | Extraction shall run in an isolated worker with heap and time limits and no access to server secrets; archive bombs, encrypted files and oversized documents shall be rejected before parsing. | User request ("sandboxing"); NFR-SEC | M |
+| FR-RAG-03 | Extracted text shall be cleaned (repeated headers/footers, page numbers, broken lines) and scored for quality, with instruction-like text flagged; the user shall review or correct the text before it is indexed. | User request ("extracting, evaluating, correcting") | M |
+| FR-RAG-04 | Indexed passages shall keep page/slide and section metadata so citations identify exact locations. | NFR-AI-04 | M |
+| FR-RAG-05 | Embeddings and reranking shall use free, open models running in-process with pinned, checksum-verified files; no API key shall be required for retrieval. | NFR-AI-01/02 | M |
+| FR-RAG-06 | Retrieval shall combine vector similarity and full-text search with reciprocal rank fusion, then rerank with a cross-encoder and keep diverse sources. | User request ("vector database, ranking") | M |
+| FR-RAG-07 | Pulse shall answer through named LangGraph agents (Planner, Researcher, Ranker, Comparator, Writer, Verifier, Corrector, Librarian) and show each answer's agent timeline. | User request ("named agents working together") | M |
+| FR-RAG-08 | Every generated claim shall be checked against the sources; claims supported by two or more documents shall be marked corroborated; numbers, names and absolute statements must agree with the source. | User request ("corroborating"); NFR-AI-04 | M |
+| FR-RAG-09 | Wrong or missing citations shall be corrected automatically; unsupported statements trigger at most one revision, then cited source excerpts replace an unverifiable answer. | User request ("correcting") | M |
+| FR-RAG-10 | Users shall be able to request a revision of an answer with their own note. | User request ("collaborating") | S |
+| FR-RAG-11 | Instructors shall compare two library documents and see shared, related and unique points with coverage; this is never plagiarism or authorship detection. | User request ("comparing"); FR-CW-18 | M |
+| FR-RAG-12 | Pulse shall suggest real references from free open catalogs (Open Library, OpenAlex, Wikipedia) through fixed endpoints with validated responses; references are suggestions requiring instructor verification. | User request ("referencing", "free API") | S |
+| FR-RAG-13 | Each generated courseware draft shall show automatic outline coverage per topic and outcome and statement verification before instructor review. | NFR-AI-06 | M |
+| FR-RAG-14 | Retrieval, abstention and verification quality shall be evaluated on real, openly licensed documents with reproducible scripts. | User request ("documented for results and discussion") | M |
 
 ### 1.9 FR-SET — Settings (9)
 

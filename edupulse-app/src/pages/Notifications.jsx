@@ -1,33 +1,7 @@
 import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
+import { useNotifications } from '../data/notifications'
 import { Bell, Check, AlertTriangle, Info, CheckCircle, Clock } from 'lucide-react'
-
-// Notifications — SYSTEM_SPEC §5. Unopened-material and unanswered-assessment
-// reminders fan out to BOTH the instructor and the student; syllabus-status
-// and delivery-gap notices go to the Dean / Associate Dean (shared 'admin' role).
-const ALL_NOTIFICATIONS = {
-  admin: [
-    { id: 1, message: 'IT 107 (Sir Rogelio L. Guisdan) is still Drafted — not yet checked or routed for approval', time: '2h ago', type: 'warning', category: 'syllabus_status', read: false },
-    { id: 2, message: 'WMAD 303-1 approved file uploaded — Course Outline extraction pending', time: '1d ago', type: 'info', category: 'syllabus_status', read: true },
-    { id: 3, message: 'IT 106 has no published courseware for Week 4 of its outline yet', time: '1d ago', type: 'warning', category: 'delivery_gap', read: true },
-    { id: 4, message: 'Marielle Angela Fianza-Buya confirmed AI-proposed loading for 4 courses', time: '3d ago', type: 'success', category: 'course_loading', read: true },
-    { id: 5, message: 'EduSuite class list import completed — 387 records', time: '1w ago', type: 'info', category: 'records', read: true },
-  ],
-  instructor: [
-    { id: 1, message: 'New courseware draft ready for review: Week 5 — Loop Structures Lab', time: '1h ago', type: 'info', category: 'courseware', read: false },
-    { id: 2, message: '5 students in BSIT-3A have not opened "Week 1 — What is Programming"', time: '4h ago', type: 'warning', category: 'unopened_material', read: false },
-    { id: 3, message: '2 students missed "Week 4 — Conditional Statements: Seatwork & Quiz"', time: '1d ago', type: 'warning', category: 'missing_assessment', read: true },
-    { id: 4, message: 'AI Auto-draft completed for the IT 106 Course Outline (3 items)', time: '5d ago', type: 'info', category: 'courseware', read: true },
-    { id: 5, message: 'Reminder: WMAD 303-1 syllabus is Checked — ready to download for approval', time: '5d ago', type: 'warning', category: 'syllabus_status', read: true },
-  ],
-  student: [
-    { id: 1, message: 'New material published: Week 3 — Variables & Data Types', time: '30m ago', type: 'info', category: 'courseware', read: false },
-    { id: 2, message: 'Reminder: you haven\'t opened "Week 1 — What is Programming: Lecture Notes"', time: '2h ago', type: 'warning', category: 'unopened_material', read: false },
-    { id: 3, message: 'Unanswered assessment: "Week 1 — Recitation & Short Quiz"', time: '1d ago', type: 'warning', category: 'missing_assessment', read: true },
-    { id: 4, message: 'Score recorded for Week 1 — Recitation & Short Quiz', time: '2d ago', type: 'success', category: 'assessment', read: true },
-    { id: 5, message: 'Due soon: Week 4 — Conditional Statements: Seatwork & Quiz', time: '3d ago', type: 'warning', category: 'assessment', read: true },
-  ],
-}
 
 const ICON_MAP = { warning: AlertTriangle, success: CheckCircle, error: AlertTriangle, info: Info }
 const CATEGORY_LABELS = {
@@ -38,7 +12,7 @@ const CATEGORY_LABELS = {
 
 export default function NotificationCenter() {
   const { user } = useAuth()
-  const [notifications, setNotifications] = useState(ALL_NOTIFICATIONS[user?.role] || [])
+  const { notifications, unreadCount, markRead, markAllRead } = useNotifications(user?.role)
   const [filter, setFilter] = useState('all')
 
   const categories = ['all', 'unread', ...new Set(notifications.map(n => n.category))]
@@ -49,14 +23,12 @@ export default function NotificationCenter() {
     return true
   })
 
-  const markAllRead = () => setNotifications(prev => prev.map(n => ({ ...n, read: true })))
-
   return (
     <div className="container">
       <div className="page-header">
         <h1>Notifications</h1>
         <div style={{ display: 'flex', gap: '8px' }}>
-          <button className="btn btn-secondary btn-sm" onClick={markAllRead}>
+          <button className="btn btn-secondary btn-sm" onClick={markAllRead} disabled={!unreadCount}>
             <Check size={14} /> Mark All Read
           </button>
         </div>
@@ -66,7 +38,7 @@ export default function NotificationCenter() {
         {categories.map(f => (
           <button key={f} className={`tab ${filter === f ? 'active' : ''}`} onClick={() => setFilter(f)} style={{ whiteSpace: 'nowrap' }}>
             {f === 'all' ? 'All' : f === 'unread' ? 'Unread' : CATEGORY_LABELS[f] || f}
-            {f === 'unread' && notifications.filter(n => !n.read).length > 0 && ` (${notifications.filter(n => !n.read).length})`}
+            {f === 'unread' && unreadCount > 0 && ` (${unreadCount})`}
           </button>
         ))}
       </div>
@@ -82,8 +54,9 @@ export default function NotificationCenter() {
           filtered.map(n => {
             const Icon = ICON_MAP[n.type] || Info
             return (
-              <div key={n.id} style={{
-                display: 'flex', alignItems: 'flex-start', gap: '14px',
+              <div key={n.id} role={n.read ? undefined : 'button'} tabIndex={n.read ? undefined : 0} title={n.read ? undefined : 'Mark as read'}
+                onClick={n.read ? undefined : () => markRead([n.id])} onKeyDown={n.read ? undefined : e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); markRead([n.id]) } }} style={{
+                display: 'flex', alignItems: 'flex-start', gap: '14px', cursor: n.read ? 'default' : 'pointer',
                 padding: '16px 20px', borderRadius: 'var(--radius-lg)',
                 background: n.read ? 'var(--white)' : 'var(--sky-50)',
                 border: `1px solid ${n.read ? 'var(--gray-100)' : 'var(--sky-200)'}`,

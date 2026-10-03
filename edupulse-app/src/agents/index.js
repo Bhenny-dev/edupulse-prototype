@@ -4,6 +4,7 @@ import recordsAgent from './recordsAgent'
 import courseLoadingAgent from './courseLoadingAgent'
 import performanceAgent from './performanceAgent'
 import monitorAgent from './monitorAgent'
+import generalAgent from './generalAgent'
 
 // The full registry of task-specific agents. Each owns one drop zone
 // (see data-pulse-zone on the corresponding page) and one real EduPulse
@@ -11,7 +12,7 @@ import monitorAgent from './monitorAgent'
 // loading, performance/scoring, and Dean/Assoc Dean monitoring. Pulse never
 // talks to the app directly — it always goes through the matching agent, so
 // a new workflow only needs a new agent module here, not changes to Pulse itself.
-export const AGENTS = [syllabusAgent, coursewareAgent, recordsAgent, courseLoadingAgent, performanceAgent, monitorAgent]
+export const AGENTS = [syllabusAgent, coursewareAgent, recordsAgent, courseLoadingAgent, performanceAgent, monitorAgent, generalAgent]
 
 export function getAgentForZone(zone, role) {
   const agent = AGENTS.find(a => a.zone === zone)

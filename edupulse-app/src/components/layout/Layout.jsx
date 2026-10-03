@@ -1,8 +1,10 @@
 import { NavLink, Outlet, useNavigate, useLocation, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
+import { useAI } from '../../context/AIContext'
 import { WorkspaceStatus } from '../../context/WorkspaceContext'
 import { useLanguage } from '../../context/LanguageContext'
 import { useTheme } from '../../context/ThemeContext'
+import { useNotifications } from '../../data/notifications'
 import {
   LayoutDashboard, BookOpen, FileText, BarChart3, LogOut,
   ChevronDown, Bell, Search, Menu, X, Moon, Sun, HelpCircle,
@@ -26,7 +28,7 @@ const SECTIONS = [
   {
     key: 'course-loading', path: '/course-loading', label: 'Course Loading', icon: ClipboardCheck, roles: ['admin'],
     sidebar: [
-      { key: 'assign', label: 'Load Courses', tab: 'assign' },
+      { key: 'assign', label: 'Loaded Courses', tab: 'assign' },
       { key: 'instructors', label: 'Instructors', tab: 'instructors' },
     ],
   },
@@ -85,27 +87,6 @@ const SECTIONS = [
     ],
   },
 ]
-
-// Notifications follow SYSTEM_SPEC §5: unopened materials and unanswered
-// assessments fan out to BOTH the instructor and the student; syllabus-status
-// and delivery-gap notices go to the Dean / Associate Dean.
-const ROLE_NOTIFICATIONS = {
-  admin: [
-    { id: 1, message: 'IT 107 syllabus still drafted — not yet checked by Sir Rogelio L. Guisdan', time: '2h ago', type: 'warning' },
-    { id: 2, message: 'WMAD 303-1 approved syllabus uploaded — Course Outline pending extraction', time: '1d ago', type: 'info' },
-    { id: 3, message: 'Delivery gap: IT 106 has no published courseware for Week 4 yet', time: '2d ago', type: 'warning' },
-  ],
-  instructor: [
-    { id: 1, message: '3 AI-generated drafts waiting in your Courseware review queue', time: '1h ago', type: 'info' },
-    { id: 2, message: '5 students in BSIT-3A have not opened "Week 1 — What is Programming"', time: '4h ago', type: 'warning' },
-    { id: 3, message: '2 students missed "Week 4 — Conditional Statements: Seatwork & Quiz"', time: '1d ago', type: 'warning' },
-  ],
-  student: [
-    { id: 1, message: 'New material published: Week 3 — Variables & Data Types', time: '30m ago', type: 'info' },
-    { id: 2, message: 'Reminder: you haven\'t opened "Week 1 — What is Programming: Lecture Notes"', time: '2h ago', type: 'warning' },
-    { id: 3, message: 'Unanswered assessment: Week 1 — Recitation & Short Quiz', time: '1d ago', type: 'warning' },
-  ],
-}
 
 function canSee(item, role) {
   return item.roles === 'all' || item.roles.includes(role)
@@ -166,26 +147,27 @@ function Breadcrumbs() {
     path: '/' + parts.slice(0, i + 1).join('/'),
   }))
 
+  // Links are inline-flex so the 44 px mobile touch-target height keeps their text centred on the row.
   return (
-    <div style={{
+    <nav aria-label="Breadcrumb" className="breadcrumb" style={{
       padding: '12px 24px',
       display: 'flex', alignItems: 'center', gap: '8px',
       fontSize: '0.8125rem', color: 'var(--gray-500)',
       background: 'var(--white)',
       borderBottom: '1px solid var(--gray-100)',
     }}>
-      <NavLink to="/dashboard" style={{ color: 'var(--sky-500)', fontWeight: 600 }}>Home</NavLink>
+      <NavLink to="/dashboard" style={{ color: 'var(--sky-500)', fontWeight: 600, display: 'inline-flex', alignItems: 'center' }}>Home</NavLink>
       {crumbs.map((crumb, i) => (
         <span key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <ChevronRight size={12} />
           {i < crumbs.length - 1 ? (
-            <NavLink to={crumb.path} style={{ color: 'var(--sky-500)', fontWeight: 600 }}>{crumb.label}</NavLink>
+            <NavLink to={crumb.path} style={{ color: 'var(--sky-500)', fontWeight: 600, display: 'inline-flex', alignItems: 'center' }}>{crumb.label}</NavLink>
           ) : (
             <span style={{ fontWeight: 600, color: 'var(--gray-700)' }}>{crumb.label}</span>
           )}
         </span>
       ))}
-    </div>
+    </nav>
   )
 }
 
@@ -281,6 +263,7 @@ function RoleSwitchPopover({ onClose }) {
 }
 
 export default function Layout() {
+  const ai = useAI()
   const { user, logout } = useAuth()
   const { language, switchLanguage } = useLanguage()
   const navigate = useNavigate()
@@ -307,8 +290,7 @@ export default function Layout() {
   }, [])
 
   const handleLogout = () => { logout(); navigate('/') }
-  const notifs = ROLE_NOTIFICATIONS[user?.role] || []
-  const unreadCount = notifs.length
+  const { notifications: notifs, unreadCount } = useNotifications(user?.role)
   const sections = SECTIONS.filter(s => canSee(s, user?.role))
   const current = activeSection(location.pathname, user?.role)
 
@@ -330,6 +312,7 @@ export default function Layout() {
         <div className="app-brand" style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
           <button
             className="mobile-menu-btn"
+            aria-label={showMobileMenu ? 'Close menu' : 'Open menu'} aria-expanded={showMobileMenu}
             onClick={() => setShowMobileMenu(!showMobileMenu)}
             style={{
               display: 'none', width: 40, height: 40, borderRadius: 'var(--radius-md)',
@@ -452,7 +435,7 @@ export default function Layout() {
           </div>
 
           <div style={{ position: 'relative' }}>
-            <button onClick={() => { setShowNotifications(!showNotifications); setShowUserMenu(false); setShowRoleSwitch(false) }} style={{
+            <button aria-label={unreadCount ? `Notifications, ${unreadCount} unread` : 'Notifications'} aria-expanded={showNotifications} onClick={() => { setShowNotifications(!showNotifications); setShowUserMenu(false); setShowRoleSwitch(false) }} style={{
               width: 36, height: 36, borderRadius: 'var(--radius-full)',
               background: 'var(--gray-100)', border: 'none',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -480,9 +463,9 @@ export default function Layout() {
                   <NavLink to="/notifications" onClick={() => setShowNotifications(false)} style={{ fontSize: '0.75rem', color: 'var(--sky-500)', fontWeight: 600 }}>View All</NavLink>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                  {notifs.map(n => (
+                  {notifs.slice(0, 3).map(n => (
                     <div key={n.id} style={{
-                      padding: '10px 12px', borderRadius: 'var(--radius-md)',
+                      padding: '10px 12px', borderRadius: 'var(--radius-md)', opacity: n.read ? 0.75 : 1,
                       background: n.type === 'warning' ? 'var(--amber-100)' : n.type === 'success' ? 'var(--green-100)' : n.type === 'error' ? 'var(--red-100)' : 'var(--sky-50)',
                       fontSize: '0.8125rem', fontWeight: 500,
                       color: n.type === 'warning' ? '#92400e' : n.type === 'success' ? '#166534' : n.type === 'error' ? '#991b1b' : 'var(--sky-700)',
@@ -508,7 +491,7 @@ export default function Layout() {
           </div>
 
           <div style={{ position: 'relative' }}>
-            <button onClick={() => { setShowUserMenu(!showUserMenu); setShowNotifications(false); setShowRoleSwitch(false) }} style={{
+            <button aria-label="Account menu" aria-expanded={showUserMenu} onClick={() => { setShowUserMenu(!showUserMenu); setShowNotifications(false); setShowRoleSwitch(false) }} style={{
               display: 'flex', alignItems: 'center', gap: '8px',
               padding: '4px 10px 4px 4px', borderRadius: 'var(--radius-full)',
               background: 'var(--white)', border: '2px solid var(--sky-200)',
@@ -607,7 +590,7 @@ export default function Layout() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 600 }}>EduPulse</span>
           <span>King's College of the Philippines — Benguet</span>
-          <span className="badge badge-draft" style={{ fontSize: '0.625rem' }}>Connected AI v0.2.0</span>
+          <NavLink to="/settings?tab=ai-provider" className={`badge ${ai.ready ? 'badge-published' : 'badge-draft'}`} style={{ fontSize: '0.625rem', maxWidth: '220px', whiteSpace: 'normal' }}>{ai.label}</NavLink>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           <NavLink to="/help" style={{ color: 'var(--gray-400)', transition: 'color 150ms' }}

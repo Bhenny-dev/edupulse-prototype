@@ -6,10 +6,10 @@ export default defineAgent({
   label: 'Courseware',
   roles: ['instructor', 'admin', 'student'],
   greeting: (user) => user?.role === 'student'
-    ? "Looking for something specific here? I can point you to what's newest, or explain how your materials are grounded. I can't answer or review your assessment items, though."
+    ? "Looking for something specific here? This student view includes sample materials; I can explain the controls, but I can't answer assessment items."
     : user?.role === 'admin'
-      ? "This is the college's published courseware. Want a quick read on what's out and what's still pending, per instructor?"
-      : "Want me to generate courseware from your extracted Course Outline, help you get through the review queue, or find something in the item bank?",
+      ? "This view includes sample courseware. Want a quick read on the displayed statuses?"
+      : "Want to generate a draft from an active syllabus, review saved drafts, or inspect an item?",
   intents: [
     {
       key: 'generate', label: 'Generate courseware from my outline', roles: ['instructor'],
@@ -17,29 +17,29 @@ export default defineAgent({
         { title: 'Choose scope', body: 'This week, a term (midterm/finals), or the whole Course Outline — only active syllabi (outline extracted) can generate.' },
         { title: 'Generation runs, grounded in your syllabus', body: 'It retrieves your approved syllabus and instructor-provided materials before drafting anything — you\'ll see the stages in plain language.' },
         { title: 'Review the draft', body: 'Every item shows which outline week and content it was grounded in. Edit, finalize, or regenerate just that one item.' },
-        { title: 'Review and publish', body: 'Mark reviewed drafts checked before publishing. Only published items appear in the student view.' },
+        { title: 'Review and publish', body: 'Mark reviewed drafts checked before using the visibility control. The private workspace does not deliver content to enrolled students yet.' },
       ],
     },
     {
       key: 'review', label: 'Help me get through my review queue', roles: ['instructor'],
       steps: [
-        { title: 'Open the Review Queue tab', body: 'Everything waiting on your decision, newest first.' },
+        { title: 'Open Courseware Builder', body: 'Select an active syllabus and inspect its saved draft items by week.' },
         { title: 'Check the grounding note on each item', body: 'It tells you which outline week and topic it drew from.' },
-        { title: 'Check, or regenerate', body: 'Regenerating only redoes that one item — the rest of your batch is untouched. Checked items are ready to publish.' },
+        { title: 'Check, or regenerate', body: 'Review and check each draft. Regeneration can replace a draft, while checked and published items are preserved by batch generation.' },
       ],
     },
     {
-      key: 'itembank', label: 'Find something in the item bank', roles: ['instructor'],
+      key: 'itembank', label: 'Find an existing item', roles: ['instructor'],
       steps: [
-        { title: 'Search or filter by course', body: 'The item bank holds every checked and published item, reusable for a new assessment or block.' },
+        { title: 'Search or filter by course', body: 'Use My Courseware to find a saved item for a course. The separate item-bank workflow is not connected here.' },
         { title: 'Preview before reusing', body: 'Check it still fits the outline row you\'re working from.' },
       ],
     },
     {
       key: 'explain', label: 'Explain what I\'m looking at', roles: ['student', 'admin'],
       steps: [
-{ title: 'Published materials', body: 'Everything your instructor has checked and published to your block.' },
-{ title: 'How it\'s grounded', body: 'Each item is generated from the approved syllabus, reviewed and checked by your instructor before you ever see it.' },
+{ title: 'Displayed materials', body: 'This view may contain sample courseware. Verify availability with your instructor.' },
+{ title: 'How a generated draft is grounded', body: 'A new draft uses the active syllabus outline and any available references, then requires instructor review. This preview does not verify delivery to your block.' },
       ],
     },
   ],

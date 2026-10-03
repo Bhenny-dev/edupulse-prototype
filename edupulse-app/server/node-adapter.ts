@@ -1,17 +1,16 @@
 import type { IncomingMessage, ServerResponse } from 'node:http'
-import { handleRequest } from './http.js'
-import { WORKSPACE_BYTES } from './workspace.js'
+import { bodyLimit, handleRequest } from './http.js'
 
 export async function handleNodeRequest(req: IncomingMessage, res: ServerResponse) {
   const controller = new AbortController()
   res.on('close', () => { if (!res.writableEnded) controller.abort() })
   const body: Buffer[] = []
   let size = 0
-  const limit = new URL(req.url || '/', 'http://localhost').searchParams.get('action') === 'workspace' ? WORKSPACE_BYTES : 100000
-  // Vercel may already parse JSON before dispatching the function.
+  const limit = bodyLimit(new URL(req.url || '/', 'http://localhost').searchParams.get('action'))
+  // Vercel may already parse the body: JSON as an object, uploads as a Buffer.
   const parsed = (req as IncomingMessage & { body?: unknown }).body
   if (parsed !== undefined) {
-    const chunk = Buffer.from(typeof parsed === 'string' ? parsed : JSON.stringify(parsed))
+    const chunk = Buffer.isBuffer(parsed) ? parsed : parsed instanceof Uint8Array ? Buffer.from(parsed) : Buffer.from(typeof parsed === 'string' ? parsed : JSON.stringify(parsed))
     size = chunk.length; body.push(chunk)
   } else {
     for await (const chunk of req) {

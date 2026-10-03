@@ -1,0 +1,223 @@
+{
+  "capturedAt": "2026-10-02T08:41:25.164Z",
+  "problems": [],
+  "scenes": [
+    {
+      "role": "all roles",
+      "folder": "02-shared-interface",
+      "file": "01-top-bar.png",
+      "title": "Top bar: navigation, tools, notifications, role and account",
+      "ok": true
+    },
+    {
+      "role": "all roles",
+      "folder": "02-shared-interface",
+      "file": "02-search-overlay.png",
+      "title": "Search overlay (Ctrl+K)",
+      "ok": true
+    },
+    {
+      "role": "all roles",
+      "folder": "02-shared-interface",
+      "file": "03-keyboard-shortcuts-modal.png",
+      "title": "Keyboard shortcuts modal",
+      "ok": true
+    },
+    {
+      "role": "all roles",
+      "folder": "02-shared-interface",
+      "file": "04-language-menu.png",
+      "title": "Language menu (English / Filipino)",
+      "ok": true
+    },
+    {
+      "role": "all roles",
+      "folder": "02-shared-interface",
+      "file": "05-notifications-dropdown.png",
+      "title": "Notifications dropdown",
+      "ok": true
+    },
+    {
+      "role": "all roles",
+      "folder": "02-shared-interface",
+      "file": "06-account-menu.png",
+      "title": "Account menu",
+      "ok": true
+    },
+    {
+      "role": "all roles",
+      "folder": "02-shared-interface",
+      "file": "07-role-switch-popover.png",
+      "title": "Preview role switcher (prototype only)",
+      "ok": true
+    },
+    {
+      "role": "all roles",
+      "folder": "02-shared-interface",
+      "file": "08-notifications-page.png",
+      "title": "Notifications page",
+      "ok": true
+    },
+    {
+      "role": "all roles",
+      "folder": "02-shared-interface",
+      "file": "09-help-and-support.png",
+      "title": "Help and support",
+      "ok": true
+    },
+    {
+      "role": "all roles",
+      "folder": "02-shared-interface",
+      "file": "10-settings-account.png",
+      "title": "Settings · Account",
+      "ok": true
+    },
+    {
+      "role": "all roles",
+      "folder": "02-shared-interface",
+      "file": "11-settings-appearance.png",
+      "title": "Settings · Appearance",
+      "ok": true
+    },
+    {
+      "role": "all roles",
+      "folder": "02-shared-interface",
+      "file": "12-settings-notifications.png",
+      "title": "Settings · Notifications",
+      "ok": true
+    },
+    {
+      "role": "all roles",
+      "folder": "02-shared-interface",
+      "file": "13-settings-ai-and-knowledge.png",
+      "title": "Settings · AI & Knowledge",
+      "ok": true
+    },
+    {
+      "role": "all roles",
+      "folder": "02-shared-interface",
+      "file": "14-settings-data-and-privacy.png",
+      "title": "Settings · Data & Privacy",
+      "ok": true
+    },
+    {
+      "role": "all roles",
+      "folder": "02-shared-interface",
+      "file": "15-dark-mode.png",
+      "title": "Dark mode (Appearance)",
+      "ok": true
+    },
+    {
+      "role": "all roles",
+      "folder": "02-shared-interface",
+      "file": "16-pulse-dock.png",
+      "title": "Pulse assistant dock",
+      "ok": true
+    },
+    {
+      "role": "all roles",
+      "folder": "02-shared-interface",
+      "file": "17-pulse-panel.png",
+      "title": "Pulse panel (welcome)",
+      "ok": true
+    },
+    {
+      "role": "all roles",
+      "folder": "02-shared-interface",
+      "file": "18-pulse-dwell-help.png",
+      "title": "“Ask Pulse about this” hover badge",
+      "ok": true
+    },
+    {
+      "role": "instructor",
+      "folder": "04-instructor",
+      "file": "01-dashboard.png",
+      "title": "Instructor dashboard",
+      "ok": true
+    },
+    {
+      "role": "instructor",
+      "folder": "04-instructor",
+      "file": "02-syllabus-my-courses.png",
+      "title": "Syllabus · My Courses",
+      "ok": true
+    },
+    {
+      "role": "instructor",
+      "folder": "04-instructor",
+      "file": "03-syllabus-my-syllabus.png",
+      "title": "Syllabus · My Syllabus (status, actions, versions)",
+      "ok": true
+    },
+    {
+      "role": "instructor",
+      "folder": "04-instructor",
+      "file": "04-syllabus-shared-repository.png",
+      "title": "Syllabus · Shared Repository",
+      "ok": true
+    },
+    {
+      "role": "instructor",
+      "folder": "04-instructor",
+      "file": "05-syllabus-builder.png",
+      "title": "Syllabus Builder (upload or build the 7 sections)",
+      "ok": true
+    },
+    {
+      "role": "instructor",
+      "folder": "04-instructor",
+      "file": "06-syllabus-builder-course-outline.png",
+      "title": "Syllabus Builder · Section 5 Course Outline",
+      "ok": true
+    },
+    {
+      "role": "instructor",
+      "folder": "04-instructor",
+      "file": "07-courseware-my-courseware.png",
+      "title": "Courseware · My Courseware",
+      "ok": true
+    },
+    {
+      "role": "instructor",
+      "folder": "04-instructor",
+      "file": "08-courseware-builder.png",
+      "title": "Courseware · Courseware Builder",
+      "ok": true
+    },
+    {
+      "role": "instructor",
+      "folder": "04-instructor",
+      "file": "09-student-monitoring-assessment-scores.png",
+      "title": "Student Monitoring · Assessment Scores",
+      "ok": true
+    },
+    {
+      "role": "instructor",
+      "folder": "04-instructor",
+      "file": "10-student-monitoring-material-access.png",
+      "title": "Student Monitoring · Material Access",
+      "ok": true
+    },
+    {
+      "role": "instructor",
+      "folder": "04-instructor",
+      "file": "11-performance-overview.png",
+      "title": "Performance · Overview",
+      "ok": true
+    },
+    {
+      "role": "instructor",
+      "folder": "04-instructor",
+      "file": "12-performance-by-topic.png",
+      "title": "Performance · By Topic",
+      "ok": true
+    },
+    {
+      "role": "instructor",
+      "folder": "04-instructor",
+      "file": "13-performance-alerts.png",
+      "title": "Performance · Alerts",
+      "ok": true
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react'
 import { supabase } from '../lib/supabaseClient'
-import { setAiAccessToken } from '../lib/aiClient'
+import { aiRequest, setAiAccessToken } from '../lib/aiClient'
 
 const AuthContext = createContext(null)
 
@@ -92,6 +92,7 @@ export function AuthProvider({ children }) {
   }, [user])
 
   const logout = useCallback(async () => {
+    await aiRequest('providers', 'DELETE').catch(() => {})
     if (user?.authenticated) await supabase?.auth.signOut()
     setAiAccessToken(undefined)
     setRoleHistory(prev => [...prev, { action: 'logout', role: user?.role, timestamp: new Date().toISOString() }])

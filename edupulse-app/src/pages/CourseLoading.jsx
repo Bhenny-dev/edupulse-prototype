@@ -487,7 +487,8 @@ function InstructorsTab() {
 export default function CourseLoading() {
   const { user } = useAuth()
   const [searchParams, setSearchParams] = useSearchParams()
-  const activeTab = searchParams.get('tab') || 'monitoring'
+  // The sidebar links use `assign`; any other value falls back to the loaded-courses view.
+  const activeTab = searchParams.get('tab') === 'instructors' ? 'instructors' : 'assign'
 
   if (user?.role !== 'admin') return <Navigate to="/dashboard" replace />
 
@@ -502,15 +503,15 @@ export default function CourseLoading() {
       {/* Tabs */}
       <div style={{ display: 'flex', gap: '0', borderBottom: '2px solid var(--gray-200)', marginBottom: '20px' }}>
         <button
-          onClick={() => switchTab('monitoring')}
+          onClick={() => switchTab('assign')}
           style={{
             padding: '10px 20px', border: 'none', background: 'none', cursor: 'pointer', fontWeight: 600,
-            fontSize: '0.875rem', color: activeTab === 'monitoring' ? 'var(--sky-600)' : 'var(--gray-500)',
-            borderBottom: activeTab === 'monitoring' ? '2px solid var(--sky-500)' : '2px solid transparent',
+            fontSize: '0.875rem', color: activeTab === 'assign' ? 'var(--sky-600)' : 'var(--gray-500)',
+            borderBottom: activeTab === 'assign' ? '2px solid var(--sky-500)' : '2px solid transparent',
             marginBottom: '-2px', transition: 'all 0.15s',
           }}
         >
-          Course Monitoring
+          Loaded Courses
         </button>
         <button
           onClick={() => switchTab('instructors')}
@@ -525,7 +526,7 @@ export default function CourseLoading() {
         </button>
       </div>
 
-      {activeTab === 'monitoring' && <MonitoringTab />}
+      {activeTab === 'assign' && <MonitoringTab />}
       {activeTab === 'instructors' && <InstructorsTab />}
     </div>
   )

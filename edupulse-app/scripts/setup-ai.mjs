@@ -5,7 +5,8 @@ try {
   const response = await fetch(`${base}/api/tags`, { headers, signal: AbortSignal.timeout(4000) })
   if (!response.ok) throw new Error('Ollama unavailable')
   const { models } = await response.json()
-  for (const name of [model, 'all-minilm']) {
+  // Embeddings run in-process (npm run models:fetch); Ollama is only needed for generation.
+  for (const name of [model]) {
     if (models.some(m => (m.name === name || m.name === `${name}:latest`) && !m.remote_host)) { console.log(`${name}: installed`); continue }
     console.log(`Downloading local model ${name}. This can take several minutes.`)
     const pull = await fetch(`${base}/api/pull`, { method: 'POST', headers, body: JSON.stringify({ name, stream: false }), signal: AbortSignal.timeout(1800000) })

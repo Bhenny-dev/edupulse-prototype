@@ -289,7 +289,7 @@ function OnboardingChecklist() {
   }
 
   return (
-    <div style={{ background: 'linear-gradient(135deg, #EFF6FF, #F0F9FF, #FAF5FF)', borderRadius: 16, padding: 20, marginBottom: 24, border: '1.5px solid var(--sky-200)', boxShadow: 'var(--shadow-3d)' }}>
+    <div style={{ background: 'var(--onboarding-bg, linear-gradient(135deg, #EFF6FF, #F0F9FF, #FAF5FF))', borderRadius: 16, padding: 20, marginBottom: 24, border: '1.5px solid var(--sky-200)', boxShadow: 'var(--shadow-3d)' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: expanded ? 12 : 0 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <div style={{ width: 36, height: 36, borderRadius: 10, background: 'var(--sky-500)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -358,6 +358,9 @@ function InstructorDashboard() {
   const { user } = useAuth()
   const mySyllabi = DEFAULT_SYLLABI.filter(s => s.instructorId === user?.id)
   const myCourseware = COURSEWARE_ITEMS.filter(c => mySyllabi.some(s => s.id === c.syllabusId))
+  // The review queue is drafts awaiting the instructor, earliest outline week first.
+  const reviewQueue = myCourseware.filter(c => c.status === 'draft').sort((a, b) => a.week - b.week)
+  const QUEUE_PREVIEW = 8
   const myBlockSections = BLOCK_SECTIONS.filter(s => s.adviserId === user?.id)
   // STUDENT_RECORDS stores the block code (not a blockSectionId FK) — match on that.
   const myStudents = STUDENT_RECORDS.filter(stu => myBlockSections.some(bs => bs.code === stu.section))
@@ -433,11 +436,13 @@ function InstructorDashboard() {
               <div className="kpi-label">90 and Above</div>
             </div>
           </div>
+          <p className="text-sm text-muted" style={{ margin: '12px 0 4px' }}>Topic averages · {DEFAULT_SYLLABI[0]?.courseCode} {DEFAULT_SYLLABI[0]?.courseTitle}</p>
           <ResponsiveContainer width="100%" height={200}>
-            <BarChart data={DEFAULT_SYLLABI[0]?.topics.map(t => ({
-              topic: t.title.substring(0, 10),
-              avg: myStudents.length ? Math.round(myStudents.reduce((a, s) => a + (s.courses[0]?.topics[t.id] || 0), 0) / myStudents.length) : 0,
-            }))} margin={{ top: 8, right: 8, bottom: 8, left: -20 }}>
+            {/* Topic averages count only students who have a score for that topic in this course. */}
+            <BarChart data={DEFAULT_SYLLABI[0]?.topics.map(t => {
+              const scores = myStudents.map(s => s.courses.find(c => c.code === DEFAULT_SYLLABI[0].courseCode)?.topics?.[t.id]).filter(v => typeof v === 'number')
+              return { topic: t.title.length > 14 ? `${t.title.slice(0, 13)}…` : t.title, avg: scores.length ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 0 }
+            })} margin={{ top: 8, right: 8, bottom: 8, left: -20 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
               <XAxis dataKey="topic" tick={{ fontSize: 10 }} />
               <YAxis domain={[0, 100]} tick={{ fontSize: 10 }} />
@@ -497,7 +502,8 @@ function InstructorDashboard() {
             <button className="btn btn-secondary btn-sm" onClick={() => navigate('/courseware?tab=builder&sub=review')}>View All <ArrowRight size={14} /></button>
           </div>
           <div className="card-body">
-            {myCourseware.map(cw => (
+            {reviewQueue.length === 0 && <p className="text-sm text-muted">No drafts are waiting for review.</p>}
+            {reviewQueue.slice(0, QUEUE_PREVIEW).map(cw => (
               <div key={cw.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 12px', borderRadius: 'var(--radius-md)', background: 'var(--gray-50)', marginBottom: '6px' }}>
                 <div>
                   <div style={{ fontWeight: 600, fontSize: '0.875rem' }}>{cw.title}</div>
@@ -506,6 +512,11 @@ function InstructorDashboard() {
                 <span className={`badge badge-${cw.status}`}>{cw.status}</span>
               </div>
             ))}
+            {reviewQueue.length > QUEUE_PREVIEW && (
+              <p className="text-sm text-muted" style={{ marginTop: 8 }}>
+                Showing {QUEUE_PREVIEW} of {reviewQueue.length} drafts. Use View All to review the rest in Courseware.
+              </p>
+            )}
           </div>
         </div>
       </div>

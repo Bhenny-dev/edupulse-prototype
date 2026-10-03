@@ -46,8 +46,13 @@ function studentsForInstructor(user) {
 
 /* ───────────────────────── Shared visual bits ───────────────────────── */
 
+// Topic ids (t14…) resolve to the syllabus topic titles so charts read "Web Fundamentals Review", not "T14".
+const TOPIC_TITLES = new Map(DEFAULT_SYLLABI.flatMap(s => (s.topics || []).map(t => [t.id, t.title])))
+const topicTitle = key => TOPIC_TITLES.get(key) || key.replace(/^t(\d+)$/, 'Topic $1')
+const shortTitle = (title, max = 18) => title.length > max ? `${title.slice(0, max - 1)}…` : title
+
 function StudentRadarChart({ topics, size = 220 }) {
-  const data = Object.entries(topics).map(([key, value]) => ({ subject: key.replace('t', 'T'), score: value, fullMark: 100 }))
+  const data = Object.entries(topics).map(([key, value]) => ({ subject: shortTitle(topicTitle(key)), score: value, fullMark: 100 }))
   return (
     <ResponsiveContainer width="100%" height={size}>
       <RadarChart data={data}>
@@ -105,7 +110,7 @@ function StudentDetailPopover({ student, onClose }) {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '16px' }}>
           {Object.entries(courseData.topics).map(([key, value]) => (
             <div key={key} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <span className="text-sm" style={{ minWidth: '60px', fontWeight: 600 }}>{key.replace('t', 'T ')}</span>
+              <span className="text-sm" style={{ width: '170px', flexShrink: 0, fontWeight: 600 }} title={topicTitle(key)}>{shortTitle(topicTitle(key), 24)}</span>
               <div className="progress-bar" style={{ flex: 1 }}><div className="progress-fill" style={{ width: `${value}%`, background: value >= 90 ? 'var(--green-500)' : value >= 75 ? 'var(--sky-500)' : 'var(--red-500)' }} /></div>
               <span className="text-sm font-bold" style={{ minWidth: '36px', textAlign: 'right' }}>{value}%</span>
             </div>
@@ -246,7 +251,7 @@ function StudentByTopic({ user, selectedCourseCode }) {
         <div className="card-body">
           {Object.entries(course.topics).map(([key, value]) => (
             <div key={key} style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
-              <span className="text-sm" style={{ minWidth: '60px', fontWeight: 600 }}>{key.replace('t', 'Topic ')}</span>
+              <span className="text-sm" style={{ width: '200px', flexShrink: 0, fontWeight: 600 }} title={topicTitle(key)}>{shortTitle(topicTitle(key), 30)}</span>
               <div className="progress-bar" style={{ flex: 1 }}><div className="progress-fill" style={{ width: `${value}%`, background: value >= 75 ? 'var(--green-500)' : 'var(--red-500)' }} /></div>
               <span className={`badge ${value >= 75 ? 'badge-approved' : 'badge-error'}`} style={{ minWidth: '110px', textAlign: 'center' }}>{value >= 75 ? 'Mastered' : 'Needs Review'}</span>
             </div>
@@ -402,9 +407,9 @@ function StudentScoresTab({ user, selectedCourseCode }) {
   return (
     <div>
       <div className="kpi-grid mb-24">
-        <div className="kpi-card"><div className="kpi-icon" style={{ background: 'var(--sky-100)' }}><ClipboardCheck size={20} style={{ color: 'var(--sky-500)' }} /></div><div><div className="kpi-value">{overallPct}%</div><div className="kpi-label">Overall Score</div></div></div>
-        <div className="kpi-card"><div className="kpi-icon" style={{ background: 'var(--green-100)' }}><Award size={20} style={{ color: 'var(--green-500)' }} /></div><div><div className="kpi-value">{csMax > 0 ? Math.round((csScore / csMax) * 100) : 0}%</div><div className="kpi-label">Class Standing</div></div></div>
-        <div className="kpi-card"><div className="kpi-icon" style={{ background: 'var(--purple-100)' }}><Target size={20} style={{ color: 'var(--purple-500)' }} /></div><div><div className="kpi-value">{examMax > 0 ? Math.round((examScore / examMax) * 100) : 0}%</div><div className="kpi-label">Examination</div></div></div>
+        <div className="kpi-card"><div className="kpi-icon" style={{ background: 'var(--sky-100)' }}><ClipboardCheck size={20} style={{ color: 'var(--sky-500)' }} /></div><div><div className="kpi-value">{totalMax > 0 ? `${overallPct}%` : '—'}</div><div className="kpi-label">Overall Score</div></div></div>
+        <div className="kpi-card"><div className="kpi-icon" style={{ background: 'var(--green-100)' }}><Award size={20} style={{ color: 'var(--green-500)' }} /></div><div><div className="kpi-value">{csMax > 0 ? `${Math.round((csScore / csMax) * 100)}%` : '—'}</div><div className="kpi-label">Class Standing</div></div></div>
+        <div className="kpi-card"><div className="kpi-icon" style={{ background: 'var(--purple-100)' }}><Target size={20} style={{ color: 'var(--purple-500)' }} /></div><div><div className="kpi-value">{examMax > 0 ? `${Math.round((examScore / examMax) * 100)}%` : '—'}</div><div className="kpi-label">Examination</div></div></div>
       </div>
 
       <div className="card">

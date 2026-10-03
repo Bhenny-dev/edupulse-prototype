@@ -2,7 +2,8 @@
   "compilerOptions": {
     "target": "ES2022", "module": "ESNext", "moduleResolution": "Bundler",
     "lib": ["ES2023", "DOM"], "types": ["node"], "strict": true,
-    "skipLibCheck": true, "noEmit": true, "esModuleInterop": true
+    "skipLibCheck": true, "noEmit": true, "esModuleInterop": true,
+    "allowJs": true, "checkJs": true
   },
-  "include": ["server/**/*.ts", "api/**/*.ts", "tests/**/*.ts", "src/lib/aiClient.ts"]
+  "include": ["server/**/*.ts", "server/**/*.mjs", "api/**/*.ts", "tests/**/*.ts", "scripts/**/*.ts", "src/lib/aiClient.ts", "src/lib/rag/**/*.ts"]
 }

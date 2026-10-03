@@ -1,7 +1,7 @@
 {
   "name": "edupulse-app",
   "private": true,
-  "version": "0.2.0",
+  "version": "0.4.0",
   "type": "module",
   "scripts": {
     "dev": "node scripts/dev.mjs",
@@ -11,29 +11,37 @@
     "typecheck": "tsc --project jsconfig.json --noEmit && tsc --project tsconfig.server.json --noEmit",
     "preview": "vite preview",
     "test": "node scripts/test.mjs",
-    "verify": "npm run lint && npm run typecheck && npm test && npm run build && npm run deployment:check",
+    "verify": "npm run lint && npm run typecheck && npm run models:fetch && npm test && npm run build && npm run deployment:check",
     "deployment:check": "node --import tsx scripts/check-deployment.ts",
     "ai:setup": "node --env-file-if-exists=.env.local scripts/setup-ai.mjs",
     "ai:smoke": "node --env-file-if-exists=.env.local --import tsx scripts/smoke-ai.ts",
-    "test:browser": "playwright test"
+    "test:browser": "playwright test",
+    "models:fetch": "node --import tsx scripts/fetch-models.ts",
+    "eval:rag": "node --import tsx scripts/eval-rag.ts",
+    "snapshots": "playwright test --config playwright.snapshots.config.ts"
   },
   "dependencies": {
     "@electric-sql/pglite": "0.5.8",
     "@electric-sql/pglite-pgvector": "0.0.9",
+    "@huggingface/tokenizers": "0.2.0",
     "@langchain/core": "1.2.11",
     "@langchain/google-genai": "2.3.2",
     "@langchain/langgraph": "1.4.15",
     "@langchain/ollama": "1.3.0",
     "@langchain/textsplitters": "1.0.1",
+    "@mlc-ai/web-llm": "0.2.85",
     "@supabase/server": "1.4.1",
     "@supabase/supabase-js": "2.112.4",
     "docx": "9.7.1",
+    "jszip": "3.10.1",
     "lucide-react": "^1.24.0",
     "mammoth": "^1.12.0",
+    "onnxruntime-web": "1.30.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-router-dom": "^7.18.1",
     "recharts": "^3.9.2",
+    "unpdf": "1.8.1",
     "zod": "4.6.4"
   },
   "devDependencies": {

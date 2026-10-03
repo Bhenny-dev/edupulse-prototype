@@ -1,4 +1,4 @@
-import { Fragment, useState, useEffect, useRef, useMemo } from 'react'
+import { Fragment, cloneElement, isValidElement, useState, useEffect, useRef, useMemo, useId } from 'react'
 import { useSearchParams, Navigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { CURRICULUM_COURSES, INSTRUCTORS, DEFAULT_INSTITUTIONAL_CONTEXT, SYLLABUS_STATUS_META, SYLLABUS_STATUS_ORDER } from '../data/mockData'
@@ -444,14 +444,20 @@ const SectionLabel = ({ num, label }) => (
     </div>
   )
 
-const FormGroup = ({ label, required, error, children, note }) => (
+// Required state and the note are exposed to assistive technology (and to Pulse) on the control itself.
+const FormGroup = ({ label, required, error, children, note }) => {
+  const id = useId()
+  const controlId = isValidElement(children) ? children.props.id || `${id}-control` : undefined
+  const control = isValidElement(children) ? cloneElement(children, { id: controlId, 'aria-required': required || undefined, 'aria-describedby': [children.props['aria-describedby'], note && `${id}-note`, error && `${id}-error`].filter(Boolean).join(' ') || undefined }) : children
+  return (
     <div className="form-group" style={{ marginBottom: '12px' }}>
-      <label className="form-label">{label}{required && ' *'}</label>
-      {note && <div style={{ fontSize: '0.75rem', color: 'var(--gray-500)', fontStyle: 'italic', marginBottom: '6px' }}>{note}</div>}
-      {children}
-      {error && <span className="form-error">{error}</span>}
+      <label className="form-label" htmlFor={controlId}>{label}{required && <span aria-hidden="true"> *</span>}</label>
+      {note && <div id={`${id}-note`} style={{ fontSize: '0.75rem', color: 'var(--gray-500)', fontStyle: 'italic', marginBottom: '6px' }}>{note}</div>}
+      {control}
+      {error && <span id={`${id}-error`} className="form-error">{error}</span>}
     </div>
   )
+}
 
 
 function SyllabusBuilder({ onComplete, onCancel, initial }) {
@@ -1409,7 +1415,7 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
       <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px', padding: '16px 0', borderTop: '1px solid var(--gray-200)' }}>
         <button className="btn btn-ghost" onClick={onCancel}>Cancel</button>
         <div style={{ display: 'flex', gap: '8px' }}>
-          <button className="btn btn-secondary" onClick={handleSave}>Save as Drafted</button>
+          <button className="btn btn-secondary" data-pulse-action="save-syllabus" onClick={handleSave}>Save as Drafted</button>
           <button className="btn btn-primary" onClick={handleMarkChecked} title="Confirms you have checked this draft — next step is downloading it for the offline signatory route"><CheckCircle size={16} /> Mark as Checked</button>
         </div>
       </div>
@@ -1475,6 +1481,7 @@ export default function Syllabus() {
     const next = record({ ...form, id: editingSyllabus?.id || crypto.randomUUID(), instructorId: user?.id, version: (editingSyllabus?.version || 0) + 1, sample: false, approvedFile: undefined, extractedAt: undefined }, status)
     setSyllabi(previous => editingSyllabus ? previous.map(s => s.id === next.id ? next : s) : [...previous, next])
     setEditingSyllabus(null); switchTab('mine')
+    pulseBus.progress('syllabus-saved', next.courseCode)
   }
 
   // One explicit human action per station — this is the approval loop of
@@ -1482,6 +1489,7 @@ export default function Syllabus() {
   const markChecked = (syl) => {
     if (!meaningfulOutline(syl.courseOutline)) { addToast('Add weekly learning outcomes and contents in the builder first.', 'error'); return }
     setStatus(syl.id, 'checked')
+    pulseBus.progress('syllabus-checked', syl.courseCode)
     addToast(`${syl.courseCode} marked as Checked — download it next for the approval route`, 'success')
   }
   const downloadForApproval = async (syl) => {
@@ -1489,6 +1497,7 @@ export default function Syllabus() {
       const blob = await syllabusDocx(syl)
       downloadBlob(blob, `${syl.courseCode.replace(/[^a-z0-9-]/gi, '_')}-v${syl.version}-approval.docx`)
       setStatus(syl.id, 'downloaded_for_approval')
+      pulseBus.progress('syllabus-downloaded', syl.courseCode)
       addToast('DOCX exported. Complete the offline approval route before uploading it.', 'info')
     } catch (error) { addToast(`Export failed: ${error.message}`, 'error') }
   }
@@ -1496,11 +1505,13 @@ export default function Syllabus() {
   const saveApproved = syl => {
     setSyllabi(previous => previous.map(item => item.id === syl.id ? record(syl, 'approved_uploaded') : item))
     setUploadingSyllabus(null)
+    pulseBus.progress('syllabus-approved-uploaded', syl.courseCode)
     addToast('Approved file retained. Review the extracted outline before activation.', 'success')
   }
   const confirmExtraction = (syl) => {
     if (!syl.approvedFile || !meaningfulOutline(syl.courseOutline)) { addToast('Upload an approved DOCX with a usable outline first.', 'error'); return }
     setStatus(syl.id, 'active')
+    pulseBus.progress('syllabus-activated', syl.courseCode)
     setExtractingSyllabus(null)
     addToast(`${syl.courseCode} is now Active — its Course Outline drives courseware generation`, 'success')
   }
@@ -1691,7 +1702,7 @@ export default function Syllabus() {
                     const outlineCount = syl.courseOutline?.length || 0
                     const action = nextAction(syl)
                     return (
-                      <tr key={syl.id}>
+                      <tr key={syl.id} data-syllabus-id={syl.id} data-pulse-target={`${syl.courseCode} syllabus`}>
                         <td>
                           <div style={{ fontWeight: 700, fontSize: '0.875rem' }}>{syl.courseCode}</div>
                           <div className="text-sm text-muted">{syl.courseTitle}{syl.sample && <span> · Sample</span>}</div>
@@ -1770,10 +1781,22 @@ export default function Syllabus() {
       {uploadingSyllabus && <ApprovedSyllabusUpload syllabus={uploadingSyllabus} onSave={saveApproved} onClose={() => setUploadingSyllabus(null)} />}
       {showVersionHistory && <div className="overlay-backdrop"><section role="dialog" aria-label="Syllabus history" className="modal-content" style={{ maxHeight: '80vh', overflow: 'auto' }}>
         <h2>Recorded syllabus changes</h2>
-        {versionHistorySyllabus?.history?.length ? <ul>{versionHistorySyllabus.history.map((entry, i) => <li key={i}>v{entry.version} · {entry.status} · {new Date(entry.timestamp).toLocaleString()} · {entry.author}</li>)}</ul> : <p>No recorded changes yet. Sample history is not a saved audit trail.</p>}
-        {versionHistorySyllabus?.approvedFile && <button className="btn btn-secondary" onClick={() => downloadApprovedFile(versionHistorySyllabus.approvedFile)}>Download retained approved file</button>}
-        {versionHistorySyllabus?.approvedFile && <button className="btn btn-ghost" onClick={() => { setSyllabi(previous => previous.map(syl => syl.id === versionHistorySyllabus.id ? record({ ...syl, approvedFile: undefined, extractedAt: undefined }, 'drafted') : syl)); setShowVersionHistory(false) }}>Remove attachment and return to draft</button>}
-        <button className="btn btn-ghost" onClick={() => setShowVersionHistory(false)}>Close</button>
+        {versionHistorySyllabus && <p className="text-sm text-muted">{versionHistorySyllabus.courseCode} — {versionHistorySyllabus.courseTitle}</p>}
+        {versionHistorySyllabus?.history?.length ? (
+          <ol className="version-timeline" style={{ listStyle: 'none', padding: 0, margin: '14px 0', display: 'grid', gap: 8 }}>
+            {versionHistorySyllabus.history.map((entry, i) => (
+              <li key={i} className="version-entry" style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 12px', border: '1px solid var(--gray-200)', borderRadius: 'var(--radius-md)' }}>
+                <StatusBadge status={entry.status} />
+                <span className="text-sm">v{entry.version} · {new Date(entry.timestamp).toLocaleString()} · {entry.author}</span>
+              </li>
+            ))}
+          </ol>
+        ) : <p>No recorded changes yet. Sample history is not a saved audit trail.</p>}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, justifyContent: 'flex-end' }}>
+          {versionHistorySyllabus?.approvedFile && <button className="btn btn-secondary" onClick={() => downloadApprovedFile(versionHistorySyllabus.approvedFile)}>Download retained approved file</button>}
+          {versionHistorySyllabus?.approvedFile && <button className="btn btn-ghost" onClick={() => { setSyllabi(previous => previous.map(syl => syl.id === versionHistorySyllabus.id ? record({ ...syl, approvedFile: undefined, extractedAt: undefined }, 'drafted') : syl)); setShowVersionHistory(false) }}>Remove attachment and return to draft</button>}
+          <button className="btn btn-ghost" onClick={() => setShowVersionHistory(false)}>Close</button>
+        </div>
       </section></div>}
 
     </div>

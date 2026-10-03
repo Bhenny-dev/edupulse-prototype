@@ -1,0 +1,1235 @@
+{
+  "generatedAt": "2026-10-01T16:01:35.269Z",
+  "environment": {
+    "node": "v24.13.0",
+    "onnxThreads": 4,
+    "embedding": "all-MiniLM-L6-v2 (ONNX int8)",
+    "reranker": "ms-marco-MiniLM-L-6-v2 (ONNX int8)",
+    "vectorStore": "PGlite + pgvector + Postgres full-text",
+    "generationModel": "qwen2.5:1.5b"
+  },
+  "corpus": [
+    {
+      "document": "Algorithm (Wikipedia)",
+      "license": "CC BY-SA 4.0",
+      "kind": "pdf",
+      "bytes": 1062857,
+      "sha256": "75d2c8db459774416690903f2788b704f968ebc2bafa0a5009613e95895ad8bc",
+      "pages": 19,
+      "words": 8374,
+      "quality": 100,
+      "warnings": [],
+      "sandbox": "isolated-worker",
+      "chunks": 86,
+      "sections": 0,
+      "stages": [
+        {
+          "name": "extract",
+          "ms": 484,
+          "detail": "PDF read in an isolated worker (256 MB heap, 30 s, empty environment); 19 pages."
+        },
+        {
+          "name": "clean",
+          "ms": 10,
+          "detail": "Removed 0 repeated header/footer lines and 0 page numbers; repaired 323 broken lines."
+        },
+        {
+          "name": "evaluate",
+          "ms": 14,
+          "detail": "Quality 100/100 (good); 8,374 words."
+        },
+        {
+          "name": "clean",
+          "ms": 1,
+          "detail": "57,552 characters after normalization."
+        },
+        {
+          "name": "evaluate",
+          "ms": 8,
+          "detail": "Quality 100/100 (good)."
+        },
+        {
+          "name": "chunk",
+          "ms": 3,
+          "detail": "86 passages with page/section metadata (900-character window, 120 overlap)."
+        },
+        {
+          "name": "embed",
+          "ms": 6024,
+          "detail": "86 vectors · all-minilm-l6-v2-int8 · 384 dimensions."
+        },
+        {
+          "name": "index",
+          "ms": 307,
+          "detail": "Stored in local PGlite + pgvector with HNSW and full-text indexes."
+        }
+      ],
+      "totalMs": 10516
+    },
+    {
+      "document": "Control flow (Wikipedia)",
+      "license": "CC BY-SA 4.0",
+      "kind": "pdf",
+      "bytes": 1429427,
+      "sha256": "f98fe5dba24b5e03fd1a88ac207dd4cd0fe17a999e3a5089d34903a75d167673",
+      "pages": 14,
+      "words": 7394,
+      "quality": 100,
+      "warnings": [],
+      "sandbox": "isolated-worker",
+      "chunks": 65,
+      "sections": 0,
+      "stages": [
+        {
+          "name": "extract",
+          "ms": 414,
+          "detail": "PDF read in an isolated worker (256 MB heap, 30 s, empty environment); 14 pages."
+        },
+        {
+          "name": "clean",
+          "ms": 3,
+          "detail": "Removed 0 repeated header/footer lines and 29 page numbers; repaired 326 broken lines."
+        },
+        {
+          "name": "evaluate",
+          "ms": 9,
+          "detail": "Quality 100/100 (good); 7,394 words."
+        },
+        {
+          "name": "clean",
+          "ms": 1,
+          "detail": "46,183 characters after normalization."
+        },
+        {
+          "name": "evaluate",
+          "ms": 7,
+          "detail": "Quality 100/100 (good)."
+        },
+        {
+          "name": "chunk",
+          "ms": 2,
+          "detail": "65 passages with page/section metadata (900-character window, 120 overlap)."
+        },
+        {
+          "name": "embed",
+          "ms": 4139,
+          "detail": "65 vectors · all-minilm-l6-v2-int8 · 384 dimensions."
+        },
+        {
+          "name": "index",
+          "ms": 224,
+          "detail": "Stored in local PGlite + pgvector with HNSW and full-text indexes."
+        }
+      ],
+      "totalMs": 4808
+    },
+    {
+      "document": "Bloom's taxonomy (Wikipedia)",
+      "license": "CC BY-SA 4.0",
+      "kind": "pdf",
+      "bytes": 438751,
+      "sha256": "2513f498a25f410caee49a02fe5f684697f87798ac29f64ec380f35086eac0e8",
+      "pages": 8,
+      "words": 3017,
+      "quality": 100,
+      "warnings": [],
+      "sandbox": "isolated-worker",
+      "chunks": 30,
+      "sections": 0,
+      "stages": [
+        {
+          "name": "extract",
+          "ms": 228,
+          "detail": "PDF read in an isolated worker (256 MB heap, 30 s, empty environment); 8 pages."
+        },
+        {
+          "name": "clean",
+          "ms": 1,
+          "detail": "Removed 0 repeated header/footer lines and 1 page numbers; repaired 129 broken lines."
+        },
+        {
+          "name": "evaluate",
+          "ms": 3,
+          "detail": "Quality 100/100 (good); 3,017 words."
+        },
+        {
+          "name": "clean",
+          "ms": 1,
+          "detail": "20,915 characters after normalization."
+        },
+        {
+          "name": "evaluate",
+          "ms": 3,
+          "detail": "Quality 100/100 (good)."
+        },
+        {
+          "name": "chunk",
+          "ms": 1,
+          "detail": "30 passages with page/section metadata (900-character window, 120 overlap)."
+        },
+        {
+          "name": "embed",
+          "ms": 1576,
+          "detail": "30 vectors · all-minilm-l6-v2-int8 · 384 dimensions."
+        },
+        {
+          "name": "index",
+          "ms": 107,
+          "detail": "Stored in local PGlite + pgvector with HNSW and full-text indexes."
+        }
+      ],
+      "totalMs": 1923
+    },
+    {
+      "document": "Data structure (Wikipedia)",
+      "license": "CC BY-SA 4.0",
+      "kind": "pdf",
+      "bytes": 356985,
+      "sha256": "fd50db096e35fea9260d169b4a4d421906c0427c8f26b6427b2588640aa19e88",
+      "pages": 6,
+      "words": 2345,
+      "quality": 100,
+      "warnings": [],
+      "sandbox": "isolated-worker",
+      "chunks": 22,
+      "sections": 0,
+      "stages": [
+        {
+          "name": "extract",
+          "ms": 222,
+          "detail": "PDF read in an isolated worker (256 MB heap, 30 s, empty environment); 6 pages."
+        },
+        {
+          "name": "clean",
+          "ms": 1,
+          "detail": "Removed 0 repeated header/footer lines and 0 page numbers; repaired 122 broken lines."
+        },
+        {
+          "name": "evaluate",
+          "ms": 2,
+          "detail": "Quality 100/100 (good); 2,345 words."
+        },
+        {
+          "name": "clean",
+          "ms": 0,
+          "detail": "15,574 characters after normalization."
+        },
+        {
+          "name": "evaluate",
+          "ms": 2,
+          "detail": "Quality 100/100 (good)."
+        },
+        {
+          "name": "chunk",
+          "ms": 0,
+          "detail": "22 passages with page/section metadata (900-character window, 120 overlap)."
+        },
+        {
+          "name": "embed",
+          "ms": 1382,
+          "detail": "22 vectors · all-minilm-l6-v2-int8 · 384 dimensions."
+        },
+        {
+          "name": "index",
+          "ms": 84,
+          "detail": "Stored in local PGlite + pgvector with HNSW and full-text indexes."
+        }
+      ],
+      "totalMs": 1698
+    },
+    {
+      "document": "EduPulse flow specification",
+      "license": "Project document",
+      "kind": "markdown",
+      "bytes": 7875,
+      "sha256": "679a5b867b9595ae7afa378eff98a213c9250f146648c1d28aca8197f6954546",
+      "pages": 0,
+      "words": 1096,
+      "quality": 100,
+      "warnings": [],
+      "sandbox": "isolated-worker",
+      "chunks": 13,
+      "sections": 11,
+      "stages": [
+        {
+          "name": "extract",
+          "ms": 34,
+          "detail": "MARKDOWN read in an isolated worker (256 MB heap, 30 s, empty environment)."
+        },
+        {
+          "name": "clean",
+          "ms": 0,
+          "detail": "Removed 0 repeated header/footer lines and 0 page numbers; repaired 0 broken lines."
+        },
+        {
+          "name": "evaluate",
+          "ms": 1,
+          "detail": "Quality 100/100 (good); 1,096 words."
+        },
+        {
+          "name": "clean",
+          "ms": 3,
+          "detail": "7,815 characters after normalization."
+        },
+        {
+          "name": "evaluate",
+          "ms": 1,
+          "detail": "Quality 100/100 (good)."
+        },
+        {
+          "name": "chunk",
+          "ms": 0,
+          "detail": "13 passages with page/section metadata (900-character window, 120 overlap)."
+        },
+        {
+          "name": "embed",
+          "ms": 730,
+          "detail": "13 vectors · all-minilm-l6-v2-int8 · 384 dimensions."
+        },
+        {
+          "name": "index",
+          "ms": 54,
+          "detail": "Stored in local PGlite + pgvector with HNSW and full-text indexes."
+        }
+      ],
+      "totalMs": 829
+    },
+    {
+      "document": "EduPulse syllabus ingestion specification",
+      "license": "Project document",
+      "kind": "markdown",
+      "bytes": 52167,
+      "sha256": "ca9c4b0417e2022de487d34243a58ff8c3d029ebd2c099e8e2b2e12bb007c054",
+      "pages": 0,
+      "words": 6513,
+      "quality": 100,
+      "warnings": [],
+      "sandbox": "isolated-worker",
+      "chunks": 73,
+      "sections": 22,
+      "stages": [
+        {
+          "name": "extract",
+          "ms": 34,
+          "detail": "MARKDOWN read in an isolated worker (256 MB heap, 30 s, empty environment)."
+        },
+        {
+          "name": "clean",
+          "ms": 1,
+          "detail": "Removed 0 repeated header/footer lines and 0 page numbers; repaired 1 broken lines."
+        },
+        {
+          "name": "evaluate",
+          "ms": 6,
+          "detail": "Quality 100/100 (good); 6,513 words."
+        },
+        {
+          "name": "clean",
+          "ms": 1,
+          "detail": "49,912 characters after normalization."
+        },
+        {
+          "name": "evaluate",
+          "ms": 5,
+          "detail": "Quality 100/100 (good)."
+        },
+        {
+          "name": "chunk",
+          "ms": 2,
+          "detail": "73 passages with page/section metadata (900-character window, 120 overlap)."
+        },
+        {
+          "name": "embed",
+          "ms": 4596,
+          "detail": "73 vectors · all-minilm-l6-v2-int8 · 384 dimensions."
+        },
+        {
+          "name": "index",
+          "ms": 279,
+          "detail": "Stored in local PGlite + pgvector with HNSW and full-text indexes."
+        }
+      ],
+      "totalMs": 4927
+    }
+  ],
+  "retrieval": {
+    "keyword": {
+      "hitAt1": 0.636,
+      "hitAt3": 0.879,
+      "hitAt5": 0.939,
+      "mrrAt10": 0.751,
+      "meanMs": 17
+    },
+    "vector": {
+      "hitAt1": 0.667,
+      "hitAt3": 0.879,
+      "hitAt5": 0.939,
+      "mrrAt10": 0.788,
+      "meanMs": 17
+    },
+    "hybrid": {
+      "hitAt1": 0.788,
+      "hitAt3": 0.939,
+      "hitAt5": 1,
+      "mrrAt10": 0.871,
+      "meanMs": 17
+    },
+    "hybrid+rerank": {
+      "hitAt1": 0.879,
+      "hitAt3": 0.97,
+      "hitAt5": 1,
+      "mrrAt10": 0.927,
+      "meanMs": 1708
+    }
+  },
+  "questions": [
+    {
+      "id": "A1",
+      "question": "Which ancient text first described the Euclidean algorithm?",
+      "document": "Algorithm (Wikipedia)",
+      "relevantPassages": 1,
+      "keyword": 3,
+      "vector": 1,
+      "hybrid": 1,
+      "hybrid+rerank": 1
+    },
+    {
+      "id": "A2",
+      "question": "Who used the word algorithm in English by the year 1596?",
+      "document": "Algorithm (Wikipedia)",
+      "relevantPassages": 1,
+      "keyword": 3,
+      "vector": 1,
+      "hybrid": 1,
+      "hybrid+rerank": 1
+    },
+    {
+      "id": "A3",
+      "question": "What levels of Turing machine description are used to classify algorithm representations?",
+      "document": "Algorithm (Wikipedia)",
+      "relevantPassages": 1,
+      "keyword": 1,
+      "vector": 1,
+      "hybrid": 1,
+      "hybrid+rerank": 1
+    },
+    {
+      "id": "A4",
+      "question": "Which approach avoids recomputing answers to overlapping subproblems?",
+      "document": "Algorithm (Wikipedia)",
+      "relevantPassages": 1,
+      "keyword": 1,
+      "vector": 1,
+      "hybrid": 1,
+      "hybrid+rerank": 1
+    },
+    {
+      "id": "A5",
+      "question": "Why are social media recommender systems better described as heuristics?",
+      "document": "Algorithm (Wikipedia)",
+      "relevantPassages": 1,
+      "keyword": 1,
+      "vector": 1,
+      "hybrid": 1,
+      "hybrid+rerank": 1
+    },
+    {
+      "id": "A6",
+      "question": "What graphical aid describes and documents an algorithm?",
+      "document": "Algorithm (Wikipedia)",
+      "relevantPassages": 1,
+      "keyword": 4,
+      "vector": 2,
+      "hybrid": 1,
+      "hybrid+rerank": 1
+    },
+    {
+      "id": "A7",
+      "question": "Which technique turns a hard problem into a better-known one, like finding a median by sorting first?",
+      "document": "Algorithm (Wikipedia)",
+      "relevantPassages": 1,
+      "keyword": 1,
+      "vector": 1,
+      "hybrid": 1,
+      "hybrid+rerank": 1
+    },
+    {
+      "id": "C1",
+      "question": "Which computer scientist argued that the goto statement is harmful?",
+      "document": "Control flow (Wikipedia)",
+      "relevantPassages": 5,
+      "keyword": 1,
+      "vector": 2,
+      "hybrid": 2,
+      "hybrid+rerank": 1
+    },
+    {
+      "id": "C2",
+      "question": "If a loop checks its condition at the end, how often does the body run at minimum?",
+      "document": "Control flow (Wikipedia)",
+      "relevantPassages": 1,
+      "keyword": 8,
+      "vector": 2,
+      "hybrid": 3,
+      "hybrid+rerank": 1
+    },
+    {
+      "id": "C3",
+      "question": "What happens in a multiway branch when no case value matches?",
+      "document": "Control flow (Wikipedia)",
+      "relevantPassages": 2,
+      "keyword": 1,
+      "vector": 2,
+      "hybrid": 2,
+      "hybrid+rerank": 1
+    },
+    {
+      "id": "C4",
+      "question": "Which protections defend programs against attacks on control-flow integrity?",
+      "document": "Control flow (Wikipedia)",
+      "relevantPassages": 1,
+      "keyword": 2,
+      "vector": 1,
+      "hybrid": 1,
+      "hybrid+rerank": 1
+    },
+    {
+      "id": "C5",
+      "question": "What is the most basic control structure?",
+      "document": "Control flow (Wikipedia)",
+      "relevantPassages": 1,
+      "keyword": 1,
+      "vector": 2,
+      "hybrid": 1,
+      "hybrid+rerank": 1
+    },
+    {
+      "id": "C6",
+      "question": "What is used to express that a loop is correct?",
+      "document": "Control flow (Wikipedia)",
+      "relevantPassages": 1,
+      "keyword": 1,
+      "vector": 1,
+      "hybrid": 1,
+      "hybrid+rerank": 1
+    },
+    {
+      "id": "C7",
+      "question": "Which keyword does Pascal use in place of switch?",
+      "document": "Control flow (Wikipedia)",
+      "relevantPassages": 1,
+      "keyword": 1,
+      "vector": 1,
+      "hybrid": 1,
+      "hybrid+rerank": 1
+    },
+    {
+      "id": "D1",
+      "question": "In which kinds of memory do data structures organize data?",
+      "document": "Data structure (Wikipedia)",
+      "relevantPassages": 1,
+      "keyword": 3,
+      "vector": 4,
+      "hybrid": 2,
+      "hybrid+rerank": 1
+    },
+    {
+      "id": "D2",
+      "question": "What are the elements of a linked list called?",
+      "document": "Data structure (Wikipedia)",
+      "relevantPassages": 1,
+      "keyword": 1,
+      "vector": 1,
+      "hybrid": 1,
+      "hybrid+rerank": 1
+    },
+    {
+      "id": "D3",
+      "question": "What other names does a record have?",
+      "document": "Data structure (Wikipedia)",
+      "relevantPassages": 1,
+      "keyword": 1,
+      "vector": 1,
+      "hybrid": 1,
+      "hybrid+rerank": 1
+    },
+    {
+      "id": "D4",
+      "question": "Which kind of tree is designed to retrieve strings efficiently?",
+      "document": "Data structure (Wikipedia)",
+      "relevantPassages": 1,
+      "keyword": 1,
+      "vector": 1,
+      "hybrid": 1,
+      "hybrid+rerank": 1
+    },
+    {
+      "id": "D5",
+      "question": "How can stacks and queues be implemented?",
+      "document": "Data structure (Wikipedia)",
+      "relevantPassages": 1,
+      "keyword": 1,
+      "vector": 1,
+      "hybrid": 1,
+      "hybrid+rerank": 1
+    },
+    {
+      "id": "B1",
+      "question": "Who chaired the committee that created the taxonomy of educational objectives?",
+      "document": "Bloom's taxonomy (Wikipedia)",
+      "relevantPassages": 4,
+      "keyword": 1,
+      "vector": 1,
+      "hybrid": 1,
+      "hybrid+rerank": 1
+    },
+    {
+      "id": "B2",
+      "question": "What are the levels of the revised cognitive domain from 2001?",
+      "document": "Bloom's taxonomy (Wikipedia)",
+      "relevantPassages": 2,
+      "keyword": 1,
+      "vector": 2,
+      "hybrid": 1,
+      "hybrid+rerank": 1
+    },
+    {
+      "id": "B3",
+      "question": "Which domain deals with attitudes and feelings, and what are its levels?",
+      "document": "Bloom's taxonomy (Wikipedia)",
+      "relevantPassages": 2,
+      "keyword": 1,
+      "vector": 1,
+      "hybrid": 1,
+      "hybrid+rerank": 1
+    },
+    {
+      "id": "B4",
+      "question": "Whose taxonomy of physical skills has seven levels?",
+      "document": "Bloom's taxonomy (Wikipedia)",
+      "relevantPassages": 1,
+      "keyword": 1,
+      "vector": 1,
+      "hybrid": 1,
+      "hybrid+rerank": 1
+    },
+    {
+      "id": "B5",
+      "question": "When was the second handbook, on the affective domain, published?",
+      "document": "Bloom's taxonomy (Wikipedia)",
+      "relevantPassages": 2,
+      "keyword": 1,
+      "vector": 1,
+      "hybrid": 1,
+      "hybrid+rerank": 1
+    },
+    {
+      "id": "F1",
+      "question": "Which CHED memorandum order is the BSIT curriculum based on?",
+      "document": "EduPulse flow specification",
+      "relevantPassages": 1,
+      "keyword": 2,
+      "vector": 1,
+      "hybrid": 1,
+      "hybrid+rerank": 1
+    },
+    {
+      "id": "F2",
+      "question": "What is the maximum number of students in one block?",
+      "document": "EduPulse flow specification",
+      "relevantPassages": 1,
+      "keyword": 2,
+      "vector": 1,
+      "hybrid": 1,
+      "hybrid+rerank": 1
+    },
+    {
+      "id": "F3",
+      "question": "Who gets priority when a course is assigned to an instructor?",
+      "document": "EduPulse flow specification",
+      "relevantPassages": 1,
+      "keyword": 1,
+      "vector": 1,
+      "hybrid": 1,
+      "hybrid+rerank": 1
+    },
+    {
+      "id": "F4",
+      "question": "Do exam weeks get generated teaching content?",
+      "document": "EduPulse flow specification",
+      "relevantPassages": 1,
+      "keyword": 1,
+      "vector": 1,
+      "hybrid": 1,
+      "hybrid+rerank": 1
+    },
+    {
+      "id": "F5",
+      "question": "Which system is the authoritative source for course records and rosters?",
+      "document": "EduPulse flow specification",
+      "relevantPassages": 1,
+      "keyword": 1,
+      "vector": 19,
+      "hybrid": 5,
+      "hybrid+rerank": 2
+    },
+    {
+      "id": "S1",
+      "question": "How is the extraction confidence of each syllabus field computed?",
+      "document": "EduPulse syllabus ingestion specification",
+      "relevantPassages": 1,
+      "keyword": 4,
+      "vector": 3,
+      "hybrid": 1,
+      "hybrid+rerank": 3
+    },
+    {
+      "id": "S2",
+      "question": "What happens to an extracted field whose confidence is under 60 percent?",
+      "document": "EduPulse syllabus ingestion specification",
+      "relevantPassages": 1,
+      "keyword": 3,
+      "vector": 4,
+      "hybrid": 2,
+      "hybrid+rerank": 2
+    },
+    {
+      "id": "S3",
+      "question": "Which colours are used for the confidence badge?",
+      "document": "EduPulse syllabus ingestion specification",
+      "relevantPassages": 2,
+      "keyword": 3,
+      "vector": 1,
+      "hybrid": 1,
+      "hybrid+rerank": 1
+    },
+    {
+      "id": "S4",
+      "question": "What is the smallest allowed value for credit units?",
+      "document": "EduPulse syllabus ingestion specification",
+      "relevantPassages": 1,
+      "keyword": 18,
+      "vector": 6,
+      "hybrid": 5,
+      "hybrid+rerank": 4
+    }
+  ],
+  "validQuestions": 33,
+  "abstention": {
+    "floor": -9.5,
+    "answerableKept": 0.97,
+    "unanswerableTopScores": [
+      -11.15,
+      -10.81,
+      -10.77,
+      -11.1
+    ],
+    "unanswerableBelowFloor": 4,
+    "medianRelevantLogit": 5.45,
+    "medianIrrelevantLogit": -9.07
+  },
+  "verification": {
+    "semantic+lexical": {
+      "accuracy": 0.75,
+      "precision": 0.667,
+      "recall": 1,
+      "f1": 0.8,
+      "tp": 12,
+      "fp": 6,
+      "tn": 6,
+      "fn": 0
+    },
+    "lexical": {
+      "accuracy": 0.875,
+      "precision": 0.8,
+      "recall": 1,
+      "f1": 0.889,
+      "tp": 12,
+      "fp": 3,
+      "tn": 9,
+      "fn": 0
+    }
+  },
+  "claims": [
+    {
+      "id": "V1",
+      "claim": "The Euclidean algorithm was first described in Euclid's Elements around 300 BC.",
+      "label": "supported",
+      "support": 0.912,
+      "predicted": "supported",
+      "correct": true
+    },
+    {
+      "id": "V2",
+      "claim": "The Euclidean algorithm was first described in Newton's Principia in 1687.",
+      "label": "altered",
+      "support": 0.645,
+      "predicted": "supported",
+      "correct": false
+    },
+    {
+      "id": "V3",
+      "claim": "By 1596 Thomas Hood had used the word algorithm in English.",
+      "label": "supported",
+      "support": 0.911,
+      "predicted": "supported",
+      "correct": true
+    },
+    {
+      "id": "V4",
+      "claim": "Thomas Edison introduced the word algorithm into English in 1896.",
+      "label": "altered",
+      "support": 0.6,
+      "predicted": "supported",
+      "correct": false
+    },
+    {
+      "id": "V5",
+      "claim": "Dijkstra was among the computer scientists who considered goto harmful.",
+      "label": "supported",
+      "support": 0.6,
+      "predicted": "supported",
+      "correct": true
+    },
+    {
+      "id": "V6",
+      "claim": "Dijkstra recommended goto statements for every structured program.",
+      "label": "altered",
+      "support": 0.625,
+      "predicted": "supported",
+      "correct": false
+    },
+    {
+      "id": "V7",
+      "claim": "When the test is at the end of a loop, its body always runs at least once.",
+      "label": "supported",
+      "support": 0.742,
+      "predicted": "supported",
+      "correct": true
+    },
+    {
+      "id": "V8",
+      "claim": "When the test is at the end of a loop, the body may be skipped completely.",
+      "label": "altered",
+      "support": 0.731,
+      "predicted": "supported",
+      "correct": false
+    },
+    {
+      "id": "V9",
+      "claim": "A linked list is a linear collection of nodes where each node points to the next one.",
+      "label": "supported",
+      "support": 0.845,
+      "predicted": "supported",
+      "correct": true
+    },
+    {
+      "id": "V10",
+      "claim": "A linked list keeps every element in one contiguous block indexed by integers.",
+      "label": "altered",
+      "support": 0.657,
+      "predicted": "supported",
+      "correct": false
+    },
+    {
+      "id": "V11",
+      "claim": "A trie, also called a prefix tree, is used to retrieve strings efficiently.",
+      "label": "supported",
+      "support": 0.944,
+      "predicted": "supported",
+      "correct": true
+    },
+    {
+      "id": "V12",
+      "claim": "A trie is a sorting algorithm for ordering floating-point numbers.",
+      "label": "altered",
+      "support": 0.436,
+      "predicted": "not supported",
+      "correct": true
+    },
+    {
+      "id": "V13",
+      "claim": "Benjamin Bloom chaired the committee of educators that devised the taxonomy.",
+      "label": "supported",
+      "support": 0.82,
+      "predicted": "supported",
+      "correct": true
+    },
+    {
+      "id": "V14",
+      "claim": "John Dewey chaired the committee that created the taxonomy in 1975.",
+      "label": "altered",
+      "support": 0.367,
+      "predicted": "not supported",
+      "correct": true
+    },
+    {
+      "id": "V15",
+      "claim": "The 2001 revision renamed the levels Remember, Understand, Apply, Analyze, Evaluate and Create.",
+      "label": "supported",
+      "support": 0.67,
+      "predicted": "supported",
+      "correct": true
+    },
+    {
+      "id": "V16",
+      "claim": "The 2001 revision reduced the cognitive domain to three levels called Read, Write and Recite.",
+      "label": "altered",
+      "support": 0.456,
+      "predicted": "not supported",
+      "correct": true
+    },
+    {
+      "id": "V17",
+      "claim": "A block holds up to 35 students, and a new block opens when it is full.",
+      "label": "supported",
+      "support": 0.557,
+      "predicted": "supported",
+      "correct": true
+    },
+    {
+      "id": "V18",
+      "claim": "A block holds up to 50 students and never opens a new block.",
+      "label": "altered",
+      "support": 0.273,
+      "predicted": "not supported",
+      "correct": true
+    },
+    {
+      "id": "V19",
+      "claim": "Priority for a course goes first to a holder of a master's degree, then to specialization or forte.",
+      "label": "supported",
+      "support": 0.812,
+      "predicted": "supported",
+      "correct": true
+    },
+    {
+      "id": "V20",
+      "claim": "Courses always go to the most senior instructor regardless of degree or specialization.",
+      "label": "altered",
+      "support": 0.482,
+      "predicted": "not supported",
+      "correct": true
+    },
+    {
+      "id": "V21",
+      "claim": "A field below 60% confidence is flagged and the instructor must accept or overwrite it.",
+      "label": "supported",
+      "support": 0.833,
+      "predicted": "supported",
+      "correct": true
+    },
+    {
+      "id": "V22",
+      "claim": "A field below 60% confidence is submitted automatically without any review.",
+      "label": "altered",
+      "support": 0.444,
+      "predicted": "not supported",
+      "correct": true
+    },
+    {
+      "id": "V23",
+      "claim": "Stacks and queues can be implemented using arrays or linked lists.",
+      "label": "supported",
+      "support": 1,
+      "predicted": "supported",
+      "correct": true
+    },
+    {
+      "id": "V24",
+      "claim": "Stacks and queues can only be implemented using hash tables.",
+      "label": "altered",
+      "support": 0.564,
+      "predicted": "supported",
+      "correct": false
+    }
+  ],
+  "agentic": [
+    {
+      "message": "What is the maximum number of students in one block?",
+      "task": "answer",
+      "mode": "retrieval",
+      "ms": 10537,
+      "agents": [
+        "Planner",
+        "Researcher",
+        "Ranker",
+        "Writer",
+        "Verifier",
+        "Corrector"
+      ],
+      "steps": [
+        "Planner:task: answer:done",
+        "Researcher:hybrid search:done",
+        "Ranker:evaluate and rank:done",
+        "Writer:write answer:done",
+        "Verifier:verify and corroborate:done",
+        "Corrector:request revision:revised",
+        "Verifier:verify and corroborate:done",
+        "Corrector:replace unverifiable answer:fallback",
+        "Writer:quote sources:fallback",
+        "Verifier:verify and corroborate:done"
+      ],
+      "sources": 2,
+      "groundedness": 1,
+      "citationAccuracy": 1,
+      "supported": 2,
+      "unsupported": 0,
+      "corroborated": 0,
+      "revisions": 1,
+      "comparisonCoverage": null,
+      "answer": "Source excerpts (no model-generated answer):\n\n• Students enroll in EduSuite and are blocked into sections first come, first served: a block holds up to 35 students; when full, a new block opens. [1]\n• Students see published learning materials and assessments for their block's courses; they open materials and answer assessments in the system (or receive them physically, outside the system). [2]"
+    },
+    {
+      "message": "Who gets priority when a course is assigned to an instructor?",
+      "task": "answer",
+      "mode": "generated",
+      "ms": 3059,
+      "agents": [
+        "Planner",
+        "Researcher",
+        "Ranker",
+        "Writer",
+        "Verifier",
+        "Corrector"
+      ],
+      "steps": [
+        "Planner:task: answer:done",
+        "Researcher:hybrid search:done",
+        "Ranker:evaluate and rank:done",
+        "Writer:write answer:done",
+        "Verifier:verify and corroborate:done",
+        "Corrector:correct citations:done"
+      ],
+      "sources": 1,
+      "groundedness": 1,
+      "citationAccuracy": 1,
+      "supported": 2,
+      "unsupported": 0,
+      "corroborated": 0,
+      "revisions": 0,
+      "comparisonCoverage": null,
+      "answer": "When a course is assigned to an instructor, priority 1 holders of master's degrees get the course first, followed by those with specializations or forté in the course [1]. The AI role provides two modes: assist mode where the admin manually assigns courses and auto mode where the AI proposes assignments based on the priority rule before confirming them with the Dean/Assoc Dean for final approval [1]."
+    },
+    {
+      "message": "What are the levels of the revised cognitive domain from 2001?",
+      "task": "answer",
+      "mode": "generated",
+      "ms": 2326,
+      "agents": [
+        "Planner",
+        "Researcher",
+        "Ranker",
+        "Writer",
+        "Verifier",
+        "Corrector"
+      ],
+      "steps": [
+        "Planner:task: answer:done",
+        "Researcher:hybrid search:done",
+        "Ranker:evaluate and rank:done",
+        "Writer:write answer:done",
+        "Verifier:verify and corroborate:done",
+        "Corrector:correct citations:done"
+      ],
+      "sources": 2,
+      "groundedness": 1,
+      "citationAccuracy": 1,
+      "supported": 1,
+      "unsupported": 0,
+      "corroborated": 0,
+      "revisions": 0,
+      "comparisonCoverage": null,
+      "answer": "The levels of the revised cognitive domain from 2001 are Remember, Understand, Apply, Analyze, Evaluate, and Create [1]."
+    },
+    {
+      "message": "If a loop checks its condition at the end, how often does the body run at minimum?",
+      "task": "answer",
+      "mode": "generated",
+      "ms": 2932,
+      "agents": [
+        "Planner",
+        "Researcher",
+        "Ranker",
+        "Writer",
+        "Verifier",
+        "Corrector"
+      ],
+      "steps": [
+        "Planner:task: answer:done",
+        "Researcher:hybrid search:done",
+        "Ranker:evaluate and rank:done",
+        "Writer:write answer:done",
+        "Verifier:verify and corroborate:done",
+        "Corrector:correct citations:done"
+      ],
+      "sources": 3,
+      "groundedness": 1,
+      "citationAccuracy": 1,
+      "supported": 2,
+      "unsupported": 0,
+      "corroborated": 0,
+      "revisions": 0,
+      "comparisonCoverage": null,
+      "answer": "If a loop checks its condition at the end, the minimum number of times the body runs is once [1]. This occurs when the loop's termination condition is met before any iterations are skipped due to early exit or other factors that prevent the entire loop from executing [3]."
+    },
+    {
+      "message": "Which kind of tree is designed to retrieve strings efficiently?",
+      "task": "answer",
+      "mode": "generated",
+      "ms": 2751,
+      "agents": [
+        "Planner",
+        "Researcher",
+        "Ranker",
+        "Writer",
+        "Verifier",
+        "Corrector"
+      ],
+      "steps": [
+        "Planner:task: answer:done",
+        "Researcher:hybrid search:done",
+        "Ranker:evaluate and rank:done",
+        "Writer:write answer:done",
+        "Verifier:verify and corroborate:done",
+        "Corrector:correct citations:done"
+      ],
+      "sources": 1,
+      "groundedness": 1,
+      "citationAccuracy": 1,
+      "supported": 1,
+      "unsupported": 0,
+      "corroborated": 0,
+      "revisions": 0,
+      "comparisonCoverage": null,
+      "answer": "A tree designed to retrieve strings efficiently is called a trie (also known as a prefix tree) [1]."
+    },
+    {
+      "message": "What happens to an extracted field whose confidence is under 60 percent?",
+      "task": "answer",
+      "mode": "generated",
+      "ms": 5276,
+      "agents": [
+        "Planner",
+        "Researcher",
+        "Ranker",
+        "Writer",
+        "Verifier",
+        "Corrector"
+      ],
+      "steps": [
+        "Planner:task: answer:done",
+        "Researcher:hybrid search:done",
+        "Ranker:evaluate and rank:done",
+        "Writer:write answer:done",
+        "Verifier:verify and corroborate:done",
+        "Corrector:request revision:revised",
+        "Verifier:verify and corroborate:done",
+        "Corrector:correct citations:done"
+      ],
+      "sources": 3,
+      "groundedness": 0.5,
+      "citationAccuracy": 1,
+      "supported": 1,
+      "unsupported": 0,
+      "corroborated": 0,
+      "revisions": 1,
+      "comparisonCoverage": null,
+      "answer": "An extracted field whose confidence score is below 60% will be flagged and excluded from \"ready to submit\" counts according to the EduPulse syllabus ingestion specification [1]. The instructor can either accept or reject this field through the Accept/Reject control available in FORM-UI."
+    },
+    {
+      "message": "Summarize what the flow specification says about syllabus approval.",
+      "task": "summarize",
+      "mode": "generated",
+      "ms": 6360,
+      "agents": [
+        "Planner",
+        "Researcher",
+        "Ranker",
+        "Writer",
+        "Verifier",
+        "Corrector"
+      ],
+      "steps": [
+        "Planner:task: summarize:done",
+        "Researcher:hybrid search:done",
+        "Ranker:evaluate and rank:done",
+        "Writer:write summarize:done",
+        "Verifier:verify and corroborate:done",
+        "Corrector:correct citations:done"
+      ],
+      "sources": 3,
+      "groundedness": 1,
+      "citationAccuracy": 1,
+      "supported": 6,
+      "unsupported": 0,
+      "corroborated": 0,
+      "revisions": 0,
+      "comparisonCoverage": null,
+      "answer": "1. **Approval Loop**: The approval loop for a syllabus starts with the instructor downloading the checked syllabus file [1]. It then goes through Dean review → CAO approval → EVP noting before being uploaded and used as the mapping backbone for everything downstream [1].\n2. **Dean Review**: The Dean or Associate Dean view checks if an approved syllabus exists and verifies that teaching materials and assessments are delivered on schedule, with graphs showing coverage per week and delivery progress per course/instructor [2].\n3. **Instructor View (Scoring Sheet)**: The Instructor view collates all assessment scores per student per course, but only shows the opened/unopened materials and answered/missed assessments in a visualization that is distinct from the official KCP grading sheet [2]. Notifications are also sent to both the instructor and students about unopened materials and unanswere"
+    },
+    {
+      "message": "Compare the Algorithm article with the Data structure article: what do they share?",
+      "task": "compare",
+      "mode": "generated",
+      "ms": 22963,
+      "agents": [
+        "Planner",
+        "Researcher",
+        "Ranker",
+        "Comparator",
+        "Writer",
+        "Verifier",
+        "Corrector"
+      ],
+      "steps": [
+        "Planner:task: compare:done",
+        "Researcher:hybrid search:done",
+        "Researcher:hybrid search:done",
+        "Researcher:hybrid search:done",
+        "Ranker:evaluate and rank:done",
+        "Comparator:align sources:done",
+        "Writer:write compare:done",
+        "Verifier:verify and corroborate:done",
+        "Corrector:request revision:revised",
+        "Verifier:verify and corroborate:done",
+        "Corrector:correct citations:done"
+      ],
+      "sources": 6,
+      "groundedness": 1,
+      "citationAccuracy": 1,
+      "supported": 10,
+      "unsupported": 0,
+      "corroborated": 2,
+      "revisions": 1,
+      "comparisonCoverage": 0.05,
+      "answer": "### Comparison of the Algorithm Article with the Data Structure Article [1]\n\n#### Shared Concepts:\n- Both articles discuss algorithms and data structures [2].\n- The first sentence of both sources mentions that an algorithm's behavior pattern or performance profile is measured in terms of computing time and space consumed while processing [1].\n\n#### Points Only in the First Source (Algorithm):\n1. **Pseudocode**: Both articles mention pseudocode as a typical representation for analyzing algorithms [6].\n2. **Efficiency Analysis**: The first source discusses how to analyze algorithms, focusing on their properties rather than implementation details [6].\n3. **Implementation Details**: While both sources discuss algorithms abstractly without referencing specific programming languages or implementations, the Algorithm article provides more detailed information about algorithmic efficiency and pe"
+    },
+    {
+      "message": "What GPA is required for Latin honors at the college?",
+      "task": "answer",
+      "mode": "insufficient-evidence",
+      "ms": 1673,
+      "agents": [
+        "Planner",
+        "Researcher",
+        "Ranker"
+      ],
+      "steps": [
+        "Planner:task: answer:done",
+        "Researcher:hybrid search:done",
+        "Ranker:evaluate and rank:done",
+        "Ranker:stop:skipped"
+      ],
+      "sources": 0,
+      "groundedness": null,
+      "citationAccuracy": null,
+      "supported": null,
+      "unsupported": null,
+      "corroborated": null,
+      "revisions": 0,
+      "comparisonCoverage": null,
+      "answer": "I could not find this in your knowledge library or the product guide. Attach or index the document that contains it, or ask without requiring sources."
+    }
+  ]
+}

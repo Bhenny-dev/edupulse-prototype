@@ -8,7 +8,7 @@ export default defineAgent({
   zone: 'records',
   label: 'Records',
   roles: ['admin'],
-  greeting: () => "Need to import files from EduSuite, or check on blocks and class lists?",
+  greeting: () => "This Records view uses sample data. Want to preview the EduSuite import flow or inspect the example blocks and class lists?",
   intents: [
     {
       key: 'import', label: 'Import files from EduSuite',
@@ -16,14 +16,14 @@ export default defineAgent({
         { title: 'Pick the file type', body: 'Course records, course loads, or student class lists (blocks) — each has its own template.' },
         { title: 'Upload the export', body: 'Drop the CSV exported from EduSuite. EduPulse never syncs live with EduSuite — this is a manual file handoff each time data changes.' },
         { title: 'Review the parsed rows', body: 'Anything malformed is flagged and reported, not silently dropped.' },
-        { title: 'Confirm the import', body: 'Once confirmed, the records are available across EduPulse — course loading, syllabus building, and block class lists.' },
+        { title: 'Review the preview result', body: 'The current import control updates only this page’s preview history. It does not persist records or update course loading, syllabi, or class lists. Use EduSuite as the institutional source of truth.' },
       ],
     },
     {
       key: 'sections', label: 'Check on blocks and class lists',
       steps: [
-        { title: 'Open Blocks & Class Lists', body: 'Every block imported from EduSuite — up to 35 students each, first come first served.' },
-        { title: 'View a block\'s class list or enlisted courses', body: 'Both come straight from the EduSuite export; EduPulse never creates or edits them here.' },
+        { title: 'Open Blocks & Class Lists', body: 'This tab illustrates the intended block and class-list view with sample records.' },
+        { title: 'View an example block', body: 'Its class list and enlisted courses are examples, not verified EduSuite imports.' },
         { title: 'Need a change?', body: 'Re-export from EduSuite with the correction, then re-import — that\'s the only path.' },
       ],
     },
