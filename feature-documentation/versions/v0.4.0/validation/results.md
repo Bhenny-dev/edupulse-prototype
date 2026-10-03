@@ -50,4 +50,41 @@ The additive migration `20261001090000_agentic_rag` is applied to the EduPulse S
 
 ## Production release
 
-Pending push; recorded below once the Vercel build and production checks complete.
+Application commit [`72cf820`](https://github.com/Bhenny-dev/edupulse-prototype/commit/72cf820f7b185cdc16eef2df4d65c65dbffc728a) and the hosted-build test correction [`13862a2`](https://github.com/Bhenny-dev/edupulse-prototype/commit/13862a22a2fb9e779fc01ab96f8e58e66c88ec2a) were pushed to `main`. The GitHub commit status for `13862a2` reports Vercel **success: Deployment has completed**. The [production alias](https://edupulse-prototype.vercel.app) serves v0.4.0.
+
+| Live production check (2026-10-03) | Result |
+| --- | --- |
+| `GET /` | 200; Content-Security-Policy and `X-Content-Type-Options: nosniff` present |
+| `GET /api/ai?action=health` | 200; version 0.4.0, embeddings ready, Supabase vector store and eight named agents reported; server-wide provider is retrieval |
+| Guest `GET documents` / `PUT workspace` | 401 / 403; guest `GET workspace` returns an empty preview workspace |
+| Guest `POST chat` asking how to review courseware | Retrieval answer with two cited product-guide passages; groundedness 1.0, zero unsupported claims; Planner, Researchers, Ranker, Writer and Verifier in the trace |
+| Guest `POST references` for data structures | Eight real results from Open Library, OpenAlex and Wikipedia, with no catalog warning |
+| Guest `POST extract` with the openly licensed Bloom's taxonomy PDF | PDF text extracted in the isolated worker (20,985 characters); quality 100, no injection flag |
+
+The hosted generation provider is not configured, so the public session returns verified source excerpts and offers on-device or personal-provider generation. Guest health reports the private database as unchecked until an authenticated user signs in. An authenticated production account session was not available for an end-to-end private upload/search check; the migration, row-level policies, local SQL/API tests and deployment check cover those boundaries separately.
+
+The Vercel connector returned 403 for the team scope, but the authenticated Vercel CLI (`vercel inspect --logs`) read both builds:
+
+* **`72cf820`, deployment failed.** `npm run verify` ran 57 of 58 tests. The failing test expected a 502 from Ollama model discovery, but a hosted build (`VERCEL=1`) refuses Ollama discovery with 400 `LOCAL_SERVER_REQUIRED` before any fetch. Production stayed on the previous deployment. Commit `13862a2` asserts the hosted refusal explicitly, then runs the fetch-failure checks in the local runtime. The suite passed 58/58 both with and without `VERCEL=1`.
+* **`13862a2`, deployment `dpl_Gv3kvfFyEAxGsoLTnVjTn9LdwoKY`: Ready, production target, built in iad1.** Lint 82 warnings and 0 errors, **58 of 58 tests passed**, and the deployment check passed: *built assets, API routing, serverless health and public retrieval*.
+
+A separate production browser check ran desktop Chrome and iPhone 13 against the production alias. It signed in with the instructor preview persona, opened Pulse and received the source-quoted answer. Neither device showed page errors, Content-Security-Policy violations or horizontal overflow.
+
+## Post-release correction: verbatim quotes
+
+The production check also showed a Verifier defect in the default hosted (retrieval) mode. Sentences quoted word for word from the product guide were marked *partial*, and the answer reported **Citations 0%**. The Verifier blends semantic similarity (55%) with term recall (45%). A one-sentence claim compared with a whole passage scored a cosine of about 0.26, which pulled exact quotations below the 0.55 *supported* threshold.
+
+The correction treats a claim as fully supported by a passage when it equals a complete sentence of that passage, word for word, with at least four words (`src/lib/rag/verify.ts`):
+* A quote cited to the wrong source is still reported as *miscited*.
+* A paraphrase gets no exemption.
+* A passage that only mentions the sentence in order to call it false does not support it. Codex added that case during review, which replaced a first, substring-based version of the rule.
+
+A regression test covers all of these; it fails on the earlier code and passes on the corrected code. None of the 24 labelled evaluation claims appears verbatim in the corpus, so the reported Verifier metrics (95.8% accuracy) are unchanged.
+
+| Gate after the correction (2026-10-03) | Result |
+| --- | --- |
+| `npm run verify` | Lint with 0 errors, typechecks, **59 of 59 tests**, build and deployment check passed. The AI suite also passed 29/29 with `VERCEL=1`. |
+| Browser suite, first attempt | 18 passed, **8 failed** with `ENOSPC`: the Windows pagefile had grown to about 19 GB and the C: drive had under 1 MB free. Not counted as a pass. After Claude's own test databases and Playwright output were removed, the suite was rerun. |
+| Browser suite, rerun | **26 passed, 2 skipped (by design), 0 failed** |
+
+[GitHub Actions run 37132080061](https://github.com/Bhenny-dev/edupulse-prototype/actions/runs/37132080061) has zero job steps. Its annotation says, “The job was not started because your account is locked due to a billing issue.” GitHub CI is therefore **not** reported as passed. The local gate, browser suite and Vercel production checks above provide the available execution evidence.

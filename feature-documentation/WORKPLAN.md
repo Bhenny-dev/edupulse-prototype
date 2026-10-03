@@ -15,7 +15,7 @@ Constraints found: 8 GB RAM, ~2 GB free disk, Ollama installed but optional, Ver
 - [x] Pulse: visible drop rejection, perch beside the target, panel placement away from the target, DOM-derived component brief and component tour, verified walkthrough targets.
 - [x] Security headers/CSP, untrusted-content spotlighting, output sanitization.
 - [x] Retrieval/extraction/verification evaluation on real documents (`session-generated/2026-10-02-agentic-rag/`); UI screenshots with Markdown guides in `system-manual/` and `system-walkthrough/`; backend configuration in `backend-system/`; v0.4.0 release record and results-and-discussion write-up.
-- [ ] Release gate: lint, typecheck, tests, build, deployment checks, browser tests; apply the additive migration, push to `main` and verify production (user authorized on 2026-10-01: "integrate and implement directly then push").
+- [x] Release gate: lint, typecheck, tests, build, deployment checks, browser tests; additive migration applied, pushed to `main`, and production verified. GitHub Actions could not start because of the account billing lock; see `versions/v0.4.0/validation/results.md`.
 
 ### Ultimate goals — definition of done
 
@@ -43,7 +43,7 @@ The user's correction takes precedence over earlier restrictions on provider/mod
 - [x] Use one bounded assistant/generation contract across server and browser inference: conversational help, drafting, document analysis and grounded answers; retain citations for source-based claims.
 - [x] Replace hard-coded connection branding with actual assistant state; connect selected inference to Pulse and courseware.
 - [x] Test drag/click distinction, touch/keyboard/reduced motion, guided completion, provider isolation/model discovery, general generation without retrieved sources, cancellation and failures.
-- [ ] Run lint, typecheck, meaningful tests, browser checks, build, deployment checks and live inference; publish a versioned requirement-to-evidence snapshot, push and verify production. Shipped as part of v0.4.0 (no separate v0.3.0 release); see the v0.4.0 release gate.
+- [x] Run lint, typecheck, meaningful tests, browser checks, build, deployment checks and live inference; publish a versioned requirement-to-evidence snapshot, push and verify production. Shipped as part of v0.4.0 (no separate v0.3.0 release); see the v0.4.0 validation record for the GitHub Actions billing lock.
 
 No new administrative workflows are part of this correction. Existing offline approval and instructor review requirements remain. Hosted APIs require the user's own eligible provider key; browser/local inference provides the no-API-fee option. Model capabilities and hardware limits must be stated accurately.
 

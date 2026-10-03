@@ -68,6 +68,8 @@ Names only; values stay in the Vercel dashboard and are never written to the rep
 
 The status after pushing v0.4.0 is recorded in [versions/v0.4.0/validation/results.md](../versions/v0.4.0/validation/results.md).
 
+**Current production (2026-10-03):** commit `13862a2` has a successful Vercel deployment status, and the production alias serves API version 0.4.0. Live requests confirmed the CSP and `nosniff` headers, public source-grounded chat, references from all three open catalogs, sandboxed PDF extraction, and guest write denial. The [release validation record](../versions/v0.4.0/validation/results.md#production-release) lists each result and the remaining authenticated-session and dashboard-log limits.
+
 ## Dashboard pages to capture for the report
 
 1. *Project → Deployments* showing the v0.4.0 production deployment as **Ready**.

@@ -7,7 +7,8 @@ import { invokeModel } from '../server/providers.js'
 import { discoverModels } from '../server/connections.js'
 import { planRequest } from '../src/lib/rag/plan.js'
 import { bibliographicShare, isBibliographic } from '../src/lib/rag/text.js'
-import type { AgentDeps, Evidence } from '../src/lib/rag/types.js'
+import { verifyAnswer } from '../src/lib/rag/verify.js'
+import type { AgentDeps, Evidence, Similarity } from '../src/lib/rag/types.js'
 
 const identity: Identity = { id: 'test-instructor', role: 'instructor', local: true }
 const signal = () => AbortSignal.timeout(10000)
@@ -185,6 +186,21 @@ test('without a model the Writer quotes cited source sentences that verify', asy
   const result = await runChat(chatInput.parse({ message: 'When can I publish courseware?' }), identity, signal(), deps())
   assert.equal(result.mode, 'retrieval'); assert.match(result.answer, /checked by the instructor before publishing\. \[1\]/)
   assert.equal(result.verification!.unsupported, 0)
+})
+
+test('a sentence quoted word for word from its cited passage is supported even when the embedding match is weak', async () => {
+  const handbook = evidence('h1', 'Courseware handbook', 'Instructors draft weekly material from the outline. Mark an item checked before publishing it. Students see published items only. Drafts stay private until review.')
+  const calendar = evidence('h2', 'Calendar', 'Weeks 9 and 18 are examination weeks.')
+  // A single sentence against a long passage often scores a low cosine; production saw about 0.26.
+  const weak: Similarity = async (left, right) => left.map(() => right.map(() => 0.26))
+  const quoted = await verifyAnswer('Mark an item checked before publishing it. [1] Students see published items only. [1]', [handbook, calendar], signal(), weak)
+  assert.deepEqual(quoted.claims.map(c => c.status), ['supported', 'supported'])
+  assert.equal(quoted.citationAccuracy, 1)
+  // A verbatim quote cited to the wrong source is still caught, and a paraphrase gets no verbatim pass.
+  assert.equal((await verifyAnswer('Mark an item checked before publishing it. [2]', [handbook, calendar], signal(), weak)).claims[0]!.status, 'miscited')
+  assert.notEqual((await verifyAnswer('Students may only view items once they are published. [1]', [handbook, calendar], signal(), weak)).claims[0]!.status, 'supported')
+  const warning = evidence('h3', 'Warning', 'The claim “Students see published items only” is false; students can preview drafts in this example.')
+  assert.notEqual((await verifyAnswer('Students see published items only. [1]', [warning], signal(), weak)).claims[0]!.status, 'supported', 'a negated quotation is not a supported source sentence')
 })
 
 test('request cancellation halts the agents', async () => {

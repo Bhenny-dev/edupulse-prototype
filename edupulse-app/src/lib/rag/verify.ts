@@ -4,6 +4,12 @@ import { consistencyCap, lexicalSupport, sentences, terms } from './text.js'
 // Calibrated on the labeled claims in the v0.4.0 evaluation set.
 export const SUPPORT = { supported: 0.55, partial: 0.35, corroborate: 0.5, semanticLow: 0.25, semanticHigh: 0.75 }
 const semanticScale = (cos: number) => Math.max(0, Math.min(1, (cos - SUPPORT.semanticLow) / (SUPPORT.semanticHigh - SUPPORT.semanticLow)))
+const words = (text: string) => ` ${text.toLowerCase().replace(/\[\d{1,2}\]/g, ' ').replace(/[^\p{L}\p{N}]+/gu, ' ').trim()} `
+/** A complete source sentence quoted word for word is supported even if the sentence-to-passage embedding is weak. */
+const quotedIn = (claim: string, passage: string) => {
+  const quote = words(claim).trim()
+  return quote.split(' ').length >= 4 && sentences(passage).some(sentence => words(sentence).trim() === quote)
+}
 
 /**
  * Blended support matrix: semantic similarity (when available) and lexical
@@ -15,6 +21,7 @@ export async function supportMatrix(claims: string[], passages: string[], signal
     try { semantic = await similarity(claims, passages, signal) } catch { signal.throwIfAborted(); semantic = null }
   }
   const matrix = claims.map((claim, i) => passages.map((passage, j) => {
+    if (!symmetric && quotedIn(claim, passage)) return 1
     const lexical = symmetric ? (lexicalSupport(claim, passage) + lexicalSupport(passage, claim)) / 2 : lexicalSupport(claim, passage)
     const blended = semantic ? 0.55 * semanticScale(semantic[i]![j]!) + 0.45 * lexical : lexical
     // Claims (not symmetric alignment) must also agree on numbers, names and absolutes.
