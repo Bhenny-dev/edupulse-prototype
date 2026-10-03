@@ -225,11 +225,8 @@ function SearchOverlay({ onClose }) {
 function RoleSwitchPopover({ onClose }) {
   const { switchRole, user } = useAuth()
   const navigate = useNavigate()
-  // Dean and Associate Dean are one shared role (`admin`) with identical
-  // permissions — two personas here only so both people can be demoed.
   const roles = [
-    { key: 'dean', label: 'Dean', desc: 'Shared admin role — loading, monitoring' },
-    { key: 'associate_dean', label: 'Associate Dean', desc: 'Shared admin role — same UI and permissions as the Dean' },
+    { key: 'admin', label: 'Admin', desc: 'Manage course loading and monitor progress' },
     { key: 'instructor', label: 'Instructor', desc: 'Syllabus, courseware, student monitoring' },
     { key: 'student', label: 'Student', desc: 'Open materials, answer assessments' },
   ]
@@ -237,24 +234,24 @@ function RoleSwitchPopover({ onClose }) {
   return (
     <div className="overlay-backdrop" onClick={onClose}>
       <div className="popover-content" style={{ maxWidth: '360px' }} onClick={e => e.stopPropagation()}>
-        <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, marginBottom: '4px' }}>Switch Role</h3>
-        <p style={{ fontSize: '0.75rem', color: 'var(--gray-400)', marginBottom: '16px' }}>Prototype-only affordance for demoing all four roles — not part of the production sign-in flow.</p>
+        <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, marginBottom: '4px' }}>Switch View</h3>
+        <p style={{ fontSize: '0.75rem', color: 'var(--gray-400)', marginBottom: '16px' }}>You remain signed in as the admin. Your AI key and saved data stay with this account.</p>
         {roles.map(r => (
-          <button key={r.key} onClick={() => { switchRole(r.key); navigate('/dashboard'); onClose() }} style={{
+          <button key={r.key} onClick={() => { if (switchRole(r.key)) { navigate('/dashboard'); onClose() } }} style={{
             display: 'flex', alignItems: 'center', gap: '12px', width: '100%',
             padding: '12px', borderRadius: 'var(--radius-md)',
-            background: user?.title === r.label ? 'var(--sky-50)' : 'transparent',
-            border: user?.title === r.label ? '2px solid var(--sky-200)' : '2px solid transparent',
+            background: user?.role === r.key ? 'var(--sky-50)' : 'transparent',
+            border: user?.role === r.key ? '2px solid var(--sky-200)' : '2px solid transparent',
             cursor: 'pointer', marginBottom: '4px', transition: 'all 150ms',
           }}
-          onMouseEnter={e => { if (user?.title !== r.label) e.currentTarget.style.background = 'var(--gray-50)' }}
-          onMouseLeave={e => { if (user?.title !== r.label) e.currentTarget.style.background = 'transparent' }}
+          onMouseEnter={e => { if (user?.role !== r.key) e.currentTarget.style.background = 'var(--gray-50)' }}
+          onMouseLeave={e => { if (user?.role !== r.key) e.currentTarget.style.background = 'transparent' }}
           >
             <div>
               <div style={{ fontWeight: 700, fontSize: '0.875rem', textAlign: 'left' }}>{r.label}</div>
               <div style={{ fontSize: '0.75rem', color: 'var(--gray-500)', textAlign: 'left' }}>{r.desc}</div>
             </div>
-            {user?.title === r.label && <span className="badge badge-published" style={{ marginLeft: 'auto' }}>Current</span>}
+            {user?.role === r.key && <span className="badge badge-published" style={{ marginLeft: 'auto' }}>Current</span>}
           </button>
         ))}
       </div>
@@ -480,14 +477,14 @@ export default function Layout() {
           </div>
 
           <div style={{ position: 'relative' }}>
-            <button className="desktop-tool" onClick={() => { setShowRoleSwitch(!showRoleSwitch); setShowUserMenu(false); setShowNotifications(false) }} disabled={user?.authenticated} title={user?.authenticated ? "Roles are assigned by your administrator" : "Switch preview role"} style={{
+            {user?.canSwitchRoles ? <button aria-label="Switch admin view" aria-expanded={showRoleSwitch} onClick={() => { setShowRoleSwitch(!showRoleSwitch); setShowUserMenu(false); setShowNotifications(false) }} title="Switch admin view" style={{
               padding: '4px 10px', borderRadius: 'var(--radius-full)',
               background: 'var(--purple-100)', border: '1px solid var(--purple-100)',
               cursor: 'pointer', fontSize: '0.75rem', fontWeight: 700, color: 'var(--purple-500)',
               transition: 'all 200ms',
             }}>
-              {user?.title}
-            </button>
+              Admin · {user?.role === 'admin' ? 'Admin' : user?.title}
+            </button> : <span className="badge badge-published">{user?.title}</span>}
           </div>
 
           <div style={{ position: 'relative' }}>
@@ -602,7 +599,7 @@ export default function Layout() {
       </footer>
 
       {showSearch && <SearchOverlay onClose={() => setShowSearch(false)} />}
-      {showRoleSwitch && !user?.authenticated && <RoleSwitchPopover onClose={() => setShowRoleSwitch(false)} />}
+      {showRoleSwitch && user?.canSwitchRoles && <RoleSwitchPopover onClose={() => setShowRoleSwitch(false)} />}
       <KeyboardShortcutsModal isOpen={showShortcuts} onClose={() => setShowShortcuts(false)} />
       <Pulse />
 

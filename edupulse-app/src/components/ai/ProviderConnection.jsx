@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Cpu, Plug, RefreshCw } from 'lucide-react'
 import { aiRequest } from '../../lib/aiClient'
 import { useAI } from '../../context/AIContext'
+import { useAuth } from '../../context/AuthContext'
 import { browserCapability, browserPresets, removeBrowserModel, setAiPreference, startBrowserAI, stopBrowserAI } from '../../lib/browserAI'
 
 const providers = [
@@ -17,7 +18,8 @@ const providers = [
 
 export default function ProviderConnection() {
   const ai = useAI()
-  const [provider, setProvider] = useState(ai.preference === 'browser' || !ai.health?.ready ? 'browser' : ai.health.provider)
+  const { user } = useAuth()
+  const [provider, setProvider] = useState(ai.preference === 'browser' ? 'browser' : user?.authenticated ? 'openai' : 'browser')
   const [key, setKey] = useState(''), [models, setModels] = useState([]), [connection, setConnection] = useState(null)
   const [browserModel, setBrowserModel] = useState(ai.local.model || browserPresets[0].id)
   const [busy, setBusy] = useState(false), [error, setError] = useState(''), [notice, setNotice] = useState(''), [capability, setCapability] = useState(null)
@@ -25,7 +27,7 @@ export default function ProviderConnection() {
     let alive = true
     browserCapability().then(value => { if (alive) { setCapability(value); if (value.supported && !value.halfPrecision) setBrowserModel(browserPresets[1].id) } }).catch(() => { if (alive) setCapability({ supported: false, message: 'The graphics adapter could not be checked.' }) })
     const controller = new AbortController()
-    aiRequest('providers', 'GET', undefined, controller.signal).then(result => { if (alive) { setConnection(result.connection); setModels(result.models) } }).catch(() => { /* Connection form remains usable when no provider is available. */ })
+    aiRequest('providers', 'GET', undefined, controller.signal).then(result => { if (alive) { setConnection(result.connection); setModels(result.models); if (result.connection && ai.preference !== 'browser') setProvider(result.connection.provider) } }).catch(() => { /* Connection form remains usable when no provider is available. */ })
     return () => { alive = false; controller.abort() }
   }, [])
   async function connect(event, model) {
@@ -46,6 +48,7 @@ export default function ProviderConnection() {
   return <div className="card mb-24" data-pulse-target="AI connection"><div className="card-header"><h3><Cpu size={18} /> Pulse AI connection</h3><span className={`badge ${ai.ready ? 'badge-published' : 'badge-draft'}`}>{ai.label}</span></div>
     <div className="card-body">
       <p>Choose where Pulse thinks. Conversation, drafting, document help and courseware use this connection. Your knowledge library adds context to the same assistant.</p>
+      {user?.authenticated && <p className="text-sm text-muted">This provider key belongs only to {user.email}. Switching the admin view keeps the same account and key.</p>}
       <label className="form-label" htmlFor="ai-provider">AI provider</label>
       <select id="ai-provider" className="form-input" value={provider} disabled={busy || ai.local.status === 'loading'} onChange={e => { setProvider(e.target.value); setKey(''); setError(''); setNotice('') }}>{providers.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}</select>
       {provider === 'browser' ? <div className="ai-provider-content">
@@ -59,7 +62,7 @@ export default function ProviderConnection() {
           {ai.local.model && ai.local.status !== 'loading' && <button className="btn btn-secondary" onClick={() => { void removeBrowserModel().catch(err => setError(err.message)) }}>Remove downloaded model</button>}
         </div>
       </div> : <form onSubmit={connect} className="ai-provider-content">
-        {provider !== 'ollama' && <><label className="form-label" htmlFor="provider-key">Provider API key</label><input id="provider-key" className="form-input" type="password" autoComplete="off" spellCheck={false} value={key} onChange={e => setKey(e.target.value)} placeholder={connection?.provider === provider ? 'Already connected — enter a key only to replace it' : 'Paste your provider key'} maxLength={1024} /><p className="text-sm text-muted">On the hosted HTTPS site, the key is encrypted by the server and kept in a protected connection cookie for up to seven days. It is never returned to application JavaScript or saved in local storage. <a href={selected.link} target="_blank" rel="noreferrer">Get a key from {selected.name}</a>. Provider quotas and any charges belong to your account.</p></>}
+        {provider !== 'ollama' && <><label className="form-label" htmlFor="provider-key">Provider API key</label><input id="provider-key" className="form-input" type="password" autoComplete="off" spellCheck={false} value={key} onChange={e => setKey(e.target.value)} placeholder={connection?.provider === provider ? 'Already connected — enter a key only to replace it' : 'Paste your provider key'} maxLength={1024} /><p className="text-sm text-muted">On the hosted HTTPS site, the key is encrypted by the server and kept in a protected connection cookie for up to seven days. It is tied to your signed-in account and never returned to application JavaScript or saved in local storage. <a href={selected.link} target="_blank" rel="noreferrer">Get a key from {selected.name}</a>. Provider quotas and any charges belong to your account.{provider === 'openai' ? ' A ChatGPT subscription does not supply an OpenAI API key.' : ''}</p></>}
         {provider === 'ollama' && <p>In the downloaded local app, Pulse discovers models installed in Ollama automatically. On the hosted site, use the on-device model above unless the server has its own reachable Ollama installation.</p>}
         <div className="ai-actions"><button className="btn btn-primary" disabled={busy || (provider !== 'ollama' && !key.trim() && connection?.provider !== provider)}><Plug size={16} /> {busy ? 'Connecting…' : 'Connect and load models'}</button>{connection?.source === 'personal' && <button type="button" className="btn btn-secondary" disabled={busy} onClick={disconnect}>Disconnect provider</button>}</div>
         {connection?.provider === provider && models.length > 0 && <div className="ai-provider-content"><label className="form-label" htmlFor="provider-model">Available model</label><select id="provider-model" className="form-input" value={connection.model} disabled={busy} onChange={e => { void connect(null, e.target.value) }}>{models.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}</select><p className="text-sm text-muted">{models.length} models discovered from the API{models.some(m => m.free) ? `; ${models.filter(m => m.free).length} free models are listed first` : ''}. Availability does not guarantee account quota. Your selection takes effect without reloading.</p></div>}

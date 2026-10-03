@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
+import { supabase } from '../../lib/supabaseClient'
 import { Mail, Lock, LogIn, GraduationCap, BookOpen, Shield, CalendarCog } from 'lucide-react'
 
 // Same shared admin role as the Dean (FLOW_SPEC ground truth #5) — both
@@ -12,16 +13,26 @@ const QUICK_ROLES = [
   { key: 'student', label: 'Student', icon: GraduationCap },
 ]
 
-// Interface-only for now — no backend auth wired up yet. The quick-access
-// row below is a temporary stand-in for real sign-in and will be removed
-// once authentication is implemented.
 export default function LoginPanel({ className = '' }) {
-  const { login, signIn } = useAuth()
+  const { user, login, signIn, signInWithGoogle } = useAuth()
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
+  const [googleEnabled, setGoogleEnabled] = useState(false)
+
+  useEffect(() => { if (user?.authenticated) navigate('/dashboard', { replace: true }) }, [user, navigate])
+  useEffect(() => {
+    if (!supabase) return
+    const controller = new AbortController()
+    fetch(`${import.meta.env.VITE_SUPABASE_URL}/auth/v1/settings`, {
+      headers: { apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY }, signal: controller.signal,
+    }).then(response => response.ok ? response.json() : null)
+      .then(settings => { if (settings) setGoogleEnabled(Boolean(settings.external?.google)) })
+      .catch(() => {})
+    return () => controller.abort()
+  }, [])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -37,6 +48,12 @@ export default function LoginPanel({ className = '' }) {
     navigate('/dashboard')
   }
 
+  const handleGoogle = async () => {
+    setBusy(true); setError('')
+    try { await signInWithGoogle() }
+    catch (err) { setError(err.message); setBusy(false) }
+  }
+
   return (
     <div className={`login-panel ${className}`.trim()}>
       <form className="login-form" onSubmit={handleSubmit}>
@@ -49,7 +66,7 @@ export default function LoginPanel({ className = '' }) {
               type="email"
               required
               className="form-input"
-              placeholder="you@kcp.edu.ph"
+              placeholder="your@email.com"
               value={email}
               onChange={e => setEmail(e.target.value)}
               autoComplete="email"
@@ -77,11 +94,16 @@ export default function LoginPanel({ className = '' }) {
           <LogIn size={16} /> {busy ? 'Signing in…' : 'Sign In'}
         </button>
         <p className="login-note">
-          Sign in with your provisioned EduPulse account. Preview access below uses sample data.
+          Use the email and password assigned to your EduPulse account.
         </p>
       </form>
 
-      <div className="login-quick-access">
+      {supabase && <div className="login-google-access">
+        <button type="button" className="btn btn-secondary w-full" disabled={busy || !googleEnabled} onClick={handleGoogle}>Sign in with Google</button>
+        <p className="login-note">Admin Google account: riverabenlor461@gmail.com{!googleEnabled ? '. Google sign-in is temporarily unavailable.' : ''}</p>
+      </div>}
+
+      {import.meta.env.DEV && <div className="login-quick-access">
         <span className="login-quick-access-label">Quick preview access (testing only)</span>
         <div className="login-quick-access-row">
           {QUICK_ROLES.map(role => (
@@ -96,7 +118,7 @@ export default function LoginPanel({ className = '' }) {
             </button>
           ))}
         </div>
-      </div>
+      </div>}
     </div>
   )
 }

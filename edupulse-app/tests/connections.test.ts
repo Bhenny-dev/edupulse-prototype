@@ -24,6 +24,19 @@ test('provider credentials are encrypted, authenticated, expiring and bound to t
   assert(!connectionInput.safeParse({ provider: 'openai', apiKey: 'valid-test-key', baseUrl: 'http://169.254.169.254' }).success)
 })
 
+test('a hosted visitor never inherits a server-wide OpenAI key', async () => {
+  process.env.AI_PROVIDER = 'openai'
+  process.env.OPENAI_API_KEY = 'server-key-must-stay-private'
+  try {
+    const response = await handleRequest(new Request('https://edupulse.test/api/ai?action=providers'))
+    assert.equal(response.status, 200)
+    assert.deepEqual(await response.json(), { connection: null, models: [] })
+  } finally {
+    process.env.AI_PROVIDER = 'retrieval'
+    delete process.env.OPENAI_API_KEY
+  }
+})
+
 test('model discovery uses fixed provider endpoints and supported generation models', async () => {
   const seen: string[] = []
   const transport: typeof fetch = async url => {

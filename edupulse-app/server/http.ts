@@ -32,8 +32,13 @@ export async function authenticate(request: Request): Promise<Identity> {
     const client = createClient(c.supabaseUrl, c.supabaseKey, { auth: { persistSession: false }, global: { fetch: (url, init) => fetch(url, { ...init, signal: AbortSignal.timeout(6000) }) } })
     const { data, error } = await client.auth.getUser(token)
     if (error || !data.user) throw new ApiError(401, 'INVALID_SESSION', 'Your session could not be verified. Please sign in again.')
-    const role = data.user.app_metadata.role
-    return { id: data.user.id, role: ['instructor', 'admin'].includes(role) ? role : 'student', token, local: false }
+    const role = data.user.app_metadata?.role
+    if (!['admin', 'instructor', 'student'].includes(role) ||
+        (role === 'admin' && (data.user.email?.toLowerCase() !== 'riverabenlor461@gmail.com' ||
+          !data.user.app_metadata?.providers?.includes('google')))) {
+      throw new ApiError(403, 'ROLE_NOT_ASSIGNED', 'This account has no EduPulse role. Contact the administrator.')
+    }
+    return { id: data.user.id, role, token, local: false }
   }
   if (!config().hosted && process.env.AI_LOCAL_MODE === 'true') return { id: 'local-workspace', role: 'instructor', local: true }
   return { id: 'public-guest', role: 'guest', local: false }
@@ -78,7 +83,9 @@ export async function handleRequest(request: Request): Promise<Response> {
     if (!methods[action].includes(request.method)) return new Response(null, { status: 405, headers: { Allow: methods[action].join(', '), 'Cache-Control': 'no-store' } })
     const identity = await authenticate(request)
     const personalConnection = readConnection(request, identity)
-    const connection = personalConnection || serverConnection()
+    // Server credentials are reserved for the local workspace. Hosted users
+    // must connect their own key, bound to their verified Supabase account.
+    const connection = personalConnection || (identity.local ? serverConnection() : undefined)
     if (action === 'providers' && request.method === 'DELETE') return json({ connection: null, models: [] }, 200, connectionCookie(null))
     if (action === 'providers' && request.method === 'GET') {
       const models = connection ? await discoverModels(connection.provider, connection.apiKey) : []
@@ -90,9 +97,11 @@ export async function handleRequest(request: Request): Promise<Response> {
       return json(await saveWorkspace(identity, workspaceInput.parse(await readJson(request, WORKSPACE_BYTES))))
     }
     if (action === 'health') {
-      const [base, models] = await Promise.all([providerHealth(), modelStatus()])
-      const health = personalConnection ? { ...await providerHealth(personalConnection), embeddings: base.embeddings } : base
-      if (identity.role === 'guest' && !personalConnection) { health.ready = false; health.message = 'Choose free on-device AI or connect your own provider for conversation and drafting. Page guidance is already available.' }
+      const models = await modelStatus()
+      const health = connection ? await providerHealth(connection) : {
+        provider: 'none', model: null, ready: false, embeddings: models.embeddings.ready,
+        message: 'Connect your own provider key in AI & Knowledge, or use on-device AI.',
+      }
       let database: { ready: boolean; message: string } = { ready: false, message: 'Sign in to check your private library.' }
       if (identity.role !== 'guest') {
         try { const docs = await listDocuments(identity); database = { ready: true, message: `${docs.length} documents in your library.` } }
@@ -125,7 +134,6 @@ export async function handleRequest(request: Request): Promise<Response> {
     }
     const body = await readJson(request, bodyLimit(action))
     if (action === 'providers') {
-      if (identity.role === 'student') throw new ApiError(403, 'FORBIDDEN', 'Provider configuration is available to instructors.')
       const input = connectionInput.parse(body)
       if (input.provider === 'ollama' && identity.role === 'guest' && config().hosted) throw new ApiError(403, 'FORBIDDEN', 'Use on-device AI or your own hosted provider in preview.')
       const result = await createConnection(input, identity, personalConnection)

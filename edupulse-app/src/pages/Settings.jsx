@@ -32,9 +32,10 @@ function AccountSettings() {
           <div className="form-group"><label className="form-label" htmlFor="profile-name">Full Name</label><input id="profile-name" className="form-input" value={name} onChange={e => setName(e.target.value)} /></div>
           <div className="form-group"><label className="form-label" htmlFor="profile-email">Email</label><input id="profile-email" className="form-input" value={user?.email || ''} readOnly /></div>
           <div className="form-group"><label className="form-label" htmlFor="profile-department">Department</label><input id="profile-department" className="form-input" value={department} onChange={e => setDepartment(e.target.value)} /></div>
-          <div className="form-group"><label className="form-label">Role</label><input className="form-input" value={user?.title || ''} disabled /></div>
-          <div className="form-group"><label className="form-label" htmlFor="profile-password">New Password</label><input id="profile-password" className="form-input" type="password" autoComplete="new-password" disabled={!user?.authenticated} value={password} onChange={e => setPassword(e.target.value)} placeholder={user?.demo ? 'Unavailable in preview mode' : 'Leave blank to keep current password'} /></div>
+          <div className="form-group"><label className="form-label">Role</label><input className="form-input" value={user?.baseRole === 'admin' ? 'Admin' : user?.title || ''} disabled /></div>
+          <div className="form-group"><label className="form-label" htmlFor="profile-password">New Password</label><input id="profile-password" className="form-input" type="password" autoComplete="new-password" disabled={!user?.authenticated || user?.provider === 'google'} value={password} onChange={e => setPassword(e.target.value)} placeholder={user?.provider === 'google' ? 'Your Google account manages sign-in' : user?.demo ? 'Unavailable in preview mode' : 'Leave blank to keep current password'} /></div>
         </div>
+        {user?.canSwitchRoles && <p className="text-sm text-muted">Current view: {user.title}. Your admin account stays active when you switch views.</p>}
         <button className="btn btn-primary" disabled={saving} onClick={save}><Check size={14} /> {saving ? 'Saving…' : 'Save Changes'}</button>
       </div>
     </div>

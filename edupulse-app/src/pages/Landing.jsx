@@ -43,7 +43,7 @@ const ABOUT_CARDS = [
 
 const STATS = [
   { icon: Clock, end: 75, suffix: '%', label: 'Less time spent preparing syllabi & materials', color: 'var(--sky-500)', bg: 'var(--sky-100)' },
-  { icon: Layers, end: 4, suffix: '', label: 'Roles working from one shared platform', color: 'var(--purple-500)', bg: 'var(--purple-100)' },
+  { icon: Layers, end: 3, suffix: '', label: 'Roles working from one shared platform', color: 'var(--purple-500)', bg: 'var(--purple-100)' },
   { icon: FolderCheck, end: 100, suffix: '%', label: 'Course materials centralized in one place', color: 'var(--green-500)', bg: 'var(--green-100)' },
   { icon: Gauge, end: 24, suffix: '/7', label: 'Access to courseware, scores & progress', color: 'var(--amber-500)', bg: 'var(--amber-100)' },
 ]
@@ -152,7 +152,7 @@ export default function Landing() {
         <Reveal className="landing-section-header">
           <span className="landing-eyebrow">Get started</span>
           <h2>Sign in to EduPulse</h2>
-          <p>Enter your KCP credentials to continue.</p>
+          <p>Use your EduPulse account to continue.</p>
         </Reveal>
 
         <Reveal delay={100} className="landing-login-wrap">

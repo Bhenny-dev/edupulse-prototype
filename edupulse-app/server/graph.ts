@@ -1,6 +1,6 @@
 import { ApiError, type ChatInput, type CourseInput, type Identity } from './contracts.js'
 import { invokeModel } from './providers.js'
-import { serverConnection, type Connection } from './connections.js'
+import type { Connection } from './connections.js'
 import { embedTexts } from './ml/onnx.js'
 import { hybridSearch, rerank, similarityMatrix } from './rag/search.js'
 import { findReferences } from './external/references.js'
@@ -20,11 +20,11 @@ export function serverDeps(identity: Identity, connection: Connection | undefine
   }
 }
 
-export async function runChat(input: ChatInput, identity: Identity, signal: AbortSignal, deps?: AgentDeps, connection = serverConnection()) {
+export async function runChat(input: ChatInput, identity: Identity, signal: AbortSignal, deps?: AgentDeps, connection?: Connection) {
   return runAgents(input, identity, signal, deps || serverDeps(identity, connection))
 }
 
-export async function runCourseware(input: CourseInput, identity: Identity, signal: AbortSignal, generate?: Generate, connection: Connection | undefined = serverConnection(), personal = false, deps?: Partial<AgentDeps>) {
+export async function runCourseware(input: CourseInput, identity: Identity, signal: AbortSignal, generate?: Generate, connection?: Connection, personal = false, deps?: Partial<AgentDeps>) {
   if (!['instructor', 'admin'].includes(identity.role) && !(identity.role === 'guest' && personal)) throw new ApiError(403, 'FORBIDDEN', 'Courseware generation requires an instructor account or your own preview connection.')
   const base = { ...serverDeps(identity, connection, generate), ...deps }
   if (!base.generate) throw new ApiError(503, 'MODEL_UNAVAILABLE', 'Connect a provider or enable the free on-device model in AI settings.')
