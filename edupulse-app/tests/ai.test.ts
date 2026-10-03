@@ -154,21 +154,31 @@ test('a failed provider fetch has a typed response without transport details', a
 })
 
 test('model discovery reports a failed fetch as provider unavailability', async () => {
-  await assert.rejects(discoverModels('ollama', undefined, signal(), async () => { throw new TypeError('fetch failed: SECRET_SHOULD_NOT_APPEAR') }), error => {
-    assert.equal((error as { status: number }).status, 502)
-    assert.equal((error as { code: string }).code, 'PROVIDER_UNAVAILABLE')
-    assert(!String(error).includes('SECRET_SHOULD_NOT_APPEAR'))
-    return true
-  })
+  const hosted = process.env.VERCEL, ollamaUrl = process.env.OLLAMA_BASE_URL
+  delete process.env.OLLAMA_BASE_URL
   const originalFetch = globalThis.fetch
-  globalThis.fetch = async () => { throw new TypeError('fetch failed: SECRET_SHOULD_NOT_APPEAR') }
   try {
+    // Hosted builds (VERCEL=1) have no local Ollama: discovery is refused before any fetch.
+    process.env.VERCEL = '1'
+    await assert.rejects(discoverModels('ollama', undefined, signal(), async () => { throw new Error('fetch must not be called') }), { status: 400, code: 'LOCAL_SERVER_REQUIRED' })
+    delete process.env.VERCEL // The rest exercises the local runtime, also during a hosted build.
+    await assert.rejects(discoverModels('ollama', undefined, signal(), async () => { throw new TypeError('fetch failed: SECRET_SHOULD_NOT_APPEAR') }), error => {
+      assert.equal((error as { status: number }).status, 502)
+      assert.equal((error as { code: string }).code, 'PROVIDER_UNAVAILABLE')
+      assert(!String(error).includes('SECRET_SHOULD_NOT_APPEAR'))
+      return true
+    })
+    globalThis.fetch = async () => { throw new TypeError('fetch failed: SECRET_SHOULD_NOT_APPEAR') }
     const response = await handleRequest(new Request('http://localhost/api/ai?action=providers'))
     assert.equal(response.status, 502)
     const body = await response.json()
     assert.equal(body.error.code, 'PROVIDER_UNAVAILABLE')
     assert(!JSON.stringify(body).includes('SECRET_SHOULD_NOT_APPEAR'))
-  } finally { globalThis.fetch = originalFetch }
+  } finally {
+    globalThis.fetch = originalFetch
+    if (hosted === undefined) delete process.env.VERCEL; else process.env.VERCEL = hosted
+    if (ollamaUrl !== undefined) process.env.OLLAMA_BASE_URL = ollamaUrl
+  }
 })
 
 test('without a model the Writer quotes cited source sentences that verify', async () => {
