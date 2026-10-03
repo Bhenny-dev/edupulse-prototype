@@ -86,5 +86,7 @@ A regression test covers all of these; it fails on the earlier code and passes o
 | `npm run verify` | Lint with 0 errors, typechecks, **59 of 59 tests**, build and deployment check passed. The AI suite also passed 29/29 with `VERCEL=1`. |
 | Browser suite, first attempt | 18 passed, **8 failed** with `ENOSPC`: the Windows pagefile had grown to about 19 GB and the C: drive had under 1 MB free. Not counted as a pass. After Claude's own test databases and Playwright output were removed, the suite was rerun. |
 | Browser suite, rerun | **26 passed, 2 skipped (by design), 0 failed** |
+| Vercel build for [`0c8edbe`](https://github.com/Bhenny-dev/edupulse-prototype/commit/0c8edbe) (`dpl_8PJwgNyoMNfJ8CENNcBiAo6A39nV`) | **Ready**: lint 82 warnings and 0 errors, **59 of 59 tests**, deployment check passed |
+| Production guest chat, same question as before | Both quoted sentences **supported** (support 1.0), citation accuracy 100%, zero unsupported claims |
 
 [GitHub Actions run 37132080061](https://github.com/Bhenny-dev/edupulse-prototype/actions/runs/37132080061) has zero job steps. Its annotation says, “The job was not started because your account is locked due to a billing issue.” GitHub CI is therefore **not** reported as passed. The local gate, browser suite and Vercel production checks above provide the available execution evidence.
