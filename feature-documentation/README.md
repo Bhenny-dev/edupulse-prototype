@@ -11,6 +11,8 @@
 
 Screenshots in the walkthrough and manual are real captures of the production build, made by the Playwright scripts in `edupulse-app/tests/snapshots/`. Charts and diagrams are kept apart from them in *session-generated*. Test runs belong on the testing site; release validation evidence is recorded in each version folder.
 
+**Strict requirement:** every feature change updates its screenshots and documentation in the same commit. Changed screenshots are replaced, stale text is edited, removed screens are taken out and new screens are added. A commit hook, `npm run verify` and CI enforce this. See the [documentation policy](DOCUMENTATION-POLICY.md) and the [source-to-documentation map](doc-map.json).
+
 ## Version history
 
 Version folders are release records. Preserve released records, and add corrections in a new version. Each one records features, architecture, validation evidence, deployment status and known limitations. No secrets or student records belong here.

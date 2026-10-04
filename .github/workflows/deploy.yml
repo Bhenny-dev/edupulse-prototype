@@ -16,6 +16,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # Full history: the documentation gate compares code and documentation commits.
+          fetch-depth: 0
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -27,6 +30,10 @@ jobs:
       - name: Install dependencies
         working-directory: edupulse-app
         run: npm ci
+
+      - name: Documentation gate (screenshots and guides match the change)
+        working-directory: edupulse-app
+        run: node scripts/docs-check.mjs --range "${{ github.event.pull_request.base.sha || github.event.before }}..${{ github.sha }}"
 
       - name: Lint, typecheck, tests, build and deployment validation
         working-directory: edupulse-app

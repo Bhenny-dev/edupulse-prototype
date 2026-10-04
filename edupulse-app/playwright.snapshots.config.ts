@@ -1,7 +1,7 @@
 import { defineConfig, devices } from '@playwright/test'
 
 // Documentation snapshots: the production build with real models and real documents.
-// Run `npm run build` first; generation uses the local Ollama model in SNAPSHOT_MODEL.
+// Run with `npm run snapshots` (builds dist-capture first); generation uses the local Ollama model in SNAPSHOT_MODEL.
 const web = process.env.SNAPSHOT_WEB_PORT || '5186', api = process.env.SNAPSHOT_API_PORT || '3016'
 export default defineConfig({
   testDir: './tests/snapshots', timeout: 600_000, retries: 0, workers: 1, reporter: 'list', outputDir: '.data/snapshot-results',

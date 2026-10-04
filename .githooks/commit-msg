@@ -1,0 +1,7 @@
+#!/bin/sh
+# Strict documentation policy (feature-documentation/DOCUMENTATION-POLICY.md).
+# Blocks a commit that changes screens, the capture pipeline or backend behaviour
+# without the matching screenshots and guides, or a reasoned trailer:
+#   Docs-Impact: none — <reason>
+# Do not bypass with --no-verify.
+exec node edupulse-app/scripts/docs-check.mjs --commit "$1"

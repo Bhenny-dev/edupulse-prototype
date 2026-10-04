@@ -6,19 +6,23 @@
   "scripts": {
     "dev": "node scripts/dev.mjs",
     "build": "vite build",
+    "build:capture": "vite build --mode capture --outDir dist-capture",
     "lint": "oxlint src server api scripts tests vite.config.js playwright.config.ts",
     "supabase:check": "node --env-file-if-exists=.env.local scripts/check-supabase.mjs",
     "typecheck": "tsc --project jsconfig.json --noEmit && tsc --project tsconfig.server.json --noEmit",
     "preview": "vite preview",
     "test": "node scripts/test.mjs",
-    "verify": "npm run lint && npm run typecheck && npm run models:fetch && npm test && npm run build && npm run deployment:check",
+    "verify": "npm run docs:check && npm run lint && npm run typecheck && npm run models:fetch && npm test && npm run build && npm run deployment:check",
     "deployment:check": "node --import tsx scripts/check-deployment.ts",
     "ai:setup": "node --env-file-if-exists=.env.local scripts/setup-ai.mjs",
     "ai:smoke": "node --env-file-if-exists=.env.local --import tsx scripts/smoke-ai.ts",
     "test:browser": "playwright test",
     "models:fetch": "node --import tsx scripts/fetch-models.ts",
     "eval:rag": "node --import tsx scripts/eval-rag.ts",
-    "snapshots": "playwright test --config playwright.snapshots.config.ts"
+    "snapshots": "npm run build:capture && playwright test --config playwright.snapshots.config.ts",
+    "docs:check": "node scripts/docs-check.mjs",
+    "hooks:install": "node scripts/install-hooks.mjs",
+    "prepare": "node scripts/install-hooks.mjs"
   },
   "dependencies": {
     "@electric-sql/pglite": "0.5.8",

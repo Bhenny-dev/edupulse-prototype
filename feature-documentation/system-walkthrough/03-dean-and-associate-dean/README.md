@@ -56,4 +56,4 @@ Instructor cards with specialisation, degree (*Master's* or *Bachelor's*, which 
 
 ![Associate Dean dashboard](12-associate-dean-dashboard.png)
 
-Identical to the Dean's dashboard apart from the name and role chip: both titles are the same shared role with the same permissions.
+Identical to the Dean's dashboard apart from the name and the role badge: both titles are the same shared role with the same permissions.

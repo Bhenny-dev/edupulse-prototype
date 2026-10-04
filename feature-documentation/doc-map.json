@@ -1,0 +1,77 @@
+{
+  "$comment": "Which documentation must change when source files change. Read by edupulse-app/scripts/docs-check.mjs; policy in DOCUMENTATION-POLICY.md. Paths are relative to the repository root. A rule is satisfied when at least one of its docs paths changes in the same commit (or push), or the commit carries a reasoned 'Docs-Impact: none' trailer. Rules marked fallback apply only to files no other rule matched.",
+  "enforcedSince": "2026-10-04T00:00:00+08:00",
+  "rules": [
+    {
+      "name": "Public site and sign-in",
+      "source": ["edupulse-app/src/pages/Landing.jsx", "edupulse-app/src/pages/Privacy.jsx", "edupulse-app/src/pages/Terms.jsx", "edupulse-app/src/components/auth/**", "edupulse-app/src/components/brand/**", "edupulse-app/src/context/AuthContext.jsx", "edupulse-app/src/lib/authRoles.js"],
+      "docs": ["feature-documentation/system-walkthrough/01-public-site", "feature-documentation/system-manual/01-getting-started", "feature-documentation/system-walkthrough/06-mobile"]
+    },
+    {
+      "name": "Shared interface (top bar, settings, help, notifications, error pages, styles)",
+      "source": ["edupulse-app/src/App.jsx", "edupulse-app/src/components/layout/**", "edupulse-app/src/components/ui/**", "edupulse-app/src/context/**", "edupulse-app/src/pages/Settings.jsx", "edupulse-app/src/pages/HelpSupport.jsx", "edupulse-app/src/pages/Notifications.jsx", "edupulse-app/src/pages/NotFound.jsx", "edupulse-app/src/pages/ServerError.jsx", "edupulse-app/src/index.css", "edupulse-app/src/data/notifications.js"],
+      "docs": ["feature-documentation/system-walkthrough/02-shared-interface", "feature-documentation/system-walkthrough/06-mobile", "feature-documentation/system-manual/01-getting-started"]
+    },
+    {
+      "name": "Pulse guidance",
+      "source": ["edupulse-app/src/components/pulse/**", "edupulse-app/src/agents/**"],
+      "docs": ["feature-documentation/system-manual/07-pulse-guidance", "feature-documentation/system-walkthrough/02-shared-interface"]
+    },
+    {
+      "name": "AI features (knowledge library, answers, comparison, references, connections)",
+      "source": ["edupulse-app/src/components/ai/**", "edupulse-app/src/lib/aiClient.ts", "edupulse-app/src/lib/browserAI.ts", "edupulse-app/src/lib/browserAI.worker.ts", "edupulse-app/src/lib/rag/**", "edupulse-app/src/context/AIContext.jsx"],
+      "docs": ["feature-documentation/system-manual/04-knowledge-library", "feature-documentation/system-manual/05-ask-pulse", "feature-documentation/system-manual/06-compare-and-references", "feature-documentation/system-manual/08-ai-connections", "feature-documentation/system-manual/03-courseware-generation-and-review"]
+    },
+    {
+      "name": "Dean and Associate Dean pages",
+      "source": ["edupulse-app/src/pages/CourseLoading.jsx", "edupulse-app/src/pages/MonitorProgress.jsx", "edupulse-app/src/pages/Records.jsx"],
+      "docs": ["feature-documentation/system-walkthrough/03-dean-and-associate-dean"]
+    },
+    {
+      "name": "Syllabus",
+      "source": ["edupulse-app/src/pages/Syllabus.jsx", "edupulse-app/src/components/syllabus/**"],
+      "docs": ["feature-documentation/system-manual/02-syllabus-lifecycle", "feature-documentation/system-walkthrough/04-instructor"]
+    },
+    {
+      "name": "Courseware",
+      "source": ["edupulse-app/src/pages/Courseware.jsx", "edupulse-app/src/pages/ContentEditor.jsx", "edupulse-app/src/components/courseware/**", "edupulse-app/src/utils/aiCourseware.js"],
+      "docs": ["feature-documentation/system-manual/03-courseware-generation-and-review", "feature-documentation/system-walkthrough/04-instructor"]
+    },
+    {
+      "name": "Instructor monitoring",
+      "source": ["edupulse-app/src/pages/StudentMonitoring.jsx", "edupulse-app/src/pages/ScoringSheet.jsx"],
+      "docs": ["feature-documentation/system-walkthrough/04-instructor"]
+    },
+    {
+      "name": "Student pages",
+      "source": ["edupulse-app/src/pages/Assessment.jsx"],
+      "docs": ["feature-documentation/system-walkthrough/05-student"]
+    },
+    {
+      "name": "Dashboards and performance (all roles)",
+      "source": ["edupulse-app/src/pages/Dashboard.jsx", "edupulse-app/src/pages/Performance.jsx"],
+      "docs": ["feature-documentation/system-walkthrough/03-dean-and-associate-dean", "feature-documentation/system-walkthrough/04-instructor", "feature-documentation/system-walkthrough/05-student"]
+    },
+    {
+      "name": "Any other screen code, data or asset",
+      "fallback": true,
+      "source": ["edupulse-app/src/**", "edupulse-app/index.html", "edupulse-app/public/**"],
+      "docs": ["feature-documentation/system-walkthrough", "feature-documentation/system-manual"]
+    },
+    {
+      "name": "Screenshot capture pipeline",
+      "source": ["edupulse-app/tests/snapshots/**", "edupulse-app/playwright.snapshots.config.ts", "edupulse-app/scripts/serve-preview.mjs"],
+      "docs": ["feature-documentation/system-walkthrough", "feature-documentation/system-manual"]
+    },
+    {
+      "name": "Backend, database and deployment",
+      "source": ["edupulse-app/server/**", "edupulse-app/api/**", "edupulse-app/supabase/**", "edupulse-app/vercel.json", "edupulse-app/.env.example", "edupulse-app/scripts/check-deployment.ts", "edupulse-app/scripts/provision-roles.mjs"],
+      "docs": ["feature-documentation/backend-system", "feature-documentation/versions"]
+    }
+  ],
+  "routesNotCaptured": {
+    "/curriculum": "Redirects to /records, which is captured.",
+    "/scoring-sheet": "Alias of /student-monitoring (same component), which is captured.",
+    "/content-editor": "The draft document editor is captured in System Manual 3 (generate and review courseware), which needs a generated draft."
+  }
+}

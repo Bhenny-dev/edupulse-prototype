@@ -47,7 +47,7 @@ Names only; values stay in the Vercel dashboard and are never written to the rep
 | `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY` | API access to Supabase as the signed-in user |
 | `SUPABASE_JWKS_URL` | Configured in Vercel but currently unused; the API validates tokens through Supabase `auth.getUser` |
 | `AI_CONNECTION_SECRET` | 64 hex characters; encrypts personal provider keys into the connection cookie. Without it, connecting a provider on the hosted site is refused. |
-| `AI_PROVIDER`, `GEMINI_API_KEY` / `GROQ_API_KEY` / `OPENROUTER_API_KEY` / `HF_TOKEN` / `OPENAI_API_KEY` / `ANTHROPIC_API_KEY` and matching `*_MODEL` | Optional server-wide generation. Without one, hosted Pulse runs in *retrieval* mode (quoted, verified source excerpts) unless a user connects their own provider. |
+| `AI_PROVIDER`, `GEMINI_API_KEY` / `GROQ_API_KEY` / `OPENROUTER_API_KEY` / `HF_TOKEN` / `OPENAI_API_KEY` / `ANTHROPIC_API_KEY` and matching `*_MODEL` | Used by the local workspace only. Hosted accounts never use a server-wide key: each account connects its own provider, otherwise Pulse runs in *retrieval* mode (quoted, verified source excerpts) or on the device. |
 | `AI_MODEL_DOWNLOAD`, `AI_MODEL_DIR`, `AI_ONNX_THREADS` | Optional model packaging overrides |
 
 The Vercel REST API lists the five Supabase variables above and two separate `AI_CONNECTION_SECRET` entries, scoped to production and preview. Both secrets are write-only (`type: sensitive`, `visibility: secret`); their values were generated independently and never entered into the repository. The production deployment was rebuilt after they were added. No server-wide generation provider is configured, so hosted guest sessions use retrieval. A personal provider connection with a valid key has not been tested end to end on production.
@@ -58,6 +58,7 @@ The Vercel REST API lists the five Supabase variables above and two separate `AI
 
 * the function limit is at least 120 s and the models and ONNX runtime are packaged;
 * the strict CSP is configured and the SPA rewrite does not capture `/api/ai`;
+* the production bundle contains no preview sign-in personas (they exist only in development and in the documentation capture build, `npm run build:capture` → `dist-capture`);
 * in the built serverless handler: health returns 200 with embeddings **loaded** from the packaged files, a chat request runs the agent pipeline (the Ranker step is present) and its quoted excerpts verify, sandboxed extraction returns 200, and a guest cannot save a workspace (403).
 
 ## Production status

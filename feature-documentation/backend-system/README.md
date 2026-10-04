@@ -11,11 +11,11 @@ What runs behind the EduPulse interface in v0.4.0: the API, the agents, the data
 | --- | --- | --- |
 | Web app | Vite dev server, `127.0.0.1:5173` | Static build from `dist/`, SPA rewrite to `index.html` |
 | API | Node server `server/dev.ts` on `127.0.0.1:3001`, proxied at `/api/ai` | One Fluid Compute function `api/ai.ts` (120 s limit) |
-| Generation model | Ollama on the same machine (no key), an on-device browser model, or a connected provider | A connected provider (free tiers or own key) or a server-wide key; otherwise *retrieval only* |
+| Generation model | Ollama on the same machine (no key), an on-device browser model, or a connected provider | The provider the signed-in account connected (free tiers or its own key); otherwise *retrieval only* |
 | Embeddings and reranker | ONNX models in-process (WebAssembly), free, no key | Same models, bundled into the function |
 | Vector database | PGlite (embedded Postgres) + pgvector in `.data/` | Supabase Postgres + pgvector |
 | Workspace (syllabi, courseware) | PGlite table `ep_workspaces` | Supabase table `edupulse_workspaces` |
-| Sign-in | Preview personas (local workspace identity) | Supabase Auth (JWT verified by the API) |
+| Sign-in | Preview personas (local workspace identity; also in the documentation capture build) | Supabase Auth: email and password, or Google for the owner admin. The API verifies the JWT and requires an assigned role. |
 
 ## API: one endpoint, ten actions
 
@@ -26,12 +26,12 @@ All requests go to `/api/ai?action=<name>`. Every request is checked for origin 
 | `health` | GET | anyone | Version, provider and model, pipeline status (embeddings, reranker, vector store, sandbox, agents), limits including the request time budget |
 | `providers` | GET, POST, DELETE | signed-in users | List, connect (key encrypted into an `HttpOnly` cookie) and disconnect a personal AI provider |
 | `chat` | POST | anyone (guests: product guide only) | Run the agent graph for a question, revision or comparison |
-| `courseware` | POST | instructors, Dean; guests with their own provider | Draft a week's material, activity and assessment from an outline row |
+| `courseware` | POST | instructor or admin accounts; guests with their own provider | Draft a week's material, activity and assessment from an outline row |
 | `context`, `similarity` | POST | used by the in-browser model | Retrieval and embedding similarity for on-device generation |
 | `references` | POST | signed-in users | Librarian search of open catalogs |
 | `extract` | POST (raw bytes) | anyone (guests cannot index) | Sandboxed extraction with a quality report |
 | `documents` | GET, POST, DELETE | signed-in users | List, index (after review) and delete library documents |
-| `workspace` | GET, PUT | signed-in users (PUT: instructors, Dean) | Load and save the academic workspace with revision checks |
+| `workspace` | GET, PUT | signed-in users (PUT: instructor or admin) | Load and save the academic workspace with revision checks |
 
 ## The agent graph
 

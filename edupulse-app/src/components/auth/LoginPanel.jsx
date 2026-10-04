@@ -103,7 +103,7 @@ export default function LoginPanel({ className = '' }) {
         <p className="login-note">{googleEnabled ? 'Administrators can use their Google account.' : 'Google sign-in is temporarily unavailable.'}</p>
       </div>}
 
-      {import.meta.env.DEV && <div className="login-quick-access">
+      {(import.meta.env.DEV || import.meta.env.MODE === 'capture') && <div className="login-quick-access">
         <span className="login-quick-access-label">Quick preview access (testing only)</span>
         <div className="login-quick-access-row">
           {QUICK_ROLES.map(role => (

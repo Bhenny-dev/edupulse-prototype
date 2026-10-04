@@ -477,14 +477,15 @@ export default function Layout() {
           </div>
 
           <div style={{ position: 'relative' }}>
-            {user?.canSwitchRoles ? <button aria-label="Switch admin view" aria-expanded={showRoleSwitch} onClick={() => { setShowRoleSwitch(!showRoleSwitch); setShowUserMenu(false); setShowNotifications(false) }} title="Switch admin view" style={{
+            {/* Hidden on phones like the other desktop tools; the role and the view switch are in the account menu there. */}
+            {user?.canSwitchRoles ? <button className="desktop-tool" aria-label="Switch admin view" aria-expanded={showRoleSwitch} onClick={() => { setShowRoleSwitch(!showRoleSwitch); setShowUserMenu(false); setShowNotifications(false) }} title="Switch admin view" style={{
               padding: '4px 10px', borderRadius: 'var(--radius-full)',
               background: 'var(--purple-100)', border: '1px solid var(--purple-100)',
               cursor: 'pointer', fontSize: '0.75rem', fontWeight: 700, color: 'var(--purple-500)',
               transition: 'all 200ms',
             }}>
               Admin · {user?.role === 'admin' ? 'Admin' : user?.title}
-            </button> : <span className="badge badge-published">{user?.title}</span>}
+            </button> : <span className="badge badge-published desktop-tool">{user?.title}</span>}
           </div>
 
           <div style={{ position: 'relative' }}>
@@ -517,6 +518,14 @@ export default function Layout() {
                   {user?.baseRole !== 'admin' && <div style={{ fontSize: '0.75rem', color: 'var(--gray-500)' }}>{user?.email}</div>}
                   <div style={{ marginTop: '4px' }}><span className="badge badge-published">{user?.title}</span></div>
                 </div>
+                {user?.canSwitchRoles && <button onClick={() => { setShowUserMenu(false); setShowRoleSwitch(true) }} style={{
+                  display: 'flex', alignItems: 'center', gap: '8px', width: '100%', padding: '10px 12px',
+                  borderRadius: 'var(--radius-md)', background: 'transparent', border: 'none', cursor: 'pointer',
+                  color: 'var(--gray-700)', fontWeight: 500, fontSize: '0.875rem', transition: 'background 150ms',
+                }}
+                onMouseEnter={e => e.currentTarget.style.background = 'var(--sky-50)'}
+                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                >Switch view</button>}
                 <NavLink to="/settings" onClick={() => setShowUserMenu(false)} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 12px', borderRadius: 'var(--radius-md)', fontSize: '0.875rem', color: 'var(--gray-700)', fontWeight: 500, transition: 'background 150ms' }}
                   onMouseEnter={e => e.currentTarget.style.background = 'var(--sky-50)'}
                   onMouseLeave={e => e.currentTarget.style.background = 'transparent'}

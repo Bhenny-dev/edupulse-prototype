@@ -1,4 +1,4 @@
-import { readFile } from 'node:fs/promises'
+import { readFile, readdir } from 'node:fs/promises'
 import assert from 'node:assert/strict'
 import { handleRequest } from '../server/http.js'
 
@@ -14,6 +14,8 @@ const rewrite = new RegExp(`^${config.rewrites[0].source}$`)
 assert(!rewrite.test('/api/ai'), 'SPA fallback must not swallow the API')
 assert(rewrite.test('/settings'), 'SPA fallback must handle frontend routes')
 assert((await readFile('dist/index.html', 'utf8')).includes('/assets/'))
+// Preview personas belong to development and the documentation capture build (dist-capture), never to production.
+for (const file of (await readdir('dist/assets')).filter(name => name.endsWith('.js'))) assert(!(await readFile(`dist/assets/${file}`, 'utf8')).includes('login-quick-access'), 'The production build must not contain preview sign-in personas')
 process.env.VERCEL = '1'
 process.env.AI_PROVIDER = 'retrieval'
 const health = await handleRequest(new Request('https://edupulse.test/api/ai?action=health'))

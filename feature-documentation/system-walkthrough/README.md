@@ -4,8 +4,8 @@ A screen-by-screen tour of EduPulse as each role sees it: every page, tab, dropd
 
 | Folder | Role | What it covers |
 | --- | --- | --- |
-| [01 · Public site](01-public-site/README.md) | Visitors | Landing page sections and the sign-in panel with preview personas |
-| [02 · Shared interface](02-shared-interface/README.md) | All signed-in roles | Top bar, search, keyboard shortcuts, language, notifications, account menu, role switcher, Help, Settings (five tabs), dark mode, the Pulse assistant |
+| [01 · Public site](01-public-site/README.md) | Visitors | Landing page sections, the hosted sign-in panel (email and password, Google for administrators), local-only preview personas, privacy, terms and the server error page |
+| [02 · Shared interface](02-shared-interface/README.md) | All signed-in roles | Top bar, search, keyboard shortcuts, language, notifications, account menu, role badge and admin view switching, Help, Settings (five tabs), dark mode, the Pulse assistant |
 | [03 · Dean and Associate Dean](03-dean-and-associate-dean/README.md) | Dean, Associate Dean (shared `admin` role) | Dashboard, Course Loading, Monitor (four tabs), Records (three tabs), Pulse on an admin page |
 | [04 · Instructor](04-instructor/README.md) | Instructor | Dashboard, Syllabus (four tabs), Syllabus Builder, Courseware, Student Monitoring, Performance |
 | [05 · Student](05-student/README.md) | Student | Dashboard, My Courses (materials and assessments), My Performance (four tabs), Pulse for students |
@@ -19,7 +19,7 @@ A screen-by-screen tour of EduPulse as each role sees it: every page, tab, dropd
 
 ## How the images were made
 
-The screenshots are produced by Playwright scripts that open the production build at 1440 × 900 (desktop) and 390 × 844 (iPhone 13), sign in with each preview persona and visit every screen. Re-running them after a UI change refreshes the images in place:
+The screenshots are produced by Playwright scripts that open the documentation capture build (`npm run build:capture`: the production build plus the preview personas, which the hosted site does not include) at 1440 × 900 (desktop) and 390 × 844 (iPhone 13), sign in with each preview persona and visit every screen. Re-running them after a UI change refreshes the images in place:
 
 ```bash
 cd edupulse-app

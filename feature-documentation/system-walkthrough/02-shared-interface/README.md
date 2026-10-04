@@ -8,7 +8,7 @@ Controls every signed-in role has. Shown here as the Instructor; the Dean and St
 
 ![Top bar](01-top-bar.png)
 
-Left to right: logo (returns to the dashboard), the role's main tabs, then **Search**, **Dark mode**, **Help & Support**, **Keyboard shortcuts**, **Language**, **Notifications** (red badge = unread count), the **role chip** (preview role switcher) and the **account menu**. Below the top bar on every page: the breadcrumb (*Home › Page*) and the workspace status (*Local workspace · Saved*, or the cloud equivalent) with **Export backup**.
+Left to right: logo (returns to the dashboard), the role's main tabs, then **Search**, **Dark mode**, **Help & Support**, **Keyboard shortcuts**, **Language**, **Notifications** (red badge = unread count), the **role badge** and the **account menu**. The owner admin account sees an *Admin · <current view>* button in place of the badge (section 7). Below the top bar on every page: the breadcrumb (*Home › Page*) and the workspace status (*Local workspace · Saved*, or the cloud equivalent) with **Export backup**.
 
 *Changed in v0.4.0:* icon-only buttons now have spoken names for screen readers (“Notifications, 2 unread”, “Account menu”, “Open menu / Close menu”), and the breadcrumb is a labelled navigation landmark.
 
@@ -42,13 +42,18 @@ The three most recent notices for the role (warnings in amber, information in bl
 
 ![Account menu](06-account-menu.png)
 
-Name, email and role, then **Settings**, **Help & Support** and **Sign Out**.
+Name, email and role, then **Settings**, **Help & Support** and **Sign Out**. The admin account's email address is not displayed.
 
-### 7. Preview role switcher
+### 7. Role badge and admin view switching
 
-![Role switcher](07-role-switch-popover.png)
+Every account sees its role as a badge in the top bar (see image 1, *Instructor*). Roles are assigned by the administrator, and only the owner admin account can change what it sees:
+* After signing in with Google, the owner admin account sees a button labelled *Admin · <current view>* where other accounts see the badge.
+* The button opens the **Switch View** popover, which offers **Admin**, **Instructor** and **Student**. On a phone, where the top-bar button is hidden, the account menu has a **Switch view** entry that opens the same popover.
+* The popover explains: “You remain signed in as the admin. Your AI key and saved data stay with this account.”
 
-Prototype-only: switches between **Dean**, **Associate Dean**, **Instructor** and **Student** without signing out. Signed-in accounts cannot use it; their role comes from the administrator.
+No other account can switch. This screen has no screenshot because it needs the owner's Google session, which the automated capture cannot use.
+
+*Changed after v0.4.0:* the preview role switcher was removed. It used to let any preview session jump between Dean, Associate Dean, Instructor and Student.
 
 ## Pages every role has
 
@@ -62,13 +67,13 @@ Filter tabs (**All**, **Unread (n)** and one tab per category such as *Coursewar
 
 ![Help and support](09-help-and-support.png)
 
-**Getting Started** explains the five-step business flow (Load Courses → Build & Approve the Syllabus → Generate Courseware → Students Open & Answer → Monitor Students). **Contact Support** lists the IT Help Desk, office hours and quick links.
+**Getting Started** explains the five-step business flow (Load Courses → Build & Approve the Syllabus → Generate Courseware → Students Open & Answer → Monitor Students). **Contact Support** lists the IT Help Desk, office hours and quick links. The frequently asked questions follow below the visible area. **How do I connect AI?** says that each admin, instructor or student connects a separate OpenAI API key in Settings → AI & Knowledge, and that a ChatGPT subscription is separate from OpenAI API billing.
 
 ### 10–14. Settings
 
 | Tab | Screenshot | What it holds |
 | --- | --- | --- |
-| Account | ![Settings · Account](10-settings-account.png) | Full name, email, department, role (read-only) and password (disabled in preview mode); **Save Changes** |
+| Account | ![Settings · Account](10-settings-account.png) | Full name, email (not shown for the admin account), department, role (read-only) and password (disabled in preview mode); **Save Changes** |
 | Appearance | ![Settings · Appearance](11-settings-appearance.png) | **Dark Mode** switch and **Font Size** (Small, Medium, Large) |
 | Notifications | ![Settings · Notifications](12-settings-notifications.png) | Device-only preferences for email, weekly digest and syllabus, courseware and performance alerts (the banner states that email delivery is not connected) |
 | AI & Knowledge | ![Settings · AI & Knowledge](13-settings-ai-and-knowledge.png) | **New in v0.4.0** — see below |
@@ -76,7 +81,7 @@ Filter tabs (**All**, **Unread (n)** and one tab per category such as *Coursewar
 
 **AI & Knowledge (New in v0.4.0)** has three cards:
 
-1. **Pulse AI connection:** choose the provider — Ollama in the local app, a model running in this browser (WebGPU, no key), free tiers (Gemini, Groq, OpenRouter free models, Hugging Face) or OpenAI/Anthropic with your own key — then **Connect and load models**, pick an **Available model** and **Check active connection**. Details: [System Manual 8](../../system-manual/08-ai-connections/README.md).
+1. **Pulse AI connection:** choose the provider — Ollama in the local app, a model running in this browser (WebGPU, no key), free tiers (Gemini, Groq, OpenRouter free models, Hugging Face) or OpenAI/Anthropic with your own key. Then use **Connect and load models**, pick an **Available model** and **Check active connection**. Each account connects its own key, and the hosted site has no shared key. Details: [System Manual 8](../../system-manual/08-ai-connections/README.md).
 2. **Agentic RAG pipeline:** live status of the five parts Pulse depends on — *Generation* (connected model), *Embeddings* (all-MiniLM-L6-v2, 384-d, free, in-process), *Reranker* (ms-marco-MiniLM-L-6-v2 cross-encoder), *Vector database* (PGlite + pgvector locally, Supabase pgvector when hosted; hybrid vector + keyword search with reciprocal rank fusion) and *Document sandbox* (worker thread, 256 MB heap, 30 s, empty environment). The coloured chips name the eight agents: Planner, Researcher, Ranker, Comparator, Writer, Verifier, Corrector, Librarian.
 3. **Knowledge library:** drop zone and the indexed-documents table with type, passages, quality, **Ask Pulse** and delete, plus **Compare in Pulse** when two documents are ticked. Step-by-step use is in [System Manual 4](../../system-manual/04-knowledge-library/README.md).
 

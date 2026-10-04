@@ -55,7 +55,10 @@ Because every function runs with the caller's rights, row-level security still d
 
 ## Authentication and keys
 
-* Users sign in with Supabase Auth (email and password). The role (`instructor`, `admin` for Dean/Associate Dean, otherwise `student`) is read from the user's `app_metadata.role`, which only an administrator can set.
+* Users sign in with Supabase Auth: email and password for provisioned accounts, Google for the owner admin. The role (`admin`, `instructor` or `student`) is read from the user's `app_metadata.role`, which only an administrator can set.
+* An account with no role, or any other value, is refused (`403 ROLE_NOT_ASSIGNED`), both by the API and at sign-in.
+* `admin` is accepted only for the owner account signed in through Google. That account can switch its view between admin, instructor and student while keeping its admin identity.
+* Prototype accounts are provisioned with `edupulse-app/scripts/provision-roles.mjs`. Their passwords are given to the owner and never stored in the repository.
 * The browser uses the **publishable** key (`VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`). The API verifies the user's JWT and queries the database **as that user**, so row-level security applies. The secret key is not used by the application at run time.
 
 ## Dashboard pages to capture for the report

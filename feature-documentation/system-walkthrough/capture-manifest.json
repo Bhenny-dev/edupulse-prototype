@@ -1,12 +1,77 @@
 {
-  "capturedAt": "2026-10-02T08:41:25.164Z",
+  "capturedAt": "2026-10-04T05:31:23.404Z",
   "problems": [],
   "scenes": [
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "01-landing-hero.png",
+      "title": "Landing page: hero and primary actions",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "02-landing-about.png",
+      "title": "Landing page: role benefits",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "03-landing-statistics.png",
+      "title": "Landing page: why it matters",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "04-sign-in-panel.png",
+      "title": "Sign-in panel as on the hosted site",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "05-preview-personas.png",
+      "title": "Preview personas (local development and documentation capture only)",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "06-privacy.png",
+      "title": "Privacy page",
+      "route": "/privacy",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "07-terms.png",
+      "title": "Terms of use page",
+      "route": "/terms",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "08-server-error.png",
+      "title": "Server error page",
+      "route": "/500",
+      "ok": true
+    },
     {
       "role": "all roles",
       "folder": "02-shared-interface",
       "file": "01-top-bar.png",
       "title": "Top bar: navigation, tools, notifications, role and account",
+      "route": "/dashboard",
       "ok": true
     },
     {
@@ -14,6 +79,7 @@
       "folder": "02-shared-interface",
       "file": "02-search-overlay.png",
       "title": "Search overlay (Ctrl+K)",
+      "route": "/dashboard",
       "ok": true
     },
     {
@@ -21,6 +87,7 @@
       "folder": "02-shared-interface",
       "file": "03-keyboard-shortcuts-modal.png",
       "title": "Keyboard shortcuts modal",
+      "route": "/dashboard",
       "ok": true
     },
     {
@@ -28,6 +95,7 @@
       "folder": "02-shared-interface",
       "file": "04-language-menu.png",
       "title": "Language menu (English / Filipino)",
+      "route": "/dashboard",
       "ok": true
     },
     {
@@ -35,6 +103,7 @@
       "folder": "02-shared-interface",
       "file": "05-notifications-dropdown.png",
       "title": "Notifications dropdown",
+      "route": "/dashboard",
       "ok": true
     },
     {
@@ -42,13 +111,7 @@
       "folder": "02-shared-interface",
       "file": "06-account-menu.png",
       "title": "Account menu",
-      "ok": true
-    },
-    {
-      "role": "all roles",
-      "folder": "02-shared-interface",
-      "file": "07-role-switch-popover.png",
-      "title": "Preview role switcher (prototype only)",
+      "route": "/dashboard",
       "ok": true
     },
     {
@@ -56,6 +119,7 @@
       "folder": "02-shared-interface",
       "file": "08-notifications-page.png",
       "title": "Notifications page",
+      "route": "/notifications",
       "ok": true
     },
     {
@@ -63,6 +127,7 @@
       "folder": "02-shared-interface",
       "file": "09-help-and-support.png",
       "title": "Help and support",
+      "route": "/help",
       "ok": true
     },
     {
@@ -70,6 +135,7 @@
       "folder": "02-shared-interface",
       "file": "10-settings-account.png",
       "title": "Settings · Account",
+      "route": "/settings",
       "ok": true
     },
     {
@@ -77,6 +143,7 @@
       "folder": "02-shared-interface",
       "file": "11-settings-appearance.png",
       "title": "Settings · Appearance",
+      "route": "/settings",
       "ok": true
     },
     {
@@ -84,6 +151,7 @@
       "folder": "02-shared-interface",
       "file": "12-settings-notifications.png",
       "title": "Settings · Notifications",
+      "route": "/settings",
       "ok": true
     },
     {
@@ -91,6 +159,7 @@
       "folder": "02-shared-interface",
       "file": "13-settings-ai-and-knowledge.png",
       "title": "Settings · AI & Knowledge",
+      "route": "/settings",
       "ok": true
     },
     {
@@ -98,6 +167,7 @@
       "folder": "02-shared-interface",
       "file": "14-settings-data-and-privacy.png",
       "title": "Settings · Data & Privacy",
+      "route": "/settings",
       "ok": true
     },
     {
@@ -105,6 +175,7 @@
       "folder": "02-shared-interface",
       "file": "15-dark-mode.png",
       "title": "Dark mode (Appearance)",
+      "route": "/dashboard",
       "ok": true
     },
     {
@@ -112,6 +183,7 @@
       "folder": "02-shared-interface",
       "file": "16-pulse-dock.png",
       "title": "Pulse assistant dock",
+      "route": "/dashboard",
       "ok": true
     },
     {
@@ -119,6 +191,7 @@
       "folder": "02-shared-interface",
       "file": "17-pulse-panel.png",
       "title": "Pulse panel (welcome)",
+      "route": "/dashboard",
       "ok": true
     },
     {
@@ -126,6 +199,103 @@
       "folder": "02-shared-interface",
       "file": "18-pulse-dwell-help.png",
       "title": "“Ask Pulse about this” hover badge",
+      "route": "/syllabus",
+      "ok": true
+    },
+    {
+      "role": "dean",
+      "folder": "03-dean-and-associate-dean",
+      "file": "01-dashboard.png",
+      "title": "Dean dashboard",
+      "route": "/dashboard",
+      "ok": true
+    },
+    {
+      "role": "dean",
+      "folder": "03-dean-and-associate-dean",
+      "file": "02-course-loading-loaded-courses.png",
+      "title": "Course Loading · Loaded Courses",
+      "route": "/course-loading",
+      "ok": true
+    },
+    {
+      "role": "dean",
+      "folder": "03-dean-and-associate-dean",
+      "file": "03-course-loading-instructors.png",
+      "title": "Course Loading · Instructors",
+      "route": "/course-loading",
+      "ok": true
+    },
+    {
+      "role": "dean",
+      "folder": "03-dean-and-associate-dean",
+      "file": "04-monitor-syllabus-status.png",
+      "title": "Monitor · Syllabus Status",
+      "route": "/monitor",
+      "ok": true
+    },
+    {
+      "role": "dean",
+      "folder": "03-dean-and-associate-dean",
+      "file": "05-monitor-delivery-progress.png",
+      "title": "Monitor · Delivery Progress",
+      "route": "/monitor",
+      "ok": true
+    },
+    {
+      "role": "dean",
+      "folder": "03-dean-and-associate-dean",
+      "file": "06-monitor-student-oversight.png",
+      "title": "Monitor · Student Oversight",
+      "route": "/monitor",
+      "ok": true
+    },
+    {
+      "role": "dean",
+      "folder": "03-dean-and-associate-dean",
+      "file": "07-monitor-alerts.png",
+      "title": "Monitor · Alerts",
+      "route": "/monitor",
+      "ok": true
+    },
+    {
+      "role": "dean",
+      "folder": "03-dean-and-associate-dean",
+      "file": "08-records-import.png",
+      "title": "Records · Import EduSuite Files",
+      "route": "/records",
+      "ok": true
+    },
+    {
+      "role": "dean",
+      "folder": "03-dean-and-associate-dean",
+      "file": "09-records-blocks-and-class-lists.png",
+      "title": "Records · Blocks & Class Lists",
+      "route": "/records",
+      "ok": true
+    },
+    {
+      "role": "dean",
+      "folder": "03-dean-and-associate-dean",
+      "file": "10-records-course-catalog.png",
+      "title": "Records · Course Catalog",
+      "route": "/records",
+      "ok": true
+    },
+    {
+      "role": "dean",
+      "folder": "03-dean-and-associate-dean",
+      "file": "11-pulse-on-course-loading.png",
+      "title": "Pulse focused on Course Loading",
+      "route": "/course-loading",
+      "ok": true
+    },
+    {
+      "role": "associate dean",
+      "folder": "03-dean-and-associate-dean",
+      "file": "12-associate-dean-dashboard.png",
+      "title": "Associate Dean dashboard (same shared admin role)",
+      "route": "/dashboard",
       "ok": true
     },
     {
@@ -133,6 +303,7 @@
       "folder": "04-instructor",
       "file": "01-dashboard.png",
       "title": "Instructor dashboard",
+      "route": "/dashboard",
       "ok": true
     },
     {
@@ -140,6 +311,7 @@
       "folder": "04-instructor",
       "file": "02-syllabus-my-courses.png",
       "title": "Syllabus · My Courses",
+      "route": "/syllabus",
       "ok": true
     },
     {
@@ -147,6 +319,7 @@
       "folder": "04-instructor",
       "file": "03-syllabus-my-syllabus.png",
       "title": "Syllabus · My Syllabus (status, actions, versions)",
+      "route": "/syllabus",
       "ok": true
     },
     {
@@ -154,6 +327,7 @@
       "folder": "04-instructor",
       "file": "04-syllabus-shared-repository.png",
       "title": "Syllabus · Shared Repository",
+      "route": "/syllabus",
       "ok": true
     },
     {
@@ -161,6 +335,7 @@
       "folder": "04-instructor",
       "file": "05-syllabus-builder.png",
       "title": "Syllabus Builder (upload or build the 7 sections)",
+      "route": "/syllabus",
       "ok": true
     },
     {
@@ -168,6 +343,7 @@
       "folder": "04-instructor",
       "file": "06-syllabus-builder-course-outline.png",
       "title": "Syllabus Builder · Section 5 Course Outline",
+      "route": "/syllabus",
       "ok": true
     },
     {
@@ -175,6 +351,7 @@
       "folder": "04-instructor",
       "file": "07-courseware-my-courseware.png",
       "title": "Courseware · My Courseware",
+      "route": "/courseware",
       "ok": true
     },
     {
@@ -182,6 +359,7 @@
       "folder": "04-instructor",
       "file": "08-courseware-builder.png",
       "title": "Courseware · Courseware Builder",
+      "route": "/courseware",
       "ok": true
     },
     {
@@ -189,6 +367,7 @@
       "folder": "04-instructor",
       "file": "09-student-monitoring-assessment-scores.png",
       "title": "Student Monitoring · Assessment Scores",
+      "route": "/student-monitoring",
       "ok": true
     },
     {
@@ -196,6 +375,7 @@
       "folder": "04-instructor",
       "file": "10-student-monitoring-material-access.png",
       "title": "Student Monitoring · Material Access",
+      "route": "/student-monitoring",
       "ok": true
     },
     {
@@ -203,6 +383,7 @@
       "folder": "04-instructor",
       "file": "11-performance-overview.png",
       "title": "Performance · Overview",
+      "route": "/performance",
       "ok": true
     },
     {
@@ -210,6 +391,7 @@
       "folder": "04-instructor",
       "file": "12-performance-by-topic.png",
       "title": "Performance · By Topic",
+      "route": "/performance",
       "ok": true
     },
     {
@@ -217,6 +399,71 @@
       "folder": "04-instructor",
       "file": "13-performance-alerts.png",
       "title": "Performance · Alerts",
+      "route": "/performance",
+      "ok": true
+    },
+    {
+      "role": "student",
+      "folder": "05-student",
+      "file": "01-dashboard.png",
+      "title": "Student dashboard",
+      "route": "/dashboard",
+      "ok": true
+    },
+    {
+      "role": "student",
+      "folder": "05-student",
+      "file": "02-my-materials.png",
+      "title": "My Courses · My Materials",
+      "route": "/courseware",
+      "ok": true
+    },
+    {
+      "role": "student",
+      "folder": "05-student",
+      "file": "03-my-assessments.png",
+      "title": "My Courses · My Assessments",
+      "route": "/assessment",
+      "ok": true
+    },
+    {
+      "role": "student",
+      "folder": "05-student",
+      "file": "04-performance-overview.png",
+      "title": "Performance · Overview",
+      "route": "/performance",
+      "ok": true
+    },
+    {
+      "role": "student",
+      "folder": "05-student",
+      "file": "05-performance-by-topic.png",
+      "title": "Performance · By Topic",
+      "route": "/performance",
+      "ok": true
+    },
+    {
+      "role": "student",
+      "folder": "05-student",
+      "file": "06-performance-learning-materials.png",
+      "title": "Performance · Learning Materials",
+      "route": "/performance",
+      "ok": true
+    },
+    {
+      "role": "student",
+      "folder": "05-student",
+      "file": "07-performance-assessment-scores.png",
+      "title": "Performance · Assessment Scores",
+      "route": "/performance",
+      "ok": true
+    },
+    {
+      "role": "student",
+      "folder": "05-student",
+      "file": "08-pulse-for-students.png",
+      "title": "Pulse for students (role-scoped help)",
+      "route": "/performance",
       "ok": true
     }
   ]

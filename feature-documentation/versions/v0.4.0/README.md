@@ -41,3 +41,10 @@ Release documents:
 ## Compatibility and boundaries
 
 Additive Supabase migration; existing documents keep working locally (re-embedded automatically). Comparison is coverage and alignment only, never plagiarism or authorship scoring (FR-CW-18, NFR-AI-08). Retrieval settings are not user-configurable (NFR-USE-03). Drafts stay drafts until an instructor reviews them; Pulse never publishes, grades or approves. Some administrative screens still use sample data, and their guidance now says so.
+
+## Changes on main after the release
+
+| Commit | Change | Documentation |
+| --- | --- | --- |
+| `809f510`, `5549385` | Role-based sign-in: accounts need an assigned admin, instructor or student role. The owner admin signs in with Google and can switch views. Each account has its own AI provider key, and the hosted site has no shared server key. Preview personas are removed from the hosted build. | Both commits landed without screenshot or guide updates, which prompted the [strict documentation policy](../../DOCUMENTATION-POLICY.md). The documentation commit below brings them up to date. |
+| Documentation policy commit | Policy, commit hook, `npm run docs:check` in `verify`, the CI documentation gate and a capture-only build with preview personas. On phones the top-bar role badge is hidden again, because it truncated the logo; the account menu offers **Switch view** to the owner admin. | System Walkthrough 01 (hosted sign-in, preview personas, privacy, terms, error page, corrected statistics), 02 (role badge and view switching), 06 (mobile header); System Manual 1 and 8; Backend System (sign-in rules, per-account keys, deployment guard) |

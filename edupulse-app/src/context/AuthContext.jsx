@@ -21,7 +21,8 @@ const ROLE_PERMISSIONS = {
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
-    if (!import.meta.env.DEV) return null
+    // Preview personas exist only in development and in the documentation capture build (vite --mode capture).
+    if (!import.meta.env.DEV && import.meta.env.MODE !== 'capture') return null
     try {
       const saved = JSON.parse(localStorage.getItem('edupulse_user') || 'null')
       return saved?.demo ? saved : null
@@ -73,7 +74,7 @@ export function AuthProvider({ children }) {
   }, [user])
 
   const login = useCallback((persona) => {
-    if (!import.meta.env.DEV || !DEMO_USERS[persona] || user?.authenticated) return
+    if ((!import.meta.env.DEV && import.meta.env.MODE !== 'capture') || !DEMO_USERS[persona] || user?.authenticated) return
     setAiAccessToken(undefined)
     setUser({ ...DEMO_USERS[persona], demo: true })
     setRoleHistory(prev => [...prev, { action: 'login', persona, timestamp: new Date().toISOString() }])

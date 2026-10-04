@@ -4,8 +4,9 @@ import { mkdir, writeFile } from 'node:fs/promises'
 // System walkthrough: every role's pages, tabs, popovers and modals, captured
 // from the production build. Output: feature-documentation/system-walkthrough/<folder>/<name>.png
 const ROOT = '../feature-documentation/system-walkthrough'
-type Scene = { folder: string; name: string; title: string; path?: string; act?: (page: Page) => Promise<unknown>; element?: (page: Page) => Locator; fullPage?: boolean; keepPointer?: boolean }
-const manifest: { role: string; folder: string; file: string; title: string; ok: boolean; error?: string }[] = []
+type Scene = { folder: string; name: string; title: string; path?: string; act?: (page: Page) => Promise<unknown>; element?: (page: Page) => Locator; fullPage?: boolean; keepPointer?: boolean; hide?: string }
+// `route` is the page each image shows; scripts/docs-check.mjs uses it to confirm every app route is documented.
+const manifest: { role: string; folder: string; file: string; title: string; route?: string; ok: boolean; error?: string }[] = []
 const problems: string[] = []
 test.describe.configure({ mode: 'serial' })
 
@@ -33,23 +34,29 @@ async function run(page: Page, role: string, scenes: Scene[]) {
       await expect(page.locator('.toast')).toHaveCount(0, { timeout: 5000 }).catch(() => undefined)
       await mkdir(`${ROOT}/${scene.folder}`, { recursive: true })
       const target = scene.element ? scene.element(page) : page
-      await target.screenshot({ path: `${ROOT}/${scene.folder}/${file}`, animations: 'disabled', fullPage: scene.fullPage, ...(scene.element ? { style: '.app-topbar{position:static !important}' } : {}) })
-      manifest.push({ role, folder: scene.folder, file, title: scene.title, ok: true })
+      const style = [scene.element ? '.app-topbar{position:static !important}' : '', scene.hide ? `${scene.hide}{display:none !important}` : ''].join('')
+      await target.screenshot({ path: `${ROOT}/${scene.folder}/${file}`, animations: 'disabled', fullPage: scene.fullPage, ...(style ? { style } : {}) })
+      const route = new URL(page.url()).hash.replace(/^#/, '').split('?')[0] || '/'
+      manifest.push({ role, folder: scene.folder, file, title: scene.title, route, ok: true })
     } catch (error) {
       manifest.push({ role, folder: scene.folder, file, title: scene.title, ok: false, error: (error as Error).message.split('\n')[0] })
     }
   }
 }
 const tab = (name: string) => async (page: Page) => { await page.getByRole('button', { name, exact: true }).first().click(); await settle(page) }
-const topButton = (page: Page, text: string) => page.locator('button.desktop-tool').filter({ hasText: new RegExp(`^${text}$`) }).first()
 
 test('public site', async ({ page }) => {
   await page.goto('/')
   await run(page, 'public', [
     { folder: '01-public-site', name: '01-landing-hero', title: 'Landing page: hero and primary actions', path: '/' },
     { folder: '01-public-site', name: '02-landing-about', title: 'Landing page: role benefits', act: p => p.locator('#about').scrollIntoViewIfNeeded() },
-    { folder: '01-public-site', name: '03-landing-statistics', title: 'Landing page: why it matters', act: p => p.locator('#stats').scrollIntoViewIfNeeded() },
-    { folder: '01-public-site', name: '04-sign-in-panel', title: 'Sign-in panel with preview personas', act: p => p.locator('#login').scrollIntoViewIfNeeded(), element: p => p.locator('#login') },
+    { folder: '01-public-site', name: '03-landing-statistics', title: 'Landing page: why it matters', act: async p => { await p.locator('#stats').scrollIntoViewIfNeeded(); await expect(p.locator('#stats')).toContainText('24/7') } }, // wait for the count-up animation to reach its final values
+    { folder: '01-public-site', name: '04-sign-in-panel', title: 'Sign-in panel as on the hosted site', act: p => p.locator('#login').scrollIntoViewIfNeeded(), element: p => p.locator('#login'), hide: '.login-quick-access' },
+    // Preview personas exist only in development and in this capture build; shown separately so the hosted panel above stays exact.
+    { folder: '01-public-site', name: '05-preview-personas', title: 'Preview personas (local development and documentation capture only)', act: p => p.locator('.login-quick-access').scrollIntoViewIfNeeded(), element: p => p.locator('.login-quick-access') },
+    { folder: '01-public-site', name: '06-privacy', title: 'Privacy page', path: '/privacy', act: p => p.evaluate(() => window.scrollTo(0, 0)) }, // hash navigation keeps the landing page scroll position
+    { folder: '01-public-site', name: '07-terms', title: 'Terms of use page', path: '/terms', act: p => p.evaluate(() => window.scrollTo(0, 0)) }, // hash navigation keeps the landing page scroll position
+    { folder: '01-public-site', name: '08-server-error', title: 'Server error page', path: '/500' },
   ])
 })
 
@@ -63,7 +70,7 @@ test('shared interface (shown as instructor)', async ({ page }) => {
     { folder: f, name: '04-language-menu', title: 'Language menu (English / Filipino)', path: '/dashboard', act: p => p.getByTitle('Language').click() },
     { folder: f, name: '05-notifications-dropdown', title: 'Notifications dropdown', path: '/dashboard', act: p => p.getByRole('button', { name: /^Notifications/ }).click() },
     { folder: f, name: '06-account-menu', title: 'Account menu', path: '/dashboard', act: p => p.getByRole('button', { name: 'Account menu' }).click() },
-    { folder: f, name: '07-role-switch-popover', title: 'Preview role switcher (prototype only)', path: '/dashboard', act: p => topButton(p, 'Instructor').click() },
+    // 07 (role switcher) was removed: only the owner admin account can switch views, and that needs its Google session.
     { folder: f, name: '08-notifications-page', title: 'Notifications page', path: '/notifications' },
     { folder: f, name: '09-help-and-support', title: 'Help and support', path: '/help' },
     { folder: f, name: '10-settings-account', title: 'Settings · Account', path: '/settings?tab=account' },
