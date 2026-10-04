@@ -48,7 +48,7 @@ export default function ProviderConnection() {
   return <div className="card mb-24" data-pulse-target="AI connection"><div className="card-header"><h3><Cpu size={18} /> Pulse AI connection</h3><span className={`badge ${ai.ready ? 'badge-published' : 'badge-draft'}`}>{ai.label}</span></div>
     <div className="card-body">
       <p>Choose where Pulse thinks. Conversation, drafting, document help and courseware use this connection. Your knowledge library adds context to the same assistant.</p>
-      {user?.authenticated && <p className="text-sm text-muted">This provider key belongs only to {user.email}. Switching the admin view keeps the same account and key.</p>}
+      {user?.authenticated && <p className="text-sm text-muted">This provider key belongs only to your account. Switching the admin view keeps the same account and key.</p>}
       <label className="form-label" htmlFor="ai-provider">AI provider</label>
       <select id="ai-provider" className="form-input" value={provider} disabled={busy || ai.local.status === 'loading'} onChange={e => { setProvider(e.target.value); setKey(''); setError(''); setNotice('') }}>{providers.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}</select>
       {provider === 'browser' ? <div className="ai-provider-content">

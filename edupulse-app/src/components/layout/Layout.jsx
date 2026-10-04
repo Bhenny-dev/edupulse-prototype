@@ -514,7 +514,7 @@ export default function Layout() {
               }}>
                 <div style={{ padding: '12px', borderBottom: '1px solid var(--gray-100)', marginBottom: '4px' }}>
                   <div style={{ fontWeight: 700, fontSize: '0.875rem' }}>{user?.name}</div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--gray-500)' }}>{user?.email}</div>
+                  {user?.baseRole !== 'admin' && <div style={{ fontSize: '0.75rem', color: 'var(--gray-500)' }}>{user?.email}</div>}
                   <div style={{ marginTop: '4px' }}><span className="badge badge-published">{user?.title}</span></div>
                 </div>
                 <NavLink to="/settings" onClick={() => setShowUserMenu(false)} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 12px', borderRadius: 'var(--radius-md)', fontSize: '0.875rem', color: 'var(--gray-700)', fontWeight: 500, transition: 'background 150ms' }}

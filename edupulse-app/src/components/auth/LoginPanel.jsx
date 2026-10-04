@@ -100,7 +100,7 @@ export default function LoginPanel({ className = '' }) {
 
       {supabase && <div className="login-google-access">
         <button type="button" className="btn btn-secondary w-full" disabled={busy || !googleEnabled} onClick={handleGoogle}>Sign in with Google</button>
-        <p className="login-note">Admin Google account: riverabenlor461@gmail.com{!googleEnabled ? '. Google sign-in is temporarily unavailable.' : ''}</p>
+        <p className="login-note">{googleEnabled ? 'Administrators can use their Google account.' : 'Google sign-in is temporarily unavailable.'}</p>
       </div>}
 
       {import.meta.env.DEV && <div className="login-quick-access">

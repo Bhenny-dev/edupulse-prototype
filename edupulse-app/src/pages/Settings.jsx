@@ -30,7 +30,7 @@ function AccountSettings() {
       <div className="card-body">
         <div className="grid-2">
           <div className="form-group"><label className="form-label" htmlFor="profile-name">Full Name</label><input id="profile-name" className="form-input" value={name} onChange={e => setName(e.target.value)} /></div>
-          <div className="form-group"><label className="form-label" htmlFor="profile-email">Email</label><input id="profile-email" className="form-input" value={user?.email || ''} readOnly /></div>
+          {user?.baseRole !== 'admin' && <div className="form-group"><label className="form-label" htmlFor="profile-email">Email</label><input id="profile-email" className="form-input" value={user?.email || ''} readOnly /></div>}
           <div className="form-group"><label className="form-label" htmlFor="profile-department">Department</label><input id="profile-department" className="form-input" value={department} onChange={e => setDepartment(e.target.value)} /></div>
           <div className="form-group"><label className="form-label">Role</label><input className="form-input" value={user?.baseRole === 'admin' ? 'Admin' : user?.title || ''} disabled /></div>
           <div className="form-group"><label className="form-label" htmlFor="profile-password">New Password</label><input id="profile-password" className="form-input" type="password" autoComplete="new-password" disabled={!user?.authenticated || user?.provider === 'google'} value={password} onChange={e => setPassword(e.target.value)} placeholder={user?.provider === 'google' ? 'Your Google account manages sign-in' : user?.demo ? 'Unavailable in preview mode' : 'Leave blank to keep current password'} /></div>
