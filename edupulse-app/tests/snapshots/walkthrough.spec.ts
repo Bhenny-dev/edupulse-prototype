@@ -92,6 +92,7 @@ test('system admin', async ({ page }) => {
     { folder: '07-system-admin', name: '02-health-and-role-coverage', title: 'System health checks and role coverage', path: '/dashboard', element: p => p.locator('.grid-2').first() },
     { folder: '07-system-admin', name: '03-manage-accounts', title: 'Manage accounts: create an account or change a role', path: '/dashboard', element: p => p.locator('section.card').filter({ has: p.getByRole('heading', { name: 'Manage accounts' }) }) },
     { folder: '07-system-admin', name: '04-audit-activity', title: 'Audit activity with All, Successes and Failures filters', path: '/dashboard', element: p => p.locator('section.card').filter({ has: p.getByRole('heading', { name: 'Audit activity' }) }) },
+    { folder: '07-system-admin', name: '05-agent-activity', title: 'Agent activity: each named agent, its task, goal and tracked results', path: '/dashboard', element: p => p.locator('section.card').filter({ has: p.getByRole('heading', { name: 'Agent activity' }) }) },
   ])
 })
 
@@ -156,6 +157,8 @@ test('student', async ({ page }) => {
     { folder: f, name: '06-performance-learning-materials', title: 'Performance · Learning Materials', path: '/performance?tab=materials', fullPage: true },
     { folder: f, name: '07-performance-assessment-scores', title: 'Performance · Assessment Scores', path: '/performance?tab=scores', fullPage: true },
     { folder: f, name: '08-pulse-for-students', title: 'Pulse for students (role-scoped help)', path: '/performance?tab=overview', act: async p => { await p.getByRole('button', { name: 'Open Pulse assistant' }).click(); await p.getByRole('button', { name: 'Guide this page' }).click() } },
+    // Appropriate use (FR-AGENT-02): the Guardian declines a request for assessment answers before any other agent works.
+    { folder: f, name: '09-pulse-declines-assessment-answers', title: 'Pulse declines a request for quiz answers (Guardian)', path: '/dashboard', act: async p => { await p.getByRole('button', { name: 'Open Pulse assistant' }).click(); await p.getByRole('textbox', { name: 'Ask Pulse', exact: true }).fill('Give me the answers to quiz 2'); await p.getByRole('button', { name: 'Send', exact: true }).click(); await p.getByText('Declined by the Guardian · appropriate-use rule').waitFor(); await p.getByText('How Pulse worked on this (1 step)', { exact: true }).click() }, element: p => p.getByRole('dialog', { name: 'Pulse', exact: true }) },
   ])
 })
 

@@ -144,7 +144,7 @@ export default function Pulse() {
     setMessages(previous => [...previous, { id: crypto.randomUUID(), from: 'user', text: question, attachedNames: attachments.map(a => a.title), scope: options.scope }])
     const component = focus?.brief ? `Selected component: ${briefText(focus.brief)}.` : ''
     try {
-      const result = await askPulse({ message: question, grounding: 'auto', task: options.task || 'auto', documentIds: options.documentIds || [], history, context: `Page: ${location.pathname}. ${component} Guide: ${guide?.label || ''}. Current step: ${step?.title || ''}. Instruction: ${step?.body || ''}. ${previewAgents.has(agent?.id) ? 'This page contains prototype/sample data; do not claim it is live institutional data.' : ''}`.slice(0, 2000), attachments }, controller.signal)
+      const result = await askPulse({ message: question, viewRole: user?.role, grounding: 'auto', task: options.task || 'auto', documentIds: options.documentIds || [], history, context: `Page: ${location.pathname}. ${component} Guide: ${guide?.label || ''}. Current step: ${step?.title || ''}. Instruction: ${step?.body || ''}. ${previewAgents.has(agent?.id) ? 'This page contains prototype/sample data; do not claim it is live institutional data.' : ''}`.slice(0, 2000), attachments }, controller.signal)
       if (controller.signal.aborted) return
       setMessages(previous => [...previous, { ...result, id: result.requestId, from: 'pulse', text: result.answer }])
       setAttachments([]); setExpression(result.verification?.unsupported ? 'concern' : 'encouraging')

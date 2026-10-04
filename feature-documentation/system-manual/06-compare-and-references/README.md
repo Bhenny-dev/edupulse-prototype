@@ -1,6 +1,6 @@
 # 6 · Compare two documents and find real references
 
-**Who:** instructors (and the Dean/Associate Dean) · **Where:** Settings → *AI & Knowledge* → *Knowledge library*, and the Pulse panel · Requirements FR-RAG-11 (comparison), FR-RAG-12 (references), NFR-AI-08 (alignment is not plagiarism detection).
+**Who:** every signed-in account · **Where:** Settings → *AI & Knowledge* → *Knowledge library*, and the Pulse panel · Requirements FR-RAG-11 (comparison), FR-RAG-12 (references), NFR-AI-08 (alignment is not plagiarism detection).
 
 ## Compare two documents
 
@@ -12,11 +12,13 @@
 
    ![Comparison answer](02-comparison-answer.png)
 
+   In this capture, the small local model’s comparison could not be verified against both documents. So Pulse shows **Source excerpts (no model-generated answer)**: cited sentences from each document, numbered by source. The alignment table in the next step is computed by the Comparator without the model, so it is still complete.
+
 3. Below the answer, **Comparison · coverage n%** opens the Comparator's alignment table. Each row pairs a statement from one document with its closest match in the other: matched rows are shared, *Related* rows are partial matches, *Not covered* marks statements found in only one document. Coverage is the share of the first document's statements that the second covers.
 
    ![Alignment table](03-alignment-table.png)
 
-The table measures topical coverage between two sources (for example a syllabus and a textbook, or two versions of a handout). It does not judge authorship or copying.
+The table measures topical coverage between two sources (for example a syllabus and a textbook, or two versions of a handout). It does not judge authorship or copying. Asking Pulse whether a document is plagiarised or AI-written is declined by the Guardian ([System Manual 5](../05-ask-pulse/README.md#what-pulse-declines)).
 
 *Changed in v0.4.0:* reference-list passages (bibliography entries, ISBNs, retrieval dates, publisher lines) are no longer compared as if they were statements about the topic. The Ranker skips passages that are mostly citations, and the Comparator ignores citation lines, so the table and the answer compare what the documents actually say.
 

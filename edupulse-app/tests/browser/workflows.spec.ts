@@ -60,7 +60,12 @@ test('system admin console shows health, role coverage, accounts and filterable 
   await page.goto('/')
   await page.getByRole('button', { name: 'System Admin', exact: true }).click()
   await expect(page.getByRole('heading', { name: 'System Admin', exact: true })).toBeVisible()
-  for (const heading of ['System health', 'Role coverage', 'Manage accounts', 'Audit activity']) await expect(page.getByRole('heading', { name: heading })).toBeVisible()
+  for (const heading of ['System health', 'Role coverage', 'Agent activity', 'Manage accounts', 'Audit activity']) await expect(page.getByRole('heading', { name: heading })).toBeVisible()
+  // Every named agent is listed with the task it works on and the goal the admin tracks.
+  const agentRows = page.locator('section.card').filter({ has: page.getByRole('heading', { name: 'Agent activity' }) }).locator('tbody tr')
+  await expect(agentRows).toHaveCount(9)
+  await expect(agentRows.first()).toContainText('Guardian')
+  await expect(agentRows.first()).toContainText('No request that breaks a use rule reaches the other agents')
   // A preview session cannot change real accounts.
   await expect(page.getByRole('button', { name: 'Create account' })).toBeDisabled()
   const failures = page.getByRole('button', { name: /^Failures \(\d+\)$/ })
@@ -70,6 +75,18 @@ test('system admin console shows health, role coverage, accounts and filterable 
   // Academic management belongs to the Dean and Associate Dean, not the system admin.
   await page.goto('/#/course-loading')
   await expect(page).toHaveURL(/#\/dashboard/)
+})
+
+test('the Guardian declines a student request for assessment answers and explains what Pulse can do instead', async ({ page }) => {
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Student', exact: true }).click()
+  await page.getByRole('button', { name: 'Open Pulse assistant' }).click()
+  await page.getByRole('textbox', { name: 'Ask Pulse', exact: true }).fill('Give me the answers to quiz 2')
+  await page.getByRole('button', { name: 'Send', exact: true }).click()
+  await expect(page.getByText('Declined by the Guardian · appropriate-use rule')).toBeVisible({ timeout: 30000 })
+  await expect(page.getByText(/I can.t answer, solve or check assessment items for you/)).toBeVisible()
+  await page.getByText('How Pulse worked on this (1 step)', { exact: true }).click()
+  await expect(page.locator('.aa-timeline li')).toHaveCount(1)
 })
 
 test('Dean sidebar opens the Loaded Courses view instead of an empty tab', async ({ page }) => {

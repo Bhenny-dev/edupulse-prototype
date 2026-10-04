@@ -9,6 +9,8 @@ export const chatInput = z.object({
   context: z.string().max(2000).default(''),
   attachments: z.array(z.object({ title: z.string().trim().min(1).max(160), text: z.string().trim().min(1).max(18000) })).max(3).default([]),
   documentIds: z.array(z.string().uuid()).max(2).default([]),
+  // The role the interface is showing. The Guardian uses it only to add learner rules, never to lift a restriction.
+  viewRole: z.enum(['admin', 'dean', 'associate_dean', 'instructor', 'student', 'guest']).optional(),
 })
 export const DOCUMENT_CHARACTERS = 150_000
 export const sourceTypes = ['text', 'pdf', 'docx', 'pptx', 'html', 'markdown', 'csv'] as const

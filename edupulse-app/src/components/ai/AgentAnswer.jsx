@@ -63,7 +63,8 @@ export default function AgentAnswer({ message, onRevise }) {
   return <>
     <AnswerText text={message.text} claims={v?.claims} grounded={grounded} onCite={showSource} />
     <div className="aa-badges">
-      {message.agents?.length > 0 && <span className="aa-badge">{message.agents.length} agents</span>}
+      {message.mode === 'declined' && <span className="aa-badge is-warn" title={`${message.policy?.reason || ''} ${message.policy?.spec ? `(${message.policy.spec})` : ''}`.trim()}>Declined by the Guardian · appropriate-use rule</span>}
+      {message.agents?.length > 0 && <span className="aa-badge">{message.agents.length} agent{message.agents.length === 1 ? '' : 's'}</span>}
       {v && v.groundedness !== null && <span className={`aa-badge ${v.unsupported ? 'is-warn' : 'is-good'}`} title="Share of statements supported by the retrieved sources">Grounded {percent(v.groundedness)}</span>}
       {v && v.citationAccuracy !== null && <span className={`aa-badge ${v.citationAccuracy < 1 ? 'is-warn' : 'is-good'}`} title="Cited statements that their cited source supports">Citations {percent(v.citationAccuracy)}</span>}
       {v?.corroborated > 0 && <span className="aa-badge is-good" title="Statements supported by two or more different documents">{v.corroborated} corroborated</span>}
@@ -90,7 +91,7 @@ export default function AgentAnswer({ message, onRevise }) {
       {source.flagged && <p className="kl-flag">This passage contains instruction-like text. Pulse treated it only as quoted data.</p>}
       <p>{source.text}</p>
     </div>)}</details>}
-    {message.trace?.length > 0 && <details><summary>How Pulse worked on this ({message.trace.length} steps)</summary><ol className="aa-timeline">{message.trace.map((step, i) => <li key={i} style={{ '--agent-color': AGENT_META[step.agent]?.color }}>
+    {message.trace?.length > 0 && <details><summary>How Pulse worked on this ({message.trace.length} step{message.trace.length === 1 ? '' : 's'})</summary><ol className="aa-timeline">{message.trace.map((step, i) => <li key={i} style={{ '--agent-color': AGENT_META[step.agent]?.color }}>
       <strong>{step.agent}</strong> · {step.action}<small>{step.ms} ms{step.status !== 'done' ? ` · ${step.status}` : ''}</small><div>{step.detail}</div>
     </li>)}</ol></details>}
     {onRevise && message.mode === 'generated' && (revising

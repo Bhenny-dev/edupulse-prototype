@@ -41,6 +41,7 @@ Built with LangGraph (`src/lib/rag/agents.ts`); the same graph runs on the serve
 
 | Agent | Role |
 | --- | --- |
+| **Guardian** | Checks appropriate use before any other agent works (`src/lib/rag/policy.ts`). It declines learners’ requests for assessment answers, excluded features (plagiarism or AI-authorship detection, integrity scoring, at-risk prediction, proctoring) and official grade computation, and cites the rule it enforces. The rules are deterministic and run before any model. |
 | **Planner** | Classifies the request (answer, compare, references, draft) and splits it into focused search queries |
 | **Researcher** (one per query, in parallel) | Hybrid search: pgvector cosine + Postgres full-text, fused with reciprocal rank fusion |
 | **Ranker** | Cross-encoder reranking, relevance floor, near-duplicate removal, at most three passages per document; for comparisons both documents must contribute and reference-list passages are skipped |
@@ -51,6 +52,15 @@ Built with LangGraph (`src/lib/rag/agents.ts`); the same graph runs on the serve
 | **Librarian** | Finds real references in Open Library, OpenAlex and Wikipedia (allowlisted, no key) |
 
 Every step is returned to the interface as the *How Pulse worked on this* timeline.
+
+**Agent registry and tracking.** `src/lib/rag/registry.ts` holds each agent’s job title, task and measurable goal, and judges after every run whether each agent met its goal. The API records each signed-in hosted run in `edupulse_agent_runs` (`server/agentRuns.ts`): workflow, task, outcome, rule, provider and model, duration, counts, and per-agent goal results named after the OpenTelemetry GenAI agent conventions (`gen_ai.operation.name` = `invoke_agent`, `gen_ai.agent.name`). Records never contain prompt, answer or document text. The System Admin console reads them through `edupulse_admin_agent_activity`.
+
+Not recorded:
+* local-workspace runs;
+* guest runs;
+* runs of the on-device model, which execute in the browser.
+
+The Guardian still applies to all of them. Open-source integrations that were considered are listed in [integrations.md](integrations.md).
 
 ## Document ingestion pipeline
 

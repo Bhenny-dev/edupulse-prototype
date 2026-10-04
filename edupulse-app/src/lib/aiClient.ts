@@ -91,8 +91,9 @@ export async function askPulse(input: Partial<ChatInput> & { message: string }, 
   if (browserAIState().status !== 'ready') throw new Error('Your on-device model is not ready. Open AI settings to load it or choose a provider.')
   const abort = AbortSignal.any([AbortSignal.timeout(240000), ...(signal ? [signal] : [])])
   const [{ runAgents }, { chatInput }] = await Promise.all([import('./rag/agents'), import('../../server/contracts')])
-  // Treated as a guest until the server verifies the session during the first search.
-  const session: Identity = { id: 'device-session', role: 'guest', local: false }
+  // The on-device Guardian runs in this browser, so the displayed role decides which use rules apply;
+  // the server replaces this identity with the verified one during the first search.
+  const session: Identity = { id: 'device-session', role: input.viewRole || 'guest', local: false }
   return runAgents(chatInput.parse(input), session, abort, browserDeps(abort, session))
 }
 

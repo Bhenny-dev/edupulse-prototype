@@ -11,6 +11,7 @@
 | 20260915100411 | `workspace_policy_initplan` | Rewrites workspace policies so `auth.uid()` is evaluated once per query |
 | 20261001090000 | `agentic_rag` | 384-d MiniLM embeddings, generated full-text column `fts` with a GIN index, `edupulse_ingest_document_v2` (pages, sections, extraction metadata) and `edupulse_hybrid_chunks` (vector + keyword search for the Researchers) |
 | 20261004054136 | `system_admin_audit_roles` | Five distinct roles, academic workspace access, admin-only account and audit overview, activity audit table |
+| 20261004073000 | `agent_runs_tracking` | **Written, not yet applied** (needs the owner’s approval; run `npx supabase db push --linked` in `edupulse-app`). Adds `edupulse_agent_runs`, the gated `edupulse_admin_agent_activity` and the helper `edupulse_private.is_system_admin()` |
 
 The SQL files are in `edupulse-app/supabase/migrations/`. Apply new ones in order with `supabase db push` or the SQL Editor, then run both advisors.
 
@@ -22,6 +23,7 @@ The SQL files are in `edupulse-app/supabase/migrations/`. Apply new ones in orde
 | `edupulse_ai_chunks` | enabled | `chunks_owner` (ALL, `authenticated`, own rows only) | `embedding vector(384)`, generated `fts` column |
 | `edupulse_workspaces` | enabled | `workspace_read`, `workspace_insert`, `workspace_update` (`authenticated`) | One row per owner; there is no delete policy |
 | `edupulse_audit_events` | enabled | `audit_self_insert` (`authenticated`) | Signed-in users can append their own activity; only the system admin overview can read it |
+| `edupulse_agent_runs` (pending migration) | enabled | `agent_runs_self_insert` (`authenticated`, own rows under the assigned role) | One row per Pulse or courseware run by a signed-in account: workflow, task, outcome, rule, provider, model, duration, counts and per-agent goal results (OpenTelemetry names). No prompt, answer or document text. No one can read rows directly; only the admin function aggregates them. |
 
 The document and workspace tables held 0 rows at the earlier verification, which is also why the performance advisor reported the search indexes as unused. Audit rows appear as people use the updated application.
 
@@ -44,6 +46,7 @@ The document and workspace tables held 0 rows at the earlier verification, which
 | `edupulse_match_chunks` (v0.1) | INVOKER | empty | no | yes |
 | `edupulse_save_workspace` | INVOKER | empty | no | yes |
 | `edupulse_admin_overview` | INVOKER wrapper around a gated private function | empty | no | yes, but only the verified Google system admin receives data |
+| `edupulse_admin_agent_activity` (pending migration) | INVOKER wrapper around a gated private function | empty | no | yes, but only the verified Google system admin receives data: totals, results per agent, declines by rule and the 30 latest runs by role (never by person) |
 
 The academic and AI functions run with the caller's rights, so row-level security decides which rows each account can read or write. The admin overview uses a private elevated function that checks the live Auth identity, the owner address, the Google identity and the admin role before returning a limited account roster and audit records. It does not return the owner's email.
 

@@ -14,6 +14,8 @@ import { LIMITS as EXTRACTION_LIMITS, SUPPORTED as EXTRACTION_FORMATS } from './
 import { research, similarityMatrix } from './rag/search.js'
 import { findReferences } from './external/references.js'
 import { embedTexts, modelStatus } from './ml/onnx.js'
+import { agentRunRow, failedRunRow, recordAgentRun } from './agentRuns.js'
+import { AGENT_ORDER } from '../src/lib/rag/registry.js'
 
 export const VERSION = '0.4.0'
 /** Request body limits per action (bytes). Uploads are raw file bytes. */
@@ -109,7 +111,7 @@ export async function handleRequest(request: Request): Promise<Response> {
       }
       return json({
         version: VERSION, ...health, connection: publicConnection(connection), database: { ...database, kind: config().database },
-        pipeline: { ...models, vectorStore: config().database === 'local' ? 'PGlite + pgvector (HNSW) + Postgres full-text' : 'Supabase pgvector (HNSW) + Postgres full-text', retrieval: 'hybrid (vector + keyword, reciprocal rank fusion) → cross-encoder reranking', extraction: { formats: EXTRACTION_FORMATS, maxBytes: EXTRACTION_LIMITS.bytes, sandbox: `worker thread · ${SANDBOX_LIMITS.heapLimitMb} MB heap · ${SANDBOX_LIMITS.timeoutMs / 1000} s · empty environment` }, agents: ['Planner', 'Researcher', 'Ranker', 'Comparator', 'Writer', 'Verifier', 'Corrector', 'Librarian'] },
+        pipeline: { ...models, vectorStore: config().database === 'local' ? 'PGlite + pgvector (HNSW) + Postgres full-text' : 'Supabase pgvector (HNSW) + Postgres full-text', retrieval: 'hybrid (vector + keyword, reciprocal rank fusion) → cross-encoder reranking', extraction: { formats: EXTRACTION_FORMATS, maxBytes: EXTRACTION_LIMITS.bytes, sandbox: `worker thread · ${SANDBOX_LIMITS.heapLimitMb} MB heap · ${SANDBOX_LIMITS.timeoutMs / 1000} s · empty environment` }, agents: AGENT_ORDER },
         identity: { mode: identity.local ? 'local-workspace' : identity.token ? 'authenticated' : 'public-guide', role: identity.role },
         limits: { maxDocuments: MAX_DOCUMENTS, maxDocumentCharacters: 150_000, maxUploadBytes: EXTRACTION_LIMITS.bytes, maxAttachments: 3, generationAttempts: 2, requestTimeoutMs: config().timeoutMs }, checkedAt: new Date().toISOString(),
       })
@@ -157,14 +159,23 @@ export async function handleRequest(request: Request): Promise<Response> {
       return json({ deleted: true })
     }
     if (action === 'documents') return json(await ingest(identity, documentInput.parse(body), signal), 201)
-    if (action === 'courseware') return json(await runCourseware(courseInput.parse(body), identity, signal, undefined, connection, Boolean(personalConnection)))
-    const input = chatInput.parse(body)
-    // Guests get the public guide only and cannot use hosted generation or submit private attachments.
-    if (identity.role === 'guest' && !personalConnection) {
-      if (input.attachments.length) throw new ApiError(401, 'SIGN_IN_REQUIRED', 'Sign in to send reference attachments.')
-      return json(await runChat(input, identity, signal, serverDeps(identity, undefined)))
+    // Every agent run is recorded for the System Admin console (FR-AGENT-03), including failures.
+    const workflow = action === 'courseware' ? 'courseware' as const : 'chat' as const, started = Date.now()
+    try {
+      let result
+      if (workflow === 'courseware') result = { ...await runCourseware(courseInput.parse(body), identity, signal, undefined, connection, Boolean(personalConnection)), mode: 'courseware', task: 'courseware' }
+      else {
+        const input = chatInput.parse(body)
+        // Guests get the public guide only and cannot use hosted generation or submit private attachments.
+        if (identity.role === 'guest' && !personalConnection && input.attachments.length) throw new ApiError(401, 'SIGN_IN_REQUIRED', 'Sign in to send reference attachments.')
+        result = identity.role === 'guest' && !personalConnection ? await runChat(input, identity, signal, serverDeps(identity, undefined)) : await runChat(input, identity, signal, undefined, connection)
+      }
+      await recordAgentRun(identity, agentRunRow(identity, workflow, result, Date.now() - started))
+      return json(result)
+    } catch (error) {
+      if (!(error instanceof z.ZodError)) await recordAgentRun(identity, failedRunRow(identity, workflow, Date.now() - started))
+      throw error
     }
-    return json(await runChat(input, identity, signal, undefined, connection))
   } catch (error) {
     if (error instanceof z.ZodError) return json({ error: { code: 'INVALID_INPUT', message: 'Some input fields are missing, too long, or invalid.', requestId } }, 400)
     if (error instanceof ApiError) return json({ error: { code: error.code, message: error.message, requestId } }, error.status)

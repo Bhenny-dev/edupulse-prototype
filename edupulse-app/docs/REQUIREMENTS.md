@@ -201,7 +201,7 @@ Every requirement below cites the section of *EduPulse Chapter 1 & 2* (Rivera, B
 | FR-RAG-04 | Indexed passages shall keep page/slide and section metadata so citations identify exact locations. | NFR-AI-04 | M |
 | FR-RAG-05 | Embeddings and reranking shall use free, open models running in-process with pinned, checksum-verified files; no API key shall be required for retrieval. | NFR-AI-01/02 | M |
 | FR-RAG-06 | Retrieval shall combine vector similarity and full-text search with reciprocal rank fusion, then rerank with a cross-encoder and keep diverse sources. | User request ("vector database, ranking") | M |
-| FR-RAG-07 | Pulse shall answer through named LangGraph agents (Planner, Researcher, Ranker, Comparator, Writer, Verifier, Corrector, Librarian) and show each answer's agent timeline. | User request ("named agents working together") | M |
+| FR-RAG-07 | Pulse shall answer through named LangGraph agents (Guardian, Planner, Researcher, Ranker, Comparator, Writer, Verifier, Corrector, Librarian) and show each answer's agent timeline. The Guardian was added by the October 4, 2026 correction (FR-AGENT-02). | User request ("named agents working together"); user correction, Oct 4 2026 | M |
 | FR-RAG-08 | Every generated claim shall be checked against the sources; claims supported by two or more documents shall be marked corroborated; numbers, names and absolute statements must agree with the source. | User request ("corroborating"); NFR-AI-04 | M |
 | FR-RAG-09 | Wrong or missing citations shall be corrected automatically; unsupported statements trigger at most one revision, then cited source excerpts replace an unverifiable answer. | User request ("correcting") | M |
 | FR-RAG-10 | Users shall be able to request a revision of an answer with their own note. | User request ("collaborating") | S |
@@ -209,6 +209,23 @@ Every requirement below cites the section of *EduPulse Chapter 1 & 2* (Rivera, B
 | FR-RAG-12 | Pulse shall suggest real references from free open catalogs (Open Library, OpenAlex, Wikipedia) through fixed endpoints with validated responses; references are suggestions requiring instructor verification. | User request ("referencing", "free API") | S |
 | FR-RAG-13 | Each generated courseware draft shall show automatic outline coverage per topic and outcome and statement verification before instructor review. | NFR-AI-06 | M |
 | FR-RAG-14 | Retrieval, abstention and verification quality shall be evaluated on real, openly licensed documents with reproducible scripts. | User request ("documented for results and discussion") | M |
+
+### 1.8b FR-ADMIN and FR-AGENT — System administration and agent governance (10)
+
+**User correction — October 4, 2026.** The project owner made two requests. First, a system admin separate from the Dean and Associate Dean: it signs in with Google, can switch into every role, and has a console for system health, audit logs of successful and failed actions, and account management. Second, stronger appropriate use for the RAG pipeline and agents: each agent is named for the task it works on and the goal it must achieve, and the system admin monitors and tracks the agents. FR-ADMIN-01 widens FR-AUTH-01 from four roles to five; the Dean and Associate Dean stay distinct roles, as FR-AUTH-01 and FR-AUTH-12 already required. For the system admin role only, FR-ADMIN-03 and FR-ADMIN-04 supersede NFR-SEC-06 and NFR-SEC-08 (no user-facing audit console) and FR-AUTH-02 and FR-AUTH-05 (no role switching in production). Every other requirement is unchanged. The governance rules enforce existing exclusions (FR-CW-18, FR-ASM-11, NFR-SEC-09, NFR-AI-08) and the FLOW_SPEC student rule; they add no new product scope.
+
+| ID | Requirement | Source | Pri |
+|---|---|---|---|
+| FR-ADMIN-01 | The system shall support five account roles: system admin, Dean, Associate Dean, Instructor and Student. The system admin is not an academic role and does not replace the Dean or Associate Dean. | User correction, Oct 4 2026; FR-AUTH-01 | M |
+| FR-ADMIN-02 | The system admin shall sign in with the owner's Google account; the other roles sign in with provisioned email and password. An account without an assigned role shall be refused at sign-in and by the API. | User correction, Oct 4 2026; FR-AUTH-03 | M |
+| FR-ADMIN-03 | The system admin's console shall show service health checks, role coverage, account creation and role assignment (through a server-side function that verifies the admin), and an audit log of actions filterable by success and failure. | User correction, Oct 4 2026 (supersedes NFR-SEC-06/08 for this role) | M |
+| FR-ADMIN-04 | The owner's admin account shall be able to switch its view into any of the five roles while keeping its admin identity, AI key and data; no other account can switch. | User correction, Oct 4 2026 (supersedes FR-AUTH-02/05 for this account) | M |
+| FR-AGENT-01 | Every named agent shall have a registered job title, the task it works on and a measurable goal; the answer timeline, AI settings and admin console shall use this one registry. | User correction, Oct 4 2026 ("name them for who works on tasks and achieving goals") | M |
+| FR-AGENT-02 | A Guardian agent shall check each Pulse request before any other agent works. It shall decline: (a) learners' requests to answer, solve or check assessment items; (b) plagiarism or AI-authorship detection, integrity scoring, at-risk prediction and proctoring; (c) computing official grades. A decline shall explain what Pulse can do instead and cite the rule. Rules are deterministic, and the displayed role may add learner rules but never lift them. | FLOW_SPEC student role; FR-CW-18; FR-ASM-11; NFR-SEC-09; NFR-AI-08; FLOW_SPEC ground truth 7 | M |
+| FR-AGENT-03 | Each Pulse or courseware run by a signed-in account shall be recorded with its workflow, task, outcome, triggered rule, provider and model, duration, evidence and claim counts, and each agent's goal result. Records shall never contain prompt, answer or document text, and a user can record only their own runs. | User correction, Oct 4 2026 ("monitored and tracked by the admin") | M |
+| FR-AGENT-04 | The system admin's console shall show, for each named agent, its task, its goal, runs, goal-met rate, fallbacks or stops, average time and last run, plus appropriate-use declines by rule and recent runs by role (never by person). | User correction, Oct 4 2026 | M |
+| FR-AGENT-05 | Agent run records shall use the OpenTelemetry GenAI agent naming (`gen_ai.operation.name` = `invoke_agent`, `gen_ai.agent.name`), so an open-source tracing tool can read them later without a schema change. | GitHub integration scan, Oct 4 2026 | S |
+| FR-AGENT-06 | The Guardian's decisions and the document injection scanner shall be evaluated with a reproducible script: labelled project cases, the openly licensed deepset/prompt-injections dataset with a held-out test split, and real course documents to count false flags. | FR-RAG-14 | M |
 
 ### 1.9 FR-SET — Settings (9)
 
@@ -344,9 +361,9 @@ Every requirement below cites the section of *EduPulse Chapter 1 & 2* (Rivera, B
 
 | Category | Count |
 |---|---|
-| Functional requirements | 160 |
+| Functional requirements | 170 |
 | Non-functional requirements | 49 |
-| **Total** | **209** |
+| **Total** | **219** |
 
 **Revision note (July 13 2026, second pass).** Two changes since the initial 190-item baseline: (1) FR-AUTH grew from 9 to 12 items to correct the role model from three roles to four, restoring Associate Dean as a distinct role per Appendix B.2 — a genuine correction, not scope creep; (2) FR-GUIDE grew from 14 to 26 items to specify Pulse's drag-and-drop, drop-to-focus conversational mode, and the `src/agents/` task-specific agent framework. A much larger 500+ item specification for the same feature was proposed and declined — it reinstated System Admin as a role and most of the enterprise-ops subsystems (reviewer SLA/certification, psychometric validation, licensing/legal review, translation backlogs, prompt A/B-testing, forensic audit tooling, cost/quota forecasting) that the original audit removed for having no basis in Chapter 1-2. The 12 new items above are the scoped equivalent: every one traces to either the user's specific request or an existing Ch.1-2 citation, and none reintroduce a cut subsystem.
 

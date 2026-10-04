@@ -1,5 +1,5 @@
 export type Task = 'answer' | 'summarize' | 'compare' | 'draft' | 'references' | 'general'
-export type AgentName = 'Planner' | 'Researcher' | 'Ranker' | 'Comparator' | 'Writer' | 'Verifier' | 'Corrector' | 'Librarian'
+export type AgentName = 'Guardian' | 'Planner' | 'Researcher' | 'Ranker' | 'Comparator' | 'Writer' | 'Verifier' | 'Corrector' | 'Librarian'
 
 export type Evidence = {
   id: string; documentId: string | null; title: string; text: string
@@ -25,7 +25,8 @@ export type Comparison = { leftTitle: string; rightTitle: string; shared: Alignm
 
 export type Reference = { title: string; authors: string[]; year: number | null; venue: string; url: string; source: 'Open Library' | 'OpenAlex' | 'Wikipedia'; identifier: string; relevance: number | null; summary: string }
 
-export type AgentStep = { agent: AgentName; node: string; action: string; detail: string; ms: number; status: 'done' | 'skipped' | 'fallback' | 'revised' }
+/** One agent action. `metrics` carries the counts the goal checks in registry.ts use (never prompt or document text). */
+export type AgentStep = { agent: AgentName; node: string; action: string; detail: string; ms: number; status: 'done' | 'skipped' | 'fallback' | 'revised' | 'declined'; metrics?: Record<string, number> }
 
 export type Generate = (system: string, prompt: string, signal: AbortSignal, json?: boolean) => Promise<string>
 export type Similarity = (left: string[], right: string[], signal: AbortSignal) => Promise<number[][]>

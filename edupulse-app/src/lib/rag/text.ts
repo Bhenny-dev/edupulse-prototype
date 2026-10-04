@@ -83,12 +83,27 @@ export function consistencyCap(claim: string, passage: string) {
   return 1
 }
 
+// Instruction-like text inside documents. Patterns added on 2026-10-04 were designed on the training
+// split of deepset/prompt-injections and measured on its held-out test split and on real course
+// documents (scripts/eval-guardian.ts). Praise-then-pivot and plain role-play wording is left out:
+// it also appears in genuine lesson material ("Well done! Now write…", "pretend you are a customer").
 const INJECTION = [
-  /\b(ignore|disregard|forget|override)\b[^.\n]{0,40}\b(previous|prior|above|earlier|all|any|your|the)\b[^.\n]{0,30}\b(instructions?|prompts?|rules|directions|guidelines)\b/i,
+  /\b(ignore|disregard|forget|override)\b[^.\n]{0,40}\b(previous|prior|above|earlier|preceding|all|any|your|the)\b[^.\n]{0,30}\b(instructions?|prompts?|rules|directions|guidelines|tasks|assignments|orders|commands|information)\b/i,
+  /\b(leave|remove)\b[^.\n]{0,30}\b(previous|prior|earlier|preceding)\b[^.\n]{0,30}\b(instructions?|prompts?|tasks|assignments|orders|information)\b/i,
+  /\b(forget|ignore|disregard)\s+(about\s+)?(everything|all of (that|this|the above)|what (you|we) (were told|discussed))\b/i,
+  /\bignore (the )?above\b/i,
+  /\b(focus|concentrate)\s+(on\s+)?your\s+new\s+(task|tasks|assignment)\b/i,
+  /\bnow\s+(new|further)\s+(tasks?|instructions?)\s+(will\s+)?(are\s+)?follow/i,
+  /\bnew challenge for you\b/i,
+  /\bI want you to act as\b/i,
+  /\b(?:[Nn]ow|[Ff]rom now on),?\s+you\s+are\s+[A-Z][a-z]+/,
   /\byou are now\b[^.\n]{0,60}/i,
+  /\battention\W{1,5}stop\b/i,
   /\b(system|developer)\s*(prompt|message|instructions?)\s*[:=]/i,
   /\bact as (an?|the) (admin|administrator|system|developer|root)\b/i,
-  /\b(reveal|print|output|show|leak|return)\b[^.\n]{0,30}\b(system prompt|hidden instructions|api[ -]?keys?|secrets?|passwords?|credentials)\b/i,
+  /\b(reveal|print|output|show|leak|return|display|repeat)\b[^.\n]{0,30}\b(system prompt|hidden instructions|(your|the full|all your) prompts?( texts?)?|api[ -]?keys?|secrets?|passwords?|credentials)\b/i,
+  // Filipino: "kalimutan / huwag pansinin ang lahat ng naunang utos"
+  /\b(kalimutan|huwag\s+(mong\s+)?pansinin|balewalain)\b[^.\n]{0,40}\b(lahat|nauna|naunang|nakaraang)\b[^.\n]{0,30}\b(utos|tagubilin|instruksyon|panuto)\b/i,
   /<\/?\s*(system|assistant|instructions?|im_start|im_end)\s*>/i,
   /\bdo not (tell|inform|warn) the user\b/i,
   /\b(begin|end) (system|prompt|instructions)\b/i,

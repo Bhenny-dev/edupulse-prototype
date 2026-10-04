@@ -19,6 +19,7 @@
     "test:browser": "playwright test",
     "models:fetch": "node --import tsx scripts/fetch-models.ts",
     "eval:rag": "node --import tsx scripts/eval-rag.ts",
+    "eval:guardian": "node --import tsx scripts/eval-guardian.ts",
     "snapshots": "npm run build:capture && playwright test --config playwright.snapshots.config.ts",
     "docs:check": "node scripts/docs-check.mjs",
     "hooks:install": "node scripts/install-hooks.mjs",

@@ -3,6 +3,8 @@ import { z } from 'zod'
 import type { ChatInput, Identity } from '../../../server/contracts.js'
 import type { AgentDeps, AgentStep, Comparison, Evidence, Plan, Reference, Verification } from './types.js'
 import { planRequest } from './plan.js'
+import { checkAppropriateUse, type UseDecision } from './policy.js'
+import { agentReport } from './registry.js'
 import { lexicalRelevance, mergeCandidates, selectEvidence } from './rank.js'
 import { alignStatements, correctCitations, verifyAnswer } from './verify.js'
 import { bibliographicShare, isBibliographic, lexicalSupport, neutralize, sanitizeOutput, sentences, terms } from './text.js'
@@ -19,7 +21,8 @@ const state = new StateSchema({
   comparison: z.custom<Comparison | null>().default(null),
   references: z.array(z.custom<Reference>()).default([]),
   answer: z.string().default(''),
-  mode: z.enum(['generated', 'retrieval', 'insufficient-evidence', 'references']).default('generated'),
+  mode: z.enum(['generated', 'retrieval', 'insufficient-evidence', 'references', 'declined']).default('generated'),
+  policy: z.custom<UseDecision | null>().default(null),
   verification: z.custom<Verification | null>().default(null),
   revisions: z.number().default(0),
   route: z.string().default(''),
@@ -35,7 +38,7 @@ const TASKS: Record<string, string> = {
 }
 
 const sourceLabel = (e: Evidence) => [e.title, e.page ? `p. ${e.page}` : '', e.section || ''].filter(Boolean).join(' · ')
-const step = (agent: AgentStep['agent'], node: string, action: string, detail: string, started: number, status: AgentStep['status'] = 'done'): AgentStep => ({ agent, node, action, detail, ms: Math.round(performance.now() - started), status })
+const step = (agent: AgentStep['agent'], node: string, action: string, detail: string, started: number, status: AgentStep['status'] = 'done', metrics?: Record<string, number>): AgentStep => ({ agent, node, action, detail, ms: Math.round(performance.now() - started), status, ...(metrics ? { metrics } : {}) })
 
 function writerPrompt(task: string, input: ChatInput, identity: Identity, evidence: Evidence[], comparison: Comparison | null, revision?: { previous: string; feedback: string[] }) {
   const budget = Math.min(1200, Math.floor(6000 / Math.max(1, evidence.length)))
@@ -67,11 +70,19 @@ const needsCorrection = (claim: Verification['claims'][number], grounded: boolea
 
 /**
  * Pulse multi-agent workflow (LangGraph). Named agents share one state:
- * Planner → Researcher ×N (parallel) → Ranker → Comparator? → Writer →
- * Verifier ⇄ Corrector, with Librarian and extractive fallbacks.
+ * Guardian → Planner → Researcher ×N (parallel) → Ranker → Comparator? →
+ * Writer → Verifier ⇄ Corrector, with Librarian and extractive fallbacks.
+ * The Guardian ends a request that breaks a use rule before any other agent works.
  */
 export function buildAssistantGraph(input: ChatInput & { task?: Plan['task'] | 'auto'; documentIds?: string[] }, identity: Identity, signal: AbortSignal, deps: AgentDeps) {
   return new StateGraph(state)
+    .addNode('guardian', () => {
+      const started = performance.now()
+      // A learner view (a student, a guest, or the admin viewing as a student) always gets the learner rules.
+      const policy = checkAppropriateUse(input.message, input.viewRole === 'student' || input.viewRole === 'guest' ? input.viewRole : identity.role)
+      if (!('guidance' in policy)) return { policy, steps: [step('Guardian', 'guardian', 'check appropriate use', policy.note, started)] }
+      return { policy, answer: policy.guidance, mode: 'declined' as const, steps: [step('Guardian', 'guardian', `decline: ${policy.rule}`, `${policy.reason} (${policy.spec}) No other agent was run.`, started, 'declined')] }
+    })
     .addNode('planner', () => {
       const started = performance.now()
       const plan = planRequest(input)
@@ -84,7 +95,7 @@ export function buildAssistantGraph(input: ChatInput & { task?: Plan['task'] | '
       const started = performance.now()
       const result = await deps.search(s.query, { focus: input.message, documentIds: input.documentIds }, signal)
       const kinds = [...new Set(result.evidence.map(e => e.origin === 'public-guide' ? 'product guide' : e.method))].join(', ')
-      return { groups: [result.evidence], warnings: result.warning ? [result.warning] : [], steps: [step('Researcher', 'researcher', 'hybrid search', `“${s.query.slice(0, 80)}” → ${result.evidence.length} candidate passages${kinds ? ` (${kinds})` : ''}.`, started)] }
+      return { groups: [result.evidence], warnings: result.warning ? [result.warning] : [], steps: [step('Researcher', 'researcher', 'hybrid search', `“${s.query.slice(0, 80)}” → ${result.evidence.length} candidate passages${kinds ? ` (${kinds})` : ''}.`, started, 'done', { passages: result.evidence.length })] }
     })
     .addNode('ranker', async s => {
       const started = performance.now()
@@ -105,7 +116,7 @@ export function buildAssistantGraph(input: ChatInput & { task?: Plan['task'] | '
       let bibliography = 0
       if (s.plan?.task === 'compare') candidates = candidates.filter(c => bibliographicShare(c.text) < 0.5 || (bibliography++, false))
       const result = selectEvidence(candidates, s.plan?.task === 'compare' ? 8 : 6, s.plan?.task === 'compare' && input.documentIds?.length === 2 ? input.documentIds : [])
-      return { evidence: result.selected, steps: [step('Ranker', 'ranker', 'evaluate and rank', `${candidates.length} candidates → ${result.selected.length} passages from ${result.documents} source${result.documents === 1 ? '' : 's'} using ${method}; ${result.belowFloor} below the relevance floor, ${result.duplicates} near-duplicates removed${bibliography ? `, ${bibliography} reference-list passage${bibliography === 1 ? '' : 's'} skipped` : ''}.`, started)] }
+      return { evidence: result.selected, steps: [step('Ranker', 'ranker', 'evaluate and rank', `${candidates.length} candidates → ${result.selected.length} passages from ${result.documents} source${result.documents === 1 ? '' : 's'} using ${method}; ${result.belowFloor} below the relevance floor, ${result.duplicates} near-duplicates removed${bibliography ? `, ${bibliography} reference-list passage${bibliography === 1 ? '' : 's'} skipped` : ''}.`, started, 'done', { candidates: candidates.length, selected: result.selected.length, belowFloor: result.belowFloor })] }
     })
     .addNode('comparator', async s => {
       const started = performance.now()
@@ -115,7 +126,7 @@ export function buildAssistantGraph(input: ChatInput & { task?: Plan['task'] | '
       if (!left || !right) return { steps: [step('Comparator', 'comparator', 'align sources', 'Only one source matched this request; a comparison needs two documents. Select two documents in the knowledge library.', started, 'skipped')] }
       const statements = (list: Evidence[]) => list.flatMap(e => sentences(e.text)).filter(t => terms(t).length >= 4 && !isBibliographic(t)).slice(0, 10)
       const comparison = await alignStatements(statements(left), statements(right), signal, deps.similarity, { left: left[0]!.title, right: right[0]!.title })
-      return { comparison, steps: [step('Comparator', 'comparator', 'align sources', `${comparison.shared.length} shared, ${comparison.related.length} related, ${comparison.onlyLeft.length} only in “${comparison.leftTitle}”, ${comparison.onlyRight.length} only in “${comparison.rightTitle}”; coverage ${Math.round(comparison.coverage * 100)}% (${comparison.method}).`, started)] }
+      return { comparison, steps: [step('Comparator', 'comparator', 'align sources', `${comparison.shared.length} shared, ${comparison.related.length} related, ${comparison.onlyLeft.length} only in “${comparison.leftTitle}”, ${comparison.onlyRight.length} only in “${comparison.rightTitle}”; coverage ${Math.round(comparison.coverage * 100)}% (${comparison.method}).`, started, 'done', { coverage: Math.round(comparison.coverage * 100) })] }
     })
     .addNode('writer', async s => {
       const started = performance.now()
@@ -175,9 +186,10 @@ export function buildAssistantGraph(input: ChatInput & { task?: Plan['task'] | '
       const answer = references.length
         ? `I found ${references.length} real references for “${s.plan!.topic}” from open catalogs. Check each one for fit and availability before adding it to Section 7:\n\n${references.map((r, i) => `${i + 1}. ${r.title}${r.authors.length ? ` — ${r.authors.slice(0, 3).join(', ')}` : ''}${r.year ? ` (${r.year})` : ''}${r.venue ? `, ${r.venue}` : ''}. ${r.source}: ${r.url}`).join('\n')}`
         : `No catalog results were found for “${s.plan!.topic}”. Try a shorter topic, such as the course subject.`
-      return { answer, references, mode: 'references' as const, warnings: warning ? [warning] : [], steps: [step('Librarian', 'librarian', 'search open catalogs', `Open Library, OpenAlex and Wikipedia → ${references.length} ranked references for “${s.plan!.topic.slice(0, 80)}”.`, started)] }
+      return { answer, references, mode: 'references' as const, warnings: warning ? [warning] : [], steps: [step('Librarian', 'librarian', 'search open catalogs', `Open Library, OpenAlex and Wikipedia → ${references.length} ranked references for “${s.plan!.topic.slice(0, 80)}”.`, started, 'done', { references: references.length })] }
     })
-    .addEdge(START, 'planner')
+    .addEdge(START, 'guardian')
+    .addConditionalEdges('guardian', s => s.policy?.allowed ? 'planner' : END, ['planner', END])
     .addConditionalEdges('planner', s => s.plan!.task === 'references' ? 'librarian' : s.plan!.needsEvidence ? s.plan!.queries.map(query => new Send('researcher', { query })) : s.groups.length ? 'ranker' : deps.generate ? 'writer' : 'missing', ['librarian', 'researcher', 'ranker', 'writer', 'missing'])
     .addEdge('researcher', 'ranker')
     .addConditionalEdges('ranker', s => {
@@ -203,13 +215,17 @@ export async function runAgents(input: ChatInput & { task?: Plan['task'] | 'auto
   const requestId = crypto.randomUUID()
   const result = await buildAssistantGraph(input, identity, signal, deps).invoke({}, { recursionLimit: 20, signal })
   const steps = result.steps as AgentStep[]
+  const sources = (result.evidence as Evidence[]).length
   return {
-    requestId, answer: result.answer as string, mode: result.mode as string, task: (result.plan as Plan).task, plan: result.plan as Plan,
+    // A declined request never reaches the Planner, so there is no plan.
+    requestId, answer: result.answer as string, mode: result.mode as string, task: (result.plan as Plan | null)?.task ?? 'general', plan: result.plan as Plan | null,
     sources: (result.evidence as Evidence[]).map((e, i) => ({ ...e, citation: i + 1, score: e.relevance ?? e.similarity ?? e.rrf })),
     verification: result.verification as Verification | null, comparison: result.comparison as Comparison | null, references: result.references as Reference[],
     trace: steps, agents: [...new Set(steps.map(s => s.agent))],
     warning: [...new Set(result.warnings as string[])].join(' ') || null,
-    provider: deps.provider, model: deps.model || null, grounding: (result.evidence as Evidence[]).length ? 'references' : 'general',
+    provider: deps.provider, model: deps.model || null, grounding: sources ? 'references' : 'general',
+    policy: result.policy as UseDecision | null,
+    agentReport: agentReport(steps, { mode: result.mode as string, verification: result.verification as Verification | null, sources }),
   }
 }
 export type AgentAnswer = Awaited<ReturnType<typeof runAgents>>

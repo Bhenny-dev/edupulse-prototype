@@ -13,7 +13,7 @@ These screenshots come from the documentation capture build and show **preview s
 
 ![System Admin console](01-system-console.png)
 
-From top to bottom: four summary cards, **System health** and **Role coverage**, **Manage accounts**, and **Audit activity**. **Refresh** repeats every check and reloads the accounts and events.
+From top to bottom: four summary cards, **System health** and **Role coverage**, **Agent activity**, **Manage accounts**, and **Audit activity**. **Refresh** repeats every check and reloads the accounts and events.
 
 The summary cards show:
 * authenticated accounts;
@@ -66,3 +66,21 @@ EduPulse records these actions:
 * role changes.
 
 The records never contain passwords, tokens, provider keys, prompts or the system admin's email address. This preview has no events yet, so the table shows its empty message.
+
+## 5. Agent activity
+
+![Agent activity](05-agent-activity.png)
+
+This section is how the admin monitors Pulse’s named agents. Each row shows:
+* an agent, its job title (for example the **Guardian**, *Appropriate-use officer*), the task it works on and the goal it must achieve;
+* for the last 7 days: **Runs**, **Goal met** (the share of runs in which it achieved its goal), **Fallbacks or stops**, **Average time** and **Last run**.
+
+The goals are measured from each run’s result, not taken from the agent’s own report. For example, the Verifier’s goal counts as met only when no claim shown to the user was unsupported. The Ranker’s goal is not met when no relevant evidence existed: those runs point to gaps in the knowledge library.
+
+Below the table:
+* **Appropriate-use declines** counts the Guardian’s declines by rule: assessment integrity, excluded features and official grade computation.
+* **Recent runs** lists the latest runs by role, workflow, task, outcome and time. Each agent appears as a chip marked ✓ (goal met) or ✗ (not met).
+
+Runs are recorded for signed-in accounts in the hosted system once the agent-run migration is applied ([Backend System · Supabase](../../backend-system/supabase.md)). Until then, the live console shows a notice instead of counts. A record holds the task, outcome, timing and goal results, never the question, the answer or document text. The admin sees roles, not the people behind them. This capture is a preview session, so every count is zero.
+
+*New after v0.4.0* (FR-AGENT-01–04).

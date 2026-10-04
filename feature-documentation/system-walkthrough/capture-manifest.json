@@ -1,5 +1,5 @@
 {
-  "capturedAt": "2026-10-04T06:33:53.594Z",
+  "capturedAt": "2026-10-04T07:43:01.393Z",
   "problems": [],
   "scenes": [
     {
@@ -231,6 +231,14 @@
       "folder": "07-system-admin",
       "file": "04-audit-activity.png",
       "title": "Audit activity with All, Successes and Failures filters",
+      "route": "/dashboard",
+      "ok": true
+    },
+    {
+      "role": "system admin",
+      "folder": "07-system-admin",
+      "file": "05-agent-activity.png",
+      "title": "Agent activity: each named agent, its task, goal and tracked results",
       "route": "/dashboard",
       "ok": true
     },
@@ -496,6 +504,14 @@
       "file": "08-pulse-for-students.png",
       "title": "Pulse for students (role-scoped help)",
       "route": "/performance",
+      "ok": true
+    },
+    {
+      "role": "student",
+      "folder": "05-student",
+      "file": "09-pulse-declines-assessment-answers.png",
+      "title": "Pulse declines a request for quiz answers (Guardian)",
+      "route": "/dashboard",
       "ok": true
     }
   ]

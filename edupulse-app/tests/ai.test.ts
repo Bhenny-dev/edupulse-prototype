@@ -67,7 +67,7 @@ test('agents research, rank, write and verify a grounded answer', async () => {
   let calls = 0
   const result = await runChat(chatInput.parse({ message: 'When can I publish courseware?' }), identity, signal(), deps({ generate: async () => { calls++; return 'The instructor must check courseware before publishing. [1]' } }))
   assert.equal(calls, 1); assert.equal(result.mode, 'generated')
-  assert.deepEqual(agents(result), ['Planner', 'Researcher', 'Ranker', 'Writer', 'Verifier'])
+  assert.deepEqual(agents(result), ['Guardian', 'Planner', 'Researcher', 'Ranker', 'Writer', 'Verifier'])
   assert.equal(result.verification!.supported, 1); assert.equal(result.verification!.unsupported, 0)
 })
 
@@ -124,7 +124,7 @@ test('a mixed answer does not retain an unsupported claim after revision', async
 test('explicit source-only questions without evidence never trigger generation', async () => {
   const result = await runChat(chatInput.parse({ message: 'Unknown document detail', grounding: 'sources' }), identity, signal(), deps({ search: async () => ({ evidence: [] }), generate: async () => { throw new Error('Must not run') } }))
   assert.equal(result.mode, 'insufficient-evidence')
-  assert.deepEqual(result.trace.map(s => s.node), ['planner', 'researcher', 'ranker', 'missing'])
+  assert.deepEqual(result.trace.map(s => s.node), ['guardian', 'planner', 'researcher', 'ranker', 'missing'])
 })
 
 test('general assistance works without sources and invented citations are removed', async () => {
@@ -236,7 +236,7 @@ test('Librarian answers reference requests from catalog results only', async () 
     references: async topic => ({ references: [{ title: 'Data structures and algorithms', authors: ['Alfred V. Aho'], year: 1983, venue: 'Addison-Wesley', url: 'https://openlibrary.org/works/OL3509435W', source: 'Open Library', identifier: 'ISBN 0201000237', relevance: 0.71, summary: topic }] }),
     generate: async () => { throw new Error('Librarian must not need a model') },
   }))
-  assert.equal(result.mode, 'references'); assert.deepEqual(agents(result), ['Planner', 'Librarian'])
+  assert.equal(result.mode, 'references'); assert.deepEqual(agents(result), ['Guardian', 'Planner', 'Librarian'])
   assert.match(result.answer, /Aho/); assert.match(result.answer, /openlibrary\.org\/works\/OL3509435W/)
 })
 
@@ -252,7 +252,7 @@ test('courseware agents verify the draft and check outline coverage automaticall
   const result = await runCourseware(course, identity, signal(), async () => { calls++; return draft(calls === 1 ? 'Bounded loops' : 'Bounded loops and sentinel values') }, undefined, false, { search: async () => ({ evidence: [] }) })
   assert.equal(calls, 2, 'a missing topic triggers one revision')
   assert.ok(result.coverage!.items.find(i => i.text === 'Sentinel values')!.status !== 'missing')
-  assert.ok(['Planner', 'Researcher', 'Ranker', 'Writer', 'Verifier', 'Comparator', 'Corrector'].every(a => result.trace.some(s => s.agent === a)))
+  assert.ok(['Guardian', 'Planner', 'Researcher', 'Ranker', 'Writer', 'Verifier', 'Comparator', 'Corrector'].every(a => result.trace.some(s => s.agent === a)))
 })
 
 test('a failed courseware revision keeps the earlier valid draft', async () => {

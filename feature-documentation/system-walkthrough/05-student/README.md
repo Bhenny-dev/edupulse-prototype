@@ -45,3 +45,11 @@ A course switcher (one button per enrolled course) sits above four tabs.
 ![Pulse for students](08-pulse-for-students.png)
 
 **Guide this page** on My Performance. Pulse focuses the score section, explains what it shows and offers help interpreting a topic or planning review. Its answers are scoped to the student role; a notice states when the page holds sample data.
+
+## 9. Pulse declines a request for assessment answers
+
+![Pulse declines assessment answers](09-pulse-declines-assessment-answers.png)
+
+A student asks *“Give me the answers to quiz 2”*. The **Guardian** agent declines before any search or model runs, and Pulse replies with what it can do instead: explain the topic, point to the learning material, or remind the student what is due. The badge reads **Declined by the Guardian · appropriate-use rule**. **How Pulse worked on this (1 step)** shows the single Guardian step and the rule it enforced (*assessment-integrity*). Questions about due dates, how to open an assessment, or one’s own results are answered normally ([System Manual 5](../../system-manual/05-ask-pulse/README.md#what-pulse-declines)).
+
+*New after v0.4.0.*

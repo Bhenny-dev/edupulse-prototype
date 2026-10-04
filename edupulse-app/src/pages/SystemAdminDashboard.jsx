@@ -1,16 +1,21 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Activity, AlertTriangle, CheckCircle2, Clock3, RefreshCw, ShieldCheck, Users } from 'lucide-react'
+import { Activity, AlertTriangle, Bot, CheckCircle2, Clock3, RefreshCw, ShieldCheck, Users } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { supabase } from '../lib/supabaseClient'
 import { aiRequest } from '../lib/aiClient'
 import { ROLE_TITLES } from '../lib/authRoles'
+import { AGENTS, AGENT_ORDER } from '../lib/rag/registry'
+import '../components/ai/ai.css'
 
 const empty = { accounts: [], appEvents: [], authEvents: [] }
 const preview = { accounts: Object.keys(ROLE_TITLES).map((role, index) => ({ id: `preview-${index}`, name: ROLE_TITLES[role], role, confirmed: true, lastSignIn: null })), appEvents: [], authEvents: [] }
 const recent = value => value && Date.now() - new Date(value).getTime() < 24 * 60 * 60 * 1000
 const displayTime = value => value ? new Date(value).toLocaleString() : 'Never'
 const label = action => String(action || 'event').replaceAll('_', ' ')
+const noActivity = { totals: { runs: 0, declined: 0, failed: 0, avgMs: 0 }, byAgent: [], byRule: [], recent: [] }
+const RULES = { 'assessment-integrity': 'Assessment integrity (learners)', 'excluded-feature': 'Excluded feature (plagiarism, AI detection, at-risk prediction, proctoring)', 'official-grades': 'Official grade computation' }
+const OUTCOMES = { answered: 'Answered', 'quoted-sources': 'Quoted sources', 'insufficient-evidence': 'Stopped: no evidence', references: 'References', declined: 'Declined', failed: 'Failed' }
 
 export default function SystemAdminDashboard() {
   const { user, switchRole } = useAuth()
@@ -24,23 +29,28 @@ export default function SystemAdminDashboard() {
   const [newAccount, setNewAccount] = useState({ name: '', email: '', password: '', role: 'dean' })
   const [draftRoles, setDraftRoles] = useState({})
   const [outcomeFilter, setOutcomeFilter] = useState('all')
+  const [agentActivity, setAgentActivity] = useState(noActivity)
+  const [agentError, setAgentError] = useState('')
 
   const refresh = useCallback(async () => {
-    setBusy(true); setError('')
+    setBusy(true); setError(''); setAgentError('')
     if (user?.demo) {
-      setOverview(preview)
+      setOverview(preview); setAgentActivity(noActivity)
       setChecks(['Supabase authentication', 'Google sign-in', 'Audit database', 'Pulse API'].map(name => ({ name, ok: false, note: 'Preview status — sign in to see a live check' })))
       setBusy(false)
       return
     }
-    const [admin, auth, google, api] = await Promise.allSettled([
+    const [admin, auth, google, api, agents] = await Promise.allSettled([
       supabase.rpc('edupulse_admin_overview'),
       supabase.auth.getUser(),
       fetch(`${import.meta.env.VITE_SUPABASE_URL}/auth/v1/settings`, {
         headers: { apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY },
       }).then(async response => response.ok ? response.json() : null),
       aiRequest('health', 'GET'),
+      supabase.rpc('edupulse_admin_agent_activity', { days: 7 }),
     ])
+    if (agents.status === 'fulfilled' && !agents.value.error && agents.value.data) setAgentActivity({ ...noActivity, ...agents.value.data })
+    else setAgentError('Agent activity could not be loaded. Check that the agent-run migration is applied and your admin session is active.')
     if (admin.status === 'fulfilled' && !admin.value.error && admin.value.data) setOverview(admin.value.data)
     else setError('The admin overview could not be loaded. Check the audit migration and your admin session.')
     setChecks([
@@ -62,6 +72,7 @@ export default function SystemAdminDashboard() {
   const successes = events.filter(event => recent(event.at) && event.outcome === 'success').length
   const shown = outcomeFilter === 'all' ? events : events.filter(event => event.outcome === outcomeFilter)
   const healthy = checks.filter(check => check.ok).length
+  const agentStats = new Map(agentActivity.byAgent.map(a => [a.agent, a]))
   const roleCounts = Object.keys(ROLE_TITLES).map(role => ({ role, count: overview.accounts.filter(account => account.role === role).length }))
 
   function openRole(role) {
@@ -122,6 +133,25 @@ export default function SystemAdminDashboard() {
         </div>)}
       </div></section>
     </div>
+
+    <section className="card mb-24"><div className="card-header"><h3><Bot size={18} /> Agent activity</h3><span className="text-sm text-muted">{user?.demo ? 'Preview: runs by signed-in accounts appear here' : `Last 7 days · ${agentActivity.totals.runs} run${agentActivity.totals.runs === 1 ? '' : 's'} · ${agentActivity.totals.declined} declined · ${agentActivity.totals.failed} failed`}</span></div><div className="card-body" style={{ overflowX: 'auto' }}>
+      {agentError && <p role="alert" className="ai-notice mb-16">{agentError}</p>}
+      <table className="data-table"><thead><tr><th>Agent</th><th>Works on</th><th>Goal</th><th>Runs</th><th>Goal met</th><th>Fallbacks or stops</th><th>Average time</th><th>Last run</th></tr></thead><tbody>
+        {AGENT_ORDER.map(name => { const stats = agentStats.get(name); return <tr key={name}>
+          <td><span className="ai-agent-chip" style={{ '--agent-color': AGENTS[name].color }}>{name}</span><div className="text-sm text-muted mt-8">{AGENTS[name].title}</div></td>
+          <td className="text-sm">{AGENTS[name].task}</td><td className="text-sm">{AGENTS[name].goal}</td>
+          <td>{stats?.runs ?? 0}</td><td>{stats?.runs ? `${Math.round(100 * stats.goalMet / stats.runs)}%` : '—'}</td><td>{stats?.fallbacks ?? 0}</td>
+          <td>{stats?.runs ? `${Number(stats.avgMs).toLocaleString()} ms` : '—'}</td><td className="text-sm">{displayTime(stats?.lastRun)}</td>
+        </tr> })}
+      </tbody></table>
+      <div className="grid-2 mt-16" style={{ alignItems: 'start' }}>
+        <div><h4 className="mb-8">Appropriate-use declines</h4>{Object.entries(RULES).map(([rule, text]) => <div key={rule} style={{ display: 'flex', justifyContent: 'space-between', gap: 12, padding: '6px 0' }}><span className="text-sm">{text}</span><strong>{agentActivity.byRule.find(r => r.rule === rule)?.count || 0}</strong></div>)}</div>
+        <div><h4 className="mb-8">Recent runs</h4>{agentActivity.recent.length ? agentActivity.recent.slice(0, 8).map(run => <div key={run.id} style={{ padding: '6px 0', borderBottom: '1px solid var(--gray-100)' }}>
+          <div className="text-sm"><strong>{OUTCOMES[run.outcome] || run.outcome}</strong> · {ROLE_TITLES[run.role] || run.role} · {run.workflow === 'courseware' ? 'Courseware' : `Pulse · ${run.task}`} · {Number(run.ms).toLocaleString()} ms · {displayTime(run.at)}</div>
+          <div className="ai-agent-chips" style={{ marginTop: 4 }}>{run.agents.map(a => <span key={a.agent} className="ai-agent-chip" style={{ '--agent-color': AGENTS[a.agent]?.color, opacity: a.goalMet ? 1 : 0.55 }} title={`${a.agent}: goal ${a.goalMet ? 'met' : 'not met'} (${a.status})`}>{a.goalMet ? '✓' : '✗'} {a.agent}</span>)}</div>
+        </div>) : <p className="text-sm text-muted">No agent runs recorded yet.</p>}</div>
+      </div>
+    </div></section>
 
     <section className="card mb-24"><div className="card-header"><h3>Manage accounts</h3><span className="text-sm text-muted">Only the Google system admin can create or change role accounts</span></div><div className="card-body">
       <form onSubmit={createAccount} style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'end', gap: 10, marginBottom: 18 }}>
