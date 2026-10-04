@@ -4,7 +4,7 @@ export default defineAgent({
   id: 'courseware',
   zone: 'courseware',
   label: 'Courseware',
-  roles: ['instructor', 'admin', 'student'],
+  roles: ['instructor', 'admin', 'dean', 'associate_dean', 'student'],
   greeting: (user) => user?.role === 'student'
     ? "Looking for something specific here? This student view includes sample materials; I can explain the controls, but I can't answer assessment items."
     : user?.role === 'admin'

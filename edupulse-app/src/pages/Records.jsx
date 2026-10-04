@@ -467,7 +467,7 @@ export default function Records() {
   const requested = searchParams.get('tab')
   const tab = ALL_TABS.some(t => t.key === requested) ? requested : ALL_TABS[0].key
   const setTab = (key) => setSearchParams({ tab: key })
-  const isAdmin = user?.role === 'admin'
+  const isAdmin = ['dean', 'associate_dean'].includes(user?.role)
 
   if (!isAdmin) return null
 

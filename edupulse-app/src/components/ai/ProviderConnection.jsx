@@ -4,6 +4,7 @@ import { aiRequest } from '../../lib/aiClient'
 import { useAI } from '../../context/AIContext'
 import { useAuth } from '../../context/AuthContext'
 import { browserCapability, browserPresets, removeBrowserModel, setAiPreference, startBrowserAI, stopBrowserAI } from '../../lib/browserAI'
+import { recordAudit } from '../../lib/audit'
 
 const providers = [
   { id: 'browser', name: 'On this device · no API key' },
@@ -35,13 +36,14 @@ export default function ProviderConnection() {
     try {
       const result = await aiRequest('providers', 'POST', { provider, ...(key.trim() ? { apiKey: key.trim() } : {}), ...(model ? { model } : {}) })
       setConnection(result.connection); setModels(result.models); setAiPreference('server'); stopBrowserAI()
+      void recordAudit(user, 'ai_connection', 'success', provider)
       setNotice('Connected. Models below were returned by this provider’s API. Select the model you want to use.'); await ai.refresh()
-    } catch (err) { setError(err.message) }
+    } catch (err) { void recordAudit(user, 'ai_connection', 'failure', provider); setError(err.message) }
     finally { setKey(''); setBusy(false) }
   }
   async function disconnect() {
     setBusy(true); setError('')
-    try { await aiRequest('providers', 'DELETE'); setConnection(null); setModels([]); setNotice('Personal provider disconnected.'); await ai.refresh() }
+    try { await aiRequest('providers', 'DELETE'); void recordAudit(user, 'ai_connection', 'success', 'Disconnected'); setConnection(null); setModels([]); setNotice('Personal provider disconnected.'); await ai.refresh() }
     catch (err) { setError(err.message) } finally { setBusy(false) }
   }
   const selected = providers.find(p => p.id === provider), preset = browserPresets.find(p => p.id === browserModel)

@@ -56,6 +56,22 @@ test('bell and Notifications page share one unread count, and Mark All Read clea
   await expect(page.getByRole('button', { name: /^Notifications/ })).toHaveAccessibleName('Notifications', { timeout: 20_000 })
 })
 
+test('system admin console shows health, role coverage, accounts and filterable audit activity, separate from academic screens', async ({ page }) => {
+  await page.goto('/')
+  await page.getByRole('button', { name: 'System Admin', exact: true }).click()
+  await expect(page.getByRole('heading', { name: 'System Admin', exact: true })).toBeVisible()
+  for (const heading of ['System health', 'Role coverage', 'Manage accounts', 'Audit activity']) await expect(page.getByRole('heading', { name: heading })).toBeVisible()
+  // A preview session cannot change real accounts.
+  await expect(page.getByRole('button', { name: 'Create account' })).toBeDisabled()
+  const failures = page.getByRole('button', { name: /^Failures \(\d+\)$/ })
+  await failures.click()
+  await expect(failures).toHaveAttribute('aria-pressed', 'true')
+  await expect(page.getByRole('button', { name: /^All \(\d+\)$/ })).toHaveAttribute('aria-pressed', 'false')
+  // Academic management belongs to the Dean and Associate Dean, not the system admin.
+  await page.goto('/#/course-loading')
+  await expect(page).toHaveURL(/#\/dashboard/)
+})
+
 test('Dean sidebar opens the Loaded Courses view instead of an empty tab', async ({ page }) => {
   await page.goto('/')
   await page.getByRole('button', { name: 'Dean', exact: true }).click()

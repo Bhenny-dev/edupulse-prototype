@@ -1,13 +1,12 @@
 import { defineAgent } from './defineAgent'
 
-// Records — FLOW_SPEC Phase 0. Dean and Associate Dean share one role
-// ('admin') with identical permissions, so this agent has a single greeting
-// rather than branching per persona.
+// Records — FLOW_SPEC Phase 0. Dean and Associate Dean have distinct
+// identities and share the same academic records station.
 export default defineAgent({
   id: 'records',
   zone: 'records',
   label: 'Records',
-  roles: ['admin'],
+  roles: ['dean', 'associate_dean'],
   greeting: () => "This Records view uses sample data. Want to preview the EduSuite import flow or inspect the example blocks and class lists?",
   intents: [
     {

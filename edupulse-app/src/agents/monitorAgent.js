@@ -9,7 +9,7 @@ export default defineAgent({
   id: 'monitor',
   zone: 'monitor',
   label: 'Monitor',
-  roles: ['admin'],
+  roles: ['dean', 'associate_dean'],
   greeting: () => "These monitoring panels use sample data. Want help interpreting a syllabus status, delivery chart, or student overview?",
   intents: [
     {

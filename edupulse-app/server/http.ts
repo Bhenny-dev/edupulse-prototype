@@ -33,7 +33,7 @@ export async function authenticate(request: Request): Promise<Identity> {
     const { data, error } = await client.auth.getUser(token)
     if (error || !data.user) throw new ApiError(401, 'INVALID_SESSION', 'Your session could not be verified. Please sign in again.')
     const role = data.user.app_metadata?.role
-    if (!['admin', 'instructor', 'student'].includes(role) ||
+    if (!['admin', 'dean', 'associate_dean', 'instructor', 'student'].includes(role) ||
         (role === 'admin' && (data.user.email?.toLowerCase() !== 'riverabenlor461@gmail.com' ||
           !data.user.app_metadata?.providers?.includes('google')))) {
       throw new ApiError(403, 'ROLE_NOT_ASSIGNED', 'This account has no EduPulse role. Contact the administrator.')
@@ -93,7 +93,7 @@ export async function handleRequest(request: Request): Promise<Response> {
     }
     if (action === 'workspace') {
       if (request.method === 'GET') return json(await readWorkspace(identity))
-      if (!['instructor', 'admin'].includes(identity.role)) throw new ApiError(403, 'FORBIDDEN', 'Sign in as an instructor to save a workspace.')
+      if (!['instructor', 'admin', 'dean', 'associate_dean'].includes(identity.role)) throw new ApiError(403, 'FORBIDDEN', 'Sign in with an academic account to save a workspace.')
       return json(await saveWorkspace(identity, workspaceInput.parse(await readJson(request, WORKSPACE_BYTES))))
     }
     if (action === 'health') {
@@ -116,7 +116,7 @@ export async function handleRequest(request: Request): Promise<Response> {
     }
     if (action === 'documents' && identity.role === 'guest') throw new ApiError(401, 'SIGN_IN_REQUIRED', 'Sign in to manage private knowledge. Preview access only includes the public guide.')
     if (action === 'documents' && request.method === 'GET') return json({ documents: await listDocuments(identity) })
-    if (action === 'courseware' && !['instructor', 'admin'].includes(identity.role) && !(identity.role === 'guest' && personalConnection)) throw new ApiError(403, 'FORBIDDEN', 'Sign in with an instructor account, use the local workspace, or connect your own provider for preview drafts.')
+    if (action === 'courseware' && !['instructor', 'admin', 'dean', 'associate_dean'].includes(identity.role) && !(identity.role === 'guest' && personalConnection)) throw new ApiError(403, 'FORBIDDEN', 'Sign in with an academic account, use the local workspace, or connect your own provider for preview drafts.')
     const now = Date.now()
     for (const [key, value] of buckets) if (value.until < now) buckets.delete(key)
     const key = `${identity.id}:${personalConnection?.id || 'default'}`

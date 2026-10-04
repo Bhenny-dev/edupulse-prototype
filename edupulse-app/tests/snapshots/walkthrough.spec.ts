@@ -10,7 +10,7 @@ const manifest: { role: string; folder: string; file: string; title: string; rou
 const problems: string[] = []
 test.describe.configure({ mode: 'serial' })
 
-async function signIn(page: Page, persona: 'Dean' | 'Assoc. Dean' | 'Instructor' | 'Student') {
+async function signIn(page: Page, persona: 'System Admin' | 'Dean' | 'Assoc. Dean' | 'Instructor' | 'Student') {
   page.on('pageerror', error => problems.push(`pageerror: ${error.message}`))
   page.on('console', message => { if (message.type() === 'error' && /Content Security Policy|Refused to/.test(message.text())) problems.push(`csp: ${message.text()}`) })
   await page.goto('/')
@@ -85,6 +85,16 @@ test('shared interface (shown as instructor)', async ({ page }) => {
   ])
 })
 
+test('system admin', async ({ page }) => {
+  await signIn(page, 'System Admin')
+  await run(page, 'system admin', [
+    { folder: '07-system-admin', name: '01-system-console', title: 'System Admin console (preview sample data)', path: '/dashboard', fullPage: true },
+    { folder: '07-system-admin', name: '02-health-and-role-coverage', title: 'System health checks and role coverage', path: '/dashboard', element: p => p.locator('.grid-2').first() },
+    { folder: '07-system-admin', name: '03-manage-accounts', title: 'Manage accounts: create an account or change a role', path: '/dashboard', element: p => p.locator('section.card').filter({ has: p.getByRole('heading', { name: 'Manage accounts' }) }) },
+    { folder: '07-system-admin', name: '04-audit-activity', title: 'Audit activity with All, Successes and Failures filters', path: '/dashboard', element: p => p.locator('section.card').filter({ has: p.getByRole('heading', { name: 'Audit activity' }) }) },
+  ])
+})
+
 test('dean and associate dean', async ({ page }) => {
   await signIn(page, 'Dean')
   const f = '03-dean-and-associate-dean'
@@ -105,7 +115,7 @@ test('dean and associate dean', async ({ page }) => {
 
 test('associate dean', async ({ page }) => {
   await signIn(page, 'Assoc. Dean')
-  await run(page, 'associate dean', [{ folder: '03-dean-and-associate-dean', name: '12-associate-dean-dashboard', title: 'Associate Dean dashboard (same shared admin role)', path: '/dashboard' }])
+  await run(page, 'associate dean', [{ folder: '03-dean-and-associate-dean', name: '12-associate-dean-dashboard', title: 'Associate Dean dashboard (distinct account)', path: '/dashboard' }])
 })
 
 test('instructor', async ({ page, request }) => {

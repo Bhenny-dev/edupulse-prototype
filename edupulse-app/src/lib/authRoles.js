@@ -1,6 +1,6 @@
 export const OWNER_EMAIL = 'riverabenlor461@gmail.com'
 /** @type {Record<string, string>} */
-export const ROLE_TITLES = { admin: 'Admin', instructor: 'Instructor', student: 'Student' }
+export const ROLE_TITLES = { admin: 'System Admin', dean: 'Dean', associate_dean: 'Associate Dean', instructor: 'Instructor', student: 'Student' }
 
 /**
  * @param {{id: string, email?: string, app_metadata?: {role?: string, provider?: string, providers?: string[]}, user_metadata?: {full_name?: string, department?: string}} | null} account
@@ -9,7 +9,7 @@ export const ROLE_TITLES = { admin: 'Admin', instructor: 'Instructor', student: 
 export function accountUser(account, previous) {
   const email = account?.email?.trim().toLowerCase()
   const assignedRole = account?.app_metadata?.role
-  if (!account || !email || !assignedRole || !['admin', 'instructor', 'student'].includes(assignedRole)) return null
+  if (!account || !email || !assignedRole || !ROLE_TITLES[assignedRole]) return null
   // Roles from editable user_metadata cannot grant access.
   if (assignedRole === 'admin' && (email !== OWNER_EMAIL ||
       !account.app_metadata?.providers?.includes('google'))) return null
@@ -17,7 +17,7 @@ export function accountUser(account, previous) {
   const role = canSwitchRoles && previous?.id === account.id && previous?.authenticated && previous.role && ROLE_TITLES[previous.role]
     ? previous.role : assignedRole
   return {
-    id: account.id, email, name: account.user_metadata?.full_name || email,
+    id: account.id, email, name: canSwitchRoles ? 'System Admin' : account.user_metadata?.full_name || email.split('@')[0],
     department: account.user_metadata?.department || '', role, baseRole: assignedRole,
     title: ROLE_TITLES[role], canSwitchRoles, provider: canSwitchRoles ? 'google' : account.app_metadata?.provider || 'email',
     authenticated: true, demo: false,

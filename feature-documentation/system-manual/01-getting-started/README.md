@@ -7,8 +7,8 @@ This section points to the walkthrough screenshots rather than repeating them.
 ## Sign in
 
 1. Open EduPulse and click **Sign In** (or scroll to the sign-in panel).
-2. Enter the email and password of the account your administrator created, then click **Sign In**. Administrators can use **Sign in with Google** instead. Your role (admin, instructor or student) comes from the account and decides which pages you see. An account without a role cannot sign in.
-3. In the local development app only, **Quick preview access** opens the system as **Dean**, **Assoc. Dean**, **Instructor** or **Student** with sample data. Preview work is kept on this device only. The hosted site does not offer preview access.
+2. Enter the email and password of the account your system admin created, then click **Sign In**. The system admin uses **Sign in with Google**. Your assigned role (Dean, Associate Dean, instructor or student) decides which pages you see. An account without a role cannot sign in.
+3. In the local development app only, **Quick preview access** opens the system as **System Admin**, **Dean**, **Assoc. Dean**, **Instructor** or **Student** with sample data. Preview work is kept on this device only. The hosted site does not offer preview access.
 
 See: [sign-in panel](../../system-walkthrough/01-public-site/04-sign-in-panel.png) and [preview personas](../../system-walkthrough/01-public-site/05-preview-personas.png).
 

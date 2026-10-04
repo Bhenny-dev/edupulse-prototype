@@ -4,9 +4,8 @@ import { useAuth } from '../../context/AuthContext'
 import { supabase } from '../../lib/supabaseClient'
 import { Mail, Lock, LogIn, GraduationCap, BookOpen, Shield, CalendarCog } from 'lucide-react'
 
-// Same shared admin role as the Dean (FLOW_SPEC ground truth #5) — both
-// offered here as separate demo personas so both people can be demoed.
 const QUICK_ROLES = [
+  { key: 'admin', label: 'System Admin', icon: Shield },
   { key: 'dean', label: 'Dean', icon: Shield },
   { key: 'associate_dean', label: 'Assoc. Dean', icon: CalendarCog },
   { key: 'instructor', label: 'Instructor', icon: BookOpen },
@@ -100,7 +99,7 @@ export default function LoginPanel({ className = '' }) {
 
       {supabase && <div className="login-google-access">
         <button type="button" className="btn btn-secondary w-full" disabled={busy || !googleEnabled} onClick={handleGoogle}>Sign in with Google</button>
-        <p className="login-note">{googleEnabled ? 'Administrators can use their Google account.' : 'Google sign-in is temporarily unavailable.'}</p>
+        <p className="login-note">{googleEnabled ? 'System admin: choose your Google account. Other roles use email and password.' : 'Google sign-in is temporarily unavailable.'}</p>
       </div>}
 
       {(import.meta.env.DEV || import.meta.env.MODE === 'capture') && <div className="login-quick-access">

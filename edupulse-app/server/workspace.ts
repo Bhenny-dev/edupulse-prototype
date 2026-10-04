@@ -38,7 +38,7 @@ export async function readWorkspace(identity: Identity): Promise<WorkspaceSnapsh
 }
 
 export async function saveWorkspace(identity: Identity, input: z.infer<typeof workspaceInput>): Promise<WorkspaceSnapshot> {
-  if (!['instructor', 'admin'].includes(identity.role)) throw new ApiError(403, 'FORBIDDEN', 'An instructor account is required to save an academic workspace.')
+  if (!['instructor', 'admin', 'dean', 'associate_dean'].includes(identity.role)) throw new ApiError(403, 'FORBIDDEN', 'An academic account is required to save an academic workspace.')
   if (!identity.local && input.data.syllabi.some(s => s.sample)) throw new ApiError(400, 'SAMPLE_WORKSPACE', 'Copy sample syllabi as drafts before saving them to an account workspace.')
   const body = JSON.stringify(input.data)
   if (Buffer.byteLength(body) > WORKSPACE_BYTES) throw new ApiError(413, 'WORKSPACE_LIMIT', 'This workspace exceeds 3 MB. Export a backup and remove unused attachments before retrying.')

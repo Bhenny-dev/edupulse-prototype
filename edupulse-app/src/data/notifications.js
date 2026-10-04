@@ -2,16 +2,21 @@ import { useCallback, useSyncExternalStore } from 'react'
 
 // Notifications — SYSTEM_SPEC §5. Unopened-material and unanswered-assessment
 // reminders fan out to BOTH the instructor and the student; syllabus-status
-// and delivery-gap notices go to the Dean / Associate Dean (shared 'admin' role).
+// and delivery-gap notices go to Dean and Associate Dean accounts.
 // The top-bar bell and the Notifications page read this one list, so their
 // unread counts always agree.
 export const ROLE_NOTIFICATIONS = {
-  admin: [
+  admin: [],
+  dean: [
     { id: 1, message: 'IT 107 (Sir Rogelio L. Guisdan) is still Drafted — not yet checked or routed for approval', time: '2h ago', type: 'warning', category: 'syllabus_status', read: false },
     { id: 2, message: 'WMAD 303-1 approved file uploaded — Course Outline extraction pending', time: '1d ago', type: 'info', category: 'syllabus_status', read: true },
     { id: 3, message: 'IT 106 has no published courseware for Week 4 of its outline yet', time: '1d ago', type: 'warning', category: 'delivery_gap', read: true },
     { id: 4, message: 'Marielle Angela Fianza-Buya confirmed AI-proposed loading for 4 courses', time: '3d ago', type: 'success', category: 'course_loading', read: true },
     { id: 5, message: 'EduSuite class list import completed — 387 records', time: '1w ago', type: 'info', category: 'records', read: true },
+  ],
+  associate_dean: [
+    { id: 1, message: 'IT 107 (Sir Rogelio L. Guisdan) is still Drafted — not yet checked or routed for approval', time: '2h ago', type: 'warning', category: 'syllabus_status', read: false },
+    { id: 2, message: 'WMAD 303-1 approved file uploaded — Course Outline extraction pending', time: '1d ago', type: 'info', category: 'syllabus_status', read: true },
   ],
   instructor: [
     { id: 1, message: 'New courseware draft ready for review: Week 5 — Loop Structures Lab', time: '1h ago', type: 'info', category: 'courseware', read: false },

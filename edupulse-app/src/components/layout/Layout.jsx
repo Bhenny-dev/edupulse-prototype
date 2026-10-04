@@ -10,10 +10,11 @@ import {
   ChevronDown, Bell, Search, Menu, X, Moon, Sun, HelpCircle,
   ChevronRight, Globe, Keyboard, ClipboardCheck,
 } from 'lucide-react'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import KeyboardShortcutsModal from '../ui/KeyboardShortcutsModal'
 import Pulse from '../pulse/Pulse'
 import EduPulseMark from '../brand/EduPulseMark'
+import { recordAudit } from '../../lib/audit'
 
 // Navigation architecture — one top-bar station per FLOW_SPEC phase, max 5
 // primary sections per role; anything below that altitude lives in the
@@ -24,16 +25,16 @@ import EduPulseMark from '../brand/EduPulseMark'
 const SECTIONS = [
   { key: 'dashboard', path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: 'all' },
 
-  // ── Dean / Associate Dean (shared `admin` role) ───────────────────────
+  // Dean and Associate Dean have separate accounts and the same academic stations.
   {
-    key: 'course-loading', path: '/course-loading', label: 'Course Loading', icon: ClipboardCheck, roles: ['admin'],
+    key: 'course-loading', path: '/course-loading', label: 'Course Loading', icon: ClipboardCheck, roles: ['dean', 'associate_dean'],
     sidebar: [
       { key: 'assign', label: 'Loaded Courses', tab: 'assign' },
       { key: 'instructors', label: 'Instructors', tab: 'instructors' },
     ],
   },
   {
-    key: 'monitor', path: '/monitor', label: 'Monitor', icon: BarChart3, roles: ['admin'],
+    key: 'monitor', path: '/monitor', label: 'Monitor', icon: BarChart3, roles: ['dean', 'associate_dean'],
     sidebar: [
       { key: 'syllabi', label: 'Syllabus Status', tab: 'syllabi' },
       { key: 'delivery', label: 'Delivery Progress', tab: 'delivery' },
@@ -226,7 +227,9 @@ function RoleSwitchPopover({ onClose }) {
   const { switchRole, user } = useAuth()
   const navigate = useNavigate()
   const roles = [
-    { key: 'admin', label: 'Admin', desc: 'Manage course loading and monitor progress' },
+    { key: 'admin', label: 'System Admin', desc: 'System health, accounts and audit logs' },
+    { key: 'dean', label: 'Dean', desc: 'Course loading and academic monitoring' },
+    { key: 'associate_dean', label: 'Associate Dean', desc: 'Course loading and academic monitoring' },
     { key: 'instructor', label: 'Instructor', desc: 'Syllabus, courseware, student monitoring' },
     { key: 'student', label: 'Student', desc: 'Open materials, answer assessments' },
   ]
@@ -273,6 +276,15 @@ export default function Layout() {
   const [showLangMenu, setShowLangMenu] = useState(false)
   const { dark: darkMode, toggleDark, fontScale } = useTheme()
   const [showShortcuts, setShowShortcuts] = useState(false)
+
+  // One audit entry per page visit; the user object is replaced on token refresh and must not log the page again.
+  const lastAuditedPage = useRef('')
+  useEffect(() => {
+    const visit = `${user?.id}|${location.pathname}`
+    if (!user?.authenticated || lastAuditedPage.current === visit) return
+    lastAuditedPage.current = visit
+    void recordAudit(user, 'navigation', 'success', location.pathname)
+  }, [location.pathname, user])
 
   useEffect(() => {
     const handleKey = (e) => {
@@ -484,7 +496,7 @@ export default function Layout() {
               cursor: 'pointer', fontSize: '0.75rem', fontWeight: 700, color: 'var(--purple-500)',
               transition: 'all 200ms',
             }}>
-              Admin · {user?.role === 'admin' ? 'Admin' : user?.title}
+              Admin · {user?.title}
             </button> : <span className="badge badge-published desktop-tool">{user?.title}</span>}
           </div>
 

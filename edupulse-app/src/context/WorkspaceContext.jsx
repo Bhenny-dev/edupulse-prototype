@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useRef, useState } f
 import { useAuth } from './AuthContext'
 import { aiRequest } from '../lib/aiClient'
 import { DEFAULT_SYLLABI, BLOCK_SECTION_REGISTRATIONS } from '../data/mockData'
+import { recordAudit } from '../lib/audit'
 
 const WorkspaceContext = createContext(null)
 const empty = () => ({ syllabi: [], content: {}, registrations: [] })
@@ -23,9 +24,9 @@ function initialJournal(key, owner, preview) {
 export function WorkspaceProvider({ children }) {
   const { user } = useAuth()
   const owner = user?.authenticated ? user.id : 'preview'
-  return <WorkspaceSession key={owner} owner={owner} preview={!user?.authenticated}>{children}</WorkspaceSession>
+  return <WorkspaceSession key={owner} owner={owner} user={user} preview={!user?.authenticated}>{children}</WorkspaceSession>
 }
-function WorkspaceSession({ children, owner, preview }) {
+function WorkspaceSession({ children, owner, user, preview }) {
   const key = `edupulse-workspace-v2-${owner}`
   const [journal, setJournal] = useState(() => initialJournal(key, owner, preview))
   const [mode, setMode] = useState(null), [loading, setLoading] = useState(true), [saving, setSaving] = useState(false)
@@ -63,12 +64,13 @@ function WorkspaceSession({ children, owner, preview }) {
       try {
         if (new TextEncoder().encode(JSON.stringify(sent.data)).length > 2_950_000) throw new Error('Workspace is near its 3 MB limit. Export a backup and remove unused approved-file attachments.')
         const saved = await aiRequest('workspace', 'PUT', { revision: sent.revision, data: sent.data })
+        void recordAudit(user, 'workspace_save', 'success', `Revision ${saved.revision}`)
         if (mounted.current) setJournal(previous => ({ data: previous.data, revision: saved.revision, dirty: previous.data !== sent.data }))
-      } catch (err) { if (mounted.current) { setError(err.message); setConflict(err.status === 409) } }
+      } catch (err) { void recordAudit(user, 'workspace_save', 'failure', 'Save failed'); if (mounted.current) { setError(err.message); setConflict(err.status === 409) } }
       finally { if (mounted.current) setSaving(false) }
     }, 500)
     return () => clearTimeout(timer)
-  }, [journal, mode, loading, saving, conflict, error])
+  }, [journal, mode, loading, saving, conflict, error, user])
   const update = useCallback(change => {
     setBackedUp(false)
     setJournal(previous => ({ ...previous, data: change(previous.data), dirty: true }))

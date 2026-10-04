@@ -2,7 +2,7 @@
 
 What runs behind the EduPulse interface in v0.4.0: the API, the agents, the data stores and the security boundaries. The two hosted services are documented separately because their configuration lives in dashboards, not in the interface:
 
-* [Supabase configuration](supabase.md) — database, authentication, row-level security, vector search (verified live on 2026-10-02).
+* [Supabase configuration](supabase.md) — database, five-role authentication, system audit, row-level security and vector search (verified live on 2026-10-04).
 * [Vercel configuration](vercel.md) — build, function limits, headers, environment variables and the production health check.
 
 ## Runtime layout
@@ -15,7 +15,7 @@ What runs behind the EduPulse interface in v0.4.0: the API, the agents, the data
 | Embeddings and reranker | ONNX models in-process (WebAssembly), free, no key | Same models, bundled into the function |
 | Vector database | PGlite (embedded Postgres) + pgvector in `.data/` | Supabase Postgres + pgvector |
 | Workspace (syllabi, courseware) | PGlite table `ep_workspaces` | Supabase table `edupulse_workspaces` |
-| Sign-in | Preview personas (local workspace identity; also in the documentation capture build) | Supabase Auth: email and password, or Google for the owner admin. The API verifies the JWT and requires an assigned role. |
+| Sign-in | Five preview personas (local workspace identity; also in the documentation capture build) | Supabase Auth: email and password for Dean, Associate Dean, Instructor and Student; Google for the system admin. The API verifies the JWT and requires an assigned role. |
 
 ## API: one endpoint, ten actions
 
@@ -31,7 +31,9 @@ All requests go to `/api/ai?action=<name>`. Every request is checked for origin 
 | `references` | POST | signed-in users | Librarian search of open catalogs |
 | `extract` | POST (raw bytes) | anyone (guests cannot index) | Sandboxed extraction with a quality report |
 | `documents` | GET, POST, DELETE | signed-in users | List, index (after review) and delete library documents |
-| `workspace` | GET, PUT | signed-in users (PUT: instructor or admin) | Load and save the academic workspace with revision checks |
+| `workspace` | GET, PUT | signed-in users (PUT: system admin, Dean, Associate Dean or Instructor) | Load and save the academic workspace with revision checks |
+
+The system admin dashboard calls the gated `edupulse_admin_overview` database RPC for account coverage and recent activity. The separate `admin-accounts` Supabase Edge Function creates role accounts and assigns roles after verifying the live Google admin identity. The admin view also checks authentication, Google sign-in, the audit query and the Pulse API. Each account connects its own AI provider in Settings; a role switch never shares an AI key or another user's workspace.
 
 ## The agent graph
 

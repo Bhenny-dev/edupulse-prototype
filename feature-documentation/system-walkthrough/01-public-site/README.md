@@ -28,21 +28,21 @@ Three cards summarise the benefit for each role:
 
 These are the prototype's design targets, labelled as targets rather than measured results:
 * 75% less preparation time;
-* 3 roles (admin, instructor and student) working from one shared platform;
+* 5 roles (system admin, Dean, Associate Dean, instructor and student) working from one shared platform;
 * 100% of course materials centralised in one place;
 * access 24/7.
 
 The numbers count up when the section scrolls into view; the screenshot shows their final values.
 
-*Changed after v0.4.0:* the role count is 3, because the Dean and Associate Dean share the admin role.
+*Changed after v0.4.0:* the role count is 5. The Dean and Associate Dean have separate accounts and roles; the system admin is distinct from both.
 
 ## 4. Sign-in panel (hosted site)
 
 ![Sign-in panel](04-sign-in-panel.png)
 
 - **Email** and **Password**, then **Sign In**, for an account the administrator has created. The hint below reads “Use the email and password assigned to your EduPulse account.”
-- **Sign in with Google**, with the note “Administrators can use their Google account.” The button works only when Google sign-in is enabled for the project; otherwise the panel says Google sign-in is temporarily unavailable.
-- Each account has one assigned role: admin, instructor or student. An account without a role is signed out with the message “This account has no EduPulse role. Contact the administrator.”
+- **Sign in with Google**, with the note “System admin: choose your Google account. Other roles use email and password.” The button works only when Google sign-in is enabled for the project; otherwise the panel says Google sign-in is temporarily unavailable.
+- Each account has one assigned role: system admin, Dean, Associate Dean, instructor or student. An account without a role is signed out with the message “This account has no EduPulse role. Contact the administrator.”
 
 *Changed after v0.4.0:* the panel now says “Use your EduPulse account to continue”, and the Google button is new. Preview personas are no longer offered on the hosted site.
 
@@ -54,7 +54,7 @@ The numbers count up when the section scrolls into view; the screenshot shows th
 * the local development app;
 * the documentation capture build (`npm run build:capture`).
 
-The hosted production build does not include it, and the deployment check enforces that. **Dean**, **Assoc. Dean**, **Instructor** and **Student** open the app as that role, with sample data and no account. The rest of this walkthrough was captured with these personas.
+The hosted production build does not include it, and the deployment check enforces that. **System Admin**, **Dean**, **Assoc. Dean**, **Instructor** and **Student** open the app as that role, with sample data and no account. The rest of this walkthrough was captured with these personas.
 
 ## 6. Privacy policy
 

@@ -43,7 +43,7 @@ const ABOUT_CARDS = [
 
 const STATS = [
   { icon: Clock, end: 75, suffix: '%', label: 'Less time spent preparing syllabi & materials', color: 'var(--sky-500)', bg: 'var(--sky-100)' },
-  { icon: Layers, end: 3, suffix: '', label: 'Roles working from one shared platform', color: 'var(--purple-500)', bg: 'var(--purple-100)' },
+  { icon: Layers, end: 5, suffix: '', label: 'Roles working from one shared platform', color: 'var(--purple-500)', bg: 'var(--purple-100)' },
   { icon: FolderCheck, end: 100, suffix: '%', label: 'Course materials centralized in one place', color: 'var(--green-500)', bg: 'var(--green-100)' },
   { icon: Gauge, end: 24, suffix: '/7', label: 'Access to courseware, scores & progress', color: 'var(--amber-500)', bg: 'var(--amber-100)' },
 ]

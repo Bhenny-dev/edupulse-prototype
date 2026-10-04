@@ -6,10 +6,11 @@ A screen-by-screen tour of EduPulse as each role sees it: every page, tab, dropd
 | --- | --- | --- |
 | [01 · Public site](01-public-site/README.md) | Visitors | Landing page sections, the hosted sign-in panel (email and password, Google for administrators), local-only preview personas, privacy, terms and the server error page |
 | [02 · Shared interface](02-shared-interface/README.md) | All signed-in roles | Top bar, search, keyboard shortcuts, language, notifications, account menu, role badge and admin view switching, Help, Settings (five tabs), dark mode, the Pulse assistant |
-| [03 · Dean and Associate Dean](03-dean-and-associate-dean/README.md) | Dean, Associate Dean (shared `admin` role) | Dashboard, Course Loading, Monitor (four tabs), Records (three tabs), Pulse on an admin page |
+| [03 · Dean and Associate Dean](03-dean-and-associate-dean/README.md) | Dean, Associate Dean (separate accounts) | Shared academic dashboard, Course Loading, Monitor (four tabs), Records (three tabs) |
 | [04 · Instructor](04-instructor/README.md) | Instructor | Dashboard, Syllabus (four tabs), Syllabus Builder, Courseware, Student Monitoring, Performance |
 | [05 · Student](05-student/README.md) | Student | Dashboard, My Courses (materials and assessments), My Performance (four tabs), Pulse for students |
 | [06 · Mobile](06-mobile/README.md) | All roles on a phone | The same screens at 390 px: menu, builder, Pulse panel, settings |
+| [07 · System Admin](07-system-admin/README.md) | Google system admin | Account management, health checks, audit activity and direct role views |
 
 ## Reading the screenshots
 

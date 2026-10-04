@@ -2,19 +2,23 @@ import { createContext, useContext, useState, useEffect, useCallback } from 'rea
 import { supabase } from '../lib/supabaseClient'
 import { aiRequest, setAiAccessToken } from '../lib/aiClient'
 import { accountUser, canSwitchRole, ROLE_TITLES } from '../lib/authRoles'
+import { recordAudit } from '../lib/audit'
 
 const AuthContext = createContext(null)
 
 // Sample personas are available only on the local development server.
 const DEMO_USERS = {
-  dean: { id: 1, name: 'Ginard S. Guaki', role: 'admin', title: 'Dean', email: 'ginard.guaki@kcp.edu.ph', department: 'College of IT' },
-  associate_dean: { id: 2, name: 'Marielle Angela Fianza-Buya', role: 'admin', title: 'Associate Dean', email: 'marielle.fianza-buya@kcp.edu.ph', department: 'College of IT' },
+  admin: { id: 0, name: 'System Admin', role: 'admin', title: 'System Admin', department: 'EduPulse', canSwitchRoles: false },
+  dean: { id: 1, name: 'Ginard S. Guaki', role: 'dean', title: 'Dean', email: 'ginard.guaki@kcp.edu.ph', department: 'College of IT' },
+  associate_dean: { id: 2, name: 'Marielle Angela Fianza-Buya', role: 'associate_dean', title: 'Associate Dean', email: 'marielle.fianza-buya@kcp.edu.ph', department: 'College of IT' },
   instructor: { id: 1, name: 'Sir Rogelio L. Guisdan', role: 'instructor', title: 'Instructor', email: 'rogelio.guisdan@kcp.edu.ph', department: 'College of IT', specialization: 'Web & Mobile Development' },
   student: { id: 4, name: 'Bhenny Benlor D. Rivera', role: 'student', title: 'Student', email: 'bhenny.rivera@kcp.edu.ph', department: 'College of IT', yearLevel: 3, section: 'BSIT-3A' },
 }
 
 const ROLE_PERMISSIONS = {
-  admin: ['load_courses', 'confirm_ai_loading', 'manage_block_sections', 'monitor_faculty', 'monitor_delivery', 'view_student_oversight', 'export_reports'],
+  admin: ['manage_users', 'view_audit_logs', 'view_system_health', 'load_courses', 'confirm_ai_loading', 'manage_block_sections', 'monitor_faculty', 'monitor_delivery', 'view_student_oversight', 'export_reports'],
+  dean: ['load_courses', 'confirm_ai_loading', 'manage_block_sections', 'monitor_faculty', 'monitor_delivery', 'view_student_oversight', 'export_reports'],
+  associate_dean: ['load_courses', 'confirm_ai_loading', 'manage_block_sections', 'monitor_faculty', 'monitor_delivery', 'view_student_oversight', 'export_reports'],
   instructor: ['manage_syllabus', 'download_for_approval', 'upload_approved_syllabus', 'extract_outline', 'generate_courseware', 'review_courseware', 'publish_courseware', 'view_scoring_sheet', 'record_scores', 'notify_students'],
   student: ['view_published', 'open_materials', 'answer_assessments', 'view_own_performance'],
 }
@@ -33,9 +37,20 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     if (!supabase) return
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setAiAccessToken(session?.access_token)
+      const signedInUser = session?.user ? accountUser(session.user) : null
       setUser(previous => session?.user ? accountUser(session.user, previous) : previous?.authenticated ? null : previous)
+      if (session?.user && !signedInUser) {
+        setTimeout(() => { void supabase.auth.signOut() }, 0)
+      }
+      if (event === 'SIGNED_IN' && session?.user) {
+        const marker = `${session.user.id}:${session.user.last_sign_in_at || ''}`
+        if (signedInUser && sessionStorage.getItem('edupulse_last_audited_login') !== marker) {
+          sessionStorage.setItem('edupulse_last_audited_login', marker)
+          setTimeout(() => { void recordAudit(signedInUser, 'sign_in') }, 0)
+        }
+      }
       setAuthLoading(false)
     })
     return () => subscription.unsubscribe()
@@ -43,7 +58,7 @@ export function AuthProvider({ children }) {
 
   const signIn = useCallback(async (email, password) => {
     if (!supabase) throw new Error('Sign-in is not configured. Contact the EduPulse administrator.')
-    if (email.trim().toLowerCase() === 'riverabenlor461@gmail.com') throw new Error('Use the Google button for the admin account.')
+    if (email.trim().toLowerCase() === 'riverabenlor461@gmail.com') throw new Error('Use Google sign-in for the system admin account.')
     const { data, error } = await supabase.auth.signInWithPassword({ email: email.trim(), password })
     if (error) throw new Error('Sign-in failed. Check your email and password.')
     if (!accountUser(data.user)) {
@@ -81,6 +96,7 @@ export function AuthProvider({ children }) {
   }, [user])
 
   const logout = useCallback(async () => {
+    await recordAudit(user, 'sign_out')
     await aiRequest('providers', 'DELETE').catch(() => {})
     if (user?.authenticated) await supabase?.auth.signOut()
     setAiAccessToken(undefined)
@@ -92,6 +108,7 @@ export function AuthProvider({ children }) {
     if (!canSwitchRole(user, role)) return false
     const previous = user.role
     setUser(current => ({ ...current, role, title: ROLE_TITLES[role] }))
+    void recordAudit(user, 'view_switch', 'success', ROLE_TITLES[role])
     setRoleHistory(prev => [...prev, { action: 'role_switch', from: previous, to: role, timestamp: new Date().toISOString() }])
     return true
   }, [user])

@@ -7,12 +7,17 @@ const account = (id: string, email: string, role?: string, userRole?: string) =>
   user_metadata: { full_name: 'Test User', role: userRole },
 })
 
-test('only the named, server-assigned admin can switch among three views', () => {
+test('only the Google system admin can switch among five distinct views', () => {
   const admin = accountUser(account('owner', 'RiveraBenlor461@gmail.com', 'admin'))!
   assert.equal(admin.baseRole, 'admin')
   assert.equal(admin.role, 'admin')
-  for (const role of ['admin', 'instructor', 'student']) assert.equal(canSwitchRole(admin, role), true)
+  for (const role of ['admin', 'dean', 'associate_dean', 'instructor', 'student']) assert.equal(canSwitchRole(admin, role), true)
   assert.equal(canSwitchRole(admin, 'unknown'), false)
+  for (const role of ['dean', 'associate_dean', 'instructor', 'student']) {
+    const member = accountUser(account(role, `${role}@example.com`, role))!
+    assert.equal(member.role, role)
+    assert.equal(canSwitchRole(member, 'admin'), false)
+  }
   const instructor = accountUser(account('teacher', 'instructor@example.com', 'instructor'))!
   assert.equal(canSwitchRole(instructor, 'admin'), false)
   assert.equal(accountUser(account('other', 'other@example.com', 'admin')), null)

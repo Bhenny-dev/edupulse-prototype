@@ -490,7 +490,7 @@ export default function CourseLoading() {
   // The sidebar links use `assign`; any other value falls back to the loaded-courses view.
   const activeTab = searchParams.get('tab') === 'instructors' ? 'instructors' : 'assign'
 
-  if (user?.role !== 'admin') return <Navigate to="/dashboard" replace />
+  if (!['dean', 'associate_dean'].includes(user?.role)) return <Navigate to="/dashboard" replace />
 
   const switchTab = (tab) => {
     const p = new URLSearchParams(searchParams)

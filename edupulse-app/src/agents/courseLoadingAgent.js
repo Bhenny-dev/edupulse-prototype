@@ -8,7 +8,7 @@ export default defineAgent({
   id: 'course-loading',
   zone: 'course-loading',
   label: 'Course Loading',
-  roles: ['admin'],
+  roles: ['dean', 'associate_dean'],
   greeting: () => "Course loading currently uses sample assignments. Want to inspect the example load or instructor cards?",
   intents: [
     {

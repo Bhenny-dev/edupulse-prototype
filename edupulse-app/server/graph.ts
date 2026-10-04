@@ -25,7 +25,7 @@ export async function runChat(input: ChatInput, identity: Identity, signal: Abor
 }
 
 export async function runCourseware(input: CourseInput, identity: Identity, signal: AbortSignal, generate?: Generate, connection?: Connection, personal = false, deps?: Partial<AgentDeps>) {
-  if (!['instructor', 'admin'].includes(identity.role) && !(identity.role === 'guest' && personal)) throw new ApiError(403, 'FORBIDDEN', 'Courseware generation requires an instructor account or your own preview connection.')
+  if (!['instructor', 'admin', 'dean', 'associate_dean'].includes(identity.role) && !(identity.role === 'guest' && personal)) throw new ApiError(403, 'FORBIDDEN', 'Courseware generation requires an academic account or your own preview connection.')
   const base = { ...serverDeps(identity, connection, generate), ...deps }
   if (!base.generate) throw new ApiError(503, 'MODEL_UNAVAILABLE', 'Connect a provider or enable the free on-device model in AI settings.')
   return draftCoursewareAgents(input, signal, { ...base, generate: base.generate })

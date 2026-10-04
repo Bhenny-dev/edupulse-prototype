@@ -48,7 +48,7 @@ Name, email and role, then **Settings**, **Help & Support** and **Sign Out**. Th
 
 Every account sees its role as a badge in the top bar (see image 1, *Instructor*). Roles are assigned by the administrator, and only the owner admin account can change what it sees:
 * After signing in with Google, the owner admin account sees a button labelled *Admin · <current view>* where other accounts see the badge.
-* The button opens the **Switch View** popover, which offers **Admin**, **Instructor** and **Student**. On a phone, where the top-bar button is hidden, the account menu has a **Switch view** entry that opens the same popover.
+* The button opens the **Switch View** popover, which offers **System Admin**, **Dean**, **Associate Dean**, **Instructor** and **Student**. On a phone, where the top-bar button is hidden, the account menu has a **Switch view** entry that opens the same popover.
 * The popover explains: “You remain signed in as the admin. Your AI key and saved data stay with this account.”
 
 No other account can switch. This screen has no screenshot because it needs the owner's Google session, which the automated capture cannot use.
@@ -67,7 +67,7 @@ Filter tabs (**All**, **Unread (n)** and one tab per category such as *Coursewar
 
 ![Help and support](09-help-and-support.png)
 
-**Getting Started** explains the five-step business flow (Load Courses → Build & Approve the Syllabus → Generate Courseware → Students Open & Answer → Monitor Students). **Contact Support** lists the IT Help Desk, office hours and quick links. The frequently asked questions follow below the visible area. **How do I connect AI?** says that each admin, instructor or student connects a separate OpenAI API key in Settings → AI & Knowledge, and that a ChatGPT subscription is separate from OpenAI API billing.
+**Getting Started** explains the five-step business flow (Load Courses → Build & Approve the Syllabus → Generate Courseware → Students Open & Answer → Monitor Students). **Contact Support** lists the IT Help Desk, office hours and quick links. The frequently asked questions follow below the visible area. **How do I connect AI?** says that each signed-in account connects its own OpenAI API key in Settings → AI & Knowledge, and that a ChatGPT subscription is separate from OpenAI API billing.
 
 ### 10–14. Settings
 

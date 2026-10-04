@@ -1,4 +1,5 @@
 import { useAuth } from '../context/AuthContext'
+import SystemAdminDashboard from './SystemAdminDashboard'
 import {
   ADMIN_STATS, DEFAULT_SYLLABI, COURSEWARE_ITEMS, STUDENT_RECORDS, INSTRUCTORS,
   RAG_GROUNDING_PASSAGES, BLOCK_SECTIONS, CURRICULUM_COURSES, SYLLABUS_STATUS_META, SYLLABUS_STATUS_ORDER,
@@ -65,9 +66,9 @@ const ACTIVITY_FEED = [
   { actor: 'System', action: 'reminded 5 students about', target: 'unopened Week 1 materials', time: '4d ago', icon: Bell, color: 'var(--amber-500)' },
 ]
 
-/* ───────────────────────── Admin (Dean / Associate Dean, one shared role) ───────────────────────── */
+/* Academic management screens are shared by the distinct Dean and Associate Dean roles. */
 
-function AdminDashboard() {
+function AcademicDashboard() {
   const navigate = useNavigate()
   const { user } = useAuth()
 
@@ -683,11 +684,11 @@ function StudentDashboard() {
   )
 }
 
-// One dashboard per role — Dean and Associate Dean share the admin view
-// (FLOW_SPEC ground truth #5: same role, one shared UI).
+// The system admin has a separate operations console.
 export default function Dashboard() {
   const { user } = useAuth()
-  if (user?.role === 'admin') return <AdminDashboard />
+  if (user?.role === 'admin') return <SystemAdminDashboard />
+  if (user?.role === 'dean' || user?.role === 'associate_dean') return <AcademicDashboard />
   if (user?.role === 'instructor') return <InstructorDashboard />
   return <StudentDashboard />
 }

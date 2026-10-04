@@ -1,6 +1,6 @@
 # 03 · Dean and Associate Dean
 
-The Dean and the Associate Dean share one role (`admin`) and see the same screens. Main tabs: **Dashboard**, **Course Loading**, **Monitor**; **Records** opens from the dashboard and search. Course assignments come from EduSuite; EduPulse monitors them and never edits the curriculum.
+The Dean (`dean`) and Associate Dean (`associate_dean`) sign in with separate email accounts. They share the same academic screens and permissions. The system admin has a separate operations console. Main academic tabs: **Dashboard**, **Course Loading**, **Monitor**; **Records** opens from the dashboard and search. Course assignments come from EduSuite; EduPulse monitors them and never edits the curriculum.
 
 ## 1. Dean dashboard
 
@@ -44,7 +44,7 @@ Instructor cards with specialisation, degree (*Master's* or *Bachelor's*, which 
 | Blocks & Class Lists | ![Blocks and class lists](09-records-blocks-and-class-lists.png) | Every block (e.g. BSIT-1A) with enrolment against the 35-student capacity, adviser and contact, and **Students** / **Courses** buttons. |
 | Course Catalog | ![Course catalog](10-records-course-catalog.png) | The 60 released courses of the CHED CMO No. 25 s. 2015 curriculum (read-only), searchable and filterable by year. |
 
-## 11. Pulse on an admin page
+## 11. Pulse on an academic management page
 
 ![Pulse on Course Loading](11-pulse-on-course-loading.png)
 
@@ -56,4 +56,4 @@ Instructor cards with specialisation, degree (*Master's* or *Bachelor's*, which 
 
 ![Associate Dean dashboard](12-associate-dean-dashboard.png)
 
-Identical to the Dean's dashboard apart from the name and the role badge: both titles are the same shared role with the same permissions.
+Identical academic controls to the Dean's dashboard, with a separate Associate Dean account and role badge.

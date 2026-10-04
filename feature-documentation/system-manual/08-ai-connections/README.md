@@ -16,6 +16,8 @@
 
 Keys are never shared between accounts. When the owner admin switches to another view, the account and its key stay the same. The hosted site has no shared server key: without your own key, Pulse answers with quoted source excerpts or uses the on-device model.
 
+Every connect, failed connect and disconnect by a signed-in account is recorded in the system audit log, which the system admin sees in *Audit activity* ([System Walkthrough 07](../../system-walkthrough/07-system-admin/README.md)). The log records only the provider name, never the key.
+
 ![Free provider options](02-free-provider-options.png)
 
 ## Run a model on this device (no key)

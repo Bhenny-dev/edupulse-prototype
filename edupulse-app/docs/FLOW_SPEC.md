@@ -8,7 +8,7 @@ Reference for the prototype. Grounded in the confirmed business process of the C
 2. **Course** is the official term. Never "subject" in any UI label, data field, or generated text.
 3. EduSuite is the system of record for course records, course loads, and student rosters. EduPulse receives these as exported files (upload). No direct integration; that is future work.
 4. Students enroll in EduSuite and are blocked into sections first come, first served: a block holds up to 35 students; when full, a new block opens. A block enlists the same courses on a shared schedule; different blocks can have different schedules. EduPulse consumes this structure, it never creates it.
-5. The Dean and the Associate Dean have the same role in the business process. One shared UI and permission set (role: `admin`, displayed as Dean / Associate Dean).
+5. The Dean and Associate Dean have separate authenticated roles (`dean`, `associate_dean`) and share the same academic UI and permission set. The `admin` role is a separate system owner for account management, health checks and audit oversight.
 6. The LMS (Moodle, Google Classroom) is an abiding variable of the current process, not the focus. EduPulse is not an LMS replacement pitch; it is the syllabus-centered layer: build syllabus, generate mapped courseware, deliver, monitor.
 7. Scoring sheet, not grading sheet. EduPulse collates assessment scores for visualization only. No institutional grades are computed (MG/TFG/FG formulas stay in the official KCP grading sheet, outside the system).
 8. The instructor (or the Dean/Assoc Dean for loading) is the deciding author. Nothing AI-generated reaches a downstream actor without human review and an explicit action.
@@ -17,8 +17,9 @@ Reference for the prototype. Grounded in the confirmed business process of the C
 
 | Actor | In system? | Role in flow |
 |---|---|---|
-| Dean | Yes (`admin`) | Uploads EduSuite records, loads courses, monitors faculty and delivery |
-| Associate Dean | Yes (`admin`, same UI as Dean) | Same as Dean |
+| System Admin | Yes (`admin`) | Manages role accounts, monitors system health and audit activity; can open every role view without changing identity |
+| Dean | Yes (`dean`) | Uploads EduSuite records, loads courses, monitors faculty and delivery |
+| Associate Dean | Yes (`associate_dean`, same academic UI as Dean) | Same academic tasks as Dean |
 | Instructor | Yes (`instructor`) | Builds syllabus, generates/reviews/publishes courseware, monitors students via scoring sheet |
 | Student | Yes (`student`) | Opens learning materials, answers assessments, gets AI guidance and reminders |
 | Chief Academic Officer | No (offline signatory) | Approves the syllabus |
@@ -30,13 +31,13 @@ Syllabus signatory chain (occurs OUTSIDE the system, on the downloaded file): re
 
 ### Phase 0. Records intake (Dean / Assoc Dean)
 - Upload EduSuite export files: course records (per CMO-based curriculum), course loads, student rosters (blocks/sections with schedules).
-- System parses and shows what it understood; admin confirms.
+- System parses and shows what it understood; the Dean or Associate Dean confirms.
 
 ### Phase 1. Course loading (Dean / Assoc Dean)
 - Load each released course to an instructor.
 - Business rule for who gets a course: priority 1 = holder of a master's degree; priority 2 = specialization or forte in the course.
 - **AI role:** two modes.
-  - *Assist:* admin assigns manually, AI suggests candidates ranked by the priority rule.
+  - *Assist:* the Dean or Associate Dean assigns manually; AI suggests candidates ranked by the priority rule.
   - *Auto:* AI proposes the complete assignment in place using the same rule.
   - Either way the Dean/Assoc Dean confirms every assignment before it takes effect. AI never finalizes loading.
 

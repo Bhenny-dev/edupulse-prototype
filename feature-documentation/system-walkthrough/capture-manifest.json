@@ -1,5 +1,5 @@
 {
-  "capturedAt": "2026-10-04T05:31:23.404Z",
+  "capturedAt": "2026-10-04T06:33:53.594Z",
   "problems": [],
   "scenes": [
     {
@@ -203,6 +203,38 @@
       "ok": true
     },
     {
+      "role": "system admin",
+      "folder": "07-system-admin",
+      "file": "01-system-console.png",
+      "title": "System Admin console (preview sample data)",
+      "route": "/dashboard",
+      "ok": true
+    },
+    {
+      "role": "system admin",
+      "folder": "07-system-admin",
+      "file": "02-health-and-role-coverage.png",
+      "title": "System health checks and role coverage",
+      "route": "/dashboard",
+      "ok": true
+    },
+    {
+      "role": "system admin",
+      "folder": "07-system-admin",
+      "file": "03-manage-accounts.png",
+      "title": "Manage accounts: create an account or change a role",
+      "route": "/dashboard",
+      "ok": true
+    },
+    {
+      "role": "system admin",
+      "folder": "07-system-admin",
+      "file": "04-audit-activity.png",
+      "title": "Audit activity with All, Successes and Failures filters",
+      "route": "/dashboard",
+      "ok": true
+    },
+    {
       "role": "dean",
       "folder": "03-dean-and-associate-dean",
       "file": "01-dashboard.png",
@@ -294,7 +326,7 @@
       "role": "associate dean",
       "folder": "03-dean-and-associate-dean",
       "file": "12-associate-dean-dashboard.png",
-      "title": "Associate Dean dashboard (same shared admin role)",
+      "title": "Associate Dean dashboard (distinct account)",
       "route": "/dashboard",
       "ok": true
     },

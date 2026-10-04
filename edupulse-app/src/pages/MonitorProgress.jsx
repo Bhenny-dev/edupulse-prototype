@@ -429,7 +429,7 @@ export default function MonitorProgress() {
   const [searchParams] = useSearchParams()
   const activeTab = searchParams.get('tab') || 'syllabi'
 
-  if (user?.role !== 'admin') return <Navigate to="/dashboard" replace />
+  if (!['dean', 'associate_dean'].includes(user?.role)) return <Navigate to="/dashboard" replace />
 
   return (
     <div style={{ padding: '24px 32px' }} data-pulse-zone="monitor">
