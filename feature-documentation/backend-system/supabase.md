@@ -46,7 +46,7 @@ The document and workspace tables held 0 rows at the earlier verification, which
 | `edupulse_match_chunks` (v0.1) | INVOKER | empty | no | yes |
 | `edupulse_save_workspace` | INVOKER | empty | no | yes |
 | `edupulse_admin_overview` | INVOKER wrapper around a gated private function | empty | no | yes, but only the verified Google system admin receives data |
-| `edupulse_admin_agent_activity` (pending migration) | INVOKER wrapper around a gated private function | empty | no | yes, but only the verified Google system admin receives data: totals, results per agent, declines by rule and the 30 latest runs by role (never by person) |
+| `edupulse_admin_agent_activity` | INVOKER wrapper around a gated private function | empty | no | yes, but only the verified Google system admin receives data: totals, results per agent, declines by rule and the 30 latest runs by role (never by person) |
 
 The academic and AI functions run with the caller's rights, so row-level security decides which rows each account can read or write. The admin overview uses a private elevated function that checks the live Auth identity, the owner address, the Google identity and the admin role before returning a limited account roster and audit records. It does not return the owner's email.
 
