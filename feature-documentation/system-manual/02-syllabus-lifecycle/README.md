@@ -8,6 +8,14 @@ The screenshots follow one real syllabus (IT 102 — Computer Programming 1) thr
 
 ## Build the draft
 
+To import an existing draft, click the upload area or drop a **.docx** file of up to **2 MB** into it. Review **Extracted Sections Preview**, then click **Use This Syllabus** to fill the form. Importing does not save the draft. The sample below contains course information and one outline week; review missing sections before saving.
+
+![DOCX import preview with sample content](12-import-preview.png)
+
+**Choose Different File** clears the preview. Unsupported or oversized files display an error; damaged DOCX files display a parsing error. Click **Try Again**, then select a corrected file. You can select the same filename again.
+
+![Unsupported file error and Try Again](13-import-error.png)
+
 1. Open **Syllabus → Syllabus Builder** and choose the **Course**. Course title, period offered and academic year fill in from the curriculum and are locked; so is the course description in Section 2.
 
    ![Section 1 auto-filled](01-select-course-autofills-section-1.png)

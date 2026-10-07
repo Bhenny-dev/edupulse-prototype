@@ -20,9 +20,13 @@ export default function UploadExistingSyllabus({ onExtract, onCancel, compact })
   const [expandedSection, setExpandedSection] = useState(null)
   const [dragOver, setDragOver] = useState(false)
   const inputRef = useRef(null)
+  const parsingRef = useRef(false)
 
   const handleFile = useCallback(async (f) => {
-    if (!f) return
+    if (!f || parsingRef.current) return
+    setFile(f)
+    setParsed(null)
+    setExpandedSection(null)
     if (!f.name.match(/\.docx$/i)) {
       setError('Only .docx files are supported')
       return
@@ -31,8 +35,8 @@ export default function UploadExistingSyllabus({ onExtract, onCancel, compact })
       setError('File must be under 2 MB')
       return
     }
-    setFile(f)
     setError(null)
+    parsingRef.current = true
     setParsing(true)
     try {
       const result = await parseSyllabusFile(f)
@@ -41,6 +45,7 @@ export default function UploadExistingSyllabus({ onExtract, onCancel, compact })
       setError('Failed to parse the document. Please ensure it is a valid .docx syllabus file.')
       setParsed(null)
     } finally {
+      parsingRef.current = false
       setParsing(false)
     }
   }, [])
@@ -86,14 +91,20 @@ export default function UploadExistingSyllabus({ onExtract, onCancel, compact })
         onDrop={handleDrop}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
-        onClick={() => inputRef.current?.click()}
+        onClick={() => !parsing && inputRef.current?.click()}
       >
         <input
           ref={inputRef}
           type="file"
           accept=".docx"
+          aria-label="Upload syllabus DOCX"
+          disabled={parsing}
           style={{ display: 'none' }}
-          onChange={e => handleFile(e.target.files?.[0])}
+          onChange={e => {
+            const selected = e.target.files?.[0]
+            e.target.value = ''
+            handleFile(selected)
+          }}
         />
 
         {parsing ? (

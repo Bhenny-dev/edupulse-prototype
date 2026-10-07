@@ -24,6 +24,8 @@ Main tabs: **Dashboard**, **Syllabus**, **Courseware**, **Student Monitoring**, 
 
 ## 5–6. Syllabus Builder
 
+The DOCX upload area accepts files up to 2 MB. Review **Extracted Sections Preview** before selecting **Use This Syllabus**. Invalid files show an error with **Try Again**; **Choose Different File** clears the preview. See the [import preview and retry steps](../../system-manual/02-syllabus-lifecycle/README.md#build-the-draft) for captured examples.
+
 ![Syllabus Builder](05-syllabus-builder.png)
 
 The seven-section template. Start by dropping an existing syllabus `.docx` (its content fills the form), by **Load curriculum outline**, or by selecting a course in Section 1, which auto-fills the locked course information and description. Required fields are marked with an asterisk.
