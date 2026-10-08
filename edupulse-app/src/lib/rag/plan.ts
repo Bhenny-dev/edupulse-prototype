@@ -1,7 +1,7 @@
 import type { Plan, Task } from './types.js'
 import { terms } from './text.js'
 
-type PlanInput = { message: string; task?: Task | 'auto'; history?: { role: string; content: string }[]; attachments?: unknown[] }
+type PlanInput = { message: string; task?: Task | 'auto'; grounding?: 'auto' | 'sources'; documentIds?: string[]; history?: { role: string; content: string }[]; attachments?: unknown[] }
 
 const COMPARE = /\b(compare|comparison|contrast|difference|differences|differ|versus|vs\.?|align(?:s|ed|ment)?|consistent|consistency|coverage|overlap)\b/i
 const REFERENCES = /\b(references?|books?|textbooks?|readings?|articles?|papers?|bibliograph\w*|journals?|scholarly)\b/i
@@ -10,6 +10,9 @@ const OWN_DOCUMENTS = /\b(my|our|these|this|the|attached|uploaded)\s+(?:\w+\s+)?
 const SUMMARIZE =/\b(summari[sz]e|summary|overview|key points|main points|tl;?dr)\b/i
 const DRAFT = /\b(draft|write|create|generate|compose|rephrase|rewrite|phrase|design|prepare|propose|formulate)\b/i
 const GREETING = /^(hi|hello|hey|thanks|thank you|good (morning|afternoon|evening)|kumusta|salamat)\b/i
+const SOURCE_REQUEST = /\b(uploaded|attached|document|pdf|file|library|source|reference|policy|syllabus|courseware|EduPulse|publish|publishing|approval|signator|grading|examination|calendar)\b/i
+const CONVERSATION = /\b(how are you|how do you feel|let'?s (?:talk|chat)|what if|suppose|imagine|scenario|situation|advice|i feel|i am (?:feeling|worried|stressed)|i'?m (?:feeling|worried|stressed)|help me (?:think|decide)|what should i do)\b/i
+const PERSONAL_SITUATION = /\b(?:i (?:am|feel)|i'?m) (?:feeling|worried|stressed|anxious|nervous|tired|overwhelmed|happy|sad)\b/i
 
 /**
  * Planner agent. Rule-based so planning adds no model latency on free local
@@ -19,14 +22,17 @@ export function planRequest(input: PlanInput): Plan {
   const message = input.message.trim()
   const revision = /^revise (your|the) previous answer/i.test(message)
   const previous = input.history?.filter(m => m.role === 'user').at(-1)?.content || ''
+  const greeting = GREETING.test(message) && message.split(/\s+/).length < 6
+  const scoped = input.grounding === 'sources' || Boolean(input.documentIds?.length)
+  const conversational = greeting || CONVERSATION.test(message) || PERSONAL_SITUATION.test(message) || (message.length < 60 && (CONVERSATION.test(previous) || PERSONAL_SITUATION.test(previous)))
   let task: Task = 'answer', rationale = 'Question about workflow or document content; answer from retrieved evidence.'
   if (input.task && input.task !== 'auto') { task = input.task; rationale = `Task selected by the user interface: ${task}.` }
   // "Find readings for my course" is an external search; "summarize my uploaded documents" is not.
+  else if (conversational && !scoped && (!SOURCE_REQUEST.test(message) || (PERSONAL_SITUATION.test(message) && !OWN_DOCUMENTS.test(message) && !/\b(according to|based on)\b/i.test(message)))) { task = 'general'; rationale = 'Conversation or situational advice; use the exchange, without requiring uploaded sources.' }
   else if (REFERENCES.test(message) && REFERENCE_REQUEST.test(message) && !OWN_DOCUMENTS.test(message)) { task = 'references'; rationale = 'Request for external reading material; consult open bibliographic APIs.' }
   else if (COMPARE.test(message)) { task = 'compare'; rationale = 'Comparison or alignment request; retrieve each side and align their statements.' }
   else if (SUMMARIZE.test(message)) { task = 'summarize'; rationale = 'Summary request; retrieve the most relevant passages and condense them.' }
   else if (DRAFT.test(message)) { task = 'draft'; rationale = 'Drafting request; use retrieved evidence as optional grounding and label assumptions.' }
-  else if (GREETING.test(message) && message.split(/\s+/).length < 6 && !input.attachments?.length) { task = 'general'; rationale = 'Conversational message; no retrieval needed.' }
 
   const base = (revision ? previous || message : message.length < 60 && previous ? `${previous.slice(0, 400)} ${message}` : message).slice(0, 1000)
   const queries = [base]
@@ -44,5 +50,5 @@ export function planRequest(input: PlanInput): Plan {
     .replace(new RegExp(REFERENCE_REQUEST.source, 'gi'), ' ').replace(new RegExp(REFERENCES.source, 'gi'), ' ')
     .replace(/\b(for|on|about|regarding|some|good|me|a|an|the|please|that|cover|covering|and|or|my|our|i|can|you|could|would|what|which|are|is|useful|relevant|recommended)\b/gi, ' ')
     .replace(/[?!.,;:]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 200)
-  return { task, queries: queries.slice(0, 3), needsEvidence: !['general', 'references'].includes(task), rationale, topic: topic || message.slice(0, 200), revision }
+  return { task, queries: queries.slice(0, 3), needsEvidence: task !== 'references' && (scoped || task !== 'general'), rationale, topic: topic || message.slice(0, 200), revision }
 }

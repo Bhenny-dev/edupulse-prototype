@@ -154,7 +154,7 @@ Every requirement below cites the section of *EduPulse Chapter 1 & 2* (Rivera, B
 | FR-REV-09 | The Review Inbox shall show, per instructor, how many topics have generated-but-unpublished courseware. | §1.2 | S |
 | FR-REV-10 | Dean-level reporting shall be reachable as an export action from Review Inbox / Performance, not a standalone "Reports" section. | §1.5 | S |
 
-### 1.8 FR-GUIDE — Pulse, the Ambient AI Guide (30)
+### 1.8 FR-GUIDE — Pulse, the Ambient AI Guide (36)
 
 | ID | Requirement | Source | Pri |
 |---|---|---|---|
@@ -188,8 +188,14 @@ Every requirement below cites the section of *EduPulse Chapter 1 & 2* (Rivera, B
 | FR-GUIDE-28 | Pulse shall offer a walkthrough generated from the visible, labelled controls of the dropped component or its section; a step on a required empty field waits for the user's input. | User request, Oct 1 2026 | M |
 | FR-GUIDE-29 | A rejected drop shall show a visible reason (outside the page, role not permitted, sensitive field); a successful drop perches Pulse beside the component with the panel on the opposite side. | FR-GUIDE-17/18 refinement, user request | M |
 | FR-GUIDE-30 | When an authored walkthrough step's control cannot be found on the page, Pulse shall say so instead of silently highlighting nothing. | User request ("accurate and correct") | M |
+| FR-GUIDE-31 | Pulse shall turn a conversation into proposed app actions (register an attached class list, add a material to the knowledge library under a course, generate a week of courseware, search records, open a page) through deterministic rules; model output never selects or runs an action. | User request, Oct 7 2026 ("anything that the conversation would trigger") | M |
+| FR-GUIDE-32 | An action that changes data shall show exactly what will change (course, block and students; course and title; outline week and the items kept) and run only after the user presses its confirm button. **Cancel** changes nothing, and a registration can be undone. Each finished action links to the page that shows its result. | User request ("for the user to confirm to do", "proper redirects") | M |
+| FR-GUIDE-33 | An instructor's attached class list (CSV, Excel, PDF, Word or text) shall be read into students with ID, name, email and block, with the course and block detected from the file. A second list for the same course and block merges without duplicates; rows without a student name are reported, never guessed. The Syllabus → My Courses uploader shall use the same reader. | User request ("upload lists of students … register it into my course"); §1.3 EduSuite class lists | M |
+| FR-GUIDE-34 | For an attached material, Pulse shall rank the courses it matches by keyword and embedding similarity against course titles, descriptions, outcomes and syllabus outline weeks, and show the matched words and where in the course each appears. | User request ("which course it should be related to") | M |
+| FR-GUIDE-35 | A search request shall return the matching registered students, class lists, courses, courseware and library documents the user's role may see, each naming its source and opening the page that shows it. A request to open a page shall navigate only to routes the role may open. | User request ("if wished to be searched then can be", "proper redirects") | M |
+| FR-GUIDE-36 | When a request names a course that has a syllabus in the user's workspace, Pulse shall add that syllabus as a cited reference. A material added under a course shall keep the course in its title and record, so later answers cite it by course, title and page. | User request ("source referencing from existing files for RAG") | M |
 
-### 1.8a FR-RAG — Agentic retrieval and knowledge (14)
+### 1.8a FR-RAG — Agentic retrieval and knowledge (16)
 
 **User correction — October 1, 2026.** The user requested a LangChain agentic workflow with named agents, real documents (no mock data), free APIs and open-source models, a vector database, and RAG covering uploading, extracting, evaluating, ranking, generating, comparing, referencing, correcting, collaborating, corroborating and planning, with stronger sandboxing. Comparison is alignment and coverage only (FR-CW-18 and NFR-AI-08 still forbid plagiarism or authorship scoring). NFR-USE-03 still applies: retrieval tuning is not user-configurable. Evidence: `feature-documentation/versions/v0.4.0`.
 
@@ -209,6 +215,8 @@ Every requirement below cites the section of *EduPulse Chapter 1 & 2* (Rivera, B
 | FR-RAG-12 | Pulse shall suggest real references from free open catalogs (Open Library, OpenAlex, Wikipedia) through fixed endpoints with validated responses; references are suggestions requiring instructor verification. | User request ("referencing", "free API") | S |
 | FR-RAG-13 | Each generated courseware draft shall show automatic outline coverage per topic and outcome and statement verification before instructor review. | NFR-AI-06 | M |
 | FR-RAG-14 | Retrieval, abstention and verification quality shall be evaluated on real, openly licensed documents with reproducible scripts. | User request ("documented for results and discussion") | M |
+| FR-RAG-15 | Courseware generation shall follow the outline week's plan. Every listed topic shall be searched and checked for coverage; a topic made only of common words (such as `for` or `while`) counts only where the draft uses it as a keyword. The activity and assessment shall follow the planned activity and assessment. Each question's explanation must support its marked answer: a contradicting key is sent back for one revision, and any disagreement that remains is shown to the instructor. The References section shall list only the week's syllabus resources and teaching materials and the knowledge-library passages used; links the syllabus does not list are removed. | User request, Oct 5 2026 ("course outline properly interpreted", "referencing is correct"); FR-RAG-13 | M |
+| FR-RAG-16 | PDF pages without a text layer shall be readable with OCR on the user's device. Page images are never uploaded, and only pages without text are read. The text keeps its `[[Page n]]` markers. Pages below 70% confidence and pages with no text are named. The OCR text passes the same cleaning, quality and instruction checks and instructor review as any upload (FR-RAG-03). | User request, Oct 5 2026 ("OCR extraction… accurateness, correctness"); FR-RAG-01 | S |
 
 ### 1.8b FR-ADMIN and FR-AGENT — System administration and agent governance (10)
 
@@ -361,12 +369,16 @@ Every requirement below cites the section of *EduPulse Chapter 1 & 2* (Rivera, B
 
 | Category | Count |
 |---|---|
-| Functional requirements | 170 |
+| Functional requirements | 186 |
 | Non-functional requirements | 49 |
-| **Total** | **219** |
+| **Total** | **235** |
 
 **Revision note (July 13 2026, second pass).** Two changes since the initial 190-item baseline: (1) FR-AUTH grew from 9 to 12 items to correct the role model from three roles to four, restoring Associate Dean as a distinct role per Appendix B.2 — a genuine correction, not scope creep; (2) FR-GUIDE grew from 14 to 26 items to specify Pulse's drag-and-drop, drop-to-focus conversational mode, and the `src/agents/` task-specific agent framework. A much larger 500+ item specification for the same feature was proposed and declined — it reinstated System Admin as a role and most of the enterprise-ops subsystems (reviewer SLA/certification, psychometric validation, licensing/legal review, translation backlogs, prompt A/B-testing, forensic audit tooling, cost/quota forecasting) that the original audit removed for having no basis in Chapter 1-2. The 12 new items above are the scoped equivalent: every one traces to either the user's specific request or an existing Ch.1-2 citation, and none reintroduce a cut subsystem.
 
 **Revision note (July 14 2026, third pass).** FR-SYL grew from 18 to 22 items: (3) FR-SYL-19 through FR-SYL-22 specify the syllabus section-locking rule — Sections 1 and 2 auto-fill from the CHED curriculum reference when a course is selected and are locked (read-only); Section 4 (Program Outcomes) is prefilled but editable. This enforces the business rule that curriculum-sourced course data (classification, prerequisites, credit units, no. of hours, description) is immutable in the syllabus, while the instructor retains control over program outcomes and all other editable sections.
+
+**Revision note (October 5 2026).** The project owner asked for a check that generation interprets the course outline correctly, that its referencing is correct, and that OCR extraction is accurate. FR-RAG-15 and FR-RAG-16 record what the check required; the evidence is in `feature-documentation/session-generated/2026-10-05-courseware-accuracy`. The summary table was also recounted from the tables above: it still showed 170 functional requirements after FR-RAG, FR-ADMIN and FR-AGENT were added, while the tables held 178 (180 with this note's two).
+
+**Revision note (October 7 2026).** The project owner asked that Pulse act on conversation requests with the user's confirmation: register an uploaded class list into the instructor's course, search records, suggest which course a student's material belongs to, generate, redirect, and cite existing files. FR-GUIDE-31 through FR-GUIDE-36 record those requirements (180 → 186 functional). The evidence is in `tests/operator.test.ts` and `tests/browser/pulse-actions.spec.ts`, and System Manual 9 documents the use.
 
 Every requirement above cites a specific section of Chapters 1–2, or an audit finding that this document exists to close. Nothing here targets a page, dashboard, or control that Chapter 1 or 2 does not describe.

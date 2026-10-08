@@ -52,7 +52,7 @@ test('syllabus lifecycle: build, check, download, approve, extract, activate', a
   await row.getByRole('button', { name: 'Upload Approved File', exact: true }).click()
   await shot(page, f, '07-upload-approved-file-attestation')
   await page.getByRole('checkbox').check()
-  await page.getByLabel('Approved DOCX', { exact: true }).setInputFiles({ name: 'IT102-approved.docx', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', buffer: await readFile(file!) })
+  await page.getByLabel('Approved DOCX or PDF', { exact: true }).setInputFiles({ name: 'IT102-approved.docx', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', buffer: await readFile(file!) })
   await expect(row.getByText('Approved — Uploaded', { exact: true })).toBeVisible()
   await expect(page.locator('.overlay-backdrop')).toHaveCount(0)
   await shot(row, f, '08-approved-file-uploaded')
@@ -95,4 +95,100 @@ test('courseware: generate a week, review alignment, check', async ({ page }) =>
   await shot(page, f, '05-draft-document-view')
   await evidence.scrollIntoViewIfNeeded()
   await shot(evidence, f, '06-outline-alignment-check')
+})
+
+// Pulse actions (System Manual 9): proposals that run only after Confirm. The class list is
+// sample data with invented names and reserved example.edu addresses, never real student records.
+const sampleClassList = `StudentID,Name,Email,YearLevel,Block
+2026-90001,Alma S. Reyes,alma.reyes@example.edu,1,BSIT-1B
+2026-90002,"Bautista, Carlo M.",carlo.bautista@example.edu,1,BSIT-1B
+2026-90003,Dario Mendoza,dario.mendoza@example.edu,1,BSIT-1B
+2026-90004,Elena V. Santos,elena.santos@example.edu,1,BSIT-1B
+2026-90005,Felix Uy,felix.uy@example.edu,1,BSIT-1B
+2026-90006,Gina P. Flores,gina.flores@example.edu,1,BSIT-1B`
+const pulseDialog = (page: Page) => page.getByRole('dialog', { name: 'Pulse', exact: true })
+async function askPulse(page: Page, text: string) {
+  await page.getByRole('textbox', { name: 'Ask Pulse', exact: true }).fill(text)
+  await page.getByRole('button', { name: 'Send', exact: true }).click()
+}
+
+test('Pulse actions: register an attached class list, then search it', async ({ page }) => {
+  const f = '09-pulse-actions'
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Instructor', exact: true }).click()
+  await page.goto('/#/syllabus?tab=register')
+  await page.getByRole('button', { name: 'Open Pulse assistant' }).click()
+  const dialog = pulseDialog(page)
+  await dialog.locator('input[type="file"]').setInputFiles({ name: 'sample IT 102 BSIT-1B class list.csv', mimeType: 'text/csv', buffer: Buffer.from(sampleClassList) })
+  await expect(dialog.locator('.connected-pulse-attachments')).toContainText('class list, 6 students')
+  await page.getByRole('textbox', { name: 'Ask Pulse', exact: true }).fill('Register these students in my course')
+  await shot(dialog, f, '01-attach-class-list')
+  await page.getByRole('button', { name: 'Send', exact: true }).click()
+  const card = dialog.getByRole('region', { name: /^Register class list/ })
+  await expect(card.getByLabel('Course to register')).toHaveValue('IT 102')
+  await card.scrollIntoViewIfNeeded()
+  await shot(dialog, f, '02-register-card')
+  await card.getByRole('button', { name: 'Register 6 students' }).click()
+  await expect(dialog.getByText(/IT 102 · BSIT-1B now lists 6 students/)).toBeVisible()
+  await saved(page)
+  await shot(page, f, '03-registered-in-my-courses')
+  await askPulse(page, 'Is Dario Mendoza registered?')
+  await expect(dialog.getByRole('region', { name: 'Search results' })).toContainText('Registered students')
+  await shot(dialog, f, '04-search-results')
+  // Leave the capture workspace as it was.
+  await dialog.getByRole('button', { name: 'Undo' }).click()
+  await saved(page)
+})
+
+test('Pulse actions: a student files a material under a course', async ({ page, request }) => {
+  const f = '09-pulse-actions'
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Student', exact: true }).click()
+  await page.getByRole('button', { name: 'Open Pulse assistant' }).click()
+  const dialog = pulseDialog(page)
+  const notes = 'Layout notes for the lab. Flexbox arranges items in one direction; CSS Grid places them in rows and columns at the same time. With a mobile-first approach the base styles target small screens, and media queries add columns as the screen gets wider. Custom properties keep spacing and colours in one place.'
+  await dialog.locator('input[type="file"]').setInputFiles({ name: 'css-layout-notes.txt', mimeType: 'text/plain', buffer: Buffer.from(notes) })
+  await expect(dialog.locator('.connected-pulse-attachments')).toContainText('css-layout-notes.txt')
+  await askPulse(page, 'Which course is this for? Please save it there.')
+  const card = dialog.getByRole('region', { name: 'Add css-layout-notes.txt to a course' })
+  await expect(card).toContainText('Ranked by meaning (embeddings) and keyword match', { timeout: 60_000 })
+  await card.scrollIntoViewIfNeeded()
+  await shot(dialog, f, '05-material-course-suggestion')
+  await card.getByRole('button', { name: /^Add to library under/ }).click()
+  await expect(dialog.getByText(/Added to your knowledge library/)).toBeVisible({ timeout: 120_000 })
+  await shot(dialog, f, '06-material-added')
+  // Leave the capture library as it was.
+  const documents = (await (await request.get('/api/ai?action=documents')).json()).documents as { id: string; title: string }[]
+  for (const document of documents.filter(d => d.title.endsWith('· css layout notes'))) await request.delete('/api/ai?action=documents', { data: { id: document.id } })
+})
+
+test('Pulse actions: prepare a week of courseware from the syllabus outline', async ({ page }) => {
+  const f = '09-pulse-actions'
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Instructor', exact: true }).click()
+  await page.goto('/#/courseware')
+  await page.getByRole('button', { name: 'Open Pulse assistant' }).click()
+  const dialog = pulseDialog(page)
+  await askPulse(page, 'Generate week 1 materials for IT 102')
+  const card = dialog.getByRole('region', { name: 'Generate courseware' })
+  await expect(card.getByLabel('Week to generate')).toHaveValue('1')
+  await card.scrollIntoViewIfNeeded()
+  await shot(dialog, f, '07-generate-week-source')
+  await card.getByRole('button', { name: 'Cancel', exact: true }).click()
+})
+
+test('class-list uploader clears a refused replacement and lets the same filename be retried', async ({ page }) => {
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Instructor', exact: true }).click()
+  await page.goto('/#/syllabus?tab=register')
+  const input = page.locator('.upload-zone input[type="file"]')
+  const file = { name: 'IT102-BSIT1B.csv', mimeType: 'text/csv', buffer: Buffer.from(sampleClassList) }
+  await input.setInputFiles(file)
+  await expect(page.getByText('Student Preview (6 records)')).toBeVisible()
+  await input.setInputFiles({ ...file, name: 'unsupported.xls' })
+  await expect(page.getByText('Student Preview (6 records)')).toHaveCount(0)
+  await shot(page.locator('.upload-zone'), '09-pulse-actions', '08-class-list-upload-error')
+  await page.getByRole('button', { name: 'Try Again', exact: true }).click()
+  await input.setInputFiles(file)
+  await expect(page.getByText('Student Preview (6 records)')).toBeVisible()
 })

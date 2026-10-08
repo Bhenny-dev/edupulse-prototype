@@ -40,7 +40,7 @@ export type ExtractionReport = {
   sandbox: { mode: string; heapLimitMb: number; timeoutMs: number; environment: string; ms: number }
   stages: { name: string; ms: number; detail: string }[]
 }
-export const UPLOAD_ACCEPT = '.pdf,.docx,.pptx,.html,.htm,.txt,.md,.markdown,.csv'
+export const UPLOAD_ACCEPT = '.pdf,.docx,.pptx,.xlsx,.html,.htm,.txt,.md,.markdown,.csv'
 /** Uploads raw bytes for sandboxed extraction. Nothing is stored until the text is indexed. */
 export async function extractDocument(file: File, signal?: AbortSignal) {
   if (file.size > 4_000_000) throw new Error('Files must be 4 MB or smaller.')
@@ -48,10 +48,15 @@ export async function extractDocument(file: File, signal?: AbortSignal) {
   return aiRequest<ExtractionReport>('extract', 'POST', undefined, signal, { raw: file, headers: { 'X-File-Name': encodeURIComponent(file.name.slice(-255)) } })
 }
 
+/** Knowledge-library source type for an extraction (a workbook is indexed as its comma-separated rows). */
+export const sourceTypeFor = (kind: string) => kind === 'xlsx' ? 'csv' : ['pdf', 'docx', 'pptx', 'html', 'markdown', 'csv'].includes(kind) ? kind : 'text'
+export type ReferenceFile = { title: string; text: string; fileName: string; kind: string; sourceType: string; raw?: string }
 /** Chat attachments use the same sandboxed extraction as the knowledge library. */
-export async function readReferenceFile(file: File): Promise<{ title: string; text: string }> {
+export async function readReferenceFile(file: File): Promise<ReferenceFile> {
   const report = await extractDocument(file)
-  return { title: file.name.slice(0, 160), text: report.text.trim() }
+  // Plain-text tables are also kept exactly as written, so class lists keep their columns and tabs.
+  const raw = report.kind === 'csv' || report.kind === 'text' ? (await file.text()).slice(0, 400_000) : undefined
+  return { title: file.name.slice(0, 160), text: report.text.trim(), fileName: file.name.slice(-255), kind: report.kind, sourceType: sourceTypeFor(report.kind), raw }
 }
 
 /** Collects Researcher queries issued in parallel into one context request. */

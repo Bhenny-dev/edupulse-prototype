@@ -1,0 +1,166 @@
+{
+  "summary": {
+    "label": "after",
+    "model": "qwen2.5:1.5b",
+    "generatedAt": "2026-10-05T04:46:16.798Z",
+    "weeks": 6,
+    "succeeded": 1,
+    "topicCoverage": 1,
+    "outcomeCoverage": 1,
+    "meanFullCoverage": 1,
+    "meanReportedCoverage": 1,
+    "activityFollowsPlan": 1,
+    "assessmentFollowsPlan": 1,
+    "answerKeysConsistent": "3/3",
+    "resourcesCarried": "0/0",
+    "inventedUrls": 0
+  },
+  "results": [
+    {
+      "course": "IT 102",
+      "week": 5,
+      "ok": true,
+      "seconds": 239,
+      "writerAttempts": 2,
+      "topics": 4,
+      "topicsCovered": 4,
+      "outcomes": 1,
+      "outcomesCovered": 1,
+      "fullCoverage": 1,
+      "reportedCoverage": 1,
+      "reportedItems": 7,
+      "activityFollowsPlan": 0.476,
+      "assessmentFollowsPlan": 1,
+      "questions": 3,
+      "keysConsistent": 3,
+      "keys": [
+        {
+          "correctIndex": 0,
+          "explanationSupports": 0,
+          "consistent": true
+        },
+        {
+          "correctIndex": 1,
+          "explanationSupports": 1,
+          "consistent": true
+        },
+        {
+          "correctIndex": 0,
+          "explanationSupports": 0,
+          "consistent": true
+        }
+      ],
+      "resourcesListed": 0,
+      "resourcesCarried": 0,
+      "inventedUrls": [],
+      "statementsSupported": 5,
+      "statementsChecked": 15,
+      "missing": [],
+      "draft": {
+        "material": {
+          "title": "Computer Programming 1 - Week 5",
+          "sections": [
+            {
+              "heading": "Loop Structures and Iterative Solutions",
+              "body": "This week's focus is on the implementation of iterative solutions using loop structures. The topics covered are 'for', 'while', 'do-while', and 'break/continue'. These constructs allow for repeated execution of code until a specific condition is met, making them essential in solving problems that require multiple iterations."
+            },
+            {
+              "heading": "Hands-on Laboratory Exercises",
+              "body": "In this week's activities, students will engage in hands-on laboratory exercises to practice and reinforce their understanding of loop structures. These practical sessions will help develop problem-solving skills and prepare for the upcoming assessment."
+            },
+            {
+              "heading": "References",
+              "body": "1. Algorithm - Wikipedia, p. 7 — knowledge-library passage used for this draft\n2. Algorithm - Wikipedia, p. 6 — knowledge-library passage used for this draft"
+            }
+          ]
+        },
+        "activity": {
+          "title": "Practical Exercise",
+          "sections": [
+            {
+              "heading": "Assessment Preparation",
+              "body": "The planned assessment is a practical exercise that tests students' ability to implement loop structures in programming. The questions are designed to evaluate their understanding of 'for', 'while', and 'do-while' loops, as well as the use of 'break/continue'."
+            },
+            {
+              "heading": "Assessment Questions",
+              "body": "1. What is the purpose of a loop structure in programming? (A) To repeat a set of instructions until a condition is met.\n(B) To execute code continuously without any conditions.\n(C) To break out of an infinite loop prematurely.\n(D) To skip over certain lines of code based on conditions.\n\n2. Which loop structure should be used when the number of iterations is unknown? (A) 'for' loop.\n(B) 'while' loop.\n(C) 'do-while' loop.\n(D) None of these.\n\n3. What does the 'continue' statement do in a loop? (A) It skips over the rest of the current iteration and moves to the next one.\n(B) It terminates the entire loop execution.\n(C) It repeats the current iteration until the condition is met.\n(D) It changes the value of the loop variable."
+            }
+          ]
+        },
+        "assessment": {
+          "title": "Practical Exercise Assessment",
+          "questions": [
+            {
+              "text": "What is the purpose of a loop structure in programming?",
+              "options": [
+                "To repeat a set of instructions until a condition is met.",
+                "To execute code continuously without any conditions.",
+                "To break out of an infinite loop prematurely.",
+                "To skip over certain lines of code based on conditions."
+              ],
+              "correctIndex": 0,
+              "explanation": "The purpose of a loop structure in programming is to repeat a set of instructions until a condition is met."
+            },
+            {
+              "text": "Which loop structure should be used when the number of iterations is unknown?",
+              "options": [
+                "'for' loop.",
+                "'while' loop.",
+                "'do-while' loop.",
+                "None of these."
+              ],
+              "correctIndex": 1,
+              "explanation": "The correct answer is B. 'While' loop."
+            },
+            {
+              "text": "What does the 'continue' statement do in a loop?",
+              "options": [
+                "It skips over the rest of the current iteration and moves to the next one.",
+                "It terminates the entire loop execution.",
+                "It repeats the current iteration until the condition is met.",
+                "It changes the value of the loop variable."
+              ],
+              "correctIndex": 0,
+              "explanation": "The correct answer is A. 'It skips over the rest of the current iteration and moves to the next one.'"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "course": "IT 106",
+      "week": 1,
+      "ok": false,
+      "seconds": 93,
+      "error": "an error was encountered while running the model: read tcp 127.0.0.1:57245->127.0.0.1:50390: wsarecv: An existing connection was forcibly closed by the remote host."
+    },
+    {
+      "course": "IT 209",
+      "week": 8,
+      "ok": false,
+      "seconds": 88,
+      "error": "an error was encountered while running the model: read tcp 127.0.0.1:63822->127.0.0.1:63797: wsarecv: An existing connection was forcibly closed by the remote host."
+    },
+    {
+      "course": "WMAD 303-1",
+      "week": 7,
+      "ok": false,
+      "seconds": 25,
+      "error": "llama runner process has terminated: cudaMalloc failed: out of memory\nerror loading model: unable to allocate CUDA0 buffer\npanic:"
+    },
+    {
+      "course": "CP 2",
+      "week": 1,
+      "ok": false,
+      "seconds": 316,
+      "error": "The local model runner stopped or could not be reached. Check Ollama and available memory, then try again."
+    },
+    {
+      "course": "IT 102",
+      "week": 7,
+      "ok": false,
+      "seconds": 125,
+      "error": "Did not receive done or success response in stream."
+    }
+  ]
+}

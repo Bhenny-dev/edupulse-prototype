@@ -18,7 +18,7 @@
 
    ![Three generated draft items](04-generated-drafts-for-review.png)
 
-5. In the material view, read the draft and the **AI draft review** panel before checking it. The panel shows outline coverage and a statement check against the outline and retrieved references. This capture reports **100% outline coverage** for the one topic and one outcome, while only **1 of 9 material statements** was automatically supported; the other eight are explicitly left for instructor verification. Open **Generation details and references** to inspect the source trace.
+5. In the material view, read the draft and the **AI draft review** panel before checking it. The panel checks every outline topic and outcome, the planned activity and assessment when listed, and agreement between question explanations and marked answers. It shows which statements were supported by the outline or references and leaves other statements for instructor verification. Open **Generation details and references** to inspect the source trace. **References** lists the syllabus resources and retrieved passages used; model-authored reference lists are removed.
 
    ![Material document and review panel](05-draft-document-view.png)
 
@@ -26,4 +26,4 @@
 
 6. Edit any inaccurate explanation or answer key, then use **Check** only after reviewing the material, activity, and assessment. Drafts are not published or graded automatically.
 
-The six images come from the production build using the local `qwen2.5:1.5b` model and a real generated week 1 draft. The [v0.4.0 release record](../../versions/v0.4.0/README.md) maps them to NFR-AI-06 (goal 6).
+The six images come from the production build using the local `qwen2.5:3b` model and a real generated week 1 draft. The [v0.4.0 release record](../../versions/v0.4.0/README.md) maps them to NFR-AI-06 (goal 6).

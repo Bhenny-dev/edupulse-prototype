@@ -24,6 +24,18 @@ test('provider credentials are encrypted, authenticated, expiring and bound to t
   assert(!connectionInput.safeParse({ provider: 'openai', apiKey: 'valid-test-key', baseUrl: 'http://169.254.169.254' }).success)
 })
 
+test('the admin connection stays usable in role previews but cannot be reused by another account or a guest', () => {
+  const admin: Identity = { id: 'verified-owner-account', role: 'admin', local: false }
+  const cookie = connectionCookie({ ...connection, owner: admin.id })
+  const request = new Request('https://edupulse.test/api/ai', { headers: { cookie } })
+  for (const role of ['admin', 'dean', 'associate_dean', 'instructor', 'student'] as const) {
+    // The server identity stays admin; viewRole is a UI hint, never a credential owner.
+    assert.equal(readConnection(request, admin)?.owner, admin.id, role)
+    assert.equal(readConnection(request, { id: `other-${role}`, role, local: false }), undefined)
+  }
+  assert.equal(readConnection(request, { id: 'public-guest', role: 'guest', local: false }), undefined)
+})
+
 test('a hosted visitor never inherits a server-wide OpenAI key', async () => {
   process.env.AI_PROVIDER = 'openai'
   process.env.OPENAI_API_KEY = 'server-key-must-stay-private'

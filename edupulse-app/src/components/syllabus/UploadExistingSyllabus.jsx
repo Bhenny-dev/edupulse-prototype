@@ -15,6 +15,7 @@ const SECTION_LABELS = [
 export default function UploadExistingSyllabus({ onExtract, onCancel, compact }) {
   const [file, setFile] = useState(null)
   const [parsing, setParsing] = useState(false)
+  const [progress, setProgress] = useState('Parsing syllabus document…')
   const [parsed, setParsed] = useState(null)
   const [error, setError] = useState(null)
   const [expandedSection, setExpandedSection] = useState(null)
@@ -27,8 +28,8 @@ export default function UploadExistingSyllabus({ onExtract, onCancel, compact })
     setFile(f)
     setParsed(null)
     setExpandedSection(null)
-    if (!f.name.match(/\.docx$/i)) {
-      setError('Only .docx files are supported')
+    if (!f.name.match(/\.(docx|pdf)$/i)) {
+      setError('Only .docx and .pdf files are supported')
       return
     }
     if (f.size > 2_000_000) {
@@ -38,11 +39,12 @@ export default function UploadExistingSyllabus({ onExtract, onCancel, compact })
     setError(null)
     parsingRef.current = true
     setParsing(true)
+    setProgress('Parsing syllabus document…')
     try {
-      const result = await parseSyllabusFile(f)
+      const result = await parseSyllabusFile(f, setProgress)
       setParsed(result)
     } catch (err) {
-      setError('Failed to parse the document. Please ensure it is a valid .docx syllabus file.')
+      setError('Failed to read the syllabus. Choose a valid DOCX or PDF with readable text, or a clear scan of up to 60 pages.')
       setParsed(null)
     } finally {
       parsingRef.current = false
@@ -96,8 +98,8 @@ export default function UploadExistingSyllabus({ onExtract, onCancel, compact })
         <input
           ref={inputRef}
           type="file"
-          accept=".docx"
-          aria-label="Upload syllabus DOCX"
+          accept=".docx,.pdf"
+          aria-label="Upload syllabus DOCX or PDF"
           disabled={parsing}
           style={{ display: 'none' }}
           onChange={e => {
@@ -112,16 +114,16 @@ export default function UploadExistingSyllabus({ onExtract, onCancel, compact })
             <div className="upload-zone-icon" style={{ animation: 'spin 1s linear infinite' }}>
               <Loader2 size={24} style={{ color: 'var(--sky-500)' }} />
             </div>
-            <div style={{ fontSize: '0.875rem', color: 'var(--gray-600)' }}>Parsing syllabus document…</div>
+            <div role="status" style={{ fontSize: '0.875rem', color: 'var(--gray-600)' }}>{progress}</div>
           </div>
         ) : !file ? (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
             <div className="upload-zone-icon">
               <Upload size={24} style={{ color: 'var(--sky-500)' }} />
             </div>
-            {!compact && <p style={{ fontWeight: 700, marginBottom: '4px' }}>Drop your syllabus .docx here or click to browse</p>}
+            {!compact && <p style={{ fontWeight: 700, marginBottom: '4px' }}>Drop your syllabus .docx or .pdf here or click to browse</p>}
             <p className="text-sm text-muted">The system will extract content and auto-fill the 7-section syllabus form.</p>
-            <p style={{ fontSize: '0.6875rem', color: 'var(--gray-400)', marginTop: '4px' }}>Accepted: .docx · Max 2MB</p>
+            <p style={{ fontSize: '0.6875rem', color: 'var(--gray-400)', marginTop: '4px' }}>Accepted: .docx, .pdf · Max 2MB · Scanned PDFs use OCR</p>
           </div>
         ) : error ? (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
@@ -148,6 +150,7 @@ export default function UploadExistingSyllabus({ onExtract, onCancel, compact })
 
       {parsed && (
         <div style={{ marginTop: '16px' }}>
+          {parsed.metadata?.scannedPages > 0 && <p role="status" className="text-sm text-muted">OCR read {parsed.metadata.scannedPages} scanned page(s). Check the extracted text against the original before using it.</p>}
           {parsed.courseMatch && (
             <div style={{
               display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 14px',

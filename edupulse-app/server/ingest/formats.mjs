@@ -2,8 +2,8 @@
 // with an empty environment (see sandbox.ts). It only reads the bytes it is
 // given: no file paths, network fetches, scripts or embedded objects.
 
-export const LIMITS = Object.freeze({ bytes: 4_000_000, pages: 300, characters: 400_000, zipEntries: 2_000, zipUncompressed: 60_000_000, zipRatio: 200, slides: 300 })
-export const SUPPORTED = Object.freeze(['pdf', 'docx', 'pptx', 'html', 'markdown', 'text', 'csv'])
+export const LIMITS = Object.freeze({ bytes: 4_000_000, pages: 300, characters: 400_000, zipEntries: 2_000, zipUncompressed: 60_000_000, zipRatio: 200, slides: 300, sheets: 20, rows: 5_000 })
+export const SUPPORTED = Object.freeze(['pdf', 'docx', 'pptx', 'xlsx', 'html', 'markdown', 'text', 'csv'])
 
 export class ExtractionError extends Error {
   /** @param {string} code @param {string} message */
@@ -63,14 +63,14 @@ export function sniff(bytes, fileName) {
     const zip = inspectZip(bytes)
     if (zip.names.includes('word/document.xml')) { if (extension !== 'docx') throw new ExtractionError('TYPE_MISMATCH', 'This Word document must use the .docx extension.'); return { kind: 'docx', mime: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', zip } }
     if (zip.names.includes('ppt/presentation.xml')) { if (extension !== 'pptx') throw new ExtractionError('TYPE_MISMATCH', 'This presentation must use the .pptx extension.'); return { kind: 'pptx', mime: 'application/vnd.openxmlformats-officedocument.presentationml.presentation', zip } }
-    if (zip.names.includes('xl/workbook.xml')) throw new ExtractionError('UNSUPPORTED_TYPE', 'Spreadsheets are not indexed directly. Export the sheet as CSV.')
+    if (zip.names.includes('xl/workbook.xml')) { if (extension !== 'xlsx') throw new ExtractionError('TYPE_MISMATCH', 'This Excel workbook must use the .xlsx extension.'); return { kind: 'xlsx', mime: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', zip } }
     throw new ExtractionError('UNSUPPORTED_TYPE', 'This ZIP archive is not a supported document.')
   }
-  if (/^(doc|ppt|xls)$/.test(extension)) throw new ExtractionError('UNSUPPORTED_TYPE', 'Legacy Office formats (.doc, .ppt, .xls) are not supported. Save as .docx or .pptx.')
-  if (bytes.subarray(0, 4096).includes(0) && !(bytes[0] === 0xff && bytes[1] === 0xfe) && !(bytes[0] === 0xfe && bytes[1] === 0xff)) throw new ExtractionError('UNSUPPORTED_TYPE', 'Binary files are not supported. Use PDF, DOCX, PPTX, HTML, TXT, Markdown or CSV.')
+  if (/^(doc|ppt|xls)$/.test(extension)) throw new ExtractionError('UNSUPPORTED_TYPE', 'Legacy Office formats (.doc, .ppt, .xls) are not supported. Save as .docx, .pptx or .xlsx.')
+  if (bytes.subarray(0, 4096).includes(0) && !(bytes[0] === 0xff && bytes[1] === 0xfe) && !(bytes[0] === 0xfe && bytes[1] === 0xff)) throw new ExtractionError('UNSUPPORTED_TYPE', 'Binary files are not supported. Use PDF, DOCX, PPTX, XLSX, HTML, TXT, Markdown or CSV.')
   const kinds = { txt: 'text', text: 'text', md: 'markdown', markdown: 'markdown', csv: 'csv', html: 'html', htm: 'html' }
   const kind = kinds[/** @type {keyof typeof kinds} */ (extension)]
-  if (!kind) throw new ExtractionError('UNSUPPORTED_TYPE', 'Supported files: PDF, DOCX, PPTX, HTML, TXT, Markdown and CSV.')
+  if (!kind) throw new ExtractionError('UNSUPPORTED_TYPE', 'Supported files: PDF, DOCX, PPTX, XLSX, HTML, TXT, Markdown and CSV.')
   return { kind, mime: kind === 'html' ? 'text/html' : kind === 'csv' ? 'text/csv' : kind === 'markdown' ? 'text/markdown' : 'text/plain' }
 }
 
@@ -172,6 +172,59 @@ async function extractPptx(bytes) {
   return { pages, meta: { slideCount: order.length } }
 }
 
+const csvCell = (/** @type {string} */ value) => /[",\n]/.test(value) ? `"${value.replace(/"/g, '""')}"` : value
+/** Column letters of a cell reference ("AB12" → 27). */
+const columnIndex = (/** @type {string} */ ref) => [...(ref.match(/^[A-Z]+/) || [''])[0]].reduce((n, ch) => n * 26 + ch.charCodeAt(0) - 64, 0) - 1
+const cellText = (/** @type {string} */ xml) => [...xml.matchAll(/<t\b[^>]*>([^<]*)<\/t>/g)].map(t => xmlText(t[1])).join('')
+
+/**
+ * Reads every visible worksheet as comma-separated rows under a "## Sheet" heading,
+ * so class lists and tables keep their columns. Formulas are never evaluated: only
+ * the value Excel last saved is read. Hidden sheets and embedded objects are ignored.
+ * @param {Uint8Array} bytes
+ */
+async function extractXlsx(bytes) {
+  const JSZip = (await import('jszip')).default
+  const zip = await JSZip.loadAsync(bytes)
+  const read = async (/** @type {string} */ path) => { const file = zip.file(path); return file ? file.async('string') : '' }
+  const [workbook, rels, shared] = await Promise.all([read('xl/workbook.xml'), read('xl/_rels/workbook.xml.rels'), read('xl/sharedStrings.xml')])
+  const strings = [...shared.matchAll(/<si\b[^>]*>([\s\S]*?)<\/si>/g)].map(si => cellText(si[1]))
+  /** @type {Record<string, string>} */
+  const targets = {}
+  for (const match of rels.matchAll(/<Relationship\b[^>]*>/g)) {
+    const id = /\bId="([^"]+)"/.exec(match[0])?.[1], target = /\bTarget="([^"]+)"/.exec(match[0])?.[1]
+    if (id && target) targets[id] = `xl/${target.replace(/^\/?xl\//, '')}`
+  }
+  const sheets = [...workbook.matchAll(/<sheet\b[^>]*>/g)]
+    .map(m => ({ name: xmlText(/\bname="([^"]*)"/.exec(m[0])?.[1] || 'Sheet'), hidden: /\bstate="(?:hidden|veryHidden)"/.test(m[0]), path: targets[/\br:id="([^"]+)"/.exec(m[0])?.[1] || ''] }))
+    .filter(sheet => sheet.path && !sheet.hidden)
+  if (sheets.length > LIMITS.sheets) throw new ExtractionError('PAGE_LIMIT', `Workbooks are limited to ${LIMITS.sheets} visible sheets.`)
+  const parts = []
+  let totalRows = 0
+  for (const sheet of sheets) {
+    const xml = await read(sheet.path)
+    const rows = []
+    for (const row of xml.matchAll(/<row\b[^>]*>([\s\S]*?)<\/row>/g)) {
+      if (++totalRows > LIMITS.rows) throw new ExtractionError('PAGE_LIMIT', `Workbooks are limited to ${LIMITS.rows.toLocaleString()} rows.`)
+      /** @type {string[]} */
+      const cells = []
+      for (const cell of row[1].matchAll(/<c\b([^>]*?)(?:\/>|>([\s\S]*?)<\/c>)/g)) {
+        const attributes = cell[1], body = cell[2] || ''
+        const ref = /\br="([A-Z]+)\d+"/.exec(attributes)?.[1], type = /\bt="([^"]+)"/.exec(attributes)?.[1]
+        const raw = /<v>([^<]*)<\/v>/.exec(body)?.[1]
+        const value = type === 's' ? strings[Number(raw)] ?? '' : type === 'inlineStr' ? cellText(body) : type === 'b' ? (raw === '1' ? 'TRUE' : 'FALSE') : xmlText(raw ?? '')
+        const index = ref ? columnIndex(ref) : cells.length
+        if (index > 200) continue
+        while (cells.length < index) cells.push('')
+        cells[index] = value.replace(/\s+/g, ' ').trim()
+      }
+      if (cells.some(Boolean)) rows.push(cells.map(csvCell).join(',').replace(/,+$/, ''))
+    }
+    if (rows.length) parts.push(`## ${sheet.name}\n${rows.join('\n')}`)
+  }
+  return { text: parts.join('\n\n'), meta: { sheetCount: sheets.length, rows: totalRows } }
+}
+
 /**
  * Extracts structured text. Paged formats insert [[Page n]] / [[Slide n]]
  * markers so chunks keep their location for citations.
@@ -187,6 +240,7 @@ export async function extractDocument(bytes, fileName) {
   if (type.kind === 'pdf') ({ pages, meta } = await extractPdf(bytes))
   else if (type.kind === 'pptx') ({ pages, meta } = await extractPptx(bytes))
   else if (type.kind === 'docx') ({ text, meta } = await extractDocx(bytes))
+  else if (type.kind === 'xlsx') ({ text, meta } = await extractXlsx(bytes))
   else {
     const decoded = decodeText(bytes)
     meta = { encoding: decoded.encoding }
@@ -198,5 +252,7 @@ export async function extractDocument(bytes, fileName) {
   }
   if (text.length > LIMITS.characters) throw new ExtractionError('TEXT_LIMIT', 'The extracted text exceeds 400,000 characters. Split the document into smaller files.')
   const zip = 'zip' in type && type.zip ? { entries: type.zip.entries, uncompressed: type.zip.uncompressed } : null
-  return { kind: type.kind, mime: type.mime, text, pageTexts: pages?.map(p => p.text.length) || [], meta, zip }
+  // Plain text that keeps [[Page n]] markers (OCR output or a reviewed extraction) still reports its pages.
+  const marked = !pages && (type.kind === 'text' || type.kind === 'markdown') && /^\[\[Page \d{1,4}\]\][ \t]*\r?$/m.test(text) ? text.split(/^\[\[Page \d{1,4}\]\][ \t]*\r?$/m).slice(1) : null
+  return { kind: type.kind, mime: type.mime, text, pageTexts: (pages?.map(p => p.text) || marked || []).map(page => page.trim().length), meta, zip }
 }

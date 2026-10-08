@@ -1,4 +1,4 @@
-import { readFile, readdir } from 'node:fs/promises'
+import { readFile, readdir, stat } from 'node:fs/promises'
 import assert from 'node:assert/strict'
 import { handleRequest } from '../server/http.js'
 
@@ -16,6 +16,8 @@ assert(rewrite.test('/settings'), 'SPA fallback must handle frontend routes')
 assert((await readFile('dist/index.html', 'utf8')).includes('/assets/'))
 // Preview personas belong to development and the documentation capture build (dist-capture), never to production.
 for (const file of (await readdir('dist/assets')).filter(name => name.endsWith('.js'))) assert(!(await readFile(`dist/assets/${file}`, 'utf8')).includes('login-quick-access'), 'The production build must not contain preview sign-in personas')
+// On-device OCR loads its worker, engines, English model and PDF decoders from this origin (the CSP blocks CDNs).
+for (const file of ['worker.min.js', 'tesseract-core-lstm.wasm.js', 'tesseract-core-simd-lstm.wasm.js', 'tesseract-core-relaxedsimd-lstm.wasm.js', 'eng.traineddata.gz', 'pdf/jbig2.wasm', 'pdf/openjpeg.wasm', 'pdf/qcms_bg.wasm']) assert((await stat(`dist/ocr/${file}`)).size > 50_000, `dist/ocr/${file} must be built for on-device OCR`)
 process.env.VERCEL = '1'
 process.env.AI_PROVIDER = 'retrieval'
 const health = await handleRequest(new Request('https://edupulse.test/api/ai?action=health'))
@@ -43,6 +45,8 @@ if (process.env.DEPLOYMENT_URL) {
     assert.equal(res.status, 200, `${path} status`)
     if (path.includes('api')) assert((res.headers.get('content-type') || '').includes('application/json'))
   }
+  const worker = await fetch(`${url}/ocr/worker.min.js`, { signal: AbortSignal.timeout(15000) })
+  assert(worker.ok && (worker.headers.get('content-type') || '').includes('javascript'), 'The OCR worker must be served as JavaScript, not the SPA fallback')
   console.log(`Live deployment checked: ${url}`)
 }
 console.log('Deployment checks passed: built assets, API routing, serverless health and public retrieval.')

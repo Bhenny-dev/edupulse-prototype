@@ -105,7 +105,7 @@ The mascot sits bottom-right on every page. Its eyes follow the pointer. **Click
 
 ![Pulse panel](17-pulse-panel.png)
 
-Header: the connected model (here *ollama · qwen2.5:1.5b*), **clear conversation**, **AI settings**, **close**. The welcome explains the three ways to use Pulse: drag it onto a component, ask/draft/compare/find references in the message box, or attach a document (paper-clip). **Guide this page** starts a walkthrough of the current page; **Explain this component** describes whatever has keyboard focus (also **Alt+P**). The footnote reminds users that AI drafts need review.
+Header: the connected model (here *ollama · qwen2.5:1.5b*), **clear conversation**, **AI settings**, **close**. The welcome explains the ways to use Pulse: drag it onto a component; ask, draft, compare documents or find references or records in the message box; or attach a document with the paper clip, such as a class list to register or a material to file under a course. It ends with *I ask before I change anything*: actions Pulse proposes wait for your confirmation ([System Manual 9](../../system-manual/09-pulse-actions/README.md)). **Guide this page** starts a walkthrough of the current page; **Explain this component** describes whatever has keyboard focus (also **Alt+P**). The footnote reminds users that AI drafts need review.
 
 ### 18. “Ask Pulse about this” hover badge
 

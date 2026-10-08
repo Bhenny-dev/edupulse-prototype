@@ -44,7 +44,7 @@ A course switcher (one button per enrolled course) sits above four tabs.
 
 ![Pulse for students](08-pulse-for-students.png)
 
-**Guide this page** on My Performance. Pulse focuses the score section, explains what it shows and offers help interpreting a topic or planning review. Its answers are scoped to the student role; a notice states when the page holds sample data.
+**Guide this page** on My Performance. Pulse focuses the score section, explains what it shows and offers help interpreting a topic or planning review. Its answers are scoped to the student role; a notice states when the page holds sample data. Students can also attach their own notes or handouts: Pulse suggests which of their courses the file belongs to, shows why, and adds it to their knowledge library only after they confirm ([System Manual 9](../../system-manual/09-pulse-actions/README.md#file-a-material-under-a-course-students-and-instructors)).
 
 ## 9. Pulse declines a request for assessment answers
 

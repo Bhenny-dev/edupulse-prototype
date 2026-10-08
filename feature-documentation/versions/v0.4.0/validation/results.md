@@ -1,5 +1,15 @@
 # Validation evidence
 
+## October 8 completion gate
+
+- `npm run verify`: documentation integrity/freshness, lint, both typechecks, pinned model checksums, **99 passing tests**, production build and the built serverless deployment checks.
+- `npm run test:browser`: **45 passed, 13 skipped** on desktop and mobile. Skips cover viewport-specific cases and opt-in OCR evaluations; there are no failed tests in the final run.
+- Documentation captures: the complete walkthrough and affected manual scenes passed, including real local-model conversation, DOCX/PDF import, on-device OCR, the syllabus lifecycle, generated courseware review, confirmable Pulse actions and class-list retry. Changed and new images were opened for visual review.
+- Opt-in OCR evaluation: all six evaluation tests passed. Eleven printed sample pages were measured; see [the results and limitations](../../../session-generated/2026-10-05-courseware-accuracy/README.md).
+- Provider isolation: tests reject reuse of the admin's encrypted provider cookie by another account or a guest, while role previews retain the verified account owner. No API key is included in this commit.
+
+The courseware capture uses `qwen2.5:3b` with a real, schema-validated draft; the earlier `qwen2.5:1.5b` baseline is preserved with its failures and is not evidence of an overall accuracy improvement. Local Ollama JSON drafts use non-streaming responses, still with at most two generation attempts and instructor review before publishing.
+
 Implementation: 2026-10-01 to 2026-10-03. Local release gate: 2026-10-03.
 
 ## Local release gate

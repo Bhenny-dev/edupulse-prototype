@@ -26,6 +26,53 @@ export function makePdf(pages: string[][]): Uint8Array {
   return new Uint8Array(Buffer.from(pdf, 'latin1'))
 }
 
+/** Width and height from a JPEG's start-of-frame marker. */
+function jpegSize(jpeg: Uint8Array) {
+  for (let i = 2; i + 9 < jpeg.length;) {
+    if (jpeg[i] !== 0xff) { i++; continue }
+    const marker = jpeg[i + 1]!
+    if (marker >= 0xc0 && marker <= 0xcf && ![0xc4, 0xc8, 0xcc].includes(marker)) return { height: (jpeg[i + 5]! << 8) | jpeg[i + 6]!, width: (jpeg[i + 7]! << 8) | jpeg[i + 8]! }
+    i += 2 + ((jpeg[i + 2]! << 8) | jpeg[i + 3]!)
+  }
+  throw new Error('The image is not a baseline or progressive JPEG.')
+}
+
+/**
+ * A US Letter PDF whose pages are either text with a real text layer or a full-page JPEG with no
+ * text at all, as a scanner produces. Mixed documents exercise OCR of only the pages that need it.
+ */
+export function makeScannedPdf(pages: ({ lines: string[] } | { jpeg: Uint8Array })[]): Uint8Array {
+  const escape = (s: string) => s.replace(/[\\()]/g, m => `\\${m}`)
+  const text = (s: string) => Buffer.from(s, 'latin1')
+  const stream = (dict: string, data: Buffer) => Buffer.concat([text(`<< ${dict}/Length ${data.length} >>\nstream\n`), data, text('\nendstream')])
+  const bodies: Buffer[] = [], kids: number[] = []
+  bodies[1] = text('<< /Type /Catalog /Pages 2 0 R >>')
+  bodies[3] = text('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>')
+  let next = 4
+  for (const page of pages) {
+    const pageId = next++, contentId = next++
+    kids.push(pageId)
+    if ('jpeg' in page) {
+      const imageId = next++, { width, height } = jpegSize(page.jpeg)
+      bodies[imageId] = stream(`/Type /XObject /Subtype /Image /Width ${width} /Height ${height} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode `, Buffer.from(page.jpeg))
+      bodies[contentId] = stream('', text('q 612 0 0 792 0 0 cm /Im1 Do Q'))
+      bodies[pageId] = text(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /XObject << /Im1 ${imageId} 0 R >> >> /Contents ${contentId} 0 R >>`)
+    } else {
+      bodies[contentId] = stream('', text(`BT /F1 12 Tf 72 720 Td 16 TL ${page.lines.map(line => `(${escape(line)}) Tj T*`).join(' ')} ET`))
+      bodies[pageId] = text(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents ${contentId} 0 R >>`)
+    }
+  }
+  bodies[2] = text(`<< /Type /Pages /Kids [${kids.map(id => `${id} 0 R`).join(' ')}] /Count ${kids.length} >>`)
+  const parts = [text('%PDF-1.4\n')], offsets: number[] = []
+  let offset = parts[0]!.length
+  for (let id = 1; id < bodies.length; id++) {
+    const object = Buffer.concat([text(`${id} 0 obj\n`), bodies[id]!, text('\nendobj\n')])
+    offsets[id] = offset; offset += object.length; parts.push(object)
+  }
+  parts.push(text(`xref\n0 ${bodies.length}\n0000000000 65535 f \n${offsets.slice(1).map(o => `${String(o).padStart(10, '0')} 00000 n \n`).join('')}trailer\n<< /Size ${bodies.length} /Root 1 0 R >>\nstartxref\n${offset}\n%%EOF\n`))
+  return new Uint8Array(Buffer.concat(parts))
+}
+
 export async function makeDocx(): Promise<Uint8Array> {
   const cell = (text: string) => new TableCell({ children: [new Paragraph(text)] })
   const document = new Document({ sections: [{ children: [

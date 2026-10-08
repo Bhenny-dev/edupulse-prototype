@@ -18,17 +18,17 @@ Main tabs: **Dashboard**, **Syllabus**, **Courseware**, **Student Monitoring**, 
 
 | Tab | Screenshot | What it holds |
 | --- | --- | --- |
-| My Courses | ![My Courses](02-syllabus-my-courses.png) | Upload an EduSuite block-section file (CSV, Excel or PDF) to register the courses you teach. |
+| My Courses | ![My Courses](02-syllabus-my-courses.png) | Upload the EduSuite class list for a block (CSV, Excel `.xlsx`, PDF, Word `.docx` or text, up to 4 MB, one student per row with a Name column) to register a course you teach. The file is read for real: the preview lists its students, the course and block are filled in when the file names them, rows without a name are reported, and a second list for the same course and block is merged without duplicates. You can also attach the file to Pulse ([System Manual 9](../../system-manual/09-pulse-actions/README.md)). |
 | My Syllabus | ![My Syllabus](03-syllabus-my-syllabus.png) | The lifecycle strip (1 Drafted → 2 Checked → 3 Out for Approval → *offline signatures* → 4 Approved — Uploaded → 5 Active) and every syllabus with status, version, extracted outline, the **next step** button for its status, and icons for **View Syllabus**, **Version History**, **Review recorded changes**, **Edit in Builder** (drafts and checked syllabi only), **Copy for next term** and **Archive**. |
 | Shared Repository | ![Shared Repository](04-syllabus-shared-repository.png) | Sample syllabus library by curriculum course. Copy one as your own draft; private workspaces are not shared with other instructors. |
 
 ## 5–6. Syllabus Builder
 
-The DOCX upload area accepts files up to 2 MB. Review **Extracted Sections Preview** before selecting **Use This Syllabus**. Invalid files show an error with **Try Again**; **Choose Different File** clears the preview. See the [import preview and retry steps](../../system-manual/02-syllabus-lifecycle/README.md#build-the-draft) for captured examples.
+The DOCX/PDF upload area accepts files up to 2 MB. Scanned PDFs use OCR on the device. Review **Extracted Sections Preview** before selecting **Use This Syllabus**. Invalid files show an error with **Try Again**; **Choose Different File** clears the preview. See the [import preview and retry steps](../../system-manual/02-syllabus-lifecycle/README.md#build-the-draft) for captured examples.
 
 ![Syllabus Builder](05-syllabus-builder.png)
 
-The seven-section template. Start by dropping an existing syllabus `.docx` (its content fills the form), by **Load curriculum outline**, or by selecting a course in Section 1, which auto-fills the locked course information and description. Required fields are marked with an asterisk.
+The seven-section template. Start by dropping an existing syllabus `.docx` or `.pdf` and accepting its extracted preview, by **Load curriculum outline**, or by selecting a course in Section 1, which auto-fills the locked course information and description. Required fields are marked with an asterisk.
 
 ![Course Outline section](06-syllabus-builder-course-outline.png)
 

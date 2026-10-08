@@ -12,6 +12,7 @@ Task-by-task instructions for EduPulse v0.4.0, each step illustrated with a scre
 | [6](06-compare-and-references/README.md) | Compare two documents; find references in open catalogs | Every signed-in account | Knowledge library, Pulse panel |
 | [7](07-pulse-guidance/README.md) | Drag Pulse onto any component for guidance; follow a section tour | Everyone | Any page |
 | [8](08-ai-connections/README.md) | Choose where Pulse thinks: local model, free providers, own key, on-device | Everyone (each account connects its own key) | Settings → AI & Knowledge |
+| [9](09-pulse-actions/README.md) | Ask Pulse to act: register a class list, file a material under a course, search records, generate a week, open a page | Instructors; students for materials; everyone for search and pages | Pulse panel |
 
 Sections 3–8 cover the AI features added in v0.4.0 (named LangGraph agents, sandboxed document extraction, free in-process embeddings and reranking, hybrid vector search, verification, correction, comparison, references and accurate on-page guidance). Sections 1–2 document the core workflow those features plug into.
 
@@ -19,7 +20,7 @@ Sections 3–8 cover the AI features added in v0.4.0 (named LangGraph agents, sa
 
 * **Bold** names a button, tab or field exactly as it appears on screen.
 * Every image is a real capture: real documents, a real local model (*qwen2.5:1.5b* through Ollama) and the real database. Nothing in the AI screenshots is mocked; where a small model's output is imperfect, the text says so.
-* Pulse drafts, explains and checks. It never saves, approves, publishes or grades on its own; every AI draft is marked for instructor review.
+* Pulse drafts, explains and checks. It never saves, registers, approves, publishes or grades on its own: an action it proposes runs only after you press the confirm button on its card ([manual 9](09-pulse-actions/README.md)), and every AI draft is marked for instructor review.
 
 ## How the images were made
 

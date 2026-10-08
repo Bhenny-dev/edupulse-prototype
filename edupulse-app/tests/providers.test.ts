@@ -4,7 +4,7 @@ import { createServer } from 'node:http'
 import { once } from 'node:events'
 import { invokeModel } from '../server/providers.js'
 
-test('Ollama transport requests JSON mode without native schema sampling and propagates errors', async () => {
+test('Ollama draft transport requests one non-streaming JSON response and propagates errors', async () => {
   const bodies: Record<string, unknown>[] = []
   let fail = false
   const server = createServer(async (request, response) => {
@@ -22,6 +22,7 @@ test('Ollama transport requests JSON mode without native schema sampling and pro
   try {
     assert.deepEqual(JSON.parse(await invokeModel('Return JSON.', 'Synthetic transport fixture.', AbortSignal.timeout(5000), true)), { test: true })
     assert.equal(bodies[0].format, 'json', 'Avoid the runner crash caused by native schema sampling')
+    assert.equal(bodies[0].stream, false, 'Drafts must not depend on streamed completion markers')
     fail = true
     await assert.rejects(invokeModel('Return JSON.', 'Synthetic transport fixture.', AbortSignal.timeout(5000), true))
     assert.equal(bodies.length, 2, 'The transport must not add hidden retries')

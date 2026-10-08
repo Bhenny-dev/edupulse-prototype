@@ -1,17 +1,21 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Upload, Trash2, MessageSquare, GitCompare, FileText, ShieldCheck, Check, X, Loader2, AlertTriangle } from 'lucide-react'
+import { Upload, Trash2, MessageSquare, GitCompare, FileText, ShieldCheck, Check, X, Loader2, AlertTriangle, ScanText } from 'lucide-react'
 import { aiRequest, extractDocument, UPLOAD_ACCEPT } from '../../lib/aiClient'
+import { LOW_CONFIDENCE, mergePageText, summarizeOcr } from '../../lib/ocrText'
 import { pulse } from '../pulse/pulseBus'
 import './ai.css'
 
 const STAGES = [['upload', 'Upload'], ['extract', 'Sandboxed extraction'], ['clean', 'Clean'], ['evaluate', 'Evaluate'], ['review', 'Your review'], ['chunk', 'Chunk'], ['embed', 'Embed'], ['index', 'Index']]
-const KIND = { pdf: 'pdf', docx: 'docx', pptx: 'pptx', html: 'html', markdown: 'markdown', text: 'text', csv: 'csv' }
+// A workbook is indexed as the comma-separated rows the sandbox extracted from it.
+const KIND = { pdf: 'pdf', docx: 'docx', pptx: 'pptx', xlsx: 'csv', html: 'html', markdown: 'markdown', text: 'text', csv: 'csv' }
 const titleFor = report => (typeof report.meta?.title === 'string' && report.meta.title.trim().length > 3 ? report.meta.title.trim() : report.fileName.replace(/\.[^.]+$/, '').replace(/[_-]+/g, ' ')).slice(0, 160)
 const kb = bytes => bytes >= 1e6 ? `${(bytes / 1e6).toFixed(1)} MB` : `${Math.max(1, Math.round(bytes / 1e3))} KB`
+const isPdf = file => /\.pdf$/i.test(file.name)
+const pagesLabel = pages => `${pages.length === 1 ? 'page' : 'pages'} ${pages.join(', ')}`
 
 function StageList({ item }) {
   const order = STAGES.map(([key]) => key)
-  const position = item.status === 'queued' ? 0 : item.status === 'extracting' ? 1 : item.status === 'review' ? 4 : item.status === 'indexing' ? 5 : item.status === 'indexed' ? 8 : item.failedAt ?? 1
+  const position = item.status === 'queued' ? 0 : item.status === 'extracting' || item.status === 'ocr' ? 1 : item.status === 'review' ? 4 : item.status === 'indexing' ? 5 : item.status === 'indexed' ? 8 : item.failedAt ?? 1
   return <ol className="kl-stages" aria-label="Pipeline progress">{STAGES.map(([key, label], i) => {
     const state = item.status === 'error' && i === position ? 'is-error' : i < position ? 'is-done' : i === position && item.status !== 'indexed' ? 'is-active' : ''
     return <li key={key} className={state}>{state === 'is-done' ? <Check size={11} /> : state === 'is-error' ? <X size={11} /> : state === 'is-active' && item.status !== 'review' ? <Loader2 size={11} className="spin" /> : null}{label}{item.timings?.[order[i]] !== undefined ? ` · ${item.timings[order[i]]} ms` : ''}</li>
@@ -29,10 +33,18 @@ function QualityReport({ report }) {
   </div>
 }
 
+function OcrSummary({ summary }) {
+  return <div className="kl-ocr-summary" role="status"><ScanText size={14} aria-hidden="true" /><div>
+    <strong>OCR read {summary.read} of {summary.pages} scanned {summary.pages === 1 ? 'page' : 'pages'} on this device</strong>{summary.read ? ` · average confidence ${summary.confidence}%` : ''}.
+    {summary.blank.length > 0 && <> No text was found on {pagesLabel(summary.blank)} (blank, or a picture without words).</>}
+    {summary.low.length > 0 && <div className="kl-flag"><AlertTriangle size={13} /> Check {pagesLabel(summary.low.map(p => `${p.page} (${p.confidence}%)`))} before indexing: below {LOW_CONFIDENCE}% confidence, some words may be misread.</div>}
+  </div></div>
+}
+
 export default function KnowledgeLibrary({ canIndex, onChange }) {
   const [items, setItems] = useState([]), [documents, setDocuments] = useState([]), [over, setOver] = useState(false)
   const [selected, setSelected] = useState([]), [error, setError] = useState(''), [busy, setBusy] = useState(false), [paste, setPaste] = useState({ open: false, title: '', text: '' })
-  const fileRef = useRef(null), queue = useRef(Promise.resolve())
+  const fileRef = useRef(null), queue = useRef(Promise.resolve()), ocrRuns = useRef(new Map())
   const update = (id, patch) => setItems(list => list.map(item => item.id === id ? { ...item, ...(typeof patch === 'function' ? patch(item) : patch) } : item))
   // The API allows one active request per account; uploads and indexing run in order instead of colliding.
   const enqueue = task => { const run = queue.current.then(task, task); queue.current = run.catch(() => undefined); return run }
@@ -53,15 +65,33 @@ export default function KnowledgeLibrary({ canIndex, onChange }) {
         try {
           const report = await extractDocument(file)
           update(id, { status: 'review', report, title: titleFor(report), text: report.text, timings: { upload: Math.round(performance.now() - started - report.stages.reduce((n, s) => n + s.ms, 0)), ...Object.fromEntries(report.stages.map(s => [s.name, s.ms])) } })
-        } catch (err) { update(id, { status: 'error', error: err.message, failedAt: 1 }) }
+        } catch (err) { update(id, { status: 'error', error: err.message, failedAt: 1, scanned: isPdf(file) && err.code === 'NO_READABLE_TEXT' }) }
       })
     }
+  }
+  // Scanned pages are read on this device; the combined text then goes through the same sandboxed
+  // cleaning, quality and instruction checks as any upload before the instructor reviews it.
+  async function readWithOcr(item) {
+    const controller = new AbortController()
+    ocrRuns.current.set(item.id, controller)
+    update(item.id, { status: 'ocr', error: '', scanned: false, progress: { done: 0, total: 0, page: null, status: 'Opening the PDF' } })
+    try {
+      const { ocrScannedPages } = await import('../../lib/ocr')
+      const { pages } = await ocrScannedPages(item.file, { signal: controller.signal, onProgress: progress => update(item.id, { progress }) })
+      const merged = mergePageText(item.report ? item.text : '', pages)
+      const stem = item.file.name.replace(/\.pdf$/i, '')
+      const report = await enqueue(() => extractDocument(new File([merged], `${stem}.txt`, { type: 'text/plain' }), controller.signal))
+      update(item.id, current => ({ status: 'review', report: { ...report, fileName: item.file.name }, sourceType: 'pdf', ocr: summarizeOcr(pages), title: current.title || titleFor({ ...report, fileName: item.file.name }), text: report.text, progress: null }))
+    } catch (err) {
+      const cancelled = controller.signal.aborted
+      update(item.id, current => ({ status: current.report ? 'review' : 'error', progress: null, scanned: !current.report, error: cancelled ? 'OCR was cancelled. The file was not changed.' : `OCR could not read this PDF. ${err.message}`, failedAt: 1 }))
+    } finally { ocrRuns.current.delete(item.id) }
   }
   function index(item) {
     update(item.id, { status: 'indexing', error: '' })
     return enqueue(async () => {
       try {
-        const result = await aiRequest('documents', 'POST', { title: item.title.trim(), text: item.text, sourceType: KIND[item.report.kind] || 'text', fileName: item.report.fileName })
+        const result = await aiRequest('documents', 'POST', { title: item.title.trim(), text: item.text, sourceType: item.sourceType || KIND[item.report.kind] || 'text', fileName: item.report.fileName })
         update(item.id, current => ({ status: 'indexed', result, timings: { ...current.timings, ...Object.fromEntries(result.stages.map(s => [s.name, s.ms])) } }))
         await load(); onChange?.()
       } catch (err) { update(item.id, { status: 'error', error: err.message, failedAt: 5 }) }
@@ -84,18 +114,26 @@ export default function KnowledgeLibrary({ canIndex, onChange }) {
   return <div className="card" data-pulse-target="Knowledge library"><div className="card-header"><h3><FileText size={18} /> Knowledge library</h3><span className="badge badge-published">{documents.length}/50 documents</span></div><div className="card-body">
     <p>Add real course documents. Each file is checked, read in an isolated sandbox, cleaned and scored before you review the text. Indexed passages keep their page or section so Pulse can cite exact locations.</p>
     <div className={`kl-dropzone ${over ? 'is-over' : ''}`} data-pulse-target="Document upload" onDragOver={e => { e.preventDefault(); setOver(true) }} onDragLeave={() => setOver(false)} onDrop={e => { e.preventDefault(); setOver(false); add(Array.from(e.dataTransfer.files || [])) }}>
-      <Upload size={26} aria-hidden="true" /><strong>Drop documents here</strong><p>PDF, DOCX, PPTX, HTML, TXT, Markdown or CSV · up to 4 MB each · scanned PDFs need OCR first</p>
+      <Upload size={26} aria-hidden="true" /><strong>Drop documents here</strong><p>PDF, DOCX, PPTX, XLSX, HTML, TXT, Markdown or CSV · up to 4 MB each · scanned PDFs can be read with OCR on this device</p>
       <input ref={fileRef} type="file" hidden multiple accept={UPLOAD_ACCEPT} aria-label="Choose documents to upload" onChange={e => { add(Array.from(e.target.files || [])); e.target.value = '' }} />
       <button type="button" className="btn btn-primary btn-sm" onClick={() => fileRef.current?.click()}>Choose files</button>
     </div>
     {!canIndex && <p className="ai-notice">You can preview extraction now. Sign in as an instructor (or use the local app) to index documents into your private library.</p>}
     {items.length > 0 && <div className="kl-queue">{items.map(item => <section key={item.id} className="kl-item" aria-label={`Upload ${item.file.name}`}>
-      <div className="kl-item-head"><strong>{item.file.name}</strong>{item.report && <span className="kl-type">{item.report.kind}</span>}<small>{kb(item.file.size)}</small><button type="button" className="btn btn-ghost btn-sm" onClick={() => setItems(list => list.filter(x => x.id !== item.id))} aria-label={`Dismiss ${item.file.name}`}><X size={14} /></button></div>
+      <div className="kl-item-head"><strong>{item.file.name}</strong>{item.report && <span className="kl-type">{item.report.kind}</span>}<small>{kb(item.file.size)}</small><button type="button" className="btn btn-ghost btn-sm" onClick={() => { ocrRuns.current.get(item.id)?.abort(); setItems(list => list.filter(x => x.id !== item.id)) }} aria-label={`Dismiss ${item.file.name}`}><X size={14} /></button></div>
       <StageList item={item} />
       {item.status === 'queued' && <p role="status">Waiting for the previous file to finish…</p>}
       {item.status === 'extracting' && <p role="status">Reading the file in the sandbox…</p>}
       {item.error && <p role="alert" className="ai-notice">{item.error}</p>}
+      {item.scanned && item.status === 'error' && <div className="kl-ocr"><p>This PDF has no text layer, so it is probably a scan. OCR can read the page images on this device; they are not uploaded. You review the text before anything is indexed.</p>
+        <button type="button" className="btn btn-primary btn-sm" onClick={() => readWithOcr(item)}><ScanText size={14} /> Read with OCR</button></div>}
+      {item.status === 'ocr' && item.progress && <div className="kl-ocr" role="status"><p>{item.progress.status}{item.progress.total ? ` · ${item.progress.done} of ${item.progress.total} ${item.progress.total === 1 ? 'page' : 'pages'} read` : ''}…</p>
+        <progress max={Math.max(1, item.progress.total)} value={item.progress.done} aria-label="OCR progress" />
+        <button type="button" className="btn btn-secondary btn-sm" onClick={() => ocrRuns.current.get(item.id)?.abort()}>Cancel OCR</button></div>}
+      {item.ocr && <OcrSummary summary={item.ocr} />}
       {item.report && <QualityReport report={item.report} />}
+      {item.status === 'review' && !item.ocr && item.report?.kind === 'pdf' && item.report.quality.metrics.emptyPages > 0 && <div className="kl-ocr"><p>{item.report.quality.metrics.emptyPages} of {item.report.quality.metrics.pages} pages have no text layer. OCR can read them on this device and add their text under the right page markers.</p>
+        <button type="button" className="btn btn-secondary btn-sm" onClick={() => readWithOcr(item)}><ScanText size={14} /> Read {item.report.quality.metrics.emptyPages === 1 ? 'that page' : `those ${item.report.quality.metrics.emptyPages} pages`} with OCR</button></div>}
       {item.status === 'review' && <div className="kl-review">
         <label className="form-label" htmlFor={`title-${item.id}`}>Document title</label>
         <input id={`title-${item.id}`} className="form-input" maxLength={160} value={item.title} onChange={e => update(item.id, { title: e.target.value })} />
@@ -120,7 +158,7 @@ export default function KnowledgeLibrary({ canIndex, onChange }) {
       {documents.length ? <div style={{ overflowX: 'auto' }}><table className="kl-library"><thead><tr><th scope="col"><span className="sr-only">Select for comparison</span></th><th scope="col">Document</th><th scope="col">Type</th><th scope="col">Passages</th><th scope="col">Quality</th><th scope="col"><span className="sr-only">Actions</span></th></tr></thead><tbody>
         {documents.map(document => <tr key={document.id}>
           <td><input type="checkbox" checked={selected.includes(document.id)} onChange={() => toggle(document.id)} aria-label={`Select ${document.title} for comparison`} /></td>
-          <td><strong>{document.title}</strong><div className="text-sm text-muted">{document.page_count ? `${document.page_count} pages · ` : ''}{(document.char_count || 0).toLocaleString()} characters · {new Date(document.created_at).toLocaleDateString()}</div></td>
+          <td><strong>{document.title}</strong><div className="text-sm text-muted">{document.quality?.course ? `Course ${document.quality.course} · ` : ''}{document.page_count ? `${document.page_count} pages · ` : ''}{(document.char_count || 0).toLocaleString()} characters · {new Date(document.created_at).toLocaleDateString()}</div></td>
           <td><span className="kl-type">{document.source_type}</span></td><td>{document.chunks}</td>
           <td>{typeof document.quality?.score === 'number' ? `${document.quality.score}/100` : '—'}{document.quality?.injectionFlagged ? <AlertTriangle size={13} aria-label="Contains instruction-like text" /> : null}</td>
           <td><div className="kl-actions"><button type="button" className="btn btn-secondary btn-sm" onClick={() => pulse.ask(`Summarize “${document.title}” and list its key points.`, { documentIds: [document.id], task: 'summarize', label: document.title })}><MessageSquare size={13} /> Ask Pulse</button><button type="button" className="btn btn-ghost btn-sm" disabled={busy} onClick={() => remove(document)} aria-label={`Delete ${document.title}`}><Trash2 size={14} /></button></div></td>

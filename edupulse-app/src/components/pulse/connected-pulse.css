@@ -88,3 +88,45 @@
 @media(max-width: 640px) { .connected-pulse.panel-left { left: auto; right: 12px; } .connected-pulse.is-focused.panel-top { top: 8px; bottom: auto; } }
 @media(prefers-reduced-motion: reduce) { .connected-pulse * { scroll-behavior: auto; animation: none !important; } }
 @media(prefers-reduced-motion: reduce) { .connected-pulse-dock.is-rejected { animation: none; } .connected-pulse-dock.is-perched { transition: none; } }
+/* Operator action cards: proposals that run only after the user confirms. */
+.pulse-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 6px; }
+.pulse-action { border: 1px solid var(--sky-200, #bae6fd); background: var(--white); border-radius: 12px; padding: 12px; font-size: .82rem; }
+.pulse-action > header { display: flex; align-items: flex-start; gap: 7px; margin-bottom: 8px; color: var(--sky-800, #075985); }
+.pulse-action > header svg { flex-shrink: 0; margin-top: 2px; }
+.pulse-action p { margin: 6px 0; line-height: 1.5; }
+.pulse-action .form-label { display: flex; flex-direction: column; gap: 4px; font-size: .76rem; margin: 8px 0 0; }
+.pulse-action .form-input { font-size: .8rem; padding: 7px 9px; }
+.pulse-action .ai-actions { margin-top: 10px; }
+.pulse-action-fields { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 8px; }
+.pulse-action-table { overflow-x: auto; margin-top: 8px; }
+.pulse-action-table table { width: 100%; border-collapse: collapse; font-size: .74rem; }
+.pulse-action-table th, .pulse-action-table td { text-align: left; padding: 5px 6px; border-bottom: 1px solid var(--gray-100); overflow-wrap: anywhere; }
+.pulse-action-table th { color: var(--gray-600); font-weight: 700; background: var(--gray-50); }
+.pulse-action-note { color: var(--gray-600); font-size: .78rem; line-height: 1.5; }
+.pulse-action-warnings { margin: 4px 0; padding-left: 18px; color: #71491a; font-size: .76rem; }
+.pulse-action-courses { border: 0; padding: 0; margin: 0; min-width: 0; }
+.pulse-action-courses > label > span { min-width: 0; overflow-wrap: anywhere; }
+.pulse-action-courses legend { font-weight: 700; font-size: .78rem; margin-bottom: 6px; }
+.pulse-action-courses > label:not(.form-label) { display: flex; gap: 8px; align-items: flex-start; padding: 7px 8px; border: 1px solid var(--gray-200); border-radius: 9px; margin-bottom: 6px; cursor: pointer; }
+.pulse-action-courses > label.is-selected { border-color: var(--sky-500, #0ea5e9); background: var(--sky-50); }
+.pulse-action-courses input[type="radio"] { margin-top: 3px; accent-color: var(--sky-600); }
+.pulse-action-courses small { margin-top: 3px; }
+.pulse-match { display: inline-block; font-style: normal; font-size: .68rem; font-weight: 700; padding: 1px 6px; margin: 2px 4px 0 0; border-radius: 999px; background: var(--gray-100); color: var(--gray-700); }
+.pulse-match.is-named, .pulse-match.is-strong { background: #dcfce7; color: #166534; }
+.pulse-match.is-possible { background: #fef3c7; color: #92400e; }
+.pulse-action-source { background: var(--gray-50); border-radius: 8px; padding: 8px 10px; }
+.pulse-action-source p { margin: 4px 0; }
+.pulse-action-results h5 { margin: 8px 0 4px; font-size: .74rem; text-transform: uppercase; letter-spacing: .4px; color: var(--gray-500); }
+.pulse-action-results ul { list-style: none; padding: 0; margin: 0; }
+.pulse-action-results li { display: flex; gap: 8px; justify-content: space-between; align-items: center; flex-wrap: wrap; padding: 7px 0; border-bottom: 1px solid var(--gray-100); }
+.pulse-action-results li > div:first-child { min-width: 0; flex: 1 1 180px; }
+.pulse-action-results li span { display: block; color: var(--gray-600); font-size: .76rem; }
+.pulse-action-results .ai-actions { margin-top: 0; }
+.pulse-action-compact { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.pulse-action-compact span { flex: 1 1 200px; }
+.pulse-action-notice p { display: flex; gap: 7px; align-items: flex-start; }
+.pulse-action-notice svg { flex-shrink: 0; margin-top: 2px; color: var(--sky-700); }
+.pulse-action-done { display: flex; gap: 8px; align-items: flex-start; padding: 10px 12px; border-radius: 12px; background: #f0fdf4; border: 1px solid #bbf7d0; font-size: .82rem; line-height: 1.5; }
+.pulse-action-done > svg { flex-shrink: 0; margin-top: 3px; color: #15803d; }
+.connected-pulse-attachments li span { min-width: 0; }
+@media(max-width: 640px) { .pulse-action-fields { grid-template-columns: 1fr; } }

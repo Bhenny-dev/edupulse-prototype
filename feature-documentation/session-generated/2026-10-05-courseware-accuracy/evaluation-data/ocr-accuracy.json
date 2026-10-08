@@ -1,0 +1,72 @@
+{
+  "generatedAt": "2026-10-07T17:00:23.864Z",
+  "engine": "tesseract.js 7.0.0, eng 4.0.0_best_int, LSTM",
+  "results": [
+    {
+      "case": "scanned PDF, 300 dpi",
+      "page": 1,
+      "wer": 0,
+      "cer": 0
+    },
+    {
+      "case": "scanned PDF, 300 dpi",
+      "page": 2,
+      "wer": 0.015151515151515152,
+      "cer": 0.0025974025974025974
+    },
+    {
+      "case": "mixed PDF, scanned page at 200 dpi, degraded",
+      "page": 2,
+      "wer": 0,
+      "cer": 0
+    },
+    {
+      "case": "scanned PDF, 300 dpi, degraded",
+      "page": 1,
+      "wer": 0,
+      "cer": 0
+    },
+    {
+      "case": "scanned PDF, 300 dpi, degraded",
+      "page": 2,
+      "wer": 0,
+      "cer": 0
+    },
+    {
+      "case": "scanned PDF, 200 dpi",
+      "page": 1,
+      "wer": 0,
+      "cer": 0
+    },
+    {
+      "case": "scanned PDF, 200 dpi",
+      "page": 2,
+      "wer": 0.015151515151515152,
+      "cer": 0.0025974025974025974
+    },
+    {
+      "case": "scanned PDF, 150 dpi",
+      "page": 1,
+      "wer": 0,
+      "cer": 0
+    },
+    {
+      "case": "scanned PDF, 150 dpi",
+      "page": 2,
+      "wer": 0,
+      "cer": 0
+    },
+    {
+      "case": "scanned PDF, 150 dpi, degraded",
+      "page": 1,
+      "wer": 0,
+      "cer": 0
+    },
+    {
+      "case": "scanned PDF, 150 dpi, degraded",
+      "page": 2,
+      "wer": 0,
+      "cer": 0
+    }
+  ]
+}

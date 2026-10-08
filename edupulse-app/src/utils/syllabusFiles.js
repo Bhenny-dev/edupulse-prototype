@@ -51,9 +51,10 @@ export async function syllabusDocx(syllabus) {
 }
 
 export async function retainApprovedFile(file) {
-  if (!/\.docx$/i.test(file.name) || file.size > APPROVED_FILE_LIMIT || !file.size) throw new Error('Choose a non-empty DOCX file up to 500 KB.')
+  if (!/\.(docx|pdf)$/i.test(file.name) || file.size > APPROVED_FILE_LIMIT || !file.size) throw new Error('Choose a non-empty DOCX or PDF file up to 500 KB.')
   const bytes = new Uint8Array(await file.arrayBuffer())
-  if (bytes[0] !== 80 || bytes[1] !== 75) throw new Error('This file is not a valid DOCX archive.')
+  const valid = /\.pdf$/i.test(file.name) ? new TextDecoder().decode(bytes.slice(0, 5)) === '%PDF-' : bytes[0] === 80 && bytes[1] === 75
+  if (!valid) throw new Error('This file does not match its DOCX or PDF format.')
   const digest = await crypto.subtle.digest('SHA-256', bytes)
   let binary = ''; for (const byte of bytes) binary += String.fromCharCode(byte)
   return { name: file.name, size: file.size, base64: btoa(binary), sha256: [...new Uint8Array(digest)].map(b => b.toString(16).padStart(2, '0')).join(''), uploadedAt: new Date().toISOString() }
@@ -61,5 +62,5 @@ export async function retainApprovedFile(file) {
 
 export function downloadApprovedFile(file) {
   const bytes = Uint8Array.from(atob(file.base64), char => char.charCodeAt(0))
-  downloadBlob(new Blob([bytes], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' }), file.name)
+  downloadBlob(new Blob([bytes], { type: /\.pdf$/i.test(file.name) ? 'application/pdf' : 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' }), file.name)
 }

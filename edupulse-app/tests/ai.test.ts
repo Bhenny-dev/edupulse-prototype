@@ -134,9 +134,38 @@ test('general assistance works without sources and invented citations are remove
   assert.equal(invented.mode, 'generated'); assert.doesNotMatch(invented.answer, /\[1\]/); assert.ok(agents(invented).includes('Corrector'))
 })
 
+test('greetings and situational exchanges do not require or inherit unrelated uploaded material', async () => {
+  let searches = 0
+  const history = [{ role: 'user' as const, content: 'I am worried about presenting to my class.' }, { role: 'assistant' as const, content: 'Would rehearsing with a friend help?' }]
+  for (const message of ['hello', 'What if I freeze while talking?', 'How can I practice that?', 'I am anxious about presenting my syllabus.']) {
+    const result = await runChat(chatInput.parse({ message, history, attachments: [{ title: 'Unrelated handout', text: 'Arrays store values in consecutive positions.' }] }), identity, signal(), deps({
+      search: async () => { searches++; return { evidence: [policy] } },
+      generate: async (_system, prompt) => {
+        const context = JSON.parse(prompt)
+        assert.equal(context.references.length, 0)
+        assert.deepEqual(context.history, history)
+        return 'Try a short rehearsal, pause to breathe, and keep one reminder card nearby.'
+      },
+    }))
+    assert.equal(result.mode, 'generated')
+    assert.equal(result.grounding, 'general')
+    assert.equal(result.sources.length, 0)
+  }
+  assert.equal(searches, 0)
+})
+
 test('provider errors never leak secrets and cause honest excerpt fallback', async () => {
   const result = await runChat(chatInput.parse({ message: 'Publish?' }), identity, signal(), deps({ generate: async () => { throw new Error('SECRET_SHOULD_NOT_APPEAR') } }))
   assert.equal(result.mode, 'retrieval'); assert(!JSON.stringify(result).includes('SECRET_SHOULD_NOT_APPEAR'))
+})
+
+test('a provider failure during conversation reports a connection error rather than missing document evidence', async () => {
+  await assert.rejects(runChat(chatInput.parse({ message: 'Hello' }), identity, signal(), deps({ generate: async () => { throw new Error('PRIVATE_PROVIDER_DETAIL') } })), error => {
+    assert(error instanceof Error)
+    assert.match(error.message, /connected model could not answer/)
+    assert.doesNotMatch(error.message, /PRIVATE_PROVIDER_DETAIL|knowledge library/)
+    return true
+  })
 })
 
 test('a failed provider fetch has a typed response without transport details', async () => {

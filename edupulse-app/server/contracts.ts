@@ -17,6 +17,8 @@ export const sourceTypes = ['text', 'pdf', 'docx', 'pptx', 'html', 'markdown', '
 export const documentInput = z.object({
   title: z.string().trim().min(1).max(160), text: z.string().trim().min(40).max(DOCUMENT_CHARACTERS),
   sourceType: z.enum(sourceTypes).default('text'), fileName: z.string().trim().min(1).max(255).optional(),
+  // The course a document was filed under (for example "IT 102"), shown in the library and kept with its quality record.
+  course: z.string().trim().min(1).max(80).optional(),
 })
 export const researchInput = z.object({ queries: z.array(z.string().trim().min(1).max(1000)).min(1).max(4), focus: z.string().trim().min(1).max(4000), documentIds: z.array(z.string().uuid()).max(2).default([]) })
 export const similarityInput = z.object({ left: z.array(z.string().max(800)).min(1).max(24), right: z.array(z.string().max(2000)).min(1).max(12) })
@@ -27,6 +29,13 @@ export const courseInput = z.object({
   topics: z.array(z.string().max(500)).min(1).max(20),
   outcomes: z.string().trim().min(1).max(3000),
   referenceText: z.string().max(18000),
+  // The week's plan from the syllabus outline: the draft must follow it, and references come only from here or the library.
+  plan: z.object({
+    activities: z.string().max(1500).default(''),
+    assessments: z.string().max(1000).default(''),
+    teachingMaterials: z.array(z.string().trim().min(1).max(300)).max(10).default([]),
+    resources: z.array(z.object({ name: z.string().trim().min(1).max(300), url: z.string().max(500).default('') })).max(10).default([]),
+  }).default({ activities: '', assessments: '', teachingMaterials: [], resources: [] }),
 })
 const section = z.object({ heading: z.string().min(1).max(160), body: z.string().min(20).max(8000) })
 const doc = z.object({ title: z.string().min(1).max(240), sections: z.array(section).min(2).max(8) })
@@ -43,7 +52,8 @@ export const courseOutput = z.object({
   }),
 })
 export type ChatInput = z.infer<typeof chatInput>
-export type CourseInput = z.infer<typeof courseInput>
+// Callers may omit `plan`; the courseware graph applies its defaults.
+export type CourseInput = z.input<typeof courseInput>
 export type Source = { id: string; title: string; text: string; score: number; method: 'vector' | 'keyword' | 'provided' }
 export type Identity = { id: string; role: 'admin' | 'dean' | 'associate_dean' | 'instructor' | 'student' | 'guest'; token?: string; local: boolean }
 export class ApiError extends Error {

@@ -93,7 +93,7 @@ async function reindexLocal(signal: AbortSignal) {
   return reindexPromise
 }
 
-export type IngestInput = { title: string; text: string; sourceType?: string; fileName?: string }
+export type IngestInput = { title: string; text: string; sourceType?: string; fileName?: string; course?: string }
 export type IngestReport = { id: string; duplicate: boolean; chunks: number; embeddingModel: string; quality: Quality; stages: Stage[]; pages: number; sections: number; flaggedChunks: number }
 
 /** Clean → evaluate → chunk → embed → index. Text is the reviewed extraction or pasted text. */
@@ -112,7 +112,7 @@ export async function ingest(identity: Identity, input: IngestInput, signal: Abo
   const chunks = await timed('chunk', () => chunkDocument(input.title, text), c => `${c.length} passages with page/section metadata (900-character window, 120 overlap).`)
   const vectors = await timed('embed', () => embedTexts(chunks.map(c => c.embedText), signal), v => `${v.length} vectors · ${EMBEDDING_MODEL_ID} · 384 dimensions.`)
   signal.throwIfAborted()
-  const sourceType = input.sourceType || 'text', meta = { score: quality.score, grade: quality.grade, warnings: quality.warnings.slice(0, 6), words: quality.metrics.words, injectionFlagged: quality.injection.flagged }
+  const sourceType = input.sourceType || 'text', meta = { score: quality.score, grade: quality.grade, warnings: quality.warnings.slice(0, 6), words: quality.metrics.words, injectionFlagged: quality.injection.flagged, ...(input.course ? { course: input.course } : {}) }
   let id: string = randomUUID()
   await timed('index', async () => {
     if (config().database === 'local') {

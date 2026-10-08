@@ -1,6 +1,7 @@
 import { test, expect, type Page, type Locator } from '@playwright/test'
 import { mkdir, writeFile } from 'node:fs/promises'
-import { makeDocx, makePptx, inflateDeclaredSize } from '../fixtures.js'
+import { makeDocx, makePptx, makeScannedPdf, inflateDeclaredSize } from '../fixtures.js'
+import { PAGES, scanPage } from '../scans.js'
 
 // Captures the System Manual screenshots for feature-documentation/system-manual.
 // Everything shown is produced by the running production build: real uploads,
@@ -10,6 +11,7 @@ const corpus = '.data/eval-corpus'
 test.describe.configure({ mode: 'serial' })
 
 const problems: string[] = []
+let fixtureWindowStarted = 0
 async function shot(target: Page | Locator, folder: string, name: string) {
   await mkdir(`${ROOT}/${folder}`, { recursive: true })
   // Component shots: the sticky top bar is made static only while capturing, so it never covers the component.
@@ -49,8 +51,17 @@ test('AI pipeline status and free providers', async ({ page }) => {
   await shot(page.locator('[data-pulse-target="AI connection"]'), '08-ai-connections', '03-on-device-model')
 })
 
-test('real documents: upload, sandboxed extraction, review and indexing', async ({ page }) => {
+test('real documents: upload, sandboxed extraction, review and indexing', async ({ page, request }) => {
   await signIn(page)
+  // Repeated captures start from the same six fixtures, rather than photographing a duplicate notice.
+  const health = await (await request.get('/api/ai?action=health')).json()
+  expect(health.identity.mode).toBe('local-workspace')
+  fixtureWindowStarted = Date.now()
+  const fixtures = new Set(['Blooms_taxonomy.pdf', 'Algorithm.pdf', 'Data_structure.pdf', 'FLOW_SPEC.md', 'IT102-course-policy.docx', 'loops-lecture.pptx'])
+  const existing = await (await request.get('/api/ai?action=documents')).json()
+  for (const document of existing.documents || []) if (fixtures.has(document.file_name)) {
+    expect((await request.delete('/api/ai?action=documents', { data: { id: document.id } })).status()).toBe(200)
+  }
   await page.goto('/#/settings?tab=ai-provider')
   await expect(library(page).getByText('Indexed documents')).toBeVisible({ timeout: 60_000 })
   await library(page).scrollIntoViewIfNeeded()
@@ -81,6 +92,10 @@ test('real documents: upload, sandboxed extraction, review and indexing', async 
 
 test('sandbox and safety: spoofed, bomb and instruction-laden files', async ({ page }) => {
   await signIn(page)
+  // Fixture deletion + six real uploads/index operations approach the normal 20/minute budget.
+  // Wait for that window, rather than weakening the API rate limiter for documentation.
+  const remaining = fixtureWindowStarted + 61000 - Date.now()
+  if (remaining > 0) await page.waitForTimeout(Math.min(60000, remaining))
   await page.goto('/#/settings?tab=ai-provider')
   await expect(library(page).getByText('Indexed documents')).toBeVisible({ timeout: 60_000 })
   const pdf = Buffer.from(await (await import('node:fs/promises')).readFile(`${corpus}/Data_structure.pdf`))
@@ -94,6 +109,31 @@ test('sandbox and safety: spoofed, bomb and instruction-laden files', async ({ p
   await upload(page, [{ name: 'week4-handout.html', mimeType: 'text/html', buffer: Buffer.from(html) }])
   await expect(library(page).locator('.kl-item').first().getByText(/Instruction-like text found/)).toBeVisible({ timeout: 60_000 })
   await shot(library(page).locator('.kl-item').first(), '04-knowledge-library', '09-instruction-like-text-flagged')
+})
+
+test('scanned PDFs: OCR on the device, then review', async ({ page, browser }) => {
+  await signIn(page)
+  await page.goto('/#/settings?tab=ai-provider')
+  await expect(library(page).getByText('Indexed documents')).toBeVisible({ timeout: 60_000 })
+  // A two-page scan with no text layer, as an office scanner saves it.
+  const scan = makeScannedPdf(await Promise.all(PAGES.map(async p => ({ jpeg: await scanPage(browser, p, { dpi: 300, degraded: false }) }))))
+  await upload(page, [{ name: 'week5-handout-scan.pdf', mimeType: 'application/pdf', buffer: Buffer.from(scan) }])
+  const item = library(page).locator('.kl-item').first()
+  await expect(item.getByRole('button', { name: 'Read with OCR' })).toBeVisible({ timeout: 60_000 })
+  await shot(item, '04-knowledge-library', '10-scanned-pdf-ocr-offer')
+  await item.getByRole('button', { name: 'Read with OCR' }).click()
+  await expect(item.getByText(/pages? read…/)).toBeVisible({ timeout: 60_000 })
+  await shot(item, '04-knowledge-library', '11-ocr-reading-pages')
+  await expect(item.getByText('OCR read 2 of 2 scanned pages on this device')).toBeVisible({ timeout: 240_000 })
+  await item.getByText(/Review or correct the extracted text/).click()
+  await shot(item, '04-knowledge-library', '12-ocr-text-for-review')
+  // A mixed PDF: one page with a text layer, one scanned page.
+  const mixed = makeScannedPdf([{ lines: ['Week 6 covers arrays and their indexes.', 'An array stores values of one type in consecutive positions.'] }, { jpeg: await scanPage(browser, PAGES[1]!, { dpi: 200, degraded: true }) }])
+  await upload(page, [{ name: 'week6-notes-partly-scanned.pdf', mimeType: 'application/pdf', buffer: Buffer.from(mixed) }])
+  const partial = library(page).locator('.kl-item').first()
+  await expect(partial.getByRole('button', { name: 'Read that page with OCR' })).toBeVisible({ timeout: 60_000 })
+  await shot(partial, '04-knowledge-library', '13-partly-scanned-pdf')
+  expect(problems).toEqual([])
 })
 
 test('agentic answer with verification, citations and agent timeline', async ({ page }) => {

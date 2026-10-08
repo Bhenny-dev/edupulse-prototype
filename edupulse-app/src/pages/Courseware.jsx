@@ -141,7 +141,7 @@ function CourseSelectionGrid({ user, contentStore, onSelectCourse }) {
 
 /* ═══════════════════════ Builder: Course Workspace ═══════════════════════ */
 
-function CourseWorkspace({ syllabusId, contentStore, onBack, onGenerateWeek, onCheckItem, onBulkCheck, onToggleVisibility }) {
+function CourseWorkspace({ syllabusId, focusWeek, contentStore, onBack, onGenerateWeek, onCheckItem, onBulkCheck, onToggleVisibility }) {
   const { syllabi } = useWorkspace()
   const generationRef = useRef(null)
   const [generationProgress, setGenerationProgress] = useState('')
@@ -157,6 +157,13 @@ function CourseWorkspace({ syllabusId, contentStore, onBack, onGenerateWeek, onC
   const [viewingItem, setViewingItem] = useState(null)
   const [viewingType, setViewingType] = useState(null)
   const [viewMode, setViewMode] = useState(null)
+  // A link from Pulse (?course=…&week=…) opens that week and scrolls it into view.
+  useEffect(() => {
+    if (!focusWeek) return
+    setExpandedWeeks(prev => prev.has(focusWeek) ? prev : new Set([...prev, focusWeek]))
+    const frame = requestAnimationFrame(() => document.querySelector(`[data-week="${focusWeek}"]`)?.scrollIntoView({ block: 'center' }))
+    return () => cancelAnimationFrame(frame)
+  }, [focusWeek, syllabusId])
 
   if (!syllabus) return null
 
@@ -357,8 +364,8 @@ function CourseWorkspace({ syllabusId, contentStore, onBack, onGenerateWeek, onC
           const published = weekItems.filter(([_, v]) => v.status === 'published').length
 
           return (
-            <div key={weekNum} style={{
-              border: '1px solid var(--gray-200)', borderRadius: 'var(--radius-md)',
+            <div key={weekNum} data-week={weekNum} style={{
+              border: `1px solid ${weekNum === focusWeek ? 'var(--sky-400, #38bdf8)' : 'var(--gray-200)'}`, borderRadius: 'var(--radius-md)',
               background: 'var(--white)', overflow: 'hidden',
             }}>
               {/* Week row */}
@@ -716,8 +723,10 @@ export default function Courseware() {
   const mainTab = ALL_TABS.some(t => t.key === requested) ? requested : 'mine'
   const setMainTab = (key) => setSearchParams({ tab: key })
 
-  // Builder state: which course is selected
-  const [selectedCourseId, setSelectedCourseId] = useState(null)
+  // Builder state: which course is selected (a ?course= link opens it directly)
+  const [selectedCourseId, setSelectedCourseId] = useState(() => searchParams.get('course'))
+  const linkedCourse = searchParams.get('course'), focusWeek = Number(searchParams.get('week')) || null
+  useEffect(() => { if (linkedCourse) setSelectedCourseId(linkedCourse) }, [linkedCourse])
 
   const handleSelectCourse = useCallback((sylId) => {
     setSelectedCourseId(sylId)
@@ -726,7 +735,8 @@ export default function Courseware() {
 
   const handleBackToGrid = useCallback(() => {
     setSelectedCourseId(null)
-  }, [])
+    setSearchParams({ tab: 'builder' })
+  }, [setSearchParams])
 
   const handleGenerateCourse = useCallback((syllabusId, courseUpdates) => {
     generateCourse(syllabusId, courseUpdates)
@@ -798,6 +808,7 @@ export default function Courseware() {
           {selectedCourseId ? (
             <CourseWorkspace
               syllabusId={selectedCourseId}
+              focusWeek={selectedCourseId === linkedCourse ? focusWeek : null}
               contentStore={contentStore}
               onBack={handleBackToGrid}
               onGenerateCourse={handleGenerateCourse}

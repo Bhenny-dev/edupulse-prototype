@@ -9,7 +9,7 @@ The settings below come from the repository (`edupulse-app/vercel.json`, `.verce
 | Setting | Value | Why |
 | --- | --- | --- |
 | Build command | `npm run verify` | Vercel runs the full gate: lint → typecheck → fetch pinned models → unit and integration tests → production build → deployment check. A failing test fails the deployment. |
-| Output | `dist/` (Vite) | Static app |
+| Output | `dist/` (Vite) | Static app. `dist/ocr/` holds the on-device OCR files (Tesseract worker, three LSTM engine builds, the English model and PDF.js's JBIG2, JPEG 2000 and colour-profile decoders, about 15 MB). They are served from the app's own origin because the Content-Security-Policy allows scripts only from `'self'`; a browser downloads one engine build, the model and the decoders the first time someone runs OCR. The deployment check fails the build if any of them is missing. |
 | Ignored on upload | `.data`, `.env.local`, `node_modules`, `test-results`, `supabase/.temp`, `models/` | Local databases and secrets never leave the machine; models are re-downloaded and checksum-verified during the build |
 
 ## Function

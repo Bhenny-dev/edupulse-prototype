@@ -29,7 +29,7 @@
 
    ![Revision request](04-revision-request.png)
 
-   The revised answer is checked again before it is shown. In this capture, the small free model’s revision contained statements the Verifier could not match to the sources. So Pulse showed cited source excerpts instead, and said so in the amber note. Pulse never shows unverifiable text as if it were supported.
+   The revised answer is checked against the sources again before it is shown. This capture displays a generated answer with supported statements and citations. Check that the model also followed your requested change: source support does not prove that every instruction was fulfilled. If a generated answer cannot be supported after revision, Pulse can show cited source excerpts instead.
 
    ![Revised answer](05-revised-answer.png)
 

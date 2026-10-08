@@ -1,0 +1,374 @@
+{
+  "summary": {
+    "label": "before",
+    "model": "qwen2.5:1.5b",
+    "generatedAt": "2026-10-05T04:21:32.382Z",
+    "weeks": 6,
+    "succeeded": 3,
+    "topicCoverage": 1,
+    "outcomeCoverage": 1,
+    "meanFullCoverage": 1,
+    "meanReportedCoverage": 1,
+    "activityFollowsPlan": 0.667,
+    "assessmentFollowsPlan": 0.333,
+    "answerKeysConsistent": "5/9",
+    "resourcesCarried": "0/0",
+    "inventedUrls": 0
+  },
+  "results": [
+    {
+      "course": "IT 102",
+      "week": 5,
+      "ok": false,
+      "seconds": 353,
+      "error": "The model did not produce a valid draft after two attempts. Existing courseware was preserved. Try a smaller or clearer outline."
+    },
+    {
+      "course": "IT 106",
+      "week": 1,
+      "ok": true,
+      "seconds": 67,
+      "writerAttempts": 1,
+      "topics": 3,
+      "topicsCovered": 3,
+      "outcomes": 1,
+      "outcomesCovered": 1,
+      "fullCoverage": 1,
+      "reportedCoverage": 1,
+      "reportedItems": 4,
+      "activityFollowsPlan": 0.144,
+      "assessmentFollowsPlan": 0,
+      "questions": 3,
+      "keysConsistent": 1,
+      "keys": [
+        {
+          "correctIndex": 1,
+          "explanationSupports": 1,
+          "consistent": true
+        },
+        {
+          "correctIndex": 1,
+          "explanationSupports": 0,
+          "consistent": false
+        },
+        {
+          "correctIndex": 0,
+          "explanationSupports": 2,
+          "consistent": false
+        }
+      ],
+      "resourcesListed": 0,
+      "resourcesCarried": 0,
+      "inventedUrls": [],
+      "statementsSupported": 2,
+      "statementsChecked": 17,
+      "missing": [],
+      "draft": {
+        "material": {
+          "title": "Computer Programming 2",
+          "sections": [
+            {
+              "heading": "Classes and Objects",
+              "body": "In object-oriented programming, a class is a blueprint for creating objects. It defines the attributes (properties) and methods that an object of that class will have. Attributes are variables that store data specific to the object, while methods define the actions or behaviors that can be performed on the object."
+            },
+            {
+              "heading": "Attributes",
+              "body": "Attributes in a class represent the characteristics or properties of an object. They describe what the object is and how it behaves. For example, if you have a `Person` class, attributes might include `name`, `age`, `gender`, and `address`. These attributes define who the person is."
+            },
+            {
+              "heading": "Methods",
+              "body": "Methods in a class are functions that perform actions on objects of that class. They encapsulate behavior specific to the object's functionality. For instance, if you have a `Person` class, methods might include `greet`, `sayHello`, and `displayInfo`. These methods define how the person interacts with others."
+            }
+          ]
+        },
+        "activity": {
+          "title": "Classes and Objects",
+          "sections": [
+            {
+              "heading": "Attributes",
+              "body": "In a class, attributes are variables that store data specific to an object. For example, if you have a `Person` class, attributes might include `name`, `age`, `gender`, and `address`. These attributes define who the person is."
+            },
+            {
+              "heading": "Methods",
+              "body": "In a class, methods are functions that perform actions on objects of that class. For instance, if you have a `Person` class, methods might include `greet`, `sayHello`, and `displayInfo`. These methods define how the person interacts with others."
+            }
+          ]
+        },
+        "assessment": {
+          "title": "Classes and Objects",
+          "questions": [
+            {
+              "text": "What is an attribute in a class?",
+              "options": [
+                "A method that performs actions on objects",
+                "A variable that stores data specific to the object",
+                "A function that defines behavior for the class",
+                "An interface for communication between classes"
+              ],
+              "correctIndex": 1,
+              "explanation": "Attributes are variables that store data specific to an object. They define what the object is and how it behaves."
+            },
+            {
+              "text": "What is a method in a class?",
+              "options": [
+                "A function that performs actions on objects",
+                "A variable that stores data specific to the object",
+                "An interface for communication between classes",
+                "A blueprint for creating objects"
+              ],
+              "correctIndex": 1,
+              "explanation": "Methods are functions that perform actions on objects of a class. They encapsulate behavior specific to the object's functionality."
+            },
+            {
+              "text": "What is an example of an attribute in a `Person` class?",
+              "options": [
+                "name",
+                "age",
+                "gender",
+                "address"
+              ],
+              "correctIndex": 0,
+              "explanation": "In a `Person` class, attributes might include `name`, `age`, `gender`, and `address`. These attributes define who the person is."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "course": "IT 209",
+      "week": 8,
+      "ok": true,
+      "seconds": 116,
+      "writerAttempts": 1,
+      "topics": 4,
+      "topicsCovered": 4,
+      "outcomes": 1,
+      "outcomesCovered": 1,
+      "fullCoverage": 1,
+      "reportedCoverage": 1,
+      "reportedItems": 5,
+      "activityFollowsPlan": 0.623,
+      "assessmentFollowsPlan": 1,
+      "questions": 3,
+      "keysConsistent": 2,
+      "keys": [
+        {
+          "correctIndex": 0,
+          "explanationSupports": 0,
+          "consistent": true
+        },
+        {
+          "correctIndex": 0,
+          "explanationSupports": 0,
+          "consistent": true
+        },
+        {
+          "correctIndex": 0,
+          "explanationSupports": 1,
+          "consistent": false
+        }
+      ],
+      "resourcesListed": 0,
+      "resourcesCarried": 0,
+      "inventedUrls": [],
+      "statementsSupported": 4,
+      "statementsChecked": 11,
+      "missing": [],
+      "draft": {
+        "material": {
+          "title": "Web System Technologies - Week 8: Component-Based Applications",
+          "sections": [
+            {
+              "heading": "JSX and Components",
+              "body": "In this week's material, we will focus on JSX and components. JSX is a syntax extension for JavaScript that allows developers to write HTML-like code within their JavaScript files. It helps in creating reusable UI elements by encapsulating the structure of an application into separate files."
+            },
+            {
+              "heading": "Hooks",
+              "body": "This week, we will introduce React Hooks, which are functions that can be used inside a component to access and modify state or other components' states. They allow developers to write more modular and reusable code by separating concerns such as state management from the component logic."
+            },
+            {
+              "heading": "State Management",
+              "body": "This week's material will cover how to manage application state using React's built-in state system, including props and context API for managing global state. We'll also explore more advanced techniques like Redux or MobX for handling complex state management scenarios."
+            }
+          ]
+        },
+        "activity": {
+          "title": "Code-along",
+          "sections": [
+            {
+              "heading": "Building a Component-Based Application",
+              "body": "In this activity, you will build a simple component-based application using React. The application should include at least one functional component and one state management technique."
+            },
+            {
+              "heading": "Group Activity: State Management Workshop",
+              "body": "This group activity focuses on implementing different state management techniques in your project. You'll learn how to use props, context API, Redux, or MobX for managing application state."
+            }
+          ]
+        },
+        "assessment": {
+          "title": "Quiz",
+          "questions": [
+            {
+              "text": "What is JSX?",
+              "options": [
+                "A. A programming language extension",
+                "B. A database management system",
+                "C. A web server technology",
+                "D. A state management tool"
+              ],
+              "correctIndex": 0,
+              "explanation": "JSX is a syntax extension for JavaScript that allows developers to write HTML-like code within their JavaScript files."
+            },
+            {
+              "text": "What is the purpose of React Hooks?",
+              "options": [
+                "A. To manage application state",
+                "B. To improve component performance",
+                "C. To enhance user interface design",
+                "D. Both A and C"
+              ],
+              "correctIndex": 0,
+              "explanation": "React Hooks are functions that can be used inside a component to access and modify state or other components' states."
+            },
+            {
+              "text": "What is the difference between props and context API?",
+              "options": [
+                "A. Props are global variables, while context API is local",
+                "B. Props are for managing application state, while context API is not",
+                "C. Props can be used in any component, while context API is specific to a component's scope",
+                "D. Both A and C"
+              ],
+              "correctIndex": 0,
+              "explanation": "Props are passed down from parent components to child components, while the context API allows you to manage state at a higher level within your application."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "course": "WMAD 303-1",
+      "week": 7,
+      "ok": false,
+      "seconds": 303,
+      "error": "The model did not produce a valid draft after two attempts. Existing courseware was preserved. Try a smaller or clearer outline."
+    },
+    {
+      "course": "CP 2",
+      "week": 1,
+      "ok": true,
+      "seconds": 78,
+      "writerAttempts": 1,
+      "topics": 3,
+      "topicsCovered": 3,
+      "outcomes": 1,
+      "outcomesCovered": 1,
+      "fullCoverage": 1,
+      "reportedCoverage": 1,
+      "reportedItems": 4,
+      "activityFollowsPlan": 0.788,
+      "assessmentFollowsPlan": 0.02,
+      "questions": 3,
+      "keysConsistent": 2,
+      "keys": [
+        {
+          "correctIndex": 2,
+          "explanationSupports": 1,
+          "consistent": false
+        },
+        {
+          "correctIndex": 0,
+          "explanationSupports": 0,
+          "consistent": true
+        },
+        {
+          "correctIndex": 2,
+          "explanationSupports": 2,
+          "consistent": true
+        }
+      ],
+      "resourcesListed": 0,
+      "resourcesCarried": 0,
+      "inventedUrls": [],
+      "statementsSupported": 0,
+      "statementsChecked": 9,
+      "missing": [],
+      "draft": {
+        "material": {
+          "title": "Capstone Project 2: Software Implementation",
+          "sections": [
+            {
+              "heading": "Stakeholder Analysis",
+              "body": "Identify and understand the needs of stakeholders, including users, project team members, and other relevant parties. This involves gathering input through interviews, surveys, or focus groups to ensure that all perspectives are considered in the development process."
+            },
+            {
+              "heading": "User Stories",
+              "body": "Develop a set of user stories that outline what features and functionalities the software should provide to users. These stories should be written from the perspective of the end-users and should clearly describe the desired outcomes or tasks they need to perform with the application."
+            },
+            {
+              "heading": "Use Case Diagrams",
+              "body": "Create use case diagrams that map out all possible interactions between actors (users, system components) and the software. This helps in visualizing how different parts of the system work together and ensures a comprehensive understanding of the system's functionality."
+            }
+          ]
+        },
+        "activity": {
+          "title": "Software Implementation",
+          "sections": [
+            {
+              "heading": "Project Brainstorming",
+              "body": "Conduct group discussions to brainstorm ideas, identify project goals, and outline key features. This step is crucial for defining the scope of the project and aligning team members on the vision."
+            },
+            {
+              "heading": "Recitation",
+              "body": "Participate in recitations where peers review each other's work, providing feedback and suggestions to improve the software implementation process."
+            }
+          ]
+        },
+        "assessment": {
+          "title": "Software Implementation Assessment",
+          "questions": [
+            {
+              "text": "What is the primary goal of stakeholder analysis?",
+              "options": [
+                "To identify project risks",
+                "To gather user feedback",
+                "To define system requirements",
+                "To map out use cases"
+              ],
+              "correctIndex": 2,
+              "explanation": "Stakeholder analysis focuses on understanding and gathering input from stakeholders to ensure that all perspectives are considered in the development process."
+            },
+            {
+              "text": "What is the purpose of user stories?",
+              "options": [
+                "To describe system requirements",
+                "To map out use cases",
+                "To identify project risks",
+                "To define system architecture"
+              ],
+              "correctIndex": 0,
+              "explanation": "User stories are used to outline what features and functionalities the software should provide to users, written from their perspective."
+            },
+            {
+              "text": "What is a key component of use case diagrams?",
+              "options": [
+                "Actor names",
+                "System components",
+                "Use cases",
+                "Risks"
+              ],
+              "correctIndex": 2,
+              "explanation": "A key component of use case diagrams is mapping out all possible interactions between actors and the software, ensuring a comprehensive understanding of system functionality."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "course": "IT 102",
+      "week": 7,
+      "ok": false,
+      "seconds": 249,
+      "error": "an error was encountered while running the model: read tcp 127.0.0.1:58707->127.0.0.1:58678: wsarecv: An existing connection was forcibly closed by the remote host."
+    }
+  ]
+}

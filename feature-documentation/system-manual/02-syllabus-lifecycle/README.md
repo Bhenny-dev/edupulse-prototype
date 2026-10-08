@@ -8,13 +8,17 @@ The screenshots follow one real syllabus (IT 102 — Computer Programming 1) thr
 
 ## Build the draft
 
-To import an existing draft, click the upload area or drop a **.docx** file of up to **2 MB** into it. Review **Extracted Sections Preview**, then click **Use This Syllabus** to fill the form. Importing does not save the draft. The sample below contains course information and one outline week; review missing sections before saving.
+To import an existing draft, click the upload area or drop a **.docx** or **.pdf** file of up to **2 MB** into it. Review **Extracted Sections Preview**, then click **Use This Syllabus** to fill the form. Importing does not save the draft. The sample below contains course information and one outline week; review missing sections before saving.
 
 ![DOCX import preview with sample content](12-import-preview.png)
 
-**Choose Different File** clears the preview. Unsupported or oversized files display an error; damaged DOCX files display a parsing error. Click **Try Again**, then select a corrected file. You can select the same filename again.
+**Choose Different File** clears the preview. Unsupported or oversized files display an error; damaged DOCX or PDF files display a reading error. Click **Try Again**, then select a corrected file. You can select the same filename again.
 
 ![Unsupported file error and Try Again](13-import-error.png)
+
+PDF text is read into the same seven-section preview. Scanned pages are read with OCR on your device (up to 60 pages); check the results against the original, especially numbers and weekly table rows. Unrecognized layouts and week ranges need manual editing.
+
+![PDF import preview with sample course and outline](14-pdf-import-preview.png)
 
 1. Open **Syllabus → Syllabus Builder** and choose the **Course**. Course title, period offered and academic year fill in from the curriculum and are locked; so is the course description in Section 2.
 
@@ -42,7 +46,7 @@ To import an existing draft, click the upload area or drop a **.docx** file of u
 
    ![Out for approval](06-downloaded-for-approval.png)
 
-7. When the signed file returns, click **Upload Approved File**. Tick the confirmation that the offline approvals are complete (EduPulse does not verify signatures) and choose the approved DOCX (up to 500 KB). The original file is kept with its checksum.
+7. When the signed file returns, click **Upload Approved File**. Tick the confirmation that the offline approvals are complete (EduPulse does not verify signatures) and choose the **Approved DOCX or PDF** (up to 500 KB). The file must contain the matching course code and a usable weekly outline. The original file is kept with its checksum.
 
    ![Upload approved syllabus dialog](07-upload-approved-file-attestation.png)
 
