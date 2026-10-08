@@ -9,6 +9,8 @@ import { rankCourses, refineCourses } from '../../agents/operator'
 
 const STRENGTH = { named: 'Named in the file', strong: 'Strong match', possible: 'Possible match' }
 const isExam = row => !row?.ilos && /examination/i.test(row?.assessments || '')
+// A long address wraps after its "@", never inside the name or domain.
+const Email = ({ value }) => { const at = value.indexOf('@'); return at > 0 ? <>{value.slice(0, at + 1)}<wbr />{value.slice(at + 1)}</> : value }
 
 function CourseOptions({ catalog }) {
   const yours = catalog.filter(c => c.yours), others = catalog.filter(c => !c.yours)
@@ -52,7 +54,7 @@ function RegisterCard({ proposal, ctx }) {
       <label className="form-label">Block section<input className="form-input" aria-label="Block section" value={block} maxLength={20} placeholder="e.g. BSIT-1A" onChange={e => setBlock(e.target.value.toUpperCase())} /></label>
     </div>
     <div className="pulse-action-table"><table><thead><tr><th scope="col">Student ID</th><th scope="col">Name</th><th scope="col">Email</th></tr></thead>
-      <tbody>{roster.students.slice(0, 5).map(s => <tr key={`${s.StudentID}-${s.Name}`}><td>{s.StudentID || '—'}</td><td>{s.Name}</td><td>{s.Email || '—'}</td></tr>)}</tbody></table>
+      <tbody>{roster.students.slice(0, 5).map(s => <tr key={`${s.StudentID}-${s.Name}`}><td>{s.StudentID || '—'}</td><td>{s.Name}</td><td>{s.Email ? <Email value={s.Email} /> : '—'}</td></tr>)}</tbody></table>
       {roster.students.length > 5 && <small>and {roster.students.length - 5} more</small>}</div>
     <p className="pulse-action-note">{!courseCode || !block.trim() ? 'Choose the course and block to see what will change.' : preview ? `${courseCode} · ${block.trim()} already lists ${existing.studentCount} students: ${preview.added} new will be added and ${preview.already} already registered will be kept once.` : `This adds a new class list for ${courseCode} · ${block.trim()} to Syllabus → My Courses.`}</p>
     {state.status === 'error' && <p role="alert" className="connected-pulse-warning">{state.message}</p>}
@@ -99,7 +101,7 @@ function FileCard({ proposal, ctx }) {
       <button type="button" className="btn btn-secondary btn-sm" onClick={() => ctx.ask(`Summarize “${r.title}” and list its key points.`, { documentIds: [r.id], task: 'summarize', label: r.title })}><MessageSquare size={13} /> Ask about it</button>
       <button type="button" className="btn btn-secondary btn-sm" onClick={() => ctx.ask(`Make a study guide from “${r.title}”: key terms, main ideas and three self-check questions, with citations.`, { documentIds: [r.id], task: 'draft', label: r.title })}><BookOpenCheck size={13} /> Make a study guide</button>
       <button type="button" className="btn btn-ghost btn-sm" onClick={() => ctx.navigate('/settings?tab=ai-provider')}><ExternalLink size={13} /> Open knowledge library</button></>}>
-      {r.duplicate ? <><strong>Already in your library.</strong> “{r.title}” was indexed before; nothing was added.</> : <><strong>Added to your knowledge library.</strong> “{r.title}” · {r.chunks} passages{r.pages ? ` from ${r.pages} pages` : ''}{r.course ? `, filed under ${r.course}` : ''}. Pulse cites it by title and page.</>}
+      {r.duplicate ? <><strong>Already in your library.</strong> “{r.title}” was indexed before; nothing was added.</> : <><strong>Added to your knowledge library.</strong> “{r.title}” · {r.chunks} passage{r.chunks === 1 ? '' : 's'}{r.pages ? ` from ${r.pages} page${r.pages === 1 ? '' : 's'}` : ''}{r.course ? `, filed under ${r.course}` : ''}. Pulse cites it by title{r.pages ? ' and page' : ''}.</>}
     </Done>
   }
   if (!open) return <div className="pulse-action pulse-action-compact"><FolderPlus size={14} aria-hidden="true" /><span>Keep <strong>{attachment.fileName}</strong> for later?{top ? <> Suggested course: <strong>{top.code}</strong> ({STRENGTH[top.strength].toLowerCase()}).</> : ''}</span><button type="button" className="btn btn-secondary btn-sm" onClick={() => setOpen(true)}>Review and add</button></div>

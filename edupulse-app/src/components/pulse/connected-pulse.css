@@ -100,8 +100,9 @@
 .pulse-action-fields { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 8px; }
 .pulse-action-table { overflow-x: auto; margin-top: 8px; }
 .pulse-action-table table { width: 100%; border-collapse: collapse; font-size: .74rem; }
-.pulse-action-table th, .pulse-action-table td { text-align: left; padding: 5px 6px; border-bottom: 1px solid var(--gray-100); overflow-wrap: anywhere; }
+.pulse-action-table th, .pulse-action-table td { text-align: left; padding: 5px 6px; border-bottom: 1px solid var(--gray-100); overflow-wrap: break-word; }
 .pulse-action-table th { color: var(--gray-600); font-weight: 700; background: var(--gray-50); }
+.pulse-action-table td:first-child { white-space: nowrap; }
 .pulse-action-note { color: var(--gray-600); font-size: .78rem; line-height: 1.5; }
 .pulse-action-warnings { margin: 4px 0; padding-left: 18px; color: #71491a; font-size: .76rem; }
 .pulse-action-courses { border: 0; padding: 0; margin: 0; min-width: 0; }

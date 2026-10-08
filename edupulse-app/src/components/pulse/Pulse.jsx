@@ -235,7 +235,7 @@ export default function Pulse() {
     const references = plan.chat ? pending.map(chatReference) : []
     const syllabusRef = plan.chat && course && references.length < 3 ? syllabusReference(course) : null
     if (syllabusRef) references.push(syllabusRef)
-    setMessages(previous => [...previous, { id: crypto.randomUUID(), from: 'user', text: question || `Attached ${pending.map(a => a.fileName || a.title).join(', ')}`, attachedNames: references.map(a => a.title).concat(plan.chat ? [] : pending.map(a => a.fileName || a.title)), scope: options.scope }])
+    setMessages(previous => [...previous, { id: crypto.randomUUID(), from: 'user', text: question || `Attached ${pending.map(a => a.fileName || a.title).join(', ')}`, attachedNames: references.map(a => a.title), fileNames: plan.chat ? [] : pending.map(a => a.fileName || a.title), scope: options.scope }])
     for (const proposal of now) {
       if (proposal.type === 'navigate') navigate(proposal.path)
       if (proposal.type === 'search') {
@@ -303,6 +303,8 @@ export default function Pulse() {
           {message.from === 'pulse' && message.trace ? <AgentAnswer message={message} onRevise={note => void send(`Revise your previous answer: ${note}`, { task: message.task, skipOperator: true })} /> : message.mode === 'actions' ? <div className="pulse-actions">{message.proposals.map((proposal, i) => <PulseAction key={i} proposal={proposal} ctx={actionContext} />)}</div> : <div className="connected-pulse-text">{message.text}</div>}
           {message.scope && <small>Scope: {message.scope}</small>}
           {message.attachedNames?.length > 0 && <small>References: {message.attachedNames.join(', ')}</small>}
+          {/* Files used only by an action card are attached, not sent to the answer agents as references. */}
+          {message.fileNames?.length > 0 && <small>Attached: {message.fileNames.join(', ')}</small>}
           {message.warning && <p className="connected-pulse-warning">{message.warning}</p>}
           {message.actions?.map(action => <button key={action.label} className="btn btn-secondary btn-sm" onClick={() => { action.onClick?.(); if (action.path) navigate(action.path) }}>{action.label}</button>)}
         </article>)}

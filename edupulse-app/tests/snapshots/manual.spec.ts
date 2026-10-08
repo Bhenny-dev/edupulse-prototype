@@ -4,14 +4,14 @@ import { mkdir, readFile } from 'node:fs/promises'
 // System manual: step-by-step task screenshots from the production build.
 const ROOT = '../feature-documentation/system-manual'
 test.describe.configure({ mode: 'serial' })
-async function shot(target: Page | Locator, folder: string, name: string) {
+async function shot(target: Page | Locator, folder: string, name: string, extraStyle = '') {
   await mkdir(`${ROOT}/${folder}`, { recursive: true })
   const component = !('goto' in target)
   // Toasts from earlier steps would cover the screen being documented.
   const page = component ? (target as Locator).page() : target as Page
   for (const toast of await page.locator('.toast').all()) await toast.click().catch(() => undefined)
   await expect(page.locator('.toast')).toHaveCount(0, { timeout: 5000 }).catch(() => undefined)
-  await target.screenshot({ path: `${ROOT}/${folder}/${name}.png`, animations: 'disabled', ...(component ? { style: '.app-topbar{position:static !important}' } : {}) })
+  await target.screenshot({ path: `${ROOT}/${folder}/${name}.png`, animations: 'disabled', ...(component ? { style: `.app-topbar{position:static !important}${extraStyle}` } : {}) })
 }
 const saved = (page: Page) => expect(page.getByText('Local workspace · Saved', { exact: true })).toBeVisible({ timeout: 30_000 })
 
@@ -107,6 +107,8 @@ const sampleClassList = `StudentID,Name,Email,YearLevel,Block
 2026-90005,Felix Uy,felix.uy@example.edu,1,BSIT-1B
 2026-90006,Gina P. Flores,gina.flores@example.edu,1,BSIT-1B`
 const pulseDialog = (page: Page) => page.getByRole('dialog', { name: 'Pulse', exact: true })
+// An action card taller than the panel's scroll area is captured whole: the panel may grow upwards while the card is shot.
+const WHOLE_CARD = '.connected-pulse{height:auto !important;overflow:visible !important}.connected-pulse-feed{overflow:visible !important;flex:none !important}'
 async function askPulse(page: Page, text: string) {
   await page.getByRole('textbox', { name: 'Ask Pulse', exact: true }).fill(text)
   await page.getByRole('button', { name: 'Send', exact: true }).click()
@@ -126,8 +128,7 @@ test('Pulse actions: register an attached class list, then search it', async ({ 
   await page.getByRole('button', { name: 'Send', exact: true }).click()
   const card = dialog.getByRole('region', { name: /^Register class list/ })
   await expect(card.getByLabel('Course to register')).toHaveValue('IT 102')
-  await card.scrollIntoViewIfNeeded()
-  await shot(dialog, f, '02-register-card')
+  await shot(card, f, '02-register-card', WHOLE_CARD)
   await card.getByRole('button', { name: 'Register 6 students' }).click()
   await expect(dialog.getByText(/IT 102 · BSIT-1B now lists 6 students/)).toBeVisible()
   await saved(page)
@@ -152,8 +153,7 @@ test('Pulse actions: a student files a material under a course', async ({ page, 
   await askPulse(page, 'Which course is this for? Please save it there.')
   const card = dialog.getByRole('region', { name: 'Add css-layout-notes.txt to a course' })
   await expect(card).toContainText('Ranked by meaning (embeddings) and keyword match', { timeout: 60_000 })
-  await card.scrollIntoViewIfNeeded()
-  await shot(dialog, f, '05-material-course-suggestion')
+  await shot(card, f, '05-material-course-suggestion', WHOLE_CARD)
   await card.getByRole('button', { name: /^Add to library under/ }).click()
   await expect(dialog.getByText(/Added to your knowledge library/)).toBeVisible({ timeout: 120_000 })
   await shot(dialog, f, '06-material-added')

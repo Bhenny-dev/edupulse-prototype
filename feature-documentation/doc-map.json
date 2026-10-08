@@ -13,9 +13,9 @@
       "docs": ["feature-documentation/system-walkthrough/02-shared-interface", "feature-documentation/system-walkthrough/06-mobile", "feature-documentation/system-manual/01-getting-started"]
     },
     {
-      "name": "Pulse guidance",
+      "name": "Pulse guidance and actions",
       "source": ["edupulse-app/src/components/pulse/**", "edupulse-app/src/agents/**"],
-      "docs": ["feature-documentation/system-manual/07-pulse-guidance", "feature-documentation/system-walkthrough/02-shared-interface"]
+      "docs": ["feature-documentation/system-manual/07-pulse-guidance", "feature-documentation/system-manual/09-pulse-actions", "feature-documentation/system-walkthrough/02-shared-interface"]
     },
     {
       "name": "AI features (knowledge library, answers, comparison, references, connections)",

@@ -14,11 +14,11 @@ The class list in these screenshots is sample data: invented names with `example
 
    ![Class list attached](01-attach-class-list.png)
 
-2. The **Register students** card shows how the file was read, the **Course** and **Block section** (detected from the file name, a course column or the first lines; change them if needed), the first five students and what will change: a new class list, or for a course and block you already registered, how many students are new and how many are already listed. Rows without a name are reported, never guessed, and duplicate rows are merged. Press **Register *n* students** to confirm, or **Cancel**.
+2. The card **Register students from *file*** shows how the file was read (*6 students found (comma-separated table)*), the **Course** and **Block section** (detected from the file name, a course column or the first lines; change them if needed), the first five students (*and 1 more*) and what will change. Here it is a new class list: *This adds a new class list for IT 102 · BSIT-1B to Syllabus → My Courses*. For a course and block you already registered, the card says instead how many students are new and how many are already listed. Rows without a name are reported, never guessed, and duplicate rows are merged. Press **Register *n* students** to confirm, or **Cancel**.
 
    ![Register card](02-register-card.png)
 
-3. Pulse saves the class list to your workspace and opens **Syllabus → My Courses**, where it appears under **Registered Courses**. The card now says what was registered and from which file, with **Open My Courses** and **Undo**. **Undo** removes this registration, or restores the earlier list if it was merged.
+3. Pulse saves the class list to your workspace and opens **Syllabus → My Courses**, where it appears under **Registered Courses**. The card now says what was registered and from which file, with **Open My Courses** and **Undo**. **Undo** removes this registration, or restores the earlier list if it was merged. Your message lists the file under **Attached:** because only the action used it; files that Pulse reads to answer a question are listed under **References:**.
 
    ![Registered in My Courses](03-registered-in-my-courses.png)
 
@@ -30,11 +30,11 @@ The class list in these screenshots is sample data: invented names with `example
 
 ## File a material under a course (students and instructors)
 
-5. Attach a handout, notes or slides and ask *Which course is this for?* (or *save this to IT 209*). The card ranks the courses it matches. Each suggestion says why: the words from your file and where they appear in the course (its title, description, program outcomes or a syllabus outline week, for example *Week 3 topics*). Your own courses are marked **Your course**. Pulse ranks first by keywords, then re-ranks the shortlist by meaning with the embedding model; the line under the list says which method was used. Pick another course from **Another course** if needed and check the **Title**.
+5. Attach a handout, notes or slides and ask *Which course is this for?* (or *save this to IT 209*). The card ranks the courses it matches. The best match is selected. Each suggestion says why: the words from your file and where they appear in the course (its title, description, program outcomes or a syllabus outline week, for example *“flexbox” (Week 3 topics)*), and how strong the match is (**Named in the file**, **Strong match** or **Possible match**; here two web courses match about equally well, so both are *possible*). Your own courses are marked **Your course**. Pulse ranks first by keywords, then re-ranks the shortlist by meaning with the embedding model; the line under the list says which method was used. Pick another course from **Another course** if needed and check the **Title**.
 
    ![Course suggestion with reasons](05-material-course-suggestion.png)
 
-6. Press **Add to library under *course*** to index it in your knowledge library. Its title starts with the course code, so later answers about that course cite it by course, title and page. The card offers **Ask about it**, **Make a study guide** (a cited draft) and **Open knowledge library**, where the document lists its course.
+6. Press **Add to library under *course*** to index it in your knowledge library. Its title starts with the course code (*IT 209 · css layout notes*), so later answers about that course find and cite it. The card says how many passages were indexed and that Pulse cites the file by title (and by page, for files that have pages). The card offers **Ask about it**, **Make a study guide** (a cited draft) and **Open knowledge library**, where the document lists its course.
 
    ![Material added](06-material-added.png)
 
@@ -42,7 +42,7 @@ The class list in these screenshots is sample data: invented names with `example
 
 ## Prepare a week of courseware (instructors)
 
-7. Ask, for example, *Generate week 1 materials for IT 102*. The card shows the source it will follow, the course's active syllabus and its **Course Outline** week (topics, learning outcomes, activities and assessments), and says that checked or published items are kept. **Generate Week *n* drafts** writes a lecture material, an activity and a short assessment as drafts for your review, then opens **Courseware** on that course with the week expanded. **Draft in chat instead** writes a draft in the conversation without saving anything. A course without an active syllabus cannot be generated; the card says why and opens **My Syllabus**.
+7. Ask, for example, *Generate week 1 materials for IT 102*. The card shows the source it will follow: the course's active syllabus and its **Course Outline** week, here the **Topics** and **Learning outcomes** of Week 1 (activities and assessments appear when the outline lists them). The **Week** list marks weeks that already have items (*has drafts*), and the card says what happens to them: here *This week already has 3 items: drafts are replaced*. Checked or published items are always kept. **Generate Week *n* drafts** writes a lecture material, an activity and a short assessment as drafts for your review, then opens **Courseware** on that course with the week expanded. **Draft in chat instead** writes a draft in the conversation without saving anything. A course without an active syllabus cannot be generated; the card says why and opens **My Syllabus**.
 
    ![Generate a week from the outline](07-generate-week-source.png)
 
