@@ -1,8 +1,8 @@
 {
-  "checkedAt": "2026-10-24T07:35:01.931Z",
+  "checkedAt": "2026-10-24T07:41:39.811Z",
   "phase": "local-and-cloud-gates-complete",
-  "commitSha": "5e7d95638c7abf8f74e85ec96cbf90ae491ed674",
-  "sourceDigest": "2216b262637336268396096ed6fbde6ce644a78b7c7d224d243a70b36beeb86f",
+  "commitSha": "5afbd0c44736b0d3ab0445cda15ad4c6f21ea351",
+  "sourceDigest": "e86ad59af03e2449da18892fa0b2d4c3e334b9f41ace40c1cb50188e47d2565c",
   "sourceDirty": true,
   "releaseGate": {
     "command": "npm run verify",
@@ -49,5 +49,15 @@
     "latencyP50Ms": 84,
     "latencyP95Ms": 352
   },
-  "deployment": "pending immutable deployment verification; separate release evidence follows"
+  "deployment": "pending immutable deployment verification; separate release evidence follows",
+  "cleanInstall": {
+    "passed": true,
+    "packagesInstalled": 191,
+    "vulnerabilities": 0
+  },
+  "installCorrection": {
+    "failedDeployment": "dpl_84yZvLxrPEZwNaQcKyWKeyFz89zB",
+    "fix": "Explicitly pinned canvas 1.0.13 development renderer and complete npm-generated parent entry",
+    "rendererCaptureTestsPassed": 2
+  }
 }

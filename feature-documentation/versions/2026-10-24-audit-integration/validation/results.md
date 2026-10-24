@@ -26,6 +26,8 @@ The [sanitized account-pair report](../../../session-generated/2026-10-24-releas
 
 ## Hosted deployment and push
 
+The first immutable attempt (`dpl_84yZvLxrPEZwNaQcKyWKeyFz89zB`, source `5afbd0c`) failed `npm ci`: canvas platform entries existed but the parent `@napi-rs/canvas@1.0.13` entry was absent. Local npm 11 had accepted this tree. The development renderer is now explicitly pinned, and npm generated the complete dependency entry. The corrected clean installation and full 107-test release gate passed again. DOCX/PDF capture regressions passed (2 tests), with unchanged image hashes. This failed attempt remains part of the release evidence.
+
 At the start, the two latest October 8 Vercel attempts were Error; an older build remained Ready. The connector denied deployment listing (403); the scoped CLI confirmed the project/team and install failure. The completion release uses an immutable staged production build before domain promotion and push. Its URL, build result, API/browser canaries and final remote commit are recorded in follow-up deployment evidence once executed. Local/cloud gates above do not by themselves assert production promotion.
 
 ## Scope and remaining operational limits

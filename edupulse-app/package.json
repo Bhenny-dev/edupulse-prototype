@@ -54,6 +54,7 @@
   "devDependencies": {
     "@emnapi/core": "1.11.3",
     "@emnapi/runtime": "1.11.3",
+    "@napi-rs/canvas": "1.0.13",
     "@playwright/test": "1.63.0",
     "@tesseract.js-data/eng": "1.0.0",
     "@types/node": "26.5.1",
