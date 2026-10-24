@@ -81,21 +81,21 @@
     },
     {
       "path": "feature-documentation/system-walkthrough/06-mobile/02-instructor-dashboard.png",
-      "sha256": "a7bf2213da8753e223c1a62940db4683de65fab8e6fecb5dc6da046fbb5139e1",
+      "sha256": "4e2afe2ee5a5b330b397a433d30e33c4ca26b6a6fb084a66e0773788c1b2e6eb",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-24T06:37:24.0275844Z"
+      "reviewedAt": "2026-10-24T16:12:36.330Z"
     },
     {
       "path": "feature-documentation/system-walkthrough/06-mobile/03-navigation-menu.png",
-      "sha256": "fb14a726ab5085281ce7129f4306f260ce4d2e32fceb4255b50bba7c84a64053",
+      "sha256": "10a48dd8eb6ee967210884fb0141d6567222f0526aeb323455f064256ea55ecf",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-24T06:37:24.0275844Z"
+      "reviewedAt": "2026-10-24T16:12:36.331Z"
     },
     {
       "path": "feature-documentation/system-walkthrough/06-mobile/04-syllabus-builder.png",
-      "sha256": "5b2fc687c465787131e3539fc53815cc04734ab227aa86128823a0ac672384be",
+      "sha256": "f98c37182efb8931ec4ac4d9f34680460dfaedce237292fa1ac76ab85c536827",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-24T06:37:24.0275844Z"
+      "reviewedAt": "2026-10-24T16:12:36.332Z"
     },
     {
       "path": "feature-documentation/system-walkthrough/06-mobile/05-pulse-panel.png",
@@ -105,9 +105,9 @@
     },
     {
       "path": "feature-documentation/system-walkthrough/06-mobile/06-settings-ai-and-knowledge.png",
-      "sha256": "c92e3255eab2de99d0203450f34b5cb22f1b73b17bef339b71f5a8c56eaeb6a6",
+      "sha256": "ad4f5c35475559142e8a4115dd570524f91b938d9dcfac0687cdccd15168807f",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-24T06:37:24.0275844Z"
+      "reviewedAt": "2026-10-24T16:04:29.878Z"
     },
     {
       "path": "feature-documentation/system-manual/09-pulse-actions/09-undo-preserves-newer-registration.png",
@@ -249,15 +249,15 @@
     },
     {
       "path": "feature-documentation/system-manual/08-ai-connections/04-saved-provider-credential.png",
-      "sha256": "d90e61aac32848e741db09d4b9c8261a0893d38c5f86d7c2f09f91f76c9cd72a",
+      "sha256": "8479a1fe47f615b7d531dcd92aef1f0e875d95221548052ef1f2e5950d752f0b",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-24T08:11:21.669Z"
+      "reviewedAt": "2026-10-24T16:12:36.326Z"
     },
     {
       "path": "feature-documentation/system-manual/08-ai-connections/05-provider-replacement-error.png",
-      "sha256": "a0d30d8f55e2abc4fe4ad77338230958969838d0e3296309d53d458e6a4e7f54",
+      "sha256": "e4419611c9f64c2593fb02cdd9d4cef96ab209981e360c799a6f3456b32765ea",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-24T08:11:21.673Z"
+      "reviewedAt": "2026-10-24T16:12:36.326Z"
     },
     {
       "path": "feature-documentation/system-manual/02-syllabus-lifecycle/12-import-preview.png",
@@ -273,27 +273,27 @@
     },
     {
       "path": "feature-documentation/system-manual/08-ai-connections/01-pipeline-status.png",
-      "sha256": "6492f2d109c321c2334489e82cccd35d5d4691981d074a54b906e60778b9c375",
+      "sha256": "f0177cc2443da9118b4a3a60a95697fd97d1fdb14ccc137a8a333466f4714f9d",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-24T08:11:21.674Z"
+      "reviewedAt": "2026-10-24T16:12:36.324Z"
     },
     {
       "path": "feature-documentation/system-manual/08-ai-connections/02-free-provider-options.png",
-      "sha256": "1b4d1679c8fafa75651dc04e6d30e359457e432364298dfe7acd566780989c2b",
+      "sha256": "f50eb6b7419c539bf97c9badb8ee40b533c3bc7bd9c5ed4a39ed149d45112bc2",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-24T08:11:21.675Z"
+      "reviewedAt": "2026-10-24T16:12:36.325Z"
     },
     {
       "path": "feature-documentation/system-manual/08-ai-connections/03-on-device-model.png",
-      "sha256": "d92a587445a9da901f9908a7a2e6fae8daed47ce69c1f3f3b651ad0af0f05b43",
+      "sha256": "98e8302eac2b374bc62cb1bf5b3defce3b23200bd2e21bfab805231d4b1ca462",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-24T08:11:21.675Z"
+      "reviewedAt": "2026-10-24T16:12:36.326Z"
     },
     {
       "path": "feature-documentation/system-walkthrough/02-shared-interface/13-settings-ai-and-knowledge.png",
-      "sha256": "286e6c31404c8acb6ccf17136961c267abd15dad06d0bcbd6f5e97100f542e30",
+      "sha256": "05707a28971332f6c8244c928614c89baec934ebd9f8b01c389b107fa22431b9",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-24T08:11:21.676Z"
+      "reviewedAt": "2026-10-24T16:12:36.329Z"
     },
     {
       "path": "feature-documentation/system-walkthrough/02-shared-interface/18-pulse-dwell-help.png",
@@ -366,6 +366,36 @@
       "sha256": "9e7b30ca1349f4f9dbb7580f79b486896c98ec42428f78c3fd1c26b79d71d16b",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-10-24T14:25:17.430Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/08-ai-connections/06-generation-verified.png",
+      "sha256": "e43632d064b2be10d01ad2c73ac816e7a3d8da189b932501bdf2396e4d6b8a5e",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-24T16:12:36.327Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/08-ai-connections/07-model-access-error.png",
+      "sha256": "493c2151d3410bc7dd91ecde0db5a083c7dbdbb4221d69df5eefa384ae1332a8",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-24T16:12:36.327Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/08-ai-connections/08-openrouter-catalog-retry.png",
+      "sha256": "ec3096c30b9b652fd5af100fe27483a2103a617ae76bea1487b70bd3f577dd24",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-24T16:12:36.328Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/08-ai-connections/09-mobile-provider-connection.png",
+      "sha256": "0e2f0cc8a983f286e1561aafd780931b960292c3791e9c6f99bcef7c469b55e6",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-24T16:12:36.328Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/08-ai-connections/10-authorization-error.png",
+      "sha256": "88804f4c8af71ddfe27993ddfb52173799c5120e820a63ff46bf0516b119aafe",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-24T16:12:36.332Z"
     }
   ]
 }

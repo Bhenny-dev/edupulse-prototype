@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test'
 import { providerFixture } from './provider-fixture.js'
 
 test('provider save synchronizes pipeline status, survives reopening, retains model selection and failed replacement input', async ({ page }) => {
-  await providerFixture(page)
+  const fixture = await providerFixture(page)
   await page.goto('/')
   await page.getByRole('button', { name: 'Instructor', exact: true }).click()
   await page.goto('/#/settings?tab=ai-provider')
@@ -11,8 +11,14 @@ test('provider save synchronizes pipeline status, survives reopening, retains mo
   await page.getByRole('button', { name: 'Connect and load models', exact: true }).click()
   await expect(page.getByLabel('Saved provider credential')).toHaveValue('saved-credential')
   const pipeline = page.locator('[data-pulse-target="AI pipeline status"]')
-  await expect(pipeline).toContainText('Model connection verified.')
-  await expect(pipeline.getByText('Connected', { exact: true })).toBeVisible()
+  await expect(pipeline.getByText('Model listed · not tested', { exact: true })).toBeVisible()
+  await page.getByRole('button', { name: 'Test selected model', exact: true }).click()
+  await expect(pipeline.getByText('Generation verified', { exact: true })).toBeVisible()
+  fixture.failNextTest()
+  await page.getByRole('button', { name: 'Test selected model', exact: true }).click()
+  await expect(page.getByRole('alert')).toContainText('unavailable for this account')
+  await expect(page.getByLabel('Saved provider credential')).toBeVisible()
+  await expect(pipeline.getByText('Model listed · not tested', { exact: true })).toBeVisible()
   await page.reload()
   await expect(page.getByLabel('Saved provider credential')).toBeVisible()
   await page.getByLabel('Available model').selectOption('gpt-3.5-turbo')
@@ -26,6 +32,11 @@ test('provider save synchronizes pipeline status, survives reopening, retains mo
   await expect(page.getByLabel('Provider API key', { exact: true })).toHaveValue('synthetic-rejected-key')
   await page.getByRole('button', { name: 'Keep saved credential', exact: true }).click()
   await expect(page.getByLabel('Saved provider credential')).toBeVisible()
+  await page.getByRole('button', { name: 'Connect Claude API', exact: true }).click()
+  await expect(page.getByLabel('AI provider', { exact: true })).toHaveValue('anthropic')
+  await expect(page.getByText('Claude account sign-in is not available', { exact: false })).toBeVisible()
+  await page.getByRole('button', { name: 'Connect OpenAI API', exact: true }).click()
+  await expect(page.getByLabel('Saved provider credential')).toBeVisible()
 })
 
 test('provider account authorization leaves for the fixed OpenRouter consent host with PKCE', async ({ page }) => {
@@ -38,11 +49,11 @@ test('provider account authorization leaves for the fixed OpenRouter consent hos
   const url = new URL(page.url())
   expect(url.searchParams.get('code_challenge_method')).toBe('S256')
   expect(url.searchParams.get('state')?.length).toBeGreaterThan(32)
-  expect(url.searchParams.get('callback_url')).toMatch(/provider_callback=openrouter/)
+  expect(new URL(url.searchParams.get('callback_url')!).pathname).toBe('/auth/provider/openrouter')
   expect(url.searchParams.has('apiKey')).toBe(false)
 })
 
-test('provider callback completes once, removes authorization parameters and restores account settings', async ({ page }) => {
+for (const callback of ['dedicated', 'legacy', 'state-marked']) test(`provider ${callback} callback completes once, removes authorization parameters and restores account settings`, async ({ page }) => {
   const fixture = await providerFixture(page)
   let exchanges = 0
   await page.route('**/api/ai?action=provider-oauth', async route => {
@@ -52,10 +63,42 @@ test('provider callback completes once, removes authorization parameters and res
   })
   await page.goto('/')
   await page.getByRole('button', { name: 'Instructor', exact: true }).click()
-  await page.goto('/?provider_callback=openrouter&code=synthetic-code&state=synthetic-callback-state-12345678901234567890')
+  if (callback === 'state-marked') await page.evaluate(() => sessionStorage.setItem('edupulse-provider-authorization', JSON.stringify({ state: 'synthetic-callback-state-12345678901234567890', expires: Date.now() + 600000 })))
+  await page.goto(`${callback === 'dedicated' ? '/auth/provider/openrouter' : '/'}?${callback === 'legacy' ? 'provider_callback=openrouter&' : ''}code=synthetic-code&state=synthetic-callback-state-12345678901234567890`)
   await expect(page).toHaveURL(/#\/settings\?tab=ai-provider/)
   await expect(page.getByLabel('Saved provider credential')).toBeVisible()
   await expect(page.getByText('OpenRouter authorized and saved.', { exact: false })).toBeVisible()
   expect(new URL(page.url()).search).toBe('')
   expect(exchanges).toBe(1)
+})
+
+test('authorized OpenRouter credential survives a catalog outage and refresh finishes setup', async ({ page }) => {
+  const fixture = await providerFixture(page)
+  await page.route('**/api/ai?action=provider-oauth', route => route.fulfill({ json: fixture.authorize('openrouter', true) }))
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Instructor', exact: true }).click()
+  await page.goto('/auth/provider/openrouter?code=synthetic-code&state=synthetic-callback-state-12345678901234567890')
+  await expect(page.getByLabel('AI provider', { exact: true })).toHaveValue('openrouter')
+  await expect(page.getByLabel('Saved provider credential')).toBeVisible()
+  await expect(page.getByRole('alert')).toContainText('no need to authorize again')
+  await page.getByRole('button', { name: 'Refresh models', exact: true }).click()
+  await expect(page.getByLabel('Available model')).toHaveValue('gpt-4.1-mini')
+})
+
+test('a provider return without an EduPulse session gives a visible recovery message and clears authorization parameters', async ({ page }) => {
+  await providerFixture(page)
+  await page.goto('/auth/provider/openrouter?code=synthetic-code&state=synthetic-callback-state-12345678901234567890')
+  await expect(page.getByRole('alert')).toContainText('Sign in to EduPulse, then reconnect OpenRouter')
+  expect(new URL(page.url()).search).toBe('')
+})
+
+test('a failed provider exchange stays visible for a signed-in account with no prior connection', async ({ page }) => {
+  await providerFixture(page)
+  await page.route('**/api/ai?action=provider-oauth', route => route.fulfill({ status: 400, json: { error: { code: 'OAUTH_EXCHANGE_FAILED', message: 'Authorization could not finish. Start Connect with OpenRouter again.' } } }))
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Instructor', exact: true }).click()
+  await page.goto('/auth/provider/openrouter?code=synthetic-code&state=synthetic-callback-state-12345678901234567890')
+  await expect(page.getByRole('alert')).toContainText('Authorization could not finish')
+  await page.getByRole('button', { name: 'Connect Claude API', exact: true }).click()
+  await expect(page.getByRole('alert')).toHaveCount(0)
 })

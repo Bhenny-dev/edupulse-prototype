@@ -49,6 +49,55 @@ test('a hosted visitor never inherits a server-wide OpenAI key', async () => {
   }
 })
 
+test('a generation test uses the saved credential, records success and clears verification after a model-access failure', async t => {
+  const original = globalThis.fetch
+  t.after(() => { globalThis.fetch = original })
+  let unavailable = false
+  globalThis.fetch = async (url, init) => {
+    assert.equal(String(url), 'https://api.openai.com/v1/responses')
+    assert.equal(new Headers(init?.headers).get('authorization'), 'Bearer fake-provider-key-for-test')
+    const body = JSON.parse(String(init?.body))
+    assert.equal(body.model, connection.model)
+    assert.equal(body.max_output_tokens, 2048)
+    return unavailable ? Response.json({ error: { code: 'model_not_found', message: 'Private provider detail' } }, { status: 404 }) : Response.json({ output: [{ type: 'message', content: [{ type: 'output_text', text: 'OK' }] }] })
+  }
+  const actor = { id: 'public-guest', role: 'guest' as const, local: false }
+  const saved = { ...connection, owner: actor.id }
+  const request = (cookie: string, body: unknown = {}) => new Request('https://edupulse.test/api/ai?action=provider-test', { method: 'POST', headers: { cookie, 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+  const verified = await handleRequest(request(connectionCookie(saved)))
+  assert.equal(verified.status, 200)
+  const verifiedCookie = verified.headers.get('set-cookie')!
+  assert(readConnection(request(verifiedCookie), actor)?.testedAt)
+  const publicResult = await verified.json()
+  assert(publicResult.tested && publicResult.connection.testedAt)
+  assert(!JSON.stringify(publicResult).includes(saved.apiKey!))
+  unavailable = true
+  const failed = await handleRequest(request(verifiedCookie))
+  assert.equal(failed.status, 400)
+  assert.equal((await failed.json()).error.code, 'MODEL_NOT_AVAILABLE')
+  const retained = readConnection(request(failed.headers.get('set-cookie')!), actor)!
+  assert.equal(retained.testedAt, undefined)
+  assert.equal(retained.apiKey, saved.apiKey)
+  assert.equal((await handleRequest(request(verifiedCookie, { model: 'override-is-rejected' }))).status, 400)
+})
+
+test('catalog outages retain public saved-connection metadata and model discovery excludes expired or specialized OpenAI models', async t => {
+  const original = globalThis.fetch
+  t.after(() => { globalThis.fetch = original })
+  const models = await discoverModels('openai', 'synthetic-key', undefined, async () => Response.json({ data: [
+    { id: 'gpt-5-mini' }, { id: 'o3-mini' }, { id: 'gpt-4o-realtime-preview' }, { id: 'gpt-image-1' }, { id: 'gpt-expired', shutdown_date: '2020-01-01T00:00:00Z' },
+  ] }))
+  assert.deepEqual(models.map(m => m.id), ['gpt-5-mini', 'o3-mini'])
+  globalThis.fetch = async () => new Response('private provider data', { status: 503 })
+  const cookie = connectionCookie({ ...connection, owner: 'public-guest' })
+  const response = await handleRequest(new Request('https://edupulse.test/api/ai?action=providers', { headers: { cookie } }))
+  const body = await response.json()
+  assert.equal(body.connection.model, connection.model)
+  assert.match(body.warning, /provider/i)
+  assert.deepEqual(body.models, [])
+  assert(!JSON.stringify(body).includes(connection.apiKey!))
+})
+
 test('model discovery uses fixed provider endpoints and supported generation models', async () => {
   const seen: string[] = []
   const transport: typeof fetch = async url => {
@@ -80,9 +129,9 @@ test('personal connection discovers and switches models, powers guest drafts, an
   globalThis.fetch = async (url, init) => {
     const target = String(url)
     if (target === 'https://api.openai.com/v1/models') return Response.json({ data: [{ id: 'gpt-test' }, { id: 'gpt-other' }, { id: 'text-embedding-test' }] })
-    if (target === 'https://api.openai.com/v1/chat/completions') {
+    if (target === 'https://api.openai.com/v1/responses') {
       requestedKeys.push(new Headers(init?.headers).get('authorization') || '')
-      return Response.json({ choices: [{ message: { content: 'A loop repeats a group of instructions until its stopping condition is met.' } }] })
+      return Response.json({ output: [{ type: 'message', content: [{ type: 'output_text', text: 'A loop repeats a group of instructions until its stopping condition is met.' }] }] })
     }
     throw new Error('Unexpected external request')
   }

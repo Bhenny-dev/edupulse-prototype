@@ -33,7 +33,7 @@ The settings below come from the repository (`edupulse-app/vercel.json`, `.verce
 
 ## Routing and headers
 
-* **Rewrite:** every path except `/api/...` serves `index.html`, so deep links such as `/settings?tab=ai-provider` work.
+* **Rewrite:** every path except `/api/...` serves `index.html`, including the dedicated `/auth/provider/openrouter` provider return address. Screen navigation uses the SPA hash, for example `/#/settings?tab=ai-provider`. External provider return codes are separated from Supabase sign-in detection.
 * **Headers on every route:**
 
 | Header | Value |

@@ -7,10 +7,10 @@ import { config } from './config.js'
 
 export const providerNames = ['ollama', 'gemini', 'openai', 'groq', 'anthropic', 'openrouter', 'huggingface'] as const
 export type ProviderName = typeof providerNames[number]
-export type Connection = { provider: ProviderName; model: string; apiKey?: string; owner: string; expires: number; id: string }
+export type Connection = { provider: ProviderName; model: string; apiKey?: string; owner: string; expires: number; id: string; testedAt?: number }
 export type ModelPreset = { id: string; name: string; free?: boolean }
 export const connectionInput = z.object({ provider: z.enum(providerNames), apiKey: z.string().trim().min(8).max(1024).optional(), model: z.string().min(1).max(200).optional() }).strict()
-const payload = connectionInput.extend({ model: z.string().min(1).max(200), owner: z.string(), expires: z.number(), id: z.string() })
+const payload = connectionInput.extend({ model: z.string().max(200), owner: z.string(), expires: z.number(), id: z.string(), testedAt: z.number().optional() })
 const TTL = 7 * 24 * 60 * 60
 const cookieName = () => config().hosted ? '__Host-edupulse-ai' : 'edupulse-ai'
 
@@ -62,6 +62,7 @@ export function serverConnection(): Connection | undefined {
 }
 
 export function providerError(status: number): ApiError {
+  if (status === 402) return new ApiError(402, 'PROVIDER_CREDITS', 'This provider account needs API credits. Check provider billing or choose another connection.')
   if (status === 401 || status === 403) return new ApiError(400, 'PROVIDER_AUTH', 'The provider rejected this key or model permission. Check your key and account access.')
   if (status === 429) return new ApiError(429, 'PROVIDER_QUOTA', 'This provider has reached its quota or rate limit. Try later or select another connection.')
   return new ApiError(502, 'PROVIDER_UNAVAILABLE', `The provider could not complete the request (${status}). Check its model availability and try again.`)
@@ -92,7 +93,7 @@ export async function discoverModels(provider: ProviderName, apiKey?: string, si
       return { id: m.id, name: `${m.name || m.id}${free && !/\(free\)/i.test(m.name || '') ? ' (free)' : ''}`, free }
     })
   }
-  else models = (data.data || []).filter((m: { id: string; active?: boolean }) => provider === 'anthropic' || (provider === 'openai' ? /^(gpt-|chatgpt-|o\d)/.test(m.id) && !/audio|realtime|transcri|image|search|instruct/.test(m.id) : m.active !== false && !/whisper|tts|guard|orpheus/.test(m.id))).map((m: { id: string; display_name?: string }) => ({ id: m.id, name: m.display_name || m.id }))
+  else models = (data.data || []).filter((m: { id: string; active?: boolean; shutdown_date?: string | null }) => provider === 'anthropic' || (provider === 'openai' ? /^(gpt-|chatgpt-|codex-|o\d)/.test(m.id) && !/audio|realtime|transcri|image|search|instruct|computer-use|robotics/.test(m.id) && !(m.shutdown_date && Date.parse(m.shutdown_date) <= Date.now()) : m.active !== false && !/whisper|tts|guard|orpheus/.test(m.id))).map((m: { id: string; display_name?: string }) => ({ id: m.id, name: m.display_name || m.id }))
   models = models.filter(m => typeof m.id === 'string' && m.id.length <= 200).sort((a, b) => Number(Boolean(b.free)) - Number(Boolean(a.free)) || a.name.localeCompare(b.name)).slice(0, 500)
   if (!models.length) throw new ApiError(400, 'NO_MODELS', 'No supported text-generation models are available for this connection.')
   return models
@@ -105,8 +106,13 @@ export async function createConnection(input: z.infer<typeof connectionInput>, i
   const preferred = input.provider === 'openai' ? ['gpt-5-mini', 'gpt-4.1-mini', 'gpt-4o-mini'].find(id => models.some(m => m.id === id)) : undefined
   const model = input.model || (previous?.provider === input.provider && models.some(m => m.id === previous.model) ? previous.model : preferred) || (input.provider === 'ollama' && models.some(m => m.id === config().model || m.id === `${config().model}:latest`) ? models.find(m => m.id === config().model || m.id === `${config().model}:latest`)!.id : models[0]!.id)
   if (!models.some(m => m.id === model)) throw new ApiError(400, 'MODEL_NOT_AVAILABLE', 'Choose a model returned by the connected provider.')
-  const connection: Connection = { provider: input.provider, model, apiKey, owner: identity.id, id: previous?.id || randomBytes(12).toString('hex'), expires: Date.now() + TTL * 1000 }
+  const connection: Connection = { provider: input.provider, model, apiKey, owner: identity.id, id: previous?.id || randomBytes(12).toString('hex'), expires: Date.now() + TTL * 1000, ...(!input.apiKey && previous?.provider === input.provider && previous.model === model && previous.testedAt ? { testedAt: previous.testedAt } : {}) }
   return { connection, models }
 }
 
-export const publicConnection = (connection?: Connection) => connection ? { provider: connection.provider, model: connection.model, expiresAt: connection.expires === Number.MAX_SAFE_INTEGER ? null : new Date(connection.expires).toISOString(), source: connection.owner === 'server' ? 'server' : 'personal' } : null
+/** Used only after a provider has issued a credential through a verified code exchange. */
+export function unconfiguredAuthorizedConnection(provider: ProviderName, apiKey: string, identity: Identity): Connection {
+  return { provider, apiKey, model: '', owner: identity.id, id: randomBytes(12).toString('hex'), expires: Date.now() + TTL * 1000 }
+}
+
+export const publicConnection = (connection?: Connection) => connection ? { provider: connection.provider, model: connection.model, expiresAt: connection.expires === Number.MAX_SAFE_INTEGER ? null : new Date(connection.expires).toISOString(), source: connection.owner === 'server' ? 'server' : 'personal', ...(connection.testedAt ? { testedAt: new Date(connection.testedAt).toISOString() } : {}) } : null

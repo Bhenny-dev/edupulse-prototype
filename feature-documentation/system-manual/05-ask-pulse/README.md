@@ -55,6 +55,8 @@ See the [student example](../../system-walkthrough/05-student/09-pulse-declines-
 
 ## Good to know
 
+If a connected provider rejects the model or has no API credits, Pulse shows the connection error even when library sources are available. Open **AI settings**, refresh the available models and use **Test selected model**. A saved key and model list alone do not verify generation access. See [connection recovery examples](../08-ai-connections/README.md).
+
 * Without a connected model, Pulse still searches and quotes the best source sentences, labelled **Source excerpts**.
 * If nothing in your library or the product guide answers the question, Pulse says the evidence is missing instead of guessing.
 * **Stop** (square button) cancels a running request; the trash icon clears the conversation; the gear opens AI settings.

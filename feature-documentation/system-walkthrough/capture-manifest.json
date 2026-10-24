@@ -1,5 +1,5 @@
 {
-  "capturedAt": "2026-10-24T08:10:25.828Z",
+  "capturedAt": "2026-10-24T16:11:14.718Z",
   "problems": [],
   "scenes": [
     {
@@ -501,14 +501,6 @@
     {
       "role": "all roles",
       "folder": "02-shared-interface",
-      "file": "13-settings-ai-and-knowledge.png",
-      "title": "Settings · AI & Knowledge",
-      "route": "/settings",
-      "ok": true
-    },
-    {
-      "role": "all roles",
-      "folder": "02-shared-interface",
       "file": "18-pulse-dwell-help.png",
       "title": "“Ask Pulse about this” hover badge",
       "route": "/syllabus",
@@ -520,6 +512,14 @@
       "file": "05-syllabus-builder.png",
       "title": "Syllabus Builder (upload or build the 7 sections)",
       "route": "/syllabus",
+      "ok": true
+    },
+    {
+      "role": "all roles",
+      "folder": "02-shared-interface",
+      "file": "13-settings-ai-and-knowledge.png",
+      "title": "Settings · AI & Knowledge",
+      "route": "/settings",
       "ok": true
     }
   ]

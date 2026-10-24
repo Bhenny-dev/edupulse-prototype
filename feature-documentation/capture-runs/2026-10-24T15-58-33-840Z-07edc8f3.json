@@ -1,0 +1,133 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-10-24T15-58-33-840Z-07edc8f3",
+  "startedAt": "2026-10-24T15:58:33.840Z",
+  "finishedAt": "2026-10-24T15:58:48.875Z",
+  "commitSha": "68ec5b36c73e262aba0499562a65819d8ea7eba2",
+  "sourceDigest": "fabd6a38e650e86af798b02a962cf5934dd216ec85bc48d1f4148fff56653b7a",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-10-24T15:58:12.935Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 3,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": null
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/capture.spec.ts",
+      "title": "AI pipeline status and free providers",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "local-real-input/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2492,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+      "title": "provider connection: clearly saved credential, synchronized status and recoverable replacement",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-provider-transport/ui-regression",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2725,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+      "title": "OpenRouter callback retains an authorized credential during a catalog outage and recovers on refresh",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-provider-transport/ui-regression",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2160,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-manual/08-ai-connections/01-pipeline-status.png",
+      "sha256": "64fef44e2df116640aa63bb3f942509246834c50dcc84d8ba64a011a4afbc7f9",
+      "bytes": 99479
+    },
+    {
+      "path": "feature-documentation/system-manual/08-ai-connections/02-free-provider-options.png",
+      "sha256": "a544431dfc91d8e38c290e527dddf0e38534f7d1c79e734d4cec4c2dc0cef8c8",
+      "bytes": 104012
+    },
+    {
+      "path": "feature-documentation/system-manual/08-ai-connections/03-on-device-model.png",
+      "sha256": "7fa9b3bf8a34f79a772268d3173aad628d4e2e33a75691a1f2481cc7a04ff13f",
+      "bytes": 117210
+    },
+    {
+      "path": "feature-documentation/system-manual/08-ai-connections/04-saved-provider-credential.png",
+      "sha256": "0d8bb809b5d98c2cd163b35a8574cf1857a926ecc9f44727f4524e218206d66a",
+      "bytes": 166190
+    },
+    {
+      "path": "feature-documentation/system-manual/08-ai-connections/05-provider-replacement-error.png",
+      "sha256": "b03f98554cebf251897fc419004896d0355fd2483bb04b7b3d8e03a574dcb1ba",
+      "bytes": 150117
+    },
+    {
+      "path": "feature-documentation/system-manual/08-ai-connections/06-generation-verified.png",
+      "sha256": "fd8b14f5239b82bacf03141099ee45940d73f90b841b3fc44491f8e7293f4e9d",
+      "bytes": 171068
+    },
+    {
+      "path": "feature-documentation/system-manual/08-ai-connections/07-model-access-error.png",
+      "sha256": "04a7f88b49e688f492f645ed371d68293dc3276f1fa7e20b70d07aa873de5ae8",
+      "bytes": 169685
+    },
+    {
+      "path": "feature-documentation/system-manual/08-ai-connections/08-openrouter-catalog-retry.png",
+      "sha256": "23742416d07cb565285a5f97d800689534f2451fedc50657fc7aa92fff6caf15",
+      "bytes": 143223
+    },
+    {
+      "path": "feature-documentation/system-manual/08-ai-connections/09-mobile-provider-connection.png",
+      "sha256": "8d5bf94b72a1ba884d53cb3479737e29e15592dca8dcedf699626b5e54a26ee1",
+      "bytes": 188090
+    }
+  ]
+}

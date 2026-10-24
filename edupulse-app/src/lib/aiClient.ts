@@ -14,13 +14,15 @@ type RequestOptions = { raw?: Blob; headers?: Record<string, string> }
 // so the browser waits for the server's answer or its timeout error instead of giving up first.
 const LONG_ACTIONS = new Set(['chat', 'courseware', 'references'])
 export async function aiRequest<T>(action: string, method = 'GET', body?: unknown, signal?: AbortSignal, options: RequestOptions = {}): Promise<T> {
+  const requestToken = accessToken
   const response = await fetch(`/api/ai?action=${encodeURIComponent(action)}`, {
     method,
-    headers: { ...(body ? { 'Content-Type': 'application/json' } : options.raw ? { 'Content-Type': 'application/octet-stream' } : {}), ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}), ...options.headers },
+    headers: { ...(body ? { 'Content-Type': 'application/json' } : options.raw ? { 'Content-Type': 'application/octet-stream' } : {}), ...(requestToken ? { Authorization: `Bearer ${requestToken}` } : {}), ...options.headers },
     ...(body ? { body: JSON.stringify(body) } : options.raw ? { body: options.raw } : {}), signal: AbortSignal.any([AbortSignal.timeout(LONG_ACTIONS.has(action) ? 610000 : 125000), ...(signal ? [signal] : [])]),
   })
   if (!response.headers.get('content-type')?.includes('application/json')) throw new Error('The AI API is unavailable. Start the app with npm run dev or check the deployment.')
   const data = await response.json()
+  if (typeof window !== 'undefined' && requestToken === accessToken && ['chat', 'courseware'].includes(action) && (response.ok || ['MODEL_NOT_AVAILABLE', 'MODEL_INCOMPATIBLE', 'PROVIDER_AUTH', 'PROVIDER_CREDITS', 'PROVIDER_QUOTA', 'EMPTY_RESPONSE'].includes(data.error?.code))) window.dispatchEvent(new Event('edupulse-ai-change'))
   if (!response.ok) throw new ApiRequestError(data.error?.message || `Request failed (${response.status}).`, response.status, data.error?.code)
   return data as T
 }
@@ -29,6 +31,7 @@ export type ModelState = { model: string; state: string; ready: boolean }
 export type AiHealth = {
   version: string; provider: string; model: string | null; ready: boolean; embeddings: boolean; message: string
   database: { ready: boolean; kind: string; message: string }; identity: { mode: string; role: string }; checkedAt: string
+  connection?: { provider: string; model: string; source: string; expiresAt: string | null; testedAt?: string } | null
   pipeline?: { embeddings: ModelState; reranker: ModelState; vectorStore: string; retrieval: string; extraction: { formats: string[]; maxBytes: number; sandbox: string }; agents: string[] }
 }
 export type AiAnswer = AgentAnswer

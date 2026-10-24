@@ -2,7 +2,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFile, readdir } from 'node:fs/promises'
 import { PGlite } from '@electric-sql/pglite'
-import { chatInput, type Identity } from '../server/contracts.js'
+import { ApiError, chatInput, type Identity } from '../server/contracts.js'
 import { runAgents } from '../src/lib/rag/agents.js'
 import { checkAppropriateUse } from '../src/lib/rag/policy.js'
 import { AGENTS, AGENT_ORDER, agentReport } from '../src/lib/rag/registry.js'
@@ -14,6 +14,12 @@ const student: Identity = { id: '33333333-3333-4333-8333-333333333333', role: 's
 const instructor: Identity = { id: 'test-instructor', role: 'instructor', local: true }
 const signal = () => AbortSignal.timeout(10000)
 const guide: Evidence = { id: 'g1', documentId: 'g1', title: 'Courseware policy', text: 'Courseware must be checked by the instructor before publishing.', page: null, section: null, flagged: false, origin: 'private', method: 'hybrid', similarity: 0.6, rrf: 0.03, relevance: null, query: '' }
+
+test('model permission failures remain actionable even when the library supplies relevant evidence', async () => {
+  await assert.rejects(runAgents(chatInput.parse({ message: 'When must courseware be checked?' }), instructor, signal(), {
+    search: async () => ({ evidence: [guide] }), provider: 'test', generate: async () => { throw new ApiError(400, 'MODEL_NOT_AVAILABLE', 'Choose another available model.') },
+  }), (error: { code?: string }) => error.code === 'MODEL_NOT_AVAILABLE')
+})
 
 test('every named agent has a job title, a task and a measurable goal', () => {
   assert.deepEqual(AGENT_ORDER, ['Guardian', 'Planner', 'Researcher', 'Ranker', 'Comparator', 'Writer', 'Verifier', 'Corrector', 'Librarian'])

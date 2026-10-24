@@ -4,6 +4,7 @@ import { createHash } from 'node:crypto'
 import { providerOAuth } from '../server/domains/providerOAuth.js'
 import { readConnection, sealProviderState, unsealProviderState, createConnection } from '../server/connections.js'
 import type { Identity } from '../server/contracts.js'
+import { clearProviderAuthorization, providerAuthorizationReturn, rememberProviderAuthorization } from '../src/lib/providerOAuth.js'
 
 process.env.VERCEL = '1'
 process.env.AI_CONNECTION_SECRET = 'cd'.repeat(32)
@@ -14,7 +15,7 @@ test('provider OAuth uses fixed hosts, private PKCE, expiring owner/origin/state
   const started = await providerOAuth(new Request(url), actor, { operation: 'start', provider: 'openrouter' })
   const authorization = new URL((started.body as { authorizationUrl: string }).authorizationUrl)
   assert.equal(authorization.origin, 'https://openrouter.ai')
-  assert.equal(authorization.searchParams.get('callback_url'), 'https://edupulse.test/?provider_callback=openrouter')
+  assert.equal(authorization.searchParams.get('callback_url'), 'https://edupulse.test/auth/provider/openrouter')
   assert.equal(authorization.searchParams.get('code_challenge_method'), 'S256')
   assert.match(started.cookie, /HttpOnly; SameSite=Strict; Max-Age=600; Secure/)
   const encoded = started.cookie.split(';')[0].split('=')[1]
@@ -46,6 +47,41 @@ test('provider OAuth uses fixed hosts, private PKCE, expiring owner/origin/state
   assert.equal(readConnection(request(completed.cookie), actor)?.provider, 'openrouter')
   await assert.rejects(providerOAuth(request(), actor, command), /could not authorize/)
   await assert.rejects(providerOAuth(new Request(url), { ...actor, role: 'guest' }, { operation: 'start', provider: 'openrouter' }))
+})
+
+test('a verified OAuth exchange keeps the protected credential when catalog discovery is temporarily unavailable', async t => {
+  const original = globalThis.fetch
+  t.after(() => { globalThis.fetch = original })
+  const started = await providerOAuth(new Request(url), actor, { operation: 'start', provider: 'openrouter' })
+  const state = new URL(started.body.authorizationUrl!).searchParams.get('state')!
+  globalThis.fetch = async target => String(target).endsWith('/auth/keys') ? Response.json({ key: 'synthetic-authorized-key' }) : new Response(null, { status: 503 })
+  const result = await providerOAuth(new Request(url, { headers: { cookie: started.cookie } }), actor, { operation: 'complete', code: 'synthetic-code', state })
+  const saved = readConnection(new Request(url, { headers: { cookie: result.cookie } }), actor)!
+  assert.equal(saved.apiKey, 'synthetic-authorized-key')
+  assert.equal(saved.model, '')
+  assert.match(result.body.warning!, /Refresh models/)
+  assert(!JSON.stringify(result.body).includes(saved.apiKey!))
+  globalThis.fetch = async () => Response.json({ data: [{ id: 'test/model:free' }] })
+  assert.equal((await createConnection({ provider: 'openrouter' }, actor, saved)).connection.model, 'test/model:free')
+})
+
+test('provider return detection supports dedicated, legacy and state-marked returns without consuming unrelated sign-in codes', () => {
+  const values = new Map<string, string>()
+  const storage: Storage = { get length() { return values.size }, clear: () => values.clear(), key: (index: number) => [...values.keys()][index] || null, getItem: (key: string) => values.get(key) || null, setItem: (key: string, value: string) => { values.set(key, value) }, removeItem: (key: string) => { values.delete(key) } }
+  const returned = 'https://edupulse.test/?code=synthetic&state=synthetic-state'
+  assert.equal(providerAuthorizationReturn(new URL(returned), storage), null)
+  rememberProviderAuthorization('https://openrouter.ai/auth?state=synthetic-state', storage)
+  assert.equal(providerAuthorizationReturn(new URL(returned), storage)?.code, 'synthetic')
+  assert.equal(providerAuthorizationReturn(new URL(returned.replace('synthetic-state', 'other-state')), storage), null)
+  clearProviderAuthorization(storage)
+  assert.equal(providerAuthorizationReturn(new URL(returned), storage), null)
+  assert.equal(providerAuthorizationReturn(new URL('https://edupulse.test/auth/provider/openrouter?code=synthetic&state=synthetic-state'), storage)?.code, 'synthetic')
+  assert.equal(providerAuthorizationReturn(new URL(`${returned}&provider_callback=openrouter`), storage)?.code, 'synthetic')
+  const blocked = { getItem() { throw new Error('Storage unavailable') }, setItem() { throw new Error('Storage unavailable') } } as unknown as Storage
+  assert.doesNotThrow(() => rememberProviderAuthorization('https://openrouter.ai/auth?state=synthetic-state', blocked))
+  assert(providerAuthorizationReturn(new URL('https://edupulse.test/auth/provider/openrouter?error=access_denied'), blocked))
+  values.set('edupulse-provider-authorization', JSON.stringify({ state: 'synthetic-state', expires: 0 }))
+  assert.equal(providerAuthorizationReturn(new URL(returned), storage), null)
 })
 
 test('refreshing models preserves the chosen model instead of selecting the alphabetically first model', async t => {

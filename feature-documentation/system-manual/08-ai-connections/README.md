@@ -16,19 +16,41 @@ The current capture shows **Not connected** for local Ollama because that runner
 2. Paste your key and click **Connect and load models**. The key is sent once, encrypted by the server and kept in a protected cookie for up to seven days. It is tied to your signed-in account and is never shown again. For a signed-in account the form opens on OpenAI; this capture, made with a preview persona, shows **OpenRouter · free models**.
 3. Pick a model from the list returned by the provider. For OpenRouter and Hugging Face, free models are listed first and marked “(free)”.
 
-After a successful save, **Saved provider credential** shows a masked indicator and expiry, with **Replace API key** and **Refresh models**. The key remains encrypted in the protected cookie for this browser/account; it is not repopulated into an editable field. Reopening Settings restores the saved indicator. Refreshing models preserves an available selected model. Generation status below uses the same live connection state as Pulse, so it updates after connecting, switching models or disconnecting. Model discovery checks access; a prompt can still fail because of quota or model permissions.
+Use **Connect OpenAI API** or **Connect Claude API** to select that provider's key form directly. For Claude, create a key scoped to the desired workspace; unscoped personal/service keys require a workspace header that this form does not supply. **Connect with OpenRouter** starts browser authorization. The connection choices explain which account sign-in methods are available.
+
+After a successful save, **Saved provider credential** shows a masked indicator and expiry, with **Replace API key** and **Refresh models**. The key remains encrypted in the protected cookie for this browser/account; it is not repopulated into an editable field. Reopening Settings restores the saved indicator. Refreshing models preserves an available selected model. Generation status below uses the same live connection state as Pulse. A returned model catalog is labelled **Model listed · not tested**; listing does not prove inference access or quota.
 
 ![Saved provider credential and active model](04-saved-provider-credential.png)
+
+Choose an **Available model**, then **Test selected model**. This sends a short generation request using provider quota. A successful reply records **Last successful generation** and changes the pipeline badge to **Generation verified**. Switching models or replacing the key requires a new test. **Check active connection** refreshes the catalog/status without sending a generation request.
+
+![Successful selected-model test](06-generation-verified.png)
+
+If the provider rejects the selected model, the alert directs you to **Refresh models**, select another model and test again. The saved credential remains available; the generation-verification mark is cleared. API credit exhaustion and rate limits have separate messages. These errors are also reported from Pulse chat, including requests with library sources.
+
+![Model-access failure with the credential retained](07-model-access-error.png)
 
 **Replace API key** opens an editable password field. A rejected replacement keeps that entry for retry and leaves the previously saved connection intact. **Keep saved credential** cancels replacement and clears the unsaved text.
 
 ![Rejected replacement preserves the saved connection and retry input](05-provider-replacement-error.png)
 
-These two screenshots use synthetic provider responses and fake credentials to exercise saved/failed UI states. The two-model list and expiry are controlled fixtures, not a live OpenAI account, quota test or successful paid inference claim.
+Screenshots 04–10 use synthetic provider responses and fake credentials. The model list, expiry, successful-generation state and failures are controlled UI fixtures; they do not establish live provider access or successful paid inference.
 
 ## Authorize an account in the browser
 
 Choose **Connect with OpenRouter**. EduPulse redirects to OpenRouter, where you sign in and review authorization. After consent, you return to **AI & Knowledge**; EduPulse exchanges the one-use code on the server, saves an encrypted account-bound credential and loads available models. Canceling or failing authorization preserves the previous connection. OpenRouter usage follows your own account credits/limits, separate from ChatGPT or Claude subscriptions. Manage or revoke the issued key in OpenRouter's account settings; **Disconnect provider** removes EduPulse's local connection cookie.
+
+The return uses `/auth/provider/openrouter`, separate from EduPulse sign-in. If authorization succeeds but the model catalog is temporarily unavailable, the new credential is still saved. **Refresh models** finishes setup without a second authorization. If your EduPulse session has ended, a visible message asks you to sign in and reconnect.
+
+An unsuccessful code exchange shows an alert in settings, including when you have no previously saved provider. Starting another connection or checking status clears the old authorization notice.
+
+![Authorization failure remains visible without a previous connection](10-authorization-error.png)
+
+![Authorized credential retained while models need a retry](08-openrouter-catalog-retry.png)
+
+On a phone, the connection choices stack vertically. The same saved credential, model selection and testing controls remain available.
+
+![OpenRouter connection on a phone](09-mobile-provider-connection.png)
 
 The redirect, callback, expiry, identity binding and failure paths are regression-tested with synthetic transports. A real user's provider-consent flow has not been completed by the agent. [OpenRouter's official authorization guide](https://openrouter.ai/docs/guides/overview/auth/oauth) defines the protocol.
 
@@ -36,7 +58,7 @@ The owner confirmed that EduPulse has no approved hosted ChatGPT OAuth client. D
 
 Keys are never shared between accounts. When the owner admin switches to another view, the account and its key stay the same. The hosted site has no shared server key: without your own key, Pulse answers with quoted source excerpts or uses the on-device model.
 
-Every connect, failed connect and disconnect by a signed-in account is recorded in the system audit log, which the system admin sees in *Audit activity* ([System Walkthrough 07](../../system-walkthrough/07-system-admin/README.md)). The log records only the provider name, never the key.
+API-key saves, failed replacements and disconnects by a signed-in account are recorded in the system audit log, which the system admin sees in *Audit activity* ([System Walkthrough 07](../../system-walkthrough/07-system-admin/README.md)). The log records only the provider name, never the key.
 
 ![Free provider options](02-free-provider-options.png)
 

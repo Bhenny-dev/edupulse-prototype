@@ -2,7 +2,8 @@ import { createHash, randomBytes, timingSafeEqual } from 'node:crypto'
 import { z } from 'zod'
 import { ApiError, type Identity } from '../contracts.js'
 import { config } from '../config.js'
-import { connectionCookie, createConnection, publicConnection, sealProviderState, unsealProviderState } from '../connections.js'
+import { connectionCookie, createConnection, publicConnection, sealProviderState, unsealProviderState, unconfiguredAuthorizedConnection } from '../connections.js'
+import { PROVIDER_CALLBACK_PATH } from '../../src/lib/providerOAuth.js'
 
 export const providerOAuthInput = z.discriminatedUnion('operation', [
   z.object({ operation: z.literal('start'), provider: z.literal('openrouter') }).strict(),
@@ -18,7 +19,7 @@ export async function providerOAuth(request: Request, identity: Identity, input:
     const state = randomBytes(32).toString('base64url'), verifier = randomBytes(48).toString('base64url')
     const pending = { owner: identity.id, origin, state, verifier, expires: Date.now() + 600000 }
     const authorization = new URL('https://openrouter.ai/auth')
-    authorization.search = new URLSearchParams({ callback_url: `${origin}/?provider_callback=openrouter`, state, code_challenge: createHash('sha256').update(verifier).digest('base64url'), code_challenge_method: 'S256', key_label: 'EduPulse' }).toString()
+    authorization.search = new URLSearchParams({ callback_url: `${origin}${PROVIDER_CALLBACK_PATH}`, state, code_challenge: createHash('sha256').update(verifier).digest('base64url'), code_challenge_method: 'S256', key_label: 'EduPulse' }).toString()
     return { body: { authorizationUrl: authorization.href }, cookie: `${cookieName()}=${sealProviderState(pending)}; Path=/; HttpOnly; SameSite=Strict; Max-Age=600${config().hosted ? '; Secure' : ''}` }
   }
   let pending: z.infer<typeof pendingSchema>
@@ -35,6 +36,11 @@ export async function providerOAuth(request: Request, identity: Identity, input:
   if (!response.ok) throw new ApiError(400, 'OAUTH_EXCHANGE_FAILED', 'OpenRouter could not authorize this code. Start the connection again; your previous connection is unchanged.')
   const parsed = z.object({ key: z.string().min(8).max(1024) }).safeParse(await response.json())
   if (!parsed.success) throw new ApiError(502, 'OAUTH_EXCHANGE_FAILED', 'OpenRouter did not return a usable credential.')
-  const result = await createConnection({ provider: 'openrouter', apiKey: parsed.data.key }, identity)
-  return { body: { connection: publicConnection(result.connection), models: result.models }, cookie: connectionCookie(result.connection) }
+  try {
+    const result = await createConnection({ provider: 'openrouter', apiKey: parsed.data.key }, identity)
+    return { body: { connection: publicConnection(result.connection), models: result.models }, cookie: connectionCookie(result.connection) }
+  } catch {
+    const retained = unconfiguredAuthorizedConnection('openrouter', parsed.data.key, identity)
+    return { body: { connection: publicConnection(retained), models: [], warning: 'OpenRouter authorized and saved. Models could not be loaded. Use Refresh models to retry; no need to authorize again.' }, cookie: connectionCookie(retained) }
+  }
 }

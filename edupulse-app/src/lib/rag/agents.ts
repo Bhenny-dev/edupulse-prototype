@@ -136,6 +136,7 @@ export function buildAssistantGraph(input: ChatInput & { task?: Plan['task'] | '
         return { answer, mode: 'generated' as const, steps: [step('Writer', 'writer', `write ${s.evidence.length ? s.plan!.task : 'general answer'}`, `${deps.provider}${deps.model ? ` · ${deps.model}` : ''} produced ${answer.length.toLocaleString()} characters${s.evidence.length ? ` grounded on ${s.evidence.length} passages` : ' without references'}.`, started)] }
       } catch (error) {
         signal.throwIfAborted()
+        if (error instanceof ApiError && ['MODEL_NOT_AVAILABLE', 'MODEL_INCOMPATIBLE', 'MODEL_SELECTION_REQUIRED', 'PROVIDER_AUTH', 'PROVIDER_CREDITS', 'PROVIDER_QUOTA', 'EMPTY_RESPONSE'].includes(error.code)) throw error
         if (!s.evidence.length) throw error instanceof ApiError ? error : new ApiError(502, 'PROVIDER_UNAVAILABLE', 'The connected model could not answer. Check its connection, quota and model access in AI settings, then retry.')
         return { route: 'fallback', warnings: ['The model could not generate an answer. Showing source excerpts instead.'], steps: [step('Writer', 'writer', 'write', 'The model provider failed; continuing with source excerpts.', started, 'fallback')] }
       }

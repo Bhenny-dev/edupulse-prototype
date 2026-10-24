@@ -20,12 +20,13 @@ export default function AISettings() {
   }, [refreshShared])
   useEffect(() => { const controller = new AbortController(); void refresh(controller.signal); return () => controller.abort() }, [refresh, user?.id])
   const pipeline = health?.pipeline
+  const generationVerified = ai.preference === 'browser' || health?.connection?.source !== 'personal' || Boolean(health?.connection?.testedAt)
   return <div className="ai-library">
     <ProviderConnection />
     <div className="card mb-24" data-pulse-target="AI pipeline status"><div className="card-header"><h3><Workflow size={18} /> Agentic RAG pipeline</h3><button className="btn btn-secondary btn-sm" disabled={busy} onClick={() => refresh()}><RefreshCw size={14} /> Check status</button></div>
       <div className="card-body">
         <div className="ai-pipeline-grid">
-          <div><h5><Cpu size={12} /> Generation</h5><span className={`badge ${ai.ready ? 'badge-published' : 'badge-draft'}`}>{ai.ready ? 'Connected' : busy ? 'Checking…' : 'Not connected'}</span><p>{ai.preference === 'browser' ? ai.label : health?.model ? `${health.provider} · ${health.model}` : 'Choose on-device AI or a provider above.'}</p><small>{ai.preference === 'browser' ? ai.local.message : health?.message}</small></div>
+          <div><h5><Cpu size={12} /> Generation</h5><span className={`badge ${ai.ready && generationVerified ? 'badge-published' : 'badge-draft'}`}>{ai.ready ? ai.preference === 'browser' || health?.connection?.source !== 'personal' ? 'Connected' : generationVerified ? 'Generation verified' : 'Model listed · not tested' : busy ? 'Checking…' : 'Not connected'}</span><p>{ai.preference === 'browser' ? ai.label : health?.model ? `${health.provider} · ${health.model}` : 'Choose on-device AI or a provider above.'}</p><small>{ai.preference === 'browser' ? ai.local.message : health?.message}</small></div>
           <div><h5>Embeddings (free, in-process)</h5><strong>{pipeline?.embeddings.model || 'Checking…'}</strong><p>{pipeline ? modelState(pipeline.embeddings.state) : ''}</p><small>Open model run with ONNX Runtime. No API key and no per-request fee.</small></div>
           <div><h5>Reranker (free, in-process)</h5><strong>{pipeline?.reranker.model || 'Checking…'}</strong><p>{pipeline ? modelState(pipeline.reranker.state) : ''}</p><small>Scores each passage against the question before the Writer sees it.</small></div>
           <div><h5>Vector database</h5><strong>{pipeline?.vectorStore || '—'}</strong><p>{health?.database.message}</p><small>{pipeline?.retrieval}</small></div>

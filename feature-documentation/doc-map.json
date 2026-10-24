@@ -59,6 +59,8 @@
         "edupulse-app/src/lib/aiClient.ts",
         "edupulse-app/src/lib/browserAI.ts",
         "edupulse-app/src/lib/browserAI.worker.ts",
+        "edupulse-app/src/lib/providerOAuth.js",
+        "edupulse-app/src/lib/supabaseClient.js",
         "edupulse-app/src/lib/rag/**",
         "edupulse-app/src/context/AIContext.jsx"
       ],
@@ -236,6 +238,7 @@
     }
   ],
   "routesNotCaptured": {
+    "/auth/provider/openrouter": "Physical SPA authorization return address, handled before hash routing. The resulting settings/retry states are captured in System Manual 8; regression tests cover dedicated and legacy returns.",
     "/curriculum": "Redirects to /records, which is captured.",
     "/scoring-sheet": "Alias of /student-monitoring (same component), which is captured.",
     "/content-editor": "The draft document editor is captured in System Manual 3 (generate and review courseware), which needs a generated draft."
