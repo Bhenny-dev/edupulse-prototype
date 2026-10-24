@@ -18,4 +18,4 @@ One real, temporary synthetic Supabase instructor account passed sign-in, provid
 
 Production public routes and security headers passed; public-guide chat returned a verified cited source with zero unsupported claims. The runtime error-log query returned zero rows for the tested deployment (15-minute window, limit 50). The synthetic account was globally signed out and deleted; its old token was rejected. Both temporary deployment shares were revoked and their local payloads cleared.
 
-GitHub runner status is checked separately after push; the preceding release recorded an account billing lock that prevented jobs from starting.
+After push, GitHub `verify` check `120923380411` on `ecc98750841145b7ea7f060f143957462b47de0b` failed before any step ran: the account is locked due to a billing issue. This is an execution blocker, not a passing CI result. Local verification and Vercel independently executed all 116 tests. The Git-triggered deployment for runtime `d0a3334` also reached Ready (`dpl_26zWdxqZDcVYE5DLCySVAqgH8Ga7`). Later documentation-only commits retain the tested application source; compare against the runtime commit to confirm no application changes.
