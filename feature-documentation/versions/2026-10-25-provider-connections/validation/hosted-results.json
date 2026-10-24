@@ -1,0 +1,41 @@
+{
+  "runtimeCommit": "d0a33348da63b0cfbe16a4fa0a32c2ee851de5a8",
+  "deploymentId": "dpl_D5P46nad2EfN8izWsFoGPKHPQrZW",
+  "remoteBuild": { "ready": true, "unitTests": 116, "failed": 0, "durationSeconds": 114.272 },
+  "hosted": {
+    "deploymentOrigin": "https://edupulse-prototype-3vnjxfs64-bhenny-benlor-d-riveras-projects.vercel.app",
+    "checkedAt": "2026-10-24T16:17:55.044Z",
+    "authenticatedSyntheticAccounts": 1,
+    "providerChoices": "passed",
+    "liveAuthorizationStartAndSealedCookie": "passed",
+    "invalidStateAndOrigin": "rejected",
+    "unconfiguredInferenceTest": "rejected",
+    "dedicatedCallbackWithPersistedSupabaseSessionAndStalePkceVerifier": "passed",
+    "supabaseProviderCodeExchanges": 0,
+    "callbackCompletionRequests": 1,
+    "missingSessionRecovery": "passed",
+    "pageErrors": 0,
+    "realProviderConsentOrPaidInference": "not-run"
+  },
+  "production": {
+    "productionOrigin": "https://edupulse-prototype.vercel.app",
+    "checkedAt": "2026-10-24T16:20:24.458Z",
+    "publicRoutesAndSecurityHeaders": "passed",
+    "unconfiguredInferenceTest": "rejected",
+    "publicGuideRetrieval": "passed",
+    "citedSources": 1,
+    "unsupportedClaims": 0
+  },
+  "cleanup": {
+    "syntheticAccountDeleted": true,
+    "staleTokenRejected": true,
+    "temporaryDeploymentSharesRevoked": 2,
+    "localSharePayloadsCleared": true
+  },
+  "observability": {
+    "deploymentRuntimeErrorLogQuery": "passed",
+    "errorRows": 0,
+    "window": "15m",
+    "limit": 50
+  }
+}

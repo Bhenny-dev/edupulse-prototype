@@ -1,8 +1,12 @@
 # Vercel configuration
 
+## Provider connection recovery — 25 October 2026
+
+Runtime `d0a3334` is deployed as `dpl_D5P46nad2EfN8izWsFoGPKHPQrZW` and promoted to [EduPulse](https://edupulse-prototype.vercel.app). The strict remote gate passed all 116 tests; 69 local browser tests passed, with 13 optional cases skipped. Hosted synthetic sign-in, authorization start/state/origin checks, dedicated callback session restoration and visible failure recovery passed. Provider completion was mocked at the external consent boundary; paid inference is untested. The temporary account was deleted, its old token rejected, and temporary shares revoked. [Validation](../versions/2026-10-25-provider-connections/validation/results.md) records the evidence and limits.
+
 ## Completion release — 24 October 2026
 
-Runtime `74191de` is deployed as `dpl_ErDYEqzWkjxiE26ChmFX9um8S5Pu` and promoted to [edupulse-prototype.vercel.app](https://edupulse-prototype.vercel.app). Vercel passed its strict install, 110-test gate, build and serverless checks. Hosted synthetic API/account checks, five authenticated browser tests, PDF/Word imports, security headers and OpenRouter authorization start passed. Synthetic users were deleted, stale tokens rejected and temporary shares closed. [Release validation](../versions/2026-10-24-audit-integration/validation/results.md) records source/deployment evidence and provider-consent limits. The dated observations below preserve the install-failure history.
+Runtime `74191de` was deployed as `dpl_ErDYEqzWkjxiE26ChmFX9um8S5Pu` and promoted to [edupulse-prototype.vercel.app](https://edupulse-prototype.vercel.app). Vercel passed its strict install, 110-test gate, build and serverless checks. Hosted synthetic API/account checks, five authenticated browser tests, PDF/Word imports, security headers and OpenRouter authorization start passed. Synthetic users were deleted, stale tokens rejected and temporary shares closed. [Release validation](../versions/2026-10-24-audit-integration/validation/results.md) records source/deployment evidence and provider-consent limits. The dated observations below preserve the install-failure history.
 
 ## Deployment reconciliation — 24 October 2026
 
