@@ -52,6 +52,10 @@ What the check verifies:
 * Every route in `src/App.jsx` has a walkthrough screenshot, or a stated reason in `doc-map.json` → `routesNotCaptured`.
 * No code area changed after `enforcedSince` is newer than its documentation (freshness).
 
+As of 24 October 2026, CI checks impact for **each commit**, as well as the whole push. A later documentation-only commit does not repair an undocumented feature commit. Manual workflow dispatch checks the selected commit; a new-branch zero-base push checks the reachable history. The source map also covers specifications, dependencies, build configuration, CI and documentation enforcement.
+
+Snapshot invocations write [capture-run evidence](capture-runs/README.md), including mobile/task suite status, unselected suites, build mode, source digest and written-image hashes. Changed screenshots need matching successful capture evidence and an exact-hash visual-review attestation in `capture-runs/image-review.json`. Record agent and human reviewers accurately. These offline checks do not replace human semantic review or authenticated production validation.
+
 **Exemption.** A commit that has no visible or documented effect must say so with a reasoned trailer:
 
 ```

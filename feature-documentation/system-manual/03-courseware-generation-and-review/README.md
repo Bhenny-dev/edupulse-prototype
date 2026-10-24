@@ -26,4 +26,4 @@
 
 6. Edit any inaccurate explanation or answer key, then use **Check** only after reviewing the material, activity, and assessment. Drafts are not published or graded automatically.
 
-The six images come from the production build using the local `qwen2.5:3b` model and a real generated week 1 draft. The [v0.4.0 release record](../../versions/v0.4.0/README.md) maps them to NFR-AI-06 (goal 6).
+The six historical images come from the documentation capture build using the local `qwen2.5:3b` model and a real generated week 1 draft. They establish local task evidence, not authenticated hosted behavior or general model accuracy. The [v0.4.0 release record](../../versions/v0.4.0/README.md) maps them to NFR-AI-06 (goal 6).

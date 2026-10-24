@@ -1,6 +1,7 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import AcademicPortal from '../components/academic/AcademicPortal'
 import { COURSEWARE_ITEMS, INSTRUCTORS, STUDENT_RECORDS } from '../data/mockData'
 import { useWorkspace } from '../context/WorkspaceContext'
 import { useToast } from '../context/ToastContext'
@@ -142,7 +143,7 @@ function CourseSelectionGrid({ user, contentStore, onSelectCourse }) {
 /* ═══════════════════════ Builder: Course Workspace ═══════════════════════ */
 
 function CourseWorkspace({ syllabusId, focusWeek, contentStore, onBack, onGenerateWeek, onCheckItem, onBulkCheck, onToggleVisibility }) {
-  const { syllabi } = useWorkspace()
+  const { syllabi, saving, dirty } = useWorkspace()
   const generationRef = useRef(null)
   const [generationProgress, setGenerationProgress] = useState('')
   useEffect(() => () => generationRef.current?.abort(), [])
@@ -522,6 +523,7 @@ function CourseWorkspace({ syllabusId, focusWeek, contentStore, onBack, onGenera
                                 className="btn btn-primary btn-sm"
                                 style={{ padding: '4px 8px', fontSize: '0.6875rem' }}
                                 title="Publish to students"
+                                disabled={saving || dirty}
                                 onClick={() => { onToggleVisibility(id, 'published'); addToast('Published — students can see this', 'success') }}
                               >
                                 <Send size={12} /> Publish
@@ -720,7 +722,7 @@ export default function Courseware() {
 
   // Main tab (mine / builder)
   const requested = searchParams.get('tab')
-  const mainTab = ALL_TABS.some(t => t.key === requested) ? requested : 'mine'
+  const mainTab = requested === 'builder' && user?.role !== 'instructor' ? 'mine' : ALL_TABS.some(t => t.key === requested) ? requested : 'mine'
   const setMainTab = (key) => setSearchParams({ tab: key })
 
   // Builder state: which course is selected (a ?course= link opens it directly)
@@ -759,6 +761,8 @@ export default function Courseware() {
   const handleToggleVisibility = useCallback((contentId, newStatus) => {
     toggleVisibility(contentId, newStatus)
   }, [toggleVisibility])
+
+  if ((user?.authenticated && user?.role !== 'instructor') || !['instructor', 'student'].includes(user?.role)) return <AcademicPortal view="courseware" />
 
   return (
     <div className="container" data-pulse-zone="courseware">

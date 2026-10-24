@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useToast } from '../context/ToastContext'
 import { useAuth } from '../context/AuthContext'
+import AcademicPortal from '../components/academic/AcademicPortal'
 import {
   FileText, CheckCircle,
   Send, Eye, Timer,
@@ -144,6 +145,7 @@ export default function Assessment() {
 
   const formatTime = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`
 
+  if (user?.authenticated) return <AcademicPortal view="assessment" />
   if (view === 'take' && selectedAssessment) {
     const q = selectedAssessment.questions[currentQuestion]
     const { score, max } = calcScore()

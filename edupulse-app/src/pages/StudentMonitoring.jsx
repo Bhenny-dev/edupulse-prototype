@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react'
+import AcademicPortal from '../components/academic/AcademicPortal'
 import { Navigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
@@ -117,6 +118,7 @@ export default function StudentMonitoring() {
   })
 
   if (user?.role !== 'instructor') return <Navigate to="/dashboard" replace />
+  if (user?.authenticated) return <AcademicPortal view="monitoring" />
 
   // ── Summary stats ──
   const totalMissed = students.reduce((acc, stu) => acc + missedCount(stu), 0)

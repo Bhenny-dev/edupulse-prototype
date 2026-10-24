@@ -1,16 +1,17 @@
 # System Walkthrough
 
-A screen-by-screen tour of EduPulse as each role sees it: every page, tab, dropdown, popover and modal, captured from the production build (v0.4.0). Use it to explain **what is on each screen**. For **how to complete a task** step by step, use the [System Manual](../system-manual/README.md).
+A screen-by-screen tour of EduPulse as each role sees it, captured from the documentation capture build (v0.4.0 plus the local audit candidate). Preview data and local task evidence do not certify authenticated production behavior. Use it to explain **what is on each screen**. For **how to complete a task** step by step, use the [System Manual](../system-manual/README.md).
 
 | Folder | Role | What it covers |
 | --- | --- | --- |
 | [01 · Public site](01-public-site/README.md) | Visitors | Landing page sections, the hosted sign-in panel (email and password, Google for administrators), local-only preview personas, privacy, terms and the server error page |
 | [02 · Shared interface](02-shared-interface/README.md) | All signed-in roles | Top bar, search, keyboard shortcuts, language, notifications, account menu, role badge and admin view switching, Help, Settings (five tabs), dark mode, the Pulse assistant |
-| [03 · Dean and Associate Dean](03-dean-and-associate-dean/README.md) | Dean, Associate Dean (separate accounts) | Shared academic dashboard, Course Loading, Monitor (four tabs), Records (three tabs) |
+| [03 · Dean and Associate Dean](03-dean-and-associate-dean/README.md) | Dean, Associate Dean (separate accounts) | Distinct dashboards, shared Course Loading/Monitor/Records navigation, and Performance denial for Associate Dean |
 | [04 · Instructor](04-instructor/README.md) | Instructor | Dashboard, Syllabus (four tabs), Syllabus Builder, Courseware, Student Monitoring, Performance |
 | [05 · Student](05-student/README.md) | Student | Dashboard, My Courses (materials and assessments), My Performance (four tabs), Pulse for students |
 | [06 · Mobile](06-mobile/README.md) | All roles on a phone | The same screens at 390 px: menu, builder, Pulse panel, settings |
 | [07 · System Admin](07-system-admin/README.md) | Google system admin | Account management, health checks, audit activity and direct role views |
+| [08 · Authenticated records](08-authenticated-records/README.md) | Instructor, Student, Dean, Associate Dean | Real sign-in and shared-data permissions, using temporary synthetic hosted canaries |
 
 ## Reading the screenshots
 
@@ -24,7 +25,7 @@ The screenshots are produced by Playwright scripts that open the documentation c
 
 ```bash
 cd edupulse-app
-npm run build
+npm run build:capture
 CI=1 npx playwright test --config playwright.snapshots.config.ts tests/snapshots/walkthrough.spec.ts tests/snapshots/walkthrough.mobile.spec.ts
 ```
 

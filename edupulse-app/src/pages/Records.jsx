@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import AcademicPortal from '../components/academic/AcademicPortal'
 import { useToast } from '../context/ToastContext'
 import {
   CURRICULUM_COURSES, BLOCK_SECTIONS, INSTRUCTORS, STUDENT_RECORDS, FILE_IMPORT_CONFIG,
@@ -470,6 +471,7 @@ export default function Records() {
   const isAdmin = ['dean', 'associate_dean'].includes(user?.role)
 
   if (!isAdmin) return null
+  if (user?.authenticated) return <AcademicPortal view="records" />
 
   return (
     <div className="container" data-pulse-zone="records">

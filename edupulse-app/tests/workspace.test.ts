@@ -3,6 +3,7 @@ import assert from 'node:assert/strict'
 import { mkdtemp, readFile, readdir } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
+import { createHash } from 'node:crypto'
 import { PGlite } from '@electric-sql/pglite'
 import { readWorkspace, saveWorkspace, workspaceInput } from '../server/workspace.js'
 import { localDb } from '../server/database.js'
@@ -33,6 +34,14 @@ test('local workspace persists per owner and rejects concurrent stale saves', as
     await assert.rejects(saveWorkspace({ ...a, role: 'student' }, data), { status: 403 })
     const invalidAttachment = workspaceInput.parse({ revision: 2, data: { ...empty, syllabi: [{ ...syllabi[0], approvedFile: { name: 'bad.docx', size: 2, base64: 'UEs=', sha256: '0'.repeat(64), uploadedAt: new Date().toISOString(), approvalAttested: true } }] } })
     await assert.rejects(saveWorkspace(a, invalidAttachment), { code: 'INVALID_ATTACHMENT' })
+    const pdf = Buffer.from('%PDF-1.7\nretained approved-file regression fixture')
+    const pdfData = workspaceInput.parse({ revision: 2, data: { ...empty, syllabi: [{ ...syllabi[0], approvedFile: {
+      name: 'IT102-approved.pdf', size: pdf.length, base64: pdf.toString('base64'), sha256: createHash('sha256').update(pdf).digest('hex'), uploadedAt: new Date().toISOString(), approvalAttested: true,
+    } }] } })
+    const pdfSaved = await saveWorkspace(a, pdfData)
+    assert.equal(pdfSaved.revision, 3)
+    assert.equal(pdfSaved.data?.syllabi[0].approvedFile?.base64, pdf.toString('base64'))
+    await assert.rejects(saveWorkspace(a, { ...pdfData, revision: 3, data: { ...pdfData.data, syllabi: pdfData.data.syllabi.map(item => ({ ...item, approvedFile: { ...item.approvedFile!, name: 'renamed.docx' } })) } }), { code: 'INVALID_ATTACHMENT' })
     await assert.rejects(saveWorkspace(a, { revision: 2, data: { ...empty, registrations: [{ excessive: 'x'.repeat(3_000_000) }] } }), { status: 413 })
     process.env.AI_LOCAL_MODE = 'true'
     const put = await handleRequest(new Request('http://localhost/api/ai?action=workspace', { method: 'PUT', body: JSON.stringify({ revision: 0, data: empty }) }))

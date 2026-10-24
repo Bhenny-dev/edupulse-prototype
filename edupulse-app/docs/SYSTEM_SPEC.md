@@ -1,5 +1,7 @@
 # EduPulse System Spec
 
+**Current scope notice (24 October 2026).** This early design remains a reference for the seven-section syllabus and field mapping. Its three-role model and academic `admin` terminology are superseded by the five roles in [REQUIREMENTS.md](REQUIREMENTS.md): System Admin, Dean, Associate Dean, Instructor and Student. The current offline approval flow is in [FLOW_SPEC.md](FLOW_SPEC.md); grading formulas are stored text and never computed. The [role/approval ADR](../../feature-documentation/backend-system/decisions/001-role-and-approval-boundaries.md) records unresolved role distinctions. Historical design text below does not grant permissions.
+
 Companion to FLOW_SPEC.md. Defines roles/UI, data model, the KCP syllabus schema, AI service boundaries, and non-goals for the prototype.
 
 ## 1. Roles and UI surfaces

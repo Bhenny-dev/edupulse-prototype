@@ -41,8 +41,9 @@ function RegisterCard({ proposal, ctx }) {
   if (state.status === 'undone') return <p className="pulse-action-note">Registration undone. My Courses is back to how it was.</p>
   if (state.status === 'done') {
     const { registration, added, already } = state.result
-    return <Done actions={<><button type="button" className="btn btn-secondary btn-sm" onClick={() => ctx.navigate('/syllabus?tab=register')}><ExternalLink size={13} /> Open My Courses</button><button type="button" className="btn btn-ghost btn-sm" onClick={() => { ctx.undoRegister(state.result); setState({ status: 'undone' }) }}><Undo2 size={13} /> Undo</button></>}>
+    return <Done actions={<><button type="button" className="btn btn-secondary btn-sm" onClick={() => ctx.navigate('/syllabus?tab=register')}><ExternalLink size={13} /> Open My Courses</button><button type="button" className="btn btn-ghost btn-sm" onClick={() => { if (ctx.undoRegister(state.result) === false) setState(previous => ({ ...previous, notice: 'This class list changed after confirmation. Its newer changes were preserved.' })); else setState({ status: 'undone' }) }}><Undo2 size={13} /> Undo</button></>}>
       <strong>Registered.</strong> {registration.courseCode} · {registration.blockSection} now lists {registration.studentCount} student{registration.studentCount === 1 ? '' : 's'} ({added} new{already ? `, ${already} already registered` : ''}). Source: {fileName}.
+      {state.notice && <p role="status">{state.notice}</p>}
     </Done>
   }
   return <section className="pulse-action" aria-label={`Register class list ${fileName}`}>

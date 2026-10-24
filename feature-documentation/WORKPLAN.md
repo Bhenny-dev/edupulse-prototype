@@ -1,5 +1,9 @@
 # Execution plan
 
+## 24 October 2026: documentation-first audit integration
+
+The supplied second audit has been checked against `5e7d956`. The [initial integration record](session-generated/2026-10-24-engineering-audit/README.md) preserves the first pass; the [completion record](session-generated/2026-10-24-release-completion/README.md) covers the remaining institutional pilot. The owner accepted the written role requirements in [ADR-001](backend-system/decisions/001-role-and-approval-boundaries.md). Four additive migrations are applied: authorized academic records and private answer keys, distributed request leases, and account labels. Authenticated dashboards, publication, enrollment access, objective attempts and material opens now use persisted records. Install/dependency, PDF retention, Pulse Undo, null-target handling and documentation/capture enforcement fixes are included. The [release validation](versions/2026-10-24-audit-integration/validation/results.md) separates local checks, cloud canaries, deployment and push evidence. This is a bounded single-college pilot; direct institutional EduSuite synchronization remains outside the implemented integration.
+
 ## v0.4.0 — Agentic RAG, real documents and accurate Pulse guidance (2026-10-01)
 
 User request: LangChain/LangGraph agentic workflow with named agents; real document upload and extraction (no mock data); free APIs/open-source models; vector database; RAG covering uploading, extracting, evaluating, ranking, generating, comparing, referencing, correcting, collaborating, corroborating and planning; stronger sandboxing; accurate Pulse drag-and-drop assistance and walkthroughs; image snapshots with Markdown guides for the capstone results and discussion. Includes the unreleased v0.3.0 work in the same verification gate.

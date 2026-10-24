@@ -1,5 +1,6 @@
 import { useAuth } from '../context/AuthContext'
 import SystemAdminDashboard from './SystemAdminDashboard'
+import AcademicPortal from '../components/academic/AcademicPortal'
 import {
   ADMIN_STATS, DEFAULT_SYLLABI, COURSEWARE_ITEMS, STUDENT_RECORDS, INSTRUCTORS,
   RAG_GROUNDING_PASSAGES, BLOCK_SECTIONS, CURRICULUM_COURSES, SYLLABUS_STATUS_META, SYLLABUS_STATUS_ORDER,
@@ -688,6 +689,7 @@ function StudentDashboard() {
 export default function Dashboard() {
   const { user } = useAuth()
   if (user?.role === 'admin') return <SystemAdminDashboard />
+  if (user?.authenticated) return <AcademicPortal view="dashboard" />
   if (user?.role === 'dean' || user?.role === 'associate_dean') return <AcademicDashboard />
   if (user?.role === 'instructor') return <InstructorDashboard />
   return <StudentDashboard />

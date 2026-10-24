@@ -1,0 +1,123 @@
+{
+  "evaluatedAt": "2026-10-24T07:06:10.863Z",
+  "commitSha": "5e7d95638c7abf8f74e85ec96cbf90ae491ed674",
+  "corpusHash": "e9be492ecaeef6ee6a1b9f624a2306f0e4a558ef63f5d681442897d550fbe9e0",
+  "provider": "retrieval-only",
+  "models": "pinned MiniLM embeddings + cross-encoder; no generative model",
+  "sampleCount": 8,
+  "taskSuccesses": 8,
+  "privateOwnerIsolation": true,
+  "latency": {
+    "p50Ms": 84,
+    "p95Ms": 352
+  },
+  "limitations": "Synthetic institutional regression corpus, explicit document/version selection, exact-phrase checks. This is not representative production factual accuracy, OCR quality, generative model completion or a before/after performance claim.",
+  "cases": [
+    {
+      "id": "COURSE-102",
+      "query": "What does the approved 2026 IT 102 outline cover in Week 1?",
+      "relevantSource": true,
+      "expectedPhrasePresent": true,
+      "sourceFaithfulness": 1,
+      "citationAccuracy": 1,
+      "taskSuccess": true,
+      "latencyMs": 352,
+      "mode": "retrieval"
+    },
+    {
+      "id": "COURSE-106",
+      "query": "Which topics does the 2026 IT 106 outline cover in Week 1?",
+      "relevantSource": true,
+      "expectedPhrasePresent": true,
+      "sourceFaithfulness": 1,
+      "citationAccuracy": 1,
+      "taskSuccess": true,
+      "latencyMs": 83,
+      "mode": "retrieval"
+    },
+    {
+      "id": "VERSION-2025",
+      "query": "What did archived revision 2025 schedule in Week 1?",
+      "relevantSource": true,
+      "expectedPhrasePresent": true,
+      "sourceFaithfulness": 1,
+      "citationAccuracy": 1,
+      "taskSuccess": true,
+      "latencyMs": 87,
+      "mode": "retrieval"
+    },
+    {
+      "id": "VERSION-CURRENT",
+      "query": "Which IT 102 Week 1 topics appear in revision 2026?",
+      "relevantSource": true,
+      "expectedPhrasePresent": true,
+      "sourceFaithfulness": 1,
+      "citationAccuracy": 1,
+      "taskSuccess": true,
+      "latencyMs": 74,
+      "mode": "retrieval"
+    },
+    {
+      "id": "SOURCE-RECORD",
+      "query": "Which system is the system of record for course loads and rosters?",
+      "relevantSource": true,
+      "expectedPhrasePresent": true,
+      "sourceFaithfulness": 1,
+      "citationAccuracy": 1,
+      "taskSuccess": true,
+      "latencyMs": 84,
+      "mode": "retrieval"
+    },
+    {
+      "id": "OFFLINE",
+      "query": "Where do Dean review, CAO approval and EVP noting happen?",
+      "relevantSource": true,
+      "expectedPhrasePresent": true,
+      "sourceFaithfulness": 1,
+      "citationAccuracy": 1,
+      "taskSuccess": true,
+      "latencyMs": 77,
+      "mode": "retrieval"
+    },
+    {
+      "id": "PUBLICATION",
+      "query": "When does draft courseware become published?",
+      "relevantSource": true,
+      "expectedPhrasePresent": true,
+      "sourceFaithfulness": 1,
+      "citationAccuracy": 1,
+      "taskSuccess": true,
+      "latencyMs": 114,
+      "mode": "retrieval"
+    },
+    {
+      "id": "ROLE-BOUNDARY",
+      "query": "May Associate Dean accounts read student performance scores?",
+      "relevantSource": true,
+      "expectedPhrasePresent": true,
+      "sourceFaithfulness": 1,
+      "citationAccuracy": 1,
+      "taskSuccess": true,
+      "latencyMs": 106,
+      "mode": "retrieval"
+    }
+  ],
+  "corpus": [
+    {
+      "title": "IT 102 approved outline — revision 2026",
+      "text": "IT 102 is Computer Programming 1. The approved 2026 outline covers variables and assignment in Week 1. Teaching uses a guided code trace. Assessment uses a short variable-declaration quiz. Weeks 9 and 18 are examination weeks."
+    },
+    {
+      "title": "IT 106 approved outline — revision 2026",
+      "text": "IT 106 is Computer Programming 2. The approved 2026 outline covers object-oriented classes and encapsulation in Week 1. Assessment uses a class-design exercise. This outline does not replace IT 102."
+    },
+    {
+      "title": "IT 102 archived outline — revision 2025",
+      "text": "Archived revision 2025 of IT 102 scheduled arrays in Week 1. This document is superseded. It is preserved for historical comparison and must not override the approved 2026 variables and assignment outline."
+    },
+    {
+      "title": "Academic access and approval policy",
+      "text": "EduSuite is the system of record for course records, course loads and student rosters. A block holds up to 35 students. Dean review, CAO approval and EVP noting happen offline. Courseware is a draft until instructor review and explicit publication. Associate Dean accounts must not read student performance scores."
+    }
+  ]
+}

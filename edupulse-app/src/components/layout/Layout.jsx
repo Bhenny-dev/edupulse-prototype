@@ -15,6 +15,7 @@ import KeyboardShortcutsModal from '../ui/KeyboardShortcutsModal'
 import Pulse from '../pulse/Pulse'
 import EduPulseMark from '../brand/EduPulseMark'
 import { recordAudit } from '../../lib/audit'
+import { PERFORMANCE_ROLES } from '../../lib/access'
 
 // Navigation architecture — one top-bar station per FLOW_SPEC phase, max 5
 // primary sections per role; anything below that altitude lives in the
@@ -78,7 +79,7 @@ const SECTIONS = [
     ],
   },
   {
-    key: 'performance', path: '/performance', label: 'Performance', icon: BarChart3, roles: ['instructor', 'student'],
+    key: 'performance', path: '/performance', label: 'Performance', icon: BarChart3, roles: PERFORMANCE_ROLES,
     sidebar: [
       { key: 'overview', label: 'Overview', tab: 'overview' },
       { key: 'bytopic', label: 'By Topic', tab: 'bytopic' },
@@ -101,7 +102,9 @@ function activeSection(pathname, role) {
 
 function Sidebar({ section, role }) {
   const location = useLocation()
+  const { user } = useAuth()
   const [searchParams] = useSearchParams()
+  if ((user?.authenticated && ['monitor', 'course-loading', 'scoring', 'performance'].includes(section?.key)) || (role === 'dean' && section?.key === 'performance')) return null
   if (!section?.sidebar) return null
   const items = section.sidebar.filter(item => !item.roles || item.roles.includes(role))
   if (items.length === 0) return null

@@ -1,0 +1,279 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-10-24T06-35-13-065Z-1466a844",
+  "startedAt": "2026-10-24T06:35:13.065Z",
+  "finishedAt": "2026-10-24T06:36:10.449Z",
+  "commitSha": "5e7d95638c7abf8f74e85ec96cbf90ae491ed674",
+  "sourceDigest": "722298259fcdd88a83901fac2c31d0b32574f7e71f5a03e873148f5b1d3cafcd",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-10-24T03:30:38.465Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 10,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": "performance|12-associate-dean"
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+      "title": "syllabus DOCX import previews, accepts, and retries the same file",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "local-real-input/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 5945,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+      "title": "syllabus PDF import previews the extracted course and week",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "local-real-input/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2073,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+      "title": "public site",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "preview/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 398,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+      "title": "shared interface (shown as instructor)",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "preview/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 671,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+      "title": "system admin",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "preview/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 543,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+      "title": "dean and associate dean",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "preview/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 517,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+      "title": "associate dean",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "preview/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 6516,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+      "title": "instructor",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "preview/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 4929,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+      "title": "student",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "preview/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 5300,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+      "title": "mobile walkthrough",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "preview/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 5536,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/12-import-preview.png",
+      "sha256": "cfb243bcc9d2cf10e321410ea66d4895070efe8efe41bd8bcb131fa4641ff0c7",
+      "bytes": 132236
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/13-import-error.png",
+      "sha256": "d561a84c70e2ab4d62952202f5717f2663b9ca9fd2b4d75fea72b9a4b4c94135",
+      "bytes": 15026
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/14-pdf-import-preview.png",
+      "sha256": "2379aaf45466cac6d9a55a2e09f1e0886d6ec048f11c0f47706e03e63fd5b280",
+      "bytes": 131929
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/03-dean-and-associate-dean/12-associate-dean-dashboard.png",
+      "sha256": "e04a410c1e4a9252320d85807641ca06f55cf8b50f099c76a050c4094aca8f99",
+      "bytes": 240757
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/03-dean-and-associate-dean/13-performance-access-denied.png",
+      "sha256": "bb4c25aef356b14a3ea6131541b88ef1f72708753959e91cccb64975b40edb19",
+      "bytes": 45687
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/04-instructor/11-performance-overview.png",
+      "sha256": "72629aa3af2d298a55486be2018e7ef4c3c878a7b321bb26690f1d450f65501d",
+      "bytes": 181073
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/04-instructor/12-performance-by-topic.png",
+      "sha256": "d02ad89092250f5477e875bf278c0bcdd4322c644d6b2257d7b6bbe9aa096bc8",
+      "bytes": 449495
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/04-instructor/13-performance-alerts.png",
+      "sha256": "42675be74743767e310d24c1a2ef0718f6b2aaf20cd97035187af0045373cf4d",
+      "bytes": 341049
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/05-student/04-performance-overview.png",
+      "sha256": "ec6ac991371ecd6719c249b44910747ad5ce05b24f5aa8d4269a6974e9aef6d1",
+      "bytes": 228670
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/05-student/05-performance-by-topic.png",
+      "sha256": "33834662b6cb0a1a35c01404e706dcddbde34297c3fb3a0966ac004ffe304c50",
+      "bytes": 218330
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/05-student/06-performance-learning-materials.png",
+      "sha256": "b7bb9e466051e6ca89fe42ee25a553a213bf1587fffa430736e4b522bb54601b",
+      "bytes": 213489
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/05-student/07-performance-assessment-scores.png",
+      "sha256": "6315301d5c9117957839e5a68a8d0e4a476a4887cba032c98dfeef54ff5f5ab1",
+      "bytes": 210122
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/06-mobile/01-landing.png",
+      "sha256": "f2df8fd587397ffb201389fd941c5ba7853f2db9f162bc5aadb8c4c5bbbbd621",
+      "bytes": 1130837
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/06-mobile/02-instructor-dashboard.png",
+      "sha256": "a7bf2213da8753e223c1a62940db4683de65fab8e6fecb5dc6da046fbb5139e1",
+      "bytes": 402162
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/06-mobile/03-navigation-menu.png",
+      "sha256": "fb14a726ab5085281ce7129f4306f260ce4d2e32fceb4255b50bba7c84a64053",
+      "bytes": 127159
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/06-mobile/04-syllabus-builder.png",
+      "sha256": "5b2fc687c465787131e3539fc53815cc04734ab227aa86128823a0ac672384be",
+      "bytes": 359449
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/06-mobile/05-pulse-panel.png",
+      "sha256": "7d0ff5546c326f6037d6053c6454ea069c29e759189bd21dbe3a7f53315a71a5",
+      "bytes": 319011
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/06-mobile/06-settings-ai-and-knowledge.png",
+      "sha256": "c92e3255eab2de99d0203450f34b5cb22f1b73b17bef339b71f5a8c56eaeb6a6",
+      "bytes": 292990
+    }
+  ]
+}

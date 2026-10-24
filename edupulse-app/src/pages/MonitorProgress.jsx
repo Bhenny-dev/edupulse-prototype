@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import AcademicPortal from '../components/academic/AcademicPortal'
 import { useSearchParams, Navigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { DEFAULT_SYLLABI, INSTRUCTORS, BLOCK_SECTIONS, CURRICULUM_COURSES, STUDENT_RECORDS, COURSEWARE_ITEMS, SYLLABUS_STATUS_META } from '../data/mockData'
@@ -430,6 +431,7 @@ export default function MonitorProgress() {
   const activeTab = searchParams.get('tab') || 'syllabi'
 
   if (!['dean', 'associate_dean'].includes(user?.role)) return <Navigate to="/dashboard" replace />
+  if (user?.authenticated) return <AcademicPortal view="monitor" />
 
   return (
     <div style={{ padding: '24px 32px' }} data-pulse-zone="monitor">

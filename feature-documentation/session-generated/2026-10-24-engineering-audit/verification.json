@@ -1,0 +1,68 @@
+{
+    "schemaVersion":  1,
+    "evaluatedAt":  "2026-10-24T06:37:24.0561343Z",
+    "timezone":  "Asia/Manila",
+    "sourceRevision":  "5e7d95638c7abf8f74e85ec96cbf90ae491ed674",
+    "sourceDigest":  "722298259fcdd88a83901fac2c31d0b32574f7e71f5a03e873148f5b1d3cafcd",
+    "sourceDirty":  true,
+    "runtime":  {
+                    "node":  "24.13.0",
+                    "platform":  "Windows",
+                    "npm":  "11.6.2"
+                },
+    "checks":  [
+                   {
+                       "command":  "npm ci",
+                       "status":  "passed",
+                       "vulnerabilities":  0
+                   },
+                   {
+                       "command":  "npm run verify",
+                       "status":  "passed",
+                       "unitIntegrationTests":  {
+                                                    "skipped":  0,
+                                                    "failed":  0,
+                                                    "passed":  106
+                                                },
+                       "includes":  [
+                                        "documentation integrity",
+                                        "lint",
+                                        "typecheck",
+                                        "pinned model verification",
+                                        "production build",
+                                        "serverless deployment checks"
+                                    ]
+                   },
+                   {
+                       "command":  "npm run test:browser",
+                       "status":  "passed",
+                       "passed":  53,
+                       "skipped":  13,
+                       "failed":  0
+                   },
+                   {
+                       "command":  "npm audit --audit-level=high",
+                       "status":  "passed",
+                       "vulnerabilities":  0
+                   }
+               ],
+    "captures":  {
+                     "imagesWritten":  18,
+                     "productionCheckStatus":  "not-run",
+                     "runId":  "2026-10-24T06-35-13-065Z-1466a844",
+                     "tests":  {
+                                   "passed":  10,
+                                   "failed":  0,
+                                   "timedOut":  0,
+                                   "skipped":  0,
+                                   "interrupted":  0
+                               },
+                     "imageReview":  "Codex agent; see capture-runs/image-review.json",
+                     "status":  "passed"
+                 },
+    "deployment":  {
+                       "status":  "local-candidate",
+                       "promoted":  false,
+                       "authenticatedAccountPairChecks":  "not-run"
+                   }
+}

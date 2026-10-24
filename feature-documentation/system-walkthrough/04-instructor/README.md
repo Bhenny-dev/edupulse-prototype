@@ -55,6 +55,8 @@ Section 5, **Course Outline**, is the part that later drives courseware: one row
 
 ## 11–13. Performance
 
+The refreshed captures display **Sample performance data · Preview only · Institutional grades remain in EduSuite.** These charts demonstrate the preview persona. Signed-in instructors use the [authenticated records view](../08-authenticated-records/README.md), which reads only owned classes and saved attempts/material opens. It never substitutes these sample scores; empty accounts show **No authorized academic records yet**.
+
 | Tab | Screenshot | What it shows |
 | --- | --- | --- |
 | Overview | ![Performance overview](11-performance-overview.png) | Student count, class average, at-risk and excelling counts, and the student list with section, midterm score, status and **Details**. |

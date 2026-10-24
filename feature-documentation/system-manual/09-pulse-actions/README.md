@@ -6,6 +6,8 @@ Pulse can act on what you ask, not only answer it. It reads your message and any
 
 Pulse decides which action fits with fixed rules, never with the language model, so an answer can never trigger an action by itself. Every finished action links to the page where you can see its result.
 
+`PULSE-ACT-001` links this task to `tests/operator.test.ts` and `tests/browser/pulse-actions.spec.ts`. Role-scoped navigation is also exercised by `AUTH-001` in `tests/browser/access.spec.ts`: **Performance** is available to Dean/instructor/student views, and Pulse declines it for Associate Dean and the admin console view. Server courseware generation rechecks the verified role (`AUTH-002`); a role named in a message or request body grants no permission. **Undo** preserves a class list changed after confirmation and displays a notice instead of overwriting newer work. Command-completion guidance follows real saved results, not a model's claim of success.
+
 The class list in these screenshots is sample data: invented names with `example.edu` addresses, not real student records.
 
 ## Register a class list (instructors)
@@ -53,6 +55,10 @@ In **Syllabus → My Courses**, the uploader also reads CSV, Excel `.xlsx`, PDF,
 ![Unsupported class-list replacement with Try Again](08-class-list-upload-error.png)
 
 ## Open a page
+
+If you confirm another registration for the same class and then undo the earlier action, Pulse preserves the newer changes and shows the notice below. Undo the later action first if you intend to restore the earlier state.
+
+![Undo preserves a later confirmed registration](09-undo-preserves-newer-registration.png)
 
 Ask *Take me to the scoring sheet*, *Open my courses* or *Where is the knowledge library?* Pulse opens the page and says so (*Opened Student Monitoring.*). It opens only pages your role can use; otherwise it says the page is not available for your role.
 

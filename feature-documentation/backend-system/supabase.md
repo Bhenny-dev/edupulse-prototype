@@ -1,5 +1,21 @@
 # Supabase configuration
 
+## October 24 compatible academic projection
+
+The owner accepted the written role scope in [ADR-001](decisions/001-role-and-approval-boundaries.md). Four additive migrations introduce `edupulse_courses`, `edupulse_enrollments`, `edupulse_publications`, `edupulse_attempts`, `edupulse_material_access`, private assessment keys and shared AI request leases. The migrations were applied to the existing EduPulse project through the explicitly linked CLI after local SQL/RLS regression tests; the connector lacked permission for this project.
+
+The owner-scoped JSONB workspace and its revision check remain the authoring source. A narrow trigger projects instructor/admin-owned confirmed data; existing workspaces can explicitly run **Sync my workspace**. There is no mass backfill or replacement of historical evidence. Active approved syllabi and a previously saved checked draft with unchanged content/type/week/syllabus are required for publication. Unpublishing revokes student publication access; attempts/material-open evidence remains retained. The original workspace still supports export, and the authenticated view can **Export authorized records** as JSON.
+
+Database RLS allows instructors to read owned courses/results, students to read their matching-email enrollments and active published material plus their own attempts, Dean to read college academic records, and Associate Dean to read course/delivery/roster data without scores. This project represents one institution/college; no cross-project or tenant-sharing policy is inferred. Academic role checks read current trusted `auth.users.raw_app_meta_data`, so deletion or role reassignment cannot preserve academic privileges through an old JWT. Editable user metadata does not grant access.
+
+Published assessment content strips correct answers and explanations. Keys are in `edupulse_private.assessment_keys` with no authenticated table read. A private, bounded grading command checks actual identity, enrollment, publication state and source version, accepts only objective responses, computes raw points, and saves one attempt per student/publication/version. A repeated submission returns the same saved attempt. No institutional grade formula is calculated. Material-open commands are similarly scoped and idempotent.
+
+Public academic tables grant SELECT only; writes go through the compatible workspace projection or the narrow command. The private definer functions have an empty search path, explicit identity/resource checks and restricted EXECUTE. Raw insert/update attempts are denied. `tests/academic.test.ts` covers direct Data API-equivalent RLS, answer-key secrecy, stale-role revocation, publication guards, duplicate submission and shared leases. Six real temporary accounts were also used against cloud Auth/API/database; their records are synthetic, not institutional evidence.
+
+Authenticated hosted AI requests use an atomic account lease: one active operation, 20 starts/minute, 130-second lease expiry, and token-matched release. A failed shared limiter fails closed; guests/local preview retain the existing per-instance safeguards. This is a per-account guard, not a global paid-provider spend guarantee.
+
+The shared-record API currently bounds each table response to 1,000 authorized rows; this is a limited pilot view, not an institution-scale analytics claim. The Supabase security advisor reported no errors after migration, with one pre-existing warning: leaked-password protection is disabled. Enabling that Auth setting is separate from the RLS/code changes and may depend on project plan. [Supabase password protection documentation](https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection).
+
 **Project:** EduPulse System (`xyziepdkdvvuhgkymooo`) · **Verified live:** 2026-10-04 through the Supabase connector and hosted application.
 
 ## Migrations applied
@@ -78,3 +94,5 @@ The connector cannot take screenshots of the Supabase dashboard. If the report n
 4. *Database → Functions* (academic invoker functions and the gated admin overview).
 5. *Authentication → Audit Logs* (database storage enabled).
 6. *Advisors → Security Advisor* (leaked-password protection setting).
+
+The fourth migration, `20261024073036_academic_lint_cleanup.sql`, removes a redundant outer loop variable found by the hosted PL/pgSQL linter. It preserves scoring and permissions.

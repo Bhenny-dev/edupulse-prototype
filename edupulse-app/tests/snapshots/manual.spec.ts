@@ -1,4 +1,4 @@
-import { test, expect, type Page, type Locator } from '@playwright/test'
+import { test, expect, type Page, type Locator } from './fixtures.js'
 import { mkdir, readFile } from 'node:fs/promises'
 
 // System manual: step-by-step task screenshots from the production build.
@@ -109,6 +109,25 @@ const sampleClassList = `StudentID,Name,Email,YearLevel,Block
 const pulseDialog = (page: Page) => page.getByRole('dialog', { name: 'Pulse', exact: true })
 // An action card taller than the panel's scroll area is captured whole: the panel may grow upwards while the card is shot.
 const WHOLE_CARD = '.connected-pulse{height:auto !important;overflow:visible !important}.connected-pulse-feed{overflow:visible !important;flex:none !important}'
+test('Pulse Undo preserves a later confirmed registration', async ({ page }) => {
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Instructor', exact: true }).click()
+  await page.getByRole('button', { name: 'Open Pulse assistant' }).click()
+  const dialog = pulseDialog(page)
+  for (const [name, id] of [['First canary learner', 'CANARY-UNDO-1'], ['Later canary learner', 'CANARY-UNDO-2']]) {
+    await dialog.locator('input[type="file"]').setInputFiles({ name: `${id} IT 102 BSIT-1C class list.csv`, mimeType: 'text/csv', buffer: Buffer.from(`StudentID,Name,Email,YearLevel,Block\n${id},${name},${id.toLowerCase()}@example.edu,1,BSIT-1C\n${id}-B,${name} B,${id.toLowerCase()}-b@example.edu,1,BSIT-1C`) })
+    await expect(dialog.locator('.connected-pulse-attachments')).toContainText('class list, 2 students')
+    await askPulse(page, 'Register these students in my course')
+    await dialog.getByRole('button', { name: 'Register 2 students', exact: true }).click()
+    await saved(page)
+  }
+  await dialog.getByRole('button', { name: 'Undo', exact: true }).first().click()
+  await expect(dialog.getByText('This class list changed after confirmation. Its newer changes were preserved.')).toBeVisible()
+  await shot(dialog.locator('.pulse-action-done').first(), '09-pulse-actions', '09-undo-preserves-newer-registration', WHOLE_CARD)
+  await dialog.getByRole('button', { name: 'Undo', exact: true }).last().click()
+  await dialog.getByRole('button', { name: 'Undo', exact: true }).first().click()
+  await saved(page)
+})
 async function askPulse(page: Page, text: string) {
   await page.getByRole('textbox', { name: 'Ask Pulse', exact: true }).fill(text)
   await page.getByRole('button', { name: 'Send', exact: true }).click()

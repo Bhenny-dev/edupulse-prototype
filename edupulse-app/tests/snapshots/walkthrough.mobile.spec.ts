@@ -1,4 +1,4 @@
-import { test, expect, type Page } from '@playwright/test'
+import { test, expect, type Page } from './fixtures.js'
 import { mkdir } from 'node:fs/promises'
 
 // Mobile walkthrough (iPhone 13 viewport, Chromium). Output: system-walkthrough/06-mobile.

@@ -2,6 +2,8 @@ import { useState, useMemo } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
+import { canUseSamplePerformance } from '../lib/access'
+import AcademicPortal from '../components/academic/AcademicPortal'
 import { exportCSV, timestampedFilename } from '../utils/exportUtils'
 import {
   STUDENT_RECORDS, DEFAULT_SYLLABI, ALERTS, BLOCK_SECTIONS,
@@ -574,12 +576,25 @@ export default function Performance() {
     addToast('Performance report exported', 'success')
   }
 
+  if (user?.authenticated || user?.role === 'dean') return <AcademicPortal view="performance" />
+  if (!canUseSamplePerformance(user)) return (
+    <div className="container" data-pulse-zone="performance">
+      <div className="page-header"><h1>{title}</h1></div>
+      <div className="empty-state" role="status">
+        <h2>Performance records are not connected</h2>
+        <p>Verified performance records for this account are not available yet. Sample scores are available in the documentation preview.</p>
+      </div>
+    </div>
+  )
+
   return (
     <div className="container" data-pulse-zone="performance">
       <div className="page-header">
         <h1>{title}</h1>
         <button className="btn btn-secondary btn-sm" onClick={handleExport}><Download size={14} /> Export Report</button>
       </div>
+
+      <p className="text-sm text-muted" data-testid="performance-provenance">Sample performance data · Preview only · Institutional grades remain in EduSuite.</p>
 
       {/* Course selector for students with multiple courses */}
       {isStudent && myCourses.length > 1 && (

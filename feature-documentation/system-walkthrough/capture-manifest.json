@@ -1,5 +1,5 @@
 {
-  "capturedAt": "2026-10-07T17:08:07.990Z",
+  "capturedAt": "2026-10-24T07:18:04.313Z",
   "problems": [],
   "scenes": [
     {
@@ -243,6 +243,126 @@
       "ok": true
     },
     {
+      "role": "instructor",
+      "folder": "04-instructor",
+      "file": "01-dashboard.png",
+      "title": "Instructor dashboard",
+      "route": "/dashboard",
+      "ok": true
+    },
+    {
+      "role": "instructor",
+      "folder": "04-instructor",
+      "file": "02-syllabus-my-courses.png",
+      "title": "Syllabus · My Courses",
+      "route": "/syllabus",
+      "ok": true
+    },
+    {
+      "role": "instructor",
+      "folder": "04-instructor",
+      "file": "03-syllabus-my-syllabus.png",
+      "title": "Syllabus · My Syllabus (status, actions, versions)",
+      "route": "/syllabus",
+      "ok": true
+    },
+    {
+      "role": "instructor",
+      "folder": "04-instructor",
+      "file": "04-syllabus-shared-repository.png",
+      "title": "Syllabus · Shared Repository",
+      "route": "/syllabus",
+      "ok": true
+    },
+    {
+      "role": "instructor",
+      "folder": "04-instructor",
+      "file": "05-syllabus-builder.png",
+      "title": "Syllabus Builder (upload or build the 7 sections)",
+      "route": "/syllabus",
+      "ok": true
+    },
+    {
+      "role": "instructor",
+      "folder": "04-instructor",
+      "file": "06-syllabus-builder-course-outline.png",
+      "title": "Syllabus Builder · Section 5 Course Outline",
+      "route": "/syllabus",
+      "ok": true
+    },
+    {
+      "role": "instructor",
+      "folder": "04-instructor",
+      "file": "07-courseware-my-courseware.png",
+      "title": "Courseware · My Courseware",
+      "route": "/courseware",
+      "ok": true
+    },
+    {
+      "role": "instructor",
+      "folder": "04-instructor",
+      "file": "08-courseware-builder.png",
+      "title": "Courseware · Courseware Builder",
+      "route": "/courseware",
+      "ok": true
+    },
+    {
+      "role": "instructor",
+      "folder": "04-instructor",
+      "file": "09-student-monitoring-assessment-scores.png",
+      "title": "Student Monitoring · Assessment Scores",
+      "route": "/student-monitoring",
+      "ok": true
+    },
+    {
+      "role": "instructor",
+      "folder": "04-instructor",
+      "file": "10-student-monitoring-material-access.png",
+      "title": "Student Monitoring · Material Access",
+      "route": "/student-monitoring",
+      "ok": true
+    },
+    {
+      "role": "student",
+      "folder": "05-student",
+      "file": "01-dashboard.png",
+      "title": "Student dashboard",
+      "route": "/dashboard",
+      "ok": true
+    },
+    {
+      "role": "student",
+      "folder": "05-student",
+      "file": "02-my-materials.png",
+      "title": "My Courses · My Materials",
+      "route": "/courseware",
+      "ok": true
+    },
+    {
+      "role": "student",
+      "folder": "05-student",
+      "file": "03-my-assessments.png",
+      "title": "My Courses · My Assessments",
+      "route": "/assessment",
+      "ok": true
+    },
+    {
+      "role": "student",
+      "folder": "05-student",
+      "file": "08-pulse-for-students.png",
+      "title": "Pulse for students (role-scoped help)",
+      "route": "/performance",
+      "ok": true
+    },
+    {
+      "role": "student",
+      "folder": "05-student",
+      "file": "09-pulse-declines-assessment-answers.png",
+      "title": "Pulse declines a request for quiz answers (Guardian)",
+      "route": "/dashboard",
+      "ok": true
+    },
+    {
       "role": "dean",
       "folder": "03-dean-and-associate-dean",
       "file": "01-dashboard.png",
@@ -339,83 +459,11 @@
       "ok": true
     },
     {
-      "role": "instructor",
-      "folder": "04-instructor",
-      "file": "01-dashboard.png",
-      "title": "Instructor dashboard",
+      "role": "associate dean",
+      "folder": "03-dean-and-associate-dean",
+      "file": "13-performance-access-denied.png",
+      "title": "Associate Dean: performance route and Pulse access denied",
       "route": "/dashboard",
-      "ok": true
-    },
-    {
-      "role": "instructor",
-      "folder": "04-instructor",
-      "file": "02-syllabus-my-courses.png",
-      "title": "Syllabus · My Courses",
-      "route": "/syllabus",
-      "ok": true
-    },
-    {
-      "role": "instructor",
-      "folder": "04-instructor",
-      "file": "03-syllabus-my-syllabus.png",
-      "title": "Syllabus · My Syllabus (status, actions, versions)",
-      "route": "/syllabus",
-      "ok": true
-    },
-    {
-      "role": "instructor",
-      "folder": "04-instructor",
-      "file": "04-syllabus-shared-repository.png",
-      "title": "Syllabus · Shared Repository",
-      "route": "/syllabus",
-      "ok": true
-    },
-    {
-      "role": "instructor",
-      "folder": "04-instructor",
-      "file": "05-syllabus-builder.png",
-      "title": "Syllabus Builder (upload or build the 7 sections)",
-      "route": "/syllabus",
-      "ok": true
-    },
-    {
-      "role": "instructor",
-      "folder": "04-instructor",
-      "file": "06-syllabus-builder-course-outline.png",
-      "title": "Syllabus Builder · Section 5 Course Outline",
-      "route": "/syllabus",
-      "ok": true
-    },
-    {
-      "role": "instructor",
-      "folder": "04-instructor",
-      "file": "07-courseware-my-courseware.png",
-      "title": "Courseware · My Courseware",
-      "route": "/courseware",
-      "ok": true
-    },
-    {
-      "role": "instructor",
-      "folder": "04-instructor",
-      "file": "08-courseware-builder.png",
-      "title": "Courseware · Courseware Builder",
-      "route": "/courseware",
-      "ok": true
-    },
-    {
-      "role": "instructor",
-      "folder": "04-instructor",
-      "file": "09-student-monitoring-assessment-scores.png",
-      "title": "Student Monitoring · Assessment Scores",
-      "route": "/student-monitoring",
-      "ok": true
-    },
-    {
-      "role": "instructor",
-      "folder": "04-instructor",
-      "file": "10-student-monitoring-material-access.png",
-      "title": "Student Monitoring · Material Access",
-      "route": "/student-monitoring",
       "ok": true
     },
     {
@@ -440,30 +488,6 @@
       "file": "13-performance-alerts.png",
       "title": "Performance · Alerts",
       "route": "/performance",
-      "ok": true
-    },
-    {
-      "role": "student",
-      "folder": "05-student",
-      "file": "01-dashboard.png",
-      "title": "Student dashboard",
-      "route": "/dashboard",
-      "ok": true
-    },
-    {
-      "role": "student",
-      "folder": "05-student",
-      "file": "02-my-materials.png",
-      "title": "My Courses · My Materials",
-      "route": "/courseware",
-      "ok": true
-    },
-    {
-      "role": "student",
-      "folder": "05-student",
-      "file": "03-my-assessments.png",
-      "title": "My Courses · My Assessments",
-      "route": "/assessment",
       "ok": true
     },
     {
@@ -496,22 +520,6 @@
       "file": "07-performance-assessment-scores.png",
       "title": "Performance · Assessment Scores",
       "route": "/performance",
-      "ok": true
-    },
-    {
-      "role": "student",
-      "folder": "05-student",
-      "file": "08-pulse-for-students.png",
-      "title": "Pulse for students (role-scoped help)",
-      "route": "/performance",
-      "ok": true
-    },
-    {
-      "role": "student",
-      "folder": "05-student",
-      "file": "09-pulse-declines-assessment-answers.png",
-      "title": "Pulse declines a request for quiz answers (Guardian)",
-      "route": "/dashboard",
       "ok": true
     }
   ]

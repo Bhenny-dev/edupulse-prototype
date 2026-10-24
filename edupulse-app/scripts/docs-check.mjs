@@ -5,14 +5,15 @@
 // A commit with no visible or documented effect states why in a trailer:
 //   Docs-Impact: none — <reason>
 import { execFileSync } from 'node:child_process'
-import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs'
+import { existsSync, readFileSync, readdirSync } from 'node:fs'
 import { dirname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { EXEMPT, compileRules, impact, rangeImpact } from './lib/docs-impact.mjs'
+import { captureEvidenceProblems } from './lib/docs-captures.mjs'
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..')
 const DOCS = join(ROOT, 'feature-documentation')
 const POLICY = 'feature-documentation/DOCUMENTATION-POLICY.md'
-const EXEMPT = /^Docs-Impact:\s*none\s*[—–:-]\s*(.{15,})$/im
 
 if (process.env.VERCEL) {
   // The root .vercelignore keeps feature-documentation out of Vercel uploads; the gate runs locally and in CI.
@@ -23,31 +24,8 @@ if (!existsSync(join(DOCS, 'doc-map.json'))) fail([`feature-documentation/doc-ma
 
 const map = JSON.parse(readFileSync(join(DOCS, 'doc-map.json'), 'utf8'))
 const git = (...args) => execFileSync('git', args, { cwd: ROOT, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 }).trim()
-const glob = pattern => new RegExp(`^${pattern.replace(/[.+^${}()|[\]\\]/g, '\\$&').replace(/\*\*/g, '\u0000').replace(/\*/g, '[^/]*').replace(/\u0000/g, '.*')}$`)
-const rules = map.rules.map(rule => ({ ...rule, matchers: rule.source.map(glob) }))
-const inside = (file, path) => file === path || file.startsWith(`${path}/`)
+const rules = compileRules(map.rules)
 const posix = path => path.split('\\').join('/')
-
-/** Rules a changed source file triggers; fallback rules only catch files no other rule matched. */
-function triggered(files) {
-  const hits = new Map()
-  for (const file of files) {
-    const specific = rules.filter(rule => !rule.fallback && rule.matchers.some(m => m.test(file)))
-    const matched = specific.length ? specific : rules.filter(rule => rule.fallback && rule.matchers.some(m => m.test(file)))
-    for (const rule of matched) hits.set(rule, [...(hits.get(rule) || []), file])
-  }
-  return hits
-}
-
-/** Impact: each triggered rule needs at least one of its documentation paths in the same change. */
-function impact(files, label) {
-  const problems = []
-  for (const [rule, sources] of triggered(files)) {
-    if (files.some(file => rule.docs.some(doc => inside(file, doc)))) continue
-    problems.push(`${label} changes ${rule.name.toLowerCase()} without updating its documentation.\n    Changed: ${sources.slice(0, 6).join(', ')}${sources.length > 6 ? ` and ${sources.length - 6} more` : ''}\n    Update at least one of: ${rule.docs.join(', ')}`)
-  }
-  return problems
-}
 
 function markdownFiles(dir) {
   return readdirSync(dir, { withFileTypes: true }).flatMap(entry => {
@@ -117,17 +95,19 @@ function fail(problems) {
 
 const args = process.argv.slice(2)
 let problems = []
+let changed = [...git('diff', '--name-only', 'HEAD', '--', 'feature-documentation').split('\n'), ...git('ls-files', '--others', '--exclude-standard', '--', 'feature-documentation').split('\n')].filter(Boolean)
+if (args[0] === '--range') {
+  const [base, head] = args[1].split('..')
+  changed = base && !/^0+$/.test(base) ? git('diff', '--name-only', base, head, '--', 'feature-documentation').split('\n') : git('diff-tree', '--no-commit-id', '--name-only', '-r', '--root', head, '--', 'feature-documentation').split('\n')
+}
+problems.push(...captureEvidenceProblems(ROOT, changed))
 if (args[0] === '--commit') {
   const message = readFileSync(args[1], 'utf8').split('\n').filter(line => !line.startsWith('#')).join('\n')
   const staged = git('diff', '--cached', '--name-only', '--diff-filter=ACDMR').split('\n').filter(Boolean)
-  if (!EXEMPT.test(message)) problems.push(...impact(staged, 'This commit'))
+  if (!EXEMPT.test(message)) problems.push(...impact(staged, 'This commit', rules))
   problems.push(...integrity())
 } else if (args[0] === '--range') {
-  const [base, head] = args[1].split('..')
-  const shas = git('rev-list', base && !/^0+$/.test(base) ? `${base}..${head}` : head, '--max-count=200').split('\n').filter(Boolean)
-  const files = [...new Set(shas.filter(sha => !EXEMPT.test(git('log', '-1', '--format=%B', sha)))
-    .flatMap(sha => git('diff-tree', '--no-commit-id', '--name-only', '-r', '--root', sha).split('\n').filter(Boolean)))]
-  problems.push(...impact(files, 'This push'), ...integrity(), ...freshness())
+  problems.push(...rangeImpact(args[1], git, rules), ...integrity(), ...freshness())
 } else {
   problems.push(...integrity(), ...freshness())
 }

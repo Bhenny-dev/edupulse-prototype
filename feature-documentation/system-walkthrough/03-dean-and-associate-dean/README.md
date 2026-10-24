@@ -1,6 +1,6 @@
 # 03 · Dean and Associate Dean
 
-The Dean (`dean`) and Associate Dean (`associate_dean`) sign in with separate email accounts. They share the same academic screens and permissions. The system admin has a separate operations console. Main academic tabs: **Dashboard**, **Course Loading**, **Monitor**; **Records** opens from the dashboard and search. Course assignments come from EduSuite; EduPulse monitors them and never edits the curriculum.
+The Dean (`dean`) and Associate Dean (`associate_dean`) sign in with separate email accounts and have distinct dashboards. They share academic navigation, with data permissions governed separately by FR-AUTH-10/11 and FR-PERF-13. The system admin has a separate operations console. Main academic tabs: **Dashboard**, **Course Loading**, **Monitor**; **Records** opens from the dashboard and search. Course assignments come from EduSuite; EduPulse monitors them and never edits the curriculum. These captures use sample academic data.
 
 ## 1. Dean dashboard
 
@@ -12,6 +12,12 @@ The Dean (`dean`) and Associate Dean (`associate_dean`) sign in with separate em
 - **Delivery Progress (Active Courses):** published versus planned courseware per active course.
 - **Faculty Overview:** each instructor's load, active syllabi and a status chip (*On track*, *n not yet routed*, *No load*).
 - **Recent Activity** and **Syllabus Status by Course** (course, instructor, status, extracted outline weeks, last update; the eye icon opens the syllabus).
+
+## Performance access boundary
+
+![Associate Dean denied access to Performance](13-performance-access-denied.png)
+
+Opening `/performance` as Associate Dean returns to **Dashboard**. Asking Pulse to open it displays **Performance is not available for your role.** The role's loading, roster and delivery oversight remain available. Dean has a **Performance** navigation entry and authenticated read-only college results under the accepted [ADR-001](../../backend-system/decisions/001-role-and-approval-boundaries.md). The [authenticated walkthrough](../08-authenticated-records/README.md) shows real sign-in with synthetic hosted records; the other captures in this folder remain preview demonstrations. Courseware authoring remains instructor-only, with the verified owner instructor view preserved. Offline syllabus review is unchanged.
 
 ## 2. Course Loading · Loaded Courses
 

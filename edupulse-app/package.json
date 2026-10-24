@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "node scripts/dev.mjs",
     "build": "vite build",
-    "build:capture": "vite build --mode capture --outDir dist-capture",
+    "build:capture": "node scripts/build-capture.mjs",
     "lint": "oxlint src server api scripts tests vite.config.js playwright.config.ts",
     "supabase:check": "node --env-file-if-exists=.env.local scripts/check-supabase.mjs",
     "typecheck": "tsc --project jsconfig.json --noEmit && tsc --project tsconfig.server.json --noEmit",
@@ -49,7 +49,7 @@
     "recharts": "^3.9.2",
     "tesseract.js": "7.0.0",
     "unpdf": "1.8.1",
-    "zod": "4.6.4"
+    "zod": "4.6.7"
   },
   "devDependencies": {
     "@emnapi/core": "1.11.3",
@@ -61,7 +61,7 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.3",
     "oxlint": "^1.71.0",
-    "pdfjs-dist": "6.1.200",
+    "pdfjs-dist": "6.4.299",
     "tsx": "4.23.13",
     "typescript": "^7.0.2",
     "vite": "^8.1.1"

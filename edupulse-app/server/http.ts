@@ -16,6 +16,9 @@ import { findReferences } from './external/references.js'
 import { embedTexts, modelStatus } from './ml/onnx.js'
 import { agentRunRow, failedRunRow, recordAgentRun } from './agentRuns.js'
 import { AGENT_ORDER } from '../src/lib/rag/registry.js'
+import { canGenerateCourseware } from '../src/lib/access.js'
+import { academicCommand, executeAcademic, readAcademic } from './domains/academic.js'
+import { changeLease } from './requestLimits.js'
 
 export const VERSION = '0.4.0'
 /** Request body limits per action (bytes). Uploads are raw file bytes. */
@@ -76,14 +79,16 @@ async function readJson(request: Request, limit: number): Promise<unknown> {
 export async function handleRequest(request: Request): Promise<Response> {
   const requestId = randomUUID()
   let activeId: string | undefined
+  let leaseIdentity: Identity | undefined
   let action = 'unknown'
   try {
     enforceOrigin(request)
     action = new URL(request.url).searchParams.get('action') || 'health'
-    const methods: Record<string, string[]> = { health: ['GET'], providers: ['GET', 'POST', 'DELETE'], context: ['POST'], similarity: ['POST'], references: ['POST'], extract: ['POST'], chat: ['POST'], courseware: ['POST'], documents: ['GET', 'POST', 'DELETE'], workspace: ['GET', 'PUT'] }
+    const methods: Record<string, string[]> = { health: ['GET'], providers: ['GET', 'POST', 'DELETE'], context: ['POST'], similarity: ['POST'], references: ['POST'], extract: ['POST'], chat: ['POST'], courseware: ['POST'], documents: ['GET', 'POST', 'DELETE'], workspace: ['GET', 'PUT'], academic: ['GET', 'POST'] }
     if (!methods[action]) throw new ApiError(404, 'NOT_FOUND', 'Unknown API action.')
     if (!methods[action].includes(request.method)) return new Response(null, { status: 405, headers: { Allow: methods[action].join(', '), 'Cache-Control': 'no-store' } })
     const identity = await authenticate(request)
+    if (action === 'academic') return request.method === 'GET' ? json(await readAcademic(identity)) : json(await executeAcademic(identity, academicCommand.parse(await readJson(request, 5000))))
     const personalConnection = readConnection(request, identity)
     // Server credentials are reserved for the local workspace. Hosted users
     // must connect their own key, bound to their verified Supabase account.
@@ -118,14 +123,18 @@ export async function handleRequest(request: Request): Promise<Response> {
     }
     if (action === 'documents' && identity.role === 'guest') throw new ApiError(401, 'SIGN_IN_REQUIRED', 'Sign in to manage private knowledge. Preview access only includes the public guide.')
     if (action === 'documents' && request.method === 'GET') return json({ documents: await listDocuments(identity) })
-    if (action === 'courseware' && !['instructor', 'admin', 'dean', 'associate_dean'].includes(identity.role) && !(identity.role === 'guest' && personalConnection)) throw new ApiError(403, 'FORBIDDEN', 'Sign in with an academic account, use the local workspace, or connect your own provider for preview drafts.')
+    if (action === 'courseware' && !canGenerateCourseware(identity.role) && !(identity.role === 'guest' && personalConnection)) throw new ApiError(403, 'FORBIDDEN', 'Courseware generation requires an instructor account or the system admin instructor view. Preview drafts require your own provider connection.')
     const now = Date.now()
     for (const [key, value] of buckets) if (value.until < now) buckets.delete(key)
     const key = `${identity.id}:${personalConnection?.id || 'default'}`
     const bucket = buckets.get(key) || { count: 0, until: now + 60000 }
-    if (bucket.count >= 20 || active.has(key)) throw new ApiError(429, 'RATE_LIMIT', 'Please wait for the current request to finish, then retry. Limit: 20 requests per minute.')
-    bucket.count++; buckets.set(key, bucket)
-    active.add(key); activeId = key
+    if (config().hosted && identity.token) {
+      await changeLease(identity, requestId); leaseIdentity = identity
+    } else {
+      if (bucket.count >= 20 || active.has(key)) throw new ApiError(429, 'RATE_LIMIT', 'Please wait for the current request to finish, then retry. Limit: 20 requests per minute.')
+      bucket.count++; buckets.set(key, bucket)
+      active.add(key); activeId = key
+    }
     const signal = AbortSignal.any([request.signal, AbortSignal.timeout(config().timeoutMs)])
     if (action === 'extract') {
       // Raw bytes go straight to the sandbox; nothing is stored until the user reviews and indexes the text.
@@ -183,5 +192,8 @@ export async function handleRequest(request: Request): Promise<Response> {
     // Provider/database errors may contain credentials or document text. Never return or log raw exceptions.
     console.error(JSON.stringify({ event: 'ai_request_failed', requestId, action, errorType: error instanceof Error ? error.name : 'Unknown' }))
     return json({ error: { code: 'SERVICE_UNAVAILABLE', message: 'The AI service could not finish this request. Check AI & Knowledge settings and try again.', requestId } }, 503)
-  } finally { if (activeId) active.delete(activeId) }
+  } finally {
+    if (activeId) active.delete(activeId)
+    if (leaseIdentity) await changeLease(leaseIdentity, requestId, true).catch(() => console.error(JSON.stringify({ event: 'lease_release_failed', requestId })))
+  }
 }

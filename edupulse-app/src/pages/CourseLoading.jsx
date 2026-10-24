@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useSearchParams, Navigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import AcademicPortal from '../components/academic/AcademicPortal'
 import { useToast } from '../context/ToastContext'
 import { CURRICULUM_COURSES, INSTRUCTORS, DEFAULT_SYLLABI, EUSUITE_COURSE_ASSIGNMENTS, BLOCK_SECTION_REGISTRATIONS } from '../data/mockData'
 import {
@@ -491,6 +492,7 @@ export default function CourseLoading() {
   const activeTab = searchParams.get('tab') === 'instructors' ? 'instructors' : 'assign'
 
   if (!['dean', 'associate_dean'].includes(user?.role)) return <Navigate to="/dashboard" replace />
+  if (user?.authenticated) return <AcademicPortal view="courses" />
 
   const switchTab = (tab) => {
     const p = new URLSearchParams(searchParams)

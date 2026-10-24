@@ -8,7 +8,7 @@ Reference for the prototype. Grounded in the confirmed business process of the C
 2. **Course** is the official term. Never "subject" in any UI label, data field, or generated text.
 3. EduSuite is the system of record for course records, course loads, and student rosters. EduPulse receives these as exported files (upload). No direct integration; that is future work.
 4. Students enroll in EduSuite and are blocked into sections first come, first served: a block holds up to 35 students; when full, a new block opens. A block enlists the same courses on a shared schedule; different blocks can have different schedules. EduPulse consumes this structure, it never creates it.
-5. The Dean and Associate Dean have separate authenticated roles (`dean`, `associate_dean`) and share the same academic UI and permission set. The `admin` role is a separate system owner for account management, health checks and audit oversight.
+5. The Dean and Associate Dean have separate authenticated roles (`dean`, `associate_dean`) and share academic navigation for loading and delivery oversight. Shared navigation does not grant identical data permissions: FR-AUTH-11 excludes the Associate Dean from performance and score data. The `admin` role is a separate system owner for account management, health checks and audit oversight. See [ADR-001](../../feature-documentation/backend-system/decisions/001-role-and-approval-boundaries.md) for the remaining Dean score-access decision.
 6. The LMS (Moodle, Google Classroom) is an abiding variable of the current process, not the focus. EduPulse is not an LMS replacement pitch; it is the syllabus-centered layer: build syllabus, generate mapped courseware, deliver, monitor.
 7. Scoring sheet, not grading sheet. EduPulse collates assessment scores for visualization only. No institutional grades are computed (MG/TFG/FG formulas stay in the official KCP grading sheet, outside the system).
 8. The instructor (or the Dean/Assoc Dean for loading) is the deciding author. Nothing AI-generated reaches a downstream actor without human review and an explicit action.
@@ -19,7 +19,7 @@ Reference for the prototype. Grounded in the confirmed business process of the C
 |---|---|---|
 | System Admin | Yes (`admin`) | Manages role accounts, monitors system health and audit activity; can open every role view without changing identity |
 | Dean | Yes (`dean`) | Uploads EduSuite records, loads courses, monitors faculty and delivery |
-| Associate Dean | Yes (`associate_dean`, same academic UI as Dean) | Same academic tasks as Dean |
+| Associate Dean | Yes (`associate_dean`, shared loading/monitor navigation) | EduSuite intake, course loading and delivery oversight; no performance scores or approval authority |
 | Instructor | Yes (`instructor`) | Builds syllabus, generates/reviews/publishes courseware, monitors students via scoring sheet |
 | Student | Yes (`student`) | Opens learning materials, answers assessments, gets AI guidance and reminders |
 | Chief Academic Officer | No (offline signatory) | Approves the syllabus |

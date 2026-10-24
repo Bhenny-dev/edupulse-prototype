@@ -173,5 +173,8 @@ export function applyRegistration(registrations, { courseCode, courseTitle = '',
 
 /** Reverses one applyRegistration result, leaving every other registration as it is now. */
 export function undoRegistration(registrations, result) {
+  const current = registrations.find(r => r.id === result.registration.id)
+  // Undo must never discard a registration edited after this confirmation.
+  if (!current || JSON.stringify(current) !== JSON.stringify(result.registration)) return registrations
   return result.previous ? registrations.map(r => r.id === result.registration.id ? result.previous : r) : registrations.filter(r => r.id !== result.registration.id)
 }

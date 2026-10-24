@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-10-24T07-22-59-077Z-f4985aa4",
+  "startedAt": "2026-10-24T07:22:59.077Z",
+  "finishedAt": "2026-10-24T07:23:10.669Z",
+  "commitSha": "5e7d95638c7abf8f74e85ec96cbf90ae491ed674",
+  "sourceDigest": "0ec063ede02e589b3741af175a57318f7e91dc189c57af9e2f694bb9dbafe9e5",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-10-24T07:22:56.234Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "failed",
+  "counts": {
+    "passed": 0,
+    "failed": 1,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": null
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/manual.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/manual.spec.ts",
+      "title": "Pulse Undo preserves a later confirmed registration",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "local-real-input/sample-academic",
+      "status": "failed",
+      "expectedStatus": "passed",
+      "durationMs": 6040,
+      "problems": []
+    }
+  ],
+  "images": []
+}

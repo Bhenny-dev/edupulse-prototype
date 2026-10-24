@@ -1,6 +1,6 @@
 # System Manual
 
-Task-by-task instructions for EduPulse v0.4.0, each step illustrated with a screenshot of the production build. Use it to explain **how to do something**. For a tour of every screen by role, use the [System Walkthrough](../system-walkthrough/README.md).
+Task-by-task instructions for EduPulse v0.4.0, illustrated with captured screens. Preview personas demonstrate sample academic data; AI guides identify their real local inputs and inference. Section 10 covers authenticated records separately. Use it to explain **how to do something**. For a tour of every screen by role, use the [System Walkthrough](../system-walkthrough/README.md).
 
 | # | Task | Who | Where |
 | --- | --- | --- | --- |
@@ -13,6 +13,7 @@ Task-by-task instructions for EduPulse v0.4.0, each step illustrated with a scre
 | [7](07-pulse-guidance/README.md) | Drag Pulse onto any component for guidance; follow a section tour | Everyone | Any page |
 | [8](08-ai-connections/README.md) | Choose where Pulse thinks: local model, free providers, own key, on-device | Everyone (each account connects its own key) | Settings → AI & Knowledge |
 | [9](09-pulse-actions/README.md) | Ask Pulse to act: register a class list, file a material under a course, search records, generate a week, open a page | Instructors; students for materials; everyone for search and pages | Pulse panel |
+| [10](10-authenticated-academic-records/README.md) | Publish and use authenticated academic records | Instructors, enrolled students, Dean, Associate Dean | Shared academic records, scoring, material access and role boundaries |
 
 Sections 3–8 cover the AI features added in v0.4.0 (named LangGraph agents, sandboxed document extraction, free in-process embeddings and reranking, hybrid vector search, verification, correction, comparison, references and accurate on-page guidance). Sections 1–2 document the core workflow those features plug into.
 
@@ -26,8 +27,10 @@ Sections 3–8 cover the AI features added in v0.4.0 (named LangGraph agents, sa
 
 ```bash
 cd edupulse-app
-npm run build
+npm run build:capture
 CI=1 npx playwright test --config playwright.snapshots.config.ts tests/snapshots/manual.spec.ts tests/snapshots/capture.spec.ts
 ```
 
 The scripts sign in with the preview personas of the documentation capture build (`npm run build:capture`), upload the evaluation documents (four Wikipedia articles as PDF, CC BY-SA 4.0, plus EduPulse specifications), run each task end to end and save the images into these folders. [`capture-log.json`](capture-log.json) records the capture time and any page error or Content-Security-Policy violation (none for this capture).
+
+Section 10 uses actual authenticated temporary accounts and synthetic hosted records. Preview captures elsewhere demonstrate sample academic data; AI guides identify their real local documents and inference. Capture-run reports record these categories separately.

@@ -24,6 +24,7 @@ import NotFound from './pages/NotFound'
 import ServerError from './pages/ServerError'
 import Privacy from './pages/Privacy'
 import Terms from './pages/Terms'
+import { PERFORMANCE_ROLES } from './lib/access'
 
 // The system admin has a dedicated console. Academic management belongs to
 // the separately authenticated Dean and Associate Dean roles.
@@ -67,7 +68,7 @@ function AppRoutes() {
         <Route path="/syllabus" element={<ProtectedRoute allowedRoles={['instructor']}><Syllabus /></ProtectedRoute>} />
         <Route path="/courseware" element={<Courseware />} />
         <Route path="/assessment" element={<ProtectedRoute allowedRoles={['student']}><Assessment /></ProtectedRoute>} />
-        <Route path="/performance" element={<Performance />} />
+        <Route path="/performance" element={<ProtectedRoute allowedRoles={PERFORMANCE_ROLES}><Performance /></ProtectedRoute>} />
         <Route path="/records" element={<ProtectedRoute allowedRoles={['dean', 'associate_dean']}><Records /></ProtectedRoute>} />
         {/* Old bookmark — Curriculum was absorbed into Records (Phase 0 intake). */}
         <Route path="/curriculum" element={<Navigate to="/records" replace />} />

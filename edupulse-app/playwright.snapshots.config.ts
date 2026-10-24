@@ -4,10 +4,10 @@ import { defineConfig, devices } from '@playwright/test'
 // Run with `npm run snapshots` (builds dist-capture first); generation uses the local Ollama model in SNAPSHOT_MODEL.
 const web = process.env.SNAPSHOT_WEB_PORT || '5186', api = process.env.SNAPSHOT_API_PORT || '3016'
 export default defineConfig({
-  testDir: './tests/snapshots', timeout: 600_000, retries: 0, workers: 1, reporter: 'list', outputDir: '.data/snapshot-results',
-  use: { baseURL: `http://127.0.0.1:${web}`, viewport: { width: 1440, height: 900 }, deviceScaleFactor: 1, colorScheme: 'light', trace: 'off' },
+  testDir: './tests/snapshots', timeout: 600_000, retries: 0, workers: 1, reporter: [['list'], ['./tests/snapshots/reporter.ts']], outputDir: '.data/snapshot-results',
+  use: { baseURL: `http://127.0.0.1:${web}`, viewport: { width: 1440, height: 900 }, deviceScaleFactor: 1, colorScheme: 'light', locale: 'en-US', timezoneId: 'Asia/Manila', trace: 'off' },
   projects: [
-    { name: 'desktop', use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 }, deviceScaleFactor: 1 }, testIgnore: /mobile/ },
+    { name: 'desktop', use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 }, deviceScaleFactor: 1 }, testIgnore: /mobile|authenticated/ },
     { name: 'mobile', use: { ...devices['iPhone 13'], defaultBrowserType: 'chromium' }, testMatch: /mobile/ },
   ],
   webServer: {

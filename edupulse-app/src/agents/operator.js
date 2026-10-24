@@ -1,4 +1,5 @@
 import { terms } from '../lib/rag/text.js'
+import { PERFORMANCE_ROLES } from '../lib/access.js'
 
 // Operator: turns a Pulse conversation into proposed app actions. Rule-based and
 // deterministic, like the Planner and the Guardian: model output never decides
@@ -31,7 +32,7 @@ export const PAGES = [
   { path: '/records', label: 'Records', words: /\b(records?|edusuite|class\s*lists?|blocks?)\b/i, roles: ['dean', 'associate_dean'] },
   { path: '/course-loading', label: 'Course Loading', words: /\b(course\s+loading|course\s+loads?|loading)\b/i, roles: ['dean', 'associate_dean'] },
   { path: '/monitor', label: 'Monitor', words: /\bmonitor(ing)?\b/i, roles: ['dean', 'associate_dean'] },
-  { path: '/performance', label: 'Performance', words: /\b(performance|progress|scores?|grades?)\b/i, roles: ['instructor', 'student', 'dean', 'associate_dean'] },
+  { path: '/performance', label: 'Performance', words: /\b(performance|progress|scores?|grades?)\b/i, roles: PERFORMANCE_ROLES },
   { path: '/settings?tab=ai-provider', label: 'Settings → AI & Knowledge', words: /\b(knowledge\s+library|my\s+library|library|ai\s+settings|ai\s+(?:&|and)\s+knowledge|ai\s+provider)\b/i, roles: 'all' },
   { path: '/settings', label: 'Settings', words: /\b(settings|preferences|profile)\b/i, roles: 'all' },
   { path: '/notifications', label: 'Notifications', words: /\bnotifications?\b/i, roles: 'all' },

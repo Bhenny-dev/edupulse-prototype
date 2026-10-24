@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from './fixtures.js'
 
 test('Pulse responds to a greeting and continues a situational exchange without documents', async ({ page }) => {
   await page.goto('/')

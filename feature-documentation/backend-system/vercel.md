@@ -1,5 +1,11 @@
 # Vercel configuration
 
+## Deployment reconciliation — 24 October 2026
+
+The scoped Vercel CLI confirmed that the latest October 8 deployments remain **Error**, while an earlier deployment is **Ready**. Build logs for `edupulse-prototype-gld4eumgd-bhenny-benlor-d-riveras-projects.vercel.app` identify source `5e7d956` and `npm ci` failure: `Missing: @napi-rs/canvas@1.0.10 from lock file`. A current local clean install also reproduced inconsistent canvas platform entries. The repaired lockfile is part of this local candidate; PDF.js/Zod/Vite/source-map security updates were checked separately. See the [candidate validation record](../versions/2026-10-24-audit-integration/validation/results.md) for final local results.
+
+The connector could list the project but denied deployment-list access (403); the scoped CLI fallback supplied the build evidence. No deployment or promotion was performed by this audit integration. The older production statements below are dated historical observations. They must not be read as proof that the current working tree or October 8 features are live.
+
 **Project:** `edupulse-prototype` (team `bhenny-benlor-d-riveras-projects`) · **Production:** https://edupulse-prototype.vercel.app · **Root directory:** `edupulse-app`
 
 The settings below come from the repository (`edupulse-app/vercel.json`, `.vercelignore`, `scripts/check-deployment.ts`), the authenticated Vercel REST API, and live HTTP checks of production. The Claude Vercel connector returned *403 — re-authenticate to this scope* on 2026-10-02; the REST API was available on 2026-10-03.

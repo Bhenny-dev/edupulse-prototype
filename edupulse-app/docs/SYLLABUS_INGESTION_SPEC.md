@@ -1,10 +1,10 @@
 # EduPulse — Syllabus Ingestion & Registration Form Specification
 
-**Formalizes Figure 2, Step 1 of *EduPulse Chapter 1 & 2* — syllabus intake ("the instructor either uploads an existing syllabus, which the system parses and confirms… or is guided by the AI assistant in building one in the official KCP format").** This document extends `docs/REQUIREMENTS.md` FR-SYL-01 through FR-SYL-05 and FR-SYL-15 with a full machine-readable form spec. It does not replace that document — read it first for the governing scope constraints (four roles, no System Admin persona, "assistive and prompt-guided… not a catalogue of configurable features").
+**Formalizes Figure 2, Step 1 of *EduPulse Chapter 1 & 2* — syllabus intake ("the instructor either uploads an existing syllabus, which the system parses and confirms… or is guided by the AI assistant in building one in the official KCP format").** This document extends `docs/REQUIREMENTS.md` FR-SYL-01 through FR-SYL-05 and FR-SYL-15 with a machine-readable form spec. Read the current requirements first: the October 4 owner correction establishes five roles, including a separate Google System Admin. Form/schema proposals below remain subject to the implemented workflow.
 
 **Provenance of the 7-section structure.** No enumerated "7-section KCP template" exists anywhere in Chapter 1-2 — Appendix D1 cites an external file ("Official KCP Syllabus Sample/Template," Google Drive) this document has no access to. The 7 sections below are derived transparently from the field schema supplied directly by the user in this conversation, grouped into sections by field cohesion. If the actual KCP template document becomes available, section 2 of this spec should be diffed against it and corrected — treat the section names here as a working structure, not verified ground truth.
 
-**Scope correction applied.** The source request included "admin workflows." The system has exactly four roles (Dean, Associate Dean, Instructor, Student — see `docs/REQUIREMENTS.md` FR-AUTH-01) and no System Administrator persona. Every control in the original draft labeled "for admins" (the VMOCV read-only toggle, the extraction "Admin Override") is instead **instructor-facing** in this spec: the instructor who owns the syllabus is the one who locks fields or accepts/rejects the AI's extraction, consistent with FR-CW-04 ("no AI-generated courseware reaches students without instructor review") applied one level upstream, to syllabus intake itself.
+**Current scope (24 October 2026).** The System Admin is a separate operations role; it does not replace the academic Dean. Syllabus intake and extraction acceptance belong to the instructor. Owner view switching preserves the owner's identity. Earlier four-role/no-admin language is superseded by FR-ADMIN-01 through FR-ADMIN-04. OCR has since been adopted as a browser enhancement: printed English PDF pages use PDF.js and Tesseract, up to 60 pages; low-confidence or incomplete extraction requires review and correction. The earlier deferred-OCR statements below describe the original guarantee, not today's feature availability or measured accuracy.
 
 ---
 
@@ -239,7 +239,7 @@ Legend: **Sec** = which of the 7 sections it belongs to (0 = upload/extraction m
 6. **Bibliography parsing** — APA-pattern heuristic first; if no match, fall back to "one non-empty line per reference" and mark low confidence.
 7. **Confidence scoring** — per field: `40% pattern-match strength + 30% proximity to the correct section anchor + 20% source file type reliability (DOCX > PDF-text > PDF-scanned/OCR > TXT) + 10% consistency with existing curriculum reference data (e.g., does the extracted course_code exist in `CURRICULUM_SUBJECTS`)`.
 8. **Threshold fallback** — any field below 60% confidence is pre-filled with the best guess but visually flagged and excluded from the "ready to submit" count; the instructor must explicitly accept or overwrite it (see FORM-UI's Accept/Reject control).
-9. **Scanned/image-only PDFs** — OCR is out of guaranteed scope for this prototype (flagged Could-priority, FORM-BE-19); such files should be detected (no extractable text layer) and routed straight to Manual Entry with a plain-language explanation, not silently produce empty fields.
+9. **Scanned/image-only PDFs** — attempt the adopted browser OCR enhancement, then require instructor review. Failed or uncertain extraction must offer retry/manual correction with a plain-language explanation. OCR does not establish official approval, infer signatures or guarantee correct tables.
 10. **Link ingestion** — heuristics 1-8 apply identically once the linked resource is fetched and reduced to the same text/table representation as an uploaded file; no separate extraction path.
 
 ---
@@ -359,7 +359,7 @@ Numbered, grouped by category. ID scheme `FORM-<CAT>-##`. Priority: `M` Must / `
 | FORM-BE-16 | Partial extraction results shall always be returned rather than an all-or-nothing failure. | M |
 | FORM-BE-17 | Re-extraction on re-upload shall replace, not merge with, the prior draft's extracted (but not yet accepted) values. | M |
 | FORM-BE-18 | Link fetching shall enforce a redirect limit (≤5) and a content-type allowlist (HTML or the same document types as file upload). | M |
-| FORM-BE-19 | OCR for scanned documents is out of guaranteed scope for the prototype; flagged Could-priority, deferred to future work. | C |
+| FORM-BE-19 | Browser OCR is an adopted enhancement for printed English documents, with a 60-page limit and manual review. Its original Could-priority status does not promise general recognition accuracy. | C |
 | FORM-BE-20 | Extraction shall be idempotent — re-submitting the identical file shall not create duplicate draft records. | S |
 | FORM-BE-21 | Extraction results may be cached keyed by file content hash to avoid re-parsing an identical upload. | C |
 | FORM-BE-22 | Every extraction attempt shall be logged (success/fail, duration, field count) for audit and pipeline-improvement purposes — internal logs only, not a new UI dashboard (ties NFR-SEC-08). | M |

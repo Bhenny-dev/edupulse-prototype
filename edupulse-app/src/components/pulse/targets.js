@@ -62,6 +62,7 @@ export function componentBrief(element) {
     state = fields.length ? `${filled} of ${fields.length} fields filled` : `${element.querySelectorAll(CONTROLS).length} controls`
   }
   return {
+    targetId: element.getAttribute('data-pulse-id') || subject.id || [element.closest('[data-pulse-zone]')?.getAttribute('data-pulse-zone') || 'page', kind, labelOf(element) || labelOf(subject)].join(':'),
     kind, label: labelOf(element) || labelOf(subject) || kind, state, value, sensitive,
     required: Boolean(subject.required || subject.getAttribute?.('aria-required') === 'true' || /\*\s*$/.test(subject.labels?.[0]?.textContent || element.querySelector?.(':scope > label')?.textContent || '')), disabled: Boolean(subject.disabled),
     hints: [...hints].filter(Boolean).slice(0, 4),

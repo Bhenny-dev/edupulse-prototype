@@ -1,4 +1,4 @@
-import { test, expect, type Page, type Locator } from '@playwright/test'
+import { test, expect, type Page, type Locator } from './fixtures.js'
 import { mkdir, writeFile } from 'node:fs/promises'
 import { makeDocx, makePptx, makeScannedPdf, inflateDeclaredSize } from '../fixtures.js'
 import { PAGES, scanPage } from '../scans.js'

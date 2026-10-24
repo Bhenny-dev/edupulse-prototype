@@ -1,5 +1,5 @@
-import { test, expect, type Page, type Locator } from '@playwright/test'
-import { mkdir, writeFile } from 'node:fs/promises'
+import { test, expect, type Page, type Locator } from './fixtures.js'
+import { mkdir, readFile, writeFile } from 'node:fs/promises'
 
 // System walkthrough: every role's pages, tabs, popovers and modals, captured
 // from the production build. Output: feature-documentation/system-walkthrough/<folder>/<name>.png
@@ -20,6 +20,7 @@ async function signIn(page: Page, persona: 'System Admin' | 'Dean' | 'Assoc. Dea
 async function settle(page: Page) { await page.waitForLoadState('networkidle').catch(() => undefined); await page.waitForTimeout(350) }
 async function run(page: Page, role: string, scenes: Scene[]) {
   for (const scene of scenes) {
+    if (process.env.SNAPSHOT_SCENES && !new RegExp(process.env.SNAPSHOT_SCENES).test(`${scene.folder}/${scene.name}`)) continue
     const file = `${scene.name}.png`
     try {
       await page.keyboard.press('Escape').catch(() => undefined)
@@ -116,7 +117,16 @@ test('dean and associate dean', async ({ page }) => {
 
 test('associate dean', async ({ page }) => {
   await signIn(page, 'Assoc. Dean')
-  await run(page, 'associate dean', [{ folder: '03-dean-and-associate-dean', name: '12-associate-dean-dashboard', title: 'Associate Dean dashboard (distinct account)', path: '/dashboard' }])
+  await run(page, 'associate dean', [
+    { folder: '03-dean-and-associate-dean', name: '12-associate-dean-dashboard', title: 'Associate Dean dashboard (distinct account)', path: '/dashboard' },
+    { folder: '03-dean-and-associate-dean', name: '13-performance-access-denied', title: 'Associate Dean: performance route and Pulse access denied', path: '/performance', act: async p => {
+      await expect(p).toHaveURL(/dashboard/)
+      await p.getByRole('button', { name: 'Open Pulse assistant' }).click()
+      await p.getByRole('textbox', { name: 'Ask Pulse', exact: true }).fill('open performance')
+      await p.getByRole('button', { name: 'Send', exact: true }).click()
+      await expect(p.getByText('Performance is not available for your role.', { exact: true })).toBeVisible()
+    }, element: p => p.getByRole('dialog', { name: 'Pulse', exact: true }) },
+  ])
 })
 
 test('instructor', async ({ page, request }) => {
@@ -164,5 +174,9 @@ test('student', async ({ page }) => {
 
 test.afterAll(async () => {
   await mkdir(ROOT, { recursive: true })
-  await writeFile(`${ROOT}/capture-manifest.json`, `${JSON.stringify({ capturedAt: new Date().toISOString(), problems, scenes: manifest }, null, 2)}\n`)
+  const previous = process.env.SNAPSHOT_SCENES ? JSON.parse(await readFile(`${ROOT}/capture-manifest.json`, 'utf8')) : { scenes: [] }
+  const replaced = new Set(manifest.map(scene => `${scene.folder}/${scene.file}`))
+  const scenes = [...previous.scenes.filter((scene: { folder: string; file: string }) => !replaced.has(`${scene.folder}/${scene.file}`)), ...manifest]
+  await writeFile(`${ROOT}/capture-manifest.json`, `${JSON.stringify({ capturedAt: new Date().toISOString(), problems, scenes }, null, 2)}\n`)
+  expect(manifest.filter(scene => !scene.ok), 'every selected scene must capture successfully').toEqual([])
 })

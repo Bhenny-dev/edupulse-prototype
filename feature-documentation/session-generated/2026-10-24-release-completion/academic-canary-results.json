@@ -1,0 +1,13 @@
+{
+  "checkedAt": "2026-10-24T07:03:00.190Z",
+  "origin": "local-handler/real-hosted-auth-and-database",
+  "syntheticAccounts": 6,
+  "enrolledPublications": 2,
+  "answerKeysExposed": false,
+  "duplicateSubmission": "same-saved-result",
+  "outsiderPublicationCount": 0,
+  "unrelatedInstructorAttemptCount": 0,
+  "deanAttemptCount": 1,
+  "associateDeanAttemptCount": 0,
+  "provenance": "synthetic-hosted-canary"
+}

@@ -6,6 +6,8 @@ A syllabus passes five stations: **Drafted → Checked → Out for Approval → 
 
 The screenshots follow one real syllabus (IT 102 — Computer Programming 1) through every station.
 
+`SYL-LIFE-001` maps the lifecycle to `tests/snapshots/manual.spec.ts` and `tests/browser/workflows.spec.ts`. The October 24 DOCX/PDF import recapture uses generated sample documents and real browser extraction; both acceptance and retry are asserted. The capture run records local input evidence separately from authenticated production behavior.
+
 ## Build the draft
 
 To import an existing draft, click the upload area or drop a **.docx** or **.pdf** file of up to **2 MB** into it. Review **Extracted Sections Preview**, then click **Use This Syllabus** to fill the form. Importing does not save the draft. The sample below contains course information and one outline week; review missing sections before saving.

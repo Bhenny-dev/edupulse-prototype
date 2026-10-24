@@ -46,7 +46,9 @@ export async function saveWorkspace(identity: Identity, input: z.infer<typeof wo
     const file = syllabus.approvedFile
     if (!file) continue
     const bytes = Buffer.from(file.base64, 'base64')
-    if (bytes.length !== file.size || bytes[0] !== 80 || bytes[1] !== 75 || createHash('sha256').update(bytes).digest('hex') !== file.sha256) throw new ApiError(400, 'INVALID_ATTACHMENT', 'An approved attachment failed its size or checksum check. Upload the original DOCX again.')
+    const formatMatches = /\.pdf$/i.test(file.name) ? bytes.subarray(0, 5).toString('ascii') === '%PDF-'
+      : /\.docx$/i.test(file.name) && bytes[0] === 80 && bytes[1] === 75 && bytes[2] === 3 && bytes[3] === 4
+    if (bytes.length !== file.size || !formatMatches || createHash('sha256').update(bytes).digest('hex') !== file.sha256) throw new ApiError(400, 'INVALID_ATTACHMENT', 'An approved attachment failed its file type, size or checksum check. Upload the original DOCX or PDF again.')
   }
   let row: Row | undefined
   if (config().database === 'local') {

@@ -170,6 +170,8 @@ test('registering the same course and block twice merges the lists, and Undo res
   assert.equal(second.registrations.length, 1); assert.equal(second.added, 1); assert.equal(second.already, 1)
   assert.equal(second.registration.studentCount, 4)
   assert.deepEqual(undoRegistration(second.registrations, second), first.registrations)
+  const newer = second.registrations.map(registration => ({ ...registration, fileName: 'newer-confirmed-file.csv' }))
+  assert.deepEqual(undoRegistration(newer, second), newer, 'Undo preserves changes confirmed after the action card')
   assert.deepEqual(undoRegistration(first.registrations, first), [])
   // Another instructor's registration for the same block is separate.
   assert.equal(applyRegistration(first.registrations, { courseCode: 'IT 102', blockSection: 'BSIT-1A', students, fileName: 'x.csv', uploadedBy: 'u2' }).registrations.length, 2)

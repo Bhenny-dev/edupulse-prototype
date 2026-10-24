@@ -1,5 +1,13 @@
 # Backend System
 
+## October 24 audit integration (local candidate)
+
+The [audit integration record](../session-generated/2026-10-24-engineering-audit/README.md) separates confirmed fixes, preserved contracts and remaining product/deployment work. [ADR-001](decisions/001-role-and-approval-boundaries.md) records the role and offline approval interpretation. `src/lib/access.js` supplies the shared Performance and courseware-author role predicates; the API enforces the latter against the verified Supabase identity. Existing ownership and RLS remain in the workspace/document services. No new database, framework or approval service was added.
+
+Performance samples are labelled and restricted to preview personas. The completion pass connects signed-in academic views to the compatible, RLS-protected projection described in [Supabase configuration](supabase.md). Instructor, enrolled student and Dean results are authorized separately; Associate Dean has no score reads. Missing data yields a truthful empty/error state. The owner admin retains its identity and provider connection during view switching.
+
+The documentation gate checks each commit in a push, including the complete range without a 200-commit cutoff. Build/dependency/specification/CI changes now map to technical/release documentation. The [capture reporter](../capture-runs/README.md) records desktop/mobile/task execution provenance and screenshot hashes. These are local evidence, separate from authenticated production checks.
+
 ## October 8 fixes and pending-work completion
 
 Personal provider cookies remain encrypted, HTTP-only, expiring and bound to the verified Supabase account ID. Admin role previews retain that account ID and can reuse its connection; changing accounts or opening a guest session cannot read the admin connection. Hosted requests never borrow server-wide provider credentials.
@@ -16,6 +24,12 @@ What runs behind the EduPulse interface in v0.4.0: the API, the agents, the data
 * [Vercel configuration](vercel.md) — build, function limits, headers, environment variables and the production health check.
 
 ## Runtime layout
+
+### Authenticated academic API
+
+`GET /api/ai?action=academic` reads the caller's RLS-filtered projection; Associate Dean responses omit attempts/access records. `POST` validates a Zod discriminated command: `sync` refreshes the caller's own workspace projection; `open` and `submit` require an enrolled student and the exact published version. Client role/student/score fields cannot substitute for the verified identity. Named recoverable errors distinguish unavailable records, invalid responses and forbidden operations. See [Supabase configuration](supabase.md) for table policies, publication checks and shared request limits.
+
+The API/domain boundary lives in `server/domains/academic.ts`; shared hosted AI leases live in `server/requestLimits.ts`. Existing `/api/ai?action=...` compatibility is preserved. Authenticated academic screens use one reusable record-view component; authoring remains in the existing syllabus/courseware components. Preview academic pages and sample notifications remain available only in preview; signed-in views have truthful empty/error states.
 
 | Part | Local app (`npm run dev`) | Hosted (Vercel) |
 | --- | --- | --- |
@@ -90,7 +104,7 @@ Pulse's Operator (`src/agents/operator.js`) plans app actions from a message and
 ## Security summary
 
 * Provider keys and the Supabase secret never reach the browser. Personal provider keys are encrypted with AES-256-GCM (`AI_CONNECTION_SECRET`) into a `__Host-` cookie that expires within seven days.
-* Database access from the API uses the signed-in user's JWT, so Supabase row-level security applies to every query; database functions run with the caller's rights.
+* Database access from the API uses the signed-in user's JWT, so Supabase row-level security applies to every query; public RPC entrypoints run with the caller's rights. Narrow private definer functions enforce current trusted roles, ownership/enrollment, review state and bounded scoring/lease mutations; projection tables grant no direct authenticated writes.
 * Content-Security-Policy and related headers are set for every route (see [vercel.md](vercel.md)).
 * Model files are pinned to a Hugging Face revision and verified by SHA-256 before use.
 

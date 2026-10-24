@@ -60,7 +60,7 @@ export default function Pulse() {
     const zone = document.querySelector('[data-pulse-zone]')?.getAttribute('data-pulse-zone') || 'general'
     const next = getAgentForZone(zone, user?.role)
     setAgent(next)
-    setFocus(previous => previous?.agent.id === next?.id && previous.element.isConnected ? previous : null)
+    setFocus(previous => previous?.element?.isConnected && previous.agent?.id === next?.id ? previous : null)
     setGuide(previous => previous?.agentId === next?.id ? previous : null)
   }, [location.pathname, user?.role])
   useEffect(() => {
@@ -138,9 +138,10 @@ export default function Pulse() {
   // Courses Pulse can act on: the curriculum, with the syllabi and class lists in this workspace.
   const enrolled = useMemo(() => {
     if (user?.role !== 'student') return null
+    if (user?.authenticated) return new Set()
     const record = STUDENT_RECORDS.find(s => s.name === user?.name)
     return record ? new Set(record.courses.map(c => c.code)) : null
-  }, [user?.role, user?.name])
+  }, [user?.role, user?.name, user?.authenticated])
   const catalog = useMemo(() => courseCatalog({ curriculum: CURRICULUM_COURSES, syllabi, registrations, enrolled, role: user?.role, userId: user?.id }), [syllabi, registrations, enrolled, user?.role, user?.id])
   const currentCourse = useMemo(() => {
     const id = new URLSearchParams(location.search).get('course')
@@ -175,7 +176,10 @@ export default function Pulse() {
     navigate('/syllabus?tab=register')
     return result
   }, [registrations, setRegistrations, user?.id, navigate])
-  const undoRegister = useCallback(result => setRegistrations(previous => undoRegistration(previous, result)), [setRegistrations])
+  const undoRegister = useCallback(result => {
+    if (undoRegistration(registrations, result) === registrations) return false
+    setRegistrations(previous => undoRegistration(previous, result)); return true
+  }, [registrations, setRegistrations])
   const runFile = useCallback(async ({ attachment, courseCode, title }) => {
     const fullTitle = (courseCode ? `${courseCode} · ${title}` : title).slice(0, 160)
     const result = await aiRequest('documents', 'POST', { title: fullTitle, text: attachment.text, sourceType: attachment.sourceType || 'text', fileName: attachment.fileName, ...(courseCode ? { course: courseCode } : {}) })

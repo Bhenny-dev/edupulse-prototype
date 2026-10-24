@@ -1,4 +1,5 @@
 import { useCallback, useSyncExternalStore } from 'react'
+import { useAuth } from '../context/AuthContext'
 
 // Notifications — SYSTEM_SPEC §5. Unopened-material and unanswered-assessment
 // reminders fan out to BOTH the instructor and the student; syllabus-status
@@ -52,9 +53,10 @@ function writeStore(next) {
 const subscribe = listener => { listeners.add(listener); return () => listeners.delete(listener) }
 
 export function useNotifications(role) {
+  const { user } = useAuth()
   const store = useSyncExternalStore(subscribe, readStore, readStore)
   const seen = new Set(store[role] || [])
-  const notifications = (ROLE_NOTIFICATIONS[role] || []).map(n => ({ ...n, read: n.read || seen.has(n.id) }))
+  const notifications = (user?.authenticated ? [] : ROLE_NOTIFICATIONS[role] || []).map(n => ({ ...n, read: n.read || seen.has(n.id) }))
   const markRead = useCallback(ids => {
     const current = readStore()
     writeStore({ ...current, [role]: [...new Set([...(current[role] || []), ...ids])] })

@@ -1,0 +1,152 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-10-24T07-29-50-560Z-72546a2b",
+  "startedAt": "2026-10-24T07:29:50.560Z",
+  "finishedAt": "2026-10-24T07:30:16.413Z",
+  "commitSha": "5e7d95638c7abf8f74e85ec96cbf90ae491ed674",
+  "sourceDigest": "2216b262637336268396096ed6fbde6ce644a78b7c7d224d243a70b36beeb86f",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-10-24T07:29:48.948Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 5,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": null
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/authenticated.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/authenticated.spec.ts",
+      "title": "authenticated instructor sees its own persisted academic records",
+      "project": "authenticated-desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-hosted-authenticated",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2479,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/authenticated.spec.ts",
+      "title": "authenticated student sees enrolled content, private scoring and persistent material access",
+      "project": "authenticated-desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-hosted-authenticated",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 7344,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/authenticated.spec.ts",
+      "title": "authenticated Dean reads authorized college results",
+      "project": "authenticated-desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-hosted-authenticated",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 4756,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/authenticated.spec.ts",
+      "title": "authenticated Associate Dean is denied scores",
+      "project": "authenticated-desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-hosted-authenticated",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2694,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/authenticated.spec.ts",
+      "title": "unrelated authenticated accounts receive empty records instead of fixtures",
+      "project": "authenticated-desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-hosted-authenticated",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 4287,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-walkthrough/08-authenticated-records/01-instructor-records.png",
+      "sha256": "26baafbf4bf6397b5ed7d75fcb5e064b62d24fa989193ab30c17c1f7d2b3f73f",
+      "bytes": 308718
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/08-authenticated-records/02-student-material.png",
+      "sha256": "6b0299b45e314a96529abb294bda11d7d6bba979e1aad5f8e33aa4f9abeaa1d7",
+      "bytes": 246562
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/08-authenticated-records/03-student-assessment.png",
+      "sha256": "27ea97e84e7ef55055bedb653c3af67aade045bb78b9f74f43a458f99316fbe7",
+      "bytes": 227412
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/08-authenticated-records/04-student-performance.png",
+      "sha256": "e2f78d4fc2879e9e0a35771d71ae0b5249bc5f93ef0ecc7231d15dd477c722c8",
+      "bytes": 261152
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/08-authenticated-records/05-dean-performance.png",
+      "sha256": "fbad70fc4d4747fc944da5b10990d6946053878a367d905925ddf4aadc456e3d",
+      "bytes": 267216
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/08-authenticated-records/06-associate-dean-oversight.png",
+      "sha256": "5956ee09bcb87a9a2b92bb8571444e15330510ee1b5ea73d8187e783bf722707",
+      "bytes": 262570
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/08-authenticated-records/07-unenrolled-student.png",
+      "sha256": "192941dc654f32e4b682b5ddea9906efe007ec40d947cd94be9da8004e81c4ee",
+      "bytes": 320327
+    }
+  ]
+}

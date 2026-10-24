@@ -9,7 +9,7 @@
 | [Backend System](backend-system/README.md) | Backend: API, agents, data stores, security boundaries | [Supabase configuration](backend-system/supabase.md) and [Vercel configuration](backend-system/vercel.md), written from the live services and the repository |
 | [Session-generated material](session-generated/README.md) | Material produced during a work session rather than captured from the interface | Evaluation data and charts, architecture figures, results-and-discussion write-ups |
 
-Screenshots in the walkthrough and manual are real captures of the production build, made by the Playwright scripts in `edupulse-app/tests/snapshots/`. Charts and diagrams are kept apart from them in *session-generated*. Test runs belong on the testing site; release validation evidence is recorded in each version folder.
+Screenshots in the walkthrough and manual are real captures of the documentation capture build (`dist-capture`), made by the Playwright scripts in `edupulse-app/tests/snapshots/`. This build includes preview personas and sample academic data; some manual tasks exercise real documents and local models. It is separate from authenticated production evidence. [Capture-run metadata](capture-runs/README.md) records executed suites, source/build provenance and image hashes. Charts and diagrams remain in *session-generated*; release validation evidence is recorded in each version folder.
 
 **Strict requirement:** every feature change updates its screenshots and documentation in the same commit. Changed screenshots are replaced, stale text is edited, removed screens are taken out and new screens are added. A commit hook, `npm run verify` and CI enforce this. See the [documentation policy](DOCUMENTATION-POLICY.md) and the [source-to-documentation map](doc-map.json).
 
@@ -19,6 +19,7 @@ Version folders are release records. Preserve released records, and add correcti
 
 | Version | Scope | Status |
 | --- | --- | --- |
+| [24 October audit integration](versions/2026-10-24-audit-integration/README.md) | Install/security fixes, authorized academic records, scoring, shared limits and documentation evidence | Local/cloud checks complete; deployment status in validation |
 | [v0.0.0](versions/v0.0.0/README.md) | Recorded baseline before connected AI | Historical baseline |
 | [v0.1.0](versions/v0.1.0/README.md) | Real AI API, LangChain/LangGraph RAG, private vector knowledge, working UI integration | Deployed; local/live checks pass; GitHub runner billing lock recorded |
 | [v0.1.1](versions/v0.1.1/README.md) | Ensure deployment tests execute and fail when tests are missing | Local and Vercel verification passed; supersedes v0.1.0 deployment gate |

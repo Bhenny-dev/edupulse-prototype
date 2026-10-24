@@ -43,8 +43,8 @@ Every requirement below cites the section of *EduPulse Chapter 1 & 2* (Rivera, B
 | FR-SYL-05 | The syllabus builder shall capture, per topic: intended learning outcomes, subtopics, timeframes, and planned lessons/activities/assessments, matching the official KCP format. | §1.2 | M |
 | FR-SYL-06 | The syllabus builder shall reference the CHED-approved curriculum inline while the instructor edits, without requiring a separate lookup screen. | §1.2, §1.4 | M |
 | FR-SYL-07 | The system shall version every syllabus edit and allow the instructor to view prior versions. | Implied by "when the plan changes mid-semester" §1.1 | S |
-| FR-SYL-08 | The instructor shall be able to submit a syllabus for Dean approval. | §1.5 | M |
-| FR-SYL-09 | The Dean shall be able to approve, or request changes to, a submitted syllabus. | §1.5 | M |
+| FR-SYL-08 | The instructor shall be able to download the checked syllabus for offline Dean review, CAO approval and EVP noting, then upload the approved signed file. | §1.5; confirmed FLOW_SPEC offline process | M |
+| FR-SYL-09 | The Dean shall review the downloaded syllabus offline and request corrections through that process. EduPulse records the instructor's approved-file attestation and reviewed outline; it does not issue electronic approvals or validate signatures. | §1.5; confirmed FLOW_SPEC offline process | M |
 | FR-SYL-10 | The system shall allow syllabus edits mid-semester and shall flag which published courseware items are now out of alignment. | §1.1 (production gap: plans and materials drift apart) | M |
 | FR-SYL-11 | The system shall list all syllabi owned by the logged-in instructor, with status (draft / submitted / approved / needs revision). | §1.2 | M |
 | FR-SYL-12 | The system shall not require the instructor to configure a template before starting — it shall ask and proceed. | §1.2 ("assistive and prompt-guided") | M |

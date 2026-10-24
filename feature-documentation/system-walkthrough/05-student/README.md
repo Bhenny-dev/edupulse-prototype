@@ -2,6 +2,8 @@
 
 Main tabs: **Dashboard**, **My Courses**, **Performance**. Students see only what is published to their block, and Pulse guides them without answering assessment items. Shown as the preview student Bhenny Benlor D. Rivera (BSIT-3A).
 
+The refreshed Performance captures explicitly display **Sample performance data · Preview only · Institutional grades remain in EduSuite.** The preview scores are examples. Signed-in students use the [authenticated records view](../08-authenticated-records/README.md) for their own saved attempts and enrolled publications. Empty accounts show **No authorized academic records yet**; these preview screenshots are separate evidence.
+
 ## 1. Student dashboard
 
 ![Student dashboard](01-dashboard.png)
@@ -35,10 +37,10 @@ A course switcher (one button per enrolled course) sits above four tabs.
 | --- | --- | --- |
 | Overview | ![Overview](04-performance-overview.png) | Midterm score, topics mastered, topics needing review, and recent scores (Prelim, Midterm, Finals). |
 | By Topic | ![By topic](05-performance-by-topic.png) | Mastery per syllabus topic for the selected course. |
-| Learning Materials | ![Learning materials](06-performance-learning-materials.png) | Which published materials the student has opened. |
-| Assessment Scores | ![Assessment scores](07-performance-assessment-scores.png) | Every recorded assessment score for the course. |
+| Learning Materials | ![Learning materials](06-performance-learning-materials.png) | The captured course shows **No materials accessed yet**, zero accessed materials/opens, and 14 course weeks. Opening published materials populates this view. |
+| Assessment Scores | ![Assessment scores](07-performance-assessment-scores.png) | The captured course shows **No assessments taken yet** and dashes for unrecorded summary scores. Completed assessments populate this view. |
 
-**Export Report** downloads the student's own report.
+**Export Report** downloads the preview student's sample topic report. Signed-in accounts cannot export sample performance through this screen.
 
 ## 8. Pulse for students
 

@@ -2,6 +2,8 @@
 
 The same application on a phone-sized screen (iPhone 13 viewport, captured at 3× pixel density). Nothing is hidden behind a separate mobile app; the layout reflows.
 
+The October 24 recapture records the mobile suite centrally in [capture-run evidence](../../capture-runs/README.md). In the visible Pulse state, page guidance and source search are ready while conversation/drafting requires model setup. **Set up free / provider AI** opens connection settings. The settings image shows **Pulse AI connection**, **Set up Pulse AI**, **AI provider** set to **On this device · no API key**, and the on-device model selector; it does not establish that a model has been downloaded or is running.
+
 | # | Screenshot | What changes on a phone |
 | --- | --- | --- |
 | 1 | ![Landing](01-landing.png) | The landing page stacks its sections in one column. |
