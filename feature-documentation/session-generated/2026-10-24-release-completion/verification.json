@@ -1,6 +1,6 @@
 {
   "checkedAt": "2026-10-24T14:17:40.979Z",
-  "phase": "final-local-gates-complete",
+  "phase": "release-validated-and-promoted",
   "commitSha": "9a4bcf55ac8a9df29460bcc1a4f73ef37d44e0f2",
   "sourceDigest": "fb548d318b6141929f19789649cd3c6f900f0fd0bbfab8c84f0f7718c0d085ac",
   "sourceDirty": true,
@@ -49,7 +49,23 @@
     "latencyP50Ms": 84,
     "latencyP95Ms": 352
   },
-  "deployment": "pending immutable deployment verification; separate release evidence follows",
+  "deployment": {
+    "sourceCommit": "74191dea999f5501b7c5da92c7410a7c2189e4b7",
+    "id": "dpl_ErDYEqzWkjxiE26ChmFX9um8S5Pu",
+    "state": "READY",
+    "promoted": true,
+    "productionUrl": "https://edupulse-prototype.vercel.app",
+    "remoteTestsPassed": 110,
+    "hostedBrowserPassed": 5,
+    "pdfWordHostedImports": "passed",
+    "cleanup": {
+      "syntheticAccountsDeleted": 6,
+      "deletionVerified": true,
+      "staleTokenRejected": 401,
+      "latestTemporaryShare": "revoked",
+      "earlierTemporaryShare": "already absent (404 after expiry)"
+    }
+  },
   "cleanInstall": {
     "passed": true,
     "packagesInstalled": 191,

@@ -15,7 +15,7 @@ The baseline failed `npm ci` with inconsistent canvas optional packages. October
 | Full desktop/mobile browser suite | **59 passed, 13 skipped, 0 failed**; skips are evaluation opt-ins and device-specific cases |
 | Targeted walkthrough, imports and mobile capture | **10 passed**, 29 images; no recorded page/CSP errors |
 | Pulse later-registration Undo capture | **1 passed**, 1 image; newer changes preserved |
-| Authenticated academic capture | **5 passed**, 7 images; real password sign-in, hosted Supabase and local documentation app |
+| Authenticated academic capture | **5 passed**, 7 images; real password sign-in, hosted Supabase and immutable hosted application |
 | Documentation evidence | Changed images opened by Codex, exact hash review attestations and successful capture reports; `docs:check` passed |
 | Dependency audit | `npm audit --audit-level=high`: **0 vulnerabilities** |
 | Hosted migration and SQL lint | Four additive migrations applied to `xyziepdkdvvuhgkymooo`; final `supabase db lint --linked --level warning`: **No schema errors found** |
@@ -28,7 +28,7 @@ The [sanitized account-pair report](../../../session-generated/2026-10-24-releas
 
 The first immutable attempt (`dpl_84yZvLxrPEZwNaQcKyWKeyFz89zB`, source `5afbd0c`) failed `npm ci`: canvas platform entries existed but the parent `@napi-rs/canvas@1.0.13` entry was absent. Local npm 11 had accepted this tree. The development renderer is now explicitly pinned, and npm generated the complete dependency entry. The corrected clean installation and full 107-test release gate passed again. DOCX/PDF capture regressions passed (2 tests), with unchanged image hashes. This failed attempt remains part of the release evidence.
 
-At the start, the two latest October 8 Vercel attempts were Error; an older build remained Ready. The connector denied deployment listing (403); the scoped CLI confirmed the project/team and install failure. The completion release uses an immutable staged production build before domain promotion and push. Its URL, build result, API/browser canaries and final remote commit are recorded in follow-up deployment evidence once executed. Local/cloud gates above do not by themselves assert production promotion.
+At the start, the two latest October 8 Vercel attempts were Error; an older build remained Ready. The connector denied deployment access (403); the scoped CLI supplied build evidence and performed the release. Runtime commit `74191dea999f5501b7c5da92c7410a7c2189e4b7` built as `dpl_ErDYEqzWkjxiE26ChmFX9um8S5Pu`: strict clean install, all 110 tests, production build and serverless checks passed. The immutable deployment passed six-account API canaries, five authenticated browser tests, fixed-host S256 authorization-start checks, and actual PDF/Word (.docx) imports with zero page errors. It was promoted to [production](https://edupulse-prototype.vercel.app); unauthenticated checks confirmed HTTP 200, loaded embeddings, security headers, the current provider interface and guest authorization denial. [Structured deployment evidence](../../../session-generated/2026-10-24-release-completion/deployment.json) identifies the immutable URL and source SHA. Documentation-only commits can follow this runtime without changing it.
 
 ## Scope and remaining operational limits
 
@@ -41,3 +41,9 @@ Supabase's security advisor reported no errors and one existing warning: leaked-
 The owner added saved-provider status/account authorization and PDF-first intake requests before push. The final local gate passes 110 tests and 59 desktop/mobile browser tests (13 skips), including a once-only provider callback, URL parameter removal, synchronized pipeline state, saved/rejected key UI, selected-model retention, and S256 redirect. The callback regression caught a missing import during development; the complete browser suite passed after correction. Provider transports and consent-boundary pages are synthetic; no live personal key, consumer consent or paid inference was exercised. The owner has no approved hosted ChatGPT OAuth client, so direct ChatGPT authorization is not offered. OpenRouter browser authorization and API-key connections are implemented.
 
 PDF and Word (.docx) intake both pass. PDF/scanned-PDF OCR, retained approval bytes and retry workflows remain covered. Targeted captures updated Settings, saved/rejected credentials, PDF builder wording/layout and mobile screens; every changed image was opened and its exact hash reviewed. Prior 107-test/53-browser evidence is historical, retained in the preceding verification record.
+
+## Cleanup and CI boundary
+
+All six temporary synthetic users were deleted and deletion verified; a retained student access token was rejected with HTTP 401. Their workspace/projection rows cascade with account deletion. The ignored credential file was removed. The latest temporary deployment share was revoked; the earlier expiring share was already absent (404). No real academic account or record was used for these fixtures.
+
+GitHub Actions previously failed to start under the recorded account billing lock. Local and Vercel execution above are independently verified; GitHub runner success is not claimed. Inspect the live checks for the pushed commit separately.

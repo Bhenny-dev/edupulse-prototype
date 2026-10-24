@@ -13,3 +13,5 @@ These captures sign in to real temporary Supabase accounts with synthetic `examp
 | Unenrolled student | ![No authorized records](07-unenrolled-student.png) | **No authorized academic records yet**, with truthful zero counts. No sample roster or score fallback. |
 
 The workspace remains owner-scoped. The additive projection shares only enrolled published content and role-authorized results. A student account's verified email must match the instructor-confirmed class list. Instructors keep syllabus/courseware authoring in the existing screens; a checked draft must finish saving before **Publish** becomes available. Editing published content requires review again. Offline syllabus signatures remain outside EduPulse.
+
+The latest hosted run used runtime `74191de`: five tests passed and seven images were captured. Temporary accounts were subsequently deleted and stale access was rejected. [Deployment and cleanup evidence](../../session-generated/2026-10-24-release-completion/deployment.json) records the verified release separately from real institutional results.

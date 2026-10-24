@@ -1,0 +1,11 @@
+{
+  "checkedAt": "2026-10-24T14:26:19.837Z",
+  "origin": "https://edupulse-prototype.vercel.app",
+  "rootStatus": 200,
+  "healthStatus": 200,
+  "version": "0.4.0",
+  "embeddings": true,
+  "securityHeaders": true,
+  "latestProviderInterface": true,
+  "guestProviderAuthorization": 401
+}

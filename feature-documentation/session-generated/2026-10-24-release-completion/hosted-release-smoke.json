@@ -1,0 +1,11 @@
+{
+  "checkedAt": "2026-10-24T14:24:29.377Z",
+  "origin": "https://edupulse-prototype-3eb2f7x1c-bhenny-benlor-d-riveras-projects.vercel.app",
+  "health": 200,
+  "version": "0.4.0",
+  "database": "supabase",
+  "embeddings": true,
+  "securityHeaders": true,
+  "providerOAuthStart": "passed-fixed-host-S256-and-HttpOnly",
+  "realProviderConsent": "not-performed"
+}

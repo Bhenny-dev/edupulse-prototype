@@ -1,5 +1,9 @@
 # Vercel configuration
 
+## Completion release — 24 October 2026
+
+Runtime `74191de` is deployed as `dpl_ErDYEqzWkjxiE26ChmFX9um8S5Pu` and promoted to [edupulse-prototype.vercel.app](https://edupulse-prototype.vercel.app). Vercel passed its strict install, 110-test gate, build and serverless checks. Hosted synthetic API/account checks, five authenticated browser tests, PDF/Word imports, security headers and OpenRouter authorization start passed. Synthetic users were deleted, stale tokens rejected and temporary shares closed. [Release validation](../versions/2026-10-24-audit-integration/validation/results.md) records source/deployment evidence and provider-consent limits. The dated observations below preserve the install-failure history.
+
 ## Deployment reconciliation — 24 October 2026
 
 The scoped Vercel CLI confirmed that the latest October 8 deployments remain **Error**, while an earlier deployment is **Ready**. Build logs for `edupulse-prototype-gld4eumgd-bhenny-benlor-d-riveras-projects.vercel.app` identify source `5e7d956` and `npm ci` failure: `Missing: @napi-rs/canvas@1.0.10 from lock file`. A current local clean install also reproduced inconsistent canvas platform entries. The repaired lockfile is part of this local candidate; PDF.js/Zod/Vite/source-map security updates were checked separately. See the [candidate validation record](../versions/2026-10-24-audit-integration/validation/results.md) for final local results.

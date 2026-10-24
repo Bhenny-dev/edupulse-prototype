@@ -14,6 +14,8 @@ The [validation record](../../versions/2026-10-24-audit-integration/validation/r
 
 The deployment targets one existing institution/college project. This is a bounded pilot and compatible projection, not a direct EduSuite integration or a claim that every institutional administration function is automated. Historical preview screens remain documented as preview screens.
 
+Hosted release evidence: [deployment](deployment.json), [account-pair checks](hosted-academic-canary-results.json), [API/security/OAuth start](hosted-release-smoke.json), [PDF and Word imports](hosted-pdf-word-smoke.json), [production domain](production-smoke.json), and [verified synthetic-account cleanup](canary-cleanup.json). Runtime `74191de` passed Vercel's 110-test gate and was promoted to production. Direct consumer-provider consent and paid inference were not performed.
+
 ## Provider connection and PDF additions
 
 The owner reported stale connection status and a blank key field after saving. Settings and Pulse now share current health, with request sequencing; saved credentials have a masked indicator and expiry, failed replacements preserve retry input, and model refresh keeps the selected available model. OpenRouter browser authorization uses S256 PKCE, sealed ten-minute owner/origin/state validation and a server-only code exchange. Legacy GPT-3.5/GPT-4 chat token parameters are compatible. UI and authorization regressions use synthetic provider transports; no user API key or paid inference was used by the agent. The owner confirmed no approved hosted ChatGPT OAuth client, so direct ChatGPT sign-in remains unavailable under provider requirements. The manual links current primary provider documentation.

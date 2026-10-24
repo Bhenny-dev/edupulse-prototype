@@ -1,0 +1,34 @@
+{
+  "checkedAt": "2026-10-24T14:27:15.795Z",
+  "projectId": "prj_TWamHPF10NMTNg46ZLTAfWhtM4Uv",
+  "teamId": "team_DBR6wjUXneLL17Qd8hxs6szg",
+  "sourceCommit": "74191dea999f5501b7c5da92c7410a7c2189e4b7",
+  "deploymentId": "dpl_ErDYEqzWkjxiE26ChmFX9um8S5Pu",
+  "immutableUrl": "https://edupulse-prototype-3eb2f7x1c-bhenny-benlor-d-riveras-projects.vercel.app",
+  "productionUrl": "https://edupulse-prototype.vercel.app",
+  "state": "READY",
+  "promoted": true,
+  "remoteVerification": {
+    "strictCleanInstall": true,
+    "unitIntegrationTests": 110,
+    "failed": 0,
+    "build": true,
+    "serverlessCheck": true
+  },
+  "hostedBrowser": {
+    "passed": 5,
+    "failed": 0,
+    "images": 7
+  },
+  "accountPairChecks": "passed",
+  "providerAuthorizationStart": "passed-fixed-host-S256-HttpOnly",
+  "pdfAndWordImports": "passed in authenticated hosted browser",
+  "realProviderConsent": "not performed",
+  "cleanup": {
+    "syntheticAccountsDeleted": 6,
+    "deletionVerified": true,
+    "staleTokenRejected": 401,
+    "latestTemporaryShare": "revoked",
+    "earlierTemporaryShare": "already absent (404 after expiry)"
+  }
+}

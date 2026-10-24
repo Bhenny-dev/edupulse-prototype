@@ -348,6 +348,24 @@
       "sha256": "21259a40623f122897f718ca76d734faa77f67c0dd8169826de503a278146697",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-10-24T08:11:21.685Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/08-authenticated-records/03-student-assessment.png",
+      "sha256": "43abfddafa9739c02dbbc3ce834070b2a2c8909877bcc5a906da027a4818cb76",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-24T14:25:17.424Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/08-authenticated-records/04-student-performance.png",
+      "sha256": "abf3d426f659d4e4401fc65e57f71fc2d90d8fe7db006fb05d526484f6758a1f",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-24T14:25:17.430Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/08-authenticated-records/06-associate-dean-oversight.png",
+      "sha256": "9e7b30ca1349f4f9dbb7580f79b486896c98ec42428f78c3fd1c26b79d71d16b",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-24T14:25:17.430Z"
     }
   ]
 }
