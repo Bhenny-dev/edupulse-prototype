@@ -1,8 +1,8 @@
 # Backend System
 
-## October 24 audit integration (local candidate)
+## October 24 audit integration and completion
 
-The [audit integration record](../session-generated/2026-10-24-engineering-audit/README.md) separates confirmed fixes, preserved contracts and remaining product/deployment work. [ADR-001](decisions/001-role-and-approval-boundaries.md) records the role and offline approval interpretation. `src/lib/access.js` supplies the shared Performance and courseware-author role predicates; the API enforces the latter against the verified Supabase identity. Existing ownership and RLS remain in the workspace/document services. No new database, framework or approval service was added.
+The [initial audit record](../session-generated/2026-10-24-engineering-audit/README.md) is followed by the [completion record](../session-generated/2026-10-24-release-completion/README.md). [ADR-001](decisions/001-role-and-approval-boundaries.md) records the accepted role and offline approval boundaries. `src/lib/access.js` supplies the shared Performance and courseware-author role predicates; the API enforces the latter against the verified Supabase identity. Existing ownership and RLS remain in the workspace/document services. The additive projection uses the existing database and framework.
 
 Performance samples are labelled and restricted to preview personas. The completion pass connects signed-in academic views to the compatible, RLS-protected projection described in [Supabase configuration](supabase.md). Instructor, enrolled student and Dean results are authorized separately; Associate Dean has no score reads. Missing data yields a truthful empty/error state. The owner admin retains its identity and provider connection during view switching.
 
@@ -41,7 +41,7 @@ The API/domain boundary lives in `server/domains/academic.ts`; shared hosted AI 
 | Workspace (syllabi, courseware) | PGlite table `ep_workspaces` | Supabase table `edupulse_workspaces` |
 | Sign-in | Five preview personas (local workspace identity; also in the documentation capture build) | Supabase Auth: email and password for Dean, Associate Dean, Instructor and Student; Google for the system admin. The API verifies the JWT and requires an assigned role. |
 
-## API: one endpoint, ten actions
+## API: one endpoint, twelve actions
 
 All requests go to `/api/ai?action=<name>`. Every request is checked for origin (same-origin only), size (per-action body limits) and identity; AI actions are limited to **20 requests per minute and one at a time** per user and connection.
 
@@ -56,6 +56,14 @@ All requests go to `/api/ai?action=<name>`. Every request is checked for origin 
 | `extract` | POST (raw bytes) | anyone (guests cannot index) | Sandboxed extraction with a quality report |
 | `documents` | GET, POST, DELETE | signed-in users | List, index (after review) and delete library documents. An optional `course` (for example `IT 102`) files a document under a course; it is kept in the document's `quality` record, so no migration is needed |
 | `workspace` | GET, PUT | signed-in users (PUT: system admin, Dean, Associate Dean or Instructor) | Load and save the academic workspace with revision checks |
+| `academic` | GET, POST | assigned academic accounts; commands further restricted by operation | Read authorized projection; instructor workspace sync, enrolled student material opens and versioned objective submissions |
+| `provider-oauth` | POST | assigned accounts or the local workspace | Begin OpenRouter PKCE authorization or complete the account/origin/state-bound code exchange |
+
+Provider settings and pipeline status share `AIContext` health; outdated requests cannot overwrite a newer refresh. Saved credentials display a masked indicator/expiry without exposing the secret. Failed replacements retain editable input and preserve the existing cookie. Model refresh preserves an available selected model; first-time OpenAI selection prefers an available small modern model instead of alphabetically defaulting to GPT-3.5. Legacy GPT-3.5/GPT-4 chat requests use `max_tokens`; reasoning models use completion-token limits.
+
+`server/domains/providerOAuth.ts` implements OpenRouter's fixed-host S256 flow. The random verifier/state are sealed in a ten-minute HttpOnly cookie using authenticated encryption. Completion requires the same verified EduPulse owner, origin, unexpired state and PKCE verifier; provider codes are one-use. Browser callback parameters are removed from the URL, and the server returns public connection metadata only. Provider errors preserve the previous saved connection. Existing hosted account leases also bound these commands. No OAuth password, key or token is written to local storage or returned in JSON.
+
+OpenRouter authorization is available; direct hosted ChatGPT sign-in requires provider approval that this project does not currently have. The [manual](../system-manual/08-ai-connections/README.md) documents provider capabilities and the distinction between synthetic authorization regressions and live consent.
 
 The system admin dashboard calls the gated `edupulse_admin_overview` database RPC for account coverage and recent activity. The separate `admin-accounts` Supabase Edge Function creates role accounts and assigns roles after verifying the live Google admin identity. The admin view also checks authentication, Google sign-in, the audit query and the Pulse API. Each account connects its own AI provider in Settings; a role switch never shares an AI key or another user's workspace.
 

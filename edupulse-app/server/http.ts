@@ -19,6 +19,7 @@ import { AGENT_ORDER } from '../src/lib/rag/registry.js'
 import { canGenerateCourseware } from '../src/lib/access.js'
 import { academicCommand, executeAcademic, readAcademic } from './domains/academic.js'
 import { changeLease } from './requestLimits.js'
+import { providerOAuth, providerOAuthInput } from './domains/providerOAuth.js'
 
 export const VERSION = '0.4.0'
 /** Request body limits per action (bytes). Uploads are raw file bytes. */
@@ -84,7 +85,7 @@ export async function handleRequest(request: Request): Promise<Response> {
   try {
     enforceOrigin(request)
     action = new URL(request.url).searchParams.get('action') || 'health'
-    const methods: Record<string, string[]> = { health: ['GET'], providers: ['GET', 'POST', 'DELETE'], context: ['POST'], similarity: ['POST'], references: ['POST'], extract: ['POST'], chat: ['POST'], courseware: ['POST'], documents: ['GET', 'POST', 'DELETE'], workspace: ['GET', 'PUT'], academic: ['GET', 'POST'] }
+    const methods: Record<string, string[]> = { health: ['GET'], providers: ['GET', 'POST', 'DELETE'], 'provider-oauth': ['POST'], context: ['POST'], similarity: ['POST'], references: ['POST'], extract: ['POST'], chat: ['POST'], courseware: ['POST'], documents: ['GET', 'POST', 'DELETE'], workspace: ['GET', 'PUT'], academic: ['GET', 'POST'] }
     if (!methods[action]) throw new ApiError(404, 'NOT_FOUND', 'Unknown API action.')
     if (!methods[action].includes(request.method)) return new Response(null, { status: 405, headers: { Allow: methods[action].join(', '), 'Cache-Control': 'no-store' } })
     const identity = await authenticate(request)
@@ -144,6 +145,10 @@ export async function handleRequest(request: Request): Promise<Response> {
       return json(await extractUpload(bytes, fileName, signal))
     }
     const body = await readJson(request, bodyLimit(action))
+    if (action === 'provider-oauth') {
+      const result = await providerOAuth(request, identity, providerOAuthInput.parse(body))
+      return json(result.body, 200, result.cookie)
+    }
     if (action === 'providers') {
       const input = connectionInput.parse(body)
       if (input.provider === 'ollama' && identity.role === 'guest' && config().hosted) throw new ApiError(403, 'FORBIDDEN', 'Use on-device AI or your own hosted provider in preview.')

@@ -11,8 +11,8 @@ The baseline failed `npm ci` with inconsistent canvas optional packages. October
 | Check | Observed result |
 | --- | --- |
 | Clean installation | `npm ci` passed after lock/dependency repair; lifecycle hooks installed |
-| Full `npm run verify` | Passed: documentation, lint, typecheck, pinned models, **107 tests / 0 failures**, production build and serverless deployment checks |
-| Full desktop/mobile browser suite | **53 passed, 13 skipped, 0 failed**; skips are evaluation opt-ins and device-specific cases |
+| Full `npm run verify` | Passed: documentation, lint, typecheck, pinned models, **110 tests / 0 failures**, production build and serverless deployment checks |
+| Full desktop/mobile browser suite | **59 passed, 13 skipped, 0 failed**; skips are evaluation opt-ins and device-specific cases |
 | Targeted walkthrough, imports and mobile capture | **10 passed**, 29 images; no recorded page/CSP errors |
 | Pulse later-registration Undo capture | **1 passed**, 1 image; newer changes preserved |
 | Authenticated academic capture | **5 passed**, 7 images; real password sign-in, hosted Supabase and local documentation app |
@@ -35,3 +35,9 @@ At the start, the two latest October 8 Vercel attempts were Error; an older buil
 This is an accepted single-college pilot. Instructor-confirmed EduSuite exports establish email enrollment; direct institution-wide EduSuite synchronization and multi-college tenancy are outside this integration. Academic reads are bounded to 1,000 rows per table per request. Raw objective scores are not official institutional grades. Offline signatures are attested, not automatically verified. Existing lint/bundle warnings remain below the configured error gates.
 
 Supabase's security advisor reported no errors and one existing warning: leaked-password protection is disabled. No paid-plan change was made; see the [official remediation](https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection). The final hosted SQL lint found no schema errors. Historical evaluation corpora/results are unchanged. The eight-question synthetic retrieval check does not establish representative factual accuracy, OCR quality, generative completion or a before/after speed improvement.
+
+## Provider and PDF follow-up
+
+The owner added saved-provider status/account authorization and PDF-first intake requests before push. The final local gate passes 110 tests and 59 desktop/mobile browser tests (13 skips), including a once-only provider callback, URL parameter removal, synchronized pipeline state, saved/rejected key UI, selected-model retention, and S256 redirect. The callback regression caught a missing import during development; the complete browser suite passed after correction. Provider transports and consent-boundary pages are synthetic; no live personal key, consumer consent or paid inference was exercised. The owner has no approved hosted ChatGPT OAuth client, so direct ChatGPT authorization is not offered. OpenRouter browser authorization and API-key connections are implemented.
+
+PDF and Word (.docx) intake both pass. PDF/scanned-PDF OCR, retained approval bytes and retry workflows remain covered. Targeted captures updated Settings, saved/rejected credentials, PDF builder wording/layout and mobile screens; every changed image was opened and its exact hash reviewed. Prior 107-test/53-browser evidence is historical, retained in the preceding verification record.

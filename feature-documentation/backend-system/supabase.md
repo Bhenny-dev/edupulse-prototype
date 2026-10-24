@@ -28,6 +28,10 @@ The shared-record API currently bounds each table response to 1,000 authorized r
 | 20261001090000 | `agentic_rag` | 384-d MiniLM embeddings, generated full-text column `fts` with a GIN index, `edupulse_ingest_document_v2` (pages, sections, extraction metadata) and `edupulse_hybrid_chunks` (vector + keyword search for the Researchers) |
 | 20261004054136 | `system_admin_audit_roles` | Five distinct roles, academic workspace access, admin-only account and audit overview, activity audit table |
 | 20261004073000 | `agent_runs_tracking` | Agent run records: `edupulse_agent_runs`, the gated `edupulse_admin_agent_activity` and the helper `edupulse_private.is_system_admin()` |
+| 20261024064532 | `academic_projection` | Courses, confirmed enrollments, sanitized publications, private assessment keys, attempts/material opens, current-role RLS and bounded commands |
+| 20261024065254 | `request_leases` | Atomic authenticated AI concurrency/rate leases across hosted instances |
+| 20261024071459 | `academic_record_labels` | Retained student email labels for authorized result views |
+| 20261024073036 | `academic_lint_cleanup` | Remove a redundant grading loop variable; linked SQL lint passes |
 
 The SQL files are in `edupulse-app/supabase/migrations/`. Apply new ones in order with `supabase db push` or the SQL Editor, then run both advisors.
 

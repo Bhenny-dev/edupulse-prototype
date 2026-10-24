@@ -4,6 +4,17 @@ import { createServer } from 'node:http'
 import { once } from 'node:events'
 import { invokeModel } from '../server/providers.js'
 
+test('OpenAI chat requests use legacy token limits for GPT-3.5 and completion limits for reasoning models', async t => {
+  const original = globalThis.fetch, bodies: Record<string, unknown>[] = []
+  globalThis.fetch = async (_url, init) => { bodies.push(JSON.parse(String(init?.body))); return Response.json({ choices: [{ message: { content: 'Hello. How can I help with your course?' } }] }) }
+  t.after(() => { globalThis.fetch = original })
+  for (const model of ['gpt-3.5-turbo', 'o3-mini']) await invokeModel('Help with the current task.', 'yo', AbortSignal.timeout(1000), false, { provider: 'openai', model, apiKey: 'synthetic-only', owner: 'test', id: 'test', expires: Date.now() + 1000 })
+  assert.equal(bodies[0].max_tokens, 1600)
+  assert.equal(bodies[0].max_completion_tokens, undefined)
+  assert.equal(bodies[1].max_completion_tokens, 2400)
+  assert.equal(bodies[1].max_tokens, undefined)
+})
+
 test('Ollama draft transport requests one non-streaming JSON response and propagates errors', async () => {
   const bodies: Record<string, unknown>[] = []
   let fail = false

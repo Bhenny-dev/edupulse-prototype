@@ -1,5 +1,5 @@
 {
-  "capturedAt": "2026-10-24T07:18:04.313Z",
+  "capturedAt": "2026-10-24T08:10:25.828Z",
   "problems": [],
   "scenes": [
     {
@@ -157,14 +157,6 @@
     {
       "role": "all roles",
       "folder": "02-shared-interface",
-      "file": "13-settings-ai-and-knowledge.png",
-      "title": "Settings · AI & Knowledge",
-      "route": "/settings",
-      "ok": true
-    },
-    {
-      "role": "all roles",
-      "folder": "02-shared-interface",
       "file": "14-settings-data-and-privacy.png",
       "title": "Settings · Data & Privacy",
       "route": "/settings",
@@ -192,14 +184,6 @@
       "file": "17-pulse-panel.png",
       "title": "Pulse panel (welcome)",
       "route": "/dashboard",
-      "ok": true
-    },
-    {
-      "role": "all roles",
-      "folder": "02-shared-interface",
-      "file": "18-pulse-dwell-help.png",
-      "title": "“Ask Pulse about this” hover badge",
-      "route": "/syllabus",
       "ok": true
     },
     {
@@ -271,14 +255,6 @@
       "folder": "04-instructor",
       "file": "04-syllabus-shared-repository.png",
       "title": "Syllabus · Shared Repository",
-      "route": "/syllabus",
-      "ok": true
-    },
-    {
-      "role": "instructor",
-      "folder": "04-instructor",
-      "file": "05-syllabus-builder.png",
-      "title": "Syllabus Builder (upload or build the 7 sections)",
       "route": "/syllabus",
       "ok": true
     },
@@ -520,6 +496,30 @@
       "file": "07-performance-assessment-scores.png",
       "title": "Performance · Assessment Scores",
       "route": "/performance",
+      "ok": true
+    },
+    {
+      "role": "all roles",
+      "folder": "02-shared-interface",
+      "file": "13-settings-ai-and-knowledge.png",
+      "title": "Settings · AI & Knowledge",
+      "route": "/settings",
+      "ok": true
+    },
+    {
+      "role": "all roles",
+      "folder": "02-shared-interface",
+      "file": "18-pulse-dwell-help.png",
+      "title": "“Ask Pulse about this” hover badge",
+      "route": "/syllabus",
+      "ok": true
+    },
+    {
+      "role": "instructor",
+      "folder": "04-instructor",
+      "file": "05-syllabus-builder.png",
+      "title": "Syllabus Builder (upload or build the 7 sections)",
+      "route": "/syllabus",
       "ok": true
     }
   ]

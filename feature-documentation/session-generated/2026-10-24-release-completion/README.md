@@ -13,3 +13,9 @@ Additional fixes: retained PDF saves now recognize PDF bytes; authenticated dash
 The [validation record](../../versions/2026-10-24-audit-integration/validation/results.md) records final local/hosted/browser/deployment outcomes. Canary accounts and records are synthetic, temporary, and removed after hosted checks. No passwords, keys, session tokens or real student records are included in this folder.
 
 The deployment targets one existing institution/college project. This is a bounded pilot and compatible projection, not a direct EduSuite integration or a claim that every institutional administration function is automated. Historical preview screens remain documented as preview screens.
+
+## Provider connection and PDF additions
+
+The owner reported stale connection status and a blank key field after saving. Settings and Pulse now share current health, with request sequencing; saved credentials have a masked indicator and expiry, failed replacements preserve retry input, and model refresh keeps the selected available model. OpenRouter browser authorization uses S256 PKCE, sealed ten-minute owner/origin/state validation and a server-only code exchange. Legacy GPT-3.5/GPT-4 chat token parameters are compatible. UI and authorization regressions use synthetic provider transports; no user API key or paid inference was used by the agent. The owner confirmed no approved hosted ChatGPT OAuth client, so direct ChatGPT sign-in remains unavailable under provider requirements. The manual links current primary provider documentation.
+
+PDF is the primary syllabus intake format, alongside Word (.docx). Text/scanned PDF import, OCR, approved PDF retention and activation remain covered by regression tests. Builder wording lists PDF first and the introduction wraps clear of its action button.

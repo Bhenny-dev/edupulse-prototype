@@ -51,7 +51,7 @@ export async function invokeModel(system: string, prompt: string, signal: AbortS
     const headers: Record<string, string> = { 'Content-Type': 'application/json', ...(anthropic ? { 'x-api-key': connection.apiKey!, 'anthropic-version': '2023-06-01' } : { Authorization: `Bearer ${connection.apiKey}` }), ...(connection.provider === 'openrouter' ? { 'X-Title': 'EduPulse' } : {}) }
     const body = anthropic
       ? { model: connection.model, system, messages: [{ role: 'user', content: prompt }], max_tokens: json ? 5000 : 1600 }
-      : { model: connection.model, messages: [{ role: 'system', content: system }, { role: 'user', content: prompt }], ...(connection.provider === 'openai' ? { max_completion_tokens: json ? 6000 : 2400 } : { max_tokens: json ? 5000 : 1600 }), ...(json ? { response_format: { type: 'json_object' } } : {}) }
+      : { model: connection.model, messages: [{ role: 'system', content: system }, { role: 'user', content: prompt }], ...(connection.provider === 'openai' && !/^gpt-(?:3\.5|4(?:\.|o|-|$))/.test(connection.model) ? { max_completion_tokens: json ? 6000 : 2400 } : { max_tokens: json ? 5000 : 1600 }), ...(json ? { response_format: { type: 'json_object' } } : {}) }
     let response: Response
     try { response = await fetch(endpoint, { method: 'POST', headers, body: JSON.stringify(body), signal, redirect: 'error' }) }
     catch (error) { throw transportFailure(error, signal, connection.provider) }

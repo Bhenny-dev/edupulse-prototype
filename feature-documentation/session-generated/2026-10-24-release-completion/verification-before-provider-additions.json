@@ -1,0 +1,63 @@
+{
+  "checkedAt": "2026-10-24T07:41:39.811Z",
+  "phase": "local-and-cloud-gates-complete",
+  "commitSha": "5afbd0c44736b0d3ab0445cda15ad4c6f21ea351",
+  "sourceDigest": "e86ad59af03e2449da18892fa0b2d4c3e334b9f41ace40c1cb50188e47d2565c",
+  "sourceDirty": true,
+  "releaseGate": {
+    "command": "npm run verify",
+    "passed": true,
+    "tests": 107,
+    "failed": 0
+  },
+  "browser": {
+    "command": "npm run test:browser",
+    "passed": 53,
+    "skipped": 13,
+    "failed": 0
+  },
+  "authenticatedCapture": {
+    "testsPassed": 5,
+    "images": 7,
+    "authAndDatabase": "real hosted Supabase",
+    "application": "local documentation build"
+  },
+  "targetedCapture": {
+    "walkthroughUploadAndMobileTestsPassed": 10,
+    "images": 29,
+    "undoTestsPassed": 1,
+    "undoImages": 1
+  },
+  "dependencyAudit": {
+    "vulnerabilities": 0
+  },
+  "supabase": {
+    "projectRef": "xyziepdkdvvuhgkymooo",
+    "appliedMigrations": [
+      "20261024064532",
+      "20261024065254",
+      "20261024071459",
+      "20261024073036"
+    ],
+    "finalLinkedSqlLint": "No schema errors found",
+    "securityAdvisor": "One existing warning: leaked-password protection disabled; no new advisor error observed"
+  },
+  "retrieval": {
+    "syntheticCases": 8,
+    "successes": 8,
+    "privateOwnerIsolation": true,
+    "latencyP50Ms": 84,
+    "latencyP95Ms": 352
+  },
+  "deployment": "pending immutable deployment verification; separate release evidence follows",
+  "cleanInstall": {
+    "passed": true,
+    "packagesInstalled": 191,
+    "vulnerabilities": 0
+  },
+  "installCorrection": {
+    "failedDeployment": "dpl_84yZvLxrPEZwNaQcKyWKeyFz89zB",
+    "fix": "Explicitly pinned canvas 1.0.13 development renderer and complete npm-generated parent entry",
+    "rendererCaptureTestsPassed": 2
+  }
+}

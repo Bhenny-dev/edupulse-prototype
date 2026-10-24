@@ -123,7 +123,7 @@ export default function UploadExistingSyllabus({ onExtract, onCancel, compact })
             </div>
             {!compact && <p style={{ fontWeight: 700, marginBottom: '4px' }}>Drop your syllabus .docx or .pdf here or click to browse</p>}
             <p className="text-sm text-muted">The system will extract content and auto-fill the 7-section syllabus form.</p>
-            <p style={{ fontSize: '0.6875rem', color: 'var(--gray-400)', marginTop: '4px' }}>Accepted: .docx, .pdf · Max 2MB · Scanned PDFs use OCR</p>
+            <p style={{ fontSize: '0.6875rem', color: 'var(--gray-400)', marginTop: '4px' }}>Accepted: .pdf, .docx · Max 2MB · Scanned PDFs use OCR</p>
           </div>
         ) : error ? (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>

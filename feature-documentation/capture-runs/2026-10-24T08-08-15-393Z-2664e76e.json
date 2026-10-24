@@ -1,0 +1,153 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-10-24T08-08-15-393Z-2664e76e",
+  "startedAt": "2026-10-24T08:08:15.393Z",
+  "finishedAt": "2026-10-24T08:08:37.127Z",
+  "commitSha": "9a4bcf55ac8a9df29460bcc1a4f73ef37d44e0f2",
+  "sourceDigest": "273a3c8d605fe7150bb65c59c5dd52ec0518482a93d3a5e40ff292c02463ed5e",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-10-24T08:08:12.062Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 4,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": "05-syllabus-builder$|18-pulse-dwell-help"
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+      "title": "provider connection: clearly saved credential, synchronized status and recoverable replacement",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-provider-transport/ui-regression",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2262,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+      "title": "shared interface (shown as instructor)",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "preview/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 4101,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+      "title": "instructor",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "preview/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2071,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+      "title": "mobile walkthrough",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "preview/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 6028,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-manual/08-ai-connections/04-saved-provider-credential.png",
+      "sha256": "d90e61aac32848e741db09d4b9c8261a0893d38c5f86d7c2f09f91f76c9cd72a",
+      "bytes": 139609
+    },
+    {
+      "path": "feature-documentation/system-manual/08-ai-connections/05-provider-replacement-error.png",
+      "sha256": "a0d30d8f55e2abc4fe4ad77338230958969838d0e3296309d53d458e6a4e7f54",
+      "bytes": 127815
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/02-shared-interface/18-pulse-dwell-help.png",
+      "sha256": "94219b18e94e33159d9cd4463fbca64c4946dd46ddf93d0735bd8df3f357f411",
+      "bytes": 186046
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/04-instructor/05-syllabus-builder.png",
+      "sha256": "eb94c1206d83f9c34db985b2c64c482876439b7851e26dff595f5a98d2095566",
+      "bytes": 180280
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/06-mobile/01-landing.png",
+      "sha256": "f2df8fd587397ffb201389fd941c5ba7853f2db9f162bc5aadb8c4c5bbbbd621",
+      "bytes": 1130837
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/06-mobile/02-instructor-dashboard.png",
+      "sha256": "4e2afe2ee5a5b330b397a433d30e33c4ca26b6a6fb084a66e0773788c1b2e6eb",
+      "bytes": 402115
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/06-mobile/03-navigation-menu.png",
+      "sha256": "fb14a726ab5085281ce7129f4306f260ce4d2e32fceb4255b50bba7c84a64053",
+      "bytes": 127159
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/06-mobile/04-syllabus-builder.png",
+      "sha256": "f72b151a0480445cda894f7ab031313f4f3caa35368f38edbe2ee2262d884489",
+      "bytes": 292018
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/06-mobile/05-pulse-panel.png",
+      "sha256": "e3b1b7f7ab41e59ccd0c9ca0f370d06499c602a3ea0d63866f20e2a0d6baff76",
+      "bytes": 307306
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/06-mobile/06-settings-ai-and-knowledge.png",
+      "sha256": "7363e2800197c6a4031145eea30f361911b6ebdce5b13b7eae4d058e5918d02b",
+      "bytes": 323657
+    }
+  ]
+}

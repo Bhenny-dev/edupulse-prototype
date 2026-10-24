@@ -1,6 +1,6 @@
 # System Walkthrough
 
-A screen-by-screen tour of EduPulse as each role sees it, captured from the documentation capture build (v0.4.0 plus the local audit candidate). Preview data and local task evidence do not certify authenticated production behavior. Use it to explain **what is on each screen**. For **how to complete a task** step by step, use the [System Manual](../system-manual/README.md).
+A screen-by-screen tour of EduPulse as each role sees it, captured from the documentation capture build (v0.4.0 plus the audit completion). Preview data and local task evidence are separate from the authenticated hosted captures in section 08. Use it to explain **what is on each screen**. For **how to complete a task** step by step, use the [System Manual](../system-manual/README.md).
 
 | Folder | Role | What it covers |
 | --- | --- | --- |

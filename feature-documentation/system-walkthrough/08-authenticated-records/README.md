@@ -1,6 +1,6 @@
 # 08 · Authenticated academic records
 
-These captures sign in to real temporary Supabase accounts with synthetic `example.invalid` identities and canary course records. They validate authenticated queries and database permissions, not real institutional results or actual signed approvals. The surrounding app is the documentation capture build; hosted checks against an immutable deployment are recorded separately in the release validation.
+These captures sign in to real temporary Supabase accounts with synthetic `example.invalid` identities and canary course records. They validate authenticated queries and database permissions, not real institutional results or actual signed approvals. The latest captures target an immutable hosted deployment; execution reports distinguish the deployed SHA from the local capture-tooling digest. The release validation records API/account checks separately.
 
 | View | Capture | Visible behavior |
 | --- | --- | --- |

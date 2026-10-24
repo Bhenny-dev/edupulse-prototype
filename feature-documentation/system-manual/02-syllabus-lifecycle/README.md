@@ -20,6 +20,8 @@ To import an existing draft, click the upload area or drop a **.docx** or **.pdf
 
 PDF text is read into the same seven-section preview. Scanned pages are read with OCR on your device (up to 60 pages); check the results against the original, especially numbers and weekly table rows. Unrecognized layouts and week ranges need manual editing.
 
+PDF is the primary institutional intake format; Word `.docx` is also supported. The builder introduction and accepted-format hint list PDF first. Activation and retained-attachment validation accept both formats. Export for the offline approval route remains DOCX.
+
 ![PDF import preview with sample course and outline](14-pdf-import-preview.png)
 
 1. Open **Syllabus → Syllabus Builder** and choose the **Course**. Course title, period offered and academic year fill in from the curriculum and are locked; so is the course description in Section 2.

@@ -1,0 +1,61 @@
+import { test, expect } from '@playwright/test'
+import { providerFixture } from './provider-fixture.js'
+
+test('provider save synchronizes pipeline status, survives reopening, retains model selection and failed replacement input', async ({ page }) => {
+  await providerFixture(page)
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Instructor', exact: true }).click()
+  await page.goto('/#/settings?tab=ai-provider')
+  await page.getByLabel('AI provider', { exact: true }).selectOption('openai')
+  await page.getByLabel('Provider API key', { exact: true }).fill('synthetic-provider-key-for-ui')
+  await page.getByRole('button', { name: 'Connect and load models', exact: true }).click()
+  await expect(page.getByLabel('Saved provider credential')).toHaveValue('saved-credential')
+  const pipeline = page.locator('[data-pulse-target="AI pipeline status"]')
+  await expect(pipeline).toContainText('Model connection verified.')
+  await expect(pipeline.getByText('Connected', { exact: true })).toBeVisible()
+  await page.reload()
+  await expect(page.getByLabel('Saved provider credential')).toBeVisible()
+  await page.getByLabel('Available model').selectOption('gpt-3.5-turbo')
+  await expect(pipeline).toContainText('gpt-3.5-turbo')
+  await page.getByRole('button', { name: 'Refresh models', exact: true }).click()
+  await expect(page.getByLabel('Available model')).toHaveValue('gpt-3.5-turbo')
+  await page.getByRole('button', { name: 'Replace API key', exact: true }).click()
+  await page.getByLabel('Provider API key', { exact: true }).fill('synthetic-rejected-key')
+  await page.getByRole('button', { name: 'Connect and load models', exact: true }).click()
+  await expect(page.getByRole('alert')).toContainText('rejected')
+  await expect(page.getByLabel('Provider API key', { exact: true })).toHaveValue('synthetic-rejected-key')
+  await page.getByRole('button', { name: 'Keep saved credential', exact: true }).click()
+  await expect(page.getByLabel('Saved provider credential')).toBeVisible()
+})
+
+test('provider account authorization leaves for the fixed OpenRouter consent host with PKCE', async ({ page }) => {
+  await page.route('https://openrouter.ai/**', route => route.fulfill({ contentType: 'text/html', body: '<h1>Synthetic external consent boundary</h1>' }))
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Instructor', exact: true }).click()
+  await page.goto('/#/settings?tab=ai-provider')
+  await page.getByRole('button', { name: 'Connect with OpenRouter', exact: true }).click()
+  await expect(page).toHaveURL(/^https:\/\/openrouter.ai\/auth\?/)
+  const url = new URL(page.url())
+  expect(url.searchParams.get('code_challenge_method')).toBe('S256')
+  expect(url.searchParams.get('state')?.length).toBeGreaterThan(32)
+  expect(url.searchParams.get('callback_url')).toMatch(/provider_callback=openrouter/)
+  expect(url.searchParams.has('apiKey')).toBe(false)
+})
+
+test('provider callback completes once, removes authorization parameters and restores account settings', async ({ page }) => {
+  const fixture = await providerFixture(page)
+  let exchanges = 0
+  await page.route('**/api/ai?action=provider-oauth', async route => {
+    exchanges++
+    expect(route.request().postDataJSON().operation).toBe('complete')
+    await route.fulfill({ json: fixture.authorize() })
+  })
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Instructor', exact: true }).click()
+  await page.goto('/?provider_callback=openrouter&code=synthetic-code&state=synthetic-callback-state-12345678901234567890')
+  await expect(page).toHaveURL(/#\/settings\?tab=ai-provider/)
+  await expect(page.getByLabel('Saved provider credential')).toBeVisible()
+  await expect(page.getByText('OpenRouter authorized and saved.', { exact: false })).toBeVisible()
+  expect(new URL(page.url()).search).toBe('')
+  expect(exchanges).toBe(1)
+})

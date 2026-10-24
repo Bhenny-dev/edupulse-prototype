@@ -1,18 +1,18 @@
 {
-  "checkedAt": "2026-10-24T07:41:39.811Z",
-  "phase": "local-and-cloud-gates-complete",
-  "commitSha": "5afbd0c44736b0d3ab0445cda15ad4c6f21ea351",
-  "sourceDigest": "e86ad59af03e2449da18892fa0b2d4c3e334b9f41ace40c1cb50188e47d2565c",
+  "checkedAt": "2026-10-24T14:17:40.979Z",
+  "phase": "final-local-gates-complete",
+  "commitSha": "9a4bcf55ac8a9df29460bcc1a4f73ef37d44e0f2",
+  "sourceDigest": "fb548d318b6141929f19789649cd3c6f900f0fd0bbfab8c84f0f7718c0d085ac",
   "sourceDirty": true,
   "releaseGate": {
     "command": "npm run verify",
     "passed": true,
-    "tests": 107,
+    "tests": 110,
     "failed": 0
   },
   "browser": {
     "command": "npm run test:browser",
-    "passed": 53,
+    "passed": 59,
     "skipped": 13,
     "failed": 0
   },
@@ -59,5 +59,24 @@
     "failedDeployment": "dpl_84yZvLxrPEZwNaQcKyWKeyFz89zB",
     "fix": "Explicitly pinned canvas 1.0.13 development renderer and complete npm-generated parent entry",
     "rendererCaptureTestsPassed": 2
+  },
+  "providerConnection": {
+    "sharedLiveStatus": true,
+    "maskedSavedCredential": true,
+    "failedReplacementRetained": true,
+    "modelRefreshPreservesSelection": true,
+    "openRouterAuthorization": "S256 PKCE; synthetic transport/desktop/mobile callback and redirect regressions passed",
+    "liveConsumerConsent": "not performed",
+    "livePaidInference": "not performed",
+    "directChatGPT": "unavailable; owner confirmed no approved hosted OAuth client"
+  },
+  "pdf": {
+    "formats": [
+      "pdf",
+      "docx"
+    ],
+    "scannedPdf": "on-device OCR",
+    "retainedPdf": "bytes/checksum validated",
+    "primaryIntake": "PDF"
   }
 }

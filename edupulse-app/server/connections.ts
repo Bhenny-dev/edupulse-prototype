@@ -26,13 +26,19 @@ function encryptionKey(): Buffer {
   return key
 }
 
+export function sealProviderState(data: unknown): string {
+  const nonce = randomBytes(12), cipher = createCipheriv('aes-256-gcm', encryptionKey(), nonce)
+  const encrypted = Buffer.concat([cipher.update(JSON.stringify(data), 'utf8'), cipher.final()])
+  return Buffer.concat([nonce, cipher.getAuthTag(), encrypted]).toString('base64url')
+}
+export function unsealProviderState(value: string): unknown {
+  if (value.length > 3500) throw new Error('Invalid protected state')
+  const bytes = Buffer.from(value, 'base64url'), decipher = createDecipheriv('aes-256-gcm', encryptionKey(), bytes.subarray(0, 12))
+  decipher.setAuthTag(bytes.subarray(12, 28))
+  return JSON.parse(Buffer.concat([decipher.update(bytes.subarray(28)), decipher.final()]).toString('utf8'))
+}
 export function connectionCookie(connection: Connection | null): string {
-  let value = ''
-  if (connection) {
-    const nonce = randomBytes(12), cipher = createCipheriv('aes-256-gcm', encryptionKey(), nonce)
-    const encrypted = Buffer.concat([cipher.update(JSON.stringify(connection), 'utf8'), cipher.final()])
-    value = Buffer.concat([nonce, cipher.getAuthTag(), encrypted]).toString('base64url')
-  }
+  const value = connection ? sealProviderState(connection) : ''
   return `${cookieName()}=${value}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${connection ? TTL : 0}${config().hosted ? '; Secure' : ''}`
 }
 
@@ -40,10 +46,7 @@ export function readConnection(request: Request, identity: Identity): Connection
   const value = request.headers.get('cookie')?.split(';').map(s => s.trim()).find(s => s.startsWith(`${cookieName()}=`))?.slice(cookieName().length + 1)
   if (!value) return undefined
   try {
-    if (value.length > 3500) return undefined
-    const bytes = Buffer.from(value, 'base64url'), decipher = createDecipheriv('aes-256-gcm', encryptionKey(), bytes.subarray(0, 12))
-    decipher.setAuthTag(bytes.subarray(12, 28))
-    const data = payload.parse(JSON.parse(Buffer.concat([decipher.update(bytes.subarray(28)), decipher.final()]).toString('utf8')))
+    const data = payload.parse(unsealProviderState(value))
     if (data.owner !== identity.id || data.expires <= Date.now()) return undefined
     return data
   } catch { return undefined }
@@ -99,7 +102,8 @@ export async function createConnection(input: z.infer<typeof connectionInput>, i
   // A browser can supply its own key, never extract or borrow the server's hosted key.
   const apiKey = input.apiKey || (previous?.provider === input.provider ? previous.apiKey : undefined) || (input.provider === 'ollama' ? process.env.OLLAMA_API_KEY : undefined)
   const models = await discoverModels(input.provider, apiKey)
-  const model = input.model || (input.provider === 'ollama' && models.some(m => m.id === config().model || m.id === `${config().model}:latest`) ? models.find(m => m.id === config().model || m.id === `${config().model}:latest`)!.id : models[0]!.id)
+  const preferred = input.provider === 'openai' ? ['gpt-5-mini', 'gpt-4.1-mini', 'gpt-4o-mini'].find(id => models.some(m => m.id === id)) : undefined
+  const model = input.model || (previous?.provider === input.provider && models.some(m => m.id === previous.model) ? previous.model : preferred) || (input.provider === 'ollama' && models.some(m => m.id === config().model || m.id === `${config().model}:latest`) ? models.find(m => m.id === config().model || m.id === `${config().model}:latest`)!.id : models[0]!.id)
   if (!models.some(m => m.id === model)) throw new ApiError(400, 'MODEL_NOT_AVAILABLE', 'Choose a model returned by the connected provider.')
   const connection: Connection = { provider: input.provider, model, apiKey, owner: identity.id, id: previous?.id || randomBytes(12).toString('hex'), expires: Date.now() + TTL * 1000 }
   return { connection, models }
