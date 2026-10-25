@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { ArrowLeft, Plus, Trash2, Check, Save, RotateCcw } from 'lucide-react'
 import { useToast } from '../../context/ToastContext'
 import DraftEvidence from '../ai/DraftEvidence'
+import { useContentEditorTool } from '../../agents/useContentEditorTool'
 
 /* ─── Assessment Editor / Viewer ───
  * One-pager assessment with 1-5 multiple choice questions.
@@ -13,6 +14,7 @@ export default function AssessmentEditor({ content, onBack, isStudent = false, o
   const [questions, setQuestions] = useState(content?.questions || [])
   const [answers, setAnswers] = useState({})
   const [submitted, setSubmitted] = useState(false)
+  useContentEditorTool(content, { ...content, questions }, next => setQuestions(next.questions), isStudent, onBack)
 
   if (!content) return null
 

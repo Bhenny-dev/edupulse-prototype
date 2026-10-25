@@ -114,3 +114,11 @@ Header: the connected model (here *ollama · qwen2.5:1.5b*), **clear conversatio
 ![Dwell help badge](18-pulse-dwell-help.png)
 
 Resting the pointer on a form control (here *Course* in the Syllabus Builder) shows a small **Ask Pulse about this** badge; clicking it opens Pulse focused on that control.
+
+## Pulse tools and private context ? 25 October 2026
+
+The Pulse header includes **Conversations and memory** alongside AI settings, new conversation and close. Its footer reports conversation saving and the bounded context window. Natural-language redirects open role-authorized pages; precise edits produce selected-field previews. See [Manual 9](../../system-manual/09-pulse-actions/README.md) for source-section import, confirmed edits, archive controls, preferences and installed tools. Existing drag, keyboard and touch guidance remains available.
+
+## Workspace buddies
+
+Pulse includes **Meet your workspace buddies** and **Visit office**. The optional 3D office has six named desks, domain-specific conversations, real request/review states, a pause control and reduced-motion support. Mobile users scroll from the office to the buddy chat. See [the illustrated office guide](../../system-manual/11-workspace-buddies/README.md).

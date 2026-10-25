@@ -20,10 +20,12 @@ import { canGenerateCourseware } from '../src/lib/access.js'
 import { academicCommand, executeAcademic, readAcademic } from './domains/academic.js'
 import { changeLease } from './requestLimits.js'
 import { providerOAuth, providerOAuthInput } from './domains/providerOAuth.js'
+import { conversationCommand, conversationRecall, executeConversation, readConversations } from './domains/conversations.js'
+import { operatorInput, operatorRequest } from './domains/operator.js'
 
 export const VERSION = '0.4.0'
 /** Request body limits per action (bytes). Uploads are raw file bytes. */
-export const BODY_LIMITS: Record<string, number> = { workspace: WORKSPACE_BYTES, extract: EXTRACTION_LIMITS.bytes, documents: 1_000_000 }
+export const BODY_LIMITS: Record<string, number> = { workspace: WORKSPACE_BYTES, extract: EXTRACTION_LIMITS.bytes, documents: 1_000_000, conversations: 200_000, operator: 100_000 }
 export const bodyLimit = (action: string | null) => BODY_LIMITS[action || ''] ?? 100_000
 const buckets = new Map<string, { count: number; until: number }>()
 const active = new Set<string>()
@@ -86,10 +88,15 @@ export async function handleRequest(request: Request): Promise<Response> {
   try {
     enforceOrigin(request)
     action = new URL(request.url).searchParams.get('action') || 'health'
-    const methods: Record<string, string[]> = { health: ['GET'], providers: ['GET', 'POST', 'DELETE'], 'provider-oauth': ['POST'], 'provider-test': ['POST'], context: ['POST'], similarity: ['POST'], references: ['POST'], extract: ['POST'], chat: ['POST'], courseware: ['POST'], documents: ['GET', 'POST', 'DELETE'], workspace: ['GET', 'PUT'], academic: ['GET', 'POST'] }
+    const methods: Record<string, string[]> = { health: ['GET'], providers: ['GET', 'POST', 'DELETE'], 'provider-oauth': ['POST'], 'provider-test': ['POST'], conversations: ['GET', 'POST'], operator: ['POST'], context: ['POST'], similarity: ['POST'], references: ['POST'], extract: ['POST'], chat: ['POST'], courseware: ['POST'], documents: ['GET', 'POST', 'DELETE'], workspace: ['GET', 'PUT'], academic: ['GET', 'POST'] }
     if (!methods[action]) throw new ApiError(404, 'NOT_FOUND', 'Unknown API action.')
     if (!methods[action].includes(request.method)) return new Response(null, { status: 405, headers: { Allow: methods[action].join(', '), 'Cache-Control': 'no-store' } })
     const identity = await authenticate(request)
+    if (action === 'conversations') {
+      const url = new URL(request.url), query = url.searchParams.get('q')
+      if (query && query.length > 4000) throw new ApiError(400, 'INVALID_INPUT', 'Use a shorter conversation search.')
+      return request.method === 'GET' ? json(query ? await conversationRecall(identity, query, url.searchParams.get('id') || undefined) : await readConversations(identity, url.searchParams.get('id'))) : json(await executeConversation(identity, conversationCommand.parse(await readJson(request, bodyLimit(action)))))
+    }
     if (action === 'academic') return request.method === 'GET' ? json(await readAcademic(identity)) : json(await executeAcademic(identity, academicCommand.parse(await readJson(request, 5000))))
     const personalConnection = readConnection(request, identity)
     usedPersonalConnection = personalConnection
@@ -151,6 +158,7 @@ export async function handleRequest(request: Request): Promise<Response> {
       return json(await extractUpload(bytes, fileName, signal))
     }
     const body = await readJson(request, bodyLimit(action))
+    if (action === 'operator') return json(await operatorRequest(operatorInput.parse(body), identity, connection, signal))
     if (action === 'provider-test') {
       z.object({}).strict().parse(body)
       if (!connection) throw new ApiError(400, 'CONNECTION_REQUIRED', 'Save a provider connection and select a model before testing.')

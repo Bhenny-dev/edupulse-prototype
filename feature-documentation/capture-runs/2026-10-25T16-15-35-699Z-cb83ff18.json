@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-10-25T16-15-35-699Z-cb83ff18",
+  "startedAt": "2026-10-25T16:15:35.699Z",
+  "finishedAt": "2026-10-25T16:15:55.960Z",
+  "commitSha": "1637c58db80efd70a7d2b1cae66dcfd2e3009333",
+  "sourceDigest": "9f7f4035a91c9fcce1f1a92b734be71573913eaaa4da584cc6c0e7ed87898c0a",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-10-25T16:15:31.877Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 2,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": null
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/pulse-tools.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+      "title": "Pulse tools: PDF source sections and private memory controls",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "local-real-input/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 9654,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+      "title": "Pulse tools: model proposal is reviewable before saving",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-provider-transport/ui-regression",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1467,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-manual/09-pulse-actions/10-pdf-section-preview.png",
+      "sha256": "37d8bd27e27b1e68bccc7563df3a5da7fe7800df276ace6e66dc4b9c45f9606a",
+      "bytes": 153858
+    },
+    {
+      "path": "feature-documentation/system-manual/09-pulse-actions/11-section-applied.png",
+      "sha256": "fa3c0c90e90aa4a0006ad06755c19dd6101859070e673252cf3c56b15ca24a81",
+      "bytes": 7957
+    },
+    {
+      "path": "feature-documentation/system-manual/09-pulse-actions/12-private-memory.png",
+      "sha256": "452ea12fd46dd0390512051aeb343d7805ab475c1cf0c4f5f4fe761a4d159097",
+      "bytes": 957
+    },
+    {
+      "path": "feature-documentation/system-manual/09-pulse-actions/13-installed-tools.png",
+      "sha256": "2e402721c7bb3c13c28e83f286e03c8057c20a868a8a309c7259bf63bc585563",
+      "bytes": 1416
+    },
+    {
+      "path": "feature-documentation/system-manual/09-pulse-actions/14-generated-edit-preview.png",
+      "sha256": "587ba72b1da66655229ecba69fd2bf3c61eab6fc399ed6f7d217de73aa29171e",
+      "bytes": 140315
+    }
+  ]
+}

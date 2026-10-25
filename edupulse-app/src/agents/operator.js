@@ -14,7 +14,8 @@ const SUMMARY = /\b(summar(?:y|i[sz]e)|key\s+points|main\s+points|overview|tl;?d
 const GENERATE = /\b(generate|create|draft|make|prepare|build|produce)\b/i
 const WEEK = /\b(?:week|wk)\.?\s*(\d{1,2})\b/i
 const COURSEWARE = /\b(courseware|materials?|lessons?|lecture\s+notes|activit(?:y|ies)|assessments?|quiz(?:zes)?|content)\b/i
-const NAVIGATE = /^(?:please\s+|can\s+you\s+|could\s+you\s+)?(?:go\s+to|open|take\s+me\s+to|bring\s+me\s+to|navigate\s+to|show\s+me|switch\s+to|where\s+(?:is|are|can\s+i\s+find)|i\s+want\s+to\s+see)\b/i
+const NAVIGATE = /\b(?:redirect\s+(?:me|us)(?:\s+to)?|go\s+to|open|take\s+me\s+to|bring\s+me\s+to|navigate\s+to|show\s+me|switch\s+to|where\s+(?:is|are|can\s+i\s+(?:find|start|build))|i\s+want\s+to\s+see)\b/i
+const GUIDE = /\b(?:guide\s+me|walk\s+me\s+through|walkthrough|step[-\s]by[-\s]step|help\s+me\s+(?:start|build|create|fill))\b/i
 const SEARCH = /^(?:please\s+|can\s+you\s+|could\s+you\s+|help\s+me\s+)?(?:find|search(?:\s+for)?|look\s*up|look\s+for|locate|who\s+is|is\s+there|do\s+i\s+have|check\s+if)\b|\bis\s+.{2,60}?\s+(?:registered|enrolled|listed|in\s+(?:my|the|this)\s+(?:class|course|list|roster|block|section|file))\b/i
 const REFERENCES = /\b(books?|textbooks?|readings?|articles?|papers?|journals?|bibliograph\w*|scholarly|references?)\b/i
 const CONTENT_QUESTION = /\b(what|why|how|explain|define|describe|says?|discuss\w*|mention\w*)\b/i
@@ -22,7 +23,7 @@ const CONTENT_QUESTION = /\b(what|why|how|explain|define|describe|says?|discuss\
 /** Pages Pulse may open, with the roles each route allows (src/App.jsx). */
 export const PAGES = [
   { path: '/syllabus?tab=register', label: 'Syllabus → My Courses', words: /\b(my\s+courses|registered\s+courses|class\s*lists?|rosters?|registrations?)\b/i, roles: ['instructor'] },
-  { path: '/syllabus?tab=builder', label: 'Syllabus Builder', words: /\b(syllabus\s+builder|(new|build|create)\s+(a\s+)?syllabus)\b/i, roles: ['instructor'] },
+  { path: '/syllabus?tab=builder', label: 'Syllabus Builder', words: /\b(?:syllabus\s+builder|(?:new|build(?:ing)?|creat(?:e|ing)|start(?:ing)?|draft(?:ing)?)\b[^.?!]{0,65}\bsyllabus|syllabus\b[^.?!]{0,40}\b(?:build|creat|start))\b/i, roles: ['instructor'] },
   { path: '/syllabus?tab=repository', label: 'Shared Repository', words: /\b(shared\s+)?repository\b/i, roles: ['instructor'] },
   { path: '/syllabus?tab=mine', label: 'Syllabus → My Syllabus', words: /\bsyllab(us|i)\b/i, roles: ['instructor'] },
   { path: '/student-monitoring', label: 'Student Monitoring', words: /\b(student\s+monitoring|scoring\s+sheet|scores?\s+sheet)\b/i, roles: ['instructor'] },
@@ -241,7 +242,7 @@ export function searchRecords(query, { role, userId, catalog = [], registrations
 
 /** The page a navigation request names, if the role may open it. */
 export function pageFor(message, role) {
-  if (!NAVIGATE.test(message)) return null
+  if (!NAVIGATE.test(message) && !GUIDE.test(message)) return null
   const rest = message.replace(NAVIGATE, ' ')
   const page = PAGES.find(p => p.words.test(rest) && allowed(p, role))
   if (page) return page
@@ -255,7 +256,7 @@ export function pageFor(message, role) {
  *
  * attachments: [{ title, fileName, text, roster }] where roster comes from parseRoster.
  */
-export function planOperator({ message, attachments = [], role, catalog = [], currentCourse = null }) {
+export function planOperator({ message, attachments = [], role, catalog = [], currentCourse = null, history = [] }) {
   const text = message.trim()
   const rosters = attachments.filter(a => a.roster)
   const materials = attachments.filter(a => !a.roster)
@@ -314,9 +315,13 @@ export function planOperator({ message, attachments = [], role, catalog = [], cu
       return { proposals, chat: false, task: 'auto', mentioned }
     }
   }
-  const page = pageFor(text, role)
+  let page = pageFor(text, role)
+  if (!page && /\b(?:take|redirect|bring|guide|show)\s+me\s+(?:there|to\s+it)\b|\b(?:open\s+(?:it|that)|go\s+there)\b/i.test(text)) {
+    const prior = history.slice().reverse().find(item => /syllabus|courseware|course\s+loading|monitoring|settings/i.test(item.text || item.content || ''))
+    if (prior) page = pageFor(`Open ${prior.text || prior.content}`, role)
+  }
   if (page) {
-    proposals.push(page.denied ? { type: 'notice', text: `${page.label} is not available for your role.` } : { type: 'navigate', path: page.path, label: page.label })
+    proposals.push(page.denied ? { type: 'notice', text: `${page.label} is not available for your role.` } : { type: GUIDE.test(text) ? 'guide' : 'navigate', path: page.path, label: page.label })
     return { proposals, chat: false, task: 'auto', mentioned }
   }
   if (SEARCH.test(text) && !REFERENCES.test(text)) {

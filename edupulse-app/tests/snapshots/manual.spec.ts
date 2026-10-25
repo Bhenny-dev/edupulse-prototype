@@ -123,7 +123,7 @@ test('Pulse Undo preserves a later confirmed registration', async ({ page }) => 
   }
   await dialog.getByRole('button', { name: 'Undo', exact: true }).first().click()
   await expect(dialog.getByText('This class list changed after confirmation. Its newer changes were preserved.')).toBeVisible()
-  await shot(dialog.locator('.pulse-action-done').first(), '09-pulse-actions', '09-undo-preserves-newer-registration', WHOLE_CARD)
+  await shot(dialog.locator('.pulse-action-done').first(), '09-pulse-actions', '09-undo-preserves-newer-registration', '.connected-pulse{height:calc(100vh - 30px)!important;bottom:10px!important}')
   await dialog.getByRole('button', { name: 'Undo', exact: true }).last().click()
   await dialog.getByRole('button', { name: 'Undo', exact: true }).first().click()
   await saved(page)

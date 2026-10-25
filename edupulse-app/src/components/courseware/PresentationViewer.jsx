@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
+import { useContentEditorTool } from '../../agents/useContentEditorTool'
 import {
   ArrowLeft, ChevronLeft, ChevronRight, Maximize2, Minimize2,
   Pencil, Save, X, Plus, Trash2,
@@ -30,6 +31,7 @@ export default function PresentationViewer({ content, onBack, isStudent = false,
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState(null)
   const containerRef = useRef(null)
+  useContentEditorTool(content, { ...content, sections: editing ? draft : content?.sections }, next => { setDraft(next.sections); setEditing(true) }, isStudent, onBack)
 
   useEffect(() => {
     const handler = () => setFullscreen(!!document.fullscreenElement)

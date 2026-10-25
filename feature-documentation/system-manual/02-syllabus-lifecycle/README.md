@@ -76,3 +76,7 @@ PDF is the primary institutional intake format; Word `.docx` is also supported. 
 
 * Edits are saved to the workspace automatically (*Local workspace · Saved*, or the cloud equivalent). **Export backup** downloads everything as JSON.
 * Pulse can walk you through any section: drag it onto the section or click **Guide this page** ([manual 7](../07-pulse-guidance/README.md)). Pulse drafts; it cannot check, approve or activate a syllabus.
+
+## Import sections through the conversation
+
+The Pulse attachment reader also recognizes PDF and Word syllabi. Ask for the intended editable section, review its extracted text and choose replacement or addition before applying it to the open builder or saving a draft. Course identity and description stay fixed to the curriculum; this path never grants approval or activates a syllabus. See [Manual 9](../09-pulse-actions/README.md#import-selected-syllabus-sections-from-a-pdf-or-word-file).

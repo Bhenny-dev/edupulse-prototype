@@ -4,7 +4,7 @@
 
 Pulse can act on what you ask, not only answer it. It reads your message and any file you attach, then shows an **action card** that says exactly what it will do. Nothing that changes your data happens until you press the card's confirm button; **Cancel** leaves everything as it was. Searches and page changes only read or navigate, so they happen at once.
 
-Pulse decides which action fits with fixed rules, never with the language model, so an answer can never trigger an action by itself. Every finished action links to the page where you can see its result.
+Pulse first matches familiar requests with fixed rules. Other requests can use a model to propose one typed tool; its output must pass the same field, role and target checks. Conversational text cannot execute code or change a record. Mutation cards require your confirmation, and saved-result receipts wait for the database response. A preview-device receipt explicitly says no cloud save was made.
 
 `PULSE-ACT-001` links this task to `tests/operator.test.ts` and `tests/browser/pulse-actions.spec.ts`. Role-scoped navigation is also exercised by `AUTH-001` in `tests/browser/access.spec.ts`: **Performance** is available to Dean/instructor/student views, and Pulse declines it for Associate Dean and the admin console view. Server courseware generation rechecks the verified role (`AUTH-002`); a role named in a message or request body grants no permission. **Undo** preserves a class list changed after confirmation and displays a notice instead of overwriting newer work. Command-completion guidance follows real saved results, not a model's claim of success.
 
@@ -32,7 +32,7 @@ The class list in these screenshots is sample data: invented names with `example
 
 ## File a material under a course (students and instructors)
 
-5. Attach a handout, notes or slides and ask *Which course is this for?* (or *save this to IT 209*). The card ranks the courses it matches. The best match is selected. Each suggestion says why: the words from your file and where they appear in the course (its title, description, program outcomes or a syllabus outline week, for example *“flexbox” (Week 3 topics)*), and how strong the match is (**Named in the file**, **Strong match** or **Possible match**; here two web courses match about equally well, so both are *possible*). Your own courses are marked **Your course**. Pulse ranks first by keywords, then re-ranks the shortlist by meaning with the embedding model; the line under the list says which method was used. Pick another course from **Another course** if needed and check the **Title**.
+5. Attach a handout, notes or slides and ask *Which course is this for?* (or *save this to IT 209*). The card ranks the courses it matches. The best match is selected. Each suggestion says why: the words from your file and where they appear in the course (its title, description, program outcomes or a syllabus outline week, for example *“flexbox” (Week 3 topics)*), and how strong the match is (**Named in the file**, **Strong match** or **Possible match**; here three courses are offered as possible matches). Your own courses are marked **Your course**. Pulse ranks first by keywords, then re-ranks the shortlist by meaning with the embedding model; the line under the list says which method was used. Pick another course from **Another course** if needed and check the **Title**.
 
    ![Course suggestion with reasons](05-material-course-suggestion.png)
 
@@ -65,3 +65,41 @@ Ask *Take me to the scoring sheet*, *Open my courses* or *Where is the knowledge
 ## Answers that cite your own records
 
 When your message names a course that has a syllabus in your workspace (for example *What does IT 102 cover in week 3?*), Pulse adds that syllabus to the references it searches, and the answer cites it like any other source. Files you added under a course are found by the course code in their title.
+
+## Import selected syllabus sections from a PDF or Word file
+
+Attach a PDF or `.docx` and ask *Import the course outline from this syllabus*. Pulse recognizes syllabus structure and offers **Import syllabus sections**. Open the intended **Syllabus Builder**, then choose **Prepare edit preview**. Only sections actually extracted from the source are offered; unreadable or absent content is not invented. Scanned PDF pages use the device OCR worker and still require review.
+
+Choose **Course for this syllabus**, select the fields, and compare **Before** with **Proposed**. **How to integrate sections** offers replacement or addition. Replacement replaces the selected list; addition preserves existing items and combines matching outline weeks. Course identity and description remain fixed curriculum data; approval, signatures, checked status and publication are never imported as permissions.
+
+![PDF outline source and selected-field preview](10-pdf-section-preview.png)
+
+**Apply to open form** changes the mounted form only. **Confirm and save draft** saves an instructor draft after validation and waits for persistence. A page or record changed after the preview requires **Refresh preview**. **Cancel edit** leaves the record unchanged. The screenshot below shows application to the form, not a database save.
+
+![Section applied to the open form with an explicit save instruction](11-section-applied.png)
+
+## Revise content or class-list records
+
+Open a syllabus builder, lecture/activity document, presentation or assessment editor. Ask for a precise change, such as *Revise the program outcomes to emphasize worked examples*. Pulse shows the target, selected fields and before/after text. Generated content remains a draft. Published courseware is protected; open a draft version first. Title changes require **Confirm and save draft**.
+
+![Generated outcome proposal awaiting confirmation](14-generated-edit-preview.png)
+
+This capture uses a synthetic model response to demonstrate the real preview controls; it is not an inference-quality evaluation. Model schema, field scope and forged-role rejection are tested separately in `tests/pulse-tools.test.ts`.
+
+For a class list, ask *Remove student B102 from the IT 102 class list* or attach an updated export. **Review class-list changes** requires an owned class list and exact selected rows for removal or field edits. **Roster operation** offers merge, replacement, removal and field update. Review **Preview roster changes**, then **Confirm roster changes**. Replacement removes old rows absent from the file. A changed roster invalidates the preview; no model-generated student identities are inserted.
+
+## Private conversations and reusable preferences
+
+Open **Conversations and memory** in the Pulse header. Chats are stored under the signed-in account; local development uses its local database. **New conversation** keeps saved chats available in history. Select a title to reopen its most recent 100 messages; older stored text remains searchable through explicit recall. **Archive**, **Restore**, and **Delete** control history. Deleting a source conversation also removes memories derived from it. Restored action cards are plain transcripts and cannot execute again.
+
+Under **Saved preferences**, automatic saving recognizes non-sensitive response preferences stated by you, such as concise bullet points or a preferred language. Review individual entries with their source label, use **Forget**, disable automatic saving, or enter **Remember a preference** and choose **Save memory**. Files and model answers are not promoted into reusable memory. Credentials and sensitive student records are rejected as memories; obvious pasted credentials are redacted before archival. At 100 preferences, remove an old entry before saving another. A full 500-message thread continues in a new stored thread; older history stays available. Account history holds up to 100 threads.
+
+![Saved preference and automatic-memory controls](12-private-memory.png)
+
+Ask *Recall our previous discussion about programming* to retrieve attributed excerpts from your own saved conversations. These excerpts describe prior statements, not the current state of a record. Missing matches are reported explicitly. Recent conversation context uses at most 12 turns within a 30,000-character prompt budget; larger target edits require a smaller section. On-device model planning uses a smaller input budget for its 4,096-token model window.
+
+**Installed Pulse skills & tools** lists the Navigator, Guide, Syllabus, Registrar, Writer and Memory capabilities. They use a fixed application registry, validated patches and existing database authorization. No arbitrary shell, script or external browsing tool is exposed.
+
+![Versioned application skills and execution boundaries](13-installed-tools.png)
+
+`PULSE-TOOLS-001` maps these flows to `tests/pulse-tools.test.ts`, `tests/browser/pulse-tools.spec.ts`, and `tests/snapshots/pulse-tools.spec.ts`. Browser coverage includes real PDF extraction, stale targets, confirmed roster removal, private recall, and database failure/retry. Provider generation is synthetic only in the generated-edit browser/capture cases; no paid inference result is implied.

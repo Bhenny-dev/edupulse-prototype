@@ -23,6 +23,7 @@ test('a class list is read from CSV with names, IDs, emails and the block; blank
   assert.equal(roster.block, 'BSIT-1A')
   assert.equal(roster.duplicates, 1)
   assert.match(roster.warnings.join(' '), /duplicate/)
+  assert.equal(parseRoster('StudentID,Name\nS001,Single Learner', 'class-list.csv')!.students.length, 1)
 })
 
 test('class lists with separate name columns, tabs or plain numbered lines are read; ordinary documents are not class lists', () => {

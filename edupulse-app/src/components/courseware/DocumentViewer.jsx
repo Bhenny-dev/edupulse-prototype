@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { ArrowLeft, Download, Printer, Save, Pencil, X } from 'lucide-react'
 import { useToast } from '../../context/ToastContext'
 import DraftEvidence from '../ai/DraftEvidence'
+import { useContentEditorTool } from '../../agents/useContentEditorTool'
 
 /* ─── Document Viewer ───
  * Renders content as a styled A4 document with proper margins,
@@ -14,6 +15,7 @@ export default function DocumentViewer({ content, onBack, isStudent = false, onS
   const { addToast } = useToast()
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState(null)
+  useContentEditorTool(content, { ...content, sections: editing ? draft : content?.sections }, next => { setDraft(next.sections); setEditing(true) }, isStudent, onBack)
 
   if (!content) return null
 

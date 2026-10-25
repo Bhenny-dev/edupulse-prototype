@@ -17,10 +17,12 @@ Task-by-task instructions for EduPulse v0.4.0, illustrated with captured screens
 
 Sections 3–8 cover the AI features added in v0.4.0 (named LangGraph agents, sandboxed document extraction, free in-process embeddings and reranking, hybrid vector search, verification, correction, comparison, references and accurate on-page guidance). Sections 1–2 document the core workflow those features plug into.
 
+| [11](11-workspace-buddies/README.md) | Meet the office crew, ask domain questions and follow real task states | Every signed-in account | Pulse / Visit office |
+
 ## Conventions
 
 * **Bold** names a button, tab or field exactly as it appears on screen.
-* Every image is a real capture: real documents, a real local model (*qwen2.5:1.5b* through Ollama) and the real database. Nothing in the AI screenshots is mocked; where a small model's output is imperfect, the text says so.
+* Images are captures of the running application. Guides identify sample academic data, real local inference (*qwen2.5:1.5b* through Ollama), authenticated canaries, and synthetic provider responses used to exercise connection or proposal states. Synthetic transport captures are UI checks, not model-quality evidence.
 * Pulse drafts, explains and checks. It never saves, registers, approves, publishes or grades on its own: an action it proposes runs only after you press the confirm button on its card ([manual 9](09-pulse-actions/README.md)), and every AI draft is marked for instructor review.
 
 ## How the images were made

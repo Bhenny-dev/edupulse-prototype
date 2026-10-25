@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Users, FolderPlus, Sparkles, Search, Info, Check, Undo2, Loader2, Paperclip, ExternalLink, MessageSquare, BookOpenCheck } from 'lucide-react'
 import { mergeStudents } from '../../utils/rosterParser'
 import { rankCourses, refineCourses } from '../../agents/operator'
+import PulseToolAction from './PulseToolActions'
 
 // Action cards for the Operator's proposals (src/agents/operator.js). A card that
 // changes data shows exactly what will happen and runs only when the user presses
@@ -33,15 +34,22 @@ function RegisterCard({ proposal, ctx }) {
   const existing = ctx.registrations.find(r => r.courseCode === courseCode && r.blockSection === block.trim() && r.uploadedBy === ctx.userId)
   const preview = existing ? mergeStudents(existing.students || [], roster.students) : null
   async function confirm() {
-    setState({ status: 'running' })
-    try { setState({ status: 'done', result: await ctx.runRegister({ courseCode, courseTitle: course?.title || '', blockSection: block.trim(), students: roster.students, fileName }) }) }
-    catch (error) { setState({ status: 'error', message: error.message }) }
+    setState({ status: 'running' }); ctx.finishTicket?.(proposal.ticketId, 'working')
+    try { setState({ status: 'done', result: await ctx.runRegister({ courseCode, courseTitle: course?.title || '', blockSection: block.trim(), students: roster.students, fileName }) }); ctx.finishTicket?.(proposal.ticketId) }
+    catch (error) { setState({ status: 'error', message: error.message }); ctx.finishTicket?.(proposal.ticketId, 'error') }
+  }
+  async function undo() {
+    setState(previous => ({ ...previous, undoing: true }))
+    try {
+      if (await ctx.undoRegister(state.result) === false) setState(previous => ({ ...previous, undoing: false, notice: 'This class list changed after confirmation. Its newer changes were preserved.' }))
+      else setState({ status: 'undone' })
+    } catch (error) { setState(previous => ({ ...previous, undoing: false, notice: error.message })) }
   }
   if (state.status === 'cancelled') return <p className="pulse-action-note">Registration cancelled. Nothing was changed.</p>
   if (state.status === 'undone') return <p className="pulse-action-note">Registration undone. My Courses is back to how it was.</p>
   if (state.status === 'done') {
     const { registration, added, already } = state.result
-    return <Done actions={<><button type="button" className="btn btn-secondary btn-sm" onClick={() => ctx.navigate('/syllabus?tab=register')}><ExternalLink size={13} /> Open My Courses</button><button type="button" className="btn btn-ghost btn-sm" onClick={() => { if (ctx.undoRegister(state.result) === false) setState(previous => ({ ...previous, notice: 'This class list changed after confirmation. Its newer changes were preserved.' })); else setState({ status: 'undone' }) }}><Undo2 size={13} /> Undo</button></>}>
+    return <Done actions={<><button type="button" className="btn btn-secondary btn-sm" onClick={() => ctx.navigate('/syllabus?tab=register')}><ExternalLink size={13} /> Open My Courses</button><button type="button" className="btn btn-ghost btn-sm" disabled={state.undoing} onClick={undo}><Undo2 size={13} /> Undo</button></>}>
       <strong>Registered.</strong> {registration.courseCode} · {registration.blockSection} now lists {registration.studentCount} student{registration.studentCount === 1 ? '' : 's'} ({added} new{already ? `, ${already} already registered` : ''}). Source: {fileName}.
       {state.notice && <p role="status">{state.notice}</p>}
     </Done>
@@ -61,7 +69,7 @@ function RegisterCard({ proposal, ctx }) {
     {state.status === 'error' && <p role="alert" className="connected-pulse-warning">{state.message}</p>}
     <div className="ai-actions">
       <button type="button" className="btn btn-primary btn-sm" disabled={!courseCode || !block.trim() || state.status === 'running'} onClick={confirm}>{state.status === 'running' ? <Loader2 size={13} className="spin" /> : <Check size={13} />} Register {roster.students.length} students</button>
-      <button type="button" className="btn btn-secondary btn-sm" onClick={() => setState({ status: 'cancelled' })}>Cancel</button>
+      <button type="button" className="btn btn-secondary btn-sm" onClick={() => { setState({ status: 'cancelled' }); ctx.finishTicket?.(proposal.ticketId, 'stopped') }}>Cancel</button>
     </div>
   </section>
 }
@@ -91,9 +99,9 @@ function FileCard({ proposal, ctx }) {
   }, [attachment, lexical, ctx.catalog, ctx.similarity])
   const top = ranking.ranked[0]
   async function confirm() {
-    setState({ status: 'running' })
-    try { setState({ status: 'done', result: await ctx.runFile({ attachment, courseCode, title: title.trim() }) }) }
-    catch (error) { setState({ status: 'error', message: error.message }) }
+    setState({ status: 'running' }); ctx.finishTicket?.(proposal.ticketId, 'working')
+    try { setState({ status: 'done', result: await ctx.runFile({ attachment, courseCode, title: title.trim() }) }); ctx.finishTicket?.(proposal.ticketId) }
+    catch (error) { setState({ status: 'error', message: error.message }); ctx.finishTicket?.(proposal.ticketId, 'error') }
   }
   if (state.status === 'cancelled') return <p className="pulse-action-note">Not added. The file stays only in this conversation.</p>
   if (state.status === 'done') {
@@ -123,7 +131,7 @@ function FileCard({ proposal, ctx }) {
     {state.status === 'error' && <p role="alert" className="connected-pulse-warning">{state.message}</p>}
     <div className="ai-actions">
       <button type="button" className="btn btn-primary btn-sm" disabled={!title.trim() || state.status === 'running'} onClick={confirm}>{state.status === 'running' ? <Loader2 size={13} className="spin" /> : <Check size={13} />} {courseCode ? `Add to library under ${courseCode}` : 'Add to library'}</button>
-      <button type="button" className="btn btn-secondary btn-sm" onClick={() => setState({ status: 'cancelled' })}>Cancel</button>
+      <button type="button" className="btn btn-secondary btn-sm" onClick={() => { setState({ status: 'cancelled' }); ctx.finishTicket?.(proposal.ticketId, 'stopped') }}>Cancel</button>
     </div>
   </section>
 }
@@ -148,8 +156,8 @@ function GenerateCard({ proposal, ctx }) {
   const kept = existing.filter(item => ['checked', 'published'].includes(item.status)).length
   async function confirm() {
     controller.current = new AbortController()
-    setState({ status: 'running' })
-    try { setState({ status: 'done', result: await ctx.runGenerate({ syllabus, week }, controller.current.signal) }) }
+    setState({ status: 'running' }); ctx.finishTicket?.(proposal.ticketId, 'working')
+    try { setState({ status: 'done', result: await ctx.runGenerate({ syllabus, week }, controller.current.signal) }); ctx.finishTicket?.(proposal.ticketId) }
     catch (error) { setState(controller.current?.signal.aborted ? { status: 'pending', message: 'Generation stopped. Nothing was saved.' } : { status: 'error', message: error.message }) }
   }
   if (state.status === 'cancelled') return <p className="pulse-action-note">Generation cancelled. Nothing was changed.</p>
@@ -175,7 +183,7 @@ function GenerateCard({ proposal, ctx }) {
         ? <><span role="status"><Loader2 size={13} className="spin" /> Generating Week {week}… a local model can take a few minutes.</span><button type="button" className="btn btn-secondary btn-sm" onClick={() => controller.current?.abort()}>Stop</button></>
         : <><button type="button" className="btn btn-primary btn-sm" disabled={!week} onClick={confirm}><Check size={13} /> Generate Week {week} drafts</button>
           <button type="button" className="btn btn-secondary btn-sm" onClick={() => ctx.chat(proposal.request)}>Draft in chat instead</button>
-          <button type="button" className="btn btn-ghost btn-sm" onClick={() => setState({ status: 'cancelled' })}>Cancel</button></>}
+          <button type="button" className="btn btn-ghost btn-sm" onClick={() => { setState({ status: 'cancelled' }); ctx.finishTicket?.(proposal.ticketId, 'stopped') }}>Cancel</button></>}
     </div>
   </section>
 }
@@ -217,6 +225,7 @@ function StudyOptions({ proposal, ctx }) {
 }
 
 export default function PulseAction({ proposal, ctx }) {
+  if (['guide', 'syllabus-import', 'editor-edit', 'roster-edit', 'recall'].includes(proposal.type)) return <PulseToolAction proposal={proposal} ctx={ctx} />
   if (proposal.type === 'register') return <RegisterCard proposal={proposal} ctx={ctx} />
   if (proposal.type === 'file') return <FileCard proposal={proposal} ctx={ctx} />
   if (proposal.type === 'generate-week') return <GenerateCard proposal={proposal} ctx={ctx} />

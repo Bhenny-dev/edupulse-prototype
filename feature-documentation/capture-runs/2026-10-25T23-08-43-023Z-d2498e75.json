@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-10-25T23-08-43-023Z-d2498e75",
+  "startedAt": "2026-10-25T23:08:43.023Z",
+  "finishedAt": "2026-10-25T23:09:03.338Z",
+  "commitSha": "1637c58db80efd70a7d2b1cae66dcfd2e3009333",
+  "sourceDigest": "1cba96f349a3dec1fcacd0d1628bfb56534811381fb6534a81f4d9490e69cab1",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-10-25T23:08:29.220Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 1,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": null
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/manual.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/manual.spec.ts",
+      "title": "Pulse Undo preserves a later confirmed registration",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "local-real-input/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 3538,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-manual/09-pulse-actions/09-undo-preserves-newer-registration.png",
+      "sha256": "45438d543d14ef2f138b48f9ce9cb39096ada0b4a34c3e4b8e67cc495617f510",
+      "bytes": 22099
+    }
+  ]
+}

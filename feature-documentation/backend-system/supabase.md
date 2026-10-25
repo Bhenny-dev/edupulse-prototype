@@ -1,5 +1,15 @@
 # Supabase configuration
 
+## Private Pulse history and memory — 25 October 2026
+
+Migration `20261024163740_pulse_conversations.sql` adds `edupulse_pulse_threads`, `edupulse_pulse_messages`, `edupulse_pulse_memories`, and `edupulse_pulse_preferences`. All use owner RLS with `(select auth.uid())`; anonymous grants are revoked. Messages are immutable (select/insert/delete only), idempotent by UUID, ordered by a database sequence, and linked to the owner/thread with a composite foreign key. Source-derived memories use a matching owner/message foreign key and cascade when the message or account is deleted.
+
+Follow-up migration `20261024213422_pulse_history_privileges.sql` explicitly revokes Supabase default table privileges before granting only the supported operations. Hosted validation exposed that an additive GRANT alone left UPDATE available; the correction was applied and immutable transcript checks then passed.
+
+Indexes cover owner/thread ordering and full-text transcript search. `edupulse_recall_pulse` is security-invoker, restricts the caller and optionally excludes the active thread, ranks bounded topic matches and returns at most five excerpts. A security-invoker trigger serializes account capacity checks: 100 threads, 500 messages per thread, 100 memories. The local PGlite counterpart uses matching owner filters and limits. Latest-chat reads return at most 100 messages; stored older messages remain available to recall. History does not bypass academic role/course RLS. A full 500-message thread returns `CONVERSATION_FULL`; the client retains the unsaved batch and starts a continuation thread. Account-wide capacity errors remain visible until old history is deleted.
+
+The migration was applied through the explicitly linked CLI after local PostgreSQL RLS, quota, provenance and immutability tests passed. The connector still rejects advisor access for this project; this is not an advisor pass. See the [agent-tools release validation](../versions/2026-10-25-pulse-agent-tools/validation/results.md) for hosted verification.
+
 ## October 24 compatible academic projection
 
 The owner accepted the written role scope in [ADR-001](decisions/001-role-and-approval-boundaries.md). Four additive migrations introduce `edupulse_courses`, `edupulse_enrollments`, `edupulse_publications`, `edupulse_attempts`, `edupulse_material_access`, private assessment keys and shared AI request leases. The migrations were applied to the existing EduPulse project through the explicitly linked CLI after local SQL/RLS regression tests; the connector lacked permission for this project.

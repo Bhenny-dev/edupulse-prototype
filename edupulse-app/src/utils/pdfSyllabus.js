@@ -1,4 +1,6 @@
-/** Keep PDF lines and table columns instead of joining the whole page into one paragraph. */
+/** Keep PDF lines and table columns instead of joining the whole page into one paragraph.
+ * @param {File} file @param {(message: string) => void} [onProgress]
+ */
 export async function readPdfSyllabus(file, onProgress = () => {}) {
   const { getDocumentProxy } = await import('unpdf')
   const pdf = await getDocumentProxy(new Uint8Array(await file.arrayBuffer()), { verbosity: 0 })
@@ -8,6 +10,7 @@ export async function readPdfSyllabus(file, onProgress = () => {}) {
     for (let number = 1; number <= pdf.numPages; number++) {
       onProgress(`Reading PDF page ${number} of ${pdf.numPages}…`)
       const content = await (await pdf.getPage(number)).getTextContent()
+      /** @type {{ y: number, cells: { x: number, end: number, text: string }[] }[]} */
       const rows = []
       for (const item of content.items) {
         if (!('str' in item) || !item.str.trim()) continue

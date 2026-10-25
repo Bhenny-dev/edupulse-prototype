@@ -97,6 +97,7 @@ export function parseSyllabusText(text, outlineOverride = []) {
   return { sections, courseMatch }
 }
 
+/** @param {File} file @param {(message: string) => void} [onProgress] */
 export async function parseSyllabusFile(file, onProgress = () => {}) {
   if (!/\.(docx|pdf)$/i.test(file.name) || file.size > 2_000_000 || !file.size) throw new Error('Choose a DOCX or PDF file up to 2 MB.')
   if (/\.pdf$/i.test(file.name)) {

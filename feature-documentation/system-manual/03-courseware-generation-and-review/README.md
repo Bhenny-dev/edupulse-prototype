@@ -27,3 +27,7 @@
 6. Edit any inaccurate explanation or answer key, then use **Check** only after reviewing the material, activity, and assessment. Drafts are not published or graded automatically.
 
 The six historical images come from the documentation capture build using the local `qwen2.5:3b` model and a real generated week 1 draft. They establish local task evidence, not authenticated hosted behavior or general model accuracy. The [v0.4.0 release record](../../versions/v0.4.0/README.md) maps them to NFR-AI-06 (goal 6).
+
+## Revise through Pulse
+
+When an instructor opens a saved draft in a document, presentation or assessment editor, Pulse can propose a typed revision to its content. Compare the selected fields before **Confirm and save draft**. The saved receipt waits for the revision-checked database response. Published items and stale targets are protected. See [Manual 9](../09-pulse-actions/README.md#revise-content-or-class-list-records).

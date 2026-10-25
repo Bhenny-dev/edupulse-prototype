@@ -1,0 +1,15 @@
+import { test, expect } from './fixtures.js'
+test('Mobile workspace buddies have accessible desk controls and reduced motion', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Instructor', exact: true }).click()
+  await page.getByRole('button', { name: 'Open Pulse assistant' }).click()
+  await page.getByRole('button', { name: 'Open workspace buddies' }).click()
+  const office = page.getByRole('dialog', { name: 'Meet your crew.' })
+  await expect(office.locator('canvas')).toBeVisible()
+  await page.waitForTimeout(400)
+  await page.screenshot({ path: '../feature-documentation/system-manual/11-workspace-buddies/04-mobile-office.png', animations: 'disabled' })
+  await office.getByRole('button', { name: /Talk to Milo,/ }).click()
+  await office.getByRole('button', { name: 'Completed work', exact: true }).click()
+  await expect(office.getByRole('log')).toContainText('haven’t recorded a completed task')
+})

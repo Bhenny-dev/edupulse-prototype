@@ -9,13 +9,13 @@ export class ApiRequestError extends Error {
   constructor(message: string, public status: number, public code?: string) { super(message) }
 }
 
-type RequestOptions = { raw?: Blob; headers?: Record<string, string> }
+type RequestOptions = { raw?: Blob; headers?: Record<string, string>; query?: Record<string, string> }
 // Generation is bounded by the server's own budget (110 s hosted, up to 10 minutes in the local app),
 // so the browser waits for the server's answer or its timeout error instead of giving up first.
 const LONG_ACTIONS = new Set(['chat', 'courseware', 'references'])
 export async function aiRequest<T>(action: string, method = 'GET', body?: unknown, signal?: AbortSignal, options: RequestOptions = {}): Promise<T> {
   const requestToken = accessToken
-  const response = await fetch(`/api/ai?action=${encodeURIComponent(action)}`, {
+  const response = await fetch(`/api/ai?${new URLSearchParams({ ...options.query, action })}`, {
     method,
     headers: { ...(body ? { 'Content-Type': 'application/json' } : options.raw ? { 'Content-Type': 'application/octet-stream' } : {}), ...(requestToken ? { Authorization: `Bearer ${requestToken}` } : {}), ...options.headers },
     ...(body ? { body: JSON.stringify(body) } : options.raw ? { body: options.raw } : {}), signal: AbortSignal.any([AbortSignal.timeout(LONG_ACTIONS.has(action) ? 610000 : 125000), ...(signal ? [signal] : [])]),
@@ -53,13 +53,26 @@ export async function extractDocument(file: File, signal?: AbortSignal) {
 
 /** Knowledge-library source type for an extraction (a workbook is indexed as its comma-separated rows). */
 export const sourceTypeFor = (kind: string) => kind === 'xlsx' ? 'csv' : ['pdf', 'docx', 'pptx', 'html', 'markdown', 'csv'].includes(kind) ? kind : 'text'
-export type ReferenceFile = { title: string; text: string; fileName: string; kind: string; sourceType: string; raw?: string }
+export type ReferenceFile = { title: string; text: string; fileName: string; kind: string; sourceType: string; raw?: string; syllabus?: ReturnType<typeof import('../utils/syllabusParser.js').parseSyllabusText>; scannedPages?: number }
 /** Chat attachments use the same sandboxed extraction as the knowledge library. */
-export async function readReferenceFile(file: File): Promise<ReferenceFile> {
+export async function readReferenceFile(file: File, onProgress: (message: string) => void = () => {}): Promise<ReferenceFile> {
   const report = await extractDocument(file)
+  let text = report.text.trim(), scannedPages = 0
+  if (report.kind === 'pdf') {
+    const { readPdfSyllabus } = await import('../utils/pdfSyllabus.js')
+    const layout = await readPdfSyllabus(file, onProgress)
+    text = layout.text; scannedPages = layout.scannedPages
+  }
+  const { parseSyllabusText } = await import('../utils/syllabusParser.js')
+  const looksLikeSyllabus = /\b(?:course\s+(?:code|outline|information)|program outcomes)\b/i.test(text) && (/syllab/i.test(file.name) || /course\s+outline|intended\s+learning\s+outcomes/i.test(text))
+  let syllabus = looksLikeSyllabus ? parseSyllabusText(text) : undefined
+  if (syllabus && report.kind === 'docx' && file.size <= 2_000_000) {
+    const { parseSyllabusFile } = await import('../utils/syllabusParser.js')
+    syllabus = await parseSyllabusFile(file, onProgress)
+  }
   // Plain-text tables are also kept exactly as written, so class lists keep their columns and tabs.
   const raw = report.kind === 'csv' || report.kind === 'text' ? (await file.text()).slice(0, 400_000) : undefined
-  return { title: file.name.slice(0, 160), text: report.text.trim(), fileName: file.name.slice(-255), kind: report.kind, sourceType: sourceTypeFor(report.kind), raw }
+  return { title: file.name.slice(0, 160), text: text.slice(0, 150000), fileName: file.name.slice(-255), kind: report.kind, sourceType: sourceTypeFor(report.kind), raw, syllabus, scannedPages }
 }
 
 /** Collects Researcher queries issued in parallel into one context request. */

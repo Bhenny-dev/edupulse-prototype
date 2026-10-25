@@ -19,6 +19,7 @@ import { parsedToFormState } from '../utils/syllabusParser'
 import { applyRegistration } from '../utils/rosterParser'
 import { TEACHING_MATERIAL_CATEGORIES, ASSESSMENT_CATEGORIES } from '../data/sixLayerCategories'
 import { pulse as pulseBus } from '../components/pulse/pulseBus'
+import { usePulseEditor } from '../agents/usePulseEditor'
 
 // Syllabus — FLOW_SPEC Phase 2. Lifecycle: drafted → checked →
 // downloaded_for_approval → approved_uploaded → active. The signatory chain
@@ -641,6 +642,20 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
     addToast('Syllabus marked as Checked — you can now download it for the approval route', 'success')
     onComplete(form, 'checked')
   }
+
+  usePulseEditor({ kind: 'syllabus', label: `${form.courseCode || 'New'} syllabus builder`, data: form,
+    apply: next => { setForm(next); setUploadStep('done') },
+    prepareCourse: (code, current) => {
+      const course = CURRICULUM_COURSES.find(item => item.code === code)
+      if (!course) throw new Error('Choose a course from the curriculum.')
+      if (current.courseCode && current.courseCode !== code) throw new Error('The open builder belongs to another course. Open a new builder or select the intended course first.')
+      return { ...current, courseCode: course.code, courseTitle: course.title, courseDescription: course.description || '', courseInfo: { ...current.courseInfo, courseCode: course.code, courseTitle: course.title, creditUnits: course.units, classification: course.classification || 'Major', noOfHours: course.units * 18, prerequisites: course.prerequisites || [] } }
+    },
+    save: async next => {
+      if (!next.courseInfo?.courseCode || !next.programOutcomes?.some(value => value.trim())) throw new Error('Select a course and supply at least one program outcome before saving. You can apply the preview to the form first.')
+      return onComplete(next, 'drafted', { confirmed: true })
+    },
+  })
 
   // AI Auto mode: generate a complete draft in one pass. Output is always
   // `drafted` — the instructor must check and correct it (FLOW_SPEC Phase 2).
@@ -1460,7 +1475,7 @@ export default function Syllabus() {
   const [showVersionHistory, setShowVersionHistory] = useState(false)
   const [versionHistorySyllabus, setVersionHistorySyllabus] = useState(null)
   const [extractingSyllabus, setExtractingSyllabus] = useState(null)
-  const { registrations, setRegistrations, syllabi, setSyllabi } = useWorkspace()
+  const { registrations, setRegistrations, syllabi, setSyllabi, commit } = useWorkspace()
   const [editingSyllabus, setEditingSyllabus] = useState(null)
   const [uploadingSyllabus, setUploadingSyllabus] = useState(null)
 
@@ -1478,11 +1493,14 @@ export default function Syllabus() {
 
   const record = (syl, status) => ({ ...syl, status, lastUpdated: new Date().toISOString(), history: [...(syl.history || []), { status, version: syl.version || 1, timestamp: new Date().toISOString(), author: user?.name || 'Instructor' }].slice(-100) })
   const setStatus = (id, status) => setSyllabi(prev => prev.map(s => s.id === id ? record(s, status) : s))
-  const saveBuilder = (form, status) => {
+  const saveBuilder = async (form, status, options = {}) => {
     const next = record({ ...form, id: editingSyllabus?.id || crypto.randomUUID(), instructorId: user?.id, version: (editingSyllabus?.version || 0) + 1, sample: false, approvedFile: undefined, extractedAt: undefined }, status)
-    setSyllabi(previous => editingSyllabus ? previous.map(s => s.id === next.id ? next : s) : [...previous, next])
+    const update = previous => editingSyllabus ? previous.map(s => s.id === next.id ? next : s) : [...previous, next]
+    const saved = options.confirmed ? await commit(data => ({ ...data, syllabi: update(data.syllabi) })) : null
+    if (!options.confirmed) setSyllabi(update)
     setEditingSyllabus(null); switchTab('mine')
     pulseBus.progress('syllabus-saved', next.courseCode)
+    return { ...saved, id: next.id, status: next.status }
   }
 
   // One explicit human action per station — this is the approval loop of

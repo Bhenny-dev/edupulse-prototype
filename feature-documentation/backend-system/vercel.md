@@ -95,3 +95,7 @@ The status after pushing v0.4.0 is recorded in [versions/v0.4.0/validation/resul
 5. *Project → Settings → Domains* (`edupulse-prototype.vercel.app`).
 
 The REST API already confirmed deployment readiness, build-test counts, environment variable names and scopes, and the production domain. Dashboard screenshots are optional report artifacts. To let the Claude connector read them, re-authorise it for the `bhenny-benlor-d-riveras-projects` team in claude.ai connector settings.
+
+## Pulse tools and workspace release - 26 October 2026
+
+The existing function now routes `operator` and `conversations` through isolated domain modules. Operator requests share the authenticated inference lease; archive writes do not invoke a model. The additive history migration must exist before deploying this source. Private memories never contain provider cookies or raw file payloads. See [release validation](../versions/2026-10-25-pulse-agent-tools/validation/results.md) for the tested source, staging and production evidence.

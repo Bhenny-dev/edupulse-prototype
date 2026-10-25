@@ -3,15 +3,15 @@
   "images": [
     {
       "path": "feature-documentation/system-manual/02-syllabus-lifecycle/12-import-preview.png",
-      "sha256": "cfb243bcc9d2cf10e321410ea66d4895070efe8efe41bd8bcb131fa4641ff0c7",
+      "sha256": "52e4bb69b1633db0972d2646f2905c8d4cac1d3ddc00f47dff74afd532831688",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-24T06:37:24.0252889Z"
+      "reviewedAt": "2026-10-24T08:11:21.673Z"
     },
     {
       "path": "feature-documentation/system-manual/02-syllabus-lifecycle/13-import-error.png",
-      "sha256": "d561a84c70e2ab4d62952202f5717f2663b9ca9fd2b4d75fea72b9a4b4c94135",
+      "sha256": "e53050d9d6ffa04cb9169b997451dcf403df4d65cfc530f40611f2ededafcfe3",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-24T06:37:24.0275844Z"
+      "reviewedAt": "2026-10-24T08:11:21.674Z"
     },
     {
       "path": "feature-documentation/system-manual/02-syllabus-lifecycle/14-pdf-import-preview.png",
@@ -21,9 +21,9 @@
     },
     {
       "path": "feature-documentation/system-walkthrough/03-dean-and-associate-dean/12-associate-dean-dashboard.png",
-      "sha256": "e04a410c1e4a9252320d85807641ca06f55cf8b50f099c76a050c4094aca8f99",
+      "sha256": "766d306fa42badfdd6dc8909097834227970fd174f3cabe37307c5641a60f6ff",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-24T06:37:24.0275844Z"
+      "reviewedAt": "2026-10-24T07:31:30.053Z"
     },
     {
       "path": "feature-documentation/system-walkthrough/03-dean-and-associate-dean/13-performance-access-denied.png",
@@ -45,9 +45,9 @@
     },
     {
       "path": "feature-documentation/system-walkthrough/04-instructor/13-performance-alerts.png",
-      "sha256": "42675be74743767e310d24c1a2ef0718f6b2aaf20cd97035187af0045373cf4d",
+      "sha256": "53de67d72ed22260622da55437d5c9cdff6208a8430e5273cd3e9341fd667023",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-24T06:37:24.0275844Z"
+      "reviewedAt": "2026-10-24T07:31:30.057Z"
     },
     {
       "path": "feature-documentation/system-walkthrough/05-student/04-performance-overview.png",
@@ -57,15 +57,15 @@
     },
     {
       "path": "feature-documentation/system-walkthrough/05-student/05-performance-by-topic.png",
-      "sha256": "33834662b6cb0a1a35c01404e706dcddbde34297c3fb3a0966ac004ffe304c50",
+      "sha256": "7d8a2694a545ca7432ae7b14dc05edde26d1a55d8cec68ab40a5703c92ef533e",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-24T06:37:24.0275844Z"
+      "reviewedAt": "2026-10-24T07:31:30.059Z"
     },
     {
       "path": "feature-documentation/system-walkthrough/05-student/06-performance-learning-materials.png",
-      "sha256": "b7bb9e466051e6ca89fe42ee25a553a213bf1587fffa430736e4b522bb54601b",
+      "sha256": "391cdd82738d89a9db96492099c5ee12d1e380ab9d4da0e89b0f65ac339b5239",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-24T06:37:24.0275844Z"
+      "reviewedAt": "2026-10-24T07:31:30.060Z"
     },
     {
       "path": "feature-documentation/system-walkthrough/05-student/07-performance-assessment-scores.png",
@@ -95,31 +95,31 @@
       "path": "feature-documentation/system-walkthrough/06-mobile/04-syllabus-builder.png",
       "sha256": "f98c37182efb8931ec4ac4d9f34680460dfaedce237292fa1ac76ab85c536827",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-24T16:12:36.332Z"
+      "reviewedAt": "2026-10-24T08:11:21.678Z"
     },
     {
       "path": "feature-documentation/system-walkthrough/06-mobile/05-pulse-panel.png",
-      "sha256": "7d0ff5546c326f6037d6053c6454ea069c29e759189bd21dbe3a7f53315a71a5",
+      "sha256": "bbb415d4f86527aae7bd466f9a84e3a3244866a3e5826fb5583bbab8a9fffc03",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-24T06:37:24.0275844Z"
+      "reviewedAt": "2026-10-25T23:09:44.346978+00:00"
     },
     {
       "path": "feature-documentation/system-walkthrough/06-mobile/06-settings-ai-and-knowledge.png",
-      "sha256": "ad4f5c35475559142e8a4115dd570524f91b938d9dcfac0687cdccd15168807f",
+      "sha256": "4f28f62eab3c95692d932ee199a45e4830b3a8054859e7894c476cf998afb3bb",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-24T16:04:29.878Z"
+      "reviewedAt": "2026-10-24T08:11:21.682Z"
     },
     {
       "path": "feature-documentation/system-manual/09-pulse-actions/09-undo-preserves-newer-registration.png",
-      "sha256": "d5c0b9678b18c4982fb11e6a2e726fa846731838759943519f6af8abf58c209d",
+      "sha256": "45438d543d14ef2f138b48f9ce9cb39096ada0b4a34c3e4b8e67cc495617f510",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-24T07:31:30.026Z"
+      "reviewedAt": "2026-10-25T23:09:44.346978+00:00"
     },
     {
       "path": "feature-documentation/system-walkthrough/08-authenticated-records/01-instructor-records.png",
-      "sha256": "26baafbf4bf6397b5ed7d75fcb5e064b62d24fa989193ab30c17c1f7d2b3f73f",
+      "sha256": "dd28aec25db47151c22f6ca40c366d9cf7259a5f712202ac8ed15cf935c53393",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-24T07:31:30.030Z"
+      "reviewedAt": "2026-10-24T08:11:21.683Z"
     },
     {
       "path": "feature-documentation/system-walkthrough/08-authenticated-records/02-student-material.png",
@@ -129,27 +129,27 @@
     },
     {
       "path": "feature-documentation/system-walkthrough/08-authenticated-records/03-student-assessment.png",
-      "sha256": "27ea97e84e7ef55055bedb653c3af67aade045bb78b9f74f43a458f99316fbe7",
+      "sha256": "43abfddafa9739c02dbbc3ce834070b2a2c8909877bcc5a906da027a4818cb76",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-24T07:31:30.034Z"
+      "reviewedAt": "2026-10-24T14:25:17.424Z"
     },
     {
       "path": "feature-documentation/system-walkthrough/08-authenticated-records/04-student-performance.png",
-      "sha256": "e2f78d4fc2879e9e0a35771d71ae0b5249bc5f93ef0ecc7231d15dd477c722c8",
+      "sha256": "abf3d426f659d4e4401fc65e57f71fc2d90d8fe7db006fb05d526484f6758a1f",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-24T07:31:30.036Z"
+      "reviewedAt": "2026-10-24T14:25:17.430Z"
     },
     {
       "path": "feature-documentation/system-walkthrough/08-authenticated-records/05-dean-performance.png",
-      "sha256": "fbad70fc4d4747fc944da5b10990d6946053878a367d905925ddf4aadc456e3d",
+      "sha256": "d944b23a95f0536f933c7fafa4fe7417b03fa9f661b86c3f1f9e8f82047087bc",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-24T07:31:30.038Z"
+      "reviewedAt": "2026-10-24T08:11:21.684Z"
     },
     {
       "path": "feature-documentation/system-walkthrough/08-authenticated-records/06-associate-dean-oversight.png",
-      "sha256": "5956ee09bcb87a9a2b92bb8571444e15330510ee1b5ea73d8187e783bf722707",
+      "sha256": "9e7b30ca1349f4f9dbb7580f79b486896c98ec42428f78c3fd1c26b79d71d16b",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-24T07:31:30.039Z"
+      "reviewedAt": "2026-10-24T14:25:17.430Z"
     },
     {
       "path": "feature-documentation/system-walkthrough/08-authenticated-records/07-unenrolled-student.png",
@@ -219,33 +219,9 @@
     },
     {
       "path": "feature-documentation/system-walkthrough/03-dean-and-associate-dean/11-pulse-on-course-loading.png",
-      "sha256": "cc5ebc45090ee3349b05ee647098b6b5447d0887d6647426d87d6c0c624aac5d",
+      "sha256": "a90e5a5dea606cbc3dc9fb4fa2343a5e932e1f38af7d18c0c5e6cd32bd4daa15",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-24T07:31:30.052Z"
-    },
-    {
-      "path": "feature-documentation/system-walkthrough/03-dean-and-associate-dean/12-associate-dean-dashboard.png",
-      "sha256": "766d306fa42badfdd6dc8909097834227970fd174f3cabe37307c5641a60f6ff",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-24T07:31:30.053Z"
-    },
-    {
-      "path": "feature-documentation/system-walkthrough/04-instructor/13-performance-alerts.png",
-      "sha256": "53de67d72ed22260622da55437d5c9cdff6208a8430e5273cd3e9341fd667023",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-24T07:31:30.057Z"
-    },
-    {
-      "path": "feature-documentation/system-walkthrough/05-student/05-performance-by-topic.png",
-      "sha256": "7d8a2694a545ca7432ae7b14dc05edde26d1a55d8cec68ab40a5703c92ef533e",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-24T07:31:30.059Z"
-    },
-    {
-      "path": "feature-documentation/system-walkthrough/05-student/06-performance-learning-materials.png",
-      "sha256": "391cdd82738d89a9db96492099c5ee12d1e380ab9d4da0e89b0f65ac339b5239",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-24T07:31:30.060Z"
+      "reviewedAt": "2026-10-25T23:09:44.346978+00:00"
     },
     {
       "path": "feature-documentation/system-manual/08-ai-connections/04-saved-provider-credential.png",
@@ -258,18 +234,6 @@
       "sha256": "e4419611c9f64c2593fb02cdd9d4cef96ab209981e360c799a6f3456b32765ea",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-10-24T16:12:36.326Z"
-    },
-    {
-      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/12-import-preview.png",
-      "sha256": "52e4bb69b1633db0972d2646f2905c8d4cac1d3ddc00f47dff74afd532831688",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-24T08:11:21.673Z"
-    },
-    {
-      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/13-import-error.png",
-      "sha256": "e53050d9d6ffa04cb9169b997451dcf403df4d65cfc530f40611f2ededafcfe3",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-24T08:11:21.674Z"
     },
     {
       "path": "feature-documentation/system-manual/08-ai-connections/01-pipeline-status.png",
@@ -297,75 +261,15 @@
     },
     {
       "path": "feature-documentation/system-walkthrough/02-shared-interface/18-pulse-dwell-help.png",
-      "sha256": "b6d704f86033fb3c8badffbc6958f932c254ee7aecd166538457d6d48314d193",
+      "sha256": "127945e7bda4c6c09bc63da1c7f81b68e2a1392e61542d0a3518a07f040a0eae",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-24T08:11:21.677Z"
+      "reviewedAt": "2026-10-25T23:09:44.346978+00:00"
     },
     {
       "path": "feature-documentation/system-walkthrough/04-instructor/05-syllabus-builder.png",
       "sha256": "50b6589890d22ea6b82be08e0d7be0a8be2c88d69b983b7adc441bb70ed788b3",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-10-24T08:11:21.678Z"
-    },
-    {
-      "path": "feature-documentation/system-walkthrough/06-mobile/04-syllabus-builder.png",
-      "sha256": "f98c37182efb8931ec4ac4d9f34680460dfaedce237292fa1ac76ab85c536827",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-24T08:11:21.678Z"
-    },
-    {
-      "path": "feature-documentation/system-walkthrough/06-mobile/05-pulse-panel.png",
-      "sha256": "abb78f560569f48e7194b5b0a4c757ae8507abe4b01a38a591bf667c424d1b2d",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-24T08:11:21.679Z"
-    },
-    {
-      "path": "feature-documentation/system-walkthrough/06-mobile/06-settings-ai-and-knowledge.png",
-      "sha256": "4f28f62eab3c95692d932ee199a45e4830b3a8054859e7894c476cf998afb3bb",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-24T08:11:21.682Z"
-    },
-    {
-      "path": "feature-documentation/system-walkthrough/08-authenticated-records/01-instructor-records.png",
-      "sha256": "dd28aec25db47151c22f6ca40c366d9cf7259a5f712202ac8ed15cf935c53393",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-24T08:11:21.683Z"
-    },
-    {
-      "path": "feature-documentation/system-walkthrough/08-authenticated-records/04-student-performance.png",
-      "sha256": "a2403a4b3ec73966a550d3a939ad471d367430d432d96512e57721ec5080e220",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-24T08:11:21.683Z"
-    },
-    {
-      "path": "feature-documentation/system-walkthrough/08-authenticated-records/05-dean-performance.png",
-      "sha256": "d944b23a95f0536f933c7fafa4fe7417b03fa9f661b86c3f1f9e8f82047087bc",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-24T08:11:21.684Z"
-    },
-    {
-      "path": "feature-documentation/system-walkthrough/08-authenticated-records/06-associate-dean-oversight.png",
-      "sha256": "21259a40623f122897f718ca76d734faa77f67c0dd8169826de503a278146697",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-24T08:11:21.685Z"
-    },
-    {
-      "path": "feature-documentation/system-walkthrough/08-authenticated-records/03-student-assessment.png",
-      "sha256": "43abfddafa9739c02dbbc3ce834070b2a2c8909877bcc5a906da027a4818cb76",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-24T14:25:17.424Z"
-    },
-    {
-      "path": "feature-documentation/system-walkthrough/08-authenticated-records/04-student-performance.png",
-      "sha256": "abf3d426f659d4e4401fc65e57f71fc2d90d8fe7db006fb05d526484f6758a1f",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-24T14:25:17.430Z"
-    },
-    {
-      "path": "feature-documentation/system-walkthrough/08-authenticated-records/06-associate-dean-oversight.png",
-      "sha256": "9e7b30ca1349f4f9dbb7580f79b486896c98ec42428f78c3fd1c26b79d71d16b",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-24T14:25:17.430Z"
     },
     {
       "path": "feature-documentation/system-manual/08-ai-connections/06-generation-verified.png",
@@ -396,6 +300,162 @@
       "sha256": "88804f4c8af71ddfe27993ddfb52173799c5120e820a63ff46bf0516b119aafe",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-10-24T16:12:36.332Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/07-pulse-guidance/01-dragging-over-component.png",
+      "sha256": "d6e3f01b3783d4f256ba56ada886d697726dcf846e71888d877d4de4b0062aa0",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-25T23:09:44.346978+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/07-pulse-guidance/02-focused-component-brief.png",
+      "sha256": "636313fe1346dbce727697f53e36c895f31e6ea06598eff45f05965badf06cd5",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-25T23:09:44.346978+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/07-pulse-guidance/03-section-tour-waits-for-input.png",
+      "sha256": "f0ce196686a9a8f51d7716520656d27b3956be42971cf0726718a1bfa881e804",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-25T23:09:44.346978+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/07-pulse-guidance/04-section-tour-next-control.png",
+      "sha256": "6d75f80e058a27c5b4ac224716dd1d04ac96400e0967343e1a0ba73c26875df1",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-25T23:09:44.346978+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/07-pulse-guidance/05-drop-rejected-with-reason.png",
+      "sha256": "fd58b2890e316f50412774ae24785b7b4bb4ba955335f409eed97b6f6a39d9fd",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-25T23:09:44.346978+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/07-pulse-guidance/06-general-conversation.png",
+      "sha256": "4d2176795f0b5090140010850236ae7be3082d13c9d2723b75f048fb1b7eaca8",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-25T23:09:44.346978+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/07-pulse-guidance/07-situational-exchange.png",
+      "sha256": "77d19777701b2ab355320b5568caa965f89a6eefd57438d207f0cab9ceb52435",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-25T23:09:44.346978+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/09-pulse-actions/01-attach-class-list.png",
+      "sha256": "e3494e4d80a1f140a1c681d2721ebf6156bd8b8d246eafc9efd7ac8504b220f0",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-25T23:09:44.346978+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/09-pulse-actions/02-register-card.png",
+      "sha256": "ee14f79658a197a57969b9624590642e3f62ef13efac5f8c3af7d9d17ad6901b",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-25T23:09:44.346978+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/09-pulse-actions/03-registered-in-my-courses.png",
+      "sha256": "0c52f7b8159494851acddc2c41d83926508bc63e698d4e8f18d2ce013ee63273",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-25T23:09:44.346978+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/09-pulse-actions/04-search-results.png",
+      "sha256": "ae57baf3786ce744be85f0ac0447bc2b5a749187645076af6190f27272ee2cf6",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-25T23:09:44.346978+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/09-pulse-actions/05-material-course-suggestion.png",
+      "sha256": "157a32e8d4276dbee60099ece8f2048f13fd7ef4eb2df49e638b269118fe9783",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-25T23:09:44.346978+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/09-pulse-actions/06-material-added.png",
+      "sha256": "347a29ea0a2cfa29c8a5d694fefa3e6b1d5902e4bcba3f55ab81deaa0974a085",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-25T23:09:44.346978+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/09-pulse-actions/07-generate-week-source.png",
+      "sha256": "262f021b77d6b88313c45090613f8c72ee210d310156c63cd64419e303aa6e7c",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-25T23:09:44.346978+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/09-pulse-actions/10-pdf-section-preview.png",
+      "sha256": "f261a2392af03688299e41ef128de4aecd88217ce04c7ad4ba7ba4215428a4e1",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-25T23:09:44.346978+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/09-pulse-actions/11-section-applied.png",
+      "sha256": "fa3c0c90e90aa4a0006ad06755c19dd6101859070e673252cf3c56b15ca24a81",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-25T23:09:44.346978+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/09-pulse-actions/12-private-memory.png",
+      "sha256": "a2d037b069dad1af5dcd84c76e7bd9dc842b8d626d826f64ba78c099fa8a88d2",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-25T23:09:44.346978+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/09-pulse-actions/13-installed-tools.png",
+      "sha256": "690bbb935865bbd4ee1b3714b05e4b3cfb5074060f791c6887e59926d4d2bf08",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-25T23:09:44.346978+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/09-pulse-actions/14-generated-edit-preview.png",
+      "sha256": "35c2b33c4431751013dd8ce9f3df48e02f0339db250b8c7d658b38987e590ed8",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-25T23:09:44.346978+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/11-workspace-buddies/01-meet-the-crew.png",
+      "sha256": "395840c54cf8a4ef1b208e261a0dfb080f3318675c416fdbd4feaa63e9fb6b77",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-25T23:09:44.346978+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/11-workspace-buddies/02-contextual-loading.png",
+      "sha256": "b496fef52ca1ad50c0b586cb7516e50b0a679dd38a38101fe42b6426f1812afc",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-25T23:09:44.346978+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/11-workspace-buddies/03-working-and-review.png",
+      "sha256": "eb0596fdc470cde884e1e730ee6f2559671b10051dd53c2157fb9a9a0d7a947f",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-25T23:09:44.346978+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/11-workspace-buddies/04-mobile-office.png",
+      "sha256": "a924ceeaf001550ec05f4d5acb87953a780be8fc61a514d57115bc630141dcd1",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-25T23:09:44.346978+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/02-shared-interface/17-pulse-panel.png",
+      "sha256": "5fcf7d86dff053fde32ae787e0842b2dc1cf089b6a9d7c3631f2f403218b0719",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-25T23:09:44.346978+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/05-student/08-pulse-for-students.png",
+      "sha256": "4e5c5517dce99b1ab71a8ec223b507ea47605ed92568bf3fef40215912101f9d",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-25T23:09:44.346978+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/05-student/09-pulse-declines-assessment-answers.png",
+      "sha256": "af4a9c8393c405d1ffe306173403ab1a3bb250da6e9b81261f5ea406ca3e606e",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-25T23:09:44.346978+00:00"
     }
   ]
 }

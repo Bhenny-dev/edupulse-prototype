@@ -42,6 +42,8 @@ Your provider connection belongs to your signed-in account. The system admin can
 
 ## Other ways to start guidance
 
+You can also say *Guide me through this page* or *Can you redirect me to where I can start building my syllabus?* Pulse opens the authorized page and starts the existing interactive guide when requested. Conversation history survives view switching within the same owner account. The header's **Conversations and memory** opens archive and preference controls; [Manual 9](../09-pulse-actions/README.md#private-conversations-and-reusable-preferences) describes saving, recall and deletion.
+
 * **Click** Pulse and choose **Guide this page** to tour the main area of the current page.
 * Rest the pointer on a form control and click **Ask Pulse about this**.
 * With the keyboard, focus any control and press **Alt+P**.
@@ -50,3 +52,7 @@ Your provider connection belongs to your signed-in account. The system admin can
 To have Pulse **do** something for you (register a class list, file a material under a course, search records, generate a week of courseware or open a page), see [System Manual 9](../09-pulse-actions/README.md).
 
 *Changed in v0.4.0:* tour steps are rebuilt from the live page every time they are shown, so a field filled during the tour is no longer described as “Empty”; the required-field asterisk is no longer read as part of a field's name; and the panel always opens on the side away from Pulse so the two never overlap.
+
+## Meet the office crew
+
+Choose **Visit office** in Pulse for [Workspace buddies](../11-workspace-buddies/README.md). Pip can hand an authorized navigation request back to the real page guide. Exact greetings answer locally; more complex requests show contextual buddy loading text. The office does not bypass the tool preview or save confirmation.

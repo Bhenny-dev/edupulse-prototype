@@ -84,7 +84,7 @@ export async function invokeModel(system: string, prompt: string, signal: AbortS
     return text.trim()
   }
   const model = connection.provider === 'ollama'
-    ? new ChatOllama({ baseUrl: c.ollamaUrl, headers: connection.apiKey ? { Authorization: `Bearer ${connection.apiKey}` } : undefined, model: connection.model, temperature: 0.1, numPredict: 1000, numCtx: 4096, numBatch: 128, useMmap: true, keepAlive: '1m', maxRetries: 0, ...(connection.model.startsWith('qwen3') ? { think: false } : {}) })
+    ? new ChatOllama({ baseUrl: c.ollamaUrl, headers: connection.apiKey ? { Authorization: `Bearer ${connection.apiKey}` } : undefined, model: connection.model, temperature: 0.1, numPredict: testBudget || 1000, numCtx: 4096, numBatch: 128, useMmap: true, keepAlive: '5m', maxRetries: 0, ...(connection.model.startsWith('qwen3') ? { think: false } : {}) })
     : connection.provider === 'gemini' && connection.apiKey
       ? new ChatGoogleGenerativeAI({ apiKey: connection.apiKey, model: connection.model, temperature: 0.1, maxOutputTokens: json ? 5000 : 2000, maxRetries: 0 })
       : null

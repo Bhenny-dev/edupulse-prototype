@@ -61,3 +61,7 @@ If a connected provider rejects the model or has no API credits, Pulse shows the
 * If nothing in your library or the product guide answers the question, Pulse says the evidence is missing instead of guessing.
 * **Stop** (square button) cancels a running request; the trash icon clears the conversation; the gear opens AI settings.
 * Answers are drafts for your judgement. Pulse cannot save, approve, publish or grade anything.
+
+## Conversation continuity
+
+Pulse supplies up to 12 recent turns within its bounded prompt budget. Saved preferences and explicit recall come from the current account?s database history, with source labels; they are not proof that an action happened. The chat header opens **Conversations and memory**. See [Manual 9](../09-pulse-actions/README.md#private-conversations-and-reusable-preferences) for review, archive, deletion and recall. Requests to navigate or edit use validated tools and confirmation cards.

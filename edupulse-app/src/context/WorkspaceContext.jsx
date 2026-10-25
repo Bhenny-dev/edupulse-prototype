@@ -1,3 +1,4 @@
+import { jsonValue } from '../utils/jsonValue'
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { useAuth } from './AuthContext'
 import { aiRequest } from '../lib/aiClient'
@@ -31,7 +32,7 @@ function WorkspaceSession({ children, owner, user, preview }) {
   const [journal, setJournal] = useState(() => initialJournal(key, owner, preview))
   const [mode, setMode] = useState(null), [loading, setLoading] = useState(true), [saving, setSaving] = useState(false)
   const [error, setError] = useState(''), [cacheError, setCacheError] = useState(''), [conflict, setConflict] = useState(false), [backedUp, setBackedUp] = useState(false)
-  const current = useRef(journal), mounted = useRef(true)
+  const current = useRef(journal), mounted = useRef(true), writeLock = useRef(false)
   current.current = journal
   useEffect(() => { mounted.current = true; return () => { mounted.current = false } }, [])
   useEffect(() => {
@@ -59,6 +60,8 @@ function WorkspaceSession({ children, owner, user, preview }) {
     if (!journal.dirty || loading || saving || conflict || error || !mode) return
     if (mode === 'preview') { setJournal(previous => ({ ...previous, dirty: false })); return }
     const timer = setTimeout(async () => {
+      if (writeLock.current) return
+      writeLock.current = true
       const sent = current.current
       setSaving(true)
       try {
@@ -67,7 +70,7 @@ function WorkspaceSession({ children, owner, user, preview }) {
         void recordAudit(user, 'workspace_save', 'success', `Revision ${saved.revision}`)
         if (mounted.current) setJournal(previous => ({ data: previous.data, revision: saved.revision, dirty: previous.data !== sent.data }))
       } catch (err) { void recordAudit(user, 'workspace_save', 'failure', 'Save failed'); if (mounted.current) { setError(err.message); setConflict(err.status === 409) } }
-      finally { if (mounted.current) setSaving(false) }
+      finally { writeLock.current = false; if (mounted.current) setSaving(false) }
     }, 500)
     return () => clearTimeout(timer)
   }, [journal, mode, loading, saving, conflict, error, user])
@@ -78,12 +81,37 @@ function WorkspaceSession({ children, owner, user, preview }) {
   const setSyllabi = useCallback(change => update(data => ({ ...data, syllabi: typeof change === 'function' ? change(data.syllabi) : change })), [update])
   const setContent = useCallback(change => update(data => ({ ...data, content: typeof change === 'function' ? change(data.content) : change })), [update])
   const setRegistrations = useCallback(change => update(data => ({ ...data, registrations: typeof change === 'function' ? change(data.registrations) : change })), [update])
+  // Confirmed agent writes use the same revision-checked API and wait for persistence.
+  // The proposed snapshot is not applied optimistically or allowed to replace later local edits.
+  const commit = useCallback(async change => {
+    if (!mounted.current || loading || saving || writeLock.current) throw new Error('Wait for the current workspace load or save, then confirm again.')
+    if (conflict || error || !mode) throw new Error(error || 'Resolve the workspace connection before applying an agent change.')
+    const before = current.current, next = change(before.data)
+    if (new TextEncoder().encode(JSON.stringify(next)).length > 2_950_000) throw new Error('The workspace is near its size limit. Export a backup and remove unused attachments first.')
+    if (mode === 'preview') { setJournal(previous => ({ ...previous, data: next, dirty: false })); return { mode: 'preview', data: next, persisted: false } }
+    writeLock.current = true; setSaving(true)
+    try {
+      let result
+      try { result = await aiRequest('workspace', 'PUT', { revision: before.revision, data: next }) }
+      catch (failure) {
+        // A lost response can follow a successful commit. Read before retrying a write.
+        const latest = await aiRequest('workspace').catch(() => null)
+        if (latest?.revision === before.revision + 1 && jsonValue(latest.data) === jsonValue(next)) result = latest
+        else throw failure
+      }
+      if (!mounted.current) throw new Error('The account changed before this update completed. Reopen the account workspace to verify its status.')
+      setJournal(previous => ({ data: previous.data === before.data ? result.data : previous.data, revision: result.revision, dirty: previous.data !== before.data }))
+      void recordAudit(user, 'workspace_save', 'success', `Confirmed Pulse update, revision ${result.revision}`)
+      return { ...result, persisted: true }
+    } catch (failure) { if (failure.status === 409) { setConflict(true); setError(failure.message) } throw failure }
+    finally { writeLock.current = false; if (mounted.current) setSaving(false) }
+  }, [loading, saving, conflict, error, mode, user])
   const exportBackup = useCallback(() => {
     const url = URL.createObjectURL(new Blob([JSON.stringify(current.current.data, null, 2)], { type: 'application/json' }))
     const link = document.createElement('a'); link.href = url; link.download = `edupulse-workspace-${new Date().toISOString().slice(0, 10)}.json`; link.click()
     setTimeout(() => URL.revokeObjectURL(url), 1000); setBackedUp(true)
   }, [])
-  return <WorkspaceContext.Provider value={{ ...journal.data, setSyllabi, setContent, setRegistrations, loading, saving, dirty: journal.dirty, mode, error: cacheError || error, conflict, backedUp, exportBackup, retry: () => mode ? setError('') : load(), reload: () => load(true) }}>{children}</WorkspaceContext.Provider>
+  return <WorkspaceContext.Provider value={{ ...journal.data, setSyllabi, setContent, setRegistrations, commit, loading, saving, dirty: journal.dirty, mode, error: cacheError || error, conflict, backedUp, exportBackup, retry: () => mode ? setError('') : load(), reload: () => load(true) }}>{children}</WorkspaceContext.Provider>
 }
 export function useWorkspace() {
   const value = useContext(WorkspaceContext)

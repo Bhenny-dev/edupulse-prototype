@@ -1,0 +1,11 @@
+{
+  "checkedAt": "2026-10-24T21:35:18.987Z",
+  "syntheticAccounts": 2,
+  "ownerIsolation": true,
+  "sourceOwnership": true,
+  "immutableTranscripts": true,
+  "idempotentAppend": true,
+  "preferenceRecall": true,
+  "deleteCascade": true,
+  "cleanedAccounts": 2
+}

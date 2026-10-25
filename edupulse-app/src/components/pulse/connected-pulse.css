@@ -131,3 +131,17 @@
 .pulse-action-done > svg { flex-shrink: 0; margin-top: 3px; color: #15803d; }
 .connected-pulse-attachments li span { min-width: 0; }
 @media(max-width: 640px) { .pulse-action-fields { grid-template-columns: 1fr; } }
+.pulse-history { padding: 12px; border: 1px solid var(--gray-200); border-radius: 12px; background: var(--white); font-size: .8rem; }
+.pulse-history header { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.pulse-history ul { padding: 0; list-style: none; margin: 8px 0; }
+.pulse-history li { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; border-bottom: 1px solid var(--gray-200); padding: 8px 0; overflow-wrap: anywhere; }
+.pulse-history li > button { max-width: 100%; white-space: normal; text-align: left; overflow-wrap: anywhere; }
+.pulse-history details { margin-top: 12px; }
+.pulse-history summary { cursor: pointer; font-weight: 600; }
+.pulse-history .form-input, .pulse-action .form-input { width: 100%; min-width: 0; box-sizing: border-box; }
+.pulse-edit-preview { padding: 10px; margin: 8px 0; border: 1px solid var(--gray-200); border-radius: 8px; }
+.pulse-edit-preview pre { font-family: inherit; font-size: .78rem; white-space: pre-wrap; overflow-wrap: anywhere; max-height: 220px; overflow: auto; line-height: 1.5; }
+.pulse-roster-row { display: flex; gap: 8px; margin: 8px 0; font-size: .76rem; overflow-wrap: anywhere; }
+.pulse-context-status { display: block; padding: 6px 16px; font-size: .65rem; line-height: 1.4; color: var(--gray-500); border-top: 1px solid var(--gray-100); }
+.connected-pulse-header > div { min-width: 0; }
+.connected-pulse-header > div small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

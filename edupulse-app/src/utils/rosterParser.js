@@ -1,3 +1,4 @@
+import { jsonValue } from './jsonValue'
 // Reads a class list (an EduSuite export or any table of students) from the text that the
 // sandboxed extractor returns for CSV, PDF, DOCX, HTML or plain-text files. Pure and
 // deterministic: nothing is guessed, rows without a student name are reported as skipped.
@@ -107,12 +108,12 @@ function lineRoster(lines) {
 export function parseRoster(text, fileName = '') {
   const lines = String(text || '').replace(/\r/g, '').split('\n').map(line => line.replace(/^\[\[(?:Page|Slide) \d+\]\]$/, '')).filter(line => line.trim())
   let result = tableRoster(lines)
-  if (!result || result.students.length < 2) {
+  if (!result || !result.students.length) {
     // Free-text lists are accepted only when the file presents itself as a class list.
     if (!ROSTER_WORDS.test(`${fileName} ${lines.slice(0, 8).join(' ')}`)) return null
     result = lineRoster(lines)
   }
-  if (result.students.length < 2) return null
+  if (!result.students.length) return null
   const seen = new Set(), students = []
   let duplicates = 0
   for (const student of result.students) {
@@ -175,6 +176,6 @@ export function applyRegistration(registrations, { courseCode, courseTitle = '',
 export function undoRegistration(registrations, result) {
   const current = registrations.find(r => r.id === result.registration.id)
   // Undo must never discard a registration edited after this confirmation.
-  if (!current || JSON.stringify(current) !== JSON.stringify(result.registration)) return registrations
+  if (!current || jsonValue(current) !== jsonValue(result.registration)) return registrations
   return result.previous ? registrations.map(r => r.id === result.registration.id ? result.previous : r) : registrations.filter(r => r.id !== result.registration.id)
 }

@@ -41,7 +41,7 @@ The API/domain boundary lives in `server/domains/academic.ts`; shared hosted AI 
 | Workspace (syllabi, courseware) | PGlite table `ep_workspaces` | Supabase table `edupulse_workspaces` |
 | Sign-in | Five preview personas (local workspace identity; also in the documentation capture build) | Supabase Auth: email and password for Dean, Associate Dean, Instructor and Student; Google for the system admin. The API verifies the JWT and requires an assigned role. |
 
-## API: one endpoint, thirteen actions
+## API: one endpoint, fifteen actions
 
 All requests go to `/api/ai?action=<name>`. Every request is checked for origin (same-origin only), size (per-action body limits) and identity; AI actions are limited to **20 requests per minute and one at a time** per user and connection.
 
@@ -59,6 +59,16 @@ All requests go to `/api/ai?action=<name>`. Every request is checked for origin 
 | `academic` | GET, POST | assigned academic accounts; commands further restricted by operation | Read authorized projection; instructor workspace sync, enrolled student material opens and versioned objective submissions |
 | `provider-oauth` | POST | assigned accounts or the local workspace | Begin OpenRouter PKCE authorization or complete the account/origin/state-bound code exchange |
 | `provider-test` | POST | callers with a saved personal connection; local server connection also supported | Send a fixed, bounded generation probe through the selected provider/model; return public metadata and record successful inference |
+| `operator` | POST | verified accounts/local workspace; authoring restricted to instructor view | Produce a validated tool plan or reviewable patch; never execute model-generated code or claim a save |
+| `conversations` | GET, POST | account owner/local workspace | List/read/recall private chats; create, append immutable messages, archive/delete; save/forget preferences and change automatic-memory setting |
+
+### Pulse tools and context (25 October 2026)
+
+`src/agents/skills.ts` declares the supported tools and schemas. `toolPlanner.ts` validates model proposals for both provider and on-device execution; `server/domains/operator.ts` supplies the authenticated provider transport. Familiar navigation and file intents retain deterministic routing. Editor adapters register an instance and exact snapshot; a stale or unmounted target cannot be modified. Allowed fields exclude course identity, fixed curriculum description, approval, publication, role and enrollment permissions. Unknown fields, invalid URLs and duplicate outline weeks fail validation. Files and prior messages are untrusted source data.
+
+Confirmed mutations use `WorkspaceContext.commit` and the existing revision-checked workspace API. It waits for the persisted response, reconciles a lost response by reading the exact next revision, and preserves later local edits. JSON comparisons ignore object-key ordering while preserving array order and values. Week generation preserves reviewed/published items and rejects a changed syllabus or draft. Model replies cannot assert completion; receipts describe form-only, preview-device or verified database saves.
+
+`server/domains/conversations.ts` stores private chat text and attachment names, not raw uploaded files, executable action payloads or credentials. Explicit recall searches the caller's indexed transcripts and returns source IDs, roles and dates. User response preferences are extracted conservatively from user statements; files/model text cannot create memory. Owner RLS, cascade deletion and quotas are described in [Supabase](supabase.md). Writer prompts contain at most 12 recent turns and 30,000 total characters including instructions; older history is retrieved separately. Operator targets retain complete selected arrays; over-budget edits are rejected instead of silently truncating replacements. On-device planning applies a 6,000-character input limit.
 
 Provider settings and pipeline status share `AIContext` health; outdated requests cannot overwrite a newer refresh. Saved credentials display a masked indicator/expiry without exposing the secret. Failed replacements retain editable input and preserve the existing cookie. Model refresh preserves an available selected model; first-time OpenAI selection prefers an available small modern model instead of alphabetically defaulting to GPT-3.5. Discovery excludes announced expired OpenAI models and specialized audio/image/search models.
 
@@ -133,3 +143,11 @@ Pulse's Operator (`src/agents/operator.js`) plans app actions from a message and
 | Document extraction | 30 s per file in the sandbox |
 
 *Changed in v0.4.0:* the local budget was raised from 110 s after courseware generation with a CPU-only 1.5B model was measured timing out at exactly 110 s; the hosted limit is unchanged.
+
+## Workspace buddies and latency paths
+
+`quickReplies.ts` recognizes only exact low-risk greetings/thanks locally. `literalEdit` performs explicit quoted replacements in schema-approved editable fields and still requires preview/confirmation. General model answers receive a smaller history/context and output budget; archive recall is queried on explicit recall intent. Ollama stays warm for five minutes when used. No third-party model latency guarantee is implied.
+
+The six profiles in `buddies.ts` map application capabilities to fictional characters. `useOffice` records at most 50 in-session request/proposal events. Statuses are working, review, done, error or stopped; preparation and response completion are distinct from persistence. Confirmed mutations await real save receipts. Conversations archive text, not executable tool objects or the transient animation state.
+
+The optional `WorkspaceOffice` and Three.js scene are dynamically imported after the user opens the office. GPU resources, animation loops and observers are released on unmount. Rendering is capped at 30 fps and pixel ratio 1.5; hidden documents pause rendering, and pause/reduced-motion states use static poses. DOM desk controls and a fallback message preserve operation if WebGL fails. The scene renders ordinary 3D animated over time, not literal 4D. See [the office manual](../system-manual/11-workspace-buddies/README.md).

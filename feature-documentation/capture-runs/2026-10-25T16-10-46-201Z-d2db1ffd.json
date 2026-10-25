@@ -1,0 +1,651 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-10-25T16-10-46-201Z-d2db1ffd",
+  "startedAt": "2026-10-25T16:10:46.201Z",
+  "finishedAt": "2026-10-25T16:13:44.945Z",
+  "commitSha": "1637c58db80efd70a7d2b1cae66dcfd2e3009333",
+  "sourceDigest": "5080b94b6a691be5b9bea22eca05cd9978b559f68e2673453a6d1432b4bfc8e6",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-10-25T16:09:23.491Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 13,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": null
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+      "title": "Pulse responds to a greeting and continues a situational exchange without documents",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "local-real-input/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 25122,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+      "title": "Pulse tools: PDF source sections and private memory controls",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "local-real-input/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 6233,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+      "title": "Pulse tools: model proposal is reviewable before saving",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-provider-transport/ui-regression",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2871,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+      "title": "public site",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "preview/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 9715,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+      "title": "shared interface (shown as instructor)",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "preview/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 34902,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+      "title": "system admin",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "preview/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 4761,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+      "title": "dean and associate dean",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "preview/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 19367,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+      "title": "associate dean",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "preview/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 7087,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+      "title": "instructor",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "preview/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 18112,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+      "title": "student",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "preview/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 14297,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/workspace-office.spec.ts",
+      "title": "Workspace buddies: real office, domain conversations and model proposal states",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-provider-transport/ui-regression",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 7391,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+      "title": "mobile walkthrough",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "preview/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 6731,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts",
+      "title": "Mobile workspace buddies have accessible desk controls and reduced motion",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "local-real-input/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 4597,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-manual/07-pulse-guidance/06-general-conversation.png",
+      "sha256": "4d2176795f0b5090140010850236ae7be3082d13c9d2723b75f048fb1b7eaca8",
+      "bytes": 49848
+    },
+    {
+      "path": "feature-documentation/system-manual/07-pulse-guidance/07-situational-exchange.png",
+      "sha256": "77d19777701b2ab355320b5568caa965f89a6eefd57438d207f0cab9ceb52435",
+      "bytes": 69269
+    },
+    {
+      "path": "feature-documentation/system-manual/09-pulse-actions/10-pdf-section-preview.png",
+      "sha256": "2f85f8bca245e9fb3edb130c4da15a06105c3ba72a6f5a976ac360ba4338cab7",
+      "bytes": 153479
+    },
+    {
+      "path": "feature-documentation/system-manual/09-pulse-actions/11-section-applied.png",
+      "sha256": "1219ac36e34a4875af1dc8c5135df6fb40548dcdad123d71397e131ea7e9c4bc",
+      "bytes": 85902
+    },
+    {
+      "path": "feature-documentation/system-manual/09-pulse-actions/12-private-memory.png",
+      "sha256": "6349c6f777ea04dcc825a2f902dacba2ce4dc3e83f12912ce927b171cfd7eca7",
+      "bytes": 110745
+    },
+    {
+      "path": "feature-documentation/system-manual/09-pulse-actions/13-installed-tools.png",
+      "sha256": "a318f1fc5e2daec450494f4b44de0112f73cc3a4dcb64bccc676ced7aaaea83f",
+      "bytes": 148807
+    },
+    {
+      "path": "feature-documentation/system-manual/09-pulse-actions/14-generated-edit-preview.png",
+      "sha256": "540002673a140be7e8b007818144c5215fee4dd74f333884a4170e59d4ba56cd",
+      "bytes": 140313
+    },
+    {
+      "path": "feature-documentation/system-manual/11-workspace-buddies/01-meet-the-crew.png",
+      "sha256": "395840c54cf8a4ef1b208e261a0dfb080f3318675c416fdbd4feaa63e9fb6b77",
+      "bytes": 216286
+    },
+    {
+      "path": "feature-documentation/system-manual/11-workspace-buddies/02-contextual-loading.png",
+      "sha256": "b496fef52ca1ad50c0b586cb7516e50b0a679dd38a38101fe42b6426f1812afc",
+      "bytes": 75366
+    },
+    {
+      "path": "feature-documentation/system-manual/11-workspace-buddies/03-working-and-review.png",
+      "sha256": "eb0596fdc470cde884e1e730ee6f2559671b10051dd53c2157fb9a9a0d7a947f",
+      "bytes": 180528
+    },
+    {
+      "path": "feature-documentation/system-manual/11-workspace-buddies/04-mobile-office.png",
+      "sha256": "a924ceeaf001550ec05f4d5acb87953a780be8fc61a514d57115bc630141dcd1",
+      "bytes": 372374
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/01-landing-hero.png",
+      "sha256": "0efd145d361917ea9bae027c817dd3f495cff680fffa90b9390e22b553e3e6d3",
+      "bytes": 493717
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/02-landing-about.png",
+      "sha256": "260dfed5f404f32c4f4d4d89e51402c8c53f7ffb333a9df4844e4aa0050842dc",
+      "bytes": 263043
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/03-landing-statistics.png",
+      "sha256": "ff2533c3e9db19a43a067deeeb62af7f974c92541edd7efba0ad0bf64e915050",
+      "bytes": 229583
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/04-sign-in-panel.png",
+      "sha256": "0b004717066caf4e7252fe4942b7b7fb717185bbeb679ec8a7cbd7bfb5b0a072",
+      "bytes": 170404
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/05-preview-personas.png",
+      "sha256": "2e37dc811be7d5dbd19f035f17fca05671e9a2ece441c12e209702b4346dcae5",
+      "bytes": 12512
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/06-privacy.png",
+      "sha256": "eb5cb02446100a179139daeaf81acb248d9581f76d2c5d6315b2547127bd0680",
+      "bytes": 366197
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/07-terms.png",
+      "sha256": "4727fe8c0d52042d62d4e56666df8c55575e40041e7420d619e9763cbe5d1c39",
+      "bytes": 317712
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/08-server-error.png",
+      "sha256": "d434bef2dbf55b1fdaac34dd887bc1f0c4445037502b1dbe749aeead704fa9c9",
+      "bytes": 241590
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/02-shared-interface/01-top-bar.png",
+      "sha256": "3d5ebb059f1bc09dae9224ba7642b4d8bdf359769e80bc744797601b8af65cad",
+      "bytes": 23862
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/02-shared-interface/02-search-overlay.png",
+      "sha256": "8d768836f8da93af4a24ccd10c4e60b527d7851ec702c0243406bb7f57e4bb90",
+      "bytes": 256489
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/02-shared-interface/03-keyboard-shortcuts-modal.png",
+      "sha256": "66895bcfa25d858db7a6e81970bbd43628e373a8a52b9fd1781e23bdec28e569",
+      "bytes": 259003
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/02-shared-interface/04-language-menu.png",
+      "sha256": "29a362a84773b175c98f23afe1458fb6766fa800eecd4a5aaa1059661ea8a81a",
+      "bytes": 275402
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/02-shared-interface/05-notifications-dropdown.png",
+      "sha256": "e8679ddaa1cd3d4f11ab41fdf830054376359a87552e13c9e1ea7189cc0dfb31",
+      "bytes": 290544
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/02-shared-interface/06-account-menu.png",
+      "sha256": "55c2802d8574b6e004e718d07ec6767330299390f4a5781beb3ff56749ec10af",
+      "bytes": 277581
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/02-shared-interface/08-notifications-page.png",
+      "sha256": "fef0012b23f16cc8d8510dc6af9488301265f628e630bcc0587930c007ccf14f",
+      "bytes": 228438
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/02-shared-interface/09-help-and-support.png",
+      "sha256": "ea66f185c471dd6c1cba0b22e33ba7eea882783cd475b06f5618186334f3b0e2",
+      "bytes": 242065
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/02-shared-interface/10-settings-account.png",
+      "sha256": "a3711618451aa434acadf0d9373f97d39c7f21145b03a19b82a94bea967398db",
+      "bytes": 192857
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/02-shared-interface/11-settings-appearance.png",
+      "sha256": "12f5fabd07ee75a39a04789ec134e475ef96f90ed1753293768911a8c89f25f1",
+      "bytes": 212735
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/02-shared-interface/12-settings-notifications.png",
+      "sha256": "5e5295c4676717d58c09ebc6d289a4d402f142a51661839ef3f51dfa44d7d9e5",
+      "bytes": 192794
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/02-shared-interface/13-settings-ai-and-knowledge.png",
+      "sha256": "84be790d14876d11d1453980fc0ffe8ae1101a5ae44103553332ece7153e51c8",
+      "bytes": 654765
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/02-shared-interface/14-settings-data-and-privacy.png",
+      "sha256": "7bd48669bff0f50c8adc504d53228ac50c2320d6cdf32f2804fb47f8a3c4cfd0",
+      "bytes": 222934
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/02-shared-interface/15-dark-mode.png",
+      "sha256": "58c2eea79b637a5c068d9f891cb82421dafc0fa9a8a5bc9dbc68995c2b2019f2",
+      "bytes": 393249
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/02-shared-interface/16-pulse-dock.png",
+      "sha256": "b3cbb79c218247ed5c39c9a7e01c2f2d2b8ba71339313162983c9e224ea78b06",
+      "bytes": 5742
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/02-shared-interface/17-pulse-panel.png",
+      "sha256": "5fcf7d86dff053fde32ae787e0842b2dc1cf089b6a9d7c3631f2f403218b0719",
+      "bytes": 313566
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/02-shared-interface/18-pulse-dwell-help.png",
+      "sha256": "127945e7bda4c6c09bc63da1c7f81b68e2a1392e61542d0a3518a07f040a0eae",
+      "bytes": 187019
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/03-dean-and-associate-dean/01-dashboard.png",
+      "sha256": "ae452c177d205f844e0721251936d53882cd1428cbc138d098e6f807d76e9602",
+      "bytes": 632827
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/03-dean-and-associate-dean/02-course-loading-loaded-courses.png",
+      "sha256": "d4b4b56afc9a7c947b75f5fdf3d8f47bbf9d725157543364e20f3f7d9c7d001c",
+      "bytes": 872692
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/03-dean-and-associate-dean/03-course-loading-instructors.png",
+      "sha256": "50565e675d9af9f9beca50465294d31d80241516a007e9647cbd4c3e19469939",
+      "bytes": 271349
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/03-dean-and-associate-dean/04-monitor-syllabus-status.png",
+      "sha256": "77949e431b7ca7ecff67ed4b08749de89e28e80cdc295c5c7f96540f86dbc0d4",
+      "bytes": 260677
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/03-dean-and-associate-dean/05-monitor-delivery-progress.png",
+      "sha256": "ecc5ad3c1290d635fdda182ce2d10be92b594e88e83321f19ef1b906ea681be6",
+      "bytes": 233392
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/03-dean-and-associate-dean/06-monitor-student-oversight.png",
+      "sha256": "d56d54d553fd2ed763bde57b41b7fa40a5d793656c429ea6e5d6afe98ec6fad3",
+      "bytes": 260533
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/03-dean-and-associate-dean/07-monitor-alerts.png",
+      "sha256": "4b6dd1a0632af3f72609f027e83370bc78a342251e43d9422802fd53eb987a13",
+      "bytes": 299450
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/03-dean-and-associate-dean/08-records-import.png",
+      "sha256": "2a29016e68f10b5da14a30adbdd878b73e21f71a9564364e59026138e1a261a1",
+      "bytes": 276422
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/03-dean-and-associate-dean/09-records-blocks-and-class-lists.png",
+      "sha256": "f9a8701d8d6b0a5419a8ebb21d55e56581200ea11c4070e72468c2d506f77a47",
+      "bytes": 521645
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/03-dean-and-associate-dean/10-records-course-catalog.png",
+      "sha256": "01e448ac6678ea156c33dee3a15162086e334f5541874b3c74dc282519431137",
+      "bytes": 993831
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/03-dean-and-associate-dean/11-pulse-on-course-loading.png",
+      "sha256": "a90e5a5dea606cbc3dc9fb4fa2343a5e932e1f38af7d18c0c5e6cd32bd4daa15",
+      "bytes": 324549
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/03-dean-and-associate-dean/12-associate-dean-dashboard.png",
+      "sha256": "e04a410c1e4a9252320d85807641ca06f55cf8b50f099c76a050c4094aca8f99",
+      "bytes": 240757
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/03-dean-and-associate-dean/13-performance-access-denied.png",
+      "sha256": "2521004c62cd19d946b7d02c30481cab285534bd0fd7e48c278d8b0a503cf819",
+      "bytes": 48626
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/04-instructor/01-dashboard.png",
+      "sha256": "28edc9c7518d0f75275794d8b613335cbd1558bd02dcd6136743353ffb7d02bd",
+      "bytes": 682507
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/04-instructor/02-syllabus-my-courses.png",
+      "sha256": "f9a347ba6ab0b84f3e57c98f2815c40ac120b0a33de69bb0a64f17edb55a2ed7",
+      "bytes": 235110
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/04-instructor/03-syllabus-my-syllabus.png",
+      "sha256": "d7fb868d462978ef4878c168887283425a2e3ab02dcffc4f9d800d7d322ffb39",
+      "bytes": 705195
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/04-instructor/04-syllabus-shared-repository.png",
+      "sha256": "d6d7cda8b00040228b6d90079550a6331c6c4fde60afe36e2f15e022874991d8",
+      "bytes": 174869
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/04-instructor/05-syllabus-builder.png",
+      "sha256": "9dacaa345ecba43b9dcde28b2670a5a1b41ad694ce430291e66439992f0a6145",
+      "bytes": 180983
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/04-instructor/06-syllabus-builder-course-outline.png",
+      "sha256": "e7b8e3556d2f3234904ece18c879ee61359b227c0913c23f869b16b673f940db",
+      "bytes": 150858
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/04-instructor/07-courseware-my-courseware.png",
+      "sha256": "d556fe8e209fe69858de75db52e19e02772ca5266253ab2f63f744ca74024469",
+      "bytes": 345631
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/04-instructor/08-courseware-builder.png",
+      "sha256": "7940b5263e42c8e06573308d1cd7adcd74e522e86f59d051b858236a10366ebc",
+      "bytes": 253737
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/04-instructor/09-student-monitoring-assessment-scores.png",
+      "sha256": "2ed6299e5926da898fe7d7bec13e66845211d51acb8fa1744b77c16c344975d8",
+      "bytes": 437573
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/04-instructor/10-student-monitoring-material-access.png",
+      "sha256": "8f1097adc232a7f34222c80c1e4fb43c6663310a580f10496b2b9c57fb8d1dd4",
+      "bytes": 437304
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/04-instructor/11-performance-overview.png",
+      "sha256": "f449879b000a717bb3142213de51093d7a635814adc8b64f5f543774bde90367",
+      "bytes": 181085
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/04-instructor/12-performance-by-topic.png",
+      "sha256": "c0618de00195616796b41955abe1541cc0c8a37f45c8686e926e38f28e42237c",
+      "bytes": 450019
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/04-instructor/13-performance-alerts.png",
+      "sha256": "c554f28adba064228cfec1635a809fae79d658a0c989ba94dd2e432b3fe07e73",
+      "bytes": 341560
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/05-student/01-dashboard.png",
+      "sha256": "21dd7ad47101bb07f7c5bfb54acdc7b918a8670592f5741eef57d54082892696",
+      "bytes": 498405
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/05-student/02-my-materials.png",
+      "sha256": "5dc927d86a29391a9523f026ec78805ad96eb72295f0327c48c8e4c49f0c04b9",
+      "bytes": 273406
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/05-student/03-my-assessments.png",
+      "sha256": "b0ef4fd05c8c39e7669f00115815a66f516033e77c34c97cd8c2c78b1d37b6d2",
+      "bytes": 261202
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/05-student/04-performance-overview.png",
+      "sha256": "23c9f86a1714e5b1a559a1c980a312c66d16ac4ccb74d8de426b8018e7c898fe",
+      "bytes": 229276
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/05-student/05-performance-by-topic.png",
+      "sha256": "ef1f098e8b836ba2a59bee436ed0f8d5cd4795d869068cc531f81622e2f495b8",
+      "bytes": 218876
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/05-student/06-performance-learning-materials.png",
+      "sha256": "3a1d3f8237ad03f55c5518311440aaa3d92a8fae99a64e3aa5f94012d7a48c42",
+      "bytes": 214038
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/05-student/07-performance-assessment-scores.png",
+      "sha256": "f98781cd69c1693be1052bb4095a3d768b6601f8fe41a7762bc0ec4992dffa0e",
+      "bytes": 210633
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/05-student/08-pulse-for-students.png",
+      "sha256": "4e5c5517dce99b1ab71a8ec223b507ea47605ed92568bf3fef40215912101f9d",
+      "bytes": 270778
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/05-student/09-pulse-declines-assessment-answers.png",
+      "sha256": "af4a9c8393c405d1ffe306173403ab1a3bb250da6e9b81261f5ea406ca3e606e",
+      "bytes": 66843
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/06-mobile/01-landing.png",
+      "sha256": "f2df8fd587397ffb201389fd941c5ba7853f2db9f162bc5aadb8c4c5bbbbd621",
+      "bytes": 1130837
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/06-mobile/02-instructor-dashboard.png",
+      "sha256": "4e2afe2ee5a5b330b397a433d30e33c4ca26b6a6fb084a66e0773788c1b2e6eb",
+      "bytes": 402115
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/06-mobile/03-navigation-menu.png",
+      "sha256": "fb14a726ab5085281ce7129f4306f260ce4d2e32fceb4255b50bba7c84a64053",
+      "bytes": 127159
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/06-mobile/04-syllabus-builder.png",
+      "sha256": "f98c37182efb8931ec4ac4d9f34680460dfaedce237292fa1ac76ab85c536827",
+      "bytes": 357226
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/06-mobile/05-pulse-panel.png",
+      "sha256": "bbb415d4f86527aae7bd466f9a84e3a3244866a3e5826fb5583bbab8a9fffc03",
+      "bytes": 306720
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/06-mobile/06-settings-ai-and-knowledge.png",
+      "sha256": "dc7bd251057adf85e5403a9592d59b88998e5fa25bb9de807aefad1a0a66ead9",
+      "bytes": 292189
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/07-system-admin/01-system-console.png",
+      "sha256": "fad9d6f4e5beefaf620d177c84bf3689cd8c1e216ab427f6ce597b825eb600ba",
+      "bytes": 644548
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/07-system-admin/02-health-and-role-coverage.png",
+      "sha256": "06af21aa1910b90ad7db628f32aba3850430bc34ffb2773cbcc3d986f98b611c",
+      "bytes": 63911
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/07-system-admin/03-manage-accounts.png",
+      "sha256": "822ceb1dbf1554d88ad4ff74e08b4970046274373bef9eec442f369b2ee63e25",
+      "bytes": 54935
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/07-system-admin/04-audit-activity.png",
+      "sha256": "bb0ec1606a3be35a5acce0ea807b84440656b5da0fc53457830d32d4eefa4029",
+      "bytes": 33376
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/07-system-admin/05-agent-activity.png",
+      "sha256": "9b6f20096a6cbaecfcf1ee3827e1ada56379822c589beb7b7a2f5406d9725254",
+      "bytes": 167596
+    }
+  ]
+}

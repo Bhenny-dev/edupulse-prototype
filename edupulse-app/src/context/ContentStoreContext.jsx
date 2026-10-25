@@ -1,3 +1,4 @@
+import { jsonValue } from '../utils/jsonValue'
 import { createContext, useContext, useCallback } from 'react'
 import { useWorkspace } from './WorkspaceContext'
 import { mergeDrafts } from '../utils/contentUpdates'
@@ -13,7 +14,7 @@ import { mergeDrafts } from '../utils/contentUpdates'
 const ContentStoreContext = createContext(null)
 
 export function ContentStoreProvider({ children }) {
-  const { content: store, setContent: setStore } = useWorkspace()
+  const { content: store, setContent: setStore, commit } = useWorkspace()
 
   const generateCourse = useCallback((syllabusId, courseUpdates) => {
     setStore(prev => mergeDrafts(prev, courseUpdates))
@@ -53,9 +54,16 @@ export function ContentStoreProvider({ children }) {
       [contentId]: { ...prev[contentId], content: newContent, status: 'draft' },
     }))
   }, [setStore])
+  const commitContent = useCallback(async (contentId, newContent, expected) => commit(data => {
+    const current = data.content[contentId]
+    if (!current) throw new Error('Open a saved courseware draft before asking Pulse to revise it.')
+    if (current.status === 'published') throw new Error('Published content is protected. Create or open a draft version before using Pulse edits.')
+    if (jsonValue(current.content) !== jsonValue(expected)) throw new Error('This courseware changed while the proposal was being prepared. Reopen it and request a fresh preview.')
+    return { ...data, content: { ...data.content, [contentId]: { ...current, content: newContent, title: newContent.title, status: 'draft' } } }
+  }), [commit])
 
   return (
-    <ContentStoreContext.Provider value={{ store, generateCourse, generateWeek, checkItem, bulkCheck, toggleVisibility, saveContent }}>
+    <ContentStoreContext.Provider value={{ store, generateCourse, generateWeek, checkItem, bulkCheck, toggleVisibility, saveContent, commitContent }}>
       {children}
     </ContentStoreContext.Provider>
   )

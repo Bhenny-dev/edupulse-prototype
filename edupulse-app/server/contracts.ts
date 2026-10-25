@@ -5,8 +5,9 @@ export const chatInput = z.object({
   grounding: z.enum(['auto', 'sources']).default('auto'),
   task: z.enum(tasks).default('auto'),
   message: z.string().trim().min(1).max(4000),
-  history: z.array(z.object({ role: z.enum(['user', 'assistant']), content: z.string().max(5000) })).max(8).default([]),
-  context: z.string().max(2000).default(''),
+  history: z.array(z.object({ role: z.enum(['user', 'assistant']), content: z.string().max(5000) })).max(12).default([]),
+  context: z.string().max(6000).default(''),
+  conversationId: z.string().uuid().optional(),
   attachments: z.array(z.object({ title: z.string().trim().min(1).max(160), text: z.string().trim().min(1).max(18000) })).max(3).default([]),
   documentIds: z.array(z.string().uuid()).max(2).default([]),
   // The role the interface is showing. The Guardian uses it only to add learner rules, never to lift a restriction.

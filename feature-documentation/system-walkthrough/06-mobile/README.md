@@ -14,3 +14,11 @@ The October 25 recapture records the mobile suite centrally in [capture-run evid
 | 6 | ![Settings · AI & Knowledge](06-settings-ai-and-knowledge.png) | Settings tabs scroll sideways; the AI connection, pipeline and knowledge library cards stack. |
 
 *Changed in v0.4.0:* the breadcrumb no longer splits “Home” and the current page onto different lines (the 44 px touch-target rule had made the link taller than its row), and the menu button announces whether it opens or closes the menu.
+
+## Pulse context controls
+
+The mobile Pulse panel retains its bottom-sheet layout and now includes **Conversations and memory**, a private-history saving indicator and the context budget. Edit previews and history scroll inside the panel. See [Manual 9](../../system-manual/09-pulse-actions/README.md) for the same confirmed actions and memory controls.
+
+## Workspace buddies
+
+Pulse includes **Meet your workspace buddies** and **Visit office**. The optional 3D office has six named desks, domain-specific conversations, real request/review states, a pause control and reduced-motion support. Mobile users scroll from the office to the buddy chat. See [the illustrated office guide](../../system-manual/11-workspace-buddies/README.md).
