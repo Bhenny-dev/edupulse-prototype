@@ -20,7 +20,7 @@ Version folders are release records. Preserve released records, and add correcti
 
 | Version | Scope | Status |
 | --- | --- | --- |
-| [26 October Pulse tools and workspace](versions/2026-10-25-pulse-agent-tools/README.md) | Validated tools, PDF imports, private context, faster greetings and animated workspace buddies | See current release validation |
+| [26 October Pulse tools and workspace](versions/2026-10-25-pulse-agent-tools/README.md) | Validated tools, PDF imports, private context, faster greetings and animated workspace buddies | 122 unit/integration + 85 browser tests; hosted canaries passed |
 | [24 October audit integration](versions/2026-10-24-audit-integration/README.md) | Install/security fixes, authorized academic records, scoring, shared limits and documentation evidence | Verified and promoted; source/build/canary evidence in validation |
 | [v0.0.0](versions/v0.0.0/README.md) | Recorded baseline before connected AI | Historical baseline |
 | [v0.1.0](versions/v0.1.0/README.md) | Real AI API, LangChain/LangGraph RAG, private vector knowledge, working UI integration | Deployed; local/live checks pass; GitHub runner billing lock recorded |

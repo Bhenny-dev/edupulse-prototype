@@ -1,0 +1,9 @@
+{
+  "checkedAt": "2026-10-26T05:45:27.856Z",
+  "origin": "https://edupulse-prototype.vercel.app",
+  "publicSignIn": true,
+  "securityHeaders": true,
+  "guestIdentity": true,
+  "privateHistoryDenied": true,
+  "pageErrors": 0
+}

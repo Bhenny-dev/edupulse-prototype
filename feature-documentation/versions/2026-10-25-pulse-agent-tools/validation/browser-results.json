@@ -1,0 +1,22 @@
+{
+  "stats": {
+    "startTime": "2026-10-26T05:37:10.424Z",
+    "duration": 429828.184,
+    "expected": 85,
+    "skipped": 13,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "greetingLatency": [
+    {
+      "project": "desktop",
+      "milliseconds": 11.5,
+      "heavyRequests": 0
+    },
+    {
+      "project": "mobile",
+      "milliseconds": 15,
+      "heavyRequests": 0
+    }
+  ]
+}
