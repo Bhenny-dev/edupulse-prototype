@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import { readFile, readdir } from 'node:fs/promises'
 import { PGlite } from '@electric-sql/pglite'
 import { ApiError, chatInput, type Identity } from '../server/contracts.js'
-import { runAgents } from '../src/lib/rag/agents.js'
+import { runAgents, writerPrompt } from '../src/lib/rag/agents.js'
 import { checkAppropriateUse } from '../src/lib/rag/policy.js'
 import { AGENTS, AGENT_ORDER, agentReport } from '../src/lib/rag/registry.js'
 import { injectionMatches } from '../src/lib/rag/text.js'
@@ -145,4 +145,19 @@ test('the injection scanner catches task hijacks in English and Filipino without
     'Pretend you are a customer and practise the dialogue.',
     'Well done! Now write your answer in the box below.',
   ]) assert.equal(injectionMatches(text).length, 0, text)
+})
+
+test('buddy dialogue uses the trusted role and retains late source text rather than a first-line excerpt', () => {
+  const text='Networking reference. '.repeat(500)+'Final unit: deployment documentation.'
+  const input=chatInput.parse({message:'Explain your approach to this outline',buddy:'quill',history:[{role:'user',content:'Please use a practical example.'}]})
+  const {system,prompt}=writerPrompt('draft',input,instructor,[{...guide,origin:'attachment',text}],null)
+  assert.match(system,/Speak conversationally as Quill/)
+  assert.match(system,/Never invent past work/)
+  assert.match(prompt,/Final unit: deployment documentation/)
+  assert.match(prompt,/Please use a practical example/)
+})
+test('an unrelated product guide cannot replace the uploaded academic source',async()=>{
+  const result=await runAgents(chatInput.parse({message:'Draft learning materials based on this syllabus',task:'draft',attachments:[{title:'Sample syllabus',text:'Week 1: Variables and assignment. Explain variables with a worked example.'}]}),instructor,signal(),{provider:'retrieval',search:async()=>({evidence:[{...guide,origin:'public-guide',text:'Open Settings to upload files.'}]})})
+  assert.equal(result.sources.some(source=>source.origin==='public-guide'),false)
+  assert.equal(result.sources[0]?.title,'Sample syllabus')
 })

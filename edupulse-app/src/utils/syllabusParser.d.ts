@@ -4,11 +4,12 @@ export type ParsedSyllabus = {
   sections: [
     Section<{ courseCode: string; courseTitle: string; periodOffered: string; academicYear: string }>,
     Section<{ description: string; creditUnits: number | ''; classification: string; noOfHours: number | ''; prerequisites: string[] }>,
-    Section<{ raw: string }>, Section<{ programOutcomes: string[] }>, Section<{ courseOutline: OutlineRow[] }>,
+    Section<{ raw: string; institutionalContext?: { kcp: {vision:string;mission:string;objectives:string[];coreValues:string[]};cit:{mission:string;objectives:string[]} } }>, Section<{ programOutcomes: string[] }>, Section<{ courseOutline: OutlineRow[] }>,
     Section<{ courseRequirements: string[]; gradingSystem: string; coursePolicy: string[] }>,
     Section<{ books: { title: string; authors: string; year: string; publisher: string }[]; onlineReferences: { title: string; url: string }[] }>
   ];
   courseMatch: { code: string; title: string; units: number; classification?: string } | null;
+  sourceText?: string; warnings?: string[]; provenance?: { weeks: number[]; pages: number[] }[];
   metadata?: { title: string; size: number; lastModified: string; scannedPages?: number };
 }
 export function parseCourseOutline(text: string): OutlineRow[]

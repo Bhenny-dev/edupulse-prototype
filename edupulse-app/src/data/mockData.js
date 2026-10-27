@@ -454,14 +454,17 @@ export const DEFAULT_INSTITUTIONAL_CONTEXT = {
     ],
     coreValues: ['Justice', 'Truth', 'Freedom'],
   },
+  // Provided IT 202 syllabus, AY 2025-2026. Existing records keep their snapshot.
   cit: {
-    mission: 'To prepare business professionals who are qualified, globally competent and fostered with ethical leadership.',
-    objectives: [
-      'prepare professionals who are competent in their chosen field',
-      'produce professionals who are fully equipped with up-to-date industry knowledge',
-      'train future industry leaders imbued with moral and spiritual values',
-    ],
-  },
+    "mission": "The College of Information Technology is committed to develop computing professionals with active and creative minds, a sense of understanding and compassion for others through appropriate world class instruction that encourages high expectation for success and considers individual differences and learning styles through the active involvement of parents, teachers, and community members in the holistic development of the students.",
+    "objectives": [
+        "equip globally-competitive professionals with passion to serve;",
+        "produce computing graduates who are valuable members of their general community;",
+        "nurturing graduates’ interpersonal and computing skills necessary in the information industry’s diverse culture;",
+        "instill the preservation and development of individuality; and",
+        "promote the discovery, dissemination, and application of knowledge involving computing."
+    ]
+},
 }
 
 export const DEFAULT_SYLLABI = [

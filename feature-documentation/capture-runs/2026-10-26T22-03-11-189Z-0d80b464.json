@@ -1,0 +1,117 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-10-26T22-03-11-189Z-0d80b464",
+  "startedAt": "2026-10-26T22:03:11.189Z",
+  "finishedAt": "2026-10-26T22:03:30.948Z",
+  "commitSha": "8fda6139c6ece969b0429c6f8748908f730fb373",
+  "sourceDigest": "e8803f08afa3a39a65ad5308537834c15717749fe35db14dbe2aefe1f238f239",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-10-26T22:03:07.538Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 2,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": null
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-tools.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-source.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/capture.spec.ts",
+      "title": "Pulse guidance: drag, focus, perch, section tour and rejection",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "local-real-input/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 6606,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+      "title": "Pulse tools: page source context, focused correction and PDF download",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "local-real-input/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 3842,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/15-wrapped-pdf-preview.png",
+      "sha256": "d57e466a056a40c8c21ff75b2b5a7bf44513f1ec186422bfa1deab55c6163a64",
+      "bytes": 150895
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/16-download-pdf-draft.png",
+      "sha256": "ed174df5527e002416dedcfadf8c4d3474dd05abad8067d883464e61436526d4",
+      "bytes": 14491
+    },
+    {
+      "path": "feature-documentation/system-manual/07-pulse-guidance/01-dragging-over-component.png",
+      "sha256": "8eafbe0288f8e8c33ef0ecdab7a6d9f9f5e21d3d69a9eab2644335bcff01e99e",
+      "bytes": 191422
+    },
+    {
+      "path": "feature-documentation/system-manual/07-pulse-guidance/02-focused-component-brief.png",
+      "sha256": "63c5f59531438ee88847d794ce28a914ef9f331546739ab155115b703b1adbd3",
+      "bytes": 248277
+    },
+    {
+      "path": "feature-documentation/system-manual/07-pulse-guidance/03-section-tour-waits-for-input.png",
+      "sha256": "fb713ee6689adc4b6d66b421658b054f324f5d058577de5481d22ff9883a278e",
+      "bytes": 228826
+    },
+    {
+      "path": "feature-documentation/system-manual/07-pulse-guidance/04-section-tour-next-control.png",
+      "sha256": "6daea60fa578162bf56f473e14e1fade486412a4d2f5249a08470abb22e1bb9b",
+      "bytes": 221232
+    },
+    {
+      "path": "feature-documentation/system-manual/07-pulse-guidance/05-drop-rejected-with-reason.png",
+      "sha256": "c3c01013f8823ea5693060ce176ac1db1e0825cdb91c97204a7f00351dead57a",
+      "bytes": 156165
+    },
+    {
+      "path": "feature-documentation/system-manual/09-pulse-actions/15-focused-page-source.png",
+      "sha256": "a16c218880cc1f8bd5ae942b4dfba7ca7dff7f77f4f91d28ffcb06e68799b4a0",
+      "bytes": 246590
+    }
+  ]
+}

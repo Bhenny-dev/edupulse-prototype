@@ -1,7 +1,7 @@
 import { test, expect, type Page } from './fixtures.js'
-import { makePdf } from '../fixtures.js'
+import { makePdf, makeRuledSyllabusPdf } from '../fixtures.js'
 const dir = '../feature-documentation/system-manual/09-pulse-actions'
-const fullCard = '.connected-pulse{height:auto!important;max-height:none!important;overflow:visible!important}.connected-pulse-feed{overflow:visible!important;flex:none!important;max-height:none!important}'
+const fullCard = '.connected-pulse{position:relative!important;inset:auto!important;height:auto!important;max-height:none!important;overflow:visible!important}.connected-pulse-feed{overflow:visible!important;flex:none!important;max-height:none!important}'
 test.setTimeout(60000)
 async function say(page: Page, text: string) {
   await page.getByRole('textbox', { name: 'Ask Pulse', exact: true }).fill(text)
@@ -49,4 +49,30 @@ test('Pulse tools: model proposal is reviewable before saving', async ({ page })
   const card = panel.getByRole('region', { name: 'Review content edit' })
   await expect(card).toContainText('Explain variable declarations using a worked example.')
   await panel.screenshot({ path: `${dir}/14-generated-edit-preview.png`, animations: 'disabled', style: fullCard })
+})
+
+test('Pulse tools: page source context, focused correction and PDF download', async ({page})=>{
+  await page.goto('/')
+  await page.getByRole('button',{name:'Instructor',exact:true}).click()
+  await page.goto('/#/syllabus?tab=builder')
+  await page.getByLabel('Upload syllabus DOCX or PDF').setInputFiles({name:'sample-syllabus.pdf',mimeType:'application/pdf',buffer:makeRuledSyllabusPdf()})
+  await expect(page.getByText('Extracted Sections Preview',{exact:true})).toBeVisible()
+  await page.getByText('Section 5: Course Outline',{exact:true}).click()
+  await page.locator('.upload-zone').locator('..').screenshot({path:'../feature-documentation/system-manual/02-syllabus-lifecycle/15-wrapped-pdf-preview.png',animations:'disabled'})
+  await page.getByRole('button',{name:'Use This Syllabus',exact:true}).click()
+  const topic=page.getByPlaceholder('Topic...',{exact:true}).nth(1)
+  await topic.fill('Incomplete topic');await topic.focus();await page.keyboard.press('Alt+p')
+  await say(page,'make it more accurate to the file uploaded, these are incomplete and not correct')
+  const card=page.getByRole('region',{name:'Import syllabus sections'})
+  await card.getByRole('button',{name:'Prepare edit preview'}).click()
+  await expect(card).toContainText('a. Variable declaration and assignment')
+  for (const toast of await page.locator('.toast').all()) await toast.click()
+  await page.locator('[data-section="5"]').evaluate(element => window.scrollBy(0, element.getBoundingClientRect().top - 90))
+  await page.screenshot({path:`${dir}/15-focused-page-source.png`,animations:'disabled'})
+  await card.getByRole('button',{name:'Apply to open form'}).click()
+  await page.getByRole('button',{name:'Close Pulse',exact:true}).click()
+  const button=page.getByRole('button',{name:'Download PDF draft',exact:true})
+  await button.scrollIntoViewIfNeeded()
+  await button.locator('..').screenshot({path:'../feature-documentation/system-manual/02-syllabus-lifecycle/16-download-pdf-draft.png',animations:'disabled'})
+  const downloaded=page.waitForEvent('download');await button.click();expect((await downloaded).suggestedFilename()).toMatch(/\.pdf$/)
 })

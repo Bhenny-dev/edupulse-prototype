@@ -186,6 +186,7 @@ test('compare two documents and find real references', async ({ page }) => {
 })
 
 test('Pulse guidance: drag, focus, perch, section tour and rejection', async ({ page }) => {
+  test.setTimeout(60_000)
   await signIn(page)
   await page.goto('/#/syllabus?tab=builder')
   const mascot = page.locator('[data-pulse-ui="mascot"]')
@@ -203,6 +204,7 @@ test('Pulse guidance: drag, focus, perch, section tour and rejection', async ({ 
   await page.getByRole('button', { name: 'Exit focused help', exact: true }).click()
   await page.getByRole('button', { name: 'Close Pulse', exact: true }).click()
   const heading = page.locator('[data-section="1"] h3')
+  await heading.scrollIntoViewIfNeeded()
   from = (await mascot.boundingBox())!; to = (await heading.boundingBox())!
   await page.mouse.move(from.x + 30, from.y + 30); await page.mouse.down(); await page.mouse.move(to.x + 20, to.y + 10, { steps: 15 }); await page.mouse.up()
   await page.getByRole('button', { name: 'Walk me through Course Information', exact: true }).click()

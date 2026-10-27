@@ -7,11 +7,10 @@ export function downloadBlob(blob, filename) {
   setTimeout(() => URL.revokeObjectURL(url), 1000)
 }
 
-export async function syllabusDocx(syllabus) {
-  const { Document, Packer, Paragraph, HeadingLevel } = await import('docx')
+export function syllabusBlocks(syllabus) {
   const paragraphs = []
-  const line = text => paragraphs.push(new Paragraph({ text: String(text || '') }))
-  const heading = text => paragraphs.push(new Paragraph({ text, heading: HeadingLevel.HEADING_1 }))
+  const line = text => paragraphs.push({ text: String(text || '') })
+  const heading = text => paragraphs.push({ text, heading: true })
   const list = items => (items || []).forEach(line)
   heading(`${syllabus.courseCode} — ${syllabus.courseTitle}`)
   heading('Section 1: Course Information')
@@ -28,11 +27,11 @@ export async function syllabusDocx(syllabus) {
   heading('Section 4: Program Outcomes'); list(syllabus.programOutcomes)
   heading('Section 5: Course Outline')
   for (const row of syllabus.courseOutline || []) {
-    line(`Week ${row.week}`); line(`ILOs: ${row.ilos || ''}`)
+    heading(`Week ${row.week}`); line(`ILOs: ${row.ilos || ''}`)
     for (const content of row.contents || []) line(`Content: ${content}`)
     line(`Activities: ${row.activities || ''}`); line(`Assessments: ${row.assessments || ''}`)
-    line(`Teaching Materials: ${(row.teachingMaterials || []).join('; ')}`)
-    line(`Assessment Types: ${(row.assessmentTypes || []).join('; ')}`)
+    if (row.teachingMaterials?.length) line(`Teaching Materials: ${row.teachingMaterials.join('; ')}`)
+    if (row.assessmentTypes?.length) line(`Assessment Types: ${row.assessmentTypes.join('; ')}`)
     for (const resource of row.resources || []) line(`Resource: ${resource.name || ''} ${resource.url || ''}`)
   }
   heading('Section 6: Requirements, Grading and Policy')
@@ -47,7 +46,12 @@ export async function syllabusDocx(syllabus) {
   line('Reviewed by Dean: _______________  Date: __________')
   line('Approved by CAO: ________________  Date: __________')
   line('Noted by EVP: ___________________  Date: __________')
-  return Packer.toBlob(new Document({ sections: [{ children: paragraphs }] }))
+  return paragraphs
+}
+
+export async function syllabusDocx(syllabus) {
+  const { Document, Packer, Paragraph, HeadingLevel } = await import('docx')
+  return Packer.toBlob(new Document({ sections: [{ children: syllabusBlocks(syllabus).map(block => new Paragraph({ text: block.text, ...(block.heading ? { heading: HeadingLevel.HEADING_1 } : {}) })) }] }))
 }
 
 export async function retainApprovedFile(file) {

@@ -122,3 +122,7 @@ The Pulse header includes **Conversations and memory** alongside AI settings, ne
 ## Workspace buddies
 
 Pulse includes **Meet your workspace buddies** and **Visit office**. The optional 3D office has six named desks, domain-specific conversations, real request/review states, a pause control and reduced-motion support. Mobile users scroll from the office to the buddy chat. See [the illustrated office guide](../../system-manual/11-workspace-buddies/README.md).
+
+## Focused conversation layout and source context
+
+At wide desktop widths, opening Pulse reserves a separate column beside the workspace; the mascot returns when it closes. Focused help highlights the selected section without dimming the editor. The compact footer reports history status and reference availability. Attachments remain usable for follow-up questions and can be removed. Generated replies offer **Download response as PDF**. Connected buddy conversations use the selected persona and recent exchange; an unavailable model is labelled as an offline role guide.

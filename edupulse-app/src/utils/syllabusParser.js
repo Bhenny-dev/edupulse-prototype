@@ -66,6 +66,8 @@ export function tableOutline(document) {
 }
 
 export function parseSyllabusText(text, outlineOverride = []) {
+  text = text.replace(/^II[.)]\s*Course\t([^\n]*)\nDescription:[ \t]*/gim, 'Section 2: Course Description\nDescription: $1\n')
+  text = text.replace(/^(?:I[.)]\s*)(?=Course Code:)/gim, '').replace(/^II[.)]\s*Course\s*\nDescription:/gim, 'Section 2: Course Description\nDescription:')
   text = text.replace(/\t+(?=(?:Course (?:Code|Title)|Period Offered|Academic Year|Description|Credit Units|Classification|No\.? of Hours|Prerequisites?)\s*:)/gi, '\n')
   const sections = Array.from({ length: 7 }, () => ({ raw: '', parsed: {} }))
   let index = 0
@@ -73,27 +75,29 @@ export function parseSyllabusText(text, outlineOverride = []) {
     const section = line.match(/^\s*section\s*([1-7])\b/i)
     const title = line.trim().replace(/^(?:[1-7]|[IVX]+)[.)\s:–-]+/i, '').replace(/\s+/g, ' ').toLowerCase()
     const titles = ['course information', 'course description', 'institutional context', 'program outcomes', 'course outline', 'requirements, grading & policy', 'references']
-    const heading = titles.indexOf(title)
+    const heading = /^vision,? mission|^institutional context/.test(title) ? 2 : /^program outcomes\b/.test(title) ? 3 : /^course requirements.*(?:grading|policy)/.test(title) ? 5 : /^references$/.test(title) ? 6 : titles.indexOf(title)
     if (section || heading >= 0) { index = section ? Number(section[1]) - 1 : heading; continue }
-    if (/^Offline approval route$/i.test(line.trim())) break
+    if (/^(?:Offline approval route|Prepared:\s*.*Reviewed:)/i.test(line.trim())) break
     sections[index].raw += `${line}\n`
   }
   const infoText = sections[0].raw
-  const info = { courseCode: field(infoText, 'Course Code'), courseTitle: field(infoText, 'Course Title'), periodOffered: field(infoText, 'Period Offered'), academicYear: field(infoText, 'Academic Year') }
+  const info = { courseCode: field(infoText, 'Course Code'), courseTitle: field(infoText, 'Course Title'), periodOffered: field(infoText, 'Period Offered'), academicYear: field(infoText, 'Academic Year') || infoText.match(/\bAY\s*(\d{4}\s*[-\u2013]\s*\d{4})/i)?.[1] || '' }
   const normalize = value => value.replace(/\s/g, '').toLowerCase()
   const courseMatch = CURRICULUM_COURSES.find(course => info.courseCode ? normalize(course.code) === normalize(info.courseCode) : info.courseTitle && course.title.toLowerCase() === info.courseTitle.toLowerCase()) || null
   const description = sections[1].raw, policy = sections[5].raw
   const subsection = (label, stop) => policy.match(new RegExp(`${label}[ \\t]*:[ \\t]*([\\s\\S]*?)(?=${stop}|$)`, 'i'))?.[1]?.trim() || ''
   sections[0].parsed = info
-  sections[1].parsed = { description: description.match(/Description[ \t]*:[ \t]*([\s\S]*?)(?=Credit Units:|Classification:|$)/i)?.[1]?.trim() || description.trim(), creditUnits: Number(field(description, 'Credit Units')) || '', classification: field(description, 'Classification'), noOfHours: Number(field(description, 'No\\.? of Hours')) || '', prerequisites: field(description, 'Prerequisites?').split(/[,;]/).map(s => s.trim()).filter(Boolean) }
+  sections[1].parsed = { description: description.match(/Description[ \t]*:[ \t]*([\s\S]*?)(?=Credit Units:|Classification:|$)/i)?.[1]?.trim() || description.trim(), creditUnits: parseFloat(field(description, 'Credit Units')) || '', classification: field(description, 'Classification'), noOfHours: parseFloat(field(description, 'No\\.? of Hours')) || '', prerequisites: field(description, 'Prerequisites?').split(/[,;]/).map(s => s.trim()).filter(Boolean) }
   sections[2].parsed = { raw: sections[2].raw }
-  sections[3].parsed = { programOutcomes: lines(sections[3].raw) }
+  const outcomeText = sections[3].raw.replace(/^(?:this subject\)|.*PSGs.*)\s*$/gim, '')
+  sections[3].parsed = { programOutcomes: lines(/^\s*\d+[.)]\s/m.test(outcomeText) ? outcomeText.replace(/\n(?!\s*\d+[.)]\s)/g, ' ') : outcomeText) }
   const outlineText = sections[4].raw || text
   const table = textTableOutline(outlineText)
   sections[4].parsed = { courseOutline: outlineOverride.length ? outlineOverride : table.length ? table : parseCourseOutline(outlineText) }
   sections[5].parsed = { courseRequirements: lines(subsection('Course Requirements', 'Grading System:|Course Policy:')), gradingSystem: subsection('Grading System', 'Course Policy:|Course Requirements:'), coursePolicy: lines(subsection('Course Policy', 'Grading System:|Course Requirements:')) }
-  const references = lines(sections[6].raw)
-  sections[6].parsed = { books: references.filter(line => !/^https?:\/\//i.test(line)).map(line => { const [title = '', authors = '', year = '', publisher = ''] = line.split(';').map(s => s.trim()); return { title, authors, year, publisher } }), onlineReferences: references.filter(line => /^https?:\/\//i.test(line)).map(url => ({ title: url, url })) }
+  const referenceText = sections[6].raw.replace(/^(?:Books|Online References?)\s*$/gim, '')
+  const references = lines(referenceText.includes('1.') ? referenceText.replace(/\n(?!\s*\d+[.)]\s)/g, ' ') : referenceText)
+  sections[6].parsed = { books: references.filter(line => ! /https?:\/\//i.test(line)).map(line => { const [title = '', authors = '', year = '', publisher = ''] = line.split(';').map(s => s.trim()); return { title, authors, year, publisher } }), onlineReferences: references.filter(line => /https?:\/\//i.test(line)).map(line => ({ title: line, url: line.match(/https?:\/\/\S+/i)[0] })) }
   return { sections, courseMatch }
 }
 
@@ -102,8 +106,11 @@ export async function parseSyllabusFile(file, onProgress = () => {}) {
   if (!/\.(docx|pdf)$/i.test(file.name) || file.size > 2_000_000 || !file.size) throw new Error('Choose a DOCX or PDF file up to 2 MB.')
   if (/\.pdf$/i.test(file.name)) {
     const { readPdfSyllabus } = await import('./pdfSyllabus')
-    const { text, scannedPages } = await readPdfSyllabus(file, onProgress)
-    return { ...parseSyllabusText(text), metadata: { title: file.name.replace(/\.pdf$/i, ''), size: file.size, lastModified: new Date(file.lastModified || Date.now()).toISOString(), scannedPages } }
+    const { text, scannedPages, outline, warnings, provenance, policies, institutionalContext } = await readPdfSyllabus(file, onProgress)
+    const parsed = parseSyllabusText(text, outline)
+    if (policies) parsed.sections[5].parsed = policies
+    if (institutionalContext) parsed.sections[2].parsed.institutionalContext = institutionalContext
+    return { ...parsed, sourceText: text, warnings, provenance, metadata: { title: file.name.replace(/\.pdf$/i, ''), size: file.size, lastModified: new Date(file.lastModified || Date.now()).toISOString(), scannedPages } }
   }
   const mammoth = await import('mammoth')
   const result = await mammoth.convertToHtml({ arrayBuffer: await file.arrayBuffer() }, { convertImage: mammoth.images.imgElement(() => Promise.resolve({ src: '' })) })
@@ -112,7 +119,7 @@ export async function parseSyllabusFile(file, onProgress = () => {}) {
   const outline = tableOutline(document)
   document.querySelectorAll('p,li,h1,h2,h3,h4,h5,h6,tr').forEach(element => element.append('\n'))
   const parsed = parseSyllabusText(document.body.textContent || '', outline)
-  return { ...parsed, metadata: { title: file.name.replace(/\.docx$/i, ''), size: file.size, lastModified: new Date(file.lastModified || Date.now()).toISOString() } }
+  return { ...parsed, sourceText: document.body.textContent || '', metadata: { title: file.name.replace(/\.docx$/i, ''), size: file.size, lastModified: new Date(file.lastModified || Date.now()).toISOString() } }
 }
 
 export function parsedToFormState({ sections, courseMatch }) {
@@ -122,6 +129,7 @@ export function parsedToFormState({ sections, courseMatch }) {
     courseInfo: { courseCode: course.code || '', courseTitle: course.title || '', periodOffered: info.periodOffered || '', academicYear: info.academicYear || '', creditUnits: desc.creditUnits || course.units || 0, classification: desc.classification || course.classification || '', noOfHours: desc.noOfHours || (course.units || 0) * 18, prerequisites: desc.prerequisites || [] },
     programOutcomes: sections[3].parsed.programOutcomes.length ? sections[3].parsed.programOutcomes : [''],
     courseOutline: sections[4].parsed.courseOutline,
+    ...(sections[2].parsed.institutionalContext ? { institutionalContext: sections[2].parsed.institutionalContext } : {}),
     ...sections[5].parsed, ...sections[6].parsed,
   }
 }

@@ -62,3 +62,7 @@ The refreshed captures display **Sample performance data · Preview only · Inst
 | Overview | ![Performance overview](11-performance-overview.png) | Student count, class average, at-risk and excelling counts, and the student list with section, midterm score, status and **Details**. |
 | By Topic | ![Performance by topic](12-performance-by-topic.png) | Mastery per syllabus topic across the instructor's classes. |
 | Alerts | ![Performance alerts](13-performance-alerts.png) | **Mastery cutoff** (default 75): students below it are listed automatically with **Email** and **Flag**; **Topic Mastery Alerts** for class averages below the cutoff, each with **Acknowledge**. |
+
+## PDF and focused source updates
+
+The builder previews wrapped PDF outline cells and keeps the accepted source available while the builder is open. **Download PDF draft** exports the current form; **Download for Approval** now exports PDF. A focused Pulse panel occupies its own desktop column and can propose corrections to the selected section using that source. The learning document viewer offers **Download PDF**. See the updated [syllabus steps](../../system-manual/02-syllabus-lifecycle/README.md) and [focused correction example](../../system-manual/09-pulse-actions/README.md#correct-the-selected-section-using-its-page-source).

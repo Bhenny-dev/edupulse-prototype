@@ -2,6 +2,7 @@ import { test, expect } from './fixtures.js'
 
 test('Workspace buddies: real office, domain conversations and model proposal states', async ({ page }) => {
   const dir = '../feature-documentation/system-manual/11-workspace-buddies'
+  await page.route('**/api/ai?action=chat', route => route.fulfill({ json: { requestId: crypto.randomUUID(), mode: 'generated', answer: 'I can help you compare the selected section with your PDF, keeping the wrapped text together. Which week would you like us to check first?', sources: [] } }))
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/')
   await page.getByRole('button', { name: 'Instructor', exact: true }).click()
@@ -13,7 +14,7 @@ test('Workspace buddies: real office, domain conversations and model proposal st
   await expect(office.locator('canvas')).toBeVisible()
   await office.getByRole('button', { name: /Talk to Luma,/ }).click()
   await office.getByRole('button', { name: 'Your role', exact: true }).click()
-  await expect(office.getByRole('log')).toContainText('Color-codes bookmarks')
+  await expect(office.getByRole('log')).toContainText('Which week would you like us to check first?')
   await page.waitForTimeout(400) // one static reduced-motion render
   await office.screenshot({ path: `${dir}/01-meet-the-crew.png`, animations: 'disabled' })
   await office.getByRole('button', { name: 'Close workspace' }).click()

@@ -34,3 +34,7 @@ An active request changes the relevant desk to **Working**. Proposed changes cre
 ![Mobile office with accessible desk choices](04-mobile-office.png)
 
 The office is loaded only when opened. It uses animated 3D geometry over time, with bounded frame rate and resolution; it is not literal four-dimensional rendering. The loading/working captures use an explicitly delayed synthetic provider response to show those states reliably. The UI, animation, role routing and preview controls are real. No synthetic output is presented as a quality benchmark or a real institutional record.
+
+## Conversational replies
+
+With a connected model, buddy questions use the chosen buddy's designation, capabilities, personality and recent conversation. Follow-ups can explore an explanation instead of repeating a fixed role paragraph. Accomplishment claims are limited to supplied session events; preparation, review and saved results remain distinct. Connection errors appear in the office. Without a model, role questions explicitly show **Offline role guide**. The role conversation shown above uses a labelled synthetic model response to make the screenshot reproducible; it is not an inference-quality evaluation.

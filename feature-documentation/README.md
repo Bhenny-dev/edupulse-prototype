@@ -4,7 +4,6 @@
 
 | Folder | Covers | Contents |
 | --- | --- | --- |
-| [Provider connection recovery](versions/2026-10-25-provider-connections/README.md) | OpenRouter return/retry, OpenAI model routing, explicit provider choices and generation verification | Verified and promoted; provider-consent limits in validation |
 | [System Walkthrough](system-walkthrough/README.md) | Frontend: **what is on each screen**, by role (public site, shared interface, Dean and Associate Dean, Instructor, Student, mobile) | Screenshots of every page, tab, dropdown, popover and modal, with a guide per folder |
 | [System Manual](system-manual/README.md) | Frontend: **how to complete each task**, step by step | Numbered steps with a screenshot for each, from sign-in to syllabus, courseware and the AI features |
 | [Backend System](backend-system/README.md) | Backend: API, agents, data stores, security boundaries | [Supabase configuration](backend-system/supabase.md) and [Vercel configuration](backend-system/vercel.md), written from the live services and the repository |
@@ -20,6 +19,8 @@ Version folders are release records. Preserve released records, and add correcti
 
 | Version | Scope | Status |
 | --- | --- | --- |
+| [Provider connection recovery](versions/2026-10-25-provider-connections/README.md) | OpenRouter return/retry, OpenAI model routing, explicit provider choices and generation verification | Verified and promoted; provider-consent limits in validation |
+| [26 October source context and PDF fidelity](versions/2026-10-26-source-context-pdf/README.md) | Focused UI, conversational buddies, complete ruled-PDF cells and PDF downloads | 126 unit/integration + 89 browser tests passed; hosted verification follows |
 | [26 October Pulse tools and workspace](versions/2026-10-25-pulse-agent-tools/README.md) | Validated tools, PDF imports, private context, faster greetings and animated workspace buddies | 122 unit/integration + 85 browser tests; hosted canaries passed |
 | [24 October audit integration](versions/2026-10-24-audit-integration/README.md) | Install/security fixes, authorized academic records, scoring, shared limits and documentation evidence | Verified and promoted; source/build/canary evidence in validation |
 | [v0.0.0](versions/v0.0.0/README.md) | Recorded baseline before connected AI | Historical baseline |

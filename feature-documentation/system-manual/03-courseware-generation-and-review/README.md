@@ -26,8 +26,12 @@
 
 6. Edit any inaccurate explanation or answer key, then use **Check** only after reviewing the material, activity, and assessment. Drafts are not published or graded automatically.
 
-The six historical images come from the documentation capture build using the local `qwen2.5:3b` model and a real generated week 1 draft. They establish local task evidence, not authenticated hosted behavior or general model accuracy. The [v0.4.0 release record](../../versions/v0.4.0/README.md) maps them to NFR-AI-06 (goal 6).
+The workflow includes original v0.4.0 captures and refreshed document/review captures generated with the local `qwen2.5:1.5b` model. They establish local task evidence, not authenticated hosted behavior or general model accuracy. The review panel may flag incorrect answer explanations; instructors must resolve them before checking or publishing. The [v0.4.0 release record](../../versions/v0.4.0/README.md) maps the original workflow to NFR-AI-06 (goal 6).
 
 ## Revise through Pulse
 
 When an instructor opens a saved draft in a document, presentation or assessment editor, Pulse can propose a typed revision to its content. Compare the selected fields before **Confirm and save draft**. The saved receipt waits for the revision-checked database response. Published items and stale targets are protected. See [Manual 9](../09-pulse-actions/README.md#revise-content-or-class-list-records).
+
+## Download a learning document
+
+**Download PDF** in the document viewer exports the displayed sections, including current edits, with embedded fonts, margins and page numbers. The download is a genuine PDF rather than a renamed text file or a print-dialog instruction. It does not save edits, change review status or publish the material. Pulse-generated responses have a separate **Download response as PDF** control.

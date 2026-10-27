@@ -112,3 +112,30 @@ export function inflateDeclaredSize(zip: Uint8Array, declared: number) {
   }
   throw new Error('No ZIP directory found')
 }
+
+/** A ruled two-page syllabus with wrapped cells, a continued row and an explicit week range. */
+export function makeRuledSyllabusPdf() {
+  const texts: string[] = []
+  const escape = (value: string) => value.replace(/[\\()]/g, value => `\\${value}`)
+  const label = (x:number,y:number,value:string) => `BT /F1 9 Tf 1 0 0 1 ${x} ${y} Tm (${escape(value)}) Tj ET`
+  const edges=[36,80,260,440,620,780]
+  const band=(bottom:number,top:number)=>edges.map(x=>`${x} ${bottom} 0.5 ${top-bottom} re f`).join(' ')
+  const row=(top:number,cells:string[][])=>cells.map((lines,column)=>lines.map((line,i)=>label(edges[column]!+5,top-12-i*12,line)).join(' ')).join(' ')
+  const header=['Week','Intended Learning Outcomes','Contents','Activities','Assessments']
+  texts.push([
+    label(36,560,'I. Course Code: IT 102'),label(36,544,'Course Title: Computer Programming 1'),label(36,520,'IV. PROGRAM OUTCOMES'),label(36,504,'1. Explain a program using examples.'),label(36,478,'V. COURSE OUTLINE'),
+    band(450,470),row(470,header.map(s=>[s])),band(350,450),row(450,[['Week','1'],['Explain variables and','their role in a program.','Trace a complete example.'],['I. Variables','a. Variable declaration','and assignment','b. Data types'],['Lecture','Worked example'],['Reflection','Short quiz']]),
+    band(300,350),row(350,[['Week','2'],['Compare conditional','statements.'],['II. Decisions','a. If and else'],['Lab'],['Program trace']]),
+  ].join(' '))
+  texts.push([
+    band(500,560),row(560,[[],['Explain nested conditions','using a trace table.'],['b. Nested conditions','and complete examples'],[],[]]),
+    band(390,500),row(500,[['Week','3 -','4'],['Use loops to process','a sequence of values.'],['III. Repetition','a. While loops','b. For loops'],['Lab','Peer explanation'],['Working program']]),
+  ].join(' '))
+  const objects=['','<< /Type /Catalog /Pages 2 0 R >>','<< /Type /Pages /Kids [3 0 R 5 0 R] /Count 2 >>']
+  texts.forEach((text,i)=>{objects[3+i*2]=`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 816 612] /Resources << /Font << /F1 7 0 R >> >> /Contents ${4+i*2} 0 R >>`;objects[4+i*2]=`<< /Length ${Buffer.byteLength(text,'latin1')} >>\nstream\n${text}\nendstream`})
+  objects[7]='<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>'
+  let pdf='%PDF-1.4\n';const offsets:number[]=[]
+  objects.slice(1).forEach((value,i)=>{offsets.push(Buffer.byteLength(pdf,'latin1'));pdf+=`${i+1} 0 obj\n${value}\nendobj\n`})
+  const xref=Buffer.byteLength(pdf,'latin1');pdf+=`xref\n0 8\n0000000000 65535 f \n${offsets.map(value=>`${String(value).padStart(10,'0')} 00000 n \n`).join('')}trailer\n<< /Size 8 /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF`
+  return Buffer.from(pdf,'latin1')
+}

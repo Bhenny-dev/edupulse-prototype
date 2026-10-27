@@ -3,10 +3,11 @@ import { currentEditor } from '../../agents/editorTools'
 import { sourceSyllabusPatch, rosterRevision } from '../../agents/workTools'
 import { studentKey } from '../../utils/rosterParser'
 
-const labels = { courseDescription: 'Course description', programOutcomes: 'Program outcomes', courseOutline: 'Course outline', courseRequirements: 'Course requirements', gradingSystem: 'Grading system', coursePolicy: 'Course policy', books: 'Books', onlineReferences: 'Online references', sections: 'Content sections', questions: 'Assessment questions', title: 'Title' }
+const labels = { institutionalContext: 'Institutional context', courseDescription: 'Course description', programOutcomes: 'Program outcomes', courseOutline: 'Course outline', courseRequirements: 'Course requirements', gradingSystem: 'Grading system', coursePolicy: 'Course policy', books: 'Books', onlineReferences: 'Online references', sections: 'Content sections', questions: 'Assessment questions', title: 'Title' }
 function readable(value) {
   if (typeof value === 'string') return value || '(empty)'
   if (Array.isArray(value)) return value.map(item => typeof item === 'string' ? item : item.week ? `Week ${item.week}\nLearning outcomes: ${item.ilos || '(empty)'}\nTopics: ${(item.contents || []).join('; ')}\nActivities: ${item.activities || '(empty)'}\nAssessments: ${item.assessments || '(empty)'}` : item.heading ? `${item.heading}\n${item.body}` : item.title ? [item.title, item.authors, item.year, item.publisher, item.url].filter(Boolean).join(' · ') : item.text ? `${item.text}\n${item.options?.map((option, i) => `${String.fromCharCode(65 + i)}. ${typeof option === 'string' ? option : option.text}`).join('\n') || ''}` : '').join('\n\n') || '(empty)'
+  if (value && typeof value === 'object') return Object.entries(value).map(([key, field]) => `${key}:\n${readable(field)}`).join('\n\n')
   return '(not set)'
 }
 function mergedPatch(editor, patch, operation) {

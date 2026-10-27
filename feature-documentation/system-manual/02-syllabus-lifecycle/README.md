@@ -46,7 +46,7 @@ PDF is the primary institutional intake format; Word `.docx` is also supported. 
 
    ![Marked as checked](05-marked-as-checked.png)
 
-6. Click **Download for Approval** to save the DOCX for the offline signatory route. The status becomes **Out for Approval** and the next step is **Upload Approved File**.
+6. Click **Download for Approval** to save the PDF for the offline signatory route. The status becomes **Out for Approval** and the next step is **Upload Approved File**.
 
    ![Out for approval](06-downloaded-for-approval.png)
 
@@ -80,3 +80,21 @@ PDF is the primary institutional intake format; Word `.docx` is also supported. 
 ## Import sections through the conversation
 
 The Pulse attachment reader also recognizes PDF and Word syllabi. Ask for the intended editable section, review its extracted text and choose replacement or addition before applying it to the open builder or saving a draft. Course identity and description stay fixed to the curriculum; this path never grants approval or activates a syllabus. See [Manual 9](../09-pulse-actions/README.md#import-selected-syllabus-sections-from-a-pdf-or-word-file).
+
+## Check wrapped PDF tables and download the draft
+
+The text-layer PDF reader uses ruled table cells to retain wrapped outcomes, topics and rows continued onto later pages. Explicit ranges share the source content across the listed weeks; duplicate entries for one week are combined. The expanded preview shows the extracted fields, including the complete mapped outline. Unmapped or OCR text needs comparison with the original; importing does not certify its accuracy.
+
+![Synthetic two-page PDF with wrapped cells and a continued outline row](15-wrapped-pdf-preview.png)
+
+After **Use This Syllabus**, the source remains available to Pulse while this builder is open. Focus a field and press **Alt+P**, or drag Pulse onto a section, then ask for a correction against that file. Check the preview and confirm before it changes the form. Leaving/reloading the builder ends that temporary source context; attach the file again or use an explicitly indexed library document.
+
+**Download PDF draft** downloads the current form as a paginated PDF without marking it checked or saving it. **Download for Approval** downloads the checked syllabus as PDF and advances the existing offline approval workflow. PDF export does not reproduce signatures or certify approval.
+
+![Draft PDF download beside the existing save and check controls](16-download-pdf-draft.png)
+
+Institutional text mapped from the accepted PDF overrides the corresponding fields only in this syllabus. Missing fields preserve the existing values. New drafts use the Information Technology wording from the provided IT-202 syllabus (AY 2025-2026); saved syllabi keep their snapshot. Review this wording against current institutional requirements.
+
+On mobile, the draft actions wrap into separate rows.
+
+![Mobile draft download, save and check controls](17-mobile-draft-actions.png)

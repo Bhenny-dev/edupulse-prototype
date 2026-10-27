@@ -20,7 +20,7 @@ Your provider connection belongs to your signed-in account. The system admin can
 
    ![Dragging over a component](01-dragging-over-component.png)
 
-2. Release. Pulse perches beside the component, the rest of the page dims, and the panel opens on the other side under **Helping with**: the component's name, its type (**Dropdown**), its current state (*Nothing selected yet · required*) and the hint text from the page. **Walk me through Course** starts a step-by-step tour of the section it belongs to; **Exit focused help** returns Pulse to its dock.
+2. Release. On wide screens the page and Pulse occupy separate columns; the mascot is hidden until the panel closes. Focused help appears under **Helping with**: the component's name, its type (**Dropdown**), its current state (*Nothing selected yet · required*) and the hint text from the page. **Walk me through Course** starts a step-by-step tour of the section it belongs to; **Exit focused help** removes the selected-component scope. Closing Pulse restores its dock.
 
    ![Focused component brief](02-focused-component-brief.png)
 
@@ -56,3 +56,7 @@ To have Pulse **do** something for you (register a class list, file a material u
 ## Meet the office crew
 
 Choose **Visit office** in Pulse for [Workspace buddies](../11-workspace-buddies/README.md). Pip can hand an authorized navigation request back to the real page guide. Exact greetings answer locally; more complex requests show contextual buddy loading text. The office does not bypass the tool preview or save confirmation.
+
+On narrower screens, focused help uses a shorter bottom panel; close it to inspect the full page. The outline table scrolls horizontally within its card. The selected component stays outlined without dimming the rest of the editor. Plain greetings retain their local quick response; requests that include work use the action or model route.
+
+Form grids shrink with the available editor width when Pulse opens, so course information fields stay clear of the assistant. Wider outline tables retain their own horizontal scrolling.

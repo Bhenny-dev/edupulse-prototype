@@ -145,3 +145,33 @@
 .pulse-context-status { display: block; padding: 6px 16px; font-size: .65rem; line-height: 1.4; color: var(--gray-500); border-top: 1px solid var(--gray-100); }
 .connected-pulse-header > div { min-width: 0; }
 .connected-pulse-header > div small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* The editor and assistant have separate usable space on desktop. */
+@media (min-width: 1200px) {
+  body.pulse-panel-open .app-workspace { padding-right: 456px; }
+  body.pulse-panel-open .connected-pulse { left: auto; right: 12px; top: 84px; bottom: 12px; height: auto; width: 432px; }
+  body.pulse-panel-open .connected-pulse-dock { display: none; }
+  body.pulse-panel-open .pulse-spotlight { box-shadow: none; }
+  body.pulse-panel-open #main-content .form-row { grid-template-columns: minmax(0, 1fr); }
+  body.pulse-panel-open #main-content .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  body.pulse-panel-open #main-content .form-group { min-width: 0; }
+  body.pulse-panel-open #main-content .form-input { min-width: 0; max-width: 100%; }
+}
+.connected-pulse-header, .connected-pulse-form, .pulse-office-entry { flex-shrink: 0; }
+.connected-pulse-feed { overflow-x: hidden; }
+@media (max-width: 1199px) {
+  .connected-pulse.is-focused { height: min(480px, 55dvh); bottom: 12px; }
+  body.pulse-panel-open .pulse-spotlight { box-shadow: none; }
+}
+
+body.pulse-panel-open .connected-pulse-dock { display: none; }
+html:has(body.pulse-panel-open) { scroll-padding-top: 90px; }
+@media (max-width: 1199px) {
+  body.pulse-panel-open .app-workspace { padding-bottom: calc(min(480px, 55dvh) + 24px); }
+  html:has(body.pulse-panel-open) { scroll-padding-bottom: calc(min(480px, 55dvh) + 24px); }
+}
+.syllabus-builder-actions, .syllabus-builder-actions > div { flex-wrap: wrap; gap: 8px; }
+@media (max-width: 600px) {
+  .syllabus-builder-actions > div { width: 100%; }
+  .syllabus-builder-actions .btn { flex: 1 1 150px; white-space: normal; }
+}

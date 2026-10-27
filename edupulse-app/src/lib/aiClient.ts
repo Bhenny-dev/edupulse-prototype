@@ -58,14 +58,23 @@ export type ReferenceFile = { title: string; text: string; fileName: string; kin
 export async function readReferenceFile(file: File, onProgress: (message: string) => void = () => {}): Promise<ReferenceFile> {
   const report = await extractDocument(file)
   let text = report.text.trim(), scannedPages = 0
+  let pdfLayout: Awaited<ReturnType<typeof import('../utils/pdfSyllabus.js').readPdfSyllabus>> | undefined
+  let outline: import('../utils/syllabusParser.js').OutlineRow[] = []
   if (report.kind === 'pdf') {
     const { readPdfSyllabus } = await import('../utils/pdfSyllabus.js')
     const layout = await readPdfSyllabus(file, onProgress)
-    text = layout.text; scannedPages = layout.scannedPages
+    pdfLayout = layout
+    text = layout.text; scannedPages = layout.scannedPages; outline = layout.outline
   }
   const { parseSyllabusText } = await import('../utils/syllabusParser.js')
   const looksLikeSyllabus = /\b(?:course\s+(?:code|outline|information)|program outcomes)\b/i.test(text) && (/syllab/i.test(file.name) || /course\s+outline|intended\s+learning\s+outcomes/i.test(text))
-  let syllabus = looksLikeSyllabus ? parseSyllabusText(text) : undefined
+  let syllabus = looksLikeSyllabus ? parseSyllabusText(text, outline) : undefined
+  if (syllabus && pdfLayout) {
+    if (pdfLayout.policies) syllabus.sections[5].parsed = pdfLayout.policies
+    if (pdfLayout.institutionalContext) syllabus.sections[2].parsed.institutionalContext = pdfLayout.institutionalContext
+    syllabus.provenance = pdfLayout.provenance
+    syllabus.warnings = pdfLayout.warnings
+  }
   if (syllabus && report.kind === 'docx' && file.size <= 2_000_000) {
     const { parseSyllabusFile } = await import('../utils/syllabusParser.js')
     syllabus = await parseSyllabusFile(file, onProgress)

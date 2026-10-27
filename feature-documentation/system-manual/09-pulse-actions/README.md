@@ -103,3 +103,17 @@ Ask *Recall our previous discussion about programming* to retrieve attributed ex
 ![Versioned application skills and execution boundaries](13-installed-tools.png)
 
 `PULSE-TOOLS-001` maps these flows to `tests/pulse-tools.test.ts`, `tests/browser/pulse-tools.spec.ts`, and `tests/snapshots/pulse-tools.spec.ts`. Browser coverage includes real PDF extraction, stale targets, confirmed roster removal, private recall, and database failure/retry. Provider generation is synthetic only in the generated-edit browser/capture cases; no paid inference result is implied.
+
+## Correct the selected section using its page source
+
+A syllabus accepted through the page uploader is available to Pulse while its builder remains mounted. Select the intended section with drag-and-drop or **Alt+P** and ask, for example, *Make it more accurate to the uploaded file*. Pulse maps this request to that section and prepares a source import; it does not answer with unrelated upload instructions. Choose **Prepare edit preview**, compare the before/proposed fields, and select **Apply to open form** or the separate save confirmation. Unrelated fields stay unchanged and stale previews are rejected.
+
+![Focused source correction beside the editable page; synthetic PDF sample](15-focused-page-source.png)
+
+Chat attachments remain available for follow-up questions until removed or the conversation changes. Newly attached files replace the prior follow-up source set. The current editor is also supplied as bounded context, distinct from the imported source. Archive transcripts do not retain raw file bytes or turn old proposals into executable actions.
+
+A request to create learning materials from a supplied outline drafts a response instead of treating the syllabus as a request to import program outcomes. **Download response as PDF** exports a generated response and its listed sources. This draft is not automatically saved or published as courseware; the existing approved-outline generation and review workflow still applies.
+
+On mobile, focused Pulse is a shorter panel. The page remains scrollable above it, and the mascot is hidden while the panel is open. Close Pulse to use the whole screen. Institutional context is also an editable, source-backed section; a confirmed patch merges only the named institution fields and does not update global defaults.
+
+![Mobile focused source correction](16-mobile-focused-source.png)

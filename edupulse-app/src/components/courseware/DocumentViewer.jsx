@@ -1,3 +1,4 @@
+import { downloadMaterialPdf } from '../../utils/pdfExport'
 import { useState } from 'react'
 import { ArrowLeft, Download, Printer, Save, Pencil, X } from 'lucide-react'
 import { useToast } from '../../context/ToastContext'
@@ -65,15 +66,7 @@ export default function DocumentViewer({ content, onBack, isStudent = false, onS
     setEditing(false)
   }
 
-  const downloadDocument = () => {
-    const text = [content.title, content.subtitle, ...(sections || []).flatMap(section => [section.heading, section.body])].filter(Boolean).join('\n\n')
-    const url = URL.createObjectURL(new Blob([text], { type: 'text/plain;charset=utf-8' }))
-    const link = document.createElement('a')
-    link.href = url
-    link.download = `${content.title.replace(/[^a-z0-9 _-]/gi, '').slice(0, 80) || 'course-document'}.txt`
-    link.click()
-    setTimeout(() => URL.revokeObjectURL(url), 1000)
-  }
+  const downloadDocument = () => downloadMaterialPdf({ ...content, sections }).catch(error => addToast(error.message, 'error'))
 
   const renderBody = (body, idx, isEditing) => {
     if (isEditing) {
@@ -140,7 +133,7 @@ export default function DocumentViewer({ content, onBack, isStudent = false, onS
           <Printer size={14} /> Print
         </button>
         <button className="btn btn-secondary btn-sm" onClick={downloadDocument}>
-          <Download size={14} /> Download text
+          <Download size={14} /> Download PDF
         </button>
       </div>
 

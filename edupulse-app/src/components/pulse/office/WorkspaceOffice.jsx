@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { X, Coffee, Pause, Play, ArrowUpRight, Send, CheckCircle2 } from 'lucide-react'
-import { BUDDIES, buddyReply } from '../../../agents/buddies'
+import { BUDDIES, buddyReply, buddyForRequest } from '../../../agents/buddies'
 import OfficeCanvas from './OfficeCanvas'
 import './workspace-office.css'
 
-export default function WorkspaceOffice({ tasks, messages, onClose, onTask, busy }) {
+export default function WorkspaceOffice({ tasks, messages, onClose, onTask, busy, modelReady, error }) {
   const [selected, setSelected] = useState('pip'), [paused, setPaused] = useState(false), [question, setQuestion] = useState(''), [handoff, setHandoff] = useState(null)
   const [chats, setChats] = useState({}), [reducedMotion, setReducedMotion] = useState(() => matchMedia('(prefers-reduced-motion: reduce)').matches)
   const root = useRef(null), closeButton = useRef(null), timer = useRef(null), waiting = useRef(null), log = useRef(null)
@@ -27,19 +27,22 @@ export default function WorkspaceOffice({ tasks, messages, onClose, onTask, busy
   }, [messages])
   function ask(text = question) {
     if (!text.trim() || handoff) return
-    const result = buddyReply(selected, text.trim(), tasks)
-    if (busy && result.handoff) return
-    setQuestion('')
-    setChats(previous => ({ ...previous, [selected]: [...(previous[selected] || []), { from:'you', text:text.trim() }, { from:selected, text:result.text }].slice(-20) }))
-    if (result.handoff) {
-      const destination=BUDDIES.find(item=>item.id===result.handoff)
-      setHandoff({ from:buddy.name,to:destination.name })
-      timer.current=setTimeout(()=>{
-        setSelected(result.handoff);setHandoff(null);waiting.current={buddy:result.handoff,previous:messages.at(-1)?.id}
-        onTask(result.request, destination)
-      },reducedMotion?0:650)
+    if (busy) return
+    const personal = /\b(?:you|your|coffee|habit|personality)\b/i.test(text) && !/\b(?:open|redirect|generate|create|update|import|fix|revise|replace)\b/i.test(text)
+    if (!modelReady && personal) {
+      const result = buddyReply(selected, text.trim(), tasks)
+      setQuestion('')
+      setChats(previous => ({...previous,[selected]:[...(previous[selected]||[]),{from:'you',text:text.trim()},{from:selected,text:`Offline role guide: ${result.text}`}].slice(-20)}))
+      return
     }
+    const target = personal ? selected : buddyForRequest(text)
+    const destination = BUDDIES.find(item=>item.id===target)
+    setQuestion('')
+    setChats(previous=>({...previous,[selected]:[...(previous[selected]||[]),{from:'you',text:text.trim()}].slice(-20)}))
+    const submit=()=>{setSelected(target);setHandoff(null);waiting.current={buddy:target,previous:messages.at(-1)?.id};onTask(text.trim(),destination,personal)}
+    if(target!==selected){setHandoff({from:buddy.name,to:destination.name});timer.current=setTimeout(submit,reducedMotion?0:650)}else submit()
   }
+
   function keyboard(event) {
     if(event.key==='Escape') { event.stopPropagation();onClose() }
     if(event.key==='Tab') {
@@ -62,7 +65,8 @@ export default function WorkspaceOffice({ tasks, messages, onClose, onTask, busy
       </div><aside className="office-companion" style={{'--buddy-color':buddy.color}}>
         <div className="office-profile"><span className="office-eyebrow">{buddy.station}</span><h3>{buddy.name}<span>{buddy.title}</span></h3><p>“{buddy.motto}”</p></div>
         <div className="office-conversation" role="log" aria-live="polite" ref={log}><div className="office-bubble"><strong>{buddy.name}</strong><p>{buddy.role}</p></div>{(chats[selected]||[]).map((item,index)=><div className={`office-bubble ${item.from==='you'?'is-you':''}`} key={index}><strong>{item.from==='you'?'You':BUDDIES.find(person=>person.id===item.from)?.name}</strong><p>{item.text}</p></div>)}{busy&&waiting.current?.buddy===selected&&<p className="office-awaiting" role="status">Your request is active in Pulse. This desk will show the result when it returns.</p>}</div>
-        <div className="office-quick-questions"><button onClick={()=>ask('What do you do?')} disabled={!!handoff}>Your role</button><button onClick={()=>ask('What have you accomplished?')} disabled={!!handoff}>Completed work</button><button onClick={()=>ask('What are your goals?')} disabled={!!handoff}>Your goals</button></div>
+        <div className="office-quick-questions"><button onClick={()=>ask('What do you do?')} disabled={busy||!!handoff}>Your role</button><button onClick={()=>ask('What have you accomplished?')} disabled={busy||!!handoff}>Completed work</button><button onClick={()=>ask('What are your goals?')} disabled={busy||!!handoff}>Your goals</button></div>
+        {error && <p role="alert" className="connected-pulse-error">{error}</p>}
         <form className="office-chat-form" onSubmit={event=>{event.preventDefault();ask()}}><input value={question} onChange={event=>setQuestion(event.target.value)} maxLength={1000} aria-label={`Message ${buddy.name}`} placeholder={`Ask ${buddy.name}…`}/><button type="submit" aria-label="Send to buddy" disabled={busy||!!handoff||!question.trim()}><Send size={17}/></button></form>
         <button className="office-return" onClick={onClose}>Review tools and results in Pulse <ArrowUpRight size={15}/></button>
       </aside></div>

@@ -1,0 +1,21 @@
+import { test, expect } from './fixtures'
+import { makeRuledSyllabusPdf } from '../fixtures'
+test('Mobile source correction keeps the editor scrollable above focused Pulse',async({page})=>{
+  await page.goto('/')
+  await page.getByRole('button',{name:'Instructor',exact:true}).click()
+  await page.goto('/#/syllabus?tab=builder')
+  await page.getByLabel('Upload syllabus DOCX or PDF').setInputFiles({name:'sample-syllabus.pdf',mimeType:'application/pdf',buffer:makeRuledSyllabusPdf()})
+  await expect(page.getByText('Extracted Sections Preview',{exact:true})).toBeVisible()
+  await page.getByRole('button',{name:'Use This Syllabus',exact:true}).click()
+  const topic=page.getByPlaceholder('Topic...',{exact:true}).nth(1)
+  await topic.focus();await page.keyboard.press('Alt+p')
+  await page.getByRole('textbox',{name:'Ask Pulse',exact:true}).fill('Make this outline more accurate to the uploaded file')
+  await page.getByRole('button',{name:'Send',exact:true}).click()
+  await page.getByRole('button',{name:'Prepare edit preview'}).click()
+  for(const toast of await page.locator('.toast').all()) await toast.click()
+  await page.screenshot({path:'../feature-documentation/system-manual/09-pulse-actions/16-mobile-focused-source.png',animations:'disabled'})
+  await page.getByRole('button',{name:'Close Pulse',exact:true}).click()
+  const download=page.getByRole('button',{name:'Download PDF draft',exact:true})
+  await download.scrollIntoViewIfNeeded()
+  await page.screenshot({path:'../feature-documentation/system-manual/02-syllabus-lifecycle/17-mobile-draft-actions.png',animations:'disabled'})
+})

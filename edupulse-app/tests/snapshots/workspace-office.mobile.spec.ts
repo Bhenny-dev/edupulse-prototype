@@ -1,5 +1,6 @@
 import { test, expect } from './fixtures.js'
 test('Mobile workspace buddies have accessible desk controls and reduced motion', async ({ page }) => {
+  await page.route('**/api/ai?action=health', async route => { const response = await route.fetch(); await route.fulfill({ json: { ...await response.json(), ready: false } }) })
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/')
   await page.getByRole('button', { name: 'Instructor', exact: true }).click()

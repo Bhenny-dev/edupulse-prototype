@@ -3,6 +3,7 @@ import { z } from 'zod'
 const textList = z.array(z.string().max(4000)).max(60)
 const referenceUrl = z.string().max(1000).refine(value => !value || /^https?:\/\//i.test(value) && z.url().safeParse(value).success, 'Use an HTTP or HTTPS source URL.')
 export const syllabusPatch = z.object({
+  institutionalContext: z.object({ kcp: z.object({vision:z.string().max(8000),mission:z.string().max(8000),objectives:textList,coreValues:textList}).partial().strict().optional(), cit:z.object({mission:z.string().max(8000),objectives:textList}).partial().strict().optional() }).strict().optional(),
   programOutcomes: textList.optional(),
   courseOutline: z.array(z.object({ week: z.number().int().min(1).max(52), ilos: z.string().max(5000), contents: textList, activities: z.string().max(5000).optional(), assessments: z.string().max(5000).optional(), teachingMaterials: textList.optional(), assessmentTypes: textList.optional(), resources: z.array(z.object({ name: z.string().max(500), url: referenceUrl, type: z.string().max(30).optional() })).max(30).optional() }).strict()).max(52).refine(rows => new Set(rows.map(row => row.week)).size === rows.length, 'Each week must appear once.').optional(),
   courseRequirements: textList.optional(), gradingSystem: z.string().max(8000).optional(), coursePolicy: textList.optional(),
@@ -16,14 +17,15 @@ export type EditorSnapshot = { instance: string; kind: EditorKind; label: string
 export function literalEdit(snapshot: EditorSnapshot, request: string, section = 'all') {
   const match = request.match(/\breplace\s+["“]([^"”]{1,500})["”]\s+with\s+["“]([^"”]{0,1000})["”]/i)
   if (!match) return null
-  const allowed = snapshot.kind === 'syllabus' ? ['programOutcomes','courseOutline','courseRequirements','gradingSystem','coursePolicy','books','onlineReferences'] : ['title','sections','questions']
+  const allowed = snapshot.kind === 'syllabus' ? ['institutionalContext','programOutcomes','courseOutline','courseRequirements','gradingSystem','coursePolicy','books','onlineReferences'] : ['title','sections','questions']
   const visit = (value: unknown): unknown => typeof value === 'string' ? value.split(match[1]!).join(match[2]!) : Array.isArray(value) ? value.map(visit) : value && typeof value === 'object' ? Object.fromEntries(Object.entries(value).map(([key,item])=>[key, ['id','url','correctIndex','week','type','label'].includes(key)?item:visit(item)])) : value
   const patch = Object.fromEntries(allowed.filter(field=>(section==='all'||field===section)&&snapshot.data[field]!==undefined).flatMap(field=>{ const value=visit(snapshot.data[field]);return JSON.stringify(value)===JSON.stringify(snapshot.data[field])?[]:[[field,value]] }))
   return Object.keys(patch).length ? (snapshot.kind==='syllabus'?syllabusPatch:contentPatch).parse(patch) : null
 }
-type Editor = { read: () => EditorSnapshot; apply: (data: Record<string, unknown>) => void; prepareCourse?: (code: string, data: Record<string, unknown>) => Record<string, unknown>; save?: (data: Record<string, unknown>) => Promise<unknown> }
+type Editor = { sources?: () => import('../lib/aiClient.js').ReferenceFile[]; read: () => EditorSnapshot; apply: (data: Record<string, unknown>) => void; prepareCourse?: (code: string, data: Record<string, unknown>) => Record<string, unknown>; save?: (data: Record<string, unknown>) => Promise<unknown> }
 const editors = new Map<string, Editor>()
 export function registerEditor(id: string, editor: Editor) { editors.set(id, editor); return () => { if (editors.get(id) === editor) editors.delete(id) } }
+export function currentEditorSources() { return structuredClone([...editors.values()].at(-1)?.sources?.() || []) }
 export function currentEditor(): EditorSnapshot | null { const editor = [...editors.values()].at(-1); return editor ? structuredClone(editor.read()) : null }
 export async function applyEditorProposal(expected: EditorSnapshot, changes: Record<string, unknown>, role: string, save = false, courseCode?: string) {
   if (role !== 'instructor') throw new Error('Switch to an authorized instructor view to edit academic content.')
@@ -36,7 +38,11 @@ export async function applyEditorProposal(expected: EditorSnapshot, changes: Rec
   }
   if ('questions' in patch && patch.questions) patch.questions = patch.questions.map(question => ({ ...question, options: question.options.map((option, index) => typeof option === 'string' ? { label: String.fromCharCode(65 + index), text: option } : option) }))
   const base = courseCode && editor.prepareCourse ? editor.prepareCourse(courseCode, expected.data) : expected.data
-  const next = { ...base, ...patch }
+  const next: Record<string, unknown> = { ...base, ...patch }
+  if ('institutionalContext' in patch && patch.institutionalContext) {
+    const before = (base.institutionalContext || {}) as Record<string, Record<string, unknown>>
+    next.institutionalContext = { ...before, ...Object.fromEntries(Object.entries(patch.institutionalContext).map(([unit,fields])=>[unit,{...before[unit],...fields}])) }
+  }
   let receipt: { persisted?: boolean; mode?: string } | undefined
   if (save) {
     if (!editor.save) throw new Error('This editor supports applying the preview; use its Save control to persist changes.')

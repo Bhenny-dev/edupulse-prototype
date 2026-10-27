@@ -27,12 +27,9 @@ test('mascot follows the cursor, distinguishes a click from dragging, and focuse
   await expect(page.locator('.pulse-brief')).toContainText('dropdown')
   await expect(page.locator('.pulse-brief')).toContainText('Nothing selected yet')
   if (test.info().project.name === 'desktop') {
-    // The dock's accessible name becomes "Close Pulse assistant" while the panel is open,
-    // and Pulse hops (260 ms) from the drop point to its perch beside the field.
-    await expect.poll(async () => {
-      const dock = (await page.locator('[data-pulse-ui="mascot"]').boundingBox())!, target = (await control.boundingBox())!
-      return dock.x >= target.x + target.width - 1 || dock.x + dock.width <= target.x + 1
-    }).toBe(true)
+    await expect(page.locator('[data-pulse-ui="mascot"]')).toBeHidden()
+    const main=(await page.locator('#main-content').boundingBox())!, panel=(await page.locator('[data-pulse-ui="panel"]').boundingBox())!
+    expect(main.x+main.width).toBeLessThanOrEqual(panel.x)
   }
   await page.getByRole('button', { name: 'Exit focused help', exact: true }).click()
   await expect(page.locator('.pulse-spotlight')).toHaveCount(0)
@@ -43,10 +40,9 @@ test('guiding a whole page keeps the panel clear of the perched mascot', async (
   await page.getByRole('button', { name: 'Open Pulse assistant' }).click()
   await page.getByRole('button', { name: 'Guide this page', exact: true }).click()
   await expect(page.locator('.pulse-focus-heading')).toBeVisible()
-  await expect.poll(async () => {
-    const m = (await page.locator('[data-pulse-ui="mascot"]').boundingBox())!, p = (await page.locator('[data-pulse-ui="panel"]').boundingBox())!
-    return m.x + m.width <= p.x || p.x + p.width <= m.x || m.y + m.height <= p.y || p.y + p.height <= m.y
-  }).toBe(true)
+  await expect(page.locator('[data-pulse-ui="mascot"]')).toBeHidden()
+  const main=(await page.locator('#main-content').boundingBox())!, panel=(await page.locator('[data-pulse-ui="panel"]').boundingBox())!
+  expect(main.x+main.width).toBeLessThanOrEqual(panel.x)
 })
 
 test('section tour reads visible controls and waits for input', async ({ page }) => {

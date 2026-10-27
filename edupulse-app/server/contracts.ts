@@ -2,6 +2,7 @@ import { z } from 'zod'
 
 export const tasks = ['auto', 'answer', 'summarize', 'compare', 'draft', 'references', 'general'] as const
 export const chatInput = z.object({
+  buddy: z.enum(['pip','luma','quill','ro','sage','milo']).optional(),
   grounding: z.enum(['auto', 'sources']).default('auto'),
   task: z.enum(tasks).default('auto'),
   message: z.string().trim().min(1).max(4000),

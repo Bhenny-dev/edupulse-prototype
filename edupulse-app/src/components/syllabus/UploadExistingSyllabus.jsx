@@ -77,7 +77,7 @@ export default function UploadExistingSyllabus({ onExtract, onCancel, compact })
     switch (idx) {
       case 0: return `${p.courseCode || '—'} · ${p.courseTitle || '—'} · ${p.periodOffered || '—'}`
       case 1: return (p.description || '').substring(0, 120) + ((p.description || '').length > 120 ? '…' : '')
-      case 2: return 'KCP Vision, Mission, Objectives + CIT Mission, Objectives'
+      case 2: return p.institutionalContext ? 'Institutional text extracted from this file' : 'No mapped institutional fields; existing defaults stay unchanged'
       case 3: return `${(p.programOutcomes || []).filter(o => o.trim()).length} program outcome(s) found`
       case 4: return `${(p.courseOutline || []).filter(w => w.ilos || w.contents?.some(c => c.trim())).length} weeks with content`
       case 5: return `Grading + ${(p.coursePolicy || []).length} policy items`
@@ -142,7 +142,7 @@ export default function UploadExistingSyllabus({ onExtract, onCancel, compact })
             </div>
             <div style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--gray-700)' }}>{file.name}</div>
             <div style={{ fontSize: '0.75rem', color: 'var(--gray-500)' }}>
-              {(file.size / 1024).toFixed(0)} KB · {parsed ? 'Parsed successfully' : 'Ready to parse'}
+              {(file.size / 1024).toFixed(0)} KB · {parsed ? 'Extraction ready for review' : 'Ready to parse'}
             </div>
           </div>
         )}
@@ -150,6 +150,8 @@ export default function UploadExistingSyllabus({ onExtract, onCancel, compact })
 
       {parsed && (
         <div style={{ marginTop: '16px' }}>
+          {parsed.warnings?.map((warning, index) => <p key={index} role="status" className="text-sm text-muted">{warning}</p>)}
+          {parsed.provenance?.some(row => row.weeks.length > 1) && <p className="text-sm text-muted">Explicit week ranges share the source row across their listed weeks. Review the pacing before using it.</p>}
           {parsed.metadata?.scannedPages > 0 && <p role="status" className="text-sm text-muted">OCR read {parsed.metadata.scannedPages} scanned page(s). Check the extracted text against the original before using it.</p>}
           {parsed.courseMatch && (
             <div style={{
@@ -190,7 +192,7 @@ export default function UploadExistingSyllabus({ onExtract, onCancel, compact })
                 {expandedSection === idx && parsed.sections[idx]?.raw && (
                   <div style={{ padding: '10px 14px 10px 40px', background: 'var(--gray-50)', borderTop: '1px solid var(--gray-100)' }}>
                     <pre style={{ fontSize: '0.6875rem', color: 'var(--gray-600)', whiteSpace: 'pre-wrap', margin: 0, maxHeight: '120px', overflow: 'auto' }}>
-                      {parsed.sections[idx].raw.substring(0, 500)}
+                      {JSON.stringify(parsed.sections[idx].parsed, null, 2)}
                     </pre>
                   </div>
                 )}

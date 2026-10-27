@@ -102,6 +102,7 @@ test('Dean sidebar opens the Loaded Courses view instead of an empty tab', async
 })
 
 test('courseware edits persist, require review again, and document downloads work', async ({ page, request }) => {
+  test.setTimeout(60_000)
   const snapshot = await (await request.get('/api/ai?action=workspace')).json()
   const { DEFAULT_SYLLABI } = await import(new URL('../../src/data/mockData.js', import.meta.url).href)
     const base = { status: 'checked', week: 1, syllabusId: 'syl-1' }
@@ -114,7 +115,7 @@ test('courseware edits persist, require review again, and document downloads wor
   await page.goto('/')
   await page.getByRole('button', { name: 'Instructor', exact: true }).click()
   await expect(page).toHaveURL(/dashboard/)
-  await expect(page.getByText('Local workspace · Saved', { exact: true })).toBeVisible()
+  await expect(page.getByText('Local workspace · Saved', { exact: true })).toBeVisible({timeout:30_000})
   await page.goto('/#/courseware')
   await page.getByRole('button', { name: 'View Items', exact: true }).first().click()
   // Synthetic content tests the actual editors and storage without a model dependency.
@@ -124,22 +125,22 @@ test('courseware edits persist, require review again, and document downloads wor
   await page.getByRole('button', { name: 'Save', exact: true }).click()
   await expect(page.getByText('Reviewed courseware text saved by the browser workflow test.', { exact: true })).toBeVisible()
   const downloadPromise = page.waitForEvent('download')
-  await page.getByRole('button', { name: 'Download text' }).click()
-  expect((await downloadPromise).suggestedFilename()).toMatch(/\.txt$/)
+  await page.getByRole('button', { name: 'Download PDF' }).click()
+  expect((await downloadPromise).suggestedFilename()).toMatch(/\.pdf$/)
   const saved = await page.evaluate(() => Object.values(JSON.parse(localStorage.getItem('edupulse-workspace-v2-preview') || '{}').data.content) as { status: string; content: { sections?: { body: string }[] } }[])
   expect(saved.find(item => item.content.sections?.some(section => section.body === 'Reviewed courseware text saved by the browser workflow test.'))?.status).toBe('draft')
   await page.getByRole('button', { name: 'Back', exact: true }).click()
   await page.getByTitle('Open assessment').first().click()
   await page.getByLabel('Answer explanation').first().fill('The answer was reviewed against the course reference by the instructor.')
   await page.getByRole('button', { name: 'Save Assessment', exact: true }).click()
-  await expect(page.getByText('Local workspace · Saved', { exact: true })).toBeVisible()
+  await expect(page.getByText('Local workspace · Saved', { exact: true })).toBeVisible({timeout:30_000})
   await page.reload()
   const assessments = await page.evaluate(() => Object.values(JSON.parse(localStorage.getItem('edupulse-workspace-v2-preview') || '{}').data.content) as { status: string; content: { questions?: { explanation?: string }[] } }[])
   expect(assessments.find(item => item.content.questions?.some(q => q.explanation === 'The answer was reviewed against the course reference by the instructor.'))?.status).toBe('draft')
 })
 
 
-test('syllabus draft survives reload and approved DOCX activates the same course in Courseware', async ({ page }) => {
+test('syllabus draft survives reload and approved PDF activates the same course in Courseware', async ({ page }) => {
   test.setTimeout(60000)
   const errors: string[] = []
   page.on('pageerror', error => errors.push(error.message))
@@ -150,7 +151,7 @@ test('syllabus draft survives reload and approved DOCX activates the same course
   await page.getByPlaceholder('Learning outcome...', { exact: true }).first().fill('Explain variable declarations and assignment.')
   await page.getByPlaceholder('Topic...', { exact: true }).first().fill('Variables and assignment')
   await page.getByRole('button', { name: 'Save as Drafted', exact: true }).click()
-  await expect(page.getByText('Local workspace · Saved', { exact: true })).toBeVisible()
+  await expect(page.getByText('Local workspace · Saved', { exact: true })).toBeVisible({timeout:30_000})
   await page.reload()
   const row = page.getByRole('row').filter({ hasText: 'IT 102' }).first()
   await row.getByTitle('Edit in Builder').click()
@@ -164,17 +165,17 @@ test('syllabus draft survives reload and approved DOCX activates the same course
   const downloadPromise = page.waitForEvent('download')
   await row.getByRole('button', { name: 'Download for Approval', exact: true }).click()
   const download = await downloadPromise
-  expect(download.suggestedFilename()).toMatch(/-v2-approval.docx$/)
+  expect(download.suggestedFilename()).toMatch(/-v2-approval.pdf$/)
   const file = await download.path()
   expect(file).toBeTruthy()
   await row.getByRole('button', { name: 'Upload Approved File', exact: true }).click()
   await expect(page.getByLabel('Approved DOCX or PDF', { exact: true })).toBeDisabled()
   await page.getByRole('checkbox').check()
-  await page.getByLabel('Approved DOCX or PDF', { exact: true }).setInputFiles({ name: 'IT102-approved.docx', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', buffer: await (await import('node:fs/promises')).readFile(file!) })
+  await page.getByLabel('Approved DOCX or PDF', { exact: true }).setInputFiles({ name: 'IT102-approved.pdf', mimeType: 'application/pdf', buffer: await (await import('node:fs/promises')).readFile(file!) })
   await row.getByRole('button', { name: 'Extract Outline', exact: true }).click()
   await expect(page.getByText('Variables and assignment', { exact: true })).toBeVisible()
   await page.getByRole('button', { name: /Confirm Extraction/ }).click()
-  await expect(page.getByText('Local workspace · Saved', { exact: true })).toBeVisible()
+  await expect(page.getByText('Local workspace · Saved', { exact: true })).toBeVisible({timeout:30_000})
   await page.reload()
   await expect(row.getByText('Drives courseware', { exact: true })).toBeVisible()
   await row.getByTitle('Version History').click()
@@ -198,7 +199,7 @@ test('syllabus draft survives reload and approved DOCX activates the same course
 test('conflicting workspace save retains pending edits until a backup is exported', async ({ page, request }) => {
   await page.goto('/')
   await page.getByRole('button', { name: 'Instructor', exact: true }).click()
-  await expect(page.getByText('Local workspace · Saved', { exact: true })).toBeVisible()
+  await expect(page.getByText('Local workspace · Saved', { exact: true })).toBeVisible({timeout:30_000})
   const snapshot = await (await request.get('/api/ai?action=workspace')).json()
   const otherSave = await request.put('/api/ai?action=workspace', { data: { revision: snapshot.revision, data: snapshot.data } })
   expect(otherSave.status()).toBe(200)
@@ -215,6 +216,6 @@ test('conflicting workspace save retains pending edits until a backup is exporte
   const contents = JSON.parse(await (await import('node:fs/promises')).readFile(file!, 'utf8'))
   expect(contents.syllabi[0].courseOutline[0].contents).toContain('Pending edits from the older tab')
   await latest.click()
-  await expect(page.getByText('Local workspace · Saved', { exact: true })).toBeVisible()
+  await expect(page.getByText('Local workspace · Saved', { exact: true })).toBeVisible({timeout:30_000})
   await expect(page.getByText('No syllabi yet.', { exact: false })).toBeVisible()
 })

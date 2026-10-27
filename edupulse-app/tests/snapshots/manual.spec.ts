@@ -52,7 +52,7 @@ test('syllabus lifecycle: build, check, download, approve, extract, activate', a
   await row.getByRole('button', { name: 'Upload Approved File', exact: true }).click()
   await shot(page, f, '07-upload-approved-file-attestation')
   await page.getByRole('checkbox').check()
-  await page.getByLabel('Approved DOCX or PDF', { exact: true }).setInputFiles({ name: 'IT102-approved.docx', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', buffer: await readFile(file!) })
+  await page.getByLabel('Approved DOCX or PDF', { exact: true }).setInputFiles({ name: 'IT102-approved.pdf', mimeType: 'application/pdf', buffer: await readFile(file!) })
   await expect(row.getByText('Approved — Uploaded', { exact: true })).toBeVisible()
   await expect(page.locator('.overlay-backdrop')).toHaveCount(0)
   await shot(row, f, '08-approved-file-uploaded')
@@ -108,7 +108,7 @@ const sampleClassList = `StudentID,Name,Email,YearLevel,Block
 2026-90006,Gina P. Flores,gina.flores@example.edu,1,BSIT-1B`
 const pulseDialog = (page: Page) => page.getByRole('dialog', { name: 'Pulse', exact: true })
 // An action card taller than the panel's scroll area is captured whole: the panel may grow upwards while the card is shot.
-const WHOLE_CARD = '.connected-pulse{height:auto !important;overflow:visible !important}.connected-pulse-feed{overflow:visible !important;flex:none !important}'
+const WHOLE_CARD = '.connected-pulse{position:relative!important;inset:auto!important;height:auto !important;overflow:visible !important}.connected-pulse-feed{overflow:visible !important;flex:none !important}'
 test('Pulse Undo preserves a later confirmed registration', async ({ page }) => {
   await page.goto('/')
   await page.getByRole('button', { name: 'Instructor', exact: true }).click()

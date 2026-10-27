@@ -1,3 +1,4 @@
+import { downloadSyllabusPdf } from '../utils/pdfExport'
 import { Fragment, cloneElement, isValidElement, useState, useEffect, useRef, useMemo, useId } from 'react'
 import { useSearchParams, Navigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
@@ -11,7 +12,7 @@ import {
 } from 'lucide-react'
 import { useWorkspace } from '../context/WorkspaceContext'
 import ApprovedSyllabusUpload from '../components/syllabus/ApprovedSyllabusUpload'
-import { meaningfulOutline, syllabusDocx, downloadBlob, downloadApprovedFile } from '../utils/syllabusFiles'
+import { meaningfulOutline, downloadApprovedFile } from '../utils/syllabusFiles'
 import UploadExistingSyllabus from '../components/syllabus/UploadExistingSyllabus'
 import BlockSectionUploader from '../components/syllabus/BlockSectionUploader'
 import SharedSyllabusRepository from '../components/syllabus/SharedSyllabusRepository'
@@ -606,12 +607,15 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
   }
 
   // ── Upload existing syllabus — merge parsed data into form ──
+  const [sourceFiles, setSourceFiles] = useState([])
   const handleUploadExtract = (parsed) => {
+    const title = parsed.metadata?.title || 'Imported syllabus'
+    setSourceFiles([{ title, fileName: title, text: parsed.sourceText || parsed.sections.map(section => section.raw).join('\n'), syllabus: parsed, kind: 'syllabus', sourceType: 'text' }])
     const merged = parsedToFormState(parsed)
     setForm(prev => ({
       ...prev,
       ...merged,
-      institutionalContext: prev.institutionalContext,
+      institutionalContext: Object.fromEntries(Object.entries(prev.institutionalContext).map(([unit, fields]) => [unit, { ...fields, ...Object.fromEntries(Object.entries(merged.institutionalContext?.[unit] || {}).filter(([,value]) => Array.isArray(value) ? value.length : String(value || '').trim())) }])),
     }))
     setUploadStep('done')
     addToast('Syllabus content extracted — review and edit each section below', 'success')
@@ -643,7 +647,7 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
     onComplete(form, 'checked')
   }
 
-  usePulseEditor({ kind: 'syllabus', label: `${form.courseCode || 'New'} syllabus builder`, data: form,
+  usePulseEditor({ kind: 'syllabus', label: `${form.courseCode || 'New'} syllabus builder`, data: form, sources: sourceFiles,
     apply: next => { setForm(next); setUploadStep('done') },
     prepareCourse: (code, current) => {
       const course = CURRICULUM_COURSES.find(item => item.code === code)
@@ -814,6 +818,7 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
       </div>
 
       {/* Upload existing syllabus step */}
+      {sourceFiles.length > 0 && <p className="syllabus-source-context" role="status">Source available to Pulse: <strong>{sourceFiles.map(file => file.title).join(', ')}</strong>. Select a section to correct it against this file. Source context lasts while this builder is open.</p>}
       {uploadStep === 'pending' && (
         <UploadExistingSyllabus
           onExtract={handleUploadExtract}
@@ -1428,9 +1433,10 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
       </div>
 
       {/* Actions */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px', padding: '16px 0', borderTop: '1px solid var(--gray-200)' }}>
+      <div className="syllabus-builder-actions" style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px', padding: '16px 0', borderTop: '1px solid var(--gray-200)' }}>
         <button className="btn btn-ghost" onClick={onCancel}>Cancel</button>
         <div style={{ display: 'flex', gap: '8px' }}>
+          <button className="btn btn-secondary" onClick={() => downloadSyllabusPdf(form).catch(error => addToast(error.message, 'error'))}><Download size={16} /> Download PDF draft</button>
           <button className="btn btn-secondary" data-pulse-action="save-syllabus" onClick={handleSave}>Save as Drafted</button>
           <button className="btn btn-primary" onClick={handleMarkChecked} title="Confirms you have checked this draft — next step is downloading it for the offline signatory route"><CheckCircle size={16} /> Mark as Checked</button>
         </div>
@@ -1513,11 +1519,10 @@ export default function Syllabus() {
   }
   const downloadForApproval = async (syl) => {
     try {
-      const blob = await syllabusDocx(syl)
-      downloadBlob(blob, `${syl.courseCode.replace(/[^a-z0-9-]/gi, '_')}-v${syl.version}-approval.docx`)
+      await downloadSyllabusPdf(syl, `${syl.courseCode.replace(/[^a-z0-9-]/gi, '_')}-v${syl.version}-approval.pdf`)
       setStatus(syl.id, 'downloaded_for_approval')
       pulseBus.progress('syllabus-downloaded', syl.courseCode)
-      addToast('DOCX exported. Complete the offline approval route before uploading it.', 'info')
+      addToast('PDF exported. Complete the offline approval route before uploading it.', 'info')
     } catch (error) { addToast(`Export failed: ${error.message}`, 'error') }
   }
   const uploadApproved = syl => setUploadingSyllabus(syl)
