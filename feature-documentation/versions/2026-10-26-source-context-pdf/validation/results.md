@@ -10,3 +10,5 @@ Known limits: OCR and ambiguous/unruled layouts require source review. Provider 
 - Production dependency audit: zero vulnerabilities. GitHub Actions on the preceding commit could not start because the account is locked for a billing issue; local gates above were executed independently.
 
 - Staging initially encountered a network upload failure, then rejected an old 131 MB local browser trace. The deployment exclusion now covers custom `test-results*` directories; application source and tested runtime behavior are unchanged.
+
+- The first staged hosted health check detected an extensionless shared buddy import under native Node ESM. It was not promoted. The import now uses `.js`, and the deployment gate adds a plain-Node compiled-module regression check. No visible UI changed in this correction.

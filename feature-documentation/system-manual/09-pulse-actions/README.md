@@ -117,3 +117,7 @@ A request to create learning materials from a supplied outline drafts a response
 On mobile, focused Pulse is a shorter panel. The page remains scrollable above it, and the mascot is hidden while the panel is open. Close Pulse to use the whole screen. Institutional context is also an editable, source-backed section; a confirmed patch merges only the named institution fields and does not update global defaults.
 
 ![Mobile focused source correction](16-mobile-focused-source.png)
+
+### Hosted availability
+
+Pulse actions require a healthy hosted API. The release process checks native server startup as well as the preview, confirmation and save behavior shown above; a build that passes local tests alone is not treated as proof that hosted actions are available.

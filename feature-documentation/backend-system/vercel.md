@@ -103,3 +103,7 @@ The existing function now routes `operator` and `conversations` through isolated
 ### Local browser artifacts
 
 The root `.vercelignore` excludes `edupulse-app/test-results*`, including custom browser trace folders. These local diagnostics are not deployment inputs; keeping them out prevents oversized uploads and unintended inclusion of test artifacts. Runtime assets and the production build remain unchanged.
+
+### Native ESM startup check
+
+Shared buddy definitions use explicit `.js` import specifiers so the emitted serverless JavaScript resolves under native Node ESM. The deployment gate compiles and imports the buddy modules with plain Node (without the local TypeScript loader), covering the startup failure that local Vite/tsx execution concealed. This changes module loading, with no interface or screenshot changes.

@@ -1,4 +1,4 @@
-import { quickReply } from './quickReplies'
+import { quickReply } from './quickReplies.js'
 /** Fictional personalities; capabilities and activity always come from real application events. */
 export const BUDDIES = [
   { id: 'pip', name: 'Pip', title: 'Workspace guide', color: '#20b8e5', station: 'Welcome desk', motto: 'One clear next step.', role: 'I open authorized pages, find the right control and guide you through real form steps. I never skip approval or save a record just because a tour ended.', goals: 'Get you to the correct page and wait for each real step to finish.', habit: 'Collects tiny maps and keeps every pencil pointed north.', agents: ['Planner', 'Navigator', 'Guide'] },

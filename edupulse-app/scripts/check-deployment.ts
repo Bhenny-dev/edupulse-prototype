@@ -1,6 +1,28 @@
-import { readFile, readdir, stat } from 'node:fs/promises'
+import { readFile, readdir, stat, mkdtemp, writeFile, rm } from 'node:fs/promises'
 import assert from 'node:assert/strict'
+import { tmpdir } from 'node:os'
+import { join, dirname, resolve, basename } from 'node:path'
+import { pathToFileURL } from 'node:url'
+import { execFileSync } from 'node:child_process'
+import { stripTypeScriptTypes } from 'node:module'
 import { handleRequest } from '../server/http.js'
+
+// Vite/tsx accept extensionless imports that fail in the native serverless ESM runtime.
+// Load the shared buddy modules after compilation with plain Node, without a TS loader.
+const nativeDir = await mkdtemp(join(tmpdir(), 'edupulse-native-esm-'))
+try {
+  await writeFile(join(nativeDir, 'package.json'), '{"type":"module"}')
+  for (const name of ['buddies', 'quickReplies']) {
+    const source = await readFile(`src/agents/${name}.ts`, 'utf8')
+    const emitted = stripTypeScriptTypes(source)
+    await writeFile(join(nativeDir, `${name}.js`), emitted)
+  }
+  execFileSync(process.execPath, ['--input-type=module', '-e', `const { BUDDIES } = await import(${JSON.stringify(pathToFileURL(join(nativeDir, 'buddies.js')).href)}); if (BUDDIES.length !== 6) throw new Error('Missing buddy definitions')`], { env: { ...process.env, NODE_OPTIONS: '' }, stdio: 'pipe' })
+} finally {
+  assert.equal(dirname(resolve(nativeDir)), resolve(tmpdir()))
+  assert(basename(nativeDir).startsWith('edupulse-native-esm-'))
+  await rm(nativeDir, { recursive: true, force: true })
+}
 
 const config = JSON.parse(await readFile('vercel.json', 'utf8'))
 assert(config.functions['api/ai.ts'].maxDuration >= 120)
