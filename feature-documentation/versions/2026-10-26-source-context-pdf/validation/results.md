@@ -8,3 +8,5 @@
 Known limits: OCR and ambiguous/unruled layouts require source review. Provider latency and model output quality remain provider-dependent. Direct ChatGPT/Claude consumer authorization is not added; the previously documented provider approval limitations remain.
 
 - Production dependency audit: zero vulnerabilities. GitHub Actions on the preceding commit could not start because the account is locked for a billing issue; local gates above were executed independently.
+
+- Staging initially encountered a network upload failure, then rejected an old 131 MB local browser trace. The deployment exclusion now covers custom `test-results*` directories; application source and tested runtime behavior are unchanged.

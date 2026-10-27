@@ -99,3 +99,7 @@ The REST API already confirmed deployment readiness, build-test counts, environm
 ## Pulse tools and workspace release - 26 October 2026
 
 The existing function now routes `operator` and `conversations` through isolated domain modules. Operator requests share the authenticated inference lease; archive writes do not invoke a model. The additive history migration must exist before deploying this source. Private memories never contain provider cookies or raw file payloads. See [release validation](../versions/2026-10-25-pulse-agent-tools/validation/results.md) for the tested source, staging and production evidence.
+
+### Local browser artifacts
+
+The root `.vercelignore` excludes `edupulse-app/test-results*`, including custom browser trace folders. These local diagnostics are not deployment inputs; keeping them out prevents oversized uploads and unintended inclusion of test artifacts. Runtime assets and the production build remain unchanged.
