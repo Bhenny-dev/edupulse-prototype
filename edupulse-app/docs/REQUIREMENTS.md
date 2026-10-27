@@ -314,8 +314,8 @@ Every requirement below cites the section of *EduPulse Chapter 1 & 2* (Rivera, B
 
 | ID | Requirement | Source | Pri |
 |---|---|---|---|
-| NFR-USE-01 | The top navigation bar shall expose no more than 5 primary sections per role. | Response to nav audit finding | M |
-| NFR-USE-02 | Secondary, section-specific navigation shall live in a contextual left sidebar, not the top bar. | Response to nav audit finding | M |
+| NFR-USE-01 | The top navigation bar shall expose no more than 5 primary sections per role. | User correction, 27 October 2026; navigation audit | M |
+| NFR-USE-02 | Secondary, section-specific navigation shall use the page tabs without repeating them in a left sidebar. Unique destinations remain in the main/mobile navigation. | Response to nav audit finding | M |
 | NFR-USE-03 | No screen shall present AI-internal mechanics (model choice, retrieval tuning, job scheduling, prompt templates) as user-configurable controls. | §1.2 (governing usability constraint) | M |
 | NFR-USE-04 | Every top-level navigation label shall use plain product language, not internal system/vendor terminology (e.g., "Review Inbox" not "Agentic Review Queue"). | §1.2 (assistive framing) | M |
 | NFR-USE-05 | New pages shall not be added to the product without a corresponding requirement in this document. | Maintainability/scope-discipline, response to REQ-3120 finding | M |
@@ -339,7 +339,7 @@ Every requirement below cites the section of *EduPulse Chapter 1 & 2* (Rivera, B
 | NFR-COMPAT-02 | A native mobile application is explicitly out of scope. | §1.4 (explicit exclusion) | M |
 | NFR-COMPAT-03 | The top bar shall collapse to a mobile menu below 768px without losing section labels to icon-only tooltips. | Response to nav audit finding | M |
 | NFR-COMPAT-04 | The system shall support current versions of Chrome, Edge, and Firefox. | Baseline for institutional deployment | S |
-| NFR-COMPAT-05 | Pulse and the left sidebar shall degrade gracefully (collapse/hide) on narrow viewports rather than overflow. | Usability baseline | M |
+| NFR-COMPAT-05 | Pulse, page tabs and dialogs shall fit narrow viewports without overlapping controls; dialogs and Pulse use distinct scrollable areas. | Usability baseline | M |
 
 ### 2.7 NFR-AI — AI Layer (8)
 

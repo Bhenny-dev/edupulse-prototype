@@ -52,7 +52,7 @@ function SyllabusStatusTab() {
       </p>
 
       {/* Summary Cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, marginBottom: 24 }}>
+      <div className="kpi-grid mb-24">
         {[
           { label: 'Courses Loaded', value: `${totalLoaded} / ${totalCourses}`, sub: 'of released courses', color: 'var(--sky-500)', icon: BookOpen },
           { label: 'Approved Syllabi', value: `${totalApproved} / ${totalLoaded}`, sub: 'signed file uploaded', color: 'var(--green-500)', icon: Check },
@@ -207,7 +207,7 @@ function DeliveryTab() {
         Are the mapped teaching materials and assessments being delivered on the Course Outline's schedule?
       </p>
 
-      <div data-pulse-help="delivery-gap" tabIndex={0} style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, marginBottom: 24, outline: 'none' }}>
+      <div className="kpi-grid mb-24" data-pulse-help="delivery-gap" tabIndex={0} style={{ outline: 'none' }}>
         {[
           { label: 'Active Courses', value: activeCourses.length, color: 'var(--sky-500)', icon: BookOpen },
           { label: 'Published Materials & Activities', value: totalPublishedMaterials, color: 'var(--green-500)', icon: FileText },
@@ -427,14 +427,24 @@ function AlertsTab() {
 /* ───────────────────── Main Component ───────────────────── */
 export default function MonitorProgress() {
   const { user } = useAuth()
-  const [searchParams] = useSearchParams()
-  const activeTab = searchParams.get('tab') || 'syllabi'
+  const [searchParams, setSearchParams] = useSearchParams()
+  const tabs = [
+    { key: 'syllabi', label: 'Syllabus Status' },
+    { key: 'delivery', label: 'Delivery Progress' },
+    { key: 'students', label: 'Student Oversight' },
+    { key: 'alerts', label: 'Alerts' },
+  ]
+  const requestedTab = searchParams.get('tab')
+  const activeTab = tabs.some(tab => tab.key === requestedTab) ? requestedTab : 'syllabi'
 
   if (!['dean', 'associate_dean'].includes(user?.role)) return <Navigate to="/dashboard" replace />
   if (user?.authenticated) return <AcademicPortal view="monitor" />
 
   return (
     <div style={{ padding: '24px 32px' }} data-pulse-zone="monitor">
+      <nav className="tabs mb-24" aria-label="Monitor views" style={{ overflowX: 'auto', flexWrap: 'nowrap' }}>
+        {tabs.map(tab => <button key={tab.key} className={`tab ${activeTab === tab.key ? 'active' : ''}`} aria-pressed={activeTab === tab.key} style={{ whiteSpace: 'nowrap' }} onClick={() => setSearchParams({ tab: tab.key })}>{tab.label}</button>)}
+      </nav>
       {activeTab === 'syllabi' && <SyllabusStatusTab />}
       {activeTab === 'delivery' && <DeliveryTab />}
       {activeTab === 'students' && <StudentsTab />}

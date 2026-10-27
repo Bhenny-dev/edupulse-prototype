@@ -26,7 +26,7 @@
 
 6. Edit any inaccurate explanation or answer key, then use **Check** only after reviewing the material, activity, and assessment. Drafts are not published or graded automatically.
 
-The workflow includes original v0.4.0 captures and refreshed document/review captures generated with the local `qwen2.5:1.5b` model. They establish local task evidence, not authenticated hosted behavior or general model accuracy. The review panel may flag incorrect answer explanations; instructors must resolve them before checking or publishing. The [v0.4.0 release record](../../versions/v0.4.0/README.md) maps the original workflow to NFR-AI-06 (goal 6).
+The current workflow captures use the local `qwen2.5:3b` model. Earlier v0.4.0 and 1.5B-model evidence remains in the historical release records. They establish local task evidence, not authenticated hosted behavior or general model accuracy. The review panel may flag incorrect answer explanations; instructors must resolve them before checking or publishing. The [v0.4.0 release record](../../versions/v0.4.0/README.md) maps the original workflow to NFR-AI-06 (goal 6).
 
 ## Revise through Pulse
 

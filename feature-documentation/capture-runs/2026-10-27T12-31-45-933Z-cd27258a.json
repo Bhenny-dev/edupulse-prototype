@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-10-27T12-31-45-933Z-cd27258a",
+  "startedAt": "2026-10-27T12:31:45.933Z",
+  "finishedAt": "2026-10-27T12:32:04.316Z",
+  "commitSha": "86e0292b2b1ca7cef62ce435a70ab3f284fce2c5",
+  "sourceDigest": "e8816cd21cb7f296221a26f24c62c9e36e615ba9aff23cac401ac01ea47780d7",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-10-27T12:31:42.404Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 2,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": null
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/interface-captures.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-source.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/interface-captures.ts",
+      "title": "interface: avatar launcher and dialog beside Pulse",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 3617,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/interface-captures.ts",
+      "title": "interface: avatar launcher and dialog beside Pulse",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2509,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-manual/12-interface-and-loading/01-page-tabs.png",
+      "sha256": "3be729cad407500ea1d15640375a846d0f38b114460780caebf6b2f6cbc2250c",
+      "bytes": 297274
+    },
+    {
+      "path": "feature-documentation/system-manual/12-interface-and-loading/02-avatar-launcher.png",
+      "sha256": "d8e2daa1335d136d0846ca8fa44fabc12613e834178cbe1710378bfe92e2cbd3",
+      "bytes": 5130
+    },
+    {
+      "path": "feature-documentation/system-manual/12-interface-and-loading/03-dialog-and-pulse.png",
+      "sha256": "a39874fcf4a594f6c1c6a82199f645cd7531c23bdadad715883389e03a7a90c6",
+      "bytes": 279061
+    },
+    {
+      "path": "feature-documentation/system-manual/12-interface-and-loading/06-mobile-page-tabs.png",
+      "sha256": "db06b6640044acfd41db934f99d342ef41c67527401a7c958749e583a51527dc",
+      "bytes": 272783
+    },
+    {
+      "path": "feature-documentation/system-manual/12-interface-and-loading/07-mobile-dialog-and-pulse.png",
+      "sha256": "8e417517933a16e84b66bd5758c5dd89efea0d7c75db1a52958412f4589dab1d",
+      "bytes": 233615
+    }
+  ]
+}

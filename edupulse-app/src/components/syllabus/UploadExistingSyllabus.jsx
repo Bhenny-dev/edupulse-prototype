@@ -1,5 +1,6 @@
+import { LoadingProgress, Spinner } from '../ui/LoadingFeedback'
 import { useState, useRef, useCallback } from 'react'
-import { Upload, FileText, X, CheckCircle, AlertCircle, Loader2, ChevronDown, ChevronRight } from 'lucide-react'
+import { Upload, FileText, X, CheckCircle, AlertCircle, ChevronDown, ChevronRight } from 'lucide-react'
 import { parseSyllabusFile } from '../../utils/syllabusParser'
 
 const SECTION_LABELS = [
@@ -89,6 +90,7 @@ export default function UploadExistingSyllabus({ onExtract, onCancel, compact })
   return (
     <div style={{ marginBottom: '20px' }}>
       <div
+        aria-busy={parsing}
         className={`upload-zone ${dragOver ? 'drag-over' : ''}`}
         onDrop={handleDrop}
         onDragOver={handleDragOver}
@@ -111,10 +113,8 @@ export default function UploadExistingSyllabus({ onExtract, onCancel, compact })
 
         {parsing ? (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
-            <div className="upload-zone-icon" style={{ animation: 'spin 1s linear infinite' }}>
-              <Loader2 size={24} style={{ color: 'var(--sky-500)' }} />
-            </div>
-            <div role="status" style={{ fontSize: '0.875rem', color: 'var(--gray-600)' }}>{progress}</div>
+            <Spinner size={28} />
+            <LoadingProgress label={progress} />
           </div>
         ) : !file ? (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>

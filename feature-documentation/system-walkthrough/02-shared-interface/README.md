@@ -126,3 +126,7 @@ Pulse includes **Meet your workspace buddies** and **Visit office**. The optiona
 ## Focused conversation layout and source context
 
 At wide desktop widths, opening Pulse reserves a separate column beside the workspace; the mascot returns when it closes. Focused help highlights the selected section without dimming the editor. The compact footer reports history status and reference availability. Attachments remain usable for follow-up questions and can be removed. Generated replies offer **Download response as PDF**. Connected buddy conversations use the selected persona and recent exchange; an unavailable model is labelled as an offline role guide.
+
+## Dialog spacing, page tabs and loading feedback
+
+Page-specific views use the tabs inside the page, with no duplicate left sidebar. Pulse opens from its avatar without a name pill. Dialogs share screen space with Pulse on desktop and stack above it on narrow displays; nested dialogs show one active surface at a time. Pending academic records display skeleton cards and table rows; short requests use spinners and file scanning uses an indeterminate bar. Reduced-motion preferences stop these animations. See [the illustrated interface guide](../../system-manual/12-interface-and-loading/README.md).

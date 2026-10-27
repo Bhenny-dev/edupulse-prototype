@@ -2,6 +2,8 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useAuth } from '../../context/AuthContext'
 import { aiRequest } from '../../lib/aiClient'
 import { pulse } from '../pulse/pulseBus'
+import { SkeletonKPI, SkeletonTable } from '../ui/LoadingSkeleton'
+import { Spinner } from '../ui/LoadingFeedback'
 
 const EMPTY = { courses: [], publications: [], enrollments: [], attempts: [], accesses: [] }
 const TITLES = { dashboard: 'Academic Dashboard', performance: 'Performance', monitoring: 'Student Monitoring', monitor: 'Academic Oversight', courses: 'Course Loading', records: 'Academic Records', courseware: 'Published Courseware', assessment: 'Assessments' }
@@ -44,13 +46,17 @@ export default function AcademicPortal({ view }) {
     if (isStudent && item.type !== 'assessment' && !await run({ operation: 'open', publication: item.id, version: item.source_version })) return
     setSelected(item); setAnswers({}); setResult(null)
   }
-  return <div className="container" data-pulse-zone={view === 'performance' ? 'performance' : view === 'courseware' ? 'courseware' : undefined}>
+  return <div className="container" aria-busy={loading || busy} data-pulse-zone={view === 'performance' ? 'performance' : view === 'courseware' ? 'courseware' : undefined}>
     <div className="page-header"><div><h1>{TITLES[view] || 'Academic Records'}</h1><p className="text-sm text-muted">Account records · Instructor-confirmed EduSuite exports · No institutional grade computations</p></div>
-      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}><button className="btn btn-secondary btn-sm" disabled={loading || busy} onClick={load}>Refresh records</button><button className="btn btn-secondary btn-sm" disabled={loading || busy} onClick={exportRecords}>Export authorized records</button>{canSync && <button className="btn btn-secondary btn-sm" disabled={loading || busy} onClick={() => run({ operation: 'sync' })}>Sync my workspace</button>}</div>
+      <div className="academic-actions" style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}><button className="btn btn-secondary btn-sm" disabled={loading || busy} onClick={load}>{loading && <Spinner />} Refresh records</button><button className="btn btn-secondary btn-sm" disabled={loading || busy} onClick={exportRecords}>Export authorized records</button>{canSync && <button className="btn btn-secondary btn-sm" disabled={loading || busy} onClick={() => run({ operation: 'sync' })}>Sync my workspace</button>}</div>
     </div>
     {error && <div role="alert" className="connected-pulse-warning">{error}</div>}
-    {loading && <p role="status">Loading authorized academic records…</p>}
-    {!loading && <>
+    {loading && <section className="academic-loading" aria-label="Loading academic records">
+      <p role="status" className="text-sm text-muted mb-16">Loading authorized academic records…</p>
+      <div aria-hidden="true"><div className="kpi-grid mb-24">{Array.from({ length: isAssociate ? 3 : 4 }, (_, i) => <SkeletonKPI key={i} />)}</div><SkeletonTable rows={4} cols={4} /></div>
+    </section>}
+    {busy && <p role="status" className="text-sm text-muted mb-16"><Spinner /> Saving your request…</p>}
+    {!loading && !error && <>
       <div className="kpi-grid mb-24">{[['Courses', data.courses.length], ['Published items', visible.length], ['Roster entries', data.enrollments.length], ...(!isAssociate ? [['Recorded attempts', data.attempts.length]] : [])].map(([label, value]) => <div className="kpi-card" key={label}><div><div className="kpi-value">{value}</div><div className="kpi-label">{label}</div></div></div>)}</div>
       {!data.courses.length && <div className="empty-state" role="status"><h2>No authorized academic records yet</h2><p>Instructors register confirmed class lists, activate an approved syllabus, review courseware and publish it. Students need a matching account email in the registered class list. Existing instructor workspaces can be synchronized explicitly.</p></div>}
       {view === 'records' && <p className="text-sm text-muted mb-16">EduSuite remains the official record. This view shows instructor-confirmed class lists; it does not claim to import or synchronize the institution's course-load database.</p>}
@@ -62,7 +68,7 @@ export default function AcademicPortal({ view }) {
       {selected && <section className="card" style={{ marginTop: 24 }} aria-label="Opened courseware"><div className="card-header"><h2>{selected.title}</h2><button className="btn btn-ghost btn-sm" onClick={() => setSelected(null)}>Close material</button></div><div className="card-body">
         {selected.type === 'assessment' ? <>
           {(selected.content.questions || []).map((question, index) => <fieldset key={index} style={{ marginBottom: 16, border: '1px solid var(--gray-200)', padding: 12 }}><legend>{index + 1}. {question.text}</legend>{question.options.map((option, optionIndex) => { const label = typeof option === 'string' ? option : option.text; return <label key={optionIndex} style={{ display: 'block', padding: 6 }}><input type="radio" name={`academic-question-${index}`} aria-label={`Question ${index + 1}: ${label}`} checked={answers[index] === optionIndex} disabled={Boolean(selectedAttempt) || busy || !isStudent} onChange={() => setAnswers(previous => ({ ...previous, [index]: optionIndex }))} /> {label}</label> })}</fieldset>)}
-          {isStudent && !selectedAttempt && <button className="btn btn-primary" disabled={busy || Object.keys(answers).length !== selected.content.questions.length} onClick={() => run({ operation: 'submit', publication: selected.id, version: selected.source_version, responses: selected.content.questions.map((_, index) => answers[index]) })}>Confirm and submit responses</button>}
+          {isStudent && !selectedAttempt && <button className="btn btn-primary" disabled={busy || Object.keys(answers).length !== selected.content.questions.length} onClick={() => run({ operation: 'submit', publication: selected.id, version: selected.source_version, responses: selected.content.questions.map((_, index) => answers[index]) })}>{busy && <Spinner />} Confirm and submit responses</button>}
           {(selectedAttempt || (result?.score !== undefined && result)) && <p role="status">Saved score: {(selectedAttempt || result).score}/{(selectedAttempt || result).max_score}. This published version has one saved attempt; retrying submission returns the same result.</p>}
         </> : <>{(selected.content.sections || []).map((section, index) => <section key={index}><h3>{section.heading || section.title}</h3><p style={{ whiteSpace: 'pre-wrap' }}>{section.body || section.content}</p></section>)}{!selected.content.sections && <p>{selected.content.instructions || selected.content.description || 'No readable content was provided.'}</p>}</>}
       </div></section>}

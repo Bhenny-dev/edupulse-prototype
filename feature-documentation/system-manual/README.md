@@ -19,10 +19,12 @@ Sections 3–8 cover the AI features added in v0.4.0 (named LangGraph agents, sa
 
 | [11](11-workspace-buddies/README.md) | Meet the office crew, ask domain questions and follow real task states | Every signed-in account | Pulse / Visit office |
 
+| [12](12-interface-and-loading/README.md) | Use page tabs, dialogs, the avatar launcher and loading feedback | Everyone | Shared interface and academic records |
+
 ## Conventions
 
 * **Bold** names a button, tab or field exactly as it appears on screen.
-* Images are captures of the running application. Guides identify sample academic data, real local inference (*qwen2.5:1.5b* through Ollama), authenticated canaries, and synthetic provider responses used to exercise connection or proposal states. Synthetic transport captures are UI checks, not model-quality evidence.
+* Images are captures of the running application. Guides identify sample academic data, real local inference (the model shown in each capture; current refresh uses *qwen2.5:3b* through Ollama), authenticated canaries, and synthetic provider responses used to exercise connection or proposal states. Synthetic transport captures are UI checks, not model-quality evidence.
 * Pulse drafts, explains and checks. It never saves, registers, approves, publishes or grades on its own: an action it proposes runs only after you press the confirm button on its card ([manual 9](09-pulse-actions/README.md)), and every AI draft is marked for instructor review.
 
 ## How the images were made
@@ -35,4 +37,4 @@ CI=1 npx playwright test --config playwright.snapshots.config.ts tests/snapshots
 
 The scripts sign in with the preview personas of the documentation capture build (`npm run build:capture`), upload the evaluation documents (four Wikipedia articles as PDF, CC BY-SA 4.0, plus EduPulse specifications), run each task end to end and save the images into these folders. [`capture-log.json`](capture-log.json) records the capture time and any page error or Content-Security-Policy violation (none for this capture).
 
-Section 10 uses actual authenticated temporary accounts and synthetic hosted records. Preview captures elsewhere demonstrate sample academic data; AI guides identify their real local documents and inference. Capture-run reports record these categories separately.
+Section 10 explains authenticated account workflows. Its current screenshots use synthetic browser transport to show the interface; the earlier hosted account canary remains historical validation evidence. Preview captures elsewhere demonstrate sample academic data; AI guides identify their real local documents and inference. Capture-run reports record these categories separately.

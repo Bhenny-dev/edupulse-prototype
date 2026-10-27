@@ -1,3 +1,4 @@
+import ModalLayer from '../components/ui/ModalLayer'
 import { useState, useMemo } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
@@ -99,7 +100,7 @@ function MasteryHeatmap({ students, topics }) {
 function StudentDetailPopover({ student, onClose }) {
   const courseData = student.courses[0]
   return (
-    <div className="overlay-backdrop" onClick={onClose}>
+    <ModalLayer className="overlay-backdrop" onClick={onClose}>
       <div className="modal-content" style={{ maxWidth: '650px' }} onClick={e => e.stopPropagation()}>
         <div className="modal-header"><h2>{student.name}</h2><button className="modal-close" onClick={onClose}>✕</button></div>
         <div style={{ display: 'flex', gap: '6px', marginBottom: '16px' }}><span className="badge badge-published">{student.section}</span><span className="badge badge-draft">{courseData.code}</span></div>
@@ -125,7 +126,7 @@ function StudentDetailPopover({ student, onClose }) {
         </div>
         <div className="modal-actions"><button className="btn btn-ghost" onClick={onClose}>Close</button></div>
       </div>
-    </div>
+    </ModalLayer>
   )
 }
 

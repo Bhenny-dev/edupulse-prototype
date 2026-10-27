@@ -307,7 +307,15 @@ select.form-input {
   align-items: center;
   justify-content: center;
   animation: fadeIn var(--duration-normal) var(--transition-smooth);
+  padding: 20px;
 }
+html:has(.overlay-backdrop) { overflow: hidden; }
+.overlay-backdrop:has(~ .overlay-backdrop) { visibility: hidden; pointer-events: none; }
+.overlay-backdrop > * { min-width: 0; max-height: calc(100dvh - 40px) !important; overflow-y: auto; overscroll-behavior: contain; }
+.overlay-backdrop .modal-header { gap: 12px; }
+.overlay-backdrop .modal-header > div, .overlay-backdrop .modal-header h2 { min-width: 0; overflow-wrap: anywhere; }
+.overlay-backdrop .modal-close { flex-shrink: 0; }
+.modal-actions { flex-wrap: wrap; }
 
 .popover-content {
   background: var(--white);
@@ -949,9 +957,6 @@ textarea:focus-visible {
   .app-tools { gap: 4px !important; }
   .app-tools > div:empty { display: none; }
   .app-workspace { flex-direction: column; }
-  .app-sidebar { width: 100% !important; min-height: auto !important; border-right: 0 !important; border-bottom: 1px solid var(--gray-100); padding: 10px 12px !important; }
-  .app-sidebar nav { flex-direction: row !important; overflow-x: auto; }
-  .app-sidebar nav a { flex-shrink: 0; }
   footer { flex-wrap: wrap; justify-content: center !important; gap: 12px; }
   /* REQ-1101: Full mobile layout */
   body { font-size: 15px; }
@@ -1000,9 +1005,8 @@ textarea:focus-visible {
     max-width: 100% !important;
     margin: 0 !important;
     border-radius: 0 !important;
-    min-height: 100vh;
-    /* The Pulse dock (76px, fixed bottom-right above dialogs) must not cover the last actions. */
-    padding-bottom: 120px;
+    min-height: 0;
+    padding: 20px;
   }
   
   /* REQ-1110: Simplified charts */
@@ -1817,3 +1821,9 @@ textarea:focus-visible {
   .login-panel { padding: 24px; }
   .landing-footer { flex-direction: column; text-align: center; }
 }
+
+/* Keep document controls outside its scroll area. */
+.syllabus-view-modal { display: flex; flex-direction: column; padding: 0 !important; overflow: hidden !important; }
+.syllabus-view-modal .modal-header { flex-shrink: 0; margin: 0; padding: 20px 24px; border-bottom: 1px solid var(--gray-100); }
+.syllabus-dialog-body { min-height: 0; overflow: auto; overscroll-behavior: contain; padding: 20px 24px 0; }
+.syllabus-view-modal .modal-actions { flex-shrink: 0; margin: 0; padding: 16px 24px; border-top: 1px solid var(--gray-200); background: var(--white); }

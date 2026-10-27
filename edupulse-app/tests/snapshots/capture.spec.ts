@@ -204,7 +204,7 @@ test('Pulse guidance: drag, focus, perch, section tour and rejection', async ({ 
   await page.getByRole('button', { name: 'Exit focused help', exact: true }).click()
   await page.getByRole('button', { name: 'Close Pulse', exact: true }).click()
   const heading = page.locator('[data-section="1"] h3')
-  await heading.scrollIntoViewIfNeeded()
+  await heading.evaluate(element => window.scrollTo({ top: scrollY + element.getBoundingClientRect().top - 110 }))
   from = (await mascot.boundingBox())!; to = (await heading.boundingBox())!
   await page.mouse.move(from.x + 30, from.y + 30); await page.mouse.down(); await page.mouse.move(to.x + 20, to.y + 10, { steps: 15 }); await page.mouse.up()
   await page.getByRole('button', { name: 'Walk me through Course Information', exact: true }).click()
@@ -218,7 +218,7 @@ test('Pulse guidance: drag, focus, perch, section tour and rejection', async ({ 
   await page.getByRole('button', { name: 'Exit walkthrough' }).click()
   await page.getByRole('button', { name: 'Close Pulse', exact: true }).click()
   from = (await mascot.boundingBox())!
-  await page.mouse.move(from.x + 30, from.y + 30); await page.mouse.down(); await page.mouse.move(20, 300, { steps: 15 }); await page.mouse.up()
+  await page.mouse.move(from.x + 30, from.y + 30); await page.mouse.down(); await page.mouse.move(20, 20, { steps: 15 }); await page.mouse.up()
   await expect(page.locator('.pulse-reject-bubble')).toBeVisible()
   await shot(page, '07-pulse-guidance', '05-drop-rejected-with-reason')
 })

@@ -1,6 +1,6 @@
 # 08 · Authenticated academic records
 
-These captures sign in to real temporary Supabase accounts with synthetic `example.invalid` identities and canary course records. They validate authenticated queries and database permissions, not real institutional results or actual signed approvals. The latest captures target an immutable hosted deployment; execution reports distinguish the deployed SHA from the local capture-tooling digest. The release validation records API/account checks separately.
+These current layout captures use synthetic academic responses and a browser-only account fixture. They show the authenticated interface without creating a hosted account. They do not prove server authorization, database permissions, persistence or scoring. Earlier hosted canary evidence is retained in the linked release record below and must not be inferred from these refreshed images.
 
 | View | Capture | Visible behavior |
 | --- | --- | --- |
@@ -14,4 +14,4 @@ These captures sign in to real temporary Supabase accounts with synthetic `examp
 
 The workspace remains owner-scoped. The additive projection shares only enrolled published content and role-authorized results. A student account's verified email must match the instructor-confirmed class list. Instructors keep syllabus/courseware authoring in the existing screens; a checked draft must finish saving before **Publish** becomes available. Editing published content requires review again. Offline syllabus signatures remain outside EduPulse.
 
-The latest hosted run used runtime `74191de`: five tests passed and seven images were captured. Temporary accounts were subsequently deleted and stale access was rejected. [Deployment and cleanup evidence](../../session-generated/2026-10-24-release-completion/deployment.json) records the verified release separately from real institutional results.
+The earlier hosted run used runtime `74191de`: five tests passed and seven images were captured. Temporary accounts were subsequently deleted and stale access was rejected. [Deployment and cleanup evidence](../../session-generated/2026-10-24-release-completion/deployment.json) records the verified release separately from real institutional results.

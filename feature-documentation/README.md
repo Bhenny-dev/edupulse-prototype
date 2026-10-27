@@ -9,7 +9,7 @@
 | [Backend System](backend-system/README.md) | Backend: API, agents, data stores, security boundaries | [Supabase configuration](backend-system/supabase.md) and [Vercel configuration](backend-system/vercel.md), written from the live services and the repository |
 | [Session-generated material](session-generated/README.md) | Material produced during a work session rather than captured from the interface | Evaluation data and charts, architecture figures, results-and-discussion write-ups |
 
-Screenshots in the walkthrough and manual are real captures of the documentation capture build (`dist-capture`), made by the Playwright scripts in `edupulse-app/tests/snapshots/`. This build includes preview personas and sample academic data; some manual tasks exercise real documents and local models. Section 08 of the walkthrough separately records real authenticated synthetic accounts on an immutable hosted deployment. [Capture-run metadata](capture-runs/README.md) records executed suites, source/build provenance and image hashes. Charts and diagrams remain in *session-generated*; release validation evidence is recorded in each version folder.
+Screenshots in the walkthrough and manual are real captures of the documentation capture build (`dist-capture`), made by the Playwright scripts in `edupulse-app/tests/snapshots/`. This build includes preview personas and sample academic data; some manual tasks exercise real documents and local models. Section 08 of the walkthrough distinguishes refreshed synthetic UI fixtures from its earlier hosted account validation. [Capture-run metadata](capture-runs/README.md) records executed suites, source/build provenance and image hashes. Charts and diagrams remain in *session-generated*; release validation evidence is recorded in each version folder.
 
 **Strict requirement:** every feature change updates its screenshots and documentation in the same commit. Changed screenshots are replaced, stale text is edited, removed screens are taken out and new screens are added. A commit hook, `npm run verify` and CI enforce this. See the [documentation policy](DOCUMENTATION-POLICY.md) and the [source-to-documentation map](doc-map.json).
 
@@ -19,6 +19,7 @@ Version folders are release records. Preserve released records, and add correcti
 
 | Version | Scope | Status |
 | --- | --- | --- |
+| [27 October interface consistency](versions/2026-10-27-interface-consistency/README.md) | Dialog spacing, page tabs, avatar launcher, loading feedback and older-feature audit | Local gates passed; release in progress |
 | [Provider connection recovery](versions/2026-10-25-provider-connections/README.md) | OpenRouter return/retry, OpenAI model routing, explicit provider choices and generation verification | Verified and promoted; provider-consent limits in validation |
 | [26 October source context and PDF fidelity](versions/2026-10-26-source-context-pdf/README.md) | Focused UI, conversational buddies, complete ruled-PDF cells and PDF downloads | Live; 126 unit/integration + 89 browser tests passed; hosted authentication gap documented |
 | [26 October Pulse tools and workspace](versions/2026-10-25-pulse-agent-tools/README.md) | Validated tools, PDF imports, private context, faster greetings and animated workspace buddies | 122 unit/integration + 85 browser tests; hosted canaries passed |

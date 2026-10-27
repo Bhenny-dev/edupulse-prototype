@@ -1,3 +1,4 @@
+import { Spinner } from './components/ui/LoadingFeedback'
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { ToastProvider } from './context/ToastContext'

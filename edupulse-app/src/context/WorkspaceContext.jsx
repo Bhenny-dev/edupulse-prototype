@@ -1,3 +1,4 @@
+import { Spinner } from '../components/ui/LoadingFeedback'
 import { jsonValue } from '../utils/jsonValue'
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { useAuth } from './AuthContext'
@@ -121,7 +122,7 @@ export function useWorkspace() {
 export function WorkspaceStatus() {
   const workspace = useWorkspace()
   return <aside className="workspace-status" role="status" style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center', padding: '8px 24px', fontSize: '0.75rem', borderBottom: '1px solid var(--gray-200)', background: 'var(--gray-50)' }}>
-    <span>{workspace.loading ? 'Loading saved workspace…' : !workspace.mode ? 'Workspace connection unavailable' : workspace.mode === 'preview' ? 'Preview workspace · saved on this device' : `${workspace.mode === 'cloud' ? 'Account workspace' : 'Local workspace'} · ${workspace.saving ? 'Saving…' : workspace.dirty ? 'Pending save' : 'Saved'}`}</span>
+    <span>{(workspace.loading || workspace.saving) && <Spinner size={12} />} {workspace.loading ? 'Loading saved workspace…' : !workspace.mode ? 'Workspace connection unavailable' : workspace.mode === 'preview' ? 'Preview workspace · saved on this device' : `${workspace.mode === 'cloud' ? 'Account workspace' : 'Local workspace'} · ${workspace.saving ? 'Saving…' : workspace.dirty ? 'Pending save' : 'Saved'}`}</span>
     {workspace.error && <strong role="alert">{workspace.error}</strong>}
     <button className="btn btn-ghost btn-sm" onClick={workspace.exportBackup}>Export backup</button>
     {workspace.error && !workspace.conflict && <button className="btn btn-secondary btn-sm" disabled={workspace.loading || workspace.saving} onClick={workspace.retry}>Retry save</button>}

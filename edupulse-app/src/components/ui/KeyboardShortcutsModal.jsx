@@ -1,3 +1,4 @@
+import ModalLayer from './ModalLayer'
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { Keyboard, X } from 'lucide-react'
 
@@ -56,7 +57,7 @@ export default function KeyboardShortcutsModal({ isOpen, onClose }) {
   if (!isOpen) return null
 
   return (
-    <div
+    <ModalLayer
       className="overlay-backdrop"
       role="dialog"
       aria-modal="true"
@@ -115,6 +116,6 @@ export default function KeyboardShortcutsModal({ isOpen, onClose }) {
           ))}
         </div>
       </div>
-    </div>
+    </ModalLayer>
   )
 }

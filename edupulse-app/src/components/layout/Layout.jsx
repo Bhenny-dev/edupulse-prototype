@@ -1,4 +1,5 @@
-import { NavLink, Outlet, useNavigate, useLocation, useSearchParams } from 'react-router-dom'
+import ModalLayer from '../ui/ModalLayer'
+import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useAI } from '../../context/AIContext'
 import { WorkspaceStatus } from '../../context/WorkspaceContext'
@@ -19,126 +20,46 @@ import { PERFORMANCE_ROLES } from '../../lib/access'
 
 // Navigation architecture — one top-bar station per FLOW_SPEC phase, max 5
 // primary sections per role; anything below that altitude lives in the
-// contextual left sidebar, addressed by `?tab=`.
+// page tabs, addressed by `?tab=`.
 // Instructor: Dashboard → Syllabus (Phase 2) → Courseware (Phase 3) →
 //   Student Monitoring + Performance (Phase 5).
 // Student: Dashboard → My Courses (Phase 4) → My Performance.
 const SECTIONS = [
   { key: 'dashboard', path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: 'all' },
+  { key: 'records', path: '/records', label: 'Records', icon: BookOpen, roles: ['dean', 'associate_dean'] },
 
   // Dean and Associate Dean have separate accounts and the same academic stations.
   {
     key: 'course-loading', path: '/course-loading', label: 'Course Loading', icon: ClipboardCheck, roles: ['dean', 'associate_dean'],
-    sidebar: [
-      { key: 'assign', label: 'Loaded Courses', tab: 'assign' },
-      { key: 'instructors', label: 'Instructors', tab: 'instructors' },
-    ],
   },
   {
     key: 'monitor', path: '/monitor', label: 'Monitor', icon: BarChart3, roles: ['dean', 'associate_dean'],
-    sidebar: [
-      { key: 'syllabi', label: 'Syllabus Status', tab: 'syllabi' },
-      { key: 'delivery', label: 'Delivery Progress', tab: 'delivery' },
-      { key: 'students', label: 'Student Oversight', tab: 'students' },
-      { key: 'alerts', label: 'Alerts', tab: 'alerts' },
-    ],
   },
 
   // ── Instructor ────────────────────────────────────────────────────────
   {
     key: 'syllabus', path: '/syllabus', label: 'Syllabus', icon: BookOpen, roles: ['instructor'],
-    sidebar: [
-      { key: 'mine', label: 'My Courses', tab: 'register' },
-      { key: 'syllabus', label: 'My Syllabus', tab: 'mine' },
-      { key: 'builder', label: 'Syllabus Builder', tab: 'builder' },
-    ],
   },
   {
     key: 'courseware', path: '/courseware', label: 'Courseware', icon: FileText, roles: ['instructor'],
     relatedPaths: ['/content-editor'],
-    sidebar: [
-      { key: 'mine', label: 'My Courseware', tab: 'mine' },
-      { key: 'builder', label: 'Courseware Builder', tab: 'builder' },
-    ],
   },
   {
     key: 'scoring', path: '/student-monitoring', label: 'Student Monitoring', icon: ClipboardCheck, roles: ['instructor'],
-    sidebar: [
-      { key: 'assessments', label: 'Assessment Scores', tab: 'assessments' },
-      { key: 'materials', label: 'Material Access', tab: 'materials' },
-    ],
   },
 
   // ── Student ───────────────────────────────────────────────────────────
   {
     key: 'my-courses', path: '/courseware', label: 'My Courses', icon: BookOpen, roles: ['student'],
-    relatedPaths: ['/assessment'],
-    sidebar: [
-      { key: 'published', label: 'My Materials', tab: 'published' },
-      { key: 'assessments', label: 'My Assessments', path: '/assessment' },
-    ],
   },
+  { key: 'assessments', path: '/assessment', label: 'Assessments', icon: ClipboardCheck, roles: ['student'] },
   {
     key: 'performance', path: '/performance', label: 'Performance', icon: BarChart3, roles: PERFORMANCE_ROLES,
-    sidebar: [
-      { key: 'overview', label: 'Overview', tab: 'overview' },
-      { key: 'bytopic', label: 'By Topic', tab: 'bytopic' },
-      { key: 'materials', label: 'Learning Materials', tab: 'materials', roles: ['student'] },
-      { key: 'scores', label: 'Assessment Scores', tab: 'scores', roles: ['student'] },
-      { key: 'alerts', label: 'Alerts', tab: 'alerts', roles: ['instructor'] },
-    ],
   },
 ]
 
 function canSee(item, role) {
   return item.roles === 'all' || item.roles.includes(role)
-}
-
-// Role-aware: student "My Courses" and instructor "Courseware" share /courseware.
-function activeSection(pathname, role) {
-  return SECTIONS.filter(s => canSee(s, role))
-    .find(s => s.path === pathname || (s.relatedPaths || []).some(p => pathname.startsWith(p)))
-}
-
-function Sidebar({ section, role }) {
-  const location = useLocation()
-  const { user } = useAuth()
-  const [searchParams] = useSearchParams()
-  if ((user?.authenticated && ['monitor', 'course-loading', 'scoring', 'performance'].includes(section?.key)) || (role === 'dean' && section?.key === 'performance')) return null
-  if (!section?.sidebar) return null
-  const items = section.sidebar.filter(item => !item.roles || item.roles.includes(role))
-  if (items.length === 0) return null
-  const activeTab = searchParams.get('tab') || items[0].tab
-
-  return (
-    <aside className="app-sidebar" role="navigation" aria-label={`${section.label} sections`} style={{
-      width: 224, flexShrink: 0, borderRight: '1px solid var(--gray-100)',
-      background: 'var(--white)', padding: '20px 12px', minHeight: 'calc(100vh - 64px)',
-    }}>
-      <div style={{ fontSize: '0.6875rem', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--gray-400)', padding: '0 10px', marginBottom: '10px' }}>
-        {section.label}
-      </div>
-      <nav style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-        {items.map(item => {
-          const to = item.path || `${section.path}?tab=${item.tab}`
-          const isActive = item.path
-            ? location.pathname === item.path
-            : location.pathname === section.path && activeTab === item.tab
-          return (
-            <NavLink key={item.key} to={to} style={{
-              display: 'block', padding: '9px 12px', borderRadius: 'var(--radius-md)',
-              fontSize: '0.8438rem', fontWeight: isActive ? 700 : 500,
-              color: isActive ? 'var(--sky-600)' : 'var(--gray-600)',
-              background: isActive ? 'var(--sky-50)' : 'transparent',
-              textDecoration: 'none', transition: 'all 150ms',
-            }}>
-              {item.label}
-            </NavLink>
-          )
-        })}
-      </nav>
-    </aside>
-  )
 }
 
 function Breadcrumbs() {
@@ -184,7 +105,7 @@ function SearchOverlay({ onClose }) {
   const filtered = suggestions.filter(s => s.toLowerCase().includes(query.toLowerCase()))
 
   return (
-    <div className="overlay-backdrop" onClick={onClose} style={{ alignItems: 'flex-start', paddingTop: '80px' }}>
+    <ModalLayer className="overlay-backdrop" onClick={onClose} style={{ alignItems: 'flex-start', paddingTop: '80px' }}>
       <div style={{
         width: '560px', maxWidth: '95%', background: 'var(--white)',
         borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-3d-hover)',
@@ -222,7 +143,7 @@ function SearchOverlay({ onClose }) {
           </div>
         )}
       </div>
-    </div>
+    </ModalLayer>
   )
 }
 
@@ -238,7 +159,7 @@ function RoleSwitchPopover({ onClose }) {
   ]
 
   return (
-    <div className="overlay-backdrop" onClick={onClose}>
+    <ModalLayer className="overlay-backdrop" onClick={onClose}>
       <div className="popover-content" style={{ maxWidth: '360px' }} onClick={e => e.stopPropagation()}>
         <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, marginBottom: '4px' }}>Switch View</h3>
         <p style={{ fontSize: '0.75rem', color: 'var(--gray-400)', marginBottom: '16px' }}>You remain signed in as the admin. Your AI key and saved data stay with this account.</p>
@@ -261,7 +182,7 @@ function RoleSwitchPopover({ onClose }) {
           </button>
         ))}
       </div>
-    </div>
+    </ModalLayer>
   )
 }
 
@@ -304,7 +225,7 @@ export default function Layout() {
   const handleLogout = () => { logout(); navigate('/') }
   const { notifications: notifs, unreadCount } = useNotifications(user?.role)
   const sections = SECTIONS.filter(s => canSee(s, user?.role))
-  const current = activeSection(location.pathname, user?.role)
+  const current = sections.find(item => item.path === location.pathname || item.relatedPaths?.some(path => location.pathname.startsWith(path)))
 
   useEffect(() => { window.scrollTo({ top: 0, left: 0, behavior: 'instant' }) }, [location.pathname])
 
@@ -595,7 +516,6 @@ export default function Layout() {
       <WorkspaceStatus />
 
       <div className="app-workspace" style={{ flex: 1, display: 'flex' }}>
-        <Sidebar section={current} role={user?.role} />
         <main id="main-content" style={{ flex: 1, minHeight: 'calc(100vh - 64px)', minWidth: 0 }} role="main" tabIndex={-1}>
           <Outlet />
         </main>

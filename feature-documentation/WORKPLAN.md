@@ -1,5 +1,12 @@
 # Execution plan
 
+## 27 October 2026: interface corrections and feature-presence review
+
+Current work removes duplicate page sidebars, separates dialogs and Pulse, makes the launcher avatar-only and adds appropriate loading states. The [history/source audit](session-generated/2026-10-27-feature-presence-audit/README.md) found retained preview features that authenticated views bypass. Those gaps are explicitly open; prior release validation is not proof that every older functional requirement is complete.
+
+Local verification passes 126 unit/integration tests and 99 browser tests, with 13 intentional device-specific skips. The final office-over-document keyboard correction passes both affected desktop/mobile tests. Changed screenshots are refreshed and agent-reviewed with exact hashes. Monitor subviews and the unique Records/Assessments routes remain reachable after the sidebar removal; the syllabus detail action now downloads a real PDF. Release evidence is tracked in the [interface validation record](versions/2026-10-27-interface-consistency/validation/results.md).
+
+
 ## 27 October 2026: focused source corrections and PDF fidelity
 
 The reported page/context failures are addressed by retaining page uploads with the mounted editor and chat references across follow-ups, carrying the selected section into typed edit previews, and keeping unrelated product-guide excerpts out of academic source work. Ruled PDF cells preserve wrapped lines, multi-page continuations, explicit week ranges, institutional columns and grading fractions. Genuine PDF exports cover syllabus drafts/approval copies and learning documents. Connected buddies receive their own role/personality and session receipts; offline descriptions are labelled. The assistant reserves desktop space, form grids shrink with it, and mobile controls remain reachable. Existing instructor confirmation, offline approval, role boundaries and account ownership remain enforced.

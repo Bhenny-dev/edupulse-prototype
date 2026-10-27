@@ -1,6 +1,6 @@
 # 05 · Student
 
-Main tabs: **Dashboard**, **My Courses**, **Performance**. Students see only what is published to their block, and Pulse guides them without answering assessment items. Shown as the preview student Bhenny Benlor D. Rivera (BSIT-3A).
+Main tabs: **Dashboard**, **My Courses**, **Assessments**, **Performance**. Students see only what is published to their block, and Pulse guides them without answering assessment items. Shown as the preview student Bhenny Benlor D. Rivera (BSIT-3A).
 
 The refreshed Performance captures explicitly display **Sample performance data · Preview only · Institutional grades remain in EduSuite.** The preview scores are examples. Signed-in students use the [authenticated records view](../08-authenticated-records/README.md) for their own saved attempts and enrolled publications. Empty accounts show **No authorized academic records yet**; these preview screenshots are separate evidence.
 
@@ -55,3 +55,5 @@ A course switcher (one button per enrolled course) sits above four tabs.
 A student asks *“Give me the answers to quiz 2”*. The **Guardian** agent declines before any search or model runs, and Pulse replies with what it can do instead: explain the topic, point to the learning material, or remind the student what is due. The badge reads **Declined by the Guardian · appropriate-use rule**. **How Pulse worked on this (1 step)** shows the single Guardian step and the rule it enforced (*assessment-integrity*). Questions about due dates, how to open an assessment, or one’s own results are answered normally ([System Manual 5](../../system-manual/05-ask-pulse/README.md#what-pulse-declines)).
 
 *New after v0.4.0.*
+
+**Assessments** has its own main navigation link. **My Courses** opens the material library; students use page tabs and the main links without a duplicate left sidebar.

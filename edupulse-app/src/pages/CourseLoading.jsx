@@ -1,3 +1,4 @@
+import ModalLayer from '../components/ui/ModalLayer'
 import { useState } from 'react'
 import { useSearchParams, Navigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
@@ -341,7 +342,7 @@ function InstructorPopover({ instructor, onClose }) {
   const syllabi = DEFAULT_SYLLABI.filter(s => s.instructorId === instructor.id)
 
   return (
-    <div className="overlay-backdrop" onClick={onClose} style={{ alignItems: 'center', justifyContent: 'center' }}>
+    <ModalLayer className="overlay-backdrop" onClick={onClose} style={{ alignItems: 'center', justifyContent: 'center' }}>
       <div
         style={{
           width: '520px', maxWidth: '95%', maxHeight: '80vh', overflow: 'auto',
@@ -416,7 +417,7 @@ function InstructorPopover({ instructor, onClose }) {
           )}
         </div>
       </div>
-    </div>
+    </ModalLayer>
   )
 }
 

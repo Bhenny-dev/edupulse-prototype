@@ -1,3 +1,4 @@
+import ModalLayer from '../ui/ModalLayer'
 import { useState } from 'react'
 import { parseSyllabusFile } from '../../utils/syllabusParser'
 import { meaningfulOutline, retainApprovedFile } from '../../utils/syllabusFiles'
@@ -19,7 +20,7 @@ export default function ApprovedSyllabusUpload({ syllabus, onSave, onClose }) {
     } catch (err) { setError(err.message) }
     finally { setBusy(false) }
   }
-  return <div className="overlay-backdrop"><section role="dialog" aria-modal="true" aria-label="Upload approved syllabus" className="modal-content" style={{ maxWidth: 560 }}>
+  return <ModalLayer className="overlay-backdrop" onDismiss={onClose}><section role="dialog" aria-modal="true" aria-label="Upload approved syllabus" className="modal-content" style={{ maxWidth: 560 }}>
     <h2>Upload approved syllabus</h2>
     <p>Upload the DOCX or PDF returned from the offline approval route. The original file is retained with its checksum. Maximum file size: 500 KB.</p>
     <label style={{ display: 'flex', gap: 10, margin: '16px 0' }}><input type="checkbox" checked={attested} onChange={event => setAttested(event.target.checked)} disabled={busy} />I confirm that the required offline approvals are complete. EduPulse does not verify signatures.</label>
@@ -27,5 +28,5 @@ export default function ApprovedSyllabusUpload({ syllabus, onSave, onClose }) {
     {busy && <p role="status">Reading approved file…</p>}
     {error && <p role="alert">{error}</p>}
     <div className="modal-actions"><button className="btn btn-secondary" disabled={busy} onClick={onClose}>Cancel</button></div>
-  </section></div>
+  </section></ModalLayer>
 }

@@ -25,13 +25,12 @@ export default class CaptureReporter implements Reporter {
   onTestEnd(test: TestCase, result: TestResult) {
     const use = test.parent.project()!.use
     const problems = result.attachments.filter(a => a.name === 'capture-problems').flatMap(a => JSON.parse(a.body?.toString() || '[]') as string[])
-    const fixtureCategory = test.location.file.includes('provider-connection') || test.title.includes('model proposal') ? 'synthetic-provider-transport/ui-regression' : test.location.file.includes('authenticated') ? 'synthetic-hosted-authenticated' : test.location.file.includes('walkthrough') ? 'preview/sample-academic' : 'local-real-input/sample-academic'
+    const fixtureCategory = /interface-(?:feedback|captures)/.test(test.location.file) ? 'synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof' : test.location.file.includes('provider-connection') || test.title.includes('model proposal') ? 'synthetic-provider-transport/ui-regression' : test.location.file.includes('authenticated') ? 'synthetic-hosted-authenticated' : test.location.file.includes('walkthrough') ? 'preview/sample-academic' : 'local-real-input/sample-academic'
     this.tests.push({ suite: pathName(test.location.file), title: test.title, project: test.parent.project()!.name, browser: use.browserName || 'chromium', viewport: use.viewport, fixtureCategory, status: result.status, expectedStatus: test.expectedStatus, durationMs: result.duration, problems })
   }
   onEnd(result: FullResult) {
     const id = `${this.startedAt.replace(/[:.]/g, '-')}-${randomUUID().slice(0, 8)}`
-    const authenticated = this.suites.some(suite => suite.endsWith('/authenticated.spec.ts'))
-    const images = ['system-manual', 'system-walkthrough'].flatMap(dir => pngs(resolve(docs, dir))).filter(path => statSync(path).mtimeMs !== this.before.get(path) && path.includes('08-authenticated-records') === authenticated).map(path => ({ path: pathName(path), sha256: createHash('sha256').update(readFileSync(path)).digest('hex'), bytes: statSync(path).size }))
+    const images = ['system-manual', 'system-walkthrough'].flatMap(dir => pngs(resolve(docs, dir))).filter(path => statSync(path).mtimeMs !== this.before.get(path)).map(path => ({ path: pathName(path), sha256: createHash('sha256').update(readFileSync(path)).digest('hex'), bytes: statSync(path).size }))
     const tests = this.tests as { status: string }[]
     const counts = Object.fromEntries(['passed', 'failed', 'timedOut', 'skipped', 'interrupted'].map(status => [status, tests.filter(test => test.status === status).length]))
     const allSuites = readdirSync(resolve(repositoryRoot, 'edupulse-app/tests/snapshots')).filter(name => name.endsWith('.spec.ts')).map(name => `edupulse-app/tests/snapshots/${name}`)

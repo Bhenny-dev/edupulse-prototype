@@ -17,7 +17,7 @@ See: [sign-in panel](../../system-walkthrough/01-public-site/04-sign-in-panel.pn
 | To… | Do this | Screenshot |
 | --- | --- | --- |
 | Go to a main area | Click a tab in the top bar; on a phone, open the ☰ menu | [Top bar](../../system-walkthrough/02-shared-interface/01-top-bar.png), [mobile menu](../../system-walkthrough/06-mobile/03-navigation-menu.png) |
-| Switch between a page's views | Use the left sidebar or the tabs at the top of the page; the address keeps the view (`?tab=…`), so it can be bookmarked | [Syllabus tabs](../../system-walkthrough/04-instructor/03-syllabus-my-syllabus.png) |
+| Switch between a page's views | Use the tabs at the top of the page; the address keeps the view (`?tab=…`), so it can be bookmarked | [Syllabus tabs](../../system-walkthrough/04-instructor/03-syllabus-my-syllabus.png) |
 | Search everything | Press **Ctrl+K** or click the magnifier | [Search](../../system-walkthrough/02-shared-interface/02-search-overlay.png) |
 | See keyboard shortcuts | Press **?** | [Shortcuts](../../system-walkthrough/02-shared-interface/03-keyboard-shortcuts-modal.png) |
 | Read notifications | Click the bell; **View All** opens the full list, where clicking a notice marks it read | [Dropdown](../../system-walkthrough/02-shared-interface/05-notifications-dropdown.png), [page](../../system-walkthrough/02-shared-interface/08-notifications-page.png) |
@@ -39,3 +39,5 @@ See: [Settings tabs](../../system-walkthrough/02-shared-interface/README.md#1014
 ## Meet Pulse
 
 Pulse, the character at the lower right, is the AI assistant on every page. Click it to ask, draft, compare or find references ([manual 5](../05-ask-pulse/README.md), [6](../06-compare-and-references/README.md)); drag it onto any part of a page for help with exactly that part ([manual 7](../07-pulse-guidance/README.md)).
+
+Unique page destinations stay in the main navigation: **Records** for Dean/Associate Dean and **Assessments** for students. Mobile users find the same links under **Open menu**. Page tabs provide subviews without duplicate left navigation.

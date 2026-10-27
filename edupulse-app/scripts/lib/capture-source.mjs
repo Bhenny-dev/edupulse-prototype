@@ -8,7 +8,7 @@ export const repositoryRoot = fileURLToPath(new URL('../../../', import.meta.url
 export function captureSource() {
   /** @param {...string} args */
   const git = (...args) => execFileSync('git', args, { cwd: repositoryRoot, encoding: 'utf8' }).trim()
-  const files = git('ls-files', '--cached', '--others', '--exclude-standard', '--', 'edupulse-app/src', 'edupulse-app/server', 'edupulse-app/api', 'edupulse-app/package.json', 'edupulse-app/package-lock.json', 'edupulse-app/vite.config.js', 'edupulse-app/tests/snapshots', 'edupulse-app/tests/browser/provider-fixture.ts', 'edupulse-app/playwright.snapshots.config.ts', 'edupulse-app/playwright.auth-snapshots.config.ts', 'edupulse-app/scripts/build-capture.mjs', 'edupulse-app/scripts/lib/capture-source.mjs').split('\n').filter(Boolean).sort()
+  const files = git('ls-files', '--cached', '--others', '--exclude-standard', '--', 'edupulse-app/src', 'edupulse-app/server', 'edupulse-app/api', 'edupulse-app/package.json', 'edupulse-app/package-lock.json', 'edupulse-app/vite.config.js', 'edupulse-app/tests/snapshots', 'edupulse-app/tests/browser/provider-fixture.ts', 'edupulse-app/tests/academic-ui-fixture.ts', 'edupulse-app/playwright.snapshots.config.ts', 'edupulse-app/playwright.auth-snapshots.config.ts', 'edupulse-app/scripts/build-capture.mjs', 'edupulse-app/scripts/lib/capture-source.mjs').split('\n').filter(Boolean).sort()
   const hash = createHash('sha256')
   for (const file of files) {
     hash.update(`${file}\0`)

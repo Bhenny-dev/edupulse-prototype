@@ -1,6 +1,6 @@
 # 04 · Instructor
 
-Main tabs: **Dashboard**, **Syllabus**, **Courseware**, **Student Monitoring**, **Performance**. Pages with sub-views show them both as a left sidebar and as tabs inside the page. Rows marked *Sample* are built-in examples; the instructor's own syllabi have no label. Task-by-task instructions for the syllabus and courseware flows are in [System Manual 2](../../system-manual/02-syllabus-lifecycle/README.md) and [3](../../system-manual/03-courseware-generation-and-review/README.md).
+Main tabs: **Dashboard**, **Syllabus**, **Courseware**, **Student Monitoring**, **Performance**. Page views use their own tabs. Duplicate left sidebars have been removed. Rows marked *Sample* are built-in examples; the instructor's own syllabi have no label. Task-by-task instructions for the syllabus and courseware flows are in [System Manual 2](../../system-manual/02-syllabus-lifecycle/README.md) and [3](../../system-manual/03-courseware-generation-and-review/README.md).
 
 ## 1. Instructor dashboard
 

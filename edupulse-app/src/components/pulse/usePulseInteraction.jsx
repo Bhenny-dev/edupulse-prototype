@@ -44,13 +44,13 @@ export default function usePulseInteraction({ dockRef, role, onTarget, onToggle 
     return () => document.removeEventListener('keydown', keyboard)
   }, [reset])
   function resolve(x, y) {
-    let reason = null
     for (const element of document.elementsFromPoint(x, y)) {
       const result = describeDrop(element, callbacks.current.role)
-      if (result.target) return { target: result.target }
-      if (result.reason !== 'self') { reason ??= result; if (result.reason !== 'outside') break }
+      // Only our own overlay is transparent to hit-testing. Never target content
+      // behind the top bar, a dialog backdrop or another foreground surface.
+      if (result.reason !== 'self') return result
     }
-    return reason || { reason: 'outside' }
+    return { reason: 'outside' }
   }
   function reject(result) {
     const message = result.reason === 'role' ? REASONS.role(result.area) : REASONS[result.reason] || REASONS.outside

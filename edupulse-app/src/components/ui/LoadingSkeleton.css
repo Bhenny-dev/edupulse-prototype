@@ -1,6 +1,5 @@
 .skeleton-line,
-.skeleton-circle,
-.skeleton-card {
+.skeleton-circle {
   background: linear-gradient(90deg, var(--gray-100) 25%, var(--gray-50) 50%, var(--gray-100) 75%);
   background-size: 200% 100%;
   animation: skeleton-shimmer 1.5s ease-in-out infinite;
@@ -12,6 +11,7 @@
 }
 
 .skeleton-card {
+  background: var(--white);
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -19,6 +19,17 @@
   border-radius: var(--radius-lg);
   border: 1px solid var(--gray-100);
 }
+.loading-spinner { display: inline-block; flex-shrink: 0; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: loading-rotate .8s linear infinite; vertical-align: middle; }
+.loading-progress { display: flex; flex-direction: column; gap: 10px; width: min(420px, 100%); font-size: .875rem; color: var(--gray-600); }
+.loading-progress progress { width: 100%; height: 7px; border: 0; border-radius: 8px; overflow: hidden; accent-color: var(--sky-500); background: var(--sky-100); }
+.loading-progress progress::-webkit-progress-bar { background: var(--sky-100); border-radius: 8px; }
+.loading-progress progress::-webkit-progress-value { background: var(--sky-500); border-radius: 8px; transition: width .2s; }
+.loading-progress progress:indeterminate { background: linear-gradient(90deg, var(--sky-100) 20%, var(--sky-400) 50%, var(--sky-100) 80%); background-size: 200% 100%; animation: skeleton-shimmer 1.5s linear infinite; }
+.academic-loading .kpi-grid { gap: 16px; }
+.academic-loading .skeleton-card { min-height: 112px; }
+.academic-loading .skeleton-card:last-child { min-height: 0; }
+@keyframes loading-rotate { to { transform: rotate(360deg); } }
+@media (max-width: 600px) { .academic-loading .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 
 @keyframes skeleton-shimmer {
   0% { background-position: 200% 0; }
@@ -27,9 +38,12 @@
 
 @media (prefers-reduced-motion: reduce) {
   .skeleton-line,
-  .skeleton-circle,
-  .skeleton-card {
+  .skeleton-circle {
     animation: none;
     background: var(--gray-100);
   }
+  .loading-spinner, .loading-progress progress:indeterminate { animation: none; }
+  .loading-spinner { border-right-color: currentColor; opacity: .65; }
 }
+
+@media (max-width: 767px) { .page-header .academic-actions > .btn { flex: 1 1 200px; min-width: 0; white-space: normal; } }

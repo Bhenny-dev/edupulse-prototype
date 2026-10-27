@@ -1,3 +1,4 @@
+import { Spinner } from '../ui/LoadingFeedback'
 import { useCallback, useEffect, useState } from 'react'
 import { Cpu, RefreshCw, Workflow } from 'lucide-react'
 import { useAI } from '../../context/AIContext'
@@ -23,7 +24,7 @@ export default function AISettings() {
   const generationVerified = ai.preference === 'browser' || health?.connection?.source !== 'personal' || Boolean(health?.connection?.testedAt)
   return <div className="ai-library">
     <ProviderConnection />
-    <div className="card mb-24" data-pulse-target="AI pipeline status"><div className="card-header"><h3><Workflow size={18} /> Agentic RAG pipeline</h3><button className="btn btn-secondary btn-sm" disabled={busy} onClick={() => refresh()}><RefreshCw size={14} /> Check status</button></div>
+    <div className="card mb-24" data-pulse-target="AI pipeline status"><div className="card-header"><h3><Workflow size={18} /> Agentic RAG pipeline</h3><button className="btn btn-secondary btn-sm" disabled={busy} onClick={() => refresh()}>{busy ? <Spinner size={14} /> : <RefreshCw size={14} />} Check status</button></div>
       <div className="card-body">
         <div className="ai-pipeline-grid">
           <div><h5><Cpu size={12} /> Generation</h5><span className={`badge ${ai.ready && generationVerified ? 'badge-published' : 'badge-draft'}`}>{ai.ready ? ai.preference === 'browser' || health?.connection?.source !== 'personal' ? 'Connected' : generationVerified ? 'Generation verified' : 'Model listed · not tested' : busy ? 'Checking…' : 'Not connected'}</span><p>{ai.preference === 'browser' ? ai.label : health?.model ? `${health.provider} · ${health.model}` : 'Choose on-device AI or a provider above.'}</p><small>{ai.preference === 'browser' ? ai.local.message : health?.message}</small></div>

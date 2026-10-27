@@ -1,3 +1,4 @@
+import ModalLayer from './ModalLayer'
 import { useState } from 'react'
 import { useToast } from '../../context/ToastContext'
 import {
@@ -163,7 +164,7 @@ export default function VersionHistory({ versions = [], entityType = 'syllabus',
   }
 
   return (
-    <div className="overlay-backdrop" onClick={onClose}>
+    <ModalLayer className="overlay-backdrop" onClick={onClose}>
       <div className="modal-content" style={{ maxWidth: '900px', maxHeight: '85vh' }} onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h2><History size={20} /> Version History — {entityType === 'syllabus' ? 'Syllabus' : 'Courseware Item'}</h2>
@@ -261,7 +262,7 @@ export default function VersionHistory({ versions = [], entityType = 'syllabus',
 
         {/* Diff View Modal - REQ-1005, REQ-1006 */}
         {showDiff && compareA && compareB && (
-          <div className="overlay-backdrop" style={{ zIndex: 1000 }} onClick={() => setShowDiff(false)}>
+          <ModalLayer className="overlay-backdrop" style={{ zIndex: 1000 }} onClick={() => setShowDiff(false)}>
             <div className="modal-content" style={{ maxWidth: '700px' }} onClick={e => e.stopPropagation()}>
               <div className="modal-header">
                 <h2><GitCompare size={20} /> Diff: v{compareA.version} → v{compareB.version}</h2>
@@ -272,13 +273,13 @@ export default function VersionHistory({ versions = [], entityType = 'syllabus',
                 <button className="btn btn-ghost" onClick={() => setShowDiff(false)}>Close</button>
               </div>
             </div>
-          </div>
+          </ModalLayer>
         )}
 
         <div className="modal-actions" style={{ borderTop: '1px solid var(--gray-100)', paddingTop: '12px', marginTop: '12px' }}>
           <button className="btn btn-ghost" onClick={onClose}>Close</button>
         </div>
       </div>
-    </div>
+    </ModalLayer>
   )
 }

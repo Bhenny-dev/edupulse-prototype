@@ -16,7 +16,7 @@ Your provider connection belongs to your signed-in account. The system admin can
 
 ## Drag Pulse onto a component
 
-1. Press and drag the Pulse character. While you drag, the component under it is outlined and a label names it (here *Help with Course · dropdown*); the character reads **Drop to guide**.
+1. Press and drag the Pulse character. While you drag, the component under it is outlined and a label names it (here *Help with Course · dropdown*); the character remains avatar-only; the separate drag hint names the target.
 
    ![Dragging over a component](01-dragging-over-component.png)
 
@@ -36,7 +36,7 @@ Your provider connection belongs to your signed-in account. The system admin can
 
 ## When Pulse cannot help with a drop
 
-5. Dropping Pulse outside the page content (on the top bar, sidebar or empty space) is refused with a reason: *Drop me on a field, card, table or section inside the page.* Pulse shakes, shows a worried face and returns to its dock. Password fields are refused (*I don’t read password fields*), and areas that belong to another role are refused with a message naming the area.
+5. Dropping Pulse outside the page content (on the top bar or empty space) is refused with a reason: *Drop me on a field, card, table or section inside the page.* Pulse shakes, shows a worried face and returns to its dock. Password fields are refused (*I don’t read password fields*), and areas that belong to another role are refused with a message naming the area.
 
    ![Drop rejected with a reason](05-drop-rejected-with-reason.png)
 
@@ -60,3 +60,7 @@ Choose **Visit office** in Pulse for [Workspace buddies](../11-workspace-buddies
 On narrower screens, focused help uses a shorter bottom panel; close it to inspect the full page. The outline table scrolls horizontally within its card. The selected component stays outlined without dimming the rest of the editor. Plain greetings retain their local quick response; requests that include work use the action or model route.
 
 Form grids shrink with the available editor width when Pulse opens, so course information fields stay clear of the assistant. Wider outline tables retain their own horizontal scrolling.
+
+## Dialogs and the avatar launcher
+
+The launcher is the Pulse avatar alone, with a keyboard focus ring and an accessible name. Opening a dialog keeps the avatar outside its action area. If Pulse is open, dialogs use a separate desktop column or a scrollable area above the assistant on smaller screens. A second dialog temporarily hides the first; **Escape** closes the top dialog. See [the current layout examples](../12-interface-and-loading/README.md).

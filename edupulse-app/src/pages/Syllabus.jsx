@@ -1,3 +1,5 @@
+import ModalLayer from '../components/ui/ModalLayer'
+import { Spinner } from '../components/ui/LoadingFeedback'
 import { downloadSyllabusPdf } from '../utils/pdfExport'
 import { Fragment, cloneElement, isValidElement, useState, useEffect, useRef, useMemo, useId } from 'react'
 import { useSearchParams, Navigate } from 'react-router-dom'
@@ -68,7 +70,7 @@ function ExtractionModal({ syllabus, onConfirm, onClose }) {
   const outline = syllabus.courseOutline || []
   const hasRows = meaningfulOutline(outline) && !!syllabus.approvedFile
   return (
-    <div className="overlay-backdrop" onClick={onClose}>
+    <ModalLayer className="overlay-backdrop" onClick={onClose}>
       <div className="modal-content" style={{ maxWidth: '760px', maxHeight: '85vh', overflow: 'auto' }} onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h2><ScanLine size={18} style={{ verticalAlign: 'middle' }} /> Extract Course Outline — {syllabus.courseCode}</h2>
@@ -109,13 +111,21 @@ function ExtractionModal({ syllabus, onConfirm, onClose }) {
           </button>
         </div>
       </div>
-    </div>
+    </ModalLayer>
   )
 }
 
 /* ─── Upload Zone ─── */
 /* ─── Syllabus View Modal — 7-Section KCP Template ─── */
 function SyllabusViewModal({ syllabus, onClose }) {
+  const { addToast } = useToast()
+  const [exporting, setExporting] = useState(false)
+  const exportPdf = async () => {
+    setExporting(true)
+    try { await downloadSyllabusPdf(syllabus) }
+    catch (error) { addToast(error.message, 'error') }
+    finally { setExporting(false) }
+  }
   const [expandedSections, setExpandedSections] = useState({ s1: true, s2: true, s3: true, s4: true, s5: true, s6: true, s7: true })
   const toggle = (key) => setExpandedSections(prev => ({ ...prev, [key]: !prev[key] }))
   const inst = INSTRUCTORS.find(i => i.id === syllabus.instructorId)
@@ -161,8 +171,8 @@ function SyllabusViewModal({ syllabus, onClose }) {
   )
 
   return (
-    <div className="overlay-backdrop" onClick={onClose}>
-      <div className="modal-content" style={{ maxWidth: '900px', maxHeight: '90vh', overflow: 'auto' }} onClick={e => e.stopPropagation()}>
+    <ModalLayer className="overlay-backdrop" onClick={onClose}>
+      <div data-dialog="syllabus-view" role="dialog" aria-label="Syllabus details" className="modal-content syllabus-view-modal" style={{ maxWidth: '900px', maxHeight: '90vh', overflow: 'auto' }} onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <div>
             <h2 style={{ fontSize: '1.125rem' }}>{ci.courseCode || syllabus.courseCode} — {ci.courseTitle || syllabus.courseTitle}</h2>
@@ -175,6 +185,7 @@ function SyllabusViewModal({ syllabus, onClose }) {
           <button className="modal-close" onClick={onClose}>✕</button>
         </div>
 
+        <div className="syllabus-dialog-body">
         {/* Section 1: Course Information (locked — from curriculum) */}
         <div style={{ marginBottom: '16px' }}>
           <SectionHeader num={1} label="Course Information" sectionKey="s1" />
@@ -346,12 +357,13 @@ function SyllabusViewModal({ syllabus, onClose }) {
           )}
         </div>
 
-        <div className="modal-actions" style={{ position: 'sticky', bottom: 0, background: 'var(--bg)', padding: '12px 0', borderTop: '1px solid var(--gray-200)' }}>
-          <button className="btn btn-secondary btn-sm"><Download size={14} /> Export</button>
+        </div>
+        <div className="modal-actions">
+          <button className="btn btn-secondary btn-sm" disabled={exporting} onClick={exportPdf}>{exporting ? <Spinner size={14} /> : <Download size={14} />} Download PDF</button>
           <button className="btn btn-ghost" onClick={onClose}>Close</button>
         </div>
       </div>
-    </div>
+    </ModalLayer>
   )
 }
 
@@ -1448,7 +1460,7 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
 /* ─── Version Compare ─── */
 function VersionCompare({ v1, v2, onClose }) {
   return (
-    <div className="overlay-backdrop" onClick={onClose}>
+    <ModalLayer className="overlay-backdrop" onClick={onClose}>
       <div className="modal-content" style={{ maxWidth: '800px' }} onClick={e => e.stopPropagation()}>
         <div className="modal-header"><h2><GitCompare size={20} /> Version Comparison</h2><button className="modal-close" onClick={onClose}>✕</button></div>
         <div className="grid-2">
@@ -1465,7 +1477,7 @@ function VersionCompare({ v1, v2, onClose }) {
         </div>
         <div className="modal-actions"><button className="btn btn-ghost" onClick={onClose}>Close</button></div>
       </div>
-    </div>
+    </ModalLayer>
   )
 }
 
@@ -1800,7 +1812,7 @@ export default function Syllabus() {
       {compareSyllabus && <VersionCompare v1={compareSyllabus} v2={compareSyllabus} onClose={() => setCompareSyllabus(null)} />}
 
       {uploadingSyllabus && <ApprovedSyllabusUpload syllabus={uploadingSyllabus} onSave={saveApproved} onClose={() => setUploadingSyllabus(null)} />}
-      {showVersionHistory && <div className="overlay-backdrop"><section role="dialog" aria-label="Syllabus history" className="modal-content" style={{ maxHeight: '80vh', overflow: 'auto' }}>
+      {showVersionHistory && <ModalLayer className="overlay-backdrop" onDismiss={() => setShowVersionHistory(false)}><section role="dialog" aria-label="Syllabus history" className="modal-content" style={{ maxHeight: '80vh', overflow: 'auto' }}>
         <h2>Recorded syllabus changes</h2>
         {versionHistorySyllabus && <p className="text-sm text-muted">{versionHistorySyllabus.courseCode} — {versionHistorySyllabus.courseTitle}</p>}
         {versionHistorySyllabus?.history?.length ? (
@@ -1818,7 +1830,7 @@ export default function Syllabus() {
           {versionHistorySyllabus?.approvedFile && <button className="btn btn-ghost" onClick={() => { setSyllabi(previous => previous.map(syl => syl.id === versionHistorySyllabus.id ? record({ ...syl, approvedFile: undefined, extractedAt: undefined }, 'drafted') : syl)); setShowVersionHistory(false) }}>Remove attachment and return to draft</button>}
           <button className="btn btn-ghost" onClick={() => setShowVersionHistory(false)}>Close</button>
         </div>
-      </section></div>}
+      </section></ModalLayer>}
 
     </div>
   )

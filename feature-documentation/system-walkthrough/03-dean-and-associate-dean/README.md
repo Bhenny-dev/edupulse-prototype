@@ -1,6 +1,6 @@
 # 03 · Dean and Associate Dean
 
-The Dean (`dean`) and Associate Dean (`associate_dean`) sign in with separate email accounts and have distinct dashboards. They share academic navigation, with data permissions governed separately by FR-AUTH-10/11 and FR-PERF-13. The system admin has a separate operations console. Main academic tabs: **Dashboard**, **Course Loading**, **Monitor**; **Records** opens from the dashboard and search. Course assignments come from EduSuite; EduPulse monitors them and never edits the curriculum. These captures use sample academic data.
+The Dean (`dean`) and Associate Dean (`associate_dean`) sign in with separate email accounts and have distinct dashboards. They share academic navigation, with data permissions governed separately by FR-AUTH-10/11 and FR-PERF-13. The system admin has a separate operations console. Main academic tabs include **Dashboard**, **Records**, **Course Loading** and **Monitor**; Dean also has **Performance**. Course assignments come from EduSuite; EduPulse monitors them and never edits the curriculum. These captures use sample academic data.
 
 ## 1. Dean dashboard
 
@@ -17,7 +17,7 @@ The Dean (`dean`) and Associate Dean (`associate_dean`) sign in with separate em
 
 ![Associate Dean denied access to Performance](13-performance-access-denied.png)
 
-Opening `/performance` as Associate Dean returns to **Dashboard**. Asking Pulse to open it displays **Performance is not available for your role.** The role's loading, roster and delivery oversight remain available. Dean has a **Performance** navigation entry and authenticated read-only college results under the accepted [ADR-001](../../backend-system/decisions/001-role-and-approval-boundaries.md). The [authenticated walkthrough](../08-authenticated-records/README.md) shows real sign-in with synthetic hosted records; the other captures in this folder remain preview demonstrations. Courseware authoring remains instructor-only, with the verified owner instructor view preserved. Offline syllabus review is unchanged.
+Opening `/performance` as Associate Dean returns to **Dashboard**. Asking Pulse to open it displays **Performance is not available for your role.** The role's loading, roster and delivery oversight remain available. Dean has a **Performance** navigation entry and authenticated read-only college results under the accepted [ADR-001](../../backend-system/decisions/001-role-and-approval-boundaries.md). The [authenticated walkthrough](../08-authenticated-records/README.md) uses synthetic browser transport for its current interface images and links the earlier hosted sign-in canary separately. Other captures in this folder remain preview demonstrations. Courseware authoring remains instructor-only, with the verified owner instructor view preserved. Offline syllabus review is unchanged.
 
 ## 2. Course Loading · Loaded Courses
 
@@ -25,7 +25,7 @@ Opening `/performance` as Associate Dean returns to **Dashboard**. Asking Pulse 
 
 **Course Loading Monitor**, a read-only view of the courses loaded in EduSuite: totals by state (*Active* = active syllabus and enrolled blocks, *Syllabus Only*, *Data Uploaded* = enrolment but no syllabus, *No Data*), a search box for course or instructor, and one row per course with year and semester, the assigned instructor(s), its syllabus versions and the state.
 
-*Changed in v0.4.0:* the sidebar link (now named **Loaded Courses**) opened an empty page because it pointed to a tab the page did not recognise. It now opens this view; the in-page tab was renamed from *Course Monitoring* to match.
+*Changed in v0.4.0:* the old **Loaded Courses** sidebar link pointed to a tab the page did not recognise. The legacy address now opens the correct view. Page tabs provide this navigation; the repeated sidebar has been removed.
 
 ## 3. Course Loading · Instructors
 
@@ -34,6 +34,8 @@ Opening `/performance` as Associate Dean returns to **Dashboard**. Asking Pulse 
 Instructor cards with specialisation, degree (*Master's* or *Bachelor's*, which drives the loading rule) and number of loaded courses. Click a card to see that instructor's courses.
 
 ## 4–7. Monitor
+
+Preview **Monitor** keeps **Syllabus Status**, **Delivery Progress**, **Student Oversight** and **Alerts** in a single horizontal page navigation row. These views remain reachable after the duplicate left panel is removed. Signed-in accounts use authorized oversight records instead of these sample charts.
 
 | Tab | Screenshot | What it answers |
 | --- | --- | --- |
@@ -54,12 +56,14 @@ Instructor cards with specialisation, degree (*Master's* or *Bachelor's*, which 
 
 ![Pulse on Course Loading](11-pulse-on-course-loading.png)
 
-**Guide this page** on Course Loading. Pulse focuses the *Course Loading Monitor* area (highlighted; the rest of the page is dimmed), perches at its corner, and the panel opens on the opposite side with what the area contains. Because this workflow uses sample assignments, Pulse says so and offers to explain the controls rather than present sample data as verified.
+**Guide this page** on Course Loading. Pulse focuses the *Course Loading Monitor* area (highlighted; the rest of the page is dimmed), and the panel opens beside it with what the area contains. Because this workflow uses sample assignments, Pulse says so and offers to explain the controls rather than present sample data as verified.
 
-*Changed in v0.4.0:* the panel now opens on the side away from the perched mascot, so the mascot no longer covers the panel header when Pulse guides a whole page.
+The launcher is hidden while the panel is open, leaving the panel header clear.
 
 ## 12. Associate Dean dashboard
 
 ![Associate Dean dashboard](12-associate-dean-dashboard.png)
 
 Identical academic controls to the Dean's dashboard, with a separate Associate Dean account and role badge.
+
+Unique page destinations stay in the main navigation: **Records** for Dean/Associate Dean and **Assessments** for students. Mobile users find the same links under **Open menu**. Page tabs provide subviews without duplicate left navigation.
