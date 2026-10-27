@@ -1,0 +1,25 @@
+{
+  "applicationCommit": "c70eb6bdcfad764be7f8628fdd9f801c00b82a54",
+  "deploymentId": "dpl_AAtT1iTgWD65WuD9o1XamsriQYFp",
+  "scope": "public startup and rendering only; no hosted sign-in or private-data validation",
+  "results": [
+    {
+      "name": "desktop",
+      "origin": "https://edupulse-prototype.vercel.app",
+      "documentStatus": 200,
+      "healthStatus": 200,
+      "entryAsset": "/assets/index-UZvmdDvS.js",
+      "pageErrors": [],
+      "checkedAt": "2026-10-27T12:43:31.156Z"
+    },
+    {
+      "name": "mobile",
+      "origin": "https://edupulse-prototype.vercel.app",
+      "documentStatus": 200,
+      "healthStatus": 200,
+      "entryAsset": "/assets/index-UZvmdDvS.js",
+      "pageErrors": [],
+      "checkedAt": "2026-10-27T12:43:32.468Z"
+    }
+  ]
+}

@@ -17,4 +17,11 @@
 
 ## Release checks
 
-`npm run verify` passed: documentation integrity, lint, type checks, 126 unit/integration tests, production build, native server-module startup and deployment checks. Push/deployment evidence will be recorded after release. Vercel MCP project lookup returned 404; the existing scoped CLI connection confirmed project `prj_TWamHPF10NMTNg46ZLTAfWhtM4Uv`, team `team_DBR6wjUXneLL17Qd8hxs6szg`, root `edupulse-app`.
+`npm run verify` passed: documentation integrity, lint, type checks, 126 unit/integration tests, production build, native server-module startup and deployment checks. The gate was repeated after the final keyboard correction and passed. Vercel MCP project lookup returned 404; the existing scoped CLI connection confirmed project `prj_TWamHPF10NMTNg46ZLTAfWhtM4Uv`, team `team_DBR6wjUXneLL17Qd8hxs6szg`, root `edupulse-app`.
+
+## Hosted release
+
+- Application commit `c70eb6bdcfad764be7f8628fdd9f801c00b82a54` was pushed to `main`. Deployment `dpl_AAtT1iTgWD65WuD9o1XamsriQYFp` was staged for production without assigning domains. Its metadata matched this exact commit; the Vercel build passed its 126 tests and deployment checks, and staged AI health returned HTTP 200.
+- That exact production build was promoted without rebuilding to [EduPulse](https://edupulse-prototype.vercel.app). Fresh desktop/mobile browsers rendered Sign In, returned HTTP 200 for the page and AI health, and recorded no page errors or CSP errors at 12:43 UTC. Both served `/assets/index-UZvmdDvS.js`. [Public canary results](hosted-canary.json).
+- Hosted sign-in, private document saves and provider generation were not revalidated in this UI-only release. Local workflow tests and synthetic academic UI captures do not establish those production results. No credentials or institutional records were changed.
+- [GitHub Actions run](https://github.com/Bhenny-dev/edupulse-prototype/actions/runs/40505244315) could not start: its annotation states that the account is locked due to a billing issue. The job had no executed steps. Local and Vercel gates passed independently; CI is not reported as passing.

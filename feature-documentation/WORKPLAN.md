@@ -6,6 +6,8 @@ Current work removes duplicate page sidebars, separates dialogs and Pulse, makes
 
 Local verification passes 126 unit/integration tests and 99 browser tests, with 13 intentional device-specific skips. The final office-over-document keyboard correction passes both affected desktop/mobile tests. Changed screenshots are refreshed and agent-reviewed with exact hashes. Monitor subviews and the unique Records/Assessments routes remain reachable after the sidebar removal; the syllabus detail action now downloads a real PDF. Release evidence is tracked in the [interface validation record](versions/2026-10-27-interface-consistency/validation/results.md).
 
+Released application commit `c70eb6b`; the staged production build passed its 126 tests and health check before promotion. Production desktop/mobile public checks passed. GitHub Actions could not start because of the existing account billing lock. The authenticated feature gaps in the audit remain open.
+
 
 ## 27 October 2026: focused source corrections and PDF fidelity
 

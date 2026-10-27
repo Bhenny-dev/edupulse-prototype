@@ -19,7 +19,7 @@ Version folders are release records. Preserve released records, and add correcti
 
 | Version | Scope | Status |
 | --- | --- | --- |
-| [27 October interface consistency](versions/2026-10-27-interface-consistency/README.md) | Dialog spacing, page tabs, avatar launcher, loading feedback and older-feature audit | Local gates passed; release in progress |
+| [27 October interface consistency](versions/2026-10-27-interface-consistency/README.md) | Dialog spacing, page tabs, avatar launcher, loading feedback and older-feature audit | Live; 126 unit/integration + 99 browser tests passed; CI billing lock documented |
 | [Provider connection recovery](versions/2026-10-25-provider-connections/README.md) | OpenRouter return/retry, OpenAI model routing, explicit provider choices and generation verification | Verified and promoted; provider-consent limits in validation |
 | [26 October source context and PDF fidelity](versions/2026-10-26-source-context-pdf/README.md) | Focused UI, conversational buddies, complete ruled-PDF cells and PDF downloads | Live; 126 unit/integration + 89 browser tests passed; hosted authentication gap documented |
 | [26 October Pulse tools and workspace](versions/2026-10-25-pulse-agent-tools/README.md) | Validated tools, PDF imports, private context, faster greetings and animated workspace buddies | 122 unit/integration + 85 browser tests; hosted canaries passed |
