@@ -12,7 +12,7 @@ A screen-by-screen tour of EduPulse as each role sees it, captured from the docu
 | [06 · Mobile](06-mobile/README.md) | All roles on a phone | The same screens at 390 px: menu, builder, Pulse panel, settings |
 | [07 · System Admin](07-system-admin/README.md) | Google system admin | Account management, health checks, audit activity and direct role views |
 | [08 · Authenticated records](08-authenticated-records/README.md) | Instructor, Student, Dean, Associate Dean | Real sign-in and shared-data permissions, using temporary synthetic hosted canaries |
-| [09 · Restored account sections](09-restored-role-pages/README.md) | Instructor, Student, Dean, Associate Dean | Current role dashboards, charts, matrices, management tabs, private file intake and student readers, captured with synthetic transport |
+| [09 · Restored account sections](09-restored-role-pages/README.md) | Instructor, Student, Dean, Associate Dean | Current role dashboards, charts, matrices, management tabs, shared file intake and student readers, captured with synthetic transport |
 
 ## Reading the screenshots
 
@@ -31,3 +31,5 @@ CI=1 npx playwright test --config playwright.snapshots.config.ts tests/snapshots
 ```
 
 [`capture-manifest.json`](capture-manifest.json) records when the images were captured, every scene's title and whether it succeeded, and any page error or Content-Security-Policy violation seen during the run (the list was empty for this capture).
+
+The [current baseline restoration](../versions/2026-10-28-baseline-workflows/README.md) extends the authenticated sections with 50 illustrated account scenes and shared workflow contracts. See [Manual 13](../system-manual/13-restored-account-sections/README.md) and [Role guide 9](../system-walkthrough/09-restored-role-pages/README.md). The four new database migrations remain a hosted deployment prerequisite.

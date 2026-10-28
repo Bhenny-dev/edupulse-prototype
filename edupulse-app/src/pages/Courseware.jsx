@@ -1,3 +1,4 @@
+import DeliverySettings from '../components/courseware/DeliverySettings'
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
@@ -287,7 +288,7 @@ function CourseWorkspace({ syllabusId, focusWeek, contentStore, onBack, onGenera
       )
     }
     if (viewingType === 'assessment') {
-      return <AssessmentEditor content={viewingItem} onBack={() => { setViewingItem(null); setViewingType(null) }} isStudent={false} onSave={handleSaveContent} />
+      return <AssessmentEditor topics={syllabus.courseOutline?.find(row=>row.week===contentStore[viewingItem._storeId]?.week)?.contents || []} content={viewingItem} onBack={() => { setViewingItem(null); setViewingType(null) }} isStudent={false} onSave={handleSaveContent} />
     }
     return (
       <DocumentViewer
@@ -460,7 +461,7 @@ function CourseWorkspace({ syllabusId, focusWeek, contentStore, onBack, onGenera
 
                       return (
                         <div key={id} style={{
-                          display: 'flex', alignItems: 'center', gap: '10px',
+                          display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '10px',
                           padding: '8px 12px', borderRadius: 'var(--radius-md)',
                           border: `1px solid ${isSelected ? 'var(--sky-300)' : 'var(--gray-100)'}`,
                           background: isSelected ? 'var(--sky-50)' : 'var(--white)',
@@ -494,8 +495,10 @@ function CourseWorkspace({ syllabusId, focusWeek, contentStore, onBack, onGenera
                             padding: '2px 8px', borderRadius: 'var(--radius-full)',
                             background: meta.color + '18', color: meta.color,
                             fontSize: '0.625rem', fontWeight: 600, flexShrink: 0,
-                          }}>{meta.label}</span>
+                          }}>{item.releaseAt && new Date(item.releaseAt)>new Date() && item.status==='published' ? 'Scheduled' : meta.label}</span>
 
+                          {item.outOfAlignment&&<span className="badge badge-draft">Syllabus changed ? review alignment</span>}
+                          <DeliverySettings id={id} item={item}/>
                           {/* Actions */}
                           <div style={{ display: 'flex', gap: '4px', flexShrink: 0 }}>
                             {item.status === 'draft' && (

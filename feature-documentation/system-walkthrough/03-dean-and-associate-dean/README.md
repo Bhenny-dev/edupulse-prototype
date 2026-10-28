@@ -70,4 +70,10 @@ Unique page destinations stay in the main navigation: **Records** for Dean/Assoc
 
 ## Restored signed-in sections
 
-The screens above demonstrate preview records. Signed-in Dean/Associate Dean accounts now have their own dashboards, four Monitor views, Course Monitoring/Instructors views and Records file-intake/block/course sections. The Dean also has read-only Performance; Associate Dean does not. See the [current account screenshots and data limits](../09-restored-role-pages/README.md) and [private file-intake task](../../system-manual/13-restored-account-sections/README.md).
+The screens above demonstrate preview records. Signed-in Dean/Associate Dean accounts now have their own dashboards, four Monitor views, Course Monitoring/Instructors views and Records file-intake/block/course sections. The Dean also has read-only Performance; Associate Dean does not. See the [current account screenshots and data limits](../09-restored-role-pages/README.md) and [shared file-intake task](../../system-manual/13-restored-account-sections/README.md).
+
+## Shared records and the offline inbox
+
+Current [account captures](../09-restored-role-pages/README.md) show shared course/load/roster confirmation, provisioned-instructor proposals, qualification details, block corrections and station/coverage charts. New imports project matching enrollments and record shared history; the earlier private intake is retained as legacy exportable data. Dean and Associate Dean can preview manual, assisted or semester-wide loading proposals and override them before confirmation. The server requires an imported released course and provisioned instructor and enforces the 35-student block cap.
+
+The Dean alone has the additional **Offline Review Inbox**. It displays the saved outline/station and sends a persisted correction request to the instructor. It does not approve a syllabus electronically. Associate Dean cannot view scores; Dean Performance remains read-only. See the [task guide](../../system-manual/13-restored-account-sections/README.md). The new shared workflows depend on the four additive migrations.

@@ -87,7 +87,8 @@
       "name": "Syllabus",
       "source": [
         "edupulse-app/src/pages/Syllabus.jsx",
-        "edupulse-app/src/components/syllabus/**"
+        "edupulse-app/src/components/syllabus/**",
+        "edupulse-app/src/utils/syllabusRevisions.ts"
       ],
       "docs": [
         "feature-documentation/system-manual/02-syllabus-lifecycle",

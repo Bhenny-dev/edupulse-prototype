@@ -3,150 +3,6 @@
   "problems": [],
   "scenes": [
     {
-      "role": "public",
-      "folder": "01-public-site",
-      "file": "01-landing-hero.png",
-      "title": "Landing page: hero, institution lockup and primary actions",
-      "route": "/",
-      "ok": true
-    },
-    {
-      "role": "public",
-      "folder": "01-public-site",
-      "file": "02-landing-navigation.png",
-      "title": "Landing navigation after scrolling: active section and reading progress",
-      "route": "/",
-      "ok": true
-    },
-    {
-      "role": "public",
-      "folder": "01-public-site",
-      "file": "03-landing-about.png",
-      "title": "Landing page: what EduPulse is, with role benefits",
-      "route": "/",
-      "ok": true
-    },
-    {
-      "role": "public",
-      "folder": "01-public-site",
-      "file": "04-landing-features.png",
-      "title": "Landing page: features",
-      "route": "/",
-      "ok": true
-    },
-    {
-      "role": "public",
-      "folder": "01-public-site",
-      "file": "05-landing-how-it-works.png",
-      "title": "Landing page: how it works (six phases)",
-      "route": "/",
-      "ok": true
-    },
-    {
-      "role": "public",
-      "folder": "01-public-site",
-      "file": "06-landing-roles.png",
-      "title": "Landing page: roles (Instructor tab)",
-      "route": "/",
-      "ok": true
-    },
-    {
-      "role": "public",
-      "folder": "01-public-site",
-      "file": "07-landing-roles-student.png",
-      "title": "Landing page: roles (Student tab)",
-      "route": "/",
-      "ok": true
-    },
-    {
-      "role": "public",
-      "folder": "01-public-site",
-      "file": "08-landing-pulse.png",
-      "title": "Landing page: Pulse and its boundaries",
-      "route": "/",
-      "ok": true
-    },
-    {
-      "role": "public",
-      "folder": "01-public-site",
-      "file": "09-landing-colleges.png",
-      "title": "Landing page: colleges",
-      "route": "/",
-      "ok": true
-    },
-    {
-      "role": "public",
-      "folder": "01-public-site",
-      "file": "10-landing-community.png",
-      "title": "Landing page: CIT community photos",
-      "route": "/",
-      "ok": true
-    },
-    {
-      "role": "public",
-      "folder": "01-public-site",
-      "file": "11-landing-statistics.png",
-      "title": "Landing page: why it matters",
-      "route": "/",
-      "ok": true
-    },
-    {
-      "role": "public",
-      "folder": "01-public-site",
-      "file": "12-landing-faq.png",
-      "title": "Landing page: frequently asked questions",
-      "route": "/",
-      "ok": true
-    },
-    {
-      "role": "public",
-      "folder": "01-public-site",
-      "file": "13-sign-in-panel.png",
-      "title": "Sign-in panel as on the hosted site",
-      "route": "/",
-      "ok": true
-    },
-    {
-      "role": "public",
-      "folder": "01-public-site",
-      "file": "14-preview-personas.png",
-      "title": "Preview personas (local development and documentation capture only)",
-      "route": "/",
-      "ok": true
-    },
-    {
-      "role": "public",
-      "folder": "01-public-site",
-      "file": "15-landing-footer.png",
-      "title": "Landing page: footer",
-      "route": "/",
-      "ok": true
-    },
-    {
-      "role": "public",
-      "folder": "01-public-site",
-      "file": "16-privacy.png",
-      "title": "Privacy page",
-      "route": "/privacy",
-      "ok": true
-    },
-    {
-      "role": "public",
-      "folder": "01-public-site",
-      "file": "17-terms.png",
-      "title": "Terms of use page",
-      "route": "/terms",
-      "ok": true
-    },
-    {
-      "role": "public",
-      "folder": "01-public-site",
-      "file": "18-server-error.png",
-      "title": "Server error page",
-      "route": "/500",
-      "ok": true
-    },
-    {
       "role": "all roles",
       "folder": "02-shared-interface",
       "file": "01-top-bar.png",
@@ -600,6 +456,150 @@
       "file": "09-pulse-declines-assessment-answers.png",
       "title": "Pulse declines a request for quiz answers (Guardian)",
       "route": "/dashboard",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "01-landing-hero.png",
+      "title": "Landing page: hero, institution lockup and primary actions",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "02-landing-navigation.png",
+      "title": "Landing navigation after scrolling: active section and reading progress",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "03-landing-about.png",
+      "title": "Landing page: what EduPulse is, with role benefits",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "04-landing-features.png",
+      "title": "Landing page: features",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "05-landing-how-it-works.png",
+      "title": "Landing page: how it works (six phases)",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "06-landing-roles.png",
+      "title": "Landing page: roles (Instructor tab)",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "07-landing-roles-student.png",
+      "title": "Landing page: roles (Student tab)",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "08-landing-pulse.png",
+      "title": "Landing page: Pulse and its boundaries",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "09-landing-colleges.png",
+      "title": "Landing page: colleges",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "10-landing-community.png",
+      "title": "Landing page: CIT community photos",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "11-landing-statistics.png",
+      "title": "Landing page: why it matters",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "12-landing-faq.png",
+      "title": "Landing page: frequently asked questions",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "13-sign-in-panel.png",
+      "title": "Sign-in panel as on the hosted site",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "14-preview-personas.png",
+      "title": "Preview personas (local development and documentation capture only)",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "15-landing-footer.png",
+      "title": "Landing page: footer",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "16-privacy.png",
+      "title": "Privacy page",
+      "route": "/privacy",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "17-terms.png",
+      "title": "Terms of use page",
+      "route": "/terms",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "18-server-error.png",
+      "title": "Server error page",
+      "route": "/500",
       "ok": true
     }
   ]

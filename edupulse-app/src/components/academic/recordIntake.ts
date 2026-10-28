@@ -28,7 +28,8 @@ export function parseIntake(text: string, kind: IntakeKind) {
   if (cell || row.length || closed) finishRow()
   const headers = rows.shift() || []
   const fields = INTAKE_FIELDS[kind]
-  if (headers.length !== fields.length || new Set(headers).size !== headers.length || fields.some(field => !headers.includes(field))) throw new Error(`Expected these columns: ${fields.join(', ')}.`)
+  const optional=kind==='loads' ? ['HasMasters','Specialization'] : kind==='rosters'?['Adviser']:[]
+  if (new Set(headers).size !== headers.length || fields.some(field => !headers.includes(field)) || headers.some(header => ![...fields,...optional].includes(header))) throw new Error(`Expected these columns: ${fields.join(', ')}. ${optional.length ? `Optional: ${optional.join(', ')}.` : ''}`)
   if (!rows.length || rows.length > 1000) throw new Error('Provide between 1 and 1,000 data rows.')
   const required = kind === 'courses' ? ['CourseCode', 'CourseTitle'] : kind === 'loads' ? ['InstructorID', 'InstructorName', 'Email', 'CourseCode', 'Block'] : ['StudentID', 'Name', 'Email', 'Block']
   const accepted: IntakeRow[] = [], errors: { row: number; message: string }[] = []
@@ -43,7 +44,7 @@ export function parseIntake(text: string, kind: IntakeKind) {
   return { headers, accepted, errors, total: rows.length }
 }
 export function intakeKey(row: IntakeRow, kind: IntakeKind) {
-  return (kind === 'courses' ? row.CourseCode : kind === 'loads' ? [row.InstructorID, row.CourseCode, row.Block, row.Semester].join('|') : [row.StudentID, row.Block].join('|')).toLowerCase()
+  return (kind === 'courses' ? row.CourseCode : kind === 'loads' ? [row.CourseCode, row.Block, row.Semester].join('|') : row.StudentID).toLowerCase()
 }
 export function mergeIntake(previous: IntakeRow[], next: IntakeRow[], kind: IntakeKind) {
   const map = new Map(previous.map(row => [intakeKey(row, kind), row]))

@@ -29,3 +29,7 @@ Unique page destinations stay in the main navigation: **Records** for Dean/Assoc
 ## Restored account pages on phones
 
 Account charts stack, Performance/Monitoring tabs scroll and wide score/material matrices stay within their own scroll region. Shared dark surfaces use solid fills. See the [three current mobile captures](../09-restored-role-pages/README.md#dark-and-mobile-views).
+
+## Restored mobile account workflows
+
+The [current account guide](../09-restored-role-pages/README.md) adds mobile topic radar/history/heatmap and confirmed loading proposals, alongside the earlier performance, reader and solid-dark dashboard scenes. Filters and proposal forms stack; wide data matrices scroll within their panels. These scenes use synthetic role fixtures rather than real institutional records.

@@ -20,7 +20,7 @@ To import an existing draft, click the upload area or drop a **.docx** or **.pdf
 
 PDF text is read into the same seven-section preview. Scanned pages are read with OCR on your device (up to 60 pages); check the results against the original, especially numbers and weekly table rows. Unrecognized layouts and week ranges need manual editing.
 
-PDF is the primary institutional intake format; Word `.docx` is also supported. The builder introduction and accepted-format hint list PDF first. Activation and retained-attachment validation accept both formats. Export for the offline approval route remains DOCX.
+PDF is the primary institutional intake format; Word `.docx` is also supported. The builder introduction and accepted-format hint list PDF first. Activation and retained-attachment validation accept both formats. Download for Approval exports PDF for the offline approval route.
 
 ![PDF import preview with sample course and outline](14-pdf-import-preview.png)
 
@@ -70,7 +70,7 @@ PDF is the primary institutional intake format; Word `.docx` is also supported. 
 
     ![Active, drives courseware](10-active-drives-courseware.png)
 
-11. **Version History** (clock icon) lists every recorded change with its station, version, time and author. From here you can download the retained approved file, or remove it and return the syllabus to draft if the wrong file was uploaded.
+11. **Version History** (clock icon) lists recorded changes with station, version, time and author. **Saved syllabus versions** retains up to ten editable snapshots, with **View saved version** and **Restore version as draft** when snapshots exist. Restoring clears approval and extraction; the current approved attachment can be downloaded separately. **Remove attachment and return to draft** handles an incorrectly uploaded file. The lifecycle capture below shows the recorded changes and an empty snapshot list for this newly created sample.
 
     ![Version history dialog](11-version-history-dialog.png)
 
@@ -100,3 +100,11 @@ Institutional text mapped from the accepted PDF overrides the corresponding fiel
 On mobile, the draft actions wrap into separate rows.
 
 ![Mobile draft download, save and check controls](17-mobile-draft-actions.png)
+
+## Revise or restore an active syllabus
+
+In **My Syllabus**, use **Edit syllabus** for a non-sample record, including an active syllabus. Saving the revision retains the earlier editable snapshot and returns the syllabus to Drafted; approval and extraction must be completed again. Previously published courseware is withdrawn. Changed outline weeks additionally return their items to draft with an alignment warning; review or regenerate them against the new approved outline before publishing again.
+
+In **Version History**, **View saved version** previews the retained editable fields. **Restore version as draft** uses the same revision and withdrawal process. Snapshots exclude file bytes and nested history; up to ten are retained. Restoring never reinstates approval or silently republishes courseware. See the [saved-version capture](../../system-walkthrough/09-restored-role-pages/README.md#baseline-workflows-restored-after-owner-confirmation).
+
+Confirmed shared course loads are shown above the builder when available. The identity/description fields remain locked under the later correction. The syllabus author still owns the draft and confirms every change.

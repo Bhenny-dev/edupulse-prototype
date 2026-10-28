@@ -97,7 +97,8 @@ test('a generated section patch is previewed and a failed database save never re
   expect((await (await request.get('/api/ai?action=workspace')).json()).data.syllabi).toEqual([])
   await page.route('**/api/ai?action=workspace', async route => route.request().method() === 'PUT' ? route.fulfill({ status: 503, json: { error: { code: 'WORKSPACE_UNAVAILABLE', message: 'Synthetic database outage; nothing saved.' } } }) : route.fallback())
   await card.getByRole('button', { name: 'Confirm and save draft' }).click()
-  await expect(card.getByRole('alert')).toContainText('Synthetic database outage')
+  // A failed PUT is followed by a read to disambiguate a lost commit response.
+  await expect(card.getByRole('alert')).toContainText('Synthetic database outage', { timeout: 15000 })
   expect((await (await request.get('/api/ai?action=workspace')).json()).data.syllabi).toEqual([])
   await page.unroute('**/api/ai?action=workspace')
   await card.getByRole('button', { name: 'Confirm and save draft' }).click()

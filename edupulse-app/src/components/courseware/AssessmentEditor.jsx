@@ -5,11 +5,11 @@ import DraftEvidence from '../ai/DraftEvidence'
 import { useContentEditorTool } from '../../agents/useContentEditorTool'
 
 /* ─── Assessment Editor / Viewer ───
- * One-pager assessment with 1-5 multiple choice questions.
+ * Assessment with 3-5 objective or instructor-marked questions.
  * Instructors see editable fields; students see a clean take view.
  */
 
-export default function AssessmentEditor({ content, onBack, isStudent = false, onSave }) {
+export default function AssessmentEditor({ content, onBack, isStudent = false, onSave, topics=[] }) {
   const { addToast } = useToast()
   const [questions, setQuestions] = useState(content?.questions || [])
   const [answers, setAnswers] = useState({})
@@ -30,7 +30,7 @@ export default function AssessmentEditor({ content, onBack, isStudent = false, o
     setQuestions(prev => {
       const next = [...prev]
       const opts = [...next[qIdx].options]
-      opts[optIdx] = { ...opts[optIdx], text: value }
+      opts[optIdx] = typeof opts[optIdx]==='string' ? value : { ...opts[optIdx], text: value }
       next[qIdx] = { ...next[qIdx], options: opts }
       return next
     })
@@ -43,6 +43,12 @@ export default function AssessmentEditor({ content, onBack, isStudent = false, o
       return next
     })
   }
+
+  const changeType = (idx, type) => setQuestions(previous => previous.map((question, index) => {
+    if (index !== idx) return question
+    const options = type === 'true_false' ? ['True', 'False'] : question.options?.length === 4 ? question.options : ['', '', '', '']
+    return { ...question, type, options, correctIndex: Number.isInteger(question.correctIndex) && question.correctIndex < options.length ? question.correctIndex : 0 }
+  }))
 
   const addQuestion = () => {
     if (questions.length >= 5) return
@@ -60,7 +66,7 @@ export default function AssessmentEditor({ content, onBack, isStudent = false, o
   }
 
   const removeQuestion = (idx) => {
-    if (questions.length <= 1) return
+    if (questions.length <= 3) return
     setQuestions(prev => prev.filter((_, i) => i !== idx))
   }
 
@@ -127,8 +133,8 @@ export default function AssessmentEditor({ content, onBack, isStudent = false, o
 
         {/* Meta info */}
         <div className="assessment-meta">
-          <span>Total Points: <strong>{content.totalPoints || questions.length * 10}</strong></span>
-          <span>Time Limit: <strong>{content.timeLimit || `${questions.length * 5} minutes`}</strong></span>
+          <span>Total Points: <strong>{questions.length}</strong></span>
+          <span>Time Limit: <strong>{content.assessmentPolicy?.durationSeconds ? `${content.assessmentPolicy.durationSeconds/60} minutes` : 'No time limit specified'}</strong></span>
           <span>Questions: <strong>{questions.length}</strong></span>
         </div>
 
@@ -148,7 +154,7 @@ export default function AssessmentEditor({ content, onBack, isStudent = false, o
                     className="btn btn-ghost btn-sm"
                     style={{ padding: '2px 6px', color: 'var(--red-400)' }}
                     onClick={() => removeQuestion(qIdx)}
-                    disabled={questions.length <= 1}
+                    disabled={questions.length <= 3}
                   >
                     <Trash2 size={12} />
                   </button>
@@ -166,8 +172,9 @@ export default function AssessmentEditor({ content, onBack, isStudent = false, o
                 />
               )}
 
+              {!isStudent&&<div className="academic-filters"><label className="academic-filter">Question {qIdx+1} syllabus topic<select className="form-select" value={q.topic || ''} onChange={event=>updateQuestion(qIdx,'topic',event.target.value)}><option value="">Unmapped — excluded from topic mastery</option>{topics.map(topic=><option key={topic}>{topic}</option>)}</select></label><label className="academic-filter">Question {qIdx+1} response type<select className="form-select" value={q.type || 'multiple_choice'} onChange={event=>changeType(qIdx,event.target.value)}><option value="multiple_choice">Multiple choice</option><option value="true_false">True / false</option><option value="short_answer">Written response — instructor marked</option></select></label></div>}
               <div className="assessment-options">
-                {q.options.map((opt, optIdx) => {
+                {q.type==='short_answer'?<p>Written response. The instructor marks this question after submission.</p>:(q.options || []).map((opt, optIdx) => {
                   const isSelected = isStudent ? answers[qIdx] === optIdx : q.correctIndex === optIdx
                   const isCorrect = submitted && optIdx === q.correctIndex
                   const isWrong = submitted && answers[qIdx] === optIdx && optIdx !== q.correctIndex
@@ -178,13 +185,13 @@ export default function AssessmentEditor({ content, onBack, isStudent = false, o
                       className={`assessment-option ${isSelected ? 'selected' : ''} ${isCorrect ? 'correct' : ''} ${isWrong ? 'wrong' : ''}`}
                       onClick={() => isStudent ? handleStudentAnswer(qIdx, optIdx) : setCorrectAnswer(qIdx, optIdx)}
                     >
-                      <span className="assessment-option-label">{opt.label}</span>
-                      {isStudent ? (
-                        <span className="assessment-option-text">{opt.text}</span>
+                      <span className="assessment-option-label">{typeof opt==='string'?String.fromCharCode(65+optIdx):opt.label}</span>
+                      {isStudent || q.type==='true_false' ? (
+                        <span className="assessment-option-text">{typeof opt==='string'?opt:opt.text}</span>
                       ) : (
                         <input
                           className="assessment-option-input"
-                          value={opt.text}
+                          value={typeof opt==='string'?opt:opt.text}
                           onChange={e => updateOption(qIdx, optIdx, e.target.value)}
                           placeholder={`Option ${opt.label}...`}
                           onClick={e => e.stopPropagation()}

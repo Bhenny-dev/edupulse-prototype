@@ -64,3 +64,5 @@ Form grids shrink with the available editor width when Pulse opens, so course in
 ## Dialogs and the avatar launcher
 
 The launcher is the Pulse avatar alone, with a keyboard focus ring and an accessible name. Opening a dialog keeps the avatar outside its action area. If Pulse is open, dialogs use a separate desktop column or a scrollable area above the assistant on smaller screens. A second dialog temporarily hides the first; **Escape** closes the top dialog. See [the current layout examples](../12-interface-and-loading/README.md).
+
+Account guidance now describes confirmed shared imports/loading, saved topic results and enrolled publication, with role-specific follow-up actions. Preview personas retain sample warnings. Authenticated Records and Course Loading expose their page targets again; Dean guidance cannot mark results and Associate Dean guidance excludes scores. See the [account Pulse capture](../../system-walkthrough/09-restored-role-pages/README.md#pulse-account-guidance).

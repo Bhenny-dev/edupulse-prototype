@@ -16,3 +16,7 @@ The `commit-msg` hook enforces this rule. Never use `--no-verify` and never unse
 
 * `edupulse-app/`: the application (React/Vite front end, Node API in `server/`, Vercel function in `api/`). The release gate is `npm run verify`, plus `npm run test:browser`.
 * `feature-documentation/`: `system-walkthrough/` (screens by role), `system-manual/` (tasks step by step), `backend-system/`, `session-generated/` (generated charts and figures; never screenshots) and `versions/` (release records).
+
+## Preserve the approved feature contract
+
+Backend improvements do not authorize removing or bypassing documented frontend features. Before changing a workflow, read its current manual, role walkthrough, backend decisions and requirements. [ADR-002](feature-documentation/backend-system/decisions/002-feature-preservation-baseline.md) records the owner-confirmed preservation baseline and later corrections. Missing backend operations are unfinished implementation, not permission to drop the interface. Compare every affected role and route, preserve actual authorized data boundaries, and record unresolved contradictions or gaps explicitly. A preview control, sample result or success toast is not evidence of a working persistent feature.

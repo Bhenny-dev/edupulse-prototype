@@ -16,7 +16,7 @@ Task-by-task instructions for EduPulse v0.4.0, illustrated with captured screens
 | [10](10-authenticated-academic-records/README.md) | Publish and use authenticated academic records | Instructors, enrolled students, Dean, Associate Dean | Shared academic records, scoring, material access and role boundaries |
 | [11](11-workspace-buddies/README.md) | Meet the office crew, ask domain questions and follow real task states | Every signed-in account | Pulse / Visit office |
 | [12](12-interface-and-loading/README.md) | Use page tabs, dialogs, the avatar launcher and loading feedback | Everyone | Shared interface and academic records |
-| [13](13-restored-account-sections/README.md) | Use restored account sections and confirmed private CSV intake | Academic roles | Dashboards, Performance, Student Monitoring, Monitor, Records and student readers |
+| [13](13-restored-account-sections/README.md) | Use restored account sections and confirmed shared CSV intake | Academic roles | Dashboards, Performance, Student Monitoring, Monitor, Records and student readers |
 
 Sections 3–8 cover the AI features added in v0.4.0 (named LangGraph agents, sandboxed document extraction, free in-process embeddings and reranking, hybrid vector search, verification, correction, comparison, references and accurate on-page guidance). Sections 1–2 document the core workflow those features plug into.
 
@@ -37,3 +37,5 @@ CI=1 npx playwright test --config playwright.snapshots.config.ts tests/snapshots
 The scripts sign in with the preview personas of the documentation capture build (`npm run build:capture`), upload the evaluation documents (four Wikipedia articles as PDF, CC BY-SA 4.0, plus EduPulse specifications), run each task end to end and save the images into these folders. [`capture-log.json`](capture-log.json) records the capture time and any page error or Content-Security-Policy violation (none for this capture).
 
 Section 10 explains authenticated account workflows. Its current screenshots use synthetic browser transport to show the interface; the earlier hosted account canary remains historical validation evidence. Preview captures elsewhere demonstrate sample academic data; AI guides identify their real local documents and inference. Capture-run reports record these categories separately.
+
+The [current baseline restoration](../versions/2026-10-28-baseline-workflows/README.md) extends the authenticated sections with 50 illustrated account scenes and shared workflow contracts. See [Manual 13](../system-manual/13-restored-account-sections/README.md) and [Role guide 9](../system-walkthrough/09-restored-role-pages/README.md). The four new database migrations remain a hosted deployment prerequisite.

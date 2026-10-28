@@ -5,7 +5,7 @@ import { Bell, Check, AlertTriangle, Info, CheckCircle, Clock } from 'lucide-rea
 
 const ICON_MAP = { warning: AlertTriangle, success: CheckCircle, error: AlertTriangle, info: Info }
 const CATEGORY_LABELS = {
-  syllabus_status: 'Syllabus Status', delivery_gap: 'Delivery Gap', course_loading: 'Course Loading',
+  academic: 'Academic Notices', syllabus_status: 'Syllabus Status', delivery_gap: 'Delivery Gap', course_loading: 'Course Loading',
   records: 'Records', courseware: 'Courseware', unopened_material: 'Unopened Material',
   missing_assessment: 'Missing Assessment', assessment: 'Assessment',
 }
@@ -34,7 +34,7 @@ export default function NotificationCenter() {
         </div>
       </div>
 
-      {user?.authenticated && <p className="text-sm text-muted mb-16">Notices reflect current authorized records. Read state is saved for this account on this device.</p>}
+      {user?.authenticated && <p className="text-sm text-muted mb-16">Academic notices and read receipts are saved to your account. Current-record reminders are also shown; their read state is retained on this device.</p>}
       {loading && <p role="status">Loading record notices…</p>}
       {error && <p role="alert">{error}</p>}
       <div className="tabs mb-24" style={{ overflowX: 'auto', flexWrap: 'nowrap' }}>

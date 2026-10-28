@@ -1,4 +1,4 @@
-import { useCallback, useSyncExternalStore } from 'react'
+import { useCallback, useSyncExternalStore, useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { useAcademicRecords } from '../context/AcademicContext'
 import { useWorkspace } from '../context/WorkspaceContext'
@@ -56,7 +56,8 @@ const subscribe = listener => { listeners.add(listener); return () => listeners.
 
 export function useNotifications(role) {
   const { user } = useAuth()
-  const { data, loading, error } = useAcademicRecords()
+  const { data, loading, error, command } = useAcademicRecords()
+  const [noticeError,setNoticeError]=useState('')
   const workspace = useWorkspace()
   const store = useSyncExternalStore(subscribe, readStore, readStore)
   const account = user?.authenticated ? `${user.id}:${role}` : role
@@ -75,17 +76,22 @@ export function useNotifications(role) {
     })
     if (role === 'instructor') Object.entries(workspace.content).filter(([, item]) => item.status === 'draft').forEach(([id, item]) => add(`draft:${id}`, `Courseware draft awaiting review: ${item.content.title}`, 'courseware'))
   }
-  const notifications = (user?.authenticated ? (loading || error ? [] : current) : ROLE_NOTIFICATIONS[role] || []).map(n => ({ ...n, read: n.read || seen.has(n.id) }))
-  const markRead = useCallback(ids => {
-    const current = readStore()
-    writeStore({ ...current, [account]: [...new Set([...(current[account] || []), ...ids])].slice(-2000) })
-  }, [account])
+  const persisted=(data.notices || []).map(item=>({id:item.id,message:`${item.title}${item.detail?` — ${item.detail}`:''}`,category:'academic',type:'info',time:new Date(item.created_at).toLocaleString(),read:Boolean(item.read_at)}))
+  const notifications = (user?.authenticated ? (error ? [] : [...persisted,...current]) : ROLE_NOTIFICATIONS[role] || []).map(n => ({ ...n, read: n.read || seen.has(n.id) }))
+  const markRead = useCallback(async ids => {
+    try {
+      setNoticeError('')
+      const savedIds=ids.filter(id=>typeof id==='string'&&/^[a-f0-9-]{36}$/.test(id))
+      if(user?.authenticated&&savedIds.length)await command({operation:'read',ids:savedIds})
+      const current=readStore();writeStore({...current,[account]:[...new Set([...(current[account] || []),...ids])].slice(-2000)})
+    } catch(failure){setNoticeError(failure.message)}
+  }, [account,user?.authenticated,command])
   return {
     notifications,
     unreadCount: notifications.filter(n => !n.read).length,
     markRead,
     markAllRead: () => markRead(notifications.map(n => n.id)),
     loading: user?.authenticated && loading,
-    error: user?.authenticated && error,
+    error: user?.authenticated && (noticeError || error),
   }
 }

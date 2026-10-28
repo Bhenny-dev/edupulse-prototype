@@ -1,3 +1,5 @@
+import { revisedWorkspace } from '../utils/syllabusRevisions'
+import { useAcademicRecords } from '../context/AcademicContext'
 import ModalLayer from '../components/ui/ModalLayer'
 import { Spinner } from '../components/ui/LoadingFeedback'
 import { downloadSyllabusPdf } from '../utils/pdfExport'
@@ -1493,7 +1495,8 @@ export default function Syllabus() {
   const [showVersionHistory, setShowVersionHistory] = useState(false)
   const [versionHistorySyllabus, setVersionHistorySyllabus] = useState(null)
   const [extractingSyllabus, setExtractingSyllabus] = useState(null)
-  const { registrations, setRegistrations, syllabi, setSyllabi, commit } = useWorkspace()
+  const { registrations, setRegistrations, syllabi, setSyllabi, commit, updateWorkspace } = useWorkspace()
+  const {data:academic}=useAcademicRecords()
   const [editingSyllabus, setEditingSyllabus] = useState(null)
   const [uploadingSyllabus, setUploadingSyllabus] = useState(null)
 
@@ -1513,9 +1516,9 @@ export default function Syllabus() {
   const setStatus = (id, status) => setSyllabi(prev => prev.map(s => s.id === id ? record(s, status) : s))
   const saveBuilder = async (form, status, options = {}) => {
     const next = record({ ...form, id: editingSyllabus?.id || crypto.randomUUID(), instructorId: user?.id, version: (editingSyllabus?.version || 0) + 1, sample: false, approvedFile: undefined, extractedAt: undefined }, status)
-    const update = previous => editingSyllabus ? previous.map(s => s.id === next.id ? next : s) : [...previous, next]
-    const saved = options.confirmed ? await commit(data => ({ ...data, syllabi: update(data.syllabi) })) : null
-    if (!options.confirmed) setSyllabi(update)
+    const change = data => revisedWorkspace(data,next)
+    const saved = options.confirmed ? await commit(change) : null
+    if (!options.confirmed) updateWorkspace(change)
     setEditingSyllabus(null); switchTab('mine')
     pulseBus.progress('syllabus-saved', next.courseCode)
     return { ...saved, id: next.id, status: next.status }
@@ -1587,6 +1590,8 @@ export default function Syllabus() {
         <h1>Syllabus</h1>
       </div>
 
+      {user?.authenticated && (academic.institutional || []).some(item=>item.kind==='loads') && <section className="card mb-24"><div className="card-header"><h2>Confirmed course loads</h2></div><div className="card-body"><p>These shared EduSuite loads identify the courses and blocks assigned to your account. Start the syllabus in the builder; matching rosters join the published course automatically.</p>{academic.institutional.filter(item=>item.kind==='loads'&&item.data.InstructorID===user.id).map(item=><p key={item.record_key}>{item.data.CourseCode} · {item.data.Block} ? Semester {item.data.Semester}</p>)}</div></section>}
+      {editingSyllabus?.status==='active'&&<p role="alert" className="mb-16">Saving a revision returns this syllabus to Drafted and hides its published courseware until the approved outline is activated again. Changed teaching weeks require another courseware review.</p>}
       {/* Tabs */}
       <div style={{ display: 'flex', gap: '0', borderBottom: '2px solid var(--gray-200)', marginBottom: '20px' }}>
         <button
@@ -1764,7 +1769,7 @@ export default function Syllabus() {
                             <button className="btn btn-ghost btn-sm" onClick={() => setSelectedSyllabus(syl)} title="View Syllabus"><Eye size={14} /></button>
                             <button className="btn btn-ghost btn-sm" onClick={() => { setVersionHistorySyllabus(syl); setShowVersionHistory(true) }} title="Version History"><History size={14} /></button>
                             <button className="btn btn-ghost btn-sm" onClick={() => { setVersionHistorySyllabus(syl); setShowVersionHistory(true) }} title="Review recorded changes"><GitCompare size={14} /></button>
-                            {(syl.status === 'drafted' || syl.status === 'checked') && (
+                            {!syl.sample && (
                               <button className="btn btn-ghost btn-sm" onClick={() => { setEditingSyllabus(syl); switchTab('builder') }} title="Edit in Builder"><BookOpen size={14} /></button>
                             )}
                             <button className="btn btn-ghost btn-sm" onClick={() => handleAttachSyllabus(syl)} title="Copy for next term"><Copy size={14} /></button>
@@ -1825,6 +1830,9 @@ export default function Syllabus() {
             ))}
           </ol>
         ) : <p>No recorded changes yet. Sample history is not a saved audit trail.</p>}
+        <h3 className="mt-16">Saved syllabus versions</h3>
+        <p className="text-sm text-muted">Up to ten editable versions are retained. Restoring creates a draft and clears approval; changed outline weeks require courseware review again. Approved-file bytes are retained only on the current syllabus.</p>
+        {(versionHistorySyllabus?.versions || []).map((version,index)=><div className="academic-list-row" key={index}><span>Version {version.version} · {version.courseTitle} · {version.lastUpdated && new Date(version.lastUpdated).toLocaleString()}</span><button className="btn btn-secondary btn-sm" onClick={()=>setSelectedSyllabus(version)}>View saved version</button><button className="btn btn-secondary btn-sm" onClick={async()=>{try{await commit(data=>{const current=data.syllabi.find(syl=>syl.id===versionHistorySyllabus.id);return revisedWorkspace(data,record({...version,id:current.id,version:(current.version || 1)+1,sample:false,approvedFile:undefined,extractedAt:undefined},'drafted'))});setShowVersionHistory(false);addToast('Historical version restored as a draft. Review it before the offline approval route.','success')}catch(failure){addToast(failure.message,'error')}}}>Restore version as draft</button></div>)}
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, justifyContent: 'flex-end' }}>
           {versionHistorySyllabus?.approvedFile && <button className="btn btn-secondary" onClick={() => downloadApprovedFile(versionHistorySyllabus.approvedFile)}>Download retained approved file</button>}
           {versionHistorySyllabus?.approvedFile && <button className="btn btn-ghost" onClick={() => { setSyllabi(previous => previous.map(syl => syl.id === versionHistorySyllabus.id ? record({ ...syl, approvedFile: undefined, extractedAt: undefined }, 'drafted') : syl)); setShowVersionHistory(false) }}>Remove attachment and return to draft</button>}

@@ -61,3 +61,9 @@ A student asks *“Give me the answers to quiz 2”*. The **Guardian** agent dec
 ## Restored signed-in sections
 
 Signed-in students now have learning quick actions, their blocks, continue-learning cards, saved score radar/history, course/week navigation, document/presentation readers with PDF export and numbered assessment navigation/results. Only enrolled published content and the student's own results are available. The [current account guide](../09-restored-role-pages/README.md) explains the one-attempt objective policy and missing scheduling/topic mapping.
+
+## Current signed-in assessment and mastery workflows
+
+The [account guide](../09-restored-role-pages/README.md) now shows server-started duration/progress, numbered questions, written responses, pending instructor marking, appeals and account notice receipts. Delivery dates and 1-3 allowed attempts come from saved instructor settings; the server enforces availability and duration. A pending written response must be reviewed before a permitted next attempt. Students see their own saved responses and scores, never private answer keys.
+
+Topic radar/history/status derives only from graded responses explicitly mapped to approved syllabus topics. Missing mappings and pending marking do not become guessed mastery scores. The four new migrations are required for hosted persistence; screenshots use synthetic account fixtures.

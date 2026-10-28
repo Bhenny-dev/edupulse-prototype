@@ -1412,6 +1412,438 @@
       "reviewedAt": "2026-10-28T03:40:31.639Z"
     },
     {
+      "path": "feature-documentation/system-walkthrough/02-shared-interface/13-settings-ai-and-knowledge.png",
+      "sha256": "7c37692717b045d15760d6fffe8ddce44035c5ed2dd6e8689c9301bb51af10a7",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/02-shared-interface/15-dark-mode.png",
+      "sha256": "01113cf0f2d8aa2ecbb251ed7917a8715ff9684eba11d5924c7652c418572a53",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/03-dean-and-associate-dean/04-monitor-syllabus-status.png",
+      "sha256": "807709e225e96f8741e70f7a90ae32c63c69b010792708f5a5c7da93dc322afa",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/03-dean-and-associate-dean/05-monitor-delivery-progress.png",
+      "sha256": "b4d50e46de2cea0e2b7a52a5cce803f8d5980d3ba47d25fc7b18f3b252d0267a",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/03-dean-and-associate-dean/06-monitor-student-oversight.png",
+      "sha256": "9ba87a72554fbb5c3bfc26cb44cbbc78797b83eaed92e386b9b25262626c11fc",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/03-dean-and-associate-dean/11-pulse-on-course-loading.png",
+      "sha256": "9a020e7224e6af35cbaf19a1468b2ba0a12f3d6b8de1040db4c3d3de08e37097",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/04-instructor/03-syllabus-my-syllabus.png",
+      "sha256": "24d382094183d8c59b7a7af8a17c102c63aba2c2c85e5e508a318e1fd4c60d8e",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/04-instructor/10-student-monitoring-material-access.png",
+      "sha256": "2b48b2db60df7a4fe70548430472426c7206e9f1c3b2dfcf71c54a8e48204e03",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/05-student/03-my-assessments.png",
+      "sha256": "016524b678b14d8e1b2b349db10e216730e1b796e596103ae3db2d1da8aa1757",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/05-student/06-performance-learning-materials.png",
+      "sha256": "562a983167efb5a79857e57c90d9577e824b0b6e98900f305580d6f643f5800d",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/05-student/09-pulse-declines-assessment-answers.png",
+      "sha256": "724b0d5975b523bc174a02d0c208f1eb1cda385b8640315800b55a6f2589d2cd",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/36-topic-mastery-heatmap.png",
+      "sha256": "7036eb7add50701f597538e89659c039d06881d8031a331afcaf1cfafba13c44",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/37-instructor-response-marking.png",
+      "sha256": "7ccf9e9a7237ee42e7857f603c0a93c3a130ab608e6cbe970c4f4712d9b53c8b",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/38-confirmed-in-app-reminder.png",
+      "sha256": "4a044e3fbfbbde264500a26419e2a5972e79e6bfd45acab015f6457d0381a36d",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/39-loading-proposals.png",
+      "sha256": "292b01daa2253b1d00d8d1d04e07d5ecc8553bd40c08b770727af1192085f6ee",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/40-block-correction.png",
+      "sha256": "2b3e265cfd3671c44b394d58ef4a510a02c9303bc8f5422a66923397016dad92",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/41-offline-review-inbox.png",
+      "sha256": "5e3cb21cfd05ee1ce85fb334c8b548b39df32e3a5d77f4592482b5748597bd08",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/44-persisted-academic-notices.png",
+      "sha256": "b99e4ca109da129e0a3e3bf6d15112ce49d224ef2fcf8aa7f818f2728a888f6d",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/45-saved-syllabus-versions.png",
+      "sha256": "c46c8b57f35d3586a5a347cf5f7ae578e86bf39a6e468d1d5ece61b42088f5bb",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/46-assessment-topic-mapping.png",
+      "sha256": "3d4d9504260a7b2df1920c3326989fe0e0ebbd908b0fffb8663d91975ddf72e2",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/47-publication-delivery-settings.png",
+      "sha256": "028489bd4feed68968fee35aa8a4bab7f9fea322213a641c72a68ba630ec8f98",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/48-mobile-topic-mastery.png",
+      "sha256": "f773e481a44f3383a4de618bf8d07a74d1ebefa145991095be9b5386d2d72a0b",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/49-mobile-loading-proposal.png",
+      "sha256": "d45fd318bfd91a5123a44f6b5b8f5e104ecee2c7de3545ca78159308386b13cf",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/03-save-as-drafted-button.png",
+      "sha256": "273796333b8a8bf0bd6b3f862f85939b179fee58386d7ae834cfba2176e0a3ba",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/04-my-syllabus-drafted.png",
+      "sha256": "aa95d8fb88d38714ffd348fc811bdd31aa99eb650b6349a145d21d8724289a73",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/06-downloaded-for-approval.png",
+      "sha256": "85e6a65518c61f1ad1362ef7ae4bd56f93c9e108db4f6c22b02b4e7f8e6d6458",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/07-upload-approved-file-attestation.png",
+      "sha256": "78f8eadb173db77f09031f36e8f76fcdd3d5cb670de12b1dd51ee1ea8b0f078b",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/08-approved-file-uploaded.png",
+      "sha256": "1f384ebf5a5c2471e126bf79f07af6537ad44a344d489660d4a664491d153ba5",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/09-review-extracted-outline.png",
+      "sha256": "81e951ca990c148a196e0ab2db01c2e59aca46c038e5dc806a48d6c5a49591d8",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/10-active-drives-courseware.png",
+      "sha256": "2df9d741c89a99ac50b332b90e13ca621e259c9728ab74f54704afc6bedd2cbf",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/11-version-history-dialog.png",
+      "sha256": "95e35f3e78c9f31bce8a00d4d3f8fc2c7185b620419b563d31274979add51d42",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/03-courseware-generation-and-review/04-generated-drafts-for-review.png",
+      "sha256": "08ce2bfc47c58fd930fe927a0ebc7e91e985dd9368194aa37116d89216dd3624",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/01-instructor-dashboard.png",
+      "sha256": "97906e23af50ff54b6a011c5ce7f77916171979f4a822b83b77146f75ebb077f",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/03-dean-dashboard.png",
+      "sha256": "2f08d30c29e2541aa78702346931b4b46dc31c7c8d8b38b2410684fd497b7122",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/04-associate_dean-dashboard.png",
+      "sha256": "d6b5b884ec4329b84e1ed6ee39c3501af5097033eea5e6c40b74228a5b09daf1",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/05-performance-radar-and-history.png",
+      "sha256": "2d7b1d6a1180b1004a0c0dc5f9aa503d1ef372a3a9836b3915a4484dc8b9d693",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/06-assessment-coverage.png",
+      "sha256": "4593e9d24db5e9d03a0a744901cf0c088aacf10cf12fc882f0e47fd99ef8c944",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/07-material-access.png",
+      "sha256": "6e17654aa768ad3655d38e02a09cc0f745e9bb1df75bfc2f9aec78d4f1371842",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/08-assessment-scores.png",
+      "sha256": "95a79fdb317116c21e69fa9bedcac64ed75fbfc290e100524ddcdbde96aa1ed7",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/09-threshold-review.png",
+      "sha256": "7b773e59c56660e89b31dba2a49a9b4ccceb2eb4b0206c3c0ae27be57d5a3280",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/10-student-drilldown.png",
+      "sha256": "92ed2e201bda20cdf5b4ac2af495a67389119d2683c5160113ee9643df61369c",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/11-monitoring-scoring-matrix.png",
+      "sha256": "64447ae800999fc8669f9b537783fb33a8137f7858c3defe52276bcb6930b68e",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/12-monitoring-material-matrix.png",
+      "sha256": "2873077ed7e3d4ef33d879dcf55a2bc436bbd241fe220adb1d9bf1f4b218775a",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/13-monitor-syllabus-status.png",
+      "sha256": "19f08fc867cc9418cc0b1866a83aa3ea2c8c7989005c1d630fa99aba4ae0e0b3",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/14-monitor-delivery.png",
+      "sha256": "d21ae7f7d4cf146ed5b992ddab30a21d9caa31131ac57131a8b48befefb07fad",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/15-monitor-students.png",
+      "sha256": "85d37f3227ce3e7905f091521a27710b7175a781ff4baf0f91103f4df9f4cbec",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/16-monitor-alerts.png",
+      "sha256": "5863d0ad6b47ef9d9c79cd81557be2b10c957b0e8a3528053c5bf79f6fa731c6",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/17-course-loading.png",
+      "sha256": "d36dd5b9f3f75aef27b7c801e431ed829c12aecd4c8a768bef78c54822053229",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/18-instructor-delivery.png",
+      "sha256": "d244618ebddfde98ca61a4e3d26dc7b0aba9f039a4a2d2c3ad18fdd1fbc57a6b",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/19-record-blocks.png",
+      "sha256": "c21a54a3813892dc541097b17c168a3c3ae10449e8aa968e9a45e4e1d787857c",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/20-record-courses.png",
+      "sha256": "eeaee82e229c3b59fc93f4d3e748cdc2cf0e19e121387e7b98b49a79fff0891c",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/21-course-intake-preview.png",
+      "sha256": "a91e61537492d2dad375f42446c61a7430d4f5d5a3148ccf7b290e22a2e34bde",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/22-course-intake-saved.png",
+      "sha256": "a128436197258696d70bcf5914256fc2ab1e79148ee2c4beb25d54e089b05155",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/23-load-intake.png",
+      "sha256": "0cc8ada244bad5c2b02ae13a592b02de65fa7f8a62a255acd396bd1ee113676c",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/24-roster-intake.png",
+      "sha256": "4149c0cc4c0c1d5a82b8554dc2c10dc77ed73bdb66010666499dd3c58c59c39c",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/25-intake-templates.png",
+      "sha256": "03bb42d78ba9a4f5b48d74b2ff1049ac084ee071889ce19a4450d9fa70416697",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/26-intake-history.png",
+      "sha256": "331ce184c10a6ceaa4f8dacfe91cdb25de2d1006e0668fa9a764f5af428d5a47",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/28-student-document.png",
+      "sha256": "5e4d7ea40133b70fb5443254c311fc1ba6f4cc921605e6866b8c261116239aee",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/31-account-notices.png",
+      "sha256": "3c6a8fc19732d8b50d9bd486105f63a8a53b2d38b2d1a7a23c1a29f19720d870",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/32-dark-performance.png",
+      "sha256": "d708993e8a1b0204f87c41cecaed2cdd26bc342df6fb4f410eb0d881366e5929",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/33-mobile-performance.png",
+      "sha256": "1533c4050a5fba5bbf19d0d651c4a8368d92ece23041168d51e7af8e553a9863",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/34-mobile-materials.png",
+      "sha256": "9093794dc5100a08299babac8936a9b2f5214a5e605fd415f4b8120c741f9304",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/35-mobile-dark-dashboard.png",
+      "sha256": "53e72227b1bbf8e13c97587da76ebfedc56bb4fc56d6b38c89bf5519d935aec9",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T05:56:16.554971+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/02-student-dashboard.png",
+      "sha256": "502ef6ae0d0a16e9018c7185b0b3961757f86e3f0ed1a46e8fe4efa11610f55b",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T06:26:40.823756+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/30-student-assessment-result.png",
+      "sha256": "fac32fc9405c71d27d010814d8b0c547d3f77b94a47a2051f3b09273f67f4885",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T06:26:40.823756+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/03-courseware-generation-and-review/04-generated-drafts-for-review.png",
+      "sha256": "b97cd85c45f7e7af1c05296aed4bd868fab954c5840d9a60e887b70ca2c3140b",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T06:29:41.270482+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/42-timed-written-assessment.png",
+      "sha256": "7d58aaa3e59f2fab1a5913b68147d005fb34161b37767373083e9110f7e6e35d",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T06:29:41.270482+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/43-assessment-pending-review-and-appeal.png",
+      "sha256": "16052c473fd5534784bb8625dcea4a7e6c8d3d4c73ef7bb95c94b43342462e7e",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T06:29:41.270482+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/44-persisted-academic-notices.png",
+      "sha256": "e76f3359e940e8a2bd38e0e22b179a3d3aac7f53197e9d3fe98fd61868d53ea0",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T06:29:41.270482+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/46-assessment-topic-mapping.png",
+      "sha256": "e6cd6ef7c7dbc10f082ed7c6a37afd0b90bd326250f38fba65069a744f71370d",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T06:29:41.270482+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/47-publication-delivery-settings.png",
+      "sha256": "36378a38f46259e131100e5b7bb417c97cf4b39d8f20dd5cf2e4dc3d1f48d5a7",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T06:29:41.270482+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/50-account-pulse-guidance.png",
+      "sha256": "9e5f6b60d59a36a8d6cdfd941328a5360b92e5c0c7ea394c932c3eb9ca0a6825",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-28T06:29:41.270482+00:00"
+    },
+    {
       "path": "feature-documentation/system-walkthrough/01-public-site/01-landing-hero.png",
       "sha256": "40d0f7f8e5e5c3f273234c705c91c022712a5fe1640909f8cbafca17b4efb7c0",
       "reviewer": "Claude agent",

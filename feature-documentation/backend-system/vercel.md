@@ -107,3 +107,7 @@ The root `.vercelignore` excludes `edupulse-app/test-results*`, including custom
 ### Native ESM startup check
 
 Shared buddy definitions use explicit `.js` import specifiers so the emitted serverless JavaScript resolves under native Node ESM. The deployment gate compiles and imports the buddy modules with plain Node (without the local TypeScript loader), covering the startup failure that local Vite/tsx execution concealed. This changes module loading, with no interface or screenshot changes.
+
+## Baseline restoration migration dependency
+
+The 28 October baseline restoration changes both the academic API and the private workspace projection. Apply the four additive migrations listed in [Supabase operations](supabase.md) in order before deploying the matching server/UI, then validate each hosted role and inspect advisors. All four were applied to EduPulse System on 28 October 2026 and verified before the code push. The restoration and the separately committed landing/motion change are checked together in an isolated worktree based on `952107c`. The production deployment follows the push to `main`; readiness and post-deployment checks are recorded separately. [Validation](../versions/2026-10-28-baseline-workflows/validation/results.md) distinguishes local SQL/browser results from hosted evidence.

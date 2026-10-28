@@ -14,7 +14,7 @@
 
    ![Week 1 generating state](03-generating-with-pulse-thinking.png)
 
-4. On success, the week expands to three separate **Draft** items: a learning material, an activity, and an assessment. Use **Open** to inspect an item. **Check** and **Check All Drafts** are instructor actions; generation itself does not mark the items checked.
+4. On generation success, the week expands to three separate **Draft** items: a learning material, an activity, and an assessment. Use **Open** to inspect an item. **Check** and **Check All Drafts** are instructor actions; generation itself does not mark the items checked.
 
    ![Three generated draft items](04-generated-drafts-for-review.png)
 
@@ -26,7 +26,7 @@
 
 6. Edit any inaccurate explanation or answer key, then use **Check** only after reviewing the material, activity, and assessment. Drafts are not published or graded automatically.
 
-The current workflow captures use the local `qwen2.5:3b` model. Earlier v0.4.0 and 1.5B-model evidence remains in the historical release records. They establish local task evidence, not authenticated hosted behavior or general model accuracy. The review panel may flag incorrect answer explanations; instructors must resolve them before checking or publishing. The [v0.4.0 release record](../../versions/v0.4.0/README.md) maps the original workflow to NFR-AI-06 (goal 6).
+The generation/material evidence uses the local `qwen2.5:3b` model. The fourth image was refreshed on 28 October with a synthetic saved assessment to show the current draft controls, including Delivery settings; it is not a new model-generation result. Earlier v0.4.0 and 1.5B-model evidence remains in the historical release records. They establish local task evidence, not authenticated hosted behavior or general model accuracy. The review panel may flag incorrect answer explanations; instructors must resolve them before checking or publishing. The [v0.4.0 release record](../../versions/v0.4.0/README.md) maps the original workflow to NFR-AI-06 (goal 6).
 
 ## Revise through Pulse
 
@@ -35,3 +35,9 @@ When an instructor opens a saved draft in a document, presentation or assessment
 ## Download a learning document
 
 **Download PDF** in the document viewer exports the displayed sections, including current edits, with embedded fonts, margins and page numbers. The download is a genuine PDF rather than a renamed text file or a print-dialog instruction. It does not save edits, change review status or publish the material. Pulse-generated responses have a separate **Download response as PDF** control.
+
+## Map topics and schedule delivery
+
+Open a saved assessment and map each question to the approved outline week using **Question ... syllabus topic**. Select multiple choice, fixed True/False choices or instructor-marked written responses. **Save Assessment** returns edits to Draft. Topic mastery uses graded, mapped responses only.
+
+**Delivery settings** stores release/deadline, duration and 1-3 allowed attempts. Review any changed assessment rules again before publication. A published future release stays hidden until its saved time. See [Manual 13](../13-restored-account-sections/README.md) and the [mapping/delivery captures](../../system-walkthrough/09-restored-role-pages/README.md#baseline-workflows-restored-after-owner-confirmation).

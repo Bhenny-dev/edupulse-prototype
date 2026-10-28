@@ -174,3 +174,7 @@ The latest request asked for a comprehensive scan. This register and inventory p
 This register preserves the original findings. [Restoration disposition](restoration-status.md) now records implemented account sections and remaining data/backend gaps for every ID. The [current role guide](../../system-walkthrough/09-restored-role-pages/README.md) supersedes the original generic-portal descriptions for restored interfaces.
 
 The 28 October inventory rerun covers 62 JSX/TSX files and 186 requirement references. The original 56-file scan and 80 findings remain historical evidence; new account components explain the increased file count.
+
+## Approved baseline restoration
+
+The owner confirmed the pre-makeover baseline with later role and theme corrections. [ADR-002](../../backend-system/decisions/002-feature-preservation-baseline.md) and the updated [80-ID disposition](restoration-status.md) supersede the earlier remaining-gap statements for implemented workflows. Shared intake/loading, mapped topic mastery, scheduled and written assessments, in-app notices, editable versions and the Dean offline-review inbox now have additive local backend contracts. Hosted migration remains pending; see the [current validation](../../versions/2026-10-28-baseline-workflows/validation/results.md).

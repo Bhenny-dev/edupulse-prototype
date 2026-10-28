@@ -1,0 +1,12 @@
+import { useState } from 'react'
+import { useAcademicRecords } from '../../context/AcademicContext'
+import { Panel,Table,Empty } from './AcademicUI'
+
+export default function OfflineReview({data}) {
+ const {command}=useAcademicRecords()
+ const [course,setCourse]=useState(''),[comment,setComment]=useState(''),[busy,setBusy]=useState(false),[message,setMessage]=useState(''),[error,setError]=useState('')
+ const selected=data.courses.find(item=>item.id===course)
+ const request=async()=>{setBusy(true);setError('');try{await command({operation:'revise',course,comment});setMessage('Correction request saved and sent to the instructor’s in-app notices.');setComment('')}catch(failure){setError(failure.message)}finally{setBusy(false)}}
+ return <Panel title="Offline syllabus review inbox"><p className="text-sm text-muted mb-16">The Dean reviews the downloaded file. CAO approval and EVP noting remain outside EduPulse. This inbox tracks the recorded syllabus station and sends correction requests; it cannot grant approval or validate signatures.</p><Table headers={['Course','Instructor','Recorded station']} rows={data.courses.filter(item=>['checked','downloaded_for_approval','approved_uploaded'].includes(item.syllabus_status)).map(item=>[item.course_code,item.instructor_name || item.instructor_id,item.syllabus_status.replaceAll('_',' ')])} empty="No syllabi currently recorded in the offline review route."/>
+ {data.courses.length?<><label className="academic-filter mt-16">Course to review<select aria-label="Course to review" className="form-select" value={course} onChange={event=>setCourse(event.target.value)}><option value="">Select course</option>{data.courses.map(item=><option key={item.id} value={item.id}>{item.course_code} — {item.course_title}</option>)}</select></label>{selected&&<Table headers={['Week','Learning outcomes','Topics']} rows={(selected.outline || []).map(row=>[row.week,row.ilos,row.contents?.join('; ')])}/>}<label className="academic-filter mt-16">Correction request<textarea className="form-input" maxLength={2000} value={comment} onChange={event=>setComment(event.target.value)}/></label><button className="btn btn-primary mt-16" disabled={busy||!course||!comment.trim()} onClick={request}>Confirm correction request</button></>:<Empty>No authorized course records yet.</Empty>}{message&&<p role="status">{message}</p>}{error&&<p role="alert">{error}</p>}</Panel>
+}

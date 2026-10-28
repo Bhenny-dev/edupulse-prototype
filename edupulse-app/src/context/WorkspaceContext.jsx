@@ -112,7 +112,7 @@ function WorkspaceSession({ children, owner, user, preview }) {
     const link = document.createElement('a'); link.href = url; link.download = `edupulse-workspace-${new Date().toISOString().slice(0, 10)}.json`; link.click()
     setTimeout(() => URL.revokeObjectURL(url), 1000); setBackedUp(true)
   }, [])
-  return <WorkspaceContext.Provider value={{ ...journal.data, setSyllabi, setContent, setRegistrations, commit, loading, saving, dirty: journal.dirty, mode, error: cacheError || error, conflict, backedUp, exportBackup, retry: () => mode ? setError('') : load(), reload: () => load(true) }}>{children}</WorkspaceContext.Provider>
+  return <WorkspaceContext.Provider value={{ ...journal.data, setSyllabi, setContent, setRegistrations, updateWorkspace:update, commit, loading, saving, dirty: journal.dirty, mode, error: cacheError || error, conflict, backedUp, exportBackup, retry: () => mode ? setError('') : load(), reload: () => load(true) }}>{children}</WorkspaceContext.Provider>
 }
 export function useWorkspace() {
   const value = useContext(WorkspaceContext)

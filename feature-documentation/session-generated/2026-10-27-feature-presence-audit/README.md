@@ -52,3 +52,7 @@ The syllabus detail dialog also contained an Export button with no click handler
 ## 28 October restoration follow-up
 
 The preceding tables preserve the findings at scan time. Role-specific dashboards, performance/monitoring, oversight, records/private intake and student readers have now been rebuilt against authorized data. [Restoration disposition](restoration-status.md) records the result for all 80 IDs, including limitations and pre-existing inactive controls. See the [current account captures](../../system-walkthrough/09-restored-role-pages/README.md).
+
+## Approved baseline restoration
+
+The owner confirmed the pre-makeover baseline with later role and theme corrections. [ADR-002](../../backend-system/decisions/002-feature-preservation-baseline.md) and the updated [80-ID disposition](restoration-status.md) supersede the earlier remaining-gap statements for implemented workflows. Shared intake/loading, mapped topic mastery, scheduled and written assessments, in-app notices, editable versions and the Dean offline-review inbox now have additive local backend contracts. Hosted migration remains pending; see the [current validation](../../versions/2026-10-28-baseline-workflows/validation/results.md).

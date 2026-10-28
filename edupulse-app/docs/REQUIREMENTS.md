@@ -143,9 +143,9 @@ Every requirement below cites the section of *EduPulse Chapter 1 & 2* (Rivera, B
 
 | ID | Requirement | Source | Pri |
 |---|---|---|---|
-| FR-REV-01 | The Dean shall have a single Review Inbox listing syllabi and courseware pending approval. | §1.5 | M |
-| FR-REV-02 | The Dean shall be able to approve or request changes on a pending syllabus, with a comment. | §1.5 | M |
-| FR-REV-03 | The Review Inbox shall separate items by status: pending, approved, needs revision. | Usability baseline | M |
+| FR-REV-01 | The Dean shall have a Review Inbox tracking saved syllabus stations in the offline review route and allowing correction requests to the instructor; the inbox shall not grant electronic approval. | §1.5 | M |
+| FR-REV-02 | The Dean shall be able to send a persisted correction request with a comment; approval follows the offline Dean review, CAO approval and EVP noting route. | §1.5 | M |
+| FR-REV-03 | The Review Inbox shall show recorded syllabus lifecycle stations and correction requests without claiming to validate signatures or issue approval. | Usability baseline | M |
 | FR-REV-04 | The Dean shall see a recent-activity feed (approvals, submissions, publications) on their dashboard, in place of a full audit-log console. | §1.5, replaces cut AuditLog page | S |
 | FR-REV-05 | Requesting changes shall notify the instructor with the Dean's comment attached. | §1.5 | M |
 | FR-REV-06 | The Dean shall be able to drill from the Review Inbox into the specific syllabus or courseware item under review. | §1.5 | M |
@@ -256,7 +256,7 @@ Every requirement below cites the section of *EduPulse Chapter 1 & 2* (Rivera, B
 | FR-NOTIF-01 | The system shall notify instructors when a syllabus is approved or returned for changes. | §1.5 | M |
 | FR-NOTIF-02 | The system shall notify students when new courseware is published to their section. | Fig. 2 step 4 | M |
 | FR-NOTIF-03 | The system shall notify instructors when generation for a requested batch completes. | §1.2 | S |
-| FR-NOTIF-04 | The Dean shall be notified when a syllabus or courseware item is submitted for review. | §1.5 | M |
+| FR-NOTIF-04 | The Dean shall see recorded syllabus review-route activity; correction requests and publication notices shall use authorized persisted records. | §1.5 | M |
 | FR-NOTIF-05 | The notification bell shall show an unread count and open a scrollable list from the top bar. | Usability baseline | S |
 | FR-NOTIF-06 | The system shall not generate notifications for internal system-operations events (job retries, model latency, storage). | §1.2 (no ops console in scope) | M |
 
@@ -382,3 +382,5 @@ Every requirement below cites the section of *EduPulse Chapter 1 & 2* (Rivera, B
 **Revision note (October 7 2026).** The project owner asked that Pulse act on conversation requests with the user's confirmation: register an uploaded class list into the instructor's course, search records, suggest which course a student's material belongs to, generate, redirect, and cite existing files. FR-GUIDE-31 through FR-GUIDE-36 record those requirements (180 → 186 functional). The evidence is in `tests/operator.test.ts` and `tests/browser/pulse-actions.spec.ts`, and System Manual 9 documents the use.
 
 Every requirement above cites a specific section of Chapters 1–2, or an audit finding that this document exists to close. Nothing here targets a page, dashboard, or control that Chapter 1 or 2 does not describe.
+
+**Owner-confirmed preservation baseline - 28 October 2026.** [ADR-002](../../feature-documentation/backend-system/decisions/002-feature-preservation-baseline.md) preserves the features of `5e7d956` with later explicit corrections. FR-REV-01/02/03 and FR-NOTIF-04 now state the offline review contract consistently with FR-SYL-08/09. Shared file intake/loading, question-to-topic mastery, publication timing, instructor response marking, notices and editable history remain in scope. No model-generated mastery, real-data fixtures, institutional grade calculation or electronic approval is authorized.

@@ -39,7 +39,7 @@ test('profile saves, survives reload, and preview password editing is disabled',
   await page.getByLabel('Full Name', { exact: true }).fill('Preview Test Instructor')
   await expect(page.getByLabel('New Password', { exact: true })).toBeDisabled()
   await page.getByRole('button', { name: 'Save Changes', exact: true }).click()
-  await page.reload()
+  await page.reload({ waitUntil: 'domcontentloaded' })
   await expect(page.getByLabel('Full Name', { exact: true })).toHaveValue('Preview Test Instructor')
 })
 

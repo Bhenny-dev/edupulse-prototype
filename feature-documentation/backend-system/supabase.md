@@ -78,7 +78,7 @@ The document and workspace tables held 0 rows at the earlier verification, which
 | `edupulse_admin_overview` | INVOKER wrapper around a gated private function | empty | no | yes, but only the verified Google system admin receives data |
 | `edupulse_admin_agent_activity` | INVOKER wrapper around a gated private function | empty | no | yes, but only the verified Google system admin receives data: totals, results per agent, declines by rule and the 30 latest runs by role (never by person) |
 
-The academic and AI functions run with the caller's rights, so row-level security decides which rows each account can read or write. The admin overview uses a private elevated function that checks the live Auth identity, the owner address, the Google identity and the admin role before returning a limited account roster and audit records. It does not return the owner's email.
+AI functions and academic read wrappers run with the caller's rights, so row-level security decides which rows each account can read. The baseline academic command RPCs listed below use SECURITY DEFINER with explicit live-role, ownership and enrollment checks and restricted execute grants. The admin overview uses a private elevated function that checks the live Auth identity, the owner address, the Google identity and the admin role before returning a limited account roster and audit records. It does not return the owner's email.
 
 ## Extensions in use
 
@@ -110,3 +110,11 @@ The connector cannot take screenshots of the Supabase dashboard. If the report n
 6. *Advisors → Security Advisor* (leaked-password protection setting).
 
 The fourth migration, `20261024073036_academic_lint_cleanup.sql`, removes a redundant outer loop variable found by the hosted PL/pgSQL linter. It preserves scoring and permissions.
+
+## Applied baseline workflow migrations (28 October 2026)
+
+Applied `20261028130000_baseline_workflows.sql`, `20261028130100_assessment_workflows.sql`, `20261028130200_delivery_notices.sql` and `20261028130300_offline_review_requests.sql`, in order, to EduPulse System (`xyziepdkdvvuhgkymooo`) on 28 October 2026 before the matching code push. Linked migration history confirms all four versions. Live catalog checks confirm RLS on all four new tables, no anonymous reads or direct authenticated writes, empty function search paths and inaccessible private helpers. The security advisor reports six intentionally authenticated, role-checked SECURITY DEFINER RPCs and the existing leaked-password-protection warning. These elevated commands enforce live account roles, ownership and enrollment internally; their execute grants are deliberate. No advisor ERROR was reported. Record counts remained unchanged: two workspaces, three courses and zero publications, enrollments, attempts or access rows. No real-data conversion or automatic promotion of earlier private intake is performed. See [workflow contracts](README.md#baseline-workflows-28-october-2026), [ADR-002](decisions/002-feature-preservation-baseline.md) and the [release validation](../versions/2026-10-28-baseline-workflows/validation/results.md).
+
+The first baseline migration also backfills the new read-model metadata from existing saved syllabi. No instructor resave is needed for the saved station, outline and reference links to appear. Private import history is not automatically promoted to shared intake; workspace revisions, approval files and assessment marks are preserved.
+
+The 28 October performance advisor reports three `auth_rls_initplan` WARN findings on the course, enrollment and publication read policies, with no ERROR. Repeated Auth-function evaluation remains a documented scaling optimization.

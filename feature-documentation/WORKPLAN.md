@@ -111,3 +111,18 @@ Compatibility: retain React/Vite, the existing AI API, local PGlite, Supabase au
 ## v0.1.1 verification correction
 
 The first Vercel verification build excluded tests through the app ignore file and reported zero tests. Include test sources in the build context and make the test runner reject an empty suite. Inspect the remote test count as well as deployment readiness. The versioned correction and its validation live in `versions/v0.1.1`.
+
+## Approved pre-makeover baseline restoration (28 October 2026)
+
+Owner-confirmed decision: preserve `5e7d956` features while retaining five roles, teacher-owned authoring, enrollment boundaries, Associate Dean score denial, read-only Dean performance, offline Dean/CAO/EVP signatures, page tabs and solid dark surfaces. The completed read-only audit is followed by [ADR-002](backend-system/decisions/002-feature-preservation-baseline.md).
+
+- [x] Restore shared institutional imports, block corrections, provisioned-instructor proposals and enrollment projection with role-checked persistence.
+- [x] Restore explicit question-topic mapping, topic radar/history/heatmap/counters and durable acknowledgment.
+- [x] Restore release/deadline/duration/attempt policies, written-response marking, retakes and appeals with private keys.
+- [x] Restore saved syllabus snapshots and draft restoration with publication withdrawal, offline inbox/correction requests and persisted in-app notices/read receipts.
+- [x] Extend desktop/mobile browser and screenshot fixtures, role guides and backend documentation.
+- [x] Finish final full browser rerun and record final local verify, browser and documentation gates in the [validation record](versions/2026-10-28-baseline-workflows/validation/results.md).
+- [x] Apply all four additive migrations to EduPulse System and verify linked history, RLS/grants, unchanged record counts and security advisors.
+- [ ] Finish hosted authenticated canaries and inspect the production deployment after pushing the combined source.
+
+The [current disposition](session-generated/2026-10-27-feature-presence-audit/restoration-status.md) also preserves outstanding automatic indexing and pre-existing inactive fallback obligations. Earlier release checks remain historical evidence; the 28 October linked checks establish the four new migrations are applied.

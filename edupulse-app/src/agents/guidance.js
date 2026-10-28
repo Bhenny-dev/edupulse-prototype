@@ -1,6 +1,6 @@
 // Authored workflow controls, kept outside the mascot. Only allowlisted UI
 // targets/actions are used; model output is never executed as a selector/tool.
-export function prepareIntent(agent, intent) {
+export function prepareIntent(agent, intent, user = null) {
   const steps = intent.steps.map(step => ({ ...step }))
   if (agent.id === 'syllabus' && ['build', 'walkthrough'].includes(intent.key)) {
     for (const step of steps) {
@@ -18,10 +18,11 @@ export function prepareIntent(agent, intent) {
     steps[0].path = '/courseware?tab=builder'
     steps[1].event = 'courseware-generated'; steps[1].hint = 'Generate a week using the page controls. I will continue when a valid draft has been saved.'
     steps[2].event = 'courseware-checked'; steps[2].hint = 'Read and check a draft in Courseware before continuing.'
-    steps[3].body = 'A checked draft is ready for your explicit publication decision. This private workspace does not yet deliver content to enrolled students. Do not interpret the preview visibility control as institutional delivery.'
+    steps[3].body = user?.authenticated ? 'Set delivery dates and assessment rules, save, review and check the draft, then explicitly publish. Enrolled students can open it after release; a future release remains hidden.' : 'Review and check the draft before publication. Preview changes stay on this device; they do not deliver material to real students.'
   }
   if (agent.id === 'performance' && intent.key === 'review') steps[steps.length - 1].path = '/courseware'
-  return { ...intent, agentId: agent.id, steps }
+  const account = user?.authenticated && accountSteps(agent.id, intent.key, user.role)
+  return { ...intent, agentId: agent.id, steps: account || steps }
 }
 
 export function approvalResumeStep(record) {
@@ -59,3 +60,18 @@ export function stepTarget(step) {
 }
 
 export const previewAgents = new Set(['records', 'course-loading', 'performance', 'monitor'])
+
+// Account guidance describes the persisted workflow; preview guidance retains its sample disclosure.
+export function accountGreeting(agent, user) {
+  if (!user?.authenticated) return agent?.greeting(user)
+  return ({ records: 'Review official EduSuite CSV exports, then confirm shared course, load and roster imports.', 'course-loading': 'Review saved loads and provisioned instructor qualifications, preview proposals, then confirm any assignment change.', monitor: 'Review saved syllabus stations, outline coverage and confirmed rosters. Signatures remain offline.', performance: 'Review authorized saved assessment results and mapped topic mastery. Official institutional grades stay in EduSuite.', courseware: user.role === 'student' ? 'Open released materials for your enrolled courses and review your saved responses. Pulse does not provide assessment answers.' : 'Generate from an active syllabus, review drafts and choose when to publish them to enrolled students.' })[agent?.id] || agent?.greeting(user)
+}
+function accountSteps(agent, intent, role) {
+  const step = (title, body, path) => ({ title, body, ...(path ? { path } : {}) })
+  if (agent === 'records' && intent === 'import') return [step('Choose the export type', 'Import Course Records first, then Course Loads, then Student Class Lists. Download the matching CSV template.', '/records?tab=import'), step('Preview the parsed rows', 'Review valid and rejected rows. Loads need an imported course and a provisioned instructor; rosters match by block and verified student email.'), step('Confirm the shared import', 'Confirm Import saves shared records and matching enrollments. Review the saved receipt and History. EduPulse does not write back to EduSuite.')]
+  if (agent === 'course-loading') return [step('Open instructor loading', 'Inspect imported courses, confirmed loads and recorded qualifications. Missing qualifications stay explicit.', '/course-loading?tab=instructors'), step(intent === 'auto' ? 'Propose the semester load' : intent === 'assist' ? 'Preview a candidate' : 'Inspect saved loads', intent === 'auto' ? 'Enter block and semester, then Auto-propose semester loads. Review every proposed instructor.' : intent === 'assist' ? 'Choose course and block, then Suggest highest-priority instructor. Recorded master\'s degree ranks before specialization match.' : 'The qualifications table shows current load counts; expand instructor delivery to inspect course readiness.'), step('Review before confirming', 'Override proposals as needed. Confirm proposed loads only after checking them; the saved receipt verifies the shared update. Official institutional assignments remain in EduSuite.')]
+  if (agent === 'monitor') return [step('Review the selected oversight view', intent === 'students' ? 'Read confirmed block rosters and course coverage.' : intent === 'delivery' ? 'Compare published teaching weeks with the saved approved outline. Coverage alone does not prove every activity was delivered or that a course is late.' : 'Read saved syllabus stations and expand the course details.', '/monitor?tab=' + (intent === 'students' ? 'students' : intent === 'delivery' ? 'delivery' : 'syllabi')), step('Follow up within your role', role === 'dean' ? 'Use Review Inbox to inspect the outline and send a saved correction request. Dean review, CAO approval and EVP noting remain offline; College Performance is read-only.' : 'Review delivery and rosters, then contact the syllabus owner when correction is needed. Associate Dean has no student-score access.')]
+  if (agent === 'performance') return [step('Choose the scope', 'Filter the authorized course, block and date range. Missing attempts are distinct from a zero score.', intent === 'scoring-sheet' ? '/student-monitoring' : '/performance?tab=' + (intent === 'flag' ? 'alerts' : intent === 'review' ? 'bytopic' : 'overview')), step('Read saved evidence', 'Topic mastery uses graded responses explicitly mapped to approved syllabus topics. Pending marking and unmapped responses do not become guessed mastery scores.'), step('Choose a follow-up', role === 'student' ? 'Open related released material in My Courses, or submit an appeal on your own saved assessment.' : role === 'dean' ? 'Review the read-only results and contact the instructor. The Dean cannot change marks.' : 'Review responses and reasons before confirming marks. Confirm reminders for missing work or acknowledge topic alerts. Notices are in-app; no email is sent.')]
+  if (agent === 'courseware' && intent === 'explain') return [step('Open released courseware', 'The account view shows publications for confirmed enrollment. Scheduled items remain hidden until release.'), step('Review a saved result', 'Assessments use the instructor\'s saved duration, deadline and attempt policy. Written responses await marking. Pulse cannot answer assessment questions.')]
+  return null
+}

@@ -27,7 +27,7 @@ export function ContentStoreProvider({ children }) {
   const checkItem = useCallback((contentId) => {
     setStore(prev => !prev[contentId] ? prev : ({
       ...prev,
-      [contentId]: { ...prev[contentId], status: 'checked' },
+      [contentId]: { ...prev[contentId], status: 'checked', outOfAlignment:false },
     }))
   }, [setStore])
 
@@ -35,7 +35,7 @@ export function ContentStoreProvider({ children }) {
     setStore(prev => {
       const next = { ...prev }
       for (const id of contentIds) {
-        if (next[id]) next[id] = { ...next[id], status: 'checked' }
+        if (next[id]) next[id] = { ...next[id], status: 'checked', outOfAlignment:false }
       }
       return next
     })

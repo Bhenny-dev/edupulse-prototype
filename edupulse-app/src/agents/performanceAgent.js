@@ -7,7 +7,7 @@ export default defineAgent({
   id: 'performance',
   zone: 'performance',
   label: 'Performance',
-  roles: ['instructor', 'student'],
+  roles: ['instructor', 'student', 'dean'],
   greeting: (user) => user?.role === 'student'
     ? "These scores are sample data. Want help interpreting a topic chart or planning what to review?"
     : "This performance view uses sample scores. Want help interpreting a chart or threshold? It is not the official grading sheet.",
@@ -37,7 +37,7 @@ export default defineAgent({
       ],
     },
     {
-      key: 'explain', label: 'Explain what I\'m looking at', roles: ['instructor', 'student'],
+      key: 'explain', label: 'Explain what I\'m looking at', roles: ['instructor', 'student', 'dean'],
       steps: [
         { title: 'Overview', body: 'Your top-line numbers for this scope.' },
         { title: 'By Topic', body: 'Mastery broken down per syllabus topic, so you can see exactly where things stand.' },
