@@ -21,3 +21,7 @@ The [feature-presence audit](../../session-generated/2026-10-27-feature-presence
 A dialog keeps the component context of its source page. Pulse can focus a table or control inside it. Dropping onto the header or backdrop is refused; it cannot select content hidden behind that surface. Syllabus actions occupy a separate footer, so scrolling content cannot show through or cover them.
 
 If you open **workspace buddies** while a document dialog is open, the office owns the keyboard. **Escape** closes the office and returns to the document; it does not dismiss the document underneath.
+
+## Restored account sections
+
+Loading/error feedback remains shared while role-specific account sections now include charts, matrices, readers and management tabs. [Manual 13](../13-restored-account-sections/README.md) documents those tasks and account-scoped notice/read behavior.

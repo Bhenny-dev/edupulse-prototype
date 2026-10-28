@@ -277,6 +277,7 @@ export default function Layout() {
                   key={item.path}
                   to={item.path}
                   title={item.label}
+                  aria-label={item.label}
                   style={{
                     display: 'flex', alignItems: 'center', gap: '6px',
                     padding: '8px 14px', borderRadius: 'var(--radius-md)',
@@ -401,7 +402,7 @@ export default function Layout() {
                       padding: '10px 12px', borderRadius: 'var(--radius-md)', opacity: n.read ? 0.75 : 1,
                       background: n.type === 'warning' ? 'var(--amber-100)' : n.type === 'success' ? 'var(--green-100)' : n.type === 'error' ? 'var(--red-100)' : 'var(--sky-50)',
                       fontSize: '0.8125rem', fontWeight: 500,
-                      color: n.type === 'warning' ? '#92400e' : n.type === 'success' ? '#166534' : n.type === 'error' ? '#991b1b' : 'var(--sky-700)',
+                      color: n.type === 'warning' ? 'var(--amber-700)' : n.type === 'success' ? 'var(--green-700)' : n.type === 'error' ? 'var(--red-700)' : 'var(--sky-700)',
                     }}>
                       <div>{n.message}</div>
                       <div style={{ fontSize: '0.6875rem', opacity: 0.7, marginTop: '4px' }}>{n.time}</div>

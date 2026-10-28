@@ -158,7 +158,7 @@ export default function Assessment() {
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
             {timeLeft !== null && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 12px', borderRadius: 8, background: timeLeft < 300 ? '#FEF2F2' : 'var(--gray-50)', fontWeight: 700, fontSize: '0.9rem', color: timeLeft < 300 ? 'var(--danger)' : 'var(--gray-700)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 12px', borderRadius: 8, background: timeLeft < 300 ? 'var(--red-50)' : 'var(--gray-50)', fontWeight: 700, fontSize: '0.9rem', color: timeLeft < 300 ? 'var(--danger)' : 'var(--gray-700)' }}>
                 <Timer size={16} /> {formatTime(timeLeft)}
               </div>
             )}
@@ -181,7 +181,7 @@ export default function Assessment() {
               {selectedAssessment.questions.map((q, i) => {
                 const isCorrect = q.type === 'multiple_choice' ? answers[q.id] === q.correct : q.type === 'true_false' ? answers[q.id] === q.correct : null
                 return (
-                  <div key={q.id} style={{ padding: 14, borderRadius: 10, border: `1.5px solid ${isCorrect === true ? 'var(--success)' : isCorrect === false ? 'var(--danger)' : 'var(--gray-200)'}`, background: isCorrect === true ? '#ECFDF5' : isCorrect === false ? '#FEF2F2' : 'var(--gray-50)' }}>
+                  <div key={q.id} style={{ padding: 14, borderRadius: 10, border: `1.5px solid ${isCorrect === true ? 'var(--success)' : isCorrect === false ? 'var(--danger)' : 'var(--gray-200)'}`, background: isCorrect === true ? 'var(--green-50)' : isCorrect === false ? 'var(--red-50)' : 'var(--gray-50)' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
                       {isCorrect === true ? <CheckCircle size={16} style={{ color: 'var(--success)' }} /> : isCorrect === false ? <X size={16} style={{ color: 'var(--danger)' }} /> : <MessageSquare size={16} style={{ color: 'var(--gray-400)' }} />}
                       <span style={{ fontWeight: 600, fontSize: '0.85rem' }}>Q{i + 1}: {q.text}</span>

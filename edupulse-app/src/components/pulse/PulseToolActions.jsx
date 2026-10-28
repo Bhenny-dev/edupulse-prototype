@@ -6,7 +6,7 @@ import { studentKey } from '../../utils/rosterParser'
 const labels = { institutionalContext: 'Institutional context', courseDescription: 'Course description', programOutcomes: 'Program outcomes', courseOutline: 'Course outline', courseRequirements: 'Course requirements', gradingSystem: 'Grading system', coursePolicy: 'Course policy', books: 'Books', onlineReferences: 'Online references', sections: 'Content sections', questions: 'Assessment questions', title: 'Title' }
 function readable(value) {
   if (typeof value === 'string') return value || '(empty)'
-  if (Array.isArray(value)) return value.map(item => typeof item === 'string' ? item : item.week ? `Week ${item.week}\nLearning outcomes: ${item.ilos || '(empty)'}\nTopics: ${(item.contents || []).join('; ')}\nActivities: ${item.activities || '(empty)'}\nAssessments: ${item.assessments || '(empty)'}` : item.heading ? `${item.heading}\n${item.body}` : item.title ? [item.title, item.authors, item.year, item.publisher, item.url].filter(Boolean).join(' · ') : item.text ? `${item.text}\n${item.options?.map((option, i) => `${String.fromCharCode(65 + i)}. ${typeof option === 'string' ? option : option.text}`).join('\n') || ''}` : '').join('\n\n') || '(empty)'
+  if (Array.isArray(value)) return value.map(item => typeof item === 'string' ? item : item.week ? `Week ${item.week}\nLearning outcomes: ${item.ilos || '(empty)'}\nTopics: ${(item.contents || []).join('; ')}\nActivities: ${item.activities || '(empty)'}\nAssessments: ${item.assessments || '(empty)'}\nTeaching materials: ${(item.teachingMaterials || []).join('; ') || '(empty)'}\nAssessment types: ${(item.assessmentTypes || []).join('; ') || '(empty)'}` : item.heading ? `${item.heading}\n${item.body}` : item.title ? [item.title, item.authors, item.year, item.publisher, item.url].filter(Boolean).join(' · ') : item.text ? `${item.text}\n${item.options?.map((option, i) => `${String.fromCharCode(65 + i)}. ${typeof option === 'string' ? option : option.text}`).join('\n') || ''}` : '').join('\n\n') || '(empty)'
   if (value && typeof value === 'object') return Object.entries(value).map(([key, field]) => `${key}:\n${readable(field)}`).join('\n\n')
   return '(not set)'
 }
@@ -32,6 +32,7 @@ function EditorCard({ proposal, ctx }) {
   const imported = proposal.type === 'syllabus-import'
   const [baseline, setBaseline] = useState(proposal.editor || currentEditor())
   const [patch, setPatch] = useState(proposal.patch || null), [chosen, setChosen] = useState(Object.keys(proposal.patch || {}))
+  const [research, setResearch] = useState({ notes: proposal.notes || [], sources: proposal.sources || [] })
   const [course, setCourse] = useState(proposal.courseCode || baseline?.data.courseCode || '')
   const [operation, setOperation] = useState(proposal.operation || 'replace'), [state, setState] = useState('pending'), [error, setError] = useState(''), [receipt, setReceipt] = useState('')
   const running = useRef(false)
@@ -48,6 +49,7 @@ function EditorCard({ proposal, ctx }) {
       controller.current.signal.throwIfAborted()
       if (result.clarification) { setError(result.clarification); return }
       const changes = imported ? result : result.patch
+      if (!imported) setResearch({ notes: result.notes || [], sources: result.sources || [] })
       const fields = Object.keys(changes).filter(field => proposal.section === 'all' || !proposal.section || field === proposal.section)
       if (!fields.length) throw new Error('This file did not contain readable data for the requested section. Supply the source or choose another section; nothing was guessed.')
       setBaseline(editor); setPatch(changes); setChosen(fields); setCourse(proposal.courseCode || editor.data.courseCode || '')
@@ -69,6 +71,8 @@ function EditorCard({ proposal, ctx }) {
   return <section className="pulse-action" aria-label={imported ? 'Import syllabus sections' : 'Review content edit'}>
     <header><strong>{imported ? `Import syllabus sections from ${proposal.attachment.fileName}` : 'Review the proposed content change'}</strong></header>
     <p>{imported ? 'Only sections actually read from the file are offered. Course identity uses the selected curriculum record. Missing sections remain unchanged; approval is not inferred.' : `Target: ${baseline?.label || 'open an editor'}. Generated wording is a draft for review; no content has changed.`}</p>
+    {research.notes.map((note, index) => <p key={index} className="pulse-action-note">{note}</p>)}
+    {research.sources.length > 0 && <details><summary>Public research sources ({research.sources.length})</summary><ul>{research.sources.map((source, index) => <li key={index}><a href={source.url} target="_blank" rel="noreferrer noopener">{source.title}</a></li>)}</ul></details>}
     {(!patch || !baseline) && <div className="ai-actions"><button className="btn btn-secondary btn-sm" onClick={() => ctx.navigate('/syllabus?tab=builder')}>Open Syllabus Builder</button><button className="btn btn-primary btn-sm" disabled={busy} onClick={prepare}>{state === 'preparing' ? 'Preparing preview…' : 'Prepare edit preview'}</button></div>}
     {patch && baseline && <>
       {imported && <><label className="form-label">Course for this syllabus<select className="form-input" value={course} onChange={event => setCourse(event.target.value)}><option value="">Choose a course</option>{ctx.catalog.map(item => <option key={item.code} value={item.code}>{item.code} — {item.title}</option>)}</select></label><label className="form-label">How to integrate sections<select className="form-input" value={operation} onChange={event => setOperation(event.target.value)}><option value="replace">Replace the selected sections</option><option value="append">Add to the selected sections</option></select></label></>}

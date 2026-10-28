@@ -1,6 +1,7 @@
-import { sectionFor, sourceSyllabusPatch } from './workTools'
+import { ALL_FIELDS, sectionFor, sourceSyllabusPatch } from './workTools'
 
 export function focusedSection(focus, message = '') {
+  if (ALL_FIELDS.test(message)) return 'all'
   const explicit = sectionFor(message)
   if (explicit !== 'all') return explicit
   return ({ 2:'courseDescription', 3:'institutionalContext', 4:'programOutcomes', 5:'courseOutline' })[focus?.section] || sectionFor(focus?.label || '')

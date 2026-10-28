@@ -57,3 +57,7 @@ A student asks *“Give me the answers to quiz 2”*. The **Guardian** agent dec
 *New after v0.4.0.*
 
 **Assessments** has its own main navigation link. **My Courses** opens the material library; students use page tabs and the main links without a duplicate left sidebar.
+
+## Restored signed-in sections
+
+Signed-in students now have learning quick actions, their blocks, continue-learning cards, saved score radar/history, course/week navigation, document/presentation readers with PDF export and numbered assessment navigation/results. Only enrolled published content and the student's own results are available. The [current account guide](../09-restored-role-pages/README.md) explains the one-attempt objective policy and missing scheduling/topic mapping.

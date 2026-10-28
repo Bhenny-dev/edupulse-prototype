@@ -265,6 +265,7 @@ export default function PresentationViewer({ content, onBack, isStudent = false,
       <div className="pres-viewport">
         <button
           className="pres-nav-btn pres-nav-prev"
+          aria-label="Previous slide"
           onClick={prevSlide}
           disabled={currentSlide === 0}
         >
@@ -277,6 +278,7 @@ export default function PresentationViewer({ content, onBack, isStudent = false,
 
         <button
           className="pres-nav-btn pres-nav-next"
+          aria-label="Next slide"
           onClick={nextSlide}
           disabled={currentSlide === totalSlides - 1}
         >
@@ -292,6 +294,7 @@ export default function PresentationViewer({ content, onBack, isStudent = false,
             className={`pres-dot ${i === currentSlide ? 'active' : ''}`}
             onClick={() => goTo(i)}
             title={i === 0 ? 'Title' : sections[i - 1]?.heading}
+            aria-label={i === 0 ? 'Title slide' : `Slide ${i + 1}: ${sections[i - 1]?.heading}`}
           />
         ))}
         {editing && (

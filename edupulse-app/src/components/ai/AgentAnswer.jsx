@@ -7,7 +7,7 @@ const STATUS = {
   supported: 'Supported by the cited source', corroborated: 'Supported by two or more documents', partial: 'Partly supported; check the source', uncited: 'Supported by a source but not cited',
   unsupported: 'Not found in the cited source', miscited: 'Cited the wrong source', general: 'General knowledge, not from your sources',
 }
-const ORIGIN = { private: 'Your library', 'public-guide': 'Product guide', attachment: 'Attached file' }
+const ORIGIN = { private: 'Your library', 'public-guide': 'Product guide', attachment: 'Attached file', web: 'Public web research' }
 const percent = value => value === null || value === undefined ? '—' : `${Math.round(value * 100)}%`
 
 /** One line of answer text with verified claims marked and citations as buttons that open their source. */
@@ -65,7 +65,8 @@ export default function AgentAnswer({ message, onRevise }) {
     <div className="aa-badges">
       {message.mode === 'declined' && <span className="aa-badge is-warn" title={`${message.policy?.reason || ''} ${message.policy?.spec ? `(${message.policy.spec})` : ''}`.trim()}>Declined by the Guardian · appropriate-use rule</span>}
       {message.agents?.length > 0 && <span className="aa-badge">{message.agents.length} agent{message.agents.length === 1 ? '' : 's'}</span>}
-      {v && v.groundedness !== null && <span className={`aa-badge ${v.unsupported ? 'is-warn' : 'is-good'}`} title="Share of statements supported by the retrieved sources">Grounded {percent(v.groundedness)}</span>}
+      {grounded && v && v.groundedness !== null && <span className={`aa-badge ${v.unsupported ? 'is-warn' : 'is-good'}`} title="Share of statements supported by the retrieved sources">Grounded {percent(v.groundedness)}</span>}
+      {message.task === 'draft' && <span className="aa-badge">Educational draft · instructor review required</span>}
       {v && v.citationAccuracy !== null && <span className={`aa-badge ${v.citationAccuracy < 1 ? 'is-warn' : 'is-good'}`} title="Cited statements that their cited source supports">Citations {percent(v.citationAccuracy)}</span>}
       {v?.corroborated > 0 && <span className="aa-badge is-good" title="Statements supported by two or more different documents">{v.corroborated} corroborated</span>}
       {v?.unsupported > 0 && <span className="aa-badge is-warn">{v.unsupported} not found in sources</span>}
@@ -87,6 +88,7 @@ export default function AgentAnswer({ message, onRevise }) {
     </li>)}</ol><small>Verify availability and fit before adding a reference to Section 7.</small></details>}
     {message.sources?.length > 0 && <details open={openSource !== null}><summary>Sources ({message.sources.length})</summary>{message.sources.map(source => <div key={source.id} id={`${message.requestId}-source-${source.citation}`} className={`aa-source ${openSource === source.citation ? 'is-open' : ''}`}>
       <header><strong>[{source.citation}] {source.title}</strong>{source.page && <span>p. {source.page}</span>}{source.section && <span>· {source.section}</span>}</header>
+      {source.url && <a href={source.url} target="_blank" rel="noreferrer noopener">Open public source <ExternalLink size={11} aria-hidden="true" /></a>}
       <small>{ORIGIN[source.origin] || 'Source'} · {source.method === 'hybrid' ? 'vector + keyword match' : source.method === 'vector' ? 'semantic match' : source.method === 'keyword' ? 'keyword match' : 'provided'}{source.relevance !== null && source.relevance !== undefined ? ` · reranker score ${source.relevance.toFixed(1)}` : ''}{source.similarity !== null && source.similarity !== undefined ? ` · cosine ${source.similarity.toFixed(2)}` : ''}</small>
       {source.flagged && <p className="kl-flag">This passage contains instruction-like text. Pulse treated it only as quoted data.</p>}
       <p>{source.text}</p>

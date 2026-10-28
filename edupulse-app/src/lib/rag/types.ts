@@ -4,13 +4,16 @@ export type AgentName = 'Guardian' | 'Planner' | 'Researcher' | 'Ranker' | 'Comp
 export type Evidence = {
   id: string; documentId: string | null; title: string; text: string
   page: number | null; section: string | null; flagged: boolean
-  origin: 'private' | 'public-guide' | 'attachment'
-  method: 'hybrid' | 'vector' | 'keyword' | 'provided'
+  origin: 'private' | 'public-guide' | 'attachment' | 'web'
+  method: 'hybrid' | 'vector' | 'keyword' | 'provided' | 'web-search'
+  url?: string
   similarity: number | null; rrf: number; relevance: number | null; query: string
 }
 export type CitedEvidence = Evidence & { citation: number }
 
-export type Plan = { task: Task; queries: string[]; needsEvidence: boolean; rationale: string; topic: string; revision: boolean }
+export type Plan = { task: Task; queries: string[]; needsEvidence: boolean; needsWeb: boolean; sourceOnly: boolean; rationale: string; topic: string; revision: boolean }
+export type WebResearch = { evidence: Evidence[]; warning?: string }
+export type WebSearch = (query: string, signal: AbortSignal) => Promise<WebResearch>
 
 export type ClaimStatus = 'supported' | 'partial' | 'unsupported' | 'miscited' | 'uncited' | 'general'
 export type Claim = { text: string; citations: number[]; status: ClaimStatus; support: number; bestSource: number | null; corroboratedBy: number }
@@ -35,6 +38,7 @@ export type AgentDeps = {
   rerank?: (query: string, passages: string[], signal: AbortSignal) => Promise<number[]>
   similarity?: Similarity
   references?: (topic: string, signal: AbortSignal) => Promise<{ references: Reference[]; warning?: string }>
+  webSearch?: WebSearch
   generate?: Generate
   provider: string
   model?: string | null

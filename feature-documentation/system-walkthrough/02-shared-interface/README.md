@@ -107,7 +107,7 @@ The mascot sits bottom-right on every page. Its eyes follow the pointer. **Click
 
 ![Pulse panel](17-pulse-panel.png)
 
-Header: the connected model (here *ollama · qwen2.5:1.5b*), **clear conversation**, **AI settings**, **close**. The welcome explains the ways to use Pulse: drag it onto a component; ask, draft, compare documents or find references or records in the message box; or attach a document with the paper clip, such as a class list to register or a material to file under a course. It ends with *I ask before I change anything*: actions Pulse proposes wait for your confirmation ([System Manual 9](../../system-manual/09-pulse-actions/README.md)). **Guide this page** starts a walkthrough of the current page; **Explain this component** describes whatever has keyboard focus (also **Alt+P**). The footnote reminds users that AI drafts need review.
+The header shows **Your interactive assistant** in this capture because the local model could not be reached. The status offers **Set up free / provider AI**; page guidance and source search remain available. Header controls include new conversation, conversation history, AI settings and close. The welcome explains dragging Pulse onto a component, asking/drafting/comparing, finding references or records, and attaching files. Proposed changes wait for confirmation ([System Manual 9](../../system-manual/09-pulse-actions/README.md)). **Guide this page** starts a walkthrough; **Explain this component** describes keyboard focus (also **Alt+P**). AI drafts need review.
 
 ### 18. “Ask Pulse about this” hover badge
 
@@ -130,3 +130,7 @@ At wide desktop widths, opening Pulse reserves a separate column beside the work
 ## Dialog spacing, page tabs and loading feedback
 
 Page-specific views use the tabs inside the page, with no duplicate left sidebar. Pulse opens from its avatar without a name pill. Dialogs share screen space with Pulse on desktop and stack above it on narrow displays; nested dialogs show one active surface at a time. Pending academic records display skeleton cards and table rows; short requests use spinners and file scanning uses an indeterminate bar. Reduced-motion preferences stop these animations. See [the illustrated interface guide](../../system-manual/12-interface-and-loading/README.md).
+
+## Account notices and solid dark surfaces, 28 October 2026
+
+Authenticated notifications now derive from authorized records instead of an empty placeholder feed. Read state is scoped to the account/role on this device. Appearance uses solid dark body/cards/primary controls with readable semantic and muted text. Laptop navigation compacts to preserve route access. See the [current account notices, charts and mobile captures](../09-restored-role-pages/README.md). The existing preview notifications remain labelled demonstration data.

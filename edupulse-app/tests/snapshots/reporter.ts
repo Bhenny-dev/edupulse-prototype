@@ -25,7 +25,7 @@ export default class CaptureReporter implements Reporter {
   onTestEnd(test: TestCase, result: TestResult) {
     const use = test.parent.project()!.use
     const problems = result.attachments.filter(a => a.name === 'capture-problems').flatMap(a => JSON.parse(a.body?.toString() || '[]') as string[])
-    const fixtureCategory = /interface-(?:feedback|captures)/.test(test.location.file) ? 'synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof' : test.location.file.includes('provider-connection') || test.title.includes('model proposal') ? 'synthetic-provider-transport/ui-regression' : test.location.file.includes('authenticated') ? 'synthetic-hosted-authenticated' : test.location.file.includes('walkthrough') ? 'preview/sample-academic' : 'local-real-input/sample-academic'
+    const fixtureCategory = /interface-(?:feedback|captures)|role-restoration/.test(test.location.file) ? 'synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof' : test.location.file.includes('provider-connection') || test.title.includes('model proposal') ? 'synthetic-provider-transport/ui-regression' : test.location.file.includes('authenticated') ? 'synthetic-hosted-authenticated' : test.location.file.includes('walkthrough') ? 'preview/sample-academic' : 'local-real-input/sample-academic'
     this.tests.push({ suite: pathName(test.location.file), title: test.title, project: test.parent.project()!.name, browser: use.browserName || 'chromium', viewport: use.viewport, fixtureCategory, status: result.status, expectedStatus: test.expectedStatus, durationMs: result.duration, problems })
   }
   onEnd(result: FullResult) {

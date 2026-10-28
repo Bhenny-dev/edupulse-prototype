@@ -1,0 +1,49 @@
+.academic-portal { min-width: 0; }
+.academic-portal .card-header { gap: 12px; flex-wrap: wrap; }
+.academic-portal .card-header h2 { font-size: 1.05rem; }
+.academic-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.academic-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.academic-grid > * { min-width: 0; }
+.academic-card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 16px; }
+.academic-tabs { flex-wrap: nowrap; overflow-x: auto; }
+.academic-tabs .tab { white-space: nowrap; }
+.academic-filters { display: flex; flex-wrap: wrap; align-items: end; gap: 16px; margin-bottom: 24px; }
+.academic-filter { display: flex; flex-direction: column; gap: 6px; font-weight: 600; font-size: .8rem; min-width: 140px; max-width: 100%; }
+.academic-filter select { padding: 10px 12px; border: 1px solid var(--gray-200); border-radius: var(--radius-md); background: var(--white); color: var(--gray-800); min-height: 42px; max-width: 100%; }
+.academic-filter:first-child { flex: 1 1 270px; }
+.academic-table-wrap { overflow-x: auto; max-width: 100%; }
+.academic-portal .data-table { min-width: 420px; }
+.academic-portal .data-table td, .academic-portal .data-table th { overflow-wrap: normal; }
+.academic-portal .data-table th { white-space: nowrap; }
+.academic-empty { padding: 20px 0; color: var(--gray-600); line-height: 1.7; }
+.academic-tile { display: flex; flex-direction: column; gap: 8px; padding: 20px; border: 1px solid var(--gray-200); border-radius: var(--radius-md); background: var(--gray-50); color: var(--gray-800); text-align: left; }
+.academic-block.selected { border-color: var(--sky-500); background: var(--sky-50); }
+.academic-block span { color: var(--gray-600); font-size: .8rem; }
+.academic-details { padding: 16px 0; border-bottom: 1px solid var(--gray-200); }
+.academic-details summary { font-weight: 600; cursor: pointer; padding: 6px 0; }
+.academic-details[open] > summary { margin-bottom: 12px; }
+.academic-list-row { display: flex; justify-content: space-between; gap: 16px; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--gray-200); }
+.academic-course + .academic-course { margin-top: 24px; }
+.academic-score { display: inline-block; border-radius: 6px; padding: 6px 10px; white-space: nowrap; }
+.academic-score-high { background: var(--green-100); color: var(--green-700); }
+.academic-score-low { background: var(--amber-100); color: var(--amber-700); }
+.academic-student-dialog { width: min(1050px, 95vw); max-width: 1050px; }
+.academic-question { padding: 16px; border: 1px solid var(--gray-200); border-radius: var(--radius-md); margin-bottom: 24px; }
+.academic-question legend { padding: 0 8px; font-weight: 600; }
+.academic-question label { display: flex; align-items: baseline; gap: 10px; padding: 10px 4px; }
+.academic-question input { accent-color: var(--sky-500); }
+.academic-result { padding: 16px; margin: 16px 0; border-radius: var(--radius-md); background: var(--green-100); color: var(--green-700); }
+.academic-upload { display: flex; flex-direction: column; gap: 16px; padding: 24px; border: 1px dashed var(--sky-500); border-radius: var(--radius-md); }
+.academic-upload input { max-width: 100%; }
+.academic-portal button:focus-visible, .academic-portal a:focus-visible, .academic-portal summary:focus-visible, .academic-table-wrap:focus-visible, .academic-question:focus-visible { outline: 2px solid var(--sky-600); outline-offset: 3px; }
+@media (max-width: 800px) {
+  .academic-grid { grid-template-columns: 1fr; }
+  .academic-list-row { align-items: start; flex-direction: column; }
+  .academic-portal .page-header { flex-direction: column; align-items: start; }
+  .academic-filter { flex: 1 1 140px; }
+  .academic-portal .data-table { display: table; }
+  .academic-portal .data-table thead { display: table-header-group; }
+  .academic-portal .data-table tr { display: table-row; }
+  .academic-portal .data-table th, .academic-portal .data-table td { display: table-cell; padding: 12px; }
+  .academic-portal .data-table td::before { display: none; }
+}

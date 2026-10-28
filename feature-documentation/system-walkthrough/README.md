@@ -12,6 +12,7 @@ A screen-by-screen tour of EduPulse as each role sees it, captured from the docu
 | [06 · Mobile](06-mobile/README.md) | All roles on a phone | The same screens at 390 px: menu, builder, Pulse panel, settings |
 | [07 · System Admin](07-system-admin/README.md) | Google system admin | Account management, health checks, audit activity and direct role views |
 | [08 · Authenticated records](08-authenticated-records/README.md) | Instructor, Student, Dean, Associate Dean | Real sign-in and shared-data permissions, using temporary synthetic hosted canaries |
+| [09 · Restored account sections](09-restored-role-pages/README.md) | Instructor, Student, Dean, Associate Dean | Current role dashboards, charts, matrices, management tabs, private file intake and student readers, captured with synthetic transport |
 
 ## Reading the screenshots
 

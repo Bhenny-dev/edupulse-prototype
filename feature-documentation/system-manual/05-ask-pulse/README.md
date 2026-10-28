@@ -58,9 +58,15 @@ See the [student example](../../system-walkthrough/05-student/09-pulse-declines-
 If a connected provider rejects the model or has no API credits, Pulse shows the connection error even when library sources are available. Open **AI settings**, refresh the available models and use **Test selected model**. A saved key and model list alone do not verify generation access. See [connection recovery examples](../08-ai-connections/README.md).
 
 * Without a connected model, Pulse still searches and quotes the best source sentences, labelled **Source excerpts**.
-* If nothing in your library or the product guide answers the question, Pulse says the evidence is missing instead of guessing.
+* Document-specific or source-only questions report missing evidence. New educational drafts can use subject knowledge and public research even when the library is empty. A draft is not judged complete merely because it matches a source.
 * **Stop** (square button) cancels a running request; the trash icon clears the conversation; the gear opens AI settings.
-* Answers are drafts for your judgement. Pulse cannot save, approve, publish or grade anything.
+* Answers are drafts for your judgement. Validated edit tools can apply or save an instructor-confirmed proposal; conversational text does not establish a completed action. Pulse cannot approve a syllabus or calculate official grades.
+
+For complete syllabus generation, select a course and use the [course-aware drafting flow](../09-pulse-actions/README.md#generate-a-syllabus-from-the-selected-course). Public research sources have links and coverage warnings. **Educational draft · instructor review required** distinguishes new teaching content from a source-grounded answer; editor JSON is context, not a cited academic reference.
+
+![Sample learning draft with its public source, source link and educational-draft label](../09-pulse-actions/18-researched-learning-draft.png)
+
+This capture uses a synthetic model/research response to demonstrate the real answer and citation controls. The activity is proposed teaching content; the cited statement is separate. The badge does not certify factual accuracy or successful persistence.
 
 ## Conversation continuity
 

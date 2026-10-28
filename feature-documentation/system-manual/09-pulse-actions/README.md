@@ -98,7 +98,7 @@ Under **Saved preferences**, automatic saving recognizes non-sensitive response 
 
 Ask *Recall our previous discussion about programming* to retrieve attributed excerpts from your own saved conversations. These excerpts describe prior statements, not the current state of a record. Missing matches are reported explicitly. Recent conversation context uses at most 12 turns within a 30,000-character prompt budget; larger target edits require a smaller section. On-device model planning uses a smaller input budget for its 4,096-token model window.
 
-**Installed Pulse skills & tools** lists the Navigator, Guide, Syllabus, Registrar, Writer and Memory capabilities. They use a fixed application registry, validated patches and existing database authorization. No arbitrary shell, script or external browsing tool is exposed.
+**Installed Pulse skills & tools** lists the Navigator, Guide, Syllabus, Registrar, Writer and Memory capabilities. They use a fixed application registry, validated patches and existing database authorization. Public research uses bounded search APIs; arbitrary shell, script and arbitrary-URL fetch tools are not exposed.
 
 ![Versioned application skills and execution boundaries](13-installed-tools.png)
 
@@ -121,3 +121,15 @@ On mobile, focused Pulse is a shorter panel. The page remains scrollable above i
 ### Hosted availability
 
 Pulse actions require a healthy hosted API. The release process checks native server startup as well as the preview, confirmation and save behavior shown above; a build that passes local tests alone is not treated as proof that hosted actions are available.
+
+## Generate a syllabus from the selected course
+
+Select **IT 104 — Research Methods** (or your intended curriculum course) in **Syllabus Builder**. Ask Pulse, for example, *Generate content for all fields in this syllabus using web research*. An empty library is permitted. Pulse prepares a **Review the proposed content change** card using the selected course and its description. A request for all fields covers the whole form even if Pulse was focused on a particular section.
+
+The card lists editable **Program outcomes**, **Course outline**, **Course requirements**, **Grading system**, **Course policy**, **Books** and **Online references** with **Before** and **Proposed** text. The outline includes every existing week, teaching activities, assessment details, teaching materials and assessment types. Exam weeks retain their labels. Curriculum identity stays locked. Unknown official grading rules remain pending; suggested requirements and policies require instructor review. Missing references do not prevent drafting the teaching content, and invented book metadata or URLs are rejected.
+
+![Course-aware syllabus proposal with readable outcomes, research links and field selection](17-course-aware-syllabus-draft.png)
+
+This screenshot uses a **synthetic model/research response** for UI verification, including a sample research link; it does not demonstrate live provider accuracy. **Public research sources** opens the retrieved links. Research limitations appear above the fields. OpenRouter and OpenAI connections can use provider web search where supported; provider search may be billed separately even with a free model. If unavailable, public educational search uses Wikipedia plus the existing bibliographic catalogs and states the coverage limit. On-device and other providers use the same keyless research fallback.
+
+Expand fields and review them, then select **Apply to open form** or **Confirm and save draft**. The former changes the form; the latter waits for a persistence receipt. Nothing is published or approved. A model response missing requested teaching weeks is repaired once and rejected if still incomplete. A failed or truncated response leaves the form unchanged. A source-only request uses the selected sources and does not expand to public research. General conversation and subject explanations remain possible without uploading documents.

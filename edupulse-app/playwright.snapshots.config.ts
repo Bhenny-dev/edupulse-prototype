@@ -12,6 +12,6 @@ export default defineConfig({
   ],
   webServer: {
     command: 'node scripts/serve-preview.mjs', url: `http://127.0.0.1:${web}/api/ai?action=health`, reuseExistingServer: !process.env.CI, timeout: 120_000,
-    env: { AI_PROVIDER: 'ollama', OLLAMA_MODEL: process.env.SNAPSHOT_MODEL || 'qwen2.5:1.5b', AI_ONNX_THREADS: '1', AI_DATA_DIR: '.data/snapshots-db', AI_PORT: api, VITE_PORT: web },
+    env: { AI_PROVIDER: 'ollama', OLLAMA_MODEL: process.env.SNAPSHOT_MODEL || 'qwen2.5:1.5b', AI_ONNX_THREADS: '1', AI_DATA_DIR: process.env.SNAPSHOT_DATA_DIR || '.data/snapshots-db', AI_PORT: api, VITE_PORT: web },
   },
 })

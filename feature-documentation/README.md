@@ -4,6 +4,8 @@
 
 | Folder | Covers | Contents |
 | --- | --- | --- |
+| [28 October role restoration](versions/2026-10-28-role-restoration/README.md) | Authenticated role dashboards, charts/matrices, records intake, readers, notices and solid dark surfaces | Working change; local validation; not deployed |
+| [27 October Pulse drafting](versions/2026-10-27-pulse-drafting/README.md) | Course-aware syllabus generation, public research, readable proposals and detailed feature-loss scan | Working change; local validation; not deployed |
 | [System Walkthrough](system-walkthrough/README.md) | Frontend: **what is on each screen**, by role (public site, shared interface, Dean and Associate Dean, Instructor, Student, mobile) | Screenshots of every page, tab, dropdown, popover and modal, with a guide per folder |
 | [System Manual](system-manual/README.md) | Frontend: **how to complete each task**, step by step | Numbered steps with a screenshot for each, from sign-in to syllabus, courseware and the AI features |
 | [Backend System](backend-system/README.md) | Backend: API, agents, data stores, security boundaries | [Supabase configuration](backend-system/supabase.md) and [Vercel configuration](backend-system/vercel.md), written from the live services and the repository |
@@ -19,6 +21,7 @@ Version folders are release records. Preserve released records, and add correcti
 
 | Version | Scope | Status |
 | --- | --- | --- |
+| [28 October role restoration](versions/2026-10-28-role-restoration/README.md) | Account sections restored across eight page branches, record-derived charts, private file intake and dark consistency | Local working tree; deployment not run |
 | [27 October interface consistency](versions/2026-10-27-interface-consistency/README.md) | Dialog spacing, page tabs, avatar launcher, loading feedback and older-feature audit | Live; 126 unit/integration + 99 browser tests passed; CI billing lock documented |
 | [Provider connection recovery](versions/2026-10-25-provider-connections/README.md) | OpenRouter return/retry, OpenAI model routing, explicit provider choices and generation verification | Verified and promoted; provider-consent limits in validation |
 | [26 October source context and PDF fidelity](versions/2026-10-26-source-context-pdf/README.md) | Focused UI, conversational buddies, complete ruled-PDF cells and PDF downloads | Live; 126 unit/integration + 89 browser tests passed; hosted authentication gap documented |

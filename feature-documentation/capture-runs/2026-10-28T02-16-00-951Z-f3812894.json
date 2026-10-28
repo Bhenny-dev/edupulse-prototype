@@ -1,0 +1,175 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-10-28T02-16-00-951Z-f3812894",
+  "startedAt": "2026-10-28T02:16:00.951Z",
+  "finishedAt": "2026-10-28T02:16:27.338Z",
+  "commitSha": "87bea6b1647f1623c5ca5705d6f6b955fce45e91",
+  "sourceDigest": "14f008146a46dd40940c5b61f1577b70c32b876085020da3fb4865d5a36a166c",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-10-28T02:15:52.047Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 5,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": null
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/pulse-drafting.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-tools.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-source.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/pulse-drafting.spec.ts",
+      "title": "Pulse model proposal: course-aware complete syllabus draft and research sources",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-provider-transport/ui-regression",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 3103,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/pulse-drafting.spec.ts",
+      "title": "Pulse model proposal: researched learning draft has source links and a draft label",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-provider-transport/ui-regression",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1643,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+      "title": "Pulse tools: PDF source sections and private memory controls",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "local-real-input/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 5609,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+      "title": "Pulse tools: model proposal is reviewable before saving",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-provider-transport/ui-regression",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1393,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+      "title": "Pulse tools: page source context, focused correction and PDF download",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "local-real-input/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2713,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/15-wrapped-pdf-preview.png",
+      "sha256": "2569b22fa4db8d1bb2e25c1de99c3cd1e075c0d8f3f978dd47f6afe5db93100f",
+      "bytes": 144526
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/16-download-pdf-draft.png",
+      "sha256": "6f87e28f9bfa6a4abe71bd7c71000ce6c8fb6b252114de78cbe858741142a4b5",
+      "bytes": 13824
+    },
+    {
+      "path": "feature-documentation/system-manual/09-pulse-actions/10-pdf-section-preview.png",
+      "sha256": "a099e82219d41c0eef2a37a6d6c1e6b83551abad6ed38b95c6341f5517e69363",
+      "bytes": 166984
+    },
+    {
+      "path": "feature-documentation/system-manual/09-pulse-actions/11-section-applied.png",
+      "sha256": "0891d9ac80206c49570921a2e97786551a0a6f094a5eae92bb4b36c12abaa59a",
+      "bytes": 7835
+    },
+    {
+      "path": "feature-documentation/system-manual/09-pulse-actions/12-private-memory.png",
+      "sha256": "f941f919e036b5663d46d06af33684dc58aa01935b9d0f1afb315dda7d65ecfa",
+      "bytes": 24495
+    },
+    {
+      "path": "feature-documentation/system-manual/09-pulse-actions/13-installed-tools.png",
+      "sha256": "598c9626a98531dfd3a9b686793048af441f1b0174a0c235ffab84eb401cc1b2",
+      "bytes": 40024
+    },
+    {
+      "path": "feature-documentation/system-manual/09-pulse-actions/14-generated-edit-preview.png",
+      "sha256": "4cf3e4c13245a6e726e1404217a42d37bb513323c5832b7cd6397f57230a7c81",
+      "bytes": 145797
+    },
+    {
+      "path": "feature-documentation/system-manual/09-pulse-actions/15-focused-page-source.png",
+      "sha256": "a176edc9b027ea68e4799962784354bcd59037644da5d08d41d18242a78adf18",
+      "bytes": 257087
+    },
+    {
+      "path": "feature-documentation/system-manual/09-pulse-actions/17-course-aware-syllabus-draft.png",
+      "sha256": "78328850e0ffddc9c81b9f2030f2252d0746c7c32238123e69fe75bc512e8750",
+      "bytes": 173931
+    },
+    {
+      "path": "feature-documentation/system-manual/09-pulse-actions/18-researched-learning-draft.png",
+      "sha256": "3d5a09e3b593dc42a708f0c157af41ea49f7d345183ff411c51d922c8eb9f2e1",
+      "bytes": 99327
+    }
+  ]
+}

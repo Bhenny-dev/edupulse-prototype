@@ -1,14 +1,15 @@
 import type { Plan, Task } from './types.js'
 import { terms } from './text.js'
 
-type PlanInput = { message: string; task?: Task | 'auto'; grounding?: 'auto' | 'sources'; documentIds?: string[]; history?: { role: string; content: string }[]; attachments?: unknown[] }
+type PlanInput = { message: string; context?: string; task?: Task | 'auto'; grounding?: 'auto' | 'sources'; documentIds?: string[]; history?: { role: string; content: string }[]; attachments?: unknown[] }
 
 const COMPARE = /\b(compare|comparison|contrast|difference|differences|differ|versus|vs\.?|align(?:s|ed|ment)?|consistent|consistency|coverage|overlap)\b/i
 const REFERENCES = /\b(references?|books?|textbooks?|readings?|articles?|papers?|bibliograph\w*|journals?|scholarly)\b/i
 const REFERENCE_REQUEST = /\b(find|suggest|recommend|look\s+for|search\s+for|give\s+me|need|list|any)\b/i
 const OWN_DOCUMENTS = /\b(my|our|these|this|the|attached|uploaded)\s+(?:\w+\s+)?(documents?|files?|pdfs?|uploads?|library|attachments?)\b/i
 const SUMMARIZE =/\b(summari[sz]e|summary|overview|key points|main points|tl;?dr)\b/i
-const DRAFT = /\b(draft|write|create|generate|compose|rephrase|rewrite|phrase|design|prepare|propose|formulate)\b/i
+const DRAFT = /\b(draft|write|create|generate|compose|rephrase|rewrite|phrase|design|prepare|propose|formulate|make|fill|populate|complete)\b/i
+const WEB = /\b(web|internet|online|search|look\s*up|research|latest|current|recent|up.to.date|today)\b/i
 const GREETING = /^(hi|hello|hey|thanks|thank you|good (morning|afternoon|evening)|kumusta|salamat)\b/i
 const SOURCE_REQUEST = /\b(uploaded|attached|document|pdf|file|library|source|reference|policy|syllabus|courseware|EduPulse|publish|publishing|approval|signator|grading|examination|calendar)\b/i
 const CONVERSATION = /\b(how are you|how do you feel|let'?s (?:talk|chat)|what if|suppose|imagine|scenario|situation|advice|i feel|i am (?:feeling|worried|stressed)|i'?m (?:feeling|worried|stressed)|help me (?:think|decide)|what should i do)\b/i
@@ -24,15 +25,19 @@ export function planRequest(input: PlanInput): Plan {
   const previous = input.history?.filter(m => m.role === 'user').at(-1)?.content || ''
   const greeting = GREETING.test(message) && message.split(/\s+/).length < 6
   const scoped = input.grounding === 'sources' || Boolean(input.documentIds?.length)
+  const sourceOnly = scoped || OWN_DOCUMENTS.test(message) || /\b(?:only|solely|exclusively)\b.{0,40}\b(?:source|file|document|attachment|library)|\b(?:based on|from|according to)\s+(?:this|the|my|attached|uploaded)\s+(?:syllabus|file|document|source)/i.test(message)
   const conversational = greeting || CONVERSATION.test(message) || PERSONAL_SITUATION.test(message) || (message.length < 60 && (CONVERSATION.test(previous) || PERSONAL_SITUATION.test(previous)))
   let task: Task = 'answer', rationale = 'Question about workflow or document content; answer from retrieved evidence.'
   if (input.task && input.task !== 'auto') { task = input.task; rationale = `Task selected by the user interface: ${task}.` }
   // "Find readings for my course" is an external search; "summarize my uploaded documents" is not.
   else if (conversational && !scoped && (!SOURCE_REQUEST.test(message) || (PERSONAL_SITUATION.test(message) && !OWN_DOCUMENTS.test(message) && !/\b(according to|based on)\b/i.test(message)))) { task = 'general'; rationale = 'Conversation or situational advice; use the exchange, without requiring uploaded sources.' }
-  else if (REFERENCES.test(message) && REFERENCE_REQUEST.test(message) && !OWN_DOCUMENTS.test(message)) { task = 'references'; rationale = 'Request for external reading material; consult open bibliographic APIs.' }
+  else if (DRAFT.test(message) && !/\b(?:list|suggest|recommend)\b/i.test(message)) { task = 'draft'; rationale = 'Create the requested educational content; sources inform the draft but an empty library does not block it.' }
+  else if (REFERENCES.test(message) && REFERENCE_REQUEST.test(message) && !sourceOnly) { task = 'references'; rationale = 'Request for external reading material; consult open bibliographic APIs.' }
   else if (COMPARE.test(message)) { task = 'compare'; rationale = 'Comparison or alignment request; retrieve each side and align their statements.' }
   else if (SUMMARIZE.test(message)) { task = 'summarize'; rationale = 'Summary request; retrieve the most relevant passages and condense them.' }
   else if (DRAFT.test(message)) { task = 'draft'; rationale = 'Drafting request; use retrieved evidence as optional grounding and label assumptions.' }
+  else if (!sourceOnly && !SOURCE_REQUEST.test(message) && !input.attachments?.length) { task = 'general'; rationale = 'General assistance; answer the request without requiring library documents.' }
+  if (task === 'references' && sourceOnly) { task = 'answer'; rationale = 'Source-only reference request; list references from the selected documents without querying external catalogs.' }
 
   const base = (revision ? previous || message : message.length < 60 && previous ? `${previous.slice(0, 400)} ${message}` : message).slice(0, 1000)
   const queries = [base]
@@ -50,5 +55,7 @@ export function planRequest(input: PlanInput): Plan {
     .replace(new RegExp(REFERENCE_REQUEST.source, 'gi'), ' ').replace(new RegExp(REFERENCES.source, 'gi'), ' ')
     .replace(/\b(for|on|about|regarding|some|good|me|a|an|the|please|that|cover|covering|and|or|my|our|i|can|you|could|would|what|which|are|is|useful|relevant|recommended)\b/gi, ' ')
     .replace(/[?!.,;:]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 200)
-  return { task, queries: queries.slice(0, 3), needsEvidence: task !== 'references' && (scoped || task !== 'general'), rationale, topic: topic || message.slice(0, 200), revision }
+  const course = input.context?.match(/Selected course:\s*([^\n]{1,200})/i)?.[1]?.trim()
+  const educationalDraft = task === 'draft' && /\b(?:syllabus|course|lesson|outline|research|topics?|assessments?|materials?|references?)\b/i.test(`${message} ${course || ''}`)
+  return { task, queries: queries.slice(0, 3), needsEvidence: task !== 'references' && (sourceOnly || task !== 'general'), needsWeb: !sourceOnly && (educationalDraft || WEB.test(message)) && task !== 'references', sourceOnly, rationale, topic: course || topic || message.slice(0, 200), revision }
 }

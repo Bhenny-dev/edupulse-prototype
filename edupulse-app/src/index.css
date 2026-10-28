@@ -28,6 +28,21 @@
   --amber-100: #fef3c7;
   --purple-500: #a855f7;
   --purple-100: #f3e8ff;
+  --green-50: #f0fdf4;
+  --green-200: #bbf7d0;
+  --green-600: #15803d;
+  --green-700: #166534;
+  --amber-50: #fffbeb;
+  --amber-200: #fde68a;
+  --amber-600: #b45309;
+  --amber-700: #92400e;
+  --red-50: #fef2f2;
+  --red-200: #fecaca;
+  --red-600: #dc2626;
+  --red-700: #991b1b;
+  --success: var(--green-600);
+  --warning: var(--amber-600);
+  --danger: var(--red-600);
 
   --shadow-3d:
     0 2px 4px rgba(14, 165, 233, 0.06),
@@ -950,6 +965,13 @@ textarea:focus-visible {
 }
 
 /* ─── MOBILE (≤767px) ─── */
+@media (min-width: 768px) and (max-width: 1350px) {
+  .app-brand { gap: 16px !important; }
+  .app-primary-nav > a { padding: 8px !important; }
+}
+@media (min-width: 768px) and (max-width: 1180px) {
+  .app-primary-nav .nav-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+}
 @media (max-width: 767px) {
   .app-topbar { padding: 0 12px !important; gap: 8px; }
   .app-brand { gap: 8px !important; min-width: 0; }
@@ -1174,8 +1196,8 @@ textarea:focus-visible {
 
   /* Text */
   --gray-300: #94a3b8;
-  --gray-400: #64748b;
-  --gray-500: #64748b;
+  --gray-400: #94a3b8;
+  --gray-500: #94a3b8;
   --gray-600: #94a3b8;
   --gray-700: #cbd5e1;
   --gray-800: #e2e8f0;
@@ -1198,7 +1220,19 @@ textarea:focus-visible {
   --purple-100: #3b0764;
 
   /* Dashboard onboarding card */
-  --onboarding-bg: linear-gradient(135deg, #0c2a45, #0f172a, #1e1b3a);
+  --onboarding-bg: #1e293b;
+  --green-50: #052e16;
+  --green-200: #166534;
+  --green-600: #86efac;
+  --green-700: #bbf7d0;
+  --amber-50: #451a03;
+  --amber-200: #92400e;
+  --amber-600: #fcd34d;
+  --amber-700: #fde68a;
+  --red-50: #450a0a;
+  --red-200: #991b1b;
+  --red-600: #fca5a5;
+  --red-700: #fecaca;
 
   /* Semantic text — lighter for contrast on dark backgrounds */
   --red-500: #fca5a5;
@@ -1224,6 +1258,8 @@ textarea:focus-visible {
 /* ─── Dark mode: component-level overrides ─── */
 .dark-mode body {
   color: var(--gray-800);
+  background: #0b1220;
+  color-scheme: dark;
 }
 
 .dark-mode h1, .dark-mode h2, .dark-mode h3, .dark-mode h4, .dark-mode h5, .dark-mode h6 {
@@ -1320,7 +1356,7 @@ textarea:focus-visible {
 }
 
 .dark-mode .upload-zone-icon {
-  background: linear-gradient(135deg, var(--sky-700), var(--sky-600));
+  background: #075985;
 }
 
 .dark-mode select.form-input {
@@ -1350,13 +1386,26 @@ textarea:focus-visible {
 }
 
 .dark-mode .btn-primary {
+  background: #0369a1;
+  color: #ffffff;
   box-shadow: 0 2px 4px rgba(14, 165, 233, 0.15), 0 4px 12px rgba(14, 165, 233, 0.2);
 }
 
-.dark-mode header {
+.dark-mode .app-topbar {
   background: rgba(15, 23, 42, 0.9) !important;
   border-bottom-color: var(--gray-200) !important;
 }
+
+/* Dark surfaces and controls use solid fills, including inline legacy accents. */
+.dark-mode .app-layout, .dark-mode .main-content { background: #0b1220; }
+.dark-mode .avatar, .dark-mode .upload-zone-icon, .dark-mode .progress-fill { background: #0284c7; }
+.dark-mode .btn-danger { background: #b91c1c; color: #fff; }
+.dark-mode [style*="linear-gradient"] { background-image: none !important; }
+.dark-mode .pres-container { background: #0b1220; }
+.dark-mode .pres-slide { background: var(--white); color: var(--gray-800); }
+.dark-mode .pres-slide-title { background: #0369a1; color: #fff; }
+.dark-mode .recharts-cartesian-axis-tick-value, .dark-mode .recharts-polar-angle-axis-tick-value, .dark-mode .recharts-polar-radius-axis-tick-value { fill: var(--gray-600); }
+.dark-mode .recharts-default-tooltip { background: var(--white) !important; border-color: var(--gray-200) !important; color: var(--gray-800); }
 
 .dark-mode .card {
   border-color: var(--gray-200);

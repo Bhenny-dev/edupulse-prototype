@@ -12,7 +12,7 @@ const CATEGORY_LABELS = {
 
 export default function NotificationCenter() {
   const { user } = useAuth()
-  const { notifications, unreadCount, markRead, markAllRead } = useNotifications(user?.role)
+  const { notifications, unreadCount, markRead, markAllRead, loading, error } = useNotifications(user?.role)
   const [filter, setFilter] = useState('all')
 
   const categories = ['all', 'unread', ...new Set(notifications.map(n => n.category))]
@@ -34,6 +34,9 @@ export default function NotificationCenter() {
         </div>
       </div>
 
+      {user?.authenticated && <p className="text-sm text-muted mb-16">Notices reflect current authorized records. Read state is saved for this account on this device.</p>}
+      {loading && <p role="status">Loading record notices…</p>}
+      {error && <p role="alert">{error}</p>}
       <div className="tabs mb-24" style={{ overflowX: 'auto', flexWrap: 'nowrap' }}>
         {categories.map(f => (
           <button key={f} className={`tab ${filter === f ? 'active' : ''}`} onClick={() => setFilter(f)} style={{ whiteSpace: 'nowrap' }}>
@@ -44,11 +47,11 @@ export default function NotificationCenter() {
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-        {filtered.length === 0 ? (
+        {!loading && !error && filtered.length === 0 ? (
           <div className="empty-state">
             <div className="empty-state-icon"><Bell size={36} /></div>
             <h3>No notifications</h3>
-            <p>You're all caught up!</p>
+            <p>No notices match the current records and filter.</p>
           </div>
         ) : (
           filtered.map(n => {

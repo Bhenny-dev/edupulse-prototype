@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-10-27T15-22-49-834Z-3eea76c9",
+  "startedAt": "2026-10-27T15:22:49.834Z",
+  "finishedAt": "2026-10-27T15:30:45.379Z",
+  "commitSha": "87bea6b1647f1623c5ca5705d6f6b955fce45e91",
+  "sourceDigest": "75ef70427e8aaf739edfbbd2ab5c89835559b06417b6d689f6ff29eaa35125f2",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-10-27T15:22:26.364Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 2,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": null
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/pulse-drafting.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-tools.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-source.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/pulse-drafting.spec.ts",
+      "title": "Pulse model proposal: course-aware complete syllabus draft and research sources",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-provider-transport/ui-regression",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 4222,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+      "title": "Pulse tools: model proposal is reviewable before saving",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-provider-transport/ui-regression",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 895,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-manual/09-pulse-actions/14-generated-edit-preview.png",
+      "sha256": "5c519b8c616ce3c01e7fd5132e7fa9242ee50aa06f547f5e652a73e8d8502f04",
+      "bytes": 100373
+    },
+    {
+      "path": "feature-documentation/system-manual/09-pulse-actions/17-course-aware-syllabus-draft.png",
+      "sha256": "251a49e77ddd4685274c9320288e3d062d7d5795cf6a5a7f4367fd0a596a7fc8",
+      "bytes": 117716
+    }
+  ]
+}

@@ -4,7 +4,7 @@ Material produced while building a release: evaluation data, charts rendered fro
 
 | Session | Release | Contents |
 | --- | --- | --- |
-| [2026-10-27 ? Feature presence](2026-10-27-feature-presence-audit/README.md) | [Interface consistency](../versions/2026-10-27-interface-consistency/README.md) | Six-version route/source review, retained preview features, authenticated-view gaps and intentional removals |
+| [2026-10-27 · Feature presence](2026-10-27-feature-presence-audit/README.md) | [Interface consistency](../versions/2026-10-27-interface-consistency/README.md) | Expanded 56-file control inventory, 186 functional requirements for cross-reference, detailed losses across roles, authenticated bypasses, inactive controls and dark-mode defects |
 | [2026-10-24 · Release completion](2026-10-24-release-completion/README.md) | Academic pilot completion | Owner-approved role scope, cloud canaries, retrieval regression evaluation and final release evidence |
 | [2026-10-24 · Engineering audit integration](2026-10-24-engineering-audit/README.md) | [Local candidate](../versions/2026-10-24-audit-integration/README.md) | Supplied audit, finding-by-finding disposition, acceptance trace, structured verification results and explicit deployment limits |
 | [2026-10-02 · Agentic RAG](2026-10-02-agentic-rag/README.md) | [v0.4.0](../versions/v0.4.0/README.md) | Retrieval, abstention and Verifier evaluation on real documents; four charts; agent-workflow and ingestion-pipeline figures; capstone results and discussion |

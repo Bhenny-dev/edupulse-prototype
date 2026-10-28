@@ -32,6 +32,11 @@ test('local workspace persists per owner and rejects concurrent stale saves', as
     assert.equal((await readWorkspace(a)).revision, 2)
     assert.equal((await readWorkspace({ ...a, role: 'guest' })).data, null)
     await assert.rejects(saveWorkspace({ ...a, role: 'student' }, data), { status: 403 })
+    const dean: Identity = { id: 'private-intake-dean', role: 'dean', local: true }
+    const intake = { courses: [{ CourseCode: 'IT 102', CourseTitle: 'Programming' }], loads: [], rosters: [], history: [] }
+    await saveWorkspace(dean, workspaceInput.parse({ revision: 0, data: { ...empty, intake } }))
+    assert.deepEqual((await readWorkspace(dean)).data?.intake, intake)
+    assert.equal((await readWorkspace(b)).data, null, 'Private intake is not shared with a different owner')
     const invalidAttachment = workspaceInput.parse({ revision: 2, data: { ...empty, syllabi: [{ ...syllabi[0], approvedFile: { name: 'bad.docx', size: 2, base64: 'UEs=', sha256: '0'.repeat(64), uploadedAt: new Date().toISOString(), approvalAttested: true } }] } })
     await assert.rejects(saveWorkspace(a, invalidAttachment), { code: 'INVALID_ATTACHMENT' })
     const pdf = Buffer.from('%PDF-1.7\nretained approved-file regression fixture')

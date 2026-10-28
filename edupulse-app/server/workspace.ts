@@ -12,7 +12,9 @@ const syllabus = z.looseObject({ id: z.string().min(1).max(120), courseCode: z.s
   if (!value.sample && ['active', 'approved_uploaded'].includes(value.status) && (!value.approvedFile || !value.courseOutline.some(row => row.ilos.trim() && row.contents.some(text => text.trim())))) ctx.addIssue({ code: 'custom', message: 'An approved file and extracted outline are required.' })
 })
 const contentItem = z.looseObject({ syllabusId: z.string().max(120), week: z.number().int().min(1).max(52), type: z.enum(['material', 'activity', 'assessment']), status: z.enum(['draft', 'checked', 'published', 'hidden']), content: z.looseObject({ title: z.string().max(240) }) })
-export const workspaceData = z.object({ syllabi: z.array(syllabus).max(50), content: z.record(z.string().max(200), contentItem), registrations: z.array(z.record(z.string(), z.unknown())).max(200).default([]) }).superRefine((value, ctx) => {
+const intakeRow = z.record(z.string().max(80), z.string().max(500))
+const intake = z.object({ courses: z.array(intakeRow).max(1000), loads: z.array(intakeRow).max(1000), rosters: z.array(intakeRow).max(1000), history: z.array(z.object({ id: z.string().max(80), filename: z.string().max(255), kind: z.enum(['courses', 'loads', 'rosters']), importedAt: z.string().datetime(), created: z.number().int().nonnegative(), updated: z.number().int().nonnegative(), rejected: z.number().int().nonnegative() })).max(50) })
+export const workspaceData = z.object({ syllabi: z.array(syllabus).max(50), content: z.record(z.string().max(200), contentItem), registrations: z.array(z.record(z.string(), z.unknown())).max(200).default([]), intake: intake.optional() }).superRefine((value, ctx) => {
   if (Object.keys(value.content).length > 1000) ctx.addIssue({ code: 'custom', message: 'Workspace is limited to 1,000 courseware items.' })
   if (new Set(value.syllabi.map(s => s.id)).size !== value.syllabi.length) ctx.addIssue({ code: 'custom', message: 'Syllabus IDs must be unique.' })
 })

@@ -1,8 +1,11 @@
 import { mergeStudents, studentKey } from '../utils/rosterParser'
+import { ALL_FIELDS, DRAFT_REQUEST, WEB_REQUEST } from './skills'
+export { ALL_FIELDS, DRAFT_REQUEST, WEB_REQUEST }
 
 export const EDIT_REQUEST = /make\s+(?:it|this|these|the.*?)\s+(?:more\s+)?(?:accurate|complete|correct)|\b(?:update|modify|revise|edit|fix|improve|rewrite|insert|append|replace|remove|delete|integrate|fill|record)\b/i
 export const ACTION_REQUEST = /\b(?:redirect|navigate|walkthrough|guide\s+me|walk\s+me|take\s+me|open|generate|create|build|update|modify|revise|edit|fix|improve|accurate|complete|rewrite|insert|append|replace|remove|delete|integrate)\b/i
 export function sectionFor(text) {
+  if (ALL_FIELDS.test(text)) return 'all'
   for (const [field, pattern] of [
     ['courseDescription', /course\s+description|section\s*2/i], ['institutionalContext', /institutional context|vision|mission|core values|section\s*3/i], ['programOutcomes', /program\s+outcomes?|section\s*4/i],
     ['courseOutline', /course\s+outline|weekly\s+(?:outline|plan)|section\s*5/i], ['courseRequirements', /course\s+requirements?/i],
@@ -25,6 +28,11 @@ export function workProposal({ message, attachments, role, editor, registrations
   const materialDraft = /\b(?:creat|generat|draft|build|mak|prepar)\w*\b/i.test(message) && /learning materials?|lessons?|courseware|lecture|quiz/i.test(message)
   if (materialDraft) return null
   const source = attachments.find(attachment => attachment.syllabus)
+  const sourceCorrection = source && /\b(?:accurate|incomplete|re.?extract|restore|not correct)\b/i.test(message) && !/\b(?:generate|create|draft|write|compose|populate)\b/i.test(message)
+  // Generating new content uses the mounted editor and selected course. A retained
+  // source can inform that draft, but must not hijack it into another file import.
+  const authoring = editor && DRAFT_REQUEST.test(message) && !/\b(?:import|extract|restore|copy\s+from)\b/i.test(message) && (/\b(?:syllabus|fields?|sections?|outline|outcomes?|requirements?|references?|content|it|this)\b/i.test(message))
+  if (authoring && !sourceCorrection) return role === 'instructor' ? { type: 'editor-edit', request: message, editor, section: editor.kind === 'syllabus' ? targetSection : 'all', attachments } : { type: 'notice', text: 'An authorized instructor view is required to draft changes to academic content.' }
   if (source && (!message || /\b(?:accurate|incomplete|re.?extract|restore)\b/i.test(message) || /\b(?:import|build|create|record|add|insert|update|modify|integrate|fill|use|apply)\b/i.test(message))) {
     return role === 'instructor' ? { type: 'syllabus-import', attachment: source, section: targetSection, courseCode: source.syllabus.courseMatch?.code || '', operation: /\b(?:append|insert|add)\b/i.test(message) ? 'append' : 'replace' } : { type: 'notice', text: 'Only an authorized instructor view can import a syllabus. You can still ask about the file.' }
   }

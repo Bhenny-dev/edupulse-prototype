@@ -34,6 +34,8 @@ The seven-section template. Start by dropping an existing syllabus `.docx` or `.
 
 Section 5, **Course Outline**, is the part that later drives courseware: one row per week with intended learning outcomes, topics (**Add Topic**), activities and teaching materials, and assessment details. Weeks 9 and 18 are fixed exam weeks; rows can be reordered with the drag handle and given attachments with the paper-clip.
 
+Pulse can prepare a new syllabus draft for the course selected in Section 1. Its [review card and research-source screenshot](../../system-manual/09-pulse-actions/README.md#generate-a-syllabus-from-the-selected-course) show the editable fields, pending institutional rules and separate apply/save controls. Empty fields do not require an existing syllabus in the library; the instructor reviews all new teaching content.
+
 ## 7–8. Courseware
 
 ![My Courseware](07-courseware-my-courseware.png)
@@ -66,3 +68,7 @@ The refreshed captures display **Sample performance data · Preview only · Inst
 ## PDF and focused source updates
 
 The builder previews wrapped PDF outline cells and keeps the accepted source available while the builder is open. **Download PDF draft** exports the current form; **Download for Approval** now exports PDF. A focused Pulse panel occupies its own desktop column and can propose corrections to the selected section using that source. The learning document viewer offers **Download PDF**. See the updated [syllabus steps](../../system-manual/02-syllabus-lifecycle/README.md) and [focused correction example](../../system-manual/09-pulse-actions/README.md#correct-the-selected-section-using-its-page-source).
+
+## Restored signed-in sections
+
+Signed-in instructors now have teaching quick actions, saved-work lifecycle/review sections, block summaries and account-derived assessment radar/history. Student Monitoring restores its scoring/access tabs, matrices, charts, filters and CSV; Performance restores its tabs and student detail dialog. These use owned authorized records, with explicit missing-topic states. See the [current account screenshots](../09-restored-role-pages/README.md). Preview mastery illustrations above must not be interpreted as real account scores.

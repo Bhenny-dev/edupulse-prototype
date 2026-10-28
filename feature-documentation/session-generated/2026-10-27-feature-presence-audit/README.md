@@ -2,6 +2,8 @@
 
 Reviewed 27 October 2026. This is a source/history audit, not a claim that every workflow has passed an authenticated production test. Baselines: `bd54add` (frontend prototype), `60972ea` (persistent workspace), `72cf820` (agentic RAG), `4486468` (Pulse/PDF), `5afbd0c` (authenticated academic records), and application release `8f7dfb6`. The UI corrections in this working change are listed separately below.
 
+**Expanded scan:** the [detailed feature-loss register](feature-loss-register.md) covers individual controls and behaviors across all roles, including assessments, published-content readers, templates/import history, notifications, inactive fallback actions, exports and theme defects. The [complete UI inventory](ui-control-inventory.md) scans 56 page/component JSX/TSX files and records all 186 functional requirements for cross-reference. Its [JSON evidence](ui-control-inventory.json) and [reproducible scanner](scan-ui.mjs) distinguish deleted files from authenticated branches that bypass retained UI. This expands the earlier summary; it is not a claim that those gaps have been restored.
+
 Several older screens used sample data or toast-only actions. The gaps below identify missing current coverage; they do not imply that every earlier control had a working persistent implementation.
 
 ## Findings that need follow-up
@@ -46,3 +48,7 @@ The main source loss is limited; the larger gap is features retained in preview 
 [Route and source inventory](route-inventory.json) records all route paths for each reviewed baseline. The frontend baseline had 36 page/component files; the last released tree has 63. The only deleted page found by history was the old standalone Login screen; sign-in moved to Landing. This audit covers major user workflows and explicit source/history evidence, not an item-by-item certification of every requirement.
 
 The syllabus detail dialog also contained an Export button with no click handler. This pass connects it to the existing genuine PDF exporter and labels it Download PDF, with pending/error feedback. A browser check verifies the download. This repairs an inactive affordance; the older simulated version-restore behavior remains out of use.
+
+## 28 October restoration follow-up
+
+The preceding tables preserve the findings at scan time. Role-specific dashboards, performance/monitoring, oversight, records/private intake and student readers have now been rebuilt against authorized data. [Restoration disposition](restoration-status.md) records the result for all 80 IDs, including limitations and pre-existing inactive controls. See the [current account captures](../../system-walkthrough/09-restored-role-pages/README.md).

@@ -1,4 +1,7 @@
 import { z } from 'zod'
+export const DRAFT_REQUEST = /\b(?:generate|create|draft|write|compose|make|prepare|build|fill|populate|complete)\b/i
+export const WEB_REQUEST = /\b(?:web|internet|online|look\s*up|research|latest|up.to.date)\b/i
+export const ALL_FIELDS = /\b(?:all|every|entire|whole|complete)\b.{0,35}\b(?:fields?|sections?|syllabus|outline)\b|\b(?:fields?|sections?|syllabus|outline)\b.{0,25}\b(?:all|every|entire|whole)\b/i
 
 /** Versioned application skills. Only these typed tools can be proposed; no shell, JS or arbitrary URL tool. */
 export const PULSE_SKILLS = [

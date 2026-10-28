@@ -1,0 +1,137 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-10-28T02-57-51-558Z-d06b60a3",
+  "startedAt": "2026-10-28T02:57:51.558Z",
+  "finishedAt": "2026-10-28T02:58:15.225Z",
+  "commitSha": "87bea6b1647f1623c5ca5705d6f6b955fce45e91",
+  "sourceDigest": "4ba855d80baf5719ee9ea0d1790d073869a711655d85af2d7fe851d27baebfa3",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-10-28T02:57:47.573Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 1,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": null
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/role-restoration.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-drafting.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-source.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+      "title": "synthetic restored oversight, loading and records sections",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 7666,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/13-monitor-syllabus-status.png",
+      "sha256": "c2e8dbd57157bec193ebb80b14a005aee5015921a95635b3c54f0bb96975d222",
+      "bytes": 270352
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/14-monitor-delivery.png",
+      "sha256": "9ab0fffad130a88e2d5fffcb09c494f69b8e1e45ab190f3bb7d830094992b366",
+      "bytes": 303924
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/15-monitor-students.png",
+      "sha256": "8b5584c035639a7c0a232c1d260dfba2094378841b1cd397ffab61365298266a",
+      "bytes": 293642
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/16-monitor-alerts.png",
+      "sha256": "9763bd632bc48ad803e937d4588200701c41d9029417cdc6e38638fac5b6f677",
+      "bytes": 267658
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/17-course-loading.png",
+      "sha256": "14ab28b4fb00b9efe2c5df86cdf2387f6370c665d92802567d673eefeb42e82a",
+      "bytes": 267614
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/18-instructor-delivery.png",
+      "sha256": "403b6b92fb54f80ba636ed9c30723c7de44506de9c7103a279a84efd42a278b5",
+      "bytes": 264643
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/19-record-blocks.png",
+      "sha256": "cdc960acb8d3fc11c84ec523d9fe24cc7b5339e7cb86237e85faae2f919b6fc5",
+      "bytes": 284869
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/20-record-courses.png",
+      "sha256": "4ef8e1343b03419e4908d93a0bd5f06d9d218f269a7b45b92eb6d9a24f5e68ea",
+      "bytes": 287683
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/21-course-intake-preview.png",
+      "sha256": "dd8986b0a32653063266bbe46b3c60114d5563d6ee3ea22bca69efd5d315e350",
+      "bytes": 379490
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/22-course-intake-saved.png",
+      "sha256": "29c4f8cb6dcb913ce202ff3e5c6a47b169c5b9a43b0d0690d9174a71263ed65d",
+      "bytes": 342094
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/23-load-intake.png",
+      "sha256": "4c33328143671877e3c04792ba79140037ddae3fa651e0939f3865c315cb0192",
+      "bytes": 304100
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/24-roster-intake.png",
+      "sha256": "6ffa79a833872f5b9b1ada038e98a084dc709c5365d503569a60704e90b5632a",
+      "bytes": 305006
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/25-intake-templates.png",
+      "sha256": "7ac4969b2cd64de0790fc484913642cb6fc1bb50faabb66695a4961b069d6d37",
+      "bytes": 301111
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/26-intake-history.png",
+      "sha256": "bbe6531752932f37b868e1ee95f4aa5f22432b3019d8e455ecfe95d9406947f5",
+      "bytes": 290091
+    }
+  ]
+}

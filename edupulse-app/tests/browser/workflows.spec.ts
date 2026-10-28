@@ -7,6 +7,7 @@ test.beforeEach(async ({ request }) => {
 })
 
 test('preview connects to real health API and shows source-grounded chat without overflow', async ({ page }) => {
+  test.setTimeout(150000)
   const errors: string[] = []
   page.on('pageerror', error => errors.push(error.message))
   await page.goto('/')

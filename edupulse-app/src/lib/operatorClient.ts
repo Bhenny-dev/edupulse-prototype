@@ -8,5 +8,5 @@ export async function requestOperator(input: z.input<typeof operatorInput>, sign
   if (aiPreference() !== 'browser') return aiRequest('operator', 'POST', input, signal)
   const { operatorInput: schema, planValidatedTool } = await import('../agents/toolPlanner.js')
   const parsed = schema.parse(input)
-  return planValidatedTool(parsed, { id: 'on-device-proposal', role: parsed.viewRole, local: true }, signal, invokeBrowserModel, 6000)
+  return planValidatedTool(parsed, { id: 'on-device-proposal', role: parsed.viewRole, local: true }, signal, invokeBrowserModel, 6000, (topic, abort) => aiRequest('web-search', 'POST', { topic: topic.slice(0, 200), bibliography: true }, abort))
 }

@@ -1,0 +1,523 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-10-28T03-00-12-537Z-a4354e35",
+  "startedAt": "2026-10-28T03:00:12.537Z",
+  "finishedAt": "2026-10-28T03:01:39.414Z",
+  "commitSha": "87bea6b1647f1623c5ca5705d6f6b955fce45e91",
+  "sourceDigest": "46d986927dc1be2a5932012e328ad9a6e7d4b8be7ef98c8cd7bd212be668db92",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-10-28T03:00:07.947Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 14,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": null
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/interface-captures.ts",
+    "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration-mobile.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-drafting.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-source.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/interface-captures.ts",
+      "title": "interface: monitor subviews remain reachable without a sidebar",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 14529,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/interface-captures.ts",
+      "title": "interface: avatar launcher and dialog beside Pulse",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2666,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/interface-captures.ts",
+      "title": "interface: academic skeleton during an actual pending request",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1117,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/interface-captures.ts",
+      "title": "interface: file scan has progress without invented percentages",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 7181,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/interface-captures.ts",
+      "title": "academic UI fixtures: current records screens, no hosted authorization claim",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 19334,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+      "title": "synthetic restored instructor dashboard",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1739,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+      "title": "synthetic restored student dashboard",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1526,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+      "title": "synthetic restored dean dashboard",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1317,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+      "title": "synthetic restored associate_dean dashboard",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1359,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+      "title": "synthetic restored performance and scoring sections",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 4506,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+      "title": "synthetic restored oversight, loading and records sections",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 5443,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+      "title": "synthetic restored student readers, results and notices",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 3346,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+      "title": "synthetic restored dark solid surfaces",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1449,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/role-restoration-mobile.spec.ts",
+      "title": "synthetic restored mobile charts, matrix and dark role navigation",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 4363,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-manual/12-interface-and-loading/01-page-tabs.png",
+      "sha256": "555b3d1a0ac18ca1266f961a9908e30b0587bb293417f8ef9b467a69ace159b1",
+      "bytes": 295795
+    },
+    {
+      "path": "feature-documentation/system-manual/12-interface-and-loading/02-avatar-launcher.png",
+      "sha256": "113912e817c7a929d0ea9d3d4f8e59f0dcde3d48324e4f025d4f9da27bd888cc",
+      "bytes": 5098
+    },
+    {
+      "path": "feature-documentation/system-manual/12-interface-and-loading/03-dialog-and-pulse.png",
+      "sha256": "6fca9e11c0e551ba1e7503f8161534bb57b7403e41aaa304eeab4aa8091a0482",
+      "bytes": 279206
+    },
+    {
+      "path": "feature-documentation/system-manual/12-interface-and-loading/04-records-loading.png",
+      "sha256": "8d468a041a5881ca87ed66edf9ddb930a5942188d9d9ce928add6c1488ddc0cb",
+      "bytes": 216181
+    },
+    {
+      "path": "feature-documentation/system-manual/12-interface-and-loading/05-file-scan-progress.png",
+      "sha256": "e57cae1a1619a886a6b788a92bb050cd3fa7110516fa9d488bfe4c9d90fc7c0d",
+      "bytes": 9759
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/03-dean-and-associate-dean/04-monitor-syllabus-status.png",
+      "sha256": "01c52db477a56e4d56b5cb0a2716a0b35ca12d7e26d3c17cd9c7ff619d32b891",
+      "bytes": 262222
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/03-dean-and-associate-dean/05-monitor-delivery-progress.png",
+      "sha256": "fcbb5cbab7aead01d81937b79454000fe1fbb9543e77e91718f338288c91f994",
+      "bytes": 229670
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/03-dean-and-associate-dean/06-monitor-student-oversight.png",
+      "sha256": "8ed8beb223a05927a4bc183270eb460a060729e68d90271fb4e08d3ee30d2df3",
+      "bytes": 261299
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/03-dean-and-associate-dean/07-monitor-alerts.png",
+      "sha256": "3ddcc428ff8d59d7ef989eaf23e0d6534067e62aa887ce5d87af7dfd1f577cf5",
+      "bytes": 236477
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/04-instructor/10-student-monitoring-material-access.png",
+      "sha256": "049f0ace86eaecdc323745ed5b8cc9a6b15eed719662e39952048aa4bc952447",
+      "bytes": 580668
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/08-authenticated-records/01-instructor-records.png",
+      "sha256": "425b8b9ac967b57c838a97075e2b930f7abf1d670d6993a453bb0f4856363373",
+      "bytes": 448968
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/08-authenticated-records/02-student-material.png",
+      "sha256": "d37c08adc95951ce3beb97fe3d5727f9441d8de7f80b268c4dada41c6a3eae26",
+      "bytes": 308054
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/08-authenticated-records/03-student-assessment.png",
+      "sha256": "a519aef9c2e37276c0cecb1a0d323550da6db975b3dab9055dd1d20debd66474",
+      "bytes": 337072
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/08-authenticated-records/04-student-performance.png",
+      "sha256": "cdd49e780271bfe1e98fc449c81fc4bf36d055699087c45e155a1bfb636e8d64",
+      "bytes": 334907
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/08-authenticated-records/05-dean-performance.png",
+      "sha256": "d5067f5499bd768e8e210aa928dc01d08487c907aa7137df47a510cd22c64999",
+      "bytes": 389305
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/08-authenticated-records/06-associate-dean-oversight.png",
+      "sha256": "1df8621d40036e1705037c75350b6ece96f8db504931266d724ac8160c570bfc",
+      "bytes": 269230
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/08-authenticated-records/07-unenrolled-student.png",
+      "sha256": "00f965303bda5725597c9d9746d72dfa1f5eed99302e20ac749f01133f0bcd2f",
+      "bytes": 453261
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/01-instructor-dashboard.png",
+      "sha256": "c80293bceaccbd2214b2544845d7f3c356c8d79236590cf6db879c99a2d67b93",
+      "bytes": 482230
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/02-student-dashboard.png",
+      "sha256": "61617f8ec19a794906b072878403b7d2e863253bbf294ef51e1f6b88e978584b",
+      "bytes": 466518
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/03-dean-dashboard.png",
+      "sha256": "cc002859b980600de877d58fe9aa01ad6d57eaf8e2f62230f15e1acfd85c5e2b",
+      "bytes": 347348
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/04-associate_dean-dashboard.png",
+      "sha256": "645f1a250c807d02d2c694bd741fde4dadce11387fb0e26be9fef87b3c5cd7df",
+      "bytes": 348899
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/05-performance-radar-and-history.png",
+      "sha256": "4861bd4e2cbe917d157fd0bc4ac1cabb2c4f147b40b2d318b0a15b366953f64c",
+      "bytes": 448384
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/06-assessment-coverage.png",
+      "sha256": "22b171bc40aef4ad330bd05192b43723c91dd130c02286e84fd90dbc35127404",
+      "bytes": 308357
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/07-material-access.png",
+      "sha256": "e3a62fdef4cac60bb5bfb2d1caf675de4f632d92d4107ee9a1a557469bf3c76f",
+      "bytes": 335725
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/08-assessment-scores.png",
+      "sha256": "b28eec36efca9467cc88c7ec4c1a808c93486473fefa0bd0c132aa5ebcff64e2",
+      "bytes": 355038
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/09-threshold-review.png",
+      "sha256": "d6fe82f1980aa2234ad43d5b62580319a23c42783a64452b2ac60487dbbaa377",
+      "bytes": 326905
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/10-student-drilldown.png",
+      "sha256": "19dec6d8d20b08cdf6bca6fbf1f4523086670cbcf9dd9f02b2cd22153829e383",
+      "bytes": 90876
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/11-monitoring-scoring-matrix.png",
+      "sha256": "11544ac3f035f516bf778a28e80b298b092e3660b51575abcd4dfcf4d044dc5d",
+      "bytes": 499904
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/12-monitoring-material-matrix.png",
+      "sha256": "99690aa7f1b86983d6b6b8c5e0b5f716afb793a13ee4079e4bddc2be8a3a8dfa",
+      "bytes": 334413
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/13-monitor-syllabus-status.png",
+      "sha256": "c2e8dbd57157bec193ebb80b14a005aee5015921a95635b3c54f0bb96975d222",
+      "bytes": 270352
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/14-monitor-delivery.png",
+      "sha256": "9ab0fffad130a88e2d5fffcb09c494f69b8e1e45ab190f3bb7d830094992b366",
+      "bytes": 303924
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/15-monitor-students.png",
+      "sha256": "8b5584c035639a7c0a232c1d260dfba2094378841b1cd397ffab61365298266a",
+      "bytes": 293642
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/16-monitor-alerts.png",
+      "sha256": "9763bd632bc48ad803e937d4588200701c41d9029417cdc6e38638fac5b6f677",
+      "bytes": 267658
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/17-course-loading.png",
+      "sha256": "14ab28b4fb00b9efe2c5df86cdf2387f6370c665d92802567d673eefeb42e82a",
+      "bytes": 267614
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/18-instructor-delivery.png",
+      "sha256": "c72ac7daf87d0cf553fa78665507ea47b543351536366cdda045a71e989754d4",
+      "bytes": 264628
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/19-record-blocks.png",
+      "sha256": "e86873e55411ff74823d4a56a98a99c8d484774c0c12ada85ed6564c27adbe01",
+      "bytes": 284878
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/20-record-courses.png",
+      "sha256": "4ef8e1343b03419e4908d93a0bd5f06d9d218f269a7b45b92eb6d9a24f5e68ea",
+      "bytes": 287683
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/21-course-intake-preview.png",
+      "sha256": "dd8986b0a32653063266bbe46b3c60114d5563d6ee3ea22bca69efd5d315e350",
+      "bytes": 379490
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/22-course-intake-saved.png",
+      "sha256": "29c4f8cb6dcb913ce202ff3e5c6a47b169c5b9a43b0d0690d9174a71263ed65d",
+      "bytes": 342094
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/23-load-intake.png",
+      "sha256": "ff8f9d32335e9b6c490f1cec9f2fdccd6839ac9e4ca248c112388c7e1c8bf47d",
+      "bytes": 303967
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/24-roster-intake.png",
+      "sha256": "90874341859ec366234df1b1e82460bfe4bed14ad64e9a07f4eb05274eadc215",
+      "bytes": 304676
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/25-intake-templates.png",
+      "sha256": "ee3faf0be9dc5f9606b78b22e7f2cd663e89e0a303ea26ae8211cb25e7673c7f",
+      "bytes": 301158
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/26-intake-history.png",
+      "sha256": "ec1f77a220e4b109ecca252f85984e3968510e3e0b936c92af800a24d5f57b96",
+      "bytes": 289678
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/27-student-course-weeks.png",
+      "sha256": "5b6595e1f51de97552008f2a7e8a9487c8736c9d1b2ac58f172e1e606bc8cde1",
+      "bytes": 252701
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/28-student-document.png",
+      "sha256": "0034664d7086ffb0b7829644c1903b238f966819b1cfa8b8896e610e58c2ff10",
+      "bytes": 304973
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/29-student-presentation.png",
+      "sha256": "ab3b7c32b2c50e7197f59b5547d9ac2c1a07c195acf6f83c4e38b1be4c388676",
+      "bytes": 277387
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/30-student-assessment-result.png",
+      "sha256": "742cc9103f4d8abab3070a735277fa67b1e6167b461e145c2a188e3bbe21df95",
+      "bytes": 379917
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/31-account-notices.png",
+      "sha256": "f4aa3221adb1641f049ead5bcba57cd104790b900b7c7bb1e012afc39a93b7c4",
+      "bytes": 253984
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/32-dark-performance.png",
+      "sha256": "dc6d2ac9b7a51060fcd51fd483133efa2517e71f0500062f7ac8910ec10046b2",
+      "bytes": 242663
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/33-mobile-performance.png",
+      "sha256": "d61d8fe5ef90ca3493703682e0240886947485710110a0a243cdd10065734056",
+      "bytes": 1269382
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/34-mobile-materials.png",
+      "sha256": "7149eef7d426938986d039c9d108afa98d68eac13b96f49c9adccc2828e13c0c",
+      "bytes": 958927
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/35-mobile-dark-dashboard.png",
+      "sha256": "fa57b5a2a36af3e7a296de5d6e9f5d64dd1bd4304a673365dd0f52aae37af91e",
+      "bytes": 919557
+    }
+  ]
+}

@@ -111,6 +111,7 @@ function browserDeps(signal: AbortSignal, session: Identity, generate = invokeBr
     search: batchedSearch(signal, session),
     similarity: async (left, right, abort) => (await aiRequest<{ matrix: number[][] }>('similarity', 'POST', { left: left.slice(0, 24).map(s => s.slice(0, 800)), right: right.slice(0, 12).map(s => s.slice(0, 2000)) }, abort)).matrix,
     references: (topic, abort) => aiRequest<{ references: Reference[]; warning?: string }>('references', 'POST', { topic: topic.slice(0, 200) }, abort),
+    webSearch: (topic, abort) => aiRequest('web-search', 'POST', { topic: topic.slice(0, 200) }, abort),
     generate, provider: 'browser', model: browserAIState().model,
   }
   return deps

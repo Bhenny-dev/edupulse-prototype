@@ -67,3 +67,7 @@ The launcher is hidden while the panel is open, leaving the panel header clear.
 Identical academic controls to the Dean's dashboard, with a separate Associate Dean account and role badge.
 
 Unique page destinations stay in the main navigation: **Records** for Dean/Associate Dean and **Assessments** for students. Mobile users find the same links under **Open menu**. Page tabs provide subviews without duplicate left navigation.
+
+## Restored signed-in sections
+
+The screens above demonstrate preview records. Signed-in Dean/Associate Dean accounts now have their own dashboards, four Monitor views, Course Monitoring/Instructors views and Records file-intake/block/course sections. The Dean also has read-only Performance; Associate Dean does not. See the [current account screenshots and data limits](../09-restored-role-pages/README.md) and [private file-intake task](../../system-manual/13-restored-account-sections/README.md).

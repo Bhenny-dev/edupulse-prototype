@@ -1,5 +1,6 @@
 import { terms } from '../lib/rag/text.js'
 import { PERFORMANCE_ROLES } from '../lib/access.js'
+import { WEB_REQUEST } from './workTools.js'
 
 // Operator: turns a Pulse conversation into proposed app actions. Rule-based and
 // deterministic, like the Planner and the Guardian: model output never decides
@@ -324,7 +325,7 @@ export function planOperator({ message, attachments = [], role, catalog = [], cu
     proposals.push(page.denied ? { type: 'notice', text: `${page.label} is not available for your role.` } : { type: GUIDE.test(text) ? 'guide' : 'navigate', path: page.path, label: page.label })
     return { proposals, chat: false, task: 'auto', mentioned }
   }
-  if (SEARCH.test(text) && !REFERENCES.test(text)) {
+  if (SEARCH.test(text) && !REFERENCES.test(text) && !WEB_REQUEST.test(text)) {
     const query = searchQuery(text)
     if (query) proposals.push({ type: 'search', query, fallbackToChat: true })
     return { proposals, chat: !query, task: 'auto', mentioned }

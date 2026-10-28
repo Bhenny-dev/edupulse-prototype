@@ -4,6 +4,7 @@ import type { Connection } from './connections.js'
 import { embedTexts } from './ml/onnx.js'
 import { hybridSearch, rerank, similarityMatrix } from './rag/search.js'
 import { findReferences } from './external/references.js'
+import { searchWeb } from './external/web.js'
 import { runAgents } from '../src/lib/rag/agents.js'
 import { draftCoursewareAgents } from '../src/lib/rag/courseware.js'
 import type { AgentDeps, Generate } from '../src/lib/rag/types.js'
@@ -18,6 +19,7 @@ export function serverDeps(identity: Identity, connection: Connection | undefine
     search: (query, options, signal) => hybridSearch(identity, query, { documentIds: options.documentIds }, signal),
     rerank, similarity: similarityMatrix,
     references: (topic, signal) => findReferences(topic, signal, embedTexts),
+    webSearch: (query, signal) => searchWeb(query, signal, connection),
     generate: generate || (connection ? (system, prompt, signal, json) => invokeModel(system, prompt, signal, json, connection) : undefined),
     provider: connection?.provider || (generate ? 'model' : 'retrieval'), model: connection?.model || null,
   }

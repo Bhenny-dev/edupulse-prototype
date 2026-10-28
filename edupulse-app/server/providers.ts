@@ -60,6 +60,7 @@ export async function invokeModel(system: string, prompt: string, signal: AbortS
     catch (error) { throw transportFailure(error, signal, connection.provider) }
     if (!response.ok) throw await modelResponseError(response, connection.model)
     const result = await response.json()
+    if (result.status === 'incomplete' || result.choices?.[0]?.finish_reason === 'length' || result.stop_reason === 'max_tokens') throw new ApiError(502, 'INCOMPLETE_RESPONSE', 'The model reached its output limit before completing the response. Nothing was applied; request a smaller section or choose another model.')
     const text = anthropic ? result.content?.filter((b: { type: string }) => b.type === 'text').map((b: { text: string }) => b.text).join('\n') : responses ? result.output?.filter((item: { type: string }) => item.type === 'message').flatMap((item: { content?: { type: string; text?: string }[] }) => item.content || []).filter((part: { type: string }) => part.type === 'output_text').map((part: { text: string }) => part.text).join('\n') : result.choices?.[0]?.message?.content
     if (typeof text !== 'string' || !text.trim()) throw new ApiError(502, 'EMPTY_RESPONSE', 'The model returned no text. Choose a text model or try again.')
     return text.trim()
@@ -72,7 +73,7 @@ export async function invokeModel(system: string, prompt: string, signal: AbortS
       response = await fetch(`${c.ollamaUrl}/api/chat`, {
         method: 'POST', redirect: 'error', signal,
         headers: { 'Content-Type': 'application/json', ...(connection.apiKey ? { Authorization: `Bearer ${connection.apiKey}` } : {}) },
-        body: JSON.stringify({ model: connection.model, stream: false, format: 'json', keep_alive: '1m', ...(connection.model.startsWith('qwen3') ? { think: false } : {}), messages: [{ role: 'system', content: system }, { role: 'user', content: prompt }], options: { temperature: 0.1, num_predict: 2200, num_ctx: 4096, num_batch: 128, use_mmap: true } }),
+        body: JSON.stringify({ model: connection.model, stream: false, format: 'json', keep_alive: '1m', ...(connection.model.startsWith('qwen3') ? { think: false } : {}), messages: [{ role: 'system', content: system }, { role: 'user', content: prompt }], options: { temperature: 0.1, num_predict: testBudget || 2200, num_ctx: testBudget && testBudget > 4096 ? 16384 : 4096, num_batch: 128, use_mmap: true } }),
       })
     } catch (error) { throw transportFailure(error, signal, connection.provider) }
     if (!response.ok) throw providerError(response.status)
@@ -86,7 +87,7 @@ export async function invokeModel(system: string, prompt: string, signal: AbortS
   const model = connection.provider === 'ollama'
     ? new ChatOllama({ baseUrl: c.ollamaUrl, headers: connection.apiKey ? { Authorization: `Bearer ${connection.apiKey}` } : undefined, model: connection.model, temperature: 0.1, numPredict: testBudget || 1000, numCtx: 4096, numBatch: 128, useMmap: true, keepAlive: '5m', maxRetries: 0, ...(connection.model.startsWith('qwen3') ? { think: false } : {}) })
     : connection.provider === 'gemini' && connection.apiKey
-      ? new ChatGoogleGenerativeAI({ apiKey: connection.apiKey, model: connection.model, temperature: 0.1, maxOutputTokens: json ? 5000 : 2000, maxRetries: 0 })
+      ? new ChatGoogleGenerativeAI({ apiKey: connection.apiKey, model: connection.model, temperature: 0.1, maxOutputTokens: testBudget || (json ? 5000 : 2000), maxRetries: 0 })
       : null
   if (!model) throw new ApiError(503, 'MODEL_UNAVAILABLE', 'Generation is unavailable. Configure a provider on the server or run the local app with Ollama.')
   let result

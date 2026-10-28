@@ -22,8 +22,8 @@ test('academic records show skeletons and respect reduced motion',async({page})=
 })
 
 test('academic request errors clear loading without claiming an empty library and retry succeeds',async({page})=>{
- let calls=0;await academicUI(page,async()=>++calls===1?{status:503,json:{error:{code:'UNAVAILABLE',message:'Records are temporarily unavailable.'}}}:{json:{courses:[],publications:[],enrollments:[],attempts:[],accesses:[]}})
- await page.goto('/#/dashboard');await expect(page.getByRole('alert').filter({hasText:'Records are temporarily unavailable.'})).toBeVisible();await expect(page.getByRole('region',{name:'Loading academic records'})).toHaveCount(0);await expect(page.getByRole('heading',{name:'No authorized academic records yet'})).toHaveCount(0);await page.getByRole('button',{name:'Refresh records',exact:true}).click();await expect(page.getByRole('heading',{name:'No authorized academic records yet'})).toBeVisible()
+ let retry=false;await academicUI(page,async()=>!retry?{status:503,json:{error:{code:'UNAVAILABLE',message:'Records are temporarily unavailable.'}}}:{json:{courses:[],publications:[],enrollments:[],attempts:[],accesses:[]}})
+ await page.goto('/#/dashboard');await expect(page.getByRole('alert').filter({hasText:'Records are temporarily unavailable.'})).toBeVisible();await expect(page.getByRole('region',{name:'Loading academic records'})).toHaveCount(0);await expect(page.getByRole('heading',{name:'No authorized academic records yet'})).toHaveCount(0);retry=true;await page.getByRole('button',{name:'Refresh records',exact:true}).click();await expect(page.getByRole('heading',{name:'No authorized academic records yet'})).toBeVisible()
 })
 
 test('unique Records and Assessments destinations remain in primary navigation',async({page},info)=>{

@@ -231,7 +231,9 @@
       ],
       "docs": [
         "feature-documentation/system-walkthrough/08-authenticated-records",
+        "feature-documentation/system-walkthrough/09-restored-role-pages",
         "feature-documentation/system-manual/10-authenticated-academic-records",
+        "feature-documentation/system-manual/13-restored-account-sections",
         "feature-documentation/backend-system",
         "feature-documentation/versions"
       ]

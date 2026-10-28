@@ -4,6 +4,7 @@ import { AuthProvider, useAuth } from './context/AuthContext'
 import { ToastProvider } from './context/ToastContext'
 import { ContentStoreProvider } from './context/ContentStoreContext'
 import { WorkspaceProvider } from './context/WorkspaceContext'
+import { AcademicProvider } from './context/AcademicContext'
 import { AIProvider } from './context/AIContext'
 import { ThemeProvider } from './context/ThemeContext'
 import Layout from './components/layout/Layout'
@@ -94,9 +95,9 @@ export default function App() {
         <AIProvider>
         <ThemeProvider>
           <ToastProvider>
-            <WorkspaceProvider><ContentStoreProvider>
+            <WorkspaceProvider><AcademicProvider><ContentStoreProvider>
               <AppRoutes />
-            </ContentStoreProvider></WorkspaceProvider>
+            </ContentStoreProvider></AcademicProvider></WorkspaceProvider>
           </ToastProvider>
         </ThemeProvider>
         </AIProvider>

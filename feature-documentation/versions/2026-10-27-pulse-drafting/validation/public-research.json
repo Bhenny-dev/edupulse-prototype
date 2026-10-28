@@ -1,0 +1,46 @@
+{
+  "startedAt": "2026-10-28T01:45:24.950Z",
+  "finishedAt": "2026-10-28T01:45:27.887Z",
+  "query": "Research Methods",
+  "connection": "none; public keyless services only",
+  "sourceCount": 6,
+  "sources": [
+    {
+      "title": "Research",
+      "url": "https://en.wikipedia.org/?curid=25524",
+      "kind": "Wikipedia introductory excerpt",
+      "characters": 1182
+    },
+    {
+      "title": "Qualitative research",
+      "url": "https://en.wikipedia.org/?curid=371299",
+      "kind": "Wikipedia introductory excerpt",
+      "characters": 1087
+    },
+    {
+      "title": "Methodology",
+      "url": "https://en.wikipedia.org/?curid=620667",
+      "kind": "Wikipedia introductory excerpt",
+      "characters": 1212
+    },
+    {
+      "title": "Research Methods for Managers",
+      "url": "https://openalex.org/W1608531082",
+      "kind": "Catalog metadata only (OpenAlex); not book contents",
+      "characters": 176
+    },
+    {
+      "title": "Phenomenological Research Methods",
+      "url": "https://doi.org/10.1007/978-1-4615-6989-3_3",
+      "kind": "Catalog metadata only (OpenAlex); not book contents",
+      "characters": 199
+    },
+    {
+      "title": "Research Methods",
+      "url": "https://doi.org/10.19030/jber.v5i3.2532",
+      "kind": "Catalog metadata only (OpenAlex); not book contents",
+      "characters": 203
+    }
+  ],
+  "warning": "Public research used Wikipedia only; broader web coverage and current facts were not verified. Open Library did not respond; results come from the other catalogs."
+}
