@@ -131,6 +131,10 @@ At wide desktop widths, opening Pulse reserves a separate column beside the work
 
 Page-specific views use the tabs inside the page, with no duplicate left sidebar. Pulse opens from its avatar without a name pill. Dialogs share screen space with Pulse on desktop and stack above it on narrow displays; nested dialogs show one active surface at a time. Pending academic records display skeleton cards and table rows; short requests use spinners and file scanning uses an indeterminate bar. Reduced-motion preferences stop these animations. See [the illustrated interface guide](../../system-manual/12-interface-and-loading/README.md).
 
+## Page, view and dialog transitions, 28 October 2026
+
+Moving between top-bar sections fades the new page in as it rises slightly into place. Moving within a section (another page tab or editor item) keeps the page's state. When a page tab swaps its view, the new view fades in the same way. Dialogs rise in while the backdrop fades in its tint and blur; on phones, full-screen dialogs slide up like a sheet. The top-bar dropdowns (**Language**, **Notifications**, account menu) open from their button, and the search overlay opens from the top centre. These are entrance effects only: every screenshot in this walkthrough shows the settled screen, which is unchanged. With *reduce motion* turned on in the operating system they are switched off (NFR-ACC-04).
+
 ## Account notices and solid dark surfaces, 28 October 2026
 
 Authenticated notifications now derive from authorized records instead of an empty placeholder feed. Read state is scoped to the account/role on this device. Appearance uses solid dark body/cards/primary controls with readable semantic and muted text. Laptop navigation compacts to preserve route access. See the [current account notices, charts and mobile captures](../09-restored-role-pages/README.md). The existing preview notifications remain labelled demonstration data.

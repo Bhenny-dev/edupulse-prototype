@@ -71,6 +71,9 @@
   --duration-fast: 150ms;
   --duration-normal: 250ms;
   --duration-slow: 350ms;
+  /* Decelerating curve for entrances: pages, views, dialogs and reveals. */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-page: 420ms;
 }
 
 *, *::before, *::after {
@@ -321,7 +324,7 @@ select.form-input {
   display: flex;
   align-items: center;
   justify-content: center;
-  animation: fadeIn var(--duration-normal) var(--transition-smooth);
+  animation: backdropIn 280ms var(--ease-out);
   padding: 20px;
 }
 html:has(.overlay-backdrop) { overflow: hidden; }
@@ -340,7 +343,7 @@ html:has(.overlay-backdrop) { overflow: hidden; }
   padding: 28px;
   max-width: 480px;
   width: 90%;
-  animation: bounceIn var(--duration-slow) var(--transition-bounce);
+  animation: dialogIn 380ms var(--ease-out);
 }
 
 .modal-content {
@@ -353,7 +356,7 @@ html:has(.overlay-backdrop) { overflow: hidden; }
   width: 90%;
   max-height: 85vh;
   overflow-y: auto;
-  animation: bounceIn var(--duration-slow) var(--transition-bounce);
+  animation: dialogIn 380ms var(--ease-out);
 }
 
 .modal-header {
@@ -784,9 +787,27 @@ html:has(.overlay-backdrop) { overflow: hidden; }
   to { opacity: 1; }
 }
 
+/* Dropdowns and small popovers (inline styles); a short travel keeps the spring overshoot subtle. */
 @keyframes bounceIn {
-  from { opacity: 0; transform: scale(0.9) translateY(12px); }
+  from { opacity: 0; transform: scale(0.96) translateY(-6px); }
   to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* Dialogs settle into place while the backdrop fades in its tint and blur. */
+@keyframes backdropIn {
+  from { opacity: 0; backdrop-filter: blur(0); -webkit-backdrop-filter: blur(0); }
+}
+@keyframes dialogIn {
+  from { opacity: 0; transform: translateY(16px) scale(0.97); }
+}
+@keyframes sheetUp {
+  from { opacity: 0.4; transform: translateY(48px); }
+}
+@keyframes pageEnter {
+  from { opacity: 0; transform: translateY(14px); }
+}
+@keyframes viewEnter {
+  from { opacity: 0; transform: translateY(8px); }
 }
 
 @keyframes slideIn {
@@ -820,6 +841,13 @@ html:has(.overlay-backdrop) { overflow: hidden; }
 }
 .spin { animation: spin 1s linear infinite; }
 @media (prefers-reduced-motion: reduce) { .spin { animation: none; } }
+
+/* ─── Page and view transitions ───
+   A routed page settles in when the top-bar section changes (Layout.jsx), and a page
+   tab's view does the same when it is swapped in. Zero specificity lets any element's
+   own animation win. Fill mode is none, so no transform remains after the entrance. */
+.page-enter { animation: pageEnter var(--duration-page) var(--ease-out); }
+:where(.tabs) ~ :where(*) { animation: viewEnter 320ms var(--ease-out); }
 /* Visually hidden, still announced by screen readers. */
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 
@@ -1021,7 +1049,7 @@ textarea:focus-visible {
   /* REQ-1106: Search bar collapse */
   .search-overlay-desktop { display: none; }
   
-  /* REQ-1109: Review popover full-screen */
+  /* REQ-1109: Review popover full-screen; it rises in like a sheet. */
   .modal-content {
     width: 100% !important;
     max-width: 100% !important;
@@ -1029,6 +1057,7 @@ textarea:focus-visible {
     border-radius: 0 !important;
     min-height: 0;
     padding: 20px;
+    animation-name: sheetUp;
   }
   
   /* REQ-1110: Simplified charts */
@@ -1446,324 +1475,29 @@ textarea:focus-visible {
 .font-large { font-size: 18px; }
 
 /* ═══════════════════════════════════════════════════════════════
-   LANDING PAGE
+   SCROLL REVEAL AND SIGN-IN PANEL
+   The landing page's own styles are in components/landing/landing.css.
    ═══════════════════════════════════════════════════════════════ */
 
-@keyframes blobFloat {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33% { transform: translate(24px, -32px) scale(1.06); }
-  66% { transform: translate(-20px, 18px) scale(0.96); }
-}
-
-@keyframes fadeSlideUpBig {
-  from { opacity: 0; transform: translateY(24px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* ─── Scroll reveal ─── */
+/* ─── Scroll reveal (components/ui/Reveal.jsx) ─── */
 .reveal {
   opacity: 0;
-  transform: translateY(24px);
-  transition: opacity var(--duration-slow) var(--transition-smooth),
-    transform var(--duration-slow) var(--transition-smooth);
+  transition: opacity 700ms var(--ease-out) var(--reveal-delay, 0ms),
+    transform 700ms var(--ease-out) var(--reveal-delay, 0ms);
 }
+.reveal-up { transform: translateY(28px); }
+.reveal-left { transform: translateX(-36px); }
+.reveal-right { transform: translateX(36px); }
+.reveal-zoom { transform: scale(0.94); }
 .reveal.is-visible {
   opacity: 1;
-  transform: translateY(0);
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; }
 }
 
-.landing-page {
-  overflow-x: hidden;
-}
-
-/* ─── Nav ─── */
-.landing-nav {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: rgba(255, 255, 255, 0.75);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--sky-100);
-}
-
-.dark-mode .landing-nav {
-  background: rgba(15, 23, 42, 0.75);
-}
-
-.landing-nav-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 14px 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-}
-
-.landing-nav-logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.landing-nav-mark {
-  width: 36px;
-  height: 36px;
-  border-radius: var(--radius-md);
-  background: linear-gradient(135deg, var(--sky-400), var(--sky-500));
-  color: var(--white);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-heading);
-  font-weight: 800;
-  font-size: 0.875rem;
-  flex-shrink: 0;
-}
-
-.landing-nav-name {
-  font-family: var(--font-heading);
-  font-weight: 800;
-  font-size: 1.0625rem;
-  color: var(--gray-900);
-}
-
-.landing-nav-links {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-}
-
-.landing-nav-link {
-  font-weight: 600;
-  font-size: 0.875rem;
-  color: var(--gray-600);
-  transition: color var(--duration-fast);
-}
-.landing-nav-link:hover { color: var(--sky-600); }
-
-/* ─── Hero ─── */
-.landing-hero {
-  position: relative;
-  min-height: 88vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 80px 24px;
-  text-align: center;
-}
-
-.landing-hero-bg {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  z-index: 0;
-}
-
-.landing-blob {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(60px);
-  opacity: 0.5;
-  animation: blobFloat 10s ease-in-out infinite;
-}
-.landing-blob-1 {
-  width: 340px; height: 340px;
-  top: -60px; left: -60px;
-  background: var(--sky-200);
-}
-.landing-blob-2 {
-  width: 300px; height: 300px;
-  bottom: -80px; right: -40px;
-  background: var(--purple-100);
-  animation-delay: 2s;
-}
-.landing-blob-3 {
-  width: 220px; height: 220px;
-  top: 40%; right: 15%;
-  background: var(--green-100);
-  animation-delay: 4s;
-}
-
-.landing-hero-content {
-  position: relative;
-  z-index: 1;
-  max-width: 720px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.landing-hero-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 18px;
-  border-radius: var(--radius-full);
-  background: var(--sky-100);
-  color: var(--sky-700);
-  font-weight: 600;
-  font-size: 0.8125rem;
-  margin-bottom: 24px;
-}
-
-.landing-hero-title {
-  font-size: clamp(2rem, 5vw, 3.25rem);
-  line-height: 1.15;
-  margin-bottom: 20px;
-  background: linear-gradient(135deg, var(--gray-900), var(--sky-600));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-.landing-hero-subtitle {
-  font-size: 1.0625rem;
-  color: var(--gray-600);
-  line-height: 1.7;
-  max-width: 560px;
-  margin-bottom: 32px;
-}
-
-.landing-hero-actions {
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-bottom: 40px;
-}
-
-.landing-hero-scroll {
-  color: var(--sky-400);
-  animation: float 2.4s ease-in-out infinite;
-}
-
-/* ─── Sections (shared) ─── */
-.landing-section {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 96px 24px;
-}
-
-.landing-section-header {
-  text-align: center;
-  max-width: 640px;
-  margin: 0 auto 56px;
-}
-
-.landing-eyebrow {
-  display: inline-block;
-  font-weight: 700;
-  font-size: 0.8125rem;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--sky-600);
-  margin-bottom: 12px;
-}
-
-.landing-section-header h2 {
-  font-size: clamp(1.5rem, 3vw, 2.25rem);
-  margin-bottom: 14px;
-}
-
-.landing-section-header p {
-  color: var(--gray-500);
-  font-size: 1rem;
-  line-height: 1.7;
-}
-
-/* ─── About ─── */
-.landing-about-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-}
-
-.landing-about-card {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.landing-about-icon {
-  width: 56px;
-  height: 56px;
-  border-radius: var(--radius-lg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 8px;
-}
-
-.landing-about-card h3 {
-  font-size: 1.125rem;
-}
-
-.landing-about-card p {
-  color: var(--gray-600);
-  font-size: 0.9375rem;
-  line-height: 1.65;
-}
-
-/* ─── Stats ─── */
-.landing-stats-section {
-  background: linear-gradient(180deg, var(--sky-50) 0%, transparent 100%);
-  border-radius: var(--radius-xl);
-}
-
-.landing-stats-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-}
-
-.landing-stat-card {
-  background: var(--white);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-3d);
-  border: 1px solid var(--sky-100);
-  padding: 28px 20px;
-  text-align: center;
-  transition: all var(--duration-normal) var(--transition-smooth);
-}
-.landing-stat-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-3d-hover);
-}
-
-.landing-stat-icon {
-  width: 52px;
-  height: 52px;
-  border-radius: var(--radius-lg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 16px;
-}
-
-.landing-stat-value {
-  font-family: var(--font-heading);
-  font-weight: 800;
-  font-size: 2rem;
-  color: var(--gray-900);
-  margin-bottom: 8px;
-}
-
-.landing-stat-label {
-  color: var(--gray-500);
-  font-size: 0.875rem;
-  line-height: 1.5;
-}
-
-/* ─── Login section / panel ─── */
-.landing-login-section { text-align: center; }
-
-.landing-login-wrap {
-  max-width: 460px;
-  margin: 0 auto;
-}
-
+/* ─── Sign-in panel (components/auth/LoginPanel.jsx) ─── */
 .login-panel {
   background: var(--white);
   border-radius: var(--radius-xl);
@@ -1841,35 +1575,10 @@ textarea:focus-visible {
   transform: translateY(-1px);
 }
 
-/* ─── Footer ─── */
-.landing-footer {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 32px 24px 48px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  color: var(--gray-400);
-  font-size: 0.8125rem;
-}
-
-.landing-footer-links { display: flex; gap: 20px; }
-.landing-footer-links a:hover { color: var(--sky-600); }
-
-@media (max-width: 900px) {
-  .landing-about-grid { grid-template-columns: 1fr; }
-  .landing-stats-grid { grid-template-columns: repeat(2, 1fr); }
-}
-
 @media (max-width: 640px) {
-  .landing-nav-link { display: none; }
-  .landing-hero { min-height: auto; padding: 64px 20px 56px; }
-  .landing-section { padding: 64px 20px; }
-  .landing-stats-grid { grid-template-columns: 1fr; }
   .login-panel { padding: 24px; }
-  .landing-footer { flex-direction: column; text-align: center; }
 }
+
 
 /* Keep document controls outside its scroll area. */
 .syllabus-view-modal { display: flex; flex-direction: column; padding: 0 !important; overflow: hidden !important; }

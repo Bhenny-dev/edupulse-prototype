@@ -1,10 +1,12 @@
 import { test, expect, type Page, type Locator } from './fixtures.js'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
+import { existsSync } from 'node:fs'
 
 // System walkthrough: every role's pages, tabs, popovers and modals, captured
 // from the production build. Output: feature-documentation/system-walkthrough/<folder>/<name>.png
 const ROOT = '../feature-documentation/system-walkthrough'
-type Scene = { folder: string; name: string; title: string; path?: string; act?: (page: Page) => Promise<unknown>; element?: (page: Page) => Locator; fullPage?: boolean; keepPointer?: boolean; hide?: string }
+// `style` adds capture-only CSS, for example to show a scroll-linked effect in its finished state.
+type Scene = { folder: string; name: string; title: string; path?: string; act?: (page: Page) => Promise<unknown>; element?: (page: Page) => Locator; fullPage?: boolean; keepPointer?: boolean; hide?: string; style?: string }
 // `route` is the page each image shows; scripts/docs-check.mjs uses it to confirm every app route is documented.
 const manifest: { role: string; folder: string; file: string; title: string; route?: string; ok: boolean; error?: string }[] = []
 const problems: string[] = []
@@ -35,7 +37,7 @@ async function run(page: Page, role: string, scenes: Scene[]) {
       await expect(page.locator('.toast')).toHaveCount(0, { timeout: 5000 }).catch(() => undefined)
       await mkdir(`${ROOT}/${scene.folder}`, { recursive: true })
       const target = scene.element ? scene.element(page) : page
-      const style = [scene.element ? '.app-topbar{position:static !important}' : '', scene.hide ? `${scene.hide}{display:none !important}` : ''].join('')
+      const style = [scene.element ? '.app-topbar{position:static !important}' : '', scene.hide ? `${scene.hide}{display:none !important}` : '', scene.style || ''].join('')
       await target.screenshot({ path: `${ROOT}/${scene.folder}/${file}`, animations: 'disabled', fullPage: scene.fullPage, ...(style ? { style } : {}) })
       const route = new URL(page.url()).hash.replace(/^#/, '').split('?')[0] || '/'
       manifest.push({ role, folder: scene.folder, file, title: scene.title, route, ok: true })
@@ -46,18 +48,42 @@ async function run(page: Page, role: string, scenes: Scene[]) {
 }
 const tab = (name: string) => async (page: Page) => { await page.getByRole('button', { name, exact: true }).first().click(); await settle(page) }
 
+// Landing sections reveal as they scroll into view. Step through the section so every
+// card has appeared, then leave its top just under the sticky navigation.
+async function showSection(page: Page, selector: string) {
+  const { top, height } = await page.locator(selector).evaluate(element => { const box = element.getBoundingClientRect(); return { top: box.top + window.scrollY, height: box.height } })
+  for (let y = top - 400; y < top + height; y += 300) { await page.evaluate(to => window.scrollTo({ top: to, behavior: 'instant' }), y); await page.waitForTimeout(80) }
+  await page.evaluate(to => window.scrollTo({ top: to, behavior: 'instant' }), top - 72)
+  await page.waitForTimeout(400)
+}
+// Section images: the sticky bar and back-to-top button stay out of the crop.
+const LANDING_CROP = '.landing-nav{position:static !important}.landing-to-top{display:none !important}'
+const section = (selector: string) => ({ act: (p: Page) => showSection(p, selector), element: (p: Page) => p.locator(selector), style: LANDING_CROP })
+
 test('public site', async ({ page }) => {
   await page.goto('/')
+  const f = '01-public-site'
   await run(page, 'public', [
-    { folder: '01-public-site', name: '01-landing-hero', title: 'Landing page: hero and primary actions', path: '/' },
-    { folder: '01-public-site', name: '02-landing-about', title: 'Landing page: role benefits', act: p => p.locator('#about').scrollIntoViewIfNeeded() },
-    { folder: '01-public-site', name: '03-landing-statistics', title: 'Landing page: why it matters', act: async p => { await p.locator('#stats').scrollIntoViewIfNeeded(); await expect(p.locator('#stats')).toContainText('24/7') } }, // wait for the count-up animation to reach its final values
-    { folder: '01-public-site', name: '04-sign-in-panel', title: 'Sign-in panel as on the hosted site', act: p => p.locator('#login').scrollIntoViewIfNeeded(), element: p => p.locator('#login'), hide: '.login-quick-access' },
+    { folder: f, name: '01-landing-hero', title: 'Landing page: hero, institution lockup and primary actions', path: '/' },
+    { folder: f, name: '02-landing-navigation', title: 'Landing navigation after scrolling: active section and reading progress', act: p => showSection(p, '#features'), element: p => p.locator('header.landing-nav') },
+    { folder: f, name: '03-landing-about', title: 'Landing page: what EduPulse is, with role benefits', ...section('#about') },
+    { folder: f, name: '04-landing-features', title: 'Landing page: features', ...section('#features') },
+    // The timeline's line fills as the reader scrolls; the capture shows it filled.
+    { folder: f, name: '05-landing-how-it-works', title: 'Landing page: how it works (six phases)', ...section('#flow'), style: `${LANDING_CROP}.flow-line-fill{transform:none !important}` },
+    { folder: f, name: '06-landing-roles', title: 'Landing page: roles (Instructor tab)', ...section('#roles') },
+    { folder: f, name: '07-landing-roles-student', title: 'Landing page: roles (Student tab)', ...section('#roles'), act: async p => { await showSection(p, '#roles'); await p.getByRole('tab', { name: 'Student', exact: true }).click(); await expect(p.getByRole('tabpanel')).toContainText('Everything for your courses') } },
+    { folder: f, name: '08-landing-pulse', title: 'Landing page: Pulse and its boundaries', ...section('#ai') },
+    { folder: f, name: '09-landing-colleges', title: 'Landing page: colleges', ...section('#colleges') },
+    { folder: f, name: '10-landing-community', title: 'Landing page: CIT community photos', ...section('#campus') },
+    { folder: f, name: '11-landing-statistics', title: 'Landing page: why it matters', ...section('#stats'), act: async p => { await showSection(p, '#stats'); await expect(p.locator('#stats')).toContainText('24/7') } }, // wait for the count-up animation to reach its final values
+    { folder: f, name: '12-landing-faq', title: 'Landing page: frequently asked questions', ...section('#faq') },
+    { folder: f, name: '13-sign-in-panel', title: 'Sign-in panel as on the hosted site', ...section('#login'), hide: '.login-quick-access' },
     // Preview personas exist only in development and in this capture build; shown separately so the hosted panel above stays exact.
-    { folder: '01-public-site', name: '05-preview-personas', title: 'Preview personas (local development and documentation capture only)', act: p => p.locator('.login-quick-access').scrollIntoViewIfNeeded(), element: p => p.locator('.login-quick-access') },
-    { folder: '01-public-site', name: '06-privacy', title: 'Privacy page', path: '/privacy', act: p => p.evaluate(() => window.scrollTo(0, 0)) }, // hash navigation keeps the landing page scroll position
-    { folder: '01-public-site', name: '07-terms', title: 'Terms of use page', path: '/terms', act: p => p.evaluate(() => window.scrollTo(0, 0)) }, // hash navigation keeps the landing page scroll position
-    { folder: '01-public-site', name: '08-server-error', title: 'Server error page', path: '/500' },
+    { folder: f, name: '14-preview-personas', title: 'Preview personas (local development and documentation capture only)', act: p => p.locator('.login-quick-access').scrollIntoViewIfNeeded(), element: p => p.locator('.login-quick-access'), style: LANDING_CROP },
+    { folder: f, name: '15-landing-footer', title: 'Landing page: footer', ...section('footer.landing-footer') },
+    { folder: f, name: '16-privacy', title: 'Privacy page', path: '/privacy', act: p => p.evaluate(() => window.scrollTo(0, 0)) }, // hash navigation keeps the landing page scroll position
+    { folder: f, name: '17-terms', title: 'Terms of use page', path: '/terms', act: p => p.evaluate(() => window.scrollTo(0, 0)) }, // hash navigation keeps the landing page scroll position
+    { folder: f, name: '18-server-error', title: 'Server error page', path: '/500' },
   ])
 })
 
@@ -176,7 +202,9 @@ test.afterAll(async () => {
   await mkdir(ROOT, { recursive: true })
   const previous = process.env.SNAPSHOT_SCENES ? JSON.parse(await readFile(`${ROOT}/capture-manifest.json`, 'utf8')) : { scenes: [] }
   const replaced = new Set(manifest.map(scene => `${scene.folder}/${scene.file}`))
-  const scenes = [...previous.scenes.filter((scene: { folder: string; file: string }) => !replaced.has(`${scene.folder}/${scene.file}`)), ...manifest]
+  // Earlier entries for renamed or removed scenes are dropped once their image is gone.
+  const kept = (scene: { folder: string; file: string }) => !replaced.has(`${scene.folder}/${scene.file}`) && existsSync(`${ROOT}/${scene.folder}/${scene.file}`)
+  const scenes = [...previous.scenes.filter(kept), ...manifest]
   await writeFile(`${ROOT}/capture-manifest.json`, `${JSON.stringify({ capturedAt: new Date().toISOString(), problems, scenes }, null, 2)}\n`)
   expect(manifest.filter(scene => !scene.ok), 'every selected scene must capture successfully').toEqual([])
 })

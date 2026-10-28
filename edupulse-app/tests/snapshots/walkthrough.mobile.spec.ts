@@ -5,9 +5,18 @@ import { mkdir } from 'node:fs/promises'
 const DIR = '../feature-documentation/system-walkthrough/06-mobile'
 async function shot(page: Page, name: string) { await mkdir(DIR, { recursive: true }); await page.waitForTimeout(400); await page.screenshot({ path: `${DIR}/${name}.png`, animations: 'disabled' }) }
 
-test('mobile walkthrough', async ({ page }) => {
+test('mobile landing page', async ({ page }) => {
   await page.goto('/')
   await shot(page, '01-landing')
+  await page.getByRole('button', { name: 'Open menu', exact: true }).click()
+  await expect(page.getByRole('navigation', { name: 'Landing page sections menu' })).toBeVisible()
+  await shot(page, '07-landing-menu')
+  await page.getByRole('button', { name: 'Close menu', exact: true }).click()
+  await expect(page.getByRole('navigation', { name: 'Landing page sections menu' })).toHaveCount(0)
+})
+
+test('mobile walkthrough', async ({ page }) => {
+  await page.goto('/')
   await page.getByRole('button', { name: 'Instructor', exact: true }).click()
   await expect(page).toHaveURL(/dashboard/)
   await shot(page, '02-instructor-dashboard')

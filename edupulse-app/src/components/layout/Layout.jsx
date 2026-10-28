@@ -110,7 +110,7 @@ function SearchOverlay({ onClose }) {
         width: '560px', maxWidth: '95%', background: 'var(--white)',
         borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-3d-hover)',
         border: '1px solid var(--sky-100)', overflow: 'hidden',
-        animation: 'bounceIn 250ms cubic-bezier(0.34, 1.56, 0.64, 1)',
+        animation: 'bounceIn 250ms cubic-bezier(0.34, 1.56, 0.64, 1)', transformOrigin: 'top center',
       }} onClick={e => e.stopPropagation()}>
         <div style={{ display: 'flex', alignItems: 'center', padding: '14px 18px', gap: '10px', borderBottom: '1px solid var(--gray-100)' }}>
           <Search size={18} style={{ color: 'var(--sky-500)' }} />
@@ -228,6 +228,9 @@ export default function Layout() {
   const current = sections.find(item => item.path === location.pathname || item.relatedPaths?.some(path => location.pathname.startsWith(path)))
 
   useEffect(() => { window.scrollTo({ top: 0, left: 0, behavior: 'instant' }) }, [location.pathname])
+  // Keyed by the first path segment: changing section replays the page entrance, while
+  // moving within one (a content-editor item, a ?tab= view) keeps the page's state.
+  const pageKey = location.pathname.split('/')[1] || 'dashboard'
 
   return (
     <div style={{
@@ -349,7 +352,7 @@ export default function Layout() {
                 position: 'absolute', top: '48px', right: 0, width: '160px',
                 background: 'var(--white)', borderRadius: 'var(--radius-xl)',
                 boxShadow: 'var(--shadow-3d-hover)', border: '1px solid var(--sky-100)', padding: '8px',
-                animation: 'bounceIn 250ms cubic-bezier(0.34, 1.56, 0.64, 1)',
+                animation: 'bounceIn 250ms cubic-bezier(0.34, 1.56, 0.64, 1)', transformOrigin: 'top right',
               }}>
                 <div style={{ padding: '6px 10px', fontSize: '0.75rem', fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Language</div>
                 {[{ code: 'en', label: 'English' }, { code: 'fil', label: 'Filipino' }].map(lang => (
@@ -390,7 +393,7 @@ export default function Layout() {
                 position: 'absolute', top: '48px', right: 0, width: '360px',
                 background: 'var(--white)', borderRadius: 'var(--radius-xl)',
                 boxShadow: 'var(--shadow-3d-hover)', border: '1px solid var(--sky-100)', padding: '16px',
-                animation: 'bounceIn 250ms cubic-bezier(0.34, 1.56, 0.64, 1)',
+                animation: 'bounceIn 250ms cubic-bezier(0.34, 1.56, 0.64, 1)', transformOrigin: 'top right',
               }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
                   <h4 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '0.9375rem' }}>Notifications</h4>
@@ -448,7 +451,7 @@ export default function Layout() {
                 position: 'absolute', top: '48px', right: 0, width: '260px',
                 background: 'var(--white)', borderRadius: 'var(--radius-xl)',
                 boxShadow: 'var(--shadow-3d-hover)', border: '1px solid var(--sky-100)', padding: '8px',
-                animation: 'bounceIn 250ms cubic-bezier(0.34, 1.56, 0.64, 1)',
+                animation: 'bounceIn 250ms cubic-bezier(0.34, 1.56, 0.64, 1)', transformOrigin: 'top right',
               }}>
                 <div style={{ padding: '12px', borderBottom: '1px solid var(--gray-100)', marginBottom: '4px' }}>
                   <div style={{ fontWeight: 700, fontSize: '0.875rem' }}>{user?.name}</div>
@@ -518,7 +521,9 @@ export default function Layout() {
 
       <div className="app-workspace" style={{ flex: 1, display: 'flex' }}>
         <main id="main-content" style={{ flex: 1, minHeight: 'calc(100vh - 64px)', minWidth: 0 }} role="main" tabIndex={-1}>
-          <Outlet />
+          <div key={pageKey} className="page-enter">
+            <Outlet />
+          </div>
         </main>
       </div>
 

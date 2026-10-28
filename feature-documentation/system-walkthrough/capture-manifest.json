@@ -1,27 +1,91 @@
 {
-  "capturedAt": "2026-10-28T02:45:40.122Z",
+  "capturedAt": "2026-10-28T07:05:33.257Z",
   "problems": [],
   "scenes": [
     {
       "role": "public",
       "folder": "01-public-site",
       "file": "01-landing-hero.png",
-      "title": "Landing page: hero and primary actions",
+      "title": "Landing page: hero, institution lockup and primary actions",
       "route": "/",
       "ok": true
     },
     {
       "role": "public",
       "folder": "01-public-site",
-      "file": "02-landing-about.png",
-      "title": "Landing page: role benefits",
+      "file": "02-landing-navigation.png",
+      "title": "Landing navigation after scrolling: active section and reading progress",
       "route": "/",
       "ok": true
     },
     {
       "role": "public",
       "folder": "01-public-site",
-      "file": "03-landing-statistics.png",
+      "file": "03-landing-about.png",
+      "title": "Landing page: what EduPulse is, with role benefits",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "04-landing-features.png",
+      "title": "Landing page: features",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "05-landing-how-it-works.png",
+      "title": "Landing page: how it works (six phases)",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "06-landing-roles.png",
+      "title": "Landing page: roles (Instructor tab)",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "07-landing-roles-student.png",
+      "title": "Landing page: roles (Student tab)",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "08-landing-pulse.png",
+      "title": "Landing page: Pulse and its boundaries",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "09-landing-colleges.png",
+      "title": "Landing page: colleges",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "10-landing-community.png",
+      "title": "Landing page: CIT community photos",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "11-landing-statistics.png",
       "title": "Landing page: why it matters",
       "route": "/",
       "ok": true
@@ -29,7 +93,15 @@
     {
       "role": "public",
       "folder": "01-public-site",
-      "file": "04-sign-in-panel.png",
+      "file": "12-landing-faq.png",
+      "title": "Landing page: frequently asked questions",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "13-sign-in-panel.png",
       "title": "Sign-in panel as on the hosted site",
       "route": "/",
       "ok": true
@@ -37,7 +109,7 @@
     {
       "role": "public",
       "folder": "01-public-site",
-      "file": "05-preview-personas.png",
+      "file": "14-preview-personas.png",
       "title": "Preview personas (local development and documentation capture only)",
       "route": "/",
       "ok": true
@@ -45,7 +117,15 @@
     {
       "role": "public",
       "folder": "01-public-site",
-      "file": "06-privacy.png",
+      "file": "15-landing-footer.png",
+      "title": "Landing page: footer",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "16-privacy.png",
       "title": "Privacy page",
       "route": "/privacy",
       "ok": true
@@ -53,7 +133,7 @@
     {
       "role": "public",
       "folder": "01-public-site",
-      "file": "07-terms.png",
+      "file": "17-terms.png",
       "title": "Terms of use page",
       "route": "/terms",
       "ok": true
@@ -61,7 +141,7 @@
     {
       "role": "public",
       "folder": "01-public-site",
-      "file": "08-server-error.png",
+      "file": "18-server-error.png",
       "title": "Server error page",
       "route": "/500",
       "ok": true

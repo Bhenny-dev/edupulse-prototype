@@ -1410,6 +1410,174 @@
       "sha256": "fa57b5a2a36af3e7a296de5d6e9f5d64dd1bd4304a673365dd0f52aae37af91e",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-10-28T03:40:31.639Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/01-landing-hero.png",
+      "sha256": "40d0f7f8e5e5c3f273234c705c91c022712a5fe1640909f8cbafca17b4efb7c0",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-28T06:57:46.261Z",
+      "method": "Claude agent opened the image and checked its visible text, controls, emblems, photo credits and sample-data labels against the 01-public-site and 06-mobile guides. This is not a human approval.",
+      "captureRun": "2026-10-28T06-54-17-427Z-1231c05c"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/02-landing-navigation.png",
+      "sha256": "a5bff8d060d293976547681e0dcf2e4440e1d6c965c0ec7aedd0ae89d65000a2",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-28T06:57:46.261Z",
+      "method": "Claude agent opened the image and checked its visible text, controls, emblems, photo credits and sample-data labels against the 01-public-site and 06-mobile guides. This is not a human approval.",
+      "captureRun": "2026-10-28T06-54-17-427Z-1231c05c"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/03-landing-about.png",
+      "sha256": "164aea645ba54c6cc9c3f68ee07daa7e83dec82a1184dae9d858fcb9f15e619a",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-28T06:57:46.261Z",
+      "method": "Claude agent opened the image and checked its visible text, controls, emblems, photo credits and sample-data labels against the 01-public-site and 06-mobile guides. This is not a human approval.",
+      "captureRun": "2026-10-28T06-54-17-427Z-1231c05c"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/04-landing-features.png",
+      "sha256": "135a09eae652084d5b03b5ac2a8081cb1ed77ac1926029e713ac7542fec62d5e",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-28T06:57:46.261Z",
+      "method": "Claude agent opened the image and checked its visible text, controls, emblems, photo credits and sample-data labels against the 01-public-site and 06-mobile guides. This is not a human approval.",
+      "captureRun": "2026-10-28T06-54-17-427Z-1231c05c"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/05-landing-how-it-works.png",
+      "sha256": "64d7f76f13ef218bb1d3862342374c2729cc11fac851dee5423e84467b57831b",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-28T06:57:46.261Z",
+      "method": "Claude agent opened the image and checked its visible text, controls, emblems, photo credits and sample-data labels against the 01-public-site and 06-mobile guides. This is not a human approval.",
+      "captureRun": "2026-10-28T06-54-17-427Z-1231c05c"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/06-landing-roles.png",
+      "sha256": "e2a34cf5e4d8de246552b757a90fce9821ea69ffba2e9ce2ac41f35e771efb23",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-28T06:57:46.261Z",
+      "method": "Claude agent opened the image and checked its visible text, controls, emblems, photo credits and sample-data labels against the 01-public-site and 06-mobile guides. This is not a human approval.",
+      "captureRun": "2026-10-28T06-54-17-427Z-1231c05c"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/07-landing-roles-student.png",
+      "sha256": "7cee3b6cb57d60832b627645a74e7245face24d9591f2f6457663e6bf10155e5",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-28T06:57:46.261Z",
+      "method": "Claude agent opened the image and checked its visible text, controls, emblems, photo credits and sample-data labels against the 01-public-site and 06-mobile guides. This is not a human approval.",
+      "captureRun": "2026-10-28T06-54-17-427Z-1231c05c"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/08-landing-pulse.png",
+      "sha256": "a74d71237695973324de29266b6d7d0623d5d91b12d9933388469498bb2beb0b",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-28T06:57:46.261Z",
+      "method": "Claude agent opened the image and checked its visible text, controls, emblems, photo credits and sample-data labels against the 01-public-site and 06-mobile guides. This is not a human approval.",
+      "captureRun": "2026-10-28T06-54-17-427Z-1231c05c"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/09-landing-colleges.png",
+      "sha256": "16acac6c78cd5e36e849e7f98f4866092826edebc97eaa5e1f6a223a74c41b52",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-28T06:57:46.261Z",
+      "method": "Claude agent opened the image and checked its visible text, controls, emblems, photo credits and sample-data labels against the 01-public-site and 06-mobile guides. This is not a human approval.",
+      "captureRun": "2026-10-28T06-54-17-427Z-1231c05c"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/10-landing-community.png",
+      "sha256": "afa4deb735315bae4e116dd8158784da0395d2eb565eca3575e84a31b2295c40",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-28T06:57:46.261Z",
+      "method": "Claude agent opened the image and checked its visible text, controls, emblems, photo credits and sample-data labels against the 01-public-site and 06-mobile guides. This is not a human approval.",
+      "captureRun": "2026-10-28T06-54-17-427Z-1231c05c"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/11-landing-statistics.png",
+      "sha256": "5abac71588a7dc495af783eef54cbcd38185490ade383c61eb7243b5d844789c",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-28T06:57:46.261Z",
+      "method": "Claude agent opened the image and checked its visible text, controls, emblems, photo credits and sample-data labels against the 01-public-site and 06-mobile guides. This is not a human approval.",
+      "captureRun": "2026-10-28T06-54-17-427Z-1231c05c"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/12-landing-faq.png",
+      "sha256": "0bedf8116ff2b5d24771ffe84306428923d20bc924751a599df56a13757cbf1f",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-28T06:57:46.261Z",
+      "method": "Claude agent opened the image and checked its visible text, controls, emblems, photo credits and sample-data labels against the 01-public-site and 06-mobile guides. This is not a human approval.",
+      "captureRun": "2026-10-28T06-54-17-427Z-1231c05c"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/13-sign-in-panel.png",
+      "sha256": "42fdcadeeea07aec89cc17373ccc571074e34e25534d9eba35d36f6402518b45",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-28T06:57:46.261Z",
+      "method": "Claude agent opened the image and checked its visible text, controls, emblems, photo credits and sample-data labels against the 01-public-site and 06-mobile guides. This is not a human approval.",
+      "captureRun": "2026-10-28T06-54-17-427Z-1231c05c"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/14-preview-personas.png",
+      "sha256": "f78fef923f2de02daefd727e937d4151253de75893f2d38afb41762af87ed9f1",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-28T06:57:46.261Z",
+      "method": "Claude agent opened the image and checked its visible text, controls, emblems, photo credits and sample-data labels against the 01-public-site and 06-mobile guides. This is not a human approval.",
+      "captureRun": "2026-10-28T06-54-17-427Z-1231c05c"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/15-landing-footer.png",
+      "sha256": "ca8e057ea41962fbeb75380f2f90b7874da149b7f1c9c700ef35700a229fca09",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-28T06:57:46.261Z",
+      "method": "Claude agent opened the image and checked its visible text, controls, emblems, photo credits and sample-data labels against the 01-public-site and 06-mobile guides. This is not a human approval.",
+      "captureRun": "2026-10-28T06-54-17-427Z-1231c05c"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/16-privacy.png",
+      "sha256": "eb5cb02446100a179139daeaf81acb248d9581f76d2c5d6315b2547127bd0680",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-28T06:57:46.261Z",
+      "method": "Claude agent opened the image and checked its visible text, controls, emblems, photo credits and sample-data labels against the 01-public-site and 06-mobile guides. This is not a human approval.",
+      "captureRun": "2026-10-28T06-54-17-427Z-1231c05c"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/17-terms.png",
+      "sha256": "4727fe8c0d52042d62d4e56666df8c55575e40041e7420d619e9763cbe5d1c39",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-28T06:57:46.261Z",
+      "method": "Claude agent opened the image and checked its visible text, controls, emblems, photo credits and sample-data labels against the 01-public-site and 06-mobile guides. This is not a human approval.",
+      "captureRun": "2026-10-28T06-54-17-427Z-1231c05c"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/18-server-error.png",
+      "sha256": "d434bef2dbf55b1fdaac34dd887bc1f0c4445037502b1dbe749aeead704fa9c9",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-28T06:57:46.261Z",
+      "method": "Claude agent opened the image and checked its visible text, controls, emblems, photo credits and sample-data labels against the 01-public-site and 06-mobile guides. This is not a human approval.",
+      "captureRun": "2026-10-28T06-54-17-427Z-1231c05c"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/06-mobile/01-landing.png",
+      "sha256": "6f4072b4bb18db59a0f8e9cf48b46181f03ea548fc2dbe8e9bc0d3bf0896d413",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-28T06:57:46.261Z",
+      "method": "Claude agent opened the image and checked its visible text, controls, emblems, photo credits and sample-data labels against the 01-public-site and 06-mobile guides. This is not a human approval.",
+      "captureRun": "2026-10-28T06-54-17-427Z-1231c05c"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/06-mobile/07-landing-menu.png",
+      "sha256": "cba714e0b5ce8b3cd1b660a2fa0f33d35b1147e9c1322ed0ccd0296d65409176",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-28T06:57:46.261Z",
+      "method": "Claude agent opened the image and checked its visible text, controls, emblems, photo credits and sample-data labels against the 01-public-site and 06-mobile guides. This is not a human approval.",
+      "captureRun": "2026-10-28T06-54-17-427Z-1231c05c"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/01-landing-hero.png",
+      "sha256": "551a3a4c97eda4008b18d4edaad11158f283fff716fa647d4c18ad5ce516b0bc",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-28T07:06:14.435Z",
+      "method": "Claude agent opened the image and checked its visible text, controls, emblems, photo credits and sample-data labels against the 01-public-site and 06-mobile guides. This is not a human approval.",
+      "captureRun": "2026-10-28T07-05-01-074Z-e61fbdfa"
     }
   ]
 }
