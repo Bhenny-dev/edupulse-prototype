@@ -123,6 +123,7 @@ Owner-confirmed decision: preserve `5e7d956` features while retaining five roles
 - [x] Extend desktop/mobile browser and screenshot fixtures, role guides and backend documentation.
 - [x] Finish final full browser rerun and record final local verify, browser and documentation gates in the [validation record](versions/2026-10-28-baseline-workflows/validation/results.md).
 - [x] Apply all four additive migrations to EduPulse System and verify linked history, RLS/grants, unchanged record counts and security advisors.
-- [ ] Finish hosted authenticated canaries and inspect the production deployment after pushing the combined source.
+- [x] Push the combined source and inspect the Ready production deployment, remote 139-test verification, served restoration bundle, health/security headers and guest denials.
+- [ ] Complete hosted authenticated role canaries when a usable existing admin credential is available; the CLI supplied a masked key and no test accounts were created.
 
 The [current disposition](session-generated/2026-10-27-feature-presence-audit/restoration-status.md) also preserves outstanding automatic indexing and pre-existing inactive fallback obligations. Earlier release checks remain historical evidence; the 28 October linked checks establish the four new migrations are applied.

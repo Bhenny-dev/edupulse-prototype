@@ -1,8 +1,8 @@
 # Validation
 
-Local restoration based on `5072b49`, 28 October 2026 (Asia/Manila). **139 unit/integration tests passed; the full desktop/mobile browser suite passed 131 tests with 13 intentional skips.** Documentation and build gates passed. The release preparation additionally applied all four migrations to EduPulse System and checked the combined source with the separate landing commit `952107c`; hosted evidence is recorded below.
+Released restoration `e976ae3`, 28 October 2026 (Asia/Manila), preserving landing commits `952107c` and `26679c2`. **139 unit/integration tests passed; the final combined desktop/mobile browser suite passed 135 tests with 13 intentional skips.** Documentation and build gates passed. All four migrations are applied to EduPulse System; hosted evidence is recorded below.
 
-## Final gates and scope
+## Earlier isolated restoration gates and scope
 
 | Check | Result |
 | --- | --- |
@@ -57,3 +57,14 @@ The performance advisor also reported three `auth_rls_initplan` WARN findings on
 The first combined browser run considered all 148 cases: **134 passed, 13 intentional skips, one mobile grading failure**. Trace inspection showed scrolling/element stability and sticky-header interception before the click; no save request was issued. The unchanged grading test then passed **three consecutive mobile repetitions** (including saved-score reload assertions), without forced clicks, reduced-motion overrides or relaxed assertions. The final complete combined rerun passed **135 tests with 13 intentional skips** in **9.2 minutes**, without retries or source changes.
 
 The separate landing documentation follow-up `26679c2` changes documentation only and is preserved ahead of this restoration. GitHub Actions for the landing commit could not start because the account is locked by a billing issue; local gates provide the execution evidence, and the restoration production build is checked after push.
+
+## Production release
+
+- **Pushed:** [restoration e976ae3](https://github.com/Bhenny-dev/edupulse-prototype/commit/e976ae39b9313e87c9e295deb4fa1be803f0f459) to `main` after both landing commits. The local main worktree was synchronized without discarding edits and was clean.
+- **Ready:** Vercel production deployment `dpl_2xvzcdNBbwtkhCGgS97PhymHUfpW`, `edupulse-prototype-jcsfsw82n-bhenny-benlor-d-riveras-projects.vercel.app`, aliased to [EduPulse production](https://edupulse-prototype.vercel.app). Existing CLI credentials were used because the connector did not have team deployment-list access.
+- **Remote build:** verification completed with **139 tests, 139 passed, 0 failed**, followed by deployment checks. Non-failing lint/chunk/import/install-script warnings remain.
+- **Live checks:** site and health **200**, API version **0.4.0**, CSP and `nosniff` present, unauthenticated academic read **401**, guest workspace write **403**. The live `/assets/index-DJD_eSDy.js` bundle contains restored topic-mastery and reviewed-marking controls.
+- **GitHub Actions:** [run 40654635040](https://github.com/Bhenny-dev/edupulse-prototype/actions/runs/40654635040) could not start because the account is locked due to billing. This is not a passing CI run. Local gates and Vercel executed verification independently.
+- **Limit:** hosted authenticated role canaries remain unverified because no usable admin secret was available. Synthetic browser transport, actual local SQL/RLS execution and live schema/guest checks are distinct evidence. No real institutional records were converted.
+
+This subsequent release-record update changes documentation only; runtime source remains the verified restoration commit.
