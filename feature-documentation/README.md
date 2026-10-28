@@ -4,7 +4,7 @@
 
 | Folder | Covers | Contents |
 | --- | --- | --- |
-| [28 October landing and motion](versions/2026-10-28-landing-and-motion/README.md) | CIT-focused landing page with KCP photographs and college emblems; page, view and dialog transitions | Working change; local validation; not deployed |
+| [28 October landing and motion](versions/2026-10-28-landing-and-motion/README.md) | CIT-focused landing page with KCP photographs and college emblems; page, view and dialog transitions | Live from `952107c`; verify and browser suites passed |
 | [28 October role restoration](versions/2026-10-28-role-restoration/README.md) | Authenticated role dashboards, charts/matrices, records intake, readers, notices and solid dark surfaces | Working change; local validation; not deployed |
 | [27 October Pulse drafting](versions/2026-10-27-pulse-drafting/README.md) | Course-aware syllabus generation, public research, readable proposals and detailed feature-loss scan | Working change; local validation; not deployed |
 | [System Walkthrough](system-walkthrough/README.md) | Frontend: **what is on each screen**, by role (public site, shared interface, Dean and Associate Dean, Instructor, Student, mobile) | Screenshots of every page, tab, dropdown, popover and modal, with a guide per folder |
@@ -22,7 +22,7 @@ Version folders are release records. Preserve released records, and add correcti
 
 | Version | Scope | Status |
 | --- | --- | --- |
-| [28 October landing and motion](versions/2026-10-28-landing-and-motion/README.md) | Landing page redesign around the CIT (features, six phases, roles, Pulse, colleges, FAQ), KCP assets, entrance motion with reduced-motion fallback | Local working tree; deployment not run |
+| [28 October landing and motion](versions/2026-10-28-landing-and-motion/README.md) | Landing page redesign around the CIT (features, six phases, roles, Pulse, colleges, FAQ), KCP assets, entrance motion with reduced-motion fallback | Live; 135 unit/integration + 119 browser tests passed; CI billing lock documented |
 | [28 October role restoration](versions/2026-10-28-role-restoration/README.md) | Account sections restored across eight page branches, record-derived charts, private file intake and dark consistency | Local working tree; deployment not run |
 | [27 October interface consistency](versions/2026-10-27-interface-consistency/README.md) | Dialog spacing, page tabs, avatar launcher, loading feedback and older-feature audit | Live; 126 unit/integration + 99 browser tests passed; CI billing lock documented |
 | [Provider connection recovery](versions/2026-10-25-provider-connections/README.md) | OpenRouter return/retry, OpenAI model routing, explicit provider choices and generation verification | Verified and promoted; provider-consent limits in validation |

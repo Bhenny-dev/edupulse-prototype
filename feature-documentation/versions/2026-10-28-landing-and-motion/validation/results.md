@@ -12,7 +12,15 @@
 - **Browser tests** (private ports, data and output folders): `layout-feedback`, `access` and `workflows` passed 36 of 36 on desktop and mobile. The new `landing.spec.ts` passed 4 of 4: section links and the phone menu, role tabs with Arrow/Home/End, one open FAQ answer, **Pause photos**, no horizontal overflow, and the reduced-motion fallback.
 - `npm run docs:check` passed.
 
-## Not run
+## Release checks
 
-- `npm run verify` (unit and integration suites, model fetch, production build check and deployment checks) and the full browser suite were not run. Another agent was working in the same tree on a machine with about 0.6–0.8 GB of free memory. Run both before release.
-- Nothing was committed, pushed or deployed, and hosted behaviour was not checked.
+Application commit `952107c` contains only this change; another agent's uncommitted work in the same tree was left out. It was verified in an isolated worktree of that exact commit.
+- `npm run verify` passed: documentation integrity, lint, both type checks, model checksums, 135 of 135 unit and integration tests, production build and deployment checks.
+- The full browser suite first ran 97 passed, 22 failed and 13 skipped (by design). All 22 failures were authenticated-UI tests that fake a Supabase session. The isolated checkout has no untracked `.env.local`, so the app ignored the session and showed the landing page. Rerun with only the public `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` set, all 22 passed. In total: 119 passed, 13 skipped, 0 failing.
+
+## Hosted release
+
+- `952107c` was pushed to `main`, and Vercel reported the deployment as successful (its build runs `npm run verify`).
+- [EduPulse](https://edupulse-prototype.vercel.app) served the new landing bundle (`/assets/index-6yfNZyWd.js`), and AI health returned HTTP 200. Fresh desktop and iPhone 13 browsers rendered all 10 landing sections, with every WebP image returning 200 (21 and 17 requests; none broken under the production CSP). Preview personas were absent, there was no horizontal overflow and there were no console or page errors.
+- The GitHub Actions `verify` job did not start: the account is locked due to a billing issue. CI is not reported as passing.
+- Hosted sign-in, private saves and provider generation were not revalidated in this front-end release. No credentials, accounts or institutional records were changed.

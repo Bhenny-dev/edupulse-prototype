@@ -20,4 +20,4 @@ The public landing page was rebuilt around the College of Information Technology
 
 [System Walkthrough 01](../../system-walkthrough/01-public-site/README.md) was rewritten: 18 images in page order, replacing the previous 8. [06 · Mobile](../../system-walkthrough/06-mobile/README.md) has a new hero image and a new open-menu image. [02 · Shared interface](../../system-walkthrough/02-shared-interface/README.md) describes the transitions. [System Manual 1](../../system-manual/01-getting-started/README.md) points to the renumbered sign-in images.
 
-[Validation](validation/results.md) · Status: local working tree; not committed or deployed.
+[Validation](validation/results.md) · Status: live from `952107c`; Vercel build and production smoke checks passed; GitHub Actions blocked by the account billing lock.
