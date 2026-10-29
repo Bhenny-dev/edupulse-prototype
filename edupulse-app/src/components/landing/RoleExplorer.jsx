@@ -1,21 +1,23 @@
 import { useLayoutEffect, useRef, useState } from 'react'
-import { CheckCircle2 } from 'lucide-react'
+import { gsap, MOTION, EASE, DURATION, TRAVEL, stagger } from './motion'
 
 // Tabs follow the WAI-ARIA pattern: arrow keys, Home and End move between roles.
-// The panel is keyed by role so each switch replays its entrance animation.
+// With motion allowed, the selected role's details rise in line by line.
 export default function RoleExplorer({ roles }) {
   const [current, setCurrent] = useState(roles[0].key)
   const tabs = useRef([])
-  const list = useRef(null)
+  const panel = useRef(null)
   const index = roles.findIndex(role => role.key === current)
   const role = roles[index]
 
   useLayoutEffect(() => {
-    const tab = tabs.current[index]
-    if (!tab || !list.current) return
-    list.current.style.setProperty('--tab-x', `${tab.offsetLeft}px`)
-    list.current.style.setProperty('--tab-w', `${tab.offsetWidth}px`)
-  }, [index])
+    const mm = gsap.matchMedia()
+    mm.add(MOTION, () => {
+      const lines = panel.current.querySelectorAll('[data-role-in]')
+      gsap.from(lines, { y: TRAVEL, autoAlpha: 0, duration: DURATION.slow * 0.9, ease: EASE, stagger: stagger(lines.length) })
+    })
+    return () => mm.revert()
+  }, [current])
 
   const select = next => { setCurrent(roles[next].key); tabs.current[next]?.focus() }
   const onKeyDown = event => {
@@ -26,47 +28,31 @@ export default function RoleExplorer({ roles }) {
   }
 
   return (
-    <div className="role-explorer">
-      <div className="role-tabs" role="tablist" aria-label="EduPulse roles" ref={list}>
-        <span className="role-tab-indicator" aria-hidden="true" />
+    <div className="roles">
+      <div className="role-tabs" role="tablist" aria-label="EduPulse roles" aria-orientation="vertical">
         {roles.map((item, i) => (
           <button key={item.key} type="button" role="tab" id={`role-tab-${item.key}`} className={`role-tab ${item.key === current ? 'is-active' : ''}`}
             aria-selected={item.key === current} aria-controls="role-panel" tabIndex={item.key === current ? 0 : -1}
             ref={element => { tabs.current[i] = element }} onClick={() => setCurrent(item.key)} onKeyDown={onKeyDown}>
-            <item.icon size={17} aria-hidden="true" /> {item.label}
+            <span className="role-tab-num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            <span className="role-tab-name">{item.label}</span>
           </button>
         ))}
       </div>
 
-      <div key={role.key} id="role-panel" role="tabpanel" aria-labelledby={`role-tab-${role.key}`} className="role-panel" style={{ '--role-accent': role.accent }}>
-        <div className="role-panel-copy">
-          <span className="role-panel-kicker">{role.kicker}</span>
-          <h3>{role.title}</h3>
-          <p>{role.summary}</p>
-          <ul className="role-panel-list">
-            {role.tasks.map(task => <li key={task}><CheckCircle2 size={18} aria-hidden="true" /> <span>{task}</span></li>)}
-          </ul>
-          {role.boundary && <p className="role-panel-boundary">{role.boundary}</p>}
+      <div ref={panel} key={role.key} id="role-panel" role="tabpanel" aria-labelledby={`role-tab-${role.key}`} className="role-panel">
+        <p className="lp-eyebrow" data-role-in>{role.kicker}</p>
+        <h3 data-role-in>{role.title}</h3>
+        <p className="role-summary" data-role-in>{role.summary}</p>
+        <ul className="role-tasks">
+          {role.tasks.map(task => <li key={task} data-role-in>{task}</li>)}
+        </ul>
+        {role.boundary && <p className="role-boundary" data-role-in>{role.boundary}</p>}
+        <div className="role-sections" data-role-in>
+          <span>Top bar</span>
+          {role.sections.map(section => <em key={section}>{section}</em>)}
         </div>
-
-        <div className="role-window" role="group" aria-label={`${role.label}: top bar sections and main views`}>
-          <div className="role-window-bar" aria-hidden="true"><span /><span /><span /></div>
-          <div className="role-window-nav">
-            {role.sections.map((section, i) => (
-              <span key={section.label} className={`role-window-pill ${i === 0 ? 'is-current' : ''}`} style={{ '--i': i }}>
-                <section.icon size={14} aria-hidden="true" /> {section.label}
-              </span>
-            ))}
-          </div>
-          <div className="role-window-body">
-            {role.views.map((view, i) => (
-              <div key={view.title} className="role-window-card" style={{ '--i': i }}>
-                <span className="role-window-icon"><view.icon size={18} aria-hidden="true" /></span>
-                <span><strong>{view.title}</strong><small>{view.detail}</small></span>
-              </div>
-            ))}
-          </div>
-        </div>
+        {role.benefit && <p className="role-benefit" data-role-in>{role.benefit}</p>}
       </div>
     </div>
   )

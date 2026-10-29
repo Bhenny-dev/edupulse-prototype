@@ -48,39 +48,40 @@ async function run(page: Page, role: string, scenes: Scene[]) {
 }
 const tab = (name: string) => async (page: Page) => { await page.getByRole('button', { name, exact: true }).first().click(); await settle(page) }
 
-// Landing sections reveal as they scroll into view. Step through the section so every
-// card has appeared, then leave its top just under the sticky navigation.
+// The landing page is captured with reduced motion: every section is then complete and
+// still (no intro curtain, pinned scenes, scroll-drawn lines or drifting photographs), and
+// the guides describe what changes when motion is allowed.
 async function showSection(page: Page, selector: string) {
-  const { top, height } = await page.locator(selector).evaluate(element => { const box = element.getBoundingClientRect(); return { top: box.top + window.scrollY, height: box.height } })
-  for (let y = top - 400; y < top + height; y += 300) { await page.evaluate(to => window.scrollTo({ top: to, behavior: 'instant' }), y); await page.waitForTimeout(80) }
+  const top = await page.locator(selector).evaluate(element => element.getBoundingClientRect().top + window.scrollY)
   await page.evaluate(to => window.scrollTo({ top: to, behavior: 'instant' }), top - 72)
   await page.waitForTimeout(400)
 }
-// Section images: the sticky bar and back-to-top button stay out of the crop.
-const LANDING_CROP = '.landing-nav{position:static !important}.landing-to-top{display:none !important}'
+// Section images: the fixed bar and back-to-top button stay out of the crop, and so does the
+// fixed film-grain layer (in a crop taller than the window it would cover only the top part).
+const LANDING_CROP = '.landing-nav{position:static !important}.landing-to-top{display:none !important}.landing-page::after{display:none !important}'
 const section = (selector: string) => ({ act: (p: Page) => showSection(p, selector), element: (p: Page) => p.locator(selector), style: LANDING_CROP })
 
 test('public site', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/')
   const f = '01-public-site'
   await run(page, 'public', [
     { folder: f, name: '01-landing-hero', title: 'Landing page: hero, institution lockup and primary actions', path: '/' },
     { folder: f, name: '02-landing-navigation', title: 'Landing navigation after scrolling: active section and reading progress', act: p => showSection(p, '#features'), element: p => p.locator('header.landing-nav') },
-    { folder: f, name: '03-landing-about', title: 'Landing page: what EduPulse is, with role benefits', ...section('#about') },
-    { folder: f, name: '04-landing-features', title: 'Landing page: features', ...section('#features') },
-    // The timeline's line fills as the reader scrolls; the capture shows it filled.
-    { folder: f, name: '05-landing-how-it-works', title: 'Landing page: how it works (six phases)', ...section('#flow'), style: `${LANDING_CROP}.flow-line-fill{transform:none !important}` },
+    { folder: f, name: '03-landing-why-edupulse', title: 'Landing page: why EduPulse (course preparation today and with EduPulse)', ...section('#problem') },
+    { folder: f, name: '04-landing-features', title: 'Landing page: features (four parts of one workflow)', ...section('#features') },
+    { folder: f, name: '05-landing-how-it-works', title: 'Landing page: how it works (six-phase timeline)', ...section('#flow') },
     { folder: f, name: '06-landing-roles', title: 'Landing page: roles (Instructor tab)', ...section('#roles') },
     { folder: f, name: '07-landing-roles-student', title: 'Landing page: roles (Student tab)', ...section('#roles'), act: async p => { await showSection(p, '#roles'); await p.getByRole('tab', { name: 'Student', exact: true }).click(); await expect(p.getByRole('tabpanel')).toContainText('Everything for your courses') } },
     { folder: f, name: '08-landing-pulse', title: 'Landing page: Pulse and its boundaries', ...section('#ai') },
-    { folder: f, name: '09-landing-colleges', title: 'Landing page: colleges', ...section('#colleges') },
-    { folder: f, name: '10-landing-community', title: 'Landing page: CIT community photos', ...section('#campus') },
-    { folder: f, name: '11-landing-statistics', title: 'Landing page: why it matters', ...section('#stats'), act: async p => { await showSection(p, '#stats'); await expect(p.locator('#stats')).toContainText('24/7') } }, // wait for the count-up animation to reach its final values
+    { folder: f, name: '09-landing-why-it-matters', title: 'Landing page: why it matters (research findings and SDGs)', ...section('#impact') },
+    { folder: f, name: '10-landing-colleges', title: 'Landing page: colleges', ...section('#colleges') },
+    { folder: f, name: '11-landing-community', title: 'Landing page: CIT community photographs', ...section('#campus') },
     { folder: f, name: '12-landing-faq', title: 'Landing page: frequently asked questions', ...section('#faq') },
     { folder: f, name: '13-sign-in-panel', title: 'Sign-in panel as on the hosted site', ...section('#login'), hide: '.login-quick-access' },
     // Preview personas exist only in development and in this capture build; shown separately so the hosted panel above stays exact.
     { folder: f, name: '14-preview-personas', title: 'Preview personas (local development and documentation capture only)', act: p => p.locator('.login-quick-access').scrollIntoViewIfNeeded(), element: p => p.locator('.login-quick-access'), style: LANDING_CROP },
-    { folder: f, name: '15-landing-footer', title: 'Landing page: footer', ...section('footer.landing-footer') },
+    { folder: f, name: '15-landing-footer', title: 'Landing page: footer', ...section('footer.lp-footer') },
     { folder: f, name: '16-privacy', title: 'Privacy page', path: '/privacy', act: p => p.evaluate(() => window.scrollTo(0, 0)) }, // hash navigation keeps the landing page scroll position
     { folder: f, name: '17-terms', title: 'Terms of use page', path: '/terms', act: p => p.evaluate(() => window.scrollTo(0, 0)) }, // hash navigation keeps the landing page scroll position
     { folder: f, name: '18-server-error', title: 'Server error page', path: '/500' },

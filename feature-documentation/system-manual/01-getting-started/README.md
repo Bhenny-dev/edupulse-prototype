@@ -6,7 +6,7 @@ This section points to the walkthrough screenshots rather than repeating them.
 
 ## Sign in
 
-1. Open EduPulse and click **Sign In** in the top bar or **Get Started** in the hero; both scroll to the sign-in panel. The landing page's other sections (**About**, **Features**, **How It Works**, **Roles**, **Colleges**, **FAQ**) explain the system first; on a phone they are under the ☰ menu. See the [landing page walkthrough](../../system-walkthrough/01-public-site/README.md).
+1. Open EduPulse and click **Sign In** in the top bar or **Get Started** in the hero; both scroll to the sign-in panel. The landing page's other sections (**Why EduPulse**, **Features**, **How It Works**, **Roles**, **Impact**, **Colleges**, **FAQ**) explain the system first; on a phone they are under the ☰ menu. With the keyboard, the first Tab stop is **Skip to main content**, which moves past the navigation and the hero. See the [landing page walkthrough](../../system-walkthrough/01-public-site/README.md).
 2. Enter the email and password of the account your system admin created, then click **Sign In**. The system admin uses **Sign in with Google**. Your assigned role (Dean, Associate Dean, instructor or student) decides which pages you see. An account without a role cannot sign in.
 3. In the local development app only, **Quick preview access** opens the system as **System Admin**, **Dean**, **Assoc. Dean**, **Instructor** or **Student** with sample data. Preview work is kept on this device only. The hosted site does not offer preview access.
 

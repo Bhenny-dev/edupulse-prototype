@@ -12,6 +12,8 @@ Left to right: logo (returns to the dashboard), the role's main tabs, then **Sea
 
 *Changed in v0.4.0:* icon-only buttons now have spoken names for screen readers (“Notifications, 2 unread”, “Account menu”, “Open menu / Close menu”), and the breadcrumb is a labelled navigation landmark.
 
+**Skip to main content**, the first Tab stop on every page (it stays hidden until focused), moves focus to the page content. *Changed on 29 October 2026:* it used to open the Not Found page instead, and its white text now sits on a darker blue that reaches the 4.5:1 contrast minimum.
+
 ### 2. Search overlay (Ctrl+K)
 
 ![Search overlay](02-search-overlay.png)

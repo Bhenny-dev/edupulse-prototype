@@ -8,6 +8,7 @@ import { AcademicProvider } from './context/AcademicContext'
 import { AIProvider } from './context/AIContext'
 import { ThemeProvider } from './context/ThemeContext'
 import Layout from './components/layout/Layout'
+import SkipToContent from './components/ui/SkipToContent'
 import Landing from './pages/Landing'
 import Dashboard from './pages/Dashboard'
 import Syllabus from './pages/Syllabus'
@@ -36,19 +37,6 @@ function ProtectedRoute({ children, allowedRoles }) {
   if (!user) return <Navigate to="/" replace />
   if (allowedRoles && !allowedRoles.includes(user.role)) return <Navigate to="/dashboard" replace />
   return children
-}
-
-function SkipToContent() {
-  return (
-    <a
-      href="#main-content"
-      className="skip-to-content"
-      tabIndex={0}
-      aria-label="Skip to main content"
-    >
-      Skip to main content
-    </a>
-  )
 }
 
 function AppRoutes() {

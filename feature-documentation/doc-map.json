@@ -6,6 +6,10 @@
       "name": "Public site and sign-in",
       "source": [
         "edupulse-app/src/pages/Landing.jsx",
+        "edupulse-app/src/components/landing/**",
+        "edupulse-app/src/data/colleges.js",
+        "edupulse-app/src/assets/kcp/**",
+        "edupulse-app/src/assets/product/**",
         "edupulse-app/src/pages/Privacy.jsx",
         "edupulse-app/src/pages/Terms.jsx",
         "edupulse-app/src/components/auth/**",

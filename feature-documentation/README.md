@@ -4,6 +4,7 @@
 
 | Folder | Covers | Contents |
 | --- | --- | --- |
+| [29 October landing v2](versions/2026-10-29-landing-v2/README.md) | Editorial landing page, shared design tokens, contrast and motion rules, skip link, formatted PDF downloads | Verify (148 tests) and browser suite (140 passed) passed; deployment in the release record |
 | [28 October landing and motion](versions/2026-10-28-landing-and-motion/README.md) | CIT-focused landing page with KCP photographs and college emblems; page, view and dialog transitions | Live from `952107c`; verify and browser suites passed |
 | [28 October role restoration](versions/2026-10-28-role-restoration/README.md) | Authenticated role dashboards, charts/matrices, records intake, readers, notices and solid dark surfaces | Live; included in the verified baseline release |
 | [27 October Pulse drafting](versions/2026-10-27-pulse-drafting/README.md) | Course-aware syllabus generation, public research, readable proposals and detailed feature-loss scan | Live; included in the verified baseline release |
@@ -22,6 +23,7 @@ Version folders are release records. Preserve released records, and add correcti
 
 | Version | Scope | Status |
 | --- | --- | --- |
+| [29 October landing v2](versions/2026-10-29-landing-v2/README.md) | Editorial landing page (comparison, product chapters, six-phase timeline, cited research), shared design tokens and WCAG contrast, motion rules, skip link, formatted PDF downloads | Verify (148 tests) and browser suite (140 passed) passed; deployment in the release record |
 | [28 October landing and motion](versions/2026-10-28-landing-and-motion/README.md) | Landing page redesign around the CIT (features, six phases, roles, Pulse, colleges, FAQ), KCP assets, entrance motion with reduced-motion fallback | Live; 135 unit/integration + 119 browser tests passed; CI billing lock documented |
 | [28 October role restoration](versions/2026-10-28-role-restoration/README.md) | Account sections restored across eight page branches, record-derived charts, private file intake and dark consistency | Live; included in the verified baseline release |
 | [27 October interface consistency](versions/2026-10-27-interface-consistency/README.md) | Dialog spacing, page tabs, avatar launcher, loading feedback and older-feature audit | Live; 126 unit/integration + 99 browser tests passed; CI billing lock documented |

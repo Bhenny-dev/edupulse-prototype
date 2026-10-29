@@ -34,7 +34,7 @@ When an instructor opens a saved draft in a document, presentation or assessment
 
 ## Download a learning document
 
-**Download PDF** in the document viewer exports the displayed sections, including current edits, with embedded fonts, margins and page numbers. The download is a genuine PDF rather than a renamed text file or a print-dialog instruction. It does not save edits, change review status or publish the material. Pulse-generated responses have a separate **Download response as PDF** control.
+**Download PDF** in the document viewer exports the displayed sections, including current edits, with embedded fonts, margins and page numbers. Headings, bold and italic text, lists, tables, quotations and code in a section are laid out as formatted text, not printed as Markdown symbols. The download is a genuine PDF rather than a renamed text file or a print-dialog instruction. It does not save edits, change review status or publish the material. Pulse-generated responses have a separate **Download response as PDF** control.
 
 ## Map topics and schedule delivery
 

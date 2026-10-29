@@ -41,7 +41,12 @@ function ocrAssets() {
 export default defineConfig({
   plugins: [react(), ocrAssets()],
   base: '/',
-  server: { proxy: { '/api': { target: `http://127.0.0.1:${process.env.AI_PORT || '3001'}`, changeOrigin: false } } },
+  // Test, capture and build output is not source: watching .data (databases, traces and
+  // results that grow with every run) delayed the first page by tens of seconds.
+  server: {
+    proxy: { '/api': { target: `http://127.0.0.1:${process.env.AI_PORT || '3001'}`, changeOrigin: false } },
+    watch: { ignored: ['**/.data/**', '**/test-results*/**', '**/dist/**', '**/dist-capture/**', '**/models/**'] },
+  },
   // Production security headers (vercel.json) are mirrored in preview so they are tested locally.
   preview: { headers: Object.fromEntries(vercel.headers[0].headers.map(h => [h.key, h.value])), proxy: { '/api': { target: `http://127.0.0.1:${process.env.AI_PORT || '3001'}`, changeOrigin: false } } },
   build: {

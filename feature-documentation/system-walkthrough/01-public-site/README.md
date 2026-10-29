@@ -5,66 +5,75 @@ These are the pages a visitor sees before signing in:
 * `/privacy` and `/terms`: the legal pages;
 * `/500`: the server error page.
 
-The landing page focuses on the College of Information Technology (CIT) of King's College of the Philippines (KCP). The KCP crest and the five college emblems were supplied by the project owner. The photographs come from [kcp.edu.ph](https://kcp.edu.ph/): the CIT page and each college's card image on the KCP home page. They were downloaded on 28 October 2026 and are served from the app itself, so the page does not depend on the KCP site being available. The page credits them as **Photos: King's College of the Philippines (kcp.edu.ph)** and **Photos and emblems © King's College of the Philippines**.
+The landing page focuses on the College of Information Technology (CIT) of King's College of the Philippines (KCP). The KCP crest and the five college emblems were supplied by the project owner. The photographs come from [kcp.edu.ph](https://kcp.edu.ph/): the CIT page and each college's card image on the KCP home page. They were downloaded on 28 October 2026 and are served from the app itself, so the page does not depend on the KCP site being available. The page credits them as **Photos: King's College of the Philippines (kcp.edu.ph)** and **Photos and emblems © King's College of the Philippines**. The product screens in the Features section are the EduPulse prototype with sample data.
 
-Sections fade or slide in once as they scroll into view, the hero photograph moves more slowly than the page, and a soft light follows the mouse over the hero. With *reduce motion* turned on in the operating system, every section is shown at once and nothing drifts. The screenshots show each section after it has appeared.
+**What the screenshots show.** The landing images were captured with *reduce motion* turned on, so every section is complete and still. With motion allowed, the page also moves; none of this appears in the images:
+* On the first visit of a browser session, a navy curtain shows the KCP crest and the EduPulse name for about a second, then lifts.
+* Headings rise line by line, paragraphs and cards rise a short distance as they come into view, and the large statement in *Why EduPulse* brightens word by word as you read it.
+* On a desktop, scrolling the hero opens the arch-shaped photograph to the full screen and ends on the statement “Every lesson begins with the *syllabus*.”
+* On a desktop, the Features section holds its place while its four parts change one at a time beside a framed prototype screen.
+* In *How it works*, a gold line draws down the timeline and each phase number lights up when the line reaches it. The page keeps scrolling normally.
+* The numbers in *Why it matters* count up once.
+* The community photographs drift slowly in two rows, in opposite directions. Hovering over them, focusing them with the keyboard or tapping them stops the movement; a second tap starts it again. They also stop while they are off screen or the browser tab is hidden.
+
+On a phone the sections stack, and the hero and Features section do not move with scrolling. **Skip to main content**, the first stop when you press Tab, moves focus past the navigation and the hero to *Why EduPulse*.
 
 ## 1. Landing page: hero
 
 ![Landing hero](01-landing-hero.png)
 
-- **Top bar:** the KCP crest, the EduPulse logo and *KCP · College of Information Technology*. Then **About**, **Features**, **How It Works**, **Roles**, **Colleges** and **FAQ**, which jump to their sections, and **Sign In**, which jumps to the sign-in panel. Over the hero the bar is transparent.
-- **Background:** the CIT photograph from kcp.edu.ph (a student at a multi-monitor coding desk) under a dark navy shade and a faint grid.
-- **Institution lockup:** the KCP crest and the CIT seal with *King's College of the Philippines* and *College of Information Technology · La Trinidad, Benguet*.
-- **Headline:** “One shared home for syllabi, courseware & scores”, with the last three words in a moving colour gradient, then a one-paragraph summary.
-- **Get Started** scrolls to sign-in; **See how it works** scrolls to the six phases (section 5).
-- Three notes: **Built on the approved syllabus**, **Human review before anything is published** and **Role-based KCP accounts**.
-- **Illustration, sample data** (right): floating cards for a sample syllabus (*IT 102 · Computer Programming 1*) whose status runs **Drafted → Checked → For approval → Active**, three Week 4 courseware drafts with **Review & publish**, a *Class progress* bar chart marked *Scoring sheet · visualization only*, and Pulse saying “Three drafts are ready for your review.” The cards drift gently and tilt with the mouse. They are not a screenshot of the app.
-- **Scroll to explore** at the bottom jumps to the next section.
+- **Top bar:** the KCP crest and the EduPulse logo, then **Why EduPulse**, **Features**, **How It Works**, **Roles**, **Impact**, **Colleges** and **FAQ**, which jump to their sections, and **Sign In**, which jumps to the sign-in panel. Over the navy hero the bar is transparent.
+- **Institution line:** the KCP crest and the CIT seal with *King's College of the Philippines · College of Information Technology*.
+- **Headline:** “One shared home for *syllabi*, *courseware* & *scores*”, with the three nouns in gold italics, then: “EduPulse turns the official KCP syllabus into the learning materials, assessments and progress views that follow from it. The AI drafts; the instructor reviews and decides.”
+- **Get started** scrolls to sign-in; **See how it works** scrolls to the six phases (section 5).
+- Three notes: **Syllabus-centred**, **Grounded in approved documents** and **Instructor-approved**.
+- **Photograph** (right): the CIT photograph from kcp.edu.ph, a student at a multi-monitor coding desk, in an arch-shaped frame.
+- **Scroll** at the lower left jumps to the next section; the caption *College of Information Technology · La Trinidad, Benguet* sits under the photograph.
 
 ## 2. Landing navigation after scrolling
 
 ![Landing navigation](02-landing-navigation.png)
 
-Once the page scrolls, the bar turns frosted white. The link for the section in view is underlined in gold (here **Features**), and a thin bar along the bottom edge shows how far down the page you are. After the first screen, a round **Back to top** button also appears at the lower right (it is left out of the section crops below).
+Once the page scrolls, the bar turns paper-toned and **Sign In** becomes a dark button. The link for the section in view is underlined (here **Features**), and a thin gold line along the bottom edge shows how far down the page you are. After the first screen, a round **Back to top** button also appears at the lower right (it is left out of the section crops below).
 
-## 3. What is EduPulse?
+## 3. Why EduPulse
 
-![What is EduPulse](03-landing-about.png)
+![Why EduPulse](03-landing-why-edupulse.png)
 
-“Less paperwork, more teaching and learning”, with a photo collage: the CIT lab photograph and a CIT event photograph, tagged **Course outline → courseware** and **Made with the CIT**. Three cards summarise the benefit for each role:
-* **For Instructors:** outline → syllabus → class materials.
-* **For Students:** one place for readings, activities, assessments and their own scores.
-* **For the Dean's Office:** which courses are loaded, which syllabi are ready, and where delivery is slow.
+A large statement: “At the CIT, every lesson is meant to follow the approved syllabus. In practice, syllabi are recycled, materials are rushed or pasted from AI chat tools, delivery is split between Moodle and paper, and the Dean's office cannot see what reaches the class.”
 
-A note below them says EduPulse sits beside the tools the college already uses: course records still come from EduSuite, official grades stay in the KCP grading sheet, and the LMS keeps working.
+Below it, a table compares **Today** (struck through) with **With EduPulse** in five areas:
+* **Syllabus:** edited from earlier versions, or recycled → built in the official seven-section KCP format, or uploaded and checked.
+* **Materials:** rushed, often pasted from AI chat tools and polished by hand → generated from the approved course outline and grounded in the syllabus and your files.
+* **Delivery:** split between Moodle and paper handouts → published to each block from one place; paper copies remain possible.
+* **Oversight:** after course loading, the Dean's office cannot see what is delivered → syllabus status and delivery for every loaded course, at a glance.
+* **Performance:** checked by hand, on paper or in the grading sheet → scores collated by syllabus topic for students and instructors.
+
+A note with a shield icon closes the section: EduPulse assists but never replaces the instructor's judgment; every material and assessment is reviewed and approved before it is used in class.
 
 ## 4. Features
 
 ![Features](04-landing-features.png)
 
-“Everything revolves around the approved syllabus”. Seven cards; each lifts and glows in its own colour on hover:
-* **Syllabus Builder:** the seven KCP syllabus sections as numbered chips, with **5 Course outline** marked *mapping backbone*.
-* **Pulse, the assistant:** asking, drafting, comparing documents and finding references, with a sample search showing **3 sources**.
-* **Course Loading:** candidates ranked by master's degree, then specialization; the Dean or Associate Dean confirms.
-* **Courseware from the outline:** sample weeks **W1–W3** with **Draft** items, and **W9** as the **Midterm examination** milestone.
-* **Records intake:** EduSuite exports are confirmed before anything is saved.
-* **Student Monitoring:** Completed and Missed, material access, class averages and reminders; scores are visualized, never turned into grades.
-* **Performance by topic:** students see their own results, instructors per course, the Dean college-wide; the Associate Dean's views leave scores out.
+“From the syllabus to every class”: four parts of one workflow, each starting from the approved KCP syllabus and shown beside a prototype screen:
+* **01 · Dean · Associate Dean: Records and course loading** (the **Records** page). EduSuite stays the system of record; its exports are uploaded, checked and confirmed, and courses are loaded to instructors by the college's rule, master's degree first, then specialization. *Nothing is saved until the Dean's office confirms. Pulse can suggest instructors; people decide.*
+* **02 · Instructor: The Syllabus Builder** (the **Syllabus Builder** tab). Build the seven-section syllabus, upload one, or let Pulse co-write it section by section; AI drafts stay Drafted until checked. *Signed outside EduPulse: Dean review, CAO approval, EVP noting. The approved Section 5 course outline becomes the map for everything else.*
+* **03 · Instructor: Courseware from the course outline** (the **My Courseware** list). Each outline week becomes learning materials and assessments, retrieved from the approved syllabus and your own files first. *Generate by week, by term or for the whole outline. Review, edit and publish; only published items reach students.*
+* **04 · Students · Instructors · Dean: Performance by syllabus topic** (the **My Performance** page). Students see which topics they have mastered, instructors see completed and missed work and unopened materials, and the Dean's office follows delivery. *Reminders for unopened materials and missing activities. Scores are visualized; official grades stay outside EduPulse.*
 
 ## 5. How it works
 
 ![How it works](05-landing-how-it-works.png)
 
-“From EduSuite files to student results”: the six phases of the business flow, alternating left and right of a vertical line. Each card names the phase and who does it, then **AI** (what Pulse may do) and **People** (who decides):
-* **Phase 0 · Records intake** (Dean · Associate Dean);
-* **Phase 1 · Course loading** (Dean · Associate Dean);
-* **Phase 2 · Syllabus building** (Instructor), including the signatures outside EduPulse: Dean review, CAO approval and EVP noting;
-* **Phase 3 · Courseware generation** (Instructor);
-* **Phase 4 · Student access** (Students);
-* **Phase 5 · Monitoring** (Everyone).
+A navy section. On the left, “Six phases. People decide each one.” and “From the EduSuite files to student results. The AI assists inside every phase and never finalizes one.” On the right, a timeline: gold numbers **00** to **05** joined by a gold line. Each phase names who does it and what happens, then **AI** (what Pulse may do) and **People** (who decides):
+* **Phase 0 · Dean · Associate Dean: Records intake.** Upload the EduSuite exports (course records, course loads and block rosters). The AI reads the files and shows what it understood; the Dean or Associate Dean confirms before anything is saved.
+* **Phase 1 · Dean · Associate Dean: Course loading.** Each released course is loaded to an instructor. The AI suggests or proposes instructors (master's degree first, then specialization); every assignment is confirmed before it takes effect.
+* **Phase 2 · Instructor: Syllabus building.** The AI co-writes section by section or drafts the whole syllabus as Drafted. It is checked, then signed outside EduPulse (Dean review, CAO approval, EVP noting); the approved file is uploaded and its course outline extracted.
+* **Phase 3 · Instructor: Courseware generation.** The AI drafts by week, by term or for the whole outline, grounded in the approved syllabus; the instructor reviews, edits and publishes, and only published items reach students.
+* **Phase 4 · Students: Student access.** The AI guides only: reminders, missed activities and finding the way. Pulse never answers, reviews or hints at assessment items.
+* **Phase 5 · Everyone: Monitoring.** A scoring sheet for instructors, delivery progress for the Dean's office and notices for students. The AI summarizes what the charts show; no grades are computed, and the KCP grading sheet stays official.
 
-The line fills from gold to violet as you scroll, and each phase's circle lights up when its card appears. The screenshot shows the line filled.
+On a desktop the heading stays beside the timeline while it scrolls past. The screenshot shows the timeline finished.
 
 ## 6–7. Roles
 
@@ -72,61 +81,63 @@ The line fills from gold to violet as you scroll, and each phase's circle lights
 
 ![Roles: Student](07-landing-roles-student.png)
 
-“Five roles, one platform”. The tabs **Instructor**, **Student**, **Dean**, **Associate Dean** and **System Admin** switch the panel below; a white pill slides to the selected tab, and the arrow keys, **Home** and **End** move between tabs. Each panel has a short summary, four tasks with check marks and a small app window showing that role's top-bar sections and three main views:
-* **Instructor** (image 6): **Dashboard**, **Syllabus**, **Courseware**, **Student Monitoring** and **Performance**; views **Syllabus Builder**, **Courseware Builder** and **Student Monitoring**.
-* **Student** (image 7): **Dashboard**, **My Courses**, **Assessments** and **Performance**; views **My Materials**, **My Assessments** and **Performance**. A yellow note reads “Pulse will not answer or hint at assessment items.”
-* **Dean**: **Dashboard**, **Records**, **Course Loading**, **Monitor** and **Performance**.
-* **Associate Dean**: **Dashboard**, **Records**, **Course Loading** and **Monitor**, with the note “Performance scores and approval authority stay with the Dean.”
-* **System Admin**: **Dashboard** only, with **Manage accounts**, **Audit activity** and **Agent activity**.
+“Five roles, one platform”: “Each account has one role, and the top bar shows only that role's sections.” The numbered tabs on the left (**Instructor**, **Student**, **Dean**, **Associate Dean** and **System Admin**) switch the panel on the right; the selected tab is dark and indented, with its number in gold. The arrow keys, **Home** and **End** move between tabs. Each panel has a short heading, a summary, four tasks, the role's **Top bar** sections and one benefit:
+* **Instructor** (image 6), *Prepare and deliver*: “Teach from one organized place”. Top bar: **Dashboard**, **Syllabus**, **Courseware**, **Student Monitoring** and **Performance**. The benefit names SDG 4.c, well-supported teachers.
+* **Student** (image 7), *Learn*: “Everything for your courses, in one place”, with **My Materials**, **My Assessments**, **Performance** and reminders. A gold-ruled line reads “Pulse will not answer or hint at assessment items.” Top bar: **Dashboard**, **My Courses**, **Assessments** and **Performance**. The benefit names SDG 4.3 and 4.4.
+
+The Dean, Associate Dean and System Admin tabs use the same layout (not shown).
 
 ## 8. Pulse, the AI assistant
 
 ![Pulse](08-landing-pulse.png)
 
-A dark band, “Pulse assists. People decide.”, with six principles: **Nothing publishes itself**, **Guide, never answer**, **Sources you can check**, **Asks before acting**, **Scores, not grades** and **Private to each role**. On the right, the Pulse character (its eyes follow the mouse) in an illustrated student chat. The student asks “Give me the answers to quiz 2.”, Pulse declines and points to an unopened Week 4 reading, and the tag reads **Declined · appropriate-use rule**. The caption labels it *Illustration*.
+A navy band: “Grounded in your documents. Decided by you.” Pulse lives on every page; it retrieves from the approved syllabus and your files, drafts when you ask, and stops at the boundaries the college set. Six numbered principles follow: **Grounded first**, **Sources you can check**, **Nothing publishes itself**, **Guide, never answer**, **Asks before acting** and **Scores, not grades**.
 
-## 9. Colleges
+On the right, an illustrated chat in the student view: the student asks “Give me the answers to quiz 2.”, and Pulse declines and points to an unopened Week 4 reading on conditional statements. The tag reads **Declined · appropriate-use rule**, and the caption labels it *Illustration*.
 
-![Colleges](09-landing-colleges.png)
+## 9. Why it matters
 
-“Starting with the College of Information Technology”. The CIT card, over the CIT lab photograph, shows its seal in a slowly turning ring, **Now serving**, and the two BSIT tracks listed on kcp.edu.ph: *Web and Mobile Application Development* and *Business Analytics and Big Data*. Below, four KCP colleges are shown with their emblem and kcp.edu.ph photograph, each marked **Ready to onboard**:
+![Why it matters](09-landing-why-it-matters.png)
+
+“Preparation takes time. The research agrees.” Three findings cited in the EduPulse study, labelled as describing the problem EduPulse addresses, not measured EduPulse results:
+* **7.4 h** a week spent preparing lessons, on average, by teachers across OECD countries (OECD, *Results from TALIS 2024*, 2025);
+* **31%** less lesson-planning time for teachers using generative AI, with no measurable drop in lesson quality (Education Endowment Foundation, 2024);
+* **5.9 h** of work recovered each week by educators who use AI tools regularly (Gallup & Walton Family Foundation, 2025).
+
+Below them, the Sustainable Development Goals the study supports: **SDG 4.3** (equitable access to quality tertiary education), **SDG 4.4** (technical skills for employment), **SDG 4.c** (well-supported teachers) and **SDG 9** (industry, innovation and infrastructure).
+
+## 10. Colleges
+
+![Colleges](10-landing-colleges.png)
+
+“Built for the CIT first”: the study is scoped to the College of Information Technology, and adoption by the other KCP colleges is planned future work. A college joins when its instructors are registered and its records are imported. Oversight stays scoped to the CIT (FR-REV-08).
+
+The CIT is shown with the CIT lab photograph in an arch, its seal, **Now serving** and the two BSIT tracks listed on kcp.edu.ph: *Web and Mobile Application Development* and *Business Analytics and Big Data*. Below, four KCP colleges, each with a kcp.edu.ph photograph, its emblem and **Planned**:
 * **College of Accountancy and Business Management** (CABM);
 * **College of Criminal Justice Education** (CCJE · since 2006);
 * **College of Theology** (COT · since 2010 · *Instructi ad Transformandum*);
 * **College of Teacher Education and Liberal Arts** (CTELA · *Equipped to Transform*).
 
-Years and mottos come from the emblems. The section says other colleges can join when their instructors are registered and their records are imported. Oversight stays scoped to the CIT (FR-REV-08).
+Years and mottos come from the emblems.
 
-## 10. Community photos
+## 11. Community photographs
 
-![Community photos](10-landing-community.png)
+![Community photographs](11-landing-community.png)
 
-“Made for the people of the CIT”: two rows of CIT event photographs from kcp.edu.ph that drift slowly in opposite directions. They stop while the pointer is over a row or a control inside has focus, and **Pause photos** (**Play photos** when paused) stops them entirely. With reduced motion the rows stand still and scroll sideways instead. The credit reads **Photos: King's College of the Philippines (kcp.edu.ph)**.
-
-## 11. Why it matters
-
-![Prototype targets](11-landing-statistics.png)
-
-These are the prototype's design targets, labelled as targets rather than measured results:
-* 75% less preparation time;
-* 5 roles (system admin, Dean, Associate Dean, instructor and student) working from one shared platform;
-* 100% of course materials centralised in one place;
-* access 24/7.
-
-The numbers count up when the section scrolls into view; the screenshot shows their final values.
+“Made for the people of the CIT”: the instructors and BSIT students EduPulse is built around. Two rows of CIT event photographs from kcp.edu.ph. As captured (reduced motion), the rows stand still and scroll sideways; the last photograph in each row is cut at the edge. The credit reads **Photos: King's College of the Philippines (kcp.edu.ph)**. With motion, the rows drift and pause as described at the top of this page; there is no pause button.
 
 ## 12. Frequently asked questions
 
 ![FAQ](12-landing-faq.png)
 
-Seven questions; one answer is open at a time, and it opens and closes smoothly. The first, **Who can sign in to EduPulse?**, is open in the screenshot. The others cover whether EduPulse replaces the LMS or the official grading sheet, whether the AI publishes on its own, whether Pulse answers assessments, whether the syllabus is approved inside EduPulse, where courses, loads and class lists come from, and the other KCP colleges.
+“Questions people ask”: how EduPulse fits the college's process, and what the AI may and may not do. Eight questions; one answer is open at a time, and its plus sign turns into a cross. The first, **Who can sign in to EduPulse?**, is open in the screenshot. The others ask whether EduPulse replaces the LMS or the official grading sheet, how the AI stays accurate, whether the AI publishes materials on its own, whether Pulse answers assessments for students, whether the syllabus is approved inside EduPulse, where courses, loads and class lists come from, and about the other KCP colleges.
 
 ## 13. Sign-in panel (hosted site)
 
 ![Sign-in panel](13-sign-in-panel.png)
 
-On the left, a CIT group photograph with the CIT seal, **Welcome to EduPulse**, “Sign in with the account your system administrator created. Your role decides what you see.” and the five role names. On the right, **Get started · Sign in to EduPulse** and the panel:
-- **Email** and **Password**, then **Sign In**, for an account the administrator has created. The hint below reads “Use the email and password assigned to your EduPulse account.”
+On the left, a CIT group photograph in an arch with the CIT seal, **Welcome to EduPulse**, “Sign in with the account your system administrator created. Your role decides what you see.” and the five role names. On the right, **Get started · Sign in to EduPulse**, “Use your EduPulse account to continue.” and the panel:
+- **Email** and **Password**, then the dark **Sign In** button, for an account the administrator has created. The hint below reads “Use the email and password assigned to your EduPulse account.”
 - **Sign in with Google**, with the note “System admin: choose your Google account. Other roles use email and password.” The button works only when Google sign-in is enabled for the project; otherwise the panel says Google sign-in is temporarily unavailable.
 - Each account has one assigned role: system admin, Dean, Associate Dean, instructor or student. An account without a role is signed out with the message “This account has no EduPulse role. Contact the administrator.”
 
@@ -144,7 +155,7 @@ The hosted production build does not include it, and the deployment check enforc
 
 ![Footer](15-landing-footer.png)
 
-A navy footer with a gold top edge. On the left, the KCP crest and EduPulse logo, a one-line description and the KCP vision, quoted from kcp.edu.ph. Then three columns: **Explore** (the six section links), **Legal** (**Privacy** and **Terms**) and **King's College of the Philippines** (Km5 Pico Rd, La Trinidad, 2601 Benguet, and **kcp.edu.ph**, which opens the official site in a new tab). The bottom line reads *Prototype v4.0 — College of Information Technology* and *Photos and emblems © King's College of the Philippines*.
+A navy footer. On the left, the KCP crest and EduPulse logo, “An AI-powered syllabus and course builder with performance monitoring, made for the College of Information Technology.” and the KCP vision, quoted from kcp.edu.ph. Then three columns: **Explore** (the seven section links), **Legal** (**Privacy** and **Terms**) and **King's College of the Philippines** (Km5 Pico Rd, La Trinidad, 2601 Benguet, and **kcp.edu.ph**, which opens the official site in a new tab). A large outlined *EduPulse* wordmark runs across the footer. The bottom line reads *A BSIT capstone project · College of Information Technology · Prototype v4.0* and *Photos and emblems © King's College of the Philippines*.
 
 ## 16. Privacy policy
 
@@ -164,4 +175,4 @@ A navy footer with a gold top edge. On the left, the KCP crest and EduPulse logo
 
 `/500` appears when the app cannot complete a request. It shows **500 · Server Error** and a short apology, with **Go to Dashboard** and **Retry**.
 
-*Changed on 28 October 2026:* the landing page was redesigned around the CIT, with KCP photographs and the college emblems. It gained the navigation menu and reading progress, the features, six-phase, roles, Pulse, colleges, community photos and FAQ sections, a sign-in welcome panel and a fuller footer. Images were renumbered in page order; the sign-in panel and preview personas are now images 13 and 14.
+*Changed on 29 October 2026:* the landing page has an editorial design (paper and KCP navy, a serif display face, arch-shaped photographs). It gained the *Why EduPulse* comparison, the four-part Features section with prototype screens, the six-phase timeline, cited research findings in place of the prototype targets, and the skip link. Gold text, grey text, the sign-in buttons and the focus outline were darkened or recoloured to reach WCAG contrast in light and dark mode. Images 3, 9, 10 and 11 were replaced (*about* and *statistics* were removed; *colleges* and *community* moved one place down), and the landing images are now captured with reduced motion.

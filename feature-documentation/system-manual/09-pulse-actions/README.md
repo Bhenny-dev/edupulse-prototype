@@ -114,6 +114,8 @@ Chat attachments remain available for follow-up questions until removed or the c
 
 A request to create learning materials from a supplied outline drafts a response instead of treating the syllabus as a request to import program outcomes. **Download response as PDF** exports a generated response and its listed sources. This draft is not automatically saved or published as courseware; the existing approved-outline generation and review workflow still applies.
 
+The PDF lays out the response's formatting rather than printing Markdown symbols: headings, bold and italic text, bulleted and numbered lists (including nested items), tables with a shaded header row, quotations with a gold bar, and code. Citation numbers stay small beside the text, and the sources are listed once at the end.
+
 On mobile, focused Pulse is a shorter panel. The page remains scrollable above it, and the mascot is hidden while the panel is open. Close Pulse to use the whole screen. Institutional context is also an editable, source-backed section; a confirmed patch merges only the named institution fields and does not update global defaults.
 
 ![Mobile focused source correction](16-mobile-focused-source.png)

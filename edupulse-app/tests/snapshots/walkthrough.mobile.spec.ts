@@ -6,6 +6,8 @@ const DIR = '../feature-documentation/system-walkthrough/06-mobile'
 async function shot(page: Page, name: string) { await mkdir(DIR, { recursive: true }); await page.waitForTimeout(400); await page.screenshot({ path: `${DIR}/${name}.png`, animations: 'disabled' }) }
 
 test('mobile landing page', async ({ page }) => {
+  // As on desktop, the landing page is captured complete and still (reduced motion).
+  await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/')
   await shot(page, '01-landing')
   await page.getByRole('button', { name: 'Open menu', exact: true }).click()

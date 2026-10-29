@@ -74,6 +74,16 @@
   /* Decelerating curve for entrances: pages, views, dialogs and reveals. */
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --duration-page: 420ms;
+
+  /* Semantic roles shared by the app and the landing page (docs/DESIGN.md). Components
+     use these instead of raw palette values; dark mode redefines them below. */
+  --brand-navy: #0a1a33;        /* KCP navy */
+  --brand-gold: #b88a2e;        /* KCP gold: rules, fills and decoration, never text on light surfaces */
+  --brand-gold-text: #866019;   /* gold text and icons on light surfaces (4.9:1 on the landing paper) */
+  --brand-gold-soft: #e5c878;   /* gold text and icons on navy (10.6:1) */
+  --focus-ring: var(--sky-400);
+  --focus-ring-width: 3px;
+  --focus-ring-offset: 2px;
 }
 
 *, *::before, *::after {
@@ -910,7 +920,7 @@ html:has(.overlay-backdrop) { overflow: hidden; }
   top: -100px;
   left: 16px;
   padding: 12px 24px;
-  background: var(--sky-500);
+  background: var(--sky-700); /* white text: 5.9:1 (sky-500 gave 2.8:1) */
   color: var(--white);
   font-weight: 700;
   font-size: 0.875rem;
@@ -927,8 +937,8 @@ html:has(.overlay-backdrop) { overflow: hidden; }
 
 /* ─── Accessibility: Focus outlines ─── */
 *:focus-visible {
-  outline: 3px solid var(--sky-400);
-  outline-offset: 2px;
+  outline: var(--focus-ring-width) solid var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
   border-radius: var(--radius-sm);
 }
 
@@ -937,8 +947,8 @@ a:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
-  outline: 3px solid var(--sky-400);
-  outline-offset: 2px;
+  outline: var(--focus-ring-width) solid var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
 }
 
 /* ─── Accessibility: Reduced motion ─── */
@@ -1217,6 +1227,8 @@ textarea:focus-visible {
 
 /* ─── DARK MODE ─── */
 .dark-mode {
+  /* Gold text and icons on dark surfaces (10.2:1 on the landing's dark paper). */
+  --brand-gold-text: #e0bd6a;
   /* Surfaces */
   --white: #0f172a;
   --gray-50: #0f172a;
@@ -1475,27 +1487,10 @@ textarea:focus-visible {
 .font-large { font-size: 18px; }
 
 /* ═══════════════════════════════════════════════════════════════
-   SCROLL REVEAL AND SIGN-IN PANEL
-   The landing page's own styles are in components/landing/landing.css.
+   SIGN-IN PANEL
+   The landing page's own styles are in components/landing/landing.css;
+   its motion is in components/landing/motion.js.
    ═══════════════════════════════════════════════════════════════ */
-
-/* ─── Scroll reveal (components/ui/Reveal.jsx) ─── */
-.reveal {
-  opacity: 0;
-  transition: opacity 700ms var(--ease-out) var(--reveal-delay, 0ms),
-    transform 700ms var(--ease-out) var(--reveal-delay, 0ms);
-}
-.reveal-up { transform: translateY(28px); }
-.reveal-left { transform: translateX(-36px); }
-.reveal-right { transform: translateX(36px); }
-.reveal-zoom { transform: scale(0.94); }
-.reveal.is-visible {
-  opacity: 1;
-  transform: none;
-}
-@media (prefers-reduced-motion: reduce) {
-  .reveal { opacity: 1; transform: none; }
-}
 
 /* ─── Sign-in panel (components/auth/LoginPanel.jsx) ─── */
 .login-panel {

@@ -1,5 +1,5 @@
 {
-  "capturedAt": "2026-10-28T07:05:33.257Z",
+  "capturedAt": "2026-10-29T14:09:29.375Z",
   "problems": [],
   "scenes": [
     {
@@ -477,8 +477,8 @@
     {
       "role": "public",
       "folder": "01-public-site",
-      "file": "03-landing-about.png",
-      "title": "Landing page: what EduPulse is, with role benefits",
+      "file": "03-landing-why-edupulse.png",
+      "title": "Landing page: why EduPulse (course preparation today and with EduPulse)",
       "route": "/",
       "ok": true
     },
@@ -486,7 +486,7 @@
       "role": "public",
       "folder": "01-public-site",
       "file": "04-landing-features.png",
-      "title": "Landing page: features",
+      "title": "Landing page: features (four parts of one workflow)",
       "route": "/",
       "ok": true
     },
@@ -494,7 +494,7 @@
       "role": "public",
       "folder": "01-public-site",
       "file": "05-landing-how-it-works.png",
-      "title": "Landing page: how it works (six phases)",
+      "title": "Landing page: how it works (six-phase timeline)",
       "route": "/",
       "ok": true
     },
@@ -525,7 +525,15 @@
     {
       "role": "public",
       "folder": "01-public-site",
-      "file": "09-landing-colleges.png",
+      "file": "09-landing-why-it-matters.png",
+      "title": "Landing page: why it matters (research findings and SDGs)",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "10-landing-colleges.png",
       "title": "Landing page: colleges",
       "route": "/",
       "ok": true
@@ -533,16 +541,8 @@
     {
       "role": "public",
       "folder": "01-public-site",
-      "file": "10-landing-community.png",
-      "title": "Landing page: CIT community photos",
-      "route": "/",
-      "ok": true
-    },
-    {
-      "role": "public",
-      "folder": "01-public-site",
-      "file": "11-landing-statistics.png",
-      "title": "Landing page: why it matters",
+      "file": "11-landing-community.png",
+      "title": "Landing page: CIT community photographs",
       "route": "/",
       "ok": true
     },

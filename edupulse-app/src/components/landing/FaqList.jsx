@@ -1,5 +1,5 @@
 import { useId, useState } from 'react'
-import { ChevronDown } from 'lucide-react'
+import { Plus } from 'lucide-react'
 
 // One answer open at a time. The answer's height animates through grid rows;
 // a closed answer is hidden from assistive technology with `visibility`.
@@ -15,7 +15,7 @@ export default function FaqList({ items }) {
             <h3>
               <button type="button" className="faq-question" id={`${id}-q${i}`} aria-expanded={expanded} aria-controls={`${id}-a${i}`} onClick={() => setOpen(expanded ? -1 : i)}>
                 <span>{item.question}</span>
-                <ChevronDown size={20} aria-hidden="true" />
+                <Plus size={20} aria-hidden="true" />
               </button>
             </h3>
             <div className="faq-answer" id={`${id}-a${i}`} role="region" aria-labelledby={`${id}-q${i}`}>
