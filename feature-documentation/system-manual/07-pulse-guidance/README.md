@@ -6,7 +6,7 @@ Pulse explains the exact component you point it at — a field, card, table or p
 
 ## Conversation and situational help
 
-With a connected model, type a greeting or a situational question in **Ask Pulse**. **Pulse · General assistance** uses the conversation rather than requiring a knowledge-library document. Follow-up questions retain the recent exchange. Document summaries, comparisons and institutional questions use source evidence; general replies are not verified institutional policy. Provider failures show a connection error instead of asking for an unrelated document.
+With a connected model, type a greeting or a situational question in **Ask Pulse**. Pulse uses the conversation rather than requiring a knowledge-library document. Follow-up questions retain the recent exchange. Document summaries, comparisons and institutional questions use source evidence; general replies are not verified institutional policy. Provider failures show a connection error instead of asking for an unrelated document.
 
 ![Pulse answering a greeting without documents](06-general-conversation.png)
 
@@ -20,7 +20,7 @@ Your provider connection belongs to your signed-in account. The system admin can
 
    ![Dragging over a component](01-dragging-over-component.png)
 
-2. Release. On wide screens the page and Pulse occupy separate columns; the mascot is hidden until the panel closes. Focused help appears under **Helping with**: the component's name, its type (**Dropdown**), its current state (*Nothing selected yet · required*) and the hint text from the page. **Walk me through Course** starts a step-by-step tour of the section it belongs to; **Exit focused help** removes the selected-component scope. Closing Pulse restores its dock.
+2. Release. On wide screens the page and Pulse occupy separate columns; the mascot returns when the panel closes. A compact chip names the selected component. Type a request immediately, or open **Pulse options → Guide selected component** to reveal its walkthrough choices. **Exit focused help** clears the selection.
 
    ![Focused component brief](02-focused-component-brief.png)
 
@@ -42,9 +42,9 @@ Your provider connection belongs to your signed-in account. The system admin can
 
 ## Other ways to start guidance
 
-You can also say *Guide me through this page* or *Can you redirect me to where I can start building my syllabus?* Pulse opens the authorized page and starts the existing interactive guide when requested. Conversation history survives view switching within the same owner account. The header's **Conversations and memory** opens archive and preference controls; [Manual 9](../09-pulse-actions/README.md#private-conversations-and-reusable-preferences) describes saving, recall and deletion.
+You can also say *Guide me through this page* or *Can you redirect me to where I can start building my syllabus?* Pulse opens the authorized page and starts the existing interactive guide when requested. Conversation history survives view switching within the same owner account. **Pulse options → Conversations and memory** opens archive and preference controls; [Manual 9](../09-pulse-actions/README.md#private-conversations-and-reusable-preferences) describes saving, recall and deletion.
 
-* **Click** Pulse and choose **Guide this page** to tour the main area of the current page.
+* **Click** Pulse, open **Pulse options** and choose **Guide this page** to tour the main area of the current page.
 * Rest the pointer on a form control and click **Ask Pulse about this**.
 * With the keyboard, focus any control and press **Alt+P**.
 * On a touch screen, press and drag Pulse with your finger; it behaves the same way.
@@ -55,7 +55,7 @@ To have Pulse **do** something for you (register a class list, file a material u
 
 ## Meet the office crew
 
-Choose **Visit office** in Pulse for [Workspace buddies](../11-workspace-buddies/README.md). Pip can hand an authorized navigation request back to the real page guide. Exact greetings answer locally; more complex requests show contextual buddy loading text. The office does not bypass the tool preview or save confirmation.
+Choose **Pulse options → Workspace buddies** in Pulse for [Workspace buddies](../11-workspace-buddies/README.md). Pip can hand an authorized navigation request back to the real page guide. Exact greetings answer locally; more complex requests show **Thinking…** or **Still working…** while pending. The office does not bypass the tool preview or save confirmation.
 
 On narrower screens, focused help uses a shorter bottom panel; close it to inspect the full page. The outline table scrolls horizontally within its card. The selected component stays outlined without dimming the rest of the editor. Plain greetings retain their local quick response; requests that include work use the action or model route.
 
@@ -66,3 +66,8 @@ Form grids shrink with the available editor width when Pulse opens, so course in
 The launcher is the Pulse avatar alone, with a keyboard focus ring and an accessible name. Opening a dialog keeps the avatar outside its action area. If Pulse is open, dialogs use a separate desktop column or a scrollable area above the assistant on smaller screens. A second dialog temporarily hides the first; **Escape** closes the top dialog. See [the current layout examples](../12-interface-and-loading/README.md).
 
 Account guidance now describes confirmed shared imports/loading, saved topic results and enrolled publication, with role-specific follow-up actions. Preview personas retain sample warnings. Authenticated Records and Course Loading expose their page targets again; Dean guidance cannot mark results and Associate Dean guidance excludes scores. See the [account Pulse capture](../../system-walkthrough/09-restored-role-pages/README.md#pulse-account-guidance).
+
+
+## Draft the selected field
+
+Instructors can select an editable field or section and ask Pulse to draft or improve it for the selected course. The proposal lists the selected values for review before applying or saving. Exact field edits preserve neighboring outcomes, weeks and questions. Explicit requests for all fields select the full editable form. See [Manual 14](../14-pulse-and-outline-workspace/README.md).

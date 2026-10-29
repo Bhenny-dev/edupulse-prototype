@@ -72,7 +72,7 @@ export default function DocumentViewer({ content, onBack, isStudent = false, onS
     if (isEditing) {
       return (
         <textarea
-          className="form-input doc-edit-body"
+          className="form-input doc-edit-body" data-pulse-field={`sections.${idx}.body`} aria-label={`Section ${idx + 1} content`}
           value={body || ''}
           onChange={e => updateSectionBody(idx, e.target.value)}
           rows={Math.max(4, (body || '').split('\n').length + 1)}
@@ -155,11 +155,11 @@ export default function DocumentViewer({ content, onBack, isStudent = false, onS
         {/* Sections */}
         <div className="doc-viewer-body">
           {sections?.map((section, idx) => (
-            <div key={idx} className="doc-viewer-section">
+            <div key={idx} className="doc-viewer-section" data-pulse-target={`Section ${idx + 1}: ${section.heading}`} data-pulse-field={`sections.${idx}.body`}>
               {editing ? (
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
                   <input
-                    className="form-input doc-edit-heading"
+                    className="form-input doc-edit-heading" data-pulse-field={`sections.${idx}.heading`} aria-label={`Section ${idx + 1} heading`}
                     value={section.heading}
                     onChange={e => updateSectionHeading(idx, e.target.value)}
                     style={{ fontWeight: 700, fontSize: '0.9375rem', flex: 1 }}

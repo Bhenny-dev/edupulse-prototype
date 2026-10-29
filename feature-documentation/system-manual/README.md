@@ -14,9 +14,11 @@ Task-by-task instructions for EduPulse v0.4.0, illustrated with captured screens
 | [8](08-ai-connections/README.md) | Choose where Pulse thinks: local model, free providers, own key, on-device | Everyone (each account connects its own key) | Settings → AI & Knowledge |
 | [9](09-pulse-actions/README.md) | Ask Pulse to act: register a class list, file a material under a course, search records, generate a week, open a page | Instructors; students for materials; everyone for search and pages | Pulse panel |
 | [10](10-authenticated-academic-records/README.md) | Publish and use authenticated academic records | Instructors, enrolled students, Dean, Associate Dean | Shared academic records, scoring, material access and role boundaries |
-| [11](11-workspace-buddies/README.md) | Meet the office crew, ask domain questions and follow real task states | Every signed-in account | Pulse / Visit office |
+| [11](11-workspace-buddies/README.md) | Meet the office crew, ask domain questions and follow real task states | Every signed-in account | Pulse options / Workspace buddies |
 | [12](12-interface-and-loading/README.md) | Use page tabs, dialogs, the avatar launcher and loading feedback | Everyone | Shared interface and academic records |
 | [13](13-restored-account-sections/README.md) | Use restored account sections and confirmed shared CSV intake | Academic roles | Dashboards, Performance, Student Monitoring, Monitor, Records and student readers |
+
+| [14](14-pulse-and-outline-workspace/README.md) | Draft selected fields, drop references, manage a wider outline and find Help/shortcuts | All roles; authoring for instructors | Pulse, Course Outline, Settings |
 
 Sections 3–8 cover the AI features added in v0.4.0 (named LangGraph agents, sandboxed document extraction, free in-process embeddings and reranking, hybrid vector search, verification, correction, comparison, references and accurate on-page guidance). Sections 1–2 document the core workflow those features plug into.
 

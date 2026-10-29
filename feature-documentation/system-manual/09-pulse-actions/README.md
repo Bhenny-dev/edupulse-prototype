@@ -90,7 +90,7 @@ For a class list, ask *Remove student B102 from the IT 102 class list* or attach
 
 ## Private conversations and reusable preferences
 
-Open **Conversations and memory** in the Pulse header. Chats are stored under the signed-in account; local development uses its local database. **New conversation** keeps saved chats available in history. Select a title to reopen its most recent 100 messages; older stored text remains searchable through explicit recall. **Archive**, **Restore**, and **Delete** control history. Deleting a source conversation also removes memories derived from it. Restored action cards are plain transcripts and cannot execute again.
+Open **Pulse options → Conversations and memory**. Chats are stored under the signed-in account; local development uses its local database. **New conversation** keeps saved chats available in history. Select a title to reopen its most recent 100 messages; older stored text remains searchable through explicit recall. **Archive**, **Restore**, and **Delete** control history. Deleting a source conversation also removes memories derived from it. Restored action cards are plain transcripts and cannot execute again.
 
 Under **Saved preferences**, automatic saving recognizes non-sensitive response preferences stated by you, such as concise bullet points or a preferred language. Review individual entries with their source label, use **Forget**, disable automatic saving, or enter **Remember a preference** and choose **Save memory**. Files and model answers are not promoted into reusable memory. Credentials and sensitive student records are rejected as memories; obvious pasted credentials are redacted before archival. At 100 preferences, remove an old entry before saving another. A full 500-message thread continues in a new stored thread; older history stays available. Account history holds up to 100 threads.
 
@@ -106,13 +106,13 @@ Ask *Recall our previous discussion about programming* to retrieve attributed ex
 
 ## Correct the selected section using its page source
 
-A syllabus accepted through the page uploader is available to Pulse while its builder remains mounted. Select the intended section with drag-and-drop or **Alt+P** and ask, for example, *Make it more accurate to the uploaded file*. Pulse maps this request to that section and prepares a source import; it does not answer with unrelated upload instructions. Choose **Prepare edit preview**, compare the before/proposed fields, and select **Apply to open form** or the separate save confirmation. Unrelated fields stay unchanged and stale previews are rejected.
+A syllabus accepted through the page uploader is available to Pulse while its builder remains mounted. An explicit source import can restore a selected section; a request to draft or improve a selected editable field prepares a writing proposal instead. Select the intended section with drag-and-drop or **Alt+P** and ask, for example, *Make it more accurate to the uploaded file*. Pulse maps this request to that section and prepares a source import; it does not answer with unrelated upload instructions. Choose **Prepare edit preview**, compare the before/proposed fields, and select **Apply to open form** or the separate save confirmation. Unrelated fields stay unchanged and stale previews are rejected.
 
 ![Focused source correction beside the editable page; synthetic PDF sample](15-focused-page-source.png)
 
 Chat attachments remain available for follow-up questions until removed or the conversation changes. Newly attached files replace the prior follow-up source set. The current editor is also supplied as bounded context, distinct from the imported source. Archive transcripts do not retain raw file bytes or turn old proposals into executable actions.
 
-A request to create learning materials from a supplied outline drafts a response instead of treating the syllabus as a request to import program outcomes. **Download response as PDF** exports a generated response and its listed sources. This draft is not automatically saved or published as courseware; the existing approved-outline generation and review workflow still applies.
+A request to create learning materials from a supplied outline drafts a response instead of treating the syllabus as a request to import program outcomes. **Response actions → Download response as PDF** exports a generated response and its listed sources. This draft is not automatically saved or published as courseware; the existing approved-outline generation and review workflow still applies.
 
 The PDF lays out the response's formatting rather than printing Markdown symbols: headings, bold and italic text, bulleted and numbered lists (including nested items), tables with a shaded header row, quotations with a gold bar, and code. Citation numbers stay small beside the text, and the sources are listed once at the end.
 
@@ -135,3 +135,8 @@ The card lists editable **Program outcomes**, **Course outline**, **Course requi
 This screenshot uses a **synthetic model/research response** for UI verification, including a sample research link; it does not demonstrate live provider accuracy. **Public research sources** opens the retrieved links. Research limitations appear above the fields. OpenRouter and OpenAI connections can use provider web search where supported; provider search may be billed separately even with a free model. If unavailable, public educational search uses Wikipedia plus the existing bibliographic catalogs and states the coverage limit. On-device and other providers use the same keyless research fallback.
 
 Expand fields and review them, then select **Apply to open form** or **Confirm and save draft**. The former changes the form; the latter waits for a persistence receipt. Nothing is published or approved. A model response missing requested teaching weeks is repaired once and rejected if still incomplete. A failed or truncated response leaves the form unchanged. A source-only request uses the selected sources and does not expand to public research. General conversation and subject explanations remain possible without uploading documents.
+
+
+## Selected fields, sections and dropped files
+
+[Manual 14](../14-pulse-and-outline-workspace/README.md) shows selected-field drafting, preview, confirmed application and native file attachments. Drop up to three files onto the panel or the closed Pulse avatar; dropping only attaches them and preserves the unsent prompt. A rejected batch leaves earlier attachments intact. Drafting and improvement requests keep the selected field or section; explicit whole-form requests broaden the scope. Identity, publication status, locked controls and another role’s data are never editable through a field target.

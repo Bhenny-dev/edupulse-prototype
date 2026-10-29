@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { currentEditor } from '../../agents/editorTools'
+import { fieldValue, scopedEditorPatch } from '../../agents/componentScope'
 import { sourceSyllabusPatch, rosterRevision } from '../../agents/workTools'
 import { studentKey } from '../../utils/rosterParser'
 
@@ -44,11 +45,12 @@ function EditorCard({ proposal, ctx }) {
     controller.current = new AbortController()
     try {
       const editor = currentEditor()
+      if (proposal.target && editor?.instance !== proposal.editor?.instance) throw new Error('The selected editor changed. Drag Pulse onto the intended field again.')
       if (!editor || imported && editor.kind !== 'syllabus') throw new Error('Open the intended syllabus builder or courseware editor first, then prepare this preview.')
       const result = imported ? sourceSyllabusPatch(proposal.attachment.syllabus) : await ctx.prepareEdit({ ...proposal, editor }, controller.current.signal)
       controller.current.signal.throwIfAborted()
       if (result.clarification) { setError(result.clarification); return }
-      const changes = imported ? result : result.patch
+      const changes = scopedEditorPatch(editor, imported ? result : result.patch, proposal.target?.path, proposal.scopeFields)
       if (!imported) setResearch({ notes: result.notes || [], sources: result.sources || [] })
       const fields = Object.keys(changes).filter(field => proposal.section === 'all' || !proposal.section || field === proposal.section)
       if (!fields.length) throw new Error('This file did not contain readable data for the requested section. Supply the source or choose another section; nothing was guessed.')
@@ -60,7 +62,7 @@ function EditorCard({ proposal, ctx }) {
     running.current = true; setState('running'); setError(''); ctx.finishTicket?.(proposal.ticketId, 'working')
     try {
       const selected = Object.fromEntries(chosen.map(field => [field, patch[field]]))
-      const result = await ctx.applyEditor(baseline, mergedPatch(baseline, selected, imported ? operation : 'replace'), save, imported ? course : undefined)
+      const result = await ctx.applyEditor(baseline, mergedPatch(baseline, selected, imported ? operation : 'replace'), save, imported && !proposal.target ? course : undefined, proposal.target?.path, proposal.scopeFields)
       ctx.finishTicket?.(proposal.ticketId)
       setReceipt(result); setState('done')
     } catch (failure) { setState('pending'); setError(failure.message); ctx.finishTicket?.(proposal.ticketId, 'error') } finally { running.current = false }
@@ -71,14 +73,16 @@ function EditorCard({ proposal, ctx }) {
   return <section className="pulse-action" aria-label={imported ? 'Import syllabus sections' : 'Review content edit'}>
     <header><strong>{imported ? `Import syllabus sections from ${proposal.attachment.fileName}` : 'Review the proposed content change'}</strong></header>
     <p>{imported ? 'Only sections actually read from the file are offered. Course identity uses the selected curriculum record. Missing sections remain unchanged; approval is not inferred.' : `Target: ${baseline?.label || 'open an editor'}. Generated wording is a draft for review; no content has changed.`}</p>
+    {proposal.scopeFields && <p className="pulse-action-note">Selected section: {proposal.scopeFields.map(field => labels[field]).join(', ')}. Other sections are preserved.</p>}
+    {proposal.target && <p className="pulse-action-note">Selected field: <strong>{proposal.target.label}</strong>. Other fields and list items are preserved.</p>}
     {research.notes.map((note, index) => <p key={index} className="pulse-action-note">{note}</p>)}
     {research.sources.length > 0 && <details><summary>Public research sources ({research.sources.length})</summary><ul>{research.sources.map((source, index) => <li key={index}><a href={source.url} target="_blank" rel="noreferrer noopener">{source.title}</a></li>)}</ul></details>}
     {(!patch || !baseline) && <div className="ai-actions"><button className="btn btn-secondary btn-sm" onClick={() => ctx.navigate('/syllabus?tab=builder')}>Open Syllabus Builder</button><button className="btn btn-primary btn-sm" disabled={busy} onClick={prepare}>{state === 'preparing' ? 'Preparing preview…' : 'Prepare edit preview'}</button></div>}
     {patch && baseline && <>
-      {imported && <><label className="form-label">Course for this syllabus<select className="form-input" value={course} onChange={event => setCourse(event.target.value)}><option value="">Choose a course</option>{ctx.catalog.map(item => <option key={item.code} value={item.code}>{item.code} — {item.title}</option>)}</select></label><label className="form-label">How to integrate sections<select className="form-input" value={operation} onChange={event => setOperation(event.target.value)}><option value="replace">Replace the selected sections</option><option value="append">Add to the selected sections</option></select></label></>}
-      <p className="pulse-action-note">Select the fields to apply. Replacing a section replaces its whole displayed list. A changed page invalidates this preview.</p>
-      {Object.keys(patch).filter(field => proposal.section === 'all' || !proposal.section || field === proposal.section).map(field => <details key={field} className="pulse-edit-preview" open={Object.keys(patch).length === 1}><summary><label><input type="checkbox" checked={chosen.includes(field)} onChange={event => setChosen(previous => event.target.checked ? [...previous, field] : previous.filter(key => key !== field))} /> {labels[field] || field}</label></summary><strong>Before</strong><pre>{readable(baseline.data[field])}</pre><strong>Proposed</strong><pre>{readable(mergedPatch(baseline, { [field]: patch[field] }, imported ? operation : 'replace')[field])}</pre></details>)}
-      <div className="ai-actions"><button className="btn btn-primary btn-sm" disabled={busy || !chosen.length || imported && !course} onClick={() => apply(true)}>{busy ? 'Saving…' : 'Confirm and save draft'}</button><button className="btn btn-secondary btn-sm" disabled={busy || !chosen.length || imported && !course} onClick={() => apply(false)}>Apply to open form</button><button className="btn btn-ghost btn-sm" disabled={busy} onClick={prepare}>Refresh preview</button></div>
+      {imported && !proposal.target && <><label className="form-label">Course for this syllabus<select className="form-input" value={course} onChange={event => setCourse(event.target.value)}><option value="">Choose a course</option>{ctx.catalog.map(item => <option key={item.code} value={item.code}>{item.code} — {item.title}</option>)}</select></label><label className="form-label">How to integrate sections<select className="form-input" value={operation} onChange={event => setOperation(event.target.value)}><option value="replace">Replace the selected sections</option><option value="append">Add to the selected sections</option></select></label></>}
+      <p className="pulse-action-note">{proposal.target ? 'Review the selected field below. A changed page invalidates this preview.' : 'Select the fields to apply. Replacing a section replaces its whole displayed list. A changed page invalidates this preview.'}</p>
+      {Object.keys(patch).filter(field => proposal.section === 'all' || !proposal.section || field === proposal.section).map(field => <details key={field} className="pulse-edit-preview" open={Object.keys(patch).length === 1}><summary><label><input type="checkbox" checked={chosen.includes(field)} onChange={event => setChosen(previous => event.target.checked ? [...previous, field] : previous.filter(key => key !== field))} /> {proposal.target?.label || labels[field] || field}</label></summary><strong>Before</strong><pre>{readable(proposal.target ? fieldValue(baseline.data, proposal.target.path) : baseline.data[field])}</pre><strong>Proposed</strong><pre>{readable(proposal.target ? fieldValue(patch, proposal.target.path) : mergedPatch(baseline, { [field]: patch[field] }, imported ? operation : 'replace')[field])}</pre></details>)}
+      <div className="ai-actions"><button className="btn btn-primary btn-sm" disabled={busy || !chosen.length || imported && !proposal.target && !course} onClick={() => apply(true)}>{busy ? 'Saving…' : 'Confirm and save draft'}</button><button className="btn btn-secondary btn-sm" disabled={busy || !chosen.length || imported && !proposal.target && !course} onClick={() => apply(false)}>Apply to open form</button><button className="btn btn-ghost btn-sm" disabled={busy} onClick={prepare}>Refresh preview</button></div>
     </>}
     <button className="btn btn-ghost btn-sm" disabled={busy} onClick={() => { setState('cancelled'); ctx.finishTicket?.(proposal.ticketId, 'stopped') }}>Cancel edit</button>
     {error && <p role="alert" className="connected-pulse-warning">{error}</p>}

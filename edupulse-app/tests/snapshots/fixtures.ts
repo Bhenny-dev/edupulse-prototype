@@ -4,6 +4,7 @@ export { expect, type Page, type Locator } from '@playwright/test'
 // Applies to every capture suite, including mobile, manual and upload flows.
 export const test = base.extend({
   page: async ({ page }, runCapture, testInfo) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' })
     const problems: string[] = []
     page.on('pageerror', error => problems.push(`pageerror: ${error.message}`))
     page.on('console', message => {

@@ -10,7 +10,19 @@ export const syllabusPatch = z.object({
   books: z.array(z.object({ title: z.string().max(500), authors: z.string().max(500), year: z.string().max(20), publisher: z.string().max(500) }).strict()).max(60).optional(),
   onlineReferences: z.array(z.object({ title: z.string().max(500), url: referenceUrl }).strict()).max(60).optional(),
 }).strict().refine(value => Object.keys(value).length > 0, 'Choose at least one section.')
-export const contentPatch = z.object({ title: z.string().min(1).max(240).optional(), sections: z.array(z.object({ heading: z.string().min(1).max(160), body: z.string().max(10000) }).strict()).min(1).max(30).optional(), questions: z.array(z.object({ id: z.string().max(80).optional(), text: z.string().min(1).max(2000), options: z.array(z.union([z.string().max(800), z.object({ label: z.string().max(10), text: z.string().max(800) }).strict()])).length(4), correctIndex: z.number().int().min(0).max(3), explanation: z.string().max(3000).optional() }).strict()).min(1).max(50).optional() }).strict().refine(value => Object.keys(value).length > 0)
+const questionEdit = z.object({
+  id: z.string().max(80).optional(), text: z.string().min(1).max(2000),
+  type: z.enum(['multiple_choice', 'true_false', 'short_answer']).optional(), topic: z.string().max(500).optional(),
+  options: z.array(z.union([z.string().max(800), z.object({ label: z.string().max(10), text: z.string().max(800) }).strict()])).max(4),
+  correctIndex: z.number().int().min(0).max(3).optional(), explanation: z.string().max(3000).optional(),
+}).strict().superRefine((question, ctx) => {
+  if (question.type === 'short_answer') return
+  const count = question.type === 'true_false' ? 2 : 4
+  if (question.options.length !== count || question.correctIndex === undefined || question.correctIndex >= count) ctx.addIssue({ code: 'custom', message: 'Objective questions need their fixed option count and a valid answer index.' })
+  if (question.type === 'true_false' && question.options.some((option, index) => (typeof option === 'string' ? option : option.text) !== ['True', 'False'][index])) ctx.addIssue({ code: 'custom', message: 'True/False choices must remain True and False.' })
+})
+export const contentPatch = z.object({ title: z.string().min(1).max(240).optional(), sections: z.array(z.object({ heading: z.string().min(1).max(160), body: z.string().max(10000) }).strict()).min(1).max(30).optional(), questions: z.array(questionEdit).min(1).max(50).optional() }).strict().refine(value => Object.keys(value).length > 0)
+
 export type EditorKind = 'syllabus' | 'content'
 export type EditorSnapshot = { instance: string; kind: EditorKind; label: string; data: Record<string, unknown> }
 /** An explicit literal replacement needs no inference. It still becomes a preview, never an automatic write. */

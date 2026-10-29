@@ -13,7 +13,7 @@ async function shot(target: Page | Locator, folder: string, name: string, extraS
   await expect(page.locator('.toast')).toHaveCount(0, { timeout: 5000 }).catch(() => undefined)
   await target.screenshot({ path: `${ROOT}/${folder}/${name}.png`, animations: 'disabled', ...(component ? { style: `.app-topbar{position:static !important}${extraStyle}` } : {}) })
 }
-const saved = (page: Page) => expect(page.getByText('Local workspace · Saved', { exact: true })).toBeVisible({ timeout: 30_000 })
+const saved = (page: Page) => expect(page.getByTestId('workspace-save-state')).toHaveText('Saved', { timeout: 30_000 })
 
 test('syllabus lifecycle: build, check, download, approve, extract, activate', async ({ page, request }) => {
   const f = '02-syllabus-lifecycle'

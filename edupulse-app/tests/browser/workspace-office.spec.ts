@@ -20,7 +20,7 @@ test('greetings answer locally under the interaction budget without model or ret
 })
 test('the office has named buddies, truthful achievements, accessible controls and real navigation handoff',async({page},testInfo)=>{
   const errors:string[]=[];page.on('pageerror',error=>errors.push(error.message))
-  await page.getByRole('button',{name:'Open workspace buddies'}).click()
+  await page.getByRole('button', { name: 'Pulse options', exact: true }).click(); await page.getByRole('button',{name:'Open workspace buddies'}).click()
   const office=page.getByRole('dialog',{name:'Meet your crew.'})
   await expect(office).toBeVisible()
   await expect(office.locator('canvas')).toBeVisible({timeout:20000})
@@ -44,7 +44,7 @@ test('the office has named buddies, truthful achievements, accessible controls a
 })
 test('reduced motion is respected and office loading does not block a simple edit',async({page})=>{
   await page.emulateMedia({reducedMotion:'reduce'})
-  await page.getByRole('button',{name:'Open workspace buddies'}).click()
+  await page.getByRole('button', { name: 'Pulse options', exact: true }).click(); await page.getByRole('button',{name:'Open workspace buddies'}).click()
   const office=page.getByRole('dialog',{name:'Meet your crew.'})
   await expect(office).toContainText('Reduced motion is on.')
   await office.getByRole('button',{name:'Close workspace'}).click()

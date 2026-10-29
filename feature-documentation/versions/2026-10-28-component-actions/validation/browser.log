@@ -1,0 +1,220 @@
+node.exe : [WebServer] (node:35080) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([WebServer] (no... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:16192) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 8:51:31 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3028
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 8:51:32 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3028
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 8:51:33 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3028
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 8:51:34 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3028
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 8:51:35 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3028
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 8:51:36 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3028
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 8:51:37 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3028
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 8:51:38 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3028
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+
+Running 170 tests using 1 worker
+
+(node:39268) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok   1 [desktop] › tests\browser\access.spec.ts:4:3 › AUTH-001: Assoc. Dean cannot open the performance route or navigate there through Pulse (4.5s)
+  ok   2 [desktop] › tests\browser\access.spec.ts:4:3 › AUTH-001: System Admin cannot open the performance route or navigate there through Pulse (1.7s)
+  ok   3 [desktop] › tests\browser\access.spec.ts:18:1 › DATA-001: sample performance is explicitly labelled in preview (1.3s)
+  ok   4 [desktop] › tests\browser\access.spec.ts:26:1 › Dean can open Performance without a stale or missing Pulse target crashing the page (1.2s)
+  ok   5 [desktop] › tests\browser\baseline-workflows.spec.ts:4:1 › syllabus-topic mastery uses mapped marks and restores radar, heatmap and status (1.3s)
+  ok   6 [desktop] › tests\browser\baseline-workflows.spec.ts:12:1 › instructor marks saved responses and the score and topic marks persist (3.3s)
+  ok   7 [desktop] › tests\browser\baseline-workflows.spec.ts:19:1 › student starts a timed written-response assessment, submits, and appeals the saved result (3.4s)
+  ok   8 [desktop] › tests\browser\baseline-workflows.spec.ts:27:1 › confirmed loading suggestions and block corrections update shared records (3.2s)
+  ok   9 [desktop] › tests\browser\baseline-workflows.spec.ts:36:1 › Dean offline inbox sends correction requests and account notice read receipts survive reload (2.5s)
+  ok  10 [desktop] › tests\browser\baseline-workflows.spec.ts:41:1 › saved syllabus versions can be viewed and restored as a draft (1.5s)
+  ok  11 [desktop] › tests\browser\baseline-workflows.spec.ts:46:1 › assessment topic mappings and delivery policy save through the instructor workspace (2.2s)
+  ok  12 [desktop] › tests\browser\baseline-workflows.spec.ts:53:1 › authenticated Pulse guidance describes shared records and keeps Dean marks read-only (1.4s)
+  ok  13 [desktop] › tests\browser\landing.spec.ts:12:1 › section links, role tabs, FAQ and photo controls work without horizontal overflow (4.2s)
+  ok  14 [desktop] › tests\browser\landing.spec.ts:53:1 › with reduced motion every section is visible at once and the photos stand still (1.1s)
+  ok  15 [desktop] › tests\browser\layout-feedback.spec.ts:4:1 › page navigation has one tab set and Pulse launcher is avatar only (1.9s)
+  ok  16 [desktop] › tests\browser\layout-feedback.spec.ts:9:1 › syllabus dialog and assistant share space and Escape preserves the assistant (5.2s)
+  ok  17 [desktop] › tests\browser\layout-feedback.spec.ts:18:1 › academic records show skeletons and respect reduced motion (880ms)
+  ok  18 [desktop] › tests\browser\layout-feedback.spec.ts:24:1 › academic request errors clear loading without claiming an empty library and retry succeeds (1.1s)
+  ok  19 [desktop] › tests\browser\layout-feedback.spec.ts:29:1 › unique Records and Assessments destinations remain in primary navigation (7.3s)
+[WebServer] (node:35080) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:35080) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:35080) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+  ok  20 [desktop] › tests\browser\ocr.spec.ts:44:3 › OCR for scanned PDFs › a fully scanned PDF is read on the device, page by page, and indexes with its page markers (12.3s)
+  ok  21 [desktop] › tests\browser\ocr.spec.ts:65:3 › OCR for scanned PDFs › in a mixed PDF only the page without text is read with OCR; the text-layer page is kept exactly (6.2s)
+  -   22 [desktop] › tests\browser\ocr.spec.ts:82:5 › OCR for scanned PDFs › evaluation: 300 dpi, degraded
+  -   23 [desktop] › tests\browser\ocr.spec.ts:82:5 › OCR for scanned PDFs › evaluation: 200 dpi
+  -   24 [desktop] › tests\browser\ocr.spec.ts:82:5 › OCR for scanned PDFs › evaluation: 150 dpi
+  -   25 [desktop] › tests\browser\ocr.spec.ts:82:5 › OCR for scanned PDFs › evaluation: 150 dpi, degraded
+  ok  26 [desktop] › tests\browser\provider-connection.spec.ts:4:1 › provider save synchronizes pipeline status, survives reopening, retains model selection and failed replacement input (11.5s)
+  ok  27 [desktop] › tests\browser\provider-connection.spec.ts:42:1 › provider account authorization leaves for the fixed OpenRouter consent host with PKCE (2.5s)
+  ok  28 [desktop] › tests\browser\provider-connection.spec.ts:56:65 › provider dedicated callback completes once, removes authorization parameters and restores account settings (2.1s)
+  ok  29 [desktop] › tests\browser\provider-connection.spec.ts:56:65 › provider legacy callback completes once, removes authorization parameters and restores account settings (2.1s)
+  ok  30 [desktop] › tests\browser\provider-connection.spec.ts:56:65 › provider state-marked callback completes once, removes authorization parameters and restores account settings (6.8s)
+  ok  31 [desktop] › tests\browser\provider-connection.spec.ts:75:1 › authorized OpenRouter credential survives a catalog outage and refresh finishes setup (10.9s)
+  ok  32 [desktop] › tests\browser\provider-connection.spec.ts:88:1 › a provider return without an EduPulse session gives a visible recovery message and clears authorization parameters (1.5s)
+  ok  33 [desktop] › tests\browser\provider-connection.spec.ts:95:1 › a failed provider exchange stays visible for a signed-in account with no prior connection (2.1s)
+  ok  34 [desktop] › tests\browser\pulse-actions.spec.ts:33:1 › an attached class list is registered only after Confirm, opens My Courses, can be searched and undone (2.5s)
+  ok  35 [desktop] › tests\browser\pulse-actions.spec.ts:62:1 › the My Courses uploader reads a real class list instead of sample names and merges a second upload (2.9s)
+  ok  36 [desktop] › tests\browser\pulse-actions.spec.ts:84:1 › a student’s material is matched to a course with reasons, and added to the library only after Confirm (2.1s)
+  ok  37 [desktop] › tests\browser\pulse-actions.spec.ts:104:1 › requests to open a page navigate only within the role, and course generation shows its syllabus source before Confirm (2.1s)
+  ok  38 [desktop] › tests\browser\pulse-actions.spec.ts:124:1 › a student cannot be sent to a page outside the student role (1.9s)
+  ok  39 [desktop] › tests\browser\pulse-components.spec.ts:5:1 › dragged field drafts only its own value, then confirmation saves and survives reload (4.1s)
+  ok  40 [desktop] › tests\browser\pulse-components.spec.ts:24:1 › a changed form invalidates the field preview and an explicit whole-syllabus request broadens the scope (2.2s)
+  ok  41 [desktop] › tests\browser\pulse-components.spec.ts:41:1 › files drop onto the closed mascot or chat without sending, while invalid batches preserve attachments (2.0s)
+  ok  42 [desktop] › tests\browser\pulse-components.spec.ts:66:1 › a focused requirements section proposes its three fields and preserves unrelated outcomes (3.2s)
+  ok  43 [desktop] › tests\browser\pulse-drafting.spec.ts:4:1 › selected Research Methods course generates readable all-field proposal without a populated library (2.1s)
+  ok  44 [desktop] › tests\browser\pulse-source-context.spec.ts:18:1 › page-uploaded PDF survives focused follow-up, corrects only the selected outline and downloads a genuine PDF (5.7s)
+  ok  45 [desktop] › tests\browser\pulse-source-context.spec.ts:50:1 › model conversations receive buddy identity, follow-up history and retained page source for material drafts (7.5s)
+  ok  46 [desktop] › tests\browser\pulse-tools.spec.ts:16:1 › natural conversation redirects and starts the real interactive syllabus guide (1.9s)
+  ok  47 [desktop] › tests\browser\pulse-tools.spec.ts:26:1 › PDF syllabus attachment offers exact section previews, preserves unrelated fields, and rejects stale targets (2.8s)
+  ok  48 [desktop] › tests\browser\pulse-tools.spec.ts:47:1 › private history saves preferences, recalls across chats, forgets and deletes source conversations (3.7s)
+  ok  49 [desktop] › tests\browser\pulse-tools.spec.ts:66:1 › roster removal previews exact rows and persists only after confirmation (2.3s)
+  ok  50 [desktop] › tests\browser\pulse-tools.spec.ts:88:1 › a generated section patch is previewed and a failed database save never reports completion (2.3s)
+  ok  51 [desktop] › tests\browser\pulse.spec.ts:9:1 › mascot follows the cursor, distinguishes a click from dragging, and focuses the dropped component (3.1s)
+  ok  52 [desktop] › tests\browser\pulse.spec.ts:38:1 › guiding a whole page keeps the panel clear of the perched mascot (1.7s)
+  ok  53 [desktop] › tests\browser\pulse.spec.ts:48:1 › section tour reads visible controls and waits for input (2.7s)
+  ok  54 [desktop] › tests\browser\pulse.spec.ts:70:1 › keyboard walkthrough waits for real input and save, then completes (3.2s)
+  ok  55 [desktop] › tests\browser\pulse.spec.ts:94:1 › invalid drop returns to the dock and reduced motion disables cursor animation (1.6s)
+  -   56 [desktop] › tests\browser\pulse.spec.ts:105:1 › touch drag opens focused guidance on a form control
+  ok  57 [desktop] › tests\browser\pulse.spec.ts:123:1 › provider settings expose real connections, model discovery and local download controls (1.3s)
+  ok  58 [desktop] › tests\browser\role-restoration.spec.ts:5:3 › restored instructor pages use account records and keep each authorized section reachable (3.1s)
+  ok  59 [desktop] › tests\browser\role-restoration.spec.ts:5:3 › restored student pages use account records and keep each authorized section reachable (4.5s)
+  ok  60 [desktop] › tests\browser\role-restoration.spec.ts:5:3 › restored dean pages use account records and keep each authorized section reachable (3.2s)
+  ok  61 [desktop] › tests\browser\role-restoration.spec.ts:5:3 › restored associate_dean pages use account records and keep each authorized section reachable (1.3s)
+  ok  62 [desktop] › tests\browser\role-restoration.spec.ts:36:1 › confirmed shared CSV import survives refresh; templates and history work (2.3s)
+  ok  63 [desktop] › tests\browser\role-restoration.spec.ts:46:1 › dark mode keeps account sections and charts on solid readable surfaces (879ms)
+  ok  64 [desktop] › tests\browser\role-restoration.spec.ts:55:1 › account notices come from unanswered records and read state survives reload (1.3s)
+  ok  65 [desktop] › tests\browser\settings-outline.spec.ts:4:86 › System Admin finds help and shortcuts in Settings with a clean top bar (3.1s)
+  ok  66 [desktop] › tests\browser\settings-outline.spec.ts:4:86 › Dean finds help and shortcuts in Settings with a clean top bar (2.2s)
+  ok  67 [desktop] › tests\browser\settings-outline.spec.ts:4:86 › Assoc. Dean finds help and shortcuts in Settings with a clean top bar (2.5s)
+  ok  68 [desktop] › tests\browser\settings-outline.spec.ts:4:86 › Instructor finds help and shortcuts in Settings with a clean top bar (2.5s)
+  ok  69 [desktop] › tests\browser\settings-outline.spec.ts:4:86 › Student finds help and shortcuts in Settings with a clean top bar (2.6s)
+  ok  70 [desktop] › tests\browser\settings-outline.spec.ts:24:1 › outline expands, filters weeks and swaps content without moving exam slots or losing resources (4.6s)
+  ok  71 [desktop] › tests\browser\settings-outline.spec.ts:53:1 › Pulse starts with conversation only and exposes optional tools on demand (2.1s)
+  ok  72 [desktop] › tests\browser\syllabus-pdf.spec.ts:13:1 › PDF syllabus text is extracted, previewed and accepted into the course form (1.8s)
+  ok  73 [desktop] › tests\browser\syllabus-pdf.spec.ts:22:1 › a scanned PDF syllabus uses OCR and still fills the course and outline (4.3s)
+  ok  74 [desktop] › tests\browser\workflows.spec.ts:9:1 › preview connects to real health API and shows source-grounded chat without overflow (3.1s)
+  ok  75 [desktop] › tests\browser\workflows.spec.ts:35:1 › profile saves, survives reload, and preview password editing is disabled (2.0s)
+  ok  76 [desktop] › tests\browser\workflows.spec.ts:46:1 › bell and Notifications page share one unread count, and Mark All Read clears both (2.9s)
+  ok  77 [desktop] › tests\browser\workflows.spec.ts:60:1 › system admin console shows health, role coverage, accounts and filterable audit activity, separate from academic screens (1.8s)
+  ok  78 [desktop] › tests\browser\workflows.spec.ts:81:1 › the Guardian declines a student request for assessment answers and explains what Pulse can do instead (1.8s)
+  ok  79 [desktop] › tests\browser\workflows.spec.ts:94:1 › Dean sidebar opens the Loaded Courses view instead of an empty tab (2.3s)
+  ok  80 [desktop] › tests\browser\workflows.spec.ts:106:1 › courseware edits persist, require review again, and document downloads work (6.0s)
+  ok  81 [desktop] › tests\browser\workflows.spec.ts:145:1 › syllabus draft survives reload and approved PDF activates the same course in Courseware (13.6s)
+  ok  82 [desktop] › tests\browser\workflows.spec.ts:201:1 › conflicting workspace save retains pending edits until a backup is exported (5.2s)
+  ok  83 [desktop] › tests\browser\workspace-office.spec.ts:8:1 › greetings answer locally under the interaction budget without model or retrieval calls (1.9s)
+  ok  84 [desktop] › tests\browser\workspace-office.spec.ts:21:1 › the office has named buddies, truthful achievements, accessible controls and real navigation handoff (7.1s)
+  ok  85 [desktop] › tests\browser\workspace-office.spec.ts:45:1 › reduced motion is respected and office loading does not block a simple edit (4.1s)
+(node:14544) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  86 [mobile] › tests\browser\access.spec.ts:4:3 › AUTH-001: Assoc. Dean cannot open the performance route or navigate there through Pulse (2.4s)
+  ok  87 [mobile] › tests\browser\access.spec.ts:4:3 › AUTH-001: System Admin cannot open the performance route or navigate there through Pulse (2.0s)
+  ok  88 [mobile] › tests\browser\access.spec.ts:18:1 › DATA-001: sample performance is explicitly labelled in preview (1.5s)
+  ok  89 [mobile] › tests\browser\access.spec.ts:26:1 › Dean can open Performance without a stale or missing Pulse target crashing the page (1.3s)
+  ok  90 [mobile] › tests\browser\baseline-workflows.spec.ts:4:1 › syllabus-topic mastery uses mapped marks and restores radar, heatmap and status (1.4s)
+  ok  91 [mobile] › tests\browser\baseline-workflows.spec.ts:12:1 › instructor marks saved responses and the score and topic marks persist (4.2s)
+  ok  92 [mobile] › tests\browser\baseline-workflows.spec.ts:19:1 › student starts a timed written-response assessment, submits, and appeals the saved result (3.8s)
+  ok  93 [mobile] › tests\browser\baseline-workflows.spec.ts:27:1 › confirmed loading suggestions and block corrections update shared records (4.6s)
+  ok  94 [mobile] › tests\browser\baseline-workflows.spec.ts:36:1 › Dean offline inbox sends correction requests and account notice read receipts survive reload (5.0s)
+  ok  95 [mobile] › tests\browser\baseline-workflows.spec.ts:41:1 › saved syllabus versions can be viewed and restored as a draft (6.6s)
+  ok  96 [mobile] › tests\browser\baseline-workflows.spec.ts:46:1 › assessment topic mappings and delivery policy save through the instructor workspace (6.1s)
+  ok  97 [mobile] › tests\browser\baseline-workflows.spec.ts:53:1 › authenticated Pulse guidance describes shared records and keeps Dean marks read-only (1.9s)
+  ok  98 [mobile] › tests\browser\landing.spec.ts:12:1 › section links, role tabs, FAQ and photo controls work without horizontal overflow (8.1s)
+  ok  99 [mobile] › tests\browser\landing.spec.ts:53:1 › with reduced motion every section is visible at once and the photos stand still (2.0s)
+  ok 100 [mobile] › tests\browser\layout-feedback.spec.ts:4:1 › page navigation has one tab set and Pulse launcher is avatar only (1.8s)
+  ok 101 [mobile] › tests\browser\layout-feedback.spec.ts:9:1 › syllabus dialog and assistant share space and Escape preserves the assistant (5.7s)
+  ok 102 [mobile] › tests\browser\layout-feedback.spec.ts:18:1 › academic records show skeletons and respect reduced motion (917ms)
+  ok 103 [mobile] › tests\browser\layout-feedback.spec.ts:24:1 › academic request errors clear loading without claiming an empty library and retry succeeds (1.3s)
+  ok 104 [mobile] › tests\browser\layout-feedback.spec.ts:29:1 › unique Records and Assessments destinations remain in primary navigation (7.6s)
+  -  105 [mobile] › tests\browser\ocr.spec.ts:44:3 › OCR for scanned PDFs › a fully scanned PDF is read on the device, page by page, and indexes with its page markers
+  -  106 [mobile] › tests\browser\ocr.spec.ts:65:3 › OCR for scanned PDFs › in a mixed PDF only the page without text is read with OCR; the text-layer page is kept exactly
+  -  107 [mobile] › tests\browser\ocr.spec.ts:82:5 › OCR for scanned PDFs › evaluation: 300 dpi, degraded
+  -  108 [mobile] › tests\browser\ocr.spec.ts:82:5 › OCR for scanned PDFs › evaluation: 200 dpi
+  -  109 [mobile] › tests\browser\ocr.spec.ts:82:5 › OCR for scanned PDFs › evaluation: 150 dpi
+  -  110 [mobile] › tests\browser\ocr.spec.ts:82:5 › OCR for scanned PDFs › evaluation: 150 dpi, degraded
+  ok 111 [mobile] › tests\browser\provider-connection.spec.ts:4:1 › provider save synchronizes pipeline status, survives reopening, retains model selection and failed replacement input (11.1s)
+  ok 112 [mobile] › tests\browser\provider-connection.spec.ts:42:1 › provider account authorization leaves for the fixed OpenRouter consent host with PKCE (2.8s)
+  ok 113 [mobile] › tests\browser\provider-connection.spec.ts:56:65 › provider dedicated callback completes once, removes authorization parameters and restores account settings (1.6s)
+  ok 114 [mobile] › tests\browser\provider-connection.spec.ts:56:65 › provider legacy callback completes once, removes authorization parameters and restores account settings (1.9s)
+  ok 115 [mobile] › tests\browser\provider-connection.spec.ts:56:65 › provider state-marked callback completes once, removes authorization parameters and restores account settings (1.8s)
+  ok 116 [mobile] › tests\browser\provider-connection.spec.ts:75:1 › authorized OpenRouter credential survives a catalog outage and refresh finishes setup (2.0s)
+  ok 117 [mobile] › tests\browser\provider-connection.spec.ts:88:1 › a provider return without an EduPulse session gives a visible recovery message and clears authorization parameters (1.3s)
+  ok 118 [mobile] › tests\browser\provider-connection.spec.ts:95:1 › a failed provider exchange stays visible for a signed-in account with no prior connection (2.3s)
+  ok 119 [mobile] › tests\browser\pulse-actions.spec.ts:33:1 › an attached class list is registered only after Confirm, opens My Courses, can be searched and undone (2.2s)
+  ok 120 [mobile] › tests\browser\pulse-actions.spec.ts:62:1 › the My Courses uploader reads a real class list instead of sample names and merges a second upload (4.7s)
+  ok 121 [mobile] › tests\browser\pulse-actions.spec.ts:84:1 › a student’s material is matched to a course with reasons, and added to the library only after Confirm (2.0s)
+  ok 122 [mobile] › tests\browser\pulse-actions.spec.ts:104:1 › requests to open a page navigate only within the role, and course generation shows its syllabus source before Confirm (1.7s)
+  ok 123 [mobile] › tests\browser\pulse-actions.spec.ts:124:1 › a student cannot be sent to a page outside the student role (1.6s)
+  ok 124 [mobile] › tests\browser\pulse-components.spec.ts:5:1 › dragged field drafts only its own value, then confirmation saves and survives reload (3.4s)
+  ok 125 [mobile] › tests\browser\pulse-components.spec.ts:24:1 › a changed form invalidates the field preview and an explicit whole-syllabus request broadens the scope (1.9s)
+  ok 126 [mobile] › tests\browser\pulse-components.spec.ts:41:1 › files drop onto the closed mascot or chat without sending, while invalid batches preserve attachments (2.2s)
+  ok 127 [mobile] › tests\browser\pulse-components.spec.ts:66:1 › a focused requirements section proposes its three fields and preserves unrelated outcomes (3.2s)
+  ok 128 [mobile] › tests\browser\pulse-drafting.spec.ts:4:1 › selected Research Methods course generates readable all-field proposal without a populated library (1.7s)
+  ok 129 [mobile] › tests\browser\pulse-source-context.spec.ts:18:1 › page-uploaded PDF survives focused follow-up, corrects only the selected outline and downloads a genuine PDF (5.6s)
+  ok 130 [mobile] › tests\browser\pulse-source-context.spec.ts:50:1 › model conversations receive buddy identity, follow-up history and retained page source for material drafts (8.7s)
+  ok 131 [mobile] › tests\browser\pulse-tools.spec.ts:16:1 › natural conversation redirects and starts the real interactive syllabus guide (1.9s)
+  ok 132 [mobile] › tests\browser\pulse-tools.spec.ts:26:1 › PDF syllabus attachment offers exact section previews, preserves unrelated fields, and rejects stale targets (3.9s)
+  ok 133 [mobile] › tests\browser\pulse-tools.spec.ts:47:1 › private history saves preferences, recalls across chats, forgets and deletes source conversations (3.7s)
+  ok 134 [mobile] › tests\browser\pulse-tools.spec.ts:66:1 › roster removal previews exact rows and persists only after confirmation (2.6s)
+  ok 135 [mobile] › tests\browser\pulse-tools.spec.ts:88:1 › a generated section patch is previewed and a failed database save never reports completion (4.3s)
+  ok 136 [mobile] › tests\browser\pulse.spec.ts:9:1 › mascot follows the cursor, distinguishes a click from dragging, and focuses the dropped component (4.8s)
+  -  137 [mobile] › tests\browser\pulse.spec.ts:38:1 › guiding a whole page keeps the panel clear of the perched mascot
+  ok 138 [mobile] › tests\browser\pulse.spec.ts:48:1 › section tour reads visible controls and waits for input (4.6s)
+  ok 139 [mobile] › tests\browser\pulse.spec.ts:70:1 › keyboard walkthrough waits for real input and save, then completes (6.5s)
+  ok 140 [mobile] › tests\browser\pulse.spec.ts:94:1 › invalid drop returns to the dock and reduced motion disables cursor animation (1.8s)
+  ok 141 [mobile] › tests\browser\pulse.spec.ts:105:1 › touch drag opens focused guidance on a form control (2.6s)
+  ok 142 [mobile] › tests\browser\pulse.spec.ts:123:1 › provider settings expose real connections, model discovery and local download controls (1.9s)
+  ok 143 [mobile] › tests\browser\role-restoration.spec.ts:5:3 › restored instructor pages use account records and keep each authorized section reachable (3.4s)
+  ok 144 [mobile] › tests\browser\role-restoration.spec.ts:5:3 › restored student pages use account records and keep each authorized section reachable (6.0s)
+  ok 145 [mobile] › tests\browser\role-restoration.spec.ts:5:3 › restored dean pages use account records and keep each authorized section reachable (4.5s)
+  ok 146 [mobile] › tests\browser\role-restoration.spec.ts:5:3 › restored associate_dean pages use account records and keep each authorized section reachable (1.7s)
+  ok 147 [mobile] › tests\browser\role-restoration.spec.ts:36:1 › confirmed shared CSV import survives refresh; templates and history work (5.8s)
+  ok 148 [mobile] › tests\browser\role-restoration.spec.ts:46:1 › dark mode keeps account sections and charts on solid readable surfaces (1.3s)
+  ok 149 [mobile] › tests\browser\role-restoration.spec.ts:55:1 › account notices come from unanswered records and read state survives reload (1.9s)
+  ok 150 [mobile] › tests\browser\settings-outline.spec.ts:4:86 › System Admin finds help and shortcuts in Settings with a clean top bar (3.9s)
+  ok 151 [mobile] › tests\browser\settings-outline.spec.ts:4:86 › Dean finds help and shortcuts in Settings with a clean top bar (3.5s)
+  ok 152 [mobile] › tests\browser\settings-outline.spec.ts:4:86 › Assoc. Dean finds help and shortcuts in Settings with a clean top bar (3.0s)
+  ok 153 [mobile] › tests\browser\settings-outline.spec.ts:4:86 › Instructor finds help and shortcuts in Settings with a clean top bar (3.5s)
+  ok 154 [mobile] › tests\browser\settings-outline.spec.ts:4:86 › Student finds help and shortcuts in Settings with a clean top bar (2.2s)
+  ok 155 [mobile] › tests\browser\settings-outline.spec.ts:24:1 › outline expands, filters weeks and swaps content without moving exam slots or losing resources (4.9s)
+  ok 156 [mobile] › tests\browser\settings-outline.spec.ts:53:1 › Pulse starts with conversation only and exposes optional tools on demand (3.0s)
+  ok 157 [mobile] › tests\browser\syllabus-pdf.spec.ts:13:1 › PDF syllabus text is extracted, previewed and accepted into the course form (3.2s)
+  -  158 [mobile] › tests\browser\syllabus-pdf.spec.ts:22:1 › a scanned PDF syllabus uses OCR and still fills the course and outline
+  ok 159 [mobile] › tests\browser\workflows.spec.ts:9:1 › preview connects to real health API and shows source-grounded chat without overflow (4.2s)
+  ok 160 [mobile] › tests\browser\workflows.spec.ts:35:1 › profile saves, survives reload, and preview password editing is disabled (2.4s)
+  ok 161 [mobile] › tests\browser\workflows.spec.ts:46:1 › bell and Notifications page share one unread count, and Mark All Read clears both (3.0s)
+  ok 162 [mobile] › tests\browser\workflows.spec.ts:60:1 › system admin console shows health, role coverage, accounts and filterable audit activity, separate from academic screens (4.5s)
+  ok 163 [mobile] › tests\browser\workflows.spec.ts:81:1 › the Guardian declines a student request for assessment answers and explains what Pulse can do instead (3.6s)
+  ok 164 [mobile] › tests\browser\workflows.spec.ts:94:1 › Dean sidebar opens the Loaded Courses view instead of an empty tab (3.3s)
+  ok 165 [mobile] › tests\browser\workflows.spec.ts:106:1 › courseware edits persist, require review again, and document downloads work (9.4s)
+  ok 166 [mobile] › tests\browser\workflows.spec.ts:145:1 › syllabus draft survives reload and approved PDF activates the same course in Courseware (26.0s)
+  ok 167 [mobile] › tests\browser\workflows.spec.ts:201:1 › conflicting workspace save retains pending edits until a backup is exported (8.2s)
+  ok 168 [mobile] › tests\browser\workspace-office.spec.ts:8:1 › greetings answer locally under the interaction budget without model or retrieval calls (2.3s)
+  ok 169 [mobile] › tests\browser\workspace-office.spec.ts:21:1 › the office has named buddies, truthful achievements, accessible controls and real navigation handoff (9.1s)
+  ok 170 [mobile] › tests\browser\workspace-office.spec.ts:45:1 › reduced motion is respected and office loading does not block a simple edit (3.8s)
+
+  13 skipped
+  157 passed (10.1m)

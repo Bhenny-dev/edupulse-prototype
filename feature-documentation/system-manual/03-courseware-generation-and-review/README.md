@@ -26,7 +26,7 @@
 
 6. Edit any inaccurate explanation or answer key, then use **Check** only after reviewing the material, activity, and assessment. Drafts are not published or graded automatically.
 
-The generation/material evidence uses the local `qwen2.5:3b` model. The fourth image was refreshed on 28 October with a synthetic saved assessment to show the current draft controls, including Delivery settings; it is not a new model-generation result. Earlier v0.4.0 and 1.5B-model evidence remains in the historical release records. They establish local task evidence, not authenticated hosted behavior or general model accuracy. The review panel may flag incorrect answer explanations; instructors must resolve them before checking or publishing. The [v0.4.0 release record](../../versions/v0.4.0/README.md) maps the original workflow to NFR-AI-06 (goal 6).
+The generation/material evidence uses the local `qwen2.5:3b` model. The current fourth image shows three generated drafts from the captured week-generation request. Earlier v0.4.0 and 1.5B-model evidence remains in the historical release records. These captures establish local task evidence, not authenticated hosted behavior or general model accuracy. The review panel may flag unsupported statements or incorrect answer explanations; instructors must resolve them before checking or publishing. The [component-actions validation record](../../versions/2026-10-28-component-actions/validation/results.md) records the current capture boundaries.
 
 ## Revise through Pulse
 

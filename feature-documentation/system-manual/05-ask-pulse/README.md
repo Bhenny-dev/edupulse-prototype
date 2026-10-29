@@ -5,7 +5,7 @@
 ## Steps
 
 1. Click **Pulse**, type a question and press **Enter** (Shift+Enter for a new line). Attach up to three files with the paperclip; they are read in the same sandbox as the library.
-2. Read the answer. Each sentence is underlined by what the sources support: solid green = supported, double = supported by two or more documents, dotted amber = partly supported or missing a citation, wavy red = not found in your sources. The badges summarize grounding and citation accuracy.
+2. Read the answer and its citations. Expand **Verification details** for grounding, citation and agent indicators. The compact conversation does not underline every sentence by default; these checks describe evidence support, not a guarantee of correctness.
 
    ![Verified answer](01-verified-answer.png)
 
@@ -21,15 +21,15 @@
    * the Writer’s model;
    * the Verifier’s check.
 
-   The screenshot is scrolled to the Researchers. The badge under the answer counts the agents that worked on it (7 here).
+   The screenshot shows the Guardian, Planner, Researchers, Ranker and the later writing/checking steps. The badge under the answer counts the agents that worked on it (7 here).
 
    ![Agent timeline](03-agent-timeline.png)
 
-5. To change the answer, click **Request a revision**, describe what to change and click **Revise**.
+5. To change the answer, open **Response actions**, click **Request a revision**, describe what to change and click **Revise**.
 
    ![Revision request](04-revision-request.png)
 
-   The revised answer is checked against the sources again before it is shown. This capture displays a generated answer with supported statements and citations. Check that the model also followed your requested change: source support does not prove that every instruction was fulfilled. If a generated answer cannot be supported after revision, Pulse can show cited source excerpts instead.
+   The revision-control screenshots use a labelled synthetic response to demonstrate the form and updated answer. They are interface checks, not a live inference-quality result. Source-based responses are checked again after revision; unsupported generated statements can lead to cited source excerpts. Review whether the answer fulfilled the requested change as well as its evidence support.
 
    ![Revised answer](05-revised-answer.png)
 
@@ -55,11 +55,11 @@ See the [student example](../../system-walkthrough/05-student/09-pulse-declines-
 
 ## Good to know
 
-If a connected provider rejects the model or has no API credits, Pulse shows the connection error even when library sources are available. Open **AI settings**, refresh the available models and use **Test selected model**. A saved key and model list alone do not verify generation access. See [connection recovery examples](../08-ai-connections/README.md).
+If a connected provider rejects the model or has no API credits, Pulse shows the connection error even when library sources are available. Open **Pulse options → AI settings**, refresh the available models and use **Test selected model**. A saved key and model list alone do not verify generation access. See [connection recovery examples](../08-ai-connections/README.md).
 
 * Without a connected model, Pulse still searches and quotes the best source sentences, labelled **Source excerpts**.
 * Document-specific or source-only questions report missing evidence. New educational drafts can use subject knowledge and public research even when the library is empty. A draft is not judged complete merely because it matches a source.
-* **Stop** (square button) cancels a running request; the trash icon clears the conversation; the gear opens AI settings.
+* **Stop** (square button) cancels a running request; **Pulse options → New conversation** starts a new chat; **AI settings** is in the same menu.
 * Answers are drafts for your judgement. Validated edit tools can apply or save an instructor-confirmed proposal; conversational text does not establish a completed action. Pulse cannot approve a syllabus or calculate official grades.
 
 For complete syllabus generation, select a course and use the [course-aware drafting flow](../09-pulse-actions/README.md#generate-a-syllabus-from-the-selected-course). Public research sources have links and coverage warnings. **Educational draft · instructor review required** distinguishes new teaching content from a source-grounded answer; editor JSON is context, not a cited academic reference.
@@ -70,4 +70,9 @@ This capture uses a synthetic model/research response to demonstrate the real an
 
 ## Conversation continuity
 
-Pulse supplies up to 12 recent turns within its bounded prompt budget. Saved preferences and explicit recall come from the current account?s database history, with source labels; they are not proof that an action happened. The chat header opens **Conversations and memory**. See [Manual 9](../09-pulse-actions/README.md#private-conversations-and-reusable-preferences) for review, archive, deletion and recall. Requests to navigate or edit use validated tools and confirmation cards.
+Pulse supplies up to 12 recent turns within its bounded prompt budget. Saved preferences and explicit recall come from the current account?s database history, with source labels; they are not proof that an action happened. Open **Pulse options → Conversations and memory**. See [Manual 9](../09-pulse-actions/README.md#private-conversations-and-reusable-preferences) for review, archive, deletion and recall. Requests to navigate or edit use validated tools and confirmation cards.
+
+
+## Capture provenance
+
+Images 1-3 use the real local Ollama qwen2.5:3b model and the uploaded Wikipedia taxonomy PDF. The model wording could not be fully verified, so the recorded result is explicitly **Source excerpts (no model-generated answer)** with citations. Images 4-5 use labelled synthetic transport to exercise revision controls. The source excerpts and interface fixtures do not establish that a model can satisfy every instruction.

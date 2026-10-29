@@ -5,7 +5,7 @@ test('Mobile workspace buddies have accessible desk controls and reduced motion'
   await page.goto('/')
   await page.getByRole('button', { name: 'Instructor', exact: true }).click()
   await page.getByRole('button', { name: 'Open Pulse assistant' }).click()
-  await page.getByRole('button', { name: 'Open workspace buddies' }).click()
+  await page.getByRole('button', { name: 'Pulse options', exact: true }).click(); await page.getByRole('button', { name: 'Open workspace buddies' }).click()
   const office = page.getByRole('dialog', { name: 'Meet your crew.' })
   await expect(office.locator('canvas')).toBeVisible()
   await page.waitForTimeout(400)

@@ -76,7 +76,7 @@ PDF is the primary institutional intake format; Word `.docx` is also supported. 
 
 ## Good to know
 
-* Edits are saved to the workspace automatically (*Local workspace · Saved*, or the cloud equivalent). **Export backup** downloads everything as JSON.
+* Edits are saved to the workspace automatically. Use **Settings → Data & Privacy → Export workspace backup** for a JSON copy. Recovery controls remain visible if a save fails or conflicts.
 * Pulse can walk you through any section: drag it onto the section or click **Guide this page** ([manual 7](../07-pulse-guidance/README.md)). Pulse drafts; it cannot check, approve or activate a syllabus.
 
 ## Import sections through the conversation
@@ -108,3 +108,8 @@ In **My Syllabus**, use **Edit syllabus** for a non-sample record, including an 
 In **Version History**, **View saved version** previews the retained editable fields. **Restore version as draft** uses the same revision and withdrawal process. Snapshots exclude file bytes and nested history; up to ten are retained. Restoring never reinstates approval or silently republishes courseware. See the [saved-version capture](../../system-walkthrough/09-restored-role-pages/README.md#baseline-workflows-restored-after-owner-confirmation).
 
 Confirmed shared course loads are shown above the builder when available. The identity/description fields remain locked under the later correction. The syllabus author still owns the draft and confirms every change.
+
+
+## Course Outline editing space
+
+The [Course Outline workspace](../14-pulse-and-outline-workspace/README.md#manage-the-course-outline) has term/week filters, an expanded view, sticky headings and full-width fields. Teaching content moves between fixed calendar slots with the grip or move buttons; weeks 9 and 18 remain examinations. Materials, assessment types and resources stay with their teaching content.

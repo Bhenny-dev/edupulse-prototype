@@ -1,6 +1,6 @@
 # Workspace buddies and faster conversations
 
-Open Pulse, then choose **Meet your workspace buddies** / **Visit office**. The office opens over your current page. Select a character in the 3D scene or use the six keyboard-accessible desk buttons. **Your role**, **Completed work** and **Your goals** provide specific answers from that buddy. **Close workspace**, Escape, or **Review tools and results in Pulse** returns to the conversation.
+Open Pulse, then choose **Pulse options → Workspace buddies**. The office opens over your current page. Select a character in the 3D scene or use the six keyboard-accessible desk buttons. **Your role**, **Completed work** and **Your goals** provide specific answers from that buddy. **Close workspace**, Escape, or **Review tools and results in Pulse** returns to the conversation.
 
 ![The office and Luma explaining her role](01-meet-the-crew.png)
 
@@ -19,9 +19,9 @@ These are fictional office personalities attached to application capabilities. C
 
 Exact greetings and thanks are answered locally without a model or retrieval request. Explicit `Replace "old text" with "new text"` requests can prepare a local preview for an editable section. Mixed greetings with an actual task still use the task route. Saving history happens separately. Generated answers still depend on provider speed, model availability and network conditions; no universal 150 ms inference promise is made.
 
-![Quill's contextual loading message](02-contextual-loading.png)
+![Pulse waiting for a response](02-contextual-loading.png)
 
-Loading text changes periodically and identifies the assigned buddy. **Stop** remains available in Pulse. General conversation uses a smaller context and output budget instead of the full evidence workflow. Source-based questions retain their retrieval and verification steps.
+Pulse shows **Thinking…**, followed by **Still working…** for longer requests. **Stop** remains available in Pulse. General conversation uses a smaller context and output budget instead of the full evidence workflow. Source-based questions retain their retrieval and verification steps.
 
 ## Working, review and coffee breaks
 

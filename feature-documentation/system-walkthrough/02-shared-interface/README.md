@@ -8,7 +8,7 @@ Controls every signed-in role has. Shown here as the Instructor; the Dean and St
 
 ![Top bar](01-top-bar.png)
 
-Left to right: logo (returns to the dashboard), the role's main tabs, then **Search**, **Dark mode**, **Help & Support**, **Keyboard shortcuts**, **Language**, **Notifications** (red badge = unread count), the **role badge** and the **account menu**. The owner admin account sees an *Admin · <current view>* button in place of the badge (section 7). Below the top bar on every page: the breadcrumb (*Home › Page*) and the workspace status (*Local workspace · Saved*, or the cloud equivalent) with **Export backup**.
+Left to right: logo (returns to the dashboard), the role's main tabs, **Search**, **Dark mode**, **Language**, **Notifications**, the role badge and the account menu. The owner admin can switch views. The breadcrumb remains below the bar. **Help & Support** and **Keyboard Shortcuts** are Settings tabs. Workspace backup is in **Settings → Data & Privacy**; recovery controls appear only for an error or conflict.
 
 *Changed in v0.4.0:* icon-only buttons now have spoken names for screen readers (“Notifications, 2 unread”, “Account menu”, “Open menu / Close menu”), and the breadcrumb is a labelled navigation landmark.
 
@@ -20,11 +20,11 @@ Left to right: logo (returns to the dashboard), the role's main tabs, then **Sea
 
 Opens over the page with suggestions (syllabi, courses, courseware items, monitoring pages, class lists). Type to filter; **Esc** or **×** closes it.
 
-### 3. Keyboard shortcuts modal (?)
+### 3. Keyboard Shortcuts in Settings (?)
 
-![Keyboard shortcuts](03-keyboard-shortcuts-modal.png)
+![Keyboard Shortcuts Settings tab](03-settings-keyboard-shortcuts.png)
 
-Navigation chords (**G** then **D/S/C/P/A** for Dashboard, Syllabus, Courseware, Performance, AI Assistant), actions (**Ctrl+E** export, **Ctrl+S** save, **Ctrl+Z** undo) and **?** to reopen this list.
+**Settings → Keyboard Shortcuts** lists search, Pulse focus, opening this tab, Escape and Tab navigation. **Planned shortcuts** separates the unconnected navigation chords and export/save/undo bindings. Press **?** outside a form control to open this tab.
 
 ### 4. Language menu
 
@@ -44,7 +44,7 @@ The three most recent notices for the role (warnings in amber, information in bl
 
 ![Account menu](06-account-menu.png)
 
-Name, email and role, then **Settings**, **Help & Support** and **Sign Out**. The admin account's email address is not displayed.
+Name, email and role, then **Settings** and **Sign Out**. The admin account's email address is not displayed.
 
 ### 7. Role badge and admin view switching
 
@@ -65,7 +65,7 @@ No other account can switch. This screen has no screenshot because it needs the 
 
 Filter tabs (**All**, **Unread (n)** and one tab per category such as *Courseware*, *Unopened Material*, *Missing Assessment*, *Syllabus Status*). Unread notices have a blue background and dot; click one to mark it read, or use **Mark All Read**.
 
-### 9. Help & Support
+### 9. Help & Support in Settings
 
 ![Help and support](09-help-and-support.png)
 
@@ -79,11 +79,13 @@ Filter tabs (**All**, **Unread (n)** and one tab per category such as *Coursewar
 | Appearance | ![Settings · Appearance](11-settings-appearance.png) | **Dark Mode** switch and **Font Size** (Small, Medium, Large) |
 | Notifications | ![Settings · Notifications](12-settings-notifications.png) | Device-only preferences for email, weekly digest and syllabus, courseware and performance alerts (the banner states that email delivery is not connected) |
 | AI & Knowledge | ![Settings · AI & Knowledge](13-settings-ai-and-knowledge.png) | **New in v0.4.0** — see below |
-| Data & Privacy | ![Settings · Data & Privacy](14-settings-data-and-privacy.png) | **Export My Data** and the account-deletion policy |
+| Data & Privacy | ![Settings · Data & Privacy](14-settings-data-and-privacy.png) | **Export My Data**, **Export workspace backup** and the account-deletion policy |
+| Help & Support | Image 9 above | Getting started, contacts and frequently asked questions |
+| Keyboard Shortcuts | Image 3 above | Working shortcuts and a separate planned list |
 
 **AI & Knowledge (New in v0.4.0)** has three cards:
 
-The connection card offers **Connect OpenAI API**, **Connect Claude API** and **Connect with OpenRouter**, with an explanation of the available sign-in methods. A saved connection shows a masked **Saved provider credential**. The pipeline distinguishes **Model listed · not tested** from **Generation verified** after a successful **Test selected model** request. In this local capture Ollama is unreachable, so **Not connected** is expected; embeddings and reranking remain bundled. [Manual 8](../../system-manual/08-ai-connections/README.md) documents authorization, model tests, credential replacement and the hosted ChatGPT approval requirement.
+The connection card offers **Connect OpenAI API**, **Connect Claude API** and **Connect with OpenRouter**, with an explanation of the available sign-in methods. A saved connection shows a masked **Saved provider credential**. The pipeline distinguishes **Model listed · not tested** from **Generation verified** after a successful **Test selected model** request. Connection status and the selected local model are shown separately from bundled embeddings and reranking. [Manual 8](../../system-manual/08-ai-connections/README.md) documents authorization, model tests, credential replacement and the hosted ChatGPT approval requirement.
 
 1. **Pulse AI connection:** choose the provider — Ollama in the local app, a model running in this browser (WebGPU, no key), free tiers (Gemini, Groq, OpenRouter free models, Hugging Face) or OpenAI/Anthropic with your own key. Then use **Connect and load models**, pick an **Available model** and **Check active connection**. Each account connects its own key, and the hosted site has no shared key. Details: [System Manual 8](../../system-manual/08-ai-connections/README.md).
 2. **Agentic RAG pipeline:** live status of the five parts Pulse depends on — *Generation* (connected model), *Embeddings* (all-MiniLM-L6-v2, 384-d, free, in-process), *Reranker* (ms-marco-MiniLM-L-6-v2 cross-encoder), *Vector database* (PGlite + pgvector locally, Supabase pgvector when hosted; hybrid vector + keyword search with reciprocal rank fusion) and *Document sandbox* (worker thread, 256 MB heap, 30 s, empty environment). The coloured chips name the nine agents: Guardian, Planner, Researcher, Ranker, Comparator, Writer, Verifier, Corrector, Librarian. Hover over a chip to see the task that agent works on.
@@ -109,7 +111,8 @@ The mascot sits bottom-right on every page. Its eyes follow the pointer. **Click
 
 ![Pulse panel](17-pulse-panel.png)
 
-The header shows **Your interactive assistant** in this capture because the local model could not be reached. The status offers **Set up free / provider AI**; page guidance and source search remain available. Header controls include new conversation, conversation history, AI settings and close. The welcome explains dragging Pulse onto a component, asking/drafting/comparing, finding references or records, and attaching files. Proposed changes wait for confirmation ([System Manual 9](../../system-manual/09-pulse-actions/README.md)). **Guide this page** starts a walkthrough; **Explain this component** describes keyboard focus (also **Alt+P**). AI drafts need review.
+The header contains **Pulse**, **Pulse options** and **Close Pulse**. The empty conversation asks **What would you like help with?**. Open **Pulse options** for new conversation, history/memory, page or selected-component guidance, workspace buddies and AI settings. Draft or edit actions appear after a relevant prompt and require review and confirmation. Dragging the avatar, the hover help badge and **Alt+P** still select a component.
+
 
 ### 18. “Ask Pulse about this” hover badge
 
@@ -119,15 +122,16 @@ Resting the pointer on a form control (here *Course* in the Syllabus Builder) sh
 
 ## Pulse tools and private context ? 25 October 2026
 
-The Pulse header includes **Conversations and memory** alongside AI settings, new conversation and close. Its footer reports conversation saving and the bounded context window. Natural-language redirects open role-authorized pages; precise edits produce selected-field previews. See [Manual 9](../../system-manual/09-pulse-actions/README.md) for source-section import, confirmed edits, archive controls, preferences and installed tools. Existing drag, keyboard and touch guidance remains available.
+**Pulse options → Conversations and memory** opens archive and preference controls. Natural-language redirects open role-authorized pages; precise edits produce selected-field previews. See [Manual 9](../../system-manual/09-pulse-actions/README.md) for source import, confirmed edits, archive controls, preferences and installed tools. The new [field and outline guide](../../system-manual/14-pulse-and-outline-workspace/README.md) includes native file drops and whole-section targeting.
+
 
 ## Workspace buddies
 
-Pulse includes **Meet your workspace buddies** and **Visit office**. The optional 3D office has six named desks, domain-specific conversations, real request/review states, a pause control and reduced-motion support. Mobile users scroll from the office to the buddy chat. See [the illustrated office guide](../../system-manual/11-workspace-buddies/README.md).
+Open **Pulse options → Workspace buddies**. The optional 3D office has six named desks, domain-specific conversations, real request/review states, a pause control and reduced-motion support. Mobile users scroll from the office to the buddy chat. See [the illustrated office guide](../../system-manual/11-workspace-buddies/README.md).
 
 ## Focused conversation layout and source context
 
-At wide desktop widths, opening Pulse reserves a separate column beside the workspace; the mascot returns when it closes. Focused help highlights the selected section without dimming the editor. The compact footer reports history status and reference availability. Attachments remain usable for follow-up questions and can be removed. Generated replies offer **Download response as PDF**. Connected buddy conversations use the selected persona and recent exchange; an unavailable model is labelled as an offline role guide.
+At wide desktop widths, opening Pulse reserves a separate column beside the workspace; the mascot returns when it closes. Focused help highlights the selected section without dimming the editor. The selected-component chip names the target without technical descriptions. Saving failures remain visible when a conversation has unsaved messages. Attachments remain usable for follow-up questions and can be removed. Generated replies offer **Response actions → Download response as PDF**. Verification indicators are under **Verification details**. Connected buddy conversations use the selected persona and recent exchange; an unavailable model is labelled as an offline role guide.
 
 ## Dialog spacing, page tabs and loading feedback
 

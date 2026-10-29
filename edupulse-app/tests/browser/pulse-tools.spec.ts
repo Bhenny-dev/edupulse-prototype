@@ -49,7 +49,7 @@ test('private history saves preferences, recalls across chats, forgets and delet
   const preference = `I prefer concise bullet points for test ${Date.now()}.`
   await say(page, `Remember that ${preference}`)
   await expect(pulse.locator('.pulse-context-status')).toContainText('Conversation saved', { timeout: 15000 })
-  await pulse.getByRole('button', { name: 'Conversations and memory' }).click()
+  await pulse.getByRole('button', { name: 'Pulse options', exact: true }).click(); await pulse.getByRole('button', { name: 'Conversations and memory' }).click()
   const history = pulse.getByRole('region', { name: 'Conversations, memory and tools' })
   await history.getByText(/Saved preferences/).click()
   await expect(history).toContainText(preference)
@@ -57,7 +57,7 @@ test('private history saves preferences, recalls across chats, forgets and delet
   await say(page, 'Recall my previous preference for concise bullet points')
   await expect(pulse.getByRole('region', { name: 'Recalled private context' })).toContainText(preference)
   await expect(pulse.locator('.pulse-context-status')).toContainText('Conversation saved', { timeout: 15000 })
-  await pulse.getByRole('button', { name: 'Conversations and memory' }).click()
+  await pulse.getByRole('button', { name: 'Pulse options', exact: true }).click(); await pulse.getByRole('button', { name: 'Conversations and memory' }).click()
   await history.getByText(/Saved preferences/).click()
   await history.locator('li').filter({ hasText: preference }).filter({ has: page.getByRole('button', { name: 'Forget', exact: true }) }).getByRole('button', { name: 'Forget', exact: true }).click()
   await expect(history.getByText(preference, { exact: true })).toHaveCount(0)
@@ -102,7 +102,7 @@ test('a generated section patch is previewed and a failed database save never re
   expect((await (await request.get('/api/ai?action=workspace')).json()).data.syllabi).toEqual([])
   await page.unroute('**/api/ai?action=workspace')
   await card.getByRole('button', { name: 'Confirm and save draft' }).click()
-  await expect(pulse).toContainText('Draft saved to the local workspace')
+  await expect(pulse).toContainText('Draft saved.')
   const saved = (await (await request.get('/api/ai?action=workspace')).json()).data.syllabi[0]
   expect(saved.programOutcomes).toEqual(['Explain variables using a worked example.'])
   expect(saved.status).toBe('drafted')

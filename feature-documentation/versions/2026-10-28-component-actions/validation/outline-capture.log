@@ -1,0 +1,24 @@
+node.exe : [WebServer] (node:13160) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([WebServer] (no... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:15932) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 8:50:29 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3026
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 8:50:30 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3026
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+
+Running 1 test using 1 worker
+
+(node:24092) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 [desktop] › tests\snapshots\component-actions.spec.ts:44:1 › wide outline: full workspace, a selected week and solid dark surfaces (2.9s)
+
+  1 passed (13.5s)

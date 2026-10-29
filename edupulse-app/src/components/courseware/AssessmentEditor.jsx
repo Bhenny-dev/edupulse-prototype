@@ -165,7 +165,7 @@ export default function AssessmentEditor({ content, onBack, isStudent = false, o
                 <div className="assessment-question-text">{q.text}</div>
               ) : (
                 <input
-                  className="form-input assessment-question-input"
+                  className="form-input assessment-question-input" data-pulse-field={`questions.${qIdx}.text`} aria-label={`Question ${qIdx + 1} text`}
                   value={q.text}
                   onChange={e => updateQuestion(qIdx, 'text', e.target.value)}
                   placeholder="Enter question text..."
@@ -190,7 +190,7 @@ export default function AssessmentEditor({ content, onBack, isStudent = false, o
                         <span className="assessment-option-text">{typeof opt==='string'?opt:opt.text}</span>
                       ) : (
                         <input
-                          className="assessment-option-input"
+                          className="assessment-option-input" data-pulse-field={`questions.${qIdx}.options.${optIdx}${typeof opt === 'string' ? '' : '.text'}`} aria-label={`Question ${qIdx + 1} option ${optIdx + 1}`}
                           value={typeof opt==='string'?opt:opt.text}
                           onChange={e => updateOption(qIdx, optIdx, e.target.value)}
                           placeholder={`Option ${opt.label}...`}
@@ -211,7 +211,7 @@ export default function AssessmentEditor({ content, onBack, isStudent = false, o
                 })}
               </div>
               {!isStudent && <label style={{ display: 'block', marginTop: 12 }}>Answer explanation
-                <textarea className="form-input" rows={3} value={q.explanation || ''} onChange={e => updateQuestion(qIdx, 'explanation', e.target.value)} placeholder="Explain why the selected answer is correct, using course references." />
+                <textarea className="form-input" rows={3} data-pulse-field={`questions.${qIdx}.explanation`} aria-label={`Question ${qIdx + 1} explanation`} value={q.explanation || ''} onChange={e => updateQuestion(qIdx, 'explanation', e.target.value)} placeholder="Explain why the selected answer is correct, using course references." />
               </label>}
               {isStudent && submitted && q.explanation && <p>{q.explanation}</p>}
             </div>

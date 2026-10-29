@@ -1,3 +1,5 @@
+import { swapTeachingWeeks } from '../utils/outlineEditing'
+import '../components/syllabus/outline-editor.css'
 import { revisedWorkspace } from '../utils/syllabusRevisions'
 import { useAcademicRecords } from '../context/AcademicContext'
 import ModalLayer from '../components/ui/ModalLayer'
@@ -380,7 +382,7 @@ function Tr({ label, value }) {
 }
 
 /* ─── Multi-Select Dropdown for Six-Layer Categories ─── */
-function MultiSelectDropdown({ categories, selected = [], onChange, placeholder = 'Select items...' }) {
+function MultiSelectDropdown({ categories, selected = [], onChange, placeholder = 'Select items...', fieldPath, fieldLabel }) {
   const [open, setOpen] = useState(false)
   const ref = useRef(null)
 
@@ -398,17 +400,9 @@ function MultiSelectDropdown({ categories, selected = [], onChange, placeholder 
   const remove = (item) => onChange(selected.filter(s => s !== item))
 
   return (
-    <div ref={ref} style={{ position: 'relative' }}>
-      <div
-        onClick={() => setOpen(!open)}
-        style={{
-          display: 'flex', flexWrap: 'wrap', gap: '4px', alignItems: 'center',
-          minHeight: '30px', padding: '4px 6px', border: '1px solid var(--gray-300)',
-          borderRadius: 'var(--radius-sm)', cursor: 'pointer', fontSize: '0.75rem',
-          background: 'var(--bg)',
-        }}
-      >
-        {selected.length === 0 && <span style={{ color: 'var(--gray-400)' }}>{placeholder}</span>}
+    <div ref={ref} onKeyDownCapture={event => { if (event.key === 'Escape' && open) { event.preventDefault(); event.stopPropagation(); setOpen(false) } }} style={{ position: 'relative' }}>
+      <button type="button" className="outline-multi-select" data-pulse-field={fieldPath} aria-label={fieldLabel || placeholder} aria-expanded={open} onClick={() => setOpen(value => !value)}>{selected.length ? `${selected.length} selected` : placeholder}</button>
+      <div className="outline-selected-items">
         {selected.map(item => (
           <span key={item} style={{
             display: 'inline-flex', alignItems: 'center', gap: '2px', padding: '1px 6px',
@@ -761,13 +755,24 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
 
   // ── Drag-and-drop reorder for outline rows ──
   const [dragIdx, setDragIdx] = useState(null)
+  const [outlineExpanded, setOutlineExpanded] = useState(false), [outlineTerm, setOutlineTerm] = useState('all'), [outlineWeek, setOutlineWeek] = useState('all')
+  const outlineRef = useRef(null)
+  useEffect(() => {
+    if (!outlineExpanded) return
+    const overflow = document.body.style.overflow; document.body.style.overflow = 'hidden'; outlineRef.current?.focus()
+    const close = event => { if (event.key === 'Escape' && !event.target.closest('[data-pulse-ui]') && !outlineRef.current?.querySelector('.outline-multi-select[aria-expanded="true"]')) { event.stopPropagation(); setOutlineExpanded(false) } }
+    document.addEventListener('keydown', close, true)
+    return () => { document.body.style.overflow = overflow; document.removeEventListener('keydown', close, true) }
+  }, [outlineExpanded])
 
   const handleDragStart = (e, idx) => {
     setDragIdx(idx)
     e.dataTransfer.effectAllowed = 'move'
+    e.dataTransfer.setData('application/x-edupulse-week', String(idx))
   }
 
   const handleDragOver = (e) => {
+    if (!Array.from(e.dataTransfer.types).includes('application/x-edupulse-week')) return
     e.preventDefault()
     e.dataTransfer.dropEffect = 'move'
   }
@@ -775,20 +780,16 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
   const handleDrop = (e, targetIdx) => {
     e.preventDefault()
     if (dragIdx === null || dragIdx === targetIdx) return
-    setForm(prev => {
-      const outline = [...prev.courseOutline]
-      const [moved] = outline.splice(dragIdx, 1)
-      outline.splice(targetIdx, 0, moved)
-      return { ...prev, courseOutline: outline }
-    })
+    setForm(prev => ({ ...prev, courseOutline: swapTeachingWeeks(prev.courseOutline, dragIdx, targetIdx) }))
     setDragIdx(null)
   }
 
   const handleDragEnd = () => setDragIdx(null)
 
   // ── Split outline into midterm/finals ──
-  const midtermWeeks = form.courseOutline.filter(w => w.week <= 9)
-  const finalsWeeks = form.courseOutline.filter(w => w.week >= 10)
+  const visibleWeek = row => (outlineWeek === 'all' || String(row.week) === outlineWeek) && (outlineTerm === 'all' || (outlineTerm === 'midterm' ? row.week <= 9 : row.week >= 10))
+  const midtermWeeks = form.courseOutline.filter(w => w.week <= 9 && visibleWeek(w)).sort((a, b) => a.week - b.week)
+  const finalsWeeks = form.courseOutline.filter(w => w.week >= 10 && visibleWeek(w)).sort((a, b) => a.week - b.week)
 
   // ── Auto-collect resources from all weeks for Section 7 sync ──
   const autoCollectedResources = useMemo(() => {
@@ -948,17 +949,17 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
           <h4 style={{ fontFamily: 'var(--font-heading)', fontSize: '0.8125rem', fontWeight: 700, margin: '0 0 10px', color: 'var(--sky-600)' }}>KCP — Vision, Mission, Objectives, Core Values</h4>
           <div className="grid-2" style={{ gap: '12px', marginBottom: '16px' }}>
             <FormGroup label="Vision">
-              <textarea className="form-input" rows={3} value={form.institutionalContext.kcp.vision} onChange={e => set('institutionalContext.kcp.vision', e.target.value)} style={{ resize: 'vertical' }} />
+              <textarea className="form-input" rows={3} data-pulse-field="institutionalContext.kcp.vision" aria-label="KCP vision" value={form.institutionalContext.kcp.vision} onChange={e => set('institutionalContext.kcp.vision', e.target.value)} style={{ resize: 'vertical' }} />
             </FormGroup>
             <FormGroup label="Mission">
-              <textarea className="form-input" rows={3} value={form.institutionalContext.kcp.mission} onChange={e => set('institutionalContext.kcp.mission', e.target.value)} style={{ resize: 'vertical' }} />
+              <textarea className="form-input" rows={3} data-pulse-field="institutionalContext.kcp.mission" aria-label="KCP mission" value={form.institutionalContext.kcp.mission} onChange={e => set('institutionalContext.kcp.mission', e.target.value)} style={{ resize: 'vertical' }} />
             </FormGroup>
           </div>
           <FormGroup label="Objectives">
             {form.institutionalContext.kcp.objectives.map((o, i) => (
               <div key={i} style={{ display: 'flex', gap: '8px', marginBottom: '6px', alignItems: 'center' }}>
                 <span style={{ fontWeight: 700, color: 'var(--sky-500)', minWidth: '24px', fontSize: '0.8125rem' }}>{i + 1}.</span>
-                <input className="form-input" style={{ flex: 1 }} value={o} onChange={e => {
+                <input className="form-input" style={{ flex: 1 }} data-pulse-field={`institutionalContext.kcp.objectives.${i}`} aria-label={`KCP objective ${i + 1}`} value={o} onChange={e => {
                   const obj = [...form.institutionalContext.kcp.objectives]; obj[i] = e.target.value
                   set('institutionalContext.kcp.objectives', obj)
                 }} />
@@ -972,7 +973,7 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
             }}><Plus size={14} /> Add Objective</button>
           </FormGroup>
           <FormGroup label="Core Values">
-            <input className="form-input" value={form.institutionalContext.kcp.coreValues.join(', ')} onChange={e => set('institutionalContext.kcp.coreValues', e.target.value.split(',').map(v => v.trim()).filter(Boolean))} placeholder="e.g., Justice, Truth, Freedom" />
+            <input className="form-input" data-pulse-field="institutionalContext.kcp.coreValues" value={form.institutionalContext.kcp.coreValues.join(', ')} onChange={e => set('institutionalContext.kcp.coreValues', e.target.value.split(',').map(v => v.trim()).filter(Boolean))} placeholder="e.g., Justice, Truth, Freedom" />
           </FormGroup>
 
           <hr style={{ margin: '20px 0', border: 'none', borderTop: '1px solid var(--gray-200)' }} />
@@ -980,13 +981,13 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
           {/* CIT */}
           <h4 style={{ fontFamily: 'var(--font-heading)', fontSize: '0.8125rem', fontWeight: 700, margin: '0 0 10px', color: 'var(--sky-600)' }}>College of Information Technology — Mission, Objectives</h4>
           <FormGroup label="Mission">
-            <textarea className="form-input" rows={3} value={form.institutionalContext.cit.mission} onChange={e => set('institutionalContext.cit.mission', e.target.value)} style={{ resize: 'vertical' }} />
+            <textarea className="form-input" rows={3} data-pulse-field="institutionalContext.cit.mission" aria-label="CIT mission" value={form.institutionalContext.cit.mission} onChange={e => set('institutionalContext.cit.mission', e.target.value)} style={{ resize: 'vertical' }} />
           </FormGroup>
           <FormGroup label="Objectives">
             {form.institutionalContext.cit.objectives.map((o, i) => (
               <div key={i} style={{ display: 'flex', gap: '8px', marginBottom: '6px', alignItems: 'center' }}>
                 <span style={{ fontWeight: 700, color: 'var(--sky-500)', minWidth: '24px', fontSize: '0.8125rem' }}>{i + 1}.</span>
-                <input className="form-input" style={{ flex: 1 }} value={o} onChange={e => {
+                <input className="form-input" style={{ flex: 1 }} data-pulse-field={`institutionalContext.cit.objectives.${i}`} aria-label={`CIT objective ${i + 1}`} value={o} onChange={e => {
                   const obj = [...form.institutionalContext.cit.objectives]; obj[i] = e.target.value
                   set('institutionalContext.cit.objectives', obj)
                 }} />
@@ -1014,7 +1015,7 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
             {form.programOutcomes.map((po, i) => (
               <div key={i} style={{ display: 'flex', gap: '8px', marginBottom: '8px', alignItems: 'center' }}>
                 <span style={{ fontWeight: 700, color: 'var(--sky-500)', minWidth: '32px', fontSize: '0.8125rem' }}>{i + 1}.</span>
-                <input className="form-input" style={{ flex: 1 }} value={po} onChange={e => setList('programOutcomes', i, e.target.value)} placeholder={`Program outcome ${i + 1}`} />
+                <input className="form-input" style={{ flex: 1 }} data-pulse-field={`programOutcomes.${i}`} value={po} onChange={e => setList('programOutcomes', i, e.target.value)} placeholder={`Program outcome ${i + 1}`} />
                 {form.programOutcomes.length > 1 && <button className="btn btn-ghost btn-sm" onClick={() => removeListItem('programOutcomes', i)}><Trash2 size={14} /></button>}
               </div>
             ))}
@@ -1023,17 +1024,23 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
         </div>
       </div>
 
-      {/* Section 5: Course Outline — Midterm */}
-      <div className="card" data-section="5" style={{ marginTop: '16px' }}>
-        <div className="card-body" style={{ overflow: 'auto' }}>
-          <SectionLabel num={5} label="Course Outline" />
+      <section ref={outlineRef} tabIndex={-1} role="region" aria-label="Course Outline editor" className={`card outline-editor ${outlineExpanded ? 'is-expanded' : ''}`} data-section="5">
+        <div className="card-body">
+          <div className="outline-toolbar"><SectionLabel num={5} label="Course Outline" />
+            <div className="outline-tools"><label>Term<select className="form-input" aria-label="Outline term" value={outlineTerm} onChange={event => { setOutlineTerm(event.target.value); setOutlineWeek('all') }}><option value="all">All terms</option><option value="midterm">Midterm</option><option value="finals">Finals</option></select></label>
+            <label>Week<select className="form-input" aria-label="Outline week" value={outlineWeek} onChange={event => { setOutlineWeek(event.target.value); setOutlineTerm('all') }}><option value="all">All weeks</option>{form.courseOutline.map(row => <option key={row.week} value={row.week}>Week {row.week}{isExamWeek(row.week) ? ' - Examination' : ''}</option>)}</select></label>
+            <button type="button" className="btn btn-secondary" aria-expanded={outlineExpanded} onClick={() => setOutlineExpanded(value => !value)}>{outlineExpanded ? 'Close expanded outline' : 'Expand outline'}</button></div>
+          </div>
+          {midtermWeeks.length > 0 && <div className="outline-term">
+
+
 
           {/* Midterm */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px', marginTop: '8px' }}>
             <span style={{ padding: '4px 12px', background: 'var(--sky-500)', color: '#fff', borderRadius: 'var(--radius-sm)', fontWeight: 700, fontSize: '0.8125rem' }}>Midterm</span>
-            <span className="text-sm text-muted">Weeks 1–9 · Collated content context for Midterm Examination</span>
+            <span className="text-sm text-muted">Weeks 1–9</span>
           </div>
-          <table className="data-table" style={{ minWidth: '900px' }}>
+          <div className="outline-table-scroll" role="region" aria-label="Teaching weeks" tabIndex={0}><table className="data-table outline-table">
             <thead>
               <tr>
                 <th style={{ width: '40px' }}></th>
@@ -1054,8 +1061,7 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
                   <Fragment key={row.week}>
                     <tr
                       key={wi}
-                      draggable={!exam}
-                      onDragStart={e => handleDragStart(e, wi)}
+
                       onDragOver={handleDragOver}
                       onDrop={e => handleDrop(e, wi)}
                       onDragEnd={handleDragEnd}
@@ -1066,7 +1072,8 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
                       }}
                     >
                       <td style={{ textAlign: 'center', verticalAlign: 'top', paddingTop: '8px' }}>
-                        {!exam && <GripVertical size={14} style={{ color: 'var(--gray-400)', cursor: 'grab' }} />}
+                        {!exam && <button type="button" className="outline-grip" draggable onDragStart={e => handleDragStart(e, wi)} onDragEnd={handleDragEnd} aria-label={`Drag week ${row.week} to swap teaching content`} title="Drag to swap teaching content"><GripVertical size={16} /></button>}
+                        {!exam && <div className="outline-move"><button type="button" className="btn btn-ghost btn-sm" disabled={!form.courseOutline.some(entry => entry.week === row.week - 1) || isExamWeek(row.week - 1)} aria-label={`Move week ${row.week} earlier`} onClick={() => setForm(previous => ({ ...previous, courseOutline: swapTeachingWeeks(previous.courseOutline, wi, previous.courseOutline.findIndex(entry => entry.week === row.week - 1)) }))}>↑</button><button type="button" className="btn btn-ghost btn-sm" disabled={!form.courseOutline.some(entry => entry.week === row.week + 1) || isExamWeek(row.week + 1)} aria-label={`Move week ${row.week} later`} onClick={() => setForm(previous => ({ ...previous, courseOutline: swapTeachingWeeks(previous.courseOutline, wi, previous.courseOutline.findIndex(entry => entry.week === row.week + 1)) }))}>↓</button></div>}
                         {!exam && (
                           <button
                             onClick={() => toggleResources(wi)}
@@ -1091,7 +1098,7 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
                       <td style={{ textAlign: 'center', fontWeight: 700 }}>{row.week}</td>
                       <td>
                         <textarea
-                          className="form-input" rows={2} value={row.ilos}
+                          className="form-input" rows={2} data-pulse-field={`courseOutline.${wi}.ilos`} aria-label={`Week ${row.week} learning outcomes`} value={row.ilos}
                           onChange={e => setOutlineField(wi, 'ilos', e.target.value)}
                           placeholder={exam ? '' : 'Learning outcome...'}
                           style={{ fontSize: '0.75rem', resize: 'vertical', padding: '6px 8px' }}
@@ -1106,7 +1113,7 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
                             {row.contents.map((c, ci) => (
                               <div key={ci} style={{ display: 'flex', gap: '4px', marginBottom: '4px', alignItems: 'center' }}>
                                 <span style={{ fontSize: '0.625rem', color: 'var(--sky-500)', minWidth: '14px' }}>{ci + 1}.</span>
-                                <input className="form-input" value={c} onChange={e => setOutlineContent(wi, ci, e.target.value)}
+                                <input className="form-input" data-pulse-field={`courseOutline.${wi}.contents.${ci}`} aria-label={`Week ${row.week} topic ${ci + 1}`} value={c} onChange={e => setOutlineContent(wi, ci, e.target.value)}
                                   style={{ fontSize: '0.75rem', padding: '4px 6px', flex: 1 }} placeholder="Topic..." />
                                 {row.contents.length > 1 && <button className="btn btn-ghost" style={{ padding: '0' }} onClick={() => removeOutlineContent(wi, ci)}><Trash2 size={10} /></button>}
                               </div>
@@ -1117,14 +1124,14 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
                       </td>
                       <td>
                         <textarea
-                          className="form-input" rows={2} value={row.activities}
+                          className="form-input" rows={2} data-pulse-field={`courseOutline.${wi}.activities`} aria-label={`Week ${row.week} activities`} value={row.activities}
                           onChange={e => setOutlineField(wi, 'activities', e.target.value)}
                           placeholder="Activities..." disabled={exam}
                           style={{ fontSize: '0.75rem', resize: 'vertical', padding: '6px 8px', marginBottom: '4px' }}
                         />
                         {!exam && (
                           <MultiSelectDropdown
-                            categories={TEACHING_MATERIAL_CATEGORIES}
+                            categories={TEACHING_MATERIAL_CATEGORIES} fieldPath={`courseOutline.${wi}.teachingMaterials`} fieldLabel={`Week ${row.week} teaching materials`}
                             selected={row.teachingMaterials || []}
                             onChange={(val) => setOutlineField(wi, 'teachingMaterials', val)}
                             placeholder="Teaching materials..."
@@ -1132,14 +1139,14 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
                         )}
                       </td>
                       <td>
-                        <input className="form-input" value={row.assessments}
+                        <input className="form-input" data-pulse-field={`courseOutline.${wi}.assessments`} aria-label={`Week ${row.week} assessment details`} value={row.assessments}
                           onChange={e => setOutlineField(wi, 'assessments', e.target.value)}
                           placeholder="Assessment..." disabled={exam}
                           style={{ fontSize: '0.75rem', padding: '4px 6px', marginBottom: '4px' }}
                         />
                         {!exam && (
                           <MultiSelectDropdown
-                            categories={ASSESSMENT_CATEGORIES}
+                            categories={ASSESSMENT_CATEGORIES} fieldPath={`courseOutline.${wi}.assessmentTypes`} fieldLabel={`Week ${row.week} assessment types`}
                             selected={row.assessmentTypes || []}
                             onChange={(val) => setOutlineField(wi, 'assessmentTypes', val)}
                             placeholder="Assessment type..."
@@ -1178,18 +1185,15 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
                 )
               })}
             </tbody>
-          </table>
-        </div>
-      </div>
+          </table></div>
+          </div>}
+          {finalsWeeks.length > 0 && <div className="outline-term">
 
-      {/* Section 5: Course Outline — Finals */}
-      <div className="card" style={{ marginTop: '16px' }}>
-        <div className="card-body" style={{ overflow: 'auto' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
             <span style={{ padding: '4px 12px', background: 'var(--sky-700, #0369a1)', color: '#fff', borderRadius: 'var(--radius-sm)', fontWeight: 700, fontSize: '0.8125rem' }}>Finals</span>
-            <span className="text-sm text-muted">Weeks 10–18 · Collated content context for Final Examination</span>
+            <span className="text-sm text-muted">Weeks 10–18</span>
           </div>
-          <table className="data-table" style={{ minWidth: '900px' }}>
+          <div className="outline-table-scroll" role="region" aria-label="Teaching weeks" tabIndex={0}><table className="data-table outline-table">
             <thead>
               <tr>
                 <th style={{ width: '40px' }}></th>
@@ -1210,8 +1214,7 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
                   <Fragment key={row.week}>
                     <tr
                       key={wi}
-                      draggable={!exam}
-                      onDragStart={e => handleDragStart(e, wi)}
+
                       onDragOver={handleDragOver}
                       onDrop={e => handleDrop(e, wi)}
                       onDragEnd={handleDragEnd}
@@ -1222,7 +1225,8 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
                       }}
                     >
                       <td style={{ textAlign: 'center', verticalAlign: 'top', paddingTop: '8px' }}>
-                        {!exam && <GripVertical size={14} style={{ color: 'var(--gray-400)', cursor: 'grab' }} />}
+                        {!exam && <button type="button" className="outline-grip" draggable onDragStart={e => handleDragStart(e, wi)} onDragEnd={handleDragEnd} aria-label={`Drag week ${row.week} to swap teaching content`} title="Drag to swap teaching content"><GripVertical size={16} /></button>}
+                        {!exam && <div className="outline-move"><button type="button" className="btn btn-ghost btn-sm" disabled={!form.courseOutline.some(entry => entry.week === row.week - 1) || isExamWeek(row.week - 1)} aria-label={`Move week ${row.week} earlier`} onClick={() => setForm(previous => ({ ...previous, courseOutline: swapTeachingWeeks(previous.courseOutline, wi, previous.courseOutline.findIndex(entry => entry.week === row.week - 1)) }))}>↑</button><button type="button" className="btn btn-ghost btn-sm" disabled={!form.courseOutline.some(entry => entry.week === row.week + 1) || isExamWeek(row.week + 1)} aria-label={`Move week ${row.week} later`} onClick={() => setForm(previous => ({ ...previous, courseOutline: swapTeachingWeeks(previous.courseOutline, wi, previous.courseOutline.findIndex(entry => entry.week === row.week + 1)) }))}>↓</button></div>}
                         {!exam && (
                           <button
                             onClick={() => toggleResources(wi)}
@@ -1247,7 +1251,7 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
                       <td style={{ textAlign: 'center', fontWeight: 700 }}>{row.week}</td>
                       <td>
                         <textarea
-                          className="form-input" rows={2} value={row.ilos}
+                          className="form-input" rows={2} data-pulse-field={`courseOutline.${wi}.ilos`} aria-label={`Week ${row.week} learning outcomes`} value={row.ilos}
                           onChange={e => setOutlineField(wi, 'ilos', e.target.value)}
                           placeholder={exam ? '' : 'Learning outcome...'}
                           style={{ fontSize: '0.75rem', resize: 'vertical', padding: '6px 8px' }}
@@ -1262,7 +1266,7 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
                             {row.contents.map((c, ci) => (
                               <div key={ci} style={{ display: 'flex', gap: '4px', marginBottom: '4px', alignItems: 'center' }}>
                                 <span style={{ fontSize: '0.625rem', color: 'var(--sky-500)', minWidth: '14px' }}>{ci + 1}.</span>
-                                <input className="form-input" value={c} onChange={e => setOutlineContent(wi, ci, e.target.value)}
+                                <input className="form-input" data-pulse-field={`courseOutline.${wi}.contents.${ci}`} aria-label={`Week ${row.week} topic ${ci + 1}`} value={c} onChange={e => setOutlineContent(wi, ci, e.target.value)}
                                   style={{ fontSize: '0.75rem', padding: '4px 6px', flex: 1 }} placeholder="Topic..." />
                                 {row.contents.length > 1 && <button className="btn btn-ghost" style={{ padding: '0' }} onClick={() => removeOutlineContent(wi, ci)}><Trash2 size={10} /></button>}
                               </div>
@@ -1273,14 +1277,14 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
                       </td>
                       <td>
                         <textarea
-                          className="form-input" rows={2} value={row.activities}
+                          className="form-input" rows={2} data-pulse-field={`courseOutline.${wi}.activities`} aria-label={`Week ${row.week} activities`} value={row.activities}
                           onChange={e => setOutlineField(wi, 'activities', e.target.value)}
                           placeholder="Activities..." disabled={exam}
                           style={{ fontSize: '0.75rem', resize: 'vertical', padding: '6px 8px', marginBottom: '4px' }}
                         />
                         {!exam && (
                           <MultiSelectDropdown
-                            categories={TEACHING_MATERIAL_CATEGORIES}
+                            categories={TEACHING_MATERIAL_CATEGORIES} fieldPath={`courseOutline.${wi}.teachingMaterials`} fieldLabel={`Week ${row.week} teaching materials`}
                             selected={row.teachingMaterials || []}
                             onChange={(val) => setOutlineField(wi, 'teachingMaterials', val)}
                             placeholder="Teaching materials..."
@@ -1288,14 +1292,14 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
                         )}
                       </td>
                       <td>
-                        <input className="form-input" value={row.assessments}
+                        <input className="form-input" data-pulse-field={`courseOutline.${wi}.assessments`} aria-label={`Week ${row.week} assessment details`} value={row.assessments}
                           onChange={e => setOutlineField(wi, 'assessments', e.target.value)}
                           placeholder="Assessment..." disabled={exam}
                           style={{ fontSize: '0.75rem', padding: '4px 6px', marginBottom: '4px' }}
                         />
                         {!exam && (
                           <MultiSelectDropdown
-                            categories={ASSESSMENT_CATEGORIES}
+                            categories={ASSESSMENT_CATEGORIES} fieldPath={`courseOutline.${wi}.assessmentTypes`} fieldLabel={`Week ${row.week} assessment types`}
                             selected={row.assessmentTypes || []}
                             onChange={(val) => setOutlineField(wi, 'assessmentTypes', val)}
                             placeholder="Assessment type..."
@@ -1334,9 +1338,10 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
                 )
               })}
             </tbody>
-          </table>
+          </table></div>
+          </div>}
         </div>
-      </div>
+      </section>
 
       {/* Section 6: Requirements, Grading, Policy — pre-filled */}
       <div className="card" data-section="6" style={{ marginTop: '16px' }}>
@@ -1348,7 +1353,7 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
                 {form.courseRequirements.map((r, i) => (
                   <div key={i} style={{ display: 'flex', gap: '8px', marginBottom: '8px', alignItems: 'center' }}>
                     <span style={{ fontSize: '0.75rem', color: 'var(--sky-500)', minWidth: '16px' }}>{i + 1}.</span>
-                    <input className="form-input" style={{ flex: 1 }} value={r} onChange={e => setList('courseRequirements', i, e.target.value)} placeholder="e.g., Attendance" />
+                    <input className="form-input" style={{ flex: 1 }} data-pulse-field={`courseRequirements.${i}`} value={r} onChange={e => setList('courseRequirements', i, e.target.value)} placeholder="e.g., Attendance" />
                     {form.courseRequirements.length > 1 && <button className="btn btn-ghost btn-sm" onClick={() => removeListItem('courseRequirements', i)}><Trash2 size={14} /></button>}
                   </div>
                 ))}
@@ -1357,14 +1362,14 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
             </div>
             <div>
               <FormGroup label="Evaluation and Grading System">
-                <textarea className="form-input" rows={4} value={form.gradingSystem} onChange={e => set('gradingSystem', e.target.value)}
+                <textarea className="form-input" rows={4} data-pulse-field="gradingSystem" value={form.gradingSystem} onChange={e => set('gradingSystem', e.target.value)}
                   placeholder="e.g., MG = 60% CS + 40% Exam&#10;TFG = 60% CS + 40% Exam&#10;FG = (MG + TFG) / 2" style={{ resize: 'vertical' }} />
               </FormGroup>
               <FormGroup label="Course Policy">
                 {form.coursePolicy.map((p, i) => (
                   <div key={i} style={{ display: 'flex', gap: '8px', marginBottom: '8px', alignItems: 'center' }}>
                     <span style={{ fontSize: '0.75rem', color: 'var(--sky-500)', minWidth: '16px' }}>{i + 1}.</span>
-                    <input className="form-input" style={{ flex: 1 }} value={p} onChange={e => setList('coursePolicy', i, e.target.value)} placeholder="Policy..." />
+                    <input className="form-input" style={{ flex: 1 }} data-pulse-field={`coursePolicy.${i}`} value={p} onChange={e => setList('coursePolicy', i, e.target.value)} placeholder="Policy..." />
                     {form.coursePolicy.length > 1 && <button className="btn btn-ghost btn-sm" onClick={() => removeListItem('coursePolicy', i)}><Trash2 size={14} /></button>}
                   </div>
                 ))}
@@ -1417,13 +1422,13 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
               {form.books.map((b, i) => (
                 <div key={i} style={{ padding: '10px', border: '1px solid var(--gray-200)', borderRadius: 'var(--radius-md)', marginBottom: '8px', background: 'var(--gray-50)' }}>
                   <div style={{ display: 'flex', gap: '6px', marginBottom: '6px', alignItems: 'center' }}>
-                    <input className="form-input" style={{ flex: 1 }} value={b.title} onChange={e => { const books = [...form.books]; books[i] = { ...books[i], title: e.target.value }; setForm(prev => ({ ...prev, books })) }} placeholder="Title" />
+                    <input className="form-input" style={{ flex: 1 }} data-pulse-field={`books.${i}.title`} aria-label={`Book ${i + 1} title`} value={b.title} onChange={e => { const books = [...form.books]; books[i] = { ...books[i], title: e.target.value }; setForm(prev => ({ ...prev, books })) }} placeholder="Title" />
                     {form.books.length > 1 && <button className="btn btn-ghost btn-sm" onClick={() => removeListItem('books', i)}><Trash2 size={14} /></button>}
                   </div>
                   <div style={{ display: 'flex', gap: '6px' }}>
-                    <input className="form-input" style={{ flex: 1 }} value={b.authors} onChange={e => { const books = [...form.books]; books[i] = { ...books[i], authors: e.target.value }; setForm(prev => ({ ...prev, books })) }} placeholder="Authors" />
-                    <input className="form-input" style={{ width: '70px' }} value={b.year} onChange={e => { const books = [...form.books]; books[i] = { ...books[i], year: e.target.value }; setForm(prev => ({ ...prev, books })) }} placeholder="Year" />
-                    <input className="form-input" style={{ flex: 1 }} value={b.publisher} onChange={e => { const books = [...form.books]; books[i] = { ...books[i], publisher: e.target.value }; setForm(prev => ({ ...prev, books })) }} placeholder="Publisher" />
+                    <input className="form-input" style={{ flex: 1 }} data-pulse-field={`books.${i}.authors`} aria-label={`Book ${i + 1} authors`} value={b.authors} onChange={e => { const books = [...form.books]; books[i] = { ...books[i], authors: e.target.value }; setForm(prev => ({ ...prev, books })) }} placeholder="Authors" />
+                    <input className="form-input" style={{ width: '70px' }} data-pulse-field={`books.${i}.year`} aria-label={`Book ${i + 1} year`} value={b.year} onChange={e => { const books = [...form.books]; books[i] = { ...books[i], year: e.target.value }; setForm(prev => ({ ...prev, books })) }} placeholder="Year" />
+                    <input className="form-input" style={{ flex: 1 }} data-pulse-field={`books.${i}.publisher`} aria-label={`Book ${i + 1} publisher`} value={b.publisher} onChange={e => { const books = [...form.books]; books[i] = { ...books[i], publisher: e.target.value }; setForm(prev => ({ ...prev, books })) }} placeholder="Publisher" />
                   </div>
                 </div>
               ))}
@@ -1434,10 +1439,10 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
               {form.onlineReferences.map((r, i) => (
                 <div key={i} style={{ padding: '10px', border: '1px solid var(--gray-200)', borderRadius: 'var(--radius-md)', marginBottom: '8px', background: 'var(--gray-50)' }}>
                   <div style={{ display: 'flex', gap: '6px', marginBottom: '6px', alignItems: 'center' }}>
-                    <input className="form-input" style={{ flex: 1 }} value={r.title} onChange={e => { const refs = [...form.onlineReferences]; refs[i] = { ...refs[i], title: e.target.value }; setForm(prev => ({ ...prev, onlineReferences: refs })) }} placeholder="Title" />
+                    <input className="form-input" style={{ flex: 1 }} data-pulse-field={`onlineReferences.${i}.title`} aria-label={`Online reference ${i + 1} title`} value={r.title} onChange={e => { const refs = [...form.onlineReferences]; refs[i] = { ...refs[i], title: e.target.value }; setForm(prev => ({ ...prev, onlineReferences: refs })) }} placeholder="Title" />
                     {form.onlineReferences.length > 1 && <button className="btn btn-ghost btn-sm" onClick={() => removeListItem('onlineReferences', i)}><Trash2 size={14} /></button>}
                   </div>
-                  <input className="form-input" style={{ width: '100%' }} value={r.url} onChange={e => { const refs = [...form.onlineReferences]; refs[i] = { ...refs[i], url: e.target.value }; setForm(prev => ({ ...prev, onlineReferences: refs })) }} placeholder="https://..." />
+                  <input className="form-input" style={{ width: '100%' }} data-pulse-field={`onlineReferences.${i}.url`} aria-label={`Online reference ${i + 1} url`} value={r.url} onChange={e => { const refs = [...form.onlineReferences]; refs[i] = { ...refs[i], url: e.target.value }; setForm(prev => ({ ...prev, onlineReferences: refs })) }} placeholder="https://..." />
                 </div>
               ))}
               <button className="btn btn-secondary btn-sm" onClick={() => addListItem('onlineReferences', { title: '', url: '' })}><Plus size={14} /> Add Online Reference</button>

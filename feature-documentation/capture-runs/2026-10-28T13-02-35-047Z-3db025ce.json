@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-10-28T13-02-35-047Z-3db025ce",
+  "startedAt": "2026-10-28T13:02:35.047Z",
+  "finishedAt": "2026-10-28T13:02:53.982Z",
+  "commitSha": "38d9f5ee38dd75751f94b48dec7686a488864936",
+  "sourceDigest": "aaf6689bb74a5da97d25534f8dbfdec8e25e3f37a480a028bda275bf60d805c6",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-10-28T13:02:31.030Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 1,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": "^system-manual/11-workspace-buddies/"
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/workspace-office.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-drafting.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-source.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/workspace-office.spec.ts",
+      "title": "Workspace buddies: real office, domain conversations and model proposal states",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-provider-transport/ui-regression",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 5138,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-manual/11-workspace-buddies/01-meet-the-crew.png",
+      "sha256": "e8833f726208aeb333bd2f309a606b39ae9ffa4be438569eb8e48a34158859d6",
+      "bytes": 200385
+    },
+    {
+      "path": "feature-documentation/system-manual/11-workspace-buddies/02-contextual-loading.png",
+      "sha256": "837569263e48ef523ca50faf6804c602d97209432a5bd3fb65185e6b2a3a07cc",
+      "bytes": 34526
+    },
+    {
+      "path": "feature-documentation/system-manual/11-workspace-buddies/03-working-and-review.png",
+      "sha256": "b85a647529a27264d71295b6adede0c53dbe7c89b94a957dc0b4ad7a5fb273de",
+      "bytes": 180118
+    }
+  ]
+}

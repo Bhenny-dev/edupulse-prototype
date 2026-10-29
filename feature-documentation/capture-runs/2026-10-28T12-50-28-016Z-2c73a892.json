@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-10-28T12-50-28-016Z-2c73a892",
+  "startedAt": "2026-10-28T12:50:28.016Z",
+  "finishedAt": "2026-10-28T12:50:42.296Z",
+  "commitSha": "38d9f5ee38dd75751f94b48dec7686a488864936",
+  "sourceDigest": "c9206e6e5c120b6232cba379919ad2f495342f3e63f2247752388acdf509ad00",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-10-28T12:50:25.755Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 1,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": null
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/component-actions.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-drafting.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-source.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/component-actions.spec.ts",
+      "title": "wide outline: full workspace, a selected week and solid dark surfaces",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "local-real-input/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2947,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-manual/14-pulse-and-outline-workspace/06-wide-outline.png",
+      "sha256": "57e789e4bf81cf2a135b02b85db5bce0b560bd51e4fe935b1545f7786bcace4e",
+      "bytes": 81148
+    },
+    {
+      "path": "feature-documentation/system-manual/14-pulse-and-outline-workspace/07-filtered-outline-week.png",
+      "sha256": "5d7c20deba20fc985ae2f57bbdd4110f351fda4c4ce3e9f0c32b25418410063d",
+      "bytes": 54516
+    },
+    {
+      "path": "feature-documentation/system-manual/14-pulse-and-outline-workspace/11-dark-outline.png",
+      "sha256": "e5603f0af840d6273aa940a242d1cdcc27ad48bbc7f7190f535db896e90677a3",
+      "bytes": 54556
+    }
+  ]
+}

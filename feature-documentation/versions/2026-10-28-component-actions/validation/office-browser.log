@@ -1,0 +1,34 @@
+node.exe : [WebServer] (node:39540) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([WebServer] (no... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:38892) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 10:25:35 AM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3028
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 10:25:36 AM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3028
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 10:25:37 AM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3028
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+
+Running 6 tests using 1 worker
+
+(node:1328) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 [desktop] › tests\browser\workspace-office.spec.ts:8:1 › greetings answer locally under the interaction budget without model or retrieval calls (6.6s)
+  ok 2 [desktop] › tests\browser\workspace-office.spec.ts:21:1 › the office has named buddies, truthful achievements, accessible controls and real navigation handoff (8.7s)
+  ok 3 [desktop] › tests\browser\workspace-office.spec.ts:45:1 › reduced motion is respected and office loading does not block a simple edit (4.0s)
+(node:20064) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 4 [mobile] › tests\browser\workspace-office.spec.ts:8:1 › greetings answer locally under the interaction budget without model or retrieval calls (2.0s)
+  ok 5 [mobile] › tests\browser\workspace-office.spec.ts:21:1 › the office has named buddies, truthful achievements, accessible controls and real navigation handoff (11.3s)
+  ok 6 [mobile] › tests\browser\workspace-office.spec.ts:45:1 › reduced motion is respected and office loading does not block a simple edit (3.8s)
+
+  6 passed (55.6s)

@@ -1,8 +1,8 @@
 # 4 · Knowledge library: add real documents for Pulse
 
-**Who:** instructors (and the Dean/Associate Dean) · **Where:** Settings → *AI & Knowledge* → *Knowledge library* · Requirements FR-RAG-01–04 and FR-RAG-16 (OCR).
+**Who:** every signed-in account · **Where:** Settings → *AI & Knowledge* → *Knowledge library* · Requirements FR-RAG-01–04 and FR-RAG-16 (OCR).
 
-Pulse answers from the documents you add here: syllabi, handouts, policies, lecture slides and readings. Every file is checked and read in a sandbox, and you review the text before anything is stored.
+The library supplies private source evidence from syllabi, handouts, policies, lecture slides and readings. General conversation and new educational drafts also work with an empty library. Every file is checked and read in a sandbox, and you review the text before anything is stored.
 
 ## Steps
 

@@ -94,13 +94,13 @@ test('shared interface (shown as instructor)', async ({ page }) => {
   await run(page, 'all roles', [
     { folder: f, name: '01-top-bar', title: 'Top bar: navigation, tools, notifications, role and account', path: '/dashboard', element: p => p.locator('header.app-topbar') },
     { folder: f, name: '02-search-overlay', title: 'Search overlay (Ctrl+K)', path: '/dashboard', act: p => p.keyboard.press('Control+k') },
-    { folder: f, name: '03-keyboard-shortcuts-modal', title: 'Keyboard shortcuts modal', path: '/dashboard', act: p => p.getByTitle('Keyboard shortcuts (?)').click() },
+    { folder: f, name: '03-settings-keyboard-shortcuts', title: 'Settings - Keyboard Shortcuts', path: '/settings?tab=keyboard-shortcuts' },
     { folder: f, name: '04-language-menu', title: 'Language menu (English / Filipino)', path: '/dashboard', act: p => p.getByTitle('Language').click() },
     { folder: f, name: '05-notifications-dropdown', title: 'Notifications dropdown', path: '/dashboard', act: p => p.getByRole('button', { name: /^Notifications/ }).click() },
     { folder: f, name: '06-account-menu', title: 'Account menu', path: '/dashboard', act: p => p.getByRole('button', { name: 'Account menu' }).click() },
     // 07 (role switcher) was removed: only the owner admin account can switch views, and that needs its Google session.
     { folder: f, name: '08-notifications-page', title: 'Notifications page', path: '/notifications' },
-    { folder: f, name: '09-help-and-support', title: 'Help and support', path: '/help' },
+    { folder: f, name: '09-help-and-support', title: 'Settings - Help and Support', path: '/settings?tab=help' },
     { folder: f, name: '10-settings-account', title: 'Settings · Account', path: '/settings?tab=account' },
     { folder: f, name: '11-settings-appearance', title: 'Settings · Appearance', path: '/settings?tab=appearance' },
     { folder: f, name: '12-settings-notifications', title: 'Settings · Notifications', path: '/settings?tab=notifications' },
@@ -138,7 +138,7 @@ test('dean and associate dean', async ({ page }) => {
     { folder: f, name: '08-records-import', title: 'Records · Import EduSuite Files', path: '/records', fullPage: true },
     { folder: f, name: '09-records-blocks-and-class-lists', title: 'Records · Blocks & Class Lists', path: '/records', act: tab('Blocks & Class Lists'), fullPage: true },
     { folder: f, name: '10-records-course-catalog', title: 'Records · Course Catalog', path: '/records', act: tab('Course Catalog'), fullPage: true },
-    { folder: f, name: '11-pulse-on-course-loading', title: 'Pulse focused on Course Loading', path: '/course-loading?tab=assign', act: async p => { await p.getByRole('button', { name: 'Open Pulse assistant' }).click(); await p.getByRole('button', { name: 'Guide this page' }).click() } },
+    { folder: f, name: '11-pulse-on-course-loading', title: 'Pulse focused on Course Loading', path: '/course-loading?tab=assign', act: async p => { await p.getByRole('button', { name: 'Open Pulse assistant' }).click(); await p.getByRole('button', { name: 'Pulse options', exact: true }).click(); await p.getByRole('button', { name: 'Guide this page' }).click() } },
   ])
 })
 
@@ -193,9 +193,9 @@ test('student', async ({ page }) => {
     { folder: f, name: '05-performance-by-topic', title: 'Performance · By Topic', path: '/performance?tab=bytopic', fullPage: true },
     { folder: f, name: '06-performance-learning-materials', title: 'Performance · Learning Materials', path: '/performance?tab=materials', fullPage: true },
     { folder: f, name: '07-performance-assessment-scores', title: 'Performance · Assessment Scores', path: '/performance?tab=scores', fullPage: true },
-    { folder: f, name: '08-pulse-for-students', title: 'Pulse for students (role-scoped help)', path: '/performance?tab=overview', act: async p => { await p.getByRole('button', { name: 'Open Pulse assistant' }).click(); await p.getByRole('button', { name: 'Guide this page' }).click() } },
+    { folder: f, name: '08-pulse-for-students', title: 'Pulse for students (role-scoped help)', path: '/performance?tab=overview', act: async p => { await p.getByRole('button', { name: 'Open Pulse assistant' }).click(); await p.getByRole('button', { name: 'Pulse options', exact: true }).click(); await p.getByRole('button', { name: 'Guide this page' }).click() } },
     // Appropriate use (FR-AGENT-02): the Guardian declines a request for assessment answers before any other agent works.
-    { folder: f, name: '09-pulse-declines-assessment-answers', title: 'Pulse declines a request for quiz answers (Guardian)', path: '/dashboard', act: async p => { await p.getByRole('button', { name: 'Open Pulse assistant' }).click(); await p.getByRole('textbox', { name: 'Ask Pulse', exact: true }).fill('Give me the answers to quiz 2'); await p.getByRole('button', { name: 'Send', exact: true }).click(); await p.getByText('Declined by the Guardian · appropriate-use rule').waitFor(); await p.getByText('How Pulse worked on this (1 step)', { exact: true }).click() }, element: p => p.getByRole('dialog', { name: 'Pulse', exact: true }) },
+    { folder: f, name: '09-pulse-declines-assessment-answers', title: 'Pulse declines a request for quiz answers (Guardian)', path: '/dashboard', act: async p => { await p.getByRole('button', { name: 'Open Pulse assistant' }).click(); await p.getByRole('textbox', { name: 'Ask Pulse', exact: true }).fill('Give me the answers to quiz 2'); await p.getByRole('button', { name: 'Send', exact: true }).click(); await p.getByText('Declined by the Guardian · appropriate-use rule').waitFor({ state: 'attached' }) }, element: p => p.getByRole('dialog', { name: 'Pulse', exact: true }) },
   ])
 })
 

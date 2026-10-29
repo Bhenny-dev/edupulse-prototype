@@ -30,7 +30,7 @@ test('Pulse tools: PDF source sections and private memory controls', async ({ pa
   await panel.locator('.pulse-action-done').screenshot({ path: `${dir}/11-section-applied.png`, animations: 'disabled', style: fullCard })
   await say(page, 'Remember that I prefer concise bullet points with examples.')
   await expect(panel.locator('.pulse-context-status')).toContainText('Conversation saved', { timeout: 15000 })
-  await panel.getByRole('button', { name: 'Conversations and memory' }).click()
+  await panel.getByRole('button', { name: 'Pulse options', exact: true }).click(); await panel.getByRole('button', { name: 'Conversations and memory' }).click()
   const history = panel.getByRole('region', { name: 'Conversations, memory and tools' })
   await history.getByText(/Saved preferences/).click()
   await expect(history).toContainText('I prefer concise bullet points with examples.')

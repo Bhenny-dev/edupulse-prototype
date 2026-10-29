@@ -118,3 +118,8 @@ Applied `20261028130000_baseline_workflows.sql`, `20261028130100_assessment_work
 The first baseline migration also backfills the new read-model metadata from existing saved syllabi. No instructor resave is needed for the saved station, outline and reference links to appear. Private import history is not automatically promoted to shared intake; workspace revisions, approval files and assessment marks are preserved.
 
 The 28 October performance advisor reports three `auth_rls_initplan` WARN findings on the course, enrollment and publication read policies, with no ERROR. Repeated Auth-function evaluation remains a documented scaling optimization.
+
+
+## Component actions and workspace controls, 28 October 2026
+
+Selected-field and section proposals are clipped against the captured editor baseline before preview and application, then use the existing validated workspace save path. No database schema, API action, RLS policy, provider credential or deployment configuration changes are required. File drops use the existing bounded reader; a drop only attaches. The healthy workspace strip is removed; recovery remains visible on save/conflict errors and backup is in Settings Data & Privacy. See [the local implementation record](../versions/2026-10-28-component-actions/README.md) for scope and validation limits.

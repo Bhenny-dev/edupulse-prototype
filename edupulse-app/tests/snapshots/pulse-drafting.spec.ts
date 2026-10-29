@@ -20,6 +20,7 @@ test('Pulse model proposal: course-aware complete syllabus draft and research so
 })
 
 test('Pulse model proposal: researched learning draft has source links and a draft label', async ({ page }) => {
+  await page.route('**/api/ai?action=operator', route => route.fulfill({ json: { plan: { tool: 'chat' } } }))
   await page.route('**/api/ai?action=chat', route => route.fulfill({ json: {
     requestId: crypto.randomUUID(), mode: 'generated', task: 'draft', trace: [],
     answer: 'Sample lesson draft: qualitative interviews\n\nResearch uses systematic investigation to develop knowledge. [1]\n\nProposed activity: write an open-ended interview question, pilot it with a partner, and revise it to avoid leading the participant.',
@@ -31,6 +32,7 @@ test('Pulse model proposal: researched learning draft has source links and a dra
   const panel = page.getByRole('dialog', { name: 'Pulse', exact: true })
   await panel.getByRole('textbox', { name: 'Ask Pulse', exact: true }).fill('Write a short lesson about qualitative interviews')
   await panel.getByRole('button', { name: 'Send', exact: true }).click()
+  await panel.getByText('Verification details', { exact: true }).click()
   await expect(panel).toContainText('Educational draft · instructor review required')
   await panel.getByRole('button', { name: 'Open source 1' }).click()
   await expect(panel.getByRole('link', { name: 'Open public source' })).toBeVisible()

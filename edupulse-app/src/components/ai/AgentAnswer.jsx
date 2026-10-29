@@ -52,7 +52,7 @@ function AnswerText({ text, claims = [], grounded, onCite }) {
   })}</div>
 }
 
-export default function AgentAnswer({ message, onRevise }) {
+export default function AgentAnswer({ message, onRevise, compact = false, onDownload }) {
   const [openSource, setOpenSource] = useState(null), [revising, setRevising] = useState(false), [note, setNote] = useState(''), [copied, setCopied] = useState('')
   const v = message.verification, grounded = message.sources?.length > 0 && ['answer', 'summarize', 'compare'].includes(message.task)
   const showSource = n => { setOpenSource(n); requestAnimationFrame(() => document.getElementById(`${message.requestId}-source-${n}`)?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })) }
@@ -61,7 +61,8 @@ export default function AgentAnswer({ message, onRevise }) {
     try { await navigator.clipboard.writeText(text); setCopied(reference.url) } catch { setCopied('') }
   }
   return <>
-    <AnswerText text={message.text} claims={v?.claims} grounded={grounded} onCite={showSource} />
+    <AnswerText text={message.text} claims={compact ? [] : v?.claims} grounded={grounded} onCite={showSource} />
+    <details open={!compact} className="aa-verification"><summary>Verification details</summary>
     <div className="aa-badges">
       {message.mode === 'declined' && <span className="aa-badge is-warn" title={`${message.policy?.reason || ''} ${message.policy?.spec ? `(${message.policy.spec})` : ''}`.trim()}>Declined by the Guardian · appropriate-use rule</span>}
       {message.agents?.length > 0 && <span className="aa-badge">{message.agents.length} agent{message.agents.length === 1 ? '' : 's'}</span>}
@@ -73,6 +74,7 @@ export default function AgentAnswer({ message, onRevise }) {
       {v && <span className="aa-badge" title="How claims were checked">{v.method === 'semantic+lexical' ? 'Semantic + lexical check' : 'Lexical check'}</span>}
     </div>
     {grounded && v?.claims?.length > 0 && <div className="aa-legend" aria-hidden="true"><span style={{ '--legend': 'var(--green-500)' }}>supported</span><span style={{ '--legend': 'var(--amber-500)' }}>partial</span><span style={{ '--legend': 'var(--red-500)' }}>not found</span></div>}
+    </details>
     {message.comparison && <details open><summary>Comparison · coverage {percent(message.comparison.coverage)}</summary>
       <table className="aa-compare"><thead><tr><th>{message.comparison.leftTitle}</th><th>{message.comparison.rightTitle}</th></tr></thead><tbody>
         {message.comparison.shared.map((pair, i) => <tr key={`s${i}`}><td>{pair.left}</td><td>{pair.right}</td></tr>)}
@@ -96,11 +98,13 @@ export default function AgentAnswer({ message, onRevise }) {
     {message.trace?.length > 0 && <details><summary>How Pulse worked on this ({message.trace.length} step{message.trace.length === 1 ? '' : 's'})</summary><ol className="aa-timeline">{message.trace.map((step, i) => <li key={i} style={{ '--agent-color': AGENT_META[step.agent]?.color }}>
       <strong>{step.agent}</strong> · {step.action}<small>{step.ms} ms{step.status !== 'done' ? ` · ${step.status}` : ''}</small><div>{step.detail}</div>
     </li>)}</ol></details>}
+    {(onRevise || onDownload) && message.mode === 'generated' && <details><summary>Response actions</summary>{onDownload && <button type="button" className="btn btn-ghost btn-sm" onClick={onDownload}>Download response as PDF</button>}
     {onRevise && message.mode === 'generated' && (revising
       ? <form className="aa-revise" onSubmit={event => { event.preventDefault(); if (note.trim()) { onRevise(note.trim()); setNote(''); setRevising(false) } }}>
         <input className="form-input" autoFocus value={note} maxLength={500} onChange={e => setNote(e.target.value)} placeholder="What should Pulse change or check?" aria-label="Revision request" />
         <button className="btn btn-primary btn-sm" disabled={!note.trim()}>Revise</button><button type="button" className="btn btn-ghost btn-sm" onClick={() => setRevising(false)}>Cancel</button>
       </form>
       : <button type="button" className="btn btn-ghost btn-sm" onClick={() => setRevising(true)}><PenLine size={13} /> Request a revision</button>)}
+    </details>}
   </>
 }

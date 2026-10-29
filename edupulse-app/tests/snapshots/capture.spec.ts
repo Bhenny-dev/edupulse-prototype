@@ -139,7 +139,9 @@ test('scanned PDFs: OCR on the device, then review', async ({ page, browser }) =
 test('agentic answer with verification, citations and agent timeline', async ({ page }) => {
   await signIn(page)
   await page.goto('/#/settings?tab=ai-provider')
-  const answer = await ask(page, "Who chaired the committee behind Bloom's taxonomy, and what are the levels of the revised cognitive domain?")
+  const answer = await ask(page, "Using the Bloom's taxonomy document in my knowledge library, who chaired its committee and what are the levels of the revised cognitive domain? Cite that document.")
+  await expect(answer.locator('.aa-source').first()).toBeAttached({ timeout: 30_000 })
+  await answer.getByText('Verification details', { exact: true }).click()
   await expect(answer.locator('.aa-badges')).toBeVisible()
   const panel = page.getByRole('dialog', { name: 'Pulse', exact: true })
   await shot(panel, '05-ask-pulse', '01-verified-answer')
@@ -150,6 +152,7 @@ test('agentic answer with verification, citations and agent timeline', async ({ 
   await answer.getByText(/How Pulse worked on this/).click()
   await answer.locator('.aa-timeline').scrollIntoViewIfNeeded()
   await shot(panel, '05-ask-pulse', '03-agent-timeline')
+  if (await answer.getByText('Response actions', { exact: true }).count()) await answer.getByText('Response actions', { exact: true }).click()
   const revise = answer.getByRole('button', { name: 'Request a revision' })
   if (await revise.count()) {
     await revise.click()
@@ -159,6 +162,24 @@ test('agentic answer with verification, citations and agent timeline', async ({ 
     await expect(panel.getByRole('button', { name: 'Send', exact: true })).toBeVisible({ timeout: 540_000 })
     await shot(panel, '05-ask-pulse', '05-revised-answer')
   }
+})
+
+test('Pulse model proposal: revision controls with labelled synthetic transport', async ({ page }) => {
+  await signIn(page)
+  await page.goto('/#/settings?tab=ai-provider')
+  await page.route('**/api/ai?action=chat', async route => {
+    const revised = route.request().postDataJSON().message.startsWith('Revise your previous answer:')
+    await route.fulfill({ json: { requestId: crypto.randomUUID(), mode: 'generated', task: 'general', answer: revised ? 'Revised synthetic preview: a variable names a stored value. This response demonstrates the revision controls only.' : 'Synthetic preview for interface validation: a variable names a stored value. This response demonstrates the revision controls only.', sources: [], agents: ['Writer'], trace: [{ agent: 'Writer', action: 'Synthetic UI validation', detail: 'Labelled fixture; no live inference or factual verification is claimed.', status: 'done', ms: 0 }] } })
+  })
+  const answer = await ask(page, 'Explain a variable briefly')
+  await answer.getByText('Response actions', { exact: true }).click()
+  await answer.getByRole('button', { name: 'Request a revision', exact: true }).click()
+  await page.getByRole('textbox', { name: 'Revision request', exact: true }).fill('Keep this explanation to two sentences.')
+  const panel = page.getByRole('dialog', { name: 'Pulse', exact: true })
+  await shot(panel, '05-ask-pulse', '04-revision-request')
+  await page.getByRole('button', { name: 'Revise', exact: true }).click()
+  await expect(panel).toContainText('Revised synthetic preview:')
+  await shot(panel, '05-ask-pulse', '05-revised-answer')
 })
 
 test('compare two documents and find real references', async ({ page }) => {
@@ -178,7 +199,7 @@ test('compare two documents and find real references', async ({ page }) => {
   await shot(panel, '06-compare-and-references', '02-comparison-answer')
   await panel.locator('.aa-compare').last().evaluate(el => el.closest('details')!.scrollIntoView({ block: 'start' }))
   await shot(panel, '06-compare-and-references', '03-alignment-table')
-  await panel.getByRole('button', { name: 'Clear conversation' }).click()
+  await panel.getByRole('button', { name: 'Pulse options', exact: true }).click(); await panel.getByRole('button', { name: 'Clear conversation' }).click()
   const references = await ask(page, 'Find books and readings about data structures for my course.')
   await expect(references.locator('.aa-refs')).toBeVisible()
   await references.evaluate(el => el.scrollIntoView({ block: 'start' }))
@@ -198,7 +219,7 @@ test('Pulse guidance: drag, focus, perch, section tour and rejection', async ({ 
   await expect(page.locator('.pulse-drag-hint')).toContainText('Help with')
   await shot(page, '07-pulse-guidance', '01-dragging-over-component')
   await page.mouse.up()
-  await expect(page.locator('.pulse-focus-heading')).toContainText('This field is labeled Course')
+  await expect(page.locator('.pulse-focus-heading strong')).toHaveText('Course')
   await page.waitForTimeout(400)
   await shot(page, '07-pulse-guidance', '02-focused-component-brief')
   await page.getByRole('button', { name: 'Exit focused help', exact: true }).click()
@@ -207,6 +228,7 @@ test('Pulse guidance: drag, focus, perch, section tour and rejection', async ({ 
   await heading.evaluate(element => window.scrollTo({ top: scrollY + element.getBoundingClientRect().top - 110 }))
   from = (await mascot.boundingBox())!; to = (await heading.boundingBox())!
   await page.mouse.move(from.x + 30, from.y + 30); await page.mouse.down(); await page.mouse.move(to.x + 20, to.y + 10, { steps: 15 }); await page.mouse.up()
+  await page.getByRole('button', { name: 'Pulse options', exact: true }).click(); await page.getByRole('button', { name: 'Guide selected component', exact: true }).click()
   await page.getByRole('button', { name: 'Walk me through Course Information', exact: true }).click()
   await expect(page.getByText(/Step 1 of \d+/)).toBeVisible()
   await page.waitForTimeout(400)

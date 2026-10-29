@@ -1,11 +1,14 @@
 import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
+import { useWorkspace } from '../context/WorkspaceContext'
 import { useTheme } from '../context/ThemeContext'
 import { exportCSV, timestampedFilename } from '../utils/exportUtils'
-import { Shield, Palette, Bell, Check, Cpu, Download, ShieldCheck } from 'lucide-react'
+import { Shield, Palette, Bell, Check, Cpu, Download, ShieldCheck, HelpCircle, Keyboard } from 'lucide-react'
 import { useSearchParams } from 'react-router-dom'
 import AISettings from '../components/ai/AISettings'
+import HelpSupport from './HelpSupport'
+import KeyboardShortcuts from '../components/ui/KeyboardShortcuts'
 
 /* ───────────────────────── Account (FR-SET-03) ───────────────────────── */
 
@@ -114,6 +117,7 @@ function NotificationSettings() {
 
 // Provider catalogue with model tiers (free vs. paid subscriptions)
 function DataPrivacySettings() {
+  const { exportBackup } = useWorkspace()
   const { user } = useAuth()
   const { addToast } = useToast()
   const handleExport = () => {
@@ -125,6 +129,8 @@ function DataPrivacySettings() {
     <div className="card">
       <div className="card-header"><h3><ShieldCheck size={18} /> Data &amp; Privacy</h3></div>
       <div className="card-body">
+        <button className="btn btn-secondary mb-16" onClick={exportBackup}><Download size={14} /> Export workspace backup</button>
+
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', borderRadius: 'var(--radius-md)', border: '1px solid var(--sky-100)' }}>
             <div>
@@ -155,25 +161,29 @@ export default function Settings() {
     { id: 'notifications', label: 'Notifications', icon: Bell },
     ...(showAIProvider ? [{ id: 'ai-provider', label: 'AI & Knowledge', icon: Cpu }] : []),
     { id: 'privacy', label: 'Data & Privacy', icon: ShieldCheck },
+    { id: 'help', label: 'Help & Support', icon: HelpCircle },
+    { id: 'keyboard-shortcuts', label: 'Keyboard Shortcuts', icon: Keyboard },
   ]
 
   return (
     <div className="container">
       <div className="page-header"><h1>Settings</h1></div>
 
-      <div className="tabs mb-24" style={{ overflowX: 'auto', flexWrap: 'nowrap' }}>
+      <nav aria-label="Settings sections" className="tabs mb-24" style={{ overflowX: 'auto', flexWrap: 'nowrap' }}>
         {tabs.map(t => (
-          <button key={t.id} className={`tab ${activeTab === t.id ? 'active' : ''}`} onClick={() => setActiveTab(t.id)} style={{ whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <button key={t.id} aria-pressed={activeTab === t.id} className={`tab ${activeTab === t.id ? 'active' : ''}`} onClick={() => setActiveTab(t.id)} style={{ whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '6px' }}>
             <t.icon size={14} /> {t.label}
           </button>
         ))}
-      </div>
+      </nav>
 
       {activeTab === 'account' && <AccountSettings />}
       {activeTab === 'appearance' && <AppearanceSettings />}
       {activeTab === 'notifications' && <NotificationSettings />}
       {activeTab === 'ai-provider' && showAIProvider && <AISettings />}
       {activeTab === 'privacy' && <DataPrivacySettings />}
+      {activeTab === 'help' && <HelpSupport embedded />}
+      {activeTab === 'keyboard-shortcuts' && <KeyboardShortcuts />}
     </div>
   )
 }

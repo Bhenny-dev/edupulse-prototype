@@ -8,11 +8,10 @@ import { useTheme } from '../../context/ThemeContext'
 import { useNotifications } from '../../data/notifications'
 import {
   LayoutDashboard, BookOpen, FileText, BarChart3, LogOut,
-  ChevronDown, Bell, Search, Menu, X, Moon, Sun, HelpCircle,
-  ChevronRight, Globe, Keyboard, ClipboardCheck,
+  ChevronDown, Bell, Search, Menu, X, Moon, Sun,
+  ChevronRight, Globe, ClipboardCheck,
 } from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
-import KeyboardShortcutsModal from '../ui/KeyboardShortcutsModal'
 import Pulse from '../pulse/Pulse'
 import EduPulseMark from '../brand/EduPulseMark'
 import { recordAudit } from '../../lib/audit'
@@ -199,7 +198,6 @@ export default function Layout() {
   const [showMobileMenu, setShowMobileMenu] = useState(false)
   const [showLangMenu, setShowLangMenu] = useState(false)
   const { dark: darkMode, toggleDark, fontScale } = useTheme()
-  const [showShortcuts, setShowShortcuts] = useState(false)
 
   // One audit entry per page visit; the user object is replaced on token refresh and must not log the page again.
   const lastAuditedPage = useRef('')
@@ -213,14 +211,14 @@ export default function Layout() {
   useEffect(() => {
     const handleKey = (e) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); setShowSearch(true) }
-      if (e.key === 'Escape') { setShowSearch(false); setShowUserMenu(false); setShowNotifications(false); setShowRoleSwitch(false); setShowMobileMenu(false); setShowShortcuts(false); setShowLangMenu(false) }
-      if (e.key === '?' && !e.ctrlKey && !e.metaKey && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
-        e.preventDefault(); setShowShortcuts(true)
+      if (e.key === 'Escape') { setShowSearch(false); setShowUserMenu(false); setShowNotifications(false); setShowRoleSwitch(false); setShowMobileMenu(false); setShowLangMenu(false) }
+      if (e.key === '?' && !e.ctrlKey && !e.metaKey && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA' && e.target.tagName !== 'SELECT' && !e.target.closest?.('[role="dialog"], [contenteditable="true"]')) {
+        e.preventDefault(); navigate('/settings?tab=keyboard-shortcuts')
       }
     }
     window.addEventListener('keydown', handleKey)
     return () => window.removeEventListener('keydown', handleKey)
-  }, [])
+  }, [navigate])
 
   const handleLogout = () => { logout(); navigate('/') }
   const { notifications: notifs, unreadCount } = useNotifications(user?.role)
@@ -317,24 +315,6 @@ export default function Layout() {
             color: darkMode ? 'var(--sky-500)' : 'var(--gray-500)', cursor: 'pointer', transition: 'all 200ms',
           }}>
             {darkMode ? <Sun size={16} /> : <Moon size={16} />}
-          </button>
-
-          <NavLink className="desktop-tool" to="/help" title="Help & Support" style={{
-            width: 36, height: 36, borderRadius: 'var(--radius-full)',
-            background: 'var(--gray-100)', border: 'none',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            color: 'var(--gray-500)', cursor: 'pointer', transition: 'all 200ms',
-          }}>
-            <HelpCircle size={16} />
-          </NavLink>
-
-          <button className="desktop-tool" onClick={() => setShowShortcuts(true)} title="Keyboard shortcuts (?)" style={{
-            width: 36, height: 36, borderRadius: 'var(--radius-full)',
-            background: 'var(--gray-100)', border: 'none',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            color: 'var(--gray-500)', cursor: 'pointer', transition: 'all 200ms',
-          }}>
-            <Keyboard size={16} />
           </button>
 
           <div style={{ position: 'relative' }}>
@@ -470,10 +450,7 @@ export default function Layout() {
                   onMouseEnter={e => e.currentTarget.style.background = 'var(--sky-50)'}
                   onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                 >Settings</NavLink>
-                <NavLink to="/help" onClick={() => setShowUserMenu(false)} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 12px', borderRadius: 'var(--radius-md)', fontSize: '0.875rem', color: 'var(--gray-700)', fontWeight: 500, transition: 'background 150ms' }}
-                  onMouseEnter={e => e.currentTarget.style.background = 'var(--sky-50)'}
-                  onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                >Help & Support</NavLink>
+
                 <button onClick={handleLogout} style={{
                   display: 'flex', alignItems: 'center', gap: '8px', width: '100%', padding: '10px 12px',
                   borderRadius: 'var(--radius-md)', background: 'transparent', border: 'none', cursor: 'pointer',
@@ -509,9 +486,7 @@ export default function Layout() {
                 <item.icon size={20} /> {item.label}
               </NavLink>
             ))}
-            <NavLink to="/help" onClick={() => setShowMobileMenu(false)} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 16px', borderRadius: 'var(--radius-md)', fontWeight: 600, fontSize: '1rem', color: 'var(--gray-600)', textDecoration: 'none' }}>
-              <HelpCircle size={20} /> Help & Support
-            </NavLink>
+
           </nav>
         </div>
       )}
@@ -540,7 +515,7 @@ export default function Layout() {
           <NavLink to="/settings?tab=ai-provider" className={`badge ${ai.ready ? 'badge-published' : 'badge-draft'}`} style={{ fontSize: '0.625rem', maxWidth: '220px', whiteSpace: 'normal' }}>{ai.label}</NavLink>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <NavLink to="/help" style={{ color: 'var(--gray-400)', transition: 'color 150ms' }}
+          <NavLink to="/settings?tab=help" style={{ color: 'var(--gray-400)', transition: 'color 150ms' }}
             onMouseEnter={e => e.target.style.color = 'var(--sky-500)'}
             onMouseLeave={e => e.target.style.color = 'var(--gray-400)'}
           >Support</NavLink>
@@ -550,7 +525,6 @@ export default function Layout() {
 
       {showSearch && <SearchOverlay onClose={() => setShowSearch(false)} />}
       {showRoleSwitch && user?.canSwitchRoles && <RoleSwitchPopover onClose={() => setShowRoleSwitch(false)} />}
-      <KeyboardShortcutsModal isOpen={showShortcuts} onClose={() => setShowShortcuts(false)} />
       <Pulse />
 
       <style>{`

@@ -115,3 +115,8 @@ The 28 October baseline restoration changes both the academic API and the privat
 ### Baseline restoration production release, 28 October 2026
 
 Restoration `e976ae3` is Ready as `dpl_2xvzcdNBbwtkhCGgS97PhymHUfpW` and serves `edupulse-prototype.vercel.app`. Its remote verification passed 139 tests and deployment checks. Live site/health return 200, security headers are present, guest academic reads return 401 and workspace writes return 403; the restored mastery/marking bundle is served. Both separate landing commits are preserved. All four database migrations were applied beforehand. GitHub Actions could not start because of the account billing lock. Hosted authenticated role canaries remain unverified; see the [release record](../versions/2026-10-28-baseline-workflows/validation/results.md#production-release).
+
+
+## Component actions and workspace controls, 28 October 2026
+
+Selected-field and section proposals are clipped against the captured editor baseline before preview and application, then use the existing validated workspace save path. No database schema, API action, RLS policy, provider credential or deployment configuration changes are required. File drops use the existing bounded reader; a drop only attaches. The healthy workspace strip is removed; recovery remains visible on save/conflict errors and backup is in Settings Data & Privacy. See [the local implementation record](../versions/2026-10-28-component-actions/README.md) for scope and validation limits.

@@ -65,3 +65,8 @@ Docs-Impact: none — <at least 15 characters explaining why>
 Typical examples are a test-only change, a refactor with identical output, or a comment. Exempt commits are left out of the freshness check, so the reason must be true.
 
 **Never bypass the hook** with `--no-verify` or by unsetting `core.hooksPath`. If the check is wrong, fix `doc-map.json` or `scripts/docs-check.mjs` in the same commit and explain why.
+
+
+The component-actions capture suites share `tests/pulse-component-fixture.ts`; this fixture is included in the capture source digest. Their generated proposals are synthetic UI validation, while file attachment captures use the real extraction path. They do not assert live inference quality or hosted persistence.
+
+The common snapshot page fixture requests reduced motion before navigation. Capture suites still assert the relevant interactive state before recording it; captures document settled screens rather than intermediate animation frames.

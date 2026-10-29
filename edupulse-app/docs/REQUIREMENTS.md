@@ -184,7 +184,7 @@ Every requirement below cites the section of *EduPulse Chapter 1 & 2* (Rivera, B
 | FR-GUIDE-24 | An agent shall declare which roles it applies to and which intents are visible to each role; Pulse shall refuse a drop (per FR-GUIDE-18) if the current user's role has no matching agent for that zone. | §1.2 (role-scoped access) | M |
 | FR-GUIDE-25 | The agents directory shall be scoped to the five real EduPulse workflows (syllabus, courseware, curriculum/import, performance, review) — not to speculative subsystems (model governance, reviewer certification, licensing, forensic tooling) absent from Ch.1-2. | §1.2, §1.4 (governs scope of every agent added here) | M |
 | FR-GUIDE-26 | Dragging shall not interfere with Pulse's existing click-to-chat behavior — a click (no meaningful pointer movement) opens the normal chat drawer; only a real drag-and-drop enters the focused zone mode. | Usability — the two interaction modes must not conflict | M |
-| FR-GUIDE-27 | On a drop, Pulse shall describe the actual component from the page (kind, label, current state, required/disabled, constraints and on-page help), never reading values of password, contact or payment fields. | User request, Oct 1 2026 ("assist be accurate and correct") | M |
+| FR-GUIDE-27 | On a drop, Pulse shall name the selected component in a compact chip. Component details and walkthroughs remain available on request, using live labels/state and never reading password, contact or payment values. | Owner refinement, 28 October 2026: cleaner chat and optional guidance | M |
 | FR-GUIDE-28 | Pulse shall offer a walkthrough generated from the visible, labelled controls of the dropped component or its section; a step on a required empty field waits for the user's input. | User request, Oct 1 2026 | M |
 | FR-GUIDE-29 | A rejected drop shall show a visible reason (outside the page, role not permitted, sensitive field); a successful drop perches Pulse beside the component with the panel on the opposite side. | FR-GUIDE-17/18 refinement, user request | M |
 | FR-GUIDE-30 | When an authored walkthrough step's control cannot be found on the page, Pulse shall say so instead of silently highlighting nothing. | User request ("accurate and correct") | M |
@@ -264,7 +264,7 @@ Every requirement below cites the section of *EduPulse Chapter 1 & 2* (Rivera, B
 
 | ID | Requirement | Source | Pri |
 |---|---|---|---|
-| FR-HELP-01 | The system shall provide a single Help & Support destination reachable from the top bar on every screen. | Usability baseline | M |
+| FR-HELP-01 | The system shall provide Help & Support as a Settings tab for every role; the former /help address shall redirect there. Keyboard Shortcuts shall be a separate Settings tab, with no duplicate top-bar icons. | Owner correction, 28 October 2026 | M |
 | FR-HELP-02 | Help content shall cover the five-step workflow in Fig. 2 in plain language. | §1.2 | M |
 | FR-HELP-03 | Help shall include a contact path to institutional technical support. | §2.4.2 (post-deployment support) | S |
 | FR-HELP-04 | The system shall not maintain a separate multi-tab knowledge-base/training-module authoring surface. | Scope discipline (six-month build, §2) | M |

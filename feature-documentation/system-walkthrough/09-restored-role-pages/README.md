@@ -104,4 +104,7 @@ See [Manual 13](../../system-manual/13-restored-account-sections/README.md), [AD
 
 Authenticated Records and Course Loading again expose their page guidance targets. Pulse distinguishes saved account records from preview samples, describes confirmed shared imports and enrolled publication, and keeps the Dean guidance read-only. The displayed final import instruction explains the saved receipt; it does not claim that an import occurred. Preview personas keep their sample-data disclosure.
 
-The Pulse capture uses a synthetic account transport, so the separate conversation service shows a session-verification/read-history warning. Authored page guidance remains available; this image is not a successful hosted session or a saved conversation. The page target is named Academic Records rather than concatenating dropdown options into its heading.
+The Pulse capture uses a synthetic account transport, so the separate conversation service shows a session-verification warning. Authored page guidance remains available; this image does not establish a successful hosted session or saved conversation. Authored page guidance remains available; this image is not a successful hosted session or a saved conversation. The page target is named Academic Records rather than concatenating dropdown options into its heading.
+
+
+Shared navigation now places **Help & Support** and **Keyboard Shortcuts** in Settings. Pulse guidance is under **Pulse options**. [Manual 14](../../system-manual/14-pulse-and-outline-workspace/README.md) shows the current controls; the academic pages and role boundaries above are preserved.

@@ -6,7 +6,7 @@
 
 **Agentic RAG pipeline** shows what is working right now: the generation model, the free embedding model and reranker (always available, no key), the vector database, the document sandbox and the nine named agents, starting with the Guardian, which checks appropriate use before the others work. The agents’ tasks, goals and tracked results are listed in the System Admin console ([System Walkthrough 07](../../system-walkthrough/07-system-admin/README.md)). Use **Check status** after changing anything.
 
-The current capture shows **Not connected** for local Ollama because that runner could not be reached. Embeddings/reranking are bundled, and six documents are in the local library. This is a truthful local status, separate from the synthetic credential UI captures below.
+The current pipeline capture shows local **Ollama / qwen2.5:3b**, bundled embeddings/reranking and an empty library before the document tasks run. The connection card says generation has not been tested at this point; use **Test selected model** to verify inference. Synthetic credential UI captures below are labelled separately.
 
 ![Pipeline status](01-pipeline-status.png)
 

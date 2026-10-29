@@ -8,7 +8,7 @@ The mobile recaptures record the mobile suite centrally in [capture-run evidence
 | --- | --- | --- |
 | 1 | ![Landing](01-landing.png) | The landing hero stacks in one column: crest, logo, **Sign In** and the round ☰ menu button in the bar, then the KCP crest and CIT seal (the institution name is left out on phones), the headline, the summary, **Get started** and **See how it works**, and the first note. The arch photograph and its caption follow below the screen. Every later section also stacks in one column, and the phase timeline runs down the left. Captured with reduced motion, as on the desktop (see [01 · Public site](../01-public-site/README.md)). |
 | 2 | ![Instructor dashboard](02-instructor-dashboard.png) | The top bar keeps the menu button, logo, dark-mode, notifications and account; the other tools move into the menu. The role badge is not shown on a phone. The account menu shows the role, and for the owner admin it also offers **Switch view**. Cards stack in one column and the Pulse dock stays bottom-right. |
-| 3 | ![Navigation menu](03-navigation-menu.png) | **Open menu** (☰) shows the role's tabs plus Help & Support; the button becomes **Close menu** (×). |
+| 3 | ![Navigation menu](03-navigation-menu.png) | **Open menu** (☰) shows the role's tabs; Help & Support and Keyboard Shortcuts are in Settings; the button becomes **Close menu** (×). |
 | 4 | ![Syllabus builder](04-syllabus-builder.png) | Page sub-views appear as a horizontal strip under the breadcrumb, and every control is at least 44 px tall for touch. |
 | 5 | ![Pulse panel](05-pulse-panel.png) | The Pulse panel uses the screen width and hides the dock while open; dragging Pulse works with touch (see [System Manual 7](../../system-manual/07-pulse-guidance/README.md)). |
 | 6 | ![Settings · AI & Knowledge](06-settings-ai-and-knowledge.png) | Settings tabs scroll sideways; the AI connection, pipeline and knowledge library cards stack. |
@@ -18,11 +18,11 @@ The mobile recaptures record the mobile suite centrally in [capture-run evidence
 
 ## Pulse context controls
 
-The mobile Pulse panel retains its bottom-sheet layout and now includes **Conversations and memory**, a private-history saving indicator and retained-reference status. Focused help uses a shorter panel, and the page remains scrollable above it. Edit previews and history scroll inside the panel. See [Manual 9](../../system-manual/09-pulse-actions/README.md) for the same confirmed actions and memory controls.
+The mobile Pulse panel retains its bottom-sheet layout. **Pulse options** opens **Conversations and memory**, guidance, workspace buddies and AI settings. The conversation has a compact selection chip and no persistent technical footer. Focused help uses a shorter panel, and the page remains scrollable above it. Edit previews and history scroll inside the panel. See [Manual 9](../../system-manual/09-pulse-actions/README.md) for the same confirmed actions and memory controls.
 
 ## Workspace buddies
 
-Pulse includes **Meet your workspace buddies** and **Visit office**. The optional 3D office has six named desks, domain-specific conversations, real request/review states, a pause control and reduced-motion support. Mobile users scroll from the office to the buddy chat. See [the illustrated office guide](../../system-manual/11-workspace-buddies/README.md).
+Open **Pulse options → Workspace buddies**. The optional 3D office has six named desks, domain-specific conversations, real request/review states, a pause control and reduced-motion support. Mobile users scroll from the office to the buddy chat. See [the illustrated office guide](../../system-manual/11-workspace-buddies/README.md).
 
 Unique page destinations stay in the main navigation: **Records** for Dean/Associate Dean and **Assessments** for students. Mobile users find the same links under **Open menu**. Page tabs provide subviews without duplicate left navigation.
 
@@ -33,3 +33,6 @@ Account charts stack, Performance/Monitoring tabs scroll and wide score/material
 ## Restored mobile account workflows
 
 The [current account guide](../09-restored-role-pages/README.md) adds mobile topic radar/history/heatmap and confirmed loading proposals, alongside the earlier performance, reader and solid-dark dashboard scenes. Filters and proposal forms stack; wide data matrices scroll within their panels. These scenes use synthetic role fixtures rather than real institutional records.
+
+
+The [current mobile field, outline and Settings examples](../../system-manual/14-pulse-and-outline-workspace/README.md#smaller-screens) show selected-field proposals, a horizontally scrollable table and the new Settings tabs.

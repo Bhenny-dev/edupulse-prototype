@@ -14,13 +14,13 @@ const FAQ_ITEMS = [
   { q: 'What can Pulse (the AI guide) do for a student?', a: 'Pulse can remind you about unopened materials or unanswered assessments and help you navigate the course. It will never answer or review your assessment items for you.' },
 ]
 
-export default function HelpSupport() {
+export default function HelpSupport({ embedded = false }) {
   const [openFaq, setOpenFaq] = useState(null)
 
   return (
-    <div className="container">
+    <div className={embedded ? undefined : "container"}>
       <div className="page-header">
-        <h1>Help & Support</h1>
+        {embedded ? <h2>Help &amp; Support</h2> : <h1>Help &amp; Support</h1>}
       </div>
 
       <div className="grid-2 mb-24">

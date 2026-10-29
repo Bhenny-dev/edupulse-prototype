@@ -156,13 +156,13 @@ export default function PresentationViewer({ content, onBack, isStudent = false,
     const points = extractKeyPoints(section.body)
 
     return (
-      <div className="pres-slide" key={idx}>
+      <div className="pres-slide" key={idx} data-pulse-target={`Slide ${idx} content`} data-pulse-field={`sections.${idx - 1}.body`}>
         <div className="pres-slide-section-num">{idx}/{sections.length}</div>
 
         {isEdit ? (
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
             <input
-              className="form-input pres-edit-heading"
+              className="form-input pres-edit-heading" data-pulse-field={`sections.${idx - 1}.heading`} aria-label={`Slide ${idx} heading`}
               value={section.heading}
               onChange={e => updateSlideHeading(idx - 1, e.target.value)}
               style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '1.25rem', flex: 1, color: 'var(--gray-900)' }}

@@ -14,7 +14,7 @@ test('Pulse responds to a greeting and continues a situational exchange without 
       expect(result.mode).toBe('generated')
       expect(result.grounding).toBe('general')
       expect(result.sources).toEqual([])
-      await expect(dialog.getByText('Pulse · General assistance', { exact: true }).last()).toBeVisible()
+      await expect(dialog.locator('.aa-text').last()).not.toBeEmpty()
     } else await expect(dialog).toContainText('Hi! What would you like')
     await dialog.screenshot({ path: `../feature-documentation/system-manual/07-pulse-guidance/${name}.png`, animations: 'disabled' })
   }

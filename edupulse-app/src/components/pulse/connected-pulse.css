@@ -1,5 +1,12 @@
 .connected-pulse { position: fixed; right: 24px; bottom: 112px; z-index: 1100; width: min(440px, calc(100vw - 24px)); height: min(650px, calc(100dvh - 145px)); background: var(--white); color: var(--gray-800); border: 1px solid var(--gray-200); border-radius: 20px; box-shadow: 0 18px 70px #142f4d30; display: flex; flex-direction: column; overflow: hidden; }
 .connected-pulse.panel-left { left: 24px; right: auto; }
+.pulse-file-drop { position: absolute; inset: 8px; z-index: 5; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 12px; padding: 24px; border: 3px dashed var(--sky-500); border-radius: 14px; background: var(--white); color: var(--gray-800); text-align: center; font-weight: 700; pointer-events: none; }
+.pulse-file-drop small { font-weight: 400; }
+.pulse-options { position: absolute; top: 54px; right: 12px; z-index: 4; width: min(250px, calc(100% - 24px)); display: flex; flex-direction: column; gap: 4px; padding: 8px; border: 1px solid var(--gray-200); border-radius: 12px; background: var(--white); box-shadow: var(--shadow-lg); }
+.pulse-options button { border: 0; text-align: left; background: var(--white); color: var(--gray-700); border-radius: 8px; padding: 10px; font: inherit; font-size: .8rem; }
+.pulse-options button:hover { background: var(--gray-50); }
+.pulse-focus-heading { flex-direction: row !important; align-items: center !important; justify-content: space-between; padding: 8px 10px; border: 1px solid var(--gray-200); border-radius: 9px; margin-bottom: 12px; font-size: .8rem; }
+.pulse-focus-heading strong { min-width: 0; overflow-wrap: anywhere; }
 .connected-pulse button { cursor: pointer; }
 .connected-pulse button:disabled { opacity: .5; cursor: not-allowed; }
 .connected-pulse-header { display: flex; align-items: center; gap: 8px; padding: 16px; border-bottom: 1px solid var(--gray-100); }
@@ -25,6 +32,7 @@
 .connected-pulse-form textarea { width: 100%; min-width: 0; resize: none; border: 1px solid var(--gray-200); border-radius: 10px; padding: 9px; color: var(--gray-800); background: var(--white); font: inherit; font-size: .85rem; }
 .connected-pulse-footnote { padding: 4px 15px 12px; }
 .connected-pulse-error, .connected-pulse-warning { background: var(--amber-50, #fff7e6); color: #71491a; padding: 9px 12px; font-size: .78rem; max-height: 90px; overflow: auto; }
+.dark-mode .connected-pulse-error, .dark-mode .connected-pulse-warning { color: var(--gray-800); }
 .connected-pulse-attachments { padding: 6px 14px; margin: 0; list-style: none; max-height: 100px; overflow: auto; }
 .connected-pulse-attachments li { display: flex; justify-content: space-between; align-items: center; font-size: .75rem; overflow-wrap: anywhere; }
 .connected-pulse-dock { position: fixed; right: 24px; bottom: 20px; z-index: 1101; width: 80px; height: 80px; border: 0; border-radius: 50%; background: transparent; box-shadow: none; cursor: grab; display: grid; place-items: center; padding: 0; color: var(--sky-700); touch-action: none; user-select: none; }

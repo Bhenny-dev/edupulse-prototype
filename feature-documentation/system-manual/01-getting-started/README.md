@@ -19,10 +19,10 @@ See: [sign-in panel](../../system-walkthrough/01-public-site/13-sign-in-panel.pn
 | Go to a main area | Click a tab in the top bar; on a phone, open the ☰ menu | [Top bar](../../system-walkthrough/02-shared-interface/01-top-bar.png), [mobile menu](../../system-walkthrough/06-mobile/03-navigation-menu.png) |
 | Switch between a page's views | Use the tabs at the top of the page; the address keeps the view (`?tab=…`), so it can be bookmarked | [Syllabus tabs](../../system-walkthrough/04-instructor/03-syllabus-my-syllabus.png) |
 | Search everything | Press **Ctrl+K** or click the magnifier | [Search](../../system-walkthrough/02-shared-interface/02-search-overlay.png) |
-| See keyboard shortcuts | Press **?** | [Shortcuts](../../system-walkthrough/02-shared-interface/03-keyboard-shortcuts-modal.png) |
+| See keyboard shortcuts | Open **Settings → Keyboard Shortcuts**, or press **?** outside a form control | [Shortcuts](../../system-walkthrough/02-shared-interface/03-settings-keyboard-shortcuts.png) |
 | Read notifications | Click the bell; **View All** opens the full list, where clicking a notice marks it read | [Dropdown](../../system-walkthrough/02-shared-interface/05-notifications-dropdown.png), [page](../../system-walkthrough/02-shared-interface/08-notifications-page.png) |
-| Get help | Click **?** (Help & Support) or ask Pulse | [Help](../../system-walkthrough/02-shared-interface/09-help-and-support.png) |
-| Keep a copy of your work | **Export backup** under the breadcrumb downloads your workspace as JSON | [Top bar](../../system-walkthrough/02-shared-interface/01-top-bar.png) |
+| Get help | Open **Settings → Help & Support** or ask Pulse | [Help](../../system-walkthrough/02-shared-interface/09-help-and-support.png) |
+| Keep a copy of your work | **Settings → Data & Privacy → Export workspace backup** downloads your workspace as JSON | [Backup settings](../14-pulse-and-outline-workspace/10-backup-settings.png) |
 
 ## Set your preferences
 
@@ -32,7 +32,9 @@ Open the account menu → **Settings**:
 * **Appearance:** **Dark Mode** and **Font Size**.
 * **Notifications:** which alerts you want (stored on this device).
 * **AI & Knowledge:** where Pulse runs and which documents it may use — see [manual 8](../08-ai-connections/README.md) and [manual 4](../04-knowledge-library/README.md).
-* **Data & Privacy:** **Export My Data** and the deletion policy.
+* **Data & Privacy:** **Export My Data**, **Export workspace backup** and the deletion policy.
+* **Help & Support:** getting started, support contacts and frequently asked questions.
+* **Keyboard Shortcuts:** working shortcuts, with unconnected shortcuts listed separately under **Planned shortcuts**.
 
 See: [Settings tabs](../../system-walkthrough/02-shared-interface/README.md#1014-settings).
 

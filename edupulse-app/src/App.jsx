@@ -21,7 +21,6 @@ import MonitorProgress from './pages/MonitorProgress'
 import StudentMonitoring from './pages/StudentMonitoring'
 import Settings from './pages/Settings'
 import NotificationCenter from './pages/Notifications'
-import HelpSupport from './pages/HelpSupport'
 import ContentEditor from './pages/ContentEditor'
 import NotFound from './pages/NotFound'
 import ServerError from './pages/ServerError'
@@ -69,7 +68,7 @@ function AppRoutes() {
         <Route path="/content-editor/:itemId?" element={<ProtectedRoute allowedRoles={['instructor']}><ContentEditor /></ProtectedRoute>} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/notifications" element={<NotificationCenter />} />
-        <Route path="/help" element={<HelpSupport />} />
+        <Route path="/help" element={<Navigate to="/settings?tab=help" replace />} />
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>

@@ -12,7 +12,7 @@ async function openLibrary(page: Page) {
   await page.getByRole('button', { name: 'Instructor', exact: true }).click()
   await expect(page).toHaveURL(/dashboard/)
   await page.getByRole('button', { name: 'Open Pulse assistant' }).click()
-  await page.getByRole('button', { name: 'AI and knowledge settings' }).click()
+  await page.getByRole('button', { name: 'Pulse options', exact: true }).click(); await page.getByRole('button', { name: 'AI and knowledge settings' }).click()
   await expect(page.getByRole('heading', { name: 'Knowledge library' })).toBeVisible()
 }
 async function upload(page: Page, name: string, pdf: Uint8Array) {

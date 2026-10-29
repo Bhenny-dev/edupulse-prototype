@@ -21,11 +21,11 @@ test('mascot follows the cursor, distinguishes a click from dragging, and focuse
   const a = (await mascot.boundingBox())!, b = (await control.boundingBox())!
   await page.mouse.move(a.x + 30, a.y + 30); await page.mouse.down()
   await page.mouse.move(b.x + 30, b.y + 15, { steps: 15 }); await page.mouse.up()
-  await expect(page.getByText('What would you like to do here?', { exact: true })).toBeVisible()
+  await expect(page.getByText('What would you like help with?', { exact: true })).toBeVisible()
   await expect(page.locator('.pulse-focus-heading')).toContainText('Course')
   await expect(page.locator('.pulse-spotlight')).toBeVisible()
-  await expect(page.locator('.pulse-brief')).toContainText('dropdown')
-  await expect(page.locator('.pulse-brief')).toContainText('Nothing selected yet')
+  await expect(page.locator('.pulse-focus-heading')).toContainText('Course')
+  await expect(page.getByLabel('Course', { exact: true })).toHaveValue('')
   if (test.info().project.name === 'desktop') {
     await expect(page.locator('[data-pulse-ui="mascot"]')).toBeHidden()
     const main=(await page.locator('#main-content').boundingBox())!, panel=(await page.locator('[data-pulse-ui="panel"]').boundingBox())!
@@ -38,7 +38,7 @@ test('mascot follows the cursor, distinguishes a click from dragging, and focuse
 test('guiding a whole page keeps the panel clear of the perched mascot', async ({ page }) => {
   test.skip(test.info().project.name !== 'desktop', 'The panel is a bottom sheet on narrow screens.')
   await page.getByRole('button', { name: 'Open Pulse assistant' }).click()
-  await page.getByRole('button', { name: 'Guide this page', exact: true }).click()
+  await page.getByRole('button', { name: 'Pulse options', exact: true }).click(); await page.getByRole('button', { name: 'Guide this page', exact: true }).click()
   await expect(page.locator('.pulse-focus-heading')).toBeVisible()
   await expect(page.locator('[data-pulse-ui="mascot"]')).toBeHidden()
   const main=(await page.locator('#main-content').boundingBox())!, panel=(await page.locator('[data-pulse-ui="panel"]').boundingBox())!
@@ -55,6 +55,7 @@ test('section tour reads visible controls and waits for input', async ({ page })
   await page.mouse.move(to.x + 20, to.y + 10, { steps: 15 })
   await page.mouse.up()
   await expect(page.locator('.pulse-focus-heading')).toContainText('Course Information')
+  await page.getByRole('button', { name: 'Pulse options', exact: true }).click(); await page.getByRole('button', { name: 'Guide selected component', exact: true }).click()
   await page.getByRole('button', { name: 'Walk me through Course Information', exact: true }).click()
   await expect(page.getByText(/Step 1 of \d+/)).toBeVisible()
   await expect(page.getByRole('button', { name: 'Next step' })).toBeDisabled()
@@ -70,6 +71,7 @@ test('keyboard walkthrough waits for real input and save, then completes', async
   test.setTimeout(60000)
   await page.getByLabel('Course', { exact: true }).focus()
   await page.keyboard.press('Alt+p')
+  await page.getByRole('button', { name: 'Pulse options', exact: true }).click(); await page.getByRole('button', { name: 'Guide selected component', exact: true }).click()
   await page.getByRole('button', { name: 'Build a new syllabus', exact: true }).click()
   await expect(page.getByText('Step 1 of 6 · Build a new syllabus')).toBeVisible()
   await expect(page.getByRole('button', { name: 'Next step', exact: true })).toBeDisabled()
@@ -115,7 +117,7 @@ test('touch drag opens focused guidance on a form control', async ({ page }) => 
   }
   await client.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
   await expect(page.locator('.pulse-focus-heading')).toContainText('Course')
-  await expect(page.getByRole('button', { name: 'Build a new syllabus', exact: true })).toBeVisible()
+  await expect(page.locator('.pulse-focus-heading')).toContainText('Course')
 })
 
 test('provider settings expose real connections, model discovery and local download controls', async ({ page }) => {

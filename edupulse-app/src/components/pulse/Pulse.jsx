@@ -2,7 +2,7 @@ import { downloadMaterialPdf } from '../../utils/pdfExport'
 import { jsonValue } from '../../utils/jsonValue'
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { X, Send, Paperclip, Square, Settings, BookOpen, Trash2, Route, Sparkles, History } from 'lucide-react'
+import { X, Send, Paperclip, Square, Route, Sparkles, MoreHorizontal } from 'lucide-react'
 import PulseAvatar from './PulseAvatar'
 import { pulse as pulseBus } from './pulseBus'
 import { useAuth } from '../../context/AuthContext'
@@ -10,12 +10,13 @@ import { aiRequest, askPulse, readReferenceFile, UPLOAD_ACCEPT } from '../../lib
 import { requestOperator } from '../../lib/operatorClient'
 import { checkAppropriateUse } from '../../lib/rag/policy'
 import { getAgentForZone, intentsForRole } from '../../agents'
-import { accountGreeting, approvalResumeStep, prepareIntent, previewAgents, stepReadiness, stepTarget } from '../../agents/guidance'
+import { approvalResumeStep, prepareIntent, previewAgents, stepReadiness, stepTarget } from '../../agents/guidance'
 import { courseCatalog, findCourseMentions, pageFor, PAGES, planOperator, searchRecords, syllabusReference } from '../../agents/operator'
 import { conversationWindow } from '../../agents/skills'
 import { applyEditorProposal, currentEditor, currentEditorSources, literalEdit } from '../../agents/editorTools'
-import { activeSources, focusedSection, sourceContext } from '../../agents/pageContext'
-import { ACTION_REQUEST, receiptText, workProposal } from '../../agents/workTools'
+import { editableField, scopedEditorPatch } from '../../agents/componentScope'
+import { activeSources, focusedSection, focusedFields, sourceContext } from '../../agents/pageContext'
+import { ACTION_REQUEST, DRAFT_REQUEST, EDIT_REQUEST, ALL_FIELDS, receiptText, workProposal } from '../../agents/workTools'
 import usePulseArchive from './usePulseArchive'
 import PulseHistory from './PulseHistory'
 import { useAI } from '../../context/AIContext'
@@ -25,18 +26,18 @@ import { CURRICULUM_COURSES, STUDENT_RECORDS } from '../../data/mockData'
 import { applyRegistration, parseRoster, undoRegistration } from '../../utils/rosterParser'
 import { generateWeekDraft } from '../../utils/aiCourseware'
 import usePulseInteraction, { DwellHelp, FocusSpotlight } from './usePulseInteraction'
-import { briefText, componentTour, describeSentence, describeTarget, liveStepBody } from './targets'
+import usePulseFileDrop from './usePulseFileDrop'
+import { briefText, componentTour, describeTarget, liveStepBody } from './targets'
 import AgentAnswer from '../ai/AgentAnswer'
 import PulseAction from './PulseActions'
 import './connected-pulse.css'
 import './office/workspace-office.css'
 import useOffice from './useOffice'
 import PulseLoading from './PulseLoading'
-import { BUDDIES, buddyForRequest } from '../../agents/buddies'
+import { buddyForRequest } from '../../agents/buddies'
 import { quickReply } from '../../agents/quickReplies'
 const WorkspaceOffice = lazy(() => import('./office/WorkspaceOffice'))
 
-const modeLabel = message => message.from === 'user' ? 'You' : message.mode === 'actions' ? 'Pulse · Actions' : message.mode === 'generated' ? `Pulse · ${message.task === 'draft' ? 'Educational draft' : message.grounding === 'general' ? 'General assistance' : 'Verified answer with sources'}` : message.mode === 'retrieval' ? 'Pulse · Source excerpts' : message.mode === 'references' ? 'Pulse · Librarian' : message.mode === 'insufficient-evidence' ? 'Pulse · Missing evidence' : 'Pulse'
 // The server accepts up to 18,000 characters per chat reference; longer files are sent as an excerpt and can be added to the library whole.
 const CHAT_REFERENCE = 18000
 const chatReference = a => ({ title: a.text.length > CHAT_REFERENCE ? `${a.title} (first ${CHAT_REFERENCE.toLocaleString()} characters)` : a.title, text: a.text.slice(0, CHAT_REFERENCE) })
@@ -52,6 +53,7 @@ export default function Pulse() {
   const archive = usePulseArchive(user, messages, setMessages)
   const office = useOffice(user?.id)
   const [officeOpen, setOfficeOpen] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false), [guidanceOpen, setGuidanceOpen] = useState(false)
   const [historyOpen, setHistoryOpen] = useState(false), [fileNotice, setFileNotice] = useState('')
   const [pendingGuide, setPendingGuide] = useState(null)
   const [input, setInput] = useState(''), [attachments, setAttachments] = useState([])
@@ -64,6 +66,7 @@ export default function Pulse() {
   const [focus, setFocus] = useState(null), [events, setEvents] = useState(new Set()), [ready, setReady] = useState(true), [completed, setCompleted] = useState(false)
   const [missingTarget, setMissingTarget] = useState(false), [side, setSide] = useState('right')
   const requestRef = useRef(null), feedRef = useRef(null), inputRef = useRef(null), fileRef = useRef(null), dockRef = useRef(null), sendRef = useRef(null)
+  const fileRead = useRef({ epoch: 0, busy: false })
 
   useEffect(() => pulseBus.subscribe(event => {
     if (event.type === 'progress') { setEvents(previous => new Set([...previous, event.name])); setExpression('cheerful') }
@@ -76,7 +79,8 @@ export default function Pulse() {
   }), [])
   useEffect(() => {
     requestRef.current?.abort(); requestRef.current = null
-    setMessages([]); setAttachments([]); setContextFiles([]); setInput(''); setError(''); setBusy(false); setFocus(null); setGuide(null); setEvents(new Set()); setCompleted(false); setOfficeOpen(false); setHistoryOpen(false)
+    fileRead.current = { epoch: fileRead.current.epoch + 1, busy: false }; setFileBusy(false)
+    setMessages([]); setAttachments([]); setContextFiles([]); setInput(''); setError(''); setBusy(false); setFocus(null); setGuide(null); setEvents(new Set()); setCompleted(false); setOfficeOpen(false); setHistoryOpen(false); setMenuOpen(false); setGuidanceOpen(false)
   }, [user?.id])
   useEffect(() => {
     const zone = document.querySelector('[data-pulse-zone]')?.getAttribute('data-pulse-zone') || 'general'
@@ -113,9 +117,10 @@ export default function Pulse() {
     const frame = open && !officeOpen && focus?.element?.isConnected ? requestAnimationFrame(() => focus.element.scrollIntoView({ block: 'start', behavior: 'instant' })) : 0
     return () => { cancelAnimationFrame(frame); document.body.classList.remove('pulse-panel-open') }
   }, [open, officeOpen, focus])
-  const close = useCallback(() => { setOpen(false); setFocus(null); dockRef.current?.focus() }, [])
+  const close = useCallback(() => { setOpen(false); setMenuOpen(false); setFocus(null); dockRef.current?.focus() }, [])
   const focusTarget = useCallback(target => {
-    setFocus(target); setAgent(target.agent); setOpen(true); setGuide(null); setStepIndex(0); setCompleted(false); setEvents(new Set()); setExpression('curious')
+    setFocus(target); setAgent(target.agent); setOpen(true); setGuidanceOpen(false); setGuide(null); setStepIndex(0); setCompleted(false); setEvents(new Set()); setExpression('curious')
+    requestAnimationFrame(() => inputRef.current?.focus())
   }, [])
   const interaction = usePulseInteraction({ dockRef, role: user?.role, onTarget: focusTarget, onToggle: () => { if (open) close(); else setOpen(true) } })
   const { perch, reset: resetDock } = interaction
@@ -171,10 +176,10 @@ export default function Pulse() {
     if (next.path) navigate(next.path)
   }
   useEffect(() => {
-    const escape = e => { if (e.key === 'Escape' && open) close() }
+    const escape = e => { if (e.key === 'Escape' && open) { if (menuOpen) setMenuOpen(false); else close() } }
     document.addEventListener('keydown', escape)
     return () => document.removeEventListener('keydown', escape)
-  }, [open, close])
+  }, [open, close, menuOpen])
 
   // Courses Pulse can act on: the curriculum, with the syllabi and class lists in this workspace.
   const enrolled = useMemo(() => {
@@ -191,12 +196,17 @@ export default function Pulse() {
   }, [location.search, syllabi, catalog])
 
   async function attachFiles(files) {
+    if (!files.length) return
+    if (busy || fileBusy || fileRead.current.busy) { setError('Wait for the current response or file reading to finish, then attach your files.'); return }
+    const epoch = fileRead.current.epoch
+    fileRead.current.busy = true
     setError(''); setFileBusy(true)
     const ticket = office.begin('luma', 'Read attached files')
     try {
       if (attachments.length + files.length > 3) throw new Error('Attach up to three files per message.')
       // Attachments go through the same sandboxed extraction as the knowledge library.
-      const refs = await Promise.all(files.map(file => readReferenceFile(file, setFileNotice)))
+      const refs = await Promise.all(files.map(file => readReferenceFile(file, notice => { if (epoch === fileRead.current.epoch) setFileNotice(notice) })))
+      if (epoch !== fileRead.current.epoch) return
       setAttachments(previous => [...previous, ...refs.map(ref => {
         // A class list keeps its rows; the course is read from the file name, a course column or the first lines.
         const roster = parseRoster(ref.raw ?? ref.text, ref.fileName)
@@ -205,9 +215,10 @@ export default function Pulse() {
         return roster ? { ...kept, roster, detectedCourse: findCourseMentions(`${ref.fileName} ${roster.courseValues.join(' ')} ${ref.text.slice(0, 600)}`, catalog)[0]?.code || '' } : kept
       })])
       office.finish(ticket, 'done', `Read ${files.length} attached file(s); no records changed.`)
-    } catch (err) { setError(err.message); office.finish(ticket, 'error', 'File reading failed; no records changed.') }
-    finally { setFileBusy(false); setFileNotice('') }
+    } catch (err) { if (epoch === fileRead.current.epoch) { setError(err.message); office.finish(ticket, 'error', 'File reading failed; no records changed.') } }
+    finally { if (epoch === fileRead.current.epoch) { fileRead.current.busy = false; setFileBusy(false); setFileNotice('') } }
   }
+  const fileDrop = usePulseFileDrop({ disabled: busy || fileBusy, onFiles: files => { setOpen(true); void attachFiles(files) }, onBlocked: () => { setOpen(true); setError('Wait for the current response or file reading to finish, then drop your files.') } })
 
   // Confirmed actions. Each runs only from an action card's confirm button.
   const runRegister = useCallback(async details => {
@@ -283,21 +294,22 @@ export default function Pulse() {
   }
   const prepareEdit = async (proposal, signal) => {
     const exact = proposal.editor && literalEdit(proposal.editor,proposal.request,proposal.section||'all')
-    if(exact) return {patch:exact,generated:false,requiresConfirmation:true}
+    if(exact) return {patch:scopedEditorPatch(proposal.editor, exact, proposal.target?.path, proposal.scopeFields),generated:false,requiresConfirmation:true}
     const editSources = (proposal.attachments || []).map(item => ({ title: item.title, text: sourceContext(item, proposal.section), kind: item.syllabus ? 'syllabus' : item.roster ? 'roster' : 'material' }))
     if (editSources.some(source => source.text.length > 18000)) throw new Error('The selected source is too long for this edit. Select a smaller section or supply a shorter excerpt; no source was silently cut.')
-    return requestOperator({
-    operation: 'revise', message: proposal.request, viewRole: user?.role || 'guest', editor: proposal.editor, section: proposal.section || 'all', context: `Page: ${location.pathname}. Selected component: ${focus?.label || ''}.`,
+    const result = await requestOperator({
+    operation: 'revise', message: proposal.request, viewRole: user?.role || 'guest', editor: proposal.editor, section: proposal.section || 'all', context: `Page: ${location.pathname}. Selected component: ${proposal.target?.label || focus?.label || ''}. ${proposal.scopeFields ? `Selected section fields: ${proposal.scopeFields.join(', ')}. Only these fields are selected.` : ''} ${proposal.target ? `Editable field path: ${proposal.target.path}. Only this field is selected; retain the surrounding array and other fields.` : ''}`,
     history: conversationWindow(messages, 10000).history.slice(-8).map(item => ({ ...item, content: item.content.slice(0, 3000) })),
     attachments: editSources,
   }, signal)
+    return result.patch ? { ...result, patch: scopedEditorPatch(proposal.editor, result.patch, proposal.target?.path, proposal.scopeFields) } : result
   }
   const tracked = async (buddy, label, fn) => { const ticket=office.begin(buddy,label); try { const result=await fn();office.finish(ticket,'done',label+' completed. See its receipt in Pulse.');return result } catch(error) {office.finish(ticket,'error',label+' did not complete.');throw error} }
   const actionContext = { role: user?.role, userId: user?.id, catalog, registrations, content, navigate: navigateAllowed, runRegister: input=>tracked('ro','Save confirmed class list',()=>runRegister(input)), undoRegister: input=>tracked('ro','Undo registration',()=>undoRegister(input)), runFile: input=>tracked('luma','File material in library',()=>runFile(input)), runGenerate: (input,signal)=>tracked('quill','Generate and save courseware drafts',()=>runGenerate(input,signal)), similarity, prepareEdit,
     finishTicket: (id,status='done') => office.finish(id,status,status==='done'?'Confirmed tool completed. Inspect its receipt in Pulse.':status==='working'?'Confirmed tool is running.':status==='error'?'Tool did not finish; inspect the error in Pulse.':'Tool cancelled; no change made.'),
-    applyEditor: async (baseline, patch, save, code) => {
-      const result = await applyEditorProposal(baseline, patch, user?.role, save, code)
-      const text = `${baseline.label}: ${result.fields.join(', ')}. ${save && result.persisted ? `Draft saved to the ${result.mode === 'local' ? 'local' : 'account'} workspace; database response verified. Review before checking or publishing.` : save ? 'Applied to this preview device; no cloud save was made.' : 'Applied to the open form. Use its Save control to persist the changes.'}`
+    applyEditor: async (baseline, patch, save, code, fieldPath, scopeFields) => {
+      const result = await applyEditorProposal(baseline, scopedEditorPatch(baseline, patch, fieldPath, scopeFields), user?.role, save, code)
+      const text = save && result.persisted ? 'Draft saved.' : save ? 'Draft updated on this device.' : 'Applied to the open form. Save the form to keep these changes.'
       setMessages(previous => [...previous, { id: crypto.randomUUID(), from: 'pulse', mode: 'receipt', text }]); return text
     },
     applyRoster: async preview => {
@@ -321,6 +333,7 @@ export default function Pulse() {
     const supplied = options.attachments || (attachments.length ? attachments : contextFiles)
     const pending = activeSources(supplied, currentEditorSources())
     const selectedSection = focusedSection(focus, question)
+    const scopeFields = focusedFields(focus, question)
     const sourceReferences = pending.map(item => ({ ...item, text: sourceContext(item, selectedSection) }))
     if (busy || fileBusy || requestRef.current || (!question && !pending.length)) return
     const history = conversationWindow(messages.map(message => ({ ...message, text: message.text || message.proposals?.map(proposal => proposal.label || proposal.text || proposal.type).join('; ') })), 14000).history
@@ -343,10 +356,13 @@ export default function Pulse() {
       }
       const permitted = !question || checkAppropriateUse(question, user?.role || 'guest').allowed
       const editor = currentEditor()
+      const broad = ALL_FIELDS.test(question) || /\b(?:all|every|entire|whole)\s+(?:(?:the|these|my)\s+)?(?:program\s+outcomes?|outcomes?|requirements?|policies|references?|questions?|sections?|fields?)\b/i.test(question)
+      const target = user?.role === 'instructor' && !options.skipOperator && (DRAFT_REQUEST.test(question) || EDIT_REQUEST.test(question)) && !broad && focus?.field && selectedSection === focus.field.split('.')[0] ? { path: focus.field, label: focus.label } : null
+      if (target && (!focus.fieldElement?.isConnected || focus.fieldElement.getAttribute('data-pulse-field') !== target.path || focus.brief?.disabled || focus.brief?.sensitive || !editor || !editableField(editor, target.path))) throw new Error('The selected field changed or is read-only. Drag Pulse onto the intended editable field again.')
       const role = user?.role || 'guest'
       const destination = pageFor(question, role === 'admin' && user?.canSwitchRoles ? 'instructor' : role)
-      const work = options.skipOperator || !permitted ? null : workProposal({ message: question, attachments: pending, role, editor, registrations: registrations.filter(item => item.uploadedBy === user?.id), catalog, section: selectedSection })
-      const draftFromSource = pending.length && /\b(?:generate|create|draft|make|prepare|build)\b/i.test(question) && (/learning materials?|lessons?|lecture|courseware/i.test(question) || /^(?:please\s+)?generate\s+(?:me\s+)?(?:this|it|these)[.!?]?$/i.test(question) && /learning materials?|lessons?|lecture|courseware/i.test(history.at(-2)?.content || history.at(-1)?.content || ''))
+      const work = options.skipOperator || !permitted ? null : workProposal({ message: question, attachments: pending, role, editor, registrations: registrations.filter(item => item.uploadedBy === user?.id), catalog, section: selectedSection, target, scopeFields })
+      const draftFromSource = !target && pending.length && /\b(?:generate|create|draft|make|prepare|build)\b/i.test(question) && (/learning materials?|lessons?|lecture|courseware/i.test(question) || /^(?:please\s+)?generate\s+(?:me\s+)?(?:this|it|these)[.!?]?$/i.test(question) && /learning materials?|lessons?|lecture|courseware/i.test(history.at(-2)?.content || history.at(-1)?.content || ''))
       let plan = draftFromSource ? { proposals: [], chat: true, task: 'draft', mentioned: [] } : options.skipOperator || !permitted ? { proposals: [], chat: true, task: options.task || 'auto', mentioned: findCourseMentions(question, catalog) }
         : work ? { proposals: [work], chat: false, mentioned: [] } : destination ? { proposals: [destination.denied ? { type: 'notice', text: `${destination.label} is not available for your role.` } : { type: /\b(?:guide|walkthrough|walk\s+me|step.by.step|help\s+me)\b/i.test(question) ? 'guide' : 'navigate', path: destination.path, label: destination.label }], chat: false, mentioned: [] }
           : /\b(?:guide|walkthrough|walk\s+me)\b/i.test(question) && /\b(?:this|current)\s+(?:page|section|component)\b/i.test(question) ? { proposals: [{ type: 'guide', path: `${location.pathname}${location.search}`, label: agent?.label || 'this page' }], chat: false, mentioned: [] }
@@ -356,7 +372,7 @@ export default function Pulse() {
         else {
           const result = await requestOperator({ operation: 'plan', message: question, viewRole: role, editor, context: `Page: ${location.pathname}. Component: ${focus?.label || ''}. Known courses: ${catalog.map(item => item.code).join(', ')}.`, history: history.slice(-8).map(item => ({ ...item, content: item.content.slice(0, 3000) })), attachments: sourceReferences.map(item => ({ title: item.title, text: item.text.slice(0, 18000), kind: item.syllabus ? 'syllabus' : item.roster ? 'roster' : 'material' })) }, controller.signal)
           const selected = result.plan
-          const routes = { 'syllabus-builder': '/syllabus?tab=builder', 'my-syllabus': '/syllabus?tab=mine', 'my-courses': role === 'student' ? '/courseware' : '/syllabus?tab=register', courseware: '/courseware', 'student-monitoring': '/student-monitoring', assessment: '/assessment', records: '/records', 'course-loading': '/course-loading', monitor: '/monitor', performance: '/performance', 'ai-settings': '/settings?tab=ai-provider', settings: '/settings', dashboard: '/dashboard', help: '/help' }
+          const routes = { 'syllabus-builder': '/syllabus?tab=builder', 'my-syllabus': '/syllabus?tab=mine', 'my-courses': role === 'student' ? '/courseware' : '/syllabus?tab=register', courseware: '/courseware', 'student-monitoring': '/student-monitoring', assessment: '/assessment', records: '/records', 'course-loading': '/course-loading', monitor: '/monitor', performance: '/performance', 'ai-settings': '/settings?tab=ai-provider', settings: '/settings', dashboard: '/dashboard', help: '/settings?tab=help' }
           let proposal = { type: 'notice', text: selected.instruction || 'Specify the target page, field or course.' }
           if (['navigate', 'guide'].includes(selected.tool) && routes[selected.page]) proposal = { type: selected.tool, path: routes[selected.page], label: selected.page.replace(/-/g, ' ') }
           if (['syllabus-edit', 'content-edit'].includes(selected.tool)) proposal = { type: 'editor-edit', editor, request: question, section: selected.section || 'all', attachments: pending }
@@ -420,24 +436,26 @@ export default function Pulse() {
     {officeOpen&&<Suspense fallback={<div className="pulse-office-loading" role="status">Opening the workspace…</div>}><WorkspaceOffice tasks={office.tasks} messages={messages} busy={busy||fileBusy} modelReady={ai.ready} error={error} onClose={()=>setOfficeOpen(false)} onTask={(question,buddy,conversational)=>void send(question,{...(conversational ? {skipOperator:true,task:'general'} : {}),scope:`${buddy.name} · ${buddy.title}`,buddy:buddy.id})}/></Suspense>}
     <DwellHelp role={user?.role} disabled={open || interaction.dragging} onTarget={focusTarget} />
     <FocusSpotlight target={interaction.dragging ? interaction.hovered : open ? focus : null} dragging={interaction.dragging} />
-    {open && <section data-pulse-ui="panel" className={`connected-pulse ${focus || (guide && !completed) ? 'is-focused' : ''} ${side === 'left' ? 'is-left' : ''}`} role="dialog" aria-modal="false" aria-labelledby="pulse-title">
+    {open && <section data-pulse-ui="panel" {...fileDrop.handlers} className={`connected-pulse ${focus || (guide && !completed) ? 'is-focused' : ''} ${side === 'left' ? 'is-left' : ''}`} role="dialog" aria-modal="false" aria-labelledby="pulse-title">
+      {fileDrop.active && <div className="pulse-file-drop" role="status"><strong>{busy || fileBusy ? 'Finish the current request before attaching files' : 'Drop files to attach'}</strong><small>Up to three references.</small></div>}
       <header className="connected-pulse-header">
-        <div><strong id="pulse-title">Pulse</strong><small>{ai.ready ? ai.label : 'Your interactive assistant'}</small></div>
-        <button type="button" disabled={busy || fileBusy} onClick={() => { try { archive.newThread(); setError(''); setAttachments([]); setContextFiles([]); setGuide(null); setFocus(null) } catch (failure) { setError(failure.message) } }} aria-label="Clear conversation" title="Start a new conversation; the current chat stays in history"><Trash2 size={16} /></button>
-        <button type="button" onClick={() => setHistoryOpen(value => !value)} aria-label="Conversations and memory"><History size={17} /></button>
-        <button type="button" onClick={() => { close(); navigate('/settings?tab=ai-provider') }} aria-label="AI and knowledge settings"><Settings size={17} /></button>
+        <div><strong id="pulse-title">Pulse</strong></div>
+        <button type="button" aria-label="Pulse options" aria-expanded={menuOpen} onClick={() => setMenuOpen(value => !value)}><MoreHorizontal size={19} /></button>
         <button type="button" onClick={close} aria-label="Close Pulse"><X size={19} /></button>
       </header>
-      <div className="connected-pulse-status">{ai.preference === 'browser' ? ai.local.message || 'Load your local model to chat.' : ai.ready ? 'Ready to help you think, draft and complete this workflow.' : 'Page guidance and source search are ready. Enable a model for conversation and drafting.'}{!ai.ready && <button className="btn btn-secondary btn-sm" onClick={() => { close(); navigate('/settings?tab=ai-provider') }}>Set up free / provider AI</button>}</div>
-      <button className="pulse-office-entry" onClick={()=>setOfficeOpen(true)} aria-label="Open workspace buddies"><span>{BUDDIES.map(buddy=><i key={buddy.id} style={{background:buddy.color}}/>)} Meet your workspace buddies</span><span>Visit office ↗</span></button>
+      {menuOpen && <nav className="pulse-options" aria-label="Pulse options">
+        <button aria-label="Clear conversation" disabled={busy || fileBusy} onClick={() => { try { archive.newThread(); setAttachments([]); setContextFiles([]); setGuide(null); setFocus(null); setMenuOpen(false) } catch (failure) { setError(failure.message) } }}>New conversation</button>
+        <button onClick={() => { setHistoryOpen(value => !value); setMenuOpen(false) }}>Conversations and memory</button>
+        <button onClick={() => { const target = focus || describeTarget(document.querySelector('[data-pulse-zone]') || document.querySelector('#main-content'), user?.role); if (target && !focus) focusTarget(target); setGuidanceOpen(true); setMenuOpen(false) }}>{focus ? 'Guide selected component' : 'Guide this page'}</button>
+        <button aria-label="Open workspace buddies" onClick={() => { setOfficeOpen(true); setMenuOpen(false) }}>Workspace buddies</button>
+        <button onClick={() => { close(); setMenuOpen(false); navigate('/settings?tab=ai-provider') }}>AI and knowledge settings</button>
+      </nav>}
       <div className="connected-pulse-feed" ref={feedRef} role="log" aria-live="polite" aria-busy={busy}>
         {historyOpen && <PulseHistory archive={archive} disabled={busy || fileBusy} onClose={() => setHistoryOpen(false)} onOpen={() => { setGuide(null); setFocus(null); setAttachments([]); setContextFiles([]); setInput('') }} />}
-        {focus && <div className="pulse-focus-heading" data-testid="pulse-component-brief"><small>Helping with</small><strong>{focus.label}</strong>
-          {focus.brief && <p className="pulse-brief">{describeSentence(focus.brief)} <span>{focus.brief.kind}</span> · {focus.brief.state}{focus.brief.required ? ' · required' : ''}{focus.brief.disabled ? ' · unavailable' : ''}</p>}
-          {focus.brief?.hints.length > 0 && <ul className="pulse-brief-hints">{focus.brief.hints.map(hint => <li key={hint}>{hint}</li>)}</ul>}
-          {!guide && <button className="btn btn-ghost btn-sm" onClick={() => setFocus(null)}>Exit focused help</button>}</div>}
-        {messages.length === 0 && !guide && <div className="connected-pulse-welcome"><BookOpen size={24} /><h3>{focus ? 'What would you like to do here?' : 'Let’s work through it.'}</h3><p>{focus ? accountGreeting(agent,user) : 'Drag me onto a field, card or process for focused help. You can also ask, draft, compare documents, find references or records, or attach a document: a class list to register, or a material to file under a course. I ask before I change anything.'}</p><button className="btn btn-secondary btn-sm" onClick={() => { const target = describeTarget(document.querySelector('[data-pulse-zone]') || document.querySelector('#main-content'), user?.role); if (target) focusTarget(target) }}>Guide this page</button><small>Keyboard: focus a component, then press Alt+P.</small></div>}
-        {agent && <div className="connected-pulse-guide">
+        {focus && <div className="pulse-focus-heading" data-testid="pulse-component-brief"><strong>{focus.label}</strong><button type="button" className="btn btn-ghost btn-sm" aria-label="Exit focused help" title="Clear selected component" onClick={() => setFocus(null)}><X size={14} /></button></div>}
+        {messages.length === 0 && !guide && <div className="connected-pulse-welcome"><h3>What would you like help with?</h3></div>}
+        {agent && (guidanceOpen || guide) && <div className="connected-pulse-guide">
+
           {guide?.key === 'activate' && !completed && <label className="form-label">Syllabus to guide<select className="form-input" value={guide.recordId || ''} onChange={e => { const recordId = e.target.value; setGuide(previous => ({ ...previous, recordId })); setStepIndex(approvalResumeStep(syllabi.find(s => s.id === recordId))) }}><option value="">Select your saved syllabus</option>{syllabi.filter(s => !s.sample && s.status !== 'archived').map(s => <option key={s.id} value={s.id}>{s.courseCode} · {s.status}</option>)}</select><small>The guide resumes from this record’s saved status.</small></label>}
           {!user?.authenticated && previewAgents.has(agent.id) && <p className="connected-pulse-warning">This workflow currently contains sample data. I can explain the controls; institutional import, delivery or scoring is not verified here.</p>}
           {!guide && <div className="pulse-intents">{intents.map(intent => <button key={intent.key} className="btn btn-secondary btn-sm" onClick={() => chooseIntent(intent)}>{intent.key === 'component-tour' && <Route size={13} />}{intent.label}</button>)}{focus && <button className="btn btn-secondary btn-sm" disabled={busy} onClick={() => void send(`Explain ${focus.label} and help me with the next step.`, { skipOperator: true })}><Sparkles size={13} />Explain this with AI</button>}</div>}
@@ -449,13 +467,13 @@ export default function Pulse() {
               <button className="btn btn-primary btn-sm" disabled={!ready} onClick={nextStep}>{stepIndex === guide.steps.length - 1 ? 'Finish walkthrough' : step.event ? 'Continue' : 'Next step'}</button>
               <button className="btn btn-ghost btn-sm" onClick={() => { setGuide(null); setFocus(null); setCompleted(false) }}>Exit walkthrough</button>
             </div></div>}
-          {completed && <div role="status"><strong>{step?.event ? 'Task recorded. Walkthrough complete.' : 'Walkthrough complete.'}</strong><p>{step?.event ? 'Your action was recorded in the workspace. Check its saved/pending indicator for sync status.' : 'Review the page’s own status for any action you performed. Guidance does not submit or approve records.'}</p><button className="btn btn-secondary btn-sm" onClick={() => { setGuide(null); setCompleted(false) }}>Choose another task</button></div>}
+          {completed && <div role="status"><strong>{step?.event ? 'Task recorded. Walkthrough complete.' : 'Walkthrough complete.'}</strong><p>{step?.event ? 'Your form action was recorded. Reopen the saved draft to review it.' : 'Review the page’s own status for any action you performed. Guidance does not submit or approve records.'}</p><button className="btn btn-secondary btn-sm" onClick={() => { setGuide(null); setCompleted(false) }}>Choose another task</button></div>}
         </div>}
         {messages.map(message => <article key={message.id} className={`connected-pulse-message ${message.from === 'user' ? 'from-user' : ''}`}>
-          <small>{modeLabel(message)}</small>
-          {message.from === 'pulse' && message.trace ? <AgentAnswer message={message} onRevise={note => void send(`Revise your previous answer: ${note}`, { task: message.task, skipOperator: true })} /> : message.mode === 'actions' ? <div className="pulse-actions">{message.proposals.map((proposal, i) => <PulseAction key={i} proposal={proposal} ctx={actionContext} />)}</div> : <div className="connected-pulse-text">{message.text}</div>}
-          {message.from === 'pulse' && message.text && message.mode === 'generated' && <button className="btn btn-secondary btn-sm" onClick={() => downloadMaterialPdf({ title: 'Pulse learning material', text: message.text, sources: message.sources }).catch(error => setError(error.message))}>Download response as PDF</button>}
-          {message.scope && <small>Scope: {message.scope}</small>}
+          <small>{message.from === 'user' ? 'You' : 'Pulse'}</small>
+          {message.from === 'pulse' && message.trace ? <AgentAnswer compact message={message} onDownload={message.mode === 'generated' ? () => downloadMaterialPdf({ title: 'Pulse learning material', text: message.text, sources: message.sources }).catch(error => setError(error.message)) : undefined} onRevise={note => void send(`Revise your previous answer: ${note}`, { task: message.task, skipOperator: true })} /> : message.mode === 'actions' ? <div className="pulse-actions">{message.proposals.map((proposal, i) => <PulseAction key={i} proposal={proposal} ctx={actionContext} />)}</div> : <div className="connected-pulse-text">{message.text}</div>}
+          {message.from === 'pulse' && message.text && message.mode === 'generated' && !message.trace && <details><summary>Response actions</summary><button className="btn btn-secondary btn-sm" onClick={() => downloadMaterialPdf({ title: 'Pulse learning material', text: message.text, sources: message.sources }).catch(error => setError(error.message))}>Download response as PDF</button></details>}
+
           {message.attachedNames?.length > 0 && <small>References: {message.attachedNames.join(', ')}</small>}
           {/* Files used only by an action card are attached, not sent to the answer agents as references. */}
           {message.fileNames?.length > 0 && <small>Attached: {message.fileNames.join(', ')}</small>}
@@ -465,17 +483,17 @@ export default function Pulse() {
         {busy && <PulseLoading buddy={office.tasks.findLast(task=>task.status==='working')?.buddy || 'quill'} startedAt={office.tasks.findLast(task=>task.status==='working')?.at}/>}
       </div>
       {error && <div role="alert" className="connected-pulse-error">{error}</div>}
-      {archive.error && !historyOpen && <div role="status" className="connected-pulse-warning">Conversation not saved: {archive.error} <button className="btn btn-ghost btn-sm" onClick={archive.retry}>Retry history save</button></div>}
-      <small className="pulse-context-status">{archive.loading ? 'Loading private history…' : archive.saving || archive.unsaved ? 'Saving conversation…' : archive.threadId ? `Conversation saved · ${archive.mode === 'cloud' ? 'private account' : 'local app'}` : 'New conversation'} · References stay available until removed.</small>
+      {archive.error && archive.unsaved && messages.length > 0 && !historyOpen && <div role="status" className="connected-pulse-warning">Chat not saved. <button className="btn btn-ghost btn-sm" onClick={archive.retry}>Retry history save</button></div>}
+      <span className="sr-only pulse-context-status" role="status">{archive.saving || archive.unsaved ? 'Saving conversation' : archive.threadId ? 'Conversation saved' : ''}</span>
       {visibleFiles.length > 0 && <ul className="connected-pulse-attachments">{visibleFiles.map((a, i) => <li key={i}><span>{a.title}{a.roster ? ` · class list, ${a.roster.students.length} students` : a.text.length > CHAT_REFERENCE ? ' · long file: chat reads the first 18,000 characters' : ''}</span><button aria-label={`Remove ${a.title}`} onClick={() => { setAttachments(previous => previous.filter((_, index) => i !== index)); setContextFiles(previous => previous.filter(file => file.fileName !== a.fileName)) }}><X size={13} /></button></li>)}</ul>}
       <form className="connected-pulse-form" onSubmit={event => { event.preventDefault(); void send() }}>
         <input ref={fileRef} type="file" hidden multiple accept={UPLOAD_ACCEPT} onChange={e => { void attachFiles(Array.from(e.target.files || [])); e.target.value = '' }} />
-        <button type="button" disabled={busy || fileBusy} onClick={() => fileRef.current?.click()} aria-label="Attach reference"><Paperclip size={18} /></button>
+        <button type="button" disabled={busy || fileBusy} onClick={() => fileRef.current?.click()} aria-label="Attach reference" title="Attach files, or drop up to three files onto Pulse"><Paperclip size={18} /></button>
         <textarea ref={inputRef} value={input} onChange={e => setInput(e.target.value)} maxLength={4000} rows={2} placeholder="Ask, draft, compare or find references…" aria-label="Ask Pulse" onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) { e.preventDefault(); void send() } }} />
         {busy ? <button type="button" onClick={() => requestRef.current?.abort()} aria-label="Stop response"><Square size={17} /></button> : <button type="submit" disabled={(!input.trim() && !attachments.length) || fileBusy} aria-label="Send"><Send size={18} /></button>}
-      </form><small className="connected-pulse-footnote">{fileBusy ? fileNotice || 'Reading the reference in the sandbox…' : 'Actions show a preview before changing data. AI drafts need review; verification is not a guarantee.'}</small>
+      </form>{fileBusy && <small className="connected-pulse-footnote" role="status">{fileNotice || 'Reading files…'}</small>}
     </section>}
-    <button ref={dockRef} data-pulse-ui="mascot" className={`connected-pulse-dock ${interaction.dragging ? 'is-dragging' : ''}`} {...interaction.handlers} aria-label={open ? 'Close Pulse assistant' : 'Open Pulse assistant'} aria-description="Drag Pulse onto a component for guidance, or focus a component and press Alt+P." aria-expanded={open}><PulseAvatar expression={interaction.rejection ? 'concern' : interaction.dragging ? 'curious' : expression} dragging={interaction.dragging} lookAt={lookAt} size={72} /></button>
+    <button ref={dockRef} data-pulse-ui="mascot" className={`connected-pulse-dock ${interaction.dragging ? 'is-dragging' : ''}`} {...interaction.handlers} {...fileDrop.handlers} aria-label={open ? 'Close Pulse assistant' : 'Open Pulse assistant'} aria-description="Drag Pulse onto a component for guidance, or focus a component and press Alt+P. Drop reference files onto Pulse to attach them." aria-expanded={open}><PulseAvatar expression={interaction.rejection ? 'concern' : interaction.dragging ? 'curious' : expression} dragging={interaction.dragging} lookAt={lookAt} size={72} /></button>
     {interaction.dragging && <div data-pulse-ui="drag-hint" className="pulse-drag-hint">{interaction.hovered ? `Help with ${interaction.hovered.label} · ${interaction.hovered.brief.kind}` : 'Drop on a page component'}</div>}
     {interaction.rejection && <div data-pulse-ui="reject" className="pulse-reject-bubble" role="status">{interaction.rejection}</div>}
     <span className="sr-only" role="status">{interaction.notice}</span>

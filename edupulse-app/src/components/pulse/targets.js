@@ -114,7 +114,8 @@ export function describeDrop(element, role) {
   const target = element.closest(TARGETS) || zoneElement
   if (target instanceof HTMLInputElement && target.type === 'password') return { reason: 'sensitive' }
   const brief = componentBrief(target)
-  return { target: { element: target, zoneElement, agent, label: brief.label.slice(0, 140), brief, section: target.closest('[data-section]')?.getAttribute('data-section') || null, recordId: element.closest('[data-syllabus-id]')?.getAttribute('data-syllabus-id') || null } }
+  const bound = target.matches('input,textarea,select,button') ? target : target.closest('[data-pulse-field]') || (target.matches('.form-group') && target.querySelectorAll('[data-pulse-field]').length === 1 ? target.querySelector('[data-pulse-field]') : null)
+  return { target: { element: target, zoneElement, agent, label: brief.label.slice(0, 140), brief, fieldElement: bound, field: bound?.getAttribute('data-pulse-field') || null, section: target.closest('[data-section]')?.getAttribute('data-section') || null, recordId: element.closest('[data-syllabus-id]')?.getAttribute('data-syllabus-id') || null } }
 }
 export const describeTarget = (element, role) => describeDrop(element, role).target || null
 export const REASONS = {

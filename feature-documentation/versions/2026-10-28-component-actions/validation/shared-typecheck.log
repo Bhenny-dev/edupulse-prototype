@@ -1,0 +1,57 @@
+
+> edupulse-app@0.4.0 typecheck
+> tsc --project jsconfig.json --noEmit && tsc --project tsconfig.server.json --noEmit
+
+src/utils/markdownBlocks.js(7,31): error TS7006: Parameter 'value' implicitly has an 'any' type.
+src/utils/markdownBlocks.js(17,17): error TS7023: 'inline' implicitly has return type 'any' because it does not have a return type annotation and is referenced directly or indirectly in one of its return expressions.
+src/utils/markdownBlocks.js(17,24): error TS7006: Parameter 'value' implicitly has an 'any' type.
+src/utils/markdownBlocks.js(22,82): error TS7006: Parameter 'run' implicitly has an 'any' type.
+src/utils/markdownBlocks.js(23,103): error TS7006: Parameter 'run' implicitly has an 'any' type.
+src/utils/markdownBlocks.js(25,50): error TS2488: Type 'RegExpMatchArray | null' must have a '[Symbol.iterator]()' method that returns an iterator.
+src/utils/markdownBlocks.js(36,15): error TS7006: Parameter 'line' implicitly has an 'any' type.
+src/utils/markdownBlocks.js(36,74): error TS7006: Parameter 'cell' implicitly has an 'any' type.
+src/utils/markdownBlocks.js(39,15): error TS7006: Parameter 'lines' implicitly has an 'any' type.
+src/utils/markdownBlocks.js(46,41): error TS2532: Object is possibly 'undefined'.
+src/utils/markdownBlocks.js(48,18): error TS18048: 'level' is possibly 'undefined'.
+src/utils/markdownBlocks.js(48,38): error TS18048: 'level' is possibly 'undefined'.
+src/utils/markdownBlocks.js(50,7): error TS18048: 'level' is possibly 'undefined'.
+src/utils/markdownBlocks.js(50,7): error TS2532: Object is possibly 'undefined'.
+src/utils/markdownBlocks.js(53,5): error TS18048: 'level' is possibly 'undefined'.
+src/utils/markdownBlocks.js(53,22): error TS2345: Argument of type '{ text: any; children: never[]; }' is not assignable to parameter of type 'never'.
+src/utils/markdownBlocks.js(55,18): error TS7006: Parameter 'node' implicitly has an 'any' type.
+src/utils/markdownBlocks.js(56,50): error TS7006: Parameter 'item' implicitly has an 'any' type.
+src/utils/markdownBlocks.js(63,32): error TS7006: Parameter 'markdown' implicitly has an 'any' type.
+src/utils/markdownBlocks.js(66,7): error TS7034: Variable 'paragraph' implicitly has type 'any[]' in some locations where its type cannot be determined.
+src/utils/markdownBlocks.js(68,66): error TS7005: Variable 'paragraph' implicitly has an 'any[]' type.
+src/utils/markdownBlocks.js(79,13): error TS2488: Type 'RegExpMatchArray | null' must have a '[Symbol.iterator]()' method that returns an iterator.
+src/utils/markdownBlocks.js(80,73): error TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{ 1: { fontSize: number; margin: number[]; }; 2: { fontSize: number; margin: number[]; }; 3: { fontSize: number; margin: number[]; }; }'.
+src/utils/markdownBlocks.js(91,83): error TS7006: Parameter 'cell' implicitly has an 'any' type.
+src/utils/markdownBlocks.js(92,30): error TS7006: Parameter 'row' implicitly has an 'any' type.
+src/utils/markdownBlocks.js(108,182): error TS7006: Parameter 'column' implicitly has an 'any' type.
+src/utils/pdfExport.js(1,10): error TS2305: Module '"./syllabusFiles"' has no exported member 'syllabusBlocks'.
+src/utils/pdfExport.js(7,26): error TS7006: Parameter 'content' implicitly has an 'any' type.
+src/utils/pdfExport.js(7,35): error TS7006: Parameter 'title' implicitly has an 'any' type.
+src/utils/pdfExport.js(7,42): error TS7006: Parameter 'status' implicitly has an 'any' type.
+src/utils/pdfExport.js(8,80): error TS7016: Could not find a declaration file for module 'pdfmake/build/pdfmake'. 'C:/Users/Benny/OneDrive/Documents/EduPulse/EduPulse System Prototype/edupulse-app/node_modules/pdfmake/build/pdfmake.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/pdfmake` if it exists or add a new declaration (.d.ts) file containing `declare module 'pdfmake/build/pdfmake';`
+src/utils/pdfExport.js(8,113): error TS7016: Could not find a declaration file for module 'pdfmake/build/vfs_fonts'. 'C:/Users/Benny/OneDrive/Documents/EduPulse/EduPulse System Prototype/edupulse-app/node_modules/pdfmake/build/vfs_fonts.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/pdfmake` if it exists or add a new declaration (.d.ts) file containing `declare module 'pdfmake/build/vfs_fonts';`
+src/utils/pdfExport.js(13,27): error TS7006: Parameter 'node' implicitly has an 'any' type.
+src/utils/pdfExport.js(13,33): error TS7006: Parameter 'index' implicitly has an 'any' type.
+src/utils/pdfExport.js(15,23): error TS7006: Parameter 'node' implicitly has an 'any' type.
+src/utils/pdfExport.js(15,29): error TS7006: Parameter 'container' implicitly has an 'any' type.
+src/utils/pdfExport.js(15,113): error TS7006: Parameter 'next' implicitly has an 'any' type.
+src/utils/pdfExport.js(16,14): error TS7006: Parameter 'page' implicitly has an 'any' type.
+src/utils/pdfExport.js(16,20): error TS7006: Parameter 'count' implicitly has an 'any' type.
+src/utils/pdfExport.js(20,35): error TS7006: Parameter 'blocks' implicitly has an 'any' type.
+src/utils/pdfExport.js(21,28): error TS7006: Parameter 'block' implicitly has an 'any' type.
+src/utils/pdfExport.js(24,43): error TS7006: Parameter 'syllabus' implicitly has an 'any' type.
+src/utils/pdfExport.js(24,53): error TS7006: Parameter 'filename' implicitly has an 'any' type.
+src/utils/pdfExport.js(31,33): error TS7006: Parameter 'content' implicitly has an 'any' type.
+src/utils/pdfExport.js(33,36): error TS2739: Type '{ text: string; color: string; margin: number[]; }' is missing the following properties from type '{ text: string; bold: boolean; fontSize: number; color: string; margin: number[]; }': bold, fontSize
+src/utils/pdfExport.js(34,167): error TS2353: Object literal may only specify known properties, and 'headlineLevel' does not exist in type '{ text: string; bold: boolean; fontSize: number; color: string; margin: number[]; }'.
+src/utils/pdfExport.js(37,102): error TS2353: Object literal may only specify known properties, and 'headlineLevel' does not exist in type '{ text: string; bold: boolean; fontSize: number; color: string; margin: number[]; }'.
+src/utils/pdfExport.js(38,18): error TS2353: Object literal may only specify known properties, and 'stack' does not exist in type '{ text: string; bold: boolean; fontSize: number; color: string; margin: number[]; }'.
+src/utils/pdfExport.js(38,46): error TS7006: Parameter 'source' implicitly has an 'any' type.
+src/utils/pdfExport.js(38,54): error TS7006: Parameter 'index' implicitly has an 'any' type.
+src/utils/pdfExport.js(42,43): error TS7006: Parameter 'content' implicitly has an 'any' type.

@@ -4,6 +4,7 @@
 
 | Folder | Covers | Contents |
 | --- | --- | --- |
+| [28 October component actions](versions/2026-10-28-component-actions/README.md) | Selected-field drafting, dropped references, clean Pulse, Settings Help/shortcuts and expanded outline | Isolated validation passed; shared PDF work has type errors; not pushed or deployed |
 | [29 October landing v2](versions/2026-10-29-landing-v2/README.md) | Editorial landing page, shared design tokens, contrast and motion rules, skip link, formatted PDF downloads | Live from 354b0a1; verify 148/148, browser 140 passed; hosted checks passed |
 | [28 October landing and motion](versions/2026-10-28-landing-and-motion/README.md) | CIT-focused landing page with KCP photographs and college emblems; page, view and dialog transitions | Live from `952107c`; verify and browser suites passed |
 | [28 October role restoration](versions/2026-10-28-role-restoration/README.md) | Authenticated role dashboards, charts/matrices, records intake, readers, notices and solid dark surfaces | Live; included in the verified baseline release |
