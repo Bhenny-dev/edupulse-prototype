@@ -42,7 +42,12 @@ The public landing page was rebuilt as an editorial, scroll-told introduction to
 
 ## Deployment
 
-Pending.
+Pushed to `main` as `354b0a1`. Vercel production deployment `dpl_mzGqb4ErMb8B13kuUeSwzELsmV3c` built from that commit in about two and a half minutes and is Ready on `edupulse-prototype.vercel.app`.
+
+Hosted checks on 29 October 2026:
+- `/api/ai?action=health` returned 200, and the served page loads the Fraunces font.
+- Desktop (1440 by 900, motion allowed): the new hero renders; scrolling produces exactly two pinned scenes; the timeline section is not pinned, and its phase numbers light up as the line reaches them; the photo gallery region and the skip link are present; there is no horizontal overflow; the browser console logged no errors or warnings.
+- Phone width (390 by 844): no pinned scenes; the timeline runs down the left and draws as the page scrolls; no horizontal overflow.
 
 ## Known limitations
 
