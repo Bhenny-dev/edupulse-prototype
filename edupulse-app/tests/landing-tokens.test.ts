@@ -2,10 +2,9 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 
-// The landing page's colour tokens, read from the stylesheets themselves, meet WCAG 2.x
-// contrast in both themes: 4.5:1 for text on the surface it is used on, 3:1 for the
-// focus ring against the section around it (docs/DESIGN.md).
-const app = readFileSync('src/index.css', 'utf8')
+// The landing page's colour tokens, read from its stylesheet, meet WCAG 2.x contrast: 4.5:1 for
+// text on the surface it is used on, 3:1 for the focus ring and form-control borders against
+// their surfaces (docs/DESIGN.md). The public page keeps one light palette in both app themes.
 const landing = readFileSync('src/components/landing/landing.css', 'utf8')
 
 type Vars = Record<string, string>
@@ -29,39 +28,43 @@ const luminance = (hex: string) => {
 }
 const contrast = (a: string, b: string) => { const [x, y] = [luminance(a), luminance(b)].sort((p, q) => q - p); return (x + 0.05) / (y + 0.05) }
 
-const light: Vars = { ...block(app, ':root'), ...block(landing, '.landing-page') }
-const dark: Vars = { ...block(app, ':root'), ...block(app, '.dark-mode'), ...block(landing, '.landing-page'), ...block(landing, '.dark-mode .landing-page') }
+const vars = block(landing, '.landing-page')
+const SURFACES = ['--lp-white', '--lp-mist', '--lp-ice']
 
-// [foreground, background]: the paper sections change with the theme; the navy sections do not.
-const PAPER_TEXT = [
-  ['--ink', '--paper'], ['--ink', '--card'], ['--ink-soft', '--paper'], ['--ink-soft', '--card'],
-  ['--ink-faint', '--paper'], ['--ink-faint', '--card'], ['--gold-text', '--paper'], ['--gold-text', '--card'],
-  ['--success-text', '--paper'], ['--paper', '--ink'], ['--on-gold-text', '--gold-text'],
-]
-const NAVY_TEXT = [
-  ['--on-navy', '--navy'], ['--on-navy-soft', '--navy'], ['--gold-soft', '--navy'],
-  ['--on-navy', '--navy-2'], ['--on-navy-soft', '--navy-2'], ['--gold-soft', '--navy-2'],
-  ['--navy', '--gold-soft'], ['--navy', '--on-navy'],
-]
-const FOCUS = [['--gold-text', '--paper'], ['--gold-text', '--card'], ['--gold-soft', '--navy'], ['--gold-soft', '--navy-2']]
+test('the landing palette is the one in the brief', () => {
+  const brief = { '--lp-white': '#ffffff', '--lp-mist': '#f4f9ff', '--lp-ice': '#dbeafe', '--lp-blue': '#2563eb', '--lp-ink': '#0f172a', '--lp-slate': '#475569', '--lp-line': '#e2e8f0' }
+  for (const [name, hex] of Object.entries(brief)) assert.equal(color(vars, name).toLowerCase(), hex, name)
+})
 
-for (const [theme, vars] of [['light', light], ['dark', dark]] as const) {
-  test(`landing text colours reach 4.5:1 in the ${theme} theme`, () => {
-    for (const [fg, bg] of [...PAPER_TEXT, ...NAVY_TEXT]) {
-      const ratio = contrast(color(vars, fg), color(vars, bg))
-      assert.ok(ratio >= 4.5, `${fg} on ${bg}: ${ratio.toFixed(2)}:1`)
-    }
-  })
-  test(`landing focus rings reach 3:1 against their sections in the ${theme} theme`, () => {
-    for (const [ring, bg] of FOCUS) {
-      const ratio = contrast(color(vars, ring), color(vars, bg))
-      assert.ok(ratio >= 3, `${ring} ring on ${bg}: ${ratio.toFixed(2)}:1`)
-    }
-  })
-}
+test('landing text colours reach 4.5:1 on the surfaces they are used on', () => {
+  const pairs = [
+    ...['--lp-ink', '--lp-slate', '--lp-blue-deep'].flatMap(fg => SURFACES.map(bg => [fg, bg])),
+    // Blue text (links, labels) is used on white and mist only; on the ice surface it is the deeper blue.
+    ['--lp-blue', '--lp-white'], ['--lp-blue', '--lp-mist'],
+    ['--lp-success', '--lp-white'], ['--lp-success', '--lp-mist'],
+    // Button and chat-bubble text.
+    ['--lp-white', '--lp-blue'], ['--lp-white', '--lp-blue-deep'],
+  ]
+  for (const [fg, bg] of pairs) {
+    const ratio = contrast(color(vars, fg), color(vars, bg))
+    assert.ok(ratio >= 4.5, `${fg} on ${bg}: ${ratio.toFixed(2)}:1`)
+  }
+})
 
-test('the decorative gold is never used for landing text', () => {
-  // --gold reaches only 2.7:1 on paper, so text and meaningful icons use --gold-text.
-  const textRules = [...landing.matchAll(/([^{}]+)\{([^}]*)\}/g)].filter(([, , body]) => /(^|[;\s])color:\s*var\(--gold\)/.test(body))
+test('the focus ring and form-control borders reach 3:1', () => {
+  for (const [fg, bg] of [...SURFACES.map(bg => ['--focus-ring', bg]), ['--lp-field', '--lp-white']]) {
+    const ratio = contrast(color(vars, fg), color(vars, bg))
+    assert.ok(ratio >= 3, `${fg} against ${bg}: ${ratio.toFixed(2)}:1`)
+  }
+})
+
+test('the public page keeps its light palette when the app is in dark mode', () => {
+  assert.doesNotMatch(landing, /\.dark-mode\s+\.landing-page\s*\{/)
+  assert.match(landing.slice(landing.search(/(^|\n)\.landing-page \{/)), /color-scheme:\s*light/)
+})
+
+test('decorative tokens are never used as a text colour', () => {
+  // --lp-line, --lp-ice-soft and --lp-blue-soft are below 4.5:1 on white; they are for rules and shapes.
+  const textRules = [...landing.matchAll(/([^{}]+)\{([^}]*)\}/g)].filter(([, , body]) => /(^|[;\s])color:\s*var\(--lp-(line|ice-soft|blue-soft)\)/.test(body))
   assert.deepEqual(textRules.map(([, selector]) => selector.trim()), [])
 })

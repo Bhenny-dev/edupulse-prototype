@@ -40,3 +40,5 @@ Version folders are release records. Preserve released records, and add correcti
 | [v0.4.0](versions/v0.4.0/README.md) | Agentic RAG with named LangGraph agents, real-document ingestion in a sandbox, free in-process embeddings and reranking, hybrid vector search, verification and correction, comparison, references, accurate Pulse guidance (includes the unreleased v0.3.0 work) | See [validation results](versions/v0.4.0/validation/results.md) |
 
 Execution is tracked in [WORKPLAN.md](WORKPLAN.md). A release is verified only after lint, typecheck, tests, build, deployment validation and remote checks have evidence.
+
+[30 October landing v3](versions/2026-10-30-landing-v3/README.md): white and light-blue landing page with an opening, a 3D ring and geometric motion; local implementation and validation, pushed to the `landing-v3-light` branch, not deployed.

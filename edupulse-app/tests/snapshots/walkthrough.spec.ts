@@ -49,16 +49,15 @@ async function run(page: Page, role: string, scenes: Scene[]) {
 const tab = (name: string) => async (page: Page) => { await page.getByRole('button', { name, exact: true }).first().click(); await settle(page) }
 
 // The landing page is captured with reduced motion: every section is then complete and
-// still (no intro curtain, pinned scenes, scroll-drawn lines or drifting photographs), and
+// still (no opening, pinned scenes, scroll-drawn lines, 3D scene or drifting photographs), and
 // the guides describe what changes when motion is allowed.
 async function showSection(page: Page, selector: string) {
   const top = await page.locator(selector).evaluate(element => element.getBoundingClientRect().top + window.scrollY)
   await page.evaluate(to => window.scrollTo({ top: to, behavior: 'instant' }), top - 72)
   await page.waitForTimeout(400)
 }
-// Section images: the fixed bar and back-to-top button stay out of the crop, and so does the
-// fixed film-grain layer (in a crop taller than the window it would cover only the top part).
-const LANDING_CROP = '.landing-nav{position:static !important}.landing-to-top{display:none !important}.landing-page::after{display:none !important}'
+// Section images: the fixed bar and the back-to-top button stay out of the crop.
+const LANDING_CROP = '.lp-nav{position:static !important}.landing-to-top{display:none !important}'
 const section = (selector: string) => ({ act: (p: Page) => showSection(p, selector), element: (p: Page) => p.locator(selector), style: LANDING_CROP })
 
 test('public site', async ({ page }) => {
@@ -67,7 +66,7 @@ test('public site', async ({ page }) => {
   const f = '01-public-site'
   await run(page, 'public', [
     { folder: f, name: '01-landing-hero', title: 'Landing page: hero, institution lockup and primary actions', path: '/' },
-    { folder: f, name: '02-landing-navigation', title: 'Landing navigation after scrolling: active section and reading progress', act: p => showSection(p, '#features'), element: p => p.locator('header.landing-nav') },
+    { folder: f, name: '02-landing-navigation', title: 'Landing navigation after scrolling: active section and reading progress', act: p => showSection(p, '#features'), element: p => p.locator('header.lp-nav') },
     { folder: f, name: '03-landing-why-edupulse', title: 'Landing page: why EduPulse (course preparation today and with EduPulse)', ...section('#problem') },
     { folder: f, name: '04-landing-features', title: 'Landing page: features (four parts of one workflow)', ...section('#features') },
     { folder: f, name: '05-landing-how-it-works', title: 'Landing page: how it works (six-phase timeline)', ...section('#flow') },

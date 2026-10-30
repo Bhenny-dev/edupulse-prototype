@@ -3474,6 +3474,108 @@
       "sha256": "47a9f38b6268e1a15ca6ca8a351a42428a8f1d2126f7ab6219480dee0bd62c5d",
       "reviewer": "Claude agent",
       "reviewedAt": "2026-10-29T13:56:03.286Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/01-landing-hero.png",
+      "sha256": "37d3269e7590d38db62f517545c74283151357ff0aa03b2277e9a9b51df454a8",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-30T05:19:31.138Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/02-landing-navigation.png",
+      "sha256": "4b2638e7419883ca59d46de7e53b1b4ad4f5fe4d730db5915e85f060394c4f38",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-30T05:19:31.138Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/03-landing-why-edupulse.png",
+      "sha256": "b083fd1d213120d57fa461c34002c34446604cd6c7ca47779f7a82e111ff1503",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-30T05:19:31.138Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/04-landing-features.png",
+      "sha256": "c50d5eb5dff7699441f2dfd21d2cf57a4c30c6d789a64ce387eecb2c7f492666",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-30T05:19:31.138Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/05-landing-how-it-works.png",
+      "sha256": "c0f171dee99602ce82d037796fc8d60795891c7d13602265871af00f3dcfff2e",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-30T05:19:31.138Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/06-landing-roles.png",
+      "sha256": "fb747f1ca0aedc055c730a382fcd75770ba74cfa22e34f84e394ad86f359311a",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-30T05:19:31.138Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/07-landing-roles-student.png",
+      "sha256": "8f0f6bd1e8570d98e8768c6df5bd17183c5787ea1a580b6784b305c6fc85d49a",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-30T05:19:31.138Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/08-landing-pulse.png",
+      "sha256": "9e26a300103a03fcb8d71662a7e07a523b6f31fb731cbc14e1ec73f9ceda6e07",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-30T05:19:31.138Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/09-landing-why-it-matters.png",
+      "sha256": "d534b87b7b2c21a580ae603f8bff83ffd7b0ed22e57b60022babecd689653b03",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-30T05:19:31.138Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/10-landing-colleges.png",
+      "sha256": "098c796f2676ecce5c78fe2df3fe5ee9805db256268682814d94ac99feebbc9a",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-30T05:19:31.138Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/11-landing-community.png",
+      "sha256": "18e854e180937a9fa81b417aed58ee67d0068e47cfc6bc06694228d0cffd185b",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-30T05:19:31.138Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/12-landing-faq.png",
+      "sha256": "18f6bd4d7eb19a406279a9504b23cc6faca0d259731bfa03516d9f07f8e063a6",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-30T05:19:31.138Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/13-sign-in-panel.png",
+      "sha256": "3a36d719a1c5d8aee4ae39b2a383b322719fd933ab72f6b1140bde4d06949942",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-30T05:19:31.138Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/14-preview-personas.png",
+      "sha256": "56a56e28a4146859e3f770e42f928b6823dec1932b0d9dd1c8ace4c696d5804b",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-30T05:19:31.138Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/15-landing-footer.png",
+      "sha256": "d8fef70020fe4ded28fd22b9b54ba087c9df1adee9afcb68d4a86cc5e0ea4993",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-30T05:19:31.138Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/06-mobile/01-landing.png",
+      "sha256": "5c6b02322805383021bcaf3c1117bc81c9351ec9df4275726968444fc5c15bfa",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-30T05:19:31.138Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/06-mobile/07-landing-menu.png",
+      "sha256": "932a15b348f361bf8447faa2336d2c8c45be560b60ba2926a10426d8a24dc3ce",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-30T05:19:31.138Z"
     }
   ]
 }

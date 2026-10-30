@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom'
 import { FileText, ArrowLeft, Calendar } from 'lucide-react'
+import PublicPage from '../components/landing/PublicPage'
 
 export default function Terms() {
   return (
+    <PublicPage variant="diagonal">
     <div style={{
       minHeight: '100vh',
       background: 'linear-gradient(135deg, var(--sky-50) 0%, var(--white) 50%, var(--sky-50) 100%)',
@@ -128,5 +130,6 @@ export default function Terms() {
         </div>
       </div>
     </div>
+    </PublicPage>
   )
 }

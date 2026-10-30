@@ -1,77 +1,85 @@
 # EduPulse design system
 
-How the interface is styled and how it moves: the token layers, the two themes, type, the motion rules and the accessibility checks that enforce them. The signed-in app and the public landing page share one set of semantic roles but use different palettes and pacing: the app is a dense working tool, the landing page an editorial introduction.
+How the interface is styled and how it moves: the token layers, the themes, type, the motion rules and the accessibility checks that enforce them. The signed-in app and the public landing page share semantic roles but use different palettes and pacing: the app is a dense working tool; the landing page is a light, geometric introduction with one orchestrated opening.
 
 ## Sources
 
-The direction was set with the ui-ux-pro-max design catalogue (nextlevelbuilder/ui-ux-pro-max-skill), read from its published data files:
-
-| Area | Catalogue entry | Applied as |
-| --- | --- | --- |
-| Product type | Learning management system; University department; Academic (for cited answers) | Role-scoped app pages; an institutional public page; Pulse answers with numbered sources |
-| Landing pattern | Scroll-triggered storytelling | One idea per section, in the order of the business flow |
-| Style | Swiss Modernism 2.0 with an editorial serif (landing); Flat and Accessible & Ethical (app) | Grid, rules and generous space on the landing page; flat, high-contrast controls in the app |
-| Colour | Institutional navy and gold, semantic tokens, both themes designed together | KCP navy and gold, mapped to roles below |
+| Area | Applied as |
+| --- | --- |
+| Product type | Learning management system for one university college (the CIT of King's College of the Philippines): role-scoped app pages, an institutional public page, Pulse answers with numbered sources |
+| Landing pattern | Scroll-led storytelling, one idea per section in the order of the business flow (records, syllabus, courseware, delivery, monitoring) |
+| Landing style | White and light blue, satin surfaces, precise geometry and generous space (landing redesign brief, 30 October 2026). Motion references for direction only, with no assets or code taken: Linear, Notion AI, Stripe, the GSAP scrubbed bento demo, Apple product pages, Spline and Lusion |
+| App style | Flat, accessible controls on sky blue (unchanged) |
 
 ## Token layers
 
-1. **Palette values** are hex colours defined once (for example `--sky-400` in `src/index.css`, `--paper` in `landing.css`).
-2. **Semantic roles** (`src/index.css`, `:root`, redefined under `.dark-mode`) are what components use:
-   * `--brand-navy` (`#0a1a33`): KCP navy surfaces.
-   * `--brand-gold` (`#b88a2e`): rules, fills and decoration only. It reaches 2.7:1 on the landing paper, so it is never text.
-   * `--brand-gold-text` (`#866019` light, `#e0bd6a` dark): gold text and meaningful icons (4.9:1 and 10.2:1 on the landing paper).
-   * `--brand-gold-soft` (`#e5c878`): gold text and icons on navy (10.6:1).
-   * `--focus-ring`, `--focus-ring-width` (3 px), `--focus-ring-offset` (2 px): the app keeps its sky ring; the landing page sets gold per section.
-3. **Component tokens** (`src/components/landing/landing.css`, `.landing-page`): `--paper`, `--card`, `--ink`, `--ink-soft`, `--ink-faint`, `--gold-text`, `--on-gold-text`, `--success-text`, `--navy`, `--on-navy`, `--on-navy-soft`, mapped onto the roles above and redefined for dark mode.
+1. **Palette values** are hex colours defined once (for example `--sky-400` in `src/index.css`, `--lp-blue` in `landing.css`).
+2. **Semantic roles** (`src/index.css`, `:root`, redefined under `.dark-mode`) are what the app's components use, including `--brand-navy`, `--brand-gold*` and the focus-ring tokens (`--focus-ring`, `--focus-ring-width` 3 px, `--focus-ring-offset` 2 px).
+3. **Landing tokens** (`src/components/landing/landing.css`, `.landing-page`):
+
+| Token | Value | Role |
+| --- | --- | --- |
+| `--lp-white` | `#FFFFFF` | main background, cards |
+| `--lp-mist` | `#F4F9FF` | alternate sections (How it works, Pulse, Sign in, footer) |
+| `--lp-ice` | `#DBEAFE` | pale geometric planes, chips, the People duty rows |
+| `--lp-blue` | `#2563EB` | primary actions, links on white and mist, connectors, focus ring |
+| `--lp-blue-deep` | `#1D4ED8` | hover, section labels, blue text on the ice surface |
+| `--lp-ink` | `#0F172A` | main text |
+| `--lp-slate` | `#475569` | secondary text |
+| `--lp-line` | `#E2E8F0` | borders and rules (never text) |
+| `--lp-field` | `#64748B` | form-control borders (3:1, WCAG 1.4.11) |
+| `--lp-ice-soft`, `--lp-blue-soft` | `#EAF2FE`, `#93C5FD` | decoration only |
 
 Rules:
-* Every text token reaches **4.5:1** on the surface it is used on, in both themes. `tests/landing-tokens.test.ts` reads the stylesheets and checks each pair, and fails if `--gold` is used as a text colour.
-* The focus ring reaches **3:1** against the section around it: `--gold-text` on paper sections, `--gold-soft` on navy sections (hero, timeline, Pulse band, footer, the bar over the hero).
-* Buttons that show white text sit on `--gold-text` (5.7:1), never on the decorative gold.
+* Every landing text token reaches **4.5:1** on the surface it is used on. Blue text (`--lp-blue`) is used on white and mist only; on the ice surface text uses `--lp-blue-deep` (5.5:1). `tests/landing-tokens.test.ts` reads the stylesheet, checks each pair and the brief's exact values, and fails if a decorative token is used as a text colour.
+* The focus ring (`#2563EB`, 3 px) reaches **3:1** on white, mist and ice; form-control borders reach 3:1 on white.
+* Button text is white on `--lp-blue` (5.2:1) or `--lp-blue-deep`.
+* Institutional seals and the KCP crest keep their original colours; photographs keep their natural colour.
 
 ## Themes
 
-Light and dark are designed together. `.dark-mode` (set by Settings → Appearance or the top-bar moon) redefines the app palette and `--brand-gold-text`; `.dark-mode .landing-page` redefines the landing surfaces and text. Navy sections stay navy in both themes. The token test checks both themes.
+`.dark-mode` (Settings → Appearance or the top-bar moon) redefines the app palette. The public landing page keeps its one light palette in both themes (`color-scheme: light`) and restyles the shared sign-in panel so its fields and buttons stay light and legible there. The token test asserts that no dark-mode override of the landing exists.
 
 ## Type
 
-* Landing display: **Fraunces** (variable, optical sizes 9 to 144), with Iowan Old Style and Georgia as fallbacks. Body: **Inter**. App headings: **Poppins**. Fonts load from Google Fonts with `display=swap`.
-* Research figures use tabular numerals so values do not shift while counting.
+* Landing: **Sora** 700 and 800 for the EduPulse name, the hero and section titles; **DM Sans** 400 to 700 for text (400–500 body, 500–600 labels, 600–700 buttons), with system sans-serif fallbacks. On desktop the hero headline wraps on three lines (a no-break space keeps “& scores” together); body text is 17 px.
+* App: **Poppins** headings and **Inter** text, unchanged.
+* Fonts load from Google Fonts with `display=swap`, only the weights above.
+* Research figures use tabular numerals.
 
 ## Motion
 
-Timing steps are shared by `motion.js` (`DURATION`, seconds) and `landing.css` (milliseconds):
-
-| Token | Value | Used for |
+| Kind | Duration | Examples |
 | --- | --- | --- |
-| `--motion-fast` / `DURATION.fast` | 200 ms | hover and colour changes, link and button states |
-| `--motion-base` / `DURATION.base` | 450 ms | underlines, icons, menu and FAQ opening, chapter changes |
-| `--motion-slow` / `DURATION.slow` | 900 ms | entrances: headings, paragraphs, cards |
-| `--motion-image` | 1200 ms | slow zoom of photographs on hover (decorative) |
-
-The app's own states use `--duration-fast/normal/slow` (150, 250, 350 ms) and `--duration-page` (420 ms).
+| Small interactions (CSS) | 150–250 ms | link and button states, the nav marker, the role marker, FAQ open and close, the plus turning into a minus |
+| Entrances (GSAP) | 500–850 ms | heading lines rising from a mask, the comparison table opening from its centre seam, the Pulse iris, arcs around the CIT seal, the sign-in aperture |
+| Opening entrance | about 1.4 s | the EduPulse mark and name, with 3D facets assembling around them |
+| Route transitions (CSS) | 320–360 ms | Privacy (rectangle), Terms (diagonal mask) |
 
 Rules:
-* Elements rise **20 px** (`TRAVEL`) as they appear; heading lines rise from behind a mask.
-* Exits take about **two thirds** of an entrance (`EXIT = 0.65`): the chapter change, the back-to-top button, closing an FAQ answer.
-* A stagger is at most 0.06 s per item and never spreads past half a second (`stagger(count)`).
-* At most **two pinned scenes** per page: the hero (the arch opens to the full screen) and the Features chapters. The six-phase timeline draws its line with scrolling but does not pin.
-* SplitText is used only for headings, the hero statement and the *Why EduPulse* statement, and is reverted when the page unmounts.
-* The magnetic pull applies to one element, the hero's **Get started**, capped at 0.3 of the pointer's offset, and only for fine pointers.
-* Continuous motion (the community photographs) stops on hover, keyboard focus or a tap, off screen and in a hidden tab (WCAG 2.2.2). There is no pause button.
-* All landing motion is created inside `gsap.matchMedia('(prefers-reduced-motion: no-preference)')`. Nothing is hidden by CSS, so with reduced motion, or without JavaScript, every section is complete and still. Smooth scrolling (Lenis) runs on the landing page only and never with reduced motion.
+* One dominant transition per major section, then the section stays still for reading. Easing is restrained ease-out (`expo.out`, `power3.out`; `cubic-bezier(0.22, 1, 0.36, 1)` in CSS).
+* Every landing animation is created inside `gsap.matchMedia` (`motion.js`). Nothing is hidden by CSS, so with reduced motion, or without JavaScript, every section is complete and still; switching reduced motion on later reverts the animations and ends the opening.
+* Scrolling is native: no smooth-scroll library and no wheel or touch interception. Section links glide with GSAP's ScrollToPlugin, stop as soon as the reader scrolls, and finish exactly under the fixed bar. Scroll anchoring is off on the landing page, so the browser never shifts the position under a pinned scene.
+* At most **two pinned scenes**: the opening aperture (about 85 % of a viewport, fresh visits only) and the Features stage. The phase connector draws with scrolling but does not pin.
+* The opening plays once per browser tab (`sessionStorage` flag `edupulse-intro`), only for a fresh visit to the root route at the top of the page. Reloads, Back and Forward, direct section links (`#/?section=faq`), documents that start on another route, later returns to the landing page and reduced motion never play it. **Skip intro**, or keyboard focus moving past the overlay, removes it.
+* GSAP and CSS never write the same property of the same element. SplitText is used only for headings; it keeps one accessible heading name and is reverted afterwards.
+* The 3D scene (`scene/landingScene.js`, plain three.js) is one canvas, one renderer, one render loop and one camera controller (entrance push-in, aperture pull-back, pointer parallax for fine pointers, clamped). It loads in its own chunk, compiles its single material program in parallel before the first frame, caps the pixel ratio (1.75, or 1.5 on phones), damps with frame-rate independent easing, renders only while on screen in a visible tab and when something changed, and disposes everything on unmount. Without WebGL, with reduced motion or on failure, an SVG ring stands in.
+* Continuous motion (the community photographs) has a persistent **Pause photo movement** control and also stops on hover, keyboard focus or a tap, off screen and in a hidden tab (WCAG 2.2.2).
 
 ## Accessibility checks
 
 | Check | Where it is enforced |
 | --- | --- |
-| Text and focus-ring contrast in both themes | `tests/landing-tokens.test.ts` |
+| Text, focus-ring and form-control contrast; the brief's palette | `tests/landing-tokens.test.ts` |
+| Opening: plays once, Skip intro by keyboard and pointer, bypassed by reloads, section links and other routes | `tests/browser/landing.spec.ts` |
+| Section links land under the fixed bar without changing the route | `tests/browser/landing.spec.ts` |
+| Feature steps keep number, heading, screen, caption and controls in step (forward, backward, rapid) | `tests/browser/landing.spec.ts` |
+| Role tabs follow the WAI-ARIA tab pattern without height jumps | `tests/browser/landing.spec.ts` |
+| Moving photographs can be paused (control, hover, focus, tap) | `tests/browser/landing.spec.ts` |
+| Reduced motion and missing WebGL give a complete, usable page | `tests/browser/landing.spec.ts` |
+| No horizontal scrolling at 1440, 1024, 768, 390 and 360 px, also after resizing | `tests/browser/landing.spec.ts` |
 | Skip link moves focus to `#main-content` (HashRouter-safe) | `src/components/ui/SkipToContent.jsx`; `tests/browser/landing.spec.ts` |
-| No horizontal scrolling at 375, 768, 1024 and 1440 px | `tests/browser/landing.spec.ts` |
-| Moving photographs can be paused without a button | `tests/browser/landing.spec.ts` (hover, focus and tap) |
-| Reduced motion gives the complete, still page | `tests/browser/landing.spec.ts` |
-| Role tabs follow the WAI-ARIA tab pattern (arrows, Home, End) | `tests/browser/landing.spec.ts` |
-| Images have width, height and lazy loading; icons are SVG; one `h1`, then `h2` per section | code review of `src/pages/Landing.jsx` and `src/components/landing/` |
+| Images have width and height and lazy-load below the fold; icons are SVG; one `h1`, then `h2` per section | code review of `src/pages/Landing.jsx` and `src/components/landing/` |
 
 ## Known gaps
 

@@ -17,25 +17,25 @@ export const PROBLEM = [
 
 export const CHAPTERS = [
   {
-    key: 'records', who: 'Dean · Associate Dean', title: 'Records and course loading', image: records,
+    key: 'records', who: 'Dean · Associate Dean', title: 'Records and course loading', image: records, screen: 'Records page',
     alt: 'EduPulse Records page: Import EduSuite Files, with course records, course loads and student class lists',
     body: "EduSuite stays the system of record. Its exported course records, course loads and block class lists are uploaded, checked and confirmed. Courses are loaded to instructors by the college's rule: a master's degree first, then specialization.",
     points: ["Nothing is saved until the Dean's office confirms", 'Pulse can suggest instructors; people decide'],
   },
   {
-    key: 'syllabus', who: 'Instructor', title: 'The Syllabus Builder', image: syllabus,
+    key: 'syllabus', who: 'Instructor', title: 'The Syllabus Builder', image: syllabus, screen: 'Syllabus Builder',
     alt: 'EduPulse Syllabus Builder with the upload area and the Course Information section',
     body: 'Build the official seven-section KCP syllabus, upload one you already have, or let Pulse co-write it section by section. AI drafts stay Drafted until you check them.',
     points: ['Signed outside EduPulse: Dean review, CAO approval, EVP noting', 'The approved Section 5 course outline becomes the map for everything else'],
   },
   {
-    key: 'courseware', who: 'Instructor', title: 'Courseware from the course outline', image: courseware,
+    key: 'courseware', who: 'Instructor', title: 'Courseware from the course outline', image: courseware, screen: 'My Courseware list',
     alt: 'EduPulse Courseware page listing sample courses, each with Start Generating',
     body: 'Each outline week becomes learning materials and assessments. Generation retrieves from the approved syllabus and your own files first, so drafts stay aligned with the course.',
     points: ['Generate by week, by term or for the whole outline', 'Review, edit and publish; only published items reach students'],
   },
   {
-    key: 'performance', who: 'Students · Instructors · Dean', title: 'Performance by syllabus topic', image: performance,
+    key: 'performance', who: 'Students · Instructors · Dean', title: 'Performance by syllabus topic', image: performance, screen: 'My Performance page',
     alt: 'EduPulse My Performance page with sample scores and topics mastered',
     body: "Students see which topics they have mastered and what to review. Instructors see completed and missed work and unopened materials; the Dean's office follows delivery across the college.",
     points: ['Reminders for unopened materials and missing activities', 'Scores are visualized; official grades stay outside EduPulse'],

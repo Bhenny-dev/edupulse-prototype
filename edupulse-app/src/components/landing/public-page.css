@@ -1,0 +1,17 @@
+/* Route transitions for the public legal pages (PublicPage.jsx). The page itself is revealed:
+   nothing covers it, and `backwards` fill leaves no clip-path once the transition ends. */
+.public-page { animation: public-page-rect 320ms cubic-bezier(0.22, 1, 0.36, 1) backwards; }
+.public-page.is-diagonal { animation-name: public-page-diagonal; animation-duration: 360ms; }
+.public-page h1:focus { outline: none; }
+
+@keyframes public-page-rect {
+  from { clip-path: inset(8% 6% 8% 6% round 24px); opacity: 0.6; }
+  to { clip-path: inset(0% 0% 0% 0% round 0px); opacity: 1; }
+}
+@keyframes public-page-diagonal {
+  from { clip-path: polygon(0% 0%, 0% 0%, -30% 100%, 0% 100%); }
+  to { clip-path: polygon(0% 0%, 130% 0%, 100% 100%, 0% 100%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .public-page, .public-page.is-diagonal { animation: none; }
+}

@@ -1,8 +1,8 @@
 import { useId, useState } from 'react'
-import { Plus } from 'lucide-react'
 
-// One answer open at a time. The answer's height animates through grid rows;
-// a closed answer is hidden from assistive technology with `visibility`.
+// One answer open at a time. The answer's height (grid rows) and opacity change in about
+// 240 ms and the plus turns into a minus; a closed answer leaves the accessibility tree
+// through `visibility`. The reading surface itself never moves.
 export default function FaqList({ items }) {
   const [open, setOpen] = useState(0)
   const id = useId()
@@ -15,7 +15,7 @@ export default function FaqList({ items }) {
             <h3>
               <button type="button" className="faq-question" id={`${id}-q${i}`} aria-expanded={expanded} aria-controls={`${id}-a${i}`} onClick={() => setOpen(expanded ? -1 : i)}>
                 <span>{item.question}</span>
-                <Plus size={20} aria-hidden="true" />
+                <span className="faq-icon" aria-hidden="true" />
               </button>
             </h3>
             <div className="faq-answer" id={`${id}-a${i}`} role="region" aria-labelledby={`${id}-q${i}`}>
