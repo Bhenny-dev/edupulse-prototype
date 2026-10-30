@@ -8,7 +8,8 @@ import citPhoto from '../../assets/kcp/hero-cit-sm.webp'
 const CIT = COLLEGES.find(college => college.status === 'active')
 
 // The hero: flat, semantic HTML. The product screen is a real EduPulse prototype screen with
-// sample data; the ring beside it is decorative (3D when the scene runs, SVG otherwise).
+// sample data and shares one row with a CIT photograph; the ring on the photograph's corner is
+// decorative (3D when the scene runs, SVG otherwise).
 export default function Hero({ ringRef }) {
   return (
     <header id="top" className="lp-hero">
@@ -25,8 +26,8 @@ export default function Hero({ ringRef }) {
 
         <div className="hero-aside">
           <p className="hero-lede" data-hero-in>
-            EduPulse turns the official KCP syllabus into the learning materials, assessments and
-            progress views that follow from it. The AI drafts; the instructor reviews and decides.
+            The approved KCP syllabus drives every material, assessment and progress view.
+            The AI drafts; instructors decide.
           </p>
           <div className="hero-actions" data-hero-in>
             <a href="#login" className="lp-button" onClick={event => scrollToId(event, 'login')}>

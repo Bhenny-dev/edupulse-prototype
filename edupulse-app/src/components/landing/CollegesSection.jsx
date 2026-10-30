@@ -24,7 +24,7 @@ export default function CollegesSection({ cit, planned }) {
         <header className="lp-head">
           <p className="lp-label">Colleges</p>
           <h2 id="colleges-title" data-split>Built for the CIT first</h2>
-          <p>The study is scoped to the College of Information Technology. Adoption by the other KCP colleges is planned future work; a college joins when its instructors are registered and its records are imported.</p>
+          <p>The study covers the CIT. Other KCP colleges are planned; each joins once its instructors and records are in.</p>
         </header>
         <article className="cit-feature" aria-labelledby="cit-name">
           <div className="cit-seal">

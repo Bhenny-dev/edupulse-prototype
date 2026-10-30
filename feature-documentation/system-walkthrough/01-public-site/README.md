@@ -12,8 +12,9 @@ The page is white and light blue, with headings in Sora and text in DM Sans.
 **What the screenshots show.** The landing images were captured with *reduce motion* turned on, so every section is complete and still. With motion allowed, the page also moves; none of this appears in the images:
 * **Opening.** On the first visit to the landing page in a browser tab, the EduPulse logo and name appear on a white and light-blue field while blue geometric planes and 3D facets assemble around them, with **Scroll to explore** and **Skip intro** below. Scrolling about one screen opens the planes outward like an aperture and reveals the hero; scrolling back up closes it again. **Skip intro**, or moving keyboard focus past it, removes the opening at once. It plays once per tab: reloads, Back and Forward, links to a section (for example `#/?section=faq`), later returns to the landing page and reduced motion all skip it.
 * **3D ring.** In the hero, a 3D blue ring takes the place of the flat ring in image 1 and follows a mouse pointer slightly. Without WebGL the flat ring stays.
-* **Section entrances.** Section headings rise line by line, the comparison table opens from its centre, the phase timeline draws its line as you scroll, the Pulse example opens in a circle and its messages appear one at a time, the arcs around the CIT seal draw in and the sign-in photograph opens from a rectangle. Each plays once.
-* **Agents.** The agents section holds the screen while scrolling travels inward ring by ring, with neighbouring rings turning in opposite directions. A card names each agent in turn (**01 / 09** to **09 / 09**) and that agent's ring turns blue. After the ninth, the blue core opens until the screen is white, and *Why it matters* follows.
+* **Section entrances.** Section headings rise line by line, the five cards of *Why EduPulse* rise showing **Today** and then turn over one by one to **With EduPulse**, the phase timeline draws its line as you scroll, the Pulse example opens in a circle and its messages appear one at a time, the arcs around the CIT seal draw in and the sign-in photograph opens from a rectangle. Each plays once.
+* **Agents.** The agents section holds the screen while scrolling travels inward ring by ring, with neighbouring rings turning in opposite directions. A card names each agent in turn (**01 / 09** to **09 / 09**), that agent's ring turns blue, and its portrait pops into a round lens at the centre, waving with its own gesture (the Guardian raises its shield, the Writer scribbles, the Verifier stamps its check). After the ninth, the blue core opens while all nine wave together, the screen turns white, and the agent workspace (section 8c) follows.
+* **Agent workspace.** When the section first appears, the studio assembles: the floor settles, the walls rise, the furniture drops in and the nine agents hop to their places while the camera settles from above. The agents then work at their stations (typing, drawing on the whiteboard, reading, comparing two papers, watching the door), mugs steam, dust drifts in the window light, the string lights glow and a cat sleeps on the rug. A tapped agent stands up, turns to the camera and waves while its line types out in a bubble above it, and the camera glides in; a request flies from agent to agent as a paper plane with a coloured trail, the camera following it, and a declined one bounces off the Guardian and falls. With a mouse, dragging turns the room a little. **Pause motion** stops all of it.
 * **Features on a desktop.** The section holds still while its four parts change beside one framed prototype screen. The step number, heading, screen, caption and the step buttons **01** to **04** always change together, scrolling up or down; a step button scrolls to its part.
 * **Photographs.** The two rows of community photographs drift slowly in opposite directions. **Pause photo movement**, under the rows, stops them until **Play photo movement** is pressed. Hovering, keyboard focus or a tap also stops them (a second tap starts them again), and they stop off screen and in a hidden tab.
 * **Links.** Section links glide to their section and stop just under the top bar; scrolling yourself stops the glide. **Privacy** opens with a rectangular reveal and **Terms** with a diagonal one.
@@ -27,9 +28,8 @@ On a phone the sections stack and nothing is held in place while scrolling. **Sk
 - **Top bar:** the KCP crest and the EduPulse logo, then **Why EduPulse**, **Features**, **How It Works**, **Roles**, **Impact**, **Colleges** and **FAQ**, which jump to their sections, and the blue **Sign In** button, which jumps to the sign-in panel. At the top of the page the bar has no background of its own.
 - **Institution line:** the KCP crest and the CIT seal with *King's College of the Philippines · College of Information Technology*.
 - **Headline:** “One shared home for syllabi, courseware & scores”, in heavy dark type.
-- **On the right:** “EduPulse turns the official KCP syllabus into the learning materials, assessments and progress views that follow from it. The AI drafts; the instructor reviews and decides.” **Get started** scrolls to sign-in; **See how it works** scrolls to the six phases (section 5). Three notes follow: **Syllabus-centred**, **Grounded in approved documents** and **Instructor-approved**.
-- **Product preview:** a window titled *EduPulse · Syllabus Builder*, tagged **Prototype screen · sample data**, showing the Syllabus Builder tab.
-- **Ring and photograph:** a blue ring on the right and, below it, the CIT photograph from kcp.edu.ph (a student at a multi-monitor coding desk), cut off by the bottom of the screen.
+- **On the right:** “The approved KCP syllabus drives every material, assessment and progress view. The AI drafts; instructors decide.” **Get started** scrolls to sign-in; **See how it works** scrolls to the six phases (section 5). Three notes follow: **Syllabus-centred**, **Grounded in approved documents** and **Instructor-approved**.
+- **Product screen and photograph, in one row:** a window titled *EduPulse · Syllabus Builder*, tagged **Prototype screen · sample data** and showing the Syllabus Builder tab, takes two thirds; the CIT photograph from kcp.edu.ph (a student at a multi-monitor coding desk) takes one third. Both start on the same line and are cut off by the bottom of the screen, and a blue ring sits on the photograph's top-right corner.
 
 ## 2. Landing navigation after scrolling
 
@@ -41,38 +41,36 @@ Once the page scrolls, the bar turns solid white with a thin rule beneath it. Th
 
 ![Why EduPulse](03-landing-why-edupulse.png)
 
-The heading **Why EduPulse** and a statement: “At the CIT, every lesson is meant to follow the approved syllabus. In practice, syllabi are recycled, materials are rushed or pasted from AI chat tools, delivery is split between Moodle and paper, and the Dean's office cannot see what reaches the class.”
+The heading **Why EduPulse** and one line: “Every lesson should follow the approved syllabus. Today, the pieces drift apart.” Below it, a switch (**Today** | **With EduPulse**) and five cards, each with an icon, an area and one phrase. As captured, **With EduPulse** is selected and the cards show it, with blue icons; **Today** turns them over to grey cards with dashed edges and struck-through phrases:
+* **Syllabus:** recycled from earlier versions → official seven-section KCP format.
+* **Materials:** rushed, or pasted from AI chats → grounded in the syllabus and your files.
+* **Delivery:** split between Moodle and paper → one place for every block.
+* **Oversight:** unseen after course loading → every course’s status at a glance.
+* **Performance:** checked by hand → scores by syllabus topic.
 
-Below it, a table compares **Today** with **With EduPulse** (shaded light blue, an arrow leading into each row) in five areas:
-* **Syllabus:** edited from earlier versions, or recycled → built in the official seven-section KCP format, or uploaded and checked.
-* **Materials:** rushed, often pasted from AI chat tools and polished by hand → generated from the approved course outline and grounded in the syllabus and your files.
-* **Delivery:** split between Moodle and paper handouts → published to each block from one place; paper copies remain possible.
-* **Oversight:** after course loading, the Dean's office cannot see what is delivered → syllabus status and delivery for every loaded course, at a glance.
-* **Performance:** checked by hand, on paper or in the grading sheet → scores collated by syllabus topic for students and instructors.
-
-A note with a shield icon closes the section: EduPulse assists but never replaces the instructor's judgment; every material and assessment is reviewed and approved before it is used in class.
+A line with a shield icon closes the section: “AI drafts. Instructors review and approve every item.” Screen readers hear both states of each card.
 
 ## 4. Features
 
 ![Features](04-landing-features.png)
 
-**Features** · “From the syllabus to every class”: “Four parts of one workflow, each starting from the approved KCP syllabus. The screens are the EduPulse prototype with sample data.” As captured (reduced motion), the four parts follow one another, each with its prototype screen and a caption naming the screen:
-* **01 · Dean · Associate Dean: Records and course loading** (*Records page*). EduSuite stays the system of record; its exported course records, course loads and block class lists are uploaded, checked and confirmed, and courses are loaded to instructors by the college's rule, a master's degree first, then specialization. *Nothing is saved until the Dean's office confirms. Pulse can suggest instructors; people decide.*
-* **02 · Instructor: The Syllabus Builder** (*Syllabus Builder*). Build the official seven-section KCP syllabus, upload one you already have, or let Pulse co-write it section by section; AI drafts stay Drafted until you check them. *Signed outside EduPulse: Dean review, CAO approval, EVP noting. The approved Section 5 course outline becomes the map for everything else.*
-* **03 · Instructor: Courseware from the course outline** (*My Courseware list*). Each outline week becomes learning materials and assessments; generation retrieves from the approved syllabus and your own files first, so drafts stay aligned with the course. *Generate by week, by term or for the whole outline. Review, edit and publish; only published items reach students.*
-* **04 · Students · Instructors · Dean: Performance by syllabus topic** (*My Performance page*). Students see which topics they have mastered and what to review, instructors see completed and missed work and unopened materials, and the Dean's office follows delivery across the college. *Reminders for unopened materials and missing activities. Scores are visualized; official grades stay outside EduPulse.*
+**Features** · “From the syllabus to every class”: “Four parts, one approved syllabus. Prototype screens with sample data.” As captured (reduced motion), the four parts follow one another, each with one line, two short points and its prototype screen with a caption naming the screen:
+* **01 · Dean · Associate Dean: Records and course loading** (*Records page*). “EduSuite stays the system of record. Upload its exports, check them, confirm.” *Loads by rule: master's degree, then specialization. Pulse suggests instructors; people decide.*
+* **02 · Instructor: The Syllabus Builder** (*Syllabus Builder*). “Build the seven-section KCP syllabus, upload one, or co-write it with Pulse.” *AI drafts wait for your check. Signed outside EduPulse; its outline maps the rest.*
+* **03 · Instructor: Courseware from the course outline** (*My Courseware list*). “Each outline week becomes materials and assessments, drawn from your sources first.” *By week, by term or the whole outline. Only published items reach students.*
+* **04 · Students · Instructors · Dean: Performance by syllabus topic** (*My Performance page*). “Mastery by topic for students, missed work for instructors, delivery for the Dean.” *Reminders for unopened and missed work. Scores shown; grades stay official.*
 
 ## 5. How it works
 
 ![How it works](05-landing-how-it-works.png)
 
-A light-blue section. On the left, **How it works** · “Six phases. People decide each one.” and “From the EduSuite files to student results. The AI assists inside every phase and never finalizes one.” On the right, a timeline: blue numbered squares **00** to **05** joined by a blue line. Each phase names who does it and what happens, then an **AI** row (what Pulse may do) and a shaded **People** row (who decides):
-* **Phase 0 · Dean · Associate Dean: Records intake.** Upload the EduSuite exports: course records, course loads and block rosters. AI: reads the files and shows what it understood. People: the Dean or Associate Dean confirms before anything is saved.
-* **Phase 1 · Dean · Associate Dean: Course loading.** Load each released course to an instructor. AI: suggests or proposes instructors, master's degree first, then specialization. People: every assignment is confirmed before it takes effect.
-* **Phase 2 · Instructor: Syllabus building.** Build the seven-section syllabus, or upload a ready-made one. AI: co-writes section by section, or drafts the whole syllabus as Drafted. People: checked, then signed outside EduPulse (Dean review, CAO approval, EVP noting); the approved file is uploaded and its course outline extracted.
-* **Phase 3 · Instructor: Courseware generation.** Turn each outline week into learning materials and assessments. AI: drafts by week, by term or for the whole outline, grounded in the approved syllabus. People: the instructor reviews, edits and publishes; only published items reach students.
-* **Phase 4 · Students: Student access.** Open published materials and answer assessments for the block's courses. AI: guides only (reminders, missed activities and finding the way). People: Pulse never answers, reviews or hints at assessment items.
-* **Phase 5 · Everyone: Monitoring.** A scoring sheet for instructors, delivery progress for the Dean's office and notices for students. AI: summarizes what the charts show. People: no grades are computed; the KCP grading sheet stays official.
+A light-blue section. On the left, **How it works** · “Six phases. People decide each one.” and “From EduSuite files to student results. The AI assists; it never finalizes.” On the right, a timeline: blue numbered squares **00** to **05** joined by a blue line. Each phase names who does it and what happens in a few words, then an **AI** row (what Pulse may do) and a shaded **People** row (who decides):
+* **Phase 0 · Dean · Associate Dean: Records intake.** Upload the EduSuite exports. AI: reads them and shows what it found. People: confirmed before anything is saved.
+* **Phase 1 · Dean · Associate Dean: Course loading.** Load each course to an instructor. AI: suggests by master's degree, then specialization. People: every assignment is confirmed.
+* **Phase 2 · Instructor: Syllabus building.** Build or upload the seven-section syllabus. AI: co-writes it section by section. People: checked, then signed outside EduPulse.
+* **Phase 3 · Instructor: Courseware generation.** Turn each outline week into courseware. AI: drafts from the approved syllabus. People: instructors review, edit and publish.
+* **Phase 4 · Students: Student access.** Open materials, answer assessments. AI: guides only, with reminders and missed work. People: Pulse never answers assessment items.
+* **Phase 5 · Everyone: Monitoring.** Scores, delivery progress and notices. AI: summarizes what the charts show. People: no grades computed; the KCP sheet stays official.
 
 On a desktop the heading stays beside the timeline while it scrolls past. The screenshot shows the timeline finished.
 
@@ -82,9 +80,9 @@ On a desktop the heading stays beside the timeline while it scrolls past. The sc
 
 ![Roles: Student](07-landing-roles-student.png)
 
-**Roles** · “Five roles, one platform”: “Each account has one role, and the top bar shows only that role's sections.” The tabs on the left (**Instructor**, **Student**, **Dean**, **Associate Dean** and **System Admin**) switch the panel on the right; the selected tab is white with blue text. The arrow keys, **Home** and **End** move between tabs, and every panel keeps the same height. Each panel has a short label, a heading, a summary, four tasks, the role's **Top bar** sections and one benefit:
-* **Instructor** (image 6), *Prepare and deliver*: “Teach from one organized place”. Top bar: **Dashboard**, **Syllabus**, **Courseware**, **Student Monitoring** and **Performance**. The benefit names SDG 4.c, well-supported teachers.
-* **Student** (image 7), *Learn*: “Everything for your courses, in one place”, with **My Materials**, **My Assessments**, **Performance** and reminders. A shaded line reads “Pulse will not answer or hint at assessment items.” Top bar: **Dashboard**, **My Courses**, **Assessments** and **Performance**. The benefit names SDG 4.3 and 4.4.
+**Roles** · “Five roles, one platform”: “One role per account. Each sees only its own pages.” The tabs on the left (**Instructor**, **Student**, **Dean**, **Associate Dean** and **System Admin**) switch the panel on the right; the selected tab is white with blue text. The arrow keys, **Home** and **End** move between tabs, and every panel keeps the same height. Each panel has a short label, a heading, a one-line summary, four short tasks, the role's **Top bar** sections and, for most roles, one benefit:
+* **Instructor** (image 6), *Prepare and deliver*: “Teach from one organized place”: build the syllabus, generate courseware, publish it, follow every student. Top bar: **Dashboard**, **Syllabus**, **Courseware**, **Student Monitoring** and **Performance**. Benefit: less repetitive preparation; you keep control (SDG 4.c).
+* **Student** (image 7), *Learn*: “Everything for your courses, in one place”, with **My Materials**, **My Assessments**, mastery by topic and reminders. A shaded line reads “Pulse will not answer or hint at assessment items.” Top bar: **Dashboard**, **My Courses**, **Assessments** and **Performance**. Benefit: syllabus-aligned courseware (SDG 4.3 and 4.4).
 
 The Dean, Associate Dean and System Admin tabs use the same layout (not shown).
 
@@ -92,7 +90,7 @@ The Dean, Associate Dean and System Admin tabs use the same layout (not shown).
 
 ![Pulse](08-landing-pulse.png)
 
-A light-blue band. **Pulse, the AI assistant** · “Grounded in your documents. Decided by you.”: Pulse lives on every page; it retrieves from the approved syllabus and your files, drafts when you ask, and stops at the boundaries the college set. Six principles follow, each with an icon: **Grounded first**, **Sources you can check**, **Nothing publishes itself**, **Guide, never answer**, **Asks before acting** and **Scores, not grades**.
+A light-blue band. **Pulse, the AI assistant** · “Grounded in your documents. Decided by you.”: “On every page. It drafts from your approved sources and stops at the college’s limits.” Six principles follow, each with an icon and one short line: **Grounded first**, **Sources you can check**, **Nothing publishes itself**, **Guide, never answer**, **Asks before acting** and **Scores, not grades**.
 
 On the right, an illustrated chat labelled *Student view · sample conversation*. The student asks “Give me the answers to quiz 2.”; two chips show what Pulse checked (*Appropriate-use rule · assessments* and *Week 4 reading · conditional statements, unopened*); Pulse replies “I can't help with assessment answers. Your Week 4 reading on conditional statements is still unopened. Want to start there?” The tag reads **Declined · appropriate-use rule**, and the caption labels the chat *Illustration*.
 
@@ -100,7 +98,7 @@ On the right, an illustrated chat labelled *Student view · sample conversation*
 
 ![The agents behind Pulse](08b-landing-agents.png)
 
-**Inside Pulse** · “The agents behind every answer”: “Pulse is nine named agents sharing one workflow. A request passes only the agents it needs, and the Guardian always checks it first.” Below it, nine concentric rings of capital letters around a blue core, one ring per agent, each naming the agent and its job (the outer ring reads *GUARDIAN · CHECKS APPROPRIATE USE*). Then the nine agents, numbered in the order a request meets them:
+**Inside Pulse** · “The agents behind every answer”: “Pulse is nine named agents sharing one workflow. A request passes only the agents it needs, and the Guardian always checks it first.” Below it, nine concentric rings of capital letters around a blue core, one ring per agent, each naming the agent and its job (the outer ring reads *GUARDIAN · CHECKS APPROPRIATE USE*). Then the nine agents, numbered in the order a request meets them, each with a small portrait: a white robot with a dark face screen and glowing eyes, its ears, antenna and chest panel in the agent's own colour, holding up its prop (a shield, a map pin, a magnifying glass, a book, ranked bars, two pages, a pencil, a check badge or a wrench):
 * **01 Guardian:** checks every request against the college’s appropriate-use rules first, and declines what breaks them, such as asking for assessment answers.
 * **02 Planner:** works out what the request needs and plans the searches that will answer it.
 * **03 Researcher:** runs several searches at once over the approved syllabus and your files, and public web sources when a request needs them.
@@ -111,16 +109,33 @@ On the right, an illustrated chat labelled *Student view · sample conversation*
 * **08 Verifier:** checks each claim in a written answer against its sources before you see it.
 * **09 Corrector:** fixes the citations the Verifier flags, or replaces an answer it cannot verify.
 
-As captured (reduced motion), the rings stand still and the list is shown. With motion, the list is read out to screen readers but replaced on screen by the moving rings and a card for the current agent (see the top of this page).
+As captured (reduced motion), the rings stand still and the list is shown. With motion, the list is read out to screen readers but replaced on screen by the moving rings, a card for the current agent and its waving portrait at the centre (see the top of this page).
+
+## 8c. The agent workspace
+
+![The agent workspace](08c-landing-workspace.png)
+
+**Agent workspace** · “Tap an agent. It answers.”: “Or run a request and watch them pass it on. A scripted example, not live AI.” On the left, a 3D studio where the agents, the robots from the scope, work. In this capture the camera has moved in on the Comparator: around it are a honey-oak floor, a blue rug, a sofa with a blanket and a cushion, a coffee table with a book, a blue pouf, a wall clock and plants. Behind, the Librarian reads in an armchair by a full bookshelf, and the Ranker and the Researcher sit at desks with glowing monitors; in front, the Corrector sits at its desk. A numbered name tag floats above each agent in view, and **Show all** and **Pause motion** sit in the corner.
+
+Below the studio, one button per agent (**Guardian** to **Corrector**), each with its icon on a disc in the agent's colour. On the right, **Try a request** offers three scripted requests (**Summarize Week 3**, **Find readings** and **Ask for quiz answers**) above the conversation.
+
+As captured, **Comparator** has been pressed (by its button; tapping the robot does the same): the Comparator stands by the sofa on a pink ring with its line in a bubble above it, and the conversation shows “Compare my syllabus with last year’s.” and the Comparator's answer: “I’ll line them up: what is shared, what is related and what only one of them has.” **Show all** returns the camera to the whole studio.
+
+Every answer is scripted from what the agents do in Pulse:
+* **Summarize Week 3** passes the request through the Guardian, the Planner, the Researcher, the Ranker, the Writer, the Verifier and the Corrector, each handing it on by name; the Verifier flags one citation and the Corrector fixes it.
+* **Find readings** goes from the Guardian and the Planner to the Librarian, who searches Open Library, OpenAlex and Wikipedia.
+* **Ask for quiz answers** stops at the Guardian: “That breaks the assessment rule, so I stop here. No other agent runs.”
+
+Without WebGL, a grid of the agents' icons stands in for the studio and the buttons and conversation work the same. With reduced motion, a request's whole conversation appears at once.
 
 ## 9. Why it matters
 
 ![Why it matters](09-landing-why-it-matters.png)
 
-**Why it matters** · “Preparation takes time. The research agrees.” Three findings cited in the EduPulse study, each under a blue rule and labelled as describing the problem EduPulse addresses, not measured EduPulse results:
-* **7.4 h** a week spent preparing lessons, on average, by teachers across OECD countries (OECD, *Results from TALIS 2024*, 2025);
-* **31%** less lesson-planning time for teachers using generative AI, with no measurable drop in lesson quality (Education Endowment Foundation, 2024);
-* **5.9 h** of work recovered each week by educators who use AI tools regularly (Gallup & Walton Family Foundation, 2025).
+**Why it matters** · “Preparation takes time. The research agrees.”: “Cited in the EduPulse study. They describe the problem, not EduPulse results.” Three findings, each under a blue rule:
+* **7.4 h** a week preparing lessons, the OECD teacher average (OECD, *Results from TALIS 2024*, 2025);
+* **31%** less lesson-planning time with generative AI, quality unchanged (Education Endowment Foundation, 2024);
+* **5.9 h** recovered weekly by educators who use AI regularly (Gallup & Walton Family Foundation, 2025).
 
 Below them, a light-blue panel lists the Sustainable Development Goals the study supports: **SDG 4.3** (equitable access to quality tertiary education), **SDG 4.4** (technical skills for employment), **SDG 4.c** (well-supported teachers) and **SDG 9** (industry, innovation and infrastructure).
 
@@ -128,7 +143,7 @@ Below them, a light-blue panel lists the Sustainable Development Goals the study
 
 ![Colleges](10-landing-colleges.png)
 
-**Colleges** · “Built for the CIT first”: the study is scoped to the College of Information Technology, and adoption by the other KCP colleges is planned future work. A college joins when its instructors are registered and its records are imported.
+**Colleges** · “Built for the CIT first”: “The study covers the CIT. Other KCP colleges are planned; each joins once its instructors and records are in.”
 
 The CIT card shows its seal inside blue arcs, a green **Now serving** badge, the two BSIT tracks listed on kcp.edu.ph (*Web and Mobile Application Development* and *Business Analytics and Big Data*) and the CIT lab photograph. Below, four KCP colleges, each with a kcp.edu.ph photograph, its emblem and **Planned**:
 * **College of Accountancy and Business Management** (CABM);

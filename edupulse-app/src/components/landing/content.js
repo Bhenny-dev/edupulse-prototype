@@ -5,99 +5,98 @@ import performance from '../../assets/product/performance.webp'
 
 // Landing copy. Sources: the EduPulse study (Rivera, Botay & De Vera, 2026; Chapters 1–2),
 // docs/FLOW_SPEC.md and docs/SYSTEM_SPEC.md. Statistics are the study's cited findings,
-// not measured EduPulse results.
+// not measured EduPulse results. Copy stays short: the visuals carry the rest.
 
 export const PROBLEM = [
-  { area: 'Syllabus', today: 'Edited from earlier versions, or recycled.', next: 'Built in the official seven-section KCP format, or uploaded and checked.' },
-  { area: 'Materials', today: 'Rushed, often pasted from AI chat tools and polished by hand.', next: 'Generated from the approved course outline and grounded in the syllabus and your files.' },
-  { area: 'Delivery', today: 'Split between Moodle and paper handouts.', next: 'Published to each block from one place; paper copies remain possible.' },
-  { area: 'Oversight', today: "After course loading, the Dean's office cannot see what is delivered.", next: 'Syllabus status and delivery for every loaded course, at a glance.' },
-  { area: 'Performance', today: 'Checked by hand, on paper or in the grading sheet.', next: 'Scores collated by syllabus topic for students and instructors.' },
+  { key: 'syllabus', area: 'Syllabus', today: 'Recycled from earlier versions', next: 'Official seven-section KCP format' },
+  { key: 'materials', area: 'Materials', today: 'Rushed, or pasted from AI chats', next: 'Grounded in the syllabus and your files' },
+  { key: 'delivery', area: 'Delivery', today: 'Split between Moodle and paper', next: 'One place for every block' },
+  { key: 'oversight', area: 'Oversight', today: 'Unseen after course loading', next: 'Every course’s status at a glance' },
+  { key: 'performance', area: 'Performance', today: 'Checked by hand', next: 'Scores by syllabus topic' },
 ]
 
 export const CHAPTERS = [
   {
     key: 'records', who: 'Dean · Associate Dean', title: 'Records and course loading', image: records, screen: 'Records page',
     alt: 'EduPulse Records page: Import EduSuite Files, with course records, course loads and student class lists',
-    body: "EduSuite stays the system of record. Its exported course records, course loads and block class lists are uploaded, checked and confirmed. Courses are loaded to instructors by the college's rule: a master's degree first, then specialization.",
-    points: ["Nothing is saved until the Dean's office confirms", 'Pulse can suggest instructors; people decide'],
+    body: 'EduSuite stays the system of record. Upload its exports, check them, confirm.',
+    points: ["Loads by rule: master's degree, then specialization", 'Pulse suggests instructors; people decide'],
   },
   {
     key: 'syllabus', who: 'Instructor', title: 'The Syllabus Builder', image: syllabus, screen: 'Syllabus Builder',
     alt: 'EduPulse Syllabus Builder with the upload area and the Course Information section',
-    body: 'Build the official seven-section KCP syllabus, upload one you already have, or let Pulse co-write it section by section. AI drafts stay Drafted until you check them.',
-    points: ['Signed outside EduPulse: Dean review, CAO approval, EVP noting', 'The approved Section 5 course outline becomes the map for everything else'],
+    body: 'Build the seven-section KCP syllabus, upload one, or co-write it with Pulse.',
+    points: ['AI drafts wait for your check', 'Signed outside EduPulse; its outline maps the rest'],
   },
   {
     key: 'courseware', who: 'Instructor', title: 'Courseware from the course outline', image: courseware, screen: 'My Courseware list',
     alt: 'EduPulse Courseware page listing sample courses, each with Start Generating',
-    body: 'Each outline week becomes learning materials and assessments. Generation retrieves from the approved syllabus and your own files first, so drafts stay aligned with the course.',
-    points: ['Generate by week, by term or for the whole outline', 'Review, edit and publish; only published items reach students'],
+    body: 'Each outline week becomes materials and assessments, drawn from your sources first.',
+    points: ['By week, by term or the whole outline', 'Only published items reach students'],
   },
   {
     key: 'performance', who: 'Students · Instructors · Dean', title: 'Performance by syllabus topic', image: performance, screen: 'My Performance page',
     alt: 'EduPulse My Performance page with sample scores and topics mastered',
-    body: "Students see which topics they have mastered and what to review. Instructors see completed and missed work and unopened materials; the Dean's office follows delivery across the college.",
-    points: ['Reminders for unopened materials and missing activities', 'Scores are visualized; official grades stay outside EduPulse'],
+    body: 'Mastery by topic for students, missed work for instructors, delivery for the Dean.',
+    points: ['Reminders for unopened and missed work', 'Scores shown; grades stay official'],
   },
 ]
 
 export const PHASES = [
-  { phase: 0, title: 'Records intake', who: 'Dean · Associate Dean', what: 'Upload the EduSuite exports: course records, course loads and block rosters.', ai: 'Reads the files and shows what it understood.', human: 'The Dean or Associate Dean confirms before anything is saved.' },
-  { phase: 1, title: 'Course loading', who: 'Dean · Associate Dean', what: 'Load each released course to an instructor.', ai: "Suggests or proposes instructors: master's degree first, then specialization.", human: 'Every assignment is confirmed before it takes effect.' },
-  { phase: 2, title: 'Syllabus building', who: 'Instructor', what: 'Build the seven-section syllabus, or upload a ready-made one.', ai: 'Co-writes section by section, or drafts the whole syllabus as Drafted.', human: 'Checked, then signed outside EduPulse: Dean review, CAO approval, EVP noting. The approved file is uploaded and its course outline extracted.' },
-  { phase: 3, title: 'Courseware generation', who: 'Instructor', what: 'Turn each outline week into learning materials and assessments.', ai: 'Drafts by week, by term or for the whole outline, grounded in the approved syllabus.', human: 'The instructor reviews, edits and publishes. Only published items reach students.' },
-  { phase: 4, title: 'Student access', who: 'Students', what: "Open published materials and answer assessments for the block's courses.", ai: 'Guides only: reminders, missed activities and finding the way.', human: 'Pulse never answers, reviews or hints at assessment items.' },
-  { phase: 5, title: 'Monitoring', who: 'Everyone', what: "A scoring sheet for instructors, delivery progress for the Dean's office and notices for students.", ai: 'Summarizes what the charts show.', human: 'No grades are computed; the KCP grading sheet stays official.' },
+  { phase: 0, title: 'Records intake', who: 'Dean · Associate Dean', what: 'Upload the EduSuite exports.', ai: 'Reads them and shows what it found.', human: 'Confirmed before anything is saved.' },
+  { phase: 1, title: 'Course loading', who: 'Dean · Associate Dean', what: 'Load each course to an instructor.', ai: "Suggests by master's degree, then specialization.", human: 'Every assignment is confirmed.' },
+  { phase: 2, title: 'Syllabus building', who: 'Instructor', what: 'Build or upload the seven-section syllabus.', ai: 'Co-writes it section by section.', human: 'Checked, then signed outside EduPulse.' },
+  { phase: 3, title: 'Courseware generation', who: 'Instructor', what: 'Turn each outline week into courseware.', ai: 'Drafts from the approved syllabus.', human: 'Instructors review, edit and publish.' },
+  { phase: 4, title: 'Student access', who: 'Students', what: 'Open materials, answer assessments.', ai: 'Guides only: reminders and missed work.', human: 'Pulse never answers assessment items.' },
+  { phase: 5, title: 'Monitoring', who: 'Everyone', what: 'Scores, delivery progress and notices.', ai: 'Summarizes what the charts show.', human: 'No grades computed; the KCP sheet stays official.' },
 ]
 
 export const ROLES = [
   {
     key: 'instructor', label: 'Instructor', kicker: 'Prepare and deliver', title: 'Teach from one organized place',
-    summary: 'Build and check the syllabus, generate and review courseware, publish it to your blocks, and follow every student in the scoring sheet.',
-    tasks: ['See your loaded courses and each syllabus status', 'Build the seven-section syllabus or upload one you already have', 'Review AI drafts, edit them and publish when ready', 'Track assessment scores and material access per student'],
+    summary: 'Build the syllabus, generate courseware, publish it, follow every student.',
+    tasks: ['Loaded courses and syllabus status', 'Build or upload the syllabus', 'Review, edit and publish drafts', 'Scores and access per student'],
     sections: ['Dashboard', 'Syllabus', 'Courseware', 'Student Monitoring', 'Performance'],
-    benefit: 'Removes the most repetitive part of course preparation while you keep full control of every output. SDG 4.c: well-supported teachers.',
+    benefit: 'Less repetitive preparation; you keep control. SDG 4.c.',
   },
   {
     key: 'student', label: 'Student', kicker: 'Learn', title: 'Everything for your courses, in one place',
-    summary: "Open the materials your instructors published for your block's courses, answer assessments, and follow your own progress whenever you want.",
-    tasks: ['My Materials: readings and activities, ready to open', 'My Assessments: answer them and see your results', 'Performance: your scores and mastery by topic', 'Reminders about unopened materials and missed work'],
+    summary: 'Materials, assessments and your own progress, together.',
+    tasks: ['My Materials, ready to open', 'My Assessments and results', 'Mastery by topic', 'Reminders for missed work'],
     boundary: 'Pulse will not answer or hint at assessment items.',
     sections: ['Dashboard', 'My Courses', 'Assessments', 'Performance'],
-    benefit: 'Organized, syllabus-aligned courseware and a view of the topics you have mastered. SDG 4.3 and 4.4.',
+    benefit: 'Syllabus-aligned courseware. SDG 4.3 and 4.4.',
   },
   {
     key: 'dean', label: 'Dean', kicker: 'Lead the college', title: 'See delivery across the college',
-    summary: 'Import EduSuite records, load courses to instructors, and monitor syllabus status, delivery progress and students across the CIT.',
-    tasks: ['Records: EduSuite files, blocks, class lists and the course catalog', 'Course Loading: assign instructors with ranked suggestions', 'Monitor: syllabus status, delivery progress, student oversight and alerts', 'Performance: a read-only, college-wide view of results'],
+    summary: 'Import records, load courses and monitor delivery across the CIT.',
+    tasks: ['Records: EduSuite files and class lists', 'Course Loading with ranked suggestions', 'Monitor: syllabus status and delivery', 'Performance: college-wide, read-only'],
     sections: ['Dashboard', 'Records', 'Course Loading', 'Monitor', 'Performance'],
-    benefit: 'A consolidated view of syllabus preparation, delivery and class performance in the college.',
+    benefit: 'One view of preparation, delivery and results.',
   },
   {
     key: 'associate_dean', label: 'Associate Dean', kicker: 'Coordinate', title: "Work beside the Dean's office",
-    summary: 'A separate account with the same records, course loading and monitoring stations as the Dean, and a dashboard of its own.',
-    tasks: ['Import and confirm EduSuite records', 'Load courses and confirm every assignment', 'Follow syllabus status and delivery progress', 'Open a dashboard built for the Associate Dean'],
+    summary: 'Records, course loading and monitoring, in a separate account.',
+    tasks: ['Import and confirm records', 'Load courses, confirm assignments', 'Follow syllabus status and delivery', 'A dashboard of its own'],
     boundary: 'Performance scores and approval authority stay with the Dean.',
     sections: ['Dashboard', 'Records', 'Course Loading', 'Monitor'],
-    benefit: 'The same oversight of syllabus preparation and delivery, in a separate account.',
   },
   {
     key: 'admin', label: 'System Admin', kicker: 'Keep it running', title: 'Accounts, health and accountability',
-    summary: 'Runs the platform rather than the curriculum: creates role accounts, watches system health and reviews what happened.',
-    tasks: ['Create accounts and assign or change roles', 'Check system health and role coverage', 'Review audit activity, filtered by successes and failures', "Follow each named AI agent's task, goal and results"],
+    summary: 'Runs the platform, not the curriculum.',
+    tasks: ['Create accounts and assign roles', 'Check health and role coverage', 'Review audit activity', "Follow each AI agent's tasks"],
     sections: ['Dashboard'],
-    benefit: 'An audit trail that keeps a locally built AI system accountable to the college.',
+    benefit: 'An audit trail that keeps the AI accountable.',
   },
 ]
 
 export const PRINCIPLES = [
-  { title: 'Grounded first', body: 'Before it writes, Pulse retrieves from the approved syllabus and your own files, so drafts follow official documents.' },
-  { title: 'Sources you can check', body: 'Answers name the passages from your library they came from.' },
-  { title: 'Nothing publishes itself', body: 'AI drafts stay labelled until an instructor reviews them and chooses to publish.' },
-  { title: 'Guide, never answer', body: 'For students, Pulse reminds and points to missed work. It declines to answer or hint at assessment items.' },
-  { title: 'Asks before acting', body: 'Registering a class list or filing a document waits for your confirmation.' },
-  { title: 'Scores, not grades', body: 'The scoring sheet visualizes results; final grades stay in the official KCP grading sheet.' },
+  { title: 'Grounded first', body: 'Drafts start from the approved syllabus and your files.' },
+  { title: 'Sources you can check', body: 'Every answer names the passages it used.' },
+  { title: 'Nothing publishes itself', body: 'Drafts wait until an instructor publishes them.' },
+  { title: 'Guide, never answer', body: 'Students get reminders, never assessment answers.' },
+  { title: 'Asks before acting', body: 'Records change only after you confirm.' },
+  { title: 'Scores, not grades', body: 'Official grades stay in the KCP grading sheet.' },
 ]
 
 // Pulse's named agents (src/lib/rag/agents.ts), in the order a request meets them. A request
@@ -115,10 +114,53 @@ export const AGENTS = [
   { key: 'corrector', name: 'Corrector', ring: 'CORRECTOR · FIXES CITATIONS', role: 'Fixes the citations the Verifier flags, or replaces an answer it cannot verify.' },
 ]
 
+// The agent workspace: a scripted example of how the agents above handle requests (the graph
+// in src/lib/rag/agents.ts). Not live AI output; the section says so.
+export const WORKSPACE_TALK = {
+  guardian: { ask: 'Can you give me the quiz answers?', reply: 'No. That breaks the assessment rule, so I stop the request here and no other agent runs.' },
+  planner: { ask: 'Summarize Week 3 from my syllabus.', reply: 'I’ll plan the searches: the Week 3 outline, your notes and the course outcomes.' },
+  researcher: { ask: 'Where do you look?', reply: 'In the approved syllabus and your files, several searches at once. Public web sources only when a request needs them.' },
+  librarian: { ask: 'Any open readings on normalization?', reply: 'I’ll search Open Library, OpenAlex and Wikipedia, then rank what I find.' },
+  ranker: { ask: 'Which passages matter?', reply: 'The most relevant ones. I drop near-duplicates and stop if nothing relevant turns up.' },
+  comparator: { ask: 'Compare my syllabus with last year’s.', reply: 'I’ll line them up: what is shared, what is related and what only one of them has.' },
+  writer: { ask: 'Write the summary.', reply: 'Only from the ranked passages, and every sentence cites one, like this [2].' },
+  verifier: { ask: 'Can I trust it?', reply: 'I check every claim against its source before you see the answer.' },
+  corrector: { ask: 'What if a claim fails?', reply: 'I fix the citation or ask the Writer to revise. If it still fails, you get the cited source excerpts instead.' },
+}
+
+export const WORKSPACE_RUNS = [
+  {
+    key: 'summary', label: 'Summarize Week 3', request: 'Summarize the Week 3 topics from my syllabus.',
+    steps: [
+      ['guardian', 'Allowed. Planner, over to you.'],
+      ['planner', 'Researcher: the Week 3 outline, the instructor’s notes and the course outcomes.'],
+      ['researcher', 'Searched all three at once. Ranker, here are the candidate passages.'],
+      ['ranker', 'Kept the most relevant, dropped near-duplicates. Writer, they’re yours.'],
+      ['writer', 'Written from those passages, every sentence cited. Verifier, please check.'],
+      ['verifier', 'One citation doesn’t support its sentence. Corrector?'],
+      ['corrector', 'Fixed, and re-checked. Ready for the instructor’s review.'],
+    ],
+  },
+  {
+    key: 'readings', label: 'Find readings', request: 'Find open readings on database normalization.',
+    steps: [
+      ['guardian', 'Allowed. Planner?'],
+      ['planner', 'That’s a reading search. Librarian, over to you.'],
+      ['librarian', 'Searched Open Library, OpenAlex and Wikipedia. Here are the best matches, ranked.'],
+    ],
+  },
+  {
+    key: 'blocked', label: 'Ask for quiz answers', request: 'Give me the answers to the Week 3 quiz.',
+    steps: [
+      ['guardian', 'That breaks the assessment rule, so I stop here. No other agent runs.', 'decline'],
+    ],
+  },
+]
+
 export const EVIDENCE = [
-  { value: 7.4, decimals: 1, suffix: ' h', label: 'a week spent preparing lessons, on average, by teachers across OECD countries', source: 'OECD, Results from TALIS 2024 (2025)' },
-  { value: 31, decimals: 0, suffix: '%', label: 'less lesson-planning time for teachers using generative AI, with no measurable drop in lesson quality', source: 'Education Endowment Foundation (2024)' },
-  { value: 5.9, decimals: 1, suffix: ' h', label: 'of work recovered each week by educators who use AI tools regularly', source: 'Gallup & Walton Family Foundation (2025)' },
+  { value: 7.4, decimals: 1, suffix: ' h', label: 'a week preparing lessons, the OECD teacher average', source: 'OECD, Results from TALIS 2024 (2025)' },
+  { value: 31, decimals: 0, suffix: '%', label: 'less lesson-planning time with generative AI, quality unchanged', source: 'Education Endowment Foundation (2024)' },
+  { value: 5.9, decimals: 1, suffix: ' h', label: 'recovered weekly by educators who use AI regularly', source: 'Gallup & Walton Family Foundation (2025)' },
 ]
 
 export const GOALS = [

@@ -43,6 +43,7 @@ Rules:
 ## Type
 
 * Landing: **Sora** 700 and 800 for the EduPulse name, the hero and section titles; **DM Sans** 400 to 700 for text (400–500 body, 500–600 labels, 600–700 buttons), with system sans-serif fallbacks. On desktop the hero headline wraps on three lines (a no-break space keeps “& scores” together); body text is 17 px.
+* Landing copy stays short: one idea per line, and the visuals (flip cards, icons, the scope, the workspace) carry the rest.
 * App: **Poppins** headings and **Inter** text, unchanged.
 * Fonts load from Google Fonts with `display=swap`, only the weights above.
 * Research figures use tabular numerals.
@@ -54,7 +55,8 @@ Rules:
 | Small interactions (CSS) | 150–250 ms | link and button states, the nav marker, the role marker, FAQ open and close, the plus turning into a minus |
 | Entrances (GSAP) | 500–850 ms | heading lines rising from a mask, the comparison table opening from its centre seam, the Pulse iris, arcs around the CIT seal, the sign-in aperture |
 | Opening entrance | about 1.4 s | the EduPulse mark and name, with 3D facets assembling around them |
-| Scroll-linked scenes | follow the scroll | the opening aperture, the Features stage, the agents scope, the phase connector |
+| Scroll-linked scenes | follow the scroll | the opening aperture, the Features stage, the agents scope (its lens portraits pop in at about 560 ms), the phase connector |
+| Agent workspace (3D) | 0.6–1.3 s, user-started | the room assembling once (about 3 s), a tapped agent standing, turning and waving, a request flying between desks as a paper plane while the camera follows, the camera gliding to an agent and back |
 | Route transitions (CSS) | 320–360 ms | Privacy (rectangle), Terms (diagonal mask) |
 
 Rules:
@@ -62,11 +64,13 @@ Rules:
 * Every landing animation is created inside `gsap.matchMedia` (`motion.js`). Nothing is hidden by CSS, so with reduced motion, or without JavaScript, every section is complete and still; switching reduced motion on later reverts the animations and ends the opening.
 * Scrolling is native: no smooth-scroll library and no wheel or touch interception. Section links glide with GSAP's ScrollToPlugin, stop as soon as the reader scrolls, and finish exactly under the fixed bar. Scroll anchoring is off on the landing page, so the browser never shifts the position under a pinned scene.
 * At most **three pinned scenes**: the opening aperture (about 85 % of a viewport, fresh visits only), the Features stage and the agents scope (about 55 % of a viewport per agent, then the core's opening). The phase connector draws with scrolling but does not pin.
-* The agents scope (`AgentsSection.jsx`) is one SVG: nine rings of type around a core, neighbouring rings turning in opposite directions. One scroll-linked timeline writes its zoom, the ring rotation and the core's white-out into the next section; React only marks the active ring and caption. The rings are `aria-hidden`; an ordered list carries the agents for assistive technology and is the visible content without motion.
+* The agents scope (`AgentsSection.jsx`) is one SVG: nine rings of type around a core, neighbouring rings turning in opposite directions. One scroll-linked timeline writes its zoom, the ring rotation and the core's white-out into the next section; React only marks the active ring and caption. A round lens at the centre shows the portrait of the agent being named (`AgentFace.jsx`, SVG with CSS animation: a wave, a blink and the agent's own gesture); while the core opens, all nine wave together and fade with the light into the agent workspace. The rings and portraits are `aria-hidden`; an ordered list carries the agents for assistive technology and is the visible content without motion, each item with its still portrait.
+* The agent workspace (`WorkspaceSection.jsx`, `scene/workspaceScene.js`) is the second three.js scene: a cosy studio in its own lazily loaded chunk, grown from the in-app office (`components/pulse/office`). Nine articulated robots, drawn like the portraits, sit, stand, walk and wave at their stations; static furniture is merged per material, so the room costs a few draw calls; animation follows real time and a slow device gets fewer pixels rather than slow motion; it renders only on screen in a visible tab and only while something moves. Every line is scripted (`content.js`) and labelled so. The agent buttons and the conversation list are ordinary HTML (the list is a polite live region), so the section works by keyboard, with a screen reader and without WebGL (a flat grid of agent icons then stands in); with reduced motion, or after **Pause motion**, nothing idles and every change jumps.
+* Agent colours (`agentLook.js`) are illustration accents for the portraits, the robots and the agent buttons' icon discs. They are never used for text.
 * The opening plays once per browser tab (`sessionStorage` flag `edupulse-intro`), only for a fresh visit to the root route at the top of the page. Reloads, Back and Forward, direct section links (`#/?section=faq`), documents that start on another route, later returns to the landing page and reduced motion never play it. **Skip intro**, or keyboard focus moving past the overlay, removes it.
 * GSAP and CSS never write the same property of the same element. SplitText is used only for headings; it keeps one accessible heading name and is reverted afterwards.
-* The 3D scene (`scene/landingScene.js`, plain three.js) is one canvas, one renderer, one render loop and one camera controller (entrance push-in, aperture pull-back, pointer parallax for fine pointers, clamped). It loads in its own chunk, compiles its single material program in parallel before the first frame, caps the pixel ratio (1.75, or 1.5 on phones), damps with frame-rate independent easing, renders only while on screen in a visible tab and when something changed, and disposes everything on unmount. Without WebGL, with reduced motion or on failure, an SVG ring stands in.
-* Continuous motion (the community photographs) has a persistent **Pause photo movement** control and also stops on hover, keyboard focus or a tap, off screen and in a hidden tab (WCAG 2.2.2).
+* The opening's 3D scene (`scene/landingScene.js`, plain three.js) is one canvas, one renderer, one render loop and one camera controller (entrance push-in, aperture pull-back, pointer parallax for fine pointers, clamped). It loads in its own chunk, compiles its single material program in parallel before the first frame, caps the pixel ratio (1.75, or 1.5 on phones), damps with frame-rate independent easing, renders only while on screen in a visible tab and when something changed, and disposes everything on unmount. Without WebGL, with reduced motion or on failure, an SVG ring stands in.
+* Continuous motion has a persistent pause control (WCAG 2.2.2): **Pause photo movement** for the community photographs, which also stop on hover, keyboard focus or a tap, off screen and in a hidden tab, and **Pause motion** for the agent workspace, which also stops off screen and in a hidden tab.
 
 ## Accessibility checks
 
@@ -76,7 +80,8 @@ Rules:
 | Opening: plays once, Skip intro by keyboard and pointer, bypassed by reloads, section links and other routes | `tests/browser/landing.spec.ts` |
 | Section links land under the fixed bar without changing the route | `tests/browser/landing.spec.ts` |
 | Feature steps keep number, heading, screen, caption and controls in step (forward, backward, rapid) | `tests/browser/landing.spec.ts` |
-| The agents scope names all nine agents in order and opens into the next section; with reduced motion it is a still picture and a list | `tests/browser/landing.spec.ts` |
+| The agents scope names all nine agents in order and opens into the agent workspace; with reduced motion it is a still picture and a list | `tests/browser/landing.spec.ts` |
+| The agent workspace answers a tap on a robot (3D picking) or on its button, runs a request, pauses its motion, shows every hand-off at once with reduced motion and keeps working without WebGL | `tests/browser/landing.spec.ts` |
 | Role tabs follow the WAI-ARIA tab pattern without height jumps | `tests/browser/landing.spec.ts` |
 | Moving photographs can be paused (control, hover, focus, tap) | `tests/browser/landing.spec.ts` |
 | Reduced motion and missing WebGL give a complete, usable page | `tests/browser/landing.spec.ts` |

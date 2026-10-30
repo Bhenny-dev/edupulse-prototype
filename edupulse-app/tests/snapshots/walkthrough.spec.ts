@@ -74,6 +74,7 @@ test('public site', async ({ page }) => {
     { folder: f, name: '07-landing-roles-student', title: 'Landing page: roles (Student tab)', ...section('#roles'), act: async p => { await showSection(p, '#roles'); await p.getByRole('tab', { name: 'Student', exact: true }).click(); await expect(p.getByRole('tabpanel')).toContainText('Everything for your courses') } },
     { folder: f, name: '08-landing-pulse', title: 'Landing page: Pulse and its boundaries', ...section('#ai') },
     { folder: f, name: '08b-landing-agents', title: 'Landing page: the agents behind Pulse', ...section('#agents') },
+    { folder: f, name: '08c-landing-workspace', title: 'Landing page: the agent workspace (the Comparator answering)', ...section('#workspace'), act: async p => { await showSection(p, '#workspace'); const workspace = p.locator('#workspace'); await expect(workspace.locator('.ws-stage')).toHaveAttribute('data-assembled', '', { timeout: 30000 }); await workspace.getByRole('button', { name: 'Comparator', exact: true }).click(); await expect(workspace.getByRole('list', { name: 'Conversation' }).locator('.is-agent')).toHaveCount(1); await p.waitForTimeout(1500) } },
     { folder: f, name: '09-landing-why-it-matters', title: 'Landing page: why it matters (research findings and SDGs)', ...section('#impact') },
     { folder: f, name: '10-landing-colleges', title: 'Landing page: colleges', ...section('#colleges') },
     { folder: f, name: '11-landing-community', title: 'Landing page: CIT community photographs', ...section('#campus') },

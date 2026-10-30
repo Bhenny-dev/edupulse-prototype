@@ -13,7 +13,7 @@ export const NAV_LINKS = [
   { id: 'colleges', label: 'Colleges' },
   { id: 'faq', label: 'FAQ' },
 ]
-export const SECTION_IDS = [...NAV_LINKS.map(link => link.id), 'ai', 'agents', 'campus', 'login']
+export const SECTION_IDS = [...NAV_LINKS.map(link => link.id), 'ai', 'agents', 'workspace', 'campus', 'login']
 export const OPENING_TRIGGER = 'lp-aperture'
 
 const barHeight = () => document.querySelector('.lp-nav')?.getBoundingClientRect().height || 72

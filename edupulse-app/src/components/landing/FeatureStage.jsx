@@ -67,7 +67,7 @@ export default function FeatureStage({ chapters }) {
         <header className="lp-head">
           <p className="lp-label">Features</p>
           <h2 id="features-title" data-split>From the syllabus to every class</h2>
-          <p>Four parts of one workflow, each starting from the approved KCP syllabus. The screens are the EduPulse prototype with sample data.</p>
+          <p>Four parts, one approved syllabus. Prototype screens with sample data.</p>
         </header>
         <div className="fs-stage" ref={stage}>
           <div className="fs-copy">

@@ -21,7 +21,7 @@ export default function ImpactSection({ evidence, goals }) {
         <header className="lp-head">
           <p className="lp-label">Why it matters</p>
           <h2 id="impact-title" data-split>Preparation takes time. The research agrees.</h2>
-          <p>Findings cited in the EduPulse study. They describe the problem EduPulse addresses, not measured EduPulse results.</p>
+          <p>Cited in the EduPulse study. They describe the problem, not EduPulse results.</p>
         </header>
         <div className="evidence">
           {evidence.map(item => (

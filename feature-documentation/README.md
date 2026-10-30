@@ -41,4 +41,4 @@ Version folders are release records. Preserve released records, and add correcti
 
 Execution is tracked in [WORKPLAN.md](WORKPLAN.md). A release is verified only after lint, typecheck, tests, build, deployment validation and remote checks have evidence.
 
-[30 October landing v3](versions/2026-10-30-landing-v3/README.md): white and light-blue landing page with an opening, a 3D ring and geometric motion; local implementation and validation, pushed to the `landing-v3-light` branch, not deployed.
+[30 October landing v3](versions/2026-10-30-landing-v3/README.md): white and light-blue landing page with an opening, a 3D ring, geometric motion, an agents scope with agent portraits and a 3D agent workspace; local implementation and validation, pushed to the `landing-v3-light` branch, not deployed.

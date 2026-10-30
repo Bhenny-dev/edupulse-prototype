@@ -74,7 +74,7 @@ export default function PhaseFlow({ phases }) {
         <header className="lp-head flow-head">
           <p className="lp-label">How it works</p>
           <h2 id="flow-title" data-split>Six phases. People decide each one.</h2>
-          <p>From the EduSuite files to student results. The AI assists inside every phase and never finalizes one.</p>
+          <p>From EduSuite files to student results. The AI assists; it never finalizes.</p>
         </header>
         <div className="flow-track" ref={track}>
           <svg className="flow-line" ref={svg} aria-hidden="true" focusable="false" preserveAspectRatio="none">

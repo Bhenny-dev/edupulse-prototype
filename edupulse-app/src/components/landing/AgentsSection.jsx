@@ -1,5 +1,6 @@
 import { useMemo, useRef, useState } from 'react'
 import { gsap, useMotion } from './motion'
+import AgentFace from './AgentFace'
 
 // Inside Pulse. The agents are concentric rings of type around a core, like a scope, and
 // neighbouring rings turn in opposite directions. With motion the section holds the screen
@@ -64,6 +65,10 @@ export default function AgentsSection({ agents }) {
       light.style.opacity = String(smooth(clamp01((state.c - 0.3) / 0.7)))
       section.style.setProperty('--agents-head', String(1 - smooth(clamp01((state.a + 0.3) / 0.7))))
       section.style.setProperty('--agents-caption', String(1 - smooth(clamp01(state.c / 0.35))))
+      // The agent being named waves from the lens at the centre; while the core opens the whole
+      // team waves, then fades with the light into the workspace.
+      section.style.setProperty('--agents-lens', String(smooth(clamp01((state.a + 0.45) / 0.35)) * (1 - smooth(clamp01(state.c / 0.25)))))
+      section.style.setProperty('--agents-team', String(smooth(clamp01((state.c - 0.08) / 0.3)) * (1 - smooth(clamp01((state.c - 0.62) / 0.3)))))
       setActive(Math.min(count - 1, Math.max(0, Math.round(state.a))))
     }
     measure()
@@ -83,6 +88,8 @@ export default function AgentsSection({ agents }) {
       light.style.opacity = ''
       section.style.removeProperty('--agents-head')
       section.style.removeProperty('--agents-caption')
+      section.style.removeProperty('--agents-lens')
+      section.style.removeProperty('--agents-team')
       setActive(0)
     }
   }, [count])
@@ -116,6 +123,10 @@ export default function AgentsSection({ agents }) {
               <circle className="scope-light" cx={C} cy={C} r={radius(count)} />
             </g>
           </svg>
+          <div className="agents-faces" aria-hidden="true">
+            <div className="agents-lens"><div key={active} className="agents-lens-card"><AgentFace agent={agents[active]} /></div></div>
+            <ul className="agents-team">{agents.map(agent => <li key={agent.key}><AgentFace agent={agent} /></li>)}</ul>
+          </div>
           <div className="agents-caption" aria-hidden="true">
             <p className="agents-count"><span>{pad(active + 1)}</span> / {pad(count)}</p>
             <div key={active} className="agents-caption-body">
@@ -129,6 +140,7 @@ export default function AgentsSection({ agents }) {
           <ol className="agents-list">
             {agents.map((agent, i) => (
               <li key={agent.key}>
+                <AgentFace agent={agent} className="agents-list-face" />
                 <span className="agents-list-num" aria-hidden="true">{pad(i + 1)}</span>
                 <h3>{agent.name}</h3>
                 <p>{agent.role}</p>

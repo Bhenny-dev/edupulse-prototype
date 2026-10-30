@@ -1,5 +1,5 @@
 {
-  "capturedAt": "2026-10-30T06:14:31.440Z",
+  "capturedAt": "2026-10-30T10:28:20.222Z",
   "problems": [],
   "scenes": [
     {
@@ -527,6 +527,14 @@
       "folder": "01-public-site",
       "file": "08b-landing-agents.png",
       "title": "Landing page: the agents behind Pulse",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "08c-landing-workspace.png",
+      "title": "Landing page: the agent workspace (the Comparator answering)",
       "route": "/",
       "ok": true
     },

@@ -1,54 +1,64 @@
-import { useRef } from 'react'
-import { ShieldCheck } from 'lucide-react'
-import { gsap, useMotion, EASE, ENTER, DURATION } from './motion'
+import { useRef, useState } from 'react'
+import { ShieldCheck, FileText, Layers, Send, Eye, ChartColumn } from 'lucide-react'
+import { gsap, useMotion, EASE } from './motion'
 
-// Why EduPulse. The comparison opens from its centre seam (a split reveal), its rows settle
-// one by one and a short connector draws from each problem to its improvement. The table
-// keeps its semantics on phones (explicit roles survive the stacked layout).
+const ICONS = { syllabus: FileText, materials: Layers, delivery: Send, oversight: Eye, performance: ChartColumn }
+
+// Why EduPulse, shown rather than told: five cards, each with today's state on one face and
+// EduPulse's on the other. With motion the cards rise showing "Today", then flip once to
+// "With EduPulse"; the switch flips them back and forth. The faces are decorative; each card
+// carries one plain sentence with both states for assistive technology.
 export default function ProblemSection({ rows }) {
   const ref = useRef(null)
+  const [view, setView] = useState('next')
+
   useMotion(ref, ({ motion }) => {
-    if (!motion) return
+    if (!motion) return undefined
     const q = gsap.utils.selector(ref)
-    const stacked = window.matchMedia('(max-width: 759px)').matches // connectors run downward on phones
-    gsap.timeline({ scrollTrigger: { trigger: q('.why-compare')[0], start: ENTER, once: true } })
-      .fromTo(q('.why-compare'), { clipPath: 'inset(0% 50% 0% 50%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: DURATION.wide, ease: 'expo.inOut', clearProps: 'clipPath' })
-      .from(q('.why-row'), { y: 14, autoAlpha: 0, duration: 0.55, ease: EASE, stagger: 0.07 }, 0.3)
-      .from(q('.why-link'), { [stacked ? 'scaleY' : 'scaleX']: 0, duration: 0.5, ease: 'power2.out', stagger: 0.07 }, 0.45)
+    setView('today')
+    gsap.timeline({ scrollTrigger: { trigger: q('.why-cards')[0], start: 'top 78%', once: true } })
+      .from(q('.why-card'), { y: 28, autoAlpha: 0, duration: 0.6, ease: EASE, stagger: 0.08 })
+      .add(() => setView('next'), '+=0.45')
+    return () => setView('next')
   })
 
   return (
     <section id="problem" className="lp-section why" ref={ref} aria-labelledby="why-title">
       <div className="lp-wrap">
-        <header className="lp-head">
+        <header className="lp-head why-head">
           <h2 id="why-title" data-split>Why EduPulse</h2>
-          <p className="why-statement">
-            At the CIT, every lesson is meant to follow the approved syllabus. In practice, syllabi
-            are recycled, materials are rushed or pasted from AI chat tools, delivery is split between
-            Moodle and paper, and the Dean's office cannot see what reaches the class.
-          </p>
+          <p className="why-statement">Every lesson should follow the approved syllabus. Today, the pieces drift apart.</p>
         </header>
-        <div className="why-compare">
-          <table className="why-table" role="table">
-            <caption className="sr-only">Course preparation today and with EduPulse</caption>
-            <thead role="rowgroup">
-              <tr role="row"><th scope="col" role="columnheader">Area</th><th scope="col" role="columnheader">Today</th><th scope="col" role="columnheader">With EduPulse</th></tr>
-            </thead>
-            <tbody role="rowgroup">
-              {rows.map(row => (
-                <tr key={row.area} className="why-row" role="row">
-                  <th scope="row" role="rowheader">{row.area}</th>
-                  <td className="why-today" role="cell"><span className="why-cell-label" aria-hidden="true">Today</span>{row.today}</td>
-                  <td className="why-next" role="cell"><span className="why-link" aria-hidden="true" /><span className="why-cell-label" aria-hidden="true">With EduPulse</span>{row.next}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="why-switch" role="group" aria-label="Show course preparation">
+          <span className="why-switch-marker" data-view={view} aria-hidden="true" />
+          <button type="button" aria-pressed={view === 'today'} onClick={() => setView('today')}>Today</button>
+          <button type="button" aria-pressed={view === 'next'} onClick={() => setView('next')}>With EduPulse</button>
         </div>
-        <p className="why-note">
-          <ShieldCheck size={20} aria-hidden="true" /> EduPulse assists but never replaces the instructor's judgment:
-          every material and assessment is reviewed and approved before it is used in class.
-        </p>
+        <ul className={`why-cards is-${view}`}>
+          {rows.map((row, i) => {
+            const Icon = ICONS[row.key]
+            return (
+              <li key={row.key} className="why-card" style={{ '--i': i }}>
+                <p className="sr-only">{`${row.area}. Today: ${row.today}. With EduPulse: ${row.next}.`}</p>
+                <div className="why-flip" aria-hidden="true">
+                  <div className="why-face is-today">
+                    <span className="why-icon"><Icon size={22} strokeWidth={1.8} /></span>
+                    <p className="why-area">{row.area}</p>
+                    <p className="why-text">{row.today}</p>
+                    <p className="why-state">Today</p>
+                  </div>
+                  <div className="why-face is-next">
+                    <span className="why-icon"><Icon size={22} strokeWidth={1.8} /></span>
+                    <p className="why-area">{row.area}</p>
+                    <p className="why-text">{row.next}</p>
+                    <p className="why-state">With EduPulse</p>
+                  </div>
+                </div>
+              </li>
+            )
+          })}
+        </ul>
+        <p className="why-note"><ShieldCheck size={20} aria-hidden="true" /> AI drafts. Instructors review and approve every item.</p>
       </div>
     </section>
   )

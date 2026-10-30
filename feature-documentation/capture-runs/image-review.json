@@ -3588,6 +3588,90 @@
       "sha256": "aeaaa6453cbb6d8274d92a786e4ab47215772da9e23631044a45a56754887d35",
       "reviewer": "Claude agent",
       "reviewedAt": "2026-10-30T06:15:22.983Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/01-landing-hero.png",
+      "sha256": "5f22ba9ba46a9b00b9d7ed8df5e3fb9e448782223e8dd6b749c953f341a935f7",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-30T10:34:11.517Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/02-landing-navigation.png",
+      "sha256": "147109b228a0a7c8be19555209ade31bbed6ae54ef8537e7d41343e6b9e43ba1",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-30T10:34:11.517Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/03-landing-why-edupulse.png",
+      "sha256": "9a28d712075e758fed1ffc11da022270e3e4fa8a399198a73e5e47e66856cea9",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-30T10:34:11.517Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/04-landing-features.png",
+      "sha256": "ac9b2a51bae6ee9d9ffdfdb084da8fe455e2ba1e95b06b9ceb34ee6e92719dcd",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-30T10:34:11.517Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/05-landing-how-it-works.png",
+      "sha256": "298b8623df798eabc02e908ee132c6d0613b9c9ebbdd48ca84142f1d453874c2",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-30T10:34:11.517Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/06-landing-roles.png",
+      "sha256": "1c1dc804b23a4288ff5587a8bf9273f9a7573b2dc4a934942e2f17a47888290e",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-30T10:34:11.517Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/07-landing-roles-student.png",
+      "sha256": "a42c0302c058eab155c7f9a2336d6faab7a1c4dc60112ac000c3f9f6dca45833",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-30T10:34:11.517Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/08-landing-pulse.png",
+      "sha256": "82cf84c69d7a8c2852a4261a918ca8094e47515eb4ad12a84ef92370bbe66f47",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-30T10:34:11.517Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/08b-landing-agents.png",
+      "sha256": "fec30bc69414e95a74e834a09b90d064c565999e40116fbf526baae384cac7d8",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-30T10:34:11.517Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/08c-landing-workspace.png",
+      "sha256": "bac20f00f808484e95e4a4ff3833620e2ecd572507b1f944f6cf9b547326b09a",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-30T10:34:11.517Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/09-landing-why-it-matters.png",
+      "sha256": "bda78ec332c981d6bef4f9220d856fa977e9bc78e41163201f9cca9f684eac31",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-30T10:34:11.517Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/10-landing-colleges.png",
+      "sha256": "31a93c987b9462dcb484e62806aa96719f6192484a1c55c736e3f31fd6b1de17",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-30T10:34:11.517Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/06-mobile/01-landing.png",
+      "sha256": "cf4824b9a7597c2ffbdb6f68958ac27cc4ad6f168025a8eea87454e12df25be3",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-30T10:34:11.517Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/06-mobile/07-landing-menu.png",
+      "sha256": "d8cfe892304c75f553c3900fabfec7ee0ed3fcd595bdb76d39213a755067bfee",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-30T10:34:11.517Z"
     }
   ]
 }

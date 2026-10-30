@@ -9,6 +9,7 @@ import PhaseFlow from '../components/landing/PhaseFlow'
 import RoleExplorer from '../components/landing/RoleExplorer'
 import PulseSection from '../components/landing/PulseSection'
 import AgentsSection from '../components/landing/AgentsSection'
+import WorkspaceSection from '../components/landing/WorkspaceSection'
 import ImpactSection from '../components/landing/ImpactSection'
 import CollegesSection from '../components/landing/CollegesSection'
 import PhotoRail from '../components/landing/PhotoRail'
@@ -18,7 +19,7 @@ import LandingFooter from '../components/landing/LandingFooter'
 import { gsap, ScrollTrigger, MEDIA, revealHeadings } from '../components/landing/motion'
 import { decideOpening, trackLandingScroll, leaveLanding, takeReturnY } from '../components/landing/intro'
 import { SECTION_IDS, scrollToId } from '../components/landing/navigation'
-import { PROBLEM, CHAPTERS, PHASES, ROLES, PRINCIPLES, AGENTS, EVIDENCE, GOALS, FAQ, COMMUNITY_ALT } from '../components/landing/content'
+import { PROBLEM, CHAPTERS, PHASES, ROLES, PRINCIPLES, AGENTS, WORKSPACE_TALK, WORKSPACE_RUNS, EVIDENCE, GOALS, FAQ, COMMUNITY_ALT } from '../components/landing/content'
 import { KCP, COLLEGES } from '../data/colleges'
 import '../components/landing/landing.css'
 
@@ -81,7 +82,7 @@ export default function Landing() {
             <header className="lp-head">
               <p className="lp-label">Roles</p>
               <h2 id="roles-title" data-split>Five roles, one platform</h2>
-              <p>Each account has one role, and the top bar shows only that role's sections.</p>
+              <p>One role per account. Each sees only its own pages.</p>
             </header>
             <RoleExplorer roles={ROLES} />
           </div>
@@ -89,6 +90,7 @@ export default function Landing() {
 
         <PulseSection principles={PRINCIPLES} />
         <AgentsSection agents={AGENTS} />
+        <WorkspaceSection agents={AGENTS} talk={WORKSPACE_TALK} runs={WORKSPACE_RUNS} />
         <ImpactSection evidence={EVIDENCE} goals={GOALS} />
         <CollegesSection cit={CIT} planned={PLANNED} />
 

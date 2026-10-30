@@ -26,7 +26,7 @@ export default function PulseSection({ principles }) {
           <header className="lp-head">
             <p className="lp-label">Pulse, the AI assistant</p>
             <h2 id="pulse-title" data-split>Grounded in your documents. Decided by you.</h2>
-            <p>Pulse lives on every page. It retrieves from the approved syllabus and your files, drafts when you ask, and stops at the boundaries the college set.</p>
+            <p>On every page. It drafts from your approved sources and stops at the college’s limits.</p>
           </header>
           <ul className="promises">
             {principles.map((principle, i) => {

@@ -2,7 +2,7 @@ import { test, expect, type Page, type Locator } from '@playwright/test'
 
 // The public landing page: the opening (once per tab, skippable, bypassed by reloads, section
 // links and other routes), section links clear of the fixed bar, the synchronized feature
-// stage, the six-phase connector, the agents scope, role tabs, FAQ, the photo rows and their pause control,
+// stage, the six-phase connector, the agents scope, the agent workspace, role tabs, FAQ, the photo rows and their pause control,
 // sign-in, legal-page transitions and history, reduced motion, missing WebGL and overflow.
 
 // A tab that has already seen the opening starts on the hero.
@@ -228,7 +228,7 @@ test('the agents scope names all nine agents in order, then opens into the next 
   await go(units)
   await expect.poll(() => section.locator('.scope-light').evaluate(element => Number(getComputedStyle(element).opacity)), { timeout: 5000 }).toBeGreaterThan(0.98)
   await page.evaluate(y => window.scrollTo(0, y), Math.round(range.start + range.distance + 300))
-  await expect(page.locator('#impact')).toBeInViewport()
+  await expect(page.locator('#workspace')).toBeInViewport()
 })
 
 test('with reduced motion the agents are one still picture and a list of all nine', async ({ page }) => {
@@ -241,6 +241,42 @@ test('with reduced motion the agents are one still picture and a list of all nin
   await expect(section.getByRole('heading', { level: 3, name: 'Corrector' })).toBeVisible()
   await expect(section.locator('.agents-caption')).toBeHidden()
   expect(await section.evaluate(element => element.parentElement?.classList.contains('pin-spacer'))).toBe(false)
+})
+
+test('the agent workspace answers a tap on a robot or on its button, and runs a request', async ({ page }) => {
+  test.setTimeout(120_000)
+  await repeatVisit(page)
+  await page.goto('/#/?section=workspace')
+  const section = page.locator('#workspace')
+  const log = section.getByRole('list', { name: 'Conversation' })
+  await expect(section.locator('.ws-stage')).toHaveClass(/is-scene/, { timeout: 20_000 })
+  await expect(section.locator('.ws-canvas')).toHaveAttribute('aria-hidden', 'true')
+  await expect(section.locator('.ws-stage')).toHaveAttribute('data-assembled', '', { timeout: 20_000 })
+  // The studio is framed on the Comparator's sofa: a tap in the middle picks it in 3D.
+  await section.locator('.ws-canvas').click()
+  await expect(section.getByRole('button', { name: 'Comparator', exact: true })).toHaveAttribute('aria-pressed', 'true')
+  await expect(log).toContainText('Compare my syllabus with last year’s.')
+  await expect(log).toContainText('I’ll line them up')
+  await section.getByRole('button', { name: 'Guardian', exact: true }).click()
+  await expect(log).toContainText('That breaks the assessment rule, so I stop the request here')
+  await expect(section.locator('.ws-bubble')).toHaveClass(/is-on/)
+  await section.getByRole('button', { name: 'Ask for quiz answers' }).click()
+  await expect(log.locator('.ws-msg')).toHaveCount(2, { timeout: 20_000 })
+  await expect(log).toContainText('Give me the answers to the Week 3 quiz.')
+  await expect(log).toContainText('No other agent runs.', { timeout: 10_000 })
+  await section.getByRole('button', { name: 'Pause motion' }).click()
+  await expect(section.getByRole('button', { name: 'Play motion' })).toBeVisible()
+})
+
+test('with reduced motion a request through the workspace shows every hand-off at once', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.goto('/#/?section=workspace')
+  const section = page.locator('#workspace')
+  await section.getByRole('button', { name: 'Summarize Week 3' }).click()
+  const log = section.getByRole('list', { name: 'Conversation' })
+  await expect(log.locator('.ws-msg.is-agent')).toHaveCount(7)
+  await expect(log.locator('.ws-msg-who')).toHaveText(['Guardian', 'Planner', 'Researcher', 'Ranker', 'Writer', 'Verifier', 'Corrector'].map(name => `${name}: `))
+  await expect(log.locator('.ws-msg').last()).toContainText('Ready for the instructor’s review.')
 })
 
 test('the six phases draw their connector; every phase keeps its AI and People duties', async ({ page }) => {
@@ -416,6 +452,11 @@ test('without WebGL the page keeps its SVG ring and the opening still works', as
   await page.getByRole('button', { name: 'Skip intro' }).click()
   await expect(page.getByRole('heading', { level: 1 })).toBeInViewport()
   if (!mobileProject(info.project.name)) await expect(page.locator('.pulse-ring-svg')).toBeVisible()
+  const workspace = page.locator('#workspace')
+  await workspace.scrollIntoViewIfNeeded()
+  await expect(workspace.locator('.ws-stage')).toHaveClass(/is-flat/, { timeout: 15_000 })
+  await workspace.getByRole('button', { name: 'Planner', exact: true }).click()
+  await expect(workspace.getByRole('list', { name: 'Conversation' })).toContainText('I’ll plan the searches')
   await page.locator('#login').scrollIntoViewIfNeeded()
   await expect(page.getByLabel('Email', { exact: true })).toBeVisible()
   expect(problems).toEqual([])
