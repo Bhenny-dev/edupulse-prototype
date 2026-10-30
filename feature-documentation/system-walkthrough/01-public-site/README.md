@@ -13,6 +13,7 @@ The page is white and light blue, with headings in Sora and text in DM Sans.
 * **Opening.** On the first visit to the landing page in a browser tab, the EduPulse logo and name appear on a white and light-blue field while blue geometric planes and 3D facets assemble around them, with **Scroll to explore** and **Skip intro** below. Scrolling about one screen opens the planes outward like an aperture and reveals the hero; scrolling back up closes it again. **Skip intro**, or moving keyboard focus past it, removes the opening at once. It plays once per tab: reloads, Back and Forward, links to a section (for example `#/?section=faq`), later returns to the landing page and reduced motion all skip it.
 * **3D ring.** In the hero, a 3D blue ring takes the place of the flat ring in image 1 and follows a mouse pointer slightly. Without WebGL the flat ring stays.
 * **Section entrances.** Section headings rise line by line, the comparison table opens from its centre, the phase timeline draws its line as you scroll, the Pulse example opens in a circle and its messages appear one at a time, the arcs around the CIT seal draw in and the sign-in photograph opens from a rectangle. Each plays once.
+* **Agents.** The agents section holds the screen while scrolling travels inward ring by ring, with neighbouring rings turning in opposite directions. A card names each agent in turn (**01 / 09** to **09 / 09**) and that agent's ring turns blue. After the ninth, the blue core opens until the screen is white, and *Why it matters* follows.
 * **Features on a desktop.** The section holds still while its four parts change beside one framed prototype screen. The step number, heading, screen, caption and the step buttons **01** to **04** always change together, scrolling up or down; a step button scrolls to its part.
 * **Photographs.** The two rows of community photographs drift slowly in opposite directions. **Pause photo movement**, under the rows, stops them until **Play photo movement** is pressed. Hovering, keyboard focus or a tap also stops them (a second tap starts them again), and they stop off screen and in a hidden tab.
 * **Links.** Section links glide to their section and stop just under the top bar; scrolling yourself stops the glide. **Privacy** opens with a rectangular reveal and **Terms** with a diagonal one.
@@ -95,6 +96,23 @@ A light-blue band. **Pulse, the AI assistant** · “Grounded in your documents.
 
 On the right, an illustrated chat labelled *Student view · sample conversation*. The student asks “Give me the answers to quiz 2.”; two chips show what Pulse checked (*Appropriate-use rule · assessments* and *Week 4 reading · conditional statements, unopened*); Pulse replies “I can't help with assessment answers. Your Week 4 reading on conditional statements is still unopened. Want to start there?” The tag reads **Declined · appropriate-use rule**, and the caption labels the chat *Illustration*.
 
+## 8b. The agents behind Pulse
+
+![The agents behind Pulse](08b-landing-agents.png)
+
+**Inside Pulse** · “The agents behind every answer”: “Pulse is nine named agents sharing one workflow. A request passes only the agents it needs, and the Guardian always checks it first.” Below it, nine concentric rings of capital letters around a blue core, one ring per agent, each naming the agent and its job (the outer ring reads *GUARDIAN · CHECKS APPROPRIATE USE*). Then the nine agents, numbered in the order a request meets them:
+* **01 Guardian:** checks every request against the college’s appropriate-use rules first, and declines what breaks them, such as asking for assessment answers.
+* **02 Planner:** works out what the request needs and plans the searches that will answer it.
+* **03 Researcher:** runs several searches at once over the approved syllabus and your files, and public web sources when a request needs them.
+* **04 Librarian:** finds readings and references in open catalogs when you ask for them.
+* **05 Ranker:** weighs what the searches found, keeps the most relevant passages and stops when nothing relevant turns up.
+* **06 Comparator:** lines up passages from different documents when a request compares them.
+* **07 Writer:** writes the answer or draft from the ranked passages, quoting them directly when it has to.
+* **08 Verifier:** checks each claim in a written answer against its sources before you see it.
+* **09 Corrector:** fixes the citations the Verifier flags, or replaces an answer it cannot verify.
+
+As captured (reduced motion), the rings stand still and the list is shown. With motion, the list is read out to screen readers but replaced on screen by the moving rings and a card for the current agent (see the top of this page).
+
 ## 9. Why it matters
 
 ![Why it matters](09-landing-why-it-matters.png)
@@ -175,4 +193,4 @@ A light-blue footer. On the left, the KCP crest and EduPulse logo, “An AI-powe
 
 `/500` appears when the app cannot complete a request. It shows **500 · Server Error** and a short apology, with **Go to Dashboard** and **Retry**.
 
-*Changed on 30 October 2026:* the landing page was redesigned in white and light blue, with Sora headings, DM Sans text, a once-per-tab opening, a 3D ring and geometric section motion. Images 1 to 15 were recaptured; images 16 to 18 are unchanged, and no image was added or removed.
+*Changed on 30 October 2026:* the landing page was redesigned in white and light blue, with Sora headings, DM Sans text, a once-per-tab opening, a 3D ring and geometric section motion. Images 1 to 15 were recaptured and images 16 to 18 are unchanged. The agents section and its image (8b) were added on the same day.

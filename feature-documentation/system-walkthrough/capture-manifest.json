@@ -1,5 +1,5 @@
 {
-  "capturedAt": "2026-10-30T05:09:27.779Z",
+  "capturedAt": "2026-10-30T06:14:31.440Z",
   "problems": [],
   "scenes": [
     {
@@ -519,6 +519,14 @@
       "folder": "01-public-site",
       "file": "08-landing-pulse.png",
       "title": "Landing page: Pulse and its boundaries",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "08b-landing-agents.png",
+      "title": "Landing page: the agents behind Pulse",
       "route": "/",
       "ok": true
     },

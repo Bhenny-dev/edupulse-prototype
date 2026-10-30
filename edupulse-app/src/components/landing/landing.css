@@ -561,3 +561,55 @@ html:has(.landing-page), html:has(.landing-page) body { overflow-anchor: none; }
   .hero-actions .lp-button { width: 100%; }
   .nav-brand img { display: none; }
 }
+
+/* Inside Pulse: the agents as a scope of rings (AgentsSection.jsx). Without motion, one still
+   picture with the agents listed below it. */
+.agents { overflow: hidden; }
+.agents-stage { display: grid; justify-items: center; gap: clamp(40px, 6vw, 72px); }
+.scope-svg { display: block; width: min(100%, 560px); height: auto; overflow: visible; }
+.scope-band { fill: var(--lp-mist); stroke: var(--lp-ice); stroke-width: 1px; vector-effect: non-scaling-stroke; }
+.scope-band.is-alt { fill: var(--lp-ice-soft); }
+.scope-ring text { font-family: var(--lp-display); font-weight: 600; fill: var(--lp-slate); transition: fill var(--lp-base) ease; }
+.scope-stop-deep { stop-color: var(--lp-blue); }
+.scope-stop-mid { stop-color: var(--lp-blue-soft); }
+.scope-stop-pale { stop-color: var(--lp-ice-soft); }
+.scope-light { fill: var(--lp-white); opacity: 0; }
+.agents-caption { display: none; }
+.agents-list { list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; width: 100%; }
+.agents-list li { padding: 22px 24px; border: 1px solid var(--lp-line); border-radius: 18px; background: var(--lp-white); }
+.agents-list-num { font-family: var(--lp-display); font-size: 0.875rem; font-weight: 700; color: var(--lp-blue-deep); }
+.landing-page .agents-list h3 { margin: 6px 0; font-size: 1.25rem; }
+.agents-list p { font-size: 0.9375rem; line-height: 1.55; color: var(--lp-slate); }
+
+/* With motion: one pinned screen that travels inward through the rings, then opens the core. */
+.agents.is-live { height: 100vh; height: 100svh; padding: 0; }
+.agents.is-live .agents-stage { position: absolute; inset: 0; display: block; }
+.agents.is-live .scope-svg { position: absolute; left: 50%; top: calc(50% + var(--nav-h) / 2); width: min(92vw, calc(88vh - var(--nav-h))); transform: translate(-50%, -50%); }
+.agents.is-live .scope-ring.is-active text { fill: var(--lp-blue-deep); }
+.agents.is-live :is(.agents-head, .agents-caption) { position: absolute; z-index: 2; left: max(var(--gutter), calc((100% - var(--container)) / 2)); max-width: 380px; padding: 22px 24px; border: 1px solid var(--lp-line); border-radius: 20px; background: rgb(255 255 255 / 0.9); box-shadow: var(--lp-shadow-lift); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+.agents.is-live .agents-head { top: calc(var(--nav-h) + 24px); margin: 0; opacity: var(--agents-head, 1); }
+.agents.is-live .agents-head h2 { font-size: clamp(1.5rem, 1.1rem + 1.2vw, 2.125rem); }
+.agents.is-live .agents-head p:last-child { font-size: 0.9375rem; line-height: 1.55; }
+.agents.is-live .agents-caption { display: block; bottom: 32px; opacity: var(--agents-caption, 1); }
+.agents.is-live .agents-list { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+.agents-count { font-family: var(--lp-display); font-size: 0.9375rem; font-weight: 700; color: var(--lp-slate); }
+.agents-count span { color: var(--lp-blue-deep); }
+.agents-name { margin-top: 4px; font-family: var(--lp-display); font-size: clamp(1.5rem, 1.15rem + 1.1vw, 2rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.025em; color: var(--lp-ink); }
+.agents-role { margin-top: 6px; font-size: 1rem; line-height: 1.5; color: var(--lp-slate); }
+.agents-ticks { list-style: none; display: flex; gap: 6px; margin-top: 16px; }
+.agents-ticks li { width: 22px; height: 4px; border-radius: 2px; background: var(--lp-line); transition: background-color var(--lp-base) ease; }
+.agents-ticks li.is-done { background: var(--lp-blue-soft); }
+.agents-ticks li.is-active { background: var(--lp-blue); }
+.agents-caption-body { animation: agents-caption 420ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+@keyframes agents-caption { from { opacity: 0; transform: translateY(10px); } }
+@media (max-width: 1023px) { .agents-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 767px) {
+  .agents-list { grid-template-columns: minmax(0, 1fr); }
+  .agents.is-live :is(.agents-head, .agents-caption) { right: var(--gutter); max-width: none; padding: 16px 18px; }
+  .agents.is-live .agents-head { top: calc(var(--nav-h) + 12px); }
+  .landing-page .agents.is-live .lp-head h2 { font-size: 1.5rem !important; }
+  .agents.is-live .agents-caption { bottom: 16px; }
+  .agents.is-live .scope-svg { width: min(94vw, 58vh); }
+  .agents-role { font-size: 0.9375rem; }
+  .agents-ticks li { width: 16px; }
+}

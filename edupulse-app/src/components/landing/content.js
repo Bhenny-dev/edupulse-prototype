@@ -100,6 +100,21 @@ export const PRINCIPLES = [
   { title: 'Scores, not grades', body: 'The scoring sheet visualizes results; final grades stay in the official KCP grading sheet.' },
 ]
 
+// Pulse's named agents (src/lib/rag/agents.ts), in the order a request meets them. A request
+// passes only the agents it needs; the Guardian always checks it first. `ring` is the line set
+// around the agent's ring.
+export const AGENTS = [
+  { key: 'guardian', name: 'Guardian', ring: 'GUARDIAN · CHECKS APPROPRIATE USE', role: 'Checks every request against the college’s appropriate-use rules first, and declines what breaks them, such as asking for assessment answers.' },
+  { key: 'planner', name: 'Planner', ring: 'PLANNER · PLANS THE SEARCH', role: 'Works out what the request needs and plans the searches that will answer it.' },
+  { key: 'researcher', name: 'Researcher', ring: 'RESEARCHER · SEARCHES YOUR SOURCES', role: 'Runs several searches at once over the approved syllabus and your files, and public web sources when a request needs them.' },
+  { key: 'librarian', name: 'Librarian', ring: 'LIBRARIAN · SEARCHES OPEN CATALOGS', role: 'Finds readings and references in open catalogs when you ask for them.' },
+  { key: 'ranker', name: 'Ranker', ring: 'RANKER · RANKS THE EVIDENCE', role: 'Weighs what the searches found, keeps the most relevant passages and stops when nothing relevant turns up.' },
+  { key: 'comparator', name: 'Comparator', ring: 'COMPARATOR · ALIGNS SOURCES', role: 'Lines up passages from different documents when a request compares them.' },
+  { key: 'writer', name: 'Writer', ring: 'WRITER · WRITES FROM THE SOURCES', role: 'Writes the answer or draft from the ranked passages, quoting them directly when it has to.' },
+  { key: 'verifier', name: 'Verifier', ring: 'VERIFIER · CHECKS EVERY CLAIM', role: 'Checks each claim in a written answer against its sources before you see it.' },
+  { key: 'corrector', name: 'Corrector', ring: 'CORRECTOR · FIXES CITATIONS', role: 'Fixes the citations the Verifier flags, or replaces an answer it cannot verify.' },
+]
+
 export const EVIDENCE = [
   { value: 7.4, decimals: 1, suffix: ' h', label: 'a week spent preparing lessons, on average, by teachers across OECD countries', source: 'OECD, Results from TALIS 2024 (2025)' },
   { value: 31, decimals: 0, suffix: '%', label: 'less lesson-planning time for teachers using generative AI, with no measurable drop in lesson quality', source: 'Education Endowment Foundation (2024)' },

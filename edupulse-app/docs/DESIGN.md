@@ -54,13 +54,15 @@ Rules:
 | Small interactions (CSS) | 150–250 ms | link and button states, the nav marker, the role marker, FAQ open and close, the plus turning into a minus |
 | Entrances (GSAP) | 500–850 ms | heading lines rising from a mask, the comparison table opening from its centre seam, the Pulse iris, arcs around the CIT seal, the sign-in aperture |
 | Opening entrance | about 1.4 s | the EduPulse mark and name, with 3D facets assembling around them |
+| Scroll-linked scenes | follow the scroll | the opening aperture, the Features stage, the agents scope, the phase connector |
 | Route transitions (CSS) | 320–360 ms | Privacy (rectangle), Terms (diagonal mask) |
 
 Rules:
 * One dominant transition per major section, then the section stays still for reading. Easing is restrained ease-out (`expo.out`, `power3.out`; `cubic-bezier(0.22, 1, 0.36, 1)` in CSS).
 * Every landing animation is created inside `gsap.matchMedia` (`motion.js`). Nothing is hidden by CSS, so with reduced motion, or without JavaScript, every section is complete and still; switching reduced motion on later reverts the animations and ends the opening.
 * Scrolling is native: no smooth-scroll library and no wheel or touch interception. Section links glide with GSAP's ScrollToPlugin, stop as soon as the reader scrolls, and finish exactly under the fixed bar. Scroll anchoring is off on the landing page, so the browser never shifts the position under a pinned scene.
-* At most **two pinned scenes**: the opening aperture (about 85 % of a viewport, fresh visits only) and the Features stage. The phase connector draws with scrolling but does not pin.
+* At most **three pinned scenes**: the opening aperture (about 85 % of a viewport, fresh visits only), the Features stage and the agents scope (about 55 % of a viewport per agent, then the core's opening). The phase connector draws with scrolling but does not pin.
+* The agents scope (`AgentsSection.jsx`) is one SVG: nine rings of type around a core, neighbouring rings turning in opposite directions. One scroll-linked timeline writes its zoom, the ring rotation and the core's white-out into the next section; React only marks the active ring and caption. The rings are `aria-hidden`; an ordered list carries the agents for assistive technology and is the visible content without motion.
 * The opening plays once per browser tab (`sessionStorage` flag `edupulse-intro`), only for a fresh visit to the root route at the top of the page. Reloads, Back and Forward, direct section links (`#/?section=faq`), documents that start on another route, later returns to the landing page and reduced motion never play it. **Skip intro**, or keyboard focus moving past the overlay, removes it.
 * GSAP and CSS never write the same property of the same element. SplitText is used only for headings; it keeps one accessible heading name and is reverted afterwards.
 * The 3D scene (`scene/landingScene.js`, plain three.js) is one canvas, one renderer, one render loop and one camera controller (entrance push-in, aperture pull-back, pointer parallax for fine pointers, clamped). It loads in its own chunk, compiles its single material program in parallel before the first frame, caps the pixel ratio (1.75, or 1.5 on phones), damps with frame-rate independent easing, renders only while on screen in a visible tab and when something changed, and disposes everything on unmount. Without WebGL, with reduced motion or on failure, an SVG ring stands in.
@@ -74,6 +76,7 @@ Rules:
 | Opening: plays once, Skip intro by keyboard and pointer, bypassed by reloads, section links and other routes | `tests/browser/landing.spec.ts` |
 | Section links land under the fixed bar without changing the route | `tests/browser/landing.spec.ts` |
 | Feature steps keep number, heading, screen, caption and controls in step (forward, backward, rapid) | `tests/browser/landing.spec.ts` |
+| The agents scope names all nine agents in order and opens into the next section; with reduced motion it is a still picture and a list | `tests/browser/landing.spec.ts` |
 | Role tabs follow the WAI-ARIA tab pattern without height jumps | `tests/browser/landing.spec.ts` |
 | Moving photographs can be paused (control, hover, focus, tap) | `tests/browser/landing.spec.ts` |
 | Reduced motion and missing WebGL give a complete, usable page | `tests/browser/landing.spec.ts` |

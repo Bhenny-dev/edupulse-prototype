@@ -3576,6 +3576,18 @@
       "sha256": "932a15b348f361bf8447faa2336d2c8c45be560b60ba2926a10426d8a24dc3ce",
       "reviewer": "Claude agent",
       "reviewedAt": "2026-10-30T05:19:31.138Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/08b-landing-agents.png",
+      "sha256": "7809160bbb5e81c1cde0e7dc135993e20642e40ea3bff76236eb162ada3c9694",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-30T06:15:22.983Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/02-landing-navigation.png",
+      "sha256": "aeaaa6453cbb6d8274d92a786e4ab47215772da9e23631044a45a56754887d35",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-30T06:15:22.983Z"
     }
   ]
 }

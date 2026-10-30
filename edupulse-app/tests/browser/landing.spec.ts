@@ -2,7 +2,7 @@ import { test, expect, type Page, type Locator } from '@playwright/test'
 
 // The public landing page: the opening (once per tab, skippable, bypassed by reloads, section
 // links and other routes), section links clear of the fixed bar, the synchronized feature
-// stage, the six-phase connector, role tabs, FAQ, the photo rows and their pause control,
+// stage, the six-phase connector, the agents scope, role tabs, FAQ, the photo rows and their pause control,
 // sign-in, legal-page transitions and history, reduced motion, missing WebGL and overflow.
 
 // A tab that has already seen the opening starts on the hero.
@@ -197,6 +197,50 @@ test('the four feature steps stay in step forwards, backwards and under rapid sc
   await expectStep(3)
   await section.getByRole('button', { name: /The Syllabus Builder/ }).click()
   await expectStep(1)
+})
+
+test('the agents scope names all nine agents in order, then opens into the next section', async ({ page }) => {
+  test.setTimeout(90_000)
+  await repeatVisit(page)
+  await page.goto('/')
+  const section = page.locator('#agents')
+  await expect(section).toHaveClass(/is-live/)
+  await expect(section.locator('.scope-svg')).toHaveAttribute('aria-hidden', 'true')
+  const names = await section.locator('.agents-list h3').allTextContents()
+  expect(names).toEqual(['Guardian', 'Planner', 'Researcher', 'Librarian', 'Ranker', 'Comparator', 'Writer', 'Verifier', 'Corrector'])
+  const range = await section.evaluate(element => {
+    const spacer = element.parentElement as HTMLElement
+    return { start: spacer.getBoundingClientRect().top + window.scrollY, distance: spacer.offsetHeight - (element as HTMLElement).offsetHeight }
+  })
+  // One unit of the scroll-linked timeline per agent, then 1.6 for the core's opening.
+  const units = names.length + 1.6
+  const go = (time: number) => page.evaluate(y => window.scrollTo(0, y), Math.round(range.start + (time / units) * range.distance))
+  const caption = section.locator('.agents-name')
+  for (const [i, name] of names.entries()) {
+    await go(i + 0.5)
+    await expect.poll(() => caption.textContent(), { timeout: 5000 }).toBe(name)
+    await expect(section.locator('.scope-ring').nth(i)).toHaveClass(/is-active/)
+    await expect(section.locator('.agents-count')).toHaveText(`0${i + 1} / 09`)
+  }
+  await go(2.5)
+  await expect.poll(() => caption.textContent(), { timeout: 5000 }).toBe('Researcher')
+  // The core opens into white, and the next section follows.
+  await go(units)
+  await expect.poll(() => section.locator('.scope-light').evaluate(element => Number(getComputedStyle(element).opacity)), { timeout: 5000 }).toBeGreaterThan(0.98)
+  await page.evaluate(y => window.scrollTo(0, y), Math.round(range.start + range.distance + 300))
+  await expect(page.locator('#impact')).toBeInViewport()
+})
+
+test('with reduced motion the agents are one still picture and a list of all nine', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.goto('/')
+  const section = page.locator('#agents')
+  await expect(section.locator('.agents-list li')).toHaveCount(9)
+  await expect(section).not.toHaveClass(/is-live/)
+  await expect(section.getByRole('heading', { level: 3, name: 'Guardian' })).toBeVisible()
+  await expect(section.getByRole('heading', { level: 3, name: 'Corrector' })).toBeVisible()
+  await expect(section.locator('.agents-caption')).toBeHidden()
+  expect(await section.evaluate(element => element.parentElement?.classList.contains('pin-spacer'))).toBe(false)
 })
 
 test('the six phases draw their connector; every phase keeps its AI and People duties', async ({ page }) => {

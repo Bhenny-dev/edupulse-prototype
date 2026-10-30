@@ -8,6 +8,7 @@ import FeatureStage from '../components/landing/FeatureStage'
 import PhaseFlow from '../components/landing/PhaseFlow'
 import RoleExplorer from '../components/landing/RoleExplorer'
 import PulseSection from '../components/landing/PulseSection'
+import AgentsSection from '../components/landing/AgentsSection'
 import ImpactSection from '../components/landing/ImpactSection'
 import CollegesSection from '../components/landing/CollegesSection'
 import PhotoRail from '../components/landing/PhotoRail'
@@ -17,7 +18,7 @@ import LandingFooter from '../components/landing/LandingFooter'
 import { gsap, ScrollTrigger, MEDIA, revealHeadings } from '../components/landing/motion'
 import { decideOpening, trackLandingScroll, leaveLanding, takeReturnY } from '../components/landing/intro'
 import { SECTION_IDS, scrollToId } from '../components/landing/navigation'
-import { PROBLEM, CHAPTERS, PHASES, ROLES, PRINCIPLES, EVIDENCE, GOALS, FAQ, COMMUNITY_ALT } from '../components/landing/content'
+import { PROBLEM, CHAPTERS, PHASES, ROLES, PRINCIPLES, AGENTS, EVIDENCE, GOALS, FAQ, COMMUNITY_ALT } from '../components/landing/content'
 import { KCP, COLLEGES } from '../data/colleges'
 import '../components/landing/landing.css'
 
@@ -87,6 +88,7 @@ export default function Landing() {
         </section>
 
         <PulseSection principles={PRINCIPLES} />
+        <AgentsSection agents={AGENTS} />
         <ImpactSection evidence={EVIDENCE} goals={GOALS} />
         <CollegesSection cit={CIT} planned={PLANNED} />
 

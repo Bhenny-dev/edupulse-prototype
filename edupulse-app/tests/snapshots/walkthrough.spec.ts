@@ -49,7 +49,7 @@ async function run(page: Page, role: string, scenes: Scene[]) {
 const tab = (name: string) => async (page: Page) => { await page.getByRole('button', { name, exact: true }).first().click(); await settle(page) }
 
 // The landing page is captured with reduced motion: every section is then complete and
-// still (no opening, pinned scenes, scroll-drawn lines, 3D scene or drifting photographs), and
+// still (no opening, pinned scenes, agent rings in motion, scroll-drawn lines, 3D scene or drifting photographs), and
 // the guides describe what changes when motion is allowed.
 async function showSection(page: Page, selector: string) {
   const top = await page.locator(selector).evaluate(element => element.getBoundingClientRect().top + window.scrollY)
@@ -73,6 +73,7 @@ test('public site', async ({ page }) => {
     { folder: f, name: '06-landing-roles', title: 'Landing page: roles (Instructor tab)', ...section('#roles') },
     { folder: f, name: '07-landing-roles-student', title: 'Landing page: roles (Student tab)', ...section('#roles'), act: async p => { await showSection(p, '#roles'); await p.getByRole('tab', { name: 'Student', exact: true }).click(); await expect(p.getByRole('tabpanel')).toContainText('Everything for your courses') } },
     { folder: f, name: '08-landing-pulse', title: 'Landing page: Pulse and its boundaries', ...section('#ai') },
+    { folder: f, name: '08b-landing-agents', title: 'Landing page: the agents behind Pulse', ...section('#agents') },
     { folder: f, name: '09-landing-why-it-matters', title: 'Landing page: why it matters (research findings and SDGs)', ...section('#impact') },
     { folder: f, name: '10-landing-colleges', title: 'Landing page: colleges', ...section('#colleges') },
     { folder: f, name: '11-landing-community', title: 'Landing page: CIT community photographs', ...section('#campus') },
