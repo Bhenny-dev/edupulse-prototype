@@ -27,3 +27,16 @@ Capture run `2026-10-31T02-06-11-674Z-01e8a26a` (public site, mobile landing pag
 The [backend validation record](../../2026-10-29-backend-harness/validation/results.md) contains real local-model syllabus/courseware generation, confirmed save and reload evidence. It also records factual mistakes and malformed example text produced by the selected small model. Completeness, citation and similarity checks do not prove academic correctness; generated drafts require instructor review. The public Agent workspace is explicitly scripted and is not inference evidence.
 
 No database migration, provider credential, hosted configuration or manual production deployment is part of this integration. Production readiness and hosted authenticated behavior are not established by local tests.
+
+## Deployment and hosted checks, 31 October 2026
+
+The owner approved the deployment. `main` was fast-forwarded from `8d2b19b` to `ebe4834` at 03:31 UTC, and the Vercel production deployment for that commit completed successfully. The GitHub Actions verification job did not start: its annotation reads "The job was not started because your account is locked due to a billing issue", as on the previous three pushes to `main`. The local release gate above is therefore the verification of record.
+
+Hosted checks against https://edupulse-prototype.vercel.app after the deployment:
+
+- `GET ?action=health`: 200, version 0.4.0, no server model configured (the expected public state).
+- Request intake: an unknown action and an inherited name (`constructor`) return 404 `NOT_FOUND` with a request ID; `DELETE` on `health` returns 405 with `Allow: GET` and `Cache-Control: no-store`; `TRACE` returns 405, answered at the edge without `Allow`; a 150 KB body to `operator` (limit 100 KB) returns 413 `BODY_TOO_LARGE` with a request ID before authentication; a small invalid body returns ordinary 400 validation.
+- Landing page: with keyboard focus on **Skip intro**, a resize that re-measures the page keeps the focus there, and Enter removes the opening (2 of 2 runs).
+- Agent workspace: the 3D studio assembles, and tapping the Comparator answers in its bubble and in the conversation.
+
+Not checked on the hosted site: the signed-in Pulse office (preview personas exist only in the documentation capture build, and no real account was used), hosted authenticated Supabase sessions, and real-model generation in production.
