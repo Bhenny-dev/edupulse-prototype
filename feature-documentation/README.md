@@ -4,7 +4,7 @@
 
 | Folder | Covers | Contents |
 | --- | --- | --- |
-| [28 October component actions](versions/2026-10-28-component-actions/README.md) | Selected-field drafting, dropped references, clean Pulse, Settings Help/shortcuts and expanded outline | Isolated validation passed; shared PDF work has type errors; not pushed or deployed |
+| [28 October component actions](versions/2026-10-28-component-actions/README.md) | Selected-field drafting, dropped references, clean Pulse, Settings Help/shortcuts and expanded outline | Integrated with later releases; current combined validation is recorded below |
 | [29 October landing v2](versions/2026-10-29-landing-v2/README.md) | Editorial landing page, shared design tokens, contrast and motion rules, skip link, formatted PDF downloads | Live from 354b0a1; verify 148/148, browser 140 passed; hosted checks passed |
 | [28 October landing and motion](versions/2026-10-28-landing-and-motion/README.md) | CIT-focused landing page with KCP photographs and college emblems; page, view and dialog transitions | Live from `952107c`; verify and browser suites passed |
 | [28 October role restoration](versions/2026-10-28-role-restoration/README.md) | Authenticated role dashboards, charts/matrices, records intake, readers, notices and solid dark surfaces | Live; included in the verified baseline release |
@@ -24,6 +24,7 @@ Version folders are release records. Preserve released records, and add correcti
 
 | Version | Scope | Status |
 | --- | --- | --- |
+| [30 October combined release](versions/2026-10-30-integrated-release/README.md) | Content generation harness, confirmed persistence, approved landing and scripted Agent workspace | Combined release checks in progress; see validation record |
 | [29 October landing v2](versions/2026-10-29-landing-v2/README.md) | Editorial landing page (comparison, product chapters, six-phase timeline, cited research), shared design tokens and WCAG contrast, motion rules, skip link, formatted PDF downloads | Live from 354b0a1; verify 148/148, browser 140 passed; hosted checks passed |
 | [28 October landing and motion](versions/2026-10-28-landing-and-motion/README.md) | Landing page redesign around the CIT (features, six phases, roles, Pulse, colleges, FAQ), KCP assets, entrance motion with reduced-motion fallback | Live; 135 unit/integration + 119 browser tests passed; CI billing lock documented |
 | [28 October role restoration](versions/2026-10-28-role-restoration/README.md) | Account sections restored across eight page branches, record-derived charts, private file intake and dark consistency | Live; included in the verified baseline release |
@@ -41,4 +42,8 @@ Version folders are release records. Preserve released records, and add correcti
 
 Execution is tracked in [WORKPLAN.md](WORKPLAN.md). A release is verified only after lint, typecheck, tests, build, deployment validation and remote checks have evidence.
 
-[30 October landing v3](versions/2026-10-30-landing-v3/README.md): white and light-blue landing page with an opening, a 3D ring, geometric motion, an agents scope with agent portraits and a 3D agent workspace; local implementation and validation, pushed to the `landing-v3-light` branch, not deployed.
+[29 October backend harness](versions/2026-10-29-backend-harness/README.md): implementation and isolated local validation; included in the 30 October combined release.
+
+[30 October request intake](versions/2026-10-30-request-lifecycle/README.md): bounded API request intake (408 for a stalled body, 405 with Allow for an unsupported method, 404 for an unknown action, cancellation when the client disconnects); included in the 30 October combined release.
+
+[30 October landing v3](versions/2026-10-30-landing-v3/README.md): white and light-blue landing page with an opening, a 3D ring, geometric motion, an agents scope with agent portraits and a 3D agent workspace whose studio is also the Pulse office (Workspace buddies); included in the 30 October combined release.

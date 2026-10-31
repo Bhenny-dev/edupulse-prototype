@@ -243,11 +243,11 @@ export default function Pulse() {
     setMessages(previous => [...previous, { id: crypto.randomUUID(), from: 'pulse', mode: 'receipt', text: `Filed ${fullTitle} in your knowledge library; the server confirmed the document record.` }])
     return { ...result, title: fullTitle, course: courseCode }
   }, [])
-  const runGenerate = useCallback(async ({ syllabus, week }, signal) => {
+  const runGenerate = useCallback(async ({ syllabus, week, request }, signal) => {
     if (user?.role !== 'instructor') throw new Error('Only an authorized instructor view can generate courseware.')
     setExpression('thinking')
     try {
-      const draft = await generateWeekDraft(syllabus, week, signal)
+      const draft = await generateWeekDraft(syllabus, week, signal, request)
       signal.throwIfAborted()
       const updates = {}
       let kept = 0

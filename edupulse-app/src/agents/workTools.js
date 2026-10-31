@@ -8,7 +8,7 @@ export function sectionFor(text) {
   if (ALL_FIELDS.test(text)) return 'all'
   for (const [field, pattern] of [
     ['courseDescription', /course\s+description|section\s*2/i], ['institutionalContext', /institutional context|vision|mission|core values|section\s*3/i], ['programOutcomes', /program\s+outcomes?|section\s*4/i],
-    ['courseOutline', /course\s+outline|weekly\s+(?:outline|plan)|section\s*5/i], ['courseRequirements', /course\s+requirements?/i],
+    ['courseOutline', /(?:course|syllabus)\s+outline|weekly\s+(?:outline|plan)|section\s*5/i], ['courseRequirements', /course\s+requirements?/i],
     ['gradingSystem', /grading\s+(?:system|policy|rules?)/i], ['coursePolicy', /course\s+polic(?:y|ies)/i],
     ['books', /textbooks?|\bbooks?\b/i], ['onlineReferences', /online\s+references?|web\s+references?/i],
   ]) if (pattern.test(text)) return field

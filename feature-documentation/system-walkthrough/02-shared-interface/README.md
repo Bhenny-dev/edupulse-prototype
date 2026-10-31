@@ -150,3 +150,5 @@ Authenticated notifications now derive from authorized records instead of an emp
 The [current account screenshots](../09-restored-role-pages/README.md) supplement the preview scenes above. Academic publication, marking, appeal, correction and instructor reminder notices and read receipts persist to the recipient account; future releases remain hidden. Current-record reminders additionally keep device read state. In-app delivery is implemented; email/push delivery is not. Mark-read failures remain visible. Feedback uses unique toast IDs, including when multiple saves complete together.
 
 Signed-in charts, dialogs and page surfaces use the existing solid dark palette. Page tabs and desktop/mobile route access remain without duplicate left navigation.
+
+[Generate content and verify its save](../../system-manual/15-backend-content-delivery/README.md) documents the real local model, existing Pulse confirmation card, persisted receipt and reloaded syllabus. The backend harness changes do not change the restored header, settings, charts or layout.

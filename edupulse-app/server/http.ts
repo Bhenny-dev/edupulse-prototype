@@ -29,6 +29,8 @@ export const VERSION = '0.4.0'
 /** Request body limits per action (bytes). Uploads are raw file bytes. */
 export const BODY_LIMITS: Record<string, number> = { workspace: WORKSPACE_BYTES, extract: EXTRACTION_LIMITS.bytes, documents: 1_000_000, conversations: 200_000, operator: 100_000 }
 export const bodyLimit = (action: string | null) => BODY_LIMITS[action || ''] ?? 100_000
+const ACTION_METHODS: Record<string, string[]> = { health: ['GET'], providers: ['GET', 'POST', 'DELETE'], 'provider-oauth': ['POST'], 'provider-test': ['POST'], conversations: ['GET', 'POST'], operator: ['POST'], context: ['POST'], similarity: ['POST'], references: ['POST'], 'web-search': ['POST'], extract: ['POST'], chat: ['POST'], courseware: ['POST'], documents: ['GET', 'POST', 'DELETE'], workspace: ['GET', 'PUT'], academic: ['GET', 'POST'] }
+export const allowedMethods = (action: string) => Object.hasOwn(ACTION_METHODS, action) ? ACTION_METHODS[action] : undefined
 const buckets = new Map<string, { count: number; until: number }>()
 const active = new Set<string>()
 
@@ -90,9 +92,9 @@ export async function handleRequest(request: Request): Promise<Response> {
   try {
     enforceOrigin(request)
     action = new URL(request.url).searchParams.get('action') || 'health'
-    const methods: Record<string, string[]> = { health: ['GET'], providers: ['GET', 'POST', 'DELETE'], 'provider-oauth': ['POST'], 'provider-test': ['POST'], conversations: ['GET', 'POST'], operator: ['POST'], context: ['POST'], similarity: ['POST'], references: ['POST'], 'web-search': ['POST'], extract: ['POST'], chat: ['POST'], courseware: ['POST'], documents: ['GET', 'POST', 'DELETE'], workspace: ['GET', 'PUT'], academic: ['GET', 'POST'] }
-    if (!methods[action]) throw new ApiError(404, 'NOT_FOUND', 'Unknown API action.')
-    if (!methods[action].includes(request.method)) return new Response(null, { status: 405, headers: { Allow: methods[action].join(', '), 'Cache-Control': 'no-store' } })
+    const methods = allowedMethods(action)
+    if (!methods) throw new ApiError(404, 'NOT_FOUND', 'Unknown API action.')
+    if (!methods.includes(request.method)) return new Response(null, { status: 405, headers: { Allow: methods.join(', '), 'Cache-Control': 'no-store' } })
     const identity = await authenticate(request)
     if (action === 'conversations') {
       const url = new URL(request.url), query = url.searchParams.get('q')
@@ -160,7 +162,10 @@ export async function handleRequest(request: Request): Promise<Response> {
       return json(await extractUpload(bytes, fileName, signal))
     }
     const body = await readJson(request, bodyLimit(action))
-    if (action === 'operator') return json(await operatorRequest(operatorInput.parse(body), identity, connection, signal))
+    if (action === 'operator') {
+      const result = await operatorRequest(operatorInput.parse(body), identity, connection, signal)
+      return json(result, 200, personalConnection && 'generated' in result && result.generated ? connectionCookie({ ...personalConnection, testedAt: Date.now() }) : undefined)
+    }
     if (action === 'provider-test') {
       z.object({}).strict().parse(body)
       if (!connection) throw new ApiError(400, 'CONNECTION_REQUIRED', 'Save a provider connection and select a model before testing.')
@@ -222,7 +227,7 @@ export async function handleRequest(request: Request): Promise<Response> {
   } catch (error) {
     if (error instanceof z.ZodError) return json({ error: { code: 'INVALID_INPUT', message: 'Some input fields are missing, too long, or invalid.', requestId } }, 400)
     if (error instanceof ApiError) {
-      const invalidateTest = usedPersonalConnection && ['chat', 'courseware', 'provider-test'].includes(action) && ['MODEL_NOT_AVAILABLE', 'MODEL_INCOMPATIBLE', 'PROVIDER_AUTH', 'PROVIDER_CREDITS', 'PROVIDER_QUOTA', 'EMPTY_RESPONSE'].includes(error.code)
+      const invalidateTest = usedPersonalConnection && ['chat', 'courseware', 'operator', 'provider-test'].includes(action) && ['MODEL_NOT_AVAILABLE', 'MODEL_INCOMPATIBLE', 'PROVIDER_AUTH', 'PROVIDER_CREDITS', 'PROVIDER_QUOTA', 'EMPTY_RESPONSE'].includes(error.code)
       return json({ error: { code: error.code, message: error.message, requestId } }, error.status, invalidateTest ? connectionCookie({ ...usedPersonalConnection!, testedAt: undefined }) : undefined)
     }
     if (error instanceof Error && ['TimeoutError', 'AbortError'].includes(error.name)) return json({ error: { code: 'TIMEOUT', message: 'The request was stopped or timed out. Try a smaller request.', requestId } }, 504)

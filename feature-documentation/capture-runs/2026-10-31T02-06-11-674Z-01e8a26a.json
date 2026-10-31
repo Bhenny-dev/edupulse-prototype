@@ -1,0 +1,247 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-10-31T02-06-11-674Z-01e8a26a",
+  "startedAt": "2026-10-31T02:06:11.674Z",
+  "finishedAt": "2026-10-31T02:07:27.650Z",
+  "commitSha": "6290c90afefc5563418fd514858215d8edee2066",
+  "sourceDigest": "964b66fa5a2fc090c9adf58d30c51ff4d1afd6eb8b41c0eff3f282e500f83f4c",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-10-31T02:06:08.516Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 4,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": null
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.spec.ts",
+    "edupulse-app/tests/snapshots/harness-delivery.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-drafting.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-source.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+      "title": "public site",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "preview/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 33546,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/workspace-office.spec.ts",
+      "title": "Workspace buddies: real office, domain conversations and model proposal states",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-provider-transport/ui-regression",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 11312,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+      "title": "mobile landing page",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "preview/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 10872,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts",
+      "title": "Mobile workspace buddies have accessible desk controls and reduced motion",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "local-real-input/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 7484,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-manual/11-workspace-buddies/01-meet-the-crew.png",
+      "sha256": "5fa1099ce46e7dc302a4aac6553e05ea244aaf12f3af21e1558f2201108dc21a",
+      "bytes": 461972
+    },
+    {
+      "path": "feature-documentation/system-manual/11-workspace-buddies/02-contextual-loading.png",
+      "sha256": "837569263e48ef523ca50faf6804c602d97209432a5bd3fb65185e6b2a3a07cc",
+      "bytes": 34526
+    },
+    {
+      "path": "feature-documentation/system-manual/11-workspace-buddies/03-working-and-review.png",
+      "sha256": "fb717fd50400617d9901eedae378dc90bda9f0f77ff21c30db0850be20d56fdc",
+      "bytes": 442881
+    },
+    {
+      "path": "feature-documentation/system-manual/11-workspace-buddies/04-mobile-office.png",
+      "sha256": "caebe820a0dd8511e14cd933b093329ee552d49bde8e78584520879bf833a4b8",
+      "bytes": 886048
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/01-landing-hero.png",
+      "sha256": "5f22ba9ba46a9b00b9d7ed8df5e3fb9e448782223e8dd6b749c953f341a935f7",
+      "bytes": 477873
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/02-landing-navigation.png",
+      "sha256": "147109b228a0a7c8be19555209ade31bbed6ae54ef8537e7d41343e6b9e43ba1",
+      "bytes": 16629
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/03-landing-why-edupulse.png",
+      "sha256": "9a28d712075e758fed1ffc11da022270e3e4fa8a399198a73e5e47e66856cea9",
+      "bytes": 105384
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/04-landing-features.png",
+      "sha256": "ac9b2a51bae6ee9d9ffdfdb084da8fe455e2ba1e95b06b9ceb34ee6e92719dcd",
+      "bytes": 538603
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/05-landing-how-it-works.png",
+      "sha256": "8e74f205a04db188e9451a109c202d5da52fc8c75b9e5285423481ba5c724169",
+      "bytes": 203273
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/06-landing-roles.png",
+      "sha256": "aebf858f45d6aa37a00df9f337172d339a97371f702dcc20121f4aa3f2414a2e",
+      "bytes": 85187
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/07-landing-roles-student.png",
+      "sha256": "283339f2d0c9dfa0302acd5bf1a7a66f6a9a33bfee314b7a58afa117438b32ab",
+      "bytes": 87256
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/08-landing-pulse.png",
+      "sha256": "82cf84c69d7a8c2852a4261a918ca8094e47515eb4ad12a84ef92370bbe66f47",
+      "bytes": 157593
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/08b-landing-agents.png",
+      "sha256": "029aa6a337442e4beee562241334533c04fd29d968d43e0fef17e22f5ce183a6",
+      "bytes": 256931
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/08c-landing-workspace.png",
+      "sha256": "411cb9108c86ce5530157f6e77d4eaeba22345d5dcd968cc656090855647f530",
+      "bytes": 465609
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/09-landing-why-it-matters.png",
+      "sha256": "a3e9d8ea80b54bd11e2a31f59bfacdaccc72efde5c094d033cf54d100aa45e5a",
+      "bytes": 97482
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/10-landing-colleges.png",
+      "sha256": "d43cd96a9d512d9a2b1dae80246203741b51e834616c3aacf6e2f1395aa06088",
+      "bytes": 686532
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/11-landing-community.png",
+      "sha256": "f4dfa09ce63b0cf3efe0cff2211e9947ab4d79ece1a6ec844f7a0e26fa67c8fe",
+      "bytes": 1216497
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/12-landing-faq.png",
+      "sha256": "6e995be3a0ec951927b801869ebbdba598a85b6ae4de1fa3875e0b1c60d0661c",
+      "bytes": 188544
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/13-sign-in-panel.png",
+      "sha256": "ac1d6cfd7466274a0311add97346b8c3430ce6708c3a9a441618af33ad4efdd4",
+      "bytes": 474423
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/14-preview-personas.png",
+      "sha256": "72273fa31801b4b3fa24c93aadbd62e001afab03e1641ad1efb78644dba956ea",
+      "bytes": 12957
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/15-landing-footer.png",
+      "sha256": "cf7803323c1307c201e39726d7823c3d86080cdd923e2eda7ad278174bfe5f69",
+      "bytes": 98749
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/16-privacy.png",
+      "sha256": "eb5cb02446100a179139daeaf81acb248d9581f76d2c5d6315b2547127bd0680",
+      "bytes": 366197
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/17-terms.png",
+      "sha256": "4727fe8c0d52042d62d4e56666df8c55575e40041e7420d619e9763cbe5d1c39",
+      "bytes": 317712
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/18-server-error.png",
+      "sha256": "d434bef2dbf55b1fdaac34dd887bc1f0c4445037502b1dbe749aeead704fa9c9",
+      "bytes": 241590
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/06-mobile/01-landing.png",
+      "sha256": "cf4824b9a7597c2ffbdb6f68958ac27cc4ad6f168025a8eea87454e12df25be3",
+      "bytes": 322901
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/06-mobile/07-landing-menu.png",
+      "sha256": "d8cfe892304c75f553c3900fabfec7ee0ed3fcd595bdb76d39213a755067bfee",
+      "bytes": 218986
+    }
+  ]
+}

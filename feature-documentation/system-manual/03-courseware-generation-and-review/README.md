@@ -18,7 +18,7 @@
 
    ![Three generated draft items](04-generated-drafts-for-review.png)
 
-5. In the material view, read the draft and the **AI draft review** panel before checking it. The panel checks every outline topic and outcome, the planned activity and assessment when listed, and agreement between question explanations and marked answers. It shows which statements were supported by the outline or references and leaves other statements for instructor verification. Open **Generation details and references** to inspect the source trace. **References** lists the syllabus resources and retrieved passages used; model-authored reference lists are removed.
+5. In the material view, read the draft and the **AI draft review** panel before checking it. The panel checks every outline topic and outcome, the planned activity and assessment when listed, and agreement between question explanations and marked answers. It shows which statements were supported by the outline or references and leaves other statements for instructor verification. Open **Generation details and references** to inspect the source trace. **References** lists the syllabus resources and retrieved passages used. When the library has no supporting material, public research can supply passages, labelled separately from library sources. Research limitations stay in the review details; model-authored reference lists are removed.
 
    ![Material document and review panel](05-draft-document-view.png)
 
@@ -29,6 +29,8 @@
 The generation/material evidence uses the local `qwen2.5:3b` model. The current fourth image shows three generated drafts from the captured week-generation request. Earlier v0.4.0 and 1.5B-model evidence remains in the historical release records. These captures establish local task evidence, not authenticated hosted behavior or general model accuracy. The review panel may flag unsupported statements or incorrect answer explanations; instructors must resolve them before checking or publishing. The [component-actions validation record](../../versions/2026-10-28-component-actions/validation/results.md) records the current capture boundaries.
 
 ## Revise through Pulse
+
+Pulse week generation carries the original request through to the writer, including language and example preferences. “Without web research” disables public searches; “only from the syllabus” also skips private-library retrieval. A file-only week request must first import its source into the syllabus because the week endpoint does not receive chat attachments. The existing **Draft in chat instead** action remains available. [Manual 15](../15-backend-content-delivery/README.md) records the newer prompt-to-save browser capture and its local-model limits.
 
 When an instructor opens a saved draft in a document, presentation or assessment editor, Pulse can propose a typed revision to its content. Compare the selected fields before **Confirm and save draft**. The saved receipt waits for the revision-checked database response. Published items and stale targets are protected. See [Manual 9](../09-pulse-actions/README.md#revise-content-or-class-list-records).
 

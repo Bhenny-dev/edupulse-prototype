@@ -1,0 +1,88 @@
+import { test, expect } from './fixtures.js'
+import { mkdir, writeFile } from 'node:fs/promises'
+import { createHash } from 'node:crypto'
+import { makePdf } from '../fixtures.js'
+
+const dir = '../feature-documentation/system-manual/15-backend-content-delivery'
+test('live local model drafts outcomes and confirmed editor content persists across reload', async ({ page, request }) => {
+  await mkdir(dir, { recursive: true })
+  const before = await (await request.get('/api/ai?action=workspace')).json()
+  expect((await request.put('/api/ai?action=workspace', { data: { revision: before.revision, data: { syllabi: [], content: {}, registrations: [] } } })).ok()).toBeTruthy()
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Instructor', exact: true }).click()
+  await page.goto('/#/syllabus?tab=builder')
+  await page.getByLabel('Course', { exact: true }).selectOption('IT 104')
+  await page.getByRole('button', { name: 'Open Pulse assistant' }).click()
+  const panel = page.getByRole('dialog', { name: 'Pulse', exact: true })
+  await panel.getByRole('textbox', { name: 'Ask Pulse', exact: true }).fill('Generate four measurable program outcomes for Research Methods without web research.')
+  const generated = page.waitForResponse(response => response.url().includes('action=operator') && response.request().method() === 'POST', { timeout: 540000 })
+  await panel.getByRole('button', { name: 'Send', exact: true }).click()
+  const response = await generated, proposal = await response.json()
+  expect(response.ok(), JSON.stringify(proposal)).toBeTruthy()
+  expect(proposal.patch.programOutcomes.length).toBeGreaterThanOrEqual(3)
+  const card = panel.getByRole('region', { name: 'Review content edit' })
+  await expect(card.getByRole('button', { name: 'Confirm and save draft' })).toBeVisible()
+  const pending = await (await request.get('/api/ai?action=workspace')).json()
+  expect(pending.data.syllabi).toHaveLength(0)
+  await card.screenshot({ path: `${dir}/01-real-model-proposal.png`, animations: 'disabled', style: '.connected-pulse{position:relative!important;inset:auto!important;height:auto!important;max-height:none!important;overflow:visible!important}.connected-pulse-feed{overflow:visible!important;flex:none!important;max-height:none!important}' })
+  await card.getByRole('button', { name: 'Confirm and save draft' }).click()
+  await expect(panel).toContainText('Draft saved.', { timeout: 30000 })
+  await panel.screenshot({ path: `${dir}/02-confirmed-save-receipt.png`, animations: 'disabled' })
+  const stored = await (await request.get('/api/ai?action=workspace')).json()
+  expect(stored.data.syllabi[0].programOutcomes).toEqual(proposal.patch.programOutcomes)
+  expect(stored.data.syllabi[0].status).toBe('drafted')
+  await page.reload()
+  await page.goto('/#/syllabus?tab=mine')
+  await expect(page.getByRole('row').filter({ hasText: 'IT 104' }).filter({ hasNotText: /sample/i })).toBeVisible()
+  await page.screenshot({ path: `${dir}/03-reloaded-syllabus.png`, animations: 'disabled' })
+})
+
+test('live courseware generation saves all three drafts and opens the persisted lesson', async ({ page, request }) => {
+  await mkdir(dir, { recursive: true })
+  const before = await (await request.get('/api/ai?action=workspace')).json()
+  // A synthetic active outline isolates the content workflow. This is not an
+  // approval test; the offline approval lifecycle has its own manual capture.
+  const pdf = Buffer.from(makePdf([['Synthetic programming outline for local generation checks.', 'Week 1: Variables, Constants, Assignment.']]))
+  const approvedFile = { name: 'synthetic-outline.pdf', size: pdf.length, base64: pdf.toString('base64'), sha256: createHash('sha256').update(pdf).digest('hex'), uploadedAt: new Date().toISOString(), approvalAttested: true }
+  const syllabus = { id: 'harness-capture-courseware', courseCode: 'IT 102', courseTitle: 'Computer Programming 1', status: 'active', sample: false, approvedFile, courseOutline: [{ week: 1, ilos: 'Explain JavaScript variables and constants and trace an assignment.', contents: ['Variables', 'Constants', 'Assignment'], activities: 'Trace values in a short JavaScript program.', assessments: 'Quiz and short coding exercise.', teachingMaterials: [], resources: [] }] }
+  const seeded = await request.put('/api/ai?action=workspace', { data: { revision: before.revision, data: { ...before.data, syllabi: [...before.data.syllabi.filter((item: { id: string }) => item.id !== syllabus.id), syllabus] } } })
+  expect(seeded.ok(), await seeded.text()).toBeTruthy()
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Instructor', exact: true }).click()
+  await page.goto('/#/courseware')
+  await page.getByRole('row').filter({ hasText: 'IT 102' }).filter({ hasNotText: /sample/i }).getByRole('button', { name: 'Start Generating', exact: true }).click()
+  await page.getByRole('button', { name: 'Open Pulse assistant' }).click()
+  const panel = page.getByRole('dialog', { name: 'Pulse', exact: true })
+  await panel.getByRole('textbox', { name: 'Ask Pulse', exact: true }).fill('Generate week 1 materials for IT 102 with a worked JavaScript example, without web research.')
+  await panel.getByRole('button', { name: 'Send', exact: true }).click()
+  const card = panel.getByRole('region', { name: 'Generate courseware', exact: true })
+  await expect(card.getByRole('button', { name: 'Generate Week 1 drafts', exact: true })).toBeVisible()
+  await panel.screenshot({ path: `${dir}/06-pulse-courseware-request.png`, animations: 'disabled' })
+  await panel.screenshot({ path: '../feature-documentation/system-manual/09-pulse-actions/07-generate-week-source.png', animations: 'disabled' })
+  const generated = page.waitForResponse(response => response.url().includes('action=courseware') && response.request().method() === 'POST', { timeout: 540000 })
+  await card.getByRole('button', { name: 'Generate Week 1 drafts', exact: true }).click()
+  const response = await generated, result = await response.json()
+  expect(response.ok(), JSON.stringify(result)).toBeTruthy()
+  expect(response.request().postDataJSON().research).toBe('sources')
+  expect(response.request().postDataJSON().request).toContain('worked JavaScript example')
+  await expect(page.getByRole('button', { name: 'Open', exact: true }).first()).toBeVisible({ timeout: 30000 })
+  await expect.poll(async () => {
+    const stored = await (await request.get('/api/ai?action=workspace')).json()
+    return Object.values(stored.data.content).filter((item) => (item as { syllabusId: string }).syllabusId === syllabus.id).length
+  }).toBe(3)
+  const stored = await (await request.get('/api/ai?action=workspace')).json()
+  const drafts = Object.values(stored.data.content).filter((item) => (item as { syllabusId: string }).syllabusId === syllabus.id) as { type: string; content: { sections?: unknown[]; questions?: { text: string; correctIndex: number }[] } }[]
+  expect(drafts.find(item => item.type === 'material')?.content.sections).toEqual(result.content.material.sections)
+  expect(drafts.find(item => item.type === 'activity')?.content.sections).toEqual(result.content.activity.sections)
+  expect(drafts.find(item => item.type === 'assessment')?.content.questions?.map(({ text, correctIndex }) => ({ text, correctIndex }))).toEqual(result.content.assessment.questions.map(({ text, correctIndex }: { text: string; correctIndex: number }) => ({ text, correctIndex })))
+  await panel.getByRole('button', { name: 'Close Pulse', exact: true }).click()
+  await page.screenshot({ path: `${dir}/04-persisted-courseware-drafts.png`, animations: 'disabled' })
+  await page.reload()
+  await page.getByText(result.content.material.title, { exact: true }).locator('../..').getByRole('button', { name: 'Open', exact: true }).click()
+  await expect(page.locator('.ai-draft-evidence').first()).toBeVisible()
+  await expect(page.getByText(result.content.material.title, { exact: true }).first()).toBeVisible()
+  await page.getByRole('heading', { name: result.content.material.title, exact: true }).scrollIntoViewIfNeeded()
+  await page.screenshot({ path: `${dir}/05-reloaded-generated-lesson.png`, animations: 'disabled' })
+  await mkdir('.data/harness-evidence', { recursive: true })
+  await writeFile('.data/harness-evidence/browser.json', JSON.stringify({ recordedAt: new Date().toISOString(), provider: result.provider, model: result.model, syntheticInput: true, modelResponsesMocked: false, persistedTypes: drafts.map(item => item.type).sort(), contentSurvivesReload: true, material: result.content.material, activity: result.content.activity, coverage: result.coverage, answerKey: result.answerKey, warning: result.warning }, null, 2) + '\n')
+})

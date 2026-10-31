@@ -12,7 +12,7 @@ export class ApiRequestError extends Error {
 type RequestOptions = { raw?: Blob; headers?: Record<string, string>; query?: Record<string, string> }
 // Generation is bounded by the server's own budget (110 s hosted, up to 10 minutes in the local app),
 // so the browser waits for the server's answer or its timeout error instead of giving up first.
-const LONG_ACTIONS = new Set(['chat', 'courseware', 'references'])
+const LONG_ACTIONS = new Set(['chat', 'courseware', 'references', 'operator', 'provider-test'])
 export async function aiRequest<T>(action: string, method = 'GET', body?: unknown, signal?: AbortSignal, options: RequestOptions = {}): Promise<T> {
   const requestToken = accessToken
   const response = await fetch(`/api/ai?${new URLSearchParams({ ...options.query, action })}`, {
@@ -22,7 +22,7 @@ export async function aiRequest<T>(action: string, method = 'GET', body?: unknow
   })
   if (!response.headers.get('content-type')?.includes('application/json')) throw new Error('The AI API is unavailable. Start the app with npm run dev or check the deployment.')
   const data = await response.json()
-  if (typeof window !== 'undefined' && requestToken === accessToken && ['chat', 'courseware'].includes(action) && (response.ok || ['MODEL_NOT_AVAILABLE', 'MODEL_INCOMPATIBLE', 'PROVIDER_AUTH', 'PROVIDER_CREDITS', 'PROVIDER_QUOTA', 'EMPTY_RESPONSE'].includes(data.error?.code))) window.dispatchEvent(new Event('edupulse-ai-change'))
+  if (typeof window !== 'undefined' && requestToken === accessToken && ['chat', 'courseware', 'operator'].includes(action) && (response.ok || ['MODEL_NOT_AVAILABLE', 'MODEL_INCOMPATIBLE', 'PROVIDER_AUTH', 'PROVIDER_CREDITS', 'PROVIDER_QUOTA', 'EMPTY_RESPONSE'].includes(data.error?.code))) window.dispatchEvent(new Event('edupulse-ai-change'))
   if (!response.ok) throw new ApiRequestError(data.error?.message || `Request failed (${response.status}).`, response.status, data.error?.code)
   return data as T
 }

@@ -1,0 +1,668 @@
+
+> edupulse-app@0.4.0 test:browser
+> playwright test
+
+node.exe : [WebServer] (node:21972) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([WebServer] (no... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:36212) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 6:04:28 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3034
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 6:04:29 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3034
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 6:04:30 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3034
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 6:04:31 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3034
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+
+Running 206 tests using 1 worker
+
+(node:37088) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 6:04:48 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok   1 [desktop] › tests\browser\access.spec.ts:4:3 › AUTH-001: Assoc. Dean cannot open the performance route or navigate there through Pulse (9.5s)
+[WebServer] 6:04:55 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok   2 [desktop] › tests\browser\access.spec.ts:4:3 › AUTH-001: System Admin cannot open the performance route or navigate there through Pulse (5.8s)
+[WebServer] 6:05:00 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok   3 [desktop] › tests\browser\access.spec.ts:18:1 › DATA-001: sample performance is explicitly labelled in preview (3.9s)
+[WebServer] 6:05:04 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok   4 [desktop] › tests\browser\access.spec.ts:26:1 › Dean can open Performance without a stale or missing Pulse target crashing the page (3.5s)
+  ok   5 [desktop] › tests\browser\baseline-workflows.spec.ts:4:1 › syllabus-topic mastery uses mapped marks and restores radar, heatmap and status (2.1s)
+  ok   6 [desktop] › tests\browser\baseline-workflows.spec.ts:12:1 › instructor marks saved responses and the score and topic marks persist (5.9s)
+  ok   7 [desktop] › tests\browser\baseline-workflows.spec.ts:19:1 › student starts a timed written-response assessment, submits, and appeals the saved result (4.7s)
+  ok   8 [desktop] › tests\browser\baseline-workflows.spec.ts:27:1 › confirmed loading suggestions and block corrections update shared records (4.3s)
+  ok   9 [desktop] › tests\browser\baseline-workflows.spec.ts:36:1 › Dean offline inbox sends correction requests and account notice read receipts survive reload (4.5s)
+  ok  10 [desktop] › tests\browser\baseline-workflows.spec.ts:41:1 › saved syllabus versions can be viewed and restored as a draft (2.7s)
+  ok  11 [desktop] › tests\browser\baseline-workflows.spec.ts:46:1 › assessment topic mappings and delivery policy save through the instructor workspace (3.2s)
+  ok  12 [desktop] › tests\browser\baseline-workflows.spec.ts:53:1 › authenticated Pulse guidance describes shared records and keeps Dean marks read-only (2.5s)
+[WebServer] 6:05:38 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  13 [desktop] › tests\browser\landing.spec.ts:32:1 › a fresh visit opens on the logo and name; scrolling opens the aperture into the hero and back (4.9s)
+[WebServer] 6:05:43 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+[WebServer] 6:05:50 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  14 [desktop] › tests\browser\landing.spec.ts:58:1 › Skip intro works with the keyboard and the pointer and removes the opening layers (11.0s)
+[WebServer] 6:05:54 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+[WebServer] 6:05:56 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+[WebServer] 6:06:01 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  15 [desktop] › tests\browser\landing.spec.ts:82:1 › the opening plays once per tab: reloads, section links and other routes bypass it (15.6s)
+[WebServer] 6:06:10 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  16 [desktop] › tests\browser\landing.spec.ts:102:1 › header links reach their sections below the bar; role tabs and the FAQ work; no horizontal overflow (18.4s)
+[WebServer] 6:06:31 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  17 [desktop] › tests\browser\landing.spec.ts:150:1 › footer links reach their sections and the legal pages (17.7s)
+[WebServer] 6:06:49 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  18 [desktop] › tests\browser\landing.spec.ts:164:1 › the four feature steps stay in step forwards, backwards and under rapid scrolling (12.3s)
+[WebServer] 6:06:59 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  19 [desktop] › tests\browser\landing.spec.ts:202:1 › the agents scope names all nine agents in order, then opens into the next section (12.1s)
+  ok  20 [desktop] › tests\browser\landing.spec.ts:234:1 › with reduced motion the agents are one still picture and a list of all nine (2.0s)
+[WebServer] 6:07:13 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  x   21 [desktop] › tests\browser\landing.spec.ts:246:1 › the agent workspace answers a tap on a robot or on its button, and runs a request (1.2m)
+(node:24424) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 6:08:26 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  22 [desktop] › tests\browser\landing.spec.ts:271:1 › with reduced motion a request through the workspace shows every hand-off at once (7.5s)
+[WebServer] 6:08:33 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  23 [desktop] › tests\browser\landing.spec.ts:282:1 › the six phases draw their connector; every phase keeps its AI and People duties (4.9s)
+[WebServer] 6:08:38 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  24 [desktop] › tests\browser\landing.spec.ts:300:1 › the photographs drift; the pause control, hover, focus and a tap stop them (9.9s)
+[WebServer] 6:08:47 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  25 [desktop] › tests\browser\landing.spec.ts:343:1 › the sign-in panel keeps its fields, hints and validation, and holds still while used (5.4s)
+[WebServer] 6:08:54 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  26 [desktop] › tests\browser\landing.spec.ts:367:1 › Privacy and Terms open with a short reveal at the top; Back returns to the same place (6.0s)
+[WebServer] 6:08:59 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  27 [desktop] › tests\browser\landing.spec.ts:394:1 › the skip link moves focus past the hero and stays on the landing page (2.4s)
+[WebServer] 6:09:01 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  28 [desktop] › tests\browser\landing.spec.ts:407:1 › no horizontal scrolling at desktop, laptop, tablet, phone and narrow phone widths, also after resizing (19.5s)
+  ok  29 [desktop] › tests\browser\landing.spec.ts:423:1 › with reduced motion there is no opening and every section is complete and still (2.3s)
+  ok  30 [desktop] › tests\browser\landing.spec.ts:440:1 › without WebGL the page keeps its SVG ring and the opening still works (6.7s)
+[WebServer] 6:09:32 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  31 [desktop] › tests\browser\layout-feedback.spec.ts:4:1 › page navigation has one tab set and Pulse launcher is avatar only (8.0s)
+[WebServer] 6:09:42 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  32 [desktop] › tests\browser\layout-feedback.spec.ts:9:1 › syllabus dialog and assistant share space and Escape preserves the assistant (14.1s)
+  ok  33 [desktop] › tests\browser\layout-feedback.spec.ts:18:1 › academic records show skeletons and respect reduced motion (2.7s)
+  ok  34 [desktop] › tests\browser\layout-feedback.spec.ts:24:1 › academic request errors clear loading without claiming an empty library and retry succeeds (2.2s)
+[WebServer] 6:09:57 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+[WebServer] 6:10:07 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+[WebServer] 6:10:17 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+[WebServer] 6:10:26 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  x   35 [desktop] › tests\browser\layout-feedback.spec.ts:29:1 › unique Records and Assessments destinations remain in primary navigation (34.5s)
+(node:36096) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 6:10:39 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  36 [desktop] › tests\browser\ocr.spec.ts:44:3 › OCR for scanned PDFs › a fully scanned PDF is read on the device, page by page, and indexes with its page markers (28.8s)
+[WebServer] 6:11:11 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  37 [desktop] › tests\browser\ocr.spec.ts:65:3 › OCR for scanned PDFs › in a mixed PDF only the page without text is read with OCR; the text-layer page is kept exactly (21.6s)
+  -   38 [desktop] › tests\browser\ocr.spec.ts:82:5 › OCR for scanned PDFs › evaluation: 300 dpi, degraded
+  -   39 [desktop] › tests\browser\ocr.spec.ts:82:5 › OCR for scanned PDFs › evaluation: 200 dpi
+  -   40 [desktop] › tests\browser\ocr.spec.ts:82:5 › OCR for scanned PDFs › evaluation: 150 dpi
+  -   41 [desktop] › tests\browser\ocr.spec.ts:82:5 › OCR for scanned PDFs › evaluation: 150 dpi, degraded
+[WebServer] 6:11:35 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  42 [desktop] › tests\browser\provider-connection.spec.ts:4:1 › provider save synchronizes pipeline status, survives reopening, retains model selection and failed replacement input (21.3s)
+[WebServer] 6:11:54 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  43 [desktop] › tests\browser\provider-connection.spec.ts:42:1 › provider account authorization leaves for the fixed OpenRouter consent host with PKCE (9.3s)
+[WebServer] 6:12:04 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+[WebServer] 6:12:08 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  44 [desktop] › tests\browser\provider-connection.spec.ts:56:65 › provider dedicated callback completes once, removes authorization parameters and restores account settings (13.8s)
+[WebServer] 6:12:16 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+[WebServer] 6:12:20 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  45 [desktop] › tests\browser\provider-connection.spec.ts:56:65 › provider legacy callback completes once, removes authorization parameters and restores account settings (11.4s)
+[WebServer] 6:12:27 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+[WebServer] 6:12:31 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  46 [desktop] › tests\browser\provider-connection.spec.ts:56:65 › provider state-marked callback completes once, removes authorization parameters and restores account settings (11.5s)
+[WebServer] 6:12:38 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  47 [desktop] › tests\browser\provider-connection.spec.ts:75:1 › authorized OpenRouter credential survives a catalog outage and refresh finishes setup (9.1s)
+[WebServer] 6:12:45 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  48 [desktop] › tests\browser\provider-connection.spec.ts:88:1 › a provider return without an EduPulse session gives a visible recovery message and clears authorization parameters (2.9s)
+  ok  49 [desktop] › tests\browser\provider-connection.spec.ts:95:1 › a failed provider exchange stays visible for a signed-in account with no prior connection (6.7s)
+[WebServer] 6:12:54 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  50 [desktop] › tests\browser\pulse-actions.spec.ts:33:1 › an attached class list is registered only after Confirm, opens My Courses, can be searched and undone (7.2s)
+[WebServer] 6:13:02 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  51 [desktop] › tests\browser\pulse-actions.spec.ts:62:1 › the My Courses uploader reads a real class list instead of sample names and merges a second upload (6.5s)
+[WebServer] 6:13:08 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  52 [desktop] › tests\browser\pulse-actions.spec.ts:84:1 › a student’s material is matched to a course with reasons, and added to the library only after Confirm (8.4s)
+  ok  53 [desktop] › tests\browser\pulse-actions.spec.ts:104:1 › requests to open a page navigate only within the role, and course generation shows its syllabus source before Confirm (9.3s)
+[WebServer] 6:13:29 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  54 [desktop] › tests\browser\pulse-actions.spec.ts:124:1 › a student cannot be sent to a page outside the student role (7.5s)
+  ok  55 [desktop] › tests\browser\pulse-components.spec.ts:5:1 › dragged field drafts only its own value, then confirmation saves and survives reload (11.8s)
+[WebServer] 6:13:46 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  56 [desktop] › tests\browser\pulse-components.spec.ts:24:1 › a changed form invalidates the field preview and an explicit whole-syllabus request broadens the scope (8.7s)
+  ok  57 [desktop] › tests\browser\pulse-components.spec.ts:41:1 › files drop onto the closed mascot or chat without sending, while invalid batches preserve attachments (7.8s)
+  ok  58 [desktop] › tests\browser\pulse-components.spec.ts:66:1 › a focused requirements section proposes its three fields and preserves unrelated outcomes (9.7s)
+  ok  59 [desktop] › tests\browser\pulse-drafting.spec.ts:4:1 › selected Research Methods course generates readable all-field proposal without a populated library (8.1s)
+[WebServer] 6:14:22 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  60 [desktop] › tests\browser\pulse-research.spec.ts:3:79 › Pulse week generation sends without web research through the confirmation card to the API (6.9s)
+[WebServer] 6:14:30 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  61 [desktop] › tests\browser\pulse-research.spec.ts:3:79 › Pulse week generation sends only from the syllabus through the confirmation card to the API (8.1s)
+[WebServer] 6:14:36 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  62 [desktop] › tests\browser\pulse-source-context.spec.ts:18:1 › page-uploaded PDF survives focused follow-up, corrects only the selected outline and downloads a genuine PDF (14.0s)
+[WebServer] 6:14:54 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  63 [desktop] › tests\browser\pulse-source-context.spec.ts:50:1 › model conversations receive buddy identity, follow-up history and retained page source for material drafts (19.4s)
+[WebServer] 6:15:10 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  64 [desktop] › tests\browser\pulse-tools.spec.ts:16:1 › natural conversation redirects and starts the real interactive syllabus guide (7.5s)
+[WebServer] 6:15:17 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  65 [desktop] › tests\browser\pulse-tools.spec.ts:26:1 › PDF syllabus attachment offers exact section previews, preserves unrelated fields, and rejects stale targets (10.7s)
+[WebServer] 6:15:27 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  66 [desktop] › tests\browser\pulse-tools.spec.ts:47:1 › private history saves preferences, recalls across chats, forgets and deletes source conversations (8.2s)
+[WebServer] 6:15:36 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  67 [desktop] › tests\browser\pulse-tools.spec.ts:66:1 › roster removal previews exact rows and persists only after confirmation (10.2s)
+[WebServer] 6:15:50 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  68 [desktop] › tests\browser\pulse-tools.spec.ts:88:1 › a generated section patch is previewed and a failed database save never reports completion (12.7s)
+[WebServer] 6:15:59 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  69 [desktop] › tests\browser\pulse.spec.ts:9:1 › mascot follows the cursor, distinguishes a click from dragging, and focuses the dropped component (10.1s)
+[WebServer] 6:16:09 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  70 [desktop] › tests\browser\pulse.spec.ts:38:1 › guiding a whole page keeps the panel clear of the perched mascot (6.5s)
+[WebServer] 6:16:15 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  71 [desktop] › tests\browser\pulse.spec.ts:48:1 › section tour reads visible controls and waits for input (10.1s)
+[WebServer] 6:16:27 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  72 [desktop] › tests\browser\pulse.spec.ts:70:1 › keyboard walkthrough waits for real input and save, then completes (12.5s)
+[WebServer] 6:16:40 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  73 [desktop] › tests\browser\pulse.spec.ts:94:1 › invalid drop returns to the dock and reduced motion disables cursor animation (8.9s)
+[WebServer] 6:16:47 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  -   74 [desktop] › tests\browser\pulse.spec.ts:105:1 › touch drag opens focused guidance on a form control
+[WebServer] 6:16:54 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  75 [desktop] › tests\browser\pulse.spec.ts:123:1 › provider settings expose real connections, model discovery and local download controls (8.8s)
+  ok  76 [desktop] › tests\browser\role-restoration.spec.ts:5:3 › restored instructor pages use account records and keep each authorized section reachable (11.3s)
+  ok  77 [desktop] › tests\browser\role-restoration.spec.ts:5:3 › restored student pages use account records and keep each authorized section reachable (8.5s)
+  ok  78 [desktop] › tests\browser\role-restoration.spec.ts:5:3 › restored dean pages use account records and keep each authorized section reachable (7.7s)
+  ok  79 [desktop] › tests\browser\role-restoration.spec.ts:5:3 › restored associate_dean pages use account records and keep each authorized section reachable (6.4s)
+  ok  80 [desktop] › tests\browser\role-restoration.spec.ts:36:1 › confirmed shared CSV import survives refresh; templates and history work (23.2s)
+  ok  81 [desktop] › tests\browser\role-restoration.spec.ts:46:1 › dark mode keeps account sections and charts on solid readable surfaces (8.5s)
+  ok  82 [desktop] › tests\browser\role-restoration.spec.ts:55:1 › account notices come from unanswered records and read state survives reload (5.6s)
+[WebServer] 6:18:19 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  83 [desktop] › tests\browser\settings-outline.spec.ts:4:86 › System Admin finds help and shortcuts in Settings with a clean top bar (19.0s)
+[WebServer] 6:18:38 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  84 [desktop] › tests\browser\settings-outline.spec.ts:4:86 › Dean finds help and shortcuts in Settings with a clean top bar (11.7s)
+[WebServer] 6:18:51 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  85 [desktop] › tests\browser\settings-outline.spec.ts:4:86 › Assoc. Dean finds help and shortcuts in Settings with a clean top bar (24.0s)
+[WebServer] 6:19:13 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  86 [desktop] › tests\browser\settings-outline.spec.ts:4:86 › Instructor finds help and shortcuts in Settings with a clean top bar (13.2s)
+[WebServer] 6:19:28 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  87 [desktop] › tests\browser\settings-outline.spec.ts:4:86 › Student finds help and shortcuts in Settings with a clean top bar (12.6s)
+[WebServer] 6:19:36 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  88 [desktop] › tests\browser\settings-outline.spec.ts:24:1 › outline expands, filters weeks and swaps content without moving exam slots or losing resources (12.7s)
+[WebServer] 6:19:53 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  89 [desktop] › tests\browser\settings-outline.spec.ts:53:1 › Pulse starts with conversation only and exposes optional tools on demand (12.6s)
+[WebServer] 6:20:02 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  90 [desktop] › tests\browser\syllabus-pdf.spec.ts:13:1 › PDF syllabus text is extracted, previewed and accepted into the course form (12.1s)
+[WebServer] 6:20:18 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  91 [desktop] › tests\browser\syllabus-pdf.spec.ts:22:1 › a scanned PDF syllabus uses OCR and still fills the course and outline (24.3s)
+[WebServer] 6:20:47 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  92 [desktop] › tests\browser\workflows.spec.ts:9:1 › preview connects to real health API and shows source-grounded chat without overflow (25.3s)
+[WebServer] 6:21:08 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  93 [desktop] › tests\browser\workflows.spec.ts:35:1 › profile saves, survives reload, and preview password editing is disabled (11.8s)
+[WebServer] 6:21:17 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  94 [desktop] › tests\browser\workflows.spec.ts:46:1 › bell and Notifications page share one unread count, and Mark All Read clears both (13.7s)
+[WebServer] 6:21:30 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  95 [desktop] › tests\browser\workflows.spec.ts:60:1 › system admin console shows health, role coverage, accounts and filterable audit activity, separate from academic screens (11.8s)
+[WebServer] 6:21:42 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  96 [desktop] › tests\browser\workflows.spec.ts:81:1 › the Guardian declines a student request for assessment answers and explains what Pulse can do instead (11.1s)
+[WebServer] 6:21:54 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  97 [desktop] › tests\browser\workflows.spec.ts:94:1 › Dean sidebar opens the Loaded Courses view instead of an empty tab (11.4s)
+[WebServer] 6:22:09 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok  98 [desktop] › tests\browser\workflows.spec.ts:106:1 › courseware edits persist, require review again, and document downloads work (23.6s)
+  ok  99 [desktop] › tests\browser\workflows.spec.ts:145:1 › syllabus draft survives reload and approved PDF activates the same course in Courseware (34.2s)
+[WebServer] 6:23:07 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 100 [desktop] › tests\browser\workflows.spec.ts:201:1 › conflicting workspace save retains pending edits until a backup is exported (22.3s)
+[WebServer] 6:23:26 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 101 [desktop] › tests\browser\workspace-office.spec.ts:8:1 › greetings answer locally under the interaction budget without model or retrieval calls (11.7s)
+[WebServer] 6:23:39 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 102 [desktop] › tests\browser\workspace-office.spec.ts:21:1 › the office has named buddies, truthful achievements, accessible controls and real navigation handoff (22.3s)
+[WebServer] 6:24:04 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 103 [desktop] › tests\browser\workspace-office.spec.ts:45:1 › reduced motion is respected and office loading does not block a simple edit (16.0s)
+(node:29068) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 6:24:24 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 104 [mobile] › tests\browser\access.spec.ts:4:3 › AUTH-001: Assoc. Dean cannot open the performance route or navigate there through Pulse (9.6s)
+[WebServer] 6:24:38 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 105 [mobile] › tests\browser\access.spec.ts:4:3 › AUTH-001: System Admin cannot open the performance route or navigate there through Pulse (11.6s)
+[WebServer] 6:24:46 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 106 [mobile] › tests\browser\access.spec.ts:18:1 › DATA-001: sample performance is explicitly labelled in preview (9.0s)
+[WebServer] 6:25:00 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 107 [mobile] › tests\browser\access.spec.ts:26:1 › Dean can open Performance without a stale or missing Pulse target crashing the page (11.3s)
+  ok 108 [mobile] › tests\browser\baseline-workflows.spec.ts:4:1 › syllabus-topic mastery uses mapped marks and restores radar, heatmap and status (4.0s)
+  ok 109 [mobile] › tests\browser\baseline-workflows.spec.ts:12:1 › instructor marks saved responses and the score and topic marks persist (9.6s)
+  ok 110 [mobile] › tests\browser\baseline-workflows.spec.ts:19:1 › student starts a timed written-response assessment, submits, and appeals the saved result (7.3s)
+  ok 111 [mobile] › tests\browser\baseline-workflows.spec.ts:27:1 › confirmed loading suggestions and block corrections update shared records (7.0s)
+  ok 112 [mobile] › tests\browser\baseline-workflows.spec.ts:36:1 › Dean offline inbox sends correction requests and account notice read receipts survive reload (8.2s)
+  ok 113 [mobile] › tests\browser\baseline-workflows.spec.ts:41:1 › saved syllabus versions can be viewed and restored as a draft (5.8s)
+  ok 114 [mobile] › tests\browser\baseline-workflows.spec.ts:46:1 › assessment topic mappings and delivery policy save through the instructor workspace (8.5s)
+  ok 115 [mobile] › tests\browser\baseline-workflows.spec.ts:53:1 › authenticated Pulse guidance describes shared records and keeps Dean marks read-only (6.7s)
+[WebServer] 6:26:04 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 116 [mobile] › tests\browser\landing.spec.ts:32:1 › a fresh visit opens on the logo and name; scrolling opens the aperture into the hero and back (7.1s)
+[WebServer] 6:26:11 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 117 [mobile] › tests\browser\landing.spec.ts:58:1 › Skip intro works with the keyboard and the pointer and removes the opening layers (6.6s)
+[WebServer] 6:26:22 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+[WebServer] 6:26:46 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+[WebServer] 6:26:51 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 118 [mobile] › tests\browser\landing.spec.ts:82:1 › the opening plays once per tab: reloads, section links and other routes bypass it (38.8s)
+[WebServer] 6:26:57 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 119 [mobile] › tests\browser\landing.spec.ts:102:1 › header links reach their sections below the bar; role tabs and the FAQ work; no horizontal overflow (25.5s)
+[WebServer] 6:27:24 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 120 [mobile] › tests\browser\landing.spec.ts:150:1 › footer links reach their sections and the legal pages (21.5s)
+  -  121 [mobile] › tests\browser\landing.spec.ts:164:1 › the four feature steps stay in step forwards, backwards and under rapid scrolling
+[WebServer] 6:27:48 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 122 [mobile] › tests\browser\landing.spec.ts:202:1 › the agents scope names all nine agents in order, then opens into the next section (19.1s)
+  ok 123 [mobile] › tests\browser\landing.spec.ts:234:1 › with reduced motion the agents are one still picture and a list of all nine (3.4s)
+[WebServer] 6:28:07 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 124 [mobile] › tests\browser\landing.spec.ts:246:1 › the agent workspace answers a tap on a robot or on its button, and runs a request (35.4s)
+[WebServer] 6:28:43 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 125 [mobile] › tests\browser\landing.spec.ts:271:1 › with reduced motion a request through the workspace shows every hand-off at once (9.1s)
+[WebServer] 6:28:51 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 126 [mobile] › tests\browser\landing.spec.ts:282:1 › the six phases draw their connector; every phase keeps its AI and People duties (6.8s)
+[WebServer] 6:29:01 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 127 [mobile] › tests\browser\landing.spec.ts:300:1 › the photographs drift; the pause control, hover, focus and a tap stop them (15.9s)
+[WebServer] 6:29:14 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 128 [mobile] › tests\browser\landing.spec.ts:343:1 › the sign-in panel keeps its fields, hints and validation, and holds still while used (9.6s)
+[WebServer] 6:29:24 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 129 [mobile] › tests\browser\landing.spec.ts:367:1 › Privacy and Terms open with a short reveal at the top; Back returns to the same place (8.0s)
+  -  130 [mobile] › tests\browser\landing.spec.ts:394:1 › the skip link moves focus past the hero and stays on the landing page
+  -  131 [mobile] › tests\browser\landing.spec.ts:407:1 › no horizontal scrolling at desktop, laptop, tablet, phone and narrow phone widths, also after resizing
+  ok 132 [mobile] › tests\browser\landing.spec.ts:423:1 › with reduced motion there is no opening and every section is complete and still (2.2s)
+  ok 133 [mobile] › tests\browser\landing.spec.ts:440:1 › without WebGL the page keeps its SVG ring and the opening still works (5.0s)
+[WebServer] 6:29:38 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 134 [mobile] › tests\browser\layout-feedback.spec.ts:4:1 › page navigation has one tab set and Pulse launcher is avatar only (7.2s)
+[WebServer] 6:29:50 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 135 [mobile] › tests\browser\layout-feedback.spec.ts:9:1 › syllabus dialog and assistant share space and Escape preserves the assistant (12.7s)
+  ok 136 [mobile] › tests\browser\layout-feedback.spec.ts:18:1 › academic records show skeletons and respect reduced motion (2.6s)
+  ok 137 [mobile] › tests\browser\layout-feedback.spec.ts:24:1 › academic request errors clear loading without claiming an empty library and retry succeeds (2.6s)
+[WebServer] 6:30:04 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+[WebServer] 6:30:14 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+[WebServer] 6:30:27 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  x  138 [mobile] › tests\browser\layout-feedback.spec.ts:29:1 › unique Records and Assessments destinations remain in primary navigation (32.6s)
+(node:22360) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  -  139 [mobile] › tests\browser\ocr.spec.ts:44:3 › OCR for scanned PDFs › a fully scanned PDF is read on the device, page by page, and indexes with its page markers
+  -  140 [mobile] › tests\browser\ocr.spec.ts:65:3 › OCR for scanned PDFs › in a mixed PDF only the page without text is read with OCR; the text-layer page is kept exactly
+  -  141 [mobile] › tests\browser\ocr.spec.ts:82:5 › OCR for scanned PDFs › evaluation: 300 dpi, degraded
+  -  142 [mobile] › tests\browser\ocr.spec.ts:82:5 › OCR for scanned PDFs › evaluation: 200 dpi
+  -  143 [mobile] › tests\browser\ocr.spec.ts:82:5 › OCR for scanned PDFs › evaluation: 150 dpi
+  -  144 [mobile] › tests\browser\ocr.spec.ts:82:5 › OCR for scanned PDFs › evaluation: 150 dpi, degraded
+[WebServer] 6:30:46 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 145 [mobile] › tests\browser\provider-connection.spec.ts:4:1 › provider save synchronizes pipeline status, survives reopening, retains model selection and failed replacement input (14.8s)
+[WebServer] 6:31:03 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 146 [mobile] › tests\browser\provider-connection.spec.ts:42:1 › provider account authorization leaves for the fixed OpenRouter consent host with PKCE (10.7s)
+[WebServer] 6:31:11 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+[WebServer] 6:31:18 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 147 [mobile] › tests\browser\provider-connection.spec.ts:56:65 › provider dedicated callback completes once, removes authorization parameters and restores account settings (11.5s)
+[WebServer] 6:31:22 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+[WebServer] 6:31:27 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 148 [mobile] › tests\browser\provider-connection.spec.ts:56:65 › provider legacy callback completes once, removes authorization parameters and restores account settings (9.9s)
+[WebServer] 6:31:35 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+[WebServer] 6:31:39 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 149 [mobile] › tests\browser\provider-connection.spec.ts:56:65 › provider state-marked callback completes once, removes authorization parameters and restores account settings (11.7s)
+[WebServer] 6:31:47 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+[WebServer] 6:31:51 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 150 [mobile] › tests\browser\provider-connection.spec.ts:75:1 › authorized OpenRouter credential survives a catalog outage and refresh finishes setup (13.3s)
+[WebServer] 6:31:58 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 151 [mobile] › tests\browser\provider-connection.spec.ts:88:1 › a provider return without an EduPulse session gives a visible recovery message and clears authorization parameters (4.8s)
+[WebServer] 6:32:02 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+[WebServer] 6:32:08 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 152 [mobile] › tests\browser\provider-connection.spec.ts:95:1 › a failed provider exchange stays visible for a signed-in account with no prior connection (11.8s)
+[WebServer] 6:32:15 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 153 [mobile] › tests\browser\pulse-actions.spec.ts:33:1 › an attached class list is registered only after Confirm, opens My Courses, can be searched and undone (11.5s)
+[WebServer] 6:32:29 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 154 [mobile] › tests\browser\pulse-actions.spec.ts:62:1 › the My Courses uploader reads a real class list instead of sample names and merges a second upload (14.3s)
+[WebServer] 6:32:40 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 155 [mobile] › tests\browser\pulse-actions.spec.ts:84:1 › a student’s material is matched to a course with reasons, and added to the library only after Confirm (13.9s)
+[WebServer] 6:32:58 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 156 [mobile] › tests\browser\pulse-actions.spec.ts:104:1 › requests to open a page navigate only within the role, and course generation shows its syllabus source before Confirm (11.0s)
+[WebServer] 6:33:05 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 157 [mobile] › tests\browser\pulse-actions.spec.ts:124:1 › a student cannot be sent to a page outside the student role (7.5s)
+[WebServer] 6:33:13 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 158 [mobile] › tests\browser\pulse-components.spec.ts:5:1 › dragged field drafts only its own value, then confirmation saves and survives reload (13.4s)
+[WebServer] 6:33:26 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 159 [mobile] › tests\browser\pulse-components.spec.ts:24:1 › a changed form invalidates the field preview and an explicit whole-syllabus request broadens the scope (10.1s)
+[WebServer] 6:33:37 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 160 [mobile] › tests\browser\pulse-components.spec.ts:41:1 › files drop onto the closed mascot or chat without sending, while invalid batches preserve attachments (10.8s)
+[WebServer] 6:33:47 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 161 [mobile] › tests\browser\pulse-components.spec.ts:66:1 › a focused requirements section proposes its three fields and preserves unrelated outcomes (11.3s)
+[WebServer] 6:33:59 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 162 [mobile] › tests\browser\pulse-drafting.spec.ts:4:1 › selected Research Methods course generates readable all-field proposal without a populated library (8.9s)
+[WebServer] 6:34:11 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 163 [mobile] › tests\browser\pulse-research.spec.ts:3:79 › Pulse week generation sends without web research through the confirmation card to the API (8.6s)
+[WebServer] 6:34:17 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 164 [mobile] › tests\browser\pulse-research.spec.ts:3:79 › Pulse week generation sends only from the syllabus through the confirmation card to the API (8.8s)
+[WebServer] 6:34:25 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 165 [mobile] › tests\browser\pulse-source-context.spec.ts:18:1 › page-uploaded PDF survives focused follow-up, corrects only the selected outline and downloads a genuine PDF (16.4s)
+[WebServer] 6:34:45 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 166 [mobile] › tests\browser\pulse-source-context.spec.ts:50:1 › model conversations receive buddy identity, follow-up history and retained page source for material drafts (21.2s)
+[WebServer] 6:35:03 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 167 [mobile] › tests\browser\pulse-tools.spec.ts:16:1 › natural conversation redirects and starts the real interactive syllabus guide (10.3s)
+[WebServer] 6:35:14 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 168 [mobile] › tests\browser\pulse-tools.spec.ts:26:1 › PDF syllabus attachment offers exact section previews, preserves unrelated fields, and rejects stale targets (13.2s)
+[WebServer] 6:35:27 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 169 [mobile] › tests\browser\pulse-tools.spec.ts:47:1 › private history saves preferences, recalls across chats, forgets and deletes source conversations (14.2s)
+[WebServer] 6:35:41 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 170 [mobile] › tests\browser\pulse-tools.spec.ts:66:1 › roster removal previews exact rows and persists only after confirmation (8.9s)
+[WebServer] 6:35:50 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 171 [mobile] › tests\browser\pulse-tools.spec.ts:88:1 › a generated section patch is previewed and a failed database save never reports completion (9.6s)
+[WebServer] 6:35:59 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 172 [mobile] › tests\browser\pulse.spec.ts:9:1 › mascot follows the cursor, distinguishes a click from dragging, and focuses the dropped component (9.0s)
+[WebServer] 6:36:09 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  -  173 [mobile] › tests\browser\pulse.spec.ts:38:1 › guiding a whole page keeps the panel clear of the perched mascot
+[WebServer] 6:36:15 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 174 [mobile] › tests\browser\pulse.spec.ts:48:1 › section tour reads visible controls and waits for input (10.6s)
+[WebServer] 6:36:29 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 175 [mobile] › tests\browser\pulse.spec.ts:70:1 › keyboard walkthrough waits for real input and save, then completes (15.7s)
+[WebServer] 6:36:41 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 176 [mobile] › tests\browser\pulse.spec.ts:94:1 › invalid drop returns to the dock and reduced motion disables cursor animation (12.3s)
+[WebServer] 6:36:59 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 177 [mobile] › tests\browser\pulse.spec.ts:105:1 › touch drag opens focused guidance on a form control (13.7s)
+[WebServer] 6:37:09 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 178 [mobile] › tests\browser\pulse.spec.ts:123:1 › provider settings expose real connections, model discovery and local download controls (9.9s)
+  ok 179 [mobile] › tests\browser\role-restoration.spec.ts:5:3 › restored instructor pages use account records and keep each authorized section reachable (11.9s)
+  ok 180 [mobile] › tests\browser\role-restoration.spec.ts:5:3 › restored student pages use account records and keep each authorized section reachable (7.9s)
+  ok 181 [mobile] › tests\browser\role-restoration.spec.ts:5:3 › restored dean pages use account records and keep each authorized section reachable (10.6s)
+  ok 182 [mobile] › tests\browser\role-restoration.spec.ts:5:3 › restored associate_dean pages use account records and keep each authorized section reachable (4.3s)
+  ok 183 [mobile] › tests\browser\role-restoration.spec.ts:36:1 › confirmed shared CSV import survives refresh; templates and history work (8.8s)
+  ok 184 [mobile] › tests\browser\role-restoration.spec.ts:46:1 › dark mode keeps account sections and charts on solid readable surfaces (4.4s)
+  ok 185 [mobile] › tests\browser\role-restoration.spec.ts:55:1 › account notices come from unanswered records and read state survives reload (26.4s)
+[WebServer] 6:38:46 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 186 [mobile] › tests\browser\settings-outline.spec.ts:4:86 › System Admin finds help and shortcuts in Settings with a clean top bar (26.1s)
+[WebServer] 6:39:02 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 187 [mobile] › tests\browser\settings-outline.spec.ts:4:86 › Dean finds help and shortcuts in Settings with a clean top bar (17.9s)
+[WebServer] 6:39:24 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 188 [mobile] › tests\browser\settings-outline.spec.ts:4:86 › Assoc. Dean finds help and shortcuts in Settings with a clean top bar (15.8s)
+[WebServer] 6:39:44 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 189 [mobile] › tests\browser\settings-outline.spec.ts:4:86 › Instructor finds help and shortcuts in Settings with a clean top bar (20.6s)
+  ok 190 [mobile] › tests\browser\settings-outline.spec.ts:4:86 › Student finds help and shortcuts in Settings with a clean top bar (9.4s)
+[WebServer] 6:40:07 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 191 [mobile] › tests\browser\settings-outline.spec.ts:24:1 › outline expands, filters weeks and swaps content without moving exam slots or losing resources (14.7s)
+[WebServer] 6:40:20 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 192 [mobile] › tests\browser\settings-outline.spec.ts:53:1 › Pulse starts with conversation only and exposes optional tools on demand (11.7s)
+[WebServer] 6:40:32 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 193 [mobile] › tests\browser\syllabus-pdf.spec.ts:13:1 › PDF syllabus text is extracted, previewed and accepted into the course form (10.7s)
+  -  194 [mobile] › tests\browser\syllabus-pdf.spec.ts:22:1 › a scanned PDF syllabus uses OCR and still fills the course and outline
+[WebServer] 6:40:44 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 195 [mobile] › tests\browser\workflows.spec.ts:9:1 › preview connects to real health API and shows source-grounded chat without overflow (15.8s)
+[WebServer] 6:41:03 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 196 [mobile] › tests\browser\workflows.spec.ts:35:1 › profile saves, survives reload, and preview password editing is disabled (12.9s)
+[WebServer] 6:41:18 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 197 [mobile] › tests\browser\workflows.spec.ts:46:1 › bell and Notifications page share one unread count, and Mark All Read clears both (17.8s)
+[WebServer] 6:41:35 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 198 [mobile] › tests\browser\workflows.spec.ts:60:1 › system admin console shows health, role coverage, accounts and filterable audit activity, separate from academic screens (14.5s)
+[WebServer] 6:41:51 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 199 [mobile] › tests\browser\workflows.spec.ts:81:1 › the Guardian declines a student request for assessment answers and explains what Pulse can do instead (14.5s)
+[WebServer] 6:42:00 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 200 [mobile] › tests\browser\workflows.spec.ts:94:1 › Dean sidebar opens the Loaded Courses view instead of an empty tab (9.9s)
+[WebServer] 6:42:13 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 201 [mobile] › tests\browser\workflows.spec.ts:106:1 › courseware edits persist, require review again, and document downloads work (22.5s)
+[WebServer] 6:42:32 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 202 [mobile] › tests\browser\workflows.spec.ts:145:1 › syllabus draft survives reload and approved PDF activates the same course in Courseware (42.5s)
+[WebServer] 6:43:17 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 203 [mobile] › tests\browser\workflows.spec.ts:201:1 › conflicting workspace save retains pending edits until a backup is exported (19.8s)
+[WebServer] 6:43:43 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 204 [mobile] › tests\browser\workspace-office.spec.ts:8:1 › greetings answer locally under the interaction budget without model or retrieval calls (15.1s)
+[WebServer] 6:43:54 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 205 [mobile] › tests\browser\workspace-office.spec.ts:21:1 › the office has named buddies, truthful achievements, accessible controls and real navigation handoff (21.8s)
+[WebServer] 6:44:12 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 206 [mobile] › tests\browser\workspace-office.spec.ts:45:1 › reduced motion is respected and office loading does not block a simple edit (12.9s)
+
+
+  1) [desktop] › tests\browser\landing.spec.ts:246:1 › the agent workspace answers a tap on a robot or on its button, and runs a request 
+
+    Test timeout of 60000ms exceeded.
+
+    Error: expect(locator).toHaveCount(expected) failed
+
+    Locator:  locator('#workspace').getByRole('list', { name: 'Conversation' }).locator('.ws-msg')
+    Expected: 2
+    Received: 1
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveCount" locator('#workspace').getByRole('list', { name: 'Conversation' }).locator('.ws-msg') with timeout 5000ms
+      - waiting for locator('#workspace').getByRole('list', { name: 'Conversation' }).locator('.ws-msg')
+        7 × locator resolved to 1 element
+          - unexpected value "1"
+
+
+      262 |   await expect(section.locator('.ws-bubble')).toHaveClass(/is-on/)
+      263 |   await section.getByRole('button', { name: 'Ask for quiz answers' }).click()
+    > 264 |   await expect(log.locator('.ws-msg')).toHaveCount(2)
+          |                                        ^
+      265 |   await expect(log).toContainText('Give me the answers to the Week 3 quiz.')
+      266 |   await expect(log).toContainText('No other agent runs.', { timeout: 10_000 })
+      267 |   await section.getByRole('button', { name: 'Pause motion' }).click()
+        at C:\Users\Benny\OneDrive\Documents\EduPulse\EduPulse System Prototype\edupulse-app\tests\browser\landing.spec.ts:264:40
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    .data\release-all-browser-results\landing-the-agent-workspac-0b399-s-button-and-runs-a-request-desktop\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: .data\release-all-browser-results\landing-the-agent-workspac-0b399-s-button-and-runs-a-request-desktop\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    .data\release-all-browser-results\landing-the-agent-workspac-0b399-s-button-and-runs-a-request-desktop\trace.zip
+    Usage:
+
+        npx playwright show-trace .data\release-all-browser-results\landing-the-agent-workspac-0b399-s-button-and-runs-a-request-desktop\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [desktop] › tests\browser\layout-feedback.spec.ts:29:1 › unique Records and Assessments destinations remain in primary navigation 
+
+    Test timeout of 30000ms exceeded.
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    .data\release-all-browser-results\layout-feedback-unique-Rec-28a90-emain-in-primary-navigation-desktop\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: .data\release-all-browser-results\layout-feedback-unique-Rec-28a90-emain-in-primary-navigation-desktop\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    .data\release-all-browser-results\layout-feedback-unique-Rec-28a90-emain-in-primary-navigation-desktop\trace.zip
+    Usage:
+
+        npx playwright show-trace .data\release-all-browser-results\layout-feedback-unique-Rec-28a90-emain-in-primary-navigation-desktop\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [mobile] › tests\browser\layout-feedback.spec.ts:29:1 › unique Records and Assessments destinations remain in primary navigation 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByRole('link', { name: 'Records', exact: true })
+
+
+      29 | test('unique Records and Assessments destinations remain in primary navigation',async({page},info)=>{
+      30 |  test.setTimeout(60000) // Multiple sign-ins and full page reloads share this test's budget.
+    > 31 |  for(const [persona,name,path] of [['Student','Assessments','assessment'],['Dean','Records','records'],['Assoc. Dean','Records','records']]){
+         |                                                                                                                                              ^
+      32 |   await page.goto('/');await page.getByRole('button',{name:persona,exact:true}).click();if(info.project.name==='mobile')await page.getByRole('button',{name:'Open menu',exact:true}).click();await page.getByRole('link',{name,exact:true}).click();await expect(page).toHaveURL(new RegExp('#/'+path));await expect(page.locator('.app-sidebar')).toHaveCount(0)
+      33 |   if(persona!=='Student'){await page.goto('/#/monitor');for(const [label,key] of [['Syllabus Status','syllabi'],['Delivery Progress','delivery'],['Student Oversight','students'],['Alerts','alerts']]){const button=page.getByRole('navigation',{name:'Monitor views'}).getByRole('button',{name:label,exact:true});await button.click();await expect(button).toHaveAttribute('aria-pressed','true');await expect(page).toHaveURL(new RegExp('tab='+key))}}
+      34 |   await page.evaluate(()=>{localStorage.removeItem('edupulse_user')});await page.goto('/');await page.reload()
+        at C:\Users\Benny\OneDrive\Documents\EduPulse\EduPulse System Prototype\edupulse-app\tests\browser\layout-feedback.spec.ts:31:237
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    .data\release-all-browser-results\layout-feedback-unique-Rec-28a90-emain-in-primary-navigation-mobile\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: .data\release-all-browser-results\layout-feedback-unique-Rec-28a90-emain-in-primary-navigation-mobile\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    .data\release-all-browser-results\layout-feedback-unique-Rec-28a90-emain-in-primary-navigation-mobile\trace.zip
+    Usage:
+
+        npx playwright show-trace .data\release-all-browser-results\layout-feedback-unique-Rec-28a90-emain-in-primary-navigation-mobile\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3 failed
+    [desktop] › tests\browser\landing.spec.ts:246:1 › the agent workspace answers a tap on a robot or on its button, and runs a request 
+    [desktop] › tests\browser\layout-feedback.spec.ts:29:1 › unique Records and Assessments destinations remain in primary navigation 
+    [mobile] › tests\browser\layout-feedback.spec.ts:29:1 › unique Records and Assessments destinations remain in primary navigation 
+  16 skipped
+  187 passed (40.1m)

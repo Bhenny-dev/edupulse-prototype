@@ -1,0 +1,79 @@
+
+> edupulse-app@0.4.0 test:browser
+> playwright test tests/browser/landing.spec.ts tests/browser/layout-feedback.spec.ts -g agent workspace answers|unique Records
+
+node.exe : [WebServer] (node:19060) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([WebServer] (no... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:28836) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 6:45:02 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3034
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 6:45:03 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3034
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 6:45:04 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3034
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 6:45:05 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3034
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 6:45:06 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3034
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 6:45:07 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3034
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 6:45:08 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3034
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 6:45:09 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3034
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 6:45:11 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3034
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 6:45:12 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3034
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 
+[WebServer] 
+[WebServer] #
+[WebServer] # Fatal process out of memory: Zone
+[WebServer] #
+[WebServer] ----- Native stack trace -----
+[WebServer] 
+[WebServer]  1: 00007FF6BF2FEF1D node::MultiIsolatePlatform::DisposeIsolate+5341
+[WebServer]  2: 00007FF6C0752536 v8::base::FatalOOM+54
+[WebServer]  3: 00007FF6BFFF3705 v8::Function::NewInstance+245
+[WebServer]  4: 00007FF6BF96E556 v8::SnapshotCreator::GetIsolate+56566
+[WebServer]  5: 00007FF6C0BC568A v8::base::DiyFp::Multiply+2469162
+[WebServer]  6: 00007FF6C0BC4D7B v8::base::DiyFp::Multiply+2466843
+[WebServer]  7: 00007FF6C0BC423D v8::base::DiyFp::Multiply+2463965
+[WebServer]  8: 00007FF6C0BC3D14 v8::base::DiyFp::Multiply+2462644
+[WebServer]  9: 00007FF6C0BC32A1 v8::base::DiyFp::Multiply+2459969
+[WebServer] 10: 00007FF6C0BC2FFF v8::base::DiyFp::Multiply+2459295
+[WebServer] 11: 00007FF6C09CFE36 v8::base::DiyFp::Multiply+414934
+[WebServer] 12: 00007FF6C09CEB50 v8::base::DiyFp::Multiply+410096
+[WebServer] 13: 00007FF6C07B281B 
+v8::internal::compiler::CompilationDependencies::FieldTypeDependencyOffTheRecord+192907
+[WebServer] 14: 00007FF6BF667E16 DH_get0_engine+659126
+[WebServer] 15: 00007FF6BF663553 DH_get0_engine+640499
+[WebServer] 16: 00007FF6BF662E39 DH_get0_engine+638681
+[WebServer] 17: 00007FF6C07C610F v8::base::SysInfo::AddressSpaceEnd+3167
+[WebServer] 18: 00007FF6BF2FADDE node::GetNodeReport+89326
+[WebServer] 19: 00007FF6C0048B26 uv_thread_detach+150
+[WebServer] 20: 00007FF6C128A3B3 v8::base::UnsignedDivisionByConstant<unsigned __int64>+2903891
+[WebServer] 21: 00007FF98661DDA7 BaseThreadInitThunk+23
+[WebServer] 22: 00007FF988159C5C RtlUserThreadStart+44
+[WebServer] 6:45:22 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: read ECONNRESET
+[WebServer]     at TCP.onStreamRead (node:internal/stream_base_commons:216:20)
+Error: Process from config.webServer exited early.
+

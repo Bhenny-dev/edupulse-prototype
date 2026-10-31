@@ -42,3 +42,7 @@ The public landing page was redesigned in white and light blue, with Sora headin
 
 - The test machine had little free memory, so browser tests ran with one worker and generous timeouts.
 - The 3D scene is checked for start-up cost, disposal and the WebGL fallback, not across real GPUs and phones.
+
+## Combined release check, 30 October 2026
+
+The combined release keeps all of these frontend changes: the public scripted Agent workspace (a lazily loaded robot studio, per-agent buttons, sample hand-offs, a conversation list, reduced-motion support and a flat WebGL fallback, labelled as a scripted example, not live AI) and the Pulse office that now shows the same studio. It adds the backend content harness and the bounded API request intake. Final combined validation is recorded in [the integration release](../2026-10-30-integrated-release/validation/results.md).

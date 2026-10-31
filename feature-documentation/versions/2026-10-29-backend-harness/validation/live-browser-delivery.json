@@ -1,0 +1,107 @@
+{
+  "recordedAt": "2026-10-30T05:40:03.006Z",
+  "provider": "ollama",
+  "model": "qwen2.5:3b",
+  "syntheticInput": true,
+  "modelResponsesMocked": false,
+  "persistedTypes": [
+    "activity",
+    "assessment",
+    "material"
+  ],
+  "contentSurvivesReload": true,
+  "material": {
+    "title": "Week 1: JavaScript Variables, Constants, and Assignment",
+    "sections": [
+      {
+        "heading": "Concepts",
+        "body": "In JavaScript, variables are used to store data values. They can hold different types of information such as numbers, strings, or even other objects. A constant is a variable whose value cannot be changed once it has been set. This means that constants are immutable and their value remains fixed throughout the program's execution. Assignment in JavaScript involves setting a variable to a specific value."
+      },
+      {
+        "heading": "Worked example",
+        "body": "Let's walk through an example of using variables, constants, and assignment in JavaScript. Consider this simple code snippet:\n\n```javascript\nclass = 'Computer Programming 1';\nconst courseCode = class;\nconsole.log(courseCode);\n```\nIn this example, we first define a variable `class` with the value `'Computer Programming 1'`. Then, we create a constant `courseCode` that is assigned the same value as `class`. The `const` keyword ensures that `courseCode` cannot be reassigned. When you run this code in your JavaScript environment, it will output the string `'Computer Programming 1'` to the console."
+      },
+      {
+        "heading": "Practice",
+        "body": "Now let's practice what we've learned with a simple task. Write a short JavaScript program that uses variables and constants. Your program should have two variables: one named `firstName` set to your name, and another constant `courseCode` set to the course code from this syllabus outline (`IT 102`). Print both values to the console."
+      },
+      {
+        "heading": "References",
+        "body": "No references are listed for this week in the syllabus, and no knowledge-library passage was used. Add the week’s references before publishing."
+      }
+    ]
+  },
+  "activity": {
+    "title": "Trace Values in a Short JavaScript Program",
+    "sections": [
+      {
+        "heading": "Part A: Write Your Code",
+        "body": "Write a short JavaScript program that includes two variables and one constant. One variable should be named `firstName` and set to your name. The other variable should be named `courseCode` and set to the course code from this syllabus outline (`IT 102`). Both values should then be printed to the console."
+      },
+      {
+        "heading": "Part B: Submit Your Code",
+        "body": "Submit your JavaScript program for review. Ensure that you include both `firstName` and `courseCode` variables, with appropriate assignment statements, and a `console.log()` statement to display their values."
+      }
+    ]
+  },
+  "coverage": {
+    "items": [
+      {
+        "kind": "topic",
+        "text": "Variables",
+        "score": 0.792,
+        "status": "covered",
+        "matchedIn": "activity"
+      },
+      {
+        "kind": "topic",
+        "text": "Constants",
+        "score": 0.882,
+        "status": "covered",
+        "matchedIn": "material"
+      },
+      {
+        "kind": "topic",
+        "text": "Assignment",
+        "score": 0.671,
+        "status": "covered",
+        "matchedIn": "material"
+      },
+      {
+        "kind": "outcome",
+        "text": "Explain JavaScript variables and constants and trace an assignment.",
+        "score": 0.91,
+        "status": "covered",
+        "matchedIn": "material"
+      },
+      {
+        "kind": "activity",
+        "text": "Trace values in a short JavaScript program.",
+        "score": 1,
+        "status": "covered",
+        "matchedIn": "activity"
+      },
+      {
+        "kind": "assessment",
+        "text": "Quiz and short coding exercise.",
+        "score": 0.33,
+        "status": "missing",
+        "matchedIn": null
+      }
+    ],
+    "coverage": 0.833,
+    "method": "semantic+lexical"
+  },
+  "answerKey": {
+    "checked": 3,
+    "consistent": 2,
+    "issues": [
+      {
+        "question": 3,
+        "marked": 0,
+        "supported": 1
+      }
+    ]
+  },
+  "warning": null
+}

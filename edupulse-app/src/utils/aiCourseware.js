@@ -1,11 +1,11 @@
 import { generateCourseDraft } from '../lib/aiClient'
 import { buildCourseInput } from './courseInput'
 
-export async function generateWeekDraft(syllabus, weekNumber, signal) {
+export async function generateWeekDraft(syllabus, weekNumber, signal, request = '') {
   const row = syllabus.courseOutline?.find(item => item.week === weekNumber)
   if (!row) throw new Error('The selected outline week no longer exists.')
   if (!row.ilos && /examination/i.test(row.assessments || '')) return { week: weekNumber, items: [] }
-  const result = await generateCourseDraft(buildCourseInput(syllabus, weekNumber), signal)
+  const result = await generateCourseDraft(buildCourseInput(syllabus, weekNumber, request), signal)
   const metadata = { requestId: result.requestId, provider: result.provider, model: result.model, sources: result.sources, trace: result.trace, warning: result.warning, coverage: result.coverage,
     // Summary only: metadata is saved with every item in the 3 MB workspace.
     verification: result.verification && { supported: result.verification.supported, total: result.verification.claims.length, method: result.verification.method },

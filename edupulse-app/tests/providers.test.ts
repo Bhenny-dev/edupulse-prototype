@@ -28,7 +28,7 @@ test('model access, compatibility and API credit errors are actionable without e
   }
 })
 
-test('Ollama draft transport requests one non-streaming JSON response and propagates errors', async () => {
+test('Ollama draft transport assembles streamed JSON and propagates errors', async () => {
   const bodies: Record<string, unknown>[] = []
   let fail = false
   const server = createServer(async (request, response) => {
@@ -46,9 +46,53 @@ test('Ollama draft transport requests one non-streaming JSON response and propag
   try {
     assert.deepEqual(JSON.parse(await invokeModel('Return JSON.', 'Synthetic transport fixture.', AbortSignal.timeout(5000), true)), { test: true })
     assert.equal(bodies[0].format, 'json', 'Avoid the runner crash caused by native schema sampling')
-    assert.equal(bodies[0].stream, false, 'Drafts must not depend on streamed completion markers')
+    assert.equal(bodies[0].stream, true, 'Read tokens while long local drafts are generating')
     fail = true
     await assert.rejects(invokeModel('Return JSON.', 'Synthetic transport fixture.', AbortSignal.timeout(5000), true))
     assert.equal(bodies.length, 2, 'The transport must not add hidden retries')
   } finally { server.closeAllConnections(); await new Promise<void>(resolve => server.close(() => resolve())) }
+})
+
+test('Ollama length stop is rejected even if the runner reports done', async t => {
+  const original = globalThis.fetch
+  t.after(() => { globalThis.fetch = original })
+  globalThis.fetch = async () => Response.json({ done: true, done_reason: 'length', message: { content: '{"programOutcomes":[]}' } })
+  await assert.rejects(invokeModel('Return JSON.', 'Draft outcomes.', AbortSignal.timeout(1000), true, { provider: 'ollama', model: 'test', id: 'test', owner: 'test', expires: Date.now() + 1000 }), { code: 'INCOMPLETE_RESPONSE' })
+})
+
+test('Ollama frames tolerate split UTF-8 and lines but reject missing, malformed or oversized completions', async t => {
+  const original = globalThis.fetch
+  t.after(() => { globalThis.fetch = original })
+  const connection = { provider: 'ollama' as const, model: 'test', id: 'test', owner: 'test', expires: Date.now() + 1000 }
+  const streamed = (raw: string, bytewise = false) => {
+    const bytes = new TextEncoder().encode(raw)
+    return new Response(new ReadableStream({ start(controller) {
+      if (bytewise) for (const byte of bytes) controller.enqueue(Uint8Array.of(byte))
+      else controller.enqueue(bytes)
+      controller.close()
+    } }), { headers: { 'Content-Type': 'application/x-ndjson' } })
+  }
+  globalThis.fetch = async () => streamed(JSON.stringify({ message: { content: '{"title":"Café' }, done: false }) + '\n' + JSON.stringify({ message: { content: '"}' }, done: true, done_reason: 'stop' }), true)
+  assert.deepEqual(JSON.parse(await invokeModel('JSON', 'Draft', AbortSignal.timeout(1000), true, connection)), { title: 'Café' })
+  for (const raw of [
+    JSON.stringify({ message: { content: '{}' }, done: false }) + '\n',
+    '{broken\n',
+    JSON.stringify({ error: 'private runner details' }) + '\n',
+    JSON.stringify({ message: { content: '{}' }, done: true, done_reason: 'length' }) + '\n',
+    JSON.stringify({ message: { content: 'a'.repeat(512_001) }, done: true }) + '\n',
+  ]) {
+    globalThis.fetch = async () => streamed(raw)
+    await assert.rejects(invokeModel('JSON', 'Draft', AbortSignal.timeout(1000), true, connection), { code: 'INCOMPLETE_RESPONSE' })
+  }
+})
+
+test('cancelling a local draft interrupts a pending stream and releases it', async t => {
+  const original = globalThis.fetch, abort = new AbortController()
+  let cancelled = false
+  t.after(() => { globalThis.fetch = original })
+  globalThis.fetch = async () => new Response(new ReadableStream({ cancel() { cancelled = true } }), { headers: { 'Content-Type': 'application/x-ndjson' } })
+  const promise = invokeModel('JSON', 'Draft', abort.signal, true, { provider: 'ollama', model: 'test', id: 'test', owner: 'test', expires: Date.now() + 1000 })
+  setTimeout(() => abort.abort(), 10)
+  await assert.rejects(promise, { name: 'AbortError' })
+  assert.equal(cancelled, true)
 })

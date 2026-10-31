@@ -10,6 +10,8 @@ const OWN_DOCUMENTS = /\b(my|our|these|this|the|attached|uploaded)\s+(?:\w+\s+)?
 const SUMMARIZE =/\b(summari[sz]e|summary|overview|key points|main points|tl;?dr)\b/i
 const DRAFT = /\b(draft|write|create|generate|compose|rephrase|rewrite|phrase|design|prepare|propose|formulate|make|fill|populate|complete)\b/i
 const WEB = /\b(web|internet|online|search|look\s*up|research|latest|current|recent|up.to.date|today)\b/i
+const NO_WEB = /\b(?:do not|don't|dont|never)\s+(?:search|browse|use|consult|access)\b.{0,35}\b(?:web|internet|online|external)|\b(?:without|no)\s+(?:web|internet|online|external)\s*(?:search|research|sources?|access|browsing)?\b/i
+export const allowsPublicResearch = (message: string) => !NO_WEB.test(message)
 const GREETING = /^(hi|hello|hey|thanks|thank you|good (morning|afternoon|evening)|kumusta|salamat)\b/i
 const SOURCE_REQUEST = /\b(uploaded|attached|document|pdf|file|library|source|reference|policy|syllabus|courseware|EduPulse|publish|publishing|approval|signator|grading|examination|calendar)\b/i
 const CONVERSATION = /\b(how are you|how do you feel|let'?s (?:talk|chat)|what if|suppose|imagine|scenario|situation|advice|i feel|i am (?:feeling|worried|stressed)|i'?m (?:feeling|worried|stressed)|help me (?:think|decide)|what should i do)\b/i
@@ -25,7 +27,7 @@ export function planRequest(input: PlanInput): Plan {
   const previous = input.history?.filter(m => m.role === 'user').at(-1)?.content || ''
   const greeting = GREETING.test(message) && message.split(/\s+/).length < 6
   const scoped = input.grounding === 'sources' || Boolean(input.documentIds?.length)
-  const sourceOnly = scoped || OWN_DOCUMENTS.test(message) || /\b(?:only|solely|exclusively)\b.{0,40}\b(?:source|file|document|attachment|library)|\b(?:based on|from|according to)\s+(?:this|the|my|attached|uploaded)\s+(?:syllabus|file|document|source)/i.test(message)
+  const sourceOnly = scoped || OWN_DOCUMENTS.test(message) || /\b(?:only|solely|exclusively)\b.{0,40}\b(?:source|file|document|attachment|library|syllabus|outline)|\b(?:based on|from|according to)\s+(?:this|the|my|attached|uploaded)\s+(?:syllabus|outline|file|document|source)/i.test(message)
   const conversational = greeting || CONVERSATION.test(message) || PERSONAL_SITUATION.test(message) || (message.length < 60 && (CONVERSATION.test(previous) || PERSONAL_SITUATION.test(previous)))
   let task: Task = 'answer', rationale = 'Question about workflow or document content; answer from retrieved evidence.'
   if (input.task && input.task !== 'auto') { task = input.task; rationale = `Task selected by the user interface: ${task}.` }
@@ -51,11 +53,17 @@ export function planRequest(input: PlanInput): Plan {
   }
   // Catalog topic: the subject only, without the request ("find books and readings … for my course").
   const topic = message
+    .replace(/\b(?:search|browse)\s+(?:the\s+)?(?:web|internet|online)(?:\s+for)?\b|\blook\s*up\b/gi, ' ')
     .replace(/\b(for|in|to)\s+(my|our|the|a|this)\s+(course|class|subject|students?|syllabus|lessons?|module)\b.*$/i, ' ')
     .replace(new RegExp(REFERENCE_REQUEST.source, 'gi'), ' ').replace(new RegExp(REFERENCES.source, 'gi'), ' ')
     .replace(/\b(for|on|about|regarding|some|good|me|a|an|the|please|that|cover|covering|and|or|my|our|i|can|you|could|would|what|which|are|is|useful|relevant|recommended)\b/gi, ' ')
     .replace(/[?!.,;:]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 200)
   const course = input.context?.match(/Selected course:\s*([^\n]{1,200})/i)?.[1]?.trim()
-  const educationalDraft = task === 'draft' && /\b(?:syllabus|course|lesson|outline|research|topics?|assessments?|materials?|references?)\b/i.test(`${message} ${course || ''}`)
-  return { task, queries: queries.slice(0, 3), needsEvidence: task !== 'references' && (sourceOnly || task !== 'general'), needsWeb: !sourceOnly && (educationalDraft || WEB.test(message)) && task !== 'references', sourceOnly, rationale, topic: course || topic || message.slice(0, 200), revision }
+  // Selected-course context resolves "this course"; it must not replace a topic
+  // explicitly requested in an otherwise unrelated public search.
+  const courseScoped = /\b(?:this|my|our|selected|current|the)\s+(?:course|syllabus|subject|outline)\b|\b(?:all|every)\s+(?:fields?|sections?)\b/i.test(message)
+  const explicitTopic = /\b(?:about|on|regarding|look\s*up|research)\s+(.+?)(?=\s+for\s+(?:my|our|this|the|selected|current)\s+course\b|$)/i.exec(message)?.[1]?.replace(/[.!?]+$/, '').trim().slice(0, 200)
+  const educationalDraft = task === 'draft' && /\b(?:syllabus|course|lesson|outline|research|topics?|assessments?|materials?|references?)\b/i.test(message)
+  if (task === 'references' && !allowsPublicResearch(message)) { task = 'answer'; rationale = 'External research was disabled by the user; use supplied or library sources.' }
+  return { task, queries: queries.slice(0, 3), needsEvidence: task !== 'references' && (sourceOnly || task !== 'general'), needsWeb: !sourceOnly && allowsPublicResearch(message) && (educationalDraft || WEB.test(message)) && task !== 'references', sourceOnly, rationale, topic: explicitTopic || (course && courseScoped ? course : topic || message.slice(0, 200)), revision }
 }

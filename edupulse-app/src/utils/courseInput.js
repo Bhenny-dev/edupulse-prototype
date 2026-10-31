@@ -1,3 +1,5 @@
+import { allowsPublicResearch, planRequest } from '../lib/rag/plan'
+
 /** @param {unknown} value A string, or an object with a `name` (outline rows store either). */
 const text = value => typeof value === 'string' ? value.trim() : value && typeof value === 'object' && 'name' in value && typeof value.name === 'string' ? value.name.trim() : ''
 /** @param {unknown} value */
@@ -15,13 +17,17 @@ const link = value => value && typeof value === 'object' && 'url' in value && ty
  * Kept free of browser APIs so evaluations and tests build the same request.
  * @param {SyllabusLike} syllabus
  * @param {number} weekNumber
+ * @param {string} [request] The current Pulse instruction; source restrictions must reach generation.
  */
-export function buildCourseInput(syllabus, weekNumber) {
+export function buildCourseInput(syllabus, weekNumber, request = '') {
   const row = syllabus.courseOutline?.find(item => item.week === weekNumber)
   if (!row) throw new Error('The selected outline week no longer exists.')
   if (!row.ilos?.trim() || !row.contents?.length) throw new Error(`Week ${weekNumber} needs topics and measurable learning outcomes before generation.`)
+  /** @type {'sources' | 'auto'} */
+  const research = !allowsPublicResearch(request) || planRequest({ message: request }).sourceOnly ? 'sources' : 'auto'
   return {
     courseCode: syllabus.courseCode, courseTitle: syllabus.courseTitle, week: weekNumber,
+    research, request: request.trim(),
     topics: row.contents.map(text).filter(Boolean).slice(0, 20).map(topic => topic.slice(0, 500)), outcomes: row.ilos.slice(0, 3000),
     referenceText: JSON.stringify({ outline: row, courseDescription: syllabus.courseDescription || '', programOutcomes: syllabus.programOutcomes || [], references: row.resources || [] }).slice(0, 18000),
     plan: {

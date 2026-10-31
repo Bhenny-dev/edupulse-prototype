@@ -3,6 +3,7 @@ import assert from 'node:assert/strict'
 import { operatorInput, planValidatedTool } from '../src/agents/toolPlanner.js'
 import { workProposal } from '../src/agents/workTools.js'
 import { focusedSection } from '../src/agents/pageContext.js'
+import { wholeSyllabusDraft, validateDraft } from '../src/agents/draftValidation.js'
 import { planOperator } from '../src/agents/operator.js'
 import { planRequest } from '../src/lib/rag/plan.js'
 import { writerPrompt, runAgents } from '../src/lib/rag/agents.js'
@@ -50,11 +51,14 @@ test('full syllabus draft researches the course and validates all 18 weeks befor
   const result = await planValidatedTool(input, identity, signal(), async (system, prompt) => {
     calls++; const context = JSON.parse(prompt)
     assert.equal(context.editor.data.courseTitle, 'Research Methods')
+    assert.equal(context.originalRequest, input.message)
+    assert.match(context.message, /Draft only/)
     assert.equal(context.research[0].url, source.url)
     assert.match(system, /empty/); assert.match(system, /untrusted data/)
-    return JSON.stringify(researchMethodsDraft)
+    const draft = { ...researchMethodsDraft, courseOutline: researchMethodsDraft.courseOutline.filter(row => context.editor.data.courseOutline?.some((old: { week: number }) => old.week === row.week)) }
+    return JSON.stringify(Object.fromEntries(context.requestedFields.map((field: keyof typeof draft) => [field, draft[field]])))
   }, 26000, research)
-  assert.equal(lookups, 1); assert.equal(calls, 1)
+  assert.equal(lookups, 1); assert.equal(calls, 6, 'core, four teaching-week batches and bibliography; research is shared')
   assert.ok('patch' in result)
   assert.ok(result.patch && 'courseOutline' in result.patch)
   assert.equal(result.patch?.courseOutline?.length, 18)
@@ -105,4 +109,58 @@ test('the public research endpoint cannot bypass learner appropriate-use rules',
     assert.equal(response.status, 403)
     assert.equal((await response.json()).error.code, 'ACTION_POLICY')
   } finally { if (localMode === undefined) delete process.env.AI_LOCAL_MODE; else process.env.AI_LOCAL_MODE = localMode }
+})
+
+test('research follows explicit topics and honors a request to avoid the web', () => {
+  for (const message of ['Research photosynthesis for my course', 'Find books about photosynthesis for this course']) assert.equal(planRequest({ message, context: 'Selected course: Research Methods' }).topic, 'photosynthesis')
+  for (const [message, section] of [['Generate a syllabus outline', 'courseOutline'], ['Complete the course outline', 'courseOutline'], ['Fill the entire syllabus outline', 'courseOutline'], ['Generate syllabus program outcomes', 'programOutcomes'], ['Complete the syllabus program outcomes', 'programOutcomes'], ['Create the syllabus course requirements only', 'courseRequirements']]) {
+    const actual = focusedSection({ section: 4 }, message)
+    assert.equal(actual, section)
+    assert.equal(wholeSyllabusDraft({ message, section: actual, context: '', editor }), false)
+  }
+  assert.equal(planRequest({ message: 'Search the web for photosynthesis', context: 'Selected course: Research Methods' }).topic, 'photosynthesis')
+  assert.equal(planRequest({ message: 'Generate a syllabus for this course', context: 'Selected course: Research Methods' }).topic, 'Research Methods')
+  for (const message of ['Draft a lesson without web research', 'Generate outcomes; do not search the web', "Write a lesson, don't use external sources"]) assert.equal(planRequest({ message }).needsWeb, false, message)
+  assert.equal(planRequest({ message: 'Find references without web search' }).task, 'answer')
+})
+
+test('edit harness repairs malformed output, preserves exact input and stops after one repair', async () => {
+  const input = operatorInput.parse({ operation: 'revise', message: 'Draft program outcomes without web research', viewRole: 'instructor', editor, section: 'programOutcomes' })
+  const prompts: string[] = []
+  let calls = 0
+  const result = await planValidatedTool(input, identity, signal(), async (_system, prompt) => { prompts.push(prompt); return ++calls === 1 ? '{bad json' : JSON.stringify({ programOutcomes: ['Evaluate research evidence.'] }) }, 26000, async () => { throw new Error('Web must not run') })
+  assert.ok('patch' in result && result.patch); assert.equal(calls, 2); assert.equal(prompts[0], prompts[1])
+  calls = 0
+  await assert.rejects(planValidatedTool(input, identity, signal(), async () => { calls++; return '{bad json' }), { code: 'TOOL_OUTPUT_INVALID' })
+  assert.equal(calls, 2)
+})
+
+test('one policy item can be delivered as prose without relaxing schema or section scope', () => {
+  const input = { editor, message: 'Draft a course policy', section: 'coursePolicy', context: '' }
+  assert.deepEqual(validateDraft({ coursePolicy: 'Proposed for instructor review: cite sources.' }, input, ''), { patch: { coursePolicy: ['Proposed for instructor review: cite sources.'] } })
+  assert.ok('error' in validateDraft({ coursePolicy: { value: 'Wrong shape' } }, input, ''))
+  assert.ok('error' in validateDraft({ programOutcomes: 'Evaluate evidence.' }, input, ''))
+})
+
+test('source-only editor requests require their file and preserve source restrictions during generation', async () => {
+  const input = operatorInput.parse({ operation: 'revise', message: 'Generate program outcomes only from my uploaded file', viewRole: 'instructor', editor, section: 'programOutcomes' })
+  const absent = await planValidatedTool(input, identity, signal(), async () => { throw new Error('Missing file must be requested first') })
+  assert.match(absent.clarification || '', /Attach the source/)
+  const attached = operatorInput.parse({ ...input, attachments: [{ title: 'source.txt', kind: 'material', text: 'Evaluate research evidence.' }] })
+  const result = await planValidatedTool(attached, identity, signal(), async system => {
+    assert.match(system, /Do not add facts from general knowledge/)
+    return JSON.stringify({ programOutcomes: ['Evaluate research evidence.'] })
+  }, 26000, async () => { throw new Error('Source-only must not search the web') })
+  assert.ok('patch' in result)
+})
+
+test('ordinary whole-syllabus phrasing and outline-only replacements cannot silently omit weeks', async () => {
+  for (const [message, section] of [['Generate a syllabus for my selected course', 'all'], ['Improve the course outline', 'courseOutline']]) {
+    const input = operatorInput.parse({ operation: 'revise', message, section, viewRole: 'instructor', editor })
+    await assert.rejects(planValidatedTool(input, identity, signal(), async (_system, prompt) => {
+      const fields = JSON.parse(prompt).requestedFields as string[] | undefined
+      if (fields?.includes('programOutcomes')) return JSON.stringify({ programOutcomes: researchMethodsDraft.programOutcomes, courseRequirements: researchMethodsDraft.courseRequirements, coursePolicy: researchMethodsDraft.coursePolicy })
+      return JSON.stringify({ courseOutline: researchMethodsDraft.courseOutline.slice(0, 1) })
+    }, 26000), { code: 'TOOL_OUTPUT_INCOMPLETE' })
+  }
 })

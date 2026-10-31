@@ -1,0 +1,112 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-10-30T05-12-25-606Z-655634cf",
+  "startedAt": "2026-10-30T05:12:25.606Z",
+  "finishedAt": "2026-10-30T05:17:54.238Z",
+  "commitSha": "8d2b19b9897aefddbaf511c90cab417750e3cbfa",
+  "sourceDigest": "9482f4c28f860eb1606295a80dfeb82500f749ff3a3efb54a40ad2cb81e12ce6",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-10-30T05:04:51.317Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "failed",
+  "counts": {
+    "passed": 1,
+    "failed": 1,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": null
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/harness-delivery.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-drafting.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-source.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/harness-delivery.spec.ts",
+      "title": "live local model drafts outcomes and confirmed editor content persists across reload",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "local-real-input/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 13150,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/harness-delivery.spec.ts",
+      "title": "live courseware generation saves all three drafts and opens the persisted lesson",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "local-real-input/sample-academic",
+      "status": "failed",
+      "expectedStatus": "passed",
+      "durationMs": 309249,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-manual/09-pulse-actions/07-generate-week-source.png",
+      "sha256": "afcbcaa4436f5179ca5dc1ad315a0f3f8010024a775ed78fa15c415bc9684cb9",
+      "bytes": 75375
+    },
+    {
+      "path": "feature-documentation/system-manual/15-backend-content-delivery/01-real-model-proposal.png",
+      "sha256": "9fb07348268efc068327348b0aa8bf0735434a6539e1f13716c8848ede1f66a8",
+      "bytes": 80100
+    },
+    {
+      "path": "feature-documentation/system-manual/15-backend-content-delivery/02-confirmed-save-receipt.png",
+      "sha256": "83d018b99e780996e29653724468b95097821e1f0bc76cb8daf74028f2abd695",
+      "bytes": 24762
+    },
+    {
+      "path": "feature-documentation/system-manual/15-backend-content-delivery/03-reloaded-syllabus.png",
+      "sha256": "30a0525e7b072e37660efc6c396defd23bab9bf198062d954453fb3fd4133c01",
+      "bytes": 266109
+    },
+    {
+      "path": "feature-documentation/system-manual/15-backend-content-delivery/06-pulse-courseware-request.png",
+      "sha256": "851c375b82eb9040bd28961082986ad5b9932cb756275834ba476af6ce49f904",
+      "bytes": 75351
+    }
+  ]
+}

@@ -66,23 +66,18 @@ export async function invokeModel(system: string, prompt: string, signal: AbortS
     return text.trim()
   }
   if (connection.provider === 'ollama' && json) {
-    // JSON drafts need one complete response, not a streamed completion marker.
-    // Keep native JSON mode; the courseware graph still validates the structure.
+    // Read tokens as they arrive so long local drafts do not wait for HTTP
+    // headers until generation ends. Only a complete draft reaches the graph.
     let response: Response
     try {
       response = await fetch(`${c.ollamaUrl}/api/chat`, {
         method: 'POST', redirect: 'error', signal,
         headers: { 'Content-Type': 'application/json', ...(connection.apiKey ? { Authorization: `Bearer ${connection.apiKey}` } : {}) },
-        body: JSON.stringify({ model: connection.model, stream: false, format: 'json', keep_alive: '1m', ...(connection.model.startsWith('qwen3') ? { think: false } : {}), messages: [{ role: 'system', content: system }, { role: 'user', content: prompt }], options: { temperature: 0.1, num_predict: testBudget || 2200, num_ctx: testBudget && testBudget > 4096 ? 16384 : 4096, num_batch: 128, use_mmap: true } }),
+        body: JSON.stringify({ model: connection.model, stream: true, format: 'json', keep_alive: '1m', ...(connection.model.startsWith('qwen3') ? { think: false } : {}), messages: [{ role: 'system', content: system }, { role: 'user', content: prompt }], options: { temperature: 0.1, num_predict: testBudget || 2200, num_ctx: testBudget && testBudget > 4096 ? 16384 : 4096, num_batch: 128, use_mmap: true } }),
       })
     } catch (error) { throw transportFailure(error, signal, connection.provider) }
     if (!response.ok) throw providerError(response.status)
-    let result: { done?: boolean; error?: unknown; message?: { content?: unknown } }
-    try { result = await response.json() } catch { throw new ApiError(502, 'INCOMPLETE_RESPONSE', 'The local model did not return a complete JSON response. Try again or choose another model.') }
-    if (!result.done || result.error) throw new ApiError(502, 'INCOMPLETE_RESPONSE', 'The local model could not finish the draft. Check Ollama and available memory, then retry.')
-    const text = result.message?.content
-    if (typeof text !== 'string' || !text.trim()) throw new ApiError(502, 'EMPTY_RESPONSE', 'The local model returned no draft text. Try again or choose another model.')
-    return text.trim()
+    return readOllamaDraft(response, signal)
   }
   const model = connection.provider === 'ollama'
     ? new ChatOllama({ baseUrl: c.ollamaUrl, headers: connection.apiKey ? { Authorization: `Bearer ${connection.apiKey}` } : undefined, model: connection.model, temperature: 0.1, numPredict: testBudget || 1000, numCtx: 4096, numBatch: 128, useMmap: true, keepAlive: '5m', maxRetries: 0, ...(connection.model.startsWith('qwen3') ? { think: false } : {}) })
@@ -95,6 +90,56 @@ export async function invokeModel(system: string, prompt: string, signal: AbortS
   catch (error) { throw transportFailure(error, signal, connection.provider) }
   const text = typeof result.content === 'string' ? result.content : result.content.filter(b => b.type === 'text').map(b => 'text' in b ? b.text : '').join('\n')
   if (!text.trim()) throw new ApiError(502, 'EMPTY_RESPONSE', 'The model returned an empty response. Try again.')
+  return text.trim()
+}
+
+async function readOllamaDraft(response: Response, signal: AbortSignal): Promise<string> {
+  let text = '', done = false
+  const incomplete = () => new ApiError(502, 'INCOMPLETE_RESPONSE', 'The local model could not finish the draft. Check Ollama and available memory, then retry.')
+  const accept = (frame: { done?: boolean; done_reason?: string; error?: unknown; message?: { content?: unknown } }) => {
+    if (!frame || done || frame.error || frame.done_reason === 'length') throw incomplete()
+    const part = frame.message?.content
+    if (part !== undefined && typeof part !== 'string') throw incomplete()
+    text += part || ''
+    if (text.length > 512_000) throw incomplete()
+    done = frame.done === true
+  }
+  try {
+    if (response.headers.get('content-type')?.includes('application/x-ndjson')) {
+      if (!response.body) throw incomplete()
+      const reader = response.body.getReader(), decoder = new TextDecoder()
+      let pending = ''
+      const abort = () => { void reader.cancel().catch(() => {}) }
+      signal.addEventListener('abort', abort, { once: true })
+      try {
+        while (true) {
+          signal.throwIfAborted()
+          const chunk = await reader.read()
+          signal.throwIfAborted()
+          pending += decoder.decode(chunk.value, { stream: !chunk.done })
+          let newline: number
+          while ((newline = pending.indexOf('\n')) !== -1) {
+            const line = pending.slice(0, newline).trim(); pending = pending.slice(newline + 1)
+            if (line) accept(JSON.parse(line))
+          }
+          if (pending.length > 512_000) throw incomplete()
+          if (chunk.done) break
+        }
+        if (pending.trim()) accept(JSON.parse(pending))
+      } finally {
+        signal.removeEventListener('abort', abort)
+        await reader.cancel().catch(() => {})
+        reader.releaseLock()
+      }
+    } else accept(await response.json())
+    signal.throwIfAborted()
+  } catch (error) {
+    signal.throwIfAborted()
+    if (error instanceof ApiError) throw error
+    throw incomplete()
+  }
+  if (!done) throw incomplete()
+  if (!text.trim()) throw new ApiError(502, 'EMPTY_RESPONSE', 'The local model returned no draft text. Try again or choose another model.')
   return text.trim()
 }
 

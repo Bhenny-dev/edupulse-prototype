@@ -6,5 +6,5 @@ import type { z } from 'zod'
 import { researchCourse } from '../external/web.js'
 export { operatorInput }
 export function operatorRequest(input: z.infer<typeof operatorInput>, identity: Identity, connection: Connection | undefined, signal: AbortSignal) {
-  return planValidatedTool(input, identity, signal, (system, prompt, signal, json) => invokeModel(system, prompt, signal, json, connection, input.operation === 'revise' ? 14000 : 1800), 26000, (query, abort) => researchCourse(query, abort, connection))
+  return planValidatedTool(input, identity, signal, (system, prompt, signal, json) => invokeModel(system, prompt, signal, json, connection, input.operation === 'revise' ? 5000 : 1800), 26000, (query, abort) => researchCourse(query, abort, connection))
 }

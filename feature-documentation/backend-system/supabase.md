@@ -123,3 +123,7 @@ The 28 October performance advisor reports three `auth_rls_initplan` WARN findin
 ## Component actions and workspace controls, 28 October 2026
 
 Selected-field and section proposals are clipped against the captured editor baseline before preview and application, then use the existing validated workspace save path. No database schema, API action, RLS policy, provider credential or deployment configuration changes are required. File drops use the existing bounded reader; a drop only attaches. The healthy workspace strip is removed; recovery remains visible on save/conflict errors and backup is in Settings Data & Privacy. See [the local implementation record](../versions/2026-10-28-component-actions/README.md) for scope and validation limits.
+
+## Backend content harness, 29 October 2026
+
+This local change retains the existing database schema, owner RLS, workspace revision protocol and hosted request budget. No migration, credential setup, environment change or deployment was performed. Live generation/save validation uses an isolated local database; it does not certify hosted sessions. See the [audit and validation record](../versions/2026-10-29-backend-harness/validation/results.md).

@@ -157,14 +157,14 @@ function GenerateCard({ proposal, ctx }) {
   async function confirm() {
     controller.current = new AbortController()
     setState({ status: 'running' }); ctx.finishTicket?.(proposal.ticketId, 'working')
-    try { setState({ status: 'done', result: await ctx.runGenerate({ syllabus, week }, controller.current.signal) }); ctx.finishTicket?.(proposal.ticketId) }
+    try { setState({ status: 'done', result: await ctx.runGenerate({ syllabus, week, request: proposal.request }, controller.current.signal) }); ctx.finishTicket?.(proposal.ticketId) }
     catch (error) { setState(controller.current?.signal.aborted ? { status: 'pending', message: 'Generation stopped. Nothing was saved.' } : { status: 'error', message: error.message }) }
   }
   if (state.status === 'cancelled') return <p className="pulse-action-note">Generation cancelled. Nothing was changed.</p>
   if (state.status === 'done') {
     const r = state.result
     return <Done actions={<button type="button" className="btn btn-secondary btn-sm" onClick={() => ctx.navigate(r.path)}><ExternalLink size={13} /> Review in Courseware</button>}>
-      <strong>{r.saved} draft{r.saved === 1 ? '' : 's'} saved for your review</strong> in {syllabus.courseCode}, Week {week}{r.titles.length ? `: ${r.titles.join('; ')}` : ''}.{r.sources ? ` They cite ${r.sources} source passage${r.sources === 1 ? '' : 's'} besides the syllabus outline.` : ' They follow the syllabus outline; no library passage matched.'}{r.kept ? ` ${r.kept} checked or published item${r.kept === 1 ? ' was' : 's were'} kept.` : ''}
+      <strong>{r.saved} draft{r.saved === 1 ? '' : 's'} saved for your review</strong> in {syllabus.courseCode}, Week {week}{r.titles.length ? `: ${r.titles.join('; ')}` : ''}.{r.sources ? ` They cite ${r.sources} source passage${r.sources === 1 ? '' : 's'} besides the syllabus outline.` : ' They follow the selected outline and request; no supporting reference passages were used.'}{r.kept ? ` ${r.kept} checked or published item${r.kept === 1 ? ' was' : 's were'} kept.` : ''}
     </Done>
   }
   return <section className="pulse-action" aria-label="Generate courseware">
@@ -175,7 +175,7 @@ function GenerateCard({ proposal, ctx }) {
       {row.ilos && <p><strong>Learning outcomes:</strong> {row.ilos}</p>}
       {row.activities && <p><strong>Activities:</strong> {row.activities}</p>}
       {row.assessments && <p><strong>Assessments:</strong> {row.assessments}</p>}</blockquote>}
-    <p className="pulse-action-note">Pulse writes a lecture material, an activity and a short assessment for this week from the outline and your knowledge library. They are saved as drafts for your review; nothing is published.{existing.length ? ` This week already has ${existing.length} item${existing.length === 1 ? '' : 's'}: ${kept ? `${kept} checked or published will be kept, ` : ''}drafts are replaced.` : ''}</p>
+    <p className="pulse-action-note">Pulse drafts a learning material, an activity and a short assessment for this week, following the selected outline and your request. They are saved as drafts for your review; nothing is published.{existing.length ? ` This week already has ${existing.length} item${existing.length === 1 ? '' : 's'}: ${kept ? `${kept} checked or published will be kept, ` : ''}drafts are replaced.` : ''}</p>
     {state.message && <p role="status" className="pulse-action-note">{state.message}</p>}
     {state.status === 'error' && <p role="alert" className="connected-pulse-warning">{state.message}</p>}
     <div className="ai-actions">

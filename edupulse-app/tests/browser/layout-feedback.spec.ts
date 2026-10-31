@@ -27,8 +27,9 @@ test('academic request errors clear loading without claiming an empty library an
 })
 
 test('unique Records and Assessments destinations remain in primary navigation',async({page},info)=>{
+ test.setTimeout(60000) // Multiple sign-ins and full page reloads share this test's budget.
  for(const [persona,name,path] of [['Student','Assessments','assessment'],['Dean','Records','records'],['Assoc. Dean','Records','records']]){
-  await page.goto('/');await page.getByRole('button',{name:persona,exact:true}).click();if(info.project.name==='mobile')await page.getByRole('button',{name:'Open menu',exact:true}).click();await page.getByRole('link',{name,exact:true}).click();await expect(page).toHaveURL(new RegExp('#/'+path));await expect(page.locator('.app-sidebar')).toHaveCount(0)
+  await page.goto('/');await page.getByRole('button',{name:persona,exact:true}).click();await expect(page).toHaveURL(/#\/dashboard/);if(info.project.name==='mobile')await page.getByRole('button',{name:'Open menu',exact:true}).click();await page.getByRole('link',{name,exact:true}).click();await expect(page).toHaveURL(new RegExp('#/'+path));await expect(page.locator('.app-sidebar')).toHaveCount(0)
   if(persona!=='Student'){await page.goto('/#/monitor');for(const [label,key] of [['Syllabus Status','syllabi'],['Delivery Progress','delivery'],['Student Oversight','students'],['Alerts','alerts']]){const button=page.getByRole('navigation',{name:'Monitor views'}).getByRole('button',{name:label,exact:true});await button.click();await expect(button).toHaveAttribute('aria-pressed','true');await expect(page).toHaveURL(new RegExp('tab='+key))}}
   await page.evaluate(()=>{localStorage.removeItem('edupulse_user')});await page.goto('/');await page.reload()
  }

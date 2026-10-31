@@ -3660,6 +3660,84 @@
       "sha256": "447389db047a5207a293beccb625c7e64377160dbcdd2efff2f076e145792363",
       "reviewer": "Claude agent",
       "reviewedAt": "2026-10-31T01:45:44.814Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/11-workspace-buddies/04-mobile-office.png",
+      "sha256": "a924ceeaf001550ec05f4d5acb87953a780be8fc61a514d57115bc630141dcd1",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-25T23:09:44.346978+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/11-workspace-buddies/01-meet-the-crew.png",
+      "sha256": "1912552a90c2d0fe801b3748ae91691c6720ae9347e33f2a3ef28161ef303de9",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-27T12:10:03.381718+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/11-workspace-buddies/03-working-and-review.png",
+      "sha256": "282bad5dede49c65afcc91dae17830884579001fdf8a1696e10375d73418573d",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-27T12:10:03.382152+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/11-workspace-buddies/01-meet-the-crew.png",
+      "sha256": "e8833f726208aeb333bd2f309a606b39ae9ffa4be438569eb8e48a34158859d6",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-29T02:19:03.679064Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/11-workspace-buddies/03-working-and-review.png",
+      "sha256": "b85a647529a27264d71295b6adede0c53dbe7c89b94a957dc0b4ad7a5fb273de",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-29T02:19:03.679064Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/15-backend-content-delivery/01-real-model-proposal.png",
+      "sha256": "124f4fa80b6f91b47e6fa9b9a8befa86ad4dfce7009110126b966d8726a06d0c",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-30T00:26:31.015210+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/15-backend-content-delivery/02-confirmed-save-receipt.png",
+      "sha256": "83d018b99e780996e29653724468b95097821e1f0bc76cb8daf74028f2abd695",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-30T00:26:31.016156+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/15-backend-content-delivery/03-reloaded-syllabus.png",
+      "sha256": "30a0525e7b072e37660efc6c396defd23bab9bf198062d954453fb3fd4133c01",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-30T00:26:31.017340+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/15-backend-content-delivery/01-real-model-proposal.png",
+      "sha256": "8d147178fd49fb574d70a22992fbacdc0f880bd390908958c382209ffeff1900",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-30T05:41:12.478272+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/15-backend-content-delivery/04-persisted-courseware-drafts.png",
+      "sha256": "82ac971c3836bbc0fc0a5684315da3430f60071931a53cc7a5a818d8b1efb27a",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-30T05:41:12.479507+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/15-backend-content-delivery/05-reloaded-generated-lesson.png",
+      "sha256": "0acb7aee25d0a7fc15e6496b9b02a9d1856a7a93078a2ec417baca981e092067",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-30T05:41:12.480002+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/15-backend-content-delivery/06-pulse-courseware-request.png",
+      "sha256": "14e3220da5877e3e1dfe65632332f4fb720aad95e9ce787fd8e53d1e7a05a640",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-30T05:41:12.480384+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/09-pulse-actions/07-generate-week-source.png",
+      "sha256": "344a64a23afa585d91510d3a8275b4e4072268c96366c35330d26eb088957ab3",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-10-30T05:41:12.480731+00:00"
     }
   ]
 }

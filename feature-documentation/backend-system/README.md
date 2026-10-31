@@ -16,7 +16,7 @@ Pulse routes greetings, situational advice and conversational follow-ups to gene
 
 Syllabus import accepts DOCX and PDF up to 2 MB. PDF text extraction preserves lines and table columns; scanned pages use the existing on-device OCR worker. Approved-file intake also accepts PDF, with the existing 500 KB retained-file limit, matching course-code validation and outline validation. Both flows require human review; OCR does not validate signatures or infer unrecognized week ranges.
 
-Local Ollama courseware calls use a non-streaming JSON-mode response instead of depending on an NDJSON completion marker. Provider errors and incomplete responses are reported without exposing raw exceptions. The courseware graph still checks the schema and limits generation to two attempts; this transport does not add hidden retries.
+Local Ollama draft calls use JSON mode over an internal NDJSON stream. Tokens are assembled until a valid final completion marker arrives; partial content never reaches the editor or courseware save. Provider errors and incomplete responses are reported without exposing raw exceptions. The courseware graph checks the schema and limits generation to two attempts; the transport adds no hidden retries.
 
 What runs behind the EduPulse interface in v0.4.0: the API, the agents, the data stores and the security boundaries. The two hosted services are documented separately because their configuration lives in dashboards, not in the interface:
 
@@ -41,9 +41,11 @@ The API/domain boundary lives in `server/domains/academic.ts`; shared hosted AI 
 | Workspace (syllabi, courseware) | PGlite table `ep_workspaces` | Supabase table `edupulse_workspaces` |
 | Sign-in | Five preview personas (local workspace identity; also in the documentation capture build) | Supabase Auth: email and password for Dean, Associate Dean, Instructor and Student; Google for the system admin. The API verifies the JWT and requires an assigned role. |
 
-## API: one endpoint, fifteen actions
+## API: one endpoint, sixteen actions
 
 All requests go to `/api/ai?action=<name>`. Every request is checked for origin (same-origin only), size (per-action body limits) and identity; AI actions are limited to **20 requests per minute and one at a time** per user and connection.
+
+Request intake (`server/node-adapter.ts`, shared by the local server and the Vercel function) is bounded before authentication or model work starts: a body that stops arriving receives `408 REQUEST_TIMEOUT` after 30 seconds, a declared or streamed oversize body `413 BODY_TOO_LARGE`, a method the action does not accept `405` with an `Allow` header, and an unknown action (including inherited object-property names) `404`. Node and Fetch handlers read the same action/method table. A client that disconnects aborts the signal passed to downstream work, and an unexpected transport or handler failure returns structured JSON with a request ID and `Cache-Control: no-store`, never the exception text. The intake deadline does not extend the hosted function's duration limit or the model budget.
 
 | Action | Methods | Who | Purpose |
 | --- | --- | --- | --- |
@@ -52,6 +54,7 @@ All requests go to `/api/ai?action=<name>`. Every request is checked for origin 
 | `chat` | POST | anyone (guests: product guide only) | Run the agent graph for a question, revision or comparison |
 | `courseware` | POST | instructor or admin accounts; guests with their own provider | Draft a week's material, activity and assessment from an outline row |
 | `context`, `similarity` | POST | used by the in-browser model; `similarity` also by Pulse actions | Retrieval and embedding similarity for on-device generation; `similarity` also re-ranks which course an attached material belongs to |
+| `web-search` | POST | verified session/local workspace, with appropriate-use checks | Bounded public research; optional catalog metadata for syllabus drafts |
 | `references` | POST | signed-in users | Librarian search of open catalogs |
 | `extract` | POST (raw bytes) | anyone (guests cannot index) | Sandboxed extraction with a quality report |
 | `documents` | GET, POST, DELETE | signed-in users | List, index (after review) and delete library documents. An optional `course` (for example `IT 102`) files a document under a course; it is kept in the document's `quality` record, so no migration is needed |
@@ -222,3 +225,17 @@ Archiving an owned syllabus withdraws its shared publications even when the reta
 ## Component actions and workspace controls, 28 October 2026
 
 Selected-field and section proposals are clipped against the captured editor baseline before preview and application, then use the existing validated workspace save path. No database schema, API action, RLS policy, provider credential or deployment configuration changes are required. File drops use the existing bounded reader; a drop only attaches. The healthy workspace strip is removed; recovery remains visible on save/conflict errors and backup is in Settings Data & Privacy. See [the local implementation record](../versions/2026-10-28-component-actions/README.md) for scope and validation limits.
+
+## Backend content harness, 29–30 October 2026
+
+The [backend audit](../versions/2026-10-29-backend-harness/validation/results.md) traces intent, generation, validation and saved delivery. Whole-syllabus intent overrides incidental focus; editor drafts receive one bounded schema/completeness/source repair, without appending an unbounded previous output. Outline replacements retain every existing week and exam label. Only whitelisted whole-field model envelopes are normalized; arbitrary paths/operations remain invalid. Confirmation and exact-editor snapshot checks still precede revision-checked saves.
+
+Whole-syllabus generation uses bounded stages: general teaching sections, up to four teaching weeks per call, and references when supplied research exists. Stages share course identity, program outcomes and preceding topics, then assemble one validated proposal. No partial stage is applied. Existing exam rows and grading rules are retained; missing official grading stays pending and new policies/requirements are explicitly proposed. Courseware receives the bounded original Pulse request, including language/example preferences, through retries. Material must contain at least 120 words outside references and no placeholder bodies; this is a minimum completeness check, not a factual-accuracy guarantee.
+
+The courseware graph rechecks no-web instructions even when a caller omits the research flag. Syllabus-only requests skip private and public retrieval. The week endpoint has no attachment input and returns `SOURCE_REQUIRED` for file-only requests; editor requests instead ask for a missing file and constrain writing to supplied source text. These errors reach the existing action card. Hosted requests retain their 110-second server budget; a slow model can time out before a complete whole-syllabus proposal, without applying partial stages.
+
+The courseware writer now receives every supported topic and requests usable explanations, examples and activities rather than two tiny sections. If no private academic passage is available, public research can supplement the outline; `research: sources` disables that external step. Only the course title and topics go to public search. Returned references distinguish public research from library passages. Source links require matching origins and path boundaries. Provider/model quality remains subject to instructor review.
+
+Operator and connection-test requests use the same long browser budget as generation. Truncated local/browser responses are rejected. Operator inference updates provider-test status only when a model actually answered; model/account failures invalidate it. The direct courseware service and HTTP route share instructor/admin authoring checks. No database schema, role-page layout or approval workflow changes are required. See [Manual 15](../system-manual/15-backend-content-delivery/README.md) for generated proposal, save receipt and reload evidence.
+
+Local JSON drafts use an internal NDJSON stream to receive tokens during long Ollama generations. Only the assembled response with a final completion marker enters draft validation; cancellation, malformed frames, output limits and missing completion markers fail without applying partial content. This does not expose partial drafts in the interface. See [Ollama streaming](https://docs.ollama.com/api/streaming).

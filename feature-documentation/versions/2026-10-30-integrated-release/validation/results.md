@@ -1,0 +1,27 @@
+# Combined release validation
+
+Validation covers the completed landing changes and backend content harness together, based on `8d2b19b`. The owner authorized inclusion of the finished landing task. No frontend behavior is changed by this integration pass. Local browser traces, temporary databases and agent session state are retained locally, outside the release.
+
+## Browser checks
+
+The full desktop/mobile suite ran 206 cases with one worker: **187 passed, 16 expected skips, three failures** in the first run (40.1 minutes). The failures were the desktop scripted-workspace interaction and the role-navigation test on both viewports. See [the complete log](browser-full.log).
+
+The workspace test exhausted its total budget during software-rendered animation. Its budget was increased to 120 seconds and the conversation assertion to 20 seconds, with assertions unchanged. It then passed on desktop and mobile. The first rerun could not start because Node exhausted host memory; the next used a 768 MB heap limit for the test processes. [Startup failure](browser-startup-failure.log); [rerun](browser-rerun.log).
+
+The role-navigation test performs several sign-ins and full reloads. Its budget was increased to 60 seconds. A further mobile failure showed the test opening the menu before the post-login route transition had completed; adding an assertion that sign-in reached the dashboard resolved that race. Both viewports passed the final [navigation rerun](browser-navigation.log), taking about 35 seconds each. No assertions were removed and no frontend code was changed to satisfy these checks. **All 190 runnable cases have passing evidence across the full run and focused reruns.** This is not a claim of one uninterrupted green run.
+
+The suite covers restored role pages, charts and solid dark surfaces; Settings Help/shortcuts; Pulse field targeting, file drops and source restrictions; real extraction; revision-checked saves and reloads; approval/publication workflows; shared records, marking and notices. Authenticated browser fixtures are synthetic and do not prove hosted Supabase sessions.
+
+## Release gate and captures
+
+The release was assembled on 31 October on the branch `release/integrated-20261031`, from the landing branch (`landing-v3-light`, including the later commit that puts the landing page's studio in the Pulse office) plus every change from this integration and the [bounded request intake](../../2026-10-30-request-lifecycle/README.md) that was still in the isolated harness checkout. Where both lines of work edited the same file, the newer landing text and its reviewed screenshots were kept and the integration's own additions were carried over: the link to the content-delivery manual in the shared-interface guide, this release's index row and the combined-release note in the landing record.
+
+`npm run verify` on the assembled tree passed: documentation check, lint (no errors; the existing warnings in other files remain), typecheck, model files, **176 of 176** unit and integration tests (including the four request-intake tests, one of which waits through the real 30-second body deadline), production build and deployment checks (built assets, API routing, serverless health and public retrieval).
+
+Capture run `2026-10-31T02-06-11-674Z-01e8a26a` (public site, mobile landing page and the Workspace buddies office on desktop and mobile) passed with no page errors against the assembled source. Compared pixel by pixel with the reviewed screenshots: six landing images were identical and only their PNG bytes differed; the sign-in panel and preview personas lacked the Google sign-in block because the release checkout has no local environment file; the community, FAQ and footer captures differed only in when the photographs loaded; the agent workspace (8c) and the three office images differed only in the animated wave and the room's wall clock. The reviewed screenshots were therefore kept, and the walkthrough manifest was merged so that it still lists all 77 scenes. The 19:36 capture run from 30 October remains as evidence; its unreviewed landing images were not used.
+
+## Content and deployment limits
+
+The [backend validation record](../../2026-10-29-backend-harness/validation/results.md) contains real local-model syllabus/courseware generation, confirmed save and reload evidence. It also records factual mistakes and malformed example text produced by the selected small model. Completeness, citation and similarity checks do not prove academic correctness; generated drafts require instructor review. The public Agent workspace is explicitly scripted and is not inference evidence.
+
+No database migration, provider credential, hosted configuration or manual production deployment is part of this integration. Production readiness and hosted authenticated behavior are not established by local tests.

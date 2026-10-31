@@ -28,7 +28,9 @@ export const referencesInput = z.object({ topic: z.string().trim().min(2).max(20
 export const courseInput = z.object({
   courseCode: z.string().trim().min(1).max(80), courseTitle: z.string().trim().min(1).max(200),
   week: z.number().int().min(1).max(52),
-  topics: z.array(z.string().max(500)).min(1).max(20),
+  topics: z.array(z.string().trim().min(1).max(500)).min(1).max(20),
+  research: z.enum(['auto', 'sources']).default('auto'),
+  request: z.string().trim().max(4000).default(''),
   outcomes: z.string().trim().min(1).max(3000),
   referenceText: z.string().max(18000),
   // The week's plan from the syllabus outline: the draft must follow it, and references come only from here or the library.

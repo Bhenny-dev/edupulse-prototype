@@ -121,7 +121,7 @@ export function buildAssistantGraph(input: ChatInput & { task?: Plan['task'] | '
       let candidates = mergeCandidates(s.groups).slice(0, 24), method = 'fused rank'
       // A supplied source/current editor is authoritative for file-specific work.
       // Product-help pages must not substitute for missing academic content.
-      if (input.attachments.length && !/\b(?:how (?:do|can)|where|help|settings|upload limit)\b/i.test(input.message)) candidates = candidates.filter(candidate => candidate.origin !== 'public-guide')
+      if (s.plan?.sourceOnly || input.attachments.length && !/\b(?:how (?:do|can)|where|help|settings|upload limit)\b/i.test(input.message)) candidates = candidates.filter(candidate => candidate.origin !== 'public-guide')
       const unscored = candidates.filter(c => c.relevance === null && c.origin !== 'attachment')
       if (deps.rerank && unscored.length) {
         const scores = await deps.rerank(focus, unscored.map(c => `${sourceLabel(c)}\n${c.text}`.slice(0, 1600)), signal)

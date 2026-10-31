@@ -11,6 +11,7 @@ import type { AgentDeps, Generate } from '../src/lib/rag/types.js'
 import { conversationWindow } from '../src/agents/skills.js'
 import { conversationRecall } from './domains/conversations.js'
 import { planRequest } from '../src/lib/rag/plan.js'
+import { canGenerateCourseware } from '../src/lib/access.js'
 export { validateCitations } from '../src/lib/rag/verify.js'
 
 /** Real server dependencies for the agents: hybrid search, cross-encoder, embeddings and open catalogs. */
@@ -37,8 +38,8 @@ export async function runChat(input: ChatInput, identity: Identity, signal: Abor
 }
 
 export async function runCourseware(input: CourseInput, identity: Identity, signal: AbortSignal, generate?: Generate, connection?: Connection, personal = false, deps?: Partial<AgentDeps>) {
-  if (!['instructor', 'admin', 'dean', 'associate_dean'].includes(identity.role) && !(identity.role === 'guest' && personal)) throw new ApiError(403, 'FORBIDDEN', 'Courseware generation requires an academic account or your own preview connection.')
-  const base = { ...serverDeps(identity, connection, generate), ...deps }
+  if (!canGenerateCourseware(identity.role) && !(identity.role === 'guest' && personal)) throw new ApiError(403, 'FORBIDDEN', 'Courseware generation requires an instructor account or your own preview connection.')
+  const base = { ...serverDeps(identity, connection, generate || (connection ? (system, prompt, abort, json) => invokeModel(system, prompt, abort, json, connection, 6000) : undefined)), ...deps }
   if (!base.generate) throw new ApiError(503, 'MODEL_UNAVAILABLE', 'Connect a provider or enable the free on-device model in AI settings.')
   return draftCoursewareAgents(input, signal, { ...base, generate: base.generate })
 }

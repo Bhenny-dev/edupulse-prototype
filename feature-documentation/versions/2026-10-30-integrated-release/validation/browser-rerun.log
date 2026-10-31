@@ -1,0 +1,88 @@
+
+> edupulse-app@0.4.0 test:browser
+> playwright test tests/browser/landing.spec.ts tests/browser/layout-feedback.spec.ts -g agent workspace answers|unique Records
+
+node.exe : [WebServer] (node:33948) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([WebServer] (no... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:13332) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 7:30:02 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3034
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 7:30:03 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3034
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 7:30:04 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3034
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 7:30:05 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3034
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+
+Running 4 tests using 1 worker
+
+(node:15832) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 7:30:28 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 1 [desktop] › tests\browser\landing.spec.ts:246:1 › the agent workspace answers a tap on a robot or on its button, and runs a request (38.7s)
+[WebServer] 7:31:01 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+[WebServer] 7:31:10 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+[WebServer] 7:31:28 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 2 [desktop] › tests\browser\layout-feedback.spec.ts:29:1 › unique Records and Assessments destinations remain in primary navigation (29.3s)
+(node:6024) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 7:31:34 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  ok 3 [mobile] › tests\browser\landing.spec.ts:246:1 › the agent workspace answers a tap on a robot or on its button, and runs a request (37.6s)
+[WebServer] 7:32:16 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+[WebServer] 7:32:29 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not 
+supported.
+  x  4 [mobile] › tests\browser\layout-feedback.spec.ts:29:1 › unique Records and Assessments destinations remain in primary navigation (1.2m)
+
+
+  1) [mobile] › tests\browser\layout-feedback.spec.ts:29:1 › unique Records and Assessments destinations remain in primary navigation 
+
+    Test timeout of 60000ms exceeded.
+
+    Error: locator.click: Test timeout of 60000ms exceeded.
+    Call log:
+      - waiting for getByRole('link', { name: 'Records', exact: true })
+
+
+      30 |  test.setTimeout(60000) // Multiple sign-ins and full page reloads share this test's budget.
+      31 |  for(const [persona,name,path] of [['Student','Assessments','assessment'],['Dean','Records','records'],['Assoc. Dean','Records','records']]){
+    > 32 |   await page.goto('/');await page.getByRole('button',{name:persona,exact:true}).click();if(info.project.name==='mobile')await page.getByRole('button',{name:'Open menu',exact:true}).click();await page.getByRole('link',{name,exact:true}).click();await expect(page).toHaveURL(new RegExp('#/'+path));await expect(page.locator('.app-sidebar')).toHaveCount(0)
+         |                                                                                                                                                                                                                                             ^
+      33 |   if(persona!=='Student'){await page.goto('/#/monitor');for(const [label,key] of [['Syllabus Status','syllabi'],['Delivery Progress','delivery'],['Student Oversight','students'],['Alerts','alerts']]){const button=page.getByRole('navigation',{name:'Monitor views'}).getByRole('button',{name:label,exact:true});await button.click();await expect(button).toHaveAttribute('aria-pressed','true');await expect(page).toHaveURL(new RegExp('tab='+key))}}
+      34 |   await page.evaluate(()=>{localStorage.removeItem('edupulse_user')});await page.goto('/');await page.reload()
+      35 |  }
+        at C:\Users\Benny\OneDrive\Documents\EduPulse\EduPulse System Prototype\edupulse-app\tests\browser\layout-feedback.spec.ts:32:237
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    .data\release-rerun-browser-results\layout-feedback-unique-Rec-28a90-emain-in-primary-navigation-mobile\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: .data\release-rerun-browser-results\layout-feedback-unique-Rec-28a90-emain-in-primary-navigation-mobile\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    .data\release-rerun-browser-results\layout-feedback-unique-Rec-28a90-emain-in-primary-navigation-mobile\trace.zip
+    Usage:
+
+        npx playwright show-trace .data\release-rerun-browser-results\layout-feedback-unique-Rec-28a90-emain-in-primary-navigation-mobile\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [mobile] › tests\browser\layout-feedback.spec.ts:29:1 › unique Records and Assessments destinations remain in primary navigation 
+  3 passed (3.4m)

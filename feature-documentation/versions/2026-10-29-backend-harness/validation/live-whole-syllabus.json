@@ -1,0 +1,385 @@
+{
+  "startedAt": "2026-10-30T05:04:28.718Z",
+  "provider": "ollama",
+  "model": "qwen2.5:3b",
+  "syntheticInput": true,
+  "modelResponsesMocked": false,
+  "operator": {
+    "durationMs": 141665,
+    "fields": [
+      "programOutcomes",
+      "courseOutline",
+      "courseRequirements",
+      "gradingSystem",
+      "coursePolicy",
+      "books",
+      "onlineReferences"
+    ],
+    "proposal": {
+      "patch": {
+        "programOutcomes": [
+          "Demonstrate the ability to design and conduct empirical studies.",
+          "Critique existing research methodologies based on their strengths and weaknesses.",
+          "Apply ethical considerations in conducting and reporting research."
+        ],
+        "courseOutline": [
+          {
+            "week": 1,
+            "ilos": "Formulate a clear and focused research question.",
+            "contents": [
+              "Research questions",
+              "Literature review"
+            ],
+            "activities": "Identify key literature and formulate initial research questions based on identified gaps.",
+            "assessments": "Written proposal of research questions with rationale.",
+            "teachingMaterials": [
+              "Selected readings",
+              "Case studies"
+            ],
+            "assessmentTypes": [
+              "Written work"
+            ],
+            "resources": []
+          },
+          {
+            "week": 2,
+            "ilos": "Analyze and compare existing methodologies for the formulated question.",
+            "contents": [
+              "Existing methodologies",
+              "Methodological frameworks"
+            ],
+            "activities": "Compare two or more methodologies relevant to the research questions, highlighting their strengths and weaknesses.",
+            "assessments": "Written comparison with criteria based on identified strengths and weaknesses.",
+            "teachingMaterials": [
+              "Selected readings",
+              "Workshops"
+            ],
+            "assessmentTypes": [
+              "Written work"
+            ],
+            "resources": []
+          },
+          {
+            "week": 3,
+            "ilos": "Design a research plan considering ethical considerations.",
+            "contents": [
+              "Research design",
+              "Ethical guidelines"
+            ],
+            "activities": "Develop a detailed research plan that incorporates ethical considerations and addresses potential issues.",
+            "assessments": "Written research plan with justification for ethical considerations.",
+            "teachingMaterials": [
+              "Selected readings",
+              "Workshops"
+            ],
+            "assessmentTypes": [
+              "Written work"
+            ],
+            "resources": []
+          },
+          {
+            "week": 4,
+            "ilos": "Conduct preliminary data collection and analysis.",
+            "contents": [
+              "Data collection methods",
+              "Data analysis techniques"
+            ],
+            "activities": "Implement the research plan, collect data, and perform initial analyses to test hypotheses.",
+            "assessments": "Written report of preliminary findings with discussion of results.",
+            "teachingMaterials": [
+              "Selected readings",
+              "Workshops"
+            ],
+            "assessmentTypes": [
+              "Written work"
+            ],
+            "resources": []
+          },
+          {
+            "week": 5,
+            "ilos": "Analyze the impact of different data collection methods on research outcomes.",
+            "contents": [
+              "Data collection methods",
+              "Impact analysis"
+            ],
+            "activities": "Compare and contrast various data collection techniques, discussing their effectiveness in achieving specific objectives.",
+            "assessments": "Written comparison with criteria.",
+            "teachingMaterials": [
+              "Case studies",
+              "Literature review"
+            ],
+            "assessmentTypes": [
+              "Written work"
+            ],
+            "resources": []
+          },
+          {
+            "week": 6,
+            "ilos": "Evaluate the ethical considerations in data analysis and reporting.",
+            "contents": [
+              "Ethical guidelines",
+              "Data analysis techniques"
+            ],
+            "activities": "Discuss common ethical dilemmas encountered during data analysis, and propose solutions based on established guidelines.",
+            "assessments": "Case study discussion with instructor feedback.",
+            "teachingMaterials": [
+              "Ethics in research guide",
+              "Real-world case studies"
+            ],
+            "assessmentTypes": [
+              "Discussion",
+              "Written work"
+            ],
+            "resources": []
+          },
+          {
+            "week": 7,
+            "ilos": "Critique the strengths and weaknesses of different research methodologies used in a given field.",
+            "contents": [
+              "Research design",
+              "Methodological frameworks"
+            ],
+            "activities": "Analyze case studies from various fields, identifying key strengths and weaknesses in methodology choices.",
+            "assessments": "Group presentation on identified methodologies with critique.",
+            "teachingMaterials": [
+              "Field-specific methodological guides",
+              "Case study materials"
+            ],
+            "assessmentTypes": [
+              "Presentation",
+              "Written work"
+            ],
+            "resources": []
+          },
+          {
+            "week": 8,
+            "ilos": "Design a research project that integrates ethical considerations and data collection methods effectively.",
+            "contents": [
+              "Research design",
+              "Data collection methods"
+            ],
+            "activities": "Work in groups to develop a research proposal, incorporating ethical guidelines and appropriate data collection techniques.",
+            "assessments": "Group presentation of research proposals with instructor feedback.",
+            "teachingMaterials": [
+              "Ethical considerations guide",
+              "Data collection toolkit"
+            ],
+            "assessmentTypes": [
+              "Presentation",
+              "Written work"
+            ],
+            "resources": []
+          },
+          {
+            "week": 9,
+            "ilos": "",
+            "contents": [
+              ""
+            ],
+            "activities": "",
+            "assessments": "Midterm Examination",
+            "teachingMaterials": [],
+            "assessmentTypes": [],
+            "resources": []
+          },
+          {
+            "week": 10,
+            "ilos": "Analyze the impact of research findings on policy and practice.",
+            "contents": [
+              "Impact analysis",
+              "Policy implications"
+            ],
+            "activities": "Discuss case studies where research has influenced policies or practices.",
+            "assessments": "Written reflection paper summarizing a key finding's impact.",
+            "teachingMaterials": [
+              "Selected case study readings",
+              "Discussion guide"
+            ],
+            "assessmentTypes": [
+              "Written work"
+            ],
+            "resources": []
+          },
+          {
+            "week": 11,
+            "ilos": "Evaluate the validity and reliability of research studies.",
+            "contents": [
+              "Validity and reliability assessment methods"
+            ],
+            "activities": "Critique a set of research studies using established criteria.",
+            "assessments": "Written critique with justification for each study's strengths and weaknesses.",
+            "teachingMaterials": [
+              "Research validation frameworks",
+              "Study selection criteria"
+            ],
+            "assessmentTypes": [
+              "Written work"
+            ],
+            "resources": []
+          },
+          {
+            "week": 12,
+            "ilos": "Develop a research proposal based on identified gaps in the literature.",
+            "contents": [
+              "Literature review synthesis",
+              "Gap identification",
+              "Research design"
+            ],
+            "activities": "Work in groups to develop and present a research proposal.",
+            "assessments": "Group presentation with feedback from peers and instructor.",
+            "teachingMaterials": [
+              "Template for research proposals",
+              "Peer evaluation rubric"
+            ],
+            "assessmentTypes": [
+              "Presentation, written work"
+            ],
+            "resources": []
+          },
+          {
+            "week": 13,
+            "ilos": "Implement a research project using appropriate methodologies.",
+            "contents": [
+              "Project planning",
+              "Data collection methods",
+              "Data analysis techniques"
+            ],
+            "activities": "Work in groups to plan and execute a mini-research project.",
+            "assessments": "Group presentation of findings with instructor feedback.",
+            "teachingMaterials": [
+              "Mini-project template",
+              "Research methodology checklist"
+            ],
+            "assessmentTypes": [
+              "Presentation, written work"
+            ],
+            "resources": []
+          },
+          {
+            "week": 14,
+            "ilos": "Analyze the impact of research findings on policy and practice.",
+            "contents": [
+              "Impact analysis",
+              "Policy implications"
+            ],
+            "activities": "Discuss case studies where research has influenced policies or practices.",
+            "assessments": "Written reflection paper summarizing a recent influential study.",
+            "teachingMaterials": [
+              "Selected articles",
+              "Case study materials"
+            ],
+            "assessmentTypes": [
+              "Written work",
+              "Oral presentation"
+            ],
+            "resources": []
+          },
+          {
+            "week": 15,
+            "ilos": "Evaluate the validity and reliability of research studies.",
+            "contents": [
+              "Validity and reliability assessment methods"
+            ],
+            "activities": "Critique a set of research studies using established criteria.",
+            "assessments": "Peer-reviewed critique report with detailed feedback for each study.",
+            "teachingMaterials": [
+              "Research validation techniques",
+              "Reliability testing methodologies"
+            ],
+            "assessmentTypes": [
+              "Written work",
+              "Group discussion"
+            ],
+            "resources": []
+          },
+          {
+            "week": 16,
+            "ilos": "Synthesize literature and identify research gaps.",
+            "contents": [
+              "Literature review synthesis",
+              "Gap identification"
+            ],
+            "activities": "Work in groups to synthesize a body of literature on a specific topic.",
+            "assessments": "Group presentation summarizing the synthesized literature with identified gaps.",
+            "teachingMaterials": [
+              "Literature review templates",
+              "Gap analysis tools"
+            ],
+            "assessmentTypes": [
+              "Oral presentation",
+              "Written work"
+            ],
+            "resources": []
+          },
+          {
+            "week": 17,
+            "ilos": "Develop a research proposal based on identified gaps.",
+            "contents": [
+              "Research design",
+              "Data collection methods",
+              "Data analysis techniques"
+            ],
+            "activities": "Work in teams to develop and present a research proposal.",
+            "assessments": "Proposal evaluation by instructor with feedback for improvement.",
+            "teachingMaterials": [
+              "Research proposal templates",
+              "Ethical guidelines"
+            ],
+            "assessmentTypes": [
+              "Oral presentation",
+              "Written work"
+            ],
+            "resources": []
+          },
+          {
+            "week": 18,
+            "ilos": "",
+            "contents": [
+              ""
+            ],
+            "activities": "",
+            "assessments": "Final Examination",
+            "teachingMaterials": [],
+            "assessmentTypes": [],
+            "resources": []
+          }
+        ],
+        "courseRequirements": [
+          "Proposed for instructor review: complete a methods portfolio including at least three original research projects."
+        ],
+        "gradingSystem": "Pending approved institutional grading formula.",
+        "coursePolicy": [
+          "Proposed for instructor review: cite sources using APA format and protect participant privacy by anonymizing data where applicable."
+        ],
+        "books": [],
+        "onlineReferences": []
+      },
+      "generated": true,
+      "requiresConfirmation": true
+    }
+  },
+  "persistence": {
+    "revision": 1,
+    "receipt": {
+      "fields": [
+        "programOutcomes",
+        "courseOutline",
+        "courseRequirements",
+        "gradingSystem",
+        "coursePolicy",
+        "books",
+        "onlineReferences"
+      ],
+      "saved": true,
+      "persisted": true,
+      "mode": "local"
+    },
+    "reloadedOutcomes": [
+      "Demonstrate the ability to design and conduct empirical studies.",
+      "Critique existing research methodologies based on their strengths and weaknesses.",
+      "Apply ethical considerations in conducting and reporting research."
+    ]
+  },
+  "status": "passed",
+  "finishedAt": "2026-10-30T05:06:54.354Z"
+}
