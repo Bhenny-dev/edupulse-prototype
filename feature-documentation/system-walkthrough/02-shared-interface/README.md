@@ -127,7 +127,7 @@ Resting the pointer on a form control (here *Course* in the Syllabus Builder) sh
 
 ## Workspace buddies
 
-Open **Pulse options → Workspace buddies**. The optional 3D office has six named desks, domain-specific conversations, real request/review states, a pause control and reduced-motion support. Mobile users scroll from the office to the buddy chat. See [the illustrated office guide](../../system-manual/11-workspace-buddies/README.md).
+Open **Pulse options → Workspace buddies**. The optional 3D office is the same cosy studio as the agent workspace on the public landing page, with six named desks, name tags, domain-specific conversations, real request/review states, a pause control and reduced-motion support. Mobile users scroll from the office to the buddy chat. See [the illustrated office guide](../../system-manual/11-workspace-buddies/README.md).
 
 ## Focused conversation layout and source context
 

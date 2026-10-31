@@ -3,6 +3,8 @@ import { test, expect } from './fixtures.js'
 test('Workspace buddies: real office, domain conversations and model proposal states', async ({ page }) => {
   const dir = '../feature-documentation/system-manual/11-workspace-buddies'
   await page.route('**/api/ai?action=chat', route => route.fulfill({ json: { requestId: crypto.randomUUID(), mode: 'generated', answer: 'I can help you compare the selected section with your PDF, keeping the wrapped text together. Which week would you like us to check first?', sources: [] } }))
+  // The reply below is synthetic, so the model is reported ready whether or not a local model runs.
+  await page.route('**/api/ai?action=health', async route => { const response = await route.fetch(); await route.fulfill({ json: { ...await response.json(), ready: true } }) })
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/')
   await page.getByRole('button', { name: 'Instructor', exact: true }).click()

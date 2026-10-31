@@ -24,6 +24,9 @@ test('the office has named buddies, truthful achievements, accessible controls a
   const office=page.getByRole('dialog',{name:'Meet your crew.'})
   await expect(office).toBeVisible()
   await expect(office.locator('canvas')).toBeVisible({timeout:20000})
+  // The office is the landing page's studio: the same room, with the six buddies as its crew.
+  await expect(office.locator('.buddy-office-viewport[data-assembled]')).toBeVisible({timeout:60000})
+  await expect(office.locator('.office-label')).toHaveCount(6)
   await office.getByRole('button',{name:/Talk to Ro,/}).click()
   await office.getByRole('button',{name:'Your role',exact:true}).click()
   await expect(office.getByRole('log')).toContainText('right row')

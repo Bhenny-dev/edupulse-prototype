@@ -13,3 +13,17 @@ export const AGENT_COLORS = {
   verifier: '#84cc16',
   corrector: '#6366f1',
 }
+
+// Where each agent works in the shared studio scene (components/studio/workspaceScene.js) and
+// what it holds there.
+export const AGENT_PLACES = {
+  guardian: { station: 'podium', prop: 'shield' },
+  planner: { station: 'whiteboard', prop: 'marker' },
+  researcher: { station: 'twinScreens' },
+  librarian: { station: 'armchair', prop: 'book' },
+  ranker: { station: 'chartDesk' },
+  comparator: { station: 'sofa', prop: 'papers' },
+  writer: { station: 'writingDesk' },
+  verifier: { station: 'benchLeft' },
+  corrector: { station: 'benchRight' },
+}

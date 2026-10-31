@@ -117,6 +117,8 @@ As captured (reduced motion), the rings stand still and the list is shown. With 
 
 **Agent workspace** · “Tap an agent. It answers.”: “Or run a request and watch them pass it on. A scripted example, not live AI.” On the left, a 3D studio where the agents, the robots from the scope, work. In this capture the camera has moved in on the Comparator: around it are a honey-oak floor, a blue rug, a sofa with a blanket and a cushion, a coffee table with a book, a blue pouf, a wall clock and plants. Behind, the Librarian reads in an armchair by a full bookshelf, and the Ranker and the Researcher sit at desks with glowing monitors; in front, the Corrector sits at its desk. A numbered name tag floats above each agent in view, and **Show all** and **Pause motion** sit in the corner.
 
+The same studio is the room in Pulse’s own **Workspace buddies** window (see [the illustrated office guide](../../system-manual/11-workspace-buddies/README.md)), where the six buddies take the places.
+
 Below the studio, one button per agent (**Guardian** to **Corrector**), each with its icon on a disc in the agent's colour. On the right, **Try a request** offers three scripted requests (**Summarize Week 3**, **Find readings** and **Ask for quiz answers**) above the conversation.
 
 As captured, **Comparator** has been pressed (by its button; tapping the robot does the same): the Comparator stands by the sofa on a pink ring with its line in a bubble above it, and the conversation shows “Compare my syllabus with last year’s.” and the Comparator's answer: “I’ll line them up: what is shared, what is related and what only one of them has.” **Show all** returns the camera to the whole studio.

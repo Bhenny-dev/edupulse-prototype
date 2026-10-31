@@ -2,21 +2,22 @@ import * as THREE from 'three'
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js'
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js'
-import { AGENT_COLORS } from '../agentLook.js'
 
-// The agent workspace: a cosy studio where Pulse's nine agents work, drawn like the portraits
-// in the agents scope (white toy robots, face screens, ears and antenna in each agent's colour).
-// It grows from the in-app office (components/pulse/office): an open dollhouse room, articulated
-// figures that sit, stand, walk and wave, mugs that steam. Each agent works at its own station
-// (typing, drawing on the whiteboard, reading, comparing two papers, watching the door). A tap
-// on a figure (generous invisible hit volumes) picks it: the page writes the conversation; the
-// figure stands, turns to the camera and waves, and the camera glides in. A request flies from
-// agent to agent as a paper plane with a trail, the camera following it. When the section first
-// appears the room assembles itself: the floor settles, the walls rise, the furniture drops in
-// and the agents hop to their places. Static furniture is merged per material (few draw calls);
-// one renderer, rendering only on screen in a visible tab and only while something moves. With
-// `still` (reduced motion, or the page's pause control) nothing idles and every change jumps.
-// createWorkspaceScene returns null without WebGL.
+// The studio: one cosy room shared by the landing page's agent workspace and the Pulse office
+// (Workspace buddies), so both show the same place and the same white toy robots (face screens,
+// ears and antenna in each one's colour). An open dollhouse room, articulated figures that sit,
+// stand, walk and wave, mugs that steam. Each figure in `cast` works at its own station (typing,
+// drawing on the whiteboard, reading, comparing two papers, watching the door). A tap on a figure
+// (generous invisible hit volumes) picks it. A request flies as a paper plane with a trail.
+// Landing page: the picked figure stands, turns to the camera and waves, the camera glides in and
+// follows each plane; when the section first appears the room assembles itself (the floor
+// settles, the walls rise, the furniture drops in, the figures hop to their places).
+// `crew` (the Pulse office): each figure takes a coffee break on the sofa, the pouf or at the
+// coffee nook until it has work, then walks along the aisles to its station; one with a result
+// to review stands by its station holding the page up; the selected one stands up and waves.
+// Static furniture is merged per material (few draw calls); one renderer, rendering only on
+// screen in a visible tab and only while something moves. With `still` (reduced motion, or the
+// page's pause control) nothing idles and every change jumps. Returns null without WebGL.
 
 const FOV = 32
 const VIEW = { az: 0.78, el: 0.5 } // the overview angles (radians)
@@ -29,21 +30,71 @@ const easeInOut = t => (t < 0.5 ? 4 * t ** 3 : 1 - (-2 * t + 2) ** 3 / 2)
 const easeOutBack = t => 1 + 2.2 * (t - 1) ** 3 + 1.2 * (t - 1) ** 2
 const lerp = (a, b, t) => a + (b - a) * t
 
-// Where each agent works: position, facing (0 faces the camera side, PI the back wall), what it
-// does there, the seat height when seated, and where it steps to when it stands up to talk.
+// The stations: position, facing (0 faces the camera side, PI the back wall), the work done
+// there, the seat height when seated, where a figure steps to when it stands up to talk, and the
+// aisle point it walks out to.
 const STATIONS = {
-  guardian: { x: 5.1, z: 1.75, yaw: Math.PI / 2, pose: 'podium', step: [-0.1, 0.35] },
-  planner: { x: 3.55, z: -4.4, yaw: Math.PI, pose: 'board', step: [0, 0.85] },
-  researcher: { x: 0.35, z: -3.05, yaw: Math.PI, pose: 'desk', seat: 0.47, step: [0.82, 0.25] },
-  librarian: { x: -5.45, z: -2.05, yaw: Math.PI / 2, pose: 'read', seat: 0.42, step: [0.75, 0.15] },
-  ranker: { x: -2.85, z: -3.05, yaw: Math.PI, pose: 'desk', seat: 0.47, step: [0.82, 0.25] },
-  comparator: { x: 0.55, z: -0.42, yaw: 0, pose: 'sofa', seat: 0.42, step: [0, 0.72] },
-  writer: { x: -4.3, z: 2.5, yaw: 0, pose: 'desk', seat: 0.47, step: [0.85, -0.05] },
-  verifier: { x: -0.65, z: 2.75, yaw: 0, pose: 'desk', seat: 0.47, step: [-0.82, -0.05] },
-  corrector: { x: 1.75, z: 2.75, yaw: 0, pose: 'desk', seat: 0.47, step: [0.82, -0.05] },
+  podium: { x: 5.1, z: 1.75, yaw: Math.PI / 2, pose: 'podium', step: [-0.1, 0.35], node: 'r3' },
+  whiteboard: { x: 3.55, z: -4.4, yaw: Math.PI, pose: 'board', step: [0, 0.85], node: 'b4' },
+  twinScreens: { x: 0.35, z: -3.05, yaw: Math.PI, pose: 'desk', seat: 0.47, step: [0.82, 0.25], node: 'b3' },
+  armchair: { x: -5.45, z: -2.05, yaw: Math.PI / 2, pose: 'read', seat: 0.42, step: [0.75, 0.15], node: 'b1' },
+  chartDesk: { x: -2.85, z: -3.05, yaw: Math.PI, pose: 'desk', seat: 0.47, step: [0.82, 0.25], node: 'b2' },
+  sofa: { x: 0.55, z: -0.42, yaw: 0, pose: 'sofa', seat: 0.42, step: [0, 0.72], node: 'sm' },
+  writingDesk: { x: -4.3, z: 2.5, yaw: 0, pose: 'desk', seat: 0.47, step: [0.85, -0.05], node: 'f1' },
+  benchLeft: { x: -0.65, z: 2.75, yaw: 0, pose: 'desk', seat: 0.47, step: [-0.82, -0.05], node: 'f2' },
+  benchRight: { x: 1.75, z: 2.75, yaw: 0, pose: 'desk', seat: 0.47, step: [0.82, -0.05], node: 'f3' },
 }
 
-export function createWorkspaceScene({ canvas, stage, order, labels = {}, bubble, still: startStill = false, onPick, onHover, onReady, onLost }) {
+// Coffee-break spots for a crew: the three sofa seats, the pouf and two places at the coffee nook.
+const RESTS = {
+  sofaLeft: { x: -0.17, z: -0.42, yaw: 0, seat: 0.42, node: 'sl' },
+  sofaMiddle: { x: 0.55, z: -0.42, yaw: 0, seat: 0.42, node: 'sm' },
+  sofaRight: { x: 1.27, z: -0.42, yaw: 0, seat: 0.42, node: 'sr' },
+  pouf: { x: 2.3, z: 0.25, yaw: -1.2, seat: 0.36, node: 'p' },
+  nookLeft: { x: 5.45, z: -3.8, yaw: 1.2, node: 'nk' },
+  nookRight: { x: 6.2, z: -3.62, yaw: -0.45, node: 'nk' },
+}
+
+// The open floor as a few aisle points and the clear straight walks between them, so a figure
+// walks around the sofa, the coffee table and the desks instead of through them.
+const NODES = {
+  b1: [-4.2, -2.1], b2: [-1.9, -2.1], b3: [1.5, -2.1], b4: [3.45, -2.1], nk: [4.6, -3.2],
+  l2: [-2.6, 0.2], r2: [3.45, 0.95], r3: [3.45, 2.05], f1: [-3, 2.05], f2: [-1.55, 2.05], f3: [2.6, 2.05],
+  s0: [-1.45, 0.25], sl: [-0.17, 0.25], sm: [0.55, 0.25], sr: [1.27, 0.25], g: [1.65, 0.6], p: [2.95, 0.75],
+}
+const WALKS = 'b1-b2 b2-b3 b3-b4 b4-nk b4-r2 r2-r3 r3-f3 f3-f2 f2-f1 f1-l2 l2-b1 l2-b2 l2-s0 s0-f2 s0-sl sl-sm sm-sr sr-g g-f3 p-r2 p-f3'
+// Shortest walks between aisle points (Floyd-Warshall over a dozen points, once).
+const NEXT = (() => {
+  const names = Object.keys(NODES), dist = {}, next = {}
+  for (const a of names) { dist[a] = {}; next[a] = {}; for (const b of names) { dist[a][b] = a === b ? 0 : Infinity; next[a][b] = null } }
+  for (const pair of WALKS.split(' ')) {
+    const [a, b] = pair.split('-')
+    dist[a][b] = dist[b][a] = Math.hypot(NODES[a][0] - NODES[b][0], NODES[a][1] - NODES[b][1])
+    next[a][b] = b
+    next[b][a] = a
+  }
+  for (const k of names) for (const i of names) for (const j of names) {
+    if (dist[i][k] + dist[k][j] < dist[i][j]) { dist[i][j] = dist[i][k] + dist[k][j]; next[i][j] = next[i][k] }
+  }
+  return next
+})()
+const point = ([x, z]) => ({ x, z })
+// The walk from one place to another: out of the first place (a seated figure steps out past its
+// greeting spot), along the aisles, into the second.
+function route(from, to) {
+  const end = { x: to.x, z: to.z }
+  if (from === to) return []
+  if (from.station && from.station === to.station) return [end]
+  const path = [...from.via, point(NODES[from.node])]
+  for (let at = from.node; at !== to.node;) {
+    at = NEXT[at][to.node]
+    if (!at) break
+    path.push(point(NODES[at]))
+  }
+  return [...path, ...[...to.via].reverse(), end]
+}
+
+export function createWorkspaceScene({ canvas, stage, cast = [], labels = {}, bubble, still: startStill = false, crew = false, assemble = true, maxFps = 0, onPick, onHover, onReady, onLost }) {
   const probe = document.createElement('canvas')
   const probeContext = probe.getContext('webgl2') || probe.getContext('webgl')
   if (!probeContext) return null
@@ -388,29 +439,29 @@ export function createWorkspaceScene({ canvas, stage, order, labels = {}, bubble
     put(new THREE.CircleGeometry(0.03, 16), M.blue, lid, 0, 0.16, -0.0095, false).rotation.y = Math.PI
   }
 
-  // Back wall: the Ranker's and the Researcher's desks, the Planner's whiteboard.
+  // Back wall: the chart desk and the twin-screen desk (the landing page's Ranker and Researcher), the whiteboard.
   const backDesks = batch('drop', 0.5)
-  for (const key of ['ranker', 'researcher']) {
+  for (const key of ['chartDesk', 'twinScreens']) {
     const s = STATIONS[key]
     desk(backDesks, s.x, s.z - 0.72, 1.4)
     chair(backDesks, s.x, s.z + 0.14, Math.PI, s.seat)
-    if (key === 'researcher') { monitor(backDesks, s.x - 0.33, s.z - 0.92, 0.18); monitor(backDesks, s.x + 0.33, s.z - 0.92, -0.18) }
+    if (key === 'twinScreens') { monitor(backDesks, s.x - 0.33, s.z - 0.92, 0.18); monitor(backDesks, s.x + 0.33, s.z - 0.92, -0.18) }
     else monitor(backDesks, s.x, s.z - 0.92, 0)
     box(backDesks, 0.44, 0.02, 0.14, s.x, 0.755, s.z - 0.55, M.white, 0.006)
-    mug(backDesks, s.x - 0.55, 0.745, s.z - 0.55, key === 'ranker' ? M.amber : M.white)
+    mug(backDesks, s.x - 0.55, 0.745, s.z - 0.55, key === 'chartDesk' ? M.amber : M.white)
   }
-  // Props: the Researcher's magnifier, the Ranker's chart blocks.
+  // Desk props: a magnifier by the twin screens, chart blocks on the chart desk.
   const magnifier = new THREE.Group()
-  magnifier.position.set(STATIONS.researcher.x + 0.6, 0.86, STATIONS.researcher.z - 0.5)
+  magnifier.position.set(STATIONS.twinScreens.x + 0.6, 0.86, STATIONS.twinScreens.z - 0.5)
   magnifier.rotation.set(-0.3, 0.2, 0.5)
   backDesks.add(magnifier)
   put(new THREE.TorusGeometry(0.09, 0.02, 10, 24), M.blue, magnifier)
   cyl(magnifier, 0.018, 0.022, 0.15, 0, -0.17, 0, M.ink, 10)
-  ;[[0.2, M.blue], [0.14, M.soft], [0.08, M.frost]].forEach(([h, m], i) => box(backDesks, 0.08, h, 0.08, STATIONS.ranker.x + 0.45 + i * 0.1, 0.745 + h / 2, STATIONS.ranker.z - 0.5, m, 0.015))
+  ;[[0.2, M.blue], [0.14, M.soft], [0.08, M.frost]].forEach(([h, m], i) => box(backDesks, 0.08, h, 0.08, STATIONS.chartDesk.x + 0.45 + i * 0.1, 0.745 + h / 2, STATIONS.chartDesk.z - 0.5, m, 0.015))
   plant(backDesks, -6.35, -4.45, 1.25)
   plant(backDesks, 5.05, -4.5, 0.95, true)
   // Shelves and warm pendant lamps over the two desks.
-  for (const key of ['ranker', 'researcher']) {
+  for (const key of ['chartDesk', 'twinScreens']) {
     const x = STATIONS[key].x, z = STATIONS[key].z - 0.72
     box(backDesks, 1.3, 0.05, 0.26, x, 2.2, -4.86, M.oak, 0.02)
     ;[M.blue, M.amber, M.soft, M.white, M.pillow].forEach((spine, i) => box(backDesks, 0.07, 0.2 + (i % 3) * 0.04, 0.18, x - 0.5 + i * 0.09, 2.33 + (i % 3) * 0.02, -4.85, spine, 0.01))
@@ -420,7 +471,7 @@ export function createWorkspaceScene({ canvas, stage, order, labels = {}, bubble
     ball(backDesks, 0.075, x, 2.38, z, M.lampGlow, 1, 1, 1, false)
   }
 
-  // The Planner's corner and the coffee nook.
+  // The whiteboard corner and the coffee nook.
   const nook = batch('drop', 0.62)
   box(nook, 1.7, 0.86, 0.62, 5.95, 0.43, -4.62, M.white, 0.03)
   box(nook, 1.76, 0.05, 0.68, 5.95, 0.885, -4.62, M.oak, 0.02)
@@ -432,7 +483,7 @@ export function createWorkspaceScene({ canvas, stage, order, labels = {}, bubble
   plant(nook, 6.4, -4.86 + 0.05, 0.45)
   for (let i = 0; i < 3; i++) cyl(nook, 0.07, 0.07, 0.18, 5.4 + i * 0.22, 2.17, -4.84, i === 1 ? M.amber : M.frost, 14)
 
-  // The Librarian's bookshelf and armchair.
+  // The bookshelf and the reading armchair.
   const library = batch('drop', 0.74)
   box(library, 0.42, 2.3, 2.6, -6.78, 1.15, -2.05, M.oak, 0.03)
   const spines = [M.blue, M.soft, M.amber, M.white, M.leaf, M.pillow, M.frost, M.cushion]
@@ -448,7 +499,7 @@ export function createWorkspaceScene({ canvas, stage, order, labels = {}, bubble
     }
   }
   const armchair = new THREE.Group()
-  armchair.position.set(STATIONS.librarian.x - 0.15, 0, STATIONS.librarian.z)
+  armchair.position.set(STATIONS.armchair.x - 0.15, 0, STATIONS.armchair.z)
   armchair.rotation.y = Math.PI / 2
   library.add(armchair)
   box(armchair, 0.86, 0.36, 0.8, 0, 0.22, 0, M.sofa, 0.1)
@@ -457,11 +508,11 @@ export function createWorkspaceScene({ canvas, stage, order, labels = {}, bubble
   box(armchair, 0.56, 0.12, 0.5, 0, 0.44, 0.06, M.cushion, 0.05)
   plant(library, -6.35, 0.35, 0.8)
 
-  // The lounge: rug, sofa (the Comparator's seat), coffee table, floor lamp.
+  // The lounge: rug, sofa, coffee table, pouf, floor lamp.
   const lounge = batch('drop', 0.86)
   box(lounge, 4.4, 0.03, 3.1, 0.55, 0.015, 0.3, M.rug, 0.01, false)
   const sofa = new THREE.Group()
-  sofa.position.set(STATIONS.comparator.x, 0, STATIONS.comparator.z - 0.12)
+  sofa.position.set(STATIONS.sofa.x, 0, STATIONS.sofa.z - 0.12)
   lounge.add(sofa)
   box(sofa, 2.5, 0.4, 0.9, 0, 0.24, 0, M.sofa, 0.12)
   box(sofa, 2.5, 0.66, 0.26, 0, 0.62, -0.36, M.sofa, 0.12)
@@ -490,10 +541,10 @@ export function createWorkspaceScene({ canvas, stage, order, labels = {}, bubble
   tail.rotation.x = -Math.PI / 2
   cats.push({ body: catBody, tail })
 
-  // The front row: the Writer's desk and the review bench of the Verifier and the Corrector.
+  // The front row: the writing desk and the review bench.
   const front = batch('drop', 1.0)
   {
-    const s = STATIONS.writer
+    const s = STATIONS.writingDesk
     desk(front, s.x, s.z + 0.72, 1.4)
     chair(front, s.x, s.z - 0.14, 0, s.seat)
     laptopAt(front, s.x - 0.1, s.z + 0.62, Math.PI)
@@ -508,20 +559,20 @@ export function createWorkspaceScene({ canvas, stage, order, labels = {}, bubble
   }
   box(front, 4.2, 0.06, 0.8, 0.55, 0.74, 3.5, M.oak, 0.03)
   for (const dx of [-1.95, 1.95]) box(front, 0.08, 0.72, 0.7, 0.55 + dx, 0.36, 3.5, M.white, 0.02)
-  for (const key of ['verifier', 'corrector']) {
+  for (const key of ['benchLeft', 'benchRight']) {
     const s = STATIONS[key]
     chair(front, s.x, s.z - 0.14, 0, s.seat)
     laptopAt(front, s.x, s.z + 0.62, Math.PI)
   }
   const badge = new THREE.Group()
-  badge.position.set(STATIONS.verifier.x + 0.52, 0.92, 3.6)
+  badge.position.set(STATIONS.benchLeft.x + 0.52, 0.92, 3.6)
   front.add(badge)
   cyl(badge, 0.13, 0.13, 0.035, 0, 0, 0, M.blue, 28).rotation.x = Math.PI / 2
   box(badge, 0.065, 0.028, 0.02, -0.035, -0.012, 0.022, M.white, 0.009).rotation.z = -0.8
   box(badge, 0.12, 0.028, 0.02, 0.028, 0.02, 0.022, M.white, 0.009).rotation.z = 0.85
-  cyl(front, 0.03, 0.05, 0.05, STATIONS.verifier.x + 0.52, 0.795, 3.6, M.ink, 12)
+  cyl(front, 0.03, 0.05, 0.05, STATIONS.benchLeft.x + 0.52, 0.795, 3.6, M.ink, 12)
   const wrench = new THREE.Group()
-  wrench.position.set(STATIONS.corrector.x + 0.55, 0.9, 3.62)
+  wrench.position.set(STATIONS.benchRight.x + 0.55, 0.9, 3.62)
   wrench.rotation.z = -0.55
   front.add(wrench)
   box(wrench, 0.05, 0.24, 0.035, 0, -0.04, 0, M.blue, 0.015)
@@ -532,10 +583,10 @@ export function createWorkspaceScene({ canvas, stage, order, labels = {}, bubble
   ball(front, 0.1, 0.55, 2.27, 3.5, M.lampGlow, 1, 1, 1, false)
   plant(front, -5.9, 3.7, 0.7)
 
-  // The Guardian's podium by the doorway.
+  // The podium by the doorway.
   const door = batch('drop', 1.12)
   {
-    const s = STATIONS.guardian
+    const s = STATIONS.podium
     box(door, 0.5, 0.98, 0.7, s.x + 0.55, 0.49, s.z, M.white, 0.04)
     box(door, 0.56, 0.05, 0.78, s.x + 0.55, 1.0, s.z, M.oak, 0.02)
     box(door, 0.04, 0.5, 0.42, s.x + 0.81, 0.55, s.z, M.blue, 0.015)
@@ -594,9 +645,9 @@ export function createWorkspaceScene({ canvas, stage, order, labels = {}, bubble
   const rounded = (w, h, d, r) => new RoundedBoxGeometry(w, h, d, 3, r)
   const v = new THREE.Vector3(), w3 = new THREE.Vector3()
 
-  const rigs = order.map((key, index) => {
-    const s = STATIONS[key] || STATIONS.comparator
-    const color = new THREE.Color(AGENT_COLORS[key] || '#3b82f6')
+  const rigs = cast.map(({ key, color: tint, station, rest, prop }, index) => {
+    const s = STATIONS[station] || STATIONS.sofa
+    const color = new THREE.Color(tint || '#3b82f6')
     const accent = mat(color, { roughness: 0.36 })
     const glow = mat(color, { emissive: color, emissiveIntensity: 0.5, roughness: 0.3 })
     const palm = mat(color.clone().lerp(new THREE.Color(0xffffff), 0.62), { roughness: 0.4 })
@@ -650,16 +701,22 @@ export function createWorkspaceScene({ canvas, stage, order, labels = {}, bubble
       put(new THREE.SphereGeometry(0.058, 14, 10), palm, grip)
       return { shoulder, elbow, grip, side, sx: 0, sz: side * 0.12, ex: -0.15 }
     })
-    // What each agent holds while it works.
-    if (key === 'guardian') {
+    // What each one holds while it works at its station.
+    const props = []
+    if (prop === 'shield') {
       const shape = new THREE.Shape()
       shape.moveTo(0, 0.17); shape.lineTo(0.135, 0.12); shape.lineTo(0.125, -0.02)
       shape.quadraticCurveTo(0.1, -0.13, 0, -0.19); shape.quadraticCurveTo(-0.1, -0.13, -0.125, -0.02); shape.lineTo(-0.135, 0.12); shape.closePath()
       const shield = put(new THREE.ExtrudeGeometry(shape, { depth: 0.04, bevelEnabled: true, bevelThickness: 0.012, bevelSize: 0.012, bevelSegments: 2, curveSegments: 6 }), accent, arms[0].grip, -0.02, -0.06, 0.08)
       shield.rotation.set(Math.PI / 2, 0, 0)
+      props.push(shield)
     }
-    if (key === 'planner') cyl(arms[1].grip, 0.018, 0.018, 0.14, 0, -0.06, 0.03, accent, 8).rotation.x = Math.PI / 2
-    if (key === 'librarian') {
+    if (prop === 'marker') {
+      const marker = cyl(arms[1].grip, 0.018, 0.018, 0.14, 0, -0.06, 0.03, accent, 8)
+      marker.rotation.x = Math.PI / 2
+      props.push(marker)
+    }
+    if (prop === 'book') {
       const book = new THREE.Group()
       book.position.set(0, 0.16, 0.34)
       book.rotation.x = -0.6
@@ -671,20 +728,54 @@ export function createWorkspaceScene({ canvas, stage, order, labels = {}, bubble
         box(half, 0.18, 0.24, 0.02, side * 0.09, 0, 0, accent, 0.006)
         box(half, 0.16, 0.22, 0.014, side * 0.085, 0, 0.012, M.paper, 0.004, false)
       }
+      props.push(book)
     }
-    if (key === 'comparator') for (const arm of arms) box(arm.grip, 0.17, 0.22, 0.008, 0, -0.02, 0.07, M.paper, 0.004, false).rotation.x = -1.2
+    if (prop === 'papers') for (const arm of arms) {
+      const paper = box(arm.grip, 0.17, 0.22, 0.008, 0, -0.02, 0.07, M.paper, 0.004, false)
+      paper.rotation.x = -1.2
+      props.push(paper)
+    }
+    // A crew also carries a mug on its coffee break and holds up a page it wants reviewed; both
+    // are counter-rotated every frame so they stay upright in the hand.
+    let mug = null, page = null
+    if (crew) {
+      mug = new THREE.Group()
+      mug.visible = false
+      arms[0].grip.add(mug)
+      cyl(mug, 0.056, 0.048, 0.11, 0, 0.02, 0.06, M.white, 16)
+      put(new THREE.TorusGeometry(0.032, 0.01, 6, 12), M.white, mug, 0.06, 0.02, 0.06).rotation.y = Math.PI / 2
+      page = new THREE.Group()
+      page.visible = false
+      arms[1].grip.add(page)
+      box(page, 0.24, 0.3, 0.01, -0.05, 0.1, 0.07, M.paper, 0.004, false)
+      for (let line = 0; line < 4; line++) box(page, 0.15 - (line % 2) * 0.04, 0.014, 0.004, -0.07, 0.17 - line * 0.045, 0.078, accent, 0, false)
+    }
     const ring = put(new THREE.TorusGeometry(0.42, 0.026, 8, 40), glow, scene, 0, 0.03, 0, false)
     ring.rotation.x = -Math.PI / 2
     ring.visible = false
     const hit = put(new THREE.CylinderGeometry(0.46, 0.46, 1.75, 12), M.hit, root, 0, 0.85, 0, false)
     hit.userData.key = key
     const home = new THREE.Vector3(s.x, 0, s.z)
+    const greet = new THREE.Vector3(s.x + s.step[0], 0, s.z + s.step[1])
     const seated = s.pose === 'desk' || s.pose === 'read' || s.pose === 'sofa'
+    // A crew member's places: its station, the spot beside it where it stands to talk, and its
+    // coffee-break spot (without one it stays at the station).
+    let places = null
+    if (crew) {
+      const node = s.node, spot = { x: greet.x, z: greet.z }
+      places = {
+        home: { x: s.x, z: s.z, yaw: s.yaw, seat: seated ? s.seat : 0, via: [spot], node, station },
+        greet: { x: greet.x, z: greet.z, yaw: null, seat: 0, via: [], node, station },
+      }
+      places.rest = RESTS[rest] ? { ...RESTS[rest], via: [] } : places.home
+    }
+    const start = places ? places.rest : null
     return {
-      key, index, s, root, pelvis, torso, head, eyes, mouth, arms, legs, ring, hit, glow,
-      home, greet: new THREE.Vector3(s.x + s.step[0], 0, s.z + s.step[1]), pos: home.clone(), yaw: s.yaw, sit: seated ? 1 : 0, seated,
+      key, index, s, root, pelvis, torso, head, eyes, mouth, arms, legs, ring, hit, glow, color, props, mug, page,
+      home, greet, pos: start ? new THREE.Vector3(start.x, 0, start.z) : home.clone(), yaw: start ? start.yaw : s.yaw, sit: (start ? start.seat : seated) ? 1 : 0, seated,
       mode: 'work', look: new THREE.Vector3(), talkUntil: 0, waveAt: -9, throwAt: -9, catchAt: -9, shakeUntil: 0,
       blinkAt: 2 + index * 0.37, blinkUntil: 0, phase: index * 0.9, hop: 0, hx: 0, hy: 0, walk: 0,
+      places, place: start, dest: start, path: [], want: { activity: 'break', selected: false }, hold: false, greeted: false, sip: 4 + index * 1.7,
     }
   })
   const byKey = Object.fromEntries(rigs.map(rig => [rig.key, rig]))
@@ -727,7 +818,7 @@ export function createWorkspaceScene({ canvas, stage, order, labels = {}, bubble
   }
 
   let still = startStill, dirty = true, disposed = false, focused = null, speaker = null, hovered = null
-  let revealed = false, revealAt = 0, bubbleBox = { w: 0, h: 0 }
+  let revealed = false, revealAt = 0, bubbleBox = { w: 0, h: 0 }, drawn = false
   function layout() {
     if (disposed) return
     const rect = canvas.getBoundingClientRect()
@@ -740,7 +831,7 @@ export function createWorkspaceScene({ canvas, stage, order, labels = {}, bubble
     renderer.setSize(rect.width, rect.height, false)
     camera.aspect = rect.width / rect.height
     camera.updateProjectionMatrix()
-    const points = corners(!compact)
+    const points = corners(!compact || crew) // the office always shows the whole room
     let distance = 24
     for (let i = 0; i < 6; i++) {
       place(HOME, VIEW.az, VIEW.el, distance)
@@ -758,16 +849,31 @@ export function createWorkspaceScene({ canvas, stage, order, labels = {}, bubble
 
   function placeOverlay() {
     scene.updateMatrixWorld()
+    const tags = []
     for (const rig of rigs) {
       const label = labels[rig.key]
       if (!label) continue
       rig.head.getWorldPosition(w3)
       w3.y += 0.42
       const { x, y } = toScreen(w3)
-      label.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) translate(-50%, -100%)`
       label.classList.toggle('is-speaking', rig === speaker)
       label.classList.toggle('is-hidden', !rig.root.visible)
+      if (!rig.tag?.w) rig.tag = { w: label.offsetWidth, h: label.offsetHeight } // measured once it is laid out
+      const shown = rig.root.visible && rig !== speaker && (!compact || label.classList.contains('is-on'))
+      tags.push({ label, x, y, w: rig.tag.w, h: rig.tag.h, shown })
     }
+    // Figures side by side (a crew on the sofa) would stack their name tags on top of each other:
+    // the lower tag keeps its place and the one above it moves up just clear of it.
+    const order = tags.filter(tag => tag.shown).sort((a, b) => b.y - a.y)
+    for (let i = 1; i < order.length; i++) {
+      const tag = order[i]
+      for (let pass = 0; pass < order.length; pass++) {
+        const below = order.slice(0, i).find(other => Math.abs(tag.x - other.x) < (tag.w + other.w) / 2 + 4 && tag.y > other.y - other.h - 3 && tag.y - tag.h - 3 < other.y)
+        if (!below) break
+        tag.y = below.y - below.h - 3
+      }
+    }
+    for (const { label, x, y } of tags) label.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) translate(-50%, -100%)`
     if (bubble && speaker) {
       speaker.head.getWorldPosition(w3)
       w3.y += 0.36
@@ -829,9 +935,11 @@ export function createWorkspaceScene({ canvas, stage, order, labels = {}, bubble
   const now = new Date()
   let clockTime = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds()
 
-  function animateRig(rig, dt) {
+  const facingCamera = rig => Math.atan2(camera.position.x - rig.pos.x, camera.position.z - rig.pos.z)
+  // Landing page: each agent works at its station and steps out beside it to greet (mode
+  // 'greet') or to throw and catch a plane ('turn').
+  function steerAgent(rig, dt) {
     const s = rig.s
-    const t = clock + rig.phase
     const greeting = rig.mode !== 'work'
     const target = greeting ? rig.greet : rig.home
     const away = Math.hypot(target.x - rig.pos.x, target.z - rig.pos.z)
@@ -842,14 +950,54 @@ export function createWorkspaceScene({ canvas, stage, order, labels = {}, bubble
       rig.pos.z += ((target.z - rig.pos.z) / away) * stepSize
     }
     const walking = !still && away > 0.03
+    let yaw = s.yaw
+    if (rig.mode === 'greet') yaw = facingCamera(rig)
+    else if (rig.mode === 'turn') yaw = Math.atan2(rig.look.x - rig.pos.x, rig.look.z - rig.pos.z)
+    else if (walking) yaw = Math.atan2(target.x - rig.pos.x, target.z - rig.pos.z)
+    return { walking, sit: rig.seated && !greeting && away < 0.06 ? 1 : 0, seat: s.seat || 0.47, seated: rig.seated, yaw, doing: rig.mode }
+  }
+  // A crew member heads for the place its state asks for: its station while it has work, the spot
+  // beside it to hand over a result or to greet when selected, otherwise its coffee-break spot. It
+  // stands up first, then walks there along the aisles; catching or throwing a plane, it holds.
+  function steerCrew(rig, dt) {
+    const { places, want } = rig
+    const desired = want.activity === 'work' ? places.home : want.activity === 'review' || want.selected ? places.greet : places.rest
+    if (still || !drawn) { rig.place = rig.dest = desired; rig.path.length = 0; rig.pos.set(desired.x, 0, desired.z) }
+    else {
+      if (!rig.path.length && rig.place !== desired && !rig.hold) { rig.path = route(rig.place, desired); rig.dest = desired }
+      if (rig.path.length && !rig.hold && rig.sit < 0.3) {
+        const next = rig.path[0]
+        const away = Math.hypot(next.x - rig.pos.x, next.z - rig.pos.z)
+        const stepSize = Math.min(away, dt * 2.1 * (rig.path.length > 1 ? 1 : Math.min(1, away / 0.25 + 0.35)))
+        if (away > 1e-4) { rig.pos.x += ((next.x - rig.pos.x) / away) * stepSize; rig.pos.z += ((next.z - rig.pos.z) / away) * stepSize }
+        if (away - stepSize < 0.03) {
+          rig.path.shift()
+          if (!rig.path.length) { rig.pos.set(next.x, 0, next.z); rig.place = rig.dest }
+        }
+      }
+    }
+    const place = rig.place, moving = rig.path.length > 0
+    const walking = moving && !rig.hold && rig.sit < 0.3
+    let doing = 'work', yaw = place.yaw ?? rig.s.yaw
+    if (moving) { doing = 'walk'; yaw = walking ? Math.atan2(rig.path[0].x - rig.pos.x, rig.path[0].z - rig.pos.z) : rig.yaw }
+    else if (place === places.rest && place !== places.home) doing = 'break'
+    else if (place === places.greet) {
+      doing = want.activity === 'review' ? 'review' : 'greet'
+      yaw = facingCamera(rig)
+      if (doing === 'greet' && !rig.greeted) { rig.greeted = true; rig.waveAt = clock + 0.15 }
+    }
+    if (rig.hold && rig.sit < 0.5) yaw = Math.atan2(rig.look.x - rig.pos.x, rig.look.z - rig.pos.z)
+    return { walking, sit: !moving && place.seat ? 1 : 0, seat: place.seat || 0.47, seated: Boolean(place.seat), yaw, doing }
+  }
+
+  function animateRig(rig, dt) {
+    const s = rig.s
+    const t = clock + rig.phase
+    const st = crew ? steerCrew(rig, dt) : steerAgent(rig, dt)
+    const { walking } = st
     rig.walk = still ? 0 : damp(rig.walk, walking ? 1 : 0, 10, dt)
-    const sitGoal = rig.seated && !greeting && away < 0.06 ? 1 : 0
-    rig.sit = still ? sitGoal : damp(rig.sit, sitGoal, 6, dt)
-    let yawGoal = s.yaw
-    if (rig.mode === 'greet') yawGoal = Math.atan2(camera.position.x - rig.pos.x, camera.position.z - rig.pos.z)
-    else if (rig.mode === 'turn') yawGoal = Math.atan2(rig.look.x - rig.pos.x, rig.look.z - rig.pos.z)
-    else if (walking) yawGoal = Math.atan2(target.x - rig.pos.x, target.z - rig.pos.z)
-    rig.yaw = still ? yawGoal : dampAngle(rig.yaw, yawGoal, 8, dt)
+    rig.sit = still ? st.sit : damp(rig.sit, st.sit, 6, dt)
+    rig.yaw = still ? st.yaw : dampAngle(rig.yaw, st.yaw, 8, dt)
 
     // Hop in when the room first assembles.
     const hop = still ? (revealed ? 1 : 0) : clamp01((clock - revealAt - 1.25 - rig.index * 0.09) / 0.55)
@@ -860,7 +1008,7 @@ export function createWorkspaceScene({ canvas, stage, order, labels = {}, bubble
     rig.root.rotation.y = rig.yaw
 
     const gait = Math.sin(clock * 9 + rig.phase)
-    const seatY = (s.seat || 0.47) + 0.02
+    const seatY = st.seat + 0.02
     rig.pelvis.position.y = lerp(0.56, seatY, rig.sit) + rig.walk * Math.abs(gait) * 0.03 + (still || rig.sit > 0.5 ? 0 : Math.sin(t * 1.6) * 0.008)
     rig.pelvis.position.z = -0.1 * rig.sit
     for (const { hip, knee, side } of rig.legs) {
@@ -871,17 +1019,27 @@ export function createWorkspaceScene({ canvas, stage, order, labels = {}, bubble
     // Arms: the station's work, then waving, throwing, catching or raising the shield.
     const [left, right] = rig.arms
     const pose = { l: [0.05, -0.12, -0.15], r: [0.05, 0.12, -0.15] } // [shoulder x, shoulder z, elbow x]
-    if (!greeting && !walking && rig.sit > 0.4 || (!greeting && !walking && !rig.seated)) {
+    const settled = !walking && (rig.sit > 0.4 || !st.seated)
+    if (st.doing === 'work' && settled) {
       if (s.pose === 'desk') { pose.l = [-0.95, -0.1, -0.6 + Math.sin(t * 15) * 0.1]; pose.r = [-0.95, 0.1, -0.6 + Math.sin(t * 15 + Math.PI) * 0.1] }
       if (s.pose === 'board') { pose.r = [-2.3 + Math.sin(t * 2.2) * 0.18, 0.2 + Math.sin(t * 1.7) * 0.22, -0.35] }
       if (s.pose === 'read') { pose.l = [-0.85, 0.3, -1.15]; pose.r = [-0.85, -0.3, -1.15] }
       if (s.pose === 'sofa') { pose.l = [-0.95, -0.28, -0.8]; pose.r = [-0.95, 0.28, -0.8] }
       if (s.pose === 'podium') { pose.l = [-0.7, -0.05, -0.55]; pose.r = [-0.7, 0.05, -0.55] }
     }
+    // A crew member on a break holds its mug and takes a sip now and then; one with a result to
+    // review holds the page up.
+    if (st.doing === 'break' && settled) {
+      const since = clock - rig.sip
+      const sipping = !still && since > 0 && since % 7 < 1.4 ? Math.sin(((since % 7) / 1.4) * Math.PI) : 0
+      pose.l = [lerp(-0.55, -1.2, sipping), -0.2, lerp(-1.35, -1.9, sipping)]
+      if (st.seated) pose.r = [-0.6, 0.12, -0.35]
+    }
+    if (st.doing === 'review') { pose.r = [-1.25, 0.2, -0.6]; pose.l = [-0.45, -0.16, -0.45] }
     if (walking) { pose.l = [gait * 0.45, -0.1, -0.2]; pose.r = [-gait * 0.45, 0.1, -0.2] }
     const waved = clock - rig.waveAt
-    if (rig.mode === 'greet' && waved >= 0 && waved < 2.6 && !still) pose.r = [-0.15, 2.45 + Math.sin(waved * 11) * 0.32, -0.25]
-    if (rig.mode === 'greet' && still) pose.r = [-0.15, 2.45, -0.25]
+    if (st.doing === 'greet' && waved >= 0 && waved < 2.6 && !still) pose.r = [-0.15, 2.45 + Math.sin(waved * 11) * 0.32, -0.25]
+    if (st.doing === 'greet' && still) pose.r = [-0.15, 2.45, -0.25]
     const thrown = clock - rig.throwAt
     if (thrown >= 0 && thrown < 0.6) { const p = thrown / 0.6; pose.r = [p < 0.45 ? lerp(-0.2, -2.9, p / 0.45) : lerp(-2.9, -1.1, (p - 0.45) / 0.55), 0.1, -0.2] }
     const caught = clock - rig.catchAt
@@ -894,10 +1052,19 @@ export function createWorkspaceScene({ canvas, stage, order, labels = {}, bubble
       arm.shoulder.rotation.set(arm.sx, 0, arm.sz)
       arm.elbow.rotation.x = arm.ex
     }
+    if (crew) {
+      rig.mug.visible = st.doing === 'break'
+      rig.mug.rotation.x = -(left.sx + left.ex)
+      rig.page.visible = st.doing === 'review'
+      rig.page.rotation.x = -(right.sx + right.ex)
+      for (const item of rig.props) item.visible = st.doing === 'work'
+    }
 
     // Head, eyes, mouth and antenna.
     let headYaw = 0, headPitch = 0
-    if (!greeting && !still) {
+    if (st.doing === 'break' && !still) { headYaw = Math.sin(t * 0.55) * 0.5; headPitch = -0.04 + Math.sin(t * 0.8) * 0.04 }
+    if (st.doing === 'review' && !still) headPitch = 0.08 + Math.sin(t * 1.4) * 0.03
+    if (st.doing === 'work' && !still) {
       if (s.pose === 'desk') headPitch = 0.12 + Math.sin(t * 1.1) * 0.05
       if (s.pose === 'read') headPitch = 0.38
       if (s.pose === 'sofa') headYaw = Math.sin(t * 1.15) * 0.5
@@ -911,20 +1078,23 @@ export function createWorkspaceScene({ canvas, stage, order, labels = {}, bubble
     rig.hy = still ? headYaw : damp(rig.hy, headYaw, 8, dt)
     rig.head.rotation.set(rig.hx, rig.hy, 0)
     if (!still && clock > rig.blinkAt) { rig.blinkUntil = clock + 0.12; rig.blinkAt = clock + 2.6 + ((rig.index * 7 + Math.floor(clock)) % 5) * 0.55 }
-    const happy = rig.mode === 'greet'
+    const happy = st.doing === 'greet'
     for (const eye of rig.eyes) {
       eye.scale.y = !still && clock < rig.blinkUntil ? 0.15 : happy ? 0.62 : 1
       eye.position.y = happy ? 0.024 : 0.012
     }
     rig.mouth.scale.x = talking ? 0.4 + 0.75 * Math.abs(Math.sin(clock * 16)) : happy ? 1 : 0.55
-    rig.glow.emissiveIntensity = rig === speaker ? (talking ? 1.4 + Math.sin(clock * 12) * 0.5 : 1.3) : 0.5
-    rig.ring.visible = rig.root.visible && rig === focused
+    rig.glow.emissiveIntensity = rig === speaker ? (talking ? 1.4 + Math.sin(clock * 12) * 0.5 : 1.3) : crew && rig.want.selected ? 1.1 : 0.5
+    // The ring marks the agent in focus, or in a crew the selected one and those at work.
+    rig.ring.visible = rig.root.visible && (crew ? rig.want.selected || (st.doing === 'work' && rig.want.activity === 'work') : rig === focused)
     if (rig.ring.visible) { rig.ring.position.set(rig.pos.x, 0.03, rig.pos.z); rig.ring.rotation.z += dt * 0.8; rig.ring.scale.setScalar(1 + Math.sin(clock * 3) * 0.06) }
-    return walking || talking || rig.sit % 1 > 0.002 || (revealed && !still && hop < 1)
+    return walking || talking || rig.sit % 1 > 0.002 || (revealed && !still && hop < 1) || (crew && rig.path.length > 0)
   }
 
   function tick(time) {
     frame = requestAnimationFrame(tick)
+    // An optional frame cap (the Pulse office stays open for long conversations).
+    if (maxFps && last && time - last < 1000 / maxFps - 2) return
     const dt = last ? Math.min(0.25, (time - last) / 1000) : 1 / 60
     last = time
     clock += dt
@@ -948,7 +1118,7 @@ export function createWorkspaceScene({ canvas, stage, order, labels = {}, bubble
     if (revealed && (still || clock - revealAt > 2.9) && stage && !stage.hasAttribute('data-assembled')) stage.setAttribute('data-assembled', '')
 
     // Camera: the goal (room, agent or flight), the user's orbit and the mouse sway.
-    if (flights[0]?.curve) {
+    if (!crew && flights[0]?.curve) {
       const flight = flights[0]
       goal.target.copy(plane.visible ? plane.position : flight.to).setY(Math.max(0.8, (plane.visible ? plane.position.y : flight.to.y) - 0.4))
       goal.dist = fit * (compact ? 0.62 : 0.56)
@@ -1054,6 +1224,7 @@ export function createWorkspaceScene({ canvas, stage, order, labels = {}, bubble
 
     if (dirty || active) {
       renderer.render(scene, camera)
+      drawn = revealed
       placeOverlay()
       dirty = false
       idle = 0
@@ -1081,7 +1252,9 @@ export function createWorkspaceScene({ canvas, stage, order, labels = {}, bubble
     rig.arms[1].grip.getWorldPosition(w3)
     return w3.clone()
   }
-  const chestOf = rig => new THREE.Vector3(rig.greet.x, 1.12, rig.greet.z)
+  // A plane aims at the chest: beside the station for a landing agent (it steps out to catch),
+  // wherever a crew member is (it holds still to catch, even seated).
+  const chestOf = rig => (crew ? new THREE.Vector3(rig.pos.x, rig.sit > 0.5 ? 0.98 : 1.12, rig.pos.z) : new THREE.Vector3(rig.greet.x, 1.12, rig.greet.z))
   function focus(key) {
     const rig = key ? byKey[key] : null
     for (const other of rigs) if (other !== rig && other.mode !== 'work' && !flights.length) other.mode = 'work'
@@ -1112,47 +1285,75 @@ export function createWorkspaceScene({ canvas, stage, order, labels = {}, bubble
     wake()
   }
   const launch = (options) => new Promise(resolve => { flights.push({ t: 0, ...options, resolve }); wake() })
+  // A request flies in through the doorway. In a crew only one plane flies at a time (the office
+  // starts it for a new task); the catcher then goes on to wherever its state sends it.
   function arrive(key, { bounce = false } = {}) {
     const rig = byKey[key]
-    if (!rig) return Promise.resolve()
-    rig.mode = 'turn'
+    if (!rig || (crew && flights.length)) return Promise.resolve()
+    if (crew) rig.hold = true
+    else rig.mode = 'turn'
     rig.look.copy(DOOR).setY(0)
     return launch({
-      wait: still ? 0 : 0.5, bounce, color: AGENT_COLORS[key],
+      wait: still ? 0 : 0.5, bounce, color: rig.color,
       source: () => DOOR.clone(), dest: () => chestOf(rig),
       onStart: () => { rig.catchAt = clock + 0.8 },
-      onArrive: () => { rig.catchAt = clock; rig.mode = 'greet'; rig.waveAt = -9 },
+      onArrive: () => {
+        rig.catchAt = clock
+        if (crew) rig.hold = false
+        else { rig.mode = 'greet'; rig.waveAt = -9 }
+      },
     })
   }
+  // A request passed from one to another (in a crew: a hand-off to the right desk).
   function travel(fromKey, toKey) {
     const a = byKey[fromKey], b = byKey[toKey]
-    if (!a || !b) return Promise.resolve()
-    a.mode = 'turn'
-    a.look.copy(b.greet)
-    b.mode = 'turn'
-    b.look.copy(a.greet)
+    if (!a || !b || a === b || (crew && flights.length)) return Promise.resolve()
+    if (crew) {
+      a.hold = b.hold = true
+      a.look.set(b.pos.x, 0, b.pos.z)
+      b.look.set(a.pos.x, 0, a.pos.z)
+    } else {
+      a.mode = 'turn'
+      a.look.copy(b.greet)
+      b.mode = 'turn'
+      b.look.copy(a.greet)
+    }
     a.throwAt = clock + (still ? -9 : 0.34)
     return launch({
-      wait: still ? 0 : 0.6, color: AGENT_COLORS[toKey],
+      wait: still ? 0 : 0.6, color: b.color,
       source: () => handOf(a), dest: () => chestOf(b),
       onStart: () => { b.catchAt = clock + 1 },
-      onArrive: () => { b.catchAt = clock; b.mode = 'greet'; b.waveAt = -9; a.mode = 'work' },
+      onArrive: () => {
+        b.catchAt = clock
+        if (crew) a.hold = b.hold = false
+        else { b.mode = 'greet'; b.waveAt = -9; a.mode = 'work' }
+      },
     })
+  }
+  // A crew's state from the page: per member, { activity: 'break' | 'work' | 'review', selected }.
+  function setCrew(states = {}) {
+    for (const rig of rigs) {
+      const next = states[rig.key] || {}
+      rig.want = { activity: next.activity === 'work' || next.activity === 'review' ? next.activity : 'break', selected: Boolean(next.selected) }
+      if (!rig.want.selected) rig.greeted = false
+    }
+    wake()
   }
   function clearRoute() {
     for (const flight of flights.splice(0)) { if (flight.trail) { flight.trail.removeFromParent(); flight.trail.geometry.dispose(); flight.trail.material.dispose() } flight.resolve() }
     for (const item of fading.splice(0)) { item.trail.removeFromParent(); item.trail.geometry.dispose(); item.trail.material.dispose() }
     fall = null
     plane.visible = false
-    for (const rig of rigs) rig.throwAt = rig.catchAt = -9
+    for (const rig of rigs) { rig.throwAt = rig.catchAt = -9; rig.hold = false }
     wake()
   }
   function reveal() {
     if (revealed) return
     revealed = true
-    revealAt = clock
+    // Without `assemble` (the Pulse office) the room is simply there.
+    revealAt = assemble ? clock : clock - 10
     // The camera starts high and settles while the room assembles.
-    if (!still) { cam.el = goal.el + 0.42; cam.dist = goal.dist * 1.3 }
+    if (assemble && !still) { cam.el = goal.el + 0.42; cam.dist = goal.dist * 1.3 }
     wake()
   }
   function setStill(value) {
@@ -1216,5 +1417,5 @@ export function createWorkspaceScene({ canvas, stage, order, labels = {}, bubble
     onReady?.()
   })
 
-  return { focus, speak, arrive, travel, clearRoute, reveal, setStill, dispose }
+  return { focus, speak, arrive, travel, setCrew, clearRoute, reveal, setStill, dispose }
 }

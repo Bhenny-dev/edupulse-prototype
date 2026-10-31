@@ -68,12 +68,6 @@
       "reviewedAt": "2026-10-24T16:12:36.332Z"
     },
     {
-      "path": "feature-documentation/system-manual/11-workspace-buddies/04-mobile-office.png",
-      "sha256": "a924ceeaf001550ec05f4d5acb87953a780be8fc61a514d57115bc630141dcd1",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-25T23:09:44.346978+00:00"
-    },
-    {
       "path": "feature-documentation/system-manual/09-pulse-actions/09-undo-preserves-newer-registration.png",
       "sha256": "4cffa3489643676b9f7698b27f68b2e260026b9b773d36c4d362867d2d0d4aa5",
       "reviewer": "Codex agent",
@@ -368,22 +362,10 @@
       "reviewedAt": "2026-10-27T12:10:03.381369+00:00"
     },
     {
-      "path": "feature-documentation/system-manual/11-workspace-buddies/01-meet-the-crew.png",
-      "sha256": "1912552a90c2d0fe801b3748ae91691c6720ae9347e33f2a3ef28161ef303de9",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-27T12:10:03.381718+00:00"
-    },
-    {
       "path": "feature-documentation/system-manual/11-workspace-buddies/02-contextual-loading.png",
       "sha256": "776718aa906e4870ceac4cd53725c64d0b5d0c3a641bb5b56b56c8ad4e90f943",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-10-27T12:10:03.381909+00:00"
-    },
-    {
-      "path": "feature-documentation/system-manual/11-workspace-buddies/03-working-and-review.png",
-      "sha256": "282bad5dede49c65afcc91dae17830884579001fdf8a1696e10375d73418573d",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-27T12:10:03.382152+00:00"
     },
     {
       "path": "feature-documentation/system-walkthrough/02-shared-interface/02-search-overlay.png",
@@ -2492,20 +2474,8 @@
       "reviewedAt": "2026-10-29T02:19:03.679064Z"
     },
     {
-      "path": "feature-documentation/system-manual/11-workspace-buddies/01-meet-the-crew.png",
-      "sha256": "e8833f726208aeb333bd2f309a606b39ae9ffa4be438569eb8e48a34158859d6",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-29T02:19:03.679064Z"
-    },
-    {
       "path": "feature-documentation/system-manual/11-workspace-buddies/02-contextual-loading.png",
       "sha256": "837569263e48ef523ca50faf6804c602d97209432a5bd3fb65185e6b2a3a07cc",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-29T02:19:03.679064Z"
-    },
-    {
-      "path": "feature-documentation/system-manual/11-workspace-buddies/03-working-and-review.png",
-      "sha256": "b85a647529a27264d71295b6adede0c53dbe7c89b94a957dc0b4ad7a5fb273de",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-10-29T02:19:03.679064Z"
     },
@@ -3672,6 +3642,24 @@
       "sha256": "d8cfe892304c75f553c3900fabfec7ee0ed3fcd595bdb76d39213a755067bfee",
       "reviewer": "Claude agent",
       "reviewedAt": "2026-10-30T10:34:11.517Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/11-workspace-buddies/01-meet-the-crew.png",
+      "sha256": "bccee29679a319cc92430430dcb64d05af7c535002ab86702fb0820276176f8e",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-31T01:45:44.814Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/11-workspace-buddies/03-working-and-review.png",
+      "sha256": "1c3fb11116b8ff45dc620a6f1a0daadb58203ba65732a66c50628a3ce951d7ec",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-31T01:45:44.814Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/11-workspace-buddies/04-mobile-office.png",
+      "sha256": "447389db047a5207a293beccb625c7e64377160dbcdd2efff2f076e145792363",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-31T01:45:44.814Z"
     }
   ]
 }

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { ShieldCheck, Route, Search, Library, ListOrdered, Columns2, PenLine, BadgeCheck, Wrench, Pause, Play, Maximize2, Square } from 'lucide-react'
 import { prefersReducedMotion } from './motion'
-import { AGENT_COLORS } from './agentLook'
+import { AGENT_COLORS, AGENT_PLACES } from './agentLook'
 
 const ICONS = { guardian: ShieldCheck, planner: Route, researcher: Search, librarian: Library, ranker: ListOrdered, comparator: Columns2, writer: PenLine, verifier: BadgeCheck, corrector: Wrench }
 const pad = n => String(n).padStart(2, '0')
@@ -109,10 +109,10 @@ export default function WorkspaceSection({ agents, talk, runs }) {
     const near = new IntersectionObserver(([entry]) => {
       if (!entry.isIntersecting) return
       near.disconnect()
-      import('./scene/workspaceScene.js').then(({ createWorkspaceScene }) => {
+      import('../studio/workspaceScene.js').then(({ createWorkspaceScene }) => {
         if (cancelled) return
         api = createWorkspaceScene({
-          canvas: canvas.current, stage: stage.current, order: agents.map(agent => agent.key), labels: labels.current, bubble: bubble.current,
+          canvas: canvas.current, stage: stage.current, cast: agents.map(agent => ({ key: agent.key, color: AGENT_COLORS[agent.key], ...AGENT_PLACES[agent.key] })), labels: labels.current, bubble: bubble.current,
           still: isStill(), onPick: key => choose.current(key), onHover: key => setHovered(key),
           onReady: () => { if (!cancelled) setMode('scene') }, onLost: flat,
         })

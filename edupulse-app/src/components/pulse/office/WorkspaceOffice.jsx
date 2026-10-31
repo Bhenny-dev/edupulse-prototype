@@ -40,7 +40,7 @@ export default function WorkspaceOffice({ tasks, messages, onClose, onTask, busy
     setQuestion('')
     setChats(previous=>({...previous,[selected]:[...(previous[selected]||[]),{from:'you',text:text.trim()}].slice(-20)}))
     const submit=()=>{setSelected(target);setHandoff(null);waiting.current={buddy:target,previous:messages.at(-1)?.id};onTask(text.trim(),destination,personal)}
-    if(target!==selected){setHandoff({from:buddy.name,to:destination.name});timer.current=setTimeout(submit,reducedMotion?0:650)}else submit()
+    if(target!==selected){setHandoff({from:buddy.name,to:destination.name,fromId:selected,toId:target});timer.current=setTimeout(submit,reducedMotion?0:650)}else submit()
   }
 
   function keyboard(event) {
@@ -56,7 +56,7 @@ export default function WorkspaceOffice({ tasks, messages, onClose, onTask, busy
     <section className="workspace-office" ref={root} role="dialog" aria-modal="true" aria-labelledby="workspace-office-title">
       <header className="office-topbar"><div className="office-brand-mark" aria-hidden="true">✦</div><div><span className="office-eyebrow">PULSE / WORKSPACE BUDDIES</span><h2 id="workspace-office-title">Meet your crew.</h2></div><div className="office-topbar-actions"><span className="office-live"><i />{working.length?`${working.length} at work`:'Ready when you are'}</span><button type="button" onClick={()=>setPaused(value=>!value)} aria-pressed={paused} aria-label={paused?'Resume office animation':'Pause office animation'}>{paused?<Play size={17}/>:<Pause size={17}/>}</button><button ref={closeButton} type="button" onClick={onClose} aria-label="Close workspace"><X size={21}/></button></div></header>
       <div className="office-body"><div className="office-world">
-        <OfficeCanvas tasks={tasks} selected={selected} onSelect={setSelected} paused={paused} reducedMotion={reducedMotion}/>
+        <OfficeCanvas tasks={tasks} selected={selected} onSelect={setSelected} paused={paused} reducedMotion={reducedMotion} handoff={handoff}/>
         {handoff&&<div className="office-handoff" role="status"><span aria-hidden="true">▤</span>{handoff.from} → {handoff.to}<small>Passing your request to the right desk</small></div>}
         <div className="office-desk-grid" aria-label="Choose a workspace buddy">{BUDDIES.map(item=>{
           const active=working.some(task=>task.buddy===item.id),review=pending.filter(task=>task.buddy===item.id).length
