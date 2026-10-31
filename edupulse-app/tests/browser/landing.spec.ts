@@ -79,6 +79,24 @@ test('Skip intro works with the keyboard and the pointer and removes the opening
   await expect(tab.getByRole('heading', { level: 1 })).toBeInViewport()
 })
 
+test('keyboard focus on Skip intro survives the page re-measuring itself', async ({ page }, info) => {
+  test.skip(mobileProject(info.project.name), 'keyboard path; the pointer path is covered above')
+  test.setTimeout(90_000)
+  await page.goto('/')
+  await expect(page.locator('.lp-prelude')).toBeVisible()
+  await page.keyboard.press('Tab')
+  await page.keyboard.press('Tab')
+  const skip = page.getByRole('button', { name: 'Skip intro' })
+  await expect(skip).toBeFocused()
+  // A resize makes ScrollTrigger re-measure the pinned sections, as fonts and photographs do.
+  const size = page.viewportSize()!
+  await page.setViewportSize({ width: size.width, height: size.height + 40 })
+  await page.waitForTimeout(600)
+  await expect(skip).toBeFocused()
+  await page.keyboard.press('Enter')
+  await expect(page.locator('.lp-prelude')).toHaveCount(0)
+})
+
 test('the opening plays once per tab: reloads, section links and other routes bypass it', async ({ page }) => {
   test.setTimeout(90_000) // three tabs, each compiled by the development server
   await page.goto('/')
@@ -208,13 +226,15 @@ test('the agents scope names all nine agents in order, then opens into the next 
   await expect(section.locator('.scope-svg')).toHaveAttribute('aria-hidden', 'true')
   const names = await section.locator('.agents-list h3').allTextContents()
   expect(names).toEqual(['Guardian', 'Planner', 'Researcher', 'Librarian', 'Ranker', 'Comparator', 'Writer', 'Verifier', 'Corrector'])
-  const range = await section.evaluate(element => {
-    const spacer = element.parentElement as HTMLElement
-    return { start: spacer.getBoundingClientRect().top + window.scrollY, distance: spacer.offsetHeight - (element as HTMLElement).offsetHeight }
-  })
-  // One unit of the scroll-linked timeline per agent, then 1.6 for the core's opening.
+  // One unit of the scroll-linked timeline per agent, then 1.6 for the core's opening. The pinned
+  // range is measured at every step, because a refresh (fonts, photographs) can move it.
   const units = names.length + 1.6
-  const go = (time: number) => page.evaluate(y => window.scrollTo(0, y), Math.round(range.start + (time / units) * range.distance))
+  const go = (time: number, past = 0) => section.evaluate((element, [fraction, extra]) => {
+    const spacer = element.parentElement as HTMLElement
+    const start = spacer.getBoundingClientRect().top + window.scrollY
+    const distance = spacer.offsetHeight - (element as HTMLElement).offsetHeight
+    window.scrollTo(0, Math.round(start + fraction * distance + extra))
+  }, [time / units, past])
   const caption = section.locator('.agents-name')
   for (const [i, name] of names.entries()) {
     await go(i + 0.5)
@@ -227,7 +247,7 @@ test('the agents scope names all nine agents in order, then opens into the next 
   // The core opens into white, and the next section follows.
   await go(units)
   await expect.poll(() => section.locator('.scope-light').evaluate(element => Number(getComputedStyle(element).opacity)), { timeout: 5000 }).toBeGreaterThan(0.98)
-  await page.evaluate(y => window.scrollTo(0, y), Math.round(range.start + range.distance + 300))
+  await go(units, 300)
   await expect(page.locator('#workspace')).toBeInViewport()
 })
 

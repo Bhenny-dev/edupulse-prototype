@@ -24,7 +24,7 @@ Version folders are release records. Preserve released records, and add correcti
 
 | Version | Scope | Status |
 | --- | --- | --- |
-| [30 October combined release](versions/2026-10-30-integrated-release/README.md) | Content generation harness, confirmed persistence, approved landing and scripted Agent workspace | Combined release checks in progress; see validation record |
+| [30 October combined release](versions/2026-10-30-integrated-release/README.md) | Content generation harness, confirmed persistence, bounded API request intake, approved landing, scripted Agent workspace and the studio in the Pulse office | Verify passed (176/176); browser 185 passed, 16 skipped, and the five landing failures fixed and rerun (34/34 runnable); pushed to `release/integrated-20261031`, not deployed |
 | [29 October landing v2](versions/2026-10-29-landing-v2/README.md) | Editorial landing page (comparison, product chapters, six-phase timeline, cited research), shared design tokens and WCAG contrast, motion rules, skip link, formatted PDF downloads | Live from 354b0a1; verify 148/148, browser 140 passed; hosted checks passed |
 | [28 October landing and motion](versions/2026-10-28-landing-and-motion/README.md) | Landing page redesign around the CIT (features, six phases, roles, Pulse, colleges, FAQ), KCP assets, entrance motion with reduced-motion fallback | Live; 135 unit/integration + 119 browser tests passed; CI billing lock documented |
 | [28 October role restoration](versions/2026-10-28-role-restoration/README.md) | Account sections restored across eight page branches, record-derived charts, private file intake and dark consistency | Live; included in the verified baseline release |
