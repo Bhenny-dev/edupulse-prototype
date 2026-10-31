@@ -1,14 +1,15 @@
 import * as THREE from 'three'
 
 // The landing page's one decorative WebGL scene: satin facets that assemble around the
-// EduPulse mark in the opening, and the blue Pulse ring beside the hero's product screen.
-// One renderer, one render loop and one camera controller, which combines the entrance
-// push-in, the aperture pull-back and a small, clamped pointer parallax. The loop runs only
-// while the canvas is on screen and the tab is visible, skips frames when nothing changes,
-// damps with frame-rate independent easing and caps the pixel ratio. createLandingScene
-// returns null without WebGL; the page then keeps its SVG ring. All meshes share one material
-// program, compiled in parallel (compileAsync) before the first frame, so starting the scene
-// never stalls the opening.
+// EduPulse mark in the opening, then the hero's emblem: the blue Pulse ring tilted like an
+// orbit around two porcelain medallions that carry the KCP crest and the CIT emblem, with blue
+// and white planes drifting in the field behind them. One renderer, one render loop and one
+// camera controller, which combines the entrance push-in, the aperture pull-back and a small,
+// clamped pointer parallax. Every movement is damped with frame-rate independent easing, on
+// long, even curves. The loop runs only while the canvas is on screen and the tab is visible,
+// and the pixel ratio is capped. createLandingScene returns null without WebGL; the page then
+// keeps its flat emblem (SVG ring and seal images). Materials compile in parallel
+// (compileAsync) before the first frame, so starting the scene never stalls the opening.
 
 const FOV = 30
 const START_Z = 10.6
@@ -31,6 +32,26 @@ const FACETS = [
   { outline: [[-0.55, 0.16], [0.6, 0.18], [0.5, -0.12], [-0.6, -0.14]], color: 0xf4f9ff, angle: -118, z: -0.3, size: 0.8 },
 ]
 
+// The hero's emblem, in units of the emblem box's width. The ring is a halo behind the seals,
+// tipped back a little. The seals sit inside it on a diagonal, KCP above on the left and CIT
+// below on the right, a little in front, each turned slightly towards the other. They turn in
+// from edge-on (from opposite sides) as the hero arrives.
+const RING = { radius: 0.45, z: -0.1 }
+const SEALS = [
+  { x: -0.15, y: 0.1, z: -0.04, radius: 0.19, turn: 0.18, phase: 0, delay: 0 },
+  { x: 0.15, y: -0.1, z: 0.08, radius: 0.19, turn: -0.18, phase: 1.9, delay: 0.14 },
+]
+// Planes drifting in the field around the emblem, clear of the title on its left: outline,
+// colour, offset from the emblem's centre, depth, size and opacity at rest. White and pale
+// blue, with one blue accent.
+const PLANES = [
+  { outline: [[-0.5, 0.3], [0.5, 0.42], [0.42, -0.4], [-0.46, -0.32]], color: 0xffffff, x: 0.52, y: 0.4, z: -0.5, size: 0.28, opacity: 0.95 },
+  { outline: [[0, 0.6], [0.52, -0.3], [-0.5, -0.36]], color: 0xdbeafe, x: -0.4, y: 0.42, z: -0.6, size: 0.24, opacity: 0.9 },
+  { outline: [[-0.48, 0.22], [0.4, 0.34], [0.5, -0.2], [-0.38, -0.3]], color: 0x2563eb, x: 0.56, y: -0.42, z: -0.3, size: 0.13, opacity: 0.85 },
+  { outline: [[0, 0.5], [0.36, 0.04], [0.02, -0.52], [-0.38, 0]], color: 0x93c5fd, x: -0.34, y: -0.52, z: -0.4, size: 0.16, opacity: 0.7 },
+  { outline: [[-0.42, 0.3], [0.14, 0.5], [0.5, 0.04], [0.2, -0.42], [-0.46, -0.2]], color: 0xf4f9ff, x: 0.22, y: -0.62, z: -0.7, size: 0.22, opacity: 0.95 },
+]
+
 export function createLandingScene({ canvas, anchor, inputs, onReady, onLost }) {
   // Without WebGL there is nothing to do (and three would log an error while failing).
   const probe = document.createElement('canvas')
@@ -46,10 +67,16 @@ export function createLandingScene({ canvas, anchor, inputs, onReady, onLost }) 
   if (!renderer.getContext()) { renderer.dispose(); return null }
   renderer.setClearColor(0x000000, 0)
   renderer.toneMapping = THREE.NeutralToneMapping
+  let dirty = true, disposed = false
 
   const scene = new THREE.Scene()
-  // Satin surfaces: one standard material program for every mesh (only uniforms differ).
+  // Satin surfaces share one standard material program (only uniforms differ).
   const satin = (color, extra = {}) => new THREE.MeshStandardMaterial({ color, roughness: 0.34, metalness: 0.08, transparent: true, opacity: 0, side: THREE.DoubleSide, ...extra })
+  const facetShape = outline => {
+    const geometry = new THREE.ExtrudeGeometry(new THREE.Shape(outline.map(([x, y]) => new THREE.Vector2(x, y))), { depth: 0.045, bevelEnabled: true, bevelThickness: 0.012, bevelSize: 0.014, bevelSegments: 2, curveSegments: 1 })
+    geometry.center()
+    return geometry
+  }
 
   const camera = new THREE.PerspectiveCamera(FOV, 1, 0.1, 80)
   camera.position.set(0, 0, START_Z)
@@ -63,11 +90,8 @@ export function createLandingScene({ canvas, anchor, inputs, onReady, onLost }) 
   scene.add(key, fill, rim)
 
   const facets = FACETS.map((facet, i) => {
-    const shape = new THREE.Shape(facet.outline.map(([x, y]) => new THREE.Vector2(x, y)))
-    const geometry = new THREE.ExtrudeGeometry(shape, { depth: 0.045, bevelEnabled: true, bevelThickness: 0.012, bevelSize: 0.014, bevelSegments: 2, curveSegments: 1 })
-    geometry.center()
     const material = satin(facet.color, { emissive: facet.color, emissiveIntensity: 0.22 }) // keeps the light facets satin-white
-    const mesh = new THREE.Mesh(geometry, material)
+    const mesh = new THREE.Mesh(facetShape(facet.outline), material)
     mesh.visible = false
     scene.add(mesh)
     const sign = i % 2 ? -1 : 1
@@ -94,10 +118,73 @@ export function createLandingScene({ canvas, anchor, inputs, onReady, onLost }) 
   ring.visible = false
   scene.add(ring)
 
-  // Layout: canvas size, the facets' ellipse around the mark, and the ring placed over the
-  // hero's ring anchor (projected for the resting camera).
-  const view = { rx: 3, ry: 1.8, scale: 1, ring: { on: false, x: 0, y: 0, r: 1 } }
-  let dirty = true, disposed = false
+  // The medallions: a porcelain disc with a blue rim and a thin pale-blue bezel; the seal is
+  // drawn from the hero's own image onto a white face. Until it has loaded the face is white.
+  const blank = new THREE.DataTexture(new Uint8Array([255, 255, 255, 255]), 1, 1)
+  blank.needsUpdate = true
+  const discBody = new THREE.CylinderGeometry(1, 1, 0.16, 96, 1).rotateX(Math.PI / 2)
+  const discFace = new THREE.CircleGeometry(0.9, 96)
+  const discRim = new THREE.TorusGeometry(1, 0.055, 24, 160)
+  const discBezel = new THREE.TorusGeometry(0.91, 0.012, 12, 160)
+  const sealImages = [...(anchor?.querySelectorAll('.hero-seal img') || [])]
+  const textures = []
+  const medallions = SEALS.map((seal, i) => {
+    const materials = {
+      body: new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: 0.3, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.14, transparent: true, opacity: 0 }),
+      face: new THREE.MeshStandardMaterial({ map: blank, roughness: 0.45, metalness: 0, transparent: true, opacity: 0 }),
+      rim: satin(0x2563eb, { roughness: 0.2, metalness: 0.35 }),
+      bezel: satin(0x93c5fd, { roughness: 0.3 }),
+    }
+    const face = new THREE.Mesh(discFace, materials.face)
+    const bezel = new THREE.Mesh(discBezel, materials.bezel)
+    face.position.z = 0.082
+    bezel.position.z = 0.084
+    const group = new THREE.Group()
+    group.add(new THREE.Mesh(discBody, materials.body), face, new THREE.Mesh(discRim, materials.rim), bezel)
+    group.visible = false
+    scene.add(group)
+    return { ...seal, group, materials, image: sealImages[i] }
+  })
+
+  function sealTexture(image) {
+    const size = 512, face = document.createElement('canvas')
+    face.width = face.height = size
+    const context = face.getContext('2d')
+    context.fillStyle = '#ffffff'
+    context.fillRect(0, 0, size, size)
+    const fit = size * 0.84, ratio = image.naturalWidth / image.naturalHeight || 1
+    const w = ratio >= 1 ? fit : fit * ratio, h = ratio >= 1 ? fit / ratio : fit
+    context.drawImage(image, (size - w) / 2, (size - h) / 2, w, h)
+    const texture = new THREE.CanvasTexture(face)
+    texture.colorSpace = THREE.SRGBColorSpace
+    texture.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy())
+    textures.push(texture)
+    return texture
+  }
+  for (const medallion of medallions) {
+    const image = medallion.image
+    if (!image) continue
+    const apply = () => {
+      if (disposed || !image.naturalWidth) return
+      medallion.materials.face.map = sealTexture(image)
+      dirty = true
+    }
+    if (image.complete) apply()
+    else image.addEventListener('load', apply, { once: true })
+  }
+
+  const planes = PLANES.map((plane, i) => {
+    const material = satin(plane.color, { emissive: plane.color, emissiveIntensity: 0.2 })
+    const mesh = new THREE.Mesh(facetShape(plane.outline), material)
+    mesh.visible = false
+    scene.add(mesh)
+    return { ...plane, mesh, material, phase: i * 1.37, delay: 0.1 + i * 0.05 }
+  })
+
+  // Layout: canvas size, the facets' ellipse around the mark, and the emblem placed over the
+  // hero's emblem box (projected for the resting camera). The flat emblem shows wherever the
+  // box's centre is off the canvas.
+  const view = { rx: 3, ry: 1.8, scale: 1, emblem: { on: false, x: 0, y: 0, size: 1 } }
   function layout() {
     if (disposed) return
     const box = canvas.getBoundingClientRect()
@@ -115,13 +202,14 @@ export function createLandingScene({ canvas, anchor, inputs, onReady, onLost }) 
     const centreY = target ? target.top + target.height / 2 - box.top : -1
     if (target && target.width > 8 && centreY > 0 && centreY < box.height) {
       const h = halfHeight(REST_Z)
-      view.ring = {
+      view.emblem = {
         on: true,
         x: (((target.left + target.width / 2 - box.left) / box.width) * 2 - 1) * h * camera.aspect,
         y: -(((centreY / box.height) * 2 - 1) * h),
-        r: (target.width / box.height) * h * 0.82,
+        size: (target.width / box.height) * 2 * h, // the box's width in world units
       }
-    } else view.ring.on = false
+    } else view.emblem.on = false
+    anchor?.toggleAttribute('data-drawn', view.emblem.on)
     dirty = true
   }
 
@@ -134,6 +222,7 @@ export function createLandingScene({ canvas, anchor, inputs, onReady, onLost }) 
   }
 
   const cam = { x: 0, y: 0, z: START_Z }
+  const stage = { arrive: 0, tiltX: 0, tiltY: 0, exit: 0 }
   const seenInputs = { intro: -1, aperture: -1, hero: -1 }
   let frame = 0, last = 0, clock = 0, running = false, onScreen = true
 
@@ -172,14 +261,50 @@ export function createLandingScene({ canvas, anchor, inputs, onReady, onLost }) 
       facet.material.opacity = opacity
     }
 
-    const arrive = easeOut(hero)
-    ring.visible = view.ring.on && arrive > 0.01
+    // The emblem. Its arrival, the stage's tilt towards the pointer and its retreat as the hero
+    // scrolls away are all damped again here, so the motion stays slow and even whatever drives it.
+    stage.arrive = damp(stage.arrive, hero, 2.4, dt)
+    stage.tiltX = damp(stage.tiltX, pointer.y * 0.12, 1.6, dt)
+    stage.tiltY = damp(stage.tiltY, pointer.x * 0.24, 1.6, dt)
+    const top = canvas.getBoundingClientRect().top
+    stage.exit = damp(stage.exit, clamp01(-top / Math.max(1, canvas.clientHeight)), 3, dt)
+    const { on, x: ex, y: ey, size } = view.emblem
+    const arrive = easeInOut(clamp01(stage.arrive))
+    const back = stage.exit * size * 0.9
+    // A slow sweep of the key light across the porcelain and the ring.
+    key.position.set(3 + Math.cos(clock * 0.28) * 3.2, 5 - Math.sin(clock * 0.21) * 1.2, 6 + Math.sin(clock * 0.28) * 2)
+
+    ring.visible = on && arrive > 0.01
     if (ring.visible) {
-      ring.position.set(view.ring.x, view.ring.y, 0)
-      ring.scale.setScalar(view.ring.r * (0.72 + 0.28 * arrive))
-      ring.rotation.set(0.95 + Math.sin(clock * 0.35) * 0.05, -0.38 + Math.sin(clock * 0.22) * 0.12 + (1 - arrive) * 0.8, 0.1)
-      pulse.rotation.z = clock * 0.55
+      ring.position.set(ex, ey, RING.z * size - back)
+      ring.scale.setScalar(size * RING.radius * (0.84 + 0.16 * arrive))
+      ring.rotation.set(0.42 + Math.sin(clock * 0.3) * 0.05 + stage.tiltX, -0.3 + stage.tiltY * 0.6 + Math.sin(clock * 0.19) * 0.08 + (1 - arrive) * 0.9, 0.1)
+      pulse.rotation.z = clock * 0.5
       for (const material of ringMaterials) material.opacity = arrive
+    }
+    for (const medallion of medallions) {
+      const t = easeInOut(clamp01((clamp01(stage.arrive) - medallion.delay) / (1 - medallion.delay)))
+      medallion.group.visible = on && t > 0.01
+      if (!medallion.group.visible) continue
+      const float = Math.sin(clock * 0.6 + medallion.phase)
+      medallion.group.position.set(ex + medallion.x * size, ey + (medallion.y + 0.012 * float) * size, (medallion.z - (1 - t) * 0.5) * size - back)
+      medallion.group.rotation.set(
+        0.05 * Math.sin(clock * 0.31 + medallion.phase) + stage.tiltX,
+        medallion.turn + 0.16 * Math.sin(clock * 0.36 + medallion.phase) + stage.tiltY + (1 - t) * Math.PI * 0.5 * Math.sign(medallion.x),
+        0,
+      )
+      medallion.group.scale.setScalar(size * medallion.radius * (0.92 + 0.08 * t))
+      for (const material of Object.values(medallion.materials)) material.opacity = t
+    }
+    for (const plane of planes) {
+      const t = easeOut(clamp01((clamp01(stage.arrive) - plane.delay) / (1 - plane.delay)))
+      plane.mesh.visible = on && t > 0.01
+      if (!plane.mesh.visible) continue
+      const drift = Math.sin(clock * 0.24 + plane.phase)
+      plane.mesh.position.set(ex + (plane.x + 0.015 * drift) * size, ey + (plane.y + 0.02 * Math.cos(clock * 0.2 + plane.phase)) * size, (plane.z - (1 - t) * 0.6) * size - back * 1.4)
+      plane.mesh.rotation.set(0.35 * Math.sin(plane.phase) + stage.tiltX * 0.5, 0.3 * Math.cos(plane.phase) + stage.tiltY * 0.5, plane.phase + clock * 0.03)
+      plane.mesh.scale.setScalar(size * plane.size * (0.85 + 0.15 * t))
+      plane.material.opacity = plane.opacity * t
     }
 
     if (dirty || changed || moving || ring.visible) {
@@ -206,6 +331,7 @@ export function createLandingScene({ canvas, anchor, inputs, onReady, onLost }) 
     cancelAnimationFrame(frame)
     seen.disconnect()
     sizes.disconnect()
+    anchor?.removeAttribute('data-drawn')
     window.removeEventListener('pointermove', onPointer)
     window.removeEventListener('load', onLoad)
     document.removeEventListener('visibilitychange', update)
@@ -213,6 +339,9 @@ export function createLandingScene({ canvas, anchor, inputs, onReady, onLost }) 
     scene.traverse(object => object.geometry?.dispose())
     for (const facet of facets) facet.material.dispose()
     for (const material of ringMaterials) material.dispose()
+    for (const medallion of medallions) for (const material of Object.values(medallion.materials)) material.dispose()
+    for (const plane of planes) plane.material.dispose()
+    for (const texture of [blank, ...textures]) texture.dispose()
     renderer.dispose()
     renderer.forceContextLoss()
   }
@@ -226,14 +355,13 @@ export function createLandingScene({ canvas, anchor, inputs, onReady, onLost }) 
   if (anchor) sizes.observe(anchor)
   document.fonts?.ready.then(onLoad)
   layout()
-  // Compile the shared material program in parallel, then start drawing. Hidden objects are
-  // skipped by the compiler, so everything is briefly marked visible for it.
-  for (const facet of facets) facet.mesh.visible = true
-  ring.visible = true
+  // Compile every material in parallel, then start drawing. Hidden objects are skipped by the
+  // compiler, so everything is briefly marked visible for it.
+  const drawn = [...facets.map(facet => facet.mesh), ring, ...medallions.map(medallion => medallion.group), ...planes.map(plane => plane.mesh)]
+  for (const object of drawn) object.visible = true
   renderer.compileAsync(scene, camera).catch(() => undefined).then(() => {
     if (disposed) return
-    for (const facet of facets) facet.mesh.visible = false
-    ring.visible = false
+    for (const object of drawn) object.visible = false
     ready = true
     dirty = true
     update()

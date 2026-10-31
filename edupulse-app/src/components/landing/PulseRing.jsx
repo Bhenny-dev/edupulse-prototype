@@ -1,5 +1,5 @@
-// The Pulse ring drawn in SVG. It stands in for the 3D ring with reduced motion, without
-// WebGL, and until the 3D scene has loaded. Decorative.
+// The Pulse ring drawn in SVG: the hero emblem's halo, tipped back a little. It stands in for
+// the 3D ring with reduced motion, without WebGL, and until the 3D scene has loaded. Decorative.
 export default function PulseRing() {
   return (
     <svg className="pulse-ring-svg" viewBox="0 0 220 220" focusable="false" aria-hidden="true">
@@ -10,10 +10,10 @@ export default function PulseRing() {
           <stop offset="1" stopColor="#1e40af" />
         </linearGradient>
       </defs>
-      <g transform="rotate(-24 110 110)">
-        <ellipse cx="110" cy="110" rx="84" ry="54" fill="none" stroke="url(#lp-ring-body)" strokeWidth="13" />
-        <ellipse cx="110" cy="110" rx="62" ry="38" fill="none" stroke="#dbeafe" strokeWidth="3" />
-        <path d="M 30 98 A 84 54 0 0 1 104 56" fill="none" stroke="#dbeafe" strokeWidth="4" strokeLinecap="round" opacity="0.9" />
+      <g transform="rotate(-8 110 110)">
+        <ellipse cx="110" cy="110" rx="98" ry="89" fill="none" stroke="url(#lp-ring-body)" strokeWidth="9" />
+        <ellipse cx="110" cy="110" rx="76" ry="69" fill="none" stroke="#dbeafe" strokeWidth="2" />
+        <path d="M 16 96 A 98 89 0 0 1 92 22" fill="none" stroke="#dbeafe" strokeWidth="3" strokeLinecap="round" opacity="0.9" />
       </g>
     </svg>
   )

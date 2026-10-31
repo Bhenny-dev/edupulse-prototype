@@ -1,12 +1,19 @@
 import { test, expect, type Page, type Locator } from '@playwright/test'
 
-// The public landing page: the opening (once per tab, skippable, bypassed by reloads, section
-// links and other routes), section links clear of the fixed bar, the synchronized feature
-// stage, the six-phase connector, the agents scope, the agent workspace, role tabs, FAQ, the photo rows and their pause control,
-// sign-in, legal-page transitions and history, reduced motion, missing WebGL and overflow.
+// The public landing page: the opening (on every load at the top, with no skip control; section
+// links and other routes bypass it), the hero emblem, section links clear of the fixed bar, the
+// synchronized feature stage, the six-phase connector, the agents scope, the agent workspace,
+// role tabs, FAQ, the photo rows and their pause control, sign-in, legal-page transitions and
+// history, reduced motion, missing WebGL and overflow.
 
-// A tab that has already seen the opening starts on the hero.
-const repeatVisit = (page: Page) => page.addInitScript(() => { try { sessionStorage.setItem('edupulse-intro', '1') } catch { /* no storage */ } })
+// The landing page always starts with the opening; most tests begin where it ends, on the hero.
+async function afterOpening(page: Page, path = '/') {
+  await page.goto(path)
+  const prelude = page.locator('.lp-prelude')
+  if (!(await prelude.count())) return
+  await page.evaluate(() => window.scrollTo(0, Math.round(window.innerHeight * 0.85) + 4))
+  await expect(prelude).toHaveClass(/is-gone/)
+}
 const mobileProject = (name: string) => name === 'mobile'
 
 async function openSection(page: Page, mobile: boolean, name: string) {
@@ -35,7 +42,7 @@ test('a fresh visit opens on the logo and name; scrolling opens the aperture int
   await expect(prelude).toBeVisible()
   await expect(page.locator('.prelude-word')).toHaveText('EduPulse')
   await expect(page.locator('.lp-opening')).toHaveAttribute('data-intro', 'ready', { timeout: 6000 })
-  await expect(page.getByRole('button', { name: 'Skip intro' })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Skip intro' })).toHaveCount(0)
   await expect(page.locator('.prelude-cue')).toHaveText('Scroll to explore')
   // While the field is closed the bar is out of sight and out of the tab order.
   await expect(page.locator('.lp-nav')).toHaveAttribute('inert', '')
@@ -47,6 +54,13 @@ test('a fresh visit opens on the logo and name; scrolling opens the aperture int
   await expect(page.locator('.lp-nav')).not.toHaveAttribute('inert', '')
   await expect(page.getByRole('heading', { level: 1 })).toBeInViewport()
   await expect(page.getByRole('heading', { level: 1 })).toContainText('One shared home for')
+  // The hero: the title, two actions and the emblem, with no screen or photograph that a later
+  // section shows. The 3D scene draws the emblem's ring and seals over its box.
+  const hero = page.locator('.lp-hero')
+  await expect(hero.locator('.hero-seal img')).toHaveCount(2)
+  await expect(hero.locator('figure, .hero-lede, .hero-notes')).toHaveCount(0)
+  await expect(hero.locator('.hero-emblem')).toHaveAttribute('data-drawn', '', { timeout: 15_000 })
+  await expect(hero.locator('.hero-emblem')).toBeInViewport()
 
   // It follows the scroll back up, and a fast jump to the end of the page is never held.
   await page.evaluate(() => window.scrollTo(0, 0))
@@ -55,55 +69,49 @@ test('a fresh visit opens on the logo and name; scrolling opens the aperture int
   await expect(page.locator('footer.lp-footer')).toBeInViewport()
 })
 
-test('Skip intro works with the keyboard and the pointer and removes the opening layers', async ({ page }, info) => {
+test('a keyboard user who tabs into the hero plays the opening forward instead of skipping it', async ({ page }, info) => {
+  test.skip(mobileProject(info.project.name), 'keyboard navigation')
   test.setTimeout(90_000)
-  if (!mobileProject(info.project.name)) {
-    await page.goto('/')
-    await expect(page.locator('.lp-prelude')).toBeVisible()
-    await page.keyboard.press('Tab')
-    await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
-    await page.keyboard.press('Tab')
-    await expect(page.getByRole('button', { name: 'Skip intro' })).toBeFocused()
-    await page.keyboard.press('Enter')
-    await expect(page.locator('.lp-prelude')).toHaveCount(0)
-    await expect(page.locator('#hero-title')).toBeFocused()
-    expect(await page.evaluate(() => window.scrollY)).toBe(0)
-    await expect(page.locator('.lp-opening .pin-spacer, .pin-spacer > .lp-opening')).toHaveCount(0)
-    await expect(page.locator('.lp-nav')).not.toHaveAttribute('inert', '')
-  }
-  // A new tab has its own session, so the opening plays there; the pointer skips it too.
-  const tab = await page.context().newPage()
-  await tab.goto('/')
-  await tab.getByRole('button', { name: 'Skip intro' }).click()
-  await expect(tab.locator('.lp-prelude')).toHaveCount(0)
-  await expect(tab.getByRole('heading', { level: 1 })).toBeInViewport()
+  await page.goto('/')
+  await expect(page.locator('.lp-prelude')).toBeVisible()
+  await page.keyboard.press('Tab')
+  await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
+  await expect(page.locator('.lp-prelude')).not.toHaveClass(/is-gone/)
+  // The bar is out of the tab order while the facets are closed, so the next stop is the hero.
+  await page.keyboard.press('Tab')
+  const start = page.locator('.lp-hero').getByRole('link', { name: 'Get started' })
+  await expect(start).toBeFocused()
+  await expect(page.locator('.lp-prelude')).toHaveClass(/is-gone/)
+  await expect(page.locator('.lp-prelude')).toHaveCount(1) // played to its end, not removed
+  await expect(start).toBeInViewport()
+  await expect(page.locator('.lp-nav')).not.toHaveAttribute('inert', '')
 })
 
-test('keyboard focus on Skip intro survives the page re-measuring itself', async ({ page }, info) => {
-  test.skip(mobileProject(info.project.name), 'keyboard path; the pointer path is covered above')
+test('keyboard focus on a hero action survives the page re-measuring itself', async ({ page }, info) => {
+  test.skip(mobileProject(info.project.name), 'keyboard navigation')
   test.setTimeout(90_000)
   await page.goto('/')
   await expect(page.locator('.lp-prelude')).toBeVisible()
   await page.keyboard.press('Tab')
   await page.keyboard.press('Tab')
-  const skip = page.getByRole('button', { name: 'Skip intro' })
-  await expect(skip).toBeFocused()
-  // A resize makes ScrollTrigger re-measure the pinned sections, as fonts and photographs do.
+  const start = page.locator('.lp-hero').getByRole('link', { name: 'Get started' })
+  await expect(start).toBeFocused()
+  await expect(page.locator('.lp-prelude')).toHaveClass(/is-gone/)
+  // A resize makes ScrollTrigger re-measure the pinned sections, as fonts and photographs do;
+  // the hero is inside the pinned opening, which a refresh takes out of its spacer and back.
   const size = page.viewportSize()!
   await page.setViewportSize({ width: size.width, height: size.height + 40 })
   await page.waitForTimeout(600)
-  await expect(skip).toBeFocused()
-  await page.keyboard.press('Enter')
-  await expect(page.locator('.lp-prelude')).toHaveCount(0)
+  await expect(start).toBeFocused()
 })
 
-test('the opening plays once per tab: reloads, section links and other routes bypass it', async ({ page }) => {
+test('the opening plays on every load at the top, a reload included; section links and other routes bypass it', async ({ page }) => {
   test.setTimeout(90_000) // three tabs, each compiled by the development server
   await page.goto('/')
   await expect(page.locator('.lp-prelude')).toBeVisible()
   await page.reload()
-  await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
-  await expect(page.locator('.lp-prelude')).toHaveCount(0)
+  await expect(page.locator('.lp-prelude')).toBeVisible()
+  await expect(page.locator('.prelude-word')).toHaveText('EduPulse')
 
   const direct = await page.context().newPage()
   await direct.goto('/#/?section=faq')
@@ -120,8 +128,7 @@ test('the opening plays once per tab: reloads, section links and other routes by
 test('header links reach their sections below the bar; role tabs and the FAQ work; no horizontal overflow', async ({ page }, info) => {
   test.setTimeout(90_000) // the development server compiles the page on the first visit
   const mobile = mobileProject(info.project.name)
-  await repeatVisit(page)
-  await page.goto('/')
+  await afterOpening(page)
   await expect(page.getByRole('heading', { level: 1 })).toContainText('One shared home for')
   await page.evaluate(() => document.fonts.ready)
 
@@ -167,8 +174,7 @@ test('header links reach their sections below the bar; role tabs and the FAQ wor
 
 test('footer links reach their sections and the legal pages', async ({ page }) => {
   test.setTimeout(90_000)
-  await repeatVisit(page)
-  await page.goto('/')
+  await afterOpening(page)
   await page.evaluate(() => document.fonts.ready)
   const footer = page.getByRole('navigation', { name: 'Footer: page sections' })
   for (const [name, id] of [['Impact', 'impact'], ['How It Works', 'flow'], ['Why EduPulse', 'problem']]) {
@@ -182,8 +188,7 @@ test('footer links reach their sections and the legal pages', async ({ page }) =
 test('the four feature steps stay in step forwards, backwards and under rapid scrolling', async ({ page }, info) => {
   test.setTimeout(90_000)
   test.skip(mobileProject(info.project.name), 'phones show the steps stacked')
-  await repeatVisit(page)
-  await page.goto('/')
+  await afterOpening(page)
   const section = page.locator('#features')
   await expect(section).toHaveClass(/is-live/)
   const titles = await section.locator('.fs-chapter h3').allTextContents()
@@ -219,8 +224,7 @@ test('the four feature steps stay in step forwards, backwards and under rapid sc
 
 test('the agents scope names all nine agents in order, then opens into the next section', async ({ page }) => {
   test.setTimeout(90_000)
-  await repeatVisit(page)
-  await page.goto('/')
+  await afterOpening(page)
   const section = page.locator('#agents')
   await expect(section).toHaveClass(/is-live/)
   await expect(section.locator('.scope-svg')).toHaveAttribute('aria-hidden', 'true')
@@ -265,7 +269,6 @@ test('with reduced motion the agents are one still picture and a list of all nin
 
 test('the agent workspace answers a tap on a robot or on its button, and runs a request', async ({ page }) => {
   test.setTimeout(120_000)
-  await repeatVisit(page)
   await page.goto('/#/?section=workspace')
   const section = page.locator('#workspace')
   const log = section.getByRole('list', { name: 'Conversation' })
@@ -300,8 +303,7 @@ test('with reduced motion a request through the workspace shows every hand-off a
 })
 
 test('the six phases draw their connector; every phase keeps its AI and People duties', async ({ page }) => {
-  await repeatVisit(page)
-  await page.goto('/')
+  await afterOpening(page)
   const flow = page.locator('#flow')
   await expect(flow).toHaveClass(/is-live/)
   await expect(flow.locator('.flow-phase')).toHaveCount(6)
@@ -320,8 +322,7 @@ test('the six phases draw their connector; every phase keeps its AI and People d
 test('the photographs drift; the pause control, hover, focus and a tap stop them', async ({ page }, info) => {
   test.setTimeout(60_000)
   const mobile = mobileProject(info.project.name)
-  await repeatVisit(page)
-  await page.goto('/')
+  await afterOpening(page)
   const rail = page.getByRole('region', { name: 'CIT community photographs' })
   const track = page.locator('.photo-track').first()
   await track.scrollIntoViewIfNeeded()
@@ -361,8 +362,7 @@ test('the photographs drift; the pause control, hover, focus and a tap stop them
 })
 
 test('the sign-in panel keeps its fields, hints and validation, and holds still while used', async ({ page }) => {
-  await repeatVisit(page)
-  await page.goto('/')
+  await afterOpening(page)
   await page.locator('.lp-nav').getByRole('link', { name: 'Sign In', exact: true }).click()
   const email = page.getByLabel('Email', { exact: true })
   const password = page.getByLabel('Password', { exact: true })
@@ -386,11 +386,13 @@ test('the sign-in panel keeps its fields, hints and validation, and holds still 
 
 test('Privacy and Terms open with a short reveal at the top; Back returns to the same place', async ({ page }) => {
   test.setTimeout(90_000)
-  await repeatVisit(page)
-  await page.goto('/')
+  await afterOpening(page)
   const legal = page.getByRole('navigation', { name: 'Footer: legal' })
   await legal.scrollIntoViewIfNeeded()
-  const left = await page.evaluate(() => window.scrollY)
+  // Where the links sat on screen: the return starts without the opening (and its pin's own
+  // scroll length), so the place is compared on screen, not as a scroll offset.
+  const where = () => legal.evaluate(element => Math.round(element.getBoundingClientRect().top))
+  const left = await where()
   await legal.getByRole('link', { name: 'Privacy' }).click()
   await expect(page).toHaveURL(/#\/privacy$/)
   await expect(page.getByRole('heading', { level: 1, name: 'Privacy Policy' })).toBeFocused()
@@ -402,7 +404,7 @@ test('Privacy and Terms open with a short reveal at the top; Back returns to the
   await page.goBack()
   await expect(page.locator('.landing-page')).toBeVisible()
   await expect(page.locator('.lp-prelude')).toHaveCount(0)
-  await expect.poll(() => page.evaluate(() => window.scrollY), { timeout: 4000 }).toBeGreaterThan(left - 80)
+  await expect.poll(async () => Math.abs((await where()) - left), { timeout: 4000 }).toBeLessThan(80)
 
   await page.getByRole('navigation', { name: 'Footer: legal' }).getByRole('link', { name: 'Terms' }).click()
   await expect(page.getByRole('heading', { level: 1, name: 'Terms of Use' })).toBeFocused()
@@ -411,10 +413,25 @@ test('Privacy and Terms open with a short reveal at the top; Back returns to the
   await expect(page).toHaveURL(/:\d+\/(#\/?)?$/)
 })
 
+test('Back from a legal page returns mid-page to the same place, although the opening has gone', async ({ page }) => {
+  test.setTimeout(90_000)
+  await afterOpening(page)
+  // The opening is on the page with its pin; the return will start without it.
+  const faq = page.locator('#faq'), faqTop = () => faq.evaluate(element => Math.round(element.getBoundingClientRect().top))
+  await page.evaluate(() => { const top = document.getElementById('faq')!.getBoundingClientRect().top + window.scrollY; window.scrollTo(0, top - 120) })
+  await scrollAtRest(page)
+  await page.waitForTimeout(400)
+  const start = await faqTop()
+  await page.evaluate(() => { window.location.hash = '#/privacy' })
+  await expect(page.getByRole('heading', { level: 1, name: 'Privacy Policy' })).toBeVisible()
+  await page.goBack()
+  await expect(page.locator('.lp-prelude')).toHaveCount(0)
+  await expect.poll(async () => Math.abs((await faqTop()) - start), { timeout: 4000 }).toBeLessThan(80)
+})
+
 test('the skip link moves focus past the hero and stays on the landing page', async ({ page }, info) => {
   test.skip(mobileProject(info.project.name), 'keyboard navigation')
-  await repeatVisit(page)
-  await page.goto('/')
+  await afterOpening(page)
   await page.keyboard.press('Tab')
   const skip = page.getByRole('link', { name: 'Skip to main content' })
   await expect(skip).toBeFocused()
@@ -427,8 +444,7 @@ test('the skip link moves focus past the hero and stays on the landing page', as
 test('no horizontal scrolling at desktop, laptop, tablet, phone and narrow phone widths, also after resizing', async ({ page }, info) => {
   test.skip(mobileProject(info.project.name), 'widths are set explicitly')
   test.setTimeout(180_000)
-  await repeatVisit(page)
-  await page.goto('/')
+  await afterOpening(page)
   // One page, resized through the widths (a resize or a turned phone must not break the layout either).
   for (const [width, height] of [[1440, 900], [1024, 768], [768, 1024], [390, 844], [360, 740]]) {
     await page.setViewportSize({ width, height })
@@ -455,9 +471,39 @@ test('with reduced motion there is no opening and every section is complete and 
   await expect(page.locator('#features .fs-inline img').first()).toBeVisible()
   await expect(page.getByRole('button', { name: /photo movement/ })).toBeHidden()
   expect(await page.locator('h2').evaluateAll(headings => headings.filter(h => getComputedStyle(h).opacity !== '1').length)).toBe(0)
+  // No seams: no shutter over any section and no shards.
+  await expect(page.locator('.lp-seam-shutter')).toHaveCount(0)
+  await expect(page.locator('.hero-seal img')).toHaveCount(2)
 })
 
-test('without WebGL the page keeps its SVG ring and the opening still works', async ({ page }, info) => {
+test('every section arrives through a seam that follows the scroll, and nothing stays over it', async ({ page }, info) => {
+  test.skip(mobileProject(info.project.name), 'the same seams run on phones; one width is enough here')
+  test.setTimeout(90_000)
+  await afterOpening(page)
+  await expect(page.locator('.lp-seam-shutter')).toHaveCount(12)
+  const place = (id: string, share: number) => page.evaluate(([id, share]) => {
+    const top = document.getElementById(String(id))!.getBoundingClientRect().top + window.scrollY
+    window.scrollTo(0, top - window.innerHeight * Number(share))
+  }, [id, share])
+  for (const id of ['problem', 'flow', 'ai', 'login']) {
+    const section = page.locator(`#${id}`), shutter = section.locator('.lp-seam-shutter')
+    // Half way in: the aperture is opening and the shards play along the section's top edge.
+    await place(id, 0.7)
+    await expect(section).toHaveAttribute('data-seam', '')
+    await expect(shutter).toBeVisible()
+    await expect(page.locator('.lp-seams')).toHaveAttribute('data-seam', id, { timeout: 15_000 })
+    // Arrived: nothing covers the section, and the controls inside it take clicks.
+    await place(id, 0.1)
+    await expect(section).not.toHaveAttribute('data-seam')
+    await expect(shutter).toBeHidden()
+    await expect(page.locator('.lp-seams')).not.toHaveAttribute('data-seam', id)
+  }
+  // Scrolling back up closes a seam again.
+  await place('login', 0.7)
+  await expect(page.locator('#login')).toHaveAttribute('data-seam', '')
+})
+
+test('without WebGL the page keeps its flat emblem and the opening still works', async ({ page }) => {
   await page.addInitScript(() => {
     const original = HTMLCanvasElement.prototype.getContext
     HTMLCanvasElement.prototype.getContext = function (this: HTMLCanvasElement, type: string, ...rest: unknown[]) {
@@ -469,9 +515,14 @@ test('without WebGL the page keeps its SVG ring and the opening still works', as
   page.on('console', message => { if (message.type() === 'error') problems.push(message.text()) })
   await page.goto('/')
   await expect(page.locator('.lp-opening')).toHaveClass(/no-scene/, { timeout: 15_000 })
-  await page.getByRole('button', { name: 'Skip intro' }).click()
+  // The opening has no skip control: scrolling opens it here too.
+  await page.evaluate(() => window.scrollTo(0, Math.round(window.innerHeight * 0.85) + 4))
+  await expect(page.locator('.lp-prelude')).toHaveClass(/is-gone/)
   await expect(page.getByRole('heading', { level: 1 })).toBeInViewport()
-  if (!mobileProject(info.project.name)) await expect(page.locator('.pulse-ring-svg')).toBeVisible()
+  // Without WebGL the flat emblem stays: the SVG ring around the two seal images.
+  await expect(page.locator('.pulse-ring-svg')).toBeVisible()
+  await expect(page.locator('.hero-seal img')).toHaveCount(2)
+  await expect(page.locator('.hero-emblem')).not.toHaveAttribute('data-drawn')
   const workspace = page.locator('#workspace')
   await workspace.scrollIntoViewIfNeeded()
   await expect(workspace.locator('.ws-stage')).toHaveClass(/is-flat/, { timeout: 15_000 })

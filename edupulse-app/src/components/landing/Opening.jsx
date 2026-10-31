@@ -8,11 +8,12 @@ import { settleOpening } from './intro'
 
 const ONLY_MOTION = { motion: MEDIA.motion } // a resize never replays the opening
 
-// The opening stage holds the hero, the decorative 3D canvas and, on a fresh visit, the
-// prelude: the EduPulse mark and name on a white and pale-blue field of facets. The mark and
-// name arrive in about 1.4 s. Scrolling about 85 % of a viewport then opens the facets
-// outward like an aperture, while the camera pulls back and the product screen settles.
-// Everything under the prelude is ordinary HTML that works without the canvas or animation.
+// The opening stage holds the hero, the decorative 3D canvas and, whenever the landing page
+// loads at its top, the prelude: the EduPulse mark and name on a white and pale-blue field of
+// facets. There is no control to skip it. The mark and name arrive in about 1.4 s. Scrolling
+// about 85 % of a viewport then opens the facets outward like an aperture, while the camera
+// pulls back and the KCP and CIT seals turn in inside the Pulse ring. Everything under the
+// prelude is ordinary HTML that works without the canvas or animation.
 export default function Opening({ prelude }) {
   const stage = useRef(null), overlay = useRef(null), canvas = useRef(null), ring = useRef(null)
   const [showPrelude, setShowPrelude] = useState(prelude)
@@ -31,9 +32,9 @@ export default function Opening({ prelude }) {
     page.querySelector('.lp-nav')?.toggleAttribute('inert', state === 'closed')
   }, [])
 
-  // Skip intro, a keyboard user moving into the page, or reduced motion: remove the pin, its
-  // spacer, the facets and the overlay, and leave the hero at rest at the top of the page.
-  const endPrelude = useCallback(({ focusHero = false, scroll = true } = {}) => {
+  // Reduced motion: remove the pin, its spacer, the facets and the overlay, and leave the hero
+  // at rest at the top of the page.
+  const endPrelude = useCallback(({ scroll = true } = {}) => {
     if (!live.current) return
     live.current = false
     preludeContext.current?.revert()
@@ -41,17 +42,16 @@ export default function Opening({ prelude }) {
     Object.assign(inputs.current, { intro: 1, aperture: 1, hero: 1 })
     setBar(null)
     settleOpening()
-    ended.current = { focusHero, scroll }
+    ended.current = { scroll }
     setShowPrelude(false)
   }, [setBar])
 
   useLayoutEffect(() => {
     if (showPrelude || !ended.current) return
-    const { focusHero, scroll } = ended.current
+    const { scroll } = ended.current
     ended.current = null
     ScrollTrigger.refresh()
     if (scroll) window.scrollTo(0, 0)
-    if (focusHero) document.getElementById('hero-title')?.focus({ preventScroll: true })
   }, [showPrelude])
 
   useLayoutEffect(() => {
@@ -67,8 +67,7 @@ export default function Opening({ prelude }) {
           .to(inputs.current, { intro: 1, duration: 1.3, ease: 'power2.out' }, 0)
           .from(q('.prelude-mark'), { autoAlpha: 0, scale: 0.84, duration: 0.7, ease: EASE }, 0.08)
           .fromTo(q('.prelude-word'), { clipPath: 'inset(-12% 100% -24% 0%)' }, { clipPath: 'inset(-12% 0% -24% 0%)', duration: 0.8, ease: 'expo.inOut' }, 0.3)
-          // Opacity only: Skip intro stays reachable by keyboard while it fades in (CSS shows it on focus).
-          .from(q('.prelude-cue, .prelude-skip'), { opacity: 0, y: 10, duration: 0.45, ease: 'power2.out', stagger: 0.08 }, 0.95)
+          .from(q('.prelude-cue'), { opacity: 0, y: 10, duration: 0.45, ease: 'power2.out' }, 0.95)
 
         // 2 · Scrolling opens the aperture. Scrubbed, so it follows the scroll both ways.
         const shards = q('.prelude-shard')
@@ -94,25 +93,25 @@ export default function Opening({ prelude }) {
         })
         open.to(inputs.current, { aperture: 1, duration: 1 }, 0)
           .to(inputs.current, { hero: 1, duration: 0.6 }, 0.4)
-          .from(q('.hero-preview'), { yPercent: 12, rotationX: 14, scale: 0.93, transformOrigin: '50% 100%', duration: 0.75, ease: 'power2.out' }, 0.25)
-          .from(q('.hero-photo'), { y: 48, autoAlpha: 0, duration: 0.5, ease: 'power2.out' }, 0.5)
+          .from(q('.hero-copy'), { y: 40, duration: 0.75, ease: 'power2.out' }, 0.25)
       }, root)
       preludeContext.current = context
       return () => { context.revert(); preludeContext.current = null }
     }
 
-    // A repeat visit: the headline rises line by line and the product screen settles.
+    // Without the prelude (a section link, Back, or a return within the visit): the headline
+    // rises line by line and the seals turn in, on long, even curves.
     function heroEntrance() {
       const split = SplitText.create(q('.hero-title')[0], {
         type: 'lines', mask: 'lines', linesClass: 'split-line', aria: 'auto', autoSplit: true,
-        onSplit: self => gsap.from(self.lines, { yPercent: 105, duration: 0.85, ease: EASE, stagger: 0.08, delay: 0.08 }),
+        onSplit: self => gsap.from(self.lines, { yPercent: 105, duration: 1.15, ease: 'expo.out', stagger: 0.1, delay: 0.1 }),
       })
       gsap.timeline({ delay: 0.08 })
-        .from(q('[data-hero-in]'), { y: 16, autoAlpha: 0, duration: 0.7, ease: EASE, stagger: 0.06 }, 0.2)
-        .from(q('.hero-preview'), { yPercent: 5, rotationX: 9, scale: 0.97, autoAlpha: 0, transformOrigin: '50% 100%', duration: 0.85, ease: EASE }, 0.1)
-        .from(q('.hero-photo'), { y: 24, autoAlpha: 0, duration: 0.7, ease: EASE }, 0.4)
-        .to(inputs.current, { hero: 1, duration: 1.1, ease: 'power2.out' }, 0.25)
-        .add(() => split.revert(), 1.4) // the heading returns to its own markup once settled
+        .from(q('[data-hero-in]'), { y: 18, autoAlpha: 0, duration: 1, ease: 'power3.out', stagger: 0.1 }, 0.25)
+        // Opacity only: the 3D scene measures the emblem box to place the medallions.
+        .from(q('.hero-emblem'), { autoAlpha: 0, duration: 1.4, ease: 'power3.out' }, 0.1)
+        .to(inputs.current, { hero: 1, duration: 1.8, ease: 'power2.inOut' }, 0.15)
+        .add(() => split.revert(), 1.6) // the heading returns to its own markup once settled
       return () => split.revert()
     }
 
@@ -128,8 +127,9 @@ export default function Opening({ prelude }) {
     return () => mm.revert()
   }, [endPrelude, setBar])
 
-  // A keyboard user who moves past the overlay (into the hero, for example) ends the prelude,
-  // so focus never sits under the facets. Pointer focus is left alone.
+  // A keyboard user who moves into the hero while the facets still cover it plays the opening
+  // forward to its end (the scroll that opens the aperture), so focus never sits under the
+  // facets and the opening is not skipped. Pointer focus is left alone.
   useEffect(() => {
     if (!showPrelude) return undefined
     let keyboard = false
@@ -137,10 +137,10 @@ export default function Opening({ prelude }) {
     const onPointer = () => { keyboard = false }
     const onFocus = event => {
       const target = event.target
-      if (!keyboard || !live.current || !(target instanceof Element)) return
-      if (overlay.current?.contains(target) || target.closest('.skip-to-content')) return
-      if ((ScrollTrigger.getById(OPENING_TRIGGER)?.progress ?? 1) > 0.99) return
-      endPrelude()
+      if (!keyboard || !live.current || !(target instanceof Element) || !stage.current?.contains(target)) return
+      const opening = ScrollTrigger.getById(OPENING_TRIGGER)
+      if (!opening || opening.progress > 0.99) return
+      window.scrollTo(0, Math.ceil(opening.end) + 1)
     }
     window.addEventListener('keydown', onKey, true)
     window.addEventListener('pointerdown', onPointer, true)
@@ -150,7 +150,7 @@ export default function Opening({ prelude }) {
       window.removeEventListener('pointerdown', onPointer, true)
       document.removeEventListener('focusin', onFocus)
     }
-  }, [showPrelude, endPrelude])
+  }, [showPrelude])
 
   // The 3D scene loads in its own chunk and never delays the page: the opening starts at once
   // and the facets join it when the scene is ready (it is requested immediately for the
@@ -197,7 +197,6 @@ export default function Opening({ prelude }) {
           </div>
           <div className="prelude-ui">
             <p className="prelude-cue" aria-hidden="true"><span className="prelude-cue-line" />Scroll to explore</p>
-            <button type="button" className="prelude-skip" onClick={() => endPrelude({ focusHero: true })}>Skip intro</button>
           </div>
         </div>
       )}

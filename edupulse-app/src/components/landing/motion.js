@@ -8,8 +8,8 @@ export { gsap, ScrollTrigger, SplitText }
 
 // A refresh (after a resize, the fonts or the photographs arrive) takes each pinned section out
 // of its spacer and back to measure it, and the browser drops keyboard focus from an element
-// that leaves the document. Give the focus back, so a keyboard user who has reached Skip intro,
-// an agent or a feature step stays there.
+// that leaves the document. Give the focus back, so a keyboard user who has reached a hero
+// action, an agent or a feature step stays there.
 let refocus = null
 ScrollTrigger.addEventListener('refreshInit', () => {
   const active = document.activeElement

@@ -3738,6 +3738,24 @@
       "sha256": "344a64a23afa585d91510d3a8275b4e4072268c96366c35330d26eb088957ab3",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-10-30T05:41:12.480731+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/01-landing-hero.png",
+      "sha256": "2f5e9c2b616e305e362d3f45f89b3039368071819c2dd95d100fcf9c4b8447a7",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-31T12:58:16.326Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/06-mobile/01-landing.png",
+      "sha256": "7f79d1d33d1d682e0a5644eb5c40ad130e8c5713bb23e66afccd7037a2caef23",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-31T12:58:16.326Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/06-mobile/07-landing-menu.png",
+      "sha256": "9ab4c8324550c43d2c5035db0e4abef7e907abfce0e4a69395d7d3e685189175",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-10-31T12:58:16.326Z"
     }
   ]
 }

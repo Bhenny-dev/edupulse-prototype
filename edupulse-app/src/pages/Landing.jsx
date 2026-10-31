@@ -18,7 +18,8 @@ import SignInSection from '../components/landing/SignInSection'
 import LandingFooter from '../components/landing/LandingFooter'
 import { gsap, ScrollTrigger, MEDIA, revealHeadings } from '../components/landing/motion'
 import { decideOpening, trackLandingScroll, leaveLanding, takeReturnY } from '../components/landing/intro'
-import { SECTION_IDS, scrollToId } from '../components/landing/navigation'
+import { setupSeams } from '../components/landing/seams'
+import { SECTION_IDS, OPENING_TRIGGER, scrollToId } from '../components/landing/navigation'
 import { PROBLEM, CHAPTERS, PHASES, ROLES, PRINCIPLES, AGENTS, WORKSPACE_TALK, WORKSPACE_RUNS, EVIDENCE, GOALS, FAQ, COMMUNITY_ALT } from '../components/landing/content'
 import { KCP, COLLEGES } from '../data/colleges'
 import '../components/landing/landing.css'
@@ -30,17 +31,19 @@ const CIT = COLLEGES.find(college => college.status === 'active')
 const PLANNED = COLLEGES.filter(college => college.status !== 'active')
 
 export default function Landing() {
-  const root = useRef(null)
+  const root = useRef(null), seamCanvas = useRef(null)
   const { search } = useLocation()
   const navigationType = useNavigationType()
   const [opening] = useState(() => decideOpening(search))
   const [arrival] = useState(() => ({ section: new URLSearchParams(search).get('section'), navigationType }))
 
-  // Shared heading reveals, created after the sections' own pins (child effects run first),
-  // so they are measured with the pin spacers in place.
+  // Shared heading reveals and the seams every section arrives through, created after the
+  // sections' own pins (child effects run first), so they are measured with the pin spacers
+  // in place. Neither runs with reduced motion.
   useLayoutEffect(() => {
     const mm = gsap.matchMedia()
     mm.add(MEDIA.motion, () => revealHeadings(root.current), root)
+    mm.add(MEDIA.motion, () => setupSeams(root.current, seamCanvas.current))
     return () => mm.revert()
   }, [])
 
@@ -60,7 +63,12 @@ export default function Landing() {
     } else if (navigationType === 'PUSH') {
       window.scrollTo(0, 0)
     }
-    const onScroll = () => trackLandingScroll()
+    // A return (Back from a legal page) starts without the opening, whose pin adds its own
+    // scroll length while it is on the page, so the place is kept without that length.
+    const onScroll = () => {
+      const opening = ScrollTrigger.getById(OPENING_TRIGGER)
+      trackLandingScroll(window.scrollY - (opening ? opening.end - opening.start : 0))
+    }
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => { alive = false; cancelAnimationFrame(frame); window.removeEventListener('scroll', onScroll); leaveLanding() }
   }, [arrival])
@@ -69,6 +77,7 @@ export default function Landing() {
     <div className="landing-page" ref={root}>
       <SkipToContent />
       <LandingNav />
+      <canvas ref={seamCanvas} className="lp-seams" aria-hidden="true" />
       <Opening prelude={opening} />
 
       {/* "Skip to main content" moves focus here, past the navigation and the hero. */}

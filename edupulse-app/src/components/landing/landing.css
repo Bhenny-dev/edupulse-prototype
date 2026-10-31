@@ -187,41 +187,37 @@ html:has(.landing-page), html:has(.landing-page) body { overflow-anchor: none; }
 .prelude-ui { position: absolute; z-index: 4; left: 0; right: 0; top: 0; height: 100vh; height: 100svh; pointer-events: none; }
 .prelude-cue { position: absolute; left: 50%; bottom: clamp(24px, 5vh, 44px); display: flex; flex-direction: column; align-items: center; gap: 10px; transform: translateX(-50%); font-size: 0.9375rem; font-weight: 500; color: var(--lp-slate); white-space: nowrap; }
 .prelude-cue-line { width: 2px; height: 28px; border-radius: 2px; background: linear-gradient(var(--lp-blue-soft), var(--lp-blue)); }
-.prelude-skip { position: absolute; right: var(--gutter); bottom: clamp(24px, 5vh, 44px); min-height: 44px; padding: 0 18px; border-radius: 999px; font-family: var(--lp-text); font-size: 0.9375rem; font-weight: 600; color: var(--lp-ink); background: rgb(255 255 255 / 0.92); border: 1px solid var(--lp-line); box-shadow: var(--lp-shadow); pointer-events: auto; transition: background-color var(--lp-fast) ease, border-color var(--lp-fast) ease; }
-.prelude-skip:hover { background: #ffffff; border-color: var(--lp-field); }
-.prelude-skip:focus-visible { opacity: 1 !important; } /* visible at once when reached by keyboard during its fade-in */
 
 /* ─── Hero ─── */
-.lp-hero { position: relative; z-index: 1; min-height: 100vh; min-height: 100svh; padding: calc(var(--nav-h) + clamp(28px, 6vh, 64px)) 0 clamp(48px, 7vh, 80px); }
-.lp-hero::before { content: ''; position: absolute; z-index: -1; left: 22%; right: -6%; top: 46%; bottom: -4%; background: linear-gradient(165deg, var(--lp-mist) 10%, var(--lp-ice) 100%); clip-path: polygon(14% 0, 100% 0, 100% 100%, 0 100%); }
-.hero-inner { width: 100%; max-width: calc(var(--container) + 2 * var(--gutter)); margin-inline: auto; padding-inline: var(--gutter); display: grid; grid-template-columns: minmax(0, 8fr) minmax(0, 4fr); column-gap: clamp(32px, 5vw, 72px); align-items: end; }
+/* The hero fills the first screen: a pale field that brightens towards the emblem, the copy on
+   the left and the emblem on the right (under the copy on narrow screens). */
+.lp-hero { position: relative; z-index: 1; min-height: 100vh; min-height: 100svh; display: grid; align-items: center; padding: calc(var(--nav-h) + clamp(24px, 5vh, 56px)) 0 clamp(40px, 7vh, 80px); background: radial-gradient(ellipse 58% 68% at 72% 54%, #ffffff 0%, var(--lp-mist) 48%, rgb(219 234 254 / 0.6) 100%); }
+/* Two large still planes in the field: the static half of the stage's geometry. */
+.lp-hero::before, .lp-hero::after { content: ''; position: absolute; z-index: -1; pointer-events: none; }
+.lp-hero::before { left: 44%; right: -8%; top: 6%; bottom: 8%; background: linear-gradient(150deg, rgb(219 234 254 / 0.85), rgb(244 249 255 / 0)); clip-path: polygon(30% 0, 100% 6%, 100% 100%, 0 82%); }
+.lp-hero::after { left: -12%; right: 58%; top: 60%; bottom: -6%; background: linear-gradient(20deg, rgb(147 197 253 / 0.24), rgb(255 255 255 / 0)); clip-path: polygon(0 18%, 100% 0, 78% 100%, 0 100%); }
+.hero-inner { width: 100%; max-width: calc(var(--container) + 2 * var(--gutter)); margin-inline: auto; padding-inline: var(--gutter); display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); column-gap: clamp(24px, 4vw, 64px); align-items: center; }
 .hero-copy { grid-column: 1; }
-.hero-aside { grid-column: 2; padding-bottom: 8px; }
-.hero-lockup { display: flex; align-items: center; gap: 10px; margin-bottom: clamp(20px, 3vh, 32px); }
-.hero-lockup img { width: 40px; height: 40px; object-fit: contain; }
-.hero-lockup > span { display: flex; flex-direction: column; margin-left: 4px; font-size: 0.875rem; font-weight: 500; line-height: 1.35; color: var(--lp-slate); }
-.landing-page .hero-title { max-width: 10.8em; font-weight: 800; font-size: clamp(2.5rem, 1rem + 3.7vw, 4.25rem); line-height: 1.03; letter-spacing: -0.045em; text-wrap: wrap; }
-.hero-lede { max-width: 33rem; margin-bottom: 26px; font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.1875rem); line-height: 1.6; color: var(--lp-slate); }
-.hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; margin-bottom: 24px; }
-.hero-notes { list-style: none; display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 0.9375rem; font-weight: 500; color: var(--lp-slate); }
-.hero-notes li { display: inline-flex; align-items: center; gap: 8px; }
-.hero-notes li::before { content: ''; width: 6px; height: 6px; border-radius: 1px; background: var(--lp-blue); transform: rotate(45deg); }
-/* The product screen takes two thirds and the photograph one third of one row. At that split
-   the photograph's own 9:11 shape fills the row the screen sets, so both cards end on the
-   same line at every width, and the ring sits on the photograph's corner. */
-.hero-visual { grid-column: 1 / -1; position: relative; margin-top: clamp(36px, 6vh, 64px); display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: clamp(16px, 2vw, 24px); perspective: 1800px; }
-.hero-preview { grid-column: 1; grid-row: 1; position: relative; margin: 0; border-radius: 18px; overflow: hidden; background: #ffffff; border: 1px solid var(--lp-line); box-shadow: var(--lp-shadow-lift); rotate: x 3deg; transform-origin: 50% 100%; }
-.preview-bar { display: flex; align-items: center; gap: 7px; height: 40px; padding: 0 16px; border-bottom: 1px solid var(--lp-line); background: linear-gradient(#ffffff, var(--lp-mist)); }
-.preview-bar span { width: 10px; height: 10px; border-radius: 50%; background: var(--lp-line); }
-.preview-bar em { margin-left: 10px; font-style: normal; font-size: 0.8125rem; font-weight: 500; color: var(--lp-slate); }
-.hero-preview img { width: 100%; height: auto; aspect-ratio: 1600 / 862; object-fit: cover; object-position: top left; }
-.preview-tag { position: absolute; top: 7px; right: 12px; padding: 4px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 600; line-height: 1.4; color: var(--lp-blue-deep); background: var(--lp-ice); }
-.hero-ring { position: absolute; z-index: 2; top: 0; right: 0; width: clamp(104px, 10vw, 148px); aspect-ratio: 1; display: grid; place-items: center; translate: 24% -40%; pointer-events: none; }
-.pulse-ring-svg { width: 100%; height: 100%; transition: opacity 500ms ease; }
-.lp-opening.has-scene .pulse-ring-svg { opacity: 0; }
-.hero-photo { grid-column: 2; grid-row: 1; position: relative; margin: 0; overflow: hidden; border-radius: 18px; background: var(--lp-ice); border: 1px solid var(--lp-line); box-shadow: var(--lp-shadow-lift); rotate: x 3deg; transform-origin: 50% 100%; }
-.hero-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; }
-.hero-photo figcaption { position: absolute; left: 10px; right: 10px; bottom: 10px; padding: 8px 12px; border-radius: 12px; font-size: 0.8125rem; font-weight: 500; line-height: 1.4; color: #ffffff; background: rgb(15 23 42 / 0.68); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.hero-lockup { display: flex; flex-direction: column; margin-bottom: clamp(18px, 3vh, 28px); font-size: 0.875rem; font-weight: 500; line-height: 1.4; color: var(--lp-slate); }
+.landing-page .hero-title { max-width: 10.5em; font-weight: 800; font-size: clamp(2.5rem, 1rem + 4.2vw, 4.75rem); line-height: 1.02; letter-spacing: -0.045em; text-wrap: wrap; }
+.hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; margin-top: clamp(24px, 4vh, 40px); }
+/* The emblem: the Pulse ring around the KCP and CIT seals, CIT a little in front. */
+.hero-emblem { grid-column: 2; position: relative; width: 100%; max-width: 520px; justify-self: center; aspect-ratio: 1; }
+.pulse-ring-svg { position: absolute; inset: 0; width: 100%; height: 100%; transition: opacity 600ms ease; }
+.hero-seal { position: absolute; width: 38%; aspect-ratio: 1; display: grid; place-items: center; border-radius: 50%; background: radial-gradient(circle at 34% 28%, #ffffff 0%, #ffffff 56%, var(--lp-mist) 100%); border: 3px solid var(--lp-blue); box-shadow: 0 0 0 5px #ffffff, 0 18px 40px rgb(37 99 235 / 0.22); transition: opacity 600ms ease; }
+.hero-seal img { width: 76%; height: 76%; object-fit: contain; }
+.hero-seal[data-seal="kcp"] { left: 16%; top: 21%; z-index: 1; }
+.hero-seal[data-seal="cit"] { left: 46%; top: 41%; z-index: 2; }
+/* The 3D scene draws the emblem whenever its centre is on the canvas. */
+.lp-opening.has-scene .hero-emblem[data-drawn] .pulse-ring-svg,
+.lp-opening.has-scene .hero-emblem[data-drawn] .hero-seal { opacity: 0; }
+
+/* Seams (seams.js): the shutter over an arriving section's top, opening through a geometric
+   aperture outlined in blue, and the shards' canvas over the page. Neither takes pointer events. */
+.lp-seams { position: fixed; inset: 0; z-index: 60; width: 100%; height: 100%; pointer-events: none; }
+.lp-seam-shutter { position: absolute; z-index: 20; left: 0; top: 0; width: 100%; height: min(100%, 100vh); overflow: visible; pointer-events: none; }
+.lp-seam-edge { fill: none; stroke: var(--lp-blue); stroke-width: 2.5; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.lp-seam-edge.is-inner { stroke: #93c5fd; stroke-width: 1.5; }
 
 /* ─── Why EduPulse ─── */
 .why .lp-head { max-width: 62rem; margin-bottom: 28px; }
@@ -508,7 +504,7 @@ html:has(.landing-page), html:has(.landing-page) body { overflow-anchor: none; }
 }
 @media (max-width: 1023px) {
   .hero-inner { grid-template-columns: minmax(0, 1fr); }
-  .hero-aside { grid-column: 1; margin-top: 24px; padding-bottom: 0; }
+  .hero-emblem { grid-column: 1; width: min(72vw, 400px); margin-top: clamp(20px, 4vh, 40px); }
   .landing-page .hero-title { max-width: 12em; }
   .why-cards { grid-template-columns: repeat(6, minmax(0, 1fr)); }
   .why-card { grid-column: span 2; }
@@ -535,13 +531,7 @@ html:has(.landing-page), html:has(.landing-page) body { overflow-anchor: none; }
   .landing-page { --nav-h: 64px; }
   .nav-name { font-size: 1.125rem; }
   .nav-brand img { width: 28px; height: 28px; }
-  .hero-lockup img { width: 34px; height: 34px; }
-  .hero-lockup > span { font-size: 0.8125rem; }
-  .hero-visual { grid-template-columns: minmax(0, 1fr); margin-top: 32px; }
-  .hero-preview { grid-row: auto; rotate: none; }
-  .hero-ring, .hero-photo { display: none; }
-  .preview-tag { position: static; display: inline-block; margin: 10px 12px 12px; }
-  .preview-bar em { display: none; }
+  .hero-lockup { font-size: 0.8125rem; }
   .why-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
   .why-card:nth-child(4) { grid-column: auto; }
   .why-card:last-child { grid-column: 1 / -1; }
@@ -558,8 +548,7 @@ html:has(.landing-page), html:has(.landing-page) body { overflow-anchor: none; }
   .cit-seal { width: 168px; }
   .faq-answer p { padding-right: 8px; }
   .footer-grid { grid-template-columns: minmax(0, 1fr); gap: 32px; }
-  .prelude-skip { right: auto; left: 50%; bottom: clamp(20px, 4vh, 32px); transform: translateX(-50%); }
-  .prelude-cue { bottom: calc(clamp(20px, 4vh, 32px) + 60px); }
+  .prelude-cue { bottom: clamp(20px, 4vh, 32px); }
   .landing-to-top { right: 16px; bottom: 16px; }
 }
 @media (max-width: 767px) {
