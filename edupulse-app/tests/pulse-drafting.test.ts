@@ -67,6 +67,20 @@ test('full syllabus draft researches the course and validates all 18 weeks befor
   await assert.rejects(planValidatedTool(input, identity, signal(), async () => JSON.stringify({ programOutcomes: ['Partial response'] }), 26000, research), { code: 'TOOL_OUTPUT_INCOMPLETE' })
 })
 
+test('drafts a model wraps in a sentence and a code fence pass every stage without a repair attempt', async () => {
+  const input = operatorInput.parse({ operation: 'revise', message: 'Generate content for all fields in this syllabus', viewRole: 'instructor', editor, section: 'all' })
+  let calls = 0
+  const result = await planValidatedTool(input, identity, signal(), async (_system, prompt) => {
+    calls++; const context = JSON.parse(prompt)
+    const draft = { ...researchMethodsDraft, courseOutline: researchMethodsDraft.courseOutline.filter(row => context.editor.data.courseOutline?.some((old: { week: number }) => old.week === row.week)) }
+    return `Here is the requested JSON:\n\`\`\`json\n${JSON.stringify(Object.fromEntries(context.requestedFields.map((field: keyof typeof draft) => [field, draft[field]])), null, 2)}\n\`\`\`\nTell me if a week needs changes.`
+  }, 26000, async () => ({ evidence: [source] }))
+  assert.equal(calls, 6, 'core, four teaching-week batches and bibliography, each on its first attempt')
+  assert.ok('patch' in result)
+  assert.ok(result.patch && 'courseOutline' in result.patch)
+  assert.equal(result.patch?.courseOutline?.length, 18)
+})
+
 test('section drafts retain course identity, web failures allow useful drafts and invented URLs fail closed', async () => {
   const input = operatorInput.parse({ operation: 'revise', message: 'Draft the program outcomes', viewRole: 'instructor', editor, section: 'programOutcomes' })
   const result = await planValidatedTool(input, identity, signal(), async (_system, prompt) => {
@@ -91,9 +105,11 @@ test('OpenRouter web tool uses fixed origins, real annotations and a public topi
   const connection = { id: 'test', owner: identity.id, provider: 'openrouter' as const, model: 'selected-model', apiKey: 'test-only', expires: Date.now() + 10000 }
   const result = await searchWeb('Research Methods', signal(), connection, transport)
   assert.equal(result.evidence.length, 1); assert.equal(result.evidence[0]?.text, source.text)
-  const body = JSON.parse(calls[0]!.body!)
+  assert.equal(calls[0]!.url, 'https://openrouter.ai/api/v1/models', 'the model catalogue says how the model reasons')
+  const body = JSON.parse(calls.find(call => call.url === 'https://openrouter.ai/api/v1/chat/completions')!.body!)
   assert.equal(body.tools[0].type, 'openrouter:web_search')
   assert.equal(body.messages[1].content, 'Research Methods')
+  assert.equal(body.max_tokens, 2224); assert.deepEqual(body.reasoning, { max_tokens: 1024, exclude: true }, 'an unlisted model may reason: its thinking cannot use up the findings budget')
   const fallback = await searchWeb('Research Methods', signal(), undefined, transport)
   assert.match(fallback.warning || '', /Wikipedia only/)
   assert.ok(fallback.evidence[0]?.url?.startsWith('https://en.wikipedia.org/'))

@@ -58,7 +58,7 @@ test('a generation test uses the saved credential, records success and clears ve
     assert.equal(new Headers(init?.headers).get('authorization'), 'Bearer fake-provider-key-for-test')
     const body = JSON.parse(String(init?.body))
     assert.equal(body.model, connection.model)
-    assert.equal(body.max_output_tokens, 2048)
+    assert.equal(body.max_output_tokens, 3072, 'a 2,048-token answer plus the reasoning allowance of a Responses model')
     return unavailable ? Response.json({ error: { code: 'model_not_found', message: 'Private provider detail' } }, { status: 404 }) : Response.json({ output: [{ type: 'message', content: [{ type: 'output_text', text: 'OK' }] }] })
   }
   const actor = { id: 'public-guest', role: 'guest' as const, local: false }

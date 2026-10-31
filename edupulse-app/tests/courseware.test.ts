@@ -97,6 +97,14 @@ test('empty-library courseware researches the teaching topic, keeps provenance a
   assert.equal(calls, 1)
 })
 
+test('a lesson a model wraps in a sentence and a code fence is read on the first attempt', async () => {
+  let attempts = 0
+  const input = { courseCode: 'TEST', courseTitle: 'Programming', week: 1, topics: ['for loops'], outcomes: 'Explain for loops.', referenceText: '', plan, research: 'sources' as const }
+  const result = await draftCoursewareAgents(input, signal(), { provider: 'test', search: async () => ({ evidence: [] }), webSearch: async () => ({ evidence: [] }), generate: async () => { attempts++; return `Here is the lesson as JSON:\n\`\`\`json\n${JSON.stringify(draft())}\n\`\`\`\nAsk if you want another example.` } })
+  assert.equal(attempts, 1)
+  assert.ok(result.content.material.sections.length)
+})
+
 test('courseware writer receives the original teaching instruction on each attempt without sending it to public search', async () => {
   const request = 'Generate the lesson in Filipino with two worked examples for my confidential tutoring group.'
   const prompts: { currentRequest: string }[] = []

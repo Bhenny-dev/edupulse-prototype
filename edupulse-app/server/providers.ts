@@ -5,6 +5,7 @@ import { config } from './config.js'
 import { ApiError } from './contracts.js'
 import { discoverModels, providerError, serverConnection, type Connection } from './connections.js'
 import { modelStatus } from './ml/onnx.js'
+import { openRouterOutput, openRouterReasoning, reasoningAllowance } from './reasoning.js'
 
 // OpenAI-compatible chat endpoints. Fixed URLs: clients never choose where keys are sent.
 const OPENAI_COMPATIBLE: Record<string, string> = {
@@ -51,38 +52,56 @@ export async function invokeModel(system: string, prompt: string, signal: AbortS
     const responses = connection.provider === 'openai' && !/^(?:gpt-(?:3\.5|4(?:\.|o|-|$))|chatgpt-4o)/.test(connection.model)
     const endpoint = anthropic ? 'https://api.anthropic.com/v1/messages' : responses ? 'https://api.openai.com/v1/responses' : OPENAI_COMPATIBLE[connection.provider]!
     const headers: Record<string, string> = { 'Content-Type': 'application/json', ...(anthropic ? { 'x-api-key': connection.apiKey!, 'anthropic-version': '2023-06-01' } : { Authorization: `Bearer ${connection.apiKey}` }), ...(connection.provider === 'openrouter' ? { 'X-Title': 'EduPulse' } : {}) }
+    // Budgets are for the visible answer. A reasoning model's thinking comes out of the same limit, so
+    // it gets an allowance on top (server/reasoning.ts). Anthropic and legacy OpenAI chat models only
+    // reason when asked, and EduPulse does not ask them to.
+    const visible = testBudget || (json ? 5000 : 1600), allowance = reasoningAllowance(visible)
+    const reasoning = connection.provider === 'openrouter' ? await openRouterReasoning(connection.model, signal) : undefined
     const body = anthropic
-      ? { model: connection.model, system, messages: [{ role: 'user', content: prompt }], max_tokens: testBudget || (json ? 5000 : 1600) }
-      : responses ? { model: connection.model, instructions: system, input: [{ role: 'user', content: [{ type: 'input_text', text: prompt }] }], max_output_tokens: testBudget || (json ? 6000 : 2400), store: false, ...(json ? { text: { format: { type: 'json_object' } } } : {}) }
-      : { model: connection.model, messages: [{ role: 'system', content: system }, { role: 'user', content: prompt }], max_tokens: testBudget || (json ? 5000 : 1600), ...(json ? { response_format: { type: 'json_object' } } : {}) }
-    let response: Response
-    try { response = await fetch(endpoint, { method: 'POST', headers, body: JSON.stringify(body), signal, redirect: 'error' }) }
-    catch (error) { throw transportFailure(error, signal, connection.provider) }
-    if (!response.ok) throw await modelResponseError(response, connection.model)
-    const result = await response.json()
+      ? { model: connection.model, system, messages: [{ role: 'user', content: prompt }], max_tokens: visible }
+      : responses ? { model: connection.model, instructions: system, input: [{ role: 'user', content: [{ type: 'input_text', text: prompt }] }], max_output_tokens: visible + allowance, store: false, ...(json ? { text: { format: { type: 'json_object' } } } : {}) }
+      : { model: connection.model, messages: [{ role: 'system', content: system }, { role: 'user', content: prompt }], ...(reasoning ? openRouterOutput(reasoning, visible) : { max_tokens: visible }), ...(json ? { response_format: { type: 'json_object' } } : {}) }
+    const send = async (payload: object) => {
+      let response: Response
+      try { response = await fetch(endpoint, { method: 'POST', headers, body: JSON.stringify(payload), signal, redirect: 'error' }) }
+      catch (error) { throw transportFailure(error, signal, connection.provider) }
+      if (!response.ok) throw await modelResponseError(response, connection.model)
+      return response.json()
+    }
+    let result = await send(body)
+    if ((responses || reasoning === 'on' || reasoning === 'mandatory') && thinkingUsedLimit(result, allowance)) {
+      // On OpenRouter, ask once more with thinking off, so the whole limit goes to the answer. A model
+      // that must think cannot do that, and OpenAI reasoning models are not retried at the owner's cost.
+      if (responses || reasoning === 'mandatory') throw reasoningLimit()
+      try { result = await send({ ...body, max_tokens: visible, reasoning: { effort: 'none' } }) }
+      catch (error) { throw error instanceof ApiError && error.code === 'MODEL_INCOMPATIBLE' ? reasoningLimit() : error }
+    }
     if (result.status === 'incomplete' || result.choices?.[0]?.finish_reason === 'length' || result.stop_reason === 'max_tokens') throw new ApiError(502, 'INCOMPLETE_RESPONSE', 'The model reached its output limit before completing the response. Nothing was applied; request a smaller section or choose another model.')
-    const text = anthropic ? result.content?.filter((b: { type: string }) => b.type === 'text').map((b: { text: string }) => b.text).join('\n') : responses ? result.output?.filter((item: { type: string }) => item.type === 'message').flatMap((item: { content?: { type: string; text?: string }[] }) => item.content || []).filter((part: { type: string }) => part.type === 'output_text').map((part: { text: string }) => part.text).join('\n') : result.choices?.[0]?.message?.content
+    const text = anthropic ? result.content?.filter((b: { type: string }) => b.type === 'text').map((b: { text: string }) => b.text).join('\n') : responses ? responsesText(result) : result.choices?.[0]?.message?.content
     if (typeof text !== 'string' || !text.trim()) throw new ApiError(502, 'EMPTY_RESPONSE', 'The model returned no text. Choose a text model or try again.')
     return text.trim()
   }
   if (connection.provider === 'ollama' && json) {
     // Read tokens as they arrive so long local drafts do not wait for HTTP
     // headers until generation ends. Only a complete draft reaches the graph.
+    const draftTokens = testBudget || 2200
     let response: Response
     try {
       response = await fetch(`${c.ollamaUrl}/api/chat`, {
         method: 'POST', redirect: 'error', signal,
         headers: { 'Content-Type': 'application/json', ...(connection.apiKey ? { Authorization: `Bearer ${connection.apiKey}` } : {}) },
-        body: JSON.stringify({ model: connection.model, stream: true, format: 'json', keep_alive: '1m', ...(connection.model.startsWith('qwen3') ? { think: false } : {}), messages: [{ role: 'system', content: system }, { role: 'user', content: prompt }], options: { temperature: 0.1, num_predict: testBudget || 2200, num_ctx: testBudget && testBudget > 4096 ? 16384 : 4096, num_batch: 128, use_mmap: true } }),
+        body: JSON.stringify({ model: connection.model, stream: true, format: 'json', keep_alive: '1m', ...(connection.model.startsWith('qwen3') ? { think: false } : {}), messages: [{ role: 'system', content: system }, { role: 'user', content: prompt }], options: { temperature: 0.1, num_predict: draftTokens, num_ctx: ollamaContext(system, prompt, draftTokens), num_batch: 128, use_mmap: true } }),
       })
     } catch (error) { throw transportFailure(error, signal, connection.provider) }
     if (!response.ok) throw providerError(response.status)
     return readOllamaDraft(response, signal)
   }
+  // Gemini 2.5 and later think by default, and the thinking counts toward maxOutputTokens.
+  const predict = testBudget || 1000, answer = testBudget || (json ? 5000 : 2000)
   const model = connection.provider === 'ollama'
-    ? new ChatOllama({ baseUrl: c.ollamaUrl, headers: connection.apiKey ? { Authorization: `Bearer ${connection.apiKey}` } : undefined, model: connection.model, temperature: 0.1, numPredict: testBudget || 1000, numCtx: 4096, numBatch: 128, useMmap: true, keepAlive: '5m', maxRetries: 0, ...(connection.model.startsWith('qwen3') ? { think: false } : {}) })
+    ? new ChatOllama({ baseUrl: c.ollamaUrl, headers: connection.apiKey ? { Authorization: `Bearer ${connection.apiKey}` } : undefined, model: connection.model, temperature: 0.1, numPredict: predict, numCtx: ollamaContext(system, prompt, predict), numBatch: 128, useMmap: true, keepAlive: '5m', maxRetries: 0, ...(connection.model.startsWith('qwen3') ? { think: false } : {}) })
     : connection.provider === 'gemini' && connection.apiKey
-      ? new ChatGoogleGenerativeAI({ apiKey: connection.apiKey, model: connection.model, temperature: 0.1, maxOutputTokens: testBudget || (json ? 5000 : 2000), maxRetries: 0 })
+      ? new ChatGoogleGenerativeAI({ apiKey: connection.apiKey, model: connection.model, temperature: 0.1, maxOutputTokens: answer + reasoningAllowance(answer), maxRetries: 0 })
       : null
   if (!model) throw new ApiError(503, 'MODEL_UNAVAILABLE', 'Generation is unavailable. Configure a provider on the server or run the local app with Ollama.')
   let result
@@ -141,6 +160,31 @@ async function readOllamaDraft(response: Response, signal: AbortSignal): Promise
   if (!done) throw incomplete()
   if (!text.trim()) throw new ApiError(502, 'EMPTY_RESPONSE', 'The local model returned no draft text. Try again or choose another model.')
   return text.trim()
+}
+
+type Reply = {
+  status?: string; incomplete_details?: { reason?: string }
+  output?: { type: string; content?: { type: string; text?: string }[] }[]
+  choices?: { finish_reason?: string; message?: { content?: string | null } }[]
+  usage?: { completion_tokens_details?: { reasoning_tokens?: number }; output_tokens_details?: { reasoning_tokens?: number } }
+}
+const responsesText = (result: Reply) => (result.output || []).filter(item => item.type === 'message').flatMap(item => item.content || []).filter(part => part.type === 'output_text').map(part => part.text || '').join('\n')
+
+/** True when a reply stopped at its output limit because of the thinking before it: no answer text, or
+ *  more reasoning tokens than the allowance, which an effort level (unlike a token cap) can overrun. */
+function thinkingUsedLimit(result: Reply, allowance: number) {
+  const choice = result.choices?.[0]
+  if (choice) return choice.finish_reason === 'length' && (!choice.message?.content?.trim() || (result.usage?.completion_tokens_details?.reasoning_tokens ?? 0) > allowance)
+  return result.status === 'incomplete' && result.incomplete_details?.reason === 'max_output_tokens' && (!responsesText(result).trim() || (result.usage?.output_tokens_details?.reasoning_tokens ?? 0) > allowance)
+}
+const reasoningLimit = () => new ApiError(502, 'INCOMPLETE_RESPONSE', 'The model spent its output limit on hidden reasoning before it wrote an answer. Nothing was applied. Try again, ask for a smaller part, or choose a model that answers without long reasoning.')
+
+/** Ollama drops the start of a prompt longer than its context window, and the instructions come first.
+ *  Size the window for the whole prompt (about three characters a token) plus the answer, in fixed
+ *  steps: each new window size reloads the model. */
+function ollamaContext(system: string, prompt: string, predict: number) {
+  const needed = Math.ceil((system.length + prompt.length) / 3) + predict + 256
+  return [4096, 8192, 16384, 32768].find(size => size >= needed) ?? 32768
 }
 
 /** Return only bounded, actionable categories; provider bodies can contain private account details. */

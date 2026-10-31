@@ -6,6 +6,7 @@ import { lexicalRelevance, mergeCandidates, selectEvidence } from './rank.js'
 import { SUPPORT, supportMatrix, verifyAnswer } from './verify.js'
 import { neutralize, sentences, terms } from './text.js'
 import { agentReport } from './registry.js'
+import { parseModelJson } from '../../agents/skills.js'
 import { allowsPublicResearch, planRequest } from './plan.js'
 
 export type CoverageItem = { kind: 'topic' | 'outcome' | 'activity' | 'assessment'; text: string; score: number; status: 'covered' | 'partial' | 'missing'; matchedIn: string | null }
@@ -258,7 +259,7 @@ export async function draftCoursewareAgents(input: CourseInput, signal: AbortSig
         courseContext: neutralize(syllabusOnly ? input.referenceText : input.referenceText.slice(0, 1200)), retrievedReferences: references, attempt: s.attempts + 1, correction: s.feedback,
       }), signal, true)
       try {
-        const { value, repairs } = repairDraft(JSON.parse(text.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '')))
+        const { value, repairs } = repairDraft(parseModelJson(text))
         const draft = courseOutput.parse(value)
         const contentIssues = teachingContentIssues(draft)
         if (contentIssues.length) return { draft: null, attempts: s.attempts + 1, feedback: contentIssues.join(' '), steps: [step('Writer', 'writer', `draft attempt ${s.attempts + 1}`, 'Draft rejected: lesson content is too thin or contains placeholders.', started, 'fallback')] }

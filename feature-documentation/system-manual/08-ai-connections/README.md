@@ -30,6 +30,12 @@ If the provider rejects the selected model, the alert directs you to **Refresh m
 
 ![Model-access failure with the credential retained](07-model-access-error.png)
 
+### Models that think before they answer
+
+Many models reason privately before they reply: most free OpenRouter models, OpenAI's GPT-5 and o-series, and Gemini 2.5. That reasoning comes out of the same length limit as the reply. EduPulse gives it its own room on top of each reply's length, so a short first question no longer runs out before the answer starts. If an OpenRouter model still spends everything on reasoning, EduPulse asks it once more to answer without reasoning. When that is not possible, the alert reads *The model spent its output limit on hidden reasoning before it wrote an answer*. Nothing is applied: try again, ask for a smaller part, or choose another model.
+
+Some models, such as **Cohere: North Mini Code (free)**, have no JSON mode and may write a sentence or a code block around a Pulse proposal or a lesson draft. EduPulse reads the complete proposal inside the reply and checks it as usual.
+
 **Replace API key** opens an editable password field. A rejected replacement keeps that entry for retry and leaves the previously saved connection intact. **Keep saved credential** cancels replacement and clears the unsaved text.
 
 ![Rejected replacement preserves the saved connection and retry input](05-provider-replacement-error.png)

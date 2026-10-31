@@ -4,6 +4,7 @@ import { dirname } from 'node:path'
 import { z } from 'zod'
 import { ApiError, type Identity } from './contracts.js'
 import { config } from './config.js'
+import { rememberReasoning } from './reasoning.js'
 
 export const providerNames = ['ollama', 'gemini', 'openai', 'groq', 'anthropic', 'openrouter', 'huggingface'] as const
 export type ProviderName = typeof providerNames[number]
@@ -86,6 +87,7 @@ export async function discoverModels(provider: ProviderName, apiKey?: string, si
   if (provider === 'ollama') models = (data.models || []).filter((m: { name: string; remote_host?: string }) => !m.remote_host && !/embed|minilm|nomic|bge/i.test(m.name)).map((m: { name: string }) => ({ id: m.name, name: m.name }))
   else if (provider === 'gemini') models = (data.models || []).filter((m: { name: string; supportedGenerationMethods?: string[] }) => m.supportedGenerationMethods?.includes('generateContent') && !/image|tts|robotics/i.test(m.name)).map((m: { name: string; displayName?: string }) => ({ id: m.name.replace(/^models\//, ''), name: m.displayName || m.name }))
   else if (provider === 'openrouter' || provider === 'huggingface') {
+    if (provider === 'openrouter') rememberReasoning(data.data)
     type Listed = { id: string; name?: string; architecture?: { output_modalities?: string[] }; pricing?: { prompt?: string; completion?: string }; providers?: { is_free?: boolean; status?: string }[] }
     models = (data.data || []).filter((m: Listed) => !m.architecture?.output_modalities || m.architecture.output_modalities.includes('text')).map((m: Listed) => {
       // Free tiers: OpenRouter ":free" variants with zero pricing; Hugging Face providers flagged is_free.

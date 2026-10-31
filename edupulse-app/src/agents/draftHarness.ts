@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { ApiError } from '../../server/contracts.js'
 import { validateDraft, wholeSyllabusDraft } from './draftValidation.js'
+import { parseModelJson } from './skills.js'
 import type { EditorSnapshot } from './editorTools.js'
 
 type Input = { editor: EditorSnapshot; message: string; section: string | null; context: string }
@@ -22,7 +23,7 @@ export async function draftHarness(input: Input, payload: Record<string, unknown
       const repair = attempt ? `\nRepair the previous attempt: ${failure.details.join('; ').slice(0, 1500)}. Return the complete corrected fields. No changes have been applied.` : ''
       const response = await generate(system + scope + repair, prompt, signal, true)
       let raw: unknown
-      try { raw = JSON.parse(response.trim().replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '')) }
+      try { raw = parseModelJson(response) }
       catch { failure = { code: 'TOOL_OUTPUT_INVALID', details: ['Return one complete JSON object without prose or code fences.'] }; continue }
       const clarification = z.object({ needsClarification: z.string().min(1).max(500) }).strict().safeParse(raw)
       if (clarification.success) return { clarification: clarification.data.needsClarification, generated: true as const }

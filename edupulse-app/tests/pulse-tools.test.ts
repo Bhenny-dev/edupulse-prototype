@@ -6,7 +6,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { PGlite } from '@electric-sql/pglite'
 import { pageFor } from '../src/agents/operator.js'
-import { parseToolPlan, conversationWindow } from '../src/agents/skills.js'
+import { parseToolPlan, parseModelJson, conversationWindow } from '../src/agents/skills.js'
 import { registerEditor, currentEditor, applyEditorProposal, syllabusPatch, literalEdit } from '../src/agents/editorTools.js'
 import { conversationCommand, executeConversation, readConversations, conversationRecall, preferenceCandidate, safeMemory } from '../server/domains/conversations.js'
 import { localDb } from '../server/database.js'
@@ -14,6 +14,13 @@ import type { Identity } from '../server/contracts.js'
 import { operatorInput, planValidatedTool } from '../src/agents/toolPlanner.js'
 import { quickReply } from '../src/agents/quickReplies.js'
 import { buddyReply } from '../src/agents/buddies.js'
+
+test('model JSON is read from bare, fenced or sentence-wrapped replies, and nothing is repaired', () => {
+  const plan = { tool: 'navigate', page: 'courseware', section: null, targetId: null, attachmentIndex: null, operation: null, selector: null, courseCode: null, week: null, instruction: 'Open courseware.' }
+  for (const text of [JSON.stringify(plan), '```json\n' + JSON.stringify(plan) + '\n```', 'Here is the tool plan:\n```json\n' + JSON.stringify(plan, null, 2) + '\n```\nIt opens the page {as asked}.', 'Sure! ' + JSON.stringify(plan)]) assert.deepEqual(parseToolPlan(text), plan)
+  assert.deepEqual(parseModelJson('Use {"week":1} as the shape. Result: {"title":"A } inside \\"quotes\\"","weeks":[{"week":1}]}'), { title: 'A } inside "quotes"', weeks: [{ week: 1 }] }, 'the largest complete object is the reply')
+  for (const text of ['No JSON here.', '{"title": "unfinished', 'Here: {not json}']) assert.throws(() => parseModelJson(text), SyntaxError)
+})
 
 test('conversational redirects route to the builder and typed plans reject arbitrary execution', () => {
   for (const message of ['ok then, can you redirect me to where i can start with building my syllabus', 'Could you take me to the syllabus builder?', 'Guide me through building my syllabus']) assert.match(pageFor(message, 'instructor')!.path, /syllabus\?tab=builder/)

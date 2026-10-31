@@ -44,6 +44,25 @@ export function conversationWindow(messages: { from?: string; role?: string; tex
 
 /** User text, uploaded text and recalled memory never become executable tool instructions. */
 export function parseToolPlan(text: string): ToolPlan {
-  const raw = text.trim().replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '')
-  return toolPlan.parse(JSON.parse(raw))
+  return toolPlan.parse(parseModelJson(text))
+}
+
+/** Read a model's JSON reply. A model without a JSON mode often wraps the object in a sentence or a code
+ *  fence, so the reply is the largest complete top-level object in the text. Nothing is repaired: the
+ *  caller's schema checks still decide whether it is usable. */
+export function parseModelJson(text: string): unknown {
+  try { return JSON.parse(text.trim()) } catch { /* not bare JSON: look inside the reply */ }
+  let found: unknown, foundLength = 0, depth = 0, start = 0, quoted = false, escaped = false
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i]
+    if (!depth) { if (char === '{') { depth = 1; start = i } continue }
+    if (quoted) { if (escaped) escaped = false; else if (char === '\\') escaped = true; else if (char === '"') quoted = false; continue }
+    if (char === '"') quoted = true
+    else if (char === '{' || char === '[') depth++
+    else if ((char === '}' || char === ']') && !--depth && i + 1 - start > foundLength) {
+      try { found = JSON.parse(text.slice(start, i + 1)); foundLength = i + 1 - start } catch { /* braces in prose */ }
+    }
+  }
+  if (!foundLength) throw new SyntaxError('The model reply contains no complete JSON object.')
+  return found
 }
