@@ -19,6 +19,10 @@ Looked at in the browser on the development server at 1440 by 900 and 390 by 844
 
 Screenshots: a targeted run (`npm run snapshots -- -g "public site|mobile landing page"`, run `2026-11-01T18-47-36-768Z-e81b7b35`) passed. Decoded pixels were compared with `main`: images 5, 6, 7 and 9 of the public site show the new phase cards, role panels and finding tiles, were opened and checked against their descriptions and are attested in `capture-runs/image-review.json`. Images 2, 3, 4, 8, 8b, 8c and 10 to 15 differed only by a one-pixel change in height, a shorter reading-progress line or text antialiasing after the longer sections, and were restored from `main`. The merged `capture-manifest.json` keeps all 77 scenes.
 
+### Deployment and hosted checks
+
+Pushed to `main` as `f1443ba` (with `62de638`) on 2 November. Vercel reported the deployment (`EgrXkyMapNNif43e4NfVVM5MmJT1`) complete on the commit. On https://edupulse-prototype.vercel.app at 1440 by 900: the opening plays with no **Skip intro**; six phase cards, five role avatars and the 31% meter are present; 51 blocks are registered for arrivals and the pieces' canvas is on the page; the SDG panel was seen being built from blue and glass fan pieces inside its corner frame; `/api/ai?action=health` returned 200; no page errors.
+
 ## 31 October: the opening, the 3D hero and the first seams
 
 Run on 31 October on Windows 11, Node 24.13, in `edupulse-app`.
