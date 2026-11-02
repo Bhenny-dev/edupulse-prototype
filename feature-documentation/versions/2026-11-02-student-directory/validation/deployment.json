@@ -1,0 +1,13 @@
+{
+  "featureCommit": "71f11bc5458fd6fdf764e02daa5cb82584ca948c",
+  "deploymentId": "dpl_2KaVJRBCqQrd3RPkk2ThV28JCqMZ",
+  "state": "READY",
+  "deploymentUrl": "https://edupulse-prototype-hpxa5nswf-bhenny-benlor-d-riveras-projects.vercel.app",
+  "productionUrl": "https://edupulse-prototype.vercel.app",
+  "checkedAt": "2026-11-02T09:11:42.846234+00:00",
+  "githubActions": {
+    "runUrl": "https://github.com/Bhenny-dev/edupulse-prototype/actions/runs/41417424151",
+    "status": "not_started",
+    "reason": "The job was not started because your account is locked due to a billing issue."
+  }
+}

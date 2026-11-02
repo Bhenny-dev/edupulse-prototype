@@ -1,0 +1,9 @@
+{
+  "url": "https://edupulse-prototype.vercel.app",
+  "authenticatedStudentApiStatus": 200,
+  "returnedOwnProfileOnly": true,
+  "guestApiStatus": 403,
+  "unenrolledAcademicApiStatus": 200,
+  "unenrolledPublications": 0,
+  "checkedAt": "2026-11-02T09:06:45.277Z"
+}

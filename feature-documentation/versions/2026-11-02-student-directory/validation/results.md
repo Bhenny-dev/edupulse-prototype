@@ -28,4 +28,12 @@ The final capture build and all nine selected snapshot tests passed. Run `2026-1
 
 `npm run verify` passed again on the final candidate: 187 tests passed, zero failures; documentation integrity/freshness, lint, both TypeScript projects, pinned model-file verification, production build and deployment packaging checks passed. Existing lint, experimental-runtime and bundle-size warnings remain. [Final gate log](verify.txt).
 
-Production publication follows the release commit. The deployed API and real browser sign-in will be checked before the release is marked live.
+## Production publication
+
+Feature commit `71f11bc5458fd6fdf764e02daa5cb82584ca948c` was pushed normally to `main`; Vercel production deployment `dpl_2KaVJRBCqQrd3RPkk2ThV28JCqMZ` is **READY** at [EduPulse](https://edupulse-prototype.vercel.app). [Deployment receipt](deployment.json). The later publication of this evidence contains documentation only; application source is identical to the verified feature commit.
+
+The deployed directory API returned 200 with only the signed-in student's profile, and rejected a guest with 403. The same unenrolled account's academic API returned no publications or enrollments. [Hosted API receipt](hosted-api-checks.json). No real enrollment or material publication was created for validation.
+
+A real student signed in through the production email/password form, reached **Student Dashboard**, and opened **Settings → Account**. Imported name, student number, year level, department and program matched the source. The initial probe timed out after navigating immediately on the dashboard URL change; a fresh run and the final probe waiting for the mounted dashboard heading both passed. No application code changed for this probe adjustment, and no screenshots or traces containing real student data were retained. The final canary session was ended. [Hosted browser receipt](hosted-browser-checks.json).
+
+GitHub Actions run [41417424151](https://github.com/Bhenny-dev/edupulse-prototype/actions/runs/41417424151) did **not start**: GitHub's annotation says the account is locked due to a billing issue. This is not a CI test pass. Local release gates and hosted functional checks above passed; billing configuration was not changed.
