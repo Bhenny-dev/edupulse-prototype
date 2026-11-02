@@ -1,5 +1,5 @@
 {
-  "capturedAt": "2026-11-01T18:48:15.668Z",
+  "capturedAt": "2026-11-02T08:58:07.751Z",
   "problems": [],
   "scenes": [
     {
@@ -288,14 +288,6 @@
       "file": "01-dashboard.png",
       "title": "Instructor dashboard",
       "route": "/dashboard",
-      "ok": true
-    },
-    {
-      "role": "instructor",
-      "folder": "04-instructor",
-      "file": "02-syllabus-my-courses.png",
-      "title": "Syllabus · My Courses",
-      "route": "/syllabus",
       "ok": true
     },
     {
@@ -616,6 +608,14 @@
       "file": "18-server-error.png",
       "title": "Server error page",
       "route": "/500",
+      "ok": true
+    },
+    {
+      "role": "instructor",
+      "folder": "04-instructor",
+      "file": "02-syllabus-my-courses.png",
+      "title": "Syllabus · My Courses",
+      "route": "/syllabus",
       "ok": true
     }
   ]

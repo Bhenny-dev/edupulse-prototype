@@ -1,0 +1,108 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-11-02T07-58-49-862Z-57a4524f",
+  "startedAt": "2026-11-02T07:58:49.862Z",
+  "finishedAt": "2026-11-02T07:59:13.761Z",
+  "commitSha": "57ccd664853f28fc4f3114946bdfe92aa6cde1b5",
+  "sourceDigest": "b28cf8c5ddc9e996f374d78c73f729a7bb7daba51b9ec7d361ea6e7e452a3462",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-11-02T07:58:29.559Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 2,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": null
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/student-directory.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.spec.ts",
+    "edupulse-app/tests/snapshots/harness-delivery.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-drafting.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-source.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/student-directory.spec.ts",
+      "title": "student directory selection and confirmed roster save",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "local-real-input/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 3072,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/student-directory.spec.ts",
+      "title": "student account shows its imported profile fields",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "local-real-input/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 826,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-manual/16-student-directory/01-directory-filters.png",
+      "sha256": "434a9d7a83b290608d52f85a4e78e5aa38570c77e6ae196a46a4644c233debb1",
+      "bytes": 73366
+    },
+    {
+      "path": "feature-documentation/system-manual/16-student-directory/02-student-selection.png",
+      "sha256": "65d947a80c7d53c5ca6539c380eacb811d61acd9c2c6b683f69d33da8285bd11",
+      "bytes": 84093
+    },
+    {
+      "path": "feature-documentation/system-manual/16-student-directory/03-saved-roster.png",
+      "sha256": "742b6ffa9aa2cf4267c9d1b9aa92485b9982202c89f8a946bd7baf217022e2fc",
+      "bytes": 245919
+    },
+    {
+      "path": "feature-documentation/system-manual/16-student-directory/04-student-profile.png",
+      "sha256": "72abc56cd2d53a8fd01db976df442cff9c95f52706a99ee8594bfe81dab655e3",
+      "bytes": 192429
+    }
+  ]
+}

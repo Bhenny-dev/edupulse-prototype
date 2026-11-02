@@ -1,0 +1,11 @@
+# Official student directory and roster selection
+
+This change imports official student identities into Supabase Auth and a protected student directory. Instructors can search and filter by year, department and program, select students across pages, and confirm enrollment through the existing revision-checked course-roster save. Students retain the existing published-material, release-time and enrollment access rules.
+
+The owner finalized lowercase student-number logins (`studentnumber@gmail.com`) for every student, with surname-based initial passwords. The one row with neither surname nor middle name uses the explicitly approved first-name password fallback, while its official surname remains blank. Existing imported accounts keep their passwords when their usernames are updated. The private provisioning receipt contains the assigned credentials and stays outside the repository. No real student records, passwords or service keys are included in migrations, fixtures, screenshots or release evidence.
+
+The additive migration introduces `edupulse_students`, with staff read access and student access to their own profile. Only trusted server-side provisioning can write official directory fields. User-editable metadata is display information, never permission authority. Accounts are created through the Auth admin API with the student role in app metadata. Existing account identity conflicts stop provisioning; existing passwords are not reset.
+
+The [manual](../../system-manual/16-student-directory/README.md) covers the new controls. [Validation](validation/results.md) records local and hosted checks, import totals, final usernames and deployment status.
+
+Department mapping follows the college/program organization in the current KCP [CABM](https://kcp.edu.ph/academics/college-of-accountancy-and-business-management/), [CTELA](https://kcp.edu.ph/academics/college-of-teacher-education-and-liberal-arts/), [CCJE](https://kcp.edu.ph/academics/college-of-criminal-justice-education/) and [Trade Technical Education](https://kcp.edu.ph/academics/trade-technical-education/) pages; original program titles are retained from the supplied official list. This extends directory organization to the supplied departments without introducing separate institutional tenants or changing course ownership.

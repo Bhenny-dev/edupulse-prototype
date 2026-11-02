@@ -1,0 +1,33 @@
+node.exe : [WebServer] .env.local not found. Continuing without it.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([WebServer] .en...ing without it.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+[WebServer] (node:9924) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:25384) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 4:57:54 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3045
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 4:57:55 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3045
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+
+Running 9 tests using 1 worker
+
+(node:27184) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 [desktop] › tests\snapshots\student-directory.spec.ts:6:1 › student directory selection and confirmed roster save (2.3s)
+  ok 2 [desktop] › tests\snapshots\student-directory.spec.ts:25:1 › student account shows its imported profile fields (615ms)
+  ok 3 [desktop] › tests\snapshots\walkthrough.spec.ts:63:1 › public site (413ms)
+  ok 4 [desktop] › tests\snapshots\walkthrough.spec.ts:92:1 › shared interface (shown as instructor) (808ms)
+  ok 5 [desktop] › tests\snapshots\walkthrough.spec.ts:117:1 › system admin (816ms)
+  ok 6 [desktop] › tests\snapshots\walkthrough.spec.ts:128:1 › dean and associate dean (804ms)
+  ok 7 [desktop] › tests\snapshots\walkthrough.spec.ts:146:1 › associate dean (873ms)
+  ok 8 [desktop] › tests\snapshots\walkthrough.spec.ts:160:1 › instructor (2.1s)
+  ok 9 [desktop] › tests\snapshots\walkthrough.spec.ts:186:1 › student (914ms)
+
+  9 passed (15.0s)

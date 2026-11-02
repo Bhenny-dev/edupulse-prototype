@@ -35,6 +35,11 @@ function AccountSettings() {
           <div className="form-group"><label className="form-label" htmlFor="profile-name">Full Name</label><input id="profile-name" className="form-input" value={name} onChange={e => setName(e.target.value)} /></div>
           {user?.baseRole !== 'admin' && <div className="form-group"><label className="form-label" htmlFor="profile-email">Email</label><input id="profile-email" className="form-input" value={user?.email || ''} readOnly /></div>}
           <div className="form-group"><label className="form-label" htmlFor="profile-department">Department</label><input id="profile-department" className="form-input" value={department} onChange={e => setDepartment(e.target.value)} /></div>
+          {user?.baseRole==='student' && user?.studentNumber && <>
+            <div className="form-group"><label className="form-label" htmlFor="profile-student-number">Student number</label><input id="profile-student-number" className="form-input" value={user.studentNumber} readOnly /></div>
+            <div className="form-group"><label className="form-label" htmlFor="profile-year">Year level</label><input id="profile-year" className="form-input" value={user.yearLevel || ''} readOnly /></div>
+            <div className="form-group"><label className="form-label" htmlFor="profile-program">Program</label><textarea id="profile-program" className="form-input" rows={2} value={user.program || ''} readOnly /></div>
+          </>}
           <div className="form-group"><label className="form-label">Role</label><input className="form-input" value={user?.baseRole === 'admin' ? 'Admin' : user?.title || ''} disabled /></div>
           <div className="form-group"><label className="form-label" htmlFor="profile-password">New Password</label><input id="profile-password" className="form-input" type="password" autoComplete="new-password" disabled={!user?.authenticated || user?.provider === 'google'} value={password} onChange={e => setPassword(e.target.value)} placeholder={user?.provider === 'google' ? 'Your Google account manages sign-in' : user?.demo ? 'Unavailable in preview mode' : 'Leave blank to keep current password'} /></div>
         </div>

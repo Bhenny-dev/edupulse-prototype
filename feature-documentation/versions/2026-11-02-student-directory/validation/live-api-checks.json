@@ -1,0 +1,6 @@
+{
+  "authenticatedStudentApiStatus": 200,
+  "returnedOwnProfileOnly": true,
+  "guestApiStatus": 403,
+  "checkedAt": "2026-11-02T08:22:39.048Z"
+}

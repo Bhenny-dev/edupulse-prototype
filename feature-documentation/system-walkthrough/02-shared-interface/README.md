@@ -152,3 +152,5 @@ The [current account screenshots](../09-restored-role-pages/README.md) supplemen
 Signed-in charts, dialogs and page surfaces use the existing solid dark palette. Page tabs and desktop/mobile route access remain without duplicate left navigation.
 
 [Generate content and verify its save](../../system-manual/15-backend-content-delivery/README.md) documents the real local model, existing Pulse confirmation card, persisted receipt and reloaded syllabus. The backend harness changes do not change the restored header, settings, charts or layout.
+
+Provisioned students also see read-only **Student number**, **Year level** and **Program** under Settings Account. The [student profile capture](../../system-manual/16-student-directory/04-student-profile.png) uses a synthetic account; official directory records are maintained through administrative provisioning.

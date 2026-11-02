@@ -21,6 +21,7 @@ import ApprovedSyllabusUpload from '../components/syllabus/ApprovedSyllabusUploa
 import { meaningfulOutline, downloadApprovedFile } from '../utils/syllabusFiles'
 import UploadExistingSyllabus from '../components/syllabus/UploadExistingSyllabus'
 import BlockSectionUploader from '../components/syllabus/BlockSectionUploader'
+import StudentDirectoryPicker from '../components/syllabus/StudentDirectoryPicker'
 import SharedSyllabusRepository from '../components/syllabus/SharedSyllabusRepository'
 import { parsedToFormState } from '../utils/syllabusParser'
 import { applyRegistration } from '../utils/rosterParser'
@@ -1581,6 +1582,16 @@ export default function Syllabus() {
     addToast(`${saved.courseCode} · ${saved.blockSection}: ${saved.studentCount} students registered (${added} new${already ? `, ${already} already registered` : ''})`, 'success')
   }
 
+  const registerDirectoryStudents = async registration => {
+    const request={...registration,uploadedBy:user.id,id:`reg-${crypto.randomUUID().slice(0,8)}`}
+    await commit(data=>{
+      const result=applyRegistration(data.registrations,request)
+      if(result.registration.studentCount>35)throw new Error('A course block supports up to 35 students. Choose another block for the remaining students.')
+      return {...data,registrations:result.registrations}
+    })
+    pulseBus.progress('roster-registered',`${registration.courseCode} · ${registration.blockSection}`)
+  }
+
   // Handle syllabus attachment from SharedSyllabusRepository
   const handleAttachSyllabus = (syllabus) => {
     const copy = record({ ...syllabus, id: crypto.randomUUID(), instructorId: user?.id, version: 1, sample: false, approvedFile: undefined, extractedAt: undefined, history: [] }, 'drafted')
@@ -1653,11 +1664,12 @@ export default function Syllabus() {
               My Courses
             </h2>
             <p style={{ fontSize: '0.875rem', color: 'var(--gray-500)', marginBottom: '16px' }}>
-              Upload block section student files from EduSuite to register courses. Registered courses appear in My Syllabus for syllabus creation.
+              Choose registered students or upload an EduSuite class list to register a course block. Registered courses appear in My Syllabus for syllabus creation.
             </p>
           </div>
 
           {/* Upload Form */}
+          <StudentDirectoryPicker onRegister={registerDirectoryStudents} />
           <div className="card" style={{ marginBottom: '20px' }}>
             <div className="card-body">
               <BlockSectionUploader

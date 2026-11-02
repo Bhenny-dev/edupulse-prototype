@@ -19,6 +19,7 @@ import { agentRunRow, failedRunRow, recordAgentRun } from './agentRuns.js'
 import { AGENT_ORDER } from '../src/lib/rag/registry.js'
 import { canGenerateCourseware } from '../src/lib/access.js'
 import { academicCommand, executeAcademic, readAcademic } from './domains/academic.js'
+import { readStudents } from './domains/students.js'
 import { changeLease } from './requestLimits.js'
 import { providerOAuth, providerOAuthInput } from './domains/providerOAuth.js'
 import { conversationCommand, conversationRecall, executeConversation, readConversations } from './domains/conversations.js'
@@ -29,7 +30,7 @@ export const VERSION = '0.4.0'
 /** Request body limits per action (bytes). Uploads are raw file bytes. */
 export const BODY_LIMITS: Record<string, number> = { workspace: WORKSPACE_BYTES, extract: EXTRACTION_LIMITS.bytes, documents: 1_000_000, conversations: 200_000, operator: 100_000 }
 export const bodyLimit = (action: string | null) => BODY_LIMITS[action || ''] ?? 100_000
-const ACTION_METHODS: Record<string, string[]> = { health: ['GET'], providers: ['GET', 'POST', 'DELETE'], 'provider-oauth': ['POST'], 'provider-test': ['POST'], conversations: ['GET', 'POST'], operator: ['POST'], context: ['POST'], similarity: ['POST'], references: ['POST'], 'web-search': ['POST'], extract: ['POST'], chat: ['POST'], courseware: ['POST'], documents: ['GET', 'POST', 'DELETE'], workspace: ['GET', 'PUT'], academic: ['GET', 'POST'] }
+const ACTION_METHODS: Record<string, string[]> = { health: ['GET'], providers: ['GET', 'POST', 'DELETE'], 'provider-oauth': ['POST'], 'provider-test': ['POST'], conversations: ['GET', 'POST'], operator: ['POST'], context: ['POST'], similarity: ['POST'], references: ['POST'], 'web-search': ['POST'], extract: ['POST'], chat: ['POST'], courseware: ['POST'], documents: ['GET', 'POST', 'DELETE'], workspace: ['GET', 'PUT'], academic: ['GET', 'POST'], students: ['GET'] }
 export const allowedMethods = (action: string) => Object.hasOwn(ACTION_METHODS, action) ? ACTION_METHODS[action] : undefined
 const buckets = new Map<string, { count: number; until: number }>()
 const active = new Set<string>()
@@ -96,6 +97,7 @@ export async function handleRequest(request: Request): Promise<Response> {
     if (!methods) throw new ApiError(404, 'NOT_FOUND', 'Unknown API action.')
     if (!methods.includes(request.method)) return new Response(null, { status: 405, headers: { Allow: methods.join(', '), 'Cache-Control': 'no-store' } })
     const identity = await authenticate(request)
+    if (action === 'students') return json(await readStudents(identity,new URL(request.url)))
     if (action === 'conversations') {
       const url = new URL(request.url), query = url.searchParams.get('q')
       if (query && query.length > 4000) throw new ApiError(400, 'INVALID_INPUT', 'Use a shorter conversation search.')

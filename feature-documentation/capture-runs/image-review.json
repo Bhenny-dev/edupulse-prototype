@@ -3780,6 +3780,66 @@
       "sha256": "aee9632a07a619857d99bbca23b5d3c898592f8894eb99744bdde52a1f8d910a",
       "reviewer": "Claude agent",
       "reviewedAt": "2026-11-01T18:52:31.154Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/16-student-directory/01-directory-filters.png",
+      "sha256": "f6bbeaef25419a5f3c9ebf6938921a8487a032eb20d650ee4449eff6a5df792c",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-02T08:04:15.772966+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/16-student-directory/02-student-selection.png",
+      "sha256": "ac216502644aab067dfd4c7a545654c54aa535a67a384aba183102eff9f6b985",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-02T08:04:15.773250+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/16-student-directory/03-saved-roster.png",
+      "sha256": "c2550fe0667d84ed0c10dfd241d948753b141d26b32990db004dd8ccd9e8ee0f",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-02T08:04:15.773622+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/16-student-directory/04-student-profile.png",
+      "sha256": "57ef9c2a1d9605617747c5cd0a25da9b83cd107cd8783bbf8630bc6854d9b1c8",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-02T08:04:15.773984+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/04-instructor/02-syllabus-my-courses.png",
+      "sha256": "7364f5fef4cca9e93150ebef5b6cdb07930ae3d5d3f7caef284b633a6da3c0a5",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-02T08:04:15.774447+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/16-student-directory/01-directory-filters.png",
+      "sha256": "19927a09ef6a5610f49888fad9bb80eeea3e5c0a115ff30f1a653a473630ad66",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-02T08:13:18.832512+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/16-student-directory/02-student-selection.png",
+      "sha256": "e62b74bde06b9c12d33df310954f6bd608a50d230f1ea64a3cbccf9f5b361840",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-02T08:13:18.832907+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/16-student-directory/03-saved-roster.png",
+      "sha256": "c2550fe0667d84ed0c10dfd241d948753b141d26b32990db004dd8ccd9e8ee0f",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-02T08:13:18.856584+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/16-student-directory/04-student-profile.png",
+      "sha256": "57ef9c2a1d9605617747c5cd0a25da9b83cd107cd8783bbf8630bc6854d9b1c8",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-02T08:13:18.873451+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/16-student-directory/02-student-selection.png",
+      "sha256": "cbc5f190c9e4f482ad5b0a39504472f940323b08d7a0e1a495e13b5595e9133b",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-02T08:58:49.910251+00:00"
     }
   ]
 }

@@ -127,3 +127,10 @@ Selected-field and section proposals are clipped against the captured editor bas
 ## Backend content harness, 29 October 2026
 
 This local change retains the existing database schema, owner RLS, workspace revision protocol and hosted request budget. No migration, credential setup, environment change or deployment was performed. Live generation/save validation uses an isolated local database; it does not certify hosted sessions. See the [audit and validation record](../versions/2026-10-29-backend-harness/validation/results.md).
+
+
+## Official student directory, 2 November 2026
+
+The additive `20261102074226_student_directory` migration stores official identity and grouping independently from course enrollment. `GET /api/ai?action=students` returns 50 authorized profiles per page, with bounded name/student-number search and exact year, department and program filters. Authenticated instructors and academic management can read the directory; students can read only their own profile. Anonymous reads and direct authenticated writes are denied. Trusted administrative provisioning creates confirmed student Auth accounts and matching directory rows; service keys stay outside the browser and repository.
+
+Instructors use **Syllabus → My Courses → Choose students**, then confirm a course/block roster through the existing revision-checked workspace save. An account alone grants no published-material access. Enrollment matches the verified account email; syllabus approval, publication review, release timing and course ownership checks remain in force. Profile display metadata is not authorization data. See [the manual](../system-manual/16-student-directory/README.md) and [release validation](../versions/2026-11-02-student-directory/validation/results.md).
