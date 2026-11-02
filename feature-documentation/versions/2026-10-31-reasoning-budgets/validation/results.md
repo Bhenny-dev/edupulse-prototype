@@ -30,7 +30,7 @@ Written first and run before the change: 11 failed for the expected reasons (no 
 | `npm run lint` | passed (existing warnings only) |
 | `npm run typecheck` | passed |
 | `npm run verify` (documentation check, lint, typecheck, model files, tests, build, deployment check) | passed; 185 of 185 tests |
-| `npm run test:browser` | not run for this commit; required before this change merges to `main` |
+| `npm run test:browser` | 2 November, on the change applied to `main` after the landing release (`581d374`), one worker and a fresh data folder: 193 passed, 19 skipped (single-project checks), 0 failed. `npm run verify` on the same tree: 185 of 185 tests, build and deployment checks passed |
 
 ## Facts checked at the source
 
