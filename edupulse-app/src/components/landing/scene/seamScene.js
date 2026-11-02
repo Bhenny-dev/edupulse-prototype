@@ -1,29 +1,50 @@
 import * as THREE from 'three'
+import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
 
-// The seams' 3D shards: one fixed, transparent canvas over the page that draws only while a
-// section is arriving. A band of shards rushes in along the arriving section's top edge (from
-// the side, from the centre, from below, in a spiral or tile by tile), holds as a faceted seam
-// and fractures apart, the half above the edge lifting away and the half below rushing past
-// the camera, while the camera rolls, pushes in and pans. The shards are satin, porcelain and
-// blue gloss with a brushed surface (a procedural texture drives their roughness and relief).
-// Every movement is a function of the scroll, so a seam plays backwards as well as forwards.
-// createSeamScene returns null without WebGL.
+// The pieces that build a card as it arrives (seams.js decides which cards and how far along
+// each one is). One fixed, transparent canvas over the page, drawn only while a card is being
+// built. For each card, faceted pieces cut from its own outline (triangles, fans, slats or
+// tiles) travel in from the section's side as glowing wireframe and fill with the section's
+// material under a studio light: brushed aluminium, iridescent glass, anodized blue, glazed
+// ceramic, or a circuit board with glowing traces. The cluster swings in like a camera settling
+// on the card, a blue frame locks onto the card's corners, and the pieces meet edge to edge
+// exactly over the card, flash along their seams, cool into the card's own surface and dissolve
+// as the card appears under them. Everything is a function of the card's progress, so it plays
+// backwards as well. createSeamScene returns null without WebGL.
 
-const FOV = 32
-const CAM_Z = 12
-const PALETTE = [0xffffff, 0xf4f9ff, 0xdbeafe, 0x93c5fd, 0x2563eb]
-const OUTLINES = {
-  tri: [[0, 0.6], [0.55, -0.34], [-0.52, -0.3]],
-  diamond: [[0, 0.62], [0.4, 0], [0, -0.62], [-0.4, 0]],
-  pentagon: [[0, 0.55], [0.52, 0.17], [0.32, -0.45], [-0.32, -0.45], [-0.52, 0.17]],
-  hex: [[0.5, 0], [0.25, 0.43], [-0.25, 0.43], [-0.5, 0], [-0.25, -0.43], [0.25, -0.43]],
+const FOV = 30
+const CAM_Z = 14
+const DEPTH = 0.07 // the pieces' thickness, in scene units
+
+const FINISHES = {
+  aluminium: { color: 0xdfe6ee, metalness: 1, roughness: 0.32, clearcoat: 0.001, iridescence: 0.001, glow: 0, env: 1.2, alpha: 1, brushed: true },
+  glass: { color: 0xd6e8ff, metalness: 0.1, roughness: 0.03, clearcoat: 1, iridescence: 1, glow: 0, env: 2, alpha: 0.78 },
+  anodized: { color: 0x2563eb, metalness: 0.82, roughness: 0.28, clearcoat: 0.7, iridescence: 0.001, glow: 0, env: 1.1, alpha: 1, brushed: true },
+  ceramic: { color: 0xffffff, metalness: 0, roughness: 0.14, clearcoat: 1, iridescence: 0.001, glow: 0, env: 1, alpha: 1 },
+  circuit: { color: 0x1e40af, metalness: 0.5, roughness: 0.36, clearcoat: 0.5, iridescence: 0.001, glow: 2.4, env: 0.9, alpha: 1, traces: true },
 }
-const clamp01 = value => Math.min(1, Math.max(0, value))
-const easeOut = t => 1 - (1 - t) ** 3
-const easeInOut = t => (t < 0.5 ? 4 * t ** 3 : 1 - (-2 * t + 2) ** 3 / 2)
-const halfHeight = distance => Math.tan(THREE.MathUtils.degToRad(FOV / 2)) * distance
+const TRACE_GLOW = 0x7cb8ff
 
-// A small seeded generator, so the shards and the texture are the same on every visit.
+// Each cut splits a cell (x and y from -0.5 to 0.5, y up) into pieces.
+const CUTS = {
+  tri: (col, row) => ((col + row) % 2
+    ? [[[-0.5, -0.5], [0.5, -0.5], [-0.5, 0.5]], [[0.5, -0.5], [0.5, 0.5], [-0.5, 0.5]]]
+    : [[[-0.5, -0.5], [0.5, -0.5], [0.5, 0.5]], [[-0.5, -0.5], [0.5, 0.5], [-0.5, 0.5]]]),
+  fan: () => [
+    [[-0.5, 0.5], [0, 0], [0.5, 0.5]], [[0.5, 0.5], [0, 0], [0.5, -0.5]],
+    [[0.5, -0.5], [0, 0], [-0.5, -0.5]], [[-0.5, -0.5], [0, 0], [-0.5, 0.5]],
+  ],
+  slat: () => [[[-0.5, -0.5], [0.5, -0.5], [0.5, 0.5], [-0.5, 0.5]]],
+  grid: () => [[[-0.5, -0.5], [0.5, -0.5], [0.5, 0.5], [-0.5, 0.5]]],
+}
+
+const clamp = (value, low, high) => Math.min(high, Math.max(low, value))
+const clamp01 = value => clamp(value, 0, 1)
+const lerp = (a, b, t) => a + (b - a) * t
+const smooth = (edge0, edge1, value) => { const t = clamp01((value - edge0) / (edge1 - edge0)); return t * t * (3 - 2 * t) }
+const easeInOut = t => (t < 0.5 ? 4 * t ** 3 : 1 - (-2 * t + 2) ** 3 / 2)
+
+// A small seeded generator, so the pieces and textures are the same on every visit.
 function random(seed) {
   let state = seed >>> 0
   return () => {
@@ -34,11 +55,18 @@ function random(seed) {
   }
 }
 
-// Brushed satin: fine horizontal strokes and a little grain, used as roughness and relief.
-function brushedTexture() {
-  const size = 256, rand = random(7), surface = document.createElement('canvas')
+function canvasTexture(size, paint) {
+  const surface = document.createElement('canvas')
   surface.width = surface.height = size
-  const context = surface.getContext('2d')
+  paint(surface.getContext('2d'), size)
+  const texture = new THREE.CanvasTexture(surface)
+  texture.wrapS = texture.wrapT = THREE.RepeatWrapping
+  return texture
+}
+
+// Brushed metal: fine horizontal strokes and a little grain, used as roughness.
+const brushedTexture = () => canvasTexture(256, (context, size) => {
+  const rand = random(7)
   context.fillStyle = '#d8d8d8'
   context.fillRect(0, 0, size, size)
   for (let i = 0; i < 700; i++) {
@@ -55,13 +83,41 @@ function brushedTexture() {
     context.fillStyle = `rgb(${shade} ${shade} ${shade} / 0.4)`
     context.fillRect(rand() * size, rand() * size, 1, 1)
   }
-  const texture = new THREE.CanvasTexture(surface)
-  texture.wrapS = texture.wrapT = THREE.RepeatWrapping
-  texture.repeat.set(1.6, 1.6)
+})
+
+// Circuit traces on black, used as the glow map: right-angled runs ending in pads.
+const tracesTexture = () => canvasTexture(256, (context, size) => {
+  const rand = random(11)
+  context.fillStyle = '#000000'
+  context.fillRect(0, 0, size, size)
+  context.strokeStyle = context.fillStyle = '#ffffff'
+  context.lineCap = context.lineJoin = 'round'
+  for (let i = 0; i < 24; i++) {
+    let x = Math.round(rand() * 15) * 16 + 8, y = Math.round(rand() * 15) * 16 + 8
+    context.lineWidth = rand() < 0.3 ? 3 : 1.5
+    context.beginPath()
+    context.moveTo(x, y)
+    for (let step = 0; step < 4; step++) {
+      const run = 16 * (1 + Math.floor(rand() * 3)), turn = Math.floor(rand() * 3)
+      if (turn === 0) x += run
+      else if (turn === 1) y += run
+      else { x += run * 0.7; y += run * 0.7 }
+      context.lineTo(x, y)
+    }
+    context.stroke()
+    context.beginPath()
+    context.arc(x, y, 3.4, 0, Math.PI * 2)
+    context.fill()
+  }
+})
+
+const pixel = value => {
+  const texture = new THREE.DataTexture(new Uint8Array([value, value, value, 255]), 1, 1)
+  texture.needsUpdate = true
   return texture
 }
 
-export function createSeamScene({ canvas, seams }) {
+export function createSeamScene({ canvas }) {
   const probe = document.createElement('canvas')
   const probeContext = probe.getContext('webgl2') || probe.getContext('webgl')
   if (!probeContext) return null
@@ -79,171 +135,274 @@ export function createSeamScene({ canvas, seams }) {
   const scene = new THREE.Scene()
   const camera = new THREE.PerspectiveCamera(FOV, 1, 0.1, 80)
   camera.position.set(0, 0, CAM_Z)
-  scene.add(new THREE.HemisphereLight(0xffffff, 0xdbeafe, 1.3))
-  const key = new THREE.DirectionalLight(0xffffff, 2.2)
+  // A studio environment for real reflections on metal, glass and glaze; it turns slowly, so
+  // light travels across the pieces as they move.
+  const pmrem = new THREE.PMREMGenerator(renderer)
+  const studio = new RoomEnvironment()
+  scene.environment = pmrem.fromScene(studio, 0.04).texture
+  studio.dispose?.()
+  pmrem.dispose()
+  scene.add(new THREE.HemisphereLight(0xffffff, 0xdbeafe, 0.55))
+  const key = new THREE.DirectionalLight(0xffffff, 1.6)
   key.position.set(4, 6, 8)
-  const rim = new THREE.DirectionalLight(0xbfdbfe, 1.2)
-  rim.position.set(-6, -3, -4)
-  scene.add(key, rim)
+  scene.add(key)
 
-  const grain = brushedTexture()
-  const extrude = outline => {
-    const geometry = new THREE.ExtrudeGeometry(new THREE.Shape(outline.map(([x, y]) => new THREE.Vector2(x, y))), { depth: 0.07, bevelEnabled: true, bevelThickness: 0.016, bevelSize: 0.018, bevelSegments: 2, curveSegments: 1 })
-    geometry.center()
-    return geometry
+  const textures = { brushed: brushedTexture(), traces: tracesTexture(), white: pixel(255) }
+  const shapes = new Map()
+  function shapeOf(points) {
+    const id = points.join(';')
+    if (shapes.has(id)) return shapes.get(id)
+    const cx = points.reduce((sum, [x]) => sum + x, 0) / points.length
+    const cy = points.reduce((sum, [, y]) => sum + y, 0) / points.length
+    const geometry = new THREE.ExtrudeGeometry(new THREE.Shape(points.map(([x, y]) => new THREE.Vector2(x, y))), { depth: 1, bevelEnabled: false, curveSegments: 1 })
+    geometry.translate(-cx, -cy, -0.5)
+    const shape = { geometry, edges: new THREE.EdgesGeometry(geometry, 1), centroid: { x: cx, y: cy } }
+    shapes.set(id, shape)
+    return shape
   }
-  const geometries = {
-    tri: extrude(OUTLINES.tri),
-    diamond: extrude(OUTLINES.diamond),
-    pentagon: extrude(OUTLINES.pentagon),
-    hex: extrude(OUTLINES.hex),
-    ring: new THREE.TorusGeometry(0.42, 0.075, 16, 56, Math.PI * 1.15),
-    tile: new THREE.BoxGeometry(0.84, 0.84, 0.07),
-    prism: new THREE.CylinderGeometry(0.34, 0.34, 0.86, 3, 1),
-  }
+  const armGeometry = new THREE.BoxGeometry(1, 1, 1)
 
-  const compact = () => window.innerWidth < 760
-  const COUNT = 18
-  const rand = random(42)
-  const shards = Array.from({ length: COUNT }, (_, i) => {
-    const material = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.4, metalness: 0.06, roughnessMap: grain, bumpMap: grain, bumpScale: 0.6, transparent: true, opacity: 0, side: THREE.DoubleSide })
-    const mesh = new THREE.Mesh(geometries.tri, material)
-    mesh.visible = false
-    scene.add(mesh)
-    const sign = i % 2 ? -1 : 1
-    return {
-      mesh, material,
-      u: -1 + (2 * (i + 0.5)) / COUNT + (rand() - 0.5) * 0.06, // place along the edge, left to right
-      j: (rand() * 2 - 1) * (i % 3 === 0 ? 0.45 : 1), // above (+) or below (-) the edge
-      z: (rand() - 0.5) * 2.4,
-      size: 0.38 + rand() * 0.42,
-      tilt: new THREE.Vector3((rand() - 0.5) * 0.9, (rand() - 0.5) * 0.9, rand() * Math.PI * 2),
-      spin: new THREE.Vector3((1 + rand()) * sign, (0.8 + rand()) * -sign, (1.2 + rand()) * sign),
-      tone: rand(),
-    }
+  const pieceMaterial = () => new THREE.MeshPhysicalMaterial({
+    roughnessMap: textures.white, emissiveMap: textures.white, clearcoat: 0.001, iridescence: 0.001,
+    iridescenceIOR: 1.3, iridescenceThicknessRange: [120, 420], transparent: true, opacity: 0,
+    polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1,
   })
+  const wireMaterial = () => new THREE.LineBasicMaterial({ color: 0x3b82f6, transparent: true, opacity: 0, depthWrite: false })
 
-  // Shapes and colours change with the seam: mostly white and pale blue, a little blue.
-  let dressed = null
-  function dress(seam) {
-    if (dressed === seam) return
-    dressed = seam
-    shards.forEach((shard, i) => {
-      shard.mesh.geometry = geometries[seam.shapes[i % seam.shapes.length]] || geometries.tri
-      const tone = shard.tone < 0.34 ? 0 : shard.tone < 0.58 ? 1 : shard.tone < 0.78 ? 2 : shard.tone < 0.9 ? 3 : 4
-      shard.material.color.setHex(PALETTE[tone])
-      shard.material.roughness = tone === 4 ? 0.22 : 0.42
-      shard.material.metalness = tone === 4 ? 0.3 : 0.06
-      shard.material.emissive.setHex(PALETTE[tone])
-      shard.material.emissiveIntensity = tone < 3 ? 0.16 : 0.05
-    })
-  }
-
+  const compact = () => canvas.clientWidth < 760
+  let viewW = 1, viewH = 1, halfH = Math.tan(THREE.MathUtils.degToRad(FOV / 2)) * CAM_Z, halfW = halfH
   function layout() {
+    viewW = Math.max(1, canvas.clientWidth)
+    viewH = Math.max(1, canvas.clientHeight)
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, compact() ? 1.25 : 1.5))
-    renderer.setSize(window.innerWidth, window.innerHeight, false)
-    camera.aspect = window.innerWidth / Math.max(1, window.innerHeight)
+    renderer.setSize(viewW, viewH, false)
+    camera.aspect = viewW / viewH
     camera.updateProjectionMatrix()
-    clearNext = true
+    halfW = halfH * camera.aspect
   }
 
-  let frame = 0, running = false, disposed = false, clearNext = true
-
-  // The seam on screen: the one furthest into its passage (sections can be short).
-  function activeSeam() {
-    let best = null, weight = 0
-    for (const seam of seams) {
-      const w = seam.progress > 0 && seam.progress < 1 ? Math.sin(seam.progress * Math.PI) : 0
-      if (w > weight) { weight = w; best = seam }
+  // One cluster of pieces per card, built the first time the card arrives.
+  const clusters = new Map()
+  let seed = 1
+  function build(block) {
+    const { seam, rect } = block
+    const cut = CUTS[seam.cut] ? seam.cut : 'grid'
+    let rows, cols
+    if (cut === 'slat') { rows = 1; cols = clamp(Math.round(rect.width / (compact() ? 72 : 100)), 3, 9) }
+    else {
+      rows = rect.height > 300 ? 2 : 1
+      cols = clamp(Math.round((rect.width / Math.max(1, rect.height)) * rows), 1, cut === 'fan' ? 3 : 4)
+      if (cut === 'fan' && rows * cols > 4) rows = 1
     }
-    return best
-  }
-
-  function tick() {
-    frame = 0
-    if (disposed) return
-    const seam = activeSeam()
-    if (!seam) {
-      running = false
-      for (const shard of shards) shard.mesh.visible = false
-      canvas.removeAttribute('data-seam')
-      if (clearNext) { renderer.clear(); clearNext = false }
-      return
-    }
-    frame = requestAnimationFrame(tick)
-    clearNext = true
-    dress(seam)
-    canvas.dataset.seam = seam.id
-    const p = seam.progress, wave = Math.sin(p * Math.PI)
-    const halfH = halfHeight(CAM_Z), halfW = halfH * camera.aspect
-    const top = seam.element.getBoundingClientRect().top
-    const line = -((top / window.innerHeight) * 2 - 1) * halfH // the section's top edge, in the scene
-    const scale = compact() ? 0.62 : 1
-
-    // The camera rolls, pushes in and pans across the seam, and settles again.
-    camera.position.set(seam.pan * (p - 0.5) * 2, line * 0.06, CAM_Z - seam.dolly * wave)
-    camera.lookAt(seam.pan * (p - 0.5) * 0.6, line * 0.04, 0)
-    camera.rotateZ(seam.roll * wave)
-
-    for (const shard of shards) {
-      const { mesh, material, u, j } = shard
-      const order = seam.from === 'left' ? (u + 1) / 2 : seam.from === 'right' ? (1 - u) / 2 : seam.from === 'line' ? (u + 1) / 2 : Math.abs(u)
-      const delay = order * 0.14
-      const enter = easeOut(clamp01((p - delay) / 0.36))
-      const leave = easeInOut(clamp01((p - 0.56 - delay * 0.5) / 0.34))
-      const opacity = enter * (1 - leave) ** 1.6
-      mesh.visible = opacity > 0.01
-      if (!mesh.visible) continue
-      const away = 1 - enter
-      let x = u * halfW * 1.02, y = line + j * 0.62 * scale, z = shard.z
-      if (seam.from === 'left') { x -= away * halfW * 1.5; z -= away * 2 }
-      else if (seam.from === 'right') { x += away * halfW * 1.5; z -= away * 2 }
-      else if (seam.from === 'centre') { x *= enter; y = line + (y - line) * enter; z -= away * 7 }
-      else if (seam.from === 'below') { y -= away * halfH * 1.3; z += away * 1.5 }
-      else if (seam.from === 'spiral') {
-        // A flattened spiral: the band turns about its centre in depth, staying near the edge.
-        const angle = away * Math.PI * 2.2, radius = enter
-        const dx = x * radius, dy = (y - line) * radius
-        x = dx * Math.cos(angle) - dy * Math.sin(angle)
-        y = line + (dx * Math.sin(angle) + dy * Math.cos(angle)) * 0.22
-        z -= away * 3 + Math.sin(angle) * 1.2
+    const rand = random(seed++ * 977)
+    const finishes = seam.finishes?.length ? seam.finishes : ['ceramic']
+    const group = new THREE.Group()
+    scene.add(group)
+    const pieces = []
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const cell = CUTS[cut](c, r)
+        cell.forEach((points, k) => {
+          const shape = shapeOf(points)
+          const finish = FINISHES[finishes[rand() < 0.66 ? 0 : 1] || finishes[0]] || FINISHES.ceramic
+          const material = pieceMaterial()
+          material.roughnessMap = finish.brushed ? textures.brushed : textures.white
+          material.emissiveMap = finish.traces ? textures.traces : textures.white
+          const mesh = new THREE.Mesh(shape.geometry, material)
+          const wire = new THREE.LineSegments(shape.edges, wireMaterial())
+          mesh.add(wire)
+          mesh.visible = false
+          group.add(mesh)
+          const across = (c + 0.5 + shape.centroid.x * 0.9) / cols, down = (r + 0.5 - shape.centroid.y * 0.9) / rows
+          const order = {
+            left: across, right: 1 - across, below: 1 - down, line: across,
+            centre: Math.min(1, Math.hypot(across - 0.5, down - 0.5) * 1.6),
+            spiral: (r * cols * cell.length + c * cell.length + k) / Math.max(1, rows * cols * cell.length - 1),
+          }[seam.from] ?? across
+          pieces.push({
+            mesh, wire, material, finish, base: new THREE.Color(finish.color), c, r, centroid: shape.centroid,
+            delay: order * 0.14 + rand() * 0.03, reach: rand(), drift: rand() - 0.5, depth: rand(), flip: rand() < 0.5 ? 1 : -1,
+            tilt: new THREE.Vector3((rand() - 0.5) * 1.4, (rand() - 0.5) * 1.4, (rand() - 0.5) * 1.8),
+            spin: new THREE.Vector3((1 + rand()) * (rand() < 0.5 ? 1 : -1), (1 + rand()) * (rand() < 0.5 ? 1 : -1), (1 + rand()) * (rand() < 0.5 ? 1 : -1)),
+          })
+        })
       }
-      // The fracture: above the edge lifts and falls back, below rushes past the camera.
-      const side = j >= 0 ? 1 : -1
-      x += Math.sign(u || 1) * halfW * 0.28 * leave
-      y += side * halfH * 0.6 * leave
-      z += (side > 0 ? -2.6 : 2.4) * leave
-      mesh.position.set(x, y, z)
-      const flip = seam.from === 'line' ? (1 - enter) * Math.PI * 0.5 : 0
-      mesh.rotation.set(
-        shard.tilt.x + shard.spin.x * (away * 1.6 + leave * 1.2) + flip,
-        shard.tilt.y + shard.spin.y * (away * 1.6 + leave * 1.2),
-        shard.tilt.z + shard.spin.z * (away + leave) * 0.8,
-      )
-      mesh.scale.setScalar(shard.size * scale * (0.55 + 0.45 * enter))
-      material.opacity = opacity
     }
-    renderer.render(scene, camera)
+    // The frame that locks onto the card's corners: two arms per corner.
+    const frameMaterial = new THREE.MeshBasicMaterial({ color: 0x2563eb, transparent: true, opacity: 0, depthTest: false, depthWrite: false })
+    const arms = Array.from({ length: 8 }, () => {
+      const arm = new THREE.Mesh(armGeometry, frameMaterial)
+      arm.visible = false
+      arm.renderOrder = 10
+      scene.add(arm)
+      return arm
+    })
+    let surface = new THREE.Color(0xffffff)
+    try { surface = new THREE.Color().setStyle(block.surface || '#ffffff') } catch { /* keep white */ }
+    const cluster = { group, pieces, arms, frameMaterial, rows, cols, surface, used: 0 }
+    clusters.set(block, cluster)
+    return cluster
   }
 
-  const wake = () => {
-    if (disposed || running) return
-    running = true
-    frame = requestAnimationFrame(tick)
+  function hide(cluster) {
+    cluster.group.visible = false
+    for (const arm of cluster.arms) arm.visible = false
   }
-  const sizes = new ResizeObserver(() => { layout(); wake() })
+
+  function release(block, cluster) {
+    for (const piece of cluster.pieces) { piece.material.dispose(); piece.wire.material.dispose() }
+    cluster.frameMaterial.dispose()
+    scene.remove(cluster.group)
+    for (const arm of cluster.arms) scene.remove(arm)
+    clusters.delete(block)
+  }
+
+  function update(block, cluster) {
+    const { p, rect, seam } = block
+    const unit = (2 * halfH) / viewH // scene units per CSS pixel
+    const W = rect.width * unit, H = rect.height * unit
+    const cx = (rect.left + rect.width / 2 - viewW / 2) * unit
+    const cy = (viewH / 2 - (rect.top + rect.height / 2)) * unit
+    const cellW = W / cluster.cols, cellH = H / cluster.rows, gap = 3 * unit
+
+    // The cluster swings in like a camera settling on the card, and rests by the time it lands.
+    const rest = 1 - easeInOut(clamp01(p / 0.6))
+    cluster.group.visible = true
+    cluster.group.position.set(cx, cy, -(seam.dolly ?? 2) * rest)
+    cluster.group.rotation.set(0.2 * rest * Math.sign(seam.pan || 1), (seam.pan ?? 0) * 0.6 * rest, (seam.roll ?? 0) * rest)
+
+    const outline = smooth(0, 0.1, p) * (1 - smooth(0.34, 0.6, p)) // wireframe first
+    const lock = smooth(0.5, 0.58, p) * (1 - smooth(0.58, 0.72, p)) // the seams flash as the pieces meet
+    const solid = smooth(0.04, 0.3, p) // the material fills in
+    const cool = smooth(0.52, 0.7, p) // and cools into the card's surface
+    const dissolve = smooth(0.66, 0.86, p) // as the card appears under it
+    const from = seam.from
+
+    for (const piece of cluster.pieces) {
+      const f = easeInOut(clamp01((p - piece.delay) / 0.5)), away = 1 - f
+      const lx = -W / 2 + (piece.c + 0.5) * cellW + piece.centroid.x * cellW
+      const ly = H / 2 - (piece.r + 0.5) * cellH + piece.centroid.y * cellH
+      let x = lx, y = ly, z = 0
+      // The pieces start close to the card (within about a card's size) and far in depth, so the
+      // whole flight plays where the reader is looking.
+      if (from === 'left' || from === 'right') {
+        const side = from === 'left' ? -1 : 1
+        x = lx + side * away * (W * (0.7 + 0.5 * piece.reach) + 1)
+        y = ly + away * piece.drift * H * 0.9
+        z = -away * (3 + piece.depth * 4)
+      } else if (from === 'below') {
+        x = lx + away * piece.drift * W * 0.7
+        y = ly - away * (H * (0.7 + 0.5 * piece.reach) + 0.6)
+        z = -away * (2.5 + piece.depth * 3)
+      } else if (from === 'centre') {
+        const spread = 0.12 + 0.88 * f
+        x = lx * spread
+        y = ly * spread
+        z = -away * (7 + piece.depth * 5)
+      } else if (from === 'spiral') {
+        const angle = away * Math.PI * 2.2, radius = 0.2 + 0.8 * f
+        x = (lx * Math.cos(angle) - ly * Math.sin(angle)) * radius
+        y = (lx * Math.sin(angle) + ly * Math.cos(angle)) * radius
+        z = -away * (4 + piece.depth * 3)
+      } else {
+        z = -away * 1.4 // line: each piece turns into place where it stands
+      }
+      piece.mesh.position.set(x, y, z)
+      if (from === 'line') {
+        const turn = away * Math.PI * 0.5 * piece.flip
+        piece.mesh.rotation.set(seam.cut === 'slat' ? 0 : turn, seam.cut === 'slat' ? turn : 0, 0)
+      } else {
+        const spin = away * away
+        piece.mesh.rotation.set(
+          piece.tilt.x * away + piece.spin.x * spin,
+          piece.tilt.y * away + piece.spin.y * spin,
+          piece.tilt.z * away + piece.spin.z * spin * 0.6,
+        )
+      }
+      const grow = from === 'line' ? 1 : 0.55 + 0.45 * f
+      piece.mesh.scale.set(Math.max(0.001, cellW - gap) * grow, Math.max(0.001, cellH - gap) * grow, DEPTH)
+
+      const { material, finish } = piece
+      material.color.copy(piece.base).lerp(cluster.surface, cool)
+      material.metalness = lerp(finish.metalness, 0, cool)
+      material.roughness = lerp(finish.roughness, 0.6, cool)
+      material.clearcoat = Math.max(0.001, lerp(finish.clearcoat, 0.001, cool))
+      material.iridescence = Math.max(0.001, lerp(finish.iridescence, 0.001, cool))
+      material.envMapIntensity = lerp(finish.env, 0.9, cool)
+      if (finish.traces) {
+        material.emissive.setHex(TRACE_GLOW)
+        material.emissiveIntensity = finish.glow * (1 - cool) * (0.75 + 0.6 * lock)
+      } else {
+        material.emissive.copy(cluster.surface) // a cooled piece is as bright as the card under it
+        material.emissiveIntensity = 0.42 * cool
+      }
+      material.opacity = solid * lerp(finish.alpha, 1, cool) * (1 - dissolve)
+      material.depthWrite = material.opacity > 0.35
+      const edge = Math.max(outline, lock * 0.95) * (1 - dissolve)
+      piece.wire.material.opacity = edge
+      piece.mesh.visible = material.opacity > 0.004 || edge > 0.004
+    }
+
+    // The frame: it closes in from just outside the card, holds while the pieces meet, then fades.
+    const frame = smooth(0.3, 0.46, p) * (1 - smooth(0.68, 0.84, p))
+    cluster.frameMaterial.opacity = frame * 0.95
+    const spread = (1 - smooth(0.3, 0.56, p)) * 18 * unit
+    const thick = 2 * unit, length = clamp(Math.min(rect.width, rect.height) * 0.14, 12, 28) * unit
+    const cornersX = [-1, 1, 1, -1], cornersY = [1, 1, -1, -1]
+    for (let i = 0; i < 4; i++) {
+      const sx = cornersX[i], sy = cornersY[i]
+      const x = cx + sx * (W / 2 + spread), y = cy + sy * (H / 2 + spread)
+      const across = cluster.arms[i * 2], down = cluster.arms[i * 2 + 1]
+      across.position.set(x - (sx * length) / 2, y - (sy * thick) / 2, 0.3)
+      across.scale.set(length, thick, thick)
+      down.position.set(x - (sx * thick) / 2, y - (sy * length) / 2, 0.3)
+      down.scale.set(thick, length, thick)
+      across.visible = down.visible = frame > 0.004
+    }
+  }
+
+  let drawn = false, disposed = false
+  function render(blocks) {
+    if (disposed) return
+    const now = performance.now()
+    for (const cluster of clusters.values()) cluster.live = false
+    for (const block of blocks) {
+      const cluster = clusters.get(block) || build(block)
+      cluster.live = true
+      cluster.used = now
+      update(block, cluster)
+    }
+    for (const [block, cluster] of clusters) {
+      if (cluster.live) continue
+      hide(cluster)
+      if (now - cluster.used > 4000) release(block, cluster)
+    }
+    if (blocks.length) {
+      scene.environmentRotation.y = now * 0.00016
+      key.position.set(4 * Math.cos(now * 0.0004), 6, 8)
+      renderer.render(scene, camera)
+      canvas.dataset.building = String(blocks.length) // how many cards are being built
+      drawn = true
+    } else if (drawn) {
+      renderer.clear()
+      delete canvas.dataset.building
+      drawn = false
+    }
+  }
+
+  const sizes = new ResizeObserver(layout)
   const onContextLost = event => { event.preventDefault(); dispose() }
-
   function dispose() {
     if (disposed) return
     disposed = true
-    if (frame) cancelAnimationFrame(frame)
     sizes.disconnect()
     canvas.removeEventListener('webglcontextlost', onContextLost)
-    canvas.removeAttribute('data-seam')
-    for (const geometry of Object.values(geometries)) geometry.dispose()
-    for (const shard of shards) shard.material.dispose()
-    grain.dispose()
+    delete canvas.dataset.building
+    for (const [block, cluster] of [...clusters]) release(block, cluster)
+    for (const shape of shapes.values()) { shape.geometry.dispose(); shape.edges.dispose() }
+    armGeometry.dispose()
+    for (const texture of Object.values(textures)) texture.dispose()
+    scene.environment?.dispose()
     renderer.dispose()
     renderer.forceContextLoss()
   }
@@ -251,11 +410,16 @@ export function createSeamScene({ canvas, seams }) {
   canvas.addEventListener('webglcontextlost', onContextLost)
   sizes.observe(canvas)
   layout()
-  // Compile the shards' material program before the first seam, so the first one never stutters.
-  for (const shard of shards) shard.mesh.visible = true
+  // Compile the pieces' programs before the first card, so the first one never stutters.
+  const warm = new THREE.Mesh(shapeOf(CUTS.grid()[0]).geometry, pieceMaterial())
+  warm.add(new THREE.LineSegments(shapeOf(CUTS.grid()[0]).edges, wireMaterial()))
+  const warmArm = new THREE.Mesh(armGeometry, new THREE.MeshBasicMaterial({ transparent: true, depthTest: false }))
+  scene.add(warm, warmArm)
   renderer.compileAsync(scene, camera).catch(() => undefined).then(() => {
-    for (const shard of shards) shard.mesh.visible = false
-    if (!disposed) wake()
+    scene.remove(warm, warmArm)
+    warm.material.dispose()
+    warm.children[0].material.dispose()
+    warmArm.material.dispose()
   })
-  return { wake, dispose }
+  return { render, dispose }
 }

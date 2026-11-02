@@ -3756,6 +3756,30 @@
       "sha256": "9ab4c8324550c43d2c5035db0e4abef7e907abfce0e4a69395d7d3e685189175",
       "reviewer": "Claude agent",
       "reviewedAt": "2026-10-31T12:58:16.326Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/05-landing-how-it-works.png",
+      "sha256": "277111a1aa6aea12c891fe98493f195ff4d20da1148166b389b8b85411ed0d90",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-11-01T18:52:31.154Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/06-landing-roles.png",
+      "sha256": "87e866592464d8dafe9e511ded08618278327be13fae44f4b36bcdfca217616a",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-11-01T18:52:31.154Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/07-landing-roles-student.png",
+      "sha256": "329a81b155c7a690b244f04879fb60371314b50302f422a0716c96ab233133bd",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-11-01T18:52:31.154Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/09-landing-why-it-matters.png",
+      "sha256": "aee9632a07a619857d99bbca23b5d3c898592f8894eb99744bdde52a1f8d910a",
+      "reviewer": "Claude agent",
+      "reviewedAt": "2026-11-01T18:52:31.154Z"
     }
   ]
 }

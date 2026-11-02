@@ -1,4 +1,25 @@
-# Validation: the opening by default, the 3D hero and section seams
+# Validation: the opening by default, the 3D hero, section arrivals and pictures
+
+## 2 November: arrivals built in place, and three sections as pictures
+
+Run on 2 November on Windows 11, Node 24.13, in `edupulse-app`, on the work rebased onto `main` (`1a29072`).
+
+| Check | Result |
+| --- | --- |
+| `tests/browser/landing.spec.ts`, desktop, whole spec | 20 passed, 1 failed: the new arrivals check placed the *How it works* heading, which is sticky on a desktop and never sits mid-screen; the check now places the Roles heading |
+| Arrivals, reduced motion, How it works, Roles and no-WebGL checks, desktop and phone | 11 passed, 1 skipped (the arrivals check runs at one width) |
+| New check: a third of the way in, the first *Why EduPulse* card, phase card, finding tile and college card are being built and not shown yet, and the canvas reports cards being built; settled, none of them or their parts keeps an inline style, and nothing is drawn; a heading rises into place; scrolling back takes a card apart again | passed |
+| Reduced motion: no block waits to be built and no card has an inline style | passed |
+| `npm run verify` | passed: documentation check, lint (no errors; warnings only in files this work does not touch), typecheck, 176 of 176 unit and integration tests, build and deployment checks |
+| Full browser suite (`npm run test:browser`, one worker, fresh data folder) | 192 passed, 19 skipped (single-project checks), 1 failed: `layout-feedback.spec.ts` "unique Records and Assessments destinations remain in primary navigation" on desktop, a 60 s timeout |
+| That failure | Not an assertion: the test signs in three times, each after two landing-page loads, and the opening now plays on every load. On this machine (under 1 GB of free memory) each run took 59 to 66 s, so the 60 s budget sat at the edge; in an unloaded browser the same persona click takes about 1.2 to 1.5 s with or without the arrival, opening or workspace scene. The budget is now 90 s with a comment saying why; no check changed. Rerun three times on both projects: 6 passed |
+| An earlier, interrupted run of the suite (162 of 212) | its `pulse-tools` history failure ("Saving conversation" never became "Conversation saved") came from stale data in the default test folder left by interrupted runs: the same test failed again there, and passed on this branch and on a clean `main` worktree with fresh data folders |
+
+Looked at in the browser on the development server at 1440 by 900 and 390 by 844, part way through and after: triangles of iridescent glass and brushed blue anodized metal rising into the *Why EduPulse* cards as wireframe first, the corner frame locking on, the cards cascading and their text rising after the hand-over; circuit-board tiles with glowing traces arriving from the left into the phase cards; fans assembling the SDG panel; the settled phase cards, role panels and finding tiles; on a phone, the phase card's **People** box under its **AI** box with a downward arrow. An earlier draft started the pieces off screen and front-loaded their flight, so most of it played below the fold; the pieces now start within about a card's size and the flight spans the first half of the arrival.
+
+Screenshots: a targeted run (`npm run snapshots -- -g "public site|mobile landing page"`, run `2026-11-01T18-47-36-768Z-e81b7b35`) passed. Decoded pixels were compared with `main`: images 5, 6, 7 and 9 of the public site show the new phase cards, role panels and finding tiles, were opened and checked against their descriptions and are attested in `capture-runs/image-review.json`. Images 2, 3, 4, 8, 8b, 8c and 10 to 15 differed only by a one-pixel change in height, a shorter reading-progress line or text antialiasing after the longer sections, and were restored from `main`. The merged `capture-manifest.json` keeps all 77 scenes.
+
+## 31 October: the opening, the 3D hero and the first seams
 
 Run on 31 October on Windows 11, Node 24.13, in `edupulse-app`.
 

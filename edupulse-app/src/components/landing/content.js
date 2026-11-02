@@ -42,27 +42,28 @@ export const CHAPTERS = [
   },
 ]
 
+// Each phase hands over from the AI (a draft) to people (the decision).
 export const PHASES = [
-  { phase: 0, title: 'Records intake', who: 'Dean · Associate Dean', what: 'Upload the EduSuite exports.', ai: 'Reads them and shows what it found.', human: 'Confirmed before anything is saved.' },
-  { phase: 1, title: 'Course loading', who: 'Dean · Associate Dean', what: 'Load each course to an instructor.', ai: "Suggests by master's degree, then specialization.", human: 'Every assignment is confirmed.' },
-  { phase: 2, title: 'Syllabus building', who: 'Instructor', what: 'Build or upload the seven-section syllabus.', ai: 'Co-writes it section by section.', human: 'Checked, then signed outside EduPulse.' },
-  { phase: 3, title: 'Courseware generation', who: 'Instructor', what: 'Turn each outline week into courseware.', ai: 'Drafts from the approved syllabus.', human: 'Instructors review, edit and publish.' },
-  { phase: 4, title: 'Student access', who: 'Students', what: 'Open materials, answer assessments.', ai: 'Guides only: reminders and missed work.', human: 'Pulse never answers assessment items.' },
-  { phase: 5, title: 'Monitoring', who: 'Everyone', what: 'Scores, delivery progress and notices.', ai: 'Summarizes what the charts show.', human: 'No grades computed; the KCP sheet stays official.' },
+  { phase: 0, icon: 'records', title: 'Records intake', who: ['Dean', 'Associate Dean'], what: 'Upload the EduSuite exports.', ai: 'Reads and previews them', human: 'Confirm before saving' },
+  { phase: 1, icon: 'loading', title: 'Course loading', who: ['Dean', 'Associate Dean'], what: 'Load each course to an instructor.', ai: "Ranks by master's degree, then specialization", human: 'Confirm every assignment' },
+  { phase: 2, icon: 'syllabus', title: 'Syllabus building', who: ['Instructor'], what: 'Build or upload the seven-section syllabus.', ai: 'Co-writes each section', human: 'Check, then sign outside EduPulse' },
+  { phase: 3, icon: 'courseware', title: 'Courseware generation', who: ['Instructor'], what: 'Turn each outline week into courseware.', ai: 'Drafts from the approved syllabus', human: 'Review, edit and publish' },
+  { phase: 4, icon: 'access', title: 'Student access', who: ['Students'], what: 'Open materials, answer assessments.', ai: 'Reminders and missed work only', human: 'Pulse never answers assessment items' },
+  { phase: 5, icon: 'monitoring', title: 'Monitoring', who: ['Everyone'], what: 'Scores, delivery progress and notices.', ai: 'Summarizes the charts', human: 'No grades: the KCP sheet stays official' },
 ]
 
 export const ROLES = [
   {
     key: 'instructor', label: 'Instructor', kicker: 'Prepare and deliver', title: 'Teach from one organized place',
     summary: 'Build the syllabus, generate courseware, publish it, follow every student.',
-    tasks: ['Loaded courses and syllabus status', 'Build or upload the syllabus', 'Review, edit and publish drafts', 'Scores and access per student'],
+    tasks: [['courses', 'Loaded courses and syllabus status'], ['syllabus', 'Build or upload the syllabus'], ['drafts', 'Review, edit and publish drafts'], ['scores', 'Scores and access per student']],
     sections: ['Dashboard', 'Syllabus', 'Courseware', 'Student Monitoring', 'Performance'],
     benefit: 'Less repetitive preparation; you keep control. SDG 4.c.',
   },
   {
     key: 'student', label: 'Student', kicker: 'Learn', title: 'Everything for your courses, in one place',
     summary: 'Materials, assessments and your own progress, together.',
-    tasks: ['My Materials, ready to open', 'My Assessments and results', 'Mastery by topic', 'Reminders for missed work'],
+    tasks: [['materials', 'My Materials, ready to open'], ['assessments', 'My Assessments and results'], ['mastery', 'Mastery by topic'], ['reminders', 'Reminders for missed work']],
     boundary: 'Pulse will not answer or hint at assessment items.',
     sections: ['Dashboard', 'My Courses', 'Assessments', 'Performance'],
     benefit: 'Syllabus-aligned courseware. SDG 4.3 and 4.4.',
@@ -70,21 +71,21 @@ export const ROLES = [
   {
     key: 'dean', label: 'Dean', kicker: 'Lead the college', title: 'See delivery across the college',
     summary: 'Import records, load courses and monitor delivery across the CIT.',
-    tasks: ['Records: EduSuite files and class lists', 'Course Loading with ranked suggestions', 'Monitor: syllabus status and delivery', 'Performance: college-wide, read-only'],
+    tasks: [['records', 'Records: EduSuite files and class lists'], ['loading', 'Course Loading with ranked suggestions'], ['monitor', 'Monitor: syllabus status and delivery'], ['scores', 'Performance: college-wide, read-only']],
     sections: ['Dashboard', 'Records', 'Course Loading', 'Monitor', 'Performance'],
     benefit: 'One view of preparation, delivery and results.',
   },
   {
     key: 'associate_dean', label: 'Associate Dean', kicker: 'Coordinate', title: "Work beside the Dean's office",
     summary: 'Records, course loading and monitoring, in a separate account.',
-    tasks: ['Import and confirm records', 'Load courses, confirm assignments', 'Follow syllabus status and delivery', 'A dashboard of its own'],
+    tasks: [['records', 'Import and confirm records'], ['loading', 'Load courses, confirm assignments'], ['monitor', 'Follow syllabus status and delivery'], ['dashboard', 'A dashboard of its own']],
     boundary: 'Performance scores and approval authority stay with the Dean.',
     sections: ['Dashboard', 'Records', 'Course Loading', 'Monitor'],
   },
   {
     key: 'admin', label: 'System Admin', kicker: 'Keep it running', title: 'Accounts, health and accountability',
     summary: 'Runs the platform, not the curriculum.',
-    tasks: ['Create accounts and assign roles', 'Check health and role coverage', 'Review audit activity', "Follow each AI agent's tasks"],
+    tasks: [['accounts', 'Create accounts and assign roles'], ['health', 'Check health and role coverage'], ['audit', 'Review audit activity'], ['agents', "Follow each AI agent's tasks"]],
     sections: ['Dashboard'],
     benefit: 'An audit trail that keeps the AI accountable.',
   },
@@ -157,17 +158,19 @@ export const WORKSPACE_RUNS = [
   },
 ]
 
+// Separate findings from separate studies: each is shown on its own, never compared with the
+// others. `share` draws a meter for a finding that is a share of a whole.
 export const EVIDENCE = [
-  { value: 7.4, decimals: 1, suffix: ' h', label: 'a week preparing lessons, the OECD teacher average', source: 'OECD, Results from TALIS 2024 (2025)' },
-  { value: 31, decimals: 0, suffix: '%', label: 'less lesson-planning time with generative AI, quality unchanged', source: 'Education Endowment Foundation (2024)' },
-  { value: 5.9, decimals: 1, suffix: ' h', label: 'recovered weekly by educators who use AI regularly', source: 'Gallup & Walton Family Foundation (2025)' },
+  { icon: 'clock', value: 7.4, decimals: 1, suffix: ' h', label: 'a week preparing lessons, the OECD teacher average', source: 'OECD, Results from TALIS 2024 (2025)' },
+  { icon: 'less', value: 31, decimals: 0, suffix: '%', share: 0.31, label: 'less lesson-planning time with generative AI, quality unchanged', source: 'Education Endowment Foundation (2024)' },
+  { icon: 'recovered', value: 5.9, decimals: 1, suffix: ' h', label: 'recovered weekly by educators who use AI regularly', source: 'Gallup & Walton Family Foundation (2025)' },
 ]
 
 export const GOALS = [
-  { code: 'SDG 4.3', text: 'Equitable access to quality tertiary education' },
-  { code: 'SDG 4.4', text: 'Technical skills for employment' },
-  { code: 'SDG 4.c', text: 'Well-supported teachers' },
-  { code: 'SDG 9', text: 'Industry, innovation and infrastructure' },
+  { icon: 'access', code: 'SDG 4.3', text: 'Equitable access to quality tertiary education' },
+  { icon: 'skills', code: 'SDG 4.4', text: 'Technical skills for employment' },
+  { icon: 'teachers', code: 'SDG 4.c', text: 'Well-supported teachers' },
+  { icon: 'industry', code: 'SDG 9', text: 'Industry, innovation and infrastructure' },
 ]
 
 export const FAQ = [

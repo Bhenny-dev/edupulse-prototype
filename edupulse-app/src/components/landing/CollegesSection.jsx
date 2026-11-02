@@ -5,8 +5,8 @@ import { gsap, useMotion, EASE, ENTER } from './motion'
 const ARCS = [0.62, 0.48, 0.8] // drawn length of each arc around the seal (matches landing.css)
 
 // Colleges: the CIT, the one college EduPulse serves now, then the four KCP colleges where
-// adoption is planned. Arcs draw around the CIT seal (a radial reveal) and the planned cards
-// settle in a gentle stagger. Their status never changes: they stay "Planned".
+// adoption is planned. Arcs draw around the CIT seal (a radial reveal); the planned cards are
+// built as they arrive (seams.js). Their status never changes: they stay "Planned".
 export default function CollegesSection({ cit, planned }) {
   const ref = useRef(null)
   useMotion(ref, ({ motion }) => {
@@ -15,7 +15,6 @@ export default function CollegesSection({ cit, planned }) {
     gsap.timeline({ scrollTrigger: { trigger: q('.cit-feature')[0], start: ENTER, once: true } })
       .from(q('.cit-arc'), { strokeDashoffset: i => ARCS[i], duration: 1, ease: 'power3.inOut', stagger: 0.1 })
       .from(q('.cit-seal img'), { opacity: 0, scale: 0.9, duration: 0.7, ease: EASE }, 0.15)
-    gsap.from(q('.college-card'), { opacity: 0, y: 18, duration: 0.7, ease: EASE, stagger: 0.09, scrollTrigger: { trigger: q('.college-list')[0], start: ENTER, once: true } })
   })
 
   return (

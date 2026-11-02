@@ -1,10 +1,22 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import {
+  Presentation, GraduationCap, Landmark, Briefcase, ShieldCheck, BookOpen, FileText, PenLine, ChartColumn, Layers,
+  ClipboardCheck, Target, BellRing, FileUp, Users, Eye, LayoutDashboard, UserPlus, Activity, ScrollText, Bot, ShieldAlert,
+} from 'lucide-react'
 import { gsap, prefersReducedMotion } from './motion'
 
+const ROLE_ICONS = { instructor: Presentation, student: GraduationCap, dean: Landmark, associate_dean: Briefcase, admin: ShieldCheck }
+const TASK_ICONS = {
+  courses: BookOpen, syllabus: FileText, drafts: PenLine, scores: ChartColumn, materials: Layers, assessments: ClipboardCheck,
+  mastery: Target, reminders: BellRing, records: FileUp, loading: Users, monitor: Eye, dashboard: LayoutDashboard,
+  accounts: UserPlus, health: Activity, audit: ScrollText, agents: Bot,
+}
+
 // Roles: a WAI-ARIA tablist (arrow keys, Home and End). A marker slides to the selected tab
-// (CSS, about 240 ms). The five panels share one grid cell, so switching never changes the
-// section's height, and a change masks the old panel out and the new one in, in the direction
-// of travel. Focus stays on the tab that was chosen.
+// (CSS, about 240 ms). Each panel shows the role as a picture of its work: an avatar, its tasks
+// as icon tiles, and its top bar in miniature. The five panels share one grid cell, so
+// switching never changes the section's height, and a change masks the old panel out and the
+// new one in, in the direction of travel. Focus stays on the tab that was chosen.
 export default function RoleExplorer({ roles }) {
   const [current, setCurrent] = useState(0)
   const [orientation, setOrientation] = useState('vertical')
@@ -75,18 +87,37 @@ export default function RoleExplorer({ roles }) {
         ))}
       </div>
       <div className="role-panels">
-        {roles.map((role, i) => (
-          <div key={role.key} ref={element => { panels.current[i] = element }} id={`role-panel-${role.key}`} role="tabpanel"
-            aria-labelledby={`role-tab-${role.key}`} className={`role-panel ${i === current ? 'is-active' : ''}`} tabIndex={i === current ? 0 : -1}>
-            <p className="role-kicker">{role.kicker}</p>
-            <h3>{role.title}</h3>
-            <p className="role-summary">{role.summary}</p>
-            <ul className="role-tasks">{role.tasks.map(task => <li key={task}>{task}</li>)}</ul>
-            {role.boundary && <p className="role-boundary">{role.boundary}</p>}
-            <div className="role-sections"><span>Top bar</span>{role.sections.map(section => <em key={section}>{section}</em>)}</div>
-            {role.benefit && <p className="role-benefit">{role.benefit}</p>}
-          </div>
-        ))}
+        {roles.map((role, i) => {
+          const RoleIcon = ROLE_ICONS[role.key] || Users
+          return (
+            <div key={role.key} ref={element => { panels.current[i] = element }} id={`role-panel-${role.key}`} role="tabpanel"
+              aria-labelledby={`role-tab-${role.key}`} className={`role-panel ${i === current ? 'is-active' : ''}`} tabIndex={i === current ? 0 : -1}>
+              <div className="role-panel-head">
+                <span className="role-avatar" aria-hidden="true"><RoleIcon size={26} strokeWidth={1.8} /></span>
+                <div>
+                  <p className="role-kicker">{role.kicker}</p>
+                  <h3>{role.title}</h3>
+                </div>
+              </div>
+              <p className="role-summary">{role.summary}</p>
+              <ul className="role-tasks">
+                {role.tasks.map(([icon, text]) => {
+                  const TaskIcon = TASK_ICONS[icon] || FileText
+                  return <li key={text}><span className="role-task-icon" aria-hidden="true"><TaskIcon size={18} strokeWidth={1.9} /></span><span>{text}</span></li>
+                })}
+              </ul>
+              {role.boundary && <p className="role-boundary"><ShieldAlert size={17} aria-hidden="true" /><span>{role.boundary}</span></p>}
+              <div className="role-sections">
+                <span className="role-sections-label">Top bar</span>
+                <div className="role-bar">
+                  <span className="role-bar-logo" aria-hidden="true" />
+                  {role.sections.map((section, s) => <em key={section} className={s === 0 ? 'is-current' : undefined}>{section}</em>)}
+                </div>
+              </div>
+              {role.benefit && <p className="role-benefit">{role.benefit}</p>}
+            </div>
+          )
+        })}
       </div>
     </div>
   )

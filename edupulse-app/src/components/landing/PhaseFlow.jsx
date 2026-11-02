@@ -1,18 +1,21 @@
 import { useRef } from 'react'
-import { Bot, UserCheck } from 'lucide-react'
-import { gsap, ScrollTrigger, useMotion, EASE } from './motion'
+import { Bot, UserCheck, FileUp, Users, FileText, Layers, GraduationCap, ChartColumn, Landmark, Briefcase, Presentation } from 'lucide-react'
+import { gsap, ScrollTrigger, useMotion } from './motion'
 
 const pad = n => String(n).padStart(2, '0')
+const PHASE_ICONS = { records: FileUp, loading: Users, syllabus: FileText, courseware: Layers, access: GraduationCap, monitoring: ChartColumn }
+const ROLE_ICONS = { Dean: Landmark, 'Associate Dean': Briefcase, Instructor: Presentation, Students: GraduationCap, Everyone: Users }
 
-// How it works: the six phases as one connected sequence. With motion, an SVG connector draws
-// down through the phase markers as the page scrolls (scrubbed, so it follows both ways), each
-// marker lights when the line reaches it, and the phase's text, then its AI and People duties,
-// settle in once. Nothing is pinned. Without motion the connector is a plain rule and every
-// phase is shown.
+// How it works: the six phases as one connected sequence of cards. Each card shows the phase,
+// who works in it, and the hand-over from the AI (a dashed draft) to people (the decision).
+// With motion, an SVG connector draws down through the phase markers as the page scrolls
+// (scrubbed, so it follows both ways) and each marker lights when the line reaches it; the
+// cards are built as they arrive (seams.js). Nothing is pinned. Without motion the connector
+// is a plain rule and every phase is shown.
 export default function PhaseFlow({ phases }) {
   const ref = useRef(null), track = useRef(null), svg = useRef(null), base = useRef(null), line = useRef(null)
 
-  useMotion(ref, ({ motion }, context) => {
+  useMotion(ref, ({ motion }) => {
     if (!motion) return undefined
     const section = ref.current, q = gsap.utils.selector(section)
     section.classList.add('is-live')
@@ -47,23 +50,13 @@ export default function PhaseFlow({ phases }) {
     })
 
     const phaseEls = q('.flow-phase')
-    gsap.set(q('.flow-body'), { opacity: 0, x: -16 }) // hidden from sight only; still read by assistive technology
-    // Created inside the context, so a later revert also undoes these entrances.
-    const reach = context.add(null, phase => {
-      phase.classList.add('is-reached')
-      if ('shown' in phase.dataset) return
-      phase.dataset.shown = ''
-      gsap.timeline()
-        .to(phase.querySelector('.flow-body'), { opacity: 1, x: 0, duration: 0.6, ease: EASE })
-        .from(phase.querySelectorAll('.flow-duty'), { opacity: 0, y: 8, duration: 0.45, ease: EASE, stagger: 0.12 }, 0.18)
-    })
     phaseEls.forEach(phase => ScrollTrigger.create({
       trigger: phase, start: 'top 62%', end: 'max',
-      onEnter: () => reach(phase), onLeaveBack: () => phase.classList.remove('is-reached'),
+      onEnter: () => phase.classList.add('is-reached'), onLeaveBack: () => phase.classList.remove('is-reached'),
     }))
     return () => {
       section.classList.remove('is-live')
-      phaseEls.forEach(phase => { phase.classList.remove('is-reached'); delete phase.dataset.shown })
+      phaseEls.forEach(phase => phase.classList.remove('is-reached'))
       for (const path of [base.current, line.current]) { path?.removeAttribute('d'); path?.removeAttribute('style') }
     }
   })
@@ -82,20 +75,35 @@ export default function PhaseFlow({ phases }) {
             <path ref={line} className="flow-line-draw" />
           </svg>
           <ol className="flow-list">
-            {phases.map(phase => (
-              <li key={phase.phase} className="flow-phase">
-                <span className="flow-node" aria-hidden="true">{pad(phase.phase)}</span>
-                <div className="flow-body">
-                  <p className="flow-who">Phase {phase.phase} · {phase.who}</p>
-                  <h3>{phase.title}</h3>
-                  <p className="flow-what">{phase.what}</p>
-                  <dl className="flow-duties">
-                    <div className="flow-duty is-ai"><dt><Bot size={16} aria-hidden="true" /> AI</dt><dd>{phase.ai}</dd></div>
-                    <div className="flow-duty is-people"><dt><UserCheck size={16} aria-hidden="true" /> People</dt><dd>{phase.human}</dd></div>
-                  </dl>
-                </div>
-              </li>
-            ))}
+            {phases.map(phase => {
+              const Icon = PHASE_ICONS[phase.icon] || FileText
+              return (
+                <li key={phase.phase} className="flow-phase">
+                  <span className="flow-node" aria-hidden="true">{pad(phase.phase)}</span>
+                  <div className="flow-body">
+                    <article className="flow-card">
+                      <div className="flow-card-head">
+                        <span className="flow-glyph" aria-hidden="true"><Icon size={22} strokeWidth={1.8} /></span>
+                        <div>
+                          <h3><span className="sr-only">Phase {phase.phase}: </span>{phase.title}</h3>
+                          <ul className="flow-roles" aria-label="Who">
+                            {phase.who.map(role => {
+                              const RoleIcon = ROLE_ICONS[role] || Users
+                              return <li key={role} className="flow-role"><RoleIcon size={13} strokeWidth={2} aria-hidden="true" />{role}</li>
+                            })}
+                          </ul>
+                        </div>
+                      </div>
+                      <p className="flow-what">{phase.what}</p>
+                      <dl className="flow-duties">
+                        <div className="flow-duty is-ai"><dt><Bot size={15} aria-hidden="true" /> AI</dt><dd>{phase.ai}</dd></div>
+                        <div className="flow-duty is-people"><dt><UserCheck size={15} aria-hidden="true" /> People</dt><dd>{phase.human}</dd></div>
+                      </dl>
+                    </article>
+                  </div>
+                </li>
+              )
+            })}
           </ol>
         </div>
       </div>

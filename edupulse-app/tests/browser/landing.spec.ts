@@ -471,36 +471,43 @@ test('with reduced motion there is no opening and every section is complete and 
   await expect(page.locator('#features .fs-inline img').first()).toBeVisible()
   await expect(page.getByRole('button', { name: /photo movement/ })).toBeHidden()
   expect(await page.locator('h2').evaluateAll(headings => headings.filter(h => getComputedStyle(h).opacity !== '1').length)).toBe(0)
-  // No seams: no shutter over any section and no shards.
-  await expect(page.locator('.lp-seam-shutter')).toHaveCount(0)
+  // No arrivals: no block waits to be built, and nothing is drawn over the page.
+  await expect(page.locator('[data-seam-block]')).toHaveCount(0)
+  expect(await page.locator('.why-card, .flow-card, .evidence-item').evaluateAll(cards => cards.filter(card => card.style.opacity !== '').length)).toBe(0)
   await expect(page.locator('.hero-seal img')).toHaveCount(2)
 })
 
-test('every section arrives through a seam that follows the scroll, and nothing stays over it', async ({ page }, info) => {
-  test.skip(mobileProject(info.project.name), 'the same seams run on phones; one width is enough here')
+test('arriving cards are built where they stand and hand over to their content, in both directions', async ({ page }, info) => {
+  test.skip(mobileProject(info.project.name), 'the same arrivals run on phones; one width is enough here')
   test.setTimeout(90_000)
   await afterOpening(page)
-  await expect(page.locator('.lp-seam-shutter')).toHaveCount(12)
-  const place = (id: string, share: number) => page.evaluate(([id, share]) => {
-    const top = document.getElementById(String(id))!.getBoundingClientRect().top + window.scrollY
-    window.scrollTo(0, top - window.innerHeight * Number(share))
-  }, [id, share])
-  for (const id of ['problem', 'flow', 'ai', 'login']) {
-    const section = page.locator(`#${id}`), shutter = section.locator('.lp-seam-shutter')
-    // Half way in: the aperture is opening and the shards play along the section's top edge.
-    await place(id, 0.7)
-    await expect(section).toHaveAttribute('data-seam', '')
-    await expect(shutter).toBeVisible()
-    await expect(page.locator('.lp-seams')).toHaveAttribute('data-seam', id, { timeout: 15_000 })
-    // Arrived: nothing covers the section, and the controls inside it take clicks.
-    await place(id, 0.1)
-    await expect(section).not.toHaveAttribute('data-seam')
-    await expect(shutter).toBeHidden()
-    await expect(page.locator('.lp-seams')).not.toHaveAttribute('data-seam', id)
+  expect(await page.locator('[data-seam-block]').count()).toBeGreaterThan(20)
+  // Places a block's centre at a share of the viewport's height (0.83 is a third of the way in, 0.3 settled).
+  const place = (selector: string, share: number) => page.evaluate(([selector, share]) => {
+    const block = document.querySelector(String(selector))!
+    const box = block.getBoundingClientRect()
+    window.scrollBy(0, box.top + Math.min(box.height, window.innerHeight) / 2 - window.innerHeight * Number(share))
+  }, [selector, share])
+  const canvas = page.locator('.lp-seams')
+  for (const selector of ['#problem .why-card', '#flow .flow-card', '#impact .evidence-item', '#colleges .college-card']) {
+    const card = page.locator(selector).first()
+    // A third of the way in: the card is being built over its place and is not shown yet.
+    await place(selector, 0.83)
+    await expect(card).toHaveAttribute('data-settling', '')
+    await expect.poll(() => card.evaluate(element => (element as HTMLElement).style.opacity)).toBe('0')
+    await expect(canvas).toHaveAttribute('data-building', /\d+/, { timeout: 15_000 })
+    // Settled: the card is itself again, with no styles left on it or its parts, and nothing is drawn.
+    await place(selector, 0.3)
+    await expect(card).not.toHaveAttribute('data-settling', { timeout: 10_000 })
+    await expect.poll(() => card.evaluate(element => [element, ...element.querySelectorAll('*')].filter(node => (node as HTMLElement).style.opacity !== '' || /translate3d/.test((node as HTMLElement).style.transform)).length)).toBe(0)
   }
-  // Scrolling back up closes a seam again.
-  await place('login', 0.7)
-  await expect(page.locator('#login')).toHaveAttribute('data-seam', '')
+  await expect(canvas).not.toHaveAttribute('data-building', { timeout: 10_000 })
+  // A heading's lines rise into place too.
+  await place('#roles .lp-head', 0.9)
+  await expect(page.locator('#roles .lp-head')).toHaveAttribute('data-settling', '')
+  // Scrolling back takes a card apart again.
+  await place('#problem .why-card', 0.83)
+  await expect(page.locator('#problem .why-card').first()).toHaveAttribute('data-settling', '')
 })
 
 test('without WebGL the page keeps its flat emblem and the opening still works', async ({ page }) => {

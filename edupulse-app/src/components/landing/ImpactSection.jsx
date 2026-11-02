@@ -1,18 +1,22 @@
 import { useRef } from 'react'
-import { gsap, useMotion, EASE, ENTER } from './motion'
+import { Clock, TrendingDown, TimerReset, GraduationCap, Wrench, Presentation, Factory } from 'lucide-react'
+import { gsap, useMotion } from './motion'
+
+const EVIDENCE_ICONS = { clock: Clock, less: TrendingDown, recovered: TimerReset }
+const GOAL_ICONS = { access: GraduationCap, skills: Wrench, teachers: Presentation, industry: Factory }
 
 // Why it matters: findings cited in the EduPulse study, with their sources. They describe the
-// problem, not EduPulse results, so they are shown as fixed figures (no counters): a rule
-// draws across each finding and the figures settle once.
+// problem, not EduPulse results, so each is a fixed figure (no counters) on its own tile; a
+// finding that is a share of a whole also has a meter. The tiles are built as they arrive
+// (seams.js); the meter then fills to its share, once.
 export default function ImpactSection({ evidence, goals }) {
   const ref = useRef(null)
   useMotion(ref, ({ motion }) => {
     if (!motion) return
     const q = gsap.utils.selector(ref)
-    gsap.timeline({ scrollTrigger: { trigger: q('.evidence')[0], start: ENTER, once: true } })
-      .from(q('.evidence-rule'), { scaleX: 0, duration: 0.8, ease: 'power3.inOut', stagger: 0.12 })
-      .from(q('.evidence-value'), { opacity: 0, y: 10, duration: 0.6, ease: EASE, stagger: 0.12 }, 0.25)
-    gsap.from(q('.goal-rule'), { scaleX: 0, duration: 0.7, ease: 'power3.inOut', stagger: 0.08, scrollTrigger: { trigger: q('.goals')[0], start: ENTER, once: true } })
+    q('.evidence-meter-fill').forEach(fill => gsap.from(fill, {
+      scaleX: 0, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: fill, start: 'top 68%', once: true },
+    }))
   })
 
   return (
@@ -24,21 +28,36 @@ export default function ImpactSection({ evidence, goals }) {
           <p>Cited in the EduPulse study. They describe the problem, not EduPulse results.</p>
         </header>
         <div className="evidence">
-          {evidence.map(item => (
-            <article key={item.source} className="evidence-item">
-              <span className="evidence-rule" aria-hidden="true" />
-              <p className="evidence-value">{item.value.toFixed(item.decimals)}{item.suffix}</p>
-              <p className="evidence-label">{item.label}</p>
-              <cite>{item.source}</cite>
-            </article>
-          ))}
+          {evidence.map(item => {
+            const Icon = EVIDENCE_ICONS[item.icon] || Clock
+            return (
+              <article key={item.source} className="evidence-item">
+                <span className="evidence-icon" aria-hidden="true"><Icon size={22} strokeWidth={1.8} /></span>
+                <p className="evidence-value">{item.value.toFixed(item.decimals)}{item.suffix}</p>
+                {item.share != null && (
+                  <span className="evidence-meter" aria-hidden="true">
+                    <span className="evidence-meter-fill" style={{ width: `${item.share * 100}%` }} />
+                  </span>
+                )}
+                <p className="evidence-label">{item.label}</p>
+                <cite>{item.source}</cite>
+              </article>
+            )
+          })}
         </div>
         <div className="goals">
           <h3>Sustainable Development Goals</h3>
           <ul>
-            {goals.map(goal => (
-              <li key={goal.code}><span className="goal-rule" aria-hidden="true" /><strong>{goal.code}</strong><span>{goal.text}</span></li>
-            ))}
+            {goals.map(goal => {
+              const Icon = GOAL_ICONS[goal.icon] || GraduationCap
+              return (
+                <li key={goal.code}>
+                  <span className="goal-icon" aria-hidden="true"><Icon size={20} strokeWidth={1.9} /></span>
+                  <strong>{goal.code}</strong>
+                  <span>{goal.text}</span>
+                </li>
+              )
+            })}
           </ul>
         </div>
       </div>

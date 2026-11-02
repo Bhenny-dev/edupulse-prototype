@@ -1,13 +1,14 @@
 import { useRef, useState } from 'react'
 import { ShieldCheck, FileText, Layers, Send, Eye, ChartColumn } from 'lucide-react'
-import { gsap, useMotion, EASE } from './motion'
+import { gsap, ScrollTrigger, useMotion } from './motion'
 
 const ICONS = { syllabus: FileText, materials: Layers, delivery: Send, oversight: Eye, performance: ChartColumn }
 
 // Why EduPulse, shown rather than told: five cards, each with today's state on one face and
-// EduPulse's on the other. With motion the cards rise showing "Today", then flip once to
-// "With EduPulse"; the switch flips them back and forth. The faces are decorative; each card
-// carries one plain sentence with both states for assistive technology.
+// EduPulse's on the other. With motion the cards are built showing "Today" as the section
+// arrives (seams.js), then turn once to "With EduPulse"; the switch flips them back and forth.
+// The faces are decorative; each card carries one plain sentence with both states for
+// assistive technology.
 export default function ProblemSection({ rows }) {
   const ref = useRef(null)
   const [view, setView] = useState('next')
@@ -16,10 +17,11 @@ export default function ProblemSection({ rows }) {
     if (!motion) return undefined
     const q = gsap.utils.selector(ref)
     setView('today')
-    gsap.timeline({ scrollTrigger: { trigger: q('.why-cards')[0], start: 'top 78%', once: true } })
-      .from(q('.why-card'), { y: 28, autoAlpha: 0, duration: 0.6, ease: EASE, stagger: 0.08 })
-      .add(() => setView('next'), '+=0.45')
-    return () => setView('next')
+    const turn = ScrollTrigger.create({
+      trigger: q('.why-cards')[0], start: 'top 50%', once: true,
+      onEnter: () => gsap.delayedCall(0.3, () => setView('next')),
+    })
+    return () => { turn.kill(); setView('next') }
   })
 
   return (

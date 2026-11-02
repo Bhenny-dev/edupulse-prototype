@@ -1,116 +1,251 @@
 import { ScrollTrigger } from './motion'
 
-// Every section after the hero arrives through a seam, scrubbed by the scroll in both
-// directions. A shutter painted in the outgoing section's colour covers the top of the new
-// section and opens through a geometric aperture outlined in blue; at the same time a band of
-// 3D shards sweeps along the section's top edge, holds as a faceted seam and fractures apart
-// under a moving camera (scene/seamScene.js). Each section has its own aperture, shard shapes,
-// direction and camera move. The shutter never takes pointer events, so nothing under it is
-// blocked. The caller runs this only without reduced motion; without WebGL the shutters still
-// open and the shards are left out.
+// Section arrivals. Every block of an arriving section settles in as it comes up the screen,
+// so the transition ends in the section's own content rather than beside it:
+//   - a card (a block with a surface) is built where it will stand: faceted pieces in the
+//     section's materials travel in from the section's side, a blue frame locks onto the card's
+//     corners, the pieces assemble edge to edge into the card's exact outline, cool from metal,
+//     glass or circuit board into the card's own surface, and dissolve as the card fades in
+//     under them (scene/seamScene.js); then its icons and text rise into place one by one;
+//   - a text block (a heading, a list without a surface) rises into place line by line.
+// Each block follows its own position on screen through a short damping, so a block that is
+// half way in stays half way in, scrolling back plays it backwards, and blocks side by side
+// cascade. Nothing is hidden by CSS: the caller runs this only without reduced motion, and the
+// inline opacity and transform written here are removed once a block has settled. Without WebGL
+// the cards still settle, rising instead of being built. Pinned stages, the sign-in form and the
+// photographs keep their own entrances.
 export const SEAMS = [
-  { id: 'problem', aperture: 'diamond', shapes: ['tri', 'diamond', 'pentagon'], from: 'left', roll: 0.16, dolly: 1.4, pan: 0.5 },
-  { id: 'features', aperture: 'wedge', shapes: ['prism', 'hex', 'tri'], from: 'right', roll: -0.18, dolly: 1.2, pan: -0.6 },
-  { id: 'flow', aperture: 'slant', shapes: ['tile'], from: 'line', roll: 0.08, dolly: 0.9, pan: 0.8 },
-  { id: 'roles', aperture: 'iris', shapes: ['tri', 'diamond'], from: 'centre', roll: -0.12, dolly: 1.8, pan: 0 },
-  { id: 'ai', aperture: 'iris', shapes: ['ring', 'diamond'], from: 'spiral', roll: 0.2, dolly: 1.6, pan: 0.2 },
-  { id: 'agents', aperture: 'hex', shapes: ['ring', 'hex', 'tri'], from: 'below', roll: -0.14, dolly: 1.3, pan: -0.3 },
-  { id: 'workspace', aperture: 'wedge', shapes: ['tile', 'prism'], from: 'left', roll: 0.12, dolly: 1.1, pan: 0.6 },
-  { id: 'impact', aperture: 'diamond', shapes: ['diamond', 'pentagon'], from: 'right', roll: -0.1, dolly: 1.4, pan: -0.5 },
-  { id: 'colleges', aperture: 'iris', shapes: ['ring', 'pentagon'], from: 'centre', roll: 0.15, dolly: 1.7, pan: 0 },
-  { id: 'campus', aperture: 'slant', shapes: ['tile', 'tri'], from: 'line', roll: -0.08, dolly: 1, pan: -0.8 },
-  { id: 'faq', aperture: 'wedge', shapes: ['tri', 'hex'], from: 'right', roll: 0.12, dolly: 1.2, pan: 0.4 },
-  { id: 'login', aperture: 'hex', shapes: ['diamond', 'ring', 'tri', 'tile'], from: 'centre', roll: -0.16, dolly: 1.6, pan: 0 },
+  {
+    id: 'problem', from: 'below', cut: 'tri', finishes: ['glass', 'anodized'], roll: 0.12, dolly: 2.4, pan: 0.4,
+    blocks: [
+      { sel: '.why-head', kind: 'text' },
+      { sel: '.why-switch', kind: 'text', self: true },
+      { sel: '.why-card', kind: 'card', parts: '.why-icon, .why-area, .why-text, .why-state' },
+      { sel: '.why-note', kind: 'text', self: true },
+    ],
+  },
+  {
+    id: 'features', from: 'right', cut: 'slat', finishes: ['aluminium', 'anodized'], roll: -0.1, dolly: 2, pan: -0.5,
+    blocks: [
+      { sel: '.lp-head', kind: 'text' },
+      { sel: '.fs-copy', kind: 'text', parts: '.fs-count, .fs-steps, .fs-chapters' },
+      { sel: '.fs-frame', kind: 'card', fixed: true, parts: '.fs-bar, .fs-caption' },
+    ],
+  },
+  {
+    id: 'flow', from: 'left', cut: 'grid', finishes: ['circuit', 'aluminium'], roll: 0.1, dolly: 1.6, pan: 0.5,
+    blocks: [
+      { sel: '.flow-head', kind: 'text' },
+      { sel: '.flow-card', kind: 'card' },
+    ],
+  },
+  {
+    id: 'roles', from: 'centre', cut: 'fan', finishes: ['anodized', 'glass'], roll: -0.14, dolly: 3, pan: 0,
+    blocks: [
+      { sel: '.lp-head', kind: 'text' },
+      { sel: '.role-tabs', kind: 'card', parts: '.role-tab' },
+      { sel: '.role-panels', kind: 'card', parts: '.role-panel.is-active > *' },
+    ],
+  },
+  {
+    id: 'ai', from: 'spiral', cut: 'tri', finishes: ['circuit', 'glass'], roll: 0.16, dolly: 2.2, pan: 0.2,
+    blocks: [
+      { sel: '.lp-head', kind: 'text' },
+      { sel: '.promises li', kind: 'text' },
+    ],
+  },
+  { id: 'agents', blocks: [{ sel: '.agents-head', kind: 'text' }] },
+  {
+    id: 'workspace', from: 'centre', cut: 'grid', finishes: ['aluminium', 'ceramic'], roll: 0.1, dolly: 3.2, pan: 0,
+    blocks: [
+      { sel: '.ws-head', kind: 'text' },
+      { sel: '.ws-stage', kind: 'card', fixed: true, parts: false },
+    ],
+  },
+  {
+    id: 'impact', from: 'below', cut: 'fan', finishes: ['anodized', 'glass'], roll: -0.12, dolly: 2.4, pan: -0.3,
+    blocks: [
+      { sel: '.lp-head', kind: 'text' },
+      { sel: '.evidence-item', kind: 'card' },
+      { sel: '.goals', kind: 'card', parts: '.goals h3, .goals li' },
+    ],
+  },
+  {
+    id: 'colleges', from: 'line', cut: 'slat', finishes: ['glass', 'aluminium'], roll: 0.08, dolly: 1.4, pan: 0.6,
+    blocks: [
+      { sel: '.lp-head', kind: 'text' },
+      { sel: '.college-card', kind: 'card' },
+    ],
+  },
+  { id: 'campus', blocks: [{ sel: '.lp-head', kind: 'text' }] },
+  {
+    id: 'faq',
+    blocks: [
+      { sel: '.lp-head', kind: 'text' },
+      { sel: '.faq-item', kind: 'text', self: true },
+    ],
+  },
 ]
 
-// Apertures: eight points each, clockwise from the top-left; x as a share of the section's
-// width, y as a share of the viewport's height below the section's top. Each opens to OPEN,
-// which lies outside the shutter, so the shutter is gone by the end.
-const APERTURES = {
-  diamond: [[0.5, 0.02], [0.5, 0.02], [0.5, 0.02], [0.78, 0.22], [0.5, 0.44], [0.5, 0.44], [0.5, 0.44], [0.22, 0.22]],
-  wedge: [[0.38, 0.08], [0.5, 0.02], [0.62, 0.08], [0.86, 0.32], [0.62, 0.22], [0.5, 0.17], [0.38, 0.22], [0.14, 0.32]], // a chevron pointing up
-  slant: [[0.08, 0.16], [0.5, 0.09], [0.92, 0.02], [0.92, 0.08], [0.92, 0.14], [0.5, 0.21], [0.08, 0.28], [0.08, 0.22]], // a rising blade
-  hex: [[0.34, 0.02], [0.5, 0.02], [0.66, 0.02], [0.8, 0.2], [0.66, 0.38], [0.5, 0.38], [0.34, 0.38], [0.2, 0.2]],
-  iris: [[0.4, 0.05], [0.5, 0.02], [0.6, 0.05], [0.66, 0.17], [0.6, 0.29], [0.5, 0.34], [0.4, 0.29], [0.34, 0.17]],
-}
-const OPEN = [[-0.2, -0.2], [0.5, -0.2], [1.2, -0.2], [1.2, 0.6], [1.2, 1.4], [0.5, 1.4], [-0.2, 1.4], [-0.2, 0.6]]
-const SVG = 'http://www.w3.org/2000/svg'
+// A block starts when its centre reaches START of the viewport's height (it is half in view)
+// and has settled when its centre reaches START - SPAN, so it is built where the reader can see
+// it. Blocks side by side start one after another (LAG per sibling). At the end of the page
+// every block has settled.
+const START = 1, SPAN = 0.42, LAG = 0.07, MAX_LAG = 0.28
+const DAMPING = 0.14 // seconds: how quickly a block catches up with the scroll
+const RISE = 16 // px a part rises from
 
 const clamp01 = value => Math.min(1, Math.max(0, value))
-const easeInOut = t => (t < 0.5 ? 4 * t ** 3 : 1 - (-2 * t + 2) ** 3 / 2)
+const smooth = (edge0, edge1, value) => { const t = clamp01((value - edge0) / (edge1 - edge0)); return t * t * (3 - 2 * t) }
+
+// The first surface in a block (its own background, or that of a child), for the pieces to cool into.
+function surfaceOf(element) {
+  for (const node of [element, ...element.children, ...[...element.children].flatMap(child => [...child.children])]) {
+    const colour = getComputedStyle(node).backgroundColor
+    if (colour && colour !== 'transparent' && !/rgba\(.*,\s*0\)$/.test(colour)) return colour
+  }
+  return 'rgb(255, 255, 255)'
+}
+
+const atEnd = () => window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2
+function goalOf(block, rect, height, end) {
+  if (end && rect.top < height) return 1
+  const centre = rect.top + Math.min(rect.height, height) / 2
+  const raw = (height * START - centre) / (height * SPAN)
+  return clamp01((raw - block.lag) / (1 - block.lag))
+}
 
 export function setupSeams(page, canvas) {
-  let scene = null, cancelled = false
-  const seams = SEAMS.map(seam => ({ ...seam, element: page.querySelector(`#${seam.id}`), progress: 0 })).filter(seam => seam.element)
-
-  for (const seam of seams) {
-    // The shutter takes the colour of the section the reader is leaving (a pinned section sits
-    // inside a pin spacer).
-    const own = seam.element.parentElement?.classList.contains('pin-spacer') ? seam.element.parentElement : seam.element
-    let previous = own.previousElementSibling
-    while (previous && !previous.offsetHeight) previous = previous.previousElementSibling
-    if (previous?.classList.contains('pin-spacer')) previous = previous.firstElementChild
-    // Where both sides share a colour, a pale blue keeps the aperture readable.
-    const surface = element => { const colour = element ? getComputedStyle(element).backgroundColor : ''; return colour && colour !== 'rgba(0, 0, 0, 0)' ? colour : 'rgb(255, 255, 255)' }
-    const leaving = surface(previous), arriving = surface(seam.element)
-    const shutter = document.createElementNS(SVG, 'svg')
-    shutter.classList.add('lp-seam-shutter')
-    shutter.setAttribute('aria-hidden', 'true')
-    shutter.setAttribute('preserveAspectRatio', 'none')
-    const cover = document.createElementNS(SVG, 'path'), edge = document.createElementNS(SVG, 'path'), inner = document.createElementNS(SVG, 'path')
-    cover.setAttribute('fill-rule', 'evenodd')
-    cover.style.fill = leaving === arriving ? (arriving === 'rgb(255, 255, 255)' ? '#eaf2fe' : '#ffffff') : leaving
-    edge.classList.add('lp-seam-edge')
-    inner.classList.add('lp-seam-edge', 'is-inner')
-    shutter.append(cover, edge, inner)
-    seam.element.prepend(shutter)
-    Object.assign(seam, { shutter, cover, edge, inner })
+  let scene = null, cancelled = false, frame = 0, last = 0
+  const blocks = []
+  for (const seam of SEAMS) {
+    const section = page.querySelector(`#${seam.id}`)
+    if (!section) continue
+    for (const spec of seam.blocks) {
+      [...section.querySelectorAll(spec.sel)].forEach((element, i) => {
+        if (element.closest('[data-seam-block]')) return // a block inside another block settles with it
+        element.setAttribute('data-seam-block', spec.kind)
+        blocks.push({ seam, spec, element, lag: Math.min(i * LAG, MAX_LAG), p: 0, goal: 0, drawn: -1, parts: null, surface: null, rect: null })
+      })
+    }
   }
 
-  function draw(seam) {
-    const open = easeInOut(clamp01(seam.progress / 0.8))
-    const done = open >= 1 || seam.progress >= 1
-    seam.shutter.style.visibility = done ? 'hidden' : ''
-    seam.element.toggleAttribute('data-seam', !done && seam.progress > 0)
-    if (done) return
-    const width = seam.element.clientWidth, viewport = window.innerHeight
-    const height = Math.min(seam.element.offsetHeight, viewport)
-    seam.shutter.setAttribute('viewBox', `0 0 ${width} ${height}`)
-    const start = APERTURES[seam.aperture]
-    const points = start.map(([sx, sy], i) => {
-      const [ex, ey] = OPEN[i]
-      return [(sx + (ex - sx) * open) * width, (sy * viewport + (ey * height - sy * viewport) * open)]
+  const partsOf = block => {
+    const { self, parts } = block.spec
+    if (self) return [block.element]
+    if (parts === false) return []
+    if (parts) return [...block.element.querySelectorAll(parts)]
+    return [...block.element.children].filter(child => !child.matches('[data-split], .sr-only'))
+  }
+
+  // Removes only what draw() wrote: a fixed card's transform belongs to its own component.
+  function clear(block) {
+    const { kind, fixed } = block.spec
+    if (kind === 'card') {
+      block.element.style.opacity = ''
+      if (!fixed) block.element.style.transform = ''
+    }
+    for (const part of block.parts || []) {
+      part.style.opacity = ''
+      part.style.transform = ''
+      part.style.willChange = ''
+    }
+    block.parts = null
+  }
+
+  // The block's styles for its progress p (0 waiting, 1 settled).
+  function draw(block) {
+    const { p, spec } = block
+    if (p === block.drawn) return
+    block.drawn = p
+    if (p >= 1) { clear(block); block.element.removeAttribute('data-settling'); return }
+    block.element.toggleAttribute('data-settling', p > 0)
+    if (!block.parts) block.parts = partsOf(block)
+    const built = spec.kind === 'card' && scene
+    if (spec.kind === 'card') {
+      // With pieces the card appears under them as they dissolve, in place (the pieces are fitted
+      // to where it stands, so it must not move); without them it rises into place.
+      const shown = built ? smooth(0.62, 0.82, p) : smooth(0.1, 0.55, p)
+      block.element.style.opacity = String(shown)
+      if (!spec.fixed) block.element.style.transform = built ? '' : `translate3d(0, ${((1 - shown) * RISE * 1.5).toFixed(2)}px, 0)`
+    }
+    const first = spec.kind !== 'card' ? 0.12 : built ? 0.7 : 0.35
+    const step = spec.kind !== 'card' ? 0.08 : 0.035
+    const span = spec.kind !== 'card' ? 0.4 : 0.2
+    block.parts.forEach((part, k) => {
+      const start = first + Math.min(k * step, spec.kind !== 'card' ? 0.32 : 0.12)
+      const v = smooth(start, start + span, p)
+      part.style.opacity = String(v)
+      part.style.transform = `translate3d(0, ${((1 - v) * RISE).toFixed(2)}px, 0)`
+      part.style.willChange = v > 0 && v < 1 ? 'opacity, transform' : ''
     })
-    const path = list => `M${list.map(([x, y]) => `${x.toFixed(1)} ${y.toFixed(1)}`).join(' L')} Z`
-    const hole = path(points)
-    // A second outline, a little inside the first and trailing it: the aperture's bevel.
-    const cx = points.reduce((sum, [x]) => sum + x, 0) / points.length, cy = points.reduce((sum, [, y]) => sum + y, 0) / points.length
-    const bevel = path(points.map(([x, y]) => [cx + (x - cx) * 0.94, cy + (y - cy) * 0.94]))
-    seam.cover.setAttribute('d', `M0 0 H${width} V${height} H0 Z ${hole}`)
-    seam.edge.setAttribute('d', hole)
-    seam.inner.setAttribute('d', bevel)
-    seam.edge.style.opacity = String(Math.min(1, 1.4 * (1 - open)))
-    seam.inner.style.opacity = String(0.55 * (1 - open))
   }
 
-  const triggers = seams.map(seam => ScrollTrigger.create({
-    trigger: seam.element, start: 'top bottom', end: 'top 20%', invalidateOnRefresh: true,
-    onUpdate: self => { seam.progress = self.progress; draw(seam); scene?.wake() },
-    onRefresh: self => { seam.progress = self.progress; draw(seam) },
-  }))
+  // Reads every block's place, then catches each block up with it, then draws (no layout
+  // read follows a write within a frame).
+  function tick(now) {
+    frame = 0
+    if (cancelled) return
+    const dt = last ? Math.min(0.05, (now - last) / 1000) : 1 / 60
+    last = now
+    const height = window.innerHeight, end = atEnd()
+    for (const block of blocks) {
+      block.rect = block.element.getBoundingClientRect()
+      block.goal = goalOf(block, block.rect, height, end)
+    }
+    const rate = 1 - Math.exp(-dt / DAMPING)
+    let moving = false
+    const building = []
+    for (const block of blocks) {
+      if (block.p !== block.goal) {
+        block.p += (block.goal - block.p) * rate
+        if (Math.abs(block.goal - block.p) < 0.002) block.p = block.goal
+        moving = true
+      }
+      draw(block)
+      if (scene && block.spec.kind === 'card' && block.p > 0 && block.p < 1 && block.rect.bottom > 0 && block.rect.top < height) {
+        block.surface ||= surfaceOf(block.element)
+        building.push(block)
+      }
+    }
+    scene?.render(building)
+    if (moving) frame = requestAnimationFrame(tick)
+    else last = 0
+  }
+  const wake = () => { if (!frame && !cancelled) frame = requestAnimationFrame(tick) }
 
-  // The shards load in their own chunk (three.js), after the page has settled.
+  // Start where the page is: blocks already passed are settled, the rest wait, with no animation.
+  const height = window.innerHeight, end = atEnd()
+  for (const block of blocks) {
+    block.p = block.goal = goalOf(block, block.element.getBoundingClientRect(), height, end)
+    draw(block)
+  }
+
+  window.addEventListener('scroll', wake, { passive: true })
+  window.addEventListener('resize', wake)
+  ScrollTrigger.addEventListener('refresh', wake)
+
+  // The pieces load in their own chunk (three.js), after the page has settled.
   if (canvas) {
     import('./scene/seamScene.js').then(({ createSeamScene }) => {
       if (cancelled) return
-      scene = createSeamScene({ canvas, seams })
+      scene = createSeamScene({ canvas })
+      wake()
     }).catch(() => undefined)
   }
 
   return () => {
     cancelled = true
-    for (const trigger of triggers) trigger.kill()
-    for (const seam of seams) { seam.shutter.remove(); seam.element.removeAttribute('data-seam') }
+    if (frame) cancelAnimationFrame(frame)
+    window.removeEventListener('scroll', wake)
+    window.removeEventListener('resize', wake)
+    ScrollTrigger.removeEventListener('refresh', wake)
+    for (const block of blocks) {
+      if (!block.parts) block.parts = partsOf(block)
+      clear(block)
+      block.element.removeAttribute('data-seam-block')
+      block.element.removeAttribute('data-settling')
+    }
     scene?.dispose()
   }
 }
