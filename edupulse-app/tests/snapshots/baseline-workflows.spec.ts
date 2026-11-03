@@ -29,6 +29,45 @@ test('synthetic baseline syllabus versions, assessment mappings and delivery set
  await page.locator('.delivery-settings').first().evaluate(element=>element.removeAttribute('open'));await page.screenshot({path:'../feature-documentation/system-manual/03-courseware-generation-and-review/04-generated-drafts-for-review.png',animations:'disabled',fullPage:true,style:'.app-topbar{position:static !important}'})
 })
 
+test('synthetic editor fields grow to display full section text and answer explanations',async({page})=>{
+ const fixture=await baselineUI(page)
+ const workspace=structuredClone(baselineWorkspace)
+ const explanation=Array.from({length:8},(_,i)=>`${i+1}. Explain the answer using the approved course topic and a worked example.`).join('\n')
+ workspace.content['baseline-quiz'].content.questions[0].explanation=explanation
+ fixture.setWorkspace({...workspace,content:{...workspace.content,'editor-material':{syllabusId:'baseline-syllabus',week:2,type:'material',status:'draft',title:'Synthetic editor material',content:{title:'Synthetic editor material',sections:[{heading:'Worked explanation',body:explanation}]}}}})
+ const dir='../feature-documentation/system-manual/03-courseware-generation-and-review'
+ await mkdir(dir,{recursive:true})
+ await page.goto('/#/courseware?tab=builder&course=baseline-syllabus&week=2')
+ await page.locator('[data-week="2"]').getByRole('button',{name:'Open',exact:true}).click()
+ await page.getByRole('button',{name:'Edit',exact:true}).click()
+ const section=page.getByLabel('Section 1 content',{exact:true})
+ await expect(section).toHaveValue(explanation)
+ await expect.poll(()=>section.evaluate(el=>el.scrollHeight<=el.clientHeight+1)).toBe(true)
+ await page.screenshot({path:`${dir}/07-edit-material-growing-field.png`,animations:'disabled',fullPage:true})
+ await page.getByRole('button',{name:'Cancel',exact:true}).click()
+ await page.getByRole('button',{name:'Back',exact:true}).click()
+ await page.goto('/#/courseware?tab=builder&course=baseline-syllabus&week=1')
+ await page.locator('[data-week="1"]').getByRole('button',{name:'Open',exact:true}).click()
+ const answer=page.getByLabel('Question 1 explanation',{exact:true})
+ await expect(answer).toHaveValue(explanation)
+ await expect.poll(()=>answer.evaluate(el=>el.scrollHeight<=el.clientHeight+1)).toBe(true)
+ expect(await answer.evaluate(el=>el.clientWidth / (el.parentElement?.clientWidth || 1))).toBeGreaterThan(.9)
+ await answer.scrollIntoViewIfNeeded()
+ await page.screenshot({path:`${dir}/08-edit-assessment-growing-explanation.png`,animations:'disabled'})
+})
+
+test('synthetic generation failure keeps the course open with actionable recovery',async({page})=>{
+ const fixture=await baselineUI(page);fixture.setWorkspace(structuredClone(baselineWorkspace))
+ await page.route('**/api/ai?action=courseware',route=>route.fulfill({status:400,json:{error:{code:'PROVIDER_WORKSPACE_REQUIRED',message:'Choose your Claude workspace in Settings → AI & Knowledge, then save the connection and test the selected model.'}}}))
+ await page.goto('/#/courseware?tab=builder&course=baseline-syllabus&week=3')
+ await page.getByRole('button',{name:'Generate',exact:true}).last().click()
+ const issue=page.getByRole('alert').filter({hasText:'Generation did not finish'})
+ await expect(issue.getByRole('button',{name:'Set up Pulse AI',exact:true})).toBeVisible()
+ await expect(page.getByRole('heading',{level:2,name:/IT 102.*Computer Programming 1/})).toBeVisible()
+ const dir='../feature-documentation/system-manual/03-courseware-generation-and-review';await mkdir(dir,{recursive:true})
+ await page.screenshot({path:`${dir}/09-generation-recovery.png`,animations:'disabled',fullPage:true})
+})
+
 test('synthetic account Pulse guidance matches shared records',async({page})=>{
  await baselineUI(page,'dean');await page.goto('/#/records');await page.getByRole('button',{name:'Open Pulse assistant',exact:true}).click();const pulse=page.getByRole('dialog',{name:'Pulse',exact:true});await pulse.getByRole('button', { name: 'Pulse options', exact: true }).click(); await pulse.getByRole('button',{name:'Guide this page',exact:true}).click();await expect(pulse.locator('.pulse-focus-heading strong')).toHaveText('Academic Records');await pulse.getByRole('button',{name:'Import files from EduSuite',exact:true}).click();await pulse.getByRole('button',{name:'Next step',exact:true}).click();await pulse.getByRole('button',{name:'Next step',exact:true}).click();await expect(pulse).toContainText('Confirm Import saves shared records and matching enrollments');await shot(page,'50-account-pulse-guidance')
 })

@@ -45,3 +45,5 @@ The [current baseline restoration](../versions/2026-10-28-baseline-workflows/REA
 [Generate content and verify its save](15-backend-content-delivery/README.md) documents the real local model, existing Pulse confirmation card, persisted receipt and reloaded syllabus. The backend harness changes do not change the restored header, settings, charts or layout.
 
 [Manual 16: Student accounts and course rosters](16-student-directory/README.md) covers the official directory, instructor selection, confirmed enrollment and imported profile fields.
+
+[Manual 17: Pulse dashboard navigation and provider recovery](17-pulse-navigation-and-provider-recovery/README.md) covers named owner views, conversational corrections and Anthropic API-credit errors.

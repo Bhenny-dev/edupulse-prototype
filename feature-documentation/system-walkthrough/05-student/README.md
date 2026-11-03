@@ -15,6 +15,8 @@ The refreshed Performance captures explicitly display **Sample performance data 
 - **Learning Material Sources:** the approved syllabus and instructor-provided references behind each course's materials (*Instructor-verified*).
 - **My Score Trend** and **Upcoming Activities** with due dates.
 
+Signed-in student accounts see this same dashboard filled from their own enrolled records: reminders list their unopened materials and unanswered assessments, course cards show the latest marked score (*No score yet* before the first) and the trend plots marked attempts. Unrecorded block details read *Not recorded* ([account capture](../09-restored-role-pages/README.md#role-dashboards)).
+
 ## 2. My Courses · My Materials
 
 ![My materials](02-my-materials.png)

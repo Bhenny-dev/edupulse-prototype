@@ -16,9 +16,11 @@ const signal = () => AbortSignal.timeout(10000)
 const guide: Evidence = { id: 'g1', documentId: 'g1', title: 'Courseware policy', text: 'Courseware must be checked by the instructor before publishing.', page: null, section: null, flagged: false, origin: 'private', method: 'hybrid', similarity: 0.6, rrf: 0.03, relevance: null, query: '' }
 
 test('model permission failures remain actionable even when the library supplies relevant evidence', async () => {
-  await assert.rejects(runAgents(chatInput.parse({ message: 'When must courseware be checked?' }), instructor, signal(), {
-    search: async () => ({ evidence: [guide] }), provider: 'test', generate: async () => { throw new ApiError(400, 'MODEL_NOT_AVAILABLE', 'Choose another available model.') },
-  }), (error: { code?: string }) => error.code === 'MODEL_NOT_AVAILABLE')
+  for (const code of ['MODEL_NOT_AVAILABLE', 'PROVIDER_WORKSPACE_REQUIRED', 'PROVIDER_CREDITS', 'PROMPT_TOO_LONG', 'MODEL_TOKEN_LIMIT']) {
+    await assert.rejects(runAgents(chatInput.parse({ message: 'When must courseware be checked?' }), instructor, signal(), {
+      search: async () => ({ evidence: [guide] }), provider: 'test', generate: async () => { throw new ApiError(400, code, 'Recover the selected provider connection.') },
+    }), (error: { code?: string }) => error.code === code)
+  }
 })
 
 test('every named agent has a job title, a task and a measurable goal', () => {

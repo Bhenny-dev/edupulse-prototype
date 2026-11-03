@@ -36,7 +36,7 @@ Source links remain accessible in answers. **Verification details** contains evi
 
 ## Manage the Course Outline
 
-**Outline term** selects all weeks, Midterm or Finals. **Outline week** narrows the visible rows without deleting their contents. **Expand outline** provides more editing space; **Close expanded outline** or **Escape** restores the page. The table scrolls within its own region and keeps the column headings visible.
+**Outline term** selects all weeks, Midterm or Finals. **Outline week** narrows the visible rows without deleting their contents. **Expand outline** provides more editing space; **Close expanded outline** or **Escape** restores the page. The outline is one table for both terms, with a **Midterm** (Weeks 1–9) and a **Finals** (Weeks 10–18) row heading. On a desktop it is wider than the page column, so every column shows without scrolling sideways, its column headings stay under the top bar as the page scrolls, and each text field grows to show its whole entry. In the expanded view and on narrower windows the table scrolls within its own region and keeps the column headings visible.
 
 ![Expanded Course Outline workspace](06-wide-outline.png)
 

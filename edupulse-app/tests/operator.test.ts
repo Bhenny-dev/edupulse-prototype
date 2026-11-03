@@ -8,6 +8,18 @@ const { CURRICULUM_COURSES } = await import(String('../src/data/mockData.js')) a
 import { extractUpload } from '../server/ingest/prepare.js'
 
 const signal = () => AbortSignal.timeout(30000)
+test('dashboard destinations keep the named role and a correction refers to the preceding navigation request',()=>{
+ assert.equal(pageFor('Open the instructors dashboard','admin',{canSwitchRoles:true})?.viewRole,'instructor')
+ const history=[{role:'user',content:'open me the instructors dashboard'},{role:'assistant',content:'Opened Dashboard.'}]
+ assert.equal(pageFor("no, not mine, the instructor's",'admin',{canSwitchRoles:true,history})?.label,'Instructor Dashboard')
+ assert.equal(pageFor('no, not mine','admin',{canSwitchRoles:true,history})?.viewRole,'instructor')
+ assert.equal(pageFor('Open the associate dean dashboard','admin',{canSwitchRoles:true})?.viewRole,'associate_dean')
+ assert.equal(pageFor('Open the instructor dashboard','student')?.denied,true)
+ assert.equal(pageFor('What does an instructor do?','student'),null)
+ assert.equal(pageFor("no, the instructor's",'student'),null,'An unrelated conversation must not switch views')
+ const plan=planOperator({message:"no, not mine, the instructor's",role:'admin',canSwitchRoles:true,history})
+ assert.equal(plan.chat,false);assert.equal(plan.proposals[0].type,'navigate')
+})
 // Invented names for tests only; no real student records.
 const csv = `StudentID,Name,Email,YearLevel,Block
 2026-00101,Ana T. Ramos,ana.ramos@example.edu,1,BSIT-1A

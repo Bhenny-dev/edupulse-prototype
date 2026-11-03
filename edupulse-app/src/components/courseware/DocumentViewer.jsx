@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { ArrowLeft, Download, Printer, Save, Pencil, X } from 'lucide-react'
 import { useToast } from '../../context/ToastContext'
 import DraftEvidence from '../ai/DraftEvidence'
+import AutoTextarea from '../ui/AutoTextarea'
 import { useContentEditorTool } from '../../agents/useContentEditorTool'
 
 /* ─── Document Viewer ───
@@ -71,11 +72,11 @@ export default function DocumentViewer({ content, onBack, isStudent = false, onS
   const renderBody = (body, idx, isEditing) => {
     if (isEditing) {
       return (
-        <textarea
+        <AutoTextarea
           className="form-input doc-edit-body" data-pulse-field={`sections.${idx}.body`} aria-label={`Section ${idx + 1} content`}
           value={body || ''}
           onChange={e => updateSectionBody(idx, e.target.value)}
-          rows={Math.max(4, (body || '').split('\n').length + 1)}
+          rows={4}
           placeholder="Enter content (use • for bullets, numbers for lists)..."
         />
       )
@@ -300,7 +301,6 @@ export default function DocumentViewer({ content, onBack, isStudent = false, onS
           width: 100%;
           font-size: 0.8125rem;
           line-height: 1.7;
-          resize: vertical;
           min-height: 80px;
         }
         @media (max-width: 767px) {

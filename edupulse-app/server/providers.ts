@@ -6,6 +6,7 @@ import { ApiError } from './contracts.js'
 import { discoverModels, providerError, serverConnection, type Connection } from './connections.js'
 import { modelStatus } from './ml/onnx.js'
 import { openRouterOutput, openRouterReasoning, reasoningAllowance } from './reasoning.js'
+import { anthropicRequestError } from './anthropic.js'
 
 // OpenAI-compatible chat endpoints. Fixed URLs: clients never choose where keys are sent.
 const OPENAI_COMPATIBLE: Record<string, string> = {
@@ -19,7 +20,7 @@ export async function providerHealth(connection?: Connection) {
   const embeddings = (await modelStatus()).embeddings.ready
   if (connection) {
     try {
-      const models = await discoverModels(connection.provider, connection.apiKey)
+      const models = await discoverModels(connection.provider, connection.apiKey, undefined, undefined, connection.workspaceId)
       const ready = models.some(m => m.id === connection.model || m.id === `${connection.model}:latest`)
       return { provider: connection.provider, model: connection.model, ready, embeddings, message: ready ? connection.testedAt ? 'The selected model answered a generation request. Provider limits can still change; retest if a prompt fails.' : 'Credential saved and model listed. Generation has not been tested. Use Test selected model to check inference access and quota.' : connection.model ? 'The selected model is no longer available. Choose another model in Settings.' : 'Credential saved. Choose a model or use Refresh models to finish setup.' }
     } catch (error) { return { provider: connection.provider, model: connection.model, ready: false, embeddings, message: error instanceof ApiError ? error.message : 'The provider could not be reached. Check the connection in Settings.' } }
@@ -52,6 +53,7 @@ export async function invokeModel(system: string, prompt: string, signal: AbortS
     const responses = connection.provider === 'openai' && !/^(?:gpt-(?:3\.5|4(?:\.|o|-|$))|chatgpt-4o)/.test(connection.model)
     const endpoint = anthropic ? 'https://api.anthropic.com/v1/messages' : responses ? 'https://api.openai.com/v1/responses' : OPENAI_COMPATIBLE[connection.provider]!
     const headers: Record<string, string> = { 'Content-Type': 'application/json', ...(anthropic ? { 'x-api-key': connection.apiKey!, 'anthropic-version': '2023-06-01' } : { Authorization: `Bearer ${connection.apiKey}` }), ...(connection.provider === 'openrouter' ? { 'X-Title': 'EduPulse' } : {}) }
+    if (anthropic && connection.workspaceId) headers['anthropic-workspace-id'] = connection.workspaceId
     // Budgets are for the visible answer. A reasoning model's thinking comes out of the same limit, so
     // it gets an allowance on top (server/reasoning.ts). Anthropic and legacy OpenAI chat models only
     // reason when asked, and EduPulse does not ask them to.
@@ -65,7 +67,7 @@ export async function invokeModel(system: string, prompt: string, signal: AbortS
       let response: Response
       try { response = await fetch(endpoint, { method: 'POST', headers, body: JSON.stringify(payload), signal, redirect: 'error' }) }
       catch (error) { throw transportFailure(error, signal, connection.provider) }
-      if (!response.ok) throw await modelResponseError(response, connection.model)
+      if (!response.ok) throw await modelResponseError(response, connection.model, connection.provider)
       return response.json()
     }
     let result = await send(body)
@@ -188,12 +190,22 @@ function ollamaContext(system: string, prompt: string, predict: number) {
 }
 
 /** Return only bounded, actionable categories; provider bodies can contain private account details. */
-async function modelResponseError(response: Response, model: string): Promise<ApiError> {
-  let code = ''
-  try { const body = JSON.parse((await response.text()).slice(0, 8192)); if (typeof body.error?.code === 'string') code = body.error.code } catch { /* Non-JSON provider errors still have an HTTP category. */ }
+async function modelResponseError(response: Response, model: string, provider: Connection['provider']): Promise<ApiError> {
+  let code = '', message = ''
+  try {
+    const body = JSON.parse((await response.text()).slice(0, 8192))
+    if (typeof body.error?.code === 'string') code = body.error.code
+    if (typeof body.error?.message === 'string') message = body.error.message
+  } catch { /* Non-JSON provider errors still have an HTTP category. */ }
+  // Anthropic reports an empty API balance as invalid_request_error (HTTP 400),
+  // not as a model-format error. Classify it without returning the private body.
+  const anthropicError = provider === 'anthropic' ? anthropicRequestError(response.status, message) : undefined
+  if (anthropicError) return anthropicError
+  if (response.status === 400 && /(?:prompt|input|context).{0,60}(?:too long|exceeds|maximum context)/i.test(message)) return new ApiError(400, 'PROMPT_TOO_LONG', 'This request is larger than the selected model can read. Use fewer attachments or ask for one section at a time.')
+  if (response.status === 400 && /\bmax_tokens\b.{0,80}(?:maximum|greater|less|exceed|allowed)/i.test(message)) return new ApiError(400, 'MODEL_TOKEN_LIMIT', 'The provider rejected this model\'s response limit. Choose a model with a larger output allowance in AI settings and retry.')
   if (response.status === 404 || code === 'model_not_found') return new ApiError(400, 'MODEL_NOT_AVAILABLE', `The selected model (${model}) is unavailable for this account or API route. Refresh models, choose another model and use Test selected model.`)
   if (code === 'insufficient_quota') return new ApiError(429, 'PROVIDER_CREDITS', 'The provider account has no available API credits or quota. Check API billing or choose another connection; a consumer chat subscription is separate.')
-  if (response.status === 400) return new ApiError(400, 'MODEL_INCOMPATIBLE', 'The selected model rejected the required text or JSON request. Choose another text model and test it before retrying.')
+  if (response.status === 400) return new ApiError(400, 'MODEL_INCOMPATIBLE', 'The provider could not accept this request for the selected model. Refresh models in AI settings and retry, or choose another model.')
   return providerError(response.status)
 }
 

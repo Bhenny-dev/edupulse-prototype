@@ -5,13 +5,16 @@ import { z } from 'zod'
 import { ApiError, type Identity } from './contracts.js'
 import { config } from './config.js'
 import { rememberReasoning } from './reasoning.js'
+import { anthropicRequestError } from './anthropic.js'
 
 export const providerNames = ['ollama', 'gemini', 'openai', 'groq', 'anthropic', 'openrouter', 'huggingface'] as const
 export type ProviderName = typeof providerNames[number]
-export type Connection = { provider: ProviderName; model: string; apiKey?: string; owner: string; expires: number; id: string; testedAt?: number }
+export type Connection = { provider: ProviderName; model: string; apiKey?: string; workspaceId?: string; owner: string; expires: number; id: string; testedAt?: number }
 export type ModelPreset = { id: string; name: string; free?: boolean }
-export const connectionInput = z.object({ provider: z.enum(providerNames), apiKey: z.string().trim().min(8).max(1024).optional(), model: z.string().min(1).max(200).optional() }).strict()
-const payload = connectionInput.extend({ model: z.string().max(200), owner: z.string(), expires: z.number(), id: z.string(), testedAt: z.number().optional() })
+const workspaceId = z.string().regex(/^wrkspc_[a-zA-Z0-9]{1,100}$/, 'Use the workspace ID from Claude Console (wrkspc_…).')
+export const connectionInput = z.object({ provider: z.enum(providerNames), apiKey: z.string().trim().min(8).max(1024).optional(), model: z.string().min(1).max(200).optional(), workspaceId: z.union([workspaceId, z.literal('')]).optional() }).strict()
+const payload = connectionInput.extend({ model: z.string().max(200), workspaceId: workspaceId.optional(), owner: z.string(), expires: z.number(), id: z.string(), testedAt: z.number().optional() })
+export const workspaceListInput = z.object({ apiKey: z.string().trim().min(8).max(1024).optional() }).strict()
 const TTL = 7 * 24 * 60 * 60
 const cookieName = () => config().hosted ? '__Host-edupulse-ai' : 'edupulse-ai'
 
@@ -69,11 +72,12 @@ export function providerError(status: number): ApiError {
   return new ApiError(502, 'PROVIDER_UNAVAILABLE', `The provider could not complete the request (${status}). Check its model availability and try again.`)
 }
 
-export async function discoverModels(provider: ProviderName, apiKey?: string, signal = AbortSignal.timeout(12000), transport: typeof fetch = fetch): Promise<ModelPreset[]> {
+export async function discoverModels(provider: ProviderName, apiKey?: string, signal = AbortSignal.timeout(12000), transport: typeof fetch = fetch, workspaceId?: string): Promise<ModelPreset[]> {
   if (provider !== 'ollama' && !apiKey) throw new ApiError(400, 'KEY_REQUIRED', 'Enter an API key to load this provider’s models.')
   if (provider === 'ollama' && config().hosted && !process.env.OLLAMA_BASE_URL) throw new ApiError(400, 'LOCAL_SERVER_REQUIRED', 'Ollama runs with the downloaded local app. Use the built-in browser model on this hosted site, or connect a hosted provider.')
   const urls: Record<ProviderName, string> = { ollama: `${config().ollamaUrl}/api/tags`, gemini: 'https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000', openai: 'https://api.openai.com/v1/models', groq: 'https://api.groq.com/openai/v1/models', anthropic: 'https://api.anthropic.com/v1/models?limit=1000', openrouter: 'https://openrouter.ai/api/v1/models', huggingface: 'https://router.huggingface.co/v1/models' }
   const headers: Record<string, string> = provider === 'gemini' ? { 'x-goog-api-key': apiKey! } : provider === 'anthropic' ? { 'x-api-key': apiKey!, 'anthropic-version': '2023-06-01' } : apiKey ? { Authorization: `Bearer ${apiKey}` } : {}
+  if (provider === 'anthropic' && workspaceId) headers['anthropic-workspace-id'] = workspaceId
   let response: Response
   try { response = await transport(urls[provider], { headers, signal, redirect: 'error' }) }
   catch (error) {
@@ -81,7 +85,14 @@ export async function discoverModels(provider: ProviderName, apiKey?: string, si
     if (error instanceof TypeError && /fetch failed/i.test(error.message)) throw new ApiError(502, 'PROVIDER_UNAVAILABLE', 'The model provider could not be reached. Check the connection, then try again.')
     throw error
   }
-  if (!response.ok) throw providerError(response.status)
+  if (!response.ok) {
+    if (provider === 'anthropic') {
+      const detail = await response.text().catch(() => '')
+      const classified = anthropicRequestError(response.status, detail.slice(0, 8192))
+      if (classified) throw classified
+    }
+    throw providerError(response.status)
+  }
   const data = await response.json()
   let models: ModelPreset[] = []
   if (provider === 'ollama') models = (data.models || []).filter((m: { name: string; remote_host?: string }) => !m.remote_host && !/embed|minilm|nomic|bge/i.test(m.name)).map((m: { name: string }) => ({ id: m.name, name: m.name }))
@@ -104,11 +115,14 @@ export async function discoverModels(provider: ProviderName, apiKey?: string, si
 export async function createConnection(input: z.infer<typeof connectionInput>, identity: Identity, previous?: Connection) {
   // A browser can supply its own key, never extract or borrow the server's hosted key.
   const apiKey = input.apiKey || (previous?.provider === input.provider ? previous.apiKey : undefined) || (input.provider === 'ollama' ? process.env.OLLAMA_API_KEY : undefined)
-  const models = await discoverModels(input.provider, apiKey)
+  if (input.provider !== 'anthropic' && input.workspaceId) throw new ApiError(400, 'INVALID_WORKSPACE', 'Workspace selection is available only for Claude connections.')
+  // Never carry a previous key's workspace into a replacement credential.
+  const workspaceId = input.provider === 'anthropic' ? (input.workspaceId === undefined && !input.apiKey && previous?.provider === input.provider ? previous.workspaceId : input.workspaceId || undefined) : undefined
+  const models = await discoverModels(input.provider, apiKey, undefined, undefined, workspaceId)
   const preferred = input.provider === 'openai' ? ['gpt-5-mini', 'gpt-4.1-mini', 'gpt-4o-mini'].find(id => models.some(m => m.id === id)) : undefined
   const model = input.model || (previous?.provider === input.provider && models.some(m => m.id === previous.model) ? previous.model : preferred) || (input.provider === 'ollama' && models.some(m => m.id === config().model || m.id === `${config().model}:latest`) ? models.find(m => m.id === config().model || m.id === `${config().model}:latest`)!.id : models[0]!.id)
   if (!models.some(m => m.id === model)) throw new ApiError(400, 'MODEL_NOT_AVAILABLE', 'Choose a model returned by the connected provider.')
-  const connection: Connection = { provider: input.provider, model, apiKey, owner: identity.id, id: previous?.id || randomBytes(12).toString('hex'), expires: Date.now() + TTL * 1000, ...(!input.apiKey && previous?.provider === input.provider && previous.model === model && previous.testedAt ? { testedAt: previous.testedAt } : {}) }
+  const connection: Connection = { provider: input.provider, model, apiKey, ...(workspaceId ? { workspaceId } : {}), owner: identity.id, id: previous?.id || randomBytes(12).toString('hex'), expires: Date.now() + TTL * 1000, ...(!input.apiKey && previous?.provider === input.provider && previous.model === model && previous.workspaceId === workspaceId && previous.testedAt ? { testedAt: previous.testedAt } : {}) }
   return { connection, models }
 }
 
@@ -117,4 +131,24 @@ export function unconfiguredAuthorizedConnection(provider: ProviderName, apiKey:
   return { provider, apiKey, model: '', owner: identity.id, id: randomBytes(12).toString('hex'), expires: Date.now() + TTL * 1000 }
 }
 
-export const publicConnection = (connection?: Connection) => connection ? { provider: connection.provider, model: connection.model, expiresAt: connection.expires === Number.MAX_SAFE_INTEGER ? null : new Date(connection.expires).toISOString(), source: connection.owner === 'server' ? 'server' : 'personal', ...(connection.testedAt ? { testedAt: new Date(connection.testedAt).toISOString() } : {}) } : null
+export const publicConnection = (connection?: Connection) => connection ? { provider: connection.provider, model: connection.model, ...(connection.workspaceId ? { workspaceId: connection.workspaceId } : {}), expiresAt: connection.expires === Number.MAX_SAFE_INTEGER ? null : new Date(connection.expires).toISOString(), source: connection.owner === 'server' ? 'server' : 'personal', ...(connection.testedAt ? { testedAt: new Date(connection.testedAt).toISOString() } : {}) } : null
+
+/** Read-only discovery; never chooses a billing/data workspace or requires an admin credential. */
+export async function discoverWorkspaces(apiKey?: string, signal = AbortSignal.timeout(12000), transport: typeof fetch = fetch) {
+  if (!apiKey) throw new ApiError(400, 'KEY_REQUIRED', 'Enter an Anthropic API key or keep your saved Claude credential before loading workspaces.')
+  const workspaces: { id: string; name: string }[] = []
+  let after: string | undefined
+  for (let page = 0; page < 5; page++) {
+    const url = new URL('https://api.anthropic.com/v1/organizations/workspaces')
+    url.searchParams.set('include_default', 'true'); url.searchParams.set('limit', '1000')
+    if (after) url.searchParams.set('after_id', after)
+    const response = await transport(url, { headers: { 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' }, signal, redirect: 'error' })
+    if (!response.ok) throw new ApiError(400, 'WORKSPACE_LIST_UNAVAILABLE', 'This key could not list Claude workspaces. If it is scoped to one workspace, leave the workspace blank. Otherwise copy the workspace ID from Claude Console → Settings → Workspaces. Keep your existing key permissions.')
+    const data = await response.json() as { data?: { id: string; name: string; archived_at?: string | null }[]; has_more?: boolean; last_id?: string }
+    for (const item of data.data || []) if (workspaceId.safeParse(item.id).success && typeof item.name === 'string' && !item.archived_at) workspaces.push({ id: item.id, name: item.name.slice(0, 200) })
+    if (!data.has_more) return [...new Map(workspaces.map(w => [w.id, w])).values()].sort((a, b) => a.name.localeCompare(b.name))
+    if (!data.last_id || data.last_id === after) break
+    after = data.last_id
+  }
+  throw new ApiError(400, 'WORKSPACE_LIST_UNAVAILABLE', 'The workspace list could not be completed. Copy the intended workspace ID from Claude Console → Settings → Workspaces.')
+}

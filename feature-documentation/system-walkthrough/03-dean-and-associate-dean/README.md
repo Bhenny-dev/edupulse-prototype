@@ -13,6 +13,8 @@ The Dean (`dean`) and Associate Dean (`associate_dean`) sign in with separate em
 - **Faculty Overview:** each instructor's load, active syllabi and a status chip (*On track*, *n not yet routed*, *No load*).
 - **Recent Activity** and **Syllabus Status by Course** (course, instructor, status, extracted outline weeks, last update; the eye icon opens the syllabus).
 
+Signed-in Dean and Associate Dean accounts see this same dashboard filled from the authorized college records: the cards count saved and imported courses and loads, the charts use saved syllabus stations and publications, and the activity list shows saved events. The sample names and numbers here appear only in the preview ([account captures](../09-restored-role-pages/README.md#role-dashboards)).
+
 ## Performance access boundary
 
 ![Associate Dean denied access to Performance](13-performance-access-denied.png)

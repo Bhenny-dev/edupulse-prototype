@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-11-02T10-40-25-637Z-afd5d476",
+  "startedAt": "2026-11-02T10:40:25.637Z",
+  "finishedAt": "2026-11-02T10:40:50.761Z",
+  "commitSha": "b96e71eb96c9216e1b7651b7f8d143c25e1a2844",
+  "sourceDigest": "dfb6c1941dc895d8666487a79ee41d1dc1b5de88a66f12f90eb663342b746d80",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-11-02T10:36:16.345Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 1,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": null
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/manual.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.spec.ts",
+    "edupulse-app/tests/snapshots/harness-delivery.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-drafting.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-source.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+    "edupulse-app/tests/snapshots/student-directory.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/manual.spec.ts",
+      "title": "syllabus lifecycle: build, check, download, approve, extract, activate",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "local-real-input/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 11141,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/01-select-course-autofills-section-1.png",
+      "sha256": "86298f537bc61752ba5a6f68be3e8c729b5e96d8910a6ab2d4d090e1d2f6f103",
+      "bytes": 26142
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/02-write-course-outline.png",
+      "sha256": "72b06cc4ae388b104c7f2f485e723ae3d5cb14e6d22ebfe1a2854f2c0eeea58a",
+      "bytes": 290777
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/03-save-as-drafted-button.png",
+      "sha256": "617c128beffbf4b52b20e1faf5841f6488e92fb867288bd20faf21e461ab0559",
+      "bytes": 190149
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/04-my-syllabus-drafted.png",
+      "sha256": "b64d79c1a8b71e6ef67df854dd97199def092cd1a1d544858eaac243372d6339",
+      "bytes": 338690
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/05-marked-as-checked.png",
+      "sha256": "d426138271aacd40ef8c3ed42f5d95cef44e0f3310a29cdff2c7c15eea029378",
+      "bytes": 38189
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/06-downloaded-for-approval.png",
+      "sha256": "ab6d79e7190c6cce07bb5ec63d3037116a175167c91315051c5e9b4770f6ccdb",
+      "bytes": 39309
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/07-upload-approved-file-attestation.png",
+      "sha256": "f82fd62898d70c763f410dee671cf77baa1410c0702de65186bfaa40bfd1869e",
+      "bytes": 313566
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/08-approved-file-uploaded.png",
+      "sha256": "7593bff726d47efada120b8f4d28c2fe30fdf465b23a552f118d08d68ddb9d69",
+      "bytes": 39048
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/09-review-extracted-outline.png",
+      "sha256": "801d799536eda0c42b0ad4a7bf4eef8776177d9d27a1e25d31aea4561d9ed938",
+      "bytes": 296835
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/10-active-drives-courseware.png",
+      "sha256": "1e1d9f46b819601e7c6882526d70e6ee36f0a0d2d8a27a088a9178b30e2042d7",
+      "bytes": 32846
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/11-version-history-dialog.png",
+      "sha256": "643bc1fdbb43e58684bd894249776e8b4e421d96d67e30a94803a0d4292146e0",
+      "bytes": 77024
+    }
+  ]
+}

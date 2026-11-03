@@ -2,6 +2,8 @@
 
 Controls every signed-in role has. Shown here as the Instructor; the Dean and Student see the same tools with their own navigation tabs and notifications.
 
+The owner System Admin can ask Pulse to open a named role dashboard and correct that destination in conversation. Ordinary accounts keep their assigned role. [Manual 17](../../system-manual/17-pulse-navigation-and-provider-recovery/README.md) shows the synthetic owner-view handoff and the retained Anthropic connection after an API-credit failure.
+
 ## Top bar and global tools
 
 ### 1. Top bar
@@ -80,6 +82,8 @@ Filter tabs (**All**, **Unread (n)** and one tab per category such as *Coursewar
 | Notifications | ![Settings · Notifications](12-settings-notifications.png) | Device-only preferences for email, weekly digest and syllabus, courseware and performance alerts (the banner states that email delivery is not connected) |
 | AI & Knowledge | ![Settings · AI & Knowledge](13-settings-ai-and-knowledge.png) | **New in v0.4.0** — see below |
 | Data & Privacy | ![Settings · Data & Privacy](14-settings-data-and-privacy.png) | **Export My Data**, **Export workspace backup** and the account-deletion policy |
+
+A Settings address with an unknown or unavailable tab, such as an old bookmark, opens **Account** instead of an empty page.
 | Help & Support | Image 9 above | Getting started, contacts and frequently asked questions |
 | Keyboard Shortcuts | Image 3 above | Working shortcuts and a separate planned list |
 

@@ -1,12 +1,15 @@
 import { useAuth } from '../context/AuthContext'
+import { useWorkspace } from '../context/WorkspaceContext'
+import { useAcademicRecords } from '../context/AcademicContext'
 import SystemAdminDashboard from './SystemAdminDashboard'
-import AcademicPortal from '../components/academic/AcademicPortal'
-import {
-  ADMIN_STATS, DEFAULT_SYLLABI, COURSEWARE_ITEMS, STUDENT_RECORDS, INSTRUCTORS,
-  RAG_GROUNDING_PASSAGES, BLOCK_SECTIONS, CURRICULUM_COURSES, SYLLABUS_STATUS_META, SYLLABUS_STATUS_ORDER,
-} from '../data/mockData'
+import { SYLLABUS_STATUS_META } from '../data/syllabusStatus'
+import { accountManagementModel, accountInstructorModel, accountStudentModel } from './dashboardModels'
+import { previewManagementModel, previewInstructorModel, previewStudentModel } from './dashboardPreview'
 import { useNavigate } from 'react-router-dom'
 import { pulse as pulseBus } from '../components/pulse/pulseBus'
+import { SkeletonKPI, SkeletonTable } from '../components/ui/LoadingSkeleton'
+import { Spinner } from '../components/ui/LoadingFeedback'
+import '../components/academic/academic.css'
 import {
   BookOpen, Users, AlertTriangle, CheckCircle, FileText, TrendingUp, ArrowRight,
   Clock, Target, Sparkles, BarChart3, Eye, Calendar, Download,
@@ -14,12 +17,6 @@ import {
 } from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts'
-
-function ordinal(n) {
-  const s = ['th', 'st', 'nd', 'rd']
-  const v = n % 100
-  return `${n}${s[(v - 20) % 10] || s[v] || s[0]}`
-}
 
 function AnimatedNumber({ value, suffix = '' }) {
   const [display, setDisplay] = useState(0)
@@ -57,34 +54,52 @@ function KpiCard({ icon: Icon, label, value, color, bg, suffix = '' }) {
   )
 }
 
-// Recent activity in the flow's own vocabulary — no in-system approvals, no
-// integrity flags, no ops telemetry (all outside the confirmed business flow).
-const ACTIVITY_FEED = [
-  { actor: 'Sir Rogelio L. Guisdan', action: 'published', target: 'Week 3 — Variables & Data Types: Guided Practice', time: '2h ago', icon: CheckCircle, color: 'var(--green-500)' },
-  { actor: 'Sir Rogelio L. Guisdan', action: 'uploaded the approved syllabus for', target: 'WMAD 303-1', time: '1d ago', icon: FileText, color: 'var(--sky-500)' },
-  { actor: 'AI (Auto mode)', action: 'drafted', target: '3 courseware items from the IT 106 outline', time: '2d ago', icon: Sparkles, color: 'var(--purple-500)' },
-  { actor: 'Marielle Angela Fianza-Buya', action: 'confirmed AI-proposed loading for', target: '4 courses', time: '3d ago', icon: ClipboardCheck, color: 'var(--sky-400)' },
-  { actor: 'System', action: 'reminded 5 students about', target: 'unopened Week 1 materials', time: '4d ago', icon: Bell, color: 'var(--amber-500)' },
-]
+// A value an account has not recorded yet shows as a dash, never as zero.
+const recorded = (value, suffix) => (value === null || value === undefined ? { value: '—', suffix: '' } : { value, suffix })
+
+const ACTIVITY_STYLE = {
+  published: [CheckCircle, 'var(--green-500)'], syllabus: [FileText, 'var(--sky-500)'], drafted: [Sparkles, 'var(--purple-500)'],
+  loading: [ClipboardCheck, 'var(--sky-400)'], reminder: [Bell, 'var(--amber-500)'], review: [Target, 'var(--purple-500)'],
+  revision: [AlertTriangle, 'var(--amber-500)'], workspace: [Activity, 'var(--sky-500)'],
+}
+
+function ActivityList({ items }) {
+  if (!items.length) return <p className="text-sm text-muted">No recorded academic activity yet.</p>
+  return items.map((item, i) => {
+    const [Icon, color] = ACTIVITY_STYLE[item.kind] || ACTIVITY_STYLE.workspace
+    return (
+      <div key={i} style={{ display: 'flex', gap: '10px', padding: '8px 0', borderBottom: i < items.length - 1 ? '1px solid var(--gray-100)' : 'none' }}>
+        <div style={{ width: 28, height: 28, borderRadius: 'var(--radius-full)', background: `${color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+          <Icon size={14} style={{ color }} />
+        </div>
+        <div style={{ flex: 1 }}>
+          <p style={{ fontSize: '0.8125rem' }}><strong>{item.actor}</strong> {item.action}{item.target && <> <strong>{item.target}</strong></>}</p>
+          <span className="text-sm text-muted">{item.time}</span>
+        </div>
+      </div>
+    )
+  })
+}
+
+function PageHeader({ title, subtitle, actions }) {
+  return (
+    <div className="page-header">
+      <div>
+        <h1>{title}</h1>
+        <p className="text-sm text-muted mt-8">{subtitle}</p>
+      </div>
+      {actions}
+    </div>
+  )
+}
+
+const exportButton = <button className="btn btn-secondary btn-sm"><Download size={14} /> Export</button>
 
 /* Academic management screens are shared by the distinct Dean and Associate Dean roles. */
 
-function AcademicDashboard() {
+function ManagementDashboard({ model, actions = exportButton, status }) {
   const navigate = useNavigate()
   const { user } = useAuth()
-
-  // Syllabus station distribution — "does an approved syllabus exist?" at a glance.
-  const stationData = SYLLABUS_STATUS_ORDER.map(status => ({
-    name: SYLLABUS_STATUS_META[status].label,
-    count: DEFAULT_SYLLABI.filter(s => s.status === status).length,
-  }))
-
-  // Delivery progress per active course: published items vs. outline weeks.
-  const deliveryData = DEFAULT_SYLLABI.filter(s => s.status === 'active').map(s => {
-    const published = COURSEWARE_ITEMS.filter(c => c.syllabusId === s.id && c.status === 'published').length
-    const checked = COURSEWARE_ITEMS.filter(c => c.syllabusId === s.id && c.status === 'checked').length
-    return { name: s.courseCode, published, checked }
-  })
 
   const quickActions = [
     { label: 'Load Courses', icon: ClipboardCheck, action: () => navigate('/course-loading'), color: 'var(--green-500)' },
@@ -94,29 +109,24 @@ function AcademicDashboard() {
 
   return (
     <div className="container">
-      <div className="page-header">
-        <div>
-          <h1>{user?.title} Dashboard</h1>
-          <p className="text-sm text-muted mt-8">College of Information Technology — course loading and delivery monitoring (shared Dean / Associate Dean view)</p>
-        </div>
-        <button className="btn btn-secondary btn-sm"><Download size={14} /> Export</button>
-      </div>
-
+      <PageHeader title={`${user?.title} Dashboard`} subtitle="College of Information Technology — course loading and delivery monitoring (shared Dean / Associate Dean view)" actions={actions} />
+      {status}
+      {model && <>
       <div className="kpi-grid mb-24">
-        <KpiCard icon={BookOpen} label="Released Courses" value={ADMIN_STATS.totalCourses} color="var(--sky-500)" bg="var(--sky-100)" />
-        <KpiCard icon={ClipboardCheck} label="Courses Loaded" value={ADMIN_STATS.coursesLoaded} color="var(--purple-500)" bg="var(--purple-100)" />
-        <KpiCard icon={CheckCircle} label="Approved Syllabi" value={ADMIN_STATS.approvedSyllabi} color="var(--green-500)" bg="var(--green-100)" />
-        <KpiCard icon={AlertTriangle} label="Not Yet Routed for Approval" value={ADMIN_STATS.deliveryGaps} color="var(--amber-500)" bg="var(--amber-100)" />
+        <KpiCard icon={BookOpen} label="Released Courses" value={model.kpis.released} color="var(--sky-500)" bg="var(--sky-100)" />
+        <KpiCard icon={ClipboardCheck} label="Courses Loaded" value={model.kpis.loaded} color="var(--purple-500)" bg="var(--purple-100)" />
+        <KpiCard icon={CheckCircle} label="Approved Syllabi" value={model.kpis.approved} color="var(--green-500)" bg="var(--green-100)" />
+        <KpiCard icon={AlertTriangle} label="Not Yet Routed for Approval" value={model.kpis.notRouted} color="var(--amber-500)" bg="var(--amber-100)" />
       </div>
 
       <div className="card mb-24">
-        <div className="card-body" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+        <nav className="card-body" aria-label="Quick actions" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
           {quickActions.map(a => (
             <button key={a.label} className="btn btn-secondary btn-sm" onClick={a.action}>
               <a.icon size={14} style={{ color: a.color }} /> {a.label}
             </button>
           ))}
-        </div>
+        </nav>
       </div>
 
       <div className="grid-2 mb-24">
@@ -128,7 +138,7 @@ function AcademicDashboard() {
           <div className="card-body">
             <p className="text-sm text-muted mb-16">Where every loaded course's syllabus sits in the lifecycle. The signatory chain (Dean → CAO → EVP) runs offline on the downloaded file.</p>
             <ResponsiveContainer width="100%" height={200}>
-              <BarChart data={stationData} margin={{ top: 8, right: 8, bottom: 8, left: -20 }}>
+              <BarChart data={model.stations} margin={{ top: 8, right: 8, bottom: 8, left: -20 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                 <XAxis dataKey="name" tick={{ fontSize: 9 }} />
                 <YAxis allowDecimals={false} tick={{ fontSize: 10 }} />
@@ -146,17 +156,18 @@ function AcademicDashboard() {
           </div>
           <div className="card-body">
             <p className="text-sm text-muted mb-16">Published courseware against the extracted Course Outline — are the mapped materials and assessments being delivered on schedule?</p>
-            {deliveryData.length === 0 ? (
+            {model.delivery.length === 0 ? (
               <p className="text-sm text-muted">No active syllabi yet.</p>
             ) : (
               <ResponsiveContainer width="100%" height={200}>
-                <BarChart data={deliveryData} layout="vertical" margin={{ top: 4, right: 8, bottom: 4, left: 20 }}>
+                <BarChart data={model.delivery} layout="vertical" margin={{ top: 4, right: 8, bottom: 4, left: 20 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" horizontal={false} />
                   <XAxis type="number" allowDecimals={false} tick={{ fontSize: 10 }} />
                   <YAxis type="category" dataKey="name" tick={{ fontSize: 11 }} width={70} />
                   <Tooltip />
-                  <Bar dataKey="published" stackId="a" fill="#22c55e" name="Published" />
-                  <Bar dataKey="checked" stackId="a" fill="#38bdf8" radius={[0, 4, 4, 0]} name="Checked (unpublished)" />
+                  {model.deliverySeries.map((series, index) => (
+                    <Bar key={series.key} dataKey={series.key} stackId="a" fill={series.color} name={series.name} radius={index === model.deliverySeries.length - 1 ? [0, 4, 4, 0] : undefined} />
+                  ))}
                 </BarChart>
               </ResponsiveContainer>
             )}
@@ -168,48 +179,34 @@ function AcademicDashboard() {
         <div className="card">
           <div className="card-header"><h3>Faculty Overview</h3></div>
           <div className="card-body">
-            {INSTRUCTORS.map(inst => {
-              const loads = DEFAULT_SYLLABI.filter(s => s.instructorId === inst.id)
-              const activeCount = loads.filter(s => s.status === 'active').length
-              const behind = loads.filter(s => s.status === 'drafted' || s.status === 'checked').length
-              return (
-                <div key={inst.id} style={{
-                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                  padding: '10px 12px', borderRadius: 'var(--radius-md)',
-                  background: 'var(--gray-50)', marginBottom: '6px',
-                }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <div style={{ width: 32, height: 32, borderRadius: 'var(--radius-full)', background: 'linear-gradient(135deg, var(--sky-300), var(--sky-400))', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 700, fontSize: '0.6875rem' }}>{inst.name.charAt(0)}</div>
-                    <div>
-                      <div style={{ fontWeight: 600, fontSize: '0.8125rem' }}>{inst.name}</div>
-                      <div className="text-sm text-muted">{loads.length} loaded · {activeCount} active</div>
-                    </div>
+            {model.faculty.length === 0 && <p className="text-sm text-muted">No instructor accounts or course loads recorded yet.</p>}
+            {model.faculty.map(inst => (
+              <div key={inst.id} style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                padding: '10px 12px', borderRadius: 'var(--radius-md)',
+                background: 'var(--gray-50)', marginBottom: '6px',
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <div style={{ width: 32, height: 32, borderRadius: 'var(--radius-full)', background: 'linear-gradient(135deg, var(--sky-300), var(--sky-400))', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 700, fontSize: '0.6875rem' }}>{inst.name.charAt(0)}</div>
+                  <div>
+                    <div style={{ fontWeight: 600, fontSize: '0.8125rem' }}>{inst.name}</div>
+                    <div className="text-sm text-muted">{inst.loads} loaded · {inst.active} active</div>
                   </div>
-                  {loads.length === 0
-                    ? <span className="badge badge-draft" style={{ fontSize: '0.6875rem' }}>No load</span>
-                    : behind > 0
-                      ? <span className="badge badge-drafted" style={{ fontSize: '0.6875rem' }}>{behind} not yet routed</span>
-                      : <span className="badge badge-approved" style={{ fontSize: '0.6875rem' }}>On track</span>}
                 </div>
-              )
-            })}
+                {inst.loads === 0
+                  ? <span className="badge badge-draft" style={{ fontSize: '0.6875rem' }}>No load</span>
+                  : inst.behind > 0
+                    ? <span className="badge badge-drafted" style={{ fontSize: '0.6875rem' }}>{inst.behind} not yet routed</span>
+                    : <span className="badge badge-approved" style={{ fontSize: '0.6875rem' }}>On track</span>}
+              </div>
+            ))}
           </div>
         </div>
 
         <div className="card">
           <div className="card-header"><h3><Activity size={16} /> Recent Activity</h3></div>
           <div className="card-body">
-            {ACTIVITY_FEED.map((item, i) => (
-              <div key={i} style={{ display: 'flex', gap: '10px', padding: '8px 0', borderBottom: i < ACTIVITY_FEED.length - 1 ? '1px solid var(--gray-100)' : 'none' }}>
-                <div style={{ width: 28, height: 28, borderRadius: 'var(--radius-full)', background: `${item.color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <item.icon size={14} style={{ color: item.color }} />
-                </div>
-                <div style={{ flex: 1 }}>
-                  <p style={{ fontSize: '0.8125rem' }}><strong>{item.actor}</strong> {item.action} <strong>{item.target}</strong></p>
-                  <span className="text-sm text-muted">{item.time}</span>
-                </div>
-              </div>
-            ))}
+            <ActivityList items={model.activity} />
           </div>
         </div>
       </div>
@@ -228,16 +225,16 @@ function AcademicDashboard() {
               </tr>
             </thead>
             <tbody>
-              {DEFAULT_SYLLABI.map(syl => {
-                const inst = INSTRUCTORS.find(i => i.id === syl.instructorId)
-                const meta = SYLLABUS_STATUS_META[syl.status]
+              {model.courses.length === 0 && <tr><td colSpan={6} className="text-sm text-muted">No loaded courses in the records yet.</td></tr>}
+              {model.courses.map(course => {
+                const meta = SYLLABUS_STATUS_META[course.status]
                 return (
-                  <tr key={syl.id}>
-                    <td><strong>{syl.courseCode}</strong><br /><span className="text-sm text-muted">{syl.courseTitle}</span></td>
-                    <td className="text-sm">{inst?.name}</td>
-                    <td><span className={`badge badge-${meta?.badge || 'draft'}`} title={meta?.hint}>{meta?.label || syl.status}</span></td>
-                    <td className="text-sm">{syl.status === 'active' ? `${syl.courseOutline?.length || 0} weeks` : '—'}</td>
-                    <td className="text-sm text-muted">{syl.lastUpdated}</td>
+                  <tr key={course.id}>
+                    <td><strong>{course.code}</strong><br /><span className="text-sm text-muted">{course.title}</span></td>
+                    <td className="text-sm">{course.instructor}</td>
+                    <td><span className={`badge badge-${meta?.badge || 'draft'}`} title={meta?.hint}>{meta?.label || course.status}</span></td>
+                    <td className="text-sm">{course.status === 'active' ? `${course.outlineWeeks} weeks` : '—'}</td>
+                    <td className="text-sm text-muted">{course.updated}</td>
                     <td>
                       <button className="btn btn-ghost btn-sm" style={{ padding: '4px 8px' }} title="View in Monitor" onClick={() => navigate('/monitor?tab=syllabi')}><Eye size={12} /></button>
                     </td>
@@ -248,6 +245,7 @@ function AcademicDashboard() {
           </table>
         </div>
       </div>
+      </>}
     </div>
   )
 }
@@ -261,7 +259,8 @@ const ONBOARDING_STEPS = [
   { id: 'onb-4', label: 'Say hi to Pulse, your AI guide', action: 'pulse', icon: Bot },
 ]
 
-function OnboardingChecklist() {
+// Steps completed by saved work (autoDone) count alongside the steps ticked on this device.
+function OnboardingChecklist({ autoDone = [] }) {
   const navigate = useNavigate()
   const [dismissed, setDismissed] = useState(() => localStorage.getItem('edupulse-onboarding-done') === 'true')
   const [completedSteps, setCompletedSteps] = useState(() => {
@@ -271,13 +270,14 @@ function OnboardingChecklist() {
 
   if (dismissed) return null
 
-  const progress = Math.round((completedSteps.length / ONBOARDING_STEPS.length) * 100)
+  const done = new Set([...completedSteps, ...autoDone])
+  const progress = Math.round((done.size / ONBOARDING_STEPS.length) * 100)
 
   const toggleStep = (id) => {
     const next = completedSteps.includes(id) ? completedSteps.filter(s => s !== id) : [...completedSteps, id]
     setCompletedSteps(next)
     localStorage.setItem('edupulse-onboarding-steps', JSON.stringify(next))
-    if (next.length === ONBOARDING_STEPS.length) {
+    if (new Set([...next, ...autoDone]).size === ONBOARDING_STEPS.length) {
       setTimeout(() => {
         setDismissed(true)
         localStorage.setItem('edupulse-onboarding-done', 'true')
@@ -300,7 +300,7 @@ function OnboardingChecklist() {
           <div>
             <h3 style={{ fontSize: '1rem', fontWeight: 700, margin: 0 }}>Getting Started with EduPulse</h3>
             <p style={{ fontSize: '0.8rem', color: 'var(--gray-500)', margin: 0 }}>
-              {completedSteps.length}/{ONBOARDING_STEPS.length} steps complete · {progress}%
+              {done.size}/{ONBOARDING_STEPS.length} steps complete · {progress}%
             </p>
           </div>
         </div>
@@ -322,27 +322,27 @@ function OnboardingChecklist() {
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 8 }}>
             {ONBOARDING_STEPS.map(step => {
-              const done = completedSteps.includes(step.id)
+              const isDone = done.has(step.id)
               const Icon = step.icon
               return (
                 <button key={step.id} onClick={() => {
-                  if (done) return
+                  if (isDone) return
                   if (step.action === 'pulse') pulseBus.say('Hi! What would you like help with today?')
                   else navigate(step.path)
                   toggleStep(step.id)
                 }}
                   style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', borderRadius: 10,
-                    border: done ? '1.5px solid var(--success)' : '1.5px solid var(--gray-200)',
-                    background: done ? 'var(--green-100)' : 'var(--white)', cursor: 'pointer', textAlign: 'left', transition: 'all 0.2s',
-                    opacity: done ? 0.8 : 1 }}>
+                    border: isDone ? '1.5px solid var(--success)' : '1.5px solid var(--gray-200)',
+                    background: isDone ? 'var(--green-100)' : 'var(--white)', cursor: 'pointer', textAlign: 'left', transition: 'all 0.2s',
+                    opacity: isDone ? 0.8 : 1 }}>
                   <div style={{ width: 28, height: 28, borderRadius: 8,
-                    background: done ? 'var(--success)' : 'var(--sky-100)',
+                    background: isDone ? 'var(--success)' : 'var(--sky-100)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    {done ? <CheckCircle size={14} style={{ color: '#fff' }} /> : <Icon size={14} style={{ color: 'var(--sky-600)' }} />}
+                    {isDone ? <CheckCircle size={14} style={{ color: '#fff' }} /> : <Icon size={14} style={{ color: 'var(--sky-600)' }} />}
                   </div>
-                  <span style={{ fontSize: '0.82rem', fontWeight: done ? 600 : 500,
-                    color: done ? 'var(--success)' : 'var(--gray-700)',
-                    textDecoration: done ? 'line-through' : 'none' }}>
+                  <span style={{ fontSize: '0.82rem', fontWeight: isDone ? 600 : 500,
+                    color: isDone ? 'var(--success)' : 'var(--gray-700)',
+                    textDecoration: isDone ? 'line-through' : 'none' }}>
                     {step.label}
                   </span>
                 </button>
@@ -355,56 +355,46 @@ function OnboardingChecklist() {
   )
 }
 
-function InstructorDashboard() {
+const QUEUE_PREVIEW = 8
+
+function InstructorDashboard({ model, actions = exportButton, status }) {
   const navigate = useNavigate()
   const { user } = useAuth()
-  const mySyllabi = DEFAULT_SYLLABI.filter(s => s.instructorId === user?.id)
-  const myCourseware = COURSEWARE_ITEMS.filter(c => mySyllabi.some(s => s.id === c.syllabusId))
-  // The review queue is drafts awaiting the instructor, earliest outline week first.
-  const reviewQueue = myCourseware.filter(c => c.status === 'draft').sort((a, b) => a.week - b.week)
-  const QUEUE_PREVIEW = 8
-  const myBlockSections = BLOCK_SECTIONS.filter(s => s.adviserId === user?.id)
-  // STUDENT_RECORDS stores the block code (not a blockSectionId FK) — match on that.
-  const myStudents = STUDENT_RECORDS.filter(stu => myBlockSections.some(bs => bs.code === stu.section))
+  const average = recorded(model?.snapshot.average, '%')
 
   return (
     <div className="container">
-      <div className="page-header">
-        <div>
-          <h1>Instructor Dashboard</h1>
-          <p className="text-sm text-muted mt-8">Welcome back, {user?.name}</p>
-        </div>
-        <button className="btn btn-secondary btn-sm"><Download size={14} /> Export</button>
-      </div>
-
-      <OnboardingChecklist />
+      <PageHeader title="Instructor Dashboard" subtitle={`Welcome back, ${user?.name}`} actions={actions} />
+      {status}
+      {model && <>
+      <OnboardingChecklist autoDone={model.autoDone} />
 
       <div className="kpi-grid mb-24">
-        <KpiCard icon={BookOpen} label="My Courses" value={mySyllabi.length} color="var(--sky-500)" bg="var(--sky-100)" />
-        <KpiCard icon={CheckCircle} label="Active Syllabi" value={mySyllabi.filter(s => s.status === 'active').length} color="var(--green-500)" bg="var(--green-100)" />
-        <KpiCard icon={Clock} label="Drafts to Review" value={myCourseware.filter(c => c.status === 'draft').length} color="var(--amber-500)" bg="var(--amber-100)" />
-        <KpiCard icon={Target} label="Published Items" value={myCourseware.filter(c => c.status === 'published').length} color="var(--purple-500)" bg="var(--purple-100)" />
+        <KpiCard icon={BookOpen} label="My Courses" value={model.kpis.courses} color="var(--sky-500)" bg="var(--sky-100)" />
+        <KpiCard icon={CheckCircle} label="Active Syllabi" value={model.kpis.active} color="var(--green-500)" bg="var(--green-100)" />
+        <KpiCard icon={Clock} label="Drafts to Review" value={model.kpis.drafts} color="var(--amber-500)" bg="var(--amber-100)" />
+        <KpiCard icon={Target} label="Published Items" value={model.kpis.published} color="var(--purple-500)" bg="var(--purple-100)" />
       </div>
 
       <div className="card mb-24">
-        <div className="card-body" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+        <nav className="card-body" aria-label="Quick actions" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
           <button className="btn btn-secondary btn-sm" onClick={() => navigate('/syllabus?tab=builder')}><FileText size={14} style={{ color: 'var(--sky-500)' }} /> Syllabus Builder</button>
           <button className="btn btn-secondary btn-sm" onClick={() => navigate('/courseware?tab=builder')}><Sparkles size={14} style={{ color: 'var(--purple-500)' }} /> Generate Courseware</button>
           <button className="btn btn-secondary btn-sm" onClick={() => navigate('/student-monitoring')}><ClipboardCheck size={14} style={{ color: 'var(--green-500)' }} /> Student Monitoring</button>
-        </div>
+        </nav>
       </div>
 
       <div className="card mb-24">
         <div className="card-header"><h3><Users size={16} /> My Block Sections</h3></div>
         <div className="card-body">
-          {myBlockSections.length === 0 ? (
+          {model.blocks.length === 0 ? (
             <p className="text-sm text-muted">No block sections assigned yet.</p>
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '12px' }}>
-              {myBlockSections.map(bs => (
+              {model.blocks.map(bs => (
                 <div key={bs.id} style={{ padding: '12px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--sky-100)', background: 'var(--sky-50)' }}>
                   <div style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--sky-600)' }}>{bs.code}</div>
-                  <div className="text-sm text-muted">{ordinal(bs.yearLevel)} Year · {bs.students} students</div>
+                  <div className="text-sm text-muted">{bs.detail}</div>
                   <button className="btn btn-secondary btn-sm" style={{ marginTop: '8px', width: '100%' }} onClick={() => navigate('/student-monitoring')}>Student Monitoring <ArrowRight size={12} /></button>
                 </div>
               ))}
@@ -422,53 +412,41 @@ function InstructorDashboard() {
         <div className="card-body">
           <div className="kpi-grid">
             <div style={{ textAlign: 'center', padding: '12px' }}>
-              <div className="kpi-value"><AnimatedNumber value={myStudents.length} /></div>
+              <div className="kpi-value"><AnimatedNumber value={model.snapshot.students} /></div>
               <div className="kpi-label">Students</div>
             </div>
             <div style={{ textAlign: 'center', padding: '12px' }}>
-              <div className="kpi-value" style={{ color: 'var(--green-500)' }}><AnimatedNumber value={myStudents.length ? Math.round(myStudents.reduce((acc, s) => acc + (s.courses[0]?.scores.midterm || 0), 0) / myStudents.length) : 0} suffix="%" /></div>
+              <div className="kpi-value" style={{ color: 'var(--green-500)' }}><AnimatedNumber value={average.value} suffix={average.suffix} /></div>
               <div className="kpi-label">Avg. Score</div>
             </div>
             <div style={{ textAlign: 'center', padding: '12px' }}>
-              <div className="kpi-value" style={{ color: 'var(--red-500)' }}><AnimatedNumber value={myStudents.filter(s => (s.courses[0]?.scores.midterm || 0) < 75).length} /></div>
+              <div className="kpi-value" style={{ color: 'var(--red-500)' }}><AnimatedNumber value={model.snapshot.below} /></div>
               <div className="kpi-label">Below 75</div>
             </div>
             <div style={{ textAlign: 'center', padding: '12px' }}>
-              <div className="kpi-value" style={{ color: 'var(--sky-500)' }}><AnimatedNumber value={myStudents.filter(s => (s.courses[0]?.scores.midterm || 0) >= 90).length} /></div>
+              <div className="kpi-value" style={{ color: 'var(--sky-500)' }}><AnimatedNumber value={model.snapshot.top} /></div>
               <div className="kpi-label">90 and Above</div>
             </div>
           </div>
-          <p className="text-sm text-muted" style={{ margin: '12px 0 4px' }}>Topic averages · {DEFAULT_SYLLABI[0]?.courseCode} {DEFAULT_SYLLABI[0]?.courseTitle}</p>
-          <ResponsiveContainer width="100%" height={200}>
-            {/* Topic averages count only students who have a score for that topic in this course. */}
-            <BarChart data={DEFAULT_SYLLABI[0]?.topics.map(t => {
-              const scores = myStudents.map(s => s.courses.find(c => c.code === DEFAULT_SYLLABI[0].courseCode)?.topics?.[t.id]).filter(v => typeof v === 'number')
-              return { topic: t.title.length > 14 ? `${t.title.slice(0, 13)}…` : t.title, avg: scores.length ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 0 }
-            })} margin={{ top: 8, right: 8, bottom: 8, left: -20 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-              <XAxis dataKey="topic" tick={{ fontSize: 10 }} />
-              <YAxis domain={[0, 100]} tick={{ fontSize: 10 }} />
-              <Tooltip />
-              <Bar dataKey="avg" fill="#38bdf8" radius={[4, 4, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
+          <p className="text-sm text-muted" style={{ margin: '12px 0 4px' }}>{model.snapshot.caption}</p>
+          {model.snapshot.chart.length > 0 && (
+            <ResponsiveContainer width="100%" height={200}>
+              <BarChart data={model.snapshot.chart} margin={{ top: 8, right: 8, bottom: 8, left: -20 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                <XAxis dataKey="topic" tick={{ fontSize: 10 }} />
+                <YAxis domain={[0, 100]} tick={{ fontSize: 10 }} />
+                <Tooltip />
+                <Bar dataKey="avg" fill="#38bdf8" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          )}
         </div>
       </div>
 
       <div className="card mb-24">
         <div className="card-header"><h3><Activity size={16} /> Recent Activity</h3></div>
         <div className="card-body">
-          {ACTIVITY_FEED.slice(0, 3).map((item, i) => (
-            <div key={i} style={{ display: 'flex', gap: '10px', padding: '8px 0', borderBottom: i < 2 ? '1px solid var(--gray-100)' : 'none' }}>
-              <div style={{ width: 28, height: 28, borderRadius: 'var(--radius-full)', background: `${item.color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <item.icon size={14} style={{ color: item.color }} />
-              </div>
-              <div style={{ flex: 1 }}>
-                <p style={{ fontSize: '0.8125rem' }}><strong>{item.actor}</strong> {item.action} <strong>{item.target}</strong></p>
-                <span className="text-sm text-muted">{item.time}</span>
-              </div>
-            </div>
-          ))}
+          <ActivityList items={model.activity} />
         </div>
       </div>
 
@@ -479,17 +457,18 @@ function InstructorDashboard() {
             <button className="btn btn-secondary btn-sm" onClick={() => navigate('/syllabus')}>Open <ArrowRight size={14} /></button>
           </div>
           <div className="card-body">
-            {mySyllabi.map(syl => {
+            {model.syllabi.length === 0 && <p className="text-sm text-muted">No syllabi yet. Start one in Syllabus Builder.</p>}
+            {model.syllabi.map(syl => {
               const meta = SYLLABUS_STATUS_META[syl.status]
               return (
                 <div key={syl.id} style={{ padding: '14px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--sky-100)', marginBottom: '10px', background: 'var(--gray-50)' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                    <strong style={{ fontSize: '0.875rem' }}>{syl.courseCode} — {syl.courseTitle}</strong>
+                    <strong style={{ fontSize: '0.875rem' }}>{syl.code} — {syl.title}</strong>
                     <span className={`badge badge-${meta?.badge || 'draft'}`} title={meta?.hint}>{meta?.label || syl.status}</span>
                   </div>
                   <div style={{ display: 'flex', gap: '12px', fontSize: '0.75rem', color: 'var(--gray-500)' }}>
                     <span>v{syl.version}</span>
-                    <span>{syl.status === 'active' ? `${syl.courseOutline?.length || 0} outline weeks` : meta?.hint}</span>
+                    <span>{syl.status === 'active' ? `${syl.outlineWeeks} outline weeks` : meta?.hint}</span>
                   </div>
                   <div className="progress-bar mt-8"><div className="progress-fill" style={{ width: `${(meta?.step || 0) * 20}%` }} /></div>
                 </div>
@@ -504,63 +483,46 @@ function InstructorDashboard() {
             <button className="btn btn-secondary btn-sm" onClick={() => navigate('/courseware?tab=builder&sub=review')}>View All <ArrowRight size={14} /></button>
           </div>
           <div className="card-body">
-            {reviewQueue.length === 0 && <p className="text-sm text-muted">No drafts are waiting for review.</p>}
-            {reviewQueue.slice(0, QUEUE_PREVIEW).map(cw => (
+            {model.queue.length === 0 && <p className="text-sm text-muted">No drafts are waiting for review.</p>}
+            {model.queue.slice(0, QUEUE_PREVIEW).map(cw => (
               <div key={cw.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 12px', borderRadius: 'var(--radius-md)', background: 'var(--gray-50)', marginBottom: '6px' }}>
                 <div>
                   <div style={{ fontWeight: 600, fontSize: '0.875rem' }}>{cw.title}</div>
-                  <div className="text-sm text-muted">{cw.type} · {cw.aiGenerated ? 'AI-generated · ' : ''}{cw.generatedAt}</div>
+                  <div className="text-sm text-muted">{cw.detail}</div>
                 </div>
                 <span className={`badge badge-${cw.status}`}>{cw.status}</span>
               </div>
             ))}
-            {reviewQueue.length > QUEUE_PREVIEW && (
+            {model.queue.length > QUEUE_PREVIEW && (
               <p className="text-sm text-muted" style={{ marginTop: 8 }}>
-                Showing {QUEUE_PREVIEW} of {reviewQueue.length} drafts. Use View All to review the rest in Courseware.
+                Showing {QUEUE_PREVIEW} of {model.queue.length} drafts. Use View All to review the rest in Courseware.
               </p>
             )}
           </div>
         </div>
       </div>
+      </>}
     </div>
   )
 }
 
 /* ───────────────────────── Student ───────────────────────── */
 
-const TREND_DATA = [
-  { week: 'W1', score: 72 }, { week: 'W2', score: 75 }, { week: 'W3', score: 78 }, { week: 'W4', score: 80 },
-  { week: 'W5', score: 83 }, { week: 'W6', score: 81 }, { week: 'W7', score: 85 }, { week: 'W8', score: 88 },
-]
-
-function StudentDashboard() {
+function StudentDashboard({ model, actions, status }) {
   const navigate = useNavigate()
   const { user } = useAuth()
-  const me = STUDENT_RECORDS.find(s => s.name === user?.name)
-  const myBlockSection = me ? BLOCK_SECTIONS.find(bs => bs.code === me.section) : null
-  const myCourses = me ? me.courses : []
-
-  // AI guide surface (Phase 4): reminders about unopened materials and
-  // unanswered assessments — guidance only, never answers.
-  const reminders = [
-    { text: 'You haven\'t opened "Week 1 — What is Programming: Lecture Notes" yet.', action: () => navigate('/courseware') },
-    { text: 'Unanswered assessment: "Week 1 — Recitation & Short Quiz".', action: () => navigate('/assessment') },
-  ]
+  const average = recorded(model?.kpis.average, '%')
 
   return (
     <div className="container">
-      <div className="page-header">
-        <div>
-          <h1>Student Dashboard</h1>
-          <p className="text-sm text-muted mt-8">Welcome back, {user?.name}</p>
-        </div>
-      </div>
-
+      <PageHeader title="Student Dashboard" subtitle={`Welcome back, ${user?.name}`} actions={actions} />
+      {status}
+      {model && <>
       <div className="kpi-grid mb-24">
-        <KpiCard icon={BookOpen} label="Enrolled Courses" value={myCourses.length} color="var(--sky-500)" bg="var(--sky-100)" />
-        <KpiCard icon={TrendingUp} label="Average Score" value={myCourses.length ? Math.round(myCourses.reduce((a, s) => a + (s.scores.midterm || 0), 0) / myCourses.length) : 0} color="var(--green-500)" bg="var(--green-100)" suffix="%" />
-        <KpiCard icon={Target} label="Topics Mastered" value={me ? Object.values(myCourses[0]?.topics || {}).filter(v => v >= 75).length : 0} color="var(--purple-500)" bg="var(--purple-100)" />
-        <KpiCard icon={Clock} label="Pending Activities" value={reminders.length} color="var(--amber-500)" bg="var(--amber-100)" />
+        <KpiCard icon={BookOpen} label="Enrolled Courses" value={model.kpis.enrolled} color="var(--sky-500)" bg="var(--sky-100)" />
+        <KpiCard icon={TrendingUp} label="Average Score" value={average.value} color="var(--green-500)" bg="var(--green-100)" suffix={average.suffix} />
+        <KpiCard icon={Target} label="Topics Mastered" value={model.kpis.mastered} color="var(--purple-500)" bg="var(--purple-100)" />
+        <KpiCard icon={Clock} label="Pending Activities" value={model.kpis.pending} color="var(--amber-500)" bg="var(--amber-100)" />
       </div>
 
       {/* Pulse guidance — reminders only, never answers */}
@@ -570,45 +532,46 @@ function StudentDashboard() {
           <span className="text-sm text-muted">Guidance only — Pulse never answers or reviews assessment items</span>
         </div>
         <div className="card-body">
-          {reminders.map((r, i) => (
-            <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px', padding: '10px 12px', borderRadius: 'var(--radius-md)', background: 'var(--amber-50, #fffbeb)', marginBottom: '6px' }}>
+          {model.reminders.length === 0 && <p className="text-sm text-muted">Nothing pending: no unopened materials or unanswered assessments in your published records.</p>}
+          {model.reminders.map(r => (
+            <div key={r.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px', padding: '10px 12px', borderRadius: 'var(--radius-md)', background: 'var(--amber-50, #fffbeb)', marginBottom: '6px' }}>
               <span style={{ fontSize: '0.8125rem' }}>{r.text}</span>
-              <button className="btn btn-secondary btn-sm" onClick={r.action} style={{ flexShrink: 0 }}>Go <ArrowRight size={12} /></button>
+              <button className="btn btn-secondary btn-sm" onClick={() => navigate(r.path)} style={{ flexShrink: 0 }}>Go <ArrowRight size={12} /></button>
             </div>
           ))}
         </div>
       </div>
 
       {/* Block info — from the EduSuite class list */}
-      {myBlockSection && (
+      {model.block && (
         <div className="card mb-24" style={{ borderLeft: '4px solid var(--sky-500)' }}>
           <div className="card-header">
             <h3><Users size={16} /> My Block</h3>
           </div>
           <div className="card-body">
             <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
-              <div><span className="text-muted">Block: </span><strong>{myBlockSection.code}</strong></div>
-              <div><span className="text-muted">Year Level: </span><strong>Year {myBlockSection.yearLevel}</strong></div>
-              <div><span className="text-muted">Students: </span><strong>{myBlockSection.students}</strong></div>
-              <div><span className="text-muted">Adviser: </span><strong>{INSTRUCTORS.find(i => i.id === myBlockSection.adviserId)?.name}</strong></div>
+              <div><span className="text-muted">Block: </span><strong>{model.block.code}</strong></div>
+              <div><span className="text-muted">Year Level: </span><strong>{model.block.year}</strong></div>
+              <div><span className="text-muted">Students: </span><strong>{model.block.students}</strong></div>
+              <div><span className="text-muted">Adviser: </span><strong>{model.block.adviser}</strong></div>
             </div>
           </div>
         </div>
       )}
 
       <div className="grid-2 mb-24">
-        {myCourses.map(course => (
+        {model.courses.map(course => (
           <div key={course.code} className="card">
             <div className="card-header">
               <h3>{course.code}</h3>
               <span className="badge badge-published">Active</span>
             </div>
             <div className="card-body">
-              <p style={{ fontWeight: 600, marginBottom: '12px' }}>{CURRICULUM_COURSES.find(s => s.code === course.code)?.title || course.code}</p>
+              <p style={{ fontWeight: 600, marginBottom: '12px' }}>{course.title}</p>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8125rem', color: 'var(--gray-500)', marginBottom: '6px' }}>
-                <span>Latest recorded score</span><span style={{ fontWeight: 600 }}>{Math.round(course.scores.midterm || 0)}%</span>
+                <span>Latest recorded score</span><span style={{ fontWeight: 600 }}>{course.score === null ? 'No score yet' : `${course.score}%`}</span>
               </div>
-              <div className="progress-bar mb-16"><div className="progress-fill" style={{ width: `${Math.round(course.scores.midterm || 0)}%` }} /></div>
+              <div className="progress-bar mb-16"><div className="progress-fill" style={{ width: `${course.score || 0}%` }} /></div>
               <div style={{ display: 'flex', gap: '8px' }}>
                 <button className="btn btn-secondary btn-sm" onClick={() => navigate('/courseware')}><BookOpen size={12} /> Materials</button>
                 <button className="btn btn-secondary btn-sm" onClick={() => navigate('/assessment')}><FileText size={12} /> Assessments</button>
@@ -628,21 +591,21 @@ function StudentDashboard() {
           <p style={{ fontSize: '0.8125rem', color: 'var(--gray-600)', marginBottom: 10 }}>
             Your learning materials are grounded in the approved syllabus and instructor-provided sources.
           </p>
+          {model.sources.length === 0 && <p className="text-sm text-muted">No enrolled courses yet.</p>}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 10 }}>
-            {myCourses.map(course => {
-              const coursePassages = RAG_GROUNDING_PASSAGES.filter(p => p.courseCode === course.code && !p.sensitive)
-              return (
-                <div key={course.code} style={{ padding: '10px 12px', borderRadius: 10, background: 'var(--gray-50)', border: '1px solid var(--gray-200)' }}>
-                  <div style={{ fontWeight: 600, fontSize: '0.8125rem', marginBottom: 6 }}>{course.code}</div>
-                  {coursePassages.length > 0 ? coursePassages.map(p => (
-                    <div key={p.id} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '3px 0', fontSize: '0.75rem' }}>
-                      <CheckCircle size={10} style={{ color: 'var(--green-500)', flexShrink: 0 }} />
-                      <span style={{ color: 'var(--gray-600)' }}>{p.docName}</span>
-                    </div>
-                  )) : <span style={{ fontSize: '0.75rem', color: 'var(--gray-400)' }}>No published sources yet</span>}
-                </div>
-              )
-            })}
+            {model.sources.map(course => (
+              <div key={course.code} style={{ padding: '10px 12px', borderRadius: 10, background: 'var(--gray-50)', border: '1px solid var(--gray-200)' }}>
+                <div style={{ fontWeight: 600, fontSize: '0.8125rem', marginBottom: 6 }}>{course.code}</div>
+                {course.items.length > 0 ? course.items.map(p => (
+                  <div key={p.id} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '3px 0', fontSize: '0.75rem' }}>
+                    <CheckCircle size={10} style={{ color: 'var(--green-500)', flexShrink: 0 }} />
+                    {p.href
+                      ? <a href={p.href} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--gray-600)', overflowWrap: 'anywhere' }}>{p.label}</a>
+                      : <span style={{ color: 'var(--gray-600)' }}>{p.label}</span>}
+                  </div>
+                )) : <span style={{ fontSize: '0.75rem', color: 'var(--gray-400)' }}>No published sources yet</span>}
+              </div>
+            ))}
           </div>
         </div>
       </div>
@@ -650,15 +613,17 @@ function StudentDashboard() {
       <div className="card mb-24">
         <div className="card-header"><h3>My Score Trend</h3></div>
         <div className="card-body">
-          <ResponsiveContainer width="100%" height={200}>
-            <LineChart data={TREND_DATA} margin={{ top: 8, right: 8, bottom: 8, left: -20 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-              <XAxis dataKey="week" tick={{ fontSize: 10 }} />
-              <YAxis domain={[60, 100]} tick={{ fontSize: 10 }} />
-              <Tooltip />
-              <Line type="monotone" dataKey="score" stroke="#0ea5e9" strokeWidth={2} dot={{ fill: '#0ea5e9', r: 4 }} />
-            </LineChart>
-          </ResponsiveContainer>
+          {model.trend.length === 0 ? <p className="text-sm text-muted">No marked attempts yet. Your trend appears after your first marked assessment.</p> : (
+            <ResponsiveContainer width="100%" height={200}>
+              <LineChart data={model.trend} margin={{ top: 8, right: 8, bottom: 8, left: -20 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                <XAxis dataKey="week" tick={{ fontSize: 10 }} />
+                <YAxis domain={model.trendDomain} tick={{ fontSize: 10 }} />
+                <Tooltip />
+                <Line type="monotone" dataKey="score" stroke="#0ea5e9" strokeWidth={2} dot={{ fill: '#0ea5e9', r: 4 }} />
+              </LineChart>
+            </ResponsiveContainer>
+          )}
         </div>
       </div>
 
@@ -666,12 +631,9 @@ function StudentDashboard() {
       <div className="card">
         <div className="card-header"><h3><Calendar size={16} /> Upcoming Activities</h3></div>
         <div className="card-body">
-          {[
-            { title: 'Week 1 — Recitation & Short Quiz: Programming Basics', course: 'IT 102', due: 'Jul 15, 2026', type: 'Quiz' },
-            { title: 'Week 4 — Conditional Statements: Seatwork & Quiz', course: 'IT 102', due: 'Jul 18, 2026', type: 'Activity' },
-            { title: 'Week 3 — Variables & Data Types: Quiz', course: 'IT 102', due: 'Jul 20, 2026', type: 'Activity' },
-          ].map((act, i) => (
-            <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', borderRadius: 'var(--radius-md)', background: 'var(--gray-50)', marginBottom: '6px' }}>
+          {model.upcoming.length === 0 && <p className="text-sm text-muted">No upcoming deadlines in the published records.</p>}
+          {model.upcoming.map(act => (
+            <div key={act.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', borderRadius: 'var(--radius-md)', background: 'var(--gray-50)', marginBottom: '6px' }}>
               <div>
                 <div style={{ fontWeight: 600, fontSize: '0.875rem' }}>{act.title}</div>
                 <div className="text-sm text-muted">{act.course} · {act.type}</div>
@@ -681,16 +643,58 @@ function StudentDashboard() {
           ))}
         </div>
       </div>
+      </>}
     </div>
   )
 }
 
-// The system admin has a separate operations console.
+/* ───────────────────────── Signed-in accounts ───────────────────────── */
+
+// Accounts see the same role dashboards as the previews, filled from their
+// authorized records (the account-scoped RLS projection) and their own workspace.
+// Missing records stay empty; they never fall back to the preview samples.
+function AccountDashboard() {
+  const { user } = useAuth()
+  const workspace = useWorkspace()
+  const { data, error, loading, loaded, load, command } = useAcademicRecords()
+  const [syncing, setSyncing] = useState(false)
+  const [syncError, setSyncError] = useState('')
+  const role = user?.role
+  const exportRecords = () => {
+    const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }))
+    const link = document.createElement('a'); link.href = url; link.download = 'edupulse-authorized-records.json'; link.click()
+    setTimeout(() => URL.revokeObjectURL(url), 1000)
+  }
+  const sync = async () => {
+    setSyncing(true); setSyncError('')
+    try { await command({ operation: 'sync' }); pulseBus.progress('academic-command-complete', 'sync') }
+    catch (failure) { setSyncError(failure.message) }
+    finally { setSyncing(false) }
+  }
+  const actions = (
+    <div className="academic-actions">
+      <button className="btn btn-secondary btn-sm" disabled={loading || syncing} onClick={() => { setSyncError(''); void load() }}>{loading && <Spinner />} Refresh records</button>
+      <button className="btn btn-secondary btn-sm" disabled={loading || !!error} onClick={exportRecords} title="Export authorized records"><Download size={14} /> Export</button>
+      {role === 'instructor' && <button className="btn btn-secondary btn-sm" disabled={loading || syncing} onClick={() => void sync()}>{syncing && <Spinner />} Sync my workspace</button>}
+    </div>
+  )
+  const status = <>
+    {(syncError || error) && <div role="alert" className="connected-pulse-warning">{syncError || error}</div>}
+    {loading && !loaded && <section className="academic-loading" aria-label="Loading academic records"><p role="status" className="text-sm text-muted mb-16">Loading authorized academic records…</p><div aria-hidden="true"><div className="kpi-grid mb-24">{Array.from({ length: 4 }, (_, index) => <SkeletonKPI key={index} />)}</div><SkeletonTable rows={4} cols={4} /></div></section>}
+    {loaded && !data.courses.length && <div className="empty-state mb-24" role="status"><h2>No authorized academic records yet</h2><p>Instructors register confirmed class lists, activate an approved syllabus, review courseware and publish it. Students need a matching account email in the registered class list. Existing instructor workspaces can be synchronized explicitly.</p></div>}
+  </>
+  if (role === 'dean' || role === 'associate_dean') return <ManagementDashboard model={loaded ? accountManagementModel(data) : null} actions={actions} status={status} />
+  if (role === 'instructor') return <InstructorDashboard model={loaded ? accountInstructorModel(data, workspace) : null} actions={actions} status={status} />
+  return <StudentDashboard model={loaded ? accountStudentModel(data, user) : null} actions={actions} status={status} />
+}
+
+// The system admin has a separate operations console. Every other role uses the
+// same dashboard components for previews and accounts; only the data source differs.
 export default function Dashboard() {
   const { user } = useAuth()
   if (user?.role === 'admin') return <SystemAdminDashboard />
-  if (user?.authenticated) return <AcademicPortal view="dashboard" />
-  if (user?.role === 'dean' || user?.role === 'associate_dean') return <AcademicDashboard />
-  if (user?.role === 'instructor') return <InstructorDashboard />
-  return <StudentDashboard />
+  if (user?.authenticated) return <AccountDashboard />
+  if (user?.role === 'dean' || user?.role === 'associate_dean') return <ManagementDashboard model={previewManagementModel()} />
+  if (user?.role === 'instructor') return <InstructorDashboard model={previewInstructorModel(user)} />
+  return <StudentDashboard model={previewStudentModel(user)} />
 }

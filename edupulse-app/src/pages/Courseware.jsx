@@ -18,8 +18,12 @@ import {
   Copy, Tag, MessageSquare, RotateCcw, Download,
   Info, Layers, Loader2, CircleCheck, BookOpen, Flag,
   ChevronDown, ChevronRight, MonitorPlay, ArrowLeft,
-  Circle, CheckCircle2, Pencil, ClipboardCheck,
+  Circle, CheckCircle2, Pencil, ClipboardCheck, PlugZap, TriangleAlert,
 } from 'lucide-react'
+import { useAI } from '../context/AIContext'
+
+// Errors that only a connection change can fix: the notice offers the AI settings.
+const SETUP_ERRORS = new Set(['MODEL_UNAVAILABLE', 'MODEL_NOT_AVAILABLE', 'MODEL_INCOMPATIBLE', 'PROVIDER_AUTH', 'PROVIDER_CREDITS', 'PROVIDER_QUOTA', 'PROVIDER_WORKSPACE_REQUIRED', 'MODEL_TOKEN_LIMIT'])
 
 // Courseware — FLOW_SPEC Phase 3. Generated from approved syllabi.
 // Lifecycle: draft → checked → published.
@@ -147,7 +151,12 @@ function CourseWorkspace({ syllabusId, focusWeek, contentStore, onBack, onGenera
   const { syllabi, saving, dirty } = useWorkspace()
   const generationRef = useRef(null)
   const [generationProgress, setGenerationProgress] = useState('')
+  // A failed generation stays on the page until it is dismissed or a later generation succeeds.
+  const [generationIssue, setGenerationIssue] = useState(null)
   useEffect(() => () => generationRef.current?.abort(), [])
+  const ai = useAI()
+  const navigate = useNavigate()
+  const reportIssue = (err, saved = 0) => setGenerationIssue({ message: err.message, setup: SETUP_ERRORS.has(err.code), saved })
 
   const { addToast } = useToast()
   const { saveContent } = useContentStore()
@@ -206,7 +215,7 @@ function CourseWorkspace({ syllabusId, focusWeek, contentStore, onBack, onGenera
   const generateAll = async () => {
     if (generationRef.current) return
     const controller = new AbortController(); generationRef.current = controller
-    setGeneratingAll(true); pulseBus.expression('thinking')
+    setGeneratingAll(true); setGenerationIssue(null); pulseBus.expression('thinking')
     let count = 0
     try {
       const rows = (syllabus.courseOutline || []).filter(row => !isExamRow(row))
@@ -216,15 +225,21 @@ function CourseWorkspace({ syllabusId, focusWeek, contentStore, onBack, onGenera
         count += await saveWeekDraft(row.week, controller.signal)
       }
       addToast(`${count} AI drafts saved. Checked and published items were preserved.`, 'success')
-    } catch (err) { addToast(`${controller.signal.aborted ? 'Generation stopped.' : err.message} ${count} completed drafts were saved.`, 'info') }
+    } catch (err) {
+      if (controller.signal.aborted) addToast(`Generation stopped. ${count} completed drafts were saved.`, 'info')
+      else reportIssue(err, count)
+    }
     finally { setGeneratingAll(false); setGenerationProgress(''); generationRef.current = null; pulseBus.expression('idle') }
   }
   const generateSingleWeek = async (weekNum) => {
     if (generationRef.current) return
     const controller = new AbortController(); generationRef.current = controller
-    setGeneratingWeek(weekNum); setGenerationProgress(`Generating week ${weekNum}`)
+    setGeneratingWeek(weekNum); setGenerationProgress(`Generating week ${weekNum}`); setGenerationIssue(null)
     try { const count = await saveWeekDraft(weekNum, controller.signal); if (!controller.signal.aborted) addToast(`Week ${weekNum}: ${count} AI drafts saved for review.`, 'success') }
-    catch (err) { addToast(controller.signal.aborted ? 'Generation stopped. Existing content was preserved.' : err.message, 'error') }
+    catch (err) {
+      if (controller.signal.aborted) addToast('Generation stopped. Existing content was preserved.', 'info')
+      else reportIssue(err)
+    }
     finally { setGeneratingWeek(null); setGenerationProgress(''); generationRef.current = null }
   }
 
@@ -330,6 +345,27 @@ function CourseWorkspace({ syllabusId, focusWeek, contentStore, onBack, onGenera
         </button>
         {generationProgress && <div className="ai-actions" role="status"><span>{generationProgress}</span><button className="btn btn-secondary btn-sm" onClick={() => generationRef.current?.abort()}>Stop generation</button></div>}
       </div>
+
+      {generationIssue ? (
+        <div className="cw-ai-notice is-error" role="alert">
+          <TriangleAlert size={18} aria-hidden="true" />
+          <div className="cw-ai-notice-body">
+            <strong>Generation did not finish</strong>
+            <span>{generationIssue.message}{generationIssue.saved ? ` ${generationIssue.saved} completed drafts remain available for review.` : ''}</span>
+          </div>
+          {generationIssue.setup && <button className="btn btn-primary btn-sm" onClick={() => navigate('/settings?tab=ai-provider')}><PlugZap size={14} /> Set up Pulse AI</button>}
+          <button className="btn btn-ghost btn-sm" onClick={() => setGenerationIssue(null)}>Dismiss</button>
+        </div>
+      ) : !ai.ready && (
+        <div className="cw-ai-notice" role="status">
+          <PlugZap size={18} aria-hidden="true" />
+          <div className="cw-ai-notice-body">
+            <strong>Pulse AI is not set up yet</strong>
+            <span>Generation needs a connected provider or the on-device model. Your outline and any saved drafts stay as they are.</span>
+          </div>
+          <button className="btn btn-secondary btn-sm" onClick={() => navigate('/settings?tab=ai-provider')}><PlugZap size={14} /> Set up Pulse AI</button>
+        </div>
+      )}
 
       {/* Summary bar */}
       {totalGenerated > 0 && (

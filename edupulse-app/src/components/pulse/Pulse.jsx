@@ -283,11 +283,14 @@ export default function Pulse() {
       }
     }
   }, [])
-  const navigateAllowed = path => {
+  const navigateAllowed = (path, viewRole) => {
     if (!path?.startsWith('/') || path.startsWith('//')) throw new Error('Pulse can open only an authorized EduPulse page.')
     const candidates = PAGES.filter(page => page.path.split('?')[0] === path.split('?')[0])
     const allowed = role => candidates.some(page => page.roles === 'all' || page.roles.includes(role))
-    if (!allowed(user?.role)) {
+    if (viewRole && viewRole !== user?.role) {
+      if (!user?.canSwitchRoles || !allowed(viewRole) || !switchRole(viewRole)) throw new Error('This dashboard is unavailable for your account.')
+    }
+    if (!viewRole && !allowed(user?.role)) {
       if (user?.role !== 'admin' || !user.canSwitchRoles || !allowed('instructor') || !switchRole('instructor')) throw new Error('This page is unavailable for your current view.')
     }
     navigate(path)
@@ -360,13 +363,13 @@ export default function Pulse() {
       const target = user?.role === 'instructor' && !options.skipOperator && (DRAFT_REQUEST.test(question) || EDIT_REQUEST.test(question)) && !broad && focus?.field && selectedSection === focus.field.split('.')[0] ? { path: focus.field, label: focus.label } : null
       if (target && (!focus.fieldElement?.isConnected || focus.fieldElement.getAttribute('data-pulse-field') !== target.path || focus.brief?.disabled || focus.brief?.sensitive || !editor || !editableField(editor, target.path))) throw new Error('The selected field changed or is read-only. Drag Pulse onto the intended editable field again.')
       const role = user?.role || 'guest'
-      const destination = pageFor(question, role === 'admin' && user?.canSwitchRoles ? 'instructor' : role)
+      const destination = pageFor(question, role === 'admin' && user?.canSwitchRoles ? 'instructor' : role, { canSwitchRoles: Boolean(user?.canSwitchRoles), history })
       const work = options.skipOperator || !permitted ? null : workProposal({ message: question, attachments: pending, role, editor, registrations: registrations.filter(item => item.uploadedBy === user?.id), catalog, section: selectedSection, target, scopeFields })
       const draftFromSource = !target && pending.length && /\b(?:generate|create|draft|make|prepare|build)\b/i.test(question) && (/learning materials?|lessons?|lecture|courseware/i.test(question) || /^(?:please\s+)?generate\s+(?:me\s+)?(?:this|it|these)[.!?]?$/i.test(question) && /learning materials?|lessons?|lecture|courseware/i.test(history.at(-2)?.content || history.at(-1)?.content || ''))
       let plan = draftFromSource ? { proposals: [], chat: true, task: 'draft', mentioned: [] } : options.skipOperator || !permitted ? { proposals: [], chat: true, task: options.task || 'auto', mentioned: findCourseMentions(question, catalog) }
-        : work ? { proposals: [work], chat: false, mentioned: [] } : destination ? { proposals: [destination.denied ? { type: 'notice', text: `${destination.label} is not available for your role.` } : { type: /\b(?:guide|walkthrough|walk\s+me|step.by.step|help\s+me)\b/i.test(question) ? 'guide' : 'navigate', path: destination.path, label: destination.label }], chat: false, mentioned: [] }
+        : work ? { proposals: [work], chat: false, mentioned: [] } : destination ? { proposals: [destination.denied ? { type: 'notice', text: `${destination.label} is not available for your role.` } : { type: /\b(?:guide|walkthrough|walk\s+me|step.by.step|help\s+me)\b/i.test(question) ? 'guide' : 'navigate', path: destination.path, label: destination.label, ...(destination.viewRole ? { viewRole: destination.viewRole } : {}) }], chat: false, mentioned: [] }
           : /\b(?:guide|walkthrough|walk\s+me)\b/i.test(question) && /\b(?:this|current)\s+(?:page|section|component)\b/i.test(question) ? { proposals: [{ type: 'guide', path: `${location.pathname}${location.search}`, label: agent?.label || 'this page' }], chat: false, mentioned: [] }
-            : work ? { proposals: [work], chat: false, mentioned: [] } : planOperator({ message: question, attachments: pending, role, catalog, currentCourse: currentCourse || catalog.find(item => item.code === editor?.data.courseCode), history })
+            : work ? { proposals: [work], chat: false, mentioned: [] } : planOperator({ message: question, attachments: pending, role, canSwitchRoles: Boolean(user?.canSwitchRoles), catalog, currentCourse: currentCourse || catalog.find(item => item.code === editor?.data.courseCode), history })
       if (!options.skipOperator && permitted && !draftFromSource && !plan.proposals.length && ACTION_REQUEST.test(question)) {
         if (!ai.ready) plan = { ...plan, chat: false, proposals: [{ type: 'notice', text: 'Name the page or open the editor you want to change. Navigation, file import and roster tools work without a model; flexible planning and rewriting need a connected text-generation model.' }] }
         else {
@@ -392,7 +395,7 @@ export default function Pulse() {
       }
       for (const proposal of now) {
         controller.signal.throwIfAborted()
-        if (proposal.type === 'navigate' || proposal.type === 'guide') { navigateAllowed(proposal.path); if (proposal.type === 'guide') setPendingGuide(proposal.path) }
+        if (proposal.type === 'navigate' || proposal.type === 'guide') { navigateAllowed(proposal.path, proposal.viewRole); if (proposal.type === 'guide') setPendingGuide(proposal.path) }
         if (proposal.type === 'editor-edit' && proposal.editor) {
           const result = await prepareEdit(proposal, controller.signal)
           controller.signal.throwIfAborted()

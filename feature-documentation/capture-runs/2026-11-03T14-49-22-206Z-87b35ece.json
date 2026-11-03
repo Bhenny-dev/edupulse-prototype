@@ -1,0 +1,119 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-11-03T14-49-22-206Z-87b35ece",
+  "startedAt": "2026-11-03T14:49:22.206Z",
+  "finishedAt": "2026-11-03T14:49:32.756Z",
+  "commitSha": "b96e71eb96c9216e1b7651b7f8d143c25e1a2844",
+  "sourceDigest": "82fba758c61d93a80284e6f18d095b9a3dfbb2ad78a636e1c5b49eff5efa5015",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-11-03T14:49:19.424Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 2,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": null
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/baseline-workflows.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.spec.ts",
+    "edupulse-app/tests/snapshots/harness-delivery.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-drafting.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-source.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+    "edupulse-app/tests/snapshots/student-directory.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+      "title": "synthetic baseline syllabus versions, assessment mappings and delivery settings",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2630,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+      "title": "synthetic editor fields grow to display full section text and answer explanations",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1420,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-manual/03-courseware-generation-and-review/04-generated-drafts-for-review.png",
+      "sha256": "9a9f8b68a9a726d2452a588438ade9ab2966529751c2370b8aa7999eb3a31dba",
+      "bytes": 258423
+    },
+    {
+      "path": "feature-documentation/system-manual/03-courseware-generation-and-review/07-edit-material-growing-field.png",
+      "sha256": "10d366059732fc8acf7f639cb3be2141133a3b1adc5306066c6ee0a478d7bdb7",
+      "bytes": 225434
+    },
+    {
+      "path": "feature-documentation/system-manual/03-courseware-generation-and-review/08-edit-assessment-growing-explanation.png",
+      "sha256": "847013fcc4e3d6f25f7a8936a51d9cd12ccc752b43392c142cbbee527b03523b",
+      "bytes": 161164
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/45-saved-syllabus-versions.png",
+      "sha256": "c65ccfa01b2472e5808df990818612473967f66cb15f02519369001b13822fb0",
+      "bytes": 58391
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/46-assessment-topic-mapping.png",
+      "sha256": "172d4413d3d050291231a12ec6eedc59d930e965f2f860ab9847a772c44d0d45",
+      "bytes": 339119
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/47-publication-delivery-settings.png",
+      "sha256": "ec5a02896c3c3152b5decb7f626024272dd7a0a9aafd2669b64895836b7f132e",
+      "bytes": 250370
+    }
+  ]
+}

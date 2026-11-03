@@ -156,7 +156,6 @@ function DataPrivacySettings() {
 export default function Settings() {
   const { user } = useAuth()
   const [searchParams, setSearchParams] = useSearchParams()
-  const activeTab = searchParams.get('tab') || 'account'
   const setActiveTab = tab => setSearchParams({ tab })
   const showAIProvider = Boolean(user)
 
@@ -169,6 +168,9 @@ export default function Settings() {
     { id: 'help', label: 'Help & Support', icon: HelpCircle },
     { id: 'keyboard-shortcuts', label: 'Keyboard Shortcuts', icon: Keyboard },
   ]
+  // An unknown or unavailable tab in the address (an old or mistyped link) opens Account.
+  const requested = searchParams.get('tab')
+  const activeTab = tabs.some(t => t.id === requested) ? requested : 'account'
 
   return (
     <div className="container">

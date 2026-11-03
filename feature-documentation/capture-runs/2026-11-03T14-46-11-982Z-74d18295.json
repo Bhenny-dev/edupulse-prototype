@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-11-03T14-46-11-982Z-74d18295",
+  "startedAt": "2026-11-03T14:46:11.982Z",
+  "finishedAt": "2026-11-03T14:46:26.293Z",
+  "commitSha": "b96e71eb96c9216e1b7651b7f8d143c25e1a2844",
+  "sourceDigest": "4478760170b2dcb640d793e2a29f850cdf81f75c6624f32d4b42ed08529486b5",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-11-03T14:44:32.016Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 2,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": null
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.spec.ts",
+    "edupulse-app/tests/snapshots/harness-delivery.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-drafting.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-source.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+    "edupulse-app/tests/snapshots/student-directory.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+      "title": "mobile landing page",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "preview/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2674,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+      "title": "mobile walkthrough",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "preview/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 5554,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-walkthrough/06-mobile/01-landing.png",
+      "sha256": "7f79d1d33d1d682e0a5644eb5c40ad130e8c5713bb23e66afccd7037a2caef23",
+      "bytes": 997595
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/06-mobile/02-instructor-dashboard.png",
+      "sha256": "4932dc2a16dddd2b995aca468ff3bf4bdb423d0170198df4d0ad4d83d2ee8c4e",
+      "bytes": 396095
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/06-mobile/03-navigation-menu.png",
+      "sha256": "d73e911af4772c338c7a22c73d1f74c62997039f5acbd31f9ee1c1158dbc5035",
+      "bytes": 105246
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/06-mobile/04-syllabus-builder.png",
+      "sha256": "16ff3a38298868c6da92c59f168264c24b7bdf642c43b385e65f4d526de42496",
+      "bytes": 379569
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/06-mobile/05-pulse-panel.png",
+      "sha256": "13f93bd44660979afe3d369b8382899c73e47afed1e7cc7e8cd520f6342f16d4",
+      "bytes": 178490
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/06-mobile/06-settings-ai-and-knowledge.png",
+      "sha256": "0549e464ab1af6781ba7c6c33737ed154711dd5022ff7df95b2002313bd86ce0",
+      "bytes": 286637
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/06-mobile/07-landing-menu.png",
+      "sha256": "9ab4c8324550c43d2c5035db0e4abef7e907abfce0e4a69395d7d3e685189175",
+      "bytes": 527857
+    }
+  ]
+}

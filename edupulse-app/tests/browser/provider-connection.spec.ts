@@ -34,7 +34,7 @@ test('provider save synchronizes pipeline status, survives reopening, retains mo
   await expect(page.getByLabel('Saved provider credential')).toBeVisible()
   await page.getByRole('button', { name: 'Connect Claude API', exact: true }).click()
   await expect(page.getByLabel('AI provider', { exact: true })).toHaveValue('anthropic')
-  await expect(page.getByText('Claude account sign-in is not available', { exact: false })).toBeVisible()
+  await expect(page.getByText('Connect an Anthropic API key from Claude Console.', { exact: false })).toBeVisible()
   await page.getByRole('button', { name: 'Connect OpenAI API', exact: true }).click()
   await expect(page.getByLabel('Saved provider credential')).toBeVisible()
 })

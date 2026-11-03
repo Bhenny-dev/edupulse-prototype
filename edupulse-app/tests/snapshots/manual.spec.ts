@@ -34,7 +34,8 @@ test('syllabus lifecycle: build, check, download, approve, extract, activate', a
   await page.getByPlaceholder('Learning outcome...', { exact: true }).first().fill('Explain variable declarations and assignment, and trace how a value changes.')
   await page.getByPlaceholder('Topic...', { exact: true }).first().fill('Variables and assignment')
   await page.locator('[data-section="5"]').scrollIntoViewIfNeeded()
-  await shot(page.locator('[data-section="5"]'), f, '02-write-course-outline')
+  // Sticky outline headings stay at the top of the table in a capture taller than the window.
+  await shot(page.locator('[data-section="5"]'), f, '02-write-course-outline', '.outline-table thead th{position:static !important}')
   await page.getByRole('button', { name: 'Save as Drafted', exact: true }).scrollIntoViewIfNeeded()
   await shot(page, f, '03-save-as-drafted-button')
   await page.getByRole('button', { name: 'Save as Drafted', exact: true }).click()

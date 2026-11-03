@@ -1,5 +1,6 @@
 import { terms } from '../lib/rag/text.js'
 import { PERFORMANCE_ROLES } from '../lib/access.js'
+import { ROLE_TITLES } from '../lib/authRoles.js'
 import { WEB_REQUEST } from './workTools.js'
 
 // Operator: turns a Pulse conversation into proposed app actions. Rule-based and
@@ -242,8 +243,24 @@ export function searchRecords(query, { role, userId, catalog = [], registrations
   return results.sort((a, b) => order.indexOf(a.group) - order.indexOf(b.group) || b.score - a.score).filter((hit, i, list) => list.findIndex(h => h.group === hit.group && h.title === hit.title && h.detail === hit.detail) === i).slice(0, 12)
 }
 
-/** The page a navigation request names, if the role may open it. */
-export function pageFor(message, role) {
+const VIEW_NAMES = [
+  ['associate_dean', /\b(?:assoc(?:iate)?\.?\s+deans?)\b/i],
+  ['instructor', /\b(?:instructors?|teachers?|faculty)\b/i],
+  ['dean', /\bdeans?\b/i],
+  ['student', /\b(?:students?|learners?)\b/i],
+  ['admin', /\b(?:system\s+admin(?:istrator)?|admin(?:istrator)?)\b/i],
+]
+const requestedView = message => VIEW_NAMES.find(([, words]) => words.test(message))?.[0]
+
+/** Keep a named account view with its destination. Only the verified owner may switch views. */
+export function pageFor(message, role, { canSwitchRoles = false, history = [] } = {}) {
+  const correction = /^(?:please\s+)?(?:no\b|not\s+(?:mine|my)|i\s+meant\b|instead\b)/i.test(message.trim())
+  const prior = correction && history.slice(-6).reverse().find(item => item.role === 'user' && NAVIGATE.test(item.content || item.text || '') && /\bdashboard\b/i.test(item.content || item.text || ''))
+  const view = requestedView(message) || (prior && requestedView(prior.content || prior.text || ''))
+  if (view && ((NAVIGATE.test(message) && /\b(?:dashboard|view|home)\b/i.test(message)) || prior)) {
+    const page = PAGES.find(item => item.path === '/dashboard')
+    return { ...page, label: `${ROLE_TITLES[view]} Dashboard`, viewRole: view, ...(!canSwitchRoles && view !== role ? { denied: true } : {}) }
+  }
   if (!NAVIGATE.test(message) && !GUIDE.test(message)) return null
   const rest = message.replace(NAVIGATE, ' ')
   const page = PAGES.find(p => p.words.test(rest) && allowed(p, role))
@@ -258,7 +275,7 @@ export function pageFor(message, role) {
  *
  * attachments: [{ title, fileName, text, roster }] where roster comes from parseRoster.
  */
-export function planOperator({ message, attachments = [], role, catalog = [], currentCourse = null, history = [] }) {
+export function planOperator({ message, attachments = [], role, canSwitchRoles = false, catalog = [], currentCourse = null, history = [] }) {
   const text = message.trim()
   const rosters = attachments.filter(a => a.roster)
   const materials = attachments.filter(a => !a.roster)
@@ -317,13 +334,13 @@ export function planOperator({ message, attachments = [], role, catalog = [], cu
       return { proposals, chat: false, task: 'auto', mentioned }
     }
   }
-  let page = pageFor(text, role)
+  let page = pageFor(text, role, { canSwitchRoles, history })
   if (!page && /\b(?:take|redirect|bring|guide|show)\s+me\s+(?:there|to\s+it)\b|\b(?:open\s+(?:it|that)|go\s+there)\b/i.test(text)) {
     const prior = history.slice().reverse().find(item => /syllabus|courseware|course\s+loading|monitoring|settings/i.test(item.text || item.content || ''))
     if (prior) page = pageFor(`Open ${prior.text || prior.content}`, role)
   }
   if (page) {
-    proposals.push(page.denied ? { type: 'notice', text: `${page.label} is not available for your role.` } : { type: GUIDE.test(text) ? 'guide' : 'navigate', path: page.path, label: page.label })
+    proposals.push(page.denied ? { type: 'notice', text: `${page.label} is not available for your role.` } : { type: GUIDE.test(text) ? 'guide' : 'navigate', path: page.path, label: page.label, ...(page.viewRole ? { viewRole: page.viewRole } : {}) })
     return { proposals, chat: false, task: 'auto', mentioned }
   }
   if (SEARCH.test(text) && !REFERENCES.test(text) && !WEB_REQUEST.test(text)) {

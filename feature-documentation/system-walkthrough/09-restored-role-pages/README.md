@@ -4,12 +4,14 @@ These screenshots exercise the authenticated components with synthetic account, 
 
 ## Role dashboards
 
+Accounts see the same role dashboards as the preview personas: the [instructor](../04-instructor/README.md#1-instructor-dashboard), [student](../05-student/README.md#1-student-dashboard) and [management](../03-dean-and-associate-dean/README.md#1-dean-dashboard) components, filled from the account's authorized records and, for an instructor, the owner workspace. The header adds **Refresh records** and **Export** (the authorized records as JSON); instructors also have **Sync my workspace**. Sample names, scores and activity never appear in an account; a value with no record stays empty.
+
 | Role | Capture | Sections |
 | --- | --- | --- |
-| Instructor | ![Instructor Dashboard](01-instructor-dashboard.png) | **Your teaching workspace**, **Quick actions**, saved syllabus lifecycle, courseware review queue, assessment radar/history, **My Block Sections**, readiness, courses and recent publications. Getting-started progress, topic mastery, stations and saved activity are restored. Empty private syllabus/draft lists are intentional in this fixture. |
-| Student | ![Student Dashboard](02-student-dashboard.png) | **Your learning workspace**, enrolled course counts, **My blocks**, **Continue learning**, saved score charts, score snapshot and publications. Recorded deadlines appear under Upcoming activities; missing dates remain explicit. |
-| Dean | ![Dean Dashboard](03-dean-dashboard.png) | Management quick actions, **College Performance** link, college course/block readiness and **Faculty overview**. |
-| Associate Dean | ![Associate Dean Dashboard](04-associate_dean-dashboard.png) | Records/loading/oversight links and readiness. No Performance link or score panel. |
+| Instructor | ![Instructor Dashboard](01-instructor-dashboard.png) | **Getting Started with EduPulse**; summary cards from the owner workspace (all zero in this fixture); **Quick actions**; **My Block Sections** BSIT-1A and BSIT-1B with one student each; **Score Snapshot** with 2 students, a 67% average and one learner below 75 (only the learner with marked attempts is averaged) and topic averages for IT 102; **Recent Activity**, the course syllabus stations and **Courseware Review Queue** showing their empty-state lines. |
+| Student | ![Student Dashboard](02-student-dashboard.png) | Summary cards: 1 enrolled course, 67% average score, 1 topic mastered, 1 pending activity. **Pulse Reminders** lists the unopened *Variables lesson*. **My Block** shows BSIT-1A with year level, size and adviser *Not recorded*. The IT 102 card shows its latest recorded score; **Learning Material Sources** has no published source; **My Score Trend** plots weeks 1–3; **Upcoming Activities** has no recorded deadline. |
+| Dean | ![Dean Dashboard](03-dean-dashboard.png) | One released, loaded and approved course; **Quick actions**; **Syllabus Stations**; **Delivery Progress (Active Courses)** with published materials and assessments for IT 102; **Faculty Overview** (*Synthetic instructor*, *On track*); **Recent Activity** with no recorded event; **Syllabus Status by Course**. |
+| Associate Dean | ![Associate Dean Dashboard](04-associate_dean-dashboard.png) | The same management dashboard under **Associate Dean Dashboard**. The navigation has no **Performance** tab and the dashboard has no score panel. |
 
 ## Performance and instructor monitoring
 
@@ -71,7 +73,7 @@ File intake accepts CSV up to 1 MB and 1,000 rows per request. Quoted commas/new
 | Dark performance | ![Dark performance](32-dark-performance.png) | Solid body/cards/controls, readable muted and semantic text, themed chart grid/axes/tooltips. |
 | Mobile performance | ![Mobile charts](33-mobile-performance.png) | Charts stack; page tabs remain scrollable and wide matrices stay in their own scroll region. |
 | Mobile monitoring | ![Mobile material access](34-mobile-materials.png) | Course/date controls, material matrix and chart fit the phone viewport. |
-| Mobile dark dashboard | ![Mobile dark dashboard](35-mobile-dark-dashboard.png) | Role quick actions and dashboard sections on solid dark surfaces. |
+| Mobile dark dashboard | ![Mobile dark dashboard](35-mobile-dark-dashboard.png) | The instructor account dashboard on a phone in dark mode: stacked **Refresh records**, **Export** and **Sync my workspace**, then **Getting Started with EduPulse**, one summary card per row, **Quick actions**, **My Block Sections**, **Score Snapshot** with its topic chart and the remaining sections, all on solid dark surfaces. |
 
 The System Admin console remains separate: account/role management, health, audit and agent activity were retained. The verified owner's view switching preserves the original account identity; restored academic screens do not grant ordinary users that capability.
 
@@ -92,7 +94,7 @@ The following scenes use the additional synthetic baseline fixture. SQL integrat
 | Persisted notices | ![Academic notices](44-persisted-academic-notices.png) | Persisted publication notice plus derived current-work reminders; account and device receipt behavior is disclosed. |
 | Saved versions | ![Saved syllabus versions](45-saved-syllabus-versions.png) | Historical editable version can be viewed or restored as a new draft; approval must be repeated. |
 | Question topic mapping | ![Assessment mapping](46-assessment-topic-mapping.png) | Each question maps to an approved outline topic and selects multiple choice, True/False or instructor-marked response type. |
-| Delivery settings | ![Delivery settings](47-publication-delivery-settings.png) | Release/deadline, duration and allowed attempts saved before review/publication. |
+| Delivery settings | ![Delivery settings](47-publication-delivery-settings.png) | Release/deadline, duration and allowed attempts saved before review/publication. This fixture has no AI connection, so the course also says **Pulse AI is not set up yet** with **Set up Pulse AI**; saved drafts stay as they are. |
 | Mobile topics | ![Mobile topic mastery](48-mobile-topic-mastery.png) | Stacked topic charts/status and scrollable matrices. |
 | Mobile loading | ![Mobile loading](49-mobile-loading-proposal.png) | Responsive proposal controls and qualification/load tables. |
 

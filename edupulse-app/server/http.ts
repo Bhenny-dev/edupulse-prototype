@@ -7,7 +7,7 @@ import { invokeModel, providerHealth } from './providers.js'
 import { MAX_DOCUMENTS, deleteDocument, ingest, listDocuments } from './database.js'
 import { runChat, runCourseware, serverDeps } from './graph.js'
 import { readWorkspace, saveWorkspace, workspaceInput, WORKSPACE_BYTES } from './workspace.js'
-import { connectionCookie, connectionInput, createConnection, discoverModels, publicConnection, readConnection, serverConnection, type Connection } from './connections.js'
+import { connectionCookie, connectionInput, createConnection, discoverModels, discoverWorkspaces, workspaceListInput, publicConnection, readConnection, serverConnection, type Connection } from './connections.js'
 import { extractUpload } from './ingest/prepare.js'
 import { SANDBOX_LIMITS } from './ingest/sandbox.js'
 import { LIMITS as EXTRACTION_LIMITS, SUPPORTED as EXTRACTION_FORMATS } from './ingest/formats.mjs'
@@ -30,7 +30,7 @@ export const VERSION = '0.4.0'
 /** Request body limits per action (bytes). Uploads are raw file bytes. */
 export const BODY_LIMITS: Record<string, number> = { workspace: WORKSPACE_BYTES, extract: EXTRACTION_LIMITS.bytes, documents: 1_000_000, conversations: 200_000, operator: 100_000 }
 export const bodyLimit = (action: string | null) => BODY_LIMITS[action || ''] ?? 100_000
-const ACTION_METHODS: Record<string, string[]> = { health: ['GET'], providers: ['GET', 'POST', 'DELETE'], 'provider-oauth': ['POST'], 'provider-test': ['POST'], conversations: ['GET', 'POST'], operator: ['POST'], context: ['POST'], similarity: ['POST'], references: ['POST'], 'web-search': ['POST'], extract: ['POST'], chat: ['POST'], courseware: ['POST'], documents: ['GET', 'POST', 'DELETE'], workspace: ['GET', 'PUT'], academic: ['GET', 'POST'], students: ['GET'] }
+const ACTION_METHODS: Record<string, string[]> = { health: ['GET'], providers: ['GET', 'POST', 'DELETE'], 'provider-oauth': ['POST'], 'provider-test': ['POST'], 'provider-workspaces': ['POST'], conversations: ['GET', 'POST'], operator: ['POST'], context: ['POST'], similarity: ['POST'], references: ['POST'], 'web-search': ['POST'], extract: ['POST'], chat: ['POST'], courseware: ['POST'], documents: ['GET', 'POST', 'DELETE'], workspace: ['GET', 'PUT'], academic: ['GET', 'POST'], students: ['GET'] }
 export const allowedMethods = (action: string) => Object.hasOwn(ACTION_METHODS, action) ? ACTION_METHODS[action] : undefined
 const buckets = new Map<string, { count: number; until: number }>()
 const active = new Set<string>()
@@ -112,7 +112,7 @@ export async function handleRequest(request: Request): Promise<Response> {
     if (action === 'providers' && request.method === 'DELETE') return json({ connection: null, models: [] }, 200, connectionCookie(null))
     if (action === 'providers' && request.method === 'GET') {
       try {
-        const models = connection ? await discoverModels(connection.provider, connection.apiKey) : []
+        const models = connection ? await discoverModels(connection.provider, connection.apiKey, undefined, undefined, connection.workspaceId) : []
         return json({ connection: publicConnection(connection), models })
       } catch (error) {
         return json({ connection: publicConnection(connection), models: [], warning: error instanceof ApiError ? error.message : 'The saved credential is retained. Models could not be loaded; retry Refresh models.' })
@@ -179,6 +179,11 @@ export async function handleRequest(request: Request): Promise<Response> {
       const result = await providerOAuth(request, identity, providerOAuthInput.parse(body))
       return json(result.body, 200, result.cookie)
     }
+    if (action === 'provider-workspaces') {
+      const input = workspaceListInput.parse(body)
+      const apiKey = input.apiKey || (personalConnection?.provider === 'anthropic' ? personalConnection.apiKey : undefined)
+      return json({ workspaces: await discoverWorkspaces(apiKey, signal) })
+    }
     if (action === 'providers') {
       const input = connectionInput.parse(body)
       if (input.provider === 'ollama' && identity.role === 'guest' && config().hosted) throw new ApiError(403, 'FORBIDDEN', 'Use on-device AI or your own hosted provider in preview.')
@@ -229,7 +234,7 @@ export async function handleRequest(request: Request): Promise<Response> {
   } catch (error) {
     if (error instanceof z.ZodError) return json({ error: { code: 'INVALID_INPUT', message: 'Some input fields are missing, too long, or invalid.', requestId } }, 400)
     if (error instanceof ApiError) {
-      const invalidateTest = usedPersonalConnection && ['chat', 'courseware', 'operator', 'provider-test'].includes(action) && ['MODEL_NOT_AVAILABLE', 'MODEL_INCOMPATIBLE', 'PROVIDER_AUTH', 'PROVIDER_CREDITS', 'PROVIDER_QUOTA', 'EMPTY_RESPONSE'].includes(error.code)
+      const invalidateTest = usedPersonalConnection && ['chat', 'courseware', 'operator', 'provider-test'].includes(action) && ['MODEL_NOT_AVAILABLE', 'MODEL_INCOMPATIBLE', 'PROVIDER_AUTH', 'PROVIDER_CREDITS', 'PROVIDER_QUOTA', 'PROVIDER_WORKSPACE_REQUIRED', 'EMPTY_RESPONSE'].includes(error.code)
       return json({ error: { code: error.code, message: error.message, requestId } }, error.status, invalidateTest ? connectionCookie({ ...usedPersonalConnection!, testedAt: undefined }) : undefined)
     }
     if (error instanceof Error && ['TimeoutError', 'AbortError'].includes(error.name)) return json({ error: { code: 'TIMEOUT', message: 'The request was stopped or timed out. Try a smaller request.', requestId } }, 504)

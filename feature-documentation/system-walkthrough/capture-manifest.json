@@ -1,5 +1,5 @@
 {
-  "capturedAt": "2026-11-02T08:58:07.751Z",
+  "capturedAt": "2026-11-03T14:46:08.982Z",
   "problems": [],
   "scenes": [
     {
@@ -87,14 +87,6 @@
       "folder": "02-shared-interface",
       "file": "12-settings-notifications.png",
       "title": "Settings · Notifications",
-      "route": "/settings",
-      "ok": true
-    },
-    {
-      "role": "all roles",
-      "folder": "02-shared-interface",
-      "file": "13-settings-ai-and-knowledge.png",
-      "title": "Settings · AI & Knowledge",
       "route": "/settings",
       "ok": true
     },
@@ -311,14 +303,6 @@
       "folder": "04-instructor",
       "file": "05-syllabus-builder.png",
       "title": "Syllabus Builder (upload or build the 7 sections)",
-      "route": "/syllabus",
-      "ok": true
-    },
-    {
-      "role": "instructor",
-      "folder": "04-instructor",
-      "file": "06-syllabus-builder-course-outline.png",
-      "title": "Syllabus Builder · Section 5 Course Outline",
       "route": "/syllabus",
       "ok": true
     },
@@ -615,6 +599,22 @@
       "folder": "04-instructor",
       "file": "02-syllabus-my-courses.png",
       "title": "Syllabus · My Courses",
+      "route": "/syllabus",
+      "ok": true
+    },
+    {
+      "role": "all roles",
+      "folder": "02-shared-interface",
+      "file": "13-settings-ai-and-knowledge.png",
+      "title": "Settings · AI & Knowledge",
+      "route": "/settings",
+      "ok": true
+    },
+    {
+      "role": "instructor",
+      "folder": "04-instructor",
+      "file": "06-syllabus-builder-course-outline.png",
+      "title": "Syllabus Builder · Section 5 Course Outline",
       "route": "/syllabus",
       "ok": true
     }

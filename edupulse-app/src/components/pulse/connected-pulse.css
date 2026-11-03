@@ -95,6 +95,13 @@ body:has(.overlay-backdrop):not(.pulse-panel-open) .connected-pulse-dock > svg {
 .ai-document-list li > div { flex: 1; min-width: 0; overflow-wrap: anywhere; }
 .ai-library textarea { min-height: 180px; resize: vertical; }
 .ai-notice { padding: 12px 16px; background: var(--sky-50); border-radius: 10px; margin: 12px 0; font-size: .85rem; color: var(--gray-700); }
+/* Courseware builder: whether generation can run, and why the last one did not. */
+.cw-ai-notice { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin: 0 0 16px; padding: 12px 16px; border-radius: 12px; border: 1px solid var(--sky-200); background: var(--sky-50); color: var(--gray-800); font-size: .875rem; }
+.cw-ai-notice > svg { flex: none; color: var(--sky-600); }
+.cw-ai-notice-body { display: flex; flex-direction: column; gap: 2px; flex: 1 1 260px; min-width: 0; }
+.cw-ai-notice-body span { color: var(--gray-700); line-height: 1.45; }
+.cw-ai-notice.is-error { border-color: var(--red-200); background: var(--red-50); }
+.cw-ai-notice.is-error > svg { color: var(--red-600); }
 @media(max-width: 640px) { .connected-pulse { right: 12px; bottom: 96px; height: calc(100dvh - 116px); } .connected-pulse-dock { right: 12px; bottom: 12px; } .ai-settings-grid { grid-template-columns: 1fr; } }
 @media(max-width: 640px) { .connected-pulse.is-focused { height: min(390px, 48dvh); } .connected-pulse.is-focused .connected-pulse-status, .connected-pulse.is-focused .connected-pulse-footnote { display: none; } .connected-pulse.is-focused .connected-pulse-header { padding: 8px 12px; } .connected-pulse.is-focused .connected-pulse-form { padding: 6px 10px; } .connected-pulse.is-focused .connected-pulse-form textarea { max-height: 45px; } }
 @media(max-width: 640px) { .connected-pulse.panel-left { left: auto; right: 12px; } .connected-pulse.is-focused.panel-top { top: 8px; bottom: auto; } }

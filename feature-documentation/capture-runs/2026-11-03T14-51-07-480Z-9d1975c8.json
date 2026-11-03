@@ -1,0 +1,184 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-11-03T14-51-07-480Z-9d1975c8",
+  "startedAt": "2026-11-03T14:51:07.480Z",
+  "finishedAt": "2026-11-03T14:51:23.307Z",
+  "commitSha": "b96e71eb96c9216e1b7651b7f8d143c25e1a2844",
+  "sourceDigest": "2f256929ae4db6212fdc3aa1d25adc008059aa7a4c9b36d68a14aafea44bff72",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-11-03T14:51:05.443Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 5,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": null
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-navigation.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.spec.ts",
+    "edupulse-app/tests/snapshots/harness-delivery.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-drafting.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-source.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+    "edupulse-app/tests/snapshots/student-directory.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+      "title": "synthetic baseline syllabus versions, assessment mappings and delivery settings",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 3011,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+      "title": "synthetic editor fields grow to display full section text and answer explanations",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1831,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/pulse-navigation.spec.ts",
+      "title": "synthetic owner opens named role dashboards and retains the correction conversation",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1626,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/pulse-navigation.spec.ts",
+      "title": "synthetic Anthropic API credit failure explains recovery without replacing the saved key",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1293,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/pulse-navigation.spec.ts",
+      "title": "synthetic Claude workspace recovery preserves the saved credential and selected model",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1373,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-manual/03-courseware-generation-and-review/04-generated-drafts-for-review.png",
+      "sha256": "173c3588ab7bc45b3d6434a07e357b181be359995c0eb9eff6a55f61e9d35081",
+      "bytes": 258263
+    },
+    {
+      "path": "feature-documentation/system-manual/03-courseware-generation-and-review/07-edit-material-growing-field.png",
+      "sha256": "10d366059732fc8acf7f639cb3be2141133a3b1adc5306066c6ee0a478d7bdb7",
+      "bytes": 225434
+    },
+    {
+      "path": "feature-documentation/system-manual/03-courseware-generation-and-review/08-edit-assessment-growing-explanation.png",
+      "sha256": "847013fcc4e3d6f25f7a8936a51d9cd12ccc752b43392c142cbbee527b03523b",
+      "bytes": 161164
+    },
+    {
+      "path": "feature-documentation/system-manual/17-pulse-navigation-and-provider-recovery/01-instructor-view.png",
+      "sha256": "cbf04d33536de85d8d0f1bc40ac2116e5d3902f388039845e5248f319793465e",
+      "bytes": 308441
+    },
+    {
+      "path": "feature-documentation/system-manual/17-pulse-navigation-and-provider-recovery/02-role-correction.png",
+      "sha256": "f0bb286b713f9f61c9beb2cc9e5cd5254930b84698eac5475d5fab3498ce9366",
+      "bytes": 303382
+    },
+    {
+      "path": "feature-documentation/system-manual/17-pulse-navigation-and-provider-recovery/03-anthropic-api-credits.png",
+      "sha256": "8f9e3edbcf03c734c0b0d79fc84fb6e972448894dc75897d08a8e9970857bbd2",
+      "bytes": 195487
+    },
+    {
+      "path": "feature-documentation/system-manual/17-pulse-navigation-and-provider-recovery/04-claude-workspace.png",
+      "sha256": "81af22e8ef98b3c46bacd97cd3ae5c27a37acfb056c5cf5b9ded37ef5092c34c",
+      "bytes": 200181
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/45-saved-syllabus-versions.png",
+      "sha256": "c65ccfa01b2472e5808df990818612473967f66cb15f02519369001b13822fb0",
+      "bytes": 58391
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/46-assessment-topic-mapping.png",
+      "sha256": "4f714a7dbeaf08128dc7b785069bff492eaa8b5f64381d4b5d8d3ed17a88047a",
+      "bytes": 338832
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/47-publication-delivery-settings.png",
+      "sha256": "c6bdde7bd178c7381796334cbe0bbcf7cb4c42187017fe4d7d1371da5a2655e7",
+      "bytes": 250209
+    }
+  ]
+}

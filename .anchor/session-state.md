@@ -1,29 +1,12 @@
-# Session state (auto-saved — last known reality)
+# Session state
 
-_Updated: 2026-11-02 01:01:08_  ·  branch: `main`
+Updated 3 November 2026. Branch: `main`.
 
-## Uncommitted changes
-```
- M .anchor/session-state.md
-```
+Claude's pending account-dashboard and outline/editor work has been reconciled with the original role contract and completed. Pulse named-role navigation and direct Anthropic workspace/error recovery are included. Actual account/RLS boundaries remain authoritative.
 
-Diff stat:
-```
- .anchor/session-state.md | 339 +----------------------------------------------
- 1 file changed, 2 insertions(+), 337 deletions(-)
-```
+Release record: `feature-documentation/versions/2026-11-03-claude-completion/README.md`.
+Validation: `feature-documentation/versions/2026-11-03-claude-completion/validation/results.md`.
 
-## Recent commits
-```
-814805e Record the combined release deployment and hosted checks
-ebe4834 Keep keyboard focus when the landing page re-measures pinned sections
-97c933c Combine the content harness and request intake with the landing release
-6290c90 Show the landing page's studio in the Pulse office
-50b8e71 Add the 3D agent workspace and agent portraits; shorten the landing copy
-b6a70dc Add the Inside Pulse agents scope to the landing page
-34bce8d Redesign the landing page in white and light blue with a 3D opening
-8d2b19b refactor: Remove unused HeroPreview and PhotoMarquee components along with associated images
-```
+Local gate: 199 unit/integration tests; type checks, lint, build, serverless checks and documentation passed. Browser coverage: 203 passed initially, four corrected cases passed on rerun, 19 declared skips. Final captures and exact-hash image review passed.
 
-## Resume
-Read `memory/HANDOFF.md` for intent/next-step, then reconcile against the diff above. If HANDOFF.md is older than this checkpoint, trust the diff.
+Next: publish the verified tree and record the hosted receipt. The browser bridge no longer exposes the earlier owner session; do not claim a successful live Anthropic generation or guess the account's HTTP 400 cause. Manual 17 explains workspace and credit recovery. Temporary/private diagnostics and the original patches remain in ignored `.data/` folders.

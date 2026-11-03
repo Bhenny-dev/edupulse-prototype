@@ -3,6 +3,7 @@ import '../components/syllabus/outline-editor.css'
 import { revisedWorkspace } from '../utils/syllabusRevisions'
 import { useAcademicRecords } from '../context/AcademicContext'
 import ModalLayer from '../components/ui/ModalLayer'
+import AutoTextarea from '../components/ui/AutoTextarea'
 import { Spinner } from '../components/ui/LoadingFeedback'
 import { downloadSyllabusPdf } from '../utils/pdfExport'
 import { Fragment, cloneElement, isValidElement, useState, useEffect, useRef, useMemo, useId } from 'react'
@@ -791,6 +792,10 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
   const visibleWeek = row => (outlineWeek === 'all' || String(row.week) === outlineWeek) && (outlineTerm === 'all' || (outlineTerm === 'midterm' ? row.week <= 9 : row.week >= 10))
   const midtermWeeks = form.courseOutline.filter(w => w.week <= 9 && visibleWeek(w)).sort((a, b) => a.week - b.week)
   const finalsWeeks = form.courseOutline.filter(w => w.week >= 10 && visibleWeek(w)).sort((a, b) => a.week - b.week)
+  const outlineTerms = [
+    { key: 'midterm', label: 'Midterm', range: 'Weeks 1–9', exam: 'Midterm Examination', weeks: midtermWeeks },
+    { key: 'finals', label: 'Finals', range: 'Weeks 10–18', exam: 'Final Examination', weeks: finalsWeeks },
+  ].filter(term => term.weeks.length > 0)
 
   // ── Auto-collect resources from all weeks for Section 7 sync ──
   const autoCollectedResources = useMemo(() => {
@@ -950,10 +955,10 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
           <h4 style={{ fontFamily: 'var(--font-heading)', fontSize: '0.8125rem', fontWeight: 700, margin: '0 0 10px', color: 'var(--sky-600)' }}>KCP — Vision, Mission, Objectives, Core Values</h4>
           <div className="grid-2" style={{ gap: '12px', marginBottom: '16px' }}>
             <FormGroup label="Vision">
-              <textarea className="form-input" rows={3} data-pulse-field="institutionalContext.kcp.vision" aria-label="KCP vision" value={form.institutionalContext.kcp.vision} onChange={e => set('institutionalContext.kcp.vision', e.target.value)} style={{ resize: 'vertical' }} />
+              <AutoTextarea className="form-input" rows={3} data-pulse-field="institutionalContext.kcp.vision" aria-label="KCP vision" value={form.institutionalContext.kcp.vision} onChange={e => set('institutionalContext.kcp.vision', e.target.value)} style={{ resize: 'vertical' }} />
             </FormGroup>
             <FormGroup label="Mission">
-              <textarea className="form-input" rows={3} data-pulse-field="institutionalContext.kcp.mission" aria-label="KCP mission" value={form.institutionalContext.kcp.mission} onChange={e => set('institutionalContext.kcp.mission', e.target.value)} style={{ resize: 'vertical' }} />
+              <AutoTextarea className="form-input" rows={3} data-pulse-field="institutionalContext.kcp.mission" aria-label="KCP mission" value={form.institutionalContext.kcp.mission} onChange={e => set('institutionalContext.kcp.mission', e.target.value)} style={{ resize: 'vertical' }} />
             </FormGroup>
           </div>
           <FormGroup label="Objectives">
@@ -982,7 +987,7 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
           {/* CIT */}
           <h4 style={{ fontFamily: 'var(--font-heading)', fontSize: '0.8125rem', fontWeight: 700, margin: '0 0 10px', color: 'var(--sky-600)' }}>College of Information Technology — Mission, Objectives</h4>
           <FormGroup label="Mission">
-            <textarea className="form-input" rows={3} data-pulse-field="institutionalContext.cit.mission" aria-label="CIT mission" value={form.institutionalContext.cit.mission} onChange={e => set('institutionalContext.cit.mission', e.target.value)} style={{ resize: 'vertical' }} />
+            <AutoTextarea className="form-input" rows={3} data-pulse-field="institutionalContext.cit.mission" aria-label="CIT mission" value={form.institutionalContext.cit.mission} onChange={e => set('institutionalContext.cit.mission', e.target.value)} style={{ resize: 'vertical' }} />
           </FormGroup>
           <FormGroup label="Objectives">
             {form.institutionalContext.cit.objectives.map((o, i) => (
@@ -1032,315 +1037,157 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
             <label>Week<select className="form-input" aria-label="Outline week" value={outlineWeek} onChange={event => { setOutlineWeek(event.target.value); setOutlineTerm('all') }}><option value="all">All weeks</option>{form.courseOutline.map(row => <option key={row.week} value={row.week}>Week {row.week}{isExamWeek(row.week) ? ' - Examination' : ''}</option>)}</select></label>
             <button type="button" className="btn btn-secondary" aria-expanded={outlineExpanded} onClick={() => setOutlineExpanded(value => !value)}>{outlineExpanded ? 'Close expanded outline' : 'Expand outline'}</button></div>
           </div>
-          {midtermWeeks.length > 0 && <div className="outline-term">
-
-
-
-          {/* Midterm */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px', marginTop: '8px' }}>
-            <span style={{ padding: '4px 12px', background: 'var(--sky-500)', color: '#fff', borderRadius: 'var(--radius-sm)', fontWeight: 700, fontSize: '0.8125rem' }}>Midterm</span>
-            <span className="text-sm text-muted">Weeks 1–9</span>
-          </div>
-          <div className="outline-table-scroll" role="region" aria-label="Teaching weeks" tabIndex={0}><table className="data-table outline-table">
+          {/* One table for the whole outline: each term is a row group with its own heading row. */}
+          <div className="outline-table-scroll" role="region" aria-label="Course Outline weeks" tabIndex={0}><table className="data-table outline-table">
+            <colgroup><col className="outline-col-tools" /><col className="outline-col-week" /><col /><col /><col /><col /></colgroup>
             <thead>
               <tr>
-                <th style={{ width: '40px' }}></th>
-                <th style={{ width: '50px' }}>Week</th>
-                <th style={{ width: '18%' }}>Intended Learning Outcomes</th>
-                <th style={{ width: '24%' }}>Contents</th>
-                <th style={{ width: '22%' }}>Activities &amp; Teaching Materials</th>
-                <th style={{ width: '22%' }}>Assessment Details &amp; Type</th>
+                <th scope="col"><span className="sr-only">Arrange</span></th>
+                <th scope="col">Week</th>
+                <th scope="col">Intended Learning Outcomes</th>
+                <th scope="col">Contents</th>
+                <th scope="col">Activities &amp; Teaching Materials</th>
+                <th scope="col">Assessment Details &amp; Type</th>
               </tr>
             </thead>
-            <tbody>
-              {midtermWeeks.map(row => {
-                const wi = form.courseOutline.indexOf(row)
-                const exam = isExamWeek(row.week)
-                const resExpanded = expandedResources[wi]
-                const resourceCount = (row.resources || []).length
-                return (
-                  <Fragment key={row.week}>
-                    <tr
-                      key={wi}
+            {outlineTerms.map(term => (
+              <tbody key={term.key} className={`outline-term is-${term.key}`}>
+                <tr className="outline-term-row"><th colSpan={6} scope="rowgroup"><span className="outline-term-badge">{term.label}</span><span className="outline-term-range">{term.range}</span></th></tr>
+                {term.weeks.map(row => {
+                  const wi = form.courseOutline.indexOf(row)
+                  const exam = isExamWeek(row.week)
+                  const resExpanded = expandedResources[wi]
+                  const resourceCount = (row.resources || []).length
+                  return (
+                    <Fragment key={row.week}>
+                      <tr
+                        key={wi}
 
-                      onDragOver={handleDragOver}
-                      onDrop={e => handleDrop(e, wi)}
-                      onDragEnd={handleDragEnd}
-                      style={{
-                        background: exam ? 'var(--sky-50)' : dragIdx === wi ? 'var(--amber-50, #fef3c7)' : undefined,
-                        opacity: dragIdx === wi ? 0.5 : 1,
-                        borderLeft: exam ? '3px solid var(--sky-500)' : '3px solid transparent',
-                      }}
-                    >
-                      <td style={{ textAlign: 'center', verticalAlign: 'top', paddingTop: '8px' }}>
-                        {!exam && <button type="button" className="outline-grip" draggable onDragStart={e => handleDragStart(e, wi)} onDragEnd={handleDragEnd} aria-label={`Drag week ${row.week} to swap teaching content`} title="Drag to swap teaching content"><GripVertical size={16} /></button>}
-                        {!exam && <div className="outline-move"><button type="button" className="btn btn-ghost btn-sm" disabled={!form.courseOutline.some(entry => entry.week === row.week - 1) || isExamWeek(row.week - 1)} aria-label={`Move week ${row.week} earlier`} onClick={() => setForm(previous => ({ ...previous, courseOutline: swapTeachingWeeks(previous.courseOutline, wi, previous.courseOutline.findIndex(entry => entry.week === row.week - 1)) }))}>↑</button><button type="button" className="btn btn-ghost btn-sm" disabled={!form.courseOutline.some(entry => entry.week === row.week + 1) || isExamWeek(row.week + 1)} aria-label={`Move week ${row.week} later`} onClick={() => setForm(previous => ({ ...previous, courseOutline: swapTeachingWeeks(previous.courseOutline, wi, previous.courseOutline.findIndex(entry => entry.week === row.week + 1)) }))}>↓</button></div>}
-                        {!exam && (
-                          <button
-                            onClick={() => toggleResources(wi)}
-                            title={resExpanded ? 'Hide resources' : 'Attach files/links'}
-                            style={{
-                              display: 'block', margin: '4px auto 0', background: 'none', border: 'none',
-                              cursor: 'pointer', padding: '2px', color: resourceCount > 0 ? 'var(--sky-500)' : 'var(--gray-400)',
-                              position: 'relative',
-                            }}
-                          >
-                            <Paperclip size={13} />
-                            {resourceCount > 0 && (
-                              <span style={{
-                                position: 'absolute', top: '-4px', right: '-6px', width: '14px', height: '14px',
-                                borderRadius: '50%', background: 'var(--sky-500)', color: '#fff',
-                                fontSize: '0.5625rem', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                              }}>{resourceCount}</span>
-                            )}
-                          </button>
-                        )}
-                      </td>
-                      <td style={{ textAlign: 'center', fontWeight: 700 }}>{row.week}</td>
-                      <td>
-                        <textarea
-                          className="form-input" rows={2} data-pulse-field={`courseOutline.${wi}.ilos`} aria-label={`Week ${row.week} learning outcomes`} value={row.ilos}
-                          onChange={e => setOutlineField(wi, 'ilos', e.target.value)}
-                          placeholder={exam ? '' : 'Learning outcome...'}
-                          style={{ fontSize: '0.75rem', resize: 'vertical', padding: '6px 8px' }}
-                          disabled={exam}
-                        />
-                      </td>
-                      <td>
-                        {exam ? (
-                          <div style={{ padding: '8px', fontWeight: 600, color: 'var(--sky-600)', fontSize: '0.8125rem' }}>Midterm Examination</div>
-                        ) : (
-                          <>
-                            {row.contents.map((c, ci) => (
-                              <div key={ci} style={{ display: 'flex', gap: '4px', marginBottom: '4px', alignItems: 'center' }}>
-                                <span style={{ fontSize: '0.625rem', color: 'var(--sky-500)', minWidth: '14px' }}>{ci + 1}.</span>
-                                <input className="form-input" data-pulse-field={`courseOutline.${wi}.contents.${ci}`} aria-label={`Week ${row.week} topic ${ci + 1}`} value={c} onChange={e => setOutlineContent(wi, ci, e.target.value)}
-                                  style={{ fontSize: '0.75rem', padding: '4px 6px', flex: 1 }} placeholder="Topic..." />
-                                {row.contents.length > 1 && <button className="btn btn-ghost" style={{ padding: '0' }} onClick={() => removeOutlineContent(wi, ci)}><Trash2 size={10} /></button>}
-                              </div>
-                            ))}
-                            <button className="btn btn-ghost btn-sm" style={{ padding: '2px 6px', fontSize: '0.6875rem' }} onClick={() => addOutlineContent(wi)}><Plus size={10} /> Add Topic</button>
-                          </>
-                        )}
-                      </td>
-                      <td>
-                        <textarea
-                          className="form-input" rows={2} data-pulse-field={`courseOutline.${wi}.activities`} aria-label={`Week ${row.week} activities`} value={row.activities}
-                          onChange={e => setOutlineField(wi, 'activities', e.target.value)}
-                          placeholder="Activities..." disabled={exam}
-                          style={{ fontSize: '0.75rem', resize: 'vertical', padding: '6px 8px', marginBottom: '4px' }}
-                        />
-                        {!exam && (
-                          <MultiSelectDropdown
-                            categories={TEACHING_MATERIAL_CATEGORIES} fieldPath={`courseOutline.${wi}.teachingMaterials`} fieldLabel={`Week ${row.week} teaching materials`}
-                            selected={row.teachingMaterials || []}
-                            onChange={(val) => setOutlineField(wi, 'teachingMaterials', val)}
-                            placeholder="Teaching materials..."
-                          />
-                        )}
-                      </td>
-                      <td>
-                        <input className="form-input" data-pulse-field={`courseOutline.${wi}.assessments`} aria-label={`Week ${row.week} assessment details`} value={row.assessments}
-                          onChange={e => setOutlineField(wi, 'assessments', e.target.value)}
-                          placeholder="Assessment..." disabled={exam}
-                          style={{ fontSize: '0.75rem', padding: '4px 6px', marginBottom: '4px' }}
-                        />
-                        {!exam && (
-                          <MultiSelectDropdown
-                            categories={ASSESSMENT_CATEGORIES} fieldPath={`courseOutline.${wi}.assessmentTypes`} fieldLabel={`Week ${row.week} assessment types`}
-                            selected={row.assessmentTypes || []}
-                            onChange={(val) => setOutlineField(wi, 'assessmentTypes', val)}
-                            placeholder="Assessment type..."
-                          />
-                        )}
-                      </td>
-                    </tr>
-                    {!exam && resExpanded && (
-                      <tr key={`res-${wi}`}>
-                        <td colSpan={6} style={{ padding: '8px 16px 12px 48px', background: 'var(--gray-50)', borderBottom: '1px solid var(--gray-200)' }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
-                            <Paperclip size={12} style={{ color: 'var(--sky-500)' }} />
-                            <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--gray-600)' }}>Resources for Week {row.week}</span>
-                            <button className="btn btn-ghost btn-sm" style={{ padding: '2px 6px', fontSize: '0.6875rem', marginLeft: 'auto' }} onClick={() => addResource(wi, 'file')}><Plus size={10} /> Add File</button>
-                            <button className="btn btn-ghost btn-sm" style={{ padding: '2px 6px', fontSize: '0.6875rem' }} onClick={() => addResource(wi, 'link')}><Plus size={10} /> Add Link</button>
-                          </div>
-                          {(row.resources || []).length === 0 && (
-                            <div style={{ fontSize: '0.75rem', color: 'var(--gray-400)', fontStyle: 'italic' }}>No resources attached — files and links added here auto-populate Section 7 (References)</div>
+                        onDragOver={handleDragOver}
+                        onDrop={e => handleDrop(e, wi)}
+                        onDragEnd={handleDragEnd}
+                        style={{
+                          background: exam ? 'var(--sky-50)' : dragIdx === wi ? 'var(--amber-50, #fef3c7)' : undefined,
+                          opacity: dragIdx === wi ? 0.5 : 1,
+                          borderLeft: exam ? '3px solid var(--sky-500)' : '3px solid transparent',
+                        }}
+                      >
+                        <td style={{ textAlign: 'center', verticalAlign: 'top', paddingTop: '8px' }}>
+                          {!exam && <button type="button" className="outline-grip" draggable onDragStart={e => handleDragStart(e, wi)} onDragEnd={handleDragEnd} aria-label={`Drag week ${row.week} to swap teaching content`} title="Drag to swap teaching content"><GripVertical size={16} /></button>}
+                          {!exam && <div className="outline-move"><button type="button" className="btn btn-ghost btn-sm" disabled={!form.courseOutline.some(entry => entry.week === row.week - 1) || isExamWeek(row.week - 1)} aria-label={`Move week ${row.week} earlier`} onClick={() => setForm(previous => ({ ...previous, courseOutline: swapTeachingWeeks(previous.courseOutline, wi, previous.courseOutline.findIndex(entry => entry.week === row.week - 1)) }))}>↑</button><button type="button" className="btn btn-ghost btn-sm" disabled={!form.courseOutline.some(entry => entry.week === row.week + 1) || isExamWeek(row.week + 1)} aria-label={`Move week ${row.week} later`} onClick={() => setForm(previous => ({ ...previous, courseOutline: swapTeachingWeeks(previous.courseOutline, wi, previous.courseOutline.findIndex(entry => entry.week === row.week + 1)) }))}>↓</button></div>}
+                          {!exam && (
+                            <button
+                              onClick={() => toggleResources(wi)}
+                              title={resExpanded ? 'Hide resources' : 'Attach files/links'}
+                              style={{
+                                display: 'block', margin: '4px auto 0', background: 'none', border: 'none',
+                                cursor: 'pointer', padding: '2px', color: resourceCount > 0 ? 'var(--sky-500)' : 'var(--gray-400)',
+                                position: 'relative',
+                              }}
+                            >
+                              <Paperclip size={13} />
+                              {resourceCount > 0 && (
+                                <span style={{
+                                  position: 'absolute', top: '-4px', right: '-6px', width: '14px', height: '14px',
+                                  borderRadius: '50%', background: 'var(--sky-500)', color: '#fff',
+                                  fontSize: '0.5625rem', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                }}>{resourceCount}</span>
+                              )}
+                            </button>
                           )}
-                          {(row.resources || []).map((res, ri) => (
-                            <div key={ri} style={{ display: 'flex', gap: '6px', marginBottom: '4px', alignItems: 'center' }}>
-                              {res.type === 'file' ? <FileText size={12} style={{ color: 'var(--sky-500)', flexShrink: 0 }} /> : <Link2 size={12} style={{ color: 'var(--green-500, #22c55e)', flexShrink: 0 }} />}
-                              <input className="form-input" value={res.name} onChange={e => updateResource(wi, ri, 'name', e.target.value)}
-                                placeholder={res.type === 'file' ? 'File name (e.g., Lecture3-notes.pdf)' : 'Reference title'}
-                                style={{ fontSize: '0.75rem', padding: '4px 6px', flex: 1 }} />
-                              <input className="form-input" value={res.url} onChange={e => updateResource(wi, ri, 'url', e.target.value)}
-                                placeholder={res.type === 'file' ? 'Description (optional)' : 'https://...'}
-                                style={{ fontSize: '0.75rem', padding: '4px 6px', flex: 1 }} />
-                              <button className="btn btn-ghost" style={{ padding: '0' }} onClick={() => removeResource(wi, ri)}><Trash2 size={10} /></button>
-                            </div>
-                          ))}
+                        </td>
+                        <td style={{ textAlign: 'center', fontWeight: 700 }}>{row.week}</td>
+                        <td>
+                          <AutoTextarea
+                            className="form-input" rows={2} data-pulse-field={`courseOutline.${wi}.ilos`} aria-label={`Week ${row.week} learning outcomes`} value={row.ilos}
+                            onChange={e => setOutlineField(wi, 'ilos', e.target.value)}
+                            placeholder={exam ? '' : 'Learning outcome...'}
+                            style={{ fontSize: '0.75rem', resize: 'vertical', padding: '6px 8px' }}
+                            disabled={exam}
+                          />
+                        </td>
+                        <td>
+                          {exam ? (
+                            <div style={{ padding: '8px', fontWeight: 600, color: 'var(--sky-600)', fontSize: '0.8125rem' }}>{term.exam}</div>
+                          ) : (
+                            <>
+                              {row.contents.map((c, ci) => (
+                                <div key={ci} style={{ display: 'flex', gap: '4px', marginBottom: '4px', alignItems: 'center' }}>
+                                  <span style={{ fontSize: '0.625rem', color: 'var(--sky-500)', minWidth: '14px' }}>{ci + 1}.</span>
+                                  <input className="form-input" data-pulse-field={`courseOutline.${wi}.contents.${ci}`} aria-label={`Week ${row.week} topic ${ci + 1}`} value={c} onChange={e => setOutlineContent(wi, ci, e.target.value)}
+                                    style={{ fontSize: '0.75rem', padding: '4px 6px', flex: 1 }} placeholder="Topic..." />
+                                  {row.contents.length > 1 && <button className="btn btn-ghost" style={{ padding: '0' }} onClick={() => removeOutlineContent(wi, ci)}><Trash2 size={10} /></button>}
+                                </div>
+                              ))}
+                              <button className="btn btn-ghost btn-sm" style={{ padding: '2px 6px', fontSize: '0.6875rem' }} onClick={() => addOutlineContent(wi)}><Plus size={10} /> Add Topic</button>
+                            </>
+                          )}
+                        </td>
+                        <td>
+                          <AutoTextarea
+                            className="form-input" rows={2} data-pulse-field={`courseOutline.${wi}.activities`} aria-label={`Week ${row.week} activities`} value={row.activities}
+                            onChange={e => setOutlineField(wi, 'activities', e.target.value)}
+                            placeholder="Activities..." disabled={exam}
+                            style={{ fontSize: '0.75rem', resize: 'vertical', padding: '6px 8px', marginBottom: '4px' }}
+                          />
+                          {!exam && (
+                            <MultiSelectDropdown
+                              categories={TEACHING_MATERIAL_CATEGORIES} fieldPath={`courseOutline.${wi}.teachingMaterials`} fieldLabel={`Week ${row.week} teaching materials`}
+                              selected={row.teachingMaterials || []}
+                              onChange={(val) => setOutlineField(wi, 'teachingMaterials', val)}
+                              placeholder="Teaching materials..."
+                            />
+                          )}
+                        </td>
+                        <td>
+                          <input className="form-input" data-pulse-field={`courseOutline.${wi}.assessments`} aria-label={`Week ${row.week} assessment details`} value={row.assessments}
+                            onChange={e => setOutlineField(wi, 'assessments', e.target.value)}
+                            placeholder="Assessment..." disabled={exam}
+                            style={{ fontSize: '0.75rem', padding: '4px 6px', marginBottom: '4px' }}
+                          />
+                          {!exam && (
+                            <MultiSelectDropdown
+                              categories={ASSESSMENT_CATEGORIES} fieldPath={`courseOutline.${wi}.assessmentTypes`} fieldLabel={`Week ${row.week} assessment types`}
+                              selected={row.assessmentTypes || []}
+                              onChange={(val) => setOutlineField(wi, 'assessmentTypes', val)}
+                              placeholder="Assessment type..."
+                            />
+                          )}
                         </td>
                       </tr>
-                    )}
-                  </Fragment>
-                )
-              })}
-            </tbody>
-          </table></div>
-          </div>}
-          {finalsWeeks.length > 0 && <div className="outline-term">
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-            <span style={{ padding: '4px 12px', background: 'var(--sky-700, #0369a1)', color: '#fff', borderRadius: 'var(--radius-sm)', fontWeight: 700, fontSize: '0.8125rem' }}>Finals</span>
-            <span className="text-sm text-muted">Weeks 10–18</span>
-          </div>
-          <div className="outline-table-scroll" role="region" aria-label="Teaching weeks" tabIndex={0}><table className="data-table outline-table">
-            <thead>
-              <tr>
-                <th style={{ width: '40px' }}></th>
-                <th style={{ width: '50px' }}>Week</th>
-                <th style={{ width: '18%' }}>Intended Learning Outcomes</th>
-                <th style={{ width: '24%' }}>Contents</th>
-                <th style={{ width: '22%' }}>Activities &amp; Teaching Materials</th>
-                <th style={{ width: '22%' }}>Assessment Details &amp; Type</th>
-              </tr>
-            </thead>
-            <tbody>
-              {finalsWeeks.map(row => {
-                const wi = form.courseOutline.indexOf(row)
-                const exam = isExamWeek(row.week)
-                const resExpanded = expandedResources[wi]
-                const resourceCount = (row.resources || []).length
-                return (
-                  <Fragment key={row.week}>
-                    <tr
-                      key={wi}
-
-                      onDragOver={handleDragOver}
-                      onDrop={e => handleDrop(e, wi)}
-                      onDragEnd={handleDragEnd}
-                      style={{
-                        background: exam ? 'var(--sky-50)' : dragIdx === wi ? 'var(--amber-50, #fef3c7)' : undefined,
-                        opacity: dragIdx === wi ? 0.5 : 1,
-                        borderLeft: exam ? '3px solid var(--sky-500)' : '3px solid transparent',
-                      }}
-                    >
-                      <td style={{ textAlign: 'center', verticalAlign: 'top', paddingTop: '8px' }}>
-                        {!exam && <button type="button" className="outline-grip" draggable onDragStart={e => handleDragStart(e, wi)} onDragEnd={handleDragEnd} aria-label={`Drag week ${row.week} to swap teaching content`} title="Drag to swap teaching content"><GripVertical size={16} /></button>}
-                        {!exam && <div className="outline-move"><button type="button" className="btn btn-ghost btn-sm" disabled={!form.courseOutline.some(entry => entry.week === row.week - 1) || isExamWeek(row.week - 1)} aria-label={`Move week ${row.week} earlier`} onClick={() => setForm(previous => ({ ...previous, courseOutline: swapTeachingWeeks(previous.courseOutline, wi, previous.courseOutline.findIndex(entry => entry.week === row.week - 1)) }))}>↑</button><button type="button" className="btn btn-ghost btn-sm" disabled={!form.courseOutline.some(entry => entry.week === row.week + 1) || isExamWeek(row.week + 1)} aria-label={`Move week ${row.week} later`} onClick={() => setForm(previous => ({ ...previous, courseOutline: swapTeachingWeeks(previous.courseOutline, wi, previous.courseOutline.findIndex(entry => entry.week === row.week + 1)) }))}>↓</button></div>}
-                        {!exam && (
-                          <button
-                            onClick={() => toggleResources(wi)}
-                            title={resExpanded ? 'Hide resources' : 'Attach files/links'}
-                            style={{
-                              display: 'block', margin: '4px auto 0', background: 'none', border: 'none',
-                              cursor: 'pointer', padding: '2px', color: resourceCount > 0 ? 'var(--sky-500)' : 'var(--gray-400)',
-                              position: 'relative',
-                            }}
-                          >
-                            <Paperclip size={13} />
-                            {resourceCount > 0 && (
-                              <span style={{
-                                position: 'absolute', top: '-4px', right: '-6px', width: '14px', height: '14px',
-                                borderRadius: '50%', background: 'var(--sky-500)', color: '#fff',
-                                fontSize: '0.5625rem', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                              }}>{resourceCount}</span>
+                      {!exam && resExpanded && (
+                        <tr key={`res-${wi}`}>
+                          <td colSpan={6} style={{ padding: '8px 16px 12px 48px', background: 'var(--gray-50)', borderBottom: '1px solid var(--gray-200)' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
+                              <Paperclip size={12} style={{ color: 'var(--sky-500)' }} />
+                              <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--gray-600)' }}>Resources for Week {row.week}</span>
+                              <button className="btn btn-ghost btn-sm" style={{ padding: '2px 6px', fontSize: '0.6875rem', marginLeft: 'auto' }} onClick={() => addResource(wi, 'file')}><Plus size={10} /> Add File</button>
+                              <button className="btn btn-ghost btn-sm" style={{ padding: '2px 6px', fontSize: '0.6875rem' }} onClick={() => addResource(wi, 'link')}><Plus size={10} /> Add Link</button>
+                            </div>
+                            {(row.resources || []).length === 0 && (
+                              <div style={{ fontSize: '0.75rem', color: 'var(--gray-400)', fontStyle: 'italic' }}>No resources attached — files and links added here auto-populate Section 7 (References)</div>
                             )}
-                          </button>
-                        )}
-                      </td>
-                      <td style={{ textAlign: 'center', fontWeight: 700 }}>{row.week}</td>
-                      <td>
-                        <textarea
-                          className="form-input" rows={2} data-pulse-field={`courseOutline.${wi}.ilos`} aria-label={`Week ${row.week} learning outcomes`} value={row.ilos}
-                          onChange={e => setOutlineField(wi, 'ilos', e.target.value)}
-                          placeholder={exam ? '' : 'Learning outcome...'}
-                          style={{ fontSize: '0.75rem', resize: 'vertical', padding: '6px 8px' }}
-                          disabled={exam}
-                        />
-                      </td>
-                      <td>
-                        {exam ? (
-                          <div style={{ padding: '8px', fontWeight: 600, color: 'var(--sky-600)', fontSize: '0.8125rem' }}>Final Examination</div>
-                        ) : (
-                          <>
-                            {row.contents.map((c, ci) => (
-                              <div key={ci} style={{ display: 'flex', gap: '4px', marginBottom: '4px', alignItems: 'center' }}>
-                                <span style={{ fontSize: '0.625rem', color: 'var(--sky-500)', minWidth: '14px' }}>{ci + 1}.</span>
-                                <input className="form-input" data-pulse-field={`courseOutline.${wi}.contents.${ci}`} aria-label={`Week ${row.week} topic ${ci + 1}`} value={c} onChange={e => setOutlineContent(wi, ci, e.target.value)}
-                                  style={{ fontSize: '0.75rem', padding: '4px 6px', flex: 1 }} placeholder="Topic..." />
-                                {row.contents.length > 1 && <button className="btn btn-ghost" style={{ padding: '0' }} onClick={() => removeOutlineContent(wi, ci)}><Trash2 size={10} /></button>}
+                            {(row.resources || []).map((res, ri) => (
+                              <div key={ri} style={{ display: 'flex', gap: '6px', marginBottom: '4px', alignItems: 'center' }}>
+                                {res.type === 'file' ? <FileText size={12} style={{ color: 'var(--sky-500)', flexShrink: 0 }} /> : <Link2 size={12} style={{ color: 'var(--green-500, #22c55e)', flexShrink: 0 }} />}
+                                <input className="form-input" value={res.name} onChange={e => updateResource(wi, ri, 'name', e.target.value)}
+                                  placeholder={res.type === 'file' ? 'File name (e.g., Lecture3-notes.pdf)' : 'Reference title'}
+                                  style={{ fontSize: '0.75rem', padding: '4px 6px', flex: 1 }} />
+                                <input className="form-input" value={res.url} onChange={e => updateResource(wi, ri, 'url', e.target.value)}
+                                  placeholder={res.type === 'file' ? 'Description (optional)' : 'https://...'}
+                                  style={{ fontSize: '0.75rem', padding: '4px 6px', flex: 1 }} />
+                                <button className="btn btn-ghost" style={{ padding: '0' }} onClick={() => removeResource(wi, ri)}><Trash2 size={10} /></button>
                               </div>
                             ))}
-                            <button className="btn btn-ghost btn-sm" style={{ padding: '2px 6px', fontSize: '0.6875rem' }} onClick={() => addOutlineContent(wi)}><Plus size={10} /> Add Topic</button>
-                          </>
-                        )}
-                      </td>
-                      <td>
-                        <textarea
-                          className="form-input" rows={2} data-pulse-field={`courseOutline.${wi}.activities`} aria-label={`Week ${row.week} activities`} value={row.activities}
-                          onChange={e => setOutlineField(wi, 'activities', e.target.value)}
-                          placeholder="Activities..." disabled={exam}
-                          style={{ fontSize: '0.75rem', resize: 'vertical', padding: '6px 8px', marginBottom: '4px' }}
-                        />
-                        {!exam && (
-                          <MultiSelectDropdown
-                            categories={TEACHING_MATERIAL_CATEGORIES} fieldPath={`courseOutline.${wi}.teachingMaterials`} fieldLabel={`Week ${row.week} teaching materials`}
-                            selected={row.teachingMaterials || []}
-                            onChange={(val) => setOutlineField(wi, 'teachingMaterials', val)}
-                            placeholder="Teaching materials..."
-                          />
-                        )}
-                      </td>
-                      <td>
-                        <input className="form-input" data-pulse-field={`courseOutline.${wi}.assessments`} aria-label={`Week ${row.week} assessment details`} value={row.assessments}
-                          onChange={e => setOutlineField(wi, 'assessments', e.target.value)}
-                          placeholder="Assessment..." disabled={exam}
-                          style={{ fontSize: '0.75rem', padding: '4px 6px', marginBottom: '4px' }}
-                        />
-                        {!exam && (
-                          <MultiSelectDropdown
-                            categories={ASSESSMENT_CATEGORIES} fieldPath={`courseOutline.${wi}.assessmentTypes`} fieldLabel={`Week ${row.week} assessment types`}
-                            selected={row.assessmentTypes || []}
-                            onChange={(val) => setOutlineField(wi, 'assessmentTypes', val)}
-                            placeholder="Assessment type..."
-                          />
-                        )}
-                      </td>
-                    </tr>
-                    {!exam && resExpanded && (
-                      <tr key={`res-${wi}`}>
-                        <td colSpan={6} style={{ padding: '8px 16px 12px 48px', background: 'var(--gray-50)', borderBottom: '1px solid var(--gray-200)' }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
-                            <Paperclip size={12} style={{ color: 'var(--sky-500)' }} />
-                            <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--gray-600)' }}>Resources for Week {row.week}</span>
-                            <button className="btn btn-ghost btn-sm" style={{ padding: '2px 6px', fontSize: '0.6875rem', marginLeft: 'auto' }} onClick={() => addResource(wi, 'file')}><Plus size={10} /> Add File</button>
-                            <button className="btn btn-ghost btn-sm" style={{ padding: '2px 6px', fontSize: '0.6875rem' }} onClick={() => addResource(wi, 'link')}><Plus size={10} /> Add Link</button>
-                          </div>
-                          {(row.resources || []).length === 0 && (
-                            <div style={{ fontSize: '0.75rem', color: 'var(--gray-400)', fontStyle: 'italic' }}>No resources attached — files and links added here auto-populate Section 7 (References)</div>
-                          )}
-                          {(row.resources || []).map((res, ri) => (
-                            <div key={ri} style={{ display: 'flex', gap: '6px', marginBottom: '4px', alignItems: 'center' }}>
-                              {res.type === 'file' ? <FileText size={12} style={{ color: 'var(--sky-500)', flexShrink: 0 }} /> : <Link2 size={12} style={{ color: 'var(--green-500, #22c55e)', flexShrink: 0 }} />}
-                              <input className="form-input" value={res.name} onChange={e => updateResource(wi, ri, 'name', e.target.value)}
-                                placeholder={res.type === 'file' ? 'File name (e.g., Lecture3-notes.pdf)' : 'Reference title'}
-                                style={{ fontSize: '0.75rem', padding: '4px 6px', flex: 1 }} />
-                              <input className="form-input" value={res.url} onChange={e => updateResource(wi, ri, 'url', e.target.value)}
-                                placeholder={res.type === 'file' ? 'Description (optional)' : 'https://...'}
-                                style={{ fontSize: '0.75rem', padding: '4px 6px', flex: 1 }} />
-                              <button className="btn btn-ghost" style={{ padding: '0' }} onClick={() => removeResource(wi, ri)}><Trash2 size={10} /></button>
-                            </div>
-                          ))}
-                        </td>
-                      </tr>
-                    )}
-                  </Fragment>
-                )
-              })}
-            </tbody>
+                          </td>
+                        </tr>
+                      )}
+                    </Fragment>
+                  )
+                })}
+              </tbody>
+            ))}
           </table></div>
-          </div>}
         </div>
       </section>
 
@@ -1363,7 +1210,7 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
             </div>
             <div>
               <FormGroup label="Evaluation and Grading System">
-                <textarea className="form-input" rows={4} data-pulse-field="gradingSystem" value={form.gradingSystem} onChange={e => set('gradingSystem', e.target.value)}
+                <AutoTextarea className="form-input" rows={4} data-pulse-field="gradingSystem" value={form.gradingSystem} onChange={e => set('gradingSystem', e.target.value)}
                   placeholder="e.g., MG = 60% CS + 40% Exam&#10;TFG = 60% CS + 40% Exam&#10;FG = (MG + TFG) / 2" style={{ resize: 'vertical' }} />
               </FormGroup>
               <FormGroup label="Course Policy">

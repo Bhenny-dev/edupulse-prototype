@@ -1,12 +1,20 @@
 import { test, expect } from '@playwright/test'
 import { restorationUI } from '../role-restoration-fixture'
 
+// Accounts render the same role dashboards as the preview personas, filled from account records.
+const DASHBOARD_SECTION: Record<string, string> = { instructor: 'Score Snapshot', student: 'Pulse Reminders', dean: 'Syllabus Stations', associate_dean: 'Syllabus Stations' }
 for (const role of ['instructor', 'student', 'dean', 'associate_dean']) {
   test(`restored ${role} pages use account records and keep each authorized section reachable`, async ({ page }) => {
     test.setTimeout(90000)
     const problems: string[] = []; page.on('pageerror', error => problems.push(error.message))
     await restorationUI(page, role)
-    await page.goto('/#/dashboard'); await expect(page.getByRole('navigation', { name: 'Quick actions' })).toBeVisible()
+    await page.goto('/#/dashboard'); await expect(page.getByRole('heading', { name: DASHBOARD_SECTION[role], exact: true })).toBeVisible()
+    if (role !== 'student') await expect(page.getByRole('navigation', { name: 'Quick actions' })).toBeVisible()
+    // No preview sample (names, scores, feed) leaks into an account dashboard.
+    await expect(page.getByRole('main')).not.toContainText(/Rogelio|Guisdan|Fianza|Guaki|Pangcog/)
+    if (role === 'instructor') { await expect(page.getByText('Topic averages · IT 102 Computer Programming 1', { exact: true })).toBeVisible(); await expect(page.getByText('BSIT-1A', { exact: true })).toBeVisible() }
+    if (role === 'student') { await expect(page.getByText('You haven\'t opened "Variables lesson" yet.', { exact: true })).toBeVisible(); await expect(page.getByRole('heading', { name: 'IT 102', exact: true })).toBeVisible() }
+    if (role === 'dean' || role === 'associate_dean') await expect(page.getByRole('cell', { name: 'Synthetic instructor', exact: true })).toBeVisible()
     if (role === 'instructor' || role === 'student' || role === 'dean') {
       await page.goto('/#/performance'); await expect(page.getByRole('img', { name: /^Assessment score radar:/ })).toBeVisible()
       await expect(page.locator('.recharts-radar-polygon')).toBeVisible()

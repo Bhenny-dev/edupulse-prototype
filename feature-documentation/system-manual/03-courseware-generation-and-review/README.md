@@ -10,7 +10,7 @@
 
    ![Week 1 outline and Generate button](02-weekly-outline-ready-to-generate.png)
 
-3. Wait while the local model drafts the week. **Stop generation** cancels this request. The app keeps any existing courseware if generation fails.
+3. Wait while the local model drafts the week. **Stop generation** cancels this request. If generation cannot run, the course stays open with **Generation did not finish** and the reason; when the cause is the AI connection it also offers **Set up Pulse AI**, which opens **Settings → AI & Knowledge**. **Dismiss** closes the message. The app keeps any existing courseware. A course opened while no provider or on-device model is connected says **Pulse AI is not set up yet** before you generate ([capture](../../system-walkthrough/09-restored-role-pages/47-publication-delivery-settings.png)).
 
    ![Week 1 generating state](03-generating-with-pulse-thinking.png)
 
@@ -24,9 +24,21 @@
 
    ![Outline alignment and statement check](06-outline-alignment-check.png)
 
-6. Edit any inaccurate explanation or answer key, then use **Check** only after reviewing the material, activity, and assessment. Drafts are not published or graded automatically.
+6. Edit any inaccurate explanation or answer key, then use **Check** only after reviewing the material, activity, and assessment. Section text and answer explanations in the editors grow to show their whole entry instead of scrolling inside a small box. Drafts are not published or graded automatically.
 
 The generation/material evidence uses the local `qwen2.5:3b` model. The current fourth image shows three generated drafts from the captured week-generation request. Earlier v0.4.0 and 1.5B-model evidence remains in the historical release records. These captures establish local task evidence, not authenticated hosted behavior or general model accuracy. The review panel may flag unsupported statements or incorrect answer explanations; instructors must resolve them before checking or publishing. The [component-actions validation record](../../versions/2026-10-28-component-actions/validation/results.md) records the current capture boundaries.
+
+This synthetic provider-failure example shows **Generation did not finish**, the Claude workspace recovery message, **Set up Pulse AI** and **Dismiss** while keeping the opened course available. It does not represent a completed generation request.
+
+![Synthetic generation failure and recovery controls](09-generation-recovery.png)
+
+The following editor examples use synthetic saved content, independently of the real model-generation captures above. **Edit** opens the material sections; **Save** keeps the edits and **Cancel** discards the unsaved edit. The section field grows to show all eight example lines.
+
+![Synthetic material section growing with its text](07-edit-material-growing-field.png)
+
+In the assessment editor, **Answer explanation** also grows with its text. The existing topic and response-type controls remain alongside it; changes require **Save Assessment**.
+
+![Synthetic assessment explanation displayed in full](08-edit-assessment-growing-explanation.png)
 
 ## Revise through Pulse
 

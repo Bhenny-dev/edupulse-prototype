@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { ArrowLeft, Plus, Trash2, Check, Save, RotateCcw } from 'lucide-react'
 import { useToast } from '../../context/ToastContext'
 import DraftEvidence from '../ai/DraftEvidence'
+import AutoTextarea from '../ui/AutoTextarea'
 import { useContentEditorTool } from '../../agents/useContentEditorTool'
 
 /* ─── Assessment Editor / Viewer ───
@@ -210,8 +211,8 @@ export default function AssessmentEditor({ content, onBack, isStudent = false, o
                   )
                 })}
               </div>
-              {!isStudent && <label style={{ display: 'block', marginTop: 12 }}>Answer explanation
-                <textarea className="form-input" rows={3} data-pulse-field={`questions.${qIdx}.explanation`} aria-label={`Question ${qIdx + 1} explanation`} value={q.explanation || ''} onChange={e => updateQuestion(qIdx, 'explanation', e.target.value)} placeholder="Explain why the selected answer is correct, using course references." />
+              {!isStudent && <label style={{ display: 'grid', gap: 8, marginTop: 12 }}>Answer explanation
+                <AutoTextarea className="form-input" rows={3} data-pulse-field={`questions.${qIdx}.explanation`} aria-label={`Question ${qIdx + 1} explanation`} value={q.explanation || ''} onChange={e => updateQuestion(qIdx, 'explanation', e.target.value)} placeholder="Explain why the selected answer is correct, using course references." />
               </label>}
               {isStudent && submitted && q.explanation && <p>{q.explanation}</p>}
             </div>

@@ -1,5 +1,11 @@
-.outline-editor { margin-top: 20px; min-width: 0; }
+.outline-editor { margin-top: 20px; min-width: 0; container: outline / inline-size; }
 .outline-editor:hover { transform: none; }
+/* On a desktop the outline is wider than the page column: it spans the window (less the Pulse
+   panel when that is open), centred on the page, up to 1760 px, so every column shows at once. */
+@media (min-width: 1180px) {
+  .outline-editor:not(.is-expanded) { --outline-room: calc(100vw - 48px); --outline-width: min(1760px, var(--outline-room)); width: var(--outline-width); max-width: none; margin-left: calc((100% - var(--outline-width)) / 2); }
+  body.pulse-panel-open .outline-editor:not(.is-expanded) { --outline-room: calc(100vw - 504px); }
+}
 .outline-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 20px; }
 .outline-toolbar h3 { margin: 0; }
 .outline-toolbar > div:first-child { margin: 0 !important; }
@@ -7,17 +13,31 @@
 .outline-tools label { display: grid; gap: 5px; font-size: .8rem; font-weight: 600; }
 .outline-tools select { min-width: 130px; }
 .dark-mode .outline-tools select { background-repeat: no-repeat; background-position: right 14px center; }
-.outline-term + .outline-term { margin-top: 24px; }
 .outline-table-scroll { overflow: auto; max-height: 75dvh; border: 1px solid var(--gray-200); border-radius: 12px; scrollbar-gutter: stable; }
 .outline-table { width: 100%; min-width: 1240px; table-layout: fixed; margin: 0; }
+.outline-col-tools { width: 52px; }
+.outline-col-week { width: 64px; }
 .outline-table th, .outline-table td { padding: 14px 12px; vertical-align: top; }
-.outline-table th { position: sticky; top: 0; z-index: 2; background: var(--gray-50); color: var(--gray-700); }
+.outline-table thead th { position: sticky; top: 0; z-index: 2; background: var(--gray-50); color: var(--gray-700); }
+/* Each term is a row group headed by one full-width row. */
+.outline-term-row th { padding: 12px 14px; text-align: left; text-transform: none; letter-spacing: 0; background: var(--sky-50); border-block: 1px solid var(--sky-200); }
+.outline-term-badge { display: inline-block; margin-right: 10px; padding: 4px 12px; border-radius: var(--radius-sm); font-size: .8125rem; font-weight: 700; color: #fff; background: var(--sky-500); }
+.outline-term.is-finals .outline-term-badge { background: var(--sky-700, #0369a1); }
+.dark-mode .outline-term.is-finals .outline-term-badge { color: #0c4a6e; }
+.outline-term-range { font-size: .875rem; font-weight: 500; color: var(--gray-600); text-transform: none; letter-spacing: 0; }
+/* When the whole table fits, it flows with the page (no box of its own to scroll) and its head
+   stays under the top bar. In the expanded view and on narrower screens it keeps its scroll box. */
+@container outline (min-width: 1160px) {
+  .outline-editor:not(.is-expanded) .outline-table-scroll { overflow: visible; max-height: none; }
+  .outline-editor:not(.is-expanded) .outline-table { min-width: 0; }
+  .outline-editor:not(.is-expanded) .outline-table thead th { top: var(--outline-sticky-top, 64px); }
+}
 .outline-table.data-table thead { display: table-header-group; }
 .outline-table.data-table tbody tr { display: table-row; margin: 0; border-radius: 0; box-shadow: none; }
 .outline-table.data-table tbody td { display: table-cell; }
 .outline-table.data-table tbody td::before { display: none; }
 .outline-table .form-input, .outline-table .form-select { width: 100%; min-width: 0; box-sizing: border-box; }
-.outline-table textarea.form-input { min-height: 132px; font-size: .875rem !important; line-height: 1.6; padding: 12px !important; }
+.outline-table textarea.form-input { min-height: 96px; font-size: .875rem !important; line-height: 1.6; padding: 12px !important; }
 .outline-table input.form-input { min-height: 42px; font-size: .875rem !important; padding: 10px !important; }
 .outline-multi-select { display: block; width: 100%; min-height: 42px; padding: 9px 10px; text-align: left; font: inherit; font-size: .8rem; color: var(--gray-700); background: var(--white); border: 1px solid var(--gray-300); border-radius: 8px; cursor: pointer; }
 .outline-selected-items { display: flex; flex-wrap: wrap; gap: 5px; margin-block: 6px; }

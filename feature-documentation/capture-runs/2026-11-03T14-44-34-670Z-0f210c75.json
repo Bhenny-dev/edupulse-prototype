@@ -1,0 +1,640 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-11-03T14-44-34-670Z-0f210c75",
+  "startedAt": "2026-11-03T14:44:34.670Z",
+  "finishedAt": "2026-11-03T14:45:48.819Z",
+  "commitSha": "b96e71eb96c9216e1b7651b7f8d143c25e1a2844",
+  "sourceDigest": "4478760170b2dcb640d793e2a29f850cdf81f75c6624f32d4b42ed08529486b5",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-11-03T14:44:32.016Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 21,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": null
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.spec.ts",
+    "edupulse-app/tests/snapshots/interface-captures.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration-mobile.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/harness-delivery.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-drafting.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-source.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+    "edupulse-app/tests/snapshots/student-directory.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+      "title": "synthetic baseline syllabus versions, assessment mappings and delivery settings",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2859,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+      "title": "synthetic editor fields grow to display full section text and answer explanations",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1482,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+      "title": "synthetic generation failure keeps the course open with actionable recovery",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1186,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/capture.spec.ts",
+      "title": "AI pipeline status and free providers",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "local-real-input/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2026,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/component-actions.spec.ts",
+      "title": "wide outline: full workspace, a selected week and solid dark surfaces",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "local-real-input/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 3018,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/interface-captures.ts",
+      "title": "interface: academic skeleton during an actual pending request",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1033,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/interface-captures.ts",
+      "title": "academic UI fixtures: current records screens, no hosted authorization claim",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 9052,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/manual.spec.ts",
+      "title": "syllabus lifecycle: build, check, download, approve, extract, activate",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "local-real-input/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 9425,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+      "title": "provider connection: clearly saved credential, synchronized status and recoverable replacement",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-provider-transport/ui-regression",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2642,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+      "title": "failed authorization remains visible when no previous provider is connected",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-provider-transport/ui-regression",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2194,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+      "title": "OpenRouter callback retains an authorized credential during a catalog outage and recovers on refresh",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-provider-transport/ui-regression",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2483,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/pulse-navigation.spec.ts",
+      "title": "synthetic owner opens named role dashboards and retains the correction conversation",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1774,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/pulse-navigation.spec.ts",
+      "title": "synthetic Anthropic API credit failure explains recovery without replacing the saved key",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1289,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/pulse-navigation.spec.ts",
+      "title": "synthetic Claude workspace recovery preserves the saved credential and selected model",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1475,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+      "title": "synthetic restored instructor dashboard",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 3239,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+      "title": "synthetic restored student dashboard",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2961,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+      "title": "synthetic restored dean dashboard",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 3366,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+      "title": "synthetic restored associate_dean dashboard",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2992,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/component-actions.mobile.spec.ts",
+      "title": "mobile Settings tabs and horizontally scrollable outline",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "local-real-input/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2506,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/interface-captures.ts",
+      "title": "interface: academic skeleton during an actual pending request",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 948,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/role-restoration-mobile.spec.ts",
+      "title": "synthetic restored mobile charts, matrix and dark role navigation",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 5063,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/01-select-course-autofills-section-1.png",
+      "sha256": "ec9e24e3c811c049ba9b64b50d8fb8c0a8a25cf4796dec506e3702d485f9edbd",
+      "bytes": 26354
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/02-write-course-outline.png",
+      "sha256": "510f81e9a69264a8b2d5e6460da469f4a5053e32e1b2a95ee580c54c84cc399e",
+      "bytes": 290822
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/03-save-as-drafted-button.png",
+      "sha256": "2ba2d59c689e48d623fa3f9d09611d1893606ad8b8b787ed9289e35bd7bc1fb2",
+      "bytes": 185397
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/04-my-syllabus-drafted.png",
+      "sha256": "b64d79c1a8b71e6ef67df854dd97199def092cd1a1d544858eaac243372d6339",
+      "bytes": 338690
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/05-marked-as-checked.png",
+      "sha256": "d426138271aacd40ef8c3ed42f5d95cef44e0f3310a29cdff2c7c15eea029378",
+      "bytes": 38189
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/06-downloaded-for-approval.png",
+      "sha256": "ab6d79e7190c6cce07bb5ec63d3037116a175167c91315051c5e9b4770f6ccdb",
+      "bytes": 39309
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/07-upload-approved-file-attestation.png",
+      "sha256": "f82fd62898d70c763f410dee671cf77baa1410c0702de65186bfaa40bfd1869e",
+      "bytes": 313566
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/08-approved-file-uploaded.png",
+      "sha256": "7593bff726d47efada120b8f4d28c2fe30fdf465b23a552f118d08d68ddb9d69",
+      "bytes": 39048
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/09-review-extracted-outline.png",
+      "sha256": "801d799536eda0c42b0ad4a7bf4eef8776177d9d27a1e25d31aea4561d9ed938",
+      "bytes": 296835
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/10-active-drives-courseware.png",
+      "sha256": "1e1d9f46b819601e7c6882526d70e6ee36f0a0d2d8a27a088a9178b30e2042d7",
+      "bytes": 32846
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/11-version-history-dialog.png",
+      "sha256": "9e1cc8e3068d0373b90231e8224116628c983ee80f3c1d5f20c0296924a36616",
+      "bytes": 77967
+    },
+    {
+      "path": "feature-documentation/system-manual/03-courseware-generation-and-review/04-generated-drafts-for-review.png",
+      "sha256": "9a9f8b68a9a726d2452a588438ade9ab2966529751c2370b8aa7999eb3a31dba",
+      "bytes": 258423
+    },
+    {
+      "path": "feature-documentation/system-manual/03-courseware-generation-and-review/07-edit-material-growing-field.png",
+      "sha256": "10d366059732fc8acf7f639cb3be2141133a3b1adc5306066c6ee0a478d7bdb7",
+      "bytes": 225434
+    },
+    {
+      "path": "feature-documentation/system-manual/03-courseware-generation-and-review/08-edit-assessment-growing-explanation.png",
+      "sha256": "8f92da4e40a6f690d018441dfb3b442b5052b8ece7100e5c10a207415fafd8eb",
+      "bytes": 154343
+    },
+    {
+      "path": "feature-documentation/system-manual/03-courseware-generation-and-review/09-generation-recovery.png",
+      "sha256": "89c404232a6a32d549e14f61e7cb073f2c1eb2ec62df48dc29a208829101b52d",
+      "bytes": 268808
+    },
+    {
+      "path": "feature-documentation/system-manual/08-ai-connections/01-pipeline-status.png",
+      "sha256": "c1dee3985b969a24eb2c771c9d5ace1e0b4c8592691acd2113bcd34d71d418e4",
+      "bytes": 100558
+    },
+    {
+      "path": "feature-documentation/system-manual/08-ai-connections/02-free-provider-options.png",
+      "sha256": "c505723bf15a1f80b2f717f33191c79bbd31f10b081f7190a6503c92d74f15f1",
+      "bytes": 105421
+    },
+    {
+      "path": "feature-documentation/system-manual/08-ai-connections/03-on-device-model.png",
+      "sha256": "341d1b5b9b1f692607c747a1eaba977dbe7299597228dbe593aa29d89d387d6a",
+      "bytes": 118531
+    },
+    {
+      "path": "feature-documentation/system-manual/08-ai-connections/04-saved-provider-credential.png",
+      "sha256": "22f79527f50bccf3d3c56c166b8aca89f4e904b06b3a1cf46b6dbfb53de747c9",
+      "bytes": 165467
+    },
+    {
+      "path": "feature-documentation/system-manual/08-ai-connections/05-provider-replacement-error.png",
+      "sha256": "476a3b9d033037d7a669c264437c40e759a18049fedb4e39b10110d5e5b29781",
+      "bytes": 151001
+    },
+    {
+      "path": "feature-documentation/system-manual/08-ai-connections/06-generation-verified.png",
+      "sha256": "f8fdb820b4f083581eba43d3050a9d24ffe7811b4623ad65c134c543118c4877",
+      "bytes": 170668
+    },
+    {
+      "path": "feature-documentation/system-manual/08-ai-connections/07-model-access-error.png",
+      "sha256": "f345be226b62a3291e1c6765cf9d2c51ed008c3b38f876eab057aca38b7a9b14",
+      "bytes": 169286
+    },
+    {
+      "path": "feature-documentation/system-manual/08-ai-connections/08-openrouter-catalog-retry.png",
+      "sha256": "e3fdef1f40c51be7d84e5ca632349fdfc5edb33e35ddfed330f8a9e3b3b9564c",
+      "bytes": 142871
+    },
+    {
+      "path": "feature-documentation/system-manual/08-ai-connections/09-mobile-provider-connection.png",
+      "sha256": "8f8c4e0e502787dfd94cec19287ba771d5c1beff7524a57fcd95dd15fb90c080",
+      "bytes": 183238
+    },
+    {
+      "path": "feature-documentation/system-manual/08-ai-connections/10-authorization-error.png",
+      "sha256": "7d8e6570bbdba7e2405ccda9cbc80e03dd28adce44ec1ea7e9d988abf0b5c7b4",
+      "bytes": 119042
+    },
+    {
+      "path": "feature-documentation/system-manual/12-interface-and-loading/04-records-loading.png",
+      "sha256": "41b7692dd9d604192b7e8fcd3754af3217be5b7fd3d2860d294f3b35d9959692",
+      "bytes": 197828
+    },
+    {
+      "path": "feature-documentation/system-manual/12-interface-and-loading/08-mobile-records-loading.png",
+      "sha256": "4f1f07cfa8281dd34570cd97fef4cd699bd1b2a3845570cbef9b255dccab1765",
+      "bytes": 284637
+    },
+    {
+      "path": "feature-documentation/system-manual/14-pulse-and-outline-workspace/06-wide-outline.png",
+      "sha256": "5d3b867233bad45099e2724d4247d2d7e9d2a4ac0919ae0135a10829e519e4be",
+      "bytes": 82459
+    },
+    {
+      "path": "feature-documentation/system-manual/14-pulse-and-outline-workspace/07-filtered-outline-week.png",
+      "sha256": "86f098dfed4bd2df6bd460848961506322cd1b81cf41abf7ad4861f9077703e3",
+      "bytes": 55415
+    },
+    {
+      "path": "feature-documentation/system-manual/14-pulse-and-outline-workspace/11-dark-outline.png",
+      "sha256": "7e1b5d8db42de9bc58219581668062f498f2f963ef55e81862948eec2019317d",
+      "bytes": 55027
+    },
+    {
+      "path": "feature-documentation/system-manual/14-pulse-and-outline-workspace/14-mobile-outline.png",
+      "sha256": "71a6c90f9c80b72712b0b8f1a44bdbddd0d71bd10243a29e8cf21277877c6651",
+      "bytes": 214674
+    },
+    {
+      "path": "feature-documentation/system-manual/14-pulse-and-outline-workspace/15-mobile-settings.png",
+      "sha256": "67ad078b9246a27e1c80fd8120bcde938f660f038f7949ab969960dea4def126",
+      "bytes": 412261
+    },
+    {
+      "path": "feature-documentation/system-manual/17-pulse-navigation-and-provider-recovery/01-instructor-view.png",
+      "sha256": "80341605dff4318d3ec3cf44eae1f69469ba79e65e44aa03c44e7f8a711d4057",
+      "bytes": 308435
+    },
+    {
+      "path": "feature-documentation/system-manual/17-pulse-navigation-and-provider-recovery/02-role-correction.png",
+      "sha256": "aca311decc0efdcb121ec87a94e46205d58bcfb6813f7f1c88f498cfc2db616f",
+      "bytes": 303212
+    },
+    {
+      "path": "feature-documentation/system-manual/17-pulse-navigation-and-provider-recovery/03-anthropic-api-credits.png",
+      "sha256": "734517ffdeff2dc4ebff54fec4a86023f9566e2960096aad38156f1a06c702a3",
+      "bytes": 198167
+    },
+    {
+      "path": "feature-documentation/system-manual/17-pulse-navigation-and-provider-recovery/04-claude-workspace.png",
+      "sha256": "b7bef459c39cfbace7f0b7c1a8e0414e8b39f59c26fa79ffe2893bf2cd3a2660",
+      "bytes": 202118
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/08-authenticated-records/01-instructor-records.png",
+      "sha256": "eda7c816b40c006e3d7f623d5f255f9bf4c0faf515a3423f0eb39c3774b71660",
+      "bytes": 550548
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/08-authenticated-records/02-student-material.png",
+      "sha256": "e6ae6523f3b5aaf1d60b9dc249e227da89c92a1c62a90ec79bd4e3f6f25ae605",
+      "bytes": 302102
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/08-authenticated-records/03-student-assessment.png",
+      "sha256": "c5ca48755ea18f7983ea3d5f5e35a40b2302b52a0bad92974049d230bff3802b",
+      "bytes": 350404
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/08-authenticated-records/04-student-performance.png",
+      "sha256": "ce35e3dd1674b1edd41717b7134cfb54dcbada5ea95a420ab6cf917705d05a4f",
+      "bytes": 330162
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/08-authenticated-records/05-dean-performance.png",
+      "sha256": "24b9272c6d6f9ce58157f70f0df597976c454c3d192b018c92dc3a4725614eb4",
+      "bytes": 381072
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/08-authenticated-records/06-associate-dean-oversight.png",
+      "sha256": "b389eb5c18af58e804bc27eebdc88c28109c7e0c0b23d5373d73ebdda8c07308",
+      "bytes": 315641
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/08-authenticated-records/07-unenrolled-student.png",
+      "sha256": "e8f87e18ef4c34155ff0acbf7ed3ba77018cbef4fcfa8bb94adeb94509a354f9",
+      "bytes": 355125
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/01-instructor-dashboard.png",
+      "sha256": "099c07fdadb88ae83a64b4903c204f7d58cec590b23ef20c3524b8a8e580d7cf",
+      "bytes": 410792
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/02-student-dashboard.png",
+      "sha256": "ca6201e48736a916b1814f6571f8f0dd6a698ea62f1fff38bee6832132cfbea3",
+      "bytes": 357078
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/03-dean-dashboard.png",
+      "sha256": "162be27a3330e5d08bb7bacaf96c6abd2e0327587e6076222e4208a44868df31",
+      "bytes": 329081
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/04-associate_dean-dashboard.png",
+      "sha256": "ccdaeaa53253fc181bf13b2ee59507832c170c23e4226d0d7b2653065f43886c",
+      "bytes": 331514
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/33-mobile-performance.png",
+      "sha256": "a5c7e78c8de70b0b03cdbfe7fb213f3e521d0d1e8afe058da9606faa1fda1de8",
+      "bytes": 1404155
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/34-mobile-materials.png",
+      "sha256": "19f4ff6c571f25d33b63faa7d8d8968df547349d5cc3db2c1e613252dc60c65e",
+      "bytes": 1095525
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/35-mobile-dark-dashboard.png",
+      "sha256": "4f2faa32f77e8595b249500b01757f33ba48a32cf78cf4810d3ca50b462aa602",
+      "bytes": 715106
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/45-saved-syllabus-versions.png",
+      "sha256": "c65ccfa01b2472e5808df990818612473967f66cb15f02519369001b13822fb0",
+      "bytes": 58391
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/46-assessment-topic-mapping.png",
+      "sha256": "0d9ada653dcf6639f0bb43f703dd4419ad9bb466343ec4944059211f02ee33e2",
+      "bytes": 338779
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/47-publication-delivery-settings.png",
+      "sha256": "ec5a02896c3c3152b5decb7f626024272dd7a0a9aafd2669b64895836b7f132e",
+      "bytes": 250370
+    }
+  ]
+}

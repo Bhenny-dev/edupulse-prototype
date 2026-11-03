@@ -4,6 +4,29 @@ import { createServer } from 'node:http'
 import { once } from 'node:events'
 import { invokeModel } from '../server/providers.js'
 
+test('Anthropic uses its native Messages format for both conversation and structured planning',async t=>{
+ const original=globalThis.fetch,bodies:Record<string,unknown>[]=[]
+ t.after(()=>{globalThis.fetch=original})
+ globalThis.fetch=async(url,init)=>{
+  assert.equal(String(url),'https://api.anthropic.com/v1/messages')
+  const body=JSON.parse(String(init?.body));bodies.push(body)
+  assert.equal(new Headers(init?.headers).get('anthropic-version'),'2023-06-01')
+  return Response.json({content:[{type:'text',text:'{"tool":"chat"}'}],stop_reason:'end_turn'})
+ }
+ const connection={provider:'anthropic' as const,model:'synthetic-claude-model',apiKey:'synthetic-only',owner:'test',id:'test',expires:Date.now()+1000}
+ for(const json of [false,true])await invokeModel('Return JSON.','Synthetic request.',AbortSignal.timeout(1000),json,connection)
+ assert.equal(bodies[0].response_format,undefined);assert.equal(bodies[1].response_format,undefined)
+})
+
+test('Anthropic HTTP 400 balance, context and token errors are distinguished without exposing private text',async t=>{
+ const original=globalThis.fetch;t.after(()=>{globalThis.fetch=original})
+ const connection={provider:'anthropic' as const,model:'synthetic-claude-model',apiKey:'synthetic-only',owner:'test',id:'test',expires:Date.now()+1000}
+ for(const [message,code] of [['Your credit balance is too low to access the Anthropic API. PRIVATE ACCOUNT DETAILS','PROVIDER_CREDITS'],['prompt is too long: PRIVATE SOURCE TEXT','PROMPT_TOO_LONG'],['max_tokens: 5000 exceeds maximum allowed. PRIVATE ACCOUNT DETAILS','MODEL_TOKEN_LIMIT']] as const){
+  globalThis.fetch=async()=>Response.json({error:{type:'invalid_request_error',message}},{status:400})
+  await assert.rejects(invokeModel('Test','OK',AbortSignal.timeout(1000),false,connection),(error:{code?:string;message?:string})=>error.code===code&&!error.message?.includes('PRIVATE'))
+ }
+})
+
 test('OpenAI routes legacy chat models to Chat Completions and modern models to stateless Responses', async t => {
   const original = globalThis.fetch, bodies: Record<string, unknown>[] = []
   const urls: string[] = []

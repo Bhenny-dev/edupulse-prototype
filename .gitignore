@@ -1,2 +1,4 @@
 .vercel
 .env*
+/.playwright-mcp/
+/supabase/.temp/

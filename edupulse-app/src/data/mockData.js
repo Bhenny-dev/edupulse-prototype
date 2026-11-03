@@ -406,19 +406,9 @@ export const INSTRUCTORS = [
   { id: 7, name: 'Maam Sharmaine Pangcog', email: 'sharmaine.pangcog@kcp.edu.ph', hasMasters: false, specialization: 'Web Development', department: 'College of IT' },
 ]
 
-// Syllabus lifecycle (FLOW_SPEC Phase 2). The signatory chain — Dean review →
-// CAO approval → EVP noting — happens OUTSIDE the system on the downloaded
-// file; EduPulse only tracks which station the syllabus is at. `active` means
-// the approved file was uploaded back and Section 5 (Course Outline) was
-// extracted, which unlocks courseware generation.
-export const SYLLABUS_STATUS_META = {
-  drafted: { label: 'Drafted', badge: 'drafted', step: 1, hint: 'AI or instructor draft — needs the instructor\'s check before anything else can happen.' },
-  checked: { label: 'Checked', badge: 'checked', step: 2, hint: 'Instructor-verified. Ready to download for the signatory route.' },
-  downloaded_for_approval: { label: 'Out for Approval', badge: 'out_for_approval', step: 3, hint: 'Downloaded file is routing offline: Dean review → CAO approval → EVP noting.' },
-  approved_uploaded: { label: 'Approved — Uploaded', badge: 'approved', step: 4, hint: 'Approved file uploaded. Extract the Course Outline to activate it.' },
-  active: { label: 'Active', badge: 'active', step: 5, hint: 'Course Outline extracted — this syllabus now drives courseware generation and monitoring.' },
-}
-export const SYLLABUS_STATUS_ORDER = ['drafted', 'checked', 'downloaded_for_approval', 'approved_uploaded', 'active']
+// The syllabus lifecycle is real configuration, not sample data. It lives in
+// syllabusStatus.js and is re-exported here for existing imports.
+export { SYLLABUS_STATUS_META, SYLLABUS_STATUS_ORDER } from './syllabusStatus'
 
 // Section-count and capacity ranges per year level are a fixed program requirement:
 // 1st Yr: 6 sections, 25-30 students · 2nd Yr: 4 sections, 25-30 · 3rd Yr: 3 sections,

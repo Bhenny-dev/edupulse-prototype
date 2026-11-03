@@ -12,6 +12,8 @@ Main tabs: **Dashboard**, **Syllabus**, **Courseware**, **Student Monitoring**, 
 - **My Block Sections:** advisory blocks with a link to their monitoring page.
 - **Score Snapshot**, **Recent Activity**, **My Courses — Syllabus Stations** and the **Courseware Review Queue**.
 
+Signed-in instructor accounts see this same dashboard with their own data: the summary cards, syllabus stations and review queue come from their workspace; block sections, the Score Snapshot and Recent Activity come from their authorized records. An empty account shows zeros and empty-state lines, never these sample values ([account capture](../09-restored-role-pages/README.md#role-dashboards)).
+
 *Changed in v0.4.0:* the Score Snapshot's topic chart averages only the students who have a score for that course (every bar previously showed about 29% because students from other courses were counted as zero) and names the course it shows. The Courseware Review Queue lists only drafts awaiting review, earliest outline week first, shows eight and states how many more there are (**View All** opens them in Courseware). It previously listed every courseware item, which made the dashboard over 16,000 pixels tall.
 
 ## 2–4. Syllabus
@@ -32,7 +34,7 @@ The seven-section template. Start by dropping an existing syllabus `.docx` or `.
 
 ![Course Outline section](06-syllabus-builder-course-outline.png)
 
-Section 5, **Course Outline**, is the part that later drives courseware: one row per week with intended learning outcomes, topics (**Add Topic**), activities and teaching materials, and assessment details. Weeks 9 and 18 are fixed exam weeks; rows can be reordered with the drag handle and given attachments with the paper-clip.
+Section 5, **Course Outline**, is the part that later drives courseware: one table with a row per week under a **Midterm** (Weeks 1–9) and a **Finals** (Weeks 10–18) heading, holding intended learning outcomes, topics (**Add Topic**), activities and teaching materials, and assessment details. On a desktop the section is wider than the page column so every column shows at once, and each text field grows to show its whole entry. Weeks 9 and 18 are fixed exam weeks; rows can be reordered with the drag handle and given attachments with the paper-clip.
 
 Pulse can prepare a new syllabus draft for the course selected in Section 1. Its [review card and research-source screenshot](../../system-manual/09-pulse-actions/README.md#generate-a-syllabus-from-the-selected-course) show the editable fields, pending institutional rules and separate apply/save controls. Empty fields do not require an existing syllabus in the library; the instructor reviews all new teaching content.
 
@@ -44,7 +46,7 @@ Pulse can prepare a new syllabus draft for the course selected in Section 1. Its
 
 ![Courseware Builder](08-courseware-builder.png)
 
-**Courseware Builder:** one card per course with an approved syllabus and extracted outline, showing weeks, planned items and progress. Opening a card lists the outline weeks with **Generate** per week and **Generate All Content**.
+**Courseware Builder:** one card per course with an approved syllabus and extracted outline, showing weeks, planned items and progress. Opening a card lists the outline weeks with **Generate** per week and **Generate All Content**. When no provider or on-device model is connected, the opened course says **Pulse AI is not set up yet** with **Set up Pulse AI** ([capture](../09-restored-role-pages/47-publication-delivery-settings.png)); a generation that cannot run stays on screen as **Generation did not finish** with its reason and **Dismiss**.
 
 *Changed in v0.4.0:* the teaching-weeks column is labelled as such (it excludes exam weeks) and counts read “1 week”, “1 item” in the singular.
 

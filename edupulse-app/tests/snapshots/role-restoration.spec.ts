@@ -10,8 +10,9 @@ async function shot(page: Page, name: string, selector?: string) {
   await page.evaluate(() => window.scrollTo({ top: 0, left: 0, behavior: 'instant' }))
   await (selector ? page.locator(selector) : page).screenshot({ path: `${root}/${name}.png`, animations: 'disabled', fullPage: !selector, style: '.app-topbar{position:static !important}' })
 }
-for (const [role, number] of [['instructor', '01'], ['student', '02'], ['dean', '03'], ['associate_dean', '04']]) {
-  test(`synthetic restored ${role} dashboard`, async ({ page }) => { await restorationUI(page, role); await page.goto('/#/dashboard'); await expect(page.getByRole('navigation', { name: 'Quick actions' })).toBeVisible(); await shot(page, `${number}-${role}-dashboard`) })
+// The same role dashboards as the preview personas, filled from the synthetic account records.
+for (const [role, number, section] of [['instructor', '01', 'Score Snapshot'], ['student', '02', 'Pulse Reminders'], ['dean', '03', 'Syllabus Stations'], ['associate_dean', '04', 'Syllabus Stations']]) {
+  test(`synthetic restored ${role} dashboard`, async ({ page }) => { await restorationUI(page, role); await page.goto('/#/dashboard'); await expect(page.getByRole('heading', { name: section, exact: true })).toBeVisible(); await page.waitForTimeout(1800); await shot(page, `${number}-${role}-dashboard`) })
 }
 test('synthetic restored performance and scoring sections', async ({ page }) => {
   await restorationUI(page)

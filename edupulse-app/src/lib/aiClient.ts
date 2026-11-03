@@ -22,7 +22,7 @@ export async function aiRequest<T>(action: string, method = 'GET', body?: unknow
   })
   if (!response.headers.get('content-type')?.includes('application/json')) throw new Error('The AI API is unavailable. Start the app with npm run dev or check the deployment.')
   const data = await response.json()
-  if (typeof window !== 'undefined' && requestToken === accessToken && ['chat', 'courseware', 'operator'].includes(action) && (response.ok || ['MODEL_NOT_AVAILABLE', 'MODEL_INCOMPATIBLE', 'PROVIDER_AUTH', 'PROVIDER_CREDITS', 'PROVIDER_QUOTA', 'EMPTY_RESPONSE'].includes(data.error?.code))) window.dispatchEvent(new Event('edupulse-ai-change'))
+  if (typeof window !== 'undefined' && requestToken === accessToken && ['chat', 'courseware', 'operator'].includes(action) && (response.ok || ['MODEL_NOT_AVAILABLE', 'MODEL_INCOMPATIBLE', 'PROVIDER_AUTH', 'PROVIDER_CREDITS', 'PROVIDER_QUOTA', 'PROVIDER_WORKSPACE_REQUIRED', 'EMPTY_RESPONSE'].includes(data.error?.code))) window.dispatchEvent(new Event('edupulse-ai-change'))
   if (!response.ok) throw new ApiRequestError(data.error?.message || `Request failed (${response.status}).`, response.status, data.error?.code)
   return data as T
 }
@@ -31,7 +31,7 @@ export type ModelState = { model: string; state: string; ready: boolean }
 export type AiHealth = {
   version: string; provider: string; model: string | null; ready: boolean; embeddings: boolean; message: string
   database: { ready: boolean; kind: string; message: string }; identity: { mode: string; role: string }; checkedAt: string
-  connection?: { provider: string; model: string; source: string; expiresAt: string | null; testedAt?: string } | null
+  connection?: { provider: string; model: string; source: string; expiresAt: string | null; testedAt?: string; workspaceId?: string } | null
   pipeline?: { embeddings: ModelState; reranker: ModelState; vectorStore: string; retrieval: string; extraction: { formats: string[]; maxBytes: number; sandbox: string }; agents: string[] }
 }
 export type AiAnswer = AgentAnswer

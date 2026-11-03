@@ -112,4 +112,4 @@ Confirmed shared course loads are shown above the builder when available. The id
 
 ## Course Outline editing space
 
-The [Course Outline workspace](../14-pulse-and-outline-workspace/README.md#manage-the-course-outline) has term/week filters, an expanded view, sticky headings and full-width fields. Teaching content moves between fixed calendar slots with the grip or move buttons; weeks 9 and 18 remain examinations. Materials, assessment types and resources stay with their teaching content.
+The [Course Outline workspace](../14-pulse-and-outline-workspace/README.md#manage-the-course-outline) is one table for both terms with term/week filters, an expanded view, sticky headings and full-width fields that grow with their text. Teaching content moves between fixed calendar slots with the grip or move buttons; weeks 9 and 18 remain examinations. Materials, assessment types and resources stay with their teaching content.
