@@ -20,7 +20,7 @@ Screenshots in the walkthrough and manual are real captures of the documentation
 
 ## Version history
 
-The [3 November completion release](versions/2026-11-03-claude-completion/README.md) finishes the pending account dashboards and outline/editor work, fixes Pulse's named-role navigation and clarifies direct Anthropic failures. The local release gate passed 199 unit/integration tests; 207 runnable browser cases passed across the broad run and corrected reruns, with 19 declared skips. See the release validation for publication status.
+The [3 November completion release](versions/2026-11-03-claude-completion/README.md) finishes the pending account dashboards and outline/editor work, fixes Pulse's named-role navigation and clarifies direct Anthropic failures. The local release gate passed 199 unit/integration tests; 207 runnable browser cases passed across the broad run and corrected reruns, with 19 declared skips. The application is live from `80b55c6`; public hosted checks passed. See the release validation for the account-specific Anthropic and GitHub billing limits.
 
 Version folders are release records. Preserve released records, and add corrections in a new version. Each one records features, architecture, validation evidence, deployment status and known limitations. No secrets or student records belong here.
 

@@ -1,0 +1,22 @@
+{
+  "checkedAt": "2026-11-03T15:03:31.590Z",
+  "origin": "https://edupulse-prototype.vercel.app",
+  "sourceCommit": "80b55c6df1daa5f0a371c911e34ee7f1566a0979",
+  "deploymentId": "dpl_6Ye1sZbbWx2iGHjxhNiGMJReiY8A",
+  "deploymentState": "READY",
+  "productionAliasCommit": "80b55c6df1daa5f0a371c911e34ee7f1566a0979",
+  "checks": [
+    { "name": "production UI bundle", "status": "passed", "asset": "/assets/index-Bor6D7Ob.js" },
+    { "name": "health", "status": "passed", "http": 200 },
+    { "name": "workspace", "status": "passed", "http": 200 },
+    { "name": "provider-workspaces", "status": "passed", "http": 400, "code": "KEY_REQUIRED" },
+    { "name": "provider-test", "status": "passed", "http": 400, "code": "CONNECTION_REQUIRED" },
+    { "name": "public source-grounded guide", "status": "passed", "http": 200, "mode": "retrieval", "sources": 1 }
+  ],
+  "accountSpecificAnthropicGeneration": "not-run; browser bridge unavailable",
+  "githubActions": {
+    "run": "https://github.com/Bhenny-dev/edupulse-prototype/actions/runs/41659079174",
+    "started": false,
+    "reason": "Account locked due to a billing issue; verify job has zero steps."
+  }
+}

@@ -40,4 +40,8 @@ The browser bridge later reported no enabled applications or browsers. The earli
 
 ## Publication
 
-Local release verification is complete. The source commit and hosted publication receipt will be recorded after pushing this verified tree.
+Source commit [`80b55c6`](https://github.com/Bhenny-dev/edupulse-prototype/commit/80b55c6df1daa5f0a371c911e34ee7f1566a0979) was pushed to `main`. Vercel deployment `dpl_6Ye1sZbbWx2iGHjxhNiGMJReiY8A` reached **READY**, and the production alias resolved to this exact source commit.
+
+Six public checks passed on [the live app](https://edupulse-prototype.vercel.app): the new workspace UI bundle, health, anonymous workspace isolation, missing-key workspace-discovery rejection, missing-connection generation-test rejection and the source-grounded public guide (one source, zero unsupported statements). See [hosted checks](hosted-checks.json). These checks did not use or replace a personal provider key.
+
+[GitHub Actions run 41659079174](https://github.com/Bhenny-dev/edupulse-prototype/actions/runs/41659079174) did not execute: its verify job has zero steps, with the annotation that the account is locked due to billing. The local gate passed independently; this is not a successful hosted CI run. No billing or access settings were changed.
