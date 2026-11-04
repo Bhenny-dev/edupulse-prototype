@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { useContentEditorTool } from '../../agents/useContentEditorTool'
+import CoursewareText from './CoursewareText'
 import {
   ArrowLeft, ChevronLeft, ChevronRight, Maximize2, Minimize2,
   Pencil, Save, X, Plus, Trash2,
@@ -17,7 +18,7 @@ function extractKeyPoints(body) {
   return body.split('\n')
     .map(l => l.trim())
     .filter(l => l.length > 0)
-    .map(l => l.replace(/^[•\-\*]\s*/, '').replace(/^\d+[\.\)]\s*/, ''))
+    .map(l => l.replace(/^[•\-*]\s+/, '').replace(/^\d+[.)]\s+/, ''))
     .slice(0, 6)
 }
 
@@ -202,7 +203,7 @@ export default function PresentationViewer({ content, onBack, isStudent = false,
                   </button>
                 </div>
               ) : (
-                <span>{pt}</span>
+                <CoursewareText inline>{pt}</CoursewareText>
               )}
             </div>
           ))}

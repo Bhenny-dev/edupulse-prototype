@@ -20,12 +20,15 @@ Screenshots in the walkthrough and manual are real captures of the documentation
 
 ## Version history
 
+The [4 November formatting update](versions/2026-11-04-courseware-formatting/README.md) displays courseware Markdown correctly and moves **AI draft review** after the content. Saved content and instructor editing remain available; refreshed examples distinguish synthetic display checks from real model-generation evidence.
+
 The [3 November completion release](versions/2026-11-03-claude-completion/README.md) finishes the pending account dashboards and outline/editor work, fixes Pulse's named-role navigation and clarifies direct Anthropic failures. The local release gate passed 199 unit/integration tests; 207 runnable browser cases passed across the broad run and corrected reruns, with 19 declared skips. The application is live from `80b55c6`; public hosted checks passed. See the release validation for the account-specific Anthropic and GitHub billing limits.
 
 Version folders are release records. Preserve released records, and add corrections in a new version. Each one records features, architecture, validation evidence, deployment status and known limitations. No secrets or student records belong here.
 
 | Version | Scope | Status |
 | --- | --- | --- |
+| [4 November courseware formatting](versions/2026-11-04-courseware-formatting/README.md) | Formatted content, preserved slide emphasis and evaluation at the end | Checks in [validation](versions/2026-11-04-courseware-formatting/validation/results.md) |
 | [3 November Claude work completion](versions/2026-11-03-claude-completion/README.md) | Original account dashboards, wide outline and growing editors, named-role Pulse navigation and direct Anthropic workspace/error recovery | Final checks in [validation](versions/2026-11-03-claude-completion/validation/results.md) |
 | [2 November account role dashboards](versions/2026-11-02-account-role-dashboards/README.md) | Signed-in Dean, Associate Dean, Instructor and Student accounts get the original role dashboards (cards, quick actions, onboarding, block sections, score snapshot, stations, review queue, reminders, score trend and management charts), filled from their own records | Unit, browser and capture checks in [validation](versions/2026-11-02-account-role-dashboards/validation/results.md) |
 | [2 November outline and editor fields](versions/2026-11-02-outline-and-editor-fields/README.md) | One wide Course Outline table with Midterm and Finals headings, fields that grow with their text, on-screen AI setup and generation notices, and an Account fallback for unknown Settings tabs | Browser and capture checks in [validation](versions/2026-11-02-outline-and-editor-fields/validation/results.md) |

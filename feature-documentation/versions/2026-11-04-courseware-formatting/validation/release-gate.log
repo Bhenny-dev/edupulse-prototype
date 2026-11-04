@@ -1,0 +1,409 @@
+
+> edupulse-app@0.4.0 verify
+> npm run docs:check && npm run lint && npm run typecheck && npm run models:fetch && npm test && npm run build && npm run deployment:check
+
+
+> edupulse-app@0.4.0 docs:check
+> node scripts/docs-check.mjs
+
+Documentation check passed: links, screenshots, capture runs, route coverage and freshness.
+
+> edupulse-app@0.4.0 lint
+> oxlint src server api scripts tests vite.config.js playwright.config.ts
+
+src/components/ui/ScreenReaderAnnouncer.jsx:1:10: warning eslint(no-unused-vars): Identifier 'useEffect' is imported but never used. help: Consider removing this import.
+src/utils/courseContentGenerator.js:41:41: warning eslint(no-unused-vars): Parameter 'ilos' is declared but never used. Unused parameters should start with a '_'. help: Consider removing this parameter.
+src/utils/courseContentGenerator.js:73:41: warning eslint(no-unused-vars): Parameter 'ilos' is declared but never used. Unused parameters should start with a '_'. help: Consider removing this parameter.
+src/utils/courseContentGenerator.js:101:41: warning eslint(no-unused-vars): Parameter 'ilos' is declared but never used. Unused parameters should start with a '_'. help: Consider removing this parameter.
+src/utils/courseContentGenerator.js:127:41: warning eslint(no-unused-vars): Parameter 'ilos' is declared but never used. Unused parameters should start with a '_'. help: Consider removing this parameter.
+src/components/landing/scene/seamScene.js:173:90: warning eslint(no-unused-vars): Variable 'halfW' is assigned a value but never used. Unused variables should start with a '_'. help: Did you mean to use this variable?
+tests/pulse-tools.test.ts:60:51: warning eslint(no-useless-escape): Unnecessary escape character '"' help: Replace `\"` with `"`.
+tests/pulse-tools.test.ts:60:63: warning eslint(no-useless-escape): Unnecessary escape character '"' help: Replace `\"` with `"`.
+tests/pulse-tools.test.ts:60:71: warning eslint(no-useless-escape): Unnecessary escape character '"' help: Replace `\"` with `"`.
+tests/pulse-tools.test.ts:60:80: warning eslint(no-useless-escape): Unnecessary escape character '"' help: Replace `\"` with `"`.
+src/pages/Assessment.jsx:134:28: warning react-hooks(exhaustive-deps): React hook useEffect depends on `handleSubmit`, which changes every render help: Try memoizing this variable with `useRef` or `useCallback`.
+src/context/WorkspaceContext.jsx:1:10: warning eslint(no-unused-vars): Identifier 'Spinner' is imported but never used. help: Consider removing this import.
+src/context/WorkspaceContext.jsx:117:17: warning react(only-export-components): Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components.
+src/context/ToastContext.jsx:34:14: warning react(only-export-components): Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components.
+src/context/ThemeContext.jsx:47:17: warning react(only-export-components): Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components.
+src/context/LanguageContext.jsx:289:17: warning react(only-export-components): Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components.
+src/context/ContentStoreContext.jsx:72:17: warning react(only-export-components): Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components.
+src/pages/CourseLoading.jsx:6:10: warning eslint(no-unused-vars): Identifier 'useToast' is imported but never used. help: Consider removing this import.
+src/pages/CourseLoading.jsx:10:26: warning eslint(no-unused-vars): Identifier 'Clock' is imported but never used. help: Consider removing this import.
+src/context/AuthContext.jsx:126:14: warning react(only-export-components): Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components.
+src/context/AIContext.jsx:55:14: warning react(only-export-components): Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components.
+src/context/AcademicContext.jsx:58:17: warning react(only-export-components): Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components.
+src/components/syllabus/UploadExistingSyllabus.jsx:3:28: warning eslint(no-unused-vars): Identifier 'X' is imported but never used. help: Consider removing this import.
+src/components/syllabus/UploadExistingSyllabus.jsx:47:14: warning eslint(no-unused-vars): Catch parameter 'err' is caught but never used. help: Consider handling this error.
+src/components/syllabus/SharedSyllabusRepository.jsx:2:82: warning eslint(no-unused-vars): Identifier 'CheckCircle' is imported but never used. help: Consider removing this import.
+src/components/syllabus/SharedSyllabusRepository.jsx:4:30: warning eslint(no-unused-vars): Identifier 'INSTRUCTORS' is imported but never used. help: Consider removing this import.
+src/components/ui/VersionHistory.jsx:5:12: warning eslint(no-unused-vars): Identifier 'Eye' is imported but never used. help: Consider removing this import.
+src/components/ui/VersionHistory.jsx:5:28: warning eslint(no-unused-vars): Identifier 'Tag' is imported but never used. help: Consider removing this import.
+src/components/ui/VersionHistory.jsx:5:33: warning eslint(no-unused-vars): Identifier 'Clock' is imported but never used. help: Consider removing this import.
+src/components/ui/VersionHistory.jsx:5:40: warning eslint(no-unused-vars): Identifier 'ChevronDown' is imported but never used. help: Consider removing this import.
+src/components/ui/VersionHistory.jsx:5:53: warning eslint(no-unused-vars): Identifier 'ChevronRight' is imported but never used. help: Consider removing this import.
+src/components/ui/VersionHistory.jsx:6:25: warning eslint(no-unused-vars): Identifier 'AlertTriangle' is imported but never used. help: Consider removing this import.
+src/components/ui/VersionHistory.jsx:6:40: warning eslint(no-unused-vars): Identifier 'Check' is imported but never used. help: Consider removing this import.
+src/components/ui/VersionHistory.jsx:6:47: warning eslint(no-unused-vars): Identifier 'X' is imported but never used. help: Consider removing this import.
+src/components/ui/VersionHistory.jsx:6:58: warning eslint(no-unused-vars): Identifier 'Filter' is imported but never used. help: Consider removing this import.
+src/components/ui/VersionHistory.jsx:7:3: warning eslint(no-unused-vars): Identifier 'FileText' is imported but never used. help: Consider removing this import.
+src/components/ui/VersionHistory.jsx:7:13: warning eslint(no-unused-vars): Identifier 'Lock' is imported but never used. help: Consider removing this import.
+src/components/ui/VersionHistory.jsx:7:19: warning eslint(no-unused-vars): Identifier 'Unlock' is imported but never used. help: Consider removing this import.
+src/components/ui/VersionHistory.jsx:7:27: warning eslint(no-unused-vars): Identifier 'Archive' is imported but never used. help: Consider removing this import.
+src/components/ui/VersionHistory.jsx:7:36: warning eslint(no-unused-vars): Identifier 'Star' is imported but never used. help: Consider removing this import.
+src/components/ui/VersionHistory.jsx:7:57: warning eslint(no-unused-vars): Identifier 'Link2' is imported but never used. help: Consider removing this import.
+src/components/ui/VersionHistory.jsx:7:64: warning eslint(no-unused-vars): Identifier 'Shield' is imported but never used. help: Consider removing this import.
+src/components/ui/VersionHistory.jsx:77:25: warning eslint(no-unused-vars): Parameter 'i' is declared but never used. Unused parameters should start with a '_'. help: Consider removing this parameter.
+src/pages/StudentMonitoring.jsx:11:3: warning eslint(no-unused-vars): Identifier 'Users' is imported but never used. help: Consider removing this import.
+src/pages/StudentMonitoring.jsx:11:10: warning eslint(no-unused-vars): Identifier 'AlertTriangle' is imported but never used. help: Consider removing this import.
+src/pages/StudentMonitoring.jsx:11:38: warning eslint(no-unused-vars): Identifier 'FileText' is imported but never used. help: Consider removing this import.
+src/pages/StudentMonitoring.jsx:11:48: warning eslint(no-unused-vars): Identifier 'FlaskConical' is imported but never used. help: Consider removing this import.
+src/pages/StudentMonitoring.jsx:95:9: warning eslint(no-unused-vars): Variable 'remindAll' is declared but never used. Unused variables should start with a '_'. help: Consider removing this declaration.
+src/components/courseware/CourseOutlineViewer.jsx:4:36: warning eslint(no-unused-vars): Identifier 'Eye' is imported but never used. help: Consider removing this import.
+src/components/courseware/CourseOutlineViewer.jsx:4:55: warning eslint(no-unused-vars): Identifier 'Pencil' is imported but never used. help: Consider removing this import.
+src/components/pulse/usePulseInteraction.jsx:4:25: warning react(only-export-components): Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components.
+src/App.jsx:1:10: warning eslint(no-unused-vars): Identifier 'Spinner' is imported but never used. help: Consider removing this import.
+src/components/ui/ExportOptions.jsx:2:59: warning eslint(no-unused-vars): Identifier 'Eye' is imported but never used. help: Consider removing this import.
+src/components/academic/AcademicUI.jsx:11:17: warning react(only-export-components): Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components.
+src/pages/Courseware.jsx:17:15: warning eslint(no-unused-vars): Identifier 'X' is imported but never used. help: Consider removing this import.
+src/pages/Courseware.jsx:17:34: warning eslint(no-unused-vars): Identifier 'Search' is imported but never used. help: Consider removing this import.
+src/pages/Courseware.jsx:17:42: warning eslint(no-unused-vars): Identifier 'Clock' is imported but never used. help: Consider removing this import.
+src/pages/Courseware.jsx:17:59: warning eslint(no-unused-vars): Identifier 'Calendar' is imported but never used. help: Consider removing this import.
+src/pages/Courseware.jsx:18:3: warning eslint(no-unused-vars): Identifier 'Copy' is imported but never used. help: Consider removing this import.
+src/pages/Courseware.jsx:18:14: warning eslint(no-unused-vars): Identifier 'MessageSquare' is imported but never used. help: Consider removing this import.
+src/pages/Courseware.jsx:18:40: warning eslint(no-unused-vars): Identifier 'Download' is imported but never used. help: Consider removing this import.
+src/pages/Courseware.jsx:19:3: warning eslint(no-unused-vars): Identifier 'Info' is imported but never used. help: Consider removing this import.
+src/pages/Courseware.jsx:19:9: warning eslint(no-unused-vars): Identifier 'Layers' is imported but never used. help: Consider removing this import.
+src/pages/Courseware.jsx:19:26: warning eslint(no-unused-vars): Identifier 'CircleCheck' is imported but never used. help: Consider removing this import.
+src/pages/Courseware.jsx:19:49: warning eslint(no-unused-vars): Identifier 'Flag' is imported but never used. help: Consider removing this import.
+src/pages/Courseware.jsx:21:3: warning eslint(no-unused-vars): Identifier 'Circle' is imported but never used. help: Consider removing this import.
+src/pages/Courseware.jsx:21:33: warning eslint(no-unused-vars): Identifier 'ClipboardCheck' is imported but never used. help: Consider removing this import.
+src/pages/Courseware.jsx:49:32: warning eslint(no-unused-vars): Parameter 'user' is declared but never used. Unused parameters should start with a '_'. help: Consider removing this parameter.
+src/pages/Courseware.jsx:75:17: warning eslint(no-unused-vars): Variable 'nonExamWeeks' is declared but never used. Unused variables should start with a '_'. help: Consider removing this declaration.
+src/pages/Courseware.jsx:391:28: warning eslint(no-unused-vars): Parameter 'idx' is declared but never used. Unused parameters should start with a '_'. help: Consider removing this parameter.
+src/pages/Courseware.jsx:617:28: warning eslint(no-unused-vars): Parameter 'items' is declared but never used. Unused parameters should start with a '_'. help: Consider removing this parameter.
+src/pages/Courseware.jsx:619:9: warning eslint(no-unused-vars): Variable 'navigate' is declared but never used. Unused variables should start with a '_'. help: Consider removing this declaration.
+src/pages/Courseware.jsx:753:11: warning eslint(no-unused-vars): Variable 'addToast' is declared but never used. Unused variables should start with a '_'. help: Consider removing this declaration.
+src/pages/Courseware.jsx:754:9: warning eslint(no-unused-vars): Variable 'navigate' is declared but never used. Unused variables should start with a '_'. help: Consider removing this declaration.
+src/pages/Courseware.jsx:758:102: warning eslint(no-unused-vars): Variable 'saveContent' is declared but never used. Unused variables should start with a '_'. help: Consider removing this declaration.
+src/pages/Courseware.jsx:759:10: warning eslint(no-unused-vars): Variable 'searchQuery' is declared but never used. Unused variables should start with a '_'. help: Consider removing this declaration.
+src/pages/Courseware.jsx:759:23: warning eslint(no-unused-vars): Variable 'setSearchQuery' is declared but never used. Unused variables should start with a '_'. help: Consider removing this declaration.
+src/pages/Courseware.jsx:775:7: warning react-hooks(exhaustive-deps): React hook useCallback depends on `setMainTab`, which changes every render help: Try memoizing this variable with `useRef` or `useCallback`.
+src/components/pulse/Pulse.jsx:112:104: warning react-hooks(exhaustive-deps): React Hook useEffect has a missing dependency: 'office' help: Either include it or remove the dependency array.
+
+> edupulse-app@0.4.0 typecheck
+> tsc --project jsconfig.json --noEmit && tsc --project tsconfig.server.json --noEmit
+
+
+> edupulse-app@0.4.0 models:fetch
+> node --import tsx scripts/fetch-models.ts
+
+all-MiniLM-L6-v2@751bff3: 4 files verified (23.7 MB, Apache-2.0).
+ms-marco-MiniLM-L-6-v2@a091443: 4 files verified (23.9 MB, Apache-2.0).
+
+> edupulse-app@0.4.0 test
+> node scripts/test.mjs
+
+✔ academic summaries exclude prior versions and preserve zero scores without treating no attempt as zero (7.171ms)
+✔ record intake handles quoted fields, rejects invalid and duplicate rows, and merges stable keys (1.8518ms)
+✔ workspace schema preserves bounded private intake without changing legacy snapshots (6.6751ms)
+✔ topic mastery counts only mapped graded current attempts and never invents topics (7.2431ms)
+✔ syllabus revisions retain editable history and withdraw stale published courseware (3.1796ms)
+✔ account guidance distinguishes persisted records from preview and preserves role boundaries (1.4695ms)
+✔ DATA-001/AUTH-001: reviewed publication, enrollment, answer-key secrecy, scoring and role RLS (2994.6073ms)
+✔ AUTH-001: performance navigation denies academic management and admin console views (3.1074ms)
+✔ DATA-001: authenticated accounts never consume sample performance (0.1876ms)
+✔ AUTH-002: courseware author capability preserves instructor and owner identity (0.146ms)
+✔ AUTH-002: forged courseware calls are denied before validation or model invocation (50.0231ms)
+✔ model permission failures remain actionable even when the library supplies relevant evidence (148.9628ms)
+✔ every named agent has a job title, a task and a measurable goal (1.3667ms)
+✔ the Guardian decides every labelled request correctly and cites the specification it enforces (18.2803ms)
+✔ a declined request stops at the Guardian: no search, no model call, and the goal is still recorded (10.3738ms)
+✔ the displayed role can add learner rules but never lift them (49.0187ms)
+✔ agent goals are judged from the run: evidence found, answer verified, and stops are not counted as success (37.3969ms)
+✔ run records keep tasks, outcomes and goal results but never prompt or answer text (8.2146ms)
+✔ agent-run SQL: users record only their own runs, nobody reads them, and only the Google system admin sees the activity (3705.7192ms)
+✔ the injection scanner catches task hijacks in English and Filipino without flagging ordinary lesson wording (7.0441ms)
+✔ buddy dialogue uses the trusted role and retains late source text rather than a first-line excerpt (4.546ms)
+✔ an unrelated product guide cannot replace the uploaded academic source (37.1681ms)
+✔ input rejects oversized prompts, unknown tasks and unsupported attachment shapes (7.9803ms)
+✔ citation validation rejects absent, zero and out-of-range references (0.3014ms)
+✔ Planner classifies tasks and decomposes comparison and long questions (8.3775ms)
+✔ comparison skips bibliography entries but keeps statements about the topic (1.9977ms)
+✔ consistency gate rejects changed numbers, names and absolutes but keeps faithful paraphrases (1.9984ms)
+✔ agents research, rank, write and verify a grounded answer (188.9369ms)
+✔ parallel researchers are fused so a passage found twice is cited once (22.4486ms)
+✔ Corrector repairs a wrong citation without another model call (29.0555ms)
+✔ Verifier counts corroboration across distinct documents (24.0805ms)
+✔ an unverifiable answer is revised once, then replaced by verified source excerpts (46.0924ms)
+✔ a mixed answer does not retain an unsupported claim after revision (30.3041ms)
+✔ explicit source-only questions without evidence never trigger generation (12.0245ms)
+✔ general assistance works without sources and invented citations are removed (30.0844ms)
+✔ greetings and situational exchanges do not require or inherit unrelated uploaded material (55.5637ms)
+✔ provider errors never leak secrets and cause honest excerpt fallback (15.8566ms)
+✔ a provider failure during conversation reports a connection error rather than missing document evidence (11.4859ms)
+✔ a failed provider fetch has a typed response without transport details (60.5503ms)
+✔ model discovery reports a failed fetch as provider unavailability (1.0844ms)
+✔ without a model the Writer quotes cited source sentences that verify (12.8669ms)
+✔ a sentence quoted word for word from its cited passage is supported even when the embedding match is weak (1.377ms)
+✔ request cancellation halts the agents (1.7168ms)
+✔ history and attachments are neutralized data under a fixed system prompt (17.9911ms)
+✔ Comparator aligns two documents for a comparison request (24.2543ms)
+✔ explicit comparison retains both selected documents despite uneven reranker scores (20.0146ms)
+✔ Librarian answers reference requests from catalog results only (9.3402ms)
+✔ courseware agents verify the draft and check outline coverage automatically (4212.2829ms)
+{"event":"courseware_validation_failed","attempt":2,"fields":["json"],"outputLength":12,"completeObject":false}
+✔ a failed courseware revision keeps the earlier valid draft (2074.1616ms)
+✔ assessment schema rejects repeated distractors and invalid answer indices (0.7629ms)
+✔ cross-origin requests are rejected (0.9385ms)
+✔ public client cannot forge role or access private documents or generation (5.9607ms)
+✔ API rejects invalid JSON, oversized requests, unknown routes, methods and nameless uploads (3.1643ms)
+✔ only the Google system admin can switch among five distinct views (0.841ms)
+✔ admin view persists only for the same authenticated account (0.1816ms)
+✔ baseline shared imports, scheduled publication, topic scoring, timed attempts, teacher marking and notices enforce role boundaries (2245.0189ms)
+✔ field edits preserve every neighboring item and reject unsafe or moved targets (6.9983ms)
+✔ scoped question wording retains question type, topic and private author answer settings (1.5203ms)
+✔ a focused writing request uses an editor proposal even with a retained syllabus source (6.2714ms)
+✔ multi-field sections keep their sibling fields while explicit all-fields requests broaden the scope (0.2763ms)
+✔ outline content moves between calendar slots while exam rows, week labels and source data stay intact (0.2426ms)
+✔ provider credentials are encrypted, authenticated, expiring and bound to their owner (39.2204ms)
+✔ the admin connection stays usable in role previews but cannot be reused by another account or a guest (1.2788ms)
+✔ a hosted visitor never inherits a server-wide OpenAI key (5.9287ms)
+✔ a generation test uses the saved credential, records success and clears verification after a model-access failure (7.9687ms)
+✔ catalog outages retain public saved-connection metadata and model discovery excludes expired or specialized OpenAI models (13.1673ms)
+✔ model discovery uses fixed provider endpoints and supported generation models (1.1399ms)
+✔ OpenRouter and Hugging Face discovery lists free text models first from fixed endpoints (0.8998ms)
+✔ personal connection discovers and switches models, powers guest drafts, and never borrows server credentials (67.0236ms)
+✔ Claude workspace discovery is read-only, includes Default, paginates and never exposes the key (1.1942ms)
+✔ Claude workspace changes retain the key and model, clear verification, and reach both native APIs (7.5802ms)
+✔ a Claude workspace error retains credentials and is distinct from a model or credit error (2.8946ms)
+✔ a delayed generation preserves work reviewed while its request was pending (0.9238ms)
+✔ courseware input carries the current prompt research restriction while preserving default automatic research (4.8793ms)
+✔ courseware input retains the current teaching instruction through API validation (5.1075ms)
+✔ Word-table outlines keep each paragraph: separate topics, readable outcomes and the resources column (2.8967ms)
+✔ the generation request carries the week plan: activity, assessment, teaching materials and resources (5.4205ms)
+✔ the answer-key check flags a key that its own explanation contradicts (2.0125ms)
+✔ references come only from the syllabus and the library; invented links are removed (0.8893ms)
+✔ coverage checks every topic and outcome, and whether the activity and assessment follow the plan (4.3378ms)
+✔ the courseware graph searches every topic, revises a wrong answer key and adds syllabus references (70.6545ms)
+✔ empty-library courseware researches the teaching topic, keeps provenance and honors source-only mode (25.1817ms)
+✔ a lesson a model wraps in a sentence and a code fence is read on the first attempt (12.9445ms)
+✔ courseware writer receives the original teaching instruction on each attempt without sending it to public search (18.9193ms)
+✔ courseware enforces request source restrictions even when the API research flag is omitted (43.7382ms)
+✔ syllabus source links do not authorize lookalike hosts or adjacent paths (0.178ms)
+✔ an irrelevant library candidate does not suppress public topic research (11.6632ms)
+✔ a valid JSON shell with tiny lesson bodies is repaired and then rejected without a usable draft (8.5292ms)
+✔ mechanical repairs fix extra questions, letter keys and option labels, and invent nothing (0.2802ms)
+✔ keyword topics such as "for" and "do-while" are checked, and count only where the draft uses them as keywords (1.9442ms)
+✔ a reference list written by the model is replaced, and no section is dropped to make room (0.3687ms)
+✔ account instructor dashboard counts the owner workspace and marked results, never samples (10.5252ms)
+✔ empty account records stay empty instead of showing preview values (1.0193ms)
+✔ account management dashboard reads courses, imported records and faculty (0.6617ms)
+✔ account student dashboard lists own pending work, future deadlines and safe source links (18.9005ms)
+✔ saved events read as recorded activity with relative times (0.224ms)
+✔ upcoming student work includes released activities, while hidden and future-release work stays out (0.6207ms)
+✔ Supabase migration enforces account isolation, vector search and atomic ingestion (2061.0176ms)
+✔ agentic RAG migration adds owner-scoped hybrid search with validated terms and metadata (1892.1835ms)
+✔ DOC-003: capture failures and stale image hashes fail the offline gate (21.8034ms)
+warning: in the working copy of 'src/page.jsx', LF will be replaced by CRLF the next time Git touches it
+✔ DOC-001: documentation in a later commit cannot repair a feature-only commit (1228.2856ms)
+✔ DOC-001: range enforcement does not truncate pushes to 200 commits (0.7272ms)
+✔ provider response crosses the real API, editor adapter and revision save, then survives reload (4871.5668ms)
+✔ model envelopes cannot execute nested paths, identity changes or removal operations (2.0246ms)
+✔ direct courseware service retains the same authoring roles as the HTTP endpoint (0.9234ms)
+✔ PDF text is extracted page by page inside the isolated worker (299.142ms)
+✔ DOCX keeps headings and table rows; PPTX follows presentation order and reads speaker notes (771.5447ms)
+✔ HTML scripts and styles are discarded and text files decode safely (72.9713ms)
+✔ type sniffing rejects renamed, legacy, binary and spreadsheet files (126.6097ms)
+✔ archive bombs and encrypted Office files are rejected before decompression (57.1646ms)
+✔ a damaged PDF fails cleanly and a stalled extraction is stopped by the sandbox timeout (109.5623ms)
+✔ cleaning removes repeated headers, footers and page numbers and repairs broken lines (0.7747ms)
+✔ quality evaluation flags scanned pages, symbol noise and instruction-like text (0.697ms)
+✔ chunking keeps page, section and a contextual header for every passage (52.5354ms)
+✔ the landing palette is the one in the brief (0.9421ms)
+✔ landing text colours reach 4.5:1 on the surfaces they are used on (0.4166ms)
+✔ the focus ring and form-control borders reach 3:1 (0.4548ms)
+✔ the public page keeps its light palette when the app is in dark mode (0.3539ms)
+✔ decorative tokens are never used as a text colour (2.6539ms)
+✔ Markdown from Pulse becomes laid-out PDF content, not raw symbols (3.4194ms)
+✔ inline runs keep code and links as plain text and spaces printable (0.2365ms)
+✔ a quotation keeps its gold bar in the narrow first column only (0.2404ms)
+✔ material PDFs lay out the reply body and list sources once (0.8363ms)
+✔ Node transport enforces route methods, byte limits and safe failures over a real socket (89.2521ms)
+✔ body intake preserves parsed and split bytes and releases listeners on completion, timeout and disconnect (3.9889ms)
+✔ disconnecting the HTTP client cancels active downstream work (10.7826ms)
+✔ an unfinished upload receives a safe 408 within the body deadline without dispatching (30010.5967ms)
+✔ OCR text goes under its own page marker; pages with a text layer and the intro are kept (1.5819ms)
+✔ a fully scanned PDF becomes paged text; blank pages keep their marker and edited-away markers return in order (0.2197ms)
+✔ the OCR summary names blank pages and pages below the confidence threshold (0.7911ms)
+✔ plain text with page markers reports its pages, so OCR output is scored like the PDF it came from (62.1704ms)
+✔ dashboard destinations keep the named role and a correction refers to the preceding navigation request (2.7837ms)
+✔ a class list is read from CSV with names, IDs, emails and the block; blanks and duplicates are reported (2.7844ms)
+✔ class lists with separate name columns, tabs or plain numbered lines are read; ordinary documents are not class lists (2.2619ms)
+✔ merging a class list keeps registered students once and recognises them by ID, email or name (0.5556ms)
+✔ Excel workbooks are read in the sandbox as comma-separated rows and become class lists (209.1746ms)
+✔ courses are recognised by code in any spacing or by title (3.1258ms)
+✔ a material is matched to its course with the words and syllabus weeks that support the match (10.8787ms)
+✔ a course syllabus becomes a cited reference with its outline (0.2634ms)
+✔ the Operator proposes confirmable actions and never registers without an attachment (4.8385ms)
+✔ navigation requests open only the pages a role may see (1.2132ms)
+✔ search finds students, courses, courseware and documents and says where each comes from (1.7236ms)
+✔ registering the same course and block twice merges the lists, and Undo restores the previous state (1.3175ms)
+✔ provider OAuth uses fixed hosts, private PKCE, expiring owner/origin/state checks and redacted credentials (37.2362ms)
+✔ a verified OAuth exchange keeps the protected credential when catalog discovery is temporarily unavailable (3.1069ms)
+✔ provider return detection supports dedicated, legacy and state-marked returns without consuming unrelated sign-in codes (0.646ms)
+✔ refreshing models preserves the chosen model instead of selecting the alphabetically first model (10.4761ms)
+✔ Anthropic uses its native Messages format for both conversation and structured planning (5.4935ms)
+✔ Anthropic HTTP 400 balance, context and token errors are distinguished without exposing private text (1.9113ms)
+✔ OpenAI routes legacy chat models to Chat Completions and modern models to stateless Responses (3.6609ms)
+✔ model access, compatibility and API credit errors are actionable without exposing provider bodies (2.3644ms)
+✔ Ollama draft transport assembles streamed JSON and propagates errors (56.7211ms)
+✔ Ollama length stop is rejected even if the runner reports done (1.5859ms)
+✔ Ollama frames tolerate split UTF-8 and lines but reject missing, malformed or oversized completions (6.5008ms)
+✔ cancelling a local draft interrupts a pending stream and releases it (14.7776ms)
+✔ OpenRouter gives a reasoning model bounded thinking on top of the answer budget, read once from the catalogue (2.7192ms)
+✔ an OpenRouter reply whose thinking used the limit is asked once more with thinking off (1.0148ms)
+✔ a model that must think, or refuses to stop, reports the reasoning limit instead of retrying again (0.7926ms)
+✔ OpenAI reasoning models keep the answer budget and name a reasoning limit without retrying (1.2649ms)
+✔ Gemini thinking gets room on top of the answer budget (5.6647ms)
+✔ Ollama context windows hold the whole prompt, so the instructions at its start are never cut (4.8268ms)
+✔ syllabus generation uses the selected editor, overrides incidental focus and retained import sources (8.9662ms)
+✔ draft intent survives missing sources and reference words; source-only scope never enables web research (76.6752ms)
+✔ full syllabus draft researches the course and validates all 18 weeks before proposing a patch (11.4376ms)
+✔ drafts a model wraps in a sentence and a code fence pass every stage without a repair attempt (3.042ms)
+✔ section drafts retain course identity, web failures allow useful drafts and invented URLs fail closed (2.0656ms)
+✔ OpenRouter web tool uses fixed origins, real annotations and a public topic, with keyless fallback (20.4756ms)
+✔ the public research endpoint cannot bypass learner appropriate-use rules (363.6615ms)
+✔ research follows explicit topics and honors a request to avoid the web (1.3032ms)
+✔ edit harness repairs malformed output, preserves exact input and stops after one repair (1.0672ms)
+✔ one policy item can be delivered as prose without relaxing schema or section scope (1.3901ms)
+✔ source-only editor requests require their file and preserve source restrictions during generation (1.7634ms)
+✔ ordinary whole-syllabus phrasing and outline-only replacements cannot silently omit weeks (2.0312ms)
+✔ model JSON is read from bare, fenced or sentence-wrapped replies, and nothing is repaired (4.573ms)
+✔ conversational redirects route to the builder and typed plans reject arbitrary execution (2.4561ms)
+✔ quick replies never absorb real tasks and buddy achievements come only from session events (1.1915ms)
+✔ editor tools require exact mounted targets and wait for persisted receipts (3.584ms)
+✔ model tool proposals reject forged roles, invalid fields and edits outside the selected section (13.0232ms)
+✔ local archive is private, idempotent, ordered, recallable and forgettable (4696.654ms)
+✔ Supabase migration enforces owner RLS, immutable transcripts, provenance and capacity (1990.3437ms)
+✔ MiniLM embeddings are normalized 384-d vectors that separate related and unrelated text (780.7543ms)
+✔ the cross-encoder ranks the answering passage first (273.7683ms)
+✔ real documents are indexed with page/section metadata and found by hybrid search (17746.6048ms)
+✔ private search is owner-isolated and can be scoped to selected documents (38.7872ms)
+✔ two selected documents each contribute evidence to a scoped comparison (39.5447ms)
+✔ documents embedded by an earlier model are re-embedded before search (105.4569ms)
+✔ research service reranks fused results against the main question; similarity is cosine (5111.8207ms)
+✔ Librarian calls only allowlisted catalogs, rebuilds links and survives a failing catalog (93.7097ms)
+✔ upload and indexing endpoints extract in the sandbox, report quality and index reviewed text (351.5434ms)
+✔ official student import keeps IDs and groups, separates duplicate surnames, and quarantines a missing surname (2.0956ms)
+✔ student directory RLS permits staff selection and each student own profile, without permitting profile writes (1946.2067ms)
+✔ PDF text with numbered headings, paired fields and outline columns retains the course and week (3.1263ms)
+✔ PDF import reads a real text-layer file and approved retention preserves its bytes and checksum (144.3118ms)
+✔ ruled PDF cells preserve wrapped lines, page continuations and explicit shared week ranges (21.0527ms)
+✔ institutional columns retain the college mission continuation without mixing objectives into it (0.675ms)
+✔ local workspace persists per owner and rejects concurrent stale saves (5180.4606ms)
+✔ cloud workspace SQL enforces ownership, trusted roles, valid snapshots and compare-and-save (1807.7319ms)
+✔ syllabus parsing never invents missing weeks, policies or a curriculum match (8.3444ms)
+✔ workspace rejects duplicate syllabus IDs and malformed courseware (4.7714ms)
+ℹ tests 199
+ℹ suites 0
+ℹ pass 199
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 137723.6784
+
+> edupulse-app@0.4.0 build
+> vite build
+
+vite v8.3.5 building client environment for production...
+transforming...
+✓ 3714 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                       0.93 kB │ gzip:     0.49 kB
+dist/assets/bg-cabm-Cp2kQB6I.webp                    15.76 kB
+dist/assets/bg-cot-DEO5qgG2.webp                     15.95 kB
+dist/assets/bg-ctela-Cp2H0_F5.webp                   21.96 kB
+dist/assets/college-cit-PVjXglhd.webp                27.87 kB
+dist/assets/kcp-crest-DbHwvd0T.webp                  28.88 kB
+dist/assets/cit-community-05-CjROx581.webp           29.27 kB
+dist/assets/bg-ccje-DmNlXw0p.webp                    29.71 kB
+dist/assets/cit-community-02-C0hFJNPb.webp           30.38 kB
+dist/assets/cit-community-06-ZQM0ZhuD.webp           30.52 kB
+dist/assets/cit-community-04-BqwbA8bw.webp           32.80 kB
+dist/assets/cit-community-09-BZxvfPVO.webp           33.13 kB
+dist/assets/cit-community-01-ChDeMT2S.webp           33.53 kB
+dist/assets/college-cabm-BUFfcft3.webp               33.86 kB
+dist/assets/cit-community-03-BBdUqgPD.webp           34.56 kB
+dist/assets/cit-community-10-C9T2O6TY.webp           35.10 kB
+dist/assets/performance-BjMh_H20.webp                35.65 kB
+dist/assets/cit-community-08-B5n8XJlT.webp           36.36 kB
+dist/assets/cit-community-07-EHmi5bt0.webp           38.63 kB
+dist/assets/cit-lab-DhrS5gI-.webp                    40.55 kB
+dist/assets/college-ccje-Cfm5ymJN.webp               40.66 kB
+dist/assets/courseware-DnHDo0aO.webp                 42.12 kB
+dist/assets/college-cot-D3C2Mw4d.webp                44.80 kB
+dist/assets/college-ctela-DQvdcld5.webp              53.01 kB
+dist/assets/syllabus-Qd2Shbm7.webp                   54.12 kB
+dist/assets/records-OXVQmXlt.webp                    63.20 kB
+dist/ocr/pdf/qcms_bg.wasm                            96.58 kB │ gzip:    36.09 kB
+dist/ocr/pdf/jbig2.wasm                             103.67 kB │ gzip:    41.64 kB
+dist/ocr/worker.min.js                              111.30 kB
+dist/ocr/pdf/openjpeg.wasm                          251.13 kB │ gzip:    82.95 kB
+dist/ocr/eng.traineddata.gz                       2,952.87 kB
+dist/ocr/tesseract-core-lstm.wasm.js              3,896.48 kB
+dist/ocr/tesseract-core-simd-lstm.wasm.js         3,899.47 kB
+dist/ocr/tesseract-core-relaxedsimd-lstm.wasm.js  3,905.76 kB
+dist/assets/browserAI.worker-J_iV-Slj.js          6,025.46 kB
+dist/assets/index-RdO0B0Rd.css                      135.52 kB │ gzip:    27.77 kB
+dist/assets/rolldown-runtime-BCiCTKAo.js              1.30 kB │ gzip:     0.71 kB
+dist/assets/base64-js-CQoVR1vJ.js                     1.44 kB │ gzip:     0.78 kB
+dist/assets/ocr-BtAN4i-F.js                           1.97 kB │ gzip:     1.12 kB
+dist/assets/RoomEnvironment-DkHENhst.js               2.03 kB │ gzip:     0.88 kB
+dist/assets/contracts-BFNjnK-E.js                     2.61 kB │ gzip:     1.07 kB
+dist/assets/dist-B9RPmzLB.js                          6.56 kB │ gzip:     2.63 kB
+dist/assets/pdfSyllabus-BqfszP3g.js                   7.76 kB │ gzip:     3.25 kB
+dist/assets/seamScene-Do2JhP0z.js                     9.29 kB │ gzip:     4.24 kB
+dist/assets/landingScene-BvY5wppg.js                  9.49 kB │ gzip:     4.11 kB
+dist/assets/WorkspaceOffice-U6edKwyU.js              10.90 kB │ gzip:     4.10 kB
+dist/assets/src-BmUdCsRu.js                          17.25 kB │ gzip:     7.29 kB
+dist/assets/agents-DQPIFq2V.js                       18.25 kB │ gzip:     7.06 kB
+dist/assets/toolPlanner-D2JqX8M4.js                  18.27 kB │ gzip:     6.97 kB
+dist/assets/courseware-BvzaLhki.js                   18.45 kB │ gzip:     7.19 kB
+dist/assets/workspaceScene-fXLKIpGp.js               43.97 kB │ gzip:    17.30 kB
+dist/assets/lib-DwKd5nrJ.js                         497.01 kB │ gzip:   125.33 kB
+dist/assets/three.module-ClPTu0h1.js                581.75 kB │ gzip:   146.06 kB
+dist/assets/pdfmake-BT47iegq.js                     767.81 kB │ gzip:   287.77 kB
+dist/assets/verify-BXU9sJaH.js                      846.29 kB │ gzip:   229.59 kB
+dist/assets/vfs_fonts-IsFsGHj9.js                   854.66 kB │ gzip:   468.60 kB
+dist/assets/pdfjs-TqaTbD-T.js                     1,599.16 kB │ gzip:   492.36 kB
+dist/assets/index-CCAlKjEC.js                     2,234.40 kB │ gzip:   627.68 kB
+dist/assets/lib-Cbpk4xPi.js                       5,950.37 kB │ gzip: 2,146.98 kB
+
+✓ built in 4.02s
+node.exe : [plugin builtin:vite-reporter]
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([plugin builtin:vite-reporter] :String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking:
+https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+[INEFFECTIVE_DYNAMIC_IMPORT] src/utils/syllabusParser.js is dynamically imported by src/lib/aiClient.ts but
+also statically imported by src/components/syllabus/ApprovedSyllabusUpload.jsx,
+src/components/syllabus/UploadExistingSyllabus.jsx, src/pages/Syllabus.jsx, dynamic import will not move module into
+another chunk.
+
+
+> edupulse-app@0.4.0 deployment:check
+> node --import tsx scripts/check-deployment.ts
+
+(node:15272) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Deployment checks passed: built assets, API routing, serverless health and public retrieval.

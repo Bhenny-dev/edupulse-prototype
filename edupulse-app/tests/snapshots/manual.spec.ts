@@ -93,9 +93,10 @@ test('courseware: generate a week, review alignment, check', async ({ page }) =>
   await open.click()
   const evidence = page.locator('.ai-draft-evidence').first()
   await expect(evidence).toBeVisible({ timeout: 60_000 })
-  await shot(page, f, '05-draft-document-view')
+  // The saved-content formatting suite owns images 05/06, so this real-model
+  // request cannot silently replace their explicitly synthetic provenance.
   await evidence.scrollIntoViewIfNeeded()
-  await shot(evidence, f, '06-outline-alignment-check')
+  expect(await evidence.evaluate(el => el.getBoundingClientRect().top >= document.querySelector('.doc-viewer-body')!.getBoundingClientRect().bottom)).toBe(true)
 })
 
 // Pulse actions (System Manual 9): proposals that run only after Confirm. The class list is

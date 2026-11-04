@@ -28,7 +28,8 @@ test('synthetic restored oversight, loading and records sections', async ({ page
   for (const [label, name] of [['Course Loads', '23-load-intake'], ['Student Class Lists', '24-roster-intake'], ['Templates', '25-intake-templates'], ['History', '26-intake-history']]) { await page.getByRole('navigation', { name: 'File import views' }).getByRole('button', { name: label, exact: true }).click(); await shot(page, name) }
 })
 test('synthetic restored student readers, results and notices', async ({ page }) => {
-  const fixture = await restorationUI(page, 'student'); await page.goto('/#/courseware'); await shot(page, '27-student-course-weeks'); await page.getByRole('button', { name: 'Open material', exact: true }).click(); await shot(page, '28-student-document'); await page.getByRole('button', { name: 'Presentation', exact: true }).click(); await shot(page, '29-student-presentation', '[aria-label="Opened courseware"]')
+  const fixture = await restorationUI(page, 'student'); await page.goto('/#/courseware'); await shot(page, '27-student-course-weeks')
+  // The formatting suite owns reader images 28/29 with its saved Markdown fixture.
   await page.goto('/#/assessment'); await page.getByRole('button', { name: 'Open assessment', exact: true }).first().click(); await shot(page, '30-student-assessment-result')
   fixture.records.attempts.pop(); await page.goto('/#/notifications'); await page.reload(); await expect(page.getByText('Unanswered assessment: Arrays quiz', { exact: true })).toBeVisible(); await shot(page, '31-account-notices')
 })

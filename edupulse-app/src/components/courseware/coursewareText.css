@@ -1,0 +1,22 @@
+.courseware-text { overflow-wrap: anywhere; }
+.courseware-text > :first-child { margin-top: 0; }
+.courseware-text > :last-child { margin-bottom: 0; }
+.courseware-text p { white-space: pre-line; }
+.courseware-text p, .courseware-text ul, .courseware-text ol, .courseware-text blockquote { margin: 0 0 12px; }
+.courseware-text ul, .courseware-text ol { padding-left: 24px; }
+.courseware-text li { margin: 4px 0; }
+.courseware-text li > p { margin-bottom: 4px; }
+.courseware-text h3, .courseware-text h4, .courseware-text h5, .courseware-text h6 {
+  font-family: var(--font-heading); color: var(--gray-900); line-height: 1.4; margin: 16px 0 8px; font-size: 1em;
+}
+.courseware-text strong { font-weight: 700; }
+.courseware-text a { color: var(--sky-600); text-decoration: underline; text-underline-offset: 2px; }
+.courseware-text code { font-family: monospace; font-size: .95em; background: var(--gray-100); border-radius: 4px; padding: 2px 4px; }
+.courseware-text pre { background: var(--gray-100); border: 1px solid var(--gray-200); border-radius: 8px; padding: 12px; white-space: pre-wrap; overflow-wrap: anywhere; text-align: left; }
+.courseware-text pre code { background: none; padding: 0; }
+.courseware-text blockquote { border-left: 3px solid var(--sky-500); padding-left: 16px; color: var(--gray-600); }
+.courseware-table { max-width: 100%; overflow-x: auto; margin: 12px 0; text-align: left; }
+.courseware-table table { border-collapse: collapse; width: 100%; }
+.courseware-table th, .courseware-table td { border: 1px solid var(--gray-200); padding: 8px 12px; vertical-align: top; min-width: 100px; }
+.courseware-table th { background: var(--gray-100); color: var(--gray-900); font-weight: 700; }
+.courseware-text-inline { white-space: pre-line; }

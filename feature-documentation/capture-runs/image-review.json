@@ -4140,6 +4140,42 @@
       "sha256": "c6bdde7bd178c7381796334cbe0bbcf7cb4c42187017fe4d7d1371da5a2655e7",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-03T14:52:42.493243Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/03-courseware-generation-and-review/05-draft-document-view.png",
+      "sha256": "d45bd4c28145adc387cfaf624134e5b73789e8050bc1ad88feb0cafc7111656a",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-04T04:15:41.465409Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/03-courseware-generation-and-review/06-outline-alignment-check.png",
+      "sha256": "784052e208f609d70de7df4187351795c20b2dfbf0e2febbbadae812cb4d9142",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-04T04:15:41.465633Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/03-courseware-generation-and-review/10-assessment-review-at-end.png",
+      "sha256": "4156ae74e9df83953207f4f872428c238603e164948f36d05cdfce5a7a5329f4",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-04T04:15:41.466043Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/03-courseware-generation-and-review/11-formatted-document-dark.png",
+      "sha256": "c761306bf6bda0c1c9ea4320e18fbcf9a5643ca786fea3707ce07fb591d5d7d0",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-04T04:15:41.466256Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/28-student-document.png",
+      "sha256": "597abb4ffac5c29e7c97d9ad54911831909175303aba5fc1ccbb6fe87d50a449",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-04T04:15:41.466855Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/29-student-presentation.png",
+      "sha256": "73e661abbee1aa8829d21efd1d7709656a7e276aa557e8caecd09606de2882f0",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-04T04:15:41.467340Z"
     }
   ]
 }

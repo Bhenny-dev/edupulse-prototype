@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { ArrowLeft, Plus, Trash2, Check, Save, RotateCcw } from 'lucide-react'
 import { useToast } from '../../context/ToastContext'
 import DraftEvidence from '../ai/DraftEvidence'
+import CoursewareText from './CoursewareText'
 import AutoTextarea from '../ui/AutoTextarea'
 import { useContentEditorTool } from '../../agents/useContentEditorTool'
 
@@ -121,7 +122,6 @@ export default function AssessmentEditor({ content, onBack, isStudent = false, o
 
       {/* A4 Assessment Page */}
       <div className="assessment-page">
-        {!isStudent && <DraftEvidence metadata={content.ai} />}
         {/* Header */}
         <div className="assessment-header">
           <div className="assessment-institution">King's College of the Philippines</div>
@@ -141,7 +141,7 @@ export default function AssessmentEditor({ content, onBack, isStudent = false, o
 
         {/* Instructions */}
         <div className="assessment-instructions">
-          {content.description || 'Answer all questions. Select the best answer for each question.'}
+          <CoursewareText>{content.description || 'Answer all questions. Select the best answer for each question.'}</CoursewareText>
         </div>
 
         {/* Questions */}
@@ -163,7 +163,7 @@ export default function AssessmentEditor({ content, onBack, isStudent = false, o
               </div>
 
               {isStudent ? (
-                <div className="assessment-question-text">{q.text}</div>
+                <div className="assessment-question-text"><CoursewareText>{q.text}</CoursewareText></div>
               ) : (
                 <input
                   className="form-input assessment-question-input" data-pulse-field={`questions.${qIdx}.text`} aria-label={`Question ${qIdx + 1} text`}
@@ -188,7 +188,7 @@ export default function AssessmentEditor({ content, onBack, isStudent = false, o
                     >
                       <span className="assessment-option-label">{typeof opt==='string'?String.fromCharCode(65+optIdx):opt.label}</span>
                       {isStudent || q.type==='true_false' ? (
-                        <span className="assessment-option-text">{typeof opt==='string'?opt:opt.text}</span>
+                        <span className="assessment-option-text"><CoursewareText inline>{typeof opt==='string'?opt:opt.text}</CoursewareText></span>
                       ) : (
                         <input
                           className="assessment-option-input" data-pulse-field={`questions.${qIdx}.options.${optIdx}${typeof opt === 'string' ? '' : '.text'}`} aria-label={`Question ${qIdx + 1} option ${optIdx + 1}`}
@@ -214,7 +214,7 @@ export default function AssessmentEditor({ content, onBack, isStudent = false, o
               {!isStudent && <label style={{ display: 'grid', gap: 8, marginTop: 12 }}>Answer explanation
                 <AutoTextarea className="form-input" rows={3} data-pulse-field={`questions.${qIdx}.explanation`} aria-label={`Question ${qIdx + 1} explanation`} value={q.explanation || ''} onChange={e => updateQuestion(qIdx, 'explanation', e.target.value)} placeholder="Explain why the selected answer is correct, using course references." />
               </label>}
-              {isStudent && submitted && q.explanation && <p>{q.explanation}</p>}
+              {isStudent && submitted && q.explanation && <CoursewareText>{q.explanation}</CoursewareText>}
             </div>
           ))}
         </div>
@@ -237,6 +237,8 @@ export default function AssessmentEditor({ content, onBack, isStudent = false, o
             </button>
           </div>
         )}
+
+        {!isStudent && <DraftEvidence metadata={content.ai} />}
 
         {/* Footer */}
         <div className="assessment-footer">

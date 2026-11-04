@@ -48,6 +48,8 @@ Pulse can prepare a new syllabus draft for the course selected in Section 1. Its
 
 **Courseware Builder:** one card per course with an approved syllabus and extracted outline, showing weeks, planned items and progress. Opening a card lists the outline weeks with **Generate** per week and **Generate All Content**. When no provider or on-device model is connected, the opened course says **Pulse AI is not set up yet** with **Set up Pulse AI** ([capture](../09-restored-role-pages/47-publication-delivery-settings.png)); a generation that cannot run stays on screen as **Generation did not finish** with its reason and **Dismiss**.
 
+Opened materials and activities display Markdown emphasis as bold or italic text, with formatted lists, tables and code. **AI draft review** follows the final section and references; the assessment editor places it below the questions. The [document and assessment examples](../../system-manual/03-courseware-generation-and-review/README.md) show this order with synthetic saved content. **Edit** retains the original formatting text, and **Save** keeps it for later display.
+
 *Changed in v0.4.0:* the teaching-weeks column is labelled as such (it excludes exam weeks) and counts read “1 week”, “1 item” in the singular.
 
 ## 9–10. Student Monitoring

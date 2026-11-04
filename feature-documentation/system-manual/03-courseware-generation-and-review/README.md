@@ -18,15 +18,23 @@
 
    ![Three generated draft items](04-generated-drafts-for-review.png)
 
-5. In the material view, read the draft and the **AI draft review** panel before checking it. The panel checks every outline topic and outcome, the planned activity and assessment when listed, and agreement between question explanations and marked answers. It shows which statements were supported by the outline or references and leaves other statements for instructor verification. Open **Generation details and references** to inspect the source trace. **References** lists the syllabus resources and retrieved passages used. When the library has no supporting material, public research can supply passages, labelled separately from library sources. Research limitations stay in the review details; model-authored reference lists are removed.
+5. In the material view, read the formatted draft first. Enclosed `**words**` display in **bold**; italic text, headings, lists, tables and code also display with their formatting. Code examples retain their literal symbols. Scroll past all sections, including **References**, to the **AI draft review** at the end. Activities and assessments also place this evaluation after their content, before the page footer. The panel checks every outline topic and outcome, the planned activity and assessment when listed, and agreement between question explanations and marked answers. It shows which statements were supported by the outline or references and leaves other statements for instructor verification. Open **Generation details and references** to inspect the source trace. **References** lists the syllabus resources and retrieved passages used. When the library has no supporting material, public research can supply passages, labelled separately from library sources. Research limitations stay in the review details; model-authored reference lists are removed.
 
-   ![Material document and review panel](05-draft-document-view.png)
+   ![Synthetic formatted material with the review after References](05-draft-document-view.png)
 
-   ![Outline alignment and statement check](06-outline-alignment-check.png)
+   ![Synthetic outline alignment and statement check at the end](06-outline-alignment-check.png)
 
 6. Edit any inaccurate explanation or answer key, then use **Check** only after reviewing the material, activity, and assessment. Section text and answer explanations in the editors grow to show their whole entry instead of scrolling inside a small box. Drafts are not published or graded automatically.
 
-The generation/material evidence uses the local `qwen2.5:3b` model. The current fourth image shows three generated drafts from the captured week-generation request. Earlier v0.4.0 and 1.5B-model evidence remains in the historical release records. These captures establish local task evidence, not authenticated hosted behavior or general model accuracy. The review panel may flag unsupported statements or incorrect answer explanations; instructors must resolve them before checking or publishing. The [component-actions validation record](../../versions/2026-10-28-component-actions/validation/results.md) records the current capture boundaries.
+Images 1–4 use the local `qwen2.5:3b` generation workflow; the fourth image shows three generated drafts from the captured week-generation request. Images 5–6 and 10–11 use synthetic saved content and evaluation metadata to demonstrate formatting and review placement. Their displayed coverage and answer checks are fixture values, not measured model accuracy. Earlier v0.4.0 and 1.5B-model evidence remains in the historical release records. These captures establish local task evidence, not authenticated hosted behavior or general model accuracy. The review panel may flag unsupported statements or incorrect answer explanations; instructors must resolve them before checking or publishing. The [component-actions validation record](../../versions/2026-10-28-component-actions/validation/results.md) records the earlier capture boundaries.
+
+The assessment editor keeps its question, topic, answer and explanation controls above **AI draft review**. The checks remain available after the final question and **Add Question**.
+
+![Synthetic assessment with review after the questions](10-assessment-review-at-end.png)
+
+The same document formatting uses the current solid dark surfaces and text colors. Raw formatting remains available through **Edit**; **Save** preserves the source text so reopening the item displays it formatted again. Student document and presentation views format emphasis without showing instructor-only draft evaluation.
+
+![Synthetic formatted document in dark mode](11-formatted-document-dark.png)
 
 This synthetic provider-failure example shows **Generation did not finish**, the Claude workspace recovery message, **Set up Pulse AI** and **Dismiss** while keeping the opened course available. It does not represent a completed generation request.
 

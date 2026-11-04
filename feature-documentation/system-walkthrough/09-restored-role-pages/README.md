@@ -61,8 +61,8 @@ File intake accepts CSV up to 1 MB and 1,000 rows per request. Quoted commas/new
 | View | Capture | Behavior |
 | --- | --- | --- |
 | Course/week navigation | ![Student course weeks](27-student-course-weeks.png) | Course/title search and expandable weeks for enrolled published materials. |
-| **Document** | ![Student document](28-student-document.png) | Read-only styled lesson; **Download PDF**, print and back controls use the existing document viewer. Opening records access before displaying the material. |
-| **Presentation** | ![Student presentation](29-student-presentation.png) | Title/section slides, previous/next, slide selector and fullscreen controls. |
+| **Document** | ![Student document](28-student-document.png) | Read-only synthetic networking lesson with bold, italic, lists, table and literal code examples; **Download PDF**, print and back controls use the existing document viewer. Opening records access before displaying the material. Instructor draft evaluation is hidden. |
+| **Presentation** | ![Student presentation](29-student-presentation.png) | Synthetic key-point slide with formatted emphasis, previous/next, slide selector and fullscreen controls. Leading bold markers render as bold text. |
 | Assessment result | ![Student result](30-student-assessment-result.png) | Numbered question navigation, disabled question controls and raw score receipt. This fixture has a saved objective result. Configured duration, deadline and 1-3 attempts are enforced by the server; written responses await instructor marking. No answer key is released. |
 | Account notices | ![Account notices](31-account-notices.png) | Record-derived notices and account/device-scoped **Mark All Read**. The fixture explicitly removes its last saved attempt and refreshes the account data to show **Unanswered assessment: Arrays quiz**. Persisted academic notices use account read receipts; derived reminders retain device read state. No email/push service is claimed. |
 

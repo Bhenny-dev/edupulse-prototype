@@ -4,6 +4,7 @@ import { ArrowLeft, Download, Printer, Save, Pencil, X } from 'lucide-react'
 import { useToast } from '../../context/ToastContext'
 import DraftEvidence from '../ai/DraftEvidence'
 import AutoTextarea from '../ui/AutoTextarea'
+import CoursewareText from './CoursewareText'
 import { useContentEditorTool } from '../../agents/useContentEditorTool'
 
 /* ─── Document Viewer ───
@@ -84,21 +85,7 @@ export default function DocumentViewer({ content, onBack, isStudent = false, onS
 
     return (
       <div className="doc-viewer-text">
-        {(body || '').split('\n').map((line, i) => {
-          const trimmed = line.trim()
-          if (!trimmed) return <br key={i} />
-          const isBullet = trimmed.startsWith('•') || trimmed.startsWith('-') || trimmed.startsWith('*')
-          const isNumbered = /^\d+[\.\)]\s/.test(trimmed)
-          const isIndented = line.startsWith('   ')
-          return (
-            <p key={i} className={
-              isBullet ? 'doc-viewer-bullet' :
-              isNumbered ? 'doc-viewer-numbered' :
-              isIndented ? 'doc-viewer-indented' :
-              ''
-            }>{trimmed.replace(/^[•\-\*]\s*/, '')}</p>
-          )
-        })}
+        <CoursewareText>{body}</CoursewareText>
       </div>
     )
   }
@@ -140,7 +127,6 @@ export default function DocumentViewer({ content, onBack, isStudent = false, onS
 
       {/* A4 Document */}
       <div className="doc-viewer-page">
-        {!isStudent && <DraftEvidence metadata={content.ai} />}
         {/* Header */}
         <div className="doc-viewer-header">
           <div className="doc-viewer-institution">King's College of the Philippines</div>
@@ -186,6 +172,8 @@ export default function DocumentViewer({ content, onBack, isStudent = false, onS
             </button>
           )}
         </div>
+
+        {!isStudent && <DraftEvidence metadata={content.ai} />}
 
         {/* Footer */}
         <div className="doc-viewer-footer">
@@ -259,28 +247,6 @@ export default function DocumentViewer({ content, onBack, isStudent = false, onS
           line-height: 1.7;
           color: var(--gray-700);
           text-align: justify;
-        }
-        .doc-viewer-text p {
-          margin: 0 0 4px;
-          text-indent: 0;
-        }
-        .doc-viewer-bullet {
-          padding-left: 20px;
-          text-indent: -14px;
-        }
-        .doc-viewer-bullet::before {
-          content: '•';
-          font-weight: 700;
-          color: var(--sky-500);
-          margin-right: 6px;
-        }
-        .doc-viewer-numbered {
-          padding-left: 20px;
-          text-indent: -20px;
-        }
-        .doc-viewer-indented {
-          padding-left: 36px;
-          color: var(--gray-500);
         }
         .doc-viewer-footer {
           display: flex;

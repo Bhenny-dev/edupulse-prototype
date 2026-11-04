@@ -1,0 +1,37 @@
+
+> edupulse-app@0.4.0 test:browser
+> playwright test tests/browser/courseware-formatting.spec.ts
+
+node.exe : [WebServer] (node:8788) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([WebServer] (no... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:21652) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 12:18:56 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3050
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 12:18:57 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3050
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+
+Running 8 tests using 1 worker
+
+(node:34140) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 [desktop] › tests\browser\courseware-formatting.spec.ts:5:1 › document formats saved Markdown and places evaluation after all sections (6.2s)
+  ok 2 [desktop] › tests\browser\courseware-formatting.spec.ts:32:1 › activity and assessment evaluation follow their content (2.3s)
+  ok 3 [desktop] › tests\browser\courseware-formatting.spec.ts:44:1 › student document and slides format emphasis without exposing draft evaluation (2.1s)
+  ok 4 [desktop] › tests\browser\courseware-formatting.spec.ts:62:1 › formatted content keeps HTML inert and prevents unsafe links or remote image loads (2.1s)
+(node:13040) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 5 [mobile] › tests\browser\courseware-formatting.spec.ts:5:1 › document formats saved Markdown and places evaluation after all sections (3.6s)
+  ok 6 [mobile] › tests\browser\courseware-formatting.spec.ts:32:1 › activity and assessment evaluation follow their content (2.0s)
+  ok 7 [mobile] › tests\browser\courseware-formatting.spec.ts:44:1 › student document and slides format emphasis without exposing draft evaluation (2.0s)
+  ok 8 [mobile] › tests\browser\courseware-formatting.spec.ts:62:1 › formatted content keeps HTML inert and prevents unsafe links or remote image loads (2.0s)
+
+  8 passed (30.4s)
