@@ -20,9 +20,9 @@ Screenshots in the walkthrough and manual are real captures of the documentation
 
 ## Version history
 
-The [4 November formatting update](versions/2026-11-04-courseware-formatting/README.md) displays courseware Markdown correctly and moves **AI draft review** after the content. Saved content and instructor editing remain available; refreshed examples distinguish synthetic display checks from real model-generation evidence.
+The [4 November formatting update](versions/2026-11-04-courseware-formatting/README.md) displays courseware Markdown correctly and moves **AI draft review** after the content. It is live from `b380f91`, with the local release gate, focused browser checks and public hosted checks passed. Saved content and instructor editing remain available; refreshed examples distinguish synthetic display checks from real model-generation evidence.
 
-The [3 November completion release](versions/2026-11-03-claude-completion/README.md) finishes the pending account dashboards and outline/editor work, fixes Pulse's named-role navigation and clarifies direct Anthropic failures. The local release gate passed 199 unit/integration tests; 207 runnable browser cases passed across the broad run and corrected reruns, with 19 declared skips. The application is live from `80b55c6`; public hosted checks passed. See the release validation for the account-specific Anthropic and GitHub billing limits.
+The [3 November completion release](versions/2026-11-03-claude-completion/README.md) finished the pending account dashboards and outline/editor work, fixed Pulse's named-role navigation and clarified direct Anthropic failures. Its local release gate passed 199 unit/integration tests; 207 runnable browser cases passed across the broad run and corrected reruns, with 19 declared skips. That release shipped from `80b55c6` and passed public hosted checks. See its release validation for the account-specific Anthropic and GitHub billing limits.
 
 Version folders are release records. Preserve released records, and add corrections in a new version. Each one records features, architecture, validation evidence, deployment status and known limitations. No secrets or student records belong here.
 

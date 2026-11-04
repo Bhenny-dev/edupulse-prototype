@@ -1,0 +1,28 @@
+{
+  "checkedAt": "2026-11-04T04:24:29.461Z",
+  "origin": "https://edupulse-prototype.vercel.app",
+  "sourceCommit": "b380f91962117919ef94ea2cc2bf1caf57a8ca12",
+  "deploymentId": "dpl_GaG9cHaEjC4dyvsgPRA6KYMqaC6w",
+  "deploymentState": "READY",
+  "productionAliasCommit": "b380f91962117919ef94ea2cc2bf1caf57a8ca12",
+  "checks": [
+    {
+      "name": "production UI and formatted renderer bundle",
+      "status": "passed",
+      "asset": "/assets/index-CCAlKjEC.js",
+      "http": 200
+    },
+    {
+      "name": "courseware formatting styles",
+      "status": "passed",
+      "asset": "/assets/index-RdO0B0Rd.css",
+      "http": 200
+    },
+    {
+      "name": "API health",
+      "status": "passed",
+      "http": 200
+    }
+  ],
+  "authenticatedCoursewareRendering": "not-run; local production capture build and synthetic account transport exercised rendering"
+}
