@@ -102,7 +102,7 @@ function slideOf(block, rect, height) {
   if (side === 'left') return { x: -x, y: 0 }
   if (side === 'right') return { x, y: 0 }
   if (side === 'top') return { x: 0, y: -y }
-  return { x: 0, y: rect.top - block.dy > height / 2 ? y : -y } // from the edge it is arriving at
+  return { x: 0, y: rect.top - block.dy < 0 ? -y : y } // from above only when its top is already above the screen
 }
 
 export function setupArrivals(page) {
