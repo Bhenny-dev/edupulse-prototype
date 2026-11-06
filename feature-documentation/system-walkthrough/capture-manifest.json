@@ -1,7 +1,167 @@
 {
-  "capturedAt": "2026-11-06T06:21:16.116Z",
+  "capturedAt": "2026-11-06T09:19:22.016Z",
   "problems": [],
   "scenes": [
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "01-landing-hero.png",
+      "title": "Landing page: hero, institution lockup and primary actions",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "02-landing-navigation.png",
+      "title": "Landing navigation after scrolling: active section and reading progress",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "03-landing-why-edupulse.png",
+      "title": "Landing page: why EduPulse (course preparation today and with EduPulse)",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "04-landing-features.png",
+      "title": "Landing page: features (four parts of one workflow)",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "05-landing-how-it-works.png",
+      "title": "Landing page: how it works (six-phase timeline)",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "06-landing-roles.png",
+      "title": "Landing page: roles (Instructor tab)",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "07-landing-roles-student.png",
+      "title": "Landing page: roles (Student tab)",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "08-landing-pulse.png",
+      "title": "Landing page: Pulse and its boundaries",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "08b-landing-agents.png",
+      "title": "Landing page: the agents behind Pulse",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "08c-landing-workspace.png",
+      "title": "Landing page: the agent workspace (the Comparator answering)",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "09-landing-why-it-matters.png",
+      "title": "Landing page: why it matters (research findings and SDGs)",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "10-landing-colleges.png",
+      "title": "Landing page: colleges",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "11-landing-community.png",
+      "title": "Landing page: CIT community photographs",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "12-landing-faq.png",
+      "title": "Landing page: frequently asked questions",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "13-sign-in-panel.png",
+      "title": "Sign-in panel as on the hosted site",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "14-preview-personas.png",
+      "title": "Preview personas (local development and documentation capture only)",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "15-landing-footer.png",
+      "title": "Landing page: footer",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "16-privacy.png",
+      "title": "Privacy page",
+      "route": "/privacy",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "17-terms.png",
+      "title": "Terms of use page",
+      "route": "/terms",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "18-server-error.png",
+      "title": "Server error page",
+      "route": "/500",
+      "ok": true
+    },
     {
       "role": "all roles",
       "folder": "02-shared-interface",
@@ -87,6 +247,14 @@
       "folder": "02-shared-interface",
       "file": "12-settings-notifications.png",
       "title": "Settings · Notifications",
+      "route": "/settings",
+      "ok": true
+    },
+    {
+      "role": "all roles",
+      "folder": "02-shared-interface",
+      "file": "13-settings-ai-and-knowledge.png",
+      "title": "Settings · AI & Knowledge",
       "route": "/settings",
       "ok": true
     },
@@ -285,6 +453,14 @@
     {
       "role": "instructor",
       "folder": "04-instructor",
+      "file": "02-syllabus-my-courses.png",
+      "title": "Syllabus · My Courses",
+      "route": "/syllabus",
+      "ok": true
+    },
+    {
+      "role": "instructor",
+      "folder": "04-instructor",
       "file": "03-syllabus-my-syllabus.png",
       "title": "Syllabus · My Syllabus (status, actions, versions)",
       "route": "/syllabus",
@@ -304,6 +480,30 @@
       "file": "05-syllabus-builder.png",
       "title": "Syllabus Builder (upload or build the 7 sections)",
       "route": "/syllabus",
+      "ok": true
+    },
+    {
+      "role": "instructor",
+      "folder": "04-instructor",
+      "file": "06-syllabus-builder-course-outline.png",
+      "title": "Syllabus Builder · Section 5 Course Outline",
+      "route": "/syllabus",
+      "ok": true
+    },
+    {
+      "role": "instructor",
+      "folder": "04-instructor",
+      "file": "07-courseware-my-courseware.png",
+      "title": "Courseware · combined course list",
+      "route": "/courseware",
+      "ok": true
+    },
+    {
+      "role": "instructor",
+      "folder": "04-instructor",
+      "file": "08-courseware-builder.png",
+      "title": "Courseware · weekly workspace",
+      "route": "/courseware",
       "ok": true
     },
     {
@@ -352,6 +552,14 @@
       "file": "01-dashboard.png",
       "title": "Student dashboard",
       "route": "/dashboard",
+      "ok": true
+    },
+    {
+      "role": "student",
+      "folder": "05-student",
+      "file": "02-my-materials.png",
+      "title": "My Courses · course list",
+      "route": "/courseware",
       "ok": true
     },
     {
@@ -408,214 +616,6 @@
       "file": "09-pulse-declines-assessment-answers.png",
       "title": "Pulse declines a request for quiz answers (Guardian)",
       "route": "/dashboard",
-      "ok": true
-    },
-    {
-      "role": "public",
-      "folder": "01-public-site",
-      "file": "01-landing-hero.png",
-      "title": "Landing page: hero, institution lockup and primary actions",
-      "route": "/",
-      "ok": true
-    },
-    {
-      "role": "public",
-      "folder": "01-public-site",
-      "file": "02-landing-navigation.png",
-      "title": "Landing navigation after scrolling: active section and reading progress",
-      "route": "/",
-      "ok": true
-    },
-    {
-      "role": "public",
-      "folder": "01-public-site",
-      "file": "03-landing-why-edupulse.png",
-      "title": "Landing page: why EduPulse (course preparation today and with EduPulse)",
-      "route": "/",
-      "ok": true
-    },
-    {
-      "role": "public",
-      "folder": "01-public-site",
-      "file": "04-landing-features.png",
-      "title": "Landing page: features (four parts of one workflow)",
-      "route": "/",
-      "ok": true
-    },
-    {
-      "role": "public",
-      "folder": "01-public-site",
-      "file": "05-landing-how-it-works.png",
-      "title": "Landing page: how it works (six-phase timeline)",
-      "route": "/",
-      "ok": true
-    },
-    {
-      "role": "public",
-      "folder": "01-public-site",
-      "file": "06-landing-roles.png",
-      "title": "Landing page: roles (Instructor tab)",
-      "route": "/",
-      "ok": true
-    },
-    {
-      "role": "public",
-      "folder": "01-public-site",
-      "file": "07-landing-roles-student.png",
-      "title": "Landing page: roles (Student tab)",
-      "route": "/",
-      "ok": true
-    },
-    {
-      "role": "public",
-      "folder": "01-public-site",
-      "file": "08-landing-pulse.png",
-      "title": "Landing page: Pulse and its boundaries",
-      "route": "/",
-      "ok": true
-    },
-    {
-      "role": "public",
-      "folder": "01-public-site",
-      "file": "08b-landing-agents.png",
-      "title": "Landing page: the agents behind Pulse",
-      "route": "/",
-      "ok": true
-    },
-    {
-      "role": "public",
-      "folder": "01-public-site",
-      "file": "08c-landing-workspace.png",
-      "title": "Landing page: the agent workspace (the Comparator answering)",
-      "route": "/",
-      "ok": true
-    },
-    {
-      "role": "public",
-      "folder": "01-public-site",
-      "file": "09-landing-why-it-matters.png",
-      "title": "Landing page: why it matters (research findings and SDGs)",
-      "route": "/",
-      "ok": true
-    },
-    {
-      "role": "public",
-      "folder": "01-public-site",
-      "file": "10-landing-colleges.png",
-      "title": "Landing page: colleges",
-      "route": "/",
-      "ok": true
-    },
-    {
-      "role": "public",
-      "folder": "01-public-site",
-      "file": "11-landing-community.png",
-      "title": "Landing page: CIT community photographs",
-      "route": "/",
-      "ok": true
-    },
-    {
-      "role": "public",
-      "folder": "01-public-site",
-      "file": "12-landing-faq.png",
-      "title": "Landing page: frequently asked questions",
-      "route": "/",
-      "ok": true
-    },
-    {
-      "role": "public",
-      "folder": "01-public-site",
-      "file": "13-sign-in-panel.png",
-      "title": "Sign-in panel as on the hosted site",
-      "route": "/",
-      "ok": true
-    },
-    {
-      "role": "public",
-      "folder": "01-public-site",
-      "file": "14-preview-personas.png",
-      "title": "Preview personas (local development and documentation capture only)",
-      "route": "/",
-      "ok": true
-    },
-    {
-      "role": "public",
-      "folder": "01-public-site",
-      "file": "15-landing-footer.png",
-      "title": "Landing page: footer",
-      "route": "/",
-      "ok": true
-    },
-    {
-      "role": "public",
-      "folder": "01-public-site",
-      "file": "16-privacy.png",
-      "title": "Privacy page",
-      "route": "/privacy",
-      "ok": true
-    },
-    {
-      "role": "public",
-      "folder": "01-public-site",
-      "file": "17-terms.png",
-      "title": "Terms of use page",
-      "route": "/terms",
-      "ok": true
-    },
-    {
-      "role": "public",
-      "folder": "01-public-site",
-      "file": "18-server-error.png",
-      "title": "Server error page",
-      "route": "/500",
-      "ok": true
-    },
-    {
-      "role": "instructor",
-      "folder": "04-instructor",
-      "file": "02-syllabus-my-courses.png",
-      "title": "Syllabus · My Courses",
-      "route": "/syllabus",
-      "ok": true
-    },
-    {
-      "role": "all roles",
-      "folder": "02-shared-interface",
-      "file": "13-settings-ai-and-knowledge.png",
-      "title": "Settings · AI & Knowledge",
-      "route": "/settings",
-      "ok": true
-    },
-    {
-      "role": "instructor",
-      "folder": "04-instructor",
-      "file": "06-syllabus-builder-course-outline.png",
-      "title": "Syllabus Builder · Section 5 Course Outline",
-      "route": "/syllabus",
-      "ok": true
-    },
-    {
-      "role": "instructor",
-      "folder": "04-instructor",
-      "file": "07-courseware-my-courseware.png",
-      "title": "Courseware · combined course list",
-      "route": "/courseware",
-      "ok": true
-    },
-    {
-      "role": "instructor",
-      "folder": "04-instructor",
-      "file": "08-courseware-builder.png",
-      "title": "Courseware · weekly workspace",
-      "route": "/courseware",
-      "ok": true
-    },
-    {
-      "role": "student",
-      "folder": "05-student",
-      "file": "02-my-materials.png",
-      "title": "My Courses · course list",
-      "route": "/courseware",
       "ok": true
     }
   ]

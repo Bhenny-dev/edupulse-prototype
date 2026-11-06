@@ -19,12 +19,14 @@ export const OPENING_TRIGGER = 'lp-aperture'
 const barHeight = () => document.querySelector('.lp-nav')?.getBoundingClientRect().height || 72
 
 // Where a section starts below the fixed bar. "top" is the hero at rest: after the opening
-// aperture (when it is on the page) has fully opened.
+// aperture (when it is on the page) has fully opened. A section that fills the screen runs under
+// the bar, so it starts at the top of the window.
 export function sectionTop(id) {
   if (id === 'top') return ScrollTrigger.getById(OPENING_TRIGGER)?.end ?? 0
   const target = document.getElementById(id)
   if (!target) return null
-  return Math.max(0, Math.round(target.getBoundingClientRect().top + window.scrollY - barHeight() + 1))
+  const top = target.getBoundingClientRect().top + window.scrollY
+  return Math.max(0, Math.round(target.hasAttribute('data-full-screen') ? top + 1 : top - barHeight() + 1))
 }
 
 // Glides the window to a scroll position with GSAP (the page's one animation system). The

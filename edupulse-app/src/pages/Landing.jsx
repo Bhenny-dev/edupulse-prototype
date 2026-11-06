@@ -18,9 +18,9 @@ import SignInSection from '../components/landing/SignInSection'
 import LandingFooter from '../components/landing/LandingFooter'
 import { gsap, ScrollTrigger, MEDIA, revealHeadings } from '../components/landing/motion'
 import { decideOpening, trackLandingScroll, leaveLanding, takeReturnY } from '../components/landing/intro'
-import { setupSeams } from '../components/landing/seams'
+import { setupArrivals } from '../components/landing/arrivals'
 import { SECTION_IDS, OPENING_TRIGGER, scrollToId } from '../components/landing/navigation'
-import { PROBLEM, CHAPTERS, PHASES, ROLES, PRINCIPLES, AGENTS, WORKSPACE_TALK, WORKSPACE_RUNS, EVIDENCE, GOALS, FAQ, COMMUNITY_ALT } from '../components/landing/content'
+import { PROBLEM, CHAPTERS, PHASES, ROLES, PRINCIPLES, AGENTS, WORKSPACE_TALK, EVIDENCE, GOALS, FAQ, COMMUNITY_ALT } from '../components/landing/content'
 import { KCP, COLLEGES } from '../data/colleges'
 import '../components/landing/landing.css'
 
@@ -31,19 +31,19 @@ const CIT = COLLEGES.find(college => college.status === 'active')
 const PLANNED = COLLEGES.filter(college => college.status !== 'active')
 
 export default function Landing() {
-  const root = useRef(null), seamCanvas = useRef(null)
+  const root = useRef(null)
   const { search } = useLocation()
   const navigationType = useNavigationType()
   const [opening] = useState(() => decideOpening(search))
   const [arrival] = useState(() => ({ section: new URLSearchParams(search).get('section'), navigationType }))
 
-  // Shared heading reveals and the seams every section arrives through, created after the
+  // Shared heading reveals and the entrances of every section's cards, created after the
   // sections' own pins (child effects run first), so they are measured with the pin spacers
   // in place. Neither runs with reduced motion.
   useLayoutEffect(() => {
     const mm = gsap.matchMedia()
     mm.add(MEDIA.motion, () => revealHeadings(root.current), root)
-    mm.add(MEDIA.motion, () => setupSeams(root.current, seamCanvas.current))
+    mm.add(MEDIA.motion, () => setupArrivals(root.current))
     return () => mm.revert()
   }, [])
 
@@ -77,7 +77,6 @@ export default function Landing() {
     <div className="landing-page" ref={root}>
       <SkipToContent />
       <LandingNav />
-      <canvas ref={seamCanvas} className="lp-seams" aria-hidden="true" />
       <Opening prelude={opening} />
 
       {/* "Skip to main content" moves focus here, past the navigation and the hero. */}
@@ -99,7 +98,7 @@ export default function Landing() {
 
         <PulseSection principles={PRINCIPLES} />
         <AgentsSection agents={AGENTS} />
-        <WorkspaceSection agents={AGENTS} talk={WORKSPACE_TALK} runs={WORKSPACE_RUNS} />
+        <WorkspaceSection agents={AGENTS} talk={WORKSPACE_TALK} />
         <ImpactSection evidence={EVIDENCE} goals={GOALS} />
         <CollegesSection cit={CIT} planned={PLANNED} />
 

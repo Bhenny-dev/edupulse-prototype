@@ -1,17 +1,19 @@
 import { useMemo, useRef, useState } from 'react'
-import { gsap, useMotion } from './motion'
+import { gsap, ScrollTrigger, useMotion } from './motion'
 import AgentFace from './AgentFace'
 
 // Inside Pulse. The agents are concentric rings of type around a core, like a scope, and
 // neighbouring rings turn in opposite directions. With motion the section holds the screen
 // while scrolling travels inward one ring per agent, naming each one, until the core opens
-// into white and the next section follows. Without motion it is one still picture with the
-// agents listed below it. The rings are decorative; the list carries the content.
+// into white and the white clears into the agent workspace, which waits behind it. Without
+// motion it is one still picture with the agents listed below it. The rings are decorative;
+// the list carries the content.
 
 const C = 500, OUTER = 480, RATIO = 0.74      // viewBox centre, outer radius, ratio between rings
 const TRIGGER = 'lp-agents'
 const PER_AGENT = 0.55                        // screens of scrolling per agent
 const OPENING = 1.6                           // the core's opening, in agent lengths
+const CLEARING = 1.1                          // seconds the white takes to clear into the workspace
 const radius = i => OUTER * RATIO ** i
 const pad = n => String(n).padStart(2, '0')
 const clamp01 = value => Math.min(1, Math.max(0, value))
@@ -72,7 +74,10 @@ export default function AgentsSection({ agents }) {
       setActive(Math.min(count - 1, Math.max(0, Math.round(state.a))))
     }
     measure()
-    gsap.timeline({
+    // At the end of the scroll the white eases away, timed so it never rests half way, and comes
+    // back when the reader scrolls back into the scope.
+    const clear = gsap.to(section, { opacity: 0, duration: CLEARING, ease: 'power2.inOut', paused: true })
+    const { scrollTrigger: pin } = gsap.timeline({
       defaults: { ease: 'none' }, onUpdate: render,
       scrollTrigger: {
         id: TRIGGER, trigger: section, pin: true, start: 'top top', scrub: 0.6, invalidateOnRefresh: true,
@@ -80,8 +85,21 @@ export default function AgentsSection({ agents }) {
         onRefresh: () => { measure(); render() },
       },
     }).to(state, { a: count - 0.5, duration: count }).to(state, { c: 1, duration: OPENING })
+    let past = false
+    const follow = () => {
+      const now = window.scrollY >= pin.end
+      if (now === past) return
+      past = now
+      if (now) clear.timeScale(1).play()
+      else clear.timeScale(2).reverse()
+    }
+    window.addEventListener('scroll', follow, { passive: true })
+    ScrollTrigger.addEventListener('refresh', follow)
+    follow()
     render()
     return () => {
+      window.removeEventListener('scroll', follow)
+      ScrollTrigger.removeEventListener('refresh', follow)
       section.classList.remove('is-live')
       zoom.removeAttribute('transform')
       ringEls.forEach(ring => { ring.removeAttribute('transform'); ring.style.visibility = '' })

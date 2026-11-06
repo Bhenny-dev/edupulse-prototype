@@ -267,39 +267,41 @@ test('with reduced motion the agents are one still picture and a list of all nin
   expect(await section.evaluate(element => element.parentElement?.classList.contains('pin-spacer'))).toBe(false)
 })
 
-test('the agent workspace answers a tap on a robot or on its button, and runs a request', async ({ page }) => {
+test('the agent workspace is the room alone on the screen and answers a tap on a robot or on its button', async ({ page }, info) => {
   test.setTimeout(120_000)
   await page.goto('/#/?section=workspace')
   const section = page.locator('#workspace')
-  const log = section.getByRole('list', { name: 'Conversation' })
+  const answer = section.locator('.ws-answer')
   await expect(section.locator('.ws-stage')).toHaveClass(/is-scene/, { timeout: 20_000 })
   await expect(section.locator('.ws-canvas')).toHaveAttribute('aria-hidden', 'true')
   await expect(section.locator('.ws-stage')).toHaveAttribute('data-assembled', '', { timeout: 20_000 })
-  // The studio is framed on the Comparator's sofa: a tap in the middle picks it in 3D.
-  await section.locator('.ws-canvas').click()
-  await expect(section.getByRole('button', { name: 'Comparator', exact: true })).toHaveAttribute('aria-pressed', 'true')
-  await expect(log).toContainText('Compare my syllabus with last year’s.')
-  await expect(log).toContainText('I’ll line them up')
+  // Nothing but the room: no request panel and no conversation beside it.
+  await expect(section.getByText('Try a request')).toHaveCount(0)
+  await expect(section.locator('.ws-chat, .ws-log')).toHaveCount(0)
+  const room = await section.locator('.ws-room').boundingBox()
+  expect(Math.abs((room?.width ?? 0) - (page.viewportSize()?.width ?? 0))).toBeLessThanOrEqual(20)
+  if (!mobileProject(info.project.name)) {
+    // A tap in the middle of the room picks the Comparator's sofa in 3D.
+    await section.locator('.ws-canvas').click()
+    await expect(section.getByRole('button', { name: 'Comparator', exact: true })).toHaveAttribute('aria-pressed', 'true')
+    await expect(answer).toContainText('Compare my syllabus with last year’s.')
+    await expect(answer).toContainText('I’ll line them up')
+  }
   await section.getByRole('button', { name: 'Guardian', exact: true }).click()
-  await expect(log).toContainText('That breaks the assessment rule, so I stop the request here')
+  await expect(answer).toContainText('That breaks the assessment rule, so I stop the request here')
   await expect(section.locator('.ws-bubble')).toHaveClass(/is-on/)
-  await section.getByRole('button', { name: 'Ask for quiz answers' }).click()
-  await expect(log.locator('.ws-msg')).toHaveCount(2, { timeout: 20_000 })
-  await expect(log).toContainText('Give me the answers to the Week 3 quiz.')
-  await expect(log).toContainText('No other agent runs.', { timeout: 10_000 })
+  await expect(section.locator('.ws-bubble')).toContainText('Can you give me the quiz answers?')
   await section.getByRole('button', { name: 'Pause motion' }).click()
   await expect(section.getByRole('button', { name: 'Play motion' })).toBeVisible()
 })
 
-test('with reduced motion a request through the workspace shows every hand-off at once', async ({ page }) => {
+test('with reduced motion the workspace is one screen and a button answers at once', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/#/?section=workspace')
   const section = page.locator('#workspace')
-  await section.getByRole('button', { name: 'Summarize Week 3' }).click()
-  const log = section.getByRole('list', { name: 'Conversation' })
-  await expect(log.locator('.ws-msg.is-agent')).toHaveCount(7)
-  await expect(log.locator('.ws-msg-who')).toHaveText(['Guardian', 'Planner', 'Researcher', 'Ranker', 'Writer', 'Verifier', 'Corrector'].map(name => `${name}: `))
-  await expect(log.locator('.ws-msg').last()).toContainText('Ready for the instructor’s review.')
+  await section.getByRole('button', { name: 'Planner', exact: true }).click()
+  await expect(section.locator('.ws-answer')).toContainText('I’ll plan the searches')
+  await expect(section.getByText('Try a request')).toHaveCount(0)
 })
 
 test('the six phases draw their connector; every phase keeps its AI and People duties', async ({ page }) => {
@@ -471,43 +473,47 @@ test('with reduced motion there is no opening and every section is complete and 
   await expect(page.locator('#features .fs-inline img').first()).toBeVisible()
   await expect(page.getByRole('button', { name: /photo movement/ })).toBeHidden()
   expect(await page.locator('h2').evaluateAll(headings => headings.filter(h => getComputedStyle(h).opacity !== '1').length)).toBe(0)
-  // No arrivals: no block waits to be built, and nothing is drawn over the page.
-  await expect(page.locator('[data-seam-block]')).toHaveCount(0)
+  // No arrivals: no block waits to come in, and nothing is moved or faded.
+  await expect(page.locator('[data-arrival]')).toHaveCount(0)
   expect(await page.locator('.why-card, .flow-card, .evidence-item').evaluateAll(cards => cards.filter(card => card.style.opacity !== '').length)).toBe(0)
   await expect(page.locator('.hero-seal img')).toHaveCount(2)
 })
 
-test('arriving cards are built where they stand and hand over to their content, in both directions', async ({ page }, info) => {
+test('arriving cards ease in from a side and leave no styles once in place, in both directions', async ({ page }, info) => {
   test.skip(mobileProject(info.project.name), 'the same arrivals run on phones; one width is enough here')
   test.setTimeout(90_000)
   await afterOpening(page)
-  expect(await page.locator('[data-seam-block]').count()).toBeGreaterThan(20)
-  // Places a block's centre at a share of the viewport's height (0.83 is a third of the way in, 0.3 settled).
+  expect(await page.locator('[data-arrival]').count()).toBeGreaterThan(20)
+  // Places a block's centre at a share of the viewport's height (1.3 is below the screen, 0.5 is its middle).
   const place = (selector: string, share: number) => page.evaluate(([selector, share]) => {
     const block = document.querySelector(String(selector))!
     const box = block.getBoundingClientRect()
     window.scrollBy(0, box.top + Math.min(box.height, window.innerHeight) / 2 - window.innerHeight * Number(share))
   }, [selector, share])
-  const canvas = page.locator('.lp-seams')
+  const style = (card: Locator) => card.evaluate(element => ({ opacity: (element as HTMLElement).style.opacity, translate: (element as HTMLElement).style.translate }))
   for (const selector of ['#problem .why-card', '#flow .flow-card', '#impact .evidence-item', '#colleges .college-card']) {
     const card = page.locator(selector).first()
-    // A third of the way in: the card is being built over its place and is not shown yet.
-    await place(selector, 0.83)
-    await expect(card).toHaveAttribute('data-settling', '')
-    await expect.poll(() => card.evaluate(element => (element as HTMLElement).style.opacity)).toBe('0')
-    await expect(canvas).toHaveAttribute('data-building', /\d+/, { timeout: 15_000 })
-    // Settled: the card is itself again, with no styles left on it or its parts, and nothing is drawn.
-    await place(selector, 0.3)
-    await expect(card).not.toHaveAttribute('data-settling', { timeout: 10_000 })
-    await expect.poll(() => card.evaluate(element => [element, ...element.querySelectorAll('*')].filter(node => (node as HTMLElement).style.opacity !== '' || /translate3d/.test((node as HTMLElement).style.transform)).length)).toBe(0)
+    // Below the screen the card waits, faded out and off to its side.
+    await place(selector, 1.4)
+    await expect(card).not.toHaveAttribute('data-arriving', { timeout: 10_000 })
+    await expect.poll(() => style(card).then(value => value.opacity)).toBe('0')
+    // Coming up the screen it eases in, from a side, rather than being built or cut in.
+    await place(selector, 0.6)
+    await expect(card).toHaveAttribute('data-arriving', '')
+    await expect.poll(() => style(card).then(value => value.translate)).not.toBe('')
+    // In place: the card is itself again, with no styles left on it or its parts.
+    await expect(card).not.toHaveAttribute('data-arriving', { timeout: 10_000 })
+    await expect.poll(() => card.evaluate(element => [element, ...element.querySelectorAll('*')].filter(node => (node as HTMLElement).style.opacity !== '' || (node as HTMLElement).style.translate !== '').length)).toBe(0)
   }
-  await expect(canvas).not.toHaveAttribute('data-building', { timeout: 10_000 })
-  // A heading's lines rise into place too.
+  // A heading's lines come in too.
+  await place('#roles .lp-head', 1.3)
   await place('#roles .lp-head', 0.9)
-  await expect(page.locator('#roles .lp-head')).toHaveAttribute('data-settling', '')
-  // Scrolling back takes a card apart again.
-  await place('#problem .why-card', 0.83)
-  await expect(page.locator('#problem .why-card').first()).toHaveAttribute('data-settling', '')
+  await expect(page.locator('#roles .lp-head')).toHaveAttribute('data-arriving', '')
+  // Scrolling back below the screen takes a card out again, and back up it comes in again.
+  await place('#problem .why-card', 1.4)
+  await expect.poll(() => style(page.locator('#problem .why-card').first()).then(value => value.opacity), { timeout: 10_000 }).toBe('0')
+  await place('#problem .why-card', 0.6)
+  await expect(page.locator('#problem .why-card').first()).toHaveAttribute('data-arriving', '')
 })
 
 test('without WebGL the page keeps its flat emblem and the opening still works', async ({ page }) => {
@@ -534,7 +540,7 @@ test('without WebGL the page keeps its flat emblem and the opening still works',
   await workspace.scrollIntoViewIfNeeded()
   await expect(workspace.locator('.ws-stage')).toHaveClass(/is-flat/, { timeout: 15_000 })
   await workspace.getByRole('button', { name: 'Planner', exact: true }).click()
-  await expect(workspace.getByRole('list', { name: 'Conversation' })).toContainText('I’ll plan the searches')
+  await expect(workspace.locator('.ws-answer')).toContainText('I’ll plan the searches')
   await page.locator('#login').scrollIntoViewIfNeeded()
   await expect(page.getByLabel('Email', { exact: true })).toBeVisible()
   expect(problems).toEqual([])

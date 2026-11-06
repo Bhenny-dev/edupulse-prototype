@@ -10,7 +10,7 @@ const ROLE_ICONS = { Dean: Landmark, 'Associate Dean': Briefcase, Instructor: Pr
 // who works in it, and the hand-over from the AI (a dashed draft) to people (the decision).
 // With motion, an SVG connector draws down through the phase markers as the page scrolls
 // (scrubbed, so it follows both ways) and each marker lights when the line reaches it; the
-// cards are built as they arrive (seams.js). Nothing is pinned. Without motion the connector
+// cards are brought in as they arrive (arrivals.js). Nothing is pinned. Without motion the connector
 // is a plain rule and every phase is shown.
 export default function PhaseFlow({ phases }) {
   const ref = useRef(null), track = useRef(null), svg = useRef(null), base = useRef(null), line = useRef(null)

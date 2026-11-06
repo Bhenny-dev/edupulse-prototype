@@ -32,6 +32,7 @@ Version folders are release records. Preserve released records, and add correcti
 
 | Version | Scope | Status |
 | --- | --- | --- |
+| [6 November landing workspace and arrivals](versions/2026-11-06-landing-workspace-arrivals/README.md) | The agent workspace is the 3D room alone on the screen (no request panel) with answers in bubbles; section cards ease in from a side instead of being built from 3D pieces | [Validation](versions/2026-11-06-landing-workspace-arrivals/validation/results.md) |
 | [6 November workspace status](versions/2026-11-06-workspace-status-settings/README.md) | Removed page-wide save banner; recovery controls in Settings | [Validation](versions/2026-11-06-workspace-status-settings/validation/results.md) |
 | [6 November combined Courseware](versions/2026-11-06-unified-courseware/README.md) | One course list/weekly workspace, contextual action menus and preserved review/delivery features | [Validation](versions/2026-11-06-unified-courseware/validation/results.md) |
 | [4 November courseware formatting](versions/2026-11-04-courseware-formatting/README.md) | Formatted content, preserved slide emphasis and evaluation at the end | Checks in [validation](versions/2026-11-04-courseware-formatting/validation/results.md) |

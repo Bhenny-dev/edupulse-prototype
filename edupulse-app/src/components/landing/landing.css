@@ -212,11 +212,6 @@ html:has(.landing-page), html:has(.landing-page) body { overflow-anchor: none; }
 .lp-opening.has-scene .hero-emblem[data-drawn] .pulse-ring-svg,
 .lp-opening.has-scene .hero-emblem[data-drawn] .hero-seal { opacity: 0; }
 
-/* Section arrivals (seams.js): the canvas where arriving cards are built, over the page and
-   under the bar; it takes no pointer events. */
-.lp-seams { position: fixed; inset: 0; z-index: 60; width: 100%; height: 100%; pointer-events: none; }
-@media print { .lp-seams { display: none; } }
-
 /* ─── Why EduPulse ─── */
 .why .lp-head { max-width: 62rem; margin-bottom: 28px; }
 .lp-head > p.why-statement { max-width: 30em; font-size: clamp(1.25rem, 1.05rem + 0.8vw, 1.75rem); line-height: 1.4; font-weight: 500; color: var(--lp-ink); letter-spacing: -0.01em; }
@@ -611,7 +606,8 @@ html:has(.landing-page), html:has(.landing-page) body { overflow-anchor: none; }
 .agents-list p { font-size: 0.9375rem; line-height: 1.55; color: var(--lp-slate); }
 
 /* With motion: one pinned screen that travels inward through the rings, then opens the core. */
-.agents.is-live { height: 100vh; height: 100svh; padding: 0; }
+.agents.is-live { z-index: 1; height: 100vh; height: 100svh; padding: 0; background: var(--lp-white); }
+.pin-spacer-lp-agents { pointer-events: none; } /* the room behind it must take taps as soon as the white clears */
 .agents.is-live .agents-stage { position: absolute; inset: 0; display: block; }
 .agents.is-live { --scope-size: min(92vw, calc(88vh - var(--nav-h))); }
 .agents.is-live .scope-svg { position: absolute; left: 50%; top: calc(50% + var(--nav-h) / 2); width: var(--scope-size); transform: translate(-50%, -50%); }
@@ -644,11 +640,18 @@ html:has(.landing-page), html:has(.landing-page) body { overflow-anchor: none; }
   .agents-ticks li { width: 16px; }
 }
 
-/* ─── Agent workspace: the 3D scene, the agent buttons and the conversation ─── */
-.ws { background: var(--lp-white); }
-.ws .lp-head { max-width: 44rem; }
-.ws-grid { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: clamp(18px, 2.4vw, 32px); align-items: start; }
-.ws-stage { position: relative; height: clamp(460px, 46vw, 640px); border-radius: 28px; overflow: hidden; border: 1px solid var(--lp-line); background: radial-gradient(110% 85% at 50% 30%, #ffffff 0%, var(--lp-mist) 58%, var(--lp-ice-soft) 100%); touch-action: pan-y; }
+/* ─── Agent workspace: the 3D room alone on the screen, with its agent buttons along the bottom ─── */
+.ws { z-index: 0; padding-block: 0; background: var(--lp-white); }
+.ws-room { position: relative; height: 100vh; height: 100svh; min-height: 520px; overflow: hidden; background: radial-gradient(110% 85% at 50% 30%, #ffffff 0%, var(--lp-mist) 58%, var(--lp-ice-soft) 100%); }
+/* With motion the room waits behind the pinned scope: it reaches the top of the screen as the
+   scope ends, stays there as the white clears, and holds a moment before the page moves on. */
+.pin-spacer-lp-agents + .ws { height: 170vh; height: 170svh; margin-top: -100vh; margin-top: -100svh; }
+.pin-spacer-lp-agents + .ws .ws-room { position: sticky; top: 0; }
+.ws-head { position: absolute; z-index: 2; top: calc(var(--nav-h) + clamp(14px, 3vh, 28px)); left: max(var(--gutter), calc((100% - var(--container)) / 2)); max-width: min(480px, calc(100% - 2 * var(--gutter))); margin: 0; pointer-events: none; transition: opacity var(--lp-base) ease; }
+.ws-room.is-focused .ws-head { opacity: 0; } /* the camera has moved in on an agent, and the room fills the screen */
+.landing-page .ws-head h2 { margin-bottom: 6px; font-size: clamp(1.5rem, 1.1rem + 1.2vw, 2.125rem); }
+.ws-head p:last-child { font-size: 0.9375rem; line-height: 1.5; }
+.ws-stage { position: absolute; inset: var(--nav-h) 0 0; overflow: hidden; touch-action: pan-y; }
 .ws-canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
 @media (pointer: fine) { .ws-canvas { cursor: grab; } }
 .ws-stage.is-pointing .ws-canvas { cursor: pointer; }
@@ -663,58 +666,42 @@ html:has(.landing-page), html:has(.landing-page) body { overflow-anchor: none; }
 .ws-bubble { position: absolute; left: 0; top: 0; z-index: 2; width: max-content; max-width: min(300px, calc(100% - 20px)); padding: 9px 14px 11px; border-radius: 16px; background: #ffffff; border: 1px solid var(--lp-line); box-shadow: 0 18px 36px -20px rgb(15 23 42 / 0.5); pointer-events: none; opacity: 0; transition: opacity 160ms ease-out; will-change: transform; }
 .ws-bubble.is-on { opacity: 1; }
 .ws-bubble::after { content: ''; position: absolute; left: var(--tail, 28px); bottom: -7px; width: 12px; height: 12px; background: #ffffff; border-right: 1px solid var(--lp-line); border-bottom: 1px solid var(--lp-line); rotate: 45deg; translate: -50% 0; }
-.ws-bubble-who { display: block; margin-bottom: 2px; font-size: 0.75rem; font-weight: 700; color: var(--lp-blue-deep); }
+.ws-bubble-head { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; margin-bottom: 2px; }
+.ws-bubble-who { font-size: 0.75rem; font-weight: 700; color: var(--lp-blue-deep); }
+.ws-bubble-note { font-size: 0.6875rem; color: var(--lp-slate); }
+.ws-bubble-ask { display: block; margin-bottom: 4px; font-size: 0.8125rem; line-height: 1.35; color: var(--lp-slate); }
 .ws-bubble-body { display: grid; font-size: 0.9375rem; line-height: 1.45; color: var(--lp-ink); }
 .ws-bubble-size, .ws-bubble-text { grid-area: 1 / 1; }
 .ws-bubble-size { visibility: hidden; }
 .ws-flat { position: absolute; inset: 0; margin: auto; list-style: none; display: grid; grid-template-columns: repeat(3, 72px); align-content: center; justify-content: center; gap: 20px; }
 .ws-flat li { width: 72px; height: 72px; border-radius: 22px; display: grid; place-items: center; color: var(--lp-blue-deep); background: #ffffff; border: 1px solid var(--lp-ice); box-shadow: var(--lp-shadow); }
 .ws-flat li.is-on { color: #ffffff; background: var(--lp-blue); border-color: var(--lp-blue); }
-.ws-tools { position: absolute; z-index: 3; top: 14px; left: 14px; right: 14px; display: flex; justify-content: flex-end; gap: 8px; pointer-events: none; }
-.ws-tool { pointer-events: auto; display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 14px; border-radius: 999px; font-family: var(--lp-text); font-size: 0.875rem; font-weight: 600; color: var(--lp-ink); background: rgb(255 255 255 / 0.94); border: 1px solid var(--lp-line); box-shadow: var(--lp-shadow); transition: border-color 160ms ease, background-color 160ms ease; }
+.ws-tools { position: absolute; z-index: 3; top: calc(var(--nav-h) + 14px); right: max(var(--gutter), calc((100% - var(--container)) / 2)); display: flex; gap: 8px; }
+.ws-tool { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 14px; border-radius: 999px; font-family: var(--lp-text); font-size: 0.875rem; font-weight: 600; color: var(--lp-ink); background: rgb(255 255 255 / 0.94); border: 1px solid var(--lp-line); box-shadow: var(--lp-shadow); transition: border-color 160ms ease, background-color 160ms ease; }
 .ws-tool:hover { border-color: var(--lp-field); background: #ffffff; }
-.ws-roster { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
-.ws-agent { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px 0 6px; border-radius: 999px; font-family: var(--lp-text); font-size: 0.9375rem; font-weight: 600; color: var(--lp-ink); background: #ffffff; border: 1px solid var(--lp-line); transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease; }
+.ws-roster { position: absolute; z-index: 3; left: 0; right: 0; bottom: 14px; list-style: none; display: flex; justify-content: safe center; gap: 6px; padding: 4px 76px; overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none; }
+.ws-roster li { flex: none; scroll-snap-align: start; }
+.ws-agent { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; padding: 0 12px 0 6px; border-radius: 999px; font-family: var(--lp-text); font-size: 0.875rem; font-weight: 600; color: var(--lp-ink); background: #ffffff; border: 1px solid var(--lp-line); box-shadow: var(--lp-shadow); transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease; }
 .ws-agent:hover { border-color: var(--lp-field); }
 .ws-agent[aria-pressed='true'] { color: var(--lp-blue-deep); background: var(--lp-ice-soft); border-color: var(--lp-blue); }
-.ws-agent-icon { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; color: #ffffff; background: var(--agent, var(--lp-blue)); }
+.ws-agent-icon { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; color: #ffffff; background: var(--agent, var(--lp-blue)); }
 .ws-agent[aria-pressed='true'] .ws-agent-icon { box-shadow: 0 0 0 3px #ffffff, 0 0 0 5px var(--agent, var(--lp-blue)); }
-.ws-agent:active, .ws-run:active, .ws-tool:active { scale: 0.97; }
-.ws-chat { display: flex; flex-direction: column; height: clamp(460px, 46vw, 640px); border-radius: 28px; overflow: hidden; background: #ffffff; border: 1px solid var(--lp-line); box-shadow: var(--lp-shadow); }
-.ws-chat-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 64px; padding: 14px 18px 0; }
-.landing-page .ws-chat-head h3 { font-size: 1.0625rem; }
-.ws-stop { box-shadow: none; }
-.ws-runs { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px 18px 16px; border-bottom: 1px solid var(--lp-line); }
-.ws-run { min-height: 40px; padding: 0 14px; border-radius: 999px; font-family: var(--lp-text); font-size: 0.875rem; font-weight: 600; color: var(--lp-ink); background: var(--lp-mist); border: 1px solid var(--lp-line); transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease; }
-.ws-run:hover { border-color: var(--lp-field); }
-.ws-run[aria-pressed='true'] { color: #ffffff; background: var(--lp-blue); border-color: var(--lp-blue); }
-.ws-log { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; list-style: none; display: flex; flex-direction: column; gap: 12px; padding: 18px; }
-.ws-empty { margin: auto; text-align: center; font-size: 0.9375rem; color: var(--lp-slate); }
-.ws-msg { max-width: 88%; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; animation: ws-msg 220ms cubic-bezier(0.22, 1, 0.36, 1); }
-.ws-msg.is-you { align-self: flex-end; align-items: flex-end; }
-.ws-msg-who { display: inline-flex; align-items: center; gap: 6px; font-size: 0.8125rem; font-weight: 700; color: var(--lp-blue-deep); }
-.ws-msg-text { padding: 9px 14px; border-radius: 16px; font-size: 0.9375rem; line-height: 1.5; }
-.ws-msg.is-you .ws-msg-text { color: #ffffff; background: var(--lp-blue); border-bottom-right-radius: 6px; }
-.ws-msg.is-agent .ws-msg-text { color: var(--lp-ink); background: var(--lp-mist); border: 1px solid var(--lp-line); border-bottom-left-radius: 6px; }
-@keyframes ws-msg { from { opacity: 0; translate: 0 8px; } }
+.ws-agent:active, .ws-tool:active { scale: 0.97; }
+/* Each answer for screen readers; on screen too when there is no 3D room to show its bubble. */
+.ws-answer { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.ws-stage:not(.is-scene) ~ .ws-answer:not(:empty) { z-index: 3; left: 50%; bottom: 76px; width: min(560px, calc(100% - 2 * var(--gutter))); height: auto; margin: 0; padding: 12px 16px; overflow: visible; clip-path: none; white-space: normal; translate: -50% 0; border-radius: 16px; font-size: 0.9375rem; line-height: 1.45; color: var(--lp-ink); background: #ffffff; border: 1px solid var(--lp-line); box-shadow: var(--lp-shadow); }
+.ws-answer-ask { display: block; margin-bottom: 4px; font-size: 0.8125rem; color: var(--lp-slate); }
 @media (prefers-reduced-motion: reduce) {
-  .ws-msg { animation: none; }
-  .ws-bubble, .ws-label { transition: none; }
+  .ws-bubble, .ws-label, .ws-head { transition: none; }
 }
-@media (max-width: 1023px) {
-  .ws-grid { grid-template-columns: minmax(0, 1fr); }
-  .ws-stage { height: clamp(380px, 70vw, 560px); }
-  .ws-chat { height: 480px; }
+/* When the buttons no longer fit they scroll sideways, ending short of the back-to-top button. */
+@media (max-width: 1240px) {
+  .ws-roster { right: 76px; padding-inline: var(--gutter) 8px; }
 }
 @media (max-width: 759px) {
-  .ws-stage { height: min(94vw, 440px); border-radius: 22px; }
-  .ws-tools { top: 10px; left: 10px; right: 10px; }
+  .ws-tools { top: auto; bottom: 74px; }
+  .ws-stage:not(.is-scene) ~ .ws-answer:not(:empty) { bottom: 122px; }
   .ws-tool { min-height: 36px; padding: 0 12px; font-size: 0.8125rem; }
-  .ws-roster { flex-wrap: nowrap; overflow-x: auto; margin-inline: calc(-1 * var(--gutter)); padding: 2px var(--gutter) 6px; scroll-snap-type: x proximity; scrollbar-width: none; }
-  .ws-roster li { flex: none; scroll-snap-align: start; }
-  .ws-chat { height: 440px; border-radius: 22px; }
-  .ws-runs { padding-inline: 14px; }
-  .ws-log { padding: 14px; }
   .ws-flat { grid-template-columns: repeat(3, 60px); gap: 14px; }
   .ws-flat li { width: 60px; height: 60px; border-radius: 18px; }
 }

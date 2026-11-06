@@ -3615,9 +3615,9 @@
     },
     {
       "path": "feature-documentation/system-walkthrough/01-public-site/08c-landing-workspace.png",
-      "sha256": "bac20f00f808484e95e4a4ff3833620e2ecd572507b1f944f6cf9b547326b09a",
+      "sha256": "d4d4c22e5485ddaed642671ec90e2e4bd223edb24c31aa0436f0cec2875ecf17",
       "reviewer": "Claude agent",
-      "reviewedAt": "2026-10-30T10:34:11.517Z"
+      "reviewedAt": "2026-11-06T09:20:56.704Z"
     },
     {
       "path": "feature-documentation/system-walkthrough/01-public-site/09-landing-why-it-matters.png",

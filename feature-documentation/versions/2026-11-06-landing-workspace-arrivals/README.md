@@ -1,0 +1,11 @@
+# Landing workspace alone on the screen and card entrances, 6 November 2026
+
+Two changes to the landing page, both made at the owner's request.
+
+**Agent workspace.** The section is now the 3D room on its own, filling the screen. The **Try a request** panel, its three scripted requests and the conversation list are removed. Tapping a robot, or its button in the single row along the bottom, answers in a speech bubble above that agent (the question, the answer and a *Scripted example* label), so no separate conversation is needed. With motion the room waits behind the agents scope: when the scope's core opens into white, the white clears over about 1.1 seconds into the room, which assembles in that light and is then held for about 70 % of a viewport before the page moves on. The answer is also in a polite live region for screen readers, and it is shown on screen when there is no 3D room (without WebGL). Keyboard focus on a button reaches the room first, so it never sits under the white. Reduced motion and **Pause motion** behave as before.
+
+**Section transitions.** The 3D shard, glass and circuit-board pieces that built each card (`seams.js`, `scene/seamScene.js`, the fixed `lp-seams` canvas) are removed. Cards now ease in over about 950 ms with a soft start and landing (`arrivals.js`), sliding from a side of the screen as they fade up, and out again when they leave, so the entrance plays going down or back up. Each section sets its side (left, right, above, below, or per card in a row), cards that arrive together follow one another, and the card's icons and text then rise in. Headings and lists still rise line by line. Only `opacity` and `translate` are written and they are removed once a card is in place. Reduced motion leaves everything still and visible.
+
+Documentation changed with the code: the **Section arrivals**, **Agents** and **Agent workspace** notes and section 8c of the [public-site walkthrough](../../system-walkthrough/01-public-site/README.md), the motion rules and test table in `edupulse-app/docs/DESIGN.md`, and the capture scene for image 08c. Earlier release records that describe the 3D pieces are kept as records of what shipped then.
+
+See [validation](validation/results.md) for evidence and its limits.

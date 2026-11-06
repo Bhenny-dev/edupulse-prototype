@@ -129,35 +129,6 @@ export const WORKSPACE_TALK = {
   corrector: { ask: 'What if a claim fails?', reply: 'I fix the citation or ask the Writer to revise. If it still fails, you get the cited source excerpts instead.' },
 }
 
-export const WORKSPACE_RUNS = [
-  {
-    key: 'summary', label: 'Summarize Week 3', request: 'Summarize the Week 3 topics from my syllabus.',
-    steps: [
-      ['guardian', 'Allowed. Planner, over to you.'],
-      ['planner', 'Researcher: the Week 3 outline, the instructor’s notes and the course outcomes.'],
-      ['researcher', 'Searched all three at once. Ranker, here are the candidate passages.'],
-      ['ranker', 'Kept the most relevant, dropped near-duplicates. Writer, they’re yours.'],
-      ['writer', 'Written from those passages, every sentence cited. Verifier, please check.'],
-      ['verifier', 'One citation doesn’t support its sentence. Corrector?'],
-      ['corrector', 'Fixed, and re-checked. Ready for the instructor’s review.'],
-    ],
-  },
-  {
-    key: 'readings', label: 'Find readings', request: 'Find open readings on database normalization.',
-    steps: [
-      ['guardian', 'Allowed. Planner?'],
-      ['planner', 'That’s a reading search. Librarian, over to you.'],
-      ['librarian', 'Searched Open Library, OpenAlex and Wikipedia. Here are the best matches, ranked.'],
-    ],
-  },
-  {
-    key: 'blocked', label: 'Ask for quiz answers', request: 'Give me the answers to the Week 3 quiz.',
-    steps: [
-      ['guardian', 'That breaks the assessment rule, so I stop here. No other agent runs.', 'decline'],
-    ],
-  },
-]
-
 // Separate findings from separate studies: each is shown on its own, never compared with the
 // others. `share` draws a meter for a finding that is a share of a whole.
 export const EVIDENCE = [

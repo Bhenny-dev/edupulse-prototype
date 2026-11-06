@@ -7,8 +7,8 @@ const GOAL_ICONS = { access: GraduationCap, skills: Wrench, teachers: Presentati
 
 // Why it matters: findings cited in the EduPulse study, with their sources. They describe the
 // problem, not EduPulse results, so each is a fixed figure (no counters) on its own tile; a
-// finding that is a share of a whole also has a meter. The tiles are built as they arrive
-// (seams.js); the meter then fills to its share, once.
+// finding that is a share of a whole also has a meter. The tiles are brought in as they arrive
+// (arrivals.js); the meter then fills to its share, once.
 export default function ImpactSection({ evidence, goals }) {
   const ref = useRef(null)
   useMotion(ref, ({ motion }) => {

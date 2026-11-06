@@ -6,7 +6,7 @@ const ARCS = [0.62, 0.48, 0.8] // drawn length of each arc around the seal (matc
 
 // Colleges: the CIT, the one college EduPulse serves now, then the four KCP colleges where
 // adoption is planned. Arcs draw around the CIT seal (a radial reveal); the planned cards are
-// built as they arrive (seams.js). Their status never changes: they stay "Planned".
+// brought in as they arrive (arrivals.js). Their status never changes: they stay "Planned".
 export default function CollegesSection({ cit, planned }) {
   const ref = useRef(null)
   useMotion(ref, ({ motion }) => {

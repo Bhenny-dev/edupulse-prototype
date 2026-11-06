@@ -5,8 +5,8 @@ import { gsap, ScrollTrigger, useMotion } from './motion'
 const ICONS = { syllabus: FileText, materials: Layers, delivery: Send, oversight: Eye, performance: ChartColumn }
 
 // Why EduPulse, shown rather than told: five cards, each with today's state on one face and
-// EduPulse's on the other. With motion the cards are built showing "Today" as the section
-// arrives (seams.js), then turn once to "With EduPulse"; the switch flips them back and forth.
+// EduPulse's on the other. With motion the cards come in showing "Today" as the section
+// arrives (arrivals.js), then turn once to "With EduPulse"; the switch flips them back and forth.
 // The faces are decorative; each card carries one plain sentence with both states for
 // assistive technology.
 export default function ProblemSection({ rows }) {
