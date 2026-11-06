@@ -1,0 +1,29 @@
+{
+  "checkedAt": "2026-11-06T06:41:10.348Z",
+  "origin": "https://edupulse-prototype.vercel.app",
+  "sourceCommit": "737d68596d116117bc85b72b17932993c08c393a",
+  "deploymentId": "dpl_28qCG6gZdknEoB1vCw64sHZWiWE7",
+  "deploymentState": "READY",
+  "productionAliasCommit": "737d68596d116117bc85b72b17932993c08c393a",
+  "checks": [
+    {
+      "name": "combined Courseware production UI bundle",
+      "status": "passed",
+      "asset": "/assets/index-CvVT_n3Q.js",
+      "http": 200
+    },
+    {
+      "name": "Courseware menus and layout stylesheet",
+      "status": "passed",
+      "asset": "/assets/index-CU-SWQA8.css",
+      "http": 200
+    },
+    {
+      "name": "API health",
+      "status": "passed",
+      "http": 200
+    }
+  ],
+  "authenticatedCourseware": "not-run; local production-capture build and synthetic account/workspace transport exercised the workflows",
+  "liveModelGeneration": "not-run for this UI update; earlier real local-model evidence retained in historical archives"
+}

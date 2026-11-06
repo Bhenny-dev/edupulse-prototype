@@ -20,9 +20,9 @@ Screenshots in the walkthrough and manual are real captures of the documentation
 
 ## Version history
 
-The [6 November Courseware update](versions/2026-11-06-unified-courseware/README.md) combines the former list and builder tabs, with **View** or **Generate** as primary actions and the remaining controls in three-dot menus. Validation and deployment status are recorded with the release.
+The [6 November Courseware update](versions/2026-11-06-unified-courseware/README.md) combines the former list and builder tabs, with **View** or **Generate** as primary actions and the remaining controls in three-dot menus. It is live from `737d685`; the release gate passed 199 tests, 30 distinct browser cases were covered across focused runs and public hosted checks passed. The release records the capture and hosted-validation boundaries.
 
-The [4 November formatting update](versions/2026-11-04-courseware-formatting/README.md) displays courseware Markdown correctly and moves **AI draft review** after the content. It is live from `b380f91`, with the local release gate, focused browser checks and public hosted checks passed. Saved content and instructor editing remain available; refreshed examples distinguish synthetic display checks from real model-generation evidence.
+The [4 November formatting update](versions/2026-11-04-courseware-formatting/README.md) added formatted courseware Markdown and moved **AI draft review** after the content. That release shipped from `b380f91` and passed its local release gate, focused browser checks and public hosted checks. Saved content and instructor editing remain available; refreshed examples distinguish synthetic display checks from real model-generation evidence.
 
 The [3 November completion release](versions/2026-11-03-claude-completion/README.md) finished the pending account dashboards and outline/editor work, fixed Pulse's named-role navigation and clarified direct Anthropic failures. Its local release gate passed 199 unit/integration tests; 207 runnable browser cases passed across the broad run and corrected reruns, with 19 declared skips. That release shipped from `80b55c6` and passed public hosted checks. See its release validation for the account-specific Anthropic and GitHub billing limits.
 
