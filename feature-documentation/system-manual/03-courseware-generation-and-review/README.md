@@ -1,12 +1,12 @@
 # 3 · Generate and review courseware
 
-**Who:** instructor. **Where:** Courseware → My Courseware and Courseware Builder. The generated material, activity, and assessment stay in Draft until an instructor checks them. The alignment report is an aid to review, not approval.
+**Who:** instructor. **Where:** Courseware. One course list combines generation progress and saved items; there are no separate My Courseware and Courseware Builder tabs. The generated material, activity, and assessment stay in Draft until an instructor checks them. The alignment report is an aid to review, not approval.
 
-1. Complete and activate a syllabus outline first. In **My Courseware**, find the instructor's own course and choose **Start Generating**. The sample courses are listed separately; the IT 102 row without “Sample” comes from the completed [syllabus workflow](../02-syllabus-lifecycle/README.md).
+1. Complete and activate a syllabus outline first. Find the course in **Courseware**. A course with saved content shows **View**; an empty course shows **Generate**. Both open its weekly workspace. The list retains status, generated/expected item counts, progress, instructor and teaching weeks. The current example contains synthetic IT 102 and IT 103 courses.
 
-   ![Course list with instructor-owned IT 102](01-courseware-with-active-syllabus.png)
+   ![Combined synthetic course list with View and Generate](01-courseware-with-active-syllabus.png)
 
-2. In **Courseware Builder**, find a teaching week with a topic and outcome. The IT 102 outline here has “Variables and assignment” in week 1. Choose that week's **Generate** button. Examination weeks have no Generate button.
+2. In the weekly workspace, an existing week shows **View** to expand its items; an empty teaching week shows **Generate**. This example generates week 2, **Functions**. Examination weeks have no generation action. **Back to courses** returns to the same list. Older course/week links from dashboards and Pulse remain supported.
 
    ![Week 1 outline and Generate button](02-weekly-outline-ready-to-generate.png)
 
@@ -14,7 +14,7 @@
 
    ![Week 1 generating state](03-generating-with-pulse-thinking.png)
 
-4. On generation success, the week expands to three separate **Draft** items: a learning material, an activity, and an assessment. Use **Open** to inspect an item. **Check** and **Check All Drafts** are instructor actions; generation itself does not mark the items checked.
+4. On generation success, the week expands to three separate **Draft** items: a learning material, an activity, and an assessment. Use **View** to inspect an item at any review status. Its three-dot menu offers document/presentation views where applicable, **Check**, **Publish** or **Unpublish**, and **Delivery settings**. **Check All Drafts** is in the course and week menus; selected draft checkboxes also expose **Check Selected**. Generation does not check or publish items.
 
    ![Three generated draft items](04-generated-drafts-for-review.png)
 
@@ -26,7 +26,7 @@
 
 6. Edit any inaccurate explanation or answer key, then use **Check** only after reviewing the material, activity, and assessment. Section text and answer explanations in the editors grow to show their whole entry instead of scrolling inside a small box. Drafts are not published or graded automatically.
 
-Images 1–4 use the local `qwen2.5:3b` generation workflow; the fourth image shows three generated drafts from the captured week-generation request. Images 5–6 and 10–11 use synthetic saved content and evaluation metadata to demonstrate formatting and review placement. Their displayed coverage and answer checks are fixture values, not measured model accuracy. Earlier v0.4.0 and 1.5B-model evidence remains in the historical release records. These captures establish local task evidence, not authenticated hosted behavior or general model accuracy. The review panel may flag unsupported statements or incorrect answer explanations; instructors must resolve them before checking or publishing. The [component-actions validation record](../../versions/2026-10-28-component-actions/validation/results.md) records the earlier capture boundaries.
+Images 1–4 and 12–16 use synthetic account, provider and workspace responses to exercise the combined interface. Images 5–6 and 10–11 use synthetic saved content and evaluation metadata. Their displayed coverage and answer checks are fixture values, not measured model accuracy. The earlier real `qwen2.5:3b` generation capture is retained in the [historical evidence](../../versions/2026-11-06-unified-courseware/validation/results.md); no live model run was repeated for this interface update. These captures do not establish authenticated hosted behavior or general model accuracy. The review panel may flag unsupported statements or incorrect answer explanations; instructors must resolve them before checking or publishing.
 
 The assessment editor keeps its question, topic, answer and explanation controls above **AI draft review**. The checks remain available after the final question and **Add Question**.
 
@@ -35,6 +35,26 @@ The assessment editor keeps its question, topic, answer and explanation controls
 The same document formatting uses the current solid dark surfaces and text colors. Raw formatting remains available through **Edit**; **Save** preserves the source text so reopening the item displays it formatted again. Student document and presentation views format emphasis without showing instructor-only draft evaluation.
 
 ![Synthetic formatted document in dark mode](11-formatted-document-dark.png)
+
+## Course, week and item actions
+
+The course row's three-dot menu opens the weekly outline or focuses the first draft for review. Within an opened course, the header menu offers **Generate missing content**, **Regenerate All** for drafts, **Check All Drafts**, and expand/collapse controls. **Generate All Content** remains directly visible on an empty course. Missing-content generation keeps existing items; regeneration preserves checked/published work, delivery dates and saved assessment rules. A partially published course stays **In Progress** until every teaching week has all three published item types.
+
+![Course row actions in the combined list](12-course-actions-menu.png)
+
+The week menu contains missing-content generation, **Regenerate week** and **Check All Drafts**, with unavailable actions disabled. **View** expands saved items and changes to **Hide** while expanded.
+
+![Week actions beside its generated content](13-week-actions-menu.png)
+
+Each saved item keeps a visible **View** button, type and saved generation date where available. Its three-dot menu contains the actions appropriate to its type and status. **Delivery settings** opens below that item; **Close delivery settings** closes the panel. Scheduling and attempt-rule changes still use the saved workspace workflow and require review where indicated.
+
+![Draft item actions including document, presentation, Check and delivery settings](14-item-actions-menu.png)
+
+On a phone, course rows stack with their labels and the same primary actions. Menus fit the viewport, support keyboard navigation and dismiss with Escape or an outside click. Solid dark surfaces use the existing theme.
+
+![Combined course list on a phone](15-mobile-course-list.png)
+
+![Item menu on a phone](16-mobile-item-actions.png)
 
 This synthetic provider-failure example shows **Generation did not finish**, the Claude workspace recovery message, **Set up Pulse AI** and **Dismiss** while keeping the opened course available. It does not represent a completed generation request.
 
@@ -50,6 +70,10 @@ In the assessment editor, **Answer explanation** also grows with its text. The e
 
 ## Revise through Pulse
 
+**Guide this page → Help me get through my review queue** describes the combined workspace and its three-dot review actions.
+
+![Pulse guidance for the combined Courseware controls](17-pulse-courseware-guidance.png)
+
 Pulse week generation carries the original request through to the writer, including language and example preferences. “Without web research” disables public searches; “only from the syllabus” also skips private-library retrieval. A file-only week request must first import its source into the syllabus because the week endpoint does not receive chat attachments. The existing **Draft in chat instead** action remains available. [Manual 15](../15-backend-content-delivery/README.md) records the newer prompt-to-save browser capture and its local-model limits.
 
 When an instructor opens a saved draft in a document, presentation or assessment editor, Pulse can propose a typed revision to its content. Compare the selected fields before **Confirm and save draft**. The saved receipt waits for the revision-checked database response. Published items and stale targets are protected. See [Manual 9](../09-pulse-actions/README.md#revise-content-or-class-list-records).
@@ -62,4 +86,4 @@ When an instructor opens a saved draft in a document, presentation or assessment
 
 Open a saved assessment and map each question to the approved outline week using **Question ... syllabus topic**. Select multiple choice, fixed True/False choices or instructor-marked written responses. **Save Assessment** returns edits to Draft. Topic mastery uses graded, mapped responses only.
 
-**Delivery settings** stores release/deadline, duration and 1-3 allowed attempts. Review any changed assessment rules again before publication. A published future release stays hidden until its saved time. See [Manual 13](../13-restored-account-sections/README.md) and the [mapping/delivery captures](../../system-walkthrough/09-restored-role-pages/README.md#baseline-workflows-restored-after-owner-confirmation).
+Choose **Delivery settings** from an item's three-dot menu to store release/deadline, duration and 1-3 allowed attempts. Review any changed assessment rules again before publication. A published future release stays hidden until its saved time. See [Manual 13](../13-restored-account-sections/README.md) and the [mapping/delivery captures](../../system-walkthrough/09-restored-role-pages/README.md#baseline-workflows-restored-after-owner-confirmation).

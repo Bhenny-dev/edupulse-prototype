@@ -1,6 +1,6 @@
 # 15 · Generate content and verify its save
 
-**Who:** instructor. **Where:** Syllabus Builder → Pulse. These captures use an installed local model and an isolated local database with a synthetic course task. No model responses or workspace saves are mocked. They do not establish hosted authentication or universal model correctness.
+**Who:** instructor. **Where:** Syllabus Builder → Pulse and Courseware. Images 1–3 and 6 retain the earlier installed-local-model workflow with an isolated database and synthetic course task; its model responses and workspace saves were not mocked. Courseware images 4–5 now use synthetic provider/workspace responses to document the combined interface. The [historical courseware model evidence](../../versions/2026-11-06-unified-courseware/validation/results.md) is archived separately. These captures do not establish hosted authentication or universal model correctness.
 
 1. Select **IT 104 — Research Methods**. Open Pulse and ask: “Generate four measurable program outcomes for Research Methods without web research.” The existing **Review the proposed content change** card shows the original field and the generated outcomes. No record changes while the proposal is displayed.
 
@@ -18,16 +18,16 @@ For an entire course, ask “Generate a syllabus for my selected course.” Puls
 
 Public research is available for educational drafts, including courseware with an empty library. “Without web research” disables external research in a Pulse request; source-only questions stay with their supplied/selected sources. Research failure is reported and does not turn original teaching content into a claimed verified answer. See [courseware review](../03-courseware-generation-and-review/README.md) and [validation evidence](../../versions/2026-10-29-backend-harness/validation/results.md).
 
-4. In **Courseware**, choose an active syllabus and **Start Generating**. Ask Pulse to generate week 1 with a worked JavaScript example, without web research. Review the selected course and week, then choose **Generate Week 1 drafts**. The captured example uses a synthetic active programming outline to isolate generation; it does not demonstrate institutional approval.
+4. In **Courseware**, choose an active syllabus using **Generate** when empty or **View** when content exists. Ask Pulse to generate week 1 with a worked JavaScript example, without web research. Review the selected course and week, then choose **Generate Week 1 drafts**. The Pulse request image retains the earlier synthetic active programming outline; it does not demonstrate institutional approval.
 
    ![Pulse courseware request and generation confirmation](06-pulse-courseware-request.png)
 
-   The real model returns material, activity and assessment drafts. The capture checks that the request and research restriction reach the API and that all three drafts are stored by the workspace API.
+   Generation returns material, activity and assessment drafts. The earlier real-model capture checked that the request and research restriction reached the API and all three drafts were stored. The current interface example below uses synthetic week 2 content to show the saved items and their **View** and three-dot actions.
 
-   ![Three generated courseware drafts saved for review](04-persisted-courseware-drafts.png)
+   ![Synthetic saved courseware drafts in the combined workspace](04-persisted-courseware-drafts.png)
 
-5. Reload and choose **Open** for the material. The saved lesson remains available with its review evidence. This captured lesson displays missing assessment alignment and an answer-key warning; it is a draft requiring correction, not an approved example. Prompt preferences such as language and worked examples are passed through when generation starts from Pulse. Short placeholder responses are rejected before saving; the instructor still reviews teaching quality, factual accuracy and answer keys.
+5. Reload, expand the week with **View**, then choose **View** for its material. The saved lesson remains available with its review evidence at the end. This current lesson is a synthetic display example requiring instructor review. Prompt preferences such as language and worked examples are passed through when generation starts from Pulse. Short placeholder responses are rejected before saving; the instructor still reviews teaching quality, factual accuracy and answer keys. The [Courseware manual](../03-courseware-generation-and-review/README.md) describes the combined menus and generation controls.
 
-   ![Saved generated lesson opened after reload](05-reloaded-generated-lesson.png)
+   ![Synthetic saved lesson opened after reload](05-reloaded-generated-lesson.png)
 
-Coverage measures alignment with the outline, and answer-key checks compare the explanation with the marked option. Neither proves factual correctness. The live audit found incorrect JavaScript statements despite high scores; review code, facts and answer keys before publishing. See the concrete defects in the [validation record](../../versions/2026-10-29-backend-harness/validation/results.md).
+Coverage measures alignment with the outline, and answer-key checks compare the explanation with the marked option. Neither proves factual correctness. The earlier live audit found incorrect JavaScript statements despite high scores; review code, facts and answer keys before publishing. See the concrete defects in the [validation record](../../versions/2026-10-29-backend-harness/validation/results.md).

@@ -174,8 +174,8 @@ test('instructor', async ({ page, request }) => {
     { folder: f, name: '05-syllabus-builder', title: 'Syllabus Builder (upload or build the 7 sections)', path: '/syllabus?tab=builder' },
     // The outline headings stick under the top bar while scrolling; in a capture taller than the window they stay at the top of the table.
     { folder: f, name: '06-syllabus-builder-course-outline', title: 'Syllabus Builder · Section 5 Course Outline', path: '/syllabus?tab=builder', element: p => p.locator('[data-section="5"]'), style: '.outline-table thead th{position:static !important}' },
-    { folder: f, name: '07-courseware-my-courseware', title: 'Courseware · My Courseware', path: '/courseware?tab=mine', fullPage: true },
-    { folder: f, name: '08-courseware-builder', title: 'Courseware · Courseware Builder', path: '/courseware?tab=builder', fullPage: true },
+    { folder: f, name: '07-courseware-my-courseware', title: 'Courseware · combined course list', path: '/courseware', fullPage: true },
+    { folder: f, name: '08-courseware-builder', title: 'Courseware · weekly workspace', path: '/courseware?course=syl-1', fullPage: true },
     { folder: f, name: '09-student-monitoring-assessment-scores', title: 'Student Monitoring · Assessment Scores', path: '/student-monitoring?tab=assessments', fullPage: true },
     { folder: f, name: '10-student-monitoring-material-access', title: 'Student Monitoring · Material Access', path: '/student-monitoring', act: tab('Learning Material Access'), fullPage: true },
     { folder: f, name: '11-performance-overview', title: 'Performance · Overview', path: '/performance?tab=overview' },
@@ -189,7 +189,7 @@ test('student', async ({ page }) => {
   const f = '05-student'
   await run(page, 'student', [
     { folder: f, name: '01-dashboard', title: 'Student dashboard', path: '/dashboard', fullPage: true },
-    { folder: f, name: '02-my-materials', title: 'My Courses · My Materials', path: '/courseware?tab=published', fullPage: true },
+    { folder: f, name: '02-my-materials', title: 'My Courses · course list', path: '/courseware', fullPage: true },
     { folder: f, name: '03-my-assessments', title: 'My Courses · My Assessments', path: '/assessment', fullPage: true },
     { folder: f, name: '04-performance-overview', title: 'Performance · Overview', path: '/performance?tab=overview', fullPage: true },
     { folder: f, name: '05-performance-by-topic', title: 'Performance · By Topic', path: '/performance?tab=bytopic', fullPage: true },

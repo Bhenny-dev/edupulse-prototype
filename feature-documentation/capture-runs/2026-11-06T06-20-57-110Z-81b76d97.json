@@ -1,0 +1,187 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-11-06T06-20-57-110Z-81b76d97",
+  "startedAt": "2026-11-06T06:20:57.110Z",
+  "finishedAt": "2026-11-06T06:21:17.024Z",
+  "commitSha": "87a1e6537d14d243e55104bc0d9e2bf1b19246df",
+  "sourceDigest": "4c44901ec71ec751b94c87ff33207067a78f6016b8789c83396591b877c7e59f",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-11-06T06:19:51.443Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 7,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": "04-instructor/0[78]-courseware|05-student/02-my-materials"
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-formatting.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.spec.ts",
+    "edupulse-app/tests/snapshots/harness-delivery.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-drafting.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-source.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+    "edupulse-app/tests/snapshots/student-directory.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+      "title": "public site",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "preview/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 846,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+      "title": "shared interface (shown as instructor)",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "preview/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1034,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+      "title": "system admin",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "preview/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 883,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+      "title": "dean and associate dean",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "preview/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 945,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+      "title": "associate dean",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "preview/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 958,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+      "title": "instructor",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "preview/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 3241,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+      "title": "student",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "preview/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2016,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-walkthrough/04-instructor/07-courseware-my-courseware.png",
+      "sha256": "df80620956666a22e0cec7b17e57659653a3806d227bf92c9927b0c46f2017ed",
+      "bytes": 350586
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/04-instructor/08-courseware-builder.png",
+      "sha256": "e1e968c836adffa1fc3943084183f4db19941f1f4e0deec58acd5f41dc187a5c",
+      "bytes": 448640
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/05-student/02-my-materials.png",
+      "sha256": "437ca362ed8728d7ad48daa8e712a635c3440e5a7d6285284fede60d0684fcd1",
+      "bytes": 273271
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/45-saved-syllabus-versions.png",
+      "sha256": "c65ccfa01b2472e5808df990818612473967f66cb15f02519369001b13822fb0",
+      "bytes": 58391
+    }
+  ]
+}

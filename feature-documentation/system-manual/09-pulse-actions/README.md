@@ -44,6 +44,8 @@ The class list in these screenshots is sample data: invented names with `example
 
 ## Prepare a week of courseware (instructors)
 
+Courseware now has one course list and weekly workspace. Pulse's page guidance opens that list; existing course/week links also remain valid. After a saved generation, use **View** to inspect the item, then its three-dot menu for review, publication or delivery settings. The [combined workspace guide](../03-courseware-generation-and-review/README.md) shows these controls and distinguishes its synthetic UI captures from earlier real model evidence.
+
 7. Ask, for example, *Generate week 1 materials for IT 102 with a worked JavaScript example, without web research*. The card shows the course's active syllabus and its **Course Outline** week, including **Topics**, **Learning outcomes**, and any planned activities and assessments. This capture uses a synthetic active outline with no previous week drafts. The original prompt and its research restriction reach the generation API. The **Week** list marks existing drafts when present; checked or published items are always kept. **Generate Week *n* drafts** writes a learning material, an activity and a short assessment as drafts for your review, then opens **Courseware** with the week expanded. **Draft in chat instead** writes a draft in the conversation without saving it. A course without an active syllabus cannot be generated; the card says why and opens **My Syllabus**. [Manual 15](../15-backend-content-delivery/README.md) follows this request through the real local model and a saved reload.
 
    ![Generate a week from the outline](07-generate-week-source.png)

@@ -17,11 +17,11 @@ The refreshed Performance captures explicitly display **Sample performance data 
 
 Signed-in student accounts see this same dashboard filled from their own enrolled records: reminders list their unopened materials and unanswered assessments, course cards show the latest marked score (*No score yet* before the first) and the trend plots marked attempts. Unrecorded block details read *Not recorded* ([account capture](../09-restored-role-pages/README.md#role-dashboards)).
 
-## 2. My Courses · My Materials
+## 2. My Courses
 
 ![My materials](02-my-materials.png)
 
-The student's enrolled courses that have an active syllabus, with the number of published items and teaching weeks. **View Courseware** opens the published weekly materials; until an instructor publishes, the row reads *No materials yet*.
+The preview student's enrolled courses that have an active syllabus, with the number of published items and teaching weeks, appear in one list. **View** opens published weekly materials; until an instructor publishes, the row reads *No materials yet*. There are no generation actions in this student view. Signed-in student readers continue to use the enrolled-publication view described in the account guide.
 
 *Changed in v0.4.0:* the list is limited to the courses on the student's EduSuite enrolment, matching the dashboard's *Enrolled Courses*; it previously listed every active syllabus in the workspace.
 

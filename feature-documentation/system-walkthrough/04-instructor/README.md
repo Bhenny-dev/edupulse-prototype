@@ -40,13 +40,13 @@ Pulse can prepare a new syllabus draft for the course selected in Section 1. Its
 
 ## 7–8. Courseware
 
-![My Courseware](07-courseware-my-courseware.png)
+![Combined Courseware list](07-courseware-my-courseware.png)
 
-**My Courseware:** each active syllabus with its status (*Not Started*, *In Progress*, *Complete*), item counts and teaching weeks; **Start Generating** opens the builder for that course.
+**Courseware:** a single list for active syllabi with status (*Not Started*, *In Progress*, *Complete*), generated/expected item counts, progress and teaching weeks. **Generate** opens an empty course's weekly workspace; **View** opens a course with saved items. The three-dot menu offers the outline and draft-review shortcuts. These preview rows remain sample data.
 
-![Courseware Builder](08-courseware-builder.png)
+![Courseware weekly workspace](08-courseware-builder.png)
 
-**Courseware Builder:** one card per course with an approved syllabus and extracted outline, showing weeks, planned items and progress. Opening a card lists the outline weeks with **Generate** per week and **Generate All Content**. When no provider or on-device model is connected, the opened course says **Pulse AI is not set up yet** with **Set up Pulse AI** ([capture](../09-restored-role-pages/47-publication-delivery-settings.png)); a generation that cannot run stays on screen as **Generation did not finish** with its reason and **Dismiss**.
+The weekly workspace combines the former viewing and builder actions. Existing weeks and items show **View**; empty teaching weeks show **Generate**. Three-dot menus contain generation, checking, publication, document/presentation and delivery actions at the relevant course, week or item. **Generate All Content** stays visible on an empty course. When no provider or on-device model is connected, the opened course says **Pulse AI is not set up yet** with **Set up Pulse AI** ([capture](../09-restored-role-pages/47-publication-delivery-settings.png)); a generation that cannot run stays on screen as **Generation did not finish** with its reason and **Dismiss**. The [current task captures](../../system-manual/03-courseware-generation-and-review/README.md) show the populated workspace and menus.
 
 Opened materials and activities display Markdown emphasis as bold or italic text, with formatted lists, tables and code. **AI draft review** follows the final section and references; the assessment editor places it below the questions. The [document and assessment examples](../../system-manual/03-courseware-generation-and-review/README.md) show this order with synthetic saved content. **Edit** retains the original formatting text, and **Save** keeps it for later display.
 

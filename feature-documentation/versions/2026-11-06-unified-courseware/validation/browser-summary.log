@@ -1,0 +1,275 @@
+Initial focused run, 22 passed
+
+> edupulse-app@0.4.0 test:browser
+> playwright test tests/browser/courseware-unified.spec.ts tests/browser/courseware-formatting.spec.ts tests/browser/courseware-ai-readiness.spec.ts
+
+node.exe : [WebServer] (node:41868) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([WebServer] (no... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:27432) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 2:09:42 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3050
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 2:09:43 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3050
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 2:09:44 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3050
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 2:09:45 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3050
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+
+Running 22 tests using 1 worker
+
+(node:4120) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 2:09:59 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok  1 [desktop] › tests\browser\courseware-ai-readiness.spec.ts:7:1 › the courseware builder says when Pulse AI is not set up and keeps a failed generation on the page (18.6s)
+[WebServer] 2:10:14 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok  2 [desktop] › tests\browser\courseware-ai-readiness.spec.ts:41:1 › an unknown Settings tab in the address opens Account instead of an empty page (7.2s)
+  ok  3 [desktop] › tests\browser\courseware-formatting.spec.ts:5:1 › document formats saved Markdown and places evaluation after all sections (3.5s)
+  ok  4 [desktop] › tests\browser\courseware-formatting.spec.ts:32:1 › activity and assessment evaluation follow their content (1.9s)
+  ok  5 [desktop] › tests\browser\courseware-formatting.spec.ts:44:1 › student document and slides format emphasis without exposing draft evaluation (1.8s)
+  ok  6 [desktop] › tests\browser\courseware-formatting.spec.ts:62:1 › formatted content keeps HTML inert and prevents unsafe links or remote image loads (1.8s)
+  ok  7 [desktop] › tests\browser\courseware-unified.spec.ts:4:1 › one course list combines progress with View or Generate and preserves old links (2.1s)
+  ok  8 [desktop] › tests\browser\courseware-unified.spec.ts:29:1 › item menus retain editing, slides, review, publish and delivery settings (5.5s)
+  ok  9 [desktop] › tests\browser\courseware-unified.spec.ts:66:1 › missing-content generation preserves existing work and changes Generate into View (3.8s)
+  ok 10 [desktop] › tests\browser\courseware-unified.spec.ts:87:1 › week and course menus keep bulk review available (3.6s)
+  ok 11 [desktop] › tests\browser\courseware-unified.spec.ts:101:1 › three-dot menus support keyboard, dismissal and a bounded viewport in dark mode (1.8s)
+(node:8820) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 2:10:50 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok 12 [mobile] › tests\browser\courseware-ai-readiness.spec.ts:7:1 › the courseware builder says when Pulse AI is not set up and keeps a failed generation on the page (16.2s)
+[WebServer] 2:11:05 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok 13 [mobile] › tests\browser\courseware-ai-readiness.spec.ts:41:1 › an unknown Settings tab in the address opens Account instead of an empty page (7.1s)
+  ok 14 [mobile] › tests\browser\courseware-formatting.spec.ts:5:1 › document formats saved Markdown and places evaluation after all sections (3.5s)
+  ok 15 [mobile] › tests\browser\courseware-formatting.spec.ts:32:1 › activity and assessment evaluation follow their content (1.9s)
+  ok 16 [mobile] › tests\browser\courseware-formatting.spec.ts:44:1 › student document and slides format emphasis without exposing draft evaluation (1.8s)
+  ok 17 [mobile] › tests\browser\courseware-formatting.spec.ts:62:1 › formatted content keeps HTML inert and prevents unsafe links or remote image loads (1.7s)
+  ok 18 [mobile] › tests\browser\courseware-unified.spec.ts:4:1 › one course list combines progress with View or Generate and preserves old links (2.0s)
+  ok 19 [mobile] › tests\browser\courseware-unified.spec.ts:29:1 › item menus retain editing, slides, review, publish and delivery settings (11.3s)
+  ok 20 [mobile] › tests\browser\courseware-unified.spec.ts:66:1 › missing-content generation preserves existing work and changes Generate into View (3.9s)
+  ok 21 [mobile] › tests\browser\courseware-unified.spec.ts:87:1 › week and course menus keep bulk review available (6.1s)
+  ok 22 [mobile] › tests\browser\courseware-unified.spec.ts:101:1 › three-dot menus support keyboard, dismissal and a bounded viewport in dark mode (2.0s)
+
+  22 passed (2.1m)
+
+Compatibility run, 14 passed and two phone failures corrected afterward
+
+> edupulse-app@0.4.0 test:browser
+> playwright test tests/browser/baseline-workflows.spec.ts tests/browser/workflows.spec.ts tests/browser/courseware-unified.spec.ts -g courseware edits persist|syllabus draft survives reload|assessment topic mappings|one course list|item menus|missing-content|week and course|three-dot
+
+node.exe : [WebServer] (node:2184) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([WebServer] (no... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:30632) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 2:14:17 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3050
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 2:14:18 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3050
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 2:14:19 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3050
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+
+Running 16 tests using 1 worker
+
+(node:25732) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 [desktop] › tests\browser\baseline-workflows.spec.ts:46:1 › assessment topic mappings and delivery policy save through the instructor workspace (5.0s)
+  ok  2 [desktop] › tests\browser\courseware-unified.spec.ts:4:1 › one course list combines progress with View or Generate and preserves old links (2.3s)
+  ok  3 [desktop] › tests\browser\courseware-unified.spec.ts:29:1 › item menus retain editing, slides, review, publish and delivery settings (5.7s)
+  ok  4 [desktop] › tests\browser\courseware-unified.spec.ts:66:1 › missing-content generation preserves existing work and changes Generate into View (4.0s)
+  ok  5 [desktop] › tests\browser\courseware-unified.spec.ts:87:1 › week and course menus keep bulk review available (3.7s)
+  ok  6 [desktop] › tests\browser\courseware-unified.spec.ts:101:1 › three-dot menus support keyboard, dismissal and a bounded viewport in dark mode (1.8s)
+[WebServer] 2:14:52 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok  7 [desktop] › tests\browser\workflows.spec.ts:106:1 › courseware edits persist, require review again, and document downloads work (15.2s)
+[WebServer] 2:15:07 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok  8 [desktop] › tests\browser\workflows.spec.ts:147:1 › syllabus draft survives reload and approved PDF activates the same course in Courseware (22.3s)
+(node:8764) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  9 [mobile] › tests\browser\baseline-workflows.spec.ts:46:1 › assessment topic mappings and delivery policy save through the instructor workspace (5.5s)
+  ok 10 [mobile] › tests\browser\courseware-unified.spec.ts:4:1 › one course list combines progress with View or Generate and preserves old links (2.5s)
+  x  11 [mobile] › tests\browser\courseware-unified.spec.ts:29:1 › item menus retain editing, slides, review, publish and delivery settings (30.5s)
+(node:33344) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 12 [mobile] › tests\browser\courseware-unified.spec.ts:66:1 › missing-content generation preserves existing work and changes Generate into View (5.0s)
+  x  13 [mobile] › tests\browser\courseware-unified.spec.ts:87:1 › week and course menus keep bulk review available (30.6s)
+(node:25088) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 14 [mobile] › tests\browser\courseware-unified.spec.ts:101:1 › three-dot menus support keyboard, dismissal and a bounded viewport in dark mode (2.6s)
+[WebServer] 2:16:52 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok 15 [mobile] › tests\browser\workflows.spec.ts:106:1 › courseware edits persist, require review again, and document downloads work (19.5s)
+[WebServer] 2:17:11 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok 16 [mobile] › tests\browser\workflows.spec.ts:147:1 › syllabus draft survives reload and approved PDF activates the same course in Courseware (34.2s)
+
+
+  1) [mobile] › tests\browser\courseware-unified.spec.ts:29:1 › item menus retain editing, slides, review, publish and delivery settings
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByRole('menuitem', { name: 'View presentation', exact: true })
+
+
+      37 |   await page.getByRole('button', { name: 'Save', exact: true }).click()
+      38 |   await material.getByRole('button', { name: 'Actions for Variables lesson' }).click()
+    > 39 |   await page.getByRole('menuitem', { name: 'View presentation', exact: true }).click()
+         |                                                                                ^
+      40 |   await expect(page.getByRole('button', { name: /Next/ }).first()).toBeVisible()
+      41 |   await page.getByRole('button', { name: 'Back', exact: true }).click()
+      42 |   await material.getByRole('button', { name: 'Actions for Variables lesson' }).click()
+        at C:\Users\Benny\OneDrive\Documents\EduPulse\EduPulse System Prototype\edupulse-app\tests\browser\courseware-unified.spec.ts:39:80
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    .data\courseware-unified-browser-extra-results\courseware-unified-item-me-e88e2-blish-and-delivery-settings-mobile\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: .data\courseware-unified-browser-extra-results\courseware-unified-item-me-e88e2-blish-and-delivery-settings-mobile\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    .data\courseware-unified-browser-extra-results\courseware-unified-item-me-e88e2-blish-and-delivery-settings-mobile\trace.zip
+    Usage:
+
+        npx playwright show-trace .data\courseware-unified-browser-extra-results\courseware-unified-item-me-e88e2-blish-and-delivery-settings-mobile\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [mobile] › tests\browser\courseware-unified.spec.ts:87:1 › week and course menus keep bulk review available
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByRole('menuitem', { name: 'Check All Drafts', exact: true })
+
+
+      89 |   await page.goto('/#/courseware?course=baseline-syllabus&week=1')
+      90 |   await page.getByRole('button', { name: 'Week 1 actions', exact: true }).click()
+    > 91 |   await page.getByRole('menuitem', { name: 'Check All Drafts', exact: true }).click()
+         |                                                                               ^
+      92 |   await expect(page.locator('[data-content-id="unified-material"] .badge')).toHaveText('Checked')
+      93 |   await page.getByRole('button', { name: 'Course actions', exact: true }).click()
+      94 |   await expect(page.getByRole('menuitem', { name: 'Check All Drafts', exact: true })).toBeDisabled()
+        at C:\Users\Benny\OneDrive\Documents\EduPulse\EduPulse System Prototype\edupulse-app\tests\browser\courseware-unified.spec.ts:91:79
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    .data\courseware-unified-browser-extra-results\courseware-unified-week-an-30b4e--keep-bulk-review-available-mobile\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: .data\courseware-unified-browser-extra-results\courseware-unified-week-an-30b4e--keep-bulk-review-available-mobile\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    .data\courseware-unified-browser-extra-results\courseware-unified-week-an-30b4e--keep-bulk-review-available-mobile\trace.zip
+    Usage:
+
+        npx playwright show-trace .data\courseware-unified-browser-extra-results\courseware-unified-week-an-30b4e--keep-bulk-review-available-mobile\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    [mobile] › tests\browser\courseware-unified.spec.ts:29:1 › item menus retain editing, slides, review, publish and delivery settings
+    [mobile] › tests\browser\courseware-unified.spec.ts:87:1 › week and course menus keep bulk review available
+  14 passed (3.5m)
+
+Corrected combined workspace and regeneration, 12 passed
+
+> edupulse-app@0.4.0 test:browser
+> playwright test tests/browser/courseware-unified.spec.ts
+
+node.exe : [WebServer] (node:29316) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([WebServer] (no... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:36644) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 2:18:28 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3050
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 2:18:29 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3050
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 2:18:30 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3050
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+
+Running 12 tests using 1 worker
+
+(node:18656) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 [desktop] › tests\browser\courseware-unified.spec.ts:4:1 › one course list combines progress with View or Generate and preserves old links (4.4s)
+  ok  2 [desktop] › tests\browser\courseware-unified.spec.ts:29:1 › item menus retain editing, slides, review, publish and delivery settings (6.6s)
+  ok  3 [desktop] › tests\browser\courseware-unified.spec.ts:66:1 › missing-content generation preserves existing work and changes Generate into View (3.8s)
+  ok  4 [desktop] › tests\browser\courseware-unified.spec.ts:87:1 › week and course menus keep bulk review available (3.7s)
+  ok  5 [desktop] › tests\browser\courseware-unified.spec.ts:101:1 › three-dot menus support keyboard, dismissal and a bounded viewport in dark mode (1.8s)
+  ok  6 [desktop] › tests\browser\courseware-unified.spec.ts:121:1 › regenerating drafts preserves delivery dates, assessment rules and checked work (2.6s)
+(node:19092) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  7 [mobile] › tests\browser\courseware-unified.spec.ts:4:1 › one course list combines progress with View or Generate and preserves old links (2.5s)
+  ok  8 [mobile] › tests\browser\courseware-unified.spec.ts:29:1 › item menus retain editing, slides, review, publish and delivery settings (11.5s)
+  ok  9 [mobile] › tests\browser\courseware-unified.spec.ts:66:1 › missing-content generation preserves existing work and changes Generate into View (4.0s)
+  ok 10 [mobile] › tests\browser\courseware-unified.spec.ts:87:1 › week and course menus keep bulk review available (6.3s)
+  ok 11 [mobile] › tests\browser\courseware-unified.spec.ts:101:1 › three-dot menus support keyboard, dismissal and a bounded viewport in dark mode (2.7s)
+  ok 12 [mobile] › tests\browser\courseware-unified.spec.ts:121:1 › regenerating drafts preserves delivery dates, assessment rules and checked work (2.7s)
+
+  12 passed (1.1m)
+
+All-disabled menu keyboard dismissal, two passed
+
+> edupulse-app@0.4.0 test:browser
+> playwright test tests/browser/courseware-unified.spec.ts -g week and course menus
+
+node.exe : [WebServer] (node:33300) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([WebServer] (no... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:11144) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 2:30:12 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3050
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 2:30:13 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3050
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+
+Running 2 tests using 1 worker
+
+(node:33696) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 [desktop] › tests\browser\courseware-unified.spec.ts:87:1 › week and course menus keep bulk review available (5.0s)
+(node:41488) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 2 [mobile] › tests\browser\courseware-unified.spec.ts:87:1 › week and course menus keep bulk review available (6.5s)
+
+  2 passed (20.1s)

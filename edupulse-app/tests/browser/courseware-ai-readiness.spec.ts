@@ -14,8 +14,8 @@ test('the courseware builder says when Pulse AI is not set up and keeps a failed
   await page.getByRole('button', { name: 'Instructor', exact: true }).click()
   await expect(page).toHaveURL(/#\/dashboard/)
   await page.goto('/#/courseware')
-  await page.getByRole('button', { name: 'Start Generating', exact: true }).first().click()
-  await expect(page).toHaveURL(/tab=builder/)
+  await page.getByRole('button', { name: 'Generate', exact: true }).first().click()
+  await expect(page).toHaveURL(/course=/)
 
   // Before any try: a calm notice with the way to set it up.
   const notice = page.locator('.cw-ai-notice')

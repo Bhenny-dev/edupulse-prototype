@@ -94,7 +94,7 @@ The following scenes use the additional synthetic baseline fixture. SQL integrat
 | Persisted notices | ![Academic notices](44-persisted-academic-notices.png) | Persisted publication notice plus derived current-work reminders; account and device receipt behavior is disclosed. |
 | Saved versions | ![Saved syllabus versions](45-saved-syllabus-versions.png) | Historical editable version can be viewed or restored as a new draft; approval must be repeated. |
 | Question topic mapping | ![Assessment mapping](46-assessment-topic-mapping.png) | Each question maps to an approved outline topic and selects multiple choice, True/False or instructor-marked response type. |
-| Delivery settings | ![Delivery settings](47-publication-delivery-settings.png) | Release/deadline, duration and allowed attempts saved before review/publication. This fixture has no AI connection, so the course also says **Pulse AI is not set up yet** with **Set up Pulse AI**; saved drafts stay as they are. |
+| Delivery settings | ![Delivery settings](47-publication-delivery-settings.png) | Opened from an item's three-dot menu in the combined Courseware workspace. Release/deadline, duration and allowed attempts are saved before review/publication; **Close delivery settings** closes the panel. This fixture has no AI connection, so the course also says **Pulse AI is not set up yet** with **Set up Pulse AI**; saved drafts stay as they are. |
 | Mobile topics | ![Mobile topic mastery](48-mobile-topic-mastery.png) | Stacked topic charts/status and scrollable matrices. |
 | Mobile loading | ![Mobile loading](49-mobile-loading-proposal.png) | Responsive proposal controls and qualification/load tables. |
 

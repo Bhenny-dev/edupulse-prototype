@@ -15,7 +15,7 @@ export function prepareIntent(agent, intent, user = null) {
   }
   if (agent.id === 'syllabus' && intent.key === 'upload') steps[0].path = '/syllabus?tab=builder'
   if (agent.id === 'courseware' && intent.key === 'generate') {
-    steps[0].path = '/courseware?tab=builder'
+    steps[0].path = '/courseware'
     steps[1].event = 'courseware-generated'; steps[1].hint = 'Generate a week using the page controls. I will continue when a valid draft has been saved.'
     steps[2].event = 'courseware-checked'; steps[2].hint = 'Read and check a draft in Courseware before continuing.'
     steps[3].body = user?.authenticated ? 'Set delivery dates and assessment rules, save, review and check the draft, then explicitly publish. Enrolled students can open it after release; a future release remains hidden.' : 'Review and check the draft before publication. Preview changes stay on this device; they do not deliver material to real students.'

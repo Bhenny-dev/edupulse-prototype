@@ -1,0 +1,317 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-11-06T06-20-14-185Z-4e499ed7",
+  "startedAt": "2026-11-06T06:20:14.185Z",
+  "finishedAt": "2026-11-06T06:20:38.050Z",
+  "commitSha": "87a1e6537d14d243e55104bc0d9e2bf1b19246df",
+  "sourceDigest": "4c44901ec71ec751b94c87ff33207067a78f6016b8789c83396591b877c7e59f",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-11-06T06:19:51.443Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 9,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": null
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-formatting.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.mobile.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.spec.ts",
+    "edupulse-app/tests/snapshots/harness-delivery.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-drafting.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-source.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+    "edupulse-app/tests/snapshots/student-directory.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+      "title": "synthetic baseline syllabus versions, assessment mappings and delivery settings",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2283,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+      "title": "synthetic editor fields grow to display full section text and answer explanations",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1170,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+      "title": "synthetic generation failure keeps the course open with actionable recovery",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 800,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/courseware-formatting.spec.ts",
+      "title": "synthetic courseware formatting and evaluation at the end",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1216,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/courseware-formatting.spec.ts",
+      "title": "synthetic courseware formatting on solid dark surfaces",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 732,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/courseware-formatting.spec.ts",
+      "title": "synthetic student formatted document and presentation",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1235,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/courseware-unified.spec.ts",
+      "title": "synthetic unified courseware list, generation and three-dot menus",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 3667,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/courseware-unified.spec.ts",
+      "title": "synthetic Pulse guidance describes the combined Courseware workspace",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 885,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/courseware-unified.mobile.spec.ts",
+      "title": "synthetic unified courseware mobile list and item actions",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1141,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-manual/03-courseware-generation-and-review/01-courseware-with-active-syllabus.png",
+      "sha256": "3de8ff0243e913924d3e2239b9e22c553baaed705f56dfaf999a2a500495d668",
+      "bytes": 289090
+    },
+    {
+      "path": "feature-documentation/system-manual/03-courseware-generation-and-review/02-weekly-outline-ready-to-generate.png",
+      "sha256": "0210593a9d5afa42c0ae82756621378dde615bcd714b4bd452852bfb03f4097e",
+      "bytes": 245133
+    },
+    {
+      "path": "feature-documentation/system-manual/03-courseware-generation-and-review/03-generating-with-pulse-thinking.png",
+      "sha256": "086602377675731ad93f855808a122a9827654eced495641b11152a88b79be1e",
+      "bytes": 238945
+    },
+    {
+      "path": "feature-documentation/system-manual/03-courseware-generation-and-review/04-generated-drafts-for-review.png",
+      "sha256": "dba6e632d46d0cb96331b770ecf5166ae776848983decc3ecbbae3facc69ac0d",
+      "bytes": 245795
+    },
+    {
+      "path": "feature-documentation/system-manual/03-courseware-generation-and-review/05-draft-document-view.png",
+      "sha256": "4db47b9efb658215fcbed2d260a8df3dcf154076f68533b592f44f5fde0f3669",
+      "bytes": 276135
+    },
+    {
+      "path": "feature-documentation/system-manual/03-courseware-generation-and-review/06-outline-alignment-check.png",
+      "sha256": "2de0c067f8c30d996e8c266a1b4bbdc345d66b7d3c2bda73d11ffd35ccda1139",
+      "bytes": 37441
+    },
+    {
+      "path": "feature-documentation/system-manual/03-courseware-generation-and-review/07-edit-material-growing-field.png",
+      "sha256": "6fc84ffa24a2cdf3ee41931d9e7d0463831836443854b3f24f22237dfd12f2e1",
+      "bytes": 204947
+    },
+    {
+      "path": "feature-documentation/system-manual/03-courseware-generation-and-review/08-edit-assessment-growing-explanation.png",
+      "sha256": "bf1321465fced17cb3f23e83eb9e74510094b9e0c7e529029b35b8fadb12f042",
+      "bytes": 160880
+    },
+    {
+      "path": "feature-documentation/system-manual/03-courseware-generation-and-review/09-generation-recovery.png",
+      "sha256": "393e1eb0ac6749ee5c47dd4da9a3141f94b9672c9c4e2b6716ed7c6df10abcdb",
+      "bytes": 269773
+    },
+    {
+      "path": "feature-documentation/system-manual/03-courseware-generation-and-review/10-assessment-review-at-end.png",
+      "sha256": "2e8d450f546c0d53f583c0b8a075f87d17f384691a4a25391061eae8a7cdb40f",
+      "bytes": 381146
+    },
+    {
+      "path": "feature-documentation/system-manual/03-courseware-generation-and-review/11-formatted-document-dark.png",
+      "sha256": "b764a3f1407d1905571ca491a40d43572f2910af94a9022e17ee6d7783df7e35",
+      "bytes": 164915
+    },
+    {
+      "path": "feature-documentation/system-manual/03-courseware-generation-and-review/12-course-actions-menu.png",
+      "sha256": "3de8ff0243e913924d3e2239b9e22c553baaed705f56dfaf999a2a500495d668",
+      "bytes": 289090
+    },
+    {
+      "path": "feature-documentation/system-manual/03-courseware-generation-and-review/13-week-actions-menu.png",
+      "sha256": "dba6e632d46d0cb96331b770ecf5166ae776848983decc3ecbbae3facc69ac0d",
+      "bytes": 245795
+    },
+    {
+      "path": "feature-documentation/system-manual/03-courseware-generation-and-review/14-item-actions-menu.png",
+      "sha256": "dba6e632d46d0cb96331b770ecf5166ae776848983decc3ecbbae3facc69ac0d",
+      "bytes": 245795
+    },
+    {
+      "path": "feature-documentation/system-manual/03-courseware-generation-and-review/15-mobile-course-list.png",
+      "sha256": "5de0506fb99c7da2d52be68e9c1add0988218657523646b25ce4a7ce044f85cf",
+      "bytes": 404789
+    },
+    {
+      "path": "feature-documentation/system-manual/03-courseware-generation-and-review/16-mobile-item-actions.png",
+      "sha256": "8c83f2e54a02451c446120cc1f54750bc7cecf6e7e580967d19aad34b2e4e0d5",
+      "bytes": 291451
+    },
+    {
+      "path": "feature-documentation/system-manual/03-courseware-generation-and-review/17-pulse-courseware-guidance.png",
+      "sha256": "02e14f6d9fcb26e8f1466ca11bf2e82bccbe64dcfb61b95f15a5d1d550048de1",
+      "bytes": 38689
+    },
+    {
+      "path": "feature-documentation/system-manual/15-backend-content-delivery/04-persisted-courseware-drafts.png",
+      "sha256": "dba6e632d46d0cb96331b770ecf5166ae776848983decc3ecbbae3facc69ac0d",
+      "bytes": 245795
+    },
+    {
+      "path": "feature-documentation/system-manual/15-backend-content-delivery/05-reloaded-generated-lesson.png",
+      "sha256": "8b421215fe165da867197b7fe05d342c0df564d1dd162cc1a7da35aad84dcfb2",
+      "bytes": 192614
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/28-student-document.png",
+      "sha256": "597abb4ffac5c29e7c97d9ad54911831909175303aba5fc1ccbb6fe87d50a449",
+      "bytes": 342363
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/29-student-presentation.png",
+      "sha256": "b02f8663dac2d310ca3cf26701293ce579789d3a8de8bbd1cd92a88332abc9fc",
+      "bytes": 318369
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/45-saved-syllabus-versions.png",
+      "sha256": "c65ccfa01b2472e5808df990818612473967f66cb15f02519369001b13822fb0",
+      "bytes": 58391
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/46-assessment-topic-mapping.png",
+      "sha256": "7776b2bf570956436fc27d7b6befdc5fd7ce9191bfa0b2801a70c02b94310c2b",
+      "bytes": 319063
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/47-publication-delivery-settings.png",
+      "sha256": "6ec32a75d7e278e12688911deb7f41d4dad9fab05cc7d8934b3c2af38b45b929",
+      "bytes": 259577
+    }
+  ]
+}

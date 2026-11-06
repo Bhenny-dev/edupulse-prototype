@@ -71,25 +71,24 @@ test('syllabus lifecycle: build, check, download, approve, extract, activate', a
 })
 
 test('courseware: generate a week, review alignment, check', async ({ page }) => {
-  const f = '03-courseware-generation-and-review'
   await page.goto('/')
   await page.getByRole('button', { name: 'Instructor', exact: true }).click()
   await page.goto('/#/courseware')
   await expect(page.getByText('Computer Programming 1', { exact: true }).first()).toBeVisible({ timeout: 30_000 })
-  await shot(page, f, '01-courseware-with-active-syllabus')
+  // Current courseware screenshots are owned by the unified synthetic UI suite.
   // The instructor's own IT 102 (not the read-only sample) carries the outline written in the lifecycle test.
-  await page.getByRole('row').filter({ hasText: 'IT 102' }).filter({ hasNotText: 'Sample' }).getByRole('button', { name: 'Start Generating', exact: true }).first().click()
+  await page.getByRole('row').filter({ hasText: 'IT 102' }).filter({ hasNotText: 'Sample' }).getByRole('button', { name: 'Generate', exact: true }).first().click()
   await expect(page.getByText('Variables and assignment', { exact: true }).first()).toBeVisible()
-  await shot(page, f, '02-weekly-outline-ready-to-generate')
+  // Current courseware screenshots are owned by the unified synthetic UI suite.
   await page.getByRole('button', { name: 'Generate', exact: true }).first().click()
   await page.mouse.move(2, 400)
   await page.waitForTimeout(1500)
-  await shot(page, f, '03-generating-with-pulse-thinking')
+  // Current courseware screenshots are owned by the unified synthetic UI suite.
   // A local CPU model can take several minutes; a failure is reported as an error toast.
-  const open = page.getByRole('button', { name: 'Open', exact: true }).first(), failure = page.locator('.toast-error').first()
+  const open = page.getByRole('button', { name: 'View', exact: true }).first(), failure = page.locator('.toast-error').first()
   await expect(open.or(failure)).toBeVisible({ timeout: 540_000 })
   if (await failure.isVisible()) throw new Error(`Generation failed: ${await failure.textContent()}`)
-  await shot(page, f, '04-generated-drafts-for-review')
+  // Current courseware screenshots are owned by the unified synthetic UI suite.
   await open.click()
   const evidence = page.locator('.ai-draft-evidence').first()
   await expect(evidence).toBeVisible({ timeout: 60_000 })

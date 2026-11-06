@@ -1,5 +1,5 @@
 {
-  "capturedAt": "2026-11-03T14:46:08.982Z",
+  "capturedAt": "2026-11-06T06:21:16.116Z",
   "problems": [],
   "scenes": [
     {
@@ -309,22 +309,6 @@
     {
       "role": "instructor",
       "folder": "04-instructor",
-      "file": "07-courseware-my-courseware.png",
-      "title": "Courseware · My Courseware",
-      "route": "/courseware",
-      "ok": true
-    },
-    {
-      "role": "instructor",
-      "folder": "04-instructor",
-      "file": "08-courseware-builder.png",
-      "title": "Courseware · Courseware Builder",
-      "route": "/courseware",
-      "ok": true
-    },
-    {
-      "role": "instructor",
-      "folder": "04-instructor",
       "file": "09-student-monitoring-assessment-scores.png",
       "title": "Student Monitoring · Assessment Scores",
       "route": "/student-monitoring",
@@ -368,14 +352,6 @@
       "file": "01-dashboard.png",
       "title": "Student dashboard",
       "route": "/dashboard",
-      "ok": true
-    },
-    {
-      "role": "student",
-      "folder": "05-student",
-      "file": "02-my-materials.png",
-      "title": "My Courses · My Materials",
-      "route": "/courseware",
       "ok": true
     },
     {
@@ -616,6 +592,30 @@
       "file": "06-syllabus-builder-course-outline.png",
       "title": "Syllabus Builder · Section 5 Course Outline",
       "route": "/syllabus",
+      "ok": true
+    },
+    {
+      "role": "instructor",
+      "folder": "04-instructor",
+      "file": "07-courseware-my-courseware.png",
+      "title": "Courseware · combined course list",
+      "route": "/courseware",
+      "ok": true
+    },
+    {
+      "role": "instructor",
+      "folder": "04-instructor",
+      "file": "08-courseware-builder.png",
+      "title": "Courseware · weekly workspace",
+      "route": "/courseware",
+      "ok": true
+    },
+    {
+      "role": "student",
+      "folder": "05-student",
+      "file": "02-my-materials.png",
+      "title": "My Courses · course list",
+      "route": "/courseware",
       "ok": true
     }
   ]

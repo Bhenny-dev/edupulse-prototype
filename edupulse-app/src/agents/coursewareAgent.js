@@ -17,13 +17,13 @@ export default defineAgent({
         { title: 'Choose scope', body: 'This week, a term (midterm/finals), or the whole Course Outline — only active syllabi (outline extracted) can generate.' },
         { title: 'Generation runs, grounded in your syllabus', body: 'It retrieves your approved syllabus and instructor-provided materials before drafting anything — you\'ll see the stages in plain language.' },
         { title: 'Review the draft', body: 'Every item shows which outline week and content it was grounded in. Edit, finalize, or regenerate just that one item.' },
-        { title: 'Review and publish', body: 'Mark reviewed drafts checked before using the visibility control. The private workspace does not deliver content to enrolled students yet.' },
+        { title: 'Review and publish', body: 'After reviewing an item with View, choose Check in its three-dot actions menu. Once saved, choose Publish; enrolled students can access released courseware.' },
       ],
     },
     {
       key: 'review', label: 'Help me get through my review queue', roles: ['instructor'],
       steps: [
-        { title: 'Open Courseware Builder', body: 'Select an active syllabus and inspect its saved draft items by week.' },
+        { title: 'Open Courseware', body: 'Choose View for a course with saved content. Open a week with View, then inspect its items before checking them from the three-dot actions menu.' },
         { title: 'Check the grounding note on each item', body: 'It tells you which outline week and topic it drew from.' },
         { title: 'Check, or regenerate', body: 'Review and check each draft. Regeneration can replace a draft, while checked and published items are preserved by batch generation.' },
       ],
@@ -31,7 +31,7 @@ export default defineAgent({
     {
       key: 'itembank', label: 'Find an existing item', roles: ['instructor'],
       steps: [
-        { title: 'Search or filter by course', body: 'Use My Courseware to find a saved item for a course. The separate item-bank workflow is not connected here.' },
+        { title: 'Choose a course', body: 'The Courseware list combines generation progress and saved items. Choose View for generated content or Generate for a course that has not started.' },
         { title: 'Preview before reusing', body: 'Check it still fits the outline row you\'re working from.' },
       ],
     },
