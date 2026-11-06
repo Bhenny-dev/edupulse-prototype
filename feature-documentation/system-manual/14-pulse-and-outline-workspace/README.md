@@ -56,9 +56,23 @@ Open **Settings → Help & Support** for getting started, contacts and frequentl
 
 ![Keyboard Shortcuts Settings tab](09-settings-keyboard-shortcuts.png)
 
-Use **Settings → Data & Privacy → Export workspace backup** to download the owner workspace as JSON. **Export My Data** remains a separate profile export. The healthy saved-workspace strip is removed; an unsaved-data error or conflict still shows recovery and backup controls.
+Use **Settings → Data & Privacy → Export workspace backup** to download the owner workspace as JSON. **Export My Data** remains a separate profile export.
 
 ![Backup controls in Data & Privacy](10-backup-settings.png)
+
+### Save recovery without a page-wide banner
+
+The page-wide workspace save banner is removed, including its error and conflict states. Pending edits remain in the device journal. The synthetic failed-save example below shows the Courseware page without the banner; it does not establish hosted connectivity.
+
+![Courseware after a synthetic failed save, without a page-wide banner](11-no-save-banner.png)
+
+Open **Settings → Data & Privacy** to check a failed save. **Workspace save** shows the error and **Retry save**. **Export workspace backup** above it downloads the pending workspace as JSON. A successful retry removes the recovery section; it does not display a new page-wide notice.
+
+![Save error and retry in Settings using synthetic workspace transport](12-save-recovery-settings.png)
+
+If a newer saved workspace conflicts with pending edits, export the backup first. **Load latest after export** stays disabled until that export, then loads the saved copy in place of the pending workspace. Review the backup before replacing work. The screenshot uses a synthetic revision conflict.
+
+![Backup-gated conflict recovery in Settings using synthetic workspace transport](13-conflict-recovery-settings.png)
 
 ## Smaller screens
 

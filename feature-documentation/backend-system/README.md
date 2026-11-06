@@ -1,5 +1,9 @@
 # Backend System
 
+## Workspace recovery location, 6 November 2026
+
+The workspace save banner is removed from shared pages. **Settings → Data & Privacy** retains the pending-workspace JSON export and conditionally displays retry or backup-gated conflict reload. The shared hidden status remains truthful for assistive technology. Device journaling, revision checks and the workspace API are unchanged. [Manual 14](../system-manual/14-pulse-and-outline-workspace/README.md#save-recovery-without-a-page-wide-banner) documents synthetic failure and conflict captures; [release validation](../versions/2026-11-06-workspace-status-settings/validation/results.md) records the local recovery checks. This interface change does not resolve or diagnose the reported hosted cloud-save failure.
+
 ## October 24 audit integration and completion
 
 The [initial audit record](../session-generated/2026-10-24-engineering-audit/README.md) is followed by the [completion record](../session-generated/2026-10-24-release-completion/README.md). [ADR-001](decisions/001-role-and-approval-boundaries.md) records the accepted role and offline approval boundaries. `src/lib/access.js` supplies the shared Performance and courseware-author role predicates; the API enforces the latter against the verified Supabase identity. Existing ownership and RLS remain in the workspace/document services. The additive projection uses the existing database and framework.

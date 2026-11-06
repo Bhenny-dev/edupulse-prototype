@@ -122,7 +122,7 @@ function NotificationSettings() {
 
 // Provider catalogue with model tiers (free vs. paid subscriptions)
 function DataPrivacySettings() {
-  const { exportBackup } = useWorkspace()
+  const { exportBackup, error, conflict, backedUp, loading, saving, retry, reload } = useWorkspace()
   const { user } = useAuth()
   const { addToast } = useToast()
   const handleExport = () => {
@@ -135,6 +135,15 @@ function DataPrivacySettings() {
       <div className="card-header"><h3><ShieldCheck size={18} /> Data &amp; Privacy</h3></div>
       <div className="card-body">
         <button className="btn btn-secondary mb-16" onClick={exportBackup}><Download size={14} /> Export workspace backup</button>
+
+        {(error || conflict) && <section aria-label="Workspace save recovery" className="mb-16" style={{ padding: 16, border: '1px solid var(--gray-200)', borderRadius: 'var(--radius-md)' }}>
+          <h4>Workspace save</h4>
+          <p role="alert" className="text-sm" style={{ margin: '8px 0 12px' }}>{error || 'A newer saved workspace exists. Export your pending edits before loading the latest copy.'}</p>
+          {conflict ? <>
+            <p className="text-sm text-muted" style={{ marginBottom: 12 }}>Export a workspace backup above before loading the latest copy.</p>
+            <button className="btn btn-secondary btn-sm" disabled={!backedUp || loading || saving} onClick={reload}>Load latest after export</button>
+          </> : <button className="btn btn-secondary btn-sm" disabled={loading || saving} onClick={retry}>Retry save</button>}
+        </section>}
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', borderRadius: 'var(--radius-md)', border: '1px solid var(--sky-100)' }}>

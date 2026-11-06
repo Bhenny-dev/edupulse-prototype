@@ -121,12 +121,5 @@ export function useWorkspace() {
 }
 export function WorkspaceStatus() {
   const workspace = useWorkspace()
-  if (!workspace.error && !workspace.conflict) return <span className="sr-only" role="status" data-testid="workspace-save-state">{workspace.loading ? 'Loading' : workspace.saving ? 'Saving' : workspace.dirty ? 'Pending save' : workspace.mode ? 'Saved' : 'Unavailable'}</span>
-  return <aside className="workspace-status" role="status" style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center', padding: '8px 24px', fontSize: '0.75rem', borderBottom: '1px solid var(--gray-200)', background: 'var(--gray-50)' }}>
-
-    {workspace.error && <strong role="alert">{workspace.error}</strong>}
-    <button className="btn btn-ghost btn-sm" onClick={workspace.exportBackup}>Export backup</button>
-    {workspace.error && !workspace.conflict && <button className="btn btn-secondary btn-sm" disabled={workspace.loading || workspace.saving} onClick={workspace.retry}>Retry save</button>}
-    {workspace.conflict && <button className="btn btn-secondary btn-sm" disabled={!workspace.backedUp || workspace.saving} onClick={workspace.reload}>Load latest after export</button>}
-  </aside>
+  return <span className="sr-only" role="status" data-testid="workspace-save-state">{workspace.error || (workspace.conflict ? 'Workspace save conflict' : workspace.loading ? 'Loading' : workspace.saving ? 'Saving' : workspace.dirty ? 'Pending save' : workspace.mode ? 'Saved' : 'Unavailable')}</span>
 }

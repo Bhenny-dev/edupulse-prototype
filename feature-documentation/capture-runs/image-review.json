@@ -4338,6 +4338,24 @@
       "sha256": "699957866b2d7f1921648277f975909e73ecddb640f3ac340a949552b67f8b87",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-06T06:27:53.391537Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/14-pulse-and-outline-workspace/11-no-save-banner.png",
+      "sha256": "ac10a411fb21d77abd1e08513400810cbf6cacd7b145a892f76eb8d4c0554fb3",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-06T06:54:36.116221Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/14-pulse-and-outline-workspace/12-save-recovery-settings.png",
+      "sha256": "6d64d2e34dc58475c2c99c1d1a9b8e666dd722ab636d86eece9dc97236c61927",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-06T06:54:36.116221Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/14-pulse-and-outline-workspace/13-conflict-recovery-settings.png",
+      "sha256": "77fc50d3245d71f76a32e073b0490d902d1869ca823681647aaa5cb5c89e7051",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-06T06:54:36.116221Z"
     }
   ]
 }

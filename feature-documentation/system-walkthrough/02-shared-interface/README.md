@@ -10,7 +10,7 @@ The owner System Admin can ask Pulse to open a named role dashboard and correct 
 
 ![Top bar](01-top-bar.png)
 
-Left to right: logo (returns to the dashboard), the role's main tabs, **Search**, **Dark mode**, **Language**, **Notifications**, the role badge and the account menu. The owner admin can switch views. The breadcrumb remains below the bar. **Help & Support** and **Keyboard Shortcuts** are Settings tabs. Workspace backup is in **Settings → Data & Privacy**; recovery controls appear only for an error or conflict.
+Left to right: logo (returns to the dashboard), the role's main tabs, **Search**, **Dark mode**, **Language**, **Notifications**, the role badge and the account menu. The owner admin can switch views. The breadcrumb remains below the bar. **Help & Support** and **Keyboard Shortcuts** are Settings tabs. Workspace backup and conditional save recovery are in **Settings → Data & Privacy**. There is no page-wide workspace save banner.
 
 *Changed in v0.4.0:* icon-only buttons now have spoken names for screen readers (“Notifications, 2 unread”, “Account menu”, “Open menu / Close menu”), and the breadcrumb is a labelled navigation landmark.
 
@@ -81,11 +81,13 @@ Filter tabs (**All**, **Unread (n)** and one tab per category such as *Coursewar
 | Appearance | ![Settings · Appearance](11-settings-appearance.png) | **Dark Mode** switch and **Font Size** (Small, Medium, Large) |
 | Notifications | ![Settings · Notifications](12-settings-notifications.png) | Device-only preferences for email, weekly digest and syllabus, courseware and performance alerts (the banner states that email delivery is not connected) |
 | AI & Knowledge | ![Settings · AI & Knowledge](13-settings-ai-and-knowledge.png) | **New in v0.4.0** — see below |
-| Data & Privacy | ![Settings · Data & Privacy](14-settings-data-and-privacy.png) | **Export My Data**, **Export workspace backup** and the account-deletion policy |
-
-A Settings address with an unknown or unavailable tab, such as an old bookmark, opens **Account** instead of an empty page.
+| Data & Privacy | ![Settings · Data & Privacy](14-settings-data-and-privacy.png) | **Export My Data**, **Export workspace backup**, conditional save recovery and the account-deletion policy |
 | Help & Support | Image 9 above | Getting started, contacts and frequently asked questions |
 | Keyboard Shortcuts | Image 3 above | Working shortcuts and a separate planned list |
+
+Failed saves show **Workspace save** with **Retry save** in this tab. Conflicts offer **Load latest after export**, enabled after exporting the pending workspace. [Manual 14](../../system-manual/14-pulse-and-outline-workspace/README.md#save-recovery-without-a-page-wide-banner) shows both synthetic recovery states and the clear page outside Settings.
+
+A Settings address with an unknown or unavailable tab, such as an old bookmark, opens **Account** instead of an empty page.
 
 **AI & Knowledge (New in v0.4.0)** has three cards:
 

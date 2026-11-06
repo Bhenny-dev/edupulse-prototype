@@ -1,0 +1,42 @@
+
+> edupulse-app@0.4.0 test:browser
+> playwright test tests/browser/workspace-recovery.spec.ts tests/browser/workflows.spec.ts -g save failures leave|Settings requires|conflicting workspace save
+
+node.exe : [WebServer] (node:20816) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([WebServer] (no... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:21288) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 2:48:57 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3050
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 2:48:58 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3050
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 2:48:59 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3050
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+
+Running 6 tests using 1 worker
+
+(node:43960) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 2:49:14 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok 1 [desktop] › tests\browser\workflows.spec.ts:203:1 › conflicting workspace save retains pending edits until a backup is exported (20.1s)
+  ok 2 [desktop] › tests\browser\workspace-recovery.spec.ts:4:1 › save failures leave pages clear and can be backed up and retried from Settings (5.0s)
+  ok 3 [desktop] › tests\browser\workspace-recovery.spec.ts:27:1 › Settings requires a backup before resolving a workspace conflict (3.4s)
+(node:15804) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 2:49:40 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok 4 [mobile] › tests\browser\workflows.spec.ts:203:1 › conflicting workspace save retains pending edits until a backup is exported (19.0s)
+  ok 5 [mobile] › tests\browser\workspace-recovery.spec.ts:4:1 › save failures leave pages clear and can be backed up and retried from Settings (7.5s)
+  ok 6 [mobile] › tests\browser\workspace-recovery.spec.ts:27:1 › Settings requires a backup before resolving a workspace conflict (6.6s)
+
+  6 passed (1.3m)

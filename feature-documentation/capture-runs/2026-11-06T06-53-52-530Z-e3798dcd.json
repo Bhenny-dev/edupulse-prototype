@@ -1,0 +1,108 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-11-06T06-53-52-530Z-e3798dcd",
+  "startedAt": "2026-11-06T06:53:52.530Z",
+  "finishedAt": "2026-11-06T06:54:13.650Z",
+  "commitSha": "958c7f02cba18826c0bfeb7bb4a7ce07e625baa7",
+  "sourceDigest": "331dcbe8fa69002de378360ad3a7001d50f73fc3ff4119358c3e668f6dacf303",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-11-06T06:53:41.608Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 2,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": null
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/workspace-recovery.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-formatting.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.spec.ts",
+    "edupulse-app/tests/snapshots/harness-delivery.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-drafting.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-source.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+    "edupulse-app/tests/snapshots/student-directory.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/workspace-recovery.spec.ts",
+      "title": "synthetic page stays clear after a failed save and recovery lives in Settings",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 5016,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/workspace-recovery.spec.ts",
+      "title": "synthetic conflict recovery stays in Settings until a backup is exported",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 4417,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-manual/14-pulse-and-outline-workspace/11-no-save-banner.png",
+      "sha256": "ac10a411fb21d77abd1e08513400810cbf6cacd7b145a892f76eb8d4c0554fb3",
+      "bytes": 261863
+    },
+    {
+      "path": "feature-documentation/system-manual/14-pulse-and-outline-workspace/12-save-recovery-settings.png",
+      "sha256": "6d64d2e34dc58475c2c99c1d1a9b8e666dd722ab636d86eece9dc97236c61927",
+      "bytes": 242377
+    },
+    {
+      "path": "feature-documentation/system-manual/14-pulse-and-outline-workspace/13-conflict-recovery-settings.png",
+      "sha256": "77fc50d3245d71f76a32e073b0490d902d1869ca823681647aaa5cb5c89e7051",
+      "bytes": 242765
+    }
+  ]
+}

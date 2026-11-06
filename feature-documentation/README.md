@@ -20,6 +20,8 @@ Screenshots in the walkthrough and manual are real captures of the documentation
 
 ## Version history
 
+The [6 November workspace-status update](versions/2026-11-06-workspace-status-settings/README.md) removes the page-wide save banner and keeps backup, retry and conflict recovery in **Settings → Data & Privacy**. Validation and publishing status are recorded in the release.
+
 The [6 November Courseware update](versions/2026-11-06-unified-courseware/README.md) combines the former list and builder tabs, with **View** or **Generate** as primary actions and the remaining controls in three-dot menus. It is live from `737d685`; the release gate passed 199 tests, 30 distinct browser cases were covered across focused runs and public hosted checks passed. The release records the capture and hosted-validation boundaries.
 
 The [4 November formatting update](versions/2026-11-04-courseware-formatting/README.md) added formatted courseware Markdown and moved **AI draft review** after the content. That release shipped from `b380f91` and passed its local release gate, focused browser checks and public hosted checks. Saved content and instructor editing remain available; refreshed examples distinguish synthetic display checks from real model-generation evidence.
@@ -30,6 +32,7 @@ Version folders are release records. Preserve released records, and add correcti
 
 | Version | Scope | Status |
 | --- | --- | --- |
+| [6 November workspace status](versions/2026-11-06-workspace-status-settings/README.md) | Removed page-wide save banner; recovery controls in Settings | [Validation](versions/2026-11-06-workspace-status-settings/validation/results.md) |
 | [6 November combined Courseware](versions/2026-11-06-unified-courseware/README.md) | One course list/weekly workspace, contextual action menus and preserved review/delivery features | [Validation](versions/2026-11-06-unified-courseware/validation/results.md) |
 | [4 November courseware formatting](versions/2026-11-04-courseware-formatting/README.md) | Formatted content, preserved slide emphasis and evaluation at the end | Checks in [validation](versions/2026-11-04-courseware-formatting/validation/results.md) |
 | [3 November Claude work completion](versions/2026-11-03-claude-completion/README.md) | Original account dashboards, wide outline and growing editors, named-role Pulse navigation and direct Anthropic workspace/error recovery | Final checks in [validation](versions/2026-11-03-claude-completion/validation/results.md) |
