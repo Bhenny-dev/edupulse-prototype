@@ -8,4 +8,4 @@ The earlier capture attempt timed out while dismissing a changing list of toasts
 
 `npm run verify` passed: documentation integrity/freshness, lint (existing warnings), both TypeScript projects, model assets, all 199 unit/integration tests, production build and serverless deployment checks. Evidence: [release gate](release-gate.log). Documentation links, screenshot provenance and exact-hash image review passed.
 
-The change is ready to publish to `main`. Deployment and public hosted checks will be recorded after the push. No authenticated hosted save/retry or live model request is claimed for this UI update.
+Source `7063fd43482b6cd6b661dea2ca47da5e42570a9a` was pushed to `main`. Vercel deployment `dpl_H2LZfsbXcYB2RXa7VwzFRUM8RDfY` reached **READY**, and the production alias resolved to the same commit. All seven [public hosted checks](hosted-checks.json) passed: HTML, JavaScript, stylesheet, Settings recovery label, backup control, absent global banner markup and API health. No authenticated hosted save/retry or live model request is claimed for this UI update.

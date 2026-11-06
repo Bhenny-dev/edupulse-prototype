@@ -20,7 +20,7 @@ Screenshots in the walkthrough and manual are real captures of the documentation
 
 ## Version history
 
-The [6 November workspace-status update](versions/2026-11-06-workspace-status-settings/README.md) removes the page-wide save banner and keeps backup, retry and conflict recovery in **Settings → Data & Privacy**. Validation and publishing status are recorded in the release.
+The [6 November workspace-status update](versions/2026-11-06-workspace-status-settings/README.md) removes the page-wide save banner and keeps backup, retry and conflict recovery in **Settings → Data & Privacy**. It is live from `7063fd4`; all 199 release-gate tests, six focused browser cases and public hosted checks passed.
 
 The [6 November Courseware update](versions/2026-11-06-unified-courseware/README.md) combines the former list and builder tabs, with **View** or **Generate** as primary actions and the remaining controls in three-dot menus. It is live from `737d685`; the release gate passed 199 tests, 30 distinct browser cases were covered across focused runs and public hosted checks passed. The release records the capture and hosted-validation boundaries.
 

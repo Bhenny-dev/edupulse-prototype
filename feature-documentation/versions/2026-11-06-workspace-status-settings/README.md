@@ -6,4 +6,4 @@ Device journaling, workspace persistence, API authorization and revision rules a
 
 [Manual 14](../../system-manual/14-pulse-and-outline-workspace/README.md#save-recovery-without-a-page-wide-banner) includes the three affected screenshots. The updated capture fixture records synthetic workspace failures and conflicts; it does not use real student data or establish hosted persistence.
 
-See [validation](validation/results.md) for checks and publishing status.
+Live from `7063fd4`; Vercel READY and public asset/health checks passed. See [validation](validation/results.md) for evidence and boundaries.

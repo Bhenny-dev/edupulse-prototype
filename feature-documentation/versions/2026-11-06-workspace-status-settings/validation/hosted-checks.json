@@ -1,0 +1,19 @@
+{
+  "checkedAt": "2026-11-06T07:02:02.622304+00:00",
+  "origin": "https://edupulse-prototype.vercel.app",
+  "source": "7063fd43482b6cd6b661dea2ca47da5e42570a9a",
+  "assets": {
+    "script": "/assets/index-BbQobKsp.js",
+    "stylesheet": "/assets/index-CU-SWQA8.css"
+  },
+  "checks": {
+    "html": true,
+    "script": true,
+    "stylesheet": true,
+    "settingsRecoveryPresent": true,
+    "backupControlPresent": true,
+    "globalBannerAbsent": true,
+    "health": true
+  },
+  "boundary": "Public assets and health only; no authenticated hosted save/retry or provider generation."
+}
