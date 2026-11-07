@@ -1,0 +1,17 @@
+{
+  "id": "dpl_65oiuT5MLBW9wwFqWMfEM87YyfAB",
+  "state": "READY",
+  "sourceSha": "bf6fc383c38d956c227df2cbb7746fd229eb1a8e",
+  "target": "production",
+  "aliases": [
+    "edupulse-prototype.vercel.app",
+    "edupulse-prototype-bhenny-benlor-d-riveras-projects.vercel.app",
+    "edupulse-prototype-git-main-bhenny-benlor-d-riveras-projects.vercel.app"
+  ],
+  "remoteVerification": {
+    "tests": 213,
+    "pass": 213,
+    "fail": 0
+  },
+  "remoteDeploymentChecks": "passed"
+}

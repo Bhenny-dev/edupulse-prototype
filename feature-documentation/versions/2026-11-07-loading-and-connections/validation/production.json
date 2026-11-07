@@ -1,0 +1,13 @@
+{
+  "checkedAt": "2026-11-07T09:01:35.476Z",
+  "origin": "https://edupulse-prototype.vercel.app",
+  "htmlStatus": 200,
+  "healthStatus": 200,
+  "publicIdentity": "public-guide",
+  "publicConnection": null,
+  "publicConnections": [],
+  "unauthenticatedCoursewareStatus": 403,
+  "unauthenticatedCoursewareCode": "FORBIDDEN",
+  "newProviderControlsServed": true,
+  "cspPresent": true
+}
