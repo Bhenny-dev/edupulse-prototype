@@ -9,3 +9,5 @@ Roster selection/import lives in **Student Monitoring → Students**, alongside 
 **Syllabus** retains **My Syllabus**, **Shared Repository**, **Syllabus Builder** and the offline approval lifecycle. **Course** retains the combined courseware workspace. Old authoring, course/week, roster and Scoring Sheet links remain usable.
 
 [Manual 21](../../system-manual/21-automatic-records-and-course-rosters/README.md) documents current controls. [Validation](validation/results.md) records evidence and limitations.
+
+Released to [production](https://edupulse-prototype.vercel.app) from feature commit `2c05068` after the full 218-test gate, desktop/mobile follow-ups and reviewed captures passed. The deployment reached **Ready** and public smoke checks passed on 8 November, Manila time; see the [release receipt](validation/production-smoke.json).

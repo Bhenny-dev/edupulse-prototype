@@ -1,0 +1,19 @@
+{
+  "featureCommit": "2c05068fc2a4001500b41a34fdfcf1360a25d92d",
+  "deploymentId": "dpl_ETtJ5HbaBmZL3pBjoh8egav4TJQw",
+  "target": "production",
+  "readyState": "READY",
+  "origin": "https://edupulse-prototype.vercel.app",
+  "verifiedAt": "2026-11-07T16:10:59.623831+00:00",
+  "checks": {
+    "homepage": 200,
+    "javascript": 200,
+    "rosterControlsInBundle": true,
+    "automaticRecordInvalidationInBundle": true,
+    "contentSecurityPolicy": true,
+    "health": 200,
+    "anonymousProviderConnections": 0,
+    "anonymousAcademicMutationDenied": 403
+  },
+  "scope": "Read-only public smoke plus a rejected anonymous mutation; signed-in membership persistence/access was separately verified in native tests and the rolled-back hosted transaction. No paid inference or real student attempts were run."
+}
