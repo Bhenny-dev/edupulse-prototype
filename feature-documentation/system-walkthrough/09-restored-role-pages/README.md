@@ -110,3 +110,5 @@ The Pulse capture uses a synthetic account transport, so the separate conversati
 
 
 Shared navigation now places **Help & Support** and **Keyboard Shortcuts** in Settings. Pulse guidance is under **Pulse options**. [Manual 14](../../system-manual/14-pulse-and-outline-workspace/README.md) shows the current controls; the academic pages and role boundaries above are preserved.
+
+Academic assignment, reviewed-mark, offline-review, delivery, student-response and appeal actions now show spinners while their existing requests are pending. The restored pages and authorized data boundaries remain. [Manual 19](../../system-manual/19-loading-and-saved-connections/README.md) records the loading audit.

@@ -43,3 +43,5 @@ See: [Settings tabs](../../system-walkthrough/02-shared-interface/README.md#1014
 Pulse, the character at the lower right, is the AI assistant on every page. Click it to ask, draft, compare or find references ([manual 5](../05-ask-pulse/README.md), [6](../06-compare-and-references/README.md)); drag it onto any part of a page for help with exactly that part ([manual 7](../07-pulse-guidance/README.md)).
 
 Unique page destinations stay in the main navigation: **Records** for Dean/Associate Dean and **Assessments** for students. Mobile users find the same links under **Open menu**. Page tabs provide subviews without duplicate left navigation.
+
+**Sign Out** clears the device connection but retains encrypted AI provider connections under the same account. Use **Disconnect provider** in **AI & Knowledge** to remove a saved provider. See [loading and saved connections](../19-loading-and-saved-connections/README.md).

@@ -1,3 +1,4 @@
+import { Spinner, SkeletonContent } from '../components/ui/LoadingFeedback'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Activity, AlertTriangle, Bot, CheckCircle2, Clock3, RefreshCw, ShieldCheck, Users } from 'lucide-react'
@@ -107,10 +108,11 @@ export default function SystemAdminDashboard() {
   return <div className="container">
     <div className="page-header">
       <div><h1>System Admin</h1><p className="text-sm text-muted mt-8">{user?.demo ? 'Preview sample data — sign in to see live system status' : 'Live account oversight, service checks and recorded activity'}</p></div>
-      <button className="btn btn-secondary btn-sm" disabled={busy} onClick={() => void refresh()}><RefreshCw size={15} /> {busy ? 'Checking…' : 'Refresh'}</button>
+      <button className="btn btn-secondary btn-sm" disabled={busy} onClick={() => void refresh()}>{busy ? <Spinner size={15} /> : <RefreshCw size={15} />} {busy ? 'Checking…' : 'Refresh'}</button>
     </div>
     {error && <p role="alert" className="ai-notice mb-24">{error}</p>}
 
+    {busy && !checks.length ? <SkeletonContent label="Loading system overview" variant="page" rows={4} /> : <>
     <div className="kpi-grid mb-24">
       <div className="kpi-card"><div className="kpi-icon" style={{ background: 'var(--sky-100)' }}><Users size={22} color="var(--sky-500)" /></div><div><div className="kpi-value">{overview.accounts.length}</div><div className="kpi-label">Authenticated accounts</div></div></div>
       <div className="kpi-card"><div className="kpi-icon" style={{ background: 'var(--green-100)' }}><Activity size={22} color="var(--green-500)" /></div><div><div className="kpi-value">{user?.demo ? '—' : `${healthy}/${checks.length || 4}`}</div><div className="kpi-label">Health checks passing</div></div></div>
@@ -118,16 +120,18 @@ export default function SystemAdminDashboard() {
       <div className="kpi-card"><div className="kpi-icon" style={{ background: 'var(--amber-100)' }}><AlertTriangle size={22} color="var(--amber-500)" /></div><div><div className="kpi-value">{failures}</div><div className="kpi-label">Recorded failures · 24h</div></div></div>
     </div>
 
+    </>}
+
     <div className="grid-2 mb-24">
       <section className="card"><div className="card-header"><h3><ShieldCheck size={18} /> System health</h3></div><div className="card-body">
         {checks.map(check => <div key={check.name} style={{ display: 'flex', justifyContent: 'space-between', gap: 12, padding: '10px 0', borderBottom: '1px solid var(--gray-100)' }}>
           <div><strong>{check.name}</strong><div className="text-sm text-muted">{check.note}</div></div>
           <span className={`badge ${check.ok ? 'badge-published' : 'badge-draft'}`}>{user?.demo ? 'Preview' : check.ok ? 'Healthy' : 'Needs attention'}</span>
         </div>)}
-        {!checks.length && <p className="text-sm text-muted">Checking services…</p>}
+        {busy && !checks.length && <SkeletonContent label="Checking services" rows={4} />}
       </div></section>
       <section className="card"><div className="card-header"><h3><Users size={18} /> Role coverage</h3></div><div className="card-body">
-        {roleCounts.map(({ role, count }) => <div key={role} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, padding: '8px 0' }}>
+        {busy && !checks.length ? <SkeletonContent label="Loading role coverage" rows={5} /> : roleCounts.map(({ role, count }) => <div key={role} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, padding: '8px 0' }}>
           <span>{ROLE_TITLES[role]}</span><span className="text-sm text-muted">{count} account{count === 1 ? '' : 's'}</span>
           <button className="btn btn-secondary btn-sm" disabled={user?.demo} onClick={() => openRole(role)}>Open view</button>
         </div>)}
@@ -136,7 +140,7 @@ export default function SystemAdminDashboard() {
 
     <section className="card mb-24"><div className="card-header"><h3><Bot size={18} /> Agent activity</h3><span className="text-sm text-muted">{user?.demo ? 'Preview: runs by signed-in accounts appear here' : `Last 7 days · ${agentActivity.totals.runs} run${agentActivity.totals.runs === 1 ? '' : 's'} · ${agentActivity.totals.declined} declined · ${agentActivity.totals.failed} failed`}</span></div><div className="card-body" style={{ overflowX: 'auto' }}>
       {agentError && <p role="alert" className="ai-notice mb-16">{agentError}</p>}
-      <table className="data-table"><thead><tr><th>Agent</th><th>Works on</th><th>Goal</th><th>Runs</th><th>Goal met</th><th>Fallbacks or stops</th><th>Average time</th><th>Last run</th></tr></thead><tbody>
+      {busy && !checks.length ? <SkeletonContent label="Loading agent activity" variant="table" /> : <><table className="data-table"><thead><tr><th>Agent</th><th>Works on</th><th>Goal</th><th>Runs</th><th>Goal met</th><th>Fallbacks or stops</th><th>Average time</th><th>Last run</th></tr></thead><tbody>
         {AGENT_ORDER.map(name => { const stats = agentStats.get(name); return <tr key={name}>
           <td><span className="ai-agent-chip" style={{ '--agent-color': AGENTS[name].color }}>{name}</span><div className="text-sm text-muted mt-8">{AGENTS[name].title}</div></td>
           <td className="text-sm">{AGENTS[name].task}</td><td className="text-sm">{AGENTS[name].goal}</td>
@@ -151,7 +155,7 @@ export default function SystemAdminDashboard() {
           <div className="ai-agent-chips" style={{ marginTop: 4 }}>{run.agents.map(a => <span key={a.agent} className="ai-agent-chip" style={{ '--agent-color': AGENTS[a.agent]?.color, opacity: a.goalMet ? 1 : 0.55 }} title={`${a.agent}: goal ${a.goalMet ? 'met' : 'not met'} (${a.status})`}>{a.goalMet ? '✓' : '✗'} {a.agent}</span>)}</div>
         </div>) : <p className="text-sm text-muted">No agent runs recorded yet.</p>}</div>
       </div>
-    </div></section>
+    </>}</div></section>
 
     <section className="card mb-24"><div className="card-header"><h3>Manage accounts</h3><span className="text-sm text-muted">Only the Google system admin can create or change role accounts</span></div><div className="card-body">
       <form onSubmit={createAccount} style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'end', gap: 10, marginBottom: 18 }}>
@@ -159,12 +163,12 @@ export default function SystemAdminDashboard() {
         <label className="form-group" style={{ flex: '1 1 210px' }}>Email<input className="form-input" type="email" required autoComplete="off" value={newAccount.email} onChange={event => setNewAccount(value => ({ ...value, email: event.target.value }))} /></label>
         <label className="form-group" style={{ flex: '1 1 170px' }}>Temporary password<input className="form-input" type="password" minLength={12} required autoComplete="new-password" value={newAccount.password} onChange={event => setNewAccount(value => ({ ...value, password: event.target.value }))} /></label>
         <label className="form-group" style={{ flex: '1 1 150px' }}>Role<select className="form-input" value={newAccount.role} onChange={event => setNewAccount(value => ({ ...value, role: event.target.value }))}>{roleCounts.filter(item => item.role !== 'admin').map(item => <option key={item.role} value={item.role}>{ROLE_TITLES[item.role]}</option>)}</select></label>
-        <button className="btn btn-primary btn-sm" disabled={accountBusy || user?.demo}>Create account</button>
+        <button className="btn btn-primary btn-sm" disabled={accountBusy || user?.demo}>{accountBusy && <Spinner />} Create account</button>
       </form>
       {accountNotice && <p role="status" className="text-sm mb-16">{accountNotice}</p>}
       <div style={{ overflowX: 'auto' }}><table className="data-table"><thead><tr><th>Name</th><th>Role</th><th>Status</th><th>Last sign-in</th><th>Manage</th></tr></thead><tbody>
-        {overview.accounts.map(account => <tr key={account.id}><td>{account.name || ROLE_TITLES[account.role]}{account.email && <div className="text-sm text-muted">{account.email}</div>}</td><td>{ROLE_TITLES[account.role] || account.role}</td><td>{account.confirmed ? 'Confirmed' : 'Pending'}</td><td>{displayTime(account.lastSignIn)}</td><td>{account.role === 'admin' ? 'Protected' : <div style={{ display: 'flex', gap: 6 }}><select aria-label={`Role for ${account.name}`} className="form-input" disabled={user?.demo} value={draftRoles[account.id] || account.role} onChange={event => setDraftRoles(value => ({ ...value, [account.id]: event.target.value }))}>{roleCounts.filter(item => item.role !== 'admin').map(item => <option key={item.role} value={item.role}>{ROLE_TITLES[item.role]}</option>)}</select><button className="btn btn-secondary btn-sm" disabled={user?.demo || accountBusy || (draftRoles[account.id] || account.role) === account.role} onClick={() => void assignRole(account)}>Save</button></div>}</td></tr>)}
-        {!overview.accounts.length && <tr><td colSpan="5" className="text-muted">{busy ? 'Loading accounts…' : 'No role accounts found.'}</td></tr>}
+        {overview.accounts.map(account => <tr key={account.id}><td>{account.name || ROLE_TITLES[account.role]}{account.email && <div className="text-sm text-muted">{account.email}</div>}</td><td>{ROLE_TITLES[account.role] || account.role}</td><td>{account.confirmed ? 'Confirmed' : 'Pending'}</td><td>{displayTime(account.lastSignIn)}</td><td>{account.role === 'admin' ? 'Protected' : <div style={{ display: 'flex', gap: 6 }}><select aria-label={`Role for ${account.name}`} className="form-input" disabled={user?.demo} value={draftRoles[account.id] || account.role} onChange={event => setDraftRoles(value => ({ ...value, [account.id]: event.target.value }))}>{roleCounts.filter(item => item.role !== 'admin').map(item => <option key={item.role} value={item.role}>{ROLE_TITLES[item.role]}</option>)}</select><button className="btn btn-secondary btn-sm" disabled={user?.demo || accountBusy || (draftRoles[account.id] || account.role) === account.role} onClick={() => void assignRole(account)}>{accountBusy && <Spinner />} Save</button></div>}</td></tr>)}
+        {!overview.accounts.length && <tr><td colSpan="5" className="text-muted">{busy ? <SkeletonContent label="Loading accounts" variant="table" /> : 'No role accounts found.'}</td></tr>}
       </tbody></table>
       </div>
     </div></section>
@@ -175,7 +179,7 @@ export default function SystemAdminDashboard() {
       </div><div className="card-body" style={{ overflowX: 'auto' }}>
       <table className="data-table"><thead><tr><th>When</th><th>Source</th><th>Actor</th><th>Action</th><th>Result</th><th>Detail</th></tr></thead><tbody>
         {shown.map(event => <tr key={`${event.source}-${event.id}`}><td>{displayTime(event.at)}</td><td>{event.source}</td><td>{ROLE_TITLES[event.actorRole] || event.actorRole}</td><td>{label(event.action)}</td><td>{event.outcome === 'failure' ? 'Failure' : event.outcome === 'success' ? 'Success' : 'Unknown'}</td><td>{event.detail || '—'}</td></tr>)}
-        {!shown.length && <tr><td colSpan="6" className="text-muted">{events.length ? `No ${outcomeFilter === 'failure' ? 'failures' : 'successes'} among the recent events.` : 'No activity has been recorded yet. New actions appear here after audit storage is enabled.'}</td></tr>}
+        {!shown.length && <tr><td colSpan="6" className="text-muted">{events.length ? `No ${outcomeFilter === 'failure' ? 'failures' : 'successes'} among the recent events.` : busy ? <SkeletonContent label="Loading audit activity" variant="table" /> : 'No activity has been recorded yet. New actions appear here after audit storage is enabled.'}</td></tr>}
       </tbody></table>
     </div></section>
   </div>

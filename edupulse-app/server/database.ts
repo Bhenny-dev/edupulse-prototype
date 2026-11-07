@@ -42,6 +42,15 @@ CREATE TABLE IF NOT EXISTS ep_workspaces (
  owner_id text PRIMARY KEY, revision integer NOT NULL CHECK(revision > 0),
  data jsonb NOT NULL, updated_at timestamptz NOT NULL DEFAULT now()
 );
+CREATE TABLE IF NOT EXISTS ep_provider_connections (
+ owner_id text NOT NULL, provider text NOT NULL, ciphertext text,
+ connection_id text, active boolean NOT NULL DEFAULT false,
+ updated_at timestamptz NOT NULL DEFAULT now(), PRIMARY KEY(owner_id,provider)
+);
+-- Upgrade the local pre-release table once when opening the database.
+ALTER TABLE ep_provider_connections ALTER COLUMN ciphertext DROP NOT NULL;
+ALTER TABLE ep_provider_connections ADD COLUMN IF NOT EXISTS connection_id text;
+
 `
 export async function localDb() {
   if (config().hosted) throw new ApiError(503, 'LOCAL_STORE_DISABLED', 'Local storage is unavailable on serverless hosting.')

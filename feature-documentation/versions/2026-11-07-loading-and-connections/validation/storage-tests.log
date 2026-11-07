@@ -1,0 +1,14 @@
+✔ AUTH-001: performance navigation denies academic management and admin console views (7.4946ms)
+✔ DATA-001: authenticated accounts never consume sample performance (0.536ms)
+✔ AUTH-002: courseware author capability preserves instructor and owner identity (0.4128ms)
+✔ AUTH-002: forged courseware calls are denied before validation or model invocation (109.5008ms)
+✔ connections and selected models survive sign-out, reopening and provider changes without exposing keys (9018.1692ms)
+✔ hosted provider storage enforces owner RLS and atomic active-provider selection with invoker rights (3308.5022ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 18319.5634

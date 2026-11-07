@@ -1,0 +1,124 @@
+
+> edupulse-app@0.4.0 test:browser
+> playwright test loading-feedback.spec.ts provider-connection.spec.ts --timeout=90000
+
+node.exe : [WebServer] (node:34644) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([WebServer] (no... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:42684) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 4:21:09 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3070
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 4:21:10 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3070
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 4:21:11 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3070
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+
+Running 28 tests using 1 worker
+
+(node:16164) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 [desktop] › tests\browser\loading-feedback.spec.ts:3:1 › saved providers and API test show pending feedback and recover (12.6s)
+  ok  2 [desktop] › tests\browser\loading-feedback.spec.ts:4:1 › academic page and notification popover load together (2.4s)
+  ok  3 [desktop] › tests\browser\loading-feedback.spec.ts:5:1 › student directory waits for actual results (3.2s)
+[WebServer] 4:21:41 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+[WebServer] 4:21:47 PM [vite] (client) [console.error] Each child in a list should have a unique "key" prop.
+[WebServer]
+[WebServer] Check the render method of `div`. It was passed a child from Pulse. See
+https://react.dev/link/warning-keys for more information.
+  ok  4 [desktop] › tests\browser\loading-feedback.spec.ts:6:1 › Pulse uses dots while waiting and respects reduced motion (9.3s)
+  ok  5 [desktop] › tests\browser\loading-feedback.spec.ts:7:1 › approved upload waits for the real file read and parser (4.0s)
+  ok  6 [desktop] › tests\browser\loading-feedback.spec.ts:8:1 › system console waits for account counts and service checks (2.7s)
+[WebServer] 4:21:57 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok  7 [desktop] › tests\browser\provider-connection.spec.ts:4:1 › provider save synchronizes pipeline status, survives reopening, retains model selection and failed replacement input (18.9s)
+[WebServer] 4:22:16 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok  8 [desktop] › tests\browser\provider-connection.spec.ts:42:1 › provider account authorization leaves for the fixed OpenRouter consent host with PKCE (6.0s)
+[WebServer] 4:22:22 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+[WebServer] 4:22:28 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok  9 [desktop] › tests\browser\provider-connection.spec.ts:56:65 › provider dedicated callback completes once, removes authorization parameters and restores account settings (10.6s)
+[WebServer] 4:22:33 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+[WebServer] 4:22:38 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok 10 [desktop] › tests\browser\provider-connection.spec.ts:56:65 › provider legacy callback completes once, removes authorization parameters and restores account settings (9.2s)
+[WebServer] 4:22:42 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+[WebServer] 4:22:47 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok 11 [desktop] › tests\browser\provider-connection.spec.ts:56:65 › provider state-marked callback completes once, removes authorization parameters and restores account settings (8.7s)
+[WebServer] 4:22:51 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+[WebServer] 4:22:57 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok 12 [desktop] › tests\browser\provider-connection.spec.ts:75:1 › authorized OpenRouter credential survives a catalog outage and refresh finishes setup (12.0s)
+[WebServer] 4:23:03 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok 13 [desktop] › tests\browser\provider-connection.spec.ts:88:1 › a provider return without an EduPulse session gives a visible recovery message and clears authorization parameters (4.4s)
+[WebServer] 4:23:08 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+[WebServer] 4:23:13 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok 14 [desktop] › tests\browser\provider-connection.spec.ts:95:1 › a failed provider exchange stays visible for a signed-in account with no prior connection (11.1s)
+(node:28548) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 15 [mobile] › tests\browser\loading-feedback.spec.ts:3:1 › saved providers and API test show pending feedback and recover (11.5s)
+  ok 16 [mobile] › tests\browser\loading-feedback.spec.ts:4:1 › academic page and notification popover load together (3.1s)
+  ok 17 [mobile] › tests\browser\loading-feedback.spec.ts:5:1 › student directory waits for actual results (4.2s)
+[WebServer] 4:23:43 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+[WebServer] 4:23:51 PM [vite] (client) [console.error] Each child in a list should have a unique "key" prop.
+[WebServer]
+[WebServer] Check the render method of `div`. It was passed a child from Pulse. See
+https://react.dev/link/warning-keys for more information.
+  ok 18 [mobile] › tests\browser\loading-feedback.spec.ts:6:1 › Pulse uses dots while waiting and respects reduced motion (15.0s)
+  ok 19 [mobile] › tests\browser\loading-feedback.spec.ts:7:1 › approved upload waits for the real file read and parser (9.1s)
+  ok 20 [mobile] › tests\browser\loading-feedback.spec.ts:8:1 › system console waits for account counts and service checks (2.2s)
+[WebServer] 4:24:07 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok 21 [mobile] › tests\browser\provider-connection.spec.ts:4:1 › provider save synchronizes pipeline status, survives reopening, retains model selection and failed replacement input (16.5s)
+[WebServer] 4:24:22 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok 22 [mobile] › tests\browser\provider-connection.spec.ts:42:1 › provider account authorization leaves for the fixed OpenRouter consent host with PKCE (7.4s)
+[WebServer] 4:24:31 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+[WebServer] 4:24:36 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok 23 [mobile] › tests\browser\provider-connection.spec.ts:56:65 › provider dedicated callback completes once, removes authorization parameters and restores account settings (11.3s)
+[WebServer] 4:24:41 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+[WebServer] 4:24:45 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok 24 [mobile] › tests\browser\provider-connection.spec.ts:56:65 › provider legacy callback completes once, removes authorization parameters and restores account settings (7.5s)
+[WebServer] 4:24:48 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+[WebServer] 4:24:52 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok 25 [mobile] › tests\browser\provider-connection.spec.ts:56:65 › provider state-marked callback completes once, removes authorization parameters and restores account settings (8.1s)
+[WebServer] 4:24:57 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+[WebServer] 4:25:00 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok 26 [mobile] › tests\browser\provider-connection.spec.ts:75:1 › authorized OpenRouter credential survives a catalog outage and refresh finishes setup (9.9s)
+[WebServer] 4:25:06 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok 27 [mobile] › tests\browser\provider-connection.spec.ts:88:1 › a provider return without an EduPulse session gives a visible recovery message and clears authorization parameters (3.0s)
+[WebServer] 4:25:09 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+[WebServer] 4:25:13 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok 28 [mobile] › tests\browser\provider-connection.spec.ts:95:1 › a failed provider exchange stays visible for a signed-in account with no prior connection (7.7s)
+
+  28 passed (4.1m)

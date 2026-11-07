@@ -1,0 +1,322 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-11-07T08-20-05-220Z-88cbf7c5",
+  "startedAt": "2026-11-07T08:20:05.220Z",
+  "finishedAt": "2026-11-07T08:20:40.409Z",
+  "commitSha": "4eefa9480159c3a8ab951799a063778e0edfe217",
+  "sourceDigest": "1e2f481d777e73fa4b295bd69cfd80da7ad016c03d1bda7188d41d6edf8fc233",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-11-07T08:20:02.324Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 11,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": null
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/loading-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.mobile.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.spec.ts",
+    "edupulse-app/tests/snapshots/course-seed.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-formatting.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.spec.ts",
+    "edupulse-app/tests/snapshots/harness-delivery.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/operator-steps.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-drafting.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-source.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+    "edupulse-app/tests/snapshots/student-directory.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-recovery.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/loading-feedback.spec.ts",
+      "title": "loading feedback: providers",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 4521,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/loading-feedback.spec.ts",
+      "title": "loading feedback: records and popover",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1430,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/loading-feedback.spec.ts",
+      "title": "loading feedback: student directory",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1534,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/loading-feedback.spec.ts",
+      "title": "loading feedback: Pulse",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2720,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/loading-feedback.spec.ts",
+      "title": "loading feedback: approved file modal",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1632,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/loading-feedback.spec.ts",
+      "title": "loading feedback: system console",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1441,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+      "title": "provider connection: clearly saved credential, synchronized status and recoverable replacement",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-provider-transport/ui-regression",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 3128,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+      "title": "failed authorization remains visible when no previous provider is connected",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-provider-transport/ui-regression",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1594,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+      "title": "OpenRouter callback retains an authorized credential during a catalog outage and recovers on refresh",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-provider-transport/ui-regression",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1954,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/loading-feedback.mobile.spec.ts",
+      "title": "mobile loading feedback: providers",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2543,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/loading-feedback.mobile.spec.ts",
+      "title": "mobile loading feedback: Pulse",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2141,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-manual/08-ai-connections/04-saved-provider-credential.png",
+      "sha256": "560198d608d17e08f7380c1e81c69e5b78ff6cd25cacf0bac57c0dd9acc2882c",
+      "bytes": 183855
+    },
+    {
+      "path": "feature-documentation/system-manual/08-ai-connections/05-provider-replacement-error.png",
+      "sha256": "dac6f162c96a2995a0132bb4e0642e7fd42d1456fc139bcc3ee69ec915fca671",
+      "bytes": 170253
+    },
+    {
+      "path": "feature-documentation/system-manual/08-ai-connections/06-generation-verified.png",
+      "sha256": "38c6873bde7bcde490bc052135acc48825f27403e4b0a8e99337020790b9f7b9",
+      "bytes": 188919
+    },
+    {
+      "path": "feature-documentation/system-manual/08-ai-connections/07-model-access-error.png",
+      "sha256": "4473cb0de8ee20f41a1cbe81c4e57bcab15461f725dd51bdf2cc96435685b579",
+      "bytes": 187566
+    },
+    {
+      "path": "feature-documentation/system-manual/08-ai-connections/08-openrouter-catalog-retry.png",
+      "sha256": "fbccd72fa79540e974fba234b34612a31a7bcb715ef7659cda28b00de9fd091e",
+      "bytes": 162923
+    },
+    {
+      "path": "feature-documentation/system-manual/08-ai-connections/09-mobile-provider-connection.png",
+      "sha256": "68f1747a9872c3d06877950ff2ec8cd0b5158f207b1643425b4fc4acb2536268",
+      "bytes": 206576
+    },
+    {
+      "path": "feature-documentation/system-manual/08-ai-connections/10-authorization-error.png",
+      "sha256": "e620ad4b11d88bf5160135a9ab5003272e46b76f42fed97a472874287aa03dba",
+      "bytes": 132385
+    },
+    {
+      "path": "feature-documentation/system-manual/19-loading-and-saved-connections/01-provider-loading.png",
+      "sha256": "be1a5b0c7426a17b98b5c77e36151fd62afbe6c827864991ec7659669e5c88f5",
+      "bytes": 87328
+    },
+    {
+      "path": "feature-documentation/system-manual/19-loading-and-saved-connections/02-provider-test.png",
+      "sha256": "130ca1a6997b63a8ba643b12a7f44c2d18b05c43b8bc7caf7abef6f0359f5646",
+      "bytes": 166951
+    },
+    {
+      "path": "feature-documentation/system-manual/19-loading-and-saved-connections/03-saved-connections.png",
+      "sha256": "ccf815febe9d8274da758e1467696b203b83f1b6fb81a603459eb29223758eba",
+      "bytes": 209700
+    },
+    {
+      "path": "feature-documentation/system-manual/19-loading-and-saved-connections/04-notification-loading.png",
+      "sha256": "930a99bde0c1bbf144547b90ec939f9a2a3feee8bda8d50a6314ace7cc0ffb0c",
+      "bytes": 201032
+    },
+    {
+      "path": "feature-documentation/system-manual/19-loading-and-saved-connections/05-directory-loading.png",
+      "sha256": "149fc26ea614fe27bf32e56d31bab86417a5d43abd3af26ea4b645ed3c65ad25",
+      "bytes": 60443
+    },
+    {
+      "path": "feature-documentation/system-manual/19-loading-and-saved-connections/06-pulse-thinking.png",
+      "sha256": "be06e92a103109f0f2e30c91df5191fc23cf80d2e4715eaa7402b96499b4c2aa",
+      "bytes": 16065
+    },
+    {
+      "path": "feature-documentation/system-manual/19-loading-and-saved-connections/07-pulse-thinking-dark.png",
+      "sha256": "7d5badb57d1ab1cf0d8e00b3499bf5a4742feee4e3e388ee040edded8e09117e",
+      "bytes": 16824
+    },
+    {
+      "path": "feature-documentation/system-manual/19-loading-and-saved-connections/08-approved-file-loading.png",
+      "sha256": "d596981045e82890491764235f709d449cf41d5e91812e65928dcd961355e33d",
+      "bytes": 40494
+    },
+    {
+      "path": "feature-documentation/system-manual/19-loading-and-saved-connections/09-system-loading.png",
+      "sha256": "9f29346aa79938d66479a5689f9b35dbe59e45dd28a58025fad1925e9f5cb962",
+      "bytes": 141181
+    },
+    {
+      "path": "feature-documentation/system-manual/19-loading-and-saved-connections/mobile-02-provider-test.png",
+      "sha256": "1bf55f3d16f112baa9b953de1222ae5b4f074150c633620c4c2406bc4397ecea",
+      "bytes": 745387
+    },
+    {
+      "path": "feature-documentation/system-manual/19-loading-and-saved-connections/mobile-06-pulse-thinking.png",
+      "sha256": "6838efb8143cc92dd79a45e95ba0849d5a4c8186e967bfeacbda40309d37a33e",
+      "bytes": 58171
+    }
+  ]
+}

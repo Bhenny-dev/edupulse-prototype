@@ -1,5 +1,9 @@
 # Backend System
 
+## Account provider retention and loading feedback, 7 November 2026
+
+The server retains one encrypted connection per account/provider, with atomic active selection and owner RLS. Sign-out retains the account records; explicit disconnect clears its key and leaves a non-secret marker against stale-cookie restoration. Workspace requests remain independent of AI connection storage. [ADR-004](decisions/004-account-provider-retention.md), [Manual 19](../system-manual/19-loading-and-saved-connections/README.md) and the [release validation](../versions/2026-11-07-loading-and-connections/validation/results.md) record the migration and actual verification limits.
+
 ## Bounded syllabus drafting, 7 November 2026
 
 Whole-syllabus and outline-only generation now use attended, separate HTTP steps. Research runs once, then each step invokes one validated drafting stage for the general sections, at most two teaching weeks, or bibliography. Repair is a separate bounded step; exams, supplied grading and selected-field boundaries remain. The browser assembles no editable partial result: the server returns one final validated proposal, and existing mounted-editor and save confirmation checks still apply.
@@ -32,7 +36,7 @@ The documentation gate checks each commit in a push, including the complete rang
 
 ## October 8 fixes and pending-work completion
 
-Personal provider cookies remain encrypted, HTTP-only, expiring and bound to the verified Supabase account ID. Admin role previews retain that account ID and can reuse its connection; changing accounts or opening a guest session cannot read the admin connection. Hosted requests never borrow server-wide provider credentials.
+Personal providers are retained as encrypted account database records, bound to the verified Supabase account ID. The device cookie remains HTTP-only and expiring; sign-out clears it without deleting saved providers. Admin role previews retain that account ID and can reuse its connection; changing accounts or opening a guest session cannot read the admin connection. Hosted requests never borrow server-wide provider credentials.
 
 Pulse routes greetings, situational advice and conversational follow-ups to general assistance with recent history. These requests do not inherit unrelated attachments or library passages. Explicit document tasks and source-only requests keep retrieval and verification. A generation failure without evidence returns a provider error rather than a misleading missing-evidence response.
 
@@ -72,7 +76,7 @@ Request intake (`server/node-adapter.ts`, shared by the local server and the Ver
 | Action | Methods | Who | Purpose |
 | --- | --- | --- | --- |
 | `health` | GET | anyone | Version, provider and model, pipeline status (embeddings, reranker, vector store, sandbox, agents), limits including the request time budget |
-| `providers` | GET, POST, DELETE | signed-in users | List, connect (key encrypted into an `HttpOnly` cookie) and disconnect a personal AI provider |
+| `providers` | GET, POST, DELETE | signed-in users | List/save encrypted account providers, switch the active model/provider, or disconnect; `sessionOnly=true` clears only the device cookie |
 | `chat` | POST | anyone (guests: product guide only) | Run the agent graph for a question, revision or comparison |
 | `courseware` | POST | instructor or admin accounts; guests with their own provider | Draft a week's material, activity and assessment from an outline row |
 | `context`, `similarity` | POST | used by the in-browser model; `similarity` also by Pulse actions | Retrieval and embedding similarity for on-device generation; `similarity` also re-ranks which course an attached material belongs to |
@@ -96,7 +100,7 @@ Confirmed mutations use `WorkspaceContext.commit` and the existing revision-chec
 
 `server/domains/conversations.ts` stores private chat text and attachment names, not raw uploaded files, executable action payloads or credentials. Explicit recall searches the caller's indexed transcripts and returns source IDs, roles and dates. User response preferences are extracted conservatively from user statements; files/model text cannot create memory. Owner RLS, cascade deletion and quotas are described in [Supabase](supabase.md). Writer prompts contain at most 12 recent turns and 30,000 total characters including instructions; older history is retrieved separately. Operator targets retain complete selected arrays; over-budget edits are rejected instead of silently truncating replacements. On-device planning applies a 6,000-character input limit.
 
-Provider settings and pipeline status share `AIContext` health; outdated requests cannot overwrite a newer refresh. Saved credentials display a masked indicator/expiry without exposing the secret. Failed replacements retain editable input and preserve the existing cookie. Model refresh preserves an available selected model; first-time OpenAI selection prefers an available small modern model instead of alphabetically defaulting to GPT-3.5. Discovery excludes announced expired OpenAI models and specialized audio/image/search models.
+Provider settings and pipeline status share `AIContext` health; outdated requests cannot overwrite a newer refresh. Saved credentials display a fixed masked indicator without exposing the secret. Failed replacements retain editable input and preserve the existing account connection. Model refresh preserves an available selected model; first-time OpenAI selection prefers an available small modern model instead of alphabetically defaulting to GPT-3.5. Discovery excludes announced expired OpenAI models and specialized audio/image/search models.
 
 Modern OpenAI models use `/v1/responses` with `max_output_tokens`, `store: false` and output-message text parsing; legacy GPT-3.5/GPT-4 chat models use Chat Completions with `max_tokens`. JSON drafts request JSON-object output and still pass the courseware schema checks. Other providers keep their fixed, provider-specific endpoints. [OpenAI's text-generation guide](https://developers.openai.com/api/docs/guides/text) describes the Responses protocol.
 

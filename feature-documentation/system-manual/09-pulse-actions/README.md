@@ -154,3 +154,5 @@ A temporary connection/timeout interruption retries its current step once. If th
 ## Selected fields, sections and dropped files
 
 [Manual 14](../14-pulse-and-outline-workspace/README.md) shows selected-field drafting, preview, confirmed application and native file attachments. Drop up to three files onto the panel or the closed Pulse avatar; dropping only attaches them and preserves the unsent prompt. A rejected batch leaves earlier attachments intact. Drafting and improvement requests keep the selected field or section; explicit whole-form requests broaden the scope. Identity, publication status, locked controls and another role’s data are never editable through a field target.
+
+Pulse uses three animated dots with **Thinking…** / **Still working…** while waiting for the actual response. **Stop response** remains available. Conversation history uses a skeleton while fetching and a spinner during archive, memory or deletion updates. [Manual 19](../19-loading-and-saved-connections/README.md) shows light/dark and mobile pending states.

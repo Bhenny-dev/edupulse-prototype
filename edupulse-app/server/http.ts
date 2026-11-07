@@ -7,7 +7,7 @@ import { invokeModel, providerHealth } from './providers.js'
 import { MAX_DOCUMENTS, deleteDocument, ingest, listDocuments } from './database.js'
 import { runChat, runCourseware, serverDeps } from './graph.js'
 import { readWorkspace, saveWorkspace, workspaceInput, WORKSPACE_BYTES } from './workspace.js'
-import { connectionCookie, connectionInput, createConnection, discoverModels, discoverWorkspaces, workspaceListInput, publicConnection, readConnection, serverConnection, type Connection } from './connections.js'
+import { connectionCookie, connectionInput, createConnection, discoverModels, discoverWorkspaces, workspaceListInput, publicConnection, serverConnection, type Connection } from './connections.js'
 import { extractUpload } from './ingest/prepare.js'
 import { SANDBOX_LIMITS } from './ingest/sandbox.js'
 import { LIMITS as EXTRACTION_LIMITS, SUPPORTED as EXTRACTION_FORMATS } from './ingest/formats.mjs'
@@ -24,6 +24,7 @@ import { changeLease } from './requestLimits.js'
 import { providerOAuth, providerOAuthInput } from './domains/providerOAuth.js'
 import { conversationCommand, conversationRecall, executeConversation, readConversations } from './domains/conversations.js'
 import { operatorInput, operatorRequest } from './domains/operator.js'
+import { loadProviders, removeProvider, resolveProvider, saveProvider } from './providerStore.js'
 import { checkAppropriateUse } from '../src/lib/rag/policy.js'
 
 export const VERSION = '0.4.0'
@@ -89,6 +90,7 @@ export async function handleRequest(request: Request): Promise<Response> {
   let activeId: string | undefined
   let leaseIdentity: Identity | undefined
   let usedPersonalConnection: Connection | undefined
+  let authenticatedIdentity: Identity | undefined
   let action = 'unknown'
   try {
     enforceOrigin(request)
@@ -97,6 +99,9 @@ export async function handleRequest(request: Request): Promise<Response> {
     if (!methods) throw new ApiError(404, 'NOT_FOUND', 'Unknown API action.')
     if (!methods.includes(request.method)) return new Response(null, { status: 405, headers: { Allow: methods.join(', '), 'Cache-Control': 'no-store' } })
     const identity = await authenticate(request)
+    authenticatedIdentity = identity
+    // Deny unsupported account roles before reading any AI credentials/store.
+    if (action === 'courseware' && identity.role !== 'guest' && !canGenerateCourseware(identity.role)) throw new ApiError(403, 'FORBIDDEN', 'Courseware generation requires an instructor account or the system admin instructor view. Preview drafts require your own provider connection.')
     if (action === 'students') return json(await readStudents(identity,new URL(request.url)))
     if (action === 'conversations') {
       const url = new URL(request.url), query = url.searchParams.get('q')
@@ -104,24 +109,29 @@ export async function handleRequest(request: Request): Promise<Response> {
       return request.method === 'GET' ? json(query ? await conversationRecall(identity, query, url.searchParams.get('id') || undefined) : await readConversations(identity, url.searchParams.get('id'))) : json(await executeConversation(identity, conversationCommand.parse(await readJson(request, bodyLimit(action)))))
     }
     if (action === 'academic') return request.method === 'GET' ? json(await readAcademic(identity)) : json(await executeAcademic(identity, academicCommand.parse(await readJson(request, 5000))))
-    const personalConnection = readConnection(request, identity)
-    usedPersonalConnection = personalConnection
-    // Server credentials are reserved for the local workspace. Hosted users
-    // must connect their own key, bound to their verified Supabase account.
-    const connection = personalConnection || (identity.local ? serverConnection() : undefined)
-    if (action === 'providers' && request.method === 'DELETE') return json({ connection: null, models: [] }, 200, connectionCookie(null))
-    if (action === 'providers' && request.method === 'GET') {
-      try {
-        const models = connection ? await discoverModels(connection.provider, connection.apiKey, undefined, undefined, connection.workspaceId) : []
-        return json({ connection: publicConnection(connection), models })
-      } catch (error) {
-        return json({ connection: publicConnection(connection), models: [], warning: error instanceof ApiError ? error.message : 'The saved credential is retained. Models could not be loaded; retry Refresh models.' })
-      }
-    }
     if (action === 'workspace') {
       if (request.method === 'GET') return json(await readWorkspace(identity))
       if (!['instructor', 'admin', 'dean', 'associate_dean'].includes(identity.role)) throw new ApiError(403, 'FORBIDDEN', 'Sign in with an academic account to save a workspace.')
       return json(await saveWorkspace(identity, workspaceInput.parse(await readJson(request, WORKSPACE_BYTES))))
+    }
+    if (action === 'providers' && request.method === 'DELETE' && new URL(request.url).searchParams.get('sessionOnly') === 'true') return json({ connection: null, models: [] }, 200, connectionCookie(null))
+    const personalConnection = await resolveProvider(request, identity)
+    usedPersonalConnection = personalConnection
+    // Server credentials are reserved for the local workspace. Hosted users
+    // must connect their own key, bound to their verified Supabase account.
+    const connection = personalConnection || (identity.local ? serverConnection() : undefined)
+    if (action === 'providers' && request.method === 'DELETE') {
+      const query = new URL(request.url).searchParams
+      if (query.get('sessionOnly') !== 'true') await removeProvider(identity, query.has('provider') ? connectionInput.shape.provider.parse(query.get('provider')) : personalConnection?.provider)
+      return json({ connection: null, models: [] }, 200, connectionCookie(null))
+    }
+    if (action === 'providers' && request.method === 'GET') {
+      try {
+        const models = connection ? await discoverModels(connection.provider, connection.apiKey, undefined, undefined, connection.workspaceId) : []
+        return json({ connection: publicConnection(connection), models, connections: (await loadProviders(identity)).map(row => ({ ...publicConnection(row.connection), active: row.active })) })
+      } catch (error) {
+        return json({ connection: publicConnection(connection), models: [], connections: (await loadProviders(identity)).map(row => ({ ...publicConnection(row.connection), active: row.active })), warning: error instanceof ApiError ? error.message : 'The saved credential is retained. Models could not be loaded; retry Refresh models.' })
+      }
     }
     if (action === 'health') {
       const models = await modelStatus()
@@ -168,14 +178,14 @@ export async function handleRequest(request: Request): Promise<Response> {
     if (action === 'operator') {
       const stepSignal = config().hosted ? AbortSignal.any([signal, AbortSignal.timeout(70000)]) : signal
       const result = await operatorRequest(operatorInput.parse(body), identity, connection, stepSignal)
-      return json(result, 200, personalConnection && 'generated' in result && result.generated ? connectionCookie({ ...personalConnection, testedAt: Date.now() }) : undefined)
+      return json(result, 200, personalConnection && 'generated' in result && result.generated ? connectionCookie(await saveProvider(identity, { ...personalConnection, testedAt: Date.now() }, false)) : undefined)
     }
     if (action === 'provider-test') {
       z.object({}).strict().parse(body)
       if (!connection) throw new ApiError(400, 'CONNECTION_REQUIRED', 'Save a provider connection and select a model before testing.')
       await invokeModel('This is a connection test. Reply briefly.', 'Reply with exactly OK.', signal, false, connection, 2048)
-      const verified = { ...connection, testedAt: Date.now() }
-      return json({ tested: true, connection: publicConnection(verified), checkedAt: new Date(verified.testedAt).toISOString() }, 200, personalConnection ? connectionCookie(verified) : undefined)
+      const verified = await saveProvider(identity, { ...connection, testedAt: Date.now() }, false)
+      return json({ tested: true, connection: publicConnection(verified), checkedAt: new Date(verified.testedAt!).toISOString() }, 200, personalConnection ? connectionCookie(verified) : undefined)
     }
     if (action === 'provider-oauth') {
       const result = await providerOAuth(request, identity, providerOAuthInput.parse(body))
@@ -183,13 +193,15 @@ export async function handleRequest(request: Request): Promise<Response> {
     }
     if (action === 'provider-workspaces') {
       const input = workspaceListInput.parse(body)
-      const apiKey = input.apiKey || (personalConnection?.provider === 'anthropic' ? personalConnection.apiKey : undefined)
+      const apiKey = input.apiKey || (await loadProviders(identity)).find(row => row.connection.provider === 'anthropic')?.connection.apiKey || (personalConnection?.provider === 'anthropic' ? personalConnection.apiKey : undefined)
       return json({ workspaces: await discoverWorkspaces(apiKey, signal) })
     }
     if (action === 'providers') {
       const input = connectionInput.parse(body)
       if (input.provider === 'ollama' && identity.role === 'guest' && config().hosted) throw new ApiError(403, 'FORBIDDEN', 'Use on-device AI or your own hosted provider in preview.')
-      const result = await createConnection(input, identity, personalConnection)
+      const saved = (await loadProviders(identity)).find(row => row.connection.provider === input.provider)?.connection
+      const result = await createConnection(input, identity, saved || personalConnection)
+      result.connection = await saveProvider(identity, result.connection)
       return json({ connection: publicConnection(result.connection), models: result.models }, 200, connectionCookie(result.connection))
     }
     if (action === 'context') {
@@ -228,7 +240,7 @@ export async function handleRequest(request: Request): Promise<Response> {
         result = identity.role === 'guest' && !personalConnection ? await runChat(input, identity, signal, serverDeps(identity, undefined)) : await runChat(input, identity, signal, undefined, connection)
       }
       await recordAgentRun(identity, agentRunRow(identity, workflow, result, Date.now() - started))
-      return json(result, 200, personalConnection && ['generated', 'courseware'].includes(result.mode) ? connectionCookie({ ...personalConnection, testedAt: Date.now() }) : undefined)
+      return json(result, 200, personalConnection && ['generated', 'courseware'].includes(result.mode) ? connectionCookie(await saveProvider(identity, { ...personalConnection, testedAt: Date.now() }, false)) : undefined)
     } catch (error) {
       if (!(error instanceof z.ZodError)) await recordAgentRun(identity, failedRunRow(identity, workflow, Date.now() - started))
       throw error
@@ -237,6 +249,11 @@ export async function handleRequest(request: Request): Promise<Response> {
     if (error instanceof z.ZodError) return json({ error: { code: 'INVALID_INPUT', message: 'Some input fields are missing, too long, or invalid.', requestId } }, 400)
     if (error instanceof ApiError) {
       const invalidateTest = usedPersonalConnection && ['chat', 'courseware', 'operator', 'provider-test'].includes(action) && ['MODEL_NOT_AVAILABLE', 'MODEL_INCOMPATIBLE', 'PROVIDER_AUTH', 'PROVIDER_CREDITS', 'PROVIDER_QUOTA', 'PROVIDER_WORKSPACE_REQUIRED', 'EMPTY_RESPONSE'].includes(error.code)
+      if (invalidateTest) {
+        // A provider failure keeps its encrypted credential, but removes the
+        // earlier verification after the next account reopen as well.
+        if (authenticatedIdentity) await saveProvider(authenticatedIdentity, { ...usedPersonalConnection!, testedAt: undefined }, false).catch(() => undefined)
+      }
       return json({ error: { code: error.code, message: error.message, requestId } }, error.status, invalidateTest ? connectionCookie({ ...usedPersonalConnection!, testedAt: undefined }) : undefined)
     }
     if (error instanceof Error && ['TimeoutError', 'AbortError'].includes(error.name)) return json({ error: { code: 'TIMEOUT', message: 'The request was stopped or timed out. Try a smaller request.', requestId } }, 504)

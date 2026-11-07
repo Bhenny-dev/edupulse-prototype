@@ -63,3 +63,5 @@ OCR uses an English model and reads up to 60 scanned pages at a time; split long
 Other refusals explain themselves: password-protected files, legacy `.doc/.ppt/.xls` (save as `.docx`, `.pptx` or `.xlsx`), workbooks with more than 20 visible sheets or 5,000 rows, PDFs over 300 pages, and documents that take over 30 seconds to read. Scanned PDFs are not refused: see *Scanned PDFs* above.
 
 **Guests** can try extraction but cannot index; sign in as an instructor (or use the local app).
+
+Initial library reads reserve list space with a skeleton. Pending queue items use dots while waiting, then spinners for extraction/indexing; OCR and model downloads keep actual progress. Failed requests end loading and retain the existing error/retry flow. See [Manual 19](../19-loading-and-saved-connections/README.md).

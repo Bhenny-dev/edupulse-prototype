@@ -6,19 +6,19 @@
 
 **Agentic RAG pipeline** shows what is working right now: the generation model, the free embedding model and reranker (always available, no key), the vector database, the document sandbox and the nine named agents, starting with the Guardian, which checks appropriate use before the others work. The agents’ tasks, goals and tracked results are listed in the System Admin console ([System Walkthrough 07](../../system-walkthrough/07-system-admin/README.md)). Use **Check status** after changing anything.
 
-The current pipeline capture shows local **Ollama / qwen2.5:3b**, bundled embeddings/reranking and an empty library before the document tasks run. The connection card says generation has not been tested at this point; use **Test selected model** to verify inference. Synthetic credential UI captures below are labelled separately.
+The current pipeline capture shows local **Ollama / qwen2.5:1.5b** as **Not connected** because that local server could not be reached, with bundled embeddings/reranking and an empty library. Connect a reachable provider and use **Test selected model** to verify inference. Synthetic credential UI captures below are labelled separately.
 
 ![Pipeline status](01-pipeline-status.png)
 
 ## Connect a provider
 
 1. In **Pulse AI connection**, open **AI provider**. Free options are labelled: Gemini and Groq free tiers, **OpenRouter · free models**, **Hugging Face Inference · free credits**, or OpenAI/Anthropic with your own key.
-2. Paste your key and click **Connect and load models**. The key is sent once, encrypted by the server and kept in a protected cookie for up to seven days. It is tied to your signed-in account and is never shown again. For a signed-in account the form opens on OpenAI; this capture, made with a preview persona, shows **OpenRouter · free models**.
+2. Paste your key and click **Connect and load models**. The key is sent to the server and encrypted in your signed-in account database. It survives sign-out and reopening while the provider credential remains valid; application JavaScript never receives the saved key. For a signed-in account the form opens on OpenAI; this capture, made with a preview persona, shows **OpenRouter · free models**.
 3. Pick a model from the list returned by the provider. For OpenRouter and Hugging Face, free models are listed first and marked “(free)”.
 
 Use **Connect OpenAI API** or **Connect Claude API** to select that provider's key form directly. For Claude, **Claude workspace** can stay blank when the key is scoped to one workspace. An unscoped personal/service key needs a workspace: use **Load Claude workspaces**, choose **Available Claude workspaces**, then **Save workspace and load models**. If the key cannot list workspaces, copy its workspace ID from Claude Console. Pulse keeps the saved key and available model; it never chooses a billing workspace automatically. See [workspace recovery](../17-pulse-navigation-and-provider-recovery/README.md). **Connect with OpenRouter** starts browser authorization. The connection choices explain which account sign-in methods are available.
 
-After a successful save, **Saved provider credential** shows a masked indicator and expiry, with **Replace API key** and **Refresh models**. The key remains encrypted in the protected cookie for this browser/account; it is not repopulated into an editable field. Reopening Settings restores the saved indicator. Refreshing models preserves an available selected model. Generation status below uses the same live connection state as Pulse. A returned model catalog is labelled **Model listed · not tested**; listing does not prove inference access or quota.
+After a successful save, **Saved provider credential** shows a fixed masked indicator, with **Replace API key** and **Refresh models**. The key remains encrypted in the account database; it is not repopulated into an editable field. Reopening the same account restores the active provider and saved indicator. Each provider retains its own selected model; select another saved provider and choose **Use saved connection** to activate it. **Sign Out** clears the device session; **Disconnect provider** removes that saved credential without selecting another. Refreshing models preserves an available selected model. Generation status below uses the same live connection state as Pulse. A returned model catalog is labelled **Model listed · not tested**; listing does not prove inference access or quota.
 
 ![Saved provider credential and active model](04-saved-provider-credential.png)
 
@@ -40,11 +40,11 @@ Some models, such as **Cohere: North Mini Code (free)**, have no JSON mode and m
 
 ![Rejected replacement preserves the saved connection and retry input](05-provider-replacement-error.png)
 
-Screenshots 04–10 use synthetic provider responses and fake credentials. The model list, expiry, successful-generation state and failures are controlled UI fixtures; they do not establish live provider access or successful paid inference.
+Screenshots 04–10 use synthetic provider responses and fake credentials in a preview persona. The account-retention captures in Manual 19 use synthetic signed-in account transport. The model list, saved-connection metadata, successful-generation state and failures are controlled UI fixtures; they do not establish live provider access or successful paid inference.
 
 ## Authorize an account in the browser
 
-Choose **Connect with OpenRouter**. EduPulse redirects to OpenRouter, where you sign in and review authorization. After consent, you return to **AI & Knowledge**; EduPulse exchanges the one-use code on the server, saves an encrypted account-bound credential and loads available models. Canceling or failing authorization preserves the previous connection. OpenRouter usage follows your own account credits/limits, separate from ChatGPT or Claude subscriptions. Manage or revoke the issued key in OpenRouter's account settings; **Disconnect provider** removes EduPulse's local connection cookie.
+Choose **Connect with OpenRouter**. EduPulse redirects to OpenRouter, where you sign in and review authorization. After consent, you return to **AI & Knowledge**; EduPulse exchanges the one-use code on the server, saves an encrypted account-bound credential and loads available models. Canceling or failing authorization preserves the previous connection. OpenRouter usage follows your own account credits/limits, separate from ChatGPT or Claude subscriptions. Manage or revoke the issued key in OpenRouter's account settings; **Disconnect provider** removes that provider from your saved account connections and clears the device cookie.
 
 The return uses `/auth/provider/openrouter`, separate from EduPulse sign-in. If authorization succeeds but the model catalog is temporarily unavailable, the new credential is still saved. **Refresh models** finishes setup without a second authorization. If your EduPulse session has ended, a visible message asks you to sign in and reconnect.
 
@@ -81,3 +81,7 @@ Choose **On this device · no API key**, pick **Qwen 2.5 · 1.5B — balanced** 
 ![On-device model](03-on-device-model.png)
 
 In the downloaded local app, **Ollama · local app server** uses models installed with `npm run ai:setup`.
+
+## Loading and account retention
+
+[Manual 19](../19-loading-and-saved-connections/README.md) shows saved-provider restoration, model-test spinners, multiple reusable connections, disconnect safeguards and reduced-motion loading feedback. **ChatGPT plan** is a separate informational choice linking to the hosted-app approval requirements; it does not accept an OpenAI API key as a ChatGPT subscription login.

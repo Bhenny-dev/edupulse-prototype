@@ -1,0 +1,17 @@
+{
+  "checkedAt": "2026-11-07T08:52:34.899496+00:00",
+  "method": "Authenticated Supabase CLI Management API; synthetic canary transaction rolled back",
+  "migrations": [
+    "20261107073514_account_provider_connections.sql",
+    "20261107084843_atomic_provider_cookie_import.sql"
+  ],
+  "checks": {
+    "anon_can_disconnect": false,
+    "anon_can_import": false,
+    "anon_can_read": false,
+    "applied_migrations": 2,
+    "invoker": true,
+    "rls": true,
+    "saved_provider_rows": 0
+  }
+}

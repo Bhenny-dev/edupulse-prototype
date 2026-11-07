@@ -20,6 +20,8 @@ Screenshots in the walkthrough and manual are real captures of the documentation
 
 ## Version history
 
+The [7 November loading and account connections update](versions/2026-11-07-loading-and-connections/README.md) retains encrypted providers across sign-out, separates ChatGPT plan requirements from API billing, and audits request-driven loading feedback across roles.
+
 The [7 November bounded syllabus fix](versions/2026-11-07-bounded-syllabus-drafting/README.md) separates research and small drafting stages across requests, preserving one final review and the existing interface. Validation distinguishes synthetic provider/browser evidence from live inference.
 
 The [7 November IT course seed](versions/2026-11-07-it-course-seed/README.md) saves 288 official-directory enrollments in nine blocks and 93 new teaching drafts, preserving three earlier items and actual student activity. [Manual 18](system-manual/18-it-course-seed/README.md) and the full review pack distinguish real persistence from synthetic UI validation.

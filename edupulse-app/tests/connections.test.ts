@@ -42,7 +42,7 @@ test('a hosted visitor never inherits a server-wide OpenAI key', async () => {
   try {
     const response = await handleRequest(new Request('https://edupulse.test/api/ai?action=providers'))
     assert.equal(response.status, 200)
-    assert.deepEqual(await response.json(), { connection: null, models: [] })
+    assert.deepEqual(await response.json(), { connection: null, models: [], connections: [] })
   } finally {
     process.env.AI_PROVIDER = 'retrieval'
     delete process.env.OPENAI_API_KEY

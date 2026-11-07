@@ -1,11 +1,16 @@
 import { useState } from 'react'
+import { SkeletonContent, LoadingStatus } from '../ui/LoadingFeedback'
 import { PULSE_SKILLS } from '../../agents/skills'
 
 export default function PulseHistory({ archive, disabled, onClose, onOpen }) {
   const [error, setError] = useState(''), [memory, setMemory] = useState(''), [deleting, setDeleting] = useState(null)
-  const run = async action => { setError(''); try { await action() } catch (failure) { setError(failure.message) } }
+  const [busy, setBusy] = useState(false)
+  const run = async action => { if (busy) return; setBusy(true); setError(''); try { await action() } catch (failure) { setError(failure.message) } finally { setBusy(false) } }
   return <section className="pulse-history" aria-label="Conversations, memory and tools">
     <header><strong>Conversations & memory</strong><button className="btn btn-ghost btn-sm" onClick={onClose}>Close history</button></header>
+    {archive.loading && <SkeletonContent label="Loading conversations…" rows={3} />}
+    {busy && <LoadingStatus label="Updating conversation…" />}
+    <fieldset className="loading-fieldset" disabled={busy || archive.loading} aria-busy={busy || archive.loading}>
     <p className="pulse-action-note">{archive.mode === 'cloud' ? 'Private to this signed-in account.' : archive.mode === 'local' ? 'Stored in this local app workspace.' : 'Sign in to use private database history.'} Archived tools are transcripts; they cannot run again.</p>
     {archive.error && <p role="alert">{archive.error} <button className="btn btn-secondary btn-sm" onClick={archive.retry}>Retry history save</button></p>}
     <button className="btn btn-secondary btn-sm" disabled={disabled || archive.saving} onClick={() => run(() => { archive.newThread(); onOpen(); onClose() })}>New conversation</button>
@@ -13,5 +18,6 @@ export default function PulseHistory({ archive, disabled, onClose, onOpen }) {
     <details><summary>Saved preferences ({archive.memories.length})</summary><p>Memories come from your own statements. Files and model replies are not promoted into reusable memory. Deleting a source conversation removes memories derived from it.</p><label><input type="checkbox" checked={archive.automaticMemory} onChange={event => run(() => archive.command({ operation: 'preferences', automaticMemory: event.target.checked }))} /> Save recognized response preferences automatically</label><ul>{archive.memories.map(item => <li key={item.id}><span>{item.text}</span><small>{item.source_message_id ? 'Source: your conversation statement' : 'Source: you saved this preference'}</small><button className="btn btn-ghost btn-sm" onClick={() => run(() => archive.command({ operation: 'forget', id: item.id }))}>Forget</button></li>)}</ul><label className="form-label">Remember a preference<input className="form-input" value={memory} onChange={event => setMemory(event.target.value)} maxLength={500} /></label><button className="btn btn-secondary btn-sm" disabled={memory.trim().length < 3} onClick={() => run(async () => { await archive.command({ operation: 'remember', text: memory.trim() }); setMemory('') })}>Save memory</button></details>
     <details><summary>Installed Pulse skills & tools</summary><ul>{PULSE_SKILLS.map(skill => <li key={skill.id}><strong>{skill.agent}</strong><span>{skill.title}{skill.mutation ? ' · preview and confirmation required' : ''}</span></li>)}</ul><p>No arbitrary scripts, shell commands or external URLs can be executed. File parsing uses the bounded document sandbox; scanned PDF OCR runs in a device worker.</p></details>
     {error && <p role="alert">{error}</p>}
+    </fieldset>
   </section>
 }

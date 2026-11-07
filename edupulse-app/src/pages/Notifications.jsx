@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { SkeletonContent } from '../components/ui/LoadingFeedback'
 import { useAuth } from '../context/AuthContext'
 import { useNotifications } from '../data/notifications'
 import { Bell, Check, AlertTriangle, Info, CheckCircle, Clock } from 'lucide-react'
@@ -35,7 +36,7 @@ export default function NotificationCenter() {
       </div>
 
       {user?.authenticated && <p className="text-sm text-muted mb-16">Academic notices and read receipts are saved to your account. Current-record reminders are also shown; their read state is retained on this device.</p>}
-      {loading && <p role="status">Loading record notices…</p>}
+      {loading && !notifications.length && <SkeletonContent label="Loading record notices…" rows={3} />}
       {error && <p role="alert">{error}</p>}
       <div className="tabs mb-24" style={{ overflowX: 'auto', flexWrap: 'nowrap' }}>
         {categories.map(f => (

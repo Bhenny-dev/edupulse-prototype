@@ -25,3 +25,7 @@ If you open **workspace buddies** while a document dialog is open, the office ow
 ## Restored account sections
 
 Loading/error feedback remains shared while role-specific account sections now include charts, matrices, readers and management tabs. [Manual 13](../13-restored-account-sections/README.md) documents those tasks and account-scoped notice/read behavior.
+
+## Expanded loading audit, 7 November 2026
+
+[Manual 19](../19-loading-and-saved-connections/README.md) extends these captures to provider restore/testing, Pulse dots, notification popovers, student-directory results, approved-file modals and System Admin counts. It records the reviewed surfaces and preserves existing OCR/model/generation progress rather than inventing percentages.

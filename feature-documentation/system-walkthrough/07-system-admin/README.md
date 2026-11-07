@@ -84,3 +84,5 @@ Below the table:
 Runs are recorded for signed-in accounts in the hosted system once the agent-run migration is applied ([Backend System · Supabase](../../backend-system/supabase.md)). Until then, the live console shows a notice instead of counts. A record holds the task, outcome, timing and goal results, never the question, the answer or document text. The admin sees roles, not the people behind them. This capture is a preview session, so every count is zero.
 
 *New after v0.4.0* (FR-AGENT-01–04).
+
+Initial overview, role/account counts, agent activity and audit reads now show skeletons while pending. Later **Refresh** retains loaded data and shows a spinner; account creation/role saves also show pending spinners. [Manual 19](../../system-manual/19-loading-and-saved-connections/README.md) captures the initial console request.

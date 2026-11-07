@@ -1,3 +1,4 @@
+import { Spinner } from '../components/ui/LoadingFeedback'
 import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
@@ -44,7 +45,7 @@ function AccountSettings() {
           <div className="form-group"><label className="form-label" htmlFor="profile-password">New Password</label><input id="profile-password" className="form-input" type="password" autoComplete="new-password" disabled={!user?.authenticated || user?.provider === 'google'} value={password} onChange={e => setPassword(e.target.value)} placeholder={user?.provider === 'google' ? 'Your Google account manages sign-in' : user?.demo ? 'Unavailable in preview mode' : 'Leave blank to keep current password'} /></div>
         </div>
         {user?.canSwitchRoles && <p className="text-sm text-muted">Current view: {user.title}. Your admin account stays active when you switch views.</p>}
-        <button className="btn btn-primary" disabled={saving} onClick={save}><Check size={14} /> {saving ? 'Saving…' : 'Save Changes'}</button>
+        <button className="btn btn-primary" disabled={saving} onClick={save}>{saving ? <Spinner size={14} /> : <Check size={14} />} {saving ? 'Saving…' : 'Save Changes'}</button>
       </div>
     </div>
   )
@@ -141,8 +142,8 @@ function DataPrivacySettings() {
           <p role="alert" className="text-sm" style={{ margin: '8px 0 12px' }}>{error || 'A newer saved workspace exists. Export your pending edits before loading the latest copy.'}</p>
           {conflict ? <>
             <p className="text-sm text-muted" style={{ marginBottom: 12 }}>Export a workspace backup above before loading the latest copy.</p>
-            <button className="btn btn-secondary btn-sm" disabled={!backedUp || loading || saving} onClick={reload}>Load latest after export</button>
-          </> : <button className="btn btn-secondary btn-sm" disabled={loading || saving} onClick={retry}>Retry save</button>}
+            <button className="btn btn-secondary btn-sm" disabled={!backedUp || loading || saving} onClick={reload}>{loading && <Spinner />} Load latest after export</button>
+          </> : <button className="btn btn-secondary btn-sm" disabled={loading || saving} onClick={retry}>{saving && <Spinner />} Retry save</button>}
         </section>}
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>

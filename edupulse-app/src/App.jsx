@@ -1,4 +1,4 @@
-import { Spinner } from './components/ui/LoadingFeedback'
+import { SkeletonContent } from './components/ui/LoadingFeedback'
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { ToastProvider } from './context/ToastContext'
@@ -32,7 +32,7 @@ import { PERFORMANCE_ROLES } from './lib/access'
 // the separately authenticated Dean and Associate Dean roles.
 function ProtectedRoute({ children, allowedRoles }) {
   const { user, authLoading } = useAuth()
-  if (authLoading) return <div role="status" className="container">Restoring your session…</div>
+  if (authLoading) return <div className="session-loading"><SkeletonContent label="Restoring your session…" variant="page" /></div>
   if (!user) return <Navigate to="/" replace />
   if (allowedRoles && !allowedRoles.includes(user.role)) return <Navigate to="/dashboard" replace />
   return children

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { SkeletonContent, Spinner } from '../ui/LoadingFeedback'
 import { aiRequest } from '../../lib/aiClient'
 import { STUDENT_PROGRAMS } from '../../data/studentPrograms'
 import { CURRICULUM_COURSES } from '../../data/mockData'
@@ -42,16 +43,16 @@ export default function StudentDirectoryPicker({ onRegister }) {
         </div>
         {loadError && <p role="alert">{loadError} <button type="button" className="btn btn-secondary btn-sm" onClick={()=>setRetry(value=>value+1)}>Retry directory</button></p>}
         <p role="status" className="text-sm mb-16">{busy?'Loading students…':`${result.total} matching students`} · {students.length} selected</p>
-        <div style={{overflowX:'auto'}}><table className="data-table"><thead><tr><th>Select</th><th>Student</th><th>Year</th><th>Department / Program</th></tr></thead><tbody>
+        {busy && !result.students.length ? <SkeletonContent variant="table" label="Loading students…" rows={5} /> : <div style={{overflowX:'auto'}}><table className="data-table" aria-busy={busy}><thead><tr><th>Select</th><th>Student</th><th>Year</th><th>Department / Program</th></tr></thead><tbody>
           {!busy && !loadError && result.students.length===0 && <tr><td colSpan={4}>No registered students match these filters.</td></tr>}
           {result.students.map(student=><tr key={student.student_number}><td><label style={{minHeight:44,minWidth:44,display:'inline-flex',alignItems:'center',justifyContent:'center'}}><input type="checkbox" aria-label={`Select ${student.full_name}`} disabled={busy || saving || (!selected[student.student_number] && students.length>=35)} checked={Boolean(selected[student.student_number])} onChange={()=>setSelected(previous=>{const next={...previous};if(next[student.student_number])delete next[student.student_number];else next[student.student_number]=student;return next})} /></label></td><td><strong>{student.full_name}</strong><div className="text-sm text-muted">{student.student_number} · {student.email}</div></td><td>{student.year_level}</td><td>{student.department}<div className="text-sm text-muted">{student.program}</div></td></tr>)}
-        </tbody></table></div>
+        </tbody></table></div>}
         <div className="academic-actions mt-16"><button type="button" className="btn btn-secondary btn-sm" disabled={busy || offset===0} onClick={()=>setOffset(value=>Math.max(0,value-50))}>Previous students</button><span className="text-sm">{result.total?offset+1:0}–{Math.min(offset+50,result.total)} of {result.total}</span><button type="button" className="btn btn-secondary btn-sm" disabled={busy || offset+50>=result.total} onClick={()=>setOffset(value=>value+50)}>Next students</button></div>
         {students.length>0 && <div className="mt-16"><h4>Selected students</h4><ul>{students.map(student=><li key={student.student_number}>{student.full_name} · {student.student_number} <button type="button" className="btn btn-ghost btn-sm" disabled={saving} onClick={()=>setSelected(previous=>{const next={...previous};delete next[student.student_number];return next})}>Remove</button></li>)}</ul></div>}
         <form className="mt-16" onSubmit={register}>
           {error && <p role="alert" className="mb-16">{error}</p>}
           <div className="grid-2"><label className="form-group" style={{minWidth:0}}>Course for selected students<select aria-label="Course for selected students" required className="form-input" value={course} onChange={event=>setCourse(event.target.value)}><option value="">Select a course</option>{CURRICULUM_COURSES.map(item=><option key={item.code} value={item.code}>{item.code} — {item.title}</option>)}</select></label><label className="form-group" style={{minWidth:0}}>Block section<input required className="form-input" maxLength={80} value={block} onChange={event=>setBlock(event.target.value)} placeholder="For example BSIT-1A" /></label></div>
-          <button className="btn btn-primary" disabled={saving || !students.length || busy}>{saving?'Registering…':`Register selected students (${students.length})`}</button>
+          <button className="btn btn-primary" disabled={saving || !students.length || busy}>{saving && <Spinner />} {saving?'Registering…':`Register selected students (${students.length})`}</button>
           {notice && <p role="status" className="mt-16">{notice}</p>}
         </form>
       </>}

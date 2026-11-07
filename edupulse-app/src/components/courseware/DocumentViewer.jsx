@@ -1,4 +1,5 @@
 import { downloadMaterialPdf } from '../../utils/pdfExport'
+import { Spinner } from '../ui/LoadingFeedback'
 import { useState } from 'react'
 import { ArrowLeft, Download, Printer, Save, Pencil, X } from 'lucide-react'
 import { useToast } from '../../context/ToastContext'
@@ -18,6 +19,7 @@ export default function DocumentViewer({ content, onBack, isStudent = false, onS
   const { addToast } = useToast()
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState(null)
+  const [saving, setSaving] = useState(false), [exporting, setExporting] = useState(false)
   useContentEditorTool(content, { ...content, sections: editing ? draft : content?.sections }, next => { setDraft(next.sections); setEditing(true) }, isStudent, onBack)
 
   if (!content) return null
@@ -59,16 +61,23 @@ export default function DocumentViewer({ content, onBack, isStudent = false, onS
     setDraft(prev => prev.filter((_, i) => i !== idx))
   }
 
-  const saveEdits = () => {
-    if (onSave) {
-      onSave(draft)
-      addToast('Changes saved', 'success')
-    }
-    setDraft(null)
-    setEditing(false)
+  const saveEdits = async () => {
+    if (saving) return
+    setSaving(true)
+    try {
+      if (onSave) { await onSave(draft); addToast('Changes saved', 'success') }
+      setDraft(null); setEditing(false)
+    } catch (error) { addToast(error.message, 'error') }
+    finally { setSaving(false) }
   }
 
-  const downloadDocument = () => downloadMaterialPdf({ ...content, sections }).catch(error => addToast(error.message, 'error'))
+  const downloadDocument = async () => {
+    if (exporting) return
+    setExporting(true)
+    try { await downloadMaterialPdf({ ...content, sections }) }
+    catch (error) { addToast(error.message, 'error') }
+    finally { setExporting(false) }
+  }
 
   const renderBody = (body, idx, isEditing) => {
     if (isEditing) {
@@ -104,11 +113,11 @@ export default function DocumentViewer({ content, onBack, isStudent = false, onS
         {!isStudent && (
           editing ? (
             <>
-              <button className="btn btn-ghost btn-sm" onClick={cancelEditing}>
+              <button className="btn btn-ghost btn-sm" disabled={saving} onClick={cancelEditing}>
                 <X size={14} /> Cancel
               </button>
-              <button className="btn btn-primary btn-sm" onClick={saveEdits}>
-                <Save size={14} /> Save
+              <button className="btn btn-primary btn-sm" disabled={saving} onClick={saveEdits}>
+                {saving ? <Spinner size={14} /> : <Save size={14} />} {saving ? 'Saving…' : 'Save'}
               </button>
             </>
           ) : (
@@ -120,8 +129,8 @@ export default function DocumentViewer({ content, onBack, isStudent = false, onS
         <button className="btn btn-ghost btn-sm" onClick={() => window.print()}>
           <Printer size={14} /> Print
         </button>
-        <button className="btn btn-secondary btn-sm" onClick={downloadDocument}>
-          <Download size={14} /> Download PDF
+        <button className="btn btn-secondary btn-sm" disabled={exporting} onClick={downloadDocument}>
+          {exporting ? <Spinner size={14} /> : <Download size={14} />} {exporting ? 'Preparing PDF…' : 'Download PDF'}
         </button>
       </div>
 

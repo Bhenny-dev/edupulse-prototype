@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { LoadingStatus, SkeletonContent, Spinner } from '../ui/LoadingFeedback'
 import { Upload, Trash2, MessageSquare, GitCompare, FileText, ShieldCheck, Check, X, Loader2, AlertTriangle, ScanText } from 'lucide-react'
 import { aiRequest, extractDocument, UPLOAD_ACCEPT } from '../../lib/aiClient'
 import { LOW_CONFIDENCE, mergePageText, summarizeOcr } from '../../lib/ocrText'
@@ -44,13 +45,16 @@ function OcrSummary({ summary }) {
 export default function KnowledgeLibrary({ canIndex, onChange }) {
   const [items, setItems] = useState([]), [documents, setDocuments] = useState([]), [over, setOver] = useState(false)
   const [selected, setSelected] = useState([]), [error, setError] = useState(''), [busy, setBusy] = useState(false), [paste, setPaste] = useState({ open: false, title: '', text: '' })
+  const [loading, setLoading] = useState(true)
   const fileRef = useRef(null), queue = useRef(Promise.resolve()), ocrRuns = useRef(new Map())
   const update = (id, patch) => setItems(list => list.map(item => item.id === id ? { ...item, ...(typeof patch === 'function' ? patch(item) : patch) } : item))
   // The API allows one active request per account; uploads and indexing run in order instead of colliding.
   const enqueue = task => { const run = queue.current.then(task, task); queue.current = run.catch(() => undefined); return run }
   const load = useCallback(async signal => {
     if (!canIndex) { setDocuments([]); return }
+    setLoading(true)
     try { setDocuments((await aiRequest('documents', 'GET', undefined, signal)).documents) } catch (err) { if (!signal?.aborted) setError(err.message) }
+    finally { if (!signal?.aborted) setLoading(false) }
   }, [canIndex])
   useEffect(() => { const controller = new AbortController(); void load(controller.signal); return () => controller.abort() }, [load])
 
@@ -122,8 +126,8 @@ export default function KnowledgeLibrary({ canIndex, onChange }) {
     {items.length > 0 && <div className="kl-queue">{items.map(item => <section key={item.id} className="kl-item" aria-label={`Upload ${item.file.name}`}>
       <div className="kl-item-head"><strong>{item.file.name}</strong>{item.report && <span className="kl-type">{item.report.kind}</span>}<small>{kb(item.file.size)}</small><button type="button" className="btn btn-ghost btn-sm" onClick={() => { ocrRuns.current.get(item.id)?.abort(); setItems(list => list.filter(x => x.id !== item.id)) }} aria-label={`Dismiss ${item.file.name}`}><X size={14} /></button></div>
       <StageList item={item} />
-      {item.status === 'queued' && <p role="status">Waiting for the previous file to finish…</p>}
-      {item.status === 'extracting' && <p role="status">Reading the file in the sandbox…</p>}
+      {item.status === 'queued' && <LoadingStatus dots label="Waiting for the previous file to finish…" />}
+      {item.status === 'extracting' && <LoadingStatus label="Reading the file in the sandbox…" />}
       {item.error && <p role="alert" className="ai-notice">{item.error}</p>}
       {item.scanned && item.status === 'error' && <div className="kl-ocr"><p>This PDF has no text layer, so it is probably a scan. OCR can read the page images on this device; they are not uploaded. You review the text before anything is indexed.</p>
         <button type="button" className="btn btn-primary btn-sm" onClick={() => readWithOcr(item)}><ScanText size={14} /> Read with OCR</button></div>}
@@ -142,7 +146,7 @@ export default function KnowledgeLibrary({ canIndex, onChange }) {
           <small>[[Page n]] and [[Slide n]] lines keep citation locations; lines starting with # mark sections.</small></details>
         <div className="ai-actions" style={{ marginTop: 10 }}><button type="button" className="btn btn-primary btn-sm" disabled={!canIndex || !item.title.trim() || item.text.trim().length < 40} onClick={() => index(item)}>Index document</button><button type="button" className="btn btn-secondary btn-sm" onClick={() => setItems(list => list.filter(x => x.id !== item.id))}>Discard</button></div>
       </div>}
-      {item.status === 'indexing' && <p role="status">Chunking, embedding and indexing…</p>}
+      {item.status === 'indexing' && <LoadingStatus label="Chunking, embedding and indexing…" />}
       {item.status === 'indexed' && <div role="status" className="ai-notice">{item.result.duplicate ? 'This document is already in your library.' : <>Indexed <strong>{item.result.chunks} passages</strong>{item.result.pages ? ` from ${item.result.pages} pages` : ''}{item.result.sections ? ` in ${item.result.sections} sections` : ''} with {item.result.embeddingModel}.{item.result.flaggedChunks ? ` ${item.result.flaggedChunks} passages are marked as containing instruction-like text.` : ''}</>}
         <ul className="kl-timings">{item.result.stages.map(s => <li key={s.name}><strong>{s.name}</strong> · {s.ms} ms · {s.detail}</li>)}</ul></div>}
     </section>)}</div>}
@@ -150,12 +154,12 @@ export default function KnowledgeLibrary({ canIndex, onChange }) {
       <form onSubmit={indexPasted} className="kl-review">
         <label className="form-label" htmlFor="paste-title">Document title</label><input id="paste-title" className="form-input" maxLength={160} required value={paste.title} onChange={e => setPaste(p => ({ ...p, title: e.target.value }))} />
         <label className="form-label" htmlFor="paste-text">Reference text</label><textarea id="paste-text" className="form-input" minLength={40} maxLength={150000} required value={paste.text} onChange={e => setPaste(p => ({ ...p, text: e.target.value }))} />
-        <button className="btn btn-primary btn-sm" disabled={!canIndex || busy}>{busy ? 'Indexing…' : 'Index text'}</button>
+        <button className="btn btn-primary btn-sm" disabled={!canIndex || busy}>{busy && <Spinner />} {busy ? 'Indexing…' : 'Index text'}</button>
       </form></details>
     {error && <p role="alert" className="ai-notice">{error}</p>}
     {canIndex && <>
       <h4 style={{ marginTop: 20 }}>Indexed documents</h4>
-      {documents.length ? <div style={{ overflowX: 'auto' }}><table className="kl-library"><thead><tr><th scope="col"><span className="sr-only">Select for comparison</span></th><th scope="col">Document</th><th scope="col">Type</th><th scope="col">Passages</th><th scope="col">Quality</th><th scope="col"><span className="sr-only">Actions</span></th></tr></thead><tbody>
+      {loading && !documents.length ? <SkeletonContent label="Loading knowledge library…" variant="table" rows={3} /> : documents.length ? <div style={{ overflowX: 'auto' }}><table className="kl-library"><thead><tr><th scope="col"><span className="sr-only">Select for comparison</span></th><th scope="col">Document</th><th scope="col">Type</th><th scope="col">Passages</th><th scope="col">Quality</th><th scope="col"><span className="sr-only">Actions</span></th></tr></thead><tbody>
         {documents.map(document => <tr key={document.id}>
           <td><input type="checkbox" checked={selected.includes(document.id)} onChange={() => toggle(document.id)} aria-label={`Select ${document.title} for comparison`} /></td>
           <td><strong>{document.title}</strong><div className="text-sm text-muted">{document.quality?.course ? `Course ${document.quality.course} · ` : ''}{document.page_count ? `${document.page_count} pages · ` : ''}{(document.char_count || 0).toLocaleString()} characters · {new Date(document.created_at).toLocaleDateString()}</div></td>

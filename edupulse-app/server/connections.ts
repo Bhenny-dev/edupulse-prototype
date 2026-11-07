@@ -13,7 +13,7 @@ export type Connection = { provider: ProviderName; model: string; apiKey?: strin
 export type ModelPreset = { id: string; name: string; free?: boolean }
 const workspaceId = z.string().regex(/^wrkspc_[a-zA-Z0-9]{1,100}$/, 'Use the workspace ID from Claude Console (wrkspc_…).')
 export const connectionInput = z.object({ provider: z.enum(providerNames), apiKey: z.string().trim().min(8).max(1024).optional(), model: z.string().min(1).max(200).optional(), workspaceId: z.union([workspaceId, z.literal('')]).optional() }).strict()
-const payload = connectionInput.extend({ model: z.string().max(200), workspaceId: workspaceId.optional(), owner: z.string(), expires: z.number(), id: z.string(), testedAt: z.number().optional() })
+export const connectionSchema = connectionInput.extend({ model: z.string().max(200), workspaceId: workspaceId.optional(), owner: z.string(), expires: z.number(), id: z.string(), testedAt: z.number().optional() })
 export const workspaceListInput = z.object({ apiKey: z.string().trim().min(8).max(1024).optional() }).strict()
 const TTL = 7 * 24 * 60 * 60
 const cookieName = () => config().hosted ? '__Host-edupulse-ai' : 'edupulse-ai'
@@ -50,7 +50,7 @@ export function readConnection(request: Request, identity: Identity): Connection
   const value = request.headers.get('cookie')?.split(';').map(s => s.trim()).find(s => s.startsWith(`${cookieName()}=`))?.slice(cookieName().length + 1)
   if (!value) return undefined
   try {
-    const data = payload.parse(unsealProviderState(value))
+    const data = connectionSchema.parse(unsealProviderState(value))
     if (data.owner !== identity.id || data.expires <= Date.now()) return undefined
     return data
   } catch { return undefined }
@@ -122,7 +122,7 @@ export async function createConnection(input: z.infer<typeof connectionInput>, i
   const preferred = input.provider === 'openai' ? ['gpt-5-mini', 'gpt-4.1-mini', 'gpt-4o-mini'].find(id => models.some(m => m.id === id)) : undefined
   const model = input.model || (previous?.provider === input.provider && models.some(m => m.id === previous.model) ? previous.model : preferred) || (input.provider === 'ollama' && models.some(m => m.id === config().model || m.id === `${config().model}:latest`) ? models.find(m => m.id === config().model || m.id === `${config().model}:latest`)!.id : models[0]!.id)
   if (!models.some(m => m.id === model)) throw new ApiError(400, 'MODEL_NOT_AVAILABLE', 'Choose a model returned by the connected provider.')
-  const connection: Connection = { provider: input.provider, model, apiKey, ...(workspaceId ? { workspaceId } : {}), owner: identity.id, id: previous?.id || randomBytes(12).toString('hex'), expires: Date.now() + TTL * 1000, ...(!input.apiKey && previous?.provider === input.provider && previous.model === model && previous.workspaceId === workspaceId && previous.testedAt ? { testedAt: previous.testedAt } : {}) }
+  const connection: Connection = { provider: input.provider, model, apiKey, ...(workspaceId ? { workspaceId } : {}), owner: identity.id, id: randomBytes(12).toString('hex'), expires: Date.now() + TTL * 1000, ...(!input.apiKey && previous?.provider === input.provider && previous.model === model && previous.workspaceId === workspaceId && previous.testedAt ? { testedAt: previous.testedAt } : {}) }
   return { connection, models }
 }
 

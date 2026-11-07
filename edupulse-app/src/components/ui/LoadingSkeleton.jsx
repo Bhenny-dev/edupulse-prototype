@@ -1,11 +1,11 @@
 import './LoadingSkeleton.css'
 
 export function SkeletonLine({ width = '100%', height = '16px', style }) {
-  return <div className="skeleton-line" style={{ width, height, ...style }} />
+  return <div className="skeleton-line" aria-hidden="true" style={{ width, height, ...style }} />
 }
 
 export function SkeletonCircle({ size = 40, style }) {
-  return <div className="skeleton-circle" style={{ width: size, height: size, ...style }} />
+  return <div className="skeleton-circle" aria-hidden="true" style={{ width: size, height: size, ...style }} />
 }
 
 export function SkeletonCard({ lines = 3, style }) {

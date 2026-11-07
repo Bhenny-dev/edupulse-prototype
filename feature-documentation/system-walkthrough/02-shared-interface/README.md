@@ -160,3 +160,7 @@ Signed-in charts, dialogs and page surfaces use the existing solid dark palette.
 [Generate content and verify its save](../../system-manual/15-backend-content-delivery/README.md) documents the real local model, existing Pulse confirmation card, persisted receipt and reloaded syllabus. The backend harness changes do not change the restored header, settings, charts or layout.
 
 Provisioned students also see read-only **Student number**, **Year level** and **Program** under Settings Account. The [student profile capture](../../system-manual/16-student-directory/04-student-profile.png) uses a synthetic account; official directory records are maintained through administrative provisioning.
+
+## Loading and provider retention, 7 November 2026
+
+Saved provider keys and selected models now survive sign-out under the same account. **ChatGPT plan** and **OpenAI API** are separate choices; the former links to OpenAI hosted-app approval requirements. Initial account/connection/list reads use skeletons, pending actions use spinners, and Pulse uses animated dots. Notifications wait for their record request before showing an empty state. Static popovers open immediately. [Manual 19](../../system-manual/19-loading-and-saved-connections/README.md) contains the current captures and surface-by-surface audit.

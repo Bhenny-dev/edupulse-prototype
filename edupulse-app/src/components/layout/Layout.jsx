@@ -2,7 +2,8 @@ import ModalLayer from '../ui/ModalLayer'
 import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useAI } from '../../context/AIContext'
-import { WorkspaceStatus } from '../../context/WorkspaceContext'
+import { WorkspaceStatus, useWorkspace } from '../../context/WorkspaceContext'
+import { SkeletonContent } from '../ui/LoadingFeedback'
 import { useLanguage } from '../../context/LanguageContext'
 import { useTheme } from '../../context/ThemeContext'
 import { useNotifications } from '../../data/notifications'
@@ -186,6 +187,7 @@ function RoleSwitchPopover({ onClose }) {
 }
 
 export default function Layout() {
+  const workspace = useWorkspace()
   const ai = useAI()
   const { user, logout } = useAuth()
   const { language, switchLanguage } = useLanguage()
@@ -221,7 +223,7 @@ export default function Layout() {
   }, [navigate])
 
   const handleLogout = () => { logout(); navigate('/') }
-  const { notifications: notifs, unreadCount } = useNotifications(user?.role)
+  const { notifications: notifs, unreadCount, loading: noticesLoading, error: noticesError } = useNotifications(user?.role)
   const sections = SECTIONS.filter(s => canSee(s, user?.role))
   const current = sections.find(item => item.path === location.pathname || item.relatedPaths?.some(path => location.pathname.startsWith(path)))
 
@@ -380,6 +382,9 @@ export default function Layout() {
                   <NavLink to="/notifications" onClick={() => setShowNotifications(false)} style={{ fontSize: '0.75rem', color: 'var(--sky-500)', fontWeight: 600 }}>View All</NavLink>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  {noticesLoading && !notifs.length && <SkeletonContent label="Loading notifications…" rows={3} />}
+                  {noticesError && <p role="alert">{noticesError}</p>}
+                  {!noticesLoading && !noticesError && !notifs.length && <p className="text-sm text-muted">No notifications yet.</p>}
                   {notifs.slice(0, 3).map(n => (
                     <div key={n.id} style={{
                       padding: '10px 12px', borderRadius: 'var(--radius-md)', opacity: n.read ? 0.75 : 1,
@@ -497,7 +502,7 @@ export default function Layout() {
       <div className="app-workspace" style={{ flex: 1, display: 'flex' }}>
         <main id="main-content" style={{ flex: 1, minHeight: 'calc(100vh - 64px)', minWidth: 0 }} role="main" tabIndex={-1}>
           <div key={pageKey} className="page-enter">
-            <Outlet />
+            {workspace.loading && ['/syllabus', '/courseware', '/content-editor'].some(path => location.pathname.startsWith(path)) ? <div className="container"><SkeletonContent variant="page" label="Loading your workspace…" /></div> : <Outlet />}
           </div>
         </main>
       </div>

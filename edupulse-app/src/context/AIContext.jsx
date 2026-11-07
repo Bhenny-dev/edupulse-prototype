@@ -10,16 +10,24 @@ export function AIProvider({ children }) {
   const userId = user?.id, role = user?.role
   const local = useSyncExternalStore(subscribeBrowserAI, browserAIState)
   const [health, setHealth] = useState(null), [preference, setPreference] = useState(aiPreference)
+  const [checking, setChecking] = useState(false), [healthError, setHealthError] = useState('')
   const latestHealth = useRef(0), callbackRequest = useRef(null)
   const [connectionNotice, setConnectionNotice] = useState(''), [connectionRevision, setConnectionRevision] = useState(0)
   const [connectionFailed, setConnectionFailed] = useState(false)
   const clearConnectionNotice = useCallback(() => { setConnectionNotice(''); setConnectionFailed(false) }, [])
   const [callback] = useState(() => providerAuthorizationReturn(new URL(window.location.href)))
-  const refresh = useCallback(async signal => { const sequence = ++latestHealth.current; const status = await getAiHealth(signal); if (!signal?.aborted && sequence === latestHealth.current) setHealth(status); return status }, [])
+  const refresh = useCallback(async signal => {
+    const sequence = ++latestHealth.current
+    setChecking(true); setHealthError('')
+    try { const status = await getAiHealth(signal); if (!signal?.aborted && sequence === latestHealth.current) setHealth(status); return status }
+    catch (error) { if (!signal?.aborted && sequence === latestHealth.current) setHealthError(error.message); throw error }
+    finally { if (sequence === latestHealth.current) setChecking(false) }
+  }, [])
   useEffect(() => {
     const controller = new AbortController()
     latestHealth.current++
     setHealth(null)
+    setChecking(false); setHealthError('')
     if (userId) { void refresh(controller.signal).catch(() => {}); void resumeBrowserAI() }
     else stopBrowserAI()
     return () => controller.abort()
@@ -49,7 +57,7 @@ export function AIProvider({ children }) {
   }, [callback, userId, authLoading, refresh])
   const usingBrowser = preference === 'browser'
   const ready = usingBrowser ? local.status === 'ready' : Boolean(health?.ready)
-  const label = usingBrowser ? local.status === 'loading' ? 'Loading local AI' : ready ? 'On-device AI' : 'Local AI needs attention' : ready ? `${health.provider} · ${health.model}${health.connection?.source === 'personal' && !health.connection.testedAt ? ' · not tested' : ''}` : 'Set up Pulse AI'
-  return <AIContext.Provider value={{ health, refresh, local, preference, ready, label, connectionNotice, connectionFailed, clearConnectionNotice, connectionRevision }}>{callback && !userId && connectionNotice && <div role="alert" className="ai-notice">{connectionNotice}</div>}{children}</AIContext.Provider>
+  const label = usingBrowser ? local.status === 'loading' ? 'Loading local AI' : ready ? 'On-device AI' : 'Local AI needs attention' : checking && !health ? 'Checking saved AI connection…' : healthError ? 'AI connection unavailable' : ready ? `${health.provider} · ${health.model}${health.connection?.source === 'personal' && !health.connection.testedAt ? ' · not tested' : ''}` : 'Set up Pulse AI'
+  return <AIContext.Provider value={{ health, refresh, checking, healthError, local, preference, ready, label, connectionNotice, connectionFailed, clearConnectionNotice, connectionRevision }}>{callback && !userId && connectionNotice && <div role="alert" className="ai-notice">{connectionNotice}</div>}{children}</AIContext.Provider>
 }
 export const useAI = () => useContext(AIContext)

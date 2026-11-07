@@ -70,3 +70,5 @@ Typical examples are a test-only change, a refactor with identical output, or a 
 The component-actions capture suites share `tests/pulse-component-fixture.ts`; this fixture is included in the capture source digest. Their generated proposals are synthetic UI validation, while file attachment captures use the real extraction path. They do not assert live inference quality or hosted persistence.
 
 The common snapshot page fixture requests reduced motion before navigation. Capture suites still assert the relevant interactive state before recording it; captures document settled screens rather than intermediate animation frames.
+
+The loading-feedback capture suites share `tests/loading-feedback-fixture.ts`, included in the capture digest. They hold actual request/file-read promises and assert the pending state before capture. Provider responses and signed-in identities are synthetic; the approved-file case resumes real PDF parsing after the held native read. These captures do not prove live paid inference or hosted account persistence.

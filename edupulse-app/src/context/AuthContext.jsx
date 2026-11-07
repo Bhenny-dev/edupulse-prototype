@@ -97,7 +97,8 @@ export function AuthProvider({ children }) {
 
   const logout = useCallback(async () => {
     await recordAudit(user, 'sign_out')
-    await aiRequest('providers', 'DELETE').catch(() => {})
+    // Clear only the device cookie. Explicit Disconnect removes the saved key.
+    await aiRequest('providers', 'DELETE', undefined, undefined, { query: { sessionOnly: 'true' } }).catch(() => {})
     if (user?.authenticated) await supabase?.auth.signOut()
     setAiAccessToken(undefined)
     setRoleHistory(prev => [...prev, { action: 'logout', role: user?.role, timestamp: new Date().toISOString() }])
