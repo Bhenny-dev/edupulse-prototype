@@ -1,0 +1,43 @@
+{
+  "id": "dpl_5SHhLPtBu5cdkvcCigSjL4JKQqs6",
+  "state": "READY",
+  "url": "edupulse-prototype-oab7xe7l4-bhenny-benlor-d-riveras-projects.vercel.app",
+  "commit": "bd82d2e2c1f405b18e0879b040bb23e024fb7019",
+  "productionOrigin": "https://edupulse-prototype.vercel.app",
+  "remoteVerification": {
+    "tests": 206,
+    "passed": 206,
+    "failed": 0,
+    "deploymentChecksPassed": true
+  },
+  "probes": {
+    "checkedAt": "2026-11-07T05:37:04.786Z",
+    "page": {
+      "status": 200,
+      "assets": [
+        "/assets/index-BKOWhBww.js",
+        "/assets/rolldown-runtime-BCiCTKAo.js",
+        "/assets/index-DMrLkArc.css"
+      ],
+      "headers": {
+        "frameOptions": "DENY",
+        "noSniff": "nosniff",
+        "cspPresent": true
+      }
+    },
+    "health": {
+      "status": 200
+    },
+    "guestAcademic": {
+      "status": 401
+    },
+    "guestStudents": {
+      "status": 403
+    }
+  },
+  "githubActions": {
+    "run": "https://github.com/Bhenny-dev/edupulse-prototype/actions/runs/42343124240",
+    "status": "not-started",
+    "reason": "The job was not started because your account is locked due to a billing issue."
+  }
+}

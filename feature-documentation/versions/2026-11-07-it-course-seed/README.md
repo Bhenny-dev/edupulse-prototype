@@ -10,4 +10,4 @@ The [review pack](../../session-generated/2026-11-07-it-course-seed/teaching-pac
 
 The unfinished hosted role check exposed the cloud-save failure. An additive private-function migration fixes roster-summary updates rejected by the hosted database safety extension. Six temporary signed accounts then passed the production publication, access, scoring and role-boundary flow and were cleaned up. Registered students and their activity were preserved. No application frontend source changed.
 
-See [validation and task disposition](validation/results.md). Publishing evidence follows the release gate.
+See [validation and task disposition](validation/results.md). Source `bd82d2e` is pushed and production is Ready; local and Vercel verification passed 206 tests. The post-deployment signed role check passed and cleaned up. GitHub Actions could not start because the account is locked for billing. The linked deployment receipt identifies the exact release and limits.
