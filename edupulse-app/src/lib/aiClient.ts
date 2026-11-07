@@ -4,7 +4,9 @@ import type { AgentAnswer } from './rag/agents'
 import { aiPreference, browserAIState, invokeBrowserModel } from './browserAI'
 
 let accessToken: string | undefined
-export function setAiAccessToken(token?: string) { accessToken = token }
+let sessionVersion = 0
+export function setAiAccessToken(token?: string) { if (token !== accessToken) sessionVersion++; accessToken = token }
+export const aiSessionVersion = () => sessionVersion
 export class ApiRequestError extends Error {
   constructor(message: string, public status: number, public code?: string) { super(message) }
 }
@@ -15,14 +17,20 @@ type RequestOptions = { raw?: Blob; headers?: Record<string, string>; query?: Re
 const LONG_ACTIONS = new Set(['chat', 'courseware', 'references', 'operator', 'provider-test'])
 export async function aiRequest<T>(action: string, method = 'GET', body?: unknown, signal?: AbortSignal, options: RequestOptions = {}): Promise<T> {
   const requestToken = accessToken
+  const abort = AbortSignal.any([AbortSignal.timeout(LONG_ACTIONS.has(action) ? 610000 : 125000), ...(signal ? [signal] : [])])
+  const transportError = (error: unknown): never => {
+    if (signal?.aborted) throw error
+    if (abort.aborted) throw new ApiRequestError('The server did not confirm this request before it timed out. Retry when the connection is available.', 504, 'TIMEOUT')
+    throw new ApiRequestError('The connection was interrupted before the server confirmed the request. Check your connection and retry.', 0, 'NETWORK_ERROR')
+  }
   const response = await fetch(`/api/ai?${new URLSearchParams({ ...options.query, action })}`, {
     method,
     headers: { ...(body ? { 'Content-Type': 'application/json' } : options.raw ? { 'Content-Type': 'application/octet-stream' } : {}), ...(requestToken ? { Authorization: `Bearer ${requestToken}` } : {}), ...options.headers },
-    ...(body ? { body: JSON.stringify(body) } : options.raw ? { body: options.raw } : {}), signal: AbortSignal.any([AbortSignal.timeout(LONG_ACTIONS.has(action) ? 610000 : 125000), ...(signal ? [signal] : [])]),
-  })
-  if (!response.headers.get('content-type')?.includes('application/json')) throw new Error('The AI API is unavailable. Start the app with npm run dev or check the deployment.')
-  const data = await response.json()
-  if (typeof window !== 'undefined' && requestToken === accessToken && ['chat', 'courseware', 'operator'].includes(action) && (response.ok || ['MODEL_NOT_AVAILABLE', 'MODEL_INCOMPATIBLE', 'PROVIDER_AUTH', 'PROVIDER_CREDITS', 'PROVIDER_QUOTA', 'PROVIDER_WORKSPACE_REQUIRED', 'EMPTY_RESPONSE'].includes(data.error?.code))) window.dispatchEvent(new Event('edupulse-ai-change'))
+    ...(body ? { body: JSON.stringify(body) } : options.raw ? { body: options.raw } : {}), signal: abort,
+  }).catch(transportError)
+  if (!response.headers.get('content-type')?.includes('application/json')) throw new ApiRequestError(response.status === 504 ? 'The server stopped this request before it finished. Check the saved state before retrying.' : 'The AI API did not return a usable response. Check the deployment and retry.', response.status || 502, response.status === 504 ? 'TIMEOUT' : 'INVALID_RESPONSE')
+  const data = await response.json().catch(error => { if (error instanceof SyntaxError) throw new ApiRequestError('The AI API returned an unreadable response. Check the deployment and retry.', 502, 'INVALID_RESPONSE'); return transportError(error) })
+  if (typeof window !== 'undefined' && requestToken === accessToken && ['chat', 'courseware', 'operator'].includes(action) && ((!data.pending && response.ok) || ['MODEL_NOT_AVAILABLE', 'MODEL_INCOMPATIBLE', 'PROVIDER_AUTH', 'PROVIDER_CREDITS', 'PROVIDER_QUOTA', 'PROVIDER_WORKSPACE_REQUIRED', 'EMPTY_RESPONSE'].includes(data.error?.code))) window.dispatchEvent(new Event('edupulse-ai-change'))
   if (!response.ok) throw new ApiRequestError(data.error?.message || `Request failed (${response.status}).`, response.status, data.error?.code)
   return data as T
 }

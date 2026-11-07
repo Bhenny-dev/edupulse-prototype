@@ -139,6 +139,18 @@ This screenshot uses a **synthetic model/research response** for UI verification
 Expand fields and review them, then select **Apply to open form** or **Confirm and save draft**. The former changes the form; the latter waits for a persistence receipt. Nothing is published or approved. A model response missing requested teaching weeks is repaired once and rejected if still incomplete. A failed or truncated response leaves the form unchanged. A source-only request uses the selected sources and does not expand to public research. General conversation and subject explanations remain possible without uploading documents.
 
 
+## Slow models and interrupted connections
+
+A full syllabus or course-outline request can take several model calls. Pulse researches the selected course once, then prepares small groups of teaching weeks while the existing **Thinking...** / **Still working...** indicator and **Stop response** remain available. Intermediate steps do not change the form or appear as partial editable proposals. When all fields and weeks pass validation, one **Review the proposed content change** card appears.
+
+![Complete Philippine Popular Culture preview after simulated step recovery](19-bounded-course-preview.png)
+
+This capture uses synthetic model/research transport for the reported Philippine Popular Culture request. The existing field selection, **Public research sources**, **Apply to open form** and **Confirm and save draft** controls are preserved. It does not establish live provider accuracy or availability.
+
+A temporary connection/timeout interruption retries its current step once. If the connection still fails, Pulse keeps the prompt in **Ask Pulse** and leaves the form unchanged with a readable error. Check the connection and resend or refresh the preview. Provider authentication and quota errors remain separate; Pulse does not change the selected model. **Stop response** prevents further steps. Reloading the page clears in-memory draft preparation; a new preview is then required.
+
+![Connection error with the original prompt retained and no partial edit](20-connection-recovery.png)
+
 ## Selected fields, sections and dropped files
 
 [Manual 14](../14-pulse-and-outline-workspace/README.md) shows selected-field drafting, preview, confirmed application and native file attachments. Drop up to three files onto the panel or the closed Pulse avatar; dropping only attaches them and preserves the unsent prompt. A rejected batch leaves earlier attachments intact. Drafting and improvement requests keep the selected field or section; explicit whole-form requests broaden the scope. Identity, publication status, locked controls and another role’s data are never editable through a field target.

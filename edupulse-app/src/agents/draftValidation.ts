@@ -17,6 +17,7 @@ export function normalizeDraft(raw: unknown): unknown {
 /** Shared by hosted and on-device planning. A model response is never a save. */
 type DraftInput = { editor: EditorSnapshot; message: string; section: string | null; context: string }
 export const wholeSyllabusDraft = (input: Omit<DraftInput, 'editor'> & { editor: EditorSnapshot | null }) => input.editor?.kind === 'syllabus' && DRAFT_REQUEST.test(input.message) && (!input.section || input.section === 'all') && !/Selected section fields:|Editable field path:/i.test(input.context) && (ALL_FIELDS.test(input.message) || /\bsyllabus\b/i.test(input.message))
+export const scheduledSyllabusDraft = (input: Omit<DraftInput, 'editor'> & { editor: EditorSnapshot | null }) => wholeSyllabusDraft(input) || input.editor?.kind === 'syllabus' && input.section === 'courseOutline' && DRAFT_REQUEST.test(input.message) && !/Editable field path:/i.test(input.context)
 export function validateDraft(raw: unknown, input: DraftInput, sources: string, options: { fields?: string[]; completeOutline?: boolean } = {}) {
   const shape = input.editor.kind === 'syllabus' ? syllabusPatch : contentPatch
   const parsed = shape.safeParse(normalizeDraft(raw))

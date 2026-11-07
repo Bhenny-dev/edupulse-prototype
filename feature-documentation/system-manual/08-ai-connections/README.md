@@ -68,6 +68,12 @@ API-key saves, failed replacements and disconnects by a signed-in account are re
 
 ![Free provider options](02-free-provider-options.png)
 
+## Interrupted requests with a connected model
+
+A saved/tested connection does not guarantee that every free-model request will finish. Pulse distinguishes provider authentication/quota failures from a browser connection interruption. The latter now explains that the server did not confirm the request and asks you to check the connection and retry, instead of showing the raw "Failed to fetch" text. No provider setting or model is changed automatically.
+
+Whole-syllabus and course-outline preparation use small requests with one final review. A transient network/timeout failure retries the unfinished step once; repeated failure retains the prompt and leaves the form unchanged. **Stop response** cancels further steps. [Manual 9](../09-pulse-actions/README.md#slow-models-and-interrupted-connections) shows the preview and connection-recovery screens, with their synthetic validation limits.
+
 ## Run a model on this device (no key)
 
 Choose **On this device · no API key**, pick **Qwen 2.5 · 1.5B — balanced** (≈1 GB download) or **0.5B — lighter**, then **Download / load local model**. It needs a browser with WebGPU (current Chrome or Edge with graphics acceleration). If your device cannot run it, Pulse says so and keeps the button disabled, as in this capture:

@@ -1,5 +1,13 @@
 # Backend System
 
+## Bounded syllabus drafting, 7 November 2026
+
+Whole-syllabus and outline-only generation now use attended, separate HTTP steps. Research runs once, then each step invokes one validated drafting stage for the general sections, at most two teaching weeks, or bibliography. Repair is a separate bounded step; exams, supplied grading and selected-field boundaries remain. The browser assembles no editable partial result: the server returns one final validated proposal, and existing mounted-editor and save confirmation checks still apply.
+
+Intermediate work is an AES-GCM protected, purpose-tagged checkpoint using the existing server connection secret. It is bound to the full original request/editor, verified account role and provider/model/connection, expires after 30 minutes, and contains no provider credentials. Only an opaque token is returned while pending. It is held in memory, discarded on cancellation or changed session/target, and cannot resume after page reload. A transient network/timeout failure retries the current step once; replay can repeat provider inference but cannot apply an edit or save a record. No model or paid fallback is selected automatically.
+
+Hosted operator intake/work has an 85-second overall signal and a 70-second generation-step signal, reserving time inside the configured 120-second function for bounded lease operations and response delivery. The operator body permits 330 KB including a protected checkpoint; original planning input remains capped at 100,000 characters and each model prompt at its existing budget. Cookie decoding keeps its original 3,500-character default. No database, auth, deployment-duration or page-layout change is required. [ADR-003](decisions/003-bounded-syllabus-drafting.md), [Manual 9](../system-manual/09-pulse-actions/README.md#slow-models-and-interrupted-connections) and [validation](../versions/2026-11-07-bounded-syllabus-drafting/validation/results.md) describe the boundaries.
+
 ## IT enrollment and teaching seed, 7 November 2026
 
 `scripts/seed-it-courses.ts` prepares an additive plan from a private instructor workspace snapshot and verified official IT directory profiles. It defaults to a dry run; `--check-transaction` exercises the existing revision RPC and projections then rolls back, and `--apply` commits the validated transaction. Inputs, backup, plan, SQL and receipts stay under ignored `.data/`. The script verifies the linked EduPulse project, current instructor role, directory identity/group matches, 35-student blocks, workspace schema/size and expected revision. A concurrent save aborts the transaction.

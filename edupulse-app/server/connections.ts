@@ -35,8 +35,8 @@ export function sealProviderState(data: unknown): string {
   const encrypted = Buffer.concat([cipher.update(JSON.stringify(data), 'utf8'), cipher.final()])
   return Buffer.concat([nonce, cipher.getAuthTag(), encrypted]).toString('base64url')
 }
-export function unsealProviderState(value: string): unknown {
-  if (value.length > 3500) throw new Error('Invalid protected state')
+export function unsealProviderState(value: string, maxLength = 3500): unknown {
+  if (value.length > maxLength) throw new Error('Invalid protected state')
   const bytes = Buffer.from(value, 'base64url'), decipher = createDecipheriv('aes-256-gcm', encryptionKey(), bytes.subarray(0, 12))
   decipher.setAuthTag(bytes.subarray(12, 28))
   return JSON.parse(Buffer.concat([decipher.update(bytes.subarray(28)), decipher.final()]).toString('utf8'))

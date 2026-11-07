@@ -1,0 +1,12 @@
+✔ reported prompt completes all weeks across bounded steps, shares research and never exposes partial patches (65.489ms)
+✔ encrypted steps cross client, real API, model adapter and final validation despite an interrupted response (7877.3811ms)
+✔ outline-only drafting batches all teaching weeks and retains exam slots without changing other fields (10.3877ms)
+✔ transport errors are actionable and cancellation does not restart a request (3.5733ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 13285.6712

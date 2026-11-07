@@ -20,6 +20,8 @@ Screenshots in the walkthrough and manual are real captures of the documentation
 
 ## Version history
 
+The [7 November bounded syllabus fix](versions/2026-11-07-bounded-syllabus-drafting/README.md) separates research and small drafting stages across requests, preserving one final review and the existing interface. Validation distinguishes synthetic provider/browser evidence from live inference.
+
 The [7 November IT course seed](versions/2026-11-07-it-course-seed/README.md) saves 288 official-directory enrollments in nine blocks and 93 new teaching drafts, preserving three earlier items and actual student activity. [Manual 18](system-manual/18-it-course-seed/README.md) and the full review pack distinguish real persistence from synthetic UI validation.
 
 The [6 November workspace-status update](versions/2026-11-06-workspace-status-settings/README.md) removes the page-wide save banner and keeps backup, retry and conflict recovery in **Settings → Data & Privacy**. It is live from `7063fd4`; all 199 release-gate tests, six focused browser cases and public hosted checks passed.
@@ -34,6 +36,7 @@ Version folders are release records. Preserve released records, and add correcti
 
 | Version | Scope | Status |
 | --- | --- | --- |
+| [7 November bounded syllabus drafting](versions/2026-11-07-bounded-syllabus-drafting/README.md) | Research once, bounded encrypted draft steps, automatic transient retry and one final preview | [Validation](versions/2026-11-07-bounded-syllabus-drafting/validation/results.md) |
 | [7 November IT course seed](versions/2026-11-07-it-course-seed/README.md) | Official IT enrollments, complete Programming draft, authored weekly content and task audit | [Validation](versions/2026-11-07-it-course-seed/validation/results.md) |
 | [6 November landing workspace and arrivals](versions/2026-11-06-landing-workspace-arrivals/README.md) | The agent workspace is the 3D room alone on the screen (no request panel) with answers in bubbles; section cards ease in from a side instead of being built from 3D pieces | [Validation](versions/2026-11-06-landing-workspace-arrivals/validation/results.md) |
 | [6 November workspace status](versions/2026-11-06-workspace-status-settings/README.md) | Removed page-wide save banner; recovery controls in Settings | [Validation](versions/2026-11-06-workspace-status-settings/validation/results.md) |

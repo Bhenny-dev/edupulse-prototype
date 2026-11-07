@@ -4380,6 +4380,18 @@
       "sha256": "a816f0906fbd16096dce46da678c9622a8726c7b8373cf04857d68bedb420f09",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-07T05:30:14.012637Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/09-pulse-actions/19-bounded-course-preview.png",
+      "sha256": "86d591328daabba708521e5d4b9101f9d5bebfd4d6872e4c842fe957089756bb",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-07T07:06:11.092095Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/09-pulse-actions/20-connection-recovery.png",
+      "sha256": "bb732d5b436a527ff58f9874eae55345708e3b0abe9b9b70d4cbfd00e8b02695",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-07T07:06:11.093129Z"
     }
   ]
 }

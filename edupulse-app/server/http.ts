@@ -28,7 +28,7 @@ import { checkAppropriateUse } from '../src/lib/rag/policy.js'
 
 export const VERSION = '0.4.0'
 /** Request body limits per action (bytes). Uploads are raw file bytes. */
-export const BODY_LIMITS: Record<string, number> = { workspace: WORKSPACE_BYTES, extract: EXTRACTION_LIMITS.bytes, documents: 1_000_000, conversations: 200_000, operator: 100_000 }
+export const BODY_LIMITS: Record<string, number> = { workspace: WORKSPACE_BYTES, extract: EXTRACTION_LIMITS.bytes, documents: 1_000_000, conversations: 200_000, operator: 330_000 }
 export const bodyLimit = (action: string | null) => BODY_LIMITS[action || ''] ?? 100_000
 const ACTION_METHODS: Record<string, string[]> = { health: ['GET'], providers: ['GET', 'POST', 'DELETE'], 'provider-oauth': ['POST'], 'provider-test': ['POST'], 'provider-workspaces': ['POST'], conversations: ['GET', 'POST'], operator: ['POST'], context: ['POST'], similarity: ['POST'], references: ['POST'], 'web-search': ['POST'], extract: ['POST'], chat: ['POST'], courseware: ['POST'], documents: ['GET', 'POST', 'DELETE'], workspace: ['GET', 'PUT'], academic: ['GET', 'POST'], students: ['GET'] }
 export const allowedMethods = (action: string) => Object.hasOwn(ACTION_METHODS, action) ? ACTION_METHODS[action] : undefined
@@ -147,6 +147,7 @@ export async function handleRequest(request: Request): Promise<Response> {
     const now = Date.now()
     for (const [key, value] of buckets) if (value.until < now) buckets.delete(key)
     const key = `${identity.id}:${personalConnection?.id || 'default'}`
+    request.signal.throwIfAborted()
     const bucket = buckets.get(key) || { count: 0, until: now + 60000 }
     if (config().hosted && identity.token) {
       await changeLease(identity, requestId); leaseIdentity = identity
@@ -165,7 +166,8 @@ export async function handleRequest(request: Request): Promise<Response> {
     }
     const body = await readJson(request, bodyLimit(action))
     if (action === 'operator') {
-      const result = await operatorRequest(operatorInput.parse(body), identity, connection, signal)
+      const stepSignal = config().hosted ? AbortSignal.any([signal, AbortSignal.timeout(70000)]) : signal
+      const result = await operatorRequest(operatorInput.parse(body), identity, connection, stepSignal)
       return json(result, 200, personalConnection && 'generated' in result && result.generated ? connectionCookie({ ...personalConnection, testedAt: Date.now() }) : undefined)
     }
     if (action === 'provider-test') {

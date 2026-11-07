@@ -1,0 +1,15 @@
+# ADR-003: bounded attended syllabus drafting
+
+Date: 7 November 2026. Status: implemented for the reported OpenRouter free-model failure.
+
+The earlier harness generated general sections, four outline batches and references in one request, under a 110-second work limit and a 120-second deployed function. Authentication and lease cleanup also consume time. The owner reported a delayed browser fetch failure while completing Philippine Popular Culture. This exposes a request-budget failure mode; the exact original browser/network failure was not recovered from logs.
+
+Keep the existing application, providers, editor preview and confirmation. Use a research-only initialization request followed by one harness invocation per HTTP step, with two teaching weeks per batch. A malformed/truncated stage gets at most one repair in a separate step. Final validation checks every requested field/week, exact examination slots and source URLs. Outline-only requests use the same batches and leave other sections untouched.
+
+The server encrypts intermediate research and validated drafts with its existing AES-GCM connection-state primitive. A distinct purpose plus request/account/role/provider/model/connection binding and 30-minute expiry prevent cross-task or cross-account continuation. Token contents are never model input, logged, saved in conversations or put in browser persistent storage. The normal provider-cookie decoder retains its smaller default limit. A changed or expired binding requires a fresh preview.
+
+The client follows opaque checkpoints in memory. One network/timeout retry can repeat the current inference; this is not exactly-once provider execution. There is no background worker or continuation after a reload. Cancellation stops subsequent steps and clears the checkpoint. Provider quota/auth failures remain distinct and do not switch models. No partial patch, workspace write, check, publication, approval or student result occurs during drafting.
+
+An 85-second operator request signal begins before body intake; a 70-second model-work signal starts inside the handler. Existing 15-second database lease operations leave delivery headroom under the 120-second configured function. The operator envelope allows 330 KB; the original request stays limited to 100,000 characters, the token to 220,000 characters and each model context to its prior limit. No duration increase, new credentials, migration or UI redesign is introduced.
+
+Regression coverage crosses the client, real handler, encrypted checkpoint, provider-envelope adapter and final validation with synthetic inference/research, including interruption, repair, cancellation, expired/tampered states and changed account/model/target. Browser and documentation captures separately use labelled synthetic transport. These checks do not certify live free-model availability or the factual quality of a syllabus.

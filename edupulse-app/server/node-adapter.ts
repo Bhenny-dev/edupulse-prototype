@@ -4,6 +4,7 @@ import { allowedMethods, bodyLimit, handleRequest } from './http.js'
 import { ApiError } from './contracts.js'
 
 export const BODY_READ_TIMEOUT_MS = 30_000
+export const OPERATOR_REQUEST_TIMEOUT_MS = 85_000
 const tooLarge = (limit: number) => new ApiError(413, 'BODY_TOO_LARGE', `Request exceeds ${limit.toLocaleString()} bytes.`)
 
 /** Bound bytes and elapsed intake time before authentication or model work starts. */
@@ -49,6 +50,9 @@ export async function handleNodeRequest(req: IncomingMessage, res: ServerRespons
   let dispatched = false
   try {
     const action = new URL(req.url || '/', 'http://localhost').searchParams.get('action') || 'health'
+    // Reserve the final 35 seconds of the configured 120-second function for
+    // bounded lease acquisition/release and response delivery, including intake.
+    const requestSignal = action === 'operator' && process.env.VERCEL ? AbortSignal.any([controller.signal, AbortSignal.timeout(OPERATOR_REQUEST_TIMEOUT_MS)]) : controller.signal
     const methods = allowedMethods(action), method = req.method || 'GET'
     // Fetch's Request rejects TRACE/CONNECT before the application can return 405.
     if (!methods) throw new ApiError(404, 'NOT_FOUND', 'Unknown API action.')
@@ -56,12 +60,12 @@ export async function handleNodeRequest(req: IncomingMessage, res: ServerRespons
       if (!req.complete) { res.setHeader('Connection', 'close'); req.resume() }
       res.writeHead(405, { Allow: methods.join(', '), 'Cache-Control': 'no-store' }); res.end(); return
     }
-    const body = await readNodeBody(req, bodyLimit(action), AbortSignal.any([controller.signal, AbortSignal.timeout(BODY_READ_TIMEOUT_MS)]))
-    controller.signal.throwIfAborted()
+    const body = await readNodeBody(req, bodyLimit(action), AbortSignal.any([requestSignal, AbortSignal.timeout(BODY_READ_TIMEOUT_MS)]))
+    requestSignal.throwIfAborted()
     const headers = new Headers()
     for (const [key, value] of Object.entries(req.headers)) if (value) headers.set(key, Array.isArray(value) ? value.join(',') : value)
     const protocol = process.env.VERCEL ? 'https' : 'http'
-    const request = new Request(`${protocol}://${req.headers.host || 'localhost'}${req.url || '/'}`, { method, headers, signal: controller.signal, ...(body.length && !['GET', 'HEAD'].includes(method) ? { body: new Uint8Array(body) } : {}) })
+    const request = new Request(`${protocol}://${req.headers.host || 'localhost'}${req.url || '/'}`, { method, headers, signal: requestSignal, ...(body.length && !['GET', 'HEAD'].includes(method) ? { body: new Uint8Array(body) } : {}) })
     dispatched = true
     const result = await dispatch(request)
     const bytes = Buffer.from(await result.arrayBuffer())

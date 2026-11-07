@@ -1,5 +1,9 @@
 # Vercel configuration
 
+## Bounded operator requests, 7 November 2026
+
+The configured `api/ai.ts` maximum duration remains 120 seconds. Whole-syllabus/outline drafting is split across requests: research initializes the task, then one harness stage runs per step. The operator adapter starts an 85-second signal before body intake and the handler caps model work at 70 seconds; existing bounded lease cleanup can finish before the platform cutoff. Response errors retain typed timeout/network categories. No new environment variable, deployment-duration increase, background worker or database migration is required. [ADR-003](decisions/003-bounded-syllabus-drafting.md) and the [release validation](../versions/2026-11-07-bounded-syllabus-drafting/validation/results.md) separate local/synthetic checks from hosted and live-provider evidence.
+
 ## Provider connection recovery — 25 October 2026
 
 Runtime `d0a3334` is deployed as `dpl_D5P46nad2EfN8izWsFoGPKHPQrZW` and promoted to [EduPulse](https://edupulse-prototype.vercel.app). The strict remote gate passed all 116 tests; 69 local browser tests passed, with 13 optional cases skipped. Hosted synthetic sign-in, authorization start/state/origin checks, dedicated callback session restoration and visible failure recovery passed. Provider completion was mocked at the external consent boundary; paid inference is untested. The temporary account was deleted, its old token rejected, and temporary shares revoked. [Validation](../versions/2026-10-25-provider-connections/validation/results.md) records the evidence and limits.
