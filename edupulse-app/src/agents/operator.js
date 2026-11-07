@@ -24,16 +24,17 @@ const CONTENT_QUESTION = /\b(what|why|how|explain|define|describe|says?|discuss\
 
 /** Pages Pulse may open, with the roles each route allows (src/App.jsx). */
 export const PAGES = [
-  { path: '/syllabus?tab=register', label: 'Syllabus → My Courses', words: /\b(my\s+courses|registered\s+courses|class\s*lists?|rosters?|registrations?)\b/i, roles: ['instructor'] },
+  { path: '/student-monitoring?tab=students', label: 'Student Monitoring → Students', words: /\b(registered\s+students|class\s*lists?|rosters?|registrations?)\b/i, roles: ['instructor'] },
   { path: '/syllabus?tab=builder', label: 'Syllabus Builder', words: /\b(?:syllabus\s+builder|(?:new|build(?:ing)?|creat(?:e|ing)|start(?:ing)?|draft(?:ing)?)\b[^.?!]{0,65}\bsyllabus|syllabus\b[^.?!]{0,40}\b(?:build|creat|start))\b/i, roles: ['instructor'] },
   { path: '/syllabus?tab=repository', label: 'Shared Repository', words: /\b(shared\s+)?repository\b/i, roles: ['instructor'] },
   { path: '/syllabus?tab=mine', label: 'Syllabus → My Syllabus', words: /\bsyllab(us|i)\b/i, roles: ['instructor'] },
-  { path: '/student-monitoring', label: 'Student Monitoring', words: /\b(student\s+monitoring|scoring\s+sheet|scores?\s+sheet)\b/i, roles: ['instructor'] },
+  { path: '/student-monitoring', label: 'Student Monitoring', words: /\bstudent\s+monitoring\b/i, roles: ['instructor'] },
+  { path: '/student-monitoring?tab=assessments', label: 'Student Monitoring → Assessment Scores', words: /\b(scoring\s+sheet|scores?\s+sheet|assessment\s+scores?)\b/i, roles: ['instructor'] },
   { path: '/assessment', label: 'Assessments', words: /\b(assessments?|quizz?(es)?)\b/i, roles: ['student'] },
   { path: '/courseware', label: 'My Courses', words: /\b(my\s+courses|courseware|materials?|lessons?)\b/i, roles: ['student'] },
-  { path: '/courseware', label: 'Courseware', words: /\b(courseware|materials?|lessons?)\b/i, roles: ['instructor', 'dean', 'associate_dean'] },
   { path: '/records', label: 'Records', words: /\b(records?|edusuite|class\s*lists?|blocks?)\b/i, roles: ['dean', 'associate_dean'] },
   { path: '/course-loading', label: 'Course Loading', words: /\b(course\s+loading|course\s+loads?|loading)\b/i, roles: ['dean', 'associate_dean'] },
+  { path: '/courseware', label: 'Course', words: /\b(my\s+courses|courses?|courseware|materials?|lessons?)\b/i, roles: ['instructor', 'dean', 'associate_dean'] },
   { path: '/monitor', label: 'Monitor', words: /\bmonitor(ing)?\b/i, roles: ['dean', 'associate_dean'] },
   { path: '/performance', label: 'Performance', words: /\b(performance|progress|scores?|grades?)\b/i, roles: PERFORMANCE_ROLES },
   { path: '/settings?tab=ai-provider', label: 'Settings → AI & Knowledge', words: /\b(knowledge\s+library|my\s+library|library|ai\s+settings|ai\s+(?:&|and)\s+knowledge|ai\s+provider)\b/i, roles: 'all' },
@@ -217,10 +218,10 @@ export function searchRecords(query, { role, userId, catalog = [], registrations
   for (const r of own) {
     for (const s of r.students || []) {
       const score = matchScore(query, `${s.Name} ${s.StudentID} ${s.Email} ${s.Block}`)
-      if (score) add('Registered students', { score, title: s.Name || s.StudentID, detail: [s.StudentID, `${r.courseCode} · ${r.blockSection}`].filter(Boolean).join(' · '), source: r.fileName || 'class list', path: role === 'instructor' ? '/syllabus?tab=register' : '/records' })
+      if (score) add('Registered students', { score, title: s.Name || s.StudentID, detail: [s.StudentID, `${r.courseCode} · ${r.blockSection}`].filter(Boolean).join(' · '), source: r.fileName || 'class list', path: role === 'instructor' ? '/student-monitoring?tab=students' : '/records' })
     }
     const score = matchScore(query, `${r.courseCode} ${r.courseTitle || ''} ${r.blockSection}`)
-    if (score) add('Class lists', { score, title: `${r.courseCode} · ${r.blockSection}`, detail: `${r.studentCount} students · ${r.status === 'active' ? 'Active' : 'Pending'}`, source: r.fileName || 'class list', path: role === 'instructor' ? '/syllabus?tab=register' : '/records' })
+    if (score) add('Class lists', { score, title: `${r.courseCode} · ${r.blockSection}`, detail: `${r.studentCount} students · ${r.status === 'active' ? 'Active' : 'Pending'}`, source: r.fileName || 'class list', path: role === 'instructor' ? '/student-monitoring?tab=students' : '/records' })
   }
   for (const course of catalog) {
     const score = matchScore(query, `${course.code} ${course.title}`)
@@ -291,7 +292,7 @@ export function planOperator({ message, attachments = [], role, canSwitchRoles =
       if (!asksAbout || REGISTER.test(text)) for (const roster of rosters) proposals.push({ type: 'register', attachment: roster, courseCode: mentioned[0]?.code || roster.detectedCourse || '', block: roster.roster.block })
       chat = Boolean(text) && !REGISTER.test(text) && !asksAbout && CONTENT_QUESTION.test(text)
     } else {
-      proposals.push({ type: 'notice', text: `${rosters.map(r => r.fileName).join(', ')} looks like a class list. Only instructors register class lists, in Syllabus → My Courses.${role === 'student' ? ' Ask your instructor if your name is missing.' : ''}` })
+      proposals.push({ type: 'notice', text: `${rosters.map(r => r.fileName).join(', ')} looks like a class list. Only instructors register class lists, in Student Monitoring → Students.${role === 'student' ? ' Ask your instructor if your name is missing.' : ''}` })
       if (asksAbout) proposals.push({ type: 'search', query: searchQuery(text) || text })
       chat = Boolean(text) && !asksAbout && CONTENT_QUESTION.test(text)
     }
@@ -318,7 +319,7 @@ export function planOperator({ message, attachments = [], role, canSwitchRoles =
   // No attachment.
   if (REGISTER.test(text) && /\b(register|enrol+|enroll|import|upload|add)\b/i.test(text) && !SEARCH.test(text)) {
     proposals.push(role === 'instructor'
-      ? { type: 'notice', text: 'Attach the class list (CSV, Excel, PDF or Word) with the paper clip and I will read it, match the course and block, and ask you to confirm before anything is registered.', attach: true, path: '/syllabus?tab=register', pathLabel: 'Open My Courses' }
+      ? { type: 'notice', text: 'Attach the class list (CSV, Excel, PDF or Word) with the paper clip and I will read it, match the course and block, and ask you to confirm before anything is registered.', attach: true, path: '/student-monitoring?tab=students', pathLabel: 'Open course students' }
       : { type: 'notice', text: 'Only instructors register class lists. Class lists come from EduSuite through each course’s instructor.' })
     return { proposals, chat: false, task: 'auto', mentioned }
   }

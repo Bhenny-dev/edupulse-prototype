@@ -5,6 +5,15 @@ export { expect, type Page, type Locator } from '@playwright/test'
 export const test = base.extend({
   page: async ({ page }, runCapture, testInfo) => {
     await page.emulateMedia({ reducedMotion: 'reduce' })
+    if (process.env.SNAPSHOT_UI_ONLY === '1') await page.route('**/api/ai?*', route => {
+      if (route.request().method() !== 'GET') return route.fallback()
+      const action = new URL(route.request().url()).searchParams.get('action')
+      // Lowest-priority read-only defaults. A suite's explicit transport always overrides these.
+      if (action === 'health') return route.fulfill({ json: { version: 'synthetic-ui', provider: 'retrieval', ready: false, embeddings: false, message: 'UI capture transport', database: { ready: false, kind: 'synthetic' }, identity: { mode: 'synthetic', role: 'guest' } } })
+      if (action === 'providers') return route.fulfill({ json: { connection: null, connections: [], models: [] } })
+      if (action === 'conversations') return route.fulfill({ json: { threads: [], messages: [], memories: [], automaticMemory: true, mode: 'session' } })
+      return route.fallback()
+    })
     const problems: string[] = []
     page.on('pageerror', error => problems.push(`pageerror: ${error.message}`))
     page.on('console', message => {

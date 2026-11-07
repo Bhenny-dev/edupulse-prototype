@@ -75,3 +75,5 @@ Execution is tracked in [WORKPLAN.md](WORKPLAN.md). A release is verified only a
 [30 October request intake](versions/2026-10-30-request-lifecycle/README.md): bounded API request intake (408 for a stalled body, 405 with Allow for an unsupported method, 404 for an unknown action, cancellation when the client disconnects); included in the 30 October combined release.
 
 [30 October landing v3](versions/2026-10-30-landing-v3/README.md): white and light-blue landing page with an opening, a 3D ring, geometric motion, an agents scope with agent portraits and a 3D agent workspace whose studio is also the Pulse office (Workspace buddies); included in the 30 October combined release.
+
+[7 November 2026: Automatic records and instructor course rosters](versions/2026-11-07-automatic-records-and-course-rosters/README.md) records navigation, safe refresh and saved membership decisions.

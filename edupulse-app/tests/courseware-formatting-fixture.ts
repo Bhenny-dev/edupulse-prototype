@@ -59,5 +59,5 @@ export async function coursewareFormattingUI(page: Page) {
 
 export async function openFormattingWeek(page: Page, week = 2) {
   await page.goto(`/#/courseware?tab=builder&course=baseline-syllabus&week=${week}`)
-  await page.locator(`[data-week="${week}"]`).getByRole('button', { name: 'View', exact: true }).click()
+  await page.locator(`[data-week="${week}"] [data-content-id]`).getByRole('button', { name: 'View', exact: true }).click()
 }

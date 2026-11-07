@@ -110,7 +110,7 @@ test('shared interface (shown as instructor)', async ({ page }) => {
     { folder: f, name: '15-dark-mode', title: 'Dark mode (Appearance)', path: '/settings?tab=appearance', act: async p => { await p.getByRole('switch', { name: 'Dark mode' }).click(); await p.goto('/#/dashboard'); await settle(p) } },
     { folder: f, name: '16-pulse-dock', title: 'Pulse assistant dock', path: '/settings?tab=appearance', act: async p => { await p.getByRole('switch', { name: 'Dark mode' }).click(); await p.goto('/#/dashboard'); await settle(p) }, element: p => p.locator('[data-pulse-ui="mascot"]') },
     { folder: f, name: '17-pulse-panel', title: 'Pulse panel (welcome)', path: '/dashboard', act: p => p.getByRole('button', { name: 'Open Pulse assistant' }).click() },
-    { folder: f, name: '18-pulse-dwell-help', title: '“Ask Pulse about this” hover badge', path: '/syllabus?tab=builder', act: async p => { await p.getByLabel('Course', { exact: true }).hover(); await expect(p.locator('.pulse-dwell-help')).toBeVisible({ timeout: 5000 }) }, keepPointer: true },
+    { folder: f, name: '18-pulse-dwell-help', title: '“Ask Pulse about this” hover badge', path: '/syllabus?tab=builder', act: async p => { await p.getByRole('combobox', { name: 'Course', exact: true }).hover(); await expect(p.locator('.pulse-dwell-help')).toBeVisible({ timeout: 5000 }) }, keepPointer: true },
   ])
 })
 
@@ -168,7 +168,7 @@ test('instructor', async ({ page, request }) => {
   const f = '04-instructor'
   await run(page, 'instructor', [
     { folder: f, name: '01-dashboard', title: 'Instructor dashboard', path: '/dashboard', fullPage: true },
-    { folder: f, name: '02-syllabus-my-courses', title: 'Syllabus · My Courses', path: '/syllabus?tab=register', fullPage: true },
+    { folder: f, name: '02-monitoring-course-students', title: 'Student Monitoring · Students', path: '/student-monitoring?tab=students', fullPage: true },
     { folder: f, name: '03-syllabus-my-syllabus', title: 'Syllabus · My Syllabus (status, actions, versions)', path: '/syllabus?tab=mine', fullPage: true },
     { folder: f, name: '04-syllabus-shared-repository', title: 'Syllabus · Shared Repository', path: '/syllabus?tab=mine', act: tab('Shared Repository') },
     { folder: f, name: '05-syllabus-builder', title: 'Syllabus Builder (upload or build the 7 sections)', path: '/syllabus?tab=builder' },

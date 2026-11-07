@@ -34,7 +34,7 @@ test('PDF syllabus attachment offers exact section previews, preserves unrelated
   await expect(card).toContainText('Variables and assignment')
   await card.getByLabel('Course for this syllabus').selectOption('IT 102')
   // Mutating the form after a preview must invalidate that preview.
-  await page.getByLabel('Course', { exact: true }).selectOption('IT 102')
+  await page.getByRole('combobox', { name: 'Course', exact: true }).selectOption('IT 102')
   await card.getByRole('button', { name: 'Apply to open form' }).click()
   await expect(card.getByRole('alert')).toContainText('changed after this proposal')
   await card.getByRole('button', { name: 'Refresh preview' }).click()
@@ -90,7 +90,7 @@ test('a generated section patch is previewed and a failed database save never re
   await request.put('/api/ai?action=workspace', { data: { revision: snapshot.revision, data: { syllabi: [], content: {}, registrations: [] } } })
   await page.route('**/api/ai?action=operator', route => route.fulfill({ json: { patch: { programOutcomes: ['Explain variables using a worked example.'] }, generated: true, requiresConfirmation: true } }))
   const pulse = await open(page, '/#/syllabus?tab=builder')
-  await page.getByLabel('Course', { exact: true }).selectOption('IT 102')
+  await page.getByRole('combobox', { name: 'Course', exact: true }).selectOption('IT 102')
   await say(page, 'Improve the program outcomes in this syllabus')
   const card = pulse.getByRole('region', { name: 'Review content edit' })
   await expect(card).toContainText('Explain variables using a worked example.')

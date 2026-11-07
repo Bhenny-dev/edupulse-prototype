@@ -46,10 +46,10 @@ function RegisterCard({ proposal, ctx }) {
     } catch (error) { setState(previous => ({ ...previous, undoing: false, notice: error.message })) }
   }
   if (state.status === 'cancelled') return <p className="pulse-action-note">Registration cancelled. Nothing was changed.</p>
-  if (state.status === 'undone') return <p className="pulse-action-note">Registration undone. My Courses is back to how it was.</p>
+  if (state.status === 'undone') return <p className="pulse-action-note">Registration undone. The course roster is back to how it was.</p>
   if (state.status === 'done') {
     const { registration, added, already } = state.result
-    return <Done actions={<><button type="button" className="btn btn-secondary btn-sm" onClick={() => ctx.navigate('/syllabus?tab=register')}><ExternalLink size={13} /> Open My Courses</button><button type="button" className="btn btn-ghost btn-sm" disabled={state.undoing} onClick={undo}><Undo2 size={13} /> Undo</button></>}>
+    return <Done actions={<><button type="button" className="btn btn-secondary btn-sm" onClick={() => ctx.navigate('/student-monitoring?tab=students')}><ExternalLink size={13} /> Open course students</button><button type="button" className="btn btn-ghost btn-sm" disabled={state.undoing} onClick={undo}><Undo2 size={13} /> Undo</button></>}>
       <strong>Registered.</strong> {registration.courseCode} · {registration.blockSection} now lists {registration.studentCount} student{registration.studentCount === 1 ? '' : 's'} ({added} new{already ? `, ${already} already registered` : ''}). Source: {fileName}.
       {state.notice && <p role="status">{state.notice}</p>}
     </Done>
@@ -65,7 +65,7 @@ function RegisterCard({ proposal, ctx }) {
     <div className="pulse-action-table"><table><thead><tr><th scope="col">Student ID</th><th scope="col">Name</th><th scope="col">Email</th></tr></thead>
       <tbody>{roster.students.slice(0, 5).map(s => <tr key={`${s.StudentID}-${s.Name}`}><td>{s.StudentID || '—'}</td><td>{s.Name}</td><td>{s.Email ? <Email value={s.Email} /> : '—'}</td></tr>)}</tbody></table>
       {roster.students.length > 5 && <small>and {roster.students.length - 5} more</small>}</div>
-    <p className="pulse-action-note">{!courseCode || !block.trim() ? 'Choose the course and block to see what will change.' : preview ? `${courseCode} · ${block.trim()} already lists ${existing.studentCount} students: ${preview.added} new will be added and ${preview.already} already registered will be kept once.` : `This adds a new class list for ${courseCode} · ${block.trim()} to Syllabus → My Courses.`}</p>
+    <p className="pulse-action-note">{!courseCode || !block.trim() ? 'Choose the course and block to see what will change.' : preview ? `${courseCode} · ${block.trim()} already lists ${existing.studentCount} students: ${preview.added} new will be added and ${preview.already} already registered will be kept once.` : `This adds a new class list for ${courseCode} · ${block.trim()} to Student Monitoring → Students.`}</p>
     {state.status === 'error' && <p role="alert" className="connected-pulse-warning">{state.message}</p>}
     <div className="ai-actions">
       <button type="button" className="btn btn-primary btn-sm" disabled={!courseCode || !block.trim() || state.status === 'running'} onClick={confirm}>{state.status === 'running' ? <Loader2 size={13} className="spin" /> : <Check size={13} />} Register {roster.students.length} students</button>
@@ -163,7 +163,7 @@ function GenerateCard({ proposal, ctx }) {
   if (state.status === 'cancelled') return <p className="pulse-action-note">Generation cancelled. Nothing was changed.</p>
   if (state.status === 'done') {
     const r = state.result
-    return <Done actions={<button type="button" className="btn btn-secondary btn-sm" onClick={() => ctx.navigate(r.path)}><ExternalLink size={13} /> Review in Courseware</button>}>
+    return <Done actions={<button type="button" className="btn btn-secondary btn-sm" onClick={() => ctx.navigate(r.path)}><ExternalLink size={13} /> Review in Course</button>}>
       <strong>{r.saved} draft{r.saved === 1 ? '' : 's'} saved for your review</strong> in {syllabus.courseCode}, Week {week}{r.titles.length ? `: ${r.titles.join('; ')}` : ''}.{r.sources ? ` They cite ${r.sources} source passage${r.sources === 1 ? '' : 's'} besides the syllabus outline.` : ' They follow the selected outline and request; no supporting reference passages were used.'}{r.kept ? ` ${r.kept} checked or published item${r.kept === 1 ? ' was' : 's were'} kept.` : ''}
     </Done>
   }

@@ -1,6 +1,7 @@
 import { useAuth } from '../context/AuthContext'
 import { useWorkspace } from '../context/WorkspaceContext'
 import { useAcademicRecords } from '../context/AcademicContext'
+import AcademicSyncStatus from '../components/academic/AcademicSyncStatus'
 import SystemAdminDashboard from './SystemAdminDashboard'
 import { SYLLABUS_STATUS_META } from '../data/syllabusStatus'
 import { accountManagementModel, accountInstructorModel, accountStudentModel } from './dashboardModels'
@@ -8,7 +9,6 @@ import { previewManagementModel, previewInstructorModel, previewStudentModel } f
 import { useNavigate } from 'react-router-dom'
 import { pulse as pulseBus } from '../components/pulse/pulseBus'
 import { SkeletonKPI, SkeletonTable } from '../components/ui/LoadingSkeleton'
-import { Spinner } from '../components/ui/LoadingFeedback'
 import '../components/academic/academic.css'
 import {
   BookOpen, Users, AlertTriangle, CheckCircle, FileText, TrendingUp, ArrowRight,
@@ -656,32 +656,23 @@ function StudentDashboard({ model, actions, status }) {
 function AccountDashboard() {
   const { user } = useAuth()
   const workspace = useWorkspace()
-  const { data, error, loading, loaded, load, command } = useAcademicRecords()
-  const [syncing, setSyncing] = useState(false)
-  const [syncError, setSyncError] = useState('')
+  const { data, error, loading, loaded } = useAcademicRecords()
   const role = user?.role
   const exportRecords = () => {
     const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }))
     const link = document.createElement('a'); link.href = url; link.download = 'edupulse-authorized-records.json'; link.click()
     setTimeout(() => URL.revokeObjectURL(url), 1000)
   }
-  const sync = async () => {
-    setSyncing(true); setSyncError('')
-    try { await command({ operation: 'sync' }); pulseBus.progress('academic-command-complete', 'sync') }
-    catch (failure) { setSyncError(failure.message) }
-    finally { setSyncing(false) }
-  }
   const actions = (
     <div className="academic-actions">
-      <button className="btn btn-secondary btn-sm" disabled={loading || syncing} onClick={() => { setSyncError(''); void load() }}>{loading && <Spinner />} Refresh records</button>
-      <button className="btn btn-secondary btn-sm" disabled={loading || !!error} onClick={exportRecords} title="Export authorized records"><Download size={14} /> Export</button>
-      {role === 'instructor' && <button className="btn btn-secondary btn-sm" disabled={loading || syncing} onClick={() => void sync()}>{syncing && <Spinner />} Sync my workspace</button>}
+      <AcademicSyncStatus />
+      <button className="btn btn-secondary btn-sm" disabled={loading || !loaded || !!error} onClick={exportRecords} title="Export authorized records"><Download size={14} /> Export</button>
     </div>
   )
   const status = <>
-    {(syncError || error) && <div role="alert" className="connected-pulse-warning">{syncError || error}</div>}
+    {error && <div role="alert" className="connected-pulse-warning">{error}</div>}
     {loading && !loaded && <section className="academic-loading" aria-label="Loading academic records"><p role="status" className="text-sm text-muted mb-16">Loading authorized academic records…</p><div aria-hidden="true"><div className="kpi-grid mb-24">{Array.from({ length: 4 }, (_, index) => <SkeletonKPI key={index} />)}</div><SkeletonTable rows={4} cols={4} /></div></section>}
-    {loaded && !data.courses.length && <div className="empty-state mb-24" role="status"><h2>No authorized academic records yet</h2><p>Instructors register confirmed class lists, activate an approved syllabus, review courseware and publish it. Students need a matching account email in the registered class list. Existing instructor workspaces can be synchronized explicitly.</p></div>}
+    {loaded && !error && !data.courses.length && <div className="empty-state mb-24" role="status"><h2>No authorized academic records yet</h2><p>Instructors register confirmed class lists, activate an approved syllabus, review courseware and publish it. Students need a matching account email in the registered class list. Saved workspaces synchronize automatically.</p></div>}
   </>
   if (role === 'dean' || role === 'associate_dean') return <ManagementDashboard model={loaded ? accountManagementModel(data) : null} actions={actions} status={status} />
   if (role === 'instructor') return <InstructorDashboard model={loaded ? accountInstructorModel(data, workspace) : null} actions={actions} status={status} />

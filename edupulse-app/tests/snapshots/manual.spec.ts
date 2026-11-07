@@ -28,7 +28,7 @@ test('syllabus lifecycle: build, check, download, approve, extract, activate', a
   await page.goto('/')
   await page.getByRole('button', { name: 'Instructor', exact: true }).click()
   await page.goto('/#/syllabus?tab=builder')
-  await page.getByLabel('Course', { exact: true }).selectOption('IT 102')
+  await page.getByRole('combobox', { name: 'Course', exact: true }).selectOption('IT 102')
   await page.locator('[data-section="1"]').scrollIntoViewIfNeeded()
   await shot(page.locator('[data-section="1"]'), f, '01-select-course-autofills-section-1')
   await page.getByPlaceholder('Learning outcome...', { exact: true }).first().fill('Explain variable declarations and assignment, and trace how a value changes.')
@@ -138,7 +138,8 @@ test('Pulse actions: register an attached class list, then search it', async ({ 
   const f = '09-pulse-actions'
   await page.goto('/')
   await page.getByRole('button', { name: 'Instructor', exact: true }).click()
-  await page.goto('/#/syllabus?tab=register')
+  await page.goto('/#/student-monitoring?tab=students')
+  await page.getByText('Import an EduSuite class list', { exact: true }).click()
   await page.getByRole('button', { name: 'Open Pulse assistant' }).click()
   const dialog = pulseDialog(page)
   await dialog.locator('input[type="file"]').setInputFiles({ name: 'sample IT 102 BSIT-1B class list.csv', mimeType: 'text/csv', buffer: Buffer.from(sampleClassList) })
@@ -200,7 +201,8 @@ test('Pulse actions: prepare a week of courseware from the syllabus outline', as
 test('class-list uploader clears a refused replacement and lets the same filename be retried', async ({ page }) => {
   await page.goto('/')
   await page.getByRole('button', { name: 'Instructor', exact: true }).click()
-  await page.goto('/#/syllabus?tab=register')
+  await page.goto('/#/student-monitoring?tab=students')
+  await page.getByText('Import an EduSuite class list', { exact: true }).click()
   const input = page.locator('.upload-zone input[type="file"]')
   const file = { name: 'IT102-BSIT1B.csv', mimeType: 'text/csv', buffer: Buffer.from(sampleClassList) }
   await input.setInputFiles(file)

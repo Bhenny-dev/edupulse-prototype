@@ -15,17 +15,14 @@ import {
   Upload, Plus, Trash2, Eye, FileText, History, Copy, Archive,
   GitCompare, Download, BookOpen, ChevronDown, ChevronUp,
   GripVertical, Sparkles, AlertCircle, CheckCircle, FileUp, ScanLine,
-  Lock, X, Link2, Paperclip, Clock,
+  Lock, X, Link2, Paperclip,
 } from 'lucide-react'
 import { useWorkspace } from '../context/WorkspaceContext'
 import ApprovedSyllabusUpload from '../components/syllabus/ApprovedSyllabusUpload'
 import { meaningfulOutline, downloadApprovedFile } from '../utils/syllabusFiles'
 import UploadExistingSyllabus from '../components/syllabus/UploadExistingSyllabus'
-import BlockSectionUploader from '../components/syllabus/BlockSectionUploader'
-import StudentDirectoryPicker from '../components/syllabus/StudentDirectoryPicker'
 import SharedSyllabusRepository from '../components/syllabus/SharedSyllabusRepository'
 import { parsedToFormState } from '../utils/syllabusParser'
-import { applyRegistration } from '../utils/rosterParser'
 import { TEACHING_MATERIAL_CATEGORIES, ASSESSMENT_CATEGORIES } from '../data/sixLayerCategories'
 import { pulse as pulseBus } from '../components/pulse/pulseBus'
 import { usePulseEditor } from '../agents/usePulseEditor'
@@ -1342,23 +1339,24 @@ export default function Syllabus() {
   const { addToast } = useToast()
   const [searchParams, setSearchParams] = useSearchParams()
 
-  const [tab, setTab] = useState(searchParams.get('tab') || 'register')
+  const [tab, setTab] = useState(['mine', 'repository', 'builder'].includes(searchParams.get('tab')) ? searchParams.get('tab') : 'mine')
   const [selectedSyllabus, setSelectedSyllabus] = useState(null)
   const [compareSyllabus, setCompareSyllabus] = useState(null)
   const [showVersionHistory, setShowVersionHistory] = useState(false)
   const [versionHistorySyllabus, setVersionHistorySyllabus] = useState(null)
   const [extractingSyllabus, setExtractingSyllabus] = useState(null)
-  const { registrations, setRegistrations, syllabi, setSyllabi, commit, updateWorkspace } = useWorkspace()
+  const { syllabi, setSyllabi, commit, updateWorkspace } = useWorkspace()
   const {data:academic}=useAcademicRecords()
   const [editingSyllabus, setEditingSyllabus] = useState(null)
   const [uploadingSyllabus, setUploadingSyllabus] = useState(null)
 
   useEffect(() => {
     const t = searchParams.get('tab')
-    if (t && t !== tab) setTab(t)
+    if (['mine', 'repository', 'builder'].includes(t) && t !== tab) setTab(t)
   }, [searchParams, tab])
 
   if (!['instructor', 'admin'].includes(user?.role)) return <Navigate to="/dashboard" replace />
+  if (searchParams.get('tab') === 'register') return <Navigate to="/student-monitoring?tab=students" replace />
 
   const switchTab = (t) => {
     setTab(t)
@@ -1419,26 +1417,6 @@ export default function Syllabus() {
     }
   }
 
-  // Handle course registration from BlockSectionUploader
-  // A second list for the same course and block is merged, so no student is registered twice.
-  const handleCourseRegistration = (registration) => {
-    const request = { ...registration, uploadedBy: user?.id || 1, id: `reg-${crypto.randomUUID().slice(0, 8)}` }
-    const { added, already, registration: saved } = applyRegistration(registrations, request)
-    setRegistrations(previous => applyRegistration(previous, request).registrations)
-    pulseBus.progress('roster-registered', `${saved.courseCode} · ${saved.blockSection}`)
-    addToast(`${saved.courseCode} · ${saved.blockSection}: ${saved.studentCount} students registered (${added} new${already ? `, ${already} already registered` : ''})`, 'success')
-  }
-
-  const registerDirectoryStudents = async registration => {
-    const request={...registration,uploadedBy:user.id,id:`reg-${crypto.randomUUID().slice(0,8)}`}
-    await commit(data=>{
-      const result=applyRegistration(data.registrations,request)
-      if(result.registration.studentCount>35)throw new Error('A course block supports up to 35 students. Choose another block for the remaining students.')
-      return {...data,registrations:result.registrations}
-    })
-    pulseBus.progress('roster-registered',`${registration.courseCode} · ${registration.blockSection}`)
-  }
-
   // Handle syllabus attachment from SharedSyllabusRepository
   const handleAttachSyllabus = (syllabus) => {
     const copy = record({ ...syllabus, id: crypto.randomUUID(), instructorId: user?.id, version: 1, sample: false, approvedFile: undefined, extractedAt: undefined, history: [] }, 'drafted')
@@ -1457,17 +1435,6 @@ export default function Syllabus() {
       {editingSyllabus?.status==='active'&&<p role="alert" className="mb-16">Saving a revision returns this syllabus to Drafted and hides its published courseware until the approved outline is activated again. Changed teaching weeks require another courseware review.</p>}
       {/* Tabs */}
       <div style={{ display: 'flex', gap: '0', borderBottom: '2px solid var(--gray-200)', marginBottom: '20px' }}>
-        <button
-          onClick={() => switchTab('register')}
-          style={{
-            padding: '10px 20px', border: 'none', background: 'none', cursor: 'pointer', fontWeight: 600,
-            fontSize: '0.875rem', color: tab === 'register' ? 'var(--sky-600)' : 'var(--gray-500)',
-            borderBottom: tab === 'register' ? '2px solid var(--sky-500)' : '2px solid transparent',
-            marginBottom: '-2px', transition: 'all 0.15s',
-          }}
-        >
-          My Courses
-        </button>
         <button
           onClick={() => switchTab('mine')}
           style={{
@@ -1503,78 +1470,6 @@ export default function Syllabus() {
         </button>
       </div>
 
-      {/* Tab: My Courses (upload EduSuite block section files + registered courses list) */}
-      {tab === 'register' && (
-        <div>
-          <div style={{ marginBottom: '20px' }}>
-            <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.25rem', fontWeight: 700, marginBottom: '8px' }}>
-              My Courses
-            </h2>
-            <p style={{ fontSize: '0.875rem', color: 'var(--gray-500)', marginBottom: '16px' }}>
-              Choose registered students or upload an EduSuite class list to register a course block. Registered courses appear in My Syllabus for syllabus creation.
-            </p>
-          </div>
-
-          {/* Upload Form */}
-          <StudentDirectoryPicker onRegister={registerDirectoryStudents} />
-          <div className="card" style={{ marginBottom: '20px' }}>
-            <div className="card-body">
-              <BlockSectionUploader
-                onRegister={handleCourseRegistration}
-                onCancel={() => {}}
-              />
-            </div>
-          </div>
-
-          {/* Registered Courses List */}
-          {registrations.length > 0 && (
-            <div>
-              <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1rem', fontWeight: 700, marginBottom: '12px' }}>
-                Registered Courses ({registrations.length})
-              </h3>
-              <div style={{ overflowX: 'auto' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8125rem' }}>
-                  <thead>
-                    <tr style={{ borderBottom: '2px solid var(--gray-200)' }}>
-                      <th style={{ textAlign: 'left', padding: '12px 16px', fontWeight: 700, color: 'var(--gray-600)', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Course</th>
-                      <th style={{ textAlign: 'left', padding: '12px 16px', fontWeight: 700, color: 'var(--gray-600)', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Block Section</th>
-                      <th style={{ textAlign: 'left', padding: '12px 16px', fontWeight: 700, color: 'var(--gray-600)', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Students</th>
-                      <th style={{ textAlign: 'left', padding: '12px 16px', fontWeight: 700, color: 'var(--gray-600)', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Uploaded</th>
-                      <th style={{ textAlign: 'center', padding: '12px 16px', fontWeight: 700, color: 'var(--gray-600)', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {registrations.filter(r => r.uploadedBy === user?.id).map(reg => (
-                      <tr key={reg.id} style={{ borderBottom: '1px solid var(--gray-100)' }}>
-                        <td style={{ padding: '12px 16px' }}>
-                          <div style={{ fontWeight: 600, color: 'var(--gray-900)' }}>{reg.courseCode}</div>
-                        </td>
-                        <td style={{ padding: '12px 16px', color: 'var(--gray-600)' }}>{reg.blockSection}</td>
-                        <td style={{ padding: '12px 16px', color: 'var(--gray-600)' }}>{reg.studentCount}</td>
-                        <td style={{ padding: '12px 16px', color: 'var(--gray-500)', fontSize: '0.75rem' }}>{reg.uploadedDate}</td>
-                        <td style={{ padding: '12px 16px', textAlign: 'center' }}>
-                          <span style={{
-                            display: 'inline-flex', alignItems: 'center', gap: '4px',
-                            padding: '3px 8px', borderRadius: 'var(--radius-full)',
-                            background: reg.status === 'active' ? 'var(--green-100, #dcfce7)' : 'var(--amber-100, #fef3c7)',
-                            color: reg.status === 'active' ? 'var(--green-700, #15803d)' : 'var(--amber-700, #b45309)',
-                            fontWeight: 600, fontSize: '0.6875rem',
-                          }}>
-                            {reg.status === 'active' ? <CheckCircle size={12} /> : <Clock size={12} />}
-                            {reg.status === 'active' ? 'Active' : 'Pending'}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Tab: My Syllabus (loaded courses with syllabus station + next action) */}
       {tab === 'mine' && (
         <>
           <LifecycleStrip />

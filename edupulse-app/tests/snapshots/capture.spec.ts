@@ -211,7 +211,7 @@ test('Pulse guidance: drag, focus, perch, section tour and rejection', async ({ 
   await signIn(page)
   await page.goto('/#/syllabus?tab=builder')
   const mascot = page.locator('[data-pulse-ui="mascot"]')
-  const control = page.getByLabel('Course', { exact: true })
+  const control = page.getByRole('combobox', { name: 'Course', exact: true })
   await control.scrollIntoViewIfNeeded()
   let from = (await mascot.boundingBox())!, to = (await control.boundingBox())!
   await page.mouse.move(from.x + 30, from.y + 30); await page.mouse.down()

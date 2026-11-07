@@ -1,0 +1,528 @@
+
+> edupulse-app@0.4.0 test:browser
+> playwright test baseline-workflows.spec.ts courseware-formatting.spec.ts courseware-unified.spec.ts student-directory.spec.ts layout-feedback.spec.ts pulse-actions.spec.ts role-restoration.spec.ts course-seed.spec.ts workspace-recovery.spec.ts
+
+node.exe : [WebServer] (node:9764) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([WebServer] (no... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:33844) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 11:32:10 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3027
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 11:32:11 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3027
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 11:32:12 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3027
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 11:32:13 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3027
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+
+Running 80 tests using 1 worker
+
+(node:42404) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 [desktop] › tests\browser\baseline-workflows.spec.ts:4:1 › syllabus-topic mastery uses mapped marks and restores radar, heatmap and status (10.4s)
+  ok  2 [desktop] › tests\browser\baseline-workflows.spec.ts:12:1 › instructor marks saved responses and the score and topic marks persist (10.1s)
+  ok  3 [desktop] › tests\browser\baseline-workflows.spec.ts:19:1 › student starts a timed written-response assessment, submits, and appeals the saved result (6.0s)
+  ok  4 [desktop] › tests\browser\baseline-workflows.spec.ts:27:1 › confirmed loading suggestions and block corrections update shared records (4.8s)
+  ok  5 [desktop] › tests\browser\baseline-workflows.spec.ts:36:1 › Dean offline inbox sends correction requests and account notice read receipts survive reload (7.1s)
+  ok  6 [desktop] › tests\browser\baseline-workflows.spec.ts:41:1 › saved syllabus versions can be viewed and restored as a draft (3.7s)
+  ok  7 [desktop] › tests\browser\baseline-workflows.spec.ts:46:1 › assessment topic mappings and delivery policy save through the instructor workspace (7.5s)
+  ok  8 [desktop] › tests\browser\baseline-workflows.spec.ts:53:1 › authenticated Pulse guidance describes shared records and keeps Dean marks read-only (4.3s)
+  x   9 [desktop] › tests\browser\course-seed.spec.ts:4:1 › seeded rosters and revised syllabus remain available after reload (7.7s)
+(node:26552) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 10 [desktop] › tests\browser\course-seed.spec.ts:21:1 › authored lessons stay draft and Performance shows only actual activity (3.3s)
+  ok 11 [desktop] › tests\browser\courseware-formatting.spec.ts:5:1 › document formats saved Markdown and places evaluation after all sections (5.8s)
+  ok 12 [desktop] › tests\browser\courseware-formatting.spec.ts:32:1 › activity and assessment evaluation follow their content (3.2s)
+  ok 13 [desktop] › tests\browser\courseware-formatting.spec.ts:44:1 › student document and slides format emphasis without exposing draft evaluation (3.3s)
+  ok 14 [desktop] › tests\browser\courseware-formatting.spec.ts:62:1 › formatted content keeps HTML inert and prevents unsafe links or remote image loads (2.7s)
+  ok 15 [desktop] › tests\browser\courseware-unified.spec.ts:4:1 › one course list combines progress with View or Generate and preserves old links (5.1s)
+  ok 16 [desktop] › tests\browser\courseware-unified.spec.ts:29:1 › item menus retain editing, slides, review, publish and delivery settings (10.3s)
+  ok 17 [desktop] › tests\browser\courseware-unified.spec.ts:66:1 › missing-content generation preserves existing work and changes Generate into View (6.8s)
+  ok 18 [desktop] › tests\browser\courseware-unified.spec.ts:87:1 › week and course menus keep bulk review available (6.5s)
+  ok 19 [desktop] › tests\browser\courseware-unified.spec.ts:106:1 › three-dot menus support keyboard, dismissal and a bounded viewport in dark mode (4.0s)
+  ok 20 [desktop] › tests\browser\courseware-unified.spec.ts:126:1 › regenerating drafts preserves delivery dates, assessment rules and checked work (3.4s)
+[WebServer] 11:34:31 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok 21 [desktop] › tests\browser\layout-feedback.spec.ts:4:1 › page navigation has one tab set and Pulse launcher is avatar only (8.0s)
+[WebServer] 11:34:38 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok 22 [desktop] › tests\browser\layout-feedback.spec.ts:9:1 › syllabus dialog and assistant share space and Escape preserves the assistant (16.9s)
+  ok 23 [desktop] › tests\browser\layout-feedback.spec.ts:18:1 › academic records show skeletons and respect reduced motion (2.9s)
+  ok 24 [desktop] › tests\browser\layout-feedback.spec.ts:24:1 › academic request errors clear loading without claiming an empty library and retry succeeds (3.1s)
+[WebServer] 11:35:00 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+[WebServer] 11:35:15 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+[WebServer] 11:35:29 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+[WebServer] 11:35:33 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+[WebServer] 11:35:44 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+[WebServer] 11:35:47 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok 25 [desktop] › tests\browser\layout-feedback.spec.ts:29:1 › unique Records and Assessments destinations remain in primary navigation (51.5s)
+[WebServer] 11:35:52 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  x  26 [desktop] › tests\browser\pulse-actions.spec.ts:33:1 › an attached class list is registered only after Confirm, opens My Courses, can be searched and undone (12.0s)
+(node:15128) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 11:36:11 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  x  27 [desktop] › tests\browser\pulse-actions.spec.ts:62:1 › the My Courses uploader reads a real class list instead of sample names and merges a second upload (16.6s)
+(node:41160) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 11:36:33 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok 28 [desktop] › tests\browser\pulse-actions.spec.ts:85:1 › a student’s material is matched to a course with reasons, and added to the library only after Confirm (18.8s)
+[WebServer] 11:36:47 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  x  29 [desktop] › tests\browser\pulse-actions.spec.ts:105:1 › requests to open a page navigate only within the role, and course generation shows its syllabus source before Confirm (17.9s)
+(node:1572) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 11:37:27 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok 30 [desktop] › tests\browser\pulse-actions.spec.ts:125:1 › a student cannot be sent to a page outside the student role (16.9s)
+  ok 31 [desktop] › tests\browser\role-restoration.spec.ts:7:3 › restored instructor pages use account records and keep each authorized section reachable (11.7s)
+  ok 32 [desktop] › tests\browser\role-restoration.spec.ts:7:3 › restored student pages use account records and keep each authorized section reachable (10.6s)
+  ok 33 [desktop] › tests\browser\role-restoration.spec.ts:7:3 › restored dean pages use account records and keep each authorized section reachable (13.5s)
+  ok 34 [desktop] › tests\browser\role-restoration.spec.ts:7:3 › restored associate_dean pages use account records and keep each authorized section reachable (7.8s)
+  ok 35 [desktop] › tests\browser\role-restoration.spec.ts:44:1 › confirmed shared CSV import survives refresh; templates and history work (14.8s)
+  ok 36 [desktop] › tests\browser\role-restoration.spec.ts:54:1 › dark mode keeps account sections and charts on solid readable surfaces (7.2s)
+  ok 37 [desktop] › tests\browser\role-restoration.spec.ts:63:1 › account notices come from unanswered records and read state survives reload (11.1s)
+  ok 38 [desktop] › tests\browser\student-directory.spec.ts:3:1 › instructors filter official profiles, retain selection across pages, and save roster enrollment through reload (14.8s)
+  ok 39 [desktop] › tests\browser\workspace-recovery.spec.ts:4:1 › save failures leave pages clear and can be backed up and retried from Settings (17.2s)
+  ok 40 [desktop] › tests\browser\workspace-recovery.spec.ts:27:1 › Settings requires a backup before resolving a workspace conflict (8.3s)
+(node:23320) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 41 [mobile] › tests\browser\baseline-workflows.spec.ts:4:1 › syllabus-topic mastery uses mapped marks and restores radar, heatmap and status (12.8s)
+  ok 42 [mobile] › tests\browser\baseline-workflows.spec.ts:12:1 › instructor marks saved responses and the score and topic marks persist (22.9s)
+  ok 43 [mobile] › tests\browser\baseline-workflows.spec.ts:19:1 › student starts a timed written-response assessment, submits, and appeals the saved result (8.9s)
+  ok 44 [mobile] › tests\browser\baseline-workflows.spec.ts:27:1 › confirmed loading suggestions and block corrections update shared records (8.1s)
+  ok 45 [mobile] › tests\browser\baseline-workflows.spec.ts:36:1 › Dean offline inbox sends correction requests and account notice read receipts survive reload (11.6s)
+  ok 46 [mobile] › tests\browser\baseline-workflows.spec.ts:41:1 › saved syllabus versions can be viewed and restored as a draft (5.6s)
+  ok 47 [mobile] › tests\browser\baseline-workflows.spec.ts:46:1 › assessment topic mappings and delivery policy save through the instructor workspace (11.2s)
+  ok 48 [mobile] › tests\browser\baseline-workflows.spec.ts:53:1 › authenticated Pulse guidance describes shared records and keeps Dean marks read-only (6.4s)
+  x  49 [mobile] › tests\browser\course-seed.spec.ts:4:1 › seeded rosters and revised syllabus remain available after reload (11.4s)
+(node:20360) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 50 [mobile] › tests\browser\course-seed.spec.ts:21:1 › authored lessons stay draft and Performance shows only actual activity (8.2s)
+  ok 51 [mobile] › tests\browser\courseware-formatting.spec.ts:5:1 › document formats saved Markdown and places evaluation after all sections (11.4s)
+  ok 52 [mobile] › tests\browser\courseware-formatting.spec.ts:32:1 › activity and assessment evaluation follow their content (5.6s)
+  ok 53 [mobile] › tests\browser\courseware-formatting.spec.ts:44:1 › student document and slides format emphasis without exposing draft evaluation (5.4s)
+  ok 54 [mobile] › tests\browser\courseware-formatting.spec.ts:62:1 › formatted content keeps HTML inert and prevents unsafe links or remote image loads (8.5s)
+  ok 55 [mobile] › tests\browser\courseware-unified.spec.ts:4:1 › one course list combines progress with View or Generate and preserves old links (6.7s)
+  ok 56 [mobile] › tests\browser\courseware-unified.spec.ts:29:1 › item menus retain editing, slides, review, publish and delivery settings (19.2s)
+  ok 57 [mobile] › tests\browser\courseware-unified.spec.ts:66:1 › missing-content generation preserves existing work and changes Generate into View (14.9s)
+  ok 58 [mobile] › tests\browser\courseware-unified.spec.ts:87:1 › week and course menus keep bulk review available (16.4s)
+  ok 59 [mobile] › tests\browser\courseware-unified.spec.ts:106:1 › three-dot menus support keyboard, dismissal and a bounded viewport in dark mode (8.5s)
+  ok 60 [mobile] › tests\browser\courseware-unified.spec.ts:126:1 › regenerating drafts preserves delivery dates, assessment rules and checked work (6.6s)
+[WebServer] 11:43:45 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok 61 [mobile] › tests\browser\layout-feedback.spec.ts:4:1 › page navigation has one tab set and Pulse launcher is avatar only (11.0s)
+[WebServer] 11:43:58 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok 62 [mobile] › tests\browser\layout-feedback.spec.ts:9:1 › syllabus dialog and assistant share space and Escape preserves the assistant (26.6s)
+  ok 63 [mobile] › tests\browser\layout-feedback.spec.ts:18:1 › academic records show skeletons and respect reduced motion (6.5s)
+  ok 64 [mobile] › tests\browser\layout-feedback.spec.ts:24:1 › academic request errors clear loading without claiming an empty library and retry succeeds (9.9s)
+[WebServer] 11:44:40 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+[WebServer] 11:44:47 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+[WebServer] 11:44:50 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+[WebServer] 11:44:54 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  x  65 [mobile] › tests\browser\layout-feedback.spec.ts:29:1 › unique Records and Assessments destinations remain in primary navigation (1.6m)
+(node:7476) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 11:46:17 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  x  66 [mobile] › tests\browser\pulse-actions.spec.ts:33:1 › an attached class list is registered only after Confirm, opens My Courses, can be searched and undone (14.1s)
+(node:32520) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 11:46:32 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  x  67 [mobile] › tests\browser\pulse-actions.spec.ts:62:1 › the My Courses uploader reads a real class list instead of sample names and merges a second upload (20.9s)
+(node:3776) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 11:46:55 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok 68 [mobile] › tests\browser\pulse-actions.spec.ts:85:1 › a student’s material is matched to a course with reasons, and added to the library only after Confirm (11.9s)
+[WebServer] 11:47:06 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  x  69 [mobile] › tests\browser\pulse-actions.spec.ts:105:1 › requests to open a page navigate only within the role, and course generation shows its syllabus source before Confirm (13.9s)
+(node:20752) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 11:47:22 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok 70 [mobile] › tests\browser\pulse-actions.spec.ts:125:1 › a student cannot be sent to a page outside the student role (8.3s)
+  ok 71 [mobile] › tests\browser\role-restoration.spec.ts:7:3 › restored instructor pages use account records and keep each authorized section reachable (9.9s)
+  ok 72 [mobile] › tests\browser\role-restoration.spec.ts:7:3 › restored student pages use account records and keep each authorized section reachable (9.9s)
+  ok 73 [mobile] › tests\browser\role-restoration.spec.ts:7:3 › restored dean pages use account records and keep each authorized section reachable (8.7s)
+  ok 74 [mobile] › tests\browser\role-restoration.spec.ts:7:3 › restored associate_dean pages use account records and keep each authorized section reachable (4.0s)
+  ok 75 [mobile] › tests\browser\role-restoration.spec.ts:44:1 › confirmed shared CSV import survives refresh; templates and history work (11.4s)
+  ok 76 [mobile] › tests\browser\role-restoration.spec.ts:54:1 › dark mode keeps account sections and charts on solid readable surfaces (8.3s)
+  ok 77 [mobile] › tests\browser\role-restoration.spec.ts:63:1 › account notices come from unanswered records and read state survives reload (5.1s)
+  ok 78 [mobile] › tests\browser\student-directory.spec.ts:3:1 › instructors filter official profiles, retain selection across pages, and save roster enrollment through reload (11.7s)
+  ok 79 [mobile] › tests\browser\workspace-recovery.spec.ts:4:1 › save failures leave pages clear and can be backed up and retried from Settings (11.9s)
+  ok 80 [mobile] › tests\browser\workspace-recovery.spec.ts:27:1 › Settings requires a backup before resolving a workspace conflict (7.8s)
+
+
+  1) [desktop] › tests\browser\course-seed.spec.ts:4:1 › seeded rosters and revised syllabus remain available after reload
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('region', { name: 'Enrolled students table', exact: true })
+    Expected substring: "BSIT-1D"
+    Received string:    "StudentStudent numberCourseBlock sectionActionsSynthetic learner 1-1syn-1-001@example.invalidSYN-1-001IT 102BSIT-1ASynthetic learner 1-2syn-1-002@example.invalidSYN-1-002IT 102BSIT-1ASynthetic learner 1-3syn-1-003@example.invalidSYN-1-003IT 102BSIT-1ASynthetic learner 1-4syn-1-004@example.invalidSYN-1-004IT 102BSIT-1ASynthetic learner 1-5syn-1-005@example.invalidSYN-1-005IT 102BSIT-1ASynthetic learner 1-6syn-1-006@example.invalidSYN-1-006IT 102BSIT-1ASynthetic learner 1-7syn-1-007@example.invalidSYN-1-007IT 102BSIT-1ASynthetic learner 1-8syn-1-008@example.invalidSYN-1-008IT 102BSIT-1ASynthetic learner 1-9syn-1-009@example.invalidSYN-1-009IT 102BSIT-1ASynthetic learner 1-10syn-1-010@example.invalidSYN-1-010IT 102BSIT-1ASynthetic learner 1-11syn-1-011@example.invalidSYN-1-011IT 102BSIT-1ASynthetic learner 1-12syn-1-012@example.invalidSYN-1-012IT 102BSIT-1ASynthetic learner 1-13syn-1-013@example.invalidSYN-1-013IT 102BSIT-1ASynthetic learner 1-14syn-1-014@example.invalidSYN-1-014IT 102BSIT-1ASynthetic learner 1-15syn-1-015@example.invalidSYN-1-015IT 102BSIT-1ASynthetic learner 1-16syn-1-016@example.invalidSYN-1-016IT 102BSIT-1ASynthetic learner 1-17syn-1-017@example.invalidSYN-1-017IT 102BSIT-1ASynthetic learner 1-18syn-1-018@example.invalidSYN-1-018IT 102BSIT-1ASynthetic learner 1-19syn-1-019@example.invalidSYN-1-019IT 102BSIT-1ASynthetic learner 1-20syn-1-020@example.invalidSYN-1-020IT 102BSIT-1ASynthetic learner 1-21syn-1-021@example.invalidSYN-1-021IT 102BSIT-1ASynthetic learner 1-22syn-1-022@example.invalidSYN-1-022IT 102BSIT-1ASynthetic learner 1-23syn-1-023@example.invalidSYN-1-023IT 102BSIT-1ASynthetic learner 1-24syn-1-024@example.invalidSYN-1-024IT 102BSIT-1ASynthetic learner 1-25syn-1-025@example.invalidSYN-1-025IT 102BSIT-1A"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toContainText" getByRole('region', { name: 'Enrolled students table', exact: true }) with timeout 5000ms
+      - waiting for getByRole('region', { name: 'Enrolled students table', exact: true })
+        13 × locator resolved to <div tabindex="0" role="region" class="academic-table-wrap" aria-label="Enrolled students table">…</div>
+           - unexpected value "StudentStudent numberCourseBlock sectionActionsSynthetic learner 1-1syn-1-001@example.invalidSYN-1-001IT 102BSIT-1ASynthetic learner 1-2syn-1-002@example.invalidSYN-1-002IT 102BSIT-1ASynthetic learner 1-3syn-1-003@example.invalidSYN-1-003IT 102BSIT-1ASynthetic learner 1-4syn-1-004@example.invalidSYN-1-004IT 102BSIT-1ASynthetic learner 1-5syn-1-005@example.invalidSYN-1-005IT 102BSIT-1ASynthetic learner 1-6syn-1-006@example.invalidSYN-1-006IT 102BSIT-1ASynthetic learner 1-7syn-1-007@example.invalidSYN-1-007IT 102BSIT-1ASynthetic learner 1-8syn-1-008@example.invalidSYN-1-008IT 102BSIT-1ASynthetic learner 1-9syn-1-009@example.invalidSYN-1-009IT 102BSIT-1ASynthetic learner 1-10syn-1-010@example.invalidSYN-1-010IT 102BSIT-1ASynthetic learner 1-11syn-1-011@example.invalidSYN-1-011IT 102BSIT-1ASynthetic learner 1-12syn-1-012@example.invalidSYN-1-012IT 102BSIT-1ASynthetic learner 1-13syn-1-013@example.invalidSYN-1-013IT 102BSIT-1ASynthetic learner 1-14syn-1-014@example.invalidSYN-1-014IT 102BSIT-1ASynthetic learner 1-15syn-1-015@example.invalidSYN-1-015IT 102BSIT-1ASynthetic learner 1-16syn-1-016@example.invalidSYN-1-016IT 102BSIT-1ASynthetic learner 1-17syn-1-017@example.invalidSYN-1-017IT 102BSIT-1ASynthetic learner 1-18syn-1-018@example.invalidSYN-1-018IT 102BSIT-1ASynthetic learner 1-19syn-1-019@example.invalidSYN-1-019IT 102BSIT-1ASynthetic learner 1-20syn-1-020@example.invalidSYN-1-020IT 102BSIT-1ASynthetic learner 1-21syn-1-021@example.invalidSYN-1-021IT 102BSIT-1ASynthetic learner 1-22syn-1-022@example.invalidSYN-1-022IT 102BSIT-1ASynthetic learner 1-23syn-1-023@example.invalidSYN-1-023IT 102BSIT-1ASynthetic learner 1-24syn-1-024@example.invalidSYN-1-024IT 102BSIT-1ASynthetic learner 1-25syn-1-025@example.invalidSYN-1-025IT 102BSIT-1A"
+
+
+       7 |   const roster = page.getByRole('region', { name: 'Enrolled students table', exact: true })
+       8 |   await expect(roster.getByRole('row')).toHaveCount(26)
+    >  9 |   await expect(roster).toContainText('BSIT-1D')
+         |                        ^
+      10 |   await page.getByRole('combobox', { name: 'Block section', exact: true }).selectOption('BSIT-2E')
+      11 |   await expect(roster).toContainText('BSIT-2E')
+      12 |   await page.getByRole('combobox', { name: 'Block section', exact: true }).selectOption('')
+        at C:\Users\Benny\OneDrive\Documents\EduPulse\EduPulse System Prototype\edupulse-app\tests\browser\course-seed.spec.ts:9:24
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    .data\records-browser-regression-results\course-seed-seeded-rosters-be212-main-available-after-reload-desktop\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: .data\records-browser-regression-results\course-seed-seeded-rosters-be212-main-available-after-reload-desktop\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    .data\records-browser-regression-results\course-seed-seeded-rosters-be212-main-available-after-reload-desktop\trace.zip
+    Usage:
+
+        npx playwright show-trace .data\records-browser-regression-results\course-seed-seeded-rosters-be212-main-available-after-reload-desktop\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [desktop] › tests\browser\pulse-actions.spec.ts:33:1 › an attached class list is registered only after Confirm, opens My Courses, can be searched and undone
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: locator('table').filter({ hasText: 'Block Section' }).getByRole('row').filter({ hasText: 'BSIT-1A' })
+    Expected substring: "3"
+    Error: strict mode violation: locator('table').filter({ hasText: 'Block Section' }).getByRole('row').filter({ hasText: 'BSIT-1A' }) resolved to 3 elements:
+        1) <tr>…</tr> aka getByRole('row', { name: 'Ana T. Ramos ana.ramos@' })
+        2) <tr>…</tr> aka getByRole('row', { name: 'Ben L. Cruz ben.cruz@example.' })
+        3) <tr>…</tr> aka getByRole('row', { name: 'Carla Mendoza carla.mendoza@' })
+
+    Call log:
+      - Expect "toContainText" locator('table').filter({ hasText: 'Block Section' }).getByRole('row').filter({ hasText: 'BSIT-1A' }) with timeout 5000ms
+      - waiting for locator('table').filter({ hasText: 'Block Section' }).getByRole('row').filter({ hasText: 'BSIT-1A' })
+
+
+      47 |   await expect(page).toHaveURL(/#\/student-monitoring\?tab=students/)
+      48 |   const table = page.locator('table').filter({ hasText: 'Block Section' })
+    > 49 |   await expect(table.getByRole('row').filter({ hasText: 'BSIT-1A' })).toContainText('3')
+         |                                                                       ^
+      50 |
+      51 |   await say(page, 'Is Ben Cruz registered?')
+      52 |   const results = pulse.getByRole('region', { name: 'Search results' }).last()
+        at C:\Users\Benny\OneDrive\Documents\EduPulse\EduPulse System Prototype\edupulse-app\tests\browser\pulse-actions.spec.ts:49:71
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    .data\records-browser-regression-results\pulse-actions-an-attached--c5e6d--can-be-searched-and-undone-desktop\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: .data\records-browser-regression-results\pulse-actions-an-attached--c5e6d--can-be-searched-and-undone-desktop\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    .data\records-browser-regression-results\pulse-actions-an-attached--c5e6d--can-be-searched-and-undone-desktop\trace.zip
+    Usage:
+
+        npx playwright show-trace .data\records-browser-regression-results\pulse-actions-an-attached--c5e6d--can-be-searched-and-undone-desktop\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [desktop] › tests\browser\pulse-actions.spec.ts:62:1 › the My Courses uploader reads a real class list instead of sample names and merges a second upload
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByText(/IT 102 · BSIT-1A: 4 students registered \(1 new, 1 already registered\)/)
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByText(/IT 102 · BSIT-1A: 4 students registered \(1 new, 1 already registered\)/) with timeout 5000ms
+      - waiting for getByText(/IT 102 · BSIT-1A: 4 students registered \(1 new, 1 already registered\)/)
+
+
+      80 |   await page.getByLabel('Select Course *').selectOption('IT 102')
+      81 |   await page.getByRole('button', { name: 'Register Course' }).click()
+    > 82 |   await expect(page.getByText(/IT 102 · BSIT-1A: 4 students registered \(1 new, 1 already registered\)/)).toBeVisible()
+         |                                                                                                           ^
+      83 | })
+      84 |
+      85 | test('a student’s material is matched to a course with reasons, and added to the library only after Confirm', async ({ page, request }) => {
+        at C:\Users\Benny\OneDrive\Documents\EduPulse\EduPulse System Prototype\edupulse-app\tests\browser\pulse-actions.spec.ts:82:107
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    .data\records-browser-regression-results\pulse-actions-the-My-Cours-8eca7--and-merges-a-second-upload-desktop\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: .data\records-browser-regression-results\pulse-actions-the-My-Cours-8eca7--and-merges-a-second-upload-desktop\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    .data\records-browser-regression-results\pulse-actions-the-My-Cours-8eca7--and-merges-a-second-upload-desktop\trace.zip
+    Usage:
+
+        npx playwright show-trace .data\records-browser-regression-results\pulse-actions-the-My-Cours-8eca7--and-merges-a-second-upload-desktop\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [desktop] › tests\browser\pulse-actions.spec.ts:105:1 › requests to open a page navigate only within the role, and course generation shows its syllabus source before Confirm
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('dialog', { name: 'Pulse', exact: true }).getByText('Opened Student Monitoring.')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('dialog', { name: 'Pulse', exact: true }).getByText('Opened Student Monitoring.') with timeout 5000ms
+      - waiting for getByRole('dialog', { name: 'Pulse', exact: true }).getByText('Opened Student Monitoring.')
+
+
+      107 |   await say(page, 'Take me to the scoring sheet')
+      108 |   await expect(page).toHaveURL(/#\/student-monitoring/)
+    > 109 |   await expect(pulse.getByText('Opened Student Monitoring.')).toBeVisible()
+          |                                                               ^
+      110 |
+      111 |   await say(page, 'Generate week 2 materials for IT 102')
+      112 |   const card = pulse.getByRole('region', { name: 'Generate courseware' })
+        at C:\Users\Benny\OneDrive\Documents\EduPulse\EduPulse System Prototype\edupulse-app\tests\browser\pulse-actions.spec.ts:109:63
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    .data\records-browser-regression-results\pulse-actions-requests-to--e2595-labus-source-before-Confirm-desktop\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: .data\records-browser-regression-results\pulse-actions-requests-to--e2595-labus-source-before-Confirm-desktop\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    .data\records-browser-regression-results\pulse-actions-requests-to--e2595-labus-source-before-Confirm-desktop\trace.zip
+    Usage:
+
+        npx playwright show-trace .data\records-browser-regression-results\pulse-actions-requests-to--e2595-labus-source-before-Confirm-desktop\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  5) [mobile] › tests\browser\course-seed.spec.ts:4:1 › seeded rosters and revised syllabus remain available after reload
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('region', { name: 'Enrolled students table', exact: true })
+    Expected substring: "BSIT-1D"
+    Received string:    "StudentStudent numberCourseBlock sectionActionsSynthetic learner 1-1syn-1-001@example.invalidSYN-1-001IT 102BSIT-1ASynthetic learner 1-2syn-1-002@example.invalidSYN-1-002IT 102BSIT-1ASynthetic learner 1-3syn-1-003@example.invalidSYN-1-003IT 102BSIT-1ASynthetic learner 1-4syn-1-004@example.invalidSYN-1-004IT 102BSIT-1ASynthetic learner 1-5syn-1-005@example.invalidSYN-1-005IT 102BSIT-1ASynthetic learner 1-6syn-1-006@example.invalidSYN-1-006IT 102BSIT-1ASynthetic learner 1-7syn-1-007@example.invalidSYN-1-007IT 102BSIT-1ASynthetic learner 1-8syn-1-008@example.invalidSYN-1-008IT 102BSIT-1ASynthetic learner 1-9syn-1-009@example.invalidSYN-1-009IT 102BSIT-1ASynthetic learner 1-10syn-1-010@example.invalidSYN-1-010IT 102BSIT-1ASynthetic learner 1-11syn-1-011@example.invalidSYN-1-011IT 102BSIT-1ASynthetic learner 1-12syn-1-012@example.invalidSYN-1-012IT 102BSIT-1ASynthetic learner 1-13syn-1-013@example.invalidSYN-1-013IT 102BSIT-1ASynthetic learner 1-14syn-1-014@example.invalidSYN-1-014IT 102BSIT-1ASynthetic learner 1-15syn-1-015@example.invalidSYN-1-015IT 102BSIT-1ASynthetic learner 1-16syn-1-016@example.invalidSYN-1-016IT 102BSIT-1ASynthetic learner 1-17syn-1-017@example.invalidSYN-1-017IT 102BSIT-1ASynthetic learner 1-18syn-1-018@example.invalidSYN-1-018IT 102BSIT-1ASynthetic learner 1-19syn-1-019@example.invalidSYN-1-019IT 102BSIT-1ASynthetic learner 1-20syn-1-020@example.invalidSYN-1-020IT 102BSIT-1ASynthetic learner 1-21syn-1-021@example.invalidSYN-1-021IT 102BSIT-1ASynthetic learner 1-22syn-1-022@example.invalidSYN-1-022IT 102BSIT-1ASynthetic learner 1-23syn-1-023@example.invalidSYN-1-023IT 102BSIT-1ASynthetic learner 1-24syn-1-024@example.invalidSYN-1-024IT 102BSIT-1ASynthetic learner 1-25syn-1-025@example.invalidSYN-1-025IT 102BSIT-1A"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toContainText" getByRole('region', { name: 'Enrolled students table', exact: true }) with timeout 5000ms
+      - waiting for getByRole('region', { name: 'Enrolled students table', exact: true })
+        13 × locator resolved to <div tabindex="0" role="region" class="academic-table-wrap" aria-label="Enrolled students table">…</div>
+           - unexpected value "StudentStudent numberCourseBlock sectionActionsSynthetic learner 1-1syn-1-001@example.invalidSYN-1-001IT 102BSIT-1ASynthetic learner 1-2syn-1-002@example.invalidSYN-1-002IT 102BSIT-1ASynthetic learner 1-3syn-1-003@example.invalidSYN-1-003IT 102BSIT-1ASynthetic learner 1-4syn-1-004@example.invalidSYN-1-004IT 102BSIT-1ASynthetic learner 1-5syn-1-005@example.invalidSYN-1-005IT 102BSIT-1ASynthetic learner 1-6syn-1-006@example.invalidSYN-1-006IT 102BSIT-1ASynthetic learner 1-7syn-1-007@example.invalidSYN-1-007IT 102BSIT-1ASynthetic learner 1-8syn-1-008@example.invalidSYN-1-008IT 102BSIT-1ASynthetic learner 1-9syn-1-009@example.invalidSYN-1-009IT 102BSIT-1ASynthetic learner 1-10syn-1-010@example.invalidSYN-1-010IT 102BSIT-1ASynthetic learner 1-11syn-1-011@example.invalidSYN-1-011IT 102BSIT-1ASynthetic learner 1-12syn-1-012@example.invalidSYN-1-012IT 102BSIT-1ASynthetic learner 1-13syn-1-013@example.invalidSYN-1-013IT 102BSIT-1ASynthetic learner 1-14syn-1-014@example.invalidSYN-1-014IT 102BSIT-1ASynthetic learner 1-15syn-1-015@example.invalidSYN-1-015IT 102BSIT-1ASynthetic learner 1-16syn-1-016@example.invalidSYN-1-016IT 102BSIT-1ASynthetic learner 1-17syn-1-017@example.invalidSYN-1-017IT 102BSIT-1ASynthetic learner 1-18syn-1-018@example.invalidSYN-1-018IT 102BSIT-1ASynthetic learner 1-19syn-1-019@example.invalidSYN-1-019IT 102BSIT-1ASynthetic learner 1-20syn-1-020@example.invalidSYN-1-020IT 102BSIT-1ASynthetic learner 1-21syn-1-021@example.invalidSYN-1-021IT 102BSIT-1ASynthetic learner 1-22syn-1-022@example.invalidSYN-1-022IT 102BSIT-1ASynthetic learner 1-23syn-1-023@example.invalidSYN-1-023IT 102BSIT-1ASynthetic learner 1-24syn-1-024@example.invalidSYN-1-024IT 102BSIT-1ASynthetic learner 1-25syn-1-025@example.invalidSYN-1-025IT 102BSIT-1A"
+
+
+       7 |   const roster = page.getByRole('region', { name: 'Enrolled students table', exact: true })
+       8 |   await expect(roster.getByRole('row')).toHaveCount(26)
+    >  9 |   await expect(roster).toContainText('BSIT-1D')
+         |                        ^
+      10 |   await page.getByRole('combobox', { name: 'Block section', exact: true }).selectOption('BSIT-2E')
+      11 |   await expect(roster).toContainText('BSIT-2E')
+      12 |   await page.getByRole('combobox', { name: 'Block section', exact: true }).selectOption('')
+        at C:\Users\Benny\OneDrive\Documents\EduPulse\EduPulse System Prototype\edupulse-app\tests\browser\course-seed.spec.ts:9:24
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    .data\records-browser-regression-results\course-seed-seeded-rosters-be212-main-available-after-reload-mobile\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: .data\records-browser-regression-results\course-seed-seeded-rosters-be212-main-available-after-reload-mobile\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    .data\records-browser-regression-results\course-seed-seeded-rosters-be212-main-available-after-reload-mobile\trace.zip
+    Usage:
+
+        npx playwright show-trace .data\records-browser-regression-results\course-seed-seeded-rosters-be212-main-available-after-reload-mobile\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  6) [mobile] › tests\browser\layout-feedback.spec.ts:29:1 › unique Records and Assessments destinations remain in primary navigation
+
+    Test timeout of 90000ms exceeded.
+
+    Error: locator.click: Test timeout of 90000ms exceeded.
+    Call log:
+      - waiting for getByRole('link', { name: 'Records', exact: true })
+
+
+      30 |  test.setTimeout(90000) // Three sign-ins share this budget, each after two landing-page loads that now play the opening (it plays on every load at the top).
+      31 |  for(const [persona,name,path] of [['Student','Assessments','assessment'],['Dean','Records','records'],['Assoc. Dean','Records','records']]){
+    > 32 |   await page.goto('/');await page.getByRole('button',{name:persona,exact:true}).click();await expect(page).toHaveURL(/#\/dashboard/);if(info.project.name==='mobile')await page.getByRole('button',{name:'Open menu',exact:true}).click();await page.getByRole('link',{name,exact:true}).click();await expect(page).toHaveURL(new RegExp('#/'+path));await expect(page.locator('.app-sidebar')).toHaveCount(0)
+         |                                                                                                                                                                                                                                                                                          ^
+      33 |   if(persona!=='Student'){await page.goto('/#/monitor');for(const [label,key] of [['Syllabus Status','syllabi'],['Delivery Progress','delivery'],['Student Oversight','students'],['Alerts','alerts']]){const button=page.getByRole('navigation',{name:'Monitor views'}).getByRole('button',{name:label,exact:true});await button.click();await expect(button).toHaveAttribute('aria-pressed','true');await expect(page).toHaveURL(new RegExp('tab='+key))}}
+      34 |   await page.evaluate(()=>{localStorage.removeItem('edupulse_user')});await page.goto('/');await page.reload()
+      35 |  }
+        at C:\Users\Benny\OneDrive\Documents\EduPulse\EduPulse System Prototype\edupulse-app\tests\browser\layout-feedback.spec.ts:32:282
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    .data\records-browser-regression-results\layout-feedback-unique-Rec-28a90-emain-in-primary-navigation-mobile\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: .data\records-browser-regression-results\layout-feedback-unique-Rec-28a90-emain-in-primary-navigation-mobile\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    .data\records-browser-regression-results\layout-feedback-unique-Rec-28a90-emain-in-primary-navigation-mobile\trace.zip
+    Usage:
+
+        npx playwright show-trace .data\records-browser-regression-results\layout-feedback-unique-Rec-28a90-emain-in-primary-navigation-mobile\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  7) [mobile] › tests\browser\pulse-actions.spec.ts:33:1 › an attached class list is registered only after Confirm, opens My Courses, can be searched and undone
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: locator('table').filter({ hasText: 'Block Section' }).getByRole('row').filter({ hasText: 'BSIT-1A' })
+    Expected substring: "3"
+    Error: strict mode violation: locator('table').filter({ hasText: 'Block Section' }).getByRole('row').filter({ hasText: 'BSIT-1A' }) resolved to 3 elements:
+        1) <tr>…</tr> aka getByRole('row', { name: 'Ana T. Ramos ana.ramos@' })
+        2) <tr>…</tr> aka getByRole('row', { name: 'Ben L. Cruz ben.cruz@example.' })
+        3) <tr>…</tr> aka getByRole('row', { name: 'Carla Mendoza carla.mendoza@' })
+
+    Call log:
+      - Expect "toContainText" locator('table').filter({ hasText: 'Block Section' }).getByRole('row').filter({ hasText: 'BSIT-1A' }) with timeout 5000ms
+      - waiting for locator('table').filter({ hasText: 'Block Section' }).getByRole('row').filter({ hasText: 'BSIT-1A' })
+
+
+      47 |   await expect(page).toHaveURL(/#\/student-monitoring\?tab=students/)
+      48 |   const table = page.locator('table').filter({ hasText: 'Block Section' })
+    > 49 |   await expect(table.getByRole('row').filter({ hasText: 'BSIT-1A' })).toContainText('3')
+         |                                                                       ^
+      50 |
+      51 |   await say(page, 'Is Ben Cruz registered?')
+      52 |   const results = pulse.getByRole('region', { name: 'Search results' }).last()
+        at C:\Users\Benny\OneDrive\Documents\EduPulse\EduPulse System Prototype\edupulse-app\tests\browser\pulse-actions.spec.ts:49:71
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    .data\records-browser-regression-results\pulse-actions-an-attached--c5e6d--can-be-searched-and-undone-mobile\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: .data\records-browser-regression-results\pulse-actions-an-attached--c5e6d--can-be-searched-and-undone-mobile\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    .data\records-browser-regression-results\pulse-actions-an-attached--c5e6d--can-be-searched-and-undone-mobile\trace.zip
+    Usage:
+
+        npx playwright show-trace .data\records-browser-regression-results\pulse-actions-an-attached--c5e6d--can-be-searched-and-undone-mobile\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  8) [mobile] › tests\browser\pulse-actions.spec.ts:62:1 › the My Courses uploader reads a real class list instead of sample names and merges a second upload
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByText(/IT 102 · BSIT-1A: 4 students registered \(1 new, 1 already registered\)/)
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByText(/IT 102 · BSIT-1A: 4 students registered \(1 new, 1 already registered\)/) with timeout 5000ms
+      - waiting for getByText(/IT 102 · BSIT-1A: 4 students registered \(1 new, 1 already registered\)/)
+
+
+      80 |   await page.getByLabel('Select Course *').selectOption('IT 102')
+      81 |   await page.getByRole('button', { name: 'Register Course' }).click()
+    > 82 |   await expect(page.getByText(/IT 102 · BSIT-1A: 4 students registered \(1 new, 1 already registered\)/)).toBeVisible()
+         |                                                                                                           ^
+      83 | })
+      84 |
+      85 | test('a student’s material is matched to a course with reasons, and added to the library only after Confirm', async ({ page, request }) => {
+        at C:\Users\Benny\OneDrive\Documents\EduPulse\EduPulse System Prototype\edupulse-app\tests\browser\pulse-actions.spec.ts:82:107
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    .data\records-browser-regression-results\pulse-actions-the-My-Cours-8eca7--and-merges-a-second-upload-mobile\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: .data\records-browser-regression-results\pulse-actions-the-My-Cours-8eca7--and-merges-a-second-upload-mobile\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    .data\records-browser-regression-results\pulse-actions-the-My-Cours-8eca7--and-merges-a-second-upload-mobile\trace.zip
+    Usage:
+
+        npx playwright show-trace .data\records-browser-regression-results\pulse-actions-the-My-Cours-8eca7--and-merges-a-second-upload-mobile\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  9) [mobile] › tests\browser\pulse-actions.spec.ts:105:1 › requests to open a page navigate only within the role, and course generation shows its syllabus source before Confirm
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('dialog', { name: 'Pulse', exact: true }).getByText('Opened Student Monitoring.')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('dialog', { name: 'Pulse', exact: true }).getByText('Opened Student Monitoring.') with timeout 5000ms
+      - waiting for getByRole('dialog', { name: 'Pulse', exact: true }).getByText('Opened Student Monitoring.')
+
+
+      107 |   await say(page, 'Take me to the scoring sheet')
+      108 |   await expect(page).toHaveURL(/#\/student-monitoring/)
+    > 109 |   await expect(pulse.getByText('Opened Scoring Sheet.')).toBeVisible()
+          |                                                               ^
+      110 |
+      111 |   await say(page, 'Generate week 2 materials for IT 102')
+      112 |   const card = pulse.getByRole('region', { name: 'Generate courseware' })
+        at C:\Users\Benny\OneDrive\Documents\EduPulse\EduPulse System Prototype\edupulse-app\tests\browser\pulse-actions.spec.ts:109:63
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    .data\records-browser-regression-results\pulse-actions-requests-to--e2595-labus-source-before-Confirm-mobile\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: .data\records-browser-regression-results\pulse-actions-requests-to--e2595-labus-source-before-Confirm-mobile\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    .data\records-browser-regression-results\pulse-actions-requests-to--e2595-labus-source-before-Confirm-mobile\trace.zip
+    Usage:
+
+        npx playwright show-trace .data\records-browser-regression-results\pulse-actions-requests-to--e2595-labus-source-before-Confirm-mobile\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  9 failed
+    [desktop] › tests\browser\course-seed.spec.ts:4:1 › seeded rosters and revised syllabus remain available after reload
+    [desktop] › tests\browser\pulse-actions.spec.ts:33:1 › an attached class list is registered only after Confirm, opens My Courses, can be searched and undone
+    [desktop] › tests\browser\pulse-actions.spec.ts:62:1 › the My Courses uploader reads a real class list instead of sample names and merges a second upload
+    [desktop] › tests\browser\pulse-actions.spec.ts:105:1 › requests to open a page navigate only within the role, and course generation shows its syllabus source before Confirm
+    [mobile] › tests\browser\course-seed.spec.ts:4:1 › seeded rosters and revised syllabus remain available after reload
+    [mobile] › tests\browser\layout-feedback.spec.ts:29:1 › unique Records and Assessments destinations remain in primary navigation
+    [mobile] › tests\browser\pulse-actions.spec.ts:33:1 › an attached class list is registered only after Confirm, opens My Courses, can be searched and undone
+    [mobile] › tests\browser\pulse-actions.spec.ts:62:1 › the My Courses uploader reads a real class list instead of sample names and merges a second upload
+    [mobile] › tests\browser\pulse-actions.spec.ts:105:1 › requests to open a page navigate only within the role, and course generation shows its syllabus source before Confirm
+  71 passed (16.9m)

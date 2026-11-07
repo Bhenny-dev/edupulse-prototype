@@ -6,7 +6,7 @@ async function openCourse(page: import('@playwright/test').Page) {
   await page.goto('/')
   await page.getByRole('button', { name: 'Instructor', exact: true }).click()
   await page.goto('/#/syllabus?tab=builder')
-  await page.getByLabel('Course', { exact: true }).selectOption('GE ELEC-PPC')
+  await page.getByRole('combobox', { name: 'Course', exact: true }).selectOption('GE ELEC-PPC')
   await page.getByRole('button', { name: 'Open Pulse assistant' }).click()
   const panel = page.getByRole('dialog', { name: 'Pulse', exact: true })
   await panel.getByRole('textbox', { name: 'Ask Pulse', exact: true }).fill(popularCulturePrompt)

@@ -1,0 +1,22 @@
+✔ dashboard destinations keep the named role and a correction refers to the preceding navigation request (23.0437ms)
+✔ a class list is read from CSV with names, IDs, emails and the block; blanks and duplicates are reported (31.5957ms)
+✔ class lists with separate name columns, tabs or plain numbered lines are read; ordinary documents are not class lists (31.5664ms)
+✔ merging a class list keeps registered students once and recognises them by ID, email or name (1.6606ms)
+✔ Excel workbooks are read in the sandbox as comma-separated rows and become class lists (2235.3749ms)
+✔ courses are recognised by code in any spacing or by title (27.5494ms)
+✔ a material is matched to its course with the words and syllabus weeks that support the match (81.6863ms)
+✔ a course syllabus becomes a cited reference with its outline (1.6375ms)
+✔ the Operator proposes confirmable actions and never registers without an attachment (34.2769ms)
+✔ navigation requests open only the pages a role may see (6.1162ms)
+✔ search finds students, courses, courseware and documents and says where each comes from (54.1303ms)
+✔ registering the same course and block twice merges the lists, and Undo restores the previous state (12.9483ms)
+✔ course membership edits preserve other owners, profiles and explicit removal until re-enrollment (101.858ms)
+✔ persisted roster overrides survive shared imports and sync, revoke access, retain attempts and enforce owner RLS (20348.3228ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 39258.0485

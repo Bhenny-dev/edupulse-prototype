@@ -8,7 +8,7 @@ The examples below use synthetic student profiles and a synthetic authenticated 
 
 ## 1. Find students
 
-Open **Syllabus → My Courses → Choose students**. Search by name or student number, and filter by **Year level**, **Department** and **Program**. **Previous students** and **Next students** page through matches. Selections remain while filters or pages change.
+Open **Student Monitoring → Students → Choose students**. Search by name or student number, and filter by **Year level**, **Department** and **Program**. **Previous students** and **Next students** page through matches. Selections remain while filters or pages change.
 
 ![Filter the official directory](01-directory-filters.png)
 
@@ -18,11 +18,11 @@ Select each student, check **Selected students**, then choose **Course for selec
 
 ![Select a student and course](02-student-selection.png)
 
-Press **Register selected students**. The button waits for the revision-checked workspace save. A failed save retains the selection and displays its error; it does not report success. Registering the same student again merges the roster without duplication. The existing file-upload workflow remains available below the directory.
+Press **Register selected students**. The button waits for the revision-checked workspace save. A failed save retains the selection and displays its error; it does not report success. Registering the same student again merges the roster without duplication. Expand **Import an EduSuite class list** below the directory for the existing file-upload workflow.
 
 ## 3. Verify the saved roster
 
-After a successful save, **Registered Courses** shows the course, block and student count. Reloading retains the roster. When its matching syllabus is active and reviewed materials are published and released, the selected student can access them. Other registered students cannot access that course merely because they are in the directory.
+After a successful save, the **Students** table shows the saved course memberships. Filter by course or block and use the pagination controls for larger rosters. Reloading retains the roster. When its matching syllabus is active and reviewed materials are published and released, the selected student can access them. Other registered students cannot access that course merely because they are in the directory.
 
 ![Roster retained after reload](03-saved-roster.png)
 
@@ -33,3 +33,5 @@ In **Settings → Account**, a provisioned student sees **Student number**, **Ye
 ![Student profile with imported fields](04-student-profile.png)
 
 Provisioning is a server-side administrative operation. It creates EduPulse sign-in accounts; it does not create Gmail mailboxes or send invitation emails. Existing unrelated accounts are never overwritten, and reruns retain existing account passwords.
+
+Saved members can be moved between blocks or removed through their three-dot menu. These edits affect course access, preserve official profiles and past attempts, and survive later shared imports or automatic sync. [Manual 21](../21-automatic-records-and-course-rosters/README.md) illustrates those confirmations.

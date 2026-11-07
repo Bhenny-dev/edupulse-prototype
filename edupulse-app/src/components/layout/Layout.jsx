@@ -41,7 +41,7 @@ const SECTIONS = [
     key: 'syllabus', path: '/syllabus', label: 'Syllabus', icon: BookOpen, roles: ['instructor'],
   },
   {
-    key: 'courseware', path: '/courseware', label: 'Courseware', icon: FileText, roles: ['instructor'],
+    key: 'courseware', path: '/courseware', label: 'Course', icon: FileText, roles: ['instructor'],
     relatedPaths: ['/content-editor'],
   },
   {
@@ -68,7 +68,7 @@ function Breadcrumbs() {
   if (parts.length === 0 || (parts.length === 1 && parts[0] === 'dashboard')) return null
 
   const crumbs = parts.map((part, i) => ({
-    label: part.charAt(0).toUpperCase() + part.slice(1).replace(/-/g, ' '),
+    label: part === 'courseware' ? 'Course' : part.charAt(0).toUpperCase() + part.slice(1).replace(/-/g, ' '),
     path: '/' + parts.slice(0, i + 1).join('/'),
   }))
 

@@ -1,0 +1,37 @@
+
+> edupulse-app@0.4.0 test:browser
+> playwright test --config playwright.records.config.ts
+
+node.exe : [WebServer] (node:20900) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([WebServer] (no... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 16 tests using 1 worker
+
+(node:31560) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 [desktop] › tests\browser\automatic-records.spec.ts:4:1 › three syllabus tabs, Course destination and legacy roster link keep their workflows (5.8s)
+  ok  2 [desktop] › tests\browser\automatic-records.spec.ts:18:1 › directory registration, block editing and confirmed removal persist after reload (14.5s)
+  ok  3 [desktop] › tests\browser\automatic-records.spec.ts:19:1 › a failed confirmed save preserves selection and is never replayed automatically (7.7s)
+  ok  4 [desktop] › tests\browser\automatic-records.spec.ts:32:1 › background reads retain cached records and coalesce duplicate wakeups (3.4s)
+  ok  5 [desktop] › tests\browser\automatic-records.spec.ts:45:1 › offline and transient read failures recover with bounded retries and no business writes (3.1s)
+  ok  6 [desktop] › tests\browser\automatic-records.spec.ts:59:1 › students cannot manage rosters and never run instructor reconciliation (2.7s)
+  ok  7 [desktop] › tests\browser\automatic-records.spec.ts:66:1 › a delayed instructor read cannot populate the next admin role view (6.4s)
+  ok  8 [desktop] › tests\browser\automatic-records.spec.ts:85:1 › cross-tab invalidation carries no records and never crosses account channels (3.3s)
+(node:9748) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  9 [mobile] › tests\browser\automatic-records.spec.ts:4:1 › three syllabus tabs, Course destination and legacy roster link keep their workflows (5.0s)
+  ok 10 [mobile] › tests\browser\automatic-records.spec.ts:18:1 › directory registration, block editing and confirmed removal persist after reload (20.9s)
+  ok 11 [mobile] › tests\browser\automatic-records.spec.ts:19:1 › a failed confirmed save preserves selection and is never replayed automatically (15.2s)
+  ok 12 [mobile] › tests\browser\automatic-records.spec.ts:32:1 › background reads retain cached records and coalesce duplicate wakeups (5.9s)
+  ok 13 [mobile] › tests\browser\automatic-records.spec.ts:45:1 › offline and transient read failures recover with bounded retries and no business writes (5.9s)
+  ok 14 [mobile] › tests\browser\automatic-records.spec.ts:59:1 › students cannot manage rosters and never run instructor reconciliation (5.4s)
+  ok 15 [mobile] › tests\browser\automatic-records.spec.ts:66:1 › a delayed instructor read cannot populate the next admin role view (10.3s)
+  ok 16 [mobile] › tests\browser\automatic-records.spec.ts:85:1 › cross-tab invalidation carries no records and never crosses account channels (6.1s)
+
+  16 passed (2.3m)

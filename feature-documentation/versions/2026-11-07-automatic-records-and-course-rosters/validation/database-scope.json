@@ -1,0 +1,24 @@
+{
+  "migrationApplied": true,
+  "hostedCanary": "Passed after both migrations: native start/submit, saved membership removal, sync, access denial, retained attempt and unchanged revision; transaction rolled back.",
+  "securityWarningsBefore": 7,
+  "securityWarningsAfter": 7,
+  "newSecurityWarnings": 0,
+  "knownWarnings": [
+    "Six existing authenticated security-definer RPC warnings",
+    "Auth leaked-password protection remains disabled"
+  ],
+  "newFunctions": {
+    "schema": "edupulse_private",
+    "searchPath": "",
+    "authenticatedExecute": false,
+    "anonymousExecute": false
+  },
+  "migrations": [
+    "20261107131810_instructor_roster_overrides.sql",
+    "20261107141745_validate_course_membership_decisions.sql"
+  ],
+  "appliedMigrationCount": 2,
+  "remainingCanaryAccounts": 0,
+  "validationFunction": "Private invoker trigger rejects malformed, duplicate or oversized membership decisions from direct RPC callers."
+}

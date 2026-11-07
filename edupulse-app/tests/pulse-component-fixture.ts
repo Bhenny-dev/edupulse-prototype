@@ -4,7 +4,7 @@ export async function componentBuilder(page: Page) {
   await page.goto('/')
   await page.getByRole('button', { name: 'Instructor', exact: true }).click()
   await page.goto('/#/syllabus?tab=builder')
-  await page.getByLabel('Course', { exact: true }).selectOption('IT 104')
+  await page.getByRole('combobox', { name: 'Course', exact: true }).selectOption('IT 104')
   const first = page.locator('[data-pulse-field="programOutcomes.0"]')
   await first.fill('Original first outcome')
   if (await page.locator('[data-pulse-field="programOutcomes.1"]').count() === 0) await page.getByRole('button', { name: 'Add Program Outcome', exact: true }).click()

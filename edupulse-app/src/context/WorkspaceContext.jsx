@@ -1,4 +1,3 @@
-import { Spinner } from '../components/ui/LoadingFeedback'
 import { jsonValue } from '../utils/jsonValue'
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { useAuth } from './AuthContext'
@@ -48,6 +47,9 @@ function WorkspaceSession({ children, owner, user, preview }) {
       setMode(remote.mode)
       if (remote.mode === 'preview') { setConflict(false); setJournal(previous => ({ ...previous, dirty: false })); return }
       const local = current.current
+      if (!discard && local.dirty && remote.revision > local.revision && jsonValue(remote.data) === jsonValue(local.data)) {
+        setConflict(false); setJournal({ data: local.data, revision: remote.revision, dirty: false }); return
+      }
       if (!discard && local.dirty && remote.revision !== local.revision) {
         setConflict(true); setError('A newer saved workspace exists. Pending edits remain on this device. Export them before loading the latest copy.'); return
       }
@@ -112,7 +114,24 @@ function WorkspaceSession({ children, owner, user, preview }) {
     const link = document.createElement('a'); link.href = url; link.download = `edupulse-workspace-${new Date().toISOString().slice(0, 10)}.json`; link.click()
     setTimeout(() => URL.revokeObjectURL(url), 1000); setBackedUp(true)
   }, [])
-  return <WorkspaceContext.Provider value={{ ...journal.data, setSyllabi, setContent, setRegistrations, updateWorkspace:update, commit, loading, saving, dirty: journal.dirty, mode, error: cacheError || error, conflict, backedUp, exportBackup, retry: () => mode ? setError('') : load(), reload: () => load(true) }}>{children}</WorkspaceContext.Provider>
+  useEffect(() => {
+    if (preview) return
+    let checked = Date.now()
+    const wake = event => {
+      if (event?.type === 'storage' && event.key !== key) return
+      if (navigator.onLine === false || document.visibilityState !== 'visible' || writeLock.current || saving || loading || conflict) return
+      if (event?.type !== 'online' && Date.now() - checked < 30000) return
+      checked = Date.now()
+      // Read before retrying a failed save. Preserve dirty edits and detect
+      // a changed server revision instead of blindly replaying a write.
+      void load(false)
+    }
+    const timer = setInterval(wake, 60000)
+    window.addEventListener('focus', wake); window.addEventListener('online', wake); window.addEventListener('storage', wake)
+    document.addEventListener('visibilitychange', wake)
+    return () => { clearInterval(timer); window.removeEventListener('focus', wake); window.removeEventListener('online', wake); window.removeEventListener('storage', wake); document.removeEventListener('visibilitychange', wake) }
+  }, [preview, key, load, saving, loading, conflict])
+  return <WorkspaceContext.Provider value={{ ...journal.data, revision: journal.revision, setSyllabi, setContent, setRegistrations, updateWorkspace:update, commit, loading, saving, dirty: journal.dirty, mode, error: cacheError || error, conflict, backedUp, exportBackup, retry: () => mode ? setError('') : load(), reload: () => load(true) }}>{children}</WorkspaceContext.Provider>
 }
 export function useWorkspace() {
   const value = useContext(WorkspaceContext)

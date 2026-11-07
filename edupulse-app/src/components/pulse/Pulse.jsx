@@ -38,6 +38,7 @@ import { buddyForRequest } from '../../agents/buddies'
 import { quickReply } from '../../agents/quickReplies'
 import usePulseVoice from './usePulseVoice'
 import PulseVoice from './PulseVoice'
+import { registerCourseStudents } from '../../utils/courseRoster'
 const WorkspaceOffice = lazy(() => import('./office/WorkspaceOffice'))
 
 // The server accepts up to 18,000 characters per chat reference; longer files are sent as an excerpt and can be added to the library whole.
@@ -237,15 +238,26 @@ export default function Pulse() {
     // The id is fixed here so the saved registration and the Undo record always match.
     const request = { ...details, uploadedBy: user?.id, id: `reg-${crypto.randomUUID().slice(0, 8)}` }
     let result
-    const saved = await commit(data => { result = applyRegistration(data.registrations, request); return { ...data, registrations: result.registrations } })
+    const saved = await commit(data => {
+      const next = registerCourseStudents(data, request, user.id)
+      result = { ...applyRegistration(data.registrations, request), beforeRegistrations: data.registrations, afterRegistrations: next.registrations, beforeOverrides: data.enrollmentOverrides || [], afterOverrides: next.enrollmentOverrides }
+      return next
+    })
     pulseBus.progress('roster-registered', `${details.courseCode} · ${details.blockSection}`)
-    navigate('/syllabus?tab=register')
+    navigate('/student-monitoring?tab=students')
     setMessages(previous => [...previous, { id: crypto.randomUUID(), from: 'pulse', mode: 'receipt', text: `${details.courseCode} · ${details.blockSection}: ${result.registration.studentCount} students. ${receiptText(saved)}` }])
     return result
   }, [commit, user?.id, user?.role, navigate])
   const undoRegister = useCallback(async result => {
+    if (result.afterRegistrations) {
+      await commit(data => {
+        if (jsonValue(data.registrations) !== jsonValue(result.afterRegistrations) || jsonValue(data.enrollmentOverrides || []) !== jsonValue(result.afterOverrides)) throw new Error('This class list changed after confirmation. Its newer changes were preserved.')
+        return { ...data, registrations: result.beforeRegistrations, enrollmentOverrides: result.beforeOverrides }
+      })
+      return true
+    }
     if (undoRegistration(registrations, result) === registrations) return false
-    await commit(data => { const next = undoRegistration(data.registrations, result); if (next === data.registrations) throw new Error('This roster changed; newer changes were preserved.'); return { ...data, registrations: next } }); return true
+    await commit(data => { const next = undoRegistration(data.registrations, result); if (next === data.registrations) throw new Error('This class list changed after confirmation. Its newer changes were preserved.'); return { ...data, registrations: next } }); return true
   }, [registrations, commit])
   const runFile = useCallback(async ({ attachment, courseCode, title }) => {
     const fullTitle = (courseCode ? `${courseCode} · ${title}` : title).slice(0, 160)
@@ -386,7 +398,7 @@ export default function Pulse() {
         else {
           const result = await requestOperator({ operation: 'plan', message: question, viewRole: role, editor, context: `Page: ${location.pathname}. Component: ${focus?.label || ''}. Known courses: ${catalog.map(item => item.code).join(', ')}.`, history: history.slice(-8).map(item => ({ ...item, content: item.content.slice(0, 3000) })), attachments: sourceReferences.map(item => ({ title: item.title, text: item.text.slice(0, 18000), kind: item.syllabus ? 'syllabus' : item.roster ? 'roster' : 'material' })) }, controller.signal)
           const selected = result.plan
-          const routes = { 'syllabus-builder': '/syllabus?tab=builder', 'my-syllabus': '/syllabus?tab=mine', 'my-courses': role === 'student' ? '/courseware' : '/syllabus?tab=register', courseware: '/courseware', 'student-monitoring': '/student-monitoring', assessment: '/assessment', records: '/records', 'course-loading': '/course-loading', monitor: '/monitor', performance: '/performance', 'ai-settings': '/settings?tab=ai-provider', settings: '/settings', dashboard: '/dashboard', help: '/settings?tab=help' }
+          const routes = { 'syllabus-builder': '/syllabus?tab=builder', 'my-syllabus': '/syllabus?tab=mine', 'my-courses': role === 'student' ? '/courseware' : '/student-monitoring?tab=students', courseware: '/courseware', 'student-monitoring': '/student-monitoring', assessment: '/assessment', records: '/records', 'course-loading': '/course-loading', monitor: '/monitor', performance: '/performance', 'ai-settings': '/settings?tab=ai-provider', settings: '/settings', dashboard: '/dashboard', help: '/settings?tab=help' }
           let proposal = { type: 'notice', text: selected.instruction || 'Specify the target page, field or course.' }
           if (['navigate', 'guide'].includes(selected.tool) && routes[selected.page]) proposal = { type: selected.tool, path: routes[selected.page], label: selected.page.replace(/-/g, ' ') }
           if (['syllabus-edit', 'content-edit'].includes(selected.tool)) proposal = { type: 'editor-edit', editor, request: question, section: selected.section || 'all', attachments: pending }

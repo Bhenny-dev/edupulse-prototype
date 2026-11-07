@@ -116,7 +116,7 @@ test('three-dot menus support keyboard, dismissal and a bounded viewport in dark
   expect(rect!.x).toBeGreaterThanOrEqual(0); expect(rect!.x + rect!.width).toBeLessThanOrEqual(size.width)
   expect(rect!.y + rect!.height).toBeLessThanOrEqual(size.height)
   await page.keyboard.press('Escape'); await expect(trigger).toBeFocused()
-  await trigger.click(); await page.getByRole('heading', { name: 'Courseware', exact: true }).click()
+  await trigger.click(); await page.getByRole('heading', { name: 'Course', exact: true }).click()
   await expect(page.getByRole('menu')).toHaveCount(0)
   await trigger.click(); await page.getByRole('menuitem', { name: 'Review drafts', exact: true }).click()
   await expect(page.locator('[data-content-id="unified-material"]')).toBeVisible()

@@ -149,9 +149,10 @@ test('the Operator proposes confirmable actions and never registers without an a
 })
 
 test('navigation requests open only the pages a role may see', () => {
-  assert.equal(pageFor('take me to the scoring sheet', 'instructor')?.path, '/student-monitoring')
+  assert.equal(pageFor('take me to the scoring sheet', 'instructor')?.path, '/student-monitoring?tab=assessments')
   assert.equal(pageFor('open my courses', 'student')?.path, '/courseware')
-  assert.equal(pageFor('open my courses', 'instructor')?.path, '/syllabus?tab=register')
+  assert.equal(pageFor('open my courses', 'instructor')?.path, '/courseware')
+  assert.equal(pageFor('go to course loading', 'dean')?.path, '/course-loading')
   assert.equal(pageFor('go to course loading', 'student')?.denied, true)
   assert.equal(pageFor('what is a loop?', 'student'), null)
 })
@@ -163,7 +164,7 @@ test('search finds students, courses, courseware and documents and says where ea
   const content = { c1: { title: 'Loops and Repetition', week: 3, type: 'material', status: 'draft', syllabusId: 'syl-1' } }
   const documents = [{ id: 'd1', title: 'IT 102 · Loop exercises', file_name: 'loops.pdf', chunks: 4, quality: { course: 'IT 102' } }]
   const hits = searchRecords('Ben Cruz', { role: 'instructor', userId: 'u1', catalog, registrations, syllabi: [syllabus], content, documents })
-  assert.equal(hits[0]?.group, 'Registered students'); assert.equal(hits[0]?.source, 'list.csv'); assert.equal(hits[0]?.path, '/syllabus?tab=register')
+  assert.equal(hits[0]?.group, 'Registered students'); assert.equal(hits[0]?.source, 'list.csv'); assert.equal(hits[0]?.path, '/student-monitoring?tab=students')
   // Another instructor's class list is not searched.
   assert.equal(searchRecords('Ben Cruz', { role: 'instructor', userId: 'u2', catalog, registrations }).length, 0)
   const loop = searchRecords('loop', { role: 'instructor', userId: 'u1', catalog, registrations, syllabi: [syllabus], content, documents })

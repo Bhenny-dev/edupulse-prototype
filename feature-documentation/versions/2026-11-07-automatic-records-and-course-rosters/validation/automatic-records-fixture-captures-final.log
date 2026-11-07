@@ -1,0 +1,53 @@
+node.exe : [WebServer] (node:42540) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([WebServer] (no... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 36 tests using 1 worker
+
+(node:24248) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 [desktop] › tests\snapshots\automatic-records.spec.ts:7:1 › automatic records: saved roster CRUD and confirmation boundaries (14.9s)
+  ok  2 [desktop] › tests\snapshots\automatic-records.spec.ts:8:1 › automatic records: retained cache while updating and offline (3.9s)
+  ok  3 [desktop] › tests\snapshots\automatic-records.spec.ts:17:1 › automatic records: focused syllabus tabs and Course page (7.7s)
+  ok  4 [desktop] › tests\snapshots\baseline-workflows.spec.ts:9:1 › synthetic baseline topic mastery and reviewed-response controls (10.8s)
+  ok  5 [desktop] › tests\snapshots\baseline-workflows.spec.ts:14:1 › synthetic baseline loading, block correction and offline review (6.3s)
+  ok  6 [desktop] › tests\snapshots\baseline-workflows.spec.ts:19:1 › synthetic baseline student timed written response and saved notice (6.2s)
+  ok  7 [desktop] › tests\snapshots\baseline-workflows.spec.ts:25:1 › synthetic baseline syllabus versions, assessment mappings and delivery settings (4.3s)
+  ok  8 [desktop] › tests\snapshots\baseline-workflows.spec.ts:31:1 › synthetic editor fields grow to display full section text and answer explanations (3.1s)
+  ok  9 [desktop] › tests\snapshots\baseline-workflows.spec.ts:58:1 › synthetic generation failure keeps the course open with actionable recovery (2.9s)
+  ok 10 [desktop] › tests\snapshots\baseline-workflows.spec.ts:70:1 › synthetic account Pulse guidance matches shared records (2.7s)
+  ok 11 [desktop] › tests\snapshots\course-seed.spec.ts:5:1 › synthetic identities show seeded blocks, syllabus draft and authored lesson without student results (4.7s)
+  ok 12 [desktop] › tests\snapshots\courseware-formatting.spec.ts:7:1 › synthetic courseware formatting and evaluation at the end (5.1s)
+  ok 13 [desktop] › tests\snapshots\courseware-formatting.spec.ts:21:1 › synthetic courseware formatting on solid dark surfaces (48.4s)
+  ok 14 [desktop] › tests\snapshots\courseware-formatting.spec.ts:30:1 › synthetic student formatted document and presentation (38.1s)
+  ok 15 [desktop] › tests\snapshots\courseware-unified.spec.ts:14:1 › synthetic unified courseware list, generation and three-dot menus (5.4s)
+  ok 16 [desktop] › tests\snapshots\courseware-unified.spec.ts:49:1 › synthetic Pulse guidance describes the combined Courseware workspace (2.0s)
+  ok 17 [desktop] › tests\snapshots\pulse-navigation.spec.ts:6:1 › synthetic owner opens named role dashboards and retains the correction conversation (2.7s)
+  ok 18 [desktop] › tests\snapshots\pulse-navigation.spec.ts:20:1 › synthetic Anthropic API credit failure explains recovery without replacing the saved key (2.0s)
+  ok 19 [desktop] › tests\snapshots\pulse-navigation.spec.ts:30:1 › synthetic Claude workspace recovery preserves the saved credential and selected model (1.7s)
+  ok 20 [desktop] › tests\snapshots\role-restoration.spec.ts:15:3 › synthetic restored instructor dashboard (3.1s)
+  ok 21 [desktop] › tests\snapshots\role-restoration.spec.ts:15:3 › synthetic restored student dashboard (3.7s)
+  ok 22 [desktop] › tests\snapshots\role-restoration.spec.ts:15:3 › synthetic restored dean dashboard (3.1s)
+  ok 23 [desktop] › tests\snapshots\role-restoration.spec.ts:15:3 › synthetic restored associate_dean dashboard (3.4s)
+  ok 24 [desktop] › tests\snapshots\role-restoration.spec.ts:17:1 › synthetic restored performance and scoring sections (7.7s)
+  ok 25 [desktop] › tests\snapshots\role-restoration.spec.ts:23:1 › synthetic restored oversight, loading and records sections (7.0s)
+  ok 26 [desktop] › tests\snapshots\role-restoration.spec.ts:30:1 › synthetic restored student readers, results and notices (3.0s)
+  ok 27 [desktop] › tests\snapshots\role-restoration.spec.ts:36:1 › synthetic restored dark solid surfaces (2.3s)
+  ok 28 [desktop] › tests\snapshots\student-directory.spec.ts:6:1 › student directory selection and confirmed roster save (3.2s)
+  ok 29 [desktop] › tests\snapshots\student-directory.spec.ts:25:1 › student account shows its imported profile fields (1.4s)
+  ok 30 [desktop] › tests\snapshots\workspace-recovery.spec.ts:5:1 › synthetic page stays clear after a failed save and recovery lives in Settings (5.4s)
+  ok 31 [desktop] › tests\snapshots\workspace-recovery.spec.ts:19:1 › synthetic conflict recovery stays in Settings until a backup is exported (4.8s)
+(node:7468) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 32 [mobile] › tests\snapshots\automatic-records.mobile.spec.ts:5:1 › automatic records: mobile roster and solid dark surfaces (7.1s)
+  ok 33 [mobile] › tests\snapshots\automatic-records.mobile.spec.ts:9:1 › automatic records: mobile dashboard removes manual refresh and sync (1.4s)
+  ok 34 [mobile] › tests\snapshots\baseline-workflows-mobile.spec.ts:4:1 › synthetic baseline mobile topic mastery and shared loading (5.8s)
+  ok 35 [mobile] › tests\snapshots\courseware-unified.mobile.spec.ts:5:1 › synthetic unified courseware mobile list and item actions (2.2s)
+  ok 36 [mobile] › tests\snapshots\role-restoration-mobile.spec.ts:4:1 › synthetic restored mobile charts, matrix and dark role navigation (7.6s)
+
+  36 passed (4.3m)

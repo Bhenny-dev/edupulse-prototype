@@ -2,7 +2,7 @@
 
 The [IT seed guide](../../system-manual/18-it-course-seed/README.md) shows the same interface populated with nine course blocks, a revised Programming draft and authored weekly material. Its fictional screenshot identities are separate from the aggregate hosted enrollment evidence.
 
-Main tabs: **Dashboard**, **Syllabus**, **Courseware**, **Student Monitoring**, **Performance**. Page views use their own tabs. Duplicate left sidebars have been removed. Rows marked *Sample* are built-in examples; the instructor's own syllabi have no label. Task-by-task instructions for the syllabus and courseware flows are in [System Manual 2](../../system-manual/02-syllabus-lifecycle/README.md) and [3](../../system-manual/03-courseware-generation-and-review/README.md).
+Main tabs: **Dashboard**, **Syllabus**, **Course**, **Student Monitoring**, **Performance**. Page views use their own tabs. Duplicate left sidebars have been removed. Rows marked *Sample* are built-in examples; the instructor's own syllabi have no label. Task-by-task instructions for the syllabus and courseware flows are in [System Manual 2](../../system-manual/02-syllabus-lifecycle/README.md) and [3](../../system-manual/03-courseware-generation-and-review/README.md).
 
 ## 1. Instructor dashboard
 
@@ -22,7 +22,6 @@ Signed-in instructor accounts see this same dashboard with their own data: the s
 
 | Tab | Screenshot | What it holds |
 | --- | --- | --- |
-| My Courses | ![My Courses](02-syllabus-my-courses.png) | **Registered students ? Choose students** opens the official directory with name, year, department and program filters; selected students are registered into a course/block after a confirmed save ([Manual 16](../../system-manual/16-student-directory/README.md)). Upload the EduSuite class list for a block (CSV, Excel `.xlsx`, PDF, Word `.docx` or text, up to 4 MB, one student per row with a Name column) to register a course you teach. The file is read for real: the preview lists its students, the course and block are filled in when the file names them, rows without a name are reported, and a second list for the same course and block is merged without duplicates. You can also attach the file to Pulse ([System Manual 9](../../system-manual/09-pulse-actions/README.md)). |
 | My Syllabus | ![My Syllabus](03-syllabus-my-syllabus.png) | The lifecycle strip (1 Drafted → 2 Checked → 3 Out for Approval → *offline signatures* → 4 Approved — Uploaded → 5 Active) and every syllabus with status, version, extracted outline, the **next step** button for its status, and icons for **View Syllabus**, **Version History**, **Review recorded changes**, **Edit syllabus** for an owned non-sample record (including active; saving returns it to draft), **Copy for next term** and **Archive**. |
 | Shared Repository | ![Shared Repository](04-syllabus-shared-repository.png) | Sample syllabus library by curriculum course. Copy one as your own draft; private workspaces are not shared with other instructors. |
 
@@ -87,3 +86,9 @@ The [current account guide](../09-restored-role-pages/README.md) includes questi
 ## Selected-field drafting and the wider outline
 
 The [Course Outline workspace](../../system-manual/14-pulse-and-outline-workspace/README.md) retains both terms, examination slots, resources and categorized selectors. Filters and an expanded view provide more working space. Move buttons and the grip swap teaching content without reordering calendar labels. Instructors can also target editable syllabus, document, slide or assessment wording with Pulse; previews preserve neighboring fields and existing metadata.
+
+### Course students
+
+![Course students](02-monitoring-course-students.png)
+
+**Student Monitoring → Students** contains the course/block roster, **Choose students**, optional **Import an EduSuite class list**, student search and paginated memberships. Three-dot menus provide **Change block** and **Remove from course**, both saved only after confirmation. Accounts and attempt history are retained. See [Manual 21](../../system-manual/21-automatic-records-and-course-rosters/README.md). The Syllabus page has only its three authoring tabs.

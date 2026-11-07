@@ -16,7 +16,7 @@ test('mascot follows the cursor, distinguishes a click from dragging, and focuse
   await mascot.click()
   await expect(page.getByRole('dialog', { name: 'Pulse', exact: true })).toBeVisible()
   await page.getByRole('button', { name: 'Close Pulse', exact: true }).click()
-  const control = page.getByLabel('Course', { exact: true })
+  const control = page.getByRole('combobox', { name: 'Course', exact: true })
   await control.scrollIntoViewIfNeeded()
   const a = (await mascot.boundingBox())!, b = (await control.boundingBox())!
   await page.mouse.move(a.x + 30, a.y + 30); await page.mouse.down()
@@ -25,7 +25,7 @@ test('mascot follows the cursor, distinguishes a click from dragging, and focuse
   await expect(page.locator('.pulse-focus-heading')).toContainText('Course')
   await expect(page.locator('.pulse-spotlight')).toBeVisible()
   await expect(page.locator('.pulse-focus-heading')).toContainText('Course')
-  await expect(page.getByLabel('Course', { exact: true })).toHaveValue('')
+  await expect(page.getByRole('combobox', { name: 'Course', exact: true })).toHaveValue('')
   if (test.info().project.name === 'desktop') {
     await expect(page.locator('[data-pulse-ui="mascot"]')).toBeHidden()
     const main=(await page.locator('#main-content').boundingBox())!, panel=(await page.locator('[data-pulse-ui="panel"]').boundingBox())!
@@ -59,7 +59,7 @@ test('section tour reads visible controls and waits for input', async ({ page })
   await page.getByRole('button', { name: 'Walk me through Course Information', exact: true }).click()
   await expect(page.getByText(/Step 1 of \d+/)).toBeVisible()
   await expect(page.getByRole('button', { name: 'Next step' })).toBeDisabled()
-  await page.getByLabel('Course', { exact: true }).selectOption('IT 102')
+  await page.getByRole('combobox', { name: 'Course', exact: true }).selectOption('IT 102')
   await page.getByRole('button', { name: 'Next step' }).click()
   await expect(page.getByText(/Step 2 of \d+/)).toBeVisible()
   // Course Title auto-fills from the selected course; the step must describe its current state.
@@ -69,13 +69,13 @@ test('section tour reads visible controls and waits for input', async ({ page })
 
 test('keyboard walkthrough waits for real input and save, then completes', async ({ page }) => {
   test.setTimeout(60000)
-  await page.getByLabel('Course', { exact: true }).focus()
+  await page.getByRole('combobox', { name: 'Course', exact: true }).focus()
   await page.keyboard.press('Alt+p')
   await page.getByRole('button', { name: 'Pulse options', exact: true }).click(); await page.getByRole('button', { name: 'Guide selected component', exact: true }).click()
   await page.getByRole('button', { name: 'Build a new syllabus', exact: true }).click()
   await expect(page.getByText('Step 1 of 6 · Build a new syllabus')).toBeVisible()
   await expect(page.getByRole('button', { name: 'Next step', exact: true })).toBeDisabled()
-  await page.getByLabel('Course', { exact: true }).selectOption('IT 102')
+  await page.getByRole('combobox', { name: 'Course', exact: true }).selectOption('IT 102')
   await page.getByRole('button', { name: 'Next step', exact: true }).click()
   await page.getByRole('button', { name: 'Next step', exact: true }).click()
   await expect(page.getByRole('button', { name: 'Next step', exact: true })).toBeDisabled()
@@ -104,7 +104,7 @@ test('invalid drop returns to the dock and reduced motion disables cursor animat
 
 test('touch drag opens focused guidance on a form control', async ({ page }) => {
   test.skip(test.info().project.name !== 'mobile')
-  const control = page.getByLabel('Course', { exact: true })
+  const control = page.getByRole('combobox', { name: 'Course', exact: true })
   await control.scrollIntoViewIfNeeded()
   const mascot = page.getByRole('button', { name: 'Open Pulse assistant' })
   const from = (await mascot.boundingBox())!, to = (await control.boundingBox())!

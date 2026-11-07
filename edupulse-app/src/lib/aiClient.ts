@@ -32,6 +32,7 @@ export async function aiRequest<T>(action: string, method = 'GET', body?: unknow
   const data = await response.json().catch(error => { if (error instanceof SyntaxError) throw new ApiRequestError('The AI API returned an unreadable response. Check the deployment and retry.', 502, 'INVALID_RESPONSE'); return transportError(error) })
   if (typeof window !== 'undefined' && requestToken === accessToken && ['chat', 'courseware', 'operator'].includes(action) && ((!data.pending && response.ok) || ['MODEL_NOT_AVAILABLE', 'MODEL_INCOMPATIBLE', 'PROVIDER_AUTH', 'PROVIDER_CREDITS', 'PROVIDER_QUOTA', 'PROVIDER_WORKSPACE_REQUIRED', 'EMPTY_RESPONSE'].includes(data.error?.code))) window.dispatchEvent(new Event('edupulse-ai-change'))
   if (!response.ok) throw new ApiRequestError(data.error?.message || `Request failed (${response.status}).`, response.status, data.error?.code)
+  if (typeof window !== 'undefined' && requestToken === accessToken && ((action === 'workspace' && method === 'PUT') || (action === 'academic' && method === 'POST'))) window.dispatchEvent(new CustomEvent('edupulse-records-change', { detail: { action, operation: (body as { operation?: string })?.operation } }))
   return data as T
 }
 

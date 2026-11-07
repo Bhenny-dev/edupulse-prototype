@@ -10,7 +10,7 @@ const available = [
 ]
 const planned = [
   ['G then D', 'Go to Dashboard'], ['G then S', 'Go to Syllabus'],
-  ['G then C', 'Go to Courseware'], ['G then P', 'Go to Performance'],
+  ['G then C', 'Go to Course'], ['G then P', 'Go to Performance'],
   ['G then A', 'Go to AI Assistant'], ['Ctrl + E', 'Export current view'],
   ['Ctrl + S', 'Save current form'], ['Ctrl + Z', 'Undo last action'],
 ]

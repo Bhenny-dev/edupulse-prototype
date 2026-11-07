@@ -1,0 +1,201 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-11-07T14-26-06-096Z-0a40e571",
+  "startedAt": "2026-11-07T14:26:06.096Z",
+  "finishedAt": "2026-11-07T14:26:57.232Z",
+  "commitSha": "4a347f19ad3016b49ba1d07a7b74d831efa6d8df",
+  "sourceDigest": "9cb7e3494ee0138ef0a9c0da57bcfb408964289346528af0b67305be6206ceee",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-11-07T14:24:45.963Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 5,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": null
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/automatic-records.spec.ts",
+    "edupulse-app/tests/snapshots/automatic-records.mobile.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.spec.ts",
+    "edupulse-app/tests/snapshots/course-seed.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-formatting.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.spec.ts",
+    "edupulse-app/tests/snapshots/harness-delivery.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/operator-steps.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-drafting.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-source.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+    "edupulse-app/tests/snapshots/student-directory.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/voice-quota.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/voice-quota.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-recovery.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/automatic-records.spec.ts",
+      "title": "automatic records: saved roster CRUD and confirmation boundaries",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 10096,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/automatic-records.spec.ts",
+      "title": "automatic records: retained cache while updating and offline",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 4507,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/automatic-records.spec.ts",
+      "title": "automatic records: focused syllabus tabs and Course page",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 4271,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/automatic-records.mobile.spec.ts",
+      "title": "automatic records: mobile roster and solid dark surfaces",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 15109,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/automatic-records.mobile.spec.ts",
+      "title": "automatic records: mobile dashboard removes manual refresh and sync",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2665,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-manual/21-automatic-records-and-course-rosters/01-course-students.png",
+      "sha256": "2bffa8caee0d3c7db75534a8a3bd902e7c8c8da26bc0fd31cff166d5b3537f36",
+      "bytes": 305995
+    },
+    {
+      "path": "feature-documentation/system-manual/21-automatic-records-and-course-rosters/02-change-block.png",
+      "sha256": "f261b023fc5ad9dde78230d3e501095496ec48be1415e5e531e455d5267fc499",
+      "bytes": 285050
+    },
+    {
+      "path": "feature-documentation/system-manual/21-automatic-records-and-course-rosters/03-remove-membership.png",
+      "sha256": "05433ba5efea850c0390311854e0a2c02458e39cb895ad858700e27c30b7e884",
+      "bytes": 308808
+    },
+    {
+      "path": "feature-documentation/system-manual/21-automatic-records-and-course-rosters/04-background-update.png",
+      "sha256": "527f58ab42681d495ac4edd8c43409d1a0c792a61593123bed56f7c70ad29c18",
+      "bytes": 389191
+    },
+    {
+      "path": "feature-documentation/system-manual/21-automatic-records-and-course-rosters/05-offline-cache.png",
+      "sha256": "11dccd3b99cd2d6012a51d807cf91fc85be0e93aae0b17e8c81800953737a9b6",
+      "bytes": 395278
+    },
+    {
+      "path": "feature-documentation/system-manual/21-automatic-records-and-course-rosters/06-syllabus-tabs.png",
+      "sha256": "e1626e7e1d88da12677b3ba3fd0029144097a03e7527402ec86e448355bda912",
+      "bytes": 283140
+    },
+    {
+      "path": "feature-documentation/system-manual/21-automatic-records-and-course-rosters/07-course-page.png",
+      "sha256": "bc131ee2e9e18780bc49646107b79f0aba1bba409d579e3a9e98f77c7c8fc21c",
+      "bytes": 261015
+    },
+    {
+      "path": "feature-documentation/system-manual/21-automatic-records-and-course-rosters/mobile-01-course-students.png",
+      "sha256": "d1d7a8b65b99a1a8324499597f32da46e1d2bcfb0e9d4873cbc286da139608a1",
+      "bytes": 253377
+    },
+    {
+      "path": "feature-documentation/system-manual/21-automatic-records-and-course-rosters/mobile-02-change-block.png",
+      "sha256": "8dcc7f2ba925ffce0664131113ac4599015760e77bf1233a674268511dc6e30a",
+      "bytes": 176962
+    },
+    {
+      "path": "feature-documentation/system-manual/21-automatic-records-and-course-rosters/mobile-03-remove-membership.png",
+      "sha256": "a20bf1a3ffd24d47de5aef333e099a6ef56a8622bb7aae9e159bc451203c3015",
+      "bytes": 213437
+    },
+    {
+      "path": "feature-documentation/system-manual/21-automatic-records-and-course-rosters/mobile-04-dashboard.png",
+      "sha256": "fa330a3367b7ba1fa8dab82c0969336ce023ae78ea274f1a841dc8ddb07429c8",
+      "bytes": 415657
+    }
+  ]
+}

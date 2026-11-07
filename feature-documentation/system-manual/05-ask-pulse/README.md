@@ -70,7 +70,7 @@ This capture uses a synthetic model/research response to demonstrate the real an
 
 ## Conversation continuity
 
-Pulse supplies up to 12 recent turns within its bounded prompt budget. Saved preferences and explicit recall come from the current account?s database history, with source labels; they are not proof that an action happened. Open **Pulse options → Conversations and memory**. See [Manual 9](../09-pulse-actions/README.md#private-conversations-and-reusable-preferences) for review, archive, deletion and recall. Requests to navigate or edit use validated tools and confirmation cards.
+Pulse supplies up to 12 recent turns within its bounded prompt budget. Saved preferences and explicit recall come from the current account's database history, with source labels; they are not proof that an action happened. Open **Pulse options → Conversations and memory**. See [Manual 9](../09-pulse-actions/README.md#private-conversations-and-reusable-preferences) for review, archive, deletion and recall. Requests to navigate or edit use validated tools and confirmation cards.
 
 
 ## Capture provenance

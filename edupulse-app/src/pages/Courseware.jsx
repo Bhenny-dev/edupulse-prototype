@@ -23,7 +23,7 @@ export default function Courseware() {
   const handleBulkCheck = ids => { bulkCheck(ids); if (ids.length) pulseBus.progress('courseware-checked') }
   if ((user?.authenticated && user?.role !== 'instructor') || !['instructor', 'student'].includes(user?.role)) return <AcademicPortal view="courseware" />
   return (<div className="container" data-pulse-zone="courseware">
-    <div className="page-header"><h1>{isStudent ? 'My Courses' : 'Courseware'}</h1></div>
+    <div className="page-header"><h1>{isStudent ? 'My Courses' : 'Course'}</h1></div>
     {selectedCourseId ? isStudent ? <CourseOutlineViewer syllabusId={selectedCourseId} onBack={back} isStudent contentStore={contentStore} /> :
       <CourseWorkspace key={selectedCourseId} syllabusId={selectedCourseId} focusWeek={focusWeek} contentStore={contentStore} onBack={back} onGenerateWeek={generateWeek} onCheckItem={handleCheckItem} onBulkCheck={handleBulkCheck} onToggleVisibility={toggleVisibility} /> :
       <CoursewareLibrary syllabi={syllabi} contentStore={contentStore} user={user} onSelectCourse={selectCourse} />}

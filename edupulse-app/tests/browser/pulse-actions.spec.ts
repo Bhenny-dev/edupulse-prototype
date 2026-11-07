@@ -30,7 +30,7 @@ async function say(page: Page, text: string) {
   await page.getByRole('button', { name: 'Send', exact: true }).click()
 }
 
-test('an attached class list is registered only after Confirm, opens My Courses, can be searched and undone', async ({ page }) => {
+test('an attached class list is registered only after Confirm, opens Students, can be searched and undone', async ({ page }) => {
   const pulse = await openPulse(page, 'Instructor', '/#/dashboard')
   await pulse.locator('input[type="file"]').setInputFiles({ name: 'IT 102 BSIT-1A class list.csv', mimeType: 'text/csv', buffer: Buffer.from(classList) })
   await expect(pulse.locator('.connected-pulse-attachments')).toContainText('class list, 3 students')
@@ -44,9 +44,9 @@ test('an attached class list is registered only after Confirm, opens My Courses,
   expect(await page.evaluate(() => location.hash)).toBe('#/dashboard')
   await card.getByRole('button', { name: 'Register 3 students' }).click()
   await expect(pulse.getByText(/IT 102 · BSIT-1A now lists 3 students \(3 new\)/)).toBeVisible()
-  await expect(page).toHaveURL(/#\/syllabus\?tab=register/)
+  await expect(page).toHaveURL(/#\/student-monitoring\?tab=students/)
   const table = page.locator('table').filter({ hasText: 'Block Section' })
-  await expect(table.getByRole('row').filter({ hasText: 'BSIT-1A' })).toContainText('3')
+  await expect(table.getByRole('row').filter({ hasText: 'BSIT-1A' })).toHaveCount(3)
 
   await say(page, 'Is Ben Cruz registered?')
   const results = pulse.getByRole('region', { name: 'Search results' }).last()
@@ -59,10 +59,11 @@ test('an attached class list is registered only after Confirm, opens My Courses,
   await expect(table.getByRole('row').filter({ hasText: 'BSIT-1A' })).toHaveCount(0)
 })
 
-test('the My Courses uploader reads a real class list instead of sample names and merges a second upload', async ({ page }) => {
+test('the Students uploader reads a real class list instead of sample names and merges a second upload', async ({ page }) => {
   await page.goto('/')
   await page.getByRole('button', { name: 'Instructor', exact: true }).click()
-  await page.goto('/#/syllabus?tab=register')
+  await page.goto('/#/student-monitoring?tab=students')
+  await page.getByText('Import an EduSuite class list', { exact: true }).click()
   await page.locator('.upload-zone input[type="file"]').setInputFiles({ name: 'IT102-BSIT1A.csv', mimeType: 'text/csv', buffer: Buffer.from(classList) })
   await expect(page.getByText('Student Preview (3 records)')).toBeVisible()
   await expect(page.getByText('Carla Mendoza')).toBeVisible()
@@ -78,7 +79,11 @@ test('the My Courses uploader reads a real class list instead of sample names an
   await page.locator('.upload-zone input[type="file"]').setInputFiles({ name: 'IT102-BSIT1A-late.csv', mimeType: 'text/csv', buffer: Buffer.from('Name,Block\nAna T. Ramos,BSIT-1A\nDan Uy,BSIT-1A') })
   await page.getByLabel('Select Course *').selectOption('IT 102')
   await page.getByRole('button', { name: 'Register Course' }).click()
-  await expect(page.getByText(/IT 102 · BSIT-1A: 4 students registered \(1 new, 1 already registered\)/)).toBeVisible()
+  const roster = page.getByRole('region', { name: 'Enrolled students table', exact: true })
+  await expect(roster.getByRole('row').filter({ hasText: 'BSIT-1A' })).toHaveCount(4)
+  await expect(roster).toContainText('Dan Uy')
+  await page.reload()
+  await expect(roster.getByRole('row').filter({ hasText: 'BSIT-1A' })).toHaveCount(4)
 })
 
 test('a student’s material is matched to a course with reasons, and added to the library only after Confirm', async ({ page, request }) => {
@@ -104,8 +109,8 @@ test('a student’s material is matched to a course with reasons, and added to t
 test('requests to open a page navigate only within the role, and course generation shows its syllabus source before Confirm', async ({ page }) => {
   const pulse = await openPulse(page, 'Instructor', '/#/dashboard')
   await say(page, 'Take me to the scoring sheet')
-  await expect(page).toHaveURL(/#\/student-monitoring/)
-  await expect(pulse.getByText('Opened Student Monitoring.')).toBeVisible()
+  await expect(page).toHaveURL(/#\/student-monitoring\?tab=assessments/)
+  await expect(pulse.getByRole('status').filter({ hasText: /^Opened / })).toHaveText('Opened Student Monitoring → Assessment Scores.')
 
   await say(page, 'Generate week 2 materials for IT 102')
   const card = pulse.getByRole('region', { name: 'Generate courseware' })

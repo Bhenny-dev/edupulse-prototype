@@ -4,7 +4,7 @@ The [IT teaching seed](../18-it-course-seed/README.md) adds saved session-author
 
 **Who:** instructor. **Where:** Courseware. One course list combines generation progress and saved items; there are no separate My Courseware and Courseware Builder tabs. The generated material, activity, and assessment stay in Draft until an instructor checks them. The alignment report is an aid to review, not approval.
 
-1. Complete and activate a syllabus outline first. Find the course in **Courseware**. A course with saved content shows **View**; an empty course shows **Generate**. Both open its weekly workspace. The list retains status, generated/expected item counts, progress, instructor and teaching weeks. The current example contains synthetic IT 102 and IT 103 courses.
+1. Complete and activate a syllabus outline first. Find the course in **Course**. A course with saved content shows **View**; an empty course shows **Generate**. Both open its weekly workspace. The list retains status, generated/expected item counts, progress, instructor and teaching weeks. The current example contains synthetic IT 102 and IT 103 courses.
 
    ![Combined synthetic course list with View and Generate](01-courseware-with-active-syllabus.png)
 

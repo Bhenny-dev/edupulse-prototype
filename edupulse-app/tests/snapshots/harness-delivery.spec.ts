@@ -11,7 +11,7 @@ test('live local model drafts outcomes and confirmed editor content persists acr
   await page.goto('/')
   await page.getByRole('button', { name: 'Instructor', exact: true }).click()
   await page.goto('/#/syllabus?tab=builder')
-  await page.getByLabel('Course', { exact: true }).selectOption('IT 104')
+  await page.getByRole('combobox', { name: 'Course', exact: true }).selectOption('IT 104')
   await page.getByRole('button', { name: 'Open Pulse assistant' }).click()
   const panel = page.getByRole('dialog', { name: 'Pulse', exact: true })
   await panel.getByRole('textbox', { name: 'Ask Pulse', exact: true }).fill('Generate four measurable program outcomes for Research Methods without web research.')

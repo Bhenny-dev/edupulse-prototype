@@ -1,0 +1,74 @@
+node.exe : [WebServer] (node:16684) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([WebServer] (no... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:8368) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 11:27:43 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3026
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 11:27:44 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3026
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 11:27:46 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3026
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 11:27:47 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3026
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 11:27:48 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3026
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 11:27:49 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3026
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 11:27:50 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3026
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+
+Running 34 tests using 1 worker
+
+(node:32484) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 [desktop] › tests\snapshots\component-actions.spec.ts:8:1 › Pulse model proposal: clean chat, selected-field preview and preserved neighboring outcomes (7.6s)
+  ok  2 [desktop] › tests\snapshots\component-actions.spec.ts:29:1 › Pulse native file drop preserves the unsent prompt and shows the extracted attachment (3.7s)
+  ok  3 [desktop] › tests\snapshots\component-actions.spec.ts:44:1 › wide outline: full workspace, a selected week and solid dark surfaces (5.1s)
+  ok  4 [desktop] › tests\snapshots\component-actions.spec.ts:60:1 › Settings: help, keyboard shortcuts and workspace backup (2.7s)
+  ok  5 [desktop] › tests\snapshots\component-actions.spec.ts:69:1 › dark Pulse keeps a refused file attachment readable (4.9s)
+  ok  6 [desktop] › tests\snapshots\interface-captures.ts:9:2 › interface: monitor subviews remain reachable without a sidebar (22.6s)
+  ok  7 [desktop] › tests\snapshots\interface-captures.ts:22:2 › interface: avatar launcher and dialog beside Pulse (4.2s)
+  ok  8 [desktop] › tests\snapshots\interface-captures.ts:27:2 › interface: academic skeleton during an actual pending request (2.1s)
+  ok  9 [desktop] › tests\snapshots\interface-captures.ts:31:13 › interface: file scan has progress without invented percentages (6.5s)
+  ok 10 [desktop] › tests\snapshots\interface-captures.ts:36:36 › academic UI fixtures: current records screens, no hosted authorization claim (13.0s)
+  ok 11 [desktop] › tests\snapshots\loading-feedback.spec.ts:6:3 › loading feedback: providers (3.2s)
+  ok 12 [desktop] › tests\snapshots\loading-feedback.spec.ts:6:3 › loading feedback: records and popover (1.3s)
+  ok 13 [desktop] › tests\snapshots\loading-feedback.spec.ts:6:3 › loading feedback: student directory (1.9s)
+  ok 14 [desktop] › tests\snapshots\loading-feedback.spec.ts:6:3 › loading feedback: Pulse (4.8s)
+  ok 15 [desktop] › tests\snapshots\loading-feedback.spec.ts:6:3 › loading feedback: approved file modal (2.1s)
+  ok 16 [desktop] › tests\snapshots\loading-feedback.spec.ts:6:3 › loading feedback: system console (1.5s)
+  ok 17 [desktop] › tests\snapshots\operator-steps.spec.ts:6:37 › synthetic bounded syllabus complete preview (4.1s)
+  ok 18 [desktop] › tests\snapshots\operator-steps.spec.ts:6:37 › synthetic bounded syllabus connection recovery (2.9s)
+  ok 19 [desktop] › tests\snapshots\walkthrough.spec.ts:63:1 › public site (53.4s)
+  ok 20 [desktop] › tests\snapshots\walkthrough.spec.ts:92:1 › shared interface (shown as instructor) (36.8s)
+  ok 21 [desktop] › tests\snapshots\walkthrough.spec.ts:117:1 › system admin (6.0s)
+  ok 22 [desktop] › tests\snapshots\walkthrough.spec.ts:128:1 › dean and associate dean (18.1s)
+  ok 23 [desktop] › tests\snapshots\walkthrough.spec.ts:146:1 › associate dean (8.5s)
+  ok 24 [desktop] › tests\snapshots\walkthrough.spec.ts:160:1 › instructor (28.3s)
+  ok 25 [desktop] › tests\snapshots\walkthrough.spec.ts:187:1 › student (15.7s)
+(node:23168) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 26 [mobile] › tests\snapshots\component-actions.mobile.spec.ts:6:1 › Pulse model proposal: mobile component focus and clean chat (12.4s)
+  ok 27 [mobile] › tests\snapshots\component-actions.mobile.spec.ts:24:1 › mobile Settings tabs and horizontally scrollable outline (3.7s)
+  ok 28 [mobile] › tests\snapshots\interface-captures.ts:9:2 › interface: monitor subviews remain reachable without a sidebar (2.9s)
+  ok 29 [mobile] › tests\snapshots\interface-captures.ts:22:2 › interface: avatar launcher and dialog beside Pulse (3.4s)
+  ok 30 [mobile] › tests\snapshots\interface-captures.ts:27:2 › interface: academic skeleton during an actual pending request (1.6s)
+  ok 31 [mobile] › tests\snapshots\loading-feedback.mobile.spec.ts:6:3 › mobile loading feedback: providers (3.8s)
+  ok 32 [mobile] › tests\snapshots\loading-feedback.mobile.spec.ts:6:3 › mobile loading feedback: Pulse (4.2s)
+  ok 33 [mobile] › tests\snapshots\walkthrough.mobile.spec.ts:8:1 › mobile landing page (4.1s)
+  ok 34 [mobile] › tests\snapshots\walkthrough.mobile.spec.ts:20:1 › mobile walkthrough (7.2s)
+
+  34 passed (5.5m)

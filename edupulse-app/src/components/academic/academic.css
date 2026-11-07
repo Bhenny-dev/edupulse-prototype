@@ -24,6 +24,10 @@
 .academic-details[open] > summary { margin-bottom: 12px; }
 .academic-list-row { display: flex; justify-content: space-between; gap: 16px; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--gray-200); }
 .academic-course + .academic-course { margin-top: 24px; }
+.academic-sync-status { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; font-size: .8125rem; color: var(--gray-600); }
+.academic-sync-status > span { display: inline-flex; align-items: center; gap: 6px; }
+.instructor-roster .academic-filter { flex: 1 1 220px; min-width: min(220px, 100%); }
+.instructor-roster details[open] summary svg { transform: rotate(180deg); }
 .academic-score { display: inline-block; border-radius: 6px; padding: 6px 10px; white-space: nowrap; }
 .academic-score-high { background: var(--green-100); color: var(--green-700); }
 .academic-score-low { background: var(--amber-100); color: var(--amber-700); }

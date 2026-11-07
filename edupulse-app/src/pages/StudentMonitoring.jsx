@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react'
 import AcademicPortal from '../components/academic/AcademicPortal'
-import { Navigate } from 'react-router-dom'
+import { Navigate, useSearchParams, useLocation } from 'react-router-dom'
+import InstructorRoster from '../components/academic/InstructorRoster'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
 import { useContentStore } from '../context/ContentStoreContext'
@@ -24,6 +25,7 @@ function hashScore(studentId, itemId) {
 }
 
 const TABS = [
+  { key: 'students', label: 'Students', icon: Users },
   { key: 'assessments', label: 'Assessment Scores', icon: ClipboardCheck },
   { key: 'materials', label: 'Learning Material Access', icon: BookOpen },
 ]
@@ -36,7 +38,10 @@ export default function StudentMonitoring() {
 
   const mySyllabi = DEFAULT_SYLLABI.filter(s => s.instructorId === user?.id)
   const [syllabusId, setSyllabusId] = useState(mySyllabi.find(s => s.status === 'active')?.id || mySyllabi[0]?.id || '')
-  const [activeTab, setActiveTab] = useState('assessments')
+  const [params, setParams] = useSearchParams()
+  const location = useLocation()
+  const activeTab = TABS.some(item => item.key === params.get('tab')) ? params.get('tab') : location.pathname === '/scoring-sheet' ? 'assessments' : 'students'
+  const setActiveTab = tab => setParams({ tab })
   const syllabus = mySyllabi.find(s => s.id === syllabusId)
   const { store: contentStore } = useContentStore()
 
@@ -119,6 +124,7 @@ export default function StudentMonitoring() {
 
   if (user?.role !== 'instructor') return <Navigate to="/dashboard" replace />
   if (user?.authenticated) return <AcademicPortal view="monitoring" />
+  if (activeTab === 'students') return <div className="container" data-pulse-zone="my-courses"><div className="page-header"><h1>Student Monitoring</h1></div><nav className="tabs" aria-label="Student monitoring views">{TABS.map(item => <button key={item.key} className={`tab ${activeTab === item.key ? 'active' : ''}`} aria-pressed={activeTab === item.key} onClick={() => setActiveTab(item.key)}>{item.label}</button>)}</nav><InstructorRoster /></div>
 
   // ── Summary stats ──
   const totalMissed = students.reduce((acc, stu) => acc + missedCount(stu), 0)

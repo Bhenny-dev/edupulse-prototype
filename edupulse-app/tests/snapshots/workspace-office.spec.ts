@@ -9,7 +9,7 @@ test('Workspace buddies: real office, domain conversations and model proposal st
   await page.goto('/')
   await page.getByRole('button', { name: 'Instructor', exact: true }).click()
   await page.goto('/#/syllabus?tab=builder')
-  await page.getByLabel('Course', { exact: true }).selectOption('IT 102')
+  await page.getByRole('combobox', { name: 'Course', exact: true }).selectOption('IT 102')
   await page.getByRole('button', { name: 'Open Pulse assistant' }).click()
   await page.getByRole('button', { name: 'Pulse options', exact: true }).click(); await page.getByRole('button', { name: 'Open workspace buddies' }).click()
   const office = page.getByRole('dialog', { name: 'Meet your crew.' })

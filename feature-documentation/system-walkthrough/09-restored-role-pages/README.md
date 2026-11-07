@@ -4,7 +4,7 @@ These screenshots exercise the authenticated components with synthetic account, 
 
 ## Role dashboards
 
-Accounts see the same role dashboards as the preview personas: the [instructor](../04-instructor/README.md#1-instructor-dashboard), [student](../05-student/README.md#1-student-dashboard) and [management](../03-dean-and-associate-dean/README.md#1-dean-dashboard) components, filled from the account's authorized records and, for an instructor, the owner workspace. The header adds **Refresh records** and **Export** (the authorized records as JSON); instructors also have **Sync my workspace**. Sample names, scores and activity never appear in an account; a value with no record stays empty.
+Accounts see the same role dashboards as the preview personas: the [instructor](../04-instructor/README.md#1-instructor-dashboard), [student](../05-student/README.md#1-student-dashboard) and [management](../03-dean-and-associate-dean/README.md#1-dean-dashboard) components, filled from the account's authorized records and, for an instructor, the owner workspace. The header shows automatic refresh status and **Export** (authorized records as JSON). Clean instructor workspaces reconcile automatically; errors expose **Retry connection**. Sample names, scores and activity never appear in an account; a value with no record stays empty.
 
 | Role | Capture | Sections |
 | --- | --- | --- |
@@ -73,7 +73,7 @@ File intake accepts CSV up to 1 MB and 1,000 rows per request. Quoted commas/new
 | Dark performance | ![Dark performance](32-dark-performance.png) | Solid body/cards/controls, readable muted and semantic text, themed chart grid/axes/tooltips. |
 | Mobile performance | ![Mobile charts](33-mobile-performance.png) | Charts stack; page tabs remain scrollable and wide matrices stay in their own scroll region. |
 | Mobile monitoring | ![Mobile material access](34-mobile-materials.png) | Course/date controls, material matrix and chart fit the phone viewport. |
-| Mobile dark dashboard | ![Mobile dark dashboard](35-mobile-dark-dashboard.png) | The instructor account dashboard on a phone in dark mode: stacked **Refresh records**, **Export** and **Sync my workspace**, then **Getting Started with EduPulse**, one summary card per row, **Quick actions**, **My Block Sections**, **Score Snapshot** with its topic chart and the remaining sections, all on solid dark surfaces. |
+| Mobile dark dashboard | ![Mobile dark dashboard](35-mobile-dark-dashboard.png) | The instructor account dashboard on a phone in dark mode: automatic record status and **Export**, then **Getting Started with EduPulse**, one summary card per row, **Quick actions**, **My Block Sections**, **Score Snapshot** with its topic chart and the remaining sections, all on solid dark surfaces. |
 
 The System Admin console remains separate: account/role management, health, audit and agent activity were retained. The verified owner's view switching preserves the original account identity; restored academic screens do not grant ordinary users that capability.
 

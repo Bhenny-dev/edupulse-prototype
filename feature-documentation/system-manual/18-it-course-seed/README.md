@@ -6,14 +6,14 @@ These screenshots use fictional identities and synthetic browser transport. The 
 
 ## Check the course blocks
 
-Open **Syllabus → My Courses**. **Registered Courses (9)** contains four Programming 1 blocks and five Networking blocks, each with at most 35 students.
+Open **Student Monitoring → Students**. The saved seed contains four Programming 1 blocks and five Networking blocks, each with at most 35 students. Filter **Block section** to inspect a block; the table pages through 25 memberships at a time. The image shows a synthetic final Networking block.
 
 | Course | Cohort | Enrollments | Blocks | New draft items |
 | --- | --- | --- | --- | --- |
 | IT 102 · Computer Programming 1 | First-year BSIT | 131 | BSIT-1A–1D | 48 |
 | IT 202 · Fundamentals of Networking | Second-year BSIT | 157 | BSIT-2A–2E | 45, plus 3 existing items retained |
 
-![Nine course blocks using fictional student identities](01-nine-roster-blocks.png)
+![Nine course blocks using fictional student identities](01-seeded-course-students.png)
 
 All 2,286 official profiles remain. Other programs and years were not enrolled. The owner delegated the IT 202 year decision: the seed follows the existing catalog's second-year placement. The retained approval PDF says **1st Year** and AY **2025–2026**. This discrepancy is recorded, not silently edited or presented as a newly verified institutional assignment.
 
@@ -27,7 +27,7 @@ The active Networking syllabus, approved attachment, outline and three week-1 it
 
 ## Review the teaching drafts
 
-Open Networking in **Courseware**, expand a week using **View**, then choose **View** beside an item. Missing weeks now have a material, activity and readiness assessment. All new items remain **Draft**. This example gives a concrete subnet calculation, lab task and primary references.
+Open Networking in **Course**, expand a week using **View**, then choose **View** beside an item. Missing weeks now have a material, activity and readiness assessment. All new items remain **Draft**. This example gives a concrete subnet calculation, lab task and primary references.
 
 ![Authored subnetting draft with references and review at the end](03-authored-subnetting-lesson.png)
 

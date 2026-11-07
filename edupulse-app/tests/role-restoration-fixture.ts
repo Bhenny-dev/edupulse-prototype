@@ -33,6 +33,7 @@ export async function restorationUI(page: Page, role = 'instructor') {
   await page.route('**/api/ai?action=academic', async route => {
     if (route.request().method() === 'POST') {
       const command = route.request().postDataJSON()
+      if(command.operation==='sync')return route.fulfill({json:{synced:true}})
       if(command.operation==='import') {
         let created=0,updated=0
         for(const row of command.rows){const key=command.kind==='courses'?row.CourseCode:command.kind==='loads'?[row.CourseCode,row.Block,row.Semester].join('|'):row.StudentID;const previous=records.institutional!.find(item=>item.kind===command.kind&&item.record_key===key);if(previous){previous.data=row;updated++}else{records.institutional!.push({kind:command.kind,record_key:key,data:row});created++}}

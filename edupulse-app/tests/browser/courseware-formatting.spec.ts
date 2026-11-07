@@ -25,7 +25,7 @@ test('document formats saved Markdown and places evaluation after all sections',
   await page.getByLabel('Section 1 content', { exact: true }).fill('**Saved emphasis** stays formatted after reopening.')
   await page.getByRole('button', { name: 'Save', exact: true }).click()
   await page.reload()
-  await page.locator('[data-week="2"]').getByRole('button', { name: 'View', exact: true }).click()
+  await page.locator('[data-content-id="formatted-material"]').getByRole('button', { name: 'View', exact: true }).click()
   await expect(page.locator('.doc-viewer-text strong')).toHaveText('Saved emphasis')
 })
 

@@ -1,3 +1,5 @@
+import { useLocation } from 'react-router-dom'
+import InstructorRoster from './InstructorRoster'
 import { useState } from 'react'
 import { BarChart, Bar, LineChart, Line, RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import { Panel, Empty, KPIs, Table, CsvButton, CourseFilter, useAcademicTabs } from './AcademicUI'
@@ -66,7 +68,8 @@ export default function AcademicPerformance({ data, role, monitoring = false }) 
   const [courseId, setCourseId] = useState(''), [block, setBlock] = useState(''), [since, setSince] = useState(''), [until, setUntil] = useState('')
   const [threshold, setThreshold] = useState(75), [student, setStudent] = useState(null)
   const topics=topicSummary(data).filter(item=>item.value<threshold)
-  const { key, nav } = useAcademicTabs({ items: monitoring ? [['assessments', 'Assessment Scores'], ['materials', 'Learning Material Access']] : [['overview', 'Overview'], ['bytopic', 'By Topic'], ['materials', 'Learning Materials'], ['scores', 'Assessment Scores'], ...(!isStudent ? [['alerts', 'Alerts']] : [])], label: monitoring ? 'Student monitoring views' : 'Performance views' })
+  const location = useLocation()
+  const { key, nav } = useAcademicTabs({ items: monitoring ? [['students', 'Students'], ['assessments', 'Assessment Scores'], ['materials', 'Learning Material Access']] : [['overview', 'Overview'], ['bytopic', 'By Topic'], ['materials', 'Learning Materials'], ['scores', 'Assessment Scores'], ...(!isStudent ? [['alerts', 'Alerts']] : [])], label: monitoring ? 'Student monitoring views' : 'Performance views', fallback: monitoring && location.pathname === '/scoring-sheet' ? 'assessments' : undefined })
   const filtered = filterAcademic(data, courseId, block, since, until)
   const validDates = !since || !until || since <= until
   const current = currentAttempts(filtered)
@@ -75,6 +78,7 @@ export default function AcademicPerformance({ data, role, monitoring = false }) 
   const average = percent(graded.reduce((sum, item) => sum + item.score, 0), graded.reduce((sum, item) => sum + item.max_score, 0))
   const alerts = graded.filter(item => percent(item.score, item.max_score) < threshold)
   const detail = student && { ...filtered, enrollments: filtered.enrollments.filter(item => item.student_email === student.student_email), attempts: filtered.attempts.filter(item => item.student_email?.toLowerCase() === student.student_email.toLowerCase()), accesses: filtered.accesses.filter(item => item.student_email?.toLowerCase() === student.student_email.toLowerCase()) }
+  if (monitoring && key === 'students') return <>{nav}<InstructorRoster /></>
   return <>
     <div className="academic-filters"><CourseFilter data={data} value={courseId} onChange={setCourseId} />{!isStudent && <label className="academic-filter">Block<select className="form-select" value={block} onChange={event => setBlock(event.target.value)}><option value="">All blocks</option>{[...new Set(data.enrollments.map(item => item.block_section).filter(Boolean))].sort().map(value => <option key={value}>{value}</option>)}</select></label>}<label className="academic-filter">From<input className="form-input" type="date" value={since} onChange={event => setSince(event.target.value)} /></label><label className="academic-filter">Through<input className="form-input" type="date" value={until} onChange={event => setUntil(event.target.value)} /></label></div>
     <p className="text-sm text-muted mb-16">Dates filter saved attempts and first opens. “No attempt” or “No recorded open” means no matching event in this date range.</p>

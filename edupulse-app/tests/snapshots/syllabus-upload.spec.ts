@@ -26,7 +26,7 @@ test('syllabus DOCX import previews, accepts, and retries the same file', async 
   await input.setInputFiles(upload)
   await expect(page.getByText('Extracted Sections Preview', { exact: true })).toBeVisible()
   await page.getByRole('button', { name: 'Use This Syllabus', exact: true }).click()
-  await expect(page.getByLabel('Course', { exact: true })).toHaveValue('IT 102')
+  await expect(page.getByRole('combobox', { name: 'Course', exact: true })).toHaveValue('IT 102')
   await expect(page.getByPlaceholder('Topic...', { exact: true }).first()).toHaveValue('Variables and assignment')
 })
 
@@ -39,6 +39,6 @@ test('syllabus PDF import previews the extracted course and week', async ({ page
   await expect(page.getByText('Extracted Sections Preview', { exact: true })).toBeVisible()
   await page.locator('.upload-zone').locator('..').screenshot({ path: '../feature-documentation/system-manual/02-syllabus-lifecycle/14-pdf-import-preview.png', animations: 'disabled' })
   await page.getByRole('button', { name: 'Use This Syllabus', exact: true }).click()
-  await expect(page.getByLabel('Course', { exact: true })).toHaveValue('IT 102')
+  await expect(page.getByRole('combobox', { name: 'Course', exact: true })).toHaveValue('IT 102')
   await expect(page.getByPlaceholder('Topic...', { exact: true }).first()).toHaveValue('Variables and assignment')
 })

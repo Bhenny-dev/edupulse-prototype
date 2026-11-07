@@ -18,7 +18,7 @@ For an entire course, ask “Generate a syllabus for my selected course.” Puls
 
 Public research is available for educational drafts, including courseware with an empty library. “Without web research” disables external research in a Pulse request; source-only questions stay with their supplied/selected sources. Research failure is reported and does not turn original teaching content into a claimed verified answer. See [courseware review](../03-courseware-generation-and-review/README.md) and [validation evidence](../../versions/2026-10-29-backend-harness/validation/results.md).
 
-4. In **Courseware**, choose an active syllabus using **Generate** when empty or **View** when content exists. Ask Pulse to generate week 1 with a worked JavaScript example, without web research. Review the selected course and week, then choose **Generate Week 1 drafts**. The Pulse request image retains the earlier synthetic active programming outline; it does not demonstrate institutional approval.
+4. In **Course**, choose an active syllabus using **Generate** when empty or **View** when content exists. Ask Pulse to generate week 1 with a worked JavaScript example, without web research. Review the selected course and week, then choose **Generate Week 1 drafts**. The Pulse request image retains the earlier synthetic active programming outline; it does not demonstrate institutional approval.
 
    ![Pulse courseware request and generation confirmation](06-pulse-courseware-request.png)
 

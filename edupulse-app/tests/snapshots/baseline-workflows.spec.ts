@@ -24,7 +24,7 @@ test('synthetic baseline student timed written response and saved notice',async(
 })
 test('synthetic baseline syllabus versions, assessment mappings and delivery settings',async({page})=>{
  const fixture=await baselineUI(page);fixture.setWorkspace(structuredClone(baselineWorkspace));await page.goto('/#/syllabus?tab=mine');await page.getByTitle('Version History').first().click();await shot(page,'45-saved-syllabus-versions','[aria-label="Syllabus history"]');await page.getByRole('button',{name:'Close',exact:true}).click()
- await page.goto('/#/courseware?tab=builder&course=baseline-syllabus&week=1');await page.getByRole('button',{name:'View',exact:true}).first().click();await expect(page.getByRole('button',{name:'Save Assessment'})).toBeVisible();await page.getByRole('combobox',{name:'Question 2 response type'}).selectOption('true_false');await page.locator('.assessment-question-input').nth(1).fill('Functions group reusable instructions.');await page.getByText('True',{exact:true}).click();await shot(page,'46-assessment-topic-mapping')
+ await page.goto('/#/courseware?tab=builder&course=baseline-syllabus&week=1');await page.locator('[data-content-id="baseline-quiz"]').getByRole('button',{name:'View',exact:true}).click();await expect(page.getByRole('button',{name:'Save Assessment'})).toBeVisible();await page.getByRole('combobox',{name:'Question 2 response type'}).selectOption('true_false');await page.locator('.assessment-question-input').nth(1).fill('Functions group reusable instructions.');await page.getByText('True',{exact:true}).click();await shot(page,'46-assessment-topic-mapping')
  await page.getByRole('button',{name:'Back',exact:true}).click();await page.locator('[data-content-id="baseline-quiz"]').getByRole('button',{name:/^Actions for/}).click();await page.getByRole('menuitem',{name:'Delivery settings',exact:true}).click();await shot(page,'47-publication-delivery-settings')
 })
 
@@ -37,7 +37,7 @@ test('synthetic editor fields grow to display full section text and answer expla
  const dir='../feature-documentation/system-manual/03-courseware-generation-and-review'
  await mkdir(dir,{recursive:true})
  await page.goto('/#/courseware?tab=builder&course=baseline-syllabus&week=2')
- await page.locator('[data-week="2"]').getByRole('button',{name:'View',exact:true}).click()
+ await page.locator('[data-content-id="editor-material"]').getByRole('button',{name:'View',exact:true}).click()
  await page.getByRole('button',{name:'Edit',exact:true}).click()
  const section=page.getByLabel('Section 1 content',{exact:true})
  await expect(section).toHaveValue(explanation)

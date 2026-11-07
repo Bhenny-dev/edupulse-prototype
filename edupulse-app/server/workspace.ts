@@ -14,9 +14,10 @@ const syllabus = z.looseObject({ id: z.string().min(1).max(120), courseCode: z.s
 const contentItem = z.looseObject({ syllabusId: z.string().max(120), week: z.number().int().min(1).max(52), type: z.enum(['material', 'activity', 'assessment']), status: z.enum(['draft', 'checked', 'published', 'hidden']), releaseAt:z.string().datetime().optional(),dueAt:z.string().datetime().optional(), content: z.looseObject({ title: z.string().max(240),assessmentPolicy:z.object({maxAttempts:z.number().int().min(1).max(3),durationSeconds:z.number().int().min(0).max(7200)}).optional() }) }).superRefine((item,ctx)=>{if(item.releaseAt&&item.dueAt&&item.dueAt<=item.releaseAt)ctx.addIssue({code:'custom',message:'The deadline must follow the release time.'})})
 const intakeRow = z.record(z.string().max(80), z.string().max(500))
 const intake = z.object({ courses: z.array(intakeRow).max(1000), loads: z.array(intakeRow).max(1000), rosters: z.array(intakeRow).max(1000), history: z.array(z.object({ id: z.string().max(80), filename: z.string().max(255), kind: z.enum(['courses', 'loads', 'rosters']), importedAt: z.string().datetime(), created: z.number().int().nonnegative(), updated: z.number().int().nonnegative(), rejected: z.number().int().nonnegative() })).max(50) })
-export const workspaceData = z.object({ syllabi: z.array(syllabus).max(50), content: z.record(z.string().max(200), contentItem), registrations: z.array(z.record(z.string(), z.unknown())).max(200).default([]), intake: intake.optional(), acknowledgments:z.array(z.string().max(500)).max(200).optional() }).superRefine((value, ctx) => {
+export const workspaceData = z.object({ syllabi: z.array(syllabus).max(50), content: z.record(z.string().max(200), contentItem), registrations: z.array(z.record(z.string(), z.unknown())).max(200).default([]), intake: intake.optional(), acknowledgments:z.array(z.string().max(500)).max(200).optional(), enrollmentOverrides: z.array(z.object({ courseCode: z.string().min(1).max(80), studentEmail: z.email().max(254).toLowerCase(), excluded: z.boolean(), blockSection: z.string().trim().min(1).max(80).optional() })).max(5000).optional() }).superRefine((value, ctx) => {
   if (Object.keys(value.content).length > 1000) ctx.addIssue({ code: 'custom', message: 'Workspace is limited to 1,000 courseware items.' })
   if (new Set(value.syllabi.map(s => s.id)).size !== value.syllabi.length) ctx.addIssue({ code: 'custom', message: 'Syllabus IDs must be unique.' })
+  if (new Set((value.enrollmentOverrides || []).map(item => `${item.courseCode}:${item.studentEmail}`)).size !== (value.enrollmentOverrides || []).length) ctx.addIssue({ code: 'custom', message: 'Student course-membership overrides must be unique.' })
 })
 export const workspaceInput = z.object({ revision: z.number().int().nonnegative(), data: workspaceData })
 export type WorkspaceData = z.infer<typeof workspaceData>
@@ -61,6 +62,7 @@ export async function saveWorkspace(identity: Identity, input: z.infer<typeof wo
   } else {
     const { data, error } = await userDb(identity).rpc('edupulse_save_workspace', { expected_revision: input.revision, snapshot: input.data })
     if (error?.code === '40001') throw new ApiError(409, 'WORKSPACE_CONFLICT', 'A newer workspace exists. Export your pending edits, then load the latest server copy.')
+    if (error?.code === '22023' && error.message === 'A course block supports up to 35 students') throw new ApiError(400, 'ROSTER_LIMIT', 'A course block supports up to 35 students. Select another block for the remaining students.')
     if (error) throw new ApiError(503, 'WORKSPACE_UNAVAILABLE', 'Cloud save failed. Your edits remain on this device; retry when connected.')
     row = data?.[0]
   }

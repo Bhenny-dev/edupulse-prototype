@@ -89,7 +89,9 @@ export default function BlockSectionUploader({ onRegister, onCancel }) {
 
   const handleDragLeave = useCallback(() => setDragOver(false), [])
 
-  const handleRegister = () => {
+  const [saving, setSaving] = useState(false)
+  const handleRegister = async () => {
+    if (saving) return
     if (!selectedCourse) {
       addToast('Please select a course to register', 'error')
       return
@@ -105,8 +107,11 @@ export default function BlockSectionUploader({ onRegister, onCancel }) {
     }
 
     const course = CURRICULUM_COURSES.find(c => c.code === selectedCourse)
-    onRegister({ courseCode: selectedCourse, courseTitle: course?.title || '', blockSection: selectedBlock.trim().toUpperCase(), students: parsed.students, fileName: file.name })
-    reset()
+    setSaving(true)
+    try {
+      await onRegister({ courseCode: selectedCourse, courseTitle: course?.title || '', blockSection: selectedBlock.trim().toUpperCase(), students: parsed.students, fileName: file.name })
+      reset()
+    } catch (failure) { setError(failure.message) } finally { setSaving(false) }
   }
   const reset = () => { setFile(null); setParsed(null); setError(null); setSelectedCourse(''); setSelectedBlock('') }
 
@@ -258,7 +263,7 @@ export default function BlockSectionUploader({ onRegister, onCancel }) {
 
           {/* Actions */}
           <div style={{ display: 'flex', gap: '10px' }}>
-            <button className="btn btn-primary" onClick={handleRegister} disabled={!selectedCourse || !selectedBlock.trim()}>
+            <button className="btn btn-primary" onClick={handleRegister} disabled={saving || !selectedCourse || !selectedBlock.trim()}>
               <CheckCircle size={14} /> Register Course
             </button>
             <button className="btn btn-secondary" onClick={reset}>

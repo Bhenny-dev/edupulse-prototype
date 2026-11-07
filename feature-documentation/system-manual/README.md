@@ -53,3 +53,5 @@ The [baseline restoration](../versions/2026-10-28-baseline-workflows/README.md) 
 [Manual 19: Loading and saved connections](19-loading-and-saved-connections/README.md) documents the cross-role loading audit, pending modals/popovers, persistent provider selection and the separate ChatGPT-plan requirement.
 
 [Manual 20: Voice and provider errors](20-voice-and-provider-errors/README.md) covers optional microphone controls, English/Filipino transcript review and conversation mode, experimental languages, and specific OpenAI billing/limit recovery.
+
+[Manual 21: Automatic records and course students](21-automatic-records-and-course-rosters/README.md) covers automatic refresh/recovery, the three Syllabus tabs, **Course**, and instructor membership CRUD.

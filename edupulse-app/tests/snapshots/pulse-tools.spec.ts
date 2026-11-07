@@ -44,7 +44,7 @@ test('Pulse tools: model proposal is reviewable before saving', async ({ page })
   // Synthetic model output; the editor, validation, source preview and save controls are real.
   await page.route('**/api/ai?action=operator', route => route.fulfill({ json: { patch: { programOutcomes: ['Explain variable declarations using a worked example.', 'Trace a short program and describe its output.'] }, generated: true, requiresConfirmation: true } }))
   const panel = await open(page, '/#/syllabus?tab=builder')
-  await page.getByLabel('Course', { exact: true }).selectOption('IT 102')
+  await page.getByRole('combobox', { name: 'Course', exact: true }).selectOption('IT 102')
   await say(page, 'Revise the program outcomes to emphasize worked examples')
   const card = panel.getByRole('region', { name: 'Review content edit' })
   await expect(card).toContainText('Explain variable declarations using a worked example.')

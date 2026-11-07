@@ -1,5 +1,5 @@
 {
-  "capturedAt": "2026-11-06T09:19:22.016Z",
+  "capturedAt": "2026-11-07T15:32:21.586Z",
   "problems": [],
   "scenes": [
     {
@@ -453,9 +453,9 @@
     {
       "role": "instructor",
       "folder": "04-instructor",
-      "file": "02-syllabus-my-courses.png",
-      "title": "Syllabus · My Courses",
-      "route": "/syllabus",
+      "file": "02-monitoring-course-students.png",
+      "title": "Student Monitoring · Students",
+      "route": "/student-monitoring",
       "ok": true
     },
     {

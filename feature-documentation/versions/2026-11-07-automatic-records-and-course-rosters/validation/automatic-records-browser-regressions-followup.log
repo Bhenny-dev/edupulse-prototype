@@ -1,0 +1,161 @@
+
+> edupulse-app@0.4.0 test:browser
+> playwright test course-seed.spec.ts pulse-actions.spec.ts layout-feedback.spec.ts -g seeded rosters|attached class list|Students uploader|requests to open a page|unique Records
+
+node.exe : [WebServer] (node:36436) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([WebServer] (no... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:14740) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 11:51:10 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3027
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 11:51:11 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3027
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 11:51:12 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3027
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 11:51:13 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3027
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+
+Running 10 tests using 1 worker
+
+(node:6548) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 [desktop] › tests\browser\course-seed.spec.ts:4:1 › seeded rosters and revised syllabus remain available after reload (11.5s)
+[WebServer] 11:51:47 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+[WebServer] 11:51:54 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+[WebServer] 11:51:57 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+[WebServer] 11:52:00 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+[WebServer] 11:52:14 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+[WebServer] 11:52:17 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+[WebServer] 11:52:30 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok  2 [desktop] › tests\browser\layout-feedback.spec.ts:29:1 › unique Records and Assessments destinations remain in primary navigation (48.3s)
+[WebServer] 11:52:35 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok  3 [desktop] › tests\browser\pulse-actions.spec.ts:33:1 › an attached class list is registered only after Confirm, opens Students, can be searched and undone (10.0s)
+[WebServer] 11:52:46 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok  4 [desktop] › tests\browser\pulse-actions.spec.ts:62:1 › the Students uploader reads a real class list instead of sample names and merges a second upload (12.7s)
+[WebServer] 11:52:57 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  x   5 [desktop] › tests\browser\pulse-actions.spec.ts:109:1 › requests to open a page navigate only within the role, and course generation shows its syllabus source before Confirm (13.9s)
+(node:14924) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  6 [mobile] › tests\browser\course-seed.spec.ts:4:1 › seeded rosters and revised syllabus remain available after reload (8.5s)
+[WebServer] 11:53:25 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+[WebServer] 11:53:34 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+[WebServer] 11:53:37 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+[WebServer] 11:53:40 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+[WebServer] 11:53:57 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+[WebServer] 11:54:10 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok  7 [mobile] › tests\browser\layout-feedback.spec.ts:29:1 › unique Records and Assessments destinations remain in primary navigation (52.8s)
+[WebServer] 11:54:17 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok  8 [mobile] › tests\browser\pulse-actions.spec.ts:33:1 › an attached class list is registered only after Confirm, opens Students, can be searched and undone (11.1s)
+[WebServer] 11:54:27 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok  9 [mobile] › tests\browser\pulse-actions.spec.ts:62:1 › the Students uploader reads a real class list instead of sample names and merges a second upload (15.5s)
+[WebServer] 11:54:42 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  x  10 [mobile] › tests\browser\pulse-actions.spec.ts:109:1 › requests to open a page navigate only within the role, and course generation shows its syllabus source before Confirm (14.0s)
+
+
+  1) [desktop] › tests\browser\pulse-actions.spec.ts:109:1 › requests to open a page navigate only within the role, and course generation shows its syllabus source before Confirm
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('dialog', { name: 'Pulse', exact: true }).getByText('Opened Scoring Sheet.')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('dialog', { name: 'Pulse', exact: true }).getByText('Opened Scoring Sheet.') with timeout 5000ms
+      - waiting for getByRole('dialog', { name: 'Pulse', exact: true }).getByText('Opened Scoring Sheet.')
+
+
+      111 |   await say(page, 'Take me to the scoring sheet')
+      112 |   await expect(page).toHaveURL(/#\/student-monitoring/)
+    > 113 |   await expect(pulse.getByText('Opened Scoring Sheet.')).toBeVisible()
+          |                                                          ^
+      114 |
+      115 |   await say(page, 'Generate week 2 materials for IT 102')
+      116 |   const card = pulse.getByRole('region', { name: 'Generate courseware' })
+        at C:\Users\Benny\OneDrive\Documents\EduPulse\EduPulse System Prototype\edupulse-app\tests\browser\pulse-actions.spec.ts:113:58
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    .data\records-browser-regression-followup-results\pulse-actions-requests-to--e2595-labus-source-before-Confirm-desktop\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: .data\records-browser-regression-followup-results\pulse-actions-requests-to--e2595-labus-source-before-Confirm-desktop\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    .data\records-browser-regression-followup-results\pulse-actions-requests-to--e2595-labus-source-before-Confirm-desktop\trace.zip
+    Usage:
+
+        npx playwright show-trace .data\records-browser-regression-followup-results\pulse-actions-requests-to--e2595-labus-source-before-Confirm-desktop\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [mobile] › tests\browser\pulse-actions.spec.ts:109:1 › requests to open a page navigate only within the role, and course generation shows its syllabus source before Confirm
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('dialog', { name: 'Pulse', exact: true }).getByText('Opened Scoring Sheet.')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('dialog', { name: 'Pulse', exact: true }).getByText('Opened Scoring Sheet.') with timeout 5000ms
+      - waiting for getByRole('dialog', { name: 'Pulse', exact: true }).getByText('Opened Scoring Sheet.')
+
+
+      111 |   await say(page, 'Take me to the scoring sheet')
+      112 |   await expect(page).toHaveURL(/#\/student-monitoring\?tab=assessments/)
+    > 113 |   await expect(pulse.getByRole('status')).toHaveText('Opened Student Monitoring → Assessment Scores.')
+          |                                                          ^
+      114 |
+      115 |   await say(page, 'Generate week 2 materials for IT 102')
+      116 |   const card = pulse.getByRole('region', { name: 'Generate courseware' })
+        at C:\Users\Benny\OneDrive\Documents\EduPulse\EduPulse System Prototype\edupulse-app\tests\browser\pulse-actions.spec.ts:113:58
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    .data\records-browser-regression-followup-results\pulse-actions-requests-to--e2595-labus-source-before-Confirm-mobile\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: .data\records-browser-regression-followup-results\pulse-actions-requests-to--e2595-labus-source-before-Confirm-mobile\error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    .data\records-browser-regression-followup-results\pulse-actions-requests-to--e2595-labus-source-before-Confirm-mobile\trace.zip
+    Usage:
+
+        npx playwright show-trace .data\records-browser-regression-followup-results\pulse-actions-requests-to--e2595-labus-source-before-Confirm-mobile\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    [desktop] › tests\browser\pulse-actions.spec.ts:109:1 › requests to open a page navigate only within the role, and course generation shows its syllabus source before Confirm
+    [mobile] › tests\browser\pulse-actions.spec.ts:109:1 › requests to open a page navigate only within the role, and course generation shows its syllabus source before Confirm
+  8 passed (3.8m)
