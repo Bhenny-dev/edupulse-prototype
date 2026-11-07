@@ -1,0 +1,20 @@
+{
+  "checks": [
+    {
+      "check": "binary ASCII example and payload transfer arithmetic",
+      "passed": true
+    },
+    {
+      "check": "IPv4 /26 total, broadcast and usable ranges",
+      "passed": true
+    },
+    {
+      "check": "VLSM capacities and non-overlap",
+      "passed": true
+    },
+    {
+      "check": "IPv6 address width",
+      "passed": true
+    }
+  ]
+}

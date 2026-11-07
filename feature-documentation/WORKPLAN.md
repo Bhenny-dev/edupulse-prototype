@@ -68,7 +68,9 @@ The user's correction takes precedence over earlier restrictions on provider/mod
 
 No new administrative workflows are part of this correction. Existing offline approval and instructor review requirements remain. Hosted APIs require the user's own eligible provider key; browser/local inference provides the no-API-fee option. Model capabilities and hardware limits must be stated accurately.
 
-## Compatibility findings
+## Initial compatibility findings (historical)
+
+These findings describe the starting prototype, before the completed work packages below. They are not the current implementation: authenticated records, provider calls, draft generation and persisted actions now have their separately documented contracts and validation.
 
 - Existing stack: React 19 / Vite 8, JavaScript, Supabase, Vercel Git integration, Node 24 CI.
 - Pulse uses authored responses and fabricated similarity labels. Settings simulates provider validation. Courseware generation uses templates. Auth is a local preview persona.
@@ -124,6 +126,6 @@ Owner-confirmed decision: preserve `5e7d956` features while retaining five roles
 - [x] Finish final full browser rerun and record final local verify, browser and documentation gates in the [validation record](versions/2026-10-28-baseline-workflows/validation/results.md).
 - [x] Apply all four additive migrations to EduPulse System and verify linked history, RLS/grants, unchanged record counts and security advisors.
 - [x] Push the combined source and inspect the Ready production deployment, remote 139-test verification, served restoration bundle, health/security headers and guest denials.
-- [ ] Complete hosted authenticated role canaries when a usable existing admin credential is available; the CLI supplied a masked key and no test accounts were created.
+- [x] Complete hosted authenticated role canaries. On 7 November the owner authorized temporary legacy-key testing after modern-secret discovery returned masked output. Six signed production-API accounts passed access, scoring, private-key and role checks after repairing the roster-refresh save failure; all synthetic accounts and activity were removed. See the [current validation](versions/2026-11-07-it-course-seed/validation/results.md#hosted-role-check-status).
 
 The [current disposition](session-generated/2026-10-27-feature-presence-audit/restoration-status.md) also preserves outstanding automatic indexing and pre-existing inactive fallback obligations. Earlier release checks remain historical evidence; the 28 October linked checks establish the four new migrations are applied.

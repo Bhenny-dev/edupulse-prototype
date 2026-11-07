@@ -1,0 +1,121 @@
+[
+  {
+    "key": "c",
+    "title": "GNU C Language Introduction and Reference Manual",
+    "url": "https://www.gnu.org/software/c-intro-and-ref/manual/html_node/index.html",
+    "status": 403,
+    "ok": false
+  },
+  {
+    "key": "cs50",
+    "title": "Harvard CS50: C",
+    "url": "https://cs50.harvard.edu/x/weeks/1/",
+    "status": 200,
+    "ok": true
+  },
+  {
+    "key": "unicode",
+    "title": "Unicode: UTF-8, UTF-16, UTF-32 and BOM FAQ",
+    "url": "https://www.unicode.org/faq/utf_bom.html",
+    "status": 200,
+    "ok": true
+  },
+  {
+    "key": "hosts",
+    "title": "IETF RFC 1122: Requirements for Internet Hosts",
+    "url": "https://www.rfc-editor.org/info/rfc1122/",
+    "status": 200,
+    "ok": true
+  },
+  {
+    "key": "tcp",
+    "title": "IETF RFC 9293: Transmission Control Protocol",
+    "url": "https://www.rfc-editor.org/info/rfc9293/",
+    "status": 200,
+    "ok": true
+  },
+  {
+    "key": "udp",
+    "title": "IETF RFC 768: User Datagram Protocol",
+    "url": "https://www.rfc-editor.org/info/rfc768/",
+    "status": 200,
+    "ok": true
+  },
+  {
+    "key": "ethernet",
+    "title": "IEEE 802.3 Ethernet Working Group",
+    "url": "https://www.ieee802.org/3/",
+    "status": 200,
+    "ok": true
+  },
+  {
+    "key": "ipv6",
+    "title": "IETF RFC 4291: IPv6 Addressing Architecture",
+    "url": "https://www.rfc-editor.org/info/rfc4291/",
+    "status": 200,
+    "ok": true
+  },
+  {
+    "key": "arp",
+    "title": "IETF RFC 826: Ethernet Address Resolution Protocol",
+    "url": "https://www.rfc-editor.org/info/rfc826/",
+    "status": 200,
+    "ok": true
+  },
+  {
+    "key": "documentation",
+    "title": "IETF RFC 5737: IPv4 Address Blocks Reserved for Documentation",
+    "url": "https://www.rfc-editor.org/info/rfc5737/",
+    "status": 200,
+    "ok": true
+  },
+  {
+    "key": "cidr",
+    "title": "IETF RFC 4632: Classless Inter-domain Routing",
+    "url": "https://www.rfc-editor.org/info/rfc4632/",
+    "status": 200,
+    "ok": true
+  },
+  {
+    "key": "private",
+    "title": "IETF RFC 1918: Address Allocation for Private Internets",
+    "url": "https://www.rfc-editor.org/info/rfc1918/",
+    "status": 200,
+    "ok": true
+  },
+  {
+    "key": "pointToPoint",
+    "title": "IETF RFC 3021: Using 31-Bit Prefixes on IPv4 Point-to-Point Links",
+    "url": "https://www.rfc-editor.org/info/rfc3021/",
+    "status": 200,
+    "ok": true
+  },
+  {
+    "key": "dhcp",
+    "title": "IETF RFC 2131: Dynamic Host Configuration Protocol",
+    "url": "https://www.rfc-editor.org/info/rfc2131/",
+    "status": 200,
+    "ok": true
+  },
+  {
+    "key": "ciscoTrunk",
+    "title": "Cisco IOS XE: Configure VLAN Trunking",
+    "url": "https://www.cisco.com/c/en/us/td/docs/switches/lan/c9000/lyr2-fwd/vlan/vlan-configuration-guide/configure-vlan-trunks.html",
+    "status": 200,
+    "ok": true
+  },
+  {
+    "key": "ciscoSecrets",
+    "title": "Cisco IOS Security Command Reference: enable and enable secret",
+    "url": "https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/security/d1/sec-d1-cr-book/sec-cr-e1.html",
+    "status": 200,
+    "ok": true
+  },
+  {
+    "key": "campus",
+    "title": "Cisco Campus LAN and Wireless LAN Solution Design Guide",
+    "url": "https://www.cisco.com/c/en/us/td/docs/solutions/CVD/Campus/cisco-campus-lan-wlan-design-guide.html",
+    "status": 200,
+    "ok": true
+  }
+]

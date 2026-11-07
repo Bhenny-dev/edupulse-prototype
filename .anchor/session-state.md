@@ -1,18 +1,73 @@
-# Session state
+# Session state (auto-saved — last known reality)
 
-Updated 6 November 2026. Branch: `main`.
+_Updated: 2026-11-07 13:18:29_  ·  branch: `main`
 
-Claude's pending account-dashboard and outline/editor work has been reconciled with the original role contract and completed. Pulse named-role navigation and direct Anthropic workspace/error recovery are included. Actual account/RLS boundaries remain authoritative.
+## Uncommitted changes
+```
+ M .anchor/session-state.md
+ M edupulse-app/scripts/academic-canary.ts
+ M edupulse-app/scripts/lib/capture-source.mjs
+ M edupulse-app/tests/snapshots/reporter.ts
+ M feature-documentation/README.md
+ M feature-documentation/WORKPLAN.md
+ M feature-documentation/backend-system/README.md
+ M feature-documentation/backend-system/supabase.md
+ M feature-documentation/capture-runs/image-review.json
+ M feature-documentation/capture-runs/latest.json
+ M feature-documentation/session-generated/2026-10-27-feature-presence-audit/restoration-status.md
+ M feature-documentation/system-manual/03-courseware-generation-and-review/README.md
+ M feature-documentation/system-manual/16-student-directory/README.md
+ M feature-documentation/system-manual/README.md
+ M feature-documentation/system-walkthrough/04-instructor/README.md
+?? edupulse-app/scripts/lib/it-course-seed.mjs
+?? edupulse-app/scripts/lib/it-networking-seed.mjs
+?? edupulse-app/scripts/lib/it-programming-seed.mjs
+?? edupulse-app/scripts/seed-it-courses.ts
+?? edupulse-app/supabase/migrations/20261107050829_safe_workspace_roster_refresh.sql
+?? edupulse-app/tests/browser/course-seed.spec.ts
+?? edupulse-app/tests/course-seed-fixture.ts
+?? edupulse-app/tests/course-seed.test.ts
+?? edupulse-app/tests/roster-refresh.test.ts
+?? edupulse-app/tests/snapshots/course-seed.spec.ts
+?? feature-documentation/capture-runs/2026-11-07T03-34-32-640Z-41dc1545.json
+?? feature-documentation/capture-runs/2026-11-07T03-38-09-742Z-092d9cc4.json
+?? feature-documentation/capture-runs/2026-11-07T04-39-40-056Z-7f0366dd.json
+?? feature-documentation/session-generated/2026-11-07-it-course-seed/
+?? feature-documentation/system-manual/18-it-course-seed/
+?? feature-documentation/versions/2026-11-07-it-course-seed/
+```
 
-Release record: `feature-documentation/versions/2026-11-03-claude-completion/README.md`.
-Validation: `feature-documentation/versions/2026-11-03-claude-completion/validation/results.md`.
+Diff stat:
+```
+ .anchor/session-state.md                           | 58 +++++++++++++++-------
+ edupulse-app/scripts/academic-canary.ts            | 48 +++++++++++++++---
+ edupulse-app/scripts/lib/capture-source.mjs        |  2 +-
+ edupulse-app/tests/snapshots/reporter.ts           |  2 +-
+ feature-documentation/README.md                    |  3 ++
+ feature-documentation/WORKPLAN.md                  |  6 ++-
+ feature-documentation/backend-system/README.md     | 10 ++++
+ feature-documentation/backend-system/supabase.md   |  8 +++
+ .../capture-runs/image-review.json                 | 24 +++++++++
+ feature-documentation/capture-runs/latest.json     |  4 +-
+ .../restoration-status.md                          |  2 +-
+ .../03-courseware-generation-and-review/README.md  |  2 +
+ .../system-manual/16-student-directory/README.md   |  2 +
+ feature-documentation/system-manual/README.md      |  4 +-
+ .../system-walkthrough/04-instructor/README.md     |  2 +
+ 15 files changed, 143 insertions(+), 34 deletions(-)
+```
 
-Local gate: 199 unit/integration tests; type checks, lint, build, serverless checks and documentation passed. Browser coverage: 203 passed initially, four corrected cases passed on rerun, 19 declared skips. Final captures and exact-hash image review passed.
+## Recent commits
+```
+69c469c Keep arriving panels off the heading and correct the validation record
+087c5d7 Show the agent workspace alone on the screen and ease section cards in from a side
+2fb35e0 Record live workspace recovery validation
+7063fd4 Move workspace save recovery into Settings
+958c7f0 Record combined Courseware production checks
+737d685 Combine Courseware viewing and generation in one workspace
+87a1e65 Record courseware formatting production validation
+b380f91 Format courseware content and place draft review at the end
+```
 
-Published source: `80b55c6`, Vercel READY, production alias confirmed. Six public hosted checks passed; receipt is in release validation. GitHub Actions did not start because of its account billing lock. The browser bridge no longer exposes the earlier owner session; do not claim a successful live Anthropic generation or guess the account's HTTP 400 cause. Manual 17 explains workspace and credit recovery. Temporary/private diagnostics and the original patches remain in ignored `.data/` folders.
-
-Current update: saved courseware displays Markdown (including leading bold text), slide emphasis survives key-point extraction, and AI draft review follows document references or assessment questions. Student review visibility and original raw edit strings are preserved. The formatting release is `feature-documentation/versions/2026-11-04-courseware-formatting/README.md`; verify passed 199 tests, focused browser checks passed 8 cases, and 3 capture scenes produced 6 reviewed images. Source `b380f91` is pushed to main and Vercel READY; production alias commit and public formatter JS/CSS/health checks passed. Hosted authenticated courseware was not exercised for this display update.
-
-6 November update: Courseware combines the old list/builder tabs into one course list and weekly workspace. View/Generate are primary actions; three-dot menus retain review, generation, publication, delivery and document/presentation controls. Old course/week links remain compatible. Missing-only generation preserves existing work; draft regeneration retains schedules and assessment rules. Verify passed 199 tests; 30 distinct browser cases were covered across focused runs, including reruns correcting two phone menu failures. Twenty-four current images and three historical archives were visually reviewed. Release record: `feature-documentation/versions/2026-11-06-unified-courseware/README.md`. Source `737d685` is pushed to main and Vercel READY; the production alias and public JS/CSS/health checks passed. No authenticated hosted courseware or live model run is claimed for this interface change.
-
-6 November workspace-status update: removed the page-wide workspace save banner at the owner's request. Settings → Data & Privacy retains backup, failed-save retry and backup-gated conflict reload. Device journaling and revision-checked persistence are unchanged. Verify passed all 199 tests; six focused desktop/mobile browser cases passed, including local-API conflict recovery. The final two-case capture run passed and three new synthetic screenshots were opened/reviewed with exact hashes. Release: `feature-documentation/versions/2026-11-06-workspace-status-settings/README.md`. Source `7063fd4` is pushed to main and Vercel READY; production alias and all seven public asset/health checks passed. No authenticated hosted save/retry was run. The underlying hosted save failure is not diagnosed by this UI change.
+## Resume
+Read `memory/HANDOFF.md` for intent/next-step, then reconcile against the diff above. If HANDOFF.md is older than this checkpoint, trust the diff.

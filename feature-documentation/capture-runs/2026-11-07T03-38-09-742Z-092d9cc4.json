@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-11-07T03-38-09-742Z-092d9cc4",
+  "startedAt": "2026-11-07T03:38:09.742Z",
+  "finishedAt": "2026-11-07T03:38:25.510Z",
+  "commitSha": "69c469ca7c7d0733fd95c235f1bbb9d16f5abd1d",
+  "sourceDigest": "60872a52f5d8280f6c360e9f69a8dde550f082ff8504a88d1acf979b06e05c28",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-11-07T03:37:26.644Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 1,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": null
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/course-seed.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-formatting.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.spec.ts",
+    "edupulse-app/tests/snapshots/harness-delivery.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-drafting.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-source.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+    "edupulse-app/tests/snapshots/student-directory.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-recovery.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/course-seed.spec.ts",
+      "title": "synthetic identities show seeded blocks, syllabus draft and authored lesson without student results",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 4929,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-manual/18-it-course-seed/01-nine-roster-blocks.png",
+      "sha256": "818bb4c025be570e91126e25b1848692cd7f4536e3cd8d12a39034a8d30e8984",
+      "bytes": 134548
+    },
+    {
+      "path": "feature-documentation/system-manual/18-it-course-seed/02-programming-draft.png",
+      "sha256": "1cbb07f58e5f88b27bb892337d2656a147c85e8b74cbd893973f189bb0cb40a9",
+      "bytes": 304656
+    },
+    {
+      "path": "feature-documentation/system-manual/18-it-course-seed/03-authored-subnetting-lesson.png",
+      "sha256": "1be651d507c833c88df9a692a4249c6bf45ee23e3074ae106b2e7d45d7a56842",
+      "bytes": 319189
+    },
+    {
+      "path": "feature-documentation/system-manual/18-it-course-seed/04-no-student-attempts.png",
+      "sha256": "a816f0906fbd16096dce46da678c9622a8726c7b8373cf04857d68bedb420f09",
+      "bytes": 386647
+    }
+  ]
+}

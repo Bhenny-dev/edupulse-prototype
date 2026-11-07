@@ -1,0 +1,27 @@
+{
+  "all_instructor_items": 96,
+  "attempts": 0,
+  "checked_at": "2026-11-07T05:15:00.370122+00:00",
+  "courses": [
+    {
+      "active": false,
+      "blocks": 4,
+      "course_code": "IT 102",
+      "enrollments": 131,
+      "syllabus_status": "drafted"
+    },
+    {
+      "active": true,
+      "blocks": 5,
+      "course_code": "IT 202",
+      "enrollments": 157,
+      "syllabus_status": "active"
+    }
+  ],
+  "invalid_directory_matches": 0,
+  "largest_block": 35,
+  "material_opens": 0,
+  "official_profiles": 2286,
+  "publications": 0,
+  "seeded_drafts": 93
+}

@@ -1,6 +1,6 @@
 # Restoration disposition - 28 October 2026
 
-The [80-item loss register](feature-loss-register.md) preserves the findings at scan time. The owner subsequently confirmed the pre-makeover `5e7d956` baseline with the later role, offline approval and solid-dark corrections. [ADR-002](../../backend-system/decisions/002-feature-preservation-baseline.md) records that decision. This follow-up describes the current local implementation; the four additive migrations have not been applied to the hosted database in this restoration pass.
+The [80-item loss register](feature-loss-register.md) preserves the findings at scan time. The owner subsequently confirmed the pre-makeover `5e7d956` baseline with the later role, offline approval and solid-dark corrections. [ADR-002](../../backend-system/decisions/002-feature-preservation-baseline.md) records that decision. This follow-up describes the restored implementation. The four additive migrations were applied to the hosted database on 28 October, as recorded in the release validation and the closing note below.
 
 See the [50 illustrated account scenes](../../system-walkthrough/09-restored-role-pages/README.md), [task guide](../../system-manual/13-restored-account-sections/README.md) and [validation record](../../versions/2026-10-28-baseline-workflows/validation/results.md). Screens use synthetic transport fixtures; real SQL tests separately exercise role and persistence contracts.
 

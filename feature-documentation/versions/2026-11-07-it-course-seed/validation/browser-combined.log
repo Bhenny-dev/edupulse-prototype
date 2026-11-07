@@ -1,0 +1,50 @@
+
+> edupulse-app@0.4.0 test:browser
+> playwright test tests/browser/course-seed.spec.ts tests/browser/landing.spec.ts -g seeded rosters|authored lessons|workspace is|arriving cards
+
+node.exe : [WebServer] (node:37244) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([WebServer] (no... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:41160) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 12:35:32 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3060
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 12:35:33 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3060
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+
+Running 10 tests using 1 worker
+
+(node:29964) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 [desktop] › tests\browser\course-seed.spec.ts:4:1 › seeded rosters and revised syllabus remain available after reload (7.1s)
+  ok  2 [desktop] › tests\browser\course-seed.spec.ts:19:1 › authored lessons stay draft and Performance shows only actual activity (2.7s)
+[WebServer] 12:35:53 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok  3 [desktop] › tests\browser\landing.spec.ts:270:1 › the agent workspace is the room alone on the screen and answers a tap on a robot or on its button (37.7s)
+[WebServer] 12:36:32 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok  4 [desktop] › tests\browser\landing.spec.ts:298:1 › with reduced motion the workspace is one screen and a button answers at once (9.9s)
+[WebServer] 12:36:39 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok  5 [desktop] › tests\browser\landing.spec.ts:482:1 › arriving cards ease in from a side and leave no styles once in place, in both directions (17.2s)
+(node:12456) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  6 [mobile] › tests\browser\course-seed.spec.ts:4:1 › seeded rosters and revised syllabus remain available after reload (3.7s)
+  ok  7 [mobile] › tests\browser\course-seed.spec.ts:19:1 › authored lessons stay draft and Performance shows only actual activity (2.6s)
+[WebServer] 12:37:04 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok  8 [mobile] › tests\browser\landing.spec.ts:270:1 › the agent workspace is the room alone on the screen and answers a tap on a robot or on its button (25.1s)
+[WebServer] 12:37:29 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok  9 [mobile] › tests\browser\landing.spec.ts:298:1 › with reduced motion the workspace is one screen and a button answers at once (6.6s)
+  -  10 [mobile] › tests\browser\landing.spec.ts:482:1 › arriving cards ease in from a side and leave no styles once in place, in both directions
+
+  1 skipped
+  9 passed (2.1m)

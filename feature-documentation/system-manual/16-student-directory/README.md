@@ -1,5 +1,7 @@
 # 16 · Student accounts and course rosters
 
+The [IT course seed](../18-it-course-seed/README.md) records the owner-authorized first/second-year IT enrollment batch. It preserves official identities and keeps student activity separate from generated teaching drafts.
+
 Student accounts are provisioned from the official list. Each account has a name, student number, year level, department and program. Directory membership does not enroll a student in a course. The instructor selects the students for a course and block; only published, released materials from an active approved syllabus become available to enrolled students.
 
 The examples below use synthetic student profiles and a synthetic authenticated session. They demonstrate the interface and saved-workspace handoff, not real student records or a hosted sign-in.

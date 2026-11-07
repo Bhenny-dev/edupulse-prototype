@@ -496,7 +496,9 @@ test('arriving cards ease in from a side and leave no styles once in place, in b
     // Below the screen the card waits, faded out and off to its side.
     await place(selector, 1.4)
     await expect(card).not.toHaveAttribute('data-arriving', { timeout: 10_000 })
-    await expect.poll(() => style(card).then(value => value.opacity)).toBe('0')
+    // The jump to the Impact cards crosses the workspace, whose 3D room loads on the way and
+    // holds the page for seconds under software rendering (2.6 to 4.3 s measured here).
+    await expect.poll(() => style(card).then(value => value.opacity), { timeout: 15_000 }).toBe('0')
     // Coming up the screen it eases in, from a side, rather than being built or cut in.
     await place(selector, 0.6)
     await expect(card).toHaveAttribute('data-arriving', '')

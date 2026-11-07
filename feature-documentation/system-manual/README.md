@@ -40,10 +40,12 @@ The scripts sign in with the preview personas of the documentation capture build
 
 Section 10 explains authenticated account workflows. Its current screenshots use synthetic browser transport to show the interface; the earlier hosted account canary remains historical validation evidence. Preview captures elsewhere demonstrate sample academic data; AI guides identify their real local documents and inference. Capture-run reports record these categories separately.
 
-The [current baseline restoration](../versions/2026-10-28-baseline-workflows/README.md) extends the authenticated sections with 50 illustrated account scenes and shared workflow contracts. See [Manual 13](../system-manual/13-restored-account-sections/README.md) and [Role guide 9](../system-walkthrough/09-restored-role-pages/README.md). The four new database migrations remain a hosted deployment prerequisite.
+The [baseline restoration](../versions/2026-10-28-baseline-workflows/README.md) extends the authenticated sections with 50 illustrated account scenes and shared workflow contracts. See [Manual 13](../system-manual/13-restored-account-sections/README.md) and [Role guide 9](../system-walkthrough/09-restored-role-pages/README.md). Its four migrations were applied on 28 October; the release validation records their hosted verification.
 
 [Generate content and verify its save](15-backend-content-delivery/README.md) documents the real local model, existing Pulse confirmation card, persisted receipt and reloaded syllabus. The backend harness changes do not change the restored header, settings, charts or layout.
 
 [Manual 16: Student accounts and course rosters](16-student-directory/README.md) covers the official directory, instructor selection, confirmed enrollment and imported profile fields.
 
 [Manual 17: Pulse dashboard navigation and provider recovery](17-pulse-navigation-and-provider-recovery/README.md) covers named owner views, conversational corrections and Anthropic API-credit errors.
+
+[Manual 18: IT course seed and actual progress](18-it-course-seed/README.md) covers saved directory enrollments, the complete Programming draft, authored teaching packs and genuine activity states.

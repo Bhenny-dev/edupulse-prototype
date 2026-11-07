@@ -1,0 +1,19 @@
+{
+  "checkedAfterMigration": "20261107050829",
+  "errors": 0,
+  "findings": [
+    {
+      "name": "auth_leaked_password_protection",
+      "count": 1
+    },
+    {
+      "name": "auth_rls_initplan",
+      "count": 3
+    },
+    {
+      "name": "authenticated_security_definer_function_executable",
+      "count": 6
+    }
+  ],
+  "boundary": "Existing advisor warnings retained; no new elevated execution grant."
+}

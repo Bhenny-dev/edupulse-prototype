@@ -1,0 +1,107 @@
+{
+  "compiler": "TinyCC 0.9.27 Windows x64; portable private tools directory",
+  "compilerSource": {
+    "source": "https://download.savannah.gnu.org/releases/tinycc/tcc-0.9.27-win64-bin.zip",
+    "sha256": "34a721949a2583fdff725312da092fa0f5f1f284b702e6f811c6954714faabb2",
+    "bytes": 489586,
+    "purpose": "Portable compiler for the original teaching examples; no global installation"
+  },
+  "checks": [
+    {
+      "week": 1,
+      "sourceSha256": "20babcb2dd4772775d5384d80085311979bab54d32b51a3f7a0532d5554dc157",
+      "output": "75",
+      "passed": true
+    },
+    {
+      "week": 2,
+      "sourceSha256": "79de22f8064fd70390fcd66e08df5f40f6c26ead2b950a96a641554b634446d7",
+      "output": "Hello, EduPulse",
+      "passed": true
+    },
+    {
+      "week": 3,
+      "sourceSha256": "1a317f2c853b270ccf4f7c035dc6bd424f133f7818a131757b7487a8d301b1cf",
+      "output": "25.00",
+      "passed": true
+    },
+    {
+      "week": 4,
+      "sourceSha256": "a4f7d316e976aa29b97c4518a549f635e16c6c40e13e7e227ae399aac8906d4d",
+      "output": "2 1 2.33",
+      "passed": true
+    },
+    {
+      "week": 5,
+      "sourceSha256": "c3fbe113dd96e4820169031014749df79fc85e5c482aed480cb12288e24251e6",
+      "output": "21",
+      "passed": true
+    },
+    {
+      "week": 6,
+      "sourceSha256": "de92edbb6e9aac09521105fc9e47c2759999ee8478e891b0d8d2f6dffea9920b",
+      "output": "Adult",
+      "passed": true
+    },
+    {
+      "week": 7,
+      "sourceSha256": "43bcf0d6165a8a43c488a9bddff3c217bf70fcd7ac397c8db648a2edb4167770",
+      "output": "List",
+      "passed": true
+    },
+    {
+      "week": 8,
+      "sourceSha256": "b6e06a0230f9aa639e72d7c20e5ffa4d76b35992f5b6daefadf8be4e515e68b8",
+      "output": "10",
+      "passed": true
+    },
+    {
+      "week": 10,
+      "sourceSha256": "5c65167a6ccc425fbd93c4a272eb0e8092bb12110a7b851a1fd0e966b4227157",
+      "output": "6",
+      "passed": true
+    },
+    {
+      "week": 11,
+      "sourceSha256": "7cee65bc372cd617c48c91694621040a17bc42fa25a63e79c01a977e2da1e4ec",
+      "output": "25",
+      "passed": true
+    },
+    {
+      "week": 12,
+      "sourceSha256": "3fda72fb1e300bd6d0c86084e98be602668761601fc4de8a542638e3cc49cb95",
+      "output": "12",
+      "passed": true
+    },
+    {
+      "week": 13,
+      "sourceSha256": "7e958e6dd1a0d2e7b324c7d8871561a182512a118049e6980eb855af2b4ed788",
+      "output": "3 1",
+      "passed": true
+    },
+    {
+      "week": 14,
+      "sourceSha256": "f9ff60933720a338c6eab0323a56f2ce0d164857fc3f15732eb31a34312b8b0d",
+      "output": "3",
+      "passed": true
+    },
+    {
+      "week": 15,
+      "sourceSha256": "8ca1e57eb6510f855cc2c20bbf3404d96b313e77ad7b739794dfbe6817d789be",
+      "output": "42",
+      "passed": true
+    },
+    {
+      "week": 16,
+      "sourceSha256": "10afb736f45ed07c3c0388a5c17d5b07732cc71b7d40c77f12848c2d7c85ad67",
+      "output": "0 1 1 0",
+      "passed": true
+    },
+    {
+      "week": 17,
+      "sourceSha256": "9f4526ae681129a62be3e33110d15b39fdf5d21271a0b087196a74c88e811936",
+      "output": "9",
+      "passed": true
+    }
+  ]
+}

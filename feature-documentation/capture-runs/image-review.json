@@ -4356,6 +4356,30 @@
       "sha256": "77fc50d3245d71f76a32e073b0490d902d1869ca823681647aaa5cb5c89e7051",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-06T06:54:36.116221Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/18-it-course-seed/01-nine-roster-blocks.png",
+      "sha256": "818bb4c025be570e91126e25b1848692cd7f4536e3cd8d12a39034a8d30e8984",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-07T05:30:14.007805Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/18-it-course-seed/02-programming-draft.png",
+      "sha256": "1cbb07f58e5f88b27bb892337d2656a147c85e8b74cbd893973f189bb0cb40a9",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-07T05:30:14.009166Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/18-it-course-seed/03-authored-subnetting-lesson.png",
+      "sha256": "1be651d507c833c88df9a692a4249c6bf45ee23e3074ae106b2e7d45d7a56842",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-07T05:30:14.010779Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/18-it-course-seed/04-no-student-attempts.png",
+      "sha256": "a816f0906fbd16096dce46da678c9622a8726c7b8373cf04857d68bedb420f09",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-07T05:30:14.012637Z"
     }
   ]
 }

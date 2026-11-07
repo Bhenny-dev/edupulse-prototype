@@ -1,0 +1,22 @@
+[
+  {
+    "path": "legacy",
+    "status": 400,
+    "code": "21000",
+    "message": "UPDATE requires a WHERE clause"
+  },
+  {
+    "path": "publishable",
+    "status": 400,
+    "code": "21000",
+    "message": "UPDATE requires a WHERE clause"
+  },
+  {
+    "path": "hosted",
+    "status": 503,
+    "code": "WORKSPACE_UNAVAILABLE"
+  },
+  {
+    "probeAccountRemoved": true
+  }
+]

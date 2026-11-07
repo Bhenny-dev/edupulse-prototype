@@ -1,0 +1,28 @@
+{
+  "checks": [
+    {
+      "cohort_year": 1,
+      "courses": [],
+      "own_enrollments": 1,
+      "own_profiles": 1,
+      "publications": 0
+    },
+    {
+      "cohort_year": 2,
+      "courses": [
+        "IT 202"
+      ],
+      "own_enrollments": 1,
+      "own_profiles": 1,
+      "publications": 0
+    },
+    {
+      "cohort_year": 3,
+      "courses": [],
+      "own_enrollments": 0,
+      "own_profiles": 1,
+      "publications": 0
+    }
+  ],
+  "boundary": "Transaction-local student RLS context; not a signed hosted API session."
+}

@@ -1,0 +1,23 @@
+{
+  "checkedAt": "2026-11-07T05:12:41.079Z",
+  "origin": "https://edupulse-prototype.vercel.app",
+  "syntheticAccounts": 6,
+  "enrolledPublications": 2,
+  "answerKeysExposed": false,
+  "duplicateSubmission": "same-saved-result",
+  "recordedMaterialOpen": true,
+  "mappedTopicResult": true,
+  "outsiderPublicationCount": 0,
+  "unrelatedInstructorAttemptCount": 0,
+  "deanAttemptCount": 1,
+  "associateDeanAttemptCount": 0,
+  "provenance": "synthetic-hosted-canary",
+  "migration_applied": true,
+  "private_refresh_authenticated_execute": false,
+  "test_accounts": 0,
+  "status": "passed",
+  "legacyPermission": "explicit-owner-approval-for-temporary-test-only",
+  "cleanedAccounts": 6,
+  "cleanupReceiptExists": false,
+  "productionCredentialsChanged": false
+}

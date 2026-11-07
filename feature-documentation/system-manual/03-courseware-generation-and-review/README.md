@@ -1,5 +1,7 @@
 # 3 · Generate and review courseware
 
+The [IT teaching seed](../18-it-course-seed/README.md) adds saved session-authored drafts with explicit provenance, preserving existing items. It does not claim connected-provider inference or student completion. All new items follow the review and publication controls below.
+
 **Who:** instructor. **Where:** Courseware. One course list combines generation progress and saved items; there are no separate My Courseware and Courseware Builder tabs. The generated material, activity, and assessment stay in Draft until an instructor checks them. The alignment report is an aid to review, not approval.
 
 1. Complete and activate a syllabus outline first. Find the course in **Courseware**. A course with saved content shows **View**; an empty course shows **Generate**. Both open its weekly workspace. The list retains status, generated/expected item counts, progress, instructor and teaching weeks. The current example contains synthetic IT 102 and IT 103 courses.

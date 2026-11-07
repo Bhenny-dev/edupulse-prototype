@@ -16,3 +16,7 @@ After the visual review, one rule changed: a block now comes from the top only w
 **Other landing images.** Only 8c is committed. The public-site scene was captured again and its 20 images compared with the committed ones by decoded pixels: 4 are identical and the others differ. Images 3, 10, 12 and 13, the largest differences outside the photograph rows, were opened side by side and show the same content. Images 4, 8, 8b, 9, 14 and 15 differ by one pixel of height; images 1, 2, 6 and 7 by 40 pixels or fewer; image 11 is the moving photograph rows. Those were not opened. The comparison capture was then discarded.
 
 **Not shown.** No hosted check was run. The motion has not been seen on a real GPU or a real phone: the frames above come from slowed clocks and software rendering, so they show position and layering, not smoothness. The 950 ms entrance is set in the code, not timed from start to finish. On the phone size, the role cards and the scope's handover were not photographed; the handover test passes there.
+
+## 7 November combined-release follow-up
+
+The course-seed release includes a test-only 15-second opacity polling wait to allow software-rendered 3D room loading while crossing the workspace. The final desktop arrivals test passed in 56.7 seconds. The earlier combined seed/landing run passed nine cases with one declared mobile skip. Landing implementation is unchanged by this follow-up. See the [combined release evidence](../../2026-11-07-it-course-seed/validation/results.md).

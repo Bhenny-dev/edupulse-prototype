@@ -1,0 +1,32 @@
+import { test, expect } from '../snapshots/fixtures'
+import { courseSeedUI } from '../course-seed-fixture'
+
+test('seeded rosters and revised syllabus remain available after reload', async ({ page }) => {
+  const fixture = await courseSeedUI(page)
+  await page.goto('/#/syllabus?tab=register')
+  const roster = page.getByRole('heading', { name: 'Registered Courses (9)', exact: true }).locator('..')
+  await expect(roster.getByRole('row')).toHaveCount(10)
+  await expect(roster).toContainText('BSIT-1D')
+  await expect(roster).toContainText('BSIT-2E')
+  await page.reload()
+  await expect(roster.getByRole('row')).toHaveCount(10)
+  await page.goto('/#/syllabus?tab=mine')
+  const programming = page.getByRole('row').filter({ hasText: 'IT 102' })
+  await expect(programming).toContainText('Drafted')
+  expect(fixture.plan.data.syllabi[0].courseOutline).toHaveLength(18)
+  expect(fixture.plan.data.registrations.reduce((sum, row) => sum + (row.students || []).length, 0)).toBe(288)
+})
+test('authored lessons stay draft and Performance shows only actual activity', async ({ page }) => {
+  const fixture = await courseSeedUI(page)
+  await page.goto('/#/courseware?course=seed-networking&week=6')
+  const items = page.locator('[data-week="6"] [data-content-id]')
+  await expect(items).toHaveCount(3)
+  await expect(items.locator('.badge')).toHaveText(['Draft', 'Draft', 'Draft'])
+  await page.locator('[data-content-id="gen-mat-seed-networking-w6"]').getByRole('button', { name: 'View', exact: true }).click()
+  await expect(page.locator('.doc-viewer-text').filter({ hasText: '192.0.2.63' })).toBeVisible()
+  await expect(page.locator('.doc-viewer-text').filter({ hasText: '62 ordinary host addresses' })).toBeVisible()
+  await page.goto('/#/performance')
+  await expect(page.getByText('No assessment attempts recorded.', { exact: true }).first()).toBeVisible()
+  expect(fixture.records.attempts).toHaveLength(0)
+  expect(fixture.records.accesses).toHaveLength(0)
+})
