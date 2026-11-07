@@ -1,0 +1,39 @@
+{
+  "id": "dpl_4mkA4gTDKRnaf8gB52cQuUQSv1Md",
+  "state": "READY",
+  "url": "edupulse-prototype-ay0h6oobc-bhenny-benlor-d-riveras-projects.vercel.app",
+  "commit": "f4ff0f7ae1eb533b74d825513c67d6dbe3e1fad7",
+  "productionOrigin": "https://edupulse-prototype.vercel.app",
+  "verification": {
+    "tests": 211,
+    "passed": 211,
+    "failed": 0,
+    "deploymentChecksPassed": true
+  },
+  "publicProbes": {
+    "checkedAt": "2026-11-07T07:19:58.917Z",
+    "pageStatus": 200,
+    "mainAsset": "/assets/index-Dh-xv4zQ.js",
+    "checkpointClientPresent": true,
+    "connectionRecoveryTextPresent": true,
+    "securityHeaders": {
+      "frameOptions": "DENY",
+      "noSniff": "nosniff",
+      "cspPresent": true
+    },
+    "healthStatus": 200,
+    "unauthenticatedDraft": {
+      "status": 403,
+      "code": "FORBIDDEN"
+    }
+  },
+  "githubActions": {
+    "run": "https://github.com/Bhenny-dev/edupulse-prototype/actions/runs/42350395583",
+    "conclusion": "failure",
+    "annotations": [
+      "The job was not started because your account is locked due to a billing issue.",
+      "\"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748\""
+    ]
+  },
+  "liveOpenRouterInference": "Unverified: existing browser tab could not be read through the browser bridge."
+}
