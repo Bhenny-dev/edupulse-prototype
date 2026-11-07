@@ -1,0 +1,15 @@
+{
+  "checkedAt": "2026-11-07T11:57:47.938524+00:00",
+  "origin": "https://edupulse-prototype.vercel.app",
+  "htmlStatus": 200,
+  "healthStatus": 200,
+  "providerStatus": 200,
+  "publicConnection": null,
+  "publicConnections": [],
+  "unauthenticatedCoursewareStatus": 403,
+  "unauthenticatedCoursewareCode": "FORBIDDEN",
+  "voiceControlsServed": true,
+  "creditGuidanceServed": true,
+  "permissionsPolicy": "camera=(), microphone=(self), geolocation=(), payment=(), usb=()",
+  "cspPresent": true
+}

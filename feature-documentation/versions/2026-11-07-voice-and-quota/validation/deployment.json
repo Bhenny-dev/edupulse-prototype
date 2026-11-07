@@ -1,0 +1,14 @@
+{
+  "checkedAt": "2026-11-07T11:57:47.938524+00:00",
+  "id": "dpl_VS667Cy7KMqKiUUwwAwCsbdjSbzm",
+  "state": "READY",
+  "sourceSha": "a7c7caca8fa5ad97e7d15d32afe67f38783f10fd",
+  "aliases": [
+    "edupulse-prototype.vercel.app",
+    "edupulse-prototype-bhenny-benlor-d-riveras-projects.vercel.app",
+    "edupulse-prototype-git-main-bhenny-benlor-d-riveras-projects.vercel.app"
+  ],
+  "remoteTests": 216,
+  "remoteDeploymentChecksPassed": true,
+  "evidence": "Scoped authenticated Vercel CLI; connected project tool was previously denied with HTTP 403."
+}

@@ -19,3 +19,9 @@ All **6** final capture cases passed with no page errors or CSP violations; all 
 ## Wider browser-suite findings
 
 A subsequent full browser run was interrupted after 24 completed desktop cases: **21 passed and 3 failed**. [Partial run](broader-browser-partial.txt). The failures were the baseline assessment-mapping case and two courseware document-formatting cases. Their broad **View** locators can operate the week expander before an item is open, leaving the expected editor/document absent. The dedicated unified-courseware item/menu cases passed in that same run. These courseware components, fixtures and failing tests are unchanged from the previous `main`; the observed locator mismatch is separate from the voice/quota implementation. No courseware interface or assessment behavior was changed to satisfy those tests. The remaining full-suite cases were not run, and these three older browser checks remain unresolved.
+
+## Deployed result
+
+Feature source `a7c7caca8fa5ad97e7d15d32afe67f38783f10fd` was pushed to `main`. Deployment `dpl_VS667Cy7KMqKiUUwwAwCsbdjSbzm` is **Ready** for that exact source with the production domain assigned. Vercel independently passed all **216 tests** and deployment checks. [Deployment receipt](deployment.json). The connected project tool had returned HTTP 403 earlier in this session; the already-authenticated, explicitly scoped Vercel CLI supplied the final evidence.
+
+The public production page, health and provider endpoints returned 200. Served JavaScript contains the optional voice controls and credit recovery handling. The actual response permits `microphone=(self)` and retains CSP; anonymous provider reads expose no account connections and unauthorized courseware generation returns 403/`FORBIDDEN`. [Production receipt](production.json). No physical microphone, live language-recognition accuracy, real-provider inference, private credential access or real account billing was exercised by these public checks.
