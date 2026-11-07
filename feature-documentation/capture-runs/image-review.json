@@ -4518,6 +4518,126 @@
       "sha256": "6838efb8143cc92dd79a45e95ba0849d5a4c8186e967bfeacbda40309d37a33e",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-07T08:22:22.291791Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/01-voice-controls.png",
+      "sha256": "91a0abe61acf12f26cbf0de7aaefb588ca8b66509d73948bd71c784551a45907",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-07T11:30:48.021314+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/02-listening-tagalog-english.png",
+      "sha256": "68135a8fc22f4d4a046447a9827043178ef8981f2983c5116751366ee28727b3",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-07T11:30:48.021314+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/03-review-transcript.png",
+      "sha256": "2acca91b7de66fe34280dc60a9d04c97f44b5c86cd36dee9bf852a3904535efd",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-07T11:30:48.021314+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/04-conversation-reading.png",
+      "sha256": "c77e85d46f3256ca53ddd448f892e5eea54674a4fafada22403c5c7b0615c2e2",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-07T11:30:48.021314+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/05-openai-credit-error.png",
+      "sha256": "c9ab9f173989f28905fec1b407a82da4f9392bca33c0374cd9349900be32b0d5",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-07T11:30:48.021314+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/06-experimental-language.png",
+      "sha256": "ed8620ff0ab94e6ea485f27f92f3b6d0db824ce71dfff9c839574bb847285eee",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-07T11:30:48.021314+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/07-microphone-denied.png",
+      "sha256": "d25e789c66e104f36070f8ab7600477580093502c37b4d39080973246eeaeb32",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-07T11:30:48.021314+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/08-voice-dark.png",
+      "sha256": "5eddbee8a53956d138b7ae2c3af713e1385148948ae7c2baaea8a2328e2ae0b9",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-07T11:30:48.021314+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/mobile-03-review-transcript.png",
+      "sha256": "1a7979f85bba0b6af531c4072191da4e809351ddcc8929317c8ad16d4ab14863",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-07T11:30:48.021314+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/mobile-05-openai-credit-error.png",
+      "sha256": "1ef48af8d3febb95e359a17384bc2188f5ad5b008c9b9bc62abd7f2483962572",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-07T11:30:48.021314+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/01-voice-controls.png",
+      "sha256": "5fa2158f1e04d64aa4865dee7684a5c9f1ef768511332deaca012ed925afc629",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-07T11:44:55.040362+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/02-listening-tagalog-english.png",
+      "sha256": "b8936a2f9cd5eca4c82f6de5dc8ed0729b7d1ca66e8e0ec0bf07bcb2a504e9cf",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-07T11:44:55.041762+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/03-review-transcript.png",
+      "sha256": "421a5f5ca969b007a836b1040dbde3876e982c84b0315ab312eba3851c544753",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-07T11:44:55.042711+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/04-conversation-reading.png",
+      "sha256": "80cf511b76c8ff4efa26a8a1e12fefd4d9d194b494fe1a0dffd4a5555cfb76de",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-07T11:44:55.046277+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/05-openai-credit-error.png",
+      "sha256": "5b59b1dc8b91beb3ac00389ba29941947cf231bc0f70d000004a8b097770cd6e",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-07T11:44:55.049827+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/06-experimental-language.png",
+      "sha256": "dbf004ed8419ffa5c8ac7d6da070c670eed0c079cc7f8bd880200b698bdc4473",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-07T11:44:55.051867+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/07-microphone-denied.png",
+      "sha256": "1807d2d0790411ff7589c5d9da18da5e7adafb06896a7a68a3e083cfb7980dad",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-07T11:44:55.053368+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/08-voice-dark.png",
+      "sha256": "f7455ac64f8f4bc9dc848afcb407b9f875fef1ba19d2b1dc331ce533c7152d99",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-07T11:44:55.054569+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/mobile-03-review-transcript.png",
+      "sha256": "53dcadab0a49cb27fc273ace2a0feadac1ede4799cb30fe6b27926adbb80f4a5",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-07T11:44:55.055786+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/mobile-05-openai-credit-error.png",
+      "sha256": "be6440a1bd8d7fd82d96a1ea29ccdb655af1dbe03f4383a30f70cf45b77befcf",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-07T11:44:55.057424+00:00"
     }
   ]
 }

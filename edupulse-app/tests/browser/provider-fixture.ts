@@ -1,7 +1,7 @@
 import type { Page } from '@playwright/test'
 type SavedConnection = { provider: string; model: string; source: string; expiresAt: string | null; testedAt?: string }
-export async function providerFixture(page: Page) {
-  const baseline = await (await page.request.get('/api/ai?action=health')).json()
+export async function providerFixture(page: Page, baselineOverride?: Record<string, unknown>) {
+  const baseline = baselineOverride || await (await page.request.get('/api/ai?action=health')).json()
   let connection: SavedConnection | null = null
   const saved = new Map<string, SavedConnection>()
   const summaries = () => [...saved.values()].map(item => ({ ...item, active: item.provider === connection?.provider }))

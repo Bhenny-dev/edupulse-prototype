@@ -20,6 +20,8 @@ Screenshots in the walkthrough and manual are real captures of the documentation
 
 ## Version history
 
+The [7 November voice and provider-limit update](versions/2026-11-07-voice-and-quota/README.md) adds optional browser speech with review/conversation modes and distinguishes OpenAI billing/spend/usage failures from temporary throttling.
+
 The [7 November loading and account connections update](versions/2026-11-07-loading-and-connections/README.md) retains encrypted providers across sign-out, separates ChatGPT plan requirements from API billing, and audits request-driven loading feedback across roles.
 
 The [7 November bounded syllabus fix](versions/2026-11-07-bounded-syllabus-drafting/README.md) separates research and small drafting stages across requests, preserving one final review and the existing interface. Validation distinguishes synthetic provider/browser evidence from live inference.

@@ -1,0 +1,23 @@
+node.exe : [WebServer] (node:39572) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([WebServer] (no... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 6 tests using 1 worker
+
+(node:16108) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 [desktop] › tests\snapshots\voice-quota.spec.ts:6:3 › voice and quota: review (9.6s)
+  ok 2 [desktop] › tests\snapshots\voice-quota.spec.ts:6:3 › voice and quota: conversation (6.1s)
+  ok 3 [desktop] › tests\snapshots\voice-quota.spec.ts:6:3 › voice and quota: language and permissions (6.6s)
+  ok 4 [desktop] › tests\snapshots\voice-quota.spec.ts:12:1 › voice controls on solid dark surfaces (2.5s)
+(node:24068) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 5 [mobile] › tests\snapshots\voice-quota.mobile.spec.ts:6:3 › mobile voice and quota: review (2.1s)
+  ok 6 [mobile] › tests\snapshots\voice-quota.mobile.spec.ts:6:3 › mobile voice and quota: conversation (2.3s)
+
+  6 passed (34.6s)

@@ -85,3 +85,7 @@ In the downloaded local app, **Ollama · local app server** uses models installe
 ## Loading and account retention
 
 [Manual 19](../19-loading-and-saved-connections/README.md) shows saved-provider restoration, model-test spinners, multiple reusable connections, disconnect safeguards and reduced-motion loading feedback. **ChatGPT plan** is a separate informational choice linking to the hosted-app approval requirements; it does not accept an OpenAI API key as a ChatGPT subscription login.
+
+## A first request can be rejected
+
+Listing a GPT-5.6 or other model does not establish available API credits. Pulse now distinguishes OpenAI credit-balance exhaustion, project/organization spend caps, approved usage limits and temporary throttling. Billing/usage errors need provider-side review; reconnecting a key does not restore credit. Valid Retry-After guidance is shown for temporary limits. The selected connection and failed prompt remain available, without automatic paid retries or model switches. [Manual 20](../20-voice-and-provider-errors/README.md) documents each category and the stopped voice loop on failure.

@@ -50,7 +50,7 @@ The settings below come from the repository (`edupulse-app/vercel.json`, `.verce
 | `X-Content-Type-Options` | `nosniff` |
 | `X-Frame-Options` | `DENY` |
 | `Referrer-Policy` | `strict-origin-when-cross-origin` |
-| `Permissions-Policy` | `camera=(), microphone=(), geolocation=(), payment=(), usb=()` |
+| `Permissions-Policy` | `camera=(), microphone=(self), geolocation=(), payment=(), usb=()` |
 | `Cross-Origin-Opener-Policy` | `same-origin` |
 
 `'wasm-unsafe-eval'` allows WebAssembly (the on-device model and ONNX) without allowing JavaScript `eval`. The UI screenshots in the System Walkthrough and System Manual were captured with this policy enforced; the capture logs record no violations.
@@ -151,3 +151,7 @@ Claude workspace selection uses the existing encrypted account-bound connection 
 Provider persistence reuses `AI_CONNECTION_SECRET` on the server and the signed-in Supabase user client. Keep the secret stable across deploys; existing encrypted records cannot be recovered from a different secret without re-encryption. No new client secret, shared paid-provider key, external auth client or function-duration change is introduced. Apply the account-provider migration before deploying this code. Browser loaders reflect actual requests/file reads; static menus retain immediate opening. [ADR-004](decisions/004-account-provider-retention.md) and [release validation](../versions/2026-11-07-loading-and-connections/validation/results.md) describe hosted checks and the unavailable ChatGPT hosted approval.
 
 The loading/retention source `bf6fc38` is Ready in production as `dpl_65oiuT5MLBW9wwFqWMfEM87YyfAB`, independently passing 213 tests on Vercel. Both provider migrations were applied before the source push. Public checks confirm updated assets and denied unauthenticated courseware; signed paid-provider inference remains unverified. [Deployment evidence](../versions/2026-11-07-loading-and-connections/validation/results.md#deployed-result).
+
+## Browser voice permission and provider recovery, 7 November 2026
+
+The Permissions-Policy now allows `microphone=(self)` so EduPulse can request browser permission on its own origin; camera, geolocation, payment and USB remain disabled. Vite preview mirrors this header for capture verification. Speech recognition and device playback need browser support and permission, and may use the browser vendor's remote service. No new OpenAI audio request, shared API key or server environment variable is introduced. OpenAI error responses include bounded Retry-After guidance for transient limits, while billing/spend/usage categories direct the owner to the provider. [Manual 20](../system-manual/20-voice-and-provider-errors/README.md).

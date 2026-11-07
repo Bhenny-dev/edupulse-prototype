@@ -1,0 +1,73 @@
+
+> edupulse-app@0.4.0 test:browser
+> playwright test
+
+node.exe : [WebServer] (node:976) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([WebServer] (no... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:30316) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 7:44:03 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3005
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 7:44:04 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3005
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 7:44:05 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3005
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 7:44:06 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3005
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+
+Running 278 tests using 1 worker
+
+(node:37036) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 7:44:30 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok   1 [desktop] › tests\browser\access.spec.ts:4:3 › AUTH-001: Assoc. Dean cannot open the performance route or navigate there through Pulse (15.0s)
+[WebServer] 7:44:41 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok   2 [desktop] › tests\browser\access.spec.ts:4:3 › AUTH-001: System Admin cannot open the performance route or navigate there through Pulse (8.2s)
+[WebServer] 7:44:49 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok   3 [desktop] › tests\browser\access.spec.ts:18:1 › DATA-001: sample performance is explicitly labelled in preview (7.3s)
+[WebServer] 7:44:57 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok   4 [desktop] › tests\browser\access.spec.ts:26:1 › Dean can open Performance without a stale or missing Pulse target crashing the page (8.5s)
+  ok   5 [desktop] › tests\browser\baseline-workflows.spec.ts:4:1 › syllabus-topic mastery uses mapped marks and restores radar, heatmap and status (3.7s)
+  ok   6 [desktop] › tests\browser\baseline-workflows.spec.ts:12:1 › instructor marks saved responses and the score and topic marks persist (9.3s)
+  ok   7 [desktop] › tests\browser\baseline-workflows.spec.ts:19:1 › student starts a timed written-response assessment, submits, and appeals the saved result (5.5s)
+  ok   8 [desktop] › tests\browser\baseline-workflows.spec.ts:27:1 › confirmed loading suggestions and block corrections update shared records (4.4s)
+  ok   9 [desktop] › tests\browser\baseline-workflows.spec.ts:36:1 › Dean offline inbox sends correction requests and account notice read receipts survive reload (6.7s)
+  ok  10 [desktop] › tests\browser\baseline-workflows.spec.ts:41:1 › saved syllabus versions can be viewed and restored as a draft (3.5s)
+  x   11 [desktop] › tests\browser\baseline-workflows.spec.ts:46:1 › assessment topic mappings and delivery policy save through the instructor workspace (31.2s)
+(node:15324) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  12 [desktop] › tests\browser\baseline-workflows.spec.ts:53:1 › authenticated Pulse guidance describes shared records and keeps Dean marks read-only (5.2s)
+  ok  13 [desktop] › tests\browser\course-seed.spec.ts:4:1 › seeded rosters and revised syllabus remain available after reload (5.8s)
+  ok  14 [desktop] › tests\browser\course-seed.spec.ts:19:1 › authored lessons stay draft and Performance shows only actual activity (4.1s)
+[WebServer] 7:46:35 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok  15 [desktop] › tests\browser\courseware-ai-readiness.spec.ts:7:1 › the courseware builder says when Pulse AI is not set up and keeps a failed generation on the page (20.5s)
+[WebServer] 7:46:50 PM [vite] (client) [console.warn] THREE.WebGLRenderer: KHR_parallel_shader_compile extension not
+supported.
+  ok  16 [desktop] › tests\browser\courseware-ai-readiness.spec.ts:41:1 › an unknown Settings tab in the address opens Account instead of an empty page (10.4s)
+  x   17 [desktop] › tests\browser\courseware-formatting.spec.ts:5:1 › document formats saved Markdown and places evaluation after all sections (8.7s)
+(node:35832) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  18 [desktop] › tests\browser\courseware-formatting.spec.ts:32:1 › activity and assessment evaluation follow their content (3.2s)
+  ok  19 [desktop] › tests\browser\courseware-formatting.spec.ts:44:1 › student document and slides format emphasis without exposing draft evaluation (3.3s)
+  x   20 [desktop] › tests\browser\courseware-formatting.spec.ts:62:1 › formatted content keeps HTML inert and prevents unsafe links or remote image loads (7.9s)
+(node:41272) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  21 [desktop] › tests\browser\courseware-unified.spec.ts:4:1 › one course list combines progress with View or Generate and preserves old links (4.1s)
+  ok  22 [desktop] › tests\browser\courseware-unified.spec.ts:29:1 › item menus retain editing, slides, review, publish and delivery settings (8.8s)
+  ok  23 [desktop] › tests\browser\courseware-unified.spec.ts:66:1 › missing-content generation preserves existing work and changes Generate into View (6.4s)
+  ok  24 [desktop] › tests\browser\courseware-unified.spec.ts:87:1 › week and course menus keep bulk review available (6.0s)

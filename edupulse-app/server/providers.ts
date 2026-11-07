@@ -7,6 +7,7 @@ import { discoverModels, providerError, serverConnection, type Connection } from
 import { modelStatus } from './ml/onnx.js'
 import { openRouterOutput, openRouterReasoning, reasoningAllowance } from './reasoning.js'
 import { anthropicRequestError } from './anthropic.js'
+import { openaiRequestError } from './openaiErrors.js'
 
 // OpenAI-compatible chat endpoints. Fixed URLs: clients never choose where keys are sent.
 const OPENAI_COMPATIBLE: Record<string, string> = {
@@ -191,16 +192,19 @@ function ollamaContext(system: string, prompt: string, predict: number) {
 
 /** Return only bounded, actionable categories; provider bodies can contain private account details. */
 async function modelResponseError(response: Response, model: string, provider: Connection['provider']): Promise<ApiError> {
-  let code = '', message = ''
+  let code = '', message = '', type = ''
   try {
     const body = JSON.parse((await response.text()).slice(0, 8192))
     if (typeof body.error?.code === 'string') code = body.error.code
     if (typeof body.error?.message === 'string') message = body.error.message
+    if (typeof body.error?.type === 'string') type = body.error.type
   } catch { /* Non-JSON provider errors still have an HTTP category. */ }
   // Anthropic reports an empty API balance as invalid_request_error (HTTP 400),
   // not as a model-format error. Classify it without returning the private body.
   const anthropicError = provider === 'anthropic' ? anthropicRequestError(response.status, message) : undefined
   if (anthropicError) return anthropicError
+  const openaiError = provider === 'openai' ? openaiRequestError(response.status, code, type, response.headers.get('retry-after')) : undefined
+  if (openaiError) return openaiError
   if (response.status === 400 && /(?:prompt|input|context).{0,60}(?:too long|exceeds|maximum context)/i.test(message)) return new ApiError(400, 'PROMPT_TOO_LONG', 'This request is larger than the selected model can read. Use fewer attachments or ask for one section at a time.')
   if (response.status === 400 && /\bmax_tokens\b.{0,80}(?:maximum|greater|less|exceed|allowed)/i.test(message)) return new ApiError(400, 'MODEL_TOKEN_LIMIT', 'The provider rejected this model\'s response limit. Choose a model with a larger output allowance in AI settings and retry.')
   if (response.status === 404 || code === 'model_not_found') return new ApiError(400, 'MODEL_NOT_AVAILABLE', `The selected model (${model}) is unavailable for this account or API route. Refresh models, choose another model and use Test selected model.`)

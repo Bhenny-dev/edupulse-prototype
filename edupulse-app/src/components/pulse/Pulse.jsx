@@ -2,7 +2,7 @@ import { downloadMaterialPdf } from '../../utils/pdfExport'
 import { jsonValue } from '../../utils/jsonValue'
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { X, Send, Paperclip, Square, Route, Sparkles, MoreHorizontal } from 'lucide-react'
+import { X, Send, Paperclip, Square, Route, Sparkles, MoreHorizontal, Mic } from 'lucide-react'
 import PulseAvatar from './PulseAvatar'
 import { pulse as pulseBus } from './pulseBus'
 import { useAuth } from '../../context/AuthContext'
@@ -36,6 +36,8 @@ import useOffice from './useOffice'
 import PulseLoading from './PulseLoading'
 import { buddyForRequest } from '../../agents/buddies'
 import { quickReply } from '../../agents/quickReplies'
+import usePulseVoice from './usePulseVoice'
+import PulseVoice from './PulseVoice'
 const WorkspaceOffice = lazy(() => import('./office/WorkspaceOffice'))
 
 // The server accepts up to 18,000 characters per chat reference; longer files are sent as an excerpt and can be added to the library whole.
@@ -62,11 +64,20 @@ export default function Pulse() {
   const [busy, setBusy] = useState(false), [fileBusy, setFileBusy] = useState(false)
   const [expression, setExpression] = useState('idle')
   const [error, setError] = useState(''), [guide, setGuide] = useState(null)
+  const [errorCode, setErrorCode] = useState('')
   const [stepIndex, setStepIndex] = useState(0), [agent, setAgent] = useState(null)
   const [focus, setFocus] = useState(null), [events, setEvents] = useState(new Set()), [ready, setReady] = useState(true), [completed, setCompleted] = useState(false)
   const [missingTarget, setMissingTarget] = useState(false), [side, setSide] = useState('right')
   const requestRef = useRef(null), feedRef = useRef(null), inputRef = useRef(null), fileRef = useRef(null), dockRef = useRef(null), sendRef = useRef(null)
   const fileRead = useRef({ epoch: 0, busy: false })
+  const voice = usePulseVoice({
+    owner: `${user?.id || 'guest'}:${user?.role || 'guest'}`, active: open && !officeOpen && !historyOpen, blocked: busy || fileBusy,
+    onTranscript: text => { setInput(previous => [previous.trim(), text].filter(Boolean).join(' ').slice(0, 4000)); inputRef.current?.focus() },
+    onPrompt: text => {
+      if (busy || fileBusy || requestRef.current) { setInput(previous => [previous.trim(), text].filter(Boolean).join(' ').slice(0, 4000)); return false }
+      return sendRef.current?.(text, { voice: true })
+    },
+  })
 
   useEffect(() => pulseBus.subscribe(event => {
     if (event.type === 'progress') { setEvents(previous => new Set([...previous, event.name])); setExpression('cheerful') }
@@ -338,18 +349,18 @@ export default function Pulse() {
     const selectedSection = focusedSection(focus, question)
     const scopeFields = focusedFields(focus, question)
     const sourceReferences = pending.map(item => ({ ...item, text: sourceContext(item, selectedSection) }))
-    if (busy || fileBusy || requestRef.current || (!question && !pending.length)) return
+    if (busy || fileBusy || requestRef.current || (!question && !pending.length)) return false
     const history = conversationWindow(messages.map(message => ({ ...message, text: message.text || message.proposals?.map(proposal => proposal.label || proposal.text || proposal.type).join('; ') })), 14000).history
     const controller = new AbortController(); requestRef.current = controller
     setBusy(true); setExpression('thinking')
-    setError(''); if (text === undefined) setInput('')
+    setError(''); setErrorCode(''); if (text === undefined || options.voice) setInput('')
     if (!options.attachments && attachments.length) { setContextFiles(attachments); setAttachments([]) }
     setMessages(previous => [...previous, { id: crypto.randomUUID(), from: 'user', text: question || `Attached ${pending.map(item => item.fileName || item.title).join(', ')}`, fileNames: pending.map(item => item.fileName || item.title), scope: options.scope }])
     const instant = !options.buddy && !supplied.length && !options.documentIds?.length && !options.task ? quickReply(question) : null
     const ticket = instant ? null : office.begin(options.buddy || buddyForRequest(question, pending.length>0), 'Handle request: '+(question || 'attached files').slice(0,100))
     const mutationTickets = []
     try {
-      if (instant) { setMessages(previous=>[...previous,{id:crypto.randomUUID(),from:'pulse',mode:'quick',text:instant}]);setExpression('cheerful');return }
+      if (instant) { setMessages(previous=>[...previous,{id:crypto.randomUUID(),from:'pulse',mode:'quick',text:instant}]);setExpression('cheerful');return instant }
       if (!options.skipOperator && /^\s*(?:please\s+)?remember\s+(?:that\s+|I\s+)/i.test(question)) {
         setMessages(previous => [...previous, { id: crypto.randomUUID(), from: 'pulse', mode: 'receipt', text: 'Non-sensitive preferences are saved from your statement when this conversation finishes saving. Open Conversations & memory to review or delete them. Credentials and sensitive student records are excluded from reusable memory.' }]); return
       }
@@ -421,10 +432,12 @@ export default function Pulse() {
       setMessages(previous => [...previous, { ...result, id: result.requestId, from: 'pulse', text: result.answer }, ...(later.length ? [{ id: crypto.randomUUID(), from: 'pulse', mode: 'actions', text: '', proposals: later }] : [])])
       setExpression(result.verification?.unsupported ? 'concern' : 'encouraging')
       office.finish(ticket,'done','Returned a response; no record change is implied.')
+      return result.answer
     } catch (err) {
       mutationTickets.forEach(id=>office.finish(id,controller.signal.aborted?'stopped':'error','Proposal preparation did not finish.'))
       office.finish(ticket,controller.signal.aborted?'stopped':'error',controller.signal.aborted?'Request stopped.':'Request failed; inspect the error in Pulse.')
-      if (requestRef.current === controller) { setError(controller.signal.aborted ? 'Request stopped. You can edit and resend your question.' : err.message); if (text === undefined) setInput(question); if (!options.attachments) setAttachments(pending); setExpression('concern') }
+      if (requestRef.current === controller) { setError(controller.signal.aborted ? 'Request stopped. You can edit and resend your question.' : err.message); setErrorCode(err.code || ''); if (text === undefined || options.voice) setInput(question); if (!options.attachments) setAttachments(pending); setExpression('concern') }
+      return false
     } finally { office.finish(ticket,controller.signal.aborted?'stopped':'done','Request handling ended. See Pulse for the result.',true); if (requestRef.current === controller) { setBusy(false); requestRef.current = null } }
   }
   useEffect(() => { sendRef.current = send })
@@ -447,7 +460,8 @@ export default function Pulse() {
         <button type="button" onClick={close} aria-label="Close Pulse"><X size={19} /></button>
       </header>
       {menuOpen && <nav className="pulse-options" aria-label="Pulse options">
-        <button aria-label="Clear conversation" disabled={busy || fileBusy} onClick={() => { try { archive.newThread(); setAttachments([]); setContextFiles([]); setGuide(null); setFocus(null); setMenuOpen(false) } catch (failure) { setError(failure.message) } }}>New conversation</button>
+        <button aria-pressed={voice.enabled} onClick={() => { voice.toggle(); setMenuOpen(false) }}><Mic size={14} /> {voice.enabled ? 'Disable voice input' : 'Voice input'}</button>
+        <button aria-label="Clear conversation" disabled={busy || fileBusy} onClick={() => { voice.stop(); try { archive.newThread(); setAttachments([]); setContextFiles([]); setGuide(null); setFocus(null); setMenuOpen(false) } catch (failure) { setError(failure.message) } }}>New conversation</button>
         <button onClick={() => { setHistoryOpen(value => !value); setMenuOpen(false) }}>Conversations and memory</button>
         <button onClick={() => { const target = focus || describeTarget(document.querySelector('[data-pulse-zone]') || document.querySelector('#main-content'), user?.role); if (target && !focus) focusTarget(target); setGuidanceOpen(true); setMenuOpen(false) }}>{focus ? 'Guide selected component' : 'Guide this page'}</button>
         <button aria-label="Open workspace buddies" onClick={() => { setOfficeOpen(true); setMenuOpen(false) }}>Workspace buddies</button>
@@ -485,15 +499,17 @@ export default function Pulse() {
         </article>)}
         {busy && <PulseLoading buddy={office.tasks.findLast(task=>task.status==='working')?.buddy || 'quill'} startedAt={office.tasks.findLast(task=>task.status==='working')?.at}/>}
       </div>
-      {error && <div role="alert" className="connected-pulse-error">{error}</div>}
+      {error && <div role="alert" className="connected-pulse-error">{error}{['PROVIDER_CREDITS', 'PROVIDER_QUOTA'].includes(errorCode) && <button type="button" className="btn btn-ghost btn-sm" onClick={() => navigate('/settings?tab=ai-provider')}>AI settings</button>}</div>}
       {archive.error && archive.unsaved && messages.length > 0 && !historyOpen && <div role="status" className="connected-pulse-warning">Chat not saved. <button className="btn btn-ghost btn-sm" onClick={archive.retry}>Retry history save</button></div>}
       <span className="sr-only pulse-context-status" role="status">{archive.saving || archive.unsaved ? 'Saving conversation' : archive.threadId ? 'Conversation saved' : ''}</span>
       {visibleFiles.length > 0 && <ul className="connected-pulse-attachments">{visibleFiles.map((a, i) => <li key={i}><span>{a.title}{a.roster ? ` · class list, ${a.roster.students.length} students` : a.text.length > CHAT_REFERENCE ? ' · long file: chat reads the first 18,000 characters' : ''}</span><button aria-label={`Remove ${a.title}`} onClick={() => { setAttachments(previous => previous.filter((_, index) => i !== index)); setContextFiles(previous => previous.filter(file => file.fileName !== a.fileName)) }}><X size={13} /></button></li>)}</ul>}
-      <form className="connected-pulse-form" onSubmit={event => { event.preventDefault(); void send() }}>
+      <PulseVoice voice={voice} blocked={busy || fileBusy} hasDraft={Boolean(input.trim())} />
+      <form className="connected-pulse-form" onSubmit={event => { event.preventDefault(); if (!voice.hearing) { voice.stop(); void send() } }}>
         <input ref={fileRef} type="file" hidden multiple accept={UPLOAD_ACCEPT} onChange={e => { void attachFiles(Array.from(e.target.files || [])); e.target.value = '' }} />
         <button type="button" disabled={busy || fileBusy} onClick={() => fileRef.current?.click()} aria-label="Attach reference" title="Attach files, or drop up to three files onto Pulse"><Paperclip size={18} /></button>
-        <textarea ref={inputRef} value={input} onChange={e => setInput(e.target.value)} maxLength={4000} rows={2} placeholder="Ask, draft, compare or find references…" aria-label="Ask Pulse" onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) { e.preventDefault(); void send() } }} />
-        {busy ? <button type="button" onClick={() => requestRef.current?.abort()} aria-label="Stop response"><Square size={17} /></button> : <button type="submit" disabled={(!input.trim() && !attachments.length) || fileBusy} aria-label="Send"><Send size={18} /></button>}
+        {voice.enabled && <button type="button" className="pulse-voice-toggle" aria-label="Disable voice input" aria-pressed="true" onClick={voice.toggle}><Mic size={18} /></button>}
+        <textarea ref={inputRef} value={input} onChange={e => setInput(e.target.value)} maxLength={4000} rows={voice.enabled ? 3 : 2} placeholder="Ask, draft, compare or find references…" aria-label="Ask Pulse" onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) { e.preventDefault(); if (!voice.hearing) { voice.stop(); void send() } } }} />
+        {busy ? <button type="button" onClick={() => { voice.stop(); requestRef.current?.abort() }} aria-label="Stop response"><Square size={17} /></button> : <button type="submit" disabled={(!input.trim() && !attachments.length) || fileBusy || voice.hearing} aria-label="Send"><Send size={18} /></button>}
       </form>{fileBusy && <small className="connected-pulse-footnote" role="status">{fileNotice || 'Reading files…'}</small>}
     </section>}
     <button ref={dockRef} data-pulse-ui="mascot" className={`connected-pulse-dock ${interaction.dragging ? 'is-dragging' : ''}`} {...interaction.handlers} {...fileDrop.handlers} aria-label={open ? 'Close Pulse assistant' : 'Open Pulse assistant'} aria-description="Drag Pulse onto a component for guidance, or focus a component and press Alt+P. Drop reference files onto Pulse to attach them." aria-expanded={open}><PulseAvatar expression={interaction.rejection ? 'concern' : interaction.dragging ? 'curious' : expression} dragging={interaction.dragging} lookAt={lookAt} size={72} /></button>

@@ -164,3 +164,7 @@ Provisioned students also see read-only **Student number**, **Year level** and *
 ## Loading and provider retention, 7 November 2026
 
 Saved provider keys and selected models now survive sign-out under the same account. **ChatGPT plan** and **OpenAI API** are separate choices; the former links to OpenAI hosted-app approval requirements. Initial account/connection/list reads use skeletons, pending actions use spinners, and Pulse uses animated dots. Notifications wait for their record request before showing an empty state. Static popovers open immediately. [Manual 19](../../system-manual/19-loading-and-saved-connections/README.md) contains the current captures and surface-by-surface audit.
+
+## Optional microphone in Pulse
+
+**Pulse options** includes **Voice input**. Controls appear only when enabled. The default is transcript review; optional conversation mode sends completed speech. Browser/device voices can read generated and quick replies. Microphone denial, unsupported languages and API failures stop the voice loop with readable recovery. **AI settings** is offered beside credit/rate-limit failures. [Manual 20](../../system-manual/20-voice-and-provider-errors/README.md) contains current light/dark and mobile captures.

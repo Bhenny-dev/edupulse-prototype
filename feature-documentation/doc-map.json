@@ -163,7 +163,8 @@
         "edupulse-app/playwright.snapshots.config.ts",
         "edupulse-app/scripts/serve-preview.mjs",
         "edupulse-app/playwright.auth-snapshots.config.ts",
-        "edupulse-app/tests/browser/provider-fixture.ts"
+        "edupulse-app/tests/browser/provider-fixture.ts",
+        "edupulse-app/playwright.voice-snapshots.config.ts"
       ],
       "docs": [
         "feature-documentation/system-walkthrough",

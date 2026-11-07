@@ -51,3 +51,5 @@ The [baseline restoration](../versions/2026-10-28-baseline-workflows/README.md) 
 [Manual 18: IT course seed and actual progress](18-it-course-seed/README.md) covers saved directory enrollments, the complete Programming draft, authored teaching packs and genuine activity states.
 
 [Manual 19: Loading and saved connections](19-loading-and-saved-connections/README.md) documents the cross-role loading audit, pending modals/popovers, persistent provider selection and the separate ChatGPT-plan requirement.
+
+[Manual 20: Voice and provider errors](20-voice-and-provider-errors/README.md) covers optional microphone controls, English/Filipino transcript review and conversation mode, experimental languages, and specific OpenAI billing/limit recovery.

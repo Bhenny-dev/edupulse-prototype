@@ -254,7 +254,9 @@ export async function handleRequest(request: Request): Promise<Response> {
         // earlier verification after the next account reopen as well.
         if (authenticatedIdentity) await saveProvider(authenticatedIdentity, { ...usedPersonalConnection!, testedAt: undefined }, false).catch(() => undefined)
       }
-      return json({ error: { code: error.code, message: error.message, requestId } }, error.status, invalidateTest ? connectionCookie({ ...usedPersonalConnection!, testedAt: undefined }) : undefined)
+      const response = json({ error: { code: error.code, message: error.message, requestId, ...(error.retryAfterSeconds ? { retryAfterSeconds: error.retryAfterSeconds } : {}) } }, error.status, invalidateTest ? connectionCookie({ ...usedPersonalConnection!, testedAt: undefined }) : undefined)
+      if (error.retryAfterSeconds) response.headers.set('Retry-After', String(error.retryAfterSeconds))
+      return response
     }
     if (error instanceof Error && ['TimeoutError', 'AbortError'].includes(error.name)) return json({ error: { code: 'TIMEOUT', message: 'The request was stopped or timed out. Try a smaller request.', requestId } }, 504)
     // Provider/database errors may contain credentials or document text. Never return or log raw exceptions.

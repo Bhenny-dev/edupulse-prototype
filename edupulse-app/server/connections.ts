@@ -6,6 +6,7 @@ import { ApiError, type Identity } from './contracts.js'
 import { config } from './config.js'
 import { rememberReasoning } from './reasoning.js'
 import { anthropicRequestError } from './anthropic.js'
+import { openaiRequestError } from './openaiErrors.js'
 
 export const providerNames = ['ollama', 'gemini', 'openai', 'groq', 'anthropic', 'openrouter', 'huggingface'] as const
 export type ProviderName = typeof providerNames[number]
@@ -86,6 +87,11 @@ export async function discoverModels(provider: ProviderName, apiKey?: string, si
     throw error
   }
   if (!response.ok) {
+    if (provider === 'openai') {
+      const body = await response.json().catch(() => ({}))
+      const classified = openaiRequestError(response.status, typeof body?.error?.code === 'string' ? body.error.code : '', typeof body?.error?.type === 'string' ? body.error.type : '', response.headers.get('retry-after'))
+      if (classified) throw classified
+    }
     if (provider === 'anthropic') {
       const detail = await response.text().catch(() => '')
       const classified = anthropicRequestError(response.status, detail.slice(0, 8192))

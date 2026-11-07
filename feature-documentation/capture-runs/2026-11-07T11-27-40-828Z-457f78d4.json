@@ -1,0 +1,209 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-11-07T11-27-40-828Z-457f78d4",
+  "startedAt": "2026-11-07T11:27:40.828Z",
+  "finishedAt": "2026-11-07T11:28:06.577Z",
+  "commitSha": "7a2fcff036ef49e7ac299eb9883c8cacbc7cc2c5",
+  "sourceDigest": "6b94e255be9c5cbf2ad18e1d6625e0d6dd57050e73aad30a81dc9aed8bbfd146",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-11-07T11:27:35.626Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 6,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": null
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/voice-quota.spec.ts",
+    "edupulse-app/tests/snapshots/voice-quota.mobile.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.spec.ts",
+    "edupulse-app/tests/snapshots/course-seed.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-formatting.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.spec.ts",
+    "edupulse-app/tests/snapshots/harness-delivery.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/operator-steps.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-drafting.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-source.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+    "edupulse-app/tests/snapshots/student-directory.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-recovery.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/voice-quota.spec.ts",
+      "title": "voice and quota: review",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 9125,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/voice-quota.spec.ts",
+      "title": "voice and quota: conversation",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1940,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/voice-quota.spec.ts",
+      "title": "voice and quota: language and permissions",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1837,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/voice-quota.spec.ts",
+      "title": "voice controls on solid dark surfaces",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1576,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/voice-quota.mobile.spec.ts",
+      "title": "mobile voice and quota: review",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2421,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/voice-quota.mobile.spec.ts",
+      "title": "mobile voice and quota: conversation",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2045,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/01-voice-controls.png",
+      "sha256": "91a0abe61acf12f26cbf0de7aaefb588ca8b66509d73948bd71c784551a45907",
+      "bytes": 36610
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/02-listening-tagalog-english.png",
+      "sha256": "68135a8fc22f4d4a046447a9827043178ef8981f2983c5116751366ee28727b3",
+      "bytes": 37849
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/03-review-transcript.png",
+      "sha256": "2acca91b7de66fe34280dc60a9d04c97f44b5c86cd36dee9bf852a3904535efd",
+      "bytes": 39605
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/04-conversation-reading.png",
+      "sha256": "c77e85d46f3256ca53ddd448f892e5eea54674a4fafada22403c5c7b0615c2e2",
+      "bytes": 53197
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/05-openai-credit-error.png",
+      "sha256": "c9ab9f173989f28905fec1b407a82da4f9392bca33c0374cd9349900be32b0d5",
+      "bytes": 63442
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/06-experimental-language.png",
+      "sha256": "ed8620ff0ab94e6ea485f27f92f3b6d0db824ce71dfff9c839574bb847285eee",
+      "bytes": 42998
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/07-microphone-denied.png",
+      "sha256": "d25e789c66e104f36070f8ab7600477580093502c37b4d39080973246eeaeb32",
+      "bytes": 41049
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/08-voice-dark.png",
+      "sha256": "5eddbee8a53956d138b7ae2c3af713e1385148948ae7c2baaea8a2328e2ae0b9",
+      "bytes": 41591
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/mobile-03-review-transcript.png",
+      "sha256": "1a7979f85bba0b6af531c4072191da4e809351ddcc8929317c8ad16d4ab14863",
+      "bytes": 141994
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/mobile-05-openai-credit-error.png",
+      "sha256": "1ef48af8d3febb95e359a17384bc2188f5ad5b008c9b9bc62abd7f2483962572",
+      "bytes": 202935
+    }
+  ]
+}
