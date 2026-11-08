@@ -1,0 +1,18 @@
+{
+  "featureCommit": "54088bde6bea24c7f4521a514c766487ddc246b9",
+  "deploymentId": "dpl_DGnKH2ssTL8Ns27u2zP4JKHgNsV7",
+  "target": "production",
+  "state": "READY",
+  "origin": "https://edupulse-prototype.vercel.app",
+  "verifiedAt": "2026-11-08T05:19:07.168684+00:00",
+  "checks": {
+    "homepage": 200,
+    "javascript": 200,
+    "draftCardDestination": true,
+    "publishedCardDestination": true,
+    "activeSyllabiDestination": true,
+    "updatedLandingIncluded": true,
+    "health": 200
+  },
+  "scope": "Public read-only deployment smoke; signed-in card interactions were tested using synthetic UI transport on desktop/mobile. No hosted record mutation or inference was run."
+}
