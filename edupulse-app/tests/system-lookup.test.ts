@@ -95,10 +95,11 @@ test('web thumbnails are real provider metadata and unsafe image URLs are omitte
 
 test('local keyword retrieval skips stale-model reindexing and enforces owner and selected document scope',async t=>{
   const directory=await mkdtemp(join(tmpdir(),'edupulse-keyword-'))
-  const oldStore=process.env.AI_VECTOR_STORE,oldPath=process.env.AI_DATA_DIR,oldFetch=globalThis.fetch
+  const oldStore=process.env.AI_VECTOR_STORE,oldPath=process.env.AI_DATA_DIR,oldFetch=globalThis.fetch,hosted=process.env.VERCEL
+  delete process.env.VERCEL // Exercise local storage in builds too; never relax the hosted application guard.
   process.env.AI_VECTOR_STORE='local';process.env.AI_DATA_DIR=join(directory,'db')
   globalThis.fetch=async()=>{throw new Error('No model download or provider request is permitted')}
-  t.after(async()=>{await closeLocalDb();globalThis.fetch=oldFetch;if(oldStore===undefined)delete process.env.AI_VECTOR_STORE;else process.env.AI_VECTOR_STORE=oldStore;if(oldPath===undefined)delete process.env.AI_DATA_DIR;else process.env.AI_DATA_DIR=oldPath;assert.equal(dirname(resolve(directory)),resolve(tmpdir()));assert.ok(basename(directory).startsWith('edupulse-keyword-'));await rm(directory,{recursive:true,force:true})})
+  t.after(async()=>{await closeLocalDb();globalThis.fetch=oldFetch;if(hosted===undefined)delete process.env.VERCEL;else process.env.VERCEL=hosted;if(oldStore===undefined)delete process.env.AI_VECTOR_STORE;else process.env.AI_VECTOR_STORE=oldStore;if(oldPath===undefined)delete process.env.AI_DATA_DIR;else process.env.AI_DATA_DIR=oldPath;assert.equal(dirname(resolve(directory)),resolve(tmpdir()));assert.ok(basename(directory).startsWith('edupulse-keyword-'));await rm(directory,{recursive:true,force:true})})
   const pg=await localDb(),zero=JSON.stringify(Array(384).fill(0))
   await pg.query("INSERT INTO ai_documents(id,owner_id,title,content_hash,embedding_model) VALUES ('own','owner','Saved manual','one','all-minilm'),('other','outsider','Private manual','two','all-minilm')")
   for(const id of ['own','other'])await pg.query('INSERT INTO ai_chunks(id,document_id,text,embedding) VALUES ($1,$2,$3,$4::vector)',[id,id,`${id} zyglotron stores botanical measurements.`,zero])

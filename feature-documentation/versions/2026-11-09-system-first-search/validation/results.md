@@ -10,3 +10,5 @@
 - No schema migration, account mutation or permission expansion is required for this release. Production activation is checked against the exact pushed commit and production alias separately from these local/capture receipts.
 
 These checks do not claim an owner Google session, live paid inference or real student completion.
+
+The first hosted build exposed a test-environment defect: the new local PGlite case inherited `VERCEL=1`, so the correct production guard rejected local storage. The test now clears that flag only for its isolated local runtime and restores it in cleanup. All five System Search native cases passed with `VERCEL=1` on the test process. Application storage and authorization guards are unchanged; screenshots retain the same source digest.
