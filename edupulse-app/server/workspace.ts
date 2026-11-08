@@ -30,12 +30,12 @@ export async function readWorkspace(identity: Identity, known?: number): Promise
   if (identity.role === 'guest') return { revision: 0, data: null, updated_at: null, mode: 'preview' }
   // A background check names the revision it already holds. Only the revision column is read then,
   // so an unchanged workspace costs neither the document's transfer nor reading it from disk.
-  if (known !== undefined) {
+  // A selected account is only ever read in full, through the audited support function below.
+  if (known !== undefined && !identity.supportActor) {
     let head: { revision: number | string; updated_at: string | null } | undefined
     if (config().database === 'local') head = (await (await localDb()).query<Row>('SELECT revision, updated_at FROM ep_workspaces WHERE owner_id=$1', [identity.id])).rows[0]
     else {
-      // A selected account is read through the audited support function, never the admin's own row.
-      const { data, error } = identity.supportActor ? { data: await supportAction(identity, 'workspace.read'), error: null } : await userDb(identity).from('edupulse_workspaces').select('revision,updated_at').maybeSingle()
+      const { data, error } = await userDb(identity).from('edupulse_workspaces').select('revision,updated_at').maybeSingle()
       if (error) throw new ApiError(503, 'WORKSPACE_UNAVAILABLE', 'Your saved workspace could not be loaded. Local edits have been preserved.')
       head = data || undefined
     }

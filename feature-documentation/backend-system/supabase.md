@@ -171,7 +171,7 @@ Academic cache invalidation contains no records or credentials. Server identity/
 
 ## Conditional workspace read, 8 November 2026
 
-The workspace read can name the revision a client already holds. The server then selects only `revision,updated_at` from `edupulse_workspaces` (under the same owner RLS as a full read) and answers `unchanged` without the JSONB document when they match. No migration, policy or grant changes, and the revision-checked save is untouched. A stale or missing `known` simply returns the document.
+The workspace read can name the revision a client already holds. The server then selects only `revision,updated_at` from `edupulse_workspaces` (under the same owner RLS as a full read) and answers `unchanged` without the JSONB document when they match. No migration, policy or grant changes, and the revision-checked save is untouched. A stale or missing `known` simply returns the document. The shortcut is only for the signed-in owner's own workspace: when the system admin has selected an account, the workspace is always read in full through the audited `edupulse_support_action` function, never from the admin's own row.
 
 ## Account support and shared agent handoffs (8 November 2026)
 

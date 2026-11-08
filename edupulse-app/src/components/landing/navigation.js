@@ -24,6 +24,9 @@ const barHeight = () => document.querySelector('.lp-nav')?.getBoundingClientRect
 // the bar, so it starts at the top of the window.
 export function sectionTop(id) {
   if (id === 'top') return ScrollTrigger.getById(OPENING_TRIGGER)?.end ?? 0
+  // The workspace room waits behind the agents scope and is the stage of its closing, so a link to
+  // it lands where the scope has finished and the room is open, not where the scope's pin begins.
+  if (id === 'workspace') { const pin = ScrollTrigger.getById('lp-agents'); if (pin) return Math.round(pin.end) + 1 }
   const target = document.getElementById(id)
   if (!target) return null
   const top = target.getBoundingClientRect().top + window.scrollY
