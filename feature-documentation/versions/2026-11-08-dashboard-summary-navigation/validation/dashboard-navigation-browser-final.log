@@ -1,0 +1,45 @@
+
+> edupulse-app@0.4.0 test:browser
+> playwright test dashboard-navigation.spec.ts courseware-unified.spec.ts
+
+node.exe : [WebServer] (node:12252) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([WebServer] (no... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:16424) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 1:00:12 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3032
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 1:00:13 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3032
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+
+Running 16 tests using 1 worker
+
+(node:23152) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 [desktop] › tests\browser\courseware-unified.spec.ts:4:1 › one course list combines progress with View or Generate and preserves old links (6.0s)
+  ok  2 [desktop] › tests\browser\courseware-unified.spec.ts:29:1 › item menus retain editing, slides, review, publish and delivery settings (7.2s)
+  ok  3 [desktop] › tests\browser\courseware-unified.spec.ts:66:1 › missing-content generation preserves existing work and changes Generate into View (5.3s)
+  ok  4 [desktop] › tests\browser\courseware-unified.spec.ts:87:1 › week and course menus keep bulk review available (4.9s)
+  ok  5 [desktop] › tests\browser\courseware-unified.spec.ts:106:1 › three-dot menus support keyboard, dismissal and a bounded viewport in dark mode (2.5s)
+  ok  6 [desktop] › tests\browser\courseware-unified.spec.ts:126:1 › regenerating drafts preserves delivery dates, assessment rules and checked work (2.9s)
+  ok  7 [desktop] › tests\browser\dashboard-navigation.spec.ts:5:1 › instructor summary cards open their matching lists and preserve browser Back (9.6s)
+  ok  8 [desktop] › tests\browser\dashboard-navigation.spec.ts:44:1 › zero-count cards remain useful and show honest empty states (3.6s)
+(node:25388) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  9 [mobile] › tests\browser\courseware-unified.spec.ts:4:1 › one course list combines progress with View or Generate and preserves old links (2.4s)
+  ok 10 [mobile] › tests\browser\courseware-unified.spec.ts:29:1 › item menus retain editing, slides, review, publish and delivery settings (12.0s)
+  ok 11 [mobile] › tests\browser\courseware-unified.spec.ts:66:1 › missing-content generation preserves existing work and changes Generate into View (5.5s)
+  ok 12 [mobile] › tests\browser\courseware-unified.spec.ts:87:1 › week and course menus keep bulk review available (7.8s)
+  ok 13 [mobile] › tests\browser\courseware-unified.spec.ts:106:1 › three-dot menus support keyboard, dismissal and a bounded viewport in dark mode (2.7s)
+  ok 14 [mobile] › tests\browser\courseware-unified.spec.ts:126:1 › regenerating drafts preserves delivery dates, assessment rules and checked work (3.4s)
+  ok 15 [mobile] › tests\browser\dashboard-navigation.spec.ts:5:1 › instructor summary cards open their matching lists and preserve browser Back (10.2s)
+  ok 16 [mobile] › tests\browser\dashboard-navigation.spec.ts:44:1 › zero-count cards remain useful and show honest empty states (5.4s)
+
+  16 passed (1.7m)

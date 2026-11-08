@@ -6054,6 +6054,48 @@
       "sha256": "15075f892a7e17b83ccee53a079cf8eab82a230601d96543581e0a820cb3a621",
       "reviewer": "Claude agent",
       "reviewedAt": "2026-11-08T01:34:33.823Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/22-dashboard-summary-navigation/01-summary-links.png",
+      "sha256": "2bf160cea6a0f7bcf8c1faa0f2e8af72862298a4373f8bd2c13bcf447ffe7d6c",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-08T05:04:12.887982+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/22-dashboard-summary-navigation/02-active-syllabi.png",
+      "sha256": "944c6821190b836ac8648345761f9ca9cf5ccf6065fe0f04d0a9b051dc3fcabf",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-08T05:04:12.889190+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/22-dashboard-summary-navigation/03-draft-courses.png",
+      "sha256": "56d0b97e9587eee9f3cce051d6f88afddde9de137303c85903bd6f1c41ef3d52",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-08T05:04:12.890150+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/22-dashboard-summary-navigation/04-published-courses.png",
+      "sha256": "c535dbbeaa611c9ed5f0d580266edc88932b1720fe5be8ec84cf040a5329f16b",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-08T05:04:12.891074+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/22-dashboard-summary-navigation/05-dark-summary-links.png",
+      "sha256": "de737fd8b1168336a1b22416f055cbcb752c6137812d7980bf276e2ddcf1bcb9",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-08T05:04:12.891416+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/22-dashboard-summary-navigation/06-mobile-summary-links.png",
+      "sha256": "a7643c0bbd8d74092a81b04112401b450bed02d3707d4a0ddc81de3dbf12262f",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-08T05:04:12.891870+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/22-dashboard-summary-navigation/07-mobile-draft-courses.png",
+      "sha256": "b86fa05bb6bb619358a76b6a1d19a005699e749b9d92115c70743147ba8a7d77",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-08T05:04:12.892425+00:00"
     }
   ]
 }

@@ -1,0 +1,38 @@
+
+> edupulse-app@0.4.0 test:browser
+> playwright test dashboard-navigation.spec.ts
+
+node.exe : [WebServer] (node:31968) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([WebServer] (no... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:33928) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 1:03:28 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3032
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 1:03:29 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3032
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[WebServer] 1:03:30 PM [vite] http proxy error: /api/ai?action=health
+[WebServer] Error: connect ECONNREFUSED 127.0.0.1:3032
+[WebServer]     at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+
+Running 6 tests using 1 worker
+
+(node:17676) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 [desktop] › tests\browser\dashboard-navigation.spec.ts:5:1 › instructor summary cards open their matching lists and preserve browser Back (16.9s)
+  ok 2 [desktop] › tests\browser\dashboard-navigation.spec.ts:44:1 › zero-count cards remain useful and show honest empty states (4.7s)
+  ok 3 [desktop] › tests\browser\dashboard-navigation.spec.ts:55:1 › leaving the active-syllabus filter keeps new drafts visible when returning to My Syllabus (5.6s)
+(node:22584) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 4 [mobile] › tests\browser\dashboard-navigation.spec.ts:5:1 › instructor summary cards open their matching lists and preserve browser Back (13.6s)
+  ok 5 [mobile] › tests\browser\dashboard-navigation.spec.ts:44:1 › zero-count cards remain useful and show honest empty states (5.2s)
+  ok 6 [mobile] › tests\browser\dashboard-navigation.spec.ts:55:1 › leaving the active-syllabus filter keeps new drafts visible when returning to My Syllabus (4.3s)
+
+  6 passed (1.1m)

@@ -5,7 +5,7 @@ import CoursewareActions from './CoursewareActions'
 import './courseware.css'
 
 const isExam = row => !row.ilos && /examination/i.test(row.assessments || '')
-export default function CoursewareLibrary({ syllabi, contentStore, user, onSelectCourse }) {
+export default function CoursewareLibrary({ syllabi, contentStore, user, onSelectCourse, itemStatus = '' }) {
   const isStudent = user?.role === 'student'
   const courses = useMemo(() => {
     const record = isStudent ? STUDENT_RECORDS.find(student => student.name === user?.name) : null
@@ -16,8 +16,9 @@ export default function CoursewareLibrary({ syllabi, contentStore, user, onSelec
       const drafts = entries.filter(item => item.status === 'draft'), checked = entries.filter(item => item.status === 'checked'), published = entries.filter(item => item.status === 'published')
       const complete = weeks.length > 0 && weeks.every(row => ['material', 'activity', 'assessment'].every(type => entries.some(item => item.week === row.week && item.type === type && item.status === 'published')))
       return { syllabus, weeks, drafts, checked, published, total: entries.length, expected: weeks.length * 3, complete }
-    })
-  }, [syllabi, contentStore, isStudent, user?.name])
+    }).filter(course => !itemStatus || course[itemStatus === 'draft' ? 'drafts' : 'published'].length > 0)
+  }, [syllabi, contentStore, isStudent, user?.name, itemStatus])
+  if (!courses.length && itemStatus) return <div className="empty-state"><div className="empty-state-icon"><BookOpen size={36} /></div><h3>{itemStatus === 'draft' ? 'No drafts to review' : 'No published items yet'}</h3><p>Use Show all courses to return to your active course outlines.</p></div>
   if (!courses.length) return <div className="empty-state"><div className="empty-state-icon"><BookOpen size={36} /></div><h3>{isStudent ? 'No courseware yet' : 'No active syllabi yet'}</h3><p>{isStudent ? 'Published courseware will appear here for your enrolled courses.' : 'Complete syllabus approval and extract the course outline to start generating courseware.'}</p></div>
   return <table className="data-table cw-course-list" aria-label="Courseware courses">
     <thead><tr><th>Course</th>{!isStudent && <th>Status</th>}<th>Items</th><th>Teaching weeks</th><th>Actions</th></tr></thead>

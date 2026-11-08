@@ -1,5 +1,7 @@
 # 3 · Generate and review courseware
 
+The instructor dashboard's **Drafts to Review** and **Published Items** cards open course lists filtered to courses containing that content. **Show all courses** clears the filter; selecting a course opens its existing weekly workspace. [Manual 22](../22-dashboard-summary-navigation/README.md) shows both destinations.
+
 The [IT teaching seed](../18-it-course-seed/README.md) adds saved session-authored drafts with explicit provenance, preserving existing items. It does not claim connected-provider inference or student completion. All new items follow the review and publication controls below.
 
 **Who:** instructor. **Where:** Courseware. One course list combines generation progress and saved items; there are no separate My Courseware and Courseware Builder tabs. The generated material, activity, and assessment stay in Draft until an instructor checks them. The alignment report is an aid to review, not approval.

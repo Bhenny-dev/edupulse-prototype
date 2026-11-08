@@ -1346,6 +1346,8 @@ export default function Syllabus() {
   const [versionHistorySyllabus, setVersionHistorySyllabus] = useState(null)
   const [extractingSyllabus, setExtractingSyllabus] = useState(null)
   const { syllabi, setSyllabi, commit, updateWorkspace } = useWorkspace()
+  const activeOnly = searchParams.get('status') === 'active'
+  const listedSyllabi = activeOnly ? syllabi.filter(syllabus => syllabus.status === 'active') : syllabi
   const {data:academic}=useAcademicRecords()
   const [editingSyllabus, setEditingSyllabus] = useState(null)
   const [uploadingSyllabus, setUploadingSyllabus] = useState(null)
@@ -1360,7 +1362,7 @@ export default function Syllabus() {
 
   const switchTab = (t) => {
     setTab(t)
-    setSearchParams(prev => { const p = new URLSearchParams(prev); p.set('tab', t); return p })
+    setSearchParams(prev => { const p = new URLSearchParams(prev); p.set('tab', t); p.delete('status'); return p })
   }
 
   const record = (syl, status) => ({ ...syl, status, lastUpdated: new Date().toISOString(), history: [...(syl.history || []), { status, version: syl.version || 1, timestamp: new Date().toISOString(), author: user?.name || 'Instructor' }].slice(-100) })
@@ -1473,12 +1475,13 @@ export default function Syllabus() {
       {tab === 'mine' && (
         <>
           <LifecycleStrip />
+          {activeOnly && <div className="flex flex-wrap items-center gap-16 mb-16" role="status"><strong>Active syllabi</strong><button className="btn btn-secondary btn-sm" onClick={() => setSearchParams({ tab: 'mine' })}>Show all syllabi</button></div>}
 
           <div style={{ marginTop: '20px' }}>
-            {syllabi.length === 0 ? (
+            {listedSyllabi.length === 0 ? (
               <div className="card"><div className="card-body text-center text-muted" style={{ padding: '40px' }}>
                 <BookOpen size={32} style={{ margin: '0 auto 12px', opacity: 0.4 }} />
-                <p>No syllabi yet. Register a course first, then create or attach a syllabus.</p>
+                <p>{activeOnly ? 'No active syllabi yet.' : 'No syllabi yet. Register a course first, then create or attach a syllabus.'}</p>
               </div></div>
             ) : (
               <table className="data-table" style={{ display: 'block', overflowX: 'auto', maxWidth: '100%' }}>
@@ -1494,7 +1497,7 @@ export default function Syllabus() {
                   </tr>
                 </thead>
                 <tbody>
-                  {syllabi.map(syl => {
+                  {listedSyllabi.map(syl => {
                     const inst = INSTRUCTORS.find(i => i.id === syl.instructorId)
                     const outlineCount = syl.courseOutline?.length || 0
                     const action = nextAction(syl)

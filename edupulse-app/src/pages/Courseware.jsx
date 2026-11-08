@@ -17,6 +17,7 @@ export default function Courseware() {
   const selectedCourseId = searchParams.get('course')
   const focusWeek = Number(searchParams.get('week')) || null
   const isStudent = user?.role === 'student'
+  const itemStatus = !isStudent && ['draft', 'published'].includes(searchParams.get('status')) ? searchParams.get('status') : ''
   const selectCourse = (id, week) => setSearchParams({ course: id, ...(week ? { week: String(week) } : {}) })
   const back = () => setSearchParams({})
   const handleCheckItem = id => { checkItem(id); pulseBus.progress('courseware-checked', id) }
@@ -24,9 +25,10 @@ export default function Courseware() {
   if ((user?.authenticated && user?.role !== 'instructor') || !['instructor', 'student'].includes(user?.role)) return <AcademicPortal view="courseware" />
   return (<div className="container" data-pulse-zone="courseware">
     <div className="page-header"><h1>{isStudent ? 'My Courses' : 'Course'}</h1></div>
+    {!selectedCourseId && itemStatus && <div className="flex flex-wrap items-center gap-16 mb-16" role="status"><strong>{itemStatus === 'draft' ? 'Courses with drafts to review' : 'Courses with published items'}</strong><button className="btn btn-secondary btn-sm" onClick={() => setSearchParams({})}>Show all courses</button></div>}
     {selectedCourseId ? isStudent ? <CourseOutlineViewer syllabusId={selectedCourseId} onBack={back} isStudent contentStore={contentStore} /> :
       <CourseWorkspace key={selectedCourseId} syllabusId={selectedCourseId} focusWeek={focusWeek} contentStore={contentStore} onBack={back} onGenerateWeek={generateWeek} onCheckItem={handleCheckItem} onBulkCheck={handleBulkCheck} onToggleVisibility={toggleVisibility} /> :
-      <CoursewareLibrary syllabi={syllabi} contentStore={contentStore} user={user} onSelectCourse={selectCourse} />}
+      <CoursewareLibrary syllabi={syllabi} contentStore={contentStore} user={user} onSelectCourse={selectCourse} itemStatus={itemStatus} />}
   </div>
   )
 }

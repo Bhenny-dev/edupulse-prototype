@@ -575,6 +575,8 @@ html:has(.overlay-backdrop) { overflow: hidden; }
   box-shadow: var(--shadow-3d-hover);
 }
 
+.kpi-card[href]:focus-visible { outline: var(--focus-ring-width) solid var(--sky-600); outline-offset: var(--focus-ring-offset); }
+
 .kpi-icon {
   width: 48px;
   height: 48px;

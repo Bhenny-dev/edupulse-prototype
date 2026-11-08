@@ -6,7 +6,7 @@ import SystemAdminDashboard from './SystemAdminDashboard'
 import { SYLLABUS_STATUS_META } from '../data/syllabusStatus'
 import { accountManagementModel, accountInstructorModel, accountStudentModel } from './dashboardModels'
 import { previewManagementModel, previewInstructorModel, previewStudentModel } from './dashboardPreview'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { pulse as pulseBus } from '../components/pulse/pulseBus'
 import { SkeletonKPI, SkeletonTable } from '../components/ui/LoadingSkeleton'
 import '../components/academic/academic.css'
@@ -40,9 +40,10 @@ function AnimatedNumber({ value, suffix = '' }) {
   return <span>{typeof display === 'number' ? display : value}{suffix}</span>
 }
 
-function KpiCard({ icon: Icon, label, value, color, bg, suffix = '' }) {
+function KpiCard({ icon: Icon, label, value, color, bg, suffix = '', to }) {
+  const Container = to ? Link : 'div'
   return (
-    <div className="kpi-card">
+    <Container className="kpi-card" {...(to ? { to, 'aria-label': label, 'aria-description': `${value}${suffix}` } : {})}>
       <div className="kpi-icon" style={{ background: bg }}>
         <Icon size={22} style={{ color }} />
       </div>
@@ -50,7 +51,7 @@ function KpiCard({ icon: Icon, label, value, color, bg, suffix = '' }) {
         <div className="kpi-value"><AnimatedNumber value={value} suffix={suffix} /></div>
         <div className="kpi-label">{label}</div>
       </div>
-    </div>
+    </Container>
   )
 }
 
@@ -370,10 +371,10 @@ function InstructorDashboard({ model, actions = exportButton, status }) {
       <OnboardingChecklist autoDone={model.autoDone} />
 
       <div className="kpi-grid mb-24">
-        <KpiCard icon={BookOpen} label="My Courses" value={model.kpis.courses} color="var(--sky-500)" bg="var(--sky-100)" />
-        <KpiCard icon={CheckCircle} label="Active Syllabi" value={model.kpis.active} color="var(--green-500)" bg="var(--green-100)" />
-        <KpiCard icon={Clock} label="Drafts to Review" value={model.kpis.drafts} color="var(--amber-500)" bg="var(--amber-100)" />
-        <KpiCard icon={Target} label="Published Items" value={model.kpis.published} color="var(--purple-500)" bg="var(--purple-100)" />
+        <KpiCard icon={BookOpen} label="My Courses" value={model.kpis.courses} color="var(--sky-500)" bg="var(--sky-100)" to="/courseware" />
+        <KpiCard icon={CheckCircle} label="Active Syllabi" value={model.kpis.active} color="var(--green-500)" bg="var(--green-100)" to="/syllabus?tab=mine&status=active" />
+        <KpiCard icon={Clock} label="Drafts to Review" value={model.kpis.drafts} color="var(--amber-500)" bg="var(--amber-100)" to="/courseware?status=draft" />
+        <KpiCard icon={Target} label="Published Items" value={model.kpis.published} color="var(--purple-500)" bg="var(--purple-100)" to="/courseware?status=published" />
       </div>
 
       <div className="card mb-24">

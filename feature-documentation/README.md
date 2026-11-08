@@ -79,3 +79,5 @@ Execution is tracked in [WORKPLAN.md](WORKPLAN.md). A release is verified only a
 [7 November 2026: Automatic records and instructor course rosters](versions/2026-11-07-automatic-records-and-course-rosters/README.md) records navigation, safe refresh and saved membership decisions.
 
 [7 November 2026: The public site as a 3D school](versions/2026-11-07-landing-classroom/README.md): the home page as a walk through a 3D classroom school with the KCP building, eight themed-room pages in the top bar (with three games on Play), a speed dial per page, and day and night across the site.
+
+[8 November 2026: Instructor summary navigation](versions/2026-11-08-dashboard-summary-navigation/README.md): keyboard-accessible summary links, active syllabi and draft/published course filters.

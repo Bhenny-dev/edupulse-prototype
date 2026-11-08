@@ -9,7 +9,7 @@ Main tabs: **Dashboard**, **Syllabus**, **Course**, **Student Monitoring**, **Pe
 ![Instructor dashboard](01-dashboard.png)
 
 - **Getting Started with EduPulse:** four onboarding steps with progress; each opens the right page.
-- **Summary cards:** my courses, active syllabi, drafts to review, published items.
+- **Summary cards:** **My Courses** opens **Course**; **Active Syllabi** opens the active-only **My Syllabus** list; **Drafts to Review** and **Published Items** open course lists filtered to courses containing that content. These are keyboard-accessible links, including when a count is zero. [Manual 22](../../system-manual/22-dashboard-summary-navigation/README.md) shows the destinations and **Show all** controls.
 - **Quick actions:** **Syllabus Builder**, **Generate Courseware**, **Student Monitoring**.
 - **My Block Sections:** advisory blocks with a link to their monitoring page.
 - **Score Snapshot**, **Recent Activity**, **My Courses — Syllabus Stations** and the **Courseware Review Queue**.

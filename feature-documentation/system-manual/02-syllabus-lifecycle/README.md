@@ -10,6 +10,8 @@ The screenshots follow one real syllabus (IT 102 — Computer Programming 1) thr
 
 ## Build the draft
 
+The dashboard's **Active Syllabi** card opens **My Syllabus** with the active-only filter. **Show all syllabi** restores the full list; changing a Syllabus tab also clears it. See [Manual 22](../22-dashboard-summary-navigation/README.md) for the current destination.
+
 To import an existing draft, click the upload area or drop a **.docx** or **.pdf** file of up to **2 MB** into it. Review **Extracted Sections Preview**, then click **Use This Syllabus** to fill the form. Importing does not save the draft. The sample below contains course information and one outline week; review missing sections before saving.
 
 ![DOCX import preview with sample content](12-import-preview.png)
