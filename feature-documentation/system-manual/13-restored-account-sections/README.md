@@ -21,3 +21,5 @@ Account guidance now describes confirmed shared imports/loading, saved topic res
 **Archive** retains the instructor-owned syllabus and courseware records while withdrawing their shared publication visibility. It does not require deleting authored content first. Existing saved syllabi also receive the new station/outline/reference metadata when the first migration is applied; an instructor resave is not required just to populate those restored read views.
 
 [Manual 21](../21-automatic-records-and-course-rosters/README.md) covers automatic recovery and the instructor's **Student Monitoring → Students** roster tools.
+
+Admin support can now load a selected person's academic view under that account's permissions. Learner support previews do not record material access or permit assessment submissions or appeals; use the learner's own sign-in for actual activity. [Manual 23](../23-account-support-and-pulse-context/README.md) documents the account picker and the hosted delivery check.

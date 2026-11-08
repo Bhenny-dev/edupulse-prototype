@@ -1,6 +1,22 @@
 import { z } from 'zod'
 import { ApiError, type Identity } from '../contracts.js'
 import { userDb } from '../database.js'
+import { supportAction } from './support.js'
+
+const orderedKeys: Record<string, string[]> = { enrollments: ['course_id','student_email','block_section'], material_access: ['publication_id','student_id'], institutional_records: ['kind','record_key'] }
+/** PostgREST caps individual responses. Never present a truncated roster/attempt list as complete statistics. */
+export async function academicRows(client: ReturnType<typeof userDb>, table: string) {
+  const rows: Record<string, unknown>[] = []
+  for (let offset = 0; offset < 50000; offset += 500) {
+    let query = client.from(`edupulse_${table}`).select('*')
+    for (const key of orderedKeys[table] || ['id']) query = query.order(key)
+    const { data, error } = await query.range(offset, offset + 499)
+    if (error) throw new ApiError(503, 'ACADEMIC_UNAVAILABLE', 'Academic records could not be loaded completely. Retry when connected; incomplete statistics are not shown.')
+    rows.push(...(data || []))
+    if (!data || data.length < 500) return rows
+  }
+  throw new ApiError(503, 'ACADEMIC_CAPACITY', 'These records exceed the current workspace capacity. Statistics were not silently truncated.')
+}
 
 const identifier = z.string().regex(/^[a-f0-9]{32}$/)
 export const academicCommand = z.discriminatedUnion('operation', [
@@ -19,14 +35,13 @@ export const academicCommand = z.discriminatedUnion('operation', [
 export async function readAcademic(identity: Identity) {
   if (identity.role === 'guest') throw new ApiError(401, 'SIGN_IN_REQUIRED', 'Sign in to read academic records.')
   if (identity.local) return { mode: 'local', courses: [], enrollments: [], publications: [], attempts: [], accesses: [] }
+  if (identity.supportActor) return supportAction(identity, 'academic.read')
   const client = userDb(identity)
   const tables = ['courses', 'enrollments', 'publications', 'notices', 'academic_events', ...(['dean','associate_dean','admin','instructor'].includes(identity.role) ? ['institutional_records'] : []), ...(identity.role === 'associate_dean' ? [] : ['attempts', 'material_access'])]
   const rows = await Promise.all(tables.map(async table => {
-    let query=client.from(`edupulse_${table}`).select('*').limit(1000)
-    if(['notices','academic_events'].includes(table))query=query.order('created_at',{ascending:false})
-    const {data,error}=await query
-    if (error) throw new ApiError(503, 'ACADEMIC_UNAVAILABLE', 'Academic records are unavailable. Check the connection and academic migration; no sample records are substituted.')
-    return [table === 'material_access' ? 'accesses' : table === 'academic_events' ? 'events' : table === 'institutional_records' ? 'institutional' : table, data || []] as const
+    const data = await academicRows(client, table)
+    if (['notices','academic_events'].includes(table)) data.sort((a,b)=>String(b.created_at).localeCompare(String(a.created_at)))
+    return [table === 'material_access' ? 'accesses' : table === 'academic_events' ? 'events' : table === 'institutional_records' ? 'institutional' : table, data] as const
   }))
   let faculty = []
   if (['dean','associate_dean','admin'].includes(identity.role)) {
@@ -38,6 +53,7 @@ export async function readAcademic(identity: Identity) {
 }
 export async function executeAcademic(identity: Identity, input: z.infer<typeof academicCommand>) {
   if (identity.local || identity.role === 'guest') throw new ApiError(403, 'FORBIDDEN', 'Use an authenticated academic account for shared records.')
+  if (identity.supportActor) return supportAction(identity, 'academic.command', input)
   const client = userDb(identity)
   if (['import','read','remind','start','respond','grade','appeal','revise'].includes(input.operation)) {
     let result

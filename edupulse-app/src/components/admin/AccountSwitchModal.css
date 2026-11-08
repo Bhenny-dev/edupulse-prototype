@@ -1,0 +1,32 @@
+.modal-content.account-switch-modal { max-width: 760px; font-family: var(--font-body), sans-serif; overflow-y: auto; width: min(760px, calc(100vw - 32px)); max-height: calc(100dvh - 40px); display: flex; flex-direction: column; padding: 24px; gap: 18px; background: var(--white); color: var(--gray-900); }
+.account-switch-modal header { flex-shrink: 0; display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+.account-switch-modal h2 { font-size: 1.25rem; margin: 0 0 6px; }
+.account-switch-modal header p { color: var(--gray-500); font-size: .875rem; margin: 0; }
+.account-switch-search { flex-shrink: 0; display: flex; align-items: center; gap: 10px; border: 1px solid var(--gray-200); border-radius: var(--radius-md); padding: 0 14px; }
+.account-switch-search input { flex: 1; min-width: 0; border: 0; background: transparent; color: inherit; padding: 13px 0; font: inherit; }
+.account-switch-search:focus-within { outline: 2px solid var(--sky-400); outline-offset: 2px; }
+.account-switch-search input:focus { outline: none; }
+.account-switch-filters { flex-shrink: 0; display: grid; grid-template-columns: .65fr 1fr 1.2fr; gap: 12px; }
+.account-switch-filters label { display: grid; gap: 6px; font-size: .8rem; font-weight: 600; min-width: 0; }
+.account-switch-modal .account-switch-filters select { background-repeat: no-repeat; background-position: right 12px center; background-size: 12px; min-width: 0; width: 100%; }
+.account-switch-results { overflow: auto; min-height: 160px; flex: 1; }
+.account-switch-row { display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 16px; padding: 14px 10px; text-align: left; color: inherit; background: transparent; border: 0; border-bottom: 1px solid var(--gray-100); cursor: pointer; }
+.account-switch-row > span { display: grid; gap: 4px; min-width: 0; overflow-wrap: anywhere; }
+.account-switch-row span span { font-size: .8rem; color: var(--gray-500); }
+.account-switch-row:hover { background: var(--sky-50); }
+.account-switch-row:focus-visible { outline: 2px solid var(--sky-400); outline-offset: -2px; }
+.account-switch-modal .account-switch-footer { flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; padding-top: 12px; border-top: 1px solid var(--gray-100); }
+.account-switch-modal .modal-close { padding: 0; min-width: 36px; }
+.account-switch-modal .modal-close svg { flex-shrink: 0; }
+.account-switch-pagination { display: flex; gap: 8px; }
+.support-view-banner { font-family: var(--font-body), sans-serif; position: sticky; bottom: 12px; margin: 12px 24px; padding: 12px 100px 12px 16px; border: 1px solid var(--sky-200); border-radius: var(--radius-md); background: var(--white); color: var(--gray-900); display: flex; justify-content: space-between; align-items: center; gap: 12px; z-index: 50; box-shadow: var(--shadow-md); font-size: .875rem; }
+@media (max-width: 600px) {
+  .modal-content.account-switch-modal { padding: 18px; gap: 12px; }
+  .account-switch-modal h2 { font-size: 1.1rem; }
+  .account-switch-filters { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .account-switch-filters label:last-child { grid-column: 1 / -1; }
+  .account-switch-results { min-height: 90px; }
+  .account-switch-modal .account-switch-footer { gap: 8px; }
+  .account-switch-modal .account-switch-footer > .btn { width: 100%; }
+  .support-view-banner { margin: 8px; padding-right: 80px; flex-direction: column; align-items: flex-start; }
+}

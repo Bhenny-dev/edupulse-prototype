@@ -57,3 +57,5 @@ The [baseline restoration](../versions/2026-10-28-baseline-workflows/README.md) 
 [Manual 21: Automatic records and course students](21-automatic-records-and-course-rosters/README.md) covers automatic refresh/recovery, the three Syllabus tabs, **Course**, and instructor membership CRUD.
 
 [Manual 22: Dashboard summary links](22-dashboard-summary-navigation/README.md) covers the four instructor cards, their filtered destinations, browser history, keyboard navigation and mobile/dark views.
+
+[Manual 23: Account support and Pulse context](23-account-support-and-pulse-context/README.md) covers choosing a real account after a role, safe support controls, authorized answers, public research, mixed-language chat, scoped agent memory and verified courseware delivery.

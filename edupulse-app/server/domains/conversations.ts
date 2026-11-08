@@ -130,11 +130,22 @@ export async function executeConversation(identity: Identity, command: Command) 
   return { saved: true, messages: messages.length }
 }
 
+async function automaticMemoryEnabled(identity: Identity) {
+  if (local()) return (await (await db()).query<{ automatic_memory: boolean }>('SELECT automatic_memory FROM ep_pulse_preferences WHERE owner_id=$1', [identity.id])).rows[0]?.automatic_memory ?? true
+  const result = await userDb(identity).from(tables.preferences).select('automatic_memory').maybeSingle()
+  unavailable(result.error)
+  return result.data?.automatic_memory ?? true
+}
+
 /** Recalled transcripts are evidence with provenance, never instructions or authorization. */
 export async function conversationRecall(identity: Identity, query: string, threadId?: string) {
   if (identity.role === 'guest') return { memories: [], matches: [] }
   if (threadId && !z.string().uuid().safeParse(threadId).success) throw new ApiError(400, 'INVALID_INPUT', 'Invalid conversation identifier.')
-  const { memories } = await readConversations(identity)
+  const automaticMemory = await automaticMemoryEnabled(identity)
+  const memories = local() ? (await (await db()).query<Memory>('SELECT id,text,source_message_id,created_at FROM ep_pulse_memories WHERE owner_id=$1 ORDER BY created_at DESC LIMIT 12', [identity.id])).rows : await (async () => {
+    const result = await userDb(identity).from(tables.memories).select('id,text,source_message_id,created_at').order('created_at', { ascending: false }).limit(12)
+    unavailable(result.error); return result.data || []
+  })()
   const words = query.toLowerCase().match(/[\p{L}\p{N}]{3,}/gu)?.filter(word => !['what', 'when', 'where', 'remember', 'recall', 'previous', 'conversation', 'about', 'that', 'this', 'from', 'please', 'have', 'were', 'did', 'you', 'our', 'the', 'and', 'last', 'time', 'chat', 'session', 'discussed', 'before', 'earlier', 'said', 'tell', 'can', 'could'].includes(word)).slice(0, 6) || []
   let matches: { id: string; text: string; role: string; thread_id: string; created_at: string }[] = []
   if (words.length && /\b(remember|recall|previous|earlier|last\s+(?:time|chat|session)|discussed|before)\b/i.test(query)) {
@@ -142,5 +153,34 @@ export async function conversationRecall(identity: Identity, query: string, thre
       matches = (await (await db()).query<typeof matches[number]>(`SELECT id,text,role,thread_id,created_at FROM ep_pulse_messages WHERE owner_id=$1 AND ($3::uuid IS NULL OR thread_id<>$3) AND to_tsvector('simple',text) @@ websearch_to_tsquery('simple',$2) ORDER BY ts_rank(to_tsvector('simple',text),websearch_to_tsquery('simple',$2)) DESC,sequence DESC LIMIT 5`, [identity.id, words.join(' OR '), threadId || null])).rows
     } else { const { data, error } = await userDb(identity).rpc('edupulse_recall_pulse', { query_text: words.join(' OR '), excluded_thread: threadId || null }); unavailable(error); matches = data || [] }
   }
-  return { memories: memories.slice(0, 12), matches: matches.map(message => ({ ...message, text: message.text.slice(0, 1500) })) }
+  return { memories: automaticMemory || /\b(?:remember|recall)\b/i.test(query) ? memories.slice(0, 12) : [], matches: matches.map(message => ({ ...message, text: message.text.slice(0, 1500) })) }
+}
+
+
+/** All named agents share concise completed-run handoffs inside the same owner/thread/subject scope. */
+export async function agentMemory(identity: Identity, thread: string, subject: string, result?: { task: string; mode: string; answer: string; sources: { id: string; title: string; url?: string }[]; trace?: { agent: string; node: string; status: string }[] }) {
+  if (identity.role === 'guest') return []
+  const automaticMemory = await automaticMemoryEnabled(identity)
+  if (!automaticMemory) return []
+  const row = result && { id: randomUUID(), owner_id: identity.id, thread_id: thread, subject_id: subject, task: result.task, outcome: result.mode, summary: redactConversation([...(result.trace || []).slice(0, 16).map(stage => `${stage.agent}: ${stage.node} (${stage.status})`), result.answer].join('\n')).slice(0, 1200), sources: result.sources.slice(0, 12).map(source => ({ id: source.id, title: source.title, ...(source.url ? { url: source.url } : {}) })) }
+  if (local()) {
+    const pg = await db()
+    await pg.exec(`CREATE TABLE IF NOT EXISTS ep_agent_memory(id uuid PRIMARY KEY, owner_id text, thread_id uuid, subject_id text, task text, outcome text, summary text, sources jsonb, created_at timestamptz DEFAULT now(), FOREIGN KEY(thread_id,owner_id) REFERENCES ep_pulse_threads(id,owner_id) ON DELETE CASCADE)`)
+    if (row) {
+      await pg.query('DELETE FROM ep_agent_memory WHERE owner_id=$1 AND thread_id=$2 AND subject_id=$3 AND id NOT IN (SELECT id FROM ep_agent_memory WHERE owner_id=$1 AND thread_id=$2 AND subject_id=$3 ORDER BY created_at DESC LIMIT 19)', [identity.id, thread, subject])
+      await pg.query('INSERT INTO ep_agent_memory(id,owner_id,thread_id,subject_id,task,outcome,summary,sources) VALUES($1,$2,$3,$4,$5,$6,$7,$8)', [row.id, identity.id, thread, subject, row.task, row.outcome, row.summary, JSON.stringify(row.sources)])
+    }
+    return (await pg.query(`SELECT task,outcome,summary,sources,created_at FROM ep_agent_memory WHERE owner_id=$1 AND thread_id=$2 AND subject_id=$3 AND created_at>now()-interval '30 days' ORDER BY created_at DESC LIMIT 3`, [identity.id, thread, subject])).rows
+  }
+  const client = userDb(identity)
+  if (row) {
+    const existing = await client.from('edupulse_agent_memory').select('id').eq('thread_id', thread).eq('subject_id', subject).order('created_at', { ascending: false }).range(19, 100)
+    unavailable(existing.error)
+    if (existing.data?.length) unavailable((await client.from('edupulse_agent_memory').delete().in('id', existing.data.map(item => item.id))).error)
+    unavailable((await client.from('edupulse_agent_memory').insert(row)).error)
+  }
+  if (row) return []
+  const stored = await client.from('edupulse_agent_memory').select('task,outcome,summary,sources,created_at').eq('thread_id', thread).eq('subject_id', subject).gt('created_at', new Date(Date.now()-30*86400000).toISOString()).order('created_at', { ascending: false }).limit(3)
+  unavailable(stored.error)
+  return stored.data || []
 }

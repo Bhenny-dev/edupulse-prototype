@@ -43,16 +43,21 @@ export default function WorkspaceOffice({ tasks, messages, onClose, onTask, busy
     if(target!==selected){setHandoff({from:buddy.name,to:destination.name,fromId:selected,toId:target});timer.current=setTimeout(submit,reducedMotion?0:650)}else submit()
   }
 
-  function keyboard(event) {
-    if(event.key==='Escape') { event.stopPropagation();onClose() }
-    if(event.key==='Tab') {
-      const controls=[...root.current.querySelectorAll('button:not(:disabled),input:not(:disabled),textarea:not(:disabled),[tabindex="0"]')].filter(item=>item.getClientRects().length)
-      const first=controls[0],last=controls.at(-1)
-      if(event.shiftKey&&document.activeElement===first){ event.preventDefault();last?.focus() }
-      else if(!event.shiftKey&&document.activeElement===last){ event.preventDefault();first?.focus() }
+  useEffect(() => {
+    const keyboard = event => {
+      if (!root.current) return
+      if (event.key === 'Escape') { event.preventDefault(); event.stopImmediatePropagation(); onClose(); return }
+      if (event.key !== 'Tab') return
+      const controls = [...root.current.querySelectorAll('button:not(:disabled),input:not(:disabled),textarea:not(:disabled),[tabindex="0"]')].filter(item => item.getClientRects().length)
+      const first = controls[0], last = controls.at(-1)
+      if (!root.current.contains(document.activeElement)) { event.preventDefault(); (event.shiftKey ? last : first)?.focus() }
+      else if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus() }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus() }
     }
-  }
-  return createPortal(<div className="workspace-office-backdrop" data-pulse-ui="office" onKeyDown={keyboard}>
+    document.addEventListener('keydown', keyboard, true)
+    return () => document.removeEventListener('keydown', keyboard, true)
+  }, [onClose])
+  return createPortal(<div className="workspace-office-backdrop" data-pulse-ui="office">
     <section className="workspace-office" ref={root} role="dialog" aria-modal="true" aria-labelledby="workspace-office-title">
       <header className="office-topbar"><div className="office-brand-mark" aria-hidden="true">✦</div><div><span className="office-eyebrow">PULSE / WORKSPACE BUDDIES</span><h2 id="workspace-office-title">Meet your crew.</h2></div><div className="office-topbar-actions"><span className="office-live"><i />{working.length?`${working.length} at work`:'Ready when you are'}</span><button type="button" onClick={()=>setPaused(value=>!value)} aria-pressed={paused} aria-label={paused?'Resume office animation':'Pause office animation'}>{paused?<Play size={17}/>:<Pause size={17}/>}</button><button ref={closeButton} type="button" onClick={onClose} aria-label="Close workspace"><X size={21}/></button></div></header>
       <div className="office-body"><div className="office-world">

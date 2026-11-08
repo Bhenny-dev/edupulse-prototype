@@ -9,6 +9,7 @@ test('owner requests preserve the dashboard role, including a conversational cor
  for(const [request,title] of [['open me the instructors dashboard','Instructor'],["no, not mine, the dean's",'Dean'],["open the student's dashboard",'Student']]) {
   await pulse.getByRole('textbox',{name:'Ask Pulse',exact:true}).fill(request)
   await pulse.getByRole('button',{name:'Send',exact:true}).click()
+  await page.getByRole('button',{name:`Use my own ${title.toLowerCase()} view`,exact:true}).click()
   await expect(page.getByRole('heading',{name:`${title} Dashboard`,exact:true})).toBeVisible()
   await expect(pulse.getByRole('status').filter({hasText:`Opened ${title} Dashboard.`})).toBeVisible()
  }

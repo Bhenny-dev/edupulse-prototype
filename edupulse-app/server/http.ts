@@ -1,11 +1,11 @@
 import { randomUUID } from 'node:crypto'
 import { createClient } from '@supabase/supabase-js'
 import { z } from 'zod'
-import { ApiError, chatInput, courseInput, documentInput, referencesInput, researchInput, similarityInput, type Identity } from './contracts.js'
+import { ApiError, chatInput, chatMemoryInput, courseInput, documentInput, referencesInput, researchInput, similarityInput, type Identity } from './contracts.js'
 import { config } from './config.js'
 import { invokeModel, providerHealth } from './providers.js'
 import { MAX_DOCUMENTS, deleteDocument, ingest, listDocuments } from './database.js'
-import { runChat, runCourseware, serverDeps } from './graph.js'
+import { runChat, runCourseware, serverDeps, prepareChatContext } from './graph.js'
 import { readWorkspace, saveWorkspace, workspaceInput, WORKSPACE_BYTES } from './workspace.js'
 import { connectionCookie, connectionInput, createConnection, discoverModels, discoverWorkspaces, workspaceListInput, publicConnection, serverConnection, type Connection } from './connections.js'
 import { extractUpload } from './ingest/prepare.js'
@@ -22,16 +22,17 @@ import { academicCommand, executeAcademic, readAcademic } from './domains/academ
 import { readStudents } from './domains/students.js'
 import { changeLease } from './requestLimits.js'
 import { providerOAuth, providerOAuthInput } from './domains/providerOAuth.js'
-import { conversationCommand, conversationRecall, executeConversation, readConversations } from './domains/conversations.js'
+import { agentMemory, conversationCommand, conversationRecall, executeConversation, readConversations } from './domains/conversations.js'
 import { operatorInput, operatorRequest } from './domains/operator.js'
 import { loadProviders, removeProvider, resolveProvider, saveProvider } from './providerStore.js'
 import { checkAppropriateUse } from '../src/lib/rag/policy.js'
+import { supportAction, supportFilters, supportIdentity } from './domains/support.js'
 
 export const VERSION = '0.4.0'
 /** Request body limits per action (bytes). Uploads are raw file bytes. */
 export const BODY_LIMITS: Record<string, number> = { workspace: WORKSPACE_BYTES, extract: EXTRACTION_LIMITS.bytes, documents: 1_000_000, conversations: 200_000, operator: 330_000 }
 export const bodyLimit = (action: string | null) => BODY_LIMITS[action || ''] ?? 100_000
-const ACTION_METHODS: Record<string, string[]> = { health: ['GET'], providers: ['GET', 'POST', 'DELETE'], 'provider-oauth': ['POST'], 'provider-test': ['POST'], 'provider-workspaces': ['POST'], conversations: ['GET', 'POST'], operator: ['POST'], context: ['POST'], similarity: ['POST'], references: ['POST'], 'web-search': ['POST'], extract: ['POST'], chat: ['POST'], courseware: ['POST'], documents: ['GET', 'POST', 'DELETE'], workspace: ['GET', 'PUT'], academic: ['GET', 'POST'], students: ['GET'] }
+const ACTION_METHODS: Record<string, string[]> = { 'chat-context': ['POST'], 'chat-memory': ['POST'], support: ['GET', 'POST'], health: ['GET'], providers: ['GET', 'POST', 'DELETE'], 'provider-oauth': ['POST'], 'provider-test': ['POST'], 'provider-workspaces': ['POST'], conversations: ['GET', 'POST'], operator: ['POST'], context: ['POST'], similarity: ['POST'], references: ['POST'], 'web-search': ['POST'], extract: ['POST'], chat: ['POST'], courseware: ['POST'], documents: ['GET', 'POST', 'DELETE'], workspace: ['GET', 'PUT'], academic: ['GET', 'POST'], students: ['GET'] }
 export const allowedMethods = (action: string) => Object.hasOwn(ACTION_METHODS, action) ? ACTION_METHODS[action] : undefined
 const buckets = new Map<string, { count: number; until: number }>()
 const active = new Set<string>()
@@ -52,7 +53,7 @@ export async function authenticate(request: Request): Promise<Identity> {
           !data.user.app_metadata?.providers?.includes('google')))) {
       throw new ApiError(403, 'ROLE_NOT_ASSIGNED', 'This account has no EduPulse role. Contact the administrator.')
     }
-    return { id: data.user.id, role, token, local: false }
+    return { id: data.user.id, role, token, local: false, name: data.user.user_metadata?.full_name || data.user.email?.split('@')[0] }
   }
   if (!config().hosted && process.env.AI_LOCAL_MODE === 'true') return { id: 'local-workspace', role: 'instructor', local: true }
   return { id: 'public-guest', role: 'guest', local: false }
@@ -100,22 +101,36 @@ export async function handleRequest(request: Request): Promise<Response> {
     if (!methods.includes(request.method)) return new Response(null, { status: 405, headers: { Allow: methods.join(', '), 'Cache-Control': 'no-store' } })
     const identity = await authenticate(request)
     authenticatedIdentity = identity
+    if (action === 'support') {
+      if (request.method === 'GET') return json(await supportAction(identity, 'accounts', supportFilters.parse(Object.fromEntries(new URL(request.url).searchParams))))
+      const command = z.object({ id: z.string().uuid(), operation: z.enum(['enter','leave']) }).parse(await readJson(request, 2000))
+      const subject = await supportIdentity(identity, command.id)
+      return json(await supportAction(subject, command.operation))
+    }
+    const effective = ['academic','workspace','chat','chat-context','chat-memory','courseware','operator','context','web-search','students'].includes(action) ? await supportIdentity(identity, request.headers.get('X-EduPulse-Subject')) : identity
+    if (action === 'chat-context') return json({ ...await prepareChatContext(chatInput.parse(await readJson(request, bodyLimit(action))), identity, effective), identity: { id: effective.id, role: effective.role, local: effective.local } })
+    if (action === 'chat-memory') {
+      if (identity.role === 'guest') throw new ApiError(401, 'SIGN_IN_REQUIRED', 'Sign in to save private agent handoffs.')
+      const input = chatMemoryInput.parse(await readJson(request, 18000))
+      await agentMemory(identity, input.conversationId, effective.id, { ...input.result, answer: `On-device reported outcome (untrusted prior conversation, not a verified action): ${input.result.answer}` })
+      return json({ processed: true })
+    }
     // Deny unsupported account roles before reading any AI credentials/store.
-    if (action === 'courseware' && identity.role !== 'guest' && !canGenerateCourseware(identity.role)) throw new ApiError(403, 'FORBIDDEN', 'Courseware generation requires an instructor account or the system admin instructor view. Preview drafts require your own provider connection.')
-    if (action === 'students') return json(await readStudents(identity,new URL(request.url)))
+    if (action === 'courseware' && effective.role !== 'guest' && !canGenerateCourseware(effective.role)) throw new ApiError(403, 'FORBIDDEN', 'Courseware generation requires an instructor account or the system admin instructor view. Preview drafts require your own provider connection.')
+    if (action === 'students') return json(await readStudents(effective,new URL(request.url)))
     if (action === 'conversations') {
       const url = new URL(request.url), query = url.searchParams.get('q')
       if (query && query.length > 4000) throw new ApiError(400, 'INVALID_INPUT', 'Use a shorter conversation search.')
       return request.method === 'GET' ? json(query ? await conversationRecall(identity, query, url.searchParams.get('id') || undefined) : await readConversations(identity, url.searchParams.get('id'))) : json(await executeConversation(identity, conversationCommand.parse(await readJson(request, bodyLimit(action)))))
     }
-    if (action === 'academic') return request.method === 'GET' ? json(await readAcademic(identity)) : json(await executeAcademic(identity, academicCommand.parse(await readJson(request, 5000))))
+    if (action === 'academic') return request.method === 'GET' ? json(await readAcademic(effective)) : json(await executeAcademic(effective, academicCommand.parse(await readJson(request, 5000))))
     if (action === 'workspace') {
       if (request.method === 'GET') {
         const known = new URL(request.url).searchParams.get('known')
-        return json(await readWorkspace(identity, known !== null && /^\d{1,9}$/.test(known) ? Number(known) : undefined))
+        return json(await readWorkspace(effective, known !== null && /^\d{1,9}$/.test(known) ? Number(known) : undefined))
       }
-      if (!['instructor', 'admin', 'dean', 'associate_dean'].includes(identity.role)) throw new ApiError(403, 'FORBIDDEN', 'Sign in with an academic account to save a workspace.')
-      return json(await saveWorkspace(identity, workspaceInput.parse(await readJson(request, WORKSPACE_BYTES))))
+      if (!['instructor', 'admin', 'dean', 'associate_dean'].includes(effective.role)) throw new ApiError(403, 'FORBIDDEN', 'Sign in with an academic account to save a workspace.')
+      return json(await saveWorkspace(effective, workspaceInput.parse(await readJson(request, WORKSPACE_BYTES))))
     }
     if (action === 'providers' && request.method === 'DELETE' && new URL(request.url).searchParams.get('sessionOnly') === 'true') return json({ connection: null, models: [] }, 200, connectionCookie(null))
     const personalConnection = await resolveProvider(request, identity)
@@ -180,7 +195,7 @@ export async function handleRequest(request: Request): Promise<Response> {
     const body = await readJson(request, bodyLimit(action))
     if (action === 'operator') {
       const stepSignal = config().hosted ? AbortSignal.any([signal, AbortSignal.timeout(70000)]) : signal
-      const result = await operatorRequest(operatorInput.parse(body), identity, connection, stepSignal)
+      const result = await operatorRequest(operatorInput.parse(body), effective, connection, stepSignal)
       return json(result, 200, personalConnection && 'generated' in result && result.generated ? connectionCookie(await saveProvider(identity, { ...personalConnection, testedAt: Date.now() }, false)) : undefined)
     }
     if (action === 'provider-test') {
@@ -209,7 +224,7 @@ export async function handleRequest(request: Request): Promise<Response> {
     }
     if (action === 'context') {
       const input = researchInput.parse(body)
-      return json({ ...await research(identity, input.queries, input.focus, input.documentIds, signal), identity: { id: identity.id, role: identity.role, local: identity.local } })
+      return json({ ...await research(identity, input.queries, input.focus, input.documentIds, signal), identity: { id: effective.id, role: effective.role, local: effective.local } })
     }
     if (action === 'similarity') {
       const input = similarityInput.parse(body)
@@ -221,7 +236,7 @@ export async function handleRequest(request: Request): Promise<Response> {
     }
     if (action === 'web-search') {
       const { topic, bibliography } = referencesInput.extend({ bibliography: z.boolean().default(false) }).strict().parse(body)
-      const decision = checkAppropriateUse(topic, identity.role)
+      const decision = checkAppropriateUse(topic, effective.role)
       if (!decision.allowed) throw new ApiError(403, 'ACTION_POLICY', decision.guidance)
       return json(await (bibliography ? researchCourse : searchWeb)(topic, signal, connection))
     }
@@ -235,12 +250,12 @@ export async function handleRequest(request: Request): Promise<Response> {
     const workflow = action === 'courseware' ? 'courseware' as const : 'chat' as const, started = Date.now()
     try {
       let result
-      if (workflow === 'courseware') result = { ...await runCourseware(courseInput.parse(body), identity, signal, undefined, connection, Boolean(personalConnection)), mode: 'courseware', task: 'courseware' }
+      if (workflow === 'courseware') result = { ...await runCourseware(courseInput.parse(body), effective, signal, undefined, connection, Boolean(personalConnection)), mode: 'courseware', task: 'courseware' }
       else {
         const input = chatInput.parse(body)
         // Guests get the public guide only and cannot use hosted generation or submit private attachments.
         if (identity.role === 'guest' && !personalConnection && input.attachments.length) throw new ApiError(401, 'SIGN_IN_REQUIRED', 'Sign in to send reference attachments.')
-        result = identity.role === 'guest' && !personalConnection ? await runChat(input, identity, signal, serverDeps(identity, undefined)) : await runChat(input, identity, signal, undefined, connection)
+        result = identity.role === 'guest' && !personalConnection ? await runChat(input, identity, signal, serverDeps(identity, undefined)) : await runChat(input, identity, signal, undefined, connection, effective)
       }
       await recordAgentRun(identity, agentRunRow(identity, workflow, result, Date.now() - started))
       return json(result, 200, personalConnection && ['generated', 'courseware'].includes(result.mode) ? connectionCookie(await saveProvider(identity, { ...personalConnection, testedAt: Date.now() }, false)) : undefined)

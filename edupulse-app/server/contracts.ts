@@ -15,6 +15,13 @@ export const chatInput = z.object({
   viewRole: z.enum(['admin', 'dean', 'associate_dean', 'instructor', 'student', 'guest']).optional(),
 })
 export const DOCUMENT_CHARACTERS = 150_000
+export const chatMemoryInput = z.object({
+  conversationId: z.string().uuid(),
+  result: z.object({ task: z.enum(tasks), mode: z.enum(['generated','retrieval','insufficient-evidence','references']), answer: z.string().max(1200),
+    sources: z.array(z.object({ id: z.string().max(200), title: z.string().max(160), url: z.string().max(2048).url().refine(value => /^https?:/i.test(value)).optional() })).max(12),
+    trace: z.array(z.object({ agent: z.enum(['Guardian','Planner','Researcher','Ranker','Comparator','Writer','Verifier','Corrector','Librarian']), node: z.string().max(80).regex(/^[a-z0-9_-]+$/i), status: z.enum(['done','skipped','fallback','revised','declined']) })).max(16),
+  }).strict(),
+}).strict()
 export const sourceTypes = ['text', 'pdf', 'docx', 'pptx', 'html', 'markdown', 'csv'] as const
 export const documentInput = z.object({
   title: z.string().trim().min(1).max(160), text: z.string().trim().min(40).max(DOCUMENT_CHARACTERS),
@@ -59,7 +66,7 @@ export type ChatInput = z.infer<typeof chatInput>
 // Callers may omit `plan`; the courseware graph applies its defaults.
 export type CourseInput = z.input<typeof courseInput>
 export type Source = { id: string; title: string; text: string; score: number; method: 'vector' | 'keyword' | 'provided' }
-export type Identity = { id: string; role: 'admin' | 'dean' | 'associate_dean' | 'instructor' | 'student' | 'guest'; token?: string; local: boolean }
+export type Identity = { id: string; role: 'admin' | 'dean' | 'associate_dean' | 'instructor' | 'student' | 'guest'; token?: string; local: boolean; supportActor?: string; name?: string }
 export class ApiError extends Error {
   constructor(public status: number, public code: string, message: string, public retryAfterSeconds?: number) { super(message) }
 }

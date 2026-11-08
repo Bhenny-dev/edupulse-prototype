@@ -5,6 +5,8 @@ import { aiPreference, browserAIState, invokeBrowserModel } from './browserAI'
 
 let accessToken: string | undefined
 let sessionVersion = 0
+let supportSubject: string | undefined
+export function setAiSubject(id?: string) { if (id !== supportSubject) sessionVersion++; supportSubject = id }
 export function setAiAccessToken(token?: string) { if (token !== accessToken) sessionVersion++; accessToken = token }
 export const aiSessionVersion = () => sessionVersion
 export class ApiRequestError extends Error {
@@ -16,7 +18,7 @@ type RequestOptions = { raw?: Blob; headers?: Record<string, string>; query?: Re
 // so the browser waits for the server's answer or its timeout error instead of giving up first.
 const LONG_ACTIONS = new Set(['chat', 'courseware', 'references', 'operator', 'provider-test'])
 export async function aiRequest<T>(action: string, method = 'GET', body?: unknown, signal?: AbortSignal, options: RequestOptions = {}): Promise<T> {
-  const requestToken = accessToken
+  const requestToken = accessToken, version = sessionVersion
   const abort = AbortSignal.any([AbortSignal.timeout(LONG_ACTIONS.has(action) ? 610000 : 125000), ...(signal ? [signal] : [])])
   const transportError = (error: unknown): never => {
     if (signal?.aborted) throw error
@@ -25,12 +27,13 @@ export async function aiRequest<T>(action: string, method = 'GET', body?: unknow
   }
   const response = await fetch(`/api/ai?${new URLSearchParams({ ...options.query, action })}`, {
     method,
-    headers: { ...(body ? { 'Content-Type': 'application/json' } : options.raw ? { 'Content-Type': 'application/octet-stream' } : {}), ...(requestToken ? { Authorization: `Bearer ${requestToken}` } : {}), ...options.headers },
+    headers: { ...(body ? { 'Content-Type': 'application/json' } : options.raw ? { 'Content-Type': 'application/octet-stream' } : {}), ...(requestToken ? { Authorization: `Bearer ${requestToken}` } : {}), ...(supportSubject ? { 'X-EduPulse-Subject': supportSubject } : {}), ...options.headers },
     ...(body ? { body: JSON.stringify(body) } : options.raw ? { body: options.raw } : {}), signal: abort,
   }).catch(transportError)
   if (!response.headers.get('content-type')?.includes('application/json')) throw new ApiRequestError(response.status === 504 ? 'The server stopped this request before it finished. Check the saved state before retrying.' : 'The AI API did not return a usable response. Check the deployment and retry.', response.status || 502, response.status === 504 ? 'TIMEOUT' : 'INVALID_RESPONSE')
   const data = await response.json().catch(error => { if (error instanceof SyntaxError) throw new ApiRequestError('The AI API returned an unreadable response. Check the deployment and retry.', 502, 'INVALID_RESPONSE'); return transportError(error) })
   if (typeof window !== 'undefined' && requestToken === accessToken && ['chat', 'courseware', 'operator'].includes(action) && ((!data.pending && response.ok) || ['MODEL_NOT_AVAILABLE', 'MODEL_INCOMPATIBLE', 'PROVIDER_AUTH', 'PROVIDER_CREDITS', 'PROVIDER_QUOTA', 'PROVIDER_WORKSPACE_REQUIRED', 'EMPTY_RESPONSE'].includes(data.error?.code))) window.dispatchEvent(new Event('edupulse-ai-change'))
+  if (version !== sessionVersion) throw new ApiRequestError('The account view changed. The previous response was discarded.', 409, 'SESSION_CHANGED')
   if (!response.ok) throw new ApiRequestError(data.error?.message || `Request failed (${response.status}).`, response.status, data.error?.code)
   if (typeof window !== 'undefined' && requestToken === accessToken && ((action === 'workspace' && method === 'PUT') || (action === 'academic' && method === 'POST'))) window.dispatchEvent(new CustomEvent('edupulse-records-change', { detail: { action, operation: (body as { operation?: string })?.operation } }))
   return data as T
@@ -130,11 +133,25 @@ export async function askPulse(input: Partial<ChatInput> & { message: string }, 
   if (aiPreference() !== 'browser') return aiRequest<AiAnswer>('chat', 'POST', input, signal)
   if (browserAIState().status !== 'ready') throw new Error('Your on-device model is not ready. Open AI settings to load it or choose a provider.')
   const abort = AbortSignal.any([AbortSignal.timeout(240000), ...(signal ? [signal] : [])])
-  const [{ runAgents }, { chatInput }] = await Promise.all([import('./rag/agents'), import('../../server/contracts')])
-  // The on-device Guardian runs in this browser, so the displayed role decides which use rules apply;
-  // the server replaces this identity with the verified one during the first search.
+  const [{ runAgents }, { chatInput }, { contextualDeps }] = await Promise.all([import('./rag/agents'), import('../../server/contracts'), import('./rag/context')])
   const session: Identity = { id: 'device-session', role: input.viewRole || 'guest', local: false }
-  return runAgents(chatInput.parse(input), session, abort, browserDeps(abort, session))
+  let prepared: import('./rag/context').PreparedChatContext = { input: chatInput.parse(input), evidence: [], warnings: [], privateContext: true }
+  let onlineContext = false
+  try {
+    const response = await aiRequest<import('./rag/context').PreparedChatContext & { identity: Identity }>('chat-context', 'POST', prepared.input, abort)
+    Object.assign(session, response.identity); prepared = response; onlineContext = true
+  } catch (error) {
+    if (abort.aborted || error instanceof ApiRequestError && [401,403].includes(error.status)) throw error
+    prepared.warnings.push('Online account context and memory are unavailable. This reply uses only supplied context and the on-device model.')
+    prepared.input.context = `Live account records and memory are unavailable; do not invent records or claim recall.\n${prepared.input.context}`.slice(0, 6000)
+  }
+  const result = await runAgents(prepared.input, session, abort, contextualDeps(prepared, browserDeps(abort, session)))
+  if (onlineContext && prepared.input.conversationId && session.role !== 'guest' && result.mode !== 'declined') {
+    try { await aiRequest('chat-memory', 'POST', { conversationId: prepared.input.conversationId, result: { task: result.task, mode: result.mode, answer: result.answer.slice(0,1200), sources: result.sources.slice(0,12).map(source => ({ id: source.id.slice(0,200), title: source.title.slice(0,160), ...(source.url ? { url: source.url } : {}) })), trace: result.trace.slice(0,16).map(stage => ({ agent: stage.agent, node: stage.node, status: stage.status })) } }, abort) }
+    catch { prepared.warnings.push('The on-device agent handoff was not saved. The response remains available in this conversation.') }
+  }
+  return { ...result, warning: [...new Set([result.warning, ...prepared.warnings].filter(Boolean))].join(' ') || null }
+
 }
 
 export type CourseDraft = Awaited<ReturnType<typeof import('./rag/courseware').draftCoursewareAgents>>

@@ -7,7 +7,7 @@ import { clearProviderAuthorization, providerAuthorizationReturn, PROVIDER_CALLB
 const AIContext = createContext(null)
 export function AIProvider({ children }) {
   const { user, authLoading } = useAuth()
-  const userId = user?.id, role = user?.role
+  const userId = user?.accountId || user?.id, role = user?.role
   const local = useSyncExternalStore(subscribeBrowserAI, browserAIState)
   const [health, setHealth] = useState(null), [preference, setPreference] = useState(aiPreference)
   const [checking, setChecking] = useState(false), [healthError, setHealthError] = useState('')

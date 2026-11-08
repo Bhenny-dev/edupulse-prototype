@@ -4,7 +4,7 @@ export type AgentName = 'Guardian' | 'Planner' | 'Researcher' | 'Ranker' | 'Comp
 export type Evidence = {
   id: string; documentId: string | null; title: string; text: string
   page: number | null; section: string | null; flagged: boolean
-  origin: 'private' | 'public-guide' | 'attachment' | 'web'
+  origin: 'private' | 'account' | 'public-guide' | 'attachment' | 'web'
   method: 'hybrid' | 'vector' | 'keyword' | 'provided' | 'web-search'
   url?: string
   similarity: number | null; rrf: number; relevance: number | null; query: string

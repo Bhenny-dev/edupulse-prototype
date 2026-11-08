@@ -6414,6 +6414,120 @@
       "sha256": "54ae4e414a1a91e6452e4b6e5c6a6182b9b5f68a0dd7b8038caa2b50f0400b47",
       "reviewer": "Claude agent (Sonnet 5.5)",
       "reviewedAt": "2026-11-08T12:52:04.829Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/17-pulse-navigation-and-provider-recovery/01-instructor-view.png",
+      "sha256": "12dd5df08bb33e399bcd3dd9821383f35818177cd80e4826e9c7c2021511665c",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-08T10:18:25.844503Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/17-pulse-navigation-and-provider-recovery/02-role-correction.png",
+      "sha256": "973f01ea231e3c2a3c905dc9ce39c42091a4ed89ffc650d259be9cf9b610e6cc",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-08T10:18:25.844503Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/17-pulse-navigation-and-provider-recovery/03-anthropic-api-credits.png",
+      "sha256": "efd89769f1b803fd3297d010a5cf211dc00ae0e2ec5971ff5d9f24f237036536",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-08T10:18:25.844503Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/01-select-account.png",
+      "sha256": "879cc1ed0ae11914f0dfff33cdfc2e8746c9c1d086095c0b9dde8dc80ec2f605",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-08T10:18:25.844503Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/02-filtered-account.png",
+      "sha256": "1be02f6a10c9344e708d4b27f7edbea566a9301d4aef824c1ba706764d30cb51",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-08T10:18:25.844503Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/03-selected-student-view.png",
+      "sha256": "855a654be7221251d42ab0a13a234104d80e3a3fc4b66d49915c4b35c7e7ca90",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-08T10:18:25.844503Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/04-dark-account-picker.png",
+      "sha256": "cbaf401b8254d102bd22ba7c4a5c3b471c175e8df8754b4acf13a714216b191a",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-08T10:18:25.844503Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/05-authorized-context.png",
+      "sha256": "3e4e5504ffd4fc786cd28f503f82b99ae3e400a6746a70c3cc487af9ab9dab79",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-08T10:18:25.844503Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/06-public-reference.png",
+      "sha256": "be9eb0240f3f7ab6de70f1860a935b7e52301702a3e639a2da60b80032da8e43",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-08T10:18:25.844503Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/07-mixed-language.png",
+      "sha256": "071cefee6a60fcb1af5102459f7335f719406770dfe90060b4daeee9217ddf07",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-08T10:18:25.844503Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/08-mobile-account-picker.png",
+      "sha256": "beba8ff3fb03cf2109a2c95e63589674ca97589e76164021125b67b6db8b7e47",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-08T10:18:25.844503Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/02-filtered-account.png",
+      "sha256": "0a0b47b1491369ba5bbc89f8fe250115979fec382fb0788536d866454883ee08",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-08T11:18:53.825867Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/03-selected-student-view.png",
+      "sha256": "3934c764d55dc71a16fec56c5fa669f749589a7dc163b6b0aa52d3612a6a87ca",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-08T11:18:53.825867Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/05-authorized-context.png",
+      "sha256": "7f5cfd86c860601e98c519060b37b02c52a254cbc2b2e03c86c00c9d76d0a65e",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-08T11:18:53.825867Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/06-public-reference.png",
+      "sha256": "901c3728a4d597ea571b6396298d315127fbe0f11af4e5d60f40bcd5eb6c5184",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-08T11:18:53.825867Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/07-mixed-language.png",
+      "sha256": "ddc2554d6f367859cd6637ed4c379b6b96cac6acea939524e083e2602dae9ce5",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-08T11:18:53.825867Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/09-office-keyboard-handoff.png",
+      "sha256": "d00a6e8f3d4ce593b7b4600af55f5535304953b5946afc6b978d4cb7ccd8fde0",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-08T11:18:53.825867Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/17-pulse-navigation-and-provider-recovery/02-role-correction.png",
+      "sha256": "3d7ab79846b317b5082451a4ce585bfaa98cfb57115d0f891d2144f732186cc0",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-08T11:18:53.825867Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/17-pulse-navigation-and-provider-recovery/03-anthropic-api-credits.png",
+      "sha256": "3a0ecd561815166c82c8a901d9e9cb52a7d87048b55fe796958c0367a9fb940e",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-08T11:18:53.825867Z"
     }
   ]
 }

@@ -11,6 +11,7 @@ export async function navigationUI(page: Page, role = 'admin', workspaceRecovery
  let connection: {provider:string;model:string;source:string;expiresAt:string;workspaceId?:string;testedAt?:string}={provider:'anthropic',model:'synthetic-claude-model',source:'personal',expiresAt:'2026-11-10T00:00:00.000Z'}
  await page.route('**/api/ai?*',async route=>{
   const action=new URL(route.request().url()).searchParams.get('action')
+  if(action==='support')return route.fulfill({json:{accounts:[],total:0,offset:0,pageSize:50,departments:[],programs:[]}})
   if(action==='providers'){
    if(route.request().method()==='POST'){const input=route.request().postDataJSON();if(input.apiKey)throw new Error('Workspace recovery must reuse the saved credential');connection={...connection,workspaceId:input.workspaceId||undefined,testedAt:undefined}}
    return route.fulfill({json:{connection,models:[{id:connection.model,name:'Synthetic Claude model'}]}})

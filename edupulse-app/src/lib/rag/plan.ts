@@ -13,7 +13,7 @@ const WEB = /\b(web|internet|online|search|look\s*up|research|latest|current|rec
 const NO_WEB = /\b(?:do not|don't|dont|never)\s+(?:search|browse|use|consult|access)\b.{0,35}\b(?:web|internet|online|external)|\b(?:without|no)\s+(?:web|internet|online|external)\s*(?:search|research|sources?|access|browsing)?\b/i
 export const allowsPublicResearch = (message: string) => !NO_WEB.test(message)
 const GREETING = /^(hi|hello|hey|thanks|thank you|good (morning|afternoon|evening)|kumusta|salamat)\b/i
-const SOURCE_REQUEST = /\b(uploaded|attached|document|pdf|file|library|source|reference|policy|syllabus|courseware|EduPulse|publish|publishing|approval|signator|grading|examination|calendar)\b/i
+const SOURCE_REQUEST = /\b(uploaded|attached|document|pdf|file|library|source|reference|policy|syllabus|courseware|EduPulse|publish|publishing|approval|signator|grading|examination|calendar|features?|functionalit\w*|rosters?|enrollments?|statistics|dashboard)\b/i
 const CONVERSATION = /\b(how are you|how do you feel|let'?s (?:talk|chat)|what if|suppose|imagine|scenario|situation|advice|i feel|i am (?:feeling|worried|stressed)|i'?m (?:feeling|worried|stressed)|help me (?:think|decide)|what should i do)\b/i
 const PERSONAL_SITUATION = /\b(?:i (?:am|feel)|i'?m) (?:feeling|worried|stressed|anxious|nervous|tired|overwhelmed|happy|sad)\b/i
 
@@ -63,7 +63,9 @@ export function planRequest(input: PlanInput): Plan {
   // explicitly requested in an otherwise unrelated public search.
   const courseScoped = /\b(?:this|my|our|selected|current|the)\s+(?:course|syllabus|subject|outline)\b|\b(?:all|every)\s+(?:fields?|sections?)\b/i.test(message)
   const explicitTopic = /\b(?:about|on|regarding|look\s*up|research)\s+(.+?)(?=\s+for\s+(?:my|our|this|the|selected|current)\s+course\b|$)/i.exec(message)?.[1]?.replace(/[.!?]+$/, '').trim().slice(0, 200)
+  const privateQuestion = /\b(?:my|our|registered|enrolled|selected)\b.{0,45}\b(?:students?|instructors?|teachers?|faculty|users?|courses?|scores?|grades?|statistics|stats|account|profile)|\bwho am i\b|\b(?:courses?|classes|students?|instructors?|teachers?|scores?|grades?|kurso|klase|estudyante|guro|marka)\s+(?:ko|namin|natin)\b|@|\b\d{4}-\d-\d{4}\b/i.test(message)
+  const publicQuestion = !conversational && !privateQuestion && !SOURCE_REQUEST.test(message) && /^(?:who|what|when|where|why|how|tell me about|do you know|sino|ano|kailan|saan|bakit|paano)\b/i.test(message)
   const educationalDraft = task === 'draft' && /\b(?:syllabus|course|lesson|outline|research|topics?|assessments?|materials?|references?)\b/i.test(message)
   if (task === 'references' && !allowsPublicResearch(message)) { task = 'answer'; rationale = 'External research was disabled by the user; use supplied or library sources.' }
-  return { task, queries: queries.slice(0, 3), needsEvidence: task !== 'references' && (sourceOnly || task !== 'general'), needsWeb: !sourceOnly && allowsPublicResearch(message) && (educationalDraft || WEB.test(message)) && task !== 'references', sourceOnly, rationale, topic: explicitTopic || (course && courseScoped ? course : topic || message.slice(0, 200)), revision }
+  return { task, queries: queries.slice(0, 3), needsEvidence: task !== 'references' && (sourceOnly || task !== 'general'), needsWeb: !sourceOnly && allowsPublicResearch(message) && (educationalDraft || !privateQuestion && (WEB.test(message) || publicQuestion)) && task !== 'references', sourceOnly, rationale, topic: explicitTopic || (course && courseScoped ? course : topic || message.slice(0, 200)), revision }
 }
