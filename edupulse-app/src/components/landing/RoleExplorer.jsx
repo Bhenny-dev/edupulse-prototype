@@ -4,6 +4,7 @@ import {
   ClipboardCheck, Target, BellRing, FileUp, Users, Eye, LayoutDashboard, UserPlus, Activity, ScrollText, Bot, ShieldAlert,
 } from 'lucide-react'
 import { gsap, prefersReducedMotion } from './motion'
+import { isWorld } from './classroom/mode'
 
 const ROLE_ICONS = { instructor: Presentation, student: GraduationCap, dean: Landmark, associate_dean: Briefcase, admin: ShieldCheck }
 const TASK_ICONS = {
@@ -24,7 +25,7 @@ export default function RoleExplorer({ roles }) {
 
   useEffect(() => {
     const narrow = window.matchMedia('(max-width: 899px)')
-    const apply = () => setOrientation(narrow.matches ? 'horizontal' : 'vertical')
+    const apply = () => setOrientation(narrow.matches || isWorld() ? 'horizontal' : 'vertical')
     apply()
     narrow.addEventListener?.('change', apply)
     return () => narrow.removeEventListener?.('change', apply)
@@ -65,6 +66,9 @@ export default function RoleExplorer({ roles }) {
       clipPath: 'inset(0% 0% 0% 0%)', y: 0, duration: 0.42, ease: 'power3.out', delay: 0.08, clearProps: 'clipPath,transform',
     })
   }, [current])
+
+  // The classmate for this role stands out in the 3D classroom.
+  useEffect(() => { document.dispatchEvent(new CustomEvent('classroom:role', { detail: current })) }, [current])
 
   const select = next => { setCurrent(next); tabs.current[next]?.focus() }
   const onKeyDown = event => {

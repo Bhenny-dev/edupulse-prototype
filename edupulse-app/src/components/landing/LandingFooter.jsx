@@ -2,7 +2,7 @@ import { useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { MapPin, ExternalLink } from 'lucide-react'
 import EduPulseMark from '../brand/EduPulseMark'
-import { NAV_LINKS, scrollToId } from './navigation'
+import { PAGES } from '../public/pages'
 import { gsap, useMotion, EASE } from './motion'
 
 // The footer. The large EduPulse wordmark resolves once with a slight reduction in depth;
@@ -26,9 +26,9 @@ export default function LandingFooter({ kcp }) {
           <p>An AI-powered syllabus and course builder with performance monitoring, made for the College of Information Technology.</p>
           <blockquote><p>{kcp.vision}</p><cite>KCP vision</cite></blockquote>
         </div>
-        <nav className="footer-col" aria-label="Footer: page sections">
+        <nav className="footer-col" aria-label="Footer: pages">
           <h3>Explore</h3>
-          {NAV_LINKS.map(link => <a key={link.id} href={`#${link.id}`} onClick={event => scrollToId(event, link.id)}>{link.label}</a>)}
+          {PAGES.map(page => <Link key={page.path} to={page.path}>{page.label}</Link>)}
         </nav>
         <nav className="footer-col" aria-label="Footer: legal">
           <h3>Legal</h3>

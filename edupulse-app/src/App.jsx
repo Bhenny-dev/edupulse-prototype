@@ -1,4 +1,5 @@
-import { SkeletonContent } from './components/ui/LoadingFeedback'
+import { lazy, Suspense } from 'react'
+import { SkeletonContent, Spinner } from './components/ui/LoadingFeedback'
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { ToastProvider } from './context/ToastContext'
@@ -28,6 +29,17 @@ import Privacy from './pages/Privacy'
 import Terms from './pages/Terms'
 import { PERFORMANCE_ROLES } from './lib/access'
 
+// The public pages, one themed room each, loaded when first opened.
+const FeaturesPage = lazy(() => import('./pages/public/FeaturesPage'))
+const HowItWorksPage = lazy(() => import('./pages/public/HowItWorksPage'))
+const RolesPage = lazy(() => import('./pages/public/RolesPage'))
+const PulsePage = lazy(() => import('./pages/public/PulsePage'))
+const ImpactPage = lazy(() => import('./pages/public/ImpactPage'))
+const CollegesPage = lazy(() => import('./pages/public/CollegesPage'))
+const PlayPage = lazy(() => import('./pages/public/PlayPage'))
+const FaqPage = lazy(() => import('./pages/public/FaqPage'))
+const publicPage = Page => <Suspense fallback={<div className="public-loading" role="status"><Spinner /> Opening the room…</div>}><Page /></Suspense>
+
 // The system admin has a dedicated console. Academic management belongs to
 // the separately authenticated Dean and Associate Dean roles.
 function ProtectedRoute({ children, allowedRoles }) {
@@ -42,6 +54,14 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<Landing />} />
+      <Route path="/features" element={publicPage(FeaturesPage)} />
+      <Route path="/how-it-works" element={publicPage(HowItWorksPage)} />
+      <Route path="/roles" element={publicPage(RolesPage)} />
+      <Route path="/pulse" element={publicPage(PulsePage)} />
+      <Route path="/impact" element={publicPage(ImpactPage)} />
+      <Route path="/colleges" element={publicPage(CollegesPage)} />
+      <Route path="/play" element={publicPage(PlayPage)} />
+      <Route path="/faq" element={publicPage(FaqPage)} />
       <Route path="/privacy" element={<Privacy />} />
       <Route path="/terms" element={<Terms />} />
       <Route path="/500" element={<ServerError />} />

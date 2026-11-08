@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Pause, Play } from 'lucide-react'
 import { gsap, ScrollTrigger, useMotion } from './motion'
+import { triggerFor } from './classroom/mode'
 
 // Two rows of CIT photographs. With motion, each photograph is first revealed through a
 // diagonal crop, then the rows drift slowly in opposite directions. Moving content can always
@@ -23,7 +24,7 @@ export default function PhotoRail({ photos, credit }) {
     rail.classList.add('is-live')
     gsap.fromTo(q('.photo-track li'), { clipPath: 'polygon(0% 0%, 24% 0%, 0% 100%, 0% 100%)' }, {
       clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)', duration: 0.85, ease: 'power3.inOut', stagger: 0.05, clearProps: 'clipPath',
-      scrollTrigger: { trigger: rail, start: 'top 82%', once: true },
+      scrollTrigger: { trigger: triggerFor(rail), start: 'top 82%', once: true },
     })
     const loops = q('.photo-track').map((track, i) => gsap.fromTo(track, { xPercent: i ? -50 : 0 }, { xPercent: i ? 0 : -50, duration: 70 + i * 14, ease: 'none', repeat: -1 }))
     const state = held.current
@@ -62,7 +63,7 @@ export default function PhotoRail({ photos, credit }) {
       on(rail, 'focusout', event => { if (!rail.contains(event.relatedTarget)) { state.focus = false; update() } }),
       on(document, 'visibilitychange', () => { visible.tab = !document.hidden; update() }),
     ]
-    const onScreen = ScrollTrigger.create({ trigger: rail, start: 'top bottom', end: 'bottom top', onToggle: self => { visible.screen = self.isActive; if (!self.isActive) state.tap = false; update() } })
+    const onScreen = ScrollTrigger.create({ trigger: triggerFor(rail), start: 'top bottom', end: 'bottom top', onToggle: self => { visible.screen = self.isActive; if (!self.isActive) state.tap = false; update() } })
     visible.screen = onScreen.isActive
     update()
     return () => {

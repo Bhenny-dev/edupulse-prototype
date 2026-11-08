@@ -6,11 +6,24 @@ This section points to the walkthrough screenshots rather than repeating them.
 
 ## Sign in
 
-1. Open EduPulse. The landing page always starts with an opening that shows the EduPulse name; scroll to reach the hero. Click **Sign In** in the top bar or **Get started** in the hero; both scroll to the sign-in panel. The landing page's other sections (**Why EduPulse**, **Features**, **How It Works**, **Roles**, **Impact**, **Colleges**, **FAQ**) explain the system first; on a phone they are under the ☰ menu. With the keyboard, the first Tab stop is **Skip to main content**, which moves past the navigation and the hero. See the [landing page walkthrough](../../system-walkthrough/01-public-site/README.md).
+1. Open EduPulse. The home page always starts with an opening that shows the EduPulse name; scroll to reach the hero. Click **Sign In** in the top bar or **Get started** in the hero; both scroll to the sign-in panel. **Sign In** on any other public page brings you to the same panel on the home page. With the keyboard, the first Tab stop is **Skip to main content**, which moves past the navigation and the hero. See the [public site walkthrough](../../system-walkthrough/01-public-site/README.md).
 2. Enter the email and password of the account your system admin created, then click **Sign In**. The system admin uses **Sign in with Google**. Your assigned role (Dean, Associate Dean, instructor or student) decides which pages you see. An account without a role cannot sign in.
 3. In the local development app only, **Quick preview access** opens the system as **System Admin**, **Dean**, **Assoc. Dean**, **Instructor** or **Student** with sample data. Preview work is kept on this device only. The hosted site does not offer preview access.
 
 See: [sign-in panel](../../system-walkthrough/01-public-site/13-sign-in-panel.png) and [preview personas](../../system-walkthrough/01-public-site/14-preview-personas.png).
+
+## Explore the public pages
+
+Before signing in, the top bar lists eight pages: **Features**, **How It Works**, **Roles**, **Pulse**, **Impact**, **Colleges**, **Play** and **FAQ**. Each opens on a themed classroom in 3D; on a phone the pages are under the ☰ menu.
+
+| To… | Do this | Screenshot |
+| --- | --- | --- |
+| Open a page | Click its name in the top bar; the EduPulse name returns to the home page | [Features page](../../system-walkthrough/01-public-site/30-page-features.png) |
+| See what something in the room stands for | Click its label in the room (on a phone, the chips under the room); the card at the lower left of the room (below it on a phone) shows it in a few words | [Roles page](../../system-walkthrough/01-public-site/32-page-roles.png) |
+| Jump to a part of the page | Click the round button in the bottom right corner, then a part; **Back to top** returns to the room. On the home page the same button lists the rooms of the school | [Speed dial on a page](../../system-walkthrough/01-public-site/41-page-dial.png) |
+| Stop the rooms moving | Open the round button and choose **Pause room motion**; **Play room motion** resumes it | [Speed dial on a page](../../system-walkthrough/01-public-site/41-page-dial.png) |
+| Switch day and night | Click the sun and moon switch beside **Sign In**. It is the same setting as **Settings → Appearance → Dark Mode**, so the choice stays after signing in | [Night](../../system-walkthrough/01-public-site/42-night-page-features.png) |
+| Play a game | Open **Play**, pick **Guardian Gate**, **Agent Match** or **Quick Quiz** in the room, then click **Play** on its card (or scroll down to the game); each game keeps a score and offers **Play again** at the end | [Guardian Gate](../../system-walkthrough/01-public-site/40-page-play-gate.png) |
 
 ## Find your way around
 
@@ -43,5 +56,3 @@ See: [Settings tabs](../../system-walkthrough/02-shared-interface/README.md#1014
 Pulse, the character at the lower right, is the AI assistant on every page. Click it to ask, draft, compare or find references ([manual 5](../05-ask-pulse/README.md), [6](../06-compare-and-references/README.md)); drag it onto any part of a page for help with exactly that part ([manual 7](../07-pulse-guidance/README.md)).
 
 Unique page destinations stay in the main navigation: **Records** for Dean/Associate Dean and **Assessments** for students. Mobile users find the same links under **Open menu**. Page tabs provide subviews without duplicate left navigation.
-
-**Sign Out** clears the device connection but retains encrypted AI provider connections under the same account. Use **Disconnect provider** in **AI & Knowledge** to remove a saved provider. See [loading and saved connections](../19-loading-and-saved-connections/README.md).

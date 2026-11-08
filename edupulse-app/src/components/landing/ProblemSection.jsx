@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react'
 import { ShieldCheck, FileText, Layers, Send, Eye, ChartColumn } from 'lucide-react'
 import { gsap, ScrollTrigger, useMotion } from './motion'
+import { isWorld, triggerFor } from './classroom/mode'
 
 const ICONS = { syllabus: FileText, materials: Layers, delivery: Send, oversight: Eye, performance: ChartColumn }
 
@@ -18,15 +19,15 @@ export default function ProblemSection({ rows }) {
     const q = gsap.utils.selector(ref)
     setView('today')
     const turn = ScrollTrigger.create({
-      trigger: q('.why-cards')[0], start: 'top 50%', once: true,
+      trigger: triggerFor(q('.why-cards')[0]), start: isWorld() ? 'top 12%' : 'top 50%', once: true,
       onEnter: () => gsap.delayedCall(0.3, () => setView('next')),
     })
     return () => { turn.kill(); setView('next') }
   })
 
   return (
-    <section id="problem" className="lp-section why" ref={ref} aria-labelledby="why-title">
-      <div className="lp-wrap">
+    <section id="problem" className="lp-section why room" data-room="problem" ref={ref} aria-labelledby="why-title">
+      <div className="room-view"><div className="lp-wrap why-board">
         <header className="lp-head why-head">
           <h2 id="why-title" data-split>Why EduPulse</h2>
           <p className="why-statement">Every lesson should follow the approved syllabus. Today, the pieces drift apart.</p>
@@ -61,7 +62,7 @@ export default function ProblemSection({ rows }) {
           })}
         </ul>
         <p className="why-note"><ShieldCheck size={20} aria-hidden="true" /> AI drafts. Instructors review and approve every item.</p>
-      </div>
+      </div></div>
     </section>
   )
 }

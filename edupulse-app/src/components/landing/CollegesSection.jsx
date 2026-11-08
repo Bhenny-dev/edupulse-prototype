@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import { GraduationCap } from 'lucide-react'
 import { gsap, useMotion, EASE, ENTER } from './motion'
+import { triggerFor } from './classroom/mode'
 
 const ARCS = [0.62, 0.48, 0.8] // drawn length of each arc around the seal (matches landing.css)
 
@@ -12,14 +13,14 @@ export default function CollegesSection({ cit, planned }) {
   useMotion(ref, ({ motion }) => {
     if (!motion) return
     const q = gsap.utils.selector(ref)
-    gsap.timeline({ scrollTrigger: { trigger: q('.cit-feature')[0], start: ENTER, once: true } })
+    gsap.timeline({ scrollTrigger: { trigger: triggerFor(q('.cit-feature')[0]), start: ENTER, once: true } })
       .from(q('.cit-arc'), { strokeDashoffset: i => ARCS[i], duration: 1, ease: 'power3.inOut', stagger: 0.1 })
       .from(q('.cit-seal img'), { opacity: 0, scale: 0.9, duration: 0.7, ease: EASE }, 0.15)
   })
 
   return (
-    <section id="colleges" className="lp-section colleges" ref={ref} aria-labelledby="colleges-title">
-      <div className="lp-wrap">
+    <section id="colleges" className="lp-section colleges room" data-room="colleges" ref={ref} aria-labelledby="colleges-title">
+      <div className="room-view"><div className="lp-wrap colleges-board">
         <header className="lp-head">
           <p className="lp-label">Colleges</p>
           <h2 id="colleges-title" data-split>Built for the CIT first</h2>
@@ -52,7 +53,7 @@ export default function CollegesSection({ cit, planned }) {
             </li>
           ))}
         </ul>
-      </div>
+      </div></div>
     </section>
   )
 }

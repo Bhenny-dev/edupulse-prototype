@@ -19,10 +19,15 @@ import LandingFooter from '../components/landing/LandingFooter'
 import { gsap, ScrollTrigger, MEDIA, revealHeadings } from '../components/landing/motion'
 import { decideOpening, trackLandingScroll, leaveLanding, takeReturnY } from '../components/landing/intro'
 import { setupArrivals } from '../components/landing/arrivals'
+import { decideMode, fullQuery } from '../components/landing/classroom/mode'
+import { createStage, createLiteStage } from '../components/landing/classroom/stage'
+import RoomDial from '../components/landing/RoomDial'
+import kcpBuilding from '../assets/kcp/kcp-building.webp'
 import { SECTION_IDS, OPENING_TRIGGER, scrollToId } from '../components/landing/navigation'
 import { PROBLEM, CHAPTERS, PHASES, ROLES, PRINCIPLES, AGENTS, WORKSPACE_TALK, EVIDENCE, GOALS, FAQ, COMMUNITY_ALT } from '../components/landing/content'
 import { KCP, COLLEGES } from '../data/colleges'
 import '../components/landing/landing.css'
+import '../components/landing/classroom.css'
 
 // Photographs from kcp.edu.ph (College of Information Technology page).
 const COMMUNITY = Object.entries(import.meta.glob('../assets/kcp/cit-community-*.webp', { eager: true, import: 'default' }))
@@ -34,6 +39,9 @@ export default function Landing() {
   const root = useRef(null)
   const { search } = useLocation()
   const navigationType = useNavigationType()
+  const canvas = useRef(null), wash = useRef(null)
+  // Decided before the sections' own effects run, which read it through classroom/mode.js.
+  const [mode] = useState(() => decideMode())
   const [opening] = useState(() => decideOpening(search))
   const [arrival] = useState(() => ({ section: new URLSearchParams(search).get('section'), navigationType }))
 
@@ -42,9 +50,26 @@ export default function Landing() {
   // in place. Neither runs with reduced motion.
   useLayoutEffect(() => {
     const mm = gsap.matchMedia()
-    mm.add(MEDIA.motion, () => revealHeadings(root.current), root)
-    mm.add(MEDIA.motion, () => setupArrivals(root.current))
+    if (mode !== 'full') {
+      mm.add(MEDIA.motion, () => revealHeadings(root.current), root)
+      mm.add(MEDIA.motion, () => setupArrivals(root.current))
+    }
     return () => mm.revert()
+  }, [mode])
+
+  // The walk through the 3D school: laid on its surfaces on large screens, behind the content on
+  // small ones. Crossing the size or motion breakpoint reloads the page in the mode that now fits.
+  useLayoutEffect(() => {
+    if (mode === 'flat') return undefined
+    const start = mode === 'full' ? createStage : createLiteStage
+    return start({ root: root.current, canvas: canvas.current, wash: wash.current, buildingUrl: kcpBuilding, onFail: () => window.location.reload() })
+  }, [mode])
+  useLayoutEffect(() => {
+    const queries = [window.matchMedia(fullQuery), window.matchMedia('(prefers-reduced-motion: reduce)')]
+    const start = queries.map(query => query.matches)
+    const onChange = () => { if (queries.some((query, i) => query.matches !== start[i])) window.location.reload() }
+    queries.forEach(query => query.addEventListener?.('change', onChange))
+    return () => queries.forEach(query => query.removeEventListener?.('change', onChange))
   }, [])
 
   // Where the page starts: a direct section link (#/?section=faq), the place a reader left
@@ -74,9 +99,12 @@ export default function Landing() {
   }, [arrival])
 
   return (
-    <div className="landing-page" ref={root}>
+    <div className={`landing-page ${mode === 'full' ? 'is-world' : `is-${mode}`}`} ref={root}>
       <SkipToContent />
+      {mode !== 'flat' && <canvas ref={canvas} className="world-canvas" aria-hidden="true" />}
       <LandingNav />
+      <RoomDial />
+      {mode === 'full' && <div ref={wash} className="world-wash" aria-hidden="true" />}
       <Opening prelude={opening} />
 
       {/* "Skip to main content" moves focus here, past the navigation and the hero. */}
@@ -85,15 +113,15 @@ export default function Landing() {
         <FeatureStage chapters={CHAPTERS} />
         <PhaseFlow phases={PHASES} />
 
-        <section id="roles" className="lp-section roles-section" aria-labelledby="roles-title">
-          <div className="lp-wrap">
+        <section id="roles" className="lp-section roles-section room" data-room="roles" aria-labelledby="roles-title">
+          <div className="room-view"><div className="lp-wrap roles-board">
             <header className="lp-head">
               <p className="lp-label">Roles</p>
               <h2 id="roles-title" data-split>Five roles, one platform</h2>
               <p>One role per account. Each sees only its own pages.</p>
             </header>
             <RoleExplorer roles={ROLES} />
-          </div>
+          </div></div>
         </section>
 
         <PulseSection principles={PRINCIPLES} />
@@ -102,8 +130,8 @@ export default function Landing() {
         <ImpactSection evidence={EVIDENCE} goals={GOALS} />
         <CollegesSection cit={CIT} planned={PLANNED} />
 
-        <section id="campus" className="lp-section campus" aria-labelledby="campus-title">
-          <div className="lp-wrap">
+        <section id="campus" className="lp-section campus room" data-room="campus" aria-labelledby="campus-title">
+          <div className="room-view"><div className="campus-board"><div className="lp-wrap">
             <header className="lp-head">
               <p className="lp-label">Our community</p>
               <h2 id="campus-title" data-split>Made for the people of the CIT</h2>
@@ -111,6 +139,7 @@ export default function Landing() {
             </header>
           </div>
           <PhotoRail photos={COMMUNITY} credit="Photos: King's College of the Philippines (kcp.edu.ph)" />
+          </div></div>
         </section>
 
         <FaqSection items={FAQ} />

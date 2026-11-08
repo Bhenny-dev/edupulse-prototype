@@ -122,7 +122,8 @@ export function createWorkspaceScene({ canvas, stage, cast = [], labels = {}, bu
   scene.environmentIntensity = 0.36
 
   const camera = new THREE.PerspectiveCamera(FOV, 1, 0.1, 160)
-  scene.add(new THREE.HemisphereLight(0xfff6ea, 0xd6bd9a, 0.62))
+  const hemi = new THREE.HemisphereLight(0xfff6ea, 0xd6bd9a, 0.62)
+  scene.add(hemi)
   const sun = new THREE.DirectionalLight(0xffe6c4, 3.2)
   sun.position.set(-4.5, 11, 7.5)
   sun.castShadow = true
@@ -1204,7 +1205,7 @@ export function createWorkspaceScene({ canvas, stage, cast = [], labels = {}, bu
       }
       for (const { crown, phase } of sways) crown.rotation.z = Math.sin(clock * 0.9 + phase) * 0.03
       for (const { body, tail } of cats) { body.scale.y = 0.62 + Math.sin(clock * 1.4) * 0.025; tail.rotation.z = Math.sin(clock * 0.8) * 0.22 }
-      M.fairy.emissiveIntensity = 1.4 + Math.sin(clock * 2.2) * 0.4
+      M.fairy.emissiveIntensity = (night ? 2.8 : 1.4) + Math.sin(clock * 2.2) * 0.4
       M.fairyAlt.emissiveIntensity = 1.2 + Math.sin(clock * 2.2 + 2) * 0.4
       const positions = dustGeometry.attributes.position
       for (let i = 0; i < dustCount; i++) {
@@ -1216,7 +1217,7 @@ export function createWorkspaceScene({ canvas, stage, cast = [], labels = {}, bu
       positions.needsUpdate = true
       screenTexture.offset.y = (screenTexture.offset.y + dt * 0.035) % 1
       clockTime += dt
-      M.shaft.opacity = 0.28 + Math.sin(clock * 0.5) * 0.05
+      M.shaft.opacity = (0.28 + Math.sin(clock * 0.5) * 0.05) * (night ? 0.75 : 1)
       active = true
     }
     minuteHand.rotation.z = -((clockTime % 3600) / 3600) * Math.PI * 2
@@ -1361,6 +1362,44 @@ export function createWorkspaceScene({ canvas, stage, cast = [], labels = {}, bu
     wake()
   }
 
+  // Night (the landing page's dark mode): moonlight through the windows instead of sun, the night
+  // sky in them, and the lamps lit, a warm pool under the lounge lamp and the bench pendant.
+  const skyNight = paint(128, 128, (g, w, h) => {
+    const fade = g.createLinearGradient(0, 0, 0, h)
+    fade.addColorStop(0, '#0a1533')
+    fade.addColorStop(1, '#2a3c6e')
+    g.fillStyle = fade
+    g.fillRect(0, 0, w, h)
+    g.fillStyle = 'rgba(255, 255, 255, 0.9)'
+    for (let i = 0; i < 26; i++) { g.beginPath(); g.arc((i * 47.3) % w, (i * 29.7) % (h - 30), i % 5 ? 0.8 : 1.5, 0, Math.PI * 2); g.fill() }
+    g.fillStyle = '#fff4d6'
+    g.beginPath(); g.arc(96, 30, 11, 0, Math.PI * 2); g.fill()
+    g.fillStyle = '#2b4636'
+    g.fillRect(0, h - 18, w, 18)
+  })
+  const nightLights = [[-1.05, 1.5, -1.1, 7], [0.55, 2.05, 3.5, 6]].map(([x, y, z, reach]) => {
+    const light = new THREE.PointLight(0xffc98a, 0, reach, 1.6)
+    light.position.set(x, y, z)
+    scene.add(light)
+    return light
+  })
+  let night = false
+  function setNight(value) {
+    night = Boolean(value)
+    hemi.color.set(night ? 0x8193c9 : 0xfff6ea)
+    hemi.groundColor.set(night ? 0x2a2433 : 0xd6bd9a)
+    hemi.intensity = night ? 0.42 : 0.62
+    sun.color.set(night ? 0xc4d6ff : 0xffe6c4)
+    sun.intensity = night ? 1.6 : 3.2
+    scene.environmentIntensity = night ? 0.12 : 0.36
+    M.sky.emissiveMap = night ? skyNight : skyTexture
+    M.sky.emissiveIntensity = night ? 0.8 : 0.9
+    M.lampGlow.emissiveIntensity = night ? 3.2 : 1.4
+    M.shaft.color.set(night ? 0x9db6ff : 0xffffff)
+    for (const light of nightLights) light.intensity = night ? 5 : 0
+    wake()
+  }
+
   const seen = new IntersectionObserver(([entry]) => { onScreen = entry.isIntersecting; if (onScreen) wake(); else update() })
   const sizes = new ResizeObserver(layout)
   const onVisibility = () => update()
@@ -1417,5 +1456,5 @@ export function createWorkspaceScene({ canvas, stage, cast = [], labels = {}, bu
     onReady?.()
   })
 
-  return { focus, speak, arrive, travel, setCrew, clearRoute, reveal, setStill, dispose }
+  return { focus, speak, arrive, travel, setCrew, clearRoute, reveal, setStill, setNight, dispose }
 }

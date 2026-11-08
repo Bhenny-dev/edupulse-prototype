@@ -165,7 +165,8 @@ export default function Opening({ prelude }) {
       import('./scene/landingScene.js').then(({ createLandingScene }) => {
         if (cancelled || prefersReducedMotion()) return
         api = createLandingScene({ canvas: canvas.current, anchor: ring.current, inputs: inputs.current, onReady: () => root.classList.add('has-scene'), onLost: fail })
-        if (!api) fail()
+        if (!api) { fail(); return }
+        api.setNight(document.documentElement.classList.contains('dark-mode'))
       }).catch(fail)
     }
     const idle = prelude ? { id: window.setTimeout(start, 0) }
@@ -173,8 +174,12 @@ export default function Opening({ prelude }) {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)')
     const onReduce = () => { if (reduce.matches && api) { api.dispose(); api = null; root.classList.remove('has-scene') } }
     reduce.addEventListener?.('change', onReduce)
+    // Night follows the app's dark mode (a class on the root element).
+    const night = new MutationObserver(() => api?.setNight(document.documentElement.classList.contains('dark-mode')))
+    night.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
     return () => {
       cancelled = true
+      night.disconnect()
       if (idle.idle) window.cancelIdleCallback(idle.id)
       else window.clearTimeout(idle.id)
       reduce.removeEventListener?.('change', onReduce)

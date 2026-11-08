@@ -11,10 +11,10 @@ test('mobile landing page', async ({ page }) => {
   await page.goto('/')
   await shot(page, '01-landing')
   await page.getByRole('button', { name: 'Open menu', exact: true }).click()
-  await expect(page.getByRole('navigation', { name: 'Landing page sections menu' })).toBeVisible()
+  await expect(page.getByRole('navigation', { name: 'Pages menu' })).toBeVisible()
   await shot(page, '07-landing-menu')
   await page.getByRole('button', { name: 'Close menu', exact: true }).click()
-  await expect(page.getByRole('navigation', { name: 'Landing page sections menu' })).toHaveCount(0)
+  await expect(page.getByRole('navigation', { name: 'Pages menu' })).toHaveCount(0)
 })
 
 test('mobile walkthrough', async ({ page }) => {

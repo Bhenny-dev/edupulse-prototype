@@ -23,8 +23,8 @@ export default function SignInSection({ photo, emblem }) {
   })
 
   return (
-    <section id="login" className="lp-section signin is-mist" ref={ref} aria-labelledby="signin-title">
-      <div className="lp-wrap">
+    <section id="login" className="lp-section signin is-mist room" data-room="login" ref={ref} aria-labelledby="signin-title">
+      <div className="room-view"><div className="lp-wrap signin-wrap">
         <div className="signin-frame">
           <figure className="signin-visual">
             <img src={photo} alt="" loading="lazy" decoding="async" width="720" height="480" />
@@ -44,7 +44,7 @@ export default function SignInSection({ photo, emblem }) {
             <LoginPanel />
           </div>
         </div>
-      </div>
+      </div></div>
     </section>
   )
 }

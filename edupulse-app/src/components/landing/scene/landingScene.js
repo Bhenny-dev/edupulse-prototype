@@ -80,7 +80,8 @@ export function createLandingScene({ canvas, anchor, inputs, onReady, onLost }) 
 
   const camera = new THREE.PerspectiveCamera(FOV, 1, 0.1, 80)
   camera.position.set(0, 0, START_Z)
-  scene.add(new THREE.HemisphereLight(0xffffff, 0xdbeafe, 1.25))
+  const hemi = new THREE.HemisphereLight(0xffffff, 0xdbeafe, 1.25)
+  scene.add(hemi)
   const key = new THREE.DirectionalLight(0xffffff, 2.1)
   key.position.set(3, 5, 6)
   const fill = new THREE.DirectionalLight(0xffffff, 0.7)
@@ -324,6 +325,25 @@ export function createLandingScene({ canvas, anchor, inputs, onReady, onLost }) 
   const onLoad = () => layout()
   const onContextLost = event => { event.preventDefault(); dispose(); onLost?.() }
 
+  // Night (dark mode): the pale rays and shards take the blues of a night sky; the strong blues keep
+  // their colour so the shapes still sparkle.
+  const NIGHT = new THREE.Color(0.12, 0.16, 0.3)
+  function setNight(night) {
+    scene.traverse(object => {
+      const material = object.material
+      if (!material?.isMeshStandardMaterial) return
+      const day = material.userData.day ??= { color: material.color.clone(), emissive: material.emissive.clone() }
+      if (day.color.getHSL({ h: 0, s: 0, l: 0 }).l < 0.85) return
+      material.color.copy(day.color)
+      material.emissive.copy(day.emissive)
+      if (night) { material.color.multiply(NIGHT); material.emissive.multiply(NIGHT) }
+    })
+    hemi.color.set(night ? 0xa9bbff : 0xffffff)
+    hemi.groundColor.set(night ? 0x0f1830 : 0xdbeafe)
+    key.intensity = night ? 1.3 : 2.1
+    rim.color.set(night ? 0x6f8fe0 : 0xbfdbfe)
+  }
+
   function dispose() {
     if (disposed) return
     disposed = true
@@ -367,5 +387,5 @@ export function createLandingScene({ canvas, anchor, inputs, onReady, onLost }) 
     update()
     onReady?.()
   })
-  return { dispose }
+  return { setNight, dispose }
 }

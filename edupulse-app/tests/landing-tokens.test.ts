@@ -68,3 +68,16 @@ test('decorative tokens are never used as a text colour', () => {
   const textRules = [...landing.matchAll(/([^{}]+)\{([^}]*)\}/g)].filter(([, , body]) => /(^|[;\s])color:\s*var\(--lp-(line|ice-soft|blue-soft)\)/.test(body))
   assert.deepEqual(textRules.map(([, selector]) => selector.trim()), [])
 })
+
+test('the classroom theme keeps its text readable on paper, cream, butter and the blackboard', () => {
+  const classroom = block(readFileSync('src/components/landing/classroom.css', 'utf8'), '.landing-page')
+  const all = { ...vars, ...classroom }
+  const pairs = [
+    ...['--cr-ink', '--cr-soft', '--lp-blue-deep'].flatMap(fg => ['--cr-paper', '--cr-cream', '--cr-butter', '--cr-sky'].map(bg => [fg, bg])),
+    ['--cr-chalk', '--cr-board'], ['--cr-chalk-dim', '--cr-board'], ['--cr-chalk-yellow', '--cr-board'],
+  ]
+  for (const [fg, bg] of pairs) {
+    const ratio = contrast(color(all, fg), color(all, bg))
+    assert.ok(ratio >= 4.5, `${fg} on ${bg}: ${ratio.toFixed(2)}:1`)
+  }
+})

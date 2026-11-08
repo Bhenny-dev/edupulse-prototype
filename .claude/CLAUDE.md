@@ -5,6 +5,7 @@
 - **Users:** five roles, one per account: System Admin, Dean, Associate Dean, Instructor, Student. EduSuite stays the system of record; AI output stays a draft until people approve it; Pulse never answers assessments; scores, not official grades.
 - **Data:** Supabase in production; local JSON data under `edupulse-app/.data` for development and tests.
 - **Constraints:** documentation and screenshots change in the same commit as any visible change (see `CLAUDE.md` at the repository root and `feature-documentation/DOCUMENTATION-POLICY.md`); release gate is `npm run verify` plus `npm run test:browser`; a push to `main` deploys to Vercel.
+- **Public site:** home `/` is the 3D school walk (`components/landing/classroom/`); the bar opens eight themed-room pages (`pages/public/*Page.jsx` on `components/public/RoomPage.jsx` + `room/themedRoom.js`); the round speed dial (`RoomDial`, props `stops`/`jump`) lists the current page's sections; day/night is the app's `.dark-mode` (ThemeContext), 3D scenes follow it through a MutationObserver. Automated browsers (`navigator.webdriver`) get the home page without the 3D walk so sign-in is reachable; tests of the walk set localStorage `edupulse-walk` to `on` first (`classroom/mode.js`).
 - **Machine notes:** low free memory, so run browser tests with one worker; a dev server from another session can linger on a port (check `Get-NetTCPConnection` before trusting it); in Playwright, a `#/` navigation on the same URL does not reload the page, use `page.reload()`.
 
 # AI strategy

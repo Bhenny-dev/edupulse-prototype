@@ -1,10 +1,11 @@
 import { test, expect, type Page, type Locator } from '@playwright/test'
 
 // The public landing page: the opening (on every load at the top, with no skip control; section
-// links and other routes bypass it), the hero emblem, section links clear of the fixed bar, the
-// synchronized feature stage, the six-phase connector, the agents scope, the agent workspace,
-// role tabs, FAQ, the photo rows and their pause control, sign-in, legal-page transitions and
-// history, reduced motion, missing WebGL and overflow.
+// links and other routes bypass it), the hero emblem, the walk through the 3D school on large
+// screens and the school behind ordinary scrolling on small ones, the speed dial, section links
+// clear of the fixed bar, the synchronized feature stage, the six-phase connector, the agents
+// scope, the agent workspace, role tabs, FAQ, the photo rows and their pause control, sign-in,
+// legal-page transitions and history, reduced motion, missing WebGL and overflow.
 
 // The landing page always starts with the opening; most tests begin where it ends, on the hero.
 async function afterOpening(page: Page, path = '/') {
@@ -14,21 +15,39 @@ async function afterOpening(page: Page, path = '/') {
   await page.evaluate(() => window.scrollTo(0, Math.round(window.innerHeight * 0.85) + 4))
   await expect(prelude).toHaveClass(/is-gone/)
 }
+// These tests are about the 3D school itself, so they ask for it (see classroom/mode.js).
+test.beforeEach(async ({ page }) => { await page.context().addInitScript(() => localStorage.setItem('edupulse-walk', 'on')) })
+
 const mobileProject = (name: string) => name === 'mobile'
 
-async function openSection(page: Page, mobile: boolean, name: string) {
-  if (mobile) await page.getByRole('button', { name: 'Open menu', exact: true }).click()
-  const nav = page.getByRole('navigation', { name: mobile ? 'Landing page sections menu' : 'Landing page sections', exact: true })
-  await nav.getByRole('link', { name, exact: true }).click()
-  if (mobile) await expect(page.getByRole('navigation', { name: 'Landing page sections menu' })).toHaveCount(0)
+// The bar lists the pages; a section of the home page is reached with the speed dial.
+const DIAL: Record<string, string> = { 'Why EduPulse': 'Bulletin board', Features: 'Blackboard', 'How It Works': 'Class seats', Roles: 'Classmates', Impact: 'Gallery', Colleges: 'Front stage', FAQ: 'Notebook' }
+async function openSection(page: Page, _mobile: boolean, name: string) {
+  const main = page.getByRole('button', { name: /speed dial/ })
+  await expect(main).toBeVisible()
+  await main.click()
+  await page.getByRole('navigation', { name: 'Jump to a room' }).getByRole('link', { name: DIAL[name], exact: true }).click()
+  await expect(page.getByRole('navigation', { name: 'Jump to a room' })).toHaveCount(0)
 }
-// After a section link, the section starts right under the fixed bar (not behind it).
+// After a section link the section starts right under the fixed bar (not behind it). On the walk its
+// room is at rest instead: the sheet is on the screen, usable, and its content clear of the bar.
 async function expectBelowBar(page: Page, section: Locator) {
   const id = await section.getAttribute('id')
-  await expect.poll(async () => {
-    const [top, bar] = await Promise.all([section.evaluate(element => element.getBoundingClientRect().top), page.locator('.lp-nav').evaluate(element => element.getBoundingClientRect().bottom)])
-    return Math.round(Math.abs(top - bar))
-  }, { timeout: 20_000, message: `#${id} should start right under the bar` }).toBeLessThanOrEqual(3)
+  await expect.poll(() => section.evaluate(element => {
+    const bar = (document.querySelector('.lp-nav') as HTMLElement).getBoundingClientRect().bottom
+    const view = element.querySelector<HTMLElement>('.room-view')
+    if (!document.querySelector('.landing-page.is-world') || !view) return Math.round(Math.abs(element.getBoundingClientRect().top - bar))
+    const atRest = view.style.opacity === '1' && view.style.pointerEvents === 'auto' && !view.style.transform.includes('matrix')
+    return atRest && Math.abs(element.getBoundingClientRect().top) <= 3 && (view.firstElementChild as HTMLElement).getBoundingClientRect().top >= bar - 1 ? 0 : 99
+  }), { timeout: 30_000, message: `#${id} should start right under the bar` }).toBeLessThanOrEqual(3)
+}
+// Brings a section to the screen: its room on the walk, its place in the page otherwise.
+async function showSection(page: Page, id: string) {
+  await page.evaluate(id => {
+    const element = document.getElementById(id) as HTMLElement
+    const top = element.getBoundingClientRect().top + window.scrollY
+    window.scrollTo(0, document.querySelector('.landing-page.is-world') ? top + 1 : top - 80)
+  }, id)
 }
 
 // The previous smooth scroll has finished (two frames apart at the same position).
@@ -37,6 +56,7 @@ async function scrollAtRest(page: Page) {
 }
 
 test('a fresh visit opens on the logo and name; scrolling opens the aperture into the hero and back', async ({ page }) => {
+  test.setTimeout(90_000)
   await page.goto('/')
   const prelude = page.locator('.lp-prelude')
   await expect(prelude).toBeVisible()
@@ -125,7 +145,7 @@ test('the opening plays on every load at the top, a reload included; section lin
   await expect(legal.locator('.lp-prelude')).toHaveCount(0)
 })
 
-test('header links reach their sections below the bar; role tabs and the FAQ work; no horizontal overflow', async ({ page }, info) => {
+test('speed dial stops reach their sections below the bar; role tabs and the FAQ work; no horizontal overflow', async ({ page }, info) => {
   test.setTimeout(90_000) // the development server compiles the page on the first visit
   const mobile = mobileProject(info.project.name)
   await afterOpening(page)
@@ -144,7 +164,8 @@ test('header links reach their sections below the bar; role tabs and the FAQ wor
   await openSection(page, mobile, 'Roles')
   const instructor = page.getByRole('tab', { name: 'Instructor', exact: true })
   await expect(instructor).toHaveAttribute('aria-selected', 'true')
-  const panelHeight = () => page.locator('.role-panels').evaluate(element => element.getBoundingClientRect().height)
+  // Layout height: on the walk the room's sheet may still be settling, which scales its screen size.
+  const panelHeight = () => page.locator('.role-panels').evaluate(element => (element as HTMLElement).offsetHeight)
   const height = await panelHeight()
   await instructor.focus()
   await page.keyboard.press('ArrowDown')
@@ -172,17 +193,20 @@ test('header links reach their sections below the bar; role tabs and the FAQ wor
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1)).toBe(true)
 })
 
-test('footer links reach their sections and the legal pages', async ({ page }) => {
+test('the bar and the footer open the pages; the footer keeps the legal pages', async ({ page }, info) => {
   test.setTimeout(90_000)
+  const mobile = mobileProject(info.project.name)
   await afterOpening(page)
-  await page.evaluate(() => document.fonts.ready)
-  const footer = page.getByRole('navigation', { name: 'Footer: page sections' })
-  for (const [name, id] of [['Impact', 'impact'], ['How It Works', 'flow'], ['Why EduPulse', 'problem']]) {
-    await scrollAtRest(page)
-    await footer.getByRole('link', { name, exact: true }).click()
-    await expectBelowBar(page, page.locator(`#${id}`))
-  }
+  const pages = ['Features', 'How It Works', 'Roles', 'Pulse', 'Impact', 'Colleges', 'Play', 'FAQ']
+  if (mobile) await page.getByRole('button', { name: 'Open menu', exact: true }).click()
+  await expect(page.getByRole('navigation', { name: mobile ? 'Pages menu' : 'Pages', exact: true }).getByRole('link')).toHaveText(pages)
+  if (mobile) await page.getByRole('button', { name: 'Close menu', exact: true }).click()
+  const footer = page.getByRole('navigation', { name: 'Footer: pages' })
+  await expect(footer.getByRole('link')).toHaveText(pages)
   await expect(page.getByRole('navigation', { name: 'Footer: legal' }).getByRole('link')).toHaveText(['Privacy', 'Terms'])
+  await footer.getByRole('link', { name: 'Impact', exact: true }).click()
+  await expect(page).toHaveURL(/#\/impact$/)
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Then, now, and why.')
 })
 
 test('the four feature steps stay in step forwards, backwards and under rapid scrolling', async ({ page }, info) => {
@@ -195,6 +219,8 @@ test('the four feature steps stay in step forwards, backwards and under rapid sc
   const screens = ['Records page', 'Syllabus Builder', 'My Courseware list', 'My Performance page']
   expect(titles).toHaveLength(4)
   const range = await section.evaluate(element => {
+    const hold = Number((element as HTMLElement).dataset.holdPx)
+    if (hold) return { start: element.getBoundingClientRect().top + window.scrollY, distance: hold }
     const spacer = element.querySelector('.pin-spacer') as HTMLElement
     const stage = element.querySelector('.fs-stage') as HTMLElement
     const bar = (document.querySelector('.lp-nav') as HTMLElement).offsetHeight
@@ -305,6 +331,7 @@ test('with reduced motion the workspace is one screen and a button answers at on
 })
 
 test('the six phases draw their connector; every phase keeps its AI and People duties', async ({ page }) => {
+  test.setTimeout(90_000)
   await afterOpening(page)
   const flow = page.locator('#flow')
   await expect(flow).toHaveClass(/is-live/)
@@ -327,7 +354,8 @@ test('the photographs drift; the pause control, hover, focus and a tap stop them
   await afterOpening(page)
   const rail = page.getByRole('region', { name: 'CIT community photographs' })
   const track = page.locator('.photo-track').first()
-  await track.scrollIntoViewIfNeeded()
+  await showSection(page, 'campus')
+  await expect(track).toBeInViewport({ timeout: 15_000 })
   await expect(rail).toHaveAttribute('data-paused', 'false')
   const x = () => track.evaluate(element => new DOMMatrix(getComputedStyle(element).transform).m41)
   const stopsMoving = async () => { await page.waitForTimeout(1600); const held = await x(); await page.waitForTimeout(800); expect(Math.abs((await x()) - held)).toBeLessThan(1) }
@@ -364,6 +392,7 @@ test('the photographs drift; the pause control, hover, focus and a tap stop them
 })
 
 test('the sign-in panel keeps its fields, hints and validation, and holds still while used', async ({ page }) => {
+  test.setTimeout(90_000)
   await afterOpening(page)
   await page.locator('.lp-nav').getByRole('link', { name: 'Sign In', exact: true }).click()
   const email = page.getByLabel('Email', { exact: true })
@@ -450,6 +479,9 @@ test('no horizontal scrolling at desktop, laptop, tablet, phone and narrow phone
   // One page, resized through the widths (a resize or a turned phone must not break the layout either).
   for (const [width, height] of [[1440, 900], [1024, 768], [768, 1024], [390, 844], [360, 740]]) {
     await page.setViewportSize({ width, height })
+    // Crossing into or out of the walk's size reloads the page in the mode that now fits.
+    await page.waitForTimeout(500)
+    await page.locator('#main-content').waitFor({ state: 'attached', timeout: 60_000 })
     for (const fraction of [0, 0.3, 0.6, 1]) {
       await page.evaluate(f => window.scrollTo(0, document.documentElement.scrollHeight * f), fraction)
       await page.waitForTimeout(200)
@@ -464,6 +496,8 @@ test('with reduced motion there is no opening and every section is complete and 
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
   await expect(page.locator('.lp-prelude')).toHaveCount(0)
   await expect(page.locator('.pin-spacer')).toHaveCount(0)
+  await expect(page.locator('.landing-page')).toHaveClass(/is-flat/)
+  await expect(page.locator('.world-canvas')).toHaveCount(0)
   await expect(page.locator('#features')).not.toHaveClass(/is-live/)
   await expect(page.locator('#flow')).not.toHaveClass(/is-live/)
   await expect(page.locator('.split-line')).toHaveCount(0)
@@ -479,10 +513,12 @@ test('with reduced motion there is no opening and every section is complete and 
   await expect(page.locator('.hero-seal img')).toHaveCount(2)
 })
 
-test('arriving cards ease in from a side and leave no styles once in place, in both directions', async ({ page }, info) => {
+test('on a small screen arriving cards ease in from a side and leave no styles once in place, in both directions', async ({ page }, info) => {
   test.skip(mobileProject(info.project.name), 'the same arrivals run on phones; one width is enough here')
-  test.setTimeout(90_000)
+  test.setTimeout(150_000)
+  await page.setViewportSize({ width: 768, height: 1024 })
   await afterOpening(page)
+  await expect(page.locator('.landing-page')).toHaveClass(/is-lite/)
   expect(await page.locator('[data-arrival]').count()).toBeGreaterThan(20)
   // Places a block's centre at a share of the viewport's height (1.3 is below the screen, 0.5 is its middle).
   const place = (selector: string, share: number) => page.evaluate(([selector, share]) => {
@@ -518,7 +554,113 @@ test('arriving cards ease in from a side and leave no styles once in place, in b
   await expect(page.locator('#problem .why-card').first()).toHaveAttribute('data-arriving', '')
 })
 
+test('on a large screen the page walks through the 3D school and each room rests square on its surface', async ({ page }, info) => {
+  test.skip(mobileProject(info.project.name), 'small screens scroll ordinary content over the school')
+  test.setTimeout(180_000)
+  await afterOpening(page)
+  await expect(page.locator('.landing-page')).toHaveClass(/is-world/)
+  const canvas = page.locator('.world-canvas')
+  await expect(canvas).toHaveClass(/is-ready/, { timeout: 60_000 })
+  await expect(canvas).toHaveAttribute('aria-hidden', 'true')
+  const sheet = (id: string) => page.locator(`#${id} .room-view`)
+  const transform = (id: string) => sheet(id).evaluate(element => (element as HTMLElement).style.transform)
+  for (const id of ['problem', 'features', 'flow', 'roles', 'ai', 'impact', 'colleges', 'campus', 'faq', 'login']) {
+    await showSection(page, id)
+    // At rest the page is plain HTML at its own size: sharp, selectable and usable (a room taller
+    // than the screen only pans up with the scroll).
+    await expect.poll(() => transform(id), { timeout: 30_000 }).toMatch(/^translate3d\(0px, -?\d+(\.\d+)?px, 0px\)$/)
+    await expect(sheet(id)).toHaveCSS('opacity', '1')
+    await expect(sheet(id)).toHaveCSS('pointer-events', 'auto')
+    await expect(sheet(id).locator('h2').first()).toBeInViewport()
+    // The school is drawn behind it, and only this room's sheet is on the screen.
+    expect(await page.locator('.room-view').evaluateAll(views => views.filter(view => (view as HTMLElement).style.opacity !== '0').length)).toBe(1)
+  }
+  // On the way from one room to the next the sheet stays laid on its surface, and cannot be clicked.
+  const flight = await page.evaluate(() => {
+    const room = document.getElementById('problem') as HTMLElement
+    const y = room.getBoundingClientRect().top + window.scrollY + Number(room.dataset.holdPx) + window.innerHeight * 0.06
+    window.scrollTo(0, y)
+    return y
+  })
+  expect(flight).toBeGreaterThan(0)
+  await expect.poll(() => transform('problem'), { timeout: 30_000 }).toContain('matrix3d')
+  await expect(sheet('problem')).toHaveCSS('pointer-events', 'none')
+})
+
+test('the items of a room pop in when the walk arrives, and keyboard focus brings a room to the screen', async ({ page }, info) => {
+  test.skip(mobileProject(info.project.name), 'keyboard navigation on the walk')
+  test.setTimeout(120_000)
+  await afterOpening(page)
+  await expect(page.locator('.world-canvas')).toHaveClass(/is-ready/, { timeout: 60_000 })
+  const faq = page.locator('#faq .room-view')
+  await expect(faq).toHaveAttribute('data-waiting', '')
+  await showSection(page, 'faq')
+  await expect(faq).not.toHaveAttribute('data-waiting', { timeout: 30_000 })
+  await expect(page.locator('#faq .faq-item').first()).toHaveClass(/pop/)
+  await expect(page.locator('#faq .faq-item').first()).toHaveCSS('opacity', '1', { timeout: 15_000 })
+  // A control on a room further along, reached with the keyboard, brings that room to the screen.
+  const email = page.getByLabel('Email', { exact: true })
+  await email.focus()
+  await page.keyboard.press('Shift+Tab')
+  await page.keyboard.press('Tab')
+  await expect(email).toBeFocused()
+  await expect.poll(() => page.locator('#login .room-view').evaluate(element => (element as HTMLElement).style.pointerEvents), { timeout: 30_000 }).toBe('auto')
+  await expect(email).toBeInViewport()
+})
+
+test('on a phone the sections scroll as ordinary content with the school behind them', async ({ page }, info) => {
+  test.skip(!mobileProject(info.project.name), 'the phone layout')
+  test.setTimeout(120_000)
+  await afterOpening(page)
+  await expect(page.locator('.landing-page')).toHaveClass(/is-lite/)
+  const canvas = page.locator('.world-canvas')
+  await expect(canvas).toHaveClass(/is-ready/, { timeout: 60_000 })
+  // Nothing is laid on a surface: the content stays in the flow of the page.
+  await expect(page.locator('#faq .room-view')).toHaveCSS('position', 'static')
+  expect(await page.locator('#faq .room-view').evaluate(element => (element as HTMLElement).style.transform)).toBe('')
+  await showSection(page, 'faq')
+  await expect(page.locator('#faq h2')).toBeInViewport()
+  // Behind a room the school is drawn, unless the device proved too slow for it (software rendering
+  // here can be): then the canvas goes and the still classroom theme remains.
+  const drawn = () => canvas.evaluate(element => (getComputedStyle(element).display === 'none' ? 'stopped' : getComputedStyle(element).visibility))
+  await expect.poll(drawn, { timeout: 20_000 }).toMatch(/^(visible|stopped)$/)
+  // The agents and the workspace have their own screens, and the school rests behind them.
+  await showSection(page, 'workspace')
+  await expect.poll(drawn, { timeout: 20_000 }).toMatch(/^(hidden|stopped)$/)
+})
+
+test('the speed dial appears once the hero is reached and reaches every room and the top', async ({ page }) => {
+  test.setTimeout(150_000)
+  await page.goto('/')
+  const dial = page.locator('.room-dial')
+  await expect(dial).not.toHaveClass(/is-shown/)
+  await page.evaluate(() => window.scrollTo(0, Math.round(window.innerHeight * 0.85) + 4))
+  const main = page.getByRole('button', { name: /speed dial/ })
+  await expect(dial).toHaveClass(/is-shown/)
+  await expect(page.getByRole('navigation', { name: 'Jump to a room' })).toHaveCount(0)
+  await main.click()
+  await expect(main).toHaveAttribute('aria-expanded', 'true')
+  const stops = page.getByRole('navigation', { name: 'Jump to a room' }).getByRole('link')
+  await expect(stops).toHaveText(['Back to top', 'Bulletin board', 'Blackboard', 'Class seats', 'Classmates', "Teacher's desk", 'Agent room', 'Gallery', 'Front stage', 'Courtyard', 'Notebook', 'The door'])
+  // The pause control for the school's idle motion (WCAG 2.2.2) lives here too.
+  await page.getByRole('button', { name: 'Pause room motion' }).click()
+  await expect(page.getByRole('button', { name: 'Play room motion' })).toBeVisible()
+  await page.getByRole('button', { name: 'Play room motion' }).click()
+  await page.keyboard.press('Escape')
+  await expect(main).toHaveAttribute('aria-expanded', 'false')
+  await expect(main).toBeFocused()
+  await main.click()
+  await page.getByRole('link', { name: 'Notebook', exact: true }).click()
+  await expect(main).toHaveAttribute('aria-expanded', 'false')
+  await expectBelowBar(page, page.locator('#faq'))
+  await main.click()
+  await page.getByRole('link', { name: 'Back to top', exact: true }).click()
+  await expect(page.getByRole('heading', { level: 1 })).toBeInViewport({ timeout: 30_000 })
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1)).toBe(true)
+})
+
 test('without WebGL the page keeps its flat emblem and the opening still works', async ({ page }) => {
+  test.setTimeout(90_000)
   await page.addInitScript(() => {
     const original = HTMLCanvasElement.prototype.getContext
     HTMLCanvasElement.prototype.getContext = function (this: HTMLCanvasElement, type: string, ...rest: unknown[]) {
@@ -534,7 +676,11 @@ test('without WebGL the page keeps its flat emblem and the opening still works',
   await page.evaluate(() => window.scrollTo(0, Math.round(window.innerHeight * 0.85) + 4))
   await expect(page.locator('.lp-prelude')).toHaveClass(/is-gone/)
   await expect(page.getByRole('heading', { level: 1 })).toBeInViewport()
-  // Without WebGL the flat emblem stays: the SVG ring around the two seal images.
+  // Without WebGL the flat emblem stays: the SVG ring around the two seal images. The classroom theme
+  // stays too, with the KCP building as a picture in place of the 3D school.
+  await expect(page.locator('.landing-page')).toHaveClass(/is-flat/)
+  await expect(page.locator('.world-canvas')).toHaveCount(0)
+  await expect(page.locator('.hero-building')).toBeVisible()
   await expect(page.locator('.pulse-ring-svg')).toBeVisible()
   await expect(page.locator('.hero-seal img')).toHaveCount(2)
   await expect(page.locator('.hero-emblem')).not.toHaveAttribute('data-drawn')

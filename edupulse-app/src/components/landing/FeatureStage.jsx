@@ -1,6 +1,7 @@
 import { useLayoutEffect, useRef, useState } from 'react'
 import { gsap, ScrollTrigger, useMotion, EASE } from './motion'
 import { glideTo } from './navigation'
+import { isWorld } from './classroom/mode'
 
 const pad = n => String(n).padStart(2, '0')
 const TRIGGER = 'lp-features'
@@ -23,9 +24,10 @@ export default function FeatureStage({ chapters }) {
     const copies = q('.fs-chapter')
     gsap.set(copies, { opacity: i => (i === shown.current ? 1 : 0) })
     ScrollTrigger.create({
-      id: TRIGGER, trigger: stage.current, pin: true, anticipatePin: 1, invalidateOnRefresh: true,
-      start: () => `top top+=${document.querySelector('.lp-nav')?.offsetHeight || 72}`,
-      end: () => `+=${Math.round((steps - 1) * window.innerHeight * 0.62)}`,
+      id: TRIGGER, invalidateOnRefresh: true,
+      ...(isWorld()
+        ? { trigger: section, start: 'top top', end: () => `+=${Math.round(Number(section.dataset.holdPx) || (steps - 1) * window.innerHeight * 0.62)}` }
+        : { trigger: stage.current, pin: true, anticipatePin: 1, start: () => `top top+=${document.querySelector('.lp-nav')?.offsetHeight || 72}`, end: () => `+=${Math.round((steps - 1) * window.innerHeight * 0.62)}` }),
       onUpdate: self => setActive(Math.min(steps - 1, Math.floor(self.progress * steps))),
     })
     return () => section.classList.remove('is-live')
@@ -62,8 +64,8 @@ export default function FeatureStage({ chapters }) {
   }
 
   return (
-    <section id="features" className="lp-section fs" ref={ref} aria-labelledby="features-title">
-      <div className="lp-wrap">
+    <section id="features" className="lp-section fs room" data-room="features" data-hold="2.1" ref={ref} aria-labelledby="features-title">
+      <div className="room-view"><div className="lp-wrap fs-board">
         <header className="lp-head">
           <p className="lp-label">Features</p>
           <h2 id="features-title" data-split>From the syllabus to every class</h2>
@@ -109,7 +111,7 @@ export default function FeatureStage({ chapters }) {
             <figcaption className="fs-caption"><strong>{chapters[active].screen}</strong> · EduPulse prototype, sample data</figcaption>
           </figure>
         </div>
-      </div>
+      </div></div>
     </section>
   )
 }

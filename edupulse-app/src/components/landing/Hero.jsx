@@ -2,6 +2,7 @@ import { ArrowRight } from 'lucide-react'
 import PulseRing from './PulseRing'
 import { scrollToId } from './navigation'
 import { KCP, COLLEGES } from '../../data/colleges'
+import kcpBuilding from '../../assets/kcp/kcp-building.webp'
 
 const CIT = COLLEGES.find(college => college.status === 'active')
 
@@ -30,6 +31,7 @@ export default function Hero({ ringRef }) {
           <span className="hero-seal" data-seal="cit"><img src={CIT.emblem} alt="" decoding="async" /></span>
         </div>
       </div>
+      <img className="hero-building" src={kcpBuilding} alt="The King's College of the Philippines building" width="2000" height="252" decoding="async" />
     </header>
   )
 }

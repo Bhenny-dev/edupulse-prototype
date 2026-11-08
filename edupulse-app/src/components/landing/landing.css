@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════
-   LANDING PAGE · white and light blue, Sora and DM Sans, geometric motion
+   LANDING PAGE · the layout of every section (classroom.css gives it the classroom look)
    This file gives the complete, still layout (reduced motion, no JavaScript motion,
    the stacked layouts on smaller screens). motion.js and the section components add
    the choreography. The public page has one light palette: its tokens do not change
@@ -27,8 +27,8 @@ html:has(.landing-page), html:has(.landing-page) body { overflow-anchor: none; }
   --lp-success: #15803d;
   --lp-ice-soft: #eaf2fe; /* decoration only */
   --lp-blue-soft: #93c5fd; /* decoration only */
-  --lp-display: 'Sora', 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
-  --lp-text: 'DM Sans', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --lp-display: 'Fredoka', 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  --lp-text: 'Nunito', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   --lp-ease: cubic-bezier(0.22, 1, 0.36, 1);
   --lp-fast: 180ms;
   --lp-base: 240ms;
@@ -146,27 +146,6 @@ html:has(.landing-page), html:has(.landing-page) body { overflow-anchor: none; }
 .nav-menu .nav-link { min-height: 52px; padding: 0; border-radius: 0; font-size: 1.125rem; font-weight: 600; color: var(--lp-ink); border-bottom: 1px solid var(--lp-line); }
 .nav-menu .nav-link:last-child { border-bottom: 0; }
 .nav-menu .nav-link.is-active { color: var(--lp-blue-deep); }
-.landing-to-top {
-  position: fixed;
-  right: 24px;
-  bottom: 24px;
-  z-index: 90;
-  width: 48px;
-  height: 48px;
-  border-radius: 14px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--lp-ink);
-  background: #ffffff;
-  border: 1px solid var(--lp-line);
-  box-shadow: var(--lp-shadow);
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(10px);
-  transition: opacity 160ms var(--lp-ease), transform 160ms var(--lp-ease);
-}
-.landing-to-top.is-shown { opacity: 1; pointer-events: auto; transform: none; transition-duration: var(--lp-base); }
 
 /* ─── Opening stage: prelude, hero and the decorative canvas ─── */
 .lp-opening { position: relative; isolation: isolate; overflow: hidden; background: var(--lp-white); }
@@ -444,7 +423,6 @@ html:has(.landing-page), html:has(.landing-page) body { overflow-anchor: none; }
 
 /* ─── FAQ ─── */
 .faq { overflow: hidden; }
-.faq-plane { position: absolute; left: -8%; top: 0; width: 46%; height: 72%; background: linear-gradient(160deg, var(--lp-mist), var(--lp-ice)); clip-path: polygon(0 0, 100% 0, 72% 100%, 0 100%); pointer-events: none; }
 .faq-grid { position: relative; display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: clamp(32px, 6vw, 96px); align-items: start; }
 .faq .lp-head { position: sticky; top: calc(var(--nav-h) + 40px); margin-bottom: 0; }
 .faq-list { border-top: 1px solid var(--lp-line); }

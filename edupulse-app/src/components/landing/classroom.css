@@ -1,0 +1,610 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   THE CLASSROOM THEME
+   One look for the whole landing page, taken from the agent workspace: warm paper, honey oak,
+   chalkboards, toy-like round forms. The first part applies in every mode, so the still page
+   (reduced motion, no WebGL, doc captures) is the same classroom without the 3D. The second part
+   (`.is-world`) lays each section's sheet on its surface in the 3D school.
+   Text colours reach 4.5:1 on the surface they are used on (tests/landing-tokens.test.ts).
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.landing-page {
+  --cr-ink: #2b2118;
+  --cr-soft: #5d4d3c;
+  --cr-paper: #fffdf8;
+  --cr-cream: #f8f1e7;
+  --cr-butter: #fdf3d7;
+  --cr-sky: #dcebf7;
+  --cr-edge: #e6d9c5;
+  --cr-oak: #c0935a;
+  --cr-oak-deep: #7c5230;
+  --cr-board: #20383a;
+  --cr-board-edge: #16292b;
+  --cr-chalk: #f5f7f2;
+  --cr-chalk-dim: #cdd9d2;
+  --cr-chalk-yellow: #fbe59b;
+  --cr-card: inset 0 1px 0 rgb(255 255 255 / 0.9), 0 3px 0 var(--cr-edge), 0 16px 26px -16px rgb(64 44 24 / 0.42);
+  --cr-hand: 'Patrick Hand', 'Fredoka', 'Segoe Print', cursive;
+  color: var(--cr-ink);
+  background: var(--cr-cream);
+}
+html:has(.landing-page) { background: var(--cr-cream); }
+.landing-page :is(h1, h2, h3) { color: var(--cr-ink); font-weight: 600; letter-spacing: -0.005em; }
+.landing-page .lp-head h2 { font-weight: 700; letter-spacing: -0.01em; line-height: 1.1; }
+.landing-page .hero-title { font-weight: 700; letter-spacing: -0.012em; line-height: 1.04; }
+.lp-head > p:not(.lp-label) { color: var(--cr-soft); font-weight: 600; }
+.lp-label { display: inline-flex; padding: 5px 14px 5px 10px; border-radius: 999px; font-family: var(--lp-display); font-size: 0.875rem; font-weight: 600; color: var(--cr-ink); background: var(--cr-paper); box-shadow: 0 2px 0 var(--cr-edge), 0 6px 12px -8px rgb(64 44 24 / 0.5); }
+.lp-label::before { width: 10px; height: 10px; border-radius: 50%; background: var(--lp-blue); transform: none; }
+.lp-section.is-mist { background: var(--cr-cream); }
+
+/* Buttons: round, with a darker bottom edge, like the toys in the workspace. */
+.lp-button { border-radius: 16px; font-family: var(--lp-display); font-weight: 600; box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.28), 0 4px 0 #1b3f9e, 0 14px 22px -12px rgb(29 78 216 / 0.8); transition: background-color var(--lp-fast) var(--lp-ease), box-shadow 120ms var(--lp-ease), translate 120ms var(--lp-ease); }
+.lp-button:hover { translate: 0 -1px; box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.28), 0 5px 0 #1b3f9e, 0 16px 24px -12px rgb(29 78 216 / 0.8); }
+.lp-button:active { translate: 0 3px; box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.28), 0 1px 0 #1b3f9e; }
+.lp-link { font-family: var(--lp-display); font-weight: 600; }
+
+/* Navigation: a paper strip with tabs. */
+.nav-name { font-weight: 700; letter-spacing: -0.01em; }
+.nav-link { font-weight: 700; color: var(--cr-soft); }
+.nav-link:hover, .nav-link.is-active { color: var(--cr-ink); }
+.nav-mark { border-radius: 11px; }
+.lp-nav.is-solid { background: rgb(255 253 248 / 0.9); box-shadow: 0 2px 0 var(--cr-edge); }
+.nav-menu { background: var(--cr-paper); border-bottom-color: var(--cr-edge); }
+.nav-menu .nav-link { border-bottom-color: var(--cr-edge); }
+
+/* ─── The speed dial ─── */
+.room-dial { position: fixed; right: 22px; bottom: 22px; z-index: 90; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; opacity: 0; pointer-events: none; translate: 0 14px; scale: 0.8; transition: opacity 200ms var(--lp-ease), translate 320ms cubic-bezier(0.34, 1.56, 0.64, 1), scale 320ms cubic-bezier(0.34, 1.56, 0.64, 1); }
+.room-dial.is-shown { opacity: 1; pointer-events: auto; translate: 0 0; scale: 1; }
+.room-dial-main { position: relative; width: 56px; height: 56px; display: grid; place-items: center; border: 0; border-radius: 50%; cursor: pointer; color: var(--cr-ink); background: var(--cr-paper); box-shadow: 0 3px 0 var(--cr-edge), 0 14px 24px -10px rgb(64 44 24 / 0.55); transition: translate 120ms var(--lp-ease), box-shadow 120ms var(--lp-ease); }
+.room-dial-main:hover { translate: 0 -2px; }
+.room-dial-main:active { translate: 0 2px; box-shadow: 0 1px 0 var(--cr-edge); }
+.room-dial-main svg:first-child { position: absolute; inset: 0; width: 100%; height: 100%; rotate: -90deg; }
+.room-dial-track, .room-dial-fill { fill: none; stroke-width: 3.5; }
+.room-dial-track { stroke: var(--cr-edge); }
+.room-dial-fill { stroke: var(--lp-blue); stroke-linecap: round; }
+.room-dial-list { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; max-height: calc(100vh - var(--nav-h) - 110px); overflow-y: auto; padding: 4px; }
+.room-dial-list[hidden] { display: none; }
+.room-dial-stop { padding: 0; border: 0; background: none; cursor: pointer; display: flex; align-items: center; justify-content: flex-end; gap: 9px; min-height: 40px; animation: dial-pop 280ms cubic-bezier(0.34, 1.56, 0.64, 1) backwards; animation-delay: calc(var(--i) * 18ms); }
+.room-dial-stop span { padding: 4px 12px; border-radius: 999px; font-family: var(--lp-display); font-size: 0.875rem; font-weight: 600; color: var(--cr-ink); background: var(--cr-paper); box-shadow: 0 2px 0 var(--cr-edge); white-space: nowrap; }
+.room-dial-stop i { width: 38px; height: 38px; flex: none; display: grid; place-items: center; border-radius: 50%; color: #ffffff; background: var(--tint); box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.3), 0 3px 0 rgb(0 0 0 / 0.2); font-style: normal; }
+.room-dial-stop:hover span { background: var(--cr-butter); }
+@keyframes dial-pop { from { opacity: 0; translate: 18px 6px; scale: 0.7; } }
+@media (prefers-reduced-motion: reduce) { .room-dial-stop { animation: none; } .room-dial, .room-dial-main { transition: none; } }
+
+/* ─── Hero ─── */
+.lp-hero { background: linear-gradient(180deg, #cfe7f7 0%, #e5f2fa 58%, #f8f1e7 100%); }
+.lp-hero::before, .lp-hero::after { content: none; }
+.hero-lockup { font-weight: 700; color: var(--cr-soft); }
+.hero-building { display: block; position: absolute; left: 50%; bottom: 0; width: max(1100px, 118vw); max-width: none; height: auto; translate: -50% 0; pointer-events: none; }
+.hero-inner { position: relative; z-index: 1; padding-bottom: clamp(70px, 13vw, 170px); }
+.hero-seal { border-color: var(--cr-paper); box-shadow: 0 4px 0 var(--cr-edge), 0 18px 34px -12px rgb(64 44 24 / 0.5); }
+.is-world .hero-building { display: none; }
+.prelude-word { font-weight: 700; letter-spacing: -0.015em; }
+
+/* ─── Why EduPulse: a cork board of pinned notes ─── */
+.why-board { padding: clamp(22px, 2.6vw, 38px); border-radius: 14px; }
+.is-flat .why-board, .is-lite .why-board { background: #c79a66 radial-gradient(rgb(92 60 30 / 0.28) 1px, transparent 1.4px) 0 0 / 9px 9px; box-shadow: 0 0 0 10px #7c5230, 0 22px 36px -22px rgb(64 44 24 / 0.7); }
+.why .lp-head { position: relative; max-width: 44rem; margin-bottom: 18px; padding: 16px 24px 18px; border-radius: 6px; background: var(--cr-paper); box-shadow: var(--cr-card); rotate: -0.6deg; }
+.why .lp-head::before { content: ''; position: absolute; left: 50%; top: -11px; width: 92px; height: 24px; translate: -50% 0; rotate: 1.5deg; background: rgb(253 230 138 / 0.82); box-shadow: 0 1px 2px rgb(64 44 24 / 0.2); }
+.lp-head > p.why-statement { font-weight: 600; color: var(--cr-soft); font-size: clamp(1.0625rem, 0.95rem + 0.5vw, 1.3125rem); }
+.why-switch { background: #8a5f36; border: 0; box-shadow: inset 0 2px 4px rgb(0 0 0 / 0.25), 0 2px 0 rgb(255 255 255 / 0.3); }
+.why-switch button { font-family: var(--lp-display); color: #fff3e0; }
+.why-switch button[aria-pressed='true'] { color: var(--cr-ink); }
+.why-switch-marker { background: var(--cr-paper); box-shadow: 0 2px 0 var(--cr-edge); }
+.why-cards { gap: 16px; }
+.why-card:nth-child(1) { rotate: -1.2deg; } .why-card:nth-child(2) { rotate: 0.9deg; } .why-card:nth-child(3) { rotate: -0.5deg; } .why-card:nth-child(4) { rotate: 1.3deg; } .why-card:nth-child(5) { rotate: -0.9deg; }
+.why-face { position: relative; min-height: 196px; padding: 26px 16px 14px; border-radius: 5px; border: 0; box-shadow: 0 2px 0 rgb(64 44 24 / 0.16), 0 14px 18px -12px rgb(64 44 24 / 0.6); }
+.why-face::before { content: ''; position: absolute; left: 50%; top: 8px; width: 15px; height: 15px; translate: -50% 0; border-radius: 50%; background: radial-gradient(circle at 34% 30%, #fecaca, #dc2626 62%, #991b1b); box-shadow: 0 3px 3px rgb(0 0 0 / 0.3); }
+.why-card:nth-child(even) .why-face::before { background: radial-gradient(circle at 34% 30%, #bfdbfe, #2563eb 62%, #1e3a8a); }
+.why-face.is-today { background: #fffdf8; border-style: none; }
+.why-face.is-next { background: #fff4c9; }
+.why-card:nth-child(even) .why-face.is-next { background: #e4f3d6; }
+.why-card:nth-child(3n) .why-face.is-next { background: #fde2e4; }
+.why-icon { width: 40px; height: 40px; margin-bottom: 10px; border-radius: 50%; }
+.is-today .why-icon { color: var(--cr-soft); background: var(--cr-cream); border: 0; }
+.is-next .why-icon { box-shadow: 0 3px 0 #1b3f9e; }
+.why-area { font-weight: 600; font-size: 1.0625rem; color: var(--cr-ink); }
+.why-text { font-weight: 600; color: var(--cr-soft); line-height: 1.4; }
+.is-next .why-text { color: var(--cr-ink); }
+.is-today .why-text { text-decoration-color: rgb(93 77 60 / 0.55); }
+.why-state { font-family: var(--cr-hand); font-size: 1rem; font-weight: 400; }
+.is-today .why-state { color: var(--cr-soft); }
+.is-next .why-state { color: var(--lp-blue-deep); }
+.why-note { display: inline-flex; margin-top: 20px; padding: 8px 16px; border-radius: 999px; font-weight: 700; color: var(--cr-ink); background: var(--cr-paper); box-shadow: 0 2px 0 var(--cr-edge); }
+
+/* ─── Features: written in chalk on the blackboard, the screen pulled down beside it ─── */
+.fs-board { padding: clamp(20px, 2.4vw, 34px); border-radius: 8px; }
+.is-flat .fs-board, .is-lite .fs-board { background: linear-gradient(135deg, #24413f, var(--cr-board)); box-shadow: 0 0 0 12px var(--cr-oak), 0 26px 40px -24px rgb(64 44 24 / 0.75); }
+.fs-board .lp-head { margin-bottom: 18px; }
+.fs-board .lp-label { background: none; box-shadow: none; padding: 0; font-family: var(--cr-hand); font-size: 1.25rem; font-weight: 400; color: var(--cr-chalk-yellow); }
+.fs-board .lp-label::before { background: var(--cr-chalk-yellow); }
+.landing-page .fs-board h2 { color: var(--cr-chalk); }
+.fs-board :is(h3, .fs-body) { color: var(--cr-chalk); }
+.landing-page .fs-board h3 { color: var(--cr-chalk); font-weight: 600; }
+.fs-board .fs-body { color: var(--cr-chalk-dim); font-weight: 600; }
+.fs-board .fs-count, .fs.is-live .fs-board .fs-count { font-family: var(--cr-hand); font-weight: 400; color: var(--cr-chalk-dim); }
+.fs-board .fs-count span, .fs.is-live .fs-board .fs-count span { color: var(--cr-chalk-yellow); }
+.fs-board .lp-head > p:not(.lp-label) { color: var(--cr-chalk-dim); }
+.fs-board .fs-chapter li { color: var(--cr-chalk); font-weight: 600; }
+.fs-board .fs-chapter li::before { border-color: var(--cr-chalk-yellow); }
+.fs-board .fs-inline figcaption { color: var(--cr-chalk-dim); }
+.fs-who { font-family: var(--cr-hand); font-size: 1.125rem; font-weight: 400; color: var(--cr-chalk-yellow); }
+.fs-who span { color: var(--cr-chalk-yellow); }
+.fs-step { color: var(--cr-chalk-dim); border-radius: 8px; border-top: 0; background: rgb(255 255 255 / 0.05); }
+.fs-step-name { font-family: var(--lp-display); font-weight: 500; }
+.fs-step-num { font-family: var(--cr-hand); color: var(--cr-chalk-dim); }
+.fs-step:hover { color: var(--cr-chalk); }
+.fs-step.is-active { color: var(--cr-board); background: var(--cr-chalk); border-top: 0; }
+.fs-step.is-active .fs-step-num { color: var(--cr-board); }
+.fs-frame { border-radius: 8px; border: 0; background: var(--cr-paper); box-shadow: 0 3px 0 #d9d0c1, 0 22px 34px -18px rgb(0 0 0 / 0.6); }
+.fs-bar { background: #eee7da; border-bottom: 0; }
+.fs-caption { font-weight: 700; color: var(--cr-soft); background: var(--cr-paper); }
+.fs-inline { border-radius: 8px; overflow: hidden; }
+/* The still page: each part's text sits together beside its screen, centred on it. */
+@media (min-width: 1024px) {
+  .fs:not(.is-live) .fs-chapter { grid-template-rows: 1fr repeat(4, auto) 1fr; }
+  .fs:not(.is-live) .fs-chapter > .fs-who { grid-row: 2; }
+  .fs:not(.is-live) .fs-chapter > h3 { grid-row: 3; }
+  .fs:not(.is-live) .fs-chapter > .fs-body { grid-row: 4; }
+  .fs:not(.is-live) .fs-chapter > ul { grid-row: 5; }
+  .fs:not(.is-live) .fs-chapter > .fs-inline { grid-row: 1 / -1; }
+}
+
+/* ─── How it works: paper worksheets on the class seats, seen from above ─── */
+.flow-head { padding: 16px 22px; border-radius: 6px; background: var(--cr-paper); box-shadow: var(--cr-card); rotate: -0.5deg; }
+.landing-page .flow-head h2 { font-size: clamp(1.625rem, 1.2rem + 1.3vw, 2.5rem); }
+.flow-card { border-radius: 8px; border: 0; background: var(--cr-paper) repeating-linear-gradient(180deg, transparent 0 25px, rgb(147 197 253 / 0.2) 25px 26px); box-shadow: var(--cr-card); }
+.flow-glyph { border-radius: 50%; color: #ffffff; background: var(--lp-blue); box-shadow: 0 3px 0 #1b3f9e; }
+.flow-node { font-family: var(--lp-display); font-weight: 700; color: #ffffff; background: var(--lp-blue); box-shadow: 0 3px 0 #1b3f9e; }
+.flow.is-live .flow-phase:not(.is-reached) .flow-node { color: var(--cr-ink); background: var(--cr-chalk-yellow); box-shadow: 0 3px 0 #d1b45c; }
+.flow-line-base { stroke: rgb(124 82 48 / 0.3); }
+.flow-line-draw { stroke: var(--lp-blue); }
+.flow-role { font-weight: 700; color: var(--cr-soft); background: var(--cr-cream); border-color: var(--cr-edge); }
+.flow-what { font-weight: 600; color: var(--cr-soft); }
+.flow-duty dt { font-family: var(--lp-display); font-weight: 600; }
+.flow-duty dd { font-weight: 600; color: var(--cr-soft); }
+.flow-duty { border-radius: 8px; border: 0; }
+.flow-duty.is-ai { color: var(--cr-soft); background: var(--cr-sky); border: 0; }
+.flow-duty.is-people { color: var(--cr-ink); background: var(--cr-butter); border: 0; }
+.flow-duty.is-people dt { color: var(--cr-ink); }
+
+/* ─── Roles: a name card on each classmate's desk, and the open notebook below ─── */
+.roles-board .lp-head { margin-bottom: 18px; }
+.role-tabs { border: 0; background: none; }
+.role-marker { display: none; }
+.role-tab { border-radius: 10px; font-family: var(--lp-display); font-weight: 600; color: var(--cr-ink); background: var(--cr-paper); box-shadow: 0 3px 0 var(--cr-edge), 0 10px 14px -10px rgb(64 44 24 / 0.6); border: 0; transition: translate 200ms cubic-bezier(0.34, 1.56, 0.64, 1), background-color 180ms ease; }
+.role-tab:hover { translate: 0 -2px; background: var(--cr-butter); }
+.role-tab.is-active { color: #ffffff; background: var(--lp-blue); box-shadow: 0 3px 0 #1b3f9e, 0 10px 14px -10px rgb(29 78 216 / 0.8); }
+.role-tab.is-active :is(span, svg) { color: #ffffff; }
+.role-panels { border-radius: 10px; border: 0; background: var(--cr-paper); box-shadow: var(--cr-card); }
+.role-panel { background: none; }
+.role-avatar { border-radius: 50%; color: #ffffff; background: var(--lp-blue); box-shadow: 0 3px 0 #1b3f9e; }
+.role-kicker { font-family: var(--cr-hand); font-size: 1.0625rem; font-weight: 400; color: var(--cr-soft); }
+.role-summary { font-weight: 600; color: var(--cr-soft); }
+.role-tasks li { font-weight: 600; }
+.role-task-icon { border-radius: 50%; color: var(--lp-blue-deep); background: var(--cr-sky); }
+.role-boundary { font-weight: 700; color: var(--cr-ink); background: var(--cr-butter); border: 0; border-radius: 8px; }
+.role-sections-label { font-family: var(--cr-hand); font-size: 1rem; color: var(--cr-soft); }
+.role-bar { border-radius: 8px; background: var(--cr-cream); border-color: var(--cr-edge); }
+.role-bar em { font-weight: 700; color: var(--cr-soft); }
+.role-bar em.is-current { color: var(--cr-ink); }
+.role-benefit { font-weight: 700; color: var(--cr-soft); }
+
+/* ─── Pulse: sticky notes beside the teacher's desk, the talk on the wall screen ─── */
+.promises li { position: relative; padding: 12px 14px; border-radius: 4px; border: 0; background: #fff4c9; box-shadow: 0 2px 0 rgb(64 44 24 / 0.14), 0 10px 14px -10px rgb(64 44 24 / 0.6); }
+.promises li:nth-child(2) { background: #e4f3d6; rotate: 0.6deg; }
+.promises li:nth-child(1) { rotate: -0.6deg; }
+.promises li:nth-child(3) { background: #fde2e4; rotate: -0.4deg; }
+.promise-icon { border-radius: 50%; color: #ffffff; background: var(--lp-blue); box-shadow: 0 2px 0 #1b3f9e; }
+.promises :is(h3) { font-weight: 600; }
+.promises p { font-weight: 600; color: var(--cr-soft); }
+.pulse-demo { border-radius: 10px; }
+.pulse-scope { border-radius: 10px; border: 0; background: var(--cr-paper); box-shadow: var(--cr-card); }
+.pulse-bubble.is-user { background: var(--lp-blue); }
+.pulse-bubble.is-pulse { background: var(--cr-cream); border-color: var(--cr-edge); color: var(--cr-ink); }
+.pulse-sources li { font-weight: 700; color: var(--cr-soft); }
+.pulse-tag { font-family: var(--cr-hand); font-size: 1.0625rem; font-weight: 400; }
+.pulse-gap { display: none; }
+
+/* ─── Why it matters: framed findings along the gallery wall ─── */
+.impact-board .lp-head { padding: 14px 22px; border-radius: 6px; background: var(--cr-paper); box-shadow: var(--cr-card); max-width: 42rem; }
+.evidence-item { border-radius: 2px; border: 0; background: var(--cr-paper); box-shadow: inset 0 0 0 1px rgb(124 82 48 / 0.25), 0 2px 8px rgb(64 44 24 / 0.18); }
+.is-flat .evidence-item, .is-lite .evidence-item { box-shadow: 0 0 0 9px #7c5230, 0 18px 24px -14px rgb(64 44 24 / 0.7); }
+.evidence-icon { border-radius: 50%; }
+.evidence-value { font-family: var(--lp-display); font-weight: 700; color: var(--lp-blue-deep); }
+.evidence-meter { border-radius: 999px; background: var(--cr-cream); }
+.evidence-meter-fill { border-radius: 999px; background: var(--cr-oak); }
+.evidence-label { font-weight: 600; color: var(--cr-soft); }
+.goals { padding: 16px 20px; border-radius: 6px; border: 0; background: var(--cr-butter); box-shadow: var(--cr-card); }
+.goal-icon { border-radius: 50%; color: #ffffff; background: var(--lp-blue); box-shadow: 0 2px 0 #1b3f9e; }
+
+/* ─── Colleges: a banner on the front stage, the planned colleges hanging from the flies ─── */
+.colleges-board .lp-head { margin-bottom: 14px; }
+.landing-page .colleges-board .lp-head h2 { color: var(--cr-ink); }
+.cit-feature { border-radius: 10px; border: 0; background: var(--cr-paper); box-shadow: var(--cr-card); }
+.cit-arc { stroke: var(--lp-blue); }
+.college-status { font-weight: 700; border-radius: 999px; }
+.college-card { border-radius: 8px; border: 0; background: var(--cr-paper); box-shadow: var(--cr-card); }
+.college-card-meta { font-weight: 600; color: var(--cr-soft); }
+
+/* ─── Community: photographs pegged on lines, the KCP building below them ─── */
+.campus-board .lp-head { display: inline-block; padding: 14px 22px; border-radius: 6px; background: var(--cr-paper); box-shadow: var(--cr-card); margin-bottom: 14px; }
+.photo-track li { background: var(--cr-paper); padding: 7px 7px 20px; border-radius: 2px; box-shadow: 0 2px 0 var(--cr-edge), 0 12px 16px -10px rgb(0 0 0 / 0.55); }
+.photo-track li:nth-child(odd) { rotate: -1.4deg; }
+.photo-track li:nth-child(even) { rotate: 1.1deg; }
+.photo-track img { border-radius: 1px; }
+.photo-credit { font-weight: 700; color: var(--cr-soft); }
+.photo-toggle { font-family: var(--lp-display); font-weight: 600; border-radius: 999px; background: var(--cr-paper); box-shadow: 0 2px 0 var(--cr-edge); border: 0; color: var(--cr-ink); }
+.photo-rail-bar { padding-inline: var(--gutter); }
+
+/* ─── FAQ: the pages of an open notebook on the desk ─── */
+.faq-grid { padding: 24px clamp(20px, 2.4vw, 34px); }
+.is-flat .faq-grid, .is-lite .faq-grid { border-radius: 8px; background: var(--cr-paper) repeating-linear-gradient(180deg, transparent 0 31px, rgb(147 197 253 / 0.22) 31px 32px); box-shadow: 0 0 0 7px #3b64a8, var(--cr-card); }
+.faq-item { border-color: rgb(147 197 253 / 0.55); border-radius: 0; background: none; box-shadow: none; }
+.faq-question { font-family: var(--lp-display); font-weight: 600; color: var(--cr-ink); }
+.faq-answer, .faq-answer p { font-weight: 600; color: var(--cr-soft); }
+
+/* ─── Sign in: a door with a photograph in its window and a clipboard on it ─── */
+.signin-frame { border-radius: 10px; border: 0; background: var(--cr-paper); box-shadow: var(--cr-card); }
+.signin-form { background: var(--cr-paper); }
+.signin-visual { border-radius: 10px; }
+
+/* ─── Footer: the blackboard at the end of the walk ─── */
+.lp-footer { color: var(--cr-chalk); background: linear-gradient(180deg, #24413f, var(--cr-board)); border-top: 10px solid var(--cr-oak); }
+.landing-page .lp-footer h3 { color: var(--cr-chalk-yellow); font-weight: 600; }
+.footer-logos strong { color: var(--cr-chalk); font-weight: 700; letter-spacing: -0.01em; }
+.footer-brand > p, .footer-col p, .footer-col a, .footer-bottom, .footer-bottom * { color: var(--cr-chalk-dim); font-weight: 600; }
+.footer-col a:hover { color: var(--cr-chalk); }
+.footer-col svg { color: var(--cr-chalk-yellow); }
+.footer-brand blockquote { color: var(--cr-chalk); background: rgb(255 255 255 / 0.06); border-left-color: var(--cr-chalk-yellow); }
+.footer-brand cite { color: var(--cr-chalk-dim); }
+.lp-footer > .footer-word { color: rgb(245 247 242 / 0.1); background: none; font-weight: 700; letter-spacing: -0.015em; }
+.footer-bottom { border-top-color: rgb(245 247 242 / 0.2); }
+
+/* ═══ Phones and portrait screens: ordinary scrolling, the 3D school behind it ═══ */
+.landing-page.is-lite { background: linear-gradient(180deg, #bcdcf3 0%, #e6f1f6 100%) fixed; }
+.is-lite .world-canvas { position: fixed; left: 0; top: 0; z-index: 0; width: 100%; height: 100%; height: 100lvh; display: block; pointer-events: none; opacity: 0; transition: opacity 500ms ease; }
+.is-lite .world-canvas.is-ready { opacity: 1; }
+.is-lite .lp-opening { z-index: 1; background: transparent; }
+.is-lite .lp-hero { background: none; }
+.is-lite .hero-building { display: none; }
+.is-lite main { position: relative; z-index: 1; padding-top: 55vh; }
+.is-lite .room { padding: 0; margin-bottom: 70vh; background: none; }
+.is-lite .room:last-child { margin-bottom: 40vh; }
+.is-lite .room .lp-head { padding: 12px 16px 14px; border-radius: 8px; background: var(--cr-paper); box-shadow: var(--cr-card); }
+.is-lite .room .fs-board .lp-head { padding: 0; background: none; box-shadow: none; }
+.is-lite .room .lp-head { margin-bottom: 16px; }
+.is-lite .agents, .is-lite .ws { position: relative; z-index: 1; background: var(--cr-cream); }
+.is-lite #impact { margin-top: 70vh; }
+.is-lite .lp-footer { position: relative; z-index: 1; }
+.is-lite .flow-node { box-shadow: 0 3px 0 #1b3f9e; }
+.is-lite .room-view { padding-block: 8px; }
+.is-lite .photo-credit { padding: 3px 12px; border-radius: 999px; background: var(--cr-paper); }
+
+/* ═══ The walk: every section's content on a surface of the 3D school ═══ */
+.landing-page.is-world { background: linear-gradient(180deg, #bcdcf3 0%, #e6f1f6 100%) fixed; }
+.is-world .world-canvas { position: fixed; inset: 0; z-index: 0; width: 100%; height: 100%; height: 100lvh; display: block; pointer-events: none; opacity: 0; transition: opacity 500ms ease; }
+.is-world .world-canvas.is-ready { opacity: 1; }
+.is-world .world-wash { position: fixed; inset: 0; z-index: 60; background: #fffdf8; opacity: 0; pointer-events: none; }
+
+/* The opening stays; once it opens, the campus shows through the hero. */
+.is-world .lp-opening { z-index: 1; background: transparent; }
+.is-world .lp-hero { background: none; }
+.is-world .hero-inner { padding-bottom: clamp(70px, 20vh, 190px); }
+.is-world .lp-scene { z-index: 3; }
+
+.is-world main { position: relative; z-index: auto; padding-top: 45vh; }
+.is-world .room { padding: 0; background: none; overflow: visible; pointer-events: none; }
+.is-world .room-view { position: fixed; left: 0; top: 0; z-index: 2; width: 100%; min-height: 100vh; min-height: 100lvh; box-sizing: border-box; padding: calc(var(--nav-h) + 12px) 0 18px; display: flex; flex-direction: column; justify-content: center; align-items: center; transform-origin: 0 0; transform: translate3d(0, 60000px, 0); opacity: 0; backface-visibility: hidden; will-change: transform; }
+.is-world .room-view > * { flex: none; }
+.is-world .room-view > .lp-wrap { width: min(var(--sheet, 1180px), 92vw); max-width: none; padding-inline: 0; }
+.is-world .room-view[data-waiting] .pop { opacity: 0; }
+.is-world .room .lp-head h2 { margin-bottom: 4px; font-size: clamp(1.5rem, 1.15rem + 1.1vw, 2.25rem); }
+.is-world .room .lp-head > p:not(.lp-label) { font-size: 1rem; line-height: 1.4; }
+.is-world .room .lp-label { margin-bottom: 8px; }
+
+.is-world .agents, .is-world .ws { position: relative; z-index: 5; }
+/* Past the agent room the white has covered it: the school is what comes up next. */
+.is-past-workspace .ws { visibility: hidden; }
+.is-world .lp-footer { position: relative; z-index: 5; }
+
+/* The cork board. */
+.is-world .why { --sheet: 1120px; }
+.is-world .why-board { padding: 26px 30px 24px; }
+.is-world .why .lp-head { margin-bottom: 14px; padding: 12px 20px 14px; }
+.is-world .room .lp-head > p.why-statement { font-size: 1.125rem; }
+.is-world .why-switch { margin-bottom: 16px; }
+.is-world .why-face { min-height: 176px; }
+.is-world .why-note { margin-top: 16px; }
+
+/* The blackboard: the text in chalk on the left, the screen pulled down on the right. */
+.is-world .fs { --sheet: 1180px; }
+.is-world .fs-board { display: grid; grid-template-columns: minmax(0, 0.84fr) minmax(0, 1.16fr); column-gap: 34px; padding: 18px 28px 22px; }
+.is-world .fs-board .lp-head { grid-column: 1; max-width: none; margin-bottom: 8px; }
+.is-world .fs.is-live .fs-stage { display: contents; }
+.is-world .fs-copy { grid-column: 1; }
+.is-world .fs.is-live .fs-frame { grid-column: 2; grid-row: 1 / span 2; align-self: center; }
+.is-world .fs.is-live .fs-count { margin-bottom: 6px; }
+.is-world .fs.is-live .fs-steps { margin-bottom: 14px; }
+.is-world .fs-step { min-height: 56px; padding: 7px 8px 6px; font-size: 0.8125rem; }
+.is-world .fs-who { margin-bottom: 4px; }
+.landing-page.is-world .fs-chapter h3 { margin-bottom: 6px; font-size: clamp(1.375rem, 1.1rem + 0.8vw, 1.875rem); }
+.is-world .fs-body { margin-bottom: 8px; line-height: 1.45; }
+.is-world .fs-chapter ul { gap: 4px; }
+.is-world .fs-chapter li { font-size: 0.9375rem; line-height: 1.4; }
+.is-world .fs.is-live .fs-frame { overflow: hidden; border-radius: 6px; border: 0; box-shadow: none; }
+.is-world .fs-bar { height: 30px; }
+.is-world .fs-caption { padding: 7px 12px; font-size: 0.8125rem; border-top: 0; }
+
+/* The class seats, from above: the worksheets lie on the tables, classmates between the rows. */
+.is-world .flow { --sheet: 1180px; }
+.is-world .flow-grid { display: block; }
+.is-world .flow-head { position: relative; top: auto; z-index: 2; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; column-gap: 28px; max-width: none; margin-bottom: 26px; padding: 8px 20px; rotate: none; }
+.is-world .flow-head .lp-label { grid-row: 1 / span 2; margin: 0; }
+.is-world .room .flow-head h2 { margin: 0; font-size: clamp(1.375rem, 1.1rem + 0.8vw, 1.875rem); }
+.is-world .room .flow-head > p:not(.lp-label) { max-width: none; font-size: 0.9375rem; }
+.is-world .flow-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 44px; row-gap: clamp(72px, 13vh, 120px); padding-bottom: clamp(44px, 9vh, 84px); }
+.is-world .flow-phase, .is-world .flow-phase:last-child { display: block; padding: 0; }
+.is-world .flow-node { position: absolute; z-index: 2; right: 10px; top: -13px; width: 38px; height: 38px; border-radius: 50%; font-size: 0.875rem; }
+.is-world .flow-line { display: none; }
+.is-world .flow-card { padding: 12px 14px 12px; }
+.is-world .flow-card-head { grid-template-columns: 40px minmax(0, 1fr); gap: 10px; margin-bottom: 6px; }
+.is-world .flow-glyph { width: 40px; height: 40px; }
+.landing-page.is-world .flow-card h3 { margin-bottom: 3px; padding-right: 26px; font-size: 1.0625rem; }
+.is-world .flow-role { padding: 1px 8px 1px 6px; font-size: 0.75rem; }
+.is-world .flow-what { margin-bottom: 8px; font-size: 0.875rem; line-height: 1.35; }
+.is-world .flow-duty { padding: 6px 9px; font-size: 0.8125rem; line-height: 1.3; }
+.is-world .flow-duties { grid-template-columns: minmax(0, 1fr) 26px minmax(0, 1fr); }
+.is-world .flow-duty.is-people::before { left: -22px; width: 14px; }
+.is-world .flow-duty.is-people::after { left: -9px; }
+
+/* The classmates: a name card on each desk, the open notebook pinned to the tier below them. */
+.is-world .roles-section { --sheet: 1140px; }
+.is-world .room .roles-board .lp-head { width: max-content; max-width: 100%; margin: 0 auto; padding: 6px 22px 8px; text-align: center; border-radius: 8px; background: var(--cr-paper); box-shadow: var(--cr-card); }
+.is-world .room .roles-board .lp-head h2 { margin: 0; font-size: clamp(1.25rem, 1rem + 0.7vw, 1.625rem); }
+.is-world .room .roles-board .lp-head > p { display: none; }
+.is-world .roles { display: block; margin-top: clamp(90px, 16.5vh, 170px); }
+.is-world .role-tabs { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; margin-bottom: 12px; padding: 0; }
+.is-world .role-tab { justify-content: center; min-height: 44px; padding: 6px 10px; text-align: center; font-size: 1rem; }
+.is-world .role-panel { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); column-gap: 26px; align-content: start; padding: 14px 22px; border: 0; border-radius: 10px; background: none; box-shadow: none; }
+.is-world .role-panel > * { grid-column: 1; }
+.is-world .role-panel > .role-tasks, .is-world .role-panel > .role-boundary, .is-world .role-panel > .role-benefit { grid-column: 2; }
+.is-world .role-panel > .role-tasks { grid-row: 1 / span 3; grid-template-columns: 1fr; gap: 6px; margin: 0 0 8px; }
+.is-world .role-panel-head { grid-template-columns: 48px minmax(0, 1fr); gap: 12px; margin-bottom: 8px; }
+.is-world .role-avatar { width: 48px; height: 48px; }
+.landing-page.is-world .role-panel h3, .landing-page.is-world .role-panel .role-panel-head h3 { font-size: clamp(1.25rem, 1.05rem + 0.6vw, 1.625rem); letter-spacing: -0.005em; }
+.is-world .role-summary { margin-bottom: 10px; font-size: 1rem; line-height: 1.4; }
+.is-world .role-tasks li { grid-template-columns: 30px minmax(0, 1fr); gap: 10px; padding: 5px 10px; font-size: 0.875rem; background: var(--cr-cream); border: 0; border-radius: 8px; }
+.is-world .role-task-icon { width: 30px; height: 30px; box-shadow: none; }
+.is-world .role-boundary { margin-bottom: 8px; padding: 7px 12px; font-size: 0.875rem; }
+.is-world .role-sections { gap: 4px; margin-bottom: 0; }
+.is-world .role-bar { gap: 2px 10px; padding: 3px 10px; box-shadow: none; }
+.is-world .role-bar em { padding: 4px 2px; font-size: 0.8125rem; }
+.is-world .role-benefit { padding-top: 6px; font-size: 0.875rem; line-height: 1.35; border-top: 0; }
+
+/* The teacher's desk: sticky notes on the left, Pulse in the middle, the talk on the wall screen. */
+.is-world .pulse { --sheet: 1180px; }
+.is-world .pulse-grid { display: grid; grid-template-columns: minmax(0, 1.05fr) 150px minmax(0, 0.9fr); gap: 20px; align-items: center; }
+.is-world .pulse-gap { display: block; height: 320px; }
+.is-world .pulse-copy .lp-head { margin-bottom: 10px; padding: 10px 16px; border-radius: 8px; background: var(--cr-paper); box-shadow: var(--cr-card); }
+.is-world .room .pulse-copy .lp-head > p:not(.lp-label) { display: none; }
+.is-world .promises { gap: 10px; margin: 0; }
+.is-world .promises li { padding: 8px 10px; column-gap: 10px; grid-template-columns: 34px minmax(0, 1fr); }
+.is-world .promise-icon { width: 34px; height: 34px; }
+.landing-page.is-world .promises h3 { font-size: 0.9375rem; }
+.is-world .promises p { font-size: 0.8125rem; line-height: 1.35; }
+.is-world .pulse-scope { padding: 16px 18px; }
+.is-world .pulse-demo-head { margin-bottom: 12px; padding-bottom: 10px; }
+.is-world .pulse-bubble { padding: 8px 12px; font-size: 0.875rem; line-height: 1.4; }
+.is-world .pulse-sources { gap: 6px; margin: 10px 0 8px; }
+.is-world .pulse-sources li { padding: 4px 9px; font-size: 0.75rem; }
+.is-world .pulse-tag { margin-top: 8px; }
+.is-world .pulse-demo figcaption { margin: 6px 6px 0; font-size: 0.75rem; color: var(--cr-chalk-dim); }
+
+/* The gallery wall. */
+.is-world .impact { --sheet: 1060px; }
+.is-world .room .impact-board .lp-head { max-width: none; margin-bottom: 50px; padding: 8px 20px; }
+.is-world .room .impact-board .lp-label { display: none; }
+.is-world .evidence { gap: 64px; }
+.is-world .evidence-item { position: relative; padding: 12px 16px; }
+.is-world .evidence-icon { position: absolute; width: 36px; height: 36px; margin: 0; right: 14px; top: 14px; }
+.is-world .evidence-value { margin-bottom: 8px; font-size: clamp(2.25rem, 1.8rem + 1.4vw, 3rem); letter-spacing: -0.015em; }
+.is-world .evidence-meter { margin: -2px 0 8px; }
+.is-world .evidence-label { margin-bottom: 8px; font-size: 0.9375rem; line-height: 1.35; }
+.is-world .evidence cite { font-size: 0.8125rem; }
+.is-world .goals { margin-top: 36px; padding: 10px 18px 12px; }
+.landing-page.is-world .goals h3 { margin-bottom: 8px; font-size: 1rem; }
+.is-world .goals ul { gap: 14px; }
+.is-world .goals li { display: grid; grid-template-columns: 32px minmax(0, 1fr); column-gap: 8px; row-gap: 0; align-items: center; }
+.is-world .goal-icon { grid-row: span 2; width: 32px; height: 32px; margin: 0; }
+.is-world .goals strong { font-size: 1rem; letter-spacing: 0; }
+.is-world .goals li > span:last-child { font-size: 0.8125rem; line-height: 1.25; }
+
+/* The front stage: the banner on the backdrop, the planned colleges hanging from the flies. */
+.is-world .colleges { --sheet: 1120px; }
+.is-world .room .colleges-board .lp-head { width: max-content; max-width: 100%; margin: 0 auto 22px; padding: 6px 22px 8px; text-align: center; border-radius: 8px; background: var(--cr-paper); box-shadow: var(--cr-card); }
+.is-world .room .colleges-board .lp-head h2 { margin: 0; font-size: clamp(1.25rem, 1rem + 0.7vw, 1.625rem); }
+.is-world .room .colleges-board .lp-head > p, .is-world .room .colleges-board .lp-head .lp-label { display: none; }
+.is-world .cit-feature { grid-template-columns: auto minmax(0, 1fr) minmax(0, 0.7fr); gap: 22px; margin-bottom: 14px; padding: 12px 20px; }
+.is-world .cit-seal { width: 118px; }
+.landing-page.is-world .cit-body h3 { margin: 6px 0 6px; font-size: clamp(1.25rem, 1.05rem + 0.6vw, 1.625rem); }
+.is-world .cit-body ul { gap: 3px; }
+.is-world .cit-body li { font-size: 0.875rem; line-height: 1.3; }
+.is-world .cit-photo { aspect-ratio: 16 / 8; border-radius: 8px; }
+.is-world .college-list { gap: 14px; }
+.is-world .college-card { padding: 6px 6px 10px; }
+.is-world .college-card-photo { aspect-ratio: 16 / 7; margin-bottom: -20px; border-radius: 5px; }
+.is-world .college-card-emblem { width: 40px; height: 40px; margin: 0 0 4px 8px; }
+.landing-page.is-world .college-card h3 { margin: 0 4px 2px; font-size: 0.9375rem; line-height: 1.2; }
+.is-world .college-card-meta { margin: 0 4px 6px; font-size: 0.75rem; line-height: 1.3; }
+.is-world .college-card .college-status { margin: auto 4px 0; padding: 1px 9px; font-size: 0.75rem; }
+
+/* The photo lines, the KCP building below them. */
+.is-world .campus-board { width: 100%; align-self: stretch; }
+.is-world .campus-board > .lp-wrap { width: min(1180px, 92vw); margin-inline: auto; padding-inline: 0; text-align: center; }
+.is-world .room .campus-board .lp-head { max-width: none; margin-bottom: 12px; padding: 6px 20px 8px; text-align: center; }
+.is-world .room .campus-board .lp-label { display: none; }
+.is-world .photo-rail { gap: 12px; }
+.is-world .photo-rail.is-live .photo-row { padding-top: 12px; overflow: hidden; }
+.is-world .photo-track li { position: relative; width: clamp(180px, 16.5vw, 260px); margin-right: 26px; padding: 5px 5px 12px; overflow: visible; }
+.is-world .photo-track li::before { content: ''; position: absolute; z-index: 1; left: 50%; top: -9px; width: 10px; height: 22px; translate: -50% 0; border-radius: 3px; background: linear-gradient(90deg, #d9b98a, #b98e58); box-shadow: 0 1px 2px rgb(0 0 0 / 0.35); }
+.is-world .photo-rail-bar { justify-content: center; gap: 12px; margin-top: 2px; }
+.is-world .photo-credit { padding: 3px 12px; font-size: 0.8125rem; border-radius: 999px; background: var(--cr-paper); box-shadow: 0 2px 0 var(--cr-edge); }
+.is-world .photo-toggle { min-height: 34px; padding: 0 14px; font-size: 0.8125rem; }
+
+/* The notebook, from above. */
+.is-world .faq { --sheet: 1040px; }
+.is-world .faq-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 66px; padding: 18px 30px; }
+.is-world .faq-grid::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 66px; translate: -50% 0; pointer-events: none; background: linear-gradient(90deg, transparent, rgb(92 60 30 / 0.16) 47%, rgb(92 60 30 / 0.3) 50%, rgb(92 60 30 / 0.16) 53%, transparent); }
+.is-world .faq .lp-head::after { content: '?'; display: block; width: max-content; margin: 6px auto 0; font-family: var(--cr-hand); font-size: clamp(8rem, 22vh, 14rem); line-height: 1; color: rgb(37 99 235 / 0.16); rotate: -8deg; }
+.is-world .faq .lp-head { position: static; margin: 0; }
+.is-world .faq-question { min-height: 42px; padding: 8px 0; gap: 12px; font-size: 1rem; line-height: 1.3; }
+.is-world .faq-icon { width: 24px; height: 24px; border-radius: 50%; }
+.is-world .faq-answer p { padding: 0 34px 10px 0; font-size: 0.9375rem; line-height: 1.4; }
+
+/* The door. */
+.is-world .signin { --sheet: 1000px; }
+.is-world .signin-frame { margin: 0; }
+.is-world .signin-visual { min-height: 0; }
+.is-world .signin-form { padding: 20px 34px; }
+.is-world .signin-form .lp-head { margin-bottom: 12px; }
+.is-world .room .signin-form .lp-head h2 { font-size: clamp(1.5rem, 1.2rem + 0.9vw, 2rem); }
+
+/* ─── Day and night: the toggle beside Sign In ─── */
+.theme-toggle { position: relative; flex: none; width: 58px; height: 32px; padding: 0; border: 0; border-radius: 999px; cursor: pointer; background: linear-gradient(180deg, #8ec5f5, #cfe7fb); box-shadow: inset 0 1px 3px rgb(0 0 0 / 0.2), 0 2px 0 var(--cr-edge); transition: background-color 300ms ease; }
+.theme-toggle::before { content: ''; position: absolute; inset: 0; border-radius: inherit; opacity: 0; background: radial-gradient(1.2px 1.2px at 14px 9px, #fff 99%, transparent), radial-gradient(1px 1px at 22px 20px, #fff 99%, transparent), radial-gradient(1.4px 1.4px at 9px 22px, #fff 99%, transparent); transition: opacity 300ms ease; }
+.theme-toggle-knob { position: absolute; top: 3px; left: 3px; width: 26px; height: 26px; display: grid; place-items: center; border-radius: 50%; color: #b45309; background: #fde68a; box-shadow: 0 2px 4px rgb(0 0 0 / 0.28); transition: translate 340ms cubic-bezier(0.34, 1.56, 0.64, 1), background-color 300ms ease, color 300ms ease; }
+.theme-toggle[aria-pressed='true'] { background: linear-gradient(180deg, #0b1633, #23365f); }
+.theme-toggle[aria-pressed='true']::before { opacity: 1; }
+.theme-toggle[aria-pressed='true'] .theme-toggle-knob { translate: 26px 0; color: #334155; background: #eef2f7; }
+.theme-toggle:focus-visible { outline: 3px solid var(--lp-blue); outline-offset: 3px; }
+.nav-actions { display: flex; align-items: center; gap: 12px; }
+@media (prefers-reduced-motion: reduce) { .theme-toggle, .theme-toggle-knob, .theme-toggle::before { transition: none; } }
+
+/* ═══ Night: the same school after dark (the app's dark mode) ═══ */
+.dark-mode .landing-page {
+  --cr-ink: #f4ecdf;
+  --cr-soft: #c9bca8;
+  --cr-paper: #1f2838;
+  --cr-cream: #141b27;
+  --cr-butter: #332c1c;
+  --cr-sky: #1b2d45;
+  --cr-edge: #0a0f18;
+  --cr-oak: #8a6440;
+  --cr-oak-deep: #5b3d22;
+  --cr-card: inset 0 1px 0 rgb(255 255 255 / 0.07), 0 3px 0 var(--cr-edge), 0 16px 26px -16px rgb(0 0 0 / 0.75);
+  --lp-ink: #f4ecdf;
+  --lp-slate: #c2cad8;
+  --lp-white: #1f2838;
+  --lp-mist: #141b27;
+  --lp-ice: #1b2d45;
+  --lp-ice-soft: #18253a;
+  --lp-line: #2d3a50;
+  --lp-field: #8391a8;
+  --lp-blue-soft: #36598f;
+  --lp-shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 18px 40px -26px rgb(0 0 0 / 0.8);
+  color-scheme: dark;
+}
+.dark-mode .lp-nav.is-solid { background: rgb(20 27 39 / 0.9); }
+.dark-mode .landing-page:not(.is-world):not(.is-lite) .lp-hero { background: linear-gradient(180deg, #071025 0%, #12203f 58%, #141b27 100%); }
+.dark-mode .landing-page.is-world, .dark-mode .landing-page.is-lite { background: linear-gradient(180deg, #050b1d 0%, #0f1c3d 62%, #1d2c55 100%) fixed; }
+.dark-mode .is-world .world-wash { background: #0f1626; }
+/* Accent text on dark paper: the lighter blue (buttons keep the deep blue under white text). */
+.dark-mode .landing-page :is(.lp-label, .lp-link, .nav-menu .nav-link.is-active, .why-switch button[aria-pressed='true'], .is-next .why-state, .fs-who span, .fs-count span, .fs-step-num, .flow-glyph, .flow-role svg, .flow-duty.is-people dt, .role-kicker, .role-task-icon, .role-boundary svg, .promise-icon, .pulse-sources li, .pulse-tag, .evidence-icon, .evidence-value, .agents-list-num, .agents-count span, .ws-label b, .ws-bubble-who, .ws-flat li, .ws-agent[aria-pressed='true']) { color: #93c5fd; }
+.dark-mode .landing-page .role-tab.is-active, .dark-mode .landing-page .role-tab.is-active :is(span, svg) { color: #ffffff; }
+.dark-mode .landing-page :is(.nav-menu-btn, .photo-toggle, .ws-flat li, .ws-tool, .ws-agent, .footer-brand blockquote, .quick-access-btn, .login-panel .form-input, .login-panel .btn-secondary) { color: var(--cr-ink); background: var(--cr-paper); border-color: var(--lp-line); }
+.dark-mode .landing-page .ws-label { background: rgb(31 40 56 / 0.94); }
+.dark-mode .landing-page .ws-stage:not(.is-scene) ~ .ws-answer:not(:empty) { background: var(--cr-paper); }
+.dark-mode .landing-page .ws-room { background: radial-gradient(110% 85% at 50% 30%, #1b2a4a 0%, #121a2c 58%, #0d1422 100%); }
+.dark-mode .landing-page .agents-lens { background: radial-gradient(circle at 50% 38%, #24345a 0%, #172238 62%, #1b2d45 100%); box-shadow: 0 0 0 6px rgb(31 40 56 / 0.9), 0 0 0 7px var(--lp-ice), 0 26px 60px -26px rgb(0 0 0 / 0.8); }
+/* Notes and screens after dark. */
+.dark-mode .landing-page .why-face.is-today { background: var(--cr-paper); }
+.dark-mode .landing-page .why-face.is-next, .dark-mode .landing-page .promises li { background: #3a3220; }
+.dark-mode .landing-page .why-card:nth-child(even) .why-face.is-next, .dark-mode .landing-page .promises li:nth-child(2) { background: #223322; }
+.dark-mode .landing-page .why-card:nth-child(3n) .why-face.is-next, .dark-mode .landing-page .promises li:nth-child(3) { background: #3a2329; }
+.dark-mode .landing-page .why .lp-head::before { background: rgb(180 150 70 / 0.7); }
+.dark-mode .landing-page .fs-bar { background: #2a3447; }
+.dark-mode .landing-page .fs-frame { box-shadow: 0 3px 0 #0a0f18, 0 22px 34px -18px rgb(0 0 0 / 0.8); }
+.dark-mode .landing-page .flow-card { background: var(--cr-paper) repeating-linear-gradient(180deg, transparent 0 25px, rgb(147 197 253 / 0.1) 25px 26px); }
+.dark-mode .landing-page .flow-line-base { stroke: rgb(201 188 168 / 0.25); }
+.dark-mode .landing-page .is-flat .faq-grid, .dark-mode .landing-page.is-flat .faq-grid, .dark-mode .landing-page.is-lite .faq-grid { background: var(--cr-paper) repeating-linear-gradient(180deg, transparent 0 31px, rgb(147 197 253 / 0.12) 31px 32px); }
+.dark-mode .landing-page .faq-item { border-color: rgb(147 197 253 / 0.25); }
+.dark-mode .landing-page.is-world .faq .lp-head::after { color: rgb(147 197 253 / 0.18); }
+.dark-mode .landing-page .is-world .faq-grid::before, .dark-mode .landing-page.is-world .faq-grid::before { background: linear-gradient(90deg, transparent, rgb(0 0 0 / 0.2) 47%, rgb(0 0 0 / 0.35) 50%, rgb(0 0 0 / 0.2) 53%, transparent); }
+/* The agent room after dark: stars and a moon around the diorama. */
+.dark-mode .landing-page .ws-room { background: radial-gradient(1.4px 1.4px at 12% 18%, #fff 99%, transparent), radial-gradient(1px 1px at 22% 64%, #dfe8ff 99%, transparent), radial-gradient(1.6px 1.6px at 31% 9%, #fff 99%, transparent), radial-gradient(1px 1px at 44% 26%, #dfe8ff 99%, transparent), radial-gradient(1.3px 1.3px at 57% 12%, #fff 99%, transparent), radial-gradient(1px 1px at 68% 38%, #dfe8ff 99%, transparent), radial-gradient(1.5px 1.5px at 79% 21%, #fff 99%, transparent), radial-gradient(1px 1px at 88% 58%, #dfe8ff 99%, transparent), radial-gradient(1.2px 1.2px at 94% 8%, #fff 99%, transparent), radial-gradient(1px 1px at 6% 82%, #dfe8ff 99%, transparent), radial-gradient(1px 1px at 96% 86%, #dfe8ff 99%, transparent), radial-gradient(circle at 93% 34%, #fff6dc 0 34px, rgb(201 216 255 / 0.18) 35px 70px, transparent 71px), radial-gradient(110% 85% at 50% 30%, #1b2a4a 0%, #121a2c 58%, #0d1422 100%); }
+/* The opening after dark: the rays in night blues over a starry backdrop. */
+.dark-mode .landing-page .prelude-backdrop { background: radial-gradient(1.4px 1.4px at 14% 22%, #fff 99%, transparent), radial-gradient(1px 1px at 27% 71%, #dfe8ff 99%, transparent), radial-gradient(1.6px 1.6px at 38% 12%, #fff 99%, transparent), radial-gradient(1px 1px at 61% 84%, #dfe8ff 99%, transparent), radial-gradient(1.3px 1.3px at 73% 18%, #fff 99%, transparent), radial-gradient(1px 1px at 86% 63%, #dfe8ff 99%, transparent), radial-gradient(1.5px 1.5px at 92% 31%, #fff 99%, transparent), #0a1228; }
+.dark-mode .landing-page .prelude-shard[data-tone='a'] { --from: #1e2d52; --to: #172443; }
+.dark-mode .landing-page .prelude-shard[data-tone='b'] { --from: #19274a; --to: #131e3a; }
+.dark-mode .landing-page .prelude-shard[data-tone='c'] { --from: #152244; --to: #101a35; }
+
+/* ─── The Pulse chat card: the request, what Pulse checked, a short reply, the outcome ─── */
+.pulse-demo-head small { display: inline-flex; align-items: center; gap: 5px; font-weight: 700; }
+.pulse-bubble.is-user { width: fit-content; font-weight: 700; }
+.pulse-checks { position: relative; display: grid; gap: 6px; margin: 14px 0 12px; padding: 0; list-style: none; }
+.pulse-checks li { position: relative; display: grid; grid-template-columns: 28px auto auto; align-items: center; gap: 8px; width: fit-content; padding: 4px 6px 4px 4px; border-radius: 999px; font-size: 0.8125rem; font-weight: 700; line-height: 1.2; color: var(--cr-ink); background: var(--cr-cream); box-shadow: inset 0 0 0 1px var(--lp-line); }
+.pulse-checks i { width: 28px; height: 28px; display: grid; place-items: center; border-radius: 50%; color: #ffffff; }
+.pulse-checks em { padding: 3px 9px; border-radius: 999px; font-style: normal; font-size: 0.75rem; font-weight: 800; }
+.pulse-checks .is-block i { background: #dc2626; } .pulse-checks .is-block em { color: #991b1b; background: #fee2e2; }
+.pulse-checks .is-hint i { background: #d97706; } .pulse-checks .is-hint em { color: #92400e; background: #fef3c7; }
+.pulse-checks .is-pass i { background: #16a34a; } .pulse-checks .is-pass em { color: #166534; background: #dcfce7; }
+.pulse-checks .pulse-source-link { left: 17px; }
+.pulse-bubble.is-pulse p { margin: 0 0 8px; font-weight: 700; }
+.pulse-actions { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.pulse-actions li { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 800; color: var(--lp-blue-deep); background: var(--cr-sky); }
+.pulse-tag { align-items: center; gap: 6px; }
+.pulse-tag.is-block { color: #b91c1c; border-color: #fca5a5; }
+.pulse-tag.is-pass { color: #15803d; border-color: #86efac; }
+.dark-mode .landing-page .pulse-scope::before { background: radial-gradient(circle, rgb(37 60 105 / 0.85) 0 30%, rgb(37 60 105 / 0) 31% 45%, rgb(37 60 105 / 0.5) 46% 47%, rgb(37 60 105 / 0) 48%); }
+.dark-mode .landing-page .pulse-actions li { color: #93c5fd; }
+.dark-mode .landing-page .pulse-checks .is-block em { color: #fecaca; background: #5b1d1d; }
+.dark-mode .landing-page .pulse-checks .is-hint em { color: #fde68a; background: #4a3512; }
+.dark-mode .landing-page .pulse-checks .is-pass em { color: #bbf7d0; background: #173d24; }
+.dark-mode .landing-page .pulse-tag.is-block { color: #fca5a5; border-color: #7f1d1d; }
+.dark-mode .landing-page .pulse-tag.is-pass { color: #86efac; border-color: #14532d; }
+
+/* ─── Inside Pulse: a round chalkboard on the classroom wall ───
+   The same zoom through the rings and the same card per agent; only the materials change: chalk
+   on a board in a wooden frame, a paper clock face in the middle, a taped note and an index card. */
+.agents.is-live { background: radial-gradient(70% 60% at 50% 46%, rgb(255 255 255 / 0.5), transparent 70%), linear-gradient(180deg, #f6e7c8 0 84%, #9c6b3c 84% 84.8%, #dcbc93 84.8%); }
+.dark-mode .landing-page .agents.is-live { background: radial-gradient(70% 60% at 50% 46%, rgb(255 214 150 / 0.08), transparent 70%), linear-gradient(180deg, #1d2536 0 84%, #3b2a1a 84% 84.8%, #2a2118 84.8%); }
+.agents .scope-band { fill: #24413f; stroke: rgb(245 247 242 / 0.16); stroke-width: 1.5px; }
+.agents .scope-band.is-alt { fill: #2a4a47; }
+.agents .scope-zoom > .scope-ring:first-child .scope-band { stroke: var(--cr-oak); stroke-width: 16px; }
+.agents .scope-ring text { font-family: var(--cr-hand); font-weight: 400; fill: var(--cr-chalk-dim); letter-spacing: 0.04em; }
+.landing-page .agents.is-live .scope-ring.is-active text { fill: var(--cr-chalk-yellow); }
+.agents .scope-stop-deep { stop-color: #fffaf0; }
+.agents .scope-stop-mid { stop-color: #f3e6c9; }
+.agents .scope-stop-pale { stop-color: #2a4a47; }
+.agents .scope-light { fill: #fffaf0; }
+.agents.is-live .scope-svg { filter: drop-shadow(0 18px 26px rgb(64 44 24 / 0.35)); }
+.landing-page .agents-lens { background: radial-gradient(circle at 50% 42%, #fffdf8 0%, #f7eedc 70%, #eadbbd 100%); box-shadow: 0 0 0 6px #fffaf0, 0 0 0 10px var(--cr-oak), 0 22px 40px -22px rgb(64 44 24 / 0.7); }
+.dark-mode .landing-page .agents-lens { background: radial-gradient(circle at 50% 42%, #fffdf8 0%, #efe3c8 70%, #dccba6 100%); box-shadow: 0 0 0 6px #e9dcc0, 0 0 0 10px var(--cr-oak), 0 22px 40px -22px rgb(0 0 0 / 0.8); }
+.agents.is-live :is(.agents-head, .agents-caption) { border: 0; border-radius: 6px; background: var(--cr-paper); box-shadow: var(--cr-card); }
+.agents.is-live .agents-head { rotate: -0.8deg; }
+.agents.is-live .agents-head::before { content: ''; position: absolute; left: 50%; top: -11px; width: 92px; height: 24px; translate: -50% 0; rotate: 2deg; background: rgb(253 230 138 / 0.85); box-shadow: 0 1px 2px rgb(64 44 24 / 0.2); }
+.agents.is-live .agents-head .lp-label { font-family: var(--cr-hand); font-size: 1.125rem; font-weight: 400; }
+.agents.is-live .agents-caption { rotate: 0.8deg; padding-top: 28px; background: var(--cr-paper) repeating-linear-gradient(180deg, transparent 0 27px, rgb(147 197 253 / 0.28) 27px 28px); background-position: 0 14px; }
+.agents.is-live .agents-caption::before { content: ''; position: absolute; left: 50%; top: 9px; width: 15px; height: 15px; translate: -50% 0; border-radius: 50%; background: radial-gradient(circle at 34% 30%, #fecaca, #dc2626 62%, #991b1b); box-shadow: 0 3px 3px rgb(0 0 0 / 0.3); }
+.agents.is-live .agents-caption::after { content: ''; position: absolute; left: 30px; top: 0; bottom: 0; width: 2px; background: rgb(239 68 68 / 0.35); }
+.agents-count { font-family: var(--cr-hand); font-size: 1.125rem; font-weight: 400; color: var(--cr-soft); }
+.agents-name { font-family: var(--lp-display); font-weight: 700; color: var(--cr-ink); }
+.agents-role { font-weight: 600; color: var(--cr-soft); }
+.agents-ticks li { width: 24px; height: 6px; border-radius: 3px; background: var(--cr-edge); }
+.agents-ticks li:nth-child(odd) { rotate: -4deg; } .agents-ticks li:nth-child(even) { rotate: 3deg; }
+.agents-ticks li.is-done { background: #10b981; }
+.agents-ticks li.is-active { background: var(--lp-blue); }
+.pulse-bubble .pulse-actions { display: flex; flex-flow: row wrap; }
+.pulse-bubble .pulse-actions li { flex: none; width: auto; }
+.agents-words { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 0; padding: 0; list-style: none; }
+.agents-words li { padding: 3px 10px; border-radius: 999px; font-size: 0.875rem; font-weight: 700; color: var(--cr-ink); background: var(--cr-sky); }
+/* A narrow bar: the crest gives way so day/night, Sign In and the menu fit on one line. */
+@media (max-width: 520px) {
+  .nav-brand img { display: none; }
+  .nav-actions { gap: 8px; }
+  .theme-toggle { width: 50px; height: 30px; }
+  .theme-toggle-knob { width: 24px; height: 24px; }
+  .theme-toggle[aria-pressed='true'] .theme-toggle-knob { translate: 20px 0; }
+  .nav-actions .lp-button.is-small { white-space: nowrap; padding-inline: 12px; }
+}
+.lp-nav .theme-toggle { min-height: 0; min-width: 0; flex-shrink: 0; }

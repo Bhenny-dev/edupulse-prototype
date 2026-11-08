@@ -1,5 +1,6 @@
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin'
 import { gsap, ScrollTrigger, prefersReducedMotion } from './motion'
+import { isWorld } from './classroom/mode'
 
 gsap.registerPlugin(ScrollToPlugin)
 
@@ -26,18 +27,22 @@ export function sectionTop(id) {
   const target = document.getElementById(id)
   if (!target) return null
   const top = target.getBoundingClientRect().top + window.scrollY
-  return Math.max(0, Math.round(target.hasAttribute('data-full-screen') ? top + 1 : top - barHeight() + 1))
+  return Math.max(0, Math.round(target.hasAttribute('data-full-screen') || (isWorld() && target.hasAttribute('data-room')) ? top + 1 : top - barHeight() + 1))
 }
 
 // Glides the window to a scroll position with GSAP (the page's one animation system). The
 // glide stops the moment the reader scrolls themselves (autoKill), and with reduced motion
 // the jump is instant. Wheel and touch scrolling are never intercepted.
 let glide = null
+let jumper = null
+// The walk through the school sets this: a long jump is a soft cut rather than a blur of rooms.
+export const setJumper = fn => { jumper = fn }
 export function glideTo(y, { instant = false, onArrive } = {}) {
   glide?.kill()
   glide = null
   if (instant || prefersReducedMotion()) { window.scrollTo(0, y); onArrive?.(); return }
   const distance = Math.abs(y - window.scrollY)
+  if (jumper && distance > window.innerHeight * 2.4) { jumper(y, onArrive); return }
   glide = gsap.to(window, {
     scrollTo: { y, autoKill: true }, duration: Math.min(1.2, 0.4 + distance / 8000), ease: 'power3.inOut', overwrite: 'auto',
     onComplete: () => { glide = null; onArrive?.() },

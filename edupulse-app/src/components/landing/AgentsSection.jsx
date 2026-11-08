@@ -149,7 +149,7 @@ export default function AgentsSection({ agents }) {
             <p className="agents-count"><span>{pad(active + 1)}</span> / {pad(count)}</p>
             <div key={active} className="agents-caption-body">
               <p className="agents-name">{agents[active].name}</p>
-              <p className="agents-role">{agents[active].role}</p>
+              <ul className="agents-words">{agents[active].words.map(word => <li key={word}>{word}</li>)}</ul>
             </div>
             <ol className="agents-ticks">
               {agents.map((agent, i) => <li key={agent.key} className={i < active ? 'is-done' : i === active ? 'is-active' : undefined} />)}

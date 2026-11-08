@@ -97,6 +97,7 @@ export default function WorkspaceSection({ agents, talk }) {
         })
         if (!api) { flat(); return }
         scene.current = api
+        api.setNight(document.documentElement.classList.contains('dark-mode'))
         if (shown.current) api.reveal()
       }).catch(flat)
     }, { rootMargin: '0px 0px 200% 0px' })
@@ -111,12 +112,16 @@ export default function WorkspaceSection({ agents, talk }) {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)')
     const onReduce = () => scene.current?.setStill(isStill())
     reduce.addEventListener?.('change', onReduce)
+    // Night follows the app's dark mode (a class on the root element).
+    const night = new MutationObserver(() => scene.current?.setNight(document.documentElement.classList.contains('dark-mode')))
+    night.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
     return () => {
       cancelled = true
       runs.current++
       near.disconnect()
       seen.disconnect()
       reduce.removeEventListener?.('change', onReduce)
+      night.disconnect()
       api?.dispose()
       scene.current = null
     }

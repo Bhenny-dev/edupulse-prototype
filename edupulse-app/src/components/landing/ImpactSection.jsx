@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import { Clock, TrendingDown, TimerReset, GraduationCap, Wrench, Presentation, Factory } from 'lucide-react'
 import { gsap, useMotion } from './motion'
+import { isWorld, triggerFor } from './classroom/mode'
 
 const EVIDENCE_ICONS = { clock: Clock, less: TrendingDown, recovered: TimerReset }
 const GOAL_ICONS = { access: GraduationCap, skills: Wrench, teachers: Presentation, industry: Factory }
@@ -15,13 +16,13 @@ export default function ImpactSection({ evidence, goals }) {
     if (!motion) return
     const q = gsap.utils.selector(ref)
     q('.evidence-meter-fill').forEach(fill => gsap.from(fill, {
-      scaleX: 0, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: fill, start: 'top 68%', once: true },
+      scaleX: 0, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: triggerFor(fill), start: isWorld() ? 'top 12%' : 'top 68%', once: true },
     }))
   })
 
   return (
-    <section id="impact" className="lp-section impact" ref={ref} aria-labelledby="impact-title">
-      <div className="lp-wrap">
+    <section id="impact" className="lp-section impact room" data-room="impact" ref={ref} aria-labelledby="impact-title">
+      <div className="room-view"><div className="lp-wrap impact-board">
         <header className="lp-head">
           <p className="lp-label">Why it matters</p>
           <h2 id="impact-title" data-split>Preparation takes time. The research agrees.</h2>
@@ -60,7 +61,7 @@ export default function ImpactSection({ evidence, goals }) {
             })}
           </ul>
         </div>
-      </div>
+      </div></div>
     </section>
   )
 }

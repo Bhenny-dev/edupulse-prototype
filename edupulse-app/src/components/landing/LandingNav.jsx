@@ -1,21 +1,23 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { Menu, X, ArrowUp } from 'lucide-react'
+import { NavLink, useLocation, useNavigate } from 'react-router-dom'
+import { Menu, X } from 'lucide-react'
 import EduPulseMark from '../brand/EduPulseMark'
 import { KCP } from '../../data/colleges'
-import { NAV_LINKS, SECTION_IDS, scrollToId } from './navigation'
+import { PAGES } from '../public/pages'
+import { scrollToId } from './navigation'
+import ThemeToggle from './ThemeToggle'
 
-// Clear over the hero and translucent white once the page scrolls. A marker slides under the
-// link for the section in view, and a line along the bottom shows reading progress. The
-// back-to-top button sits outside the header: a backdrop blur would otherwise become the
-// containing block of a fixed child.
-const SPY = [...SECTION_IDS, 'top']
-
+// The bar on every public page: the EduPulse home, one link per page, day or night, and Sign In.
+// Clear over the hero and solid once the page scrolls; a marker slides under the current page's
+// link and a line along the bottom shows reading progress. Sections within a page are reached
+// with the round speed dial in the corner.
 export default function LandingNav() {
   const [scrolled, setScrolled] = useState(false)
-  const [farDown, setFarDown] = useState(false)
-  const [active, setActive] = useState('')
   const [open, setOpen] = useState(false)
   const progress = useRef(null), list = useRef(null)
+  const { pathname } = useLocation()
+  const navigate = useNavigate()
+  const home = pathname === '/'
 
   useEffect(() => {
     let frame = 0
@@ -23,7 +25,6 @@ export default function LandingNav() {
       frame = 0
       const y = window.scrollY, max = document.documentElement.scrollHeight - window.innerHeight
       setScrolled(y > 24)
-      setFarDown(y > window.innerHeight * 1.2)
       progress.current?.style.setProperty('--progress', max > 0 ? Math.min(1, y / max).toFixed(4) : '0')
     }
     const schedule = () => { if (!frame) frame = requestAnimationFrame(update) }
@@ -33,16 +34,7 @@ export default function LandingNav() {
     return () => { cancelAnimationFrame(frame); window.removeEventListener('scroll', schedule); window.removeEventListener('resize', schedule) }
   }, [])
 
-  useEffect(() => {
-    if (typeof IntersectionObserver === 'undefined') return undefined
-    const observer = new IntersectionObserver(entries => {
-      for (const entry of entries) if (entry.isIntersecting) setActive(entry.target.id)
-    }, { rootMargin: '-45% 0px -50% 0px' })
-    for (const id of SPY) { const section = document.getElementById(id); if (section) observer.observe(section) }
-    return () => observer.disconnect()
-  }, [])
-
-  // The marker follows the active link (CSS moves it in about 240 ms).
+  // The marker follows the current page's link (CSS moves it in about 240 ms).
   useLayoutEffect(() => {
     const element = list.current
     if (!element) return undefined
@@ -57,8 +49,9 @@ export default function LandingNav() {
     const sizes = new ResizeObserver(place)
     sizes.observe(element)
     return () => sizes.disconnect()
-  }, [active])
+  }, [pathname])
 
+  useEffect(() => { setOpen(false) }, [pathname])
   useEffect(() => {
     if (!open) return undefined
     const close = event => { if (event.key === 'Escape') setOpen(false) }
@@ -66,36 +59,37 @@ export default function LandingNav() {
     return () => window.removeEventListener('keydown', close)
   }, [open])
 
-  const go = (event, id) => { scrollToId(event, id); setOpen(false) }
-  const links = NAV_LINKS.map(link => (
-    <a key={link.id} href={`#${link.id}`} className={`nav-link ${active === link.id ? 'is-active' : ''}`}
-      aria-current={active === link.id ? 'location' : undefined} onClick={event => go(event, link.id)}>{link.label}</a>
+  const toTop = event => { if (home) { scrollToId(event, 'top'); setOpen(false) } }
+  const signIn = event => {
+    setOpen(false)
+    if (home) { scrollToId(event, 'login'); return }
+    event.preventDefault()
+    navigate('/?section=login')
+  }
+  const links = PAGES.map(page => (
+    <NavLink key={page.path} to={page.path} className={({ isActive }) => `nav-link ${isActive ? 'is-active' : ''}`}>{page.label}</NavLink>
   ))
 
   return (
-    <>
-      <header className={`lp-nav ${scrolled || open ? 'is-solid' : ''}`}>
-        <div className="nav-inner">
-          <a href="#top" className="nav-brand" onClick={event => go(event, 'top')} aria-label="EduPulse, King's College of the Philippines, back to top">
-            <img src={KCP.crest} alt="" width="32" height="32" />
-            <span className="nav-mark"><EduPulseMark size={18} strokeWidth={8} /></span>
-            <span className="nav-name">EduPulse</span>
-          </a>
-          <nav className="nav-links" ref={list} aria-label="Landing page sections">{links}</nav>
-          <div className="nav-actions">
-            <a href="#login" className="lp-button is-small" onClick={event => go(event, 'login')}>Sign In</a>
-            <button type="button" className="nav-menu-btn" aria-expanded={open} aria-controls="landing-menu"
-              aria-label={open ? 'Close menu' : 'Open menu'} onClick={() => setOpen(value => !value)}>
-              {open ? <X size={20} aria-hidden="true" /> : <Menu size={20} aria-hidden="true" />}
-            </button>
-          </div>
+    <header className={`lp-nav ${scrolled || open ? 'is-solid' : ''}`}>
+      <div className="nav-inner">
+        <NavLink to="/" className="nav-brand" onClick={toTop} aria-label="EduPulse, King's College of the Philippines, home">
+          <img src={KCP.crest} alt="" width="32" height="32" />
+          <span className="nav-mark"><EduPulseMark size={18} strokeWidth={8} /></span>
+          <span className="nav-name">EduPulse</span>
+        </NavLink>
+        <nav className="nav-links" ref={list} aria-label="Pages">{links}</nav>
+        <div className="nav-actions">
+          <ThemeToggle />
+          <a href="#login" className="lp-button is-small" onClick={signIn}>Sign In</a>
+          <button type="button" className="nav-menu-btn" aria-expanded={open} aria-controls="landing-menu"
+            aria-label={open ? 'Close menu' : 'Open menu'} onClick={() => setOpen(value => !value)}>
+            {open ? <X size={20} aria-hidden="true" /> : <Menu size={20} aria-hidden="true" />}
+          </button>
         </div>
-        <div className="nav-progress" ref={progress} aria-hidden="true" />
-        {open && <nav id="landing-menu" className="nav-menu" aria-label="Landing page sections menu">{links}</nav>}
-      </header>
-      <a href="#top" className={`landing-to-top ${farDown ? 'is-shown' : ''}`} aria-label="Back to top" tabIndex={farDown ? 0 : -1} aria-hidden={!farDown} onClick={event => go(event, 'top')}>
-        <ArrowUp size={18} aria-hidden="true" />
-      </a>
-    </>
+      </div>
+      <div className="nav-progress" ref={progress} aria-hidden="true" />
+      {open && <nav id="landing-menu" className="nav-menu" aria-label="Pages menu">{links}</nav>}
+    </header>
   )
 }

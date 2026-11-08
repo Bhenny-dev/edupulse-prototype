@@ -102,17 +102,17 @@ export const PRINCIPLES = [
 
 // Pulse's named agents (src/lib/rag/agents.ts), in the order a request meets them. A request
 // passes only the agents it needs; the Guardian always checks it first. `ring` is the line set
-// around the agent's ring.
+// around the agent's ring; `words` are its keywords on cards.
 export const AGENTS = [
-  { key: 'guardian', name: 'Guardian', ring: 'GUARDIAN · CHECKS APPROPRIATE USE', role: 'Checks every request against the college’s appropriate-use rules first, and declines what breaks them, such as asking for assessment answers.' },
-  { key: 'planner', name: 'Planner', ring: 'PLANNER · PLANS THE SEARCH', role: 'Works out what the request needs and plans the searches that will answer it.' },
-  { key: 'researcher', name: 'Researcher', ring: 'RESEARCHER · SEARCHES YOUR SOURCES', role: 'Runs several searches at once over the approved syllabus and your files, and public web sources when a request needs them.' },
-  { key: 'librarian', name: 'Librarian', ring: 'LIBRARIAN · SEARCHES OPEN CATALOGS', role: 'Finds readings and references in open catalogs when you ask for them.' },
-  { key: 'ranker', name: 'Ranker', ring: 'RANKER · RANKS THE EVIDENCE', role: 'Weighs what the searches found, keeps the most relevant passages and stops when nothing relevant turns up.' },
-  { key: 'comparator', name: 'Comparator', ring: 'COMPARATOR · ALIGNS SOURCES', role: 'Lines up passages from different documents when a request compares them.' },
-  { key: 'writer', name: 'Writer', ring: 'WRITER · WRITES FROM THE SOURCES', role: 'Writes the answer or draft from the ranked passages, quoting them directly when it has to.' },
-  { key: 'verifier', name: 'Verifier', ring: 'VERIFIER · CHECKS EVERY CLAIM', role: 'Checks each claim in a written answer against its sources before you see it.' },
-  { key: 'corrector', name: 'Corrector', ring: 'CORRECTOR · FIXES CITATIONS', role: 'Fixes the citations the Verifier flags, or replaces an answer it cannot verify.' },
+  { key: 'guardian', words: ['Checks first', 'Appropriate use', 'Stops what breaks rules'], name: 'Guardian', ring: 'GUARDIAN · CHECKS APPROPRIATE USE', role: 'Checks every request against the college’s appropriate-use rules first, and declines what breaks them, such as asking for assessment answers.' },
+  { key: 'planner', words: ['Reads the request', 'Plans the searches'], name: 'Planner', ring: 'PLANNER · PLANS THE SEARCH', role: 'Works out what the request needs and plans the searches that will answer it.' },
+  { key: 'researcher', words: ['Your syllabus', 'Your files', 'Web when needed'], name: 'Researcher', ring: 'RESEARCHER · SEARCHES YOUR SOURCES', role: 'Runs several searches at once over the approved syllabus and your files, and public web sources when a request needs them.' },
+  { key: 'librarian', words: ['Open catalogs', 'Readings', 'References'], name: 'Librarian', ring: 'LIBRARIAN · SEARCHES OPEN CATALOGS', role: 'Finds readings and references in open catalogs when you ask for them.' },
+  { key: 'ranker', words: ['Keeps the best passages', 'Drops duplicates'], name: 'Ranker', ring: 'RANKER · RANKS THE EVIDENCE', role: 'Weighs what the searches found, keeps the most relevant passages and stops when nothing relevant turns up.' },
+  { key: 'comparator', words: ['Lines up documents', 'Shared · different'], name: 'Comparator', ring: 'COMPARATOR · ALIGNS SOURCES', role: 'Lines up passages from different documents when a request compares them.' },
+  { key: 'writer', words: ['Writes from sources', 'Cites every line'], name: 'Writer', ring: 'WRITER · WRITES FROM THE SOURCES', role: 'Writes the answer or draft from the ranked passages, quoting them directly when it has to.' },
+  { key: 'verifier', words: ['Checks each claim', 'Against its source'], name: 'Verifier', ring: 'VERIFIER · CHECKS EVERY CLAIM', role: 'Checks each claim in a written answer against its sources before you see it.' },
+  { key: 'corrector', words: ['Fixes citations', 'Or shows the excerpts'], name: 'Corrector', ring: 'CORRECTOR · FIXES CITATIONS', role: 'Fixes the citations the Verifier flags, or replaces an answer it cannot verify.' },
 ]
 
 // The agent workspace: a scripted example of how the agents above handle requests (the graph

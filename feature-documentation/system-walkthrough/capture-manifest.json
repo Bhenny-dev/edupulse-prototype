@@ -1,5 +1,5 @@
 {
-  "capturedAt": "2026-11-07T15:32:21.586Z",
+  "capturedAt": "2026-11-08T01:25:33.428Z",
   "problems": [],
   "scenes": [
     {
@@ -14,7 +14,7 @@
       "role": "public",
       "folder": "01-public-site",
       "file": "02-landing-navigation.png",
-      "title": "Landing navigation after scrolling: active section and reading progress",
+      "title": "The bar after scrolling: the pages, day and night, Sign In and reading progress",
       "route": "/",
       "ok": true
     },
@@ -23,14 +23,6 @@
       "folder": "01-public-site",
       "file": "03-landing-why-edupulse.png",
       "title": "Landing page: why EduPulse (course preparation today and with EduPulse)",
-      "route": "/",
-      "ok": true
-    },
-    {
-      "role": "public",
-      "folder": "01-public-site",
-      "file": "04-landing-features.png",
-      "title": "Landing page: features (four parts of one workflow)",
       "route": "/",
       "ok": true
     },
@@ -160,6 +152,214 @@
       "file": "18-server-error.png",
       "title": "Server error page",
       "route": "/500",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "19-walk-campus.png",
+      "title": "The walk: the hero on the campus lawn, with the KCP building",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "20-walk-bulletin-board.png",
+      "title": "The walk: Why EduPulse on the corridor bulletin board",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "21-walk-blackboard.png",
+      "title": "The walk: Features on the classroom blackboard",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "22-walk-class-seats.png",
+      "title": "The walk: How it works on the class seats, from above",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "23-walk-classmates.png",
+      "title": "The walk: Roles with the classmates on their tier",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "24-walk-teachers-desk.png",
+      "title": "The walk: Pulse at the teacher's end of the classroom",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "25-walk-gallery.png",
+      "title": "The walk: Why it matters in frames along the gallery wall",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "26-walk-front-stage.png",
+      "title": "The walk: Colleges on the front stage",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "27-walk-courtyard.png",
+      "title": "The walk: community photographs on lines above the KCP building",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "28-walk-notebook.png",
+      "title": "The walk: FAQ in an open notebook on the desk",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "29-walk-door.png",
+      "title": "The walk: sign-in on the door of the study",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "30-page-features.png",
+      "title": "Features page: the science lab, one station per feature",
+      "route": "/features",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "31-page-how-it-works.png",
+      "title": "How It Works page: the physics room, the phases along a marble run",
+      "route": "/how-it-works",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "32-page-roles.png",
+      "title": "Roles page: the math room, one shape per role",
+      "route": "/roles",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "33-page-pulse.png",
+      "title": "Pulse page: the computer lab, one workstation per agent",
+      "route": "/pulse",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "34-page-impact.png",
+      "title": "Impact page: the history room, findings as exhibits and the goals on a globe",
+      "route": "/impact",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "35-page-colleges.png",
+      "title": "Colleges page: the gallery, one framed picture per college",
+      "route": "/colleges",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "36-page-play.png",
+      "title": "Play page: the game room, one cabinet per game",
+      "route": "/play",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "37-page-faq.png",
+      "title": "FAQ page: the library, one book per question",
+      "route": "/faq",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "38-page-roles-grid.png",
+      "title": "Roles page: which pages each role opens",
+      "route": "/roles",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "39-page-pulse-ask.png",
+      "title": "Pulse page: a sample exchange in keywords and icons",
+      "route": "/pulse",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "40-page-play-gate.png",
+      "title": "Play page: Guardian Gate after a decision",
+      "route": "/play",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "41-page-dial.png",
+      "title": "A page with the speed dial open: its parts and the pause control",
+      "route": "/play",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "42-night-page-features.png",
+      "title": "Night: the science lab with moonlight and the lamps on",
+      "route": "/features",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "43-night-walk-campus.png",
+      "title": "Night: the hero on the campus lawn, stars and the moon over the KCP building",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "44-night-walk-teachers-desk.png",
+      "title": "Night: Pulse at the teacher's end of the classroom",
+      "route": "/",
       "ok": true
     },
     {
@@ -616,6 +816,14 @@
       "file": "09-pulse-declines-assessment-answers.png",
       "title": "Pulse declines a request for quiz answers (Guardian)",
       "route": "/dashboard",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "04-landing-features.png",
+      "title": "Landing page: features (four parts of one workflow)",
+      "route": "/",
       "ok": true
     }
   ]

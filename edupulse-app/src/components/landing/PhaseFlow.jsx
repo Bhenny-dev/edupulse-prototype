@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import { Bot, UserCheck, FileUp, Users, FileText, Layers, GraduationCap, ChartColumn, Landmark, Briefcase, Presentation } from 'lucide-react'
 import { gsap, ScrollTrigger, useMotion } from './motion'
+import { isWorld, rectIn } from './classroom/mode'
 
 const pad = n => String(n).padStart(2, '0')
 const PHASE_ICONS = { records: FileUp, loading: Users, syllabus: FileText, courseware: Layers, access: GraduationCap, monitoring: ChartColumn }
@@ -27,10 +28,10 @@ export default function PhaseFlow({ phases }) {
     }
     // The connector: a spine through every marker, with a short branch into each phase.
     const build = () => {
-      const box = track.current.getBoundingClientRect()
+      const box = { width: track.current.offsetWidth, height: track.current.offsetHeight }
       const nodes = q('.flow-node').map(node => {
-        const r = node.getBoundingClientRect()
-        return { x: r.left - box.left + r.width / 2, y: r.top - box.top + r.height / 2, edge: r.right - box.left }
+        const r = rectIn(node, track.current)
+        return { x: r.x + r.w / 2, y: r.y + r.h / 2, edge: r.x + r.w }
       })
       let d = ''
       nodes.forEach((node, i) => {
@@ -46,12 +47,18 @@ export default function PhaseFlow({ phases }) {
     build()
     gsap.to(state, {
       p: 1, ease: 'none', onUpdate: paint,
-      scrollTrigger: { trigger: track.current, start: 'top 62%', end: 'bottom 62%', scrub: 0.4, onRefresh: build },
+      scrollTrigger: isWorld()
+        ? { trigger: section, start: 'top top', end: () => `+=${Math.max(1, Number(section.dataset.holdPx) || 1)}`, scrub: 0.4, invalidateOnRefresh: true, onRefresh: build }
+        : { trigger: track.current, start: 'top 62%', end: 'bottom 62%', scrub: 0.4, onRefresh: build },
     })
 
     const phaseEls = q('.flow-phase')
+    const view = section.querySelector('.room-view')
     phaseEls.forEach(phase => ScrollTrigger.create({
-      trigger: phase, start: 'top 62%', end: 'max',
+      ...(isWorld()
+        ? { trigger: section, start: () => `top top-=${Math.max(0, rectIn(phase, view).y - window.innerHeight * 0.62)}`, invalidateOnRefresh: true }
+        : { trigger: phase, start: 'top 62%' }),
+      end: 'max',
       onEnter: () => phase.classList.add('is-reached'), onLeaveBack: () => phase.classList.remove('is-reached'),
     }))
     return () => {
@@ -62,8 +69,8 @@ export default function PhaseFlow({ phases }) {
   })
 
   return (
-    <section id="flow" className="lp-section flow is-mist" ref={ref} aria-labelledby="flow-title">
-      <div className="lp-wrap flow-grid">
+    <section id="flow" className="lp-section flow is-mist room" data-room="flow" ref={ref} aria-labelledby="flow-title">
+      <div className="room-view"><div className="lp-wrap flow-grid">
         <header className="lp-head flow-head">
           <p className="lp-label">How it works</p>
           <h2 id="flow-title" data-split>Six phases. People decide each one.</h2>
@@ -106,7 +113,7 @@ export default function PhaseFlow({ phases }) {
             })}
           </ol>
         </div>
-      </div>
+      </div></div>
     </section>
   )
 }
