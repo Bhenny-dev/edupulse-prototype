@@ -9,6 +9,7 @@ import { useAuth } from '../../context/AuthContext'
 import { aiRequest, askPulse, readReferenceFile, UPLOAD_ACCEPT } from '../../lib/aiClient'
 import { requestOperator } from '../../lib/operatorClient'
 import { checkAppropriateUse } from '../../lib/rag/policy'
+import { informationalQuestion } from '../../lib/rag/lookup'
 import { getAgentForZone, intentsForRole } from '../../agents'
 import { approvalResumeStep, prepareIntent, previewAgents, stepReadiness, stepTarget } from '../../agents/guidance'
 import { courseCatalog, findCourseMentions, pageFor, PAGES, planOperator, searchRecords, syllabusReference } from '../../agents/operator'
@@ -383,19 +384,20 @@ export default function Pulse() {
         setMessages(previous => [...previous, { id: crypto.randomUUID(), from: 'pulse', mode: 'actions', text: '', proposals: [{ type: 'recall', ...recalled }] }]); return
       }
       const permitted = !question || checkAppropriateUse(question, user?.role || 'guest').allowed
+      const informational = !options.task && informationalQuestion(question)
       const editor = currentEditor()
       const broad = ALL_FIELDS.test(question) || /\b(?:all|every|entire|whole)\s+(?:(?:the|these|my)\s+)?(?:program\s+outcomes?|outcomes?|requirements?|policies|references?|questions?|sections?|fields?)\b/i.test(question)
-      const target = user?.role === 'instructor' && !options.skipOperator && (DRAFT_REQUEST.test(question) || EDIT_REQUEST.test(question)) && !broad && focus?.field && selectedSection === focus.field.split('.')[0] ? { path: focus.field, label: focus.label } : null
+      const target = user?.role === 'instructor' && !informational && !options.skipOperator && (DRAFT_REQUEST.test(question) || EDIT_REQUEST.test(question)) && !broad && focus?.field && selectedSection === focus.field.split('.')[0] ? { path: focus.field, label: focus.label } : null
       if (target && (!focus.fieldElement?.isConnected || focus.fieldElement.getAttribute('data-pulse-field') !== target.path || focus.brief?.disabled || focus.brief?.sensitive || !editor || !editableField(editor, target.path))) throw new Error('The selected field changed or is read-only. Drag Pulse onto the intended editable field again.')
       const role = user?.role || 'guest'
       const destination = pageFor(question, role === 'admin' && user?.canSwitchRoles ? 'instructor' : role, { canSwitchRoles: Boolean(user?.canSwitchRoles), history })
-      const work = options.skipOperator || !permitted ? null : workProposal({ message: question, attachments: pending, role, editor, registrations: registrations.filter(item => item.uploadedBy === user?.id), catalog, section: selectedSection, target, scopeFields })
-      const draftFromSource = !target && pending.length && /\b(?:generate|create|draft|make|prepare|build)\b/i.test(question) && (/learning materials?|lessons?|lecture|courseware/i.test(question) || /^(?:please\s+)?generate\s+(?:me\s+)?(?:this|it|these)[.!?]?$/i.test(question) && /learning materials?|lessons?|lecture|courseware/i.test(history.at(-2)?.content || history.at(-1)?.content || ''))
-      let plan = draftFromSource ? { proposals: [], chat: true, task: 'draft', mentioned: [] } : options.skipOperator || !permitted ? { proposals: [], chat: true, task: options.task || 'auto', mentioned: findCourseMentions(question, catalog) }
+      const work = options.skipOperator || !permitted || informational ? null : workProposal({ message: question, attachments: pending, role, editor, registrations: registrations.filter(item => item.uploadedBy === user?.id), catalog, section: selectedSection, target, scopeFields })
+      const draftFromSource = !informational && !target && pending.length && /\b(?:generate|create|draft|make|prepare|build)\b/i.test(question) && (/learning materials?|lessons?|lecture|courseware/i.test(question) || /^(?:please\s+)?generate\s+(?:me\s+)?(?:this|it|these)[.!?]?$/i.test(question) && /learning materials?|lessons?|lecture|courseware/i.test(history.at(-2)?.content || history.at(-1)?.content || ''))
+      let plan = draftFromSource ? { proposals: [], chat: true, task: 'draft', mentioned: [] } : options.skipOperator || !permitted || informational ? { proposals: [], chat: true, task: options.task || 'auto', mentioned: findCourseMentions(question, catalog) }
         : work ? { proposals: [work], chat: false, mentioned: [] } : destination ? { proposals: [destination.denied ? { type: 'notice', text: `${destination.label} is not available for your role.` } : { type: /\b(?:guide|walkthrough|walk\s+me|step.by.step|help\s+me)\b/i.test(question) ? 'guide' : 'navigate', path: destination.path, label: destination.label, ...(destination.viewRole ? { viewRole: destination.viewRole } : {}) }], chat: false, mentioned: [] }
           : /\b(?:guide|walkthrough|walk\s+me)\b/i.test(question) && /\b(?:this|current)\s+(?:page|section|component)\b/i.test(question) ? { proposals: [{ type: 'guide', path: `${location.pathname}${location.search}`, label: agent?.label || 'this page' }], chat: false, mentioned: [] }
             : work ? { proposals: [work], chat: false, mentioned: [] } : planOperator({ message: question, attachments: pending, role, canSwitchRoles: Boolean(user?.canSwitchRoles), catalog, currentCourse: currentCourse || catalog.find(item => item.code === editor?.data.courseCode), history })
-      if (!options.skipOperator && permitted && !draftFromSource && !plan.proposals.length && ACTION_REQUEST.test(question)) {
+      if (!options.skipOperator && permitted && !informational && !draftFromSource && !plan.proposals.length && ACTION_REQUEST.test(question)) {
         if (!ai.ready) plan = { ...plan, chat: false, proposals: [{ type: 'notice', text: 'Name the page or open the editor you want to change. Navigation, file import and roster tools work without a model; flexible planning and rewriting need a connected text-generation model.' }] }
         else {
           const result = await requestOperator({ operation: 'plan', message: question, viewRole: role, editor, context: `Page: ${location.pathname}. Component: ${focus?.label || ''}. Known courses: ${catalog.map(item => item.code).join(', ')}.`, history: history.slice(-8).map(item => ({ ...item, content: item.content.slice(0, 3000) })), attachments: sourceReferences.map(item => ({ title: item.title, text: item.text.slice(0, 18000), kind: item.syllabus ? 'syllabus' : item.roster ? 'roster' : 'material' })) }, controller.signal)

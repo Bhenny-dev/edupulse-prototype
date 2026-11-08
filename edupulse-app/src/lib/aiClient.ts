@@ -131,19 +131,25 @@ function browserDeps(signal: AbortSignal, session: Identity, generate = invokeBr
 
 export async function askPulse(input: Partial<ChatInput> & { message: string }, signal?: AbortSignal): Promise<AiAnswer> {
   if (aiPreference() !== 'browser') return aiRequest<AiAnswer>('chat', 'POST', input, signal)
-  if (browserAIState().status !== 'ready') throw new Error('Your on-device model is not ready. Open AI settings to load it or choose a provider.')
   const abort = AbortSignal.any([AbortSignal.timeout(240000), ...(signal ? [signal] : [])])
   const [{ runAgents }, { chatInput }, { contextualDeps }] = await Promise.all([import('./rag/agents'), import('../../server/contracts'), import('./rag/context')])
   const session: Identity = { id: 'device-session', role: input.viewRole || 'guest', local: false }
   let prepared: import('./rag/context').PreparedChatContext = { input: chatInput.parse(input), evidence: [], warnings: [], privateContext: true }
   let onlineContext = false
+  let fallbackAnswer:AiAnswer|undefined
   try {
-    const response = await aiRequest<import('./rag/context').PreparedChatContext & { identity: Identity }>('chat-context', 'POST', prepared.input, abort)
+    const response = await aiRequest<import('./rag/context').PreparedChatContext & { identity: Identity; answer?: AiAnswer; fallbackAnswer?:AiAnswer }>('chat-context', 'POST', prepared.input, abort)
+    if (response.answer) return response.answer
+    fallbackAnswer=response.fallbackAnswer
     Object.assign(session, response.identity); prepared = response; onlineContext = true
   } catch (error) {
     if (abort.aborted || error instanceof ApiRequestError && [401,403].includes(error.status)) throw error
     prepared.warnings.push('Online account context and memory are unavailable. This reply uses only supplied context and the on-device model.')
     prepared.input.context = `Live account records and memory are unavailable; do not invent records or claim recall.\n${prepared.input.context}`.slice(0, 6000)
+  }
+  if (browserAIState().status !== 'ready') {
+    if(fallbackAnswer)return fallbackAnswer
+    throw new Error('Your on-device model is not ready. Open AI settings to load it or choose a provider.')
   }
   const result = await runAgents(prepared.input, session, abort, contextualDeps(prepared, browserDeps(abort, session)))
   if (onlineContext && prepared.input.conversationId && session.role !== 'guest' && result.mode !== 'declined') {

@@ -1,0 +1,95 @@
+import { randomUUID } from 'node:crypto'
+import type { ChatInput, Identity } from './contracts.js'
+import { publicKnowledge } from './knowledge.js'
+import { authorizedAccountContext, accountQuestion, profileQuery } from './domains/accountContext.js'
+import { readAcademic } from './domains/academic.js'
+import { readWorkspace } from './workspace.js'
+import { keywordSearch } from './rag/keyword.js'
+import { searchWeb } from './external/web.js'
+import { keywordMatch, words, informationalQuestion } from '../src/lib/rag/lookup.js'
+import { planRequest, allowsPublicResearch, casualConversation } from '../src/lib/rag/plan.js'
+import { checkAppropriateUse } from '../src/lib/rag/policy.js'
+import { extractiveAnswer, runAgents, type AgentAnswer } from '../src/lib/rag/agents.js'
+import { verifyAnswer } from '../src/lib/rag/verify.js'
+import { agentReport } from '../src/lib/rag/registry.js'
+import type { Evidence, AgentStep } from '../src/lib/rag/types.js'
+
+export function simpleLookup(input: ChatInput) {
+  const plan=planRequest(input)
+  return ['auto','answer'].includes(input.task) && (['answer','general'].includes(plan.task)||informationalQuestion(input.message)) && !casualConversation(input.message) && !plan.revision && !/\b(?:analy[sz]e|evaluate|reason|brainstorm|explain in detail|step.by.step)\b/i.test(input.message)
+}
+const evidence = (id:string,title:string,text:string,origin:Evidence['origin']='account'):Evidence => ({id,documentId:null,title,text,page:null,section:null,flagged:false,origin,method:origin==='public-guide'?'keyword':'provided',similarity:null,relevance:null,rrf:1,query:''})
+const label=(key:string)=>key.replace(/([a-z])([A-Z])/g,'$1 $2').replace(/[_-]+/g,' ')
+function prose(value:unknown,depth=0):string {
+  if(depth>5)return ''
+  if(typeof value==='string')return value.slice(0,12000)
+  if(typeof value==='number'&&Number.isFinite(value))return String(value)
+  if(Array.isArray(value))return value.map(item=>prose(item,depth+1)).filter(Boolean).join('\n')
+  if(value&&typeof value==='object')return Object.entries(value).filter(([key])=>!/^(?:id|.*Id|approvedFile|history|provenance|correctIndex|answerKey|password|token|apiKey|base64|data|courseOutline)$/i.test(key)).map(([key,item])=>{
+    const text=prose(item,depth+1)
+    return text?`${['parsed','sections','content'].includes(key)?'':label(key)+': '}${text}`:''
+  }).filter(Boolean).join('\n')
+  return ''
+}
+function outlineText(outline:any[]) {
+  return outline.flatMap(row=>Object.entries(row).filter(([key])=>key!=='week').map(([key,value])=>{
+    const text=prose(value).replace(/\n/g,'; ')
+    return text?`Week ${row.week} ${key==='ilos'?'learning outcomes':label(key)}: ${text}`:''
+  })).join('\n')
+}
+
+/** Deterministic quoted answers, with real provenance and no generation/reranking model. */
+export async function lookupAnswer(input: ChatInput, sources: Evidence[], signal: AbortSignal, scope:'system'|'web', correction?:string, warning?:string):Promise<AgentAnswer> {
+  const core=profileQuery(input.message) && sources[0]?.origin==='account' ? `${sources[0].text} [1]` : extractiveAnswer(input.message,sources).replace(/^Source excerpts \(no model-generated answer\):\s*/,'')
+  const verification=sources.length?await verifyAnswer(core,sources,signal):null
+  const prefix=correction?`Did you mean ${correction}?\n\n`:''
+  const answer=prefix+(scope==='web'?'I did not find a relevant match in the accessible system content searched. These are Internet suggestions, not EduPulse records:\n\n':'')+(sources.length?core:warning||'No matching accessible system content was found. Try a course code, student number, a shorter name or a different keyword.')
+  const trace:AgentStep[]=[{agent:'Guardian',node:'guardian',action:'check appropriate use',detail:'Applied the current role restrictions before retrieval.',ms:0,status:'done'},{agent:'Researcher',node:'system-search',action:scope==='system'?'search authorized system content':'system search, then public suggestions',detail:'Keyword and typo matching; no generation model or embedding model invoked.',ms:0,status:sources.length?'done':'fallback',metrics:{passages:sources.length}}]
+  return {requestId:randomUUID(),answer,mode:sources.length?'retrieval':'insufficient-evidence',task:'answer',plan:planRequest(input),sources:sources.map((e,i)=>({...e,citation:i+1,score:e.rrf})),verification,comparison:null,references:[],trace,agents:['Guardian','Researcher'],warning:warning||null,provider:'system-search',model:null,grounding:sources.length?'references':'general',policy:{allowed:true,rule:null,note:'Role restrictions were checked before System Search.'},agentReport:agentReport(trace,{mode:sources.length?'retrieval':'insufficient-evidence',verification,sources:sources.length}),lookup:{scope,...(correction?{correction}:{})}}
+}
+
+/** Read-only System Search agent. Existing RLS helpers are the sole source of private data. */
+export async function systemLookup(input:ChatInput,owner:Identity,subject:Identity,signal:AbortSignal):Promise<AgentAnswer|null> {
+  if (!simpleLookup(input)) return null
+  if (!checkAppropriateUse(input.message,input.viewRole==='student'||input.viewRole==='guest'?input.viewRole:subject.role).allowed) return runAgents(input,subject,signal,{provider:'system-search',search:async()=>({evidence:[]})})
+  const plan=planRequest(input), candidates:Evidence[]=[], warnings:string[]=[]
+  const scoped=plan.sourceOnly, selectedFiles=Boolean(input.documentIds.length||input.attachments.length&&scoped)
+  const live=selectedFiles?{evidence:[]}:await authorizedAccountContext(subject,input.message,signal)
+  signal.throwIfAborted()
+  if (live.warning) return lookupAnswer(input,[],signal,'system',undefined,live.warning)
+  if (live.evidence.length && (profileQuery(input.message)||! /\b(?:says?|about|covers?|topics?|outcomes?|requirements?|polic\w*|grading|references?|lessons?|concepts?|weeks?|activit\w*)\b/i.test(input.message))) return lookupAnswer(input,live.evidence,signal,'system',live.correction)
+  candidates.push(...live.evidence)
+  if (!input.documentIds.length) for (const [i,file] of input.attachments.entries()) candidates.push(evidence(`attachment-${i}`,file.title,file.text,'attachment'))
+  if (!scoped) candidates.push(...publicKnowledge.map(row=>evidence(row.id,row.title,row.text,'public-guide')))
+  if (!selectedFiles && subject.role!=='guest' && !profileQuery(input.message)) {
+    try {
+      const records=await readAcademic(subject)
+      for (const row of records.courses) candidates.push(evidence(`course:${row.id}`,String(row.course_code)+' '+row.course_title,`${row.course_code}: ${row.course_title}. Instructor: ${row.instructor_name||'not recorded'}.\n${outlineText(Array.isArray(row.outline)?row.outline:[])}`))
+      for (const row of records.publications) if (row.type==='material') candidates.push(evidence(`release:${row.id}`,String(row.title),`${row.title}\n${prose(row.content?.concepts)}\n${prose(row.content?.examples)}\n${prose(row.content?.applications)}`))
+    } catch { warnings.push('Academic content could not be searched completely.') }
+    if (['admin','instructor','dean','associate_dean'].includes(subject.role)) try {
+      const workspace=await readWorkspace(subject)
+      for (const row of workspace.data?.syllabi||[]) candidates.push(evidence(`syllabus:${row.id}`,`${row.courseCode} ${row.courseTitle} syllabus (${row.status})`,`${row.courseCode}: ${row.courseTitle}. Status: ${row.status}.\n${prose(row)}\n${outlineText(row.courseOutline)}`))
+      for (const [id,row] of Object.entries(workspace.data?.content||{})) if (row.type==='material') candidates.push(evidence(`authored:${id}`,row.content.title,`${row.content.title}\n${prose(row.content.concepts)}\n${prose(row.content.examples)}\n${prose(row.content.applications)}`))
+    } catch { warnings.push('Saved workspace content could not be searched completely.') }
+  }
+  try { candidates.push(...await keywordSearch(owner,input.message,input.documentIds,signal)) }
+  catch { signal.throwIfAborted();warnings.push('The indexed knowledge library could not be searched completely.') }
+  const ranked=candidates.map(source=>({source,score:keywordMatch(input.message,`${source.title}\n${source.text}`)})).filter(hit=>hit.score>=0.68).sort((a,b)=>b.score-a.score||(['account','attachment','private'].includes(b.source.origin)?1:0)-(['account','attachment','private'].includes(a.source.origin)?1:0))
+  const found=ranked.slice(0,4).map(hit=>({...hit.source,query:input.message}))
+  if (found.length) {
+    const exact=words(input.message).every(q=>words(found[0]!.title+' '+found[0]!.text).includes(q)||q.length<4)
+    return lookupAnswer(input,found,signal,'system',!exact&&ranked[0]!.score<1?found[0]!.title:undefined,warnings.join(' '))
+  }
+  const privateQuestion=accountQuestion(input.message)||/@|\b\d{4}-\d-\d{4}\b/.test(input.message)
+  if (!scoped && !privateQuestion && allowsPublicResearch(input.message)) {
+    // Preserve the existing provider's broader/current web research on explicit requests.
+    if (/\b(?:latest|recent|today|news|breaking|up.to.date)\b|\b(?:search|browse)\s+(?:the\s+)?(?:broader?\s+)?(?:web|internet)\b|\boutside Wikipedia\b/i.test(input.message)) return null
+    const web=await searchWeb(plan.topic,signal)
+    if (web.evidence.length) return lookupAnswer(input,web.evidence.slice(0,4),signal,'web',undefined,[...warnings,web.warning].filter(Boolean).join(' '))
+    if(web.warning) warnings.push(web.warning)
+  }
+  const missing=await lookupAnswer(input,[],signal,'system',undefined,warnings.length?`${warnings.join(' ')} No match is claimed; retry when connected or refine the keywords.`:undefined)
+  if(!scoped&&!privateQuestion&&!profileQuery(input.message)) missing.lookup={...missing.lookup!,canGenerate:true}
+  return missing
+}

@@ -3,9 +3,13 @@ import { makeRuledSyllabusPdf } from '../fixtures'
 import { readFile } from 'node:fs/promises'
 import { getDocumentProxy, extractText } from 'unpdf'
 
+test.setTimeout(90_000)
+test.beforeEach(async({page})=>{await page.emulateMedia({reducedMotion:'reduce'})})
+
 async function builder(page: import('@playwright/test').Page) {
   await page.goto('/')
   await page.getByRole('button',{name:'Instructor',exact:true}).click()
+  await expect.poll(()=>page.evaluate(()=>JSON.parse(localStorage.getItem('edupulse_user')||'null')?.role)).toBe('instructor')
   await page.goto('/#/syllabus?tab=builder')
   await page.getByLabel('Upload syllabus DOCX or PDF').setInputFiles({name:'sample-syllabus.pdf',mimeType:'application/pdf',buffer:makeRuledSyllabusPdf()})
   await expect(page.getByText('Extracted Sections Preview',{exact:true})).toBeVisible({timeout:30_000})
@@ -64,6 +68,8 @@ test('model conversations receive buddy identity, follow-up history and retained
   await expect(page.getByRole('button',{name:'Download response as PDF'}).last()).toBeVisible()
   await page.getByRole('button', { name: 'Pulse options', exact: true }).click(); await page.getByRole('button',{name:'Open workspace buddies'}).click()
   const office=page.getByRole('dialog',{name:'Meet your crew.'})
+  const pause=office.getByRole('button',{name:'Pause office animation',exact:true})
+  if(await pause.isVisible())await pause.click()
   await office.getByRole('button',{name:/Talk to Quill,/}).click()
   await office.getByLabel('Message Quill').fill('How do you decide which example helps me?')
   await office.getByRole('button',{name:'Send to buddy'}).click()

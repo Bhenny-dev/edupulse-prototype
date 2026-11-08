@@ -55,7 +55,7 @@ See the [student example](../../system-walkthrough/05-student/09-pulse-declines-
 
 ## Good to know
 
-If a connected provider rejects the model or has no API credits, Pulse shows the connection error even when library sources are available. Open **Pulse options → AI settings**, refresh the available models and use **Test selected model**. A saved key and model list alone do not verify generation access. See [connection recovery examples](../08-ai-connections/README.md).
+Ordinary system and keyword searches answer without resolving an AI provider. Requests that need generation still show actionable provider model or API-credit errors. Open **Pulse options → AI settings**, refresh the available models and use **Test selected model**. A saved key and model list alone do not verify generation access. See [connection recovery examples](../08-ai-connections/README.md).
 
 * Without a connected model, Pulse still searches and quotes the best source sentences, labelled **Source excerpts**.
 * Document-specific or source-only questions report missing evidence. New educational drafts can use subject knowledge and public research even when the library is empty. A draft is not judged complete merely because it matches a source.
@@ -78,3 +78,5 @@ Pulse supplies up to 12 recent turns within its bounded prompt budget. Saved pre
 Images 1-3 use the real local Ollama qwen2.5:3b model and the uploaded Wikipedia taxonomy PDF. The model wording could not be fully verified, so the recorded result is explicitly **Source excerpts (no model-generated answer)** with citations. Images 4-5 use labelled synthetic transport to exercise revision controls. The source excerpts and interface fixtures do not establish that a model can satisfy every instruction.
 
 Pulse now receives live authorized account evidence for course, syllabus, roster and activity questions. Public factual questions can search without an explicit search keyword, while casual exchanges and source-only questions keep their appropriate scope. Supabase handoffs provide owner/conversation/subject-scoped continuity and respect automatic-memory controls. See [Manual 23](../23-account-support-and-pulse-context/README.md) for the current examples and limits.
+
+[System-first search and image results](../24-system-first-search/README.md) documents the keyless path, typo suggestions and explicit Internet fallback.

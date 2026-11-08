@@ -52,6 +52,18 @@ function AnswerText({ text, claims = [], grounded, onCite }) {
   })}</div>
 }
 
+function SearchImages({ sources = [] }) {
+  const [failed,setFailed]=useState([])
+  const images=sources.filter(source=>{
+    try { return source.origin==='web' && ['https://upload.wikimedia.org','https://thumb.wikimedia.org'].includes(new URL(source.image.url).origin) && new URL(source.image.creditsUrl).origin==='https://en.wikipedia.org' && new URL(source.url).protocol==='https:' } catch { return false }
+  }).slice(0,4)
+  if (!images.length) return null
+  return <div className="aa-images" aria-label="Images from public search sources">{images.map(source=><figure key={source.id}>
+    {failed.includes(source.id)?<div className="aa-image-missing">Image unavailable</div>:<a href={source.url} target="_blank" rel="noreferrer noopener" aria-label={`Open source for ${source.title}`}><img src={source.image.url} alt={source.title} width="480" height="320" loading="lazy" decoding="async" referrerPolicy="no-referrer" onError={()=>setFailed(previous=>[...previous,source.id])} /></a>}
+    <figcaption><a href={source.url} target="_blank" rel="noreferrer noopener">{source.title}</a><a href={source.image.creditsUrl} target="_blank" rel="noreferrer noopener">Image credits</a></figcaption>
+  </figure>)}</div>
+}
+
 export default function AgentAnswer({ message, onRevise, compact = false, onDownload }) {
   const [openSource, setOpenSource] = useState(null), [revising, setRevising] = useState(false), [note, setNote] = useState(''), [copied, setCopied] = useState('')
   const v = message.verification, grounded = message.sources?.length > 0 && ['answer', 'summarize', 'compare'].includes(message.task)
@@ -62,6 +74,8 @@ export default function AgentAnswer({ message, onRevise, compact = false, onDown
   }
   return <>
     <AnswerText text={message.text} claims={compact ? [] : v?.claims} grounded={grounded} onCite={showSource} />
+    {message.lookup && <small className="aa-lookup" title="This search used keyword matching and quoted sources, without a generation-model request.">{message.lookup.scope==='web'?'Internet suggestions':'System search'} · No AI credits used</small>}
+    <SearchImages sources={message.sources} />
     <details open={!compact} className="aa-verification"><summary>Verification details</summary>
     <div className="aa-badges">
       {message.mode === 'declined' && <span className="aa-badge is-warn" title={`${message.policy?.reason || ''} ${message.policy?.spec ? `(${message.policy.spec})` : ''}`.trim()}>Declined by the Guardian · appropriate-use rule</span>}

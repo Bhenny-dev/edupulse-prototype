@@ -213,14 +213,15 @@ export function buildAssistantGraph(input: ChatInput & { task?: Plan['task'] | '
     })
     .addEdge(START, 'guardian')
     .addConditionalEdges('guardian', s => s.policy?.allowed ? 'planner' : END, ['planner', END])
-    .addConditionalEdges('planner', s => s.plan!.task === 'references' ? 'librarian' : s.plan!.needsWeb ? 'web' : s.plan!.needsEvidence ? s.plan!.queries.map(query => new Send('researcher', { query })) : s.groups.length ? 'ranker' : deps.generate ? 'writer' : 'missing', ['librarian', 'web', 'researcher', 'ranker', 'writer', 'missing'])
-    .addConditionalEdges('web', s => s.plan!.needsEvidence ? s.plan!.queries.map(query => new Send('researcher', { query })) : 'ranker', ['researcher', 'ranker'])
+    .addConditionalEdges('planner', s => s.plan!.task === 'references' ? 'librarian' : s.plan!.needsEvidence || s.plan!.needsWeb ? s.plan!.queries.map(query => new Send('researcher', { query })) : s.groups.length ? 'ranker' : deps.generate ? 'writer' : 'missing', ['librarian', 'researcher', 'ranker', 'writer', 'missing'])
+    .addEdge('web','ranker')
     .addEdge('researcher', 'ranker')
     .addConditionalEdges('ranker', s => {
+      if (s.plan!.needsWeb && !s.steps.some(stage=>stage.node==='web') && (!s.evidence.length || s.plan!.task==='draft' || /\b(?:internet|web|online|latest|today)\b/i.test(input.message))) return 'web'
       if (s.plan!.task === 'compare' && s.evidence.length) return 'comparator'
       if (!s.evidence.length && (s.plan!.sourceOnly || !deps.generate)) return 'missing'
       return deps.generate ? 'writer' : 'extractor'
-    }, ['comparator', 'missing', 'writer', 'extractor'])
+    }, ['web', 'comparator', 'missing', 'writer', 'extractor'])
     .addConditionalEdges('comparator', () => deps.generate ? 'writer' : 'extractor', ['writer', 'extractor'])
     .addConditionalEdges('writer', s => s.route === 'fallback' ? (s.evidence.length ? 'extractor' : 'missing') : 'verifier', ['extractor', 'missing', 'verifier'])
     .addConditionalEdges('verifier', s => {
@@ -252,4 +253,4 @@ export async function runAgents(input: ChatInput & { task?: Plan['task'] | 'auto
     agentReport: agentReport(steps, { mode: result.mode as string, verification: result.verification as Verification | null, sources }),
   }
 }
-export type AgentAnswer = Awaited<ReturnType<typeof runAgents>>
+export type AgentAnswer = Awaited<ReturnType<typeof runAgents>> & { lookup?: { scope: 'system' | 'web'; correction?: string; canGenerate?: boolean } }

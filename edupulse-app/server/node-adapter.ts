@@ -45,6 +45,8 @@ export async function readNodeBody(req: IncomingMessage, limit: number, signal: 
 
 export async function handleNodeRequest(req: IncomingMessage, res: ServerResponse, dispatch = handleRequest) {
   const controller = new AbortController()
+  let deadline:AbortSignal|undefined
+  const expire=()=>controller.abort(deadline?.reason)
   const disconnected = () => { if (!res.writableEnded) controller.abort() }
   res.once('close', disconnected)
   let dispatched = false
@@ -52,7 +54,13 @@ export async function handleNodeRequest(req: IncomingMessage, res: ServerRespons
     const action = new URL(req.url || '/', 'http://localhost').searchParams.get('action') || 'health'
     // Reserve the final 35 seconds of the configured 120-second function for
     // bounded lease acquisition/release and response delivery, including intake.
-    const requestSignal = action === 'operator' && process.env.VERCEL ? AbortSignal.any([controller.signal, AbortSignal.timeout(OPERATOR_REQUEST_TIMEOUT_MS)]) : controller.signal
+    // Retain the deadline and its forwarding listener until response cleanup.
+    if(action==='operator'&&process.env.VERCEL) {
+      deadline=AbortSignal.timeout(OPERATOR_REQUEST_TIMEOUT_MS)
+      deadline.addEventListener('abort',expire,{once:true})
+      if(deadline.aborted)expire()
+    }
+    const requestSignal = controller.signal
     const methods = allowedMethods(action), method = req.method || 'GET'
     // Fetch's Request rejects TRACE/CONNECT before the application can return 405.
     if (!methods) throw new ApiError(404, 'NOT_FOUND', 'Unknown API action.')
@@ -79,5 +87,5 @@ export async function handleNodeRequest(req: IncomingMessage, res: ServerRespons
     if (!req.complete) { res.setHeader('Connection', 'close'); req.resume() }
     res.writeHead(failure.status, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' })
     res.end(JSON.stringify({ error: { code: failure.code, message: failure.message, requestId: randomUUID() } }))
-  } finally { res.off('close', disconnected) }
+  } finally { deadline?.removeEventListener('abort',expire);res.off('close', disconnected) }
 }

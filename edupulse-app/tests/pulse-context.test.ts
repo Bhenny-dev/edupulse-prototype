@@ -31,10 +31,10 @@ test('public factual chat actually calls web research while mixed-language conve
   const source: Evidence = {id:'public-source',documentId:null,title:'Photosynthesis',text:'Photosynthesis converts light energy into chemical energy in plants.',url:'https://en.wikipedia.org/wiki/Photosynthesis',page:null,section:null,flagged:false,origin:'web',method:'web-search',similarity:null,relevance:1,rrf:1,query:'photosynthesis'}
   const deps: AgentDeps={provider:'synthetic-model',search:async()=>{searched++;return {evidence:[]}},webSearch:async()=>{web++;return {evidence:[source]}},generate:async(system,prompt)=>{written=system+' '+prompt;return 'Photosynthesis converts light energy into chemical energy in plants. [1]'}}
   const answer=await runChat(chatInput.parse({message:'What is photosynthesis?'}),guest,AbortSignal.timeout(5000),deps)
-  assert.equal(web,1);assert.equal(searched,0);assert.equal(answer.sources[0]?.url,source.url)
+  assert.equal(web,1);assert.equal(searched,1);assert.equal(answer.sources[0]?.url,source.url)
   deps.generate=async(system,prompt)=>{written=system+' '+prompt;return 'Kumusta! Maaari tayong mag-usap sa Tagalog, English, o mixed.'}
   const casual=await runChat(chatInput.parse({message:'Kumusta'}),guest,AbortSignal.timeout(5000),deps)
-  assert.equal(web,1);assert.equal(searched,0);assert.match(casual.answer,/Kumusta/);assert.match(written,/Tagalog and English/)
+  assert.equal(web,1);assert.equal(searched,1);assert.match(casual.answer,/Kumusta/);assert.match(written,/Tagalog and English/)
 })
 
 test('live account summaries distinguish access from completion and include only the authorized snapshot', () => {
@@ -72,9 +72,9 @@ test('a registered-name question reads authorized profiles before public researc
 })
 
 test('on-device context bridge returns verified role and account evidence without credentials; shared dependencies keep it out of public search', async t => {
-  const oldFetch=globalThis.fetch, names=['SUPABASE_URL','SUPABASE_PUBLISHABLE_KEY','AI_LOCAL_MODE'] as const
+  const oldFetch=globalThis.fetch, names=['SUPABASE_URL','SUPABASE_PUBLISHABLE_KEY','AI_LOCAL_MODE','AI_VECTOR_STORE'] as const
   const old=Object.fromEntries(names.map(name=>[name,process.env[name]]))
-  process.env.SUPABASE_URL='https://synthetic.invalid';process.env.SUPABASE_PUBLISHABLE_KEY='sb_publishable_synthetic';delete process.env.AI_LOCAL_MODE
+  process.env.SUPABASE_URL='https://synthetic.invalid';process.env.SUPABASE_PUBLISHABLE_KEY='sb_publishable_synthetic';process.env.AI_VECTOR_STORE='supabase';delete process.env.AI_LOCAL_MODE
   t.after(()=>{globalThis.fetch=oldFetch;for(const name of names){if(old[name]===undefined)delete process.env[name];else process.env[name]=old[name]}})
   globalThis.fetch=async url=>{
     const path=new URL(String(url)).pathname

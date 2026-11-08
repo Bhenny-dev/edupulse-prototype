@@ -3,10 +3,31 @@ import type { Evidence } from '../../src/lib/rag/types.js'
 import { readAcademic } from './academic.js'
 import { readWorkspace } from '../workspace.js'
 import { readStudents } from './students.js'
+import { nameMatch, words, wordMatch } from '../../src/lib/rag/lookup.js'
+
+export const accountTerms=(text:string)=>text.replace(/[\p{L}]{4,}/gu,word=>['syllabus','student','course','score','statistics','profile','material','outline','instructor'].find(known=>wordMatch(word.toLowerCase(),known)>=0.82)||word)
 
 export const accountQuestion = (text: string) => /\b(?:my|our|this|selected|enrolled|registered)\b.{0,45}\b(?:courses?|syllab\w*|students?|instructors?|teachers?|faculty|users?|department|program|year level|topics?|class|block|materials?|progress|statistics|stats|performance|assessments?|scores?|drafts?|account|profile)|\b(?:who am i|who teaches|what can (?:i|you|the system)|which (?:courses?|students?)|published items|released materials)\b|\b(?:sino|ilan|aking|ko|nakaenrol)\b.{0,40}\b(?:estudyante|mag-aaral|guro|kurso|klase|marka|syllabus|instructors?|teachers?|students?|courses?)\b|\b(?:courses?|classes|students?|instructors?|teachers?|scores?|grades?|kurso|klase|estudyante|guro|marka)\s+(?:ko|namin|natin|aking|ating)\b/i.test(text)
 export function profileQuery(text: string) {
-  return /^(?:who is|do you know|sino si|kilala mo (?:ba )?si|profile of|find (?:the )?student(?: named)?)\s+([\p{L}\p{N}\s'-]{3,100})[?.!]?$/iu.exec(text.trim())?.[1]?.trim() || ''
+  return /^(?:who is|do you know|sino si|kilala mo (?:ba )?si|profile of|find (?:the )?student(?: named)?)\s+([\p{L}\p{N}\s.'’-]{3,100})[?!]?$/iu.exec(text.trim())?.[1]?.replace(/[.?!]+$/, '').trim() || ''
+}
+
+/** Candidate reads retain the directory's existing RLS, including selected-account support. */
+export async function findStudentProfiles(identity: Identity, name: string, signal?:AbortSignal) {
+  const tokens=words(name).filter(t=>t.length>2).sort((a,b)=>b.length-a.length).slice(0,3)
+  const queries=[name,...tokens,...tokens.filter(t=>t.length>=4).map(t=>t.slice(0,3))]
+  const candidates=new Map<string,Record<string,any>>()
+  let truncated=false
+  for (const q of [...new Set(queries)]) {
+    signal?.throwIfAborted()
+    const url=new URL('https://edupulse.invalid/directory');url.searchParams.set('q',q)
+    const found=await readStudents(identity,url,signal)
+    truncated ||= found.total>found.students.length
+    for (const row of found.students) candidates.set(String(row.student_number),row)
+    if ([...candidates.values()].some(row=>nameMatch(name,String(row.full_name),String(row.student_number))>=0.9)) break
+  }
+  const matches=[...candidates.values()].map(person=>({person,score:nameMatch(name,String(person.full_name),String(person.student_number))})).filter(hit=>hit.score>=0.82).sort((a,b)=>b.score-a.score||String(a.person.full_name).localeCompare(String(b.person.full_name)))
+  return { matches:matches.slice(0,8), truncated:truncated||matches.length>8 }
 }
 
 type Academic = { courses: Record<string, any>[]; enrollments: Record<string, any>[]; publications: Record<string, any>[]; attempts: Record<string, any>[]; accesses: Record<string, any>[] }
@@ -41,27 +62,38 @@ export function accountFacts(records: Academic, identity: Identity, question: st
   }
   return lines.join('\n')
 }
-export async function authorizedAccountContext(identity: Identity, question: string): Promise<{ evidence: Evidence[]; warning?: string }> {
-  const name = profileQuery(question), contextual = accountQuestion(question)
+export async function authorizedAccountContext(identity: Identity, question: string, signal?:AbortSignal): Promise<{ evidence: Evidence[]; warning?: string; correction?: string }> {
+  const name = profileQuery(question), normalized=accountTerms(question)
+  const productHelp=/\b(?:what can (?:i|you|the system)|features?|functionalities)\b/i.test(normalized)&&! /\b(?:my|our|selected|aking|namin)\b/i.test(normalized)
+  const contextual = accountQuestion(normalized)&&!productHelp
   if (identity.role === 'guest' || identity.local || !contextual && !name) return { evidence: [] }
   try {
-    let text = ''
+    let text = '', correction: string | undefined
     if (name) {
-      const url = new URL('https://edupulse.invalid/directory'); url.searchParams.set('q', name)
-      const found = await readStudents(identity, url)
-      text = found.students.slice(0,8).map((person: Record<string, unknown>) => `Registered student: ${person.full_name}; student number ${person.student_number}; year ${person.year_level}; department ${person.department}; program ${person.program}.`).join('\n')
-      if (found.total > Math.min(8,found.students.length)) text += `\nShowing ${Math.min(8,found.students.length)} of ${found.total} authorized matching profiles. Refine the name or student number.`
+      const found = await findStudentProfiles(identity,name,signal)
+      text = found.matches.map(({person}) => `Registered student: ${person.full_name}; student number ${person.student_number}; year ${person.year_level}; department ${person.department}; program ${person.program}.`).join('\n')
+      if (found.truncated) text += '\nCandidate search is limited; refine the name or student number for additional matches.'
+      if (found.matches.length===1 && words(name).join(' ')!==words(String(found.matches[0]!.person.full_name)).join(' ') && !/\d/.test(name)) correction=String(found.matches[0]!.person.full_name)
+      if (!text) {
+        const records=await readAcademic(identity)
+        for (const course of records.courses) if (course.instructor_name && nameMatch(name,String(course.instructor_name),'')>=0.82) text+=`Recorded instructor: ${course.instructor_name}; course ${course.course_code}: ${course.course_title}.\n`
+        for (const faculty of records.faculty||[]) {
+          const fullName=String(faculty.full_name||faculty.name||faculty.faculty_name||'')
+          if(fullName && nameMatch(name,fullName,'')>=0.82) text+=`Recorded faculty: ${fullName}; department ${faculty.department||'not recorded'}; specialization ${faculty.specialization||'not recorded'}.\n`
+        }
+      }
       if (!contextual && !text) return { evidence: [] }
     }
-    if (contextual) text += `\n${accountFacts(await readAcademic(identity), identity, question)}`
+    if (contextual) text += `\n${accountFacts(await readAcademic(identity), identity, normalized)}`
     if (identity.name && contextual) text = `The selected account is ${identity.name}.\n${text}`
-    if (['instructor','admin','dean','associate_dean'].includes(identity.role) && /\b(?:syllab\w*|drafts?|outline|workspace|sections?)\b/i.test(question)) {
+    if (['instructor','admin','dean','associate_dean'].includes(identity.role) && /\b(?:syllab\w*|drafts?|outline|workspace|sections?)\b/i.test(normalized)) {
       const workspace = await readWorkspace(identity)
       text += `\nThe saved workspace contains ${workspace.data?.syllabi.length || 0} syllabi and ${Object.keys(workspace.data?.content || {}).length} authored items. Saved workspace revision: ${workspace.revision}.`
       for (const syllabus of workspace.data?.syllabi.slice(0, 12) || []) text += `\nSaved syllabus: ${syllabus.courseCode} ${syllabus.courseTitle}; status ${syllabus.status}; ${syllabus.courseOutline.length} outline weeks.`
     }
-    return { evidence: [{ id: 'authorized-account-snapshot', documentId: null, title: `Live authorized ${identity.role.replace('_',' ')} records`, text: text.slice(0, 9500), page: null, section: 'Account records', flagged: false, origin: 'account', method: 'provided', similarity: null, relevance: null, rrf: 1, query: question }] }
+    return { correction:correction||(!name&&normalized!==question?normalized:undefined), evidence: [{ id: 'authorized-account-snapshot', documentId: null, title: `Live authorized ${identity.role.replace('_',' ')} records`, text: text.slice(0, 9500), page: null, section: 'Account records', flagged: false, origin: 'account', method: 'provided', similarity: null, relevance: null, rrf: 1, query: question }] }
   } catch {
+    signal?.throwIfAborted()
     return { evidence: [], warning: 'Live account records could not be loaded. Do not infer zero courses, students, scores or releases from this failure. Open the relevant page and retry when connected.' }
   }
 }

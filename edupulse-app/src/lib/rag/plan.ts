@@ -16,6 +16,7 @@ const GREETING = /^(hi|hello|hey|thanks|thank you|good (morning|afternoon|evenin
 const SOURCE_REQUEST = /\b(uploaded|attached|document|pdf|file|library|source|reference|policy|syllabus|courseware|EduPulse|publish|publishing|approval|signator|grading|examination|calendar|features?|functionalit\w*|rosters?|enrollments?|statistics|dashboard)\b/i
 const CONVERSATION = /\b(how are you|how do you feel|let'?s (?:talk|chat)|what if|suppose|imagine|scenario|situation|advice|i feel|i am (?:feeling|worried|stressed)|i'?m (?:feeling|worried|stressed)|help me (?:think|decide)|what should i do)\b/i
 const PERSONAL_SITUATION = /\b(?:i (?:am|feel)|i'?m) (?:feeling|worried|stressed|anxious|nervous|tired|overwhelmed|happy|sad)\b/i
+export const casualConversation=(message:string)=>(GREETING.test(message)&&message.split(/\s+/).length<6)||CONVERSATION.test(message)||PERSONAL_SITUATION.test(message)
 
 /**
  * Planner agent. Rule-based so planning adds no model latency on free local

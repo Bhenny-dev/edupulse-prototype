@@ -7,6 +7,7 @@ export type Evidence = {
   origin: 'private' | 'account' | 'public-guide' | 'attachment' | 'web'
   method: 'hybrid' | 'vector' | 'keyword' | 'provided' | 'web-search'
   url?: string
+  image?: { url: string; creditsUrl: string }
   similarity: number | null; rrf: number; relevance: number | null; query: string
 }
 export type CitedEvidence = Evidence & { citation: number }

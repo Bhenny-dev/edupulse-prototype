@@ -104,7 +104,7 @@ test('OpenRouter web tool uses fixed origins, real annotations and a public topi
   }
   const connection = { id: 'test', owner: identity.id, provider: 'openrouter' as const, model: 'selected-model', apiKey: 'test-only', expires: Date.now() + 10000 }
   const result = await searchWeb('Research Methods', signal(), connection, transport)
-  assert.equal(result.evidence.length, 1); assert.equal(result.evidence[0]?.text, source.text)
+  assert.equal(result.evidence.length, 2); assert.equal(result.evidence[0]?.text, source.text)
   assert.equal(calls[0]!.url, 'https://openrouter.ai/api/v1/models', 'the model catalogue says how the model reasons')
   const body = JSON.parse(calls.find(call => call.url === 'https://openrouter.ai/api/v1/chat/completions')!.body!)
   assert.equal(body.tools[0].type, 'openrouter:web_search')

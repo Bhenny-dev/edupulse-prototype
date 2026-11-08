@@ -59,3 +59,5 @@ The [baseline restoration](../versions/2026-10-28-baseline-workflows/README.md) 
 [Manual 22: Dashboard summary links](22-dashboard-summary-navigation/README.md) covers the four instructor cards, their filtered destinations, browser history, keyboard navigation and mobile/dark views.
 
 [Manual 23: Account support and Pulse context](23-account-support-and-pulse-context/README.md) covers choosing a real account after a role, safe support controls, authorized answers, public research, mixed-language chat, scoped agent memory and verified courseware delivery.
+
+[Manual 24: System-first search](24-system-first-search/README.md) covers provider-free lookups, spelling and name suggestions, explicit Internet fallback, sourced images and source boundaries.

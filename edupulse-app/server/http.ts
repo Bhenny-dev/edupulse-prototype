@@ -2,6 +2,7 @@ import { randomUUID } from 'node:crypto'
 import { createClient } from '@supabase/supabase-js'
 import { z } from 'zod'
 import { ApiError, chatInput, chatMemoryInput, courseInput, documentInput, referencesInput, researchInput, similarityInput, type Identity } from './contracts.js'
+import { simpleLookup, systemLookup } from './systemLookup.js'
 import { config } from './config.js'
 import { invokeModel, providerHealth } from './providers.js'
 import { MAX_DOCUMENTS, deleteDocument, ingest, listDocuments } from './database.js'
@@ -16,7 +17,7 @@ import { findReferences } from './external/references.js'
 import { researchCourse, searchWeb } from './external/web.js'
 import { embedTexts, modelStatus } from './ml/onnx.js'
 import { agentRunRow, failedRunRow, recordAgentRun } from './agentRuns.js'
-import { AGENT_ORDER } from '../src/lib/rag/registry.js'
+import { AGENT_ORDER, agentReport } from '../src/lib/rag/registry.js'
 import { canGenerateCourseware } from '../src/lib/access.js'
 import { academicCommand, executeAcademic, readAcademic } from './domains/academic.js'
 import { readStudents } from './domains/students.js'
@@ -108,7 +109,31 @@ export async function handleRequest(request: Request): Promise<Response> {
       return json(await supportAction(subject, command.operation))
     }
     const effective = ['academic','workspace','chat','chat-context','chat-memory','courseware','operator','context','web-search','students'].includes(action) ? await supportIdentity(identity, request.headers.get('X-EduPulse-Subject')) : identity
-    if (action === 'chat-context') return json({ ...await prepareChatContext(chatInput.parse(await readJson(request, bodyLimit(action))), identity, effective), identity: { id: effective.id, role: effective.role, local: effective.local } })
+    let chatBody: ReturnType<typeof chatInput.parse> | undefined
+    let lookupFallback: Awaited<ReturnType<typeof systemLookup>> = null
+    if (action === 'chat' || action === 'chat-context') {
+      chatBody=chatInput.parse(await readJson(request,bodyLimit(action)))
+      if (simpleLookup(chatBody)) {
+        const key=`${identity.id}:system-search`, now=Date.now()
+        for (const [old,value] of buckets) if(value.until<now) buckets.delete(old)
+        const slot=buckets.get(key)||{count:0,until:now+60000}
+        if(slot.count>=60) throw new ApiError(429,'RATE_LIMIT','Please wait before repeating this search.')
+        slot.count++;buckets.set(key,slot)
+        const lookupStarted=Date.now()
+        const answer=await systemLookup(chatBody,identity,effective,AbortSignal.any([request.signal,AbortSignal.timeout(25000)]))
+        if(answer) {
+          const stage=answer.trace.find(item=>item.node==='system-search');if(stage) stage.ms=Date.now()-lookupStarted
+          answer.agentReport=agentReport(answer.trace,{mode:answer.mode,verification:answer.verification,sources:answer.sources.length})
+        }
+        if(answer && !answer.lookup?.canGenerate) {
+          if (chatBody.conversationId && identity.role!=='guest' && answer.mode!=='declined') await agentMemory(identity,chatBody.conversationId,effective.id,answer).catch(()=>{})
+          await recordAgentRun(identity,agentRunRow(identity,'chat',answer,Date.now()-lookupStarted))
+          return action==='chat'?json(answer):json({input:chatBody,evidence:answer.sources,warnings:[],privateContext:answer.lookup?.scope!=='web',answer,identity:{id:effective.id,role:effective.role,local:effective.local}})
+        }
+        lookupFallback=answer
+      }
+      if (action==='chat-context') return json({...await prepareChatContext(chatBody,identity,effective),...(lookupFallback?{fallbackAnswer:lookupFallback}:{}),identity:{id:effective.id,role:effective.role,local:effective.local}})
+    }
     if (action === 'chat-memory') {
       if (identity.role === 'guest') throw new ApiError(401, 'SIGN_IN_REQUIRED', 'Sign in to save private agent handoffs.')
       const input = chatMemoryInput.parse(await readJson(request, 18000))
@@ -138,6 +163,11 @@ export async function handleRequest(request: Request): Promise<Response> {
     // Server credentials are reserved for the local workspace. Hosted users
     // must connect their own key, bound to their verified Supabase account.
     const connection = personalConnection || (identity.local ? serverConnection() : undefined)
+    if (lookupFallback && !connection) {
+      if(chatBody?.conversationId && identity.role!=='guest') await agentMemory(identity,chatBody.conversationId,effective.id,lookupFallback).catch(()=>{})
+      await recordAgentRun(identity,agentRunRow(identity,'chat',lookupFallback,lookupFallback.trace.find(stage=>stage.node==='system-search')?.ms||0))
+      return json(lookupFallback)
+    }
     if (action === 'providers' && request.method === 'DELETE') {
       const query = new URL(request.url).searchParams
       if (query.get('sessionOnly') !== 'true') await removeProvider(identity, query.has('provider') ? connectionInput.shape.provider.parse(query.get('provider')) : personalConnection?.provider)
@@ -192,7 +222,7 @@ export async function handleRequest(request: Request): Promise<Response> {
       if (bytes.length > EXTRACTION_LIMITS.bytes) throw new ApiError(413, 'FILE_TOO_LARGE', 'Files must be 4 MB or smaller.')
       return json(await extractUpload(bytes, fileName, signal))
     }
-    const body = await readJson(request, bodyLimit(action))
+    const body = chatBody || await readJson(request, bodyLimit(action))
     if (action === 'operator') {
       const stepSignal = config().hosted ? AbortSignal.any([signal, AbortSignal.timeout(70000)]) : signal
       const result = await operatorRequest(operatorInput.parse(body), effective, connection, stepSignal)

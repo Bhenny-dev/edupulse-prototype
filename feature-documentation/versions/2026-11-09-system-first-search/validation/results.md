@@ -1,0 +1,12 @@
+# Validation
+
+- Browser: all 40 selected desktop/mobile cases passed on the integrated source (`system-search`, navigation, component actions, retained sources, research, drafting and actions). The source-context cases exercise real PDF parsing/export; provider transports remain controlled. Animation is paused/reduced for stable interaction checks, and preview sign-in persistence is awaited before full navigation.
+- Documentation captures: 3 cases passed and all 6 PNGs were opened and reviewed. [Capture receipt](../../../capture-runs/2026-11-08T23-26-51-010Z-5a3859b6.json) records unchanged source during capture, exact hashes and synthetic transport boundaries. Desktop, mobile, solid dark mode and failed-image states are included.
+- Live public probe (2026-11-08 23:28 UTC): the real Wikipedia endpoint returned Photosynthesis and related articles, an HTTPS Wikimedia thumbnail and its file-credit URL. Broader Internet coverage/current-fact verification is explicitly not claimed by this fallback.
+- Native coverage includes the real HTTP chat/context path, directory scoping, unavailable-record handling, assessment restrictions before provider resolution, typo/name-initial matching, saved syllabus policies and week-specific activities, private-library precedence, explicit broad research, image-origin filtering, and actual PGlite owner/document isolation without model loading or reindexing.
+- An earlier combined gate exposed a transport cancellation problem. The operator deadline is now retained and forwarded to the request controller through response cleanup. Native real-socket tests cover dispatched work and unfinished body intake. The original accelerated production clock remains; it was not replaced by a mocked success response.
+
+- Final release gate: `npm run verify` passed, including documentation integrity, lint, both typechecks, pinned model checks, all 239 native tests, the production build and serverless deployment checks. The deployment check asserts keyless System Search for simple help and separately exercises the Ranker/packaged embeddings for detailed source-only research; the old expectation that every help query must load embeddings was corrected.
+- No schema migration, account mutation or permission expansion is required for this release. Production activation is checked against the exact pushed commit and production alias separately from these local/capture receipts.
+
+These checks do not claim an owner Google session, live paid inference or real student completion.

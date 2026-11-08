@@ -4,7 +4,7 @@ import { createServer, request } from 'node:http'
 import type { AddressInfo } from 'node:net'
 import { handleNodeRequest, OPERATOR_REQUEST_TIMEOUT_MS } from '../server/node-adapter.js'
 
-test('hosted operator deadline covers body intake and stops dispatched work with a readable response', async t => {
+test('hosted operator deadline covers body intake and stops dispatched work with a readable response', {timeout:10000}, async t => {
   const hosted = process.env.VERCEL, timeout = AbortSignal.timeout
   process.env.VERCEL = '1'
   // Advance only the operator's production clock; exercise real sockets/body

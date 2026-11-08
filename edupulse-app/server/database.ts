@@ -78,7 +78,7 @@ export function userDb(identity: Identity) {
   if (!c.supabaseUrl || !c.supabaseKey) throw new ApiError(503, 'DATABASE_UNAVAILABLE', 'Supabase is not configured on the server.')
   return createClient(c.supabaseUrl, c.supabaseKey, {
     auth: { persistSession: false, autoRefreshToken: false },
-    global: { headers: identity.token ? { Authorization: `Bearer ${identity.token}` } : {}, fetch: (url, init) => fetch(url, { ...init, signal: AbortSignal.timeout(15000) }) },
+    global: { headers: identity.token ? { Authorization: `Bearer ${identity.token}` } : {}, fetch: (url, init) => fetch(url, { ...init, signal: AbortSignal.any([AbortSignal.timeout(15000), ...(init?.signal ? [init.signal] : [])]) }) },
   })
 }
 

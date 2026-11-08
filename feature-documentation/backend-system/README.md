@@ -327,3 +327,7 @@ Instructor roster CRUD lives in **Student Monitoring → Students**. **Syllabus*
 ## Authorized Pulse context and account support
 
 The [8 November release](../versions/2026-11-08-pulse-context-and-account-support/README.md) adds live role-scoped evidence, factual public-search routing and persistent agent handoffs. The existing LangGraph workflow remains in use. Admin support delegates only academic operations through a transaction-scoped invoker RPC, retaining target RLS and actual actor attribution. It does not impersonate Supabase Auth sessions or share provider credentials. See [Supabase contracts](supabase.md) and the rolled-back canary in `edupulse-app/scripts/check-support-delivery.sql`.
+
+## Deterministic System Search
+
+The [9 November release](../versions/2026-11-09-system-first-search/README.md) adds a read-only agent before AI provider resolution. Existing authorized helpers supply record and workspace evidence, while direct indexed full-text queries supply private-library candidates without embeddings. The normal inference graph searches local evidence before web supplementation. Public fallback and image extraction use fixed Wikimedia API origins, not model-invented URLs. See [contracts](supabase.md) and [Manual 24](../system-manual/24-system-first-search/README.md).

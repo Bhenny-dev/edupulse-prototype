@@ -65,3 +65,5 @@ Connected-provider and on-device inference use the same authorized context and r
 After a buddy sends a request to Pulse, Tab and Shift+Tab keep focus inside the open office, even if the send control becomes disabled. Escape closes the office and returns to Pulse. Opening an account picker from a cross-role request closes the office first.
 
 ![Buddy handoff with keyboard focus on the office playback control](09-office-keyboard-handoff.png)
+
+The [System Search extension](../24-system-first-search/README.md) answers ordinary record and help queries before provider resolution. It accepts name initials and small typos, shows clear suggestions and uses public Internet images only for labelled external results.

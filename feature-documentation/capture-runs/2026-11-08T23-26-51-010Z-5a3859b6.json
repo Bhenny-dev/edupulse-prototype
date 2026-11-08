@@ -1,0 +1,152 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-11-08T23-26-51-010Z-5a3859b6",
+  "startedAt": "2026-11-08T23:26:51.010Z",
+  "finishedAt": "2026-11-08T23:27:01.870Z",
+  "commitSha": "7c068927aa0afbab1cf8c888a3ab001e87fdd42c",
+  "sourceDigest": "a723e04f5b24c3e050b557610652d6fe117536290e7d6e9508fe891d468a0940",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-11-08T23:26:50.286Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 3,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": null
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/system-search.spec.ts",
+    "edupulse-app/tests/snapshots/system-search-mobile.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/account-support-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/account-support.spec.ts",
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/automatic-records.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/automatic-records.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.spec.ts",
+    "edupulse-app/tests/snapshots/course-seed.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-formatting.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-navigation.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/harness-delivery.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/operator-steps.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-drafting.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-source.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+    "edupulse-app/tests/snapshots/student-directory.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/voice-quota.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/voice-quota.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-recovery.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/system-search.spec.ts",
+      "title": "keyless system answers, spelling suggestions and sourced web images",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1844,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/system-search.spec.ts",
+      "title": "unavailable public image keeps its source and attribution links",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1012,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/system-search-mobile.spec.ts",
+      "title": "system-first search images and credits fit a phone",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 994,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-manual/24-system-first-search/01-profile-suggestion.png",
+      "sha256": "310c4b43d703bcefe644d8e54abb7925579fae3d75ad0172c6fa96d561f5543e",
+      "bytes": 42133
+    },
+    {
+      "path": "feature-documentation/system-manual/24-system-first-search/02-keyless-help.png",
+      "sha256": "2b0c57b7e6d259c8015862ed0fa716e2a798e7ebfc6214aa51cd3aba5f05eb89",
+      "bytes": 63726
+    },
+    {
+      "path": "feature-documentation/system-manual/24-system-first-search/03-web-images.png",
+      "sha256": "6e60853e7b6e1d55bd32606dea752028def2f6e572973b44fc898044a485f235",
+      "bytes": 72036
+    },
+    {
+      "path": "feature-documentation/system-manual/24-system-first-search/04-dark-web-images.png",
+      "sha256": "b3c16e8a627da2250d3d1e06be01b0fffb21f21807bc5777779e5e331e36946d",
+      "bytes": 72799
+    },
+    {
+      "path": "feature-documentation/system-manual/24-system-first-search/05-mobile-web-images.png",
+      "sha256": "c570f293f248ea39d29d60e4796bd79e7d73954bfac71cc9180c0d6a46dc8edf",
+      "bytes": 59541
+    },
+    {
+      "path": "feature-documentation/system-manual/24-system-first-search/06-image-unavailable.png",
+      "sha256": "2d32645ecfee1fd73d586a26738b9c246112bb5c10888899ddaa17425bf33a88",
+      "bytes": 40215
+    }
+  ]
+}

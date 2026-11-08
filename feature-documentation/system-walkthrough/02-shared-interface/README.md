@@ -172,3 +172,7 @@ Saved provider keys and selected models now survive sign-out under the same acco
 ## Account support and contextual Pulse, 8 November 2026
 
 The existing role chooser now leads to a searchable account dialog. A selected account has a support banner and **Return to System Admin** action; the admin keeps their own AI connection. Pulse source details distinguish authorized account records from public references and remembered outcomes. [Manual 23](../../system-manual/23-account-support-and-pulse-context/README.md) shows the picker in light, dark and mobile layouts and the three conversation types.
+
+## System Search and public images
+
+Pulse now shows **System search · No AI credits used** for simple quoted local answers. Approximate name or keyword matches can begin **Did you mean**. Public fallback is labelled **Internet suggestions**, with source-linked thumbnails and **Image credits** when the API provides images. The existing theme, compact verification controls and role boundaries remain. See [Manual 24 and its desktop/mobile captures](../../system-manual/24-system-first-search/README.md).
