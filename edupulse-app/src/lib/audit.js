@@ -4,7 +4,7 @@ import { supabase } from './supabaseClient'
 export async function recordAudit(user, action, outcome = 'success', detail = '') {
   if (!supabase || !user?.authenticated || !user.id || !user.baseRole) return
   await supabase.from('edupulse_audit_events').insert({
-    actor_id: user.id,
+    actor_id: user.accountId || user.id,
     actor_role: user.baseRole,
     action,
     outcome,

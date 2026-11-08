@@ -4,6 +4,7 @@
 
 | Folder | Covers | Contents |
 | --- | --- | --- |
+| [8 November Pulse context and account support](versions/2026-11-08-pulse-context-and-account-support/README.md) | Authorized record answers, public research, scoped agent handoffs and searchable account support views | See release validation |
 | [28 October component actions](versions/2026-10-28-component-actions/README.md) | Selected-field drafting, dropped references, clean Pulse, Settings Help/shortcuts and expanded outline | Integrated with later releases; current combined validation is recorded below |
 | [29 October landing v2](versions/2026-10-29-landing-v2/README.md) | Editorial landing page, shared design tokens, contrast and motion rules, skip link, formatted PDF downloads | Live from 354b0a1; verify 148/148, browser 140 passed; hosted checks passed |
 | [28 October landing and motion](versions/2026-10-28-landing-and-motion/README.md) | CIT-focused landing page with KCP photographs and college emblems; page, view and dialog transitions | Live from `952107c`; verify and browser suites passed |

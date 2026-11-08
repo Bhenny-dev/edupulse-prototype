@@ -10,6 +10,7 @@ test('synthetic owner opens named role dashboards and retains the correction con
  for(const [request,title,file] of [['open me the instructors dashboard','Instructor','01-instructor-view'],["no, not mine, the dean's",'Dean','02-role-correction']]) {
   await page.getByRole('textbox',{name:'Ask Pulse',exact:true}).fill(request)
   await page.getByRole('button',{name:'Send',exact:true}).click()
+  await page.getByRole('button',{name:`Use my own ${title.toLowerCase()} view`,exact:true}).click()
   await expect(page.getByRole('heading',{name:`${title} Dashboard`,exact:true})).toBeVisible()
   await expect(page.getByRole('status').filter({hasText:`Opened ${title} Dashboard.`})).toBeVisible()
   await page.screenshot({path:`${DIR}/${file}.png`,animations:'disabled'})

@@ -40,7 +40,7 @@ export function selectEvidence(candidates: Evidence[], keep = RANKING.keep, requ
   const scored = candidates.filter(c => c.origin === 'attachment' || c.relevance === null || c.relevance >= RANKING.relevanceFloor)
   const top = Math.max(...scored.filter(c => c.relevance !== null).map(c => c.relevance!), -Infinity)
   const eligible = scored.filter(c => c.relevance === null || c.relevance >= top - RANKING.relevanceWindow)
-    .sort((a, b) => (a.origin === 'attachment' ? -1 : 0) - (b.origin === 'attachment' ? -1 : 0) || (b.relevance ?? -99) - (a.relevance ?? -99) || b.rrf - a.rrf)
+    .sort((a, b) => (['attachment','account'].includes(a.origin) ? -1 : 0) - (['attachment','account'].includes(b.origin) ? -1 : 0) || (b.relevance ?? -99) - (a.relevance ?? -99) || b.rrf - a.rrf)
   // An explicit two-document comparison needs evidence from both selected
   // documents even when a broad comparison question scores one side poorly.
   const required = [...new Set(requiredDocumentIds)].slice(0, keep).flatMap(id => {

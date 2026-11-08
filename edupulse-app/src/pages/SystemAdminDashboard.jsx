@@ -76,8 +76,8 @@ export default function SystemAdminDashboard() {
   const agentStats = new Map(agentActivity.byAgent.map(a => [a.agent, a]))
   const roleCounts = Object.keys(ROLE_TITLES).map(role => ({ role, count: overview.accounts.filter(account => account.role === role).length }))
 
-  function openRole(role) {
-    if (switchRole(role)) navigate('/dashboard')
+  async function openRole(role) {
+    if (await switchRole(role)) navigate('/dashboard')
   }
 
   async function createAccount(event) {

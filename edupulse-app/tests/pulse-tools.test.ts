@@ -8,7 +8,7 @@ import { PGlite } from '@electric-sql/pglite'
 import { pageFor } from '../src/agents/operator.js'
 import { parseToolPlan, parseModelJson, conversationWindow } from '../src/agents/skills.js'
 import { registerEditor, currentEditor, applyEditorProposal, syllabusPatch, literalEdit } from '../src/agents/editorTools.js'
-import { conversationCommand, executeConversation, readConversations, conversationRecall, preferenceCandidate, safeMemory } from '../server/domains/conversations.js'
+import { conversationCommand, executeConversation, readConversations, conversationRecall, agentMemory, preferenceCandidate, safeMemory } from '../server/domains/conversations.js'
 import { localDb } from '../server/database.js'
 import type { Identity } from '../server/contracts.js'
 import { operatorInput, planValidatedTool } from '../src/agents/toolPlanner.js'
@@ -95,7 +95,14 @@ test('local archive is private, idempotent, ordered, recallable and forgettable'
     await assert.rejects(readConversations(other, thread), { status: 404 })
     assert.equal((await conversationRecall(other, 'recall programming')).matches.length, 0)
     assert.equal((await conversationRecall(owner, 'Can you recall our earlier programming discussion?')).matches.length, 1)
+    const handoff={task:'answer',mode:'generated',answer:'A concise completed-run summary with a sk-proj-abcdefghijklmnopqrstuvwx credential.',sources:[{id:'synthetic-source',title:'Synthetic source'}],trace:[{agent:'Planner',node:'planner',status:'done'}]}
+    await agentMemory(owner,thread,owner.id,handoff)
+    assert.match(JSON.stringify(await agentMemory(owner,thread,owner.id)),/credential redacted/)
+    assert.match(JSON.stringify(await agentMemory(owner,thread,owner.id)),/Planner: planner/)
+    assert.equal((await agentMemory(owner,thread,'other-subject')).length,0,'support subjects never share handoffs')
+    assert.equal((await agentMemory(other,thread,owner.id)).length,0,'account owner boundary applies to handoffs')
     await command({ operation: 'preferences', automaticMemory: false })
+    assert.equal((await agentMemory(owner,thread,owner.id,handoff)).length,0,'memory opt-out stops handoff read and write')
     await command({ operation: 'append', id: thread, messages: [{ id: randomUUID(), role: 'user', text: 'Please use detailed examples.' }] })
     assert.equal((await readConversations(owner)).memories.length, 1)
     await command({ operation: 'forget', id: result.memories[0].id })
@@ -109,6 +116,7 @@ test('local archive is private, idempotent, ordered, recallable and forgettable'
     await assert.rejects(command({ operation: 'append', id: thread, messages: [{ id: randomUUID(), role: 'user', text: 'Overflow' }] }), { code: 'CONVERSATION_FULL' })
     await command({ operation: 'delete', id: thread })
     result = await readConversations(owner)
+    assert.equal((await (await localDb()).query('SELECT * FROM ep_agent_memory')).rows.length,0,'deleting a conversation removes run handoffs')
     assert.equal(result.threads.length, 0); assert.equal(result.memories.length, 0)
     assert.equal(preferenceCandidate('A student prefers concise bullet points.'), null)
     assert.equal(safeMemory('Remember student grades are 90'), false)

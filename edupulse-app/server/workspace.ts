@@ -3,6 +3,7 @@ import { createHash } from 'node:crypto'
 import { ApiError, type Identity } from './contracts.js'
 import { config } from './config.js'
 import { localDb, userDb } from './database.js'
+import { supportAction } from './domains/support.js'
 
 export const WORKSPACE_BYTES = 3_000_000
 const outlineRow = z.looseObject({ week: z.number().int().min(1).max(52), ilos: z.string().max(5000).default(''), contents: z.array(z.string().max(2000)).max(40).default([]) })
@@ -31,7 +32,7 @@ export async function readWorkspace(identity: Identity): Promise<WorkspaceSnapsh
   if (config().database === 'local') {
     row = (await (await localDb()).query<Row>('SELECT revision, data, updated_at FROM ep_workspaces WHERE owner_id=$1', [identity.id])).rows[0]
   } else {
-    const { data, error } = await userDb(identity).from('edupulse_workspaces').select('revision,data,updated_at').maybeSingle()
+    const { data, error } = identity.supportActor ? { data: await supportAction(identity, 'workspace.read'), error: null } : await userDb(identity).from('edupulse_workspaces').select('revision,data,updated_at').maybeSingle()
     if (error) throw new ApiError(503, 'WORKSPACE_UNAVAILABLE', 'Your saved workspace could not be loaded. Local edits have been preserved.')
     row = data || undefined
   }
@@ -60,7 +61,7 @@ export async function saveWorkspace(identity: Identity, input: z.infer<typeof wo
       ON CONFLICT(owner_id) DO NOTHING RETURNING revision,data,updated_at`, [identity.id, body, input.revision])).rows[0]
     if (!row && input.revision > 0) row = (await pg.query<Row>(`UPDATE ep_workspaces SET data=$2::jsonb, revision=revision+1, updated_at=now() WHERE owner_id=$1 AND revision=$3 RETURNING revision,data,updated_at`, [identity.id, body, input.revision])).rows[0]
   } else {
-    const { data, error } = await userDb(identity).rpc('edupulse_save_workspace', { expected_revision: input.revision, snapshot: input.data })
+    const { data, error } = identity.supportActor ? { data: await supportAction(identity, 'workspace.save', input), error: null } : await userDb(identity).rpc('edupulse_save_workspace', { expected_revision: input.revision, snapshot: input.data })
     if (error?.code === '40001') throw new ApiError(409, 'WORKSPACE_CONFLICT', 'A newer workspace exists. Export your pending edits, then load the latest server copy.')
     if (error?.code === '22023' && error.message === 'A course block supports up to 35 students') throw new ApiError(400, 'ROSTER_LIMIT', 'A course block supports up to 35 students. Select another block for the remaining students.')
     if (error) throw new ApiError(503, 'WORKSPACE_UNAVAILABLE', 'Cloud save failed. Your edits remain on this device; retry when connected.')

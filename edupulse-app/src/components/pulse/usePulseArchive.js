@@ -9,7 +9,7 @@ const archivedMessage = message => ({
 })
 /** Archive text and file names only. Restored action cards cannot replay mutations. */
 export default function usePulseArchive(user, messages, setMessages) {
-  const userKey = user?.id ?? null
+  const userKey = user?.accountId || user?.id || null
   const [state, setState] = useState({ threads: [], memories: [], automaticMemory: true, mode: 'session', loading: false, saving: false, error: '' })
   const [threadId, setThreadId] = useState(null), [revision, setRevision] = useState(0)
   const current = useRef({ messages }), active = useRef(null), saved = useRef(new Set()), owner = useRef(0), created = useRef(false), saving = useRef(false)
@@ -63,6 +63,20 @@ export default function usePulseArchive(user, messages, setMessages) {
     }, 350)
     return () => clearTimeout(timer)
   }, [messages, userKey, state.loading, state.error, refresh, revision])
+  const ensureThread = async title => {
+    if (!user?.authenticated || !userKey) return null
+    const version = owner.current
+    if (!active.current) { active.current = crypto.randomUUID(); setThreadId(active.current) }
+    const id = active.current
+    if (!created.current) {
+      try {
+        await aiRequest('conversations', 'POST', { operation: 'create', id, title: title.slice(0, 160) || 'Pulse conversation' })
+        if (version !== owner.current) return null
+        created.current = true
+      } catch (error) { if (version === owner.current) setState(previous => ({ ...previous, error: error.message })); return null }
+    }
+    return id
+  }
   const hasUnsaved = () => current.current.messages.some(message => archivedMessage(message).text && !saved.current.has(message.id))
   const openThread = async id => {
     if (saving.current || hasUnsaved()) throw new Error('Wait for this conversation to finish saving.')
@@ -78,5 +92,5 @@ export default function usePulseArchive(user, messages, setMessages) {
   }
   const command = async input => { await aiRequest('conversations', 'POST', input); await refresh() }
   const deleteThread = async id => { if (active.current === id && (saving.current || hasUnsaved())) throw new Error('Wait for this conversation to finish saving before deleting it.'); await command({ operation: 'delete', id }); if (active.current === id) { active.current = null; created.current = false; saved.current = new Set(); setThreadId(null); setMessages([]) } }
-  return { ...state, threadId, unsaved: hasUnsaved(), refresh, openThread, newThread, deleteThread, command, retry: () => { setState(previous => ({ ...previous, error: '' })); setRevision(value => value + 1) } }
+  return { ...state, threadId, ensureThread, unsaved: hasUnsaved(), refresh, openThread, newThread, deleteThread, command, retry: () => { setState(previous => ({ ...previous, error: '' })); setRevision(value => value + 1) } }
 }

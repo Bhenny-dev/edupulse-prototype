@@ -1,0 +1,245 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-11-08T11-12-17-685Z-3565c1f4",
+  "startedAt": "2026-11-08T11:12:17.685Z",
+  "finishedAt": "2026-11-08T11:12:41.913Z",
+  "commitSha": "0165180e153e18959a2416e5060e5a24d74a5d68",
+  "sourceDigest": "fb79d8829a4d5a8314509250e0d921d664e9f6b918a3c9cbcc9a3a34f0c37149",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-11-08T11:12:14.784Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 7,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": null
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/account-support.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/account-support-mobile.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/automatic-records.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/automatic-records.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.spec.ts",
+    "edupulse-app/tests/snapshots/course-seed.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-formatting.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-navigation.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/harness-delivery.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/operator-steps.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-drafting.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-source.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+    "edupulse-app/tests/snapshots/student-directory.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/voice-quota.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/voice-quota.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-recovery.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/account-support.spec.ts",
+      "title": "synthetic account search, filtered selection, student support view and solid dark modal",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 4138,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/account-support.spec.ts",
+      "title": "synthetic Pulse account answer, public reference and mixed-language exchange",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1588,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/account-support.spec.ts",
+      "title": "workspace navigation handoff keeps Tab and Escape within the office",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 7492,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/pulse-navigation.spec.ts",
+      "title": "synthetic owner opens named role dashboards and retains the correction conversation",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1750,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/pulse-navigation.spec.ts",
+      "title": "synthetic Anthropic API credit failure explains recovery without replacing the saved key",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 996,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/pulse-navigation.spec.ts",
+      "title": "synthetic Claude workspace recovery preserves the saved credential and selected model",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1285,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/account-support-mobile.spec.ts",
+      "title": "synthetic mobile account picker fits the screen and keeps filters usable",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1587,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-manual/17-pulse-navigation-and-provider-recovery/01-instructor-view.png",
+      "sha256": "12dd5df08bb33e399bcd3dd9821383f35818177cd80e4826e9c7c2021511665c",
+      "bytes": 299733
+    },
+    {
+      "path": "feature-documentation/system-manual/17-pulse-navigation-and-provider-recovery/02-role-correction.png",
+      "sha256": "3d7ab79846b317b5082451a4ce585bfaa98cfb57115d0f891d2144f732186cc0",
+      "bytes": 302115
+    },
+    {
+      "path": "feature-documentation/system-manual/17-pulse-navigation-and-provider-recovery/03-anthropic-api-credits.png",
+      "sha256": "3a0ecd561815166c82c8a901d9e9cb52a7d87048b55fe796958c0367a9fb940e",
+      "bytes": 212270
+    },
+    {
+      "path": "feature-documentation/system-manual/17-pulse-navigation-and-provider-recovery/04-claude-workspace.png",
+      "sha256": "4763a2dc4a718b1be0c28fd19f8d43ae59205ba002a375407df8cfc51e94a0d5",
+      "bytes": 223877
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/01-select-account.png",
+      "sha256": "879cc1ed0ae11914f0dfff33cdfc2e8746c9c1d086095c0b9dde8dc80ec2f605",
+      "bytes": 47150
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/02-filtered-account.png",
+      "sha256": "0a0b47b1491369ba5bbc89f8fe250115979fec382fb0788536d866454883ee08",
+      "bytes": 40768
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/03-selected-student-view.png",
+      "sha256": "3934c764d55dc71a16fec56c5fa669f749589a7dc163b6b0aa52d3612a6a87ca",
+      "bytes": 278535
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/04-dark-account-picker.png",
+      "sha256": "cbaf401b8254d102bd22ba7c4a5c3b471c175e8df8754b4acf13a714216b191a",
+      "bytes": 47757
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/05-authorized-context.png",
+      "sha256": "7f5cfd86c860601e98c519060b37b02c52a254cbc2b2e03c86c00c9d76d0a65e",
+      "bytes": 44019
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/06-public-reference.png",
+      "sha256": "901c3728a4d597ea571b6396298d315127fbe0f11af4e5d60f40bcd5eb6c5184",
+      "bytes": 59824
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/07-mixed-language.png",
+      "sha256": "ddc2554d6f367859cd6637ed4c379b6b96cac6acea939524e083e2602dae9ce5",
+      "bytes": 53616
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/08-mobile-account-picker.png",
+      "sha256": "beba8ff3fb03cf2109a2c95e63589674ca97589e76164021125b67b6db8b7e47",
+      "bytes": 272446
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/09-office-keyboard-handoff.png",
+      "sha256": "d00a6e8f3d4ce593b7b4600af55f5535304953b5946afc6b978d4cb7ccd8fde0",
+      "bytes": 461278
+    }
+  ]
+}

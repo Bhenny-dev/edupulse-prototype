@@ -26,10 +26,10 @@ export function accountUser(account, previous) {
 }
 
 /**
- * @param {{authenticated?: boolean, canSwitchRoles?: boolean, baseRole?: string, email?: string} | null} user
+ * @param {{authenticated?: boolean, canSwitchRoles?: boolean, baseRole?: string, email?: string, accountEmail?: string} | null} user
  * @param {string} role
  */
 export function canSwitchRole(user, role) {
   return Boolean(user?.authenticated && user.canSwitchRoles && user.baseRole === 'admin' &&
-    user.email?.toLowerCase() === OWNER_EMAIL && ROLE_TITLES[role])
+    (user.accountEmail || user.email)?.toLowerCase() === OWNER_EMAIL && ROLE_TITLES[role])
 }

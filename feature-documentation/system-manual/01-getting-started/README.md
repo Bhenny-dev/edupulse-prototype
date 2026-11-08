@@ -56,3 +56,5 @@ See: [Settings tabs](../../system-walkthrough/02-shared-interface/README.md#1014
 Pulse, the character at the lower right, is the AI assistant on every page. Click it to ask, draft, compare or find references ([manual 5](../05-ask-pulse/README.md), [6](../06-compare-and-references/README.md)); drag it onto any part of a page for help with exactly that part ([manual 7](../07-pulse-guidance/README.md)).
 
 Unique page destinations stay in the main navigation: **Records** for Dean/Associate Dean and **Assessments** for students. Mobile users find the same links under **Open menu**. Page tabs provide subviews without duplicate left navigation.
+
+The verified System Admin can now select an actual account after choosing a role. This does not replace the admin Google session or provide the selected person's credentials. See [account support](../23-account-support-and-pulse-context/README.md) for search, filters, support restrictions and returning to the admin console.

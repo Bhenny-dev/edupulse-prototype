@@ -35,7 +35,7 @@ export default function AcademicPortal({ view }) {
   const open = async item => {
     if (isStudent && item.type !== 'assessment' && !await run({ operation: 'open', publication: item.id, version: item.source_version })) return
     setSession(null)
-    if(isStudent && item.type==='assessment' && !data.attempts.some(a=>a.publication_id===item.id&&String(a.source_version)===String(item.source_version))) {
+    if(isStudent && !user?.supportSubject && item.type==='assessment' && !data.attempts.some(a=>a.publication_id===item.id&&String(a.source_version)===String(item.source_version))) {
       const started=await run({operation:'start',publication:item.id,version:item.source_version})
       if(!started)return
       setSession(started)
@@ -52,7 +52,7 @@ export default function AcademicPortal({ view }) {
       {['performance', 'monitoring'].includes(view) && user?.role !== 'associate_dean' && <AcademicPerformance data={data} role={user?.role} monitoring={view === 'monitoring'} />}
       {['records', 'courses', 'monitor'].includes(view) && <AcademicManagement data={data} role={user?.role} view={view} />}
       {['courseware', 'assessment'].includes(view) && <AcademicLibrary data={data} assessments={view === 'assessment'} onOpen={open} busy={busy} />}
-      {selected && <OpenedPublication key={`${selected.id}:${session?.id || "reader"}`} selected={selected} data={data} isStudent={isStudent} answers={answers} setAnswers={setAnswers} result={result} session={session} busy={busy} onClose={() => setSelected(null)} onRetake={async()=>{const started=await run({operation:'start',publication:selected.id,version:selected.source_version,retake:true});if(started){setSession(started);setAnswers({});setResult(null)}}} onSubmit={() => run({ operation: 'respond', publication: selected.id, version: selected.source_version, session:session?.id, responses: selected.content.questions.map((_, index) => answers[index]) })} />}
+      {selected && <OpenedPublication key={`${selected.id}:${session?.id || "reader"}`} selected={selected} data={data} isStudent={isStudent && !user?.supportSubject} answers={answers} setAnswers={setAnswers} result={result} session={session} busy={busy} onClose={() => setSelected(null)} onRetake={async()=>{const started=await run({operation:'start',publication:selected.id,version:selected.source_version,retake:true});if(started){setSession(started);setAnswers({});setResult(null)}}} onSubmit={() => run({ operation: 'respond', publication: selected.id, version: selected.source_version, session:session?.id, responses: selected.content.questions.map((_, index) => answers[index]) })} />}
     </>}
   </div>
 }

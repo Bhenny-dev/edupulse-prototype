@@ -7,7 +7,7 @@ const STATUS = {
   supported: 'Supported by the cited source', corroborated: 'Supported by two or more documents', partial: 'Partly supported; check the source', uncited: 'Supported by a source but not cited',
   unsupported: 'Not found in the cited source', miscited: 'Cited the wrong source', general: 'General knowledge, not from your sources',
 }
-const ORIGIN = { private: 'Your library', 'public-guide': 'Product guide', attachment: 'Attached file', web: 'Public web research' }
+const ORIGIN = { account: 'Authorized account records', private: 'Your library', 'public-guide': 'Product guide', attachment: 'Attached file', web: 'Public web research' }
 const percent = value => value === null || value === undefined ? '—' : `${Math.round(value * 100)}%`
 
 /** One line of answer text with verified claims marked and citations as buttons that open their source. */

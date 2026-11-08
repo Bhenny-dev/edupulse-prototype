@@ -35,8 +35,8 @@ The summary cards show:
 | **Pulse API** | The application API responds |
 
 **Role coverage** counts the accounts in each of the five roles: System Admin, Dean, Associate Dean, Instructor and Student.
-* **Open view** opens EduPulse as that role, so the admin can reach and check any role's screens directly.
-* The admin identity, AI key and saved data stay the same while viewing as another role.
+* **Open view** opens an account picker for that role. Search and filter the actual accounts, then choose the person to inspect.
+* The admin sign-in, AI key, private history and knowledge library remain with the admin. Academic records and permitted saves belong to the selected account; support changes are audited.
 * The view can also be changed from the top bar (*Admin · <view>*) or, on a phone, from **Switch view** in the account menu.
 
 ## 3. Manage accounts
@@ -86,3 +86,10 @@ Runs are recorded for signed-in accounts in the hosted system once the agent-run
 *New after v0.4.0* (FR-AGENT-01–04).
 
 Initial overview, role/account counts, agent activity and audit reads now show skeletons while pending. Later **Refresh** retains loaded data and shows a spinner; account creation/role saves also show pending spinners. [Manual 19](../../system-manual/19-loading-and-saved-connections/README.md) captures the initial console request.
+
+
+## Account picker and support boundaries
+
+![Account selection after choosing Student](../../system-manual/23-account-support-and-pulse-context/01-select-account.png)
+
+Search by name, student number or email. Student filters include **Year level**, **Department** and **Program**. Choose a row to enter that person's academic view. The banner names the selected person and offers **Return to System Admin**. Support previews do not create learner access/completion events, assessment attempts or appeals. The existing own-account role view remains available through **Use my own ... view**. See [Manual 23](../../system-manual/23-account-support-and-pulse-context/README.md) for filtered, selected-account, dark and mobile captures. These are synthetic UI examples; native and rolled-back hosted checks separately verify row-level boundaries.

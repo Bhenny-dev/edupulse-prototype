@@ -71,3 +71,7 @@ Account guidance now describes confirmed shared imports/loading, saved topic res
 ## Draft the selected field
 
 Instructors can select an editable field or section and ask Pulse to draft or improve it for the selected course. The proposal lists the selected values for review before applying or saving. Exact field edits preserve neighboring outcomes, weeks and questions. Explicit requests for all fields select the full editable form. See [Manual 14](../14-pulse-and-outline-workspace/README.md).
+
+## Authorized context and agent continuity
+
+Pulse can answer from live authorized course, syllabus, roster and activity records, use public references for factual Internet questions, and chat naturally without a private document. Completed-run handoffs are scoped to the owner, conversation and selected account, with source provenance and memory opt-out. See [Manual 23](../23-account-support-and-pulse-context/README.md) for current captures, limits and delivery evidence.

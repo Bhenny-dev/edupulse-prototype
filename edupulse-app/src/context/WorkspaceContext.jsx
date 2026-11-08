@@ -24,7 +24,7 @@ function initialJournal(key, owner, preview) {
 
 export function WorkspaceProvider({ children }) {
   const { user } = useAuth()
-  const owner = user?.authenticated ? user.id : 'preview'
+  const owner = user?.authenticated ? (user.supportSubject ? `support-${user.accountId}-${user.id}` : user.id) : 'preview'
   return <WorkspaceSession key={owner} owner={owner} user={user} preview={!user?.authenticated}>{children}</WorkspaceSession>
 }
 function WorkspaceSession({ children, owner, user, preview }) {

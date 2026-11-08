@@ -168,3 +168,7 @@ Saved provider keys and selected models now survive sign-out under the same acco
 ## Optional microphone in Pulse
 
 **Pulse options** includes **Voice input**. Controls appear only when enabled. The default is transcript review; optional conversation mode sends completed speech. Browser/device voices can read generated and quick replies. Microphone denial, unsupported languages and API failures stop the voice loop with readable recovery. **AI settings** is offered beside credit/rate-limit failures. [Manual 20](../../system-manual/20-voice-and-provider-errors/README.md) contains current light/dark and mobile captures.
+
+## Account support and contextual Pulse, 8 November 2026
+
+The existing role chooser now leads to a searchable account dialog. A selected account has a support banner and **Return to System Admin** action; the admin keeps their own AI connection. Pulse source details distinguish authorized account records from public references and remembered outcomes. [Manual 23](../../system-manual/23-account-support-and-pulse-context/README.md) shows the picker in light, dark and mobile layouts and the three conversation types.

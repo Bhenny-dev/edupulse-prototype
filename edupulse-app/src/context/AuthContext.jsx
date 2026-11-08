@@ -1,8 +1,9 @@
-import { createContext, useContext, useState, useEffect, useCallback } from 'react'
+import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react'
 import { supabase } from '../lib/supabaseClient'
-import { aiRequest, setAiAccessToken } from '../lib/aiClient'
+import { aiRequest, setAiAccessToken, setAiSubject } from '../lib/aiClient'
 import { accountUser, canSwitchRole, ROLE_TITLES } from '../lib/authRoles'
 import { recordAudit } from '../lib/audit'
+import AccountSwitchModal from '../components/admin/AccountSwitchModal'
 
 const AuthContext = createContext(null)
 
@@ -34,13 +35,17 @@ export function AuthProvider({ children }) {
   })
   const [authLoading, setAuthLoading] = useState(Boolean(supabase))
   const [roleHistory, setRoleHistory] = useState([])
+  const principal = useRef(null), pendingSwitch = useRef(null)
+  const [accountPicker, setAccountPicker] = useState(null)
 
   useEffect(() => {
     if (!supabase) return
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setAiAccessToken(session?.access_token)
       const signedInUser = session?.user ? accountUser(session.user) : null
-      setUser(previous => session?.user ? accountUser(session.user, previous) : previous?.authenticated ? null : previous)
+      principal.current = signedInUser
+      if (!signedInUser?.canSwitchRoles) { setAiSubject(undefined); pendingSwitch.current?.(false); pendingSwitch.current = null; setAccountPicker(null) }
+      setUser(previous => session?.user ? (signedInUser?.canSwitchRoles && previous?.supportSubject && previous.accountId === session.user.id ? { ...previous, canSwitchRoles: Boolean(signedInUser?.canSwitchRoles) } : accountUser(session.user, previous)) : previous?.authenticated ? null : previous)
       if (session?.user && !signedInUser) {
         setTimeout(() => { void supabase.auth.signOut() }, 0)
       }
@@ -76,6 +81,7 @@ export function AuthProvider({ children }) {
   }, [])
 
   const updateProfile = useCallback(async (profile) => {
+    if (user?.supportSubject) throw new Error('Return to System Admin to change your account profile or credentials.')
     if (user?.authenticated) {
       const { error } = await supabase.auth.updateUser({ data: { full_name: profile.name, department: profile.department }, ...(profile.password ? { password: profile.password } : {}) })
       if (error) throw new Error('Profile could not be saved. Please try again.')
@@ -96,23 +102,41 @@ export function AuthProvider({ children }) {
   }, [user])
 
   const logout = useCallback(async () => {
-    await recordAudit(user, 'sign_out')
+    if (user?.supportSubject) await aiRequest('support', 'POST', { id: user.supportSubject, operation: 'leave' }).catch(() => {})
+    setAiSubject(undefined)
+    await recordAudit(principal.current || user, 'sign_out')
     // Clear only the device cookie. Explicit Disconnect removes the saved key.
     await aiRequest('providers', 'DELETE', undefined, undefined, { query: { sessionOnly: 'true' } }).catch(() => {})
     if (user?.authenticated) await supabase?.auth.signOut()
     setAiAccessToken(undefined)
     setRoleHistory(prev => [...prev, { action: 'logout', role: user?.role, timestamp: new Date().toISOString() }])
+    pendingSwitch.current?.(false); pendingSwitch.current = null; setAccountPicker(null)
     setUser(null)
   }, [user])
 
-  const switchRole = useCallback((role) => {
+  const closePicker = useCallback(() => { pendingSwitch.current?.(false); pendingSwitch.current = null; setAccountPicker(null) }, [])
+  const selectAccount = useCallback(async (account) => {
+    const base = principal.current
+    if (!base?.canSwitchRoles) throw new Error('Sign in again as the system admin.')
+    const selected = account ? await aiRequest('support', 'POST', { id: account.id, operation: 'enter' }) : null
+    if (user?.supportSubject && !selected) await aiRequest('support', 'POST', { id: user.supportSubject, operation: 'leave' })
+    setAiSubject(selected?.id)
+    const role = selected?.role || accountPicker
+    setUser({ ...base, ...(selected || {}), accountId: base.id, accountEmail: base.email, role, title: ROLE_TITLES[role], supportSubject: selected?.id || null })
+    setRoleHistory(previous => [...previous, { action: 'role_switch', to: role, subject: selected?.id || base.id, timestamp: new Date().toISOString() }])
+    if (!selected) void recordAudit(base, 'view_switch', 'success', ROLE_TITLES[role])
+    pendingSwitch.current?.(true); pendingSwitch.current = null; setAccountPicker(null)
+  }, [accountPicker, user?.supportSubject])
+  const switchRole = useCallback(async (role) => {
     if (!canSwitchRole(user, role)) return false
-    const previous = user.role
-    setUser(current => ({ ...current, role, title: ROLE_TITLES[role] }))
-    void recordAudit(user, 'view_switch', 'success', ROLE_TITLES[role])
-    setRoleHistory(prev => [...prev, { action: 'role_switch', from: previous, to: role, timestamp: new Date().toISOString() }])
-    return true
-  }, [user])
+    if (role === 'admin') {
+      if (user?.supportSubject) await aiRequest('support', 'POST', { id: user.supportSubject, operation: 'leave' }).catch(() => recordAudit(principal.current, 'view_switch', 'failure', 'Support exit audit unavailable; returned to admin locally'))
+      setAiSubject(undefined); setUser(principal.current); closePicker(); return true
+    }
+    pendingSwitch.current?.(false)
+    setAccountPicker(role)
+    return new Promise(resolve => { pendingSwitch.current = resolve })
+  }, [user, closePicker])
 
   const hasPermission = useCallback((permission) => Boolean(user && ROLE_PERMISSIONS[user.role]?.includes(permission)), [user])
   const canAccess = useCallback((requiredRoles) => Boolean(user && (requiredRoles === 'all' || requiredRoles.includes(user.role))), [user])
@@ -120,6 +144,7 @@ export function AuthProvider({ children }) {
   return (
     <AuthContext.Provider value={{ user, login, signIn, signInWithGoogle, logout, updateProfile, authLoading, switchRole, hasPermission, canAccess, roleHistory, ROLE_PERMISSIONS }}>
       {children}
+      {accountPicker && user?.canSwitchRoles && <AccountSwitchModal key={accountPicker} role={accountPicker} onSelect={selectAccount} onClose={closePicker} />}
     </AuthContext.Provider>
   )
 }

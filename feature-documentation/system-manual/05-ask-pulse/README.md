@@ -76,3 +76,5 @@ Pulse supplies up to 12 recent turns within its bounded prompt budget. Saved pre
 ## Capture provenance
 
 Images 1-3 use the real local Ollama qwen2.5:3b model and the uploaded Wikipedia taxonomy PDF. The model wording could not be fully verified, so the recorded result is explicitly **Source excerpts (no model-generated answer)** with citations. Images 4-5 use labelled synthetic transport to exercise revision controls. The source excerpts and interface fixtures do not establish that a model can satisfy every instruction.
+
+Pulse now receives live authorized account evidence for course, syllabus, roster and activity questions. Public factual questions can search without an explicit search keyword, while casual exchanges and source-only questions keep their appropriate scope. Supabase handoffs provide owner/conversation/subject-scoped continuity and respect automatic-memory controls. See [Manual 23](../23-account-support-and-pulse-context/README.md) for the current examples and limits.

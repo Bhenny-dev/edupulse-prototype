@@ -162,9 +162,9 @@ function RoleSwitchPopover({ onClose }) {
     <ModalLayer className="overlay-backdrop" onClick={onClose}>
       <div className="popover-content" style={{ maxWidth: '360px' }} onClick={e => e.stopPropagation()}>
         <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, marginBottom: '4px' }}>Switch View</h3>
-        <p style={{ fontSize: '0.75rem', color: 'var(--gray-400)', marginBottom: '16px' }}>You remain signed in as the admin. Your AI key and saved data stay with this account.</p>
+        <p style={{ fontSize: '0.75rem', color: 'var(--gray-400)', marginBottom: '16px' }}>You remain signed in as the admin. Choose an account to view its academic records. Your AI connection stays with the admin.</p>
         {roles.map(r => (
-          <button key={r.key} onClick={() => { if (switchRole(r.key)) { navigate('/dashboard'); onClose() } }} style={{
+          <button key={r.key} onClick={async () => { onClose(); if (await switchRole(r.key)) navigate('/dashboard') }} style={{
             display: 'flex', alignItems: 'center', gap: '12px', width: '100%',
             padding: '12px', borderRadius: 'var(--radius-md)',
             background: user?.role === r.key ? 'var(--sky-50)' : 'transparent',
@@ -189,7 +189,7 @@ function RoleSwitchPopover({ onClose }) {
 export default function Layout() {
   const workspace = useWorkspace()
   const ai = useAI()
-  const { user, logout } = useAuth()
+  const { user, logout, switchRole } = useAuth()
   const { language, switchLanguage } = useLanguage()
   const navigate = useNavigate()
   const location = useLocation()
@@ -528,6 +528,7 @@ export default function Layout() {
         </div>
       </footer>
 
+      {user?.supportSubject && <div className="support-view-banner" role="status"><span>Viewing <strong>{user.name}</strong> ({user.title}). Student activity tracking and submissions are disabled.</span><button className="btn btn-secondary btn-sm" onClick={async () => { if (await switchRole('admin')) navigate('/dashboard') }}>Return to System Admin</button></div>}
       {showSearch && <SearchOverlay onClose={() => setShowSearch(false)} />}
       {showRoleSwitch && user?.canSwitchRoles && <RoleSwitchPopover onClose={() => setShowRoleSwitch(false)} />}
       <Pulse />
