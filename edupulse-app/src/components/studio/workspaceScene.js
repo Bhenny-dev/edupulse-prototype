@@ -33,6 +33,9 @@ const lerp = (a, b, t) => a + (b - a) * t
 // The stations: position, facing (0 faces the camera side, PI the back wall), the work done
 // there, the seat height when seated, where a figure steps to when it stands up to talk, and the
 // aisle point it walks out to.
+// The team line-up (the landing page's scope ends with it): the nine stand in a row at the front of
+// the room, facing the camera, and wave in turn; then they hop back to their places.
+const LINE = { z: 3.7, x0: -4.4, gap: 1.1 }
 const STATIONS = {
   podium: { x: 5.1, z: 1.75, yaw: Math.PI / 2, pose: 'podium', step: [-0.1, 0.35], node: 'r3' },
   whiteboard: { x: 3.55, z: -4.4, yaw: Math.PI, pose: 'board', step: [0, 0.85], node: 'b4' },
@@ -94,7 +97,7 @@ function route(from, to) {
   return [...path, ...[...to.via].reverse(), end]
 }
 
-export function createWorkspaceScene({ canvas, stage, cast = [], labels = {}, bubble, still: startStill = false, crew = false, assemble = true, maxFps = 0, onPick, onHover, onReady, onLost }) {
+export function createWorkspaceScene({ canvas, stage, cast = [], labels = {}, bubble, still: startStill = false, crew = false, assemble = true, maxFps = 0, touchOrbit = false, onPick, onHover, onReady, onLost }) {
   const probe = document.createElement('canvas')
   const probeContext = probe.getContext('webgl2') || probe.getContext('webgl')
   if (!probeContext) return null
@@ -774,8 +777,9 @@ export function createWorkspaceScene({ canvas, stage, cast = [], labels = {}, bu
     return {
       key, index, s, root, pelvis, torso, head, eyes, mouth, arms, legs, ring, hit, glow, color, props, mug, page,
       home, greet, pos: start ? new THREE.Vector3(start.x, 0, start.z) : home.clone(), yaw: start ? start.yaw : s.yaw, sit: (start ? start.seat : seated) ? 1 : 0, seated,
-      mode: 'work', look: new THREE.Vector3(), talkUntil: 0, waveAt: -9, throwAt: -9, catchAt: -9, shakeUntil: 0,
+      mode: 'work', look: new THREE.Vector3(), talkUntil: 0, waveAt: -9, throwAt: -9, catchAt: -9, shakeUntil: 0, mood: null, moodAt: -9, moodUntil: 0, tilt: 0, lean: 0,
       blinkAt: 2 + index * 0.37, blinkUntil: 0, phase: index * 0.9, hop: 0, hx: 0, hy: 0, walk: 0,
+      lineAt: new THREE.Vector3(LINE.x0 + index * LINE.gap, 0, LINE.z), lined: false, trip: null, air: 0,
       places, place: start, dest: start, path: [], want: { activity: 'break', selected: false }, hold: false, greeted: false, sip: 4 + index * 1.7,
     }
   })
@@ -907,11 +911,11 @@ export function createWorkspaceScene({ canvas, stage, cast = [], labels = {}, bu
     if (key) onPick?.(key)
   }
   const onMove = event => {
-    if (event.pointerType !== 'mouse') return
+    if (event.pointerType !== 'mouse' && !touchOrbit) return
     const rect = canvas.getBoundingClientRect()
     sway.tx = Math.max(-1, Math.min(1, ((event.clientX - rect.left) / rect.width) * 2 - 1))
     sway.ty = Math.max(-1, Math.min(1, ((event.clientY - rect.top) / rect.height) * 2 - 1))
-    if (down?.mouse && event.buttons & 1) {
+    if (down && (down.mouse ? event.buttons & 1 : touchOrbit)) {
       const dx = event.clientX - down.x, dy = event.clientY - down.y
       if (!down.drag && Math.hypot(dx, dy) > 8) { down.drag = true; stage?.setAttribute('data-dragging', '') }
       if (down.drag) {
@@ -941,8 +945,20 @@ export function createWorkspaceScene({ canvas, stage, cast = [], labels = {}, bu
   // 'greet') or to throw and catch a plane ('turn').
   function steerAgent(rig, dt) {
     const s = rig.s
-    const greeting = rig.mode !== 'work'
-    const target = greeting ? rig.greet : rig.home
+    // A hop between its place and the line, over whatever stands between.
+    const trip = rig.trip
+    if (trip && clock >= trip.t0) {
+      const k = still ? 1 : clamp01((clock - trip.t0) / trip.dur), e = easeInOut(k)
+      rig.lined = false
+      rig.pos.set(lerp(trip.from.x, trip.to.x, e), 0, lerp(trip.from.z, trip.to.z, e))
+      rig.air = still ? 0 : Math.sin(k * Math.PI) * 0.8
+      if (k >= 1) { rig.trip = null; rig.air = 0; rig.lined = trip.line; if (trip.line) rig.waveAt = clock + 0.15 }
+      const there = k >= 1 && trip.line
+      return { walking: false, sit: 0, seat: s.seat || 0.47, seated: rig.seated, yaw: there ? facingCamera(rig) : Math.atan2(trip.to.x - trip.from.x, trip.to.z - trip.from.z), doing: there ? 'greet' : 'hop' }
+    }
+    const lined = rig.lined
+    const greeting = rig.mode !== 'work' || lined
+    const target = lined ? rig.lineAt : greeting ? rig.greet : rig.home
     const away = Math.hypot(target.x - rig.pos.x, target.z - rig.pos.z)
     if (still) rig.pos.copy(target)
     else if (away > 0.005) {
@@ -952,10 +968,10 @@ export function createWorkspaceScene({ canvas, stage, cast = [], labels = {}, bu
     }
     const walking = !still && away > 0.03
     let yaw = s.yaw
-    if (rig.mode === 'greet') yaw = facingCamera(rig)
+    if (lined || rig.mode === 'greet') yaw = facingCamera(rig)
     else if (rig.mode === 'turn') yaw = Math.atan2(rig.look.x - rig.pos.x, rig.look.z - rig.pos.z)
     else if (walking) yaw = Math.atan2(target.x - rig.pos.x, target.z - rig.pos.z)
-    return { walking, sit: rig.seated && !greeting && away < 0.06 ? 1 : 0, seat: s.seat || 0.47, seated: rig.seated, yaw, doing: rig.mode }
+    return { walking, sit: rig.seated && !greeting && away < 0.06 ? 1 : 0, seat: s.seat || 0.47, seated: rig.seated, yaw, doing: lined ? 'greet' : rig.mode }
   }
   // A crew member heads for the place its state asks for: its station while it has work, the spot
   // beside it to hand over a result or to greet when selected, otherwise its coffee-break spot. It
@@ -1005,7 +1021,7 @@ export function createWorkspaceScene({ canvas, stage, cast = [], labels = {}, bu
     rig.root.visible = revealed && (still || hop > 0)
     const lift = revealed ? easeOutBack(hop) : 0
     rig.root.scale.setScalar(Math.max(0.001, lift))
-    rig.root.position.set(rig.pos.x, still ? 0 : Math.sin(hop * Math.PI) * 0.35, rig.pos.z)
+    rig.root.position.set(rig.pos.x, still ? 0 : Math.sin(hop * Math.PI) * 0.35 + rig.air, rig.pos.z)
     rig.root.rotation.y = rig.yaw
 
     const gait = Math.sin(clock * 9 + rig.phase)
@@ -1046,6 +1062,25 @@ export function createWorkspaceScene({ canvas, stage, cast = [], labels = {}, bu
     const caught = clock - rig.catchAt
     if (caught > -0.45 && caught < 0.5) { pose.l = [-1.9, 0.15, -0.35]; pose.r = [-1.9, -0.15, -0.35] }
     if (clock < rig.shakeUntil) pose.l = [-1.55, 0.35, -0.5]
+    // A mood while it answers someone (the Pulse page's chat): its arms, head, eyes and mouth, and
+    // how it stands. Each is easy to tell apart at a glance.
+    const mood = clock < rig.moodUntil && !walking ? rig.mood : null
+    const felt = clock - rig.moodAt, beat = still ? 0 : Math.sin(felt * 6)
+    const face = { tilt: 0, lean: 0, bounce: 0, pitch: 0, eyes: null, eyeY: null, mouth: null, glow: null }
+    if (mood === 'happy') { pose.r = [-0.15, 2.45 + beat * 0.3, -0.25]; Object.assign(face, { eyes: [0.62, 0.62], eyeY: 0.024, mouth: 1.05, bounce: Math.abs(beat) * 0.025 }) }
+    if (mood === 'excited') { pose.l = [-0.2, -2.6 - beat * 0.2, -0.3]; pose.r = [-0.2, 2.6 + beat * 0.2, -0.3]; Object.assign(face, { eyes: [0.62, 0.62], eyeY: 0.024, mouth: 1.2, bounce: still ? 0 : Math.abs(Math.sin(felt * 9)) * 0.09, glow: 1.9 }) }
+    if (mood === 'laugh') { pose.l = [-0.55, -0.45, -1.3]; pose.r = [-0.55, 0.45, -1.3]; Object.assign(face, { eyes: [0.28, 0.28], eyeY: 0.022, mouth: still ? 1.1 : 0.9 + Math.abs(Math.sin(felt * 18)) * 0.5, bounce: still ? 0 : Math.abs(Math.sin(felt * 14)) * 0.03, lean: -0.12 }) }
+    if (mood === 'proud') { pose.l = [0.15, -0.8, -1.65]; pose.r = [0.15, 0.8, -1.65]; Object.assign(face, { eyes: [0.62, 0.62], eyeY: 0.024, mouth: 1, lean: -0.14, pitch: -0.12 }) }
+    if (mood === 'curious') { pose.r = [-1.75, 0.35, -1.8]; Object.assign(face, { tilt: 0.3, eyes: [1.18, 1.18], mouth: 0.4 }) }
+    if (mood === 'focused') { pose.l = [-0.95, -0.2, -1.05]; pose.r = [-0.95, 0.2, -1.05]; Object.assign(face, { eyes: [0.72, 0.72], mouth: 0.5, pitch: 0.06 + (still ? 0 : Math.sin(felt * 4) * 0.06) }) }
+    if (mood === 'confused') { pose.l = [-0.25, -0.95, -1.35]; pose.r = [-0.25, 0.95, -1.35]; Object.assign(face, { tilt: still ? 0.22 : Math.sin(felt * 2) * 0.26, eyes: [1.2, 0.7], mouth: 0.45 }) }
+    if (mood === 'sad') { pose.l = [0.05, -0.04, -0.04]; pose.r = [0.05, 0.04, -0.04]; Object.assign(face, { eyes: [0.5, 0.5], eyeY: 0.002, mouth: 0.35, lean: 0.12, pitch: 0.36, glow: 0.25 }) }
+    if (mood === 'caring') { pose.r = [-1.25, -0.4, -1.65]; Object.assign(face, { tilt: 0.18, eyes: [0.7, 0.7], eyeY: 0.02, mouth: 0.8 }) }
+    if (mood === 'grateful') { pose.l = [-0.25, -0.2, -0.6]; pose.r = [-0.25, 0.2, -0.6]; Object.assign(face, { eyes: [0.62, 0.62], eyeY: 0.024, mouth: 0.95, lean: still ? 0.2 : felt < 1.6 ? Math.sin((felt / 1.6) * Math.PI) * 0.38 : 0 }) }
+    if (mood === 'surprised') { pose.l = [-0.4, -0.65, -0.4]; pose.r = [-0.4, 0.65, -0.4]; Object.assign(face, { eyes: [1.35, 1.35], mouth: 0.35, bounce: still || felt > 0.4 ? 0 : Math.sin((felt / 0.4) * Math.PI) * 0.08 }) }
+    rig.pelvis.position.y += face.bounce
+    rig.lean = still ? face.lean : damp(rig.lean, face.lean, 7, dt)
+    rig.torso.rotation.x = rig.lean
     for (const [arm, [sx, sz, ex]] of [[left, pose.l], [right, pose.r]]) {
       arm.sx = still ? sx : damp(arm.sx, sx, 12, dt)
       arm.sz = still ? sz : damp(arm.sz, sz, 12, dt)
@@ -1075,21 +1110,23 @@ export function createWorkspaceScene({ canvas, stage, cast = [], labels = {}, bu
     const talking = !still && clock < rig.talkUntil
     if (talking) headPitch += Math.sin(clock * 8) * 0.05
     if (!still && clock < rig.shakeUntil) headYaw = Math.sin(clock * 20) * 0.38
+    headPitch += face.pitch
     rig.hx = still ? headPitch : damp(rig.hx, headPitch, 8, dt)
     rig.hy = still ? headYaw : damp(rig.hy, headYaw, 8, dt)
-    rig.head.rotation.set(rig.hx, rig.hy, 0)
+    rig.tilt = still ? face.tilt : damp(rig.tilt, face.tilt, 6, dt)
+    rig.head.rotation.set(rig.hx, rig.hy, rig.tilt)
     if (!still && clock > rig.blinkAt) { rig.blinkUntil = clock + 0.12; rig.blinkAt = clock + 2.6 + ((rig.index * 7 + Math.floor(clock)) % 5) * 0.55 }
     const happy = st.doing === 'greet'
-    for (const eye of rig.eyes) {
-      eye.scale.y = !still && clock < rig.blinkUntil ? 0.15 : happy ? 0.62 : 1
-      eye.position.y = happy ? 0.024 : 0.012
-    }
-    rig.mouth.scale.x = talking ? 0.4 + 0.75 * Math.abs(Math.sin(clock * 16)) : happy ? 1 : 0.55
-    rig.glow.emissiveIntensity = rig === speaker ? (talking ? 1.4 + Math.sin(clock * 12) * 0.5 : 1.3) : crew && rig.want.selected ? 1.1 : 0.5
+    rig.eyes.forEach((eye, i) => {
+      eye.scale.y = !still && clock < rig.blinkUntil ? 0.15 : face.eyes ? face.eyes[i] : happy ? 0.62 : 1
+      eye.position.y = face.eyeY ?? (happy ? 0.024 : 0.012)
+    })
+    rig.mouth.scale.x = talking ? 0.4 + 0.75 * Math.abs(Math.sin(clock * 16)) : face.mouth ?? (happy ? 1 : 0.55)
+    rig.glow.emissiveIntensity = face.glow ?? (rig === speaker ? (talking ? 1.4 + Math.sin(clock * 12) * 0.5 : 1.3) : crew && rig.want.selected ? 1.1 : 0.5)
     // The ring marks the agent in focus, or in a crew the selected one and those at work.
     rig.ring.visible = rig.root.visible && (crew ? rig.want.selected || (st.doing === 'work' && rig.want.activity === 'work') : rig === focused)
     if (rig.ring.visible) { rig.ring.position.set(rig.pos.x, 0.03, rig.pos.z); rig.ring.rotation.z += dt * 0.8; rig.ring.scale.setScalar(1 + Math.sin(clock * 3) * 0.06) }
-    return walking || talking || rig.sit % 1 > 0.002 || (revealed && !still && hop < 1) || (crew && rig.path.length > 0)
+    return walking || talking || Boolean(mood) || rig.trip !== null || rig.sit % 1 > 0.002 || (revealed && !still && hop < 1) || (crew && rig.path.length > 0)
   }
 
   function tick(time) {
@@ -1276,10 +1313,36 @@ export function createWorkspaceScene({ canvas, stage, cast = [], labels = {}, bu
     goal.az = VIEW.az
     wake()
   }
+  // `mood` (the Pulse page's chat): decline shakes its head; happy, excited, laugh, proud, curious,
+  // focused, confused, sad, caring, grateful and surprised show in its pose and face for a while.
+  // The team line-up: all nine hop to a row at the front of the room and wave in turn (`on`), or hop
+  // back to their places. The camera steps back to the front of the row, and returns with them.
+  let lined = false
+  function lineup(on) {
+    on = Boolean(on)
+    if (on === lined) return
+    lined = on
+    focus(null)
+    rigs.forEach((rig, i) => {
+      const to = on ? rig.lineAt : rig.home
+      if (still) { rig.pos.copy(to); rig.lined = on; rig.trip = null; return }
+      rig.trip = { from: rig.pos.clone(), to: to.clone(), t0: clock + 0.1 * i, dur: 0.9, line: on }
+    })
+    if (on) {
+      goal.target.set(0, 1.05, LINE.z - 0.3)
+      goal.dist = fit * (compact ? 0.72 : 0.5)
+      goal.el = VIEW.el - 0.28
+      goal.az = 0
+    }
+    wake()
+  }
   function speak(key, ms = 0, mood) {
     speaker = key ? byKey[key] || null : null
     if (speaker) {
       speaker.talkUntil = clock + ms / 1000
+      speaker.mood = mood || null
+      speaker.moodAt = clock
+      speaker.moodUntil = mood ? clock + Math.max(5, ms / 1000 + 3) : 0
       if (mood === 'decline') speaker.shakeUntil = clock + 1.2
       if (bubble) bubbleBox = { w: bubble.offsetWidth, h: bubble.offsetHeight }
     }
@@ -1456,5 +1519,5 @@ export function createWorkspaceScene({ canvas, stage, cast = [], labels = {}, bu
     onReady?.()
   })
 
-  return { focus, speak, arrive, travel, setCrew, clearRoute, reveal, setStill, setNight, dispose }
+  return { focus, speak, arrive, travel, setCrew, clearRoute, lineup, reveal, setStill, setNight, dispose }
 }

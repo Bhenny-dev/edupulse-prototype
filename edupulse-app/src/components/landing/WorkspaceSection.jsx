@@ -10,8 +10,9 @@ const wait = ms => new Promise(resolve => window.setTimeout(resolve, ms))
 
 // The agent workspace: the nine agents as robots at desks in one 3D scene (its own lazily
 // loaded chunk), alone on the screen. With motion the room waits behind the agents scope
-// (landing.css): the scope's white-out clears into it and the room assembles in that light, then
-// holds for a moment before the page moves on. Tapping a robot, or its button, makes it answer in
+// (landing.css) and is the same room the scope looks onto through its window: it assembles as the
+// scope pins, shows each agent as the scope names it, and is all there is once the window has
+// opened out, then holds for a moment before the page moves on. Tapping a robot, or its button, makes it answer in
 // a bubble. Every line is scripted (content.js) and the section says so. The buttons are ordinary
 // HTML and a polite live region carries each answer (it is on screen only when the bubble cannot
 // be), so the section works by keyboard, with a screen reader, without WebGL and with reduced
@@ -100,7 +101,7 @@ export default function WorkspaceSection({ agents, talk }) {
         api.setNight(document.documentElement.classList.contains('dark-mode'))
         if (shown.current) api.reveal()
       }).catch(flat)
-    }, { rootMargin: '0px 0px 200% 0px' })
+    }, { rootMargin: '0px 0px 300% 0px' }) // the room is built during Pulse's hold, not while the camera flies to the clock
     const seen = new IntersectionObserver(([entry]) => {
       if (!entry.isIntersecting) return
       seen.disconnect()
@@ -109,6 +110,12 @@ export default function WorkspaceSection({ agents, talk }) {
     }, { rootMargin: prefersReducedMotion() ? '0px' : '0px 0px -99% 0px' })
     near.observe(section.current)
     seen.observe(section.current)
+    // The scope above steers the room while it is pinned (AgentsSection): the camera turns to the
+    // agent it is naming, then the team lines up and hops back to its desks.
+    const onScopeFocus = event => scene.current?.focus(event.detail)
+    const onScopeLine = event => scene.current?.lineup(event.detail)
+    document.addEventListener('scope:focus', onScopeFocus)
+    document.addEventListener('scope:line', onScopeLine)
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)')
     const onReduce = () => scene.current?.setStill(isStill())
     reduce.addEventListener?.('change', onReduce)
@@ -120,6 +127,8 @@ export default function WorkspaceSection({ agents, talk }) {
       runs.current++
       near.disconnect()
       seen.disconnect()
+      document.removeEventListener('scope:focus', onScopeFocus)
+      document.removeEventListener('scope:line', onScopeLine)
       reduce.removeEventListener?.('change', onReduce)
       night.disconnect()
       api?.dispose()

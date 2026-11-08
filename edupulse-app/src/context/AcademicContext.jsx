@@ -6,6 +6,11 @@ import { aiRequest } from '../lib/aiClient'
 const EMPTY_ACADEMIC = { courses: [], publications: [], enrollments: [], attempts: [], accesses: [], institutional: [], faculty: [], events: [], notices: [] }
 const AcademicContext = createContext(null)
 
+// Background reads cost a serverless call and a read of every records table, so they are spaced
+// out: a visible tab rereads every five minutes, and focus or reconnecting rereads data older than a
+// minute. The user's own commands and other tabs' changes still reload at once.
+const REFRESH_MS = 300000, RECHECK_MS = 60000
+
 export function AcademicProvider({ children }) {
   const { user } = useAuth()
   // A view switch preserves the surrounding chat, but never reuses another view's records.
@@ -83,7 +88,7 @@ function AcademicSession({ children, user }) {
     if (!enabled) return
     const wake = () => {
       setOnline(navigator.onLine !== false)
-      if (navigator.onLine !== false && document.visibilityState === 'visible' && Date.now() >= timing.current.retryAt && Date.now() - timing.current.success >= 15000) void load()
+      if (navigator.onLine !== false && document.visibilityState === 'visible' && Date.now() >= timing.current.retryAt && Date.now() - timing.current.success >= RECHECK_MS) void load()
     }
     const offline = () => { setOnline(false); request.current?.controller.abort(); request.current = null; setLoading(false) }
     const changed = event => {
@@ -98,7 +103,7 @@ function AcademicSession({ children, user }) {
         channel.current.onmessage = event => { if (event.data === 'invalidate') { timing.current.invalidation++; timing.current.success = 0; wake() } }
       } catch { /* Periodic/focus refresh still works when cross-tab messaging is blocked. */ }
     }
-    const timer = setInterval(() => { if (Date.now() - timing.current.success >= 60000 || timing.current.retryAt) wake() }, 15000)
+    const timer = setInterval(() => { if (Date.now() - timing.current.success >= REFRESH_MS || timing.current.retryAt) wake() }, 15000)
     window.addEventListener('focus', wake); window.addEventListener('online', wake); window.addEventListener('offline', offline)
     document.addEventListener('visibilitychange', wake); window.addEventListener('edupulse-records-change', changed)
     return () => {

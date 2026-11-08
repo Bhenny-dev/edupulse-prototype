@@ -94,7 +94,7 @@ export const FLIGHTS = {
   'ai>agents': {
     sets: ['roomB'],
     via: [[[20.2, 3, -60], [20.2, 3.55, -64]]],
-    end: { pos: [20.2, 3.5, -63.2], look: [20.2, 3.5, -64], fov: 30 },
+    end: { fov: 30 }, // on the clock, as far as makes its rim the scope's outer ring (world.js)
     leave: [0.05, 0.32], fovKick: 0,
   },
   'workspace>impact': {

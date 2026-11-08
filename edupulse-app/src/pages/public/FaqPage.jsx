@@ -1,5 +1,5 @@
 import { BookOpen, BookMarked, Library } from 'lucide-react'
-import RoomPage, { Chips, DetailCard } from '../../components/public/RoomPage'
+import RoomPage, { Chips, DetailCard, Extra } from '../../components/public/RoomPage'
 import { FAQ } from '../../components/landing/content'
 
 // Each question as a book on the reading table: a short answer in keywords, the full one a click away.
@@ -14,9 +14,13 @@ const SHORT = [
   { topic: 'Other colleges', words: ['CIT first', 'Others planned'] },
 ]
 const TINTS = ['#2563eb', '#f59e0b', '#10b981', '#ec4899', '#8b5cf6', '#06b6d4', '#ef4444', '#84cc16']
-const ITEMS = FAQ.map((_, i) => ({ key: `q${i}`, short: SHORT[i].topic, icon: BookOpen, tint: TINTS[i] }))
+const ITEMS = [
+  ...FAQ.map((_, i) => ({ key: `q${i}`, short: SHORT[i].topic, icon: BookOpen, tint: TINTS[i] })),
+  { key: 'shelf', short: 'Every question', icon: BookMarked, tint: '#2563eb' },
+]
 
 function detail(key) {
+  if (key === 'shelf') return <Extra icon={BookMarked} tint="#2563eb" title="The floating book: every question"><Shelf /></Extra>
   const i = Number(key.slice(1)), item = FAQ[i]
   return (
     <DetailCard icon={BookOpen} tint={TINTS[i]} kicker={`Question ${i + 1} of ${FAQ.length}`} name={item.question} words={SHORT[i].words}>
@@ -41,7 +45,6 @@ function Shelf() {
 
 export default function FaqPage() {
   return (
-    <RoomPage theme="library" room="Library" icon={Library} tint="#7c5230" title="Eight questions, eight books." lead="Pick a book." items={ITEMS} detail={detail}
-      sections={[{ id: 'shelf', label: 'The shelf', title: 'Every question', icon: BookMarked, tint: '#2563eb', node: <Shelf /> }]} />
+    <RoomPage theme="library" room="Library" icon={Library} tint="#7c5230" title="Eight questions, eight books." lead="Pick a book, or the floating book for all of them." items={ITEMS} detail={detail} />
   )
 }

@@ -527,7 +527,7 @@ function StudentDashboard({ model, actions, status }) {
       </div>
 
       {/* Pulse guidance — reminders only, never answers */}
-      <div className="card mb-24" style={{ borderLeft: '4px solid var(--amber-500)' }}>
+      <div className="card mb-24">
         <div className="card-header">
           <h3><Bell size={16} /> Pulse Reminders</h3>
           <span className="text-sm text-muted">Guidance only — Pulse never answers or reviews assessment items</span>
@@ -545,7 +545,7 @@ function StudentDashboard({ model, actions, status }) {
 
       {/* Block info — from the EduSuite class list */}
       {model.block && (
-        <div className="card mb-24" style={{ borderLeft: '4px solid var(--sky-500)' }}>
+        <div className="card mb-24">
           <div className="card-header">
             <h3><Users size={16} /> My Block</h3>
           </div>
@@ -583,7 +583,7 @@ function StudentDashboard({ model, actions, status }) {
       </div>
 
       {/* Grounding transparency — teacher-approved sources only */}
-      <div className="card mb-24" style={{ borderLeft: '4px solid var(--sky-500)' }}>
+      <div className="card mb-24">
         <div className="card-header">
           <h3><CheckCircle size={16} /> Learning Material Sources</h3>
           <span className="badge badge-connected" style={{ fontSize: '0.625rem' }}>Instructor-verified</span>

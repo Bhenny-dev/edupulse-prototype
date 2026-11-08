@@ -2,7 +2,7 @@
 
 These are the pages a visitor sees before signing in:
 * `/`: the home page, a walk through a 3D school with one section on each surface;
-* `/features`, `/how-it-works`, `/roles`, `/pulse`, `/impact`, `/colleges`, `/play` and `/faq`: the eight pages in the top bar, each a themed classroom in 3D;
+* `/features`, `/how-it-works`, `/roles`, `/pulse`, `/impact`, `/colleges`, `/play` and `/faq`: the eight pages in the top bar, each one themed classroom in 3D that fills the screen and does not scroll: tap something in the room to zoom in on it and read its card;
 * `/privacy` and `/terms`: the legal pages;
 * `/500`: the server error page.
 
@@ -10,15 +10,15 @@ The site focuses on the College of Information Technology (CIT) of King's Colleg
 
 The site is a school: cream paper, oak frames, cork boards and green chalkboards, with headings in rounded bold Fredoka, text in Nunito and handwritten notes in Patrick Hand.
 
-**What the screenshots show.** Images 1 to 18 were captured with *reduce motion* turned on: the home page is then complete and still, in the same classroom style drawn without 3D. Images 19 to 44 were captured with motion allowed, on a large screen: the walk through the school (19 to 29), the eight pages (30 to 41) and night (42 to 44). With motion allowed, the site also moves; none of this appears in the images:
+**What the screenshots show.** Images 1 to 18 were captured with *reduce motion* turned on: the home page is then complete and still, in the same classroom style drawn without 3D. Images 19 to 44 were captured with motion allowed, on a large screen: the walk through the school (19 to 29, with 24b to 24d and 26b), the eight pages (30 to 41, with 30b and 41b) and night (42 to 44). The phone views are in [the mobile walkthrough](../06-mobile/README.md). With motion allowed, the site also moves; none of this appears in the images:
 * **Opening.** The home page always starts with the opening: whenever it loads at the top, a reload included, the EduPulse logo and name appear while geometric planes and 3D facets assemble around them, with **Scroll to explore** below. Scrolling about one screen opens the planes outward like an aperture and reveals the hero; scrolling back up closes it again. A keyboard user who presses Tab into the hero plays the opening forward to its end. Back and Forward, links to a section (for example `#/?section=faq`), later returns within the same visit and reduced motion start without it.
 * **3D hero.** As the opening clears, the emblem becomes 3D: the blue Pulse ring tips back like a halo, and the KCP crest and the CIT seal are porcelain medallions that turn in from edge-on, float and tilt with a mouse pointer, while white and blue planes drift around them.
 * **The walk.** On a large screen the page then walks through the school. The camera flies from room to room as you scroll, and each section rests square on its surface when it arrives: the hero on the campus lawn, *Why EduPulse* on the corridor bulletin board, *Features* on the classroom blackboard, *How it works* on the class seats, Roles with the classmates, Pulse at the teacher's end of the classroom, *Why it matters* in frames along the gallery wall, Colleges on the front stage, the photographs on lines above the KCP building, the FAQ in an open notebook and sign-in on the door of the study. A room's items pop into place as the walk arrives, and keyboard focus brings a room to the screen. The agents section and the agent workspace hold the screen on their own between Pulse and *Why it matters*.
 * **Phones.** On a phone or a portrait screen the school stays behind the page and the sections scroll as ordinary content in front of it.
-* **Speed dial.** Once the hero is reached, a round button with an arrow appears at the lower right, its ring filling as you go down the page. It opens a list of the page's parts: on the home page **Back to top** and the rooms of the school, on another page **Back to top**, its room and its sections. **Pause room motion** stops the 3D rooms; **Play room motion** starts them again.
-* **Agents.** The agents section holds the screen while scrolling travels inward ring by ring on its round chalkboard, neighbouring rings turning in opposite directions. A pinned index card names each agent in turn (**01 / 09** to **09 / 09**) with its keywords, that agent's ring lights up and its portrait pops into the lens at the centre, waving with its own gesture. After the ninth, the core opens while all nine wave together and the screen clears into the agent workspace.
-* **Agent workspace.** The studio fills the screen on its own and assembles: the floor settles, the walls rise, the furniture drops in and the nine agents hop to their places. They work at their stations, mugs steam and a cat sleeps on the rug. A tapped agent, or its button along the bottom, stands up, turns to the camera and waves while its line types out in a bubble above it. **Pause motion** stops all of it.
-* **Pages.** In each page's room the view sways a little with the mouse pointer and leans toward the prop you pick; the robots work and the cat sits, sleeps or walks.
+* **Speed dial.** On the home page, once the hero is reached, a round button with an arrow appears at the lower right, its ring filling as you go down the page; it opens **Back to top** and the rooms of the school. On each of the eight pages the button is a compass, always there, and opens the things in that room (image 41); choosing one zooms to it and opens its card. On every page **Pause room motion** stops the 3D rooms and **Play room motion** starts them again.
+* **Agents.** Scrolling on from the teacher's end, the camera comes to rest square on the wall clock and the agents section holds the screen without a fade to white (images 24b to 24d). The clock grows until its rim is the thick blue ring of a scope, its two hands come apart into letters and small round shapes that swirl out and settle on nine concentric rings of chalk capitals, one per agent, neighbouring rings turning in opposite directions. A round window opens in the middle onto the agent workspace, which waits behind the scope. Scrolling then travels inward ring by ring: a pinned index card names each agent in turn (**01 / 09** to **09 / 09**) with its keywords, that agent's ring lights up and the window shows the workspace's own 3D robot for that agent, the camera turning to it, waving with its own gesture. After the ninth, the window opens out to the whole screen while the nine robots hop into a row, wave and hop back to their desks.
+* **Agent workspace.** The studio is the room the scope opened onto, so there is no change of scene: it fills the screen on its own and settles. The agents work at their stations, mugs steam and a cat sleeps on the rug. A tapped agent, or its button along the bottom, stands up, turns to the camera and waves while its line types out in a bubble above it. **Pause motion** stops all of it.
+* **Pages.** In each page's room the view sways a little with the mouse pointer. Tapping a label (or its stop on the speed dial) flies the camera in on that prop and opens its card beside it; **Back to the room** or **Escape** flies back out. A drag looks around, the wheel or a pinch zooms, and the robots work. The cats can be played with: a tap pets one (it purrs and little hearts float up), a drag picks it up and carries it until you let go (it lands on the floor), and three quick taps make it cross: it arches its back with a small red mark over its head, bolts away and follows the pointer along the floor while the pointer is near, then calms down a few seconds after losing interest (image 41b).
 * **Photographs.** The two rows of community photographs drift slowly in opposite directions. **Pause photo movement** stops them until **Play photo movement** is pressed. Hovering, keyboard focus or a tap also stops them.
 * **Day and night.** The sun and moon switch beside **Sign In** turns the whole site to night and back (images 42 to 44). It is the same setting as **Settings → Appearance → Dark Mode**, so the choice is kept.
 
@@ -28,7 +28,7 @@ The site is a school: cream paper, oak frames, cork boards and green chalkboards
 
 ![Home page hero](01-landing-hero.png)
 
-- **Top bar:** the KCP crest and the EduPulse logo, which lead to the home page, then **Features**, **How It Works**, **Roles**, **Pulse**, **Impact**, **Colleges**, **Play** and **FAQ**, which open the eight pages (images 30 to 37). On the right, the sun and moon switch (here the sun: day) and the blue **Sign In** button, which goes to the sign-in panel. At the top of the page the bar has no background of its own.
+- **Top bar:** the KCP crest and the EduPulse logo, which lead to the home page, then **Home** (filled in blue here, because this is the home page), **Features**, **How It Works**, **Roles**, **Pulse**, **Impact**, **Colleges**, **Play** and **FAQ**, which open the eight pages (images 30 to 37). On the right, the sun and moon switch (here the sun: day) and the blue **Sign In** button, which goes to the sign-in panel. At the top of the page the bar has no background of its own.
 - **Institution line:** *King's College of the Philippines* above *College of Information Technology*.
 - **Headline:** “One shared home for syllabi, courseware & scores”, in heavy dark rounded type.
 - **Actions:** **Get started** goes to sign-in; **See how it works** goes to the six phases (section 5).
@@ -39,7 +39,7 @@ The site is a school: cream paper, oak frames, cork boards and green chalkboards
 
 ![Top bar after scrolling](02-landing-navigation.png)
 
-Once the page scrolls, the bar turns solid cream with a thin rule beneath it, and a blue line along its bottom edge shows how far down the page you are. On the home page no link is underlined, because the links name pages; on one of the eight pages its own link is underlined (images 30 to 37).
+Once the page scrolls, the bar turns solid cream with a thin rule beneath it, and a blue line along its bottom edge shows how far down the page you are. The link of the page you are on is filled in blue with a small marker beneath it that slides along to the next page's link when you move: **Home** on the home page (as here), and the page's own name on each of the eight pages (images 30 to 37). On a phone the links sit in the menu button's list, **Home** first.
 
 ## 3. Why EduPulse
 
@@ -117,7 +117,7 @@ The caption reads *Illustration · a student asks Pulse for quiz answers*.
 * **08 Verifier:** checks each claim in a written answer against its sources before you see it.
 * **09 Corrector:** fixes the citations the Verifier flags, or replaces an answer it cannot verify.
 
-As captured (reduced motion), the rings stand still and the list is shown. With motion, the list is read out to screen readers but replaced on screen by the turning rings, a pinned index card with the current agent's keywords and its waving portrait at the centre (see the top of this page).
+As captured (reduced motion), the rings stand still and the list is shown. With motion, the list is read out to screen readers but replaced on screen by the scope that grows from the wall clock: the turning rings, a pinned index card with the current agent's keywords and the workspace's 3D robot for that agent, waving, in the window at the centre (images 24b to 24d).
 
 ## 8c. The agent workspace
 
@@ -129,7 +129,7 @@ The same studio is the room in Pulse’s own **Workspace buddies** window (see [
 
 One button per agent (**Guardian** to **Corrector**) runs along the bottom of the screen, each with its icon on a disc in the agent's colour; on a narrow screen the row scrolls sideways. As captured, **Comparator** has been pressed (by its button; tapping the robot does the same): the Comparator stands by the sofa on a pink ring and a bubble above it shows **Comparator**, the label *Scripted example*, the question “Compare my syllabus with last year’s.” and the answer “I’ll line them up: what is shared, what is related and what only one of them has.” **Show all** returns the camera to the whole studio.
 
-Every answer is scripted from what the agents do in Pulse, one per agent. For example, the **Guardian** answers “Can you give me the quiz answers?” with “No. That breaks the assessment rule, so I stop the request here and no other agent runs.” The same answer is also read out by screen readers. Without WebGL, a grid of the agents' icons stands in for the studio and the buttons still work.
+The same studio is the window of the agents scope above (image 24d): its nine agents are the ones that line up, wave and return to their desks as the scope opens. Every answer is scripted from what the agents do in Pulse, one per agent. For example, the **Guardian** answers “Can you give me the quiz answers?” with “No. That breaks the assessment rule, so I stop the request here and no other agent runs.” The same answer is also read out by screen readers. Without WebGL, a grid of the agents' icons stands in for the studio and the buttons still work.
 
 ## 9. Why it matters
 
@@ -191,7 +191,7 @@ The hosted production build does not include it, and the deployment check enforc
 
 ![Footer](15-landing-footer.png)
 
-A green chalkboard footer under an oak rail. On the left, the KCP crest and EduPulse logo, “An AI-powered syllabus and course builder with performance monitoring, made for the College of Information Technology.” and the KCP vision, quoted from kcp.edu.ph, in a card with a yellow rule and the label *KCP vision*. Then three columns: **Explore** (the eight pages: **Features**, **How It Works**, **Roles**, **Pulse**, **Impact**, **Colleges**, **Play** and **FAQ**), **Legal** (**Privacy** and **Terms**) and **King's College of the Philippines** (Km5 Pico Rd, La Trinidad, 2601 Benguet, and **kcp.edu.ph**, which opens the official site in a new tab). A large faint *EduPulse* wordmark runs across the footer. The bottom line reads *A BSIT capstone project · College of Information Technology · Prototype v4.0* and *Photos and emblems © King's College of the Philippines*.
+A green chalkboard footer under an oak rail. On the left, the KCP crest and EduPulse logo, “An AI-powered syllabus and course builder with performance monitoring, made for the College of Information Technology.” and the KCP vision, quoted from kcp.edu.ph, in a plain card labelled *KCP vision*. Then three columns: **Explore** (the eight pages: **Features**, **How It Works**, **Roles**, **Pulse**, **Impact**, **Colleges**, **Play** and **FAQ**), **Legal** (**Privacy** and **Terms**) and **King's College of the Philippines** (Km5 Pico Rd, La Trinidad, 2601 Benguet, and **kcp.edu.ph**, which opens the official site in a new tab). A large faint *EduPulse* wordmark runs across the footer. The bottom line reads *A BSIT capstone project · College of Information Technology · Prototype v4.0* and *Photos and emblems © King's College of the Philippines*.
 
 ## 16. Privacy policy
 
@@ -239,6 +239,18 @@ Images 19 to 29 show the home page with motion allowed on a large screen, each r
 
 **24. Teacher's end.** Pulse's section at the front of the classroom: the six principles on the left, the Pulse robot standing in front, a wall clock, the chat card on a dark board on the right and a vase of flowers in the corner.
 
+![The wall clock becoming the scope](24b-walk-clock-letters.png)
+
+**24b. The clock becomes the scope.** Scrolling on from the teacher's end, the camera rests square on the wall clock and the scope is drawn over it: the clock's rim is the scope's thick blue outer ring. The clock's two hands have come apart into letters and small round shapes that are swirling out to the rings. In this frame the outer ring is nearly spelled out (*GUARDIAN · CHECKS APPROPRIATE USE*) while the rings inside it still hold scattered letters in flight. Nothing fades to white; the room behind the scope is still the school's.
+
+![The scope with the Guardian in its window](24c-walk-scope-agent.png)
+
+**24c. The scope names an agent.** The nine rings of chalk capitals turn in opposite directions under the blue rim, with a round window at the centre onto the agent workspace. The window shows the workspace's own 3D robot for the agent being named, here the **Guardian** (white, with a blue chest panel) in front of the studio's floor and furniture. The pinned index card at the lower left reads *01 / 09* · **Guardian** with the keywords *Checks first*, *Appropriate use* and *Stops what breaks rules* above nine marks, the first filled; the section's heading card is at the upper left. Each of the nine agents has its turn.
+
+![The agents line up as the window opens](24d-walk-agents-line-up.png)
+
+**24d. The window opens onto the workspace.** After the ninth agent the window grows until it is the whole screen. In this frame it is nearly there: the studio's honey-oak floor, desks and back wall fill the round opening, the robots stand in a row with their numbered tags (**02 Planner** to **08 Verifier** in view), the workspace's heading (*Tap an agent. It answers.*) is half hidden behind the window's edge and the nine agent buttons run along the bottom. The room behind the scope is the same studio throughout, so the next screen (section 8c) is this room with the agents back at their desks.
+
 ![Why it matters in the gallery](25-walk-gallery.png)
 
 **25. Gallery.** The three findings hang in oak frames along the gallery wall, the SDG card on a shelf below them and potted plants at both ends.
@@ -246,6 +258,10 @@ Images 19 to 29 show the home page with motion allowed on a large screen, each r
 ![Colleges on the front stage](26-walk-front-stage.png)
 
 **26. Front stage.** Colleges is on the stage, under a gold valance between blue curtains: the heading on a sign, the CIT card in an oak frame and the four college cards hanging on wires.
+
+![Through the hall window onto the yard](26b-walk-yard-window.png)
+
+**26b. The yard.** Leaving the front stage, the camera passes the hall's window (its oak sill and the blue chairs and desks below it) and looks out over the lawn in front of the KCP building, where students are out: two sit on a red checked picnic blanket with a basket and a third stands beside them, two walk the path towards the building and two more sit on a bench at the right eating ice creams. Out of this frame, two others toss a ball and one runs circles round a tree. The students are robots in the school's colours, moving the whole time; the eaters lift their food to their mouths.
 
 ![The photographs above the KCP building](27-walk-courtyard.png)
 
@@ -259,61 +275,67 @@ Images 19 to 29 show the home page with motion allowed on a large screen, each r
 
 **29. Door.** The sign-in panel is the door of the study, with an oak frame, hinges and a knob, and a plant on each side. In this capture build the panel also shows **Quick preview access (testing only)** (section 14).
 
-## 30-37. The pages
+## 30-41. The pages
 
-Each page in the bar is a themed classroom in 3D, seen from one corner. A paper card at the top left names the room, the page's heading and what to do; a label floats over each prop that stands for something, and the card at the lower left shows the one picked (below the room on a phone, where the labels become a row of chips). Clicking a label or the prop itself picks it. Robots and a cat live in every room. The bar underlines the current page's link.
+Each page in the bar is one themed classroom in 3D, seen from a corner, that fills the screen under the bar and never scrolls. A paper card at the top left names the room, gives the page's heading and says what to do; a hint at the bottom reads *Drag to look around · tap anything*; the round compass button at the lower right opens the room's speed dial (image 41); and the bar fills the current page's link in blue. A label floats over each prop that stands for something.
+
+**Tap a thing.** Clicking a label (or the prop under it, or its stop on the speed dial) flies the camera in on that prop and opens its card at the left, under a **Back to the room** button; **Back to the room** or **Escape** flies back out and returns keyboard focus to the label. A card holds a few words and icons: a small kicker, the name, short chips and, for the product's screens, a picture of the screen. What each page once showed further down (rules, timelines, grids, a sample chat) is now another thing in the room with its own label and card, so nothing sits below the room. On a phone the labels become a row of chips under the room and the card rises from the bottom ([mobile walkthrough](../06-mobile/README.md)).
 
 ![Features: the science lab](30-page-features.png)
 
-**30. Features: Science lab.** “Five stations, one syllabus.” · *Tap a station.* Five labelled stations: **Records** (a filing cabinet), **Syllabus**, **Courseware**, **Scores** (bar books) and **Pulse** (a robot at the bench), around lab benches with a flask, a microscope and test tubes under a periodic table; an orange cat walks the floor. Picked here: **Syllabus**, so the card shows *Instructor* · **The Syllabus Builder** with the chips *7-section KCP format*, *Co-write with Pulse* and *You check*, and a picture of the Syllabus Builder.
+**30. Features: Science lab.** “Five stations, one syllabus.” · *Tap a station, the formula, the rules or the microscope.* Eight labels: **Records** (a filing cabinet), **Syllabus**, **Courseware** (a flask), **Scores** (bars), **Pulse** (a robot at the bench), **The formula** (a periodic table), **Lab rules** (a poster) and **Microscope**, around lab benches, with an orange cat and a grey cat on the floor.
+
+![Features: the Courseware flask zoomed in](30b-page-features-zoom.png)
+
+**30b. Features: zoomed in.** Picking **Courseware** has flown the camera in on the flask, a stack of coloured books beside it; the card at the left reads *Instructor* · **Courseware from the course outline** with the chips *Week by week*, *From your sources* and *Publish when ready*, and a picture of the Courseware page.
 
 ![How It Works: the physics room](31-page-how-it-works.png)
 
-**31. How It Works: Physics room.** “Six stations, one run.” · *Follow the marble.* Six pedestals labelled **0 · Records** to **5 · Monitor**, joined by a rail a marble runs along, with a Newton's cradle on a table, a board reading *F = ma* and *E = mc²*, a wall clock, two robots and a black cat. The card shows *Phase 0 · Dean · Associate Dean* · **Records intake**, with **AI**: reads and previews them, and **People**: confirm before saving.
+**31. How It Works: Physics room.** “Six stations, one run.” · *Follow the marble, then tap a station, the cradle or the board.* Six pedestals labelled **0 · Records**, **1 · Loading**, **2 · Syllabus**, **3 · Courseware**, **4 · Students** and **5 · Monitor**, joined by a rail a marble runs along, with a Newton's cradle on a table (**Newton's cradle**), a board of formulas (**The forces**), a wall clock, two robots and a black cat.
 
 ![Roles: the math room](32-page-roles.png)
 
-**32. Roles: Math room.** “Five roles, five shapes.” · *Tap a shape.* Each role is a shape on a plinth: **Instructor** a blue cube, **Student** an orange sphere, **Dean** a green pyramid and **Associate Dean** a pink cylinder; the System Admin's purple ring is just out of view on the right. A chalkboard of formulas (*a² + b² = c²*, *π ≈ 3.14*, *Σn = n(n+1)/2*) and a curve, a protractor, an abacus on a desk, building blocks, a robot and two cats complete the room. Picked here: **Student** (*Sphere · Learn*), with its four tasks as chips and the line “Pulse will not answer or hint at assessment items.”
+**32. Roles: Math room.** “Five roles, five shapes.” · *Tap a shape, the board or the abacus.* Each role is a shape on a plinth: **Instructor** a blue cube, **Student** an orange sphere, **Dean** a green pyramid, **Associate Dean** a pink cylinder and **System Admin** a purple ring. **The board** is a chalkboard of formulas (*a² + b² = c²*, *π ≈ 3.14*, *Σn = n(n+1)/2*) and a curve; **The abacus** stands on a desk, with a protractor on the wall, building blocks, a robot and two cats.
 
-![Pulse: the computer lab](33-page-pulse.png)
+![Pulse: the agents studio](33-page-pulse.png)
 
-**33. Pulse: Computer lab.** “Nine agents, one answer.” · *Tap an agent.* The nine agents work at desks with laptops, each labelled (**Guardian**, **Planner**, **Researcher**, **Librarian**, **Ranker**, **Comparator**, **Writer**, **Verifier** and **Corrector**), beside a server rack and a board with nine coloured dots on one line. The card shows *Agent 1 of 9* · **Guardian** with *Checks first*, *Appropriate use* and *Stops what breaks rules*.
+**33. Pulse: Agent room.** “Nine agents. Ask them anything.” · *Tap an agent to talk to it, or just type.* The agents' studio from the home page fills the left of the screen, each agent labelled with its number (**01 Guardian** to **09 Corrector**), and the chat sits on the right. The chat's **Talk to** row starts with **Everyone** and continues with the nine agents (it scrolls sideways). The first lines read *Everyone. A message goes to the agent whose job it is; the Guardian checks first.* over the nine agents' icons joined by arrows, then the Guardian's greeting with its mood, *Happy*: “Hi! We're the nine agents behind Pulse. Tap one of us to talk to it, or just type; whoever's job it is will answer, and we answer everything else too.” Below are a field (*Say hi, ask about EduPulse, or ask for…*), **Send**, and the note *Scripted replies written on this page: no AI, nothing is sent or stored.* The compass button at the lower right opens a list of the nine agents (**Talk to an agent**) with **Pause room motion**.
 
 ![Impact: the history room](34-page-impact.png)
 
-**34. Impact: History room.** “Then, now, and why.” · *Tap an exhibit. Findings from cited studies, not EduPulse results.* Exhibits on plinths: **7.4 h** (an hourglass), **31%** (scales), **5.9 h** (a clock) and **SDGs** (a globe on a red rug), under a timeline on the wall. Picked here: **SDGs**, so the card shows *UN Sustainable Development Goals* · **The goals it serves** with **SDG 4.3**, **SDG 4.4**, **SDG 4.c** and **SDG 9**.
+**34. Impact: History room.** “Then, now, and why.” · *Tap an exhibit, the globe or the timeline. Findings from cited studies, not EduPulse results.* Five labels: **7.4 h**, **31%**, **SDGs** (a globe on a rug) and **5.9 h** (a clock), each on a plinth, and **The timeline** on the wall, between two columns, with a robot and a cat.
 
 ![Colleges: the gallery](35-page-colleges.png)
 
-**35. Colleges: Gallery.** “Five colleges, CIT first.” · *Tap a picture.* Framed pictures of the five colleges, labelled **CTELA**, **COT**, **CABM**, **CIT** (the largest) and **CCJE**, with a rope barrier, a bench where a black cat sits, an easel and a robot. The card shows *Now on EduPulse* · **College of Information Technology**, its two BSIT tracks and the CIT seal.
+**35. Colleges: Gallery.** “Five colleges, CIT first.” · *Tap a picture or the crest.* Framed pictures of the colleges, labelled **CTELA**, **COT**, **CABM**, **CIT** (the largest) and **CCJE**, with the **KCP crest** on the left wall, a rope barrier, a bench where a black cat sits, an easel and a robot.
 
 ![Play: the game room](36-page-play.png)
 
-**36. Play: Game room.** “Three games. Learn by playing.” · *Pick a cabinet.* Three arcade cabinets, **Guardian Gate** (blue), **Agent Match** (green) and **Quick Quiz** (orange), under a *PLAY* sign, with a bean bag, a round rug, a low table, two robots and a cat. The card shows *Game* · **Guardian Gate** with *Be the Guardian*, *Allow or decline* and *8 requests*, and a **Play** button that scrolls to the game (image 40).
+**36. Play: Game room.** “Three games. Learn by playing.” · *Tap a cabinet, then Play.* Three arcade cabinets, **Guardian Gate** (blue), **Agent Match** (green) and **Quick Quiz** (orange), under a *PLAY* sign, with a bean bag, a round rug, a low table, a pouf, two robots and a cat. A cabinet's card shows its name, three chips (for Guardian Gate *Be the Guardian*, *Allow or decline* and *8 requests*) and a **Play** button.
 
 ![FAQ: the library](37-page-faq.png)
 
-**37. FAQ: Library.** “Eight questions, eight books.” · *Pick a book.* Eight books stand pulled out of the shelves, one per question, labelled **LMS & grades**, **Sign-in**, **Publishing**, **Syllabus approval**, **AI accuracy**, **Assessments**, **Other colleges** and **Records**, around a reading table with an open book, a lamp, an armchair where a grey cat sleeps and a robot. The card shows *Question 1 of 8* · **Who can sign in to EduPulse?** with *Accounts from the admin* and *One role each*, and **Full answer**, which opens the whole answer.
+**37. FAQ: Library.** “Eight questions, eight books.” · *Pick a book, or the floating book for all of them.* Eight books stand pulled out of the shelves, one per question, labelled **LMS & grades**, **Sign-in**, **Publishing**, **Syllabus approval**, **AI accuracy**, **Assessments**, **Other colleges** and **Records**, and a ninth, **Every question**, opens the whole list. A reading table with an open book, a lamp, an armchair where a grey cat sleeps and a robot complete the room.
 
-## 38-41. Below the room
+![Roles: the board](38-page-roles-board.png)
 
-Under its room, each page has a few short sections. Three of them:
+**38. Roles: the board.** Picking **The board** flies the camera to the chalkboard and opens **Who opens what** at the left: the pages down the side (**Dashboard**, **Syllabus**, **Courseware**, **Student Monitoring**, **Performance**, **My Courses**, **Assessments**, **Records**, **Course Loading** and **Monitor**) and the five roles across the top (**Instructor**, **Student**, **Dean**, **Associate Dean** and **System Admin**), each in its own colour. A tick in the role's colour marks a page the role opens; a dash marks one it does not. The whole grid fits the card without scrolling sideways.
 
-![Roles: who opens what](38-page-roles-grid.png)
+![Pulse: the Guardian answering firmly](39-page-pulse-chat.png)
 
-**38. Roles: the grid.** **The grid** · “Who opens what”: the pages down the side (**Dashboard**, **Syllabus**, **Courseware**, **Student Monitoring**, **Performance**, **My Courses**, **Assessments**, **Records**, **Course Loading** and **Monitor**) and the five roles across the top, each in its own colour. A tick in the role's colour marks a page the role opens; a dash marks one it does not.
+**39. Pulse: talking to the agents.** The request “Can you give me the answers to quiz 2?” was typed with no one picked, so the agent whose job it is answered: the Guardian stands, turns to the camera and says, in a bubble over its head and in the chat, with the mood *Firm*, “I can't give assessment answers, hints or reviews; that's the one rule Pulse never bends. I can remind you what's due, find your materials or explain a topic from the syllabus instead.” The chat keeps the exchange: each agent's line carries its name and mood. Moods follow the message: a question about open textbooks makes the Librarian *Curious*, a joke makes an agent *Laughing*, good news *Excited*, a worry *Caring*, an insult *Sad*, thanks *Grateful* and something no agent knows *Puzzled*. Picking an agent in **Talk to** (or tapping it in the room) makes that agent answer everything, its job or not, and it says so (“That's usually Librarian's job, but I'll answer.”). Questions about EduPulse are answered from the site's own pages, with a line naming the page (*From: About EduPulse*). Every reply is written on this page; no AI is called and nothing is sent or stored.
 
-![Pulse: two sample exchanges](39-page-pulse-ask.png)
+![Play: the robot at the Guardian Gate cabinet](40-page-play-cabinet.png)
 
-**39. Pulse: Ask Pulse.** **Ask Pulse** · “Two sample exchanges”: a switch between **Student view** (shown) and **Instructor view**, and the chat card from the home page (section 8), captioned *Illustration · sample exchange*.
-
-![Play: Guardian Gate](40-page-play-gate.png)
-
-**40. Play: Guardian Gate.** **Guardian Gate** · “Allow or decline?”: one request at a time, as the Guardian would see it. The card shows the count (**2 / 8**), a dot per request and the score (**Score 1**), who asks (*Student*) and the request (“Which materials haven't I opened?”), then the green **Allow** and red **Decline** buttons. After an answer, a line says what the last request was and whether it was right (here *Declined: Assessment answers*). **Agent Match** (“Who does this job?”) and **Quick Quiz** follow below; each game keeps a score and offers **Play again** at the end.
+**40. Play: at the cabinet.** After **Play** on a cabinet's card, a robot walks to the cabinet and the camera looks over its shoulder at the screen, where the game runs: for **Guardian Gate** the heading *GUARDIAN GATE*, the count *1 / 8* and *SCORE 1*, *A student asks* and the request (“Quiz 2 answers, please.”), the green **Allow** and red **Decline** buttons, and the verdict under them (here *Decline: Assessment answers*). The robot presses the cabinet's buttons for each answer and pushes the joystick for **Next** and **Previous**; its head is at the right of the picture. Under the screen the keys **Previous**, **Next** and **Exit** run along the bottom (**Previous** is greyed on the first request). **Exit** walks the robot back and returns to the card. **Agent Match** (“Who does this job?”, nine agents, three choices) and **Quick Quiz** (six true-or-false questions) run the same way; each keeps a score and offers **Play again** at the end.
 
 ![The speed dial on a page](41-page-dial.png)
 
-**41. Speed dial.** The round button at the lower right, opened on the Play page: **Pause room motion**, **Back to top**, **Game room**, **Guardian Gate**, **Agent Match** and **Quick Quiz**, each beside a round icon; the button itself has turned into a close button marked X. Choosing a part glides to it and stops just under the bar.
+**41. Speed dial.** The round button at the lower right, opened on the Play page: **Pause room motion**, then the room's things (**Guardian Gate**, **Agent Match** and **Quick Quiz**), each beside a round icon; the button itself has turned into a close button marked X. Choosing a thing zooms to it and opens its card, as clicking its label does.
+
+![The cat after three quick taps](41b-page-cat.png)
+
+**41b. The cat.** On the Colleges page the black cat sat on the bench. A tap pets it (it purrs and hearts float up), a drag carries it, and three quick taps made it cross: here it has left the bench for the floor beside the robot, with a small red mark over its head, and follows the pointer while the pointer is near.
 
 ## 42-44. Night
 
@@ -321,7 +343,7 @@ The sun and moon switch beside **Sign In** turns the site to night; the switch t
 
 ![The Features page at night](42-night-page-features.png)
 
-**42. A page at night.** The science lab after dark: a starry navy sky behind the walls, stars and the moon in the windows, and dark cards with light text (here **Records and course loading** picked).
+**42. A page at night.** The science lab after dark: a starry navy sky behind the walls, stars and the moon in the windows, the title card and the labels as dark chips with light text, and the sun and moon switch showing the moon.
 
 ![The campus at night](43-night-walk-campus.png)
 
@@ -330,6 +352,8 @@ The sun and moon switch beside **Sign In** turns the site to night; the switch t
 ![Pulse's wall at night](44-night-walk-teachers-desk.png)
 
 **44. The teacher's end at night.** The classroom in lamplight, with the principles and the chat card as dark cards.
+
+*Changed on 8 November 2026:* the eight pages became interactive rooms that do not scroll: tapping a thing zooms in on it and opens its card, the things that were sections below the room are things in it (images 30 to 41 were recaptured, 30b and 41b added, and the old images 38 to 40 replaced by the board, the chat and the cabinet), the cats can be petted, carried and annoyed, **Play** runs the games on the cabinets with a robot at the keys, and **Pulse** is the agents' studio with a chat. The bar gained **Home** and fills the current link (images 1 to 29, 43 and 44 show it). The wall clock now becomes the agents scope and then the workspace without a fade to white (24b to 24d added, 8b and 8c text updated), students are out on the lawn (26b added), and the left-edge stripes were removed from cards, including the footer's quote.
 
 *Changed on 7 November 2026:* the public site became a school you walk through. Images 1 to 15 were recaptured in the classroom style; images 19 to 44 were added (the walk, the eight pages, the speed dial and night); images 16 to 18 are unchanged. The bar now opens pages instead of jumping to sections, the round speed dial replaces the **Back to top** button, Pulse's chat is in keywords and icons, and the agents' rings are a round chalkboard with pinned index cards.
 

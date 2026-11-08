@@ -39,13 +39,15 @@ function WorkspaceSession({ children, owner, user, preview }) {
     try { sessionStorage.setItem(key, JSON.stringify(journal)); localStorage.setItem(key, JSON.stringify(journal)); setCacheError('') }
     catch { setCacheError('Device storage is full or unavailable. Export a backup before leaving this page.') }
   }, [key, journal])
-  const load = useCallback(async (discard = false, signal) => {
+  const load = useCallback(async (discard = false, signal, background = false) => {
     setLoading(true); setError('')
     try {
-      const remote = await aiRequest('workspace', 'GET', undefined, signal)
+      // A background check names the revision it holds; the document comes back only when it changed.
+      const remote = await aiRequest('workspace', 'GET', undefined, signal, background ? { query: { known: String(current.current.revision) } } : {})
       if (!mounted.current || signal?.aborted) return
       setMode(remote.mode)
       if (remote.mode === 'preview') { setConflict(false); setJournal(previous => ({ ...previous, dirty: false })); return }
+      if (remote.unchanged && remote.revision === current.current.revision) { setConflict(false); return }
       const local = current.current
       if (!discard && local.dirty && remote.revision > local.revision && jsonValue(remote.data) === jsonValue(local.data)) {
         setConflict(false); setJournal({ data: local.data, revision: remote.revision, dirty: false }); return
@@ -74,7 +76,7 @@ function WorkspaceSession({ children, owner, user, preview }) {
         if (mounted.current) setJournal(previous => ({ data: previous.data, revision: saved.revision, dirty: previous.data !== sent.data }))
       } catch (err) { void recordAudit(user, 'workspace_save', 'failure', 'Save failed'); if (mounted.current) { setError(err.message); setConflict(err.status === 409) } }
       finally { writeLock.current = false; if (mounted.current) setSaving(false) }
-    }, 500)
+    }, 1500)
     return () => clearTimeout(timer)
   }, [journal, mode, loading, saving, conflict, error, user])
   const update = useCallback(change => {
@@ -124,9 +126,9 @@ function WorkspaceSession({ children, owner, user, preview }) {
       checked = Date.now()
       // Read before retrying a failed save. Preserve dirty edits and detect
       // a changed server revision instead of blindly replaying a write.
-      void load(false)
+      void load(false, undefined, true)
     }
-    const timer = setInterval(wake, 60000)
+    const timer = setInterval(wake, 120000)
     window.addEventListener('focus', wake); window.addEventListener('online', wake); window.addEventListener('storage', wake)
     document.addEventListener('visibilitychange', wake)
     return () => { clearInterval(timer); window.removeEventListener('focus', wake); window.removeEventListener('online', wake); window.removeEventListener('storage', wake); document.removeEventListener('visibilitychange', wake) }

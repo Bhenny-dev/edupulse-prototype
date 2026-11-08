@@ -8,28 +8,30 @@ import { WorkspaceProvider } from './context/WorkspaceContext'
 import { AcademicProvider } from './context/AcademicContext'
 import { AIProvider } from './context/AIContext'
 import { ThemeProvider } from './context/ThemeContext'
-import Layout from './components/layout/Layout'
 import SkipToContent from './components/ui/SkipToContent'
 import Landing from './pages/Landing'
-import Dashboard from './pages/Dashboard'
-import Syllabus from './pages/Syllabus'
-import Courseware from './pages/Courseware'
-import Assessment from './pages/Assessment'
-import Performance from './pages/Performance'
-import Records from './pages/Records'
-import CourseLoading from './pages/CourseLoading'
-import MonitorProgress from './pages/MonitorProgress'
-import StudentMonitoring from './pages/StudentMonitoring'
-import Settings from './pages/Settings'
-import NotificationCenter from './pages/Notifications'
-import ContentEditor from './pages/ContentEditor'
 import NotFound from './pages/NotFound'
 import ServerError from './pages/ServerError'
-import Privacy from './pages/Privacy'
-import Terms from './pages/Terms'
 import { PERFORMANCE_ROLES } from './lib/access'
 
 // The public pages, one themed room each, loaded when first opened.
+// Signed-in pages and the legal pages load on demand, so a visitor's first page downloads only the
+// public site.
+const Layout = lazy(() => import('./components/layout/Layout'))
+const Dashboard = lazy(() => import('./pages/Dashboard'))
+const Syllabus = lazy(() => import('./pages/Syllabus'))
+const Courseware = lazy(() => import('./pages/Courseware'))
+const Assessment = lazy(() => import('./pages/Assessment'))
+const Performance = lazy(() => import('./pages/Performance'))
+const Records = lazy(() => import('./pages/Records'))
+const CourseLoading = lazy(() => import('./pages/CourseLoading'))
+const MonitorProgress = lazy(() => import('./pages/MonitorProgress'))
+const StudentMonitoring = lazy(() => import('./pages/StudentMonitoring'))
+const Settings = lazy(() => import('./pages/Settings'))
+const NotificationCenter = lazy(() => import('./pages/Notifications'))
+const ContentEditor = lazy(() => import('./pages/ContentEditor'))
+const Privacy = lazy(() => import('./pages/Privacy'))
+const Terms = lazy(() => import('./pages/Terms'))
 const FeaturesPage = lazy(() => import('./pages/public/FeaturesPage'))
 const HowItWorksPage = lazy(() => import('./pages/public/HowItWorksPage'))
 const RolesPage = lazy(() => import('./pages/public/RolesPage'))
@@ -62,14 +64,14 @@ function AppRoutes() {
       <Route path="/colleges" element={publicPage(CollegesPage)} />
       <Route path="/play" element={publicPage(PlayPage)} />
       <Route path="/faq" element={publicPage(FaqPage)} />
-      <Route path="/privacy" element={<Privacy />} />
-      <Route path="/terms" element={<Terms />} />
+      <Route path="/privacy" element={publicPage(Privacy)} />
+      <Route path="/terms" element={publicPage(Terms)} />
       <Route path="/500" element={<ServerError />} />
       <Route
         element={
           <ProtectedRoute>
             <SkipToContent />
-            <Layout />
+            <Suspense fallback={<div className="session-loading"><SkeletonContent label="Opening EduPulse…" variant="page" /></div>}><Layout /></Suspense>
           </ProtectedRoute>
         }
       >

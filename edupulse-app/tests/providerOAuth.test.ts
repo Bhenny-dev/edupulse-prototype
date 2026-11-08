@@ -86,10 +86,10 @@ test('provider return detection supports dedicated, legacy and state-marked retu
 
 test('refreshing models preserves the chosen model instead of selecting the alphabetically first model', async t => {
   const transport = globalThis.fetch
-  globalThis.fetch = async () => Response.json({ data: [{ id: 'gpt-3.5-turbo' }, { id: 'gpt-4.1-mini' }] })
+  globalThis.fetch = async () => Response.json({ data: [{ id: 'gpt-5.5' }, { id: 'gpt-6.1-terra' }] })
   t.after(() => { globalThis.fetch = transport })
   const fresh = await createConnection({ provider: 'openai', apiKey: 'synthetic-test-key' }, actor)
-  assert.equal(fresh.connection.model, 'gpt-4.1-mini')
-  const selected = { ...fresh.connection, model: 'gpt-3.5-turbo' }
-  assert.equal((await createConnection({ provider: 'openai' }, actor, selected)).connection.model, 'gpt-3.5-turbo')
+  assert.equal(fresh.connection.model, 'gpt-6.1-terra')
+  const selected = { ...fresh.connection, model: 'gpt-5.5' }
+  assert.equal((await createConnection({ provider: 'openai' }, actor, selected)).connection.model, 'gpt-5.5')
 })

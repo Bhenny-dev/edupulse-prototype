@@ -258,7 +258,7 @@ export default function Assessment() {
           const attempt = MOCK_ATTEMPTS.find(a => a.assessmentId === assess.id)
           const isOverdue = new Date(assess.dueDate) < new Date()
           return (
-            <div key={assess.id} style={{ background: 'var(--white)', borderRadius: 16, padding: 20, boxShadow: 'var(--shadow-3d)', borderLeft: `4px solid ${isOverdue ? 'var(--danger)' : 'var(--sky-500)'}` }}>
+            <div key={assess.id} style={{ background: 'var(--white)', borderRadius: 16, padding: 20, boxShadow: 'var(--shadow-3d)' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div style={{ flex: 1 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
@@ -266,6 +266,7 @@ export default function Assessment() {
                     <span style={{ padding: '2px 8px', borderRadius: 6, fontSize: '0.7rem', fontWeight: 700, background: assess.type === 'quiz' ? 'var(--purple-100)' : 'var(--sky-100)', color: assess.type === 'quiz' ? 'var(--purple-500)' : 'var(--sky-500)', textTransform: 'capitalize' }}>
                       {assess.type}
                     </span>
+                    {isOverdue && <span style={{ padding: '2px 8px', borderRadius: 6, fontSize: '0.7rem', fontWeight: 700, background: 'var(--red-50)', color: 'var(--danger)' }}>Overdue</span>}
                   </div>
                   <div style={{ display: 'flex', gap: 16, fontSize: '0.8rem', color: 'var(--gray-500)' }}>
                     <span>{assess.totalPoints} points</span>

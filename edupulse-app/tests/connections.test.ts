@@ -81,13 +81,13 @@ test('a generation test uses the saved credential, records success and clears ve
   assert.equal((await handleRequest(request(verifiedCookie, { model: 'override-is-rejected' }))).status, 400)
 })
 
-test('catalog outages retain public saved-connection metadata and model discovery excludes expired or specialized OpenAI models', async t => {
+test('catalog outages retain public saved-connection metadata and model discovery excludes expired, deprecated, dated or specialized OpenAI models', async t => {
   const original = globalThis.fetch
   t.after(() => { globalThis.fetch = original })
   const models = await discoverModels('openai', 'synthetic-key', undefined, async () => Response.json({ data: [
-    { id: 'gpt-5-mini' }, { id: 'o3-mini' }, { id: 'gpt-4o-realtime-preview' }, { id: 'gpt-image-1' }, { id: 'gpt-expired', shutdown_date: '2020-01-01T00:00:00Z' },
+    { id: 'gpt-6.1-terra' }, { id: 'gpt-6-sol' }, { id: 'gpt-6-sol-2026-09-22' }, { id: 'gpt-5-mini' }, { id: 'o3-mini' }, { id: 'gpt-4o-realtime-preview' }, { id: 'gpt-image-1' }, { id: 'gpt-expired', shutdown_date: '2020-01-01T00:00:00Z' },
   ] }))
-  assert.deepEqual(models.map(m => m.id), ['gpt-5-mini', 'o3-mini'])
+  assert.deepEqual(models.map(m => m.id).sort(), ['gpt-6-sol', 'gpt-6.1-terra'])
   globalThis.fetch = async () => new Response('private provider data', { status: 503 })
   const cookie = connectionCookie({ ...connection, owner: 'public-guest' })
   const response = await handleRequest(new Request('https://edupulse.test/api/ai?action=providers', { headers: { cookie } }))

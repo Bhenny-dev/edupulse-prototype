@@ -1,0 +1,173 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-11-08T12-32-43-912Z-520f2238",
+  "startedAt": "2026-11-08T12:32:43.912Z",
+  "finishedAt": "2026-11-08T12:35:37.914Z",
+  "commitSha": "0165180e153e18959a2416e5060e5a24d74a5d68",
+  "sourceDigest": "db8ec3e60810b67eaafc7590c52ba383c534733b6c406c7c5fe8aa0b8e89608e",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-11-08T12:29:12.189Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 1,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": "^01-public-site/"
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/automatic-records.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/automatic-records.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.spec.ts",
+    "edupulse-app/tests/snapshots/course-seed.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-formatting.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-navigation.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/harness-delivery.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/operator-steps.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-drafting.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-source.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+    "edupulse-app/tests/snapshots/student-directory.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/voice-quota.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/voice-quota.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-recovery.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+      "title": "public site: the themed pages, night and the dial",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "preview/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 161798,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/30-page-features.png",
+      "sha256": "55283b864a9431633b28627b354d44748a84a8af288b08129fce251951f520ae",
+      "bytes": 506641
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/30b-page-features-zoom.png",
+      "sha256": "ddbf79c4ac8deb1cbc02d16e904f3803fd88cf1dade69099dfbffbf1d8d789bb",
+      "bytes": 214720
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/31-page-how-it-works.png",
+      "sha256": "b2c22bf4cde87aa3cd4250e84f971698aec0566811f65bfb7dd284b483df82f1",
+      "bytes": 512924
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/32-page-roles.png",
+      "sha256": "427e77020a875e06defe3bbb456df6cc3fcaf983756e2ff8923b11c9e17b4cb7",
+      "bytes": 507108
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/33-page-pulse.png",
+      "sha256": "fbe3b7771b5e6e2914ee2000d724744cd37f469556838716f1fa8b99d4bd1fbc",
+      "bytes": 706123
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/34-page-impact.png",
+      "sha256": "c447c441778c477fc0cfdfae21b41482576cb17a2ca5a15c2b6226b68f50235a",
+      "bytes": 484429
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/35-page-colleges.png",
+      "sha256": "1900e858006d128db4483cce132e925a4231110a82471939d6cf0ade26a74cf5",
+      "bytes": 529441
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/36-page-play.png",
+      "sha256": "1da7c513b971868544376a228b7e7fe62c96867c04b7acf519d7903fc740e1a3",
+      "bytes": 469680
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/37-page-faq.png",
+      "sha256": "db4fcc1c447b9b11f18011db7a4a76f1c25e6ab8566f7df74b965bb0692f5412",
+      "bytes": 558673
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/38-page-roles-board.png",
+      "sha256": "7de8af7eef07114da2232428b7ca8f35566892dcd3b88b5d650cdc336813721c",
+      "bytes": 221616
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/39-page-pulse-chat.png",
+      "sha256": "f4a3298e1395fb02490194d3616666da8157813daa545f0ad59f17caefe18c05",
+      "bytes": 712705
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/40-page-play-cabinet.png",
+      "sha256": "e7bb49d3e00449458cc4a163617ce4c80b84512eddafc82d0e1659e078adc733",
+      "bytes": 390162
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/41-page-dial.png",
+      "sha256": "00760747599f59503db904bd5c59f75e1793cab4d6c2690c2268b4814471eb04",
+      "bytes": 490117
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/41b-page-cat.png",
+      "sha256": "66b62193fa1fd59dbb4fbec1edddf0c4feadb81e1c110c0bfcd3c0bb56b1fe40",
+      "bytes": 540119
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/42-night-page-features.png",
+      "sha256": "3b6ba2810929b90a83841aa41fd2cd7e43384c362e00ea5d7ffd9a0dee261033",
+      "bytes": 571724
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/43-night-walk-campus.png",
+      "sha256": "cf601366420b9503429e6e188e3c91df7854069659359be358a2ce3d1fc9ae03",
+      "bytes": 599794
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/44-night-walk-teachers-desk.png",
+      "sha256": "f8409721d484bd76f0b4fdd871ba6c9debb93629d4be2db5d7bfb5e972a03a11",
+      "bytes": 310819
+    }
+  ]
+}

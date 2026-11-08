@@ -5,6 +5,7 @@ import { SHARDS } from './shards'
 import { gsap, ScrollTrigger, SplitText, MEDIA, EASE, prefersReducedMotion } from './motion'
 import { OPENING_TRIGGER } from './navigation'
 import { settleOpening } from './intro'
+import { whenSettled } from './settle'
 
 const ONLY_MOTION = { motion: MEDIA.motion } // a resize never replays the opening
 
@@ -153,9 +154,8 @@ export default function Opening({ prelude }) {
   }, [showPrelude])
 
   // The 3D scene loads in its own chunk and never delays the page: the opening starts at once
-  // and the facets join it when the scene is ready (it is requested immediately for the
-  // opening, when the browser is idle otherwise). Without WebGL, with reduced motion or if it
-  // fails, the SVG ring stays and nothing else changes.
+  // and the facets join it when the scene is ready (once the page has settled, settle.js).
+  // Without WebGL, with reduced motion or if it fails, the SVG ring stays and nothing else changes.
   useEffect(() => {
     const root = stage.current
     if (prefersReducedMotion()) return undefined
@@ -169,8 +169,7 @@ export default function Opening({ prelude }) {
         api.setNight(document.documentElement.classList.contains('dark-mode'))
       }).catch(fail)
     }
-    const idle = prelude ? { id: window.setTimeout(start, 0) }
-      : window.requestIdleCallback ? { id: window.requestIdleCallback(start, { timeout: 700 }), idle: true } : { id: window.setTimeout(start, 150) }
+    const cancelStart = whenSettled(start)
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)')
     const onReduce = () => { if (reduce.matches && api) { api.dispose(); api = null; root.classList.remove('has-scene') } }
     reduce.addEventListener?.('change', onReduce)
@@ -180,8 +179,7 @@ export default function Opening({ prelude }) {
     return () => {
       cancelled = true
       night.disconnect()
-      if (idle.idle) window.cancelIdleCallback(idle.id)
-      else window.clearTimeout(idle.id)
+      cancelStart()
       reduce.removeEventListener?.('change', onReduce)
       api?.dispose()
       root.classList.remove('has-scene', 'no-scene')

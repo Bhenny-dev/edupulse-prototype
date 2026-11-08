@@ -45,9 +45,10 @@ For imported institutional class lists, a saved instructor membership decision i
 
 The persistent **Refresh records** and **Sync my workspace** buttons have been replaced by a compact status. **Export** / **Export authorized records** remains available after records load.
 
-* Records load on entry and revalidate about once a minute while visible and online. Returning focus or connectivity rechecks stale data. An account-scoped cross-tab signal invalidates the cache without sending records or credentials.
+* Records load on entry and revalidate about every five minutes while visible and online. Returning focus or connectivity rechecks records older than a minute. Your own actions and changes from another of your tabs reload them at once. An account-scoped cross-tab signal invalidates the cache without sending records or credentials.
 * Only one record read runs at a time. A completed mutation during a read invalidates its response and causes a newer read. Existing records and open forms remain during background reads.
 * Normal workspace saves already project their confirmed contents transactionally. An instructor's older, clean cloud workspace is reconciled once per account session after loading. Dirty edits, saves, conflicts and workspace errors block that reconciliation.
+* A background workspace check, every two minutes while visible, asks only whether the saved revision changed; the whole workspace downloads only when it did. Edits are saved a moment and a half after you stop typing.
 * Workspace background recovery reads before retrying a failed save. A matching saved snapshot recovers a lost response; a changed revision preserves local edits and requires conflict review. It never overwrites the newer revision automatically.
 * Offline tabs pause requests and retain the current account's loaded view. Transient record failures retry with increasing delay, from 15 seconds up to five minutes. An error offers **Retry connection**; authorization failures clear the loaded records. A network reconnect is not proof that a request succeeded.
 * Changing account, assigned role or admin view isolates the record cache and cancels obsolete reads. Delayed responses cannot populate the next role's view. Role checks and server RLS remain authoritative.

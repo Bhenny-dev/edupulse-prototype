@@ -14,16 +14,20 @@ See: [sign-in panel](../../system-walkthrough/01-public-site/13-sign-in-panel.pn
 
 ## Explore the public pages
 
-Before signing in, the top bar lists eight pages: **Features**, **How It Works**, **Roles**, **Pulse**, **Impact**, **Colleges**, **Play** and **FAQ**. Each opens on a themed classroom in 3D; on a phone the pages are under the ☰ menu.
+Before signing in, the top bar lists **Home** and eight pages: **Features**, **How It Works**, **Roles**, **Pulse**, **Impact**, **Colleges**, **Play** and **FAQ**. The link of the page you are on is filled in blue. Each page is one themed classroom in 3D that fills the screen and does not scroll: everything the page has to say is in the room, behind something you can tap. On a phone the pages are under the ☰ menu.
 
 | To… | Do this | Screenshot |
 | --- | --- | --- |
-| Open a page | Click its name in the top bar; the EduPulse name returns to the home page | [Features page](../../system-walkthrough/01-public-site/30-page-features.png) |
-| See what something in the room stands for | Click its label in the room (on a phone, the chips under the room); the card at the lower left of the room (below it on a phone) shows it in a few words | [Roles page](../../system-walkthrough/01-public-site/32-page-roles.png) |
-| Jump to a part of the page | Click the round button in the bottom right corner, then a part; **Back to top** returns to the room. On the home page the same button lists the rooms of the school | [Speed dial on a page](../../system-walkthrough/01-public-site/41-page-dial.png) |
+| Open a page | Click its name in the top bar; **Home** and the EduPulse name return to the home page | [Features page](../../system-walkthrough/01-public-site/30-page-features.png) |
+| Look around the room | Drag it to turn the view, scroll or pinch to zoom; the hint at the bottom of the room says so | [Roles page](../../system-walkthrough/01-public-site/32-page-roles.png) |
+| Zoom in on something | Click its label (on a phone, its chip under the room) or the prop itself. The camera flies in on it and its card opens beside it with a few words; **Back to the room** or **Escape** flies back out | [Features, the Courseware flask](../../system-walkthrough/01-public-site/30b-page-features-zoom.png) |
+| Read a grid or a chat that used to be further down | They are things in the room: on **Roles** pick **The board** for who opens what, on **Pulse** type in the chat | [The board](../../system-walkthrough/01-public-site/38-page-roles-board.png) |
+| Pick from a list | Click the round compass button in the bottom right corner, then a thing; it zooms to it and opens its card. On the home page the same button lists the rooms of the school | [Speed dial on a page](../../system-walkthrough/01-public-site/41-page-dial.png) |
 | Stop the rooms moving | Open the round button and choose **Pause room motion**; **Play room motion** resumes it | [Speed dial on a page](../../system-walkthrough/01-public-site/41-page-dial.png) |
+| Talk to the agents | Open **Pulse**, tap an agent or pick one under **Talk to**, and type. With no one picked, the agent whose job it is answers; a picked agent answers anything. Replies are written on the page (no AI) and each agent shows how it feels | [Pulse chat](../../system-walkthrough/01-public-site/39-page-pulse-chat.png) |
+| Play a game | Open **Play**, tap **Guardian Gate**, **Agent Match** or **Quick Quiz**, then click **Play** on its card. A robot walks to the cabinet and the game runs on its screen: answer on the screen and use **Previous**, **Next** and **Exit** under it. Each game keeps a score and offers **Play again** at the end | [At the cabinet](../../system-walkthrough/01-public-site/40-page-play-cabinet.png) |
+| Play with a cat | Tap it to pet it, drag it to carry it, or tap three times quickly to make it cross; it then follows the pointer along the floor for a while | [The cat](../../system-walkthrough/01-public-site/41b-page-cat.png) |
 | Switch day and night | Click the sun and moon switch beside **Sign In**. It is the same setting as **Settings → Appearance → Dark Mode**, so the choice stays after signing in | [Night](../../system-walkthrough/01-public-site/42-night-page-features.png) |
-| Play a game | Open **Play**, pick **Guardian Gate**, **Agent Match** or **Quick Quiz** in the room, then click **Play** on its card (or scroll down to the game); each game keeps a score and offers **Play again** at the end | [Guardian Gate](../../system-walkthrough/01-public-site/40-page-play-gate.png) |
 
 ## Find your way around
 

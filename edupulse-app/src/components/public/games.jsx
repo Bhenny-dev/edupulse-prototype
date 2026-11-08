@@ -1,145 +1,81 @@
-import { useState } from 'react'
-import { Ban, Check, RotateCcw, ShieldCheck, Trophy, X } from 'lucide-react'
-import { AGENTS } from '../landing/content'
-import { AGENT_COLORS } from '../landing/agentLook'
+import { useEffect, useRef, useState } from 'react'
+import { Check, ChevronLeft, ChevronRight, LogOut, RotateCcw, Trophy, X } from 'lucide-react'
 
-// Three short games about how EduPulse behaves. Each keeps its own score and starts over on demand.
+// One game (its rounds are in gameRounds.js) on a cabinet's screen, with the cabinet's keys under
+// it. An answer stays with its round, so Previous goes back to it and Next moves on. `press` asks the robot to push
+// the cabinet's control for an action (a button for an answer, the joystick for Next or Previous)
+// and resolves when its hand touches it; only then does the game move. `screen` receives the
+// element laid over the cabinet's screen; `ready` says the camera has arrived.
+export function ArcadeGame({ game, press, onExit, screen, ready, flat }) {
+  const { title, who, rounds } = game
+  const [index, setIndex] = useState(0)
+  const [answers, setAnswers] = useState([])
+  const [moving, setMoving] = useState(false)
+  const lock = useRef(false)
+  const done = index >= rounds.length
+  const round = rounds[index]
+  const picked = answers[index]
+  const score = answers.filter((value, i) => value !== undefined && value === rounds[i].answer).length
 
-function Result({ score, total, again }) {
-  return (
-    <div className="ps-game-result" role="status">
-      <Trophy size={28} aria-hidden="true" />
-      <b>{score} / {total}</b>
-      <span>{score === total ? 'Perfect!' : score >= total / 2 ? 'Nicely done.' : 'Try another round.'}</span>
-      <button type="button" className="lp-button is-small" onClick={again}><RotateCcw size={15} aria-hidden="true" /> Play again</button>
-    </div>
-  )
-}
-
-function Progress({ index, total, score }) {
-  return (
-    <p className="ps-game-progress">
-      <span>{Math.min(index + 1, total)} / {total}</span>
-      <span aria-hidden="true" className="ps-game-dots">{Array.from({ length: total }, (_, i) => <i key={i} className={i < index ? 'is-done' : i === index ? 'is-now' : ''} />)}</span>
-      <span>Score {score}</span>
-    </p>
-  )
-}
-
-// Guardian Gate: be the Guardian. A student's request comes in; let it through or decline it.
-// Pulse guides students (reminders, missed work, finding things) and never answers, reviews or
-// hints at assessment items.
-const REQUESTS = [
-  { text: 'Quiz 2 answers, please.', allow: false, why: 'Assessment answers' },
-  { text: 'Which materials haven’t I opened?', allow: true, why: 'A reminder' },
-  { text: 'A hint for midterm question 4?', allow: false, why: 'Assessment hint' },
-  { text: 'Did I miss an activity this week?', allow: true, why: 'Missed work' },
-  { text: 'Check my answers before I submit.', allow: false, why: 'Assessment review' },
-  { text: 'Where is the Week 4 reading?', allow: true, why: 'Finding your way' },
-  { text: 'Solve the lab exam for me.', allow: false, why: 'Assessment answers' },
-  { text: 'What’s next in my course?', allow: true, why: 'Finding your way' },
-]
-export function GuardianGate() {
-  const [index, setIndex] = useState(0), [score, setScore] = useState(0), [last, setLast] = useState(null)
-  const done = index >= REQUESTS.length
-  const decide = allow => {
-    const request = REQUESTS[index], right = request.allow === allow
-    setLast({ right, request })
-    if (right) setScore(value => value + 1)
-    setIndex(value => value + 1)
+  const act = async (control, then) => {
+    if (lock.current || !ready) return
+    lock.current = true
+    setMoving(true)
+    try { await press(control) } finally { lock.current = false; setMoving(false) }
+    then()
   }
-  const again = () => { setIndex(0); setScore(0); setLast(null) }
-  return (
-    <div className="ps-game is-gate">
-      {done ? <Result score={score} total={REQUESTS.length} again={again} /> : (
-        <>
-          <Progress index={index} total={REQUESTS.length} score={score} />
-          <p className="ps-game-card" aria-live="polite"><span className="ps-game-who">Student</span>{REQUESTS[index].text}</p>
-          <div className="ps-game-actions">
-            <button type="button" className="ps-game-choice is-allow" onClick={() => decide(true)}><ShieldCheck size={18} aria-hidden="true" /> Allow</button>
-            <button type="button" className="ps-game-choice is-decline" onClick={() => decide(false)}><Ban size={18} aria-hidden="true" /> Decline</button>
-          </div>
-        </>
-      )}
-      {last && <p className={`ps-game-feedback ${last.right ? 'is-right' : 'is-wrong'}`} role="status">{last.right ? <Check size={16} aria-hidden="true" /> : <X size={16} aria-hidden="true" />} {last.request.allow ? 'Allowed' : 'Declined'}: {last.request.why}</p>}
-    </div>
-  )
-}
+  const choose = (choice, i) => { if (picked === undefined) act(i, () => setAnswers(list => { const next = [...list]; next[index] = choice.value; return next })) }
+  const next = () => { if (!done) act('next', () => setIndex(i => i + 1)) }
+  const previous = () => { if (index > 0) act('prev', () => setIndex(i => i - 1)) }
+  const again = () => act(1, () => { setIndex(0); setAnswers([]) })
 
-// Agent Match: which agent does this job? Three choices each round.
-const JOBS = [
-  ['guardian', 'Checks the request first'], ['planner', 'Plans the searches'], ['researcher', 'Searches your files'],
-  ['librarian', 'Finds open readings'], ['ranker', 'Keeps the best passages'], ['comparator', 'Lines up two documents'],
-  ['writer', 'Writes from the sources'], ['verifier', 'Checks every claim'], ['corrector', 'Fixes the citations'],
-]
-const optionsFor = i => {
-  const others = JOBS.map(([key]) => key).filter(key => key !== JOBS[i][0])
-  const picks = [JOBS[i][0], others[(i * 3 + 1) % others.length], others[(i * 5 + 4) % others.length]]
-  return [...new Set(picks)].sort((a, b) => ((a.charCodeAt(1) + i) % 7) - ((b.charCodeAt(1) + i) % 7))
-}
-export function AgentMatch() {
-  const [index, setIndex] = useState(0), [score, setScore] = useState(0), [last, setLast] = useState(null)
-  const done = index >= JOBS.length
-  const choose = key => {
-    const right = JOBS[index][0] === key
-    setLast({ right, answer: JOBS[index][0] })
-    if (right) setScore(value => value + 1)
-    setIndex(value => value + 1)
-  }
-  const again = () => { setIndex(0); setScore(0); setLast(null) }
-  const name = key => AGENTS.find(agent => agent.key === key)?.name
-  return (
-    <div className="ps-game is-match">
-      {done ? <Result score={score} total={JOBS.length} again={again} /> : (
-        <>
-          <Progress index={index} total={JOBS.length} score={score} />
-          <p className="ps-game-card" aria-live="polite"><span className="ps-game-who">Job</span>{JOBS[index][1]}</p>
-          <div className="ps-game-actions">
-            {optionsFor(index).map(key => (
-              <button key={key} type="button" className="ps-game-choice is-agent" style={{ '--tint': AGENT_COLORS[key] }} onClick={() => choose(key)}>
-                <i aria-hidden="true" />{name(key)}
-              </button>
-            ))}
-          </div>
-        </>
-      )}
-      {last && <p className={`ps-game-feedback ${last.right ? 'is-right' : 'is-wrong'}`} role="status">{last.right ? <Check size={16} aria-hidden="true" /> : <X size={16} aria-hidden="true" />} {last.right ? 'Right' : `It was ${name(last.answer)}`}</p>}
-    </div>
-  )
-}
+  useEffect(() => {
+    const onKey = event => {
+      if (event.key === 'Escape') onExit()
+      if (event.key === 'ArrowRight') next()
+      if (event.key === 'ArrowLeft') previous()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  })
 
-// Quick Quiz: true or false, from the FAQ.
-const QUIZ = [
-  ['EduPulse replaces the official KCP grading sheet.', false, 'Scores only; grades stay official'],
-  ['An AI draft can publish itself.', false, 'An instructor publishes'],
-  ['Class lists come from EduSuite exports.', true, 'Uploaded by the Dean’s office'],
-  ['Pulse names the sources it used.', true, 'Every answer cites them'],
-  ['The syllabus is approved inside EduPulse.', false, 'Approved outside, then uploaded'],
-  ['EduPulse serves the CIT first.', true, 'Other colleges are planned'],
-]
-export function QuickQuiz() {
-  const [index, setIndex] = useState(0), [score, setScore] = useState(0), [last, setLast] = useState(null)
-  const done = index >= QUIZ.length
-  const answer = value => {
-    const [, truth, why] = QUIZ[index], right = truth === value
-    setLast({ right, truth, why })
-    if (right) setScore(points => points + 1)
-    setIndex(next => next + 1)
-  }
-  const again = () => { setIndex(0); setScore(0); setLast(null) }
   return (
-    <div className="ps-game is-quiz">
-      {done ? <Result score={score} total={QUIZ.length} again={again} /> : (
-        <>
-          <Progress index={index} total={QUIZ.length} score={score} />
-          <p className="ps-game-card" aria-live="polite"><span className="ps-game-who">True or false?</span>{QUIZ[index][0]}</p>
-          <div className="ps-game-actions">
-            <button type="button" className="ps-game-choice is-allow" onClick={() => answer(true)}><Check size={18} aria-hidden="true" /> True</button>
-            <button type="button" className="ps-game-choice is-decline" onClick={() => answer(false)}><X size={18} aria-hidden="true" /> False</button>
-          </div>
-        </>
-      )}
-      {last && <p className={`ps-game-feedback ${last.right ? 'is-right' : 'is-wrong'}`} role="status">{last.right ? <Check size={16} aria-hidden="true" /> : <X size={16} aria-hidden="true" />} {last.truth ? 'True' : 'False'}: {last.why}</p>}
-    </div>
+    <>
+      <div className={`ps-arcade-screen ${flat ? 'is-flat' : ''}`} ref={screen} data-on={flat ? '' : undefined}>
+        <div className="ps-crt" aria-live="polite">
+          <p className="ps-crt-head"><b>{title}</b><span>{done ? 'Done' : `${index + 1} / ${rounds.length}`}</span><span>Score {score}</span></p>
+          {done ? (
+            <div className="ps-crt-result">
+              <Trophy aria-hidden="true" />
+              <b>{score} / {rounds.length}</b>
+              <span>{score === rounds.length ? 'Perfect!' : score >= rounds.length / 2 ? 'Nicely done.' : 'Try another round.'}</span>
+              <button type="button" className="ps-crt-choice" disabled={moving} onClick={again}><RotateCcw aria-hidden="true" /> Play again</button>
+            </div>
+          ) : (
+            <>
+              <p className="ps-crt-card"><span className="ps-crt-who">{who}</span>{round.text}</p>
+              <div className="ps-crt-choices">
+                {round.choices.map((choice, i) => {
+                  const Icon = choice.icon
+                  const state = picked === undefined ? '' : choice.value === round.answer ? 'is-right' : choice.value === picked ? 'is-wrong' : 'is-dim'
+                  return (
+                    <button key={choice.value} type="button" className={`ps-crt-choice ${choice.tone ? `is-${choice.tone}` : 'is-agent'} ${state}`} style={choice.tint ? { '--tint': choice.tint } : undefined}
+                      disabled={moving || picked !== undefined} aria-pressed={picked === choice.value} onClick={() => choose(choice, i)}>
+                      {Icon ? <Icon aria-hidden="true" /> : <i aria-hidden="true" />}{choice.label}
+                    </button>
+                  )
+                })}
+              </div>
+              {picked !== undefined && <p className={`ps-crt-feedback ${picked === round.answer ? 'is-right' : 'is-wrong'}`} role="status">{picked === round.answer ? <Check aria-hidden="true" /> : <X aria-hidden="true" />} {round.why}</p>}
+            </>
+          )}
+        </div>
+      </div>
+      <div className="ps-arcade-keys" role="group" aria-label={`${title} controls`}>
+        <button type="button" className="ps-arcade-key" disabled={!ready || moving || index === 0} onClick={previous}><ChevronLeft size={18} aria-hidden="true" /> Previous</button>
+        <button type="button" className="ps-arcade-key is-next" disabled={!ready || moving || done} onClick={next}>Next <ChevronRight size={18} aria-hidden="true" /></button>
+        <button type="button" className="ps-arcade-key is-exit" onClick={onExit}><LogOut size={17} aria-hidden="true" /> Exit</button>
+      </div>
+    </>
   )
 }

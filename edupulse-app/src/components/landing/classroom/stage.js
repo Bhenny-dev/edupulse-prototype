@@ -1,6 +1,8 @@
 import { ScrollTrigger } from '../motion'
 import { OPENING_TRIGGER, setJumper } from '../navigation'
 import { rectIn } from './mode'
+import { openingEnd } from './scope'
+import { whenSettled } from '../settle'
 import { ROOM_ORDER, ROOMS, MEASURE, FLIGHTS, LITE_LAYOUT } from './plan'
 
 // The walk through the school. The page keeps its normal scroll: nothing intercepts the wheel, touch
@@ -40,12 +42,8 @@ function watchNight(apply) {
   return () => watcher.disconnect()
 }
 
-// The school is built when the browser has a moment, never in the middle of the opening's entrance.
-function whenIdle(start) {
-  if (!window.requestIdleCallback) { const id = setTimeout(start, 1000); return () => clearTimeout(id) }
-  const id = window.requestIdleCallback(start, { timeout: 2000 })
-  return () => window.cancelIdleCallback(id)
-}
+// The school is built once the page has settled (settle.js), never in the middle of the opening's entrance.
+const whenIdle = start => whenSettled(start)
 
 // The school's own time: stopped by the speed dial's pause control, so robots, plants and clouds hold
 // still while the camera still follows the scroll.
@@ -85,8 +83,11 @@ export function createLiteStage({ root, canvas, buildingUrl, onFail }) {
       if (!next) return
       if (spot.key === 'ai' && agents && workspace) {
         const end = top(workspace) + workspace.offsetHeight - H
-        list.push({ kind: 'flight', key: 'ai>agents', a: spot.b, b: top(agents) })
-        list.push({ kind: 'opaque', a: top(agents), b: end })
+        const pin = ScrollTrigger.getById('lp-agents'), pinned = pin ? pin.start : top(agents)
+        // The camera ends on the clock; the scope opens over it; then the scope covers the school.
+        list.push({ kind: 'flight', key: 'ai>agents', a: spot.b, b: pinned })
+        list.push({ kind: 'scope', a: pinned, b: openingEnd(pin, pinned) })
+        list.push({ kind: 'opaque', a: openingEnd(pin, pinned), b: end })
         list.push({ kind: 'flight', key: 'workspace>impact', a: end, b: next.a })
       } else list.push({ kind: 'flight', key: `${spot.key}>${next.key}`, a: spot.b, b: next.a })
     })
@@ -102,6 +103,7 @@ export function createLiteStage({ root, canvas, buildingUrl, onFail }) {
     for (const s of segments) {
       if (y < s.a || y >= s.b) continue
       if (s.kind === 'flight') return { kind: 'flight', key: s.key, t: Math.min(1, Math.max(0, (y - s.a) / Math.max(1, s.b - s.a))) }
+      if (s.kind === 'scope') return { kind: 'flight', key: 'ai>agents', t: 1, scope: true }
       return s.kind === 'hold' ? { kind: 'hold', key: s.key, pan: 0 } : { kind: s.kind }
     }
     return { kind: 'hero' }
@@ -118,7 +120,9 @@ export function createLiteStage({ root, canvas, buildingUrl, onFail }) {
     lastY = y
     walked += (y - walked) * (1 - Math.exp(-dt * DAMPING))
     if (Math.abs(y - walked) < 0.2) walked = y
-    world.pose(stateAt(walked))
+    const state = stateAt(walked)
+    world.pose(state)
+    root.classList.toggle('is-scope-aligned', Boolean(state.scope) || state.kind === 'opaque')
     world.frame(clock.read(time))
   }
   let timer = 0
@@ -180,7 +184,7 @@ export function createStage({ root, canvas, wash, buildingUrl, onFail }) {
   const byKey = Object.fromEntries(rooms.map(room => [room.key, room]))
 
   let world = null, disposed = false, frame = 0, last = 0, walked = window.scrollY, lastY = walked, segments = []
-  const marks = { agents: 0, wsEnd: 0, H: window.innerHeight }
+  const marks = { agents: 0, open: 0, wsEnd: 0, H: window.innerHeight }
   const clock = schoolClock()
 
   // ─── Layout ───
@@ -194,9 +198,8 @@ export function createStage({ root, canvas, wash, buildingUrl, onFail }) {
       const share = Number(room.section.dataset.hold || 0.36)
       room.hold = room.panMax > 0 ? Math.round(room.panMax + H * 0.18) : Math.round(H * share)
       const lastRoom = i === rooms.length - 1
-      // After Pulse the white fills the screen before the agents section rises into it. The last room
-      // stays on the screen until the footer rises over it.
-      const flight = lastRoom ? H : room.key === 'ai' ? H * (TRANSIT + 1) : H * TRANSIT
+      // The last room stays on the screen until the footer rises over it.
+      const flight = lastRoom ? H : H * TRANSIT
       const height = Math.round(room.hold + flight)
       room.section.dataset.hold = String(share)
       room.section.dataset.holdPx = String(room.hold)
@@ -227,6 +230,7 @@ export function createStage({ root, canvas, wash, buildingUrl, onFail }) {
     const heroEnd = opening ? opening.end : 0
     const agents = ScrollTrigger.getById('lp-agents')
     marks.agents = agents ? agents.start : (root.querySelector('#agents')?.getBoundingClientRect().top ?? 0) + scroll
+    marks.open = openingEnd(agents, marks.agents)
     marks.wsEnd = byKey.impact ? byKey.impact.y - H : marks.agents
     marks.H = H
     const list = [{ kind: 'hero', a: -Infinity, b: heroEnd }, { kind: 'flight', key: 'hero>problem', a: heroEnd, b: rooms[0].y }]
@@ -235,8 +239,10 @@ export function createStage({ root, canvas, wash, buildingUrl, onFail }) {
       list.push({ kind: 'hold', key: room.key, a: room.y, b: next ? end : Infinity })
       if (!next) return
       if (room.key === 'ai') {
-        list.push({ kind: 'flight', key: 'ai>agents', a: end, b: marks.agents - H })
-        list.push({ kind: 'opaque', a: marks.agents - H, b: marks.wsEnd })
+        // The camera ends on the clock, the scope opens over it, then the scope covers the school.
+        list.push({ kind: 'flight', key: 'ai>agents', a: end, b: marks.agents })
+        list.push({ kind: 'scope', a: marks.agents, b: marks.open })
+        list.push({ kind: 'opaque', a: marks.open, b: marks.wsEnd })
         list.push({ kind: 'flight', key: 'workspace>impact', a: marks.wsEnd, b: next.y })
       } else list.push({ kind: 'flight', key: `${room.key}>${next.key}`, a: end, b: next.y })
     })
@@ -262,6 +268,8 @@ export function createStage({ root, canvas, wash, buildingUrl, onFail }) {
         return { kind: 'hold', key: s.key, pan: Math.min(room.panMax, Math.max(0, y - s.a)) }
       }
       if (s.kind === 'flight') return { kind: 'flight', key: s.key, t: Math.min(1, Math.max(0, (y - s.a) / Math.max(1, s.b - s.a))) }
+      // While the scope opens the camera holds on the clock it draws over.
+      if (s.kind === 'scope') return { kind: 'flight', key: 'ai>agents', t: 1, scope: true }
       return { kind: s.kind }
     }
     return { kind: 'hero' }
@@ -313,18 +321,13 @@ export function createStage({ root, canvas, wash, buildingUrl, onFail }) {
     }
   }
 
-  function washAt(state, y) {
-    const { H, agents, wsEnd } = marks
-    if (state.kind === 'flight') {
-      if (state.key === 'ai>agents') return smooth(0.5, 0.94, state.t)
-      if (state.key === 'workspace>impact') return 1 - smooth(0.02, 0.5, state.t)
-      const flash = FLIGHTS[state.key]?.flash
-      if (flash) { const d = (state.t - flash[0]) / 0.1; return flash[1] * Math.exp(-d * d) }
-      return 0
-    }
-    if (state.kind !== 'opaque') return 0
-    if (y < agents + H * 0.06) return 1 - smooth(agents - H * 0.2, agents + H * 0.06, y)
-    return smooth(wsEnd - H * 0.45, wsEnd, y)
+  // A soft flash of light where the camera passes through a doorway; nothing else covers the school.
+  function washAt(state) {
+    if (state.kind !== 'flight') return 0
+    const flash = FLIGHTS[state.key]?.flash
+    if (!flash) return 0
+    const d = (state.t - flash[0]) / 0.1
+    return flash[1] * Math.exp(-d * d)
   }
 
   function tick(now) {
@@ -342,8 +345,9 @@ export function createStage({ root, canvas, wash, buildingUrl, onFail }) {
     const state = stateAt(walked)
     world?.pose(state)
     place(state)
-    const light = washAt(state, walked)
+    const light = washAt(state)
     if (!cutting) wash.style.opacity = light > 0.002 ? light.toFixed(3) : '0'
+    root.classList.toggle('is-scope-aligned', Boolean(state.scope) || state.kind === 'opaque')
     root.classList.toggle('is-past-workspace', walked > marks.wsEnd)
     world?.frame(clock.read(time))
   }
@@ -418,7 +422,7 @@ export function createStage({ root, canvas, wash, buildingUrl, onFail }) {
     document.removeEventListener('focusin', onFocus)
     document.removeEventListener('classroom:role', onRole)
     clock.stop()
-    root.classList.remove('is-staged', 'is-past-workspace')
+    root.classList.remove('is-staged', 'is-past-workspace', 'is-scope-aligned')
     for (const room of rooms) {
       room.section.style.height = ''
       room.view.style.transform = ''

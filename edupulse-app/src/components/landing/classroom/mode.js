@@ -4,16 +4,18 @@
 //   - 'flat': reduced motion or no WebGL: the same classroom theme, complete and still, in CSS only.
 let mode = 'flat'
 
+let drawable
 const canDraw = () => {
+  if (drawable !== undefined) return drawable
   try {
     const probe = document.createElement('canvas')
     const context = probe.getContext('webgl2') || probe.getContext('webgl')
-    if (!context) return false
-    context.getExtension('WEBGL_lose_context')?.loseContext()
-    return true
+    if (context) context.getExtension('WEBGL_lose_context')?.loseContext()
+    drawable = Boolean(context)
   } catch {
-    return false
+    drawable = false
   }
+  return drawable
 }
 const FULL = '(min-width: 1024px) and (min-height: 560px) and (min-aspect-ratio: 1/1)'
 
@@ -25,9 +27,15 @@ const automated = () => {
   try { return localStorage.getItem('edupulse-walk') !== 'on' } catch { return true }
 }
 
-export function decideMode() {
+// What fits this device now. The page compares it with the mode in use when the window or the motion
+// setting changes: a page in 'flat' stays as it is however the window is resized (a capture of a tall
+// section resizes it), and only a crossing that changes the mode reloads the page.
+export function wantedMode() {
   const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
-  mode = reduced || automated() || !canDraw() ? 'flat' : window.matchMedia(FULL).matches ? 'full' : 'lite'
+  return reduced || automated() || !canDraw() ? 'flat' : window.matchMedia(FULL).matches ? 'full' : 'lite'
+}
+export function decideMode() {
+  mode = wantedMode()
   return mode
 }
 export const currentMode = () => mode

@@ -6,6 +6,17 @@ import kcpBuilding from '../../assets/kcp/kcp-building.webp'
 
 const CIT = COLLEGES.find(college => college.status === 'active')
 
+// The hero's picture is what the first screen waits for: it is requested before the page has drawn
+// anything else, ahead of the scripts that will place it.
+if (typeof document !== 'undefined' && /^#?\/?(\?.*)?$/.test(window.location.hash)) {
+  const link = document.createElement('link')
+  link.rel = 'preload'
+  link.as = 'image'
+  link.href = kcpBuilding
+  link.fetchPriority = 'high'
+  document.head.append(link)
+}
+
 // The hero: the institutions, the title and two actions on a blue and white stage, beside the
 // emblem: the Pulse ring around the KCP and CIT seals. When the 3D scene runs it draws the ring
 // and the seals as medallions over the emblem box, its anchor. Without WebGL, with reduced
@@ -31,7 +42,7 @@ export default function Hero({ ringRef }) {
           <span className="hero-seal" data-seal="cit"><img src={CIT.emblem} alt="" decoding="async" /></span>
         </div>
       </div>
-      <img className="hero-building" src={kcpBuilding} alt="The King's College of the Philippines building" width="2000" height="252" decoding="async" />
+      <img className="hero-building" src={kcpBuilding} alt="The King's College of the Philippines building" width="2000" height="252" decoding="async" fetchPriority="high" />
     </header>
   )
 }

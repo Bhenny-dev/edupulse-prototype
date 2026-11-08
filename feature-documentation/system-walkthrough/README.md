@@ -4,12 +4,12 @@ A screen-by-screen tour of EduPulse as each role sees it, captured from the docu
 
 | Folder | Role | What it covers |
 | --- | --- | --- |
-| [01 · Public site](01-public-site/README.md) | Visitors | The CIT-focused landing page (KCP photographs and college emblems; why EduPulse, features, the six-phase timeline, roles, Pulse, cited research, colleges, community, FAQ), the hosted sign-in panel (email and password, Google for administrators), local-only preview personas, privacy, terms and the server error page |
+| [01 · Public site](01-public-site/README.md) | Visitors | The CIT-focused landing page (KCP photographs and college emblems; why EduPulse, features, the six-phase timeline, roles, Pulse, cited research, colleges, community, FAQ), its walk through a 3D school (the wall clock that becomes the agents scope and the agent workspace, the yard with its students), the eight interactive room pages (tap a thing to zoom in on its card, cats, the game cabinets, the agents' chat), day and night, the hosted sign-in panel (email and password, Google for administrators), local-only preview personas, privacy, terms and the server error page |
 | [02 · Shared interface](02-shared-interface/README.md) | All signed-in roles | Top bar, search, keyboard shortcuts, language, notifications, account menu, role badge and admin view switching, Help, Settings (seven tabs), dark mode, the Pulse assistant |
 | [03 · Dean and Associate Dean](03-dean-and-associate-dean/README.md) | Dean, Associate Dean (separate accounts) | Distinct dashboards, shared Course Loading/Monitor/Records navigation, and Performance denial for Associate Dean |
 | [04 · Instructor](04-instructor/README.md) | Instructor | Dashboard, Syllabus (four tabs), Syllabus Builder, Courseware, Student Monitoring, Performance |
 | [05 · Student](05-student/README.md) | Student | Dashboard, My Courses (materials and assessments), My Performance (four tabs), Pulse for students |
-| [06 · Mobile](06-mobile/README.md) | All roles on a phone | The same screens at 390 px: menu, builder, Pulse panel, settings |
+| [06 · Mobile](06-mobile/README.md) | All roles on a phone | The same screens at 390 px: menu, a public room page and its card, builder, Pulse panel, settings |
 | [07 · System Admin](07-system-admin/README.md) | Google system admin | Account management, health checks, audit activity and direct role views |
 | [08 · Authenticated records](08-authenticated-records/README.md) | Instructor, Student, Dean, Associate Dean | Real sign-in and shared-data permissions, using temporary synthetic hosted canaries |
 | [09 · Restored account sections](09-restored-role-pages/README.md) | Instructor, Student, Dean, Associate Dean | Current role dashboards, charts, matrices, management tabs, shared file intake and student readers, captured with synthetic transport |

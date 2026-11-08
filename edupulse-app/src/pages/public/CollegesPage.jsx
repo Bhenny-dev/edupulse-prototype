@@ -1,11 +1,14 @@
 import { CalendarDays, ExternalLink, Frame, GraduationCap, MapPin, School, Sparkles } from 'lucide-react'
-import RoomPage, { Chips, DetailCard } from '../../components/public/RoomPage'
+import RoomPage, { Chips, DetailCard, Extra } from '../../components/public/RoomPage'
 import { COLLEGES, KCP } from '../../data/colleges'
 import { STUDENT_PROGRAMS } from '../../data/studentPrograms'
 
 const TINTS = { CIT: '#2563eb', CABM: '#f59e0b', CCJE: '#64748b', COT: '#8b5cf6', CTELA: '#10b981' }
-const ITEMS = COLLEGES.map(college => ({ key: college.code.toLowerCase(), short: college.code, icon: GraduationCap, tint: TINTS[college.code] }))
-const IMAGES = Object.fromEntries(COLLEGES.map(college => [college.code.toLowerCase(), college.photo]))
+const ITEMS = [
+  ...COLLEGES.map(college => ({ key: college.code.toLowerCase(), short: college.code, icon: GraduationCap, tint: TINTS[college.code] })),
+  { key: 'kcp', short: 'KCP crest', icon: School, tint: '#b91c1c' },
+]
+const IMAGES = { ...Object.fromEntries(COLLEGES.map(college => [college.code.toLowerCase(), college.photo])), kcp: KCP.crest }
 
 // Program names, shortened the way they are said on campus.
 const short = name => name
@@ -19,6 +22,12 @@ const short = name => name
 const programs = college => (college.programs || STUDENT_PROGRAMS[college.name] || []).map(short)
 
 function detail(key) {
+  if (key === 'kcp') return (
+    <>
+      <Extra icon={School} tint="#b91c1c" title={KCP.name}><Kcp /></Extra>
+      <Extra icon={Sparkles} tint="#2563eb" title="What each college offers" level={3}><Offers /></Extra>
+    </>
+  )
   const college = COLLEGES.find(entry => entry.code.toLowerCase() === key)
   return (
     <DetailCard icon={GraduationCap} tint={TINTS[college.code]} kicker={college.status === 'active' ? 'Now on EduPulse' : 'Planned'} name={college.name}>
@@ -60,10 +69,6 @@ function Kcp() {
 
 export default function CollegesPage() {
   return (
-    <RoomPage theme="gallery" room="Gallery" icon={Frame} tint="#7c3aed" title="Five colleges, CIT first." lead="Tap a picture." items={ITEMS} detail={detail} images={IMAGES}
-      sections={[
-        { id: 'offers', label: 'Programs', title: 'What each college offers', icon: Sparkles, tint: '#2563eb', node: <Offers /> },
-        { id: 'kcp', label: 'KCP', title: KCP.name, icon: School, tint: '#b91c1c', node: <Kcp /> },
-      ]} />
+    <RoomPage theme="gallery" room="Gallery" icon={Frame} tint="#7c3aed" title="Five colleges, CIT first." lead="Tap a picture or the crest." items={ITEMS} detail={detail} images={IMAGES} />
   )
 }

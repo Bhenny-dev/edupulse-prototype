@@ -33,8 +33,10 @@ test('background reads retain cached records and coalesce duplicate wakeups', as
   await page.clock.install(); const fixture = await automaticRecordsUI(page)
   await page.goto('/#/dashboard'); await expect(page.getByRole('status').filter({ hasText: 'Records up to date' })).toBeVisible()
   expect(fixture.counts().syncs).toBe(1)
+  // Nothing may be in flight when the clock jumps: a jump longer than a request's timeout ends it.
+  await page.waitForLoadState('networkidle')
   const start = fixture.counts().gets, release = fixture.holdRead()
-  await page.clock.fastForward(61000)
+  await page.clock.fastForward(301000)
   await expect.poll(() => fixture.counts().gets).toBeGreaterThan(start)
   await expect(page.getByText('Synthetic saved activity', { exact: true })).toBeVisible()
   await page.evaluate(() => { window.dispatchEvent(new Event('focus')); window.dispatchEvent(new Event('online')) })
@@ -74,7 +76,7 @@ test('a delayed instructor read cannot populate the next admin role view', async
   await switchView('Instructor'); await expect(page.getByRole('status').filter({ hasText: 'Records up to date' })).toBeVisible()
   const before = fixture.counts().gets, release = fixture.holdRead()
   try {
-    await page.clock.fastForward(61000); await expect.poll(() => fixture.counts().gets).toBeGreaterThan(before)
+    await page.clock.fastForward(301000); await expect.poll(() => fixture.counts().gets).toBeGreaterThan(before)
     fixture.setRecords({ courses: [], enrollments: [], publications: [], attempts: [], accesses: [], events: [], notices: [] })
     await switchView('Student'); await expect(page.getByRole('heading', { name: 'Student Dashboard', exact: true })).toBeVisible()
     await expect(page.getByRole('heading', { name: 'No authorized academic records yet', exact: true })).toBeVisible()

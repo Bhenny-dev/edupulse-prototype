@@ -1,5 +1,5 @@
 import { Activity, Atom, Bot, BookOpen, FolderInput, GraduationCap, Layers, Scale, UserCheck, Users, Workflow } from 'lucide-react'
-import RoomPage, { DetailCard } from '../../components/public/RoomPage'
+import RoomPage, { DetailCard, Extra } from '../../components/public/RoomPage'
 import { PHASES } from '../../components/landing/content'
 
 const LOOK = {
@@ -10,9 +10,15 @@ const LOOK = {
   access: { icon: GraduationCap, tint: '#8b5cf6', short: 'Students' },
   monitoring: { icon: Activity, tint: '#06b6d4', short: 'Monitor' },
 }
-const ITEMS = PHASES.map(phase => ({ key: phase.icon, ...LOOK[phase.icon], short: `${phase.phase} · ${LOOK[phase.icon].short}` }))
+const ITEMS = [
+  ...PHASES.map(phase => ({ key: phase.icon, ...LOOK[phase.icon], short: `${phase.phase} · ${LOOK[phase.icon].short}` })),
+  { key: 'chain', short: 'Newton’s cradle', icon: Workflow, tint: '#2563eb' },
+  { key: 'forces', short: 'The forces', icon: Scale, tint: '#f59e0b' },
+]
 
 function detail(key) {
+  if (key === 'chain') return <Extra icon={Workflow} tint="#2563eb" title="A chain reaction: records to results"><Chain /></Extra>
+  if (key === 'forces') return <Extra icon={Scale} tint="#f59e0b" title="The forces: AI drafts. People decide."><Balance /></Extra>
   const phase = PHASES.find(entry => entry.icon === key)
   const look = LOOK[key]
   return (
@@ -66,10 +72,6 @@ function Balance() {
 
 export default function HowItWorksPage() {
   return (
-    <RoomPage theme="physics" room="Physics room" icon={Atom} tint="#6366f1" title="Six stations, one run." lead="Follow the marble." items={ITEMS} detail={detail}
-      sections={[
-        { id: 'chain', label: 'Chain reaction', title: 'Records to results', icon: Workflow, tint: '#2563eb', node: <Chain /> },
-        { id: 'forces', label: 'The forces', title: 'AI drafts. People decide.', icon: Scale, tint: '#f59e0b', node: <Balance /> },
-      ]} />
+    <RoomPage theme="physics" room="Physics room" icon={Atom} tint="#6366f1" title="Six stations, one run." lead="Follow the marble, then tap a station, the cradle or the board." items={ITEMS} detail={detail} />
   )
 }

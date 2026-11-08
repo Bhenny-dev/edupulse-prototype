@@ -642,10 +642,10 @@ html:has(.overlay-backdrop) { overflow: hidden; }
   min-width: 300px;
 }
 
-.toast-success { border-left: 4px solid var(--green-500); }
-.toast-error { border-left: 4px solid var(--red-500); }
-.toast-info { border-left: 4px solid var(--sky-500); }
-.toast-warning { border-left: 4px solid var(--amber-500); }
+.toast-success { border-color: var(--green-500); }
+.toast-error { border-color: var(--red-500); }
+.toast-info { border-color: var(--sky-500); }
+.toast-warning { border-color: var(--amber-500); }
 
 /* ─── Error Banner ─── */
 .error-banner {
@@ -1582,3 +1582,9 @@ textarea:focus-visible {
 .syllabus-view-modal .modal-header { flex-shrink: 0; margin: 0; padding: 20px 24px; border-bottom: 1px solid var(--gray-100); }
 .syllabus-dialog-body { min-height: 0; overflow: auto; overscroll-behavior: contain; padding: 20px 24px 0; }
 .syllabus-view-modal .modal-actions { flex-shrink: 0; margin: 0; padding: 16px 24px; border-top: 1px solid var(--gray-200); background: var(--white); }
+
+/* A provider return that reached the site without a session: below the top bar, never under it. */
+.ai-return-notice { position: fixed; z-index: 1200; top: 84px; left: 50%; transform: translateX(-50%); width: min(640px, calc(100vw - 32px)); display: flex; align-items: flex-start; gap: 12px; padding: 12px 12px 12px 16px; border: 1px solid #fcd34d; border-radius: 12px; background: #fffbeb; color: #78350f; font-size: 0.9375rem; line-height: 1.45; box-shadow: 0 14px 32px -18px rgb(15 23 42 / 0.5); }
+.ai-return-notice button { flex: none; margin-left: auto; padding: 4px 10px; border: 1px solid #f59e0b; border-radius: 8px; background: #ffffff; color: #78350f; font: inherit; font-weight: 700; cursor: pointer; }
+.dark-mode .ai-return-notice { border-color: #92400e; background: #2a2110; color: #fde68a; }
+.dark-mode .ai-return-notice button { border-color: #b45309; background: #1f2937; color: #fde68a; }

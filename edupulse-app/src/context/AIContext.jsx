@@ -58,6 +58,6 @@ export function AIProvider({ children }) {
   const usingBrowser = preference === 'browser'
   const ready = usingBrowser ? local.status === 'ready' : Boolean(health?.ready)
   const label = usingBrowser ? local.status === 'loading' ? 'Loading local AI' : ready ? 'On-device AI' : 'Local AI needs attention' : checking && !health ? 'Checking saved AI connection…' : healthError ? 'AI connection unavailable' : ready ? `${health.provider} · ${health.model}${health.connection?.source === 'personal' && !health.connection.testedAt ? ' · not tested' : ''}` : 'Set up Pulse AI'
-  return <AIContext.Provider value={{ health, refresh, checking, healthError, local, preference, ready, label, connectionNotice, connectionFailed, clearConnectionNotice, connectionRevision }}>{callback && !userId && connectionNotice && <div role="alert" className="ai-notice">{connectionNotice}</div>}{children}</AIContext.Provider>
+  return <AIContext.Provider value={{ health, refresh, checking, healthError, local, preference, ready, label, connectionNotice, connectionFailed, clearConnectionNotice, connectionRevision }}>{callback && !userId && connectionNotice && <div role="alert" className="ai-return-notice"><span>{connectionNotice}</span><button type="button" onClick={clearConnectionNotice}>Dismiss</button></div>}{children}</AIContext.Provider>
 }
 export const useAI = () => useContext(AIContext)

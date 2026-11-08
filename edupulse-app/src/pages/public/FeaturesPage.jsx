@@ -1,5 +1,5 @@
 import { ArrowRight, BarChart3, Bot, BookOpen, Compass, FlaskConical, FolderOpen, Hand, Lock, Microscope, Quote, ShieldCheck, Sigma } from 'lucide-react'
-import RoomPage, { DetailCard } from '../../components/public/RoomPage'
+import RoomPage, { DetailCard, Extra } from '../../components/public/RoomPage'
 import { CHAPTERS, PRINCIPLES } from '../../components/landing/content'
 
 const ITEMS = [
@@ -8,10 +8,16 @@ const ITEMS = [
   { key: 'courseware', short: 'Courseware', icon: FlaskConical, tint: '#06b6d4', words: ['Week by week', 'From your sources', 'Publish when ready'] },
   { key: 'performance', short: 'Scores', icon: BarChart3, tint: '#10b981', words: ['Mastery by topic', 'Missed work', 'Scores, not grades'] },
   { key: 'pulse', short: 'Pulse', icon: Bot, tint: '#3b82f6', words: ['Grounded', 'Cites sources', 'Drafts only'] },
+  { key: 'formula', short: 'The formula', icon: Sigma, tint: '#2563eb' },
+  { key: 'rules', short: 'Lab rules', icon: ShieldCheck, tint: '#f59e0b' },
+  { key: 'screens', short: 'Microscope', icon: Microscope, tint: '#10b981' },
 ]
 const RULE_ICONS = [ShieldCheck, Quote, Lock, Compass, Hand, BarChart3]
 
 function detail(key) {
+  if (key === 'formula') return <Extra icon={Sigma} tint="#2563eb" title="Syllabus in, classes out"><Formula /></Extra>
+  if (key === 'rules') return <Extra icon={ShieldCheck} tint="#f59e0b" title="Six rules Pulse keeps"><Rules /></Extra>
+  if (key === 'screens') return <Extra icon={Microscope} tint="#10b981" title="Under the microscope: the real screens"><Screens /></Extra>
   const item = ITEMS.find(entry => entry.key === key)
   const chapter = CHAPTERS.find(entry => entry.key === key)
   return (
@@ -59,11 +65,6 @@ function Screens() {
 
 export default function FeaturesPage() {
   return (
-    <RoomPage theme="science" room="Science lab" icon={FlaskConical} tint="#0d9488" title="Five stations, one syllabus." lead="Tap a station." items={ITEMS} detail={detail}
-      sections={[
-        { id: 'formula', label: 'The formula', title: 'Syllabus in, classes out', icon: Sigma, tint: '#2563eb', node: <Formula /> },
-        { id: 'rules', label: 'Lab rules', title: 'Six rules Pulse keeps', icon: ShieldCheck, tint: '#f59e0b', node: <Rules /> },
-        { id: 'screens', label: 'Under the microscope', title: 'The real screens', icon: Microscope, tint: '#10b981', node: <Screens /> },
-      ]} />
+    <RoomPage theme="science" room="Science lab" icon={FlaskConical} tint="#0d9488" title="Five stations, one syllabus." lead="Tap a station, the formula, the rules or the microscope." items={ITEMS} detail={detail} />
   )
 }

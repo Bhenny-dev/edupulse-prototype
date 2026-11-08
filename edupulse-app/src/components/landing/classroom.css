@@ -46,6 +46,12 @@ html:has(.landing-page) { background: var(--cr-cream); }
 .nav-name { font-weight: 700; letter-spacing: -0.01em; }
 .nav-link { font-weight: 700; color: var(--cr-soft); }
 .nav-link:hover, .nav-link.is-active { color: var(--cr-ink); }
+/* The current page's tab is filled; in the menu it is marked with a dot. */
+.nav-links::after { display: none; }
+.nav-links .nav-link { padding: 0 11px; }
+.nav-links .nav-link.is-active, .nav-links .nav-link.is-active:hover { color: #ffffff; background: #2563eb; box-shadow: 0 3px 0 #1b3f9e; }
+.nav-menu .nav-link.is-active { gap: 10px; color: #1d4ed8; }
+.nav-menu .nav-link.is-active::before { content: ''; flex: none; width: 10px; height: 10px; border-radius: 50%; background: #2563eb; }
 .nav-mark { border-radius: 11px; }
 .lp-nav.is-solid { background: rgb(255 253 248 / 0.9); box-shadow: 0 2px 0 var(--cr-edge); }
 .nav-menu { background: var(--cr-paper); border-bottom-color: var(--cr-edge); }
@@ -255,7 +261,7 @@ html:has(.landing-page) { background: var(--cr-cream); }
 .footer-brand > p, .footer-col p, .footer-col a, .footer-bottom, .footer-bottom * { color: var(--cr-chalk-dim); font-weight: 600; }
 .footer-col a:hover { color: var(--cr-chalk); }
 .footer-col svg { color: var(--cr-chalk-yellow); }
-.footer-brand blockquote { color: var(--cr-chalk); background: rgb(255 255 255 / 0.06); border-left-color: var(--cr-chalk-yellow); }
+.footer-brand blockquote { color: var(--cr-chalk); background: rgb(255 255 255 / 0.06); }
 .footer-brand cite { color: var(--cr-chalk-dim); }
 .lp-footer > .footer-word { color: rgb(245 247 242 / 0.1); background: none; font-weight: 700; letter-spacing: -0.015em; }
 .footer-bottom { border-top-color: rgb(245 247 242 / 0.2); }
@@ -274,6 +280,7 @@ html:has(.landing-page) { background: var(--cr-cream); }
 .is-lite .room .fs-board .lp-head { padding: 0; background: none; box-shadow: none; }
 .is-lite .room .lp-head { margin-bottom: 16px; }
 .is-lite .agents, .is-lite .ws { position: relative; z-index: 1; background: var(--cr-cream); }
+.is-lite .agents.is-live { z-index: 2; background: transparent; }
 .is-lite #impact { margin-top: 70vh; }
 .is-lite .lp-footer { position: relative; z-index: 1; }
 .is-lite .flow-node { box-shadow: 0 3px 0 #1b3f9e; }
@@ -303,6 +310,7 @@ html:has(.landing-page) { background: var(--cr-cream); }
 .is-world .room .lp-label { margin-bottom: 8px; }
 
 .is-world .agents, .is-world .ws { position: relative; z-index: 5; }
+.is-world .agents.is-live { z-index: 6; }
 /* Past the agent room the white has covered it: the school is what comes up next. */
 .is-past-workspace .ws { visibility: hidden; }
 .is-world .lp-footer { position: relative; z-index: 5; }
@@ -515,7 +523,6 @@ html:has(.landing-page) { background: var(--cr-cream); }
 .dark-mode .landing-page .ws-label { background: rgb(31 40 56 / 0.94); }
 .dark-mode .landing-page .ws-stage:not(.is-scene) ~ .ws-answer:not(:empty) { background: var(--cr-paper); }
 .dark-mode .landing-page .ws-room { background: radial-gradient(110% 85% at 50% 30%, #1b2a4a 0%, #121a2c 58%, #0d1422 100%); }
-.dark-mode .landing-page .agents-lens { background: radial-gradient(circle at 50% 38%, #24345a 0%, #172238 62%, #1b2d45 100%); box-shadow: 0 0 0 6px rgb(31 40 56 / 0.9), 0 0 0 7px var(--lp-ice), 0 26px 60px -26px rgb(0 0 0 / 0.8); }
 /* Notes and screens after dark. */
 .dark-mode .landing-page .why-face.is-today { background: var(--cr-paper); }
 .dark-mode .landing-page .why-face.is-next, .dark-mode .landing-page .promises li { background: #3a3220; }
@@ -563,23 +570,9 @@ html:has(.landing-page) { background: var(--cr-cream); }
 .dark-mode .landing-page .pulse-tag.is-block { color: #fca5a5; border-color: #7f1d1d; }
 .dark-mode .landing-page .pulse-tag.is-pass { color: #86efac; border-color: #14532d; }
 
-/* ─── Inside Pulse: a round chalkboard on the classroom wall ───
-   The same zoom through the rings and the same card per agent; only the materials change: chalk
-   on a board in a wooden frame, a paper clock face in the middle, a taped note and an index card. */
-.agents.is-live { background: radial-gradient(70% 60% at 50% 46%, rgb(255 255 255 / 0.5), transparent 70%), linear-gradient(180deg, #f6e7c8 0 84%, #9c6b3c 84% 84.8%, #dcbc93 84.8%); }
-.dark-mode .landing-page .agents.is-live { background: radial-gradient(70% 60% at 50% 46%, rgb(255 214 150 / 0.08), transparent 70%), linear-gradient(180deg, #1d2536 0 84%, #3b2a1a 84% 84.8%, #2a2118 84.8%); }
-.agents .scope-band { fill: #24413f; stroke: rgb(245 247 242 / 0.16); stroke-width: 1.5px; }
-.agents .scope-band.is-alt { fill: #2a4a47; }
-.agents .scope-zoom > .scope-ring:first-child .scope-band { stroke: var(--cr-oak); stroke-width: 16px; }
-.agents .scope-ring text { font-family: var(--cr-hand); font-weight: 400; fill: var(--cr-chalk-dim); letter-spacing: 0.04em; }
-.landing-page .agents.is-live .scope-ring.is-active text { fill: var(--cr-chalk-yellow); }
-.agents .scope-stop-deep { stop-color: #fffaf0; }
-.agents .scope-stop-mid { stop-color: #f3e6c9; }
-.agents .scope-stop-pale { stop-color: #2a4a47; }
-.agents .scope-light { fill: #fffaf0; }
-.agents.is-live .scope-svg { filter: drop-shadow(0 18px 26px rgb(64 44 24 / 0.35)); }
-.landing-page .agents-lens { background: radial-gradient(circle at 50% 42%, #fffdf8 0%, #f7eedc 70%, #eadbbd 100%); box-shadow: 0 0 0 6px #fffaf0, 0 0 0 10px var(--cr-oak), 0 22px 40px -22px rgb(64 44 24 / 0.7); }
-.dark-mode .landing-page .agents-lens { background: radial-gradient(circle at 50% 42%, #fffdf8 0%, #efe3c8 70%, #dccba6 100%); box-shadow: 0 0 0 6px #e9dcc0, 0 0 0 10px var(--cr-oak), 0 22px 40px -22px rgb(0 0 0 / 0.8); }
+/* ─── Inside Pulse: the scope keeps the blue of the landing page ───
+   The clock on the Pulse room's wall becomes the scope, so it is the school's blue, not a chalkboard.
+   Its two notes are paper cards: the title taped up and an index card for the agent being named. */
 .agents.is-live :is(.agents-head, .agents-caption) { border: 0; border-radius: 6px; background: var(--cr-paper); box-shadow: var(--cr-card); }
 .agents.is-live .agents-head { rotate: -0.8deg; }
 .agents.is-live .agents-head::before { content: ''; position: absolute; left: 50%; top: -11px; width: 92px; height: 24px; translate: -50% 0; rotate: 2deg; background: rgb(253 230 138 / 0.85); box-shadow: 0 1px 2px rgb(64 44 24 / 0.2); }
@@ -608,3 +601,7 @@ html:has(.landing-page) { background: var(--cr-cream); }
   .nav-actions .lp-button.is-small { white-space: nowrap; padding-inline: 12px; }
 }
 .lp-nav .theme-toggle { min-height: 0; min-width: 0; flex-shrink: 0; }
+
+/* Night: the scope's veil is the night room's blue. */
+.dark-mode .landing-page .agents.is-live::before { background: radial-gradient(75% 75% at 50% 50%, #24345a 0%, #172238 55%, #101a2e 100%); }
+.dark-mode .landing-page .scope-hand.is-hour { fill: #e8efff; }

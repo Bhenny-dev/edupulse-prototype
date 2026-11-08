@@ -21,12 +21,24 @@ export const workspaceData = z.object({ syllabi: z.array(syllabus).max(50), cont
 })
 export const workspaceInput = z.object({ revision: z.number().int().nonnegative(), data: workspaceData })
 export type WorkspaceData = z.infer<typeof workspaceData>
-export type WorkspaceSnapshot = { revision: number; data: WorkspaceData | null; updated_at: string | null; mode: 'local' | 'cloud' | 'preview' }
+export type WorkspaceSnapshot = { revision: number; data: WorkspaceData | null; updated_at: string | null; mode: 'local' | 'cloud' | 'preview'; unchanged?: true }
 type Row = Omit<WorkspaceSnapshot, 'mode'>
 const mode = () => config().database === 'local' ? 'local' as const : 'cloud' as const
 
-export async function readWorkspace(identity: Identity): Promise<WorkspaceSnapshot> {
+export async function readWorkspace(identity: Identity, known?: number): Promise<WorkspaceSnapshot> {
   if (identity.role === 'guest') return { revision: 0, data: null, updated_at: null, mode: 'preview' }
+  // A background check names the revision it already holds. Only the revision column is read then,
+  // so an unchanged workspace costs neither the document's transfer nor reading it from disk.
+  if (known !== undefined) {
+    let head: { revision: number | string; updated_at: string | null } | undefined
+    if (config().database === 'local') head = (await (await localDb()).query<Row>('SELECT revision, updated_at FROM ep_workspaces WHERE owner_id=$1', [identity.id])).rows[0]
+    else {
+      const { data, error } = await userDb(identity).from('edupulse_workspaces').select('revision,updated_at').maybeSingle()
+      if (error) throw new ApiError(503, 'WORKSPACE_UNAVAILABLE', 'Your saved workspace could not be loaded. Local edits have been preserved.')
+      head = data || undefined
+    }
+    if (Number(head?.revision || 0) === known) return { revision: known, data: null, updated_at: head?.updated_at || null, mode: mode(), unchanged: true }
+  }
   let row: Row | undefined
   if (config().database === 'local') {
     row = (await (await localDb()).query<Row>('SELECT revision, data, updated_at FROM ep_workspaces WHERE owner_id=$1', [identity.id])).rows[0]

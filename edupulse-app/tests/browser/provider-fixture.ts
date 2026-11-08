@@ -6,7 +6,7 @@ export async function providerFixture(page: Page, baselineOverride?: Record<stri
   const saved = new Map<string, SavedConnection>()
   const summaries = () => [...saved.values()].map(item => ({ ...item, active: item.provider === connection?.provider }))
   let failTest = false, catalogUnavailable = false
-  const models = [{ id: 'gpt-4.1-mini', name: 'gpt-4.1-mini' }, { id: 'gpt-3.5-turbo', name: 'gpt-3.5-turbo' }]
+  const models = [{ id: 'gpt-6.1-terra', name: 'gpt-6.1-terra' }, { id: 'gpt-6-luna', name: 'gpt-6-luna' }]
   const modelsFor = (provider?: string) => provider === 'anthropic' ? [{ id: 'claude-synthetic', name: 'Claude (synthetic fixture)' }] : models
   await page.route('**/api/ai?*', async route => {
     const action = new URL(route.request().url()).searchParams.get('action')

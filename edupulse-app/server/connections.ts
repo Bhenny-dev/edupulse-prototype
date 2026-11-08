@@ -7,6 +7,7 @@ import { config } from './config.js'
 import { rememberReasoning } from './reasoning.js'
 import { anthropicRequestError } from './anthropic.js'
 import { openaiRequestError } from './openaiErrors.js'
+import { currentModels, preferredModel } from './modelLifecycle.js'
 
 export const providerNames = ['ollama', 'gemini', 'openai', 'groq', 'anthropic', 'openrouter', 'huggingface'] as const
 export type ProviderName = typeof providerNames[number]
@@ -113,7 +114,7 @@ export async function discoverModels(provider: ProviderName, apiKey?: string, si
     })
   }
   else models = (data.data || []).filter((m: { id: string; active?: boolean; shutdown_date?: string | null }) => provider === 'anthropic' || (provider === 'openai' ? /^(gpt-|chatgpt-|codex-|o\d)/.test(m.id) && !/audio|realtime|transcri|image|search|instruct|computer-use|robotics/.test(m.id) && !(m.shutdown_date && Date.parse(m.shutdown_date) <= Date.now()) : m.active !== false && !/whisper|tts|guard|orpheus/.test(m.id))).map((m: { id: string; display_name?: string }) => ({ id: m.id, name: m.display_name || m.id }))
-  models = models.filter(m => typeof m.id === 'string' && m.id.length <= 200).sort((a, b) => Number(Boolean(b.free)) - Number(Boolean(a.free)) || a.name.localeCompare(b.name)).slice(0, 500)
+  models = currentModels(provider, models.filter(m => typeof m.id === 'string' && m.id.length <= 200)).sort((a, b) => Number(Boolean(b.free)) - Number(Boolean(a.free)) || a.name.localeCompare(b.name)).slice(0, 500)
   if (!models.length) throw new ApiError(400, 'NO_MODELS', 'No supported text-generation models are available for this connection.')
   return models
 }
@@ -125,7 +126,7 @@ export async function createConnection(input: z.infer<typeof connectionInput>, i
   // Never carry a previous key's workspace into a replacement credential.
   const workspaceId = input.provider === 'anthropic' ? (input.workspaceId === undefined && !input.apiKey && previous?.provider === input.provider ? previous.workspaceId : input.workspaceId || undefined) : undefined
   const models = await discoverModels(input.provider, apiKey, undefined, undefined, workspaceId)
-  const preferred = input.provider === 'openai' ? ['gpt-5-mini', 'gpt-4.1-mini', 'gpt-4o-mini'].find(id => models.some(m => m.id === id)) : undefined
+  const preferred = preferredModel(input.provider, models)
   const model = input.model || (previous?.provider === input.provider && models.some(m => m.id === previous.model) ? previous.model : preferred) || (input.provider === 'ollama' && models.some(m => m.id === config().model || m.id === `${config().model}:latest`) ? models.find(m => m.id === config().model || m.id === `${config().model}:latest`)!.id : models[0]!.id)
   if (!models.some(m => m.id === model)) throw new ApiError(400, 'MODEL_NOT_AVAILABLE', 'Choose a model returned by the connected provider.')
   const connection: Connection = { provider: input.provider, model, apiKey, ...(workspaceId ? { workspaceId } : {}), owner: identity.id, id: randomBytes(12).toString('hex'), expires: Date.now() + TTL * 1000, ...(!input.apiKey && previous?.provider === input.provider && previous.model === model && previous.workspaceId === workspaceId && previous.testedAt ? { testedAt: previous.testedAt } : {}) }

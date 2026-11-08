@@ -19,7 +19,7 @@ import LandingFooter from '../components/landing/LandingFooter'
 import { gsap, ScrollTrigger, MEDIA, revealHeadings } from '../components/landing/motion'
 import { decideOpening, trackLandingScroll, leaveLanding, takeReturnY } from '../components/landing/intro'
 import { setupArrivals } from '../components/landing/arrivals'
-import { decideMode, fullQuery } from '../components/landing/classroom/mode'
+import { decideMode, fullQuery, wantedMode } from '../components/landing/classroom/mode'
 import { createStage, createLiteStage } from '../components/landing/classroom/stage'
 import RoomDial from '../components/landing/RoomDial'
 import kcpBuilding from '../assets/kcp/kcp-building.webp'
@@ -58,7 +58,7 @@ export default function Landing() {
   }, [mode])
 
   // The walk through the 3D school: laid on its surfaces on large screens, behind the content on
-  // small ones. Crossing the size or motion breakpoint reloads the page in the mode that now fits.
+  // small ones. Crossing the size or motion breakpoint reloads the page when that changes the mode that fits.
   useLayoutEffect(() => {
     if (mode === 'flat') return undefined
     const start = mode === 'full' ? createStage : createLiteStage
@@ -66,11 +66,10 @@ export default function Landing() {
   }, [mode])
   useLayoutEffect(() => {
     const queries = [window.matchMedia(fullQuery), window.matchMedia('(prefers-reduced-motion: reduce)')]
-    const start = queries.map(query => query.matches)
-    const onChange = () => { if (queries.some((query, i) => query.matches !== start[i])) window.location.reload() }
+    const onChange = () => { if (wantedMode() !== mode) window.location.reload() }
     queries.forEach(query => query.addEventListener?.('change', onChange))
     return () => queries.forEach(query => query.removeEventListener?.('change', onChange))
-  }, [])
+  }, [mode])
 
   // Where the page starts: a direct section link (#/?section=faq), the place a reader left
   // for a legal page (Back), or the top.

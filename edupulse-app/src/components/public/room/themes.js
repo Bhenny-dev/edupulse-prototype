@@ -1,5 +1,3 @@
-import { AGENT_COLORS } from '../../landing/agentLook'
-
 // The themed rooms of the public pages. Each is a cut-away classroom (floor, back wall, left wall,
 // windows) dressed for one subject, with props that move and props the page lets you pick. Keys
 // passed to `pick` match the page's items. Everything is built from primitives in the art style of
@@ -27,6 +25,7 @@ export function buildTheme(name, ctx) {
   box(room, 0.3, 0.12, 2 * D + 0.3, -W - 0.08, H + 0.06, 0, M.trim, 0, false)
 
   // A group standing against a wall: `back` at x, or `side` at z; local +z faces into the room.
+  // `face` (passed to `pick`) tells the room which way to look at a prop when it zooms in.
   const onWall = (wall, at, y) => {
     const g = new THREE.Group()
     if (wall === 'back') g.position.set(at, y, -D + 0.01)
@@ -64,8 +63,7 @@ export function buildTheme(name, ctx) {
     cyl(parent, 0.4, 0.4, 0.06, x, h + 0.03, z, M.trim, 24, false)
   }
   const helpers = { images: ctx.images, THREE, kit, room, M, mat, box, cyl, ball, put, live, paint, onWall, windowAt, picture, plant, desk, pedestal, paints, glass, robot: ctx.robot, cat: ctx.cat, tick: ctx.tick, pick: ctx.pick }
-  const result = spec.build(helpers) || {}
-  return { setNight: result.setNight }
+  return spec.build(helpers) || {}
 }
 
 // A canvas helper for chalk and poster lettering.
@@ -83,11 +81,7 @@ const robotLive = (helpers, ...args) => {
   helpers.tick(time => r.update(time))
   return r
 }
-const catLive = (helpers, ...args) => {
-  const c = helpers.cat(...args)
-  helpers.tick(time => c.update(time))
-  return c
-}
+const catLive = (helpers, ...args) => helpers.cat(...args)
 
 const THEMES = {
   // ─── Features: a science lab, one station per feature ───
@@ -97,7 +91,7 @@ const THEMES = {
       const { THREE, room, M, mat, box, cyl, ball, put, live, windowAt, picture, plant, paints, glass, tick, pick } = h
       windowAt('back', 3.9)
       windowAt('side', 1.9)
-      picture('back', 0.4, 3.05, 2.5, 1.2, (g, w, hh) => {
+      const table = picture('back', 0.4, 3.05, 2.5, 1.2, (g, w, hh) => {
         g.fillStyle = '#fffdf8'; g.fillRect(0, 0, w, hh)
         const colors = ['#93c5fd', '#fca5a5', '#86efac', '#fde68a', '#c4b5fd', '#f9a8d4']
         for (let r = 0; r < 6; r++) for (let c = 0; c < 18; c++) {
@@ -107,6 +101,15 @@ const THEMES = {
           g.fillRect(8 + c * (w - 16) / 18 + 1, 10 + r * (hh - 20) / 6 + 1, (w - 16) / 18 - 2, (hh - 20) / 6 - 2)
         }
       })
+      pick('formula', table, 0.95, { face: 'back' })
+      // The lab rules: a yellow safety poster on the side wall.
+      const rules = picture('side', -1.2, 2.55, 1.0, 1.3, (g, w, hh) => {
+        g.fillStyle = '#fde047'; g.fillRect(0, 0, w, hh)
+        g.fillStyle = '#1f2937'; g.fillRect(0, 0, w, hh * 0.2)
+        letter(g, 'LAB RULES', w / 2, hh * 0.1, 26, '#fde047')
+        for (let i = 0; i < 6; i++) { g.fillStyle = '#1f2937'; g.beginPath(); g.arc(w * 0.16, hh * (0.3 + i * 0.115), 7, 0, Math.PI * 2); g.fill(); g.fillRect(w * 0.27, hh * (0.3 + i * 0.115) - 4, w * (0.42 + (i % 3) * 0.1), 8) }
+      }, M.ink, 200)
+      pick('rules', rules, 0.95, { face: 'side' })
       const teal = mat(0x2a9d8f, { roughness: 0.55 })
       box(room, 7.4, 0.9, 1.05, -1.6, 0.45, -3.92, teal, 0.02)
       box(room, 7.5, 0.07, 1.15, -1.6, 0.94, -3.92, M.white, 0.02)
@@ -147,10 +150,11 @@ const THEMES = {
       pick('performance', performance, 1.15)
 
       // On the island: a microscope, a rack of tubes and Pulse beside them.
-      const scope = new THREE.Group(); scope.position.set(0.2, 0.98, 0.55); room.add(scope)
+      const scope = live(new THREE.Group()); scope.position.set(0.2, 0.98, 0.55); room.add(scope)
       box(scope, 0.3, 0.05, 0.36, 0, 0.025, 0, M.ink, 0.01, false)
       cyl(scope, 0.04, 0.04, 0.5, -0.08, 0.3, -0.08, M.steel, 10, false)
       const tube = cyl(scope, 0.05, 0.06, 0.34, 0, 0.5, 0.02, M.white, 14, false); tube.rotation.x = 0.4
+      pick('screens', scope, 0.9)
       box(room, 0.7, 0.18, 0.22, 1.5, 1.07, 0.5, M.oak, 0.01)
       for (let i = 0; i < 5; i++) { cyl(room, 0.035, 0.035, 0.32, 1.26 + i * 0.12, 1.2, 0.5, glass, 10, false); cyl(room, 0.032, 0.032, 0.12, 1.26 + i * 0.12, 1.1, 0.5, paints[i], 10, false) }
       const pulse = robotLive(h, room, '#3b82f6', { x: 2.55, z: 0.6, yaw: -0.9, scale: 0.92, phase: 0.3 })
@@ -181,7 +185,7 @@ const THEMES = {
       const { THREE, room, M, mat, box, cyl, ball, live, windowAt, picture, plant, desk, pedestal, paints, tick, pick } = h
       windowAt('back', 4.1)
       windowAt('side', 2.2)
-      picture('back', -1.2, 3.1, 2.2, 1.0, (g, w, hh) => {
+      const board = picture('back', -1.2, 3.1, 2.2, 1.0, (g, w, hh) => {
         g.fillStyle = '#20383a'; g.fillRect(0, 0, w, hh)
         letter(g, 'F = m·a', w * 0.28, hh * 0.35, 30, '#f5f7f2')
         letter(g, 'E = mc²', w * 0.72, hh * 0.35, 30, '#fbe59b')
@@ -189,6 +193,7 @@ const THEMES = {
         for (let x = 0; x <= w; x += 4) g.lineTo(x, hh * 0.72 + Math.sin(x / 14) * 12)
         g.stroke()
       })
+      pick('forces', board, 0.85, { face: 'back' })
       plant(5.1, -3.8)
       const stops = [[-4.6, -3.0], [-2.4, -2.9], [-0.2, -2.6], [2.2, -2.8], [3.6, -0.6], [1.6, 1.0]]
       const KEYS = ['records', 'loading', 'syllabus', 'courseware', 'access', 'monitoring']
@@ -230,6 +235,7 @@ const THEMES = {
         return pivot
       })
       tick(time => { const s = Math.sin(time * 3.2); balls[0].rotation.z = Math.min(0, s) * 0.6; balls[4].rotation.z = Math.max(0, s) * 0.6 })
+      pick('chain', cradle, 1.05)
       // An orrery on a side table.
       desk(room, -4.9, -0.6, 1.0, 1.0)
       const orrery = live(new THREE.Group()); orrery.position.set(-4.9, 0.79, -0.6); room.add(orrery)
@@ -259,7 +265,7 @@ const THEMES = {
       const { THREE, room, M, mat, box, cyl, ball, put, live, windowAt, picture, plant, desk, pedestal, tick, pick } = h
       windowAt('back', 4.2)
       windowAt('side', 2.4)
-      picture('back', -1.3, 2.5, 4.4, 1.9, (g, w, hh) => {
+      const board = picture('back', -1.3, 2.5, 4.4, 1.9, (g, w, hh) => {
         g.fillStyle = '#20383a'; g.fillRect(0, 0, w, hh)
         letter(g, 'a² + b² = c²', w * 0.3, hh * 0.25, 30, '#f5f7f2')
         letter(g, 'π ≈ 3.14', w * 0.75, hh * 0.22, 28, '#fbe59b')
@@ -270,6 +276,7 @@ const THEMES = {
         for (let x = 0; x <= w * 0.3; x += 3) g.lineTo(w * 0.62 + x, hh * 0.85 - Math.pow(x / (w * 0.3), 2) * hh * 0.38)
         g.stroke()
       }, M.oak, 320)
+      pick('matrix', board, 1.25, { face: 'back' })
       plant(5.2, -3.8)
       const ROLE = [['instructor', '#3b82f6'], ['student', '#f59e0b'], ['dean', '#10b981'], ['associate_dean', '#ec4899'], ['admin', '#8b5cf6']]
       const shapes = [
@@ -299,6 +306,7 @@ const THEMES = {
         for (let b = 0; b < 5; b++) beads.push({ mesh: ball(abacus, 0.045, -0.4 + b * 0.1, 0.12 + r * 0.13, 0, mat(['#ef4444', '#f59e0b', '#10b981', '#3b82f6'][r], { roughness: 0.4 }), 1, 0.8, 1, false), r, b })
       }
       tick(time => beads.forEach(({ mesh, r, b }) => { const slide = Math.max(0, Math.sin(time * 0.8 + r)) * (b < 2 ? 0.45 : 0); mesh.position.x = -0.4 + b * 0.1 + slide }))
+      pick('solids', abacus, 0.95)
       // A protractor on the side wall.
       const arc = live(new THREE.Group()); arc.position.set(-W + 0.08, 2.6, -1.4); arc.rotation.y = Math.PI / 2; room.add(arc)
       put(new THREE.TorusGeometry(0.62, 0.035, 8, 40, Math.PI), mat(0x93c5fd, { roughness: 0.4 }), arc, 0, 0, 0, false)
@@ -315,59 +323,20 @@ const THEMES = {
     },
   },
 
-  // ─── Pulse: a computer lab, one workstation per agent ───
-  lab: {
-    wall: 0xe2ebfb, side: 0xecf2fd, floor: 0xe2e8f2,
-    build(h) {
-      const { THREE, room, M, mat, box, cyl, ball, live, windowAt, picture, plant, desk, tick, pick } = h
-      windowAt('side', 2.6)
-      windowAt('back', 4.4)
-      const AGENTS = ['guardian', 'planner', 'researcher', 'librarian', 'ranker', 'comparator', 'writer', 'verifier', 'corrector'].map(key => [key, AGENT_COLORS[key]])
-      picture('back', -0.6, 3.05, 4.2, 1.15, (g, w, hh) => {
-        g.fillStyle = '#0f1d38'; g.fillRect(0, 0, w, hh)
-        AGENTS.forEach(([, color], i) => {
-          const x = 30 + i * ((w - 60) / 8)
-          if (i) { g.strokeStyle = 'rgba(147,197,253,0.6)'; g.lineWidth = 3; g.beginPath(); g.moveTo(x - (w - 60) / 8 + 14, hh / 2); g.lineTo(x - 14, hh / 2); g.stroke() }
-          g.fillStyle = color; g.beginPath(); g.arc(x, hh / 2, 13, 0, Math.PI * 2); g.fill()
-        })
-      }, M.ink, 384)
-      // The server rack.
-      const rack = live(new THREE.Group()); rack.position.set(-5.3, 0, -3.8); room.add(rack)
-      box(rack, 0.9, 2.3, 0.8, 0, 1.15, 0, M.ink, 0.03)
-      const leds = [mat(0x22c55e, { emissive: 0x22c55e, emissiveIntensity: 1.5 }), mat(0x3b82f6, { emissive: 0x3b82f6, emissiveIntensity: 1.5 }), mat(0xf59e0b, { emissive: 0xf59e0b, emissiveIntensity: 1.5 })]
-      for (let r = 0; r < 8; r++) { box(rack, 0.74, 0.18, 0.02, 0, 0.35 + r * 0.24, 0.41, mat(0x1e293b), 0, false); for (let c = 0; c < 3; c++) ball(rack, 0.018, 0.22 + c * 0.06, 0.35 + r * 0.24, 0.43, leds[(r + c) % 3], 1, 1, 0.5, false) }
-      tick(time => leds.forEach((m, i) => { m.emissiveIntensity = Math.sin(time * (3 + i) + i) > 0 ? 2 : 0.3 }))
-      const rows = [-2.9, -0.6, 1.7], cols = [-3.3, 0.1, 3.5]
-      AGENTS.forEach(([key, color], i) => {
-        const g = live(new THREE.Group()); g.position.set(cols[i % 3], 0, rows[Math.floor(i / 3)]); room.add(g)
-        desk(g, 0, 0, 1.3, 0.7, M.white, M.steel, 0.72)
-        const laptop = new THREE.Group(); laptop.position.set(0, 0.75, 0.05); g.add(laptop)
-        box(laptop, 0.46, 0.02, 0.32, 0, 0.01, 0, M.steel, 0.005, false)
-        const screen = box(laptop, 0.46, 0.3, 0.02, 0, 0.16, -0.16, mat(0x0f1d38, { emissive: color, emissiveIntensity: 0.55 }), 0.005, false)
-        screen.rotation.x = 0.25
-        cyl(g, 0.2, 0.2, 0.06, 0, 0.47, -0.62, mat(0x334155), 16, false)
-        const bot = robotLive(h, g, color, { x: 0, z: -0.62, yaw: 0, scale: 0.78, seated: true, seat: 0.5, phase: i * 0.7 })
-        bot.root.userData.live = true
-        pick(key, g, 1.75)
-      })
-      plant(5.3, -3.9)
-      catLive(h, room, { coat: 'grey', mode: 'walk', path: [[-1.6, -1.8], [1.8, -1.8], [1.8, 0.6], [-1.6, 0.6]], speed: 0.45, scale: 0.95 })
-    },
-  },
-
   // ─── Impact: a history room, findings as exhibits and the goals on a globe ───
   history: {
     wall: 0xf2e4cf, side: 0xf7ecdd, floor: 0xffffff,
     build(h) {
       const { THREE, room, M, mat, box, cyl, ball, put, live, paint, windowAt, picture, plant, pedestal, paints, tick, pick } = h
       windowAt('side', 2.6)
-      picture('back', 0.2, 3.1, 5.2, 0.9, (g, w, hh) => {
+      const timeline = picture('back', 0.2, 3.1, 5.2, 0.9, (g, w, hh) => {
         g.fillStyle = '#fff7e6'; g.fillRect(0, 0, w, hh)
         g.strokeStyle = '#7c5230'; g.lineWidth = 4; g.beginPath(); g.moveTo(30, hh / 2); g.lineTo(w - 40, hh / 2); g.stroke()
         g.fillStyle = '#7c5230'; g.beginPath(); g.moveTo(w - 20, hh / 2); g.lineTo(w - 44, hh / 2 - 12); g.lineTo(w - 44, hh / 2 + 12); g.fill()
         const marks = ['#94a3b8', '#94a3b8', '#f59e0b', '#2563eb']
         marks.forEach((c, i) => { g.fillStyle = c; g.beginPath(); g.arc(70 + i * ((w - 160) / 3), hh / 2, 12, 0, Math.PI * 2); g.fill() })
       }, M.walnut, 384)
+      pick('then-now', timeline, 0.75, { face: 'back' })
       for (const x of [-5.2, 5.2]) {
         const z = -3.9
         cyl(room, 0.24, 0.28, 3.6, x, 1.8, z, M.white, 18)
@@ -450,6 +419,14 @@ const THEMES = {
       hang('ccje', 'back', 3.55, 2.45, 1.5, 1.05)
       hang('cot', 'side', -3.1, 2.45, 1.5, 1.05)
       hang('ctela', 'side', -0.9, 2.45, 1.5, 1.05)
+      // The college crest on a round wooden plaque.
+      const crest = onWall('side', 1.25, 2.5)
+      crest.userData.live = true
+      cyl(crest, 0.52, 0.52, 0.06, 0, 0, 0.03, M.deepWood, 40, false).rotation.x = Math.PI / 2
+      const seal = frames.kcp ? loader.load(frames.kcp) : null
+      if (seal) { seal.colorSpace = THREE.SRGBColorSpace; kit.textures.add(seal) }
+      put(new THREE.CircleGeometry(0.44, 40), mat(0xffffff, { map: seal, roughness: 0.7, transparent: true }), crest, 0, 0, 0.065, false)
+      pick('kcp', crest, 0.85, { face: 'side' })
       // Rope stands in front of the CIT picture.
       for (const x of [-1.2, 2.0]) { cyl(room, 0.04, 0.05, 0.9, x, 0.45, -3.3, M.brass, 10); ball(room, 0.07, x, 0.92, -3.3, M.brass, 1, 1, 1, false) }
       const rope = put(new THREE.TorusGeometry(1.6, 0.03, 6, 40, Math.PI), mat(0xb91c1c, { roughness: 0.6 }), room, 0.4, 0.88, -3.3, false)
@@ -489,19 +466,24 @@ const THEMES = {
       const GAMES = [['gate', '#2563eb', g => { g.fillStyle = '#93c5fd'; g.beginPath(); g.moveTo(64, 18); g.lineTo(104, 32); g.lineTo(98, 78); g.lineTo(64, 104); g.lineTo(30, 78); g.lineTo(24, 32); g.closePath(); g.fill() }],
         ['match', '#10b981', g => { const c = ['#fde68a', '#f9a8d4', '#93c5fd', '#86efac']; c.forEach((col, i) => { g.fillStyle = col; g.fillRect(22 + (i % 2) * 44, 22 + Math.floor(i / 2) * 44, 38, 38) }) }],
         ['quiz', '#f59e0b', g => letter(g, '?', 64, 66, 84, '#fde68a')]]
+      const cabinets = {}
       GAMES.forEach(([key, color, draw], i) => {
         const g = live(new THREE.Group()); g.position.set(-3.4 + i * 2.5, 0, -3.65); room.add(g)
         const body = mat(color, { roughness: 0.45 })
         box(g, 1.0, 1.9, 0.85, 0, 0.95, 0, body, 0.04)
         box(g, 1.04, 0.32, 0.9, 0, 2.02, 0.03, mat(0x1e293b), 0.04)
         const art = paint(128, 128, (c, w, hh) => { c.fillStyle = '#0f172a'; c.fillRect(0, 0, w, hh); draw(c) })
-        const screen = box(g, 0.78, 0.62, 0.03, 0, 1.45, 0.42, mat(0x0f172a, { emissive: 0xffffff, emissiveMap: art, emissiveIntensity: 0.9 }), 0, false)
+        const glow = mat(0x0f172a, { emissive: 0xffffff, emissiveMap: art, emissiveIntensity: 0.9 })
+        const screen = box(g, 0.78, 0.62, 0.03, 0, 1.45, 0.42, glow, 0, false)
         screen.rotation.x = -0.15
         box(g, 0.98, 0.08, 0.4, 0, 0.98, 0.55, mat(0x1e293b), 0.02, false)
-        cyl(g, 0.02, 0.02, 0.14, -0.2, 1.07, 0.55, M.ink, 8, false)
-        ball(g, 0.05, -0.2, 1.15, 0.55, mat(0xef4444), 1, 1, 1, false)
-        for (let b = 0; b < 3; b++) ball(g, 0.035, 0.08 + b * 0.1, 1.03, 0.55, mat(['#fbbf24', '#22c55e', '#3b82f6'][b]), 1, 0.6, 1, false)
+        // The joystick tilts on a pivot; the buttons sink when pressed.
+        const stick = new THREE.Group(); stick.position.set(-0.22, 1.02, 0.6); g.add(stick)
+        cyl(stick, 0.02, 0.02, 0.14, 0, 0.07, 0, M.ink, 8, false)
+        ball(stick, 0.05, 0, 0.15, 0, mat(0xef4444), 1, 1, 1, false)
+        const buttons = [0, 1, 2].map(b => ball(g, 0.04, 0.06 + b * 0.12, 1.03, 0.6, mat(['#fbbf24', '#22c55e', '#3b82f6'][b], { emissive: ['#fbbf24', '#22c55e', '#3b82f6'][b], emissiveIntensity: 0.15 }), 1, 0.6, 1, false))
         pick(key, g, 2.5)
+        cabinets[key] = { group: g, screen, glow, stick, buttons, stand: new THREE.Vector3(g.position.x + 0.62, 0, -2.78) }
       })
       // Bean bags, a rug, a table with dice and a yarn ball the cat chases.
       put(new THREE.CircleGeometry(2.0, 40), mat(0xfde68a, { roughness: 0.95 }), room, 0.8, 0.012, 1.1, false).rotation.x = -Math.PI / 2
@@ -516,9 +498,10 @@ const THEMES = {
       tick(time => { const a = time * 0.5; yarn.position.set(1.6 + Math.cos(a) * 1.4, 0.13, 2.6 + Math.sin(a) * 0.8); yarn.rotation.z = -time * 3 })
       catLive(h, room, { coat: 'ginger', mode: 'walk', path: Array.from({ length: 12 }, (_, i) => [1.6 + Math.cos(i / 12 * Math.PI * 2 - 0.5) * 1.4, 2.6 + Math.sin(i / 12 * Math.PI * 2 - 0.5) * 0.8]), speed: 0.65 })
       const player = robotLive(h, room, '#8b5cf6', { x: -0.9, z: -2.5, yaw: Math.PI, scale: 0.9, phase: 0.2 })
-      tick(time => player.setExcited(Math.sin(time * 1.4) > 0.5))
+      tick(time => { if (!player.busy) player.setExcited(Math.sin(time * 1.4) > 0.5) })
       robotLive(h, room, '#06b6d4', { x: -1.4, z: 1.6, yaw: 0.6, scale: 0.86, seated: true, seat: 0.42, phase: 1.6 })
       plant(5.3, -3.9)
+      return { arcade: { cabinets, player, home: new THREE.Vector3(-0.9, 0, -2.5) } }
     },
   },
 
@@ -565,6 +548,7 @@ const THEMES = {
       const open = live(new THREE.Group()); open.position.set(4.3, 1.5, -1.6); room.add(open)
       for (const s of [-1, 1]) { const p = box(open, 0.34, 0.02, 0.46, s * 0.17, 0, 0, M.lined, 0, false); p.rotation.z = -s * 0.18 }
       const glyphs = Array.from({ length: 8 }, (_, i) => box(open, 0.05, 0.05, 0.01, Math.sin(i * 2) * 0.2, 0.1, Math.cos(i * 3) * 0.15, paints[i % paints.length], 0, false))
+      pick('shelf', open, 0.6)
       tick(time => { open.position.y = 1.5 + Math.sin(time * 1.2) * 0.08; open.rotation.y = Math.sin(time * 0.4) * 0.3; glyphs.forEach((g, i) => { const p = (time * 0.35 + i / 8) % 1; g.position.y = 0.06 + p * 0.7; g.rotation.y = time + i; g.scale.setScalar(1 - p * 0.7) }) })
       // The reading lamp and an armchair with a sleeping cat.
       cyl(room, 0.03, 0.03, 1.5, 3.6, 0.75, 2.6, M.brass, 8)
@@ -580,4 +564,3 @@ const THEMES = {
   },
 }
 
-export const THEME_NAMES = Object.keys(THEMES)

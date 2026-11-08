@@ -81,3 +81,5 @@ Execution is tracked in [WORKPLAN.md](WORKPLAN.md). A release is verified only a
 [7 November 2026: The public site as a 3D school](versions/2026-11-07-landing-classroom/README.md): the home page as a walk through a 3D classroom school with the KCP building, eight themed-room pages in the top bar (with three games on Play), a speed dial per page, and day and night across the site.
 
 [8 November 2026: Instructor summary navigation](versions/2026-11-08-dashboard-summary-navigation/README.md): keyboard-accessible summary links, active syllabi and draft/published course filters.
+
+[8 November 2026: Interactive rooms, a seamless clock and a lighter site](versions/2026-11-08-interactive-rooms-and-performance/README.md): the eight public pages as single rooms you tap to zoom into (cats, game cabinets, the agents' chat), the wall clock becoming the agents scope and then the workspace, students on the yard, cards without coloured edges, less server traffic, only usable models and Lighthouse results.

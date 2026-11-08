@@ -110,7 +110,10 @@ export async function handleRequest(request: Request): Promise<Response> {
     }
     if (action === 'academic') return request.method === 'GET' ? json(await readAcademic(identity)) : json(await executeAcademic(identity, academicCommand.parse(await readJson(request, 5000))))
     if (action === 'workspace') {
-      if (request.method === 'GET') return json(await readWorkspace(identity))
+      if (request.method === 'GET') {
+        const known = new URL(request.url).searchParams.get('known')
+        return json(await readWorkspace(identity, known !== null && /^\d{1,9}$/.test(known) ? Number(known) : undefined))
+      }
       if (!['instructor', 'admin', 'dean', 'associate_dean'].includes(identity.role)) throw new ApiError(403, 'FORBIDDEN', 'Sign in with an academic account to save a workspace.')
       return json(await saveWorkspace(identity, workspaceInput.parse(await readJson(request, WORKSPACE_BYTES))))
     }

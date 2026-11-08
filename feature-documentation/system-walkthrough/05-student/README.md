@@ -29,7 +29,7 @@ The preview student's enrolled courses that have an active syllabus, with the nu
 
 ![My assessments](03-my-assessments.png)
 
-Published quizzes and activities with points, time limit, number of questions and due date. **Start** opens an assessment; a completed one shows the last score and **Retry** when retakes are allowed.
+Published quizzes and activities with points, time limit, number of questions and due date. An assessment past its due date carries a red **Overdue** tag beside its **Quiz** or **Activity** tag (all three here); the cards no longer have a coloured edge. **Start** opens an assessment; a completed one shows the last score and **Retry** when retakes are allowed.
 
 ## 4–7. My Performance
 

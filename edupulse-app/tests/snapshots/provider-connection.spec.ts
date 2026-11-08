@@ -48,7 +48,7 @@ test('OpenRouter callback retains an authorized credential during a catalog outa
   await expect(page.getByRole('alert')).toContainText('no need to authorize again')
   await page.locator('[data-pulse-target="AI connection"]').screenshot({ path: '../feature-documentation/system-manual/08-ai-connections/08-openrouter-catalog-retry.png', animations: 'disabled', style: '.app-topbar{position:static !important}' })
   await page.getByRole('button', { name: 'Refresh models', exact: true }).click()
-  await expect(page.getByLabel('Available model')).toHaveValue('gpt-4.1-mini')
+  await expect(page.getByLabel('Available model')).toHaveValue('gpt-6.1-terra')
   await page.setViewportSize({ width: 390, height: 844 })
   await page.locator('[data-pulse-target="AI connection"]').screenshot({ path: '../feature-documentation/system-manual/08-ai-connections/09-mobile-provider-connection.png', animations: 'disabled', style: '.app-topbar{position:static !important}.connected-pulse-dock{visibility:hidden !important}' })
 })

@@ -24,7 +24,7 @@ const RING = 2 * Math.PI * 25
 // plain back-to-top button and keeps its job as the first stop, and it holds the pause control for
 // the 3D school's idle motion (WCAG 2.2.2). Every public page uses it: a page passes its own sections
 // as `stops` and how to reach one as `jump`; the home page keeps the rooms of the school.
-export default function RoomDial({ stops = STOPS, jump = scrollToId, revealAt = 0.7, pausable = currentMode() !== 'flat', label = 'Jump to a room' }) {
+export default function RoomDial({ stops = STOPS, jump = scrollToId, revealAt = 0.7, pausable = currentMode() !== 'flat', label = 'Jump to a room', icon: Icon = ArrowUp }) {
   const [shown, setShown] = useState(false)
   const [open, setOpen] = useState(false)
   const [paused, setPaused] = useState(false)
@@ -81,7 +81,7 @@ export default function RoomDial({ stops = STOPS, jump = scrollToId, revealAt = 
           <circle cx="28" cy="28" r="25" className="room-dial-track" />
           <circle cx="28" cy="28" r="25" className="room-dial-fill" ref={ring} strokeDasharray={RING} />
         </svg>
-        {open ? <X size={20} aria-hidden="true" /> : <ArrowUp size={20} aria-hidden="true" />}
+        {open ? <X size={20} aria-hidden="true" /> : <Icon size={20} aria-hidden="true" />}
       </button>
     </div>
   )

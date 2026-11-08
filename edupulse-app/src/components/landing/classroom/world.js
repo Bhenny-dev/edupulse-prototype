@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import { createKit } from './kit'
 import { buildSets } from './sets'
 import { FOV, HERO, ROOMS, FLIGHTS } from './plan'
+import { navHeight, scopeSize, OUTER } from './scope'
 
 const smoother = t => t * t * t * (t * (t * 6 - 15) + 10)
 const v3 = a => new THREE.Vector3(a[0], a[1], a[2])
@@ -222,8 +223,14 @@ export function createWorld({ canvas, buildingUrl, compact = false, onLost, onSl
         : restPose(rooms[from], rooms[from].panMax)
     let end
     if (flight.end) {
+      // The camera ends square on the wall clock, close enough that its rim is the scope's outer
+      // ring (the page draws the scope over it) and the clock sits where the scope's centre does.
       const clockAt = school.anchors.clock
-      end = { pos: new THREE.Vector3(clockAt.x, clockAt.y, flight.end.pos[2]), look: new THREE.Vector3(clockAt.x, clockAt.y, flight.end.look[2]), up: new THREE.Vector3(0, 1, 0), fov: compact ? restFov : flight.end.fov }
+      const fov = compact ? restFov : flight.end.fov
+      const tan = Math.tan(THREE.MathUtils.degToRad(fov / 2)), half = Math.max(1, size.h) / 2
+      const distance = school.anchors.clockRadius / (((OUTER * scopeSize(size.w, size.h)) / half) * tan)
+      const lift = (navHeight() / 2 / half) * distance * tan
+      end = { pos: new THREE.Vector3(clockAt.x, clockAt.y + lift, clockAt.z + distance), look: new THREE.Vector3(clockAt.x, clockAt.y + lift, clockAt.z), up: new THREE.Vector3(0, 1, 0), fov }
     } else end = restPose(rooms[to], 0)
     return { start, end }
   }
@@ -259,6 +266,13 @@ export function createWorld({ canvas, buildingUrl, compact = false, onLost, onSl
   const lastPos = new THREE.Vector3()
 
   function pose(state) {
+    // The Pulse clock's hands come to rest as the camera arrives, and go while the scope draws them.
+    const hands = school.anchors.clockPose
+    if (hands) {
+      const toward = state.kind === 'flight' && state.key === 'ai>agents'
+      hands.ease = toward ? THREE.MathUtils.smoothstep(state.t, 0.5, 0.96) : 0
+      hands.hidden = toward && Boolean(state.scope)
+    }
     if (state.kind === 'opaque') {
       if (!hidden) { hidden = true; canvas.style.visibility = 'hidden' }
       return

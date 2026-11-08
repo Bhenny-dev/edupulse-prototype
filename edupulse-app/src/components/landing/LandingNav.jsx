@@ -7,11 +7,12 @@ import { PAGES } from '../public/pages'
 import { scrollToId } from './navigation'
 import ThemeToggle from './ThemeToggle'
 
-// The bar on every public page: the EduPulse home, one link per page, day or night, and Sign In.
-// Clear over the hero and solid once the page scrolls; a marker slides under the current page's
-// link and a line along the bottom shows reading progress. Sections within a page are reached
-// with the round speed dial in the corner.
-export default function LandingNav() {
+// The bar on every public page: the EduPulse home, Home and one link per page, day or night, and
+// Sign In. Clear over the hero and solid once the page scrolls (always solid with `solid`, over a
+// room page that does not scroll); the current page's link is filled in its colour with a marker
+// under it, and a line along the bottom shows reading progress. Within a page, the round speed
+// dial in the corner reaches each part.
+export default function LandingNav({ solid = false }) {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
   const progress = useRef(null), list = useRef(null)
@@ -66,12 +67,13 @@ export default function LandingNav() {
     event.preventDefault()
     navigate('/?section=login')
   }
-  const links = PAGES.map(page => (
-    <NavLink key={page.path} to={page.path} className={({ isActive }) => `nav-link ${isActive ? 'is-active' : ''}`}>{page.label}</NavLink>
+  const links = [{ path: '/', label: 'Home' }, ...PAGES].map(page => (
+    <NavLink key={page.path} to={page.path} end className={({ isActive }) => `nav-link ${isActive ? 'is-active' : ''}`}
+      onClick={page.path === '/' ? toTop : undefined}>{page.label}</NavLink>
   ))
 
   return (
-    <header className={`lp-nav ${scrolled || open ? 'is-solid' : ''}`}>
+    <header className={`lp-nav ${scrolled || open || solid ? 'is-solid' : ''}`}>
       <div className="nav-inner">
         <NavLink to="/" className="nav-brand" onClick={toTop} aria-label="EduPulse, King's College of the Philippines, home">
           <img src={KCP.crest} alt="" width="32" height="32" />

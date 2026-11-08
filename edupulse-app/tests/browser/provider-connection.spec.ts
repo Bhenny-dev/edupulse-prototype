@@ -21,10 +21,10 @@ test('provider save synchronizes pipeline status, survives reopening, retains mo
   await expect(pipeline.getByText('Model listed · not tested', { exact: true })).toBeVisible()
   await page.reload()
   await expect(page.getByLabel('Saved provider credential')).toBeVisible()
-  await page.getByLabel('Available model').selectOption('gpt-3.5-turbo')
-  await expect(pipeline).toContainText('gpt-3.5-turbo')
+  await page.getByLabel('Available model').selectOption('gpt-6-luna')
+  await expect(pipeline).toContainText('gpt-6-luna')
   await page.getByRole('button', { name: 'Refresh models', exact: true }).click()
-  await expect(page.getByLabel('Available model')).toHaveValue('gpt-3.5-turbo')
+  await expect(page.getByLabel('Available model')).toHaveValue('gpt-6-luna')
   await page.getByRole('button', { name: 'Replace API key', exact: true }).click()
   await page.getByLabel('Provider API key', { exact: true }).fill('synthetic-rejected-key')
   await page.getByRole('button', { name: 'Connect and load models', exact: true }).click()
@@ -82,7 +82,7 @@ test('authorized OpenRouter credential survives a catalog outage and refresh fin
   await expect(page.getByLabel('Saved provider credential')).toBeVisible()
   await expect(page.getByRole('alert')).toContainText('no need to authorize again')
   await page.getByRole('button', { name: 'Refresh models', exact: true }).click()
-  await expect(page.getByLabel('Available model')).toHaveValue('gpt-4.1-mini')
+  await expect(page.getByLabel('Available model')).toHaveValue('gpt-6.1-terra')
 })
 
 test('a provider return without an EduPulse session gives a visible recovery message and clears authorization parameters', async ({ page }) => {

@@ -481,7 +481,7 @@ html:has(.landing-page), html:has(.landing-page) body { overflow-anchor: none; }
 .footer-logos img { width: 40px; height: 40px; object-fit: contain; }
 .footer-logos strong { font-family: var(--lp-display); font-size: 1.5rem; font-weight: 800; letter-spacing: -0.035em; }
 .footer-brand > p { max-width: 44ch; margin-bottom: 22px; font-size: 1rem; color: var(--lp-slate); }
-.footer-brand blockquote { max-width: 46ch; padding: 16px 18px; border-left: 3px solid var(--lp-blue); border-radius: 0 12px 12px 0; background: #ffffff; font-size: 0.9375rem; line-height: 1.6; color: var(--lp-ink); }
+.footer-brand blockquote { max-width: 46ch; padding: 16px 18px; border-radius: 12px; background: #ffffff; font-size: 0.9375rem; line-height: 1.6; color: var(--lp-ink); }
 .footer-brand cite { display: block; margin-top: 8px; font-style: normal; font-size: 0.875rem; font-weight: 600; color: var(--lp-slate); }
 .footer-col { display: flex; flex-direction: column; gap: 2px; font-size: 0.9375rem; }
 .landing-page .footer-col h3 { margin-bottom: 8px; font-family: var(--lp-text); font-size: 0.9375rem; font-weight: 600; letter-spacing: 0; color: var(--lp-slate); }
@@ -575,7 +575,18 @@ html:has(.landing-page), html:has(.landing-page) body { overflow-anchor: none; }
 .scope-stop-deep { stop-color: var(--lp-blue); }
 .scope-stop-mid { stop-color: var(--lp-blue-soft); }
 .scope-stop-pale { stop-color: var(--lp-ice-soft); }
-.scope-light { fill: var(--lp-white); opacity: 0; }
+.scope-letter { text-anchor: middle; }
+.scope-rim-line { fill: none; stroke: var(--lp-blue); }
+.scope-face { fill: var(--lp-white); }
+.scope-hand.is-hour { fill: var(--lp-ink); }
+.scope-hand.is-minute { fill: var(--lp-blue); }
+.scope-lens { fill: none; stroke: var(--lp-white); stroke-width: 4px; vector-effect: non-scaling-stroke; opacity: 0; }
+.scope-lens.is-inner { stroke: var(--lp-blue); stroke-width: 3px; }
+/* The clock the scope grows from is drawn only with motion; without the 3D school behind it (flat) it
+   has its own face, and with it the 3D clock is the face. */
+.agents:not(.is-live) :is(.scope-hands, .scope-rim-line, .scope-face, .scope-lens) { display: none; }
+.landing-page:not(.is-flat) .scope-face { display: none; }
+.landing-page:not(.is-flat):not(.is-scope-aligned) .agents.is-live :is(.scope-hands, .scope-rim-line) { visibility: hidden; }
 .agents-caption { display: none; }
 .agents-list { list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; width: 100%; }
 .agents-list li { padding: 22px 24px; border: 1px solid var(--lp-line); border-radius: 18px; background: var(--lp-white); }
@@ -583,13 +594,17 @@ html:has(.landing-page), html:has(.landing-page) body { overflow-anchor: none; }
 .landing-page .agents-list h3 { margin: 6px 0; font-size: 1.25rem; }
 .agents-list p { font-size: 0.9375rem; line-height: 1.55; color: var(--lp-slate); }
 
-/* With motion: one pinned screen that travels inward through the rings, then opens the core. */
-.agents.is-live { z-index: 1; height: 100vh; height: 100svh; padding: 0; background: var(--lp-white); }
-.pin-spacer-lp-agents { pointer-events: none; } /* the room behind it must take taps as soon as the white clears */
+/* With motion: one pinned screen. The clock becomes the scope, the scope travels inward through the
+   rings, and a round window in its middle (a mask, opened by the script) looks onto the agent
+   workspace behind it until the window is the whole screen. */
+.agents.is-live { z-index: 1; height: 100vh; height: 100svh; padding: 0; background: transparent; pointer-events: none; }
+.agents.is-live::before { content: ''; position: absolute; inset: 0; background: radial-gradient(75% 75% at 50% 50%, var(--lp-white) 0%, var(--lp-mist) 55%, var(--lp-ice) 100%); opacity: var(--agents-veil, 0); }
+.pin-spacer-lp-agents { pointer-events: none; } /* the room behind it must take taps as soon as the window is open */
 .agents.is-live .agents-stage { position: absolute; inset: 0; display: block; }
-.agents.is-live { --scope-size: min(92vw, calc(88vh - var(--nav-h))); }
+.agents.is-live { --scope-size: min(92vw, calc(100svh - 150px)); }
 .agents.is-live .scope-svg { position: absolute; left: 50%; top: calc(50% + var(--nav-h) / 2); width: var(--scope-size); transform: translate(-50%, -50%); }
 .agents.is-live .scope-ring.is-active text { fill: var(--lp-blue-deep); }
+.agents.is-live .scope-core { display: none; } /* the window in the middle shows the workspace instead */
 .agents.is-live :is(.agents-head, .agents-caption) { position: absolute; z-index: 2; left: max(var(--gutter), calc((100% - var(--container)) / 2)); max-width: 380px; padding: 22px 24px; border: 1px solid var(--lp-line); border-radius: 20px; background: rgb(255 255 255 / 0.9); box-shadow: var(--lp-shadow-lift); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
 .agents.is-live .agents-head { top: calc(var(--nav-h) + 24px); margin: 0; opacity: var(--agents-head, 1); }
 .agents.is-live .agents-head h2 { font-size: clamp(1.5rem, 1.1rem + 1.2vw, 2.125rem); }
@@ -613,7 +628,7 @@ html:has(.landing-page), html:has(.landing-page) body { overflow-anchor: none; }
   .agents.is-live .agents-head { top: calc(var(--nav-h) + 12px); }
   .landing-page .agents.is-live .lp-head h2 { font-size: 1.5rem !important; }
   .agents.is-live .agents-caption { bottom: 16px; }
-  .agents.is-live { --scope-size: min(94vw, 58vh); }
+  .agents.is-live { --scope-size: min(94vw, 58svh); }
   .agents-role { font-size: 0.9375rem; }
   .agents-ticks li { width: 16px; }
 }
@@ -621,10 +636,14 @@ html:has(.landing-page), html:has(.landing-page) body { overflow-anchor: none; }
 /* ─── Agent workspace: the 3D room alone on the screen, with its agent buttons along the bottom ─── */
 .ws { z-index: 0; padding-block: 0; background: var(--lp-white); }
 .ws-room { position: relative; height: 100vh; height: 100svh; min-height: 520px; overflow: hidden; background: radial-gradient(110% 85% at 50% 30%, #ffffff 0%, var(--lp-mist) 58%, var(--lp-ice-soft) 100%); }
-/* With motion the room waits behind the pinned scope: it reaches the top of the screen as the
-   scope ends, stays there as the white clears, and holds a moment before the page moves on. */
-.pin-spacer-lp-agents + .ws { height: 170vh; height: 170svh; margin-top: -100vh; margin-top: -100svh; }
-.pin-spacer-lp-agents + .ws .ws-room { position: sticky; top: 0; }
+/* With motion the room waits behind the pinned scope the whole time it is pinned (--agents-pin is
+   how far that scrolls, set by AgentsSection): it sits at the top of the screen under the scope,
+   unseen until the scope's rings are in, seen through the scope's window, and holds a moment after
+   the window has opened out before the page moves on. */
+.pin-spacer-lp-agents + .ws { height: calc(170svh + var(--agents-pin, 0px)); margin-top: calc(-100svh - var(--agents-pin, 0px)); background: transparent; }
+.pin-spacer-lp-agents + .ws .ws-room { position: sticky; top: 0; opacity: 0; visibility: hidden; }
+.is-scope-open .pin-spacer-lp-agents + .ws .ws-room { opacity: 1; visibility: visible; }
+.is-scoping .pin-spacer-lp-agents + .ws .ws-room { pointer-events: none; }
 .ws-head { position: absolute; z-index: 2; top: calc(var(--nav-h) + clamp(14px, 3vh, 28px)); left: max(var(--gutter), calc((100% - var(--container)) / 2)); max-width: min(480px, calc(100% - 2 * var(--gutter))); margin: 0; pointer-events: none; transition: opacity var(--lp-base) ease; }
 .ws-room.is-focused .ws-head { opacity: 0; } /* the camera has moved in on an agent, and the room fills the screen */
 .landing-page .ws-head h2 { margin-bottom: 6px; font-size: clamp(1.5rem, 1.1rem + 1.2vw, 2.125rem); }
@@ -724,23 +743,10 @@ html:has(.landing-page), html:has(.landing-page) body { overflow-anchor: none; }
 @keyframes face-stamp { 0%, 60%, 100% { transform: scale(1); } 70% { transform: scale(1.25); } 80% { transform: scale(0.94); } }
 @keyframes face-twist { 0%, 100% { transform: rotate(-16deg); } 50% { transform: rotate(18deg); } }
 
-.agents-faces { display: none; }
-.agents.is-live .agents-faces { display: block; position: absolute; z-index: 1; left: 50%; top: calc(50% + var(--nav-h) / 2); width: var(--scope-size); aspect-ratio: 1; transform: translate(-50%, -50%); pointer-events: none; }
-.agents-lens { position: absolute; inset: 0; margin: auto; width: 34%; aspect-ratio: 1; display: grid; place-items: center; border-radius: 50%; background: radial-gradient(circle at 50% 38%, #ffffff 0%, var(--lp-mist) 62%, var(--lp-ice) 100%); box-shadow: 0 0 0 6px rgb(255 255 255 / 0.9), 0 0 0 7px var(--lp-ice), 0 26px 60px -26px rgb(37 99 235 / 0.6); opacity: var(--agents-lens, 1); }
-.agents-lens-card { width: 70%; translate: 0 4%; animation: lens-pop 560ms cubic-bezier(0.34, 1.56, 0.64, 1); }
-@keyframes lens-pop { from { opacity: 0; scale: 0.55; translate: 0 22%; } }
-.agents-team { position: absolute; inset: 0; margin: auto; width: 62%; height: 62%; list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-content: center; gap: 2% 4%; opacity: var(--agents-team, 0); }
-.agents-team .face-shadow { fill: rgb(15 23 42 / 0.22); }
-.agents-team li:nth-child(3n + 2) .face-arm.is-wave { animation-delay: -0.5s; }
-.agents-team li:nth-child(3n) .face-arm.is-wave { animation-delay: -1s; }
-.agents-team .face-arm.is-wave { animation-name: face-wave !important; animation-duration: 1.2s !important; }
 .agents-list-face { width: 64px; margin-bottom: 8px; }
 .agents-list-face :is(.face-figure, .face-head, .face-arm, .face-eyes, .face-bulb, .face-prop) { animation: none; }
 @media (prefers-reduced-motion: reduce) {
   .agent-face :is(.face-figure, .face-head, .face-arm, .face-eyes, .face-bulb, .face-prop) { animation: none !important; }
-  .agents-lens-card { animation: none; }
 }
 @media (max-width: 759px) {
-  .agents-lens { width: 46%; }
-  .agents-team { width: 70%; height: 70%; }
 }

@@ -199,7 +199,7 @@ test('the bar and the footer open the pages; the footer keeps the legal pages', 
   await afterOpening(page)
   const pages = ['Features', 'How It Works', 'Roles', 'Pulse', 'Impact', 'Colleges', 'Play', 'FAQ']
   if (mobile) await page.getByRole('button', { name: 'Open menu', exact: true }).click()
-  await expect(page.getByRole('navigation', { name: mobile ? 'Pages menu' : 'Pages', exact: true }).getByRole('link')).toHaveText(pages)
+  await expect(page.getByRole('navigation', { name: mobile ? 'Pages menu' : 'Pages', exact: true }).getByRole('link')).toHaveText(['Home', ...pages])
   if (mobile) await page.getByRole('button', { name: 'Close menu', exact: true }).click()
   const footer = page.getByRole('navigation', { name: 'Footer: pages' })
   await expect(footer.getByRole('link')).toHaveText(pages)
@@ -248,35 +248,55 @@ test('the four feature steps stay in step forwards, backwards and under rapid sc
   await expectStep(1)
 })
 
-test('the agents scope names all nine agents in order, then opens into the next section', async ({ page }) => {
-  test.setTimeout(90_000)
+test('the agents scope grows from the clock, names all nine agents in order, then is the workspace', async ({ page }) => {
+  test.setTimeout(150_000)
   await afterOpening(page)
   const section = page.locator('#agents')
   await expect(section).toHaveClass(/is-live/)
   await expect(section.locator('.scope-svg')).toHaveAttribute('aria-hidden', 'true')
   const names = await section.locator('.agents-list h3').allTextContents()
   expect(names).toEqual(['Guardian', 'Planner', 'Researcher', 'Librarian', 'Ranker', 'Comparator', 'Writer', 'Verifier', 'Corrector'])
-  // One unit of the scroll-linked timeline per agent, then 1.6 for the core's opening. The pinned
-  // range is measured at every step, because a refresh (fonts, photographs) can move it.
-  const units = names.length + 1.6
+  // One unit of the scroll-linked timeline per agent, 1.6 before them for the clock becoming the
+  // scope and 2.4 after them for the window opening out. The pinned range is measured at every
+  // step, because a refresh (fonts, photographs) can move it.
+  const OPENING = 1.6, CLOSING = 2.4
+  const units = OPENING + names.length + CLOSING
   const go = (time: number, past = 0) => section.evaluate((element, [fraction, extra]) => {
     const spacer = element.parentElement as HTMLElement
     const start = spacer.getBoundingClientRect().top + window.scrollY
     const distance = spacer.offsetHeight - (element as HTMLElement).offsetHeight
     window.scrollTo(0, Math.round(start + fraction * distance + extra))
   }, [time / units, past])
+  const landing = page.locator('.landing-page')
+  const handsOpacity = () => section.locator('.scope-hands').evaluate(element => Number(getComputedStyle(element).opacity))
+  const lettersAway = () => section.locator('.scope-letter').evaluateAll(letters => letters.filter(letter => (letter as SVGElement).style.opacity !== '').length)
+
+  // The pin starts with the clock's hands whole, and the room behind the scope not yet seen.
+  await go(0)
+  await expect.poll(handsOpacity, { timeout: 20_000 }).toBeGreaterThan(0.95)
+  await expect(landing).not.toHaveClass(/is-scope-open/)
+  // Half way through the opening the hands are coming apart: letters are on their way to the rings.
+  await go(OPENING * 0.5)
+  await expect.poll(lettersAway, { timeout: 20_000 }).toBeGreaterThan(20)
+  await expect.poll(handsOpacity, { timeout: 20_000 }).toBeLessThan(0.6)
+  // Then the rings are in, every letter is home, and the round window onto the workspace is open.
+  await go(OPENING + 0.2)
+  await expect.poll(lettersAway, { timeout: 20_000 }).toBe(0)
+  await expect(landing).toHaveClass(/is-scope-open/)
+  await expect.poll(() => section.evaluate(element => element.style.maskImage), { timeout: 20_000 }).toContain('radial-gradient')
   const caption = section.locator('.agents-name')
   for (const [i, name] of names.entries()) {
-    await go(i + 0.5)
-    await expect.poll(() => caption.textContent(), { timeout: 5000 }).toBe(name)
+    await go(OPENING + i + 0.5)
+    await expect.poll(() => caption.textContent(), { timeout: 20_000 }).toBe(name)
     await expect(section.locator('.scope-ring').nth(i)).toHaveClass(/is-active/)
     await expect(section.locator('.agents-count')).toHaveText(`0${i + 1} / 09`)
   }
-  await go(2.5)
-  await expect.poll(() => caption.textContent(), { timeout: 5000 }).toBe('Researcher')
-  // The core opens into white, and the next section follows.
+  await go(OPENING + 2.5)
+  await expect.poll(() => caption.textContent(), { timeout: 20_000 }).toBe('Researcher')
+  // The window grows until it is the whole screen: nothing is covered and nothing is white.
   await go(units)
-  await expect.poll(() => section.locator('.scope-light').evaluate(element => Number(getComputedStyle(element).opacity)), { timeout: 5000 }).toBeGreaterThan(0.98)
+  await expect.poll(() => section.evaluate(element => parseFloat(element.style.maskImage.match(/transparent ([\d.]+)px/)?.[1] || '0')), { timeout: 20_000 })
+    .toBeGreaterThan(await page.evaluate(() => Math.hypot(window.innerWidth, window.innerHeight) / 2))
   await go(units, 300)
   await expect(page.locator('#workspace')).toBeInViewport()
 })

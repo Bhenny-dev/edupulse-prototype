@@ -1,5 +1,5 @@
 import { Briefcase, Check, GraduationCap, Grid3x3, Landmark, Lock, Presentation, ServerCog, Shapes, Triangle } from 'lucide-react'
-import RoomPage, { DetailCard } from '../../components/public/RoomPage'
+import RoomPage, { DetailCard, Extra } from '../../components/public/RoomPage'
 import { ROLES } from '../../components/landing/content'
 
 const LOOK = {
@@ -9,9 +9,15 @@ const LOOK = {
   associate_dean: { icon: Briefcase, tint: '#ec4899', solid: 'Cylinder' },
   admin: { icon: ServerCog, tint: '#8b5cf6', solid: 'Ring' },
 }
-const ITEMS = ROLES.map(role => ({ key: role.key, short: role.label, ...LOOK[role.key] }))
+const ITEMS = [
+  ...ROLES.map(role => ({ key: role.key, short: role.label, ...LOOK[role.key] })),
+  { key: 'matrix', short: 'The board', icon: Grid3x3, tint: '#2563eb' },
+  { key: 'solids', short: 'The abacus', icon: Triangle, tint: '#10b981' },
+]
 
 function detail(key) {
+  if (key === 'matrix') return <Extra icon={Grid3x3} tint="#2563eb" title="Who opens what"><Matrix /></Extra>
+  if (key === 'solids') return <Extra icon={Triangle} tint="#10b981" title="One account, one role"><Solids /></Extra>
   const role = ROLES.find(entry => entry.key === key)
   const look = LOOK[key]
   return (
@@ -68,10 +74,6 @@ function Solids() {
 
 export default function RolesPage() {
   return (
-    <RoomPage theme="math" room="Math room" icon={Shapes} tint="#d97706" title="Five roles, five shapes." lead="Tap a shape." items={ITEMS} detail={detail}
-      sections={[
-        { id: 'matrix', label: 'The grid', title: 'Who opens what', icon: Grid3x3, tint: '#2563eb', node: <Matrix /> },
-        { id: 'solids', label: 'One each', title: 'One account, one role', icon: Triangle, tint: '#10b981', node: <Solids /> },
-      ]} />
+    <RoomPage theme="math" room="Math room" icon={Shapes} tint="#d97706" title="Five roles, five shapes." lead="Tap a shape, the board or the abacus." items={ITEMS} detail={detail} />
   )
 }

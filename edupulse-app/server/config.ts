@@ -6,7 +6,8 @@ export function config() {
     model: process.env.OLLAMA_MODEL || 'qwen2.5:3b',
     ollamaUrl: process.env.OLLAMA_BASE_URL || 'http://127.0.0.1:11434',
     embeddingModel: 'all-minilm',
-    geminiModel: process.env.GEMINI_MODEL || 'gemini-2.5-flash',
+    // The alias always points at Google's current Flash model (2.5 Flash is legacy since 2026).
+    geminiModel: process.env.GEMINI_MODEL || 'gemini-flash-latest',
     database: process.env.AI_VECTOR_STORE || (hosted ? 'supabase' : 'local'),
     localPath: process.env.AI_DATA_DIR || '.data/ai-pgvector',
     supabaseUrl: process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '',

@@ -52,7 +52,7 @@ export function createRobots(kit) {
     const pelvis = new THREE.Group()
     pelvis.position.y = seated ? seat + 0.08 : 0.56
     root.add(pelvis)
-    for (const side of [-1, 1]) {
+    const legs = [-1, 1].map(side => {
       const hip = new THREE.Group()
       hip.position.set(side * 0.1, 0, 0)
       if (seated) hip.rotation.x = -1.42
@@ -64,7 +64,8 @@ export function createRobots(kit) {
       hip.add(knee)
       put(shape.shin, botWhite, knee, 0, -0.12, 0)
       put(shape.foot, accent, knee, 0, -0.25, 0.04)
-    }
+      return { hip, knee, side }
+    })
     const torso = new THREE.Group()
     pelvis.add(torso)
     put(shape.body, botWhite, torso, 0, 0.25, 0).scale.set(1, 1, 0.86)
@@ -94,31 +95,66 @@ export function createRobots(kit) {
       return { shoulder, elbow, side }
     })
     const rest = seated ? { sx: -0.75, ex: -0.8 } : { sx: 0, ex: -0.15 }
-    const state = { excited: 0, goal: 0, lift: 0 }
+    const state = { excited: 0, goal: 0, lift: 0, walk: 0, walking: false }
     const blinkAt = 2 + phase * 1.7
+    // A press: one arm reaches out to a point in the room (a game button), pushes, and comes back.
+    // The promise resolves at the moment the hand touches the point.
+    let press = null
+    const local = new THREE.Vector3(), aim = new THREE.Vector3()
 
     const update = time => {
       const t = time + phase
       state.excited += (state.goal - state.excited) * 0.12
-      const e = state.excited
+      state.walk += ((state.walking ? 1 : 0) - state.walk) * 0.18
+      const e = state.excited, w = seated ? 0 : state.walk, gait = Math.sin(t * 9)
       torso.position.y = Math.sin(t * 1.7) * 0.012 + e * 0.05
       torso.rotation.z = Math.sin(t * 0.8) * 0.018
       head.rotation.y = Math.sin(t * 0.55) * 0.16 * (1 - e)
       head.rotation.x = Math.sin(t * 0.9 + 1) * 0.04 - e * 0.05
       head.rotation.z = Math.sin(t * 0.7) * 0.03 + e * Math.sin(t * 3) * 0.05
+      if (!seated) {
+        pelvis.position.y = 0.56 + w * Math.abs(gait) * 0.03
+        for (const { hip, knee, side } of legs) { hip.rotation.x = gait * side * 0.55 * w; knee.rotation.x = Math.max(0, -gait * side) * 0.6 * w }
+      }
       arms.forEach(({ shoulder, elbow, side }) => {
         const waving = side === 1 ? e : 0
-        const sway = Math.sin(t * 1.3 + side) * 0.05
+        const sway = Math.sin(t * 1.3 + side) * 0.05 - gait * side * 0.45 * w
         shoulder.rotation.x = rest.sx * (1 - waving) + sway - waving * 0.1
         shoulder.rotation.z = side * (0.1 + waving * (2.55 + Math.sin(t * 7) * 0.32))
         elbow.rotation.x = rest.ex * (1 - waving) - waving * 0.25
       })
+      if (press) {
+        press.start ??= time
+        const k = time - press.start
+        const smooth = x => x * x * (3 - 2 * x)
+        // Out to just above the point, in to touch it, then back to rest.
+        const reach = k < 0.28 ? smooth(k / 0.28) : k < 0.42 ? 1 : 1 - smooth(Math.min(1, (k - 0.42) / 0.33))
+        const lift = k < 0.28 ? 1 : k < 0.36 ? 1 - (k - 0.28) / 0.08 : 0
+        if (k >= 0.36 && !press.hit) { press.hit = true; press.resolve() }
+        const { shoulder, elbow } = arms[press.arm]
+        torso.updateWorldMatrix(true, false)
+        aim.copy(press.target)
+        aim.y += lift * 0.07
+        torso.worldToLocal(local.copy(aim)).sub(shoulder.position).normalize()
+        const rz = Math.asin(Math.max(-1, Math.min(1, local.x))), rx = Math.atan2(-local.z, -local.y)
+        shoulder.rotation.x += (rx - shoulder.rotation.x) * reach
+        shoulder.rotation.z += (rz - shoulder.rotation.z) * reach
+        elbow.rotation.x += (-0.12 * lift - elbow.rotation.x) * reach
+        head.rotation.x += (0.22 - head.rotation.x) * reach
+        if (k >= 0.75) press = null
+      }
       const blink = (t % (3.6 + phase)) > blinkAt % 3.4 && (t % (3.6 + phase)) < (blinkAt % 3.4) + 0.12
       for (const eye of eyes) eye.scale.y = blink ? 0.14 : 1
     }
     const setExcited = on => { state.goal = on ? 1 : 0 }
+    const setWalking = on => { state.walking = Boolean(on) }
+    // `arm` 0 or 1; the point is in world space. A new press replaces one in progress.
+    const pressAt = (target, arm = 1) => new Promise(resolve => {
+      press?.resolve()
+      press = { target: target.clone(), arm, start: null, hit: false, resolve }
+    })
     update(0)
-    return { root, head, arms, update, setExcited }
+    return { root, head, arms, legs, update, setExcited, setWalking, pressAt }
   }
 
   return { robot, shape }

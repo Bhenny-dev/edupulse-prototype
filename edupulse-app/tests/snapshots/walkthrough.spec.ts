@@ -115,6 +115,28 @@ const room = (id: string) => async (page: Page) => {
   await page.waitForLoadState('networkidle').catch(() => undefined)
   await page.waitForTimeout(2500)
 }
+// The agents section holds the screen while its timeline follows the scroll: 1.6 units for the clock
+// to become the scope, one per agent and 2.4 for the window to open out (see AgentsSection.jsx).
+const agentsAt = (time: number) => async (page: Page) => {
+  await page.evaluate(time => {
+    const element = document.getElementById('agents') as HTMLElement
+    const spacer = element.parentElement as HTMLElement
+    const start = spacer.getBoundingClientRect().top + window.scrollY
+    const distance = spacer.offsetHeight - element.offsetHeight
+    window.scrollTo(0, Math.round(start + (time / (1.6 + 9 + 2.4)) * distance))
+  }, time)
+  await page.waitForLoadState('networkidle').catch(() => undefined)
+  await page.waitForTimeout(7000)
+}
+// The flight from the hall out through its window to the yard, half way: the lawn with its students.
+const windowOnYard = async (page: Page) => {
+  await page.evaluate(() => {
+    const top = (id: string) => (document.getElementById(id) as HTMLElement).getBoundingClientRect().top + window.scrollY
+    window.scrollTo(0, Math.round(top('colleges') + 0.5 * (top('campus') - top('colleges'))))
+  })
+  await page.waitForLoadState('networkidle').catch(() => undefined)
+  await page.waitForTimeout(7000)
+}
 test('public site: the walk through the 3D school', async ({ page }) => {
   await page.context().addInitScript(() => localStorage.setItem('edupulse-walk', 'on'))
   await page.emulateMedia({ reducedMotion: 'no-preference' })
@@ -128,8 +150,12 @@ test('public site: the walk through the 3D school', async ({ page }) => {
     { folder: f, name: '22-walk-class-seats', title: 'The walk: How it works on the class seats, from above', act: room('flow') },
     { folder: f, name: '23-walk-classmates', title: 'The walk: Roles with the classmates on their tier', act: room('roles') },
     { folder: f, name: '24-walk-teachers-desk', title: "The walk: Pulse at the teacher's end of the classroom", act: room('ai') },
+    { folder: f, name: '24b-walk-clock-letters', title: 'The walk: the wall clock grows and its hands come apart into letters', act: agentsAt(0.8) },
+    { folder: f, name: '24c-walk-scope-agent', title: 'The walk: the scope of nine rings with the Guardian in the lens', act: agentsAt(1.6 + 0.5) },
+    { folder: f, name: '24d-walk-agents-line-up', title: 'The walk: the nine agents line up as the window opens onto the workspace', act: agentsAt(1.6 + 9 + 1.1) },
     { folder: f, name: '25-walk-gallery', title: 'The walk: Why it matters in frames along the gallery wall', act: room('impact') },
     { folder: f, name: '26-walk-front-stage', title: 'The walk: Colleges on the front stage', act: room('colleges') },
+    { folder: f, name: '26b-walk-yard-window', title: 'The walk: the hall window onto the yard, where students picnic, stroll, toss a ball and eat', act: windowOnYard },
     { folder: f, name: '27-walk-courtyard', title: 'The walk: community photographs on lines above the KCP building', act: room('campus') },
     { folder: f, name: '28-walk-notebook', title: 'The walk: FAQ in an open notebook on the desk', act: room('faq') },
     { folder: f, name: '29-walk-door', title: 'The walk: sign-in on the door of the study', act: room('login') },
@@ -139,20 +165,48 @@ test('public site: the walk through the 3D school', async ({ page }) => {
 // The public pages: each a themed room with robots and a cat, captured with motion allowed once the
 // room is drawn and its labels sit over their props. Then night (the app's dark mode) on the walk
 // and on a page, and the speed dial open on a page.
+// A label rides over a prop that may be moving, so the button itself is asked rather than aimed at.
+const things = (page: Page) => page.getByRole('group', { name: 'Things in the room' }).getByRole('button')
 const themed = (path: string, pick?: string) => async (page: Page) => {
   await page.goto(`/#${path}`)
   await page.evaluate(() => window.scrollTo(0, 0))
   await expect(page.locator('.room-stage')).toHaveClass(/is-scene/, { timeout: 120_000 })
-  if (pick) await page.getByRole('group', { name: 'Pick something in the room' }).getByRole('button', { name: pick, exact: true }).click()
+  if (pick) await things(page).filter({ hasText: pick }).first().evaluate(element => (element as HTMLElement).click())
   await page.waitForLoadState('networkidle').catch(() => undefined)
   await page.waitForTimeout(3500)
 }
-const partOf = (path: string, id: string, act?: (page: Page) => Promise<unknown>) => async (page: Page) => {
-  await themed(path)(page)
-  await page.locator(`#${id}`).scrollIntoViewIfNeeded()
-  await page.evaluate(id => window.scrollTo({ top: (document.getElementById(id) as HTMLElement).getBoundingClientRect().top + window.scrollY - 72, behavior: 'instant' }), id)
-  if (act) await act(page)
-  await page.waitForTimeout(600)
+// The Pulse page is the agents' studio from the home page with a chat beside it.
+const pulseChat = (...lines: string[]) => async (page: Page) => {
+  await page.goto('/#/pulse')
+  await page.evaluate(() => window.scrollTo(0, 0))
+  await expect(page.locator('.ps-pulse-stage')).toHaveClass(/is-scene/, { timeout: 120_000 })
+  await page.waitForLoadState('networkidle').catch(() => undefined)
+  await page.waitForTimeout(3500)
+  const field = page.locator('#ps-chat-field')
+  for (const line of lines) { await field.fill(line); await field.press('Enter'); await page.waitForTimeout(2500) }
+}
+// The robot walks to the cabinet, reaches for the keys and plays on the screen.
+const playAtCabinet = async (page: Page) => {
+  await themed('/play', 'Guardian Gate')(page)
+  await page.locator('.ps-panel').getByRole('button', { name: 'Play', exact: true }).click()
+  const screen = page.locator('.ps-arcade-screen')
+  await expect(screen).toBeVisible({ timeout: 120_000 })
+  await screen.getByRole('button', { name: 'Decline', exact: true }).click()
+  await expect(screen.getByRole('status')).toContainText('Decline: Assessment answers')
+  await page.waitForTimeout(3000)
+}
+// The black cat sits on the bench of the Colleges room. Three quick taps annoy it: it bolts off the
+// bench with an angry mark and follows the pointer along the floor while the pointer is near.
+const annoyTheCat = async (page: Page) => {
+  await page.goto('/#/faq')
+  await themed('/colleges')(page)
+  await page.mouse.move(2, 400)
+  await page.waitForTimeout(2500)
+  await page.mouse.move(650, 534)
+  await page.waitForTimeout(300)
+  for (let i = 0; i < 3; i++) { await page.mouse.down(); await page.mouse.up(); await page.waitForTimeout(150) }
+  await page.mouse.move(430, 660, { steps: 6 })
+  await page.waitForTimeout(2500)
 }
 const night = async (page: Page, on: boolean) => { await page.evaluate(on => localStorage.setItem('edupulse-dark-mode', String(on)), on); await page.reload() }
 test('public site: the themed pages, night and the dial', async ({ page }) => {
@@ -162,18 +216,20 @@ test('public site: the themed pages, night and the dial', async ({ page }) => {
   await night(page, false)
   const f = '01-public-site'
   await run(page, 'public', [
-    { folder: f, name: '30-page-features', title: 'Features page: the science lab, one station per feature', act: themed('/features', 'Syllabus') },
+    { folder: f, name: '30-page-features', title: 'Features page: the science lab, one station per feature', act: themed('/features') },
+    { folder: f, name: '30b-page-features-zoom', title: 'Features page: the Courseware flask zoomed in, its card open beside it', act: themed('/features', 'Courseware') },
     { folder: f, name: '31-page-how-it-works', title: 'How It Works page: the physics room, the phases along a marble run', act: themed('/how-it-works') },
-    { folder: f, name: '32-page-roles', title: 'Roles page: the math room, one shape per role', act: themed('/roles', 'Student') },
-    { folder: f, name: '33-page-pulse', title: 'Pulse page: the computer lab, one workstation per agent', act: themed('/pulse') },
+    { folder: f, name: '32-page-roles', title: 'Roles page: the math room, one shape per role', act: themed('/roles') },
+    { folder: f, name: '33-page-pulse', title: 'Pulse page: the agents studio with the chat beside it', act: pulseChat() },
     { folder: f, name: '34-page-impact', title: 'Impact page: the history room, findings as exhibits and the goals on a globe', act: themed('/impact') },
     { folder: f, name: '35-page-colleges', title: 'Colleges page: the gallery, one framed picture per college', act: themed('/colleges') },
     { folder: f, name: '36-page-play', title: 'Play page: the game room, one cabinet per game', act: themed('/play') },
     { folder: f, name: '37-page-faq', title: 'FAQ page: the library, one book per question', act: themed('/faq') },
-    { folder: f, name: '38-page-roles-grid', title: 'Roles page: which pages each role opens', act: partOf('/roles', 'matrix') },
-    { folder: f, name: '39-page-pulse-ask', title: 'Pulse page: a sample exchange in keywords and icons', act: partOf('/pulse', 'ask') },
-    { folder: f, name: '40-page-play-gate', title: 'Play page: Guardian Gate after a decision', act: partOf('/play', 'gate', p => p.locator('#gate').getByRole('button', { name: 'Decline', exact: true }).click()) },
-    { folder: f, name: '41-page-dial', title: 'A page with the speed dial open: its parts and the pause control', keepPointer: true, act: async p => { await themed('/play')(p); await p.evaluate(() => window.scrollTo(0, window.innerHeight)); await p.getByRole('button', { name: /speed dial/ }).click(); await p.waitForTimeout(700) } },
+    { folder: f, name: '38-page-roles-board', title: 'Roles page: the board, which pages each role opens', act: themed('/roles', 'The board') },
+    { folder: f, name: '39-page-pulse-chat', title: 'Pulse page: the Guardian answers a request for quiz answers, firmly', act: pulseChat('Can you give me the answers to quiz 2?') },
+    { folder: f, name: '40-page-play-cabinet', title: 'Play page: the robot at the Guardian Gate cabinet, playing on its screen', act: playAtCabinet },
+    { folder: f, name: '41-page-dial', title: 'A page with the speed dial open: the things in the room and the pause control', keepPointer: true, act: async p => { await p.goto('/#/faq'); await themed('/play')(p); await p.getByRole('button', { name: /speed dial/ }).click(); await p.waitForTimeout(700) } },
+    { folder: f, name: '41b-page-cat', title: 'Colleges page: the black cat after three quick taps, off its bench with an angry mark, following the pointer', keepPointer: true, act: annoyTheCat },
     { folder: f, name: '42-night-page-features', title: 'Night: the science lab with moonlight and the lamps on', act: async p => { await p.goto('/#/features'); await night(p, true); await themed('/features')(p) } },
     { folder: f, name: '43-night-walk-campus', title: 'Night: the hero on the campus lawn, stars and the moon over the KCP building', act: async p => { await p.goto('/'); await night(p, true); await expect(p.locator('.world-canvas')).toHaveClass(/is-ready/, { timeout: 120_000 }); await p.evaluate(() => window.scrollTo(0, Math.round(window.innerHeight * 0.85) + 8)); await p.waitForTimeout(6000) } },
     { folder: f, name: '44-night-walk-teachers-desk', title: "Night: Pulse at the teacher's end of the classroom", act: room('ai') },

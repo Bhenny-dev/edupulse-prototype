@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import { createRobots } from './robot'
 import { AGENT_COLORS } from '../agentLook'
+import { CLOCK, REST, blend, handsAt } from './clockface'
 
 const H = 5.2 // wall height of a classroom
 const TIER = 1.16 // height of the classmates' tier in classroom B
@@ -11,7 +12,7 @@ const ROLE_COLORS = ['#3b82f6', '#f59e0b', '#10b981', '#ec4899', '#8b5cf6']
 // inward-facing walls, so the camera can stand behind a wall and still look in, as it does in the
 // workspace. A room's `fits` entry lines its props up with the page's measured layout.
 export function buildSets(kit, { buildingUrl }) {
-  const { M, mat, put, box, cyl, ball, flat, live, floorMaterial, bake } = kit
+  const { M, mat, put, box, cyl, ball, flat, live, paint, floorMaterial, bake } = kit
   const { robot } = createRobots(kit)
   const sets = {}, doors = {}, fits = {}, anchors = {}
   const ticksOf = {}
@@ -132,19 +133,32 @@ export function buildSets(kit, { buildingUrl }) {
       g.add(flag)
     }
   }
-  const clock = (g, name, x, y, z, rotY = 0, size = 1) => {
+  // A wall clock: a blue rim, a white face with a mark for each hour, two hands that keep time.
+  // With a `pose` its hands settle at the resting time as `pose.ease` reaches 1, and `pose.hidden`
+  // takes them off for the scope to draw over (AgentsSection draws the same hands).
+  const clock = (g, name, x, y, z, rotY = 0, size = 1, pose = null) => {
     const f = live(new THREE.Group())
     f.position.set(x, y, z)
     f.rotation.y = rotY
     f.scale.setScalar(size)
     g.add(f)
-    cyl(f, 0.36, 0.36, 0.05, 0, 0, 0, M.ink, 32, false).rotation.x = Math.PI / 2
-    cyl(f, 0.31, 0.31, 0.06, 0, 0, 0.004, M.white, 32, false).rotation.x = Math.PI / 2
+    cyl(f, CLOCK.rim, CLOCK.rim, 0.05, 0, 0, 0, M.blue, 40, false).rotation.x = Math.PI / 2
+    cyl(f, CLOCK.rim - CLOCK.rimWidth, CLOCK.rim - CLOCK.rimWidth, 0.06, 0, 0, 0.004, M.white, 40, false).rotation.x = Math.PI / 2
+    for (let i = 0; i < 12; i++) {
+      const a = (i * Math.PI) / 6
+      box(f, 0.012, i % 3 ? 0.03 : 0.05, 0.008, Math.sin(a) * 0.29, Math.cos(a) * 0.29, 0.037, M.ink, 0, false).rotation.z = -a
+    }
     const hour = new THREE.Group(), minute = new THREE.Group()
     f.add(hour, minute)
-    box(hour, 0.03, 0.17, 0.01, 0, 0.07, 0.04, M.ink, 0, false)
-    box(minute, 0.02, 0.25, 0.01, 0, 0.11, 0.045, M.blue, 0, false)
-    tick(name, time => { minute.rotation.z = -time * 0.1; hour.rotation.z = -time * 0.1 / 12 - 1 })
+    const { hour: h, minute: m } = CLOCK
+    box(hour, h.width, h.tip + h.tail, 0.01, 0, (h.tip - h.tail) / 2, 0.04, M.ink, 0, false)
+    box(minute, m.width, m.tip + m.tail, 0.01, 0, (m.tip - m.tail) / 2, 0.045, M.blue, 0, false)
+    tick(name, time => {
+      const now = handsAt(time), ease = pose ? pose.ease : 0
+      minute.rotation.z = blend(now.minute, REST.minute, ease)
+      hour.rotation.z = blend(now.hour, REST.hour, ease)
+      hour.visible = minute.visible = !pose?.hidden
+    })
     return f
   }
   const lockers = (g, x0, count, z) => {
@@ -508,8 +522,11 @@ export function buildSets(kit, { buildingUrl }) {
     const podium = live(new THREE.Group())
     g.add(podium)
     cyl(podium, 0.62, 0.74, 0.16, 0, 0.08, 0, M.oak, 24)
-    const teacherClock = clock(g, 'roomB', 20, 3.6, -63.9, 0, 0.95)
+    const clockPose = { ease: 0, hidden: false }
+    const teacherClock = clock(g, 'roomB', 20, 3.6, -63.9, 0, 0.95, clockPose)
     anchors.clock = teacherClock.position
+    anchors.clockPose = clockPose
+    anchors.clockRadius = CLOCK.rim * 0.95
     // Beside the board, in whatever room the screen leaves to its right: a vase of flowers on the
     // floor and paper stickers on the wall, placed so neither covers the conversation.
     const vase = live(new THREE.Group())
@@ -698,7 +715,99 @@ export function buildSets(kit, { buildingUrl }) {
     for (const z of [-86, -70]) windowOn(g, 71.92, 2.6, z, -Math.PI / 2, 2, 2)
     tree(g, 68, -66, 1.5)
     tree(g, 67.5, -88, 1.7)
+    // A picnic blanket with a basket, a bench beside the path, and where the ball game is played.
+    const blanket = put(new THREE.PlaneGeometry(4.6, 3.6), mat(0xffffff, { roughness: 1, map: paint(128, 96, (c, w, h) => {
+      c.fillStyle = '#fff7ed'; c.fillRect(0, 0, w, h)
+      c.fillStyle = '#ef4444'
+      for (let i = 0; i < 8; i++) { c.globalAlpha = 0.85; c.fillRect(i * (w / 8), 0, w / 16, h); c.fillRect(0, i * (h / 6), w, h / 12) }
+    }) }), g, 46.6, 0.04, -69.6, false)
+    blanket.rotation.set(-Math.PI / 2, 0, 0.12)
+    const wicker = mat(0xc69c6d, { roughness: 0.9 })
+    box(g, 0.98, 0.48, 0.66, 49, 0.29, -70.9, wicker, 0.05)
+    box(g, 1.04, 0.06, 0.7, 49, 0.55, -70.9, M.white, 0.02, false)
+    put(new THREE.TorusGeometry(0.36, 0.03, 6, 16, Math.PI), wicker, g, 49, 0.58, -70.9, false)
+    for (const [x, z, color] of [[45.1, -69.2, M.amber], [47.2, -69.6, M.coral], [46.2, -68.2, M.mint]]) cyl(g, 0.26, 0.22, 0.05, x, 0.08, z, color, 14, false)
+    ball(g, 0.13, 46.9, 0.18, -70.8, M.coral, 1, 1, 1, false)
+    ball(g, 0.13, 45.0, 0.19, -71.0, M.canopy, 1, 1, 1, false)
+    cyl(g, 0.09, 0.09, 0.44, 47.5, 0.26, -68.3, M.blue, 10, false)
+    const bench = (x, z) => {
+      box(g, 0.8, 0.13, 3.2, x, 0.64, z, M.oak, 0.02)
+      box(g, 0.12, 0.8, 3.2, x + 0.4, 1.08, z, M.oak, 0.02)
+      for (const dz of [-1, 1]) for (const dx of [-0.26, 0.26]) box(g, 0.1, 0.64, 0.1, x + dx, 0.32, z + dz * 1.4, M.deepWood, 0, false)
+    }
+    bench(58.4, -66.4)
     bake(g)
+    // The students. Each group does one thing: picnic on the blanket, a pair strolling down the path,
+    // a ball tossed across the lawn with a runner circling, and two on the bench with ice creams.
+    const COLORS = ['#3b82f6', '#f59e0b', '#10b981', '#ec4899', '#8b5cf6', '#06b6d4', '#ef4444', '#84cc16']
+    const hold = (bot, make) => { const food = live(new THREE.Group()); food.position.set(0, -0.27, 0.07); bot.arms[1].elbow.add(food); make(food); return food }
+    const sandwich = food => { box(food, 0.15, 0.05, 0.11, 0, 0, 0, M.amber, 0.02, false); box(food, 0.15, 0.025, 0.11, 0, 0.04, 0, M.canopy, 0, false); box(food, 0.15, 0.05, 0.11, 0, 0.08, 0, M.amber, 0.02, false) }
+    const cone = (food, color) => { cyl(food, 0.045, 0, 0.14, 0, -0.04, 0, M.amber, 10, false); ball(food, 0.06, 0, 0.07, 0, color, 1, 1, 1, false) }
+    // The right arm goes up to the mouth now and then (`bite` is 0 at rest, 1 at the lips).
+    const eat = (bot, rest, phase) => time => {
+      const bite = Math.max(0, Math.sin(time * 1.15 + phase)) ** 3
+      const { shoulder, elbow } = bot.arms[1]
+      shoulder.rotation.x = rest.sx + (-2.15 - rest.sx) * bite
+      elbow.rotation.x = rest.ex + (-1.55 - rest.ex) * bite
+      bot.head.rotation.x += bite * 0.18
+    }
+    const sit = { sx: -0.75, ex: -0.8 }
+    const picnic = [
+      robot(g, COLORS[0], { x: 44.2, z: -69.9, yaw: 0.95, scale: 1.8, seated: true, seat: 0.2, phase: 0.2 }),
+      robot(g, COLORS[1], { x: 49, z: -68.4, yaw: -1.15, scale: 1.8, seated: true, seat: 0.2, phase: 1.1 }),
+      robot(g, COLORS[2], { x: 46.4, z: -71.9, yaw: 0.1, scale: 1.8, seated: true, seat: 0.2, phase: 2.3 }),
+    ]
+    hold(picnic[0], sandwich)
+    hold(picnic[1], food => cone(food, M.pink))
+    picnic[2].setExcited(true)
+    const bites = [eat(picnic[0], sit, 0), eat(picnic[1], sit, 2.4)]
+    const diners = [
+      robot(g, COLORS[3], { x: 58.3, z: -67.5, yaw: -Math.PI / 2, scale: 1.8, seated: true, seat: 0.27, phase: 0.7 }),
+      robot(g, COLORS[4], { x: 58.3, z: -65.3, yaw: -Math.PI / 2, scale: 1.8, seated: true, seat: 0.27, phase: 1.9 }),
+    ]
+    hold(diners[0], food => cone(food, M.coral))
+    hold(diners[1], food => cone(food, M.mint))
+    const licks = [eat(diners[0], sit, 1.3), eat(diners[1], sit, 3.9)]
+    // The pair that strolls along the path, towards the building and back.
+    const strollers = [robot(g, COLORS[5], { x: 52.7, z: -66, yaw: Math.PI, scale: 1.7, phase: 0.4 }), robot(g, COLORS[6], { x: 55.3, z: -66, yaw: Math.PI, scale: 1.7, phase: 1.6 })]
+    strollers.forEach(bot => bot.setWalking(true))
+    strollers[1].setExcited(true)
+    let facing = Math.PI
+    // Two toss a ball between them; one runs circles round the lawn's tree.
+    const toss = [robot(g, COLORS[7], { x: 62.4, z: -72, yaw: 2.6, scale: 1.8, phase: 0.9 }), robot(g, COLORS[0], { x: 67.2, z: -80.5, yaw: -0.52, scale: 1.8, phase: 2.7 })]
+    const ball3 = live(ball(g, 0.26, 62, 1, -72, mat(0xffffff, { roughness: 0.5 }), 1, 1, 1, true))
+    ball(ball3, 0.265, 0, 0, 0, mat(0xef4444, { roughness: 0.5 }), 1, 1, 0.45, false).rotation.x = 0.6
+    const runner = robot(g, COLORS[2], { x: 66, z: -86, yaw: 0, scale: 1.6, phase: 3.1 })
+    runner.setWalking(true)
+    const from = new THREE.Vector3(), to = new THREE.Vector3()
+    tick('yard', time => {
+      for (const bot of [...picnic, ...diners, ...strollers, ...toss, runner]) bot.update(time)
+      bites.forEach(step => step(time))
+      licks.forEach(step => step(time))
+      // The stroll: forty metres down the path to the building's doors and back at a walking pace.
+      const lap = (time * 1.1) % 84, out = lap < 42
+      const z = -64 - (out ? lap : 84 - lap)
+      const aim = out ? Math.PI : 0
+      facing += Math.atan2(Math.sin(aim - facing), Math.cos(aim - facing)) * 0.08
+      strollers.forEach((bot, i) => { bot.root.position.set(52.7 + i * 2.6 + Math.sin(time * 0.5 + i) * 0.12, 0, z); bot.root.rotation.y = facing })
+      // The toss: the ball leaves one pair of hands and lands in the other's every two and a half seconds.
+      const turn = (time / 2.5) % 2, leg = turn % 1, back = turn >= 1
+      const thrower = toss[back ? 1 : 0], catcher = toss[back ? 0 : 1]
+      from.set(thrower.root.position.x, 1.45, thrower.root.position.z)
+      to.set(catcher.root.position.x, 1.45, catcher.root.position.z)
+      ball3.position.lerpVectors(from, to, leg)
+      ball3.position.y += Math.sin(leg * Math.PI) * 2.6
+      ball3.rotation.x = time * 5
+      // Arms go up to throw and again to catch.
+      for (const [bot, up] of [[thrower, Math.max(0, 1 - leg * 4)], [catcher, Math.max(0, (leg - 0.6) / 0.4)]]) for (const arm of bot.arms) {
+        arm.shoulder.rotation.x += (-2.6 - arm.shoulder.rotation.x) * up
+        arm.elbow.rotation.x += (-0.3 - arm.elbow.rotation.x) * up
+      }
+      // The runner circles the lawn's middle, quick enough to swing its arms.
+      const angle = time * 0.55
+      runner.root.position.set(61.5 + Math.cos(angle) * 3.4, 0, -88 + Math.sin(angle) * 2.8)
+      runner.root.rotation.y = -angle + Math.PI
+    })
     clouds(g, 'yard', [[34, 30, -160, 6], [66, 34, -170, 8], [90, 25, -150, 5], [18, 22, -146, 4.4], [52, 22, -140, 3.4]])
     const lines = [0, 1].map(() => {
       const line = live(cyl(g, 0.012, 0.012, 1, 0, 0, -77.96, M.ink, 6, false))

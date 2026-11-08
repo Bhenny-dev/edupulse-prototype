@@ -1,0 +1,163 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-11-08T12-30-08-947Z-114047e5",
+  "startedAt": "2026-11-08T12:30:08.947Z",
+  "finishedAt": "2026-11-08T12:32:41.045Z",
+  "commitSha": "0165180e153e18959a2416e5060e5a24d74a5d68",
+  "sourceDigest": "db8ec3e60810b67eaafc7590c52ba383c534733b6c406c7c5fe8aa0b8e89608e",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-11-08T12:29:12.189Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 1,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": "^01-public-site/"
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/automatic-records.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/automatic-records.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.spec.ts",
+    "edupulse-app/tests/snapshots/course-seed.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-formatting.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-navigation.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/harness-delivery.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/operator-steps.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-drafting.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-source.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+    "edupulse-app/tests/snapshots/student-directory.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/voice-quota.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/voice-quota.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-recovery.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+      "title": "public site: the walk through the 3D school",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "preview/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 140276,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/19-walk-campus.png",
+      "sha256": "45e2caf90f0fb1d5ed1649a4cd23c5cd582723648748f6474c6f1968c4eba73c",
+      "bytes": 611522
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/20-walk-bulletin-board.png",
+      "sha256": "089585655513824833e676148c5fab3d31687e50bc003498f7cfae099a48d530",
+      "bytes": 460158
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/21-walk-blackboard.png",
+      "sha256": "f8689453705f197ee5da1d80685fa5102b861a5afd45b8445b55b6a2ea611693",
+      "bytes": 361773
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/22-walk-class-seats.png",
+      "sha256": "1f9c747135708b5ed351c2e7ab0d2c5537434fa6516811f1fce17d62847c352b",
+      "bytes": 299401
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/23-walk-classmates.png",
+      "sha256": "2ff0c5a0d6620aa07770ba7d1db5c72c06b9aeb493f5454a84857f554701600e",
+      "bytes": 233770
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/24-walk-teachers-desk.png",
+      "sha256": "9ade2b7bb56c0311f690a897dfe00536ef44df94a8f6e0b3f05db05b2f97d882",
+      "bytes": 262233
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/24b-walk-clock-letters.png",
+      "sha256": "1c5f6ede92948ca6d1b2d4561f6e94cc06b6afb9441a43474cf9781d850fd3a1",
+      "bytes": 462004
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/24c-walk-scope-agent.png",
+      "sha256": "67f1f6a81d3c8b9ad7899914f3a62502a9e36fe0f220d96e88e84de0e0bdd4a3",
+      "bytes": 507684
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/24d-walk-agents-line-up.png",
+      "sha256": "dde3ab985a4d1a0baad953f894fe23aa2c2240a2d068b298506ea9d80312e2c2",
+      "bytes": 568503
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/25-walk-gallery.png",
+      "sha256": "aff9e89d1be65a2575b55761cb406297bd67f381b41e9897eba2b269caa973cd",
+      "bytes": 263703
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/26-walk-front-stage.png",
+      "sha256": "42ea0fcbd1981e58592a2e5ccca72cf827ca6fa3d9280fdc8d100b3581ad5f54",
+      "bytes": 580783
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/26b-walk-yard-window.png",
+      "sha256": "3623bee970fb032f96414babc2f960224522077875efe2f2182d67fada19ca16",
+      "bytes": 416073
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/27-walk-courtyard.png",
+      "sha256": "02ddbb83b4c2fea76617966b2f6b263e181f2fd55bf3aede59bd6b1615b2801a",
+      "bytes": 1056111
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/28-walk-notebook.png",
+      "sha256": "6b7d54f8acf610778f7a8b5428d91e8397c37b7aa5ce387ae0d3f44493c43783",
+      "bytes": 281227
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/29-walk-door.png",
+      "sha256": "9926f6e9bbfc931d7d66f51d7bdb0a84aa75e6e23c1820f1c518752d7bc096f2",
+      "bytes": 588675
+    }
+  ]
+}

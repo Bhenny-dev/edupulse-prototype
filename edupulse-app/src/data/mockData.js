@@ -1474,29 +1474,6 @@ export const ADMIN_STATS = {
   deliveryGaps: DEFAULT_SYLLABI.filter(s => s.status === 'drafted' || s.status === 'checked').length,
 }
 
-export const AI_CONFIG = {
-  ragSources: [
-    { id: 'src-1', name: 'BSIT Web & Mobile Curriculum Reference', type: 'curriculum', enabled: true },
-    { id: 'src-2', name: 'KCP IT Program Guide', type: 'institutional', enabled: true },
-    { id: 'src-3', name: 'Course Syllabus CC-WEB111', type: 'syllabus', enabled: true, courseId: 'CC-WEB111' },
-    { id: 'src-4', name: 'Course Syllabus CC-MOB111', type: 'syllabus', enabled: true, courseId: 'CC-MOB111' },
-    { id: 'src-5', name: 'Instructor Notes - Sir Guisdan', type: 'instructor', enabled: true, courseId: 'CC-WEB111' },
-    { id: 'src-6', name: 'Web Development Fundamentals Textbook', type: 'attachment', enabled: true, courseId: 'CC-WEB111' },
-    { id: 'src-7', name: 'React Native Documentation', type: 'attachment', enabled: true, courseId: 'CC-MOB111' },
-  ],
-  effortModes: [
-    { id: 'fast', label: 'Fast', description: 'Single-pass generation, 1 candidate, minimal grounding', candidates: 1, color: 'var(--amber-500)', bg: 'var(--amber-100)' },
-    { id: 'balanced', label: 'Balanced', description: 'Iterative refinement, 3 candidates, standard grounding', candidates: 3, color: 'var(--sky-500)', bg: 'var(--sky-100)' },
-    { id: 'thoughtful', label: 'Thoughtful', description: 'Multi-step reasoning, 5 candidates, deep grounding + verification', candidates: 5, color: 'var(--purple-500)', bg: 'var(--purple-100)' },
-  ],
-  models: [
-    { id: 'gpt-4o-mini', name: 'GPT-4o Mini', tier: 'free', costPer1k: 0.00015, maxTokens: 16384, capabilities: ['text', 'json'] },
-    { id: 'gpt-4o', name: 'GPT-4o', tier: 'pro', costPer1k: 0.005, maxTokens: 128000, capabilities: ['text', 'json', 'vision', 'tools'] },
-    { id: 'gpt-4o-thinking', name: 'GPT-4o Thinking', tier: 'strongest', costPer1k: 0.03, maxTokens: 128000, capabilities: ['text', 'json', 'reasoning', 'tools'] },
-    { id: 'local-llm', name: 'Local LLM (Llama 3.1 70B)', tier: 'local', costPer1k: 0, maxTokens: 8192, capabilities: ['text', 'json'] },
-  ],
-}
-
 export const CHAT_HISTORY = [
   { id: 'msg-1', role: 'user', content: 'Generate a quiz for Topic 1: Introduction to Programming', timestamp: '10:30 AM' },
   { id: 'msg-2', role: 'ai', content: 'I\'ve generated a 10-item multiple choice quiz covering variables, data types, and basic I/O operations. The quiz is aligned with curriculum standards and includes questions of varying difficulty levels.', timestamp: '10:31 AM', context: ['Curriculum Memorandum Order 2024', 'CC-COMPROG11 Syllabus'] },

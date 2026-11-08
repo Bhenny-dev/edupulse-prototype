@@ -17,6 +17,19 @@ test('mobile landing page', async ({ page }) => {
   await expect(page.getByRole('navigation', { name: 'Pages menu' })).toHaveCount(0)
 })
 
+test('mobile public page', async ({ page }) => {
+  // A page of the public site on a phone: the room, then a thing picked, its card rising from the bottom.
+  await page.context().addInitScript(() => localStorage.setItem('edupulse-walk', 'on'))
+  await page.emulateMedia({ reducedMotion: 'no-preference' })
+  await page.goto('/#/roles')
+  await expect(page.locator('.room-stage')).toHaveClass(/is-scene/, { timeout: 120_000 })
+  await page.waitForTimeout(4000)
+  await shot(page, '08-page-roles')
+  await page.getByRole('group', { name: 'Things in the room' }).getByRole('button').filter({ hasText: 'The board' }).first().evaluate(element => (element as HTMLElement).click())
+  await page.waitForTimeout(4500)
+  await shot(page, '09-page-roles-board')
+})
+
 test('mobile walkthrough', async ({ page }) => {
   await page.goto('/')
   await page.getByRole('button', { name: 'Instructor', exact: true }).click()
