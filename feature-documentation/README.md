@@ -4,6 +4,7 @@
 
 | Folder | Covers | Contents |
 | --- | --- | --- |
+| [9 November retained syllabus sources](versions/2026-11-09-retained-syllabus-sources/README.md) | Read references, retain private copies and cite actual passages | See release validation |
 | [9 November approved syllabus intake](versions/2026-11-09-approved-syllabus-intake/README.md) | Add courses from approved PDF/DOCX copies through My Syllabus | See release validation |
 | [9 November combined oversight](versions/2026-11-09-combined-oversight/README.md) | One syllabus/delivery view with correct teaching-week coverage and retained roles | See release validation |
 | [9 November outline selectors](versions/2026-11-09-outline-selectors/README.md) | Searchable unclipped categorized choices with keyboard/touch support | See release validation |

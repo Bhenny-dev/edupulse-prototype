@@ -1,3 +1,4 @@
+import SyllabusSources from './SyllabusSources'
 import { useState, useEffect, useRef, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Eye, Check, Send, FileText, Sparkles, Tag, RotateCcw, Loader2, Flag, MonitorPlay, ArrowLeft, PlugZap, TriangleAlert } from 'lucide-react'
@@ -215,6 +216,7 @@ export default function CourseWorkspace({ syllabusId, focusWeek, contentStore, o
       {generationProgress && <div className="ai-actions cw-generation-progress" role="status"><Loader2 size={16} className="spin" /><span>{generationProgress}</span><button className="btn btn-secondary btn-sm" onClick={() => generationRef.current?.abort()}>Stop generation</button></div>}
       {generationIssue ? <div className="cw-ai-notice is-error" role="alert"><TriangleAlert size={18} aria-hidden="true" /><div className="cw-ai-notice-body"><strong>Generation did not finish</strong><span>{generationIssue.message}{generationIssue.saved ? ` ${generationIssue.saved} completed drafts remain available for review.` : ''}</span></div>{generationIssue.setup && <button className="btn btn-primary btn-sm" onClick={() => navigate('/settings?tab=ai-provider')}><PlugZap size={14} /> Set up Pulse AI</button>}<button className="btn btn-ghost btn-sm" onClick={() => setGenerationIssue(null)}>Dismiss</button></div> : !ai.ready && <div className="cw-ai-notice" role="status"><PlugZap size={18} aria-hidden="true" /><div className="cw-ai-notice-body"><strong>Pulse AI is not set up yet</strong><span>Generation needs a connected provider or the on-device model. Your outline and any saved drafts stay as they are.</span></div><button className="btn btn-secondary btn-sm" onClick={() => navigate('/settings?tab=ai-provider')}><PlugZap size={14} /> Set up Pulse AI</button></div>}
       {totalGenerated > 0 && <div className="cw-summary"><strong>{totalGenerated} {totalGenerated === 1 ? 'item' : 'items'} generated</strong>{totalDrafts > 0 && <span>{totalDrafts} draft</span>}{totalChecked > 0 && <span>{totalChecked} checked</span>}{totalPublished > 0 && <span>{totalPublished} published</span>}{selectedItems.size > 0 && <button className="btn btn-primary btn-sm" onClick={checkSelected}><Check size={14} /> Check Selected ({selectedItems.size})</button>}</div>}
+      <SyllabusSources syllabus={syllabus} />
       <div className="cw-week-list">
         {outline.map(row => {
           const weekNum = row.week, exam = isExamRow(row), weekItems = getWeekItems(weekNum)

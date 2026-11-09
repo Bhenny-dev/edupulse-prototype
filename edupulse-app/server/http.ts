@@ -1,3 +1,5 @@
+import { executeSources } from './sources/service.js'
+import { sourceCommand } from './sources/contracts.js'
 import { randomUUID } from 'node:crypto'
 import { createClient } from '@supabase/supabase-js'
 import { z } from 'zod'
@@ -31,9 +33,9 @@ import { supportAction, supportFilters, supportIdentity } from './domains/suppor
 
 export const VERSION = '0.4.0'
 /** Request body limits per action (bytes). Uploads are raw file bytes. */
-export const BODY_LIMITS: Record<string, number> = { workspace: WORKSPACE_BYTES, extract: EXTRACTION_LIMITS.bytes, documents: 1_000_000, conversations: 200_000, operator: 330_000, courseware:330_000 }
+export const BODY_LIMITS: Record<string, number> = { 'syllabus-sources': 2_800_000, workspace: WORKSPACE_BYTES, extract: EXTRACTION_LIMITS.bytes, documents: 1_000_000, conversations: 200_000, operator: 330_000, courseware:330_000 }
 export const bodyLimit = (action: string | null) => BODY_LIMITS[action || ''] ?? 100_000
-const ACTION_METHODS: Record<string, string[]> = { 'chat-context': ['POST'], 'chat-memory': ['POST'], support: ['GET', 'POST'], health: ['GET'], providers: ['GET', 'POST', 'DELETE'], 'provider-oauth': ['POST'], 'provider-test': ['POST'], 'provider-workspaces': ['POST'], conversations: ['GET', 'POST'], operator: ['POST'], context: ['POST'], similarity: ['POST'], references: ['POST'], 'web-search': ['POST'], extract: ['POST'], chat: ['POST'], courseware: ['POST'], documents: ['GET', 'POST', 'DELETE'], workspace: ['GET', 'PUT'], academic: ['GET', 'POST'], students: ['GET'] }
+const ACTION_METHODS: Record<string, string[]> = { 'syllabus-sources': ['POST'], 'chat-context': ['POST'], 'chat-memory': ['POST'], support: ['GET', 'POST'], health: ['GET'], providers: ['GET', 'POST', 'DELETE'], 'provider-oauth': ['POST'], 'provider-test': ['POST'], 'provider-workspaces': ['POST'], conversations: ['GET', 'POST'], operator: ['POST'], context: ['POST'], similarity: ['POST'], references: ['POST'], 'web-search': ['POST'], extract: ['POST'], chat: ['POST'], courseware: ['POST'], documents: ['GET', 'POST', 'DELETE'], workspace: ['GET', 'PUT'], academic: ['GET', 'POST'], students: ['GET'] }
 export const allowedMethods = (action: string) => Object.hasOwn(ACTION_METHODS, action) ? ACTION_METHODS[action] : undefined
 const buckets = new Map<string, { count: number; until: number }>()
 const active = new Set<string>()
@@ -108,7 +110,7 @@ export async function handleRequest(request: Request): Promise<Response> {
       const subject = await supportIdentity(identity, command.id)
       return json(await supportAction(subject, command.operation))
     }
-    const effective = ['academic','workspace','chat','chat-context','chat-memory','courseware','operator','context','web-search','students'].includes(action) ? await supportIdentity(identity, request.headers.get('X-EduPulse-Subject')) : identity
+    const effective = ['academic','workspace','chat','chat-context','chat-memory','courseware','operator','context','web-search','students','syllabus-sources'].includes(action) ? await supportIdentity(identity, request.headers.get('X-EduPulse-Subject')) : identity
     let chatBody: ReturnType<typeof chatInput.parse> | undefined
     let courseBody:ReturnType<typeof courseInput.parse>|undefined
     let lookupFallback: Awaited<ReturnType<typeof systemLookup>> = null
@@ -146,6 +148,14 @@ export async function handleRequest(request: Request): Promise<Response> {
     if(action==='courseware') {
       courseBody=courseInput.parse(await readJson(request,bodyLimit(action)))
       if(!courseBody.stepKey)throw new ApiError(409,'CLIENT_UPDATE_REQUIRED','Reload EduPulse before generating courseware to use the outline-based generator. Existing content was preserved.')
+    }
+    if (action === 'syllabus-sources') {
+      if (!['instructor','admin'].includes(effective.role) || !['instructor','admin'].includes(identity.role)) throw new ApiError(403,'FORBIDDEN','Use an instructor view to manage your private teaching sources.')
+      const command=sourceCommand.parse(await readJson(request,bodyLimit(action))),key=`${identity.id}:source-reader`,now=Date.now()
+      const bucket=buckets.get(key);if(bucket&&bucket.until>now&&bucket.count>=60)throw new ApiError(429,'RATE_LIMIT','Wait before reading more source requests. Retained copies remain available.',60)
+      buckets.set(key,{count:bucket&&bucket.until>now?bucket.count+1:1,until:bucket&&bucket.until>now?bucket.until:now+60000})
+      if(['read','attach','remove'].includes(command.operation)){if(active.has(key))throw new ApiError(429,'REQUEST_IN_PROGRESS','A source update is already running. Wait for it to finish.');active.add(key);activeId=key}
+      return json(await executeSources(identity,command,AbortSignal.any([request.signal,AbortSignal.timeout(90000)])))
     }
     if (action === 'students') return json(await readStudents(effective,new URL(request.url)))
     if (action === 'conversations') {

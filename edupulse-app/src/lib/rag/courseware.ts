@@ -1,9 +1,10 @@
+import { bibliographicLabel, referenceToken, type SyllabusReference } from './syllabusReferences.js'
 import { StateGraph, StateSchema, ReducedValue, Send, START, END } from '@langchain/langgraph'
 import { z } from 'zod'
 import { ApiError, courseInput, courseOutput, type CourseInput } from '../../../server/contracts.js'
 import type { AgentDeps, AgentStep, Evidence, Verification } from './types.js'
 import { lexicalRelevance, mergeCandidates, selectEvidence } from './rank.js'
-import { SUPPORT, supportMatrix, verifyAnswer } from './verify.js'
+import { SUPPORT, supportMatrix, verifyAnswer, correctCitations } from './verify.js'
 import { neutralize, sentences, terms } from './text.js'
 import { agentReport } from './registry.js'
 import { parseModelJson } from '../../agents/skills.js'
@@ -177,23 +178,26 @@ export async function answerKeyCheck(draft: Draft, signal: AbortSignal, similari
  * materials for the week and the knowledge-library passages the Ranker supplied. Unlisted links are removed.
  */
 // A reference list the model writes itself may be invented; only the syllabus and the library are cited.
-export const MODEL_REFERENCES = /^\s*(?:references?|bibliography|sources|works cited|further reading)\s*:?\s*$/i
-export function withReferences(draft: Required<Draft>, plan: Plan, evidence: Evidence[]): Required<Draft>
-export function withReferences(draft: Draft, plan: Plan, evidence: Evidence[]): Draft
-export function withReferences(draft: Draft, plan: Plan, evidence: Evidence[]): Draft {
+const syllabusReferences=(input:CourseInput):SyllabusReference[]=>(input.syllabusReferences||[]).map(ref=>({url:'',authors:'',year:'',publisher:'',...ref}))
+export const MODEL_REFERENCES = /^\s*(?:references?|bibliography|sources|works cited|further reading)(?: \(continued\))?\s*:?\s*$/i
+export function withReferences(draft: Required<Draft>, plan: Plan, evidence: Evidence[], listedReferences?:SyllabusReference[]): Required<Draft>
+export function withReferences(draft: Draft, plan: Plan, evidence: Evidence[], listedReferences?:SyllabusReference[]): Draft
+export function withReferences(draft: Draft, plan: Plan, evidence: Evidence[], listedReferences:SyllabusReference[]=[]): Draft {
   const allowed = listed(plan)
   const strip = (value: string) => value.replace(LINK, url => allowed(url) ? url : '(link removed: not listed in the syllabus)')
   const doc = (d: NonNullable<Draft['material']>) => ({ ...d, title: strip(d.title), sections: d.sections.map(s => ({ heading: strip(s.heading), body: strip(s.body) })) })
-  const references = [...new Set([
-    ...plan.resources.map(r => r.url ? `${r.name} — ${r.url}` : r.name),
-    ...plan.teachingMaterials,
-    ...evidence.map(e => `${e.title}${e.page ? `, p. ${e.page}` : ''}${e.section ? ` (${e.section})` : ''} — ${e.origin === 'web' ? `public research passage used for this draft: ${e.url}` : 'knowledge-library passage used for this draft'}`),
-  ])]
-  const body = references.length ? references.map((r, i) => `${i + 1}. ${r}`).join('\n') : 'No references are listed for this week in the syllabus, and no knowledge-library passage was used. Add the week’s references before publishing.'
+  const seen=new Set(evidence.flatMap(e=>e.retained?[referenceToken(e.retained.reference)]:[]))
+  const references=evidence.map((e,index)=>`[${e.citation||index+1}] ${e.retained?bibliographicLabel(e.retained.reference):e.title}${e.page?`, p. ${e.page}`:''}${e.section?` (${e.section})`:''}${e.url?` - ${e.url}`:''}${e.retained?` - retained ${e.retained.readAt.slice(0,10)}, SHA-256 ${e.retained.sha256}${e.retained.truncated?' (partial searchable text)':''}`:e.origin==='web'?' - public research excerpt':' - knowledge-library passage'}`)
+  const unread=listedReferences.filter(ref=>!seen.has(referenceToken(ref)))
+  const legacy=[...plan.resources.map(r=>r.url?`${r.name} - ${r.url}`:r.name),...plan.teachingMaterials]
+  const body=[...references,...(unread.length?['Listed in the syllabus; readable text was not used for this draft:',...unread.map(ref=>`- ${bibliographicLabel(ref)}${ref.url?` - ${ref.url}`:''}`)]:[]),...(!listedReferences.length&&legacy.length?['Planned syllabus resources (a listing alone is not evidence):',...legacy.map(value=>'- '+value)]:[])].join('\n')||'No references are listed for this week in the syllabus, and no knowledge-library passage was used. Add the week’s references before publishing.'
+  const pages:{heading:string;body:string}[]=[];let page=''
+  for(const line of body.split('\n')){if(page.length+line.length>7800&&page){pages.push({heading:pages.length?'References (continued)':'References',body:page});page=''}page+=(page?'\n':'')+line}
+  if(page)pages.push({heading:pages.length?'References (continued)':'References',body:page})
   const material=draft.material&&doc(draft.material),activity=draft.activity&&doc(draft.activity)
   return {
-    ...(material?{material:{...material,sections:[...material.sections.filter(s=>!MODEL_REFERENCES.test(s.heading)),{heading:'References',body:body.slice(0,8000)}]}}:{}),
-    ...(activity?{activity:{...activity,sections:[...activity.sections.filter(s=>!MODEL_REFERENCES.test(s.heading)),{heading:'References',body:body.slice(0,8000)}]}}:{}),
+    ...(material?{material:{...material,sections:[...material.sections.filter(s=>!MODEL_REFERENCES.test(s.heading)),...pages]}}:{}),
+    ...(activity?{activity:{...activity,sections:[...activity.sections.filter(s=>!MODEL_REFERENCES.test(s.heading)),...pages]}}:{}),
     ...(draft.assessment?{assessment:{...draft.assessment,title:strip(draft.assessment.title),questions:draft.assessment.questions.map(q=>({...q,text:strip(q.text),options:q.options.map(strip),explanation:strip(q.explanation)}))}}:{}),
   }
 }
@@ -217,12 +221,17 @@ async function draftStepGraph(input: CourseInput, part:CoursewareStep, signal: A
   const groupCount = Math.min(4, input.topics.length)
   const queries = syllabusOnly ? [] : Array.from({ length: groupCount }, (_, g) => input.topics.filter((_, i) => i % groupCount === g)).map(group => `${group.join(' ')} ${terms(input.outcomes).slice(0, 4).join(' ')}`.slice(0, 400))
   const warnings: string[] = []
+  let retained:Evidence[]=[]
+  if(!syllabusOnly&&input.syllabusReferences?.length&&deps.sourceEvidence){
+    try{const result=await deps.sourceEvidence(syllabusReferences(input),focus,signal);retained=result.evidence;if(result.warning)warnings.push(result.warning)}
+    catch(error){signal.throwIfAborted();if(error instanceof ApiError&&[401,403].includes(error.status))throw error;warnings.push('Retained syllabus sources were unavailable. No unread book or link contents are claimed.')}
+  }
   const graph = new StateGraph(state)
     .addNode('planner', () => {
       const started = performance.now()
       // The API admits only academic accounts (or a guest with their own key) before this graph runs.
       const guardian = step('Guardian', 'guardian', 'check appropriate use', 'Permitted: drafting courseware from the active syllabus outline. The draft stays unpublished until an instructor reviews it (NFR-AI-07).', started)
-      return { groups: [[outlineEvidence]], warnings, steps: [guardian, step('Planner', 'planner', 'plan week', `Week ${input.week}: ${input.topics.length} topic${input.topics.length === 1 ? '' : 's'} in ${queries.length} search${queries.length === 1 ? '' : 'es'}; the draft must follow the planned activity${plan.activities ? '' : ' (none listed)'} and assessment${plan.assessments ? '' : ' (none listed)'} and pass the schema, coverage and answer-key checks.`, started)] }
+      return { groups: [[outlineEvidence,...retained]], warnings, steps: [guardian, ...(input.syllabusReferences?.length?[step('Researcher','retained-sources','read retained syllabus references',`${retained.length} saved passages available from ${input.syllabusReferences.length} listed references. Citation metadata alone is not evidence.`,started)]:[]), step('Planner', 'planner', 'plan week', `Week ${input.week}: ${input.topics.length} topic${input.topics.length === 1 ? '' : 's'} in ${queries.length} search${queries.length === 1 ? '' : 'es'}; the draft must follow the planned activity${plan.activities ? '' : ' (none listed)'} and assessment${plan.assessments ? '' : ' (none listed)'} and pass the schema, coverage and answer-key checks.`, started)] }
     })
     .addNode('researcher', async s => {
       const started = performance.now()
@@ -268,8 +277,8 @@ async function draftStepGraph(input: CourseInput, part:CoursewareStep, signal: A
     })
     .addNode('writer', async s => {
       const started = performance.now()
-      const references = s.evidence.filter(e => e.id !== 'outline').slice(0, 3).map(e => ({ title: e.title, text: neutralize(e.text.slice(0, 500)) }))
-      const text = await deps.generate(writerSystem(part) + (syllabusOnly ? ' Source scope is the supplied syllabus only. Do not add factual claims or sources beyond the supplied outline and course context; explicitly identify missing source details instead of filling them from general knowledge.' : ''), JSON.stringify({
+      const references = s.evidence.filter(e => e.id !== 'outline').slice(0, 3).map((e,index) => ({ citation:index+1, title:e.title, page:e.page, section:e.section, text:neutralize(e.text.slice(0,1200)) }))
+      const text = await deps.generate(writerSystem(part) + ' Cite factual explanations from retrievedReferences with [1], [2], etc., matching their citation numbers. A book title or syllabus bibliography is metadata, never proof of its contents. Do not invent quotations, pages or citations. Keep original examples distinct from source claims.' + (syllabusOnly ? ' Source scope is the supplied syllabus only. Do not add factual claims or sources beyond the supplied outline and course context; explicitly identify missing source details instead of filling them from general knowledge.' : ''), JSON.stringify({
         courseCode: input.courseCode, courseTitle: input.courseTitle, week: input.week,
         currentRequest: request, plannedFormat:part.format, generationStep:part.key,
         topics: input.topics.map(t => neutralize(t)), outcomes: neutralize(input.outcomes),
@@ -294,10 +303,15 @@ async function draftStepGraph(input: CourseInput, part:CoursewareStep, signal: A
     })
     .addNode('checker', async s => {
       const started = performance.now()
-      const draft = s.draft!
+      let draft = s.draft!
+      const factualEvidence=s.evidence.filter(e=>e.id!=='outline')
+      const bodies=[...draft.material?.sections||[],...draft.activity?.sections||[]].map(section=>section.body).join('\n')
+      const initial=await verifyAnswer(bodies,factualEvidence,signal,deps.similarity)
+      const fix=(document:NonNullable<Draft['material']>)=>({...document,sections:document.sections.map(section=>({...section,body:correctCitations(section.body,initial,factualEvidence.length).text}))})
+      draft={...draft,...(draft.material?{material:fix(draft.material)}:{}),...(draft.activity?{activity:fix(draft.activity)}:{})}
       const coverage = await outlineCoverage({ ...input, topics:part.type==='material'?input.topics:[], plan }, draft, signal, deps.similarity)
       const material = [...draft.material?.sections||[], ...draft.activity?.sections||[]].map(x => x.body).join('\n')
-      const verification = await verifyAnswer(material, s.evidence, signal, deps.similarity)
+      const verification = await verifyAnswer(material, factualEvidence, signal, deps.similarity)
       const answerKey = await answerKeyCheck(draft, signal, deps.similarity)
       const links = inventedLinks(draft, plan)
       const missing = coverage.items.filter(i => i.status === 'missing' && i.kind!=='outcome')
@@ -312,7 +326,7 @@ async function draftStepGraph(input: CourseInput, part:CoursewareStep, signal: A
         coverage, verification, best: !s.best || score(coverage, answerKey) >= score(s.best.coverage, s.best.answerKey) ? { draft, coverage, verification, answerKey } : s.best,
         feedback: problems.length && s.attempts < MAX_ATTEMPTS ? problems.join(' ').slice(0, 1500) : '',
         steps: [
-          step('Verifier', 'checker', 'verify draft', `${verification.claims.length} material statements: ${verification.supported} supported by the outline or references, ${verification.claims.length - verification.supported} for instructor verification (${verification.method}). Answer keys: ${answerKey.consistent} of ${answerKey.checked} explanations agree with the marked option.${links.length ? ` ${links.length} unlisted link${links.length === 1 ? '' : 's'} found.` : ''}`, started),
+          step('Verifier', 'checker', 'verify draft', `${verification.claims.length} material statements: ${verification.supported} supported by read reference passages, ${verification.claims.length - verification.supported} for instructor verification (${verification.method}). Answer keys: ${answerKey.consistent} of ${answerKey.checked} explanations agree with the marked option.${links.length ? ` ${links.length} unlisted link${links.length === 1 ? '' : 's'} found.` : ''}`, started),
           step('Comparator', 'checker', 'outline alignment', `Coverage ${Math.round(coverage.coverage * 100)}%: ${coverage.items.filter(i => i.status === 'covered').length} covered, ${coverage.items.filter(i => i.status === 'partial').length} partial, ${missing.length} missing of ${coverage.items.length} topics, outcomes and planned items.`, started),
         ],
       }
@@ -336,7 +350,7 @@ async function draftStepGraph(input: CourseInput, part:CoursewareStep, signal: A
   if(part.type==='material'&&best.coverage.items.some(item=>item.kind==='topic'&&item.status==='missing'))throw new ApiError(502,'INCOMPLETE_COURSEWARE','The lesson still omits an outline topic after correction. Existing courseware was preserved.')
   const sources = (result.evidence as Evidence[]).filter(e => e.id !== 'outline')
   return {
-    requestId: crypto.randomUUID(), step:part, content: withReferences(best.draft, plan, sources), trace: result.steps as AgentStep[], status: 'draft' as const,
+    requestId: crypto.randomUUID(), step:part, content: withReferences(best.draft, plan, sources, syllabusReferences(input)), trace: result.steps as AgentStep[], status: 'draft' as const,
     sources, warning: [...new Set([...result.warnings as string[], ...(best.draft.material?.sections.some(s => MODEL_REFERENCES.test(s.heading)) ? ['The model wrote its own reference list, which was removed: the References section lists only the syllabus resources and the library passages used.'] : [])])].join(' ') || null,
     provider: deps.provider, model: deps.model || '', coverage: best.coverage, verification: best.verification, answerKey: best.answerKey,
     agentReport: agentReport(result.steps as AgentStep[], { mode: 'courseware', verification: best.verification, sources: sources.length }),
@@ -372,11 +386,18 @@ function review(results:StepResult[]) {
 export function assembleCourseware(input:CourseInput,results:StepResult[],types?:CoursewareStep['type'][]) {
   const plan=coursewarePlan(input).filter(part=>!types||types.includes(part.type))
   if(!results.length||results.length!==plan.length||new Set(results.map(result=>result.step.key)).size!==plan.length||plan.some(part=>!results.some(result=>result.step.key===part.key))||results.some(result=>!result.content[result.step.type]))throw new ApiError(502,'INCOMPLETE_COURSEWARE','The complete outline plan did not finish. Existing courseware was preserved.')
+  const ids=[...new Set(results.flatMap(result=>result.sources.map(source=>source.id)))]
+  results=results.map(result=>{
+    const map=result.sources.map(source=>ids.indexOf(source.id)+1)
+    const renumber=(text:string)=>text.replace(/\[(\d{1,2})\]/g,(_marker,n)=>map[Number(n)-1]?`[${map[Number(n)-1]}]`:'')
+    const doc=(document:NonNullable<Draft['material']>)=>({...document,sections:document.sections.map(section=>({...section,body:renumber(section.body)}))})
+    return {...result,sources:result.sources.map((source,i)=>({...source,citation:map[i]})),content:{...result.content,...(result.content.material?{material:doc(result.content.material)}:{}),...(result.content.activity?{activity:doc(result.content.activity)}:{}),...(result.content.assessment?{assessment:{...result.content.assessment,questions:result.content.assessment.questions.map(question=>({...question,explanation:renumber(question.explanation)}))}}:{})},verification:{...result.verification,claims:result.verification.claims.map(claim=>({...claim,text:renumber(claim.text),citations:claim.citations.flatMap(n=>map[n-1]?[map[n-1]!]:[]),bestSource:claim.bestSource?map[claim.bestSource-1]||null:null}))}}
+  })
   const lessons=results.filter(result=>result.step.type==='material')
   if((plan.some(part=>part.type==='material')&&!lessons.length)||lessons.some(result=>!result.content.material))throw new ApiError(502,'INVALID_GENERATION','A complete teaching lesson is required.')
   const activity=results.find(result=>result.step.type==='activity')?.content.activity,assessment=results.find(result=>result.step.type==='assessment')?.content.assessment
   const combined:Draft={...(lessons.length?{material:{title:lessons.length===1?lessons[0]!.content.material!.title:`${input.courseCode} - Week ${input.week}: ${input.courseTitle}`.slice(0,240),sections:lessons.flatMap(result=>result.content.material!.sections.filter(section=>!MODEL_REFERENCES.test(section.heading)))}}:{}),...(activity?{activity:{...activity,sections:activity.sections.filter(section=>!MODEL_REFERENCES.test(section.heading))}}:{}),...(assessment?{assessment}:{})}
-  const all=review(results),content=withReferences(combined,courseInput.shape.plan.parse(input.plan||{}),all.sources)
+  const all=review(results),content=withReferences(combined,courseInput.shape.plan.parse(input.plan||{}),all.sources,syllabusReferences(input))
   const reviews=Object.fromEntries((['material','activity','assessment'] as const).map(type=>[type,results.filter(result=>result.step.type===type)]).filter(([,group])=>(group as StepResult[]).length).map(([type,group])=>[type,review(group as StepResult[])])) as Partial<Record<'material'|'activity'|'assessment',ReturnType<typeof review>>>
   return {...all,content,reviews,status:'draft' as const}
 }

@@ -1,5 +1,5 @@
 {
-  "capturedAt": "2026-11-09T08:56:39.250Z",
+  "capturedAt": "2026-11-09T12:35:59.263Z",
   "problems": [],
   "scenes": [
     {
@@ -313,14 +313,6 @@
       "file": "06-syllabus-builder-course-outline.png",
       "title": "Syllabus Builder · Section 5 Course Outline",
       "route": "/syllabus",
-      "ok": true
-    },
-    {
-      "role": "instructor",
-      "folder": "04-instructor",
-      "file": "08-courseware-builder.png",
-      "title": "Courseware · weekly workspace",
-      "route": "/courseware",
       "ok": true
     },
     {
@@ -864,6 +856,14 @@
       "folder": "04-instructor",
       "file": "07-courseware-my-courseware.png",
       "title": "Course · combined course list and approved syllabus intake",
+      "route": "/courseware",
+      "ok": true
+    },
+    {
+      "role": "instructor",
+      "folder": "04-instructor",
+      "file": "08-courseware-builder.png",
+      "title": "Courseware · weekly workspace",
       "route": "/courseware",
       "ok": true
     }

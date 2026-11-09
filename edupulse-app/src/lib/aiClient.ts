@@ -161,9 +161,34 @@ export async function askPulse(input: Partial<ChatInput> & { message: string }, 
 }
 
 export type CourseDraft = Awaited<ReturnType<typeof import('./rag/courseware').draftCoursewareAgents>>
+export async function syllabusSources(operation:Record<string,unknown>,signal?:AbortSignal) {
+  return aiRequest<{sources:import('../../server/sources/contracts').SourceStatus[]}>('syllabus-sources','POST',operation,signal)
+}
+export async function prepareSyllabusSources(references:import('./rag/syllabusReferences').SyllabusReference[],signal?:AbortSignal,refresh=false,readLinks=true) {
+  if(!references.length)return []
+  let sources=(await syllabusSources({operation:'list',references},signal)).sources
+  const pending=sources.filter(source=>source.reference.url&&(refresh||!source.snapshot))
+  if(readLinks)for(let i=0;i<pending.length;i+=3){
+    signal?.throwIfAborted()
+    const result=await syllabusSources({operation:'read',references:pending.slice(i,i+3).map(source=>source.reference),refresh},signal)
+    const byKey=new Map(result.sources.map(source=>[source.key,source]));sources=sources.map(source=>byKey.get(source.key)||source)
+  }
+  return sources
+}
+export async function downloadRetainedSource(id:string) {
+ const result=await aiRequest<{name:string;mime:string;base64:string;sha256:string}>('syllabus-sources','POST',{operation:'open',id})
+ const bytes=Uint8Array.from(atob(result.base64),char=>char.charCodeAt(0))
+ const sha=await crypto.subtle.digest('SHA-256',bytes);if([...new Uint8Array(sha)].map(byte=>byte.toString(16).padStart(2,'0')).join('')!==result.sha256)throw new Error('The retained file checksum did not match. Download was stopped.')
+ const {downloadBlob}=await import('../utils/syllabusFiles');downloadBlob(new Blob([bytes],{type:result.mime}),result.name)
+}
 export async function generateCoursewareParts(input:CourseInput,signal?:AbortSignal,types?:('material'|'activity'|'assessment')[]) {
   const [{coursewarePlan},{draftCoursewareStep,assembleCourseware}]=await Promise.all([import('./rag/coursewarePlan'),import('./rag/courseware')])
   const results:Awaited<ReturnType<typeof draftCoursewareStep>>[]=[]
+  let sourceWarning=''
+  if(input.syllabusReferences?.length){
+    try{const sources=await prepareSyllabusSources(input.syllabusReferences.map(ref=>({url:'',authors:'',year:'',publisher:'',...ref})),signal,false,input.research!=='sources');if(typeof window!=='undefined')window.dispatchEvent(new CustomEvent('edupulse-sources-updated',{detail:{sources,sessionVersion:aiSessionVersion()}}));if(sources.some(source=>!source.snapshot))sourceWarning='Some syllabus references could not be read. Only actual retrieved passages can support citations.'}
+    catch(error){signal?.throwIfAborted();sourceWarning='Syllabus source retention was unavailable. No unread book or linked-page contents are claimed.'}
+  }
   for(const part of coursewarePlan(input).filter(part=>!types||types.includes(part.type))) {
     signal?.throwIfAborted()
     const scoped={...input,stepKey:part.key}
@@ -171,10 +196,12 @@ export async function generateCoursewareParts(input:CourseInput,signal?:AbortSig
     else {
       const abort=AbortSignal.any([AbortSignal.timeout(180000),...(signal?[signal]:[])])
       const deps=browserDeps(abort,{id:'device-session',role:'guest',local:false})
-      results.push(await draftCoursewareStep(scoped,abort,{...deps,generate:invokeBrowserModel}))
+      results.push(await draftCoursewareStep(scoped,abort,{...deps,generate:invokeBrowserModel,sourceEvidence:(references,focus,signal)=>aiRequest('syllabus-sources','POST',{operation:'evidence',references,focus},signal)}))
     }
   }
-  return assembleCourseware(input,results,types)
+  const assembled=assembleCourseware(input,results,types)
+  if(sourceWarning){assembled.warning=[assembled.warning,sourceWarning].filter(Boolean).join(' ');for(const review of Object.values(assembled.reviews))if(review)review.warning=[review.warning,sourceWarning].filter(Boolean).join(' ')}
+  return assembled
 }
 export async function generateCourseDraft(input:CourseInput,signal?:AbortSignal):Promise<CourseDraft> {
   const result=await generateCoursewareParts(input,signal)

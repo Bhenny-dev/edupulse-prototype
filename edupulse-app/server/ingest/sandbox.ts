@@ -40,7 +40,8 @@ async function slot<T>(task: () => Promise<T>): Promise<T> {
 
 function inWorker(bytes: Uint8Array, fileName: string, signal: AbortSignal): Promise<Extracted> {
   return new Promise((resolve, reject) => {
-    const copy = bytes.slice().buffer
+    // Buffer.slice() is a view into a pooled allocation; transfer only these bytes.
+    const copy = Uint8Array.from(bytes).buffer
     const worker = new Worker(source, {
       eval: true, env: {}, execArgv: [], stdout: true, stderr: true,
       workerData: { bytes: copy, fileName, module: moduleUrl }, transferList: [copy],

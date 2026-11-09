@@ -27,3 +27,7 @@
 ## Evidence boundaries
 
 These five captures use original sample loop teaching text through the actual courseware graph with controlled account, provider and workspace transports. The connection badge is a simulated ready state. They demonstrate rendering, planned outputs, final evaluation and save/reload interaction; they do not establish hosted sign-in, paid-provider quality or student activity. A separate native HTTP test uses the real API and isolated database to prove a failed later part leaves the revision unchanged and a complete week persists. A separate installed `qwen2.5:1.5b` smoke generated 393 body words for one topic from supplied sample teaching text in 45.107 seconds using one 2,400-token writer call. That source-constrained smoke does not establish independent curriculum accuracy, general free-model reliability or successful paid-provider inference. See the [release validation](../../versions/2026-11-09-outline-driven-courseware/validation/results.md).
+
+## Read references before regenerating
+
+Section 7 books/links now accompany weekly resources in every generation input. The bounded writer receives selected actual passages and citation numbers. Outline coverage is distinct from factual support: the outline states what to teach and is not counted as proof for a generated explanation. Read passages appear as numbered references; unscanned book metadata and planned teaching resources remain separately labelled. Saved copies and source review are described in [Manual 31](../31-retained-syllabus-sources/README.md).

@@ -106,3 +106,7 @@ Course selection, week expansion, item selection and document/presentation prefe
 ## Readable outline selectors
 
 Week-specific teaching materials and assessment types open a viewport-bounded panel with **Search options...**, category headings, native checkboxes, selected count, **Clear selections** and **Done**. The popup sits outside the table scroll container, and its single list scrolls independently. [Manual 28](../../system-manual/28-outline-selectors/README.md) shows desktop/phone light and dark examples. Free-text activities and assessment details retain their own fields.
+
+## Retained syllabus references
+
+The weekly Course workspace shows a collapsed **Syllabus sources** panel when references are listed. Expand it to read links, attach readable book copies, inspect retained text and manage versions. Private saved copies are reused by generation, while unread references remain explicitly separate from passage evidence. The refreshed weekly screenshot above shows this additional panel; [Manual 31](../../system-manual/31-retained-syllabus-sources/README.md) shows every source state and action.

@@ -1,4 +1,5 @@
 import { allowsPublicResearch, planRequest } from '../lib/rag/plan'
+import { collectSyllabusReferences } from '../lib/rag/syllabusReferences'
 
 /** @param {unknown} value A string, or an object with a `name` (outline rows store either). */
 const text = value => typeof value === 'string' ? value.trim() : value && typeof value === 'object' && 'name' in value && typeof value.name === 'string' ? value.name.trim() : ''
@@ -27,6 +28,7 @@ export function buildCourseInput(syllabus, weekNumber, request = '') {
   /** @type {'sources' | 'auto'} */
   const research = !allowsPublicResearch(request) || planRequest({ message: request }).sourceOnly ? 'sources' : 'auto'
   return {
+    syllabusReferences: collectSyllabusReferences(syllabus, weekNumber),
     courseCode: syllabus.courseCode, courseTitle: syllabus.courseTitle, week: weekNumber,
     research, request: request.trim(),
     topics: row.contents.map(text).filter(Boolean).map(topic => topic.slice(0, 2000)), outcomes: row.ilos.slice(0, 5000),

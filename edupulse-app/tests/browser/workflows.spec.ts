@@ -224,5 +224,5 @@ test('conflicting workspace save retains pending edits until a backup is exporte
   await latest.click()
   await expect(page.getByTestId('workspace-save-state')).toHaveText('Saved', {timeout:30_000})
   await page.goto('/#/syllabus?tab=mine')
-  await expect(page.getByText('No syllabi yet.', { exact: false })).toBeVisible()
+  await expect(page.getByText('No saved syllabi yet.', { exact: false })).toBeVisible()
 })

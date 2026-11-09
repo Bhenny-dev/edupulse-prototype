@@ -7,6 +7,8 @@ export type Evidence = {
   origin: 'private' | 'account' | 'public-guide' | 'attachment' | 'web'
   method: 'hybrid' | 'vector' | 'keyword' | 'provided' | 'web-search'
   url?: string
+  citation?: number
+  retained?: { id:string; sha256:string; readAt:string; reference:import('./syllabusReferences').SyllabusReference; truncated:boolean }
   image?: { url: string; creditsUrl: string }
   similarity: number | null; rrf: number; relevance: number | null; query: string
 }
@@ -40,6 +42,7 @@ export type AgentDeps = {
   similarity?: Similarity
   references?: (topic: string, signal: AbortSignal) => Promise<{ references: Reference[]; warning?: string }>
   webSearch?: WebSearch
+  sourceEvidence?: (references:import('./syllabusReferences').SyllabusReference[],focus:string,signal:AbortSignal)=>Promise<{evidence:Evidence[];warning?:string}>
   generate?: Generate
   provider: string
   model?: string | null

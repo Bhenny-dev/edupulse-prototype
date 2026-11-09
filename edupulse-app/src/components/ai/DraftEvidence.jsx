@@ -1,3 +1,5 @@
+import { useState } from 'react'
+import RetainedSourceReview from './RetainedSourceReview'
 import { AGENT_META } from './agentMeta'
 import './ai.css'
 
@@ -5,6 +7,7 @@ const KIND = { topic: 'Topic', outcome: 'Outcome', activity: 'Planned activity',
 const STATUS = { covered: { label: 'Covered', badge: 'badge-approved' }, partial: { label: 'Partial', badge: 'badge-draft' }, missing: { label: 'Missing', badge: 'badge-error' } }
 
 export default function DraftEvidence({ metadata }) {
+  const [retainedSource,setRetainedSource]=useState(null)
   if (!metadata) return null
   const coverage = metadata.coverage, verification = metadata.verification, answerKey = metadata.answerKey
   return <aside className="ai-draft-evidence" data-pulse-target="AI draft review" style={{ margin: '16px 24px', padding: 16, border: '1px solid var(--gray-200)', borderRadius: 8, fontSize: '0.8125rem', overflowWrap: 'anywhere' }}>
@@ -17,12 +20,13 @@ export default function DraftEvidence({ metadata }) {
       </tbody></table>
       {coverage.items.some(i => i.status === 'missing') && <p role="status">Some outline items are not addressed. Regenerate this week or add them before checking the draft.</p>}
     </details>}
-    {verification && <p>Statements checked against the outline and references: {verification.supported} supported, {verification.total - verification.supported} for your verification.</p>}
+    {verification && <p>Statements checked against {verification.scope === 'sources' ? 'read source passages' : 'the outline and references'}: {verification.supported} supported, {verification.total - verification.supported} for your verification.</p>}
     {answerKey?.checked > 0 && <p role={answerKey.issues?.length ? 'alert' : undefined}>Answer-key check: {answerKey.consistent} of {answerKey.checked} explanations agree with the marked answer.{answerKey.issues?.length ? ` Check ${answerKey.issues.map(i => `question ${i.question} (marked ${String.fromCharCode(65 + i.marked)}, explanation points to ${String.fromCharCode(65 + i.supported)})`).join(', ')} before publishing.` : ''}</p>}
     <details><summary>Generation details and references ({metadata.sources?.length || 0})</summary>
       <p>{metadata.provider} · {metadata.model} · Request {metadata.requestId}</p>
       {metadata.trace?.length > 0 && <ol className="aa-timeline">{metadata.trace.map((step, i) => <li key={i} style={{ '--agent-color': AGENT_META[step.agent]?.color }}><strong>{step.agent || step.node}</strong>{step.action ? ` · ${step.action}` : ''}<div>{step.detail}</div></li>)}</ol>}
-      {metadata.sources?.length ? metadata.sources.map((source, i) => <div key={`${source.id}-${i}`}><strong>{source.title}{source.page ? ` · p. ${source.page}` : ''}</strong><p style={{ whiteSpace: 'pre-wrap' }}>{source.text}</p></div>) : <p>No additional library passages were retrieved. Verify subject facts against your course references.</p>}
+      {metadata.sources?.length ? metadata.sources.map((source, i) => <div key={`${source.id}-${i}`}><strong>[{source.citation || i + 1}] {source.title}{source.page ? ` · p. ${source.page}` : ''}</strong>{source.retained && <p className="text-sm text-muted">Retained {new Date(source.retained.readAt).toLocaleDateString()} · SHA-256 {source.retained.sha256}{source.retained.truncated ? ' · Partial searchable text' : ''}</p>}<p style={{ whiteSpace: 'pre-wrap' }}>{source.text}</p>{source.retained && <button className="btn btn-ghost btn-sm" onClick={() => setRetainedSource(source.retained.id)}>Review retained source</button>}</div>) : <p>No additional library passages were retrieved. Verify subject facts against your course references.</p>}
     </details>
+    {retainedSource && <RetainedSourceReview id={retainedSource} onClose={() => setRetainedSource(null)} />}
   </aside>
 }

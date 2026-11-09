@@ -6,12 +6,21 @@ test('owner requests preserve the dashboard role, including a conversational cor
  await page.goto('/#/dashboard')
  await page.getByRole('button',{name:'Open Pulse assistant',exact:true}).click()
  const pulse=page.getByRole('dialog',{name:'Pulse',exact:true})
- for(const [request,title] of [['open me the instructors dashboard','Instructor'],["no, not mine, the dean's",'Dean'],["open the student's dashboard",'Student']]) {
+ // Correct the target while still in the same account conversation. A completed
+ // account switch intentionally discards that conversation's private context.
+ await pulse.getByRole('textbox',{name:'Ask Pulse',exact:true}).fill('open me the instructors dashboard')
+ await pulse.getByRole('button',{name:'Send',exact:true}).click()
+ await expect(page.getByRole('heading',{name:'Choose instructor account',exact:true})).toBeVisible()
+ await page.getByRole('button',{name:'Close account selection',exact:true}).click()
+ for(const [request,title] of [["no, not mine, the dean's",'Dean'],['open me the instructors dashboard','Instructor'],["open the student's dashboard",'Student']]) {
   await pulse.getByRole('textbox',{name:'Ask Pulse',exact:true}).fill(request)
   await pulse.getByRole('button',{name:'Send',exact:true}).click()
   await page.getByRole('button',{name:`Use my own ${title.toLowerCase()} view`,exact:true}).click()
   await expect(page.getByRole('heading',{name:`${title} Dashboard`,exact:true})).toBeVisible()
-  await expect(pulse.getByRole('status').filter({hasText:`Opened ${title} Dashboard.`})).toBeVisible()
+  await expect(page.getByRole('banner').getByText(`Admin · ${title}`,{exact:true})).toHaveCount(1)
+  // Switching the viewed role resets Pulse's private context and closes its panel.
+  await page.getByRole('button',{name:'Open Pulse assistant',exact:true}).click()
+  await expect(pulse.getByRole('textbox',{name:'Ask Pulse',exact:true})).toBeVisible()
  }
  expect(fixture.modelCalls()).toBe(0)
 })

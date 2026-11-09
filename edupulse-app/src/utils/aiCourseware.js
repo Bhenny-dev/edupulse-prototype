@@ -11,7 +11,7 @@ export async function generateWeekDraft(syllabus, weekNumber, signal, request = 
   const result = await generateCoursewareParts(buildCourseInput(syllabus, weekNumber, request), signal, types)
   const metadata = result => ({ requestId: result.requestId, provider: result.provider, model: result.model, sources: result.sources, trace: result.trace, warning: result.warning, coverage: result.coverage,
     // Summary only: metadata is saved with every item in the 3 MB workspace.
-    verification: result.verification && { supported: result.verification.supported, total: result.verification.claims.length, method: result.verification.method },
+    verification: result.verification && { scope: 'sources', supported: result.verification.supported, total: result.verification.claims.length, method: result.verification.method },
     answerKey: result.answerKey && { checked: result.answerKey.checked, consistent: result.answerKey.consistent, issues: result.answerKey.issues },
     reviewRequired: true, planBased: true })
   const content = result.content

@@ -77,6 +77,21 @@
       ]
     },
     {
+      "name": "Retained syllabus source reader and citations",
+      "source": [
+        "edupulse-app/server/sources/**",
+        "edupulse-app/src/lib/rag/syllabusReferences.ts",
+        "edupulse-app/src/components/courseware/SyllabusSources.jsx",
+        "edupulse-app/src/components/courseware/syllabus-sources.css",
+        "edupulse-app/src/components/ai/RetainedSourceReview.jsx"
+      ],
+      "docs": [
+        "feature-documentation/system-manual/31-retained-syllabus-sources",
+        "feature-documentation/backend-system",
+        "feature-documentation/versions/2026-11-09-retained-syllabus-sources"
+      ]
+    },
+    {
       "name": "Dean and Associate Dean pages",
       "source": [
         "edupulse-app/src/pages/CourseLoading.jsx",

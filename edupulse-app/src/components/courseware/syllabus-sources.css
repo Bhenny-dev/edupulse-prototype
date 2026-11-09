@@ -1,0 +1,14 @@
+.syllabus-sources{margin:16px 0;padding:0;overflow:visible}
+.syllabus-sources>summary{display:flex;align-items:center;gap:10px;min-height:52px;padding:14px 18px;cursor:pointer;flex-wrap:wrap}
+.syllabus-sources>summary:focus-visible{outline:3px solid var(--sky-500);outline-offset:2px;border-radius:var(--radius-lg)}
+.syllabus-sources>summary::after{content:'+';margin-left:auto;font-size:1.25rem}
+.syllabus-sources[open]>summary::after{content:'−'}
+.syllabus-sources-body{padding:0 18px 18px}
+.syllabus-sources-toolbar{display:flex;align-items:start;gap:16px;justify-content:space-between;flex-wrap:wrap;margin-bottom:14px}
+.syllabus-sources-toolbar p{flex:1;min-width:220px}
+.syllabus-source-list{list-style:none;padding:0;margin:0 0 16px;display:grid}
+.syllabus-source-list>li{display:flex;gap:16px;justify-content:space-between;align-items:start;padding:16px 0;border-bottom:1px solid var(--gray-200)}
+.syllabus-source-description{display:flex;flex-direction:column;gap:5px;min-width:0;overflow-wrap:anywhere}
+.syllabus-source-actions{display:flex;gap:8px;flex-shrink:0;align-items:center}
+.retained-source-text{white-space:pre-wrap;overflow-wrap:anywhere;max-height:48vh;overflow:auto;padding:16px;background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius-md);font-family:inherit;font-size:.875rem;line-height:1.7}
+@media(max-width:600px){.syllabus-source-list>li{flex-wrap:wrap}.syllabus-source-actions{margin-left:auto}.syllabus-source-actions button{min-height:44px}.syllabus-sources-toolbar .btn{min-height:44px}}

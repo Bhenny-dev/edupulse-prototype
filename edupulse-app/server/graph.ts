@@ -1,3 +1,4 @@
+import { retainedSourceEvidence } from './sources/service.js'
 import { ApiError, type ChatInput, type CourseInput, type Identity } from './contracts.js'
 import { invokeModel } from './providers.js'
 import type { Connection } from './connections.js'
@@ -68,12 +69,12 @@ export async function runCourseware(input: CourseInput, identity: Identity, sign
   if (!canGenerateCourseware(identity.role) && !(identity.role === 'guest' && personal)) throw new ApiError(403, 'FORBIDDEN', 'Courseware generation requires an instructor account or your own preview connection.')
   const base = { ...serverDeps(identity, connection, generate || (connection ? (system, prompt, abort, json) => invokeModel(system, prompt, abort, json, connection, 2400) : undefined)), ...deps }
   if (!base.generate) throw new ApiError(503, 'MODEL_UNAVAILABLE', 'Connect a provider or enable the free on-device model in AI settings.')
-  return draftCoursewareAgents(input, signal, { ...base, generate: base.generate })
+  return draftCoursewareAgents(input, signal, { ...base, generate: base.generate, sourceEvidence:base.sourceEvidence||((refs,focus)=>retainedSourceEvidence(identity,refs,focus)) })
 }
 
 export async function runCoursewareStep(input:CourseInput,identity:Identity,signal:AbortSignal,connection?:Connection,personal=false,owner=identity) {
   if(!canGenerateCourseware(identity.role)&&!(identity.role==='guest'&&personal))throw new ApiError(403,'FORBIDDEN','Courseware generation requires an instructor account or your own preview connection.')
   const base=serverDeps(owner,connection,connection?(system,prompt,abort,json)=>invokeModel(system,prompt,abort,json,connection,2400):undefined)
   if(!base.generate)throw new ApiError(503,'MODEL_UNAVAILABLE','Connect a provider or enable the free on-device model in AI settings.')
-  return draftCoursewareStep(input,signal,{...base,generate:base.generate})
+  return draftCoursewareStep(input,signal,{...base,generate:base.generate,sourceEvidence:(refs,focus)=>retainedSourceEvidence(owner,refs,focus)})
 }
