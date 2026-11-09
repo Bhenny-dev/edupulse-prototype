@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
-import { useSearchParams, useNavigationType } from 'react-router-dom'
+import { FileUp } from 'lucide-react'
+import { useSearchParams, useNavigationType, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useWorkspace, useWorkspaceViewState } from '../context/WorkspaceContext'
 import { useContentStore } from '../context/ContentStoreContext'
@@ -29,7 +30,7 @@ export default function Courseware() {
   const handleBulkCheck = ids => { bulkCheck(ids); if (ids.length) pulseBus.progress('courseware-checked') }
   if ((user?.authenticated && user?.role !== 'instructor') || !['instructor', 'student'].includes(user?.role)) return <AcademicPortal view="courseware" />
   return (<div className="container" data-pulse-zone="courseware">
-    <div className="page-header"><h1>{isStudent ? 'My Courses' : 'Course'}</h1></div>
+    <div className="page-header"><h1>{isStudent ? 'My Courses' : 'Course'}</h1>{!isStudent && !selectedCourseId && syllabi.some(item => item.status === 'active' && item.courseOutline?.length) && <Link className="btn btn-primary" to="/syllabus?tab=mine&upload=approved"><FileUp size={16} />Upload syllabi</Link>}</div>
     {!selectedCourseId && itemStatus && <div className="flex flex-wrap items-center gap-16 mb-16" role="status"><strong>{itemStatus === 'draft' ? 'Courses with drafts to review' : 'Courses with published items'}</strong><button className="btn btn-secondary btn-sm" onClick={() => setSearchParams({})}>Show all courses</button></div>}
     {selectedCourseId ? isStudent ? <CourseOutlineViewer syllabusId={selectedCourseId} onBack={back} isStudent contentStore={contentStore} /> :
       <CourseWorkspace key={selectedCourseId} syllabusId={selectedCourseId} focusWeek={focusWeek} contentStore={contentStore} onBack={back} onGenerateWeek={commitWeekDrafts} onCheckItem={handleCheckItem} onBulkCheck={handleBulkCheck} onToggleVisibility={toggleVisibility} /> :

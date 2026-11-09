@@ -1,0 +1,152 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-11-09T09-01-08-307Z-89cecdda",
+  "startedAt": "2026-11-09T09:01:08.307Z",
+  "finishedAt": "2026-11-09T09:01:19.385Z",
+  "commitSha": "f30257dce6fd345521e96e00a382cfd2af3698c5",
+  "sourceDigest": "c0de2e3ca16c5dedc37827ea01e97e8f2493ac802adb73ebd06de9173bcf0c3f",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-11-09T09:01:05.308Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 2,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": null
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/dashboard-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-navigation.mobile.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/account-support-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/account-support.spec.ts",
+    "edupulse-app/tests/snapshots/approved-syllabus-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/approved-syllabus.spec.ts",
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/automatic-records.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/automatic-records.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.spec.ts",
+    "edupulse-app/tests/snapshots/course-seed.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-formatting.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.spec.ts",
+    "edupulse-app/tests/snapshots/harness-delivery.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/operator-steps.spec.ts",
+    "edupulse-app/tests/snapshots/outline-courseware.spec.ts",
+    "edupulse-app/tests/snapshots/outline-selector.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/outline-selector.spec.ts",
+    "edupulse-app/tests/snapshots/oversight.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/oversight.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-drafting.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-source.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+    "edupulse-app/tests/snapshots/staff-registration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/staff-registration.spec.ts",
+    "edupulse-app/tests/snapshots/student-directory.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/system-search-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/system-search.spec.ts",
+    "edupulse-app/tests/snapshots/voice-quota.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/voice-quota.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-cache.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-recovery.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/dashboard-navigation.spec.ts",
+      "title": "synthetic instructor summary cards and their filtered destinations",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 3634,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/dashboard-navigation.mobile.spec.ts",
+      "title": "synthetic mobile summary links and filtered course list",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2069,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-manual/22-dashboard-summary-navigation/01-summary-links.png",
+      "sha256": "53968d24f16879b7b085c54dbbb1563fa5916abd26f832ea2a44915c48741276",
+      "bytes": 20289
+    },
+    {
+      "path": "feature-documentation/system-manual/22-dashboard-summary-navigation/02-active-syllabi.png",
+      "sha256": "22c24aa6f19a72f1934641b91a49405105a0b38117b78f756740ab4bd85ee38a",
+      "bytes": 258391
+    },
+    {
+      "path": "feature-documentation/system-manual/22-dashboard-summary-navigation/03-draft-courses.png",
+      "sha256": "3046fbd4bd068bef94f4b65babcd1e87529fbe2a3826888d906ecac85f09fd63",
+      "bytes": 268020
+    },
+    {
+      "path": "feature-documentation/system-manual/22-dashboard-summary-navigation/04-published-courses.png",
+      "sha256": "d52f7fc07f23e79efcb8548d349bc81dc31c63212b2aa5c58ed1325878331e6f",
+      "bytes": 268120
+    },
+    {
+      "path": "feature-documentation/system-manual/22-dashboard-summary-navigation/05-dark-summary-links.png",
+      "sha256": "de737fd8b1168336a1b22416f055cbcb752c6137812d7980bf276e2ddcf1bcb9",
+      "bytes": 16511
+    },
+    {
+      "path": "feature-documentation/system-manual/22-dashboard-summary-navigation/06-mobile-summary-links.png",
+      "sha256": "a5686bd41e82b3ed2861d57cac1e3fdd9d92a6301b259923fdf2fdb4591e23f4",
+      "bytes": 121345
+    },
+    {
+      "path": "feature-documentation/system-manual/22-dashboard-summary-navigation/07-mobile-draft-courses.png",
+      "sha256": "dc73014bb55d879acc5e91fe81ab4e3f81a38721d46456d4216d9edd495049cd",
+      "bytes": 365164
+    }
+  ]
+}

@@ -55,6 +55,15 @@ test('local workspace persists per owner and rejects concurrent stale saves', as
     assert.equal(stale.status, 409)
     const invalid = await handleRequest(new Request('http://localhost/api/ai?action=workspace', { method: 'PUT', body: JSON.stringify({ revision: 1, data: {} }) }))
     assert.equal(invalid.status, 400)
+    // Direct approved intake is a normal owner-scoped active snapshot, not an approval bypass.
+    const direct = workspaceInput.parse({ revision: 0, data: { ...empty, syllabi: [{ ...pdfData.data.syllabi[0], id: 'direct-approved', status: 'active', courseOutline: [{ week: 1, ilos: 'Identify network components.', contents: ['Network components'], activities: 'Discussion', assessments: 'Learning discussion' }] }] } })
+    await saveWorkspace(b, direct)
+    const reopened = await readWorkspace(b)
+    assert.equal(reopened.data?.syllabi[0].status, 'active')
+    assert.equal(reopened.data?.syllabi[0].approvedFile?.sha256, createHash('sha256').update(pdf).digest('hex'))
+    assert.equal((await readWorkspace(a)).data?.syllabi[0].id, 'syllabus-a')
+    assert.equal(workspaceInput.safeParse({ ...direct, data: { ...direct.data, syllabi: [{ ...direct.data.syllabi[0], approvedFile: undefined }] } }).success, false)
+    assert.equal(workspaceInput.safeParse({ ...direct, data: { ...direct.data, syllabi: [{ ...direct.data.syllabi[0], courseOutline: [] }] } }).success, false)
     delete process.env.AI_LOCAL_MODE
     const guest = await handleRequest(new Request('http://localhost/api/ai?action=workspace'))
     assert.deepEqual(await guest.json(), { revision: 0, data: null, updated_at: null, mode: 'preview' })

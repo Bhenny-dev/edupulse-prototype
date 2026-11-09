@@ -1,5 +1,5 @@
 {
-  "capturedAt": "2026-11-08T12:36:27.918Z",
+  "capturedAt": "2026-11-09T08:56:39.250Z",
   "problems": [],
   "scenes": [
     {
@@ -294,14 +294,6 @@
     {
       "role": "instructor",
       "folder": "04-instructor",
-      "file": "03-syllabus-my-syllabus.png",
-      "title": "Syllabus · My Syllabus (status, actions, versions)",
-      "route": "/syllabus",
-      "ok": true
-    },
-    {
-      "role": "instructor",
-      "folder": "04-instructor",
       "file": "04-syllabus-shared-repository.png",
       "title": "Syllabus · Shared Repository",
       "route": "/syllabus",
@@ -321,14 +313,6 @@
       "file": "06-syllabus-builder-course-outline.png",
       "title": "Syllabus Builder · Section 5 Course Outline",
       "route": "/syllabus",
-      "ok": true
-    },
-    {
-      "role": "instructor",
-      "folder": "04-instructor",
-      "file": "07-courseware-my-courseware.png",
-      "title": "Courseware · combined course list",
-      "route": "/courseware",
       "ok": true
     },
     {
@@ -865,6 +849,22 @@
       "file": "03-my-assessments.png",
       "title": "My Courses · My Assessments",
       "route": "/assessment",
+      "ok": true
+    },
+    {
+      "role": "instructor",
+      "folder": "04-instructor",
+      "file": "03-syllabus-my-syllabus.png",
+      "title": "Syllabus · My Syllabus (approved uploads, saved syllabi and versions)",
+      "route": "/syllabus",
+      "ok": true
+    },
+    {
+      "role": "instructor",
+      "folder": "04-instructor",
+      "file": "07-courseware-my-courseware.png",
+      "title": "Course · combined course list and approved syllabus intake",
+      "route": "/courseware",
       "ok": true
     }
   ]

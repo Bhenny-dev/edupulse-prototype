@@ -2,9 +2,11 @@
 
 **Who:** instructors · **Where:** Syllabus → *Syllabus Builder* and *My Syllabus* · Requirements FR-SYL (lifecycle), FR-CW-01 (outline drives courseware).
 
-A syllabus passes five stations: **Drafted → Checked → Out for Approval → Approved — Uploaded → Active**. Signatures (Dean review → CAO approval → EVP noting) happen offline on the downloaded file; EduPulse never marks a syllabus approved by itself. Only an **Active** syllabus, whose Course Outline you have reviewed, drives courseware generation.
+Already have an approved copy? Use **Course → Upload syllabi**, then scan, review and select it in **My Syllabus** ([Manual 30](../30-approved-syllabus-intake/README.md)). This direct path needs no existing draft or course registration. The five-station indicator is removed from My Syllabus.
 
-The screenshots follow one real syllabus (IT 102 — Computer Programming 1) through every station.
+For a syllabus you are preparing in the builder, the optional draft route still uses five saved stations: **Drafted → Checked → Out for Approval → Approved — Uploaded → Active**. Signatures (Dean review → CAO approval → EVP noting) happen offline on the downloaded file; EduPulse never marks a syllabus approved by itself. Only an **Active** syllabus, whose Course Outline you have reviewed, drives courseware generation.
+
+The local capture screenshots follow one syllabus (IT 102 — Computer Programming 1) through every station.
 
 `SYL-LIFE-001` maps the lifecycle to `tests/snapshots/manual.spec.ts` and `tests/browser/workflows.spec.ts`. The October 24 DOCX/PDF import recapture uses generated sample documents and real browser extraction; both acceptance and retry are asserted. The capture run records local input evidence separately from authenticated production behavior.
 

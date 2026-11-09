@@ -316,12 +316,12 @@ test('instructor', async ({ page, request }) => {
   await run(page, 'instructor', [
     { folder: f, name: '01-dashboard', title: 'Instructor dashboard', path: '/dashboard', fullPage: true },
     { folder: f, name: '02-monitoring-course-students', title: 'Student Monitoring · Students', path: '/student-monitoring?tab=students', fullPage: true },
-    { folder: f, name: '03-syllabus-my-syllabus', title: 'Syllabus · My Syllabus (status, actions, versions)', path: '/syllabus?tab=mine', fullPage: true },
+    { folder: f, name: '03-syllabus-my-syllabus', title: 'Syllabus · My Syllabus (approved uploads, saved syllabi and versions)', path: '/syllabus?tab=mine', fullPage: true },
     { folder: f, name: '04-syllabus-shared-repository', title: 'Syllabus · Shared Repository', path: '/syllabus?tab=mine', act: tab('Shared Repository') },
     { folder: f, name: '05-syllabus-builder', title: 'Syllabus Builder (upload or build the 7 sections)', path: '/syllabus?tab=builder' },
     // The outline headings stick under the top bar while scrolling; in a capture taller than the window they stay at the top of the table.
     { folder: f, name: '06-syllabus-builder-course-outline', title: 'Syllabus Builder · Section 5 Course Outline', path: '/syllabus?tab=builder', element: p => p.locator('[data-section="5"]'), style: '.outline-table thead th{position:static !important}' },
-    { folder: f, name: '07-courseware-my-courseware', title: 'Courseware · combined course list', path: '/courseware', fullPage: true },
+    { folder: f, name: '07-courseware-my-courseware', title: 'Course · combined course list and approved syllabus intake', path: '/courseware', fullPage: true },
     { folder: f, name: '08-courseware-builder', title: 'Courseware · weekly workspace', path: '/courseware?course=syl-1', fullPage: true },
     { folder: f, name: '09-student-monitoring-assessment-scores', title: 'Student Monitoring · Assessment Scores', path: '/student-monitoring?tab=assessments', fullPage: true },
     { folder: f, name: '10-student-monitoring-material-access', title: 'Student Monitoring · Material Access', path: '/student-monitoring', act: tab('Learning Material Access'), fullPage: true },

@@ -11,6 +11,8 @@ The instructor dashboard's four summary cards are links. Click or tap a card, or
 | **Drafts to Review** | **Course**, showing eligible courses containing drafts |
 | **Published Items** | **Course**, showing eligible courses containing published content |
 
+**Upload syllabi** in Course opens the approved-file intake in **My Syllabus**. That upload area stays visible above the filtered active list; [Manual 30](../30-approved-syllabus-intake/README.md) shows scanning, review and selection.
+
 ## Active syllabi
 
 ![My Syllabus filtered to active records](02-active-syllabi.png)

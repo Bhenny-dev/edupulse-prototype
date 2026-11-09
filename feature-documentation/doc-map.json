@@ -96,7 +96,8 @@
       ],
       "docs": [
         "feature-documentation/system-manual/02-syllabus-lifecycle",
-        "feature-documentation/system-walkthrough/04-instructor"
+        "feature-documentation/system-walkthrough/04-instructor",
+        "feature-documentation/system-manual/30-approved-syllabus-intake"
       ]
     },
     {
@@ -111,7 +112,8 @@
       ],
       "docs": [
         "feature-documentation/system-manual/03-courseware-generation-and-review",
-        "feature-documentation/system-walkthrough/04-instructor"
+        "feature-documentation/system-walkthrough/04-instructor",
+        "feature-documentation/system-manual/30-approved-syllabus-intake"
       ]
     },
     {

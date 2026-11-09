@@ -71,3 +71,5 @@ The [baseline restoration](../versions/2026-10-28-baseline-workflows/README.md) 
 [Manual 28: Outline selectors](28-outline-selectors/README.md) covers searchable categorized choices, retained selections, touch targets and keyboard behavior.
 
 [Manual 29: Combined oversight](29-combined-oversight/README.md) covers the merged syllabus/delivery view, correct teaching-week coverage, legacy links and preserved academic role controls.
+
+[Manual 30: Approved syllabus intake](30-approved-syllabus-intake/README.md) covers adding a course directly from an approved PDF/DOCX, extraction review, explicit selection and retained-file saving.

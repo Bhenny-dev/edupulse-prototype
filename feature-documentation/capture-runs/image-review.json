@@ -6918,6 +6918,222 @@
       "sha256": "784d03b7526d104909b4c36312a81a51793338ede3bcbc90c785c5ba012d38eb",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-09T08:09:06.860496+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/30-approved-syllabus-intake/01-empty-course.png",
+      "sha256": "d72b4cb602de0834db3587cad0fd658c1cfc1d5b26d97fab689f4bc678941053",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T09:04:55.765715Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/30-approved-syllabus-intake/02-my-syllabus-upload.png",
+      "sha256": "afe69e3a1283aa6e67283c9669bfa2117576a796c3df57051e9eca72c7499ea3",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T09:04:55.765715Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/30-approved-syllabus-intake/03-review-extracted-syllabus.png",
+      "sha256": "2adf59d94c36bccbfbff685d5437fa4ebc20450266b6a4ca2dbafc17ca554691",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T09:04:55.765715Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/30-approved-syllabus-intake/04-view-syllabus.png",
+      "sha256": "02b6df3688f2c89a10783cb78874e9b904146a212cb875211491530f1d3fda30",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T09:04:55.765715Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/30-approved-syllabus-intake/05-course-added.png",
+      "sha256": "3dc19daa3c79a33030eb7ecc25f7dad5f34c99052005319ebe3e45b17d0056e9",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T09:04:55.765715Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/30-approved-syllabus-intake/mobile-01-empty-course.png",
+      "sha256": "303785d3eaf93364f27c8dbfd1f62f30f4f5963ddc946edf9750dd0ed421c6dd",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T09:04:55.765715Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/30-approved-syllabus-intake/mobile-03-review-extracted-syllabus.png",
+      "sha256": "a19ff38339795224197bd61393af707ed5346f7f5b53ff414fba0c7553c96805",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T09:04:55.765715Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/30-approved-syllabus-intake/mobile-dark-03-review-extracted-syllabus.png",
+      "sha256": "fa7e17a23256833b9455a338d64ac1adcc656407bf26de8e71031caf7e0da735",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T09:04:55.765715Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/01-select-course-autofills-section-1.png",
+      "sha256": "86298f537bc61752ba5a6f68be3e8c729b5e96d8910a6ab2d4d090e1d2f6f103",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T09:04:55.765715Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/02-write-course-outline.png",
+      "sha256": "02b5cccb8cbfc7dd01bace8439d5253a2cfb0da54ccc8362d9e089557fd9c71a",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T09:04:55.765715Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/03-save-as-drafted-button.png",
+      "sha256": "e00bb40b7a5c50442fc834f059cf3f25128f84be2fd2d41e34ab225067f341d9",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T09:04:55.765715Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/04-my-syllabus-drafted.png",
+      "sha256": "aa054927fc580194970d84612d7fb9a1a0c0cf444bc88e5b9e1ecf4903c89450",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T09:04:55.765715Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/05-marked-as-checked.png",
+      "sha256": "3589f0c3bb69b7752bdb9919ea6edd581a06f58f9aa05c22f9d339583b0c87c5",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T09:04:55.765715Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/06-downloaded-for-approval.png",
+      "sha256": "e256e1c3b9dff88f270078d83851e1d9f547776b27d6a9fc07a32e6c6e73bca0",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T09:04:55.765715Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/07-upload-approved-file-attestation.png",
+      "sha256": "27e234605ecbcfa2cfbc4c9b4b27014eaab17fd9981eb554f967ad603c2261e3",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T09:04:55.765715Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/08-approved-file-uploaded.png",
+      "sha256": "f57bceae3c9eea0c134c2ae27272f19d12bc1c218b2cc07e1e949fab75eeeb22",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T09:04:55.765715Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/09-review-extracted-outline.png",
+      "sha256": "e3f4de673a061b51147e87b3a679cf05b78bb10577de29d8bdd191763f3aaf45",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T09:04:55.765715Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/10-active-drives-courseware.png",
+      "sha256": "48b345f5bde63500351c52867260d373c19ce40a362a658f6938368f8243c5c4",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T09:04:55.765715Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/11-version-history-dialog.png",
+      "sha256": "f7bf41954b2709dbb3e00cee20dc015f74bb114e55c8a156c8450fc48cab40a3",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T09:04:55.765715Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/03-courseware-generation-and-review/01-courseware-with-active-syllabus.png",
+      "sha256": "19601ead4506f7c4f0fdd991e849e04cc4be5576cd7eed78979ba2c383261e79",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T09:04:55.765715Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/03-courseware-generation-and-review/12-course-actions-menu.png",
+      "sha256": "9eb0a53f685a4c2b9be560f99eadd09cb98d73f7a607e6f1fbd945aed7a1ef5a",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T09:04:55.765715Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/18-it-course-seed/02-programming-draft.png",
+      "sha256": "4f15ba77b952dd4c1b72f3d1a3bf2d204084f0d6b003d15d20fff13a4b151941",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T09:04:55.765715Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/18-it-course-seed/03-authored-subnetting-lesson.png",
+      "sha256": "40e3ee09557ea3de39ee8325ef903c31b4d2b24697139123b9056c9642fc406d",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T09:04:55.765715Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/22-dashboard-summary-navigation/03-draft-courses.png",
+      "sha256": "3046fbd4bd068bef94f4b65babcd1e87529fbe2a3826888d906ecac85f09fd63",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T09:04:55.765715Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/22-dashboard-summary-navigation/04-published-courses.png",
+      "sha256": "d52f7fc07f23e79efcb8548d349bc81dc31c63212b2aa5c58ed1325878331e6f",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T09:04:55.765715Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/04-instructor/03-syllabus-my-syllabus.png",
+      "sha256": "fe078321a4c570e3d83af3907f9ed06d94b252a4027da3af9566bab07fdea28a",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T09:04:55.765715Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/04-instructor/07-courseware-my-courseware.png",
+      "sha256": "3cd1644ccfe834e74a5b1c473058c6f80b82721b1077f656170ce1d500adc363",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T09:04:55.765715Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/12-interface-and-loading/01-page-tabs.png",
+      "sha256": "f163df7dbcb598c510e952e4ea290a9f7dcc42b4b0f6b715c53142c2e95ab323",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T09:04:55.765715Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/12-interface-and-loading/02-avatar-launcher.png",
+      "sha256": "c4e8fbfa5125968e496952b30affef042c7692a8adf3d25eb6f07a90bf391a4e",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T09:04:55.765715Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/12-interface-and-loading/03-dialog-and-pulse.png",
+      "sha256": "68acd1e99123ce1b8f08ba0870a59dc1992302b2e401b1d0428285675f367fc8",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T09:04:55.765715Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/12-interface-and-loading/06-mobile-page-tabs.png",
+      "sha256": "ed7fb2e073a5b805f162a7cdc6f03aaa4d12e4840e798512ef622fe7e7c63734",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T09:04:55.765715Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/12-interface-and-loading/07-mobile-dialog-and-pulse.png",
+      "sha256": "3bd9a178075023dfc299ecdf0840455ed0c416a3cd4bec49be6f547696dfd39a",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T09:04:55.765715Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/22-dashboard-summary-navigation/01-summary-links.png",
+      "sha256": "53968d24f16879b7b085c54dbbb1563fa5916abd26f832ea2a44915c48741276",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T09:04:55.765715Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/22-dashboard-summary-navigation/02-active-syllabi.png",
+      "sha256": "22c24aa6f19a72f1934641b91a49405105a0b38117b78f756740ab4bd85ee38a",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T09:04:55.765715Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/22-dashboard-summary-navigation/06-mobile-summary-links.png",
+      "sha256": "a5686bd41e82b3ed2861d57cac1e3fdd9d92a6301b259923fdf2fdb4591e23f4",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T09:04:55.765715Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/22-dashboard-summary-navigation/07-mobile-draft-courses.png",
+      "sha256": "dc73014bb55d879acc5e91fe81ab4e3f81a38721d46456d4216d9edd495049cd",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T09:04:55.765715Z"
     }
   ]
 }

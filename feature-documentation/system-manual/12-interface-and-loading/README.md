@@ -4,7 +4,7 @@ These captures show the current interface. Academic loading/records scenes use s
 
 | State | Capture | What to expect |
 | --- | --- | --- |
-| Page navigation | ![Single page tabs](01-page-tabs.png) | Syllabus views are selected using the page tabs. The duplicate left sidebar is gone; primary areas remain in the top bar. |
+| Page navigation | ![Single page tabs](01-page-tabs.png) | Syllabus views are selected using the page tabs. My Syllabus now also provides approved-file intake above saved records ([Manual 30](../30-approved-syllabus-intake/README.md)). The duplicate left sidebar is gone; primary areas remain in the top bar. |
 | Monitor navigation on mobile | ![Monitor page navigation](09-mobile-monitor-tabs.png) | Preview Monitor keeps its four subviews in a horizontally scrollable page navigation row. |
 | Pulse launcher | ![Avatar-only Pulse](02-avatar-launcher.png) | The character is the entire launcher. Its accessible name remains **Open Pulse assistant**, and it supports keyboard focus and dragging. |
 | Dialog with Pulse | ![Dialog beside Pulse](03-dialog-and-pulse.png) | The syllabus dialog and assistant have distinct desktop columns. Both scroll independently and their controls stay inside their own surface. **Download PDF** exports the displayed syllabus; **Close** and the PDF action remain outside the scrolling document. **Escape** dismisses the top dialog while Pulse stays open. |

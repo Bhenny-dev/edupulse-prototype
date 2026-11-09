@@ -20,6 +20,8 @@ Signed-in instructor accounts see this same dashboard with their own data: the s
 
 ## 2–4. Syllabus
 
+**My Syllabus** starts with **Upload syllabi** for approved PDF/DOCX copies, whether the list is empty or populated. Scan, view and check the outline, then explicitly select it for the course. The five-station indicator is removed; draft preparation and per-row version/approval/archive actions remain. See [Manual 30](../../system-manual/30-approved-syllabus-intake/README.md).
+
 | Tab | Screenshot | What it holds |
 | --- | --- | --- |
 | My Syllabus | ![My Syllabus](03-syllabus-my-syllabus.png) | The lifecycle strip (1 Drafted → 2 Checked → 3 Out for Approval → *offline signatures* → 4 Approved — Uploaded → 5 Active) and every syllabus with status, version, extracted outline, the **next step** button for its status, and icons for **View Syllabus**, **Version History**, **Review recorded changes**, **Edit syllabus** for an owned non-sample record (including active; saving returns it to draft), **Copy for next term** and **Archive**. |
@@ -43,7 +45,7 @@ Pulse can prepare a new syllabus draft for the course selected in Section 1. Its
 
 ![Combined Courseware list](07-courseware-my-courseware.png)
 
-**Courseware:** a single list for active syllabi with status (*Not Started*, *In Progress*, *Complete*), generated/expected item counts, progress and teaching weeks. **Generate** opens an empty course's weekly workspace; **View** opens a course with saved items. The three-dot menu offers the outline and draft-review shortcuts. These preview rows remain sample data.
+**Course** keeps **Upload syllabi** available above the populated list, and as the action in an empty course list. It opens the approved-file upload area in **My Syllabus**. The single list for active syllabi with status (*Not Started*, *In Progress*, *Complete*), generated/expected item counts, progress and teaching weeks. **Generate** opens an empty course's weekly workspace; **View** opens a course with saved items. The three-dot menu offers the outline and draft-review shortcuts. These preview rows remain sample data.
 
 ![Courseware weekly workspace](08-courseware-builder.png)
 

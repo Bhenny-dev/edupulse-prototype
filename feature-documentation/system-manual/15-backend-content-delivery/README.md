@@ -12,7 +12,7 @@
 
 3. Reload and open **My Syllabus**. The draft remains in the course list. The capture also compares the saved outcomes returned by the API with the model proposal. Generation does not check, approve, activate or publish a syllabus.
 
-   ![Generated syllabus retained after reload](03-reloaded-syllabus.png)
+   The current [My Syllabus guide](../30-approved-syllabus-intake/README.md) shows the upload area and saved-record selection. The earlier reload image with the retired lifecycle indicator has been removed; the native capture test still asserts the saved draft after reload.
 
 For an entire course, ask “Generate a syllabus for my selected course.” Pulse treats this as a whole-syllabus request even if another section had focus. It drafts the general sections, teaching weeks in groups of four, and sourced references, then assembles one reviewable proposal. It validates all existing teaching weeks and preserves exam rows. Missing official grading rules remain pending; new policy and requirement text is marked as proposed for instructor review. References require supplied or retrieved metadata. Each generation stage gets at most one repair attempt. If any stage still fails, nothing changes. An explicit outline or outcomes request remains limited to that section.
 

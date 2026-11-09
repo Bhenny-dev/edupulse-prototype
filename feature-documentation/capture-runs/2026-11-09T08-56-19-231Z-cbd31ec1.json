@@ -1,0 +1,182 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-11-09T08-56-19-231Z-cbd31ec1",
+  "startedAt": "2026-11-09T08:56:19.231Z",
+  "finishedAt": "2026-11-09T08:56:40.306Z",
+  "commitSha": "f30257dce6fd345521e96e00a382cfd2af3698c5",
+  "sourceDigest": "2cfbfee9b5d22f819a7cfc6de5ff41e972f5ba7fae4e70c19d263cd80e555513",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-11-09T08:54:10.568Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 2,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": "04-instructor/(03-syllabus-my-syllabus|07-courseware-my-courseware)"
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/account-support-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/account-support.spec.ts",
+    "edupulse-app/tests/snapshots/approved-syllabus-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/approved-syllabus.spec.ts",
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/automatic-records.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/automatic-records.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.spec.ts",
+    "edupulse-app/tests/snapshots/course-seed.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-formatting.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-navigation.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/harness-delivery.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/operator-steps.spec.ts",
+    "edupulse-app/tests/snapshots/outline-courseware.spec.ts",
+    "edupulse-app/tests/snapshots/outline-selector.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/outline-selector.spec.ts",
+    "edupulse-app/tests/snapshots/oversight.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/oversight.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-drafting.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-source.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+    "edupulse-app/tests/snapshots/staff-registration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/staff-registration.spec.ts",
+    "edupulse-app/tests/snapshots/student-directory.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/system-search-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/system-search.spec.ts",
+    "edupulse-app/tests/snapshots/voice-quota.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/voice-quota.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-cache.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-recovery.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/manual.spec.ts",
+      "title": "syllabus lifecycle: build, check, download, approve, extract, activate",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "local-real-input/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 10958,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+      "title": "instructor",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "preview/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 3308,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/01-select-course-autofills-section-1.png",
+      "sha256": "86298f537bc61752ba5a6f68be3e8c729b5e96d8910a6ab2d4d090e1d2f6f103",
+      "bytes": 26142
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/02-write-course-outline.png",
+      "sha256": "02b5cccb8cbfc7dd01bace8439d5253a2cfb0da54ccc8362d9e089557fd9c71a",
+      "bytes": 294501
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/03-save-as-drafted-button.png",
+      "sha256": "e00bb40b7a5c50442fc834f059cf3f25128f84be2fd2d41e34ab225067f341d9",
+      "bytes": 189300
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/04-my-syllabus-drafted.png",
+      "sha256": "aa054927fc580194970d84612d7fb9a1a0c0cf444bc88e5b9e1ecf4903c89450",
+      "bytes": 350825
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/05-marked-as-checked.png",
+      "sha256": "3589f0c3bb69b7752bdb9919ea6edd581a06f58f9aa05c22f9d339583b0c87c5",
+      "bytes": 40163
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/06-downloaded-for-approval.png",
+      "sha256": "e256e1c3b9dff88f270078d83851e1d9f547776b27d6a9fc07a32e6c6e73bca0",
+      "bytes": 41097
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/07-upload-approved-file-attestation.png",
+      "sha256": "27e234605ecbcfa2cfbc4c9b4b27014eaab17fd9981eb554f967ad603c2261e3",
+      "bytes": 315958
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/08-approved-file-uploaded.png",
+      "sha256": "f57bceae3c9eea0c134c2ae27272f19d12bc1c218b2cc07e1e949fab75eeeb22",
+      "bytes": 40686
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/09-review-extracted-outline.png",
+      "sha256": "e3f4de673a061b51147e87b3a679cf05b78bb10577de29d8bdd191763f3aaf45",
+      "bytes": 299502
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/10-active-drives-courseware.png",
+      "sha256": "48b345f5bde63500351c52867260d373c19ce40a362a658f6938368f8243c5c4",
+      "bytes": 40592
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/11-version-history-dialog.png",
+      "sha256": "f7bf41954b2709dbb3e00cee20dc015f74bb114e55c8a156c8450fc48cab40a3",
+      "bytes": 78367
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/04-instructor/03-syllabus-my-syllabus.png",
+      "sha256": "fe078321a4c570e3d83af3907f9ed06d94b252a4027da3af9566bab07fdea28a",
+      "bytes": 808231
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/04-instructor/07-courseware-my-courseware.png",
+      "sha256": "3cd1644ccfe834e74a5b1c473058c6f80b82721b1077f656170ce1d500adc363",
+      "bytes": 373114
+    }
+  ]
+}

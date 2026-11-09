@@ -23,7 +23,7 @@ All 2,286 official profiles remain. Other programs and years were not enrolled. 
 
 ![Programming draft beside the retained active Networking syllabus](02-programming-draft.png)
 
-The active Networking syllabus, approved attachment, outline and three week-1 items were preserved exactly. Programming must complete the existing [syllabus review and offline approval workflow](../02-syllabus-lifecycle/README.md) before activation. No signed file was manufactured.
+The active Networking syllabus, approved attachment, outline and three week-1 items were preserved exactly. Programming must complete the existing [syllabus review and offline approval workflow](../02-syllabus-lifecycle/README.md) before activation. Once an approved copy exists, [direct approved-file intake](../30-approved-syllabus-intake/README.md) can select it for a course. No signed file was manufactured.
 
 ## Review the teaching drafts
 

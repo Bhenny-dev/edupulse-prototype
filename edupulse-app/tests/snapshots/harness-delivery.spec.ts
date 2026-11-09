@@ -34,7 +34,7 @@ test('live local model drafts outcomes and confirmed editor content persists acr
   await page.reload()
   await page.goto('/#/syllabus?tab=mine')
   await expect(page.getByRole('row').filter({ hasText: 'IT 104' }).filter({ hasNotText: /sample/i })).toBeVisible()
-  await page.screenshot({ path: `${dir}/03-reloaded-syllabus.png`, animations: 'disabled' })
+  // Reload persistence stays asserted above; current My Syllabus is captured by the approved-intake/role suites.
 })
 
 test('live courseware generation saves all three drafts and opens the persisted lesson', async ({ page, request }) => {

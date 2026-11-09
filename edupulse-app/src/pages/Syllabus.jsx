@@ -8,9 +8,9 @@ import AutoTextarea from '../components/ui/AutoTextarea'
 import { Spinner } from '../components/ui/LoadingFeedback'
 import { downloadSyllabusPdf } from '../utils/pdfExport'
 import { Fragment, cloneElement, isValidElement, useState, useEffect, useRef, useMemo, useId } from 'react'
-import { useSearchParams, Navigate } from 'react-router-dom'
+import { useSearchParams, Navigate, useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { CURRICULUM_COURSES, INSTRUCTORS, DEFAULT_INSTITUTIONAL_CONTEXT, SYLLABUS_STATUS_META, SYLLABUS_STATUS_ORDER } from '../data/mockData'
+import { CURRICULUM_COURSES, INSTRUCTORS, DEFAULT_INSTITUTIONAL_CONTEXT, SYLLABUS_STATUS_META } from '../data/mockData'
 import { useToast } from '../context/ToastContext'
 import {
   Upload, Plus, Trash2, Eye, FileText, History, Copy, Archive,
@@ -20,6 +20,7 @@ import {
 } from 'lucide-react'
 import { useWorkspace } from '../context/WorkspaceContext'
 import ApprovedSyllabusUpload from '../components/syllabus/ApprovedSyllabusUpload'
+import ApprovedSyllabusIntake from '../components/syllabus/ApprovedSyllabusIntake'
 import { meaningfulOutline, downloadApprovedFile } from '../utils/syllabusFiles'
 import UploadExistingSyllabus from '../components/syllabus/UploadExistingSyllabus'
 import SharedSyllabusRepository from '../components/syllabus/SharedSyllabusRepository'
@@ -41,32 +42,6 @@ function StatusBadge({ status }) {
   return <span className={`badge badge-${meta.badge}`} title={meta.hint}>{meta.label}</span>
 }
 
-// The five stations of the lifecycle, with the offline signatory chain called
-// out where it actually happens — between download and re-upload.
-function LifecycleStrip() {
-  return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap', padding: '12px 16px', background: 'var(--sky-50)', border: '1px solid var(--sky-100)', borderRadius: 'var(--radius-lg)', marginBottom: '16px', fontSize: '0.75rem' }}>
-      {SYLLABUS_STATUS_ORDER.map((s, i) => {
-        const meta = SYLLABUS_STATUS_META[s]
-        return (
-          <span key={s} style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <span title={meta.hint} style={{
-              padding: '3px 10px', borderRadius: 'var(--radius-full)', fontWeight: 600,
-              background: 'var(--white)', color: 'var(--gray-600)', border: '1px solid var(--gray-200)',
-            }}>{i + 1}. {meta.label}</span>
-            {i < SYLLABUS_STATUS_ORDER.length - 1 && <span style={{ color: 'var(--gray-300)' }}>→</span>}
-            {s === 'downloaded_for_approval' && (
-              <span style={{ color: 'var(--gray-400)', fontStyle: 'italic', marginRight: '4px' }}>
-                (offline: Dean review → CAO approval → EVP noting)
-              </span>
-            )}
-          </span>
-        )
-      })}
-    </div>
-  )
-}
-
 // Extraction preview — the parsed Section 5 (Course Outline) rows shown for
 // confirmation before the syllabus becomes active (the mapping backbone for
 // courseware generation). Exam weeks are flagged as milestones.
@@ -78,7 +53,7 @@ function ExtractionModal({ syllabus, onConfirm, onClose }) {
       <div className="modal-content" style={{ maxWidth: '760px', maxHeight: '85vh', overflow: 'auto' }} onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h2><ScanLine size={18} style={{ verticalAlign: 'middle' }} /> Extract Course Outline — {syllabus.courseCode}</h2>
-          <button className="modal-close" onClick={onClose}>✕</button>
+          <button className="modal-close" aria-label="Close outline preview" onClick={onClose}>✕</button>
         </div>
         <p className="text-sm text-muted" style={{ marginBottom: '12px' }}>
           Section 5 of the approved file was parsed into the rows below. Each row becomes a generation unit for
@@ -135,8 +110,8 @@ function SyllabusViewModal({ syllabus, onClose }) {
   const inst = INSTRUCTORS.find(i => i.id === syllabus.instructorId)
   const ci = syllabus.courseInfo || {}
   const outline = syllabus.courseOutline || []
-  const refs = syllabus.references || { books: [], onlineReferences: [] }
-  const rp = syllabus.requirementsAndPolicies || {}
+  const refs = syllabus.references || { books: syllabus.books || [], onlineReferences: syllabus.onlineReferences || [] }
+  const rp = syllabus.requirementsAndPolicies || syllabus
   const po = syllabus.programOutcomes || []
   const ic = syllabus.institutionalContext || DEFAULT_INSTITUTIONAL_CONTEXT
 
@@ -181,12 +156,12 @@ function SyllabusViewModal({ syllabus, onClose }) {
           <div>
             <h2 style={{ fontSize: '1.125rem' }}>{ci.courseCode || syllabus.courseCode} — {ci.courseTitle || syllabus.courseTitle}</h2>
             <div style={{ display: 'flex', gap: '8px', marginTop: '6px', fontSize: '0.75rem' }}>
-              <span className={`badge badge-${syllabus.status}`}>{syllabus.status}</span>
+              <span className={`badge badge-${syllabus.status || 'draft'}`}>{syllabus.status || 'Preview only'}</span>
               <span className="badge badge-draft">v{syllabus.version}</span>
               {inst && <span className="text-muted">{inst.name}</span>}
             </div>
           </div>
-          <button className="modal-close" onClick={onClose}>✕</button>
+          <button className="modal-close" aria-label="Close syllabus details" onClick={onClose}>✕</button>
         </div>
 
         <div className="syllabus-dialog-body">
@@ -1277,6 +1252,7 @@ function VersionCompare({ v1, v2, onClose }) {
 export default function Syllabus() {
   const { user } = useAuth()
   const { addToast } = useToast()
+  const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
 
   const [tab, setTab] = useState(['mine', 'repository', 'builder'].includes(searchParams.get('tab')) ? searchParams.get('tab') : 'mine')
@@ -1315,6 +1291,14 @@ export default function Syllabus() {
     setEditingSyllabus(null); switchTab('mine')
     pulseBus.progress('syllabus-saved', next.courseCode)
     return { ...saved, id: next.id, status: next.status }
+  }
+
+  const handleUseApprovedSyllabus = async candidate => {
+    const next = record({ ...candidate, instructorId: user?.id, history: [] }, 'active')
+    await commit(data => revisedWorkspace(data, next))
+    pulseBus.progress('syllabus-activated', next.courseCode)
+    navigate(`/courseware?course=${encodeURIComponent(next.id)}`)
+    addToast(`${next.courseCode} syllabus selected. Its outline is ready for courseware generation.`, 'success')
   }
 
   // One explicit human action per station — this is the approval loop of
@@ -1373,7 +1357,7 @@ export default function Syllabus() {
         <h1>Syllabus</h1>
       </div>
 
-      {user?.authenticated && (academic.institutional || []).some(item=>item.kind==='loads') && <section className="card mb-24"><div className="card-header"><h2>Confirmed course loads</h2></div><div className="card-body"><p>These shared EduSuite loads identify the courses and blocks assigned to your account. Start the syllabus in the builder; matching rosters join the published course automatically.</p>{academic.institutional.filter(item=>item.kind==='loads'&&item.data.InstructorID===user.id).map(item=><p key={item.record_key}>{item.data.CourseCode} · {item.data.Block} ? Semester {item.data.Semester}</p>)}</div></section>}
+      {user?.authenticated && (academic.institutional || []).some(item=>item.kind==='loads') && <section className="card mb-24"><div className="card-header"><h2>Confirmed course loads</h2></div><div className="card-body"><p>These shared EduSuite loads identify the courses and blocks assigned to your account. Upload an approved syllabus or start a draft in Syllabus Builder; matching rosters join the published course automatically.</p>{academic.institutional.filter(item=>item.kind==='loads'&&item.data.InstructorID===user.id).map(item=><p key={item.record_key}>{item.data.CourseCode} · {item.data.Block} ? Semester {item.data.Semester}</p>)}</div></section>}
       {editingSyllabus?.status==='active'&&<p role="alert" className="mb-16">Saving a revision returns this syllabus to Drafted and hides its published courseware until the approved outline is activated again. Changed teaching weeks require another courseware review.</p>}
       {/* Tabs */}
       <div style={{ display: 'flex', gap: '0', borderBottom: '2px solid var(--gray-200)', marginBottom: '20px' }}>
@@ -1414,14 +1398,14 @@ export default function Syllabus() {
 
       {tab === 'mine' && (
         <>
-          <LifecycleStrip />
+          <ApprovedSyllabusIntake onUse={handleUseApprovedSyllabus} onView={setSelectedSyllabus} focusUpload={searchParams.get('upload') === 'approved'} />
           {activeOnly && <div className="flex flex-wrap items-center gap-16 mb-16" role="status"><strong>Active syllabi</strong><button className="btn btn-secondary btn-sm" onClick={() => setSearchParams({ tab: 'mine' })}>Show all syllabi</button></div>}
 
           <div style={{ marginTop: '20px' }}>
             {listedSyllabi.length === 0 ? (
               <div className="card"><div className="card-body text-center text-muted" style={{ padding: '40px' }}>
                 <BookOpen size={32} style={{ margin: '0 auto 12px', opacity: 0.4 }} />
-                <p>{activeOnly ? 'No active syllabi yet.' : 'No syllabi yet. Register a course first, then create or attach a syllabus.'}</p>
+                <p>{activeOnly ? 'No active syllabi yet.' : 'No saved syllabi yet. Upload an approved copy above, or create a draft in Syllabus Builder.'}</p>
               </div></div>
             ) : (
               <table className="data-table" style={{ display: 'block', overflowX: 'auto', maxWidth: '100%' }}>
@@ -1462,7 +1446,7 @@ export default function Syllabus() {
                             </button>
                           ) : (
                             <span className="text-sm" style={{ color: 'var(--green-600, #16a34a)', fontWeight: 600, whiteSpace: 'nowrap' }}>
-                              <CheckCircle size={13} style={{ verticalAlign: 'middle', marginRight: 4 }} />{syl.status === 'active' ? 'Drives courseware' : 'Archived'}
+                              {syl.status === 'active' ? <><CheckCircle size={13} style={{ verticalAlign: 'middle', marginRight: 4 }} /><span>Drives courseware</span> <Link to={`/courseware?course=${encodeURIComponent(syl.id)}`} className="btn btn-secondary btn-sm">Open course</Link></> : 'Archived'}
                             </span>
                           )}
                         </td>
