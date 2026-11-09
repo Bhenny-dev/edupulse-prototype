@@ -217,3 +217,7 @@ The CLI API-key listing can provide a redacted secret that receives HTTP 401. Au
 ## Outline-driven courseware save contract (9 November 2026)
 
 No schema or RLS change is required. The AI endpoint returns one validated planned part identified by `stepKey`; it does not mutate workspace records. The existing revision-checked workspace commit receives the complete assembled week once, rejects stale syllabus/drafts and preserves manual, checked and published content. Admin support retains owner-bound credentials/library retrieval and effective-subject authoring authorization. Student publication, access, attempts and score rules remain unchanged. The native API/database test proves failed later generation does not increment the saved revision and completed content survives a new read; it does not claim a hosted paid-model run. See [validation](../versions/2026-11-09-outline-driven-courseware/validation/results.md).
+
+## Manual cache refresh (9 November 2026)
+
+No database or RLS migration is introduced. Initial identity reads and local confirmed-mutation readbacks still use the existing authorized API. Focus, reconnect and timers do not replace client snapshots; other-tab invalidation is only a notice. Manual refresh retains revision checks and never replays a business command. New account/support identities cannot inherit the prior view cache. [Validation](../versions/2026-11-09-cached-workspaces/validation/results.md) distinguishes controlled browser evidence from hosted database results.

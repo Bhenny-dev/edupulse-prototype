@@ -41,24 +41,24 @@ For imported institutional class lists, a saved instructor membership decision i
 
 ![Mobile removal confirmation](mobile-03-remove-membership.png)
 
-## Automatic refresh and sync
+## Cached records and deliberate refresh
 
-The persistent **Refresh records** and **Sync my workspace** buttons have been replaced by a compact status. **Export** / **Export authorized records** remains available after records load.
+The owner's later cache instruction supersedes automatic timer/focus refresh. Records load once on account/view entry. Returning focus, connectivity or visibility retains the loaded snapshot and open reader. There is no polling reload. **Export** / **Export authorized records** remains available after records load.
 
-* Records load on entry and revalidate about every five minutes while visible and online. Returning focus or connectivity rechecks records older than a minute. Your own actions and changes from another of your tabs reload them at once. An account-scoped cross-tab signal invalidates the cache without sending records or credentials.
-* Only one record read runs at a time. A completed mutation during a read invalidates its response and causes a newer read. Existing records and open forms remain during background reads.
-* Normal workspace saves already project their confirmed contents transactionally. An instructor's older, clean cloud workspace is reconciled once per account session after loading. Dirty edits, saves, conflicts and workspace errors block that reconciliation.
-* A background workspace check, every two minutes while visible, asks only whether the saved revision changed; the whole workspace downloads only when it did. Edits are saved a moment and a half after you stop typing.
-* Workspace background recovery reads before retrying a failed save. A matching saved snapshot recovers a lost response; a changed revision preserves local edits and requires conflict review. It never overwrites the newer revision automatically.
-* Offline tabs pause requests and retain the current account's loaded view. Transient record failures retry with increasing delay, from 15 seconds up to five minutes. An error offers **Retry connection**; authorization failures clear the loaded records. A network reconnect is not proof that a request succeeded.
-* Changing account, assigned role or admin view isolates the record cache and cancels obsolete reads. Delayed responses cannot populate the next role's view. Role checks and server RLS remain authoritative.
+* Your own confirmed mutations still receive an authorized readback. One in-flight record read is shared; a mutation during that read invalidates its result and reads the newer projection. This preserves save/score/access correctness without replaying a business command.
+* Normal workspace saves still project their confirmed contents transactionally. An instructor's older clean cloud workspace is reconciled once after its initial load. Dirty edits, saves, conflicts and errors block reconciliation.
+* Workspace edits retain their existing debounce save. Confirmed writes retain revision checks and exact lost-response recovery. Focus/reconnect do not reload a workspace or retry a failed write. Local pending edits and conflict/export recovery remain available.
+* Another of your account's tabs sends only an invalidation signal. **Updates available** offers **Refresh records**, without replacing the current view. **Settings ? Data & Privacy ? Refresh workspace and records** is available for a deliberate general refresh; pending edits, saves and conflicts must be resolved first.
+* Offline and failed reads retain the loaded cache. **Retry connection** explicitly retries a failed read; there is no timer/backoff replay. Authorization failures clear records. Account/role/support-subject changes cancel obsolete reads and isolate caches.
 
-![Updating records while retaining the loaded dashboard](04-background-update.png)
+The first image now shows an authorized readback after a synthetic confirmed change, while the loaded dashboard stays visible. The filename is retained for existing links; it is not evidence of timer polling.
+
+![Authorized readback retaining the loaded dashboard](04-background-update.png)
 
 ![Offline cached dashboard](05-offline-cache.png)
 
-![Automatic status and Export on a phone](mobile-04-dashboard.png)
+![Loaded status and Export on a phone](mobile-04-dashboard.png)
 
-**Records up to date** follows a successful authorized read. Pending workspace edits, conflicts, errors, loading and offline state have distinct text. No student scores or completion are guessed. Background work does not submit assessments, mark answers, approve syllabi, publish material, send reminders or call a paid model. Those business actions retain their existing confirmation and audit boundaries.
+**Records up to date** records the last successful authorized read, rather than a guarantee that another tab has made no changes. Pending workspace edits, conflicts, errors, loading, offline and update-available states remain distinct. No student scores or completion are guessed. Refresh does not submit assessments, approve syllabi, publish material, send reminders or call a paid model.
 
-[Release validation](../../versions/2026-11-07-automatic-records-and-course-rosters/validation/results.md) distinguishes UI fixtures, native SQL checks and hosted validation.
+[Manual 27](../27-cached-workspaces/README.md) shows retained Course readers and deliberate refresh. The [original membership release validation](../../versions/2026-11-07-automatic-records-and-course-rosters/validation/results.md) remains historical evidence for roster persistence and access boundaries.

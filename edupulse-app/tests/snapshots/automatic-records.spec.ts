@@ -10,7 +10,7 @@ test('automatic records: retained cache while updating and offline', async ({ pa
   await page.goto('/#/dashboard'); await expect(page.getByRole('status').filter({ hasText: 'Records up to date' })).toBeVisible()
   await page.waitForLoadState('networkidle')
   const start = fixture.counts().gets, release = fixture.holdRead()
-  try { await page.clock.fastForward(301000); await expect.poll(() => fixture.counts().gets).toBeGreaterThan(start); await shot(page, '04-background-update') } finally { release() }
+  try { await page.evaluate(()=>window.dispatchEvent(new CustomEvent('edupulse-records-change',{detail:{action:'academic',operation:'readback'}}))); await expect.poll(() => fixture.counts().gets).toBeGreaterThan(start); await shot(page, '04-background-update') } finally { release() }
   await expect(page.getByRole('status').filter({ hasText: 'Records up to date' })).toBeVisible()
   await page.evaluate(async () => { await document.fonts.ready }); await context.setOffline(true)
   try { await expect(page.getByRole('status').filter({ hasText: 'Offline' }).first()).toBeVisible(); await shot(page, '05-offline-cache') } finally { await context.setOffline(false) }

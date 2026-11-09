@@ -1,3 +1,4 @@
+import { useWorkspaceViewState } from '../../context/WorkspaceContext'
 import { useState, useRef, useEffect } from 'react'
 import { useContentEditorTool } from '../../agents/useContentEditorTool'
 import CoursewareText from './CoursewareText'
@@ -26,8 +27,9 @@ function keyPointsToBody(points) {
   return points.map(p => `• ${p}`).join('\n')
 }
 
-export default function PresentationViewer({ content, onBack, isStudent = false, onSave }) {
-  const [currentSlide, setCurrentSlide] = useState(0)
+export default function PresentationViewer({ content, onBack, isStudent = false, onSave, cacheKey = null }) {
+  const [currentSlide, setCurrentSlide] = useWorkspaceViewState(cacheKey?`slide:${cacheKey}`:null,0)
+  useEffect(()=>{if(currentSlide>(content?.sections?.length||0))setCurrentSlide(0)},[currentSlide,content?.sections?.length,setCurrentSlide])
   const [fullscreen, setFullscreen] = useState(false)
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState(null)
@@ -250,7 +252,7 @@ export default function PresentationViewer({ content, onBack, isStudent = false,
                 </button>
               </>
             ) : (
-              <button className="btn btn-secondary btn-sm" onClick={startEditing}>
+              <button className="btn btn-ghost btn-sm" onClick={startEditing}>
                 <Pencil size={14} /> Edit
               </button>
             )

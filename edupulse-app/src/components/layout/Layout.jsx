@@ -502,7 +502,7 @@ export default function Layout() {
       <div className="app-workspace" style={{ flex: 1, display: 'flex' }}>
         <main id="main-content" style={{ flex: 1, minHeight: 'calc(100vh - 64px)', minWidth: 0 }} role="main" tabIndex={-1}>
           <div key={pageKey} className="page-enter">
-            {workspace.loading && ['/syllabus', '/courseware', '/content-editor'].some(path => location.pathname.startsWith(path)) ? <div className="container"><SkeletonContent variant="page" label="Loading your workspace…" /></div> : <Suspense fallback={<div className="container"><SkeletonContent variant="page" label="Opening the page…" /></div>}><Outlet /></Suspense>}
+            {workspace.loading && !workspace.mode && ['/syllabus', '/courseware', '/content-editor'].some(path => location.pathname.startsWith(path)) ? <div className="container"><SkeletonContent variant="page" label="Loading your workspace…" /></div> : <Suspense fallback={<div className="container"><SkeletonContent variant="page" label="Opening the page…" /></div>}><Outlet /></Suspense>}
           </div>
         </main>
       </div>

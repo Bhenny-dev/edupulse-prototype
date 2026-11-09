@@ -1,8 +1,8 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Eye, Check, Send, FileText, Sparkles, Tag, RotateCcw, Loader2, Flag, MonitorPlay, ArrowLeft, PlugZap, TriangleAlert } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
-import { useWorkspace } from '../../context/WorkspaceContext'
+import { useWorkspace, useWorkspaceViewState } from '../../context/WorkspaceContext'
 import { useToast } from '../../context/ToastContext'
 import { useContentStore } from '../../context/ContentStoreContext'
 import { useAI } from '../../context/AIContext'
@@ -24,7 +24,7 @@ const isExamRow = row => !row.ilos && /examination/i.test(row.assessments || '')
 export default function CourseWorkspace({ syllabusId, focusWeek, contentStore, onBack, onGenerateWeek, onCheckItem, onBulkCheck, onToggleVisibility }) {
   const { syllabi, saving, dirty } = useWorkspace()
   const { user } = useAuth()
-  const [deliveryItemId, setDeliveryItemId] = useState(null)
+  const [deliveryItemId, setDeliveryItemId] = useWorkspaceViewState(`course:${syllabusId}:delivery`,null)
   const generationRef = useRef(null)
   const [generationProgress, setGenerationProgress] = useState('')
   // A failed generation stays on the page until it is dismissed or a later generation succeeds.
@@ -39,11 +39,12 @@ export default function CourseWorkspace({ syllabusId, focusWeek, contentStore, o
   const syllabus = syllabi.find(s => s.id === syllabusId)
   const [generatingWeek, setGeneratingWeek] = useState(null)
   const [generatingAll, setGeneratingAll] = useState(false)
-  const [expandedWeeks, setExpandedWeeks] = useState(new Set())
-  const [selectedItems, setSelectedItems] = useState(new Set())
-  const [viewingItem, setViewingItem] = useState(null)
-  const [viewingType, setViewingType] = useState(null)
-  const [viewMode, setViewMode] = useState(null)
+  const [expandedWeeks, setExpandedWeeks] = useWorkspaceViewState(`course:${syllabusId}:expanded`,()=>new Set())
+  const [selectedItems, setSelectedItems] = useWorkspaceViewState(`course:${syllabusId}:selected`,()=>new Set())
+  const [viewingId,setViewingId]=useWorkspaceViewState(`course:${syllabusId}:reader`,null)
+  const viewingItem=useMemo(()=>contentStore[viewingId]?.syllabusId===syllabusId?{...contentStore[viewingId].content,_storeId:viewingId}:null,[contentStore,viewingId,syllabusId])
+  const [viewingType, setViewingType] = useWorkspaceViewState(`course:${syllabusId}:type`,null)
+  const [viewMode, setViewMode] = useWorkspaceViewState(`course:${syllabusId}:mode`,null)
   // A link from Pulse (?course=…&week=…) opens that week and scrolls it into view.
   useEffect(() => {
     if (!focusWeek) return
@@ -142,10 +143,7 @@ export default function CourseWorkspace({ syllabusId, focusWeek, contentStore, o
   }
 
   const openItem = (id, item, mode) => {
-    const stored = contentStore[id]
-    const content = stored?.content || item.content
-    const enriched = { ...content, _storeId: id }
-    setViewingItem(enriched)
+    setViewingId(id)
     if (item.type === 'assessment') {
       setViewingType('assessment')
       setViewMode(null)
@@ -161,7 +159,7 @@ export default function CourseWorkspace({ syllabusId, focusWeek, contentStore, o
       saveContent(_storeId, { ...existing, [viewingType === 'assessment' ? 'questions' : 'sections']: newContent })
       addToast('Content saved', 'success')
     }
-    setViewingItem(null)
+    setViewingId(null)
     setViewMode(null)
     setViewingType(null)
   }
@@ -176,21 +174,21 @@ export default function CourseWorkspace({ syllabusId, focusWeek, contentStore, o
   if (viewingItem) {
     if (viewMode === 'presentation') {
       return (
-        <PresentationViewer
+        <PresentationViewer cacheKey={viewingId}
           content={viewingItem}
-          onBack={() => { setViewingItem(null); setViewMode(null) }}
+          onBack={() => { setViewingId(null); setViewMode(null) }}
           isStudent={false}
           onSave={handleSaveContent}
         />
       )
     }
     if (viewingType === 'assessment') {
-      return <AssessmentEditor topics={syllabus.courseOutline?.find(row=>row.week===contentStore[viewingItem._storeId]?.week)?.contents || []} content={viewingItem} onBack={() => { setViewingItem(null); setViewingType(null) }} isStudent={false} onSave={handleSaveContent} />
+      return <AssessmentEditor topics={syllabus.courseOutline?.find(row=>row.week===contentStore[viewingItem._storeId]?.week)?.contents || []} content={viewingItem} onBack={() => { setViewingId(null); setViewingType(null) }} isStudent={false} onSave={handleSaveContent} />
     }
     return (
       <DocumentViewer
         content={viewingItem}
-        onBack={() => { setViewingItem(null); setViewMode(null) }}
+        onBack={() => { setViewingId(null); setViewMode(null) }}
         isStudent={false}
         onSave={handleSaveContent}
       />

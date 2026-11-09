@@ -1,0 +1,266 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-11-09T07-00-10-578Z-223e2337",
+  "startedAt": "2026-11-09T07:00:10.578Z",
+  "finishedAt": "2026-11-09T07:00:35.750Z",
+  "commitSha": "e785332aff95370c0f0a1b73dab1eac1ca689181",
+  "sourceDigest": "184209c14f6dea23c1fe2e506347a3ce1002828da40e9b661b8c0792d00b779e",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-11-09T07:00:07.270Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 7,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": null
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/automatic-records.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-cache.spec.ts",
+    "edupulse-app/tests/snapshots/automatic-records.mobile.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/account-support-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/account-support.spec.ts",
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.spec.ts",
+    "edupulse-app/tests/snapshots/course-seed.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-formatting.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-navigation.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/harness-delivery.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/operator-steps.spec.ts",
+    "edupulse-app/tests/snapshots/outline-courseware.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-drafting.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-source.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+    "edupulse-app/tests/snapshots/staff-registration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/staff-registration.spec.ts",
+    "edupulse-app/tests/snapshots/student-directory.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/system-search-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/system-search.spec.ts",
+    "edupulse-app/tests/snapshots/voice-quota.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/voice-quota.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-recovery.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/automatic-records.spec.ts",
+      "title": "automatic records: saved roster CRUD and confirmation boundaries",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 3639,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/automatic-records.spec.ts",
+      "title": "automatic records: retained cache while updating and offline",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1950,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/automatic-records.spec.ts",
+      "title": "automatic records: focused syllabus tabs and Course page",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1801,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/workspace-cache.spec.ts",
+      "title": "workspace cache: retained course presentation and manual account refresh",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1873,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/workspace-cache.spec.ts",
+      "title": "workspace cache: another tab announces updates without applying them",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1827,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/automatic-records.mobile.spec.ts",
+      "title": "automatic records: mobile roster and solid dark surfaces",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 6707,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/automatic-records.mobile.spec.ts",
+      "title": "automatic records: mobile dashboard removes manual refresh and sync",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1353,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-manual/21-automatic-records-and-course-rosters/01-course-students.png",
+      "sha256": "a45924b0e795632ef80163269db9e0921d71f6c9352818d49c60a8893a76d592",
+      "bytes": 308492
+    },
+    {
+      "path": "feature-documentation/system-manual/21-automatic-records-and-course-rosters/02-change-block.png",
+      "sha256": "1be2401acc84e37333f4beb8ee2998bc250849255d524219ff54d0274cc6a654",
+      "bytes": 285029
+    },
+    {
+      "path": "feature-documentation/system-manual/21-automatic-records-and-course-rosters/03-remove-membership.png",
+      "sha256": "136bcae319a681d8e37e2b812c617b7aac0b87673373a1b440a8032575eaaf6b",
+      "bytes": 298995
+    },
+    {
+      "path": "feature-documentation/system-manual/21-automatic-records-and-course-rosters/04-background-update.png",
+      "sha256": "552b75d38c4be182637ad92f2907ecd210a81ad49897978bdcda8e2290e72d2c",
+      "bytes": 389225
+    },
+    {
+      "path": "feature-documentation/system-manual/21-automatic-records-and-course-rosters/05-offline-cache.png",
+      "sha256": "2aa27e6518d30d92abc0610e3ae4106e497bcce7542c01ae7be5dfd98cf84167",
+      "bytes": 395323
+    },
+    {
+      "path": "feature-documentation/system-manual/21-automatic-records-and-course-rosters/06-syllabus-tabs.png",
+      "sha256": "ffb73fedee4d5e2abe4e6567cbfd55be4d75f5250934ddbf8436449876be4253",
+      "bytes": 283206
+    },
+    {
+      "path": "feature-documentation/system-manual/21-automatic-records-and-course-rosters/07-course-page.png",
+      "sha256": "49b9e5d1e1b17215ce6cdfe9fd021e2bd888d867af43380ce30334af728c9047",
+      "bytes": 286014
+    },
+    {
+      "path": "feature-documentation/system-manual/21-automatic-records-and-course-rosters/mobile-01-course-students.png",
+      "sha256": "7dbf8ecc5540ddd105f9068624f66a64a66ff8da03d1baabd4a0c3d425f4026d",
+      "bytes": 253617
+    },
+    {
+      "path": "feature-documentation/system-manual/21-automatic-records-and-course-rosters/mobile-02-change-block.png",
+      "sha256": "df9ed4161076f586b74d3190e5f85127fc5b8943fc4787c47b996525e272fcf6",
+      "bytes": 173413
+    },
+    {
+      "path": "feature-documentation/system-manual/21-automatic-records-and-course-rosters/mobile-03-remove-membership.png",
+      "sha256": "0532662e70d35c610d8696b85c1ff6ab998cb96a96bf4cc4b2cb5c131beb557e",
+      "bytes": 208088
+    },
+    {
+      "path": "feature-documentation/system-manual/21-automatic-records-and-course-rosters/mobile-04-dashboard.png",
+      "sha256": "fa330a3367b7ba1fa8dab82c0969336ce023ae78ea274f1a841dc8ddb07429c8",
+      "bytes": 415657
+    },
+    {
+      "path": "feature-documentation/system-manual/27-cached-workspaces/01-retained-reader.png",
+      "sha256": "5a172391045802389b4abf3d47ad2a7ffdbbe82d3d022186fa2f00319cd83778",
+      "bytes": 163530
+    },
+    {
+      "path": "feature-documentation/system-manual/27-cached-workspaces/02-manual-refresh.png",
+      "sha256": "4a98efc57960bf586daa8b8461a70dbd8343fa254b1c759220b97b3c999e5210",
+      "bytes": 246513
+    },
+    {
+      "path": "feature-documentation/system-manual/27-cached-workspaces/03-updates-available.png",
+      "sha256": "35484c60dff4cdba943c48ff623909c09db495d56dbd1769479b3563b9cfe926",
+      "bytes": 397539
+    },
+    {
+      "path": "feature-documentation/system-manual/27-cached-workspaces/04-manual-read-pending.png",
+      "sha256": "680a475d22402f09484e96c7445f8dff770a6cdcb0d236b93a31566ee54e54ab",
+      "bytes": 391642
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/02-shared-interface/14-settings-data-and-privacy.png",
+      "sha256": "8e4014338d089db4430e8b7d9a4d8674cb91ec0dccf56a296fada5604593bebc",
+      "bytes": 246528
+    }
+  ]
+}

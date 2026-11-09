@@ -1,5 +1,5 @@
 import { jsonValue } from '../utils/jsonValue'
-import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useAuth } from './AuthContext'
 import { aiRequest } from '../lib/aiClient'
 import { DEFAULT_SYLLABI, BLOCK_SECTION_REGISTRATIONS } from '../data/mockData'
@@ -33,6 +33,8 @@ function WorkspaceSession({ children, owner, user, preview }) {
   const [mode, setMode] = useState(null), [loading, setLoading] = useState(true), [saving, setSaving] = useState(false)
   const [error, setError] = useState(''), [cacheError, setCacheError] = useState(''), [conflict, setConflict] = useState(false), [backedUp, setBackedUp] = useState(false)
   const current = useRef(journal), mounted = useRef(true), writeLock = useRef(false)
+  const viewState=useMemo(()=>new Map(),[user?.role])
+  const [refreshAvailable,setRefreshAvailable]=useState(false)
   current.current = journal
   useEffect(() => { mounted.current = true; return () => { mounted.current = false } }, [])
   useEffect(() => {
@@ -45,7 +47,7 @@ function WorkspaceSession({ children, owner, user, preview }) {
       // A background check names the revision it holds; the document comes back only when it changed.
       const remote = await aiRequest('workspace', 'GET', undefined, signal, background ? { query: { known: String(current.current.revision) } } : {})
       if (!mounted.current || signal?.aborted) return
-      setMode(remote.mode)
+      setMode(remote.mode); setRefreshAvailable(false)
       if (remote.mode === 'preview') { setConflict(false); setJournal(previous => ({ ...previous, dirty: false })); return }
       if (remote.unchanged && remote.revision === current.current.revision) { setConflict(false); return }
       const local = current.current
@@ -118,22 +120,15 @@ function WorkspaceSession({ children, owner, user, preview }) {
   }, [])
   useEffect(() => {
     if (preview) return
-    let checked = Date.now()
+    // Other tabs may announce a change; applying it is an explicit user action.
     const wake = event => {
       if (event?.type === 'storage' && event.key !== key) return
-      if (navigator.onLine === false || document.visibilityState !== 'visible' || writeLock.current || saving || loading || conflict) return
-      if (event?.type !== 'online' && Date.now() - checked < 30000) return
-      checked = Date.now()
-      // Read before retrying a failed save. Preserve dirty edits and detect
-      // a changed server revision instead of blindly replaying a write.
-      void load(false, undefined, true)
+      if(event?.type==='storage')setRefreshAvailable(true)
     }
-    const timer = setInterval(wake, 120000)
-    window.addEventListener('focus', wake); window.addEventListener('online', wake); window.addEventListener('storage', wake)
-    document.addEventListener('visibilitychange', wake)
-    return () => { clearInterval(timer); window.removeEventListener('focus', wake); window.removeEventListener('online', wake); window.removeEventListener('storage', wake); document.removeEventListener('visibilitychange', wake) }
-  }, [preview, key, load, saving, loading, conflict])
-  return <WorkspaceContext.Provider value={{ ...journal.data, revision: journal.revision, setSyllabi, setContent, setRegistrations, updateWorkspace:update, commit, loading, saving, dirty: journal.dirty, mode, error: cacheError || error, conflict, backedUp, exportBackup, retry: () => mode ? setError('') : load(), reload: () => load(true) }}>{children}</WorkspaceContext.Provider>
+    window.addEventListener('storage',wake)
+    return ()=>window.removeEventListener('storage',wake)
+  },[preview,key])
+  return <WorkspaceContext.Provider value={{ ...journal.data, revision: journal.revision, viewState, refreshAvailable, refresh:()=>load(false), setSyllabi, setContent, setRegistrations, updateWorkspace:update, commit, loading, saving, dirty: journal.dirty, mode, error: cacheError || error, conflict, backedUp, exportBackup, retry: () => mode ? setError('') : load(), reload: () => load(true) }}>{children}</WorkspaceContext.Provider>
 }
 export function useWorkspace() {
   const value = useContext(WorkspaceContext)
@@ -143,4 +138,15 @@ export function useWorkspace() {
 export function WorkspaceStatus() {
   const workspace = useWorkspace()
   return <span className="sr-only" role="status" data-testid="workspace-save-state">{workspace.error || (workspace.conflict ? 'Workspace save conflict' : workspace.loading ? 'Loading' : workspace.saving ? 'Saving' : workspace.dirty ? 'Pending save' : workspace.mode ? 'Saved' : 'Unavailable')}</span>
+}
+
+/** In-memory UI preferences only, scoped to this account, subject and role session. */
+export function useWorkspaceViewState(key, initial) {
+  const {viewState}=useWorkspace()
+  const read=()=>key&&viewState.has(key)?viewState.get(key):typeof initial==='function'?initial():initial
+  const scope=useRef({viewState,key})
+  const [value,setValue]=useState(read)
+  if(scope.current.viewState!==viewState||scope.current.key!==key){scope.current={viewState,key};setValue(read())}
+  useEffect(()=>{if(key)viewState.set(key,value)},[viewState,key,value])
+  return [value,setValue]
 }

@@ -1,3 +1,4 @@
+import { useWorkspaceViewState } from '../../context/WorkspaceContext'
 import { Spinner } from '../ui/LoadingFeedback'
 import { useEffect, useRef, useState } from 'react'
 import DocumentViewer from '../courseware/DocumentViewer'
@@ -23,7 +24,8 @@ export default function AcademicLibrary({ data, assessments = false, onOpen, bus
 
 export function OpenedPublication({ selected, data, isStudent, answers, setAnswers, result, session, busy, onClose, onSubmit, onRetake }) {
   const {command}=useAcademicRecords()
-  const [mode,setMode]=useState('document'),[activeQuestion,setActiveQuestion]=useState(0),[now,setNow]=useState(Date.now()),[appeal,setAppeal]=useState(''),[message,setMessage]=useState(''),[error,setError]=useState('')
+  const [mode,setMode]=useWorkspaceViewState(`publication:${selected.id}:mode`,'document')
+  const [activeQuestion,setActiveQuestion]=useState(0),[now,setNow]=useState(Date.now()),[appeal,setAppeal]=useState(''),[message,setMessage]=useState(''),[error,setError]=useState('')
   const [appealing,setAppealing]=useState(false)
   const questionsRef=useRef([])
   const latest=studentAttempt(data,selected)
@@ -50,6 +52,6 @@ export function OpenedPublication({ selected, data, isStudent, answers, setAnswe
       {attempt&&<Table headers={['Submitted','Raw score','Version']} rows={[[new Date(attempt.submitted_at).toLocaleString(),`${attempt.score}/${attempt.max_score}`,'Current published version']]}/>}
       {isStudent&&attempt&&attempt.grading_status!=='pending_review'&&(attempt.attempt_no || 1)<(policy.maxAttempts || 1)&&!expired&&<button className="btn btn-secondary mt-16" disabled={busy} onClick={onRetake}>{busy && <Spinner />} Start next allowed attempt</button>}
       {isStudent&&attempt&&<div className="mt-24"><label className="academic-filter">Appeal to instructor<textarea className="form-input" maxLength={2000} value={appeal} onChange={event=>setAppeal(event.target.value)}/></label><button className="btn btn-secondary mt-16" disabled={!appeal.trim()||busy||appealing} onClick={sendAppeal}>{appealing && <Spinner />} {appealing ? 'Saving appeal…' : 'Submit appeal'}</button>{message&&<p role="status">{message}</p>}{error&&<p role="alert">{error}</p>}</div>}
-    </>:<><nav className="tabs academic-tabs mb-24" aria-label="Material reader views">{[['document','Document'],['presentation','Presentation']].map(([id,label])=><button key={id} className={`tab ${mode===id?'active':''}`} aria-pressed={mode===id} onClick={()=>setMode(id)}>{label}</button>)}</nav>{mode==='document'?<DocumentViewer content={content} isStudent onBack={onClose}/>:<PresentationViewer content={content} isStudent onBack={onClose}/>}</>}
+    </>:<><nav className="tabs academic-tabs mb-24" aria-label="Material reader views">{[['document','Document'],['presentation','Presentation']].map(([id,label])=><button key={id} className={`tab ${mode===id?'active':''}`} aria-pressed={mode===id} onClick={()=>setMode(id)}>{label}</button>)}</nav>{mode==='document'?<DocumentViewer content={content} isStudent onBack={onClose}/>:<PresentationViewer cacheKey={selected.id} content={content} isStudent onBack={onClose}/>}</>}
   </div></section>
 }

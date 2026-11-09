@@ -6720,6 +6720,60 @@
       "sha256": "e6e3302c3157b76d3c5dccaeba0fdc7238b13460202c81162ec77f583f48c881",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-09T06:33:54.837625+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/21-automatic-records-and-course-rosters/04-background-update.png",
+      "sha256": "552b75d38c4be182637ad92f2907ecd210a81ad49897978bdcda8e2290e72d2c",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T07:04:40.119530+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/21-automatic-records-and-course-rosters/05-offline-cache.png",
+      "sha256": "2aa27e6518d30d92abc0610e3ae4106e497bcce7542c01ae7be5dfd98cf84167",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T07:04:40.120569+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/21-automatic-records-and-course-rosters/mobile-02-change-block.png",
+      "sha256": "df9ed4161076f586b74d3190e5f85127fc5b8943fc4787c47b996525e272fcf6",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T07:04:40.121148+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/21-automatic-records-and-course-rosters/mobile-03-remove-membership.png",
+      "sha256": "0532662e70d35c610d8696b85c1ff6ab998cb96a96bf4cc4b2cb5c131beb557e",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T07:04:40.121617+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/02-shared-interface/14-settings-data-and-privacy.png",
+      "sha256": "8e4014338d089db4430e8b7d9a4d8674cb91ec0dccf56a296fada5604593bebc",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T07:04:40.122093+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/27-cached-workspaces/01-retained-reader.png",
+      "sha256": "07e6b4bc5d3236c4ab813bd83ea0fba3b7181d5ca695f68b3af8f7a5d2ca8881",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T07:04:40.122491+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/27-cached-workspaces/02-manual-refresh.png",
+      "sha256": "4a98efc57960bf586daa8b8461a70dbd8343fa254b1c759220b97b3c999e5210",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T07:04:40.122938+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/27-cached-workspaces/03-updates-available.png",
+      "sha256": "35484c60dff4cdba943c48ff623909c09db495d56dbd1769479b3563b9cfe926",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T07:04:40.124369+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/27-cached-workspaces/04-manual-read-pending.png",
+      "sha256": "680a475d22402f09484e96c7445f8dff770a6cdcb0d236b93a31566ee54e54ab",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T07:04:40.125637+00:00"
     }
   ]
 }

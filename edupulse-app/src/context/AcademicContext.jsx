@@ -6,15 +6,13 @@ import { aiRequest } from '../lib/aiClient'
 const EMPTY_ACADEMIC = { courses: [], publications: [], enrollments: [], attempts: [], accesses: [], institutional: [], faculty: [], events: [], notices: [] }
 const AcademicContext = createContext(null)
 
-// Background reads cost a serverless call and a read of every records table, so they are spaced
-// out: a visible tab rereads every five minutes, and focus or reconnecting rereads data older than a
-// minute. The user's own commands and other tabs' changes still reload at once.
-const REFRESH_MS = 300000, RECHECK_MS = 60000
+// Load on identity entry and after this tab's confirmed mutations. Focus, timers and
+// reconnects preserve the loaded snapshot; other tabs announce updates for manual refresh.
 
 export function AcademicProvider({ children }) {
   const { user } = useAuth()
   // A view switch preserves the surrounding chat, but never reuses another view's records.
-  return <AcademicSession key={`${user?.id}:${user?.baseRole || user?.role}:${!!user?.authenticated}`} user={user}>{children}</AcademicSession>
+  return <AcademicSession key={`${user?.accountId || user?.id}:${user?.id}:${user?.role}:${!!user?.authenticated}`} user={user}>{children}</AcademicSession>
 }
 
 function AcademicSession({ children, user }) {
@@ -23,7 +21,8 @@ function AcademicSession({ children, user }) {
   const role = user?.role, enabled = Boolean(user?.authenticated && role !== 'admin')
   const currentRole = useRef(role), alive = useRef(true), request = useRef(null), channel = useRef(null)
   currentRole.current = role
-  const timing = useRef({ success: 0, retryAt: 0, failures: 0, invalidation: 0, projected: false, syncing: false })
+  const timing = useRef({ invalidation: 0, projected: false, syncing: false })
+  const [refreshAvailable,setRefreshAvailable]=useState(false)
   const seenRevision = useRef(null)
   const [snapshot, setSnapshot] = useState({ role, data: EMPTY_ACADEMIC, loaded: false })
   const [loading, setLoading] = useState(enabled), [error, setError] = useState('')
@@ -58,14 +57,12 @@ function AcademicSession({ children, user }) {
           const records = await aiRequest('academic', 'GET', undefined, controller.signal)
           if (!valid()) return
           // A mutation arriving during a GET invalidates that response; read the newer projection.
-          if (version === timing.current.invalidation) setSnapshot({ role, data: Object.fromEntries(Object.keys(EMPTY_ACADEMIC).map(key => [key, Array.isArray(records[key]) ? records[key] : []])), loaded: true })
+          if (version === timing.current.invalidation) {setSnapshot({ role, data: Object.fromEntries(Object.keys(EMPTY_ACADEMIC).map(key => [key, Array.isArray(records[key]) ? records[key] : []])), loaded: true });setRefreshAvailable(false)}
         } while (valid() && version !== timing.current.invalidation)
-        if (valid()) { timing.current.success = Date.now(); timing.current.failures = 0; timing.current.retryAt = 0 }
       } catch (failure) {
         if (valid()) {
           if ([401, 403].includes(failure.status)) setSnapshot({ role, data: EMPTY_ACADEMIC, loaded: false })
           setError(failure.message)
-          timing.current.retryAt = Date.now() + Math.min(300000, 15000 * 2 ** Math.min(timing.current.failures++, 5))
         }
       } finally {
         if (request.current === entry) { request.current = null; if (alive.current) setLoading(false) }
@@ -75,7 +72,6 @@ function AcademicSession({ children, user }) {
   }, [enabled, role])
 
   useEffect(() => {
-    timing.current.success = timing.current.retryAt = timing.current.failures = 0
     if (enabled) void load(true)
     return () => { request.current?.controller.abort(); request.current = null }
   }, [enabled, load])
@@ -88,7 +84,6 @@ function AcademicSession({ children, user }) {
     if (!enabled) return
     const wake = () => {
       setOnline(navigator.onLine !== false)
-      if (navigator.onLine !== false && document.visibilityState === 'visible' && Date.now() >= timing.current.retryAt && Date.now() - timing.current.success >= RECHECK_MS) void load()
     }
     const offline = () => { setOnline(false); request.current?.controller.abort(); request.current = null; setLoading(false) }
     const changed = event => {
@@ -100,16 +95,15 @@ function AcademicSession({ children, user }) {
     if (typeof BroadcastChannel === 'function') {
       try {
         channel.current = new BroadcastChannel(`edupulse-records-${user.id}`)
-        channel.current.onmessage = event => { if (event.data === 'invalidate') { timing.current.invalidation++; timing.current.success = 0; wake() } }
-      } catch { /* Periodic/focus refresh still works when cross-tab messaging is blocked. */ }
+        channel.current.onmessage = event => { if (event.data === 'invalidate') setRefreshAvailable(true) }
+      } catch { /* Manual refresh remains available without cross-tab messaging. */ }
     }
-    const timer = setInterval(() => { if (Date.now() - timing.current.success >= REFRESH_MS || timing.current.retryAt) wake() }, 15000)
-    window.addEventListener('focus', wake); window.addEventListener('online', wake); window.addEventListener('offline', offline)
-    document.addEventListener('visibilitychange', wake); window.addEventListener('edupulse-records-change', changed)
+    window.addEventListener('online', wake); window.addEventListener('offline', offline)
+    window.addEventListener('edupulse-records-change', changed)
     return () => {
-      clearInterval(timer); channel.current?.close(); channel.current = null
-      window.removeEventListener('focus', wake); window.removeEventListener('online', wake); window.removeEventListener('offline', offline)
-      document.removeEventListener('visibilitychange', wake); window.removeEventListener('edupulse-records-change', changed)
+      channel.current?.close(); channel.current = null
+      window.removeEventListener('online', wake); window.removeEventListener('offline', offline)
+      window.removeEventListener('edupulse-records-change', changed)
     }
   }, [enabled, load, user?.id])
   const command = useCallback(async input => {
@@ -119,7 +113,7 @@ function AcademicSession({ children, user }) {
     return result
   }, [load, role])
   const sameView = snapshot.role === role
-  return <AcademicContext.Provider value={{ data: sameView ? snapshot.data : EMPTY_ACADEMIC, loading: sameView ? loading : enabled, loaded: sameView && snapshot.loaded, error: sameView ? error : '', online, load, command }}>{children}</AcademicContext.Provider>
+  return <AcademicContext.Provider value={{ data: sameView ? snapshot.data : EMPTY_ACADEMIC, loading: sameView ? loading : enabled, loaded: sameView && snapshot.loaded, error: sameView ? error : '', online, refreshAvailable, load, command }}>{children}</AcademicContext.Provider>
 }
 
 export function useAcademicRecords() {

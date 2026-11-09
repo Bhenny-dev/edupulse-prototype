@@ -95,3 +95,7 @@ Choose **Delivery settings** from an item's three-dot menu to store release/dead
 Document export shows **Preparing PDF…** while the PDF is created. **Save** awaits its supplied callback, shows a spinner and retains the edited draft if that callback rejects. Workspace autosave remains a separate account operation. Delivery settings and academic save actions use spinners while pending; static three-dot menus still open immediately. See [Manual 19](../19-loading-and-saved-connections/README.md).
 
 The [8 November delivery audit](../../versions/2026-11-08-pulse-context-and-account-support/validation/results.md) verifies that checked drafts stay hidden until publication, notices reach enrolled learners, saved access/assessment activity reaches instructors, and unenrolled students remain blocked. Admin student support previews are read-only for activity/assessments and never count as student completion.
+
+## Return to loaded work
+
+The Course page retains its selected course, expanded weeks and open document/presentation when you navigate away and return. Focus and reconnect do not replace it with a workspace skeleton. Browser Back and **Back to courses** retain their normal destinations. See [Manual 27](../27-cached-workspaces/README.md) for explicit refresh and state-isolation limits.

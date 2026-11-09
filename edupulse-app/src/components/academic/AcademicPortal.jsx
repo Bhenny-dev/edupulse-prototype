@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useWorkspaceViewState } from '../../context/WorkspaceContext'
 import { useAuth } from '../../context/AuthContext'
 import { useAcademicRecords } from '../../context/AcademicContext'
 import { pulse } from '../pulse/pulseBus'
@@ -18,7 +19,10 @@ const TITLES = { performance: 'Performance', monitoring: 'Student Monitoring', m
 export default function AcademicPortal({ view }) {
   const { user } = useAuth()
   const { data, error: loadError, loading, loaded, command: execute } = useAcademicRecords()
-  const [selected, setSelected] = useState(null), [answers, setAnswers] = useState({}), [busy, setBusy] = useState(false), [result, setResult] = useState(null), [error, setError] = useState('')
+  const [readerId,setReaderId]=useWorkspaceViewState(`academic-reader:${view}`,null)
+  const [assessmentId,setAssessmentId]=useState(null)
+  const selected=data.publications.find(item=>item.active&&item.id===(assessmentId||readerId))||null
+  const [answers, setAnswers] = useState({}), [busy, setBusy] = useState(false), [result, setResult] = useState(null), [error, setError] = useState('')
   const [session,setSession]=useState(null)
   const run = async command => {
     setBusy(true); setError('')
@@ -40,7 +44,7 @@ export default function AcademicPortal({ view }) {
       if(!started)return
       setSession(started)
     }
-    setSelected(item); setAnswers({}); setResult(null)
+    setAssessmentId(item.type==='assessment'?item.id:null);setReaderId(item.type==='assessment'?null:item.id); setAnswers({}); setResult(null)
   }
   return <div className="container academic-portal" aria-busy={loading || busy} data-pulse-target={TITLES[view]} data-pulse-zone={view === 'performance' ? 'performance' : view === 'courseware' ? 'courseware' : view === 'monitor' ? 'monitor' : view === 'records' ? 'records' : view === 'courses' ? 'course-loading' : view === 'monitoring' ? 'performance' : undefined}>
     <div className="page-header"><div><h1>{TITLES[view]}</h1><p className="text-sm text-muted">Account records · Instructor-confirmed EduSuite exports · No institutional grade computations</p></div><div className="academic-actions"><AcademicSyncStatus /><button className="btn btn-secondary btn-sm" disabled={loading || !loaded || busy || !!loadError} onClick={exportRecords}>Export authorized records</button></div></div>
@@ -52,7 +56,7 @@ export default function AcademicPortal({ view }) {
       {['performance', 'monitoring'].includes(view) && user?.role !== 'associate_dean' && <AcademicPerformance data={data} role={user?.role} monitoring={view === 'monitoring'} />}
       {['records', 'courses', 'monitor'].includes(view) && <AcademicManagement data={data} role={user?.role} view={view} />}
       {['courseware', 'assessment'].includes(view) && <AcademicLibrary data={data} assessments={view === 'assessment'} onOpen={open} busy={busy} />}
-      {selected && <OpenedPublication key={`${selected.id}:${session?.id || "reader"}`} selected={selected} data={data} isStudent={isStudent && !user?.supportSubject} answers={answers} setAnswers={setAnswers} result={result} session={session} busy={busy} onClose={() => setSelected(null)} onRetake={async()=>{const started=await run({operation:'start',publication:selected.id,version:selected.source_version,retake:true});if(started){setSession(started);setAnswers({});setResult(null)}}} onSubmit={() => run({ operation: 'respond', publication: selected.id, version: selected.source_version, session:session?.id, responses: selected.content.questions.map((_, index) => answers[index]) })} />}
+      {selected && <OpenedPublication key={`${selected.id}:${session?.id || "reader"}`} selected={selected} data={data} isStudent={isStudent && !user?.supportSubject} answers={answers} setAnswers={setAnswers} result={result} session={session} busy={busy} onClose={() => {setAssessmentId(null);setReaderId(null)}} onRetake={async()=>{const started=await run({operation:'start',publication:selected.id,version:selected.source_version,retake:true});if(started){setSession(started);setAnswers({});setResult(null)}}} onSubmit={() => run({ operation: 'respond', publication: selected.id, version: selected.source_version, session:session?.id, responses: selected.content.questions.map((_, index) => answers[index]) })} />}
     </>}
   </div>
 }

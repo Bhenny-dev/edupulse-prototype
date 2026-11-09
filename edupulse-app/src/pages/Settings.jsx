@@ -2,6 +2,7 @@ import { Spinner } from '../components/ui/LoadingFeedback'
 import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
+import { useAcademicRecords } from '../context/AcademicContext'
 import { useWorkspace } from '../context/WorkspaceContext'
 import { useTheme } from '../context/ThemeContext'
 import { exportCSV, timestampedFilename } from '../utils/exportUtils'
@@ -123,7 +124,8 @@ function NotificationSettings() {
 
 // Provider catalogue with model tiers (free vs. paid subscriptions)
 function DataPrivacySettings() {
-  const { exportBackup, error, conflict, backedUp, loading, saving, retry, reload } = useWorkspace()
+  const { exportBackup, error, conflict, backedUp, loading, saving, dirty, refreshAvailable, refresh, retry, reload } = useWorkspace()
+  const records=useAcademicRecords()
   const { user } = useAuth()
   const { addToast } = useToast()
   const handleExport = () => {
@@ -136,6 +138,8 @@ function DataPrivacySettings() {
       <div className="card-header"><h3><ShieldCheck size={18} /> Data &amp; Privacy</h3></div>
       <div className="card-body">
         <button className="btn btn-secondary mb-16" onClick={exportBackup}><Download size={14} /> Export workspace backup</button>
+
+        <div className="mb-16"><button className="btn btn-secondary" disabled={loading || records.loading || saving || dirty || conflict} onClick={async()=>{await refresh();await records.load(true)}}>{loading && <Spinner />} Refresh workspace and records</button>{(refreshAvailable || records.refreshAvailable) && <p role="status" className="text-sm text-muted">Updates available from another tab. Refresh when ready.</p>}{records.error && <p role="alert">{records.error}</p>}</div>
 
         {(error || conflict) && <section aria-label="Workspace save recovery" className="mb-16" style={{ padding: 16, border: '1px solid var(--gray-200)', borderRadius: 'var(--radius-md)' }}>
           <h4>Workspace save</h4>

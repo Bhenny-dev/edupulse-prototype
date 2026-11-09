@@ -116,3 +116,7 @@ Academic assignment, reviewed-mark, offline-review, delivery, student-response a
 ### Outline-driven authoring and student readers
 
 [Manual 26](../../system-manual/26-outline-driven-courseware/README.md) records the current variable-item authoring contract. Student document and presentation captures 28?29 remain controlled publication/formatting examples: formatted emphasis, tables and literal code are retained, and instructor-only draft evaluation is absent. These images do not prove hosted delivery or substantial generated content; the separate delivery audit remains the evidence for access boundaries.
+
+### Retained readers and deliberate refresh
+
+Academic records remain loaded across navigation and browser focus. Another-tab changes announce **Updates available** and offer a deliberate refresh; own confirmed commands still receive authorized readbacks. Student document/presentation return restores the selected publication without another open event, while assessment sessions/submissions are not replayed. See [Manual 27](../../system-manual/27-cached-workspaces/README.md).

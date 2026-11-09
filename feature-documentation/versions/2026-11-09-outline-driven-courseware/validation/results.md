@@ -13,3 +13,7 @@
 ## Limits
 
 No actual hosted courseware was regenerated or published; student activity, grades and existing reviewed material were not changed. No paid provider key was used. Body-length/topic/format checks can reject thin or incomplete outputs, but instructors must verify factual accuracy, examples, references and answer keys. Source-free original content remains explicitly unverified. Existing 3?5-question assessment and manual written-marking limits remain. Legacy unreviewed thin drafts require an explicit regenerate action; manual and reviewed work remain protected.
+
+## Production verification
+
+Deployment `dpl_JEB2GyghKsAUbjLsAAxPQiXrYpS2` reached READY for exact commit `e785332aff95370c0f0a1b73dab1eac1ca689181`. Public HTML/assets, keyless system help, attributed image fallback, guest support denial, forged support-subject denial and private-memory denial passed at the production alias. The live courseware contract returned 409 `CLIENT_UPDATE_REQUIRED` for an old whole-week request and 403 `FORBIDDEN` for a role-spoofing guest using the valid step schema. No hosted generation or content mutation was performed.

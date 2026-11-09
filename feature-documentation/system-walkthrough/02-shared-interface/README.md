@@ -81,7 +81,7 @@ Filter tabs (**All**, **Unread (n)** and one tab per category such as *Coursewar
 | Appearance | ![Settings · Appearance](11-settings-appearance.png) | **Dark Mode** switch and **Font Size** (Small, Medium, Large) |
 | Notifications | ![Settings · Notifications](12-settings-notifications.png) | Device-only preferences for email, weekly digest and syllabus, courseware and performance alerts (the banner states that email delivery is not connected) |
 | AI & Knowledge | ![Settings · AI & Knowledge](13-settings-ai-and-knowledge.png) | **New in v0.4.0** — see below |
-| Data & Privacy | ![Settings · Data & Privacy](14-settings-data-and-privacy.png) | **Export My Data**, **Export workspace backup**, conditional save recovery and the account-deletion policy |
+| Data & Privacy | ![Settings · Data & Privacy](14-settings-data-and-privacy.png) | **Export My Data**, **Export workspace backup**, **Refresh workspace and records**, conditional save recovery and the account-deletion policy |
 | Help & Support | Image 9 above | Getting started, contacts and frequently asked questions |
 | Keyboard Shortcuts | Image 3 above | Working shortcuts and a separate planned list |
 
@@ -182,3 +182,7 @@ The existing account picker now includes registered named staff. [Manual 25](../
 ## Planned courseware save receipts
 
 Pulse and the Course workspace use the same bounded week-generation plan and revision-checked save. A failed part reports failure without replacing the saved week. The completion receipt waits for actual persistence; checked/published types are skipped before inference. See [Manual 26](../../system-manual/26-outline-driven-courseware/README.md). No shared navigation or restored dashboard controls are removed.
+
+## Cached account views
+
+[Manual 27](../../system-manual/27-cached-workspaces/README.md) supersedes timer/focus reload guidance: loaded work stays visible until a deliberate refresh or an authorized readback after the current user?s mutation. **Data & Privacy** offers a safe manual refresh. The refreshed privacy capture uses a synthetic signed-in instructor and contains no credentials or real student records.
