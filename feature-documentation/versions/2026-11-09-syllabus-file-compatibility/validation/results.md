@@ -15,7 +15,13 @@ Thirteen files expose weeks 1–18; IT 103 exposes 17 explicit weeks and has an 
 - Ten capture cases passed across desktop, mobile, dark mobile, the instructor page and the optional draft approval workflow. Fourteen changed/new images were opened and reviewed. The capture evidence shares one unchanged source digest. Sample PDFs exercise the real parser; controlled account transports do not establish hosted persistence.
 - The manual capture helper now dismisses the current first toast rather than stale indexed locators. The entire native lifecycle workflow passed with bounded capture timeouts.
 - The full `npm run verify` gate passed: documentation, lint, both type checks, pinned model checks, 266 native cases, production build and serverless deployment contract. The initial full run exposed an old test expecting an explicit unfamiliar course code to be discarded; that assertion now verifies source retention, no invented title and no invented catalog match. Its focused rerun and the complete gate both passed.
-- Hosted deployment: pending.
+- Production deployment `dpl_27ydA7ydDrgTbENdiw9EkH6Zh6n7` reached **Ready** for `b0ca8043da293ec82fa1a3ff6e27347331162ed4` on 10 November (Asia/Manila).
+
+## Hosted persistence verification
+
+At `https://edupulse-prototype.vercel.app`, an isolated temporary instructor signed in and saved an actual generated 650 KB scaled PDF through the production workspace API. Readback preserved every original byte, its SHA-256, all four printed weeks and the saved revision. A subsequent 750,001-byte declaration was rejected with HTTP 400, and readback confirmed the revision remained unchanged. The academic projection contained the approved course and no publications. This check used the modern project secret only for temporary-account administration/cleanup and the instructor's own session for workspace operations.
+
+The temporary session was signed out globally, its synthetic academic events removed and its Auth account deleted; a final Auth lookup returned 404. No registered student's enrollment, access history, attempt or grade was changed. This proves hosted import persistence and rejection behavior, not real instructor seeding, signature verification, live model inference or learner completion. The private receipt is retained outside Git.
 
 ## Scope remaining
 
