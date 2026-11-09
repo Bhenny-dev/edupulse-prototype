@@ -25,4 +25,10 @@ The temporary session was signed out globally, its synthetic academic events rem
 
 ## Scope remaining
 
+## Existing WMAD 304 record repair, 10 November
+
+The owner's reported saved WMAD 304 contained the older five-week extraction and the title **Network Management &**. Its retained original matched both the supplied Syllabi PDF and Downloads PDF byte-for-byte. Re-reading those bytes with the released parser produced **Network Management & Application Areas**, all 18 printed weeks and no extraction warnings. An owner-authorized compare-and-save updated that same syllabus ID from workspace revision 1 to 2, retaining the approved original/checksum, existing source links and editable history. The affected workspace had no saved generated items, publications, attempts or material opens; readback confirmed the complete title/outline and unchanged learner activity. This was a specific data repair, not an automatic rewrite of other instructors' work.
+
+## Scope remaining after the repair
+
 This compatibility change prepares approved files for import. It is not evidence of instructor seeding, shared publication, block-specific delivery, real AI inference, learner submissions or live statistics. Those tasks require separate persisted execution and authorization checks. Existing actual student activity must remain unchanged during seeding.
