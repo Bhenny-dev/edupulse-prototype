@@ -6774,6 +6774,54 @@
       "sha256": "680a475d22402f09484e96c7445f8dff770a6cdcb0d236b93a31566ee54e54ab",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-09T07:04:40.125637+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/28-outline-selectors/desktop-dark-assessments.png",
+      "sha256": "bdd55ee310367290d5e40ff068535388a675dc18a87ff8a71252abb098486b3f",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T07:24:26.587099+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/28-outline-selectors/desktop-dark-materials.png",
+      "sha256": "52673e76ba8d05ccacd857301b720950f2e8e9530c5283c20e0d05930ef04082",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T07:24:26.588601+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/28-outline-selectors/desktop-light-assessments.png",
+      "sha256": "f34d78be56bcc511d67e6bedc3f9e6062bd27aa219755f1330a0c5f51e7f6e50",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T07:24:26.589483+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/28-outline-selectors/desktop-light-materials.png",
+      "sha256": "af985f84ce1b20db85b1911adc3eace0f9e9d5c6d737a966ec1abcb16aa9a3fe",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T07:24:26.590130+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/28-outline-selectors/mobile-dark-assessments.png",
+      "sha256": "3c74ac07475a9ccf43e2cebbb930fe14eac5747aae3faa8dcdb4d3c54750788e",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T07:24:26.591144+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/28-outline-selectors/mobile-dark-materials.png",
+      "sha256": "5dabfc7e5ae334941c1d58325f9bf6cc988235dad30de48e3f01f7a32fad0b22",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T07:24:26.591891+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/28-outline-selectors/mobile-light-assessments.png",
+      "sha256": "af9e84353f1b1e637c4bf92a07eb102fc711cb968a1e9d00ff9ac6467067fce7",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T07:24:26.593001+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/28-outline-selectors/mobile-light-materials.png",
+      "sha256": "ad8673f2c15e9fdaa304753476ed67cf8aaa33f21b807624f78464ec72c301b8",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T07:24:26.594445+00:00"
     }
   ]
 }

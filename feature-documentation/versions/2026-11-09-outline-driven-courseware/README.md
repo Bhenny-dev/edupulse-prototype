@@ -1,4 +1,4 @@
-# Outline-driven courseware ? 9 November 2026
+# Outline-driven courseware - 9 November 2026
 
 Courseware now follows the actual weekly outline instead of forcing a material/activity/quiz trio. Bounded lesson parts assemble into a complete learning document; planned discussions, laboratories and deliverables receive appropriate guides. Interactive question formats remain within the established assessment contract. Reviewed work is skipped before inference, and a failed part never replaces the saved week. Existing readers, PDF, menus, review and delivery controls remain.
 

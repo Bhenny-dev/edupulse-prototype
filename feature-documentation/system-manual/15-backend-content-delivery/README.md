@@ -32,4 +32,4 @@ Public research is available for educational drafts, including courseware with a
 
 Coverage measures alignment with the outline, and answer-key checks compare the explanation with the marked option. Neither proves factual correctness. The earlier live audit found incorrect JavaScript statements despite high scores; review code, facts and answer keys before publishing. See the concrete defects in the [validation record](../../versions/2026-10-29-backend-harness/validation/results.md).
 
-The current bounded writer and atomic save contract are documented in [Manual 26](../26-outline-driven-courseware/README.md). Images 4?5 are controlled UI samples, not evidence of substantial model-generated lessons; the new instructional sample, native API/database test and actual local-model smoke have separate provenance.
+The current bounded writer and atomic save contract are documented in [Manual 26](../26-outline-driven-courseware/README.md). Images 4-5 are controlled UI samples, not evidence of substantial model-generated lessons; the new instructional sample, native API/database test and actual local-model smoke have separate provenance.

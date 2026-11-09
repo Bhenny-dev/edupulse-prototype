@@ -100,3 +100,7 @@ The existing Course workspace now derives its expected items from the actual wee
 ## Returning to an open Course
 
 Course selection, week expansion, item selection and document/presentation preferences remain in the current account/role memory while navigating. Browser focus and reconnect do not reload the workspace. The [cache guide](../../system-manual/27-cached-workspaces/README.md) shows the retained reader and deliberate refresh controls; confirmed saves still use revision protection.
+
+## Readable outline selectors
+
+Week-specific teaching materials and assessment types open a viewport-bounded panel with **Search options...**, category headings, native checkboxes, selected count, **Clear selections** and **Done**. The popup sits outside the table scroll container, and its single list scrolls independently. [Manual 28](../../system-manual/28-outline-selectors/README.md) shows desktop/phone light and dark examples. Free-text activities and assessment details retain their own fields.

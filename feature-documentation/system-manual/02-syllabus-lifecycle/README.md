@@ -117,3 +117,7 @@ Confirmed shared course loads are shown above the builder when available. The id
 The [Course Outline workspace](../14-pulse-and-outline-workspace/README.md#manage-the-course-outline) is one table for both terms with term/week filters, an expanded view, sticky headings and full-width fields that grow with their text. Teaching content moves between fixed calendar slots with the grip or move buttons; weeks 9 and 18 remain examinations. Materials, assessment types and resources stay with their teaching content.
 
 The approved-file modal now displays **Reading approved file…** and a spinner during checksum and parsing. Initial workspace and student-directory reads use skeletons. [Manual 19](../19-loading-and-saved-connections/README.md) shows these pending states; the offline approval and outline validation requirements remain.
+
+## Searchable outline choices
+
+Teaching materials and assessment types now open searchable grouped panels above the scrolling table. Checkbox rows remain separate, selected values remain as removable chips, and **Done** / **Escape** returns focus to the field. Activity and assessment-detail text are preserved. See [Manual 28](../28-outline-selectors/README.md).

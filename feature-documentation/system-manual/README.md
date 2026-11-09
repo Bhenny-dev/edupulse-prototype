@@ -67,3 +67,5 @@ The [baseline restoration](../versions/2026-10-28-baseline-workflows/README.md) 
 [Manual 26: Outline-driven courseware](26-outline-driven-courseware/README.md) covers substantive lesson parts, planned discussion/laboratory/assessment formats, per-item review and atomic saved delivery.
 
 [Manual 27: Cached workspaces](27-cached-workspaces/README.md) covers retained readers, deliberate refresh, other-tab update notices and unchanged mutation/conflict protection.
+
+[Manual 28: Outline selectors](28-outline-selectors/README.md) covers searchable categorized choices, retained selections, touch targets and keyboard behavior.

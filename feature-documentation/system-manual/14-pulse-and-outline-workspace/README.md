@@ -85,3 +85,7 @@ Pulse keeps its compact bottom panel. Close it to use the full page. The outline
 ![Mobile Course Outline](14-mobile-outline.png)
 
 ![Mobile Settings shortcuts](15-mobile-settings.png)
+
+## Categorized selector panels
+
+The [current outline-selector guide](../28-outline-selectors/README.md) shows searchable teaching-material and assessment-type panels. They appear outside the table scroll region, retain existing values and use one option-list scrollbar. Keyboard focus, touch targets, chip removal and expanded-outline Escape behavior are preserved. These changes do not alter Pulse targeting, source scope, saved arrays or exam weeks.

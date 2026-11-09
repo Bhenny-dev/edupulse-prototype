@@ -1,8 +1,8 @@
-# 26 ? Generate from the actual course outline
+# 26 - Generate from the actual course outline
 
 **Who:** instructor. **Where:** **Course**, then a teaching week. Existing review, edit, document, presentation, PDF and delivery actions remain available.
 
-1. Review the week's syllabus topics, outcomes, teaching activities and assessment format before **Generate** or **Regenerate week**. Generation always produces one complete learning document. It adds a discussion, laboratory, essay, report or project guide when the plan calls for that work, and an interactive assessment only when a quiz/test response format is planned. ?Learning? alone does not request a quiz. This original sample week has five loop topics and a discussion: the result has **2 items generated**, both **Draft**, with no readiness quiz.
+1. Review the week's syllabus topics, outcomes, teaching activities and assessment format before **Generate** or **Regenerate week**. Generation always produces one complete learning document. It adds a discussion, laboratory, essay, report or project guide when the plan calls for that work, and an interactive assessment only when a quiz/test response format is planned. "Learning" alone does not request a quiz. This original sample week has five loop topics and a discussion: the result has **2 items generated**, both **Draft**, with no readiness quiz.
 
    ![Five loop topics with two planned draft items](01-planned-items.png)
 
@@ -18,7 +18,7 @@
 
    ![References followed by the final material review](04-final-review.png)
 
-5. Open the discussion's **View** action. Its **Purpose and preparation**, **Discussion tasks**, and **Expected output and review** follow the planned activity. A laboratory or written deliverable similarly stays a guide rather than becoming a multiple-choice quiz. Planned interactive assessments retain the platform's current 3?5-question limit, mapped topics and supported multiple-choice, True/False or instructor-marked written response types. No institutional grading weight, deadline or duration is invented.
+5. Open the discussion's **View** action. Its **Purpose and preparation**, **Discussion tasks**, and **Expected output and review** follow the planned activity. A laboratory or written deliverable similarly stays a guide rather than becoming a multiple-choice quiz. Planned interactive assessments retain the platform's current 3-5-question limit, mapped topics and supported multiple-choice, True/False or instructor-marked written response types. No institutional grading weight, deadline or duration is invented.
 
    ![Planned discussion guide with preparation, tasks and review](05-discussion-guide.png)
 

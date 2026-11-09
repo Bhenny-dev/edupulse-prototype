@@ -185,4 +185,4 @@ Pulse and the Course workspace use the same bounded week-generation plan and rev
 
 ## Cached account views
 
-[Manual 27](../../system-manual/27-cached-workspaces/README.md) supersedes timer/focus reload guidance: loaded work stays visible until a deliberate refresh or an authorized readback after the current user?s mutation. **Data & Privacy** offers a safe manual refresh. The refreshed privacy capture uses a synthetic signed-in instructor and contains no credentials or real student records.
+[Manual 27](../../system-manual/27-cached-workspaces/README.md) supersedes timer/focus reload guidance: loaded work stays visible until a deliberate refresh or an authorized readback after the current user's mutation. **Data & Privacy** offers a safe manual refresh. The refreshed privacy capture uses a synthetic signed-in instructor and contains no credentials or real student records.

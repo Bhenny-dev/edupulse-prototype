@@ -1,8 +1,8 @@
-# 27 ? Keep loaded work and refresh when ready
+# 27 - Keep loaded work and refresh when ready
 
-**Who:** signed-in academic roles. **Where:** **Course**, published material readers and **Settings ? Data & Privacy**.
+**Who:** signed-in academic roles. **Where:** **Course**, published material readers and **Settings → Data & Privacy**.
 
-1. Opening an account or a different support subject loads its authorized records. Returning to the browser tab preserves the current workspace; focus, visibility, reconnect and timers do not reload it. In **Course**, navigate away and return through the main navigation: the selected course, expanded weeks, item selection, reader mode and presentation position remain in memory. **Back to courses** and browser Back still honor their explicit destinations. The presentation?s **Edit** action uses the same readable header styling as **Back**. This sample returns to slide **2 / 2** of **Variables lesson**.
+1. Opening an account or a different support subject loads its authorized records. Returning to the browser tab preserves the current workspace; focus, visibility, reconnect and timers do not reload it. In **Course**, navigate away and return through the main navigation: the selected course, expanded weeks, item selection, reader mode and presentation position remain in memory. **Back to courses** and browser Back still honor their explicit destinations. The presentation's **Edit** action uses the same readable header styling as **Back**. This sample returns to slide **2 / 2** of **Variables lesson**.
 
    ![Retained course presentation after leaving and returning](01-retained-reader.png)
 
@@ -14,7 +14,7 @@
 
    ![Account update notice with an explicit Refresh records action](03-updates-available.png)
 
-4. During an authorized refresh, **Updating records?** uses a spinner while the existing dashboard remains visible. First identity loads still use skeletons. Offline/error states retain the loaded snapshot; failed reads require **Retry connection** or a manual refresh. A failed mutation is never resubmitted automatically.
+4. During an authorized refresh, **Updating records…** uses a spinner while the existing dashboard remains visible. First identity loads still use skeletons. Offline/error states retain the loaded snapshot; failed reads require **Retry connection** or a manual refresh. A failed mutation is never resubmitted automatically.
 
    ![Manual read in progress with cached dashboard retained](04-manual-read-pending.png)
 

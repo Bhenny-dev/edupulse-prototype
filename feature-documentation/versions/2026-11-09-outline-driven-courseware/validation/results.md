@@ -1,4 +1,4 @@
-# Validation ? Outline-driven courseware
+# Validation - Outline-driven courseware
 
 ## Completed evidence
 
@@ -12,7 +12,7 @@
 
 ## Limits
 
-No actual hosted courseware was regenerated or published; student activity, grades and existing reviewed material were not changed. No paid provider key was used. Body-length/topic/format checks can reject thin or incomplete outputs, but instructors must verify factual accuracy, examples, references and answer keys. Source-free original content remains explicitly unverified. Existing 3?5-question assessment and manual written-marking limits remain. Legacy unreviewed thin drafts require an explicit regenerate action; manual and reviewed work remain protected.
+No actual hosted courseware was regenerated or published; student activity, grades and existing reviewed material were not changed. No paid provider key was used. Body-length/topic/format checks can reject thin or incomplete outputs, but instructors must verify factual accuracy, examples, references and answer keys. Source-free original content remains explicitly unverified. Existing 3-5-question assessment and manual written-marking limits remain. Legacy unreviewed thin drafts require an explicit regenerate action; manual and reviewed work remain protected.
 
 ## Production verification
 

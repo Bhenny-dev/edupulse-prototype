@@ -1,3 +1,4 @@
+import MultiSelectDropdown from '../components/syllabus/OutlineMultiSelect'
 import { swapTeachingWeeks } from '../utils/outlineEditing'
 import '../components/syllabus/outline-editor.css'
 import { revisedWorkspace } from '../utils/syllabusRevisions'
@@ -381,67 +382,6 @@ function Tr({ label, value }) {
 }
 
 /* ─── Multi-Select Dropdown for Six-Layer Categories ─── */
-function MultiSelectDropdown({ categories, selected = [], onChange, placeholder = 'Select items...', fieldPath, fieldLabel }) {
-  const [open, setOpen] = useState(false)
-  const ref = useRef(null)
-
-  useEffect(() => {
-    const handleClick = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false) }
-    document.addEventListener('mousedown', handleClick)
-    return () => document.removeEventListener('mousedown', handleClick)
-  }, [])
-
-  const toggle = (item) => {
-    const next = selected.includes(item) ? selected.filter(s => s !== item) : [...selected, item]
-    onChange(next)
-  }
-
-  const remove = (item) => onChange(selected.filter(s => s !== item))
-
-  return (
-    <div ref={ref} onKeyDownCapture={event => { if (event.key === 'Escape' && open) { event.preventDefault(); event.stopPropagation(); setOpen(false) } }} style={{ position: 'relative' }}>
-      <button type="button" className="outline-multi-select" data-pulse-field={fieldPath} aria-label={fieldLabel || placeholder} aria-expanded={open} onClick={() => setOpen(value => !value)}>{selected.length ? `${selected.length} selected` : placeholder}</button>
-      <div className="outline-selected-items">
-        {selected.map(item => (
-          <span key={item} style={{
-            display: 'inline-flex', alignItems: 'center', gap: '2px', padding: '1px 6px',
-            background: 'var(--sky-100)', color: 'var(--sky-700)', borderRadius: 'var(--radius-sm)',
-            fontSize: '0.6875rem', whiteSpace: 'nowrap',
-          }}>
-            {item}
-            <button onClick={(e) => { e.stopPropagation(); remove(item) }} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontSize: '0.625rem', lineHeight: 1 }}><X size={10} /></button>
-          </span>
-        ))}
-      </div>
-      {open && (
-        <div style={{
-          position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 50,
-          maxHeight: '200px', overflowY: 'auto', background: 'var(--bg)',
-          border: '1px solid var(--gray-200)', borderRadius: 'var(--radius-md)',
-          boxShadow: 'var(--shadow-lg)', marginTop: '4px',
-        }}>
-          {categories.map(cat => (
-            <div key={cat.layer}>
-              <div style={{ padding: '4px 10px', fontSize: '0.6875rem', fontWeight: 700, color: 'var(--sky-600)', background: 'var(--gray-50)', position: 'sticky', top: 0 }}>
-                {cat.layer}
-              </div>
-              {cat.items.map(item => (
-                <label key={item} style={{
-                  display: 'flex', alignItems: 'center', gap: '6px', padding: '4px 10px 4px 20px',
-                  fontSize: '0.75rem', cursor: 'pointer', background: selected.includes(item) ? 'var(--sky-50)' : 'transparent',
-                }}>
-                  <input type="checkbox" checked={selected.includes(item)} onChange={() => toggle(item)} style={{ width: '12px', height: '12px' }} />
-                  {item}
-                </label>
-              ))}
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  )
-}
-
 /* ─── Syllabus Builder — Single-Page 7-Section Form ─── */
 const SectionLabel = ({ num, label }) => (
     <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px', marginTop: '24px' }}>

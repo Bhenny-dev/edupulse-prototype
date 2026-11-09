@@ -39,7 +39,7 @@
 .outline-table .form-input, .outline-table .form-select { width: 100%; min-width: 0; box-sizing: border-box; }
 .outline-table textarea.form-input { min-height: 96px; font-size: .875rem !important; line-height: 1.6; padding: 12px !important; }
 .outline-table input.form-input { min-height: 42px; font-size: .875rem !important; padding: 10px !important; }
-.outline-multi-select { display: block; width: 100%; min-height: 42px; padding: 9px 10px; text-align: left; font: inherit; font-size: .8rem; color: var(--gray-700); background: var(--white); border: 1px solid var(--gray-300); border-radius: 8px; cursor: pointer; }
+.outline-multi-select { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; min-height: 42px; padding: 9px 10px; text-align: left; font: inherit; font-size: .8rem; color: var(--gray-700); background: var(--white); border: 1px solid var(--gray-300); border-radius: 8px; cursor: pointer; }
 .outline-selected-items { display: flex; flex-wrap: wrap; gap: 5px; margin-block: 6px; }
 .outline-table td:first-child { padding-inline: 5px; }
 .outline-grip { display: inline-grid; place-items: center; border: 0; background: transparent; color: var(--gray-500); cursor: grab; padding: 5px; }
@@ -52,3 +52,23 @@
 .outline-editor.is-expanded .outline-table { min-width: 1400px; }
 @media (min-width: 1200px) { body.pulse-panel-open .outline-editor.is-expanded { right: 480px; } }
 @media (max-width: 640px) { .outline-tools { width: 100%; } .outline-tools label { flex: 1; } .outline-tools :is(select, button), .outline-multi-select { min-height: 44px; } .outline-grip, .outline-move .btn { min-height: 44px; min-width: 44px; } .outline-table .form-input { font-size: 1rem !important; } .outline-editor.is-expanded { inset: 68px 4px 4px; } .outline-editor.is-expanded > .card-body { padding: 12px; } }
+
+/* The selector lives outside the scrolling outline; only the option list scrolls. */
+.outline-options { position: fixed; z-index: 1200; display: flex; flex-direction: column; gap: 12px; padding: 12px; box-sizing: border-box; border: 1px solid var(--gray-300); border-radius: var(--radius-md); background: var(--white); color: var(--gray-800); box-shadow: var(--shadow-lg); font-size: .875rem; }
+.outline-options header, .outline-options footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-shrink: 0; }
+.outline-options header strong { min-width: 0; overflow-wrap: anywhere; }
+.outline-options header .btn, .outline-options footer .btn { min-height: 44px; flex-shrink: 0; }
+.outline-options > input { font-size: 1rem; flex-shrink: 0; min-height: 44px; width: 100%; }
+.outline-options-list { min-height: 0; flex: 1; overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable; }
+.outline-options fieldset { border: 0; margin: 0 0 12px; padding: 0; min-width: 0; }
+.outline-options legend { padding: 8px; width: 100%; box-sizing: border-box; background: var(--gray-50); color: var(--sky-700); font-size: .8125rem; font-weight: 700; }
+.outline-options label { display: flex; align-items: center; gap: 12px; min-height: 44px; margin: 0; padding: 8px; box-sizing: border-box; cursor: pointer; line-height: 1.5; }
+.outline-options label:has(input:checked) { background: var(--sky-50); }
+.outline-options label:hover { background: var(--gray-50); }
+.outline-options label input { width: 18px; height: 18px; margin: 0; flex-shrink: 0; accent-color: var(--sky-600); }
+.outline-options footer { border-top: 1px solid var(--gray-200); padding-top: 4px; color: var(--gray-600); }
+.outline-options :is(button,input):focus-visible { outline: 2px solid var(--sky-600); outline-offset: 2px; }
+.outline-selected-item { display: inline-flex; align-items: center; gap: 4px; max-width: 100%; padding-left: 8px; border-radius: var(--radius-sm); color: var(--sky-700); background: var(--sky-100); font-size: .8125rem; line-height: 1.5; }
+.outline-selected-item > span { overflow-wrap: anywhere; min-width: 0; }
+.outline-selected-item button { display: grid; place-items: center; flex-shrink: 0; width: 32px; height: 36px; border: 0; border-radius: inherit; color: inherit; background: transparent; cursor: pointer; }
+@media (max-width: 640px) { .outline-selected-item button { width: 44px; height: 44px; } }

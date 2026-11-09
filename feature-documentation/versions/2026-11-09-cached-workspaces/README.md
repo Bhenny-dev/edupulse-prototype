@@ -1,4 +1,4 @@
-# Retained workspaces and deliberate refresh ? 9 November 2026
+# Retained workspaces and deliberate refresh - 9 November 2026
 
 Returning to a browser tab preserves the loaded account workspace. Course and student material readers retain their navigation preferences; timer/focus/reconnect polling is removed. Other tabs announce updates, and Settings offers manual refresh. Local confirmed mutations still receive authorized readback, and revision conflicts, dirty edits, role isolation and student activity boundaries remain protected.
 
