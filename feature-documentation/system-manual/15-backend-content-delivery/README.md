@@ -22,7 +22,7 @@ Public research is available for educational drafts, including courseware with a
 
    ![Pulse courseware request and generation confirmation](06-pulse-courseware-request.png)
 
-   Generation returns material, activity and assessment drafts. The earlier real-model capture checked that the request and research restriction reached the API and all three drafts were stored. The current interface example below uses synthetic week 2 content to show the saved items and their **View** and three-dot actions.
+   Generation returns the item types required by the current outline. The earlier real-model capture checked that the request and research restriction reached the API and all three drafts were stored. The current quiz-week interface example below uses synthetic week 2 content to show the saved items and their **View** and three-dot actions.
 
    ![Synthetic saved courseware drafts in the combined workspace](04-persisted-courseware-drafts.png)
 
@@ -31,3 +31,5 @@ Public research is available for educational drafts, including courseware with a
    ![Synthetic saved lesson opened after reload](05-reloaded-generated-lesson.png)
 
 Coverage measures alignment with the outline, and answer-key checks compare the explanation with the marked option. Neither proves factual correctness. The earlier live audit found incorrect JavaScript statements despite high scores; review code, facts and answer keys before publishing. See the concrete defects in the [validation record](../../versions/2026-10-29-backend-harness/validation/results.md).
+
+The current bounded writer and atomic save contract are documented in [Manual 26](../26-outline-driven-courseware/README.md). Images 4?5 are controlled UI samples, not evidence of substantial model-generated lessons; the new instructional sample, native API/database test and actual local-model smoke have separate provenance.

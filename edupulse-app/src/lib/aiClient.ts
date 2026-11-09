@@ -161,10 +161,23 @@ export async function askPulse(input: Partial<ChatInput> & { message: string }, 
 }
 
 export type CourseDraft = Awaited<ReturnType<typeof import('./rag/courseware').draftCoursewareAgents>>
-export async function generateCourseDraft(input: CourseInput, signal?: AbortSignal): Promise<CourseDraft> {
-  if (aiPreference() !== 'browser') return aiRequest<CourseDraft>('courseware', 'POST', input, signal)
-  const abort = AbortSignal.any([AbortSignal.timeout(300000), ...(signal ? [signal] : [])])
-  const { draftCoursewareAgents } = await import('./rag/courseware')
-  const deps = browserDeps(abort, { id: 'device-session', role: 'guest', local: false })
-  return draftCoursewareAgents(input, abort, { ...deps, generate: invokeBrowserModel })
+export async function generateCoursewareParts(input:CourseInput,signal?:AbortSignal,types?:('material'|'activity'|'assessment')[]) {
+  const [{coursewarePlan},{draftCoursewareStep,assembleCourseware}]=await Promise.all([import('./rag/coursewarePlan'),import('./rag/courseware')])
+  const results:Awaited<ReturnType<typeof draftCoursewareStep>>[]=[]
+  for(const part of coursewarePlan(input).filter(part=>!types||types.includes(part.type))) {
+    signal?.throwIfAborted()
+    const scoped={...input,stepKey:part.key}
+    if(aiPreference()!=='browser')results.push({...await aiRequest<Awaited<ReturnType<typeof draftCoursewareStep>>>('courseware','POST',scoped,signal),step:part})
+    else {
+      const abort=AbortSignal.any([AbortSignal.timeout(180000),...(signal?[signal]:[])])
+      const deps=browserDeps(abort,{id:'device-session',role:'guest',local:false})
+      results.push(await draftCoursewareStep(scoped,abort,{...deps,generate:invokeBrowserModel}))
+    }
+  }
+  return assembleCourseware(input,results,types)
+}
+export async function generateCourseDraft(input:CourseInput,signal?:AbortSignal):Promise<CourseDraft> {
+  const result=await generateCoursewareParts(input,signal)
+  if(!result.content.material)throw new Error('The complete lesson did not finish. Existing courseware was preserved.')
+  return {...result,content:{...result.content,material:result.content.material}}
 }

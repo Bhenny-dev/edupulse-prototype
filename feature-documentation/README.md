@@ -4,6 +4,7 @@
 
 | Folder | Covers | Contents |
 | --- | --- | --- |
+| [9 November outline-driven courseware](versions/2026-11-09-outline-driven-courseware/README.md) | Bounded complete lessons, planned item formats and atomic week saves | See release validation |
 | [9 November named staff](versions/2026-11-09-named-staff/README.md) | Confirmed surname logins and corrected academic staff roles | See hosted account validation |
 | [9 November System Search](versions/2026-11-09-system-first-search/README.md) | System-first keyless answers, spelling suggestions and sourced Internet images | See release validation |
 | [8 November Pulse context and account support](versions/2026-11-08-pulse-context-and-account-support/README.md) | Authorized record answers, public research, scoped agent handoffs and searchable account support views | See release validation |

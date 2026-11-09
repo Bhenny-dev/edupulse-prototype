@@ -92,3 +92,7 @@ The [Course Outline workspace](../../system-manual/14-pulse-and-outline-workspac
 ![Course students](02-monitoring-course-students.png)
 
 **Student Monitoring → Students** contains the course/block roster, **Choose students**, optional **Import an EduSuite class list**, student search and paginated memberships. Three-dot menus provide **Change block** and **Remove from course**, both saved only after confirmation. Accounts and attempt history are retained. See [Manual 21](../../system-manual/21-automatic-records-and-course-rosters/README.md). The Syllabus page has only its three authoring tabs.
+
+## Outline-driven weekly content
+
+The existing Course workspace now derives its expected items from the actual week plan. Full lesson parts assemble into one document; discussion/lab/written guides and interactive assessments are included only when planned. Reviewed and manually authored work remain protected. The [current illustrated task](../../system-manual/26-outline-driven-courseware/README.md) shows a five-topic lesson plus discussion, with evaluation last and no unrequested quiz.

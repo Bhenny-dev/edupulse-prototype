@@ -18,7 +18,7 @@ export default function DraftEvidence({ metadata }) {
       {coverage.items.some(i => i.status === 'missing') && <p role="status">Some outline items are not addressed. Regenerate this week or add them before checking the draft.</p>}
     </details>}
     {verification && <p>Statements checked against the outline and references: {verification.supported} supported, {verification.total - verification.supported} for your verification.</p>}
-    {answerKey && <p role={answerKey.issues?.length ? 'alert' : undefined}>Answer-key check: {answerKey.consistent} of {answerKey.checked} explanations agree with the marked answer.{answerKey.issues?.length ? ` Check ${answerKey.issues.map(i => `question ${i.question} (marked ${String.fromCharCode(65 + i.marked)}, explanation points to ${String.fromCharCode(65 + i.supported)})`).join(', ')} before publishing.` : ''}</p>}
+    {answerKey?.checked > 0 && <p role={answerKey.issues?.length ? 'alert' : undefined}>Answer-key check: {answerKey.consistent} of {answerKey.checked} explanations agree with the marked answer.{answerKey.issues?.length ? ` Check ${answerKey.issues.map(i => `question ${i.question} (marked ${String.fromCharCode(65 + i.marked)}, explanation points to ${String.fromCharCode(65 + i.supported)})`).join(', ')} before publishing.` : ''}</p>}
     <details><summary>Generation details and references ({metadata.sources?.length || 0})</summary>
       <p>{metadata.provider} · {metadata.model} · Request {metadata.requestId}</p>
       {metadata.trace?.length > 0 && <ol className="aa-timeline">{metadata.trace.map((step, i) => <li key={i} style={{ '--agent-color': AGENT_META[step.agent]?.color }}><strong>{step.agent || step.node}</strong>{step.action ? ` · ${step.action}` : ''}<div>{step.detail}</div></li>)}</ol>}

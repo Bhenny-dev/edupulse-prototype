@@ -63,3 +63,5 @@ The [baseline restoration](../versions/2026-10-28-baseline-workflows/README.md) 
 [Manual 24: System-first search](24-system-first-search/README.md) covers provider-free lookups, spelling and name suggestions, explicit Internet fallback, sourced images and source boundaries.
 
 [Manual 25: Named staff test accounts](25-staff-test-accounts/README.md) covers surname logins, corrected academic roles, selecting a named person and the boundary between registration and course assignment.
+
+[Manual 26: Outline-driven courseware](26-outline-driven-courseware/README.md) covers substantive lesson parts, planned discussion/laboratory/assessment formats, per-item review and atomic saved delivery.

@@ -178,3 +178,7 @@ The existing role chooser now leads to a searchable account dialog. A selected a
 Pulse now shows **System search · No AI credits used** for simple quoted local answers. Approximate name or keyword matches can begin **Did you mean**. Public fallback is labelled **Internet suggestions**, with source-linked thumbnails and **Image credits** when the API provides images. The existing theme, compact verification controls and role boundaries remain. See [Manual 24 and its desktop/mobile captures](../../system-manual/24-system-first-search/README.md).
 
 The existing account picker now includes registered named staff. [Manual 25](../../system-manual/25-staff-test-accounts/README.md) shows instructor surname searches and the corrected Dean and Associate Dean selections with controlled transports.
+
+## Planned courseware save receipts
+
+Pulse and the Course workspace use the same bounded week-generation plan and revision-checked save. A failed part reports failure without replacing the saved week. The completion receipt waits for actual persistence; checked/published types are skipped before inference. See [Manual 26](../../system-manual/26-outline-driven-courseware/README.md). No shared navigation or restored dashboard controls are removed.

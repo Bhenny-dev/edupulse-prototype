@@ -112,3 +112,7 @@ The Pulse capture uses a synthetic account transport, so the separate conversati
 Shared navigation now places **Help & Support** and **Keyboard Shortcuts** in Settings. Pulse guidance is under **Pulse options**. [Manual 14](../../system-manual/14-pulse-and-outline-workspace/README.md) shows the current controls; the academic pages and role boundaries above are preserved.
 
 Academic assignment, reviewed-mark, offline-review, delivery, student-response and appeal actions now show spinners while their existing requests are pending. The restored pages and authorized data boundaries remain. [Manual 19](../../system-manual/19-loading-and-saved-connections/README.md) records the loading audit.
+
+### Outline-driven authoring and student readers
+
+[Manual 26](../../system-manual/26-outline-driven-courseware/README.md) records the current variable-item authoring contract. Student document and presentation captures 28?29 remain controlled publication/formatting examples: formatted emphasis, tables and literal code are retained, and instructor-only draft evaluation is absent. These images do not prove hosted delivery or substantial generated content; the separate delivery audit remains the evidence for access boundaries.

@@ -19,3 +19,5 @@ Account-support capture suites use `tests/account-support-fixture.ts`, which is 
 The System Search suites use synthetic account transports with the real keyless answer builder and an attributed, checked-in Wikimedia thumbnail. Live keyword/API routing is checked separately; image availability can change after capture.
 
 Staff-registration captures use `tests/staff-registration-fixture.ts` and the owner-confirmed app-only staff manifest. Both enter the capture digest. Synthetic IDs/transports demonstrate account-picker rendering; actual Auth creation, password sign-in and named picker RPC results are separate hosted receipts.
+
+The outline-courseware suites include `tests/outline-courseware-fixture.ts` and original `tests/outline-courseware-data.ts` in the capture digest. They run the real bounded generation graph with controlled provider/account/workspace transports and a simulated ready badge. They demonstrate substantial sample rendering and atomic UI interaction, not hosted authentication, paid inference or student completion. Native API/database persistence and the installed local-model smoke are reported separately.

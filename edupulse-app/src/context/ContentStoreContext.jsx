@@ -1,7 +1,7 @@
 import { jsonValue } from '../utils/jsonValue'
 import { createContext, useContext, useCallback } from 'react'
 import { useWorkspace } from './WorkspaceContext'
-import { mergeDrafts } from '../utils/contentUpdates'
+import { mergeDrafts, mergeGeneratedWeek } from '../utils/contentUpdates'
 
 /* ─── Content Store Context ───
  * Workspace-backed, account-scoped store for generated courseware content.
@@ -23,6 +23,17 @@ export function ContentStoreProvider({ children }) {
   const generateWeek = useCallback((weekUpdates) => {
     setStore(prev => mergeDrafts(prev, weekUpdates))
   }, [setStore])
+
+  const commitWeekDrafts = useCallback(async (updates,{syllabus,week,expected,types,missingOnly=false}) => {
+    let saved=0
+    const receipt=await commit(data=>{
+      if(jsonValue(data.syllabi.find(item=>item.id===syllabus.id))!==jsonValue(syllabus))throw new Error('The syllabus changed during generation. Generate from its current outline.')
+      const content=mergeGeneratedWeek(data.content,updates,expected,{syllabusId:syllabus.id,week,types,missingOnly})
+      saved=Object.keys(updates).filter(id=>content[id]!==data.content[id]).length
+      return {...data,content}
+    })
+    return {...receipt,saved}
+  },[commit])
 
   const checkItem = useCallback((contentId) => {
     setStore(prev => !prev[contentId] ? prev : ({
@@ -63,7 +74,7 @@ export function ContentStoreProvider({ children }) {
   }), [commit])
 
   return (
-    <ContentStoreContext.Provider value={{ store, generateCourse, generateWeek, checkItem, bulkCheck, toggleVisibility, saveContent, commitContent }}>
+    <ContentStoreContext.Provider value={{ store, generateCourse, generateWeek, commitWeekDrafts, checkItem, bulkCheck, toggleVisibility, saveContent, commitContent }}>
       {children}
     </ContentStoreContext.Provider>
   )

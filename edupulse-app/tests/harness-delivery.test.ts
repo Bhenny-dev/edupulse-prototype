@@ -1,13 +1,17 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { mkdtemp } from 'node:fs/promises'
+import { mkdtemp,rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
-import { join } from 'node:path'
+import { join,dirname,basename,resolve } from 'node:path'
 import { handleRequest } from '../server/http.js'
 import { closeLocalDb } from '../server/database.js'
 import { runCourseware } from '../server/graph.js'
 import { registerEditor, applyEditorProposal, type EditorSnapshot } from '../src/agents/editorTools.js'
 import { validateDraft } from '../src/agents/draftValidation.js'
+import { buildCourseInput } from '../src/utils/courseInput.js'
+import { coursewarePlan } from '../src/lib/rag/coursewarePlan.js'
+import { assembleCourseware } from '../src/lib/rag/courseware.js'
+import { loopLesson,loopDiscussion,outlineCoursewareSyllabus } from './outline-courseware-data.js'
 
 test('provider response crosses the real API, editor adapter and revision save, then survives reload', async t => {
   const originalFetch = globalThis.fetch
@@ -56,4 +60,30 @@ test('model envelopes cannot execute nested paths, identity changes or removal o
 
 test('direct courseware service retains the same authoring roles as the HTTP endpoint', async () => {
   for (const role of ['dean', 'associate_dean', 'student', 'guest'] as const) await assert.rejects(runCourseware({ courseCode: 'TEST', courseTitle: 'Test', week: 1, topics: ['Variables'], outcomes: 'Explain variables', referenceText: '' }, { id: 'role-test', role, local: false }, AbortSignal.timeout(1000), async () => assert.fail('Denied roles must not reach the model')), { code: 'FORBIDDEN' })
+})
+
+test('outline steps cross the actual API and model adapter, expose no partial save, and persist the completed variable bundle',async t=>{
+  const directory=await mkdtemp(join(tmpdir(),'edupulse-outline-delivery-')),fetchBefore=globalThis.fetch
+  const names=['AI_LOCAL_MODE','AI_PROVIDER','AI_DATA_DIR','AI_VECTOR_STORE','VERCEL'] as const,old=Object.fromEntries(names.map(name=>[name,process.env[name]]))
+  delete process.env.VERCEL;process.env.AI_LOCAL_MODE='true';process.env.AI_PROVIDER='ollama';process.env.AI_VECTOR_STORE='local';process.env.AI_DATA_DIR=join(directory,'db')
+  t.after(async()=>{globalThis.fetch=fetchBefore;await closeLocalDb();for(const name of names){if(old[name]===undefined)delete process.env[name];else process.env[name]=old[name]}assert.equal(dirname(resolve(directory)),resolve(tmpdir()));assert.ok(basename(directory).startsWith('edupulse-outline-delivery-'));await rm(directory,{recursive:true,force:true})})
+  let failActivity=true;const requested:string[]=[]
+  globalThis.fetch=async(url,init)=>{
+    assert.match(String(url),/\/api\/chat$/)
+    const body=JSON.parse(String(init?.body)),prompt=JSON.parse(body.messages.at(-1).content)
+    assert.equal(body.options.num_predict,2400);requested.push(prompt.generationStep)
+    return Response.json({done:true,done_reason:'stop',message:{content:prompt.generationStep==='activity'&&failActivity?'invalid JSON':JSON.stringify(prompt.generationStep==='activity'?{activity:loopDiscussion}:{material:loopLesson})}})
+  }
+  const api=async(action:string,body?:unknown)=>{const response=await handleRequest(new Request(`http://localhost/api/ai?action=${action}`,body?{method:action==='workspace'?'PUT':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}:undefined));return {response,result:await response.json()}}
+  const input=buildCourseInput(outlineCoursewareSyllabus,5,'Only from the syllabus.'),before=(await api('workspace')).result,parts=[]
+  const outdated=await api('courseware',input);assert.equal(outdated.response.status,409);assert.equal(outdated.result.error.code,'CLIENT_UPDATE_REQUIRED');assert.equal(requested.length,0,'an old client must fail before any model call')
+  for(const part of coursewarePlan(input).filter(part=>part.type==='material')){const {response,result}=await api('courseware',{...input,stepKey:part.key});assert.equal(response.status,200);assert.equal(result.content.assessment,undefined);parts.push(result)}
+  const failed=await api('courseware',{...input,stepKey:'activity'});assert.equal(failed.response.status,502)
+  assert.equal((await api('workspace')).result.revision,before.revision,'Generation, including a failed later step, saves no partial document')
+  failActivity=false;const activity=await api('courseware',{...input,stepKey:'activity'});assert.equal(activity.response.status,200);parts.push(activity.result)
+  const completed=assembleCourseware(input,parts);assert.equal(completed.content.assessment,undefined)
+  const content=Object.fromEntries(Object.entries(completed.content).map(([type,value])=>[type,{syllabusId:outlineCoursewareSyllabus.id,week:5,type,status:'draft',content:value}]))
+  const saved=await api('workspace',{revision:before.revision,data:{syllabi:[outlineCoursewareSyllabus],registrations:[],content}});assert.equal(saved.response.status,200)
+  const loaded=(await api('workspace')).result;assert.equal(loaded.revision,before.revision+1);assert.deepEqual(Object.keys(loaded.data.content).sort(),['activity','material'])
+  assert.ok(loaded.data.content.material.content.sections.length>5);assert.ok(requested.filter(key=>key.startsWith('lesson-')).length===2)
 })

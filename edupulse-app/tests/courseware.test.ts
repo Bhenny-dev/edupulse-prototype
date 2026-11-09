@@ -9,8 +9,8 @@ import type { AgentDeps, Evidence } from '../src/lib/rag/types.js'
 const signal = () => AbortSignal.timeout(10000)
 const plan = { activities: '', assessments: '', teachingMaterials: [], resources: [] }
 const draft = (over: { correctIndex?: number; explanation?: string; material?: string } = {}) => ({
-  material: { title: 'Loops in C', sections: [{ heading: 'For loops', body: over.material || 'A for loop repeats statements while a counter stays within a limit, and nested loops trace tables row by row.' }, { heading: 'While loops', body: 'A while loop checks its condition before each pass and stops when the condition becomes false.' }, { heading: 'Worked trace and practice', body: 'A loop combines an initial state, a test and a state update. Start a counter at zero, print its current value and increase it by one while it remains below three. The visible output is zero, one and two; three is never printed because the test is evaluated before the body. Trace the counter and the truth value in separate columns before running the example. Next change the starting value to one and predict the output again. Compare your prediction with the actual result and explain any difference. An update that never moves the state toward the stopping condition may cause repeated execution. During practice, identify the initial value, stopping test and update separately before rewriting the loop.' }] },
-  activity: { title: 'Pair-programming laboratory', sections: [{ heading: 'Trace the table', body: 'Pairs trace a nested-loop multiplication table by hand before writing the program in the laboratory.' }, { heading: 'Compare output', body: 'Run the program and compare its output with the trace table, noting each difference.' }] },
+  material: { title: 'Loops in C', sections: [{ heading: 'For loops', body: over.material || 'A for loop repeats statements while a counter stays within a limit, and nested loops trace tables row by row.' }, { heading: 'While loops', body: 'A while loop checks its condition before each pass and stops when the condition becomes false.' }, { heading: 'Worked trace and practice', body: 'A loop combines an initial state, a test and a state update. Start a counter at zero, print its current value and increase it by one while it remains below three. The visible output is zero, one and two; three is never printed because the test is evaluated before the body. Trace the counter and the truth value in separate columns before running the example. Next change the starting value to one and predict the output again. Compare your prediction with the actual result and explain any difference. An update that never moves the state toward the stopping condition may cause repeated execution. During practice, identify the initial value, stopping test and update separately before rewriting the loop. A bounded count and a sentinel communicate different reasons for termination. A count-controlled loop is appropriate when the number of entries is known in advance; the counter records how many entries have been handled. A sentinel-controlled loop instead recognizes a reserved input value. Test the sentinel before processing the input so that the sentinel is never included in the result. For example, read positive values until zero is entered and accumulate their sum: input two, five, zero produces seven, not an extra data record. Record the input, decision and running total in separate trace-table columns. Consider the empty-input case, immediate sentinel case and a normal sequence before running the program. Check that input is refreshed in the loop body. Reusing an unchanged input or forgetting the counter update can prevent termination. During practice, compare your predicted trace with the actual output and explain which statement changes the state. A correct result for one sequence does not establish correctness for every sequence, so use boundary cases as well as typical values.' }] },
+  activity: { title: 'Pair-programming laboratory', sections: [{ heading: 'Trace the table', body: 'Pairs trace a nested-loop multiplication table by hand before writing the program in the laboratory.' }, { heading: 'Compare output', body: 'Run the program and compare its output with the trace table, noting each difference. First, identify the starting state, stopping condition and state update in the supplied example. Work with a partner: one learner predicts the next state and the other records the prediction in a trace table. Swap roles after three iterations. Next, run the example and compare every recorded state with the actual output. Record discrepancies rather than silently correcting the prediction. Repeat with the smallest valid input and an input at the stopping boundary. Submit the trace table, the tested inputs, the observed output and a short explanation of the condition that ended each run. Review whether the predicted states match the executed statements and whether the explanation accounts for the boundary case. Discuss any loop that did not terminate and identify the missing or incorrect state update before attempting a correction.' }] },
   assessment: { title: 'Loop tracing quiz', questions: [
     { text: 'Which structure processes items first in, first out?', options: ['Stack', 'Queue', 'Tree', 'Graph'], correctIndex: over.correctIndex ?? 1, explanation: over.explanation || 'A queue processes items first in, first out.' },
     { text: 'Which loop checks its condition after the body runs?', options: ['for loop', 'while loop', 'do-while loop', 'nested loop'], correctIndex: 2, explanation: 'A do-while loop runs the body first and checks the condition after it.' },
@@ -69,16 +69,21 @@ test('coverage checks every topic and outcome, and whether the activity and asse
 
 test('the courseware graph searches every topic, revises a wrong answer key and adds syllabus references', async () => {
   const queries: string[] = [], prompts: { topics: string[]; plannedActivity: string; correction: string }[] = []
-  const responses = [draft({ correctIndex: 0 }), draft()]
   const deps: AgentDeps & { generate: NonNullable<AgentDeps['generate']> } = {
     search: async query => { queries.push(query); return { evidence: [] } }, provider: 'test',
-    generate: async (_system, prompt) => { prompts.push(JSON.parse(prompt)); return JSON.stringify(responses.shift()) },
+    generate: async (_system,prompt) => {
+      const part=JSON.parse(prompt);prompts.push(part)
+      const value=draft({correctIndex:part.generationStep==='assessment'&&part.attempt===1?0:1})
+      if(part.generationStep.startsWith('lesson'))value.material.sections.unshift(...part.topics.map((topic:string)=>({heading:topic,body:`${topic} can be investigated by tracing the changing state, recording the boundary conditions and comparing the predicted result with the executed example.`})))
+      return JSON.stringify(value)
+    },
   }
   const topics = Array.from({ length: 14 }, (_, i) => `topic number ${i + 1} on loops`)
-  const result = await draftCoursewareAgents({ courseCode: 'IT 102', courseTitle: 'Programming', week: 7, topics, outcomes: 'Trace nested loops.', referenceText: '', plan: { ...plan, activities: 'Pair-programming laboratory', resources: [{ name: 'CS50 notes', url: 'https://cs50.harvard.edu/x/' }] } }, signal(), deps)
+  const result = await draftCoursewareAgents({ courseCode: 'IT 102', courseTitle: 'Programming', week: 7, topics, outcomes: 'Trace nested loops.', referenceText: '', plan: { ...plan, activities: 'Pair-programming laboratory', assessments:'Loop tracing quiz', resources: [{ name: 'CS50 notes', url: 'https://cs50.harvard.edu/x/' }] } }, signal(), deps)
   for (const topic of topics) assert.ok(queries.some(q => q.includes(topic)), `${topic} searched`)
-  assert.equal(prompts[0]!.topics.length, 14); assert.equal(prompts[0]!.plannedActivity, 'Pair-programming laboratory')
-  assert.match(prompts[1]!.correction, /Question 1: the explanation supports option 1 but correctIndex is 0/)
+  assert.ok(prompts.filter((p:any)=>p.generationStep.startsWith('lesson')).every(p=>p.topics.length<=3))
+  assert.ok(prompts.some(p=>p.plannedActivity==='Pair-programming laboratory'))
+  assert.ok(prompts.some(p=>/Question 1: the explanation supports option 1 but correctIndex is 0/.test(p.correction)))
   assert.deepEqual(result.answerKey.issues, [])
   assert.match(result.content.material.sections.at(-1)!.body, /CS50 notes — https:\/\/cs50\.harvard\.edu\/x\//)
   assert.doesNotMatch(result.warning || '', /first 12/)
@@ -117,7 +122,7 @@ test('courseware writer receives the original teaching instruction on each attem
       return JSON.stringify(prompts.length === 1 ? draft({ correctIndex: 0 }) : draft())
     },
   })
-  assert.equal(prompts.length, 2)
+  assert.equal(prompts.length, 1, 'an unrelated quiz key is not generated for a lesson-only outline')
   assert.ok(prompts.every(prompt => prompt.currentRequest === request))
 })
 

@@ -6,7 +6,7 @@ import { hybridSearch, rerank, similarityMatrix } from './rag/search.js'
 import { findReferences } from './external/references.js'
 import { searchWeb } from './external/web.js'
 import { runAgents } from '../src/lib/rag/agents.js'
-import { draftCoursewareAgents } from '../src/lib/rag/courseware.js'
+import { draftCoursewareAgents, draftCoursewareStep } from '../src/lib/rag/courseware.js'
 import type { AgentDeps, Generate } from '../src/lib/rag/types.js'
 import { conversationWindow } from '../src/agents/skills.js'
 import { agentMemory, conversationRecall } from './domains/conversations.js'
@@ -66,7 +66,14 @@ export async function runChat(input: ChatInput, identity: Identity, signal: Abor
 
 export async function runCourseware(input: CourseInput, identity: Identity, signal: AbortSignal, generate?: Generate, connection?: Connection, personal = false, deps?: Partial<AgentDeps>) {
   if (!canGenerateCourseware(identity.role) && !(identity.role === 'guest' && personal)) throw new ApiError(403, 'FORBIDDEN', 'Courseware generation requires an instructor account or your own preview connection.')
-  const base = { ...serverDeps(identity, connection, generate || (connection ? (system, prompt, abort, json) => invokeModel(system, prompt, abort, json, connection, 6000) : undefined)), ...deps }
+  const base = { ...serverDeps(identity, connection, generate || (connection ? (system, prompt, abort, json) => invokeModel(system, prompt, abort, json, connection, 2400) : undefined)), ...deps }
   if (!base.generate) throw new ApiError(503, 'MODEL_UNAVAILABLE', 'Connect a provider or enable the free on-device model in AI settings.')
   return draftCoursewareAgents(input, signal, { ...base, generate: base.generate })
+}
+
+export async function runCoursewareStep(input:CourseInput,identity:Identity,signal:AbortSignal,connection?:Connection,personal=false,owner=identity) {
+  if(!canGenerateCourseware(identity.role)&&!(identity.role==='guest'&&personal))throw new ApiError(403,'FORBIDDEN','Courseware generation requires an instructor account or your own preview connection.')
+  const base=serverDeps(owner,connection,connection?(system,prompt,abort,json)=>invokeModel(system,prompt,abort,json,connection,2400):undefined)
+  if(!base.generate)throw new ApiError(503,'MODEL_UNAVAILABLE','Connect a provider or enable the free on-device model in AI settings.')
+  return draftCoursewareStep(input,signal,{...base,generate:base.generate})
 }

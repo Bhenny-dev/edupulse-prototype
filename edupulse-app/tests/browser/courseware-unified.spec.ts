@@ -66,13 +66,13 @@ test('item menus retain editing, slides, review, publish and delivery settings',
 test('missing-content generation preserves existing work and changes Generate into View', async ({ page }) => {
   const fixture = await unifiedCoursewareUI(page)
   const existing = JSON.stringify((fixture.getWorkspace() as { content: unknown }).content)
-  const requested: number[] = []
-  await page.route('**/api/ai?action=courseware', async route => { const { week } = route.request().postDataJSON(); requested.push(week); await route.fulfill({ json: generatedWeek(week) }) })
+  const requested: {week:number;stepKey:string}[] = []
+  await page.route('**/api/ai?action=courseware', async route => { const { week,stepKey } = route.request().postDataJSON(); requested.push({week,stepKey}); await route.fulfill({ json: generatedWeek(week) }) })
   await page.goto('/#/courseware?course=baseline-syllabus')
   await page.getByRole('button', { name: 'Course actions', exact: true }).click()
   await page.getByRole('menuitem', { name: 'Generate missing content', exact: true }).click()
   await expect(page.locator('[data-content-id]')).toHaveCount(6)
-  expect(requested).toEqual([2, 3])
+  expect(requested).toEqual([2,3].flatMap(week=>['lesson-1','activity','assessment'].map(stepKey=>({week,stepKey}))))
   await expect(page.locator('[data-week="2"]').getByRole('button', { name: 'Generate', exact: true })).toHaveCount(0)
   await expect.poll(() => Object.keys((fixture.getWorkspace() as { content: object }).content).length).toBe(9)
   const saved = fixture.getWorkspace() as { content: Record<string, unknown> }

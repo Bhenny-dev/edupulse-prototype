@@ -105,7 +105,9 @@
         "edupulse-app/src/pages/Courseware.jsx",
         "edupulse-app/src/pages/ContentEditor.jsx",
         "edupulse-app/src/components/courseware/**",
-        "edupulse-app/src/utils/aiCourseware.js"
+        "edupulse-app/src/utils/aiCourseware.js",
+        "edupulse-app/src/utils/courseInput.js",
+        "edupulse-app/src/utils/contentUpdates.ts"
       ],
       "docs": [
         "feature-documentation/system-manual/03-courseware-generation-and-review",

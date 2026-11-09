@@ -9,6 +9,7 @@ import { useAI } from '../../context/AIContext'
 import { INSTRUCTORS } from '../../data/mockData'
 import { pulse as pulseBus } from '../pulse/pulseBus'
 import { generateWeekDraft } from '../../utils/aiCourseware'
+import { plannedCoursewareTypes } from '../../lib/rag/coursewarePlan'
 import DeliverySettings from './DeliverySettings'
 import CoursewareActions from './CoursewareActions'
 import DocumentViewer from './DocumentViewer'
@@ -72,7 +73,8 @@ export default function CourseWorkspace({ syllabusId, focusWeek, contentStore, o
   }
 
   const saveWeekDraft = async (weekNum, signal, missingOnly = false) => {
-    const weekResult = await generateWeekDraft(syllabus, weekNum, signal)
+    const skipTypes=plannedCoursewareTypes(outline.find(row=>row.week===weekNum)||{}).filter(type=>{const existing=getWeekItems(weekNum).find(([,item])=>item.type===type)?.[1];return existing&&(missingOnly||['checked','published'].includes(existing.status))})
+    const weekResult = await generateWeekDraft(syllabus, weekNum, signal,'',{skipTypes})
     if (signal.aborted) return 0
     const updates = {}
     for (const item of weekResult.items) {
@@ -84,10 +86,10 @@ export default function CourseWorkspace({ syllabusId, focusWeek, contentStore, o
         week: weekNum, syllabusId: syllabus.id, title: item.content.title,
         generatedAt: new Date().toISOString() }
     }
-    onGenerateWeek(updates)
-    if (Object.keys(updates).length) pulseBus.progress('courseware-generated', `${syllabus.courseCode}, week ${weekNum}`)
+    const receipt=await onGenerateWeek(updates,{syllabus,week:weekNum,expected:contentStore,types:weekResult.plannedTypes,missingOnly})
+    if (receipt.saved) pulseBus.progress('courseware-generated', `${syllabus.courseCode}, week ${weekNum}`)
     setExpandedWeeks(prev => new Set([...prev, weekNum]))
-    return Object.keys(updates).length
+    return receipt.saved
   }
   const generateAll = async (missingOnly = false) => {
     if (generationRef.current) return
@@ -96,7 +98,7 @@ export default function CourseWorkspace({ syllabusId, focusWeek, contentStore, o
     let count = 0
     try {
       const rows = (syllabus.courseOutline || []).filter(row => !isExamRow(row) && (
-        ['material', 'activity', 'assessment'].some(type => !getWeekItems(row.week).some(([, item]) => item.type === type)) ||
+        plannedCoursewareTypes(row).some(type => !getWeekItems(row.week).some(([, item]) => item.type === type)) ||
         (!missingOnly && getWeekItems(row.week).some(([, item]) => item.status === 'draft'))
       ))
       for (const [index, row] of rows.entries()) {
@@ -228,7 +230,7 @@ export default function CourseWorkspace({ syllabusId, focusWeek, contentStore, o
               {!exam && <div className="cw-row-actions">
                 {hasContent ? <button className="btn btn-secondary btn-sm" aria-expanded={expanded} aria-controls={`week-items-${weekNum}`} onClick={() => toggleWeek(weekNum)}><Eye size={14} /> {expanded ? 'Hide' : 'View'}</button> : <button className="btn btn-secondary btn-sm" disabled={busy} onClick={() => generateSingleWeek(weekNum)}>{generatingWeek === weekNum ? <><Loader2 size={14} className="spin" /> Generating…</> : <><Sparkles size={14} /> Generate</>}</button>}
                 {hasContent && <CoursewareActions label={`Week ${weekNum} actions`} actions={[
-                  { label: 'Generate missing content', icon: Sparkles, disabled: busy || ['material', 'activity', 'assessment'].every(type => weekItems.some(([, item]) => item.type === type)), onSelect: () => generateSingleWeek(weekNum, true) },
+                  { label: 'Generate missing content', icon: Sparkles, disabled: busy || plannedCoursewareTypes(row).every(type => weekItems.some(([, item]) => item.type === type)), onSelect: () => generateSingleWeek(weekNum, true) },
                   { label: 'Regenerate week', icon: RotateCcw, disabled: busy || !weekDraftIds.length, onSelect: () => generateSingleWeek(weekNum) },
                   { label: 'Check All Drafts', icon: Check, disabled: !weekDraftIds.length, onSelect: () => checkDrafts(weekDraftIds) },
                 ]} />}

@@ -1,3 +1,4 @@
+import { mergeGeneratedWeek } from '../../utils/contentUpdates'
 import { downloadMaterialPdf } from '../../utils/pdfExport'
 import { jsonValue } from '../../utils/jsonValue'
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
@@ -271,7 +272,8 @@ export default function Pulse() {
     if (user?.role !== 'instructor') throw new Error('Only an authorized instructor view can generate courseware.')
     setExpression('thinking')
     try {
-      const draft = await generateWeekDraft(syllabus, week, signal, request)
+      const skipTypes=[...new Set(Object.values(content).filter(item=>item.syllabusId===syllabus.id&&item.week===week&&['checked','published'].includes(item.status)).map(item=>item.type))]
+      const draft = await generateWeekDraft(syllabus, week, signal, request,{skipTypes})
       signal.throwIfAborted()
       const updates = {}
       let kept = 0
@@ -287,7 +289,7 @@ export default function Pulse() {
           if (['checked', 'published'].includes(data.content[id]?.status)) { delete updates[id]; kept++; continue }
           if (jsonValue(data.content[id]) !== jsonValue(content[id])) throw new Error('A draft changed during generation. Your newer work was preserved; generate again.')
         }
-        return { ...data, content: { ...data.content, ...updates } }
+        return { ...data, content: mergeGeneratedWeek(data.content,updates,content,{syllabusId:syllabus.id,week,types:draft.plannedTypes}) }
       })
       setMessages(previous => [...previous, { id: crypto.randomUUID(), from: 'pulse', mode: 'receipt', text: `${syllabus.courseCode}, week ${week}: ${Object.keys(updates).length} drafts. ${receiptText(receipt)} Review before checking or publishing.` }])
       if (Object.keys(updates).length) pulseBus.progress('courseware-generated', `${syllabus.courseCode}, week ${week}`)

@@ -12,7 +12,7 @@ export default function Courseware() {
   const { user } = useAuth()
   const { syllabi } = useWorkspace()
   const [searchParams, setSearchParams] = useSearchParams()
-  const { store: contentStore, generateWeek, checkItem, bulkCheck, toggleVisibility } = useContentStore()
+  const { store: contentStore, commitWeekDrafts, checkItem, bulkCheck, toggleVisibility } = useContentStore()
   // Old ?tab=mine/builder links still resolve here; only course/week select a view.
   const selectedCourseId = searchParams.get('course')
   const focusWeek = Number(searchParams.get('week')) || null
@@ -27,7 +27,7 @@ export default function Courseware() {
     <div className="page-header"><h1>{isStudent ? 'My Courses' : 'Course'}</h1></div>
     {!selectedCourseId && itemStatus && <div className="flex flex-wrap items-center gap-16 mb-16" role="status"><strong>{itemStatus === 'draft' ? 'Courses with drafts to review' : 'Courses with published items'}</strong><button className="btn btn-secondary btn-sm" onClick={() => setSearchParams({})}>Show all courses</button></div>}
     {selectedCourseId ? isStudent ? <CourseOutlineViewer syllabusId={selectedCourseId} onBack={back} isStudent contentStore={contentStore} /> :
-      <CourseWorkspace key={selectedCourseId} syllabusId={selectedCourseId} focusWeek={focusWeek} contentStore={contentStore} onBack={back} onGenerateWeek={generateWeek} onCheckItem={handleCheckItem} onBulkCheck={handleBulkCheck} onToggleVisibility={toggleVisibility} /> :
+      <CourseWorkspace key={selectedCourseId} syllabusId={selectedCourseId} focusWeek={focusWeek} contentStore={contentStore} onBack={back} onGenerateWeek={commitWeekDrafts} onCheckItem={handleCheckItem} onBulkCheck={handleBulkCheck} onToggleVisibility={toggleVisibility} /> :
       <CoursewareLibrary syllabi={syllabi} contentStore={contentStore} user={user} onSelectCourse={selectCourse} itemStatus={itemStatus} />}
   </div>
   )

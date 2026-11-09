@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import { BookOpen, Eye, Sparkles, ClipboardCheck, List } from 'lucide-react'
 import { STUDENT_RECORDS, INSTRUCTORS } from '../../data/mockData'
 import CoursewareActions from './CoursewareActions'
+import { plannedCoursewareTypes } from '../../lib/rag/coursewarePlan'
 import './courseware.css'
 
 const isExam = row => !row.ilos && /examination/i.test(row.assessments || '')
@@ -14,8 +15,9 @@ export default function CoursewareLibrary({ syllabi, contentStore, user, onSelec
       const weeks = syllabus.courseOutline.filter(row => !isExam(row))
       const entries = Object.values(contentStore).filter(item => item.content && item.syllabusId === syllabus.id && weeks.some(row => row.week === item.week))
       const drafts = entries.filter(item => item.status === 'draft'), checked = entries.filter(item => item.status === 'checked'), published = entries.filter(item => item.status === 'published')
-      const complete = weeks.length > 0 && weeks.every(row => ['material', 'activity', 'assessment'].every(type => entries.some(item => item.week === row.week && item.type === type && item.status === 'published')))
-      return { syllabus, weeks, drafts, checked, published, total: entries.length, expected: weeks.length * 3, complete }
+      const complete = weeks.length > 0 && entries.every(item=>['published','hidden'].includes(item.status)) && weeks.every(row => plannedCoursewareTypes(row).every(type => entries.some(item => item.week === row.week && item.type === type && item.status === 'published')))
+      const expected=entries.length+weeks.reduce((sum,row)=>sum+plannedCoursewareTypes(row).filter(type=>!entries.some(item=>item.week===row.week&&item.type===type)).length,0)
+      return { syllabus, weeks, drafts, checked, published, total: entries.length, expected, complete }
     }).filter(course => !itemStatus || course[itemStatus === 'draft' ? 'drafts' : 'published'].length > 0)
   }, [syllabi, contentStore, isStudent, user?.name, itemStatus])
   if (!courses.length && itemStatus) return <div className="empty-state"><div className="empty-state-icon"><BookOpen size={36} /></div><h3>{itemStatus === 'draft' ? 'No drafts to review' : 'No published items yet'}</h3><p>Use Show all courses to return to your active course outlines.</p></div>

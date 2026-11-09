@@ -270,7 +270,7 @@ test('Librarian answers reference requests from catalog results only', async () 
 })
 
 const draft = (topic: string) => JSON.stringify({
-  material: { title: 'Loops', sections: [{ heading: 'Overview', body: `${topic} repeat a block of statements while a stopping condition stays true, and each pass is traced.` }, { heading: 'Verification', body: 'Check this explanation against the course reference before publishing it to students.' }, { heading: 'Worked trace and practice', body: 'A loop combines an initial state, a test and a state update. Start a counter at zero, print its current value and increase it by one while it remains below three. The visible output is zero, one and two; three is never printed because the test is evaluated before the body. Trace the counter and the truth value in separate columns before running the example. Next change the starting value to one and predict the output again. Compare your prediction with the actual result and explain any difference. An update that never moves the state toward the stopping condition may cause repeated execution. During practice, identify the initial value, stopping test and update separately before rewriting the loop.' }] },
+  material: { title: 'Loops', sections: [{ heading: 'Overview', body: `${topic} repeat a block of statements while a stopping condition stays true, and each pass is traced.` }, { heading: 'Verification', body: 'Check this explanation against the course reference before publishing it to students.' }, { heading: 'Worked trace and practice', body: 'A loop combines an initial state, a test and a state update. Start a counter at zero, print its current value and increase it by one while it remains below three. The visible output is zero, one and two; three is never printed because the test is evaluated before the body. Trace the counter and the truth value in separate columns before running the example. Next change the starting value to one and predict the output again. Compare your prediction with the actual result and explain any difference. An update that never moves the state toward the stopping condition may cause repeated execution. During practice, identify the initial value, stopping test and update separately before rewriting the loop. A count-controlled loop is appropriate when the number of entries is known in advance; the counter records how many entries have been handled. For example, to display the first three entries in a list, begin at index zero, test whether the index is less than three, display the current entry, and increase the index once. The displayed indexes are zero, one and two. Testing a less-than-or-equal condition instead would include index three and attempt a fourth entry. An empty list should execute no iterations, so the condition must be tested before accessing the first entry. Compare this behavior with a post-test loop, which executes its body before checking the condition. During practice, draw the initial state and final state, show each intermediate index, and explain why the final failed test does not produce another displayed entry. Check the smallest valid count, a typical count and a count at the list boundary. Use the observed output to test your prediction, and revise the explanation when the states differ.' }] },
   activity: { title: 'Trace it', sections: [{ heading: 'Task', body: `Trace ${topic.toLowerCase()} by hand and record the counter after every iteration in a table.` }, { heading: 'Reflection', body: 'Explain which condition stops the loop and what would happen if it never became false.' }] },
   assessment: { title: 'Quiz', questions: [0, 1, 2].map(i => ({ text: `Question ${i + 1}: what stops a bounded loop from running forever?`, options: ['A stopping condition', 'A comment', 'A semicolon', 'An import'], correctIndex: 0, explanation: 'The loop ends once its stopping condition becomes false.' })) },
 })
@@ -278,17 +278,16 @@ const course = { courseCode: 'IT 102', courseTitle: 'Computer Programming 1', we
 
 test('courseware agents verify the draft and check outline coverage automatically', async () => {
   let calls = 0
-  const result = await runCourseware(course, identity, signal(), async () => { calls++; return draft(calls === 1 ? 'Bounded loops' : 'Bounded loops and sentinel values') }, undefined, false, { search: async () => ({ evidence: [] }) })
+  const result = await runCourseware(course, identity, signal(), async () => { calls++; return draft(calls === 1 ? 'Bounded loops' : 'Bounded loops and sentinel values') }, undefined, false, { search: async () => ({ evidence: [] }), similarity:async(left,right)=>left.map(q=>right.map(text=>Number(text.toLowerCase().includes(q.toLowerCase())))) })
   assert.equal(calls, 2, 'a missing topic triggers one revision')
   assert.ok(result.coverage!.items.find(i => i.text === 'Sentinel values')!.status !== 'missing')
   assert.ok(['Guardian', 'Planner', 'Researcher', 'Ranker', 'Writer', 'Verifier', 'Comparator', 'Corrector'].every(a => result.trace.some(s => s.agent === a)))
 })
 
-test('a failed courseware revision keeps the earlier valid draft', async () => {
+test('an incomplete lesson remains blocked when the repair fails, preserving saved courseware', async () => {
   let calls = 0
-  const result = await runCourseware(course, identity, signal(), async () => (++calls === 1 ? draft('Bounded loops') : '{"material":'), undefined, false, { search: async () => ({ evidence: [] }) })
-  assert.equal(calls, 2); assert.equal(result.content.material.title, 'Loops')
-  assert.equal(result.coverage!.items.find(i => i.text === 'Sentinel values')!.status, 'missing', 'the gap stays visible to the instructor')
+  await assert.rejects(runCourseware(course, identity, signal(), async () => (++calls === 1 ? draft('Bounded loops') : '{"material":'), undefined, false, { search: async () => ({ evidence: [] }), similarity:async(left,right)=>left.map(q=>right.map(text=>Number(text.toLowerCase().includes(q.toLowerCase())))) }),{code:'INCOMPLETE_COURSEWARE'})
+  assert.equal(calls,2)
 })
 
 test('assessment schema rejects repeated distractors and invalid answer indices', () => {
@@ -305,7 +304,7 @@ test('public client cannot forge role or access private documents or generation'
   const request = (action: string, method: string, body?: unknown) => new Request(`https://edupulse.test/api/ai?action=${action}`, { method, headers: { 'Content-Type': 'application/json', 'x-user-role': 'admin' }, ...(body ? { body: JSON.stringify(body) } : {}) })
   assert.equal((await authenticate(request('health', 'GET'))).role, 'guest')
   assert.equal((await handleRequest(request('documents', 'GET'))).status, 401)
-  assert.equal((await handleRequest(request('courseware', 'POST', { role: 'admin' }))).status, 403)
+  assert.equal((await handleRequest(request('courseware', 'POST', { role: 'admin', courseCode: 'SAMPLE', courseTitle: 'Sample programming', week: 1, topics: ['Loops'], outcomes: 'Explain loops', referenceText: '', research: 'sources', stepKey: 'lesson-1' }))).status, 403)
   assert.equal((await handleRequest(request('chat', 'POST', { message: 'Hi', attachments: [{ title: 'Private', text: 'Data' }] }))).status, 401)
 })
 test('API rejects invalid JSON, oversized requests, unknown routes, methods and nameless uploads', async () => {

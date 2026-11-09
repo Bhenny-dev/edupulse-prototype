@@ -35,33 +35,30 @@ export const referencesInput = z.object({ topic: z.string().trim().min(2).max(20
 export const courseInput = z.object({
   courseCode: z.string().trim().min(1).max(80), courseTitle: z.string().trim().min(1).max(200),
   week: z.number().int().min(1).max(52),
-  topics: z.array(z.string().trim().min(1).max(500)).min(1).max(20),
+  topics: z.array(z.string().trim().min(1).max(2000)).min(1).max(40),
   research: z.enum(['auto', 'sources']).default('auto'),
   request: z.string().trim().max(4000).default(''),
-  outcomes: z.string().trim().min(1).max(3000),
+  stepKey: z.string().regex(/^(?:lesson-\d{1,2}|activity|assessment)$/).optional(),
+  outcomes: z.string().trim().min(1).max(5000),
   referenceText: z.string().max(18000),
   // The week's plan from the syllabus outline: the draft must follow it, and references come only from here or the library.
   plan: z.object({
     activities: z.string().max(1500).default(''),
     assessments: z.string().max(1000).default(''),
+    assessmentTypes: z.array(z.string().trim().min(1).max(300)).max(10).optional(),
     teachingMaterials: z.array(z.string().trim().min(1).max(300)).max(10).default([]),
     resources: z.array(z.object({ name: z.string().trim().min(1).max(300), url: z.string().max(500).default('') })).max(10).default([]),
   }).default({ activities: '', assessments: '', teachingMaterials: [], resources: [] }),
 })
 const section = z.object({ heading: z.string().min(1).max(160), body: z.string().min(20).max(8000) })
-const doc = z.object({ title: z.string().min(1).max(240), sections: z.array(section).min(2).max(8) })
-export const courseOutput = z.object({
-  material: doc, activity: doc,
-  assessment: z.object({
-    title: z.string().min(1).max(240),
-    questions: z.array(z.object({
-      text: z.string().min(10).max(1600),
-      options: z.array(z.string().min(1).max(600)).length(4).refine(v => new Set(v.map(s => s.trim().toLowerCase())).size === 4, 'Options must be distinct'),
-      correctIndex: z.number().int().min(0).max(3),
-      explanation: z.string().min(15).max(2000),
-    })).min(3).max(5),
-  }),
-})
+export const courseDocument = z.object({ title: z.string().min(1).max(240), sections: z.array(section).min(2).max(8) })
+const doc=courseDocument
+const questionFields={text:z.string().min(10).max(1600),topic:z.string().max(2000).optional(),explanation:z.string().min(15).max(2000)}
+const multipleChoice=z.object({...questionFields,type:z.literal('multiple_choice').optional(),options:z.array(z.string().min(1).max(600)).length(4).refine(values=>new Set(values.map(value=>value.trim().toLowerCase())).size===4,'Options must be distinct'),correctIndex:z.number().int().min(0).max(3)})
+const trueFalse=z.object({...questionFields,type:z.literal('true_false'),options:z.array(z.string()).length(2).refine(values=>values[0]==='True'&&values[1]==='False','True/false choices must be True, False in order'),correctIndex:z.number().int().min(0).max(1)})
+const writtenResponse=z.object({...questionFields,type:z.literal('short_answer'),options:z.array(z.string()).length(0).default([]),correctIndex:z.literal(0).optional()})
+export const courseOutput=z.object({material:doc,activity:doc,assessment:z.object({title:z.string().min(1).max(240),questions:z.array(z.union([multipleChoice,trueFalse,writtenResponse])).min(3).max(5)})})
+
 export type ChatInput = z.infer<typeof chatInput>
 // Callers may omit `plan`; the courseware graph applies its defaults.
 export type CourseInput = z.input<typeof courseInput>

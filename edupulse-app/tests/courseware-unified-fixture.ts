@@ -21,7 +21,7 @@ export async function unifiedCoursewareUI(page: Page) {
 }
 
 export function generatedWeek(week: number) {
-  return { requestId: `synthetic-week-${week}`, provider: 'Synthetic transport', model: 'Saved UI fixture', sources: [], trace: [], content: {
+  return { requestId: `synthetic-week-${week}`, provider: 'Synthetic transport', model: 'Saved UI fixture', sources: [], trace: [], coverage:{items:[],coverage:0,method:'lexical'},verification:{claims:[],supported:0,unsupported:0,corroborated:0,invalidCitations:[],groundedness:null,citationAccuracy:null,method:'lexical'},answerKey:{checked:0,consistent:0,issues:[]}, content: {
     material: { title: `Week ${week} learning material`, sections: [{ heading: 'Concepts', body: 'A **function** groups reusable instructions. Explain its inputs, steps and result.' }, { heading: 'Practice', body: 'Write a function that adds two values, then check its result.' }] },
     activity: { title: `Week ${week} activity`, sections: [{ heading: 'Task', body: '1. Read the example.\n2. Write and test your own function.' }] },
     assessment: { title: `Week ${week} assessment`, questions: [1, 2, 3].map((n, i) => ({ text: `Synthetic question ${n}`, options: ['A', 'B', 'C', 'D'], correctIndex: i, explanation: 'Check this synthetic question against the course reference.' })) },

@@ -6,7 +6,7 @@ import { simpleLookup, systemLookup } from './systemLookup.js'
 import { config } from './config.js'
 import { invokeModel, providerHealth } from './providers.js'
 import { MAX_DOCUMENTS, deleteDocument, ingest, listDocuments } from './database.js'
-import { runChat, runCourseware, serverDeps, prepareChatContext } from './graph.js'
+import { runChat, runCoursewareStep, serverDeps, prepareChatContext } from './graph.js'
 import { readWorkspace, saveWorkspace, workspaceInput, WORKSPACE_BYTES } from './workspace.js'
 import { connectionCookie, connectionInput, createConnection, discoverModels, discoverWorkspaces, workspaceListInput, publicConnection, serverConnection, type Connection } from './connections.js'
 import { extractUpload } from './ingest/prepare.js'
@@ -31,7 +31,7 @@ import { supportAction, supportFilters, supportIdentity } from './domains/suppor
 
 export const VERSION = '0.4.0'
 /** Request body limits per action (bytes). Uploads are raw file bytes. */
-export const BODY_LIMITS: Record<string, number> = { workspace: WORKSPACE_BYTES, extract: EXTRACTION_LIMITS.bytes, documents: 1_000_000, conversations: 200_000, operator: 330_000 }
+export const BODY_LIMITS: Record<string, number> = { workspace: WORKSPACE_BYTES, extract: EXTRACTION_LIMITS.bytes, documents: 1_000_000, conversations: 200_000, operator: 330_000, courseware:330_000 }
 export const bodyLimit = (action: string | null) => BODY_LIMITS[action || ''] ?? 100_000
 const ACTION_METHODS: Record<string, string[]> = { 'chat-context': ['POST'], 'chat-memory': ['POST'], support: ['GET', 'POST'], health: ['GET'], providers: ['GET', 'POST', 'DELETE'], 'provider-oauth': ['POST'], 'provider-test': ['POST'], 'provider-workspaces': ['POST'], conversations: ['GET', 'POST'], operator: ['POST'], context: ['POST'], similarity: ['POST'], references: ['POST'], 'web-search': ['POST'], extract: ['POST'], chat: ['POST'], courseware: ['POST'], documents: ['GET', 'POST', 'DELETE'], workspace: ['GET', 'PUT'], academic: ['GET', 'POST'], students: ['GET'] }
 export const allowedMethods = (action: string) => Object.hasOwn(ACTION_METHODS, action) ? ACTION_METHODS[action] : undefined
@@ -110,6 +110,7 @@ export async function handleRequest(request: Request): Promise<Response> {
     }
     const effective = ['academic','workspace','chat','chat-context','chat-memory','courseware','operator','context','web-search','students'].includes(action) ? await supportIdentity(identity, request.headers.get('X-EduPulse-Subject')) : identity
     let chatBody: ReturnType<typeof chatInput.parse> | undefined
+    let courseBody:ReturnType<typeof courseInput.parse>|undefined
     let lookupFallback: Awaited<ReturnType<typeof systemLookup>> = null
     if (action === 'chat' || action === 'chat-context') {
       chatBody=chatInput.parse(await readJson(request,bodyLimit(action)))
@@ -142,6 +143,10 @@ export async function handleRequest(request: Request): Promise<Response> {
     }
     // Deny unsupported account roles before reading any AI credentials/store.
     if (action === 'courseware' && effective.role !== 'guest' && !canGenerateCourseware(effective.role)) throw new ApiError(403, 'FORBIDDEN', 'Courseware generation requires an instructor account or the system admin instructor view. Preview drafts require your own provider connection.')
+    if(action==='courseware') {
+      courseBody=courseInput.parse(await readJson(request,bodyLimit(action)))
+      if(!courseBody.stepKey)throw new ApiError(409,'CLIENT_UPDATE_REQUIRED','Reload EduPulse before generating courseware to use the outline-based generator. Existing content was preserved.')
+    }
     if (action === 'students') return json(await readStudents(effective,new URL(request.url)))
     if (action === 'conversations') {
       const url = new URL(request.url), query = url.searchParams.get('q')
@@ -222,7 +227,7 @@ export async function handleRequest(request: Request): Promise<Response> {
       if (bytes.length > EXTRACTION_LIMITS.bytes) throw new ApiError(413, 'FILE_TOO_LARGE', 'Files must be 4 MB or smaller.')
       return json(await extractUpload(bytes, fileName, signal))
     }
-    const body = chatBody || await readJson(request, bodyLimit(action))
+    const body = chatBody || courseBody || await readJson(request, bodyLimit(action))
     if (action === 'operator') {
       const stepSignal = config().hosted ? AbortSignal.any([signal, AbortSignal.timeout(70000)]) : signal
       const result = await operatorRequest(operatorInput.parse(body), effective, connection, stepSignal)
@@ -280,7 +285,10 @@ export async function handleRequest(request: Request): Promise<Response> {
     const workflow = action === 'courseware' ? 'courseware' as const : 'chat' as const, started = Date.now()
     try {
       let result
-      if (workflow === 'courseware') result = { ...await runCourseware(courseInput.parse(body), effective, signal, undefined, connection, Boolean(personalConnection)), mode: 'courseware', task: 'courseware' }
+      if (workflow === 'courseware') {
+        const input=courseInput.parse(body)
+        result = { ...await runCoursewareStep(input,effective,signal,connection,Boolean(personalConnection),identity), mode: 'courseware', task: 'courseware' }
+      }
       else {
         const input = chatInput.parse(body)
         // Guests get the public guide only and cannot use hosted generation or submit private attachments.

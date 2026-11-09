@@ -1,0 +1,5 @@
+# Outline-driven courseware ? 9 November 2026
+
+Courseware now follows the actual weekly outline instead of forcing a material/activity/quiz trio. Bounded lesson parts assemble into a complete learning document; planned discussions, laboratories and deliverables receive appropriate guides. Interactive question formats remain within the established assessment contract. Reviewed work is skipped before inference, and a failed part never replaces the saved week. Existing readers, PDF, menus, review and delivery controls remain.
+
+See [Manual 26](../../system-manual/26-outline-driven-courseware/README.md), the [backend contract](../../backend-system/README.md#outline-driven-courseware-9-november-2026) and [validation](validation/results.md). No hosted courseware was regenerated or published, no student completion was seeded and no database migration was introduced by this release. Earlier thin unreviewed drafts require explicit regeneration. Page caching, the outline selector UI and duplicate oversight tabs are separate queued tasks.

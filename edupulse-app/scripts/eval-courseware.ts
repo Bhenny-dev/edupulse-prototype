@@ -54,8 +54,8 @@ for (const { syllabus, row } of samples) {
     const allText = JSON.stringify(d)
     const statements = [
       ...d.material.sections.flatMap(s => sentences(`${s.heading}. ${s.body}`)),
-      ...d.activity.sections.flatMap(s => sentences(`${s.heading}. ${s.body}`)),
-      ...d.assessment.questions.flatMap(q => [q.text, q.explanation]),
+      ...d.activity?.sections.flatMap(s => sentences(`${s.heading}. ${s.body}`))||[],
+      ...d.assessment?.questions.flatMap(q => [q.text, q.explanation])||[],
     ].filter(t => terms(t).length >= 2)
     // Every topic and every outcome sentence from the raw outline, not only the ones the app checks.
     // Keyword topics ("for", "while") use the same keyword rule as the app; the rest use similarity.
@@ -66,12 +66,12 @@ for (const { syllabus, row } of samples) {
       const score = keyword ? Number(statements.some(s => keyword.test(s))) : Math.max(...matrix[semantic.findIndex(i => i.text === item.text && i.kind === item.kind)]!)
       return { ...item, score, status: score >= 0.5 ? 'covered' : score >= 0.35 ? 'partial' : 'missing' }
     })
-    const activityText = d.activity.sections.flatMap(s => sentences(`${d.activity.title}. ${s.heading}. ${s.body}`))
-    const assessmentText = [d.assessment.title, ...d.assessment.questions.map(q => q.text)]
-    const activityScore = Math.max(...(await supportMatrix([row.activities], activityText, signal(), similarityMatrix)).matrix[0]!)
-    const assessmentScore = Math.max(...(await supportMatrix([row.assessments], assessmentText, signal(), similarityMatrix)).matrix[0]!)
+    const activityText = d.activity?.sections.flatMap(s => sentences(`${d.activity?.title}. ${s.heading}. ${s.body}`))||[]
+    const assessmentText = d.assessment?[d.assessment.title,...d.assessment.questions.map(q=>q.text)]:[]
+    const activityScore = activityText.length?Math.max(...(await supportMatrix([row.activities], activityText, signal(), similarityMatrix)).matrix[0]!):0
+    const assessmentScore = assessmentText.length?Math.max(...(await supportMatrix([row.assessments], assessmentText, signal(), similarityMatrix)).matrix[0]!):0
     // Answer key: the explanation should support the option marked correct more than any other.
-    const keys = await Promise.all(d.assessment.questions.map(async q => {
+    const keys = await Promise.all((d.assessment?.questions||[]).filter(q=>q.type!=='short_answer').map(async q => {
       const scores = (await supportMatrix([q.explanation], q.options, signal(), similarityMatrix, true)).matrix[0]!
       return { correctIndex: q.correctIndex, explanationSupports: best(scores), consistent: scores[q.correctIndex]! >= Math.max(...scores) - 0.05 }
     }))

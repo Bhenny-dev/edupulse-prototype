@@ -155,7 +155,7 @@ test('personal connection discovers and switches models, powers guest drafts, an
   assert.equal(process.env.AI_PROVIDER, 'retrieval')
   const disconnected = await handleRequest(request('providers', undefined, cookie, 'DELETE'))
   assert(disconnected.headers.get('set-cookie')?.includes('Max-Age=0'))
-  const denied = await handleRequest(request('courseware', { role: 'instructor' }))
+  const denied = await handleRequest(request('courseware', { role: 'instructor', courseCode: 'SAMPLE', courseTitle: 'Sample programming', week: 1, topics: ['Loops'], outcomes: 'Explain loops', referenceText: '', research: 'sources', stepKey: 'lesson-1' }))
   assert.equal(denied.status, 403)
 })
 
