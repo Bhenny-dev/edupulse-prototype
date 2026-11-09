@@ -67,3 +67,5 @@ After a buddy sends a request to Pulse, Tab and Shift+Tab keep focus inside the 
 ![Buddy handoff with keyboard focus on the office playback control](09-office-keyboard-handoff.png)
 
 The [System Search extension](../24-system-first-search/README.md) answers ordinary record and help queries before provider resolution. It accepts name initials and small typos, shows clear suggestions and uses public Internet images only for labelled external results.
+
+Named staff test accounts and their corrected role assignments are documented in [Manual 25](../25-staff-test-accounts/README.md). Their passwords remain private.

@@ -17,3 +17,5 @@ The source digest also includes shared syllabus-draft and role-restoration fixtu
 Account-support capture suites use `tests/account-support-fixture.ts`, which is included in the capture source digest and categorized as synthetic academic UI transport. They cover account lookup/filtering, an explicit support banner, light/dark/mobile layout and sample contextual/public/mixed-language replies. Native and rolled-back hosted tests independently establish RLS, delivery and memory persistence; screenshots do not claim real inference or private Google authentication.
 
 The System Search suites use synthetic account transports with the real keyless answer builder and an attributed, checked-in Wikimedia thumbnail. Live keyword/API routing is checked separately; image availability can change after capture.
+
+Staff-registration captures use `tests/staff-registration-fixture.ts` and the owner-confirmed app-only staff manifest. Both enter the capture digest. Synthetic IDs/transports demonstrate account-picker rendering; actual Auth creation, password sign-in and named picker RPC results are separate hosted receipts.

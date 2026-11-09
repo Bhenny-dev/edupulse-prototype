@@ -6600,6 +6600,36 @@
       "sha256": "2d32645ecfee1fd73d586a26738b9c246112bb5c10888899ddaa17425bf33a88",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-08T23:27:36.666267+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/25-staff-test-accounts/01-instructor-accounts.png",
+      "sha256": "a8fac42ad4c42588aa9c1fa56ea1b81ea45b029dc61d5be7857e4d286843c4f4",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T00:02:14.067739+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/25-staff-test-accounts/02-filtered-instructor.png",
+      "sha256": "bc5f211588ce44d10e793170759417f123d85c9c32450eb403aaa357e63e89d9",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T00:02:14.068603+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/25-staff-test-accounts/03-associate-dean.png",
+      "sha256": "e87526478dc3c2bd0dbaf4c30c003dd0338bdb57c53ced269aa886c53cdfd876",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T00:02:14.069296+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/25-staff-test-accounts/04-dean.png",
+      "sha256": "8375508042cf40fe694cae6f240d81ac0d7bbf7f7cd03bc9d31a50d54eaa59c3",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T00:02:14.070119+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/25-staff-test-accounts/05-mobile-staff-search.png",
+      "sha256": "965dc5e9eb64efa4c0591b6cc9a611e56d9dc20547173ac4828e85f42e5aabd7",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T00:02:14.071155+00:00"
     }
   ]
 }

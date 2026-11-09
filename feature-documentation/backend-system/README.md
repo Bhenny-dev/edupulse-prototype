@@ -331,3 +331,7 @@ The [8 November release](../versions/2026-11-08-pulse-context-and-account-suppor
 ## Deterministic System Search
 
 The [9 November release](../versions/2026-11-09-system-first-search/README.md) adds a read-only agent before AI provider resolution. Existing authorized helpers supply record and workspace evidence, while direct indexed full-text queries supply private-library candidates without embeddings. The normal inference graph searches local evidence before web supplementation. Public fallback and image extraction use fixed Wikimedia API origins, not model-invented URLs. See [contracts](supabase.md) and [Manual 24](../system-manual/24-system-first-search/README.md).
+
+## Named staff registration
+
+The owner-confirmed nine-person staff manifest is provisioned through the Auth admin API by `scripts/provision-staff.mjs`. Existing matching accounts are skipped; conflicting accounts stop the preflight. Credential recovery is private and durable before a creation request. [Operational details](supabase.md#named-staff-test-accounts-9-november-2026) distinguish real account registration from sample preview names and course assignments.

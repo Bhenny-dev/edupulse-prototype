@@ -181,7 +181,9 @@
         "edupulse-app/vercel.json",
         "edupulse-app/.env.example",
         "edupulse-app/scripts/check-deployment.ts",
-        "edupulse-app/scripts/provision-roles.mjs"
+        "edupulse-app/scripts/provision-roles.mjs",
+        "edupulse-app/scripts/provision-staff.mjs",
+        "edupulse-app/scripts/lib/staff-accounts.mjs"
       ],
       "docs": [
         "feature-documentation/backend-system",

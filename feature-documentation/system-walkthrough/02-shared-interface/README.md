@@ -176,3 +176,5 @@ The existing role chooser now leads to a searchable account dialog. A selected a
 ## System Search and public images
 
 Pulse now shows **System search · No AI credits used** for simple quoted local answers. Approximate name or keyword matches can begin **Did you mean**. Public fallback is labelled **Internet suggestions**, with source-linked thumbnails and **Image credits** when the API provides images. The existing theme, compact verification controls and role boundaries remain. See [Manual 24 and its desktop/mobile captures](../../system-manual/24-system-first-search/README.md).
+
+The existing account picker now includes registered named staff. [Manual 25](../../system-manual/25-staff-test-accounts/README.md) shows instructor surname searches and the corrected Dean and Associate Dean selections with controlled transports.

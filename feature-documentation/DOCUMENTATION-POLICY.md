@@ -82,3 +82,5 @@ The dashboard-navigation suites share `tests/dashboard-navigation-fixture.ts`, w
 The account-support suites share `tests/account-support-fixture.ts`; the capture digest includes it. Their sample records and replies are synthetic, while actual delegation, courseware delivery and memory isolation are validated separately through native SQL and a rolled-back hosted canary.
 
 System Search suites share `tests/system-search-fixture.ts` and the attributed Wikimedia thumbnail under `tests/fixtures/system-search/`. Both enter the capture source digest. Responses use the real deterministic answer builder with synthetic private records and controlled API transports; captures do not assert hosted sign-in or live search quality. Native API/graph tests and a separate live Wikimedia probe establish those stated boundaries.
+
+Staff-registration capture suites use the staff manifest and `tests/staff-registration-fixture.ts`, both included in source provenance. App-only test addresses are distinct from personal or verified institutional mailboxes. The controlled picker images never contain temporary passwords or real student records.
