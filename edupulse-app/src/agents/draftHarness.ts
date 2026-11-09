@@ -3,6 +3,7 @@ import { ApiError } from '../../server/contracts.js'
 import { validateDraft, wholeSyllabusDraft, scheduledSyllabusDraft } from './draftValidation.js'
 import { parseModelJson } from './skills.js'
 import type { EditorSnapshot, syllabusPatch } from './editorTools.js'
+import {referenceWindow,type ReferenceSyllabus} from './relatedSyllabi.js'
 
 type Input = { editor: EditorSnapshot; message: string; section: string | null; context: string }
 type Row = { week: number; assessments?: string; [key: string]: unknown }
@@ -32,7 +33,7 @@ export async function draftHarness(input: Input, payload: Record<string, unknown
     for (let attempt = execution?.state.repair ? 1 : 0; attempt < 2; attempt++) {
       signal.throwIfAborted()
       const scope = fields ? `\nThis is one stage of a larger task. Return ONLY ${fields.join(', ')}. Do not return other sections. All requested fields must contain useful proposed content; existing empty values are blanks to FILL. ${completeOutline
-        ? `Complete every teaching field for exactly these weeks: ${((target.editor.data.courseOutline || []) as Row[]).map(row => row.week).join(', ')}. ilos is a nonempty measurable learning outcome starting with an action verb for EACH week. Follow the preceding topics and program outcomes without repeating earlier weeks. Example shape: {"courseOutline":[{"week":1,"ilos":"Evaluate a focused research question.","contents":["Research questions"],"activities":"Compare two research questions and justify the stronger one.","assessments":"Written comparison with criteria.","teachingMaterials":["Case studies"],"assessmentTypes":["Written work"],"resources":[]}]}. Adapt the content and week numbers to the actual course.`
+        ? `Complete every teaching field for exactly these weeks: ${((target.editor.data.courseOutline || []) as Row[]).map(row => row.week).join(', ')}. ilos is a nonempty measurable learning outcome starting with an action verb for EACH week. Keep the outline concise: a focused outcome, 2 to 5 topics, brief activity and assessment instructions, and appropriate materials/types. Do not write full lessons here. Follow preceding topic previews and program outcome previews without repeating earlier weeks. Example shape: {"courseOutline":[{"week":1,"ilos":"Evaluate a focused research question.","contents":["Research questions"],"activities":"Compare two research questions and justify the stronger one.","assessments":"Written comparison with criteria.","teachingMaterials":["Case studies"],"assessmentTypes":["Written work"],"resources":[]}]}. Adapt the content and week numbers to the actual course.`
         : fields.includes('programOutcomes')
           ? 'Return three arrays of plain strings. Example shape: {"programOutcomes":["Evaluate competing methods."],"courseRequirements":["Proposed for instructor review: methods portfolio."],"coursePolicy":["Proposed for instructor review: cite sources and protect participant privacy."]}. Adapt the content to this course. Do not return grading or outline fields.'
           : 'Return {"books":[{"title":"exact source title","authors":"exact source authors","year":"exact source year","publisher":"exact source publisher"}],"onlineReferences":[{"title":"source title","url":"exact source URL"}]}. Include only supplied or retrieved entries; use empty arrays for unavailable entries.'}` : ''
@@ -40,8 +41,9 @@ export async function draftHarness(input: Input, payload: Record<string, unknown
       let response = ''
       try { response = await generate(system + scope + repair, prompt, signal, true) }
       catch (error) {
-        if (!(execution && !attempt && error instanceof ApiError && error.code === 'INCOMPLETE_RESPONSE')) throw error
-        pause(index, { code: error.code, details: ['The prior answer was truncated. Be concise and complete only the requested fields and weeks.'] })
+        const incomplete=error instanceof ApiError&&error.code==='INCOMPLETE_RESPONSE'||error instanceof Error&&/on-device model reached its output limit/i.test(error.message)
+        if (!(execution && !attempt && incomplete)) throw error
+        pause(index, { code: 'INCOMPLETE_RESPONSE', details: ['The prior answer was truncated. Be concise and complete only the requested fields and weeks.'] })
       }
       generatedStages++
       let raw: unknown
@@ -64,9 +66,10 @@ export async function draftHarness(input: Input, payload: Record<string, unknown
     const identity = Object.fromEntries(['courseCode', 'courseTitle', 'courseDescription', 'courseInfo'].filter(key => before[key] !== undefined).map(key => [key, before[key]]))
     const generateFields = async (fields: string[], data: Record<string, unknown>, completeOutline = false) => {
       const target = { ...input, section: fields.length === 1 ? fields[0]! : 'all', context: `${input.context}\nSelected section fields: ${fields.join(', ')}.`, editor: { ...input.editor, data: { ...identity, ...data } } }
-      const progression = completeOutline ? { programOutcomes: combined.programOutcomes || before.programOutcomes, precedingTopics: (combined.courseOutline as Row[] || []).map(row => ({ week: row.week, contents: row.contents })), totalWeeks: weeks.length } : undefined
-      const task = `Draft only ${fields.join(', ')}${completeOutline ? ` for weeks ${(data.courseOutline as Row[]).map(row => row.week).join(', ')}` : ''}. Follow the original request's subject, language and source restrictions within this stage. Other sections and weeks are handled separately.`
-      return stage(target, { ...payload, ...target, message: task, originalRequest: input.message, requestedFields: fields, ...(progression ? { progression } : {}) }, fields, completeOutline)
+      const progression = completeOutline ? { programOutcomePreviews: ((combined.programOutcomes || before.programOutcomes || []) as string[]).slice(0,5).map(text=>text.slice(0,180)), precedingTopicPreviews: (combined.courseOutline as Row[] || []).filter(row=>row.week<Math.min(...(data.courseOutline as Row[]).map(r=>r.week))).slice(-4).map(row => ({ week: row.week, topicPreview: ((row.contents||[]) as string[]).join('; ').slice(0,140) })), totalWeeks: weeks.length } : undefined
+      const task = `Draft only ${fields.join(', ')}${completeOutline ? ` for weeks ${(data.courseOutline as Row[]).map(row => row.week).join(', ')}` : ''}. Follow the original request's subject, language and source restrictions within this stage. Compare supplied referenceSyllabi as educational sequence examples, preserving the selected course and requested week. Source previews are bounded excerpts, not verified institutional policy or full-book evidence. Adapt instead of copying blindly; do not invent sources. Other sections and weeks are handled separately.`
+      const referenceSyllabi=referenceWindow((payload.referenceSyllabi||[]) as ReferenceSyllabus[],completeOutline?(data.courseOutline as Row[]).map(row=>row.week):[])
+      return stage(target, { ...payload, ...target, referenceSyllabi, message: task, originalRequest: input.message, requestedFields: fields, ...(progression ? { progression } : {}) }, fields, completeOutline)
     }
     if (whole) {
       const core = ['programOutcomes', 'courseRequirements', 'coursePolicy']
@@ -82,9 +85,13 @@ export async function draftHarness(input: Input, payload: Record<string, unknown
       combined.gradingSystem = typeof before.gradingSystem === 'string' && before.gradingSystem.trim() ? before.gradingSystem : 'Pending approved institutional grading formula.'
     }
     const completed = new Map<number, Row>()
-    const teaching = weeks.filter(row => !/examination/i.test(row.assessments || ''))
-    for (const row of weeks.filter(row => /examination/i.test(row.assessments || ''))) completed.set(row.week, structuredClone(row))
-    const batchSize = execution?.batchSize || 4
+    const fillMissing=/\b(?:complete|fill|finish|remaining|missing)\b/i.test(input.message)&&!/\b(?:regenerate|replace|rewrite|redesign)\b/i.test(input.message)
+    const filled=(row:Row)=>Boolean(String(row.ilos||'').trim()&&(row.contents as string[]|undefined)?.some(text=>text.trim())&&row.activities&&row.assessments&&(row.teachingMaterials as string[]|undefined)?.length&&(row.assessmentTypes as string[]|undefined)?.length)
+    const preserved=(row:Row)=>/examination/i.test(row.assessments||'')||fillMissing&&filled(row)
+    const teaching=weeks.filter(row=>!preserved(row))
+    for(const row of weeks.filter(preserved))completed.set(row.week,structuredClone(row))
+    combined.courseOutline=[...completed.values()].sort((a,b)=>a.week-b.week)
+    const batchSize = execution?.batchSize || 1
     for (let start = 0; start < teaching.length; start += batchSize) {
       const batch = teaching.slice(start, start + batchSize)
       const result = await generateFields(['courseOutline'], { courseOutline: batch }, true)

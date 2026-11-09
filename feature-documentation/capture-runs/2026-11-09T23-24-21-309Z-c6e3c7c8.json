@@ -1,0 +1,210 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-11-09T23-24-21-309Z-c6e3c7c8",
+  "startedAt": "2026-11-09T23:24:21.309Z",
+  "finishedAt": "2026-11-09T23:24:41.630Z",
+  "commitSha": "fd6a9177920eeb75e346cb7c498673d7f85e0535",
+  "sourceDigest": "7195e66b744560b50c3cc7afab0075afb7427f9be0ff0a0779224026f208c9a0",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-11-09T23:24:18.641Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 5,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": null
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/operator-steps.spec.ts",
+    "edupulse-app/tests/snapshots/outline-progress.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-drafting.spec.ts",
+    "edupulse-app/tests/snapshots/outline-progress-mobile.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/account-support-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/account-support.spec.ts",
+    "edupulse-app/tests/snapshots/approved-syllabus-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/approved-syllabus.spec.ts",
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/automatic-records.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/automatic-records.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.spec.ts",
+    "edupulse-app/tests/snapshots/course-seed.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-formatting.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-navigation.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/harness-delivery.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/outline-courseware.spec.ts",
+    "edupulse-app/tests/snapshots/outline-selector.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/outline-selector.spec.ts",
+    "edupulse-app/tests/snapshots/oversight.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/oversight.spec.ts",
+    "edupulse-app/tests/snapshots/pipeline-progress-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pipeline-progress.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/public-pulse-search-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/public-pulse-search.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-source.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+    "edupulse-app/tests/snapshots/retained-sources-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/retained-sources.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+    "edupulse-app/tests/snapshots/staff-registration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/staff-registration.spec.ts",
+    "edupulse-app/tests/snapshots/student-directory.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/system-search-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/system-search.spec.ts",
+    "edupulse-app/tests/snapshots/voice-quota.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/voice-quota.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-cache.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-recovery.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/operator-steps.spec.ts",
+      "title": "synthetic bounded syllabus complete preview",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2706,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/operator-steps.spec.ts",
+      "title": "synthetic bounded syllabus connection recovery",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2198,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/outline-progress.spec.ts",
+      "title": "progressive outline: visible completed weeks, stopped prefix and safe placement",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "local-real-input/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2399,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/pulse-drafting.spec.ts",
+      "title": "Pulse model proposal: course-aware complete syllabus draft and research sources",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-provider-transport/ui-regression",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1894,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/outline-progress-mobile.spec.ts",
+      "title": "progressive outline mobile: completed preview and retained failure state",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "local-real-input/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2194,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-manual/09-pulse-actions/17-course-aware-syllabus-draft.png",
+      "sha256": "439a1147ed9917fddb852207c35896c885987e88ed64fccbd38e7e34008fb578",
+      "bytes": 112096
+    },
+    {
+      "path": "feature-documentation/system-manual/09-pulse-actions/19-bounded-course-preview.png",
+      "sha256": "634a8c03f72efd834a7905d81db63802f7b1dfed52b1819ab57bfa1b0ef1d78f",
+      "bytes": 108877
+    },
+    {
+      "path": "feature-documentation/system-manual/09-pulse-actions/20-connection-recovery.png",
+      "sha256": "bb732d5b436a527ff58f9874eae55345708e3b0abe9b9b70d4cbfd00e8b02695",
+      "bytes": 27120
+    },
+    {
+      "path": "feature-documentation/system-manual/34-progressive-outlines/01-weeks-arrive.png",
+      "sha256": "7dec67ee89bea9ff08ee2b38e8d7ddf5d52f31e565336592fd466db9e36ee4ec",
+      "bytes": 77366
+    },
+    {
+      "path": "feature-documentation/system-manual/34-progressive-outlines/02-stopped-prefix.png",
+      "sha256": "b07ff7506dfad31873da7249cd1e5cd73e2dd1a814d818392bd8487c4d22830b",
+      "bytes": 81510
+    },
+    {
+      "path": "feature-documentation/system-manual/34-progressive-outlines/03-editable-weeks.png",
+      "sha256": "b018faeeb671deea19edb9a8b6cc51ebd172af30559676983127b2a2c4ec391f",
+      "bytes": 76321
+    },
+    {
+      "path": "feature-documentation/system-manual/34-progressive-outlines/04-mobile-progress.png",
+      "sha256": "7a4c341411cf202c2465f6b4f2868c307eb7df0d7bac619b9556255e4985f29e",
+      "bytes": 308799
+    },
+    {
+      "path": "feature-documentation/system-manual/34-progressive-outlines/05-mobile-stopped.png",
+      "sha256": "6e7ef63f543a700f7fd28e04cc42dac07190f0e85b2e175c2ed0cf8d8a128065",
+      "bytes": 326659
+    }
+  ]
+}

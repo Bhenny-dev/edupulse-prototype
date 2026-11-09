@@ -28,6 +28,8 @@ import { parsedToFormState } from '../utils/syllabusParser'
 import { TEACHING_MATERIAL_CATEGORIES, ASSESSMENT_CATEGORIES } from '../data/sixLayerCategories'
 import { pulse as pulseBus } from '../components/pulse/pulseBus'
 import { usePulseEditor } from '../agents/usePulseEditor'
+import OutlineDraftPreview from '../components/syllabus/OutlineDraftPreview'
+import {keepOutlineDraft} from '../agents/draftProgress'
 
 // Syllabus — FLOW_SPEC Phase 2. Lifecycle: drafted → checked →
 // downloaded_for_approval → approved_uploaded → active. The signatory chain
@@ -386,6 +388,7 @@ const FormGroup = ({ label, required, error, children, note }) => {
 
 
 function SyllabusBuilder({ onComplete, onCancel, initial }) {
+  const [outlineDraft,setOutlineDraft]=useState(null)
   const { addToast } = useToast()
   const ic = DEFAULT_INSTITUTIONAL_CONTEXT
 
@@ -570,6 +573,7 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
   }
 
   usePulseEditor({ kind: 'syllabus', label: `${form.courseCode || 'New'} syllabus builder`, data: form, sources: sourceFiles,
+    previewOutline:(progress,baseline)=>setOutlineDraft({...progress,baseline}),
     apply: next => { setForm(next); setUploadStep('done') },
     prepareCourse: (code, current) => {
       const course = CURRICULUM_COURSES.find(item => item.code === code)
@@ -950,6 +954,10 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
             <label>Week<select className="form-input" aria-label="Outline week" value={outlineWeek} onChange={event => { setOutlineWeek(event.target.value); setOutlineTerm('all') }}><option value="all">All weeks</option>{form.courseOutline.map(row => <option key={row.week} value={row.week}>Week {row.week}{isExamWeek(row.week) ? ' - Examination' : ''}</option>)}</select></label>
             <button type="button" className="btn btn-secondary" aria-expanded={outlineExpanded} onClick={() => setOutlineExpanded(value => !value)}>{outlineExpanded ? 'Close expanded outline' : 'Expand outline'}</button></div>
           </div>
+          {outlineDraft?.baseline.data.courseCode===form.courseCode&&<OutlineDraftPreview draft={outlineDraft} onDismiss={()=>setOutlineDraft(null)} onKeep={week=>{
+            const {rows,kept,conflicts}=keepOutlineDraft(form.courseOutline,outlineDraft.baseline.data.courseOutline,outlineDraft.rows,week)
+            setForm({...form,courseOutline:rows});if(kept)setUploadStep('done');addToast(`${kept} draft week(s) placed in the form.${conflicts?` ${conflicts} manually changed week(s) preserved.`:''} Review before saving.`,conflicts?'warning':'success')
+          }}/>}
           {/* One table for the whole outline: each term is a row group with its own heading row. */}
           <div className="outline-table-scroll" role="region" aria-label="Course Outline weeks" tabIndex={0}><table className="data-table outline-table">
             <colgroup><col className="outline-col-tools" /><col className="outline-col-week" /><col /><col /><col /><col /></colgroup>

@@ -58,7 +58,7 @@ test('full syllabus draft researches the course and validates all 18 weeks befor
     const draft = { ...researchMethodsDraft, courseOutline: researchMethodsDraft.courseOutline.filter(row => context.editor.data.courseOutline?.some((old: { week: number }) => old.week === row.week)) }
     return JSON.stringify(Object.fromEntries(context.requestedFields.map((field: keyof typeof draft) => [field, draft[field]])))
   }, 26000, research)
-  assert.equal(lookups, 1); assert.equal(calls, 6, 'core, four teaching-week batches and bibliography; research is shared')
+  assert.equal(lookups, 1); assert.equal(calls, 18, 'core, sixteen individual teaching weeks and bibliography; research is shared')
   assert.ok('patch' in result)
   assert.ok(result.patch && 'courseOutline' in result.patch)
   assert.equal(result.patch?.courseOutline?.length, 18)
@@ -75,7 +75,7 @@ test('drafts a model wraps in a sentence and a code fence pass every stage witho
     const draft = { ...researchMethodsDraft, courseOutline: researchMethodsDraft.courseOutline.filter(row => context.editor.data.courseOutline?.some((old: { week: number }) => old.week === row.week)) }
     return `Here is the requested JSON:\n\`\`\`json\n${JSON.stringify(Object.fromEntries(context.requestedFields.map((field: keyof typeof draft) => [field, draft[field]])), null, 2)}\n\`\`\`\nTell me if a week needs changes.`
   }, 26000, async () => ({ evidence: [source] }))
-  assert.equal(calls, 6, 'core, four teaching-week batches and bibliography, each on its first attempt')
+  assert.equal(calls, 18, 'core, sixteen individual teaching weeks and bibliography, each on its first attempt')
   assert.ok('patch' in result)
   assert.ok(result.patch && 'courseOutline' in result.patch)
   assert.equal(result.patch?.courseOutline?.length, 18)

@@ -28,7 +28,7 @@ test('reported prompt completes all weeks across bounded steps, shares research 
       assert.equal(task.originalRequest, popularCulturePrompt)
       assert.equal(task.editor.data.courseTitle, 'Philippine Popular Culture')
       assert.equal(task.continuation, undefined, 'protected transport state is not model input')
-      if (task.requestedFields.includes('courseOutline')) assert.ok(task.editor.data.courseOutline.length <= 2)
+      if (task.requestedFields.includes('courseOutline')) assert.ok(task.editor.data.courseOutline.length === 1)
       if (calls === 4 && !repaired) { repaired = true; return '{malformed' }
       return JSON.stringify(popularCultureStage(prompt))
     }, 26000, async () => { lookups++; return { evidence: [] } }, execution)
@@ -38,7 +38,7 @@ test('reported prompt completes all weeks across bounded steps, shares research 
       execution = { initialize: false, ...result.pending }
     } else {
       assert.equal(lookups, 1)
-      assert.equal(calls, 10, 'core, eight outline batches and one repair; no bibliography call without sources')
+      assert.equal(calls, 18, 'core, sixteen individual teaching weeks and one repair; no bibliography call without sources')
       assert.ok('patch' in result && result.patch)
       assert.ok('courseOutline' in result.patch)
       assert.deepEqual(result.patch.courseOutline, popularCultureDraft.courseOutline)
@@ -90,7 +90,7 @@ test('encrypted steps cross client, real API, model adapter and final validation
   const result = await requestOperator(input(), AbortSignal.timeout(30000))
   assert.deepEqual(result?.patch?.courseOutline, popularCultureDraft.courseOutline)
   assert.equal(result?.requiresConfirmation, true)
-  assert.equal(generations, 10); assert.equal(researches, 1); assert.equal(requests, 12)
+  assert.equal(generations, 18); assert.equal(researches, 1); assert.equal(requests, 20)
   assert.deepEqual((await (await handleRequest(new Request('http://localhost/api/ai?action=workspace'))).json()).data, null, 'generation alone never saves')
   const resume = { ...input(), continuation: firstCheckpoint }
   await assert.rejects(operatorRequest(resume, { ...identity, id: 'different-user' }, connection, AbortSignal.timeout(1000)), { code: 'DRAFT_STATE_EXPIRED' })
@@ -105,7 +105,7 @@ test('encrypted steps cross client, real API, model adapter and final validation
 test('outline-only drafting batches all teaching weeks and retains exam slots without changing other fields', async () => {
   const task = operatorInput.parse({ ...input(), section: 'courseOutline', message: 'Complete the course outline without web research' })
   let execution: PlannerExecution = { initialize: true }, calls = 0
-  for (let step = 0; step < 12; step++) {
+  for (let step = 0; step < 20; step++) {
     const result = await planValidatedTool(task, identity, AbortSignal.timeout(10000), async (_system, prompt) => {
       calls++; assert.deepEqual(JSON.parse(prompt).requestedFields, ['courseOutline'])
       return JSON.stringify(popularCultureStage(prompt))
@@ -115,7 +115,7 @@ test('outline-only drafting batches all teaching weeks and retains exam slots wi
       assert.ok('patch' in result && result.patch && 'courseOutline' in result.patch)
       assert.deepEqual(Object.keys(result.patch), ['courseOutline'])
       assert.deepEqual(result.patch.courseOutline, popularCultureDraft.courseOutline)
-      assert.equal(calls, 8)
+      assert.equal(calls, 16)
       return
     }
   }

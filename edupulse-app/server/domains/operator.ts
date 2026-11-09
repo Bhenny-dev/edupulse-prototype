@@ -6,6 +6,7 @@ import { scheduledSyllabusDraft } from '../../src/agents/draftValidation.js'
 import { createHash } from 'node:crypto'
 import { z } from 'zod'
 import { researchCourse } from '../external/web.js'
+import {outlineDraftProgress} from '../../src/agents/draftProgress.js'
 export { operatorInput }
 const checkpoint = z.object({
   purpose: z.literal('syllabus-draft-v1'), binding: z.string(), expires: z.number(),
@@ -25,7 +26,7 @@ export async function operatorRequest(input: z.infer<typeof operatorInput>, iden
   if ('pending' in result && result.pending) {
     const continuation = sealProviderState({ purpose: 'syllabus-draft-v1', binding, expires: resume?.expires || Date.now() + 30 * 60_000, pending: result.pending })
     if (continuation.length > 220000) throw new ApiError(413, 'DRAFT_STATE_LIMIT', 'The draft and sources exceed the checkpoint limit. Use a shorter source excerpt; nothing has been applied.')
-    return { continuation, pending: true, generated: result.generated }
+    return { continuation, pending: true, generated: result.generated, progress: input.editor ? outlineDraftProgress(result.pending.draft.patch,input.editor) : null }
   }
   return result
 }

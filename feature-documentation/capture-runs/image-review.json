@@ -849,9 +849,9 @@
     },
     {
       "path": "feature-documentation/system-manual/09-pulse-actions/17-course-aware-syllabus-draft.png",
-      "sha256": "251a49e77ddd4685274c9320288e3d062d7d5795cf6a5a7f4367fd0a596a7fc8",
+      "sha256": "439a1147ed9917fddb852207c35896c885987e88ed64fccbd38e7e34008fb578",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-27T15:39:04.571Z"
+      "reviewedAt": "2026-11-09T23:27:06.812Z"
     },
     {
       "path": "feature-documentation/system-walkthrough/09-restored-role-pages/03-dean-dashboard.png",
@@ -4383,9 +4383,9 @@
     },
     {
       "path": "feature-documentation/system-manual/09-pulse-actions/19-bounded-course-preview.png",
-      "sha256": "86d591328daabba708521e5d4b9101f9d5bebfd4d6872e4c842fe957089756bb",
+      "sha256": "634a8c03f72efd834a7905d81db63802f7b1dfed52b1819ab57bfa1b0ef1d78f",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-07T07:06:11.092095Z"
+      "reviewedAt": "2026-11-09T23:27:06.812Z"
     },
     {
       "path": "feature-documentation/system-manual/09-pulse-actions/20-connection-recovery.png",
@@ -7434,6 +7434,36 @@
       "sha256": "e3c35101565ee022db9cb13f7203d909c4761974562a5d60e6f7bad54142f108",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-09T22:39:55.720Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/34-progressive-outlines/01-weeks-arrive.png",
+      "sha256": "7dec67ee89bea9ff08ee2b38e8d7ddf5d52f31e565336592fd466db9e36ee4ec",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T23:27:06.778Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/34-progressive-outlines/02-stopped-prefix.png",
+      "sha256": "b07ff7506dfad31873da7249cd1e5cd73e2dd1a814d818392bd8487c4d22830b",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T23:27:06.810Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/34-progressive-outlines/03-editable-weeks.png",
+      "sha256": "b018faeeb671deea19edb9a8b6cc51ebd172af30559676983127b2a2c4ec391f",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T23:27:06.810Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/34-progressive-outlines/04-mobile-progress.png",
+      "sha256": "7a4c341411cf202c2465f6b4f2868c307eb7df0d7bac619b9556255e4985f29e",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T23:27:06.811Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/34-progressive-outlines/05-mobile-stopped.png",
+      "sha256": "6e7ef63f543a700f7fd28e04cc42dac07190f0e85b2e175c2ed0cf8d8a128065",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T23:27:06.811Z"
     }
   ]
 }

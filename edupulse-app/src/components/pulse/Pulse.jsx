@@ -9,13 +9,16 @@ import { pulse as pulseBus } from './pulseBus'
 import { useAuth } from '../../context/AuthContext'
 import { aiRequest, askPulse, readReferenceFile, UPLOAD_ACCEPT } from '../../lib/aiClient'
 import { requestOperator } from '../../lib/operatorClient'
+import {relatedSyllabi} from '../../agents/relatedSyllabi'
+import {scheduledSyllabusDraft} from '../../agents/draftValidation'
+import {planRequest} from '../../lib/rag/plan'
 import { checkAppropriateUse } from '../../lib/rag/policy'
 import { informationalQuestion } from '../../lib/rag/lookup'
 import { getAgentForZone, intentsForRole } from '../../agents'
 import { approvalResumeStep, prepareIntent, previewAgents, stepReadiness, stepTarget } from '../../agents/guidance'
 import { courseCatalog, findCourseMentions, pageFor, PAGES, planOperator, searchRecords, syllabusReference } from '../../agents/operator'
 import { conversationWindow } from '../../agents/skills'
-import { applyEditorProposal, currentEditor, currentEditorSources, literalEdit } from '../../agents/editorTools'
+import { applyEditorProposal, currentEditor, currentEditorSources, literalEdit, previewEditorOutline } from '../../agents/editorTools'
 import { editableField, scopedEditorPatch } from '../../agents/componentScope'
 import { activeSources, focusedSection, focusedFields, sourceContext } from '../../agents/pageContext'
 import { ACTION_REQUEST, DRAFT_REQUEST, EDIT_REQUEST, ALL_FIELDS, receiptText, workProposal } from '../../agents/workTools'
@@ -328,11 +331,17 @@ export default function Pulse() {
     if(exact) return {patch:scopedEditorPatch(proposal.editor, exact, proposal.target?.path, proposal.scopeFields),generated:false,requiresConfirmation:true}
     const editSources = (proposal.attachments || []).map(item => ({ title: item.title, text: sourceContext(item, proposal.section), kind: item.syllabus ? 'syllabus' : item.roster ? 'roster' : 'material' }))
     if (editSources.some(source => source.text.length > 18000)) throw new Error('The selected source is too long for this edit. Select a smaller section or supply a shorter excerpt; no source was silently cut.')
-    const result = await requestOperator({
+    const scheduled=scheduledSyllabusDraft({editor:proposal.editor,message:proposal.request,section:proposal.section||'all',context:proposal.target?.path?'Editable field path: '+proposal.target.path:''})
+    const references=scheduled&&!planRequest({message:proposal.request}).sourceOnly?relatedSyllabi(syllabi,proposal.editor.data):[]
+    let lastProgress=null,previewed=false,result
+    try { result = await requestOperator({
     operation: 'revise', message: proposal.request, viewRole: user?.role || 'guest', editor: proposal.editor, section: proposal.section || 'all', context: `Page: ${location.pathname}. Selected component: ${proposal.target?.label || focus?.label || ''}. ${proposal.scopeFields ? `Selected section fields: ${proposal.scopeFields.join(', ')}. Only these fields are selected.` : ''} ${proposal.target ? `Editable field path: ${proposal.target.path}. Only this field is selected; retain the surrounding array and other fields.` : ''}`,
     history: conversationWindow(messages, 10000).history.slice(-8).map(item => ({ ...item, content: item.content.slice(0, 3000) })),
-    attachments: editSources,
-  }, signal)
+    attachments: editSources,referenceSyllabi:references,
+  }, signal,progress=>{lastProgress={...progress,references};previewed=previewEditorOutline(proposal.editor,{...lastProgress,phase:'working'},user?.role)})
+      if(lastProgress)previewEditorOutline(proposal.editor,{...lastProgress,phase:'complete'},user?.role)
+    }catch(error){if(lastProgress)try{previewEditorOutline(proposal.editor,{...lastProgress,phase:'stopped'},user?.role)}catch{/* The original editor may have unmounted. */}throw error}
+    if(previewed&&proposal.section==='courseOutline')return {...result,previewed:true}
     return result.patch ? { ...result, patch: scopedEditorPatch(proposal.editor, result.patch, proposal.target?.path, proposal.scopeFields) } : result
   }
   const tracked = async (buddy, label, fn) => { const ticket=office.begin(buddy,label); try { const result=await fn();office.finish(ticket,'done',label+' completed. See its receipt in Pulse.');return result } catch(error) {office.finish(ticket,'error',label+' did not complete.');throw error} }
@@ -428,7 +437,7 @@ export default function Pulse() {
         if (proposal.type === 'editor-edit' && proposal.editor) {
           const result = await prepareEdit(proposal, controller.signal)
           controller.signal.throwIfAborted()
-          if (result.clarification) { office.finish(proposal.ticketId,'stopped','More information is needed; no edit prepared.'); proposal.type = 'notice'; proposal.text = result.clarification } else { proposal.patch = result.patch; proposal.notes = result.notes; proposal.sources = result.sources }
+          if (result.clarification) { office.finish(proposal.ticketId,'stopped','More information is needed; no edit prepared.'); proposal.type = 'notice'; proposal.text = result.clarification } else if(result.previewed){proposal.type='notice';proposal.text='Your generated weeks are ready in the Course Outline preview. Use individual weeks or Use completed weeks, then review and save the syllabus.'} else { proposal.patch = result.patch; proposal.notes = result.notes; proposal.sources = result.sources }
         }
         if (proposal.type === 'search') {
           const documents = await aiRequest('documents').then(result => result.documents, () => [])

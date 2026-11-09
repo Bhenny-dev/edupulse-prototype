@@ -72,3 +72,13 @@
 .outline-selected-item > span { overflow-wrap: anywhere; min-width: 0; }
 .outline-selected-item button { display: grid; place-items: center; flex-shrink: 0; width: 32px; height: 36px; border: 0; border-radius: inherit; color: inherit; background: transparent; cursor: pointer; }
 @media (max-width: 640px) { .outline-selected-item button { width: 44px; height: 44px; } }
+
+.outline-draft-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; }
+.outline-draft-toolbar > strong { margin-right: auto; }
+.outline-draft-toolbar [role="status"] { display: inline-flex; align-items: center; gap: 8px; color: var(--gray-600); font-size: .875rem; }
+.outline-draft-preview p { line-height: 1.6; }
+.outline-draft-week { margin-top: 12px; padding: 12px 16px; border: 1px solid var(--gray-200); border-radius: var(--radius-sm); background: var(--white); line-height: 1.6; }
+.outline-draft-week summary { cursor: pointer; font-weight: 600; overflow-wrap: anywhere; }
+.outline-draft-week p, .outline-draft-week ul { margin: 8px 0; }
+.outline-draft-week ul { padding-left: 24px; }
+.outline-draft-week .btn { margin-top: 8px; }

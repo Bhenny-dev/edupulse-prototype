@@ -110,3 +110,7 @@ Week-specific teaching materials and assessment types open a viewport-bounded pa
 ## Retained syllabus references
 
 The weekly Course workspace shows a collapsed **Syllabus sources** panel when references are listed. Expand it to read links, attach readable book copies, inspect retained text and manage versions. The source dialog formats extracted headings, emphasis, lists and tables; **Source details** exposes the original bibliography and checksum. **Download PDF** creates a formatted reading copy, while **Download retained copy** preserves the original. Private saved copies are reused by generation, while unread references remain explicitly separate from passage evidence. The refreshed weekly screenshot above shows this additional panel; [Manual 31](../../system-manual/31-retained-syllabus-sources/README.md) shows every source state and action.
+
+## Progressive outline preparation
+
+The syllabus builder now displays completed weekly previews while Pulse prepares the next week, with **Use completed weeks**, individual week controls and a retained stopped state. Same-course source patterns are displayed with version/status. Placement preserves manual edits and does not save or publish. [Manual 34](../../system-manual/34-progressive-outlines/README.md) shows desktop and mobile examples.

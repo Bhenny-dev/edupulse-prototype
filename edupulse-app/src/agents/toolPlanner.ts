@@ -7,6 +7,7 @@ import { checkAppropriateUse } from '../lib/rag/policy.js'
 import { allowsPublicResearch, planRequest } from '../lib/rag/plan.js'
 import { DRAFT_REQUEST, WEB_REQUEST } from './skills.js'
 import type { WebResearch, WebSearch } from '../lib/rag/types.js'
+import {referenceSyllabus} from './relatedSyllabi.js'
 
 const editor = z.object({ instance: z.string().max(100), kind: z.enum(['syllabus', 'content']), label: z.string().max(240), data: z.record(z.string(), z.unknown()) }).strict()
 export const operatorInput = z.object({
@@ -15,6 +16,7 @@ export const operatorInput = z.object({
   editor: editor.nullable().default(null), section: z.string().max(80).nullable().default(null),
   attachments: z.array(z.object({ title: z.string().max(255), text: z.string().max(18000), kind: z.enum(['syllabus', 'roster', 'material']) })).max(3).default([]),
   staged: z.boolean().optional(), continuation: z.string().min(1).max(220000).optional(),
+  referenceSyllabi:z.array(referenceSyllabus).max(2).default([]),
 }).strict().refine(input => JSON.stringify({ ...input, continuation: undefined }).length <= 100000, 'Planning context is too large.')
 
 export type PlannerExecution = { initialize: boolean; research?: WebResearch; draft?: DraftState }
@@ -24,6 +26,7 @@ export async function planValidatedTool(input: z.infer<typeof operatorInput>, id
   if (decision.allowed === false) throw new ApiError(403, 'ACTION_POLICY', decision.guidance)
   const staged = input.operation === 'revise' && scheduledSyllabusDraft(input)
   const { continuation: _continuation, staged: _staged, ...taskInput } = input
+  if(planRequest({message:input.message}).sourceOnly)taskInput.referenceSyllabi=[]
   const context = { ...taskInput, viewRole: role, history: [...input.history], editor: input.editor ? { ...input.editor, data: input.section && input.section !== 'all' ? { courseCode: input.editor.data.courseCode, courseTitle: input.editor.data.courseTitle, courseDescription: input.editor.data.courseDescription, courseInfo: input.editor.data.courseInfo, [input.section]: input.editor.data[input.section] } : input.editor.data } : null }
   // Keep exact target fields; never truncate an editable array into a destructive replacement.
   while (JSON.stringify(context).length > contextLimit && context.history.length) context.history.shift()
@@ -38,7 +41,7 @@ export async function planValidatedTool(input: z.infer<typeof operatorInput>, id
     const sourceOnly = planRequest({ message: input.message }).sourceOnly
     if (sourceOnly && /\b(?:files?|documents?|pdfs?|attachments?|uploads?|uploaded|attached)\b/i.test(input.message) && !input.attachments.some(file => file.text.trim())) return { clarification: 'Attach the source file to this request so I can draft from it without substituting other sources.' }
     let research: WebResearch | undefined = execution?.research
-    if ((drafting || WEB_REQUEST.test(input.message)) && allowsPublicResearch(input.message) && !planRequest({ message: input.message }).sourceOnly) {
+    if ((WEB_REQUEST.test(input.message) || drafting&&!input.referenceSyllabi.length) && allowsPublicResearch(input.message) && !planRequest({ message: input.message }).sourceOnly) {
       try { if (!execution || execution.initialize) research = webSearch ? await webSearch(String(input.editor.data.courseTitle || input.message).slice(0, 200), signal) : { evidence: [], warning: 'Web research is unavailable. New educational content is an unverified draft for instructor review.' } }
       catch { signal.throwIfAborted(); research = { evidence: [], warning: 'Web research failed. No web findings are claimed; the educational draft needs instructor review.' } }
       // Preserve exact editable arrays. Only external research, never the target,
@@ -52,7 +55,7 @@ export async function planValidatedTool(input: z.infer<typeof operatorInput>, id
     const sourceText = `${input.message}\n${JSON.stringify(input.editor.data)}\n${input.attachments.map(file => file.text).join('\n')}\n${research?.evidence.map(source => `${source.url}\n${source.text}`).join('\n') || ''}`
     const sourceScope = sourceOnly ? ' Use only the supplied source content and selected syllabus. Do not add facts from general knowledge. If an essential requested detail is absent, return needsClarification identifying the missing source; never invent content to satisfy completeness checks.' : ''
     if (execution?.initialize) return { pending: { research, draft: { next: 0, patch: {} } as DraftState }, generated: false }
-    const result = await draftHarness({ ...taskInput, editor: input.editor }, JSON.parse(payload), system + sourceScope, sourceText, generate, signal, contextLimit, execution ? { state: execution.draft!, batchSize: 2 } : undefined)
+    const result = await draftHarness({ ...taskInput, editor: input.editor }, JSON.parse(payload), system + sourceScope, sourceText, generate, signal, contextLimit, execution ? { state: execution.draft!, batchSize: 1 } : undefined)
     if ('pending' in result) return { pending: { research, draft: result.pending }, generated: result.generated }
     return { ...result, requiresConfirmation: true, ...(research ? { sources: research.evidence.map(source => ({ title: source.title, url: source.url })), notes: [research.warning, 'New teaching content is proposed for instructor review. Official rules and bibliography need their approved sources.'].filter(Boolean) } : {}) }
   }

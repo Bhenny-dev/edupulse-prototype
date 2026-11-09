@@ -28,6 +28,8 @@ The owner asked for an audit of unfinished work across the conversation, with ea
 
 ## Binding clarifications
 
+The owner also requested a replacement References intake: accept **link or file only**, automatically extract available title/authors/year/publisher/identifiers, retain the source and associate it with the syllabus/course. Index readable content for authorized vector/RAG retrieval, with reusable source versions and exact citations in formatted views and exports. Existing private account boundaries remain authoritative; absent metadata is marked missing, never invented. This is an active implementation task, distinct from the already delivered retained-source reader.
+
 - Enroll **BSIT only**. Do not fabricate program-appropriate syllabi for the other registered programs.
 - Labelled test submissions on registered accounts are authorized and should count in recorded student progress; distinguish them from independent learner achievement.
 - All 14 supplied PDFs were confirmed approved by the owner. Historical signatories do not replace Ginard's Dean role or Myriell's Associate Dean role; Marielle remains an instructor.

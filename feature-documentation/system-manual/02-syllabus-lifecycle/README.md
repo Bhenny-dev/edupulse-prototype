@@ -123,3 +123,7 @@ The approved-file modal now displays **Reading approved file…** and a spinner 
 ## Searchable outline choices
 
 Teaching materials and assessment types now open searchable grouped panels above the scrolling table. Checkbox rows remain separate, selected values remain as removable chips, and **Done** / **Escape** returns focus to the field. Activity and assessment-detail text are preserved. See [Manual 28](../28-outline-selectors/README.md).
+
+## Progressive Course Outline drafts
+
+[Manual 34](../34-progressive-outlines/README.md) shows weekly previews as generation continues, retained completed weeks after a later failure, same-course reference patterns and safe placement into the form. These controls do not automatically save, check or publish a syllabus.

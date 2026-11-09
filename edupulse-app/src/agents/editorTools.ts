@@ -34,11 +34,20 @@ export function literalEdit(snapshot: EditorSnapshot, request: string, section =
   const patch = Object.fromEntries(allowed.filter(field=>(section==='all'||field===section)&&snapshot.data[field]!==undefined).flatMap(field=>{ const value=visit(snapshot.data[field]);return JSON.stringify(value)===JSON.stringify(snapshot.data[field])?[]:[[field,value]] }))
   return Object.keys(patch).length ? (snapshot.kind==='syllabus'?syllabusPatch:contentPatch).parse(patch) : null
 }
-type Editor = { sources?: () => import('../lib/aiClient.js').ReferenceFile[]; read: () => EditorSnapshot; apply: (data: Record<string, unknown>) => void; prepareCourse?: (code: string, data: Record<string, unknown>) => Record<string, unknown>; save?: (data: Record<string, unknown>) => Promise<unknown> }
+type Editor = { previewOutline?:(progress:NonNullable<ReturnType<typeof import('./draftProgress.js').outlineDraftProgress>>,baseline:EditorSnapshot)=>void; sources?: () => import('../lib/aiClient.js').ReferenceFile[]; read: () => EditorSnapshot; apply: (data: Record<string, unknown>) => void; prepareCourse?: (code: string, data: Record<string, unknown>) => Record<string, unknown>; save?: (data: Record<string, unknown>) => Promise<unknown> }
 const editors = new Map<string, Editor>()
 export function registerEditor(id: string, editor: Editor) { editors.set(id, editor); return () => { if (editors.get(id) === editor) editors.delete(id) } }
 export function currentEditorSources() { return structuredClone([...editors.values()].at(-1)?.sources?.() || []) }
 export function currentEditor(): EditorSnapshot | null { const editor = [...editors.values()].at(-1); return editor ? structuredClone(editor.read()) : null }
+export function previewEditorOutline(expected:EditorSnapshot,progress:NonNullable<ReturnType<typeof import('./draftProgress.js').outlineDraftProgress>>,role:string) {
+ if(role!=='instructor'||expected.kind!=='syllabus')throw new Error('Only the authorized syllabus editor can preview an outline.')
+ const editor=[...editors.values()].find(value=>value.read().instance===expected.instance)
+ if(!editor||editor.read().data.courseCode!==expected.data.courseCode)throw new Error('The selected course or editor changed. Completed previews remain with their original course.')
+ const rows=syllabusPatch.parse({courseOutline:progress.rows}).courseOutline!
+ if(rows.some(row=>!(expected.data.courseOutline as {week:number}[]).some(old=>old.week===row.week)))throw new Error('A draft preview cannot introduce an unscheduled week.')
+ editor.previewOutline?.({...progress,rows},expected)
+ return Boolean(editor.previewOutline)
+}
 export async function applyEditorProposal(expected: EditorSnapshot, changes: Record<string, unknown>, role: string, save = false, courseCode?: string) {
   if (role !== 'instructor') throw new Error('Switch to an authorized instructor view to edit academic content.')
   const editor = [...editors.values()].find(value => value.read().instance === expected.instance)
