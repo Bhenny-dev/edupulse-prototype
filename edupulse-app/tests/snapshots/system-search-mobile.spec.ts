@@ -2,6 +2,13 @@ import {test,expect} from './fixtures'
 import {systemSearchUI} from '../system-search-fixture'
 test.use({viewport:{width:390,height:844},deviceScaleFactor:1,isMobile:true,hasTouch:true})
 
+test('verified account self recognition on a phone',async({page})=>{
+ await systemSearchUI(page);await page.goto('/#/dashboard');await page.getByRole('button',{name:'Open Pulse assistant'}).click()
+ const panel=page.getByRole('dialog',{name:'Pulse',exact:true});await panel.getByRole('textbox',{name:'Ask Pulse',exact:true}).fill('kilala mo ba ako?');await panel.getByRole('button',{name:'Send',exact:true}).click()
+ await expect(panel).toContainText('Username: teacher@example.invalid');await expect(panel).toContainText('Role: Instructor');await expect(panel).not.toContainText('Internet suggestions')
+ await panel.screenshot({path:'../feature-documentation/system-manual/24-system-first-search/10-mobile-self-account.png',animations:'disabled'})
+})
+
 test('Filipino person follow-up retains the subject on a phone',async({page})=>{
   await systemSearchUI(page);await page.goto('/#/dashboard');await page.getByRole('button',{name:'Open Pulse assistant'}).click()
   const panel=page.getByRole('dialog',{name:'Pulse',exact:true})

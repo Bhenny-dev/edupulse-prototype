@@ -56,7 +56,7 @@ export async function authenticate(request: Request): Promise<Identity> {
           !data.user.app_metadata?.providers?.includes('google')))) {
       throw new ApiError(403, 'ROLE_NOT_ASSIGNED', 'This account has no EduPulse role. Contact the administrator.')
     }
-    return { id: data.user.id, role, token, local: false, name: data.user.user_metadata?.full_name || data.user.email?.split('@')[0] }
+    return { id: data.user.id, role, token, local: false, name: data.user.user_metadata?.full_name || data.user.email?.split('@')[0], email: data.user.email?.toLowerCase() }
   }
   if (!config().hosted && process.env.AI_LOCAL_MODE === 'true') return { id: 'local-workspace', role: 'instructor', local: true }
   return { id: 'public-guest', role: 'guest', local: false }

@@ -7386,6 +7386,18 @@
       "sha256": "0ff765e8bc1c7c87ceb51a2e7c913856751c38f156b331c1129863b90695661c",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-09T21:49:47.401040Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/24-system-first-search/09-verified-self-account.png",
+      "sha256": "2334a0d061af1ef85601ba63571d90b7a64bb0e148fd2ed40cf172632d7a4da1",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T22:09:14.303216Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/24-system-first-search/10-mobile-self-account.png",
+      "sha256": "5bb5e8cd71e1109896f4e6a09580298539125d5901500d2b298e96e59c865ca6",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T22:09:14.303216Z"
     }
   ]
 }

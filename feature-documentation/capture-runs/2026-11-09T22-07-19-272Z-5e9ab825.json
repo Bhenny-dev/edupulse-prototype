@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-11-09T22-07-19-272Z-5e9ab825",
+  "startedAt": "2026-11-09T22:07:19.272Z",
+  "finishedAt": "2026-11-09T22:07:38.371Z",
+  "commitSha": "9c14397ea26aa4e4920def64e668f42c635a960b",
+  "sourceDigest": "a3f64cd817a46af06f3697bce93cc44581b9d0617859bac21ce57497074a0f39",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-11-09T22:07:15.101Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 2,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": null
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/system-search.spec.ts",
+    "edupulse-app/tests/snapshots/system-search-mobile.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/account-support-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/account-support.spec.ts",
+    "edupulse-app/tests/snapshots/approved-syllabus-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/approved-syllabus.spec.ts",
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/automatic-records.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/automatic-records.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.spec.ts",
+    "edupulse-app/tests/snapshots/course-seed.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-formatting.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-navigation.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/harness-delivery.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/operator-steps.spec.ts",
+    "edupulse-app/tests/snapshots/outline-courseware.spec.ts",
+    "edupulse-app/tests/snapshots/outline-selector.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/outline-selector.spec.ts",
+    "edupulse-app/tests/snapshots/oversight.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/oversight.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/public-pulse-search-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/public-pulse-search.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-drafting.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-source.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+    "edupulse-app/tests/snapshots/retained-sources-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/retained-sources.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+    "edupulse-app/tests/snapshots/staff-registration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/staff-registration.spec.ts",
+    "edupulse-app/tests/snapshots/student-directory.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/voice-quota.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/voice-quota.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-cache.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-recovery.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/system-search.spec.ts",
+      "title": "verified account self recognition uses username and role",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1589,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/system-search-mobile.spec.ts",
+      "title": "verified account self recognition on a phone",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1459,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-manual/24-system-first-search/09-verified-self-account.png",
+      "sha256": "2334a0d061af1ef85601ba63571d90b7a64bb0e148fd2ed40cf172632d7a4da1",
+      "bytes": 41790
+    },
+    {
+      "path": "feature-documentation/system-manual/24-system-first-search/10-mobile-self-account.png",
+      "sha256": "5bb5e8cd71e1109896f4e6a09580298539125d5901500d2b298e96e59c865ca6",
+      "bytes": 41745
+    }
+  ]
+}

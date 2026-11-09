@@ -1,6 +1,15 @@
 import {test,expect} from '@playwright/test'
 import {systemSearchUI} from '../system-search-fixture'
 
+test('self questions show the account username, role and work without Internet suggestions',async({page})=>{
+ const fixture=await systemSearchUI(page);await page.goto('/#/dashboard');await page.getByRole('button',{name:'Open Pulse assistant'}).click()
+ const panel=page.getByRole('dialog',{name:'Pulse',exact:true})
+ await panel.getByRole('textbox',{name:'Ask Pulse',exact:true}).fill('do you know me?');await panel.getByRole('button',{name:'Send',exact:true}).click()
+ await expect(panel).toContainText('Username: teacher@example.invalid');await expect(panel).toContainText('Role: Instructor');await expect(panel).toContainText('upload approved syllabi')
+ await expect(panel).not.toContainText('Internet suggestions');await expect(panel.getByRole('img')).toHaveCount(0)
+ expect(fixture.calls.filter(call=>['operator','provider-test'].includes(call.action))).toHaveLength(0)
+})
+
 test('System Search answers typo/name queries with no provider and shows attributed web images',async({page})=>{
   const fixture=await systemSearchUI(page)
   await page.goto('/#/dashboard');await page.getByRole('button',{name:'Open Pulse assistant'}).click()

@@ -1,6 +1,6 @@
 import type { Plan, Task } from './types.js'
 import { terms } from './text.js'
-import { conversationSubject, conversationalFollowUp } from './conversation.js'
+import { conversationSubject, conversationalFollowUp, selfAccountQuestion } from './conversation.js'
 
 type PlanInput = { message: string; context?: string; task?: Task | 'auto'; grounding?: 'auto' | 'sources'; documentIds?: string[]; history?: { role: string; content: string }[]; attachments?: unknown[] }
 
@@ -66,7 +66,7 @@ export function planRequest(input: PlanInput): Plan {
   // explicitly requested in an otherwise unrelated public search.
   const courseScoped = /\b(?:this|my|our|selected|current|the)\s+(?:course|syllabus|subject|outline)\b|\b(?:all|every)\s+(?:fields?|sections?)\b/i.test(message)
   const explicitTopic = /\b(?:about|on|regarding|look\s*up|research)\s+(.+?)(?=\s+for\s+(?:my|our|this|the|selected|current)\s+course\b|$)/i.exec(message)?.[1]?.replace(/[.!?]+$/, '').trim().slice(0, 200)
-  const privateQuestion = (conversation.followUp||conversation.social)&&Boolean(conversation.person)||/\b(?:my|our|registered|enrolled|selected)\b.{0,45}\b(?:students?|instructors?|teachers?|faculty|users?|courses?|scores?|grades?|statistics|stats|account|profile)|\bwho am i\b|\b(?:courses?|classes|students?|instructors?|teachers?|scores?|grades?|kurso|klase|estudyante|guro|marka)\s+(?:ko|namin|natin)\b|@|\b\d{4}-\d-\d{4}\b/i.test(message)
+  const privateQuestion = selfAccountQuestion(message)||(conversation.followUp||conversation.social)&&Boolean(conversation.person)||/\b(?:my|our|registered|enrolled|selected)\b.{0,45}\b(?:students?|instructors?|teachers?|faculty|users?|courses?|scores?|grades?|statistics|stats|account|profile)|\bwho am i\b|\b(?:courses?|classes|students?|instructors?|teachers?|scores?|grades?|kurso|klase|estudyante|guro|marka)\s+(?:ko|namin|natin)\b|@|\b\d{4}-\d-\d{4}\b/i.test(message)
   const publicQuestion = !conversational && !privateQuestion && !SOURCE_REQUEST.test(message) && /^(?:who|what|when|where|why|how|tell me about|do you know|sino|ano|kailan|saan|bakit|paano)\b/i.test(message)
   const educationalDraft = task === 'draft' && /\b(?:syllabus|course|lesson|outline|research|topics?|assessments?|materials?|references?)\b/i.test(message)
   if (task === 'references' && !allowsPublicResearch(message)) { task = 'answer'; rationale = 'External research was disabled by the user; use supplied or library sources.' }

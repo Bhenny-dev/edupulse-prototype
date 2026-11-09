@@ -4,6 +4,12 @@ Pulse searches accessible EduPulse records and content before public Internet su
 
 ## Find a registered person
 
+For your own account, ask **do you know me?**, **who am I?**, **what is my username?** or **kilala mo ba ako?**. Pulse uses the verified session to show your name, username, role and the work available to that role. It does not use Internet suggestions or a model for these questions. A signed-out visitor gets a sign-in explanation. In a System Admin support view, the answer distinguishes the signed-in admin from the selected person's username and role; student submissions remain disabled there.
+
+![Verified sample account username and instructor role](09-verified-self-account.png)
+
+![The same self-account question understood on a phone](10-mobile-self-account.png)
+
 Ask a name question such as **Do you know alexandra benlro d. sample?**. Initials, punctuation, partial names and small spelling mistakes can match authorized directory candidates. A single sufficiently close candidate starts with **Did you mean** and shows the recorded profile with its citation. Multiple matches stay a list; this never selects an account, changes enrollment or establishes that similarly named Internet people are the same person. Student numbers require exact matches and are never autocorrected.
 
 ![Synthetic profile suggestion with the recorded name and student number](01-profile-suggestion.png)

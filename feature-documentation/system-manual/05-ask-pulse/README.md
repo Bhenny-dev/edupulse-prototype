@@ -4,6 +4,8 @@
 
 ## Steps
 
+Ask **do you know me?**, **who am I?** or **kilala mo ba ako?** to see your verified name, username, role and role functions. Pulse answers these directly from the signed-in session without a provider or public search. A support view identifies the signed-in admin and the selected person separately. [Manual 24](../24-system-first-search/README.md) shows the desktop/mobile self-account response.
+
 1. Click **Pulse**, type a question and press **Enter** (Shift+Enter for a new line). Attach up to three files with the paperclip; they are read in the same sandbox as the library.
 2. Read the answer and its citations. Expand **Verification details** for grounding, citation and agent indicators. The compact conversation does not underline every sentence by default; these checks describe evidence support, not a guarantee of correctness.
 

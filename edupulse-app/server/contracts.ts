@@ -64,7 +64,7 @@ export type ChatInput = z.infer<typeof chatInput>
 // Callers may omit `plan`; the courseware graph applies its defaults.
 export type CourseInput = z.input<typeof courseInput>
 export type Source = { id: string; title: string; text: string; score: number; method: 'vector' | 'keyword' | 'provided' }
-export type Identity = { id: string; role: 'admin' | 'dean' | 'associate_dean' | 'instructor' | 'student' | 'guest'; token?: string; local: boolean; supportActor?: string; name?: string }
+export type Identity = { id: string; role: 'admin' | 'dean' | 'associate_dean' | 'instructor' | 'student' | 'guest'; token?: string; local: boolean; supportActor?: string; name?: string; email?: string }
 export class ApiError extends Error {
   constructor(public status: number, public code: string, message: string, public retryAfterSeconds?: number) { super(message) }
 }

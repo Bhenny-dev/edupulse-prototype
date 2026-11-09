@@ -2,6 +2,13 @@ import {test,expect} from './fixtures'
 import {systemSearchUI} from '../system-search-fixture'
 const folder='../feature-documentation/system-manual/24-system-first-search'
 
+test('verified account self recognition uses username and role',async({page})=>{
+ await systemSearchUI(page);await page.goto('/#/dashboard');await page.getByRole('button',{name:'Open Pulse assistant'}).click()
+ const panel=page.getByRole('dialog',{name:'Pulse',exact:true});await panel.getByRole('textbox',{name:'Ask Pulse',exact:true}).fill('do you know me?');await panel.getByRole('button',{name:'Send',exact:true}).click()
+ await expect(panel).toContainText('Username: teacher@example.invalid');await expect(panel).toContainText('Role: Instructor');await expect(panel).not.toContainText('Internet suggestions')
+ await panel.screenshot({path:`${folder}/09-verified-self-account.png`,animations:'disabled'})
+})
+
 test('person follow-up retains the registered subject without claiming a public identity',async({page})=>{
   await systemSearchUI(page);await page.goto('/#/dashboard');await page.getByRole('button',{name:'Open Pulse assistant'}).click()
   const panel=page.getByRole('dialog',{name:'Pulse',exact:true})

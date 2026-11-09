@@ -17,5 +17,5 @@ export async function supportIdentity(actor: Identity, id: string | null): Promi
   if (!id) return actor
   if (!z.string().uuid().safeParse(id).success || actor.role !== 'admin' || actor.local) throw new ApiError(403, 'SUPPORT_FORBIDDEN', 'A verified system admin and a valid account are required.')
   const result = await supportAction({ ...actor, id, supportActor: actor.id }, 'subject')
-  return { ...actor, id: result.id, role: result.role, supportActor: actor.id, name: result.name }
+  return { ...actor, id: result.id, role: result.role, supportActor: actor.id, name: result.name, email: result.email }
 }

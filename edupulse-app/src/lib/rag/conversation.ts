@@ -1,6 +1,9 @@
 type Turn = { role: string; content: string }
 type ConversationInput = { message: string; history?: Turn[] }
 
+/** Account deictics resolve from the verified session, never public search terms. */
+export const selfAccountQuestion=(text:string)=>/^(?:please\s+)?(?:do you know me|(?:can you |do you )?recogni[sz]e me|who am i|(?:what is|what's|whats) my (?:name|username|login|role|account)|(?:tell me|what do you know) about (?:me|my account)|what can i do(?: here| in edupulse)?|sino (?:ba )?ako|kilala mo (?:ba )?ako|(?:ano|anong) (?:ang )?(?:pangalan|username|role|account)(?: (?:ko|ako))?)[\s?.!]*$/i.test(text.trim())
+
 export function profileName(text: string) {
   return /^(?:who is|do you know|sino si|kilala mo (?:ba )?si|profile of|find (?:the )?student(?: named)?)\s+([\p{L}\p{N}\s.'’\-]{3,100})[?!]?$/iu.exec(text.trim())?.[1]?.replace(/[.?!]+$/, '').trim() || ''
 }

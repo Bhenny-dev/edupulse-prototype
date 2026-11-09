@@ -7,7 +7,7 @@ import { readWorkspace } from './workspace.js'
 import { keywordSearch } from './rag/keyword.js'
 import { searchWeb } from './external/web.js'
 import { keywordMatch, words, informationalQuestion } from '../src/lib/rag/lookup.js'
-import { conversationSubject } from '../src/lib/rag/conversation.js'
+import { conversationSubject, selfAccountQuestion } from '../src/lib/rag/conversation.js'
 import { planRequest, allowsPublicResearch, casualConversation } from '../src/lib/rag/plan.js'
 import { checkAppropriateUse } from '../src/lib/rag/policy.js'
 import { extractiveAnswer, runAgents, type AgentAnswer } from '../src/lib/rag/agents.js'
@@ -16,8 +16,27 @@ import { agentReport } from '../src/lib/rag/registry.js'
 import type { Evidence, AgentStep } from '../src/lib/rag/types.js'
 
 export function simpleLookup(input: ChatInput) {
+  if(['auto','answer'].includes(input.task)&&selfAccountQuestion(input.message))return true
   const plan=planRequest(input)
   return ['auto','answer'].includes(input.task) && (['answer','general'].includes(plan.task)||informationalQuestion(input.message)) && !casualConversation(input.message) && !plan.revision && !/\b(?:analy[sz]e|evaluate|reason|brainstorm|explain in detail|step.by.step)\b/i.test(input.message)
+}
+
+const roleWork:Record<Identity['role'],string>={
+  admin:'You manage accounts, review system health and audit records, and open authorized academic support views.',
+  dean:'You review syllabus delivery, course loads and authorized performance records, and request corrections for the offline review process.',
+  associate_dean:'You manage confirmed course loads and blocks, monitor syllabus delivery and student oversight. Individual student scores are outside this role.',
+  instructor:'You upload approved syllabi, generate and review courseware, publish materials, manage course rosters and monitor enrolled students’ work.',
+  student:'You open released materials in your enrolled courses, answer available assessments and view your own progress and results.',
+  guest:'Sign in to access your assigned academic workspace.',
+}
+const roleName=(role:Identity['role'])=>role==='admin'?'System Admin':role==='associate_dean'?'Associate Dean':role.charAt(0).toUpperCase()+role.slice(1)
+export async function selfAccountAnswer(input:ChatInput,owner:Identity,subject:Identity,signal:AbortSignal){
+  const signedIn=owner.role!=='guest'&&!owner.local
+  const viewed=subject.supportActor?subject:owner
+  const details=signedIn?[`Name: ${viewed.name||'Not recorded'}.`,viewed.email?`Username: ${viewed.email}.`:'Username is not available in this verified session.',`Role: ${roleName(viewed.role)}.`,roleWork[viewed.role]]:[]
+  const text=!signedIn?'I can help with EduPulse, but you are not signed in to a verified account. Sign in so I can identify your username and role.':subject.supportActor?`You are signed in as ${owner.name||roleName(owner.role)}${owner.email?` (${owner.email})`:''}, and you are viewing this account:\n\n${details.join('\n')}\n\nStudent activity and assessment submissions remain disabled in this support view.`:`Yes. ${details.join('\n')}`
+  const result=await lookupAnswer(input,signedIn?[evidence('verified-session','Current verified account',text)]:[],signal,'system',undefined,signedIn?undefined:text)
+  result.answer=text;result.verification=null;result.agentReport=agentReport(result.trace,{mode:result.mode,verification:null,sources:result.sources.length});return result
 }
 const evidence = (id:string,title:string,text:string,origin:Evidence['origin']='account'):Evidence => ({id,documentId:null,title,text,page:null,section:null,flagged:false,origin,method:origin==='public-guide'?'keyword':'provided',similarity:null,relevance:null,rrf:1,query:''})
 const label=(key:string)=>key.replace(/([a-z])([A-Z])/g,'$1 $2').replace(/[_-]+/g,' ')
@@ -63,6 +82,7 @@ export async function socialProfileAnswer(input:ChatInput,sources:Evidence[],sig
 export async function systemLookup(input:ChatInput,owner:Identity,subject:Identity,signal:AbortSignal):Promise<AgentAnswer|null> {
   if (!simpleLookup(input)) return null
   if (!checkAppropriateUse(input.message,input.viewRole==='student'||input.viewRole==='guest'?input.viewRole:subject.role).allowed) return runAgents(input,subject,signal,{provider:'system-search',search:async()=>({evidence:[]})})
+  if(selfAccountQuestion(input.message))return selfAccountAnswer(input,owner,subject,signal)
   const plan=planRequest(input), conversation=conversationSubject(input), candidates:Evidence[]=[], warnings:string[]=[]
   const scoped=plan.sourceOnly, selectedFiles=Boolean(input.documentIds.length||input.attachments.length&&scoped)
   if(!selectedFiles&&conversation.personFollowUp&&!conversation.person) return lookupAnswer(input,[],signal,'system',undefined,conversation.ambiguous?'Which of the people in the previous answer do you mean? Please give the full name or student number.':'Who do you mean? Please give a name so I can check the accessible EduPulse records first.')

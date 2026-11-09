@@ -1,0 +1,5 @@
+# Verified account self-recognition — 10 November 2026
+
+Generic self questions previously missed account retrieval and became vague public searches. Pulse now resolves the question directly from the verified sign-in, showing the account name, username, assigned role and role-specific functions. English and Filipino self phrases use the deterministic System Search path without provider, embedding, directory or public research calls. A guest receives a sign-in explanation instead of a guessed identity.
+
+Server authentication carries the email returned by verified Auth. Support identity resolution replaces it with the freshly authorized subject email; the answer separately identifies the signed-in admin and selected person. History, client role hints and editable role metadata cannot replace those roles or usernames. [Manual 24](../../system-manual/24-system-first-search/README.md) shows the sample answer. [Validation](validation/results.md) distinguishes controlled transports from hosted evidence.
