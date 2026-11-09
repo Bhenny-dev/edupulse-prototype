@@ -4,6 +4,7 @@
 
 | Folder | Covers | Contents |
 | --- | --- | --- |
+| [10 November approved instructor seed](versions/2026-11-10-approved-course-seed/README.md) | All 14 approved originals represented across seven instructor accounts, preserving existing data | Persisted intake verified; enrollment/generation/delivery continue |
 | [10 November course generation and source reading](versions/2026-11-10-course-source-reading/README.md) | Serialized on-device JSON schema, safe worker errors, formatted retained-source review and PDF reading copies | See release validation |
 | [9 November syllabus file compatibility](versions/2026-11-09-syllabus-file-compatibility/README.md) | Larger approved copies, scaled PDF tables, full source identity and explicit row-mapping warnings | See release validation |
 | [9 November public Pulse search](versions/2026-11-09-public-pulse-search/README.md) | Relevant public staff, project credits and feature answers with spelling correction and follow-ups; no AI connection | See release validation |
