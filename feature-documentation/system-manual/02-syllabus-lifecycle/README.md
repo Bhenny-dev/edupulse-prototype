@@ -56,7 +56,7 @@ PDF is the primary institutional intake format; Word `.docx` is also supported. 
 
    ![Out for approval](06-downloaded-for-approval.png)
 
-7. When the signed file returns, click **Upload Approved File**. Tick the confirmation that the offline approvals are complete (EduPulse does not verify signatures) and choose the **Approved DOCX or PDF** (up to 500 KB). The file must contain the matching course code and a usable weekly outline. The original file is kept with its checksum.
+7. When the signed file returns, click **Upload Approved File**. Tick the confirmation that the offline approvals are complete (EduPulse does not verify signatures) and choose the **Approved DOCX or PDF** (up to 750 KB). The file must contain the matching course code and a usable weekly outline. The original file is kept with its checksum. Split PDF rows retain their printed week labels; an unnumbered row stays flagged for comparison with the original.
 
    ![Upload approved syllabus dialog](07-upload-approved-file-attestation.png)
 

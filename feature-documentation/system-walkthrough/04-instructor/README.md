@@ -24,7 +24,7 @@ Signed-in instructor accounts see this same dashboard with their own data: the s
 
 | Tab | Screenshot | What it holds |
 | --- | --- | --- |
-| My Syllabus | ![My Syllabus](03-syllabus-my-syllabus.png) | The lifecycle strip (1 Drafted → 2 Checked → 3 Out for Approval → *offline signatures* → 4 Approved — Uploaded → 5 Active) and every syllabus with status, version, extracted outline, the **next step** button for its status, and icons for **View Syllabus**, **Version History**, **Review recorded changes**, **Edit syllabus** for an owned non-sample record (including active; saving returns it to draft), **Copy for next term** and **Archive**. |
+| My Syllabus | ![My Syllabus](03-syllabus-my-syllabus.png) | Approved PDF/DOCX upload, a 750 KB retained-file limit, and saved syllabi with status/version and available row actions. There is no global lifecycle strip. Check the extracted course identity and weekly outline before selecting the approved copy for its course. |
 | Shared Repository | ![Shared Repository](04-syllabus-shared-repository.png) | Sample syllabus library by curriculum course. Copy one as your own draft; private workspaces are not shared with other instructors. |
 
 ## 5–6. Syllabus Builder

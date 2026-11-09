@@ -10,7 +10,7 @@ When Course is empty, choose **Upload syllabi**.
 
 ![Empty Course with Upload syllabi](01-empty-course.png)
 
-The link opens **My Syllabus** and focuses the upload area. Drop one approved PDF or DOCX onto it, or click/press Enter to browse. The file must be non-empty and no larger than **500 KB**. Scanned PDFs use the existing on-device OCR reader. Wait for scanning to finish.
+The link opens **My Syllabus** and focuses the upload area. Drop one approved PDF or DOCX onto it, or click/press Enter to browse. The file must be non-empty and no larger than **750 KB**. Scanned PDFs use the existing on-device OCR reader. Wait for scanning to finish. The total saved workspace still has its existing 3 MB limit.
 
 ![My Syllabus approved-file upload area without the lifecycle strip](02-my-syllabus-upload.png)
 
@@ -46,4 +46,28 @@ The outline scrolls horizontally within its own region on a narrow screen. The u
 
 The five-station indicator has been removed from **My Syllabus**. The optional draft, version, archive and offline approval actions remain for instructors who prepare a new syllabus in [Syllabus Builder](../02-syllabus-lifecycle/README.md).
 
-These screenshots use controlled account/workspace transport with synthetic course text and genuine generated PDF bytes read by the production parser. They demonstrate the interaction and layout, not a hosted sign-in, verified signatures, generated learning content or student completion.
+## Scaled tables, larger files and unmapped rows
+
+![Scaled two-page PDF retained as a preview](06-scaled-layout-and-size.png)
+
+This sample is a valid 650 KB PDF with scaled, separately drawn cell borders. The actual reader preserves wrapped text, a row continued onto the next page, and the printed **Week 3 to Week 4** range. Its four extracted weeks remain a preview until you confirm and choose **Use syllabus for course**. Course code, full title and offered academic year follow the readable source fields; a catalog match does not replace explicit source identity.
+
+![Missing week remains a review warning](07-missing-week-review.png)
+
+The second sample removes a printed week label. EduPulse shows the unnumbered content and its source pages as a warning. It does not create a guessed Week 2 or append that material to the previous week. **Original file** remains available for comparison. Resolve uncertain mapping against the approved document before generating affected content. Approval of the document does not establish that its extraction is complete.
+
+![Mobile scaled-file review](mobile-06-scaled-layout-and-size.png)
+
+![Mobile unmapped-row warning](mobile-07-missing-week-review.png)
+
+The same preview and warning remain visible on a phone; the outline scrolls within its own region. Optional draft preparation and attaching an approved copy keep their existing controls.
+
+## Keep source identity in an optional draft
+
+![Imported course information in the builder](08-imported-builder-identity.png)
+
+![Mobile imported course information](mobile-08-imported-builder-identity.png)
+
+When you import through **Syllabus Builder** and choose **Use This Syllabus**, the **Course** selector retains a source code outside the built-in catalog. Its selected title and the read-only course fields retain the extracted wording and academic year. The form fields stay within their column on a narrow screen. Selecting another curriculum course explicitly replaces those fields with that course's defaults. Importing into the builder does not activate or publish the draft.
+
+These screenshots use controlled account/workspace transport with synthetic course text and genuine generated PDF bytes read by the production parser. They demonstrate the interaction and layout, not a hosted sign-in, verified signatures, generated learning content or student completion. The owner's 14 original PDFs were also scanned and validated locally; [the compatibility validation](../../versions/2026-11-09-syllabus-file-compatibility/validation/results.md) records the source gaps without publishing private originals.

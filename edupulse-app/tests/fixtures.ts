@@ -114,25 +114,25 @@ export function inflateDeclaredSize(zip: Uint8Array, declared: number) {
 }
 
 /** A ruled two-page syllabus with wrapped cells, a continued row and an explicit week range. */
-export function makeRuledSyllabusPdf() {
+export function makeRuledSyllabusPdf(options: { transformed?: boolean; wordRange?: boolean; segmentedRules?: boolean; missingWeek?:boolean } = {}) {
   const texts: string[] = []
   const escape = (value: string) => value.replace(/[\\()]/g, value => `\\${value}`)
   const label = (x:number,y:number,value:string) => `BT /F1 9 Tf 1 0 0 1 ${x} ${y} Tm (${escape(value)}) Tj ET`
   const edges=[36,80,260,440,620,780]
-  const band=(bottom:number,top:number)=>edges.map(x=>`${x} ${bottom} 0.5 ${top-bottom} re f`).join(' ')
+  const band=(bottom:number,top:number)=>[...edges.map(x=>`${x} ${bottom} 0.5 ${top-bottom} re f`),...(options.segmentedRules?edges.slice(0,-1).flatMap((x,i)=>[`${x} ${bottom} ${edges[i+1]!-x} 0.5 re f`,`${x} ${top} ${edges[i+1]!-x} 0.5 re f`]):[])].join(' ')
   const row=(top:number,cells:string[][])=>cells.map((lines,column)=>lines.map((line,i)=>label(edges[column]!+5,top-12-i*12,line)).join(' ')).join(' ')
   const header=['Week','Intended Learning Outcomes','Contents','Activities','Assessments']
   texts.push([
     label(36,560,'I. Course Code: IT 102'),label(36,544,'Course Title: Computer Programming 1'),label(36,520,'IV. PROGRAM OUTCOMES'),label(36,504,'1. Explain a program using examples.'),label(36,478,'V. COURSE OUTLINE'),
     band(450,470),row(470,header.map(s=>[s])),band(350,450),row(450,[['Week','1'],['Explain variables and','their role in a program.','Trace a complete example.'],['I. Variables','a. Variable declaration','and assignment','b. Data types'],['Lecture','Worked example'],['Reflection','Short quiz']]),
-    band(300,350),row(350,[['Week','2'],['Compare conditional','statements.'],['II. Decisions','a. If and else'],['Lab'],['Program trace']]),
+    band(300,350),row(350,[options.missingWeek?[]:['Week','2'],['Compare conditional','statements.'],['II. Decisions','a. If and else'],['Lab'],['Program trace']]),
   ].join(' '))
   texts.push([
     band(500,560),row(560,[[],['Explain nested conditions','using a trace table.'],['b. Nested conditions','and complete examples'],[],[]]),
-    band(390,500),row(500,[['Week','3 -','4'],['Use loops to process','a sequence of values.'],['III. Repetition','a. While loops','b. For loops'],['Lab','Peer explanation'],['Working program']]),
+    band(390,500),row(500,[options.wordRange?['Week 3','to Week 4']:['Week','3 -','4'],['Use loops to process','a sequence of values.'],['III. Repetition','a. While loops','b. For loops'],['Lab','Peer explanation'],['Working program']]),
   ].join(' '))
   const objects=['','<< /Type /Catalog /Pages 2 0 R >>','<< /Type /Pages /Kids [3 0 R 5 0 R] /Count 2 >>']
-  texts.forEach((text,i)=>{objects[3+i*2]=`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 816 612] /Resources << /Font << /F1 7 0 R >> >> /Contents ${4+i*2} 0 R >>`;objects[4+i*2]=`<< /Length ${Buffer.byteLength(text,'latin1')} >>\nstream\n${text}\nendstream`})
+  texts.forEach((body,i)=>{const text=options.transformed?`q 0.75 0 0 0.75 40 50 cm ${body} Q`:body;objects[3+i*2]=`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 816 612] /Resources << /Font << /F1 7 0 R >> >> /Contents ${4+i*2} 0 R >>`;objects[4+i*2]=`<< /Length ${Buffer.byteLength(text,'latin1')} >>\nstream\n${text}\nendstream`})
   objects[7]='<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>'
   let pdf='%PDF-1.4\n';const offsets:number[]=[]
   objects.slice(1).forEach((value,i)=>{offsets.push(Buffer.byteLength(pdf,'latin1'));pdf+=`${i+1} 0 obj\n${value}\nendobj\n`})

@@ -3,6 +3,8 @@ import { CURRICULUM_COURSES } from '../data/mockData.js'
 const lines = text => text.split('\n').map(value => value.trim()).filter(Boolean)
 const field = (text, label) => text.match(new RegExp(`^${label}(?:[ \\t]*:[ \\t]*|\\t+)([^\\n]*)`, 'im'))?.[1]?.trim() || ''
 const blankRow = week => ({ week, ilos: '', contents: [], activities: '', assessments: '', teachingMaterials: [], assessmentTypes: [], resources: [] })
+const normalizeCode=value=>value.replace(/\s/g,'').toLowerCase()
+const matchCourse=info=>CURRICULUM_COURSES.find(course=>info.courseCode?normalizeCode(course.code)===normalizeCode(info.courseCode):info.courseTitle&&course.title.toLowerCase()===info.courseTitle.toLowerCase())||null
 
 // Only emit weeks that are present. A missing outline must stay missing.
 export function parseCourseOutline(text) {
@@ -82,8 +84,7 @@ export function parseSyllabusText(text, outlineOverride = []) {
   }
   const infoText = sections[0].raw
   const info = { courseCode: field(infoText, 'Course Code'), courseTitle: field(infoText, 'Course Title'), periodOffered: field(infoText, 'Period Offered'), academicYear: field(infoText, 'Academic Year') || infoText.match(/\bAY\s*(\d{4}\s*[-\u2013]\s*\d{4})/i)?.[1] || '' }
-  const normalize = value => value.replace(/\s/g, '').toLowerCase()
-  const courseMatch = CURRICULUM_COURSES.find(course => info.courseCode ? normalize(course.code) === normalize(info.courseCode) : info.courseTitle && course.title.toLowerCase() === info.courseTitle.toLowerCase()) || null
+  const courseMatch = matchCourse(info)
   const description = sections[1].raw, policy = sections[5].raw
   const subsection = (label, stop) => policy.match(new RegExp(`${label}[ \\t]*:[ \\t]*([\\s\\S]*?)(?=${stop}|$)`, 'i'))?.[1]?.trim() || ''
   sections[0].parsed = info
@@ -106,8 +107,11 @@ export async function parseSyllabusFile(file, onProgress = () => {}) {
   if (!/\.(docx|pdf)$/i.test(file.name) || file.size > 2_000_000 || !file.size) throw new Error('Choose a DOCX or PDF file up to 2 MB.')
   if (/\.pdf$/i.test(file.name)) {
     const { readPdfSyllabus } = await import('./pdfSyllabus')
-    const { text, scannedPages, outline, warnings, provenance, policies, institutionalContext } = await readPdfSyllabus(file, onProgress)
+    const { text, scannedPages, outline, warnings, provenance, courseInformation, courseDetails, policies, institutionalContext } = await readPdfSyllabus(file, onProgress)
     const parsed = parseSyllabusText(text, outline)
+    Object.assign(parsed.sections[0].parsed,courseInformation)
+    parsed.courseMatch=matchCourse(parsed.sections[0].parsed)
+    Object.assign(parsed.sections[1].parsed,courseDetails)
     if (policies) parsed.sections[5].parsed = policies
     if (institutionalContext) parsed.sections[2].parsed.institutionalContext = institutionalContext
     return { ...parsed, sourceText: text, warnings, provenance, metadata: { title: file.name.replace(/\.pdf$/i, ''), size: file.size, lastModified: new Date(file.lastModified || Date.now()).toISOString(), scannedPages } }
@@ -125,8 +129,8 @@ export async function parseSyllabusFile(file, onProgress = () => {}) {
 export function parsedToFormState({ sections, courseMatch }) {
   const course = courseMatch || {}, info = sections[0].parsed, desc = sections[1].parsed
   return {
-    courseCode: course.code || '', courseTitle: course.title || '', courseDescription: desc.description || '',
-    courseInfo: { courseCode: course.code || '', courseTitle: course.title || '', periodOffered: info.periodOffered || '', academicYear: info.academicYear || '', creditUnits: desc.creditUnits || course.units || 0, classification: desc.classification || course.classification || '', noOfHours: desc.noOfHours || (course.units || 0) * 18, prerequisites: desc.prerequisites || [] },
+    courseCode: info.courseCode || course.code || '', courseTitle: info.courseTitle || course.title || '', courseDescription: desc.description || '',
+    courseInfo: { courseCode: info.courseCode || course.code || '', courseTitle: info.courseTitle || course.title || '', periodOffered: info.periodOffered || '', academicYear: info.academicYear || '', creditUnits: desc.creditUnits || course.units || 0, classification: desc.classification || course.classification || '', noOfHours: desc.noOfHours || (course.units || 0) * 18, prerequisites: desc.prerequisites || [] },
     programOutcomes: sections[3].parsed.programOutcomes.length ? sections[3].parsed.programOutcomes : [''],
     courseOutline: sections[4].parsed.courseOutline,
     ...(sections[2].parsed.institutionalContext ? { institutionalContext: sections[2].parsed.institutionalContext } : {}),

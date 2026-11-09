@@ -1,7 +1,9 @@
 import { test, expect } from './fixtures'
-import { intakeScene } from './approved-syllabus-scenes'
+import { intakeScene, layoutReviewScene, builderSourceScene } from './approved-syllabus-scenes'
 import { unifiedCoursewareUI } from '../courseware-unified-fixture'
 test('approved syllabus: direct course intake and review',async({page})=>intakeScene(page))
+test('approved syllabus: scaled files and missing-week review',async({page})=>layoutReviewScene(page))
+test('approved syllabus: imported builder identity',async({page})=>builderSourceScene(page))
 test('approved syllabus: existing course list and actions retain upload access',async({page})=>{
  await unifiedCoursewareUI(page);await page.goto('/#/courseware')
  await expect(page.getByRole('link',{name:'Upload syllabi',exact:true})).toBeVisible()

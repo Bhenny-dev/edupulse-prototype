@@ -19,6 +19,22 @@ test('PDF syllabus text is extracted, previewed and accepted into the course for
   await expect(page.getByPlaceholder('Topic...', { exact: true }).first()).toHaveValue('Variables and assignment')
 })
 
+test('an imported draft retains an unfamiliar course identity and its offered year',async({page})=>{
+ await openBuilder(page)
+ const lines=syllabus.map(line=>line.replace('IT 102','SPEC 901').replace('Computer Programming 1','Special Topics from the Approved Source'))
+ lines.splice(3,0,'Period Offered: First Semester','Academic Year: 2025-2026')
+ await page.getByLabel('Upload syllabus DOCX or PDF').setInputFiles({name:'source-course.pdf',mimeType:'application/pdf',buffer:Buffer.from(makePdf([lines]))})
+ await expect(page.getByText('Extracted Sections Preview',{exact:true})).toBeVisible()
+ await page.getByRole('button',{name:'Use This Syllabus',exact:true}).click()
+ const course=page.getByRole('combobox',{name:'Course',exact:true}),section=page.locator('[data-section="1"]')
+ await expect(course).toHaveValue('SPEC 901');await expect(course.locator('option:checked')).toContainText('Special Topics from the Approved Source')
+ await expect(page.getByRole('textbox',{name:'Academic Year',exact:true})).toHaveValue('2025-2026')
+ await expect(page.getByRole('textbox',{name:'Course Title',exact:true})).toHaveValue('Special Topics from the Approved Source')
+ const box=(await section.boundingBox())!,field=(await course.boundingBox())!
+ expect(field.x+field.width).toBeLessThanOrEqual(box.x+box.width)
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true)
+})
+
 test('a scanned PDF syllabus uses OCR and still fills the course and outline', async ({ page, browser, isMobile }) => {
   test.skip(isMobile, 'OCR extraction is viewport independent; desktop covers the scanned document.')
   test.setTimeout(300000)

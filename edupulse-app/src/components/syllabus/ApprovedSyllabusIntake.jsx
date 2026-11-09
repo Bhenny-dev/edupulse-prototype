@@ -1,8 +1,9 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { Download, Eye, FileUp, Upload } from 'lucide-react'
 import { LoadingProgress, Spinner } from '../ui/LoadingFeedback'
-import { parseSyllabusFile, parsedToFormState } from '../../utils/syllabusParser'
-import { downloadApprovedFile, meaningfulOutline, retainApprovedFile } from '../../utils/syllabusFiles'
+import { parseSyllabusFile } from '../../utils/syllabusParser'
+import { APPROVED_FILE_LIMIT, downloadApprovedFile, retainApprovedFile } from '../../utils/syllabusFiles'
+import { approvedSyllabusCandidate } from '../../utils/approvedSyllabus'
 import './approved-syllabus-intake.css'
 
 // Approved copies can start a course without a pre-existing draft or roster.
@@ -23,14 +24,7 @@ export default function ApprovedSyllabusIntake({ onUse, onView, focusUpload = fa
     try {
       const approvedFile = await retainApprovedFile(file)
       const parsed = await parseSyllabusFile(file, setProgress)
-      const source = parsed.sections[0].parsed
-      const courseCode = source.courseCode?.trim() || parsed.courseMatch?.code || ''
-      const courseTitle = source.courseTitle?.trim() || parsed.courseMatch?.title || ''
-      if (!courseCode || !courseTitle) throw new Error('The file needs a readable Course Code and Course Title. Check the document and upload it again.')
-      const form = parsedToFormState(parsed), outline = form.courseOutline
-      if (!meaningfulOutline(outline)) throw new Error('No usable weekly learning outcomes and contents were found. Check the outline table in the approved file and upload it again.')
-      if (outline.length > 52 || outline.some(row => !Number.isInteger(row.week) || row.week < 1 || row.week > 52) || new Set(outline.map(row => row.week)).size !== outline.length) throw new Error('The outline needs distinct week numbers from 1 to 52. Check the document and upload it again.')
-      setCandidate({ ...form, id: crypto.randomUUID(), institutionalContext: form.institutionalContext || { kcp: { vision: '', mission: '', objectives: [], coreValues: [] }, cit: { mission: '', objectives: [] } }, courseCode, courseTitle, courseInfo: { ...form.courseInfo, courseCode, courseTitle }, courseOutline: outline, approvedFile, extractedAt: new Date().toISOString(), version: 1, sample: false })
+      setCandidate(approvedSyllabusCandidate(parsed, approvedFile))
       setWarnings([...(parsed.warnings || []), ...(parsed.metadata?.scannedPages ? ['OCR was used. Check the extracted wording and week numbers against the original.'] : [])])
     } catch (failure) { setError(failure.message || 'The syllabus could not be read. Choose a readable PDF or DOCX and try again.') }
     finally { locked.current = false; setBusy(false) }
@@ -49,7 +43,7 @@ export default function ApprovedSyllabusIntake({ onUse, onView, focusUpload = fa
       onClick={() => input.current?.click()} onDragOver={event => { event.preventDefault(); if (!locked.current) setDragOver(true) }} onDragLeave={() => setDragOver(false)}
       onDrop={event => { event.preventDefault(); setDragOver(false); if (event.dataTransfer.files.length !== 1) { if (!locked.current) setError('Upload one syllabus at a time so you can review each course.'); return } void scan(event.dataTransfer.files[0]) }}>
       {busy ? <><Spinner size={24} /><LoadingProgress label={progress} /></> : <><Upload size={24} aria-hidden="true" /><strong>{candidate ? 'Drop another approved syllabus or browse' : 'Drop an approved syllabus here or browse'}</strong></>}
-      <span id={hint}>PDF or DOCX, up to 500 KB. Scanned PDFs use OCR.</span>
+      <span id={hint}>PDF or DOCX, up to {APPROVED_FILE_LIMIT / 1000} KB. Scanned PDFs use OCR.</span>
     </button>
     {error && <p role="alert" className="approved-intake-error">{error}</p>}
     {candidate && <div className="approved-intake-preview">

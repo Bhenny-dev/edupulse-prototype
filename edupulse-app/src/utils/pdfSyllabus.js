@@ -1,4 +1,4 @@
-import { pdfLines, readRuledOutline, readRuledPolicies, readInstitutionalContext } from './pdfTableLayout'
+import { pdfLines, pdfPathBoxes, readCourseInformation, readCourseDetails, readRuledOutline, readRuledPolicies, readInstitutionalContext } from './pdfTableLayout'
 /** Keep PDF lines and table columns instead of joining the whole page into one paragraph.
  * @param {File} file @param {(message: string) => void} [onProgress]
  */
@@ -13,11 +13,7 @@ export async function readPdfSyllabus(file, onProgress = () => {}) {
       onProgress(`Reading PDF page ${number} of ${pdf.numPages}…`)
       const page = await pdf.getPage(number)
       const content = await page.getTextContent(), operators = await page.getOperatorList()
-      const boxes = operators.argsArray.flatMap((args, i) => {
-        if (operators.fnArray[i] !== OPS.constructPath || !args[2]) return []
-        const box = Array.from(args[2])
-        return box.length === 4 ? [box] : []
-      })
+      const boxes = pdfPathBoxes(operators, OPS)
       const edges = boxes.filter(box => box[2]-box[0] < 2 && box[3]-box[1] > 4)
       const rules = boxes.filter(box => box[3]-box[1] < 2 && box[2]-box[0] > 4)
       const items = content.items.filter(item => 'str' in item)
@@ -40,5 +36,5 @@ export async function readPdfSyllabus(file, onProgress = () => {}) {
   if (text.length > 2_000_000) throw new Error('The extracted document is too large.')
   const table = readRuledOutline(layouts)
   if (scannedPages) table.warnings.push('OCR text needs comparison with the original scan, especially tables and mathematical notation.')
-  return { text, scannedPages, ...table, policies: readRuledPolicies(layouts), institutionalContext: readInstitutionalContext(layouts) }
+  return { text, scannedPages, ...table, courseInformation:readCourseInformation(layouts), courseDetails:readCourseDetails(layouts), policies: readRuledPolicies(layouts), institutionalContext: readInstitutionalContext(layouts) }
 }

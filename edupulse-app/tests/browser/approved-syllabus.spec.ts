@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test'
 import { createHash } from 'node:crypto'
 import { approvedIntakeUI, approvedPdf, approvedDocx, approvedLines, openIntake, dropApprovedPdf } from '../approved-syllabus-fixture'
+import {makeRuledSyllabusPdf} from '../fixtures'
 
 test('approved file starts an empty course through drop, preview, explicit selection and retained save',async({page})=>{
  const fixture=await approvedIntakeUI(page);await openIntake(page)
@@ -31,7 +32,7 @@ test('approved file starts an empty course through drop, preview, explicit selec
 
 test('file validation permits retry and a DOCX course outside the built-in catalog',async({page})=>{
  const fixture=await approvedIntakeUI(page);const input=await openIntake(page)
- for(const upload of [{name:'bad.txt',mimeType:'text/plain',buffer:Buffer.from('text')},{...approvedPdf(),buffer:Buffer.from('not a PDF')},{...approvedPdf(),buffer:Buffer.alloc(500001)}]){
+ for(const upload of [{name:'bad.txt',mimeType:'text/plain',buffer:Buffer.from('text')},{...approvedPdf(),buffer:Buffer.from('not a PDF')},{...approvedPdf(),buffer:Buffer.alloc(750001)}]){
   await input.setInputFiles(upload);await expect(page.getByRole('alert')).toBeVisible();await expect(page.getByRole('button',{name:'Use syllabus for course',exact:true})).toHaveCount(0)
  }
  const lines=approvedLines.map(line=>line.replace('IT 202','SPEC 901').replace('Fundamentals of Networking','Special Topics in Networks'))
@@ -58,4 +59,19 @@ test('missing identity or outline cannot be selected and students have no intake
 test('students cannot upload or select an approved syllabus',async({page})=>{
  await approvedIntakeUI(page,'student');await page.goto('/#/courseware');await expect(page.getByRole('heading',{name:'Published Courseware',exact:true})).toBeVisible();await expect(page.getByRole('link',{name:'Upload syllabi',exact:true})).toHaveCount(0)
  await page.goto('/#/syllabus?tab=mine&upload=approved');await expect(page).toHaveURL(/dashboard/)
+})
+
+test('a larger scaled PDF reaches the real review, and an unnumbered continuation stays flagged',async({page})=>{
+ const fixture=await approvedIntakeUI(page),input=await openIntake(page)
+ const buffer=Buffer.alloc(650000,32);makeRuledSyllabusPdf({transformed:true,wordRange:true,segmentedRules:true}).copy(buffer)
+ await input.setInputFiles({name:'larger-approved.pdf',mimeType:'application/pdf',buffer})
+ await expect(page.getByRole('heading',{name:'IT 102 - Computer Programming 1',exact:true})).toBeVisible()
+ const outline=page.getByRole('region',{name:'Extracted approved course outline',exact:true})
+ await expect(outline.locator('tbody tr')).toHaveCount(4);await expect(outline).toContainText('Nested conditions')
+ expect(fixture.getWorkspace().syllabi).toEqual([])
+ await input.setInputFiles({name:'missing-week.pdf',mimeType:'application/pdf',buffer:makeRuledSyllabusPdf({transformed:true,segmentedRules:true,missingWeek:true})})
+ await expect(outline.locator('tbody tr')).toHaveCount(3)
+ await expect(page.getByText(/Unnumbered outline content.*II\. Decisions.*no week was inferred/)).toBeVisible()
+ await expect(outline.locator('tbody tr').first()).not.toContainText('Decisions')
+ expect(fixture.getWorkspace().syllabi).toEqual([])
 })

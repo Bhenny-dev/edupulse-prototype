@@ -375,7 +375,7 @@ const FormGroup = ({ label, required, error, children, note }) => {
   const controlId = isValidElement(children) ? children.props.id || `${id}-control` : undefined
   const control = isValidElement(children) ? cloneElement(children, { id: controlId, 'aria-required': required || undefined, 'aria-describedby': [children.props['aria-describedby'], note && `${id}-note`, error && `${id}-error`].filter(Boolean).join(' ') || undefined }) : children
   return (
-    <div className="form-group" style={{ marginBottom: '12px' }}>
+    <div className="form-group" style={{ marginBottom: '12px', minWidth:0 }}>
       <label className="form-label" htmlFor={controlId}>{label}{required && <span aria-hidden="true"> *</span>}</label>
       {note && <div id={`${id}-note`} style={{ fontSize: '0.75rem', color: 'var(--gray-500)', fontStyle: 'italic', marginBottom: '6px' }}>{note}</div>}
       {control}
@@ -785,7 +785,8 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
             <FormGroup label="Course" required error={errors.courseCode} note="Select a course — all fields auto-fill from curriculum">
               <select aria-label="Course" className={`form-input ${errors.courseCode ? 'form-input-error' : ''}`} value={form.courseCode} onChange={e => selectCourse(e.target.value)}>
                 <option value="">Select a course...</option>
-                {CURRICULUM_COURSES.map(s => <option key={s.code} value={s.code}>{s.code} — {s.title}</option>)}
+                {form.courseCode&&!CURRICULUM_COURSES.some(s=>s.code===form.courseCode)&&<option value={form.courseCode}>{form.courseCode} — {form.courseInfo.courseTitle}</option>}
+                {CURRICULUM_COURSES.map(s => <option key={s.code} value={s.code}>{s.code} — {s.code===form.courseCode?(form.courseInfo.courseTitle||s.title):s.title}</option>)}
               </select>
             </FormGroup>
             <FormGroup label="Course Title" required>

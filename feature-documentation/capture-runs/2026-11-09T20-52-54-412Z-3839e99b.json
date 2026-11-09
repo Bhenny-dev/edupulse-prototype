@@ -1,0 +1,286 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-11-09T20-52-54-412Z-3839e99b",
+  "startedAt": "2026-11-09T20:52:54.412Z",
+  "finishedAt": "2026-11-09T20:53:23.588Z",
+  "commitSha": "5df44b5d5362255374f0e222b6b600c7085cd49f",
+  "sourceDigest": "d0616f46c553f06c7c7470380f3d8562bfce4cda4e95ea0f55a901dda9d6049a",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-11-09T20:52:50.390Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 8,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": null
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/approved-syllabus.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/approved-syllabus-mobile.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/account-support-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/account-support.spec.ts",
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/automatic-records.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/automatic-records.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.spec.ts",
+    "edupulse-app/tests/snapshots/course-seed.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-formatting.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-navigation.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/harness-delivery.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/operator-steps.spec.ts",
+    "edupulse-app/tests/snapshots/outline-courseware.spec.ts",
+    "edupulse-app/tests/snapshots/outline-selector.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/outline-selector.spec.ts",
+    "edupulse-app/tests/snapshots/oversight.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/oversight.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/public-pulse-search-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/public-pulse-search.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-drafting.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-source.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+    "edupulse-app/tests/snapshots/retained-sources-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/retained-sources.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+    "edupulse-app/tests/snapshots/staff-registration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/staff-registration.spec.ts",
+    "edupulse-app/tests/snapshots/student-directory.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/system-search-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/system-search.spec.ts",
+    "edupulse-app/tests/snapshots/voice-quota.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/voice-quota.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-cache.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-recovery.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/approved-syllabus.spec.ts",
+      "title": "approved syllabus: direct course intake and review",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 3991,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/approved-syllabus.spec.ts",
+      "title": "approved syllabus: scaled files and missing-week review",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2413,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/approved-syllabus.spec.ts",
+      "title": "approved syllabus: imported builder identity",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1790,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/loading-feedback.spec.ts",
+      "title": "loading feedback: approved file modal",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1275,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/approved-syllabus-mobile.spec.ts",
+      "title": "approved syllabus: mobile direct intake",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 5584,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/approved-syllabus-mobile.spec.ts",
+      "title": "approved syllabus: dark mobile review",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 5078,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/approved-syllabus-mobile.spec.ts",
+      "title": "approved syllabus: mobile scaled files and missing-week review",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2396,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/approved-syllabus-mobile.spec.ts",
+      "title": "approved syllabus: mobile imported builder identity",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1426,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-manual/19-loading-and-saved-connections/08-approved-file-loading.png",
+      "sha256": "9bb746a5eef9fdc94026c81433469d1d9ed56ad134d5a249aff26da1f4d86605",
+      "bytes": 40362
+    },
+    {
+      "path": "feature-documentation/system-manual/30-approved-syllabus-intake/01-empty-course.png",
+      "sha256": "d72b4cb602de0834db3587cad0fd658c1cfc1d5b26d97fab689f4bc678941053",
+      "bytes": 274494
+    },
+    {
+      "path": "feature-documentation/system-manual/30-approved-syllabus-intake/02-my-syllabus-upload.png",
+      "sha256": "8d2add46b2d9aa56362d36e341d3bbccd8a60f86b1ebdf84bfc5ca360aee0c7b",
+      "bytes": 220461
+    },
+    {
+      "path": "feature-documentation/system-manual/30-approved-syllabus-intake/03-review-extracted-syllabus.png",
+      "sha256": "01e7c6353dc255cbfd804b4cb3146eaf60d18b921ed226e6da38fbcd14be5da3",
+      "bytes": 260185
+    },
+    {
+      "path": "feature-documentation/system-manual/30-approved-syllabus-intake/04-view-syllabus.png",
+      "sha256": "a89d31445d97c80cd456dc973a6bb59d0d2ec598204dbe8bcacc7c4743f15d94",
+      "bytes": 227527
+    },
+    {
+      "path": "feature-documentation/system-manual/30-approved-syllabus-intake/05-course-added.png",
+      "sha256": "3dc19daa3c79a33030eb7ecc25f7dad5f34c99052005319ebe3e45b17d0056e9",
+      "bytes": 274564
+    },
+    {
+      "path": "feature-documentation/system-manual/30-approved-syllabus-intake/06-scaled-layout-and-size.png",
+      "sha256": "636c136b373cd231ab6752a9269c297c86e70163d94c9919ccc4990f89f157e9",
+      "bytes": 302330
+    },
+    {
+      "path": "feature-documentation/system-manual/30-approved-syllabus-intake/07-missing-week-review.png",
+      "sha256": "7f01a1abf012218e763206f83dfd8de5442fc0cd2235c8e9ed2ee082a446b2d1",
+      "bytes": 301719
+    },
+    {
+      "path": "feature-documentation/system-manual/30-approved-syllabus-intake/08-imported-builder-identity.png",
+      "sha256": "2dc8c2a99e1492e6ff755fafcfd5fe31c82056babca7bfb990947ae709799ca7",
+      "bytes": 29368
+    },
+    {
+      "path": "feature-documentation/system-manual/30-approved-syllabus-intake/mobile-01-empty-course.png",
+      "sha256": "303785d3eaf93364f27c8dbfd1f62f30f4f5963ddc946edf9750dd0ed421c6dd",
+      "bytes": 505031
+    },
+    {
+      "path": "feature-documentation/system-manual/30-approved-syllabus-intake/mobile-03-review-extracted-syllabus.png",
+      "sha256": "fa1ef3745e5476a9e1cf124384b9b378cff882eac09b50cad6625eec7a981b4a",
+      "bytes": 668641
+    },
+    {
+      "path": "feature-documentation/system-manual/30-approved-syllabus-intake/mobile-06-scaled-layout-and-size.png",
+      "sha256": "243235e6e561b7e3d162b1b5267feef4836c9185f8a814581a7fa59e12ea30f7",
+      "bytes": 696754
+    },
+    {
+      "path": "feature-documentation/system-manual/30-approved-syllabus-intake/mobile-07-missing-week-review.png",
+      "sha256": "6bbd58e4383d3d6c08ebabe113483f94525b5aef51de7d5240dabd0e333c7013",
+      "bytes": 744059
+    },
+    {
+      "path": "feature-documentation/system-manual/30-approved-syllabus-intake/mobile-08-imported-builder-identity.png",
+      "sha256": "79d3d9b272e92e3a6d6c7cda1e9d19dc1b0cde17301b3f80a5a9256b46a105b6",
+      "bytes": 135923
+    },
+    {
+      "path": "feature-documentation/system-manual/30-approved-syllabus-intake/mobile-dark-03-review-extracted-syllabus.png",
+      "sha256": "0605e0bf3b61b1eef3175d41a55a3ef2a98d7f87e44deb79ad57d587476c202f",
+      "bytes": 448340
+    }
+  ]
+}

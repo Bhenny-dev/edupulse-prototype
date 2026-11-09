@@ -4497,9 +4497,9 @@
     },
     {
       "path": "feature-documentation/system-manual/19-loading-and-saved-connections/08-approved-file-loading.png",
-      "sha256": "d596981045e82890491764235f709d449cf41d5e91812e65928dcd961355e33d",
+      "sha256": "9bb746a5eef9fdc94026c81433469d1d9ed56ad134d5a249aff26da1f4d86605",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-07T08:22:22.291791Z"
+      "reviewedAt": "2026-11-09T20:57:14.840564Z"
     },
     {
       "path": "feature-documentation/system-manual/19-loading-and-saved-connections/09-system-loading.png",
@@ -6909,21 +6909,21 @@
     },
     {
       "path": "feature-documentation/system-manual/30-approved-syllabus-intake/02-my-syllabus-upload.png",
-      "sha256": "afe69e3a1283aa6e67283c9669bfa2117576a796c3df57051e9eca72c7499ea3",
+      "sha256": "8d2add46b2d9aa56362d36e341d3bbccd8a60f86b1ebdf84bfc5ca360aee0c7b",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-09T09:04:55.765715Z"
+      "reviewedAt": "2026-11-09T20:57:14.840564Z"
     },
     {
       "path": "feature-documentation/system-manual/30-approved-syllabus-intake/03-review-extracted-syllabus.png",
-      "sha256": "2adf59d94c36bccbfbff685d5437fa4ebc20450266b6a4ca2dbafc17ca554691",
+      "sha256": "01e7c6353dc255cbfd804b4cb3146eaf60d18b921ed226e6da38fbcd14be5da3",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-09T09:04:55.765715Z"
+      "reviewedAt": "2026-11-09T20:57:14.840564Z"
     },
     {
       "path": "feature-documentation/system-manual/30-approved-syllabus-intake/04-view-syllabus.png",
-      "sha256": "02b6df3688f2c89a10783cb78874e9b904146a212cb875211491530f1d3fda30",
+      "sha256": "a89d31445d97c80cd456dc973a6bb59d0d2ec598204dbe8bcacc7c4743f15d94",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-09T09:04:55.765715Z"
+      "reviewedAt": "2026-11-09T20:57:14.840564Z"
     },
     {
       "path": "feature-documentation/system-manual/30-approved-syllabus-intake/05-course-added.png",
@@ -6939,15 +6939,15 @@
     },
     {
       "path": "feature-documentation/system-manual/30-approved-syllabus-intake/mobile-03-review-extracted-syllabus.png",
-      "sha256": "a19ff38339795224197bd61393af707ed5346f7f5b53ff414fba0c7553c96805",
+      "sha256": "fa1ef3745e5476a9e1cf124384b9b378cff882eac09b50cad6625eec7a981b4a",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-09T09:04:55.765715Z"
+      "reviewedAt": "2026-11-09T20:57:14.840564Z"
     },
     {
       "path": "feature-documentation/system-manual/30-approved-syllabus-intake/mobile-dark-03-review-extracted-syllabus.png",
-      "sha256": "fa7e17a23256833b9455a338d64ac1adcc656407bf26de8e71031caf7e0da735",
+      "sha256": "0605e0bf3b61b1eef3175d41a55a3ef2a98d7f87e44deb79ad57d587476c202f",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-09T09:04:55.765715Z"
+      "reviewedAt": "2026-11-09T20:57:14.840564Z"
     },
     {
       "path": "feature-documentation/system-manual/02-syllabus-lifecycle/01-select-course-autofills-section-1.png",
@@ -6987,9 +6987,9 @@
     },
     {
       "path": "feature-documentation/system-manual/02-syllabus-lifecycle/07-upload-approved-file-attestation.png",
-      "sha256": "27e234605ecbcfa2cfbc4c9b4b27014eaab17fd9981eb554f967ad603c2261e3",
+      "sha256": "489160416582c1f5e729cd782aabec1e964b806129db99421945e2600c56ec1c",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-09T09:04:55.765715Z"
+      "reviewedAt": "2026-11-09T20:57:14.840564Z"
     },
     {
       "path": "feature-documentation/system-manual/02-syllabus-lifecycle/08-approved-file-uploaded.png",
@@ -7053,9 +7053,9 @@
     },
     {
       "path": "feature-documentation/system-walkthrough/04-instructor/03-syllabus-my-syllabus.png",
-      "sha256": "fe078321a4c570e3d83af3907f9ed06d94b252a4027da3af9566bab07fdea28a",
+      "sha256": "7b174ddd470fcd8922745532e964994a8ec5cb1b91198b6b1c9fc5f13f0d5aea",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-09T09:04:55.765715Z"
+      "reviewedAt": "2026-11-09T20:57:14.840564Z"
     },
     {
       "path": "feature-documentation/system-walkthrough/04-instructor/07-courseware-my-courseware.png",
@@ -7320,6 +7320,42 @@
       "sha256": "46f50d83578a3f698e682a5504e59138b77c0a4c9edbeeec84396b1f3b127dd7",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-09T15:04:12.716768+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/30-approved-syllabus-intake/06-scaled-layout-and-size.png",
+      "sha256": "636c136b373cd231ab6752a9269c297c86e70163d94c9919ccc4990f89f157e9",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T20:57:14.840564Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/30-approved-syllabus-intake/07-missing-week-review.png",
+      "sha256": "7f01a1abf012218e763206f83dfd8de5442fc0cd2235c8e9ed2ee082a446b2d1",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T20:57:14.840564Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/30-approved-syllabus-intake/08-imported-builder-identity.png",
+      "sha256": "2dc8c2a99e1492e6ff755fafcfd5fe31c82056babca7bfb990947ae709799ca7",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T20:57:14.840564Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/30-approved-syllabus-intake/mobile-06-scaled-layout-and-size.png",
+      "sha256": "243235e6e561b7e3d162b1b5267feef4836c9185f8a814581a7fa59e12ea30f7",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T20:57:14.840564Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/30-approved-syllabus-intake/mobile-07-missing-week-review.png",
+      "sha256": "6bbd58e4383d3d6c08ebabe113483f94525b5aef51de7d5240dabd0e333c7013",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T20:57:14.840564Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/30-approved-syllabus-intake/mobile-08-imported-builder-identity.png",
+      "sha256": "79d3d9b272e92e3a6d6c7cda1e9d19dc1b0cde17301b3f80a5a9256b46a105b6",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T20:57:14.840564Z"
     }
   ]
 }

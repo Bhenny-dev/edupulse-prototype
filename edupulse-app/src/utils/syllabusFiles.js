@@ -1,4 +1,5 @@
-export const APPROVED_FILE_LIMIT = 500_000
+import { APPROVED_FILE_LIMIT } from '../lib/syllabusLimits'
+export { APPROVED_FILE_LIMIT }
 export const meaningfulOutline = rows => Array.isArray(rows) && rows.some(row => row.ilos?.trim() && row.contents?.some(text => text.trim()))
 
 export function downloadBlob(blob, filename) {
@@ -55,7 +56,7 @@ export async function syllabusDocx(syllabus) {
 }
 
 export async function retainApprovedFile(file) {
-  if (!/\.(docx|pdf)$/i.test(file.name) || file.size > APPROVED_FILE_LIMIT || !file.size) throw new Error('Choose a non-empty DOCX or PDF file up to 500 KB.')
+  if (!/\.(docx|pdf)$/i.test(file.name) || file.size > APPROVED_FILE_LIMIT || !file.size) throw new Error(`Choose a non-empty DOCX or PDF file up to ${APPROVED_FILE_LIMIT / 1000} KB.`)
   const bytes = new Uint8Array(await file.arrayBuffer())
   const valid = /\.pdf$/i.test(file.name) ? new TextDecoder().decode(bytes.slice(0, 5)) === '%PDF-' : bytes[0] === 80 && bytes[1] === 75
   if (!valid) throw new Error('This file does not match its DOCX or PDF format.')

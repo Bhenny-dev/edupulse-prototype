@@ -1,0 +1,1 @@
+export const APPROVED_FILE_LIMIT = 750_000

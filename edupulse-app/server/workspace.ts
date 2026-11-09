@@ -1,13 +1,14 @@
 import { z } from 'zod'
 import { createHash } from 'node:crypto'
 import { ApiError, type Identity } from './contracts.js'
+import { APPROVED_FILE_LIMIT } from '../src/lib/syllabusLimits.js'
 import { config } from './config.js'
 import { localDb, userDb } from './database.js'
 import { supportAction } from './domains/support.js'
 
 export const WORKSPACE_BYTES = 3_000_000
 const outlineRow = z.looseObject({ week: z.number().int().min(1).max(52), ilos: z.string().max(5000).default(''), contents: z.array(z.string().max(2000)).max(40).default([]) })
-const approvedFile = z.object({ name: z.string().min(1).max(255), size: z.number().int().positive().max(500000), base64: z.string().min(1).max(666668).regex(/^[A-Za-z0-9+/]*={0,2}$/), sha256: z.string().regex(/^[a-f0-9]{64}$/), uploadedAt: z.string().datetime(), approvalAttested: z.literal(true) })
+const approvedFile = z.object({ name: z.string().min(1).max(255), size: z.number().int().positive().max(APPROVED_FILE_LIMIT), base64: z.string().min(1).max(Math.ceil(APPROVED_FILE_LIMIT / 3) * 4).regex(/^[A-Za-z0-9+/]*={0,2}$/), sha256: z.string().regex(/^[a-f0-9]{64}$/), uploadedAt: z.string().datetime(), approvalAttested: z.literal(true) })
 const syllabus = z.looseObject({ id: z.string().min(1).max(120), courseCode: z.string().min(1).max(80), courseTitle: z.string().min(1).max(240), status: z.enum(['drafted', 'checked', 'downloaded_for_approval', 'approved_uploaded', 'active', 'archived']), courseOutline: z.array(outlineRow).max(52).default([]), sample: z.boolean().optional(), approvedFile: approvedFile.optional() }).superRefine((value, ctx) => {
   if (new Set(value.courseOutline.map(row => row.week)).size !== value.courseOutline.length) ctx.addIssue({ code: 'custom', message: 'Outline weeks must be unique.' })
   if (!value.sample && ['active', 'approved_uploaded'].includes(value.status) && (!value.approvedFile || !value.courseOutline.some(row => row.ilos.trim() && row.contents.some(text => text.trim())))) ctx.addIssue({ code: 'custom', message: 'An approved file and extracted outline are required.' })

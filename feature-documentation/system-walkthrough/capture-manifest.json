@@ -1,5 +1,5 @@
 {
-  "capturedAt": "2026-11-09T15:03:39.738Z",
+  "capturedAt": "2026-11-09T20:53:36.649Z",
   "problems": [],
   "scenes": [
     {
@@ -830,14 +830,6 @@
     {
       "role": "instructor",
       "folder": "04-instructor",
-      "file": "03-syllabus-my-syllabus.png",
-      "title": "Syllabus · My Syllabus (approved uploads, saved syllabi and versions)",
-      "route": "/syllabus",
-      "ok": true
-    },
-    {
-      "role": "instructor",
-      "folder": "04-instructor",
       "file": "07-courseware-my-courseware.png",
       "title": "Course · combined course list and approved syllabus intake",
       "route": "/courseware",
@@ -865,6 +857,14 @@
       "file": "39-page-pulse-chat.png",
       "title": "Pulse page: the Guardian answers a request for quiz answers, firmly",
       "route": "/pulse",
+      "ok": true
+    },
+    {
+      "role": "instructor",
+      "folder": "04-instructor",
+      "file": "03-syllabus-my-syllabus.png",
+      "title": "Syllabus · My Syllabus (approved uploads, saved syllabi and versions)",
+      "route": "/syllabus",
       "ok": true
     }
   ]

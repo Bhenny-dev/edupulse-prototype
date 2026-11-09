@@ -5,13 +5,16 @@ import { mkdir, readFile } from 'node:fs/promises'
 const ROOT = '../feature-documentation/system-manual'
 test.describe.configure({ mode: 'serial' })
 async function shot(target: Page | Locator, folder: string, name: string, extraStyle = '') {
+  if(process.env.SNAPSHOT_SCENES&&!new RegExp(process.env.SNAPSHOT_SCENES).test(`${folder}/${name}`))return
   await mkdir(`${ROOT}/${folder}`, { recursive: true })
   const component = !('goto' in target)
   // Toasts from earlier steps would cover the screen being documented.
   const page = component ? (target as Locator).page() : target as Page
-  for (const toast of await page.locator('.toast').all()) await toast.click().catch(() => undefined)
-  await expect(page.locator('.toast')).toHaveCount(0, { timeout: 5000 }).catch(() => undefined)
-  await target.screenshot({ path: `${ROOT}/${folder}/${name}.png`, animations: 'disabled', ...(component ? { style: `.app-topbar{position:static !important}${extraStyle}` } : {}) })
+  const toasts=page.locator('.toast')
+  // Dismiss the current first toast; removing one invalidates later nth() locators.
+  for(let i=0;i<20&&await toasts.count();i++)await toasts.first().click({timeout:1000}).catch(()=>undefined)
+  await expect(toasts).toHaveCount(0, { timeout: 5000 })
+  await target.screenshot({ path: `${ROOT}/${folder}/${name}.png`, timeout:30000, animations: 'disabled', ...(component ? { style: `.app-topbar{position:static !important}${extraStyle}` } : {}) })
 }
 const saved = (page: Page) => expect(page.getByTestId('workspace-save-state')).toHaveText('Saved', { timeout: 30_000 })
 
@@ -51,7 +54,7 @@ test('syllabus lifecycle: build, check, download, approve, extract, activate', a
   const file = await (await downloadPromise).path()
   await shot(row, f, '06-downloaded-for-approval')
   await row.getByRole('button', { name: 'Upload Approved File', exact: true }).click()
-  await shot(page, f, '07-upload-approved-file-attestation')
+  await shot(page.getByRole('dialog',{name:'Upload approved syllabus',exact:true}), f, '07-upload-approved-file-attestation')
   await page.getByRole('checkbox').check()
   await page.getByLabel('Approved DOCX or PDF', { exact: true }).setInputFiles({ name: 'IT102-approved.pdf', mimeType: 'application/pdf', buffer: await readFile(file!) })
   await expect(row.getByText('Approved — Uploaded', { exact: true })).toBeVisible()

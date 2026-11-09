@@ -40,7 +40,7 @@ Pulse shows three animated dots and **Thinking…** while waiting for an answer,
 
 ![Pulse loading on solid dark surfaces](07-pulse-thinking-dark.png)
 
-The approved-syllabus dialog shows **Reading approved file…** with a spinner while retaining/checksumming and parsing the document. Its file and confirmation controls cannot submit another import while that work is pending. Completion still requires a matching course code and usable outline; a spinner is not evidence of approval.
+The approved-syllabus dialog shows **Reading approved file…** with a spinner while retaining/checksumming and parsing the document. Its file and confirmation controls cannot submit another import while that work is pending. The retained-file limit is **750 KB**. Completion still requires a matching course code and usable outline; a spinner is not evidence of approval.
 
 ![Approved file reader pending in its modal](08-approved-file-loading.png)
 
