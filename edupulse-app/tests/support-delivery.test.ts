@@ -16,7 +16,7 @@ test('support gateway rechecks owner, adopts target RLS, restores claims, audits
       GRANT USAGE ON SCHEMA auth TO authenticated,anon;`)
     for (let i=0;i<ids.length;i++) await db.query(`INSERT INTO auth.users(id,email,raw_app_meta_data,raw_user_meta_data) VALUES($1,$2,$3,$4)`, [ids[i],i===0?'riverabenlor461@gmail.com':`canary${i}@example.invalid`,JSON.stringify({role:['admin','instructor','student','student','associate_dean'][i]}),JSON.stringify({full_name:`Synthetic account ${i}`})])
     await db.query(`INSERT INTO auth.identities VALUES($1,'google')`,[ids[0]])
-    for (const file of ['20260915042129_persistent_workspace','20261004054136_system_admin_audit_roles','20261024064532_academic_projection','20261024071459_academic_record_labels','20261024073036_academic_lint_cleanup','20261024163740_pulse_conversations','20261024213422_pulse_history_privileges','20261028130000_baseline_workflows','20261028130100_assessment_workflows','20261028130200_delivery_notices','20261028130300_offline_review_requests','20261102074226_student_directory','20261107050829_safe_workspace_roster_refresh','20261107131810_instructor_roster_overrides','20261107141745_validate_course_membership_decisions','20261108055904_pulse_support_context']) await db.exec(await readFile(`supabase/migrations/${file}.sql`,'utf8'))
+    for (const file of ['20260915042129_persistent_workspace','20261004054136_system_admin_audit_roles','20261024064532_academic_projection','20261024071459_academic_record_labels','20261024073036_academic_lint_cleanup','20261024163740_pulse_conversations','20261024213422_pulse_history_privileges','20261028130000_baseline_workflows','20261028130100_assessment_workflows','20261028130200_delivery_notices','20261028130300_offline_review_requests','20261102074226_student_directory','20261107050829_safe_workspace_roster_refresh','20261107131810_instructor_roster_overrides','20261107141745_validate_course_membership_decisions','20261108055904_pulse_support_context','20261109221703_labelled_pipeline_activity']) await db.exec(await readFile(`supabase/migrations/${file}.sql`,'utf8'))
     for (const i of [2,3]) await db.query(`INSERT INTO public.edupulse_students(student_number,user_id,email,surname,first_name,full_name,year_level,department,program) VALUES($1,$2,$3,'Canary','Synthetic',$4,$5,'College of IT','BSIT')`, [`SYN-${i}`,ids[i],`canary${i}@example.invalid`,`Synthetic account ${i}`,i===2?1:2])
     const as = async (i:number) => {
       await db.exec('RESET ROLE')
@@ -48,12 +48,22 @@ test('support gateway rechecks owner, adopts target RLS, restores claims, audits
     assert.equal((await db.query('SELECT * FROM public.edupulse_support_events')).rows.length,2,'enter and preview are audited as admin')
     const material=supported.publications.find((row:any)=>row.type==='material')
     await as(2)
+    await assert.rejects(db.query('SELECT public.edupulse_authorize_pipeline_test($1,$2,$3)',[publication.id,publication.source_version,ids[2]]),{code:'42501'},'learners cannot label their own activity as a pipeline test')
+    await as(1)
+    await assert.rejects(db.query('SELECT public.edupulse_authorize_pipeline_test($1,$2,$3)',[publication.id,publication.source_version,ids[3]]),{code:'42501'},'outsiders cannot be added through test authorization')
+    await assert.rejects(db.query('SELECT public.edupulse_authorize_pipeline_test($1,$2,$3)',[publication.id,'old-version',ids[2]]),{code:'42501'})
+    await db.query('SELECT public.edupulse_authorize_pipeline_test($1,$2,$3)',[publication.id,publication.source_version,ids[2]])
+    await as(2)
+    await assert.rejects(db.query('SELECT * FROM edupulse_private.pipeline_activity_grants'),{code:'42501'},'private allowances are not exposed to learners')
     assert.equal((await db.query('SELECT * FROM public.edupulse_notices')).rows.length,2,'release notices reach the enrolled student')
     await db.query(`SELECT public.edupulse_academic_action($1,$2,'[]','open')`,[material.id,material.source_version])
     const session=(await db.query<{r:{id:string}}>('SELECT public.edupulse_assessment_command($1) r',[JSON.stringify({operation:'start',publication:publication.id,version:publication.source_version})])).rows[0].r
-    const attempt=(await db.query<{r:{score:number}}>('SELECT public.edupulse_assessment_command($1) r',[JSON.stringify({operation:'submit',publication:publication.id,version:publication.source_version,session:session.id,responses:[0,1,2]})])).rows[0].r
+    const attempt=(await db.query<{r:{score:number;is_test:boolean}}>('SELECT public.edupulse_assessment_command($1) r',[JSON.stringify({operation:'submit',publication:publication.id,version:publication.source_version,session:session.id,responses:[0,1,2]})])).rows[0].r
     assert.equal(attempt.score,3)
+    assert.equal(attempt.is_test,true,'the real scoring transaction persistently labels authorized test activity')
+    assert.equal((await db.query<{is_test:boolean}>('SELECT is_test FROM public.edupulse_material_access')).rows[0].is_test,false,'an unmarked material open remains genuine')
     await as(1);assert.equal((await db.query('SELECT * FROM public.edupulse_attempts')).rows.length,1);assert.equal((await db.query('SELECT * FROM public.edupulse_material_access')).rows.length,1,'actual student activity reaches instructor statistics')
+    await assert.rejects(db.query('SELECT public.edupulse_authorize_pipeline_test($1,$2,$3)',[material.id,material.source_version,ids[2]]),{code:'22023'},'existing genuine opens cannot be relabelled')
     await as(0);assert.equal((await call(ids[4],'academic.read')).attempts.length,0,'associate dean never gets scores')
     const thread='aaaaaaaa-1111-4111-8111-111111111111'
     await db.query('INSERT INTO public.edupulse_pulse_threads(id,owner_id,title) VALUES($1,$2,$3)',[thread,ids[0],'Synthetic support conversation'])

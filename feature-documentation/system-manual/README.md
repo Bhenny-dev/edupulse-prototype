@@ -77,3 +77,5 @@ The [baseline restoration](../versions/2026-10-28-baseline-workflows/README.md) 
 [Manual 31: Retained syllabus sources](31-retained-syllabus-sources/README.md) covers linked-reference reading, readable book attachments, private versioned copies and passage citations.
 
 [Manual 32: Public Pulse information](32-public-pulse-search/README.md) covers public staff and project credits, relevant feature answers, spelling suggestions and follow-up context without an AI connection.
+
+[Manual 33: Synced test progress](33-pipeline-progress/README.md) covers labelled pipeline results in student and instructor views, activity filtering and CSV provenance.

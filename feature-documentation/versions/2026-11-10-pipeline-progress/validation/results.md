@@ -1,0 +1,8 @@
+# Validation
+
+- The PGlite role/scoring integration test passed with the new migration. It verifies an authorized test attempt still scores 3/3 through the normal timed assessment RPC, retains `is_test`, and reaches instructor records. Student self-authorization, unenrolled students, stale versions, private grant-table reads and relabelling an existing genuine material open are rejected. Unmarked activity remains genuine. Existing support-view restrictions and Associate Dean score denial still pass.
+- Both type checks passed. Four desktop/mobile browser cases passed for matching saved student results, labelled opens and instructor progress filtering. Six final capture cases passed; every new image was opened and reviewed, with exact-hash review entries. These fixtures exercise the actual renderer using synthetic transports.
+- The hosted migration dry run listed only the additive pipeline-activity migration. It was then applied successfully through the linked Supabase CLI. No attempt or open was inserted by the migration, and existing rows default to unmarked student activity.
+- Advisor review moved the checked privileged authorization implementation into the private schema behind a security-invoker public wrapper. The final advisor run has no new pipeline-function finding; earlier authenticated assessment-RPC and Auth configuration warnings remain. The SQL role/scoring test passed again after hardening.
+- Full `npm run verify` passed: documentation, lint, both type checks, pinned models, all 271 native tests, production build and serverless deployment checks.
+- Seeded submissions and live student/instructor readback remain pending. The UI fixture's marks are not a claim of hosted student completion.

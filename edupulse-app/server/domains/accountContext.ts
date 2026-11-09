@@ -56,7 +56,7 @@ export function accountFacts(records: Academic, identity: Identity, question: st
       const publication = publications.find(row => row.id === attempt.publication_id && row.source_version === attempt.source_version)
       if (!publication) continue
       const learner = (records.enrollments || []).find(row => row.student_email === attempt.student_email)
-      lines.push(`Saved assessment result: ${publication.title}; learner ${learner?.display_name || 'current authorized account'}; ${attempt.grading_status === 'pending_review' ? 'written responses awaiting instructor grading' : `raw score ${attempt.score}/${attempt.max_score}`}; attempt ${attempt.attempt_no || 1}; submitted ${attempt.submitted_at}.`)
+      lines.push(`Saved assessment result${attempt.is_test?' (Pipeline test)':''}: ${publication.title}; learner ${learner?.display_name || 'current authorized account'}; ${attempt.grading_status === 'pending_review' ? 'written responses awaiting instructor grading' : `raw score ${attempt.score}/${attempt.max_score}`}; attempt ${attempt.attempt_no || 1}; submitted ${attempt.submitted_at}.`)
     }
     if (current.size > 10) lines.push('Only the ten most recent result descriptions are included; open Performance for the complete authorized results. These are saved raw scores, not institutional course grades.')
   }

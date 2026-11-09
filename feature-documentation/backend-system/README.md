@@ -1,5 +1,13 @@
 # Backend System
 
+## Labelled pipeline progress, 10 November 2026
+
+The public authorization RPC uses security-invoker mode and delegates to a private function with explicit caller/ownership/enrollment checks. The privileged implementation is outside the exposed API schema; the private table and trigger have no client table privileges.
+
+`20261109221703_labelled_pipeline_activity.sql` adds immutable-at-insert `is_test` provenance to attempts and material opens. The owner's explicit registered-account test authorization is represented by a private, version-bound allowance. `edupulse_authorize_pipeline_test` checks the current instructor, owned publication version and active registered enrollment. It rejects existing genuine activity instead of retroactively relabelling it. A private insert trigger overwrites the marker from that allowance inside the ordinary scoring/open transaction; clients cannot choose the label. Grants remain private with RLS and no client privileges; exposed RPC execution is explicitly revoked from public/anonymous callers.
+
+Student progress and instructor monitoring include the same saved rows, with **Pipeline test** labels, an activity filter and CSV provenance. Test scores remain actual RPC results from the integration exercise. They are not evidence of independent student completion. Existing score/read permissions and support-view submission restrictions remain unchanged. [Manual 33](../system-manual/33-pipeline-progress/README.md) and [validation](../versions/2026-11-10-pipeline-progress/validation/results.md).
+
 ## Account provider retention and loading feedback, 7 November 2026
 
 The server retains one encrypted connection per account/provider, with atomic active selection and owner RLS. Sign-out retains the account records; explicit disconnect clears its key and leaves a non-secret marker against stale-cookie restoration. Workspace requests remain independent of AI connection storage. [ADR-004](decisions/004-account-provider-retention.md), [Manual 19](../system-manual/19-loading-and-saved-connections/README.md) and the [release validation](../versions/2026-11-07-loading-and-connections/validation/results.md) record the migration and actual verification limits.

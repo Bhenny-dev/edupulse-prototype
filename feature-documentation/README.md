@@ -4,6 +4,8 @@
 
 | Folder | Covers | Contents |
 | --- | --- | --- |
+| [10 November completion register](versions/2026-11-10-completion-audit/README.md) | Conversation requests, binding corrections, persisted evidence and remaining work | Updated as each increment completes |
+| [10 November synced pipeline progress](versions/2026-11-10-pipeline-progress/README.md) | Version-bound test activity, real scoring, matching student/instructor labels and activity filtering | See release validation |
 | [10 November account self-recognition](versions/2026-11-10-account-self-recognition/README.md) | Verified username, role and functions for casual English/Filipino self questions | See release validation |
 | [10 November approved instructor seed](versions/2026-11-10-approved-course-seed/README.md) | All 14 approved originals represented across seven instructor accounts, preserving existing data | Persisted intake verified; enrollment/generation/delivery continue |
 | [10 November course generation and source reading](versions/2026-11-10-course-source-reading/README.md) | Serialized on-device JSON schema, safe worker errors, formatted retained-source review and PDF reading copies | See release validation |

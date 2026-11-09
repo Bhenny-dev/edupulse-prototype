@@ -39,10 +39,10 @@ export function CoverageChart({ data, material = false, completion = false }) {
 }
 function Attempts({ data, isStudent }) {
   const publication = id => data.publications.find(item => item.id === id)
-  const headers = ['Course', 'Assessment', ...(!isStudent ? ['Student account'] : []), 'Raw score', 'Submitted', 'Version', 'Marking']
+  const headers = ['Course', 'Assessment', ...(!isStudent ? ['Student account'] : []), 'Raw score', 'Submitted', 'Version', 'Marking', 'Activity']
   const rows = data.attempts.map(item => {
     const pub = publication(item.publication_id)
-    return [data.courses.find(course => course.id === pub?.course_id)?.course_code || 'Retained course', pub?.title || 'Retained assessment', ...(!isStudent ? [data.enrollments.find(entry => entry.student_email === item.student_email)?.display_name || item.student_email || 'Retained student account'] : []), `${item.score}/${item.max_score}`, new Date(item.submitted_at).toLocaleString(), pub && String(pub.source_version) === String(item.source_version) ? 'Current' : 'Earlier version', item.grading_status==='pending_review'?'Awaiting instructor marking':'Graded']
+    return [data.courses.find(course => course.id === pub?.course_id)?.course_code || 'Retained course', pub?.title || 'Retained assessment', ...(!isStudent ? [data.enrollments.find(entry => entry.student_email === item.student_email)?.display_name || item.student_email || 'Retained student account'] : []), `${item.score}/${item.max_score}`, new Date(item.submitted_at).toLocaleString(), pub && String(pub.source_version) === String(item.source_version) ? 'Current' : 'Earlier version', item.grading_status==='pending_review'?'Awaiting instructor marking':'Graded', item.is_test?'Pipeline test':'Student activity']
   })
   return <Panel title="Recorded assessment attempts" actions={<CsvButton headers={headers} rows={rows} name="assessment-scores" />}><Table headers={headers} rows={rows} empty="No assessment attempts recorded." /><p className="text-sm text-muted mt-16">Objective items are scored on the server. These are raw assessment results; EduPulse does not calculate official grades or infer risk.</p></Panel>
 }
@@ -50,7 +50,7 @@ export function MaterialAccess({ data, isStudent }) {
   const materials = data.publications.filter(item => item.active && item.type !== 'assessment')
   const rows = isStudent ? materials.map(item => [item.title, `Week ${item.week}`, data.accesses.find(access => access.publication_id === item.id)?.first_opened_at ? 'Opened' : 'Not opened']) : learnerRows(data).map(learner => [learner.display_name || learner.student_email, ...materials.map(item => !data.enrollments.some(entry => entry.course_id === item.course_id && entry.student_email === learner.student_email) ? 'Not enrolled' : data.accesses.some(access => access.publication_id === item.id && access.student_email?.toLowerCase() === learner.student_email.toLowerCase()) ? 'Opened' : 'No recorded open')])
   const headers = isStudent ? ['Material', 'Week', 'Status'] : ['Student', ...materials.map(item => item.title)]
-  return <><Panel title="Learning Material Access" actions={<CsvButton headers={headers} rows={rows} name="material-access" />}><p className="text-sm text-muted mb-16">A recorded open confirms the first access. It does not measure time spent or completion of the reading.</p><Table headers={headers} rows={materials.length ? rows : []} /></Panel><Panel title="Material access chart"><CoverageChart data={data} material /></Panel><Panel title="Recorded material access"><Table headers={['Material', ...(!isStudent ? ['Student'] : []), 'First opened']} rows={data.accesses.map(item => [data.publications.find(pub => pub.id === item.publication_id)?.title || 'Retained material', ...(!isStudent ? [item.student_email || 'Retained student account'] : []), new Date(item.first_opened_at).toLocaleString()])} empty="No material opens recorded." /></Panel></>
+  return <><Panel title="Learning Material Access" actions={<CsvButton headers={headers} rows={rows} name="material-access" />}><p className="text-sm text-muted mb-16">A recorded open confirms the first access. It does not measure time spent or completion of the reading.</p><Table headers={headers} rows={materials.length ? rows : []} /></Panel><Panel title="Material access chart"><CoverageChart data={data} material /></Panel><Panel title="Recorded material access"><Table headers={['Material', ...(!isStudent ? ['Student'] : []), 'First opened', 'Activity']} rows={data.accesses.map(item => [data.publications.find(pub => pub.id === item.publication_id)?.title || 'Retained material', ...(!isStudent ? [item.student_email || 'Retained student account'] : []), new Date(item.first_opened_at).toLocaleString(),item.is_test?'Pipeline test':'Student activity'])} empty="No material opens recorded." /></Panel></>
 }
 export function ScoreMatrix({ data, onStudent }) {
   const assessments = data.publications.filter(item => item.active && item.type === 'assessment')
@@ -64,13 +64,15 @@ export function ScoreMatrix({ data, onStudent }) {
 export default function AcademicPerformance({ data, role, monitoring = false }) {
   const isStudent = role === 'student'
   const workspace=useWorkspace()
-  const [ackError,setAckError]=useState('')
+  const [ackError,setAckError]=useState(''), [activity,setActivity]=useState('all')
   const [courseId, setCourseId] = useState(''), [block, setBlock] = useState(''), [since, setSince] = useState(''), [until, setUntil] = useState('')
   const [threshold, setThreshold] = useState(75), [student, setStudent] = useState(null)
   const topics=topicSummary(data).filter(item=>item.value<threshold)
   const location = useLocation()
   const { key, nav } = useAcademicTabs({ items: monitoring ? [['students', 'Students'], ['assessments', 'Assessment Scores'], ['materials', 'Learning Material Access']] : [['overview', 'Overview'], ['bytopic', 'By Topic'], ['materials', 'Learning Materials'], ['scores', 'Assessment Scores'], ...(!isStudent ? [['alerts', 'Alerts']] : [])], label: monitoring ? 'Student monitoring views' : 'Performance views', fallback: monitoring && location.pathname === '/scoring-sheet' ? 'assessments' : undefined })
-  const filtered = filterAcademic(data, courseId, block, since, until)
+  const scoped = filterAcademic(data, courseId, block, since, until)
+  const filtered = {...scoped,attempts:scoped.attempts.filter(item=>activity==='all'||(activity==='test'?item.is_test:!item.is_test)),accesses:scoped.accesses.filter(item=>activity==='all'||(activity==='test'?item.is_test:!item.is_test))}
+  const testCount=scoped.attempts.filter(item=>item.is_test).length+scoped.accesses.filter(item=>item.is_test).length
   const validDates = !since || !until || since <= until
   const current = currentAttempts(filtered)
   const summary = assessmentSummary(filtered)
@@ -81,6 +83,7 @@ export default function AcademicPerformance({ data, role, monitoring = false }) 
   if (monitoring && key === 'students') return <>{nav}<InstructorRoster /></>
   return <>
     <div className="academic-filters"><CourseFilter data={data} value={courseId} onChange={setCourseId} />{!isStudent && <label className="academic-filter">Block<select className="form-select" value={block} onChange={event => setBlock(event.target.value)}><option value="">All blocks</option>{[...new Set(data.enrollments.map(item => item.block_section).filter(Boolean))].sort().map(value => <option key={value}>{value}</option>)}</select></label>}<label className="academic-filter">From<input className="form-input" type="date" value={since} onChange={event => setSince(event.target.value)} /></label><label className="academic-filter">Through<input className="form-input" type="date" value={until} onChange={event => setUntil(event.target.value)} /></label></div>
+    {testCount>0&&<div className="mb-16" role="status"><p>{testCount} labelled pipeline test record(s) are synced with student progress. These exercise delivery and scoring; they do not establish independent student completion.</p><label className="academic-filter">Activity records<select aria-label="Activity records" className="form-select" value={activity} onChange={event=>setActivity(event.target.value)}><option value="all">All recorded progress</option><option value="student">Student activity only</option><option value="test">Pipeline tests only</option></select></label></div>}
     <p className="text-sm text-muted mb-16">Dates filter saved attempts and first opens. “No attempt” or “No recorded open” means no matching event in this date range.</p>
     {!validDates && <p role="alert">The start date must be on or before the end date.</p>}
     {nav}

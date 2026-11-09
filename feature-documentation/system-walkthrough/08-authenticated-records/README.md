@@ -1,5 +1,7 @@
 # 08 · Authenticated academic records
 
+Labelled pipeline activity appears in both student progress and instructor monitoring. **Activity records** includes all recorded progress by default, with separate student-only and pipeline-test filters. The **Activity** column and student saved-result text retain **Pipeline test**. [Manual 33](../../system-manual/33-pipeline-progress/README.md) shows these additions with synthetic captures and distinguishes them from hosted seed evidence.
+
 These current layout captures use synthetic academic responses and a browser-only account fixture. They show the authenticated interface without creating a hosted account. They do not prove server authorization, database permissions, persistence or scoring. Earlier hosted canary evidence is retained in the linked release record below and must not be inferred from these refreshed images.
 
 | View | Capture | Visible behavior |
