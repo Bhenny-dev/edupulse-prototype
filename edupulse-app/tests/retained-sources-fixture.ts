@@ -11,6 +11,14 @@ export const sourceRefs=[
  {kind:'book' as const,title:'Sample Networks Book',url:'',authors:'Example Author',year:'2025',publisher:'Classroom Example Press'},
  {kind:'link' as const,title:'Unavailable sample reading',url:'https://unavailable.example.org/reading.pdf',authors:'',year:'',publisher:''},
 ]
+export const formattedSourceText=`# Network study guide\n\n### Guided explanation\n\n**Hosts** send and receive application data.\n\n${sourceLesson}\n\n### Compare the devices\n\n| Component | Role |\n| --- | --- |\n| Host | Sends and receives application data |\n| Switch | Forwards local frames |\n| Router | Connects networks |\n\n- Label each **host** in a classroom diagram.\n- Explain the *router* connection.\n\n[Original reading](https://teaching.example.org/network-guide)\n`
+export async function attachFormattedSource(page:Page){
+ const panel=page.locator('.syllabus-sources')
+ await panel.getByRole('button',{name:`Source actions for ${sourceRefs[1]!.title}`,exact:true}).click()
+ await page.getByRole('menuitem',{name:'Attach readable copy',exact:true}).click()
+ await panel.getByLabel('Attach readable reference copy',{exact:true}).setInputFiles({name:'network-study-guide.md',mimeType:'text/markdown',buffer:Buffer.from(formattedSourceText)})
+ return panel.locator('li').filter({has:page.getByText(sourceRefs[1]!.title,{exact:true})})
+}
 const key=(ref:any)=>createHash('sha256').update(referenceSnapshotToken(ref)).digest('hex')
 export async function retainedSourcesUI(page:Page,ready=true){
  const fixture=await restorationUI(page,'instructor')

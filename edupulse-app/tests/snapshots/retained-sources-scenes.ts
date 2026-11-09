@@ -1,9 +1,9 @@
 import {expect,type Page} from '@playwright/test'
 import {mkdir} from 'node:fs/promises'
-import {retainedSourcesUI,sourceRefs,sourceLesson} from '../retained-sources-fixture'
+import {retainedSourcesUI,sourceRefs,sourceLesson,attachFormattedSource} from '../retained-sources-fixture'
 import {makePdf} from '../fixtures'
 const root='../feature-documentation/system-manual/31-retained-syllabus-sources'
-async function shot(page:Page,name:string){await mkdir(root,{recursive:true});for(const toast of await page.locator('.toast').all())await toast.click().catch(()=>{});await page.mouse.move(2,400);await page.evaluate(async()=>{await document.fonts.ready});await page.screenshot({path:`${root}/${name}.png`,animations:'disabled',style:'.app-topbar{position:static !important}'})}
+async function shot(page:Page,name:string){await mkdir(root,{recursive:true});for(let i=0;i<20&&await page.locator('.toast').count();i++)await page.locator('.toast').first().click({timeout:1000}).catch(()=>{});await expect(page.locator('.toast')).toHaveCount(0);await page.mouse.move(2,400);await page.evaluate(async()=>{await document.fonts.ready});await page.screenshot({path:`${root}/${name}.png`,animations:'disabled',timeout:30000,style:'.app-topbar{position:static !important}'})}
 export async function sourceScene(page:Page,mobile=false,dark=false){
  if(dark)await page.addInitScript(()=>localStorage.setItem('edupulse-dark-mode','true'))
  const fixture=await retainedSourcesUI(page);await page.goto('/#/courseware?course=retained-course');const panel=page.locator('.syllabus-sources');await panel.locator('summary').click();await expect(panel).toContainText('Book metadata only')
@@ -15,10 +15,21 @@ export async function sourceScene(page:Page,mobile=false,dark=false){
  await page.locator('[data-week="1"]').getByRole('button',{name:'Generate',exact:true}).click();await expect(page.locator('[data-content-id]')).toHaveCount(2)
  await page.locator('[data-content-id="gen-mat-retained-course-w1"]').getByRole('button',{name:'View',exact:true}).click();await expect(page.locator('.doc-viewer-text').first()).toContainText('[1]');await shot(page,'04-passage-citations')
  await page.locator('.ai-draft-evidence').scrollIntoViewIfNeeded();await page.getByText(/Generation details and references/).click();await shot(page,'05-reference-provenance')
- await page.getByRole('button',{name:'Review retained source',exact:true}).click();await expect(page.getByRole('dialog',{name:'Retained source review'}).locator('pre')).toContainText('Network components include hosts');await shot(page,'06-retained-source-review');await page.keyboard.press('Escape');await page.getByRole('button',{name:'Back',exact:true}).click();await expect(panel).toHaveJSProperty('open',true)
+ await page.getByRole('button',{name:'Review retained source',exact:true}).click();await expect(page.getByRole('dialog',{name:'Retained source review'}).getByTestId('retained-source-body')).toContainText('Network components include hosts');await shot(page,'06-retained-source-review');await page.keyboard.press('Escape');await page.getByRole('button',{name:'Back',exact:true}).click();await expect(panel).toHaveJSProperty('open',true)
  await panel.getByRole('button',{name:`Source actions for ${sourceRefs[1]!.title}`,exact:true}).click();await shot(page,'07-book-source-actions');await page.getByRole('menuitem',{name:'Attach readable copy',exact:true}).click()
  const pdf=Buffer.from(makePdf([['Sample Networks Book',...sourceLesson.match(/.{1,88}(?:\s|$)/g)||[sourceLesson]],['Chapter 2: Classroom diagrams','Review the host, switch, router and link labels before revising a network diagram.']]))
  await panel.getByLabel('Attach readable reference copy',{exact:true}).setInputFiles({name:'sample-book.pdf',mimeType:'application/pdf',buffer:pdf});await expect(panel).toContainText('2 retained');await panel.locator('li').filter({has:page.getByText(sourceRefs[1]!.title,{exact:true})}).getByRole('button',{name:'View',exact:true}).click();await expect(page.getByRole('dialog',{name:'Retained source review'})).toContainText('2 pages');await shot(page,'08-retained-book-copy');await page.keyboard.press('Escape')
  fixture.advanceEdition();await panel.getByRole('button',{name:`Source actions for ${sourceRefs[0]!.title}`,exact:true}).click();await page.getByRole('menuitem',{name:'Read a new version',exact:true}).click();await expect(panel).toContainText('2 saved versions');await shot(page,'09-source-versions')
  await panel.getByRole('button',{name:`Source actions for ${sourceRefs[0]!.title}`,exact:true}).click();await shot(page,'10-retained-source-actions');await page.getByRole('menuitem',{name:'Remove retained version',exact:true}).click();await expect(page.getByRole('dialog',{name:'Remove retained source version'})).toBeVisible();await shot(page,'11-remove-confirmation');await page.getByRole('button',{name:'Cancel',exact:true}).click()
+}
+
+export async function formattedSourceScene(page:Page,mobile=false,dark=false){
+ if(dark)await page.addInitScript(()=>localStorage.setItem('edupulse-dark-mode','true'))
+ await retainedSourcesUI(page,false);await page.goto('/#/courseware?course=retained-course');await page.locator('.syllabus-sources summary').click()
+ const row=await attachFormattedSource(page);await expect(row.getByRole('button',{name:'View',exact:true})).toBeVisible();await row.getByRole('button',{name:'View',exact:true}).click()
+ const dialog=page.getByRole('dialog',{name:'Retained source review',exact:true});await expect(dialog.getByRole('heading',{name:'Guided explanation',exact:true})).toBeVisible()
+ await expect(dialog.getByRole('table')).toHaveCount(1);await expect(dialog.getByRole('button',{name:'Download PDF',exact:true})).toBeVisible()
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true)
+ await shot(page,`${mobile?'mobile-':dark?'dark-':''}12-formatted-source-review`)
+ if(!dark){await dialog.getByRole('heading',{name:'Compare the devices',exact:true}).evaluate(node=>node.scrollIntoView({block:'start'}));await expect(dialog.getByRole('table')).toBeInViewport({ratio:.99});await shot(page,`${mobile?'mobile-':''}13-source-table-and-list`)}
 }

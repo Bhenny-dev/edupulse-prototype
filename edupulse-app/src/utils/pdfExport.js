@@ -43,3 +43,18 @@ export async function downloadMaterialPdf(content) {
   const blob = await renderPdf(materialContent(content), content.title || 'Pulse learning material', 'Draft - review before use')
   downloadBlob(blob, `${(content.title || 'pulse-material').replace(/[^a-z0-9 _-]/gi, '').slice(0, 80)}.pdf`)
 }
+
+/** Reading exports format extracted text; the separately retained original stays byte-for-byte. */
+export function retainedSourceTitle(source) {
+  return String(source.reference?.title || source.name || 'Retained source').replace(/^\s*\d+[.)]\s+/,'').replace(/https?:\/\/\S+/gi,'').replace(/\s+/g,' ').trim() || 'Retained source'
+}
+export function retainedSourceContent(source) {
+  const nodes=materialContent({title:retainedSourceTitle(source),subtitle:[source.reference?.authors,source.reference?.year,source.reference?.publisher].filter(Boolean).join(' · '),text:source.text||''})
+  const metadata=[source.reference?.title,source.url,source.name,source.sha256?`Original SHA-256: ${source.sha256}`:'',source.created_at?`Retained: ${source.created_at}`:'',source.truncated?'This reading copy contains the retained searchable extract; the original file may contain additional content.':''].filter(Boolean)
+  nodes.push({text:'Retained source details',bold:true,fontSize:13,margin:[0,16,0,6],headlineLevel:1},...metadata.map(text=>({text:printableText(text),fontSize:9,margin:[0,0,0,5]})))
+  return nodes
+}
+export async function downloadRetainedSourcePdf(source) {
+  const title=retainedSourceTitle(source),blob=await renderPdf(retainedSourceContent(source),title,'Retained reading copy - original file unchanged')
+  downloadBlob(blob,`${title.replace(/[^a-z0-9 _-]/gi,'').slice(0,75)||'retained-source'}-reading-copy.pdf`)
+}

@@ -7131,9 +7131,9 @@
     },
     {
       "path": "feature-documentation/system-manual/31-retained-syllabus-sources/03-retained-and-unread.png",
-      "sha256": "ab0078aa0480130180aa05fc92a2c83fee11b0ccdd68f632e85adeed2816114a",
+      "sha256": "d6c4aff8969e2d7daef1f1bb61f88491f6c301b4969797574b864017bf493fb6",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-09T12:36:30.399211+00:00"
+      "reviewedAt": "2026-11-09T21:49:47.401040Z"
     },
     {
       "path": "feature-documentation/system-manual/31-retained-syllabus-sources/04-passage-citations.png",
@@ -7143,15 +7143,15 @@
     },
     {
       "path": "feature-documentation/system-manual/31-retained-syllabus-sources/05-reference-provenance.png",
-      "sha256": "99e246a4eaec769c92f437253cee020cff3b30a19dcdf5fd025ec4d8b3b9debf",
+      "sha256": "1a117aec92d5029e32a54d58b66b6bd7af40d247255e4bf12f5f92f1fc508c26",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-09T12:36:30.399211+00:00"
+      "reviewedAt": "2026-11-09T21:49:47.401040Z"
     },
     {
       "path": "feature-documentation/system-manual/31-retained-syllabus-sources/06-retained-source-review.png",
-      "sha256": "1c1805cdc0b9ae0ed1511db7ee3e1c2b5792113bc8f1fc0becab80d2c997de98",
+      "sha256": "b1a1b549ff58491739b17530a1705791d80c4f627a6d5f3d3b5181fe3052d4a1",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-09T12:36:30.399211+00:00"
+      "reviewedAt": "2026-11-09T21:49:47.401040Z"
     },
     {
       "path": "feature-documentation/system-manual/31-retained-syllabus-sources/07-book-source-actions.png",
@@ -7161,9 +7161,9 @@
     },
     {
       "path": "feature-documentation/system-manual/31-retained-syllabus-sources/08-retained-book-copy.png",
-      "sha256": "0056880385beb812036f865146787830374e8ad0c9c3286f722e68ed4a7c4353",
+      "sha256": "59a066c4ba70b12d4fd4c7e63354bf59bfab01d581b7616ee0b659db1ce79939",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-09T12:36:30.399211+00:00"
+      "reviewedAt": "2026-11-09T21:49:47.401040Z"
     },
     {
       "path": "feature-documentation/system-manual/31-retained-syllabus-sources/09-source-versions.png",
@@ -7356,6 +7356,36 @@
       "sha256": "79d3d9b272e92e3a6d6c7cda1e9d19dc1b0cde17301b3f80a5a9256b46a105b6",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-09T20:57:14.840564Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/31-retained-syllabus-sources/12-formatted-source-review.png",
+      "sha256": "af743cc38caba6819c024f396798927e03f2b9a133a408e17861b1719bb94371",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T21:49:47.401040Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/31-retained-syllabus-sources/13-source-table-and-list.png",
+      "sha256": "cab963c74fdaa3a0268a956e4a1e0e4f79bbe0cdf386517f7c52d9014ac7d374",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T21:49:47.401040Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/31-retained-syllabus-sources/dark-12-formatted-source-review.png",
+      "sha256": "4294f15db72caf1bf57f7b08e20280c9207f9e9b2dbb6876101306ceea146475",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T21:49:47.401040Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/31-retained-syllabus-sources/mobile-12-formatted-source-review.png",
+      "sha256": "87965caf7703881329c154049d2c75ab4f9eb13e065b01e316795cd37d87a230",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T21:49:47.401040Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/31-retained-syllabus-sources/mobile-13-source-table-and-list.png",
+      "sha256": "0ff765e8bc1c7c87ceb51a2e7c913856751c38f156b331c1129863b90695661c",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T21:49:47.401040Z"
     }
   ]
 }

@@ -1,4 +1,5 @@
 import type { WebWorkerMLCEngine } from '@mlc-ai/web-llm'
+import { completeInBrowser } from './browserCompletion'
 
 export const browserPresets = [
   { id: 'Qwen2.5-1.5B-Instruct-q4f16_1-MLC', name: 'Qwen 2.5 · 1.5B — balanced', download: 'about 1 GB', memory: 'about 1.7 GB GPU memory' },
@@ -82,14 +83,7 @@ export async function invokeBrowserModel(system: string, prompt: string, signal:
   if (generating) throw new Error('Wait for the current local response to finish, or stop it before starting another.')
   signal.throwIfAborted(); generating = true
   const current = engine
-  const abort = () => current.interruptGenerate()
-  signal.addEventListener('abort', abort, { once: true })
   try {
-    const response = await current.chat.completions.create({ messages: [{ role: 'system', content: system }, { role: 'user', content: prompt }], temperature: 0.2, max_tokens: json ? 2200 : 1000, ...(json ? { response_format: { type: 'json_object' as const } } : {}) })
-    signal.throwIfAborted()
-    if (response.choices[0]?.finish_reason === 'length') throw new Error('The on-device model reached its output limit. Nothing was applied; select a smaller section or use a larger provider model.')
-    const text = response.choices[0]?.message.content?.trim()
-    if (!text) throw new Error('The local model returned no text. Try a smaller prompt or the balanced model.')
-    return text
-  } finally { signal.removeEventListener('abort', abort); generating = false; await current.resetChat().catch(() => {}) }
+    return await completeInBrowser(current,system,prompt,signal,json)
+  } finally { generating = false }
 }

@@ -65,6 +65,7 @@
         "edupulse-app/src/components/ai/**",
         "edupulse-app/src/lib/aiClient.ts",
         "edupulse-app/src/lib/browserAI.ts",
+        "edupulse-app/src/lib/browserCompletion.ts",
         "edupulse-app/src/lib/browserAI.worker.ts",
         "edupulse-app/src/lib/providerOAuth.js",
         "edupulse-app/src/lib/supabaseClient.js",

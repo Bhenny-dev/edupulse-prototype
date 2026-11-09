@@ -6,6 +6,8 @@ The [IT teaching seed](../18-it-course-seed/README.md) adds saved session-author
 
 **Who:** instructor. **Where:** Course. One course list combines generation progress and saved items; there are no separate My Courseware and Courseware Builder tabs. Generated items stay in Draft until an instructor checks them. The outline determines the required item types; a discussion or learning week does not automatically require an interactive quiz. The alignment report is an aid to review, not approval.
 
+On-device structured generation now sends a serialized object schema to the installed WebLLM grammar compiler. Worker failures keep their original message as an Error instead of producing the unrelated `pregelTaskId` failure. Existing topic, completeness, answer and atomic-save checks still decide whether a draft can be saved. This correction does not establish that every small on-device model can complete every teaching request.
+
 1. If you already have an approved syllabus, choose **Upload syllabi** from Course. Drop or browse for its PDF/DOCX in **My Syllabus**, review the extracted outline and choose **Use syllabus for course** ([Manual 30](../30-approved-syllabus-intake/README.md)). The upload action stays available when courses already exist. For a new draft, the optional builder approval route remains. Find the course in **Course**. A course with saved content shows **View**; an empty course shows **Generate**. Both open its weekly workspace. The list retains status, generated/expected item counts, progress, instructor and teaching weeks. The current example contains synthetic IT 102 and IT 103 courses.
 
    ![Combined synthetic course list with View and Generate](01-courseware-with-active-syllabus.png)

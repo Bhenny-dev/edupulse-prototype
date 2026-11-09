@@ -18,7 +18,7 @@
 
    ![Sample passage citations within a lesson](04-passage-citations.png)
 
-5. At the end, expand **Generation details and references**. Retained sources show their saved date, checksum and **Review retained source**. The source review opens extracted text and page markers where the file has them. Unpaginated HTML is not assigned invented book pages. Checks measure passage support, not correctness certification.
+5. At the end, expand **Generation details and references**. Retained sources show their saved date, checksum and **Review retained source**. The source review formats extracted headings, emphasis, lists, tables and code, retaining page markers where present. Open **Source details** for the full bibliographic entry, saved date, page count and checksum. Unpaginated HTML is not assigned invented book pages. Checks measure passage support, not correctness certification.
 
    ![Source provenance after the draft](05-reference-provenance.png)
 
@@ -30,7 +30,7 @@
 
    ![Retained two-page sample book extraction](08-retained-book-copy.png)
 
-7. **Download retained copy** returns the original bytes and verifies SHA-256 in the browser. **Read a new version** checks the link again; changed bytes create a new immutable snapshot. The latest copy supplies later generation. Changing bibliographic metadata creates a separate citation association. **Remove retained version** requires confirmation; existing drafts keep their citation text and checksum, but a deleted copy cannot be reviewed later.
+7. **Download PDF** exports a formatted reading copy of the retained searchable text, including source details. It is labelled as a reading copy and may be partial when the searchable extract was truncated. **Download retained copy** still returns the unchanged original bytes and verifies SHA-256 in the browser. The dialog keeps its close and download actions visible while its content scrolls. **Read a new version** checks the link again; changed bytes create a new immutable snapshot. The latest copy supplies later generation. Changing bibliographic metadata creates a separate citation association. **Remove retained version** requires confirmation; existing drafts keep their citation text and checksum, but a deleted copy cannot be reviewed later.
 
    ![Guide with two saved versions](09-source-versions.png)
 
@@ -49,6 +49,20 @@ The same controls stack on phones and use the existing dark surfaces.
 ![Source list in dark mode](dark-01-syllabus-sources.png)
 
 ![Dark retained and unavailable states](dark-03-retained-and-unread.png)
+
+The attached sample Markdown renders its headings, bold text, list and table in the reader. The PDF action exports that formatting; the original Markdown remains separately downloadable.
+
+![Formatted sample reading and PDF action](12-formatted-source-review.png)
+
+Scroll within the reading area to continue through the table and list. The title and download actions remain available.
+
+![Formatted comparison table and list](13-source-table-and-list.png)
+
+![Formatted reading in dark mode](dark-12-formatted-source-review.png)
+
+![Formatted reading on a phone](mobile-12-formatted-source-review.png)
+
+![Phone table and list after scrolling](mobile-13-source-table-and-list.png)
 
 ## Evidence boundaries
 
