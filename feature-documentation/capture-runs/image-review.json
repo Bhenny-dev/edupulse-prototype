@@ -7236,6 +7236,54 @@
       "sha256": "f2645771c3d334d72ffd9e3545db8a70c4288ed2dbf118ea82e84aa558c6741e",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-09T12:36:30.399211+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/24-system-first-search/01-profile-suggestion.png",
+      "sha256": "470a684aa472b9b0ab65a225962339944c4ca74414a268e9d1a1c1a0935bfdbc",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T13:54:35.435428+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/24-system-first-search/02-keyless-help.png",
+      "sha256": "1ecd9e139d51645ee88be10adf502181274a2186ee53d5a0df3d8a49959383c5",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T13:54:35.435428+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/24-system-first-search/03-web-images.png",
+      "sha256": "ab38e196cb05e40bfca187ecf93447600787de9c8e0775275de0c78d56d5316f",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T13:54:35.435428+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/24-system-first-search/04-dark-web-images.png",
+      "sha256": "ed919fa9d3676c3c79676b023001df6602e943c991f7a91fb49489db1716dd64",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T13:54:35.435428+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/24-system-first-search/05-mobile-web-images.png",
+      "sha256": "a227067fcba6dcd18185c46df89a61de8ed052ab30cd331ffbc9b84cdfc481cb",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T13:54:35.435428+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/24-system-first-search/06-image-unavailable.png",
+      "sha256": "06a6675b2481743bcc8b565cc392d45c58597a4a6eeb00eaa085dccc584d43ac",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T13:54:35.435428+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/24-system-first-search/07-person-follow-up.png",
+      "sha256": "c3d2640d7893e651eae1eecf1ebbb36fc05c8d74cfad4c7a85000921f110ac67",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T13:54:35.435428+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/24-system-first-search/08-mobile-person-follow-up.png",
+      "sha256": "96d14d89f6a3e4bc58acabbba521a0724373b1223cc5e08f161c7b5bc86c1c46",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T13:54:35.435428+00:00"
     }
   ]
 }

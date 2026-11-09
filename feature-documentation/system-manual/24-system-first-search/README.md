@@ -10,6 +10,18 @@ Ask a name question such as **Do you know alexandra benlro d. sample?**. Initial
 
 Only the current account's permitted directory, course and faculty records are available. Student sessions retain their own-profile boundaries. Failed record reads are reported as unavailable, rather than no records. Candidate searches are bounded; refine a common name or use its exact student number. Admin support continues to use the selected person's academic permissions and the admin's own private library.
 
+## Keep the person in follow-up questions
+
+After a recorded person answer, ask **Do you know him on fb?** or **kilala mo ba siya sa fb?**. Pulse resolves the person from the recent conversation and reads the currently authorized record again. It does not search the letters ?FB? as a separate subject. Missing or multiple possible people require a name or student number. A clear new question such as **What is photosynthesis?** starts its own topic.
+
+![English follow-up keeps the sample registered person and distinguishes an unverified Facebook identity](07-person-follow-up.png)
+
+The answer identifies the same recorded name and says when no verified Facebook link is available. **Search Facebook for ALEXANDRA BENLOR DAYSA SAMPLE** is a manual search link using only the name, not a discovered or verified account. Pulse does not attach unrelated public images or assign a groundedness percentage to that public identity. These lookups still need no model key.
+
+![Filipino follow-up with the same recorded subject and readable search link on a phone](08-mobile-person-follow-up.png)
+
+Private history is a search hint, not access evidence. A completed account switch resets its private conversation context. Retained follow-ups remain subject to current record access, and unavailable records do not become Internet identity claims. Inline answer links and emphasis use the existing safe Markdown renderer; citation numbers retain their source buttons.
+
 ## Ask for help without connecting a provider
 
 Ask a workflow or content question. Product guidance, saved syllabi and materials, accessible course outlines and released learning materials, attachments and indexed private-library passages can supply quoted answers. Simple searches show **System search · No AI credits used**. If both system and public searches miss a general explanation, a ready connected model can still answer from general knowledge; that fallback can use AI credits and does not claim Internet verification. Without a ready model the search result remains available with refinement guidance. Private-record failures and document-only requests never become invented model answers. No record is edited by searching. Informational questions such as **How do I create a syllabus?** stay on the read-only answer path; explicit generation and editing commands retain their preview/confirmation controls.

@@ -80,3 +80,7 @@ Images 1-3 use the real local Ollama qwen2.5:3b model and the uploaded Wikipedia
 Pulse now receives live authorized account evidence for course, syllabus, roster and activity questions. Public factual questions can search without an explicit search keyword, while casual exchanges and source-only questions keep their appropriate scope. Supabase handoffs provide owner/conversation/subject-scoped continuity and respect automatic-memory controls. See [Manual 23](../23-account-support-and-pulse-context/README.md) for the current examples and limits.
 
 [System-first search and image results](../24-system-first-search/README.md) documents the keyless path, typo suggestions and explicit Internet fallback.
+
+## Recent conversation context
+
+English and Filipino person follow-ups keep the most recent unambiguous subject while current permissions are checked again. Missing or ambiguous names need clarification; explicit new topics get fresh queries. [Manual 24](../24-system-first-search/README.md#keep-the-person-in-follow-up-questions) shows the English and Filipino captures and explains the distinction between a Facebook search link and a verified profile.

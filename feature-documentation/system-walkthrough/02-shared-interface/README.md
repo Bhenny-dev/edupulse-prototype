@@ -190,3 +190,7 @@ Pulse and the Course workspace use the same bounded week-generation plan and rev
 ## Current Monitor guidance
 
 Pulse and Dashboard links open **Syllabus & Delivery**. Old syllabus/delivery links resolve to the combined view without an extra browser-history entry. Guidance retains offline review and the Associate Dean score restriction. See [Manual 29](../../system-manual/29-combined-oversight/README.md).
+
+## Person follow-ups
+
+Pulse retains an unambiguous recent person for **him**, **her**, **siya**, **niya**, and short **on fb?** questions. It checks the accessible record again, offers a correctly named manual search link when no Facebook profile is verified, and keeps explicit new topics separate. [Manual 24](../../system-manual/24-system-first-search/README.md#keep-the-person-in-follow-up-questions) contains the current desktop/mobile views.

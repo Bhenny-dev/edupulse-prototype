@@ -32,14 +32,14 @@ test('actual chat and on-device preflight answer system records without looking 
   const old=Object.fromEntries(names.map(name=>[name,process.env[name]]))
   process.env.SUPABASE_URL='https://synthetic.invalid';process.env.SUPABASE_PUBLISHABLE_KEY='sb_publishable_synthetic';process.env.AI_VECTOR_STORE='supabase';delete process.env.AI_LOCAL_MODE
   t.after(()=>{globalThis.fetch=oldFetch;for(const name of names){if(old[name]===undefined)delete process.env[name];else process.env[name]=old[name]}})
-  let providers=0,web=0,library=0,directory=0,privateHit=false,workspaceHit=false,role='instructor',failDirectory=false
+  let providers=0,web=0,library=0,directory=0,privateHit=false,workspaceHit=false,role='instructor',failDirectory=false,denyProfiles=false
   const person={full_name:'ALEXANDRA BENLOR DAYSA SAMPLE',student_number:'SYN-001',year_level:4,department:'College of IT',program:'BSIT'}
   globalThis.fetch=async(value,init)=>{
     const url=new URL(String(value)),path=url.pathname
     if(path==='/auth/v1/user')return Response.json({id:'11111111-1111-4111-8111-111111111111',email:'synthetic@example.invalid',app_metadata:{role,provider:'email'},user_metadata:{full_name:'Synthetic account'}})
     if(path.includes('provider')||url.host.includes('openai.com')){providers++;throw new Error('No provider should be consulted')}
     if(path.endsWith('edupulse_students')){
-      directory++;if(failDirectory)return Response.json({message:'offline'},{status:503})
+      directory++;if(denyProfiles)return Response.json([]);if(failDirectory)return Response.json({message:'offline'},{status:503})
       const q=/full_name\.ilike\.%(.+?)%,student_number/.exec(url.searchParams.get('or')||'')?.[1]||''
       return Response.json(person.full_name.toLowerCase().includes(q.toLowerCase())?[person]:[],{headers:{'content-range':'0-0/1'}})
     }
@@ -49,12 +49,23 @@ test('actual chat and on-device preflight answer system records without looking 
     assert.match(path,/^\/rest\/v1\/edupulse_/)
     return Response.json([])
   }
-  const ask=async(message:string,action='chat',attachments:{title:string;text:string}[]=[])=>{
-    const response=await handleRequest(new Request(`http://localhost/api/ai?action=${action}`,{method:'POST',headers:{authorization:'Bearer synthetic-only','Content-Type':'application/json'},body:JSON.stringify({message,attachments})}))
+  const ask=async(message:string,action='chat',attachments:{title:string;text:string}[]=[],history:{role:string;content:string}[]=[])=>{
+    const response=await handleRequest(new Request(`http://localhost/api/ai?action=${action}`,{method:'POST',headers:{authorization:'Bearer synthetic-only','Content-Type':'application/json'},body:JSON.stringify({message,attachments,history})}))
     assert.equal(response.status,200);const data=await response.json();return action==='chat'?data:data.answer
   }
   const found=await ask('do you know alexandra benlor d. sample')
   assert.match(found.answer,/Did you mean ALEXANDRA BENLOR DAYSA SAMPLE/);assert.match(found.answer,/SYN-001/);assert.equal(found.lookup.scope,'system');assert.equal(providers,0);assert.equal(web,0);assert.ok(directory>=2)
+  const history=[{role:'user',content:'do you know alexandra benlor d. sample'},{role:'assistant',content:found.answer}]
+  const reads=directory
+  const facebook=await ask('do you know him on fb?','chat',[],history)
+  assert.match(facebook.answer,/You mean ALEXANDRA BENLOR DAYSA SAMPLE/);assert.match(facebook.answer,/does not provide a verified Facebook link/);assert.match(facebook.answer,/facebook\.com\/search\/top\?q=ALEXANDRA%20BENLOR/)
+  assert.equal(facebook.verification,null);assert.equal(web,0);assert.equal(providers,0);assert.ok(directory>reads,'follow-up reads current authorized records again')
+  const tagalog=await ask('kilala mo ba siya sa fb?','chat-context',[],[...history,{role:'user',content:'do you know him on fb?'},{role:'assistant',content:facebook.answer}]);assert.match(tagalog.answer,/ALEXANDRA BENLOR DAYSA SAMPLE/);assert.equal(web,0)
+  const year=await ask('What year is he?','chat',[],history);assert.match(year.answer,/year 4/);assert.equal(web,0)
+  const missing=await ask('Do you know him on fb?');assert.match(missing.answer,/Who do you mean/);assert.equal(web,0)
+  const ambiguous=await ask('Do you know him on fb?','chat',[],[{role:'assistant',content:'Registered student: ALEX SAMPLE; year 1.\nRegistered student: ALEX OTHER; year 2.'}]);assert.match(ambiguous.answer,/Which of the people/);assert.equal(web,0)
+  denyProfiles=true
+  const revoked=await ask('Do you know him on fb?','chat',[],history);assert.match(revoked.answer,/currently accessible/);assert.doesNotMatch(revoked.answer,/SYN-001|ALEXANDRA BENLOR/);assert.equal(web,0);denyProfiles=false
   const typo=await ask('do you know alexandra benlro d. sample','chat-context');assert.match(typo.answer,/SYN-001/);assert.equal(providers,0)
   const retained=await ask('Do you know Alexandra Benlor D. Sample?','chat',[{title:'Unrelated earlier file',text:'An earlier attachment discusses another topic.'}]);assert.match(retained.answer,/SYN-001/);assert.equal(web,0)
   const help=await ask('How do I publsih a sylabus?');assert.equal(help.lookup.scope,'system');assert.match(help.answer,/Did you mean/);assert.equal(web,0)
@@ -66,7 +77,7 @@ test('actual chat and on-device preflight answer system records without looking 
   privateHit=true
   const local=await ask('What is a zyglotron?');assert.equal(local.sources[0].origin,'private');assert.equal(web,0);assert.ok(library>0)
   privateHit=false
-  const external=await ask('What is photosynthesis?');assert.equal(external.lookup.scope,'web');assert.match(external.answer,/Internet suggestions/);assert.ok(external.sources[0].image.url.startsWith('https://upload.wikimedia.org/'));assert.equal(providers,0);assert.equal(web,1)
+  const external=await ask('What is photosynthesis?','chat',[],history);assert.equal(external.lookup.scope,'web');assert.match(external.answer,/Internet suggestions/);assert.ok(external.sources[0].image.url.startsWith('https://upload.wikimedia.org/'));assert.equal(providers,0);assert.equal(web,1)
   const staff={id:'11111111-1111-4111-8111-111111111111',role:'instructor' as const,local:false,token:'synthetic-only'}
   assert.equal(await systemLookup(chatInput.parse({message:'What is the latest computing news?'}),staff,staff,AbortSignal.timeout(5000)),null,'explicit current research retains the existing provider path after the system search')
   assert.equal(providers,0);assert.equal(web,1)

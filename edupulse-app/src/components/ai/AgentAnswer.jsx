@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Copy, ExternalLink, PenLine } from 'lucide-react'
 import { AGENT_META } from './agentMeta'
+import CoursewareText from '../courseware/CoursewareText'
 import './ai.css'
 
 const STATUS = {
@@ -23,10 +24,10 @@ function markLine(line, claims, grounded, onCite, used, key) {
     marks.push({ start, end: start + claim.text.length, status, claim })
   })
   marks.sort((a, b) => a.start - b.start)
-  // Markdown bold markers are dropped from display; citations become buttons.
+  // Reuse the safe inline Markdown renderer; citations retain their source buttons.
   const cite = (segment, id) => segment.split(/(\[\d{1,2}\])/).map((piece, i) => {
     const n = piece.match(/^\[(\d{1,2})\]$/)?.[1]
-    return n ? <button key={`${id}-${i}`} type="button" className="aa-cite" onClick={() => onCite(Number(n))} aria-label={`Open source ${n}`}>{n}</button> : piece.replace(/\*\*/g, '')
+    return n ? <button key={`${id}-${i}`} type="button" className="aa-cite" onClick={() => onCite(Number(n))} aria-label={`Open source ${n}`}>{n}</button> : <CoursewareText key={`${id}-${i}`} inline>{piece}</CoursewareText>
   })
   const parts = []
   let cursor = 0

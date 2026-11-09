@@ -1,0 +1,204 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-11-09T13-52-01-006Z-6bb1c77f",
+  "startedAt": "2026-11-09T13:52:01.006Z",
+  "finishedAt": "2026-11-09T13:52:26.787Z",
+  "commitSha": "c4fd463bc1febd99938abcf411a046030dd0f998",
+  "sourceDigest": "45d4ee140db987b9f488b1fdd705a62d1b2f59a95b11f32b078bf98d652d7096",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-11-09T13:51:56.310Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 5,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": null
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/system-search.spec.ts",
+    "edupulse-app/tests/snapshots/system-search-mobile.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/account-support-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/account-support.spec.ts",
+    "edupulse-app/tests/snapshots/approved-syllabus-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/approved-syllabus.spec.ts",
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/automatic-records.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/automatic-records.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.spec.ts",
+    "edupulse-app/tests/snapshots/course-seed.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-formatting.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-navigation.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/harness-delivery.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/operator-steps.spec.ts",
+    "edupulse-app/tests/snapshots/outline-courseware.spec.ts",
+    "edupulse-app/tests/snapshots/outline-selector.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/outline-selector.spec.ts",
+    "edupulse-app/tests/snapshots/oversight.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/oversight.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-drafting.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-source.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+    "edupulse-app/tests/snapshots/retained-sources-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/retained-sources.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+    "edupulse-app/tests/snapshots/staff-registration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/staff-registration.spec.ts",
+    "edupulse-app/tests/snapshots/student-directory.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/voice-quota.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/voice-quota.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-cache.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-recovery.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/system-search.spec.ts",
+      "title": "person follow-up retains the registered subject without claiming a public identity",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2493,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/system-search.spec.ts",
+      "title": "keyless system answers, spelling suggestions and sourced web images",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2339,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/system-search.spec.ts",
+      "title": "unavailable public image keeps its source and attribution links",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2079,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/system-search-mobile.spec.ts",
+      "title": "Filipino person follow-up retains the subject on a phone",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1843,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/system-search-mobile.spec.ts",
+      "title": "system-first search images and credits fit a phone",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1437,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-manual/24-system-first-search/01-profile-suggestion.png",
+      "sha256": "470a684aa472b9b0ab65a225962339944c4ca74414a268e9d1a1c1a0935bfdbc",
+      "bytes": 42137
+    },
+    {
+      "path": "feature-documentation/system-manual/24-system-first-search/02-keyless-help.png",
+      "sha256": "1ecd9e139d51645ee88be10adf502181274a2186ee53d5a0df3d8a49959383c5",
+      "bytes": 63711
+    },
+    {
+      "path": "feature-documentation/system-manual/24-system-first-search/03-web-images.png",
+      "sha256": "ab38e196cb05e40bfca187ecf93447600787de9c8e0775275de0c78d56d5316f",
+      "bytes": 72168
+    },
+    {
+      "path": "feature-documentation/system-manual/24-system-first-search/04-dark-web-images.png",
+      "sha256": "ed919fa9d3676c3c79676b023001df6602e943c991f7a91fb49489db1716dd64",
+      "bytes": 72805
+    },
+    {
+      "path": "feature-documentation/system-manual/24-system-first-search/05-mobile-web-images.png",
+      "sha256": "a227067fcba6dcd18185c46df89a61de8ed052ab30cd331ffbc9b84cdfc481cb",
+      "bytes": 59535
+    },
+    {
+      "path": "feature-documentation/system-manual/24-system-first-search/06-image-unavailable.png",
+      "sha256": "06a6675b2481743bcc8b565cc392d45c58597a4a6eeb00eaa085dccc584d43ac",
+      "bytes": 40347
+    },
+    {
+      "path": "feature-documentation/system-manual/24-system-first-search/07-person-follow-up.png",
+      "sha256": "c3d2640d7893e651eae1eecf1ebbb36fc05c8d74cfad4c7a85000921f110ac67",
+      "bytes": 64057
+    },
+    {
+      "path": "feature-documentation/system-manual/24-system-first-search/08-mobile-person-follow-up.png",
+      "sha256": "96d14d89f6a3e4bc58acabbba521a0724373b1223cc5e08f161c7b5bc86c1c46",
+      "bytes": 48459
+    }
+  ]
+}

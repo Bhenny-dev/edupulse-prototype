@@ -4,13 +4,13 @@ import { readAcademic } from './academic.js'
 import { readWorkspace } from '../workspace.js'
 import { readStudents } from './students.js'
 import { nameMatch, words, wordMatch } from '../../src/lib/rag/lookup.js'
+import { profileName as profileQuery } from '../../src/lib/rag/conversation.js'
+export { profileQuery }
 
 export const accountTerms=(text:string)=>text.replace(/[\p{L}]{4,}/gu,word=>['syllabus','student','course','score','statistics','profile','material','outline','instructor'].find(known=>wordMatch(word.toLowerCase(),known)>=0.82)||word)
 
 export const accountQuestion = (text: string) => /\b(?:my|our|this|selected|enrolled|registered)\b.{0,45}\b(?:courses?|syllab\w*|students?|instructors?|teachers?|faculty|users?|department|program|year level|topics?|class|block|materials?|progress|statistics|stats|performance|assessments?|scores?|drafts?|account|profile)|\b(?:who am i|who teaches|what can (?:i|you|the system)|which (?:courses?|students?)|published items|released materials)\b|\b(?:sino|ilan|aking|ko|nakaenrol)\b.{0,40}\b(?:estudyante|mag-aaral|guro|kurso|klase|marka|syllabus|instructors?|teachers?|students?|courses?)\b|\b(?:courses?|classes|students?|instructors?|teachers?|scores?|grades?|kurso|klase|estudyante|guro|marka)\s+(?:ko|namin|natin|aking|ating)\b/i.test(text)
-export function profileQuery(text: string) {
-  return /^(?:who is|do you know|sino si|kilala mo (?:ba )?si|profile of|find (?:the )?student(?: named)?)\s+([\p{L}\p{N}\s.'’-]{3,100})[?!]?$/iu.exec(text.trim())?.[1]?.replace(/[.?!]+$/, '').trim() || ''
-}
+
 
 /** Candidate reads retain the directory's existing RLS, including selected-account support. */
 export async function findStudentProfiles(identity: Identity, name: string, signal?:AbortSignal) {

@@ -1,5 +1,6 @@
 import type { Plan, Task } from './types.js'
 import { terms } from './text.js'
+import { conversationSubject, conversationalFollowUp } from './conversation.js'
 
 type PlanInput = { message: string; context?: string; task?: Task | 'auto'; grounding?: 'auto' | 'sources'; documentIds?: string[]; history?: { role: string; content: string }[]; attachments?: unknown[] }
 
@@ -24,6 +25,7 @@ export const casualConversation=(message:string)=>(GREETING.test(message)&&messa
  */
 export function planRequest(input: PlanInput): Plan {
   const message = input.message.trim()
+  const conversation = conversationSubject(input)
   const revision = /^revise (your|the) previous answer/i.test(message)
   const previous = input.history?.filter(m => m.role === 'user').at(-1)?.content || ''
   const greeting = GREETING.test(message) && message.split(/\s+/).length < 6
@@ -42,7 +44,7 @@ export function planRequest(input: PlanInput): Plan {
   else if (!sourceOnly && !SOURCE_REQUEST.test(message) && !input.attachments?.length) { task = 'general'; rationale = 'General assistance; answer the request without requiring library documents.' }
   if (task === 'references' && sourceOnly) { task = 'answer'; rationale = 'Source-only reference request; list references from the selected documents without querying external catalogs.' }
 
-  const base = (revision ? previous || message : message.length < 60 && previous ? `${previous.slice(0, 400)} ${message}` : message).slice(0, 1000)
+  const base = (revision ? previous || message : conversation.person ? conversation.message : conversationalFollowUp(message)&&previous ? `${previous.slice(0, 400)} ${message}` : message).slice(0, 1000)
   const queries = [base]
   if (task === 'compare') {
     const sides = message.replace(COMPARE, ' ').split(/\b(?:and|with|against|to|from|vs\.?|versus)\b|[,;]/i).map(s => s.replace(/\b(the|my|this|these|documents?|files?|between)\b/gi, ' ').replace(/\s+/g, ' ').trim()).filter(s => terms(s).length >= 1)
@@ -53,7 +55,7 @@ export function planRequest(input: PlanInput): Plan {
     if (focused) queries.push(focused)
   }
   // Catalog topic: the subject only, without the request ("find books and readings … for my course").
-  const topic = message
+  const topic = conversation.message
     .replace(/\b(?:search|browse)\s+(?:the\s+)?(?:web|internet|online)(?:\s+for)?\b|\blook\s*up\b/gi, ' ')
     .replace(/\b(for|in|to)\s+(my|our|the|a|this)\s+(course|class|subject|students?|syllabus|lessons?|module)\b.*$/i, ' ')
     .replace(new RegExp(REFERENCE_REQUEST.source, 'gi'), ' ').replace(new RegExp(REFERENCES.source, 'gi'), ' ')
@@ -64,9 +66,9 @@ export function planRequest(input: PlanInput): Plan {
   // explicitly requested in an otherwise unrelated public search.
   const courseScoped = /\b(?:this|my|our|selected|current|the)\s+(?:course|syllabus|subject|outline)\b|\b(?:all|every)\s+(?:fields?|sections?)\b/i.test(message)
   const explicitTopic = /\b(?:about|on|regarding|look\s*up|research)\s+(.+?)(?=\s+for\s+(?:my|our|this|the|selected|current)\s+course\b|$)/i.exec(message)?.[1]?.replace(/[.!?]+$/, '').trim().slice(0, 200)
-  const privateQuestion = /\b(?:my|our|registered|enrolled|selected)\b.{0,45}\b(?:students?|instructors?|teachers?|faculty|users?|courses?|scores?|grades?|statistics|stats|account|profile)|\bwho am i\b|\b(?:courses?|classes|students?|instructors?|teachers?|scores?|grades?|kurso|klase|estudyante|guro|marka)\s+(?:ko|namin|natin)\b|@|\b\d{4}-\d-\d{4}\b/i.test(message)
+  const privateQuestion = (conversation.followUp||conversation.social)&&Boolean(conversation.person)||/\b(?:my|our|registered|enrolled|selected)\b.{0,45}\b(?:students?|instructors?|teachers?|faculty|users?|courses?|scores?|grades?|statistics|stats|account|profile)|\bwho am i\b|\b(?:courses?|classes|students?|instructors?|teachers?|scores?|grades?|kurso|klase|estudyante|guro|marka)\s+(?:ko|namin|natin)\b|@|\b\d{4}-\d-\d{4}\b/i.test(message)
   const publicQuestion = !conversational && !privateQuestion && !SOURCE_REQUEST.test(message) && /^(?:who|what|when|where|why|how|tell me about|do you know|sino|ano|kailan|saan|bakit|paano)\b/i.test(message)
   const educationalDraft = task === 'draft' && /\b(?:syllabus|course|lesson|outline|research|topics?|assessments?|materials?|references?)\b/i.test(message)
   if (task === 'references' && !allowsPublicResearch(message)) { task = 'answer'; rationale = 'External research was disabled by the user; use supplied or library sources.' }
-  return { task, queries: queries.slice(0, 3), needsEvidence: task !== 'references' && (sourceOnly || task !== 'general'), needsWeb: !sourceOnly && allowsPublicResearch(message) && (educationalDraft || !privateQuestion && (WEB.test(message) || publicQuestion)) && task !== 'references', sourceOnly, rationale, topic: explicitTopic || (course && courseScoped ? course : topic || message.slice(0, 200)), revision }
+  return { task, queries: queries.slice(0, 3), needsEvidence: task !== 'references' && (sourceOnly || task !== 'general'), needsWeb: !sourceOnly && allowsPublicResearch(message) && (educationalDraft || !privateQuestion && (WEB.test(message) || publicQuestion)) && task !== 'references', sourceOnly, rationale, topic: conversation.person&&(conversation.followUp||conversation.social) ? `${conversation.person}${conversation.social ? ' Facebook' : ''}` : explicitTopic || (course && courseScoped ? course : topic || message.slice(0, 200)), revision }
 }

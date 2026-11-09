@@ -7,6 +7,7 @@ import { readWorkspace } from './workspace.js'
 import { keywordSearch } from './rag/keyword.js'
 import { searchWeb } from './external/web.js'
 import { keywordMatch, words, informationalQuestion } from '../src/lib/rag/lookup.js'
+import { conversationSubject } from '../src/lib/rag/conversation.js'
 import { planRequest, allowsPublicResearch, casualConversation } from '../src/lib/rag/plan.js'
 import { checkAppropriateUse } from '../src/lib/rag/policy.js'
 import { extractiveAnswer, runAgents, type AgentAnswer } from '../src/lib/rag/agents.js'
@@ -48,15 +49,35 @@ export async function lookupAnswer(input: ChatInput, sources: Evidence[], signal
   return {requestId:randomUUID(),answer,mode:sources.length?'retrieval':'insufficient-evidence',task:'answer',plan:planRequest(input),sources:sources.map((e,i)=>({...e,citation:i+1,score:e.rrf})),verification,comparison:null,references:[],trace,agents:['Guardian','Researcher'],warning:warning||null,provider:'system-search',model:null,grounding:sources.length?'references':'general',policy:{allowed:true,rule:null,note:'Role restrictions were checked before System Search.'},agentReport:agentReport(trace,{mode:sources.length?'retrieval':'insufficient-evidence',verification,sources:sources.length}),lookup:{scope,...(correction?{correction}:{})}}
 }
 
+/** No public identity is inferred from a registered name or an unverified history hint. */
+export async function socialProfileAnswer(input:ChatInput,sources:Evidence[],signal:AbortSignal) {
+  const names=[...new Set(sources.flatMap(source=>[...source.text.matchAll(/(?:Registered student|Recorded instructor|Recorded faculty):\s*([^;\n]{3,100})/gi)].map(match=>match[1]!.trim())))]
+  const result=await lookupAnswer(input,sources,signal,'system')
+  result.answer=names.length===1?`You mean ${names[0]}. [1]\n\nThe accessible EduPulse profile does not provide a verified Facebook link. A matching public name alone does not confirm that it is the same person.\n\n[Search Facebook for ${names[0]}](https://www.facebook.com/search/top?q=${encodeURIComponent(names[0]!)})`:'Which person do you mean? Please give the full name or student number; I will check the accessible system record first.'
+  result.verification=null
+  result.agentReport=agentReport(result.trace,{mode:result.mode,verification:null,sources:sources.length})
+  return result
+}
+
 /** Read-only System Search agent. Existing RLS helpers are the sole source of private data. */
 export async function systemLookup(input:ChatInput,owner:Identity,subject:Identity,signal:AbortSignal):Promise<AgentAnswer|null> {
   if (!simpleLookup(input)) return null
   if (!checkAppropriateUse(input.message,input.viewRole==='student'||input.viewRole==='guest'?input.viewRole:subject.role).allowed) return runAgents(input,subject,signal,{provider:'system-search',search:async()=>({evidence:[]})})
-  const plan=planRequest(input), candidates:Evidence[]=[], warnings:string[]=[]
+  const plan=planRequest(input), conversation=conversationSubject(input), candidates:Evidence[]=[], warnings:string[]=[]
   const scoped=plan.sourceOnly, selectedFiles=Boolean(input.documentIds.length||input.attachments.length&&scoped)
-  const live=selectedFiles?{evidence:[]}:await authorizedAccountContext(subject,input.message,signal)
+  if(!selectedFiles&&conversation.personFollowUp&&!conversation.person) return lookupAnswer(input,[],signal,'system',undefined,conversation.ambiguous?'Which of the people in the previous answer do you mean? Please give the full name or student number.':'Who do you mean? Please give a name so I can check the accessible EduPulse records first.')
+  const contextualPerson=conversation.person&&(conversation.followUp||conversation.social)
+  const lookupInput=contextualPerson?{...input,message:`Who is ${conversation.person}?`}:input
+  const live=selectedFiles?{evidence:[]}:await authorizedAccountContext(subject,lookupInput.message,signal)
   signal.throwIfAborted()
   if (live.warning) return lookupAnswer(input,[],signal,'system',undefined,live.warning)
+  if(!selectedFiles&&contextualPerson) {
+    if(!live.evidence.length)return lookupAnswer(input,[],signal,'system',undefined,'I could not find that person in the currently accessible EduPulse records. Please give their full name or student number; the earlier conversation is not current access evidence.')
+    if(conversation.social)return socialProfileAnswer(input,live.evidence,signal)
+    const result=await lookupAnswer(lookupInput,live.evidence,signal,'system',live.correction)
+    result.plan=plan
+    return result
+  }
   if (live.evidence.length && (profileQuery(input.message)||! /\b(?:says?|about|covers?|topics?|outcomes?|requirements?|polic\w*|grading|references?|lessons?|concepts?|weeks?|activit\w*)\b/i.test(input.message))) return lookupAnswer(input,live.evidence,signal,'system',live.correction)
   candidates.push(...live.evidence)
   if (!input.documentIds.length) for (const [i,file] of input.attachments.entries()) candidates.push(evidence(`attachment-${i}`,file.title,file.text,'attachment'))
@@ -73,9 +94,10 @@ export async function systemLookup(input:ChatInput,owner:Identity,subject:Identi
       for (const [id,row] of Object.entries(workspace.data?.content||{})) if (row.type==='material') candidates.push(evidence(`authored:${id}`,row.content.title,`${row.content.title}\n${prose(row.content.concepts)}\n${prose(row.content.examples)}\n${prose(row.content.applications)}`))
     } catch { warnings.push('Saved workspace content could not be searched completely.') }
   }
-  try { candidates.push(...await keywordSearch(owner,input.message,input.documentIds,signal)) }
+  const question=conversation.followUp?plan.queries[0]||input.message:input.message
+  try { candidates.push(...await keywordSearch(owner,question,input.documentIds,signal)) }
   catch { signal.throwIfAborted();warnings.push('The indexed knowledge library could not be searched completely.') }
-  const ranked=candidates.map(source=>({source,score:keywordMatch(input.message,`${source.title}\n${source.text}`)})).filter(hit=>hit.score>=0.68).sort((a,b)=>b.score-a.score||(['account','attachment','private'].includes(b.source.origin)?1:0)-(['account','attachment','private'].includes(a.source.origin)?1:0))
+  const ranked=candidates.map(source=>({source,score:keywordMatch(question,`${source.title}\n${source.text}`)})).filter(hit=>hit.score>=0.68).sort((a,b)=>b.score-a.score||(['account','attachment','private'].includes(b.source.origin)?1:0)-(['account','attachment','private'].includes(a.source.origin)?1:0))
   const found=ranked.slice(0,4).map(hit=>({...hit.source,query:input.message}))
   if (found.length) {
     const exact=words(input.message).every(q=>words(found[0]!.title+' '+found[0]!.text).includes(q)||q.length<4)

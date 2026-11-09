@@ -43,3 +43,7 @@ The owner explicitly requested **Upload syllabi** from empty and populated Cours
 ### Owner-requested syllabus source retention, 9 November 2026
 
 Additive reference reading and immutable private copies extend the restored Course workspace. Section 7 and weekly resources enter generation; readable text supports passage citations, while bibliography listings alone do not. Existing optional drafting, checked/published content protection, shared syllabi, support-view boundaries and student delivery are preserved. A failed source read cannot masquerade as a verified source or remove the educational drafting interface. New source controls and exact-hash reviewed captures ship with [Manual 31](../../system-manual/31-retained-syllabus-sources/README.md).
+
+### Person follow-up correction
+
+The owner reported a registered-person answer followed by ?do you know him on fb?? returning aircraft. Preserve the recent person in the same conversation, recheck current permissions, and distinguish a public search suggestion from verified identity. Explicit topic changes must not inherit the prior person. Completed account switches continue to clear private conversation state.
