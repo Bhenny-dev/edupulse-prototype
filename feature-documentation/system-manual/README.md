@@ -75,3 +75,5 @@ The [baseline restoration](../versions/2026-10-28-baseline-workflows/README.md) 
 [Manual 30: Approved syllabus intake](30-approved-syllabus-intake/README.md) covers adding a course directly from an approved PDF/DOCX, extraction review, explicit selection and retained-file saving.
 
 [Manual 31: Retained syllabus sources](31-retained-syllabus-sources/README.md) covers linked-reference reading, readable book attachments, private versioned copies and passage citations.
+
+[Manual 32: Public Pulse information](32-public-pulse-search/README.md) covers public staff and project credits, relevant feature answers, spelling suggestions and follow-up context without an AI connection.

@@ -5984,12 +5984,6 @@
       "reviewedAt": "2026-11-08T01:34:33.823Z"
     },
     {
-      "path": "feature-documentation/system-walkthrough/01-public-site/33-page-pulse.png",
-      "sha256": "6206cffdad20b4423d14b68d0f15ccc4132fff0614ea12f358441e6ef1e1a142",
-      "reviewer": "Claude agent",
-      "reviewedAt": "2026-11-08T01:34:33.823Z"
-    },
-    {
       "path": "feature-documentation/system-walkthrough/01-public-site/34-page-impact.png",
       "sha256": "742df4212f4c91086b684df4c56f091b8f7aa2ebdf91640f099fd412fcebbc78",
       "reviewer": "Claude agent",
@@ -6278,12 +6272,6 @@
       "reviewedAt": "2026-11-08T12:52:04.829Z"
     },
     {
-      "path": "feature-documentation/system-walkthrough/01-public-site/33-page-pulse.png",
-      "sha256": "fbe3b7771b5e6e2914ee2000d724744cd37f469556838716f1fa8b99d4bd1fbc",
-      "reviewer": "Claude agent (Sonnet 5.5)",
-      "reviewedAt": "2026-11-08T12:52:04.829Z"
-    },
-    {
       "path": "feature-documentation/system-walkthrough/01-public-site/34-page-impact.png",
       "sha256": "c447c441778c477fc0cfdfae21b41482576cb17a2ca5a15c2b6226b68f50235a",
       "reviewer": "Claude agent (Sonnet 5.5)",
@@ -6382,12 +6370,6 @@
     {
       "path": "feature-documentation/system-walkthrough/01-public-site/38-page-roles-board.png",
       "sha256": "7de8af7eef07114da2232428b7ca8f35566892dcd3b88b5d650cdc336813721c",
-      "reviewer": "Claude agent (Sonnet 5.5)",
-      "reviewedAt": "2026-11-08T12:52:04.829Z"
-    },
-    {
-      "path": "feature-documentation/system-walkthrough/01-public-site/39-page-pulse-chat.png",
-      "sha256": "f4a3298e1395fb02490194d3616666da8157813daa545f0ad59f17caefe18c05",
       "reviewer": "Claude agent (Sonnet 5.5)",
       "reviewedAt": "2026-11-08T12:52:04.829Z"
     },
@@ -7284,6 +7266,60 @@
       "sha256": "96d14d89f6a3e4bc58acabbba521a0724373b1223cc5e08f161c7b5bc86c1c46",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-09T13:54:35.435428+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/32-public-pulse-search/01-person-follow-up.png",
+      "sha256": "db3f4962c4fecd1deea95ac649b158333926babafd125aed2acf43e086459598",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T15:04:12.716768+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/32-public-pulse-search/02-ranked-public-staff.png",
+      "sha256": "e07047a21fafcd454e37c38eed4d24972d72b197b9c2c906bf06512b36219380",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T15:04:12.716768+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/32-public-pulse-search/03-feature-help.png",
+      "sha256": "91386a258c850a0369a5e6607a1291050c00227d7f4c54bc2250ee8c69ebfea2",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T15:04:12.716768+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/32-public-pulse-search/04-dark-feature-help.png",
+      "sha256": "8e139c40057368b9ee534b7937f40785a4550372d523f5c806e59e165c6e0c33",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T15:04:12.716768+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/32-public-pulse-search/mobile-01-person-follow-up.png",
+      "sha256": "a42c994744374b10b8f330ded95dd25884bbec6d682f53f276b07f9508a68498",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T15:04:12.716768+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/32-public-pulse-search/mobile-02-ranked-public-staff.png",
+      "sha256": "b669f810a18d6e695fac8f6926092fc3db2e78410a6c5bbf87d7a0cb566c463e",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T15:04:12.716768+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/32-public-pulse-search/mobile-03-feature-help.png",
+      "sha256": "01c2a3cc8c001afdf4d9cd43ef07ce2b2cd62645faed78bb924232cb7206fa15",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T15:04:12.716768+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/33-page-pulse.png",
+      "sha256": "8f23ad208b8fe6d0b90ca8d9ac1ecb3ea67a3a78f7791cc944b01a6d11e70bc7",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T15:04:12.716768+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/39-page-pulse-chat.png",
+      "sha256": "46f50d83578a3f698e682a5504e59138b77c0a4c9edbeeec84396b1f3b127dd7",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-09T15:04:12.716768+00:00"
     }
   ]
 }

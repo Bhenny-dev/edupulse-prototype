@@ -1,0 +1,156 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-11-09T15-02-07-790Z-bb451962",
+  "startedAt": "2026-11-09T15:02:07.790Z",
+  "finishedAt": "2026-11-09T15:03:01.706Z",
+  "commitSha": "b3399801b6bb28eb1b7e1d9245a52fbd6f9d5024",
+  "sourceDigest": "0d1a58ae37d0d15ab5bb03bf86b457bcdf91968171c25ec87b72ecd87ff27f25",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-11-09T15:02:04.405Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 2,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": null
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/public-pulse-search.spec.ts",
+    "edupulse-app/tests/snapshots/public-pulse-search-mobile.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/account-support-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/account-support.spec.ts",
+    "edupulse-app/tests/snapshots/approved-syllabus-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/approved-syllabus.spec.ts",
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/automatic-records.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/automatic-records.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.spec.ts",
+    "edupulse-app/tests/snapshots/course-seed.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-formatting.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-navigation.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/harness-delivery.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/operator-steps.spec.ts",
+    "edupulse-app/tests/snapshots/outline-courseware.spec.ts",
+    "edupulse-app/tests/snapshots/outline-selector.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/outline-selector.spec.ts",
+    "edupulse-app/tests/snapshots/oversight.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/oversight.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-drafting.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-source.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+    "edupulse-app/tests/snapshots/retained-sources-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/retained-sources.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+    "edupulse-app/tests/snapshots/staff-registration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/staff-registration.spec.ts",
+    "edupulse-app/tests/snapshots/student-directory.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/system-search-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/system-search.spec.ts",
+    "edupulse-app/tests/snapshots/voice-quota.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/voice-quota.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-cache.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-recovery.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/public-pulse-search.spec.ts",
+      "title": "public Pulse ranks bundled information and retains the person without an AI service",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "bundled-public-information; no-chat-or-directory-service",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 33431,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/public-pulse-search-mobile.spec.ts",
+      "title": "public Pulse information and corrections fit a phone",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "bundled-public-information; no-chat-or-directory-service",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 16022,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-manual/32-public-pulse-search/01-person-follow-up.png",
+      "sha256": "db3f4962c4fecd1deea95ac649b158333926babafd125aed2acf43e086459598",
+      "bytes": 684773
+    },
+    {
+      "path": "feature-documentation/system-manual/32-public-pulse-search/02-ranked-public-staff.png",
+      "sha256": "e07047a21fafcd454e37c38eed4d24972d72b197b9c2c906bf06512b36219380",
+      "bytes": 702866
+    },
+    {
+      "path": "feature-documentation/system-manual/32-public-pulse-search/03-feature-help.png",
+      "sha256": "91386a258c850a0369a5e6607a1291050c00227d7f4c54bc2250ee8c69ebfea2",
+      "bytes": 669644
+    },
+    {
+      "path": "feature-documentation/system-manual/32-public-pulse-search/04-dark-feature-help.png",
+      "sha256": "8e139c40057368b9ee534b7937f40785a4550372d523f5c806e59e165c6e0c33",
+      "bytes": 668442
+    },
+    {
+      "path": "feature-documentation/system-manual/32-public-pulse-search/mobile-01-person-follow-up.png",
+      "sha256": "a42c994744374b10b8f330ded95dd25884bbec6d682f53f276b07f9508a68498",
+      "bytes": 186394
+    },
+    {
+      "path": "feature-documentation/system-manual/32-public-pulse-search/mobile-02-ranked-public-staff.png",
+      "sha256": "b669f810a18d6e695fac8f6926092fc3db2e78410a6c5bbf87d7a0cb566c463e",
+      "bytes": 186090
+    },
+    {
+      "path": "feature-documentation/system-manual/32-public-pulse-search/mobile-03-feature-help.png",
+      "sha256": "01c2a3cc8c001afdf4d9cd43ef07ce2b2cd62645faed78bb924232cb7206fa15",
+      "bytes": 160258
+    }
+  ]
+}

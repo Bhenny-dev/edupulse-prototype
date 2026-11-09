@@ -7,6 +7,8 @@
       "source": [
         "edupulse-app/src/pages/Landing.jsx",
         "edupulse-app/src/components/landing/**",
+        "edupulse-app/src/components/public/**",
+        "edupulse-app/src/pages/public/**",
         "edupulse-app/src/data/colleges.js",
         "edupulse-app/src/assets/kcp/**",
         "edupulse-app/src/assets/product/**",
@@ -20,6 +22,7 @@
       "docs": [
         "feature-documentation/system-walkthrough/01-public-site",
         "feature-documentation/system-manual/01-getting-started",
+        "feature-documentation/system-manual/32-public-pulse-search",
         "feature-documentation/system-walkthrough/06-mobile"
       ]
     },

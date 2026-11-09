@@ -1,5 +1,5 @@
 {
-  "capturedAt": "2026-11-09T12:35:59.263Z",
+  "capturedAt": "2026-11-09T15:03:39.738Z",
   "problems": [],
   "scenes": [
     {
@@ -726,14 +726,6 @@
     {
       "role": "public",
       "folder": "01-public-site",
-      "file": "33-page-pulse.png",
-      "title": "Pulse page: the agents studio with the chat beside it",
-      "route": "/pulse",
-      "ok": true
-    },
-    {
-      "role": "public",
-      "folder": "01-public-site",
       "file": "34-page-impact.png",
       "title": "Impact page: the history room, findings as exhibits and the goals on a globe",
       "route": "/impact",
@@ -769,14 +761,6 @@
       "file": "38-page-roles-board.png",
       "title": "Roles page: the board, which pages each role opens",
       "route": "/roles",
-      "ok": true
-    },
-    {
-      "role": "public",
-      "folder": "01-public-site",
-      "file": "39-page-pulse-chat.png",
-      "title": "Pulse page: the Guardian answers a request for quiz answers, firmly",
-      "route": "/pulse",
       "ok": true
     },
     {
@@ -865,6 +849,22 @@
       "file": "08-courseware-builder.png",
       "title": "Courseware · weekly workspace",
       "route": "/courseware",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "33-page-pulse.png",
+      "title": "Pulse page: the agents studio with the chat beside it",
+      "route": "/pulse",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "39-page-pulse-chat.png",
+      "title": "Pulse page: the Guardian answers a request for quiz answers, firmly",
+      "route": "/pulse",
       "ok": true
     }
   ]

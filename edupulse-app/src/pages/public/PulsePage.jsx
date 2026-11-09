@@ -13,7 +13,7 @@ import '../../components/public/public-site.css'
 const ICONS = { guardian: ShieldCheck, planner: Route, researcher: Search, librarian: Library, ranker: ListOrdered, comparator: Columns2, writer: PenLine, verifier: BadgeCheck, corrector: Wrench }
 const NAME = Object.fromEntries(AGENTS.map(agent => [agent.key, agent.name]))
 const wait = ms => new Promise(resolve => window.setTimeout(resolve, ms))
-const HELLO = { agent: 'guardian', mood: 'happy', text: 'Hi! We’re the nine agents behind Pulse. Tap one of us to talk to it, or just type; whoever’s job it is will answer, and we answer everything else too.', source: null }
+const HELLO = { agent: 'guardian', mood: 'happy', text: 'Hi! We can explain EduPulse, its roles, features and public project information without an AI connection. Tap an agent or type a question.', source: null }
 
 // The Pulse page: the agent room from the home page, filling the screen, and a chat beside it.
 // Tap an agent (or pick it in the chat) to talk to it; with no one picked, the agent whose job it
@@ -81,7 +81,7 @@ export default function PulsePage() {
     if (!message) return
     setDraft('')
     setLines(list => [...list, { agent: null, text: message }].slice(-40))
-    answer(respond(message, { to, last: last.current }))
+    answer(respond(message, { to, last: last.current, history: lines }))
   }
 
   useEffect(() => {
@@ -186,7 +186,7 @@ export default function PulsePage() {
               placeholder={picked ? `Say anything to ${picked.name}…` : 'Say hi, ask about EduPulse, or ask for help…'} />
             <button type="submit" className="lp-button is-small" disabled={!draft.trim()}><Send size={16} aria-hidden="true" /> Send</button>
           </form>
-          <p className="ps-chat-note">Scripted replies written on this page: no AI, nothing is sent or stored.</p>
+          <p className="ps-chat-note">Searches public EduPulse information on this page. No AI key; messages are not sent or saved.</p>
         </section>
       </main>
       <RoomDial stops={AGENTS.map(agent => ({ id: agent.key, label: agent.name, icon: ICONS[agent.key], tint: AGENT_COLORS[agent.key] }))}
