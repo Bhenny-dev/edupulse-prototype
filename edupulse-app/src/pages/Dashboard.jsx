@@ -134,7 +134,7 @@ function ManagementDashboard({ model, actions = exportButton, status }) {
         <div className="card">
           <div className="card-header">
             <h3>Syllabus Stations</h3>
-            <button className="btn btn-ghost btn-sm" onClick={() => navigate('/monitor?tab=syllabi')}>Monitor <ArrowRight size={14} /></button>
+            <button className="btn btn-ghost btn-sm" onClick={() => navigate('/monitor?tab=overview')}>Monitor <ArrowRight size={14} /></button>
           </div>
           <div className="card-body">
             <p className="text-sm text-muted mb-16">Where every loaded course's syllabus sits in the lifecycle. The signatory chain (Dean → CAO → EVP) runs offline on the downloaded file.</p>
@@ -153,7 +153,7 @@ function ManagementDashboard({ model, actions = exportButton, status }) {
         <div className="card">
           <div className="card-header">
             <h3>Delivery Progress (Active Courses)</h3>
-            <button className="btn btn-ghost btn-sm" onClick={() => navigate('/monitor?tab=delivery')}>Details <ArrowRight size={14} /></button>
+            <button className="btn btn-ghost btn-sm" onClick={() => navigate('/monitor?tab=overview')}>Details <ArrowRight size={14} /></button>
           </div>
           <div className="card-body">
             <p className="text-sm text-muted mb-16">Published courseware against the extracted Course Outline — are the mapped materials and assessments being delivered on schedule?</p>
@@ -216,7 +216,7 @@ function ManagementDashboard({ model, actions = exportButton, status }) {
       <div className="card">
         <div className="card-header">
           <h3>Syllabus Status by Course</h3>
-          <button className="btn btn-secondary btn-sm" onClick={() => navigate('/monitor?tab=syllabi')}>Full Monitor <ArrowRight size={14} /></button>
+          <button className="btn btn-secondary btn-sm" onClick={() => navigate('/monitor?tab=overview')}>Full Monitor <ArrowRight size={14} /></button>
         </div>
         <div className="card-body">
           <table className="data-table">
@@ -237,7 +237,7 @@ function ManagementDashboard({ model, actions = exportButton, status }) {
                     <td className="text-sm">{course.status === 'active' ? `${course.outlineWeeks} weeks` : '—'}</td>
                     <td className="text-sm text-muted">{course.updated}</td>
                     <td>
-                      <button className="btn btn-ghost btn-sm" style={{ padding: '4px 8px' }} title="View in Monitor" onClick={() => navigate('/monitor?tab=syllabi')}><Eye size={12} /></button>
+                      <button className="btn btn-ghost btn-sm" style={{ padding: '4px 8px' }} title="View in Monitor" onClick={() => navigate('/monitor?tab=overview')}><Eye size={12} /></button>
                     </td>
                   </tr>
                 )

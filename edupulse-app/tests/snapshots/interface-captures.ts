@@ -9,11 +9,11 @@ export function interfaceCaptures(mobile=false){
  test('interface: monitor subviews remain reachable without a sidebar',async({page})=>{
   await page.goto('/');await page.getByRole('button',{name:'Dean',exact:true}).click();await page.goto('/#/monitor')
   const directory='../feature-documentation/system-walkthrough/03-dean-and-associate-dean'
-  for(const [label,key,name] of [['Syllabus Status','syllabi','04-monitor-syllabus-status'],['Delivery Progress','delivery','05-monitor-delivery-progress'],['Student Oversight','students','06-monitor-student-oversight'],['Alerts','alerts','07-monitor-alerts']]){
+  for(const [label,key,name] of [['Syllabus & Delivery','overview','04-monitor-syllabus-status'],['Student Oversight','students','06-monitor-student-oversight'],['Alerts','alerts','07-monitor-alerts']]){
    const button=page.getByRole('navigation',{name:'Monitor views'}).getByRole('button',{name:label,exact:true});await button.click();await expect(button).toHaveAttribute('aria-pressed','true');await expect(page).toHaveURL(new RegExp('tab='+key));await expect(page.locator('.app-sidebar')).toHaveCount(0)
    expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true)
    if(!mobile){await page.mouse.move(2,400);await page.waitForTimeout(1800);await page.screenshot({path:`${directory}/${name}.png`,animations:'disabled',fullPage:true})}
-   else if(key==='syllabi')await shot(page,'09-mobile-monitor-tabs')
+   else if(key==='overview')await shot(page,'09-mobile-monitor-tabs')
   }
   if(!mobile){
    await page.evaluate(()=>localStorage.removeItem('edupulse_user'));await page.goto('/');await page.reload();await page.getByRole('button',{name:'Instructor',exact:true}).click();await page.goto('/#/student-monitoring');await page.getByRole('button',{name:'Learning Material Access',exact:true}).click();await expect(page.getByText('Learning Material Access',{exact:false}).last()).toBeVisible();await page.locator('.recharts-wrapper').last().scrollIntoViewIfNeeded();await page.waitForTimeout(2000);await expect(page.locator('.recharts-bar-rectangle').first()).toBeVisible();await page.evaluate(()=>scrollTo(0,0));await page.screenshot({path:'../feature-documentation/system-walkthrough/04-instructor/10-student-monitoring-material-access.png',animations:'disabled',fullPage:true})

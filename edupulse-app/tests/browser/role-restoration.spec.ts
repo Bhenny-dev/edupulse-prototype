@@ -24,7 +24,7 @@ for (const role of ['instructor', 'student', 'dean', 'associate_dean']) {
       if (role !== 'student') { await page.goto('/#/performance?tab=scores'); await page.getByRole('button', { name: 'Synthetic learner', exact: true }).click(); await expect(page.getByRole('dialog', { name: 'Student performance detail' })).toBeVisible(); await page.keyboard.press('Escape'); await expect(page.getByRole('dialog', { name: 'Student performance detail' })).toHaveCount(0) }
     }
     if (['dean', 'associate_dean'].includes(role)) {
-      for (const [tab, heading] of [['syllabi', 'Syllabus status overview'], ['delivery', 'Published delivery by course'], ['students', 'Confirmed class lists'], ['alerts', 'Readiness and delivery alerts']]) {
+      for (const [tab, heading] of [['syllabi', 'Syllabus and delivery overview'], ['delivery', 'Released courseware by course'], ['students', 'Confirmed class lists'], ['alerts', 'Readiness and delivery alerts']]) {
         await page.goto(`/#/monitor?tab=${tab}`); await expect(page.getByRole('heading', { name: heading, exact: true })).toBeVisible(); await expect(page.getByRole('heading', { name: 'Recorded assessment attempts' })).toHaveCount(0)
       }
       for (const path of ['records?tab=sections', 'records?tab=courses', 'course-loading', 'course-loading?tab=instructors']) { await page.goto('/#/' + path); await expect(page.locator('.academic-portal')).toBeVisible() }

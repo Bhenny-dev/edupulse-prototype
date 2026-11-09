@@ -29,3 +29,5 @@ Loading/error feedback remains shared while role-specific account sections now i
 ## Expanded loading audit, 7 November 2026
 
 [Manual 19](../19-loading-and-saved-connections/README.md) extends these captures to provider restore/testing, Pulse dots, notification popovers, student-directory results, approved-file modals and System Admin counts. It records the reviewed surfaces and preserves existing OCR/model/generation progress rather than inventing percentages.
+
+The current mobile Monitor navigation has one **Syllabus & Delivery** destination instead of two duplicate top-level tabs. Its sample status and delivery sections remain available together. [Manual 29](../29-combined-oversight/README.md) distinguishes preview examples from signed-in oversight.

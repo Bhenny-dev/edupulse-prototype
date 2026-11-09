@@ -44,7 +44,7 @@ export function deliverySummary(data: AcademicData) {
     const roster = data.enrollments.filter(item => item.course_id === course.id)
     const planned=(course.outline || []).filter(row=>row.ilos?.trim()&&row.contents?.length)
     const covered=planned.filter(row=>items.some(item=>item.week===row.week)).length
-    return { ...course, plannedWeeks:planned.length, coverage:percent(covered,planned.length), materials: items.filter(item => item.type !== 'assessment').length, assessments: items.filter(item => item.type === 'assessment').length,
+    return { ...course, plannedWeeks:planned.length, coveredWeeks:covered, coverage:percent(covered,planned.length), materials: items.filter(item => item.type !== 'assessment').length, assessments: items.filter(item => item.type === 'assessment').length,
       students: new Set(roster.map(item => item.student_email.toLowerCase())).size, blocks: [...new Set(roster.map(item => item.block_section).filter(Boolean))], weeks: new Set(items.map(item => item.week)).size }
   })
 }

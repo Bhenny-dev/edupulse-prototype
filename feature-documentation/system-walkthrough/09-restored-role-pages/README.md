@@ -34,8 +34,7 @@ Students receive only their own result/access records. The Dean's view is read-o
 
 | View | Capture | Sections |
 | --- | --- | --- |
-| **Syllabus Status** | ![Syllabus status](13-monitor-syllabus-status.png) | Saved syllabus stations, planned/published teaching-week coverage, readiness counts and expandable course details. Approval remains offline. |
-| **Delivery Progress** | ![Delivery](14-monitor-delivery.png) | Material/assessment bars by course, publication counts, represented weeks and titles. Coverage counts planned teaching weeks with published content; it does not prove every planned item was delivered. |
+| **Syllabus & Delivery** | ![Combined syllabus and delivery](13-monitor-syllabus-status.png) | One set of saved stations and released courseware charts, consistent filtered counters, a combined readiness/coverage table with CSV, course details and an optional released-title list. Distinct course instances remain separate; approval stays offline. |
 | **Student Oversight** | ![Student oversight](15-monitor-students.png) | Block/enrollment summary and **Confirmed class lists**, with CSV export and role scope. |
 | **Alerts** | ![Readiness alerts](16-monitor-alerts.png) | Actual inactive-syllabus, missing-roster or missing-publication gaps; no scheduled deadline is assumed. |
 | **Course Monitoring** | ![Course Loading](17-course-loading.png) | Search/course filter, readiness KPIs, course table, CSV and expandable publication/roster details. |
@@ -120,3 +119,7 @@ Academic assignment, reviewed-mark, offline-review, delivery, student-response a
 ### Retained readers and deliberate refresh
 
 Academic records remain loaded across navigation and browser focus. Another-tab changes announce **Updates available** and offer a deliberate refresh; own confirmed commands still receive authorized readbacks. Student document/presentation return restores the selected publication without another open event, while assessment sessions/submissions are not replayed. See [Manual 27](../../system-manual/27-cached-workspaces/README.md).
+
+### Combined oversight and teaching-week accuracy
+
+The two former syllabus/delivery tabs now share one **Syllabus & Delivery** view. [Manual 29](../../system-manual/29-combined-oversight/README.md) explains released/planned coverage, filters, distinct course identities and retained role controls. Current monitor and Course Loading captures use controlled records. The refreshed offline-review image preserves its original sample correction; no request was sent or approved.

@@ -206,17 +206,10 @@
       "role": "dean",
       "folder": "03-dean-and-associate-dean",
       "file": "04-monitor-syllabus-status.png",
-      "title": "Monitor · Syllabus Status",
-      "route": "/monitor",
-      "ok": true
-    },
-    {
-      "role": "dean",
-      "folder": "03-dean-and-associate-dean",
-      "file": "05-monitor-delivery-progress.png",
-      "title": "Monitor · Delivery Progress",
-      "route": "/monitor",
-      "ok": true
+      "title": "Monitor - Syllabus & Delivery",
+      "route": "/monitor?tab=overview",
+      "ok": true,
+      "captureRun": "2026-11-09T07-48-36-673Z-9b88d283"
     },
     {
       "role": "dean",

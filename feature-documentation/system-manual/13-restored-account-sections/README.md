@@ -23,3 +23,7 @@ Account guidance now describes confirmed shared imports/loading, saved topic res
 [Manual 21](../21-automatic-records-and-course-rosters/README.md) covers automatic recovery and the instructor's **Student Monitoring → Students** roster tools.
 
 Admin support can now load a selected person's academic view under that account's permissions. Learner support previews do not record material access or permit assessment submissions or appeals; use the learner's own sign-in for actual activity. [Manual 23](../23-account-support-and-pulse-context/README.md) documents the account picker and the hosted delivery check.
+
+## Combined syllabus and delivery oversight
+
+[Manual 29](../29-combined-oversight/README.md) replaces the duplicate top-level syllabus/delivery tabs with one combined view. Saved stations, released material/assessment charts, coverage, CSV, course details, class lists, Student Oversight, Alerts and the Dean-only Review Inbox remain. Teaching-week coverage excludes future and unplanned/examination weeks; it never certifies completion or lateness.

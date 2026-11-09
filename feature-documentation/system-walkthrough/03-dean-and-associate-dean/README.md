@@ -37,12 +37,11 @@ Instructor cards with specialisation, degree (*Master's* or *Bachelor's*, which 
 
 ## 4–7. Monitor
 
-Preview **Monitor** keeps **Syllabus Status**, **Delivery Progress**, **Student Oversight** and **Alerts** in a single horizontal page navigation row. These views remain reachable after the duplicate left panel is removed. Signed-in accounts use authorized oversight records instead of these sample charts.
+Preview **Monitor** keeps **Syllabus & Delivery**, **Student Oversight** and **Alerts** in a single horizontal page navigation row. These views remain reachable after the duplicate left panel is removed. Signed-in accounts use authorized oversight records instead of these sample charts.
 
 | Tab | Screenshot | What it answers |
 | --- | --- | --- |
-| Syllabus Status | ![Syllabus Status](04-monitor-syllabus-status.png) | Per instructor and course: does an approved syllabus exist and has its Course Outline been extracted? Summary cards, a by-instructor chart and a progress row per instructor. |
-| Delivery Progress | ![Delivery Progress](05-monitor-delivery-progress.png) | For each active course: published, checked and draft items and how many outline weeks are covered. |
+| Syllabus & Delivery | ![Combined sample syllabus and delivery](04-monitor-syllabus-status.png) | The syllabus-status cards, instructor chart and course breakdown appear above the distinct delivery section with published/checked/draft counts and planned teaching-week coverage. These are preview samples. |
 | Student Oversight | ![Student Oversight](06-monitor-student-oversight.png) | Block sections with year, size and adviser (from the EduSuite class lists). Scores stay in each instructor's Student Monitoring page. |
 | Alerts | ![Alerts](07-monitor-alerts.png) | Syllabus-status and delivery-gap notices, plus the unopened-material and missed-assessment reminders sent to instructors and students. |
 
@@ -79,3 +78,5 @@ The screens above demonstrate preview records. Signed-in Dean/Associate Dean acc
 Current [account captures](../09-restored-role-pages/README.md) show shared course/load/roster confirmation, provisioned-instructor proposals, qualification details, block corrections and station/coverage charts. New imports project matching enrollments and record shared history; the earlier private intake is retained as legacy exportable data. Dean and Associate Dean can preview manual, assisted or semester-wide loading proposals and override them before confirmation. The server requires an imported released course and provisioned instructor and enforces the 35-student block cap.
 
 The Dean alone has the additional **Offline Review Inbox**. It displays the saved outline/station and sends a persisted correction request to the instructor. It does not approve a syllabus electronically. Associate Dean cannot view scores; Dean Performance remains read-only. See the [task guide](../../system-manual/13-restored-account-sections/README.md). The new shared workflows depend on the four additive migrations.
+
+The [signed-in combined oversight guide](../../system-manual/29-combined-oversight/README.md) shows authorized course records, one consolidated summary table and the retained Dean/Associate Dean boundaries. Legacy syllabus/delivery tab links remain compatible aliases.

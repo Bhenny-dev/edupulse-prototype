@@ -1,0 +1,270 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-11-09T07-48-36-673Z-9b88d283",
+  "startedAt": "2026-11-09T07:48:36.673Z",
+  "finishedAt": "2026-11-09T07:48:55.942Z",
+  "commitSha": "2e33c67e7700799113df5c13c43d09b5ab18683a",
+  "sourceDigest": "a649fb49bd151b10fc1fc7000a41e65513ac2857bd74b5818ae6abebfc41ed74",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-11-09T07:48:34.412Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 7,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": null
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/oversight.spec.ts",
+    "edupulse-app/tests/snapshots/oversight.mobile.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/account-support-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/account-support.spec.ts",
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/automatic-records.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/automatic-records.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.spec.ts",
+    "edupulse-app/tests/snapshots/course-seed.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-formatting.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-navigation.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/harness-delivery.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/operator-steps.spec.ts",
+    "edupulse-app/tests/snapshots/outline-courseware.spec.ts",
+    "edupulse-app/tests/snapshots/outline-selector.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/outline-selector.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-drafting.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-source.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+    "edupulse-app/tests/snapshots/staff-registration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/staff-registration.spec.ts",
+    "edupulse-app/tests/snapshots/student-directory.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/system-search-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/system-search.spec.ts",
+    "edupulse-app/tests/snapshots/voice-quota.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/voice-quota.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-cache.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-recovery.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/oversight.spec.ts",
+      "title": "oversight: combined dean records",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2874,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/oversight.spec.ts",
+      "title": "oversight: combined associate_dean records",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1377,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/oversight.spec.ts",
+      "title": "oversight: retained Dean offline review",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1059,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/oversight.spec.ts",
+      "title": "oversight: combined preview",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 3834,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/oversight.mobile.spec.ts",
+      "title": "oversight: mobile light records",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1911,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/oversight.mobile.spec.ts",
+      "title": "oversight: mobile dark records",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1337,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/oversight.mobile.spec.ts",
+      "title": "oversight: mobile preview navigation",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 4079,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-manual/12-interface-and-loading/09-mobile-monitor-tabs.png",
+      "sha256": "3b845e78ca46d5816be6171ceadb686d72287fe3a5a6b3f399263feb05766fc3",
+      "bytes": 1401789
+    },
+    {
+      "path": "feature-documentation/system-manual/29-combined-oversight/associate_dean-overview.png",
+      "sha256": "3c62273e5c481f288a45cab150b368b1fcca675c8c0b85fa497f1c1c8aab74a4",
+      "bytes": 361337
+    },
+    {
+      "path": "feature-documentation/system-manual/29-combined-oversight/dean-alerts.png",
+      "sha256": "08f46aec34adb554e217d255a4b25feddc05c490d304922f08263f66dd0fec07",
+      "bytes": 258686
+    },
+    {
+      "path": "feature-documentation/system-manual/29-combined-oversight/dean-overview.png",
+      "sha256": "f95f49df46642052758e1d693c4e3c22397ec8e0f7345cd931853e9676261138",
+      "bytes": 362688
+    },
+    {
+      "path": "feature-documentation/system-manual/29-combined-oversight/dean-review-inbox.png",
+      "sha256": "e32d8a4a1112f84b03ec535d606cae55788fdfdc904bf8adb34d520f7166ed30",
+      "bytes": 310834
+    },
+    {
+      "path": "feature-documentation/system-manual/29-combined-oversight/dean-students.png",
+      "sha256": "703a3fb59a07348261cbbca211e2c4348802fd83baa3311ad0b7c1aeeabae5d7",
+      "bytes": 286535
+    },
+    {
+      "path": "feature-documentation/system-manual/29-combined-oversight/mobile-associate_dean-overview.png",
+      "sha256": "f334f895df203668a7445e9c499dbfa629588d2b7673161ac5437042c5ee236d",
+      "bytes": 991251
+    },
+    {
+      "path": "feature-documentation/system-manual/29-combined-oversight/mobile-dark-associate_dean-overview.png",
+      "sha256": "67d589be4bed7cdcc76fd59360132b8dac73e449242372b0e79cf3e9965d0b6a",
+      "bytes": 617060
+    },
+    {
+      "path": "feature-documentation/system-manual/29-combined-oversight/preview-combined.png",
+      "sha256": "784d03b7526d104909b4c36312a81a51793338ede3bcbc90c785c5ba012d38eb",
+      "bytes": 385770
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/03-dean-and-associate-dean/04-monitor-syllabus-status.png",
+      "sha256": "784d03b7526d104909b4c36312a81a51793338ede3bcbc90c785c5ba012d38eb",
+      "bytes": 385770
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/08-authenticated-records/06-associate-dean-oversight.png",
+      "sha256": "3c62273e5c481f288a45cab150b368b1fcca675c8c0b85fa497f1c1c8aab74a4",
+      "bytes": 361337
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/13-monitor-syllabus-status.png",
+      "sha256": "f95f49df46642052758e1d693c4e3c22397ec8e0f7345cd931853e9676261138",
+      "bytes": 362688
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/15-monitor-students.png",
+      "sha256": "703a3fb59a07348261cbbca211e2c4348802fd83baa3311ad0b7c1aeeabae5d7",
+      "bytes": 286535
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/16-monitor-alerts.png",
+      "sha256": "08f46aec34adb554e217d255a4b25feddc05c490d304922f08263f66dd0fec07",
+      "bytes": 258686
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/17-course-loading.png",
+      "sha256": "36c7256c36000b5ba93a6b9267ff6ca0adac5b8812314ab544148ef902bb68df",
+      "bytes": 333142
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/41-offline-review-inbox.png",
+      "sha256": "e32d8a4a1112f84b03ec535d606cae55788fdfdc904bf8adb34d520f7166ed30",
+      "bytes": 310834
+    }
+  ]
+}

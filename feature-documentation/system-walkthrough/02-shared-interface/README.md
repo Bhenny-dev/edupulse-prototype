@@ -186,3 +186,7 @@ Pulse and the Course workspace use the same bounded week-generation plan and rev
 ## Cached account views
 
 [Manual 27](../../system-manual/27-cached-workspaces/README.md) supersedes timer/focus reload guidance: loaded work stays visible until a deliberate refresh or an authorized readback after the current user's mutation. **Data & Privacy** offers a safe manual refresh. The refreshed privacy capture uses a synthetic signed-in instructor and contains no credentials or real student records.
+
+## Current Monitor guidance
+
+Pulse and Dashboard links open **Syllabus & Delivery**. Old syllabus/delivery links resolve to the combined view without an extra browser-history entry. Guidance retains offline review and the Associate Dean score restriction. See [Manual 29](../../system-manual/29-combined-oversight/README.md).

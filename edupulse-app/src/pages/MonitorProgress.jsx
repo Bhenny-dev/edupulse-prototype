@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import AcademicPortal from '../components/academic/AcademicPortal'
 import { useSearchParams, Navigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
@@ -191,8 +191,9 @@ function DeliveryTab() {
     const checkedItems = items.filter(c => c.status === 'checked')
     const drafts = items.filter(c => c.status === 'draft')
     const inst = INSTRUCTORS.find(i => i.id === syl.instructorId)
-    const weeks = syl.courseOutline?.length || 0
-    const weeksCovered = new Set(published.map(c => c.week).filter(Boolean)).size
+    const planned=(syl.courseOutline||[]).filter(row=>row.ilos?.trim()&&row.contents?.length)
+    const weeks = planned.length
+    const weeksCovered = new Set(published.filter(item=>planned.some(row=>row.week===item.week)).map(item=>item.week)).size
     return { syl, inst, items, published, checkedItems, drafts, weeks, weeksCovered }
   })
 
@@ -204,7 +205,7 @@ function DeliveryTab() {
     <div>
       <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.25rem', fontWeight: 700, marginBottom: 8 }}>Delivery Progress</h2>
       <p style={{ fontSize: '0.875rem', color: 'var(--gray-500)', marginBottom: 24 }}>
-        Are the mapped teaching materials and assessments being delivered on the Course Outline's schedule?
+        Compare published teaching materials and assessments with the planned teaching weeks. Coverage is not a completion score.
       </p>
 
       <div className="kpi-grid mb-24" data-pulse-help="delivery-gap" tabIndex={0} style={{ outline: 'none' }}>
@@ -429,13 +430,13 @@ export default function MonitorProgress() {
   const { user } = useAuth()
   const [searchParams, setSearchParams] = useSearchParams()
   const tabs = [
-    { key: 'syllabi', label: 'Syllabus Status' },
-    { key: 'delivery', label: 'Delivery Progress' },
+    { key: 'overview', label: 'Syllabus & Delivery' },
     { key: 'students', label: 'Student Oversight' },
     { key: 'alerts', label: 'Alerts' },
   ]
   const requestedTab = searchParams.get('tab')
-  const activeTab = tabs.some(tab => tab.key === requestedTab) ? requestedTab : 'syllabi'
+  useEffect(()=>{if(['syllabi','delivery'].includes(requestedTab)){const next=new URLSearchParams(searchParams);next.set('tab','overview');setSearchParams(next,{replace:true})}},[requestedTab,searchParams,setSearchParams])
+  const activeTab = tabs.some(tab => tab.key === requestedTab) ? requestedTab : 'overview'
 
   if (!['dean', 'associate_dean'].includes(user?.role)) return <Navigate to="/dashboard" replace />
   if (user?.authenticated) return <AcademicPortal view="monitor" />
@@ -445,8 +446,7 @@ export default function MonitorProgress() {
       <nav className="tabs mb-24" aria-label="Monitor views" style={{ overflowX: 'auto', flexWrap: 'nowrap' }}>
         {tabs.map(tab => <button key={tab.key} className={`tab ${activeTab === tab.key ? 'active' : ''}`} aria-pressed={activeTab === tab.key} style={{ whiteSpace: 'nowrap' }} onClick={() => setSearchParams({ tab: tab.key })}>{tab.label}</button>)}
       </nav>
-      {activeTab === 'syllabi' && <SyllabusStatusTab />}
-      {activeTab === 'delivery' && <DeliveryTab />}
+      {activeTab === 'overview' && <><SyllabusStatusTab /><div className="mt-24"><DeliveryTab /></div></>}
       {activeTab === 'students' && <StudentsTab />}
       {activeTab === 'alerts' && <AlertsTab />}
     </div>

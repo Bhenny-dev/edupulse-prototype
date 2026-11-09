@@ -221,3 +221,7 @@ No schema or RLS change is required. The AI endpoint returns one validated plann
 ## Manual cache refresh (9 November 2026)
 
 No database or RLS migration is introduced. Initial identity reads and local confirmed-mutation readbacks still use the existing authorized API. Focus, reconnect and timers do not replace client snapshots; other-tab invalidation is only a notice. Manual refresh retains revision checks and never replays a business command. New account/support identities cannot inherit the prior view cache. [Validation](../versions/2026-11-09-cached-workspaces/validation/results.md) distinguishes controlled browser evidence from hosted database results.
+
+## Oversight presentation and coverage (9 November 2026)
+
+No migration, RPC, RLS or write operation changes. The combined view consumes the same authorized course, enrollment and publication projection; course identity remains the database ID rather than a deduplicated course code. Client teaching-week coverage counts released publications only within planned teaching rows. Native aggregation tests cover duplicate codes, inactive/future publications and unplanned weeks. Browser role tests retain Dean read-only performance, Dean-only offline correction review and Associate Dean score/access exclusion. [Validation](../versions/2026-11-09-combined-oversight/validation/results.md) does not claim a new hosted account canary.

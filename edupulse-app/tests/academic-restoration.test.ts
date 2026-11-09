@@ -54,3 +54,11 @@ test('account guidance distinguishes persisted records from preview and preserve
  assert.match(prepareIntent(monitorGuide,monitorGuide.intents[0],associate).steps.at(-1).body,/no student-score access/)
  assert.match(prepareIntent(performanceGuide,performanceGuide.intents.at(-1),dean).steps.at(-1).body,/cannot change marks/)
 })
+
+import {deliverySummary} from '../src/components/academic/academicData'
+test('delivery coverage counts only released planned teaching weeks and preserves distinct course identities',()=>{
+ const course={id:'one',course_code:'IT 202',course_title:'Networking',active:true,outline:[{week:1,ilos:'Explain networks',contents:['Networks']},{week:2,ilos:'Apply networks',contents:['Routing']},{week:9,ilos:'',contents:[]}]}
+ const item={id:'one',course_id:'one',active:true,type:'material',week:1,title:'Lesson',source_version:1}
+ const data:AcademicData={courses:[course,{...course,id:'two'}],publications:[item,{...item,id:'exam',week:9},{...item,id:'future',week:2,release_at:'2999-01-01T00:00:00Z'},{...item,id:'draft',week:2,active:false}],enrollments:[],attempts:[],accesses:[]}
+ const rows=deliverySummary(data);assert.equal(rows.length,2);assert.equal(rows[0].coveredWeeks,1);assert.equal(rows[0].plannedWeeks,2);assert.equal(rows[0].coverage,50);assert.equal(rows[0].weeks,2);assert.equal(rows[1].coveredWeeks,0)
+})

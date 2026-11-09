@@ -20,8 +20,8 @@ export function Table({ headers, rows, empty, label }) {
 export function CsvButton({ headers, rows, name = 'academic-records' }) {
   return <button className="btn btn-secondary btn-sm" disabled={!rows.length} onClick={() => exportCSV(rows.map(row => Object.fromEntries(headers.map((header, index) => [header, typeof row[index] === 'string' && /^[=+@\-\t\r]/.test(row[index]) ? `'${row[index]}` : row[index]]))), `${name}.csv`)}>Download CSV</button>
 }
-export function CourseFilter({ data, value, onChange }) {
-  return <label className="academic-filter">Course<select className="form-select" value={value} onChange={event => onChange(event.target.value)}><option value="">All authorized courses</option>{data.courses.map(course => <option key={course.id} value={course.id}>{course.course_code} — {course.course_title}</option>)}</select></label>
+export function CourseFilter({ data, value, onChange, details=false }) {
+  return <label className="academic-filter">Course<select className="form-select" value={value} onChange={event => onChange(event.target.value)}><option value="">All authorized courses</option>{data.courses.map(course => <option key={course.id} value={course.id}>{course.course_code} — {course.course_title}{details?` - ${course.instructor_name||data.faculty?.find(person=>person.id===course.instructor_id)?.name||'No instructor recorded'} - ${[...new Set(data.enrollments.filter(item=>item.course_id===course.id).map(item=>item.block_section).filter(Boolean))].join(', ')||'No confirmed block'}`:''}</option>)}</select></label>
 }
 export function CourseTable({ data }) {
   return <Table headers={['Course', 'Title', 'Syllabus', 'Source revision']} rows={data.courses.map(course => [course.course_code, course.course_title, course.active ? 'Active' : 'Not active', course.source_revision])} />

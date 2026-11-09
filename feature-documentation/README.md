@@ -4,6 +4,7 @@
 
 | Folder | Covers | Contents |
 | --- | --- | --- |
+| [9 November combined oversight](versions/2026-11-09-combined-oversight/README.md) | One syllabus/delivery view with correct teaching-week coverage and retained roles | See release validation |
 | [9 November outline selectors](versions/2026-11-09-outline-selectors/README.md) | Searchable unclipped categorized choices with keyboard/touch support | See release validation |
 | [9 November cached workspaces](versions/2026-11-09-cached-workspaces/README.md) | Retained readers and manual refresh without command replay | See release validation |
 | [9 November outline-driven courseware](versions/2026-11-09-outline-driven-courseware/README.md) | Bounded complete lessons, planned item formats and atomic week saves | See release validation |
