@@ -16,6 +16,9 @@ export function sourceUrl(value:string){
 }
 type Address={address:string;family:number}
 type Download={bytes:Uint8Array;mime:string;url:string;metadataOnly?:boolean}
+export function catalogSourceUrl(value:string){
+ try{const url=new URL(value),host=url.hostname.toLowerCase();return ['openlibrary.org','books.google.com','www.worldcat.org','search.worldcat.org','www.goodreads.com','openalex.org'].includes(host)||/(?:^|\.)amazon\.[a-z.]+$/.test(host)||/\/(?:search|catalog|results)(?:\/|$)/i.test(url.pathname)}catch{return false}
+}
 type Response={status:number;headers:Record<string,string|undefined>;bytes:Uint8Array}
 // DNS is checked and pinned into the socket lookup, including after each redirect.
 // No browser cookies, authorization headers, source instructions or scripts are used.
@@ -47,8 +50,7 @@ export async function downloadSource(value:string,signal:AbortSignal,dependencie
   if(!['application/pdf','text/html','application/xhtml+xml','text/plain','text/markdown','application/vnd.openxmlformats-officedocument.wordprocessingml.document'].includes(mime))throw new ApiError(422,'SOURCE_FORMAT','This link does not serve a supported PDF, DOCX, HTML or text document. Attach a readable copy instead.')
   let metadataOnly=false
   if(mime.includes('html')){
-   const host=url.hostname.toLowerCase()
-   metadataOnly=['openlibrary.org','books.google.com','www.worldcat.org','search.worldcat.org','www.goodreads.com','openalex.org'].includes(host)||/(?:^|\.)amazon\.[a-z.]+$/.test(host)||/\/(?:search|catalog|results)(?:\/|$)/i.test(url.pathname)
+   metadataOnly=catalogSourceUrl(url.href)
    if(metadataOnly&&!dependencies.allowCatalog)throw new ApiError(422,'SOURCE_METADATA_ONLY','This is a catalog or search listing, not readable teaching contents. Attach the book or a readable chapter instead.')
    const head=Buffer.from(result.bytes).toString('utf8').slice(0,100000)
    if(/<input\b[^>]*type\s*=\s*["']?password/i.test(head)||/<title[^>]*>[^<]*(?:sign in|log in|access denied|just a moment|verify you are human|captcha)/i.test(head))throw new ApiError(422,'SOURCE_ACCESS_REQUIRED','The link returned a sign-in, access or verification page. Its text was not retained as source content. Attach an accessible copy instead.')

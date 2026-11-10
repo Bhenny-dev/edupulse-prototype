@@ -118,3 +118,5 @@ The syllabus builder now displays completed weekly previews while Pulse prepares
 ## Reference link/file intake
 
 **Syllabus Builder → References** accepts a source link or readable file and lists extracted citation details. Available copies can be viewed and indexed for authorized private search; unavailable metadata stays absent. Saving the syllabus remains explicit. [Manual 35](../../system-manual/35-reference-intake/README.md) shows loading, indexing retry, missing metadata and phone/dark states.
+
+Older saved source listings now show a metadata-only exclusion in **Course ? Syllabus sources**. They remain reviewable but cannot ground a new lesson or enter teaching-content indexing. [Example](../../system-manual/35-reference-intake/README.md#older-retained-listings).

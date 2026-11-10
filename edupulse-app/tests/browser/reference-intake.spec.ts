@@ -4,6 +4,7 @@ import {extractText} from 'unpdf'
 import {referenceIntakeUI,referenceHtml,referenceUrl} from '../reference-intake-fixture'
 
 test('link and dropped reference file extract citation details, preserve failed-index copies and save only on request',async({page},testInfo)=>{
+ test.setTimeout(60000) // Includes a real PDF/font load and subsequent debounced workspace save.
  const fixture=await referenceIntakeUI(page,true)
  await page.goto('/');await page.getByRole('button',{name:'Instructor',exact:true}).click();await page.goto('/#/syllabus?tab=builder');await page.getByRole('combobox',{name:'Course',exact:true}).selectOption('IT 202')
  const section=page.getByRole('region',{name:'Reference links and files',exact:true})

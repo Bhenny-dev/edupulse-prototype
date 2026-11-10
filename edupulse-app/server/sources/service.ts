@@ -8,12 +8,13 @@ import {lexicalRelevance} from '../../src/lib/rag/rank.js'
 import type {Evidence} from '../../src/lib/rag/types.js'
 import {sourceCommand,SOURCE_BYTES,SOURCE_TEXT,type SourceReference,type SourceSnapshot,type SourceStatus} from './contracts.js'
 import {latestSnapshotForUrl,listSnapshots,readSnapshot,removeSnapshot,saveSnapshot,sourceKey} from './store.js'
-import {downloadSource,sourceUrl} from './fetch.js'
+import {catalogSourceUrl,downloadSource,sourceUrl} from './fetch.js'
 
 export async function sourceManifest(identity:Identity,refs:SourceReference[]):Promise<SourceStatus[]>{
  const rows=await listSnapshots(identity,refs.map(sourceKey))
- return refs.map(reference=>{const key=sourceKey(reference),snapshot=rows.find(row=>row.reference_key===key);return {reference,key,status:snapshot?'retained':reference.url?'unread':'attachment-needed',...(snapshot?{snapshot}:{message:reference.url?'This link has not been read.':'Citation metadata only. Attach a readable copy to use this book as evidence.'})}})
+ return refs.map(reference=>{const key=sourceKey(reference),snapshot=rows.find(row=>row.reference_key===key),metadataOnly=snapshot&&catalogSnapshot(snapshot);return {reference,key,status:snapshot?'retained':reference.url?'unread':'attachment-needed',...(snapshot?{snapshot,...(metadataOnly?{metadataOnly:true,message:'This saved catalog or search listing is metadata only. Its text is excluded from teaching evidence.'}:{})}:{message:reference.url?'This link has not been read.':'Citation metadata only. Attach a readable copy to use this book as evidence.'})}})
 }
+const catalogSnapshot=(snapshot:Pick<SourceSnapshot,'mime'|'url'>)=>snapshot.mime.includes('html')&&catalogSourceUrl(snapshot.url)
 async function retain(identity:Identity,reference:SourceReference,bytes:Uint8Array,name:string,url:string,signal:AbortSignal,parsed?:Extracted){
  if(bytes.length>SOURCE_BYTES||!bytes.length)throw new ApiError(413,'SOURCE_TOO_LARGE','Attach a non-empty PDF, DOCX, HTML or text copy up to 2 MB.')
  if(!/\.(?:pdf|docx|html?|txt|md)$/i.test(name))throw new ApiError(400,'SOURCE_FORMAT','Use a readable PDF, DOCX, HTML or text source.')
@@ -38,13 +39,14 @@ export async function executeSources(identity:Identity,body:unknown,signal:Abort
  const command=sourceCommand.parse(body)
  if(command.operation==='index'){
   const snapshot=await readSnapshot(identity,command.id)
+  if(catalogSnapshot(snapshot))throw new ApiError(422,'SOURCE_METADATA_ONLY','Catalog and search listings cannot be indexed as teaching content. Attach a readable source instead.')
   const report=await ingest(identity,{title:snapshot.reference.title.slice(0,160),text:snapshot.text,sourceType:snapshot.mime==='application/pdf'?'pdf':snapshot.mime.includes('wordprocessingml')?'docx':snapshot.mime.includes('html')?'html':'text',fileName:snapshot.name,course:command.course,source:{id:snapshot.id,sha256:snapshot.sha256,readAt:snapshot.created_at,reference:snapshot.reference,truncated:snapshot.truncated,url:snapshot.url}},signal)
   return {indexed:true,documentId:report.id,duplicate:report.duplicate,chunks:report.chunks,embeddingModel:report.embeddingModel}
  }
  if(command.operation==='import-file'||command.operation==='import-link'){
   const url=command.operation==='import-link'?sourceUrl(command.url).href:''
   const existing=url?await latestSnapshotForUrl(identity,url):null
-  if(existing)return {reference:existing.reference,snapshot:(await sourceManifest(identity,[existing.reference]))[0]!.snapshot,missing:metadataGaps(existing.reference),reused:true}
+  if(existing){const metadataOnly=catalogSnapshot(existing);return {reference:existing.reference,snapshot:metadataOnly?null:(await sourceManifest(identity,[existing.reference]))[0]!.snapshot,missing:metadataGaps(existing.reference),reused:true,...(metadataOnly?{message:'Catalog or search metadata only. Attach readable teaching contents before using this source as evidence.'}:{})}}
   const response=command.operation==='import-link'?await download(url,signal,{allowCatalog:true}):null
   const bytes=response?response.bytes:decodeUpload((command as Extract<typeof command,{operation:'import-file'}>).base64)
   const name=command.operation==='import-file'?command.name:`source.${fileExtension(response!.mime)}`
@@ -84,10 +86,10 @@ export async function executeSources(identity:Identity,body:unknown,signal:Abort
 export async function retainedSourceEvidence(identity:Identity,refs:SourceReference[],focus:string){
  const manifest=await sourceManifest(identity,refs),evidence:Evidence[]=[]
  for(const source of manifest){
-  if(!source.snapshot)continue
+  if(!source.snapshot||source.metadataOnly)continue
   const snapshot=await readSnapshot(identity,source.snapshot.id)
   const chunks=(await chunkDocument(snapshot.reference.title,snapshot.text)).map(chunk=>({chunk,score:lexicalRelevance(focus,chunk.text)})).filter(row=>row.score>=0.12).sort((a,b)=>b.score-a.score).slice(0,3)
   for(const {chunk,score} of chunks)evidence.push({id:`retained:${snapshot.id}:${chunk.index}`,documentId:snapshot.id,title:snapshot.reference.title,text:chunk.text,page:chunk.page,section:chunk.section,flagged:chunk.flagged,origin:'private',method:'provided',url:snapshot.url||undefined,similarity:null,rrf:score,relevance:null,query:focus,retained:{id:snapshot.id,sha256:snapshot.sha256,readAt:snapshot.created_at,reference:snapshot.reference,truncated:snapshot.truncated}})
  }
- return {evidence:evidence.sort((a,b)=>b.rrf-a.rrf).slice(0,12),warning:manifest.some(source=>!source.snapshot)?'Some syllabus references have no retained readable text. Those entries are listed separately and were not used as evidence.':undefined}
+ return {evidence:evidence.sort((a,b)=>b.rrf-a.rrf).slice(0,12),warning:manifest.some(source=>!source.snapshot||source.metadataOnly)?'Some syllabus references have no retained teaching text or are catalog/search listings. Those entries are listed separately and were not used as evidence.':undefined}
 }

@@ -39,3 +39,9 @@ Readable copies supply course generation through exact citation associations. In
 Catalog/search listings may supply citation metadata but are not retained or indexed as teaching content. Sign-in pages, unsupported files, unreadable scans, unavailable links and resource limits remain explicit failures. Prefer an accessible chapter or readable copy. At most 80 references are collected for a syllabus, 200 source versions are retained per account and the existing 50-document library limit still applies. Only the first 150,000 extracted characters per source are searchable; truncation is disclosed.
 
 **Evidence boundary:** these captures use original sample text and controlled source/persistence/index responses. Native tests separately exercise actual isolated extraction, immutable bytes, local pgvector/keyword indexing, citation provenance and cross-account denial. Browser tests verify delayed persistence and a real generated PDF. They do not establish hosted metadata coverage, perfect bibliographic parsing, factual correctness of every source or genuine student completion.
+
+## Older retained listings
+
+A search/catalog page retained by an earlier version remains available for inspection, with **Saved catalog/search listing - metadata only** and an explicit exclusion message. Its text does not supply teaching evidence and cannot be indexed as teaching content. Attach a readable book/chapter separately.
+
+![Previously saved catalog copy excluded from teaching evidence](07-legacy-catalog.png)

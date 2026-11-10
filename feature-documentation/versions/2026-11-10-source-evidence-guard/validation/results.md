@@ -1,0 +1,5 @@
+# Validation
+
+- The reference-intake native workflow now includes an old fetched search page: its original bytes remain readable, manifest marks it metadata-only, evidence retrieval returns no teaching passages, and indexing rejects it. All three reference-intake tests passed with actual local extraction/storage/vector operations.
+- The controlled saved-catalog capture passed and its image was opened/reviewed. Seven initial browser cases passed; the combined real-PDF/font-load/save scenario exceeded its 30-second case budget. Its budget was set to 60 seconds without changing assertions, and both desktop/mobile reruns passed. The full `npm run verify` release gate passed: 280 native cases, types, lint, documentation, production build and deployment checks.
+- Production reference intake at `e416b68` passed the deployed HTTP and hosted keyword/vector canary on 10 November 2026, including cross-owner denial and source/index cleanup. This is a temporary original sample, not source-quality certification or student completion.

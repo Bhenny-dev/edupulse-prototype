@@ -4,6 +4,7 @@
 
 | Folder | Covers | Contents |
 | --- | --- | --- |
+| [10 November source evidence guard](versions/2026-11-10-source-evidence-guard/README.md) | Exclude historical catalog/search pages while preserving inspectable originals | See validation |
 | [10 November reference intake](versions/2026-11-10-reference-intake/README.md) | Link/file metadata, retained copies, retryable private indexing and formatted citations | See release validation |
 | [10 November progressive outlines](versions/2026-11-10-progressive-outlines/README.md) | One-week preparation, visible retained previews, safe placement and same-course sequence patterns | See release validation |
 | [10 November completion register](versions/2026-11-10-completion-audit/README.md) | Conversation requests, binding corrections, persisted evidence and remaining work | Updated as each increment completes |

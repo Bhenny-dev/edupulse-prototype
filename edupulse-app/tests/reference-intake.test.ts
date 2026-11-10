@@ -6,7 +6,7 @@ import {join} from 'node:path'
 import {Document,Packer,Paragraph} from 'docx'
 import {citationMetadata} from '../server/ingest/formats.mjs'
 import {sandboxedExtract} from '../server/ingest/sandbox.js'
-import {executeSources} from '../server/sources/service.js'
+import {executeSources,retainedSourceEvidence,sourceManifest} from '../server/sources/service.js'
 import {readSnapshot} from '../server/sources/store.js'
 import {closeLocalDb,listDocuments,searchPrivate} from '../server/database.js'
 import {keywordSearch} from '../server/rag/keyword.js'
@@ -52,6 +52,15 @@ test('reference intake persists exact source bytes, indexes reusable private pas
   await assert.rejects(executeSources({...owner,role:'student'},{operation:'import-link',url:imported.reference.url},signal),{code:'FORBIDDEN'})
   const catalog=await executeSources(owner,{operation:'import-link',url:'https://openlibrary.org/works/example'},signal,async()=>({bytes:Buffer.from(html),mime:'text/html',url:'https://openlibrary.org/works/example',metadataOnly:true})) as any
   assert.equal(catalog.snapshot,null);assert.match(catalog.message,/metadata only/);assert.equal((await listDocuments(owner)).length,1)
+  // Simulate a listing retained before the catalog guard existed. Keep its original for inspection,
+  // but exclude it from both future teaching evidence and the new indexing operation.
+  const legacy={...imported.reference,url:'https://www.coursera.org/search?query=networking'}
+  const saved:any=await executeSources(owner,{operation:'read',references:[legacy]},signal,async()=>({bytes:Buffer.from(html),mime:'text/html',url:legacy.url}))
+  assert.equal((await sourceManifest(owner,[legacy]))[0]!.metadataOnly,true)
+  assert.deepEqual((await retainedSourceEvidence(owner,[legacy],'classroom switch forwarding')).evidence,[])
+  assert.match((await retainedSourceEvidence(owner,[legacy],'networking')).warning!,/catalog\/search/)
+  await assert.rejects(executeSources(owner,{operation:'index',id:saved.sources[0].snapshot.id},signal),{code:'SOURCE_METADATA_ONLY'})
+  assert.equal((await readSnapshot(owner,saved.sources[0].snapshot.id,true)).base64,Buffer.from(html).toString('base64'))
   await executeSources(owner,{operation:'remove',id:snapshot.id},signal);assert.equal((await listDocuments(owner)).length,0);assert.deepEqual(await keywordSearch(owner,'network switch',[],signal),[])
   const file=await executeSources(owner,{operation:'import-file',name:'practice.md',base64:Buffer.from('# Network practice\n\n'+body).toString('base64')},signal) as any
   assert.equal(file.reference.title,'Network practice');assert.deepEqual(file.missing,['authors','year','publisher']);assert.equal(file.titleOrigin,'document heading')

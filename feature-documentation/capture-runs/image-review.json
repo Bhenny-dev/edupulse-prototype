@@ -7512,6 +7512,12 @@
       "sha256": "0e8f317f6aa91081eaf8d78afc7875cbba66a2e9936f798108bf3bde82d74920",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-10T03:11:17.430397+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/35-reference-intake/07-legacy-catalog.png",
+      "sha256": "daf35a0e9c93f74c652d352925dcdaf6c1700c0685d6f9df1cf7d6f7727671ce",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-10T03:28:33.990082+00:00"
     }
   ]
 }

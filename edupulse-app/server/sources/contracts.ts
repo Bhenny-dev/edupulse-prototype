@@ -17,7 +17,7 @@ export const sourceCommand=z.discriminatedUnion('operation',[
 export type SourceReference=z.infer<typeof sourceReference>
 export type SourceSnapshot={id:string;reference_key:string;reference:SourceReference;url:string;sha256:string;name:string;mime:string;size:number;text:string;base64:string;pages:number;truncated:boolean;created_at:string;warnings:string[]}
 export type SourceSummary=Omit<SourceSnapshot,'text'|'base64'>&{versions:number;status:'retained'}
-export type SourceStatus={reference:SourceReference;key:string;status:'retained'|'unread'|'unavailable'|'attachment-needed';message?:string;snapshot?:SourceSummary}
+export type SourceStatus={reference:SourceReference;key:string;status:'retained'|'unread'|'unavailable'|'attachment-needed';message?:string;snapshot?:SourceSummary;metadataOnly?:boolean}
 const provenance=z.object({id:z.string().uuid(),sha256:z.string().regex(/^[a-f0-9]{64}$/),readAt:z.string().datetime(),reference:sourceReference,truncated:z.boolean(),url:z.string()})
 export function indexedSourceMetadata(quality:unknown):Partial<Pick<import('../../src/lib/rag/types.js').Evidence,'retained'|'url'>>{
  const parsed=provenance.safeParse(quality&&typeof quality==='object'&&'source' in quality?quality.source:null)
