@@ -420,3 +420,7 @@ The pinned-DNS fetcher still denies internal targets, unsafe redirects, protecte
 ## Older catalog evidence, 10 November 2026
 
 Source manifests classify fetched HTML snapshots using their actual saved URL and MIME type. Recognized catalog/search snapshots remain stored and readable, but `retainedSourceEvidence` excludes them and `index` rejects them with `SOURCE_METADATA_ONLY`. Importing their cached URL returns metadata without a teaching snapshot. Explicitly attached readable copies have no fetched catalog URL and remain eligible. Native tests cover the historical-cache case; no original archive is rewritten or destroyed.
+
+## Learner publication metadata, 10 November 2026
+
+Migration `20261110033603_protect_learner_publication_metadata` adds a private security-invoker before-write trigger on the learner-facing publication table. It strips reserved AI/answer-key review metadata while leaving the teacher workspace untouched. The original full-content source hash and private scoring key remain authoritative. An idempotent backfill changes only the projected metadata: existing versions and scored history remain. Native SQL checks cover old rows, future publication, teacher review retention, scoring and role denial; hosted digests preserve the existing workspace revisions. [Validation](../versions/2026-11-10-learner-publication-metadata/validation/results.md).

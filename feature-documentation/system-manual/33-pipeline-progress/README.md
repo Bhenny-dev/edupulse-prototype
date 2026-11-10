@@ -12,3 +12,7 @@ The owner authorized labelled test activity on registered BSIT accounts. A pipel
 | ![Mobile instructor progress](05-mobile-instructor.png) | The instructor notice, record filter, charts and responsive score rows remain reachable. |
 
 These screenshots use synthetic UI transports. They demonstrate presentation and filtering, not hosted persistence. The [validation record](../../versions/2026-11-10-pipeline-progress/validation/results.md) separates SQL authorization/scoring, browser presentation and live seed evidence.
+
+## Learner-facing publication content
+
+Student content and saved scores remain available. Private teacher AI review traces, raw retrieved source excerpts and marked-answer review metadata are excluded from publication payloads. Instructors retain these details in their authoring workspace. This projection does not regrade attempts, change publication versions during backfill, or create learner activity.

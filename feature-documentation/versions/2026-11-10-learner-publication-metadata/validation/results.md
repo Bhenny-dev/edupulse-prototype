@@ -1,0 +1,6 @@
+# Validation
+
+- The native academic SQL scenario passed: it first recreates the old metadata exposure, applies the guard/backfill, retains owner review metadata and private scoring keys, denies keys to unauthorized roles, scores a real learner attempt, publishes a reviewed new version and preserves the earlier score/version.
+- The hosted dry run listed only `20261110033603_protect_learner_publication_metadata.sql`. Applying it and reading back baseline counts/digests left all nine workspace revisions unchanged, with zero pre-existing publications/attempts. No student activity was invented by this migration.
+- Security advisors report no finding for the new private security-invoker trigger. Existing public security-definer RPC and Auth password-protection warnings remain outside this patch; the report is not a clean-security certificate.
+- Both student progress capture cases passed and the images were opened/reviewed. All four desktop/mobile progress browser cases passed. The full `npm run verify` gate passed, including 280 native tests, types, lint, documentation, production build and deployment checks. UI captures use controlled sample transports and cannot prove database authorization.
