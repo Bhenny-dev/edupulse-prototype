@@ -15,7 +15,7 @@ export function sourceUrl(value:string){
  url.hash='';return url
 }
 type Address={address:string;family:number}
-type Download={bytes:Uint8Array;mime:string;url:string}
+type Download={bytes:Uint8Array;mime:string;url:string;metadataOnly?:boolean}
 type Response={status:number;headers:Record<string,string|undefined>;bytes:Uint8Array}
 // DNS is checked and pinned into the socket lookup, including after each redirect.
 // No browser cookies, authorization headers, source instructions or scripts are used.
@@ -31,7 +31,7 @@ async function requestPinned(url:URL,address:Address,signal:AbortSignal):Promise
   });request.on('error',reject);request.end()
  })
 }
-export async function downloadSource(value:string,signal:AbortSignal,dependencies:{resolve?:(host:string)=>Promise<Address[]>;request?:typeof requestPinned}={}):Promise<Download>{
+export async function downloadSource(value:string,signal:AbortSignal,dependencies:{resolve?:(host:string)=>Promise<Address[]>;request?:typeof requestPinned;allowCatalog?:boolean}={}):Promise<Download>{
  const abort=AbortSignal.any([signal,AbortSignal.timeout(15_000)])
  let url=sourceUrl(value)
  for(let redirects=0;redirects<=3;redirects++){
@@ -45,13 +45,15 @@ export async function downloadSource(value:string,signal:AbortSignal,dependencie
   if(!result.bytes.length||result.bytes.length>SOURCE_BYTES)throw new ApiError(413,'SOURCE_TOO_LARGE','Choose a readable source up to 2 MB.')
   const mime=(result.headers.type||'').split(';')[0]!.toLowerCase().trim()
   if(!['application/pdf','text/html','application/xhtml+xml','text/plain','text/markdown','application/vnd.openxmlformats-officedocument.wordprocessingml.document'].includes(mime))throw new ApiError(422,'SOURCE_FORMAT','This link does not serve a supported PDF, DOCX, HTML or text document. Attach a readable copy instead.')
+  let metadataOnly=false
   if(mime.includes('html')){
    const host=url.hostname.toLowerCase()
-   if(['openlibrary.org','books.google.com','www.worldcat.org','search.worldcat.org','www.goodreads.com','openalex.org'].includes(host)||/(?:^|\.)amazon\.[a-z.]+$/.test(host))throw new ApiError(422,'SOURCE_METADATA_ONLY','This is a catalog or book listing, not readable book contents. Attach the book or a readable chapter instead.')
+   metadataOnly=['openlibrary.org','books.google.com','www.worldcat.org','search.worldcat.org','www.goodreads.com','openalex.org'].includes(host)||/(?:^|\.)amazon\.[a-z.]+$/.test(host)||/\/(?:search|catalog|results)(?:\/|$)/i.test(url.pathname)
+   if(metadataOnly&&!dependencies.allowCatalog)throw new ApiError(422,'SOURCE_METADATA_ONLY','This is a catalog or search listing, not readable teaching contents. Attach the book or a readable chapter instead.')
    const head=Buffer.from(result.bytes).toString('utf8').slice(0,100000)
    if(/<input\b[^>]*type\s*=\s*["']?password/i.test(head)||/<title[^>]*>[^<]*(?:sign in|log in|access denied|just a moment|verify you are human|captcha)/i.test(head))throw new ApiError(422,'SOURCE_ACCESS_REQUIRED','The link returned a sign-in, access or verification page. Its text was not retained as source content. Attach an accessible copy instead.')
   }
-  return {bytes:result.bytes,mime,url:url.href}
+  return {bytes:result.bytes,mime,url:url.href,...(metadataOnly?{metadataOnly:true}:{})}
  }
  throw new ApiError(422,'SOURCE_UNAVAILABLE','The source could not be read.')
 }

@@ -1,0 +1,15 @@
+.reference-intake { display: grid; gap: 16px; min-width: 0; }
+.reference-intake > p { margin: 0; }
+.reference-link-form > div { display: flex; gap: 10px; align-items: center; }
+.reference-link-form input { flex: 1; min-width: 0; }
+.reference-file-drop { display: flex; align-items: center; gap: 14px; padding: 20px; border: 1px dashed var(--sky-300); border-radius: var(--radius-lg); background: var(--sky-50); }
+.reference-file-drop > svg { flex-shrink: 0; color: var(--sky-600); }
+.reference-file-drop > div { flex: 1; min-width: 0; display: grid; gap: 6px; }
+.reference-file-drop.is-dragging { outline: 2px solid var(--sky-500); outline-offset: 3px; }
+.reference-intake-list { list-style: none; display: grid; gap: 10px; padding: 0; margin: 0; }
+.reference-intake-list > li { display: flex; align-items: flex-start; gap: 16px; border: 1px solid var(--gray-200); border-radius: var(--radius-md); padding: 16px; }
+.reference-intake-list > li > div:first-child { flex: 1; min-width: 0; display: grid; gap: 6px; overflow-wrap: anywhere; }
+.reference-intake-list p { margin: 0; }
+.reference-intake-list details > p { margin-top: 6px; }
+.reference-intake-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+@media(max-width: 600px) { .reference-link-form > div, .reference-file-drop { flex-wrap: wrap; } .reference-link-form input { flex-basis: 100%; } .reference-file-drop > div { flex-basis: calc(100% - 42px); } .reference-file-drop .btn { margin-left: 36px; } .reference-intake-list > li { flex-direction: column; } .reference-intake-actions { align-self: flex-end; } }

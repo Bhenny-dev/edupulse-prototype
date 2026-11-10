@@ -114,3 +114,7 @@ The weekly Course workspace shows a collapsed **Syllabus sources** panel when re
 ## Progressive outline preparation
 
 The syllabus builder now displays completed weekly previews while Pulse prepares the next week, with **Use completed weeks**, individual week controls and a retained stopped state. Same-course source patterns are displayed with version/status. Placement preserves manual edits and does not save or publish. [Manual 34](../../system-manual/34-progressive-outlines/README.md) shows desktop and mobile examples.
+
+## Reference link/file intake
+
+**Syllabus Builder → References** accepts a source link or readable file and lists extracted citation details. Available copies can be viewed and indexed for authorized private search; unavailable metadata stays absent. Saving the syllabus remains explicit. [Manual 35](../../system-manual/35-reference-intake/README.md) shows loading, indexing retry, missing metadata and phone/dark states.

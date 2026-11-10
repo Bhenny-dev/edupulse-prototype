@@ -65,3 +65,5 @@ Other refusals explain themselves: password-protected files, legacy `.doc/.ppt/.
 **Guests** can try extraction but cannot index; sign in as an instructor (or use the local app).
 
 Initial library reads reserve list space with a skeleton. Pending queue items use dots while waiting, then spinners for extraction/indexing; OCR and model downloads keep actual progress. Failed requests end loading and retain the existing error/retry flow. See [Manual 19](../19-loading-and-saved-connections/README.md).
+
+Sources added in Syllabus Builder can now be retained and indexed through [reference intake](../35-reference-intake/README.md). They use the same private library and its limits. Source-version/checksum and page/section metadata accompany retrieved passages. Indexing requires no paid generation provider; a failed index leaves the retained copy available for review and retry. Removing that retained version also removes its indexed passages.

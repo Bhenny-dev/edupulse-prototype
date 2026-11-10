@@ -120,6 +120,46 @@ export function htmlToStructuredText(html) {
 /** @param {string} xml */
 const xmlText = xml => decodeEntities(xml)
 
+/** Explicit citation metadata only; creation/modification dates are not publication dates.
+ * @param {string} input @param {boolean} html */
+export function citationMetadata(input, html = false) {
+  const clean = (/** @type {unknown} */ value, max = 500) => typeof value === 'string' ? decodeEntities(value.replace(/<[^>]*>/g, ' ')).replace(/\s+/g, ' ').trim().slice(0, max) : ''
+  /** @type {Record<string,string[]>} */ const fields = Object.create(null)
+  const add = (/** @type {string} */ key, /** @type {string} */ value) => { key = key.toLowerCase(); if (clean(value)) (fields[key] ??= []).push(clean(value, 1000)) }
+  const head = input.slice(0, 150000)
+  if (html) {
+    for (const tag of head.matchAll(/<meta\b[^>]{0,4000}>/gi)) {
+      /** @type {Record<string,string>} */ const attributes = Object.create(null)
+      for (const attr of tag[0].matchAll(/([\w:.-]+)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/g)) attributes[attr[1].toLowerCase()] = attr[2] ?? attr[3] ?? attr[4]
+      add(attributes.name || attributes.property || '', attributes.content || '')
+    }
+    let count = 0
+    for (const script of head.matchAll(/<script\b[^>]*type\s*=\s*["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script\s*>/gi)) {
+      if (++count > 8 || script[1].length > 50000) break
+      try {
+        const parsed = JSON.parse(script[1]), list = Array.isArray(parsed) ? parsed : [parsed, ...(Array.isArray(parsed?.['@graph']) ? parsed['@graph'] : [])]
+        const item = list.find(row => row && ['Book','Article','ScholarlyArticle','TechArticle','Report','BlogPosting'].some(type => (Array.isArray(row['@type']) ? row['@type'] : [row['@type']]).includes(type)))
+        if (!item) continue
+        add('ld:title', item.headline || item.name)
+        for (const author of Array.isArray(item.author) ? item.author : [item.author]) add('ld:author', typeof author === 'string' ? author : author?.name)
+        add('ld:date', item.datePublished); add('ld:publisher', typeof item.publisher === 'string' ? item.publisher : item.publisher?.name); add('ld:isbn', item.isbn)
+        if (typeof item.identifier === 'string' && /^(?:https?:\/\/(?:dx\.)?doi.org\/)?10\.\d{4,9}\//i.test(item.identifier)) add('ld:doi', item.identifier)
+        break
+      } catch { /* Malformed page metadata is not inferred from the article body. */ }
+    }
+  } else {
+    const front = head.match(/^---\s*\r?\n([\s\S]{0,12000}?)\r?\n---(?:\r?\n|$)/)?.[1] || ''
+    for (const field of front.matchAll(/^(title|author|authors|year|date|publisher|doi|isbn):\s*([^\r\n]+)$/gmi)) add(field[1], field[2].replace(/^["']|["']$/g, ''))
+  }
+  const first = (/** @type {string[]} */ keys) => keys.map(key => fields[key]?.[0]).find(Boolean) || ''
+  const title = first(['citation_title','dc.title','dcterms.title','ld:title','title'])
+  const titleFallback = html ? clean(head.match(/<title\b[^>]*>([\s\S]*?)<\/title>/i)?.[1]) || clean(head.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)?.[1]) : clean(head.match(/^#\s+(.+)$/m)?.[1])
+  const authors = ['citation_author','dc.creator','dcterms.creator','ld:author','authors','author'].map(key => fields[key]).find(Boolean) || []
+  const date = first(['citation_publication_date','citation_date','dc.date','dcterms.issued','article:published_time','ld:date','year','date'])
+  const doi = first(['citation_doi','dc.identifier.doi','ld:doi','doi']).replace(/^https?:\/\/(?:dx\.)?doi\.org\//i, '')
+  return { title: (title || titleFallback).slice(0,500), author: [...new Set(authors)].join(', ').slice(0,1000), year: date.match(/^([12]\d{3})(?:\D|$)/)?.[1] || '', publisher: first(['citation_publisher','dc.publisher','dcterms.publisher','ld:publisher','publisher']).slice(0,500), doi: /^10\.\d{4,9}\/\S+$/i.test(doi) ? doi.slice(0,300) : '', isbn: first(['citation_isbn','ld:isbn','isbn']).slice(0,80), titleOrigin: title ? 'citation metadata' : titleFallback ? 'document heading' : 'file name' }
+}
+
 /** @param {Uint8Array} bytes */
 async function extractPdf(bytes) {
   const { getDocumentProxy, extractText, getMeta } = await import('unpdf')
@@ -132,7 +172,7 @@ async function extractPdf(bytes) {
     const [{ text }, meta] = await Promise.all([extractText(pdf, { mergePages: false }), getMeta(pdf).catch(() => ({ info: {} }))])
     const pages = text.map((page, index) => ({ page: index + 1, text: page }))
     const info = /** @type {Record<string, unknown>} */ (meta.info || {})
-    return { pages, meta: { title: typeof info.Title === 'string' ? info.Title.slice(0, 200) : '', author: typeof info.Author === 'string' ? info.Author.slice(0, 200) : '', pageCount: pdf.numPages } }
+    return { pages, meta: { title: typeof info.Title === 'string' ? info.Title.slice(0, 500) : '', author: typeof info.Author === 'string' ? info.Author.slice(0, 1000) : '', pageCount: pdf.numPages } }
   } finally { await pdf.loadingTask.destroy() }
 }
 
@@ -142,7 +182,10 @@ async function extractDocx(bytes) {
   // Node's mammoth reads { buffer }; a { path } input is never used. Images are
   // never decoded and linked external files are never opened.
   const result = await mammoth.convertToHtml({ buffer: Buffer.from(bytes.buffer, bytes.byteOffset, bytes.byteLength) }, { externalFileAccess: false, ignoreEmptyParagraphs: true, convertImage: mammoth.images.imgElement(async () => ({ src: '' })) })
-  return { text: htmlToStructuredText(result.value), meta: { messages: result.messages.length } }
+  const JSZip = (await import('jszip')).default, zip = await JSZip.loadAsync(bytes)
+  const core = await zip.file('docProps/core.xml')?.async('string') || ''
+  const field = (/** @type {string} */ tag) => decodeEntities(core.match(new RegExp(`<${tag}\\b[^>]*>([\\s\\S]*?)<\\/${tag}>`, 'i'))?.[1] || '').replace(/<[^>]*>/g,'').trim()
+  return { text: htmlToStructuredText(result.value), meta: { messages: result.messages.length, title: field('dc:title').slice(0,500), author: field('dc:creator').slice(0,1000), titleOrigin: 'document metadata' } }
 }
 
 /** @param {Uint8Array} bytes */
@@ -243,7 +286,7 @@ export async function extractDocument(bytes, fileName) {
   else if (type.kind === 'xlsx') ({ text, meta } = await extractXlsx(bytes))
   else {
     const decoded = decodeText(bytes)
-    meta = { encoding: decoded.encoding }
+    meta = { encoding: decoded.encoding, ...citationMetadata(decoded.text, type.kind === 'html') }
     text = type.kind === 'html' ? htmlToStructuredText(decoded.text) : decoded.text
   }
   if (pages) {

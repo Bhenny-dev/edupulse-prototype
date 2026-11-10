@@ -3,7 +3,7 @@ import {mkdir} from 'node:fs/promises'
 import {retainedSourcesUI,sourceRefs,sourceLesson,attachFormattedSource} from '../retained-sources-fixture'
 import {makePdf} from '../fixtures'
 const root='../feature-documentation/system-manual/31-retained-syllabus-sources'
-async function shot(page:Page,name:string){await mkdir(root,{recursive:true});for(let i=0;i<20&&await page.locator('.toast').count();i++)await page.locator('.toast').first().click({timeout:1000}).catch(()=>{});await expect(page.locator('.toast')).toHaveCount(0);await page.mouse.move(2,400);await page.evaluate(async()=>{await document.fonts.ready});await page.screenshot({path:`${root}/${name}.png`,animations:'disabled',timeout:30000,style:'.app-topbar{position:static !important}'})}
+async function shot(page:Page,name:string){if(process.env.SNAPSHOT_SCENES&&!new RegExp(process.env.SNAPSHOT_SCENES).test('31-retained-syllabus-sources/'+name))return;await mkdir(root,{recursive:true});for(let i=0;i<20&&await page.locator('.toast').count();i++)await page.locator('.toast').first().click({timeout:1000}).catch(()=>{});await expect(page.locator('.toast')).toHaveCount(0);await page.mouse.move(2,400);await page.evaluate(async()=>{await document.fonts.ready});await page.screenshot({path:`${root}/${name}.png`,animations:'disabled',timeout:30000,style:'.app-topbar{position:static !important}'})}
 export async function sourceScene(page:Page,mobile=false,dark=false){
  if(dark)await page.addInitScript(()=>localStorage.setItem('edupulse-dark-mode','true'))
  const fixture=await retainedSourcesUI(page);await page.goto('/#/courseware?course=retained-course');const panel=page.locator('.syllabus-sources');await panel.locator('summary').click();await expect(panel).toContainText('Book metadata only')

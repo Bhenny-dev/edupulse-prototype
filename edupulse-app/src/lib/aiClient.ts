@@ -161,9 +161,12 @@ export async function askPulse(input: Partial<ChatInput> & { message: string }, 
 }
 
 export type CourseDraft = Awaited<ReturnType<typeof import('./rag/courseware').draftCoursewareAgents>>
-export async function syllabusSources(operation:Record<string,unknown>,signal?:AbortSignal) {
-  return aiRequest<{sources:import('../../server/sources/contracts').SourceStatus[]}>('syllabus-sources','POST',operation,signal)
+export async function syllabusSources<T={sources:import('../../server/sources/contracts').SourceStatus[]}>(operation:Record<string,unknown>,signal?:AbortSignal) {
+  return aiRequest<T>('syllabus-sources','POST',operation,signal)
 }
+export type ImportedReference={reference:import('../../server/sources/contracts').SourceReference;snapshot:import('../../server/sources/contracts').SourceSummary|null;missing:string[];message?:string;titleOrigin?:string;reused?:boolean}
+export const importSyllabusReference=(operation:Record<string,unknown>,signal?:AbortSignal)=>syllabusSources<ImportedReference>(operation,signal)
+export const indexSyllabusReference=(id:string,course?:string,signal?:AbortSignal)=>syllabusSources<{indexed:true;documentId:string;duplicate:boolean;chunks:number;embeddingModel:string}>({operation:'index',id,...(course?{course}:{})},signal)
 export async function prepareSyllabusSources(references:import('./rag/syllabusReferences').SyllabusReference[],signal?:AbortSignal,refresh=false,readLinks=true) {
   if(!references.length)return []
   let sources=(await syllabusSources({operation:'list',references},signal)).sources

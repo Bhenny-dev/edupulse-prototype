@@ -129,9 +129,9 @@
     },
     {
       "path": "feature-documentation/system-manual/02-syllabus-lifecycle/03-save-as-drafted-button.png",
-      "sha256": "5481295328a776163b1921df883b91d75f5514bd81f4eb992b7b7888cfeab83c",
+      "sha256": "4fbdc7dcb565b6a714abcb0bd994f3060ba81b124d9ee6b2be6c0b29a12623d9",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-27T11:59:10.353760+00:00"
+      "reviewedAt": "2026-11-10T03:11:17.430397+00:00"
     },
     {
       "path": "feature-documentation/system-manual/02-syllabus-lifecycle/04-my-syllabus-drafted.png",
@@ -7179,9 +7179,9 @@
     },
     {
       "path": "feature-documentation/system-manual/31-retained-syllabus-sources/11-remove-confirmation.png",
-      "sha256": "78edba10ca84cc877cbe23043584cbd2713f8b54b02f48bf3c1951bb621816d1",
+      "sha256": "0004fdab214162e8058cb30b5329979db550bc5e5bf3b6fdd3f21acc080a64ef",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-09T12:36:30.399211+00:00"
+      "reviewedAt": "2026-11-10T03:11:17.430397+00:00"
     },
     {
       "path": "feature-documentation/system-manual/31-retained-syllabus-sources/dark-01-syllabus-sources.png",
@@ -7464,6 +7464,54 @@
       "sha256": "6e7ef63f543a700f7fd28e04cc42dac07190f0e85b2e175c2ed0cf8d8a128065",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-09T23:27:06.811Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/35-reference-intake/01-link-or-file.png",
+      "sha256": "f19936335101a9691238944202e28eef2d419b86d9d1470c8ee5a794b7b92421",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-10T03:11:17.430397+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/35-reference-intake/02-reading-reference.png",
+      "sha256": "4021e4bf18792207a9a8447cba85a0538af187901a7f56e4ea68d8d821a04954",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-10T03:11:17.430397+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/35-reference-intake/03-indexing-retry.png",
+      "sha256": "f87c8da3cda0dcda909006588256e4288c9ce4d296cf19ca53919ea3a7d4a75c",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-10T03:11:17.430397+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/35-reference-intake/04-extracted-citation.png",
+      "sha256": "f520d5aae34ad36fc4aa993eb27864c0e42b8fa843b1a66d8dc3f7b25f4212cb",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-10T03:11:17.430397+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/35-reference-intake/05-retained-reading.png",
+      "sha256": "0986b96ae2647d6670d446efd41bb1b561a95670abe52a63016b02045d90e184",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-10T03:11:17.430397+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/35-reference-intake/06-missing-metadata.png",
+      "sha256": "fc7910b57b7216e6bee60f855c43884559417313e6e9c35662f4de4e3d2784ba",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-10T03:11:17.430397+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/35-reference-intake/dark-04-extracted-citation.png",
+      "sha256": "53daf7f24082ff417a022057e4df8bf13cb31122d2e0e00aa469f0d86e7bca42",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-10T03:11:17.430397+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/35-reference-intake/mobile-04-extracted-citation.png",
+      "sha256": "0e8f317f6aa91081eaf8d78afc7875cbba66a2e9936f798108bf3bde82d74920",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-10T03:11:17.430397+00:00"
     }
   ]
 }

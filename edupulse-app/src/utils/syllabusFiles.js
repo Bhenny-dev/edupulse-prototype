@@ -1,4 +1,5 @@
 import { APPROVED_FILE_LIMIT } from '../lib/syllabusLimits'
+import {collectSyllabusReferences,bibliographicLabel} from '../lib/rag/syllabusReferences'
 export { APPROVED_FILE_LIMIT }
 export const meaningfulOutline = rows => Array.isArray(rows) && rows.some(row => row.ilos?.trim() && row.contents?.some(text => text.trim()))
 
@@ -40,8 +41,7 @@ export function syllabusBlocks(syllabus) {
   line('Grading System:'); list((syllabus.gradingSystem || '').split('\n'))
   line('Course Policy:'); list(syllabus.coursePolicy)
   heading('Section 7: References')
-  for (const book of syllabus.books || []) line([book.title, book.authors, book.year, book.publisher].filter(Boolean).join('; '))
-  for (const ref of syllabus.onlineReferences || []) { line(ref.title); line(ref.url) }
+  for (const reference of collectSyllabusReferences({...syllabus,courseOutline:[]})) line([bibliographicLabel(reference),reference.url].filter(Boolean).join('. '))
   heading('Offline approval route')
   line('Prepared by: ____________________  Date: __________')
   line('Reviewed by Dean: _______________  Date: __________')

@@ -15,6 +15,10 @@ const initialized=new WeakSet<object>()
 async function local(){const pg=await localDb();if(!initialized.has(pg)){await pg.exec(localSourceSchema);initialized.add(pg)}return pg}
 function unavailable(error:unknown){if(error&&typeof error==='object'&&'code' in error&&error.code==='23514')throw new ApiError(429,'SOURCE_ARCHIVE_LIMIT','The retained source limit was reached. Remove an unused saved version before retaining another.');if(error)throw new ApiError(503,'SOURCE_STORE_UNAVAILABLE','Retained sources are unavailable. Check the source-archive migration and connection. No source was claimed as saved.')}
 const summaryColumns='id,reference_key,reference,url,sha256,name,mime,size,pages,truncated,warnings,created_at'
+export async function latestSnapshotForUrl(identity:Identity,url:string){
+ if(config().database==='local')return (await (await local()).query<SourceSummary>(`SELECT ${summaryColumns} FROM ep_source_archives WHERE owner_id=$1 AND (url=$2 OR reference->>'url'=$2) ORDER BY created_at DESC LIMIT 1`,[identity.id,url])).rows[0]
+ const result=await userDb(identity).from('edupulse_source_archives').select(summaryColumns).eq('owner_id',identity.id).eq('reference->>url',url).order('created_at',{ascending:false}).limit(1).maybeSingle();unavailable(result.error);return result.data as SourceSummary|null
+}
 export async function listSnapshots(identity:Identity,keys:string[]):Promise<SourceSummary[]>{
  if(!keys.length)return []
  let rows:Omit<SourceSnapshot,'text'|'base64'>[]

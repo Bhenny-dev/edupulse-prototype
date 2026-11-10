@@ -1,14 +1,14 @@
 import { z } from 'zod'
 
 const textList = z.array(z.string().max(4000)).max(60)
-const referenceUrl = z.string().max(1000).refine(value => !value || /^https?:\/\//i.test(value) && z.url().safeParse(value).success, 'Use an HTTP or HTTPS source URL.')
+const referenceUrl = z.string().max(2000).refine(value => !value || /^https?:\/\//i.test(value) && z.url().safeParse(value).success, 'Use an HTTP or HTTPS source URL.')
 export const syllabusPatch = z.object({
   institutionalContext: z.object({ kcp: z.object({vision:z.string().max(8000),mission:z.string().max(8000),objectives:textList,coreValues:textList}).partial().strict().optional(), cit:z.object({mission:z.string().max(8000),objectives:textList}).partial().strict().optional() }).strict().optional(),
   programOutcomes: textList.optional(),
   courseOutline: z.array(z.object({ week: z.number().int().min(1).max(52), ilos: z.string().max(5000), contents: textList, activities: z.string().max(5000).optional(), assessments: z.string().max(5000).optional(), teachingMaterials: textList.optional(), assessmentTypes: textList.optional(), resources: z.array(z.object({ name: z.string().max(500), url: referenceUrl, type: z.string().max(30).optional() })).max(30).optional() }).strict()).max(52).refine(rows => new Set(rows.map(row => row.week)).size === rows.length, 'Each week must appear once.').optional(),
   courseRequirements: textList.optional(), gradingSystem: z.string().max(8000).optional(), coursePolicy: textList.optional(),
-  books: z.array(z.object({ title: z.string().max(500), authors: z.string().max(500), year: z.string().max(20), publisher: z.string().max(500) }).strict()).max(60).optional(),
-  onlineReferences: z.array(z.object({ title: z.string().max(500), url: referenceUrl }).strict()).max(60).optional(),
+  books: z.array(z.object({ title: z.string().max(500), authors: z.string().max(1000), year: z.string().max(40), publisher: z.string().max(500),url:referenceUrl.optional(),doi:z.string().max(300).optional(),isbn:z.string().max(80).optional() }).strict()).max(60).optional(),
+  onlineReferences: z.array(z.object({ title: z.string().max(500), url: referenceUrl,authors:z.string().max(1000).optional(),year:z.string().max(40).optional(),publisher:z.string().max(500).optional(),doi:z.string().max(300).optional(),isbn:z.string().max(80).optional() }).strict()).max(60).optional(),
 }).strict().refine(value => Object.keys(value).length > 0, 'Choose at least one section.')
 const questionEdit = z.object({
   id: z.string().max(80).optional(), text: z.string().min(1).max(2000),

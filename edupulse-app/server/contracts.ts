@@ -33,7 +33,7 @@ export const researchInput = z.object({ queries: z.array(z.string().trim().min(1
 export const similarityInput = z.object({ left: z.array(z.string().max(800)).min(1).max(24), right: z.array(z.string().max(2000)).min(1).max(12) })
 export const referencesInput = z.object({ topic: z.string().trim().min(2).max(200) })
 export const courseInput = z.object({
-  syllabusReferences: z.array(z.object({kind:z.enum(['book','link']),title:z.string().min(1).max(500),url:z.string().max(2000).default(''),authors:z.string().max(1000).default(''),year:z.string().max(40).default(''),publisher:z.string().max(500).default('')})).max(80).optional(),
+  syllabusReferences: z.array(z.object({kind:z.enum(['book','link']),title:z.string().min(1).max(500),url:z.string().max(2000).default(''),authors:z.string().max(1000).default(''),year:z.string().max(40).default(''),publisher:z.string().max(500).default(''),doi:z.string().max(300).optional(),isbn:z.string().max(80).optional()})).max(80).optional(),
   courseCode: z.string().trim().min(1).max(80), courseTitle: z.string().trim().min(1).max(200),
   week: z.number().int().min(1).max(52),
   topics: z.array(z.string().trim().min(1).max(2000)).min(1).max(40),

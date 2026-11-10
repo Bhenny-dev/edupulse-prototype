@@ -1,0 +1,7 @@
+# Validation
+
+- Nineteen targeted native cases passed across reference intake, retained sources and syllabus drafting. They include actual HTML/Word extraction, explicit metadata and missing dates, exact-byte private retention, failed-index recovery, deduplication, real local embeddings/pgvector and keyword retrieval, source citation metadata, cross-account/student denial, deletion and legacy associations.
+- Six desktop/mobile browser cases passed for reference intake, progressive outlines and whole-syllabus drafting. A further desktop export check passed. New reference tests verify file drop, exact metadata, indexing retry, course association, no workspace save until requested, saved citation fields and a real generated five-page PDF. The reference page was rendered and visually reviewed.
+- All five final capture cases passed; ten images were opened and reviewed. The full `npm run verify` release gate passed, including 280 native tests, type checks, lint, documentation, production build and deployment checks. UI transports are controlled examples; they do not prove hosted source authorization or production inference quality.
+
+Hosted storage canary passed using ordinary owner JWTs and the new local service against the real project: explicit metadata, exact bytes, private keyword and vector citation provenance, other-owner denial and complete source/index cleanup. Existing workspaces were unchanged. This checks hosted database/RLS operations, not the pending deployed HTTP implementation.

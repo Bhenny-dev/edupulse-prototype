@@ -15,7 +15,7 @@ import type { Evidence, WebSearch } from '../src/lib/rag/types.js'
 
 const identity = { id: 'draft-instructor', role: 'instructor' as const, local: true }
 const signal = () => AbortSignal.timeout(10000)
-const source: Evidence = { id: 'research', documentId: 'research', title: 'Research', url: 'https://en.wikipedia.org/wiki/Research', text: 'Research involves a systematic investigation to establish facts and reach new conclusions.', page: null, section: 'Public excerpt', flagged: false, origin: 'web', method: 'web-search', rrf: 1, relevance: null, similarity: null, query: 'Research Methods' }
+const source: Evidence = { id: 'research', documentId: 'research', title: researchMethodsDraft.onlineReferences[0]!.title, url: 'https://en.wikipedia.org/wiki/Research', text: 'Research involves a systematic investigation to establish facts and reach new conclusions.', page: null, section: 'Public excerpt', flagged: false, origin: 'web', method: 'web-search', rrf: 1, relevance: null, similarity: null, query: 'Research Methods' }
 const editor = { instance: 'research-methods', kind: 'syllabus' as const, label: 'IT 104 syllabus builder', data: { courseCode: 'IT 104', courseTitle: 'Research Methods', courseDescription: 'Introduction to academic research and methodologies.', programOutcomes: [''], courseOutline: researchMethodsDraft.courseOutline.map(row => ({ ...row, ilos: '', contents: [''], activities: '', assessments: row.week === 9 || row.week === 18 ? row.assessments : '', teachingMaterials: [], assessmentTypes: [] })) } }
 
 test('syllabus generation uses the selected editor, overrides incidental focus and retained import sources', () => {

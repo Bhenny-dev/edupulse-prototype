@@ -1,4 +1,4 @@
-export type SyllabusReference = { kind:'book'|'link'; title:string; url:string; authors:string; year:string; publisher:string }
+export type SyllabusReference = { kind:'book'|'link'; title:string; url:string; authors:string; year:string; publisher:string; doi?:string; isbn?:string }
 const text=(value:unknown)=>typeof value==='string'?value.trim():''
 export function referenceToken(ref:SyllabusReference) {
  if(ref.url){try{const url=new URL(ref.url);url.hash='';return 'url:'+url.href}catch{return 'url:'+ref.url}}
@@ -6,13 +6,15 @@ export function referenceToken(ref:SyllabusReference) {
 }
 // A corrected author/edition is a new citation association, never silently reused
 // with a copy retained under older bibliographic details.
-export const referenceSnapshotToken=(ref:SyllabusReference)=>JSON.stringify([referenceToken(ref),ref.kind,ref.title,ref.authors,ref.year,ref.publisher])
+export const referenceSnapshotToken=(ref:SyllabusReference)=>JSON.stringify([referenceToken(ref),ref.kind,ref.title,ref.authors,ref.year,ref.publisher,...(ref.doi||ref.isbn?[ref.doi||'',ref.isbn||'']:[])])
 export function collectSyllabusReferences(syllabus:Record<string,any>,week?:number):SyllabusReference[] {
  const refs:SyllabusReference[]=[], seen=new Set<string>()
  const add=(value:any,kind:'book'|'link')=>{
   if(!value)return
   const raw=typeof value==='string'?value:''
   const ref:SyllabusReference={kind,title:text(value.title)||text(value.name)||raw,url:text(value.url)||(/^https?:\/\//i.test(raw)?raw:''),authors:Array.isArray(value.authors)?value.authors.map(text).filter(Boolean).join(', '):text(value.authors),year:String(value.year||'').trim(),publisher:text(value.publisher)}
+  if(text(value.doi))ref.doi=text(value.doi)
+  if(text(value.isbn))ref.isbn=text(value.isbn)
   if(!ref.title)ref.title=ref.url
   if(!ref.title)return
   const key=referenceToken(ref);if(seen.has(key))return;seen.add(key);refs.push(ref)
@@ -25,5 +27,16 @@ export function collectSyllabusReferences(syllabus:Record<string,any>,week?:numb
  return refs
 }
 export function bibliographicLabel(ref:Partial<SyllabusReference>) {
- return [ref.authors,ref.year?`(${ref.year})`:null,ref.title,ref.publisher].filter(Boolean).join('. ')
+ return [ref.authors,ref.year?`(${ref.year})`:null,ref.title,ref.publisher,ref.doi?`DOI: ${ref.doi}`:null,ref.isbn?`ISBN: ${ref.isbn}`:null].filter(Boolean).join('. ')
+}
+
+/** Remove a citation association from this syllabus, not its reusable private source copy. */
+export function removeSyllabusReference(syllabus:Record<string,any>,reference:SyllabusReference){
+ const key=referenceToken(reference)
+ const filter=(rows:any[],kind:'book'|'link')=>(rows||[]).filter(value=>{const normalized=collectSyllabusReferences(kind==='book'?{books:[value]}:{onlineReferences:[value]})[0];return !normalized||referenceToken(normalized)!==key})
+ return {...syllabus,books:filter(syllabus.books,'book'),onlineReferences:filter(syllabus.onlineReferences,'link'),...(Array.isArray(syllabus.references)?{references:filter(syllabus.references,'link')}:syllabus.references?{references:{...syllabus.references,books:filter(syllabus.references.books,'book'),onlineReferences:filter(syllabus.references.onlineReferences,'link')}}:{})}
+}
+export function addSyllabusReference(syllabus:Record<string,any>,reference:SyllabusReference){
+ const updated=removeSyllabusReference(syllabus,reference),{kind,...entry}=reference,field=kind==='book'?'books':'onlineReferences'
+ return {...updated,[field]:[...updated[field].filter((value:any)=>value.title||value.url),entry]}
 }

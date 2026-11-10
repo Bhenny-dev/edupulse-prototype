@@ -30,6 +30,8 @@ import { pulse as pulseBus } from '../components/pulse/pulseBus'
 import { usePulseEditor } from '../agents/usePulseEditor'
 import OutlineDraftPreview from '../components/syllabus/OutlineDraftPreview'
 import {keepOutlineDraft} from '../agents/draftProgress'
+import ReferenceIntake from '../components/syllabus/ReferenceIntake'
+import {addSyllabusReference,removeSyllabusReference,bibliographicLabel} from '../lib/rag/syllabusReferences'
 
 // Syllabus — FLOW_SPEC Phase 2. Lifecycle: drafted → checked →
 // downloaded_for_approval → approved_uploaded → active. The signatory chain
@@ -322,7 +324,7 @@ function SyllabusViewModal({ syllabus, onClose }) {
                 <>
                   <h4 style={{ fontFamily: 'var(--font-heading)', fontSize: '0.8125rem', fontWeight: 700, margin: '0 0 8px' }}>Books</h4>
                   <ol style={{ margin: '0 0 16px', paddingLeft: '20px' }}>{refs.books.map((b, i) => (
-                    <li key={i} style={{ marginBottom: '4px', fontSize: '0.875rem' }}>{b.authors} ({b.year}). <em>{b.title}</em>. {b.publisher}.</li>
+                    <li key={i} style={{ marginBottom: '4px', fontSize: '0.875rem' }}>{bibliographicLabel(b)}</li>
                   ))}</ol>
                 </>
               )}
@@ -330,7 +332,7 @@ function SyllabusViewModal({ syllabus, onClose }) {
                 <>
                   <h4 style={{ fontFamily: 'var(--font-heading)', fontSize: '0.8125rem', fontWeight: 700, margin: '0 0 8px' }}>Online References</h4>
                   <ol style={{ margin: 0, paddingLeft: '20px' }}>{refs.onlineReferences.map((r, i) => (
-                    <li key={i} style={{ marginBottom: '4px', fontSize: '0.875rem' }}>{r.title}. <a href={r.url} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--sky-600)' }}>{r.url}</a></li>
+                    <li key={i} style={{ marginBottom: '4px', fontSize: '0.875rem',overflowWrap:'anywhere' }}>{bibliographicLabel(r)}. <a href={r.url} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--sky-600)' }}>{r.url}</a></li>
                   ))}</ol>
                 </>
               )}
@@ -414,8 +416,8 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
     courseRequirements: [''],
     gradingSystem: '',
     coursePolicy: [''],
-    books: [{ title: '', authors: '', year: '', publisher: '' }],
-    onlineReferences: [{ title: '', url: '' }],
+    books: [],
+    onlineReferences: [],
     ...initial,
   }))
 
@@ -1185,38 +1187,7 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
             </div>
           )}
 
-          <div className="grid-2" style={{ gap: '16px' }}>
-            <div>
-              <h4 style={{ fontFamily: 'var(--font-heading)', fontSize: '0.8125rem', fontWeight: 700, marginBottom: '8px' }}>Books</h4>
-              {form.books.map((b, i) => (
-                <div key={i} style={{ padding: '10px', border: '1px solid var(--gray-200)', borderRadius: 'var(--radius-md)', marginBottom: '8px', background: 'var(--gray-50)' }}>
-                  <div style={{ display: 'flex', gap: '6px', marginBottom: '6px', alignItems: 'center' }}>
-                    <input className="form-input" style={{ flex: 1 }} data-pulse-field={`books.${i}.title`} aria-label={`Book ${i + 1} title`} value={b.title} onChange={e => { const books = [...form.books]; books[i] = { ...books[i], title: e.target.value }; setForm(prev => ({ ...prev, books })) }} placeholder="Title" />
-                    {form.books.length > 1 && <button className="btn btn-ghost btn-sm" onClick={() => removeListItem('books', i)}><Trash2 size={14} /></button>}
-                  </div>
-                  <div style={{ display: 'flex', gap: '6px' }}>
-                    <input className="form-input" style={{ flex: 1 }} data-pulse-field={`books.${i}.authors`} aria-label={`Book ${i + 1} authors`} value={b.authors} onChange={e => { const books = [...form.books]; books[i] = { ...books[i], authors: e.target.value }; setForm(prev => ({ ...prev, books })) }} placeholder="Authors" />
-                    <input className="form-input" style={{ width: '70px' }} data-pulse-field={`books.${i}.year`} aria-label={`Book ${i + 1} year`} value={b.year} onChange={e => { const books = [...form.books]; books[i] = { ...books[i], year: e.target.value }; setForm(prev => ({ ...prev, books })) }} placeholder="Year" />
-                    <input className="form-input" style={{ flex: 1 }} data-pulse-field={`books.${i}.publisher`} aria-label={`Book ${i + 1} publisher`} value={b.publisher} onChange={e => { const books = [...form.books]; books[i] = { ...books[i], publisher: e.target.value }; setForm(prev => ({ ...prev, books })) }} placeholder="Publisher" />
-                  </div>
-                </div>
-              ))}
-              <button className="btn btn-secondary btn-sm" onClick={() => addListItem('books', { title: '', authors: '', year: '', publisher: '' })}><Plus size={14} /> Add Book</button>
-            </div>
-            <div>
-              <h4 style={{ fontFamily: 'var(--font-heading)', fontSize: '0.8125rem', fontWeight: 700, marginBottom: '8px' }}>Online References</h4>
-              {form.onlineReferences.map((r, i) => (
-                <div key={i} style={{ padding: '10px', border: '1px solid var(--gray-200)', borderRadius: 'var(--radius-md)', marginBottom: '8px', background: 'var(--gray-50)' }}>
-                  <div style={{ display: 'flex', gap: '6px', marginBottom: '6px', alignItems: 'center' }}>
-                    <input className="form-input" style={{ flex: 1 }} data-pulse-field={`onlineReferences.${i}.title`} aria-label={`Online reference ${i + 1} title`} value={r.title} onChange={e => { const refs = [...form.onlineReferences]; refs[i] = { ...refs[i], title: e.target.value }; setForm(prev => ({ ...prev, onlineReferences: refs })) }} placeholder="Title" />
-                    {form.onlineReferences.length > 1 && <button className="btn btn-ghost btn-sm" onClick={() => removeListItem('onlineReferences', i)}><Trash2 size={14} /></button>}
-                  </div>
-                  <input className="form-input" style={{ width: '100%' }} data-pulse-field={`onlineReferences.${i}.url`} aria-label={`Online reference ${i + 1} url`} value={r.url} onChange={e => { const refs = [...form.onlineReferences]; refs[i] = { ...refs[i], url: e.target.value }; setForm(prev => ({ ...prev, onlineReferences: refs })) }} placeholder="https://..." />
-                </div>
-              ))}
-              <button className="btn btn-secondary btn-sm" onClick={() => addListItem('onlineReferences', { title: '', url: '' })}><Plus size={14} /> Add Online Reference</button>
-            </div>
-          </div>
+          <ReferenceIntake syllabus={form} onAdd={reference=>setForm(previous=>addSyllabusReference(previous,reference))} onRemove={reference=>setForm(previous=>removeSyllabusReference(previous,reference))} />
         </div>
       </div>
 

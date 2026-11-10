@@ -16,6 +16,7 @@ The owner asked for an audit of unfinished work across the conversation, with ea
 | Retain/read syllabus links and readable book copies, source citations and readable/PDF exports | [Retained sources](../../system-manual/31-retained-syllabus-sources/README.md), [reader validation](../2026-11-10-course-source-reading/validation/results.md). Unread metadata is explicitly not cited as book content. |
 | Every named instructor receives approved syllabi; BSIT-only student subject enrollment | [Persisted seed](../2026-11-10-approved-course-seed/README.md): all 14 originals across seven named instructors; 417 BSIT students, 1,389 subject memberships, 47 test course/block groups. No other program was enrolled. |
 | Direct capstone paper update based on Chapters 1–2, existing methodology and verified findings | The original Word file was updated and rendered/reviewed in the prior paper increment. Local receipt and backup preserve the before/after evidence. New pipeline tests must not become claims of genuine learner completion or participant evaluation. |
+| Visible week-by-week outline preparation with retained partial results and same-course references | [Progressive outline release](../2026-11-10-progressive-outlines/README.md), pushed at `e296b5f`; production Ready. Use controls place validated weeks without saving. Persistent shared sources and reload restoration remain open. |
 
 ## Active completion queue
 
@@ -24,7 +25,7 @@ The owner asked for an audit of unfinished work across the conversation, with ea
 3. **Persistent shared syllabi:** replace sample-only repository behavior with explicitly shared, authorized copies and reference provenance; preserve private workspaces and original files.
 4. **Multiple blocks with different delivery:** keep one course and multiple confirmed blocks, with authorized block-specific release/deadline behavior consistently enforced on reads and learner commands.
 5. **Reload restoration:** preserve the current route, verified admin support subject, tabs, readers, modal/popover references and loaded view state after a deliberate reload. Revalidate authorization; never replay a business command. Apply this requirement to new features as well.
-6. **Progressive syllabus outline generation:** the owner's latest report shows on-device output-limit failure after targeting the outline table. Generate and display validated weeks individually, keep completed weeks when a later request fails, allow cancellation/resume, preserve manual edits and remain editable through Pulse. Use accessible similar existing syllabi first, cross-reference one or more source sequences, show provenance and supplement with suited readable web sources when needed. Similarity does not authorize reading another person's private workspace.
+6. **Reference intake:** link/file controls, explicit metadata extraction, retained copies and private keyword/vector indexing passed the release gate and hosted database canary. Production HTTP verification follows deployment. Metadata that the source does not supply stays missing; catalog listings are not teaching evidence.
 
 ## Binding clarifications
 

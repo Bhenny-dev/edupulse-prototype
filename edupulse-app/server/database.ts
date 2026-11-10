@@ -102,7 +102,7 @@ async function reindexLocal(signal: AbortSignal) {
   return reindexPromise
 }
 
-export type IngestInput = { title: string; text: string; sourceType?: string; fileName?: string; course?: string }
+export type IngestInput = { title: string; text: string; sourceType?: string; fileName?: string; course?: string; source?: {id:string;sha256:string;readAt:string;reference:import('./sources/contracts.js').SourceReference;truncated:boolean;url:string} }
 export type IngestReport = { id: string; duplicate: boolean; chunks: number; embeddingModel: string; quality: Quality; stages: Stage[]; pages: number; sections: number; flaggedChunks: number }
 
 /** Clean → evaluate → chunk → embed → index. Text is the reviewed extraction or pasted text. */
@@ -113,7 +113,7 @@ export async function ingest(identity: Identity, input: IngestInput, signal: Abo
   const pages = [...text.matchAll(/^\[\[(?:Page|Slide) (\d+)\]\]$/gm)].length
   const quality = await timed('evaluate', () => evaluateQuality(text), q => `Quality ${q.score}/100 (${q.grade}).`)
   if (quality.grade === 'unusable' || text.length < 40) throw new ApiError(422, 'NO_READABLE_TEXT', `This text is not usable for retrieval. ${quality.warnings[0] || ''}`.trim())
-  const hash = createHash('sha256').update(`${input.title}\n${text}`).digest('hex')
+  const hash = createHash('sha256').update(`${input.title}\n${text}${input.source?'\n'+input.source.id:''}`).digest('hex')
   const documents = await listDocuments(identity)
   const existing = documents.find(d => d.content_hash === hash)
   if (existing) return { id: existing.id, duplicate: true, chunks: 0, embeddingModel: EMBEDDING_MODEL_ID, quality, stages, pages, sections: 0, flaggedChunks: 0 }
@@ -121,7 +121,7 @@ export async function ingest(identity: Identity, input: IngestInput, signal: Abo
   const chunks = await timed('chunk', () => chunkDocument(input.title, text), c => `${c.length} passages with page/section metadata (900-character window, 120 overlap).`)
   const vectors = await timed('embed', () => embedTexts(chunks.map(c => c.embedText), signal), v => `${v.length} vectors · ${EMBEDDING_MODEL_ID} · 384 dimensions.`)
   signal.throwIfAborted()
-  const sourceType = input.sourceType || 'text', meta = { score: quality.score, grade: quality.grade, warnings: quality.warnings.slice(0, 6), words: quality.metrics.words, injectionFlagged: quality.injection.flagged, ...(input.course ? { course: input.course } : {}) }
+  const sourceType = input.sourceType || 'text', meta = { score: quality.score, grade: quality.grade, warnings: quality.warnings.slice(0, 6), words: quality.metrics.words, injectionFlagged: quality.injection.flagged, ...(input.course ? { course: input.course } : {}), ...(input.source?{source:input.source}:{}) }
   let id: string = randomUUID()
   await timed('index', async () => {
     if (config().database === 'local') {
@@ -162,10 +162,10 @@ export async function deleteDocument(identity: Identity, id: string) {
   }
 }
 
-export type ChunkHit = { id: string; document_id: string; title: string; text: string; page: number | null; section: string | null; flagged: boolean; similarity: number | null; vector_rank: number | null; keyword_rank: number | null }
+export type ChunkHit = { id: string; document_id: string; title: string; text: string; page: number | null; section: string | null; flagged: boolean; similarity: number | null; vector_rank: number | null; keyword_rank: number | null; quality?:unknown }
 const localHybrid = `
 WITH scope AS (
-  SELECT c.id, c.document_id, d.title, c.text, c.page, c.section, c.flagged, c.embedding, c.tsv
+  SELECT c.id, c.document_id, d.title, d.quality, c.text, c.page, c.section, c.flagged, c.embedding, c.tsv
   FROM ai_chunks c JOIN ai_documents d ON d.id = c.document_id
   WHERE d.owner_id = $2 AND d.embedding_model = $3 AND ($5::text[] IS NULL OR d.id = ANY($5::text[]))
 ), semantic AS (
@@ -175,7 +175,7 @@ WITH scope AS (
   SELECT id, row_number() OVER (ORDER BY ts_rank_cd(tsv, q) DESC) AS rank
   FROM scope, to_tsquery('english', $4) q WHERE $4 <> '' AND tsv @@ q ORDER BY ts_rank_cd(tsv, q) DESC LIMIT $6
 )
-SELECT s.id, s.document_id, s.title, s.text, s.page, s.section, s.flagged, sem.similarity, sem.rank::int AS vector_rank, kw.rank::int AS keyword_rank
+SELECT s.id, s.document_id, s.title, s.quality, s.text, s.page, s.section, s.flagged, sem.similarity, sem.rank::int AS vector_rank, kw.rank::int AS keyword_rank
 FROM scope s LEFT JOIN semantic sem ON sem.id = s.id LEFT JOIN keyword kw ON kw.id = s.id
 WHERE sem.id IS NOT NULL OR kw.id IS NOT NULL`
 
@@ -194,5 +194,10 @@ export async function searchPrivate(identity: Identity, embedding: number[], ter
   if (!identity.token) return []
   const { data, error } = await userDb(identity).rpc('edupulse_hybrid_chunks', { query_embedding: embedding, query_terms: tsquery ? tsquery.split(' | ') : [], match_count: k, model: EMBEDDING_MODEL_ID, document_ids: documentIds?.length ? documentIds : null })
   if (error) throw new ApiError(503, 'DATABASE_UNAVAILABLE', 'Private knowledge search is unavailable. Apply the agentic RAG migration.')
-  return data || []
+  const hits=(data||[]) as ChunkHit[]
+  if(!hits.length)return hits
+  const metadata=await userDb(identity).from('edupulse_ai_documents').select('id,quality').in('id',[...new Set(hits.map(hit=>hit.document_id))]).abortSignal(signal)
+  if(metadata.error)throw new ApiError(503,'DATABASE_UNAVAILABLE','Source citation metadata is unavailable. Retry the private search.')
+  const byId=new Map((metadata.data||[]).map(row=>[row.id,row.quality]))
+  return hits.map(hit=>({...hit,quality:byId.get(hit.document_id)}))
 }

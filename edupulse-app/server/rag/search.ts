@@ -5,6 +5,7 @@ import { cosine, embedTexts, rerankScores } from '../ml/onnx.js'
 import type { Evidence } from '../../src/lib/rag/types.js'
 import { lexicalRelevance, reciprocalRankFusion } from '../../src/lib/rag/rank.js'
 import { searchTerms } from '../../src/lib/rag/text.js'
+import {indexedSourceMetadata} from '../sources/contracts.js'
 
 let guideIndex: Promise<{ id: string; title: string; text: string; vector: number[] }[]> | undefined
 /** The public product guide is small and identical for everyone, so it is embedded once in memory. */
@@ -38,7 +39,7 @@ export async function hybridSearch(identity: Identity, query: string, options: {
     }
   }
   const candidates = new Map<string, Evidence>()
-  for (const hit of privateHits) candidates.set(hit.id, toEvidence({ id: hit.id, documentId: hit.document_id, title: hit.title, text: hit.text, page: hit.page, section: hit.section, flagged: hit.flagged, origin: 'private', method: hit.vector_rank && hit.keyword_rank ? 'hybrid' : hit.vector_rank ? 'vector' : 'keyword', similarity: hit.similarity === null ? null : Number(Number(hit.similarity).toFixed(4)) }, query))
+  for (const hit of privateHits) candidates.set(hit.id, toEvidence({ id: hit.id, documentId: hit.document_id, title: hit.title, text: hit.text, page: hit.page, section: hit.section, flagged: hit.flagged, origin: 'private', method: hit.vector_rank && hit.keyword_rank ? 'hybrid' : hit.vector_rank ? 'vector' : 'keyword', similarity: hit.similarity === null ? null : Number(Number(hit.similarity).toFixed(4)),...indexedSourceMetadata(hit.quality) }, query))
   const guide = options.documentIds?.length ? [] : await publicGuide(signal)
   const guideScored = guide.map(d => ({ d, similarity: cosine(embedding!, d.vector), lexical: lexicalRelevance(query, `${d.title} ${d.text}`) }))
   for (const { d, similarity, lexical } of guideScored) {

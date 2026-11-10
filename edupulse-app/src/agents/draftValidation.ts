@@ -61,6 +61,7 @@ export function validateDraft(raw: unknown, input: DraftInput, sources: string, 
     return Object.entries(value).some(([key, item]) => key === 'url' && typeof item === 'string' ? Boolean(item && !knownUrls.has(item)) : unknownUrls(item))
   }
   if (unknownUrls(patch)) return issue('TOOL_UNVERIFIED_SOURCE', ['Use only exact URLs from the supplied context and research; remove invented links.'])
-  if ('books' in patch && patch.books?.some(book => [book.title, book.authors, book.year, book.publisher].some(value => value && !sources.toLowerCase().includes(value.toLowerCase())))) return issue('TOOL_UNVERIFIED_SOURCE', ['Use only book metadata explicitly present in supplied sources, or leave books empty.'])
+  const references=[...('books' in patch?patch.books||[]:[]),...('onlineReferences' in patch?patch.onlineReferences||[]:[])]
+  if (references.some(ref => [ref.title, ref.authors, ref.year, ref.publisher,ref.doi,ref.isbn].some(value => value && !sources.toLowerCase().includes(value.toLowerCase())))) return issue('TOOL_UNVERIFIED_SOURCE', ['Use only citation metadata explicitly present in supplied sources, or leave unavailable fields empty.'])
   return { patch } as const
 }

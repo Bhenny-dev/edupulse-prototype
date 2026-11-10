@@ -67,3 +67,5 @@ Scroll within the reading area to continue through the table and list. The title
 ## Evidence boundaries
 
 These captures use controlled account, source and provider transports with original sample teaching text. The book attachment uses actual generated PDF bytes and extraction. They prove interaction and presentation, not a real institution's book contents or paid inference quality. Native tests separately exercise real PDF extraction, private persistence, generation citations and HTTP delivery. A live RFC download proves public fetching and cache reuse; a rolled-back hosted SQL canary proves ownership, immutable copies and denied access. See [release validation](../../versions/2026-11-09-retained-syllabus-sources/validation/results.md).
+
+New references can be added directly in **Syllabus Builder → References** using a link or readable file, with automatic metadata extraction and retryable private indexing. See [Manual 35](../35-reference-intake/README.md). Removing a retained version also removes its associated indexed search passages; removing only the syllabus reference keeps the private copy for reuse.

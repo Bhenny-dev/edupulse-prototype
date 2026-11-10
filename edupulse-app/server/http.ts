@@ -154,7 +154,7 @@ export async function handleRequest(request: Request): Promise<Response> {
       const command=sourceCommand.parse(await readJson(request,bodyLimit(action))),key=`${identity.id}:source-reader`,now=Date.now()
       const bucket=buckets.get(key);if(bucket&&bucket.until>now&&bucket.count>=60)throw new ApiError(429,'RATE_LIMIT','Wait before reading more source requests. Retained copies remain available.',60)
       buckets.set(key,{count:bucket&&bucket.until>now?bucket.count+1:1,until:bucket&&bucket.until>now?bucket.until:now+60000})
-      if(['read','attach','remove'].includes(command.operation)){if(active.has(key))throw new ApiError(429,'REQUEST_IN_PROGRESS','A source update is already running. Wait for it to finish.');active.add(key);activeId=key}
+      if(['read','attach','remove','import-link','import-file','index'].includes(command.operation)){if(active.has(key))throw new ApiError(429,'REQUEST_IN_PROGRESS','A source update is already running. Wait for it to finish.');active.add(key);activeId=key}
       return json(await executeSources(identity,command,AbortSignal.any([request.signal,AbortSignal.timeout(90000)])))
     }
     if (action === 'students') return json(await readStudents(effective,new URL(request.url)))

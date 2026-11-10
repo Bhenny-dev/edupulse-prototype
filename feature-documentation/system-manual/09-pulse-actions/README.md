@@ -164,3 +164,5 @@ Open **Pulse options** and choose **Voice input**. Review recognized text before
 ## Outline previews while generation continues
 
 **Course Outline** preparation now uses one teaching week per step in both runtimes. The mounted builder displays completed previews before the final week finishes. **Use completed weeks** or **Use week 2** places reviewed rows into the form; changed manual rows and exams remain. A later failure keeps completed previews. Saving remains a separate confirmation. [Manual 34](../34-progressive-outlines/README.md) shows this interface; other whole-syllabus sections retain their final confirmation card.
+
+Reference edits retain supplied citation metadata. Validation checks the retrieved source title and retained bibliographic details as well as its URL and body text, so an exact source title is not rejected simply because it is absent from the passage body. New references enter through links/files in [Manual 35](../35-reference-intake/README.md). Placement and saving remain explicit.
