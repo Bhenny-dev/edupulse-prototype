@@ -47,3 +47,7 @@ Additive reference reading and immutable private copies extend the restored Cour
 ### Person follow-up correction
 
 The owner reported a registered-person answer followed by ?do you know him on fb?? returning aircraft. Preserve the recent person in the same conversation, recheck current permissions, and distinguish a public search suggestion from verified identity. Explicit topic changes must not inherit the prior person. Completed account switches continue to clear private conversation state.
+
+## Owner correction: resumable courseware parts, 10 November 2026
+
+The owner explicitly requested visible saved chunks and continuation after interruption. This supersedes the earlier whole-week-only visibility rule for unfinished drafts. Save validated parts in the existing private workspace, expose them as an unfinished read-only preview, and resume only missing compatible parts after an explicit action. Complete replacement still requires every requested plan part and the original draft comparison. Preserve published/reviewed content, reject incomplete checkpoint review/release at API and database boundaries, and never start paid inference merely because a page reloads. A checkpoint is not student delivery or completion.

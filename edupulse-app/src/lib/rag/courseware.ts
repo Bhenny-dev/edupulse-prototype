@@ -346,7 +346,7 @@ async function draftStepGraph(input: CourseInput, part:CoursewareStep, signal: A
     .compile()
   const result = await graph.invoke({}, { recursionLimit: 18, signal })
   const best = result.best as { draft: Draft; coverage: Coverage; verification: Verification; answerKey: AnswerKeyCheck } | null
-  if (!best) throw new ApiError(502, 'INVALID_GENERATION', 'The model did not produce a valid draft after two attempts. Existing courseware was preserved. Try a smaller or clearer outline.')
+  if (!best) throw new ApiError(502, 'INVALID_GENERATION', 'This part did not pass the draft checks after two attempts. Saved parts and existing courseware are preserved. Resume to retry this part, or check the source text and model connection.')
   if(part.type==='material'&&best.coverage.items.some(item=>item.kind==='topic'&&item.status==='missing'))throw new ApiError(502,'INCOMPLETE_COURSEWARE','The lesson still omits an outline topic after correction. Existing courseware was preserved.')
   const sources = (result.evidence as Evidence[]).filter(e => e.id !== 'outline')
   return {
@@ -365,7 +365,7 @@ export async function draftCoursewareStep(input:CourseInput,signal:AbortSignal,d
   const plan=courseInput.shape.plan.parse(input.plan||{})
   return draftStepGraph({...input,topics:part.topics,plan:{...plan,activities:part.type==='activity'?part.planned:'',assessments:part.type==='assessment'?part.planned:''}},part,signal,deps)
 }
-type StepResult=Awaited<ReturnType<typeof draftCoursewareStep>>
+export type StepResult=Awaited<ReturnType<typeof draftCoursewareStep>>
 function review(results:StepResult[]) {
   const first=results[0]!,items=new Map<string,CoverageItem>()
   for(const result of results)for(const item of result.coverage.items) {
@@ -377,15 +377,16 @@ function review(results:StepResult[]) {
   const verification:Verification={claims,method:results.some(r=>r.verification.method==='semantic+lexical')?'semantic+lexical':'lexical',supported,unsupported:results.reduce((sum,r)=>sum+r.verification.unsupported,0),corroborated:results.reduce((sum,r)=>sum+r.verification.corroborated,0),invalidCitations:[...new Set(results.flatMap(r=>r.verification.invalidCitations))],groundedness:claims.length?supported/claims.length:null,citationAccuracy:null}
   const trace=results.flatMap(result=>result.trace.map(stage=>({...stage,detail:result.step.key+': '+stage.detail})))
   const sources=[...new Map(results.flatMap(result=>result.sources).map(source=>[source.id,source])).values()]
-  return {requestId:first.requestId,provider:first.provider,model:first.model,sources,trace,warning:[...new Set(results.map(result=>result.warning).filter(Boolean))].join(' ')||null,
+  return {requestId:first.requestId,provider:first.provider,model:first.model,parts:results.map(result=>({key:result.step.key,requestId:result.requestId,provider:result.provider,model:result.model})),sources,trace,warning:[...new Set(results.map(result=>result.warning).filter(Boolean))].join(' ')||null,
     coverage:{items:coverageItems,coverage:coverageItems.length?coverageItems.reduce((sum,item)=>sum+(item.status==='covered'?1:item.status==='partial'?0.5:0),0)/coverageItems.length:0,method:results.some(r=>r.coverage.method==='semantic+lexical')?'semantic+lexical' as const:'lexical' as const},verification,
     answerKey:{checked:results.reduce((sum,r)=>sum+r.answerKey.checked,0),consistent:results.reduce((sum,r)=>sum+r.answerKey.consistent,0),issues:results.flatMap(r=>r.answerKey.issues)},
     agentReport:agentReport(trace,{mode:'courseware',verification,sources:sources.length})}
 }
-/** No partial lesson is exposed: every planned topic group and requested item must finish first. */
-export function assembleCourseware(input:CourseInput,results:StepResult[],types?:CoursewareStep['type'][]) {
-  const plan=coursewarePlan(input).filter(part=>!types||types.includes(part.type))
+/** Incomplete previews are draft-only checkpoints; final assembly still requires every planned part. */
+export function assembleCourseware(input:CourseInput,results:StepResult[],types?:CoursewareStep['type'][],preview=false) {
+  const plan=coursewarePlan(input).filter(part=>(!types||types.includes(part.type))&&(!preview||results.some(result=>result.step.key===part.key)))
   if(!results.length||results.length!==plan.length||new Set(results.map(result=>result.step.key)).size!==plan.length||plan.some(part=>!results.some(result=>result.step.key===part.key))||results.some(result=>!result.content[result.step.type]))throw new ApiError(502,'INCOMPLETE_COURSEWARE','The complete outline plan did not finish. Existing courseware was preserved.')
+  results=plan.map(part=>results.find(result=>result.step.key===part.key)!)
   const ids=[...new Set(results.flatMap(result=>result.sources.map(source=>source.id)))]
   results=results.map(result=>{
     const map=result.sources.map(source=>ids.indexOf(source.id)+1)

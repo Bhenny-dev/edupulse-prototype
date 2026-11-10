@@ -184,24 +184,41 @@ export async function downloadRetainedSource(id:string) {
  const sha=await crypto.subtle.digest('SHA-256',bytes);if([...new Uint8Array(sha)].map(byte=>byte.toString(16).padStart(2,'0')).join('')!==result.sha256)throw new Error('The retained file checksum did not match. Download was stopped.')
  const {downloadBlob}=await import('../utils/syllabusFiles');downloadBlob(new Blob([bytes],{type:result.mime}),result.name)
 }
-export async function generateCoursewareParts(input:CourseInput,signal?:AbortSignal,types?:('material'|'activity'|'assessment')[]) {
-  const [{coursewarePlan},{draftCoursewareStep,assembleCourseware}]=await Promise.all([import('./rag/coursewarePlan'),import('./rag/courseware')])
-  const results:Awaited<ReturnType<typeof draftCoursewareStep>>[]=[]
+export async function generateCoursewareParts(input:CourseInput,signal?:AbortSignal,types?:('material'|'activity'|'assessment')[],options:{completed?:import('./rag/courseware').StepResult[];onPart?:(results:import('./rag/courseware').StepResult[])=>Promise<void>;onProgress?:(completed:number,total:number,key:string)=>void}={}) {
+  const [{coursewarePlan,COURSEWARE_PLAN_VERSION},{draftCoursewareStep,assembleCourseware}]=await Promise.all([import('./rag/coursewarePlan'),import('./rag/courseware')])
+  const results:Awaited<ReturnType<typeof draftCoursewareStep>>[]=[...(options.completed||[])]
+  const plan=coursewarePlan(input).filter(part=>!types||types.includes(part.type))
+  let failed:unknown
   let sourceWarning=''
-  if(input.syllabusReferences?.length){
+  if(input.syllabusReferences?.length&&plan.some(part=>!results.some(result=>result.step.key===part.key))){
+    options.onProgress?.(results.length,plan.length,'sources')
     try{const sources=await prepareSyllabusSources(input.syllabusReferences.map(ref=>({url:'',authors:'',year:'',publisher:'',...ref})),signal,false,input.research!=='sources');if(typeof window!=='undefined')window.dispatchEvent(new CustomEvent('edupulse-sources-updated',{detail:{sources,sessionVersion:aiSessionVersion()}}));if(sources.some(source=>!source.snapshot))sourceWarning='Some syllabus references could not be read. Only actual retrieved passages can support citations.'}
     catch(error){signal?.throwIfAborted();sourceWarning='Syllabus source retention was unavailable. No unread book or linked-page contents are claimed.'}
   }
-  for(const part of coursewarePlan(input).filter(part=>!types||types.includes(part.type))) {
+  for(const part of plan) {
     signal?.throwIfAborted()
-    const scoped={...input,stepKey:part.key}
-    if(aiPreference()!=='browser')results.push({...await aiRequest<Awaited<ReturnType<typeof draftCoursewareStep>>>('courseware','POST',scoped,signal),step:part})
-    else {
-      const abort=AbortSignal.any([AbortSignal.timeout(180000),...(signal?[signal]:[])])
-      const deps=browserDeps(abort,{id:'device-session',role:'guest',local:false})
-      results.push(await draftCoursewareStep(scoped,abort,{...deps,generate:invokeBrowserModel,sourceEvidence:(references,focus,signal)=>aiRequest('syllabus-sources','POST',{operation:'evidence',references,focus},signal)}))
+    if(results.some(result=>result.step.key===part.key))continue
+    options.onProgress?.(results.length,plan.length,part.key)
+    const scoped={...input,planVersion:COURSEWARE_PLAN_VERSION,stepKey:part.key}
+    try {
+      if(aiPreference()!=='browser')results.push({...await aiRequest<Awaited<ReturnType<typeof draftCoursewareStep>>>('courseware','POST',scoped,signal),step:part})
+      else {
+        const abort=AbortSignal.any([AbortSignal.timeout(180000),...(signal?[signal]:[])])
+        const deps=browserDeps(abort,{id:'device-session',role:'guest',local:false})
+        results.push(await draftCoursewareStep(scoped,abort,{...deps,generate:invokeBrowserModel,sourceEvidence:(references,focus,signal)=>aiRequest('syllabus-sources','POST',{operation:'evidence',references,focus},signal)}))
+      }
+    } catch(error) {
+      signal?.throwIfAborted()
+      // Only model-content failures can move on to another independently planned part.
+      // Auth, quota, network, timeout and save failures stop further spending immediately.
+      if(!options.onPart||!['INVALID_GENERATION','MODEL_TOKEN_LIMIT','INCOMPLETE_COURSEWARE'].includes((error as {code?:string}).code||''))throw error
+      failed=error;continue
     }
+    // Wait for durable acknowledgement before spending inference on the next part.
+    signal?.throwIfAborted()
+    await options.onPart?.([...results])
   }
+  if(failed)throw failed
   const assembled=assembleCourseware(input,results,types)
   if(sourceWarning){assembled.warning=[assembled.warning,sourceWarning].filter(Boolean).join(' ');for(const review of Object.values(assembled.reviews))if(review)review.warning=[review.warning,sourceWarning].filter(Boolean).join(' ')}
   return assembled

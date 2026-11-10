@@ -2,6 +2,7 @@ import { jsonValue } from '../utils/jsonValue'
 import { createContext, useContext, useCallback } from 'react'
 import { useWorkspace } from './WorkspaceContext'
 import { mergeDrafts, mergeGeneratedWeek } from '../utils/contentUpdates'
+import { checkpointId } from '../utils/coursewareCheckpoint'
 
 /* ─── Content Store Context ───
  * Workspace-backed, account-scoped store for generated courseware content.
@@ -24,11 +25,18 @@ export function ContentStoreProvider({ children }) {
     setStore(prev => mergeDrafts(prev, weekUpdates))
   }, [setStore])
 
-  const commitWeekDrafts = useCallback(async (updates,{syllabus,week,expected,types,missingOnly=false}) => {
+  const commitGenerationPart=useCallback(async(item,{syllabus,expected})=>commit(data=>{
+    if(jsonValue(data.syllabi.find(value=>value.id===syllabus.id))!==jsonValue(syllabus))throw new Error('The syllabus changed. Saved parts remain available; restart from the updated outline.')
+    const id=checkpointId(syllabus.id,item.week)
+    if(jsonValue(data.content[id])!==jsonValue(expected))throw new Error('Generation progress changed in another session. Reopen the saved workspace before resuming.')
+    return {...data,content:{...data.content,[id]:item}}
+  }),[commit])
+  const commitWeekDrafts = useCallback(async (updates,{syllabus,week,expected,types,missingOnly=false,checkpoint}) => {
     let saved=0
     const receipt=await commit(data=>{
       if(jsonValue(data.syllabi.find(item=>item.id===syllabus.id))!==jsonValue(syllabus))throw new Error('The syllabus changed during generation. Generate from its current outline.')
       const content=mergeGeneratedWeek(data.content,updates,expected,{syllabusId:syllabus.id,week,types,missingOnly})
+      if(checkpoint){const id=checkpointId(syllabus.id,week);if(jsonValue(data.content[id])!==jsonValue(checkpoint))throw new Error('Generation progress changed before completion. Reopen the workspace to resume.');delete content[id]}
       saved=Object.keys(updates).filter(id=>content[id]!==data.content[id]).length
       return {...data,content}
     })
@@ -36,7 +44,7 @@ export function ContentStoreProvider({ children }) {
   },[commit])
 
   const checkItem = useCallback((contentId) => {
-    setStore(prev => !prev[contentId] ? prev : ({
+    setStore(prev => !prev[contentId] || prev[contentId].generationCheckpoint ? prev : ({
       ...prev,
       [contentId]: { ...prev[contentId], status: 'checked', outOfAlignment:false },
     }))
@@ -46,21 +54,21 @@ export function ContentStoreProvider({ children }) {
     setStore(prev => {
       const next = { ...prev }
       for (const id of contentIds) {
-        if (next[id]) next[id] = { ...next[id], status: 'checked', outOfAlignment:false }
+        if (next[id] && !next[id].generationCheckpoint) next[id] = { ...next[id], status: 'checked', outOfAlignment:false }
       }
       return next
     })
   }, [setStore])
 
   const toggleVisibility = useCallback((contentId, newStatus) => {
-    setStore(prev => !prev[contentId] || (newStatus === 'published' && !['checked', 'published'].includes(prev[contentId].status)) ? prev : ({
+    setStore(prev => !prev[contentId] || prev[contentId].generationCheckpoint || (newStatus === 'published' && !['checked', 'published'].includes(prev[contentId].status)) ? prev : ({
       ...prev,
       [contentId]: { ...prev[contentId], status: newStatus },
     }))
   }, [setStore])
 
   const saveContent = useCallback((contentId, newContent) => {
-    setStore(prev => !prev[contentId] ? prev : ({
+    setStore(prev => !prev[contentId] || prev[contentId].generationCheckpoint ? prev : ({
       ...prev,
       [contentId]: { ...prev[contentId], content: newContent, status: 'draft' },
     }))
@@ -68,13 +76,14 @@ export function ContentStoreProvider({ children }) {
   const commitContent = useCallback(async (contentId, newContent, expected) => commit(data => {
     const current = data.content[contentId]
     if (!current) throw new Error('Open a saved courseware draft before asking Pulse to revise it.')
+    if (current.generationCheckpoint) throw new Error('Resume this unfinished generation before editing its assembled draft.')
     if (current.status === 'published') throw new Error('Published content is protected. Create or open a draft version before using Pulse edits.')
     if (jsonValue(current.content) !== jsonValue(expected)) throw new Error('This courseware changed while the proposal was being prepared. Reopen it and request a fresh preview.')
     return { ...data, content: { ...data.content, [contentId]: { ...current, content: newContent, title: newContent.title, status: 'draft' } } }
   }), [commit])
 
   return (
-    <ContentStoreContext.Provider value={{ store, generateCourse, generateWeek, commitWeekDrafts, checkItem, bulkCheck, toggleVisibility, saveContent, commitContent }}>
+    <ContentStoreContext.Provider value={{ store, generateCourse, generateWeek, commitWeekDrafts, commitGenerationPart, checkItem, bulkCheck, toggleVisibility, saveContent, commitContent }}>
       {children}
     </ContentStoreContext.Provider>
   )

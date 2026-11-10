@@ -6,7 +6,7 @@
 
    ![Five loop topics with two planned draft items](01-planned-items.png)
 
-2. Choose **View** on the learning material. Read its explanations and worked examples rather than relying on an overview. The writer receives the supported topics (up to 40), outcomes and supplied institutional/course context. Lesson parts contain at most three topics per generation call and are assembled into one document before saving. The sample starts with **State, conditions and loop counters** and **Worked example and boundary cases**.
+2. Choose **View** on the learning material. Read its explanations and worked examples rather than relying on an overview. The writer receives the supported topics (up to 40), outcomes and supplied institutional/course context. Each lesson call handles one outline topic. Validated parts are saved as an unfinished preview; the complete lesson is assembled when the requested plan finishes. The sample starts with **State, conditions and loop counters** and **Worked example and boundary cases**.
 
    ![Lesson context and the first worked example](02-lesson-context.png)
 
@@ -14,7 +14,7 @@
 
    ![Nested loop worked trace and bounded-loop practice](03-worked-example.png)
 
-4. Read **References** and then **AI draft review** at the end. Material coverage combines its bounded parts; activity and assessment reviews concern their own outcomes and format. In this controlled example, **100% coverage** means all measured topics were detected, while **0 supported, 47 for your verification** explicitly leaves factual verification to the instructor. There is no answer-key line for a document with no objective questions. Missing references remain visible and must be resolved before publication.
+4. Read **References** and then **AI draft review** at the end. Material coverage combines its bounded parts; activity and assessment reviews concern their own outcomes and format. Coverage indicates detected outline alignment; statements marked for verification still need instructor review. There is no answer-key line for a document with no objective questions. Missing references remain visible and must be resolved before publication.
 
    ![References followed by the final material review](04-final-review.png)
 
@@ -22,11 +22,35 @@
 
    ![Planned discussion guide with preparation, tasks and review](05-discussion-guide.png)
 
-**Generate missing content** skips saved types. Explicit regeneration preserves checked/published types before inference, retains manually authored work and removes obsolete unreviewed AI types only after a complete successful replacement. A changed syllabus or edited draft cancels the save. Failure in any required part leaves the saved week intact; success is reported only after the revision-checked workspace response. Generation never checks or publishes material or records student completion. Existing thin drafts are not silently rewritten: review the outline and explicitly regenerate the unreviewed week.
+**Generate missing content** skips completed saved types. Explicit regeneration preserves checked/published types before inference and removes obsolete unreviewed AI types only after a complete successful replacement. A changed syllabus or edited draft cancels the replacement. The original draft comparison survives interruption and reload: **Resume** cannot silently overwrite a later instructor edit. **Regenerate week** explicitly starts a new plan. Generation never checks or publishes material or records student completion.
+
+## Save parts and resume
+
+The progress row reports saved parts while the next lesson is generating. **Stop generation** stops further inference. The unfinished item has **View**, so its available teaching sections can be read before the entire week finishes. Existing saved materials remain alongside the preview.
+
+![One saved lesson part while the next is generating](10-incremental-progress.png)
+
+A part that fails content checks does not discard other valid parts. The app tries other independently planned parts, then reports **Generation did not finish**. **Generate All Content** also proceeds to other teaching weeks for these content failures. Connection, quota, timeout and persistence errors stop additional calls. Failed or in-flight calls may need to run again; acknowledged successful parts are not inferred again.
+
+![Failed part with saved unfinished draft and Resume](06-saved-parts.png)
+
+After a deliberate reload, the owner workspace restores the saved parts and offers **Resume** for the week or **Resume generation** for missing course content. Reload does not start AI calls. Resume checks the input/plan fingerprint; changed input starts a fresh plan instead of mixing incompatible parts. A provider may be changed before resuming; the original provider/model/request identifiers remain recorded for each completed part.
+
+![Saved progress restored after reload](07-resume-after-reload.png)
+
+The unfinished reader shows its saved sections and an unfinished subtitle. It supports **Print** and **Download PDF**, retaining that subtitle, but has no **Edit**, **Check**, **Publish** or delivery action. Complete the plan before reviewing its final items. The API and database also reject changing a marked checkpoint to checked, published or hidden.
+
+![Read-only unfinished document](08-unfinished-reader.png)
+
+The Course list counts complete items separately from **1 unfinished week**. Its **View** action opens the existing course. Resume is available in light/dark and narrow layouts without changing the restored navigation.
+
+![Course list distinguishes unfinished work](12-course-list-progress.png)
+![Dark resume controls](11-dark-resume.png)
+![Narrow layout with saved progress](09-mobile-resume.png)
 
 ## Evidence boundaries
 
-These five captures use original sample loop teaching text through the actual courseware graph with controlled account, provider and workspace transports. The connection badge is a simulated ready state. They demonstrate rendering, planned outputs, final evaluation and save/reload interaction; they do not establish hosted sign-in, paid-provider quality or student activity. A separate native HTTP test uses the real API and isolated database to prove a failed later part leaves the revision unchanged and a complete week persists. A separate installed `qwen2.5:1.5b` smoke generated 393 body words for one topic from supplied sample teaching text in 45.107 seconds using one 2,400-token writer call. That source-constrained smoke does not establish independent curriculum accuracy, general free-model reliability or successful paid-provider inference. See the [release validation](../../versions/2026-11-09-outline-driven-courseware/validation/results.md).
+These captures use original sample loop teaching text through the actual courseware graph with controlled account, provider and workspace transports. They demonstrate rendering, planned outputs, final evaluation, incremental saving and explicit resume; they do not establish hosted sign-in, paid-provider quality or student activity. The current native HTTP test uses the real API and isolated database to save five acknowledged parts, recover them after a failed activity call and assemble the final week. Database tests separately enforce the draft-only checkpoint boundary. Historical local-model evidence remains in the [original validation](../../versions/2026-11-09-outline-driven-courseware/validation/results.md); current evidence and limitations are in the [resumable courseware release](../../versions/2026-11-10-resumable-courseware/validation/results.md).
 
 ## Read references before regenerating
 

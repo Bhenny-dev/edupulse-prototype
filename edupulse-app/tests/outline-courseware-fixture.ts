@@ -12,16 +12,18 @@ export async function outlineCoursewareUI(page:Page) {
     [quizId]:{syllabusId:syllabus.id,week:5,type:'assessment',status:'draft',content:{title:'Previous automatic readiness quiz',questions:[],ai:{requestId:'old-fixture'}}},
   }})
   const requests:{key:string;topics:string[]}[]=[],prompts:{topics:string[];generationStep:string}[]=[]
-  let failure=''
+  let failure='',held='',release=()=>{}
+  let gate=Promise.resolve()
   await page.route('**/api/ai?action=health',route=>route.fulfill({json:{ready:true,provider:'Controlled instructional fixture',model:'Original sample teaching text',database:{ready:true,kind:'synthetic'},identity:{mode:'account',role:'instructor'}}}))
   await page.route('**/api/ai?action=courseware',async route=>{
     const input=courseInput.parse(route.request().postDataJSON());requests.push({key:input.stepKey||'',topics:input.topics})
-    if(input.stepKey===failure)return route.fulfill({status:502,json:{error:{code:'MODEL_TOKEN_LIMIT',message:'The selected model stopped before this item was complete. Existing courseware was preserved.'}}})
+    if(input.stepKey===held)await gate
+    if(input.stepKey===failure)return route.fulfill({status:502,json:{error:{code:'INVALID_GENERATION',message:'This part did not pass the draft checks. Saved parts and existing courseware are preserved. Resume to retry this part.'}}})
     const result=await draftCoursewareStep(input,AbortSignal.timeout(10000),{provider:'Controlled instructional fixture',model:'Original sample teaching text',search:async()=>({evidence:[]}),generate:async(_system,prompt)=>{
       const part=JSON.parse(prompt);prompts.push(part)
       return JSON.stringify(part.generationStep==='activity'?{activity:loopDiscussion}:{material:loopMaterialFor(part.topics)})
     }})
     return route.fulfill({json:result})
   })
-  return {...fixture,requests,prompts,syllabus,id,quizId,failStep:(key:string)=>{failure=key}}
+  return {...fixture,requests,prompts,syllabus,id,quizId,failStep:(key:string)=>{failure=key},holdStep:(key:string)=>{held=key;gate=new Promise<void>(resolve=>{release=resolve})},releaseStep:()=>{held='';release()}}
 }

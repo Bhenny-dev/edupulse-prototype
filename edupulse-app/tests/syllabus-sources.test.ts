@@ -69,8 +69,8 @@ test('real PDF snapshots persist privately, reuse cached text, preserve refreshe
   const refs=result.content.material!.sections.find(section=>section.heading==='References')!.body
   assert.match(refs,/retained .*SHA-256/);assert.match(refs,/Listed in the syllabus; readable text was not used/);assert.match(refs,/Unlinked networking book/)
   const multi={...input,topics:['Network components','Network cables','Network switches','Network routers']},parts=coursewarePlan(multi)
-  const second={...result,step:parts[1]!,sources:result.sources.map(source=>({...source,id:source.id+'-second'}))},firstResult={...result,step:parts[0]!}
-  const assembled=assembleCourseware(multi,[firstResult,second]);assert.match(assembled.content.material!.sections[2]!.body,new RegExp('\\['+(result.sources.length+1)+'\\]'));assert.equal(assembled.sources[result.sources.length]!.citation,result.sources.length+1)
+  const groups=parts.map((part,index)=>({...result,step:part,sources:result.sources.map(source=>({...source,id:source.id+'-part-'+index}))}))
+  const assembled=assembleCourseware(multi,[...groups].reverse());assert.match(assembled.content.material!.sections[2]!.body,new RegExp('\\['+(result.sources.length+1)+'\\]'));assert.equal(assembled.sources[result.sources.length]!.citation,result.sources.length+1)
   await executeSources(identity,{operation:'attach',reference:book,name:'licensed-book.pdf',base64:bytes.toString('base64')},signal)
   assert.equal((await sourceManifest(identity,[book]))[0]!.status,'retained')
   process.env.AI_LOCAL_MODE='true'

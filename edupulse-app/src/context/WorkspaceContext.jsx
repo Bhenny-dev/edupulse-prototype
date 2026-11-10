@@ -95,7 +95,11 @@ function WorkspaceSession({ children, owner, user, preview }) {
     if (conflict || error || !mode) throw new Error(error || 'Resolve the workspace connection before applying an agent change.')
     const before = current.current, next = change(before.data)
     if (new TextEncoder().encode(JSON.stringify(next)).length > 2_950_000) throw new Error('The workspace is near its size limit. Export a backup and remove unused attachments first.')
-    if (mode === 'preview') { setJournal(previous => ({ ...previous, data: next, dirty: false })); return { mode: 'preview', data: next, persisted: false } }
+    if (mode === 'preview') {
+      current.current={...before,data:next,dirty:false}
+      setJournal(previous => ({ ...previous, data: next, dirty: false }))
+      return { mode: 'preview', data: next, persisted: false }
+    }
     writeLock.current = true; setSaving(true)
     try {
       let result
@@ -107,7 +111,13 @@ function WorkspaceSession({ children, owner, user, preview }) {
         else throw failure
       }
       if (!mounted.current) throw new Error('The account changed before this update completed. Reopen the account workspace to verify its status.')
-      setJournal(previous => ({ data: previous.data === before.data ? result.data : previous.data, revision: result.revision, dirty: previous.data !== before.data }))
+      const latest=current.current
+      current.current={data:latest.data===before.data?result.data:latest.data,revision:result.revision,dirty:latest.data!==before.data}
+      setJournal(previous => {
+        const confirmed={data:previous.data===before.data?result.data:previous.data,revision:result.revision,dirty:previous.data!==before.data}
+        current.current=confirmed
+        return confirmed
+      })
       void recordAudit(user, 'workspace_save', 'success', `Confirmed Pulse update, revision ${result.revision}`)
       return { ...result, persisted: true }
     } catch (failure) { if (failure.status === 409) { setConflict(true); setError(failure.message) } throw failure }

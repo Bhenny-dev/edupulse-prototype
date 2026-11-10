@@ -1,0 +1,15 @@
+{
+  "checkedAt": "2026-11-10T04:53:35.146584+00:00",
+  "method": "Rolled-back hosted SQL RPC/RLS authorization harness; not a fresh browser sign-in",
+  "migration": "20261110041721_draft_only_generation_checkpoints",
+  "draftCheckpointAcknowledged": true,
+  "checkedPublishedHiddenRejected": true,
+  "transactionRolledBack": true,
+  "workspaceCount": 9,
+  "publicationCount": 3,
+  "attemptCount": 3,
+  "workspaceRevisionDigestUnchanged": true,
+  "scoreDigestUnchanged": true,
+  "studentActivityCreated": false,
+  "liveModelSuccessClaimed": false
+}

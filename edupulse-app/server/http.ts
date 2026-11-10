@@ -4,6 +4,7 @@ import { randomUUID } from 'node:crypto'
 import { createClient } from '@supabase/supabase-js'
 import { z } from 'zod'
 import { ApiError, chatInput, chatMemoryInput, courseInput, documentInput, referencesInput, researchInput, similarityInput, type Identity } from './contracts.js'
+import { COURSEWARE_PLAN_VERSION } from '../src/lib/rag/coursewarePlan.js'
 import { simpleLookup, systemLookup } from './systemLookup.js'
 import { config } from './config.js'
 import { invokeModel, providerHealth } from './providers.js'
@@ -147,7 +148,7 @@ export async function handleRequest(request: Request): Promise<Response> {
     if (action === 'courseware' && effective.role !== 'guest' && !canGenerateCourseware(effective.role)) throw new ApiError(403, 'FORBIDDEN', 'Courseware generation requires an instructor account or the system admin instructor view. Preview drafts require your own provider connection.')
     if(action==='courseware') {
       courseBody=courseInput.parse(await readJson(request,bodyLimit(action)))
-      if(!courseBody.stepKey)throw new ApiError(409,'CLIENT_UPDATE_REQUIRED','Reload EduPulse before generating courseware to use the outline-based generator. Existing content was preserved.')
+      if(!courseBody.stepKey||courseBody.planVersion!==COURSEWARE_PLAN_VERSION)throw new ApiError(409,'CLIENT_UPDATE_REQUIRED','Reload EduPulse before generating courseware to use the current resumable outline plan. Existing content was preserved.')
     }
     if (action === 'syllabus-sources') {
       if (!['instructor','admin'].includes(effective.role) || !['instructor','admin'].includes(identity.role)) throw new ApiError(403,'FORBIDDEN','Use an instructor view to manage your private teaching sources.')

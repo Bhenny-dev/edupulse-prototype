@@ -120,3 +120,7 @@ The syllabus builder now displays completed weekly previews while Pulse prepares
 **Syllabus Builder → References** accepts a source link or readable file and lists extracted citation details. Available copies can be viewed and indexed for authorized private search; unavailable metadata stays absent. Saving the syllabus remains explicit. [Manual 35](../../system-manual/35-reference-intake/README.md) shows loading, indexing retry, missing metadata and phone/dark states.
 
 Older saved source listings now show a metadata-only exclusion in **Course ? Syllabus sources**. They remain reviewable but cannot ground a new lesson or enter teaching-content indexing. [Example](../../system-manual/35-reference-intake/README.md#older-retained-listings).
+
+## Saved courseware parts
+
+**Course** shows validated parts in an unfinished read-only preview while generation continues. **Stop generation**, failed content checks and deliberate reload preserve acknowledged parts. **Resume** requests only missing compatible parts. Unfinished drafts cannot be checked or published; older saved work remains intact until complete replacement. [Manual 26](../../system-manual/26-outline-driven-courseware/README.md#save-parts-and-resume) shows the progress, reload, reader, phone and dark states.

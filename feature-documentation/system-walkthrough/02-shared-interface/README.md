@@ -196,3 +196,7 @@ Pulse and Dashboard links open **Syllabus & Delivery**. Old syllabus/delivery li
 Self questions such as **do you know me?** and **kilala mo ba ako?** now show the verified username, role and role functions directly. A support view identifies both the signed-in admin and the selected account. Guests are asked to sign in; these phrases do not become public searches. [Manual 24](../../system-manual/24-system-first-search/README.md) shows the desktop/mobile answer.
 
 Pulse retains an unambiguous recent person for **him**, **her**, **siya**, **niya**, and short **on fb?** questions. It checks the accessible record again, offers a correctly named manual search link when no Facebook profile is verified, and keeps explicit new topics separate. [Manual 24](../../system-manual/24-system-first-search/README.md#keep-the-person-in-follow-up-questions) contains the current desktop/mobile views.
+
+## Acknowledged generation progress
+
+Course generation uses the existing owner-scoped workspace journal and revision checks for each validated part. Its pending row, **Stop generation**, unfinished reader and explicit **Resume** survive acknowledged saves; reloading never starts AI work. A shared confirmed-commit reference advances immediately so sequential saves do not reuse an older revision. [Course examples](../../system-manual/26-outline-driven-courseware/README.md#save-parts-and-resume) show the settled light, dark and narrow layouts.

@@ -1,6 +1,7 @@
 import type { CourseInput } from '../../../server/contracts.js'
 
 export type CoursewareStep = { key:string; type:'material'|'activity'|'assessment'; format:string; topics:string[]; planned:string }
+export const COURSEWARE_PLAN_VERSION=2
 /** One complete lesson, generated in small topic groups; additional items follow the actual outline. */
 export function coursewarePlan(input:Pick<CourseInput,'topics'|'plan'>):CoursewareStep[] {
   const groups:string[][]=[]
@@ -9,7 +10,7 @@ export function coursewarePlan(input:Pick<CourseInput,'topics'|'plan'>):Coursewa
     groups.at(-1)!.push(topic)
   }
   const steps:CoursewareStep[]=[]
-  for(const group of groups)for(let i=0;i<group.length;i+=3)steps.push({key:`lesson-${steps.length+1}`,type:'material',format:'lesson',topics:group.slice(i,i+3),planned:''})
+  for(const group of groups)for(const topic of group)steps.push({key:`lesson-${steps.length+1}`,type:'material',format:'lesson',topics:[topic],planned:''})
   const activity=input.plan?.activities?.trim()||'',assessment=input.plan?.assessments?.trim()||''
   const hints=[assessment,...input.plan?.assessmentTypes||[]].join('; ')
   const quiz=/\b(?:quiz|quizzes|test|multiple[ -]choice|true[ /-]*false|short[ -]answer|written response)\b/i.test(hints)

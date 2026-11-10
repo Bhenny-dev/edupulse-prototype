@@ -278,16 +278,16 @@ const course = { courseCode: 'IT 102', courseTitle: 'Computer Programming 1', we
 
 test('courseware agents verify the draft and check outline coverage automatically', async () => {
   let calls = 0
-  const result = await runCourseware(course, identity, signal(), async () => { calls++; return draft(calls === 1 ? 'Bounded loops' : 'Bounded loops and sentinel values') }, undefined, false, { search: async () => ({ evidence: [] }), similarity:async(left,right)=>left.map(q=>right.map(text=>Number(text.toLowerCase().includes(q.toLowerCase())))) })
-  assert.equal(calls, 2, 'a missing topic triggers one revision')
+  const result = await runCourseware(course, identity, signal(), async () => { calls++; return draft(calls <= 2 ? 'Bounded loops' : 'Sentinel values') }, undefined, false, { search: async () => ({ evidence: [] }), similarity:async(left,right)=>left.map(q=>right.map(text=>Number(text.toLowerCase().includes(q.toLowerCase())))) })
+  assert.equal(calls, 3, 'the second single-topic part needs one coverage revision')
   assert.ok(result.coverage!.items.find(i => i.text === 'Sentinel values')!.status !== 'missing')
   assert.ok(['Guardian', 'Planner', 'Researcher', 'Ranker', 'Writer', 'Verifier', 'Comparator', 'Corrector'].every(a => result.trace.some(s => s.agent === a)))
 })
 
 test('an incomplete lesson remains blocked when the repair fails, preserving saved courseware', async () => {
   let calls = 0
-  await assert.rejects(runCourseware(course, identity, signal(), async () => (++calls === 1 ? draft('Bounded loops') : '{"material":'), undefined, false, { search: async () => ({ evidence: [] }), similarity:async(left,right)=>left.map(q=>right.map(text=>Number(text.toLowerCase().includes(q.toLowerCase())))) }),{code:'INCOMPLETE_COURSEWARE'})
-  assert.equal(calls,2)
+  await assert.rejects(runCourseware(course, identity, signal(), async () => {calls++;return draft('Bounded loops')}, undefined, false, { search: async () => ({ evidence: [] }), similarity:async(left,right)=>left.map(q=>right.map(text=>Number(text.toLowerCase().includes(q.toLowerCase())))) }),{code:'INCOMPLETE_COURSEWARE'})
+  assert.equal(calls,3)
 })
 
 test('assessment schema rejects repeated distractors and invalid answer indices', () => {
@@ -304,7 +304,7 @@ test('public client cannot forge role or access private documents or generation'
   const request = (action: string, method: string, body?: unknown) => new Request(`https://edupulse.test/api/ai?action=${action}`, { method, headers: { 'Content-Type': 'application/json', 'x-user-role': 'admin' }, ...(body ? { body: JSON.stringify(body) } : {}) })
   assert.equal((await authenticate(request('health', 'GET'))).role, 'guest')
   assert.equal((await handleRequest(request('documents', 'GET'))).status, 401)
-  assert.equal((await handleRequest(request('courseware', 'POST', { role: 'admin', courseCode: 'SAMPLE', courseTitle: 'Sample programming', week: 1, topics: ['Loops'], outcomes: 'Explain loops', referenceText: '', research: 'sources', stepKey: 'lesson-1' }))).status, 403)
+  assert.equal((await handleRequest(request('courseware', 'POST', { role: 'admin', courseCode: 'SAMPLE', courseTitle: 'Sample programming', week: 1, topics: ['Loops'], outcomes: 'Explain loops', referenceText: '', research: 'sources', planVersion: 2, stepKey: 'lesson-1' }))).status, 403)
   assert.equal((await handleRequest(request('chat', 'POST', { message: 'Hi', attachments: [{ title: 'Private', text: 'Data' }] }))).status, 401)
 })
 test('API rejects invalid JSON, oversized requests, unknown routes, methods and nameless uploads', async () => {

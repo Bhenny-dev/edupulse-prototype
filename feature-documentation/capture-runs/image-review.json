@@ -6662,36 +6662,6 @@
       "reviewedAt": "2026-11-09T06:33:54.837625+00:00"
     },
     {
-      "path": "feature-documentation/system-manual/26-outline-driven-courseware/01-planned-items.png",
-      "sha256": "eb9a0f88577109b9f149af11325fd96bdfa752a4ee9df120aff6fa2bec885c76",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-09T06:33:54.837625+00:00"
-    },
-    {
-      "path": "feature-documentation/system-manual/26-outline-driven-courseware/02-lesson-context.png",
-      "sha256": "e901d614b6a6c562fc0f57e36d61deb04e6dbbcf8ecf70f3fde97759ea651bb6",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-09T06:33:54.837625+00:00"
-    },
-    {
-      "path": "feature-documentation/system-manual/26-outline-driven-courseware/03-worked-example.png",
-      "sha256": "7f6c07eeadb05531b43668546b035f3e3f3a0501da2108bad05e456387b52b51",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-09T06:33:54.837625+00:00"
-    },
-    {
-      "path": "feature-documentation/system-manual/26-outline-driven-courseware/04-final-review.png",
-      "sha256": "515090858fb50bea2ef2859a68817836e4d18ef2422e088d93e93498289be533",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-09T06:33:54.837625+00:00"
-    },
-    {
-      "path": "feature-documentation/system-manual/26-outline-driven-courseware/05-discussion-guide.png",
-      "sha256": "e1b25230ed9e7ed1aa1f80850719055fbeca9d569ac796db83dc1ea0b9044137",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-09T06:33:54.837625+00:00"
-    },
-    {
       "path": "feature-documentation/system-walkthrough/09-restored-role-pages/28-student-document.png",
       "sha256": "22c8c88f936afe7c41810b1bb8e14ac4405651aee47d9560ea6a7fa28e8ba879",
       "reviewer": "Codex agent",
@@ -7208,12 +7178,6 @@
       "reviewedAt": "2026-11-09T12:36:30.399211+00:00"
     },
     {
-      "path": "feature-documentation/system-manual/26-outline-driven-courseware/04-final-review.png",
-      "sha256": "c87cf9eafb412e09e68229929b1e03220ebaf5704e4156a4257f999c98b72179",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-09T12:36:30.399211+00:00"
-    },
-    {
       "path": "feature-documentation/system-walkthrough/04-instructor/08-courseware-builder.png",
       "sha256": "f2645771c3d334d72ffd9e3545db8a70c4288ed2dbf118ea82e84aa558c6741e",
       "reviewer": "Codex agent",
@@ -7518,6 +7482,78 @@
       "sha256": "daf35a0e9c93f74c652d352925dcdaf6c1700c0685d6f9df1cf7d6f7727671ce",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-10T03:28:33.990082+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/26-outline-driven-courseware/01-planned-items.png",
+      "sha256": "91c219b345a29082a9ab0aace3c32aea5063d0b5164e026d62b58b197616521a",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-10T04:45:28.677706Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/26-outline-driven-courseware/02-lesson-context.png",
+      "sha256": "e9b473fed3ef08eb129ae9d1d6255ba5393b5d3ca459e2dac32bf554abc6c06e",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-10T04:45:28.677706Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/26-outline-driven-courseware/03-worked-example.png",
+      "sha256": "27ff8071d05d81b09fc9002d8d44517759f1ccc11401de1af8a352576e1fe721",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-10T04:45:28.677706Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/26-outline-driven-courseware/04-final-review.png",
+      "sha256": "3b1699e8abb228f74d6d46878ae6a8f0aec64d2cd680a9bbfcdc8588713f009f",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-10T04:45:28.677706Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/26-outline-driven-courseware/05-discussion-guide.png",
+      "sha256": "e1b25230ed9e7ed1aa1f80850719055fbeca9d569ac796db83dc1ea0b9044137",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-10T04:45:28.677706Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/26-outline-driven-courseware/06-saved-parts.png",
+      "sha256": "3ba6d69e3023e53c2979f2ac8aef0892146bcabf795ba150b486f46722b89b53",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-10T04:45:28.677706Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/26-outline-driven-courseware/07-resume-after-reload.png",
+      "sha256": "c0826de0aa2f349bc79d63daea9db9f8630d63c6b6189f31a6585b7a599933ec",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-10T04:45:28.677706Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/26-outline-driven-courseware/08-unfinished-reader.png",
+      "sha256": "27ee861e4f72f0b8aceebbc32602a9bb1602e07bd6c8d15fa72582dea3cbca26",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-10T04:45:28.677706Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/26-outline-driven-courseware/09-mobile-resume.png",
+      "sha256": "3dde13d3a25590705b042291304b17fefb45d0e2e7f4129b027dc5ce8bbccc32",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-10T04:45:28.677706Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/26-outline-driven-courseware/10-incremental-progress.png",
+      "sha256": "449f78bf35acde5ca4c43a41159b8427cf92122b8cfe3935e45b478aa2675bcc",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-10T04:45:28.677706Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/26-outline-driven-courseware/11-dark-resume.png",
+      "sha256": "18ecf5a64166cee0c2566d72cf099e35dddaf811d6672a42467d7572503a8777",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-10T04:45:28.677706Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/26-outline-driven-courseware/12-course-list-progress.png",
+      "sha256": "d711d965a1c99738db4f719103689453dab9cfa716b6cc8c9ec287a33ebaf6b9",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-10T04:45:28.677706Z"
     }
   ]
 }

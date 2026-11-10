@@ -11,6 +11,9 @@ import { INSTRUCTORS } from '../../data/mockData'
 import { pulse as pulseBus } from '../pulse/pulseBus'
 import { generateWeekDraft } from '../../utils/aiCourseware'
 import { plannedCoursewareTypes } from '../../lib/rag/coursewarePlan'
+import { buildCourseInput } from '../../utils/courseInput'
+import { checkpointId, checkpointResults, checkpointItem, coursewareFingerprint } from '../../utils/coursewareCheckpoint'
+import { coursewarePlan } from '../../lib/rag/coursewarePlan'
 import DeliverySettings from './DeliverySettings'
 import CoursewareActions from './CoursewareActions'
 import DocumentViewer from './DocumentViewer'
@@ -36,7 +39,9 @@ export default function CourseWorkspace({ syllabusId, focusWeek, contentStore, o
   const reportIssue = (err, saved = 0) => setGenerationIssue({ message: err.message, setup: SETUP_ERRORS.has(err.code), saved })
 
   const { addToast } = useToast()
-  const { saveContent } = useContentStore()
+  const { saveContent, commitGenerationPart } = useContentStore()
+  const liveContent=useRef(contentStore)
+  liveContent.current=contentStore
   const syllabus = syllabi.find(s => s.id === syllabusId)
   const [generatingWeek, setGeneratingWeek] = useState(null)
   const [generatingAll, setGeneratingAll] = useState(false)
@@ -70,56 +75,80 @@ export default function CourseWorkspace({ syllabusId, focusWeek, contentStore, o
   }
 
   const getWeekItems = (weekNum) => {
-    return Object.entries(contentStore)
+    return Object.entries(liveContent.current)
       .filter(([_, v]) => v.content && v.syllabusId === syllabusId && v.week === weekNum)
   }
 
-  const saveWeekDraft = async (weekNum, signal, missingOnly = false) => {
-    const skipTypes=plannedCoursewareTypes(outline.find(row=>row.week===weekNum)||{}).filter(type=>{const existing=getWeekItems(weekNum).find(([,item])=>item.type===type)?.[1];return existing&&(missingOnly||['checked','published'].includes(existing.status))})
-    const weekResult = await generateWeekDraft(syllabus, weekNum, signal,'',{skipTypes})
+  const saveWeekDraft = async (weekNum, signal, missingOnly = false, restart = false) => {
+    let expected=Object.fromEntries(getWeekItems(weekNum).filter(([,item])=>!item.generationCheckpoint))
+    const id=checkpointId(syllabus.id,weekNum),input=buildCourseInput(syllabus,weekNum),planned=plannedCoursewareTypes(outline.find(row=>row.week===weekNum)||{})
+    let checkpoint=liveContent.current[id]
+    const cached=checkpoint?.generationCheckpoint
+    const samePlan=!restart&&Array.isArray(cached?.types)&&cached.types.every(type=>planned.includes(type))&&cached.fingerprint===await coursewareFingerprint(input,cached.types)
+    if(samePlan&&cached.expected)expected=cached.expected
+    const skipTypes=planned.filter(type=>{const existing=getWeekItems(weekNum).find(([,item])=>!item.generationCheckpoint&&item.type===type)?.[1];return (samePlan&&!cached.types.includes(type))||(existing&&((missingOnly&&!samePlan)||['checked','published'].includes(existing.status)))})
+    const types=planned.filter(type=>!skipTypes.includes(type)),fingerprint=await coursewareFingerprint(input,types)
+    const completed=restart?[]:await checkpointResults(input,checkpoint?.generationCheckpoint,fingerprint)
+    const total=coursewarePlan(input).filter(part=>types.includes(part.type)).length
+    const weekResult = await generateWeekDraft(syllabus, weekNum, signal,'',{skipTypes,completed,
+      onProgress:(done,total,key)=>setGenerationProgress(`Week ${weekNum} · ${done}/${total} parts saved · ${key==='sources'?'Reading sources':'Generating '+(key.startsWith('lesson-')?'lesson '+key.slice(7):key)}`),
+      onPart:async results=>{
+        const item=await checkpointItem(input,syllabus.id,{version:1,fingerprint,types,results,total,expected})
+        const receipt=await commitGenerationPart(item,{syllabus,expected:checkpoint})
+        checkpoint=receipt.data.content[id];liveContent.current=receipt.data.content
+        setExpandedWeeks(prev=>new Set([...prev,weekNum]))
+      }})
     if (signal.aborted) return 0
     const updates = {}
     for (const item of weekResult.items) {
       // Reviewed/published work must not be silently overwritten by a batch.
-      const existingEntry = getWeekItems(weekNum).find(([, saved]) => saved.type === item.type && saved.content)
+      const existingEntry = getWeekItems(weekNum).find(([, saved]) => !saved.generationCheckpoint && saved.type === item.type && saved.content)
       const existing = existingEntry?.[1]
       if (existing && (missingOnly || ['checked', 'published'].includes(existing.status))) continue
       updates[existingEntry?.[0] || item.id] = { ...existing, content: { ...item.content, ...(existing?.content.assessmentPolicy ? { assessmentPolicy: existing.content.assessmentPolicy } : {}) }, status: 'draft', type: item.type,
         week: weekNum, syllabusId: syllabus.id, title: item.content.title,
         generatedAt: new Date().toISOString() }
     }
-    const receipt=await onGenerateWeek(updates,{syllabus,week:weekNum,expected:contentStore,types:weekResult.plannedTypes,missingOnly})
+    const receipt=await onGenerateWeek(updates,{syllabus,week:weekNum,expected,types:weekResult.plannedTypes,missingOnly,checkpoint})
+    liveContent.current=receipt.data.content
     if (receipt.saved) pulseBus.progress('courseware-generated', `${syllabus.courseCode}, week ${weekNum}`)
     setExpandedWeeks(prev => new Set([...prev, weekNum]))
     return receipt.saved
   }
-  const generateAll = async (missingOnly = false) => {
+  const generateAll = async (missingOnly = false, restart = false) => {
     if (generationRef.current) return
     const controller = new AbortController(); generationRef.current = controller
     setGeneratingAll(true); setGenerationIssue(null); pulseBus.expression('thinking')
     let count = 0
+    const failedWeeks=[]
     try {
       const rows = (syllabus.courseOutline || []).filter(row => !isExamRow(row) && (
-        plannedCoursewareTypes(row).some(type => !getWeekItems(row.week).some(([, item]) => item.type === type)) ||
+        getWeekItems(row.week).some(([,item])=>item.generationCheckpoint) || plannedCoursewareTypes(row).some(type => !getWeekItems(row.week).some(([, item]) => !item.generationCheckpoint && item.type === type)) ||
         (!missingOnly && getWeekItems(row.week).some(([, item]) => item.status === 'draft'))
       ))
       for (const [index, row] of rows.entries()) {
         controller.signal.throwIfAborted()
         setGenerationProgress(`Week ${row.week} (${index + 1}/${rows.length})`)
-        count += await saveWeekDraft(row.week, controller.signal, missingOnly)
+        try { count += await saveWeekDraft(row.week, controller.signal, missingOnly, restart) }
+        catch(error){
+          controller.signal.throwIfAborted()
+          if(!['INVALID_GENERATION','MODEL_TOKEN_LIMIT','INCOMPLETE_COURSEWARE'].includes(error.code))throw error
+          failedWeeks.push(row.week)
+        }
       }
-      addToast(`${count} AI drafts saved. Checked and published items were preserved.`, 'success')
+      if(failedWeeks.length)reportIssue(new Error(`Saved completed parts. Weeks ${failedWeeks.join(', ')} still need generation. Resume to retry only their unfinished parts.`),count)
+      else addToast(`${count} AI drafts saved. Checked and published items were preserved.`, 'success')
     } catch (err) {
       if (controller.signal.aborted) addToast(`Generation stopped. ${count} completed drafts were saved.`, 'info')
       else reportIssue(err, count)
     }
     finally { setGeneratingAll(false); setGenerationProgress(''); generationRef.current = null; pulseBus.expression('idle') }
   }
-  const generateSingleWeek = async (weekNum, missingOnly = false) => {
+  const generateSingleWeek = async (weekNum, missingOnly = false, restart = false) => {
     if (generationRef.current) return
     const controller = new AbortController(); generationRef.current = controller
     setGeneratingWeek(weekNum); setGenerationProgress(`Generating week ${weekNum}`); setGenerationIssue(null)
-    try { const count = await saveWeekDraft(weekNum, controller.signal, missingOnly); if (!controller.signal.aborted) addToast(`Week ${weekNum}: ${count} AI drafts saved for review.`, 'success') }
+    try { const count = await saveWeekDraft(weekNum, controller.signal, missingOnly, restart); if (!controller.signal.aborted) addToast(`Week ${weekNum}: ${count} AI drafts saved for review.`, 'success') }
     catch (err) {
       if (controller.signal.aborted) addToast('Generation stopped. Existing content was preserved.', 'info')
       else reportIssue(err)
@@ -166,7 +195,8 @@ export default function CourseWorkspace({ syllabusId, focusWeek, contentStore, o
   }
 
   // Summary stats
-  const allEntries = Object.entries(contentStore).filter(([_, v]) => v.content && v.syllabusId === syllabusId && outline.some(row => !isExamRow(row) && row.week === v.week))
+  const allEntries = Object.entries(contentStore).filter(([_, v]) => v.content && !v.generationCheckpoint && v.syllabusId === syllabusId && outline.some(row => !isExamRow(row) && row.week === v.week))
+  const unfinished=Object.values(contentStore).filter(item=>item.syllabusId===syllabusId&&item.generationCheckpoint)
   const totalDrafts = allEntries.filter(([_, v]) => v.status === 'draft').length
   const totalChecked = allEntries.filter(([_, v]) => v.status === 'checked').length
   const totalPublished = allEntries.filter(([_, v]) => v.status === 'published').length
@@ -189,6 +219,7 @@ export default function CourseWorkspace({ syllabusId, focusWeek, contentStore, o
     return (
       <DocumentViewer
         content={viewingItem}
+        readOnly={!!contentStore[viewingId]?.generationCheckpoint}
         onBack={() => { setViewingId(null); setViewMode(null) }}
         isStudent={false}
         onSave={handleSaveContent}
@@ -204,16 +235,17 @@ export default function CourseWorkspace({ syllabusId, focusWeek, contentStore, o
       <div className="cw-workspace-header">
         <button className="btn btn-ghost cw-more" aria-label="Back to courses" onClick={onBack}><ArrowLeft size={18} /></button>
         <div className="cw-workspace-title"><h2>{syllabus.courseCode} — {syllabus.courseTitle}</h2><p className="text-sm text-muted">{instructor?.name || 'Instructor'} · {outline.length} {outline.length === 1 ? 'week' : 'weeks'} · {teachingWeeks} teaching {teachingWeeks === 1 ? 'week' : 'weeks'}</p></div>
-        {totalGenerated === 0 && <button className="btn btn-primary" disabled={busy} onClick={() => generateAll()}><Sparkles size={15} /> Generate All Content</button>}
+        {(totalGenerated === 0 || unfinished.length>0) && <button className="btn btn-primary" disabled={busy || saving || dirty} onClick={() => generateAll(unfinished.length>0)}><Sparkles size={15} /> {unfinished.length?'Resume generation':'Generate All Content'}</button>}
         <CoursewareActions label="Course actions" disabled={busy} actions={[
           { label: 'Generate missing content', icon: Sparkles, onSelect: () => generateAll(true) },
-          { label: 'Regenerate All', icon: RotateCcw, disabled: !totalDrafts, onSelect: () => generateAll() },
+          { label: 'Regenerate All', icon: RotateCcw, disabled: !totalDrafts&&!unfinished.length, onSelect: () => generateAll(false,true) },
           { label: 'Check All Drafts', icon: Check, disabled: !draftIds.length, onSelect: () => checkDrafts(draftIds) },
           { label: 'Expand all weeks', icon: Eye, onSelect: () => setExpandedWeeks(new Set(outline.map(row => row.week))) },
           { label: 'Collapse all weeks', icon: Eye, onSelect: () => setExpandedWeeks(new Set()) },
         ]} />
       </div>
       {generationProgress && <div className="ai-actions cw-generation-progress" role="status"><Loader2 size={16} className="spin" /><span>{generationProgress}</span><button className="btn btn-secondary btn-sm" onClick={() => generationRef.current?.abort()}>Stop generation</button></div>}
+      {!busy && unfinished.length>0 && <p role="status">Saved parts are available below. Resume generation to finish; unfinished drafts cannot be checked or published.</p>}
       {generationIssue ? <div className="cw-ai-notice is-error" role="alert"><TriangleAlert size={18} aria-hidden="true" /><div className="cw-ai-notice-body"><strong>Generation did not finish</strong><span>{generationIssue.message}{generationIssue.saved ? ` ${generationIssue.saved} completed drafts remain available for review.` : ''}</span></div>{generationIssue.setup && <button className="btn btn-primary btn-sm" onClick={() => navigate('/settings?tab=ai-provider')}><PlugZap size={14} /> Set up Pulse AI</button>}<button className="btn btn-ghost btn-sm" onClick={() => setGenerationIssue(null)}>Dismiss</button></div> : !ai.ready && <div className="cw-ai-notice" role="status"><PlugZap size={18} aria-hidden="true" /><div className="cw-ai-notice-body"><strong>Pulse AI is not set up yet</strong><span>Generation needs a connected provider or the on-device model. Your outline and any saved drafts stay as they are.</span></div><button className="btn btn-secondary btn-sm" onClick={() => navigate('/settings?tab=ai-provider')}><PlugZap size={14} /> Set up Pulse AI</button></div>}
       {totalGenerated > 0 && <div className="cw-summary"><strong>{totalGenerated} {totalGenerated === 1 ? 'item' : 'items'} generated</strong>{totalDrafts > 0 && <span>{totalDrafts} draft</span>}{totalChecked > 0 && <span>{totalChecked} checked</span>}{totalPublished > 0 && <span>{totalPublished} published</span>}{selectedItems.size > 0 && <button className="btn btn-primary btn-sm" onClick={checkSelected}><Check size={14} /> Check Selected ({selectedItems.size})</button>}</div>}
       <SyllabusSources syllabus={syllabus} />
@@ -221,17 +253,19 @@ export default function CourseWorkspace({ syllabusId, focusWeek, contentStore, o
         {outline.map(row => {
           const weekNum = row.week, exam = isExamRow(row), weekItems = getWeekItems(weekNum)
           const hasContent = weekItems.length > 0, expanded = expandedWeeks.has(weekNum)
-          const weekDraftIds = weekItems.filter(([, item]) => item.status === 'draft').map(([id]) => id)
+          const weekDraftIds = weekItems.filter(([, item]) => item.status === 'draft'&&!item.generationCheckpoint).map(([id]) => id)
+          const pending=weekItems.find(([,item])=>item.generationCheckpoint)?.[1]
           const topic = (row.contents || []).join('; ') || (exam ? row.assessments : `Week ${weekNum}`)
           return <section key={weekNum} data-week={weekNum} className="cw-week-card">
             <div className="cw-week-heading">
               <span className="cw-week-number">{exam ? <Flag size={16} aria-label="Examination week" /> : weekNum}</span>
               <div className="cw-week-topic"><strong>{topic}</strong>{exam && <span className="text-sm text-muted">Examination week</span>}{hasContent && <span className="text-sm text-muted">{weekItems.length} {weekItems.length === 1 ? 'item' : 'items'} · {weekDraftIds.length} draft</span>}</div>
               {!exam && <div className="cw-row-actions">
+                {pending && <button className="btn btn-secondary btn-sm" disabled={busy || saving || dirty} onClick={()=>generateSingleWeek(weekNum)}><RotateCcw size={14}/>Resume</button>}
                 {hasContent ? <button className="btn btn-secondary btn-sm" aria-expanded={expanded} aria-controls={`week-items-${weekNum}`} onClick={() => toggleWeek(weekNum)}><Eye size={14} /> {expanded ? 'Hide' : 'View'}</button> : <button className="btn btn-secondary btn-sm" disabled={busy} onClick={() => generateSingleWeek(weekNum)}>{generatingWeek === weekNum ? <><Loader2 size={14} className="spin" /> Generating…</> : <><Sparkles size={14} /> Generate</>}</button>}
                 {hasContent && <CoursewareActions label={`Week ${weekNum} actions`} actions={[
-                  { label: 'Generate missing content', icon: Sparkles, disabled: busy || plannedCoursewareTypes(row).every(type => weekItems.some(([, item]) => item.type === type)), onSelect: () => generateSingleWeek(weekNum, true) },
-                  { label: 'Regenerate week', icon: RotateCcw, disabled: busy || !weekDraftIds.length, onSelect: () => generateSingleWeek(weekNum) },
+                  { label: 'Generate missing content', icon: Sparkles, disabled: busy || plannedCoursewareTypes(row).every(type => weekItems.some(([, item]) => !item.generationCheckpoint&&item.type === type)), onSelect: () => generateSingleWeek(weekNum, true) },
+                  { label: 'Regenerate week', icon: RotateCcw, disabled: busy || (!weekDraftIds.length&&!pending), onSelect: () => generateSingleWeek(weekNum,false,true) },
                   { label: 'Check All Drafts', icon: Check, disabled: !weekDraftIds.length, onSelect: () => checkDrafts(weekDraftIds) },
                 ]} />}
               </div>}
@@ -243,14 +277,14 @@ export default function CourseWorkspace({ syllabusId, focusWeek, contentStore, o
                 const title = item.title || item.content.title
                 const generatedAt = item.generatedAt ? new Date(item.generatedAt) : null
                 return <div key={id} className="cw-item" data-content-id={id}>
-                  {item.status === 'draft' && <input type="checkbox" aria-label={`Select ${title}`} checked={selectedItems.has(id)} onChange={() => toggleItemSelect(id)} />}
+                  {item.status === 'draft' && !item.generationCheckpoint && <input type="checkbox" aria-label={`Select ${title}`} checked={selectedItems.has(id)} onChange={() => toggleItemSelect(id)} />}
                   <Icon size={16} aria-hidden="true" />
                   <div className="cw-item-title"><strong>{title}</strong><div className="text-sm text-muted">{item.type}{Number.isFinite(generatedAt?.getTime()) && <time dateTime={item.generatedAt}> · {generatedAt.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}</time>}{item.content?.questions && ` · ${item.content.questions.length} questions`}{item.content?.category && ` · ${item.content.category}`}</div></div>
-                  <span className={`badge ${meta.badge}`}>{item.releaseAt && new Date(item.releaseAt) > new Date() && item.status === 'published' ? 'Scheduled' : meta.label}</span>
+                  <span className={`badge ${meta.badge}`}>{item.generationCheckpoint?'Unfinished':item.releaseAt && new Date(item.releaseAt) > new Date() && item.status === 'published' ? 'Scheduled' : meta.label}</span>
                   {item.outOfAlignment && <span className="badge badge-draft">Syllabus changed — review alignment</span>}
                   <div className="cw-row-actions">
                     <button className="btn btn-secondary btn-sm" onClick={() => openItem(id, item)}><Eye size={14} /> View</button>
-                    <CoursewareActions label={`Actions for ${title}`} actions={[
+                    {!item.generationCheckpoint && <CoursewareActions label={`Actions for ${title}`} actions={[
                       ...(item.type !== 'assessment' ? [
                         { label: 'View document', icon: FileText, onSelect: () => openItem(id, item, 'document') },
                         { label: 'View presentation', icon: MonitorPlay, onSelect: () => openItem(id, item, 'presentation') },
@@ -259,7 +293,7 @@ export default function CourseWorkspace({ syllabusId, focusWeek, contentStore, o
                       ...(item.status === 'checked' ? [{ label: 'Publish', icon: Send, disabled: saving || dirty, onSelect: () => onToggleVisibility(id, 'published') }] : []),
                       ...(item.status === 'published' ? [{ label: 'Unpublish', icon: Eye, onSelect: () => onToggleVisibility(id, 'checked') }] : []),
                       { label: 'Delivery settings', icon: Send, onSelect: () => setDeliveryItemId(current => current === id ? null : id) },
-                    ]} />
+                    ]} />}
                   </div>
                   {deliveryItemId === id && <DeliverySettings key={id} id={id} item={item} initiallyOpen onClose={() => setDeliveryItemId(null)} />}
                 </div>

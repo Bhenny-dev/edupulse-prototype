@@ -15,12 +15,12 @@ import { useContentEditorTool } from '../../agents/useContentEditorTool'
  * Used for viewing materials and activities.
  */
 
-export default function DocumentViewer({ content, onBack, isStudent = false, onSave }) {
+export default function DocumentViewer({ content, onBack, isStudent = false, readOnly = false, onSave }) {
   const { addToast } = useToast()
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState(null)
   const [saving, setSaving] = useState(false), [exporting, setExporting] = useState(false)
-  useContentEditorTool(content, { ...content, sections: editing ? draft : content?.sections }, next => { setDraft(next.sections); setEditing(true) }, isStudent, onBack)
+  useContentEditorTool(content, { ...content, sections: editing ? draft : content?.sections }, next => { setDraft(next.sections); setEditing(true) }, isStudent || readOnly, onBack)
 
   if (!content) return null
 
@@ -110,7 +110,7 @@ export default function DocumentViewer({ content, onBack, isStudent = false, onS
           <ArrowLeft size={14} /> Back
         </button>
         <div style={{ flex: 1 }} />
-        {!isStudent && (
+        {!isStudent && !readOnly && (
           editing ? (
             <>
               <button className="btn btn-ghost btn-sm" disabled={saving} onClick={cancelEditing}>

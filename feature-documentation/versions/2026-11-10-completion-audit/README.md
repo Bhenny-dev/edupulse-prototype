@@ -21,19 +21,24 @@ The owner asked for an audit of unfinished work across the conversation, with ea
 
 ## Active completion queue
 
-1. **Synced labelled progress:** finish the additive provenance release and live scoring/readback. The owner's later clarification requires test results to appear in student progress and instructor monitoring from the same persisted rows, with their test label retained.
+1. **Synced labelled progress:** the first live IT 103 example passed scoring and matching student/instructor readback. Expand reviewed examples to the remaining instructors while retaining each test label; do not count them as independent learner achievement.
 2. **Substantive real generation and delivery:** finish actual model generation from the approved outlines and readable references, review/correct the produced content, save drafts through owner workspaces, publish reviewed examples, submit authorized labelled tests through normal learner operations and verify instructor monitoring. A rejected or partial draft is not a completed week.
 3. **Persistent shared syllabi:** replace sample-only repository behavior with explicitly shared, authorized copies and reference provenance; preserve private workspaces and original files.
 4. **Multiple blocks with different delivery:** keep one course and multiple confirmed blocks, with authorized block-specific release/deadline behavior consistently enforced on reads and learner commands.
 5. **Reload restoration:** preserve the current route, verified admin support subject, tabs, readers, modal/popover references and loaded view state after a deliberate reload. Revalidate authorization; never replay a business command. Apply this requirement to new features as well.
-6. **Assessment publication boundary:** the pre-release audit found that question keys/explanations are stripped, but teacher AI review metadata can still carry marked-answer indexes. The private projection guard is implemented, applied and passed all release checks before seeded quizzes are released. Hosted baseline had zero publications/attempts, and all nine workspace revision digests stayed unchanged.
-7. **Generation findings:** real model runs still require content review. Correct wrong correlation procedures/answer keys, unsupported dataset-file claims and HTML formatting before publishing. The historical catalog exclusion guard is being validated.
+6. **Remaining generation findings:** review the remaining raw packs, including incorrect cloud-model quiz mappings, HTML formatting and embedded topic lists. The reviewed correlation pack is released; the historical catalog exclusion and learner-metadata guards are applied and verified. Neither older raw model output nor the current unfinished previews establish completed teaching material.
 
 ## Binding clarifications
 
-The owner also requested a replacement References intake: accept **link or file only**, automatically extract available title/authors/year/publisher/identifiers, retain the source and associate it with the syllabus/course. Index readable content for authorized vector/RAG retrieval, with reusable source versions and exact citations in formatted views and exports. Existing private account boundaries remain authoritative; absent metadata is marked missing, never invented. This is an active implementation task, distinct from the already delivered retained-source reader.
+The owner also requested a replacement References intake: accept **link or file only**, automatically extract available title/authors/year/publisher/identifiers, retain the source and associate it with the syllabus/course. Index readable content for authorized vector/RAG retrieval, with reusable source versions and exact citations in formatted views and exports. Existing private account boundaries remain authoritative; absent metadata is marked missing, never invented. This intake is delivered in the reference-intake release; private scope, extracted provenance and missing-metadata labels remain binding.
 
 - Enroll **BSIT only**. Do not fabricate program-appropriate syllabi for the other registered programs.
 - Labelled test submissions on registered accounts are authorized and should count in recorded student progress; distinguish them from independent learner achievement.
 - All 14 supplied PDFs were confirmed approved by the owner. Historical signatories do not replace Ginard's Dean role or Myriell's Associate Dean role; Marielle remains an instructor.
 - Preserve unrelated Claude work. Push this task's complete, verified increments only, with matching screenshots, manuals, backend documentation and capture evidence in the same commit.
+
+## Latest verified progress
+
+- IT 103 Week 12 now has a reviewed live material/activity/assessment release. Three registered BSIT test attempts scored 4/4, 3/4 and 2/4; six opens matched fresh instructor readback. All retained their explicit pipeline-test provenance. This completes the first end-to-end example, not all seven instructors or independent learner evaluation.
+- The current courseware increment adds acknowledged private chunks, read-only unfinished previews and explicit resume after failure/reload. It preserves newer instructor edits and blocks unfinished review/publication. [Release and validation](../2026-11-10-resumable-courseware/README.md).
+- Reference link/file intake, production archive/index canaries and the historical catalog exclusion guard are completed. The shared syllabus repository, differentiated block delivery, broad route/modal restoration and remaining reviewed instructor packs remain open. The capstone must be reconciled only with results actually verified.

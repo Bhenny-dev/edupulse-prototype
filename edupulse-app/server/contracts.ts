@@ -40,6 +40,7 @@ export const courseInput = z.object({
   research: z.enum(['auto', 'sources']).default('auto'),
   request: z.string().trim().max(4000).default(''),
   stepKey: z.string().regex(/^(?:lesson-\d{1,2}|activity|assessment)$/).optional(),
+  planVersion:z.number().int().optional(),
   outcomes: z.string().trim().min(1).max(5000),
   referenceText: z.string().max(18000),
   // The week's plan from the syllabus outline: the draft must follow it, and references come only from here or the library.

@@ -16,3 +16,7 @@ These screenshots use synthetic UI transports. They demonstrate presentation and
 ## Learner-facing publication content
 
 Student content and saved scores remain available. Private teacher AI review traces, raw retrieved source excerpts and marked-answer review metadata are excluded from publication payloads. Instructors retain these details in their authoring workspace. This projection does not regrade attempts, change publication versions during backfill, or create learner activity.
+
+## Verified live integration exercise
+
+On 10 November 2026, the researchers released a reviewed IT 103 Week 12 material, activity and four-question assessment through the real instructor workspace. Three registered BSIT accounts used authorized labelled tests through the normal learner APIs. Their persisted scores were 4/4, 3/4 and 2/4, with six recorded material/activity opens. Fresh instructor reads matched the exact saved attempt versions, scores and access rows. These entries appear in ordinary student progress and instructor monitoring with the existing **Pipeline test** provenance. They are integration results, not independent learner achievement or institutional grades. No account password was reset, and the approved syllabus remained unchanged.

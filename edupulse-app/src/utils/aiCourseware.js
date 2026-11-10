@@ -8,12 +8,12 @@ export async function generateWeekDraft(syllabus, weekNumber, signal, request = 
   if (!row.ilos && /examination/i.test(row.assessments || '')) throw new Error('Examination weeks are excluded from automatic courseware generation.')
   const plannedTypes=plannedCoursewareTypes(row),types=plannedTypes.filter(type=>!options.skipTypes?.includes(type))
   if(!types.length)return {week:weekNumber,items:[],plannedTypes}
-  const result = await generateCoursewareParts(buildCourseInput(syllabus, weekNumber, request), signal, types)
+  const result = await generateCoursewareParts(buildCourseInput(syllabus, weekNumber, request), signal, types, options)
   const metadata = result => ({ requestId: result.requestId, provider: result.provider, model: result.model, sources: result.sources, trace: result.trace, warning: result.warning, coverage: result.coverage,
     // Summary only: metadata is saved with every item in the 3 MB workspace.
     verification: result.verification && { scope: 'sources', supported: result.verification.supported, total: result.verification.claims.length, method: result.verification.method },
     answerKey: result.answerKey && { checked: result.answerKey.checked, consistent: result.answerKey.consistent, issues: result.answerKey.issues },
-    reviewRequired: true, planBased: true })
+    parts:result.parts, reviewRequired: true, planBased: true })
   const content = result.content
   const items = [
     ...(content.material?[{ id: `gen-mat-${syllabus.id}-w${weekNumber}`, type: 'material', content: { ...content.material, subtitle: 'AI draft — instructor review required', viewMode: 'document', ai: metadata(result.reviews?.material || result) } }]:[]),
