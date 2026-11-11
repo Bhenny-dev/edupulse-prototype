@@ -90,3 +90,12 @@ test('GET support subject does not reuse a prior result after database authoriza
   assert.equal(calls.filter(call=>call.path==='/auth/v1/user').length,3)
   assert.equal(calls.filter(call=>call.path.endsWith('edupulse_support_action')).length,3)
 })
+
+test('the second assigned Google admin can resolve a subject, but a role or provider change revokes access',async t=>{
+  const {state,calls,get}=transport(t)
+  state.email='2024-1-0262.botay@kcp.edu.ph'
+  assert.equal((await get()).status,200)
+  state.role='student';assert.equal((await get()).status,403)
+  state.role='admin';state.providers=['email'];assert.equal((await get()).status,403)
+  assert.equal(calls.filter(call=>call.path!=='/auth/v1/user').length,1)
+})

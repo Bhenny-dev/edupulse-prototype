@@ -1,0 +1,159 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-11-11T11-59-56-532Z-df3f8c68",
+  "startedAt": "2026-11-11T11:59:56.532Z",
+  "finishedAt": "2026-11-11T12:00:12.365Z",
+  "commitSha": "30bcd5d0583e3d3cd65ff05367c72c29fbb22380",
+  "sourceDigest": "42d9a3a6fe460b32eda738564c85f332fe2348ea64fd1e3cc52b3052001c0016",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-11-11T11:59:52.878Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 2,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": null
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/second-admin.spec.ts",
+    "edupulse-app/tests/snapshots/second-admin-mobile.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/account-support-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/account-support-reload-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/account-support-reload.spec.ts",
+    "edupulse-app/tests/snapshots/account-support.spec.ts",
+    "edupulse-app/tests/snapshots/approved-syllabus-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/approved-syllabus.spec.ts",
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/automatic-records.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/automatic-records.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.spec.ts",
+    "edupulse-app/tests/snapshots/course-seed.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-formatting.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-navigation.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/harness-delivery.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/local-models-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/local-models.spec.ts",
+    "edupulse-app/tests/snapshots/login-icons-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/login-icons.spec.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/operator-steps.spec.ts",
+    "edupulse-app/tests/snapshots/outline-courseware.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/outline-courseware.spec.ts",
+    "edupulse-app/tests/snapshots/outline-progress-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/outline-progress.spec.ts",
+    "edupulse-app/tests/snapshots/outline-selector.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/outline-selector.spec.ts",
+    "edupulse-app/tests/snapshots/oversight.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/oversight.spec.ts",
+    "edupulse-app/tests/snapshots/pipeline-progress-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pipeline-progress.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/public-pulse-search-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/public-pulse-search.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-drafting.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-source.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+    "edupulse-app/tests/snapshots/radar-progress-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/radar-progress.spec.ts",
+    "edupulse-app/tests/snapshots/reference-intake-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/reference-intake.spec.ts",
+    "edupulse-app/tests/snapshots/retained-catalog.spec.ts",
+    "edupulse-app/tests/snapshots/retained-sources-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/retained-sources.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+    "edupulse-app/tests/snapshots/staff-registration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/staff-registration.spec.ts",
+    "edupulse-app/tests/snapshots/student-directory.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/system-search-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/system-search.spec.ts",
+    "edupulse-app/tests/snapshots/voice-quota.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/voice-quota.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-cache.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-recovery.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/second-admin.spec.ts",
+      "title": "second admin sees two protected admins and restores an authorized account view",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 3140,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/second-admin-mobile.spec.ts",
+      "title": "second admin retains the selected account and page on a phone",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 3989,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-walkthrough/07-system-admin/06-two-admins.png",
+      "sha256": "37876eb22386f25b0e01b80af3fb1a7a5dbeccbc7ba0d4d2300d6145b0507ad4",
+      "bytes": 40720
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/07-system-admin/07-second-admin-reloaded-view.png",
+      "sha256": "b93d5be2eace7f65e242606524372deb62ca81cfa087b6f5aaf5e9a20ce96375",
+      "bytes": 437605
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/07-system-admin/mobile-06-two-admins.png",
+      "sha256": "eea567dd089d1e99bed921934b3cf25d48555d5cf986c373bbb827d678da4686",
+      "bytes": 160193
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/07-system-admin/mobile-07-second-admin-reloaded-view.png",
+      "sha256": "6ff8cce0371436c1a2f9b1672e72d6ae961e07bfc4540e4ae6c21da021f5a3b1",
+      "bytes": 1239080
+    }
+  ]
+}

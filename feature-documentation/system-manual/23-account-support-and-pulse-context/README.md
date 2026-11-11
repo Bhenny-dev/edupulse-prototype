@@ -103,3 +103,7 @@ An open **Choose student account** dialog also reopens after reload. Its role is
 ![Account selection dialog restored without choosing a person](19-reloaded-account-selection.png)
 
 These are controlled account-transport captures. They verify rendering and navigation; the native API and SQL tests separately check fresh authority, read-only resolution and absence of account-switch/business mutations. See the [reload release validation](../../versions/2026-11-10-admin-reload-restoration/validation/results.md).
+
+### A second admin keeps its own support session
+
+Either of the two designated, Google-verified admins can select an academic person through **Open view**. Reload retains that person's authorized page and tab using hints bound to the actual admin ID. Signing into the other admin account cannot reuse the former admin's selection, provider credentials or private history. Both admin accounts remain protected from selection as academic subjects and from ordinary role reassignment. [Second-admin desktop and phone captures](../../system-walkthrough/07-system-admin/README.md#two-designated-google-admins) show the same existing controls with two registered admins.

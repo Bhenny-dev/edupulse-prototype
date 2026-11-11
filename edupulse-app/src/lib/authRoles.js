@@ -1,4 +1,7 @@
 export const OWNER_EMAIL = 'riverabenlor461@gmail.com'
+export const SYSTEM_ADMIN_EMAILS = Object.freeze([OWNER_EMAIL, '2024-1-0262.botay@kcp.edu.ph'])
+/** @param {string | undefined | null} email */
+export const isSystemAdminEmail = email => typeof email === 'string' && SYSTEM_ADMIN_EMAILS.includes(email.trim().toLowerCase())
 /** @type {Record<string, string>} */
 export const ROLE_TITLES = { admin: 'System Admin', dean: 'Dean', associate_dean: 'Associate Dean', instructor: 'Instructor', student: 'Student' }
 
@@ -11,9 +14,9 @@ export function accountUser(account, previous) {
   const assignedRole = account?.app_metadata?.role
   if (!account || !email || typeof assignedRole !== 'string' || !Object.hasOwn(ROLE_TITLES, assignedRole)) return null
   // Roles from editable user_metadata cannot grant access.
-  if (assignedRole === 'admin' && (email !== OWNER_EMAIL ||
+  if (assignedRole === 'admin' && (!isSystemAdminEmail(email) ||
       !account.app_metadata?.providers?.includes('google'))) return null
-  const canSwitchRoles = assignedRole === 'admin' && email === OWNER_EMAIL
+  const canSwitchRoles = assignedRole === 'admin' && isSystemAdminEmail(email)
   const role = canSwitchRoles && previous?.id === account.id && previous?.authenticated && typeof previous.role === 'string' && Object.hasOwn(ROLE_TITLES, previous.role)
     ? previous.role : assignedRole
   return {
@@ -31,5 +34,5 @@ export function accountUser(account, previous) {
  */
 export function canSwitchRole(user, role) {
   return Boolean(user?.authenticated && user.canSwitchRoles && user.baseRole === 'admin' &&
-    (user.accountEmail || user.email)?.toLowerCase() === OWNER_EMAIL && typeof role === 'string' && Object.hasOwn(ROLE_TITLES, role))
+    isSystemAdminEmail(user.accountEmail || user.email) && typeof role === 'string' && Object.hasOwn(ROLE_TITLES, role))
 }

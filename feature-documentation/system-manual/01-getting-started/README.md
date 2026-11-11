@@ -78,3 +78,7 @@ Pulse, the character at the lower right, is the AI assistant on every page. Clic
 Unique page destinations stay in the main navigation: **Records** for Dean/Associate Dean and **Assessments** for students. Mobile users find the same links under **Open menu**. Page tabs provide subviews without duplicate left navigation.
 
 The verified System Admin can now select an actual account after choosing a role. This does not replace the admin Google session or provide the selected person's credentials. See [account support](../23-account-support-and-pulse-context/README.md) for search, filters, support restrictions and returning to the admin console.
+
+### Two designated Google admins
+
+Both designated System Admin accounts use **Sign in with Google**, choosing their own Google account. No EduPulse password is required for the newly registered institutional admin. An account registered for Google sign-in becomes usable after Google verifies it and links that identity; a browser profile alone does not establish an EduPulse session. The original admin retains access. Other institutional email addresses do not receive admin privileges automatically. See the [admin walkthrough](../../system-walkthrough/07-system-admin/README.md#two-designated-google-admins).

@@ -4,6 +4,7 @@
 
 | Folder | Covers | Contents |
 | --- | --- | --- |
+| [11 November second admin](versions/2026-11-11-second-admin/README.md) | Second designated Google admin, protected accounts and retained role/person views | See registration and validation |
 | [11 November assessment radar](versions/2026-11-11-assessment-radar/README.md) | Three scored quizzes, matched learner/instructor progress and repaired timed-attempt roster labels | See validation |
 | [11 November local model catalog](versions/2026-11-11-local-model-catalog/README.md) | Twelve downloadable browser models, compatibility, cache inspection and selected removal | See validation and GPU limitation |
 | [11 November sign-in icons](versions/2026-11-11-sign-in-icons/README.md) | Password show/hide eye and visible Google sign-in mark on desktop and phone | See validation |

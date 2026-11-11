@@ -14,7 +14,7 @@ The owner System Admin can ask Pulse to open a named role dashboard and correct 
 
 ![Top bar](01-top-bar.png)
 
-Left to right: logo (returns to the dashboard), the role's main tabs, **Search**, **Dark mode**, **Language**, **Notifications**, the role badge and the account menu. The owner admin can switch views. The breadcrumb remains below the bar. **Help & Support** and **Keyboard Shortcuts** are Settings tabs. Workspace backup and conditional save recovery are in **Settings → Data & Privacy**. There is no page-wide workspace save banner.
+Left to right: logo (returns to the dashboard), the role's main tabs, **Search**, **Dark mode**, **Language**, **Notifications**, the role badge and the account menu. Either designated Google admin can switch views. The breadcrumb remains below the bar. **Help & Support** and **Keyboard Shortcuts** are Settings tabs. Workspace backup and conditional save recovery are in **Settings → Data & Privacy**. There is no page-wide workspace save banner.
 
 *Changed in v0.4.0:* icon-only buttons now have spoken names for screen readers (“Notifications, 2 unread”, “Account menu”, “Open menu / Close menu”), and the breadcrumb is a labelled navigation landmark.
 
@@ -54,12 +54,12 @@ Name, email and role, then **Settings** and **Sign Out**. The admin account's em
 
 ### 7. Role badge and admin view switching
 
-Every account sees its role as a badge in the top bar (see image 1, *Instructor*). Roles are assigned by the administrator, and only the owner admin account can change what it sees:
-* After signing in with Google, the owner admin account sees a button labelled *Admin · <current view>* where other accounts see the badge.
+Every account sees its role as a badge in the top bar (see image 1, *Instructor*). Roles are assigned by the administrator, and the two designated Google admin accounts can change what they see:
+* After signing in with Google, either admin account sees a button labelled *Admin · <current view>* where other accounts see the badge.
 * The button opens the **Switch View** popover, which offers **System Admin**, **Dean**, **Associate Dean**, **Instructor** and **Student**. On a phone, where the top-bar button is hidden, the account menu has a **Switch view** entry that opens the same popover.
 * The popover explains: “You remain signed in as the admin. Your AI key and saved data stay with this account.”
 
-No other account can switch. This screen has no screenshot because it needs the owner's Google session, which the automated capture cannot use.
+Other roles cannot switch. The [second-admin captures](../07-system-admin/README.md#two-designated-google-admins) use synthetic account transport; actual Google consent is completed in the account holder's browser.
 
 *Changed after v0.4.0:* the preview role switcher was removed. It used to let any preview session jump between Dean, Associate Dean, Instructor and Student.
 

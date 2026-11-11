@@ -7794,6 +7794,48 @@
       "sha256": "e2c0194b1b971650e8c67063322f031573564339e3ebec49eea7eba92d665c4a",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-11T09:46:09.023634+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/07-system-admin/06-two-admins.png",
+      "sha256": "37876eb22386f25b0e01b80af3fb1a7a5dbeccbc7ba0d4d2300d6145b0507ad4",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-11T12:00:42.186111+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/07-system-admin/07-second-admin-reloaded-view.png",
+      "sha256": "b93d5be2eace7f65e242606524372deb62ca81cfa087b6f5aaf5e9a20ce96375",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-11T12:00:42.187890+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/07-system-admin/mobile-06-two-admins.png",
+      "sha256": "eea567dd089d1e99bed921934b3cf25d48555d5cf986c373bbb827d678da4686",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-11T12:00:42.191213+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/07-system-admin/mobile-07-second-admin-reloaded-view.png",
+      "sha256": "6ff8cce0371436c1a2f9b1672e72d6ae961e07bfc4540e4ae6c21da021f5a3b1",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-11T12:00:42.199632+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/07-system-admin/07-second-admin-reloaded-view.png",
+      "sha256": "061eecf1f4786b5bceb8e01ed7bd05a087e9cf064212bdc1b6adfb210d2eb65d",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-11T12:03:25.903519+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/07-system-admin/mobile-06-two-admins.png",
+      "sha256": "2083d6994933cf4c12e2a6f1f6a6af36e108abea40764c1aced9f96f96e384bc",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-11T12:03:25.905005+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/07-system-admin/mobile-07-second-admin-reloaded-view.png",
+      "sha256": "4f8f0a7c2b575061192af4b604943e5af55a8a099bb44da483f64e749607a650",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-11T12:03:25.906741+00:00"
     }
   ]
 }

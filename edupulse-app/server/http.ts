@@ -31,6 +31,7 @@ import { operatorInput, operatorRequest } from './domains/operator.js'
 import { loadProviders, removeProvider, resolveProvider, saveProvider } from './providerStore.js'
 import { checkAppropriateUse } from '../src/lib/rag/policy.js'
 import { supportAction, supportFilters, supportIdentity, resolveSupportSubject } from './domains/support.js'
+import { isSystemAdminEmail } from '../src/lib/authRoles.js'
 
 export const VERSION = '0.4.0'
 /** Request body limits per action (bytes). Uploads are raw file bytes. */
@@ -53,7 +54,7 @@ export async function authenticate(request: Request): Promise<Identity> {
     if (error || !data.user) throw new ApiError(401, 'INVALID_SESSION', 'Your session could not be verified. Please sign in again.')
     const role = data.user.app_metadata?.role
     if (!['admin', 'dean', 'associate_dean', 'instructor', 'student'].includes(role) ||
-        (role === 'admin' && (data.user.email?.toLowerCase() !== 'riverabenlor461@gmail.com' ||
+        (role === 'admin' && (!isSystemAdminEmail(data.user.email) ||
           !data.user.app_metadata?.providers?.includes('google')))) {
       throw new ApiError(403, 'ROLE_NOT_ASSIGNED', 'This account has no EduPulse role. Contact the administrator.')
     }

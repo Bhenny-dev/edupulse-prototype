@@ -1,0 +1,20 @@
+import {test,expect} from '@playwright/test'
+import {secondAdminUI,SECOND_ADMIN_ID} from '../second-admin-fixture'
+test('second Google admin restores its selected instructor without replaying commands',async({page})=>{
+ const fixture=await secondAdminUI(page);await page.goto('/#/dashboard')
+ await expect(page.getByText('Protected',{exact:true})).toHaveCount(2)
+ const coverage=page.getByRole('heading',{name:'Role coverage',exact:true}).locator('../..')
+ await coverage.getByText('Instructor',{exact:true}).locator('..').getByRole('button',{name:'Open view',exact:true}).click()
+ await page.getByRole('button',{name:'View Synthetic Instructor',exact:true}).click()
+ await page.goto('/#/performance?tab=materials')
+ await expect(page.locator('.support-view-banner')).toContainText('Synthetic Instructor')
+ const hint=await page.evaluate(()=>JSON.parse(sessionStorage.getItem('edupulse-admin-view-v1')||'null'));expect(hint.accountId).toBe(SECOND_ADMIN_ID)
+ fixture.calls.length=0;await page.reload()
+ await expect(page.locator('.support-view-banner')).toContainText('Synthetic Instructor')
+ await expect(page).toHaveURL(/performance\?tab=materials/)
+ await expect(page.getByRole('heading',{name:'Performance',exact:true})).toBeVisible()
+ expect(fixture.calls.filter(call=>call.method==='POST'&&call.action==='support')).toEqual([])
+ expect(fixture.calls.filter(call=>['chat','courseware','operator','provider-test'].includes(call.action)||['start','respond','submit','open','publish'].includes(call.operation||''))).toEqual([])
+ await page.getByRole('button',{name:'Return to System Admin',exact:true}).click()
+ await expect(page.getByRole('heading',{name:'System Admin',exact:true})).toBeVisible()
+})

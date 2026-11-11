@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react'
 import { supabase } from '../lib/supabaseClient'
 import { aiRequest, setAiAccessToken, setAiSubject } from '../lib/aiClient'
-import { accountUser, canSwitchRole, ROLE_TITLES } from '../lib/authRoles'
+import { accountUser, canSwitchRole, isSystemAdminEmail, ROLE_TITLES } from '../lib/authRoles'
 import { recordAudit } from '../lib/audit'
 import AccountSwitchModal from '../components/admin/AccountSwitchModal'
 import { clearAdminPicker, clearAdminView, readAdminPicker, readAdminView, saveAdminPicker, saveAdminView } from '../lib/adminViewState'
@@ -115,7 +115,7 @@ export function AuthProvider({ children }) {
   const signIn = useCallback(async (email, password) => {
     signingOut.current=false
     if (!supabase) throw new Error('Sign-in is not configured. Contact the EduPulse administrator.')
-    if (email.trim().toLowerCase() === 'riverabenlor461@gmail.com') throw new Error('Use Google sign-in for the system admin account.')
+    if (isSystemAdminEmail(email)) throw new Error('Use Google sign-in for the system admin account.')
     const { data, error } = await supabase.auth.signInWithPassword({ email: email.trim(), password })
     if (error) throw new Error('Sign-in failed. Check your email and password.')
     if (!accountUser(data.user)) {

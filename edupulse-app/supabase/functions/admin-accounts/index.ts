@@ -1,6 +1,6 @@
 import { withSupabase } from 'npm:@supabase/server@1.4.1'
 
-const OWNER_EMAIL = 'riverabenlor461@gmail.com'
+const ADMIN_EMAILS = new Set(['riverabenlor461@gmail.com', '2024-1-0262.botay@kcp.edu.ph'])
 const assignable = new Set(['dean', 'associate_dean', 'instructor', 'student'])
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -9,7 +9,7 @@ export default {
     if (request.method !== 'POST') return Response.json({ error: 'Method not allowed' }, { status: 405 })
     const { data: { user: caller }, error: callerError } = await ctx.supabase.auth.getUser()
     if (callerError || !caller || caller.id !== ctx.userClaims?.id ||
-        caller.email?.toLowerCase() !== OWNER_EMAIL || caller.app_metadata?.role !== 'admin' ||
+        !ADMIN_EMAILS.has(caller.email?.toLowerCase() || '') || caller.app_metadata?.role !== 'admin' ||
         !caller.identities?.some(identity => identity.provider === 'google')) {
       return Response.json({ error: 'System admin required' }, { status: 403 })
     }
@@ -23,7 +23,7 @@ export default {
       const email = String(input.email || '').trim().toLowerCase()
       const password = String(input.password || '')
       const name = String(input.name || '').trim().slice(0, 100)
-      if (!emailPattern.test(email) || email === OWNER_EMAIL || password.length < 12 || password.length > 128) {
+      if (!emailPattern.test(email) || ADMIN_EMAILS.has(email) || password.length < 12 || password.length > 128) {
         return Response.json({ error: 'Use a valid email and a password of 12–128 characters' }, { status: 400 })
       }
       const { data, error } = await ctx.supabaseAdmin.auth.admin.createUser({
@@ -39,7 +39,7 @@ export default {
       const userId = String(input.userId || '')
       if (!/^[0-9a-f]{8}-[0-9a-f-]{27,36}$/i.test(userId) || userId === caller.id) return Response.json({ error: 'Invalid account' }, { status: 400 })
       const { data: target, error: lookupError } = await ctx.supabaseAdmin.auth.admin.getUserById(userId)
-      if (lookupError || !target.user || target.user.app_metadata?.role === 'admin' || target.user.email?.toLowerCase() === OWNER_EMAIL) {
+      if (lookupError || !target.user || target.user.app_metadata?.role === 'admin' || ADMIN_EMAILS.has(target.user.email?.toLowerCase() || '')) {
         return Response.json({ error: 'Account cannot be changed' }, { status: 403 })
       }
       const { error } = await ctx.supabaseAdmin.auth.admin.updateUserById(userId, { app_metadata: { ...target.user.app_metadata, role } })

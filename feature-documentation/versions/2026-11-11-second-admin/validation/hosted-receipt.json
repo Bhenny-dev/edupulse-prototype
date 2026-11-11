@@ -1,0 +1,17 @@
+{
+  "checkedAt": "2026-11-11T11:56:20.396Z",
+  "created": true,
+  "assignedRole": "admin",
+  "googleLinked": false,
+  "passwordSet": false,
+  "emailNotificationSent": false,
+  "originalAdminUnchanged": true,
+  "onlyRequestedAccountRegistered": true,
+  "compatibilityKeyUse": "Explicit owner authorization for this one account only",
+  "databaseReadback": {
+    "registeredAdmins": 2,
+    "originalGoogleAdminAuthorized": true,
+    "newAccountDeniedUntilGoogleLinked": true,
+    "proof": "Transaction-scoped SQL claims, not a Google session"
+  }
+}

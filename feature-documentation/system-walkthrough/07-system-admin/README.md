@@ -4,7 +4,7 @@ Browser reload preserves an admin-selected person and the current protected page
 
 **New after v0.4.0.** The system admin is a separate role from the Dean and Associate Dean. It runs the system: accounts, service health and the audit trail. Academic work (course loading, monitoring, records) belongs to the Dean and Associate Dean.
 
-The system admin signs in with Google, and only the owner's Google-linked account is accepted as admin. The admin's dashboard (`/dashboard`) is the system console, and its top bar shows only **Dashboard** plus the shared tools.
+The system admin signs in with Google, and the two explicitly designated Google-linked accounts are accepted as admin. The admin's dashboard (`/dashboard`) is the system console, and its top bar shows only **Dashboard** plus the shared tools.
 
 These screenshots come from the documentation capture build and show **preview sample data**. A preview session cannot change accounts, so its controls are disabled. In a signed-in admin session, the same screen loads:
 * live Supabase accounts;
@@ -51,7 +51,7 @@ To create an account:
 
 To change an existing account's role, choose the new role in its **Manage** column and select **Save**. The person signs in again to receive the new role.
 
-The system admin account shows **Protected** and cannot be reassigned. A protected Supabase Edge Function (`admin-accounts`) checks the admin's Google-verified identity before every change, and records each change in the audit log.
+Both system admin accounts show **Protected** and cannot be reassigned. A protected Supabase Edge Function (`admin-accounts`) checks the admin's Google-verified identity before every change, and records each change in the audit log.
 
 ## 4. Audit activity
 
@@ -95,3 +95,13 @@ Initial overview, role/account counts, agent activity and audit reads now show s
 ![Account selection after choosing Student](../../system-manual/23-account-support-and-pulse-context/01-select-account.png)
 
 Search by name, student number or email. Student filters include **Year level**, **Department** and **Program**. Choose a row to enter that person's academic view. The banner names the selected person and offers **Return to System Admin**. Support previews do not create learner access/completion events, assessment attempts or appeals. The existing own-account role view remains available through **Use my own ... view**. See [Manual 23](../../system-manual/23-account-support-and-pulse-context/README.md) for filtered, selected-account, dark and mobile captures. These are synthetic UI examples; native and rolled-back hosted checks separately verify row-level boundaries.
+
+## Two designated Google admins
+
+**Role coverage** counts both registered admin accounts. **Manage accounts** marks each **Protected**; neither can be reassigned through the ordinary role selector. Either Google-verified admin can use the existing academic account picker. Provider connections, conversations, workspaces and reload hints remain scoped to the actual signed-in admin.
+
+![Two protected admin accounts counted in Role coverage](06-two-admins.png)
+
+![The second admin retains the selected instructor and Performance tab after reload](07-second-admin-reloaded-view.png)
+
+On a phone the same [role coverage](mobile-06-two-admins.png) and [restored support view](mobile-07-second-admin-reloaded-view.png) remain available. These captures use synthetic admin identities and an invented instructor. They verify rendering and reload behavior, not live Google consent or access to a real person's records. A newly registered Google-only account is counted before its first sign-in; registration is not evidence of a completed Google session.

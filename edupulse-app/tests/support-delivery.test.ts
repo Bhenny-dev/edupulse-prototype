@@ -24,6 +24,22 @@ test('support gateway rechecks owner, adopts target RLS, restores claims, audits
       await db.exec('SET ROLE authenticated')
     }
     const call = async (subject:string|null,operation:string,input:object={}) => (await db.query<{r:any}>(`SELECT public.edupulse_support_action($1,$2,$3) r`,[subject,operation,JSON.stringify(input)])).rows[0].r
+    await db.exec(await readFile('supabase/migrations/20261111114904_second_google_admin.sql','utf8'))
+    const second='66666666-1111-4111-8111-111111111111'
+    await db.query(`INSERT INTO auth.users(id,email,raw_app_meta_data) VALUES($1,'2024-1-0262.botay@kcp.edu.ph','{"role":"admin"}')`,[second])
+    await db.query(`SELECT set_config('request.jwt.claim.sub',$1,false),set_config('request.jwt.claims',$2,false)`,[second,JSON.stringify({sub:second,app_metadata:{role:'admin'}})])
+    await db.exec('SET ROLE authenticated')
+    await assert.rejects(call(ids[2],'subject'),{code:'42501'},'pre-registration alone cannot bypass Google verification')
+    await db.exec('RESET ROLE');await db.query(`INSERT INTO auth.identities VALUES($1,'google')`,[second]);await db.exec('SET ROLE authenticated')
+    assert.equal((await call(ids[2],'subject')).id,ids[2])
+    assert.equal((await db.query<{r:any}>('SELECT public.edupulse_admin_overview() r')).rows[0].r.accounts.filter((a:any)=>a.role==='admin').length,2)
+    await assert.rejects(call(ids[0],'subject'),{code:'42501'},'the second admin cannot impersonate the protected original admin')
+    for(const mutation of ["raw_app_meta_data='{}'","email_confirmed_at=NULL","banned_until=now()+interval '1 day'","email='outsider@kcp.edu.ph'"]){
+      await db.exec('RESET ROLE');await db.query(`UPDATE auth.users SET ${mutation} WHERE id=$1`,[second]);await db.exec('SET ROLE authenticated')
+      await assert.rejects(call(ids[2],'subject'),{code:'42501'},'fresh account state overrides stale admin claims')
+      await db.exec('RESET ROLE');await db.query(`UPDATE auth.users SET email='2024-1-0262.botay@kcp.edu.ph',raw_app_meta_data='{"role":"admin"}',email_confirmed_at=now(),banned_until=NULL WHERE id=$1`,[second]);await db.exec('SET ROLE authenticated')
+    }
+    await as(0)
     const snapshot:any={syllabi:[{id:'canary-syllabus',courseCode:'SYN 101',courseTitle:'Synthetic delivery check',status:'active',approvedFile:{approvalAttested:true},courseOutline:[{week:1,ilos:'Explain variables',contents:['Variables']}]}],content:{quiz:{syllabusId:'canary-syllabus',week:1,type:'assessment',status:'checked',content:{title:'Synthetic variables assessment',questions:[0,1,2].map(i=>({text:`Question ${i}`,topic:'Variables',options:['A','B','C','D'],correctIndex:i,explanation:'Reviewed explanation.'}))}}},registrations:[{courseCode:'SYN 101',blockSection:'SYN-1A',status:'active',students:[{Name:'Synthetic account 2',Email:'canary2@example.invalid',StudentID:'SYN-2'}]}]}
     snapshot.content.lesson={syllabusId:'canary-syllabus',week:1,type:'material',status:'checked',content:{title:'Synthetic variables lesson',sections:[{heading:'Variables',body:'Variables store named values.'}]}}
     await as(1); await db.query('SELECT public.edupulse_save_workspace(0,$1)',[JSON.stringify(snapshot)])
