@@ -69,3 +69,7 @@ The owner authorizes Dean navigation **Dashboard, Course, Instructors, Students*
 ## Owner correction: syllabus builder header, 12 November 2026
 
 The owner explicitly removes **Load curriculum outline** from the Syllabus Builder header. The matching introduction no longer offers that action. File import, **Upload Different**, curriculum course selection and Pulse drafting retain their existing behavior; this is not a change to generation, storage, authorization or reload restoration.
+
+## Owner correction: remove in-app review, 12 November 2026
+
+The owner removes Review Inbox, its navigation links and correction-request interface because syllabus review happens outside EduPulse. Old review-tab URLs resolve to Syllabus & Delivery. Existing saved notices and backend audit history remain intact. Demonstration activity must not be relabelled as genuine.

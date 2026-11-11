@@ -1,6 +1,6 @@
 # 29 - Review syllabus readiness and delivery together
 
-**Who:** Dean and Associate Dean. **Where:** Dean **Course → Syllabus & Delivery** or Associate Dean **Monitor**, under **Academic Oversight**. **Syllabus & Delivery** combines the former status and delivery tabs. **Student Oversight** and **Alerts** remain separate; signed-in Deans also retain **Review Inbox**.
+**Who:** Dean and Associate Dean. **Where:** Dean **Course → Syllabus & Delivery** or Associate Dean **Monitor**, under **Academic Oversight**. **Syllabus & Delivery** combines the former status and delivery tabs. **Student Oversight** and **Alerts** remain separate; review and approval take place outside EduPulse.
 
 1. Open **Syllabus & Delivery**. **Course** includes instructor/block context when available, and **Search courses** filters the same records used by every summary card. Courses with the same code remain separate saved course identities. This controlled sample contains two IT 102 records with different instructors/blocks, one active syllabus and two released items.
 
@@ -20,9 +20,8 @@
 
    ![Retained readiness and delivery alerts](dean-alerts.png)
 
-6. A signed-in Dean can open **Review Inbox** and prepare a correction request. Dean review, CAO approval and EVP noting remain offline; no electronic approval or grade editing is introduced.
+6. Review and approval take place outside EduPulse. There is no Review Inbox or correction-request dialog.
 
-   ![Dean offline review inbox with a sample correction request](dean-review-inbox.png)
 
 7. Old `tab=syllabi` and `tab=delivery` links replace their tab parameter with `tab=overview`, preserving other query parameters and browser history. Dashboard/Pulse guidance points to the combined view. In preview, the former distinct status and delivery sections appear together under the same tab and remain sample data.
 

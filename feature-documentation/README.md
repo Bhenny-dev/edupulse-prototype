@@ -4,6 +4,7 @@
 
 | Folder | Covers | Contents |
 | --- | --- | --- |
+| [12 November genuine records](versions/2026-11-12-genuine-records/README.md) | Demonstration cleanup and removal of Review Inbox | See validation |
 | [12 November builder header](versions/2026-11-12-builder-header/README.md) | Removed curriculum-outline loading button; retained import and drafting controls | See validation |
 | [11 November Dean activity records](versions/2026-11-11-dean-activity-records/README.md) | Four-item Dean navigation, clickable shared cards and year-grouped downloadable block lists | See validation |
 | [11 November second admin](versions/2026-11-11-second-admin/README.md) | Second designated Google admin, protected accounts and retained role/person views | See registration and validation |

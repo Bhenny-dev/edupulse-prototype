@@ -11,7 +11,7 @@ for(const role of ['dean','associate_dean'])test(`${role} gets one combined over
  await page.goto('/#/monitor?tab=syllabi');await expect(page).toHaveURL(/tab=overview/)
  await tabs.getByRole('button',{name:'Student Oversight',exact:true}).click();await expect(page.getByRole('heading',{name:'Blocks and enrollment',exact:true})).toBeVisible();await expect(page.getByRole('heading',{name:'Recorded assessment attempts',exact:true})).toHaveCount(0)
  await tabs.getByRole('button',{name:'Alerts',exact:true}).click();await expect(page.getByRole('heading',{name:'Readiness and delivery alerts',exact:true})).toBeVisible()
- await expect(tabs.getByRole('button',{name:'Review Inbox',exact:true})).toHaveCount(role==='dean'?1:0)
+ await expect(tabs.getByRole('button',{name:'Review Inbox',exact:true})).toHaveCount(0)
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true)
 })
 test('preview combines its two distinct sections and keeps legacy delivery links',async({page})=>{

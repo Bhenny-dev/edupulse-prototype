@@ -22,7 +22,7 @@ The old Course Loading address opens **Course → Course loads**, listing saved 
 
 ## 4-7. Syllabus and delivery oversight
 
-Open **Course → Syllabus & Delivery** or **Monitor Delivery**. Oversight, alerts and signed-in Dean **Review Inbox** retain their functions without adding a fifth main navigation item.
+Open **Course → Syllabus & Delivery** or **Monitor Delivery**. Oversight and alerts retain their functions without adding a fifth main navigation item.
 
 | View | Capture | Content |
 | --- | --- | --- |

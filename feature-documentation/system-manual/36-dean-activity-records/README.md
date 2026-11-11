@@ -33,7 +33,7 @@ Pulse navigation follows the same role destinations: a Dean's request to open co
 
 Catalog totals group course codes; separate saved offerings retain instructor and membership context. Released items exclude inactive and future releases. Submission counts use each learner's latest current-version attempt. Counts marked **test** preserve their provenance. Opens do not establish completed reading; enrollment does not establish assessment completion.
 
-**Syllabus & Delivery**, **Review Inbox** and **Students → View student performance** retain oversight, offline correction and read-only results. Dean File Import, Templates, History and block-edit controls are removed. Saved records remain. The Associate Dean retains the separate shared intake workflow.
+**Syllabus & Delivery**, **Students → View student performance** retain oversight and read-only results. Review and approval take place outside EduPulse. Dean File Import, Templates, History and block-edit controls are removed. Saved records remain. The Associate Dean retains the separate shared intake workflow.
 
 ## Browse blocks by year and download students
 

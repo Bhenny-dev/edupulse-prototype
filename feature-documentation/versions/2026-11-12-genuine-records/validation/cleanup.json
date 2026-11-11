@@ -1,0 +1,16 @@
+{
+  "checkedAt": "2026-11-11T21:13:13.684Z",
+  "removed": {
+    "workspaces": 7,
+    "enrollments": 1389,
+    "attempts": 9,
+    "opens": 6
+  },
+  "genuineAttempts": 0,
+  "genuineOpens": 0,
+  "remainingEnrollments": 288,
+  "remainingSeedRegistrations": 0,
+  "remainingTestAttempts": 0,
+  "remainingTestBlocks": 0,
+  "remainingTestOpens": 0
+}

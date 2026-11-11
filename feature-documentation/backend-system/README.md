@@ -488,3 +488,9 @@ See [Manual 36](../system-manual/36-dean-activity-records/README.md) and [valida
 ## Syllabus builder header - 12 November 2026
 
 The owner-requested removal of **Load curriculum outline** changes only the builder header and its introduction. Existing Pulse curriculum-copy handlers remain available to their callers. Upload/extraction, course selection, model generation, workspace saves, view restoration and API permissions are unchanged. The unused loading flag is removed. See [validation](../versions/2026-11-12-builder-header/validation/results.md).
+
+## Genuine activity and external review - 12 November 2026
+
+Owner-authorized demonstration cleanup removed provenance-matched seed registrations and 1,389 enrollments from seven owner workspaces, nine marked attempts and six marked opens. Private backups and revision checks protected concurrent data. Projection triggers rebuilt the memberships; 288 other memberships remain. Students, approved syllabi and authored materials were retained. Review Inbox and its frontend correction form are removed; old tab links resolve to overview. Existing notices/audit history remain. [Validation](../versions/2026-11-12-genuine-records/validation/results.md).
+
+A second provenance check identified the remaining 288 memberships as the older `it-course-drafts-2026-11-06-` seed. Their owner workspaces were backed up and revision-checked, and those registrations were removed through the owner-guarded projection transaction. Final readback has zero enrollments, marked test attempts and marked test opens. Registered student profiles, course syllabi and authored content remain. Real course enrollment must now be supplied or confirmed by instructors. See the release validation.

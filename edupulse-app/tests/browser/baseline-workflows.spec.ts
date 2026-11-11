@@ -4,7 +4,7 @@ import { baselineUI,baselineWorkspace } from '../baseline-fixture'
 test('syllabus-topic mastery uses mapped marks and restores radar, heatmap and status',async({page})=>{
  await baselineUI(page);await page.goto('/#/performance?tab=bytopic')
  await expect(page.getByRole('img',{name:/^Syllabus topic mastery radar:/})).toBeVisible()
- await expect(page.getByRole('heading',{name:'Topic mastery heatmap — My sections'})).toBeVisible()
+ await expect(page.getByRole('heading',{name:'Topic mastery heatmap â€” My sections'})).toBeVisible()
  await expect(page.getByRole('heading',{name:'Mastery / needs-review counts by topic'})).toBeVisible()
  await expect(page.getByRole('cell',{name:'Not assessed',exact:true}).first()).toBeVisible()
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true)
@@ -33,10 +33,8 @@ test('confirmed loading suggestions and block corrections update shared records'
  await page.goto('/#/records?tab=sections');await page.getByLabel('Imported student',{exact:true}).selectOption('SYN-001');await page.getByLabel('Confirmed block',{exact:true}).fill('BSIT-1B');await page.getByRole('button',{name:'Confirm block correction',exact:true}).click();await expect(page.getByRole('status').filter({hasText:'Block correction saved'})).toBeVisible()
  expect(fixture.records.institutional!.find(r=>r.kind==='rosters')!.data.Block).toBe('BSIT-1B')
 })
-test('Dean offline inbox sends correction requests and account notice read receipts survive reload',async({page})=>{
- await baselineUI(page,'dean');await page.goto('/#/monitor?tab=review');await expect(page.getByRole('heading',{name:'Offline syllabus review inbox'})).toBeVisible()
- await page.getByLabel('Course to review',{exact:true}).selectOption('a'.repeat(32));await page.getByLabel('Correction request',{exact:true}).fill('Please clarify the learning outcomes before the offline signatory route.');await page.getByRole('button',{name:'Confirm correction request',exact:true}).click();await expect(page.getByRole('status').filter({hasText:'Correction request saved'})).toBeVisible()
- await page.goto('/#/notifications');await page.getByRole('button',{name:'Mark All Read',exact:true}).click();await page.reload();await expect(page.getByRole('button',{name:'Mark All Read',exact:true})).toBeDisabled()
+test('removed Dean review link returns to oversight without correction controls',async({page})=>{
+ await baselineUI(page,'dean');await page.goto('/#/monitor?tab=review');await expect(page).toHaveURL(/tab=overview/);await expect(page.getByRole('button',{name:'Review Inbox',exact:true})).toHaveCount(0);await expect(page.getByLabel('Correction request',{exact:true})).toHaveCount(0)
 })
 test('saved syllabus versions can be viewed and restored as a draft',async({page})=>{
  const fixture=await baselineUI(page);fixture.setWorkspace(structuredClone(baselineWorkspace));await page.goto('/#/syllabus?tab=mine')

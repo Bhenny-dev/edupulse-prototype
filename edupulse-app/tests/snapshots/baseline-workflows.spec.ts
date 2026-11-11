@@ -16,10 +16,6 @@ test('synthetic baseline loading, block correction and offline review',async({pa
  await page.goto('/#/records?tab=sections');await page.getByLabel('Imported student',{exact:true}).selectOption('SYN-001');await page.getByLabel('Confirmed block',{exact:true}).fill('BSIT-1B');await shot(page,'40-block-correction')
 })
 
-test('synthetic retained Dean offline review',async({page})=>{
- await baselineUI(page,'dean')
- await page.goto('/#/monitor?tab=review');await page.getByLabel('Course to review',{exact:true}).selectOption('a'.repeat(32));await page.getByLabel('Correction request',{exact:true}).fill('Clarify the learning outcomes before the offline review route.');await shot(page,'41-offline-review-inbox')
-})
 test('synthetic baseline student timed written response and saved notice',async({page})=>{
  const fixture=await baselineUI(page,'student');fixture.records.attempts=[];const publication=fixture.records.publications.find(p=>p.type==='assessment')!;publication.content={...publication.content,assessmentPolicy:{durationSeconds:600,maxAttempts:2},questions:[{text:'Choose the named variable.',topic:'Variables',options:['A','B','C','D']},{text:'Explain how a function groups reusable instructions.',type:'short_answer',topic:'Functions'},{text:'An array holds only one value.',type:'true_false',topic:'Arrays',options:['True','False']}]};
  await page.goto('/#/assessment');await page.getByRole('button',{name:'Open assessment',exact:true}).first().click();await page.getByRole('button',{name:'Question 2',exact:true}).click();await page.getByRole('textbox',{name:'Written response for question 2',exact:true}).fill('A function groups a reusable sequence of instructions.');await shot(page,'42-timed-written-assessment')
@@ -61,7 +57,7 @@ test('synthetic editor fields grow to display full section text and answer expla
 
 test('synthetic generation failure keeps the course open with actionable recovery',async({page})=>{
  const fixture=await baselineUI(page);fixture.setWorkspace(structuredClone(baselineWorkspace))
- await page.route('**/api/ai?action=courseware',route=>route.fulfill({status:400,json:{error:{code:'PROVIDER_WORKSPACE_REQUIRED',message:'Choose your Claude workspace in Settings → AI & Knowledge, then save the connection and test the selected model.'}}}))
+ await page.route('**/api/ai?action=courseware',route=>route.fulfill({status:400,json:{error:{code:'PROVIDER_WORKSPACE_REQUIRED',message:'Choose your Claude workspace in Settings â†’ AI & Knowledge, then save the connection and test the selected model.'}}}))
  await page.goto('/#/courseware?tab=builder&course=baseline-syllabus&week=3')
  await page.getByRole('button',{name:'Generate',exact:true}).last().click()
  const issue=page.getByRole('alert').filter({hasText:'Generation did not finish'})

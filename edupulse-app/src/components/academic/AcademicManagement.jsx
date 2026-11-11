@@ -1,16 +1,18 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import MonitorOverview from './MonitorOverview'
 import { Panel, Empty, KPIs, Table, CsvButton, CourseFilter, ClassLists, useAcademicTabs } from './AcademicUI'
 import { deliverySummary, filterAcademic } from './academicData'
 import AcademicRecords from './AcademicRecords'
 import CourseAssignments from './CourseAssignments'
 import ReadinessCharts from './ReadinessCharts'
-import OfflineReview from './OfflineReview'
 
 export default function AcademicManagement({ data, view, role }) {
+  const [params,setParams]=useSearchParams()
+  useEffect(()=>{if(view==='monitor'&&params.get('tab')==='review'){const next=new URLSearchParams(params);next.set('tab','overview');setParams(next,{replace:true})}},[view,params,setParams])
   const [courseId, setCourseId] = useState(''), [search, setSearch] = useState('')
   const intake = {loads:(data.institutional || []).filter(item=>item.kind==='loads').map(item=>item.data)}
-  const items = view === 'monitor' ? [['overview', 'Syllabus & Delivery'], ['students', 'Student Oversight'], ['alerts', 'Alerts'],...(role==='dean'?[['review','Review Inbox']]:[])] : view === 'courses' ? [['monitoring', 'Course Monitoring'], ['instructors', 'Instructors']] : [['import', 'File Import'], ['sections', 'Blocks / Sections'], ['courses', 'Courses']]
+  const items = view === 'monitor' ? [['overview', 'Syllabus & Delivery'], ['students', 'Student Oversight'], ['alerts', 'Alerts']] : view === 'courses' ? [['monitoring', 'Course Monitoring'], ['instructors', 'Instructors']] : [['import', 'File Import'], ['sections', 'Blocks / Sections'], ['courses', 'Courses']]
   const { key, nav } = useAcademicTabs({ items, label: view === 'monitor' ? 'Monitor views' : view === 'courses' ? 'Course loading views' : 'Records views' })
   const scoped = filterAcademic(data, courseId)
   const courses = scoped.courses.filter(item => `${item.course_code} ${item.course_title}`.toLowerCase().includes(search.toLowerCase()))
@@ -23,7 +25,6 @@ export default function AcademicManagement({ data, view, role }) {
   return <>{nav}<div className="academic-filters"><CourseFilter data={data} details={view==='monitor'} value={courseId} onChange={setCourseId} /><label className="academic-filter">Search courses<input className="form-input" type="search" value={search} onChange={event => setSearch(event.target.value)} placeholder="Course code or title" /></label></div>
     <KPIs items={[["Authorized courses", filtered.courses.length], ['Active syllabi', filtered.courses.filter(item => item.active).length], ['Blocks', new Set(filtered.enrollments.map(item => item.block_section).filter(Boolean)).size], [view==='monitor'?'Released items':'Published items', filtered.publications.filter(item => item.active&&(view!=='monitor'||!item.release_at||new Date(item.release_at).getTime()<=Date.now())).length]]} />
     {view === 'records' ? <AcademicRecords data={filtered} tab={key} /> : <>
-      {key==='review'&&role==='dean'&&<OfflineReview data={filtered}/>}
       {view==='courses' && key==='instructors' && <CourseAssignments data={data}/>}
       {key==='overview'&&view==='monitor'&&<MonitorOverview data={filtered}/>}
       {key==='monitoring'&&<ReadinessCharts data={filtered}/>}
