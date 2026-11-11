@@ -1,0 +1,26 @@
+import {test,expect} from '@playwright/test'
+import {localModelUI} from '../local-model-fixture'
+test('local catalog checks complete weights, retains model choice on reload and removes only that cache',async({page})=>{
+ const fixture=await localModelUI(page)
+ await page.goto('/#/settings?tab=ai-provider')
+ const select=page.getByLabel('On-device model',{exact:true})
+ await expect(select.locator('option')).toHaveCount(12)
+ await expect(page.getByText(/1 of 12 models downloaded/)).toBeVisible()
+ await expect(select.locator(`option[value="${fixture.partialModel.id}"]`)).not.toContainText('downloaded')
+ await select.selectOption(fixture.cachedModel.id)
+ const bounds=await select.boundingBox();expect(bounds).not.toBeNull();expect(bounds!.x+bounds!.width).toBeLessThanOrEqual(page.viewportSize()!.width)
+ await expect(page.getByRole('button',{name:'Remove downloaded model',exact:true})).toBeVisible()
+ await page.reload();await expect(select).toHaveValue(fixture.cachedModel.id)
+ await expect(page.getByText(/1 of 12 models downloaded/)).toBeVisible()
+ await page.getByRole('button',{name:'Remove downloaded model',exact:true}).click()
+ await expect(page.getByText(/0 of 12 models downloaded/)).toBeVisible()
+ await expect(page.getByRole('button',{name:'Remove downloaded model',exact:true})).toHaveCount(0)
+})
+test('FP16 choices are unavailable without shader-f16 while the selected FP32 choice survives reload',async({page})=>{
+ const fixture=await localModelUI(page,false)
+ await page.goto('/#/settings?tab=ai-provider')
+ const select=page.getByLabel('On-device model',{exact:true})
+ await expect(select).toHaveValue('Qwen2.5-0.5B-Instruct-q4f32_1-MLC')
+ await expect(select.locator('option[value="SmolLM2-135M-Instruct-q0f16-MLC"]')).toBeDisabled()
+ await select.selectOption(fixture.cachedModel.id);await page.reload();await expect(select).toHaveValue(fixture.cachedModel.id)
+})

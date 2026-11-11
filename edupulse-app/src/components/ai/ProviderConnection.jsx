@@ -4,7 +4,8 @@ import { Cpu, Plug, RefreshCw } from 'lucide-react'
 import { aiRequest } from '../../lib/aiClient'
 import { useAI } from '../../context/AIContext'
 import { useAuth } from '../../context/AuthContext'
-import { browserCapability, browserPresets, removeBrowserModel, setAiPreference, startBrowserAI, stopBrowserAI } from '../../lib/browserAI'
+import { browserCapability, browserPresets, cachedBrowserModels, removeBrowserModel, setAiPreference, startBrowserAI, stopBrowserAI } from '../../lib/browserAI'
+import {useWorkspaceViewState} from '../../context/WorkspaceContext'
 import { recordAudit } from '../../lib/audit'
 import { rememberProviderAuthorization } from '../../lib/providerOAuth'
 
@@ -27,13 +28,21 @@ export default function ProviderConnection() {
   const [connections, setConnections] = useState([]), [loading, setLoading] = useState(true)
   const [loadAttempt, setLoadAttempt] = useState(0), [loadFailed, setLoadFailed] = useState(false)
   const [workspaceId, setWorkspaceId] = useState(''), [workspaces, setWorkspaces] = useState([])
-  const [browserModel, setBrowserModel] = useState(ai.local.model || browserPresets[0].id)
+  const [rememberedBrowserModel, setBrowserModel] = useWorkspaceViewState('ai-local-model',ai.local.model || browserPresets[0].id)
+  const browserModel=browserPresets.some(p=>p.id===rememberedBrowserModel)?rememberedBrowserModel:browserPresets[0].id
+  const [cached,setCached]=useState([]),[cacheChecking,setCacheChecking]=useState(true),[cacheError,setCacheError]=useState(''),[cacheRevision,setCacheRevision]=useState(0)
   const [busy, setBusy] = useState(false), [editingKey, setEditingKey] = useState(false), [error, setError] = useState(''), [notice, setNotice] = useState(''), [capability, setCapability] = useState(null)
   useEffect(() => {
     let alive = true
-    browserCapability().then(value => { if (alive) { setCapability(value); if (value.supported && !value.halfPrecision) setBrowserModel(browserPresets[1].id) } }).catch(() => { if (alive) setCapability({ supported: false, message: 'The graphics adapter could not be checked.' }) })
+    browserCapability().then(value => { if (alive) { setCapability(value); if (value.supported && !value.halfPrecision) setBrowserModel(current=>{const preset=browserPresets.find(p=>p.id===current);return !preset||preset.halfPrecision?browserPresets[1].id:current}) } }).catch(() => { if (alive) setCapability({ supported: false, message: 'The graphics adapter could not be checked.' }) })
     return () => { alive = false }
   }, [])
+  useEffect(()=>{
+    if(provider!=='browser'||ai.local.status==='loading')return
+    let alive=true;setCacheChecking(true);setCacheError('')
+    cachedBrowserModels().then(ids=>{if(alive)setCached(ids)}).catch(()=>{if(alive)setCacheError('Downloaded-model status could not be checked. Retry the cache check.')}).finally(()=>{if(alive)setCacheChecking(false)})
+    return()=>{alive=false}
+  },[provider,ai.local.status,ai.local.model,cacheRevision])
   useEffect(() => {
     let alive = true
     const controller = new AbortController()
@@ -97,6 +106,12 @@ export default function ProviderConnection() {
     try { await aiRequest('providers', 'DELETE', undefined, undefined, { query: { provider } }); void recordAudit(user, 'ai_connection', 'success', 'Disconnected'); setConnections(previous => previous.filter(item => item.provider !== provider)); setConnection(null); setModels([]); setNotice('Provider removed from your saved connections.'); await ai.refresh() }
     catch (err) { setError(err.message) } finally { setBusy(false) }
   }
+  async function removeSelectedLocalModel(){
+    setBusy('Removing downloaded model…');setError('')
+    try{await removeBrowserModel(browserModel);setCacheRevision(value=>value+1)}
+    catch(err){setError(err.message)}
+    finally{setBusy(false)}
+  }
   const selected = providers.find(p => p.id === provider), preset = browserPresets.find(p => p.id === browserModel)
   const shownError = error || (ai.connectionFailed ? ai.connectionNotice : '')
   const shownNotice = notice || (!ai.connectionFailed ? ai.connectionNotice : '')
@@ -116,14 +131,18 @@ export default function ProviderConnection() {
       <label className="form-label" htmlFor="ai-provider">AI provider</label>
       <select id="ai-provider" className="form-input" value={provider} disabled={busy || ai.local.status === 'loading'} onChange={e => chooseProvider(e.target.value)}>{providers.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}</select>
       {provider === 'browser' ? <div className="ai-provider-content">
-        <label className="form-label" htmlFor="browser-model">On-device model</label><select id="browser-model" className="form-input" value={browserModel} disabled={ai.local.status === 'loading'} onChange={e => setBrowserModel(e.target.value)}>{browserPresets.map(p => <option key={p.id} value={p.id} disabled={p.id.includes('q4f16') && capability?.supported && !capability.halfPrecision}>{p.name}</option>)}</select>
-        <p>{preset?.download} download · {preset?.memory}. Download once; cached models reopen automatically on this browser. A small model can make more mistakes than larger hosted models; review its drafts.</p>
+        <label className="form-label" htmlFor="browser-model">On-device model</label><select id="browser-model" className="form-input" style={{width: '100%', maxWidth: 480, minWidth: 0}} value={browserModel} disabled={ai.local.status === 'loading'} onChange={e => setBrowserModel(e.target.value)}>{browserPresets.map(p => <option key={p.id} value={p.id} disabled={p.halfPrecision && capability?.supported && !capability.halfPrecision}>{p.name}{ai.local.status==='ready'&&ai.local.model===p.id?' · loaded':cached.includes(p.id)?' · downloaded':''}</option>)}</select>
+        <p><strong>{preset?.name}</strong><br />{preset?.download} of weights · {preset?.memory}. Tokenizer and runtime files use additional storage. Memory needs vary with context and other apps.</p>
+        {preset&&<p className="text-sm"><a href={preset.source} target="_blank" rel="noreferrer">Download source</a> · <a href={preset.modelCard} target="_blank" rel="noreferrer">Model card and license: {preset.license}</a></p>}
+        {cacheChecking?<LoadingStatus label="Checking downloaded models…" />:cacheError?null:<p className="text-sm" role="status">{cached.length} of {browserPresets.length} models downloaded in this browser. {ai.local.status==='ready'?`Loaded: ${browserPresets.find(p=>p.id===ai.local.model)?.name||ai.local.model}.`:''}</p>}
+        {cacheError&&<div role="alert"><p>{cacheError}</p><button className="btn btn-secondary btn-sm" onClick={()=>setCacheRevision(value=>value+1)}>Retry cache check</button></div>}
+        <p className="text-sm text-muted">Download a model when you need it; other downloaded models stay cached for later switching. Browser storage can be cleared or evicted. Review AI drafts before use.</p>
         <p className="text-sm text-muted">{capability?.message || 'Checking WebGPU support…'} Your prompts stay in the browser for inference; signed-in knowledge retrieval still uses your library API.</p>
         {ai.local.status === 'loading' && <div role="status"><progress aria-label="Local model download progress" max="1" value={ai.local.progress} /><p>{ai.local.message}</p></div>}
         {ai.local.status !== 'loading' && ai.local.message && <p role="status">{ai.local.message}</p>}
         <div className="ai-actions">
-          {ai.local.status === 'loading' ? <button className="btn btn-secondary" onClick={stopBrowserAI}>Cancel model loading</button> : <button className="btn btn-primary" disabled={capability?.supported === false || busy} onClick={() => { setError(''); void startBrowserAI(browserModel).catch(err => setError(err.message)) }}>{ai.local.status === 'ready' && ai.local.model === browserModel ? 'Use on-device AI' : 'Download / load local model'}</button>}
-          {ai.local.model && ai.local.status !== 'loading' && <button className="btn btn-secondary" onClick={() => { void removeBrowserModel().catch(err => setError(err.message)) }}>Remove downloaded model</button>}
+          {ai.local.status === 'loading' ? <button className="btn btn-secondary" onClick={stopBrowserAI}>Cancel model loading</button> : <button className="btn btn-primary" disabled={capability?.supported === false || busy} onClick={() => { setError(''); void startBrowserAI(browserModel).catch(err => setError(err.message)) }}>{ai.local.status === 'ready' && ai.local.model === browserModel ? 'Use on-device AI' : cached.includes(browserModel)?'Load downloaded model':'Download / load local model'}</button>}
+          {cached.includes(browserModel) && ai.local.status !== 'loading' && <button className="btn btn-secondary" disabled={busy} onClick={removeSelectedLocalModel}>Remove downloaded model</button>}
         </div>
       </div> : <form onSubmit={connect} className="ai-provider-content">
         {provider !== 'ollama' && <>{savedCredential && !editingKey ? <div role="status"><label className="form-label" htmlFor="saved-provider-key">Saved provider credential</label><input id="saved-provider-key" className="form-input" type="password" value="saved-credential" readOnly aria-describedby="saved-provider-note" /><p id="saved-provider-note" className="text-sm text-muted">{user?.authenticated ? 'Saved encrypted to your EduPulse account. Sign out and return without reconnecting.' : 'Saved for this browser session.'} Provider expiry or revocation still applies. This masked indicator does not contain your key.</p><button type="button" className="btn btn-secondary btn-sm" disabled={busy} onClick={() => { setEditingKey(true); setWorkspaceId(''); setWorkspaces([]) }}>Replace API key</button></div> : <><label className="form-label" htmlFor="provider-key">Provider API key</label><input id="provider-key" className="form-input" type="password" disabled={busy} autoComplete="off" spellCheck={false} value={key} onChange={e => setKey(e.target.value)} placeholder="Paste your provider key" maxLength={1024} />{savedCredential && <button type="button" className="btn btn-ghost btn-sm" disabled={busy} onClick={() => { setEditingKey(false); setKey(''); setWorkspaceId(connection.workspaceId || ''); setWorkspaces([]) }}>Keep saved credential</button>}</>}<p className="text-sm text-muted">Saved credentials are encrypted on the server and private to your account. Sign out clears the device connection; Disconnect provider removes the saved connection. Keys are never returned to application JavaScript or stored in local storage. <a href={selected.link} target="_blank" rel="noreferrer">Get a key from {selected.name}</a>. Provider quotas and charges apply.</p></>}

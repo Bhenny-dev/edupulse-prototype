@@ -124,7 +124,7 @@ test('provider settings expose real connections, model discovery and local downl
   await page.goto('/#/settings?tab=ai-provider')
   await expect(page.getByRole('heading', { name: 'Pulse AI connection', exact: true })).toBeVisible()
   await expect(page.getByLabel('On-device model')).toBeVisible()
-  await expect(page.getByText(/about 1 GB/)).toBeVisible()
+  await expect(page.getByText(/870 MB of weights/)).toBeVisible()
   await page.getByLabel('AI provider', { exact: true }).selectOption('openai')
   await expect(page.getByLabel('Provider API key')).toHaveAttribute('type', 'password')
   await expect(page.getByRole('button', { name: 'Connect and load models' })).toBeDisabled()

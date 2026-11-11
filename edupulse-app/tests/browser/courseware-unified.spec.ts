@@ -78,7 +78,7 @@ test('missing-content generation preserves existing work and changes Generate in
   const saved = fixture.getWorkspace() as { content: Record<string, unknown> }
   for (const [id, item] of Object.entries(JSON.parse(existing))) expect(saved.content[id]).toEqual(item)
   await page.reload()
-  await expect(page.locator('[data-week="2"]').getByRole('button', { name: 'View', exact: true })).toBeVisible()
+  await expect(page.locator('[data-week="2"] > .cw-week-heading').getByRole('button', { name: 'Hide', exact: true })).toHaveAttribute('aria-expanded', 'true')
   await page.getByRole('button', { name: 'Back to courses', exact: true }).click()
   await expect(page.locator('[data-course="baseline-syllabus"]')).toContainText('9 of 9 generated')
   await expect(page.locator('[data-course="baseline-syllabus"]')).toContainText('In Progress')

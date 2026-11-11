@@ -7668,6 +7668,42 @@
       "sha256": "9c4a93e85867654631967dfdbc168ef2bed9588f5dd0bf6f7412afd7e99353ab",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-11T05:17:30.448887+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/08-ai-connections/03-on-device-model.png",
+      "sha256": "539405b7409245fbf01b537959fa3a01d714027ebd471636210b882542f0c13e",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-11T06:18:23.413127+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/08-ai-connections/10-cached-local-model.png",
+      "sha256": "0937d753a183af0e876b0d6a3e10f73f598303ca97d4900f907846e40afbe56c",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-11T06:18:23.413603+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/08-ai-connections/11-local-model-removed.png",
+      "sha256": "be55933e2c87da2b40486f4ba9dfb4b9d18b2bc0bad7d634e0bf0669606c7ba3",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-11T06:18:23.413899+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/08-ai-connections/mobile-local-model-catalog.png",
+      "sha256": "d2de8e77130378e6e8172ef4f5845c0484f100676e00dc6b7c5859ab795ee6d4",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-11T06:18:23.414821+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/08-ai-connections/mobile-10-cached-local-model.png",
+      "sha256": "9844cef6af746a1df0e796e2abef8830dd94d96d6b8cf6aac0a3a44ec286379c",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-11T06:18:23.415743+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/08-ai-connections/mobile-11-local-model-removed.png",
+      "sha256": "9623394141c484d5cf795dd50ba27d83977787dfa0e904da2642b2830c8e63d5",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-11T06:18:23.416612+00:00"
     }
   ]
 }

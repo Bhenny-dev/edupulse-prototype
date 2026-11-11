@@ -9,12 +9,12 @@ type CompletionClient = {
 /** WebLLM's JSON-schema path requires a serialized schema, even for an open object.
  * The courseware graph still validates the exact teaching-content schema afterwards.
  */
-export async function completeInBrowser(client:CompletionClient,system:string,prompt:string,signal:AbortSignal,json=false) {
+export async function completeInBrowser(client:CompletionClient,system:string,prompt:string,signal:AbortSignal,json=false,disableThinking=false) {
   signal.throwIfAborted()
   const interrupt=()=>client.interruptGenerate()
   signal.addEventListener('abort',interrupt,{once:true})
   try {
-    const response=await client.chat.completions.create({messages:[{role:'system',content:system},{role:'user',content:prompt}],temperature:0.2,max_tokens:json?2200:1000,...(json?{response_format:{type:'json_object' as const,schema:JSON.stringify({type:'object'})}}:{})})
+    const response=await client.chat.completions.create({messages:[{role:'system',content:system},{role:'user',content:prompt}],temperature:0.2,max_tokens:json?2200:1000,...(disableThinking?{extra_body:{enable_thinking:false}}:{}),...(json?{response_format:{type:'json_object' as const,schema:JSON.stringify({type:'object'})}}:{})})
     signal.throwIfAborted()
     if(response.choices[0]?.finish_reason==='length')throw new Error('The on-device model reached its output limit. Nothing was applied; select a smaller section or use a larger provider model.')
     const text=response.choices[0]?.message.content?.trim()

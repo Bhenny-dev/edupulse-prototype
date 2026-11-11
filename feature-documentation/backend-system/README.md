@@ -450,3 +450,13 @@ Content-validation/output-budget failures can leave gaps while other planned par
 `generationCheckpoint` is an outer content-item marker, stored only as draft. UI actions, content-store mutations, the workspace schema and private security-invoker migration `20261110041721_draft_only_generation_checkpoints` prevent marking that checkpoint checked/published/hidden. Existing publications and student progress are unchanged. The existing 3 MB workspace limit applies; storage failure stops rather than continuing unacknowledged inference. Graph code remains dynamically loaded when generation/resume actually needs it. [Manual 26](../system-manual/26-outline-driven-courseware/README.md#save-parts-and-resume), [validation](../versions/2026-11-10-resumable-courseware/validation/results.md).
 
 The single-topic HTTP plan carries `planVersion: 2`. Older clients are rejected with `CLIENT_UPDATE_REQUIRED` before provider resolution or inference, so a previously loaded multi-topic client cannot mislabel new single-topic responses. Pure graph callers retain their existing schema compatibility.
+
+## Browser model catalog — 11 November 2026
+
+The curated twelve-model allowlist in `browserModelCatalog.ts` matches installed WebLLM 0.2.85 records. [Public artifact audit](local-model-catalog.json) records exact weight bytes, source configuration, compiled Wasm and upstream memory estimates; HTTP availability does not prove inference quality. No new model runtime dependency was introduced. WebLLM remains responsible for actual download, cache and worker initialization.
+
+Cache inspection uses `hasModelInCache` without loading weights into an engine. Ready state still requires successful engine initialization. Removal targets the selected model, preserves a different loaded engine and refuses deletion of the generating engine. Half-precision checks include q0f16; FP32 fallbacks remain selectable. Qwen 3 alone receives `enable_thinking:false`; other families retain their existing prompt template. Graphics/runtime failures become bounded readable messages rather than native stacks.
+
+`ai-local-model` stores only an allowlisted model-selection reference in the existing account/subject/role view scope. It stores no credential, permission, prompt or command and never triggers inference on restoration. Cache state and engine state are independently checked.
+
+Local-model capture fixtures simulate capability and cache metadata, clearly labelled in capture provenance. A separate real 204 MB weight download survived reload; Windows graphics initialization failed in automated tests, so successful inference is not established. [Validation](../versions/2026-11-11-local-model-catalog/validation/results.md) records this boundary.

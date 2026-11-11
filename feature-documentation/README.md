@@ -4,6 +4,7 @@
 
 | Folder | Covers | Contents |
 | --- | --- | --- |
+| [11 November local model catalog](versions/2026-11-11-local-model-catalog/README.md) | Twelve downloadable browser models, compatibility, cache inspection and selected removal | See validation and GPU limitation |
 | [11 November sign-in icons](versions/2026-11-11-sign-in-icons/README.md) | Password show/hide eye and visible Google sign-in mark on desktop and phone | See validation |
 | [10 November admin reload restoration](versions/2026-11-10-admin-reload-restoration/README.md) | Selected-person/page restoration, bounded view hints, reader positions, popovers and explicit recovery | See release validation |
 | [10 November learner publication metadata](versions/2026-11-10-learner-publication-metadata/README.md) | Private teacher review data excluded from learner payloads without changing scores or versions | See validation |

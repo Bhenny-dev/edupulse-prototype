@@ -52,3 +52,17 @@ The [current account guide](../09-restored-role-pages/README.md) adds mobile top
 
 
 The [current mobile field, outline and Settings examples](../../system-manual/14-pulse-and-outline-workspace/README.md#smaller-screens) show selected-field proposals, a horizontally scrollable table and the new Settings tabs.
+
+## Local models on a phone
+
+The model selector, source links and download controls wrap within the connection panel. Hardware compatibility still applies; these controlled captures do not establish mobile GPU inference.
+
+![Phone local model catalog](../../system-manual/08-ai-connections/mobile-local-model-catalog.png)
+
+The selected cached model survives reload. Cache status is checked rather than inferred from the selection.
+
+![Phone cached model](../../system-manual/08-ai-connections/mobile-10-cached-local-model.png)
+
+Removing the selected cached model updates the count and restores the download action.
+
+![Phone removed model](../../system-manual/08-ai-connections/mobile-11-local-model-removed.png)

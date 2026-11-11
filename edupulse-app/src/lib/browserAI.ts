@@ -1,10 +1,22 @@
 import type { WebWorkerMLCEngine } from '@mlc-ai/web-llm'
 import { completeInBrowser } from './browserCompletion'
 
-export const browserPresets = [
-  { id: 'Qwen2.5-1.5B-Instruct-q4f16_1-MLC', name: 'Qwen 2.5 · 1.5B — balanced', download: 'about 1 GB', memory: 'about 1.7 GB GPU memory' },
-  { id: 'Qwen2.5-0.5B-Instruct-q4f32_1-MLC', name: 'Qwen 2.5 · 0.5B — lighter', download: 'about 400 MB', memory: 'about 1.1 GB GPU memory' },
-]
+import {browserPresets} from './browserModelCatalog'
+export {browserPresets} from './browserModelCatalog'
+
+export function browserModelLoadError(error:unknown) {
+  const message=typeof error==='string'?error:error instanceof Error?error.message:''
+  if(/requestDevice|DynamicLib\.Open|dxil\.dll|GPUDeviceLost/i.test(message))return 'The browser graphics runtime could not start. Try current Chrome or Edge with graphics acceleration, or use Ollama or a provider connection.'
+  if(/out of memory|exceed.*(?:memory|buffer)|buffer.*limit/i.test(message))return 'This model needs more available graphics memory. Close other GPU apps or choose a smaller model.'
+  return message.split('\n')[0].slice(0,350)||'The model could not load. Check your connection and available GPU memory.'
+}
+
+/** Inspect actual runtime caches; this never downloads weights or starts inference. */
+export async function cachedBrowserModels() {
+  const {hasModelInCache}=await import('@mlc-ai/web-llm')
+  const cached=await Promise.all(browserPresets.map(async model=>await hasModelInCache(model.id)?model.id:null))
+  return cached.filter((id):id is typeof browserPresets[number]['id']=>id!==null)
+}
 type State = { status: 'idle' | 'loading' | 'ready' | 'error'; model: string; progress: number; message: string }
 let state: State = { status: 'idle', model: '', progress: 0, message: '' }
 let engine: WebWorkerMLCEngine | undefined, worker: Worker | undefined, loading: AbortController | undefined, generating = false
@@ -28,16 +40,17 @@ export function stopBrowserAI() {
   update({ status: 'idle', progress: 0, message: 'Local model stopped. Downloaded weights remain cached.' })
 }
 
-export async function startBrowserAI(model = browserPresets[0]!.id) {
+export async function startBrowserAI(model: string = browserPresets[0]!.id) {
   if (generating) throw new Error('Stop the current response before switching models.')
   if (!browserPresets.some(p => p.id === model)) throw new Error('Choose a supported on-device model.')
+  if(state.status==='ready'&&state.model===model){setAiPreference('browser');return}
   stopBrowserAI()
   const controller = new AbortController(); loading = controller
   update({ status: 'loading', model, progress: 0, message: 'Checking this device…' })
   try {
     const capability = await browserCapability()
     if (!capability.supported) throw new Error(capability.message)
-    if (model.includes('q4f16') && !capability.halfPrecision) throw new Error('Choose the lighter model; this graphics adapter does not support 16-bit shaders.')
+    if (browserPresets.find(p=>p.id===model)?.halfPrecision && !capability.halfPrecision) throw new Error('Choose an FP32 model; this graphics adapter does not support 16-bit shaders.')
     const { WebWorkerMLCEngine } = await import('@mlc-ai/web-llm')
     controller.signal.throwIfAborted()
     worker = new Worker(new URL('./browserAI.worker.ts', import.meta.url), { type: 'module' })
@@ -54,7 +67,7 @@ export async function startBrowserAI(model = browserPresets[0]!.id) {
   } catch (error) {
     if (controller.signal.aborted) return
     worker?.terminate(); worker = undefined; engine = undefined
-    update({ status: 'error', message: error instanceof Error ? error.message.slice(0, 350) : 'The model could not load. Check your connection and available GPU memory.' })
+    update({ status: 'error', message: browserModelLoadError(error) })
     throw new Error(state.message)
   } finally { if (loading === controller) loading = undefined }
 }
@@ -70,12 +83,15 @@ export async function resumeBrowserAI() {
   } catch { /* The status card reports load failures without breaking application startup. */ }
 }
 
-export async function removeBrowserModel() {
-  const model = state.model
-  stopBrowserAI(); setAiPreference('server')
-  if (model) { const { deleteModelAllInfoInCache } = await import('@mlc-ai/web-llm'); await deleteModelAllInfoInCache(model) }
-  try { localStorage.removeItem('edupulse-browser-model') } catch { /* Optional preferences. */ }
-  update({ model: '', message: 'Downloaded model removed from this browser.' })
+export async function removeBrowserModel(model = state.model) {
+  if(!browserPresets.some(p=>p.id===model))throw new Error('Choose a supported on-device model.')
+  const active=model===state.model
+  if(active&&generating)throw new Error('Stop the current response before removing the loaded model.')
+  if(active){stopBrowserAI();setAiPreference('server')}
+  const {deleteModelAllInfoInCache}=await import('@mlc-ai/web-llm')
+  await deleteModelAllInfoInCache(model)
+  try { if(localStorage.getItem('edupulse-browser-model')===model)localStorage.removeItem('edupulse-browser-model') } catch { /* Optional preferences. */ }
+  if(active)update({model:'',message:'Downloaded model removed from this browser.'})
 }
 
 export async function invokeBrowserModel(system: string, prompt: string, signal: AbortSignal, json = false) {
@@ -84,6 +100,6 @@ export async function invokeBrowserModel(system: string, prompt: string, signal:
   signal.throwIfAborted(); generating = true
   const current = engine
   try {
-    return await completeInBrowser(current,system,prompt,signal,json)
+    return await completeInBrowser(current,system,prompt,signal,json,state.model.startsWith('Qwen3-'))
   } finally { generating = false }
 }

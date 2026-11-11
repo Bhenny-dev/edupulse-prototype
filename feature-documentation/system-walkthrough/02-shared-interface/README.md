@@ -204,3 +204,7 @@ Pulse retains an unambiguous recent person for **him**, **her**, **siya**, **niy
 ## Acknowledged generation progress
 
 Course generation uses the existing owner-scoped workspace journal and revision checks for each validated part. Its pending row, **Stop generation**, unfinished reader and explicit **Resume** survive acknowledged saves; reloading never starts AI work. A shared confirmed-commit reference advances immediately so sequential saves do not reuse an older revision. [Course examples](../../system-manual/26-outline-driven-courseware/README.md#save-parts-and-resume) show the settled light, dark and narrow layouts.
+
+## Downloadable local model choices
+
+Settings → **AI & Knowledge** offers twelve browser model choices with download sizes, GPU-memory estimates, source/license links and checked cache status. **Load downloaded model** reuses cached weights; **Remove downloaded model** targets the selected model. The scoped selection survives reload without generation. [Manual 8](../../system-manual/08-ai-connections/README.md#run-a-model-on-this-device-no-key) shows the controls and verification limits.

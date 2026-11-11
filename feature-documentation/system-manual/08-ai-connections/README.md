@@ -78,11 +78,23 @@ Whole-syllabus and course-outline preparation use small requests with one final 
 
 ## Run a model on this device (no key)
 
-Choose **On this device · no API key**, pick **Qwen 2.5 · 1.5B — balanced** (≈1 GB download) or **0.5B — lighter**, then **Download / load local model**. It needs a browser with WebGPU (current Chrome or Edge with graphics acceleration). If your device cannot run it, Pulse says so and keeps the button disabled, as in this capture:
+Choose **On this device · no API key**, then an **On-device model**. Twelve choices cover Qwen 2.5, SmolLM 2, Llama 3.2, Qwen 3 and Gemma 2. The selected model shows its approximate weight download and upstream GPU-memory estimate. Tokenizer and runtime files need extra storage; available memory also depends on context and other applications. **Download source** and the model-card/license link identify the original files and usage terms.
 
-![On-device model](03-on-device-model.png)
+![Local model catalog and size information](03-on-device-model.png)
 
-In the downloaded local app, **Ollama · local app server** uses models installed with `npm run ai:setup`.
+Choose **Download / load local model** to download the selected model and initialize it. A compatible WebGPU browser and graphics runtime are required. Unsupported half-precision choices are disabled; FP32 choices remain available on compatible adapters without half precision. A load error is not a successful installation. Try a smaller model, current Chrome/Edge with acceleration, or the existing Ollama connection when your graphics runtime cannot initialize.
+
+The downloaded-model count checks complete weight files in this browser's cache. It distinguishes **downloaded** from **loaded**: cached files still need initialization before inference. **Load downloaded model** reuses completed files. Selecting a model and reloading preserves the choice without generating a response. Browser storage is specific to this device, browser profile and site; it can be cleared or evicted.
+
+![Cached model selected after reload](10-cached-local-model.png)
+
+**Remove downloaded model** deletes the selected model's cache. Removing another cached model does not stop an independently loaded model. Removing the loaded model stops that engine; removal is blocked while it is producing a response.
+
+![Selected model removed from cache](11-local-model-removed.png)
+
+These captures use synthetic WebGPU capability and tiny cache records to exercise the real cache inspection/removal controls. They do not show downloaded weights or successful inference. Separately, a real 203,614,080-byte SmolLM 2 360M FP32 weight download was checked across reload in an isolated browser profile. Actual GPU initialization in the automated Windows environment did not succeed; inference is not claimed. See [release validation](../../versions/2026-11-11-local-model-catalog/validation/results.md).
+
+In the downloaded local app, **Ollama · local app server** uses separately installed models through the existing setup workflow.
 
 ## Loading and account retention
 
