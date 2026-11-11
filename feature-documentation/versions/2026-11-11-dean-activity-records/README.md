@@ -7,3 +7,5 @@ Course contains read-only course records, loads, student class lists and syllabi
 View hints store bounded detail references scoped to the actual account, role and support subject. Fresh authorized records determine the restored dialog. Navigation/reload does not replay commands or inference. No schema migration or backend permission change is required.
 
 See [Manual 36](../../system-manual/36-dean-activity-records/README.md), the [walkthrough](../../system-walkthrough/03-dean-and-associate-dean/README.md) and [validation](validation/results.md).
+
+Code commit `ab1e849` is live at [EduPulse](https://edupulse-prototype.vercel.app/). Authenticated desktop/phone checks passed on 12 November Manila time; the validation record distinguishes real hosted records from synthetic captures and support-view regressions.

@@ -9,6 +9,10 @@ The isolated worktree preserves concurrent provider/library changes for their au
 
 `npm run verify` passed: **304 native tests passed, zero failed/cancelled**, documentation integrity, lint, frontend/server type checks, pinned model checks, production build and deployment packaging/API smoke. The stale Dean course-loading assertion was updated to the new tab, with Associate Dean and new page destinations checked separately. An initial deadline test timeout passed both in isolation and in the complete rerun. Existing bundle-size/dynamic-import warnings remain.
 
-Production publication and authenticated browser checks follow the feature commit; this record makes no predeployment production claim.
+Feature commit `ab1e849346261f1be4c849542d2767d8f18d29fc` was pushed to `main`. Vercel production deployment `dpl_5QVPSSafC1n9UxqUmgb52MUJ9jQJ` reached **READY**; the production alias was verified against that deployment. Vercel independently passed all **304 native tests**, lint/type checks, production build and API packaging smoke.
+
+At **2026-11-11 20:35 UTC (12 November, Manila)**, an authenticated Dean browser check passed on **1440 px desktop and 390 px phone**, using the real saved records: four-item navigation, Course loads, all four registered year groups, block student table, downloaded CSV and the same block dialog after browser reload. No page errors, academic commands or inference calls occurred. The initial phone-check locator was corrected to inspect the visible mobile menu; no app change was needed. [production.json](production.json) contains the aggregate receipt without student records or credentials.
+
+Actual owner Google support-view sign-in was not used in this production check. Support restoration, authorization changes and no-command-replay remain covered by the native and controlled browser regressions. GitHub Actions was still queued with no jobs started when checked; it is not reported as passed. Local and independent Vercel release gates passed.
 
 Screenshots use synthetic records with example.invalid addresses or explicit preview samples. They do not prove hosted authentication, real assessment completion or new publication. No student account, enrollment, score or provider credential is changed by this feature.
