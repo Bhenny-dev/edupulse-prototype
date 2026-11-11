@@ -4,15 +4,15 @@ These examples use synthetic accounts, records and provider responses. They veri
 
 ## Open the requested dashboard
 
-The owner System Admin can ask Pulse **open me the instructors dashboard**. Pulse first opens the account picker. Choose an instructor, or **Use my own instructor view** to retain the admin's workspace. It confirms **Instructor Dashboard** only after selection succeeds. The account and provider connection stay the same. Ordinary accounts cannot open a different role's dashboard by asking Pulse.
+The owner System Admin can ask Pulse **open me the instructors dashboard**. Pulse first opens the account picker. Choose a named instructor account. It confirms **Instructor Dashboard** only after selection succeeds. The account and provider connection stay the same. Ordinary accounts cannot open a different role's dashboard by asking Pulse.
 
 ![Instructor view opened by name](01-instructor-view.png)
 
 ## Correct a destination in conversation
 
-A follow-up such as **no, not mine, the dean's** uses the preceding dashboard request. Pulse opens the Dean account picker, then **Dean Dashboard** after selection. The illustrated own-account view retains the conversation. These navigation requests require no model call. Academic records reload for the selected view; an actual account or assigned-role change still resets the session.
+Ask **open the dean's dashboard**, then choose a named Dean account. Pulse opens **Dean Dashboard** after selection. Switching to another person resets the private conversation; open Pulse again for the next request. These navigation requests require no model call. The instructor capture uses a controlled workspace transport and shows an unconfirmed synchronization warning; it is not evidence of a successful hosted workspace load.
 
-![Conversational correction opens the named view](02-role-correction.png)
+![Named Dean account opens its dashboard](02-role-correction.png)
 
 ## Understand a Claude connection failure
 

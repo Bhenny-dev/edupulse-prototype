@@ -66,7 +66,8 @@ test('a delayed instructor read cannot populate the next admin role view', async
     await page.getByRole('button', { name: 'Account menu', exact: true }).click()
     await page.getByRole('button', { name: 'Switch view', exact: true }).click()
     await page.locator('.popover-content').getByRole('button', { name: new RegExp(`^${name} `) }).click()
-    await page.getByRole('button', { name: `Use my own ${name.toLowerCase()} view`, exact: true }).click()
+    await page.clock.fastForward(300)
+    await page.getByRole('button', { name: `View ${name==='Instructor'?'Rowan Instructor Demo':'Alex Sample'}`, exact: true }).click()
   }
   await switchView('Instructor'); await expect(page.getByRole('status').filter({ hasText: 'Records up to date' })).toBeVisible()
   const before = fixture.counts().gets, release = fixture.holdRead()

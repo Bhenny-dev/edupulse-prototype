@@ -7,7 +7,7 @@ import { useAuth } from '../../context/AuthContext'
 
 export default function StudentDirectoryPicker({ onRegister }) {
   const { user }=useAuth()
-  const [open,setOpen]=useState(false),[filters,setFilters]=useState({q:'',year:'',department:'',program:''})
+  const [open,setOpen]=useState(false),[filters,setFilters]=useState({q:'',year:'',department:'College of Information Technology',program:''})
   const [offset,setOffset]=useState(0),[result,setResult]=useState({students:[],total:0}),[selected,setSelected]=useState({})
   const [course,setCourse]=useState(''),[block,setBlock]=useState(''),[busy,setBusy]=useState(false),[saving,setSaving]=useState(false),[error,setError]=useState(''),[loadError,setLoadError]=useState(''),[notice,setNotice]=useState(''),[retry,setRetry]=useState(0)
   useEffect(()=>{
@@ -38,7 +38,7 @@ export default function StudentDirectoryPicker({ onRegister }) {
         <div className="grid-2">
           <label className="form-group" style={{minWidth:0}}>Search students<input className="form-input" value={filters.q} onChange={event=>change('q',event.target.value)} placeholder="Name or student number" /></label>
           <label className="form-group" style={{minWidth:0}}>Year level<select aria-label="Year level" className="form-input" value={filters.year} onChange={event=>change('year',event.target.value)}><option value="">All year levels</option>{[1,2,3,4].map(year=><option key={year} value={year}>Year {year}</option>)}</select></label>
-          <label className="form-group" style={{minWidth:0}}>Department<select aria-label="Department" className="form-input" value={filters.department} onChange={event=>change('department',event.target.value)}><option value="">All departments</option>{Object.keys(STUDENT_PROGRAMS).map(name=><option key={name}>{name}</option>)}</select></label>
+          <label className="form-group" style={{minWidth:0}}>Department<select aria-label="Department" className="form-input" value={filters.department} onChange={event=>change('department',event.target.value)}><option value="College of Information Technology">College of Information Technology</option></select></label>
           <label className="form-group" style={{minWidth:0}}>Program<select aria-label="Program" className="form-input" value={filters.program} onChange={event=>change('program',event.target.value)}><option value="">All programs</option>{(filters.department?STUDENT_PROGRAMS[filters.department]:Object.values(STUDENT_PROGRAMS).flat()).map(name=><option key={name}>{name}</option>)}</select></label>
         </div>
         {loadError && <p role="alert">{loadError} <button type="button" className="btn btn-secondary btn-sm" onClick={()=>setRetry(value=>value+1)}>Retry directory</button></p>}

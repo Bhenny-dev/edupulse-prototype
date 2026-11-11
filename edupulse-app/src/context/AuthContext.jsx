@@ -63,7 +63,8 @@ export function AuthProvider({ children }) {
         const hint=readAdminView(base)
         let next=base
         if(!base.canSwitchRoles){clearAdminView();clearAdminPicker()}
-        if(hint){
+        if(hint&&!hint.subjectId)clearAdminView()
+        if(hint?.subjectId){
           const selected=hint.subjectId?await aiRequest('support','GET',undefined,AbortSignal.any([controller.signal,AbortSignal.timeout(20000)]),{query:{subject:hint.subjectId}}):null
           if(!valid())return
           if(hint.subjectId&&(!selected||selected.id!==hint.subjectId||selected.role!==hint.role))throw new Error('The saved account view changed. Choose the account again from System Admin.')
@@ -177,6 +178,7 @@ export function AuthProvider({ children }) {
     const base = principal.current,role=accountPicker,version=restoring.current.version,selection=pickerVersion.current
     const valid=()=>!signingOut.current&&restoring.current.ready&&restoring.current.version===version&&pickerVersion.current===selection&&principal.current?.id===base?.id&&canSwitchRole(principal.current,role)
     if (!valid()) throw new Error('Sign in again as the system admin.')
+    if(!account?.id)throw new Error('Choose a registered account to open its view.')
     const selected = account ? await aiRequest('support', 'POST', { id: account.id, operation: 'enter' }) : null
     if(!valid())throw new Error('The account session changed. Reopen account selection.')
     if(account&&(!selected||selected.id!==account.id||selected.role!==role))throw new Error('This account changed roles. Reopen account selection.')

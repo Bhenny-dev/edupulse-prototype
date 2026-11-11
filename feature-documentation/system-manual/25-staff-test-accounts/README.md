@@ -20,7 +20,7 @@ As the verified System Admin, open **Switch View** and choose **Instructor**, **
 
 ![The seven named instructors and their app-only surname logins](01-instructor-accounts.png)
 
-Use **Search accounts** to find an exact surname or login ID. Choose the named row to open that person's permitted academic workspace. **Use my own instructor view** keeps the admin's own workspace and does not select one of these people. See [Manual 23](../23-account-support-and-pulse-context/README.md) for support-view boundaries and returning to the admin.
+Use **Search accounts** to find an exact surname or login ID. Choose the named row to open that person's permitted academic workspace. The former own-account view option is removed. See [Manual 23](../23-account-support-and-pulse-context/README.md) for support-view boundaries and returning to the admin.
 
 ![Exact app-only login narrows the picker to Marielle as an instructor](02-filtered-instructor.png)
 

@@ -18,7 +18,7 @@ Choose a person's row to open their academic view. The account name and a persis
 
 Support views can inspect released materials and assessment questions, but do not record student access, start attempts, submit responses or appeal as the student. This preserves actual student activity in instructor statistics. The selected person's password and sign-in session are never shared or replaced. Account profile and credential editing requires returning to the admin account.
 
-**Use my own student view** (or the corresponding role name) retains the previous role-only view using the admin's own workspace. It does not select a student's identity or enrollment.
+Choose a named account. The former own-account role-view buttons are removed; retired placeholder accounts are not selectable.
 
 ![Solid dark account picker](04-dark-account-picker.png)
 
@@ -107,3 +107,5 @@ These are controlled account-transport captures. They verify rendering and navig
 ### A second admin keeps its own support session
 
 Either of the two designated, Google-verified admins can select an academic person through **Open view**. Reload retains that person's authorized page and tab using hints bound to the actual admin ID. Signing into the other admin account cannot reuse the former admin's selection, provider credentials or private history. Both admin accounts remain protected from selection as academic subjects and from ordinary role reassignment. [Second-admin desktop and phone captures](../../system-walkthrough/07-system-admin/README.md#two-designated-google-admins) show the same existing controls with two registered admins.
+
+The active student directory is limited to **College of Information Technology**. The department selector contains only CIT, with year/program filtering retained. Non-CIT profiles and the four legacy role placeholders are retired from active use, with their records preserved. Student profile count after retirement is 417.

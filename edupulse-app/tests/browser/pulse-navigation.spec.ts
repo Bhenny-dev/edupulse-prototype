@@ -15,7 +15,7 @@ test('owner requests preserve the dashboard role, including a conversational cor
  for(const [request,title] of [["no, not mine, the dean's",'Dean'],['open me the instructors dashboard','Instructor'],["open the student's dashboard",'Student']]) {
   await pulse.getByRole('textbox',{name:'Ask Pulse',exact:true}).fill(request)
   await pulse.getByRole('button',{name:'Send',exact:true}).click()
-  await page.getByRole('button',{name:`Use my own ${title.toLowerCase()} view`,exact:true}).click()
+  await page.getByRole('button',{name:`View ${title==='Instructor'?'Rowan Instructor Demo':title==='Dean'?'Dana Dean Demo':'Alex Sample'}`,exact:true}).click()
   await expect(page.getByRole('heading',{name:`${title} Dashboard`,exact:true})).toBeVisible()
   await expect(page.getByRole('banner').getByText(`Admin · ${title}`,{exact:true})).toHaveCount(1)
   // Switching the viewed role resets Pulse's private context and closes its panel.

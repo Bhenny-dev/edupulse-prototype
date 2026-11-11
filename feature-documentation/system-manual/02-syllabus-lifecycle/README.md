@@ -129,3 +129,5 @@ Teaching materials and assessment types now open searchable grouped panels above
 [Manual 34](../34-progressive-outlines/README.md) shows weekly previews as generation continues, retained completed weeks after a later failure, same-course reference patterns and safe placement into the form. These controls do not automatically save, check or publish a syllabus.
 
 Section 7 now accepts a **Source link** or **Upload reference file**, including drag and drop. Review the automatically extracted citation and missing fields, then save the syllabus explicitly. See [Manual 35](../35-reference-intake/README.md). The draft PDF includes these citation details and URLs.
+
+When selecting registered students for a course block, the directory is limited to **College of Information Technology**. Year and program filters remain available. The [student directory guide](../16-student-directory/README.md) shows the current controls.

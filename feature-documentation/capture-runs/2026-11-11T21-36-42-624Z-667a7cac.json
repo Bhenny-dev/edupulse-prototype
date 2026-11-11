@@ -1,0 +1,351 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-11-11T21-36-42-624Z-667a7cac",
+  "startedAt": "2026-11-11T21:36:42.624Z",
+  "finishedAt": "2026-11-11T21:37:25.807Z",
+  "commitSha": "f9df4af5d6d134785747f53be33591296666bb82",
+  "sourceDigest": "d75c3ea9de821b2075947a3f3a55bc0fe41c536ec19ab579b75218a3ab7056bf",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-11-11T21:35:42.980Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 9,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": null
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/account-support-reload.spec.ts",
+    "edupulse-app/tests/snapshots/account-support.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/second-admin.spec.ts",
+    "edupulse-app/tests/snapshots/staff-registration.spec.ts",
+    "edupulse-app/tests/snapshots/student-directory.spec.ts",
+    "edupulse-app/tests/snapshots/account-support-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/second-admin-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/staff-registration-mobile.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/account-support-reload-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/approved-syllabus-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/approved-syllabus.spec.ts",
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/automatic-records.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/automatic-records.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.spec.ts",
+    "edupulse-app/tests/snapshots/course-seed.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-formatting.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-navigation.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/dean-records-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/dean-records.spec.ts",
+    "edupulse-app/tests/snapshots/harness-delivery.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/local-models-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/local-models.spec.ts",
+    "edupulse-app/tests/snapshots/login-icons-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/login-icons.spec.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/operator-steps.spec.ts",
+    "edupulse-app/tests/snapshots/outline-courseware.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/outline-courseware.spec.ts",
+    "edupulse-app/tests/snapshots/outline-progress-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/outline-progress.spec.ts",
+    "edupulse-app/tests/snapshots/outline-selector.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/outline-selector.spec.ts",
+    "edupulse-app/tests/snapshots/oversight.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/oversight.spec.ts",
+    "edupulse-app/tests/snapshots/pipeline-progress-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pipeline-progress.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/public-pulse-search-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/public-pulse-search.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-drafting.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-source.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+    "edupulse-app/tests/snapshots/radar-progress-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/radar-progress.spec.ts",
+    "edupulse-app/tests/snapshots/reference-intake-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/reference-intake.spec.ts",
+    "edupulse-app/tests/snapshots/retained-catalog.spec.ts",
+    "edupulse-app/tests/snapshots/retained-sources-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/retained-sources.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/system-search-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/system-search.spec.ts",
+    "edupulse-app/tests/snapshots/voice-quota.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/voice-quota.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-cache.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-recovery.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/account-support-reload.spec.ts",
+      "title": "account support reload: account popover and pending person selection reopen",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2496,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/account-support.spec.ts",
+      "title": "synthetic account search, filtered selection, student support view and solid dark modal",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 4251,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/pulse-navigation.spec.ts",
+      "title": "synthetic owner opens named role dashboards and retains the correction conversation",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 4556,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/second-admin.spec.ts",
+      "title": "second admin sees two protected admins and restores an authorized account view",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 4484,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/staff-registration.spec.ts",
+      "title": "named staff role pickers show surname logins and corrected academic roles",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 4891,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/student-directory.spec.ts",
+      "title": "student directory selection and confirmed roster save",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 4525,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/account-support-mobile.spec.ts",
+      "title": "synthetic mobile account picker fits the screen and keeps filters usable",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2310,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/second-admin-mobile.spec.ts",
+      "title": "second admin retains the selected account and page on a phone",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 4105,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/staff-registration-mobile.spec.ts",
+      "title": "surname account search remains usable on a phone",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2856,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-manual/16-student-directory/01-directory-filters.png",
+      "sha256": "abb8fbf1723e0422e877411f7d35182cc770a90765b587f2caea987e62df0e75",
+      "bytes": 75655
+    },
+    {
+      "path": "feature-documentation/system-manual/16-student-directory/02-student-selection.png",
+      "sha256": "8e5fad499e40b1c880cf141c44d50a788282161ddfa863a7e250d6b7bea198c3",
+      "bytes": 85372
+    },
+    {
+      "path": "feature-documentation/system-manual/16-student-directory/03-saved-roster.png",
+      "sha256": "96068eca2a95a1d556169c7e6ff6d019f1992db8970fc99ae63409ba75a03a1f",
+      "bytes": 290940
+    },
+    {
+      "path": "feature-documentation/system-manual/17-pulse-navigation-and-provider-recovery/01-instructor-view.png",
+      "sha256": "a21dc0ed78855924fae6c46d8efd6fa1fdcf9c7b12f0bb6a8bf50dc7ad604877",
+      "bytes": 281032
+    },
+    {
+      "path": "feature-documentation/system-manual/17-pulse-navigation-and-provider-recovery/02-role-correction.png",
+      "sha256": "c9838893aeea906207360f4dd3a5c2d088633c7186ad628f71882704f97e2284",
+      "bytes": 301212
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/01-select-account.png",
+      "sha256": "df0b0eb01c460899607075a3a7a5afdc5afa2bf056693157f3c5e5bb815a8adb",
+      "bytes": 41274
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/02-filtered-account.png",
+      "sha256": "3214271346217c3a37ec1c61032ed118359269ea1e73c2afb779bc7f6bb3e39d",
+      "bytes": 34787
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/03-selected-student-view.png",
+      "sha256": "d1286ad05b97bf767cb9c654b716c243b1e282cd92a04e463c5e3ae5182097a9",
+      "bytes": 278013
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/04-dark-account-picker.png",
+      "sha256": "4cd70c46e40c2b91028b21455df7278a23f935b4cacb170e33e9236aa7598811",
+      "bytes": 43209
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/08-mobile-account-picker.png",
+      "sha256": "0b6cb330aa92827f147b08c8dec1bba8349e61fff2be87e1f1e800e011d35c89",
+      "bytes": 258813
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/18-reloaded-account-popover.png",
+      "sha256": "deb8419c9c4bb90c517b83acd4d5c7d5af017d03c20219efdb0670fea93b5898",
+      "bytes": 255798
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/19-reloaded-account-selection.png",
+      "sha256": "b9fe661add2f9337aa15ce48a7a252316ca4765b1f368d9789fbd216685a6aec",
+      "bytes": 41620
+    },
+    {
+      "path": "feature-documentation/system-manual/25-staff-test-accounts/01-instructor-accounts.png",
+      "sha256": "c19f85ae47591c890eb1699c553b689ad233f6cef899c2af86cc30256d4f7e09",
+      "bytes": 56226
+    },
+    {
+      "path": "feature-documentation/system-manual/25-staff-test-accounts/02-filtered-instructor.png",
+      "sha256": "b480fae4b84a8ecc8ee0bdc07baed82ad6a76f3993251d1c8551acd5cc9b623b",
+      "bytes": 28778
+    },
+    {
+      "path": "feature-documentation/system-manual/25-staff-test-accounts/03-associate-dean.png",
+      "sha256": "06fbf2c60af8c5a9205839aff5b448f3074f6d807a742c7e59474a8a3e3f3300",
+      "bytes": 27434
+    },
+    {
+      "path": "feature-documentation/system-manual/25-staff-test-accounts/04-dean.png",
+      "sha256": "7cf083d56504100f90408540381e55b127631a28096225e20db441dca90aefa3",
+      "bytes": 25533
+    },
+    {
+      "path": "feature-documentation/system-manual/25-staff-test-accounts/05-mobile-staff-search.png",
+      "sha256": "b3f9961c6be1c9b23eecd96873c7632e190bb698adeb92472801366dd7c98014",
+      "bytes": 87840
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/07-system-admin/06-two-admins.png",
+      "sha256": "37876eb22386f25b0e01b80af3fb1a7a5dbeccbc7ba0d4d2300d6145b0507ad4",
+      "bytes": 40720
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/07-system-admin/07-second-admin-reloaded-view.png",
+      "sha256": "576686007e2ab45ad9ae09357c29bd58ed3be38dd540bc3e394cb8b92c508d89",
+      "bytes": 294746
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/07-system-admin/mobile-06-two-admins.png",
+      "sha256": "2083d6994933cf4c12e2a6f1f6a6af36e108abea40764c1aced9f96f96e384bc",
+      "bytes": 160196
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/07-system-admin/mobile-07-second-admin-reloaded-view.png",
+      "sha256": "4f8f0a7c2b575061192af4b604943e5af55a8a099bb44da483f64e749607a650",
+      "bytes": 475248
+    }
+  ]
+}

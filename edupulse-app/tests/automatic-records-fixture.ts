@@ -15,6 +15,12 @@ export async function automaticRecordsUI(page: Page, role = 'instructor') {
   let gets = 0, syncs = 0, puts = 0, business = 0, failRead = false, failSave = false, nextGate: Promise<void> | null = null
   await page.route('**/api/ai?*', async route => {
     const action = new URL(route.request().url()).searchParams.get('action'), method = route.request().method()
+    if(action==='support'){
+      const people=[{id:'44444444-4444-4444-8444-444444444444',name:'Rowan Instructor Demo',role:'instructor'},{id:'22222222-2222-4222-8222-222222222222',name:'Alex Sample',role:'student'}]
+      if(method==='POST')return route.fulfill({json:people.find(person=>person.id===route.request().postDataJSON().id)})
+      const target=new URL(route.request().url()).searchParams.get('role'),accounts=people.filter(person=>person.role===target)
+      return route.fulfill({json:{accounts,total:accounts.length,departments:['College of Information Technology'],programs:['BSIT']}})
+    }
     if (action === 'academic') {
       if (method === 'POST') { if (route.request().postDataJSON().operation !== 'sync') { business++; throw new Error('Background refresh must never submit a business command') } syncs++; return route.fulfill({ json: { synced: true } }) }
       gets++

@@ -73,3 +73,7 @@ The owner explicitly removes **Load curriculum outline** from the Syllabus Build
 ## Owner correction: remove in-app review, 12 November 2026
 
 The owner removes Review Inbox, its navigation links and correction-request interface because syllabus review happens outside EduPulse. Old review-tab URLs resolve to Syllabus & Delivery. Existing saved notices and backend audit history remain intact. Demonstration activity must not be relabelled as genuine.
+
+## Owner correction: CIT directory and named support accounts, 12 November 2026
+
+The owner limits active students to CIT and removes own-account role views and their four placeholder accounts. Retired records are preserved rather than destroyed. Named staff and 417 CIT profiles retain access under their existing roles; selecting an actual authorized person is required for academic support views.

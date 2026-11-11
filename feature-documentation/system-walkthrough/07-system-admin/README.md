@@ -94,7 +94,7 @@ Initial overview, role/account counts, agent activity and audit reads now show s
 
 ![Account selection after choosing Student](../../system-manual/23-account-support-and-pulse-context/01-select-account.png)
 
-Search by name, student number or email. Student filters include **Year level**, **Department** and **Program**. Choose a row to enter that person's academic view. The banner names the selected person and offers **Return to System Admin**. Support previews do not create learner access/completion events, assessment attempts or appeals. The existing own-account role view remains available through **Use my own ... view**. See [Manual 23](../../system-manual/23-account-support-and-pulse-context/README.md) for filtered, selected-account, dark and mobile captures. These are synthetic UI examples; native and rolled-back hosted checks separately verify row-level boundaries.
+Search by name, student number or email. Student filters include **Year level**, **Department** and **Program**. Choose a row to enter that person's academic view. The banner names the selected person and offers **Return to System Admin**. Support previews do not create learner access/completion events, assessment attempts or appeals. Only named accounts can be selected. The former own-account view option is removed. See [Manual 23](../../system-manual/23-account-support-and-pulse-context/README.md) for filtered, selected-account, dark and mobile captures. These are synthetic UI examples; native and rolled-back hosted checks separately verify row-level boundaries.
 
 ## Two designated Google admins
 
@@ -105,3 +105,5 @@ Search by name, student number or email. Student filters include **Year level**,
 ![The second admin retains the selected instructor and Performance tab after reload](07-second-admin-reloaded-view.png)
 
 On a phone the same [role coverage](mobile-06-two-admins.png) and [restored support view](mobile-07-second-admin-reloaded-view.png) remain available. These captures use synthetic admin identities and an invented instructor. They verify rendering and reload behavior, not live Google consent or access to a real person's records. A newly registered Google-only account is counted before its first sign-in; registration is not evidence of a completed Google session.
+
+The active student directory is limited to **College of Information Technology**. The department selector contains only CIT, with year/program filtering retained. Non-CIT profiles and the four legacy role placeholders are retired from active use, with their records preserved. Student profile count after retirement is 417.

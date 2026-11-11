@@ -5,6 +5,7 @@ import { userDb } from '../database.js'
 export const supportFilters = z.object({ role: z.enum(['student','instructor','dean','associate_dean']), q: z.string().trim().max(120).default(''), year: z.coerce.number().int().min(1).max(4).optional(), department: z.string().max(150).default(''), program: z.string().max(250).default(''), offset: z.coerce.number().int().min(0).max(100000).default(0) })
 export async function supportAction(identity: Identity, operation: string, input: unknown = {}, signal?: AbortSignal) {
   if (identity.local || (!identity.supportActor && identity.role !== 'admin')) throw new ApiError(403, 'SUPPORT_FORBIDDEN', 'Only the verified system admin can select an account.')
+  if(operation==='accounts'&&(input as {role?:string}).role==='student')input={...(input as Record<string,unknown>),department:'College of Information Technology'}
   let request=userDb(identity).rpc('edupulse_support_action', { subject: identity.supportActor ? identity.id : null, operation, input })
   if (signal) request=request.abortSignal(signal)
   const { data, error } = await request

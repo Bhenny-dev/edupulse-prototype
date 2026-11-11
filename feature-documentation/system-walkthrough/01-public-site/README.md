@@ -366,3 +366,5 @@ The sun and moon switch beside **Sign In** turns the site to night; the switch t
 *Changed on 30 October 2026:* the landing page was redesigned with a once-per-tab opening, a 3D ring and geometric section motion. Images 1 to 15 were recaptured and images 16 to 18 are unchanged. The agents section and its image (8b) were added on the same day.
 
 Official-list student accounts use the existing email/password sign-in panel. The administrator distributes credentials privately. After sign-in, the imported student identity fields appear in [Settings Account](../../system-manual/16-student-directory/README.md#4-student-profile). Directory membership alone does not grant access to course materials.
+
+Account registration remains unchanged. The signed-in active directory now contains CIT students and named staff only; retired placeholder logins cannot reopen a role view.

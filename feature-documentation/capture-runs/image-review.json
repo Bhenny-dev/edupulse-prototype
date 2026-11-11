@@ -8496,6 +8496,102 @@
       "sha256": "2d3f214edaebcbd371e34b5fa7209f7fe06fba92987ab04af8d601605252d9da",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-11T21:14:33.112260+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/16-student-directory/01-directory-filters.png",
+      "sha256": "abb8fbf1723e0422e877411f7d35182cc770a90765b587f2caea987e62df0e75",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-11T21:46:24.200873+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/16-student-directory/02-student-selection.png",
+      "sha256": "8e5fad499e40b1c880cf141c44d50a788282161ddfa863a7e250d6b7bea198c3",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-11T21:46:24.200873+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/17-pulse-navigation-and-provider-recovery/01-instructor-view.png",
+      "sha256": "a21dc0ed78855924fae6c46d8efd6fa1fdcf9c7b12f0bb6a8bf50dc7ad604877",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-11T21:46:24.200873+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/17-pulse-navigation-and-provider-recovery/02-role-correction.png",
+      "sha256": "c9838893aeea906207360f4dd3a5c2d088633c7186ad628f71882704f97e2284",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-11T21:46:24.200873+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/01-select-account.png",
+      "sha256": "df0b0eb01c460899607075a3a7a5afdc5afa2bf056693157f3c5e5bb815a8adb",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-11T21:46:24.200873+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/02-filtered-account.png",
+      "sha256": "3214271346217c3a37ec1c61032ed118359269ea1e73c2afb779bc7f6bb3e39d",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-11T21:46:24.200873+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/03-selected-student-view.png",
+      "sha256": "d1286ad05b97bf767cb9c654b716c243b1e282cd92a04e463c5e3ae5182097a9",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-11T21:46:24.200873+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/04-dark-account-picker.png",
+      "sha256": "4cd70c46e40c2b91028b21455df7278a23f935b4cacb170e33e9236aa7598811",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-11T21:46:24.200873+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/08-mobile-account-picker.png",
+      "sha256": "0b6cb330aa92827f147b08c8dec1bba8349e61fff2be87e1f1e800e011d35c89",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-11T21:46:24.200873+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/19-reloaded-account-selection.png",
+      "sha256": "b9fe661add2f9337aa15ce48a7a252316ca4765b1f368d9789fbd216685a6aec",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-11T21:46:24.200873+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/25-staff-test-accounts/01-instructor-accounts.png",
+      "sha256": "c19f85ae47591c890eb1699c553b689ad233f6cef899c2af86cc30256d4f7e09",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-11T21:46:24.200873+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/25-staff-test-accounts/02-filtered-instructor.png",
+      "sha256": "b480fae4b84a8ecc8ee0bdc07baed82ad6a76f3993251d1c8551acd5cc9b623b",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-11T21:46:24.200873+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/25-staff-test-accounts/03-associate-dean.png",
+      "sha256": "06fbf2c60af8c5a9205839aff5b448f3074f6d807a742c7e59474a8a3e3f3300",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-11T21:46:24.200873+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/25-staff-test-accounts/04-dean.png",
+      "sha256": "7cf083d56504100f90408540381e55b127631a28096225e20db441dca90aefa3",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-11T21:46:24.200873+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/25-staff-test-accounts/05-mobile-staff-search.png",
+      "sha256": "b3f9961c6be1c9b23eecd96873c7632e190bb698adeb92472801366dd7c98014",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-11T21:46:24.200873+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/07-system-admin/07-second-admin-reloaded-view.png",
+      "sha256": "576686007e2ab45ad9ae09357c29bd58ed3be38dd540bc3e394cb8b92c508d89",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-11T21:46:24.200873+00:00"
     }
   ]
 }

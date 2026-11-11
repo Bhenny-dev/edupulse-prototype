@@ -5,7 +5,7 @@ import { academicUI } from '../academic-ui-fixture'
 const DIR='../feature-documentation/system-manual/16-student-directory'
 test('student directory selection and confirmed roster save',async({page})=>{
  await mkdir(DIR,{recursive:true});await directoryFixture(page)
- await page.goto('/#/syllabus?tab=register');await page.getByRole('button',{name:'Choose students',exact:true}).click()
+ await page.goto('/#/student-monitoring?tab=students');await page.getByRole('button',{name:'Choose students',exact:true}).click()
  const directory=page.getByRole('region',{name:'Official student directory'})
  await directory.getByLabel('Department',{exact:true}).selectOption(DIRECTORY_DEPARTMENT)
  await directory.getByLabel('Program',{exact:true}).selectOption(DIRECTORY_PROGRAM)

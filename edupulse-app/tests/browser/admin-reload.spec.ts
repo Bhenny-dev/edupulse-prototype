@@ -78,15 +78,13 @@ test('choosing a person records only minimal view hints and restores that choice
   noReplayedActions(fixture)
 })
 
-test('an admin own-role view restores without resolving or entering another account',async({page})=>{
+test('a legacy subjectless role hint returns to System Admin without entering an account',async({page})=>{
   const fixture=await adminReloadUI(page,'instructor',{subjectId:null})
   await page.goto('/#/syllabus?tab=mine')
-  await expect(page.getByRole('heading',{name:'Syllabus',exact:true})).toBeVisible()
-  await page.reload()
-  await expect(page.getByRole('heading',{name:'Syllabus',exact:true})).toBeVisible()
-  expect(new URL(page.url()).hash).toBe('#/syllabus?tab=mine')
+  await expect(page.getByRole('heading',{name:'System Admin',exact:true})).toBeVisible()
+  await page.reload();await expect(page.getByRole('heading',{name:'System Admin',exact:true})).toBeVisible()
   await expect(page.locator('.support-view-banner')).toHaveCount(0)
-  expect(await viewHint(page)).toEqual(fixture.hint)
+  expect(await viewHint(page)).toBeNull()
   expect(fixture.calls.filter(call=>call.lookupSubject||call.subject)).toEqual([])
   noReplayedActions(fixture)
 })
