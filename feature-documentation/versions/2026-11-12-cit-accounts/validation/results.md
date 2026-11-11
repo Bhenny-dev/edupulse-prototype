@@ -11,3 +11,5 @@ Nine affected screenshot scenarios passed. Every changed image was opened and it
 A fresh linked SQL read confirmed 417 active CIT students, zero active other-department students, zero active legacy placeholders, and the installed admin-overview ban filter. No test accounts, submissions or enrollments were created.
 
 `npm run verify` passed: documentation, lint, both type checks, verified local model files, all 304 native tests, production build and deployment asset/API checks. Build warnings concern existing chunk composition; the gate completed successfully.
+
+Production deployment for `adb6278` is READY. A real registered instructor signed in with the existing password and modern publishable key. The production student endpoint returned 417 total CIT profiles (50 paginated rows); explicitly requesting another department still returned the same CIT-only scope. The probe signed out its own session and performed no academic writes or inference. See [aggregate production receipt](production.json).

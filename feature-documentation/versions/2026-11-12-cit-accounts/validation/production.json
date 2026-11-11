@@ -1,0 +1,23 @@
+{
+  "checkedAt": "2026-11-11T21:57:17.571Z",
+  "authenticatedRole": "instructor",
+  "actualProductionApi": true,
+  "results": [
+    {
+      "requestedOtherDepartment": false,
+      "total": 417,
+      "returnedCount": 50,
+      "onlyCit": true
+    },
+    {
+      "requestedOtherDepartment": true,
+      "total": 417,
+      "returnedCount": 50,
+      "onlyCit": true
+    }
+  ],
+  "noAcademicWritesOrInference": true,
+  "productionCommit": "adb6278980d726bb5995028e4056b0055c0ea2ca",
+  "deploymentState": "READY",
+  "deploymentId": "dpl_Gv1TmsSdWv8ptQ7k2JoWZ47hists"
+}
