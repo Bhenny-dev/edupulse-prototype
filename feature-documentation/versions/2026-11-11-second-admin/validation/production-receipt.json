@@ -1,0 +1,39 @@
+{
+  "deployment": {
+    "checkedAt": "2026-11-11T12:15:38.502Z",
+    "id": "dpl_28JJjQ1C1gdabRcV7U4Kt7baGBNP",
+    "state": "READY",
+    "target": "production",
+    "sha": "199be826ff591e0edf5a491d0eecb51cebb401ba",
+    "url": "edupulse-prototype-frhxz0vu2-bhenny-benlor-d-riveras-projects.vercel.app"
+  },
+  "publicArtifact": {
+    "checkedAt": "2026-11-11T12:15:47.285Z",
+    "origin": "https://edupulse-prototype.vercel.app",
+    "secondAdminFrontendPublished": true,
+    "asset": {
+      "path": "/assets/index-AHzdGmDN.js",
+      "sha256": "e779f32b64954b0976532ff75b9b610cf068b1adb38e5c4ae9e59b94fd2556d0"
+    },
+    "publicApiHealthy": true,
+    "googleLoginPerformed": false,
+    "noInferenceOrAssessmentCommands": true
+  },
+  "finalAccountReadback": {
+    "checkedAt": "2026-11-11T12:15:50.219Z",
+    "newAdminRegistered": true,
+    "newGoogleLinked": false,
+    "originalAdminRetained": true,
+    "registeredAdminCount": 2
+  },
+  "independentVercelBuild": {
+    "nativeTestsPassed": 300,
+    "nativeTestsFailed": 0,
+    "deploymentChecksPassed": true
+  },
+  "accountManagementFunction": {
+    "version": 2,
+    "status": "ACTIVE",
+    "verifyJwt": true
+  }
+}
