@@ -35,6 +35,12 @@ Owner correction, 8 November 2026: the existing System Admin role selector must 
 
 The owner later requested that leaving and returning to a page preserve loaded/cache state and that reload be manual. This supersedes timer, focus, visibility and reconnect revalidation above. Identity entry and authorized readback after a confirmed local mutation remain necessary. Preserve workspace debounce saves, revision conflicts, lost-response reconciliation, role/subject isolation and publication/assessment boundaries. Other-tab changes may announce available updates without applying them or replaying commands.
 
+### Owner correction: reload the current authorized view, 10 November 2026
+
+The owner explicitly requires browser refresh to retain the viewed page and its supported modal/popover, including a System Admin's selected role and person. This is a preservation requirement for existing and future features, not permission to retain stale authority. Restore the hash route and allowlisted navigation references only after verifying the current session and, for a selected person, resolving that subject through the read-only support endpoint. Scope tab-local hints to the actual account, subject and role; store references rather than profiles, credentials or pending actions.
+
+Do not redirect to the default dashboard while restoration is pending. A temporary verification failure preserves the URL and offers retry. An unavailable subject or changed role stays gated until an explicit recovery choice; returning to System Admin requires a freshly verified admin principal. Signing out, closing account selection or exiting a support view clears its corresponding hints. Reload must not replay support enter/leave, student opens/assessment commands, publication, workspace writes or inference. This extends the manual-refresh correction above without reintroducing focus/timer/reconnect polling. [Manual 23](../../system-manual/23-account-support-and-pulse-context/README.md) and [Manual 27](../../system-manual/27-cached-workspaces/README.md) describe the view boundaries.
+
 
 ## Owner correction: approved-copy course intake, 9 November 2026
 

@@ -1,5 +1,7 @@
 # 06 · Mobile (390 px)
 
+An admin-selected student remains selected after browser reload on a phone. Authorization runs before the academic view reopens; service failure retains the current URL with retry and explicit admin-exit controls. See the [mobile restored view and recovery captures](../../system-manual/23-account-support-and-pulse-context/README.md#reload-the-selected-account-without-returning-to-dashboard). The mobile navigation surface also reopens after reload and closes when a destination is chosen.
+
 The same application on a phone-sized screen (iPhone 13 viewport, captured at 3× pixel density). Nothing is hidden behind a separate mobile app; the layout reflows.
 
 The instructor's four summary cards are tappable links. [Manual 22](../../system-manual/22-dashboard-summary-navigation/README.md#keyboard-dark-mode-and-mobile) shows their mobile layout and the draft-course destination, including **Show all courses**.

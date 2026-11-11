@@ -15,3 +15,9 @@ test('workspace cache: another tab announces updates without applying them',asyn
  const before=fixture.counts().gets;await page.evaluate(()=>{const c=new BroadcastChannel('edupulse-records-fe67b9d2-719b-4b10-91cd-76031ab115fe');c.postMessage('invalidate');c.close()});await expect(page.getByText('Updates available',{exact:true})).toBeVisible();expect(fixture.counts().gets).toBe(before);await shot(page,'03-updates-available')
  const release=fixture.holdRead();try{await page.getByRole('button',{name:'Refresh records',exact:true}).click();await expect.poll(()=>fixture.counts().gets).toBeGreaterThan(before);await shot(page,'04-manual-read-pending')}finally{release()}
 })
+
+test('workspace cache: browser reload restores the open presentation and slide',async({page})=>{
+ await unifiedCoursewareUI(page);await page.goto('/#/courseware?course=baseline-syllabus&week=1')
+ await page.locator('[data-content-id="unified-material"]').getByRole('button',{name:'Actions for Variables lesson',exact:true}).click();await page.getByRole('menuitem',{name:'View presentation',exact:true}).click();await page.getByRole('button',{name:'Next slide',exact:true}).click()
+ await expect(page.locator('.pres-topbar-counter')).toHaveText('2 / 2');await page.reload();await expect(page.locator('.pres-topbar-counter')).toHaveText('2 / 2');await shot(page,'05-reloaded-reader')
+})

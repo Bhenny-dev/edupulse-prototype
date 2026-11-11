@@ -1,0 +1,271 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-11-10T06-28-57-357Z-509d644d",
+  "startedAt": "2026-11-10T06:28:57.357Z",
+  "finishedAt": "2026-11-10T06:29:27.269Z",
+  "commitSha": "4220974bd902e47f2b12ac7567a32b3d8c1260f9",
+  "sourceDigest": "df75f0a56f9f98b44a0cd8f8f4f61b357166dca42072dc9691116ef22c7e4fef",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-11-10T06:23:21.537Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "failed",
+  "counts": {
+    "passed": 7,
+    "failed": 1,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": null
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/account-support-reload.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-cache.spec.ts",
+    "edupulse-app/tests/snapshots/account-support-reload-mobile.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/account-support-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/account-support.spec.ts",
+    "edupulse-app/tests/snapshots/approved-syllabus-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/approved-syllabus.spec.ts",
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/automatic-records.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/automatic-records.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.spec.ts",
+    "edupulse-app/tests/snapshots/course-seed.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-formatting.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-navigation.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/harness-delivery.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/operator-steps.spec.ts",
+    "edupulse-app/tests/snapshots/outline-courseware.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/outline-courseware.spec.ts",
+    "edupulse-app/tests/snapshots/outline-progress-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/outline-progress.spec.ts",
+    "edupulse-app/tests/snapshots/outline-selector.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/outline-selector.spec.ts",
+    "edupulse-app/tests/snapshots/oversight.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/oversight.spec.ts",
+    "edupulse-app/tests/snapshots/pipeline-progress-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pipeline-progress.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/public-pulse-search-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/public-pulse-search.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-drafting.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-source.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+    "edupulse-app/tests/snapshots/reference-intake-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/reference-intake.spec.ts",
+    "edupulse-app/tests/snapshots/retained-catalog.spec.ts",
+    "edupulse-app/tests/snapshots/retained-sources-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/retained-sources.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+    "edupulse-app/tests/snapshots/staff-registration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/staff-registration.spec.ts",
+    "edupulse-app/tests/snapshots/student-directory.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/system-search-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/system-search.spec.ts",
+    "edupulse-app/tests/snapshots/voice-quota.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/voice-quota.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-recovery.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/account-support-reload.spec.ts",
+      "title": "account support reload: student remains selected on the protected page",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 5282,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/account-support-reload.spec.ts",
+      "title": "account support reload: instructor remains selected on the protected page",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "failed",
+      "expectedStatus": "passed",
+      "durationMs": 6278,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/account-support-reload.spec.ts",
+      "title": "account support reload: dean remains selected on the protected page",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1577,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/account-support-reload.spec.ts",
+      "title": "account support reload: associate_dean remains selected on the protected page",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1463,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/account-support-reload.spec.ts",
+      "title": "account support reload: pending verification and explicit recovery retain the URL",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1977,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/account-support-reload.spec.ts",
+      "title": "account support reload: account popover and pending person selection reopen",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2355,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/workspace-cache.spec.ts",
+      "title": "workspace cache: browser reload restores the open presentation and slide",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1768,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/account-support-reload-mobile.spec.ts",
+      "title": "account support reload mobile: selected student and recoverable service failure",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2317,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/10-reload-student.png",
+      "sha256": "5f2e29918a8ad82e6e82aa6a8a274831086de44baa6c58e2806a70d44fa45bce",
+      "bytes": 262414
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/12-reload-dean.png",
+      "sha256": "b6c2037a24241da9b37ecac0c9ade887d81f867b5a6a3d95f49116df965437e1",
+      "bytes": 285422
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/13-reload-associate_dean.png",
+      "sha256": "f5c39cad08c96f1adf6dd1483da54d083b0eab6af02dae7290204162be008fcf",
+      "bytes": 268510
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/14-reload-verifying.png",
+      "sha256": "020d4e26ec07c7836182c72afde5445ce12b92eacd4366b8931aaffaf699057d",
+      "bytes": 151496
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/15-reload-recovery.png",
+      "sha256": "88d1f4c7b97c8d614e86d135e8d8e04e99ce61fefde6b605cb0568139bfc319c",
+      "bytes": 219826
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/16-mobile-reloaded-view.png",
+      "sha256": "6bc64afc1947b26af8d1e964262a326b9849749a647c2dee48c14fed73948672",
+      "bytes": 503574
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/17-mobile-recovery.png",
+      "sha256": "4b83702ef58b739f193fa49db7feb5f86d61eaffc41100bc7e46b2c4d7faa8fb",
+      "bytes": 415184
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/18-reloaded-account-popover.png",
+      "sha256": "8583a0fe4c00dd4e6995fd34e12522245725eba2da50d5d443a4ff6e28a9ce19",
+      "bytes": 255600
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/19-reloaded-account-selection.png",
+      "sha256": "d9a72a2c11daa6613622cf6c13b514b411ab543a59dc9b679653a68b65bb1a4a",
+      "bytes": 47544
+    },
+    {
+      "path": "feature-documentation/system-manual/27-cached-workspaces/05-reloaded-reader.png",
+      "sha256": "07e6b4bc5d3236c4ab813bd83ea0fba3b7181d5ca695f68b3af8f7a5d2ca8881",
+      "bytes": 160948
+    }
+  ]
+}

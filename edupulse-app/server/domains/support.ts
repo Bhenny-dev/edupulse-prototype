@@ -15,7 +15,11 @@ export async function supportAction(identity: Identity, operation: string, input
 /** The header selects a subject, never grants authorization. SQL rechecks the live owner and target on every operation. */
 export async function supportIdentity(actor: Identity, id: string | null): Promise<Identity> {
   if (!id) return actor
-  if (!z.string().uuid().safeParse(id).success || actor.role !== 'admin' || actor.local) throw new ApiError(403, 'SUPPORT_FORBIDDEN', 'A verified system admin and a valid account are required.')
-  const result = await supportAction({ ...actor, id, supportActor: actor.id }, 'subject')
+  const result=await resolveSupportSubject(actor,id)
   return { ...actor, id: result.id, role: result.role, supportActor: actor.id, name: result.name, email: result.email }
+}
+/** Resolving a saved view is read-only; it does not replay an enter/leave command. */
+export async function resolveSupportSubject(actor:Identity,id:string,signal?:AbortSignal) {
+  if (!z.string().uuid().safeParse(id).success || actor.role !== 'admin' || actor.local) throw new ApiError(403, 'SUPPORT_FORBIDDEN', 'A verified system admin and a valid account are required.')
+  return supportAction({ ...actor, id, supportActor: actor.id }, 'subject',{},signal)
 }

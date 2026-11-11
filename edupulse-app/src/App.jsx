@@ -45,8 +45,23 @@ const publicPage = Page => <Suspense fallback={<div className="public-loading" r
 // The system admin has a dedicated console. Academic management belongs to
 // the separately authenticated Dean and Associate Dean roles.
 function ProtectedRoute({ children, allowedRoles }) {
-  const { user, authLoading } = useAuth()
-  if (authLoading) return <div className="session-loading"><SkeletonContent label="Restoring your session…" variant="page" /></div>
+  const { user, authLoading, authRestoreError, retryRestoration, returnToAdmin, canReturnToAdmin, logout } = useAuth()
+  if (authLoading) return (
+    <div className="session-loading">
+      {authRestoreError ? (
+        <section role="alert" className="card session-recovery">
+          <h1>Could not restore your view</h1>
+          <p>{authRestoreError}</p>
+          <div className="flex flex-wrap gap-12">
+            <button className="btn btn-primary" onClick={retryRestoration}>Retry restoring view</button>
+            {canReturnToAdmin ? (
+              <button className="btn btn-secondary" onClick={() => { if (returnToAdmin()) window.location.hash = '/dashboard' }}>Return to System Admin</button>
+            ) : <button className="btn btn-secondary" onClick={logout}>Sign out</button>}
+          </div>
+        </section>
+      ) : <SkeletonContent label="Restoring your session…" variant="page" />}
+    </div>
+  )
   if (!user) return <Navigate to="/" replace />
   if (allowedRoles && !allowedRoles.includes(user.role)) return <Navigate to="/dashboard" replace />
   return children

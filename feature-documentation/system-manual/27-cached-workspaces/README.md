@@ -18,6 +18,12 @@
 
    ![Manual read in progress with cached dashboard retained](04-manual-read-pending.png)
 
-Student document/presentation readers also retain their open material and view mode when returning through navigation. Restoring a reader does not record another material-open action. Assessment sessions, answers and submissions are not automatically restored or replayed; their existing explicit start/submit controls remain. Memory preferences store identifiers and UI state, not extra copies of material, secrets or assessment answers, and are isolated/reset when the account, role or support subject changes. A full browser reload or sign-out clears these in-memory preferences and revalidates authorization; saved workspace drafts retain their existing account-specific device journal.
+Student document/presentation readers also retain their open material and view mode when returning through navigation. Restoring a reader does not record another material-open action. Assessment sessions, answers and submissions are not automatically restored or replayed; their existing explicit start/submit controls remain. View preferences store identifiers and UI state, not extra copies of material, secrets or assessment answers, and are isolated by account, role and support subject.
+
+A full browser reload now retains the selected course, expanded weeks, selected items, reader/document mode, slide position and delivery dialog reference in this tab. Fresh authorization and current content availability are still required before a reader or delivery dialog can reopen. Explicit close/back actions update the retained preference. Saved workspace drafts retain their existing account-specific device journal. The sample below returns to **2 / 2** after a browser reload, rather than restarting the presentation.
+
+![Open course presentation and slide restored after browser reload](05-reloaded-reader.png)
+
+Admin-selected person views and header surfaces follow the [account restoration steps](../23-account-support-and-pulse-context/README.md#reload-the-selected-account-without-returning-to-dashboard). Restoring a view does not replay generation, delivery, submission or assessment-start actions. If view-hint storage is unavailable, those references remain in memory and may be lost on reload.
 
 These captures use controlled sample accounts, workspaces and records. Browser tests count requests, preserve reader/slide state, exercise stale-response role isolation and confirm no extra writes or student material-open event on reader return. They do not establish hosted student activity or paid inference. See [validation](../../versions/2026-11-09-cached-workspaces/validation/results.md).

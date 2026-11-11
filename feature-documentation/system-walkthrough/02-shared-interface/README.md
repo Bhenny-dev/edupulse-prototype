@@ -1,5 +1,7 @@
 # 02 · Shared interface
 
+Browser refresh keeps the current route/query and restores supported view references after authorization. Header account, notification, language, role, search and mobile-navigation surfaces retain their visibility; close/Escape clears it. Search text and private result payloads are not saved as view hints. Selected course readers retain their slide, while business actions remain explicit. [Manual 23](../../system-manual/23-account-support-and-pulse-context/README.md#reload-the-selected-account-without-returning-to-dashboard) shows restored popovers and recovery; [Manual 27](../../system-manual/27-cached-workspaces/README.md) shows the reloaded presentation.
+
 Controls every signed-in role has. Shown here as the Instructor; the Dean and Student see the same tools with their own navigation tabs and notifications.
 
 The owner System Admin can ask Pulse to open a named role dashboard and correct that destination in conversation. Ordinary accounts keep their assigned role. [Manual 17](../../system-manual/17-pulse-navigation-and-provider-recovery/README.md) shows the synthetic owner-view handoff and the retained Anthropic connection after an API-credit failure.

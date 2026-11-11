@@ -1,5 +1,7 @@
 # 07 · System Admin
 
+Browser reload preserves an admin-selected person and the current protected page/tab. Fresh admin and target checks complete before the view renders; a failed check keeps that URL with explicit retry/exit controls. The account picker and header popovers can also reopen without choosing an account or replaying an action. See the four role captures and recovery screens in [Manual 23](../../system-manual/23-account-support-and-pulse-context/README.md#reload-the-selected-account-without-returning-to-dashboard).
+
 **New after v0.4.0.** The system admin is a separate role from the Dean and Associate Dean. It runs the system: accounts, service health and the audit trail. Academic work (course loading, monitoring, records) belongs to the Dean and Associate Dean.
 
 The system admin signs in with Google, and only the owner's Google-linked account is accepted as admin. The admin's dashboard (`/dashboard`) is the system console, and its top bar shows only **Dashboard** plus the shared tools.

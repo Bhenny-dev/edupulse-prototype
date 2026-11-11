@@ -10,15 +10,15 @@ const AcademicContext = createContext(null)
 // reconnects preserve the loaded snapshot; other tabs announce updates for manual refresh.
 
 export function AcademicProvider({ children }) {
-  const { user } = useAuth()
+  const { user,authLoading } = useAuth()
   // A view switch preserves the surrounding chat, but never reuses another view's records.
-  return <AcademicSession key={`${user?.accountId || user?.id}:${user?.id}:${user?.role}:${!!user?.authenticated}`} user={user}>{children}</AcademicSession>
+  return <AcademicSession key={`${user?.accountId || user?.id}:${user?.id}:${user?.role}:${!!user?.authenticated}`} user={user} authLoading={authLoading}>{children}</AcademicSession>
 }
 
-function AcademicSession({ children, user }) {
+function AcademicSession({ children, user,authLoading }) {
   const workspace = useWorkspace(), workspaceRef = useRef(workspace)
   workspaceRef.current = workspace
-  const role = user?.role, enabled = Boolean(user?.authenticated && role !== 'admin')
+  const role = user?.role, enabled = Boolean(!authLoading && user?.authenticated && role !== 'admin')
   const currentRole = useRef(role), alive = useRef(true), request = useRef(null), channel = useRef(null)
   currentRole.current = role
   const timing = useRef({ invalidation: 0, projected: false, syncing: false })

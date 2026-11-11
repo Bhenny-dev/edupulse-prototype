@@ -36,6 +36,35 @@ test('support gateway rechecks owner, adopts target RLS, restores claims, audits
     const accounts=await call(null,'accounts',{role:'student',year:1,q:'SYN-2'})
     assert.equal(accounts.total,1);assert.equal(accounts.accounts[0].id,ids[2])
     assert.equal((await call(null,'accounts',{role:'student',year:2})).accounts[0].id,ids[3])
+    const publicSnapshot = async () => {
+      await db.exec('RESET ROLE')
+      try {
+        const tables=(await db.query<{tablename:string}>("SELECT tablename FROM pg_tables WHERE schemaname='public' ORDER BY tablename")).rows
+        const rows:Record<string,unknown>={}
+        for(const {tablename} of tables) rows[tablename]=(await db.query(`SELECT to_jsonb(t) row FROM public."${tablename.replaceAll('"','""')}" t ORDER BY to_jsonb(t)::text`)).rows
+        return rows
+      } finally { await db.exec('SET ROLE authenticated') }
+    }
+    const beforeResolve=await publicSnapshot()
+    const claimsBefore=(await db.query("SELECT auth.uid() uid,auth.jwt() claims,current_setting('request.jwt.claim.email',true) email")).rows
+    for(let attempt=0;attempt<2;attempt++) {
+      const subject=await call(ids[2],'subject',{operation:'enter',data:{syllabi:[]}})
+      assert.deepEqual(subject,{id:ids[2],role:'student',name:'Synthetic account 2',email:'canary2@example.invalid',department:'College of IT',yearLevel:1,program:'BSIT'},'subject resolution exposes only the account DTO, never internal claims or credentials')
+    }
+    assert.deepEqual((await db.query("SELECT auth.uid() uid,auth.jwt() claims,current_setting('request.jwt.claim.email',true) email")).rows,claimsBefore,'resolving does not adopt subject claims')
+    assert.deepEqual(await publicSnapshot(),beforeResolve,'repeated resolution does not enter/leave, audit, or mutate any public business table')
+    await db.exec('RESET ROLE');await db.query("UPDATE auth.users SET raw_app_meta_data=jsonb_build_object('role','instructor') WHERE id=$1",[ids[2]])
+    await as(0);assert.equal((await call(ids[2],'subject')).role,'instructor','the subject role is read freshly instead of replaying the saved view')
+    await db.exec('RESET ROLE');await db.query("UPDATE auth.users SET raw_app_meta_data=jsonb_build_object('role','student') WHERE id=$1",[ids[2]])
+    await db.query("UPDATE auth.users SET raw_app_meta_data=jsonb_build_object('role','student') WHERE id=$1",[ids[0]])
+    await as(0);await assert.rejects(call(ids[2],'subject'),{code:'42501'},'stale admin JWT claims cannot bypass a live owner role revocation')
+    await db.exec('RESET ROLE');await db.query("UPDATE auth.users SET raw_app_meta_data=jsonb_build_object('role','admin') WHERE id=$1",[ids[0]])
+    await db.query("DELETE FROM auth.identities WHERE user_id=$1 AND provider='google'",[ids[0]])
+    await as(0);await assert.rejects(call(ids[2],'subject'),{code:'42501'},'the owner must still have the required Google identity')
+    await db.exec('RESET ROLE');await db.query("INSERT INTO auth.identities VALUES($1,'google')",[ids[0]])
+    await as(0);await assert.rejects(call(ids[0],'subject'),{code:'42501'},'the admin account cannot be selected as an academic subject')
+    await assert.rejects(call('99999999-1111-4111-8111-111111111111','subject'),{code:'42501'},'unknown subjects cannot be restored')
+    assert.deepEqual(await publicSnapshot(),beforeResolve,'denied resolutions also leave audit and business records unchanged')
     await call(ids[2],'enter')
     const selected=await call(ids[2],'academic.read')
     assert.equal(selected.courses.length,1);assert.equal(selected.enrollments.length,1);assert.equal(selected.publications.length,2)

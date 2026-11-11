@@ -4,6 +4,8 @@
 
 ## Check the pipeline
 
+On browser reload, connection health checks wait until the signed-in account and any selected admin person view have been verified. Restoration retains the current page and does not run generation or a model test. The provider connection still belongs to the actual signed-in account. See the [restoration and retry screens](../23-account-support-and-pulse-context/README.md#reload-the-selected-account-without-returning-to-dashboard); an unavailable verification step offers retry before the requested view and its connection controls reopen.
+
 **Agentic RAG pipeline** shows what is working right now: the generation model, the free embedding model and reranker (always available, no key), the vector database, the document sandbox and the nine named agents, starting with the Guardian, which checks appropriate use before the others work. The agents’ tasks, goals and tracked results are listed in the System Admin console ([System Walkthrough 07](../../system-walkthrough/07-system-admin/README.md)). Use **Check status** after changing anything.
 
 The current pipeline capture shows local **Ollama / qwen2.5:1.5b** as **Not connected** because that local server could not be reached, with bundled embeddings/reranking and an empty library. Connect a reachable provider and use **Test selected model** to verify inference. Synthetic credential UI captures below are labelled separately.

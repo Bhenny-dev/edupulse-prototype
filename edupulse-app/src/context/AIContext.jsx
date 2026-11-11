@@ -24,6 +24,7 @@ export function AIProvider({ children }) {
     finally { if (sequence === latestHealth.current) setChecking(false) }
   }, [])
   useEffect(() => {
+    if(authLoading)return
     const controller = new AbortController()
     latestHealth.current++
     setHealth(null)
@@ -31,8 +32,8 @@ export function AIProvider({ children }) {
     if (userId) { void refresh(controller.signal).catch(() => {}); void resumeBrowserAI() }
     else stopBrowserAI()
     return () => controller.abort()
-  }, [userId, role, refresh])
-  useEffect(() => { const update = () => { setPreference(aiPreference()); void refresh().catch(() => {}) }; window.addEventListener('edupulse-ai-change', update); return () => window.removeEventListener('edupulse-ai-change', update) }, [refresh])
+  }, [userId, role, refresh,authLoading])
+  useEffect(() => { if(authLoading)return; const update = () => { setPreference(aiPreference()); void refresh().catch(() => {}) }; window.addEventListener('edupulse-ai-change', update); return () => window.removeEventListener('edupulse-ai-change', update) }, [refresh,authLoading])
   useEffect(() => {
     if (!callback) return
     const clean = new URL(window.location.href)

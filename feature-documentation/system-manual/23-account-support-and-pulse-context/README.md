@@ -69,3 +69,37 @@ After a buddy sends a request to Pulse, Tab and Shift+Tab keep focus inside the 
 The [System Search extension](../24-system-first-search/README.md) answers ordinary record and help queries before provider resolution. It accepts name initials and small typos, shows clear suggestions and uses public Internet images only for labelled external results.
 
 Named staff test accounts and their corrected role assignments are documented in [Manual 25](../25-staff-test-accounts/README.md). Their passwords remain private.
+
+## Reload the selected account without returning to Dashboard
+
+A browser refresh keeps the current URL, including its page and tab query, and restores the selected person after fresh authorization. The role and person's identifier are tab-local hints; the application verifies the admin session and resolves the selected account again before opening its records. The support banner still names that person. Reload does not choose another account, enter a support session again, generate content, publish, or record student work.
+
+![Selected student remains on Assessments after reload](10-reload-student.png)
+
+![Selected instructor remains on My Syllabus after reload](11-reload-instructor.png)
+
+![Selected Dean remains on Monitor after reload](12-reload-dean.png)
+
+![Selected Associate Dean remains on Monitor after reload](13-reload-associate_dean.png)
+
+While verification is pending, **Restoring your session…** and skeletons appear on the requested URL. The prior person's private records are not rendered during this check.
+
+![Session verification before the selected view reopens](14-reload-verifying.png)
+
+If verification fails, **Could not restore your view** keeps the URL and saved choice. **Retry restoring view** repeats the read-only verification. **Return to System Admin** is available only after the current admin has been freshly verified; it explicitly clears the selected account and opens Dashboard. If the admin session itself cannot be verified, the alternative is **Sign out**. A removed account or changed role is not silently replaced by an own-account role view.
+
+![Recoverable view restoration failure](15-reload-recovery.png)
+
+![Selected student restored on a phone](16-mobile-reloaded-view.png)
+
+![Phone recovery controls remain available](17-mobile-recovery.png)
+
+The account menu, notifications, language menu, **Switch View**, search overlay and mobile navigation retain their open surface after authorized reload. Only the surface name is saved; search text, notifications and account results are read again. Escape or a close/destination action clears the saved surface. The desktop account menu is shown below after reload.
+
+![Account menu remains open after reload](18-reloaded-account-popover.png)
+
+An open **Choose student account** dialog also reopens after reload. Its role is retained, while its filters and result contents are loaded afresh. Selecting a person remains an explicit action. Closing the dialog clears this pending picker. **Return to System Admin** and signing out clear both the selected-account hint and pending picker.
+
+![Account selection dialog restored without choosing a person](19-reloaded-account-selection.png)
+
+These are controlled account-transport captures. They verify rendering and navigation; the native API and SQL tests separately check fresh authority, read-only resolution and absence of account-switch/business mutations. See the [reload release validation](../../versions/2026-11-10-admin-reload-restoration/validation/results.md).

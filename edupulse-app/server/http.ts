@@ -30,7 +30,7 @@ import { agentMemory, conversationCommand, conversationRecall, executeConversati
 import { operatorInput, operatorRequest } from './domains/operator.js'
 import { loadProviders, removeProvider, resolveProvider, saveProvider } from './providerStore.js'
 import { checkAppropriateUse } from '../src/lib/rag/policy.js'
-import { supportAction, supportFilters, supportIdentity } from './domains/support.js'
+import { supportAction, supportFilters, supportIdentity, resolveSupportSubject } from './domains/support.js'
 
 export const VERSION = '0.4.0'
 /** Request body limits per action (bytes). Uploads are raw file bytes. */
@@ -106,7 +106,10 @@ export async function handleRequest(request: Request): Promise<Response> {
     const identity = await authenticate(request)
     authenticatedIdentity = identity
     if (action === 'support') {
-      if (request.method === 'GET') return json(await supportAction(identity, 'accounts', supportFilters.parse(Object.fromEntries(new URL(request.url).searchParams))))
+      if (request.method === 'GET') {
+        const query=new URL(request.url).searchParams
+        return json(query.has('subject')?await resolveSupportSubject(identity,query.get('subject')||'',request.signal):await supportAction(identity, 'accounts', supportFilters.parse(Object.fromEntries(query)),request.signal))
+      }
       const command = z.object({ id: z.string().uuid(), operation: z.enum(['enter','leave']) }).parse(await readJson(request, 2000))
       const subject = await supportIdentity(identity, command.id)
       return json(await supportAction(subject, command.operation))

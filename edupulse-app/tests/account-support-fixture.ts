@@ -4,21 +4,33 @@ import { automaticRecordsUI } from './automatic-records-fixture'
 export const supportAccounts = [
   { id: '22222222-2222-4222-8222-222222222222', name: 'Alex Sample', role: 'student', email: 'sample1@example.invalid', student_number: 'SYN-001', year_level: 1, department: 'College of IT', program: 'BSIT' },
   { id: '33333333-3333-4333-8333-333333333333', name: 'Sam Example', role: 'student', email: 'sample2@example.invalid', student_number: 'SYN-002', year_level: 2, department: 'College of IT', program: 'BSIT' },
+  { id: '44444444-4444-4444-8444-444444444444', name: 'Rowan Instructor Demo', role: 'instructor', email: 'teacher@example.invalid', department: 'College of IT', program: 'BSIT' },
+  { id: '55555555-5555-4555-8555-555555555555', name: 'Dana Dean Demo', role: 'dean', email: 'dean@example.invalid', department: 'College of IT', program: 'BSIT' },
+  { id: '66666666-6666-4666-8666-666666666666', name: 'Casey Associate Demo', role: 'associate_dean', email: 'associate@example.invalid', department: 'College of IT', program: 'BSIT' },
 ]
 /** Synthetic UI transport. Actual SQL delegation, delivery and attribution have separate native/hosted tests. */
 export async function accountSupportUI(page: Page, role = 'admin') {
   await automaticRecordsUI(page, role)
-  const calls: { action: string; subject?: string; authorization?: string; operation?: string }[] = []
+  const calls: { action: string; method:string; subject?: string; lookupSubject?:string; authorization?: string; operation?: string }[] = []
   let failEnter = false, failRead = false
+  let resolveFailure:number|'network'=0,resolveRole:string|null=null,resolveGate:Promise<void>|null=null
   await page.route('**/api/ai?*', async route => {
     const request = route.request(), url = new URL(request.url()), action = url.searchParams.get('action') || ''
     const headers = request.headers(), body = request.method() === 'POST' ? request.postDataJSON() : null
-    calls.push({ action, subject: headers['x-edupulse-subject'], authorization: headers.authorization, operation: body?.operation })
+    calls.push({ action, method:request.method(), subject: headers['x-edupulse-subject'], lookupSubject:url.searchParams.get('subject')||undefined, authorization: headers.authorization, operation: body?.operation })
     if (action === 'support') {
       if (request.method() === 'POST') {
         if (failEnter) return route.fulfill({ status: 403, json: { error: { code: 'SUPPORT_UNAVAILABLE', message: 'The selected account is no longer available.' } } })
         const account = supportAccounts.find(item => item.id === body.id)!
         return route.fulfill({ json: { ...account, yearLevel: account.year_level } })
+      }
+      const subject=url.searchParams.get('subject')
+      if(subject){
+        const held=resolveGate;if(held)await held
+        if(resolveFailure==='network')return route.abort('failed')
+        const account=supportAccounts.find(item=>item.id===subject)
+        if(resolveFailure||!account)return route.fulfill({status:typeof resolveFailure==='number'&&resolveFailure?resolveFailure:403,json:{error:{code:'SUPPORT_UNAVAILABLE',message:resolveFailure===503?'The selected view could not be verified while the service is unavailable.':'The selected account is no longer available.'}}})
+        return route.fulfill({json:{...account,role:resolveRole||account.role,yearLevel:account.year_level}})
       }
       if (failRead) return route.fulfill({ status: 503, json: { error: { code: 'SUPPORT_UNAVAILABLE', message: 'Account lookup is unavailable. Retry when connected.' } } })
       const q = url.searchParams.get('q')?.toLowerCase() || ''
@@ -35,5 +47,8 @@ export async function accountSupportUI(page: Page, role = 'admin') {
     if (action === 'health') return route.fulfill({ json: { version: 'synthetic-ui', ready: true, provider: 'synthetic-ui', model: 'synthetic-text-model', embeddings: false, database: { ready: true, kind: 'synthetic' }, identity: { mode: 'account', role }, message: 'Synthetic account transport' } })
     return route.fallback()
   })
-  return { calls, failEnter(value: boolean) { failEnter = value }, failRead(value: boolean) { failRead = value } }
+  return { calls, failEnter(value: boolean) { failEnter = value }, failRead(value: boolean) { failRead = value },
+    failResolve(value:number|'network'){resolveFailure=value},resolveRole(value:string|null){resolveRole=value},
+    holdResolve(){let release!:()=>void;const gate=new Promise<void>(resolve=>{release=resolve});resolveGate=gate;return()=>{if(resolveGate===gate)resolveGate=null;release()}},
+  }
 }

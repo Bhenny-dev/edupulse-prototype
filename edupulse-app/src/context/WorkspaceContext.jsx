@@ -4,6 +4,7 @@ import { useAuth } from './AuthContext'
 import { aiRequest } from '../lib/aiClient'
 import { DEFAULT_SYLLABI, BLOCK_SECTION_REGISTRATIONS } from '../data/mockData'
 import { recordAudit } from '../lib/audit'
+import { readWorkspaceViews, saveWorkspaceViews, workspaceViewKey } from '../utils/workspaceViewState'
 
 const WorkspaceContext = createContext(null)
 const empty = () => ({ syllabi: [], content: {}, registrations: [] })
@@ -23,17 +24,18 @@ function initialJournal(key, owner, preview) {
 }
 
 export function WorkspaceProvider({ children }) {
-  const { user } = useAuth()
+  const { user,authLoading } = useAuth()
   const owner = user?.authenticated ? (user.supportSubject ? `support-${user.accountId}-${user.id}` : user.id) : 'preview'
-  return <WorkspaceSession key={owner} owner={owner} user={user} preview={!user?.authenticated}>{children}</WorkspaceSession>
+  return <WorkspaceSession key={owner} owner={owner} user={user} authLoading={authLoading} preview={!user?.authenticated}>{children}</WorkspaceSession>
 }
-function WorkspaceSession({ children, owner, user, preview }) {
+function WorkspaceSession({ children, owner, user, preview,authLoading }) {
   const key = `edupulse-workspace-v2-${owner}`
   const [journal, setJournal] = useState(() => initialJournal(key, owner, preview))
   const [mode, setMode] = useState(null), [loading, setLoading] = useState(true), [saving, setSaving] = useState(false)
   const [error, setError] = useState(''), [cacheError, setCacheError] = useState(''), [conflict, setConflict] = useState(false), [backedUp, setBackedUp] = useState(false)
   const current = useRef(journal), mounted = useRef(true), writeLock = useRef(false)
-  const viewState=useMemo(()=>new Map(),[user?.role])
+  const viewStateKey=workspaceViewKey(owner,user?.role)
+  const viewState=useMemo(()=>readWorkspaceViews(viewStateKey),[viewStateKey])
   const [refreshAvailable,setRefreshAvailable]=useState(false)
   current.current = journal
   useEffect(() => { mounted.current = true; return () => { mounted.current = false } }, [])
@@ -62,9 +64,9 @@ function WorkspaceSession({ children, owner, user, preview }) {
     } catch (err) { if (mounted.current && !signal?.aborted) setError(err.message) }
     finally { if (mounted.current && !signal?.aborted) setLoading(false) }
   }, [])
-  useEffect(() => { const controller = new AbortController(); void load(false, controller.signal); return () => controller.abort() }, [load])
+  useEffect(() => { if(authLoading)return;const controller = new AbortController(); void load(false, controller.signal); return () => controller.abort() }, [load,authLoading])
   useEffect(() => {
-    if (!journal.dirty || loading || saving || conflict || error || !mode) return
+    if (authLoading || !journal.dirty || loading || saving || conflict || error || !mode) return
     if (mode === 'preview') { setJournal(previous => ({ ...previous, dirty: false })); return }
     const timer = setTimeout(async () => {
       if (writeLock.current) return
@@ -80,7 +82,7 @@ function WorkspaceSession({ children, owner, user, preview }) {
       finally { writeLock.current = false; if (mounted.current) setSaving(false) }
     }, 1500)
     return () => clearTimeout(timer)
-  }, [journal, mode, loading, saving, conflict, error, user])
+  }, [journal, mode, loading, saving, conflict, error, user,authLoading])
   const update = useCallback(change => {
     setBackedUp(false)
     setJournal(previous => ({ ...previous, data: change(previous.data), dirty: true }))
@@ -91,7 +93,7 @@ function WorkspaceSession({ children, owner, user, preview }) {
   // Confirmed agent writes use the same revision-checked API and wait for persistence.
   // The proposed snapshot is not applied optimistically or allowed to replace later local edits.
   const commit = useCallback(async change => {
-    if (!mounted.current || loading || saving || writeLock.current) throw new Error('Wait for the current workspace load or save, then confirm again.')
+    if (authLoading || !mounted.current || loading || saving || writeLock.current) throw new Error('Wait for the current workspace load or save, then confirm again.')
     if (conflict || error || !mode) throw new Error(error || 'Resolve the workspace connection before applying an agent change.')
     const before = current.current, next = change(before.data)
     if (new TextEncoder().encode(JSON.stringify(next)).length > 2_950_000) throw new Error('The workspace is near its size limit. Export a backup and remove unused attachments first.')
@@ -122,7 +124,7 @@ function WorkspaceSession({ children, owner, user, preview }) {
       return { ...result, persisted: true }
     } catch (failure) { if (failure.status === 409) { setConflict(true); setError(failure.message) } throw failure }
     finally { writeLock.current = false; if (mounted.current) setSaving(false) }
-  }, [loading, saving, conflict, error, mode, user])
+  }, [loading, saving, conflict, error, mode, user,authLoading])
   const exportBackup = useCallback(() => {
     const url = URL.createObjectURL(new Blob([JSON.stringify(current.current.data, null, 2)], { type: 'application/json' }))
     const link = document.createElement('a'); link.href = url; link.download = `edupulse-workspace-${new Date().toISOString().slice(0, 10)}.json`; link.click()
@@ -138,7 +140,7 @@ function WorkspaceSession({ children, owner, user, preview }) {
     window.addEventListener('storage',wake)
     return ()=>window.removeEventListener('storage',wake)
   },[preview,key])
-  return <WorkspaceContext.Provider value={{ ...journal.data, revision: journal.revision, viewState, refreshAvailable, refresh:()=>load(false), setSyllabi, setContent, setRegistrations, updateWorkspace:update, commit, loading, saving, dirty: journal.dirty, mode, error: cacheError || error, conflict, backedUp, exportBackup, retry: () => mode ? setError('') : load(), reload: () => load(true) }}>{children}</WorkspaceContext.Provider>
+  return <WorkspaceContext.Provider value={{ ...journal.data, revision: journal.revision, viewState, viewStateKey, refreshAvailable, refresh:()=>load(false), setSyllabi, setContent, setRegistrations, updateWorkspace:update, commit, loading, saving, dirty: journal.dirty, mode, error: cacheError || error, conflict, backedUp, exportBackup, retry: () => mode ? setError('') : load(), reload: () => load(true) }}>{children}</WorkspaceContext.Provider>
 }
 export function useWorkspace() {
   const value = useContext(WorkspaceContext)
@@ -150,13 +152,13 @@ export function WorkspaceStatus() {
   return <span className="sr-only" role="status" data-testid="workspace-save-state">{workspace.error || (workspace.conflict ? 'Workspace save conflict' : workspace.loading ? 'Loading' : workspace.saving ? 'Saving' : workspace.dirty ? 'Pending save' : workspace.mode ? 'Saved' : 'Unavailable')}</span>
 }
 
-/** In-memory UI preferences only, scoped to this account, subject and role session. */
+/** Navigation references survive reload in this tab, scoped to account, subject and role. */
 export function useWorkspaceViewState(key, initial) {
-  const {viewState}=useWorkspace()
+  const {viewState,viewStateKey}=useWorkspace()
   const read=()=>key&&viewState.has(key)?viewState.get(key):typeof initial==='function'?initial():initial
   const scope=useRef({viewState,key})
   const [value,setValue]=useState(read)
   if(scope.current.viewState!==viewState||scope.current.key!==key){scope.current={viewState,key};setValue(read())}
-  useEffect(()=>{if(key)viewState.set(key,value)},[viewState,key,value])
+  useEffect(()=>{if(key){viewState.set(key,value);saveWorkspaceViews(viewStateKey,viewState)}},[viewState,viewStateKey,key,value])
   return [value,setValue]
 }

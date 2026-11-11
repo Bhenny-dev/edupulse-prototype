@@ -7554,6 +7554,72 @@
       "sha256": "d711d965a1c99738db4f719103689453dab9cfa716b6cc8c9ec287a33ebaf6b9",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-10T04:45:28.677706Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/10-reload-student.png",
+      "sha256": "5f2e29918a8ad82e6e82aa6a8a274831086de44baa6c58e2806a70d44fa45bce",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-10T06:33:14.042Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/11-reload-instructor.png",
+      "sha256": "fb044971acdd91797e9d43f8ab2fb33d1fed1fcbe243a99b5c8aefe97d729df5",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-10T06:33:14.044Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/12-reload-dean.png",
+      "sha256": "b6c2037a24241da9b37ecac0c9ade887d81f867b5a6a3d95f49116df965437e1",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-10T06:33:14.044Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/13-reload-associate_dean.png",
+      "sha256": "f5c39cad08c96f1adf6dd1483da54d083b0eab6af02dae7290204162be008fcf",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-10T06:33:14.044Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/14-reload-verifying.png",
+      "sha256": "020d4e26ec07c7836182c72afde5445ce12b92eacd4366b8931aaffaf699057d",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-10T06:33:14.044Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/15-reload-recovery.png",
+      "sha256": "88d1f4c7b97c8d614e86d135e8d8e04e99ce61fefde6b605cb0568139bfc319c",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-10T06:33:14.044Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/16-mobile-reloaded-view.png",
+      "sha256": "6bc64afc1947b26af8d1e964262a326b9849749a647c2dee48c14fed73948672",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-10T06:33:14.044Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/17-mobile-recovery.png",
+      "sha256": "454fdfea40f3f963745b51823048c29b755a073a6501f8eea95de3f0219a33a1",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-10T06:33:14.044Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/18-reloaded-account-popover.png",
+      "sha256": "deb8419c9c4bb90c517b83acd4d5c7d5af017d03c20219efdb0670fea93b5898",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-10T06:33:14.044Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/19-reloaded-account-selection.png",
+      "sha256": "d9a72a2c11daa6613622cf6c13b514b411ab543a59dc9b679653a68b65bb1a4a",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-10T06:33:14.044Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/27-cached-workspaces/05-reloaded-reader.png",
+      "sha256": "07e6b4bc5d3236c4ab813bd83ea0fba3b7181d5ca695f68b3af8f7a5d2ca8881",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-10T06:33:14.045Z"
     }
   ]
 }

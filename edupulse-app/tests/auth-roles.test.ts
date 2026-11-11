@@ -13,6 +13,10 @@ test('only the Google system admin can switch among five distinct views', () => 
   assert.equal(admin.role, 'admin')
   for (const role of ['admin', 'dean', 'associate_dean', 'instructor', 'student']) assert.equal(canSwitchRole(admin, role), true)
   assert.equal(canSwitchRole(admin, 'unknown'), false)
+  for(const role of ['constructor','__proto__','toString']) {
+    assert.equal(canSwitchRole(admin,role),false)
+    assert.equal(accountUser(account('invalid','invalid@example.invalid',role)),null)
+  }
   for (const role of ['dean', 'associate_dean', 'instructor', 'student']) {
     const member = accountUser(account(role, `${role}@example.com`, role))!
     assert.equal(member.role, role)

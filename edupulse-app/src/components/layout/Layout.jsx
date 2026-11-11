@@ -2,7 +2,7 @@ import ModalLayer from '../ui/ModalLayer'
 import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useAI } from '../../context/AIContext'
-import { WorkspaceStatus, useWorkspace } from '../../context/WorkspaceContext'
+import { WorkspaceStatus, useWorkspace, useWorkspaceViewState } from '../../context/WorkspaceContext'
 import { SkeletonContent } from '../ui/LoadingFeedback'
 import { useLanguage } from '../../context/LanguageContext'
 import { useTheme } from '../../context/ThemeContext'
@@ -189,16 +189,17 @@ function RoleSwitchPopover({ onClose }) {
 export default function Layout() {
   const workspace = useWorkspace()
   const ai = useAI()
-  const { user, logout, switchRole } = useAuth()
+  const { user, logout, switchRole, authLoading } = useAuth()
   const { language, switchLanguage } = useLanguage()
   const navigate = useNavigate()
   const location = useLocation()
-  const [showUserMenu, setShowUserMenu] = useState(false)
-  const [showNotifications, setShowNotifications] = useState(false)
-  const [showSearch, setShowSearch] = useState(false)
-  const [showRoleSwitch, setShowRoleSwitch] = useState(false)
-  const [showMobileMenu, setShowMobileMenu] = useState(false)
-  const [showLangMenu, setShowLangMenu] = useState(false)
+  // Only the open surface is retained; search text and account/notification data stay transient.
+  const [overlay, setOverlay] = useWorkspaceViewState('layout-overlay', null)
+  const activeOverlay = authLoading ? null : overlay
+  const showUserMenu = activeOverlay === 'account', showNotifications = activeOverlay === 'notifications'
+  const showSearch = activeOverlay === 'search', showRoleSwitch = activeOverlay === 'roles'
+  const showMobileMenu = activeOverlay === 'mobile', showLangMenu = activeOverlay === 'language'
+  const toggleOverlay = name => setOverlay(previous => previous === name ? null : name)
   const { dark: darkMode, toggleDark, fontScale } = useTheme()
 
   // One audit entry per page visit; the user object is replaced on token refresh and must not log the page again.
@@ -212,17 +213,21 @@ export default function Layout() {
 
   useEffect(() => {
     const handleKey = (e) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); setShowSearch(true) }
-      if (e.key === 'Escape') { setShowSearch(false); setShowUserMenu(false); setShowNotifications(false); setShowRoleSwitch(false); setShowMobileMenu(false); setShowLangMenu(false) }
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); setOverlay('search') }
+      if (e.key === 'Escape') setOverlay(null)
       if (e.key === '?' && !e.ctrlKey && !e.metaKey && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA' && e.target.tagName !== 'SELECT' && !e.target.closest?.('[role="dialog"], [contenteditable="true"]')) {
         e.preventDefault(); navigate('/settings?tab=keyboard-shortcuts')
       }
     }
     window.addEventListener('keydown', handleKey)
     return () => window.removeEventListener('keydown', handleKey)
-  }, [navigate])
+  }, [navigate, setOverlay])
 
-  const handleLogout = () => { logout(); navigate('/') }
+  useEffect(() => {
+    if (!authLoading && overlay === 'roles' && !user?.canSwitchRoles) setOverlay(null)
+  }, [authLoading, overlay, user?.canSwitchRoles, setOverlay])
+
+  const handleLogout = () => { setOverlay(null); logout(); navigate('/') }
   const { notifications: notifs, unreadCount, loading: noticesLoading, error: noticesError } = useNotifications(user?.role)
   const sections = SECTIONS.filter(s => canSee(s, user?.role))
   const current = sections.find(item => item.path === location.pathname || item.relatedPaths?.some(path => location.pathname.startsWith(path)))
@@ -249,7 +254,7 @@ export default function Layout() {
           <button
             className="mobile-menu-btn"
             aria-label={showMobileMenu ? 'Close menu' : 'Open menu'} aria-expanded={showMobileMenu}
-            onClick={() => setShowMobileMenu(!showMobileMenu)}
+            onClick={() => toggleOverlay('mobile')}
             style={{
               display: 'none', width: 40, height: 40, borderRadius: 'var(--radius-md)',
               background: 'var(--gray-100)', border: 'none', alignItems: 'center', justifyContent: 'center',
@@ -301,7 +306,7 @@ export default function Layout() {
         </div>
 
         <div className="app-tools" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <button className="desktop-tool" onClick={() => setShowSearch(true)} title="Search (Ctrl+K)" style={{
+          <button className="desktop-tool" onClick={() => setOverlay('search')} title="Search (Ctrl+K)" style={{
             width: 36, height: 36, borderRadius: 'var(--radius-full)',
             background: 'var(--gray-100)', border: 'none',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -320,7 +325,7 @@ export default function Layout() {
           </button>
 
           <div style={{ position: 'relative' }}>
-            <button className="desktop-tool" onClick={() => { setShowLangMenu(!showLangMenu); setShowNotifications(false); setShowRoleSwitch(false); setShowUserMenu(false) }}
+            <button className="desktop-tool" onClick={() => toggleOverlay('language')}
               title="Language" style={{
               width: 36, height: 36, borderRadius: 'var(--radius-full)',
               background: 'var(--gray-100)', border: 'none',
@@ -338,7 +343,7 @@ export default function Layout() {
               }}>
                 <div style={{ padding: '6px 10px', fontSize: '0.75rem', fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Language</div>
                 {[{ code: 'en', label: 'English' }, { code: 'fil', label: 'Filipino' }].map(lang => (
-                  <button key={lang.code} onClick={() => { switchLanguage(lang.code); setShowLangMenu(false) }}
+                  <button key={lang.code} onClick={() => { switchLanguage(lang.code); setOverlay(null) }}
                     style={{
                       display: 'block', width: '100%', textAlign: 'left', padding: '8px 10px', border: 'none',
                       borderRadius: 'var(--radius-md)', cursor: 'pointer', fontSize: '0.8125rem', fontWeight: language === lang.code ? 700 : 500,
@@ -354,7 +359,7 @@ export default function Layout() {
           </div>
 
           <div style={{ position: 'relative' }}>
-            <button aria-label={unreadCount ? `Notifications, ${unreadCount} unread` : 'Notifications'} aria-expanded={showNotifications} onClick={() => { setShowNotifications(!showNotifications); setShowUserMenu(false); setShowRoleSwitch(false) }} style={{
+            <button aria-label={unreadCount ? `Notifications, ${unreadCount} unread` : 'Notifications'} aria-expanded={showNotifications} onClick={() => toggleOverlay('notifications')} style={{
               width: 36, height: 36, borderRadius: 'var(--radius-full)',
               background: 'var(--gray-100)', border: 'none',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -379,7 +384,7 @@ export default function Layout() {
               }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
                   <h4 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '0.9375rem' }}>Notifications</h4>
-                  <NavLink to="/notifications" onClick={() => setShowNotifications(false)} style={{ fontSize: '0.75rem', color: 'var(--sky-500)', fontWeight: 600 }}>View All</NavLink>
+                  <NavLink to="/notifications" onClick={() => setOverlay(null)} style={{ fontSize: '0.75rem', color: 'var(--sky-500)', fontWeight: 600 }}>View All</NavLink>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                   {noticesLoading && !notifs.length && <SkeletonContent label="Loading notifications…" rows={3} />}
@@ -403,7 +408,7 @@ export default function Layout() {
 
           <div style={{ position: 'relative' }}>
             {/* Hidden on phones like the other desktop tools; the role and the view switch are in the account menu there. */}
-            {user?.canSwitchRoles ? <button className="desktop-tool" aria-label="Switch admin view" aria-expanded={showRoleSwitch} onClick={() => { setShowRoleSwitch(!showRoleSwitch); setShowUserMenu(false); setShowNotifications(false) }} title="Switch admin view" style={{
+            {user?.canSwitchRoles ? <button className="desktop-tool" aria-label="Switch admin view" aria-expanded={showRoleSwitch} onClick={() => toggleOverlay('roles')} title="Switch admin view" style={{
               padding: '4px 10px', borderRadius: 'var(--radius-full)',
               background: 'var(--purple-100)', border: '1px solid var(--purple-100)',
               cursor: 'pointer', fontSize: '0.75rem', fontWeight: 700, color: 'var(--purple-500)',
@@ -414,7 +419,7 @@ export default function Layout() {
           </div>
 
           <div style={{ position: 'relative' }}>
-            <button aria-label="Account menu" aria-expanded={showUserMenu} onClick={() => { setShowUserMenu(!showUserMenu); setShowNotifications(false); setShowRoleSwitch(false) }} style={{
+            <button aria-label="Account menu" aria-expanded={showUserMenu} onClick={() => toggleOverlay('account')} style={{
               display: 'flex', alignItems: 'center', gap: '8px',
               padding: '4px 10px 4px 4px', borderRadius: 'var(--radius-full)',
               background: 'var(--white)', border: '2px solid var(--sky-200)',
@@ -443,7 +448,7 @@ export default function Layout() {
                   {user?.baseRole !== 'admin' && <div style={{ fontSize: '0.75rem', color: 'var(--gray-500)' }}>{user?.email}</div>}
                   <div style={{ marginTop: '4px' }}><span className="badge badge-published">{user?.title}</span></div>
                 </div>
-                {user?.canSwitchRoles && <button onClick={() => { setShowUserMenu(false); setShowRoleSwitch(true) }} style={{
+                {user?.canSwitchRoles && <button onClick={() => setOverlay('roles')} style={{
                   display: 'flex', alignItems: 'center', gap: '8px', width: '100%', padding: '10px 12px',
                   borderRadius: 'var(--radius-md)', background: 'transparent', border: 'none', cursor: 'pointer',
                   color: 'var(--gray-700)', fontWeight: 500, fontSize: '0.875rem', transition: 'background 150ms',
@@ -451,7 +456,7 @@ export default function Layout() {
                 onMouseEnter={e => e.currentTarget.style.background = 'var(--sky-50)'}
                 onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                 >Switch view</button>}
-                <NavLink to="/settings" onClick={() => setShowUserMenu(false)} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 12px', borderRadius: 'var(--radius-md)', fontSize: '0.875rem', color: 'var(--gray-700)', fontWeight: 500, transition: 'background 150ms' }}
+                <NavLink to="/settings" onClick={() => setOverlay(null)} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 12px', borderRadius: 'var(--radius-md)', fontSize: '0.875rem', color: 'var(--gray-700)', fontWeight: 500, transition: 'background 150ms' }}
                   onMouseEnter={e => e.currentTarget.style.background = 'var(--sky-50)'}
                   onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                 >Settings</NavLink>
@@ -478,7 +483,7 @@ export default function Layout() {
         }}>
           <nav style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
             {sections.map(item => (
-              <NavLink key={item.path} to={item.path} onClick={() => setShowMobileMenu(false)}
+              <NavLink key={item.path} to={item.path} onClick={() => setOverlay(null)}
                 style={({ isActive }) => ({
                   display: 'flex', alignItems: 'center', gap: '12px',
                   padding: '14px 16px', borderRadius: 'var(--radius-md)',
@@ -529,8 +534,8 @@ export default function Layout() {
       </footer>
 
       {user?.supportSubject && <div className="support-view-banner" role="status"><span>Viewing <strong>{user.name}</strong> ({user.title}). Student activity tracking and submissions are disabled.</span><button className="btn btn-secondary btn-sm" onClick={async () => { if (await switchRole('admin')) navigate('/dashboard') }}>Return to System Admin</button></div>}
-      {showSearch && <SearchOverlay onClose={() => setShowSearch(false)} />}
-      {showRoleSwitch && user?.canSwitchRoles && <RoleSwitchPopover onClose={() => setShowRoleSwitch(false)} />}
+      {showSearch && <SearchOverlay onClose={() => setOverlay(null)} />}
+      {showRoleSwitch && user?.canSwitchRoles && <RoleSwitchPopover onClose={() => setOverlay(null)} />}
       <Pulse />
 
       <style>{`

@@ -4,6 +4,8 @@
 
 This section points to the walkthrough screenshots rather than repeating them.
 
+Refreshing a signed-in page keeps its route and tab. When the System Admin is viewing another account, the same person is restored after fresh verification, before academic records load. Failed verification offers an explicit retry without moving to Dashboard. The [account restoration guide](../23-account-support-and-pulse-context/README.md#reload-the-selected-account-without-returning-to-dashboard) shows the pending, restored and recovery screens.
+
 ## Sign in
 
 1. Open EduPulse. The home page always starts with an opening that shows the EduPulse name; scroll to reach the hero. Click **Sign In** in the top bar or **Get started** in the hero; both scroll to the sign-in panel. **Sign In** on any other public page brings you to the same panel on the home page. With the keyboard, the first Tab stop is **Skip to main content**, which moves past the navigation and the hero. See the [public site walkthrough](../../system-walkthrough/01-public-site/README.md).

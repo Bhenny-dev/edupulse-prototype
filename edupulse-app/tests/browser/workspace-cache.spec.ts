@@ -27,3 +27,35 @@ test('Settings manual refresh revalidates data without business commands or writ
   const before=fixture.counts().gets;await page.getByRole('button',{name:'Refresh workspace and records',exact:true}).click();await expect.poll(()=>fixture.counts().gets).toBeGreaterThan(before)
   expect(fixture.counts().puts).toBe(0);expect(fixture.counts().business).toBe(0)
 })
+
+test('hard reload restores a course reader and slide without generating or publishing',async({page})=>{
+  await unifiedCoursewareUI(page)
+  const actions:string[]=[]
+  page.on('request',r=>{if(r.method()==='POST'&&r.url().includes('/api/ai?'))actions.push(new URL(r.url()).searchParams.get('action')||'')})
+  await page.goto('/#/courseware?course=baseline-syllabus&week=1')
+  await page.locator('[data-content-id="unified-material"]').getByRole('button',{name:'Actions for Variables lesson',exact:true}).click()
+  await page.getByRole('menuitem',{name:'View presentation',exact:true}).click()
+  await page.getByRole('button',{name:'Next slide',exact:true}).click()
+  await expect(page.locator('.pres-topbar-counter')).toHaveText('2 / 2')
+  actions.length=0
+  await page.reload()
+  await expect(page.locator('.pres-topbar-counter')).toHaveText('2 / 2')
+  expect(new URL(page.url()).hash).toBe('#/courseware?course=baseline-syllabus&week=1')
+  expect(actions.filter(action=>['courseware','operator','chat','provider-test'].includes(action))).toEqual([])
+})
+
+test('hard reload restores a student reader without another access or attempt',async({page})=>{
+  await restorationUI(page,'student')
+  const operations:string[]=[]
+  page.on('request',r=>{if(r.method()==='POST'&&r.url().includes('action=academic'))operations.push(r.postDataJSON()?.operation)})
+  await page.goto('/#/courseware')
+  await page.getByRole('button',{name:'Open material',exact:true}).click()
+  await page.getByRole('button',{name:'Presentation',exact:true}).click()
+  await page.getByRole('button',{name:'Next slide',exact:true}).click()
+  const counter=await page.locator('.pres-topbar-counter').textContent()
+  expect(operations.filter(op=>op==='open')).toHaveLength(1)
+  operations.length=0
+  await page.reload()
+  await expect(page.locator('.pres-topbar-counter')).toHaveText(counter!)
+  expect(operations.filter(op=>['open','start','respond','submit'].includes(op))).toEqual([])
+})
