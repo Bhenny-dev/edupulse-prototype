@@ -1,0 +1,69 @@
+{
+  "receipt": {
+    "checkedAt": "2026-11-11T09:42:15.070Z",
+    "course": "IT 103",
+    "week": 12,
+    "additionalAssessments": 2,
+    "additionalQuestions": 8,
+    "labelledNewAttempts": 6,
+    "totalAttempts": 9,
+    "scoredAssessments": [
+      {
+        "title": "Pearson Coefficient: Calculation and Limits",
+        "score": 92,
+        "attempts": 3
+      },
+      {
+        "title": "Spearman Ranks: Computation and Interpretation",
+        "score": 58,
+        "attempts": 3
+      },
+      {
+        "title": "Week 12 Quiz: Correlation and Scatterplot Interpretation",
+        "score": 75,
+        "attempts": 3
+      }
+    ],
+    "studentInstructorScoresMatch": true,
+    "approvedSyllabiUnchanged": true,
+    "existingContentAndAttemptsUnchanged": true,
+    "independentLearnerAchievement": false
+  },
+  "readback": {
+    "checkedAt": "2026-11-11T09:44:47.562Z",
+    "attempts": 9,
+    "scoredAssessments": 3,
+    "labelsComplete": true,
+    "blocksWithTestLearners": 3,
+    "allTestedBlocksHaveThreeAxes": true
+  },
+  "live-browser": {
+    "checkedAt": "2026-11-11T09:45:37.638Z",
+    "origin": "https://edupulse-prototype.vercel.app",
+    "actualInstructorAuthentication": true,
+    "realSavedRecords": true,
+    "views": [
+      {
+        "width": 1440,
+        "threeAxes": true,
+        "percentages": [
+          92,
+          58,
+          75
+        ],
+        "reloadRetained": true
+      },
+      {
+        "width": 390,
+        "threeAxes": true,
+        "percentages": [
+          92,
+          58,
+          75
+        ],
+        "reloadRetained": true
+      }
+    ],
+    "noAssessmentCommandsOrInference": true
+  }
+}

@@ -18,7 +18,7 @@ test('synthetic restored performance and scoring sections', async ({ page }) => 
   await restorationUI(page)
   for (const [tab, name] of [['overview', '05-performance-radar-and-history'], ['bytopic', '06-assessment-coverage'], ['materials', '07-material-access'], ['scores', '08-assessment-scores'], ['alerts', '09-threshold-review']]) { await page.goto(`/#/performance?tab=${tab}`); await expect(page.getByRole('navigation', { name: 'Performance views' })).toBeVisible(); await shot(page, name) }
   await page.goto('/#/performance?tab=scores'); await page.getByRole('button', { name: 'Synthetic learner', exact: true }).click(); await shot(page, '10-student-drilldown', '.academic-student-dialog'); await page.keyboard.press('Escape')
-  await page.goto('/#/scoring-sheet'); await shot(page, '11-monitoring-scoring-matrix'); await page.getByRole('button', { name: 'Learning Material Access', exact: true }).click(); await shot(page, '12-monitoring-material-matrix')
+  await page.goto('/#/scoring-sheet'); await expect(page.getByRole('heading', { name: 'Assessment score radar', exact: true })).toBeVisible(); await shot(page, '11-monitoring-scoring-matrix'); await page.getByRole('button', { name: 'Learning Material Access', exact: true }).click(); await shot(page, '12-monitoring-material-matrix')
 })
 test('synthetic restored oversight, loading and records sections', async ({ page }) => {
   await restorationUI(page, 'dean')

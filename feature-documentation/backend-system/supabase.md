@@ -237,3 +237,7 @@ The hosted SQL canary inserted a synthetic source through authenticated RLS, ver
 ## Learner publication metadata guard
 
 `20261110033603_protect_learner_publication_metadata.sql` enforces the learner DTO at insert/update and cleans earlier rows without recomputing source versions. The private trigger is security-invoker, has an empty search path and no direct authenticated/anonymous execute grant. Teacher review metadata remains in the original workspace; private assessment keys and learner attempts are unchanged. The hosted project applied this migration before seeded releases. See [validation](../versions/2026-11-10-learner-publication-metadata/validation/results.md).
+
+## Timed assessment roster labels
+
+`20261111093735_assessment_student_labels.sql` restores missing attempt email labels using authoritative account IDs. The private insert trigger has an empty search path, no public/anonymous/authenticated execute privilege and no new table-write grant. Only display metadata is backfilled; answers, scores, marking state, publication versions and pipeline provenance remain intact. Existing student/instructor/Dean/Associate Dean RLS continues to govern reads. See [radar validation](../versions/2026-11-11-assessment-radar/validation/results.md).

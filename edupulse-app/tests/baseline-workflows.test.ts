@@ -36,6 +36,11 @@ test('baseline shared imports, scheduled publication, topic scoring, timed attem
   const s=await command({operation:'start',publication:p.id,version:p.source_version});
   await assert.rejects(command({operation:'submit',publication:p.id,version:p.source_version,session:s.id,responses:[0,2,'Invalid true/false choice.']}),{code:'22023'});
   const a=await command({operation:'submit',publication:p.id,version:p.source_version,session:s.id,responses:[0,1,'A variable stores a value.']});assert.equal(a.grading_status,'pending_review');assert.deepEqual(a.topic_scores,[]);
+  assert.equal(a.student_email,'','regression: the older timed path omitted the record label');
+  await db.exec('RESET ROLE');await db.exec(await readFile('supabase/migrations/20261111093735_assessment_student_labels.sql','utf8'));await db.exec('SET ROLE authenticated');
+  const labelled=(await db.query<{value:{student_email:string;[key:string]:unknown}}>('SELECT to_jsonb(a) value FROM public.edupulse_attempts a WHERE id=$1',[a.id])).rows[0].value;
+  assert.equal(labelled.student_email,'user1@example.invalid');assert.deepEqual({...labelled,student_email:''},a,'backfill changes only the missing display label');
+  await assert.rejects(db.query('SELECT edupulse_private.assessment_student_label()'),{code:'42501'});
   assert.equal((await command({operation:'submit',publication:p.id,version:p.source_version,session:s.id,responses:[0,1,'A variable stores a value.']})).id,a.id,'retry is idempotent');
   await assert.rejects(command({operation:'grade',attempt:a.id,points:[1,1,1],reason:'Forged student mark'}),{code:'42501'});
   await command({operation:'appeal',attempt:a.id,reason:'Please review the explanation.'});
@@ -47,6 +52,7 @@ test('baseline shared imports, scheduled publication, topic scoring, timed attem
   await assert.rejects(command({operation:'submit',publication:p.id,version:p.source_version,session:second.id,responses:[0,1,'Too late.']}),{code:'22023'});
   await db.exec('RESET ROLE');await db.query('UPDATE public.edupulse_assessment_sessions SET started_at=now() WHERE id=$1',[second.id]);await db.exec('SET ROLE authenticated');
   const retaken=await command({operation:'submit',publication:p.id,version:p.source_version,session:second.id,responses:[0,1,'Second written response.']});assert.equal(retaken.attempt_no,2);
+  assert.equal(retaken.student_email,'user1@example.invalid','future timed submissions match the verified account to its roster');
   await as(0,'instructor');await command({operation:'grade',attempt:retaken.id,points:[1,1,1],reason:'Reviewed second attempt.'});
   await as(1,'student');await assert.rejects(command({operation:'start',publication:p.id,version:p.source_version,retake:true}),{code:'22023'});
   await as(2,'associate_dean');await assert.rejects(imp('rosters',Array.from({length:36},(_,i)=>({StudentID:`CAP-${i}`,Name:`Synthetic ${i}`,Email:`cap${i}@example.invalid`,Block:'OVER-CAP'}))),{code:'22023'});

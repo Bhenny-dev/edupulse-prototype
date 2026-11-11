@@ -22,7 +22,7 @@ The owner asked for an audit of unfinished work across the conversation, with ea
 
 ## Active completion queue
 
-1. **Synced labelled progress:** the first live IT 103 example passed scoring and matching student/instructor readback. Expand reviewed examples to the remaining instructors while retaining each test label; do not count them as independent learner achievement.
+1. **Synced labelled progress:** the live IT 103 example now has three distinct scored assessments and nine labelled attempts, with matching student/instructor readback; see the [radar extension](../2026-11-11-assessment-radar/README.md). Expand reviewed examples to the remaining instructors while retaining each test label; do not count them as independent learner achievement.
 2. **Substantive real generation and delivery:** finish actual model generation from the approved outlines and readable references, review/correct the produced content, save drafts through owner workspaces, publish reviewed examples, submit authorized labelled tests through normal learner operations and verify instructor monitoring. A rejected or partial draft is not a completed week.
 3. **Persistent shared syllabi:** replace sample-only repository behavior with explicitly shared, authorized copies and reference provenance; preserve private workspaces and original files.
 4. **Multiple blocks with different delivery:** keep one course and multiple confirmed blocks, with authorized block-specific release/deadline behavior consistently enforced on reads and learner commands.

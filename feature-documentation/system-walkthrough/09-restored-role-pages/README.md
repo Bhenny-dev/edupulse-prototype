@@ -123,3 +123,7 @@ Academic records remain loaded across navigation and browser focus. Another-tab 
 ### Combined oversight and teaching-week accuracy
 
 The two former syllabus/delivery tabs now share one **Syllabus & Delivery** view. [Manual 29](../../system-manual/29-combined-oversight/README.md) explains released/planned coverage, filters, distinct course identities and retained role controls. Current monitor and Course Loading captures use controlled records. The refreshed offline-review image preserves its original sample correction; no request was sent or approved.
+
+### Radar coverage and roster labels
+
+The assessment radar retains its three-distinct-assessment minimum and leaves margin for narrow-screen labels. Multiple attempts on one quiz do not create extra axes. [Manual 33](../../system-manual/33-pipeline-progress/README.md#three-distinct-scored-assessments) shows two versus three scored quizzes and records the separate live labelled integration exercise. Timed-assessment labels now join saved scores to the verified learner's roster and block without changing grade values.

@@ -20,3 +20,20 @@ Student content and saved scores remain available. Private teacher AI review tra
 ## Verified live integration exercise
 
 On 10 November 2026, the researchers released a reviewed IT 103 Week 12 material, activity and four-question assessment through the real instructor workspace. Three registered BSIT accounts used authorized labelled tests through the normal learner APIs. Their persisted scores were 4/4, 3/4 and 2/4, with six recorded material/activity opens. Fresh instructor reads matched the exact saved attempt versions, scores and access rows. These entries appear in ordinary student progress and instructor monitoring with the existing **Pipeline test** provenance. They are integration results, not independent learner achievement or institutional grades. No account password was reset, and the approved syllabus remained unchanged.
+
+## Three distinct scored assessments
+
+**Assessment score radar** requires at least three distinct, active, current-version assessments with graded attempts in the selected course, block, date and activity scope. Three students answering one quiz still supply one axis. Unanswered assessments and pending marking do not supply an axis; a genuine zero score does.
+
+| View | What is visible |
+| --- | --- |
+| ![Two assessments are insufficient](06-two-assessments.png) | Two scored assessments retain the explanation and count; no polygon is invented. |
+| ![Three scored assessments produce a radar](07-three-assessment-radar.png) | Three separate quizzes produce three axes with a 0–100 scale. Full names and values remain in the chart's accessible description and tooltip. Extra plot margin keeps the labels within narrow panels. |
+| ![Phone with two assessments](mobile-06-two-assessments.png) | The same minimum applies on a phone. |
+| ![Phone radar with three assessments](mobile-07-three-assessment-radar.png) | The triangle uses the same recorded percentages, without adding missing scores. |
+
+These images use synthetic, anonymous presentation data. Separately, on 11 November the researchers extended the live IT 103 Week 12 practice with two reviewed quizzes: **Pearson Coefficient: Calculation and Limits** and **Spearman Ranks: Computation and Interpretation**. Both follow the approved correlation outline. The same three registered BSIT test learners now have nine saved attempts across three distinct assessments. Fresh instructor and learner reads agreed; class averages are **75%**, **92%** and **58%**. Each new attempt retains **Pipeline test** provenance. These are integration exercises rather than independent learner achievement.
+
+To view the seeded radar, open Dave's instructor **Performance → Overview**, select **IT 103**, and use **All recorded progress** or **Pipeline tests only**. **Student activity only** excludes these tests and may show the minimum-count explanation. A stale loaded view requires a deliberate browser reload; background focus or timers do not replace it. [Validation](../../versions/2026-11-11-assessment-radar/validation/results.md) distinguishes hosted persistence from synthetic captures.
+
+Timed submissions now save the verified student account email alongside the authorization UUID, so scores match their roster rows and block filters. Missing historical labels were repaired from account IDs without regrading, changing answers, publication versions or test provenance.

@@ -460,3 +460,11 @@ Cache inspection uses `hasModelInCache` without loading weights into an engine. 
 `ai-local-model` stores only an allowlisted model-selection reference in the existing account/subject/role view scope. It stores no credential, permission, prompt or command and never triggers inference on restoration. Cache state and engine state are independently checked.
 
 Local-model capture fixtures simulate capability and cache metadata, clearly labelled in capture provenance. A separate real 204 MB weight download survived reload; Windows graphics initialization failed in automated tests, so successful inference is not established. [Validation](../versions/2026-11-11-local-model-catalog/validation/results.md) records this boundary.
+
+## Assessment radar and timed-attempt labels — 11 November 2026
+
+The radar continues to aggregate one average per scored current publication, with three publications required. No attempt is duplicated into an axis. Supplementary Pearson and Spearman practice quizzes were reviewed against the approved IT 103 correlation outline and the primary SciPy documentation, published through draft/checked/published owner-workspace transitions, then scored through normal enrolled-learner start/respond APIs with version-bound pipeline grants.
+
+The newer timed submission function omitted the `student_email` field introduced by the earlier label migration. Migration `20261111093735_assessment_student_labels.sql` adds a non-callable private trigger that derives the display label from `auth.users` using `student_id`, and fills only blank historical labels. UUID-based RLS, enrollment verification, scoring, versions, dates and `is_test` remain unchanged. The integration test covers backfill without other field changes, new timed attempts/retakes, denied direct function execution and existing role restrictions.
+
+[Validation](../versions/2026-11-11-assessment-radar/validation/results.md) records real saved results and synthetic chart captures separately. Three scored tests are not evidence of independent academic achievement.
