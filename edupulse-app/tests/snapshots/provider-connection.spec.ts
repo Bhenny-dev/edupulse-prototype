@@ -2,6 +2,26 @@ import { test, expect } from './fixtures.js'
 import { mkdir } from 'node:fs/promises'
 import { providerFixture } from '../browser/provider-fixture.js'
 
+test('compact provider cards: Gemini, dark mode and settings without a library panel', async ({ page }) => {
+  await providerFixture(page)
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Instructor', exact: true }).click()
+  await page.goto('/#/settings?tab=ai-provider')
+  await page.getByRole('button', { name: 'Connect Gemini', exact: true }).click()
+  await expect(page.getByLabel('AI provider', { exact: true })).toHaveValue('gemini')
+  await expect(page.getByRole('heading', { name: 'Knowledge library', exact: true })).toHaveCount(0)
+  await page.mouse.move(0, 0)
+  const panel = page.locator('[data-pulse-target="AI connection"]')
+  const root = '../feature-documentation/system-manual/08-ai-connections'
+  await panel.screenshot({ path: `${root}/12-gemini-provider.png`, animations: 'disabled', style: '.app-topbar{position:static !important}' })
+  await page.evaluate(() => document.documentElement.classList.add('dark-mode'))
+  await expect(page.locator('.pulse-dwell-help')).toHaveCount(0)
+  await panel.screenshot({ path: `${root}/13-provider-cards-dark.png`, animations: 'disabled', style: '.app-topbar{position:static !important}' })
+  await page.evaluate(() => document.documentElement.classList.remove('dark-mode'))
+  await page.getByLabel('AI provider', { exact: true }).selectOption('openrouter')
+  await panel.screenshot({ path: `${root}/02-free-provider-options.png`, animations: 'disabled', style: '.app-topbar{position:static !important}' })
+})
+
 test('provider connection: clearly saved credential, synchronized status and recoverable replacement', async ({ page }) => {
   const fixture = await providerFixture(page)
   await page.goto('/')

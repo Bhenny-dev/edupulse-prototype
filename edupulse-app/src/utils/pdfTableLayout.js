@@ -1,3 +1,4 @@
+import {aggregateSections,weekSections} from './outlineSections'
 // PDF text order is not table order. Use the document's ruled cell boundaries;
 // never infer a missing cell from neighbouring text or a model response.
 /** @typedef {{str?: string, transform?: number[], width?: number}} PdfItem */
@@ -128,7 +129,9 @@ export function readRuledOutline(pages) {
   /** @type {{edges:number[],labels:string[]}|null} */
   let columns = null
   let active = false
-  const records = [], warnings = []
+  /** @type {{weeks:number[],cells:string[],pages:number[],examination?:boolean,pending?:boolean}[]} */
+  const records = []
+  const warnings = []
   /** @type {{cells:string[],pages:number[],edges:number[]}|null} */
   let leading = null
   /** @param {string[]} left @param {string[]} right */
@@ -203,6 +206,8 @@ export function readRuledOutline(pages) {
         records.push({ weeks:Array.from({length:end-start+1},(_,i)=>start+i), cells:values, pages:sourcePages })
       } else if (!weekCell&&values.some(Boolean)) {
         const boundary=spans.some(rule=>Math.abs(rule[1]-band[3])<2&&rule[0]<=table.edges[0]+2&&rule[2]>=table.edges[1]-2)
+        const sectionBoundary=spans.some(rule=>Math.abs(rule[1]-band[3])<2&&rule[0]>table.edges[0]+2&&rule[0]<=table.edges[1]+2&&rule[2]>=(table.edges.at(-1)??Infinity)-2)
+        if(previous&&!previous.examination&&previous.pages.at(-1)===page.number&&!boundary&&sectionBoundary&&values[0]&&values[1]){records.push({weeks:[...previous.weeks],cells:values,pages:[page.number]});continue}
         if(previous&&!previous.examination&&((wasFirst&&previous.pages.at(-1)===page.number-1)||!boundary)) {
           previous.cells=combine(previous.cells,values);previous.pages.push(page.number)
         }else if(bandNumber===bands.length-1&&!stop&&page!==pages.at(-1))leading={cells:values,pages:[page.number],edges:[...table.edges]}
@@ -214,14 +219,15 @@ export function readRuledOutline(pages) {
   flushLeading()
   for(const record of records)if(record.pending)warnings.push(`The week range beginning at ${record.weeks[0]} on page ${record.pages.join(', ')} has no readable end. Review the original.`)
   const byWeek=new Map()
-  for(const record of records) for(const week of record.weeks) {
+  for(const [recordIndex,record] of records.entries()) for(const week of record.weeks) {
     const [rawIlos,content,activities,assessments]=record.cells
     const ilos=rawIlos.replace(/\n/g,' ')
     // Keep wrapped lines together; split only at an explicit new list marker.
     const topics=content.replace(/\n(?!\s*(?:[a-z]|[ivxlcdm]+)[.)]\s)/gi,' ').split('\n').filter(Boolean)
     const prior=byWeek.get(week)
-    if(prior) { prior.ilos=[prior.ilos,ilos].filter(Boolean).join('\n');prior.contents.push(...topics);prior.activities=[prior.activities,activities].filter(Boolean).join('\n');prior.assessments=[prior.assessments,assessments].filter(Boolean).join('\n') }
-    else byWeek.set(week,{week,ilos,contents:topics,activities,assessments,teachingMaterials:[],assessmentTypes:[],resources:[]})
+    const section={id:`imported-section-${recordIndex+1}`,ilos,contents:topics,activities,assessments,teachingMaterials:[],assessmentTypes:[],resources:[]}
+    if(prior)byWeek.set(week,aggregateSections(prior,[...weekSections(prior),section]))
+    else byWeek.set(week,aggregateSections({week},[section]))
   }
   return { outline:[...byWeek.values()], warnings, provenance:records.map(record=>({weeks:record.weeks,pages:[...new Set(record.pages)]})) }
 }

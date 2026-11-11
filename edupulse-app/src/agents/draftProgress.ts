@@ -10,7 +10,7 @@ export function outlineDraftProgress(patch:Record<string,unknown>,editor:EditorS
  return {rows,total:baseline.filter(row=>!/examination/i.test(row.assessments||'')).length}
 }
 
-const fields=['week','ilos','contents','activities','assessments','teachingMaterials','assessmentTypes','resources']
+const fields=['week','ilos','contents','activities','assessments','teachingMaterials','assessmentTypes','resources','sections']
 const editable=(row:Record<string,unknown>)=>JSON.stringify(fields.map(key=>[key,row[key]]))
 /** Confirmed placement changes only unchanged target rows and never persists or drops other weeks. */
 export function keepOutlineDraft(current:Record<string,unknown>[],baseline:Record<string,unknown>[],incoming:unknown,week?:number) {
@@ -20,7 +20,12 @@ export function keepOutlineDraft(current:Record<string,unknown>[],baseline:Recor
   const next=selected.get(Number(row.week));if(!next)return row
   const before=baseline.find(r=>r.week===row.week)
   if(!before||/examination/i.test(String(before.assessments||''))||editable(row)!==editable(before)&&editable(row)!==editable(next)){conflicts++;return row}
-  kept++;return {...row,...next}
+  const sections=before.sections as {id:string}[]|undefined
+  if(sections?.some(section=>(sections.length>1||baseline.some(other=>other.week!==before.week&&(other.sections as {id:string}[]|undefined)?.some(value=>value.id===section.id)))&&!next.sections?.some(value=>value.id===section.id))){conflicts++;return row}
+  const merged={...row,...next}
+  // Legacy whole-week proposals replace their blank canonical section as well.
+  if(!next.sections)delete merged.sections
+  kept++;return merged
  })
  return {rows,kept,conflicts}
 }

@@ -41,7 +41,7 @@ test('PDF syllabus attachment offers exact section previews, preserves unrelated
   await card.getByRole('button', { name: 'Apply to open form' }).click()
   await expect(pulse).toContainText('Applied to the open form')
   await page.getByRole('button', { name: 'Close Pulse', exact: true }).click()
-  await expect(page.getByPlaceholder('Topic...', { exact: true }).first()).toHaveValue('Variables and assignment')
+  await expect(page.getByPlaceholder('Contents...', { exact: true }).first()).toHaveValue('Variables and assignment')
 })
 
 test('private history saves preferences, recalls across chats, forgets and deletes source conversations', async ({ page }) => {

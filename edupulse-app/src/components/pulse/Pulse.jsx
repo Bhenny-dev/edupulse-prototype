@@ -92,7 +92,7 @@ export default function Pulse() {
       setOpen(true); setExpression(event.expression || 'curious')
       setMessages(previous => [...previous, { id: crypto.randomUUID(), from: 'pulse', text: event.message, mode: 'App notification', actions: event.actions }])
     }
-    if (event.type === 'ask') { setOpen(true); void sendRef.current?.(event.message, { documentIds: event.documentIds, task: event.task, scope: event.label, skipOperator: true }) }
+    if (event.type === 'ask') { setOpen(true); void sendRef.current?.(event.message, { documentIds: event.documentIds, task: event.task, scope: event.label, attachments:event.attachments, skipOperator: true }) }
   }), [])
   useEffect(() => {
     requestRef.current?.abort(); requestRef.current = null

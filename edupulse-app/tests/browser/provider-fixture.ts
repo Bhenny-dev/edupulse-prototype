@@ -7,7 +7,7 @@ export async function providerFixture(page: Page, baselineOverride?: Record<stri
   const summaries = () => [...saved.values()].map(item => ({ ...item, active: item.provider === connection?.provider }))
   let failTest = false, catalogUnavailable = false
   const models = [{ id: 'gpt-6.1-terra', name: 'gpt-6.1-terra' }, { id: 'gpt-6-luna', name: 'gpt-6-luna' }]
-  const modelsFor = (provider?: string) => provider === 'anthropic' ? [{ id: 'claude-synthetic', name: 'Claude (synthetic fixture)' }] : models
+  const modelsFor = (provider?: string) => provider === 'anthropic' ? [{ id: 'claude-synthetic', name: 'Claude (synthetic fixture)' }] : provider === 'gemini' ? [{ id: 'gemini-synthetic', name: 'Gemini (synthetic fixture)' }] : models
   await page.route('**/api/ai?*', async route => {
     const action = new URL(route.request().url()).searchParams.get('action')
     if (action === 'health') return route.fulfill({ json: { ...baseline, ready: Boolean(connection?.model), provider: connection?.provider || 'none', model: connection?.model || null, connection, message: connection?.testedAt ? 'The selected model answered a generation request. Provider limits can still change; retest if a prompt fails.' : connection?.model ? 'Credential saved and model listed. Generation has not been tested. Use Test selected model to check inference access and quota.' : connection ? 'Credential saved. Choose a model or use Refresh models to finish setup.' : 'Connect a provider to use generation.' } })

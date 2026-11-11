@@ -49,7 +49,7 @@
 .outline-editor.is-expanded { position: fixed; inset: 76px 16px 16px; z-index: 1080; margin: 0 !important; overflow: auto; background: var(--white); }
 .outline-editor.is-expanded > .card-body { padding: 24px; }
 .outline-editor.is-expanded .outline-toolbar { position: sticky; top: 0; z-index: 4; background: var(--white); padding-block: 12px; }
-.outline-editor.is-expanded .outline-table { min-width: 1400px; }
+.outline-editor.is-expanded .outline-table { min-width: 1240px; }
 @media (min-width: 1200px) { body.pulse-panel-open .outline-editor.is-expanded { right: 480px; } }
 @media (max-width: 640px) { .outline-tools { width: 100%; } .outline-tools label { flex: 1; } .outline-tools :is(select, button), .outline-multi-select { min-height: 44px; } .outline-grip, .outline-move .btn { min-height: 44px; min-width: 44px; } .outline-table .form-input { font-size: 1rem !important; } .outline-editor.is-expanded { inset: 68px 4px 4px; } .outline-editor.is-expanded > .card-body { padding: 12px; } }
 
@@ -82,3 +82,20 @@
 .outline-draft-week p, .outline-draft-week ul { margin: 8px 0; }
 .outline-draft-week ul { padding-left: 24px; }
 .outline-draft-week .btn { margin-top: 8px; }
+
+.outline-section-toolbar { display:flex;align-items:center;flex-wrap:wrap;gap:12px;padding:8px 0; }
+.outline-section-controls td { background:var(--gray-50); }
+.outline-section-toolbar details form { display:flex;align-items:end;flex-wrap:wrap;gap:12px;padding:12px 0; }
+.outline-section-toolbar input { max-width:90px; }
+.outline-table textarea { width:100%;min-height:110px; }
+.outline-section-toolbar summary { cursor:pointer;min-height:44px;display:flex;align-items:center; }
+
+.outline-resource-row {display:flex;gap:8px;align-items:center;margin:8px 0;}
+
+.outline-tools button, .outline-tools select { scroll-margin-block:110px; }
+
+@media(max-width:640px){.outline-section-toolbar {position:sticky;left:8px;max-width:calc(100vw - 64px);}.outline-table td[colspan] > .btn {position:sticky;left:8px;}}
+
+.dark-mode .outline-table select.form-input { background-repeat:no-repeat; background-position:right 14px center; }
+
+@media(max-width:1179px){.outline-table-scroll {contain:layout paint;}}

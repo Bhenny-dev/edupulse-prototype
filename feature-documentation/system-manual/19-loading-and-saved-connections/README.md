@@ -4,7 +4,7 @@ These captures use synthetic provider responses and synthetic signed-in account 
 
 ## Connect once, return later
 
-Open **Settings → AI & Knowledge**. **ChatGPT plan** is presented separately from **OpenAI API**: a ChatGPT subscription does not supply API billing or a key. This hosted app cannot offer ChatGPT plan sign-in until OpenAI approves the app; **ChatGPT connection requirements** links to the official requirements. **Connect OpenAI API** and **Connect Claude API** select their respective API-key forms. Claude API credits remain separate from Claude subscriptions. **Connect with OpenRouter** opens its browser consent flow.
+Open **Settings → AI & Knowledge**. **ChatGPT plan** is presented separately from **OpenAI API**: a ChatGPT subscription does not supply API billing or a key. This hosted app cannot offer ChatGPT plan sign-in until OpenAI approves the app; **ChatGPT connection requirements** links to the official requirements. Each card shows a provider logo, name and **Connect** button. **Connect** under **OpenAI API**, **Claude** or **Gemini** selects its key form. **ChatGPT plan** has a disabled button; **Connection details** contains the approval and billing explanation. Claude API credits remain separate from Claude subscriptions. **Connect** under **OpenRouter** opens its browser consent flow. The Knowledge library upload and indexed-document panel is removed from settings.
 
 While saved account connections are being read, the form displays skeleton lines and **Loading saved AI connections…**. Connection actions wait for that read; a failed read offers **Retry saved connections** instead of asking for another key. The pipeline also shows a skeleton during its first status request; later status checks retain the last loaded information.
 
@@ -59,7 +59,7 @@ The System Admin overview uses skeleton cards and rows until account counts and 
 | Provider restore, model discovery/selection, connection checks, Claude workspace lookup and disconnect | Initial skeleton, operation-specific status and pending action spinner. Successful save follows the server response. |
 | OpenRouter authorization | Status during initiation; callback retains its existing authenticated code-exchange and failure recovery. Consent belongs to the external provider. |
 | On-device model | Real model-download progress and cancel control retained. |
-| Knowledge library | Initial list skeleton; queued items use dots, extraction/indexing use spinners; OCR keeps its real processing progress. |
+| Private source intake | Use Pulse attachments or syllabus reference intake; the settings library panel has been removed. |
 | Pulse messages and conversations | Dots while generating; skeleton while reading history; spinner while updating a conversation or memory. **Close history** remains available. |
 | Notification popover and page | Skeleton for the first record request, then data, error or empty state. |
 | Student directory and confirmed roster save | Table skeleton, retained rows on refresh, spinner for registration. |

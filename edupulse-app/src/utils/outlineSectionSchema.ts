@@ -1,0 +1,2 @@
+import {z} from 'zod'
+export const outlineSectionSchema=z.object({id:z.string().min(1).max(120),ilos:z.string().max(5000),contents:z.array(z.string().max(2000)).max(40),activities:z.string().max(5000).default(''),assessments:z.string().max(5000).default(''),assessmentTypes:z.array(z.string().max(300)).max(10).default([]),teachingMaterials:z.array(z.string().max(300)).max(10).optional(),resources:z.array(z.object({name:z.string().max(500),url:z.string().max(2000),type:z.string().max(30).optional()})).max(30).optional()}).strict()

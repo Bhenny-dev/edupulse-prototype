@@ -10,6 +10,7 @@ export const sourceCommand=z.discriminatedUnion('operation',[
  z.object({operation:z.literal('read'),references:z.array(sourceReference).min(1).max(3),refresh:z.boolean().default(false)}).strict(),
  z.object({operation:z.literal('attach'),reference:sourceReference,name:z.string().min(1).max(255),base64:z.string().min(4).max(Math.ceil(SOURCE_BYTES/3)*4).regex(/^[A-Za-z0-9+/]+={0,2}$/)}).strict(),
  z.object({operation:z.literal('evidence'),references:z.array(sourceReference).max(80),focus:z.string().min(1).max(1500)}).strict(),
+ z.object({operation:z.literal('locate'),ids:z.array(z.string().uuid()).min(1).max(12),text:z.string().trim().min(3).max(2000)}).strict(),
  z.object({operation:z.literal('review'),id:z.string().uuid()}).strict(),
  z.object({operation:z.literal('open'),id:z.string().uuid()}).strict(),
  z.object({operation:z.literal('remove'),id:z.string().uuid()}).strict(),

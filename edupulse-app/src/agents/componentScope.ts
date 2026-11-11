@@ -1,7 +1,8 @@
+import {editOutlineSection} from '../utils/outlineSections.js'
 import { contentPatch, syllabusPatch, type EditorSnapshot } from './editorTools.js'
 
 const index = '(?:0|[1-9]\\d{0,2})'
-const syllabusPaths = new RegExp(`^(?:gradingSystem|(?:programOutcomes|courseRequirements|coursePolicy)(?:\\.${index})?|institutionalContext\\.(?:kcp\\.(?:vision|mission|(?:objectives|coreValues)(?:\\.${index})?)|cit\\.(?:mission|objectives(?:\\.${index})?))|courseOutline\\.${index}\\.(?:ilos|activities|assessments|(?:contents|teachingMaterials|assessmentTypes)(?:\\.${index})?)|books\\.${index}\\.(?:title|authors|year|publisher)|onlineReferences\\.${index}\\.(?:title|url))$`)
+const syllabusPaths = new RegExp(`^(?:gradingSystem|(?:programOutcomes|courseRequirements|coursePolicy)(?:\\.${index})?|institutionalContext\\.(?:kcp\\.(?:vision|mission|(?:objectives|coreValues)(?:\\.${index})?)|cit\\.(?:mission|objectives(?:\\.${index})?))|courseOutline\\.${index}\\.(?:sections\\.${index}\\.)?(?:ilos|activities|assessments|(?:contents|teachingMaterials|assessmentTypes)(?:\\.${index})?)|books\\.${index}\\.(?:title|authors|year|publisher)|onlineReferences\\.${index}\\.(?:title|url))$`)
 const contentPaths = new RegExp(`^(?:title|sections\\.${index}\\.(?:heading|body)|questions\\.${index}\\.(?:text|explanation|options\\.${index}(?:\\.text)?))$`)
 
 export function fieldValue(data: Record<string, unknown>, path: string): unknown {
@@ -42,5 +43,11 @@ export function scopedEditorPatch(snapshot: EditorSnapshot, changes: Record<stri
   let parent: Record<string, unknown> = patch
   for (const key of keys.slice(0, -1)) parent = parent[key] as Record<string, unknown>
   parent[keys.at(-1)!] = structuredClone(value)
+  if(root==='courseOutline'&&keys[2]==='sections'){
+   const rows=snapshot.data.courseOutline as import('../utils/outlineSections.js').OutlineWeek[],row=rows[Number(keys[1])]!,section=row.sections?.[Number(keys[3])]
+   if(!section)throw new Error('The selected section changed. Request a fresh preview.')
+   patch[root]=editOutlineSection(rows,row.week,section.id,{[keys[4]!]:keys.length===5?value:fieldValue(patch,keys.slice(0,5).join('.'))})
+  }
+
   return (snapshot.kind === 'syllabus' ? syllabusPatch : contentPatch).parse(patch)
 }

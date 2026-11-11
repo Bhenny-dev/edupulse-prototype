@@ -53,6 +53,7 @@ export async function providerLoading(page: Page, capture = noCapture) {
   await page.getByRole('button', { name: 'Use saved connection', exact: true }).click()
   await expect(page.getByRole('button', { name: 'Refresh models', exact: true })).toBeEnabled()
   await expect(page.getByText('ChatGPT plan', { exact: true })).toBeVisible()
+  await page.getByText('Connection details', { exact: true }).click()
   await expect(page.getByRole('link', { name: 'ChatGPT connection requirements' })).toHaveAttribute('href', 'https://developers.openai.com/siwc/token-sharing-open-source')
 }
 export async function recordLoading(page: Page, capture = noCapture) {

@@ -43,10 +43,10 @@ test('Pulse native file drop preserves the unsent prompt and shows the extracted
 
 test('wide outline: full workspace, a selected week and solid dark surfaces', async ({ page }) => {
   await componentBuilder(page)
-  await page.locator('[data-pulse-field="courseOutline.0.ilos"]').fill('Formulate a research question and identify suitable evidence.')
-  await page.locator('[data-pulse-field="courseOutline.0.contents.0"]').fill('Research questions and evidence')
-  await page.locator('[data-pulse-field="courseOutline.0.activities"]').fill('Compare example questions and justify an appropriate method.')
-  await page.locator('[data-pulse-field="courseOutline.1.ilos"]').fill('Explain ethical treatment of research participants.')
+  await page.locator('[data-pulse-field="courseOutline.0.sections.0.ilos"]').fill('Formulate a research question and identify suitable evidence.')
+  await page.locator('[data-pulse-field="courseOutline.0.sections.0.contents"]').fill('Research questions and evidence')
+  await page.locator('[data-pulse-field="courseOutline.0.sections.0.activities"]').fill('Compare example questions and justify an appropriate method.')
+  await page.locator('[data-pulse-field="courseOutline.1.sections.0.ilos"]').fill('Explain ethical treatment of research participants.')
   const outline = page.getByRole('region', { name: 'Course Outline editor', exact: true })
   await outline.getByRole('button', { name: 'Expand outline', exact: true }).click()
   await page.waitForTimeout(400)

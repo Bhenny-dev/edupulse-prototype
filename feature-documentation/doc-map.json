@@ -187,6 +187,8 @@
         "edupulse-app/scripts/serve-preview.mjs",
         "edupulse-app/playwright.auth-snapshots.config.ts",
         "edupulse-app/tests/browser/provider-fixture.ts",
+        "edupulse-app/tests/outline-source-ui.ts",
+        "edupulse-app/tests/outline-progress-ui.ts",
         "edupulse-app/playwright.voice-snapshots.config.ts",
         "edupulse-app/playwright.records-snapshots.config.ts"
       ],

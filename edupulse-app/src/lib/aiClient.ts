@@ -187,19 +187,21 @@ export async function downloadRetainedSource(id:string) {
 export async function generateCoursewareParts(input:CourseInput,signal?:AbortSignal,types?:('material'|'activity'|'assessment')[],options:{completed?:import('./rag/courseware').StepResult[];onPart?:(results:import('./rag/courseware').StepResult[])=>Promise<void>;onProgress?:(completed:number,total:number,key:string)=>void}={}) {
   const [{coursewarePlan,COURSEWARE_PLAN_VERSION},{draftCoursewareStep,assembleCourseware}]=await Promise.all([import('./rag/coursewarePlan'),import('./rag/courseware')])
   const results:Awaited<ReturnType<typeof draftCoursewareStep>>[]=[...(options.completed||[])]
+  if(input.sections?.length&&!input.syllabusReferences?.length)throw new ApiRequestError('Add and retain a readable reference before generating this outline.',422,'SOURCE_REQUIRED')
   const plan=coursewarePlan(input).filter(part=>!types||types.includes(part.type))
   let failed:unknown
   let sourceWarning=''
   if(input.syllabusReferences?.length&&plan.some(part=>!results.some(result=>result.step.key===part.key))){
     options.onProgress?.(results.length,plan.length,'sources')
-    try{const sources=await prepareSyllabusSources(input.syllabusReferences.map(ref=>({url:'',authors:'',year:'',publisher:'',...ref})),signal,false,input.research!=='sources');if(typeof window!=='undefined')window.dispatchEvent(new CustomEvent('edupulse-sources-updated',{detail:{sources,sessionVersion:aiSessionVersion()}}));if(sources.some(source=>!source.snapshot))sourceWarning='Some syllabus references could not be read. Only actual retrieved passages can support citations.'}
-    catch(error){signal?.throwIfAborted();sourceWarning='Syllabus source retention was unavailable. No unread book or linked-page contents are claimed.'}
+    try{const sources=await prepareSyllabusSources(input.syllabusReferences.map(ref=>({url:'',authors:'',year:'',publisher:'',...ref})),signal,false,true);if(typeof window!=='undefined')window.dispatchEvent(new CustomEvent('edupulse-sources-updated',{detail:{sources,sessionVersion:aiSessionVersion()}}));if(input.sections?.length&&!sources.some(source=>source.snapshot&&!source.metadataOnly))throw new ApiRequestError('Read or attach a usable reference before generating this outline. No reference contents were available.',422,'SOURCE_NOT_READY');if(sources.some(source=>!source.snapshot||source.metadataOnly))sourceWarning='Some syllabus references could not be read. Only actual retrieved passages can support citations.'}
+    catch(error){signal?.throwIfAborted();if(input.sections?.length)throw error;sourceWarning='Syllabus source retention was unavailable. No unread book or linked-page contents are claimed.'}
   }
   for(const part of plan) {
     signal?.throwIfAborted()
     if(results.some(result=>result.step.key===part.key))continue
     options.onProgress?.(results.length,plan.length,part.key)
-    const scoped={...input,planVersion:COURSEWARE_PLAN_VERSION,stepKey:part.key}
+    const generatedTeaching=[input.generatedTeaching||'',...results.filter(result=>!part.sectionId||result.step.sectionId===part.sectionId).flatMap(result=>[...result.content.material?.sections||[],...result.content.activity?.sections||[]].map(section=>section.heading+'\n'+section.body))].join('\n\n').slice(0,18000)
+    const scoped={...input,...(part.type==='assessment'?{generatedTeaching}:{}),planVersion:COURSEWARE_PLAN_VERSION,stepKey:part.key}
     try {
       if(aiPreference()!=='browser')results.push({...await aiRequest<Awaited<ReturnType<typeof draftCoursewareStep>>>('courseware','POST',scoped,signal),step:part})
       else {

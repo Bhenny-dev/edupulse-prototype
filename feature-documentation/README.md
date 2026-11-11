@@ -8,6 +8,9 @@
 | [12 November genuine records](versions/2026-11-12-genuine-records/README.md) | Demonstration cleanup and removal of Review Inbox | See validation |
 | [12 November builder header](versions/2026-11-12-builder-header/README.md) | Removed curriculum-outline loading button; retained import and drafting controls | See validation |
 | [11 November Dean activity records](versions/2026-11-11-dean-activity-records/README.md) | Four-item Dean navigation, clickable shared cards and year-grouped downloadable block lists | See validation |
+
+| [11 November outline sections](versions/2026-11-11-outline-sections/README.md) | Shared week sections, seven assessment formats, teaching attachments and retained-source inspection | See local validation |
+| [11 November provider cards](versions/2026-11-11-provider-cards/README.md) | Gemini card, compact provider logos and removal of the settings Knowledge library panel | See local validation |
 | [11 November second admin](versions/2026-11-11-second-admin/README.md) | Second designated Google admin, protected accounts and retained role/person views | See registration and validation |
 | [11 November assessment radar](versions/2026-11-11-assessment-radar/README.md) | Three scored quizzes, matched learner/instructor progress and repaired timed-attempt roster labels | See validation |
 | [11 November local model catalog](versions/2026-11-11-local-model-catalog/README.md) | Twelve downloadable browser models, compatibility, cache inspection and selected removal | See validation and GPU limitation |

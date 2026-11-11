@@ -1,4 +1,4 @@
-export type OutlineRow = { week: number; ilos: string; contents: string[]; activities: string; assessments: string; teachingMaterials: string[]; assessmentTypes: string[]; resources: { type: string; name: string; url: string }[] }
+export type OutlineRow = { week: number; sections?: import('./outlineSections').OutlineSection[]; ilos: string; contents: string[]; activities: string; assessments: string; teachingMaterials: string[]; assessmentTypes: string[]; resources: { type: string; name: string; url: string }[] }
 type Section<T> = { raw: string; parsed: T }
 export type ParsedSyllabus = {
   sections: [

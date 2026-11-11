@@ -16,7 +16,7 @@ test('PDF syllabus text is extracted, previewed and accepted into the course for
   await expect(page.getByText('Extracted Sections Preview', { exact: true })).toBeVisible({ timeout: 30000 })
   await page.getByRole('button', { name: 'Use This Syllabus', exact: true }).click()
   await expect(page.getByRole('combobox', { name: 'Course', exact: true })).toHaveValue('IT 102')
-  await expect(page.getByPlaceholder('Topic...', { exact: true }).first()).toHaveValue('Variables and assignment')
+  await expect(page.getByPlaceholder('Contents...', { exact: true }).first()).toHaveValue('Variables and assignment')
 })
 
 test('an imported draft retains an unfamiliar course identity and its offered year',async({page})=>{
@@ -44,5 +44,5 @@ test('a scanned PDF syllabus uses OCR and still fills the course and outline', a
   await expect(page.getByText(/OCR read 1 scanned page/)).toBeVisible({ timeout: 240000 })
   await page.getByRole('button', { name: 'Use This Syllabus', exact: true }).click()
   await expect(page.getByRole('combobox', { name: 'Course', exact: true })).toHaveValue('IT 102')
-  await expect(page.getByPlaceholder('Topic...', { exact: true }).first()).toHaveValue('Variables and assignment')
+  await expect(page.getByPlaceholder('Contents...', { exact: true }).first()).toHaveValue('Variables and assignment')
 })

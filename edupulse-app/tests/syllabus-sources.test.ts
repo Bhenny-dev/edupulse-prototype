@@ -54,6 +54,9 @@ test('real PDF snapshots persist privately, reuse cached text, preserve refreshe
   assert.equal(snapshot.sha256,createHash('sha256').update(bytes).digest('hex'));assert.equal(snapshot.pages,1)
   assert.equal('base64' in snapshot,false);assert.equal('text' in snapshot,false)
   await executeSources(identity,{operation:'read',references:[reference]},signal,download);assert.equal(fetches,1)
+  const located=await executeSources(identity,{operation:'locate',ids:[snapshot.id],text:'A switch connects devices within a local network'},signal) as {matches:{id:string;text:string;page:number;exact:boolean;highlight:{start:number;end:number}}[]}
+  assert.equal(located.matches[0]!.id,snapshot.id);assert.match(located.matches[0]!.text,/switch connects devices/);assert.equal(located.matches[0]!.page,1);assert.match(located.matches[0]!.text.slice(located.matches[0]!.highlight.start,located.matches[0]!.highlight.end),/switch connects devices/)
+  await assert.rejects(executeSources(other,{operation:'locate',ids:[snapshot.id],text:'network'},signal),{code:'SOURCE_NOT_FOUND'})
   const read=await readSnapshot(identity,snapshot.id,true);assert.equal(read.base64,bytes.toString('base64'));assert.match(read.text,/Network components/)
   await assert.rejects(readSnapshot(other,snapshot.id,true),{code:'SOURCE_NOT_FOUND'})
   bytes=pdf(lesson+' A changed edition adds a second classroom network.')

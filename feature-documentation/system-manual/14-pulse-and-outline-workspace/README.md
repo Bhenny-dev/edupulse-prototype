@@ -88,4 +88,4 @@ Pulse keeps its compact bottom panel. Close it to use the full page. The outline
 
 ## Categorized selector panels
 
-The [current outline-selector guide](../28-outline-selectors/README.md) shows searchable teaching-material and assessment-type panels. They appear outside the table scroll region, retain existing values and use one option-list scrollbar. Keyboard focus, touch targets, chip removal and expanded-outline Escape behavior are preserved. These changes do not alter Pulse targeting, source scope, saved arrays or exam weeks.
+The [current outline guide](../28-outline-selectors/README.md) shows multiple/shared week sections and seven assessment types. Contents is one multiline field per section, and the teaching-material selector is removed. Pulse targeting follows the selected section. Existing saved notes and examination weeks are preserved.

@@ -37,7 +37,7 @@ The seven-section template. Start by dropping an existing syllabus `.docx` or `.
 
 ![Course Outline section](06-syllabus-builder-course-outline.png)
 
-Section 5, **Course Outline**, is the part that later drives courseware: one table with a row per week under a **Midterm** (Weeks 1–9) and a **Finals** (Weeks 10–18) heading, holding intended learning outcomes, topics (**Add Topic**), activities and teaching materials, and assessment details. On a desktop the section is wider than the page column so every column shows at once, and each text field grows to show its whole entry. Weeks 9 and 18 are fixed exam weeks; rows can be reordered with the drag handle and given attachments with the paper-clip.
+Section 5, **Course Outline**, is the part that later drives courseware: one table with a row per week under a **Midterm** (Weeks 1–9) and a **Finals** (Weeks 10–18) heading, holding intended learning outcomes, one multiline Contents field, Teaching-Learning Activities and Assessments for each section. A week may contain several sections, and a section can span teaching weeks. On a desktop the section is wider than the page column so every column shows at once, and each text field grows to show its whole entry. Weeks 9 and 18 are fixed exam weeks; rows can be reordered with the drag handle and given attachments with the paper-clip.
 
 Pulse can prepare a new syllabus draft for the course selected in Section 1. Its [review card and research-source screenshot](../../system-manual/09-pulse-actions/README.md#generate-a-syllabus-from-the-selected-course) show the editable fields, pending institutional rules and separate apply/save controls. Empty fields do not require an existing syllabus in the library; the instructor reviews all new teaching content.
 
@@ -105,7 +105,7 @@ Course selection, week expansion, item selection and document/presentation prefe
 
 ## Readable outline selectors
 
-Week-specific teaching materials and assessment types open a viewport-bounded panel with **Search options...**, category headings, native checkboxes, selected count, **Clear selections** and **Done**. The popup sits outside the table scroll container, and its single list scrolls independently. [Manual 28](../../system-manual/28-outline-selectors/README.md) shows desktop/phone light and dark examples. Free-text activities and assessment details retain their own fields.
+Each section offers seven assessment types through one selector, with a system-selected default. The teaching-material selector is removed. [Manual 28](../../system-manual/28-outline-selectors/README.md) shows desktop/phone light and dark examples. Free-text activities and assessment details retain their own fields.
 
 ## Retained syllabus references
 
@@ -124,3 +124,7 @@ Older saved source listings now show a metadata-only exclusion in **Course ? Syl
 ## Saved courseware parts
 
 **Course** shows validated parts in an unfinished read-only preview while generation continues. **Stop generation**, failed content checks and deliberate reload preserve acknowledged parts. **Resume** requests only missing compatible parts. Unfinished drafts cannot be checked or published; older saved work remains intact until complete replacement. [Manual 26](../../system-manual/26-outline-driven-courseware/README.md#save-parts-and-resume) shows the progress, reload, reader, phone and dark states.
+
+## Scoped outline and source-based courseware update
+
+The Course Outline has multiline Contents, Teaching-Learning Activities and Assessments. Each week can contain several sections; shared sections update together across teaching weeks. Seven assessment formats replace the former broad catalog, and the teaching-material dropdown is removed. [Manual 28](../../system-manual/28-outline-selectors/README.md) shows desktop and phone controls. Course groups documents/files under Teaching-Learning Activities and separately lists Assessments. Files can be attached as private drafts; selected generated text opens its retained source basis and an explicit Pulse explanation ([Manual 31](../../system-manual/31-retained-syllabus-sources/README.md)).

@@ -80,7 +80,7 @@ test('keyboard walkthrough waits for real input and save, then completes', async
   await page.getByRole('button', { name: 'Next step', exact: true }).click()
   await expect(page.getByRole('button', { name: 'Next step', exact: true })).toBeDisabled()
   await page.getByPlaceholder('Learning outcome...', { exact: true }).first().fill('Explain bounded loops and demonstrate a stopping condition.')
-  await page.getByPlaceholder('Topic...', { exact: true }).first().fill('Bounded loops')
+  await page.getByPlaceholder('Contents...', { exact: true }).first().fill('Bounded loops')
   await page.getByRole('button', { name: 'Next step', exact: true }).click()
   await page.getByRole('button', { name: 'Next step', exact: true }).click()
   await page.getByRole('button', { name: 'Next step', exact: true }).click()

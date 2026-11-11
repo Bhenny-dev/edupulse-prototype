@@ -4,7 +4,6 @@ import { Cpu, RefreshCw, Workflow } from 'lucide-react'
 import { useAI } from '../../context/AIContext'
 import { useAuth } from '../../context/AuthContext'
 import ProviderConnection from './ProviderConnection'
-import KnowledgeLibrary from './KnowledgeLibrary'
 import { AGENT_META } from './agentMeta'
 import './ai.css'
 
@@ -38,6 +37,5 @@ export default function AISettings() {
         {error && <p role="alert" className="ai-notice">{error}</p>}
         {health?.checkedAt && <p className="text-sm text-muted">Last checked: {new Date(health.checkedAt).toLocaleString()}</p>}
       </div></div>
-    <KnowledgeLibrary canIndex={Boolean(health?.database.ready)} onChange={() => refresh()} />
   </div>
 }

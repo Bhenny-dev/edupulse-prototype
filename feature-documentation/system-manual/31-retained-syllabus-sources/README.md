@@ -71,3 +71,19 @@ These captures use controlled account, source and provider transports with origi
 New references can be added directly in **Syllabus Builder → References** using a link or readable file, with automatic metadata extraction and retryable private indexing. See [Manual 35](../35-reference-intake/README.md). Removing a retained version also removes its associated indexed search passages; removing only the syllabus reference keeps the private copy for reuse.
 
 Previously saved catalog/search HTML is now identified as metadata-only and excluded from teaching evidence and indexing. Its original remains inspectable. See the [older retained listing example](../35-reference-intake/README.md#older-retained-listings). Readable files attached separately remain eligible.
+
+## Inspect the basis of a selected generated passage
+
+Select text in the generated document or an instructor assessment question and choose **Find source for selection**. EduPulse searches the retained copies associated with that draft. The **Source basis** popover shows the selected generated passage, actual source excerpts, page/section where available, and a highlighted exact match or related sentence. A related passage is a possible basis, not verification of every generated claim. No match is reported explicitly. **Open retained copy** opens the saved text and provenance.
+
+![Actual sample source excerpt highlighted in the popover](source-popover.png)
+![Phone source inspection](mobile-source-popover.png)
+
+**Explain in Pulse** sends the generated selection and actual source excerpt to the chat panel and asks it to distinguish supported ideas, original examples and unsupported claims. This is an explicit AI request; provider access and quota still apply. A deliberate reload restores the source view after authorization and rechecks the content signature and retained-source access; it never sends another explanation or runs generation.
+
+![Selected text and retained basis passed into Pulse](source-in-pulse.png)
+![Phone source explanation](mobile-source-in-pulse.png)
+
+These four captures use controlled account/source transports and a labelled synthetic explanation. The source-selection interface and reload controls are real; native checks separately verify actual chunk lookup/highlight offsets, source ownership and denied cross-account access. They do not establish live model quality or permission to download restricted books. Existing size, extraction and partial-search limits remain visible.
+
+The displayed quote and **Explain in Pulse** remain bound to the passage whose lookup completed. Selecting different text prepares another lookup; it cannot relabel earlier source results as evidence for the new selection.

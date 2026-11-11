@@ -93,14 +93,6 @@
     {
       "role": "all roles",
       "folder": "02-shared-interface",
-      "file": "13-settings-ai-and-knowledge.png",
-      "title": "Settings · AI & Knowledge",
-      "route": "/settings",
-      "ok": true
-    },
-    {
-      "role": "all roles",
-      "folder": "02-shared-interface",
       "file": "14-settings-data-and-privacy.png",
       "title": "Settings · Data & Privacy",
       "route": "/settings",
@@ -128,6 +120,14 @@
       "file": "17-pulse-panel.png",
       "title": "Pulse panel (welcome)",
       "route": "/dashboard",
+      "ok": true
+    },
+    {
+      "role": "all roles",
+      "folder": "02-shared-interface",
+      "file": "18-pulse-dwell-help.png",
+      "title": "“Ask Pulse about this” hover badge",
+      "route": "/syllabus",
       "ok": true
     },
     {
@@ -171,6 +171,78 @@
       "ok": true
     },
     {
+      "role": "dean",
+      "folder": "03-dean-and-associate-dean",
+      "file": "01-dashboard.png",
+      "title": "Dean dashboard",
+      "route": "/dashboard",
+      "ok": true
+    },
+    {
+      "role": "dean",
+      "folder": "03-dean-and-associate-dean",
+      "file": "02-course-loading-loaded-courses.png",
+      "title": "Course Loading · Loaded Courses",
+      "route": "/records",
+      "ok": true
+    },
+    {
+      "role": "dean",
+      "folder": "03-dean-and-associate-dean",
+      "file": "03-course-loading-instructors.png",
+      "title": "Course Loading · Instructors",
+      "route": "/instructors",
+      "ok": true
+    },
+    {
+      "role": "dean",
+      "folder": "03-dean-and-associate-dean",
+      "file": "04-monitor-syllabus-status.png",
+      "title": "Monitor - Syllabus & Delivery",
+      "route": "/monitor",
+      "ok": true
+    },
+    {
+      "role": "dean",
+      "folder": "03-dean-and-associate-dean",
+      "file": "06-monitor-student-oversight.png",
+      "title": "Monitor · Student Oversight",
+      "route": "/monitor",
+      "ok": true
+    },
+    {
+      "role": "dean",
+      "folder": "03-dean-and-associate-dean",
+      "file": "07-monitor-alerts.png",
+      "title": "Monitor · Alerts",
+      "route": "/monitor",
+      "ok": true
+    },
+    {
+      "role": "dean",
+      "folder": "03-dean-and-associate-dean",
+      "file": "11-pulse-on-course-loading.png",
+      "title": "Pulse focused on Course Loading",
+      "route": "/records",
+      "ok": true
+    },
+    {
+      "role": "associate dean",
+      "folder": "03-dean-and-associate-dean",
+      "file": "12-associate-dean-dashboard.png",
+      "title": "Associate Dean dashboard (distinct account)",
+      "route": "/dashboard",
+      "ok": true
+    },
+    {
+      "role": "associate dean",
+      "folder": "03-dean-and-associate-dean",
+      "file": "13-performance-access-denied.png",
+      "title": "Associate Dean: performance route and Pulse access denied",
+      "route": "/dashboard",
+      "ok": true
+    },
+    {
       "role": "instructor",
       "folder": "04-instructor",
       "file": "01-dashboard.png",
@@ -197,8 +269,8 @@
     {
       "role": "instructor",
       "folder": "04-instructor",
-      "file": "06-syllabus-builder-course-outline.png",
-      "title": "Syllabus Builder · Section 5 Course Outline",
+      "file": "05-syllabus-builder.png",
+      "title": "Syllabus Builder (upload or build the 7 sections)",
       "route": "/syllabus",
       "ok": true
     },
@@ -755,43 +827,19 @@
       "ok": true
     },
     {
-      "role": "dean",
-      "folder": "03-dean-and-associate-dean",
-      "file": "01-dashboard.png",
-      "title": "Dean dashboard",
-      "route": "/dashboard",
+      "role": "all roles",
+      "folder": "02-shared-interface",
+      "file": "13-settings-ai-and-knowledge.png",
+      "title": "Settings · AI & Knowledge",
+      "route": "/settings",
       "ok": true
     },
     {
-      "role": "dean",
-      "folder": "03-dean-and-associate-dean",
-      "file": "03-course-loading-instructors.png",
-      "title": "Course Loading · Instructors",
-      "route": "/instructors",
-      "ok": true
-    },
-    {
-      "role": "dean",
-      "folder": "03-dean-and-associate-dean",
-      "file": "04-monitor-syllabus-status.png",
-      "title": "Monitor - Syllabus & Delivery",
-      "route": "/monitor",
-      "ok": true
-    },
-    {
-      "role": "dean",
-      "folder": "03-dean-and-associate-dean",
-      "file": "06-monitor-student-oversight.png",
-      "title": "Monitor · Student Oversight",
-      "route": "/monitor",
-      "ok": true
-    },
-    {
-      "role": "dean",
-      "folder": "03-dean-and-associate-dean",
-      "file": "07-monitor-alerts.png",
-      "title": "Monitor · Alerts",
-      "route": "/monitor",
+      "role": "instructor",
+      "folder": "04-instructor",
+      "file": "06-syllabus-builder-course-outline.png",
+      "title": "Syllabus Builder · Section 5 Course Outline",
+      "route": "/syllabus",
       "ok": true
     },
     {
@@ -816,54 +864,6 @@
       "file": "10-course-syllabi.png",
       "title": "Dean Course syllabi",
       "route": "/records",
-      "ok": true
-    },
-    {
-      "role": "dean",
-      "folder": "03-dean-and-associate-dean",
-      "file": "11-pulse-on-course-loading.png",
-      "title": "Pulse focused on Course Loading",
-      "route": "/records",
-      "ok": true
-    },
-    {
-      "role": "associate dean",
-      "folder": "03-dean-and-associate-dean",
-      "file": "12-associate-dean-dashboard.png",
-      "title": "Associate Dean dashboard (distinct account)",
-      "route": "/dashboard",
-      "ok": true
-    },
-    {
-      "role": "associate dean",
-      "folder": "03-dean-and-associate-dean",
-      "file": "13-performance-access-denied.png",
-      "title": "Associate Dean: performance route and Pulse access denied",
-      "route": "/dashboard",
-      "ok": true
-    },
-    {
-      "role": "dean",
-      "folder": "03-dean-and-associate-dean",
-      "file": "02-course-loading-loaded-courses.png",
-      "title": "Course Loading · Loaded Courses",
-      "route": "/records",
-      "ok": true
-    },
-    {
-      "role": "all roles",
-      "folder": "02-shared-interface",
-      "file": "18-pulse-dwell-help.png",
-      "title": "“Ask Pulse about this” hover badge",
-      "route": "/syllabus",
-      "ok": true
-    },
-    {
-      "role": "instructor",
-      "folder": "04-instructor",
-      "file": "05-syllabus-builder.png",
-      "title": "Syllabus Builder (upload or build the 7 sections)",
-      "route": "/syllabus",
       "ok": true
     }
   ]

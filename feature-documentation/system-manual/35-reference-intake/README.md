@@ -45,3 +45,5 @@ Catalog/search listings may supply citation metadata but are not retained or ind
 A search/catalog page retained by an earlier version remains available for inspection, with **Saved catalog/search listing - metadata only** and an explicit exclusion message. Its text does not supply teaching evidence and cannot be indexed as teaching content. Attach a readable book/chapter separately.
 
 ![Previously saved catalog copy excluded from teaching evidence](07-legacy-catalog.png)
+
+For updated outline sections, retained reference text is the factual basis for both teaching-learning content and assessments. Prepare the listed links/files before generation. Existing copies are reused; inaccessible books, catalog pages and truncated copies are never described as complete readable sources. Attach the licensed/readable source file when the system cannot retrieve usable contents. Section-specific source inspection is described in [Manual 31](../31-retained-syllabus-sources/README.md).

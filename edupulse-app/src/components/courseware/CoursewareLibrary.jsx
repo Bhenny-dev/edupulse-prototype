@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { BookOpen, Eye, Sparkles, ClipboardCheck, List } from 'lucide-react'
 import { STUDENT_RECORDS, INSTRUCTORS } from '../../data/mockData'
 import CoursewareActions from './CoursewareActions'
-import { plannedCoursewareTypes } from '../../lib/rag/coursewarePlan'
+import { missingCoursewareCount } from '../../lib/rag/coursewarePlan'
 import './courseware.css'
 
 const isExam = row => !row.ilos && /examination/i.test(row.assessments || '')
@@ -17,8 +17,8 @@ export default function CoursewareLibrary({ syllabi, contentStore, user, onSelec
       const saved = Object.values(contentStore).filter(item => item.content && item.syllabusId === syllabus.id && weeks.some(row => row.week === item.week))
       const entries=saved.filter(item=>!item.generationCheckpoint),unfinished=saved.filter(item=>item.generationCheckpoint).length
       const drafts = entries.filter(item => item.status === 'draft'), checked = entries.filter(item => item.status === 'checked'), published = entries.filter(item => item.status === 'published')
-      const complete = weeks.length > 0 && entries.every(item=>['published','hidden'].includes(item.status)) && weeks.every(row => plannedCoursewareTypes(row).every(type => entries.some(item => item.week === row.week && item.type === type && item.status === 'published')))
-      const expected=entries.length+weeks.reduce((sum,row)=>sum+plannedCoursewareTypes(row).filter(type=>!entries.some(item=>item.week===row.week&&item.type===type)).length,0)
+      const complete = weeks.length > 0 && entries.every(item=>['published','hidden'].includes(item.status)) && weeks.every(row => missingCoursewareCount(row,entries.filter(item=>item.week===row.week&&item.status==='published'))===0)
+      const expected=entries.length+weeks.reduce((sum,row)=>sum+missingCoursewareCount(row,entries.filter(item=>item.week===row.week)),0)
       return { syllabus, weeks, drafts, checked, published, total: entries.length, expected, complete:complete&&!unfinished, unfinished }
     }).filter(course => !itemStatus || course[itemStatus === 'draft' ? 'drafts' : 'published'].length > 0)
   }, [syllabi, contentStore, isStudent, user?.name, itemStatus])

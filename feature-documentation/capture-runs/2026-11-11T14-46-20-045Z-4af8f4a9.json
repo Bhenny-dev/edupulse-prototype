@@ -1,0 +1,431 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-11-11T14-46-20-045Z-4af8f4a9",
+  "startedAt": "2026-11-11T14:46:20.045Z",
+  "finishedAt": "2026-11-11T14:47:19.884Z",
+  "commitSha": "625366df57e505ec1526d575e6d5e02dc7feacc3",
+  "sourceDigest": "73ececeb2b5bd02290a4fbec6a965660ef735a1afb9eee50ca4c56ea97555dfc",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-11-11T14:46:14.437Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "failed",
+  "counts": {
+    "passed": 12,
+    "failed": 2,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": null
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/outline-courseware.spec.ts",
+    "edupulse-app/tests/snapshots/outline-selector.spec.ts",
+    "edupulse-app/tests/snapshots/outline-sources.spec.ts",
+    "edupulse-app/tests/snapshots/outline-courseware.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/outline-selector.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/outline-sources-mobile.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/account-support-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/account-support-reload-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/account-support-reload.spec.ts",
+    "edupulse-app/tests/snapshots/account-support.spec.ts",
+    "edupulse-app/tests/snapshots/approved-syllabus-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/approved-syllabus.spec.ts",
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/automatic-records.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/automatic-records.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.spec.ts",
+    "edupulse-app/tests/snapshots/course-seed.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-formatting.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-navigation.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/harness-delivery.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/local-models-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/local-models.spec.ts",
+    "edupulse-app/tests/snapshots/login-icons-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/login-icons.spec.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/operator-steps.spec.ts",
+    "edupulse-app/tests/snapshots/outline-progress-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/outline-progress.spec.ts",
+    "edupulse-app/tests/snapshots/oversight.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/oversight.spec.ts",
+    "edupulse-app/tests/snapshots/pipeline-progress-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pipeline-progress.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/public-pulse-search-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/public-pulse-search.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-drafting.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-source.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+    "edupulse-app/tests/snapshots/radar-progress-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/radar-progress.spec.ts",
+    "edupulse-app/tests/snapshots/reference-intake-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/reference-intake.spec.ts",
+    "edupulse-app/tests/snapshots/retained-catalog.spec.ts",
+    "edupulse-app/tests/snapshots/retained-sources-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/retained-sources.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+    "edupulse-app/tests/snapshots/second-admin-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/second-admin.spec.ts",
+    "edupulse-app/tests/snapshots/staff-registration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/staff-registration.spec.ts",
+    "edupulse-app/tests/snapshots/student-directory.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/system-search-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/system-search.spec.ts",
+    "edupulse-app/tests/snapshots/voice-quota.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/voice-quota.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-cache.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-recovery.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/outline-courseware.spec.ts",
+      "title": "substantive outline lesson, planned discussion and final review remain in the existing workspace",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 9259,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/outline-courseware.spec.ts",
+      "title": "saved parts remain visible after failure and reload, then resume without replaying completed inference",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 3324,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/outline-courseware.spec.ts",
+      "title": "validated progress is visible while the next part is still generating",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1258,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/outline-selector.spec.ts",
+      "title": "outline selector: light sections and supported assessment formats",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2344,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/outline-selector.spec.ts",
+      "title": "outline selector: dark sections and supported assessment formats",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2508,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/outline-sources.spec.ts",
+      "title": "selected generated text locates its retained source and carries it into Pulse",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2857,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/outline-sources.spec.ts",
+      "title": "teaching file attached as a draft without inference",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1624,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/outline-sources.spec.ts",
+      "title": "supported assessment formats are saved by the instructor",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "failed",
+      "expectedStatus": "passed",
+      "durationMs": 5862,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/outline-courseware.mobile.spec.ts",
+      "title": "unfinished courseware is readable and resumable on a narrow screen",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1605,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/outline-selector.mobile.spec.ts",
+      "title": "outline selector: light sections and supported assessment formats",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2346,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/outline-selector.mobile.spec.ts",
+      "title": "outline selector: dark sections and supported assessment formats",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2391,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/outline-sources-mobile.spec.ts",
+      "title": "mobile selected text finds retained source and explains the basis",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2634,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/outline-sources-mobile.spec.ts",
+      "title": "teaching file attached as a draft without inference",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1559,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/outline-sources-mobile.spec.ts",
+      "title": "supported assessment formats are saved by the instructor",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "failed",
+      "expectedStatus": "passed",
+      "durationMs": 5787,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-manual/26-outline-driven-courseware/01-planned-items.png",
+      "sha256": "6c0b6e0c81d387709657c174539ddb27f7550374bf3fc97cad56a055f2f52c8e",
+      "bytes": 259903
+    },
+    {
+      "path": "feature-documentation/system-manual/26-outline-driven-courseware/02-lesson-context.png",
+      "sha256": "491da457c72c0d5f44145feeff0dfcf52270c9c239799f6ff0031d809a19438d",
+      "bytes": 210647
+    },
+    {
+      "path": "feature-documentation/system-manual/26-outline-driven-courseware/03-worked-example.png",
+      "sha256": "27ff8071d05d81b09fc9002d8d44517759f1ccc11401de1af8a352576e1fe721",
+      "bytes": 251299
+    },
+    {
+      "path": "feature-documentation/system-manual/26-outline-driven-courseware/04-final-review.png",
+      "sha256": "3b1699e8abb228f74d6d46878ae6a8f0aec64d2cd680a9bbfcdc8588713f009f",
+      "bytes": 181623
+    },
+    {
+      "path": "feature-documentation/system-manual/26-outline-driven-courseware/05-discussion-guide.png",
+      "sha256": "e1b25230ed9e7ed1aa1f80850719055fbeca9d569ac796db83dc1ea0b9044137",
+      "bytes": 214172
+    },
+    {
+      "path": "feature-documentation/system-manual/26-outline-driven-courseware/06-saved-parts.png",
+      "sha256": "d229dee977d9ce1b559d43d045277b76ea183838c7d2549bbab9d9ab3841f0c7",
+      "bytes": 278324
+    },
+    {
+      "path": "feature-documentation/system-manual/26-outline-driven-courseware/07-resume-after-reload.png",
+      "sha256": "130f8b228b2bb78559bf7603cfef2d76139673af8bee1aa48c0a720ff1d990cf",
+      "bytes": 270594
+    },
+    {
+      "path": "feature-documentation/system-manual/26-outline-driven-courseware/08-unfinished-reader.png",
+      "sha256": "3cdd3f010245c09f6ce27e2d3fefc989fdae4ed80507e92f88f143f9d2ce9c43",
+      "bytes": 222548
+    },
+    {
+      "path": "feature-documentation/system-manual/26-outline-driven-courseware/09-mobile-resume.png",
+      "sha256": "36366c98d2b222fa8725ed32e44680f01db7672546a3908c951253ad3e1deb65",
+      "bytes": 691199
+    },
+    {
+      "path": "feature-documentation/system-manual/26-outline-driven-courseware/10-incremental-progress.png",
+      "sha256": "5f5e2625d64e09504891d74aa2449fc544cac2a2fa10c522c1caab72792e4345",
+      "bytes": 252588
+    },
+    {
+      "path": "feature-documentation/system-manual/26-outline-driven-courseware/11-dark-resume.png",
+      "sha256": "6210c8c0bd5dc76e60a0460ccd7b18613e7fc9fe7dada8b7d81e7d7470cb246d",
+      "bytes": 125410
+    },
+    {
+      "path": "feature-documentation/system-manual/26-outline-driven-courseware/12-course-list-progress.png",
+      "sha256": "07345472ca0365a065687dfabdc3d8c492d4913d3db1b4baf051e2ba4812be66",
+      "bytes": 267172
+    },
+    {
+      "path": "feature-documentation/system-manual/26-outline-driven-courseware/13-attached-teaching-file-mobile.png",
+      "sha256": "1adde620d83cf876bcc4c1120a9c471ff20ee673a9cf56283ffb7b5785846ea0",
+      "bytes": 398654
+    },
+    {
+      "path": "feature-documentation/system-manual/26-outline-driven-courseware/13-attached-teaching-file.png",
+      "sha256": "007c9b3ecd2a9fbff11f1c78eef687862c43543219b0b7ecedcfbf95627dc4af",
+      "bytes": 245276
+    },
+    {
+      "path": "feature-documentation/system-manual/28-outline-selectors/desktop-dark-outline.png",
+      "sha256": "dcf19ca9e47bcf336d09ba72c6a2f9b77f8b2334d090ffe22d787d43dd7ba011",
+      "bytes": 88721
+    },
+    {
+      "path": "feature-documentation/system-manual/28-outline-selectors/desktop-light-outline.png",
+      "sha256": "3a2d90db3b068f60d48a3d2b12959346324a052a68350785d6009cf48c0dc5df",
+      "bytes": 85400
+    },
+    {
+      "path": "feature-documentation/system-manual/28-outline-selectors/mobile-dark-outline.png",
+      "sha256": "8590d0246098f9e89a49eb89da93dcda5c2e17b2532960ee893a43a1f2e0cc08",
+      "bytes": 149530
+    },
+    {
+      "path": "feature-documentation/system-manual/28-outline-selectors/mobile-light-outline.png",
+      "sha256": "21926f187e4fa9172d354c37346c8a896ee582dd276e58b7c785d7c27b79c751",
+      "bytes": 159420
+    },
+    {
+      "path": "feature-documentation/system-manual/31-retained-syllabus-sources/mobile-source-in-pulse.png",
+      "sha256": "c7ace66bc778069493687fd3cd415d89c596262a2e4558555c56c703b4b68977",
+      "bytes": 175138
+    },
+    {
+      "path": "feature-documentation/system-manual/31-retained-syllabus-sources/mobile-source-popover.png",
+      "sha256": "fab81660cdae91d8634c7f1c6c037f4db2ca428558d4c8aa3de97c095e23fc08",
+      "bytes": 253723
+    },
+    {
+      "path": "feature-documentation/system-manual/31-retained-syllabus-sources/source-in-pulse.png",
+      "sha256": "f7cd539b37e6aa48e3c663751cdae74148630cfe9e76323274a41cbe8723aa01",
+      "bytes": 51570
+    },
+    {
+      "path": "feature-documentation/system-manual/31-retained-syllabus-sources/source-popover.png",
+      "sha256": "16c75e21beab2fb9cfdcf06a69967129964fe7569daf96ae59e58b883a040e21",
+      "bytes": 123632
+    }
+  ]
+}

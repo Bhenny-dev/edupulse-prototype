@@ -1,4 +1,5 @@
-type ViewValue=string|number|boolean|null|Set<string|number>
+type SourceSelection={section:number;start:number;end:number;signature:string}
+type ViewValue=SourceSelection|string|number|boolean|null|Set<string|number>
 type TabStorage=Pick<Storage,'getItem'|'setItem'>
 const LIMIT=65_536,MAX_ENTRIES=200
 const storage=()=>{try{return sessionStorage}catch{return null}}
@@ -8,6 +9,13 @@ export const workspaceViewKey=(owner:string,role:string)=>`edupulse-view-v1:${en
 function valid(key:unknown,value:unknown):value is ViewValue {
   if(typeof key!=='string'||key.length>400)return false
   const id=(item:unknown)=>typeof item==='string'&&item.length<=200
+  if(/^source-inspector:.+:retained$/.test(key))return value===null||id(value)
+  if(/^source-inspector:.+/.test(key)){
+   if(value===null)return true
+   if(!value||typeof value!=='object'||Array.isArray(value))return false
+   const item=value as Record<string,unknown>
+   return ['end,section,signature,start','end,input,section,signature,start'].includes(Object.keys(item).sort().join(','))&&(!('input' in item)||item.input===true)&&['section','start','end'].every(field=>Number.isInteger(item[field])&&Number(item[field])>=0)&&Number(item.section)<=100&&Number(item.end)<=150000&&Number(item.end)>Number(item.start)&&Number(item.end)-Number(item.start)<=2000&&typeof item.signature==='string'&&/^\d{1,10}$/.test(item.signature)
+  }
   if(key==='ai-local-model')return id(value)
   if(/^dean-detail:(?:records|instructors|students)$/.test(key))return value===null||(typeof value==='string'&&id(value)&&(/^(?:block|course|instructor):.+$/.test(value)||['students','blocks','years','faculty'].includes(value)))
   if(key==='layout-overlay')return value===null||['search','account','notifications','roles','language','mobile'].includes(value as string)

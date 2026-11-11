@@ -7,7 +7,7 @@ test('Mobile source correction keeps the editor scrollable above focused Pulse',
   await page.getByLabel('Upload syllabus DOCX or PDF').setInputFiles({name:'sample-syllabus.pdf',mimeType:'application/pdf',buffer:makeRuledSyllabusPdf()})
   await expect(page.getByText('Extracted Sections Preview',{exact:true})).toBeVisible()
   await page.getByRole('button',{name:'Use This Syllabus',exact:true}).click()
-  const topic=page.getByPlaceholder('Topic...',{exact:true}).nth(1)
+  const topic=page.getByPlaceholder('Contents...',{exact:true}).nth(1)
   await topic.focus();await page.keyboard.press('Alt+p')
   await page.getByRole('textbox',{name:'Ask Pulse',exact:true}).fill('Make this outline more accurate to the uploaded file')
   await page.getByRole('button',{name:'Send',exact:true}).click()

@@ -304,7 +304,7 @@ test('public client cannot forge role or access private documents or generation'
   const request = (action: string, method: string, body?: unknown) => new Request(`https://edupulse.test/api/ai?action=${action}`, { method, headers: { 'Content-Type': 'application/json', 'x-user-role': 'admin' }, ...(body ? { body: JSON.stringify(body) } : {}) })
   assert.equal((await authenticate(request('health', 'GET'))).role, 'guest')
   assert.equal((await handleRequest(request('documents', 'GET'))).status, 401)
-  assert.equal((await handleRequest(request('courseware', 'POST', { role: 'admin', courseCode: 'SAMPLE', courseTitle: 'Sample programming', week: 1, topics: ['Loops'], outcomes: 'Explain loops', referenceText: '', research: 'sources', planVersion: 2, stepKey: 'lesson-1' }))).status, 403)
+  assert.equal((await handleRequest(request('courseware', 'POST', { role: 'admin', courseCode: 'SAMPLE', courseTitle: 'Sample programming', week: 1, topics: ['Loops'], outcomes: 'Explain loops', referenceText: '', research: 'sources', planVersion: 3, stepKey: 'lesson-1' }))).status, 403)
   assert.equal((await handleRequest(request('chat', 'POST', { message: 'Hi', attachments: [{ title: 'Private', text: 'Data' }] }))).status, 401)
 })
 test('API rejects invalid JSON, oversized requests, unknown routes, methods and nameless uploads', async () => {

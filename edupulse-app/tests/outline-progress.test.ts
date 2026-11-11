@@ -69,3 +69,15 @@ test('on-device output-limit errors repair one week instead of restarting the wh
  const result=await planValidatedTool(input,{id:'browser',role:'instructor',local:true},AbortSignal.timeout(1000),async(_s,p)=>{assert.equal(JSON.parse(p).editor.data.courseOutline.length,1);return JSON.stringify({courseOutline:[filled(1)]})},6000,undefined,{initialize:false,...pending.pending})
  assert('patch' in result&&result.patch&&'courseOutline' in result.patch);assert.equal(result.patch.courseOutline?.length,1)
 })
+
+
+test('placing a whole-week preview replaces its canonical blank section and preserves shared scopes',async()=>{
+ const {normalizeOutlineSections,weekSections,shareOutlineSection}=await import('../src/utils/outlineSections.js')
+ const before=normalizeOutlineSections([blank(1),blank(2)])
+ const placed=keepOutlineDraft(before,before,[filled(1)])
+ const current=normalizeOutlineSections(placed.rows as typeof before)
+ assert.equal(weekSections(current[0]!)[0]!.contents[0],filled(1).contents[0])
+ const shared=shareOutlineSection(before,weekSections(before[0]!)[0]!,[1,2])
+ const blocked=keepOutlineDraft(shared,shared,[filled(1)])
+ assert.equal(blocked.kept,0);assert.equal(blocked.conflicts,1);assert.deepEqual(blocked.rows,shared)
+})

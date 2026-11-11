@@ -109,7 +109,7 @@ function FileCard({ proposal, ctx }) {
     return <Done actions={<>
       <button type="button" className="btn btn-secondary btn-sm" onClick={() => ctx.ask(`Summarize “${r.title}” and list its key points.`, { documentIds: [r.id], task: 'summarize', label: r.title })}><MessageSquare size={13} /> Ask about it</button>
       <button type="button" className="btn btn-secondary btn-sm" onClick={() => ctx.ask(`Make a study guide from “${r.title}”: key terms, main ideas and three self-check questions, with citations.`, { documentIds: [r.id], task: 'draft', label: r.title })}><BookOpenCheck size={13} /> Make a study guide</button>
-      <button type="button" className="btn btn-ghost btn-sm" onClick={() => ctx.navigate('/settings?tab=ai-provider')}><ExternalLink size={13} /> Open knowledge library</button></>}>
+      </>}>
       {r.duplicate ? <><strong>Already in your library.</strong> “{r.title}” was indexed before; nothing was added.</> : <><strong>Added to your knowledge library.</strong> “{r.title}” · {r.chunks} passage{r.chunks === 1 ? '' : 's'}{r.pages ? ` from ${r.pages} page${r.pages === 1 ? '' : 's'}` : ''}{r.course ? `, filed under ${r.course}` : ''}. Pulse cites it by title{r.pages ? ' and page' : ''}.</>}
     </Done>
   }

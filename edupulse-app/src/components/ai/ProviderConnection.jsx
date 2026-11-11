@@ -8,6 +8,10 @@ import { browserCapability, browserPresets, cachedBrowserModels, removeBrowserMo
 import {useWorkspaceViewState} from '../../context/WorkspaceContext'
 import { recordAudit } from '../../lib/audit'
 import { rememberProviderAuthorization } from '../../lib/providerOAuth'
+import openaiLogo from '../../assets/providers/openai.svg'
+import claudeLogo from '../../assets/providers/claude-color.svg'
+import geminiLogo from '../../assets/providers/gemini-color.svg'
+import openrouterLogo from '../../assets/providers/openrouter.svg'
 
 const providers = [
   { id: 'browser', name: 'On this device · no API key' },
@@ -118,14 +122,16 @@ export default function ProviderConnection() {
   const verified = ai.ready && (ai.preference === 'browser' || ai.health?.connection?.source !== 'personal' || ai.health?.connection?.testedAt)
   return <div className="card mb-24" data-pulse-target="AI connection"><div className="card-header"><h3><Cpu size={18} /> Pulse AI connection</h3><span className={`badge ${verified ? 'badge-published' : 'badge-draft'}`}>{ai.label}</span></div>
     <div className="card-body" aria-busy={loading || Boolean(busy)}>
-      <p>Choose where Pulse thinks. Conversation, drafting, document help and courseware use this connection. Your knowledge library adds context to the same assistant.</p>
+      <p>Choose an AI connection for Pulse.</p>
       {user?.authenticated && <p className="text-sm text-muted">This provider key belongs only to your account. Switching the admin view keeps the same account and key.</p>}
-      <div className="ai-notice"><strong>Choose a connection</strong><div className="ai-connection-options">
-        <div><strong>ChatGPT plan</strong><p>Subscription sign-in is separate from API billing. This hosted app needs OpenAI approval before it can offer ChatGPT plan usage.</p><a href="https://developers.openai.com/siwc/token-sharing-open-source" target="_blank" rel="noreferrer">ChatGPT connection requirements</a></div>
-        <div><strong>OpenAI API</strong><p>Use an OpenAI API key and its API billing account. This does not use your ChatGPT subscription allowance.</p><button className="btn btn-secondary btn-sm" disabled={busy || loading} onClick={() => chooseProvider('openai')}>Connect OpenAI API</button></div>
-        <div><strong>Claude</strong><p>Connect an Anthropic API key from Claude Console. API credits are separate from a Claude or Claude Code subscription.</p><button className="btn btn-secondary btn-sm" disabled={busy || loading} onClick={() => chooseProvider('anthropic')}>Connect Claude API</button></div>
-        <div><strong>OpenRouter account</strong><p>Authorize in your browser to use available OpenAI, Claude and other models with OpenRouter credits.</p><button className="btn btn-secondary btn-sm" disabled={busy || loading || !user} onClick={authorizeOpenRouter}><Plug size={16} /> Connect with OpenRouter</button></div>
-      </div><p className="text-sm text-muted">API usage has its own credits and permissions. A ChatGPT or Claude subscription does not supply an API key.</p></div>
+      <div className="ai-connection-options" role="group" aria-label="AI providers">
+        <div><img className="ai-provider-logo ai-provider-logo-mono" src={openaiLogo} alt="" width="36" height="36" /><strong>ChatGPT plan</strong><button type="button" className="btn btn-secondary btn-sm" disabled aria-label="Connect ChatGPT plan" title="ChatGPT plan sign-in requires OpenAI approval for this hosted app.">Connect</button></div>
+        <div><img className="ai-provider-logo ai-provider-logo-mono" src={openaiLogo} alt="" width="36" height="36" /><strong>OpenAI API</strong><button type="button" className="btn btn-secondary btn-sm" disabled={busy || loading || ai.local.status === 'loading'} aria-label="Connect OpenAI API" onClick={() => chooseProvider('openai')}>Connect</button></div>
+        <div><img className="ai-provider-logo" src={claudeLogo} alt="" width="36" height="36" /><strong>Claude</strong><button type="button" className="btn btn-secondary btn-sm" disabled={busy || loading || ai.local.status === 'loading'} aria-label="Connect Claude API" onClick={() => chooseProvider('anthropic')}>Connect</button></div>
+        <div><img className="ai-provider-logo" src={geminiLogo} alt="" width="36" height="36" /><strong>Gemini</strong><button type="button" className="btn btn-secondary btn-sm" disabled={busy || loading || ai.local.status === 'loading'} aria-label="Connect Gemini" onClick={() => chooseProvider('gemini')}>Connect</button></div>
+        <div><img className="ai-provider-logo ai-provider-logo-mono" src={openrouterLogo} alt="" width="36" height="36" /><strong>OpenRouter</strong><button type="button" className="btn btn-secondary btn-sm" disabled={busy || loading || !user || ai.local.status === 'loading'} aria-label="Connect with OpenRouter" onClick={authorizeOpenRouter}>Connect</button></div>
+      </div>
+      <details className="ai-connection-help"><summary>Connection details</summary><p>API usage has its own credits and permissions. ChatGPT and Claude subscriptions do not supply API keys. ChatGPT plan sign-in requires approval for this hosted app. <a href="https://developers.openai.com/siwc/token-sharing-open-source" target="_blank" rel="noreferrer">ChatGPT connection requirements</a></p></details>
       {loading ? <SkeletonContent label="Loading saved AI connections…" rows={3} /> : <>
       {connections.length > 0 && <p className="text-sm text-muted">Saved to your account: {connections.map(item => `${item.provider}${item.active ? ' (active)' : ''}`).join(', ')}. Select a provider below to reuse its saved connection.</p>}
       <label className="form-label" htmlFor="ai-provider">AI provider</label>

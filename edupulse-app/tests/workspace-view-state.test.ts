@@ -48,3 +48,11 @@ test('large view histories stay bounded without changing the live map',()=>{
  assert.ok(new TextEncoder().encode(tab.rows.get(key)).length<=65_536);assert.ok(readWorkspaceViews(key,tab).size<200);assert.equal(readWorkspaceViews(key,tab).get('course-location'),'latest')
  tab.rows.set(key,'x'.repeat(65_537));assert.equal(readWorkspaceViews(key,tab).size,0)
 })
+
+test('source popover reload stores only bounded coordinates and a content signature',()=>{
+ const tab=memory(),key=workspaceViewKey('instructor','instructor'),reference={section:2,start:10,end:50,signature:'123456'}
+ saveWorkspaceViews(key,new Map<string,unknown>([['source-inspector:item',reference],['source-inspector:item:retained','source-id'],['source-inspector:unsafe',{...reference,text:'Private generated and source text'}],['source-inspector:oversize',{...reference,end:5000}]]),tab)
+ assert.deepEqual(readWorkspaceViews(key,tab).get('source-inspector:item'),reference)
+ assert.equal(readWorkspaceViews(key,tab).has('source-inspector:unsafe'),false);assert.equal(readWorkspaceViews(key,tab).has('source-inspector:oversize'),false)
+ assert.equal(tab.rows.get(key)!.includes('Private generated'),false)
+})

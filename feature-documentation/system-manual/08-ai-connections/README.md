@@ -18,7 +18,7 @@ The current pipeline capture shows local **Ollama / qwen2.5:1.5b** as **Not conn
 2. Paste your key and click **Connect and load models**. The key is sent to the server and encrypted in your signed-in account database. It survives sign-out and reopening while the provider credential remains valid; application JavaScript never receives the saved key. For a signed-in account the form opens on OpenAI; this capture, made with a preview persona, shows **OpenRouter · free models**.
 3. Pick a model from the list returned by the provider. For OpenRouter and Hugging Face, free models are listed first and marked “(free)”. EduPulse leaves out what the provider has retired or shut down, models that do not write text (speech, images, video, music, embeddings) and a dated copy of a model whose plain name is also listed, so every model offered can be used. A new OpenAI, Gemini or Claude connection starts on the newest balanced model still offered (for Gemini, `gemini-flash-latest`) unless you choose another.
 
-Use **Connect OpenAI API** or **Connect Claude API** to select that provider's key form directly. For Claude, **Claude workspace** can stay blank when the key is scoped to one workspace. An unscoped personal/service key needs a workspace: use **Load Claude workspaces**, choose **Available Claude workspaces**, then **Save workspace and load models**. If the key cannot list workspaces, copy its workspace ID from Claude Console. Pulse keeps the saved key and available model; it never chooses a billing workspace automatically. See [workspace recovery](../17-pulse-navigation-and-provider-recovery/README.md). **Connect with OpenRouter** starts browser authorization. The connection choices explain which account sign-in methods are available.
+Each provider card shows only its logo, name and **Connect** button. **Connect** under **OpenAI API**, **Claude** or **Gemini** selects its API-key form. **Connect** under **OpenRouter** starts browser authorization. **ChatGPT plan** has a disabled **Connect** button; expand **Connection details** for its approval requirements and API billing information. For Claude, **Claude workspace** can stay blank when the key is scoped to one workspace. An unscoped personal/service key needs a workspace: use **Load Claude workspaces**, choose **Available Claude workspaces**, then **Save workspace and load models**. If the key cannot list workspaces, copy its workspace ID from Claude Console. Pulse keeps the saved key and available model; it never chooses a billing workspace automatically. See [workspace recovery](../17-pulse-navigation-and-provider-recovery/README.md). Account and subscription explanations are under **Connection details**. The Knowledge library panel is no longer part of settings; existing private sources remain available to Pulse.
 
 After a successful save, **Saved provider credential** shows a fixed masked indicator, with **Replace API key** and **Refresh models**. The key remains encrypted in the account database; it is not repopulated into an editable field. Reopening the same account restores the active provider and saved indicator. Each provider retains its own selected model; select another saved provider and choose **Use saved connection** to activate it. **Sign Out** clears the device session; **Disconnect provider** removes that saved credential without selecting another. Refreshing models preserves an available selected model. Generation status below uses the same live connection state as Pulse. A returned model catalog is labelled **Model listed · not tested**; listing does not prove inference access or quota.
 
@@ -46,7 +46,7 @@ Screenshots 04–10 use synthetic provider responses and fake credentials in a p
 
 ## Authorize an account in the browser
 
-Choose **Connect with OpenRouter**. EduPulse redirects to OpenRouter, where you sign in and review authorization. After consent, you return to **AI & Knowledge**; EduPulse exchanges the one-use code on the server, saves an encrypted account-bound credential and loads available models. Canceling or failing authorization preserves the previous connection. OpenRouter usage follows your own account credits/limits, separate from ChatGPT or Claude subscriptions. Manage or revoke the issued key in OpenRouter's account settings; **Disconnect provider** removes that provider from your saved account connections and clears the device cookie.
+Choose **Connect** under **OpenRouter**. EduPulse redirects to OpenRouter, where you sign in and review authorization. After consent, you return to **AI & Knowledge**; EduPulse exchanges the one-use code on the server, saves an encrypted account-bound credential and loads available models. Canceling or failing authorization preserves the previous connection. OpenRouter usage follows your own account credits/limits, separate from ChatGPT or Claude subscriptions. Manage or revoke the issued key in OpenRouter's account settings; **Disconnect provider** removes that provider from your saved account connections and clears the device cookie.
 
 The return uses `/auth/provider/openrouter`, separate from EduPulse sign-in. If authorization succeeds but the model catalog is temporarily unavailable, the new credential is still saved. **Refresh models** finishes setup without a second authorization. If your EduPulse session has ended, a visible message asks you to sign in and reconnect.
 
@@ -56,7 +56,7 @@ An unsuccessful code exchange shows an alert in settings, including when you hav
 
 ![Authorized credential retained while models need a retry](08-openrouter-catalog-retry.png)
 
-On a phone, the connection choices stack vertically. The same saved credential, model selection and testing controls remain available.
+On a phone, the compact connection cards wrap into two columns, with a single column on narrower screens. The same saved credential, model selection and testing controls remain available.
 
 ![OpenRouter connection on a phone](09-mobile-provider-connection.png)
 
@@ -103,3 +103,15 @@ In the downloaded local app, **Ollama · local app server** uses separately inst
 ## A first request can be rejected
 
 Listing a GPT-5.6 or other model does not establish available API credits. Pulse now distinguishes OpenAI credit-balance exhaustion, project/organization spend caps, approved usage limits and temporary throttling. Billing/usage errors need provider-side review; reconnecting a key does not restore credit. Valid Retry-After guidance is shown for temporary limits. The selected connection and failed prompt remain available, without automatic paid retries or model switches. [Manual 20](../20-voice-and-provider-errors/README.md) documents each category and the stopped voice loop on failure.
+
+## Compact provider cards
+
+**Gemini** now has its own logo, name and **Connect** card. Connect opens the existing Gemini API-key form; saving and model selection use the same private account connection as the dropdown. **Connection details** holds subscription and approval explanations. The settings page no longer contains the Knowledge library panel.
+
+![Gemini connection form and compact provider cards](12-gemini-provider.png)
+
+Monochrome provider marks adapt to dark mode, and the cards wrap on smaller screens.
+
+![Compact provider cards in dark mode](13-provider-cards-dark.png)
+
+These two captures use synthetic provider transport and preview data. They verify appearance and provider selection, not live Gemini credentials or paid inference.

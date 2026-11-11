@@ -55,6 +55,21 @@ export async function executeSources(identity:Identity,body:unknown,signal:Abort
   const snapshot=response?.metadataOnly?null:await retain(identity,reference,bytes,name,response?.url||'',signal,extracted)
   return {reference,snapshot,missing:metadataGaps(reference),titleOrigin:extracted.meta.title?extracted.meta.titleOrigin||'document metadata':url?'source URL':'file name',...(response?.metadataOnly?{message:'Catalog or search metadata only. Attach readable teaching contents before using this source as evidence.'}:{})}
  }
+ if(command.operation==='locate'){
+  const matches=[]
+  for(const id of [...new Set(command.ids)]){
+   const snapshot=await readSnapshot(identity,id)
+   if(catalogSnapshot(snapshot))continue
+   for(const chunk of await chunkDocument(snapshot.reference.title,snapshot.text)){
+    const exactIndex=chunk.text.toLowerCase().indexOf(command.text.toLowerCase()),exact=exactIndex>=0
+    const score=exact?1:lexicalRelevance(command.text,chunk.text)
+    const sentences=[...chunk.text.matchAll(/[^.!?\n]+(?:[.!?]+|$)/g)].map(match=>({start:match.index,end:match.index!+match[0].length,score:lexicalRelevance(command.text,match[0])})).sort((a,b)=>b.score-a.score)
+    const highlight=exact?{start:exactIndex,end:exactIndex+command.text.length}:{start:sentences[0]?.start||0,end:sentences[0]?.end||chunk.text.length}
+    if(score>=0.12)matches.push({id:snapshot.id,title:snapshot.reference.title,text:chunk.text,page:chunk.page,section:chunk.section,score,exact,highlight,sha256:snapshot.sha256,readAt:snapshot.created_at,truncated:snapshot.truncated})
+   }
+  }
+  return {matches:matches.sort((a,b)=>b.score-a.score).slice(0,3),message:'Passages are retrieved from your retained copies. Similarity indicates a possible basis, not proof that every generated claim is supported.'}
+ }
  if(command.operation==='open'){const snapshot=await readSnapshot(identity,command.id,true);return {name:snapshot.name,mime:snapshot.mime,base64:snapshot.base64,sha256:snapshot.sha256}}
  if(command.operation==='review'){const {base64:_base64,...snapshot}=await readSnapshot(identity,command.id);return snapshot}
  if(command.operation==='remove'){

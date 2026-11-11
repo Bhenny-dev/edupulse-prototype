@@ -55,3 +55,19 @@ These captures use original sample loop teaching text through the actual coursew
 ## Read references before regenerating
 
 Section 7 books/links now accompany weekly resources in every generation input. The bounded writer receives selected actual passages and citation numbers. Outline coverage is distinct from factual support: the outline states what to teach and is not counted as proof for a generated explanation. Read passages appear as numbered references; unscanned book metadata and planned teaching resources remain separately labelled. Saved copies and source review are described in [Manual 31](../31-retained-syllabus-sources/README.md).
+
+## Section scopes and two output groups
+
+For the updated outline, each week's items are organized under **Teaching-Learning Activities** and **Assessments**. Each section retains its own outcomes, Contents text and assessment format; a week can include multiple sections and shared sections can span weeks. **Attach teaching file** accepts a readable PDF, DOCX, HTML, TXT or Markdown file up to 2 MB, retains/indexes its private copy and saves a separate instructor draft without generation. Long files show a bounded reading excerpt with the original retained copy available. Generated teaching documents and activity guides remain separate reviewable items within the teaching group.
+
+Assessments use the preceding teaching output and the section's supported type. When no type is specified, the system chooses a format suited to the stated outcomes/activities; an explicit Pulse instruction can request a supported alternative. Several section assessments remain separate 3–5-question items. Written lists, identification, essays, matching pairs and documented follow-along work are instructor marked. Previously saved syllabi and completed items remain readable; checked/published content and attached teaching files are preserved during new generation.
+
+The updated section flow prepares readable retained references first. If no usable matching source is available, generation asks you to read or attach one. Inaccessible references cannot support citations. Highlight a passage in a teaching document or assessment and use **Find source for selection**; [Manual 31](../31-retained-syllabus-sources/README.md) shows the source popover and explicit chat explanation.
+
+
+![Teaching file retained and saved as a draft](13-attached-teaching-file.png)
+![Attached teaching file on a phone](13-attached-teaching-file-mobile.png)
+
+These attachment captures use an original sample TXT file and controlled workspace/source transport. They verify an actual extraction, saved draft, readable content and reload without inference; they do not prove hosted authorization or publication.
+
+Course progress and **Generate missing content** count every section assessment separately. A week with two assessment scopes remains incomplete when only one has been saved; generating the missing scope preserves the first assessment and its stable section identity.

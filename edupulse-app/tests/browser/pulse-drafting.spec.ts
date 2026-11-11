@@ -28,5 +28,5 @@ test('selected Research Methods course generates readable all-field proposal wit
   await card.getByRole('button', { name: 'Apply to open form' }).click()
   await expect(panel).toContainText('Applied to the open form')
   await panel.getByRole('button', { name: 'Close Pulse', exact: true }).click()
-  await expect(page.getByPlaceholder('Topic...', { exact: true }).first()).toHaveValue('Research questions and evidence')
+  await expect(page.getByPlaceholder('Contents...', { exact: true }).first()).toHaveValue('Research questions and evidence')
 })

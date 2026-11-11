@@ -1,3 +1,4 @@
+import SourcePassageInspector from './SourcePassageInspector'
 import { downloadMaterialPdf } from '../../utils/pdfExport'
 import { Spinner } from '../ui/LoadingFeedback'
 import { useState } from 'react'
@@ -149,9 +150,9 @@ export default function DocumentViewer({ content, onBack, isStudent = false, rea
         )}
 
         {/* Sections */}
-        <div className="doc-viewer-body">
+        {!isStudent&&!editing?<SourcePassageInspector content={content}><div className="doc-viewer-body">{sections?.map((section,idx)=><div key={idx} className="doc-viewer-section" data-source-section={idx} data-pulse-field={`sections.${idx}.body`} data-pulse-target={`Section ${idx+1}: ${section.heading}`}><h2 className="doc-viewer-heading">{section.heading}</h2>{renderBody(section.body,idx,false)}</div>)}</div></SourcePassageInspector>:<div className="doc-viewer-body">
           {sections?.map((section, idx) => (
-            <div key={idx} className="doc-viewer-section" data-pulse-target={`Section ${idx + 1}: ${section.heading}`} data-pulse-field={`sections.${idx}.body`}>
+            <div key={idx} className="doc-viewer-section" data-source-section={idx} data-pulse-target={`Section ${idx + 1}: ${section.heading}`} data-pulse-field={`sections.${idx}.body`}>
               {editing ? (
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
                   <input
@@ -182,6 +183,7 @@ export default function DocumentViewer({ content, onBack, isStudent = false, rea
           )}
         </div>
 
+        }
         {!isStudent && <DraftEvidence metadata={content.ai} />}
 
         {/* Footer */}

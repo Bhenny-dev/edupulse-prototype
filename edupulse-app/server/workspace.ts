@@ -1,3 +1,4 @@
+import {outlineSectionSchema} from '../src/utils/outlineSectionSchema.js'
 import { z } from 'zod'
 import { createHash } from 'node:crypto'
 import { ApiError, type Identity } from './contracts.js'
@@ -7,7 +8,7 @@ import { localDb, userDb } from './database.js'
 import { supportAction } from './domains/support.js'
 
 export const WORKSPACE_BYTES = 3_000_000
-const outlineRow = z.looseObject({ week: z.number().int().min(1).max(52), ilos: z.string().max(5000).default(''), contents: z.array(z.string().max(2000)).max(40).default([]) })
+const outlineRow = z.looseObject({ week: z.number().int().min(1).max(52), ilos: z.string().max(5000).default(''), contents: z.array(z.string().max(2000)).max(40).default([]), sections:z.array(outlineSectionSchema).min(1).max(12).optional() })
 const approvedFile = z.object({ name: z.string().min(1).max(255), size: z.number().int().positive().max(APPROVED_FILE_LIMIT), base64: z.string().min(1).max(Math.ceil(APPROVED_FILE_LIMIT / 3) * 4).regex(/^[A-Za-z0-9+/]*={0,2}$/), sha256: z.string().regex(/^[a-f0-9]{64}$/), uploadedAt: z.string().datetime(), approvalAttested: z.literal(true) })
 const syllabus = z.looseObject({ id: z.string().min(1).max(120), courseCode: z.string().min(1).max(80), courseTitle: z.string().min(1).max(240), status: z.enum(['drafted', 'checked', 'downloaded_for_approval', 'approved_uploaded', 'active', 'archived']), courseOutline: z.array(outlineRow).max(52).default([]), sample: z.boolean().optional(), approvedFile: approvedFile.optional() }).superRefine((value, ctx) => {
   if (new Set(value.courseOutline.map(row => row.week)).size !== value.courseOutline.length) ctx.addIssue({ code: 'custom', message: 'Outline weeks must be unique.' })
@@ -21,6 +22,13 @@ const intakeRow = z.record(z.string().max(80), z.string().max(500))
 const intake = z.object({ courses: z.array(intakeRow).max(1000), loads: z.array(intakeRow).max(1000), rosters: z.array(intakeRow).max(1000), history: z.array(z.object({ id: z.string().max(80), filename: z.string().max(255), kind: z.enum(['courses', 'loads', 'rosters']), importedAt: z.string().datetime(), created: z.number().int().nonnegative(), updated: z.number().int().nonnegative(), rejected: z.number().int().nonnegative() })).max(50) })
 export const workspaceData = z.object({ syllabi: z.array(syllabus).max(50), content: z.record(z.string().max(200), contentItem), registrations: z.array(z.record(z.string(), z.unknown())).max(200).default([]), intake: intake.optional(), acknowledgments:z.array(z.string().max(500)).max(200).optional(), enrollmentOverrides: z.array(z.object({ courseCode: z.string().min(1).max(80), studentEmail: z.email().max(254).toLowerCase(), excluded: z.boolean(), blockSection: z.string().trim().min(1).max(80).optional() })).max(5000).optional() }).superRefine((value, ctx) => {
   if (Object.keys(value.content).length > 1000) ctx.addIssue({ code: 'custom', message: 'Workspace is limited to 1,000 courseware items.' })
+  for(const syllabus of value.syllabi){
+   const shared=new Map<string,string>()
+   for(const row of syllabus.courseOutline){
+    if(new Set(row.sections?.map(section=>section.id)).size!==(row.sections?.length||0))ctx.addIssue({code:'custom',message:'Section IDs must be unique within a week.'})
+    for(const section of row.sections||[]){const serialized=JSON.stringify(section);if(shared.has(section.id)&&shared.get(section.id)!==serialized)ctx.addIssue({code:'custom',message:'A shared section must have the same content in every covered week.'});shared.set(section.id,serialized)}
+   }
+  }
   if (new Set(value.syllabi.map(s => s.id)).size !== value.syllabi.length) ctx.addIssue({ code: 'custom', message: 'Syllabus IDs must be unique.' })
   if (new Set((value.enrollmentOverrides || []).map(item => `${item.courseCode}:${item.studentEmail}`)).size !== (value.enrollmentOverrides || []).length) ctx.addIssue({ code: 'custom', message: 'Student course-membership overrides must be unique.' })
 })

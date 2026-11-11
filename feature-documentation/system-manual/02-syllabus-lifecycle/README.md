@@ -32,7 +32,7 @@ PDF is the primary institutional intake format; Word `.docx` is also supported. 
 
    ![Section 1 auto-filled](01-select-course-autofills-section-1.png)
 
-2. In **Section 5 · Course Outline**, write each week's **intended learning outcome** and **topics** (use **Add Topic** for more), and optionally activities, teaching materials and assessments. Weeks 9 and 18 are the midterm and final examinations. This outline is what courseware is generated from, so write measurable outcomes.
+2. In **Section 5 · Course Outline**, write each section's **intended learning outcome**, multiline **Contents**, **Teaching-Learning Activities** and **Assessments**. Add sections within a week or share one across a teaching-week range. Weeks 9 and 18 are the midterm and final examinations. This outline is what courseware is generated from, so write measurable outcomes.
 
    For a new draft, ask Pulse to generate the editable fields for the selected course. Review its field-by-field proposal, research sources and pending institutional rules before applying or saving it. See [Generate a syllabus from the selected course](../09-pulse-actions/README.md#generate-a-syllabus-from-the-selected-course). The builder header has no curriculum-outline loading button. After accepting an imported file, **Upload Different** remains available.
 
@@ -122,7 +122,7 @@ The approved-file modal now displays **Reading approved file…** and a spinner 
 
 ## Searchable outline choices
 
-Teaching materials and assessment types now open searchable grouped panels above the scrolling table. Checkbox rows remain separate, selected values remain as removable chips, and **Done** / **Escape** returns focus to the field. Activity and assessment-detail text are preserved. See [Manual 28](../28-outline-selectors/README.md).
+Each section has one assessment-type selector with the seven supported choices and a system-selected default. The teaching-material selector is removed. Activity and assessment-detail text keep their own fields. See [Manual 28](../28-outline-selectors/README.md).
 
 ## Progressive Course Outline drafts
 
@@ -131,3 +131,7 @@ Teaching materials and assessment types now open searchable grouped panels above
 Section 7 now accepts a **Source link** or **Upload reference file**, including drag and drop. Review the automatically extracted citation and missing fields, then save the syllabus explicitly. See [Manual 35](../35-reference-intake/README.md). The draft PDF includes these citation details and URLs.
 
 When selecting registered students for a course block, the directory is limited to **College of Information Technology**. Year and program filters remain available. The [student directory guide](../16-student-directory/README.md) shows the current controls.
+
+The outline editor now uses **Teaching-Learning Activities** and **Assessments**, with one multiline **Contents** field per section. Add multiple sections within a week or share a section over teaching weeks. Printed shared weeks/row sections are retained on import, and exports keep the section labels. The old teaching-material dropdown is removed; the assessment selector offers only the seven supported types. See [Manual 28](../28-outline-selectors/README.md).
+
+When re-importing an EduPulse PDF, the approval/page footer is excluded from the outline fields. Blank printed weeks remain blank; a page number does not become a teaching scope or assessment. Multiline educational fields and shared section labels remain intact.

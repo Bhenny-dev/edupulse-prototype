@@ -93,13 +93,14 @@ Failed saves show **Workspace save** with **Retry save** in this tab. Conflicts 
 
 A Settings address with an unknown or unavailable tab, such as an old bookmark, opens **Account** instead of an empty page.
 
-**AI & Knowledge (New in v0.4.0)** has three cards:
+**AI & Knowledge** has two main cards:
 
-The connection card offers **Connect OpenAI API**, **Connect Claude API** and **Connect with OpenRouter**, with an explanation of the available sign-in methods. A saved connection shows a masked **Saved provider credential**. The pipeline distinguishes **Model listed · not tested** from **Generation verified** after a successful **Test selected model** request. Connection status and the selected local model are shown separately from bundled embeddings and reranking. [Manual 8](../../system-manual/08-ai-connections/README.md) documents authorization, model tests, credential replacement and the hosted ChatGPT approval requirement.
+The connection card shows provider logos, names and **Connect** buttons, including **Gemini**. **Connection details** expands the subscription and sign-in explanation. A saved connection shows a masked **Saved provider credential**. The pipeline distinguishes **Model listed · not tested** from **Generation verified** after a successful **Test selected model** request. Connection status and the selected local model are shown separately from bundled embeddings and reranking. [Manual 8](../../system-manual/08-ai-connections/README.md) documents authorization, model tests, credential replacement and the hosted ChatGPT approval requirement.
 
 1. **Pulse AI connection:** choose the provider — Ollama in the local app, a model running in this browser (WebGPU, no key), free tiers (Gemini, Groq, OpenRouter free models, Hugging Face) or OpenAI/Anthropic with your own key. Then use **Connect and load models**, pick an **Available model** and **Check active connection**. Each account connects its own key, and the hosted site has no shared key. Details: [System Manual 8](../../system-manual/08-ai-connections/README.md).
 2. **Agentic RAG pipeline:** live status of the five parts Pulse depends on — *Generation* (connected model), *Embeddings* (all-MiniLM-L6-v2, 384-d, free, in-process), *Reranker* (ms-marco-MiniLM-L-6-v2 cross-encoder), *Vector database* (PGlite + pgvector locally, Supabase pgvector when hosted; hybrid vector + keyword search with reciprocal rank fusion) and *Document sandbox* (worker thread, 256 MB heap, 30 s, empty environment). The coloured chips name the nine agents: Guardian, Planner, Researcher, Ranker, Comparator, Writer, Verifier, Corrector, Librarian. Hover over a chip to see the task that agent works on.
-3. **Knowledge library:** drop zone and the indexed-documents table with type, passages, quality, **Ask Pulse** and delete, plus **Compare in Pulse** when two documents are ticked. Step-by-step use is in [System Manual 4](../../system-manual/04-knowledge-library/README.md).
+
+The former **Knowledge library** upload and indexed-document panel is removed from settings. Existing private sources remain available through Pulse attachments and syllabus reference intake; see [System Manual 4](../../system-manual/04-knowledge-library/README.md).
 
 ### 15. Dark mode
 

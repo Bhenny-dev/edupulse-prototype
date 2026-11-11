@@ -1,3 +1,5 @@
+import SourcePassageInspector from './SourcePassageInspector'
+import {ASSESSMENT_FORMATS,writtenFormat,assessmentLabel} from '../../data/assessmentFormats'
 import { useState } from 'react'
 import { ArrowLeft, Plus, Trash2, Check, Save, RotateCcw } from 'lucide-react'
 import { useToast } from '../../context/ToastContext'
@@ -48,8 +50,10 @@ export default function AssessmentEditor({ content, onBack, isStudent = false, o
 
   const changeType = (idx, type) => setQuestions(previous => previous.map((question, index) => {
     if (index !== idx) return question
-    const options = type === 'true_false' ? ['True', 'False'] : question.options?.length === 4 ? question.options : ['', '', '', '']
-    return { ...question, type, options, correctIndex: Number.isInteger(question.correctIndex) && question.correctIndex < options.length ? question.correctIndex : 0 }
+    const responseFormat=writtenFormat(type)?type:undefined
+    const storageType=responseFormat?'short_answer':type
+    const options = responseFormat?[]:type === 'true_false' ? ['True', 'False'] : question.options?.length === 4 ? question.options : ['', '', '', '']
+    return { ...question, type:storageType,responseFormat, options, correctIndex: Number.isInteger(question.correctIndex) && question.correctIndex < options.length ? question.correctIndex : 0 }
   }))
 
   const addQuestion = () => {
@@ -145,9 +149,9 @@ export default function AssessmentEditor({ content, onBack, isStudent = false, o
         </div>
 
         {/* Questions */}
-        <div className="assessment-questions">
+        <SourcePassageInspector content={{...content,questions}}><div className="assessment-questions">
           {questions.map((q, qIdx) => (
-            <div key={q.id} className="assessment-question">
+            <div key={q.id} className="assessment-question" data-source-section={qIdx}>
               <div className="assessment-question-header">
                 <span className="assessment-question-number">Question {qIdx + 1}</span>
                 {!isStudent && (
@@ -173,9 +177,9 @@ export default function AssessmentEditor({ content, onBack, isStudent = false, o
                 />
               )}
 
-              {!isStudent&&<div className="academic-filters"><label className="academic-filter">Question {qIdx+1} syllabus topic<select className="form-select" value={q.topic || ''} onChange={event=>updateQuestion(qIdx,'topic',event.target.value)}><option value="">Unmapped — excluded from topic mastery</option>{topics.map(topic=><option key={topic}>{topic}</option>)}</select></label><label className="academic-filter">Question {qIdx+1} response type<select className="form-select" value={q.type || 'multiple_choice'} onChange={event=>changeType(qIdx,event.target.value)}><option value="multiple_choice">Multiple choice</option><option value="true_false">True / false</option><option value="short_answer">Written response — instructor marked</option></select></label></div>}
+              {!isStudent&&<div className="academic-filters"><label className="academic-filter">Question {qIdx+1} syllabus topic<select className="form-select" value={q.topic || ''} onChange={event=>updateQuestion(qIdx,'topic',event.target.value)}><option value="">Unmapped — excluded from topic mastery</option>{topics.map(topic=><option key={topic}>{topic}</option>)}</select></label><label className="academic-filter">Question {qIdx+1} response type<select className="form-select" value={q.responseFormat || (q.type==='short_answer'?'essay':q.type) || 'multiple_choice'} onChange={event=>changeType(qIdx,event.target.value)}>{ASSESSMENT_FORMATS.map(format=><option key={format.id} value={format.id}>{format.label}</option>)}</select></label></div>}
               <div className="assessment-options">
-                {q.type==='short_answer'?<p>Written response. The instructor marks this question after submission.</p>:(q.options || []).map((opt, optIdx) => {
+                {q.type==='short_answer'?<p>{assessmentLabel(q.responseFormat)}. The instructor marks this response after submission.</p>:(q.options || []).map((opt, optIdx) => {
                   const isSelected = isStudent ? answers[qIdx] === optIdx : q.correctIndex === optIdx
                   const isCorrect = submitted && optIdx === q.correctIndex
                   const isWrong = submitted && answers[qIdx] === optIdx && optIdx !== q.correctIndex
@@ -219,6 +223,7 @@ export default function AssessmentEditor({ content, onBack, isStudent = false, o
           ))}
         </div>
 
+        </SourcePassageInspector>
         {/* Add question button (instructor only) */}
         {!isStudent && questions.length < 5 && (
           <button className="btn btn-ghost" style={{ margin: '0 72px 20px' }} onClick={addQuestion}>

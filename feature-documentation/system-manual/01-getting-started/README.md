@@ -64,7 +64,7 @@ Open the account menu → **Settings**:
 * **Account:** your name and department (**Save Changes**).
 * **Appearance:** **Dark Mode** and **Font Size**.
 * **Notifications:** which alerts you want (stored on this device).
-* **AI & Knowledge:** where Pulse runs and which documents it may use — see [manual 8](../08-ai-connections/README.md) and [manual 4](../04-knowledge-library/README.md).
+* **AI & Knowledge:** where Pulse runs and the pipeline status — see [manual 8](../08-ai-connections/README.md) and [manual 4](../04-knowledge-library/README.md).
 * **Data & Privacy:** **Export My Data**, **Export workspace backup** and the deletion policy. If a workspace save fails, this tab shows **Retry save** or backup-gated conflict recovery. See [save recovery](../14-pulse-and-outline-workspace/README.md#save-recovery-without-a-page-wide-banner). The page-wide save banner is removed.
 * **Help & Support:** getting started, support contacts and frequently asked questions.
 * **Keyboard Shortcuts:** working shortcuts, with unconnected shortcuts listed separately under **Planned shortcuts**.

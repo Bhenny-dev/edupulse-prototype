@@ -60,7 +60,7 @@ test('Pulse tools: page source context, focused correction and PDF download', as
   await page.getByText('Section 5: Course Outline',{exact:true}).click()
   await page.locator('.upload-zone').locator('..').screenshot({path:'../feature-documentation/system-manual/02-syllabus-lifecycle/15-wrapped-pdf-preview.png',animations:'disabled'})
   await page.getByRole('button',{name:'Use This Syllabus',exact:true}).click()
-  const topic=page.getByPlaceholder('Topic...',{exact:true}).nth(1)
+  const topic=page.getByPlaceholder('Contents...',{exact:true}).nth(1)
   await topic.fill('Incomplete topic');await topic.focus();await page.keyboard.press('Alt+p')
   await say(page,'make it more accurate to the file uploaded, these are incomplete and not correct')
   const card=page.getByRole('region',{name:'Import syllabus sections'})

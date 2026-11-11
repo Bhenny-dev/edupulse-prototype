@@ -29,7 +29,7 @@ Release documents:
 | 5 | Compare documents; real references from free APIs | FR-RAG-11–12, FR-CW-18, NFR-AI-08 | Done | `tests/ai.test.ts`, `tests/rag.test.ts` | [Manual 6](../../system-manual/06-compare-and-references/README.md) |
 | 6 | Courseware outline-coverage check | NFR-AI-06, FR-CW-18 | Done | courseware agent tests in `tests/ai.test.ts` | [Manual 3](../../system-manual/03-courseware-generation-and-review/README.md) |
 | 7 | Accurate Pulse guidance | FR-GUIDE-15–21, FR-GUIDE-27–29 | Done | `tests/browser/pulse.spec.ts` (desktop and mobile) | [Manual 7](../../system-manual/07-pulse-guidance/README.md), [Walkthrough 2](../../system-walkthrough/02-shared-interface/README.md) |
-| 8 | Hardened sandbox and security headers | FR-RAG-02–04, NFR-SEC-01–04 | Done | ingestion tests, deployment check | [Manual 4, “When a file is refused or flagged”](../../system-manual/04-knowledge-library/README.md#when-a-file-is-refused-or-flagged) |
+| 8 | Hardened sandbox and security headers | FR-RAG-02–04, NFR-SEC-01–04 | Done | ingestion tests, deployment check | [Manual 4, “When a file is refused or flagged”](../../system-manual/04-knowledge-library/README.md) |
 | 9 | Measured results on real documents | FR-RAG-14 | Done | `npm run eval:rag` | Charts in [session-generated](../../session-generated/2026-10-02-agentic-rag/evaluation-charts/README.md) (generated, not UI) |
 | 10 | Shipped | — | Done; GitHub Actions could not start because of the account billing lock | `npm run verify`, browser tests, successful Vercel commit status and live production checks | [Validation results](validation/results.md) |
 

@@ -1,5 +1,6 @@
+import TeachingFileAttachment from './TeachingFileAttachment'
 import SyllabusSources from './SyllabusSources'
-import { useState, useEffect, useRef, useMemo } from 'react'
+import { Fragment, useState, useEffect, useRef, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Eye, Check, Send, FileText, Sparkles, Tag, RotateCcw, Loader2, Flag, MonitorPlay, ArrowLeft, PlugZap, TriangleAlert } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
@@ -10,7 +11,7 @@ import { useAI } from '../../context/AIContext'
 import { INSTRUCTORS } from '../../data/mockData'
 import { pulse as pulseBus } from '../pulse/pulseBus'
 import { generateWeekDraft } from '../../utils/aiCourseware'
-import { plannedCoursewareTypes } from '../../lib/rag/coursewarePlan'
+import { plannedCoursewareTypes,missingCoursewareCount } from '../../lib/rag/coursewarePlan'
 import { buildCourseInput } from '../../utils/courseInput'
 import { checkpointId, checkpointResults, checkpointItem, coursewareFingerprint } from '../../utils/coursewareCheckpoint'
 import { coursewarePlan } from '../../lib/rag/coursewarePlan'
@@ -24,6 +25,7 @@ import './courseware.css'
 const SETUP_ERRORS = new Set(['MODEL_UNAVAILABLE', 'MODEL_NOT_AVAILABLE', 'MODEL_INCOMPATIBLE', 'PROVIDER_AUTH', 'PROVIDER_CREDITS', 'PROVIDER_QUOTA', 'PROVIDER_WORKSPACE_REQUIRED', 'MODEL_TOKEN_LIMIT'])
 const STATUS_META = { draft: { label: 'Draft', badge: 'badge-draft' }, checked: { label: 'Checked', badge: 'badge-checked' }, published: { label: 'Published', badge: 'badge-published' } }
 const isExamRow = row => !row.ilos && /examination/i.test(row.assessments || '')
+const missingWeekContent=(row,items)=>missingCoursewareCount(row,items.filter(([,item])=>!item.generationCheckpoint).map(([,item])=>item))>0
 
 export default function CourseWorkspace({ syllabusId, focusWeek, contentStore, onBack, onGenerateWeek, onCheckItem, onBulkCheck, onToggleVisibility }) {
   const { syllabi, saving, dirty } = useWorkspace()
@@ -82,15 +84,18 @@ export default function CourseWorkspace({ syllabusId, focusWeek, contentStore, o
   const saveWeekDraft = async (weekNum, signal, missingOnly = false, restart = false) => {
     let expected=Object.fromEntries(getWeekItems(weekNum).filter(([,item])=>!item.generationCheckpoint))
     const id=checkpointId(syllabus.id,weekNum),input=buildCourseInput(syllabus,weekNum),planned=plannedCoursewareTypes(outline.find(row=>row.week===weekNum)||{})
+    input.skipSteps=coursewarePlan(input).filter(part=>part.type==='assessment'&&part.sectionId&&getWeekItems(weekNum).some(([,item])=>item.type==='assessment'&&item.content?.outlineSectionId===part.sectionId&&(missingOnly||['checked','published'].includes(item.status)))).map(part=>part.key)
+    input.generatedTeaching=getWeekItems(weekNum).filter(([,item])=>item.type!=='assessment'&&!item.generationCheckpoint).flatMap(([,item])=>item.content?.sections||[]).map(section=>section.heading+'\n'+section.body).join('\n\n').slice(0,18000)
     let checkpoint=liveContent.current[id]
     const cached=checkpoint?.generationCheckpoint
     const samePlan=!restart&&Array.isArray(cached?.types)&&cached.types.every(type=>planned.includes(type))&&cached.fingerprint===await coursewareFingerprint(input,cached.types)
     if(samePlan&&cached.expected)expected=cached.expected
-    const skipTypes=planned.filter(type=>{const existing=getWeekItems(weekNum).find(([,item])=>!item.generationCheckpoint&&item.type===type)?.[1];return (samePlan&&!cached.types.includes(type))||(existing&&((missingOnly&&!samePlan)||['checked','published'].includes(existing.status)))})
+    const skipTypes=planned.filter(type=>{const existing=getWeekItems(weekNum).find(([,item])=>!item.generationCheckpoint&&item.type===type)?.[1];if(type==='assessment'&&(input.sections?.length||0)>1)return !coursewarePlan(input).some(part=>part.type==='assessment');return (type==='material'&&existing?.attachedAt)||(samePlan&&!cached.types.includes(type))||(existing&&((missingOnly&&!samePlan)||['checked','published'].includes(existing.status)))})
     const types=planned.filter(type=>!skipTypes.includes(type)),fingerprint=await coursewareFingerprint(input,types)
     const completed=restart?[]:await checkpointResults(input,checkpoint?.generationCheckpoint,fingerprint)
     const total=coursewarePlan(input).filter(part=>types.includes(part.type)).length
     const weekResult = await generateWeekDraft(syllabus, weekNum, signal,'',{skipTypes,completed,
+      generatedTeaching:input.generatedTeaching,skipSteps:input.skipSteps,
       onProgress:(done,total,key)=>setGenerationProgress(`Week ${weekNum} · ${done}/${total} parts saved · ${key==='sources'?'Reading sources':'Generating '+(key.startsWith('lesson-')?'lesson '+key.slice(7):key)}`),
       onPart:async results=>{
         const item=await checkpointItem(input,syllabus.id,{version:1,fingerprint,types,results,total,expected})
@@ -102,7 +107,7 @@ export default function CourseWorkspace({ syllabusId, focusWeek, contentStore, o
     const updates = {}
     for (const item of weekResult.items) {
       // Reviewed/published work must not be silently overwritten by a batch.
-      const existingEntry = getWeekItems(weekNum).find(([, saved]) => !saved.generationCheckpoint && saved.type === item.type && saved.content)
+      const existingEntry = getWeekItems(weekNum).find(([, saved]) => !saved.generationCheckpoint && saved.type === item.type && saved.content && saved.content.outlineSectionId===item.content.outlineSectionId)
       const existing = existingEntry?.[1]
       if (existing && (missingOnly || ['checked', 'published'].includes(existing.status))) continue
       updates[existingEntry?.[0] || item.id] = { ...existing, content: { ...item.content, ...(existing?.content.assessmentPolicy ? { assessmentPolicy: existing.content.assessmentPolicy } : {}) }, status: 'draft', type: item.type,
@@ -123,7 +128,7 @@ export default function CourseWorkspace({ syllabusId, focusWeek, contentStore, o
     const failedWeeks=[]
     try {
       const rows = (syllabus.courseOutline || []).filter(row => !isExamRow(row) && (
-        getWeekItems(row.week).some(([,item])=>item.generationCheckpoint) || plannedCoursewareTypes(row).some(type => !getWeekItems(row.week).some(([, item]) => !item.generationCheckpoint && item.type === type)) ||
+        getWeekItems(row.week).some(([,item])=>item.generationCheckpoint) || missingWeekContent(row,getWeekItems(row.week)) ||
         (!missingOnly && getWeekItems(row.week).some(([, item]) => item.status === 'draft'))
       ))
       for (const [index, row] of rows.entries()) {
@@ -262,21 +267,21 @@ export default function CourseWorkspace({ syllabusId, focusWeek, contentStore, o
               <div className="cw-week-topic"><strong>{topic}</strong>{exam && <span className="text-sm text-muted">Examination week</span>}{hasContent && <span className="text-sm text-muted">{weekItems.length} {weekItems.length === 1 ? 'item' : 'items'} · {weekDraftIds.length} draft</span>}</div>
               {!exam && <div className="cw-row-actions">
                 {pending && <button className="btn btn-secondary btn-sm" disabled={busy || saving || dirty} onClick={()=>generateSingleWeek(weekNum)}><RotateCcw size={14}/>Resume</button>}
-                {hasContent ? <button className="btn btn-secondary btn-sm" aria-expanded={expanded} aria-controls={`week-items-${weekNum}`} onClick={() => toggleWeek(weekNum)}><Eye size={14} /> {expanded ? 'Hide' : 'View'}</button> : <button className="btn btn-secondary btn-sm" disabled={busy} onClick={() => generateSingleWeek(weekNum)}>{generatingWeek === weekNum ? <><Loader2 size={14} className="spin" /> Generating…</> : <><Sparkles size={14} /> Generate</>}</button>}
+                <TeachingFileAttachment syllabus={syllabus} week={weekNum} disabled={busy||saving||dirty} onSaved={receipt=>{liveContent.current=receipt.data.content;setExpandedWeeks(previous=>new Set([...previous,weekNum]));addToast('Teaching file saved as a draft and retained as a reference.','success')}}/>{hasContent ? <button className="btn btn-secondary btn-sm" aria-expanded={expanded} aria-controls={`week-items-${weekNum}`} onClick={() => toggleWeek(weekNum)}><Eye size={14} /> {expanded ? 'Hide' : 'View'}</button> : <button className="btn btn-secondary btn-sm" disabled={busy} onClick={() => generateSingleWeek(weekNum)}>{generatingWeek === weekNum ? <><Loader2 size={14} className="spin" /> Generating…</> : <><Sparkles size={14} /> Generate</>}</button>}
                 {hasContent && <CoursewareActions label={`Week ${weekNum} actions`} actions={[
-                  { label: 'Generate missing content', icon: Sparkles, disabled: busy || plannedCoursewareTypes(row).every(type => weekItems.some(([, item]) => !item.generationCheckpoint&&item.type === type)), onSelect: () => generateSingleWeek(weekNum, true) },
+                  { label: 'Generate missing content', icon: Sparkles, disabled: busy || !missingWeekContent(row,weekItems), onSelect: () => generateSingleWeek(weekNum, true) },
                   { label: 'Regenerate week', icon: RotateCcw, disabled: busy || (!weekDraftIds.length&&!pending), onSelect: () => generateSingleWeek(weekNum,false,true) },
                   { label: 'Check All Drafts', icon: Check, disabled: !weekDraftIds.length, onSelect: () => checkDrafts(weekDraftIds) },
                 ]} />}
               </div>}
             </div>
             {expanded && hasContent && <div id={`week-items-${weekNum}`} className="cw-week-items">
-              {weekItems.map(([id, item]) => {
+              {[...weekItems].sort((a,b)=>Number(a[1].type==='assessment')-Number(b[1].type==='assessment')).map(([id, item],itemIndex,items) => {
                 const meta = STATUS_META[item.status] || STATUS_META.draft
                 const Icon = item.type === 'material' ? FileText : item.type === 'activity' ? MonitorPlay : Tag
                 const title = item.title || item.content.title
                 const generatedAt = item.generatedAt ? new Date(item.generatedAt) : null
-                return <div key={id} className="cw-item" data-content-id={id}>
+                return <Fragment key={id}>{(itemIndex===0||items[itemIndex-1][1].type!=='assessment'&&item.type==='assessment')&&<h3 className="cw-output-heading">{item.type==='assessment'?'Assessments':'Teaching-Learning Activities'}</h3>}<div className="cw-item" data-content-id={id}>
                   {item.status === 'draft' && !item.generationCheckpoint && <input type="checkbox" aria-label={`Select ${title}`} checked={selectedItems.has(id)} onChange={() => toggleItemSelect(id)} />}
                   <Icon size={16} aria-hidden="true" />
                   <div className="cw-item-title"><strong>{title}</strong><div className="text-sm text-muted">{item.type}{Number.isFinite(generatedAt?.getTime()) && <time dateTime={item.generatedAt}> · {generatedAt.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}</time>}{item.content?.questions && ` · ${item.content.questions.length} questions`}{item.content?.category && ` · ${item.content.category}`}</div></div>
@@ -296,7 +301,7 @@ export default function CourseWorkspace({ syllabusId, focusWeek, contentStore, o
                     ]} />}
                   </div>
                   {deliveryItemId === id && <DeliverySettings key={id} id={id} item={item} initiallyOpen onClose={() => setDeliveryItemId(null)} />}
-                </div>
+                </div></Fragment>
               })}
             </div>}
           </section>

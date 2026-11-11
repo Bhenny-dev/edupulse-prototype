@@ -29,7 +29,7 @@ test('syllabus DOCX import previews, accepts, and retries the same file', async 
   await expect(page.getByRole('button', { name: 'Upload Different', exact: true })).toBeVisible()
   await expect(page.getByRole('button', { name: 'Load curriculum outline', exact: true })).toHaveCount(0)
   await expect(page.getByRole('combobox', { name: 'Course', exact: true })).toHaveValue('IT 102')
-  await expect(page.getByPlaceholder('Topic...', { exact: true }).first()).toHaveValue('Variables and assignment')
+  await expect(page.getByPlaceholder('Contents...', { exact: true }).first()).toHaveValue('Variables and assignment')
 })
 
 test('syllabus PDF import previews the extracted course and week', async ({ page }) => {
@@ -42,5 +42,5 @@ test('syllabus PDF import previews the extracted course and week', async ({ page
   await page.locator('.upload-zone').locator('..').screenshot({ path: '../feature-documentation/system-manual/02-syllabus-lifecycle/14-pdf-import-preview.png', animations: 'disabled' })
   await page.getByRole('button', { name: 'Use This Syllabus', exact: true }).click()
   await expect(page.getByRole('combobox', { name: 'Course', exact: true })).toHaveValue('IT 102')
-  await expect(page.getByPlaceholder('Topic...', { exact: true }).first()).toHaveValue('Variables and assignment')
+  await expect(page.getByPlaceholder('Contents...', { exact: true }).first()).toHaveValue('Variables and assignment')
 })

@@ -3,7 +3,7 @@ import { mkdir } from 'node:fs/promises'
 
 // Mobile walkthrough (iPhone 13 viewport, Chromium). Output: system-walkthrough/06-mobile.
 const DIR = '../feature-documentation/system-walkthrough/06-mobile'
-async function shot(page: Page, name: string) { if(process.env.SNAPSHOT_SCENES&&!new RegExp(process.env.SNAPSHOT_SCENES).test(`06-mobile/${name}`))return; await mkdir(DIR, { recursive: true }); await page.waitForTimeout(400); await page.screenshot({ path: `${DIR}/${name}.png`, animations: 'disabled' }) }
+async function shot(page: Page, name: string) { if (process.env.SNAPSHOT_SCENES && !new RegExp(process.env.SNAPSHOT_SCENES).test(`06-mobile/${name}`)) return; await mkdir(DIR, { recursive: true }); await page.waitForTimeout(400); await page.screenshot({ path: `${DIR}/${name}.png`, animations: 'disabled' }) }
 
 test('mobile landing page', async ({ page }) => {
   // As on desktop, the landing page is captured complete and still (reduced motion).

@@ -53,9 +53,10 @@ Syllabus signatory chain (occurs OUTSIDE the system, on the downloaded file): re
 - Statuses: `none → drafted → checked → downloaded_for_approval → approved_uploaded → extracted (active)`.
 
 ### Phase 3. Courseware generation (Instructor)
-- Basis: the extracted Course Outline rows (Week, Intended Learning Outcomes, Contents, Teaching-Learning Activities, Assessments).
+- Basis: the extracted Course Outline rows (Week, Intended Learning Outcomes, Contents, Teaching-Learning Activities, Assessments). Each teaching week supports multiple scope sections; a section can span a selected range of teaching weeks. Shared section edits propagate, while exam slots remain fixed. Contents is one multiline field per section; there is no teaching-material selector.
 - **AI role:** *Assist* (instructor creates manually with AI help) or *Auto* with three scopes: by week, by semester/term, or the whole course outline.
-- Generation is retrieval-grounded (RAG) in the approved syllabus (plus instructor-provided materials). Contents + ILO drive learning materials; the Assessments column drives assessment items; TLA informs the activity type.
+- Generation has two groups: **Teaching-Learning Activities** (generated documents/guides or instructor-attached teaching files) and **Assessments**, derived from that teaching output and the section outcomes. The seven formats are Multiple choice, True or false, Enumeration, Identification, Essay, Matching type, and the combined Follow-along / Step-by-step documentation guide or criteria. The system chooses a suitable type when none is specified; an explicit instructor request takes precedence. Written responses retain instructor marking.
+- Listed references are read or attached into private retained copies before generation for section-based outlines. Citation metadata, catalog listings and inaccessible books are not factual evidence. Available retained text is retrieved per scope; limits and missing copies are disclosed. Selecting generated text can open a source-basis popover with an actual highlighted retained passage, then **Explain in Pulse** sends both excerpts to chat. Opening or restoring the popover performs read-only lookup; reload never replays generation, publication or a chat explanation.
 - Every generated item lands as a draft. Instructor reviews, edits, finalizes, then **publishes**. Only published items are visible to students.
 - Exam weeks (midterm, final) are outline rows without generated teaching content; they surface as milestones.
 

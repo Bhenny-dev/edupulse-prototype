@@ -41,7 +41,7 @@ export const PAGES = [
   { path: '/courseware', label: 'Course', words: /\b(my\s+courses|courses?|courseware|materials?|lessons?)\b/i, roles: ['instructor', 'dean', 'associate_dean'] },
   { path: '/monitor', label: 'Monitor', words: /\bmonitor(ing)?\b/i, roles: ['dean', 'associate_dean'] },
   { path: '/performance', label: 'Performance', words: /\b(performance|progress|scores?|grades?)\b/i, roles: PERFORMANCE_ROLES },
-  { path: '/settings?tab=ai-provider', label: 'Settings → AI & Knowledge', words: /\b(knowledge\s+library|my\s+library|library|ai\s+settings|ai\s+(?:&|and)\s+knowledge|ai\s+provider)\b/i, roles: 'all' },
+  { path: '/settings?tab=ai-provider', label: 'Settings → AI & Knowledge', words: /\b(ai\s+settings|ai\s+(?:&|and)\s+knowledge|ai\s+provider)\b/i, roles: 'all' },
   { path: '/settings?tab=keyboard-shortcuts', label: 'Keyboard Shortcuts', words: /\b(?:keyboard|shortcuts?|hotkeys?)\b/i, roles: 'all' },
   { path: '/settings?tab=help', label: 'Help & Support', words: /\bhelp(\s+(?:&|and)\s+support)?\b/i, roles: 'all' },
   { path: '/settings', label: 'Settings', words: /\b(settings|preferences|profile)\b/i, roles: 'all' },

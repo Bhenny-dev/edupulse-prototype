@@ -28,6 +28,6 @@ export async function checkpointItem(input:CourseInput,syllabusId:string,saved:C
   const assembled=assembleCourseware(input,saved.results,saved.types,true)
   const title=`Week ${input.week}: unfinished draft (${saved.results.length}/${saved.total} parts)`
   const sections=[...(assembled.content.material?.sections||[]),...(assembled.content.activity?.sections||[])]
-  if(assembled.content.assessment)sections.push({heading:'Assessment draft',body:assembled.content.assessment.questions.map((q,i)=>`${i+1}. ${q.text}`).join('\n\n')})
+  for(const assessment of assembled.content.assessments|| (assembled.content.assessment?[assembled.content.assessment]:[]))sections.push({heading:assessment.title,body:assessment.questions.map((q,i)=>`${i+1}. ${q.text}`).join('\n\n')})
   return {syllabusId,week:input.week,type:'material',status:'draft',title,generationCheckpoint:saved,content:{title,subtitle:'Unfinished AI draft — resume generation before review or release',sections,viewMode:'document'}}
 }

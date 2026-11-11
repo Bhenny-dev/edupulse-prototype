@@ -1,3 +1,4 @@
+import {weekSections} from '../../utils/outlineSections'
 import { useEffect, useId, useRef, useState } from 'react'
 import { Download, Eye, FileUp, Upload } from 'lucide-react'
 import { LoadingProgress, Spinner } from '../ui/LoadingFeedback'
@@ -52,8 +53,8 @@ export default function ApprovedSyllabusIntake({ onUse, onView, focusUpload = fa
         <button className="btn btn-ghost btn-sm" disabled={saving} onClick={() => downloadApprovedFile(candidate.approvedFile)}><Download size={15} />Original file</button>
       </div></div>
       {warnings.map((warning, index) => <p className="text-sm text-muted" key={index}>{warning}</p>)}
-      <div className="approved-intake-table" tabIndex={0} role="region" aria-label="Extracted approved course outline"><table className="approved-outline-table"><thead><tr><th>Week</th><th>Learning outcomes</th><th>Contents</th><th>Activities and materials</th><th>Assessments</th></tr></thead><tbody>
-        {candidate.courseOutline.map(row => <tr key={row.week}><td>{row.week}{row.isExam && <span className="text-sm text-muted"> Exam</span>}</td><td>{row.ilos || 'Not extracted'}</td><td><ul>{row.contents?.map((text, index) => <li key={index}>{text}</li>)}</ul></td><td>{row.activities}<ul>{row.teachingMaterials?.map((text, index) => <li key={index}>{text}</li>)}</ul></td><td>{row.assessments}<ul>{row.assessmentTypes?.map((text, index) => <li key={index}>{text}</li>)}</ul></td></tr>)}
+      <div className="approved-intake-table" tabIndex={0} role="region" aria-label="Extracted approved course outline"><table className="approved-outline-table"><thead><tr><th>Week</th><th>Learning outcomes</th><th>Contents</th><th>Teaching-Learning Activities</th><th>Assessments</th></tr></thead><tbody>
+        {candidate.courseOutline.flatMap(row=>weekSections(row).map(section=>({...section,week:row.week,isExam:row.isExam}))).map(row => <tr key={`${row.week}-${row.id}`}><td>{row.week}{row.isExam && <span className="text-sm text-muted"> Exam</span>}</td><td>{row.ilos || 'Not extracted'}</td><td><ul>{row.contents?.map((text, index) => <li key={index}>{text}</li>)}</ul></td><td>{row.activities}<ul>{row.teachingMaterials?.map((text, index) => <li key={index}>{text}</li>)}</ul></td><td>{row.assessments}<ul>{row.assessmentTypes?.map((text, index) => <li key={index}>{text}</li>)}</ul></td></tr>)}
       </tbody></table></div>
       <label className="approved-intake-confirm"><input type="checkbox" checked={attested} disabled={saving} onChange={event => setAttested(event.target.checked)} /><span>I confirm this is the approved copy and have checked the extracted course and outline. EduPulse does not verify signatures.</span></label>
       <div className="approved-intake-actions"><button className="btn btn-primary" disabled={!attested || saving} onClick={() => void handleUseSyllabus()}>{saving ? <Spinner size={16} /> : <FileUp size={16} />}{saving ? 'Saving syllabus...' : 'Use syllabus for course'}</button><span className="text-sm text-muted">Saves this copy and opens its course. Generate materials when ready.</span></div>

@@ -36,9 +36,11 @@ The class list in these screenshots is sample data: invented names with `example
 
    ![Course suggestion with reasons](05-material-course-suggestion.png)
 
-6. Press **Add to library under *course*** to index it in your knowledge library. Its title starts with the course code (*IT 209 · css layout notes*), so later answers about that course find and cite it. The card says how many passages were indexed and that Pulse cites the file by title (and by page, for files that have pages). The card offers **Ask about it**, **Make a study guide** (a cited draft) and **Open knowledge library**, where the document lists its course.
+6. Press **Add to library under *course*** to index it in your knowledge library. Its title starts with the course code (*WMAD 302 · css layout notes* in this sample), so later answers about that course find and cite it. The card says how many passages were indexed and that Pulse cites the file by title (and by page, for files that have pages). The card offers **Ask about it** and **Make a study guide** (a cited draft). The former link to the settings library is removed with that panel.
 
    ![Material added](06-material-added.png)
+
+   This local sample confirms the indexed document record. Its **Chat not saved** notice and **Retry history save** action describe a separate conversation-history failure; the screenshot does not establish saved chat history.
 
    If you attach a material without a message, Pulse offers the same card plus **Summarize it**, **Make a study guide** and **Make practice questions**, all quoting and citing the file. If you ask a question about the file instead, Pulse answers first and offers to file it underneath the answer.
 
@@ -62,7 +64,7 @@ If you confirm another registration for the same class and then undo the earlier
 
 ![Undo preserves a later confirmed registration](09-undo-preserves-newer-registration.png)
 
-Ask *Take me to the scoring sheet*, *Open my courses* or *Where is the knowledge library?* Pulse opens the page and says so (*Opened Student Monitoring.*). It opens only pages your role can use; otherwise it says the page is not available for your role.
+Ask *Take me to the scoring sheet*, *Open my courses* or *Open AI settings* Pulse opens the page and says so (*Opened Student Monitoring.*). It opens only pages your role can use; otherwise it says the page is not available for your role.
 
 ## Answers that cite your own records
 

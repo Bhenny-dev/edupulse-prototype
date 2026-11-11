@@ -38,16 +38,18 @@ export function validateDraft(raw: unknown, input: DraftInput, sources: string, 
     if ('gradingSystem' in patch && !patch.gradingSystem?.trim()) gaps.push('gradingSystem or explicit pending status')
   }
   if ('courseOutline' in patch && patch.courseOutline) {
-    const before = input.editor.data.courseOutline as { week: number; assessments?: string }[] | undefined
+    const before = input.editor.data.courseOutline as { week: number; assessments?: string;sections?:{id:string}[] }[] | undefined
     // Even a section edit is an array replacement. Never silently lose a week.
     if (before?.length) {
       if (patch.courseOutline.some(row => !before.some(old => old.week === row.week))) gaps.push('retain exactly the existing week numbers')
       for (const old of before) {
         const row = patch.courseOutline.find(item => item.week === old.week)
         if (!row) { gaps.push(`retain week ${old.week}`); continue }
+        const protectedSections=old.sections?.filter(section=>old.sections!.length>1||before.some(other=>other.week!==old.week&&other.sections?.some(value=>value.id===section.id)))||[]
+        if(protectedSections.some(section=>!row.sections?.some(value=>value.id===section.id)))gaps.push(`retain every existing section ID in week ${old.week}`)
         if (/examination/i.test(old.assessments || '') && !row.assessments?.includes(old.assessments!)) gaps.push(`preserve exam label for week ${old.week}`)
         if ((whole || options.completeOutline) && !/examination/i.test(old.assessments || '')) {
-          const missing = [!row.ilos.trim() && 'ilos (a measurable learning outcome)', !row.contents.some(text => text.trim()) && 'contents', !row.activities?.trim() && 'activities', !row.assessments?.trim() && 'assessments', !row.teachingMaterials?.some(text => text.trim()) && 'teachingMaterials', !row.assessmentTypes?.some(text => text.trim()) && 'assessmentTypes'].filter(Boolean)
+          const missing = [!row.ilos.trim() && 'ilos (a measurable learning outcome)', !row.contents.some(text => text.trim()) && 'contents', !row.activities?.trim() && 'activities', !row.assessments?.trim() && 'assessments', !row.assessmentTypes?.some(text => text.trim()) && 'assessmentTypes'].filter(Boolean)
           if (missing.length) gaps.push(`week ${old.week}: generate nonempty ${missing.join(', ')}`)
         }
       }

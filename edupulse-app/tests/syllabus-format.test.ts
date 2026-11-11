@@ -12,7 +12,8 @@ test('PDF text with numbered headings, paired fields and outline columns retains
   const parsed = parseSyllabusText('I. Course Information\nCourse Code: IT 102\tCourse Title: Computer Programming 1\nV. Course Outline\nWeek\tLearning Outcomes\tContents\tActivities\tAssessment\n1\tExplain variables\tVariables and assignment\tTrace values\tShort quiz\n2-3\tReview arrays\tArrays\tLab\tQuiz')
   assert.equal(parsed.courseMatch?.code, 'IT 102')
   assert.equal(parsed.sections[0].parsed.courseTitle, 'Computer Programming 1')
-  assert.equal(parsed.sections[4].parsed.courseOutline.length, 1, 'ambiguous week ranges are never invented')
+  assert.deepEqual(parsed.sections[4].parsed.courseOutline.map(row=>row.week),[1,2,3], 'an explicitly printed week range becomes a shared section')
+  assert.equal(parsed.sections[4].parsed.courseOutline[1]!.sections![0]!.id,parsed.sections[4].parsed.courseOutline[2]!.sections![0]!.id)
   assert.deepEqual(parsed.sections[4].parsed.courseOutline[0].contents, ['Variables and assignment'])
   assert.equal(parsed.sections[4].parsed.courseOutline[0].activities, 'Trace values')
 })
@@ -116,4 +117,23 @@ test('the shared intake keeps original bytes above 500 KB, rejects oversize inpu
  assert.equal(workspaceData.safeParse({syllabi:[{...candidate,status:'active',approvedFile:{...retained,approvalAttested:true}}],content:{},registrations:[]}).success,true)
  await assert.rejects(retainApprovedFile(new File([new Uint8Array(APPROVED_FILE_LIMIT+1)],'too-large.pdf')),/750 KB/)
  assert.equal(workspaceData.safeParse({syllabi:[{...candidate,status:'active',approvedFile:{...retained,size:APPROVED_FILE_LIMIT+1,approvalAttested:true}}],content:{}}).success,false)
+})
+
+
+test('a partial row divider preserves two scope sections inside a merged PDF week cell',()=>{
+ const xs=[10,50,250,450,650,850]
+ const item=(x:number,y:number,str:string)=>({str,width:str.length*3,transform:[1,0,0,1,x,y]})
+ const cells=(y:number,text:string[])=>text.flatMap((value,index)=>value?[item(xs[index]!+5,y,value)]:[])
+ const page={number:1,edges:xs.map(x=>[x,100,x+.5,400]),rules:[[10,400,850,400.5],[10,350,850,350.5],[50,250,850,250.5],[10,100,850,100.5]],items:[...cells(375,['Week','Learning Outcomes','Contents','Activities','Assessments']),...cells(320,['Week 1','Explain classroom expectations.','Class orientation','Discussion','Essay']),...cells(220,['','Identify multimedia formats.','Introduction to multimedia','Guided reading','Multiple choice'])]}
+ const result=readRuledOutline([page])
+ assert.equal(result.outline.length,1);assert.equal(result.outline[0]!.sections!.length,2)
+ assert.deepEqual(result.outline[0]!.sections!.map((section:{contents:string[]})=>section.contents),[['Class orientation'],['Introduction to multimedia']])
+ assert.deepEqual(result.warnings,[])
+})
+
+
+test('an exported approval footer cannot populate a blank outline week or its multiline assessment',()=>{
+ const parsed=parseSyllabusText('Section 5: Course Outline\nWeek 1\nILOs: Explain variables.\nContent: Variable declarations\nAssessments: Explain the trace.\nUse the classroom example.\nSyllabus - complete the institutional review and approval process | 1 / 3\nWeek 2\nILOs: \nAssessments: \nSyllabus - complete the institutional review and approval process | 2 / 3\nWeek 9\nAssessments: Midterm Examination')
+ assert.deepEqual(parsed.sections[4].parsed.courseOutline.map(row=>row.week),[1,9])
+ assert.equal(parsed.sections[4].parsed.courseOutline[0]!.assessments,'Explain the trace.\nUse the classroom example.')
 })

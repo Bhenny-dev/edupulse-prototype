@@ -37,3 +37,11 @@
   .cw-week-items { padding: 8px 12px 12px; }
   .cw-week-heading .cw-row-actions { margin-left: auto; }
 }
+
+.source-selection-toolbar { position:sticky;bottom:12px;display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin:16px;padding:12px;background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius-md);z-index:2; }
+.source-passage-popover { position:fixed;inset:auto 24px 24px auto;width:min(540px,calc(100vw - 48px));max-height:75vh;overflow:auto;padding:20px;background:var(--white);color:var(--gray-800);border:1px solid var(--gray-300);border-radius:var(--radius-md);box-shadow:var(--shadow-lg);z-index:900; }
+.source-passage-popover header { display:flex;align-items:center;justify-content:space-between; }
+.source-passage-popover article { border-top:1px solid var(--gray-200);margin-top:12px;padding-top:12px; }
+.source-passage-popover mark { background:var(--amber-100);color:var(--gray-900); }
+
+@media(max-width:767px){.cw-week-heading > .cw-row-actions {flex:1 1 100%;flex-wrap:wrap;}}

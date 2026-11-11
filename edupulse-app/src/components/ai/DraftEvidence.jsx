@@ -8,7 +8,7 @@ const STATUS = { covered: { label: 'Covered', badge: 'badge-approved' }, partial
 
 export default function DraftEvidence({ metadata }) {
   const [retainedSource,setRetainedSource]=useState(null)
-  if (!metadata) return null
+  if (!metadata||metadata.manualAttachment) return null
   const coverage = metadata.coverage, verification = metadata.verification, answerKey = metadata.answerKey
   return <aside className="ai-draft-evidence" data-pulse-target="AI draft review" style={{ margin: '16px 24px', padding: 16, border: '1px solid var(--gray-200)', borderRadius: 8, fontSize: '0.8125rem', overflowWrap: 'anywhere' }}>
     <strong>AI draft review</strong>

@@ -21,8 +21,9 @@ async function say(page: import('@playwright/test').Page,text:string) {
 }
 test('page-uploaded PDF survives focused follow-up, corrects only the selected outline and downloads a genuine PDF',async({page},info)=>{
   await builder(page)
-  const topic=page.getByPlaceholder('Topic...',{exact:true}).nth(1)
-  await expect(topic).toHaveValue('a. Variable declaration and assignment')
+  const topic=page.getByLabel('Week 1 contents',{exact:true})
+  const originalContents='I. Variables\na. Variable declaration and assignment\nb. Data types'
+  await expect(topic).toHaveValue(originalContents)
   await topic.fill('Incomplete topic')
   await topic.focus();await page.keyboard.press('Alt+p')
   const panel=page.getByRole('dialog',{name:'Pulse',exact:true})
@@ -34,7 +35,7 @@ test('page-uploaded PDF survives focused follow-up, corrects only the selected o
   await expect(card).toContainText('a. Variable declaration and assignment')
   await expect(card).not.toContainText('nested conditions using a trace table')
   await card.getByRole('button',{name:'Apply to open form'}).click()
-  await expect(topic).toHaveValue('a. Variable declaration and assignment')
+  await expect(topic).toHaveValue(originalContents)
   await expect(page.getByPlaceholder('Program outcome 1',{exact:true})).toHaveValue('1. Explain a program using examples.')
   if(info.project.name==='desktop') {
     const main=await page.locator('#main-content').boundingBox(), chat=await panel.boundingBox()

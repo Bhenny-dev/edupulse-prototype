@@ -35,7 +35,7 @@ test('syllabus lifecycle: build, check, download, approve, extract, activate', a
   await page.locator('[data-section="1"]').scrollIntoViewIfNeeded()
   await shot(page.locator('[data-section="1"]'), f, '01-select-course-autofills-section-1')
   await page.getByPlaceholder('Learning outcome...', { exact: true }).first().fill('Explain variable declarations and assignment, and trace how a value changes.')
-  await page.getByPlaceholder('Topic...', { exact: true }).first().fill('Variables and assignment')
+  await page.getByPlaceholder('Contents...', { exact: true }).first().fill('Variables and assignment')
   await page.locator('[data-section="5"]').scrollIntoViewIfNeeded()
   // Sticky outline headings stay at the top of the table in a capture taller than the window.
   await shot(page.locator('[data-section="5"]'), f, '02-write-course-outline', '.outline-table thead th{position:static !important}')
@@ -62,6 +62,8 @@ test('syllabus lifecycle: build, check, download, approve, extract, activate', a
   await shot(row, f, '08-approved-file-uploaded')
   await row.getByRole('button', { name: 'Extract Outline', exact: true }).click()
   await expect(page.getByText('Variables and assignment', { exact: true })).toBeVisible()
+  await expect(page.locator('.overlay-backdrop tbody tr')).toHaveCount(3)
+  await expect(page.locator('.overlay-backdrop')).not.toContainText('Syllabus - complete the institutional review')
   await shot(page, f, '09-review-extracted-outline')
   await page.getByRole('button', { name: /Confirm Extraction/ }).click()
   await saved(page)

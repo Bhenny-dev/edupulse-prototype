@@ -73,11 +73,11 @@ Local PGlite schema migrates in place (`ADD COLUMN IF NOT EXISTS`); documents em
 
 | Threat | Control | Evidence |
 | --- | --- | --- |
-| Malicious parser input (PDF/Office exploits, memory exhaustion) | Worker thread, 256 MB heap, 48 MB young gen, 4 MB stack, 30 s hard timeout, two concurrent workers, `env: {}` (no secrets), stdout/stderr discarded | `tests/ingest.test.ts` (timeout, damaged PDF); [screenshots](../../../system-manual/04-knowledge-library/README.md#when-a-file-is-refused-or-flagged) |
+| Malicious parser input (PDF/Office exploits, memory exhaustion) | Worker thread, 256 MB heap, 48 MB young gen, 4 MB stack, 30 s hard timeout, two concurrent workers, `env: {}` (no secrets), stdout/stderr discarded | `tests/ingest.test.ts` (timeout, damaged PDF); [screenshots](../../../system-manual/04-knowledge-library/README.md) |
 | Archive bombs, encrypted or ZIP64 archives | Central-directory inspection before decompression: ≤2,000 entries, ≤60 MB expanded, ratio ≤200 for large entries | `archive bombs and encrypted Office files…` test |
 | File-type spoofing | Content sniffing; extension must match content | `type sniffing rejects renamed…` test |
 | PDF font code execution (CVE-2024-4367 class) | unpdf's PDF.js build compiles PostScript functions to WebAssembly and contains no `eval`/`new Function` (verified by scanning the bundle) | design note in `formats.mjs` |
-| Prompt injection inside documents | Injection scan at evaluation and per chunk; flagged passages carry a caution; `neutralize()` defangs role tags, delimiters and footnote markers; fixed system prompt; evidence passed as JSON data | `history and attachments are neutralized…` test; [screenshot](../../../system-manual/04-knowledge-library/09-instruction-like-text-flagged.png) |
+| Prompt injection inside documents | Injection scan at evaluation and per chunk; flagged passages carry a caution; `neutralize()` defangs role tags, delimiters and footnote markers; fixed system prompt; evidence passed as JSON data | `history and attachments are neutralized…` test; [screenshot](../../../system-manual/04-knowledge-library/README.md) |
 | Model output abuse | `sanitizeOutput()` strips control/bidi characters, script/iframe/image markup; React renders text only; citations validated and repaired | Verifier/Corrector tests |
 | External API abuse (SSRF, oversized or hostile responses) | Fixed origins, `redirect: 'error'`, 8 s timeout, 1.5 MB cap, Zod schemas, links rebuilt from validated identifiers | `Librarian calls only allowlisted catalogs…` test |
 | Supply chain (model files) | Pinned Hugging Face revisions with SHA-256 verification at load and download | `server/ml/models.ts` |

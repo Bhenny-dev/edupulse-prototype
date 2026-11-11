@@ -7,9 +7,9 @@ Task-by-task instructions for EduPulse v0.4.0, illustrated with captured screens
 | [1](01-getting-started/README.md) | Sign in, find your way around, set preferences | Everyone | Landing page, top bar, Settings |
 | [2](02-syllabus-lifecycle/README.md) | Build a syllabus and take it from draft to active | Instructors | Syllabus Builder, My Syllabus |
 | [3](03-courseware-generation-and-review/README.md) | Generate a week of courseware from the outline and review it | Instructors | Courseware Builder |
-| [4](04-knowledge-library/README.md) | Add real documents to Pulse's knowledge library | Every signed-in account | Settings → AI & Knowledge |
+| [4](04-knowledge-library/README.md) | Private source intake after removal of the settings library | Every signed-in account | Pulse, Syllabus Builder |
 | [5](05-ask-pulse/README.md) | Ask Pulse and read a verified, cited answer | Everyone | Pulse panel |
-| [6](06-compare-and-references/README.md) | Compare two documents; find references in open catalogs | Every signed-in account | Knowledge library, Pulse panel |
+| [6](06-compare-and-references/README.md) | Find references in open catalogs | Every signed-in account | Pulse panel |
 | [7](07-pulse-guidance/README.md) | Drag Pulse onto any component for guidance; follow a section tour | Everyone | Any page |
 | [8](08-ai-connections/README.md) | Choose where Pulse thinks: local model, free providers, own key, on-device | Everyone (each account connects its own key) | Settings → AI & Knowledge |
 | [9](09-pulse-actions/README.md) | Ask Pulse to act: register a class list, file a material under a course, search records, generate a week, open a page | Instructors; students for materials; everyone for search and pages | Pulse panel |

@@ -48,7 +48,7 @@ export function stepReadiness(step, events, guide, records = []) {
   if (step.check === 'course') return Boolean(document.querySelector('[data-section="1"] select')?.value)
   if (step.check === 'outline') {
     const section = document.querySelector('[data-section="5"]')
-    return Array.from(section?.querySelectorAll('tr') || []).some(row => row.querySelector('[placeholder="Learning outcome..."]')?.value.trim() && Array.from(row.querySelectorAll('[placeholder="Topic..."]')).some(input => input.value.trim()))
+    return Array.from(section?.querySelectorAll('tr') || []).some(row => row.querySelector('[placeholder="Learning outcome..."]')?.value.trim() && Array.from(row.querySelectorAll('[placeholder="Contents..."]')).some(input => input.value.trim()))
   }
   return true
 }

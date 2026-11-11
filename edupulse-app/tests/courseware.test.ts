@@ -213,3 +213,23 @@ test('a reference list written by the model is replaced, and no section is dropp
   const full = draft(); full.material.sections = Array.from({ length: 8 }, (_, i) => ({ heading: `Part ${i + 1}`, body: 'A while loop checks its condition before every pass.' }))
   assert.equal(withReferences(full, plan, []).material.sections.length, 9)
 })
+
+
+test('section assessments use their teaching output, retain separate formats and fail before inference without references',async()=>{
+ const sections=[{id:'one',ilos:'Explain for loops.',contents:['for loops'],activities:'',assessments:'Quiz',assessmentTypes:['Multiple choice']},{id:'two',ilos:'Explain while loops.',contents:['while loops'],activities:'',assessments:'Explain the trace.',assessmentTypes:['Essay']}]
+ const input={courseCode:'TEST',courseTitle:'Programming',week:1,topics:['for loops','while loops'],outcomes:'Explain loops.',referenceText:'',plan,sections,syllabusReferences:[{kind:'link' as const,title:'Loop notes',url:'https://teaching.example.org/loops',authors:'',year:'',publisher:''}],research:'sources' as const}
+ const prompts:{generationStep:string;generatedTeaching?:string;topics:string[]}[]=[]
+ const evidence:Evidence={id:'retained-loop',documentId:'retained-loop',title:'Loop notes',text:'A for loop repeats statements while a counter stays within a limit. A while loop checks its condition before each pass.',origin:'private',method:'hybrid',page:1,section:'Loops',flagged:false,similarity:1,rrf:1,relevance:5,query:'loops'}
+ const deps={provider:'test',search:async()=>({evidence:[]}),sourceEvidence:async()=>({evidence:[evidence]}),generate:async(_system:string,prompt:string)=>{
+  const part=JSON.parse(prompt);prompts.push(part);const value=draft()
+  if(part.generationStep==='assessment-2')return JSON.stringify({assessment:{title:'Written trace',questions:value.assessment.questions.map(question=>({...question,type:'short_answer',options:[],correctIndex:0,topic:part.topics[0]}))}})
+  return JSON.stringify(part.generationStep.startsWith('assessment')?{assessment:value.assessment}:{material:value.material})
+ }}
+ await assert.rejects(draftCoursewareAgents(input,signal(),{...deps,sourceEvidence:async()=>({evidence:[]})}),{code:'SOURCE_NOT_READY'})
+ assert.equal(prompts.length,0)
+ const result=await draftCoursewareAgents(input,signal(),deps)
+ assert.deepEqual(result.content.assessments?.map(assessment=>assessment.outlineSectionId),['one','two'])
+ const written=result.content.assessments?.[1]?.questions[0]
+ assert.equal(written?.type,'short_answer');assert.ok(written&&'responseFormat' in written);assert.equal(written.responseFormat,'essay')
+ for(const prompt of prompts.filter(value=>value.generationStep.startsWith('assessment')))assert.match(prompt.generatedTeaching||'',/Worked trace and practice/)
+})
