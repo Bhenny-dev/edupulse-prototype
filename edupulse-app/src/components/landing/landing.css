@@ -460,6 +460,7 @@ html:has(.landing-page), html:has(.landing-page) body { overflow-anchor: none; }
 .landing-page .login-panel .form-input:focus { border-color: var(--lp-blue); box-shadow: 0 0 0 4px rgb(37 99 235 / 0.16); }
 .landing-page .login-panel .form-input::placeholder { color: var(--lp-field); }
 .landing-page .login-input-icon { color: var(--lp-slate); }
+.landing-page .login-password-toggle { color:var(--lp-slate); }
 .landing-page .login-panel .btn { min-height: 50px; border-radius: 12px; font-family: var(--lp-text); font-size: 1rem; font-weight: 600; }
 .landing-page .login-panel .btn:hover, .landing-page .login-panel .btn:active { transform: none; }
 .landing-page .login-panel .btn-primary { color: #ffffff; background: var(--lp-blue); border-color: transparent; box-shadow: 0 12px 24px -16px rgb(37 99 235 / 0.9); }

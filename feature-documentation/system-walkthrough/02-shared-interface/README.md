@@ -1,5 +1,7 @@
 # 02 · Shared interface
 
+The shared public sign-in form provides an eye-shaped **Show password / Hide password** control with a visible keyboard focus ring and a 44-pixel touch target. **Sign in with Google** includes its Google mark even when disabled. The [sign-in guide](../../system-manual/01-getting-started/README.md#password-visibility-and-google-icon) documents both icons and the pending state; the authentication flow is unchanged.
+
 Browser refresh keeps the current route/query and restores supported view references after authorization. Header account, notification, language, role, search and mobile-navigation surfaces retain their visibility; close/Escape clears it. Search text and private result payloads are not saved as view hints. Selected course readers retain their slide, while business actions remain explicit. [Manual 23](../../system-manual/23-account-support-and-pulse-context/README.md#reload-the-selected-account-without-returning-to-dashboard) shows restored popovers and recovery; [Manual 27](../../system-manual/27-cached-workspaces/README.md) shows the reloaded presentation.
 
 Controls every signed-in role has. Shown here as the Instructor; the Dean and Student see the same tools with their own navigation tabs and notifications.

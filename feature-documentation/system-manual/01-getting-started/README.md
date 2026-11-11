@@ -14,6 +14,20 @@ Refreshing a signed-in page keeps its route and tab. When the System Admin is vi
 
 See: [sign-in panel](../../system-walkthrough/01-public-site/13-sign-in-panel.png) and [preview personas](../../system-walkthrough/01-public-site/14-preview-personas.png).
 
+### Password visibility and Google icon
+
+The password is hidden initially. Choose the eye button, **Show password**, to reveal the typed value; **Hide password** masks the same value again. The button supports Tab and Space/Enter, has a visible focus ring and does not submit the form. The email envelope, password lock and Google **G** mark remain visible. The Google mark identifies the existing **Sign in with Google** action; it does not add a separate Gmail login.
+
+![Sign-in fields with visible eye and Google mark](01-sign-in-icons.png)
+
+![Keyboard-focused Hide password control with illustrative text](02-password-revealed.png)
+
+During **Signing in…**, the Google action is disabled while its mark remains visible, and the eye button is still available to hide or reveal the field. The existing authentication and assigned-role rules are unchanged.
+
+![Visible icons while the sign-in request is pending](03-sign-in-busy.png)
+
+These component captures use invented example input and a held synthetic authentication response. No real account password is shown or submitted. The public top bar and capture-only preview controls are hidden only for the component crop. [Mobile captures](../../system-walkthrough/06-mobile/README.md#sign-in-icons) show the same controls at the phone breakpoint.
+
 ## Explore the public pages
 
 Before signing in, the top bar lists **Home** and eight pages: **Features**, **How It Works**, **Roles**, **Pulse**, **Impact**, **Colleges**, **Play** and **FAQ**. The link of the page you are on is filled in blue. Each page is one themed classroom in 3D that fills the screen and does not scroll: everything the page has to say is in the room, behind something you can tap. On a phone the pages are under the ☰ menu.

@@ -1,5 +1,5 @@
 {
-  "capturedAt": "2026-11-09T20:53:36.649Z",
+  "capturedAt": "2026-11-11T05:15:31.887Z",
   "problems": [],
   "scenes": [
     {
@@ -526,14 +526,6 @@
     {
       "role": "public",
       "folder": "01-public-site",
-      "file": "13-sign-in-panel.png",
-      "title": "Sign-in panel as on the hosted site",
-      "route": "/",
-      "ok": true
-    },
-    {
-      "role": "public",
-      "folder": "01-public-site",
       "file": "14-preview-personas.png",
       "title": "Preview personas (local development and documentation capture only)",
       "route": "/",
@@ -680,14 +672,6 @@
       "folder": "01-public-site",
       "file": "28-walk-notebook.png",
       "title": "The walk: FAQ in an open notebook on the desk",
-      "route": "/",
-      "ok": true
-    },
-    {
-      "role": "public",
-      "folder": "01-public-site",
-      "file": "29-walk-door.png",
-      "title": "The walk: sign-in on the door of the study",
       "route": "/",
       "ok": true
     },
@@ -865,6 +849,22 @@
       "file": "03-syllabus-my-syllabus.png",
       "title": "Syllabus · My Syllabus (approved uploads, saved syllabi and versions)",
       "route": "/syllabus",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "13-sign-in-panel.png",
+      "title": "Sign-in panel as on the hosted site",
+      "route": "/",
+      "ok": true
+    },
+    {
+      "role": "public",
+      "folder": "01-public-site",
+      "file": "29-walk-door.png",
+      "title": "The walk: sign-in on the door of the study",
+      "route": "/",
       "ok": true
     }
   ]

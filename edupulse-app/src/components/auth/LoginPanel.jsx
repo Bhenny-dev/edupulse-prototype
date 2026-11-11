@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { supabase } from '../../lib/supabaseClient'
-import { Mail, Lock, LogIn, GraduationCap, BookOpen, Shield, CalendarCog } from 'lucide-react'
+import { Mail, Lock, LogIn, GraduationCap, BookOpen, Shield, CalendarCog, Eye, EyeOff } from 'lucide-react'
 
 const QUICK_ROLES = [
   { key: 'admin', label: 'System Admin', icon: Shield },
@@ -17,6 +17,7 @@ export default function LoginPanel({ className = '' }) {
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [passwordVisible, setPasswordVisible] = useState(false)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const [googleEnabled, setGoogleEnabled] = useState(false)
@@ -78,14 +79,17 @@ export default function LoginPanel({ className = '' }) {
             <Lock size={18} className="login-input-icon" aria-hidden="true" />
             <input
               id="login-password"
-              type="password"
+              type={passwordVisible ? 'text' : 'password'}
               required
-              className="form-input"
+              className="form-input login-password-input"
               placeholder="••••••••"
               value={password}
               onChange={e => setPassword(e.target.value)}
               autoComplete="current-password"
             />
+            <button type="button" className="login-password-toggle" aria-label={passwordVisible ? 'Hide password' : 'Show password'} aria-controls="login-password" aria-pressed={passwordVisible} onClick={() => setPasswordVisible(visible => !visible)}>
+              {passwordVisible ? <EyeOff size={20} aria-hidden="true" /> : <Eye size={20} aria-hidden="true" />}
+            </button>
           </div>
         </div>
         {error && <p role="alert" className="text-sm">{error}</p>}
@@ -98,7 +102,15 @@ export default function LoginPanel({ className = '' }) {
       </form>
 
       {supabase && <div className="login-google-access">
-        <button type="button" className="btn btn-secondary w-full" disabled={busy || !googleEnabled} onClick={handleGoogle}>Sign in with Google</button>
+        <button type="button" className="btn btn-secondary w-full" disabled={busy || !googleEnabled} onClick={handleGoogle}>
+          <svg className="login-google-icon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path fill="#4285F4" d="M22.56 12.25c0-.73-.06-1.42-.19-2.09H12v3.96h5.92a5.06 5.06 0 0 1-2.2 3.32v2.76h3.56c2.08-1.92 3.28-4.74 3.28-7.95Z" />
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.8l-3.56-2.76c-.98.66-2.23 1.06-3.72 1.06-2.87 0-5.3-1.94-6.17-4.54H2.15v2.85A11 11 0 0 0 12 23Z" />
+            <path fill="#FBBC05" d="M5.83 13.96a6.6 6.6 0 0 1 0-3.92V7.19H2.15a11 11 0 0 0 0 9.62l3.68-2.85Z" />
+            <path fill="#EA4335" d="M12 5.5c1.62 0 3.06.56 4.21 1.64l3.15-3.15A10.56 10.56 0 0 0 12 1a11 11 0 0 0-9.85 6.19l3.68 2.85C6.7 7.44 9.13 5.5 12 5.5Z" />
+          </svg>
+          Sign in with Google
+        </button>
         <p className="login-note">{googleEnabled ? 'System admin: choose your Google account. Other roles use email and password.' : 'Google sign-in is temporarily unavailable.'}</p>
       </div>}
 

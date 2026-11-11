@@ -1,5 +1,9 @@
 # Backend System
 
+## Sign-in icon controls, 11 November 2026
+
+The password eye toggles only the local input type, with a labelled non-submit button. It preserves the typed value without storing the visibility preference or password as view hints. The inline Google mark has no network dependency and remains present in disabled/busy states. Authentication endpoints, provider availability checks, role assignment and session restoration are unchanged. The capture pipeline tests keyboard toggling, unchanged value, no accidental form submission, phone fit and busy-state visibility using held synthetic authentication responses; it does not perform a live sign-in. [Guide](../system-manual/01-getting-started/README.md#password-visibility-and-google-icon).
+
 ## Authorized reload restoration, 10 November 2026
 
 `AuthContext` keeps `ProtectedRoute` gated through bootstrap instead of publishing the base admin early and redirecting an academic URL to Dashboard. The Supabase callback remains synchronous; deferred restoration first calls `supabase.auth.getUser(accessToken)` and then, when a saved person is selected, `GET /api/ai?action=support&subject=<uuid>`. Each stage has a 20-second client deadline, and generation/abort guards ignore late responses after logout or another session transition. The read-only GET returns the currently authorized subject DTO through the existing live owner/target checks. It does not replay an account-enter/leave operation. A returned ID or role that differs from the saved reference is rejected. The approach follows Supabase's [verified user lookup](https://supabase.com/docs/reference/javascript/auth-getuser) and [auth event subscription](https://supabase.com/docs/reference/javascript/auth-onauthstatechange) contracts.

@@ -1,5 +1,7 @@
 # 01 · Public site
 
+The shared sign-in panel now includes a visible eye button that switches between **Show password** and **Hide password**, plus the multicolour Google mark beside **Sign in with Google**. The envelope and lock icons remain. See the [keyboard, revealed and busy-state captures](../../system-manual/01-getting-started/README.md#password-visibility-and-google-icon). The sign-in panel and study-door screenshots below are recaptured with these controls.
+
 These are the pages a visitor sees before signing in:
 * `/`: the home page, a walk through a 3D school with one section on each surface;
 * `/features`, `/how-it-works`, `/roles`, `/pulse`, `/impact`, `/colleges`, `/play` and `/faq`: the eight pages in the top bar, each one themed classroom in 3D that fills the screen and does not scroll: tap something in the room to zoom in on it and read its card;

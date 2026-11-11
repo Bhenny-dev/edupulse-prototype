@@ -1,5 +1,15 @@
 # 06 · Mobile (390 px)
 
+## Sign-in icons
+
+The password eye is a 44-pixel touch control at the right of the field. **Show password** reveals the entered value; **Hide password** masks it without submitting or clearing it. The Google mark remains beside **Sign in with Google**, including while that action is disabled during sign-in. These component crops hide the fixed public bar and capture-only preview controls; their example input and authentication transport are synthetic.
+
+![Phone sign-in with eye and Google mark](../../system-manual/01-getting-started/mobile-01-sign-in-icons.png)
+
+![Phone password visibility control with illustrative text](../../system-manual/01-getting-started/mobile-02-password-revealed.png)
+
+![Phone icons remain visible during sign-in](../../system-manual/01-getting-started/mobile-03-sign-in-busy.png)
+
 An admin-selected student remains selected after browser reload on a phone. Authorization runs before the academic view reopens; service failure retains the current URL with retry and explicit admin-exit controls. See the [mobile restored view and recovery captures](../../system-manual/23-account-support-and-pulse-context/README.md#reload-the-selected-account-without-returning-to-dashboard). The mobile navigation surface also reopens after reload and closes when a destination is chosen.
 
 The same application on a phone-sized screen (iPhone 13 viewport, captured at 3× pixel density). Nothing is hidden behind a separate mobile app; the layout reflows.

@@ -1516,6 +1516,11 @@ textarea:focus-visible {
 }
 
 .login-input-wrap .form-input { width: 100%; padding-left: 44px; }
+.login-input-wrap .login-password-input { padding-right: 56px; }
+.login-password-toggle { position:absolute; right:4px; display:flex; align-items:center; justify-content:center; width:44px; height:44px; padding:0; border:0; border-radius:8px; background:transparent; color:var(--gray-600); cursor:pointer; }
+.login-password-toggle:hover { background:var(--gray-100); }
+.login-password-toggle:focus-visible { outline:2px solid var(--sky-500); outline-offset:1px; }
+.login-google-icon { flex-shrink:0; }
 
 .login-submit { margin-top: 4px; }
 

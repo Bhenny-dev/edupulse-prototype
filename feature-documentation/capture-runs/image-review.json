@@ -7620,6 +7620,54 @@
       "sha256": "07e6b4bc5d3236c4ab813bd83ea0fba3b7181d5ca695f68b3af8f7a5d2ca8881",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-10T06:33:14.045Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/01-getting-started/01-sign-in-icons.png",
+      "sha256": "c45cbe3855a6bbe1ed417d574cebaef0fcd422ae05a7aa6a82bdc97f13d2fcd8",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-11T05:17:30.440433+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/01-getting-started/02-password-revealed.png",
+      "sha256": "02b1863a6296418c25b04f09edd03f139c84d54354948aa87d880bff43b202bc",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-11T05:17:30.442116+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/01-getting-started/03-sign-in-busy.png",
+      "sha256": "bc21640c60a256d98519e09986c09dbe735a6908add791021aaa4ccdf0b72879",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-11T05:17:30.443537+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/01-getting-started/mobile-01-sign-in-icons.png",
+      "sha256": "fb100ed1e498cb8d39100bcc5ce2b7134009aa2c68b5fb2690b1df7da7612901",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-11T05:17:30.444787+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/01-getting-started/mobile-02-password-revealed.png",
+      "sha256": "241cc0774292d6be8d525b5ce709ed1fa645d8c7187e06960055b7e27880bb29",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-11T05:17:30.446134+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/01-getting-started/mobile-03-sign-in-busy.png",
+      "sha256": "ad10cc070d90fb9486cef1e4f52478f7c9c55d810b8e1967d1da816aa65e8225",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-11T05:17:30.446771+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/13-sign-in-panel.png",
+      "sha256": "778d34c5dd00e3740540f360bcb480b9cfa1415e17e1e41d794be86f1895329b",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-11T05:17:30.447745+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/01-public-site/29-walk-door.png",
+      "sha256": "9c4a93e85867654631967dfdbc168ef2bed9588f5dd0bf6f7412afd7e99353ab",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-11T05:17:30.448887+00:00"
     }
   ]
 }
