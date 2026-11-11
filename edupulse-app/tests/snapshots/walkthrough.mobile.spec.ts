@@ -3,7 +3,7 @@ import { mkdir } from 'node:fs/promises'
 
 // Mobile walkthrough (iPhone 13 viewport, Chromium). Output: system-walkthrough/06-mobile.
 const DIR = '../feature-documentation/system-walkthrough/06-mobile'
-async function shot(page: Page, name: string) { await mkdir(DIR, { recursive: true }); await page.waitForTimeout(400); await page.screenshot({ path: `${DIR}/${name}.png`, animations: 'disabled' }) }
+async function shot(page: Page, name: string) { if(process.env.SNAPSHOT_SCENES&&!new RegExp(process.env.SNAPSHOT_SCENES).test(`06-mobile/${name}`))return; await mkdir(DIR, { recursive: true }); await page.waitForTimeout(400); await page.screenshot({ path: `${DIR}/${name}.png`, animations: 'disabled' }) }
 
 test('mobile landing page', async ({ page }) => {
   // As on desktop, the landing page is captured complete and still (reduced motion).
@@ -39,6 +39,8 @@ test('mobile walkthrough', async ({ page }) => {
   await shot(page, '03-navigation-menu')
   await page.getByRole('button', { name: 'Close menu' }).click()
   await page.goto('/#/syllabus?tab=builder')
+  await expect(page.getByRole('heading', {name:'Syllabus Builder',exact:true})).toBeVisible()
+  await expect(page.getByRole('button', {name:'Load curriculum outline',exact:true})).toHaveCount(0)
   await shot(page, '04-syllabus-builder')
   await page.getByRole('button', { name: 'Open Pulse assistant' }).click()
   await expect(page.getByRole('dialog', { name: 'Pulse', exact: true })).toBeVisible()

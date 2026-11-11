@@ -14,9 +14,11 @@ An admin-selected student remains selected after browser reload on a phone. Auth
 
 The same application on a phone-sized screen (iPhone 13 viewport, captured at 3× pixel density). Nothing is hidden behind a separate mobile app; the layout reflows.
 
+The Syllabus Builder header no longer contains the curriculum-outline loading button. Its upload area remains the entry point for PDF/DOCX import; **Upload Different** appears after accepting a file.
+
 The instructor's four summary cards are tappable links. [Manual 22](../../system-manual/22-dashboard-summary-navigation/README.md#keyboard-dark-mode-and-mobile) shows their mobile layout and the draft-course destination, including **Show all courses**.
 
-The mobile recaptures record the mobile suite centrally in [capture-run evidence](../../capture-runs/README.md). In the visible Pulse state, page guidance and source search are ready while conversation/drafting requires model setup. **Set up free / provider AI** opens connection settings. The settings image shows **Pulse AI connection**, **Set up Pulse AI** and the first **OpenAI / ChatGPT** connection choice. Claude, OpenRouter and the provider selector continue below this viewport. [Manual 8](../../system-manual/08-ai-connections/README.md) includes the full mobile connection card with a synthetic saved credential and model-test controls.
+The mobile recaptures record the mobile suite centrally in [capture-run evidence](../../capture-runs/README.md). The Pulse image shows **What would you like help with?**, its message composer, attachment control, **Pulse options** and close control. Page guidance is available from Pulse options. The settings image shows **Pulse AI connection**, **Set up Pulse AI** and the first **OpenAI / ChatGPT** connection choice. Claude, OpenRouter and the provider selector continue below this viewport. [Manual 8](../../system-manual/08-ai-connections/README.md) includes the full mobile connection card with a synthetic saved credential and model-test controls.
 
 | # | Screenshot | What changes on a phone |
 | --- | --- | --- |

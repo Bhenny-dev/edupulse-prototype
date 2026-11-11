@@ -8298,6 +8298,78 @@
       "sha256": "250df50dc8c4de2ea13c8b85adafee7d73e490cbe1167893ffb17ee49e1746e8",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-11T20:15:18.801047+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/12-import-preview.png",
+      "sha256": "4cd14d02a274a08218a1f5ec0961b2b0069bd368f1ee55b7a25f08c9a9995fb3",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-11T20:44:52.379082+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/13-import-error.png",
+      "sha256": "ab5324470ff941d7bac59bfa20cf664d1a24aa9e2cf7d154be8b64a4147c5cf2",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-11T20:44:52.379082+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/14-pdf-import-preview.png",
+      "sha256": "4ce4dfa4a1276c7342194c33421c666e48042e3a2a8e2ab007dc6d7e1d48dd84",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-11T20:44:52.379082+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/07-pulse-guidance/01-dragging-over-component.png",
+      "sha256": "61b6efa1f17f5e16d23ead975db5c3bdc170c2de56348912dfa058371e445653",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-11T20:44:52.379082+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/07-pulse-guidance/02-focused-component-brief.png",
+      "sha256": "05f293d3e168f3e5d75131b746795c9fabf8bf891cd8202f59c1c309d31cca95",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-11T20:44:52.379082+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/07-pulse-guidance/03-section-tour-waits-for-input.png",
+      "sha256": "529ea24ebe0066ff0027531ebd28af94ff32cc6bb16061e5dfd0b24095a2c756",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-11T20:44:52.379082+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/07-pulse-guidance/04-section-tour-next-control.png",
+      "sha256": "1d12a2bad577720581e398ce5d0733c187f532b357f559fca1ead6d760a05bb8",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-11T20:44:52.379082+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/07-pulse-guidance/05-drop-rejected-with-reason.png",
+      "sha256": "9b0360103948bf97e75f60b313cf0e0593911ce3bb3baac2ebc1530a14b94179",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-11T20:44:52.379082+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/02-shared-interface/18-pulse-dwell-help.png",
+      "sha256": "305715dcddc8cb8a319dbfb15ce1cf2e29994ce769b52b33bec14c0b029614da",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-11T20:44:52.379082+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/04-instructor/05-syllabus-builder.png",
+      "sha256": "6ff050357cac62faaf840a4de4f107429f54a308f30d7e7b1166dc2b3acf51e6",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-11T20:44:52.379082+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/06-mobile/04-syllabus-builder.png",
+      "sha256": "7e1686791d3243348a0e1d51b92981add1c80e285dd7bbf068bc121a71eecd22",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-11T20:44:52.379082+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/06-mobile/05-pulse-panel.png",
+      "sha256": "5d65c6c038195af1b3b29af808e3a50cbd32b428eb7606f6e12ea728068f9904",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-11T20:44:52.379082+00:00"
     }
   ]
 }

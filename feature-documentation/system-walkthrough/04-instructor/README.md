@@ -33,7 +33,7 @@ The DOCX/PDF upload area accepts files up to 2 MB. Scanned PDFs use OCR on the d
 
 ![Syllabus Builder](05-syllabus-builder.png)
 
-The seven-section template. Start by dropping an existing syllabus `.docx` or `.pdf` and accepting its extracted preview, by **Load curriculum outline**, or by selecting a course in Section 1, which auto-fills the locked course information and description. Required fields are marked with an asterisk.
+The seven-section template. Start by dropping an existing syllabus `.docx` or `.pdf` and accepting its extracted preview, or by selecting a course in Section 1, which auto-fills the locked course information and description. The curriculum-outline loading button is removed. After accepting an import, **Upload Different** remains available. Required fields are marked with an asterisk.
 
 ![Course Outline section](06-syllabus-builder-course-outline.png)
 

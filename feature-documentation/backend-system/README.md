@@ -484,3 +484,7 @@ The Dean frontend now has Dashboard/Course/Instructors/Students. It consumes the
 `dean-detail:records`, `dean-detail:instructors` and `dean-detail:students` opt into the existing account/support-subject/role-scoped view mechanism. Only bounded reference strings are stored; current authorized data resolves each modal. Failed or withdrawn access cannot render an old cached roster. Navigation/reload issues no academic command, material open or inference. Legacy Dean sections/loading links redirect to the new read pages; routes reject other roles. Preview samples use an explicit separate adapter.
 
 See [Manual 36](../system-manual/36-dean-activity-records/README.md) and [validation](../versions/2026-11-11-dean-activity-records/validation/results.md).
+
+## Syllabus builder header - 12 November 2026
+
+The owner-requested removal of **Load curriculum outline** changes only the builder header and its introduction. Existing Pulse curriculum-copy handlers remain available to their callers. Upload/extraction, course selection, model generation, workspace saves, view restoration and API permissions are unchanged. The unused loading flag is removed. See [validation](../versions/2026-11-12-builder-header/validation/results.md).

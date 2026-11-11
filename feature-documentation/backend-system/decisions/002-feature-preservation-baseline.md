@@ -65,3 +65,7 @@ The owner requested a second System Admin using the specified institutional Goog
 ## Owner correction: Dean activity pages, 11 November 2026
 
 The owner authorizes Dean navigation **Dashboard, Course, Instructors, Students**, clickable shared summary cards, read-only course/load/class-list statistics, removal of Dean import/Templates/History/block-edit controls, and year-grouped blocks opening downloadable student lists. This supersedes the earlier identical Dean/Associate Dean interface requirement for these controls only. Confirmed records and backend permissions remain; Associate Dean shared imports/loading/templates/history/block correction remain. Dean oversight, offline review and read-only Performance remain accessible from the new pages. [Manual 36](../../system-manual/36-dean-activity-records/README.md) records the replacement and reload behavior.
+
+## Owner correction: syllabus builder header, 12 November 2026
+
+The owner explicitly removes **Load curriculum outline** from the Syllabus Builder header. The matching introduction no longer offers that action. File import, **Upload Different**, curriculum course selection and Pulse drafting retain their existing behavior; this is not a change to generation, storage, authorization or reload restoration.

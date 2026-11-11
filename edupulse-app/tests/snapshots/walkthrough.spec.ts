@@ -319,7 +319,7 @@ test('instructor', async ({ page, request }) => {
     { folder: f, name: '02-monitoring-course-students', title: 'Student Monitoring · Students', path: '/student-monitoring?tab=students', fullPage: true },
     { folder: f, name: '03-syllabus-my-syllabus', title: 'Syllabus · My Syllabus (approved uploads, saved syllabi and versions)', path: '/syllabus?tab=mine', fullPage: true },
     { folder: f, name: '04-syllabus-shared-repository', title: 'Syllabus · Shared Repository', path: '/syllabus?tab=mine', act: tab('Shared Repository') },
-    { folder: f, name: '05-syllabus-builder', title: 'Syllabus Builder (upload or build the 7 sections)', path: '/syllabus?tab=builder' },
+    { folder: f, name: '05-syllabus-builder', title: 'Syllabus Builder (upload or build the 7 sections)', path: '/syllabus?tab=builder', act: async p => { await expect(p.getByRole('heading', {name:'Syllabus Builder',exact:true})).toBeVisible(); await expect(p.getByRole('button', {name:'Load curriculum outline',exact:true})).toHaveCount(0) } },
     // The outline headings stick under the top bar while scrolling; in a capture taller than the window they stay at the top of the table.
     { folder: f, name: '06-syllabus-builder-course-outline', title: 'Syllabus Builder · Section 5 Course Outline', path: '/syllabus?tab=builder', element: p => p.locator('[data-section="5"]'), style: '.outline-table thead th{position:static !important}' },
     { folder: f, name: '07-courseware-my-courseware', title: 'Course · combined course list and approved syllabus intake', path: '/courseware', fullPage: true },

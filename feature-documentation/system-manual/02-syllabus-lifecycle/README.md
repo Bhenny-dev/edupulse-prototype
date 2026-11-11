@@ -34,7 +34,7 @@ PDF is the primary institutional intake format; Word `.docx` is also supported. 
 
 2. In **Section 5 · Course Outline**, write each week's **intended learning outcome** and **topics** (use **Add Topic** for more), and optionally activities, teaching materials and assessments. Weeks 9 and 18 are the midterm and final examinations. This outline is what courseware is generated from, so write measurable outcomes.
 
-   For a new draft, ask Pulse to generate the editable fields for the selected course. Review its field-by-field proposal, research sources and pending institutional rules before applying or saving it. See [Generate a syllabus from the selected course](../09-pulse-actions/README.md#generate-a-syllabus-from-the-selected-course). **Load curriculum outline** remains a reference-copy action.
+   For a new draft, ask Pulse to generate the editable fields for the selected course. Review its field-by-field proposal, research sources and pending institutional rules before applying or saving it. See [Generate a syllabus from the selected course](../09-pulse-actions/README.md#generate-a-syllabus-from-the-selected-course). The builder header has no curriculum-outline loading button. After accepting an imported file, **Upload Different** remains available.
 
    ![Writing the course outline](02-write-course-outline.png)
 

@@ -26,6 +26,8 @@ test('syllabus DOCX import previews, accepts, and retries the same file', async 
   await input.setInputFiles(upload)
   await expect(page.getByText('Extracted Sections Preview', { exact: true })).toBeVisible()
   await page.getByRole('button', { name: 'Use This Syllabus', exact: true }).click()
+  await expect(page.getByRole('button', { name: 'Upload Different', exact: true })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Load curriculum outline', exact: true })).toHaveCount(0)
   await expect(page.getByRole('combobox', { name: 'Course', exact: true })).toHaveValue('IT 102')
   await expect(page.getByPlaceholder('Topic...', { exact: true }).first()).toHaveValue('Variables and assignment')
 })

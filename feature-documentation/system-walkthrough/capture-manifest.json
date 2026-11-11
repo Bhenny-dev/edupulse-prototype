@@ -1,5 +1,5 @@
 {
-  "capturedAt": "2026-11-11T13:17:51.294Z",
+  "capturedAt": "2026-11-11T20:41:40.957Z",
   "problems": [],
   "scenes": [
     {
@@ -131,14 +131,6 @@
       "ok": true
     },
     {
-      "role": "all roles",
-      "folder": "02-shared-interface",
-      "file": "18-pulse-dwell-help.png",
-      "title": "“Ask Pulse about this” hover badge",
-      "route": "/syllabus",
-      "ok": true
-    },
-    {
       "role": "system admin",
       "folder": "07-system-admin",
       "file": "01-system-console.png",
@@ -199,14 +191,6 @@
       "folder": "04-instructor",
       "file": "04-syllabus-shared-repository.png",
       "title": "Syllabus · Shared Repository",
-      "route": "/syllabus",
-      "ok": true
-    },
-    {
-      "role": "instructor",
-      "folder": "04-instructor",
-      "file": "05-syllabus-builder.png",
-      "title": "Syllabus Builder (upload or build the 7 sections)",
       "route": "/syllabus",
       "ok": true
     },
@@ -864,6 +848,22 @@
       "file": "02-course-loading-loaded-courses.png",
       "title": "Course Loading · Loaded Courses",
       "route": "/records",
+      "ok": true
+    },
+    {
+      "role": "all roles",
+      "folder": "02-shared-interface",
+      "file": "18-pulse-dwell-help.png",
+      "title": "“Ask Pulse about this” hover badge",
+      "route": "/syllabus",
+      "ok": true
+    },
+    {
+      "role": "instructor",
+      "folder": "04-instructor",
+      "file": "05-syllabus-builder.png",
+      "title": "Syllabus Builder (upload or build the 7 sections)",
+      "route": "/syllabus",
       "ok": true
     }
   ]
