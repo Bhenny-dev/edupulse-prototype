@@ -645,7 +645,11 @@ test('on a phone the sections scroll as ordinary content with the school behind 
   const drawn = () => canvas.evaluate(element => (getComputedStyle(element).display === 'none' ? 'stopped' : getComputedStyle(element).visibility))
   await expect.poll(drawn, { timeout: 20_000 }).toMatch(/^(visible|stopped)$/)
   // The agents and the workspace have their own screens, and the school rests behind them.
-  await showSection(page, 'workspace')
+  // Its section starts behind the pinned agents scope. Use the public room link,
+  // which lands after that scope, where the workspace is actually readable.
+  await page.getByRole('button', { name: /speed dial/ }).click()
+  await page.getByRole('navigation', { name: 'Jump to a room' }).getByRole('link', { name: 'Agent room', exact: true }).click()
+  await expect(page.locator('#workspace .ws-room')).toBeVisible()
   await expect.poll(drawn, { timeout: 20_000 }).toMatch(/^(hidden|stopped)$/)
 })
 

@@ -385,8 +385,9 @@ function InstructorDashboard({ model, actions = exportButton, status }) {
               {model.blocks.map(bs => (
                 <div key={bs.id} style={{ padding: '12px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--sky-100)', background: 'var(--sky-50)' }}>
                   <div style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--sky-600)' }}>{bs.code}</div>
+                  <div className="text-sm" style={{fontWeight:600,marginTop:4}}>{bs.course}</div>
                   <div className="text-sm text-muted">{bs.detail}</div>
-                  <button className="btn btn-secondary btn-sm" style={{ marginTop: '8px', width: '100%' }} onClick={() => navigate('/student-monitoring')}>Student Monitoring <ArrowRight size={12} /></button>
+                  <button className="btn btn-secondary btn-sm" style={{ marginTop: '8px', width: '100%' }} onClick={() => navigate(bs.courseId?`/student-monitoring?tab=assessments&course=${encodeURIComponent(bs.courseId)}&block=${encodeURIComponent(bs.code)}`:'/student-monitoring')}>Student Monitoring <ArrowRight size={12} /></button>
                 </div>
               ))}
             </div>
@@ -401,24 +402,25 @@ function InstructorDashboard({ model, actions = exportButton, status }) {
           <button className="btn btn-secondary btn-sm" onClick={() => navigate('/student-monitoring')}>Full Monitoring <ArrowRight size={14} /></button>
         </div>
         <div className="card-body">
-          <div className="kpi-grid">
+          {model.snapshot.average===null ? <p className="academic-empty">No marked scores yet. Published assessment results appear here after submission and any required instructor marking.</p> : <><div className="kpi-grid">
             <div style={{ textAlign: 'center', padding: '12px' }}>
-              <div className="kpi-value"><AnimatedNumber value={model.snapshot.students} /></div>
+              <div className="kpi-value"><span>{model.snapshot.students}</span></div>
               <div className="kpi-label">Students</div>
             </div>
             <div style={{ textAlign: 'center', padding: '12px' }}>
-              <div className="kpi-value" style={{ color: 'var(--green-500)' }}><AnimatedNumber value={average.value} suffix={average.suffix} /></div>
+              <div className="kpi-value" style={{ color: 'var(--green-500)' }}><span>{average.value}{average.suffix}</span></div>
               <div className="kpi-label">Avg. Score</div>
             </div>
             <div style={{ textAlign: 'center', padding: '12px' }}>
-              <div className="kpi-value" style={{ color: 'var(--red-500)' }}><AnimatedNumber value={model.snapshot.below} /></div>
+              <div className="kpi-value" style={{ color: 'var(--red-500)' }}><span>{model.snapshot.below}</span></div>
               <div className="kpi-label">Below 75</div>
             </div>
             <div style={{ textAlign: 'center', padding: '12px' }}>
-              <div className="kpi-value" style={{ color: 'var(--sky-500)' }}><AnimatedNumber value={model.snapshot.top} /></div>
+              <div className="kpi-value" style={{ color: 'var(--sky-500)' }}><span>{model.snapshot.top}</span></div>
               <div className="kpi-label">90 and Above</div>
             </div>
           </div>
+          {model.snapshot.scored!==undefined&&<p className="text-sm text-muted">{model.snapshot.scored} {model.snapshot.scored===1?'student':'students'} with marked results. Unsubmitted and unmarked work is excluded.</p>}
           <p className="text-sm text-muted" style={{ margin: '12px 0 4px' }}>{model.snapshot.caption}</p>
           {model.snapshot.chart.length > 0 && (
             <ResponsiveContainer width="100%" height={200}>
@@ -431,6 +433,8 @@ function InstructorDashboard({ model, actions = exportButton, status }) {
               </BarChart>
             </ResponsiveContainer>
           )}
+          {(model.snapshot.results||[]).length>0&&<div className="academic-table-wrap"><table className="data-table"><thead><tr><th>Course</th><th>Assessment</th><th>Average</th><th>Marked results</th></tr></thead><tbody>{model.snapshot.results.map(item=><tr key={item.id}><td data-label="Course">{item.course}</td><td data-label="Assessment">Week {item.week} · {item.title}{item.test&&<span className="text-sm text-muted"> · Includes pipeline test</span>}</td><td data-label="Average">{item.score}%</td><td data-label="Marked results">{item.marked}</td></tr>)}</tbody></table></div>}
+          </>}
         </div>
       </div>
 

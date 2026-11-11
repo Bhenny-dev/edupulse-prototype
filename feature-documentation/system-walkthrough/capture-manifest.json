@@ -1,5 +1,5 @@
 {
-  "capturedAt": "2026-11-11T20:41:40.957Z",
+  "capturedAt": "2026-11-11T22:00:57.673Z",
   "problems": [],
   "scenes": [
     {
@@ -245,25 +245,9 @@
     {
       "role": "instructor",
       "folder": "04-instructor",
-      "file": "01-dashboard.png",
-      "title": "Instructor dashboard",
-      "route": "/dashboard",
-      "ok": true
-    },
-    {
-      "role": "instructor",
-      "folder": "04-instructor",
       "file": "02-monitoring-course-students.png",
       "title": "Student Monitoring · Students",
       "route": "/student-monitoring",
-      "ok": true
-    },
-    {
-      "role": "instructor",
-      "folder": "04-instructor",
-      "file": "04-syllabus-shared-repository.png",
-      "title": "Syllabus · Shared Repository",
-      "route": "/syllabus",
       "ok": true
     },
     {
@@ -803,14 +787,6 @@
       "ok": true
     },
     {
-      "role": "instructor",
-      "folder": "04-instructor",
-      "file": "03-syllabus-my-syllabus.png",
-      "title": "Syllabus · My Syllabus (approved uploads, saved syllabi and versions)",
-      "route": "/syllabus",
-      "ok": true
-    },
-    {
       "role": "public",
       "folder": "01-public-site",
       "file": "13-sign-in-panel.png",
@@ -864,6 +840,30 @@
       "file": "10-course-syllabi.png",
       "title": "Dean Course syllabi",
       "route": "/records",
+      "ok": true
+    },
+    {
+      "role": "instructor",
+      "folder": "04-instructor",
+      "file": "01-dashboard.png",
+      "title": "Instructor dashboard",
+      "route": "/dashboard",
+      "ok": true
+    },
+    {
+      "role": "instructor",
+      "folder": "04-instructor",
+      "file": "03-syllabus-my-syllabus.png",
+      "title": "Syllabus · My Syllabus (approved uploads, saved syllabi and unified history)",
+      "route": "/syllabus",
+      "ok": true
+    },
+    {
+      "role": "instructor",
+      "folder": "04-instructor",
+      "file": "04-syllabus-shared-repository.png",
+      "title": "Syllabus · Shared Repository",
+      "route": "/syllabus",
       "ok": true
     }
   ]

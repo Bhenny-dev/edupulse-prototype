@@ -31,3 +31,7 @@ Loading/error feedback remains shared while role-specific account sections now i
 [Manual 19](../19-loading-and-saved-connections/README.md) extends these captures to provider restore/testing, Pulse dots, notification popovers, student-directory results, approved-file modals and System Admin counts. It records the reviewed surfaces and preserves existing OCR/model/generation progress rather than inventing percentages.
 
 The current mobile Monitor navigation has one **Syllabus & Delivery** destination instead of two duplicate top-level tabs. Its sample status and delivery sections remain available together. [Manual 29](../29-combined-oversight/README.md) distinguishes preview examples from signed-in oversight.
+
+## Available-width tables and charts
+
+Shared academic tables and charts fit their container, with native auto scrolling only for wider content. Short mobile tables no longer reserve a 420-pixel minimum; grid children and responsive charts can shrink. Wide matrices and the Course Outline retain their scroll regions. [Manual 36](../36-instructor-syllabi/README.md) documents the instructor changes and cross-role responsive verification.

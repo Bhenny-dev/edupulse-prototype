@@ -1,3 +1,6 @@
+import '../components/academic/academic.css'
+import useSyllabusSharing from '../components/syllabus/useSyllabusSharing'
+import { aiRequest } from '../lib/aiClient'
 import {normalizeOutlineSections,addOutlineSection,weekSections,editOutlineSection} from '../utils/outlineSections'
 import OutlineWeekTable from '../components/syllabus/OutlineWeekTable'
 import '../components/syllabus/outline-editor.css'
@@ -13,12 +16,12 @@ import { useAuth } from '../context/AuthContext'
 import { CURRICULUM_COURSES, INSTRUCTORS, DEFAULT_INSTITUTIONAL_CONTEXT, SYLLABUS_STATUS_META } from '../data/mockData'
 import { useToast } from '../context/ToastContext'
 import {
-  Upload, Plus, Trash2, Eye, History, Copy, Archive,
+  Upload, Plus, Trash2, Eye, History, Copy, Share2,
   GitCompare, Download, BookOpen, ChevronDown, ChevronUp,
   Sparkles, AlertCircle, CheckCircle, FileUp, ScanLine,
   Lock, Paperclip,
 } from 'lucide-react'
-import { useWorkspace } from '../context/WorkspaceContext'
+import { useWorkspace, useWorkspaceViewState } from '../context/WorkspaceContext'
 import ApprovedSyllabusUpload from '../components/syllabus/ApprovedSyllabusUpload'
 import ApprovedSyllabusIntake from '../components/syllabus/ApprovedSyllabusIntake'
 import { meaningfulOutline, downloadApprovedFile } from '../utils/syllabusFiles'
@@ -160,7 +163,7 @@ function SyllabusViewModal({ syllabus, onClose }) {
             <h2 style={{ fontSize: '1.125rem' }}>{ci.courseCode || syllabus.courseCode} — {ci.courseTitle || syllabus.courseTitle}</h2>
             <div style={{ display: 'flex', gap: '8px', marginTop: '6px', fontSize: '0.75rem' }}>
               <span className={`badge badge-${syllabus.status || 'draft'}`}>{syllabus.status || 'Preview only'}</span>
-              <span className="badge badge-draft">v{syllabus.version}</span>
+              {syllabus.version&&<span className="badge badge-draft">v{syllabus.version}</span>}{syllabus.sharedCopy&&<span className="text-muted">Shared by {syllabus.sharedBy?.name} · Read-only copy</span>}
               {inst && <span className="text-muted">{inst.name}</span>}
             </div>
           </div>
@@ -994,12 +997,39 @@ export default function Syllabus() {
   const [searchParams, setSearchParams] = useSearchParams()
 
   const [tab, setTab] = useState(['mine', 'repository', 'builder'].includes(searchParams.get('tab')) ? searchParams.get('tab') : 'mine')
-  const [selectedSyllabus, setSelectedSyllabus] = useState(null)
+  const [readerId,setReaderId]=useWorkspaceViewState('syllabus-reader',null)
+  const [readerVersion,setReaderVersion]=useWorkspaceViewState('syllabus-version',null)
+  const [sharedReader,setSharedReader]=useState(null)
+  const [previewSyllabus,setPreviewSyllabus]=useState(null)
+  const sharing=useSyllabusSharing()
+  const [shareId,setShareId]=useWorkspaceViewState('syllabus-share',null)
+  const [deleteId,setDeleteId]=useWorkspaceViewState('syllabus-delete',null)
+  const [email,setEmail]=useState(''),[actionError,setActionError]=useState(''),[actionBusy,setActionBusy]=useState(false)
   const [compareSyllabus, setCompareSyllabus] = useState(null)
-  const [showVersionHistory, setShowVersionHistory] = useState(false)
-  const [versionHistorySyllabus, setVersionHistorySyllabus] = useState(null)
+  const [historyId,setHistoryId]=useWorkspaceViewState('syllabus-history',null)
+  const showVersionHistory=!!historyId
+  const setShowVersionHistory=value=>{if(!value)setHistoryId(null)}
+  const setVersionHistorySyllabus=syllabus=>setHistoryId(syllabus?.id||null)
   const [extractingSyllabus, setExtractingSyllabus] = useState(null)
-  const { syllabi, setSyllabi, commit, updateWorkspace } = useWorkspace()
+  const { syllabi, setSyllabi, commit, updateWorkspace,revision,dirty,saving,loading:workspaceLoading } = useWorkspace()
+  const versionHistorySyllabus=syllabi.find(item=>item.id===historyId)
+  const sharedId=readerId?.startsWith('shared:')?readerId.slice(7):null
+  const readableShare=sharing.shares.find(item=>item.id===sharedId)
+  const ownedReader=syllabi.find(item=>item.id===readerId)
+  const selectedSyllabus=previewSyllabus||(sharedId?(readableShare&&sharedReader?.id===sharedId?sharedReader.syllabus:null):(readerVersion!==null?ownedReader?.versions?.[readerVersion]:ownedReader))
+  const setSelectedSyllabus=syllabus=>{setReaderVersion(null);const saved=syllabus&&syllabi.some(item=>item.id===syllabus.id);setPreviewSyllabus(syllabus&&!saved?syllabus:null);setReaderId(saved?syllabus.id:null)}
+  useEffect(()=>{
+    setSharedReader(null)
+    if(!readableShare)return
+    const controller=new AbortController()
+    aiRequest('syllabi','POST',{operation:'open',id:readableShare.id},controller.signal).then(result=>{if(!controller.signal.aborted)setSharedReader({id:readableShare.id,syllabus:{...result.syllabus,id:`shared:${readableShare.id}`,status:'drafted',sharedCopy:true,sharedBy:{name:readableShare.sender_name,id:readableShare.sender_id}}})}).catch(error=>{if(!controller.signal.aborted)setActionError(error.message)})
+    return()=>controller.abort()
+  },[readableShare])
+  const incoming=sharing.shares.filter(item=>item.recipient_id===user?.id)
+  const outgoing=sharing.shares.filter(item=>item.sender_id===user?.id)
+  const deleteSyllabus=syllabi.find(item=>item.id===deleteId)
+  const deleteShare=sharing.shares.find(item=>`shared:${item.id}`===deleteId)
+  const sharingSyllabus=syllabi.find(item=>item.id===shareId)
   const activeOnly = searchParams.get('status') === 'active'
   const listedSyllabi = activeOnly ? syllabi.filter(syllabus => syllabus.status === 'active') : syllabi
   const {data:academic}=useAcademicRecords()
@@ -1082,9 +1112,9 @@ export default function Syllabus() {
   }
 
   // Handle syllabus attachment from SharedSyllabusRepository
-  const handleAttachSyllabus = (syllabus) => {
+  const handleAttachSyllabus = async (syllabus) => {
     const copy = record({ ...syllabus, id: crypto.randomUUID(), instructorId: user?.id, version: 1, sample: false, approvedFile: undefined, extractedAt: undefined, history: [] }, 'drafted')
-    setSyllabi(previous => [...previous, copy])
+    await commit(data=>({...data,syllabi:[...data.syllabi,copy]}))
     addToast('Copied as a new draft. Review and complete its approval route.', 'success')
     switchTab('mine')
   }
@@ -1097,6 +1127,8 @@ export default function Syllabus() {
 
       {user?.authenticated && (academic.institutional || []).some(item=>item.kind==='loads') && <section className="card mb-24"><div className="card-header"><h2>Confirmed course loads</h2></div><div className="card-body"><p>These shared EduSuite loads identify the courses and blocks assigned to your account. Upload an approved syllabus or start a draft in Syllabus Builder; matching rosters join the published course automatically.</p>{academic.institutional.filter(item=>item.kind==='loads'&&item.data.InstructorID===user.id).map(item=><p key={item.record_key}>{item.data.CourseCode} · {item.data.Block} ? Semester {item.data.Semester}</p>)}</div></section>}
       {editingSyllabus?.status==='active'&&<p role="alert" className="mb-16">Saving a revision returns this syllabus to Drafted and hides its published courseware until the approved outline is activated again. Changed teaching weeks require another courseware review.</p>}
+      {sharing.allowed&&<div className="academic-actions mb-16"><button className="btn btn-secondary btn-sm" disabled={sharing.loading} onClick={()=>sharing.load()}>{sharing.loading?'Loading shared syllabi…':'Refresh shared syllabi'}</button>{sharing.error&&<p role="alert">{sharing.error}</p>}</div>}
+      {actionError&&!sharingSyllabus&&!deleteSyllabus&&!deleteShare&&<p role="alert">{actionError}</p>}
       {/* Tabs */}
       <div style={{ display: 'flex', gap: '0', borderBottom: '2px solid var(--gray-200)', marginBottom: '20px' }}>
         <button
@@ -1146,38 +1178,29 @@ export default function Syllabus() {
                 <p>{activeOnly ? 'No active syllabi yet.' : 'No saved syllabi yet. Upload an approved copy above, or create a draft in Syllabus Builder.'}</p>
               </div></div>
             ) : (
-              <table className="data-table" style={{ display: 'block', overflowX: 'auto', maxWidth: '100%' }}>
+              <div className="academic-table-wrap"><table className="data-table syllabus-list">
                 <thead>
                   <tr>
                     <th>Course</th>
                     <th>Instructor</th>
                     <th>Status</th>
-                    <th>Version</th>
-                    <th>Outline</th>
                     <th>Next Step</th>
-                    <th></th>
+                    <th><span className="sr-only">Actions</span></th>
                   </tr>
                 </thead>
                 <tbody>
                   {listedSyllabi.map(syl => {
                     const inst = INSTRUCTORS.find(i => i.id === syl.instructorId)
-                    const outlineCount = syl.courseOutline?.length || 0
                     const action = nextAction(syl)
                     return (
                       <tr key={syl.id} data-syllabus-id={syl.id} data-pulse-target={`${syl.courseCode} syllabus`}>
-                        <td>
+                        <td data-label="Course"><div style={{minWidth:0}}>
                           <div style={{ fontWeight: 700, fontSize: '0.875rem' }}>{syl.courseCode}</div>
-                          <div className="text-sm text-muted">{syl.courseTitle}{syl.sample && <span> · Sample</span>}</div>
-                        </td>
-                        <td className="text-sm">{inst?.name || user?.name || 'Instructor'}</td>
-                        <td><StatusBadge status={syl.status} /></td>
-                        <td><span className="badge badge-draft">v{syl.version}</span></td>
-                        <td className="text-sm">
-                          {syl.status === 'active'
-                            ? `${outlineCount} weeks extracted`
-                            : outlineCount > 0 ? `${outlineCount} weeks (not yet extracted)` : 'Not extracted'}
-                        </td>
-                        <td>
+                          <div className="text-sm text-muted">{syl.courseTitle}{syl.sample && <span> · Sample</span>}</div>{syl.sharedBy?.name&&<div className="text-sm text-muted">Shared by {syl.sharedBy.name}</div>}
+                        </div></td>
+                        <td className="text-sm" data-label="Instructor">{inst?.name || user?.name || 'Instructor'}</td>
+                        <td data-label="Status"><StatusBadge status={syl.status} /></td>
+                        <td data-label="Next step">
                           {action ? (
                             <button className="btn btn-secondary btn-sm" onClick={action.onClick} title={action.title} style={{ whiteSpace: 'nowrap' }}>
                               <action.icon size={13} /> {action.label}
@@ -1188,35 +1211,30 @@ export default function Syllabus() {
                             </span>
                           )}
                         </td>
-                        <td>
-                          <div style={{ display: 'flex', gap: '4px' }}>
+                        <td data-label="Actions">
+                          <div className="academic-actions">
                             <button className="btn btn-ghost btn-sm" onClick={() => setSelectedSyllabus(syl)} title="View Syllabus"><Eye size={14} /></button>
                             <button className="btn btn-ghost btn-sm" onClick={() => { setVersionHistorySyllabus(syl); setShowVersionHistory(true) }} title="Version History"><History size={14} /></button>
-                            <button className="btn btn-ghost btn-sm" onClick={() => { setVersionHistorySyllabus(syl); setShowVersionHistory(true) }} title="Review recorded changes"><GitCompare size={14} /></button>
                             {!syl.sample && (
                               <button className="btn btn-ghost btn-sm" onClick={() => { setEditingSyllabus(syl); switchTab('builder') }} title="Edit in Builder"><BookOpen size={14} /></button>
                             )}
-                            <button className="btn btn-ghost btn-sm" onClick={() => handleAttachSyllabus(syl)} title="Copy for next term"><Copy size={14} /></button>
-                            <button className="btn btn-ghost btn-sm" onClick={() => setStatus(syl.id, syl.status === 'archived' ? 'drafted' : 'archived')} title={syl.status === 'archived' ? 'Restore as draft' : 'Archive'}><Archive size={14} /></button>
+                            <button className="btn btn-ghost btn-sm" onClick={() => handleAttachSyllabus(syl).catch(error=>setActionError(error.message))} title="Copy for next term"><Copy size={14} /></button>
+                            {!syl.sample&&<button className="btn btn-ghost btn-sm" disabled={!sharing.allowed} onClick={()=>{setActionError('');setEmail('');setShareId(syl.id)}} title="Share syllabus"><Share2 size={14}/></button>}
+                            <button className="btn btn-ghost btn-sm" onClick={()=>{setActionError('');setDeleteId(syl.id)}} title="Delete syllabus"><Trash2 size={14}/></button>
                           </div>
                         </td>
                       </tr>
                     )
                   })}
                 </tbody>
-              </table>
+              </table></div>
             )}
           </div>
+          {incoming.length>0&&!activeOnly&&<section className="card mt-24"><div className="card-header"><h2>Shared with me</h2></div><div className="card-body"><p className="text-sm text-muted mb-16">Received copies stay read-only. Use as draft creates your own copy for review and offline approval.</p>{incoming.map(share=><div className="academic-list-row" key={share.id} data-shared-id={share.id}><div><strong>{share.courseCode} — {share.courseTitle}</strong><div className="text-sm text-muted">Shared by {share.sender_name}</div></div><div className="academic-actions"><button className="btn btn-secondary btn-sm" onClick={()=>{setReaderVersion(null);setReaderId(`shared:${share.id}`)}}>View shared syllabus</button><button className="btn btn-secondary btn-sm" disabled={actionBusy} onClick={async()=>{setActionBusy(true);setActionError('');try{const result=await sharing.command({operation:'open',id:share.id});await handleAttachSyllabus({...result.syllabus,sharedBy:{id:share.sender_id,name:share.sender_name}})}catch(error){setActionError(error.message)}finally{setActionBusy(false)}}}>Use as draft</button><button className="btn btn-ghost btn-sm" title="Delete received syllabus" onClick={()=>setDeleteId(`shared:${share.id}`)}><Trash2 size={14}/></button></div></div>)}</div></section>}
         </>
       )}
 
-      {/* Tab: Shared Repository (browse approved syllabi from other instructors) */}
-      {tab === 'repository' && (
-        <SharedSyllabusRepository
-          onAttach={handleAttachSyllabus}
-          onView={(syl) => setSelectedSyllabus(syl)}
-        />
-      )}
+      {tab === 'repository' && <SharedSyllabusRepository shares={outgoing} onView={share=>{setReaderVersion(null);setReaderId(`shared:${share.id}`)}} onRemove={share=>{setActionError('');setDeleteId(`shared:${share.id}`)}}/>}
 
       {/* Tab: Syllabus Builder */}
       {tab === 'builder' && (
@@ -1224,6 +1242,9 @@ export default function Syllabus() {
           <SyllabusBuilder key={editingSyllabus?.id || "new"} initial={editingSyllabus} onComplete={saveBuilder} onCancel={() => { setEditingSyllabus(null); switchTab('mine') }} />
         </div>
       )}
+
+      {sharingSyllabus&&<ModalLayer onDismiss={()=>setShareId(null)}><section className="modal-content" role="dialog" aria-modal="true" aria-label="Share syllabus"><div className="modal-header"><h2>Share {sharingSyllabus.courseCode} syllabus</h2><button className="modal-close" aria-label="Close sharing" onClick={()=>setShareId(null)}>×</button></div><p className="mb-16">Send a syllabus copy to another registered instructor. Their My Syllabus tab will show your name. Private source copies, approved attachments and courseware are excluded.</p><form onSubmit={async event=>{event.preventDefault();setActionBusy(true);setActionError('');try{const result=await sharing.command({operation:'send',syllabus:sharingSyllabus.id,revision,email});setShareId(null);addToast(`Syllabus shared with ${result.recipient}.`,'success')}catch(error){setActionError(error.message)}finally{setActionBusy(false)}}}><label className="form-label">Instructor email<input className="form-input" type="email" maxLength={254} required value={email} onChange={event=>setEmail(event.target.value)}/></label>{(dirty||saving||workspaceLoading)&&<p role="status">Wait for the workspace to finish saving before sharing.</p>}{actionError&&<p role="alert">{actionError}</p>}<div className="modal-actions"><button className="btn btn-secondary" type="button" onClick={()=>setShareId(null)}>Cancel</button><button className="btn btn-primary" type="submit" disabled={actionBusy||dirty||saving||workspaceLoading||!sharing.allowed}>{actionBusy?'Sharing…':'Share syllabus'}</button></div></form></section></ModalLayer>}
+      {(deleteSyllabus||deleteShare)&&<ModalLayer onDismiss={()=>setDeleteId(null)}><section className="modal-content" role="dialog" aria-modal="true" aria-label="Delete syllabus"><h2>{deleteSyllabus?'Delete syllabus?':deleteShare.sender_id===user.id?'Remove shared syllabus?':'Delete received syllabus?'}</h2><p className="mt-16">{deleteSyllabus?`Delete ${deleteSyllabus.courseCode} and its authored courseware from your workspace? Its publications will be withdrawn. Recorded assessment history and independently shared copies are retained.`:deleteShare.sender_id===user.id?'Withdraw this shared entry from the recipient. Their independently saved draft is retained.':'Remove this received entry from My Syllabus. Your saved draft and the sender’s syllabus are retained.'}</p>{actionError&&<p role="alert">{actionError}</p>}<div className="modal-actions"><button className="btn btn-secondary" onClick={()=>setDeleteId(null)}>Cancel</button><button className="btn btn-primary" disabled={actionBusy} onClick={async()=>{setActionBusy(true);setActionError('');try{if(deleteSyllabus)await commit(data=>({...data,syllabi:data.syllabi.filter(item=>item.id!==deleteId),content:Object.fromEntries(Object.entries(data.content).filter(([,item])=>item.syllabusId!==deleteId))}));else await sharing.command({operation:'remove',id:deleteShare.id});setDeleteId(null);addToast('Syllabus removed.','success')}catch(error){setActionError(error.message)}finally{setActionBusy(false)}}}>{actionBusy?'Removing…':'Confirm delete'}</button></div></section></ModalLayer>}
 
       {/* View Modal */}
       {selectedSyllabus && <SyllabusViewModal syllabus={selectedSyllabus} onClose={() => setSelectedSyllabus(null)} />}
@@ -1241,7 +1262,7 @@ export default function Syllabus() {
       {compareSyllabus && <VersionCompare v1={compareSyllabus} v2={compareSyllabus} onClose={() => setCompareSyllabus(null)} />}
 
       {uploadingSyllabus && <ApprovedSyllabusUpload syllabus={uploadingSyllabus} onSave={saveApproved} onClose={() => setUploadingSyllabus(null)} />}
-      {showVersionHistory && <ModalLayer className="overlay-backdrop" onDismiss={() => setShowVersionHistory(false)}><section role="dialog" aria-label="Syllabus history" className="modal-content" style={{ maxHeight: '80vh', overflow: 'auto' }}>
+      {showVersionHistory && versionHistorySyllabus && <ModalLayer className="overlay-backdrop" onDismiss={() => setShowVersionHistory(false)}><section role="dialog" aria-label="Syllabus history" className="modal-content" style={{ maxHeight: '80vh', overflow: 'auto' }}>
         <h2>Recorded syllabus changes</h2>
         {versionHistorySyllabus && <p className="text-sm text-muted">{versionHistorySyllabus.courseCode} — {versionHistorySyllabus.courseTitle}</p>}
         {versionHistorySyllabus?.history?.length ? (
@@ -1256,7 +1277,7 @@ export default function Syllabus() {
         ) : <p>No recorded changes yet. Sample history is not a saved audit trail.</p>}
         <h3 className="mt-16">Saved syllabus versions</h3>
         <p className="text-sm text-muted">Up to ten editable versions are retained. Restoring creates a draft and clears approval; changed outline weeks require courseware review again. Approved-file bytes are retained only on the current syllabus.</p>
-        {(versionHistorySyllabus?.versions || []).map((version,index)=><div className="academic-list-row" key={index}><span>Version {version.version} · {version.courseTitle} · {version.lastUpdated && new Date(version.lastUpdated).toLocaleString()}</span><button className="btn btn-secondary btn-sm" onClick={()=>setSelectedSyllabus(version)}>View saved version</button><button className="btn btn-secondary btn-sm" onClick={async()=>{try{await commit(data=>{const current=data.syllabi.find(syl=>syl.id===versionHistorySyllabus.id);return revisedWorkspace(data,record({...version,id:current.id,version:(current.version || 1)+1,sample:false,approvedFile:undefined,extractedAt:undefined},'drafted'))});setShowVersionHistory(false);addToast('Historical version restored as a draft. Review it before the offline approval route.','success')}catch(failure){addToast(failure.message,'error')}}}>Restore version as draft</button></div>)}
+        {(versionHistorySyllabus?.versions || []).map((version,index)=><div className="academic-list-row" key={index}><span>Version {version.version} · {version.courseTitle} · {version.lastUpdated && new Date(version.lastUpdated).toLocaleString()}</span><button className="btn btn-secondary btn-sm" onClick={()=>{setReaderId(versionHistorySyllabus.id);setReaderVersion(index)}}>View saved version</button><button className="btn btn-secondary btn-sm" onClick={async()=>{try{await commit(data=>{const current=data.syllabi.find(syl=>syl.id===versionHistorySyllabus.id);return revisedWorkspace(data,record({...version,id:current.id,version:(current.version || 1)+1,sample:false,approvedFile:undefined,extractedAt:undefined},'drafted'))});setShowVersionHistory(false);addToast('Historical version restored as a draft. Review it before the offline approval route.','success')}catch(failure){addToast(failure.message,'error')}}}>Restore version as draft</button></div>)}
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, justifyContent: 'flex-end' }}>
           {versionHistorySyllabus?.approvedFile && <button className="btn btn-secondary" onClick={() => downloadApprovedFile(versionHistorySyllabus.approvedFile)}>Download retained approved file</button>}
           {versionHistorySyllabus?.approvedFile && <button className="btn btn-ghost" onClick={() => { setSyllabi(previous => previous.map(syl => syl.id === versionHistorySyllabus.id ? record({ ...syl, approvedFile: undefined, extractedAt: undefined }, 'drafted') : syl)); setShowVersionHistory(false) }}>Remove attachment and return to draft</button>}

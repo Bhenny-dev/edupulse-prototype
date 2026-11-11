@@ -3,7 +3,7 @@
 // with the same dashboard components.
 import {
   ADMIN_STATS, DEFAULT_SYLLABI, COURSEWARE_ITEMS, STUDENT_RECORDS, INSTRUCTORS,
-  RAG_GROUNDING_PASSAGES, BLOCK_SECTIONS, CURRICULUM_COURSES,
+  RAG_GROUNDING_PASSAGES, BLOCK_SECTIONS, CURRICULUM_COURSES, BLOCK_SECTION_REGISTRATIONS,
 } from '../data/mockData'
 import { SYLLABUS_STATUS_META, SYLLABUS_STATUS_ORDER } from '../data/syllabusStatus'
 import { ordinal, shortLabel } from './dashboardModels'
@@ -55,7 +55,7 @@ export function previewInstructorModel(user) {
   return {
     kpis: { courses: mySyllabi.length, active: mySyllabi.filter(s => s.status === 'active').length, drafts: myCourseware.filter(c => c.status === 'draft').length, published: myCourseware.filter(c => c.status === 'published').length },
     autoDone: [],
-    blocks: myBlockSections.map(bs => ({ id: bs.id, code: bs.code, detail: `${ordinal(bs.yearLevel)} Year · ${bs.students} students` })),
+    blocks: myBlockSections.map(bs => ({ id: bs.id, code: bs.code, course: BLOCK_SECTION_REGISTRATIONS.filter(reg=>reg.uploadedBy===user?.id&&reg.blockSection===bs.code).map(reg=>`${reg.courseCode} — ${CURRICULUM_COURSES.find(course=>course.code===reg.courseCode)?.title||reg.courseCode}`).join('; ') || 'No registered course', detail: `${ordinal(bs.yearLevel)} Year · ${bs.students} students` })),
     snapshot: {
       students: myStudents.length,
       average: myStudents.length ? Math.round(myStudents.reduce((acc, s) => acc + midterm(s), 0) / myStudents.length) : 0,

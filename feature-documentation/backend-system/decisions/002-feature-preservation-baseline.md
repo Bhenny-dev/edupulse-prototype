@@ -97,3 +97,17 @@ Do not regress progressive placement or phone geometry: a whole-week proposal wi
 Do not regress multiline export/import: remove the exact EduPulse approval/page footer from outline parsing. Its page counter must never populate a blank printed week or become an assessment. Preserve actual multiline outcomes/activities/assessments and the original retained bytes.
 
 The trusted courseware plan supplies the stored written-response format when a model omits its optional responseFormat tag. Omission must not relabel enumeration, identification, matching or follow-along work as an essay; contradictory supplied formats still fail validation.
+
+### Owner correction: instructor dashboard, syllabi and conditional scrolling · 12 November 2026
+
+The owner requested course labels on block cards, actual score summaries, Delete in place of Archive, one combined history control, removal of Version/Outline list columns, sender-only Shared Repository and received copies in My Syllabus labelled by sender. Implement explicit saved-copy delivery to registered instructors; receipt must not grant access to private workspaces, retained books, approved bytes, courseware or automatic approval. Copying into an owned draft remains explicit. Deleting a syllabus withdraws publications and retains scored history; deleting an incoming entry does not delete the sender's work or an independent draft. Preserve current-version/marked score rules and pipeline-test provenance; missing scores cannot be fabricated.
+
+Do not regress: shared UI tables/charts use available width and auto overflow. Short tables must not inherit a forced 420-pixel width on phones. Keep genuine wide matrices/outline scrollable. Support sharing stays owner-gated and audited. Reload restores current allowed reader/history/share/delete references without storing unsaved recipient emails or replaying writes. Focus/timers/reconnects must not trigger list reloads.
+
+Score Snapshot displays saved values directly, without animating through intermediate percentages. Keep Recharts own measured width: its internal zero-width overflow wrapper means `max-width:100%` on the chart wrapper can collapse the visible SVG. Responsive checks must verify a nonzero chart width as well as absence of page overflow.
+
+Do not regress approved-file intake preview: a freshly scanned, unsaved syllabus can open in the read-only syllabus modal before selection. Keep it in memory, separate from saved-record navigation references; opening it must not save or activate it.
+
+Syllabus imports the shared academic stylesheet explicitly. Shared table/action/history layouts must work on direct navigation; do not rely on Dashboard or another lazy route having loaded those styles first.
+
+Shared-summary reads use 500-row pages below the PostgREST response cap, and check the explicit 1,000-share capacity before returning success. Do not replace pagination with a 1,001-row limit that the API can silently cap at 1,000.

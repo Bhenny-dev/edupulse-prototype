@@ -86,3 +86,9 @@ EduSuite files in → Dean/Assoc Dean load courses (AI assist/auto, human confir
 ## 28 October preservation baseline
 
 The owner confirmed `5e7d956` as the pre-makeover feature contract, retaining later role, offline-approval, page-tab and solid-dark corrections. [ADR-002](../../feature-documentation/backend-system/decisions/002-feature-preservation-baseline.md) records this decision. Shared confirmed imports/loading, topic mastery, scheduled release, marking, notices and syllabus history are implementation obligations; an absent backend does not remove them from scope. Course-loading proposals are reviewed updates to imported EduSuite records, not direct writes back to EduSuite.
+
+## Owner correction · Instructor syllabus delivery · 12 November 2026
+
+From My Syllabus, the instructor shares a saved copy to another registered instructor email. The sender sees it in Shared Repository; the recipient sees an attributed read-only entry in My Syllabus. Use as draft creates an independent owned draft that needs the recipient's review and offline approvals. Sharing excludes private retained source copies, approval-file bytes, courseware and version history. Removing an incoming entry hides only that receipt. Removing an outgoing share withdraws the receipt and preserves independent drafts. Delete syllabus removes owned workspace syllabus/courseware, withdraws publications and retains recorded score history. One Version History dialog retains recorded changes, preview and restore; redundant list columns and Archive are removed.
+
+Dashboard block links name and filter by course/block, preserving the URL across reload. Score Snapshot uses actual marked current-version attempts and distinguishes pipeline tests. Unsubmitted/unmarked work is excluded, and missing scores are not fabricated. All-role table/chart containers fit available width; native auto scrolling remains for genuinely wider content.

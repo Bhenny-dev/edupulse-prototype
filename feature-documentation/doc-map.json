@@ -271,6 +271,17 @@
         "feature-documentation/backend-system",
         "feature-documentation/versions"
       ]
+    },
+    {
+      "name": "Instructor dashboard and syllabus delivery capture fixtures",
+      "source": [
+        "edupulse-app/tests/instructor-updates-fixture.ts",
+        "edupulse-app/tests/instructor-updates-ui.ts"
+      ],
+      "docs": [
+        "feature-documentation/system-manual/36-instructor-syllabi",
+        "feature-documentation/DOCUMENTATION-POLICY.md"
+      ]
     }
   ],
   "routesNotCaptured": {

@@ -116,3 +116,15 @@ test('upcoming student work includes released activities, while hidden and futur
  const model=accountStudentModel(data,{email:'one@example.invalid'},NOW)
  assert.deepEqual(model.upcoming.map(item=>[item.title,item.type]),[['Released activity','Activity'],['Functions quiz','Assessment']])
 })
+
+test('block cards are distinct per course and score details use marked current results including a true zero',()=>{
+ const data=records()
+ data.enrollments.push({course_id:'c2',student_email:'one@example.invalid',block_section:'BSIT-1A'})
+ data.attempts.push({publication_id:'a3',source_version:'v1',student_email:'one@example.invalid',score:0,max_score:10,submitted_at:'2026-11-02T00:00:00Z',grading_status:'graded',is_test:true})
+ const model=accountInstructorModel(data,{},NOW)
+ assert.equal(model.blocks.filter(block=>block.code==='BSIT-1A').length,2)
+ assert.ok(model.blocks.every(block=>block.course.includes('IT 10')&&block.courseId))
+ assert.equal(model.snapshot.scored,2)
+ assert.deepEqual(model.snapshot.results.map(item=>[item.score,item.marked,item.test]),[[70,2,false],[0,1,true]])
+ assert.equal(model.snapshot.average,48,'ungraded work is excluded; recorded zero remains real')
+})

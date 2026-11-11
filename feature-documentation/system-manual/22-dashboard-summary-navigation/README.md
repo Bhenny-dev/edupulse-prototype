@@ -40,3 +40,5 @@ Focused links have a visible outline. Their accessible names identify the card a
 ![Mobile draft-course destination](07-mobile-draft-courses.png)
 
 Cards stack on phones and the filtered course list keeps the existing mobile layout. These images use synthetic account/workspace data: three syllabi, two active, one draft item and one published item. They are UI evidence, not real student activity or a hosted-account persistence test.
+
+[Manual 36](../36-instructor-syllabi/README.md) adds course-labelled block cards, course/block monitoring links that survive reload, and actual marked score rows. My Syllabus no longer has Version or Outline columns; its history remains available through one control.

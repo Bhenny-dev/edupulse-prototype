@@ -1,3 +1,4 @@
+import { sharingCommand, syllabusSharing } from './domains/syllabusSharing.js'
 import { executeSources } from './sources/service.js'
 import { sourceCommand } from './sources/contracts.js'
 import { randomUUID } from 'node:crypto'
@@ -37,7 +38,7 @@ export const VERSION = '0.4.0'
 /** Request body limits per action (bytes). Uploads are raw file bytes. */
 export const BODY_LIMITS: Record<string, number> = { 'syllabus-sources': 2_800_000, workspace: WORKSPACE_BYTES, extract: EXTRACTION_LIMITS.bytes, documents: 1_000_000, conversations: 200_000, operator: 330_000, courseware:330_000 }
 export const bodyLimit = (action: string | null) => BODY_LIMITS[action || ''] ?? 100_000
-const ACTION_METHODS: Record<string, string[]> = { 'syllabus-sources': ['POST'], 'chat-context': ['POST'], 'chat-memory': ['POST'], support: ['GET', 'POST'], health: ['GET'], providers: ['GET', 'POST', 'DELETE'], 'provider-oauth': ['POST'], 'provider-test': ['POST'], 'provider-workspaces': ['POST'], conversations: ['GET', 'POST'], operator: ['POST'], context: ['POST'], similarity: ['POST'], references: ['POST'], 'web-search': ['POST'], extract: ['POST'], chat: ['POST'], courseware: ['POST'], documents: ['GET', 'POST', 'DELETE'], workspace: ['GET', 'PUT'], academic: ['GET', 'POST'], students: ['GET'] }
+const ACTION_METHODS: Record<string, string[]> = { syllabi: ['POST'], 'syllabus-sources': ['POST'], 'chat-context': ['POST'], 'chat-memory': ['POST'], support: ['GET', 'POST'], health: ['GET'], providers: ['GET', 'POST', 'DELETE'], 'provider-oauth': ['POST'], 'provider-test': ['POST'], 'provider-workspaces': ['POST'], conversations: ['GET', 'POST'], operator: ['POST'], context: ['POST'], similarity: ['POST'], references: ['POST'], 'web-search': ['POST'], extract: ['POST'], chat: ['POST'], courseware: ['POST'], documents: ['GET', 'POST', 'DELETE'], workspace: ['GET', 'PUT'], academic: ['GET', 'POST'], students: ['GET'] }
 export const allowedMethods = (action: string) => Object.hasOwn(ACTION_METHODS, action) ? ACTION_METHODS[action] : undefined
 const buckets = new Map<string, { count: number; until: number }>()
 const active = new Set<string>()
@@ -115,7 +116,7 @@ export async function handleRequest(request: Request): Promise<Response> {
       const subject = await supportIdentity(identity, command.id)
       return json(await supportAction(subject, command.operation))
     }
-    const effective = ['academic','workspace','chat','chat-context','chat-memory','courseware','operator','context','web-search','students','syllabus-sources'].includes(action) ? await supportIdentity(identity, request.headers.get('X-EduPulse-Subject')) : identity
+    const effective = ['syllabi','academic','workspace','chat','chat-context','chat-memory','courseware','operator','context','web-search','students','syllabus-sources'].includes(action) ? await supportIdentity(identity, request.headers.get('X-EduPulse-Subject')) : identity
     let chatBody: ReturnType<typeof chatInput.parse> | undefined
     let courseBody:ReturnType<typeof courseInput.parse>|undefined
     let lookupFallback: Awaited<ReturnType<typeof systemLookup>> = null
@@ -168,6 +169,7 @@ export async function handleRequest(request: Request): Promise<Response> {
       if (query && query.length > 4000) throw new ApiError(400, 'INVALID_INPUT', 'Use a shorter conversation search.')
       return request.method === 'GET' ? json(query ? await conversationRecall(identity, query, url.searchParams.get('id') || undefined) : await readConversations(identity, url.searchParams.get('id'))) : json(await executeConversation(identity, conversationCommand.parse(await readJson(request, bodyLimit(action)))))
     }
+    if (action === 'syllabi') return json(await syllabusSharing(effective, sharingCommand.parse(await readJson(request, 5000))))
     if (action === 'academic') return request.method === 'GET' ? json(await readAcademic(effective)) : json(await executeAcademic(effective, academicCommand.parse(await readJson(request, 5000))))
     if (action === 'workspace') {
       if (request.method === 'GET') {

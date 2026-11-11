@@ -105,17 +105,17 @@ function scoreChart(data: AcademicData) {
 }
 
 function blockCards(data: AcademicData) {
-  const blocks = new Map<string, { code: string; students: Set<string>; year: number }>()
+  const blocks = new Map<string, { code:string; courseId:string; course:string; students:Set<string>; year:number }>()
   for (const entry of data.enrollments) {
-    if (!entry.block_section) continue
-    const block = blocks.get(entry.block_section) || { code: entry.block_section, students: new Set<string>(), year: 0 }
+    const course=courses(data).find(c=>c.id===entry.course_id)
+    if (!entry.block_section || !course) continue
+    const id=`${course.id}:${entry.block_section}`
+    const block=blocks.get(id)||{code:entry.block_section,courseId:course.id,course:`${course.course_code} — ${course.course_title}`,students:new Set<string>(),year:0}
     block.students.add(entry.student_email.toLowerCase())
-    const info = courses(data).find(c => c.id === entry.course_id)?.block_info?.find(b => b.block === entry.block_section)
-    block.year ||= parseInt(String(info?.yearLevel ?? ''), 10) || 0
-    blocks.set(entry.block_section, block)
+    block.year ||= parseInt(String(course.block_info?.find(b=>b.block===entry.block_section)?.yearLevel??''),10)||0
+    blocks.set(id,block)
   }
-  return [...blocks.values()].sort((a, b) => a.code.localeCompare(b.code))
-    .map(block => ({ id: block.code, code: block.code, detail: `${block.year ? `${ordinal(block.year)} Year · ` : ''}${block.students.size} ${block.students.size === 1 ? 'student' : 'students'}` }))
+  return [...blocks].sort(([,a],[,b])=>a.course.localeCompare(b.course)||a.code.localeCompare(b.code)).map(([id,block])=>({id,code:block.code,course:block.course,courseId:block.courseId,detail:`${block.year?`${ordinal(block.year)} Year · `:''}${block.students.size} ${block.students.size===1?'student':'students'}`}))
 }
 
 export function accountInstructorModel(data: AcademicData, workspace?: DashboardWorkspace, now = Date.now()) {
@@ -131,6 +131,13 @@ export function accountInstructorModel(data: AcademicData, workspace?: Dashboard
     blocks: blockCards(data),
     snapshot: {
       students: learnerRows(data).length,
+      scored: averages.length,
+      results: assessmentSummary(data).filter(item=>item.score!==null).map(item=>{
+        const publication=data.publications.find(pub=>pub.id===item.id)!
+        const course=data.courses.find(course=>course.id===publication.course_id)
+        const attempts=currentAttempts(data).filter(attempt=>attempt.publication_id===item.id&&attempt.grading_status!=='pending_review')
+        return {...item,course:`${course?.course_code || 'Course'} — ${course?.course_title || ''}`,marked:attempts.length,test:attempts.some(attempt=>attempt.is_test)}
+      }),
       average: averages.length ? Math.round(averages.reduce((a, b) => a + b, 0) / averages.length) : null,
       below: averages.filter(value => value < 75).length,
       top: averages.filter(value => value >= 90).length,

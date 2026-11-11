@@ -212,6 +212,10 @@ Settings → **AI & Knowledge** offers twelve browser model choices with downloa
 
 ## Dean activity navigation
 
-Dean uses **Dashboard**, **Course**, **Instructors** and **Students**, also under the phone menu. Summary cards share the dashboard component and open matching records or dialogs. **Course** retains links to combined oversight and the offline review inbox; **Students** links to read-only Performance. The Associate Dean retains Records/Course Loading/Monitor and its shared intake controls. See [Manual 36](../../system-manual/36-dean-activity-records/README.md).
+Dean uses **Dashboard**, **Course**, **Instructors** and **Students**, also under the phone menu. Summary cards share the dashboard component and open matching records or dialogs. **Course** links to combined oversight; syllabus review happens outside EduPulse; **Students** links to read-only Performance. The Associate Dean retains Records/Course Loading/Monitor and its shared intake controls. See [Manual 36](../../system-manual/36-dean-activity-records/README.md).
+
+## Conditional horizontal scrolling
+
+Shared academic tables and charts use available container width. Short phone tables no longer reserve a 420-pixel minimum, and charts retain their measured width without forcing a minimum. Horizontal scrolling appears only for genuinely wider content. All five roles retain their existing data permissions. [Manual 36](../../system-manual/36-instructor-syllabi/README.md) shows the related instructor controls and cross-role layout verification.
 
 System Admin account selection requires a named registered person. The former **Use my own student/instructor/associate dean/dean view** shortcuts are removed. A legacy subjectless hint is cleared; named authorized support views retain their route and selected person after reload.

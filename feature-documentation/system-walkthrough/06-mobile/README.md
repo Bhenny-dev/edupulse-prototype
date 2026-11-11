@@ -68,3 +68,7 @@ The selected cached model survives reload. Cache status is checked rather than i
 Removing the selected cached model updates the count and restores the download action.
 
 ![Phone removed model](../../system-manual/08-ai-connections/mobile-11-local-model-removed.png)
+
+## Conditional horizontal scrolling
+
+Shared academic tables and charts use available container width. Short phone tables no longer reserve a 420-pixel minimum, and charts retain their measured width without forcing a minimum. Horizontal scrolling appears only for genuinely wider content. All five roles retain their existing data permissions. [Manual 36](../../system-manual/36-instructor-syllabi/README.md) shows the related instructor controls and cross-role layout verification.

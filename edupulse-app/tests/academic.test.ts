@@ -90,6 +90,12 @@ test('DATA-001/AUTH-001: reviewed publication, enrollment, answer-key secrecy, s
     await acquire(lease, true)
     for (let count = 1; count < 20; count++) { assert.equal((await acquire(lease)).rows[0].ok, true); await acquire(lease, true) }
     assert.equal((await acquire(lease)).rows[0].ok, false, 'twenty requests exhaust the shared window')
+    await as(0,'instructor')
+    await db.query('SELECT * FROM public.edupulse_save_workspace(4,$1)',[JSON.stringify({syllabi:[],content:{},registrations:[]})])
+    assert.equal((await db.query<{active:boolean}>('SELECT active FROM public.edupulse_courses')).rows[0].active,false,'deleting a syllabus withdraws its course')
+    assert.equal((await db.query('SELECT * FROM public.edupulse_publications WHERE active')).rows.length,0,'deleted syllabus publications are withdrawn')
+    assert.equal((await db.query('SELECT * FROM public.edupulse_attempts')).rows.length,1,'deletion retains scored history')
+    await as(2,'student');assert.equal((await db.query('SELECT * FROM public.edupulse_publications')).rows.length,0,'former enrolled students cannot open withdrawn courseware')
     await as(4, 'dean')
     await db.exec('RESET ROLE')
     await db.query(`UPDATE auth.users SET raw_app_meta_data='{}' WHERE id=$1`, [ids[4]])

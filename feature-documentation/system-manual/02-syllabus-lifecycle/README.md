@@ -44,7 +44,7 @@ PDF is the primary institutional intake format; Word `.docx` is also supported. 
 
 ## Move it through the stations
 
-4. The syllabus appears in **My Syllabus** with status **Drafted**, version **v1**, and *18 weeks (not yet extracted)*. The **Next step** column always shows the one action that moves it forward.
+4. The syllabus appears in **My Syllabus** with status **Drafted**. Version and Outline columns are removed; the history control retains saved version details. The **Next step** column always shows the one action that moves it forward.
 
    ![Drafted in My Syllabus](04-my-syllabus-drafted.png)
 
@@ -70,7 +70,7 @@ PDF is the primary institutional intake format; Word `.docx` is also supported. 
 
    ![Review the extracted outline](09-review-extracted-outline.png)
 
-10. The syllabus is **Active**, the outline shows as extracted, and the next-step column reads **Drives courseware**. It now appears in Courseware ([manual 3](../03-courseware-generation-and-review/README.md)).
+10. The syllabus is **Active**, and the next-step column reads **Drives courseware**. It now appears in Courseware ([manual 3](../03-courseware-generation-and-review/README.md)).
 
     ![Active, drives courseware](10-active-drives-courseware.png)
 
@@ -135,3 +135,7 @@ When selecting registered students for a course block, the directory is limited 
 The outline editor now uses **Teaching-Learning Activities** and **Assessments**, with one multiline **Contents** field per section. Add multiple sections within a week or share a section over teaching weeks. Printed shared weeks/row sections are retained on import, and exports keep the section labels. The old teaching-material dropdown is removed; the assessment selector offers only the seven supported types. See [Manual 28](../28-outline-selectors/README.md).
 
 When re-importing an EduPulse PDF, the approval/page footer is excluded from the outline fields. Blank printed weeks remain blank; a page number does not become a teaching scope or assessment. Multiline educational fields and shared section labels remain intact.
+
+## Sharing and deletion
+
+The list has one **Version History** control, with recorded changes and saved editable versions. **Delete syllabus** replaces Archive and requires confirmation. It withdraws publications while retaining scored history. **Share syllabus** sends a saved copy to a registered instructor; received copies appear in My Syllabus labelled by sender. [Manual 36](../36-instructor-syllabi/README.md) shows these actions and their persistence boundaries.

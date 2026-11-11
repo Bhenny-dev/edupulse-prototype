@@ -12,7 +12,7 @@
 .academic-filter select { padding: 10px 12px; border: 1px solid var(--gray-200); border-radius: var(--radius-md); background: var(--white); color: var(--gray-800); min-height: 42px; max-width: 100%; }
 .academic-filter:first-child { flex: 1 1 270px; }
 .academic-table-wrap { overflow-x: auto; max-width: 100%; }
-.academic-portal .data-table { min-width: 420px; }
+.academic-portal .data-table { width: 100%; }
 .academic-portal .data-table td, .academic-portal .data-table th { overflow-wrap: normal; }
 .academic-portal .data-table th { white-space: nowrap; }
 .academic-empty { padding: 20px 0; color: var(--gray-600); line-height: 1.7; }
@@ -77,3 +77,8 @@
 .delivery-settings summary { cursor: pointer; color: var(--sky-600); }
 .academic-question textarea { width: 100%; min-height: 100px; }
 .academic-portal progress { accent-color: var(--sky-500); width: 100%; margin-top: 12px; }
+
+@media (max-width: 640px) {
+  .syllabus-list td { gap: 12px; align-items: flex-start; }
+  .syllabus-list td[data-label="Next step"] > span { white-space: normal !important; display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
+}

@@ -11,21 +11,21 @@ Main tabs: **Dashboard**, **Syllabus**, **Course**, **Student Monitoring**, **Pe
 - **Getting Started with EduPulse:** four onboarding steps with progress; each opens the right page.
 - **Summary cards:** **My Courses** opens **Course**; **Active Syllabi** opens the active-only **My Syllabus** list; **Drafts to Review** and **Published Items** open course lists filtered to courses containing that content. These are keyboard-accessible links, including when a count is zero. [Manual 22](../../system-manual/22-dashboard-summary-navigation/README.md) shows the destinations and **Show all** controls.
 - **Quick actions:** **Syllabus Builder**, **Generate Courseware**, **Student Monitoring**.
-- **My Block Sections:** advisory blocks with a link to their monitoring page.
+- **My Block Sections:** each card names its course and block, with a link to that course/block in monitoring.
 - **Score Snapshot**, **Recent Activity**, **My Courses — Syllabus Stations** and the **Courseware Review Queue**.
 
-Signed-in instructor accounts see this same dashboard with their own data: the summary cards, syllabus stations and review queue come from their workspace; block sections, the Score Snapshot and Recent Activity come from their authorized records. An empty account shows zeros and empty-state lines, never these sample values ([account capture](../09-restored-role-pages/README.md#role-dashboards)).
+Signed-in instructor accounts see this same dashboard with their own data: the summary cards, syllabus stations and review queue come from their workspace; block sections, the Score Snapshot and Recent Activity come from their authorized records. An account without marked scores shows a clear missing-results state; counts and recorded results come from its own records, never these sample values ([account capture](../09-restored-role-pages/README.md#role-dashboards)).
 
 *Changed in v0.4.0:* the Score Snapshot's topic chart averages only the students who have a score for that course (every bar previously showed about 29% because students from other courses were counted as zero) and names the course it shows. The Courseware Review Queue lists only drafts awaiting review, earliest outline week first, shows eight and states how many more there are (**View All** opens them in Courseware). It previously listed every courseware item, which made the dashboard over 16,000 pixels tall.
 
 ## 2–4. Syllabus
 
-**My Syllabus** starts with **Upload syllabi** for approved PDF/DOCX copies, whether the list is empty or populated. Scan, view and check the outline, then explicitly select it for the course. The five-station indicator is removed; draft preparation and per-row version/approval/archive actions remain. See [Manual 30](../../system-manual/30-approved-syllabus-intake/README.md).
+**My Syllabus** starts with **Upload syllabi** for approved PDF/DOCX copies, whether the list is empty or populated. Scan, view and check the outline, then explicitly select it for the course. The five-station indicator is removed; draft preparation, offline approval, one history control, sharing and confirmed deletion remain. See [Manual 30](../../system-manual/30-approved-syllabus-intake/README.md).
 
 | Tab | Screenshot | What it holds |
 | --- | --- | --- |
-| My Syllabus | ![My Syllabus](03-syllabus-my-syllabus.png) | Approved PDF/DOCX upload, a 750 KB retained-file limit, and saved syllabi with status/version and available row actions. There is no global lifecycle strip. Check the extracted course identity and weekly outline before selecting the approved copy for its course. |
-| Shared Repository | ![Shared Repository](04-syllabus-shared-repository.png) | Sample syllabus library by curriculum course. Copy one as your own draft; private workspaces are not shared with other instructors. |
+| My Syllabus | ![My Syllabus](03-syllabus-my-syllabus.png) | Approved PDF/DOCX upload, a 750 KB retained-file limit, and saved syllabi with status and available row actions; Version and Outline columns are removed. There is no global lifecycle strip. Check the extracted course identity and weekly outline before selecting the approved copy for its course. |
+| Shared Repository | ![Shared Repository](04-syllabus-shared-repository.png) | Only copies this instructor sent. Received copies appear in My Syllabus with the sender name, and can be explicitly saved as an owned draft. Private workspace/source copies stay private. |
 
 ## 5–6. Syllabus Builder
 
@@ -128,3 +128,7 @@ Older saved source listings now show a metadata-only exclusion in **Course ? Syl
 ## Scoped outline and source-based courseware update
 
 The Course Outline has multiline Contents, Teaching-Learning Activities and Assessments. Each week can contain several sections; shared sections update together across teaching weeks. Seven assessment formats replace the former broad catalog, and the teaching-material dropdown is removed. [Manual 28](../../system-manual/28-outline-selectors/README.md) shows desktop and phone controls. Course groups documents/files under Teaching-Learning Activities and separately lists Assessments. Files can be attached as private drafts; selected generated text opens its retained source basis and an explicit Pulse explanation ([Manual 31](../../system-manual/31-retained-syllabus-sources/README.md)).
+
+## Instructor dashboard and syllabus updates
+
+[Manual 36](../../system-manual/36-instructor-syllabi/README.md) shows course-labelled blocks, recorded assessment rows, the single history dialog, confirmed deletion and actual sender/recipient sharing. Its controlled account captures complement the preview role screens above. Short tables fit their containers; wide matrices scroll only when needed.

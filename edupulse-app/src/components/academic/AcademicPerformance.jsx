@@ -1,4 +1,4 @@
-import { useLocation } from 'react-router-dom'
+import { useLocation, useSearchParams } from 'react-router-dom'
 import InstructorRoster from './InstructorRoster'
 import { useState } from 'react'
 import { BarChart, Bar, LineChart, Line, RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
@@ -65,7 +65,12 @@ export default function AcademicPerformance({ data, role, monitoring = false }) 
   const isStudent = role === 'student'
   const workspace=useWorkspace()
   const [ackError,setAckError]=useState(''), [activity,setActivity]=useState('all')
-  const [courseId, setCourseId] = useState(''), [block, setBlock] = useState(''), [since, setSince] = useState(''), [until, setUntil] = useState('')
+  const [params,setParams]=useSearchParams()
+  const courseId=data.courses.some(course=>course.id===params.get('course'))?params.get('course'):''
+  const block=data.enrollments.some(entry=>(!courseId||entry.course_id===courseId)&&entry.block_section===params.get('block'))?params.get('block'):''
+  const filterParam=(name,value)=>setParams(previous=>{const next=new URLSearchParams(previous);if(value)next.set(name,value);else next.delete(name);if(name==='course')next.delete('block');return next})
+  const setCourseId=value=>filterParam('course',value),setBlock=value=>filterParam('block',value)
+  const [since,setSince]=useState(''),[until,setUntil]=useState('')
   const [threshold, setThreshold] = useState(75), [student, setStudent] = useState(null)
   const topics=topicSummary(data).filter(item=>item.value<threshold)
   const location = useLocation()
