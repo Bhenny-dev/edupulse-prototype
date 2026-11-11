@@ -1,0 +1,32 @@
+{
+  "codeCommit": "8690192c661ffaba25c8e91d166d336c154626cc",
+  "deploymentId": "dpl_8dLEpZp3EeZ9d4f5estXWkuAT9LG",
+  "target": "production",
+  "state": "READY",
+  "independentVercelNativeTestsPassed": 304,
+  "browser": {
+    "checkedAt": "2026-11-11T20:57:03.894Z",
+    "origin": "https://edupulse-prototype.vercel.app",
+    "actualInstructorAuthentication": true,
+    "results": [
+      {
+        "width": 1440,
+        "removedButtonAbsent": true,
+        "fileInputAndCourseSelectionAvailable": true,
+        "builderRouteRetainedOnReload": true,
+        "noPageErrors": true,
+        "noInferenceOrLearnerActions": true,
+        "existingStartupSynchronizations": 2
+      },
+      {
+        "width": 390,
+        "removedButtonAbsent": true,
+        "fileInputAndCourseSelectionAvailable": true,
+        "builderRouteRetainedOnReload": true,
+        "noPageErrors": true,
+        "noInferenceOrLearnerActions": true,
+        "existingStartupSynchronizations": 2
+      }
+    ]
+  }
+}
