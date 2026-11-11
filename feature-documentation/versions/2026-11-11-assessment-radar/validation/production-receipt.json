@@ -1,0 +1,50 @@
+{
+  "deployment": {
+    "checkedAt": "2026-11-11T11:38:52.277Z",
+    "id": "dpl_EXupFktX2jC3JvWgJdBLzUCcjUYH",
+    "state": "READY",
+    "target": "production",
+    "sha": "e741fc570aa94d88558f776e235b675f684bc9a0",
+    "url": "edupulse-prototype-nvloyd3po-bhenny-benlor-d-riveras-projects.vercel.app"
+  },
+  "postDeploymentBrowser": {
+    "checkedAt": "2026-11-11T11:39:22.086Z",
+    "origin": "https://edupulse-prototype.vercel.app",
+    "actualInstructorAuthentication": true,
+    "realSavedRecords": true,
+    "views": [
+      {
+        "width": 1440,
+        "threeAxes": true,
+        "percentages": [
+          92,
+          58,
+          75
+        ],
+        "reloadRetained": true
+      },
+      {
+        "width": 390,
+        "threeAxes": true,
+        "percentages": [
+          92,
+          58,
+          75
+        ],
+        "reloadRetained": true
+      }
+    ],
+    "noAssessmentCommandsOrInference": true
+  },
+  "githubActions": {
+    "runId": 42998760202,
+    "stepsStarted": false,
+    "reason": "Account locked due to a billing issue"
+  },
+  "localVerification": {
+    "nativeTestsPassed": 298,
+    "focusedBrowserTestsPassed": 24,
+    "releaseGatePassed": true
+  },
+  "dataProvenance": "Labelled test submissions; not independent learner achievement"
+}
