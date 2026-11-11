@@ -3,10 +3,11 @@ import { useWorkspace } from '../context/WorkspaceContext'
 import { useAcademicRecords } from '../context/AcademicContext'
 import AcademicSyncStatus from '../components/academic/AcademicSyncStatus'
 import SystemAdminDashboard from './SystemAdminDashboard'
+import SummaryCard from '../components/ui/SummaryCard'
 import { SYLLABUS_STATUS_META } from '../data/syllabusStatus'
 import { accountManagementModel, accountInstructorModel, accountStudentModel } from './dashboardModels'
 import { previewManagementModel, previewInstructorModel, previewStudentModel } from './dashboardPreview'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { pulse as pulseBus } from '../components/pulse/pulseBus'
 import { SkeletonKPI, SkeletonTable } from '../components/ui/LoadingSkeleton'
 import '../components/academic/academic.css'
@@ -41,18 +42,7 @@ function AnimatedNumber({ value, suffix = '' }) {
 }
 
 function KpiCard({ icon: Icon, label, value, color, bg, suffix = '', to }) {
-  const Container = to ? Link : 'div'
-  return (
-    <Container className="kpi-card" {...(to ? { to, 'aria-label': label, 'aria-description': `${value}${suffix}` } : {})}>
-      <div className="kpi-icon" style={{ background: bg }}>
-        <Icon size={22} style={{ color }} />
-      </div>
-      <div>
-        <div className="kpi-value"><AnimatedNumber value={value} suffix={suffix} /></div>
-        <div className="kpi-label">{label}</div>
-      </div>
-    </Container>
-  )
+  return <SummaryCard icon={Icon} label={label} value={value} color={color} bg={bg} to={to} description={`${value}${suffix}`}><AnimatedNumber value={value} suffix={suffix}/></SummaryCard>
 }
 
 // A value an account has not recorded yet shows as a dash, never as zero.
@@ -103,21 +93,21 @@ function ManagementDashboard({ model, actions = exportButton, status }) {
   const { user } = useAuth()
 
   const quickActions = [
-    { label: 'Load Courses', icon: ClipboardCheck, action: () => navigate('/course-loading'), color: 'var(--green-500)' },
+    { label: user?.role==='dean'?'View Course':'Load Courses', icon: ClipboardCheck, action: () => navigate(user?.role==='dean'?'/records':'/course-loading'), color: 'var(--green-500)' },
     { label: 'Monitor Delivery', icon: BarChart3, action: () => navigate('/monitor'), color: 'var(--purple-500)' },
     { label: 'Ask Pulse', icon: Sparkles, action: () => pulseBus.say('Hi! What would you like help with today?'), color: 'var(--amber-500)' },
   ]
 
   return (
     <div className="container">
-      <PageHeader title={`${user?.title} Dashboard`} subtitle="College of Information Technology — course loading and delivery monitoring (shared Dean / Associate Dean view)" actions={actions} />
+      <PageHeader title={`${user?.title} Dashboard`} subtitle={user?.role==='dean'?'Courses, instructors and recorded student activity':'College of Information Technology — course loading and delivery monitoring'} actions={actions} />
       {status}
       {model && <>
       <div className="kpi-grid mb-24">
-        <KpiCard icon={BookOpen} label="Released Courses" value={model.kpis.released} color="var(--sky-500)" bg="var(--sky-100)" />
-        <KpiCard icon={ClipboardCheck} label="Courses Loaded" value={model.kpis.loaded} color="var(--purple-500)" bg="var(--purple-100)" />
-        <KpiCard icon={CheckCircle} label="Approved Syllabi" value={model.kpis.approved} color="var(--green-500)" bg="var(--green-100)" />
-        <KpiCard icon={AlertTriangle} label="Not Yet Routed for Approval" value={model.kpis.notRouted} color="var(--amber-500)" bg="var(--amber-100)" />
+        <KpiCard icon={BookOpen} label="Released Courses" value={model.kpis.released} color="var(--sky-500)" bg="var(--sky-100)" to={user?.role==='dean'?'/records?tab=courses':undefined}/>
+        <KpiCard icon={ClipboardCheck} label="Courses Loaded" value={model.kpis.loaded} color="var(--purple-500)" bg="var(--purple-100)" to={user?.role==='dean'?'/records?tab=loads':undefined}/>
+        <KpiCard icon={CheckCircle} label="Approved Syllabi" value={model.kpis.approved} color="var(--green-500)" bg="var(--green-100)" to={user?.role==='dean'?'/records?tab=syllabi&status=approved':undefined}/>
+        <KpiCard icon={AlertTriangle} label="Not Yet Routed for Approval" value={model.kpis.notRouted} color="var(--amber-500)" bg="var(--amber-100)" to={user?.role==='dean'?'/records?tab=syllabi&status=not-routed':undefined}/>
       </div>
 
       <div className="card mb-24">

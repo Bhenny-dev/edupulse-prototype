@@ -1,5 +1,5 @@
 {
-  "capturedAt": "2026-11-11T05:15:31.887Z",
+  "capturedAt": "2026-11-11T13:17:51.294Z",
   "problems": [],
   "scenes": [
     {
@@ -175,103 +175,6 @@
       "folder": "07-system-admin",
       "file": "05-agent-activity.png",
       "title": "Agent activity: each named agent, its task, goal and tracked results",
-      "route": "/dashboard",
-      "ok": true
-    },
-    {
-      "role": "dean",
-      "folder": "03-dean-and-associate-dean",
-      "file": "01-dashboard.png",
-      "title": "Dean dashboard",
-      "route": "/dashboard",
-      "ok": true
-    },
-    {
-      "role": "dean",
-      "folder": "03-dean-and-associate-dean",
-      "file": "02-course-loading-loaded-courses.png",
-      "title": "Course Loading · Loaded Courses",
-      "route": "/course-loading",
-      "ok": true
-    },
-    {
-      "role": "dean",
-      "folder": "03-dean-and-associate-dean",
-      "file": "03-course-loading-instructors.png",
-      "title": "Course Loading · Instructors",
-      "route": "/course-loading",
-      "ok": true
-    },
-    {
-      "role": "dean",
-      "folder": "03-dean-and-associate-dean",
-      "file": "04-monitor-syllabus-status.png",
-      "title": "Monitor - Syllabus & Delivery",
-      "route": "/monitor?tab=overview",
-      "ok": true,
-      "captureRun": "2026-11-09T07-48-36-673Z-9b88d283"
-    },
-    {
-      "role": "dean",
-      "folder": "03-dean-and-associate-dean",
-      "file": "06-monitor-student-oversight.png",
-      "title": "Monitor · Student Oversight",
-      "route": "/monitor",
-      "ok": true
-    },
-    {
-      "role": "dean",
-      "folder": "03-dean-and-associate-dean",
-      "file": "07-monitor-alerts.png",
-      "title": "Monitor · Alerts",
-      "route": "/monitor",
-      "ok": true
-    },
-    {
-      "role": "dean",
-      "folder": "03-dean-and-associate-dean",
-      "file": "08-records-import.png",
-      "title": "Records · Import EduSuite Files",
-      "route": "/records",
-      "ok": true
-    },
-    {
-      "role": "dean",
-      "folder": "03-dean-and-associate-dean",
-      "file": "09-records-blocks-and-class-lists.png",
-      "title": "Records · Blocks & Class Lists",
-      "route": "/records",
-      "ok": true
-    },
-    {
-      "role": "dean",
-      "folder": "03-dean-and-associate-dean",
-      "file": "10-records-course-catalog.png",
-      "title": "Records · Course Catalog",
-      "route": "/records",
-      "ok": true
-    },
-    {
-      "role": "dean",
-      "folder": "03-dean-and-associate-dean",
-      "file": "11-pulse-on-course-loading.png",
-      "title": "Pulse focused on Course Loading",
-      "route": "/course-loading",
-      "ok": true
-    },
-    {
-      "role": "associate dean",
-      "folder": "03-dean-and-associate-dean",
-      "file": "12-associate-dean-dashboard.png",
-      "title": "Associate Dean dashboard (distinct account)",
-      "route": "/dashboard",
-      "ok": true
-    },
-    {
-      "role": "associate dean",
-      "folder": "03-dean-and-associate-dean",
-      "file": "13-performance-access-denied.png",
-      "title": "Associate Dean: performance route and Pulse access denied",
       "route": "/dashboard",
       "ok": true
     },
@@ -865,6 +768,102 @@
       "file": "29-walk-door.png",
       "title": "The walk: sign-in on the door of the study",
       "route": "/",
+      "ok": true
+    },
+    {
+      "role": "dean",
+      "folder": "03-dean-and-associate-dean",
+      "file": "01-dashboard.png",
+      "title": "Dean dashboard",
+      "route": "/dashboard",
+      "ok": true
+    },
+    {
+      "role": "dean",
+      "folder": "03-dean-and-associate-dean",
+      "file": "03-course-loading-instructors.png",
+      "title": "Course Loading · Instructors",
+      "route": "/instructors",
+      "ok": true
+    },
+    {
+      "role": "dean",
+      "folder": "03-dean-and-associate-dean",
+      "file": "04-monitor-syllabus-status.png",
+      "title": "Monitor - Syllabus & Delivery",
+      "route": "/monitor",
+      "ok": true
+    },
+    {
+      "role": "dean",
+      "folder": "03-dean-and-associate-dean",
+      "file": "06-monitor-student-oversight.png",
+      "title": "Monitor · Student Oversight",
+      "route": "/monitor",
+      "ok": true
+    },
+    {
+      "role": "dean",
+      "folder": "03-dean-and-associate-dean",
+      "file": "07-monitor-alerts.png",
+      "title": "Monitor · Alerts",
+      "route": "/monitor",
+      "ok": true
+    },
+    {
+      "role": "dean",
+      "folder": "03-dean-and-associate-dean",
+      "file": "08-course-records.png",
+      "title": "Dean Course records",
+      "route": "/records",
+      "ok": true
+    },
+    {
+      "role": "dean",
+      "folder": "03-dean-and-associate-dean",
+      "file": "09-students-by-year.png",
+      "title": "Dean Students grouped by year",
+      "route": "/students",
+      "ok": true
+    },
+    {
+      "role": "dean",
+      "folder": "03-dean-and-associate-dean",
+      "file": "10-course-syllabi.png",
+      "title": "Dean Course syllabi",
+      "route": "/records",
+      "ok": true
+    },
+    {
+      "role": "dean",
+      "folder": "03-dean-and-associate-dean",
+      "file": "11-pulse-on-course-loading.png",
+      "title": "Pulse focused on Course Loading",
+      "route": "/records",
+      "ok": true
+    },
+    {
+      "role": "associate dean",
+      "folder": "03-dean-and-associate-dean",
+      "file": "12-associate-dean-dashboard.png",
+      "title": "Associate Dean dashboard (distinct account)",
+      "route": "/dashboard",
+      "ok": true
+    },
+    {
+      "role": "associate dean",
+      "folder": "03-dean-and-associate-dean",
+      "file": "13-performance-access-denied.png",
+      "title": "Associate Dean: performance route and Pulse access denied",
+      "route": "/dashboard",
+      "ok": true
+    },
+    {
+      "role": "dean",
+      "folder": "03-dean-and-associate-dean",
+      "file": "02-course-loading-loaded-courses.png",
+      "title": "Course Loading · Loaded Courses",
+      "route": "/records",
       "ok": true
     }
   ]

@@ -37,15 +37,15 @@ Students receive only their own result/access records. The Dean's view is read-o
 | **Syllabus & Delivery** | ![Combined syllabus and delivery](13-monitor-syllabus-status.png) | One set of saved stations and released courseware charts, consistent filtered counters, a combined readiness/coverage table with CSV, course details and an optional released-title list. Distinct course instances remain separate; approval stays offline. |
 | **Student Oversight** | ![Student oversight](15-monitor-students.png) | Block/enrollment summary and **Confirmed class lists**, with CSV export and role scope. |
 | **Alerts** | ![Readiness alerts](16-monitor-alerts.png) | Actual inactive-syllabus, missing-roster or missing-publication gaps; no scheduled deadline is assumed. |
-| **Course Monitoring** | ![Course Loading](17-course-loading.png) | Search/course filter, readiness KPIs, course table, CSV and expandable publication/roster details. |
-| **Instructors** | ![Instructor delivery](18-instructor-delivery.png) | Expandable instructor account/course summaries. Confirmed shared load rows supply names and optional qualifications. Provisioned instructor accounts support reviewed loading proposals; missing qualifications are explicit. |
+| **Course loads** | ![Course loads](17-course-loading.png) | Dean read-only assignments, blocks, registered students and activity, with the shared clickable summary cards. |
+| **Instructors** | ![Instructor records](18-instructor-delivery.png) | Dean instructor cards and search; selecting a card opens saved course and activity details. |
 
-## Records and confirmed shared file intake
+## Dean records and Associate Dean confirmed file intake
 
 | View | Capture | Behavior |
 | --- | --- | --- |
-| **Blocks / Sections** | ![Blocks](19-record-blocks.png) | Select a block card to filter confirmed roster entries; select it again to show all blocks. Counts deduplicate learners. |
-| **Courses** | ![Courses](20-record-courses.png) | Authorized course identity, active status and source revision. |
+| **Students** | ![Blocks](19-record-blocks.png) | Dean summary cards and year-grouped blocks. Select a block for its registered student dialog and complete CSV download. |
+| **Course records** | ![Courses](20-record-courses.png) | Read-only Dean catalog, instructor/student memberships and recorded activity. |
 | CSV preview | ![Intake preview](21-course-intake-preview.png) | Expected headers, valid/rejected counts, first ten accepted rows and rejection reasons. **Confirm Import (1 records)** saves only the valid row. |
 | Saved intake | ![Saved intake](22-course-intake-saved.png) | Persistence receipt and **Shared academic records** table with CSV download. This fixture simulates the shared import command. |
 | **Course Loads** | ![Load intake](23-load-intake.png) | Separate load CSV preview/save panel and saved rows. |
@@ -53,7 +53,7 @@ Students receive only their own result/access records. The Dean's view is read-o
 | **Templates** | ![Templates](25-intake-templates.png) | Three real CSV header-template downloads. |
 | **History** | ![Import history](26-intake-history.png) | Confirmed filename/result/time from the saved shared event history. |
 
-File intake accepts CSV up to 1 MB and 1,000 rows per request. Quoted commas/newlines and optional qualification/adviser columns are supported. Invalid/duplicate rows are reported; confirmation saves valid shared course, load or roster rows atomically. Courses precede loads; loads use provisioned instructor IDs; matching blocks and verified student emails feed enrollment. Earlier private intake stays in the owner backup for explicit re-import. No direct EduSuite synchronization is claimed.
+The import, Templates and History images above now show the Associate Dean; those controls are removed from Dean pages. Associate Dean file intake accepts CSV up to 1 MB and 1,000 rows per request. Quoted commas/newlines and optional qualification/adviser columns are supported. Invalid/duplicate rows are reported; confirmation saves valid shared course, load or roster rows atomically. Courses precede loads; loads use provisioned instructor IDs; matching blocks and verified student emails feed enrollment. Earlier private intake stays in the owner backup for explicit re-import. No direct EduSuite synchronization is claimed.
 
 ## Student readers and assessment results
 
@@ -85,8 +85,8 @@ The following scenes use the additional synthetic baseline fixture. SQL integrat
 | Topic mastery | ![Topic radar and heatmap](36-topic-mastery-heatmap.png) | Three mapped topics, separate topic history/status, learner heatmap, class average and mastered/needs-review counts. No assessed result is invented for the second learner. |
 | Instructor marking | ![Review responses](37-instructor-response-marking.png) | Select a saved attempt, review each response and 0/1 mark, enter a reason and confirm. |
 | In-app reminder | ![Saved reminder](38-confirmed-in-app-reminder.png) | Reviewed marks receipt and one saved reminder receipt; duplicate/day and completed-work exclusions are stated. |
-| Loading proposals | ![Loading and qualifications](39-loading-proposals.png) | Imported course, block/semester, provisioned instructor list, degree/specialization records, preview/auto proposals and confirmation. |
-| Block correction | ![Block correction](40-block-correction.png) | Select imported student and confirmed block, then confirm the shared correction. |
+| Associate Dean loading proposals | ![Loading and qualifications](39-loading-proposals.png) | Imported course, block/semester, provisioned instructor list, degree/specialization records, preview/auto proposals and confirmation. |
+| Associate Dean block correction | ![Block correction](40-block-correction.png) | Select imported student and confirmed block, then confirm the shared correction. |
 | Offline review inbox | ![Offline review](41-offline-review-inbox.png) | Recorded stations, selected course outline and correction request. There is no electronic approval action. |
 | Timed written assessment | ![Timed response](42-timed-written-assessment.png) | Server-started session, remaining time, topic names, one visible written question, Previous/Next and numbered navigation. |
 | Saved result and appeal | ![Pending marking and appeal](43-assessment-pending-review-and-appeal.png) | Objective subtotal, pending written-response marking and appeal form. |
@@ -95,7 +95,7 @@ The following scenes use the additional synthetic baseline fixture. SQL integrat
 | Question topic mapping | ![Assessment mapping](46-assessment-topic-mapping.png) | Each question maps to an approved outline topic and selects multiple choice, True/False or instructor-marked response type. |
 | Delivery settings | ![Delivery settings](47-publication-delivery-settings.png) | Opened from an item's three-dot menu in the combined Courseware workspace. Release/deadline, duration and allowed attempts are saved before review/publication; **Close delivery settings** closes the panel. This fixture has no AI connection, so the course also says **Pulse AI is not set up yet** with **Set up Pulse AI**; saved drafts stay as they are. |
 | Mobile topics | ![Mobile topic mastery](48-mobile-topic-mastery.png) | Stacked topic charts/status and scrollable matrices. |
-| Mobile loading | ![Mobile loading](49-mobile-loading-proposal.png) | Responsive proposal controls and qualification/load tables. |
+| Associate Dean mobile loading | ![Mobile loading](49-mobile-loading-proposal.png) | Responsive proposal controls and qualification/load tables. |
 
 See [Manual 13](../../system-manual/13-restored-account-sections/README.md), [ADR-002](../../backend-system/decisions/002-feature-preservation-baseline.md) and the [baseline release record](../../versions/2026-10-28-baseline-workflows/README.md). The four new migrations were applied to EduPulse System on 28 October 2026; other installations must apply them before serving this version.
 
@@ -103,7 +103,7 @@ See [Manual 13](../../system-manual/13-restored-account-sections/README.md), [AD
 
 ![Pulse confirms shared-record scope](50-account-pulse-guidance.png)
 
-Authenticated Records and Course Loading again expose their page guidance targets. Pulse distinguishes saved account records from preview samples, describes confirmed shared imports and enrolled publication, and keeps the Dean guidance read-only. The displayed final import instruction explains the saved receipt; it does not claim that an import occurred. Preview personas keep their sample-data disclosure.
+Authenticated Records and Course Loading again expose their page guidance targets. Pulse distinguishes saved account records from preview samples, describes confirmed shared imports and enrolled publication, and keeps the Dean guidance read-only. The displayed Associate Dean import instruction explains the saved receipt; it does not claim that an import occurred. Preview personas keep their sample-data disclosure.
 
 The Pulse capture uses a synthetic account transport, so the separate conversation service shows a session-verification warning. Authored page guidance remains available; this image does not establish a successful hosted session or saved conversation. Authored page guidance remains available; this image is not a successful hosted session or a saved conversation. The page target is named Academic Records rather than concatenating dropdown options into its heading.
 
@@ -127,3 +127,7 @@ The two former syllabus/delivery tabs now share one **Syllabus & Delivery** view
 ### Radar coverage and roster labels
 
 The assessment radar retains its three-distinct-assessment minimum and leaves margin for narrow-screen labels. Multiple attempts on one quiz do not create extra axes. [Manual 33](../../system-manual/33-pipeline-progress/README.md#three-distinct-scored-assessments) shows two versus three scored quizzes and records the separate live labelled integration exercise. Timed-assessment labels now join saved scores to the verified learner's roster and block without changing grade values.
+
+## Dean course, instructor and student navigation
+
+Dean navigation is now **Dashboard**, **Course**, **Instructors** and **Students**. Its summaries share the clickable dashboard card component. Course records/loads/class lists are read-only; Students groups blocks by recorded year and opens downloadable student lists. Old Dean sections/loading addresses redirect to these pages. Screens 21-26, 39-40, 49 and 50 retain the Associate Dean intake/proposal/guidance workflow under that role. Dean offline review and read-only Performance remain accessible. See [Manual 36](../../system-manual/36-dean-activity-records/README.md).

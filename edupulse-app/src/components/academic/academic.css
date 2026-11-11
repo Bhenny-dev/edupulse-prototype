@@ -19,6 +19,19 @@
 .academic-tile { display: flex; flex-direction: column; gap: 8px; padding: 20px; border: 1px solid var(--gray-200); border-radius: var(--radius-md); background: var(--gray-50); color: var(--gray-800); text-align: left; }
 .academic-block.selected { border-color: var(--sky-500); background: var(--sky-50); }
 .academic-block span { color: var(--gray-600); font-size: .8rem; }
+.dean-year-group { margin: 28px 0; }
+.dean-year-group > h2 { font-size: 1.1rem; margin-bottom: 16px; }
+.dean-record-card { padding: 22px; display: flex; flex-direction: column; align-items: flex-start; gap: 10px; color: var(--gray-900); text-align: left; cursor: pointer; font: inherit; }
+.dean-record-card strong { font-family: var(--font-heading); font-size: 1.1rem; }
+.dean-record-card > span:not(.dean-card-icon) { color: var(--gray-600); font-size: .875rem; }
+.dean-record-card:hover { border-color: var(--sky-400); box-shadow: var(--shadow-3d-hover); }
+.dean-card-icon { display: inline-flex; padding: 12px; border-radius: 14px; background: var(--sky-100); color: var(--sky-600); }
+.dean-record-dialog { width: min(1120px, 94vw); max-width: 1120px; padding: 0; max-height: 90dvh; display: flex; flex-direction: column; }
+.dean-record-dialog .modal-header, .dean-record-dialog .modal-footer { flex-shrink: 0; padding: 20px 24px; margin: 0; }
+.dean-dialog-body { overflow: auto; padding: 8px 24px 24px; min-height: 0; }
+.dean-dialog-body .data-table { min-width: 720px; }
+.dean-dialog-body .academic-filters { align-items: flex-end; }
+.dean-record-dialog .modal-header h2 { overflow-wrap: anywhere; }
 .academic-details { padding: 16px 0; border-bottom: 1px solid var(--gray-200); }
 .academic-details summary { font-weight: 600; cursor: pointer; padding: 6px 0; }
 .academic-details[open] > summary { margin-bottom: 12px; }
@@ -50,6 +63,13 @@
   .academic-portal .data-table tr { display: table-row; }
   .academic-portal .data-table th, .academic-portal .data-table td { display: table-cell; padding: 12px; }
   .academic-portal .data-table td::before { display: none; }
+  /* ModalLayer portals the dialog outside .academic-portal. Keep its wide
+     records table together inside the dialog's horizontal scroll region. */
+  .dean-record-dialog .data-table { display: table; }
+  .dean-record-dialog .data-table thead { display: table-header-group; }
+  .dean-record-dialog .data-table tr { display: table-row; }
+  .dean-record-dialog .data-table th, .dean-record-dialog .data-table td { display: table-cell; padding: 12px; }
+  .dean-record-dialog .data-table td::before { display: none; }
 }
 
 .delivery-settings { min-width: 0; max-width: 100%; font-size: .8rem; }

@@ -13,7 +13,7 @@ export const PULSE_SKILLS = [
   { id: 'recall', title: 'Recall private chats and saved preferences', agent: 'Memory', mutation: false },
 ] as const
 
-export const pageIds = ['syllabus-builder', 'my-syllabus', 'my-courses', 'courseware', 'student-monitoring', 'assessment', 'records', 'course-loading', 'monitor', 'performance', 'ai-settings', 'settings', 'dashboard', 'help'] as const
+export const pageIds = ['syllabus-builder', 'my-syllabus', 'my-courses', 'courseware', 'student-monitoring', 'assessment', 'records', 'instructors', 'students', 'course-loading', 'monitor', 'performance', 'ai-settings', 'settings', 'dashboard', 'help'] as const
 export const syllabusSections = ['all', 'courseDescription', 'institutionalContext', 'programOutcomes', 'courseOutline', 'courseRequirements', 'gradingSystem', 'coursePolicy', 'books', 'onlineReferences'] as const
 export const toolPlan = z.object({
   tool: z.enum(['navigate', 'guide', 'syllabus-import', 'syllabus-edit', 'roster-edit', 'content-edit', 'generate-week', 'clarify', 'chat']),

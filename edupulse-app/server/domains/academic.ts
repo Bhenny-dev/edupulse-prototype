@@ -19,6 +19,17 @@ export async function academicRows(client: ReturnType<typeof userDb>, table: str
 }
 
 const identifier = z.string().regex(/^[a-f0-9]{32}$/)
+/** Enrich only memberships already visible in the authorized projection. */
+export async function academicStudentYears(client: ReturnType<typeof userDb>, enrollments: Record<string,unknown>[]) {
+  const emails=[...new Set(enrollments.map(row=>String(row.student_email||'').trim().toLowerCase()).filter(Boolean))]
+  const years=new Map<string,number>()
+  for(let offset=0;offset<emails.length;offset+=200){
+    const {data,error}=await client.from('edupulse_students').select('email,year_level').eq('active',true).in('email',emails.slice(offset,offset+200))
+    if(error)throw new ApiError(503,'ACADEMIC_UNAVAILABLE','Registered student year levels could not be verified. Retry when connected.')
+    for(const row of data||[])if(Number.isInteger(row.year_level)&&row.year_level>=1&&row.year_level<=4)years.set(String(row.email).toLowerCase(),row.year_level)
+  }
+  return enrollments.map(row=>({...row,year_level:years.get(String(row.student_email||'').trim().toLowerCase())??null}))
+}
 export const academicCommand = z.discriminatedUnion('operation', [
   z.object({ operation: z.literal('sync') }),
   z.object({ operation: z.literal('open'), publication: identifier, version: identifier }),
@@ -35,7 +46,11 @@ export const academicCommand = z.discriminatedUnion('operation', [
 export async function readAcademic(identity: Identity) {
   if (identity.role === 'guest') throw new ApiError(401, 'SIGN_IN_REQUIRED', 'Sign in to read academic records.')
   if (identity.local) return { mode: 'local', courses: [], enrollments: [], publications: [], attempts: [], accesses: [] }
-  if (identity.supportActor) return supportAction(identity, 'academic.read')
+  if (identity.supportActor) {
+    const data=await supportAction(identity, 'academic.read')
+    if(identity.role==='dean')data.enrollments=await academicStudentYears(userDb(identity),data.enrollments||[])
+    return data
+  }
   const client = userDb(identity)
   const tables = ['courses', 'enrollments', 'publications', 'notices', 'academic_events', ...(['dean','associate_dean','admin','instructor'].includes(identity.role) ? ['institutional_records'] : []), ...(identity.role === 'associate_dean' ? [] : ['attempts', 'material_access'])]
   const rows = await Promise.all(tables.map(async table => {
@@ -49,7 +64,9 @@ export async function readAcademic(identity: Identity) {
     if (result.error) throw new ApiError(503,'ACADEMIC_UNAVAILABLE','Shared faculty records need the baseline-workflow migration.')
     faculty = result.data || []
   }
-  return { mode: 'cloud', attempts: [], accesses: [], faculty, ...Object.fromEntries(rows) }
+  const result={ mode: 'cloud', attempts: [], accesses: [], enrollments:[] as Record<string,unknown>[], faculty, ...Object.fromEntries(rows) }
+  if(identity.role==='dean')result.enrollments=await academicStudentYears(client,result.enrollments as Record<string,unknown>[])
+  return result
 }
 export async function executeAcademic(identity: Identity, input: z.infer<typeof academicCommand>) {
   if (identity.local || identity.role === 'guest') throw new ApiError(403, 'FORBIDDEN', 'Use an authenticated academic account for shared records.')

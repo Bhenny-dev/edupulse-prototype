@@ -9,7 +9,7 @@ export async function overviewScene(page:Page,role='dean',mobile=false,dark=fals
  await shot(page,[`${manual}/${mobile?'mobile-'+(dark?'dark-':''):''}${role}-overview.png`,...(!mobile?[role==='dean'?`${roles}/13-monitor-syllabus-status.png`:'../feature-documentation/system-walkthrough/08-authenticated-records/06-associate-dean-oversight.png']:[])])
  if(!mobile&&role==='dean'){
   for(const [tab,file,old] of [['students','dean-students','15-monitor-students'],['alerts','dean-alerts','16-monitor-alerts']]){await page.getByRole('navigation',{name:'Monitor views'}).getByRole('button',{name:tab==='students'?'Student Oversight':'Alerts',exact:true}).click();await shot(page,[`${manual}/${file}.png`,`${roles}/${old}.png`])}
-  await page.goto('/#/course-loading');await expect(page.getByRole('heading',{name:'Course readiness monitoring',exact:true})).toBeVisible();await shot(page,[`${roles}/17-course-loading.png`])
+  await page.goto('/#/course-loading');await expect(page.getByRole('heading',{name:'Course loads',exact:true})).toBeVisible();await shot(page,[`${roles}/17-course-loading.png`])
  }
 }
 export async function reviewScene(page:Page){await baselineUI(page,'dean');await page.goto('/#/monitor?tab=review');await page.getByLabel('Course to review',{exact:true}).selectOption('a'.repeat(32));await page.getByLabel('Correction request',{exact:true}).fill('Clarify the learning outcomes before the offline review route.');await shot(page,[`${manual}/dean-review-inbox.png`,`${roles}/41-offline-review-inbox.png`])}

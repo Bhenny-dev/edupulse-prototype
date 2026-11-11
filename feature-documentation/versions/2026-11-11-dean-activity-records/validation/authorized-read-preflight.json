@@ -1,0 +1,18 @@
+{
+  "checkedAt": "2026-11-11T20:09:10.284Z",
+  "authenticatedRole": "dean",
+  "actualAuthorizedProjection": true,
+  "courses": 23,
+  "courseCodes": 15,
+  "faculty": 9,
+  "students": 417,
+  "memberships": 1677,
+  "blocks": 23,
+  "yearCategories": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "noAcademicWritesOrInference": true
+}

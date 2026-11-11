@@ -208,3 +208,7 @@ Course generation uses the existing owner-scoped workspace journal and revision 
 ## Downloadable local model choices
 
 Settings → **AI & Knowledge** offers twelve browser model choices with download sizes, GPU-memory estimates, source/license links and checked cache status. **Load downloaded model** reuses cached weights; **Remove downloaded model** targets the selected model. The scoped selection survives reload without generation. [Manual 8](../../system-manual/08-ai-connections/README.md#run-a-model-on-this-device-no-key) shows the controls and verification limits.
+
+## Dean activity navigation
+
+Dean uses **Dashboard**, **Course**, **Instructors** and **Students**, also under the phone menu. Summary cards share the dashboard component and open matching records or dialogs. **Course** retains links to combined oversight and the offline review inbox; **Students** links to read-only Performance. The Associate Dean retains Records/Course Loading/Monitor and its shared intake controls. See [Manual 36](../../system-manual/36-dean-activity-records/README.md).

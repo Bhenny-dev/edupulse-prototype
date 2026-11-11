@@ -493,6 +493,7 @@ export default function CourseLoading() {
   const activeTab = searchParams.get('tab') === 'instructors' ? 'instructors' : 'assign'
 
   if (!['dean', 'associate_dean'].includes(user?.role)) return <Navigate to="/dashboard" replace />
+  if(user?.role==='dean')return <Navigate to={activeTab==='instructors'?'/instructors':'/records?tab=loads'} replace/>
   if (user?.authenticated) return <AcademicPortal view="courses" />
 
   const switchTab = (tab) => {

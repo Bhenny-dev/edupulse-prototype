@@ -25,6 +25,7 @@ const Assessment = lazy(() => import('./pages/Assessment'))
 const Performance = lazy(() => import('./pages/Performance'))
 const Records = lazy(() => import('./pages/Records'))
 const CourseLoading = lazy(() => import('./pages/CourseLoading'))
+const AcademicPortal = lazy(() => import('./components/academic/AcademicPortal'))
 const MonitorProgress = lazy(() => import('./pages/MonitorProgress'))
 const StudentMonitoring = lazy(() => import('./pages/StudentMonitoring'))
 const Settings = lazy(() => import('./pages/Settings'))
@@ -96,6 +97,8 @@ function AppRoutes() {
         <Route path="/assessment" element={<ProtectedRoute allowedRoles={['student']}><Assessment /></ProtectedRoute>} />
         <Route path="/performance" element={<ProtectedRoute allowedRoles={PERFORMANCE_ROLES}><Performance /></ProtectedRoute>} />
         <Route path="/records" element={<ProtectedRoute allowedRoles={['dean', 'associate_dean']}><Records /></ProtectedRoute>} />
+        <Route path="/instructors" element={<ProtectedRoute allowedRoles={['dean']}><AcademicPortal view="instructors" /></ProtectedRoute>} />
+        <Route path="/students" element={<ProtectedRoute allowedRoles={['dean']}><AcademicPortal view="students" /></ProtectedRoute>} />
         {/* Old bookmark — Curriculum was absorbed into Records (Phase 0 intake). */}
         <Route path="/curriculum" element={<Navigate to="/records" replace />} />
         <Route path="/course-loading" element={<ProtectedRoute allowedRoles={['dean', 'associate_dean']}><CourseLoading /></ProtectedRoute>} />

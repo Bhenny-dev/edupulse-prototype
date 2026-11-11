@@ -9,8 +9,10 @@ export default defineAgent({
   roles: ['dean', 'associate_dean'],
   greeting: () => "This Records view uses sample data. Want to preview the EduSuite import flow or inspect the example blocks and class lists?",
   intents: [
+    {key:'courses',label:'Review course activity',roles:['dean'],steps:[]},
+    {key:'instructors',label:'Review instructor activity',roles:['dean'],steps:[]},
     {
-      key: 'import', label: 'Import files from EduSuite',
+      key: 'import', label: 'Import files from EduSuite', roles:['associate_dean'],
       steps: [
         { title: 'Pick the file type', body: 'Course records, course loads, or student class lists (blocks) — each has its own template.' },
         { title: 'Upload the export', body: 'Drop the CSV exported from EduSuite. EduPulse never syncs live with EduSuite — this is a manual file handoff each time data changes.' },

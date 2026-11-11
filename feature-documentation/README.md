@@ -4,6 +4,7 @@
 
 | Folder | Covers | Contents |
 | --- | --- | --- |
+| [11 November Dean activity records](versions/2026-11-11-dean-activity-records/README.md) | Four-item Dean navigation, clickable shared cards and year-grouped downloadable block lists | See validation |
 | [11 November second admin](versions/2026-11-11-second-admin/README.md) | Second designated Google admin, protected accounts and retained role/person views | See registration and validation |
 | [11 November assessment radar](versions/2026-11-11-assessment-radar/README.md) | Three scored quizzes, matched learner/instructor progress and repaired timed-attempt roster labels | See validation |
 | [11 November local model catalog](versions/2026-11-11-local-model-catalog/README.md) | Twelve downloadable browser models, compatibility, cache inspection and selected removal | See validation and GPU limitation |

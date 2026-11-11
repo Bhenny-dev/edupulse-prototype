@@ -10,7 +10,7 @@ import { useNotifications } from '../../data/notifications'
 import {
   LayoutDashboard, BookOpen, FileText, BarChart3, LogOut,
   ChevronDown, Bell, Search, Menu, X, Moon, Sun,
-  ChevronRight, Globe, ClipboardCheck,
+  ChevronRight, Globe, ClipboardCheck, Users, GraduationCap,
 } from 'lucide-react'
 import { Suspense, useState, useEffect, useRef } from 'react'
 import Pulse from '../pulse/Pulse'
@@ -26,14 +26,17 @@ import { PERFORMANCE_ROLES } from '../../lib/access'
 // Student: Dashboard → My Courses (Phase 4) → My Performance.
 const SECTIONS = [
   { key: 'dashboard', path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: 'all' },
-  { key: 'records', path: '/records', label: 'Records', icon: BookOpen, roles: ['dean', 'associate_dean'] },
+  { key: 'dean-course', path: '/records', label: 'Course', icon: BookOpen, roles: ['dean'], relatedPaths:['/course-loading','/monitor'] },
+  { key: 'dean-instructors', path: '/instructors', label: 'Instructors', icon: GraduationCap, roles: ['dean'] },
+  { key: 'dean-students', path: '/students', label: 'Students', icon: Users, roles: ['dean'], relatedPaths:['/performance'] },
+  { key: 'records', path: '/records', label: 'Records', icon: BookOpen, roles: ['associate_dean'] },
 
   // Dean and Associate Dean have separate accounts and the same academic stations.
   {
-    key: 'course-loading', path: '/course-loading', label: 'Course Loading', icon: ClipboardCheck, roles: ['dean', 'associate_dean'],
+    key: 'course-loading', path: '/course-loading', label: 'Course Loading', icon: ClipboardCheck, roles: ['associate_dean'],
   },
   {
-    key: 'monitor', path: '/monitor', label: 'Monitor', icon: BarChart3, roles: ['dean', 'associate_dean'],
+    key: 'monitor', path: '/monitor', label: 'Monitor', icon: BarChart3, roles: ['associate_dean'],
   },
 
   // ── Instructor ────────────────────────────────────────────────────────
@@ -54,7 +57,7 @@ const SECTIONS = [
   },
   { key: 'assessments', path: '/assessment', label: 'Assessments', icon: ClipboardCheck, roles: ['student'] },
   {
-    key: 'performance', path: '/performance', label: 'Performance', icon: BarChart3, roles: PERFORMANCE_ROLES,
+    key: 'performance', path: '/performance', label: 'Performance', icon: BarChart3, roles: PERFORMANCE_ROLES.filter(role=>role!=='dean'),
   },
 ]
 
@@ -64,11 +67,12 @@ function canSee(item, role) {
 
 function Breadcrumbs() {
   const location = useLocation()
+  const {user}=useAuth()
   const parts = location.pathname.split('/').filter(Boolean)
   if (parts.length === 0 || (parts.length === 1 && parts[0] === 'dashboard')) return null
 
   const crumbs = parts.map((part, i) => ({
-    label: part === 'courseware' ? 'Course' : part.charAt(0).toUpperCase() + part.slice(1).replace(/-/g, ' '),
+    label: part === 'courseware'||(part==='records'&&user?.role==='dean') ? 'Course' : part.charAt(0).toUpperCase() + part.slice(1).replace(/-/g, ' '),
     path: '/' + parts.slice(0, i + 1).join('/'),
   }))
 

@@ -36,6 +36,7 @@ async function run(page: Page, role: string, scenes: Scene[]) {
     try {
       await page.keyboard.press('Escape').catch(() => undefined)
       if (scene.path) { await page.goto(`/#${scene.path}`); await settle(page) }
+      if (scene.folder === '03-dean-and-associate-dean' && scene.name === '02-course-loading-loaded-courses') await expect(page.getByRole('heading', {name:'Course loads',exact:true})).toBeVisible()
       if (scene.act) { await scene.act(page); await page.waitForTimeout(400) }
       // Recharts draws with JavaScript animation (about 1.5 s) that `animations: 'disabled'` cannot stop.
       if (await page.locator('.recharts-wrapper').count()) await page.waitForTimeout(1800)
@@ -283,9 +284,9 @@ test('dean and associate dean', async ({ page }) => {
     { folder: f, name: '04-monitor-syllabus-status', title: 'Monitor - Syllabus & Delivery', path: '/monitor?tab=overview', fullPage: true },
     { folder: f, name: '06-monitor-student-oversight', title: 'Monitor · Student Oversight', path: '/monitor?tab=students', fullPage: true },
     { folder: f, name: '07-monitor-alerts', title: 'Monitor · Alerts', path: '/monitor?tab=alerts', fullPage: true },
-    { folder: f, name: '08-records-import', title: 'Records · Import EduSuite Files', path: '/records', fullPage: true },
-    { folder: f, name: '09-records-blocks-and-class-lists', title: 'Records · Blocks & Class Lists', path: '/records', act: tab('Blocks & Class Lists'), fullPage: true },
-    { folder: f, name: '10-records-course-catalog', title: 'Records · Course Catalog', path: '/records', act: tab('Course Catalog'), fullPage: true },
+    { folder: f, name: '08-course-records', title: 'Dean Course records', path: '/records', fullPage: true },
+    { folder: f, name: '09-students-by-year', title: 'Dean Students grouped by year', path: '/students', fullPage: true },
+    { folder: f, name: '10-course-syllabi', title: 'Dean Course syllabi', path: '/records?tab=syllabi', fullPage: true },
     { folder: f, name: '11-pulse-on-course-loading', title: 'Pulse focused on Course Loading', path: '/course-loading?tab=assign', act: async p => { await p.getByRole('button', { name: 'Open Pulse assistant' }).click(); await p.getByRole('button', { name: 'Pulse options', exact: true }).click(); await p.getByRole('button', { name: 'Guide this page' }).click() } },
   ])
 })

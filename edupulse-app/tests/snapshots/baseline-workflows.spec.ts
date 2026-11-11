@@ -12,8 +12,12 @@ test('synthetic baseline topic mastery and reviewed-response controls',async({pa
  await page.getByRole('button',{name:'Confirm reviewed marks',exact:true}).click();await page.getByRole('button',{name:'Confirm reminder',exact:true}).first().click();await expect(page.getByRole('status').filter({hasText:'in-app reminders saved'})).toBeVisible();await shot(page,'38-confirmed-in-app-reminder')
 })
 test('synthetic baseline loading, block correction and offline review',async({page})=>{
- await baselineUI(page,'dean');await page.goto('/#/course-loading?tab=instructors');await page.getByLabel('Released course',{exact:true}).selectOption('IT 102');await page.getByLabel('Block',{exact:true}).fill('BSIT-1B');await page.getByRole('button',{name:'Suggest highest-priority instructor',exact:true}).click();await shot(page,'39-loading-proposals')
+ await baselineUI(page,'associate_dean');await page.goto('/#/course-loading?tab=instructors');await page.getByLabel('Released course',{exact:true}).selectOption('IT 102');await page.getByLabel('Block',{exact:true}).fill('BSIT-1B');await page.getByRole('button',{name:'Suggest highest-priority instructor',exact:true}).click();await shot(page,'39-loading-proposals')
  await page.goto('/#/records?tab=sections');await page.getByLabel('Imported student',{exact:true}).selectOption('SYN-001');await page.getByLabel('Confirmed block',{exact:true}).fill('BSIT-1B');await shot(page,'40-block-correction')
+})
+
+test('synthetic retained Dean offline review',async({page})=>{
+ await baselineUI(page,'dean')
  await page.goto('/#/monitor?tab=review');await page.getByLabel('Course to review',{exact:true}).selectOption('a'.repeat(32));await page.getByLabel('Correction request',{exact:true}).fill('Clarify the learning outcomes before the offline review route.');await shot(page,'41-offline-review-inbox')
 })
 test('synthetic baseline student timed written response and saved notice',async({page})=>{
@@ -68,5 +72,5 @@ test('synthetic generation failure keeps the course open with actionable recover
 })
 
 test('synthetic account Pulse guidance matches shared records',async({page})=>{
- await baselineUI(page,'dean');await page.goto('/#/records');await page.getByRole('button',{name:'Open Pulse assistant',exact:true}).click();const pulse=page.getByRole('dialog',{name:'Pulse',exact:true});await pulse.getByRole('button', { name: 'Pulse options', exact: true }).click(); await pulse.getByRole('button',{name:'Guide this page',exact:true}).click();await expect(pulse.locator('.pulse-focus-heading strong')).toHaveText('Academic Records');await pulse.getByRole('button',{name:'Import files from EduSuite',exact:true}).click();await pulse.getByRole('button',{name:'Next step',exact:true}).click();await pulse.getByRole('button',{name:'Next step',exact:true}).click();await expect(pulse).toContainText('Confirm Import saves shared records and matching enrollments');await shot(page,'50-account-pulse-guidance')
+ await baselineUI(page,'associate_dean');await page.goto('/#/records');await page.getByRole('button',{name:'Open Pulse assistant',exact:true}).click();const pulse=page.getByRole('dialog',{name:'Pulse',exact:true});await pulse.getByRole('button', { name: 'Pulse options', exact: true }).click(); await pulse.getByRole('button',{name:'Guide this page',exact:true}).click();await expect(pulse.locator('.pulse-focus-heading strong')).toHaveText('Academic Records');await pulse.getByRole('button',{name:'Import files from EduSuite',exact:true}).click();await pulse.getByRole('button',{name:'Next step',exact:true}).click();await pulse.getByRole('button',{name:'Next step',exact:true}).click();await expect(pulse).toContainText('Confirm Import saves shared records and matching enrollments');await shot(page,'50-account-pulse-guidance')
 })

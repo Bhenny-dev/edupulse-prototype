@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useSearchParams, Navigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import AcademicPortal from '../components/academic/AcademicPortal'
 import { useToast } from '../context/ToastContext'
@@ -471,6 +471,7 @@ export default function Records() {
   const isAdmin = ['dean', 'associate_dean'].includes(user?.role)
 
   if (!isAdmin) return null
+  if(user?.role==='dean')return tab==='sections'?<Navigate to="/students" replace/>:<AcademicPortal view="records"/>
   if (user?.authenticated) return <AcademicPortal view="records" />
 
   return (

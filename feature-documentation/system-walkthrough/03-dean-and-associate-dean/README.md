@@ -1,82 +1,59 @@
-# 03 · Dean and Associate Dean
+# 03 - Dean and Associate Dean
 
-The Dean (`dean`) and Associate Dean (`associate_dean`) sign in with separate email accounts and have distinct dashboards. They share academic navigation, with data permissions governed separately by FR-AUTH-10/11 and FR-PERF-13. The system admin has a separate operations console. Main academic tabs include **Dashboard**, **Records**, **Course Loading** and **Monitor**; Dean also has **Performance**. Course assignments come from EduSuite; EduPulse monitors them and never edits the curriculum. These captures use sample academic data.
+The Dean and Associate Dean use separate accounts and permissions. Dean navigation is **Dashboard**, **Course**, **Instructors** and **Students**. Associate Dean retains **Dashboard**, **Records**, **Course Loading** and **Monitor**. These images show preview samples; authenticated pages use authorized records without sample fallback. [Manual 36](../../system-manual/36-dean-activity-records/README.md) illustrates the current account interface.
 
 ## 1. Dean dashboard
 
 ![Dean dashboard](01-dashboard.png)
 
-- **Summary cards:** released courses, courses loaded, approved syllabi, and syllabi not yet routed for approval.
-- **Quick actions:** **Load Courses**, **Monitor Delivery**, **Ask Pulse**.
-- **Syllabus Stations:** how many loaded courses sit at each lifecycle station (Drafted → Checked → Out for Approval → Approved — Uploaded → Active). The signatory chain (Dean → CAO → EVP) happens offline on the downloaded file.
-- **Delivery Progress (Active Courses):** published versus planned courseware per active course.
-- **Faculty Overview:** each instructor's load, active syllabi and a status chip (*On track*, *n not yet routed*, *No load*).
-- **Recent Activity** and **Syllabus Status by Course** (course, instructor, status, extracted outline weeks, last update; the eye icon opens the syllabus).
+Summary cards link to course records, loads, approved syllabi and not-yet-routed syllabi. **View Course**, **Monitor Delivery** and **Ask Pulse** remain below. **Syllabus Stations**, **Delivery Progress (Active Courses)**, **Faculty Overview**, **Recent Activity** and **Syllabus Status by Course** remain. Offline review, CAO approval and EVP noting are unchanged. Preview numbers and names are sample data.
 
-Signed-in Dean and Associate Dean accounts see this same dashboard filled from the authorized college records: the cards count saved and imported courses and loads, the charts use saved syllabus stations and publications, and the activity list shows saved events. The sample names and numbers here appear only in the preview ([account captures](../09-restored-role-pages/README.md#role-dashboards)).
+## 2. Course loads
 
-## Performance access boundary
+![Dean course loads](02-course-loading-loaded-courses.png)
 
-![Associate Dean denied access to Performance](13-performance-access-denied.png)
+The old Course Loading address opens **Course → Course loads**, listing saved course/instructor assignments and recorded blocks, students, releases and submissions. Summary cards use the dashboard design and open matching records. Dean imports and loading-proposal forms no longer appear.
 
-Opening `/performance` as Associate Dean returns to **Dashboard**. Asking Pulse to open it displays **Performance is not available for your role.** The role's loading, roster and delivery oversight remain available. Dean has a **Performance** navigation entry and authenticated read-only college results under the accepted [ADR-001](../../backend-system/decisions/001-role-and-approval-boundaries.md). The [authenticated walkthrough](../08-authenticated-records/README.md) uses synthetic browser transport for its current interface images and links the earlier hosted sign-in canary separately. Other captures in this folder remain preview demonstrations. Courseware authoring remains instructor-only, with the verified owner instructor view preserved. Offline syllabus review is unchanged.
+## 3. Instructors
 
-## 2. Course Loading · Loaded Courses
+![Dean instructors](03-course-loading-instructors.png)
 
-![Loaded courses](02-course-loading-loaded-courses.png)
+**Instructors** contains searchable cards. Selecting one opens the instructor's saved courses, syllabus statuses and recorded activity.
 
-**Course Loading Monitor**, a read-only view of the courses loaded in EduSuite: totals by state (*Active* = active syllabus and enrolled blocks, *Syllabus Only*, *Data Uploaded* = enrolment but no syllabus, *No Data*), a search box for course or instructor, and one row per course with year and semester, the assigned instructor(s), its syllabus versions and the state.
+## 4-7. Syllabus and delivery oversight
 
-*Changed in v0.4.0:* the old **Loaded Courses** sidebar link pointed to a tab the page did not recognise. The legacy address now opens the correct view. Page tabs provide this navigation; the repeated sidebar has been removed.
+Open **Course → Syllabus & Delivery** or **Monitor Delivery**. Oversight, alerts and signed-in Dean **Review Inbox** retain their functions without adding a fifth main navigation item.
 
-## 3. Course Loading · Instructors
-
-![Instructors](03-course-loading-instructors.png)
-
-Instructor cards with specialisation, degree (*Master's* or *Bachelor's*, which drives the loading rule) and number of loaded courses. Click a card to see that instructor's courses.
-
-## 4–7. Monitor
-
-Preview **Monitor** keeps **Syllabus & Delivery**, **Student Oversight** and **Alerts** in a single horizontal page navigation row. These views remain reachable after the duplicate left panel is removed. Signed-in accounts use authorized oversight records instead of these sample charts.
-
-| Tab | Screenshot | What it answers |
+| View | Capture | Content |
 | --- | --- | --- |
-| Syllabus & Delivery | ![Combined sample syllabus and delivery](04-monitor-syllabus-status.png) | The syllabus-status cards, instructor chart and course breakdown appear above the distinct delivery section with published/checked/draft counts and planned teaching-week coverage. These are preview samples. |
-| Student Oversight | ![Student Oversight](06-monitor-student-oversight.png) | Block sections with year, size and adviser (from the EduSuite class lists). Scores stay in each instructor's Student Monitoring page. |
-| Alerts | ![Alerts](07-monitor-alerts.png) | Syllabus-status and delivery-gap notices, plus the unopened-material and missed-assessment reminders sent to instructors and students. |
+| **Syllabus & Delivery** | ![Combined oversight](04-monitor-syllabus-status.png) | Syllabus-status and delivery sections share one view; stations and publication coverage remain distinct measures. |
+| **Student Oversight** | ![Student oversight](06-monitor-student-oversight.png) | Retained block, enrollment and class-list oversight. The main Students page provides year-grouped block dialogs. |
+| **Alerts** | ![Alerts](07-monitor-alerts.png) | Readiness and delivery gaps supported by available records. |
 
-## 8–10. Records (EduSuite intake)
+## 8-10. Course records and blocks
 
-| Tab | Screenshot | What it holds |
+| View | Capture | Content |
 | --- | --- | --- |
-| Import EduSuite Files | ![Records import](08-records-import.png) | Upload EduSuite exports by type (**Course Records**, **Course Loads**, **Student Class Lists**), plus **Templates** and import **History**. Each file is parsed and shown for confirmation; nothing is saved until confirmed. |
-| Blocks & Class Lists | ![Blocks and class lists](09-records-blocks-and-class-lists.png) | Every block (e.g. BSIT-1A) with enrolment against the 35-student capacity, adviser and contact, and **Students** / **Courses** buttons. |
-| Course Catalog | ![Course catalog](10-records-course-catalog.png) | The 60 released courses of the CHED CMO No. 25 s. 2015 curriculum (read-only), searchable and filterable by year. |
+| **Course records** | ![Course records](08-course-records.png) | Read-only course/instructor/student activity, summary links and CSV. |
+| **Students** | ![Blocks by year](09-students-by-year.png) | Summary cards, year categories and block cards; dialogs download registered students. |
+| **Syllabi** | ![Course syllabi](10-course-syllabi.png) | Recorded status, outline week count and **View outline**. |
 
-## 11. Pulse on an academic management page
+Dean Course also retains **Student class lists**. File Import, Templates, History and block-edit controls are removed from Dean pages at the owner's request. Saved institutional records are retained. Old sections/loading links redirect to the new pages.
 
-![Pulse on Course Loading](11-pulse-on-course-loading.png)
+## 11. Pulse guidance
 
-**Guide this page** on Course Loading. Pulse focuses the *Course Loading Monitor* area (highlighted; the rest of the page is dimmed), and the panel opens beside it with what the area contains. Because this workflow uses sample assignments, Pulse says so and offers to explain the controls rather than present sample data as verified.
+![Pulse on Course records](11-pulse-on-course-loading.png)
 
-The launcher is hidden while the panel is open, leaving the panel header clear.
+Page guidance explains Dean read-only activity records. Preview guidance identifies sample data. Associate Dean guidance retains shared file-intake instructions.
 
 ## 12. Associate Dean dashboard
 
 ![Associate Dean dashboard](12-associate-dean-dashboard.png)
 
-Identical academic controls to the Dean's dashboard, with a separate Associate Dean account and role badge.
+The Associate Dean retains Records/Course Loading/Monitor navigation, CSV confirmation, loading proposals, templates, history and block correction under existing permissions. The [account role guide](../09-restored-role-pages/README.md) shows those controls with synthetic records.
 
-Unique page destinations stay in the main navigation: **Records** for Dean/Associate Dean and **Assessments** for students. Mobile users find the same links under **Open menu**. Page tabs provide subviews without duplicate left navigation.
+## 13. Performance access boundary
 
-## Restored signed-in sections
+![Associate Dean denied Performance](13-performance-access-denied.png)
 
-The screens above demonstrate preview records. Signed-in Dean/Associate Dean accounts now have their own dashboards, four Monitor views, Course Monitoring/Instructors views and Records file-intake/block/course sections. The Dean also has read-only Performance; Associate Dean does not. See the [current account screenshots and data limits](../09-restored-role-pages/README.md) and [shared file-intake task](../../system-manual/13-restored-account-sections/README.md).
-
-## Shared records and the offline inbox
-
-Current [account captures](../09-restored-role-pages/README.md) show shared course/load/roster confirmation, provisioned-instructor proposals, qualification details, block corrections and station/coverage charts. New imports project matching enrollments and record shared history; the earlier private intake is retained as legacy exportable data. Dean and Associate Dean can preview manual, assisted or semester-wide loading proposals and override them before confirmation. The server requires an imported released course and provisioned instructor and enforces the 35-student block cap.
-
-The Dean alone has the additional **Offline Review Inbox**. It displays the saved outline/station and sends a persisted correction request to the instructor. It does not approve a syllabus electronically. Associate Dean cannot view scores; Dean Performance remains read-only. See the [task guide](../../system-manual/13-restored-account-sections/README.md). The new shared workflows depend on the four additive migrations.
-
-The [signed-in combined oversight guide](../../system-manual/29-combined-oversight/README.md) shows authorized course records, one consolidated summary table and the retained Dean/Associate Dean boundaries. Legacy syllabus/delivery tab links remain compatible aliases.
+Associate Dean direct Performance navigation returns to Dashboard, and Pulse reports it unavailable. Dean read-only Performance remains reachable through **Students → View student performance** and existing links. No Dean authoring, marking or electronic approval was added. See [ADR-001](../../backend-system/decisions/001-role-and-approval-boundaries.md) and the [combined oversight guide](../../system-manual/29-combined-oversight/README.md).
