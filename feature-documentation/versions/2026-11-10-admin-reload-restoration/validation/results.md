@@ -20,3 +20,12 @@ No database migration, registered-account activity, grades, enrollment, hosted c
 This increment restores the selected admin person and common page/reader/header/picker references. It does not claim that every feature-specific form/dialog has opted in yet; the completion register retains that remaining coverage. File chooser values and business commands are never persisted as reload hints.
 
 The authorized push targets `main` and the existing EduPulse production Git integration. Deployment status is checked against the exact pushed commit, without changing production configuration or credentials.
+
+## Production receipt, 11 November 2026
+
+- Application commit: `73512117b6469ac48cf0168b6352a63d391a0af5`, pushed to `main`.
+- Vercel production deployment: `dpl_12BpyBT4ZZZppnzGaM8Xy5hHbfyD`, **Ready**, checked at 10:14:52 AM Asia/Manila. Its build logs separately confirm **294 passed / 0 failed** and successful deployment checks before output publication.
+- Live [production URL](https://edupulse-prototype.vercel.app/): HTTP 200 for the page, JavaScript bundle and public health endpoint. The delivered bundle contains the new recovery screen and both admin view/picker hint keys. Anonymous support-subject lookup returns **403 `SUPPORT_FORBIDDEN`**, without account details. No account-enter or business write was performed by this smoke check.
+- [GitHub Actions run](https://github.com/Bhenny-dev/edupulse-prototype/actions/runs/42944040483): no steps ran. GitHub's check annotation states that the account is locked due to a billing issue. This is an external CI availability failure, not a passing CI run; billing settings were not changed. The local and Vercel verification results above remain separate evidence.
+
+The production smoke check confirms deployment and public/anonymous boundaries; it does not claim a live owner-Google selected-person session test. A documentation-only follow-up records this receipt without changing application bytes.
