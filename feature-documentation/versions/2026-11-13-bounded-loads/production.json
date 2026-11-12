@@ -1,0 +1,50 @@
+{
+  "origin": "https://edupulse-prototype.vercel.app",
+  "checkedAt": "2026-11-12T20:38:14.453Z",
+  "results": [
+    {
+      "name": "Marielle Angela Fianza-Buya",
+      "classes": 10,
+      "students": 245,
+      "passed": true
+    },
+    {
+      "name": "Rogelio L. Guisdan",
+      "classes": 9,
+      "students": 248,
+      "passed": true
+    },
+    {
+      "name": "Dave Medrano",
+      "classes": 9,
+      "students": 157,
+      "passed": true
+    },
+    {
+      "name": "Ralphy Luzada",
+      "classes": 8,
+      "students": 178,
+      "passed": true
+    },
+    {
+      "name": "Steve Sudaypan",
+      "classes": 9,
+      "students": 230,
+      "passed": true
+    },
+    {
+      "name": "Libby Teofilo",
+      "classes": 9,
+      "students": 160,
+      "passed": true
+    },
+    {
+      "name": "Sharmaine Pangcog",
+      "classes": 10,
+      "students": 222,
+      "passed": true
+    }
+  ],
+  "noAcademicWrites": true,
+  "ownProbeSessionsSignedOut": true
+}

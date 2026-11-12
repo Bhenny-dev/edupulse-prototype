@@ -121,3 +121,5 @@ Instructor-update suites share `tests/instructor-updates-fixture.ts` and `tests/
 Monitoring captures include `tests/monitoring-fixture.ts` and `tests/monitoring-ui.ts` in the source digest. They use fictional accounts and controlled workspace/academic transports to exercise the real year/course/block UI, sequential confirmation controls, scoped charts and nested dialog restoration. Reporter provenance marks them synthetic academic UI. SQL persistence/RLS and hosted rollback checks remain separate evidence; the screenshots do not prove real learner activity or live sign-in.
 
 Read-only dashboard captures include `tests/dashboard-readonly-ui.ts` in source provenance. Synthetic instructor/support transports deliberately reject academic writes while testing entry, reload and manual refresh. They do not assert live Google sign-in or learner achievement.
+
+Bounded-load captures include `tests/bounded-loads-ui.ts` in source provenance. Their nine classes and 150 learners are fictional controlled UI records; hosted aggregate reads and actual staff sign-ins are recorded separately. They do not claim learner achievement or official grades.

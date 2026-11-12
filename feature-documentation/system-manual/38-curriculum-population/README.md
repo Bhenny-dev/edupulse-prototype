@@ -1,6 +1,6 @@
 # 38 · Assigned courses, units and real activity
 
-The owner authorized filling all recorded curriculum periods for active CIT students. The allocation uses the saved BSIT curriculum, including its two semesters and summer terms, with each student's recorded year. It is an owner-authorized administrative allocation, not a newly imported EduSuite export or a newly verified teaching qualification. Courses and units were not invented.
+The owner initially authorized filling all recorded curriculum periods for active CIT students. On 13 November, the owner replaced the all-block expansion with 5-10 actual course/block assignments per named active instructor. The allocation uses the saved BSIT curriculum, including its two semesters and summer terms, with each student's recorded year. It is an owner-authorized administrative allocation, not a newly imported EduSuite export or a newly verified teaching qualification. Courses and units were not invented.
 
 ## Inspect the loads
 
@@ -34,3 +34,5 @@ The allocation command defaults to a private dry run and supports rollback valid
 ## Next: prepared teaching drafts
 
 The owner then requested direct authoring before provider-dependent generation. [Manual 39](../39-authored-weeks/README.md) explains the original Weeks 1–5 packs and review disclosures. Preparing drafts does not activate a syllabus, publish material or generate learner activity.
+
+The current allocation has 64 teaching classes and 1,962 memberships across all 417 students. Every student retains at least one approved course; unassigned curriculum classes are not invented to fill counts. [Current workload validation](../../versions/2026-11-13-bounded-loads/validation/results.md) supersedes the initial 239-load population totals. The original all-block command refuses to overwrite this bounded allocation.

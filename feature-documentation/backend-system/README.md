@@ -592,3 +592,9 @@ Client lists derive the primary set from owned `teachingSetRole` metadata; statu
 ## Dashboard startup correction ? 13 November 2026
 
 Academic view entry, reload and manual refresh read the existing RLS-authorized projection without issuing `sync`. Confirmed workspace saves still project records transactionally. The former legacy startup command could exceed the database connection timeout and surface a misleading account-verification error before GET ran. This affects ordinary instructor and System Admin support dashboards; account verification and role boundaries remain required.
+
+## Bounded instructor allocations - 13 November 2026
+
+The owner replaces all-block curriculum expansion with 5-10 actual course/block classes per named active instructor. The bounded planner retains existing owner/course/block identities, prioritizes approved delivery and prepared teaching sets, preserves every assigned course group, and maintains approved-course coverage for all 417 students. Actual loads fell from 239 to 64; membership rows from 7,375 to 1,962. The retired generated load rows and original input remain in ignored private backups. Workspaces, syllabi, approvals, shares, attempts, opens and reading records are retained. The original population planner refuses bounded allocations so a later run cannot silently restore every-block expansion.
+
+The administrative correction is guarded by the import advisory lock, exact load-snapshot equality and owner revision checks, with a rollback run before commit and a recorded admin audit entry. Existing projection functions rebuild enrolled membership and block summaries. Assertions check 5-10 actual classes per instructor, 35 students maximum per class, every active student retaining an approved course, and exact hashes of retained activity. No RLS, schema, account role, courseware or learner action changes. See [aggregate validation](../versions/2026-11-13-bounded-loads/validation/results.md).

@@ -1,0 +1,55 @@
+{
+  "allHaveApprovedCourses": true,
+  "attempts": 432,
+  "instructors": [
+    {
+      "course_blocks": 9,
+      "courses": 9,
+      "name": "Dave Medrano",
+      "students": 157
+    },
+    {
+      "course_blocks": 9,
+      "courses": 8,
+      "name": "Libby Teofilo",
+      "students": 160
+    },
+    {
+      "course_blocks": 10,
+      "courses": 10,
+      "name": "Marielle Angela Fianza-Buya",
+      "students": 245
+    },
+    {
+      "course_blocks": 8,
+      "courses": 8,
+      "name": "Ralphy Luzada",
+      "students": 178
+    },
+    {
+      "course_blocks": 9,
+      "courses": 8,
+      "name": "Rogelio L. Guisdan",
+      "students": 248
+    },
+    {
+      "course_blocks": 10,
+      "courses": 10,
+      "name": "Sharmaine Pangcog",
+      "students": 222
+    },
+    {
+      "course_blocks": 9,
+      "courses": 8,
+      "name": "Steve Sudaypan",
+      "students": 230
+    }
+  ],
+  "memberships": 1962,
+  "opens": 864,
+  "reading": 864,
+  "students": 417,
+  "previousCourseBlocks": 239,
+  "currentCourseBlocks": 64,
+  "activityHashChecks": "unchanged attempts, accesses and versioned reading in guarded commit"
+}

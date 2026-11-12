@@ -149,3 +149,7 @@ Label every scripted learner action Pipeline test. Normal score, access, session
 ## Correction: dashboard startup is read-only ? 13 November 2026
 
 Remove once-per-session legacy projection replay from AcademicContext. Confirmed saves already maintain the projection. Do not regress: entering/restoring a dashboard or clicking Refresh records must issue academic GETs, never synchronization writes. A failed optional legacy command cannot prevent available authorized records from loading. Preserve subject verification, empty-on-revocation, manual refresh, revision protection and post-mutation readback.
+
+## Owner correction: bounded instructor loads - 13 November 2026
+
+Replace the all-block curriculum allocation with 5-10 actual course/block assignments per active named instructor. The screenshot count means course/block classes, not a display slice or unique block names. Preserve course ownership, the prepared syllabus mix, recorded year, units, 35-student class limit, approved delivery, and all scored/access/reading history. Retain private backups and use guarded administrative allocation changes. Do not regress by rerunning all-block population over bounded allocations or merely hiding excess cards. Monitoring and every role must read the same saved assignments. Current reload/manual-refresh rules still apply.

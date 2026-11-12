@@ -3850,6 +3850,22 @@
       "reviewedAt": "2026-11-12T20:11:38.209097+00:00",
       "captureRun": "2026-11-12T20-10-50-394Z-bb0b9149",
       "method": "Opened with view_image; verified loaded instructor dashboard, Records up to date and support banner. Synthetic UI; not hosted Google authentication or human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/13-bounded-loads.png",
+      "sha256": "25e5310ea2f3884b6590cbebc5594ec4c9e6ae5e4342e76b92d458e46a5b5023",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T20:39:23.982079+00:00",
+      "captureRun": "2026-11-12T20-41-20-788Z-8a9c43c9",
+      "method": "Opened with view_image; verified nine class cards, 150 distinct fictional learners, recorded year grouping and usable desktop/phone layouts. Controlled UI; no real learner records or human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/mobile-13-bounded-loads.png",
+      "sha256": "b0eced20706329302e8171dbfbe5283902e322a55d6a3d8ae3ae28b8f64ae056",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T20:39:23.984390+00:00",
+      "captureRun": "2026-11-12T20-41-20-788Z-8a9c43c9",
+      "method": "Opened with view_image; verified nine class cards, 150 distinct fictional learners, recorded year grouping and usable desktop/phone layouts. Controlled UI; no real learner records or human approval."
     }
   ]
 }

@@ -86,3 +86,12 @@ Additional phone views retain the same scope and saved results:
 | Sequential student reader | ![Phone document confirmations](mobile-12-student-reading.png) |
 
 Phone component captures use the same 390-pixel width with a taller browser viewport to show complete charts, table rows and confirmation controls inside the actual scrolling dialog. Shorter devices scroll within that same layout.
+
+## Bounded teaching assignments
+
+Each named active instructor now has 5-10 saved course/block classes, rather than every block for every curriculum course. **Course blocks** counts those classes; **Students handled** counts distinct currently enrolled students across them. One student taking multiple handled courses counts once. Syllabi and recorded activity remain retained when an excess generated load is withdrawn.
+
+![Nine fictional course/block classes and 150 distinct sample students](13-bounded-loads.png)
+![The same nine fictional classes on a phone](mobile-13-bounded-loads.png)
+
+These captures use fictional accounts and controlled transports; they do not display the production students. The [live aggregate receipt](../../versions/2026-11-13-bounded-loads/evidence.json) separately records the saved allocation. Reload the current page or use **Refresh records** when updates are announced to load the saved assignments.

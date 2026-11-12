@@ -4,6 +4,7 @@
 
 | Folder | Covers | Contents |
 | --- | --- | --- |
+| [13 November bounded teaching loads](versions/2026-11-13-bounded-loads/README.md) | Actual 5-10 course/block allocations per instructor; history preserved | See validation |
 | [13 November dashboard fix](versions/2026-11-13-dashboard-readonly/README.md) | Read-only instructor/support dashboard startup, reload and refresh | See validation |
 | [12 November recent role history](versions/2026-11-12-recent-role-history/README.md) | Complete seven-day role totals, notices and separately attributed support operations | See validation |
 | [12 November admin role monitoring](versions/2026-11-12-admin-role-monitoring/README.md) | Four role stations with account, activity, AI and shared health monitoring | See validation |
