@@ -109,7 +109,7 @@ test('support gateway rechecks owner, adopts target RLS, restores claims, audits
     assert.equal((await db.query<{is_test:boolean}>('SELECT is_test FROM public.edupulse_material_access')).rows[0].is_test,false,'an unmarked material open remains genuine')
     await as(1);assert.equal((await db.query('SELECT * FROM public.edupulse_attempts')).rows.length,1);assert.equal((await db.query('SELECT * FROM public.edupulse_material_access')).rows.length,1,'actual student activity reaches instructor statistics')
     await assert.rejects(db.query('SELECT public.edupulse_authorize_pipeline_test($1,$2,$3)',[material.id,material.source_version,ids[2]]),{code:'22023'},'existing genuine opens cannot be relabelled')
-    await as(0);assert.equal((await call(ids[4],'academic.read')).attempts.length,0,'associate dean never gets scores')
+    await as(0);assert.equal((await call(ids[4],'academic.read')).attempts.length,0,'program coordinator never gets scores')
     const thread='aaaaaaaa-1111-4111-8111-111111111111'
     await db.query('INSERT INTO public.edupulse_pulse_threads(id,owner_id,title) VALUES($1,$2,$3)',[thread,ids[0],'Synthetic support conversation'])
     await db.query('INSERT INTO public.edupulse_agent_memory(owner_id,thread_id,subject_id,task,outcome,summary) VALUES($1,$2,$3,$4,$5,$6)',[ids[0],thread,ids[2],'answer','generated','Verified outcome and reference provenance'])

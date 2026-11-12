@@ -56,12 +56,12 @@ Name, email and role, then **Settings** and **Sign Out**. The admin account's em
 
 Every account sees its role as a badge in the top bar (see image 1, *Instructor*). Roles are assigned by the administrator, and the two designated Google admin accounts can change what they see:
 * After signing in with Google, either admin account sees a button labelled *Admin · <current view>* where other accounts see the badge.
-* The button opens the **Switch View** popover, which offers **System Admin**, **Dean**, **Associate Dean**, **Instructor** and **Student**. On a phone, where the top-bar button is hidden, the account menu has a **Switch view** entry that opens the same popover.
+* The button opens the **Switch View** popover, which offers **System Admin**, **Dean**, **Program Coordinator**, **Instructor** and **Student**. On a phone, where the top-bar button is hidden, the account menu has a **Switch view** entry that opens the same popover.
 * The popover explains: “You remain signed in as the admin. Your AI key and saved data stay with this account.”
 
 Other roles cannot switch. The [second-admin captures](../07-system-admin/README.md#two-designated-google-admins) use synthetic account transport; actual Google consent is completed in the account holder's browser.
 
-*Changed after v0.4.0:* the preview role switcher was removed. It used to let any preview session jump between Dean, Associate Dean, Instructor and Student.
+*Changed after v0.4.0:* the preview role switcher was removed. It used to let any preview session jump between Dean, Program Coordinator, Instructor and Student.
 
 ## Pages every role has
 
@@ -182,7 +182,7 @@ The existing role chooser now leads to a searchable account dialog. A selected a
 
 Pulse now shows **System search · No AI credits used** for simple quoted local answers. Approximate name or keyword matches can begin **Did you mean**. Public fallback is labelled **Internet suggestions**, with source-linked thumbnails and **Image credits** when the API provides images. The existing theme, compact verification controls and role boundaries remain. See [Manual 24 and its desktop/mobile captures](../../system-manual/24-system-first-search/README.md).
 
-The existing account picker now includes registered named staff. [Manual 25](../../system-manual/25-staff-test-accounts/README.md) shows instructor surname searches and the corrected Dean and Associate Dean selections with controlled transports.
+The existing account picker now includes registered named staff. [Manual 25](../../system-manual/25-staff-test-accounts/README.md) shows instructor surname searches and the corrected Dean and Program Coordinator selections with controlled transports.
 
 ## Planned courseware save receipts
 
@@ -194,7 +194,7 @@ Pulse and the Course workspace use the same bounded week-generation plan and rev
 
 ## Current Monitor guidance
 
-Pulse and Dashboard links open **Syllabus & Delivery**. Old syllabus/delivery links resolve to the combined view without an extra browser-history entry. Guidance retains offline review and the Associate Dean score restriction. See [Manual 29](../../system-manual/29-combined-oversight/README.md).
+Pulse and Dashboard links open **Syllabus & Delivery**. Old syllabus/delivery links resolve to the combined view without an extra browser-history entry. Guidance retains offline review and the Program Coordinator score restriction. See [Manual 29](../../system-manual/29-combined-oversight/README.md).
 
 ## Person follow-ups
 
@@ -212,16 +212,19 @@ Settings → **AI & Knowledge** offers twelve browser model choices with downloa
 
 ## Dean activity navigation
 
-Dean uses **Dashboard**, **Course**, **Instructors** and **Students**, also under the phone menu. Summary cards share the dashboard component and open matching records or dialogs. **Course** links to combined oversight; syllabus review happens outside EduPulse; **Students** links to read-only Performance. The Associate Dean retains Records/Course Loading/Monitor and its shared intake controls. See [Manual 36](../../system-manual/36-dean-activity-records/README.md).
+Dean uses **Dashboard**, **Course**, **Instructors** and **Students**, also under the phone menu. Summary cards share the dashboard component and open matching records or dialogs. **Course** links to combined oversight; syllabus review happens outside EduPulse; **Students** links to read-only Performance. The Program Coordinator retains Records/Course Loading/Monitor and its shared intake controls. See [Manual 36](../../system-manual/36-dean-activity-records/README.md).
 
 ## Conditional horizontal scrolling
 
 Shared academic tables and charts use available container width. Short phone tables no longer reserve a 420-pixel minimum, and charts retain their measured width without forcing a minimum. Horizontal scrolling appears only for genuinely wider content. All five roles retain their existing data permissions. [Manual 36](../../system-manual/36-instructor-syllabi/README.md) shows the related instructor controls and cross-role layout verification.
 
-System Admin account selection requires a named registered person. The former **Use my own student/instructor/associate dean/dean view** shortcuts are removed. A legacy subjectless hint is cleared; named authorized support views retain their route and selected person after reload.
+System Admin account selection requires a named registered person. The former **Use my own student/instructor/program coordinator/dean view** shortcuts are removed. A legacy subjectless hint is cleared; named authorized support views retain their route and selected person after reload.
 
 ## Combined instructor monitoring
 
 Instructor navigation now has Dashboard, Syllabus, Course and Student Monitoring. Its former Performance link redirects to the combined class workspace. Student and Dean performance remain authorized. Restored nested class/student dialogs keep the child above the parent with keyboard focus. See [Manual 37](../../system-manual/37-instructor-monitoring/README.md).
 
 Pulse content reviews show changed outline fields by week and section. Existing review, cancel, form-placement and explicit save controls remain. [Targeted outline examples](../../system-manual/38-targeted-outline-edits/README.md) show the shared-section preview.
+
+
+The role formerly labelled Associate Dean is displayed as **Program Coordinator** in badges, account selection and role guidance. Existing accounts keep the same role and access.

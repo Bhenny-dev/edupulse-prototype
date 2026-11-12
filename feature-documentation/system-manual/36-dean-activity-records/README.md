@@ -21,7 +21,7 @@ Each summary is a keyboard-accessible link. Other Dean summaries use the same ic
 
 **Instructors** provides name search and instructor cards. Select one for saved courses, statuses, released items, submissions and material opens. **Teaching instructors** filters to instructors assigned to saved courses.
 
-Pulse navigation follows the same role destinations: a Dean's request to open course loading opens **Course → Course loads**. The Associate Dean's request retains **Course Loading**.
+Pulse navigation follows the same role destinations: a Dean's request to open course loading opens **Course → Course loads**. The Program Coordinator's request retains **Course Loading**.
 
 | View | Desktop | Phone |
 | --- | --- | --- |
@@ -33,7 +33,7 @@ Pulse navigation follows the same role destinations: a Dean's request to open co
 
 Catalog totals group course codes; separate saved offerings retain instructor and membership context. Released items exclude inactive and future releases. Submission counts use each learner's latest current-version attempt. Counts marked **test** preserve their provenance. Opens do not establish completed reading; enrollment does not establish assessment completion.
 
-**Syllabus & Delivery**, **Students → View student performance** retain oversight and read-only results. Review and approval take place outside EduPulse. Dean File Import, Templates, History and block-edit controls are removed. Saved records remain. The Associate Dean retains the separate shared intake workflow.
+**Syllabus & Delivery**, **Students → View student performance** retain oversight and read-only results. Review and approval take place outside EduPulse. Dean File Import, Templates, History and block-edit controls are removed. Saved records remain. The Program Coordinator retains the separate shared intake workflow.
 
 ## Browse blocks by year and download students
 
@@ -69,7 +69,7 @@ Phone navigation exposes all four destinations under **Open menu**. Wide tables 
 
 ## Existing links and access
 
-Dean `/course-loading` opens **Course loads**; its instructor tab opens **Instructors**. Dean `/records?tab=sections` opens **Students**. Old import-tab addresses fall back to **Course records**. Associate Dean Records/Course Loading/Monitor, imports, templates, history and block correction retain their existing role permissions. New `/instructors` and `/students` routes are Dean-only.
+Dean `/course-loading` opens **Course loads**; its instructor tab opens **Instructors**. Dean `/records?tab=sections` opens **Students**. Old import-tab addresses fall back to **Course records**. Program Coordinator Records/Course Loading/Monitor, imports, templates, history and block correction retain their existing role permissions. New `/instructors` and `/students` routes are Dean-only.
 
 Captures use original synthetic records and controlled account/API transport: four syllabus instances, three course codes, four students, five memberships and three blocks. One current attempt and one open are labelled test activity. The images demonstrate UI behavior, not hosted authentication or real student achievement. See [validation](../../versions/2026-11-11-dean-activity-records/validation/results.md).
 

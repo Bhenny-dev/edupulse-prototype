@@ -12,7 +12,7 @@ Type **do you know bhenny?**, then **he is a student**. The answer keeps Bhenny'
 
 ![Ranked public instructor information](02-ranked-public-staff.png)
 
-Type **instrcutors**. The reply offers **Did you mean instructors?** and the public staff list. Ginard S. Guaki is the Dean; Myriell Nginsayan is the Associate Dean; Marielle Angela Fianza-Buya is an instructor. The reply identifies its public source. This list establishes project roles only, not current loads or schedules.
+Type **instrcutors**. The reply offers **Did you mean instructors?** and the public staff list. Ginard S. Guaki is the Dean; Myriell Nginsayan is the Program Coordinator; Marielle Angela Fianza-Buya is an instructor. The reply identifies its public source. This list establishes project roles only, not current loads or schedules.
 
 ## Ask how a feature works
 

@@ -34,7 +34,7 @@ test('public answers use only bundled facts, do not disclose private records and
   assert.match(respond('do you know bheeny?').text,/Bhenny Benlor/)
   assert.match(respond('do you know bheeny?').text,/Did you mean Bhenny Benlor D\. Rivera/)
   assert.match(respond('instructors').text,/Marielle Angela Fianza-Buya/)
-  assert.match(respond('Who is Myriell?').text,/Associate Dean/)
+  assert.match(respond('Who is Myriell?').text,/Program Coordinator/)
   assert.match(respond('Who is unknownxyz?').text,/could not find that person/)
   for(const message of ['student profiles email password','students grades','2024-1-0277@gmail.com'])assert.doesNotMatch(respond(message).text,/2024-1-0277|@edupulse\.com|@123/)
   assert.equal(respond('Give me quiz answers').mood,'decline')

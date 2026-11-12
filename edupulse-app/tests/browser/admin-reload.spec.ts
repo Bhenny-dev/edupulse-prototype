@@ -14,7 +14,7 @@ async function viewHint(page:Page){return page.evaluate(key=>JSON.parse(sessionS
 for(const {role} of roleReloadCases)test(`reload reopens the ${role} account picker without selecting a person`,async({page})=>{
   const fixture=await accountSupportUI(page)
   const index={dean:1,associate_dean:2,instructor:3,student:4}[role]
-  const title={dean:'dean',associate_dean:'associate dean',instructor:'instructor',student:'student'}[role]
+  const title={dean:'dean',associate_dean:'program coordinator',instructor:'instructor',student:'student'}[role]
   await page.goto('/#/dashboard')
   await page.getByRole('button',{name:'Open view',exact:true}).nth(index).click()
   const picker=page.getByRole('dialog',{name:`Choose ${title} account`,exact:true})

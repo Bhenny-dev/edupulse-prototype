@@ -22,7 +22,7 @@ test('Dean navigation and dashboard summaries open matching read-only record vie
  }
 })
 
-test('Associate Dean retains the existing shared import workflow and cannot open Dean-only pages',async({page})=>{
+test('Program Coordinator retains the existing shared import workflow and cannot open Dean-only pages',async({page})=>{
  await deanRecordsUI(page,'associate_dean');await page.goto('/#/records')
  await expect(page.getByLabel('Choose CSV for preview')).toBeVisible()
  await page.goto('/#/students');await expect(page).toHaveURL(/dashboard/)
@@ -51,7 +51,7 @@ test('year groups, complete downloadable block membership, reload and withdrawn 
  await page.keyboard.press('Escape');await expect(page.getByRole('dialog')).toHaveCount(0)
  await page.reload();await expect(page.getByRole('dialog')).toHaveCount(0)
 })
-test('legacy Dean links resolve to the new hubs while Associate Dean imports remain separate',async({page})=>{
+test('legacy Dean links resolve to the new hubs while Program Coordinator imports remain separate',async({page})=>{
  await deanRecordsUI(page)
  await page.goto('/#/course-loading?tab=instructors');await expect(page).toHaveURL(/#\/instructors$/)
  await page.getByRole('button',{name:'View instructor Alex Sample Instructor',exact:true}).click()

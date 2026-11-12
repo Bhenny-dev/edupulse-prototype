@@ -61,7 +61,7 @@ A white pill with a shield icon closes the board: “AI drafts. Instructors revi
 ![Features](04-landing-features.png)
 
 A green chalkboard in an oak frame. **Features** · “From the syllabus to every class”: “Four parts, one approved syllabus. Prototype screens with sample data.” As captured (reduced motion), the four parts follow one another, each with its number and roles handwritten in yellow chalk, a heading, one line, two short points and its prototype screen in a white frame with a caption naming the screen:
-* **01 · Dean · Associate Dean: Records and course loading** (*Records page*). “EduSuite stays the system of record. Upload its exports, check them, confirm.” *Loads by rule: master's degree, then specialization. Pulse suggests instructors; people decide.*
+* **01 · Dean · Program Coordinator: Records and course loading** (*Records page*). “EduSuite stays the system of record. Upload its exports, check them, confirm.” *Loads by rule: master's degree, then specialization. Pulse suggests instructors; people decide.*
 * **02 · Instructor: The Syllabus Builder** (*Syllabus Builder*). “Build the seven-section KCP syllabus, upload one, or co-write it with Pulse.” *AI drafts wait for your check. Signed outside EduPulse; its outline maps the rest.*
 * **03 · Instructor: Courseware from the course outline** (*My Courseware list*). “Each outline week becomes materials and assessments, drawn from your sources first.” *By week, by term or the whole outline. Only published items reach students.*
 * **04 · Students · Instructors · Dean: Performance by syllabus topic** (*My Performance page*). “Mastery by topic for students, missed work for instructors, delivery for the Dean.” *Reminders for unopened and missed work. Scores shown; grades stay official.*
@@ -71,8 +71,8 @@ A green chalkboard in an oak frame. **Features** · “From the syllabus to ever
 ![How it works](05-landing-how-it-works.png)
 
 On the left, a paper card: **How it works** · “Six phases. People decide each one.” and “From EduSuite files to student results. The AI assists; it never finalizes.” On the right, a timeline: blue numbered squares **00** to **05** joined by a blue line, each beside a card. A card shows the phase's icon on a blue disc, its name, who works in it as small chips, one line on what happens, and the hand-over: a light-blue **AI** box (the draft) with an arrow to a yellow **People** box (the decision):
-* **Records intake** (Dean, Associate Dean). Upload the EduSuite exports. AI: reads and previews them → People: confirm before saving.
-* **Course loading** (Dean, Associate Dean). Load each course to an instructor. AI: ranks by master's degree, then specialization → People: confirm every assignment.
+* **Records intake** (Dean, Program Coordinator). Upload the EduSuite exports. AI: reads and previews them → People: confirm before saving.
+* **Course loading** (Dean, Program Coordinator). Load each course to an instructor. AI: ranks by master's degree, then specialization → People: confirm every assignment.
 * **Syllabus building** (Instructor). Build or upload the seven-section syllabus. AI: co-writes each section → People: check, then sign outside EduPulse.
 * **Courseware generation** (Instructor). Turn each outline week into courseware. AI: drafts from the approved syllabus → People: review, edit and publish.
 * **Student access** (Students). Open materials, answer assessments. AI: reminders and missed work only → People: Pulse never answers assessment items.
@@ -84,11 +84,11 @@ On the left, a paper card: **How it works** · “Six phases. People decide each
 
 ![Roles: Student](07-landing-roles-student.png)
 
-**Roles** · “Five roles, one platform”: “One role per account. Each sees only its own pages.” The tabs on the left (**Instructor**, **Student**, **Dean**, **Associate Dean** and **System Admin**) switch the panel on the right; the selected tab is blue with white text. The arrow keys, **Home** and **End** move between tabs. Each panel opens with the role's icon on a blue disc beside a handwritten label and a heading, then a one-line summary, the role's four tasks as tiles with icons, its **Top bar** drawn in miniature (the role's pages, **Dashboard** underlined) and one benefit:
+**Roles** · “Five roles, one platform”: “One role per account. Each sees only its own pages.” The tabs on the left (**Instructor**, **Student**, **Dean**, **Program Coordinator** and **System Admin**) switch the panel on the right; the selected tab is blue with white text. The arrow keys, **Home** and **End** move between tabs. Each panel opens with the role's icon on a blue disc beside a handwritten label and a heading, then a one-line summary, the role's four tasks as tiles with icons, its **Top bar** drawn in miniature (the role's pages, **Dashboard** underlined) and one benefit:
 * **Instructor** (image 6), *Prepare and deliver*: “Teach from one organized place”: build the syllabus, generate courseware, publish it, follow every student. Tasks: loaded courses and syllabus status; build or upload the syllabus; review, edit and publish drafts; scores and access per student. Top bar: **Dashboard**, **Syllabus**, **Courseware**, **Student Monitoring** and **Performance**. Benefit: less repetitive preparation; you keep control (SDG 4.c).
 * **Student** (image 7), *Learn*: “Everything for your courses, in one place”: materials, assessments and your own progress, together. Tasks: **My Materials**, ready to open; **My Assessments** and results; mastery by topic; reminders for missed work. A yellow line with a shield icon reads “Pulse will not answer or hint at assessment items.” Top bar: **Dashboard**, **My Courses**, **Assessments** and **Performance**. Benefit: syllabus-aligned courseware (SDG 4.3 and 4.4).
 
-The Dean, Associate Dean and System Admin tabs use the same layout (not shown).
+The Dean, Program Coordinator and System Admin tabs use the same layout (not shown).
 
 ## 8. Pulse, the AI assistant
 
@@ -168,7 +168,7 @@ A paper card: **Our community** · “Made for the people of the CIT”: the ins
 
 ![FAQ](12-landing-faq.png)
 
-A ruled notebook page with a blue edge. On the left, **FAQ** · “Questions people ask”: how EduPulse fits the college's process, and what the AI may and may not do. On the right, eight questions; one answer is open at a time, and its plus sign turns into a minus. The first, **Who can sign in to EduPulse?**, is open in the screenshot: “Anyone with an account the system administrator created: the Dean, the Associate Dean, and the instructors and students of the College of Information Technology. Each account has one role, and that role decides which pages you see.” The others ask whether EduPulse replaces the LMS or the official grading sheet, how the AI stays accurate, whether the AI publishes materials on its own, whether Pulse answers assessments for students, whether the syllabus is approved inside EduPulse, where courses, loads and class lists come from, and about the other KCP colleges.
+A ruled notebook page with a blue edge. On the left, **FAQ** · “Questions people ask”: how EduPulse fits the college's process, and what the AI may and may not do. On the right, eight questions; one answer is open at a time, and its plus sign turns into a minus. The first, **Who can sign in to EduPulse?**, is open in the screenshot: “Anyone with an account the system administrator created: the Dean, the Program Coordinator, and the instructors and students of the College of Information Technology. Each account has one role, and that role decides which pages you see.” The others ask whether EduPulse replaces the LMS or the official grading sheet, how the AI stays accurate, whether the AI publishes materials on its own, whether Pulse answers assessments for students, whether the syllabus is approved inside EduPulse, where courses, loads and class lists come from, and about the other KCP colleges.
 
 ## 13. Sign-in panel (hosted site)
 
@@ -177,7 +177,7 @@ A ruled notebook page with a blue edge. On the left, **FAQ** · “Questions peo
 One card. On the left, a CIT group photograph with the KCP crest, **Welcome to EduPulse**, “Sign in with the account your system administrator created. Your role decides what you see.” and the five role names. On the right, **Get started** · **Sign in to EduPulse**, “Use your EduPulse account to continue.” and the panel:
 - **Email** and **Password**, then the blue **Sign In** button, for an account the administrator has created. The hint below reads “Use the email and password assigned to your EduPulse account.”
 - **Sign in with Google**, with the note “System admin: choose your Google account. Other roles use email and password.” The button works only when Google sign-in is enabled for the project; otherwise the panel says Google sign-in is temporarily unavailable.
-- Each account has one assigned role: system admin, Dean, Associate Dean, instructor or student. An account without a role is signed out with the message “This account has no EduPulse role. Contact the administrator.”
+- Each account has one assigned role: system admin, Dean, Program Coordinator, instructor or student. An account without a role is signed out with the message “This account has no EduPulse role. Contact the administrator.”
 
 ## 14. Preview personas (local development and documentation capture only)
 
@@ -297,7 +297,7 @@ Each page in the bar is one themed classroom in 3D, seen from a corner, that fil
 
 ![Roles: the math room](32-page-roles.png)
 
-**32. Roles: Math room.** “Five roles, five shapes.” · *Tap a shape, the board or the abacus.* Each role is a shape on a plinth: **Instructor** a blue cube, **Student** an orange sphere, **Dean** a green pyramid, **Associate Dean** a pink cylinder and **System Admin** a purple ring. **The board** is a chalkboard of formulas (*a² + b² = c²*, *π ≈ 3.14*, *Σn = n(n+1)/2*) and a curve; **The abacus** stands on a desk, with a protractor on the wall, building blocks, a robot and two cats.
+**32. Roles: Math room.** “Five roles, five shapes.” · *Tap a shape, the board or the abacus.* Each role is a shape on a plinth: **Instructor** a blue cube, **Student** an orange sphere, **Dean** a green pyramid, **Program Coordinator** a pink cylinder and **System Admin** a purple ring. **The board** is a chalkboard of formulas (*a² + b² = c²*, *π ≈ 3.14*, *Σn = n(n+1)/2*) and a curve; **The abacus** stands on a desk, with a protractor on the wall, building blocks, a robot and two cats.
 
 ![Pulse: the agents studio](33-page-pulse.png)
 
@@ -321,7 +321,7 @@ Each page in the bar is one themed classroom in 3D, seen from a corner, that fil
 
 ![Roles: the board](38-page-roles-board.png)
 
-**38. Roles: the board.** Picking **The board** flies the camera to the chalkboard and opens **Who opens what** at the left: the pages down the side (**Dashboard**, **Syllabus**, **Courseware**, **Student Monitoring**, **Performance**, **My Courses**, **Assessments**, **Records**, **Course Loading** and **Monitor**) and the five roles across the top (**Instructor**, **Student**, **Dean**, **Associate Dean** and **System Admin**), each in its own colour. A tick in the role's colour marks a page the role opens; a dash marks one it does not. The whole grid fits the card without scrolling sideways.
+**38. Roles: the board.** Picking **The board** flies the camera to the chalkboard and opens **Who opens what** at the left: the pages down the side (**Dashboard**, **Syllabus**, **Courseware**, **Student Monitoring**, **Performance**, **My Courses**, **Assessments**, **Records**, **Course Loading** and **Monitor**) and the five roles across the top (**Instructor**, **Student**, **Dean**, **Program Coordinator** and **System Admin**), each in its own colour. A tick in the role's colour marks a page the role opens; a dash marks one it does not. The whole grid fits the card without scrolling sideways.
 
 ![Pulse: the Guardian answering firmly](39-page-pulse-chat.png)
 

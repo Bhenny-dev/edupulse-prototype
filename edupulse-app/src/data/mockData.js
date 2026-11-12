@@ -1072,7 +1072,7 @@ function buildStudentRoster() {
 
 export const STUDENT_RECORDS = buildStudentRoster()
 
-// Derived stats for the Dean / Associate Dean monitoring surfaces (FLOW_SPEC
+// Derived stats for the Dean / Program Coordinator monitoring surfaces (FLOW_SPEC
 // Phase 5): does an approved syllabus exist, and is delivery on schedule?
 // No compliance scores, no grades — status counts and delivery gaps only.
 export const ADMIN_STATS = {
@@ -1128,7 +1128,7 @@ export const SYLLABUS_VERSIONS = [
 // EduSuite records intake (FLOW_SPEC Phase 0). EduSuite is the system of record;
 // EduPulse only receives exported files — course records, course loads, student
 // class lists (blocks) — parses them, shows what it understood, and the Dean /
-// Associate Dean confirms. No live integration (explicit non-goal).
+// Program Coordinator confirms. No live integration (explicit non-goal).
 export const FILE_IMPORT_CONFIG = {
   templates: [
     { id: 'course-records', name: 'Course Records Template', description: 'CSV template for EduSuite course records per the CMO-based curriculum (CourseCode, CourseTitle, Units, Classification, Hours, Prerequisites, YearLevel, Semester)', fields: ['CourseCode', 'CourseTitle', 'Units', 'Classification', 'Hours', 'Prerequisites', 'YearLevel', 'Semester'], downloadName: 'course_records_template.csv' },
@@ -1163,7 +1163,7 @@ export const RAG_GROUNDING_PASSAGES = [
 ]
 
 // ─────────────────────────────────────────────────────────────────────────
-// EduSuite Course Assignments — the Dean/Associate Dean loads courses in
+// EduSuite Course Assignments — the Dean/Program Coordinator loads courses in
 // EduSuite (not in EduPulse). EduPulse only displays the assignments
 // as a read-only monitoring surface.
 // ─────────────────────────────────────────────────────────────────────────

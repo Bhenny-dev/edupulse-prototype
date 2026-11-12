@@ -31,7 +31,7 @@ const SECTIONS = [
   { key: 'dean-students', path: '/students', label: 'Students', icon: Users, roles: ['dean'], relatedPaths:['/performance'] },
   { key: 'records', path: '/records', label: 'Records', icon: BookOpen, roles: ['associate_dean'] },
 
-  // Dean and Associate Dean have separate accounts and the same academic stations.
+  // Dean and Program Coordinator have separate accounts and the same academic stations.
   {
     key: 'course-loading', path: '/course-loading', label: 'Course Loading', icon: ClipboardCheck, roles: ['associate_dean'],
   },
@@ -157,7 +157,7 @@ function RoleSwitchPopover({ onClose }) {
   const roles = [
     { key: 'admin', label: 'System Admin', desc: 'System health, accounts and audit logs' },
     { key: 'dean', label: 'Dean', desc: 'Course loading and academic monitoring' },
-    { key: 'associate_dean', label: 'Associate Dean', desc: 'Course loading and academic monitoring' },
+    { key: 'associate_dean', label: 'Program Coordinator', desc: 'Course loading and academic monitoring' },
     { key: 'instructor', label: 'Instructor', desc: 'Syllabus, courseware, student monitoring' },
     { key: 'student', label: 'Student', desc: 'Open materials, answer assessments' },
   ]

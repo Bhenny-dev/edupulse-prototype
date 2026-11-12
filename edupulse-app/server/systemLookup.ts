@@ -29,7 +29,7 @@ const roleWork:Record<Identity['role'],string>={
   student:'You open released materials in your enrolled courses, answer available assessments and view your own progress and results.',
   guest:'Sign in to access your assigned academic workspace.',
 }
-const roleName=(role:Identity['role'])=>role==='admin'?'System Admin':role==='associate_dean'?'Associate Dean':role.charAt(0).toUpperCase()+role.slice(1)
+const roleName=(role:Identity['role'])=>role==='admin'?'System Admin':role==='associate_dean'?'Program Coordinator':role.charAt(0).toUpperCase()+role.slice(1)
 export async function selfAccountAnswer(input:ChatInput,owner:Identity,subject:Identity,signal:AbortSignal){
   const signedIn=owner.role!=='guest'&&!owner.local
   const viewed=subject.supportActor?subject:owner

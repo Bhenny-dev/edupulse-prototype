@@ -2,7 +2,7 @@ import { defineAgent } from './defineAgent'
 
 // Performance / Scoring Sheet — FLOW_SPEC Phase 5, instructor and student
 // sides. Shares zone 'performance' with the Scoring Sheet page. The Dean /
-// Associate Dean's monitoring view lives in Monitor, not here.
+// Program Coordinator's monitoring view lives in Monitor, not here.
 export default defineAgent({
   id: 'performance',
   zone: 'performance',

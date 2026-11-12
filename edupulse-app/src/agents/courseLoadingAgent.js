@@ -2,7 +2,7 @@ import { defineAgent } from './defineAgent'
 
 // Course Loading — FLOW_SPEC Phase 1. AI has two modes: Assist (ranked
 // suggestions per course) and Auto (propose the whole assignment in place).
-// Either way, the Dean / Associate Dean confirms every assignment — AI never
+// Either way, the Dean / Program Coordinator confirms every assignment — AI never
 // finalizes loading.
 export default defineAgent({
   id: 'course-loading',

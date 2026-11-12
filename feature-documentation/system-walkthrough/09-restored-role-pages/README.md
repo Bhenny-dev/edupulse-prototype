@@ -11,7 +11,7 @@ Accounts see the same role dashboards as the preview personas: the [instructor](
 | Instructor | ![Instructor Dashboard](01-instructor-dashboard.png) | **Getting Started with EduPulse**; summary cards from the owner workspace (all zero in this fixture); **Quick actions**; **My Block Sections** BSIT-1A and BSIT-1B with one student each; **Score Snapshot** with 2 students, a 67% average and one learner below 75 (only the learner with marked attempts is averaged) and topic averages for IT 102; **Recent Activity**, the course syllabus stations and **Courseware Review Queue** showing their empty-state lines. |
 | Student | ![Student Dashboard](02-student-dashboard.png) | Summary cards: 1 enrolled course, 67% average score, 1 topic mastered, 1 pending activity. **Pulse Reminders** lists the unopened *Variables lesson*. **My Block** shows BSIT-1A with year level, size and adviser *Not recorded*. The IT 102 card shows its latest recorded score; **Learning Material Sources** has no published source; **My Score Trend** plots weeks 1–3; **Upcoming Activities** has no recorded deadline. |
 | Dean | ![Dean Dashboard](03-dean-dashboard.png) | One released, loaded and approved course; **Quick actions**; **Syllabus Stations**; **Delivery Progress (Active Courses)** with published materials and assessments for IT 102; **Faculty Overview** (*Synthetic instructor*, *On track*); **Recent Activity** with no recorded event; **Syllabus Status by Course**. |
-| Associate Dean | ![Associate Dean Dashboard](04-associate_dean-dashboard.png) | The same management dashboard under **Associate Dean Dashboard**. The navigation has no **Performance** tab and the dashboard has no score panel. |
+| Program Coordinator | ![Program Coordinator Dashboard](04-associate_dean-dashboard.png) | The same management dashboard under **Program Coordinator Dashboard**. The navigation has no **Performance** tab and the dashboard has no score panel. |
 
 ## Combined instructor monitoring
 
@@ -28,7 +28,7 @@ Choose **Student Monitoring**, then a course/block under its recorded year level
 | Assessment charts | ![Monitoring assessment charts](11-monitoring-scoring-matrix.png) | Assessment charts in the same selected class. Old instructor Performance and Scoring Sheet links lead into monitoring. |
 | Material rows | ![Monitoring material rows](12-monitoring-material-matrix.png) | Accesses, confirmed reading completion, reading average and progress for this class only. |
 
-Dates constrain recorded events; student search/progress filters affect the list. Marked current-version results determine raw averages; real zeros remain zero, while missing/unmarked work is excluded. Student Performance retains only the learner's own data. Dean Performance remains read-only. Associate Dean Performance links return to Dashboard and its backend projection excludes performance records.
+Dates constrain recorded events; student search/progress filters affect the list. Marked current-version results determine raw averages; real zeros remain zero, while missing/unmarked work is excluded. Student Performance retains only the learner's own data. Dean Performance remains read-only. Program Coordinator Performance links return to Dashboard and its backend projection excludes performance records.
 
 ## Oversight and course loading
 
@@ -40,7 +40,7 @@ Dates constrain recorded events; student search/progress filters affect the list
 | **Course loads** | ![Course loads](17-course-loading.png) | Dean read-only assignments, blocks, registered students and activity, with the shared clickable summary cards. |
 | **Instructors** | ![Instructor records](18-instructor-delivery.png) | Dean instructor cards and search; selecting a card opens saved course and activity details. |
 
-## Dean records and Associate Dean confirmed file intake
+## Dean records and Program Coordinator confirmed file intake
 
 | View | Capture | Behavior |
 | --- | --- | --- |
@@ -53,7 +53,7 @@ Dates constrain recorded events; student search/progress filters affect the list
 | **Templates** | ![Templates](25-intake-templates.png) | Three real CSV header-template downloads. |
 | **History** | ![Import history](26-intake-history.png) | Confirmed filename/result/time from the saved shared event history. |
 
-The import, Templates and History images above now show the Associate Dean; those controls are removed from Dean pages. Associate Dean file intake accepts CSV up to 1 MB and 1,000 rows per request. Quoted commas/newlines and optional qualification/adviser columns are supported. Invalid/duplicate rows are reported; confirmation saves valid shared course, load or roster rows atomically. Courses precede loads; loads use provisioned instructor IDs; matching blocks and verified student emails feed enrollment. Earlier private intake stays in the owner backup for explicit re-import. No direct EduSuite synchronization is claimed.
+The import, Templates and History images above now show the Program Coordinator; those controls are removed from Dean pages. Program Coordinator file intake accepts CSV up to 1 MB and 1,000 rows per request. Quoted commas/newlines and optional qualification/adviser columns are supported. Invalid/duplicate rows are reported; confirmation saves valid shared course, load or roster rows atomically. Courses precede loads; loads use provisioned instructor IDs; matching blocks and verified student emails feed enrollment. Earlier private intake stays in the owner backup for explicit re-import. No direct EduSuite synchronization is claimed.
 
 ## Student readers and assessment results
 
@@ -85,8 +85,8 @@ The following scenes use the additional synthetic baseline fixture. SQL integrat
 | Topic mastery | ![Topic radar and heatmap](36-topic-mastery-heatmap.png) | The selected course/block heatmap shows mapped topic results. The other graphs and mastery counts remain in Topic mastery and follow-up; an unassessed result is never invented. |
 | Instructor marking | ![Review responses](37-instructor-response-marking.png) | Select a saved attempt, review each response and 0/1 mark, enter a reason and confirm. |
 | In-app reminder | ![Saved reminder](38-confirmed-in-app-reminder.png) | Reviewed marks receipt and one saved reminder receipt; duplicate/day and completed-work exclusions are stated. |
-| Associate Dean loading proposals | ![Loading and qualifications](39-loading-proposals.png) | Imported course, block/semester, provisioned instructor list, degree/specialization records, preview/auto proposals and confirmation. |
-| Associate Dean block correction | ![Block correction](40-block-correction.png) | Select imported student and confirmed block, then confirm the shared correction. |
+| Program Coordinator loading proposals | ![Loading and qualifications](39-loading-proposals.png) | Imported course, block/semester, provisioned instructor list, degree/specialization records, preview/auto proposals and confirmation. |
+| Program Coordinator block correction | ![Block correction](40-block-correction.png) | Select imported student and confirmed block, then confirm the shared correction. |
 | Timed written assessment | ![Timed response](42-timed-written-assessment.png) | Server-started session, remaining time, topic names, one visible written question, Previous/Next and numbered navigation. |
 | Saved result and appeal | ![Pending marking and appeal](43-assessment-pending-review-and-appeal.png) | Objective subtotal, pending written-response marking and appeal form. |
 | Persisted notices | ![Academic notices](44-persisted-academic-notices.png) | Persisted publication notice plus derived current-work reminders; account and device receipt behavior is disclosed. |
@@ -94,7 +94,7 @@ The following scenes use the additional synthetic baseline fixture. SQL integrat
 | Question topic mapping | ![Assessment mapping](46-assessment-topic-mapping.png) | Each question maps to an approved outline topic and selects multiple choice, True/False or instructor-marked response type. |
 | Delivery settings | ![Delivery settings](47-publication-delivery-settings.png) | Opened from an item's three-dot menu in the combined Courseware workspace. Release/deadline, duration and allowed attempts are saved before review/publication; **Close delivery settings** closes the panel. This fixture has no AI connection, so the course also says **Pulse AI is not set up yet** with **Set up Pulse AI**; saved drafts stay as they are. |
 | Mobile topics | ![Mobile topic mastery](48-mobile-topic-mastery.png) | Stacked topic charts/status and scrollable matrices. |
-| Associate Dean mobile loading | ![Mobile loading](49-mobile-loading-proposal.png) | Responsive proposal controls and qualification/load tables. |
+| Program Coordinator mobile loading | ![Mobile loading](49-mobile-loading-proposal.png) | Responsive proposal controls and qualification/load tables. |
 
 See [Manual 13](../../system-manual/13-restored-account-sections/README.md), [ADR-002](../../backend-system/decisions/002-feature-preservation-baseline.md) and the [baseline release record](../../versions/2026-10-28-baseline-workflows/README.md). The four new migrations were applied to EduPulse System on 28 October 2026; other installations must apply them before serving this version.
 
@@ -102,7 +102,7 @@ See [Manual 13](../../system-manual/13-restored-account-sections/README.md), [AD
 
 ![Pulse confirms shared-record scope](50-account-pulse-guidance.png)
 
-Authenticated Records and Course Loading again expose their page guidance targets. Pulse distinguishes saved account records from preview samples, describes confirmed shared imports and enrolled publication, and keeps the Dean guidance read-only. The displayed Associate Dean import instruction explains the saved receipt; it does not claim that an import occurred. Preview personas keep their sample-data disclosure.
+Authenticated Records and Course Loading again expose their page guidance targets. Pulse distinguishes saved account records from preview samples, describes confirmed shared imports and enrolled publication, and keeps the Dean guidance read-only. The displayed Program Coordinator import instruction explains the saved receipt; it does not claim that an import occurred. Preview personas keep their sample-data disclosure.
 
 The Pulse capture uses a synthetic account transport, so the separate conversation service shows a session-verification warning. Authored page guidance remains available; this image does not establish a successful hosted session or saved conversation. Authored page guidance remains available; this image is not a successful hosted session or a saved conversation. The page target is named Academic Records rather than concatenating dropdown options into its heading.
 
@@ -129,7 +129,7 @@ The assessment radar retains its three-distinct-assessment minimum and leaves ma
 
 ## Dean course, instructor and student navigation
 
-Dean navigation is now **Dashboard**, **Course**, **Instructors** and **Students**. Its summaries share the clickable dashboard card component. Course records/loads/class lists are read-only; Students groups blocks by recorded year and opens downloadable student lists. Old Dean sections/loading addresses redirect to these pages. Screens 21-26, 39-40, 49 and 50 retain the Associate Dean intake/proposal/guidance workflow under that role. Dean offline review and read-only Performance remain accessible. See [Manual 36](../../system-manual/36-dean-activity-records/README.md).
+Dean navigation is now **Dashboard**, **Course**, **Instructors** and **Students**. Its summaries share the clickable dashboard card component. Course records/loads/class lists are read-only; Students groups blocks by recorded year and opens downloadable student lists. Old Dean sections/loading addresses redirect to these pages. Screens 21-26, 39-40, 49 and 50 retain the Program Coordinator intake/proposal/guidance workflow under that role. Dean offline review and read-only Performance remain accessible. See [Manual 36](../../system-manual/36-dean-activity-records/README.md).
 
 ## Combined instructor class monitoring
 

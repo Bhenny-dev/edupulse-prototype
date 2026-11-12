@@ -5,7 +5,7 @@ import { useWorkspace } from '../context/WorkspaceContext'
 
 // Notifications — SYSTEM_SPEC §5. Unopened-material and unanswered-assessment
 // reminders fan out to BOTH the instructor and the student; syllabus-status
-// and delivery-gap notices go to Dean and Associate Dean accounts.
+// and delivery-gap notices go to Dean and Program Coordinator accounts.
 // The top-bar bell and the Notifications page read this one list, so their
 // unread counts always agree.
 export const ROLE_NOTIFICATIONS = {

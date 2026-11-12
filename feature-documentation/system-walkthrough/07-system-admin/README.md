@@ -2,7 +2,7 @@
 
 Browser reload preserves an admin-selected person and the current protected page/tab. Fresh admin and target checks complete before the view renders; a failed check keeps that URL with explicit retry/exit controls. The account picker and header popovers can also reopen without choosing an account or replaying an action. See the four role captures and recovery screens in [Manual 23](../../system-manual/23-account-support-and-pulse-context/README.md#reload-the-selected-account-without-returning-to-dashboard).
 
-**New after v0.4.0.** The system admin is a separate role from the Dean and Associate Dean. It runs the system: accounts, service health and the audit trail. Academic work (course loading, monitoring, records) belongs to the Dean and Associate Dean.
+**New after v0.4.0.** The system admin is a separate role from the Dean and Program Coordinator. It runs the system: accounts, service health and the audit trail. Academic work (course loading, monitoring, records) belongs to the Dean and Program Coordinator.
 
 The system admin signs in with Google, and the two explicitly designated Google-linked accounts are accepted as admin. The admin's dashboard (`/dashboard`) is the system console, and its top bar shows only **Dashboard** plus the shared tools.
 
@@ -36,7 +36,7 @@ The summary cards show:
 | **Audit database** | The admin overview query (accounts and activity) succeeds |
 | **Pulse API** | The application API responds |
 
-**Role coverage** counts the accounts in each of the five roles: System Admin, Dean, Associate Dean, Instructor and Student.
+**Role coverage** counts the accounts in each of the five roles: System Admin, Dean, Program Coordinator, Instructor and Student.
 * **Open view** opens an account picker for that role. Search and filter the actual accounts, then choose the person to inspect.
 * The admin sign-in, AI key, private history and knowledge library remain with the admin. Academic records and permitted saves belong to the selected account; support changes are audited.
 * The view can also be changed from the top bar (*Admin · <view>*) or, on a phone, from **Switch view** in the account menu.
@@ -46,7 +46,7 @@ The summary cards show:
 ![Manage accounts](03-manage-accounts.png)
 
 To create an account:
-1. Enter **Name**, **Email**, a **Temporary password** of at least 12 characters, and a **Role** (Dean, Associate Dean, Instructor or Student).
+1. Enter **Name**, **Email**, a **Temporary password** of at least 12 characters, and a **Role** (Dean, Program Coordinator, Instructor or Student).
 2. Choose **Create account**, then give the credentials to that person securely.
 
 To change an existing account's role, choose the new role in its **Manage** column and select **Save**. The person signs in again to receive the new role.

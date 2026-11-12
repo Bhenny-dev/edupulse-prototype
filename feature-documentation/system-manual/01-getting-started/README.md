@@ -9,7 +9,7 @@ Refreshing a signed-in page keeps its route and tab. When the System Admin is vi
 ## Sign in
 
 1. Open EduPulse. The home page always starts with an opening that shows the EduPulse name; scroll to reach the hero. Click **Sign In** in the top bar or **Get started** in the hero; both scroll to the sign-in panel. **Sign In** on any other public page brings you to the same panel on the home page. With the keyboard, the first Tab stop is **Skip to main content**, which moves past the navigation and the hero. See the [public site walkthrough](../../system-walkthrough/01-public-site/README.md).
-2. Enter the email and password of the account your system admin created, then click **Sign In**. The system admin uses **Sign in with Google**. Your assigned role (Dean, Associate Dean, instructor or student) decides which pages you see. An account without a role cannot sign in.
+2. Enter the email and password of the account your system admin created, then click **Sign In**. The system admin uses **Sign in with Google**. Your assigned role (Dean, Program Coordinator, instructor or student) decides which pages you see. An account without a role cannot sign in.
 3. In the local development app only, **Quick preview access** opens the system as **System Admin**, **Dean**, **Assoc. Dean**, **Instructor** or **Student** with sample data. Preview work is kept on this device only. The hosted site does not offer preview access.
 
 See: [sign-in panel](../../system-walkthrough/01-public-site/13-sign-in-panel.png) and [preview personas](../../system-walkthrough/01-public-site/14-preview-personas.png).
@@ -75,7 +75,7 @@ See: [Settings tabs](../../system-walkthrough/02-shared-interface/README.md#1014
 
 Pulse, the character at the lower right, is the AI assistant on every page. Click it to ask, draft, compare or find references ([manual 5](../05-ask-pulse/README.md), [6](../06-compare-and-references/README.md)); drag it onto any part of a page for help with exactly that part ([manual 7](../07-pulse-guidance/README.md)).
 
-Dean navigation is **Dashboard**, **Course**, **Instructors** and **Students**. The Associate Dean retains **Records**, **Course Loading** and **Monitor**; students retain **Assessments**. [Manual 36](../36-dean-activity-records/README.md) covers the Dean's linked summaries and downloadable block lists. Mobile users find the same links under **Open menu**. Page tabs provide subviews without duplicate left navigation.
+Dean navigation is **Dashboard**, **Course**, **Instructors** and **Students**. The Program Coordinator retains **Records**, **Course Loading** and **Monitor**; students retain **Assessments**. [Manual 36](../36-dean-activity-records/README.md) covers the Dean's linked summaries and downloadable block lists. Mobile users find the same links under **Open menu**. Page tabs provide subviews without duplicate left navigation.
 
 The verified System Admin can now select an actual account after choosing a role. This does not replace the admin Google session or provide the selected person's credentials. See [account support](../23-account-support-and-pulse-context/README.md) for search, filters, support restrictions and returning to the admin console.
 

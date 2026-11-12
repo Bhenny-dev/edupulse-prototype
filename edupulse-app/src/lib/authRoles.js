@@ -3,7 +3,7 @@ export const SYSTEM_ADMIN_EMAILS = Object.freeze([OWNER_EMAIL, '2024-1-0262.bota
 /** @param {string | undefined | null} email */
 export const isSystemAdminEmail = email => typeof email === 'string' && SYSTEM_ADMIN_EMAILS.includes(email.trim().toLowerCase())
 /** @type {Record<string, string>} */
-export const ROLE_TITLES = { admin: 'System Admin', dean: 'Dean', associate_dean: 'Associate Dean', instructor: 'Instructor', student: 'Student' }
+export const ROLE_TITLES = { admin: 'System Admin', dean: 'Dean', associate_dean: 'Program Coordinator', instructor: 'Instructor', student: 'Student' }
 
 /**
  * @param {{id: string, email?: string, app_metadata?: {role?: string, provider?: string, providers?: string[]}, user_metadata?: {full_name?: string, department?: string, student_number?: string, year_level?: number, program?: string}} | null} account

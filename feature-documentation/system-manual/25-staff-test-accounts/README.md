@@ -5,7 +5,7 @@ Nine named staff test accounts are registered with confirmed email/password acce
 | Staff member | Role | App-only login |
 | --- | --- | --- |
 | Ginard S. Guaki | Dean | guaki@edupulse.com |
-| Myriell Nginsayan | Associate Dean | nginsayan@edupulse.com |
+| Myriell Nginsayan | Program Coordinator | nginsayan@edupulse.com |
 | Marielle Angela Fianza-Buya | Instructor | fianza-buya@edupulse.com |
 | Rogelio L. Guisdan | Instructor | guisdan@edupulse.com |
 | Dave Medrano | Instructor | medrano@edupulse.com |
@@ -16,7 +16,7 @@ Nine named staff test accounts are registered with confirmed email/password acce
 
 ## Open a named academic view
 
-As the verified System Admin, open **Switch View** and choose **Instructor**, **Dean** or **Associate Dean**. The matching **Open view** control in Role coverage opens the same picker. These captures use the nine new staff names with controlled transports and synthetic IDs, without a private Google session. The live database also retains older role-only accounts, which may appear alongside the named staff.
+As the verified System Admin, open **Switch View** and choose **Instructor**, **Dean** or **Program Coordinator**. The matching **Open view** control in Role coverage opens the same picker. These captures use the nine new staff names with controlled transports and synthetic IDs, without a private Google session. The live database also retains older role-only accounts, which may appear alongside the named staff.
 
 ![The seven named instructors and their app-only surname logins](01-instructor-accounts.png)
 
@@ -24,9 +24,9 @@ Use **Search accounts** to find an exact surname or login ID. Choose the named r
 
 ![Exact app-only login narrows the picker to Marielle as an instructor](02-filtered-instructor.png)
 
-The corrected Associate Dean is **Myriell Nginsayan**. **Marielle Angela Fianza-Buya** is an **Instructor**. The Dean is **Ginard S. Guaki**.
+The corrected Program Coordinator is **Myriell Nginsayan**. **Marielle Angela Fianza-Buya** is an **Instructor**. The Dean is **Ginard S. Guaki**.
 
-![Myriell in the Associate Dean picker](03-associate-dean.png)
+![Myriell in the Program Coordinator picker](03-associate-dean.png)
 
 ![Ginard in the Dean picker](04-dean.png)
 

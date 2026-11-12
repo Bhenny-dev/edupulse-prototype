@@ -73,7 +73,7 @@ test('system admin console shows health, role coverage, accounts and filterable 
   await failures.click()
   await expect(failures).toHaveAttribute('aria-pressed', 'true')
   await expect(page.getByRole('button', { name: /^All \(\d+\)$/ })).toHaveAttribute('aria-pressed', 'false')
-  // Academic management belongs to the Dean and Associate Dean, not the system admin.
+  // Academic management belongs to the Dean and Program Coordinator, not the system admin.
   await page.goto('/#/course-loading')
   await expect(page).toHaveURL(/#\/dashboard/)
 })

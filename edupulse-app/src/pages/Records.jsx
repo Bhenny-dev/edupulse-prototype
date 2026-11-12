@@ -11,7 +11,7 @@ import {
   ChevronLeft, Users, BookOpen, Eye, GraduationCap, Mail, FileSpreadsheet, Info, Search,
 } from 'lucide-react'
 
-// Records — FLOW_SPEC Phase 0 (records intake), Dean / Associate Dean only.
+// Records — FLOW_SPEC Phase 0 (records intake), Dean / Program Coordinator only.
 // EduSuite is the system of record: EduPulse receives its exported files
 // (course records, course loads, student class lists/blocks), parses them, shows
 // what it understood, and the admin confirms. No live integration. Blocks are

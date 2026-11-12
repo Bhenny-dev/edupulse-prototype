@@ -5,7 +5,7 @@ import { isWorld, rectIn } from './classroom/mode'
 
 const pad = n => String(n).padStart(2, '0')
 const PHASE_ICONS = { records: FileUp, loading: Users, syllabus: FileText, courseware: Layers, access: GraduationCap, monitoring: ChartColumn }
-const ROLE_ICONS = { Dean: Landmark, 'Associate Dean': Briefcase, Instructor: Presentation, Students: GraduationCap, Everyone: Users }
+const ROLE_ICONS = { Dean: Landmark, 'Program Coordinator': Briefcase, Instructor: Presentation, Students: GraduationCap, Everyone: Users }
 
 // How it works: the six phases as one connected sequence of cards. Each card shows the phase,
 // who works in it, and the hand-over from the AI (a dashed draft) to people (the decision).

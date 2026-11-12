@@ -49,7 +49,7 @@ test('authenticated Dean reads authorized college results', async ({ page }) => 
     await expect(page.getByText('3/3', { exact: true })).toBeVisible()
     await shot(page, '05-dean-performance')
 })
-test('authenticated Associate Dean is denied scores', async ({ page }) => {
+test('authenticated Program Coordinator is denied scores', async ({ page }) => {
     await signIn(page, 5)
     await page.goto('/#/performance')
     await expect(page).toHaveURL(/dashboard/)

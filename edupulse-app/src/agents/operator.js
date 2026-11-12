@@ -250,7 +250,7 @@ export function searchRecords(query, { role, userId, catalog = [], registrations
 }
 
 const VIEW_NAMES = [
-  ['associate_dean', /\b(?:assoc(?:iate)?\.?\s+deans?)\b/i],
+  ['associate_dean', /\b(?:(?:assoc(?:iate)?\.?\s+deans?|program\s+coordinators?))\b/i],
   ['instructor', /\b(?:instructors?|teachers?|faculty)\b/i],
   ['dean', /\bdeans?\b/i],
   ['student', /\b(?:students?|learners?)\b/i],

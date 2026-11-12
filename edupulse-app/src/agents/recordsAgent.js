@@ -1,6 +1,6 @@
 import { defineAgent } from './defineAgent'
 
-// Records — FLOW_SPEC Phase 0. Dean and Associate Dean have distinct
+// Records — FLOW_SPEC Phase 0. Dean and Program Coordinator have distinct
 // identities and share the same academic records station.
 export default defineAgent({
   id: 'records',

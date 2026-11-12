@@ -4,7 +4,7 @@ const folder='../feature-documentation/system-manual/25-staff-test-accounts'
 
 test('named staff role pickers show surname logins and corrected academic roles',async({page})=>{
   await staffRegistrationUI(page);await page.goto('/#/dashboard')
-  for(const [role,name,file] of [['Instructor','Marielle Angela Fianza-Buya','01-instructor-accounts'],['Associate Dean','Myriell Nginsayan','03-associate-dean'],['Dean','Ginard S. Guaki','04-dean']]) {
+  for(const [role,name,file] of [['Instructor','Marielle Angela Fianza-Buya','01-instructor-accounts'],['Program Coordinator','Myriell Nginsayan','03-associate-dean'],['Dean','Ginard S. Guaki','04-dean']]) {
     await page.getByText(role,{exact:true}).locator('..').getByRole('button',{name:'Open view',exact:true}).click()
     const picker=page.getByRole('dialog',{name:`Choose ${role.toLowerCase()} account`})
     await expect(picker.getByRole('button',{name:`View ${name}`,exact:true})).toBeVisible()

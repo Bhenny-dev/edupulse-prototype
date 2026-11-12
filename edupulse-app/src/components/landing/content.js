@@ -17,7 +17,7 @@ export const PROBLEM = [
 
 export const CHAPTERS = [
   {
-    key: 'records', who: 'Dean · Associate Dean', title: 'Records and course loading', image: records, screen: 'Records page',
+    key: 'records', who: 'Dean · Program Coordinator', title: 'Records and course loading', image: records, screen: 'Records page',
     alt: 'EduPulse Records page: Import EduSuite Files, with course records, course loads and student class lists',
     body: 'EduSuite stays the system of record. Upload its exports, check them, confirm.',
     points: ["Loads by rule: master's degree, then specialization", 'Pulse suggests instructors; people decide'],
@@ -44,8 +44,8 @@ export const CHAPTERS = [
 
 // Each phase hands over from the AI (a draft) to people (the decision).
 export const PHASES = [
-  { phase: 0, icon: 'records', title: 'Records intake', who: ['Dean', 'Associate Dean'], what: 'Upload the EduSuite exports.', ai: 'Reads and previews them', human: 'Confirm before saving' },
-  { phase: 1, icon: 'loading', title: 'Course loading', who: ['Dean', 'Associate Dean'], what: 'Load each course to an instructor.', ai: "Ranks by master's degree, then specialization", human: 'Confirm every assignment' },
+  { phase: 0, icon: 'records', title: 'Records intake', who: ['Dean', 'Program Coordinator'], what: 'Upload the EduSuite exports.', ai: 'Reads and previews them', human: 'Confirm before saving' },
+  { phase: 1, icon: 'loading', title: 'Course loading', who: ['Dean', 'Program Coordinator'], what: 'Load each course to an instructor.', ai: "Ranks by master's degree, then specialization", human: 'Confirm every assignment' },
   { phase: 2, icon: 'syllabus', title: 'Syllabus building', who: ['Instructor'], what: 'Build or upload the seven-section syllabus.', ai: 'Co-writes each section', human: 'Check, then sign outside EduPulse' },
   { phase: 3, icon: 'courseware', title: 'Courseware generation', who: ['Instructor'], what: 'Turn each outline week into courseware.', ai: 'Drafts from the approved syllabus', human: 'Review, edit and publish' },
   { phase: 4, icon: 'access', title: 'Student access', who: ['Students'], what: 'Open materials, answer assessments.', ai: 'Reminders and missed work only', human: 'Pulse never answers assessment items' },
@@ -76,7 +76,7 @@ export const ROLES = [
     benefit: 'One view of preparation, delivery and results.',
   },
   {
-    key: 'associate_dean', label: 'Associate Dean', kicker: 'Coordinate', title: "Work beside the Dean's office",
+    key: 'associate_dean', label: 'Program Coordinator', kicker: 'Coordinate', title: "Work beside the Dean's office",
     summary: 'Records, course loading and monitoring, in a separate account.',
     tasks: [['records', 'Import and confirm records'], ['loading', 'Load courses, confirm assignments'], ['monitor', 'Follow syllabus status and delivery'], ['dashboard', 'A dashboard of its own']],
     boundary: 'Performance scores and approval authority stay with the Dean.',
@@ -145,13 +145,13 @@ export const GOALS = [
 ]
 
 export const FAQ = [
-  { question: 'Who can sign in to EduPulse?', answer: 'Anyone with an account the system administrator created: the Dean, the Associate Dean, and the instructors and students of the College of Information Technology. Each account has one role, and that role decides which pages you see.' },
+  { question: 'Who can sign in to EduPulse?', answer: 'Anyone with an account the system administrator created: the Dean, the Program Coordinator, and the instructors and students of the College of Information Technology. Each account has one role, and that role decides which pages you see.' },
   { question: 'Does EduPulse replace our LMS or the official grading sheet?', answer: 'No. EduPulse is the syllabus-centred layer: build the syllabus, generate mapped courseware, deliver it and monitor it. The scoring sheet is for visualization only; grades stay in the official KCP grading sheet.' },
   { question: 'How does the AI stay accurate?', answer: "Generation is grounded: Pulse first retrieves passages from the approved syllabus and the instructor's files, then drafts from them and names its sources. Language models can still make mistakes, which is why every draft is reviewed by the instructor." },
-  { question: 'Can the AI publish materials on its own?', answer: "No. Every AI draft is labelled and stays a draft until an instructor reviews it and chooses to publish. Course-loading suggestions also wait for the Dean's or Associate Dean's confirmation." },
+  { question: 'Can the AI publish materials on its own?', answer: "No. Every AI draft is labelled and stays a draft until an instructor reviews it and chooses to publish. Course-loading suggestions also wait for the Dean's or Program Coordinator's confirmation." },
   { question: 'Will Pulse answer assessments for students?', answer: 'No. For students, Pulse is a guide: it reminds them about unopened materials, points to missed activities and helps them find their way. It declines to answer, review or hint at assessment items.' },
   { question: 'Is the syllabus approved inside EduPulse?', answer: 'No. The instructor downloads the checked syllabus. It is reviewed by the Dean, approved by the Chief Academic Officer and noted by the Executive Vice President outside the system. The approved file is then uploaded, and EduPulse extracts its course outline.' },
-  { question: 'Where do courses, loads and class lists come from?', answer: "From EduSuite, the college's system of record. The Dean or Associate Dean uploads its export files; EduPulse has no direct connection to EduSuite." },
+  { question: 'Where do courses, loads and class lists come from?', answer: "From EduSuite, the college's system of record. The Dean or Program Coordinator uploads its export files; EduPulse has no direct connection to EduSuite." },
   { question: 'What about the other colleges of KCP?', answer: 'The study is scoped to the College of Information Technology. Adoption by other KCP colleges is planned future work; a college joins when its instructors are registered and its records are imported.' },
 ]
 

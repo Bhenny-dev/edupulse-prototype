@@ -11,7 +11,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from 'recharts'
 
-// Monitor — FLOW_SPEC Phase 5, Dean / Associate Dean view. Two questions per
+// Monitor — FLOW_SPEC Phase 5, Dean / Program Coordinator view. Two questions per
 // instructor and course: (1) does an approved syllabus exist? (2) are the
 // mapped teaching materials and assessments being delivered on the outline's
 // schedule? Plus student oversight (students within the courses each

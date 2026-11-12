@@ -12,7 +12,7 @@ import {
 
 // Course Loading — FLOW_SPEC Phase 1 (read-only monitoring view).
 // Course assignments happen in EduSuite (not in EduPulse). The Dean /
-// Associate Dean monitors which courses have been loaded, which instructors
+// Program Coordinator monitors which courses have been loaded, which instructors
 // are assigned, and which syllabi exist. No manual assignment in EduPulse.
 
 /* ───────────────────────── Monitoring tab (read-only) ───────────────────────── */

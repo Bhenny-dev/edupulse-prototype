@@ -3598,6 +3598,42 @@
       "reviewedAt": "2026-11-12T11:58:49.200185+00:00",
       "captureRun": "2026-11-12T11-57-03-448Z-a155dcb5",
       "method": "Opened with view_image; checked original draft text, labels, disclosure, assessment marking and phone fit. Fictional account UI, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/25-staff-test-accounts/01-instructor-accounts.png",
+      "sha256": "5b04c440f26fd4c9f9cf59fbd03655dfc580309295ea3b36738e28a78fe7bab5",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T12:02:02.193845+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/25-staff-test-accounts/02-filtered-instructor.png",
+      "sha256": "329da00caa6f3baff5884502434aa0f5864fe6d83cb7505f52aca4ec498d3d0a",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T12:02:02.194939+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/25-staff-test-accounts/03-associate-dean.png",
+      "sha256": "08cad9e51d51d62237fedec80d25f7a8d1d37b4f5a278a251f1f2d701d2721a8",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T12:02:02.195610+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/25-staff-test-accounts/04-dean.png",
+      "sha256": "57b10153162a06bc07a101431c3eb8ef32a86c864befbc221d87635eb7f9c11e",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T12:02:02.196558+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/25-staff-test-accounts/02-filtered-instructor.png",
+      "sha256": "e57bca0856a2dc6e236ac9178d09a55a059cafb593fd6e577873f5c5013e5f5e",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T12:09:53.106388+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/25-staff-test-accounts/03-associate-dean.png",
+      "sha256": "9a8ff9b39c9a77bf96c231a1f50ad2d2f0f31dc360f34f0732c1cb705e3d6e24",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T12:09:53.106631+00:00"
     }
   ]
 }

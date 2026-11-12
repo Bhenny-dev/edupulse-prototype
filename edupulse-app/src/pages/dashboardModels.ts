@@ -50,7 +50,7 @@ export function accountActivity(events: AcademicEvent[] = [], limit = 5, now = D
   })
 }
 
-/* Dean and Associate Dean */
+/* Dean and Program Coordinator */
 
 export function accountManagementModel(data: AcademicData, now = Date.now()) {
   const imported = (kind: string) => (data.institutional || []).filter(row => row.kind === kind).map(row => row.data?.CourseCode)

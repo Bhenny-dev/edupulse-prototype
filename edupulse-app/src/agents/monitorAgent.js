@@ -1,6 +1,6 @@
 import { defineAgent } from './defineAgent'
 
-// Monitor — FLOW_SPEC Phase 5, Dean / Associate Dean view. There is no
+// Monitor — FLOW_SPEC Phase 5, Dean / Program Coordinator view. There is no
 // in-system syllabus approval to triage here: the signatory chain (Dean
 // review → CAO approval → EVP noting) happens offline on the downloaded
 // file. This agent's job is reading the two questions Monitor answers: does

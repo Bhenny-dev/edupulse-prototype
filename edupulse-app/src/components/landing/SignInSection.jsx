@@ -2,7 +2,7 @@ import { useRef } from 'react'
 import LoginPanel from '../auth/LoginPanel'
 import { gsap, useMotion } from './motion'
 
-const ROLE_NAMES = ['Dean', 'Associate Dean', 'Instructor', 'Student', 'System Admin']
+const ROLE_NAMES = ['Dean', 'Program Coordinator', 'Instructor', 'Student', 'System Admin']
 
 // Get started. A rectangular aperture opens the welcome picture once, as the section comes into
 // view, so the layout resolves before anyone reaches the form; it finishes at once if anyone does.

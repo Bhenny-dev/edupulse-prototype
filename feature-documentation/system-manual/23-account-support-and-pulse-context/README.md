@@ -4,7 +4,7 @@ The screenshots use synthetic account, academic and model transports. They show 
 
 ## Select a person after choosing a role
 
-Sign in as the verified System Admin. Open **Switch View** in the top bar, or **Switch view** in the account menu on a phone. Choose **Student**, **Instructor**, **Dean** or **Associate Dean**. The console's **Open view** buttons open the same account picker.
+Sign in as the verified System Admin. Open **Switch View** in the top bar, or **Switch view** in the account menu on a phone. Choose **Student**, **Instructor**, **Dean** or **Program Coordinator**. The console's **Open view** buttons open the same account picker.
 
 ![Searchable account picker with sample students](01-select-account.png)
 
@@ -52,7 +52,7 @@ Use **Conversations and memory** in the Pulse menu to reopen or delete a convers
 
 ## Verify courseware delivery
 
-An instructor reviews a draft, marks it checked, and explicitly publishes it from an active syllabus with an approved uploaded document and extracted outline. Enrolled students then receive release notices and can access released items; a future release date still gates access. Actual student material opens and saved assessment attempts feed instructor records. An unenrolled account cannot read or submit the item, and the Associate Dean does not receive scores.
+An instructor reviews a draft, marks it checked, and explicitly publishes it from an active syllabus with an approved uploaded document and extracted outline. Enrolled students then receive release notices and can access released items; a future release date still gates access. Actual student material opens and saved assessment attempts feed instructor records. An unenrolled account cannot read or submit the item, and the Program Coordinator does not receive scores.
 
 At the 8 November hosted audit there were 288 enrollments, 96 draft items, six checked items and zero publications, access events or attempts. The lack of activity is consistent with nothing being published. This release does not approve, publish, complete or grade those real records automatically. The hosted canary proved delivery using isolated test users and rolled every test record back.
 
@@ -80,7 +80,7 @@ A browser refresh keeps the current URL, including its page and tab query, and r
 
 ![Selected Dean remains on Monitor after reload](12-reload-dean.png)
 
-![Selected Associate Dean remains on Monitor after reload](13-reload-associate_dean.png)
+![Selected Program Coordinator remains on Monitor after reload](13-reload-associate_dean.png)
 
 While verification is pending, **Restoring your session…** and skeletons appear on the requested URL. The prior person's private records are not rendered during this check.
 

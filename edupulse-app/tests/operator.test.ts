@@ -13,7 +13,7 @@ test('dashboard destinations keep the named role and a correction refers to the 
  const history=[{role:'user',content:'open me the instructors dashboard'},{role:'assistant',content:'Opened Dashboard.'}]
  assert.equal(pageFor("no, not mine, the instructor's",'admin',{canSwitchRoles:true,history})?.label,'Instructor Dashboard')
  assert.equal(pageFor('no, not mine','admin',{canSwitchRoles:true,history})?.viewRole,'instructor')
- assert.equal(pageFor('Open the associate dean dashboard','admin',{canSwitchRoles:true})?.viewRole,'associate_dean')
+ assert.equal(pageFor('Open the program coordinator dashboard','admin',{canSwitchRoles:true})?.viewRole,'associate_dean')
  assert.equal(pageFor('Open the instructor dashboard','student')?.denied,true)
  assert.equal(pageFor('What does an instructor do?','student'),null)
  assert.equal(pageFor("no, the instructor's",'student'),null,'An unrelated conversation must not switch views')

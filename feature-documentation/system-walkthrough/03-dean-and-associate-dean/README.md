@@ -1,6 +1,6 @@
-# 03 - Dean and Associate Dean
+# 03 - Dean and Program Coordinator
 
-The Dean and Associate Dean use separate accounts and permissions. Dean navigation is **Dashboard**, **Course**, **Instructors** and **Students**. Associate Dean retains **Dashboard**, **Records**, **Course Loading** and **Monitor**. These images show preview samples; authenticated pages use authorized records without sample fallback. [Manual 36](../../system-manual/36-dean-activity-records/README.md) illustrates the current account interface.
+The Dean and Program Coordinator use separate accounts and permissions. Dean navigation is **Dashboard**, **Course**, **Instructors** and **Students**. Program Coordinator retains **Dashboard**, **Records**, **Course Loading** and **Monitor**. These images show preview samples; authenticated pages use authorized records without sample fallback. [Manual 36](../../system-manual/36-dean-activity-records/README.md) illustrates the current account interface.
 
 ## 1. Dean dashboard
 
@@ -44,19 +44,19 @@ Dean Course also retains **Student class lists**. File Import, Templates, Histor
 
 ![Pulse on Course records](11-pulse-on-course-loading.png)
 
-Page guidance explains Dean read-only activity records. Preview guidance identifies sample data. Associate Dean guidance retains shared file-intake instructions.
+Page guidance explains Dean read-only activity records. Preview guidance identifies sample data. Program Coordinator guidance retains shared file-intake instructions.
 
-## 12. Associate Dean dashboard
+## 12. Program Coordinator dashboard
 
-![Associate Dean dashboard](12-associate-dean-dashboard.png)
+![Program Coordinator dashboard](12-associate-dean-dashboard.png)
 
-The Associate Dean retains Records/Course Loading/Monitor navigation, CSV confirmation, loading proposals, templates, history and block correction under existing permissions. The [account role guide](../09-restored-role-pages/README.md) shows those controls with synthetic records.
+The Program Coordinator retains Records/Course Loading/Monitor navigation, CSV confirmation, loading proposals, templates, history and block correction under existing permissions. The [account role guide](../09-restored-role-pages/README.md) shows those controls with synthetic records.
 
 ## 13. Performance access boundary
 
-![Associate Dean denied Performance](13-performance-access-denied.png)
+![Program Coordinator denied Performance](13-performance-access-denied.png)
 
-Associate Dean direct Performance navigation returns to Dashboard, and Pulse reports it unavailable. Dean read-only Performance remains reachable through **Students → View student performance** and existing links. No Dean authoring, marking or electronic approval was added. See [ADR-001](../../backend-system/decisions/001-role-and-approval-boundaries.md) and the [combined oversight guide](../../system-manual/29-combined-oversight/README.md).
+Program Coordinator direct Performance navigation returns to Dashboard, and Pulse reports it unavailable. Dean read-only Performance remains reachable through **Students → View student performance** and existing links. No Dean authoring, marking or electronic approval was added. See [ADR-001](../../backend-system/decisions/001-role-and-approval-boundaries.md) and the [combined oversight guide](../../system-manual/29-combined-oversight/README.md).
 
 ## Assigned curriculum loads
 

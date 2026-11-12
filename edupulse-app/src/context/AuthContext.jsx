@@ -12,7 +12,7 @@ const AuthContext = createContext(null)
 const DEMO_USERS = {
   admin: { id: 0, name: 'System Admin', role: 'admin', title: 'System Admin', department: 'EduPulse', canSwitchRoles: false },
   dean: { id: 1, name: 'Ginard S. Guaki', role: 'dean', title: 'Dean', email: 'ginard.guaki@kcp.edu.ph', department: 'College of IT' },
-  associate_dean: { id: 2, name: 'Myriell Nginsayan', role: 'associate_dean', title: 'Associate Dean', department: 'College of IT' },
+  associate_dean: { id: 2, name: 'Myriell Nginsayan', role: 'associate_dean', title: 'Program Coordinator', department: 'College of IT' },
   instructor: { id: 1, name: 'Sir Rogelio L. Guisdan', role: 'instructor', title: 'Instructor', email: 'rogelio.guisdan@kcp.edu.ph', department: 'College of IT', specialization: 'Web & Mobile Development' },
   student: { id: 4, name: 'Bhenny Benlor D. Rivera', role: 'student', title: 'Student', email: 'bhenny.rivera@kcp.edu.ph', department: 'College of IT', yearLevel: 3, section: 'BSIT-3A' },
 }

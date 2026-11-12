@@ -44,7 +44,7 @@ const FaqPage = lazy(() => import('./pages/public/FaqPage'))
 const publicPage = Page => <Suspense fallback={<div className="public-loading" role="status"><Spinner /> Opening the room…</div>}><Page /></Suspense>
 
 // The system admin has a dedicated console. Academic management belongs to
-// the separately authenticated Dean and Associate Dean roles.
+// the separately authenticated Dean and Program Coordinator roles.
 function ProtectedRoute({ children, allowedRoles }) {
   const { user, authLoading, authRestoreError, retryRestoration, returnToAdmin, canReturnToAdmin, logout } = useAuth()
   if (authLoading) return (

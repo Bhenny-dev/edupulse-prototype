@@ -87,7 +87,7 @@ function PageHeader({ title, subtitle, actions }) {
 
 const exportButton = <button className="btn btn-secondary btn-sm"><Download size={14} /> Export</button>
 
-/* Academic management screens are shared by the distinct Dean and Associate Dean roles. */
+/* Academic management screens are shared by the distinct Dean and Program Coordinator roles. */
 
 function ManagementDashboard({ model, actions = exportButton, status }) {
   const navigate = useNavigate()

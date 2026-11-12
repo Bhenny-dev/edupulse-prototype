@@ -30,7 +30,7 @@ test('synthetic restored oversight, loading and records sections', async ({ page
   for (const [path, name] of [['monitor?tab=overview', '13-monitor-syllabus-status'], ['monitor?tab=students', '15-monitor-students'], ['monitor?tab=alerts', '16-monitor-alerts'], ['course-loading', '17-course-loading'], ['course-loading?tab=instructors', '18-instructor-delivery'], ['records?tab=sections', '19-record-blocks'], ['records?tab=courses', '20-record-courses']]) { await page.goto('/#/' + path); await expect(page.locator('.academic-portal')).toBeVisible(); await shot(page, name) }
 })
 
-test('Associate Dean retains shared file intake, templates and history', async ({page})=>{
+test('Program Coordinator retains shared file intake, templates and history', async ({page})=>{
   await restorationUI(page,'associate_dean')
   await page.goto('/#/records'); await page.getByLabel('Choose CSV for preview').setInputFiles({ name: 'synthetic-courses.csv', mimeType: 'text/csv', buffer: Buffer.from('CourseCode,CourseTitle,Units,Classification,Hours,Prerequisites,YearLevel,Semester\nIT 102,Computer Programming 1,3,Core,5,,1,1\nIT 103,,3,Core,3,,1,1') }); await expect(page.getByText('1 valid · 1 rejected · 2 total')).toBeVisible(); await shot(page, '21-course-intake-preview')
   await page.getByRole('button', { name: 'Confirm Import (1 records)', exact: true }).click(); await expect(page.getByRole('status').filter({ hasText: 'Saved 1 new' })).toBeVisible(); await shot(page, '22-course-intake-saved')

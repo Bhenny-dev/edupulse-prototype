@@ -274,7 +274,7 @@ test('system admin', async ({ page }) => {
   ])
 })
 
-test('dean and associate dean', async ({ page }) => {
+test('dean and program coordinator', async ({ page }) => {
   await signIn(page, 'Dean')
   const f = '03-dean-and-associate-dean'
   await run(page, 'dean', [
@@ -291,11 +291,11 @@ test('dean and associate dean', async ({ page }) => {
   ])
 })
 
-test('associate dean', async ({ page }) => {
+test('program coordinator', async ({ page }) => {
   await signIn(page, 'Assoc. Dean')
-  await run(page, 'associate dean', [
-    { folder: '03-dean-and-associate-dean', name: '12-associate-dean-dashboard', title: 'Associate Dean dashboard (distinct account)', path: '/dashboard' },
-    { folder: '03-dean-and-associate-dean', name: '13-performance-access-denied', title: 'Associate Dean: performance route and Pulse access denied', path: '/performance', act: async p => {
+  await run(page, 'program coordinator', [
+    { folder: '03-dean-and-associate-dean', name: '12-associate-dean-dashboard', title: 'Program Coordinator dashboard (distinct account)', path: '/dashboard' },
+    { folder: '03-dean-and-associate-dean', name: '13-performance-access-denied', title: 'Program Coordinator: performance route and Pulse access denied', path: '/performance', act: async p => {
       await expect(p).toHaveURL(/dashboard/)
       await p.getByRole('button', { name: 'Open Pulse assistant' }).click()
       await p.getByRole('textbox', { name: 'Ask Pulse', exact: true }).fill('open performance')
