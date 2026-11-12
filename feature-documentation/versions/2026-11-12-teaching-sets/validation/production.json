@@ -1,0 +1,99 @@
+{
+  "origin": "https://edupulse-prototype.vercel.app",
+  "checkedAt": "2026-11-12T13:11:20.946Z",
+  "results": [
+    {
+      "role": "dean",
+      "passed": true,
+      "courses": 69,
+      "attempts": 432,
+      "opens": 864,
+      "reading": 864,
+      "incoming": 0,
+      "laterAssessmentActions": 0
+    },
+    {
+      "role": "associate_dean",
+      "passed": true,
+      "courses": 69,
+      "attempts": 0,
+      "opens": 0,
+      "reading": 0,
+      "incoming": 0,
+      "laterAssessmentActions": 0
+    },
+    {
+      "role": "instructor",
+      "passed": true,
+      "courses": 11,
+      "attempts": 54,
+      "opens": 108,
+      "reading": 108,
+      "incoming": 2,
+      "laterAssessmentActions": 0
+    },
+    {
+      "role": "instructor",
+      "passed": true,
+      "courses": 8,
+      "attempts": 72,
+      "opens": 144,
+      "reading": 144,
+      "incoming": 2,
+      "laterAssessmentActions": 0
+    },
+    {
+      "role": "instructor",
+      "passed": true,
+      "courses": 9,
+      "attempts": 63,
+      "opens": 126,
+      "reading": 126,
+      "incoming": 2,
+      "laterAssessmentActions": 0
+    },
+    {
+      "role": "instructor",
+      "passed": true,
+      "courses": 8,
+      "attempts": 72,
+      "opens": 144,
+      "reading": 144,
+      "incoming": 2,
+      "laterAssessmentActions": 0
+    },
+    {
+      "role": "instructor",
+      "passed": true,
+      "courses": 8,
+      "attempts": 72,
+      "opens": 144,
+      "reading": 144,
+      "incoming": 2,
+      "laterAssessmentActions": 0
+    },
+    {
+      "role": "instructor",
+      "passed": true,
+      "courses": 8,
+      "attempts": 72,
+      "opens": 144,
+      "reading": 144,
+      "incoming": 2,
+      "laterAssessmentActions": 0
+    },
+    {
+      "role": "instructor",
+      "passed": true,
+      "courses": 10,
+      "attempts": 27,
+      "opens": 54,
+      "reading": 54,
+      "incoming": 2,
+      "laterAssessmentActions": 0
+    }
+  ],
+  "noAcademicWrites": true,
+  "noInference": true,
+  "ownProbeSessionsSignedOut": true
+}

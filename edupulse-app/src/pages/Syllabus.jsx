@@ -1031,7 +1031,8 @@ export default function Syllabus() {
   const deleteShare=sharing.shares.find(item=>`shared:${item.id}`===deleteId)
   const sharingSyllabus=syllabi.find(item=>item.id===shareId)
   const activeOnly = searchParams.get('status') === 'active'
-  const listedSyllabi = activeOnly ? syllabi.filter(syllabus => syllabus.status === 'active') : syllabi
+  const teachingSyllabi = syllabi.filter(syllabus => ['own','draft'].includes(syllabus.teachingSetRole))
+  const listedSyllabi = activeOnly ? syllabi.filter(syllabus => syllabus.status === 'active') : teachingSyllabi.length && searchParams.get('status') !== 'all' ? teachingSyllabi : syllabi
   const {data:academic}=useAcademicRecords()
   const [editingSyllabus, setEditingSyllabus] = useState(null)
   const [uploadingSyllabus, setUploadingSyllabus] = useState(null)
@@ -1056,7 +1057,7 @@ export default function Syllabus() {
     const change = data => revisedWorkspace(data,next)
     const saved = options.confirmed ? await commit(change) : null
     if (!options.confirmed) updateWorkspace(change)
-    setEditingSyllabus(null); switchTab('mine')
+    setEditingSyllabus(null); setTab('mine'); setSearchParams({tab:'mine',status:'all'})
     pulseBus.progress('syllabus-saved', next.courseCode)
     return { ...saved, id: next.id, status: next.status }
   }
@@ -1168,6 +1169,7 @@ export default function Syllabus() {
       {tab === 'mine' && (
         <>
           <ApprovedSyllabusIntake onUse={handleUseApprovedSyllabus} onView={setSelectedSyllabus} focusUpload={searchParams.get('upload') === 'approved'} />
+          {teachingSyllabi.length>0&&!activeOnly&&<div className="academic-actions mt-16" role="status"><strong>Teaching set</strong><span>{teachingSyllabi.filter(s=>s.teachingSetRole==='own').length} own syllabi</span><span>{incoming.length} shared with me</span><span>{teachingSyllabi.filter(s=>s.teachingSetRole==='draft').length} complete drafts</span><button className="btn btn-secondary btn-sm" onClick={()=>setSearchParams({tab:'mine',...(searchParams.get('status')==='all'?{}:{status:'all'})})}>{searchParams.get('status')==='all'?'Show teaching set':'Show all syllabi'}</button></div>}
           {activeOnly && <div className="flex flex-wrap items-center gap-16 mb-16" role="status"><strong>Active syllabi</strong><button className="btn btn-secondary btn-sm" onClick={() => setSearchParams({ tab: 'mine' })}>Show all syllabi</button></div>}
 
           <div style={{ marginTop: '20px' }}>
@@ -1229,7 +1231,7 @@ export default function Syllabus() {
               </table></div>
             )}
           </div>
-          {incoming.length>0&&!activeOnly&&<section className="card mt-24"><div className="card-header"><h2>Shared with me</h2></div><div className="card-body"><p className="text-sm text-muted mb-16">Received copies stay read-only. Use as draft creates your own copy for review and offline approval.</p>{incoming.map(share=><div className="academic-list-row" key={share.id} data-shared-id={share.id}><div><strong>{share.courseCode} — {share.courseTitle}</strong><div className="text-sm text-muted">Shared by {share.sender_name}</div></div><div className="academic-actions"><button className="btn btn-secondary btn-sm" onClick={()=>{setReaderVersion(null);setReaderId(`shared:${share.id}`)}}>View shared syllabus</button><button className="btn btn-secondary btn-sm" disabled={actionBusy} onClick={async()=>{setActionBusy(true);setActionError('');try{const result=await sharing.command({operation:'open',id:share.id});await handleAttachSyllabus({...result.syllabus,sharedBy:{id:share.sender_id,name:share.sender_name}})}catch(error){setActionError(error.message)}finally{setActionBusy(false)}}}>Use as draft</button><button className="btn btn-ghost btn-sm" title="Delete received syllabus" onClick={()=>setDeleteId(`shared:${share.id}`)}><Trash2 size={14}/></button></div></div>)}</div></section>}
+          {incoming.length>0&&!activeOnly&&<section className="card mt-24"><div className="card-header"><h2>Shared with me</h2></div><div className="card-body"><p className="text-sm text-muted mb-16">Received copies stay read-only. Use as draft creates your own copy for review and offline approval.</p>{incoming.map(share=><div className="academic-list-row" key={share.id} data-shared-id={share.id}><div><strong>{share.courseCode} — {share.courseTitle}</strong><div className="text-sm text-muted">Shared by {share.sender_name}</div></div><div className="academic-actions"><button className="btn btn-secondary btn-sm" onClick={()=>{setReaderVersion(null);setReaderId(`shared:${share.id}`)}}>View shared syllabus</button><button className="btn btn-secondary btn-sm" disabled={actionBusy} onClick={async()=>{setActionBusy(true);setActionError('');try{const result=await sharing.command({operation:'open',id:share.id});await handleAttachSyllabus({...result.syllabus,sharedBy:{id:share.sender_id,name:share.sender_name}});setSearchParams({tab:'mine',status:'all'})}catch(error){setActionError(error.message)}finally{setActionBusy(false)}}}>Use as draft</button><button className="btn btn-ghost btn-sm" title="Delete received syllabus" onClick={()=>setDeleteId(`shared:${share.id}`)}><Trash2 size={14}/></button></div></div>)}</div></section>}
         </>
       )}
 

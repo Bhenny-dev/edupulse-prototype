@@ -249,6 +249,7 @@ export default function CourseWorkspace({ syllabusId, focusWeek, contentStore, o
           { label: 'Collapse all weeks', icon: Eye, onSelect: () => setExpandedWeeks(new Set()) },
         ]} />
       </div>
+      {syllabus.status!=='active'&&<p role="status" className="mb-16">Awaiting syllabus approval. Review these prepared drafts here; publication is available after the approved syllabus is activated.</p>}
       {generationProgress && <div className="ai-actions cw-generation-progress" role="status"><Loader2 size={16} className="spin" /><span>{generationProgress}</span><button className="btn btn-secondary btn-sm" onClick={() => generationRef.current?.abort()}>Stop generation</button></div>}
       {!busy && unfinished.length>0 && <p role="status">Saved parts are available below. Resume generation to finish; unfinished drafts cannot be checked or published.</p>}
       {generationIssue ? <div className="cw-ai-notice is-error" role="alert"><TriangleAlert size={18} aria-hidden="true" /><div className="cw-ai-notice-body"><strong>Generation did not finish</strong><span>{generationIssue.message}{generationIssue.saved ? ` ${generationIssue.saved} completed drafts remain available for review.` : ''}</span></div>{generationIssue.setup && <button className="btn btn-primary btn-sm" onClick={() => navigate('/settings?tab=ai-provider')}><PlugZap size={14} /> Set up Pulse AI</button>}<button className="btn btn-ghost btn-sm" onClick={() => setGenerationIssue(null)}>Dismiss</button></div> : !ai.ready && <div className="cw-ai-notice" role="status"><PlugZap size={18} aria-hidden="true" /><div className="cw-ai-notice-body"><strong>Pulse AI is not set up yet</strong><span>Generation needs a connected provider or the on-device model. Your outline and any saved drafts stay as they are.</span></div><button className="btn btn-secondary btn-sm" onClick={() => navigate('/settings?tab=ai-provider')}><PlugZap size={14} /> Set up Pulse AI</button></div>}
@@ -295,7 +296,7 @@ export default function CourseWorkspace({ syllabusId, focusWeek, contentStore, o
                         { label: 'View presentation', icon: MonitorPlay, onSelect: () => openItem(id, item, 'presentation') },
                       ] : []),
                       ...(item.status === 'draft' ? [{ label: 'Check', icon: Check, onSelect: () => { onCheckItem(id); addToast('Item marked as checked', 'success') } }] : []),
-                      ...(item.status === 'checked' ? [{ label: 'Publish', icon: Send, disabled: saving || dirty, onSelect: () => onToggleVisibility(id, 'published') }] : []),
+                      ...(item.status === 'checked' ? [{ label: 'Publish', icon: Send, disabled: saving || dirty || syllabus.status !== 'active', onSelect: () => onToggleVisibility(id, 'published') }] : []),
                       ...(item.status === 'published' ? [{ label: 'Unpublish', icon: Eye, onSelect: () => onToggleVisibility(id, 'checked') }] : []),
                       { label: 'Delivery settings', icon: Send, onSelect: () => setDeliveryItemId(current => current === id ? null : id) },
                     ]} />}

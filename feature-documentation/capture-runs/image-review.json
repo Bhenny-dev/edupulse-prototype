@@ -3778,6 +3778,62 @@
       "sha256": "75b8c7caa73c45325b2614087694aa3eeb829c0fea10eca3876149d335d4a4cb",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-12T13:17:15.621629+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/40-teaching-sets/01-primary-eight.png",
+      "sha256": "f831605c6ecb504df6ca22452eb08823836150b35cc45104d8ad252894a78307",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T13:22:46.845067+00:00",
+      "captureRun": "2026-11-12T13-21-59-946Z-da6d84ba",
+      "method": "Opened with view_image after integrating concurrent main changes; checked counts, sender labels, complete draft fields, approval boundary, wider True/False editor and phone fit. Fictional UI; not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/40-teaching-sets/02-complete-draft.png",
+      "sha256": "1bd25e906e4ce332eb28ff7c668f4b6bd1094a408d7d894ca192173dda3f0cf2",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T13:22:46.845602+00:00",
+      "captureRun": "2026-11-12T13-21-59-946Z-da6d84ba",
+      "method": "Opened with view_image after integrating concurrent main changes; checked counts, sender labels, complete draft fields, approval boundary, wider True/False editor and phone fit. Fictional UI; not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/40-teaching-sets/03-two-received-syllabi.png",
+      "sha256": "f1f4ba182046f9ceb279c94bf8e5168b1a51c2c805e65d1457831c9a36d910e7",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T13:22:46.845927+00:00",
+      "captureRun": "2026-11-12T13-21-59-946Z-da6d84ba",
+      "method": "Opened with view_image after integrating concurrent main changes; checked counts, sender labels, complete draft fields, approval boundary, wider True/False editor and phone fit. Fictional UI; not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/40-teaching-sets/04-owned-courseware.png",
+      "sha256": "d823f35f482d8f077b232287cc3347f6eaa56b51b2a779ed664fa33195674b61",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T13:22:46.846580+00:00",
+      "captureRun": "2026-11-12T13-21-59-946Z-da6d84ba",
+      "method": "Opened with view_image after integrating concurrent main changes; checked counts, sender labels, complete draft fields, approval boundary, wider True/False editor and phone fit. Fictional UI; not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/40-teaching-sets/05-approval-boundary.png",
+      "sha256": "937eae1377d29bb351dfa2168f9f1f1d1e4014256b3cb5af8ef39ef005d81d8b",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T13:29:24.711344+00:00",
+      "captureRun": "2026-11-12T13-28-13-651Z-a296a7b8",
+      "method": "Opened with view_image after final main integration; verified disabled Publish, wider fixed True/False editor and phone teaching counts. Fictional UI; not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/40-teaching-sets/06-true-false.png",
+      "sha256": "83f08253ea04da3117abd1cf6213c031abc00bf60301a65fff4fabd261797f54",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T13:29:24.711965+00:00",
+      "captureRun": "2026-11-12T13-28-13-651Z-a296a7b8",
+      "method": "Opened with view_image after final main integration; verified disabled Publish, wider fixed True/False editor and phone teaching counts. Fictional UI; not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/40-teaching-sets/07-phone-teaching-set.png",
+      "sha256": "069ee45d4eba6936a0207b0e1b48b58a649dfa986262f104ccc99317814b7990",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T13:29:24.712393+00:00",
+      "captureRun": "2026-11-12T13-28-13-651Z-a296a7b8",
+      "method": "Opened with view_image after final main integration; verified disabled Publish, wider fixed True/False editor and phone teaching counts. Fictional UI; not human approval."
     }
   ]
 }

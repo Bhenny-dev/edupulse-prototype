@@ -95,3 +95,5 @@ The [baseline restoration](../versions/2026-10-28-baseline-workflows/README.md) 
 - [38 · Assigned courses, units and real activity](38-curriculum-population/README.md)
 
 [Manual 39: Authored Weeks 1–5](39-authored-weeks/README.md) covers original teaching/activity/assessment drafts, truthful direct-authoring disclosures, written marking and pre-approval review.
+
+[Manual 40: Instructor teaching sets](40-teaching-sets/README.md) covers four own/two shared/two complete drafts, prepared-content review and labelled delivery with unanswered later assessments.

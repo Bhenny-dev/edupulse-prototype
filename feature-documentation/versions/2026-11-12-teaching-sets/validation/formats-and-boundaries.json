@@ -1,0 +1,15 @@
+{
+  "formats": [
+    "enumeration",
+    "essay",
+    "follow_along",
+    "identification",
+    "matching",
+    "multiple_choice",
+    "true_false"
+  ],
+  "genuineAttempts": 0,
+  "genuineOpens": 0,
+  "genuineReading": 0,
+  "wrongBlocks": 0
+}

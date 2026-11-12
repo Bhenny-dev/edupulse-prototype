@@ -1,5 +1,7 @@
 # Synced pipeline test progress
 
+The current [teaching-set demonstration](../40-teaching-sets/README.md) extends the same provenance and normal learner RPCs across recorded classes. Its Weeks 1–3 activity remains separate from independent learner achievement, and all Week 4–5 assessments stay untouched for manual trials. [Current aggregate validation](../../versions/2026-11-12-teaching-sets/validation/results.md).
+
 The owner authorized labelled test activity on registered BSIT accounts. A pipeline test uses the normal enrolled-student material-open and assessment-start/submit operations. Its score is calculated by the server and the same saved attempt appears in the student's progress and the instructor's monitoring. The label identifies an integration exercise; it does not establish independent student achievement.
 
 | View | What is visible |

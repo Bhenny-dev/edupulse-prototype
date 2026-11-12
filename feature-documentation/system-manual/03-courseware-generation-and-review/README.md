@@ -1,5 +1,7 @@
 # 3 · Generate and review courseware
 
+Prepared owned content is reviewable before syllabus activation and shows **Awaiting syllabus approval**. Publish stays disabled until activation. The owner-authorized first-five-week demonstration and primary teaching-set mix are described in [Manual 40](../40-teaching-sets/README.md); normal generated content still starts as a draft.
+
 The instructor dashboard's **Drafts to Review** and **Published Items** cards open course lists filtered to courses containing that content. **Show all courses** clears the filter; selecting a course opens its existing weekly workspace. [Manual 22](../22-dashboard-summary-navigation/README.md) shows both destinations.
 
 The [IT teaching seed](../18-it-course-seed/README.md) adds saved session-authored drafts with explicit provenance, preserving existing items. It does not claim connected-provider inference or student completion. All new items follow the review and publication controls below.

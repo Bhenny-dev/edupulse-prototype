@@ -141,3 +141,7 @@ Pulse resolves **Week 1 Section 1** against the mounted outline. Its review name
 The Syllabus page no longer displays the **Confirmed course loads** summary. Its tabs and upload/builder controls remain; assigned course loads and roster matching are unchanged.
 
 Instructor assessment and teaching-material editors use wider screen containers (up to 1200 px) and growing multiline fields. Questions, options, material headings, slide headings and slide points wrap without clipping. Long bodies retain their auto-growing fields. Presentation editing scrolls vertically for longer slides. Document reading, PDF export and print page sizing remain unchanged.
+
+## Primary teaching set and practice delivery
+
+The primary **My Syllabus** list contains four own entries and two complete drafts, with two received entries under **Shared with me**. **Show all syllabi** reveals the remaining assignments. Prepared content for nonactive owned syllabi is visible under **Course**, labelled **Awaiting syllabus approval**, with publication disabled. [Manual 40](../../system-manual/40-teaching-sets/README.md) shows the list, complete-draft fields, received sender labels and phone view. The separately authorized live demonstration uses Pipeline test provenance; later assessments remain available for manual trials.

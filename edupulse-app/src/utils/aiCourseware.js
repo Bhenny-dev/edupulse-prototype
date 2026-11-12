@@ -26,7 +26,7 @@ export async function generateWeekDraft(syllabus, weekNumber, signal, request = 
     ...((content.assessments|| (content.assessment?[content.assessment]:[])).map((assessment,assessmentIndex)=>({ id: assessmentId(assessment,assessmentIndex), type: 'assessment', content: {
       ...assessment, subtitle: 'AI draft assessment', viewMode: 'assessment', ai: metadata(result.reviews?.assessment || result),
       description: 'Instructor must verify each answer and explanation before publishing.',
-      questions: assessment.questions.map((q, i) => ({ ...q, id: `q${i + 1}`, options: q.options.map((text, index) => ({ label: String.fromCharCode(65 + index), text })) })),
+      questions: assessment.questions.map((q, i) => ({ ...q, id: `q${i + 1}`, options: q.type === 'true_false' ? q.options : q.options.map((text, index) => ({ label: String.fromCharCode(65 + index), text })) })),
       totalPoints: assessment.questions.length, timeLimit: 'No time limit specified',
     } }))),
   ]

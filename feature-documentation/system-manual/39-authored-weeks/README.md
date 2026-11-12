@@ -32,3 +32,5 @@ Draft syllabi retain the normal offline approval path. Their saved packs do not 
 The recorded foreign-language course has no selected language. Its Japanese starter track is a proposal for instructor confirmation. Elective 2 similarly proposes a quality-engineering track because no approved specialization is recorded. Neither proposal is represented as approved curriculum content.
 
 No student opens, reading confirmations, responses, scores, service hours, practicum hours, signatures or approvals are created. Publication and actual learner participation remain separate work after instructor review.
+
+The owner's subsequent [teaching-set and demonstration request](../40-teaching-sets/README.md) releases selected existing approved courses and adds explicitly labelled Pipeline test activity. That later operation does not change this authoring command's draft-only behavior or grant approval to the remaining syllabi.

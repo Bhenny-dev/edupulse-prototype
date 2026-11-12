@@ -12,7 +12,8 @@ export default function CoursewareLibrary({ syllabi, contentStore, user, onSelec
   const courses = useMemo(() => {
     const record = isStudent ? STUDENT_RECORDS.find(student => student.name === user?.name) : null
     const enrolled = record ? new Set(record.courses.map(course => course.code)) : null
-    return syllabi.filter(s => s.status === 'active' && s.courseOutline?.length && (!enrolled || enrolled.has(s.courseCode))).map(syllabus => {
+    const generated = new Set(Object.values(contentStore).map(item=>item.syllabusId))
+    return syllabi.filter(s => s.courseOutline?.length && (s.status === 'active' || !isStudent && s.status !== 'archived' && generated.has(s.id)) && (!enrolled || enrolled.has(s.courseCode))).map(syllabus => {
       const weeks = syllabus.courseOutline.filter(row => !isExam(row))
       const saved = Object.values(contentStore).filter(item => item.content && item.syllabusId === syllabus.id && weeks.some(row => row.week === item.week))
       const entries=saved.filter(item=>!item.generationCheckpoint),unfinished=saved.filter(item=>item.generationCheckpoint).length
@@ -28,7 +29,7 @@ export default function CoursewareLibrary({ syllabi, contentStore, user, onSelec
     <thead><tr><th>Course</th>{!isStudent && <th>Status</th>}<th>Items</th><th>Teaching weeks</th><th>Actions</th></tr></thead>
     <tbody>{courses.map(({ syllabus, weeks, drafts, checked, published, total, expected, complete,unfinished }) => <tr key={syllabus.id} data-course={syllabus.id}>
       <td><strong>{syllabus.courseCode}</strong><div className="text-sm text-muted">{syllabus.courseTitle}{syllabus.sample && ' · Sample'}</div>{!isStudent && <small className="text-muted">{user?.authenticated ? user.name : INSTRUCTORS.find(instructor => instructor.id === syllabus.instructorId)?.name || 'Instructor not assigned'}</small>}</td>
-      {!isStudent && <td data-label="Status"><span className={`badge ${complete ? 'badge-published' : total||unfinished ? 'badge-checked' : 'badge-draft'}`}>{complete ? 'Complete' : total||unfinished ? 'In Progress' : 'Not Started'}</span></td>}
+      {!isStudent && <td data-label="Status"><span className={`badge ${syllabus.status!=='active'?'badge-draft':complete ? 'badge-published' : total||unfinished ? 'badge-checked' : 'badge-draft'}`}>{syllabus.status!=='active'?'Awaiting syllabus approval':complete ? 'Complete' : total||unfinished ? 'In Progress' : 'Not Started'}</span></td>}
       <td data-label="Items"><div className="cw-item-counts">{isStudent ? <span>{published.length} published</span> : <>
         <span className="text-muted">{total} of {expected} generated</span><progress className="cw-course-progress" aria-label={`Generated content for ${syllabus.courseCode}`} value={Math.min(total, expected)} max={expected || 1} />
         {!!drafts.length && <span>{drafts.length} draft</span>}{!!checked.length && <span>{checked.length} checked</span>}{!!published.length && <span>{published.length} published</span>}

@@ -1,0 +1,82 @@
+{
+  "allActivityLabelled": true,
+  "answerKeyLeaks": 0,
+  "attempts": 432,
+  "completedReading": 288,
+  "demonstrationStudents": 42,
+  "enrollments": 7375,
+  "graded": 432,
+  "laterAssessmentActions": 0,
+  "laterAssessments": 32,
+  "laterMaterialActions": 0,
+  "opens": 864,
+  "published": 240,
+  "reading": 864,
+  "sessions": 432,
+  "shares": 14,
+  "teacherActivity": [
+    {
+      "attempts": 63,
+      "completeDrafts": 2,
+      "incoming": 2,
+      "name": "Dave Medrano",
+      "opens": 126,
+      "outgoing": 2,
+      "own": 4
+    },
+    {
+      "attempts": 72,
+      "completeDrafts": 2,
+      "incoming": 2,
+      "name": "Ralphy Luzada",
+      "opens": 144,
+      "outgoing": 2,
+      "own": 4
+    },
+    {
+      "attempts": 54,
+      "completeDrafts": 2,
+      "incoming": 2,
+      "name": "Marielle Angela Fianza-Buya",
+      "opens": 108,
+      "outgoing": 2,
+      "own": 4
+    },
+    {
+      "attempts": 72,
+      "completeDrafts": 2,
+      "incoming": 2,
+      "name": "Libby Teofilo",
+      "opens": 144,
+      "outgoing": 2,
+      "own": 4
+    },
+    {
+      "attempts": 72,
+      "completeDrafts": 2,
+      "incoming": 2,
+      "name": "Rogelio L. Guisdan",
+      "opens": 144,
+      "outgoing": 2,
+      "own": 4
+    },
+    {
+      "attempts": 27,
+      "completeDrafts": 2,
+      "incoming": 2,
+      "name": "Sharmaine Pangcog",
+      "opens": 54,
+      "outgoing": 2,
+      "own": 4
+    },
+    {
+      "attempts": 72,
+      "completeDrafts": 2,
+      "incoming": 2,
+      "name": "Steve Sudaypan",
+      "opens": 144,
+      "outgoing": 2,
+      "own": 4
+    }
+  ]
+}
