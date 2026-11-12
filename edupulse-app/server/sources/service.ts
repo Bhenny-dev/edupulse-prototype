@@ -1,3 +1,6 @@
+import {parseCitation} from '../../src/utils/referenceParsing.js'
+import {bibliographicLabel} from '../../src/lib/rag/syllabusReferences.js'
+import {discoverReference} from './discovery.js'
 import {createHash,randomUUID} from 'node:crypto'
 import {ApiError,type Identity} from '../contracts.js'
 import {sandboxedExtract} from '../ingest/sandbox.js'
@@ -12,9 +15,9 @@ import {catalogSourceUrl,downloadSource,sourceUrl} from './fetch.js'
 
 export async function sourceManifest(identity:Identity,refs:SourceReference[]):Promise<SourceStatus[]>{
  const rows=await listSnapshots(identity,refs.map(sourceKey))
- return refs.map(reference=>{const key=sourceKey(reference),snapshot=rows.find(row=>row.reference_key===key),metadataOnly=snapshot&&catalogSnapshot(snapshot);return {reference,key,status:snapshot?'retained':reference.url?'unread':'attachment-needed',...(snapshot?{snapshot,...(metadataOnly?{metadataOnly:true,message:'This saved catalog or search listing is metadata only. Its text is excluded from teaching evidence.'}:{})}:{message:reference.url?'This link has not been read.':'Citation metadata only. Attach a readable copy to use this book as evidence.'})}})
+ return refs.map(reference=>{const key=sourceKey(reference),snapshot=rows.find(row=>row.reference_key===key),metadataOnly=snapshot&&catalogSnapshot(snapshot);return {reference,key,status:snapshot?'retained':reference.url?'unread':'attachment-needed',...(snapshot?{snapshot,...(metadataOnly?{metadataOnly:true,message:snapshot.warnings.join(' ')||'This saved catalog or search listing is metadata only. Its text is excluded from teaching evidence.'}:{})}:{message:reference.url?'This link has not been read.':'Citation metadata only. Attach a readable copy to use this book as evidence.'})}})
 }
-const catalogSnapshot=(snapshot:Pick<SourceSnapshot,'mime'|'url'>)=>snapshot.mime.includes('html')&&catalogSourceUrl(snapshot.url)
+const catalogSnapshot=(snapshot:Pick<SourceSnapshot,'mime'|'url'|'name'>)=>snapshot.name==='catalog-metadata.txt'||snapshot.mime.includes('html')&&catalogSourceUrl(snapshot.url)
 async function retain(identity:Identity,reference:SourceReference,bytes:Uint8Array,name:string,url:string,signal:AbortSignal,parsed?:Extracted){
  if(bytes.length>SOURCE_BYTES||!bytes.length)throw new ApiError(413,'SOURCE_TOO_LARGE','Attach a non-empty PDF, DOCX, HTML or text copy up to 2 MB.')
  if(!/\.(?:pdf|docx|html?|txt|md)$/i.test(name))throw new ApiError(400,'SOURCE_FORMAT','Use a readable PDF, DOCX, HTML or text source.')
@@ -23,8 +26,10 @@ async function retain(identity:Identity,reference:SourceReference,bytes:Uint8Arr
  const clean=cleanText(extracted.text).text,quality=evaluateQuality(clean)
  if(clean.length<80||quality.grade==='unusable')throw new ApiError(422,'SOURCE_UNREADABLE','No usable source text was found. A scanned or protected book needs a readable text-layer copy or OCR before it can support citations.')
  const truncated=clean.length>SOURCE_TEXT,text=clean.slice(0,SOURCE_TEXT)
+ const parsedCitation=parseCitation(reference.title),detected=extractedReference(extracted,name,url)
+ const citation:SourceReference={...reference,title:parsedCitation.title===reference.url?detected.title:parsedCitation.title||reference.title,authors:reference.authors||parsedCitation.authors||detected.authors,year:reference.year||parsedCitation.year||detected.year,publisher:reference.publisher||parsedCitation.publisher||detected.publisher}
  // Retain original bytes; the extraction limit is explicit and never called full-book coverage.
- const snapshot:SourceSnapshot={id:randomUUID(),reference_key:sourceKey(reference),reference,url,sha256:createHash('sha256').update(bytes).digest('hex'),name:name.replace(/[\\/]/g,'_'),mime:extracted.mime,size:bytes.length,text,base64:Buffer.from(bytes).toString('base64'),pages:extracted.pageTexts.length,truncated,created_at:new Date().toISOString(),warnings:[...quality.warnings.slice(0,4),...(truncated?['Only the first 150,000 extracted characters are searchable. The original copy is retained.']:[])]}
+ const snapshot:SourceSnapshot={id:randomUUID(),reference_key:sourceKey(reference),reference:citation,url,sha256:createHash('sha256').update(bytes).digest('hex'),name:name.replace(/[\\/]/g,'_'),mime:extracted.mime,size:bytes.length,text,base64:Buffer.from(bytes).toString('base64'),pages:extracted.pageTexts.length,truncated,created_at:new Date().toISOString(),warnings:[...quality.warnings.slice(0,4),...(truncated?['Only the first 150,000 extracted characters are searchable. The original copy is retained.']:[])]}
  signal.throwIfAborted();return saveSnapshot(identity,snapshot)
 }
 const fileExtension=(mime:string)=>mime==='application/pdf'?'pdf':mime.includes('wordprocessingml')?'docx':mime.includes('html')?'html':'txt'
@@ -34,7 +39,7 @@ export function extractedReference(extracted:Extracted,name:string,url=''):Sourc
  return {kind:url?'link':'book',title:field('title')||name.replace(/\.[^.]+$/,'').slice(0,500),authors:field('author',1000),year:field('year',40),publisher:field('publisher'),url,...(field('doi')?{doi:field('doi',300)}:{}),...(field('isbn')?{isbn:field('isbn',80)}:{})}
 }
 const metadataGaps=(reference:SourceReference)=>['authors','year','publisher'].filter(key=>!reference[key as keyof SourceReference])
-export async function executeSources(identity:Identity,body:unknown,signal:AbortSignal,download=downloadSource){
+export async function executeSources(identity:Identity,body:unknown,signal:AbortSignal,download=downloadSource,discover=discoverReference){
  if(!['instructor','admin'].includes(identity.role))throw new ApiError(403,'FORBIDDEN','Only instructors and the system admin can manage retained teaching sources.')
  const command=sourceCommand.parse(body)
  if(command.operation==='index'){
@@ -87,11 +92,21 @@ export async function executeSources(identity:Identity,body:unknown,signal:Abort
  const sources=await sourceManifest(identity,command.references)
  for(const source of sources){
   signal.throwIfAborted()
-  if(source.snapshot&&!command.refresh||!source.reference.url)continue
+  if(source.snapshot&&!command.refresh)continue
   try{
-   const response=await download(source.reference.url,signal)
+   if(!source.reference.url){
+    const found=await discover(source.reference,signal)
+    if(!found.candidate){source.status='unavailable';source.message=found.warning;continue}
+    const candidate=found.candidate
+    const reference:SourceReference={kind:source.reference.kind,title:candidate.title,authors:candidate.authors.join(', '),year:'',publisher:'',url:candidate.url}
+    const text=['# Catalog record - metadata only',`## ${candidate.title}`,`**Authors:** ${candidate.authors.join(', ')||'Not supplied'}`,`**Catalog year:** ${candidate.year||'Not supplied'}${candidate.source==='Open Library'?' (first publication; edition not verified)':''}`,`**Catalog venue/publisher:** ${candidate.venue||'Not supplied'}`,`**Identifier:** ${candidate.identifier}`,`**Catalog:** [${candidate.source}](${candidate.url})`,'## Review note',found.warning,'## Original syllabus citation',bibliographicLabel(source.reference)].join('\n\n')
+    const bytes=Buffer.from(text),snapshot:SourceSnapshot={id:randomUUID(),reference_key:source.key,reference,url:candidate.url,sha256:createHash('sha256').update(bytes).digest('hex'),name:'catalog-metadata.txt',mime:'text/plain',size:bytes.length,text,base64:bytes.toString('base64'),pages:0,truncated:false,created_at:new Date().toISOString(),warnings:[found.warning]}
+    Object.assign(source,{status:'retained',metadataOnly:true,snapshot:await saveSnapshot(identity,snapshot),message:found.warning})
+    continue
+   }
+   const response=await download(source.reference.url,signal,{allowCatalog:true})
    const snapshot=await retain(identity,source.reference,response.bytes,`source.${fileExtension(response.mime)}`,response.url,signal)
-   Object.assign(source,{status:'retained',snapshot,message:undefined})
+   Object.assign(source,{status:'retained',snapshot,...(response.metadataOnly?{metadataOnly:true,message:'Catalog/search listing retained as metadata only; it is excluded from teaching evidence.'}:{metadataOnly:false,message:undefined})})
   }catch(failure){signal.throwIfAborted();source.message=failure instanceof ApiError?failure.message:'The source could not be read. Its link or metadata alone was not used as teaching evidence.';source.status=source.snapshot?'retained':'unavailable'}
  }
  return {sources}

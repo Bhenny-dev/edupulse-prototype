@@ -149,3 +149,7 @@ The primary **My Syllabus** list contains four own entries and two complete draf
 Dashboard entry, reload and **Refresh records** read the current authorized snapshot without running a workspace synchronization command. Saved workspace changes still project normally. See the [read-only dashboard example](../../system-manual/23-account-support-and-pulse-context/README.md#dashboard-loading).
 
 Student Monitoring uses the bounded saved allocation: 5-10 course/block classes per named active instructor, with distinct enrolled-student totals. This corrects generated assignments in the database rather than limiting displayed cards. [Manual 37](../../system-manual/37-instructor-monitoring/README.md#bounded-teaching-assignments) shows the desktop and phone examples.
+
+### Reference continuation repair and catalog search
+
+The course **Syllabus sources** panel separates readable retained text from catalog-only records. **Search and read sources** processes books and links one at a time, retaining results and indexing readable text. Titles wrap; author/year/publisher fields are separated. The original imported citation and year discrepancies remain inspectable; catalog metadata is excluded from generated-content evidence. See [the repaired reference and formatted review captures](../../system-manual/31-retained-syllabus-sources/README.md#repaired-citations-and-online-lookup).

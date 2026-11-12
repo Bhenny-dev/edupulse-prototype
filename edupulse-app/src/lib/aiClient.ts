@@ -170,10 +170,10 @@ export const indexSyllabusReference=(id:string,course?:string,signal?:AbortSigna
 export async function prepareSyllabusSources(references:import('./rag/syllabusReferences').SyllabusReference[],signal?:AbortSignal,refresh=false,readLinks=true) {
   if(!references.length)return []
   let sources=(await syllabusSources({operation:'list',references},signal)).sources
-  const pending=sources.filter(source=>source.reference.url&&(refresh||!source.snapshot))
-  if(readLinks)for(let i=0;i<pending.length;i+=3){
+  const pending=sources.filter(source=>refresh||!source.snapshot)
+  if(readLinks)for(let i=0;i<pending.length;i++){
     signal?.throwIfAborted()
-    const result=await syllabusSources({operation:'read',references:pending.slice(i,i+3).map(source=>source.reference),refresh},signal)
+    const result=await syllabusSources({operation:'read',references:pending.slice(i,i+1).map(source=>source.reference),refresh},signal)
     const byKey=new Map(result.sources.map(source=>[source.key,source]));sources=sources.map(source=>byKey.get(source.key)||source)
   }
   return sources

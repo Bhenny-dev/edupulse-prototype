@@ -31,6 +31,7 @@ function valid(key:unknown,value:unknown):value is ViewValue {
   if(/^course:.+:mode$/.test(key)||/^publication:.+:mode$/.test(key))return value===null||value==='document'||value==='presentation'
   if(/^slide:.+$/.test(key))return Number.isInteger(value)&&Number(value)>=0&&Number(value)<=1000
   if(/^syllabus-sources-open:.+$/.test(key))return typeof value==='boolean'
+  if(/^syllabus-source-(?:reader|menu):.+$/.test(key))return value===null||id(value)
   return false
 }
 

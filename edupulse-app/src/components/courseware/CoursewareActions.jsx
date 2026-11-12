@@ -3,10 +3,11 @@ import { createPortal } from 'react-dom'
 import { Ellipsis } from 'lucide-react'
 import './courseware.css'
 
-export default function CoursewareActions({ label, actions, disabled = false }) {
+export default function CoursewareActions({ label, actions, disabled = false, open: controlledOpen, onOpenChange }) {
   const id = useId()
   const trigger = useRef(null), menu = useRef(null)
-  const [open, setOpen] = useState(false)
+  const [localOpen, setLocalOpen] = useState(false)
+  const open=controlledOpen??localOpen,setOpen=onOpenChange||setLocalOpen
   const [position, setPosition] = useState({ top: 0, left: 0 })
   const close = (restoreFocus = true) => { setOpen(false); if (restoreFocus) trigger.current?.focus({ preventScroll: true }) }
   useLayoutEffect(() => {
@@ -29,7 +30,7 @@ export default function CoursewareActions({ label, actions, disabled = false }) 
     document.addEventListener('pointerdown', dismiss)
     window.addEventListener('resize', reposition)
     return () => { document.removeEventListener('pointerdown', dismiss); window.removeEventListener('resize', reposition) }
-  }, [open])
+  }, [open,setOpen])
   const onKeyDown = event => {
     if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); close(); return }
     if (event.key === 'Tab') { close(); return }

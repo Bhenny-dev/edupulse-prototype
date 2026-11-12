@@ -123,3 +123,5 @@ Monitoring captures include `tests/monitoring-fixture.ts` and `tests/monitoring-
 Read-only dashboard captures include `tests/dashboard-readonly-ui.ts` in source provenance. Synthetic instructor/support transports deliberately reject academic writes while testing entry, reload and manual refresh. They do not assert live Google sign-in or learner achievement.
 
 Bounded-load captures include `tests/bounded-loads-ui.ts` in source provenance. Their nine classes and 150 learners are fictional controlled UI records; hosted aggregate reads and actual staff sign-ins are recorded separately. They do not claim learner achievement or official grades.
+
+Citation-repair captures include `tests/citation-repair-fixture.ts` in the source digest. Controlled archive replies exercise the real legacy-continuation read model, catalog-only display and formatted review. They do not claim a live catalog response or complete-book access. Native persistence tests, the original owner PDF import and a separately recorded live keyless lookup/intake establish those narrower results.

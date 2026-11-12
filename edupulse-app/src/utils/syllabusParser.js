@@ -1,3 +1,4 @@
+import {referenceLines,parseCitation} from './referenceParsing'
 import {aggregateSections,mergeOutlineRows} from './outlineSections'
 import { CURRICULUM_COURSES } from '../data/mockData.js'
 
@@ -108,9 +109,8 @@ export function parseSyllabusText(text, outlineOverride = []) {
   const table = textTableOutline(outlineText)
   sections[4].parsed = { courseOutline: outlineOverride.length ? outlineOverride : table.length ? table : parseCourseOutline(outlineText) }
   sections[5].parsed = { courseRequirements: lines(subsection('Course Requirements', 'Grading System:|Course Policy:')), gradingSystem: subsection('Grading System', 'Course Policy:|Course Requirements:'), coursePolicy: lines(subsection('Course Policy', 'Grading System:|Course Requirements:')) }
-  const referenceText = sections[6].raw.replace(/^(?:Books|Online References?)\s*$/gim, '')
-  const references = lines(referenceText.includes('1.') ? referenceText.replace(/\n(?!\s*\d+[.)]\s)/g, ' ') : referenceText)
-  sections[6].parsed = { books: references.filter(line => ! /https?:\/\//i.test(line)).map(line => { const [title = '', authors = '', year = '', publisher = ''] = line.split(';').map(s => s.trim()); return { title, authors, year, publisher } }), onlineReferences: references.filter(line => /https?:\/\//i.test(line)).map(line => ({ title: line, url: line.match(/https?:\/\/\S+/i)[0] })) }
+  const references=referenceLines(sections[6].raw).map(parseCitation)
+  sections[6].parsed={books:references.filter(ref=>!ref.url),onlineReferences:references.filter(ref=>ref.url)}
   return { sections, courseMatch }
 }
 

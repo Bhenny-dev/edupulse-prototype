@@ -5,10 +5,11 @@ import {readWorkspaceViews,saveWorkspaceViews,workspaceViewKey} from '../src/uti
 const memory=()=>{const rows=new Map<string,string>();return {rows,getItem:(key:string)=>rows.get(key)||null,setItem:(key:string,value:string)=>{rows.set(key,value)}}}
 test('reload view references are isolated by owner, support subject and role and preserve Set values',()=>{
  const tab=memory(),owner=workspaceViewKey('support-admin-student-a','student')
- const state=new Map<string,unknown>([['course-location','s1'],['course:s1:expanded',new Set([1,2,18])],['course:s1:selected',new Set(['material-1'])],['course:s1:reader','material-1'],['course:s1:mode','document'],['course:s1:delivery',null],['slide:material-1',2],['syllabus-sources-open:s1',true]])
+ const state=new Map<string,unknown>([['course-location','s1'],['course:s1:expanded',new Set([1,2,18])],['course:s1:selected',new Set(['material-1'])],['course:s1:reader','material-1'],['course:s1:mode','document'],['course:s1:delivery',null],['slide:material-1',2],['syllabus-sources-open:s1',true],['syllabus-source-reader:s1','source-id'],['syllabus-source-menu:s1','source-key']])
  saveWorkspaceViews(owner,state,tab)
  const loaded=readWorkspaceViews(owner,tab)
  assert.equal(loaded.get('course-location'),'s1');assert.deepEqual(loaded.get('course:s1:expanded'),new Set([1,2,18]));assert.deepEqual(loaded.get('course:s1:selected'),new Set(['material-1']));assert.equal(loaded.get('slide:material-1'),2)
+ assert.equal(loaded.get('syllabus-source-reader:s1'),'source-id');assert.equal(loaded.get('syllabus-source-menu:s1'),'source-key')
  for(const scope of [workspaceViewKey('support-admin-student-b','student'),workspaceViewKey('support-other-student-a','student'),workspaceViewKey('support-admin-student-a','instructor')])assert.equal(readWorkspaceViews(scope,tab).size,0)
 })
 test('view persistence excludes response caches, content, credentials, commands and malformed values',()=>{

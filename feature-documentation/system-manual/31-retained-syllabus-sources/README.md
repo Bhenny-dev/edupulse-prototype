@@ -6,11 +6,11 @@
 
    ![Sample book, accessible guide and inaccessible link](01-syllabus-sources.png)
 
-2. Choose **Read linked sources**, or generate a week to prepare its references automatically. Pending reads show **Reading and retaining sources...**. Reading and reviewing do not require a connected AI model. Existing copies are reused without another network download.
+2. Choose **Search and read sources**, or generate a week to prepare its references automatically. Pending reads show **Searching, retaining and indexing sources...**. Reading and reviewing do not require a connected AI model. Existing copies are reused without another network download.
 
    ![Pending source read](02-reading-sources.png)
 
-3. Check each result. The sample guide is retained; the protected example reports **Could not read linked source**. A failure does not become a successful citation or discard a previously saved copy. Catalog listings and sign-in pages are not retained as book text.
+3. Check each result. The sample guide is retained; the protected example reports **Source search or reading unavailable**. A failure does not become a successful citation or discard a previously saved copy. Catalog listings and sign-in pages are not retained as book text.
 
    ![Retained guide and explicitly unread references](03-retained-and-unread.png)
 
@@ -30,7 +30,7 @@
 
    ![Retained two-page sample book extraction](08-retained-book-copy.png)
 
-7. **Download PDF** exports a formatted reading copy of the retained searchable text, including source details. It is labelled as a reading copy and may be partial when the searchable extract was truncated. **Download retained copy** still returns the unchanged original bytes and verifies SHA-256 in the browser. The dialog keeps its close and download actions visible while its content scrolls. **Read a new version** checks the link again; changed bytes create a new immutable snapshot. The latest copy supplies later generation. Changing bibliographic metadata creates a separate citation association. **Remove retained version** requires confirmation; existing drafts keep their citation text and checksum, but a deleted copy cannot be reviewed later.
+7. **Download PDF** exports a formatted reading copy of the retained searchable text, including source details. It is labelled as a reading copy and may be partial when the searchable extract was truncated. **Download retained copy** still returns the unchanged original bytes and verifies SHA-256 in the browser. The dialog keeps its close and download actions visible while its content scrolls. **Search or read again** checks the link again; changed bytes create a new immutable snapshot. The latest copy supplies later generation. Changing bibliographic metadata creates a separate citation association. **Remove retained version** requires confirmation; existing drafts keep their citation text and checksum, but a deleted copy cannot be reviewed later.
 
    ![Guide with two saved versions](09-source-versions.png)
 
@@ -87,3 +87,20 @@ Select text in the generated document or an instructor assessment question and c
 These four captures use controlled account/source transports and a labelled synthetic explanation. The source-selection interface and reload controls are real; native checks separately verify actual chunk lookup/highlight offsets, source ownership and denied cross-account access. They do not establish live model quality or permission to download restricted books. Existing size, extraction and partial-search limits remain visible.
 
 The displayed quote and **Explain in Pulse** remain bound to the passage whose lookup completed. Selecting different text prepares another lookup; it cannot relabel earlier source results as evidence for the new selection.
+
+## Repaired citations and online lookup
+
+Syllabus import joins physical title and publisher continuation lines, repairs wrapped URL paths and DOI suffixes, separates adjacent numbered citations, and stops at approval signatories. Books/Online headings and institutional page footers are excluded. Printed detached edition suffixes are reattached only where an edition number is present. Author/year/publisher fields are separated; malformed dates and absent authors remain as printed instead of being invented. Existing saved split entries such as a trailing **making** are repaired in the source read model without modifying the original approved file or saved draft. The original invalid year remains visible until an online record can identify a possible discrepancy.
+
+**Search and read sources** processes every entry individually, including books without links. Each completed result appears before the next is requested; existing copies are reused. Citation-specific Open Library lookup compares titles, subtitles and author metadata. A close catalog match is retained as a formatted metadata record, with a source link and explicit edition/year warnings. It does not establish that the catalog's first-publication year is the cited edition. A missing/uncertain match is reported; no replacement is invented.
+
+![One repaired citation and explicit catalog-only status](14-repaired-citation.png)
+
+**Original syllabus citation** preserves the imported wording. The summary separates **retained text** from **catalog records**. Catalog metadata cannot be indexed or used as teaching evidence. A readable supplied book/chapter can replace its metadata-only latest copy while earlier versions remain retained.
+
+![Formatted catalog review with the original-year discrepancy](15-catalog-metadata-review.png)
+
+Readable public linked files and uploaded copies are indexed for private knowledge search, associated with the course when available. Failed indexing is reported separately from a successful retention. Search/catalog/login pages cannot become teaching contents. Downloads still enforce public-network checks, no credentials, a 2 MB byte cap and explicit 150,000-character truncation. No full-text access, complete book, or edition is claimed when only catalog metadata or a partial web page is available. Use **Attach readable copy** for protected, scanned or unavailable contents.
+
+
+The source reader and source action menu restore after deliberate reload using scoped navigation IDs only. The source list is read again before either opens; retained content, account data and commands are not stored as navigation hints. Restoration never replays source discovery, indexing, attachment or removal.

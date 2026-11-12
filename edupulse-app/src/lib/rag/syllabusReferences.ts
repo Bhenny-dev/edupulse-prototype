@@ -1,3 +1,4 @@
+import {repairReferenceEntries} from '../../utils/referenceParsing.js'
 export type SyllabusReference = { kind:'book'|'link'; title:string; url:string; authors:string; year:string; publisher:string; doi?:string; isbn?:string }
 const text=(value:unknown)=>typeof value==='string'?value.trim():''
 export function referenceToken(ref:SyllabusReference) {
@@ -19,8 +20,17 @@ export function collectSyllabusReferences(syllabus:Record<string,any>,week?:numb
   if(!ref.title)return
   const key=referenceToken(ref);if(seen.has(key))return;seen.add(key);refs.push(ref)
  }
- for(const book of [...syllabus.books||[],...syllabus.references?.books||[]])add(book,'book')
- for(const link of [...syllabus.onlineReferences||[],...syllabus.references?.onlineReferences||[]])add(link,'link')
+ const books=repairReferenceEntries([...syllabus.books||[],...syllabus.references?.books||[]].map(book=>typeof book==='string'?{title:book}:book))
+ const links=[...syllabus.onlineReferences||[],...syllabus.references?.onlineReferences||[]].map(link=>typeof link==='string'?{title:link,url:link}:{...link})
+ const attached=new Set<any>()
+ for(const link of links){
+  if(!link||String(link.title||'').trim()!==String(link.url||'').trim())continue
+  let host='';try{host=new URL(link.url).hostname.replace(/^www\./,'').split('.')[0]||''}catch{continue}
+  const book=books.find(book=>book&&!book.url&&/[-:]$/.test(book.title)&&host.length>=4&&book.title.toLowerCase().startsWith(host.toLowerCase()))
+  if(book){link.title=book.title.replace(/[-:]+$/,'').trim();attached.add(book)}
+ }
+ for(const book of books)if(!attached.has(book))add(book,'book')
+ for(const link of links)add(link,'link')
  if(Array.isArray(syllabus.references))for(const link of syllabus.references)add(link,'link')
  for(const row of syllabus.courseOutline||[])if(week===undefined||row.week===week)for(const resource of row.resources||[])add(resource,'link')
  if(refs.length>80)throw new Error('This source view supports up to 80 distinct references. Split the syllabus source list before scanning; no references were silently omitted.')

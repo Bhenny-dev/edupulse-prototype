@@ -1,0 +1,343 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-11-12T20-52-59-784Z-67f6634a",
+  "startedAt": "2026-11-12T20:52:59.784Z",
+  "finishedAt": "2026-11-12T20:53:28.533Z",
+  "commitSha": "68d5291886098575d0b79dbd32620dc79a8dc401",
+  "sourceDigest": "f57b2f0804d92014adc7769b9e81506b224d6727cae8bba00f4d5504db0192a2",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-11-12T20:52:32.686Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 7,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": null
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/citation-repair.spec.ts",
+    "edupulse-app/tests/snapshots/retained-sources.spec.ts",
+    "edupulse-app/tests/snapshots/retained-sources-mobile.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/account-support-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/account-support-reload-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/account-support-reload.spec.ts",
+    "edupulse-app/tests/snapshots/account-support.spec.ts",
+    "edupulse-app/tests/snapshots/approved-syllabus-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/approved-syllabus.spec.ts",
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/authored-weeks.spec.ts",
+    "edupulse-app/tests/snapshots/automatic-records.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/automatic-records.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+    "edupulse-app/tests/snapshots/bounded-loads-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/bounded-loads.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.spec.ts",
+    "edupulse-app/tests/snapshots/course-seed.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-formatting.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-navigation.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-readonly.spec.ts",
+    "edupulse-app/tests/snapshots/dean-records-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/dean-records.spec.ts",
+    "edupulse-app/tests/snapshots/editor-layout.spec.ts",
+    "edupulse-app/tests/snapshots/harness-delivery.spec.ts",
+    "edupulse-app/tests/snapshots/instructor-updates-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/instructor-updates.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/local-models-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/local-models.spec.ts",
+    "edupulse-app/tests/snapshots/login-icons-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/login-icons.spec.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/monitoring-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/monitoring.spec.ts",
+    "edupulse-app/tests/snapshots/operator-steps.spec.ts",
+    "edupulse-app/tests/snapshots/outline-courseware.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/outline-courseware.spec.ts",
+    "edupulse-app/tests/snapshots/outline-progress-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/outline-progress.spec.ts",
+    "edupulse-app/tests/snapshots/outline-selector.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/outline-selector.spec.ts",
+    "edupulse-app/tests/snapshots/outline-sources-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/outline-sources.spec.ts",
+    "edupulse-app/tests/snapshots/oversight.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/oversight.spec.ts",
+    "edupulse-app/tests/snapshots/pipeline-progress-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pipeline-progress.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/public-pulse-search-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/public-pulse-search.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-drafting.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-source.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+    "edupulse-app/tests/snapshots/radar-progress-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/radar-progress.spec.ts",
+    "edupulse-app/tests/snapshots/reference-intake-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/reference-intake.spec.ts",
+    "edupulse-app/tests/snapshots/retained-catalog.spec.ts",
+    "edupulse-app/tests/snapshots/role-monitoring.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+    "edupulse-app/tests/snapshots/second-admin-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/second-admin.spec.ts",
+    "edupulse-app/tests/snapshots/staff-registration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/staff-registration.spec.ts",
+    "edupulse-app/tests/snapshots/student-directory.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-no-loads.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/system-search-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/system-search.spec.ts",
+    "edupulse-app/tests/snapshots/targeted-outline-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/targeted-outline.spec.ts",
+    "edupulse-app/tests/snapshots/teaching-sets.spec.ts",
+    "edupulse-app/tests/snapshots/voice-quota.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/voice-quota.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-cache.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-recovery.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/citation-repair.spec.ts",
+      "title": "repaired citation and catalog-only retained record",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 5160,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/retained-sources.spec.ts",
+      "title": "retained sources: references, passage citations, book attachment and version review",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 4342,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/retained-sources.spec.ts",
+      "title": "retained sources: dark readable source states",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1057,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/retained-sources.spec.ts",
+      "title": "retained sources: formatted reading and PDF actions",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1439,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/retained-sources.spec.ts",
+      "title": "retained sources: dark formatted reading",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1187,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/retained-sources-mobile.spec.ts",
+      "title": "retained sources: mobile readable source states",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1447,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/retained-sources-mobile.spec.ts",
+      "title": "retained sources: mobile formatted reading",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1439,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-manual/31-retained-syllabus-sources/01-syllabus-sources.png",
+      "sha256": "5064d9be333287944632e1b7930a69bc46c004ecaa0a52c4f5633ae1e75185c2",
+      "bytes": 254933
+    },
+    {
+      "path": "feature-documentation/system-manual/31-retained-syllabus-sources/02-reading-sources.png",
+      "sha256": "4c9e5d7662ddd44130ff37f3e21db82f2dc74dd67fa8ad03830a0f5d6570754c",
+      "bytes": 251764
+    },
+    {
+      "path": "feature-documentation/system-manual/31-retained-syllabus-sources/03-retained-and-unread.png",
+      "sha256": "b5ee346e1b7783425310236d03dfa0bb07a2dddcd602536d5188ea2c366daef9",
+      "bytes": 264235
+    },
+    {
+      "path": "feature-documentation/system-manual/31-retained-syllabus-sources/04-passage-citations.png",
+      "sha256": "ed4eac44c3434db6b7e56cfb81d223716b275c483704d74fd997c54e49af1bcf",
+      "bytes": 248242
+    },
+    {
+      "path": "feature-documentation/system-manual/31-retained-syllabus-sources/05-reference-provenance.png",
+      "sha256": "9e5862b4cd16fbc54e9d75dbddf984b8cd3d22958a0e00de34610b5cb5efbcef",
+      "bytes": 232911
+    },
+    {
+      "path": "feature-documentation/system-manual/31-retained-syllabus-sources/06-retained-source-review.png",
+      "sha256": "e19283c6585a1996500b1703ef244290066242349a87978597622cce29714ad3",
+      "bytes": 220103
+    },
+    {
+      "path": "feature-documentation/system-manual/31-retained-syllabus-sources/07-book-source-actions.png",
+      "sha256": "c6c01ccb14d50965af0dd77c5424f19aefbefa3373be6b242bbc29227a315b39",
+      "bytes": 254275
+    },
+    {
+      "path": "feature-documentation/system-manual/31-retained-syllabus-sources/08-retained-book-copy.png",
+      "sha256": "4a9c56f72a4f677f325103b97dc1c9253fff1ba8ff1f0b10536bb1551bb960c9",
+      "bytes": 323605
+    },
+    {
+      "path": "feature-documentation/system-manual/31-retained-syllabus-sources/09-source-versions.png",
+      "sha256": "3ce44234da905eaa5688367933e241acde90035b4a1da3366ad60fbe2e8e63e0",
+      "bytes": 249636
+    },
+    {
+      "path": "feature-documentation/system-manual/31-retained-syllabus-sources/10-retained-source-actions.png",
+      "sha256": "cd0ad57a612aa1c07cd226978e71af1b6144aafdaf4ece0b83aa6da06c1d25b3",
+      "bytes": 270938
+    },
+    {
+      "path": "feature-documentation/system-manual/31-retained-syllabus-sources/11-remove-confirmation.png",
+      "sha256": "0fc609263cc4de1450a6547584648efb06d5b16a35331185403f74aa51cae7d9",
+      "bytes": 252605
+    },
+    {
+      "path": "feature-documentation/system-manual/31-retained-syllabus-sources/12-formatted-source-review.png",
+      "sha256": "788d5e8fa3f0fc2c0c370e62ff6984cb1355e2898a849a7fa339ca48b792581f",
+      "bytes": 318539
+    },
+    {
+      "path": "feature-documentation/system-manual/31-retained-syllabus-sources/13-source-table-and-list.png",
+      "sha256": "89d5e0ad57ece3250c00ec7f027ab96366368c92a4018be15140c27a5c9ada1d",
+      "bytes": 288573
+    },
+    {
+      "path": "feature-documentation/system-manual/31-retained-syllabus-sources/14-repaired-citation.png",
+      "sha256": "4168c68612264271697f939dd92f6129fa296245098b0cc2daa590032aa99c42",
+      "bytes": 308795
+    },
+    {
+      "path": "feature-documentation/system-manual/31-retained-syllabus-sources/15-catalog-metadata-review.png",
+      "sha256": "f9c609d7383d854c4304aab2bf8a4d9d6052bb517872f28c78643ddf194e9434",
+      "bytes": 267830
+    },
+    {
+      "path": "feature-documentation/system-manual/31-retained-syllabus-sources/dark-01-syllabus-sources.png",
+      "sha256": "8023dc38dfb1ddbae15e0bd22d8b32ef3c3884daf2e007059f75dffe4c7808bb",
+      "bytes": 138052
+    },
+    {
+      "path": "feature-documentation/system-manual/31-retained-syllabus-sources/dark-03-retained-and-unread.png",
+      "sha256": "560412b788a676b2a8990db2bb12464b5588cff2e48608a4d18d5f59c92e3ec6",
+      "bytes": 149112
+    },
+    {
+      "path": "feature-documentation/system-manual/31-retained-syllabus-sources/dark-12-formatted-source-review.png",
+      "sha256": "73629dd6478ad7ad618679029c8b9d62ceaa2bb603ef14160e21db1dd94269fe",
+      "bytes": 243138
+    },
+    {
+      "path": "feature-documentation/system-manual/31-retained-syllabus-sources/mobile-01-syllabus-sources.png",
+      "sha256": "e406222b26044aca77f946b7619908cf708d04803256216eccba4ab783418637",
+      "bytes": 404430
+    },
+    {
+      "path": "feature-documentation/system-manual/31-retained-syllabus-sources/mobile-03-retained-and-unread.png",
+      "sha256": "e5156540990b2a4a01f2d9d42b59cbff0b57139dffd95a365a630d14133d3ed4",
+      "bytes": 245010
+    },
+    {
+      "path": "feature-documentation/system-manual/31-retained-syllabus-sources/mobile-12-formatted-source-review.png",
+      "sha256": "87965caf7703881329c154049d2c75ab4f9eb13e065b01e316795cd37d87a230",
+      "bytes": 295741
+    },
+    {
+      "path": "feature-documentation/system-manual/31-retained-syllabus-sources/mobile-13-source-table-and-list.png",
+      "sha256": "0ff765e8bc1c7c87ceb51a2e7c913856751c38f156b331c1129863b90695661c",
+      "bytes": 241037
+    }
+  ]
+}

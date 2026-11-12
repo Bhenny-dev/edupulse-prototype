@@ -95,3 +95,19 @@ export async function findReferences(topic: string, signal: AbortSignal, embed?:
   if (transport === fetch) { cache.set(key, { at: Date.now(), value }); if (cache.size > 100) cache.delete(cache.keys().next().value!) }
   return value
 }
+
+/** Citation-specific lookup retains subtitles omitted by the search index. */
+export async function searchBookCatalog(title:string,author:string,signal:AbortSignal,transport:typeof fetch=fetch):Promise<ReferenceResult>{
+ const base=title.split(':')[0]!.replace(/["\\]/g,' ').trim(),surname=author.split(',')[0]!.replace(/["\\]/g,' ').trim()
+ const url=new URL('https://openlibrary.org/search.json')
+ url.search=new URLSearchParams({q:`title:"${base}"${surname?` author:"${surname}"`:''}`,fields:'key,title,author_name,first_publish_year,publisher,isbn',limit:'4'}).toString()
+ try{
+ const docs=openLibrary.parse(await getJson(url,signal,transport)).docs.filter(d=>/^\/works\/OL\d+W$/.test(d.key))
+ const references=await Promise.all(docs.map(async d=>{
+  let fullTitle=d.title
+  try{const work=z.object({title:z.string(),subtitle:z.string().optional()}).loose().parse(await getJson(new URL(`https://openlibrary.org${d.key}.json`),signal,transport));fullTitle=[work.title,work.subtitle].filter(Boolean).join(': ')}catch{signal.throwIfAborted()}
+  return {title:clean(fullTitle,400),authors:(d.author_name||[]).map(a=>clean(a,80)),year:year(d.first_publish_year),venue:clean(d.publisher?.[0],160),url:`https://openlibrary.org${d.key}`,source:'Open Library' as const,identifier:d.key.slice(7),relevance:null,summary:''}
+ }))
+ return {references,status:[{name:'Open Library',ok:true,count:references.length}]}
+ }catch{signal.throwIfAborted();return {references:[],status:[{name:'Open Library',ok:false,count:0}],warning:'The book catalog did not respond. No bibliographic match was verified.'}}
+}
