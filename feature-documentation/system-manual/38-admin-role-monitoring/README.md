@@ -8,3 +8,7 @@
 6. To inspect a named academic workspace, choose **Choose account view**, then explicitly select a person in the account picker.
 
 See [screens and data-window boundaries](../../system-walkthrough/07-system-admin/README.md#role-monitoring-stations).
+
+Read **Role actions - 7 days** and **AI runs - 7 days** as complete seven-day totals for the selected role. Tables are capped at the latest 100 role actions and 30 role AI runs. Inspect **Notices & checks** on each tab for successful actions, historical failures, stopped AI requests, confirmation/sign-in gaps and current shared-service checks. The displayed timestamp identifies when the data was read.
+
+The **Admin support operations** section lists System Admin operations on accounts currently assigned the role. These remain separate from direct role actions and student progress. **Unavailable** indicates a failed read; use **Refresh** to retry. Do not interpret absent data as a successful operation.

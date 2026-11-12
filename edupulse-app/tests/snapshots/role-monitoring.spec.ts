@@ -10,6 +10,7 @@ test('role monitoring pages and tabs',async({page})=>{
  for(const role of ['dean','associate_dean','instructor','student']){
   await page.goto(`/#/dashboard?role=${role}`)
   await expect(page.getByRole('heading',{name:/monitoring$/})).toBeVisible()
+  await expect(page.getByRole('heading',{name:'Notices & checks',exact:true})).toBeVisible()
   await expect(page.getByRole('button',{name:'Refresh',exact:true})).toBeEnabled()
   await page.screenshot({path:`${folder}/monitor-${role}.png`,fullPage:true})
  }

@@ -34,16 +34,18 @@ export default function SystemAdminDashboard() {
   const [outcomeFilter, setOutcomeFilter] = useState('all')
   const [agentActivity, setAgentActivity] = useState(noActivity)
   const [agentError, setAgentError] = useState('')
+  const [roleHistory,setRoleHistory]=useState(null)
+  const [historyError,setHistoryError]=useState('')
 
   const refresh = useCallback(async () => {
-    setBusy(true); setError(''); setAgentError('')
+    setBusy(true); setError(''); setAgentError(''); setHistoryError('')
     if (user?.demo) {
       setOverview(preview); setAgentActivity(noActivity)
       setChecks(['Supabase authentication', 'Google sign-in', 'Audit database', 'Pulse API'].map(name => ({ name, ok: false, note: 'Preview status — sign in to see a live check' })))
       setBusy(false)
       return
     }
-    const [admin, auth, google, api, agents] = await Promise.allSettled([
+    const [admin, auth, google, api, agents, history] = await Promise.allSettled([
       supabase.rpc('edupulse_admin_overview'),
       supabase.auth.getUser(),
       fetch(`${import.meta.env.VITE_SUPABASE_URL}/auth/v1/settings`, {
@@ -51,7 +53,10 @@ export default function SystemAdminDashboard() {
       }).then(async response => response.ok ? response.json() : null),
       aiRequest('health', 'GET'),
       supabase.rpc('edupulse_admin_agent_activity', { days: 7 }),
+      supabase.rpc('edupulse_admin_role_monitoring'),
     ])
+    if(history.status==='fulfilled' && !history.value.error && history.value.data?.roles) setRoleHistory(history.value.data)
+    else setHistoryError('Recent role history could not be loaded. Refresh to retry; retained records may be outdated.')
     if (agents.status === 'fulfilled' && !agents.value.error && agents.value.data) setAgentActivity({ ...noActivity, ...agents.value.data })
     else setAgentError('Agent activity could not be loaded. Check that the agent-run migration is applied and your admin session is active.')
     if (admin.status === 'fulfilled' && !admin.value.error && admin.value.data) setOverview(admin.value.data)
@@ -107,7 +112,7 @@ export default function SystemAdminDashboard() {
     finally { setAccountBusy(false) }
   }
 
-  if (['dean','associate_dean','instructor','student'].includes(params.get('role'))) return <RoleMonitoring role={params.get('role')} overview={overview} checks={checks} activity={agentActivity} busy={busy} error={error} agentError={agentError} refresh={refresh} openRole={openRole} demo={user?.demo} />
+  if (['dean','associate_dean','instructor','student'].includes(params.get('role'))) return <RoleMonitoring role={params.get('role')} overview={overview} checks={checks} activity={agentActivity} busy={busy} error={error} agentError={agentError} refresh={refresh} openRole={openRole} demo={user?.demo} history={roleHistory} historyError={historyError} />
 
   return <div className="container">
     <div className="page-header">

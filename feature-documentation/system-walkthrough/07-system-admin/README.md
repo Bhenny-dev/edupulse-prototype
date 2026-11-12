@@ -112,7 +112,7 @@ The active student directory is limited to **College of Information Technology**
 
 The four role stations share clickable summary cards and five tabs: **Overview**, **Accounts**, **Activity & logs**, **AI usage**, and **Health**. **Choose account view** opens the existing named-person picker; it does not select a person automatically. **Refresh** explicitly repeats the reads. Moving between role stations or tabs retains loaded data; focus and timers do not refresh it. Browser reload restores the role and tab from the URL after normal session verification.
 
-The captures below use synthetic account/activity transports, not genuine student activity or live AI billing. **Role accounts** counts the loaded accounts of that role. **Loaded role events** uses only role-attributed EduPulse events within the latest 100 system events; unattributed Auth events are excluded. **Recent role AI runs** uses role-attributed entries within the latest 30 runs from seven days. Neither window is a lifetime total. **Shared services passing** reports system services, not personal provider credentials.
+The captures below use synthetic account/activity transports, not genuine student activity or live AI billing. **Role accounts** counts the loaded accounts of that role. **Role actions - 7 days** and **AI runs - 7 days** count every recorded entry for that role in the seven-day period. The lists contain the newest 100 actions and 30 AI runs for that role; charts use the full period. Unattributed Auth events are excluded. The read timestamp is displayed. **Shared services passing** reports system services, not personal provider credentials.
 
 ![Dean monitoring](monitor-dean.png)
 ![Program Coordinator monitoring](monitor-associate_dean.png)
@@ -127,3 +127,11 @@ The captures below use synthetic account/activity transports, not genuine studen
 ![Shared health](monitor-health.png)
 
 ![Role monitoring on a phone](monitor-mobile.png)
+
+### Recent history and notices
+
+**Notices & checks** appears on every role tab. Success notices count recorded successful actions. Attention notices identify failed actions, failed AI runs, stopped requests, pending confirmations and unhealthy shared checks. Source-excerpt fallbacks are notices rather than generated-answer successes. Missing sign-ins do not count as activity. Read failures show **Unavailable** with retry guidance rather than invented zeros.
+
+**Admin support operations** appears on **Overview** and **Activity & logs**. It shows committed support operations by System Admin for accounts currently in that role, separately from the role's own actions. Changing a user's role changes this grouping. A support operation does not establish student completion or original role use. The totals cover seven days; the table lists the latest 30 operations.
+
+The controlled capture fixture intentionally includes both success and failure examples. Live pages use database outcomes unchanged. No demonstration records were inserted to populate monitoring.

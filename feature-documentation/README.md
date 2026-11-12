@@ -4,6 +4,7 @@
 
 | Folder | Covers | Contents |
 | --- | --- | --- |
+| [12 November recent role history](versions/2026-11-12-recent-role-history/README.md) | Complete seven-day role totals, notices and separately attributed support operations | See validation |
 | [12 November admin role monitoring](versions/2026-11-12-admin-role-monitoring/README.md) | Four role stations with account, activity, AI and shared health monitoring | See validation |
 | [12 November courseware editor width](versions/2026-11-12-courseware-editor-width/README.md) | Wider, growing assessment and teaching-material fields | See validation |
 | [12 November authored weeks](versions/2026-11-12-authored-weeks/README.md) | Original Weeks 1–5 teaching/activity/assessment drafts with accurate provenance | See validation |
