@@ -397,3 +397,7 @@ Instructor block summaries identify their course and block. Score Snapshot reads
 ## Owner correction · 12 November 2026: instructor monitoring
 
 Combine instructor monitoring/performance in one year/course/block workspace with three class tabs, scoped summary/chart/student detail, course roster CRUD with suspension before removal, and actual version-bound section confirmation for reading progress. Preserve student/dean performance access, raw-score-only reporting, owner RLS and explicit saves. See Manual 37 and ADR-002 for the implemented contract.
+
+## Confirmed population extension (12 November 2026)
+
+Owner-authorized administrative allocations can populate all recorded BSIT curriculum periods for active CIT students using actual directory accounts. Assignment metadata includes units, year, semester and block. Missing approval/content remains explicit. Management assessment counts identify student attempts rather than online instructor syllabus submissions. Student self-assignment metadata does not grant access to draft content.

@@ -1,0 +1,168 @@
+{
+  "population": {
+    "active_students": 417,
+    "activity": {
+      "attempts": 0,
+      "opens": 0,
+      "reading": 0
+    },
+    "blocks": 14,
+    "courses": 60,
+    "enrollments": 7375,
+    "faculty": [
+      {
+        "course_blocks": 32,
+        "name": "Rogelio L. Guisdan"
+      },
+      {
+        "course_blocks": 32,
+        "name": "Ralphy Luzada"
+      },
+      {
+        "course_blocks": 36,
+        "name": "Dave Medrano"
+      },
+      {
+        "course_blocks": 36,
+        "name": "Marielle Angela Fianza-Buya"
+      },
+      {
+        "course_blocks": 34,
+        "name": "Steve Sudaypan"
+      },
+      {
+        "course_blocks": 33,
+        "name": "Libby Teofilo"
+      },
+      {
+        "course_blocks": 36,
+        "name": "Sharmaine Pangcog"
+      }
+    ],
+    "loads": 239,
+    "max_block_students": 35,
+    "students_enrolled": 417,
+    "students_without_load": 0
+  },
+  "curriculumAllocation": {
+    "students": 417,
+    "blocks": 14,
+    "correctedLegacyBlocks": 1389,
+    "curriculumCourses": 60,
+    "courseLoadRows": 239,
+    "expectedMemberships": 7375,
+    "instructors": [
+      {
+        "name": "Dave Medrano",
+        "courseBlocks": 36,
+        "unitsAcrossAllPeriods": 94
+      },
+      {
+        "name": "Libby Teofilo",
+        "courseBlocks": 33,
+        "unitsAcrossAllPeriods": 95
+      },
+      {
+        "name": "Marielle Angela Fianza-Buya",
+        "courseBlocks": 36,
+        "unitsAcrossAllPeriods": 104
+      },
+      {
+        "name": "Ralphy Luzada",
+        "courseBlocks": 32,
+        "unitsAcrossAllPeriods": 92
+      },
+      {
+        "name": "Rogelio L. Guisdan",
+        "courseBlocks": 32,
+        "unitsAcrossAllPeriods": 102
+      },
+      {
+        "name": "Sharmaine Pangcog",
+        "courseBlocks": 36,
+        "unitsAcrossAllPeriods": 104
+      },
+      {
+        "name": "Steve Sudaypan",
+        "courseBlocks": 34,
+        "unitsAcrossAllPeriods": 92
+      }
+    ],
+    "periods": [
+      {
+        "year": 1,
+        "semester": 1,
+        "units": 28
+      },
+      {
+        "year": 2,
+        "semester": 1,
+        "units": 28
+      },
+      {
+        "year": 3,
+        "semester": 1,
+        "units": 18
+      },
+      {
+        "year": 4,
+        "semester": 1,
+        "units": 9
+      },
+      {
+        "year": 1,
+        "semester": 2,
+        "units": 28
+      },
+      {
+        "year": 2,
+        "semester": 2,
+        "units": 28
+      },
+      {
+        "year": 3,
+        "semester": 2,
+        "units": 15
+      },
+      {
+        "year": 4,
+        "semester": 2,
+        "units": 7
+      },
+      {
+        "year": 2,
+        "semester": "summer",
+        "units": 6
+      },
+      {
+        "year": 3,
+        "semester": "summer",
+        "units": 6
+      }
+    ],
+    "activeCourseBlocks": 48,
+    "draftCourseBlocks": 191
+  },
+  "verification": {
+    "nativePassed": 332,
+    "nativeFailed": 0,
+    "browserPassed": 36,
+    "browserFailed": 0,
+    "verify": "passed"
+  },
+  "database": {
+    "migration": "20261112035656",
+    "roleBoundaryCheck": "passed across all 417 active student and 7 active instructor accounts; Dean/Associate Dean/admin checked",
+    "advisorWarnings": 11,
+    "advisorAddedKeys": []
+  },
+  "visual": {
+    "changedImages": 24,
+    "reviewer": "Codex agent",
+    "humanApproval": false
+  },
+  "remaining": {
+    "generation": "Not completed; missing syllabi remain drafts and require offline approval. No active instructor provider connections were found; only the admin has a connected provider. Local Ollama is unavailable.",
+    "studentActivity": "No learner opens, confirmations or attempts manufactured."
+  }
+}

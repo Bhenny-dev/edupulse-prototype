@@ -1,0 +1,329 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-11-12T04-02-04-224Z-c09db4e1",
+  "startedAt": "2026-11-12T04:02:04.224Z",
+  "finishedAt": "2026-11-12T04:02:33.309Z",
+  "commitSha": "ce23b449bed25c7360c5bb56e2e2cc5228548086",
+  "sourceDigest": "556214bdeec1e62d074eb4839dd03aa3329a2d4f1a08837254aa89f84953b2ac",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-11-12T04:02:01.387Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 2,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": null
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/dean-records.spec.ts",
+    "edupulse-app/tests/snapshots/dean-records-mobile.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/account-support-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/account-support-reload-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/account-support-reload.spec.ts",
+    "edupulse-app/tests/snapshots/account-support.spec.ts",
+    "edupulse-app/tests/snapshots/approved-syllabus-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/approved-syllabus.spec.ts",
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/automatic-records.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/automatic-records.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.spec.ts",
+    "edupulse-app/tests/snapshots/course-seed.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-formatting.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-navigation.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/harness-delivery.spec.ts",
+    "edupulse-app/tests/snapshots/instructor-updates-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/instructor-updates.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/local-models-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/local-models.spec.ts",
+    "edupulse-app/tests/snapshots/login-icons-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/login-icons.spec.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/monitoring-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/monitoring.spec.ts",
+    "edupulse-app/tests/snapshots/operator-steps.spec.ts",
+    "edupulse-app/tests/snapshots/outline-courseware.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/outline-courseware.spec.ts",
+    "edupulse-app/tests/snapshots/outline-progress-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/outline-progress.spec.ts",
+    "edupulse-app/tests/snapshots/outline-selector.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/outline-selector.spec.ts",
+    "edupulse-app/tests/snapshots/outline-sources-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/outline-sources.spec.ts",
+    "edupulse-app/tests/snapshots/oversight.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/oversight.spec.ts",
+    "edupulse-app/tests/snapshots/pipeline-progress-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pipeline-progress.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/public-pulse-search-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/public-pulse-search.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-drafting.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-source.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+    "edupulse-app/tests/snapshots/radar-progress-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/radar-progress.spec.ts",
+    "edupulse-app/tests/snapshots/reference-intake-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/reference-intake.spec.ts",
+    "edupulse-app/tests/snapshots/retained-catalog.spec.ts",
+    "edupulse-app/tests/snapshots/retained-sources-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/retained-sources.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+    "edupulse-app/tests/snapshots/second-admin-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/second-admin.spec.ts",
+    "edupulse-app/tests/snapshots/staff-registration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/staff-registration.spec.ts",
+    "edupulse-app/tests/snapshots/student-directory.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/system-search-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/system-search.spec.ts",
+    "edupulse-app/tests/snapshots/targeted-outline-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/targeted-outline.spec.ts",
+    "edupulse-app/tests/snapshots/voice-quota.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/voice-quota.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-cache.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-recovery.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/dean-records.spec.ts",
+      "title": "Dean activity records, shared cards, year groups and authorized dialog restoration",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 11360,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/dean-records-mobile.spec.ts",
+      "title": "Dean records and block roster remain usable on a phone",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 10738,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/01-dashboard.png",
+      "sha256": "f909221a5a4747f4967ab60cd46ed9a997407810ede05ef382f56abb34444383",
+      "bytes": 380818
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/02-course-records.png",
+      "sha256": "a0389aa222d157bda4e1ba4a047df4ddb2441efc6eeb0163fb41965ebf0f47a2",
+      "bytes": 264748
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/03-course-loads.png",
+      "sha256": "3917871636bf4ff439a1b25eb33ebcf78dbf4afa2fdfd1ca60e94aa9880d0f87",
+      "bytes": 261492
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/04-student-class-lists.png",
+      "sha256": "1c47a36d24f8abad3fc75cc981379ef5b558f6504f86de9b319340c4d541437e",
+      "bytes": 273830
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/05-instructors.png",
+      "sha256": "4b745c0e5101ca4743afff53389d5c87e0a76dd122dbb231b22119fd15d45f48",
+      "bytes": 266513
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/06-instructor-detail.png",
+      "sha256": "7d0d2f2e1a5666bb501920057ec0c033501c85df72152e6cf0a83ab520e68888",
+      "bytes": 25861
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/07-students-by-year.png",
+      "sha256": "76e2498882d588a8606695884c22527651bf329800e05b14d1e9e9c2396d70fa",
+      "bytes": 269986
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/08-block-students.png",
+      "sha256": "4550b1dd3ba6c148cd513f8abcb392fd8d98ae34f5e8e9f4955025788e11027a",
+      "bytes": 48242
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/09-reloaded-block.png",
+      "sha256": "4c44f9fddb1588f8eefa209a3f14c260a360a9c17747c918025310214d6bdd00",
+      "bytes": 48749
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/10-all-students.png",
+      "sha256": "d85e7d2759b4145d3379919eec87ffba278820a188db0679fc34c3df32301456",
+      "bytes": 63218
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/11-dark-blocks.png",
+      "sha256": "3ff34245a258589d9c7bdc1bc2d8a4f2b5d4e724e01a518a05007949b4f23700",
+      "bytes": 113663
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/12-syllabi.png",
+      "sha256": "71022f18a72b6266d1109f690bb795310b4e5d880483866c877c59b584727f19",
+      "bytes": 267840
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/13-syllabus-outline.png",
+      "sha256": "70832795e68e7d6eaab000f4557c1106d122f56d3470199cf5d70bb2a8f6323b",
+      "bytes": 24245
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/14-all-instructors.png",
+      "sha256": "04ac840ec0be248dd0cd817f98f1257a82135522c4d3fe6bcb4fe2b614ab7679",
+      "bytes": 32778
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/15-all-blocks.png",
+      "sha256": "64f0b54319a6c88bcb576eae95ac2a0ed2bb6c5fab84e5324a630b650455ee21",
+      "bytes": 43513
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/16-year-levels.png",
+      "sha256": "1930476925f0bf2e21da23cdf7e0847a46866e03c803d7bbd27b60606626f4ec",
+      "bytes": 21675
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/17-record-unavailable.png",
+      "sha256": "ec13526d7fe97db610f16ed6901fed38f43a1d67ebf3631e17b8ce295f6d421b",
+      "bytes": 19815
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/mobile-01-navigation.png",
+      "sha256": "83a2f80c031dbd6cb0cb40d494e861ee6c2f5ea5db1fdef29465b782d01fc4fb",
+      "bytes": 93474
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/mobile-02-course-records.png",
+      "sha256": "63325f62a713500bd8500de1e55af46116505540fe88242dae7ba8159b209fa3",
+      "bytes": 675729
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/mobile-03-course-loads.png",
+      "sha256": "b58cecb4b374dccc2d9bbc1b1624ae2e29b1a339e4244133761aa0ce9d2f1a09",
+      "bytes": 656372
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/mobile-04-student-class-lists.png",
+      "sha256": "c92a7616411434e31454c769764acca12c7de652cf8a521963c23202f9448f0c",
+      "bytes": 703426
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/mobile-05-instructors.png",
+      "sha256": "641473c608d49e986c01e2de095c101e0d0195e5ce85b1b77e8f99b10020c6d2",
+      "bytes": 576362
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/mobile-06-instructor-detail.png",
+      "sha256": "9a7eef81e61103722b8af7503b4d0fe182cec5218c0676ea974b5a0fe9f48d23",
+      "bytes": 67180
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/mobile-07-students-by-year.png",
+      "sha256": "90671902d4a7be63bed516d3151676fd8cf9adb1849be453de528af46cbc395e",
+      "bytes": 703329
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/mobile-08-block-students.png",
+      "sha256": "854e13a2609153fa7992088f5ea758971fe26333b00c1b5bc421e49517cd9348",
+      "bytes": 136787
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/mobile-09-reloaded-block.png",
+      "sha256": "ba7916fc70780aa216047f98f9c8b6f1beca8e0b03929b3ab11e3608aca70cb4",
+      "bytes": 138564
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/mobile-10-all-students.png",
+      "sha256": "85bdb4a95d3ca55a8565e7336befb0f409a844064755536efb8cdea7c4cab16b",
+      "bytes": 145183
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/mobile-11-dark-blocks.png",
+      "sha256": "181cdb2393cf52a1c237548351c4294e955a78aea9cd046830d43f4383abeb5a",
+      "bytes": 368614
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/mobile-12-syllabi.png",
+      "sha256": "5311001b05ab54cc17b9bda0f5928b5209d54a14b09e00c2384c6c11efacdbae",
+      "bytes": 691148
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/mobile-13-syllabus-outline.png",
+      "sha256": "a659d254ef88f72d3343a7beb19a1959e37028e24c7c6ae87b74c35d7ddad45b",
+      "bytes": 61222
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/mobile-14-all-instructors.png",
+      "sha256": "b1afd793e2be9c77f38a20961e054744bf3851add87581a1ef4267b66b1a6684",
+      "bytes": 57753
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/mobile-15-all-blocks.png",
+      "sha256": "d34438a33bee4cffb2127f8cffe908f85a2b62b32d4f4fb228bc6146f38cbd3c",
+      "bytes": 75641
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/mobile-16-year-levels.png",
+      "sha256": "c827c473aea7adb079bb8bcc3c722d60ac5b022d43e1e83d04935f454ee20b37",
+      "bytes": 53418
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/mobile-17-record-unavailable.png",
+      "sha256": "9de103c4107def026d0559695718fc0c8fd4492dbd708818be6c087f71f00621",
+      "bytes": 63705
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/03-dean-and-associate-dean/08-course-records.png",
+      "sha256": "a0389aa222d157bda4e1ba4a047df4ddb2441efc6eeb0163fb41965ebf0f47a2",
+      "bytes": 264748
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/03-dean-and-associate-dean/10-course-syllabi.png",
+      "sha256": "71022f18a72b6266d1109f690bb795310b4e5d880483866c877c59b584727f19",
+      "bytes": 267840
+    }
+  ]
+}

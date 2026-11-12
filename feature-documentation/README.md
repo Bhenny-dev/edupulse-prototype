@@ -121,3 +121,5 @@ Execution is tracked in [WORKPLAN.md](WORKPLAN.md). A release is verified only a
 [8 November 2026: Interactive rooms, a seamless clock and a lighter site](versions/2026-11-08-interactive-rooms-and-performance/README.md): the eight public pages as single rooms you tap to zoom into (cats, game cabinets, the agents' chat), the wall clock becoming the agents scope and then the workspace, students on the yard, cards without coloured edges, less server traffic, only usable models and Lighthouse results.
 
 [12 November instructor updates](versions/2026-11-12-instructor-syllabi/README.md) · course-labelled blocks, recorded results, deletion, unified history and attributed sharing.
+
+- [12 November 2026 · Curriculum population](versions/2026-11-12-curriculum-population/README.md)

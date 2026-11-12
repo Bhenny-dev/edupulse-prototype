@@ -16,3 +16,5 @@ Current walkthrough images use synthetic UI transport to keep the screen layout 
 ## Instructor monitoring update
 
 The instructor now chooses a year-level course/block card before viewing Students, Assessment Scores or Learning Material Access. The separate instructor Performance page redirects here. Student and Dean views retain their roles. [Manual 37](../37-instructor-monitoring/README.md) supersedes the earlier instructor screenshots and distinguishes recorded first opens from sequential section confirmations.
+
+Assigned courses can appear before content release, with units/year/period and a pending notice. The separate metadata RPC exposes only the current student's assignment labels, never a draft outline or source bytes. [Manual 38](../38-curriculum-population/README.md).

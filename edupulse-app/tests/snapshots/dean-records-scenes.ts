@@ -1,10 +1,11 @@
+import {readFile,writeFile} from 'node:fs/promises'
 import type {Page} from '@playwright/test'
 import {expect} from './fixtures'
 import {deanRecordsUI} from '../dean-records-fixture'
 const folder='../feature-documentation/system-manual/36-dean-activity-records'
 export async function deanRecordScenes(page:Page,mobile=false){
  const fixture=await deanRecordsUI(page),prefix=mobile?'mobile-':''
- const shot=async(name:string,dialog=false)=>{await page.mouse.move(2,2);await expect(page.locator('main h1')).toBeVisible();await expect(page.locator('.academic-loading')).toHaveCount(0);await (dialog?page.getByRole('dialog'):page).screenshot({path:`${folder}/${prefix}${name}.png`,animations:'disabled',fullPage:!dialog&&name!=='01-navigation'})}
+ const shot=async(name:string,dialog=false)=>{await page.mouse.move(2,2);await expect(page.locator('main h1')).toBeVisible();await expect(page.locator('.academic-loading')).toHaveCount(0);await (dialog?page.getByRole('dialog'):page).screenshot({path:`${folder}/${prefix}${name}.png`,animations:'disabled',fullPage:!dialog&&name!=='01-navigation'});const alias=!mobile&&({'02-course-records':'08-course-records','12-syllabi':'10-course-syllabi'} as Record<string,string>)[name];if(alias){await writeFile(`../feature-documentation/system-walkthrough/03-dean-and-associate-dean/${alias}.png`,await readFile(`${folder}/${name}.png`));const file='../feature-documentation/system-walkthrough/capture-manifest.json',manifest=JSON.parse(await readFile(file,'utf8')),entries=Array.isArray(manifest)?manifest:manifest.scenes,entry=entries.find((e:any)=>e.folder==='03-dean-and-associate-dean'&&e.file===alias+'.png');if(entry)Object.assign(entry,{role:'Dean',route:name==='02-course-records'?'/records?tab=courses':'/records?tab=syllabi',ok:true});await writeFile(file,JSON.stringify(manifest,null,2)+'\n')}}
  await page.goto('/#/dashboard');await expect(page.getByRole('link',{name:'Released Courses',exact:true})).toHaveAttribute('aria-description','3');await page.waitForTimeout(900)
  if(mobile){await page.getByRole('button',{name:'Open menu',exact:true}).click();await shot('01-navigation');await page.getByRole('button',{name:'Close menu',exact:true}).click()}else await shot('01-dashboard')
  await page.getByRole('link',{name:'Released Courses',exact:true}).click();await expect(page.getByRole('heading',{name:'Course records',exact:true})).toBeVisible();await shot('02-course-records')

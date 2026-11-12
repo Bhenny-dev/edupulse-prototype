@@ -755,11 +755,11 @@
       "ok": true
     },
     {
-      "role": "dean",
+      "role": "Dean",
       "folder": "03-dean-and-associate-dean",
       "file": "08-course-records.png",
       "title": "Dean Course records",
-      "route": "/records",
+      "route": "/records?tab=courses",
       "ok": true
     },
     {
@@ -771,11 +771,11 @@
       "ok": true
     },
     {
-      "role": "dean",
+      "role": "Dean",
       "folder": "03-dean-and-associate-dean",
       "file": "10-course-syllabi.png",
       "title": "Dean Course syllabi",
-      "route": "/records",
+      "route": "/records?tab=syllabi",
       "ok": true
     },
     {

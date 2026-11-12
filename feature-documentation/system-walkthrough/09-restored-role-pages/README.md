@@ -136,3 +136,7 @@ Dean navigation is now **Dashboard**, **Course**, **Instructors** and **Students
 The refreshed instructor account captures now show Student Monitoring inside a selected course/block. The former Performance content is retained as assessment radar/history, topic follow-up and material charts in that workspace. The standalone instructor Performance page is removed. Student and Dean performance remain separate under their existing permissions. [Manual 37](../../system-manual/37-instructor-monitoring/README.md) supersedes the earlier instructor navigation descriptions and records explicit reading confirmations and suspend-before-remove.
 
 Topic, marking and reminder component crops use a taller desktop browser viewport to fit the complete selected panel inside the class dialog. They retain the actual layout and controls.
+
+## Student assigned-course metadata
+
+The course-week view includes curriculum units and the student's pending **Research Methods** assignment. Its release notice does not expose a draft or invent a publication. The synthetic student result and notice screens retain their existing controlled responses. Actual population counts are documented separately in [Manual 38](../../system-manual/38-curriculum-population/README.md).

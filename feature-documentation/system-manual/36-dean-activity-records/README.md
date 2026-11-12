@@ -72,3 +72,7 @@ Phone navigation exposes all four destinations under **Open menu**. Wide tables 
 Dean `/course-loading` opens **Course loads**; its instructor tab opens **Instructors**. Dean `/records?tab=sections` opens **Students**. Old import-tab addresses fall back to **Course records**. Associate Dean Records/Course Loading/Monitor, imports, templates, history and block correction retain their existing role permissions. New `/instructors` and `/students` routes are Dean-only.
 
 Captures use original synthetic records and controlled account/API transport: four syllabus instances, three course codes, four students, five memberships and three blocks. One current attempt and one open are labelled test activity. The images demonstrate UI behavior, not hosted authentication or real student achievement. See [validation](../../versions/2026-11-11-dean-activity-records/validation/results.md).
+
+## Curriculum population update
+
+Course loads include **Curriculum load** with units, year and semester from the recorded curriculum. Counts labelled **Student assessment attempts** refer to learners, not instructor syllabus submissions. The instructor approval/signatory process remains offline. [Assignment and genuine-activity guide](../38-curriculum-population/README.md).

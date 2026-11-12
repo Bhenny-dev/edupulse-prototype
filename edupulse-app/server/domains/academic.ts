@@ -53,6 +53,8 @@ export async function readAcademic(identity: Identity) {
     return data
   }
   const client = userDb(identity)
+  const assigned=identity.role==='student'?await client.rpc('edupulse_student_course_loads'):null
+  if(assigned?.error)throw new ApiError(503,'ACADEMIC_UNAVAILABLE','Assigned course loads could not be verified. Retry when connected.')
   const tables = ['courses', 'enrollments', 'publications', 'notices', 'academic_events', ...(['dean','associate_dean','admin','instructor'].includes(identity.role) ? ['institutional_records'] : []), ...(identity.role === 'associate_dean' ? [] : ['attempts', 'material_access','material_progress','assessment_sessions'])]
   const rows = await Promise.all(tables.map(async table => {
     const data = await academicRows(client, table)
@@ -65,7 +67,7 @@ export async function readAcademic(identity: Identity) {
     if (result.error) throw new ApiError(503,'ACADEMIC_UNAVAILABLE','Shared faculty records need the baseline-workflow migration.')
     faculty = result.data || []
   }
-  const result={ mode: 'cloud', attempts: [], accesses: [], enrollments:[] as Record<string,unknown>[], faculty, ...Object.fromEntries(rows) }
+  const result={ mode: 'cloud', attempts: [], accesses: [], enrollments:[] as Record<string,unknown>[], faculty, assignedCourses:assigned?.data||[], ...Object.fromEntries(rows) }
   if(['dean','instructor'].includes(identity.role))result.enrollments=await academicStudentYears(client,result.enrollments as Record<string,unknown>[])
   return result
 }

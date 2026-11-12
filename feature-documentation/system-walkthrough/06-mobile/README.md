@@ -76,3 +76,7 @@ Shared academic tables and charts use available container width. Short phone tab
 ## Instructor class dialogs
 
 Handled classes are grouped by recorded year and labelled with course/block. Each class opens a full-screen phone dialog with Students, Assessment Scores and Learning Material Access. Nested student progress and roster confirmations scroll within their own surface and restore on reload. [Manual 37](../../system-manual/37-instructor-monitoring/README.md) contains the current phone captures; the separate instructor Performance page is removed.
+
+## Curriculum loads and pending courses
+
+Student course lists include units, year, period and pending-release labels on phones. Wide Dean course-load/roster tables retain native horizontal scrolling; navigation tabs scroll within their own strip. No forced page-wide scrollbar is added. [Manual 38](../../system-manual/38-curriculum-population/README.md) links the current task images and distinguishes actual hosted allocations from fictional capture records.

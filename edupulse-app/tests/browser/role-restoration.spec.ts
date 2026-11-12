@@ -65,3 +65,9 @@ test('account notices come from unanswered records and read state survives reloa
   await page.goto('/#/notifications'); await expect(page.getByText('Unanswered assessment: Arrays quiz', { exact: true })).toBeVisible()
   await page.getByRole('button', { name: 'Mark All Read', exact: true }).click(); await page.reload(); await expect(page.getByRole('button', { name: 'Mark All Read', exact: true })).toBeDisabled()
 })
+
+
+test('student sees assigned units and pending releases without draft content or an inferred result',async({page})=>{
+ const {records}=await restorationUI(page,'student');records.assignedCourses=[{id:'d'.repeat(32),course_code:'IT 104',course_title:'Research Methods',active:false,block_section:'BSIT-1A',suspended:false,units:'3',year_level:'1',semester:'2'}]
+ await page.goto('/#/courseware');const course=page.locator('.academic-course').filter({has:page.getByRole('heading',{name:'IT 104 — Research Methods',exact:true})});await expect(course).toContainText('3 units');await expect(course).toContainText('2nd Semester');await expect(course).toContainText('Course assigned.');await expect(course.getByRole('button',{name:'Open material',exact:true})).toHaveCount(0);await page.reload();await expect(course).toContainText('Course assigned.')
+})

@@ -127,3 +127,9 @@ Do not regress nested dialog restoration: portal mount order can put a parent ov
 Monitoring visual checks also preserve a single dark-mode select chevron and reset the internal class body to its summary cards when changing tabs. Completed-material counts remain distinct from confirmed-section progress; do not reuse section totals under the Materials completed heading.
 
 Keep assessment-session SELECT authority in one policy containing the same student-self, owning instructor/admin and Dean conditions. Do not add overlapping permissive policies or broaden Associate Dean score access when extending monitoring.
+
+## Owner correction: full curriculum population · 12 November 2026
+
+The owner authorizes assignment of the recorded curriculum to active CIT students across all periods and year levels, including instructor/block designation. This is an administrative allocation, not an invented EduSuite export. Preserve units, recorded year and semester, the 35-student block cap, existing approved syllabi and private backups. Reconcile legacy test block labels as assignment corrections; never relabel activity provenance. Missing syllabi remain drafts and cannot manufacture offline approval.
+
+Before release, students may see their own whitelisted course assignment metadata and pending status. Do not expose draft outlines, source files or assessment keys to achieve this. Staff support cannot fabricate learner opens, reading or responses. The owner requests true activity; missing scores must remain missing until actual student actions occur. Management labels must distinguish student assessment attempts from instructor syllabus approval, which remains outside the system.

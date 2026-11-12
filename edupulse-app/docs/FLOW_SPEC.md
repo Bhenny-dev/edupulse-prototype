@@ -96,3 +96,7 @@ Dashboard block links name and filter by course/block, preserving the URL across
 ## Owner correction · combined class monitoring, 12 November 2026
 
 Instructor Student Monitoring: student summary → search/year/course filters → handled year categories → course/block cards → full-page class dialog (Students, Assessment Scores, Learning Material Access). Class rosters govern all denominators and detail. Suspend before membership removal; retain accounts/history. A first open records access only; students explicitly confirm full document sections in order, with current-version progress and no write replay on reload. The separate instructor Performance page redirects to this flow; Student/Dean performance remains.
+
+## Owner-authorized curriculum allocation (12 November 2026)
+
+The owner may explicitly authorize a curriculum-based administrative course/block allocation rather than importing a new EduSuite export. Keep its provenance distinct, retain the recorded units/year/period and explicit instructor suspension/exclusion decisions, and create missing syllabi only as drafts. Assignment labels may precede release; draft content and private files may not. Genuine learner activity requires actual learner actions, including in populated course lists.

@@ -3,7 +3,7 @@ import { useAuth } from './AuthContext'
 import { useWorkspace } from './WorkspaceContext'
 import { aiRequest } from '../lib/aiClient'
 
-const EMPTY_ACADEMIC = { courses: [], publications: [], enrollments: [], attempts: [], accesses: [],reading:[],sessions:[], institutional: [], faculty: [], events: [], notices: [] }
+const EMPTY_ACADEMIC = { courses: [],assignedCourses:[], publications: [], enrollments: [], attempts: [], accesses: [],reading:[],sessions:[], institutional: [], faculty: [], events: [], notices: [] }
 const AcademicContext = createContext(null)
 
 // Load on identity entry and after this tab's confirmed mutations. Focus, timers and
