@@ -25,6 +25,7 @@ import { PERFORMANCE_ROLES } from '../../lib/access'
 //   Student Monitoring + Performance (Phase 5).
 // Student: Dashboard → My Courses (Phase 4) → My Performance.
 const SECTIONS = [
+  ...[['dean','Dean'],['associate_dean','Program Coordinator'],['instructor','Instructor'],['student','Student']].map(([role,label]) => ({key:`admin-${role}`,path:`/dashboard?role=${role}`,label,icon:Users,roles:['admin'],monitorRole:role})),
   { key: 'dashboard', path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: 'all' },
   { key: 'dean-course', path: '/records', label: 'Course', icon: BookOpen, roles: ['dean'], relatedPaths:['/course-loading','/monitor'] },
   { key: 'dean-instructors', path: '/instructors', label: 'Instructors', icon: GraduationCap, roles: ['dean'] },
@@ -233,8 +234,9 @@ export default function Layout() {
 
   const handleLogout = () => { setOverlay(null); logout(); navigate('/') }
   const { notifications: notifs, unreadCount, loading: noticesLoading, error: noticesError } = useNotifications(user?.role)
-  const sections = SECTIONS.filter(s => canSee(s, user?.role))
-  const current = sections.find(item => item.path === location.pathname || item.relatedPaths?.some(path => location.pathname.startsWith(path)))
+  const sections = SECTIONS.filter(s => canSee(s, user?.role)).sort((a,b) => a.key === 'dashboard' ? -1 : b.key === 'dashboard' ? 1 : 0)
+  const monitorRole = user?.role === 'admin' ? new URLSearchParams(location.search).get('role') : null
+  const current = sections.find(item => item.monitorRole ? item.monitorRole === monitorRole : item.path === location.pathname && !monitorRole || item.relatedPaths?.some(path => location.pathname.startsWith(path)))
 
   useEffect(() => { window.scrollTo({ top: 0, left: 0, behavior: 'instant' }) }, [location.pathname])
   // Keyed by the first path segment: changing section replays the page entrance, while
@@ -290,6 +292,7 @@ export default function Layout() {
                   to={item.path}
                   title={item.label}
                   aria-label={item.label}
+                  aria-current={isActive ? 'page' : false}
                   style={{
                     display: 'flex', alignItems: 'center', gap: '6px',
                     padding: '8px 14px', borderRadius: 'var(--radius-md)',
@@ -487,13 +490,13 @@ export default function Layout() {
         }}>
           <nav style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
             {sections.map(item => (
-              <NavLink key={item.path} to={item.path} onClick={() => setOverlay(null)}
-                style={({ isActive }) => ({
+              <NavLink key={item.path} to={item.path} aria-current={current?.key===item.key?'page':false} onClick={() => setOverlay(null)}
+                style={() => ({
                   display: 'flex', alignItems: 'center', gap: '12px',
                   padding: '14px 16px', borderRadius: 'var(--radius-md)',
                   fontWeight: 600, fontSize: '1rem',
-                  color: isActive ? 'var(--sky-600)' : 'var(--gray-600)',
-                  background: isActive ? 'var(--sky-50)' : 'transparent',
+                  color: current?.key === item.key ? 'var(--sky-600)' : 'var(--gray-600)',
+                  background: current?.key === item.key ? 'var(--sky-50)' : 'transparent',
                   textDecoration: 'none',
                 })}
               >

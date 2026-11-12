@@ -228,3 +228,7 @@ Pulse content reviews show changed outline fields by week and section. Existing 
 
 
 The role formerly labelled Associate Dean is displayed as **Program Coordinator** in badges, account selection and role guidance. Existing accounts keep the same role and access.
+
+### System Admin monitoring navigation
+
+The System Admin top bar now contains **Dashboard**, **Dean**, **Program Coordinator**, **Instructor**, and **Student**. These four role stations open monitoring tabs and retain the admin identity; named-person support remains an explicit account-picker action. On a phone, these links appear under **Open menu**. The selected role/tab survives browser reload through its URL; navigating between monitoring tabs reuses loaded reads. See [desktop and phone role monitoring captures](../07-system-admin/README.md#role-monitoring-stations).

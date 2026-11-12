@@ -1,6 +1,7 @@
 import { Spinner, SkeletonContent } from '../components/ui/LoadingFeedback'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import RoleMonitoring from '../components/admin/RoleMonitoring'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Activity, AlertTriangle, Bot, CheckCircle2, Clock3, RefreshCw, ShieldCheck, Users } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { supabase } from '../lib/supabaseClient'
@@ -21,6 +22,7 @@ const OUTCOMES = { answered: 'Answered', 'quoted-sources': 'Quoted sources', 'in
 export default function SystemAdminDashboard() {
   const { user, switchRole } = useAuth()
   const navigate = useNavigate()
+  const [params] = useSearchParams()
   const [overview, setOverview] = useState(empty)
   const [checks, setChecks] = useState([])
   const [busy, setBusy] = useState(true)
@@ -104,6 +106,8 @@ export default function SystemAdminDashboard() {
     } catch { setAccountNotice('Role update failed. Check your admin session and try again.') }
     finally { setAccountBusy(false) }
   }
+
+  if (['dean','associate_dean','instructor','student'].includes(params.get('role'))) return <RoleMonitoring role={params.get('role')} overview={overview} checks={checks} activity={agentActivity} busy={busy} error={error} agentError={agentError} refresh={refresh} openRole={openRole} demo={user?.demo} />
 
   return <div className="container">
     <div className="page-header">

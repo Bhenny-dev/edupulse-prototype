@@ -568,3 +568,7 @@ The owner removed the Syllabus page course-load summary panel. This deletes pres
 
 
 Courseware editor layout now uses the existing AutoTextarea control for question/option and heading/slide text. Content values, persistence contracts, scoring and export generation are unchanged.
+
+### System Admin role monitoring
+
+The four `/dashboard?role=?&monitorTab=?` stations reuse the admin-only `edupulse_admin_overview` and `edupulse_admin_agent_activity` RPCs and existing health checks. No new database access or credential storage is introduced. Role selectors map to existing immutable role values, including `associate_dean` for Program Coordinator. Filtering uses explicit event `actorRole` and run `role`; Auth events without role attribution are excluded. Account counts come from returned active accounts, audit charts from at most 100 recent system events, and AI charts from at most 30 recent seven-day runs. UI labels disclose those windows and shared-health scope. These are not costs, token totals or academic performance. Navigation queries contain only finite role/tab choices, never account DTOs or actions. Account switching remains a separate explicit authorized picker workflow.

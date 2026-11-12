@@ -4,9 +4,9 @@ Browser reload preserves an admin-selected person and the current protected page
 
 **New after v0.4.0.** The system admin is a separate role from the Dean and Program Coordinator. It runs the system: accounts, service health and the audit trail. Academic work (course loading, monitoring, records) belongs to the Dean and Program Coordinator.
 
-The system admin signs in with Google, and the two explicitly designated Google-linked accounts are accepted as admin. The admin's dashboard (`/dashboard`) is the system console, and its top bar shows only **Dashboard** plus the shared tools.
+The system admin signs in with Google, and the two explicitly designated Google-linked accounts are accepted as admin. The admin's dashboard (`/dashboard`) is the system console, and its top bar shows **Dashboard**, **Dean**, **Program Coordinator**, **Instructor**, and **Student**, plus the shared tools. These role stations monitor the role without switching accounts.
 
-These screenshots come from the documentation capture build and show **preview sample data**. A preview session cannot change accounts, so its controls are disabled. In a signed-in admin session, the same screen loads:
+These screenshots come from the documentation capture build and use **synthetic sample data**. The full console and role stations use controlled signed-in transports; earlier detail crops use preview mode with disabled account controls. Neither is evidence of hosted authorization or actual activity. In a signed-in admin session, the same screen loads:
 * live Supabase accounts;
 * service checks;
 * recorded activity.
@@ -107,3 +107,23 @@ Search by name, student number or email. Student filters include **Year level**,
 On a phone the same [role coverage](mobile-06-two-admins.png) and [restored support view](mobile-07-second-admin-reloaded-view.png) remain available. These captures use synthetic admin identities and an invented instructor. They verify rendering and reload behavior, not live Google consent or access to a real person's records. A newly registered Google-only account is counted before its first sign-in; registration is not evidence of a completed Google session.
 
 The active student directory is limited to **College of Information Technology**. The department selector contains only CIT, with year/program filtering retained. Non-CIT profiles and the four legacy role placeholders are retired from active use, with their records preserved. Student profile count after retirement is 417.
+
+## Role monitoring stations
+
+The four role stations share clickable summary cards and five tabs: **Overview**, **Accounts**, **Activity & logs**, **AI usage**, and **Health**. **Choose account view** opens the existing named-person picker; it does not select a person automatically. **Refresh** explicitly repeats the reads. Moving between role stations or tabs retains loaded data; focus and timers do not refresh it. Browser reload restores the role and tab from the URL after normal session verification.
+
+The captures below use synthetic account/activity transports, not genuine student activity or live AI billing. **Role accounts** counts the loaded accounts of that role. **Loaded role events** uses only role-attributed EduPulse events within the latest 100 system events; unattributed Auth events are excluded. **Recent role AI runs** uses role-attributed entries within the latest 30 runs from seven days. Neither window is a lifetime total. **Shared services passing** reports system services, not personal provider credentials.
+
+![Dean monitoring](monitor-dean.png)
+![Program Coordinator monitoring](monitor-associate_dean.png)
+![Instructor monitoring](monitor-instructor.png)
+![Student monitoring](monitor-student.png)
+
+**Overview** shows action and AI-outcome bars with visible numeric counts. Empty windows have explicit empty states. **Accounts** lists names, usernames, confirmation and last sign-in, with name/email search. **Activity & logs** lists time, action, result and safe audit detail. **AI usage** lists workflow, task, outcome, duration and participating agents; it does not expose prompts, credentials or claim token/cost totals. **Health** repeats the four shared service checks.
+
+![Role accounts](monitor-accounts.png)
+![Role audit log](monitor-activity.png)
+![Role AI usage](monitor-ai.png)
+![Shared health](monitor-health.png)
+
+![Role monitoring on a phone](monitor-mobile.png)

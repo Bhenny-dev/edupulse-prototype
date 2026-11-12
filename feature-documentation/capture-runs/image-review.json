@@ -3658,6 +3658,66 @@
       "sha256": "b8af3c62506e3fbebee7205101e5bbc064ac7add5ccaaacef503584d8009c58d",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-12T12:28:14.384835+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/07-system-admin/01-system-console.png",
+      "sha256": "7c19fed918890c88581ce60efa938e47b30269d8adff98664fe2fd295ef16469",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T12:45:05.784996+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/07-system-admin/monitor-accounts.png",
+      "sha256": "529489693dad9d45fdc7807ff42a4ac52ad2dd306f07fef342ecf6374feec1d5",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T12:45:05.792035+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/07-system-admin/monitor-activity.png",
+      "sha256": "7cdf62469fe64ca232801ff3889f5d105e4fc370d9cf7aa05ed1817c601ddbb8",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T12:45:05.801012+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/07-system-admin/monitor-ai.png",
+      "sha256": "03e26d85a7dce9ef70fc6942aa680f23ec113b152c3fa508b4e88b241850927b",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T12:45:05.807923+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/07-system-admin/monitor-associate_dean.png",
+      "sha256": "3e59f51169e573024b2b2bcdddc500f589d2370bb5b6eeca9ed923a0a56155ae",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T12:45:05.814942+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/07-system-admin/monitor-dean.png",
+      "sha256": "bfa709078835c2aeeb80257420851468ec06f2d558b0421bda1f16cf9cfa463d",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T12:45:05.822099+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/07-system-admin/monitor-health.png",
+      "sha256": "702d9234a6c557e232bafd15bc47cd66ad4bc9a180efb19580e6466379bd85ed",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T12:45:05.828446+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/07-system-admin/monitor-instructor.png",
+      "sha256": "68e9c2621beedd38937c3c07a6117093f8253c9611b11efbd5426d7c5212be44",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T12:45:05.835802+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/07-system-admin/monitor-mobile.png",
+      "sha256": "302b0d965e8d37006fda4b73142bd76bcea61a5d437bcc69e9d9369bd5ca49f4",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T12:45:05.836240+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/07-system-admin/monitor-student.png",
+      "sha256": "3f0952d683a1cb039de9bd04982b46f3e06fb256f3585e28241b4b8fbf5c72fd",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T12:45:05.842825+00:00"
     }
   ]
 }
