@@ -87,3 +87,13 @@
 
 .student-learning .kpi-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
 @media(max-width:700px){.student-learning .kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+.academic-publication-dialog{width:min(1240px,96vw);max-width:1240px;padding:0;max-height:94dvh;overflow:auto;background:var(--white)}
+.academic-publication-dialog .academic-publication{margin:0;border:0;box-shadow:none}
+.academic-publication-dialog .card-header{position:sticky;top:0;background:var(--white);z-index:2;gap:12px;flex-wrap:wrap}
+.academic-publication-dialog .card-header h2{min-width:0;overflow-wrap:anywhere;font-size:1.1rem}
+.academic-publication-dialog .academic-question{min-width:0;overflow-wrap:anywhere}
+.academic-publication-dialog .academic-question label:has(textarea){display:block}
+.academic-publication-dialog .academic-question textarea{display:block;margin-top:8px}
+.academic-publication-dialog progress{width:100%;accent-color:var(--sky-500)}
+@media(max-width:640px){.academic-publication-overlay{padding:8px}.academic-publication-dialog{width:100%;border-radius:16px}.academic-publication-dialog .card-body{padding:16px}.academic-publication-dialog .academic-question{padding:12px}}

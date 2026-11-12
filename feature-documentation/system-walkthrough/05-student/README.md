@@ -82,3 +82,5 @@ The local preview persona retains its sample material and timed-assessment lists
 
 ![Local preview material list with sample courses](02-my-materials.png)
 ![Local preview assessment list with sample deadlines](03-my-assessments.png)
+
+The selected course now has **All**, **Teaching Materials** and **Assessments** tabs. Materials and assessments open in separate page-sized dialogs; assessments show every question together without Previous/Next controls. The authorized course, tab and dialog restore on reload without replaying activity. [Current desktop and phone views](../../system-manual/41-student-learning/README.md#content-filters-and-complete-assessment-view).

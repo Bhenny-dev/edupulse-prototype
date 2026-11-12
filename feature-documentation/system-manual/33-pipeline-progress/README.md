@@ -8,7 +8,7 @@ The owner authorized labelled test activity on registered BSIT accounts. A pipel
 | --- | --- |
 | ![Instructor assessment progress](01-instructor-scores.png) | **Student Monitoring → selected course/block → Assessment Scores** includes scoped charts and the labelled activity notice. Expand **Topic mastery and follow-up** for individual historical attempts and their **Activity** labels. **Activity records** defaults to **All recorded activity** and can show **Student activity only** or **Pipeline tests only**. The CSV includes the activity label. |
 | ![Instructor material opens](02-instructor-opens.png) | **Learning Material Access** shows the same recorded first open for the selected class, a labelled-activity notice, and access/confirmed-reading charts. An open is an access record, not proof of finishing the reading. |
-| ![Student saved assessment](03-student-score.png) | The saved score is prefixed **Pipeline test**. Normal question navigation and retained attempt controls remain. |
+| ![Student saved assessment](03-student-score.png) | The saved score is prefixed **Pipeline test**. All questions appear together in the separate dialog; retained attempt controls remain. [Current view](../41-student-learning/README.md#content-filters-and-complete-assessment-view). |
 | ![Student material access](04-student-opens.png) | The publication list identifies **Opened · Pipeline test**. |
 | ![Mobile student progress](05-mobile-student.png) | A student's saved result retains the label on a narrow screen. |
 | ![Mobile instructor progress](05-mobile-instructor.png) | The instructor notice, record filter, charts and responsive score rows remain reachable. |

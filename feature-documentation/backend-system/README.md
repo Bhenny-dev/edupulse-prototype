@@ -636,3 +636,7 @@ Migrations: `20261113051000_admin_student_demonstration`, `20261113052000_studen
 ## Academic header cleanup - 13 November 2026
 
 The routine ready indicator and header projection export are removed from AcademicPortal and signed-in dashboards. Conditional retry/refresh and loading/offline/error feedback remain. The Admin student panel is removed while current support identity determines the existing `adminTest` command flag. Database authorization, provenance, independent-work protection and no-write reload remain unchanged. No migration or business-data write is required. [Current student guide](../system-manual/41-student-learning/README.md).
+
+## Course content tabs and separate readers - 13 November 2026
+
+StudentCourses uses the shared academic tabs with a `content` URL parameter for All, Teaching Materials and Assessments. All reuses the same weekly list with per-item open/status semantics. AcademicPortal portals authorized published readers through ModalLayer; both reading and assessment IDs use the existing account/subject-scoped navigation-reference storage. Current student sessions are read from freshly authorized records to restore the timer/submission reference; reload never sends start, open, respond or generation. Questions render together without the wizard state. Practice uses the same modal layer. Existing server validation, grading, Admin attribution and answer-key boundaries are unchanged. [Current guide](../system-manual/41-student-learning/README.md).

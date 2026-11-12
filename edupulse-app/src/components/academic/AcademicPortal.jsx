@@ -1,5 +1,5 @@
 import {useSearchParams} from 'react-router-dom'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useWorkspaceViewState } from '../../context/WorkspaceContext'
 import { useAuth } from '../../context/AuthContext'
 import { useAcademicRecords } from '../../context/AcademicContext'
@@ -12,6 +12,7 @@ import AcademicManagement from './AcademicManagement'
 import StudentCourses from './StudentCourses'
 import StudentPractice from './StudentPractice'
 import AcademicLibrary, { OpenedPublication } from './AcademicLibrary'
+import ModalLayer from '../ui/ModalLayer'
 import AcademicSyncStatus from './AcademicSyncStatus'
 import DeanRecords from './DeanRecords'
 import { deanPreview } from './deanPreview'
@@ -31,12 +32,11 @@ export default function AcademicPortal({ view }) {
   const deanPage=user?.role==='dean'&&['records','instructors','students'].includes(view)
   const title=user?.role==='student'&&view==='courseware'?'My Courses':user?.role==='student'&&view==='assessment'?'Practice Assessments':user?.role==='dean'&&view==='records'?'Course':TITLES[view]
   const [readerId,setReaderId]=useWorkspaceViewState(`academic-reader:${view}`,null)
-  const [assessmentId,setAssessmentId]=useState(null)
-  const selected=data.publications.find(item=>item.active&&item.id===(assessmentId||readerId)&&(view!=='courseware'||user?.role!=='student'||item.course_id===pageParams.get('course')))||null
+  const selected=data.publications.find(item=>item.active&&item.id===readerId&&(view!=='courseware'||user?.role!=='student'||item.course_id===pageParams.get('course')))||null
   const [answers, setAnswers] = useState({}), [busy, setBusy] = useState(false), [result, setResult] = useState(null), [error, setError] = useState('')
-  const [session,setSession]=useState(null)
+  const [startedSession,setSession]=useState(null)
+  const session=startedSession?.publication_id===selected?.id&&startedSession?.source_version===selected?.source_version?startedSession:(data.sessions||[]).filter(s=>s.student_id===user?.id&&s.publication_id===selected?.id&&s.source_version===selected?.source_version).sort((a,b)=>b.attempt_no-a.attempt_no)[0]||null
   const adminTest=user?.role==='student'&&Boolean(user?.supportSubject)
-  useEffect(()=>{if(selected)document.getElementById('opened-publication')?.scrollIntoView({block:'start'})},[selected?.id])
   const learnerControls=user?.role==='student'&&(!user?.supportSubject||adminTest)
   const run = async command => {
     setBusy(true); setError('')
@@ -47,7 +47,7 @@ export default function AcademicPortal({ view }) {
   const isStudent = user?.role === 'student'
   const open = async item => {
     if(isStudent&&item.type!=='assessment'){
-      setAssessmentId(null);setReaderId(item.id);setResult(null);setAnswers({});
+      setReaderId(item.id);setResult(null);setAnswers({});
       if(learnerControls)void run({operation:'open',publication:item.id,version:item.source_version});
       return
     }
@@ -55,9 +55,9 @@ export default function AcademicPortal({ view }) {
     if(learnerControls && item.type==='assessment' && !data.attempts.some(a=>a.publication_id===item.id&&String(a.source_version)===String(item.source_version))) {
       const started=await run({operation:'start',publication:item.id,version:item.source_version})
       if(!started)return
-      setSession(started)
+      setSession({...started,publication_id:item.id,source_version:item.source_version})
     }
-    setAssessmentId(item.type==='assessment'?item.id:null);setReaderId(item.type==='assessment'?null:item.id); setAnswers({}); setResult(null)
+    setReaderId(item.id); setAnswers({}); setResult(null)
   }
   return <div className={`container academic-portal${isStudent?' student-learning':''}`} aria-busy={loading || busy} data-pulse-target={title} data-pulse-zone={deanPage?'records':view === 'performance' ? 'performance' : view === 'courseware' ? 'courseware' : view === 'monitor' ? 'monitor' : view === 'records' ? 'records' : view === 'courses' ? 'course-loading' : view === 'monitoring' ? 'performance' : undefined}>
     <div className="page-header"><div><h1>{title}</h1><p className="text-sm text-muted">{preview?'Preview sample records':deanPage?'Recorded course, instructor and student activity':'Account records · Instructor-confirmed EduSuite exports · No institutional grade computations'}</p></div><div className="academic-actions">{!preview&&<AcademicSyncStatus/>}{user?.role==='dean'&&view==='students'&&<a className="btn btn-secondary btn-sm" href="#/performance">View student performance</a>}</div></div>
@@ -69,7 +69,7 @@ export default function AcademicPortal({ view }) {
       {view==='monitoring'&&user?.role==='instructor'?<InstructorMonitoring data={data}/>:['performance', 'monitoring'].includes(view) && user?.role !== 'associate_dean' && <AcademicPerformance data={data} role={user?.role} monitoring={view === 'monitoring'} />}
       {deanPage?<DeanRecords data={data} view={view}/>:['records', 'courses', 'monitor'].includes(view) && <AcademicManagement data={data} role={user?.role} view={view} />}
       {isStudent&&view==='courseware'?<StudentCourses data={data} onOpen={open} busy={busy}/>:isStudent&&view==='assessment'?<StudentPractice data={data} onOpen={open} busy={busy} adminTest={adminTest}/>:['courseware', 'assessment'].includes(view) && <AcademicLibrary data={data} assessments={view === 'assessment'} onOpen={open} busy={busy} />}
-      {selected && <div id="opened-publication"><OpenedPublication key={`${selected.id}:${session?.id || "reader"}`} selected={selected} data={data} isStudent={learnerControls} adminTest={Boolean(user?.supportSubject&&adminTest)} answers={answers} setAnswers={setAnswers} result={result} session={session} busy={busy} onClose={() => {setAssessmentId(null);setReaderId(null)}} onRetake={async()=>{const started=await run({operation:'start',publication:selected.id,version:selected.source_version,retake:true});if(started){setSession(started);setAnswers({});setResult(null)}}} onSubmit={() => run({ operation: 'respond', publication: selected.id, version: selected.source_version, session:session?.id, responses: selected.content.questions.map((_, index) => answers[index]) })} /></div>}
+      {selected && <ModalLayer className="overlay-backdrop academic-publication-overlay" onDismiss={()=>setReaderId(null)}><section className="modal-content academic-publication-dialog" role="dialog" aria-modal="true" aria-label={selected.title}><div id="opened-publication">{error&&<p role="alert" className="connected-pulse-warning">{error}</p>}<OpenedPublication key={`${selected.id}:${session?.id || "reader"}`} selected={selected} data={data} isStudent={learnerControls} adminTest={Boolean(user?.supportSubject&&adminTest)} answers={answers} setAnswers={setAnswers} result={result} session={session} busy={busy} onClose={() => {setReaderId(null)}} onRetake={async()=>{const started=await run({operation:'start',publication:selected.id,version:selected.source_version,retake:true});if(started){setSession({...started,publication_id:selected.id,source_version:selected.source_version});setAnswers({});setResult(null)}}} onSubmit={() => run({ operation: 'respond', publication: selected.id, version: selected.source_version, session:session?.id, responses: selected.content.questions.map((_, index) => answers[index]) })} /></div></section></ModalLayer>}
     </>}
   </div>
 }

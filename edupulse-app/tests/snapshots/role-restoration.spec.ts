@@ -37,9 +37,9 @@ test('Program Coordinator retains shared file intake, templates and history', as
   for (const [label, name] of [['Course Loads', '23-load-intake'], ['Student Class Lists', '24-roster-intake'], ['Templates', '25-intake-templates'], ['History', '26-intake-history']]) { await page.getByRole('navigation', { name: 'File import views' }).getByRole('button', { name: label, exact: true }).click(); await shot(page, name) }
 })
 test('synthetic restored student readers, results and notices', async ({ page }) => {
-  const fixture = await restorationUI(page, 'student'); fixture.records.assignedCourses=[{id:'d'.repeat(32),course_code:'IT 104',course_title:'Research Methods',active:false,block_section:'BSIT-1A',suspended:false,units:'3',year_level:'1',semester:'2'}]; await page.goto('/#/courseware');await expect(page.getByText('Course assigned. Materials become available after syllabus approval and instructor release.',{exact:true})).toBeVisible(); await shot(page, '27-student-course-weeks')
+  const fixture = await restorationUI(page, 'student'); fixture.records.assignedCourses=[{id:'d'.repeat(32),course_code:'IT 104',course_title:'Research Methods',active:false,block_section:'BSIT-1A',suspended:false,units:'3',year_level:'1',semester:'2'}]; await page.goto('/#/courseware');await expect(page.getByRole('button',{name:'Open course IT 104',exact:true})).toContainText('Awaiting instructor release'); await shot(page, '27-student-course-weeks')
   // The formatting suite owns reader images 28/29 with its saved Markdown fixture.
-  await page.goto('/#/assessment'); await page.getByRole('button', { name: 'Open assessment', exact: true }).first().click(); await shot(page, '30-student-assessment-result')
+  await page.goto('/#/assessment'); await page.getByRole('button', { name: 'Open assessment', exact: true }).first().click(); await expect(page.getByRole('dialog')).toBeVisible();await shot(page, '30-student-assessment-result','.academic-publication-dialog')
   fixture.records.attempts.pop(); await page.goto('/#/notifications'); await page.reload(); await expect(page.getByText('Unanswered assessment: Arrays quiz', { exact: true })).toBeVisible(); await shot(page, '31-account-notices')
 })
 test('synthetic restored dark solid surfaces', async ({ page }) => {

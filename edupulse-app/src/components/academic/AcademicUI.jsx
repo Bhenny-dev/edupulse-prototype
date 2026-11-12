@@ -17,10 +17,10 @@ export function KPIs({ items }) {
   }
   return <div className="kpi-grid mb-24">{items.map(([label, value]) => <div className="kpi-card" key={label}><div><div className="kpi-value">{value ?? '—'}</div><div className="kpi-label">{label}</div></div></div>)}</div>
 }
-export function useAcademicTabs({ items, label = 'Page views', fallback }) {
+export function useAcademicTabs({ items, label = 'Page views', fallback, parameter = 'tab' }) {
   const [params, setParams] = useSearchParams()
-  const key = items.some(([id]) => id === params.get('tab')) ? params.get('tab') : fallback || items[0][0]
-  const nav = <nav className="tabs academic-tabs mb-24" aria-label={label}>{items.map(([id, title]) => <button key={id} className={`tab ${key === id ? 'active' : ''}`} aria-pressed={key === id} onClick={() => { const next = new URLSearchParams(params); next.set('tab', id); setParams(next) }}>{title}</button>)}</nav>
+  const key = items.some(([id]) => id === params.get(parameter)) ? params.get(parameter) : fallback || items[0][0]
+  const nav = <nav className="tabs academic-tabs mb-24" aria-label={label}>{items.map(([id, title]) => <button key={id} className={`tab ${key === id ? 'active' : ''}`} aria-pressed={key === id} onClick={() => { const next = new URLSearchParams(params); next.set(parameter, id); setParams(next) }}>{title}</button>)}</nav>
   return { key, nav }
 }
 export function Table({ headers, rows, empty, label }) {

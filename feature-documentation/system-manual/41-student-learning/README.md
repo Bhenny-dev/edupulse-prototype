@@ -10,13 +10,13 @@ These screenshots use fictional student records, controlled provider/API respons
 
 ![Weekly teaching and assessment items in a selected course](02-delivered-course.png)
 
-Select a course card. The course header identifies its instructor. Its weekly published materials and instructor assessments have **Open material** and **Open assessment** actions. **Back to My Courses** returns to the cards. The selected authorized course restores after reload; course selection never records an open or starts an attempt.
+Select a course card. The course header identifies its instructor. The **All**, **Teaching Materials** and **Assessments** tabs filter a single weekly list. **All** includes both materials and assessments. The selected tab restores from the URL. **Open material** and **Open assessment** open a separate page-sized dialog above the list. **Back to My Courses** returns to the cards. The selected authorized course restores after reload; course selection never records an open or starts an attempt.
 
 ![The material reader and section confirmations](03-material-reader.png)
 
-Materials become readable immediately while the explicit first-open record saves. A recording failure is shown without replacing the readable document with a pending screen. **Document** and **Presentation** remain available. Confirm reading sections in order using their confirmation buttons; an open alone never marks a document finished. Reload restores the reader without replaying opens or confirmations.
+Materials become readable in the separate dialog immediately while the explicit first-open record saves. Close using **Close material**, **Back**, or Escape to return to the same course/tab. A recording failure is shown without replacing the readable document with a pending screen. **Document** and **Presentation** remain available. Confirm reading sections in order using their confirmation buttons; an open alone never marks a document finished. Reload restores the reader without replaying opens or confirmations.
 
-Instructor assessments retain duration, deadline, question navigation, supported response formats, saved results, allowed retakes and instructor marking. Written responses can remain **Awaiting marking**; missing marks cannot become zero. These are recorded raw scores, not institutional grades.
+Instructor assessments display every question together in one scrollable dialog, with no numbered question navigator or Previous/Next question buttons. Duration, deadline, supported response formats, saved results, allowed retakes and instructor marking remain. Answer all questions, then use **Confirm and submit responses**. **Close assessment** or Escape returns to the list. Reload restores the authorized dialog and reads any existing server session without starting another attempt; unsaved answers do not restore. Written responses can remain **Awaiting marking**; missing marks cannot become zero. These are recorded raw scores, not institutional grades.
 
 ## Practice Assessments
 
@@ -26,7 +26,7 @@ The former Assessments navigation is **Practice Assessments**. Summary cards rep
 
 In **Advanced reading practice**, choose **Reading material** and select **Generate advanced practice with AI**. Generation uses the current account's connected provider and reading already delivered to this enrollment, including later-week reading available before its instructor assessment. It creates new application questions; private or unreleased instructor assessment questions and keys are never read. Missing provider access or invalid model output shows an explicit error rather than invented questions. This generation is explicit and is never replayed on reload.
 
-Answer every practice question and select **Save practice attempt**. Objective practice is scored on the server. The saved set remains available after reload; unsaved responses do not restore. **Close practice** exits. A request identifier makes retries of the same submission idempotent.
+Answer every practice question and select **Save practice attempt**. Objective practice is scored on the server. Practice questions also open in a separate dialog, with all questions together. The saved set remains available after reload; unsaved responses do not restore. **Close practice** exits. A request identifier makes retries of the same submission idempotent.
 
 ![Saved practice history, progress bar and comparison](05-practice-improvement.png)
 
@@ -54,3 +54,12 @@ A reload restores the authorized course or reader without recreating an action. 
 The owner-authorized data exercise covers one enrolled approved course per student in Weeks 1-3, plus allowed labelled retakes where needed for topic examples. All Weeks 4-5 assessments remain untouched for manual testing. Independent learner completion is never claimed. [Release validation](../../versions/2026-11-13-student-learning/validation/results.md) records the current aggregate evidence.
 
 The routine **Records up to date** indicator and page-header **Export authorized records** / **Export** buttons have been removed across academic pages and signed-in dashboards. Loading/error/offline feedback and explicit **Refresh records** / **Retry connection** remain available when needed. Specific CSV downloads and the Settings workspace backup keep their existing purposes.
+
+## Content filters and complete assessment view
+
+![Only teaching materials in the selected course](10-teaching-materials-tab.png)
+![Only assessments in the selected course](11-assessments-tab.png)
+![All assessment questions together in a separate dialog](12-all-assessment-questions.png)
+![Assessment dialog on a phone](13-phone-assessment-dialog.png)
+
+Each tab keeps the course and instructor context. Dialogs use the existing focus and Escape behavior, keep the background page in place, and scroll within the viewport. A long assessment remains one continuous question list. The server remains responsible for active enrollment, release dates, time limits, attempt limits and marks.

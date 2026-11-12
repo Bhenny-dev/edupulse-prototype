@@ -35,7 +35,7 @@ for (const role of ['instructor', 'student', 'dean', 'associate_dean']) {
     }
     if (role === 'student') {
       await page.goto('/#/courseware');await page.getByRole('button',{name:/^Open course /}).first().click(); await page.getByRole('button', { name: 'Open material', exact: true }).click(); await expect(page.getByRole('region', { name: 'Opened courseware' })).toContainText('A variable stores a value.'); await page.getByRole('button', { name: 'Presentation', exact: true }).click(); await expect(page.getByRole('button', { name: /Next/i }).first()).toBeVisible()
-      await page.goto('/#/assessment'); await page.getByRole('button', { name: 'Open assessment', exact: true }).first().click(); await expect(page.getByRole('navigation', { name: 'Question navigation' })).toBeVisible(); await expect(page.getByRole('status').filter({ hasText: 'Saved score:' })).toBeVisible()
+      await page.goto('/#/assessment'); await page.getByRole('button', { name: 'Open assessment', exact: true }).first().click(); await expect(page.getByRole('dialog').locator('.academic-question').first()).toBeVisible();await expect(page.getByRole('button',{name:'Next question',exact:true})).toHaveCount(0); await expect(page.getByRole('status').filter({ hasText: 'Saved score:' })).toBeVisible()
     }
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true)
     expect(problems).toEqual([])

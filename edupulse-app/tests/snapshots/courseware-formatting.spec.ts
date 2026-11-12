@@ -33,15 +33,16 @@ test('synthetic student formatted document and presentation', async ({ page }) =
   fixture.records.publications[0].title = formattedMaterial.title
   fixture.records.courses[0].course_title = 'Computer Networks'
   await page.goto('/#/courseware')
+  await page.getByRole('button',{name:/^Open course /}).first().click()
   await page.getByRole('button', { name: 'Open material', exact: true }).click()
   await expect(page.locator('.doc-viewer-text strong').first()).toHaveText('Network foundations')
   await expect(page.locator('.ai-draft-evidence')).toHaveCount(0)
   await page.mouse.move(2, 400)
   const root = '../feature-documentation/system-walkthrough/09-restored-role-pages'
-  await page.screenshot({ path: `${root}/28-student-document.png`, animations: 'disabled', fullPage: true, style: '.app-topbar{position:static !important}' })
+  await page.screenshot({ path: `${root}/28-student-document.png`, animations: 'disabled', fullPage: false, style: '.app-topbar{position:static !important}' })
   await page.getByRole('button', { name: 'Presentation', exact: true }).click()
   await page.getByRole('button', { name: /Next/i }).first().click()
   await expect(page.locator('.pres-slide-points strong').first()).toHaveText('Network foundations')
   await page.mouse.move(2, 400)
-  await page.screenshot({ path: `${root}/29-student-presentation.png`, animations: 'disabled', fullPage: true, style: '.app-topbar{position:static !important}' })
+  await page.screenshot({ path: `${root}/29-student-presentation.png`, animations: 'disabled', fullPage: false, style: '.app-topbar{position:static !important}' })
 })

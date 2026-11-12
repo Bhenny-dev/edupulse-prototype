@@ -170,3 +170,7 @@ The owner explicitly authorizes Admin manipulation of the selected student view.
 ## Owner correction: remove routine academic header controls - 13 November 2026
 
 Remove the shown Records up to date indicator, page-header projection export buttons, and yellow Admin demonstration checkbox/panel. This supersedes the earlier UI opt-in requirement: an already verified Admin student view may send the existing labelled command flag on explicit learner actions directly. Do not regress live subject verification, Admin attribution, protection of independent student work or no-write reload restoration. Retain recovery/refresh when needed, specific CSV downloads and Settings workspace backup. No data or permission policy changes are implied.
+
+## Owner correction: course tabs and complete assessment dialogs - 13 November 2026
+
+Add All, Teaching Materials and Assessments to the selected student's course. Open delivered materials, official assessments and practice questions in separate page-sized dialogs using the existing modal layer. Every official question is in one continuous view; remove question wizard/Previous/Next controls. Do not regress keyboard close/focus, phone sizing, existing question formats, timers, deadlines, allowed attempts, grading or Admin attribution. Persist only authorized navigation references, resolve existing sessions from fresh records, and never replay an action on reload or store unsaved answers as navigation hints.

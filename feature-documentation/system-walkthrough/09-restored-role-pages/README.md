@@ -59,10 +59,10 @@ The import, Templates and History images above now show the Program Coordinator;
 
 | View | Capture | Behavior |
 | --- | --- | --- |
-| Course/week navigation | ![Student course weeks](27-student-course-weeks.png) | Course/title search and expandable weeks for enrolled published materials. |
-| **Document** | ![Student document](28-student-document.png) | Read-only synthetic networking lesson with bold, italic, lists, table and literal code examples; **Download PDF**, print and back controls use the existing document viewer. Opening records access before displaying the material. Instructor draft evaluation is hidden. |
+| Course/week navigation | ![Student course weeks](27-student-course-weeks.png) | Enrolled course cards with instructor/delivery context; opening a card leads to the three content tabs. |
+| **Document** | ![Student document](28-student-document.png) | Read-only synthetic networking lesson with bold, italic, lists, table and literal code examples; **Download PDF**, print and back controls use the existing document viewer. The separate reader displays immediately while first-open recording completes. Instructor draft evaluation is hidden. |
 | **Presentation** | ![Student presentation](29-student-presentation.png) | Synthetic key-point slide with formatted emphasis, previous/next, slide selector and fullscreen controls. Leading bold markers render as bold text. |
-| Assessment result | ![Student result](30-student-assessment-result.png) | Numbered question navigation, disabled question controls and raw score receipt. This fixture has a saved objective result. Configured duration, deadline and 1-3 attempts are enforced by the server; written responses await instructor marking. No answer key is released. |
+| Assessment result | ![Student result](30-student-assessment-result.png) | All questions together, disabled submitted controls and raw score receipt. Current separate dialogs are shown in [Manual 41](../../system-manual/41-student-learning/README.md). This fixture has a saved objective result. Configured duration, deadline and 1-3 attempts are enforced by the server; written responses await instructor marking. No answer key is released. |
 | Account notices | ![Account notices](31-account-notices.png) | Record-derived notices and account/device-scoped **Mark All Read**. The fixture explicitly removes its last saved attempt and refreshes the account data to show **Unanswered assessment: Arrays quiz**. Persisted academic notices use account read receipts; derived reminders retain device read state. No email/push service is claimed. |
 
 ## Dark and mobile views
@@ -87,7 +87,7 @@ The following scenes use the additional synthetic baseline fixture. SQL integrat
 | In-app reminder | ![Saved reminder](38-confirmed-in-app-reminder.png) | Reviewed marks receipt and one saved reminder receipt; duplicate/day and completed-work exclusions are stated. |
 | Program Coordinator loading proposals | ![Loading and qualifications](39-loading-proposals.png) | Imported course, block/semester, provisioned instructor list, degree/specialization records, preview/auto proposals and confirmation. |
 | Program Coordinator block correction | ![Block correction](40-block-correction.png) | Select imported student and confirmed block, then confirm the shared correction. |
-| Timed written assessment | ![Timed response](42-timed-written-assessment.png) | Server-started session, remaining time, topic names, one visible written question, Previous/Next and numbered navigation. |
+| Timed written assessment | ![Timed response](42-timed-written-assessment.png) | Server-started session, remaining time, topic names, all questions together in a separate scrollable dialog, without Previous/Next question controls. |
 | Saved result and appeal | ![Pending marking and appeal](43-assessment-pending-review-and-appeal.png) | Objective subtotal, pending written-response marking and appeal form. |
 | Persisted notices | ![Academic notices](44-persisted-academic-notices.png) | Persisted publication notice plus derived current-work reminders; account and device receipt behavior is disclosed. |
 | Question topic mapping | ![Assessment mapping](46-assessment-topic-mapping.png) | Each question maps to an approved outline topic and selects multiple choice, True/False or instructor-marked response type. |

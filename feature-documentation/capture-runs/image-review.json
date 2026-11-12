@@ -4372,6 +4372,134 @@
       "reviewedAt": "2026-11-12T22:20:49.584102+00:00",
       "captureRun": "2026-11-12T22-18-21-622Z-8d8263f7",
       "method": "Opened with view_image. Verified removed routine ready/export controls on desktop/phone and removed Admin checkbox/panel, while course readers, practice progress, support attribution, and offline/update feedback remain. Synthetic UI evidence, not hosted sign-in or independent learner achievement."
+    },
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/02-delivered-course.png",
+      "sha256": "8ab2cde197a94289e122e4aa7089c2a6464da79e51e1d81b3f93b26dc1fcb753",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T23:03:15.403856+00:00",
+      "captureRun": "2026-11-12T23-02-10-432Z-bae815f3",
+      "method": "Opened with view_image. Verified the selected content tabs, separate material/practice/official-assessment dialogs, continuous questions without wizard controls, existing results/marking, keyboard close and phone viewport. Final viewport captures were reopened after correcting full-page artifact framing. Synthetic UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/03-material-reader.png",
+      "sha256": "e5a63a08e738d211dc4c148c0101c939e82a77e5fa41a882e84a964a694e08f8",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T23:03:15.404611+00:00",
+      "captureRun": "2026-11-12T23-02-10-432Z-bae815f3",
+      "method": "Opened with view_image. Verified the selected content tabs, separate material/practice/official-assessment dialogs, continuous questions without wizard controls, existing results/marking, keyboard close and phone viewport. Final viewport captures were reopened after correcting full-page artifact framing. Synthetic UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/04-practice-questions.png",
+      "sha256": "efea4480e6277446f7b7f1cf79253ce24b6ac4800bacfd448704cf35774d12d8",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T23:03:15.405250+00:00",
+      "captureRun": "2026-11-12T23-02-10-432Z-bae815f3",
+      "method": "Opened with view_image. Verified the selected content tabs, separate material/practice/official-assessment dialogs, continuous questions without wizard controls, existing results/marking, keyboard close and phone viewport. Final viewport captures were reopened after correcting full-page artifact framing. Synthetic UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/05-practice-improvement.png",
+      "sha256": "59ac194391e311ef957b0db8affffc035db4f16895c81436e146248e01ee00ca",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T23:03:15.413372+00:00",
+      "captureRun": "2026-11-12T23-02-10-432Z-bae815f3",
+      "method": "Opened with view_image. Verified the selected content tabs, separate material/practice/official-assessment dialogs, continuous questions without wizard controls, existing results/marking, keyboard close and phone viewport. Final viewport captures were reopened after correcting full-page artifact framing. Synthetic UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/09-admin-controls.png",
+      "sha256": "905bf00af96f1a470e8bdda2a4bd7d1058c750ebc32fdf147804da5eabcfc9b7",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T23:03:15.420382+00:00",
+      "captureRun": "2026-11-12T23-02-10-432Z-bae815f3",
+      "method": "Opened with view_image. Verified the selected content tabs, separate material/practice/official-assessment dialogs, continuous questions without wizard controls, existing results/marking, keyboard close and phone viewport. Final viewport captures were reopened after correcting full-page artifact framing. Synthetic UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/27-student-course-weeks.png",
+      "sha256": "8856f035b2c379e43bade500b323793099c380474507c135c2f8e713023c41ec",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T23:03:15.421131+00:00",
+      "captureRun": "2026-11-12T23-00-46-874Z-b9989dba",
+      "method": "Opened with view_image. Verified the selected content tabs, separate material/practice/official-assessment dialogs, continuous questions without wizard controls, existing results/marking, keyboard close and phone viewport. Final viewport captures were reopened after correcting full-page artifact framing. Synthetic UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/28-student-document.png",
+      "sha256": "921ac445ae7174bc7112ccac6473c372ea160667d612ef24f544c28e93062526",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T23:03:15.421507+00:00",
+      "captureRun": "2026-11-12T23-02-10-432Z-bae815f3",
+      "method": "Opened with view_image. Verified the selected content tabs, separate material/practice/official-assessment dialogs, continuous questions without wizard controls, existing results/marking, keyboard close and phone viewport. Final viewport captures were reopened after correcting full-page artifact framing. Synthetic UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/29-student-presentation.png",
+      "sha256": "43f6ab3d8ba9be5207425f1ac3f42b9d0c497b1086e68a4881d634005812808b",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T23:03:15.421832+00:00",
+      "captureRun": "2026-11-12T23-02-10-432Z-bae815f3",
+      "method": "Opened with view_image. Verified the selected content tabs, separate material/practice/official-assessment dialogs, continuous questions without wizard controls, existing results/marking, keyboard close and phone viewport. Final viewport captures were reopened after correcting full-page artifact framing. Synthetic UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/30-student-assessment-result.png",
+      "sha256": "2c032bdb4798e6e945b47cd09f4d753af4cc3b453033dd6d3d1dc31a7d476665",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T23:03:15.422306+00:00",
+      "captureRun": "2026-11-12T23-00-46-874Z-b9989dba",
+      "method": "Opened with view_image. Verified the selected content tabs, separate material/practice/official-assessment dialogs, continuous questions without wizard controls, existing results/marking, keyboard close and phone viewport. Final viewport captures were reopened after correcting full-page artifact framing. Synthetic UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/31-account-notices.png",
+      "sha256": "2e55ab5d4fa50261bba4a6472063e29ba169d12cd8eb220da0198f81c46cb931",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T23:03:15.422867+00:00",
+      "captureRun": "2026-11-12T23-00-46-874Z-b9989dba",
+      "method": "Opened with view_image. Verified the selected content tabs, separate material/practice/official-assessment dialogs, continuous questions without wizard controls, existing results/marking, keyboard close and phone viewport. Final viewport captures were reopened after correcting full-page artifact framing. Synthetic UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/42-timed-written-assessment.png",
+      "sha256": "c681e1585a469c8853e3ac0bde30bb5cf38208e94d4046fbb80a321a9bc71387",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T23:03:15.423054+00:00",
+      "captureRun": "2026-11-12T23-02-10-432Z-bae815f3",
+      "method": "Opened with view_image. Verified the selected content tabs, separate material/practice/official-assessment dialogs, continuous questions without wizard controls, existing results/marking, keyboard close and phone viewport. Final viewport captures were reopened after correcting full-page artifact framing. Synthetic UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/43-assessment-pending-review-and-appeal.png",
+      "sha256": "1cd0282d3d29670698546673c4d9a7a235a1ed1eccb5048710d58280d1ecf47f",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T23:03:15.423219+00:00",
+      "captureRun": "2026-11-12T23-02-10-432Z-bae815f3",
+      "method": "Opened with view_image. Verified the selected content tabs, separate material/practice/official-assessment dialogs, continuous questions without wizard controls, existing results/marking, keyboard close and phone viewport. Final viewport captures were reopened after correcting full-page artifact framing. Synthetic UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/10-teaching-materials-tab.png",
+      "sha256": "03cff0f5ef91e49d8bf3258a38592687b155aece251a65d7fedf2a515fea6d86",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T23:03:15.431096+00:00",
+      "captureRun": "2026-11-12T23-02-10-432Z-bae815f3",
+      "method": "Opened with view_image. Verified the selected content tabs, separate material/practice/official-assessment dialogs, continuous questions without wizard controls, existing results/marking, keyboard close and phone viewport. Final viewport captures were reopened after correcting full-page artifact framing. Synthetic UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/11-assessments-tab.png",
+      "sha256": "a5cc305010523702d02d1431e353a799039980e8e00ca70742f45d93bcf0b48e",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T23:03:15.437236+00:00",
+      "captureRun": "2026-11-12T23-02-10-432Z-bae815f3",
+      "method": "Opened with view_image. Verified the selected content tabs, separate material/practice/official-assessment dialogs, continuous questions without wizard controls, existing results/marking, keyboard close and phone viewport. Final viewport captures were reopened after correcting full-page artifact framing. Synthetic UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/12-all-assessment-questions.png",
+      "sha256": "ae161c2f8b04207cdf82ed2244fafe49aede24d50f310bff91733a757a428cc9",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T23:03:15.437561+00:00",
+      "captureRun": "2026-11-12T23-02-10-432Z-bae815f3",
+      "method": "Opened with view_image. Verified the selected content tabs, separate material/practice/official-assessment dialogs, continuous questions without wizard controls, existing results/marking, keyboard close and phone viewport. Final viewport captures were reopened after correcting full-page artifact framing. Synthetic UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/13-phone-assessment-dialog.png",
+      "sha256": "5721ad9f69b8a2f797cbe1139c57fc5194ff36aac5bd28257482ce3af8ba8f80",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T23:03:15.437814+00:00",
+      "captureRun": "2026-11-12T23-02-10-432Z-bae815f3",
+      "method": "Opened with view_image. Verified the selected content tabs, separate material/practice/official-assessment dialogs, continuous questions without wizard controls, existing results/marking, keyboard close and phone viewport. Final viewport captures were reopened after correcting full-page artifact framing. Synthetic UI evidence only."
     }
   ]
 }
