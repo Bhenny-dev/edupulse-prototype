@@ -30,13 +30,12 @@ export default function MonitoringAnalytics({data,tab,scope}){
  const workspace=useWorkspace(),[cutoff,setCutoff]=useState(75),[ackError,setAckError]=useState('')
  const [followup,setFollowup]=useWorkspaceViewState(`monitoring-followup:${scope}`,false)
  const material=tab==='materials'
- const [query,setQuery]=useState(''),[status,setStatus]=useState('all'),[since,setSince]=useState(''),[until,setUntil]=useState(''),[activity,setActivity]=useState('all')
+ const [query,setQuery]=useState(''),[status,setStatus]=useState('all'),[since,setSince]=useState(''),[until,setUntil]=useState('')
  const [detail,setDetail]=useWorkspaceViewState(`monitoring-detail:${scope}:${tab}`,null)
  const dates=date=>(!since||date.slice(0,10)>=since)&&(!until||date.slice(0,10)<=until)
- const matches=item=>activity==='all'||(activity==='test'?item.is_test:!item.is_test)
  const items=released(data,material?'material':'assessment'),ids=new Set(items.map(p=>p.id))
- const filtered={...data,publications:items,attempts:data.attempts.filter(a=>ids.has(a.publication_id)&&dates(a.submitted_at)&&matches(a)),accesses:data.accesses.filter(a=>ids.has(a.publication_id)&&dates(a.first_opened_at)&&matches(a)),sessions:(data.sessions||[]).filter(s=>ids.has(s.publication_id)&&dates(s.started_at)&&(activity==='all'||(activity==='test'?s.is_test===true:s.is_test===false))),reading:(data.reading||[]).filter(r=>ids.has(r.publication_id)&&dates(r.updated_at)&&matches(r))}
- const historyData={...filtered,publications:data.publications,attempts:data.attempts.filter(a=>dates(a.submitted_at)&&matches(a))}
+ const filtered={...data,publications:items,attempts:data.attempts.filter(a=>ids.has(a.publication_id)&&dates(a.submitted_at)),accesses:data.accesses.filter(a=>ids.has(a.publication_id)&&dates(a.first_opened_at)),sessions:(data.sessions||[]).filter(s=>ids.has(s.publication_id)&&dates(s.started_at)),reading:(data.reading||[]).filter(r=>ids.has(r.publication_id)&&dates(r.updated_at))}
+ const historyData={...filtered,publications:data.publications,attempts:data.attempts.filter(a=>dates(a.submitted_at))}
  const rows=material?materialRows(filtered):assessmentRows(filtered)
  const visible=rows.filter(r=>`${r.student.display_name} ${r.student.student_email} ${r.student.student_ref}`.toLowerCase().includes(query.toLowerCase())&&(status==='all'||(status==='incomplete'?(material?r.completed:r.submitted)<r.total:material?r.completed===r.total&&r.total>0:r.submitted===r.total&&r.total>0)))
  const selected=rows.find(r=>(r.student.student_ref||r.student.student_email)===detail)
@@ -46,13 +45,11 @@ export default function MonitoringAnalytics({data,tab,scope}){
  const csv=visible.map(r=>[r.student.display_name||r.student.student_email,r.accessed,material?r.completed:r.submitted,r.average===null?'No marked/confirmed result':`${r.average}%`,`${material?r.sectionsRead:r.submitted}/${material?r.sectionsTotal:r.total}`])
  return <>
   <KPIs items={material?[['Students in this block',rows.length],['Released learning materials',items.length],['Recorded material opens',submitted],['Completed materials',rows.reduce((n,r)=>n+r.completed,0)]]:[['Students in this block',rows.length],['Released assessments',items.length],['Submitted assessments',`${submitted}/${expected}`],['Average raw score',average===null?'—':`${average}%`]]}/>
-  {activity==='all'&&[...filtered.attempts,...filtered.accesses,...(filtered.sessions||[]),...(filtered.reading||[])].some(r=>r.is_test)&&<p className="text-sm text-muted mb-16" role="status">Includes labelled pipeline test activity. It does not establish independent student completion; use Activity records to view student activity only.</p>}
   {!material?<><ScoreCharts data={filtered} historyData={historyData}/><div className="academic-grid"><Panel title="Class average per assessment"><CoverageChart data={filtered}/></Panel><Panel title="Assessment submission rate"><CoverageChart data={filtered} completion/></Panel></div></>:<MaterialCharts data={filtered} rows={rows}/>}
   <div className="academic-filters monitoring-analytics-filters">
    <label className="academic-filter">Find enrolled student<input type="search" className="form-input" maxLength={200} value={query} onChange={e=>setQuery(e.target.value)} placeholder="Name, student number or email"/></label>
    <label className="academic-filter">Progress filter<select className="form-input" value={status} onChange={e=>setStatus(e.target.value)}><option value="all">All students in this block</option><option value="incomplete">Incomplete</option><option value="complete">Complete</option></select></label>
    <label className="academic-filter">From<input type="date" className="form-input" value={since} onChange={e=>setSince(e.target.value)}/></label><label className="academic-filter">Through<input type="date" className="form-input" value={until} onChange={e=>setUntil(e.target.value)}/></label>
-   <label className="academic-filter">Activity records<select className="form-input" value={activity} onChange={e=>setActivity(e.target.value)}><option value="all">All recorded activity</option><option value="student">Student activity only</option><option value="test">Pipeline tests only</option></select></label>
   </div>
   {since&&until&&since>until&&<p role="alert">The start date must be on or before the end date.</p>}
   <p className="text-sm text-muted mb-16">Charts cover this course block only. Date filters apply to recorded events; student search and progress filters apply to the list below. {material?'The reading average is confirmed sections divided by all released sections.':'The score average uses marked current-version results only; missing and unmarked assessments are excluded.'}</p>

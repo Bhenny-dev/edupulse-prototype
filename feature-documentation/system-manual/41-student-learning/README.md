@@ -39,7 +39,7 @@ Answer every practice question and select **Save practice attempt**. Objective p
 ![Student dashboard using recorded scores](07-student-dashboard.png)
 ![Assessment history and material-open records](08-student-performance.png)
 
-The dashboard average uses marked current-version instructor assessments, and mastered topics use saved mapped topic marks. Performance retains assessment history, raw scores, topic views and learning material access. Missing data remains explicit until an actual saved action exists. Pipeline test results retain their labels; they do not establish human comprehension or independent achievement.
+The dashboard average uses marked current-version instructor assessments, and mastered topics use saved mapped topic marks. Performance retains assessment history, raw scores, topic views and learning material access. Missing data remains explicit until an actual saved action exists. Test provenance remains in audit metadata rather than interface labels; they do not establish human comprehension or independent achievement.
 
 The current administrative allocation caps Years 1-3 at ten subjects each. Year 4 has its five recorded curriculum subjects. Recorded year, units, class ownership and the 35-student block maximum are retained. This supersedes the earlier five-to-ten-class instructor cap; instructors can now handle more classes. Historical unselected syllabus content and activity remain retained.
 
@@ -47,7 +47,7 @@ The current administrative allocation caps Years 1-3 at ten subjects each. Year 
 
 ![Admin student course view and persistent support banner](09-admin-controls.png)
 
-Select a student through the verified Admin account picker. The selected student learning pages provide material, assessment and practice actions directly; there is no additional checkbox or yellow demonstration panel. New opens, section confirmations, assessment sessions/responses and practice attempts use the selected student's current enrollment and release rules, remain **Pipeline test**, and record the Admin actor. Real student work cannot be relabelled or replaced by a demonstration. Instructor attempt limits and marking still apply.
+Select a student through the verified Admin account picker. The selected student learning pages provide material, assessment and practice actions directly; there is no additional checkbox or yellow demonstration panel. New opens, section confirmations, assessment sessions/responses and practice attempts use the selected student's current enrollment and release rules, retain their test flag in storage and record the Admin actor, without a visible test badge. Real student work cannot be relabelled or replaced by a demonstration. Instructor attempt limits and marking still apply.
 
 A reload restores the authorized course or reader without recreating an action. **Return to System Admin** exits. Ordinary students cannot enable an Admin delegation by posting a subject or actor ID; live Admin and selected-account verification remains on the database boundary.
 

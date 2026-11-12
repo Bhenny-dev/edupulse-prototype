@@ -4500,6 +4500,198 @@
       "reviewedAt": "2026-11-12T23:03:15.437814+00:00",
       "captureRun": "2026-11-12T23-02-10-432Z-bae815f3",
       "method": "Opened with view_image. Verified the selected content tabs, separate material/practice/official-assessment dialogs, continuous questions without wizard controls, existing results/marking, keyboard close and phone viewport. Final viewport captures were reopened after correcting full-page artifact framing. Synthetic UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/33-pipeline-progress/01-instructor-scores.png",
+      "sha256": "20a73ec0445dbf2c307572d587c5ba12ab08dd0a367f309a6dfee1e74d2d06ea",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T23:21:11.264798+00:00",
+      "captureRun": "2026-11-12T23-17-48-246Z-532e62a0",
+      "method": "Opened with view_image. Verified score, material-access, dashboard and monitoring displays retain useful data without test-origin labels or redundant Activity columns. Reviewed desktop and phone framing; wide phone tables retain their existing horizontal scrolling. Synthetic UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/33-pipeline-progress/02-instructor-opens.png",
+      "sha256": "426f7602ed07b9e622b42f0f03547d38d6721dea2f55473d512be40b3dc004ae",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T23:21:11.265453+00:00",
+      "captureRun": "2026-11-12T23-17-48-246Z-532e62a0",
+      "method": "Opened with view_image. Verified score, material-access, dashboard and monitoring displays retain useful data without test-origin labels or redundant Activity columns. Reviewed desktop and phone framing; wide phone tables retain their existing horizontal scrolling. Synthetic UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/33-pipeline-progress/03-student-score.png",
+      "sha256": "cd12b9ef6de079b746c4c0446e571c4479a23d3b1aff92a66fedc3db25b69339",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T23:21:11.266255+00:00",
+      "captureRun": "2026-11-12T23-17-48-246Z-532e62a0",
+      "method": "Opened with view_image. Verified score, material-access, dashboard and monitoring displays retain useful data without test-origin labels or redundant Activity columns. Reviewed desktop and phone framing; wide phone tables retain their existing horizontal scrolling. Synthetic UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/33-pipeline-progress/04-student-opens.png",
+      "sha256": "e43fcb86038f29a8853523135c31431e62b2c7691ef7336273b367029635b824",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T23:21:11.267396+00:00",
+      "captureRun": "2026-11-12T23-17-48-246Z-532e62a0",
+      "method": "Opened with view_image. Verified score, material-access, dashboard and monitoring displays retain useful data without test-origin labels or redundant Activity columns. Reviewed desktop and phone framing; wide phone tables retain their existing horizontal scrolling. Synthetic UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/33-pipeline-progress/05-mobile-instructor.png",
+      "sha256": "1862b7be3a027456476a521da60e24ccc5701314718d46a3483f6f07bcf1d715",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T23:21:11.268787+00:00",
+      "captureRun": "2026-11-12T23-17-48-246Z-532e62a0",
+      "method": "Opened with view_image. Verified score, material-access, dashboard and monitoring displays retain useful data without test-origin labels or redundant Activity columns. Reviewed desktop and phone framing; wide phone tables retain their existing horizontal scrolling. Synthetic UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/33-pipeline-progress/05-mobile-student.png",
+      "sha256": "2895b45081174944710a72ab0596104eb52a33b3bf7828e55513ae38dbc66e53",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T23:21:11.270147+00:00",
+      "captureRun": "2026-11-12T23-17-48-246Z-532e62a0",
+      "method": "Opened with view_image. Verified score, material-access, dashboard and monitoring displays retain useful data without test-origin labels or redundant Activity columns. Reviewed desktop and phone framing; wide phone tables retain their existing horizontal scrolling. Synthetic UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/33-pipeline-progress/08-student-attempts.png",
+      "sha256": "0bc19ccbe21d000ae2507083a25d70613edc7727df71691d0b593f6c6534cf0a",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T23:21:11.272005+00:00",
+      "captureRun": "2026-11-12T23-17-48-246Z-532e62a0",
+      "method": "Opened with view_image. Verified score, material-access, dashboard and monitoring displays retain useful data without test-origin labels or redundant Activity columns. Reviewed desktop and phone framing; wide phone tables retain their existing horizontal scrolling. Synthetic UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/33-pipeline-progress/09-student-dashboard.png",
+      "sha256": "9b9b613b25bef9242fbdcded94ca5c0bb3b5f53737396f1ebe36189677bc8db1",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T23:21:11.273565+00:00",
+      "captureRun": "2026-11-12T23-17-48-246Z-532e62a0",
+      "method": "Opened with view_image. Verified score, material-access, dashboard and monitoring displays retain useful data without test-origin labels or redundant Activity columns. Reviewed desktop and phone framing; wide phone tables retain their existing horizontal scrolling. Synthetic UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/33-pipeline-progress/10-instructor-dashboard.png",
+      "sha256": "653995ca040b9ccc7282b6adb1f79fddb072296489f1de29cef2a06a6d1a8b2a",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T23:21:11.275256+00:00",
+      "captureRun": "2026-11-12T23-17-48-246Z-532e62a0",
+      "method": "Opened with view_image. Verified score, material-access, dashboard and monitoring displays retain useful data without test-origin labels or redundant Activity columns. Reviewed desktop and phone framing; wide phone tables retain their existing horizontal scrolling. Synthetic UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/02-course-records.png",
+      "sha256": "b6d867b6438b79fe297ad85ce0211bc4c807c49cee80792c85a0c61820a5b0b4",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T23:21:11.276601+00:00",
+      "captureRun": "2026-11-12T23-18-25-049Z-b47f02dd",
+      "method": "Opened with view_image. Verified score, material-access, dashboard and monitoring displays retain useful data without test-origin labels or redundant Activity columns. Reviewed desktop and phone framing; wide phone tables retain their existing horizontal scrolling. Synthetic UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/03-course-loads.png",
+      "sha256": "4ff60ce7496d6d1073f31b5f7ed80fe6bfadc98bc7bb6f91d89f0ef21d4cbda0",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T23:21:11.278191+00:00",
+      "captureRun": "2026-11-12T23-18-25-049Z-b47f02dd",
+      "method": "Opened with view_image. Verified score, material-access, dashboard and monitoring displays retain useful data without test-origin labels or redundant Activity columns. Reviewed desktop and phone framing; wide phone tables retain their existing horizontal scrolling. Synthetic UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/05-instructors.png",
+      "sha256": "fffe9ba98613aa2d086a394997ac678ee4c32cbfc2f7c37da3c7741b056ffae6",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T23:21:11.279203+00:00",
+      "captureRun": "2026-11-12T23-18-25-049Z-b47f02dd",
+      "method": "Opened with view_image. Verified score, material-access, dashboard and monitoring displays retain useful data without test-origin labels or redundant Activity columns. Reviewed desktop and phone framing; wide phone tables retain their existing horizontal scrolling. Synthetic UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/06-instructor-detail.png",
+      "sha256": "5cc53a7a31ad2cbd62d9979e6ee64c61829b4f44cc579d6dfbf6d1fb45a3a2b9",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T23:21:11.279731+00:00",
+      "captureRun": "2026-11-12T23-18-25-049Z-b47f02dd",
+      "method": "Opened with view_image. Verified score, material-access, dashboard and monitoring displays retain useful data without test-origin labels or redundant Activity columns. Reviewed desktop and phone framing; wide phone tables retain their existing horizontal scrolling. Synthetic UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/08-block-students.png",
+      "sha256": "4113dcee60361610d7061df6387a744014f1755a77285c2d7a97ac21a121b2a7",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T23:21:11.280420+00:00",
+      "captureRun": "2026-11-12T23-18-25-049Z-b47f02dd",
+      "method": "Opened with view_image. Verified score, material-access, dashboard and monitoring displays retain useful data without test-origin labels or redundant Activity columns. Reviewed desktop and phone framing; wide phone tables retain their existing horizontal scrolling. Synthetic UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/mobile-02-course-records.png",
+      "sha256": "773d790fc1620490d502c817e32036b8b63524ee7c9dd44bc46806e3040716f6",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T23:21:11.281903+00:00",
+      "captureRun": "2026-11-12T23-18-25-049Z-b47f02dd",
+      "method": "Opened with view_image. Verified score, material-access, dashboard and monitoring displays retain useful data without test-origin labels or redundant Activity columns. Reviewed desktop and phone framing; wide phone tables retain their existing horizontal scrolling. Synthetic UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/mobile-03-course-loads.png",
+      "sha256": "7a833ef7cb946f453f9e6b7345a2c1ece6c17d87e7cde67852d897e7d4f348f0",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T23:21:11.283609+00:00",
+      "captureRun": "2026-11-12T23-18-25-049Z-b47f02dd",
+      "method": "Opened with view_image. Verified score, material-access, dashboard and monitoring displays retain useful data without test-origin labels or redundant Activity columns. Reviewed desktop and phone framing; wide phone tables retain their existing horizontal scrolling. Synthetic UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/mobile-05-instructors.png",
+      "sha256": "931df0056f79552896086293cbb354a5061bfdc0cf1a901a8a39db7f95aad714",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T23:21:11.285248+00:00",
+      "captureRun": "2026-11-12T23-18-25-049Z-b47f02dd",
+      "method": "Opened with view_image. Verified score, material-access, dashboard and monitoring displays retain useful data without test-origin labels or redundant Activity columns. Reviewed desktop and phone framing; wide phone tables retain their existing horizontal scrolling. Synthetic UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/mobile-06-instructor-detail.png",
+      "sha256": "102b819b23bcd495027dcf74e1cbd71bb19b822ee111878dfaf6df96b0dfa522",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T23:21:11.286481+00:00",
+      "captureRun": "2026-11-12T23-18-25-049Z-b47f02dd",
+      "method": "Opened with view_image. Verified score, material-access, dashboard and monitoring displays retain useful data without test-origin labels or redundant Activity columns. Reviewed desktop and phone framing; wide phone tables retain their existing horizontal scrolling. Synthetic UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/mobile-08-block-students.png",
+      "sha256": "17ef82d770420ceac03c204ece0e9348df4bc6b89d5fe10d850ec48aa259d380",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T23:21:11.287465+00:00",
+      "captureRun": "2026-11-12T23-18-25-049Z-b47f02dd",
+      "method": "Opened with view_image. Verified score, material-access, dashboard and monitoring displays retain useful data without test-origin labels or redundant Activity columns. Reviewed desktop and phone framing; wide phone tables retain their existing horizontal scrolling. Synthetic UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/03-assessment-overview.png",
+      "sha256": "10e14eb3e402c6ecb60b006c25e62eda25de520517922b3f0187aa88d692324e",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T23:21:11.288056+00:00",
+      "captureRun": "2026-11-12T23-18-05-242Z-9d193418",
+      "method": "Opened with view_image. Verified score, material-access, dashboard and monitoring displays retain useful data without test-origin labels or redundant Activity columns. Reviewed desktop and phone framing; wide phone tables retain their existing horizontal scrolling. Synthetic UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/06-material-overview.png",
+      "sha256": "db6f5a6d7841bf5f50da14d30e0476b4f922801b45a8b86180f112db26055d46",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T23:21:11.288666+00:00",
+      "captureRun": "2026-11-12T23-18-05-242Z-9d193418",
+      "method": "Opened with view_image. Verified score, material-access, dashboard and monitoring displays retain useful data without test-origin labels or redundant Activity columns. Reviewed desktop and phone framing; wide phone tables retain their existing horizontal scrolling. Synthetic UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/03-dean-and-associate-dean/08-course-records.png",
+      "sha256": "b6d867b6438b79fe297ad85ce0211bc4c807c49cee80792c85a0c61820a5b0b4",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T23:21:11.289775+00:00",
+      "captureRun": "2026-11-12T23-18-25-049Z-b47f02dd",
+      "method": "Opened with view_image. Verified score, material-access, dashboard and monitoring displays retain useful data without test-origin labels or redundant Activity columns. Reviewed desktop and phone framing; wide phone tables retain their existing horizontal scrolling. Synthetic UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/04-instructor/09-student-monitoring-assessment-scores.png",
+      "sha256": "10e14eb3e402c6ecb60b006c25e62eda25de520517922b3f0187aa88d692324e",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T23:21:11.290910+00:00",
+      "captureRun": "2026-11-12T23-18-05-242Z-9d193418",
+      "method": "Opened with view_image. Verified score, material-access, dashboard and monitoring displays retain useful data without test-origin labels or redundant Activity columns. Reviewed desktop and phone framing; wide phone tables retain their existing horizontal scrolling. Synthetic UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/04-instructor/10-student-monitoring-material-access.png",
+      "sha256": "db6f5a6d7841bf5f50da14d30e0476b4f922801b45a8b86180f112db26055d46",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T23:21:11.292229+00:00",
+      "captureRun": "2026-11-12T23-18-05-242Z-9d193418",
+      "method": "Opened with view_image. Verified score, material-access, dashboard and monitoring displays retain useful data without test-origin labels or redundant Activity columns. Reviewed desktop and phone framing; wide phone tables retain their existing horizontal scrolling. Synthetic UI evidence only."
     }
   ]
 }

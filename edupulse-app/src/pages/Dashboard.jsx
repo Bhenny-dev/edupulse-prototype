@@ -434,7 +434,7 @@ function InstructorDashboard({ model, actions = exportButton, status }) {
               </BarChart>
             </ResponsiveContainer>
           )}
-          {(model.snapshot.results||[]).length>0&&<div className="academic-table-wrap"><table className="data-table"><thead><tr><th>Course</th><th>Assessment</th><th>Average</th><th>Marked results</th></tr></thead><tbody>{model.snapshot.results.map(item=><tr key={item.id}><td data-label="Course">{item.course}</td><td data-label="Assessment">Week {item.week} · {item.title}{item.test&&<span className="text-sm text-muted"> · Includes pipeline test</span>}</td><td data-label="Average">{item.score}%</td><td data-label="Marked results">{item.marked}</td></tr>)}</tbody></table></div>}
+          {(model.snapshot.results||[]).length>0&&<div className="academic-table-wrap"><table className="data-table"><thead><tr><th>Course</th><th>Assessment</th><th>Average</th><th>Marked results</th></tr></thead><tbody>{model.snapshot.results.map(item=><tr key={item.id}><td data-label="Course">{item.course}</td><td data-label="Assessment">Week {item.week} · {item.title}</td><td data-label="Average">{item.score}%</td><td data-label="Marked results">{item.marked}</td></tr>)}</tbody></table></div>}
           </>}
         </div>
       </div>
@@ -661,7 +661,6 @@ function AccountDashboard() {
     </div>
   )
   const status = <>
-    {role==='student'&&data.attempts.some(a=>a.is_test)&&<p className="text-sm text-muted mb-16">Includes labelled Pipeline test / Admin demonstration results. These do not establish independent learner achievement.</p>}
     {error && <div role="alert" className="connected-pulse-warning">{error}</div>}
     {loading && !loaded && <section className="academic-loading" aria-label="Loading academic records"><p role="status" className="text-sm text-muted mb-16">Loading authorized academic records…</p><div aria-hidden="true"><div className="kpi-grid mb-24">{Array.from({ length: 4 }, (_, index) => <SkeletonKPI key={index} />)}</div><SkeletonTable rows={4} cols={4} /></div></section>}
     {loaded && !error && !data.courses.length && <div className="empty-state mb-24" role="status"><h2>No authorized academic records yet</h2><p>Instructors register confirmed class lists, activate an approved syllabus, review courseware and publish it. Students need a matching account email in the registered class list. Saved workspaces synchronize automatically.</p></div>}

@@ -60,3 +60,8 @@ test('legacy Dean links resolve to the new hubs while Program Coordinator import
  await page.goto('/#/records?tab=sections');await expect(page).toHaveURL(/#\/students$/)
  await page.goto('/#/performance');await expect(page.getByRole('heading',{name:'Performance',exact:true})).toBeVisible()
 })
+
+test('Dean record totals keep their values without test suffixes',async({page})=>{
+ const fixture=await deanRecordsUI(page);await page.goto('/#/records');await expect(page.getByRole('heading',{name:'Course records',exact:true})).toBeVisible();await expect(page.locator('.academic-portal')).not.toContainText(/pipeline test|\d+ test/i);expect(fixture.records.attempts.some(a=>a.is_test)).toBe(true)
+ await page.goto('/#/instructors');await expect(page.getByRole('button',{name:'View instructor Alex Sample Instructor',exact:true})).toBeVisible();await expect(page.locator('.academic-portal')).not.toContainText(/pipeline test|\d+ test/i)
+})

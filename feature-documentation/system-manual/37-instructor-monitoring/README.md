@@ -36,7 +36,7 @@ The summaries and charts use only this course block: assessment score radar, sav
 
 ![Student assessment rows](04-assessment-students.png)
 
-The student table shows accessed/started assessments, submitted assessments, the average and submission progress. Select a student to open the assessment breakdown, with each assessment's status, raw score, percentage and the final average at the end. Date and activity filters constrain recorded events. Student search/progress filters constrain the list, while charts continue to describe the selected block. Historical assessment starts without provenance are included only under all activity; labelled pipeline tests never establish independent student completion.
+The student table shows accessed/started assessments, submitted assessments, the average and submission progress. Select a student to open the assessment breakdown, with each assessment's status, raw score, percentage and the final average at the end. Date filters constrain recorded events. Student search/progress filters constrain the list, while charts continue to describe the selected block. The removed activity-origin selector no longer splits records by test provenance. Audit fields remain stored; scripted activity does not establish independent student completion.
 
 ![Assessment breakdown](05-assessment-breakdown.png)
 

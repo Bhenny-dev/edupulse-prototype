@@ -7,7 +7,7 @@ for(const scored of [1,2,3])test(`radar requires three distinct scored assessmen
  else{
   await expect(radar).toHaveAttribute('aria-label',/Interpretation 75%.*Limits 92%.*Interpretation 58%/)
   await page.reload();await expect(radar).toBeVisible()
-  await page.getByRole('combobox',{name:'Activity records',exact:true}).selectOption('student')
-  await expect(radar).toHaveCount(0)
+  await expect(page.getByRole('combobox',{name:'Activity records',exact:true})).toHaveCount(0)
+  await expect(radar).toBeVisible()
  }
 })

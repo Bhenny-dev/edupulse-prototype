@@ -174,3 +174,7 @@ Remove the shown Records up to date indicator, page-header projection export but
 ## Owner correction: course tabs and complete assessment dialogs - 13 November 2026
 
 Add All, Teaching Materials and Assessments to the selected student's course. Open delivered materials, official assessments and practice questions in separate page-sized dialogs using the existing modal layer. Every official question is in one continuous view; remove question wizard/Previous/Next controls. Do not regress keyboard close/focus, phone sizing, existing question formats, timers, deadlines, allowed attempts, grading or Admin attribution. Persist only authorized navigation references, resolve existing sessions from fresh records, and never replay an action on reload or store unsaved answers as navigation hints.
+
+## Owner correction: remove visible test indicators - 13 November 2026
+
+Remove Pipeline test/test suffixes and the Activity origin column from academic displays, dashboard/review labels and Dean totals. Remove the associated test-origin selector/notice. This supersedes the earlier requirement to show origin labels in those interfaces; preserve provenance in stored audit fields and Admin attribution, and do not rewrite test rows as independent learner work. Keep the same default saved rows, raw scores, dates, current/earlier version and marking status. Visible score CSVs match the reduced columns. Keep authorization, filtering by actual course/block/date, scoring and no-write navigation intact.

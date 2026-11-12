@@ -7,6 +7,7 @@
 | 2026-11-13 | [Registered syllabus sharing](versions/2026-11-13-syllabus-sharing/README.md) | Registered recipients, safe adoption and suspension before deletion. |
 | [13 November reference repair](versions/2026-11-13-reference-continuations/README.md) | Joined references, catalog discovery and privately indexed readable sources | See validation |
 
+| [13 November score label cleanup](versions/2026-11-13-score-label-cleanup/README.md) | Removed visible test indicators and Activity origin columns | See validation |
 | [13 November course dialogs](versions/2026-11-13-course-content-dialogs/README.md) | Content tabs, separate readers and all-question assessments | See validation |
 | [13 November academic header cleanup](versions/2026-11-13-academic-header-cleanup/README.md) | Removed routine ready/export controls and extra Admin checkbox | See validation |
 | [13 November student learning](versions/2026-11-13-student-learning/README.md) | Course caps, enrolled cards, practice progress and explicit Admin demonstrations | See validation |

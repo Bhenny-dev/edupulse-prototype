@@ -78,3 +78,7 @@ Pulse can answer from live authorized course, syllabus, roster and activity reco
 
 
 **November 11, 2026 ? outline source explanation.** In an instructor teaching document or assessment, select a passage and choose **Find source for selection**. The source-basis popover searches owned retained copies and highlights a real matching sentence, distinguishing exact wording from a related passage. **Explain in Pulse** supplies the selected generated passage and actual source excerpt to chat for explanation. It does not claim every generated detail is supported. Reload restores the read-only lookup; explanation requires an explicit click. See the desktop and phone captures in [Manual 31](../31-retained-syllabus-sources/README.md). Pulse workflow help now describes the single Contents field, shared week sections, two courseware groups and seven assessment formats; it no longer instructs users to choose teaching materials from the retired dropdown.
+
+## Assessment record labels
+
+Dean record guidance describes saved assessment attempts and material opens. It no longer instructs users to look for test-origin labels; audit metadata remains stored while score and access displays use neutral labels. See [the updated record views](../36-dean-activity-records/README.md).
