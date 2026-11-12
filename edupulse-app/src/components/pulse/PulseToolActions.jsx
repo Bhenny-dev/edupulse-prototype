@@ -11,6 +11,17 @@ function readable(value) {
   if (value && typeof value === 'object') return Object.entries(value).map(([key, field]) => `${key}:\n${readable(field)}`).join('\n\n')
   return '(not set)'
 }
+function outlineReview(before,after,side){
+  const names={ilos:'Learning outcomes',contents:'Contents',activities:'Teaching-learning activities',assessments:'Assessments',assessmentTypes:'Assessment types',resources:'References'}
+  return after.flatMap(row=>{
+    const old=before.find(value=>value.week===row.week)
+    return (row.sections||[row]).flatMap((section,index)=>{
+      const prior=row.sections?old?.sections?.find(value=>value.id===section.id):old
+      const changed=Object.keys(names).filter(key=>JSON.stringify(prior?.[key])!==JSON.stringify(section[key]))
+      return changed.length?[`Week ${row.week}${row.sections?` · Section ${index+1}`:''}\n`+changed.map(key=>`${names[key]}:\n${readable(side==='before'?prior?.[key]:section[key])}`).join('\n\n')]:[]
+    })
+  }).join('\n\n')||'No changes to the selected outline.'
+}
 function mergedPatch(editor, patch, operation) {
   if (operation !== 'append') return patch
   const result = {}
@@ -80,8 +91,8 @@ function EditorCard({ proposal, ctx }) {
     {(!patch || !baseline) && <div className="ai-actions"><button className="btn btn-secondary btn-sm" onClick={() => ctx.navigate('/syllabus?tab=builder')}>Open Syllabus Builder</button><button className="btn btn-primary btn-sm" disabled={busy} onClick={prepare}>{state === 'preparing' ? 'Preparing preview…' : 'Prepare edit preview'}</button></div>}
     {patch && baseline && <>
       {imported && !proposal.target && <><label className="form-label">Course for this syllabus<select className="form-input" value={course} onChange={event => setCourse(event.target.value)}><option value="">Choose a course</option>{ctx.catalog.map(item => <option key={item.code} value={item.code}>{item.code} — {item.title}</option>)}</select></label><label className="form-label">How to integrate sections<select className="form-input" value={operation} onChange={event => setOperation(event.target.value)}><option value="replace">Replace the selected sections</option><option value="append">Add to the selected sections</option></select></label></>}
-      <p className="pulse-action-note">{proposal.target ? 'Review the selected field below. A changed page invalidates this preview.' : 'Select the fields to apply. Replacing a section replaces its whole displayed list. A changed page invalidates this preview.'}</p>
-      {Object.keys(patch).filter(field => proposal.section === 'all' || !proposal.section || field === proposal.section).map(field => <details key={field} className="pulse-edit-preview" open={Object.keys(patch).length === 1}><summary><label><input type="checkbox" checked={chosen.includes(field)} onChange={event => setChosen(previous => event.target.checked ? [...previous, field] : previous.filter(key => key !== field))} /> {proposal.target?.label || labels[field] || field}</label></summary><strong>Before</strong><pre>{readable(proposal.target ? fieldValue(baseline.data, proposal.target.path) : baseline.data[field])}</pre><strong>Proposed</strong><pre>{readable(proposal.target ? fieldValue(patch, proposal.target.path) : mergedPatch(baseline, { [field]: patch[field] }, imported ? operation : 'replace')[field])}</pre></details>)}
+      <p className="pulse-action-note">{proposal.target ? 'Review the selected field below. A changed page invalidates this preview.' : 'Review the requested changes below. Targeted outline edits preserve other sections and shared links. A changed page invalidates this preview.'}</p>
+      {Object.keys(patch).filter(field => proposal.section === 'all' || !proposal.section || field === proposal.section).map(field => <details key={field} className="pulse-edit-preview" open={Object.keys(patch).length === 1}><summary><label><input type="checkbox" checked={chosen.includes(field)} onChange={event => setChosen(previous => event.target.checked ? [...previous, field] : previous.filter(key => key !== field))} /> {proposal.target?.label || labels[field] || field}</label></summary><strong>Before</strong><pre>{field==='courseOutline'&&!imported&&!proposal.target?outlineReview(baseline.data.courseOutline,patch.courseOutline,'before'):readable(proposal.target ? fieldValue(baseline.data, proposal.target.path) : baseline.data[field])}</pre><strong>Proposed</strong><pre>{field==='courseOutline'&&!imported&&!proposal.target?outlineReview(baseline.data.courseOutline,patch.courseOutline,'after'):readable(proposal.target ? fieldValue(patch, proposal.target.path) : mergedPatch(baseline, { [field]: patch[field] }, imported ? operation : 'replace')[field])}</pre></details>)}
       <div className="ai-actions"><button className="btn btn-primary btn-sm" disabled={busy || !chosen.length || imported && !proposal.target && !course} onClick={() => apply(true)}>{busy ? 'Saving…' : 'Confirm and save draft'}</button><button className="btn btn-secondary btn-sm" disabled={busy || !chosen.length || imported && !proposal.target && !course} onClick={() => apply(false)}>Apply to open form</button><button className="btn btn-ghost btn-sm" disabled={busy} onClick={prepare}>Refresh preview</button></div>
     </>}
     <button className="btn btn-ghost btn-sm" disabled={busy} onClick={() => { setState('cancelled'); ctx.finishTicket?.(proposal.ticketId, 'stopped') }}>Cancel edit</button>

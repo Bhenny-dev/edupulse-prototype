@@ -129,3 +129,7 @@ The Course Outline has multiline Contents, Teaching-Learning Activities and Asse
 ## Instructor dashboard and syllabus updates
 
 [Manual 36](../../system-manual/36-instructor-syllabi/README.md) shows course-labelled blocks, recorded assessment rows, the single history dialog, confirmed deletion and actual sender/recipient sharing. Its controlled account captures complement the preview role screens above. Short tables fit their containers; wide matrices scroll only when needed.
+
+### Targeted syllabus drafting
+
+Pulse resolves **Week 1 Section 1** against the mounted outline. Its review names the fields and shows their before/proposed content, including linked teaching weeks for shared sections. [Manual 38](../../system-manual/38-targeted-outline-edits/README.md) contains current desktop and phone captures. Generation does not save; explicit confirmation and revision checks remain required.

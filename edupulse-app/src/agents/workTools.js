@@ -5,6 +5,7 @@ export { ALL_FIELDS, DRAFT_REQUEST, WEB_REQUEST }
 export const EDIT_REQUEST = /make\s+(?:it|this|these|the.*?)\s+(?:more\s+)?(?:accurate|complete|correct)|\b(?:update|modify|change|revise|edit|fix|correct|adjust|improve|rewrite|rephrase|shorten|expand|simplify|polish|insert|append|replace|remove|delete|integrate|fill|record)\b/i
 export const ACTION_REQUEST = /\b(?:redirect|navigate|walkthrough|guide\s+me|walk\s+me|take\s+me|open|generate|create|draft|write|compose|fill|populate|complete|build|change|correct|adjust|rephrase|shorten|expand|simplify|polish|update|modify|revise|edit|fix|improve|accurate|complete|rewrite|insert|append|replace|remove|delete|integrate)\b/i
 export function sectionFor(text) {
+  if(/\b(?:week|wk)\.?\s*\d+\b/i.test(text)&&(/\bsections?\s*\d+/i.test(text)||!/course\s+(?:description|requirements?|polic(?:y|ies))|institutional context|program\s+outcomes?|grading\s+(?:system|policy|rules?)|online\s+references?|\bbooks?\b/i.test(text)))return 'courseOutline'
   if (ALL_FIELDS.test(text)) return 'all'
   for (const [field, pattern] of [
     ['courseDescription', /course\s+description|section\s*2/i], ['institutionalContext', /institutional context|vision|mission|core values|section\s*3/i], ['programOutcomes', /program\s+outcomes?|section\s*4/i],

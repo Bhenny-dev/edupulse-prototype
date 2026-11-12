@@ -1,6 +1,7 @@
 import {normalizeOutlineSections} from '../utils/outlineSections.js'
 import {outlineSectionSchema} from '../utils/outlineSectionSchema.js'
 import { z } from 'zod'
+import {resolveOutlineEdit,outlineEditPrompt,mergeOutlineEdits} from './outlineEdits.js'
 
 const textList = z.array(z.string().max(4000)).max(60)
 const referenceUrl = z.string().max(2000).refine(value => !value || /^https?:\/\//i.test(value) && z.url().safeParse(value).success, 'Use an HTTP or HTTPS source URL.')
@@ -31,6 +32,14 @@ export type EditorSnapshot = { instance: string; kind: EditorKind; label: string
 export function literalEdit(snapshot: EditorSnapshot, request: string, section = 'all') {
   const match = request.match(/\breplace\s+["“]([^"”]{1,500})["”]\s+with\s+["“]([^"”]{0,1000})["”]/i)
   if (!match) return null
+  const scope=resolveOutlineEdit({editor:snapshot,message:request,section,context:''})
+  if(scope){
+    const targets=outlineEditPrompt(snapshot,scope).targets
+    const visit=(value:unknown):unknown=>typeof value==='string'?value.split(match[1]!).join(match[2]!):Array.isArray(value)?value.map(visit):value
+    const result=mergeOutlineEdits({edits:targets.map(target=>({target:target.target,changes:Object.fromEntries(Object.entries(target.current).map(([key,value])=>[key,visit(value)]))}))},snapshot,scope)
+    if(result.error)throw new Error(result.error.details.join('; '))
+    return result.patch
+  }
   const allowed = snapshot.kind === 'syllabus' ? ['institutionalContext','programOutcomes','courseOutline','courseRequirements','gradingSystem','coursePolicy','books','onlineReferences'] : ['title','sections','questions']
   const visit = (value: unknown): unknown => typeof value === 'string' ? value.split(match[1]!).join(match[2]!) : Array.isArray(value) ? value.map(visit) : value && typeof value === 'object' ? Object.fromEntries(Object.entries(value).map(([key,item])=>[key, ['id','url','correctIndex','week','type','label'].includes(key)?item:visit(item)])) : value
   const patch = Object.fromEntries(allowed.filter(field=>(section==='all'||field===section)&&snapshot.data[field]!==undefined).flatMap(field=>{ const value=visit(snapshot.data[field]);return JSON.stringify(value)===JSON.stringify(snapshot.data[field])?[]:[[field,value]] }))

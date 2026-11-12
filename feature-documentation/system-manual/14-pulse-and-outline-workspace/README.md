@@ -89,3 +89,5 @@ Pulse keeps its compact bottom panel. Close it to use the full page. The outline
 ## Categorized selector panels
 
 The [current outline guide](../28-outline-selectors/README.md) shows multiple/shared week sections and seven assessment types. Contents is one multiline field per section, and the teaching-material selector is removed. Pulse targeting follows the selected section. Existing saved notes and examination weeks are preserved.
+
+For individual outline sections, name the week and section or target an editable field. The content review lists changed fields instead of presenting untouched weeks as replacements. See [targeted outline edits](../38-targeted-outline-edits/README.md).

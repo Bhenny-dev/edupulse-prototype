@@ -5,6 +5,8 @@
 | Folder | Covers | Contents |
 | --- | --- | --- |
 | [12 November instructor monitoring](versions/2026-11-12-instructor-monitoring/README.md) | Combined class rosters, assessment analytics and confirmed reading progress | See validation |
+
+| [12 November targeted outline edits](versions/2026-11-12-targeted-outline-edits/README.md) | Content-only section/field proposals with immutable IDs and atomic persistence | See validation |
 | [12 November CIT accounts](versions/2026-11-12-cit-accounts/README.md) | CIT-only active students and named support selection | See validation |
 | [12 November genuine records](versions/2026-11-12-genuine-records/README.md) | Demonstration cleanup and removal of Review Inbox | See validation |
 | [12 November builder header](versions/2026-11-12-builder-header/README.md) | Removed curriculum-outline loading button; retained import and drafting controls | See validation |

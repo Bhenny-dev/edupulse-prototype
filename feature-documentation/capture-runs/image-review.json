@@ -3476,6 +3476,54 @@
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-12T02:46:27.234016+00:00",
       "method": "Opened with view_image. Checked narrow table heading and CSV wrapping, roster-only rows, zero versus missing scores, and completed-material versus confirmed-section counts. This is not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/38-targeted-outline-edits/desktop-applied.png",
+      "sha256": "7d5bd1553aeccb98f6f9bb079d78654155c35672c84399ce741f96c042361250",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:42:00.507115+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/38-targeted-outline-edits/desktop-review.png",
+      "sha256": "2dbb28c7a133858214a19bf67e17dfcffdc04ba4071bfb3f2b0bbdd09ebc0beb",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:42:00.507115+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/38-targeted-outline-edits/mobile-applied.png",
+      "sha256": "6c259090e36b6ce37111ee80632f01118ebd2c2d440af48da04c7ed3bbca3b56",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:42:00.507115+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/38-targeted-outline-edits/mobile-review.png",
+      "sha256": "2ed220914c44ba6b956808a3752c43645ec2ceaa816154c8c9b910cc1696df82",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:42:00.507115+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/38-targeted-outline-edits/desktop-applied.png",
+      "sha256": "305ab08cf49fa198f590f8ac7e718af91978937e130dd102dc68268535e99a0f",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T03:01:00.604936+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/38-targeted-outline-edits/desktop-review.png",
+      "sha256": "c71194ee98f6169945c72c40d08aac6e95e92ffe51fb348f6fa152ef8ac91f58",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T03:01:00.604936+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/38-targeted-outline-edits/mobile-applied.png",
+      "sha256": "2580730c75349b48127eea19d5515ab077f39c86b2a73ad9217d233a6825756b",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T03:01:00.604936+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/38-targeted-outline-edits/desktop-applied.png",
+      "sha256": "0cce4f6ffe63acd0303d77353dfa6dede6937e65eefae1d6864e5711a4d0f3ec",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T03:11:50.877033+00:00"
     }
   ]
 }

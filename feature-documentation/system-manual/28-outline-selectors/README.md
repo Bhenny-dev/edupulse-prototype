@@ -21,3 +21,5 @@ The assessment reader also offers these seven response types for each question. 
 
 ![Instructor assessment formats](assessment-formats.png)
 ![Assessment formats on a phone](assessment-formats-mobile.png)
+
+Pulse can complete one existing section or field without regenerating its siblings. Shared section content updates every linked week; existing IDs and associations remain unchanged. [Manual 38](../38-targeted-outline-edits/README.md) shows explicit preview and placement.

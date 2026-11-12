@@ -223,3 +223,5 @@ System Admin account selection requires a named registered person. The former **
 ## Combined instructor monitoring
 
 Instructor navigation now has Dashboard, Syllabus, Course and Student Monitoring. Its former Performance link redirects to the combined class workspace. Student and Dean performance remain authorized. Restored nested class/student dialogs keep the child above the parent with keyboard focus. See [Manual 37](../../system-manual/37-instructor-monitoring/README.md).
+
+Pulse content reviews show changed outline fields by week and section. Existing review, cancel, form-placement and explicit save controls remain. [Targeted outline examples](../../system-manual/38-targeted-outline-edits/README.md) show the shared-section preview.

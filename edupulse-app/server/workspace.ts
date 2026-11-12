@@ -22,11 +22,11 @@ const intakeRow = z.record(z.string().max(80), z.string().max(500))
 const intake = z.object({ courses: z.array(intakeRow).max(1000), loads: z.array(intakeRow).max(1000), rosters: z.array(intakeRow).max(1000), history: z.array(z.object({ id: z.string().max(80), filename: z.string().max(255), kind: z.enum(['courses', 'loads', 'rosters']), importedAt: z.string().datetime(), created: z.number().int().nonnegative(), updated: z.number().int().nonnegative(), rejected: z.number().int().nonnegative() })).max(50) })
 export const workspaceData = z.object({ syllabi: z.array(syllabus).max(50), content: z.record(z.string().max(200), contentItem), registrations: z.array(z.record(z.string(), z.unknown())).max(200).default([]), intake: intake.optional(), acknowledgments:z.array(z.string().max(500)).max(200).optional(), enrollmentOverrides: z.array(z.object({ courseCode: z.string().min(1).max(80), studentEmail: z.email().max(254).toLowerCase(), excluded: z.boolean(), suspended:z.boolean().optional(),displayName:z.string().trim().min(1).max(200).optional(),studentRef:z.string().trim().max(80).optional(),yearLevel:z.number().int().min(1).max(4).optional(), blockSection: z.string().trim().min(1).max(80).optional() })).max(5000).optional() }).superRefine((value, ctx) => {
   if (Object.keys(value.content).length > 1000) ctx.addIssue({ code: 'custom', message: 'Workspace is limited to 1,000 courseware items.' })
-  for(const syllabus of value.syllabi){
+  for(const [syllabusIndex,syllabus] of value.syllabi.entries()){
    const shared=new Map<string,string>()
-   for(const row of syllabus.courseOutline){
-    if(new Set(row.sections?.map(section=>section.id)).size!==(row.sections?.length||0))ctx.addIssue({code:'custom',message:'Section IDs must be unique within a week.'})
-    for(const section of row.sections||[]){const serialized=JSON.stringify(section);if(shared.has(section.id)&&shared.get(section.id)!==serialized)ctx.addIssue({code:'custom',message:'A shared section must have the same content in every covered week.'});shared.set(section.id,serialized)}
+   for(const [weekIndex,row] of syllabus.courseOutline.entries()){
+    if(new Set(row.sections?.map(section=>section.id)).size!==(row.sections?.length||0))ctx.addIssue({code:'custom',path:['syllabi',syllabusIndex,'courseOutline',weekIndex,'sections'],message:'Section IDs must be unique within a week.'})
+    for(const [sectionIndex,section] of (row.sections||[]).entries()){const serialized=JSON.stringify(section);if(shared.has(section.id)&&shared.get(section.id)!==serialized)ctx.addIssue({code:'custom',path:['syllabi',syllabusIndex,'courseOutline',weekIndex,'sections',sectionIndex],message:'A shared section must have the same content in every covered week.'});shared.set(section.id,serialized)}
    }
   }
   if (new Set(value.syllabi.map(s => s.id)).size !== value.syllabi.length) ctx.addIssue({ code: 'custom', message: 'Syllabus IDs must be unique.' })
@@ -68,6 +68,9 @@ export async function readWorkspace(identity: Identity, known?: number): Promise
 
 export async function saveWorkspace(identity: Identity, input: z.infer<typeof workspaceInput>): Promise<WorkspaceSnapshot> {
   if (!['instructor', 'admin', 'dean', 'associate_dean'].includes(identity.role)) throw new ApiError(403, 'FORBIDDEN', 'An academic account is required to save an academic workspace.')
+  const validated=workspaceInput.safeParse(input)
+  if(!validated.success)throw new ApiError(400,'WORKSPACE_INVALID',validated.error.issues.slice(0,5).map(issue=>`${issue.path.join('.')}: ${issue.message}`).join('; '))
+  input=validated.data
   if (!identity.local && input.data.syllabi.some(s => s.sample)) throw new ApiError(400, 'SAMPLE_WORKSPACE', 'Copy sample syllabi as drafts before saving them to an account workspace.')
   const body = JSON.stringify(input.data)
   if (Buffer.byteLength(body) > WORKSPACE_BYTES) throw new ApiError(413, 'WORKSPACE_LIMIT', 'This workspace exceeds 3 MB. Export a backup and remove unused attachments before retrying.')

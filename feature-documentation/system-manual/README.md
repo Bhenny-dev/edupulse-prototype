@@ -89,3 +89,5 @@ The [baseline restoration](../versions/2026-10-28-baseline-workflows/README.md) 
 - [36 · Instructor dashboard, deletion and shared syllabi](36-instructor-syllabi/README.md)
 
 [Manual 37: Instructor monitoring](37-instructor-monitoring/README.md) combines course/block discovery, roster suspension/edit/removal, assessment analytics and versioned reading progress.
+
+[Manual 38: Targeted outline edits](38-targeted-outline-edits/README.md) covers section/field targets, shared links, strict validation and explicit persistence.

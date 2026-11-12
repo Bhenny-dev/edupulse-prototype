@@ -5,7 +5,7 @@ test('selected Research Methods course generates readable all-field proposal wit
   const requests: { operation: string; section: string; editor: { data: { courseTitle: string } } }[] = []
   await page.route('**/api/ai?action=operator', async route => {
     requests.push(route.request().postDataJSON())
-    await route.fulfill({ json: { patch: researchMethodsDraft, generated: true, requiresConfirmation: true, notes: ['Synthetic research fixture; instructor review required.'], sources: [{ title: 'Research methods — sample retrieved source', url: researchMethodsDraft.onlineReferences[0]!.url }] } })
+    await route.fulfill({ json: { patch: researchMethodsDraft, generated: true, requiresConfirmation: true, notes: ['Synthetic research fixture; instructor review required.'], sources: [{ title: 'Research methods â€” sample retrieved source', url: researchMethodsDraft.onlineReferences[0]!.url }] } })
   })
   await page.goto('/')
   await page.getByRole('button', { name: 'Instructor', exact: true }).click()
@@ -22,8 +22,8 @@ test('selected Research Methods course generates readable all-field proposal wit
   expect(requests[0]?.editor.data.courseTitle).toBe('Research Methods')
   expect(requests[0]?.section).toBe('all')
   await card.locator('details.pulse-edit-preview').filter({ hasText: 'Course outline' }).locator('summary').click()
-  await expect(card).toContainText('Teaching materials: Case Studies')
-  await expect(card).toContainText('Week 18')
+  await expect(card).toContainText('Research questions and evidence')
+  await expect(card).not.toContainText('retain every existing section ID')
   await expect(card).not.toContainText('Grounded 100%')
   await card.getByRole('button', { name: 'Apply to open form' }).click()
   await expect(panel).toContainText('Applied to the open form')

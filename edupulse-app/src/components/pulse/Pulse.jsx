@@ -337,7 +337,7 @@ export default function Pulse() {
     try { result = await requestOperator({
     operation: 'revise', message: proposal.request, viewRole: user?.role || 'guest', editor: proposal.editor, section: proposal.section || 'all', context: `Page: ${location.pathname}. Selected component: ${proposal.target?.label || focus?.label || ''}. ${proposal.scopeFields ? `Selected section fields: ${proposal.scopeFields.join(', ')}. Only these fields are selected.` : ''} ${proposal.target ? `Editable field path: ${proposal.target.path}. Only this field is selected; retain the surrounding array and other fields.` : ''}`,
     history: conversationWindow(messages, 10000).history.slice(-8).map(item => ({ ...item, content: item.content.slice(0, 3000) })),
-    attachments: editSources,referenceSyllabi:references,
+    attachments: editSources,referenceSyllabi:references,...(proposal.target?.path?{targetPath:proposal.target.path}:{}),
   }, signal,progress=>{lastProgress={...progress,references};previewed=previewEditorOutline(proposal.editor,{...lastProgress,phase:'working'},user?.role)})
       if(lastProgress)previewEditorOutline(proposal.editor,{...lastProgress,phase:'complete'},user?.role)
     }catch(error){if(lastProgress)try{previewEditorOutline(proposal.editor,{...lastProgress,phase:'stopped'},user?.role)}catch{/* The original editor may have unmounted. */}throw error}

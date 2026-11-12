@@ -1,5 +1,6 @@
 import { syllabusPatch, contentPatch, type EditorSnapshot } from './editorTools.js'
 import { ALL_FIELDS, DRAFT_REQUEST } from './skills.js'
+import {resolveOutlineEdit} from './outlineEdits.js'
 
 /** Some text models return a JSON Patch envelope. Translate only whole-field
  * replacements into inert data; never interpret arbitrary paths or operations. */
@@ -15,9 +16,9 @@ export function normalizeDraft(raw: unknown): unknown {
 }
 
 /** Shared by hosted and on-device planning. A model response is never a save. */
-type DraftInput = { editor: EditorSnapshot; message: string; section: string | null; context: string }
+type DraftInput = { editor: EditorSnapshot; message: string; section: string | null; context: string; targetPath?:string }
 export const wholeSyllabusDraft = (input: Omit<DraftInput, 'editor'> & { editor: EditorSnapshot | null }) => input.editor?.kind === 'syllabus' && DRAFT_REQUEST.test(input.message) && (!input.section || input.section === 'all') && !/Selected section fields:|Editable field path:/i.test(input.context) && (ALL_FIELDS.test(input.message) || /\bsyllabus\b/i.test(input.message))
-export const scheduledSyllabusDraft = (input: Omit<DraftInput, 'editor'> & { editor: EditorSnapshot | null }) => wholeSyllabusDraft(input) || input.editor?.kind === 'syllabus' && input.section === 'courseOutline' && DRAFT_REQUEST.test(input.message) && !/Editable field path:/i.test(input.context)
+export const scheduledSyllabusDraft = (input: Omit<DraftInput, 'editor'> & { editor: EditorSnapshot | null }) => !resolveOutlineEdit(input)&&(wholeSyllabusDraft(input) || input.editor?.kind === 'syllabus' && input.section === 'courseOutline' && DRAFT_REQUEST.test(input.message) && !/Editable field path:/i.test(input.context))
 export function validateDraft(raw: unknown, input: DraftInput, sources: string, options: { fields?: string[]; completeOutline?: boolean } = {}) {
   const shape = input.editor.kind === 'syllabus' ? syllabusPatch : contentPatch
   const parsed = shape.safeParse(normalizeDraft(raw))
@@ -45,8 +46,10 @@ export function validateDraft(raw: unknown, input: DraftInput, sources: string, 
       for (const old of before) {
         const row = patch.courseOutline.find(item => item.week === old.week)
         if (!row) { gaps.push(`retain week ${old.week}`); continue }
-        const protectedSections=old.sections?.filter(section=>old.sections!.length>1||before.some(other=>other.week!==old.week&&other.sections?.some(value=>value.id===section.id)))||[]
+        const protectedSections=old.sections||[]
         if(protectedSections.some(section=>!row.sections?.some(value=>value.id===section.id)))gaps.push(`retain every existing section ID in week ${old.week}`)
+        if(row.sections?.some(section=>!(old.sections?.length?old.sections:[{id:`week-${old.week}`}]).some(value=>value.id===section.id)))gaps.push(`week ${old.week}.sections: existing section IDs are immutable`)
+        if(new Set(row.sections?.map(section=>section.id)).size!==(row.sections?.length||0))gaps.push(`week ${old.week}.sections: duplicate section ID`)
         if (/examination/i.test(old.assessments || '') && !row.assessments?.includes(old.assessments!)) gaps.push(`preserve exam label for week ${old.week}`)
         if ((whole || options.completeOutline) && !/examination/i.test(old.assessments || '')) {
           const missing = [!row.ilos.trim() && 'ilos (a measurable learning outcome)', !row.contents.some(text => text.trim()) && 'contents', !row.activities?.trim() && 'activities', !row.assessments?.trim() && 'assessments', !row.assessmentTypes?.some(text => text.trim()) && 'assessmentTypes'].filter(Boolean)
@@ -55,6 +58,7 @@ export function validateDraft(raw: unknown, input: DraftInput, sources: string, 
       }
     } else if (whole && !patch.courseOutline.length) gaps.push('nonempty courseOutline')
   }
+  if('courseOutline' in patch){const shared=new Map<string,string>();for(const row of patch.courseOutline||[])for(const section of row.sections||[]){const text=JSON.stringify(section);if(shared.has(section.id)&&shared.get(section.id)!==text)gaps.push(`week ${row.week}.section ${section.id}: shared content must match every linked week`);shared.set(section.id,text)}}
   if (gaps.length) return issue('TOOL_OUTPUT_INCOMPLETE', gaps)
   const knownUrls = new Set((sources.match(/https?:\/\/[^\s"<>\\]+/g) || []).map(value => value.replace(/[),.;]+$/, '')))
   const unknownUrls = (value: unknown): boolean => {
