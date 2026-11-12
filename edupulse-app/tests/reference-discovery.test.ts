@@ -4,9 +4,11 @@ import {mkdtemp} from 'node:fs/promises'
 import {tmpdir} from 'node:os'
 import {join} from 'node:path'
 import {executeSources,retainedSourceEvidence} from '../server/sources/service.js'
-import {closeLocalDb} from '../server/database.js'
+import {closeLocalDb,localDb} from '../server/database.js'
 import type {Identity} from '../server/contracts.js'
 test('book discovery persists reusable catalog identity, excludes it from teaching evidence and permits a readable replacement',async()=>{
+ const keys=['VERCEL','AI_VECTOR_STORE','AI_DATA_DIR'] as const,previous=Object.fromEntries(keys.map(key=>[key,process.env[key]]))
+ delete process.env.VERCEL
  process.env.AI_VECTOR_STORE='local';process.env.AI_DATA_DIR=join(await mkdtemp(join(tmpdir(),'edupulse-citation-')),'db')
  const actor:Identity={id:'citation-owner',local:true,role:'instructor'},signal=new AbortController().signal
  const reference={kind:'book' as const,title:'Anderson, David R. (1019). Quantitative approaches to decision making',url:'',authors:'',year:'',publisher:''}
@@ -30,5 +32,12 @@ test('book discovery persists reusable catalog identity, excludes it from teachi
   assert.notEqual(retained.sources[0].metadataOnly,true)
   assert((await retainedSourceEvidence(actor,[reference],'quantitative approaches decision')).evidence.length)
   await assert.rejects(executeSources({...actor,id:'another-owner'},{operation:'review',id:row.snapshot.id},signal))
- }finally{await closeLocalDb()}
+ }finally{await closeLocalDb();for(const key of keys){if(previous[key]===undefined)delete process.env[key];else process.env[key]=previous[key]}}
+})
+
+test('serverless storage guard still rejects a local source database',async()=>{
+ const hosted=process.env.VERCEL
+ process.env.VERCEL='1'
+ try{await assert.rejects(localDb(),{code:'LOCAL_STORE_DISABLED'})}
+ finally{if(hosted===undefined)delete process.env.VERCEL;else process.env.VERCEL=hosted}
 })
