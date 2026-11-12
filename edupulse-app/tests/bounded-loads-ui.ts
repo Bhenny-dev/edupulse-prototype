@@ -9,7 +9,7 @@ export async function boundedLoadUI(page:Page){
  store.workspace.registrations=[];store.workspace.enrollmentOverrides=[]
  await monitoringUI(page,'instructor',store)
  await page.goto('/#/student-monitoring')
- await expect(page.locator('.academic-sync-status')).toContainText('Records up to date')
+ await expect(page.locator('.academic-sync-status')).toHaveAttribute('data-records-state','ready')
  await expect(page.locator('.monitoring-course-card')).toHaveCount(9)
  await expect(page.locator('.kpi-grid')).toContainText('150')
  await page.reload();await expect(page.locator('.monitoring-course-card')).toHaveCount(9)

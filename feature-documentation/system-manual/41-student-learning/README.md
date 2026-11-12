@@ -45,10 +45,12 @@ The current administrative allocation caps Years 1-3 at ten subjects each. Year 
 
 ## Try the student view as Admin
 
-![Explicit labelled Admin controls and persistent support banner](09-admin-controls.png)
+![Admin student course view and persistent support banner](09-admin-controls.png)
 
-Select a student through the verified Admin account picker. Reading and question preview require no learner write. To create activity, explicitly check **Enable Admin demonstration controls**. New opens, section confirmations, assessment sessions/responses and practice attempts use the selected student's current enrollment and release rules, remain **Pipeline test**, and record the Admin actor. Real student work cannot be relabelled or replaced by a demonstration. Instructor attempt limits and marking still apply.
+Select a student through the verified Admin account picker. The selected student learning pages provide material, assessment and practice actions directly; there is no additional checkbox or yellow demonstration panel. New opens, section confirmations, assessment sessions/responses and practice attempts use the selected student's current enrollment and release rules, remain **Pipeline test**, and record the Admin actor. Real student work cannot be relabelled or replaced by a demonstration. Instructor attempt limits and marking still apply.
 
-The checkbox resets after reload or leaving this page. A reload never recreates an action. **Return to System Admin** exits. Ordinary students cannot enable an Admin delegation by posting a subject or actor ID; live Admin and selected-account verification remains on the database boundary.
+A reload restores the authorized course or reader without recreating an action. **Return to System Admin** exits. Ordinary students cannot enable an Admin delegation by posting a subject or actor ID; live Admin and selected-account verification remains on the database boundary.
 
 The owner-authorized data exercise covers one enrolled approved course per student in Weeks 1-3, plus allowed labelled retakes where needed for topic examples. All Weeks 4-5 assessments remain untouched for manual testing. Independent learner completion is never claimed. [Release validation](../../versions/2026-11-13-student-learning/validation/results.md) records the current aggregate evidence.
+
+The routine **Records up to date** indicator and page-header **Export authorized records** / **Export** buttons have been removed across academic pages and signed-in dashboards. Loading/error/offline feedback and explicit **Refresh records** / **Retry connection** remain available when needed. Specific CSV downloads and the Settings workspace backup keep their existing purposes.

@@ -235,4 +235,4 @@ The System Admin top bar now contains **Dashboard**, **Dean**, **Program Coordin
 
 Academic dashboards load with authorized reads on entry and reload. **Refresh records**, when updates are available, also reads without replaying a workspace synchronization write. Confirmed saves retain their normal projection and readback.
 
-Student navigation now names **Practice Assessments**. A selected Admin student view offers explicit **Enable Admin demonstration controls** on its learning pages; ordinary reading remains preview-only and new actions are labelled/audited. The [current student guide](../../system-manual/41-student-learning/README.md) shows the updated navigation, course cards, phone layout and support controls.
+Student navigation now names **Practice Assessments**. A selected Admin student view offers learner actions directly without a demonstration checkbox or yellow panel; new actions remain labelled and audited. Academic headers omit the routine ready indicator and export button. The [current student guide](../../system-manual/41-student-learning/README.md) shows the updated navigation, course cards, phone layout and support controls.

@@ -7,6 +7,7 @@
 | 2026-11-13 | [Registered syllabus sharing](versions/2026-11-13-syllabus-sharing/README.md) | Registered recipients, safe adoption and suspension before deletion. |
 | [13 November reference repair](versions/2026-11-13-reference-continuations/README.md) | Joined references, catalog discovery and privately indexed readable sources | See validation |
 
+| [13 November academic header cleanup](versions/2026-11-13-academic-header-cleanup/README.md) | Removed routine ready/export controls and extra Admin checkbox | See validation |
 | [13 November student learning](versions/2026-11-13-student-learning/README.md) | Course caps, enrolled cards, practice progress and explicit Admin demonstrations | See validation |
 | [13 November bounded teaching loads](versions/2026-11-13-bounded-loads/README.md) | Actual 5-10 course/block allocations per instructor; history preserved | See validation |
 | [13 November dashboard fix](versions/2026-11-13-dashboard-readonly/README.md) | Read-only instructor/support dashboard startup, reload and refresh | See validation |

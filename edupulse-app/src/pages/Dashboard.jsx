@@ -655,15 +655,9 @@ function AccountDashboard() {
   const workspace = useWorkspace()
   const { data, error, loading, loaded } = useAcademicRecords()
   const role = user?.role
-  const exportRecords = () => {
-    const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }))
-    const link = document.createElement('a'); link.href = url; link.download = 'edupulse-authorized-records.json'; link.click()
-    setTimeout(() => URL.revokeObjectURL(url), 1000)
-  }
   const actions = (
     <div className="academic-actions">
       <AcademicSyncStatus />
-      <button className="btn btn-secondary btn-sm" disabled={loading || !loaded || !!error} onClick={exportRecords} title="Export authorized records"><Download size={14} /> Export</button>
     </div>
   )
   const status = <>

@@ -16,7 +16,7 @@ test('synthetic account search, filtered selection, student support view and sol
   await picker.screenshot({ path: `${folder}/02-filtered-account.png`, animations: 'disabled' })
   await picker.getByRole('button', { name: 'View Sam Example' }).click()
   await expect(page.locator('.support-view-banner')).toContainText('Sam Example')
-  await expect(page.locator('.academic-sync-status')).toContainText('Records up to date')
+  await expect(page.locator('.academic-sync-status')).toHaveAttribute('data-records-state','ready')
   await page.screenshot({ path: `${folder}/03-selected-student-view.png`, animations: 'disabled' })
   await page.getByRole('button', { name: 'Return to System Admin' }).click()
   await page.evaluate(() => localStorage.setItem('edupulse-dark-mode','true'))

@@ -38,7 +38,7 @@ A saved instructor membership decision is applied again during workspace project
 
 ## Cached records and deliberate refresh
 
-The owner's later cache instruction supersedes automatic timer/focus refresh. Records load once on account/view entry. Returning focus, connectivity or visibility retains the loaded snapshot and open reader. There is no polling reload. **Export** / **Export authorized records** remains available after records load.
+The owner's later cache instruction supersedes automatic timer/focus refresh. Records load once on account/view entry. Returning focus, connectivity or visibility retains the loaded snapshot and open reader. There is no polling reload. The routine ready indicator and page-header export buttons are removed.
 
 * Your own confirmed mutations still receive an authorized readback. One in-flight record read is shared; a mutation during that read invalidates its result and reads the newer projection. This preserves save/score/access correctness without replaying a business command.
 * Normal workspace saves still project their confirmed contents transactionally. An instructor's older clean cloud workspace is reconciled once after its initial load. Dirty edits, saves, conflicts and errors block reconciliation.
@@ -54,6 +54,6 @@ The first image now shows an authorized readback after a synthetic confirmed cha
 
 ![Loaded status and Export on a phone](mobile-04-dashboard.png)
 
-**Records up to date** records the last successful authorized read, rather than a guarantee that another tab has made no changes. Pending workspace edits, conflicts, errors, loading, offline and update-available states remain distinct. No student scores or completion are guessed. Refresh does not submit assessments, approve syllabi, publish material, send reminders or call a paid model.
+A successful authorized read no longer displays a routine ready indicator. Pending workspace edits, conflicts, errors, loading, offline and update-available states remain distinct. No student scores or completion are guessed. Refresh does not submit assessments, approve syllabi, publish material, send reminders or call a paid model.
 
 [Manual 27](../27-cached-workspaces/README.md) shows retained Course readers and deliberate refresh. The [original membership release validation](../../versions/2026-11-07-automatic-records-and-course-rosters/validation/results.md) remains historical evidence for roster persistence and access boundaries.

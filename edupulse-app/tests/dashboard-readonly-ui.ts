@@ -13,7 +13,7 @@ export async function readOnlyDashboard(page:Page,support=false){
  })
  await page.goto('/#/dashboard')
  if(support)await expect(page.locator('.support-view-banner')).toContainText('Rowan Instructor Demo')
- const ready=()=>expect(page.locator('.academic-sync-status')).toContainText('Records up to date')
+ const ready=()=>expect(page.locator('.academic-sync-status')).toHaveAttribute('data-records-state','ready')
  await ready();await expect(page.getByRole('heading',{name:'Instructor Dashboard',exact:true})).toBeVisible()
  await page.waitForLoadState('networkidle',{timeout:10000})
  expect(writes).toEqual([])

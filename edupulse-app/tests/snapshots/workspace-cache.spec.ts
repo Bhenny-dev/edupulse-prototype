@@ -11,7 +11,7 @@ test('workspace cache: retained course presentation and manual account refresh',
  await page.goto('/#/settings?tab=privacy');await expect(page.getByRole('button',{name:'Refresh workspace and records',exact:true})).toBeEnabled();await shot(page,'02-manual-refresh');await page.screenshot({path:'../feature-documentation/system-walkthrough/02-shared-interface/14-settings-data-and-privacy.png',animations:'disabled',fullPage:true,style:'.app-topbar{position:static !important}'})
 })
 test('workspace cache: another tab announces updates without applying them',async({page})=>{
- const fixture=await automaticRecordsUI(page);await page.goto('/#/dashboard');await expect(page.getByRole('status').filter({hasText:'Records up to date'})).toBeVisible();await page.waitForLoadState('networkidle')
+ const fixture=await automaticRecordsUI(page);await page.goto('/#/dashboard');await expect(page.locator('.academic-sync-status')).toHaveAttribute('data-records-state','ready');await page.waitForLoadState('networkidle')
  const before=fixture.counts().gets;await page.evaluate(()=>{const c=new BroadcastChannel('edupulse-records-fe67b9d2-719b-4b10-91cd-76031ab115fe');c.postMessage('invalidate');c.close()});await expect(page.getByText('Updates available',{exact:true})).toBeVisible();expect(fixture.counts().gets).toBe(before);await shot(page,'03-updates-available')
  const release=fixture.holdRead();try{await page.getByRole('button',{name:'Refresh records',exact:true}).click();await expect.poll(()=>fixture.counts().gets).toBeGreaterThan(before);await shot(page,'04-manual-read-pending')}finally{release()}
 })

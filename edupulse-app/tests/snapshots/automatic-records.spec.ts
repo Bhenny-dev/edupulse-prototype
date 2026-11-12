@@ -7,11 +7,11 @@ async function shot(page: Page, name: string, selector?: string) { await mkdir(r
 test('automatic records: saved roster CRUD and confirmation boundaries', async ({ page }) => { await rosterWorkflow(page, name => shot(page, name)) })
 test('automatic records: retained cache while updating and offline', async ({ page, context }) => {
   await page.clock.install(); const fixture = await automaticRecordsUI(page)
-  await page.goto('/#/dashboard'); await expect(page.getByRole('status').filter({ hasText: 'Records up to date' })).toBeVisible()
+  await page.goto('/#/dashboard'); await expect(page.locator('.academic-sync-status')).toHaveAttribute('data-records-state','ready')
   await page.waitForLoadState('networkidle')
   const start = fixture.counts().gets, release = fixture.holdRead()
   try { await page.evaluate(()=>window.dispatchEvent(new CustomEvent('edupulse-records-change',{detail:{action:'academic',operation:'readback'}}))); await expect.poll(() => fixture.counts().gets).toBeGreaterThan(start); await shot(page, '04-background-update') } finally { release() }
-  await expect(page.getByRole('status').filter({ hasText: 'Records up to date' })).toBeVisible()
+  await expect(page.locator('.academic-sync-status')).toHaveAttribute('data-records-state','ready')
   await page.evaluate(async () => { await document.fonts.ready }); await context.setOffline(true)
   try { await expect(page.getByRole('status').filter({ hasText: 'Offline' }).first()).toBeVisible(); await shot(page, '05-offline-cache') } finally { await context.setOffline(false) }
 })

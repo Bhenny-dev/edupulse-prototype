@@ -7,6 +7,6 @@ test('automatic records: mobile roster and solid dark surfaces', async ({ page }
   await rosterWorkflow(page, async name => { for(let i=0;i<10&&await page.locator('.toast').count();i++)await page.locator('.toast').first().click({timeout:1500}).catch(()=>{}); await page.screenshot({ path: `${root}/mobile-${name}.png`, scale:'css',animations: 'disabled' }); expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true) })
 })
 test('automatic records: mobile dashboard removes manual refresh and sync', async ({ page }) => {
-  await automaticRecordsUI(page); await page.goto('/#/dashboard'); await expect(page.getByRole('status').filter({ hasText: 'Records up to date' })).toBeVisible()
+  await automaticRecordsUI(page); await page.goto('/#/dashboard'); await expect(page.locator('.academic-sync-status')).toHaveAttribute('data-records-state','ready')
   await page.screenshot({ path: `${root}/mobile-04-dashboard.png`, scale:'css',animations: 'disabled' })
 })

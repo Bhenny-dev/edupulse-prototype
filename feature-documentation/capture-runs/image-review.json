@@ -4260,6 +4260,118 @@
       "reviewedAt": "2026-11-12T22:02:33.162061+00:00",
       "captureRun": "2026-11-12T22-02-02-369Z-7342734f",
       "method": "Opened final full-page image with view_image. Verified explicit checked Admin controls, instructor-labelled course, material/assessment actions, untouched quizzes and the full selected-student/Return to System Admin banner. Synthetic UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/21-automatic-records-and-course-rosters/04-background-update.png",
+      "sha256": "24074008435529d077ea7d210a5053ed29158562ba5d074459b195a12becfc6e",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T22:20:49.569016+00:00",
+      "captureRun": "2026-11-12T22-18-21-622Z-8d8263f7",
+      "method": "Opened with view_image. Verified removed routine ready/export controls on desktop/phone and removed Admin checkbox/panel, while course readers, practice progress, support attribution, and offline/update feedback remain. Synthetic UI evidence, not hosted sign-in or independent learner achievement."
+    },
+    {
+      "path": "feature-documentation/system-manual/21-automatic-records-and-course-rosters/05-offline-cache.png",
+      "sha256": "f158391b19595eda091dd626130a7dff94f54684ff251f5f054355b4cddc5901",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T22:20:49.570320+00:00",
+      "captureRun": "2026-11-12T22-18-21-622Z-8d8263f7",
+      "method": "Opened with view_image. Verified removed routine ready/export controls on desktop/phone and removed Admin checkbox/panel, while course readers, practice progress, support attribution, and offline/update feedback remain. Synthetic UI evidence, not hosted sign-in or independent learner achievement."
+    },
+    {
+      "path": "feature-documentation/system-manual/21-automatic-records-and-course-rosters/mobile-04-dashboard.png",
+      "sha256": "c5f79cb8238d3436f92443bd6a6251bd0ead74b9d33789cb3d6f5457d996e434",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T22:20:49.571032+00:00",
+      "captureRun": "2026-11-12T22-18-21-622Z-8d8263f7",
+      "method": "Opened with view_image. Verified removed routine ready/export controls on desktop/phone and removed Admin checkbox/panel, while course readers, practice progress, support attribution, and offline/update feedback remain. Synthetic UI evidence, not hosted sign-in or independent learner achievement."
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/10-read-only-dashboard.png",
+      "sha256": "28b57f3ef5896d52341ad6f1c1d51fa6ec3dcc4f983668ff894718f0d667a6ca",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T22:20:49.572037+00:00",
+      "captureRun": "2026-11-12T22-18-21-622Z-8d8263f7",
+      "method": "Opened with view_image. Verified removed routine ready/export controls on desktop/phone and removed Admin checkbox/panel, while course readers, practice progress, support attribution, and offline/update feedback remain. Synthetic UI evidence, not hosted sign-in or independent learner achievement."
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/11-support-dashboard.png",
+      "sha256": "f78d07f9ad88c971e2117a965161b61e2f0da7d6f75275adc6a82d9bed5ef18f",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T22:20:49.573589+00:00",
+      "captureRun": "2026-11-12T22-18-21-622Z-8d8263f7",
+      "method": "Opened with view_image. Verified removed routine ready/export controls on desktop/phone and removed Admin checkbox/panel, while course readers, practice progress, support attribution, and offline/update feedback remain. Synthetic UI evidence, not hosted sign-in or independent learner achievement."
+    },
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/01-course-cards.png",
+      "sha256": "bafada281b4f024c1902678a4ca3829bc3f09d00787c71efa80a46633883cc2b",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T22:20:49.574495+00:00",
+      "captureRun": "2026-11-12T22-18-21-622Z-8d8263f7",
+      "method": "Opened with view_image. Verified removed routine ready/export controls on desktop/phone and removed Admin checkbox/panel, while course readers, practice progress, support attribution, and offline/update feedback remain. Synthetic UI evidence, not hosted sign-in or independent learner achievement."
+    },
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/02-delivered-course.png",
+      "sha256": "1d3d11aef44cf02c4d38c5690846df9e02a26c799d2a4810b522e0b931c0f873",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T22:20:49.575725+00:00",
+      "captureRun": "2026-11-12T22-18-21-622Z-8d8263f7",
+      "method": "Opened with view_image. Verified removed routine ready/export controls on desktop/phone and removed Admin checkbox/panel, while course readers, practice progress, support attribution, and offline/update feedback remain. Synthetic UI evidence, not hosted sign-in or independent learner achievement."
+    },
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/03-material-reader.png",
+      "sha256": "2411199d0673439a7088018cb687c7897c9f0ec079dd94b30eb0ca6e33888a9a",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T22:20:49.577070+00:00",
+      "captureRun": "2026-11-12T22-18-21-622Z-8d8263f7",
+      "method": "Opened with view_image. Verified removed routine ready/export controls on desktop/phone and removed Admin checkbox/panel, while course readers, practice progress, support attribution, and offline/update feedback remain. Synthetic UI evidence, not hosted sign-in or independent learner achievement."
+    },
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/04-practice-questions.png",
+      "sha256": "8054f21db9d79524ad6d781c70d398c03555fb9e20ccd68aea43f850a82320d5",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T22:20:49.578376+00:00",
+      "captureRun": "2026-11-12T22-18-21-622Z-8d8263f7",
+      "method": "Opened with view_image. Verified removed routine ready/export controls on desktop/phone and removed Admin checkbox/panel, while course readers, practice progress, support attribution, and offline/update feedback remain. Synthetic UI evidence, not hosted sign-in or independent learner achievement."
+    },
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/05-practice-improvement.png",
+      "sha256": "c7c77b54cd66e38b1480fc8184ac9f14a995fb6564137862f5001af975a36656",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T22:20:49.579272+00:00",
+      "captureRun": "2026-11-12T22-18-21-622Z-8d8263f7",
+      "method": "Opened with view_image. Verified removed routine ready/export controls on desktop/phone and removed Admin checkbox/panel, while course readers, practice progress, support attribution, and offline/update feedback remain. Synthetic UI evidence, not hosted sign-in or independent learner achievement."
+    },
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/06-phone-courses.png",
+      "sha256": "13b6adf66e55c0ea7eca5a3924a74690ad7f04caa32bac4599ac6e81fa9607a7",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T22:20:49.580516+00:00",
+      "captureRun": "2026-11-12T22-18-21-622Z-8d8263f7",
+      "method": "Opened with view_image. Verified removed routine ready/export controls on desktop/phone and removed Admin checkbox/panel, while course readers, practice progress, support attribution, and offline/update feedback remain. Synthetic UI evidence, not hosted sign-in or independent learner achievement."
+    },
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/07-student-dashboard.png",
+      "sha256": "dc973546751e0421726e825f484ab87a4e3de0c7b6535c89abafc3a95b5386cd",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T22:20:49.581838+00:00",
+      "captureRun": "2026-11-12T22-18-21-622Z-8d8263f7",
+      "method": "Opened with view_image. Verified removed routine ready/export controls on desktop/phone and removed Admin checkbox/panel, while course readers, practice progress, support attribution, and offline/update feedback remain. Synthetic UI evidence, not hosted sign-in or independent learner achievement."
+    },
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/08-student-performance.png",
+      "sha256": "0b3d3c769760919ec989bfdcdc04acde6b40cc76bb9248b99773123841a3b586",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T22:20:49.582665+00:00",
+      "captureRun": "2026-11-12T22-18-21-622Z-8d8263f7",
+      "method": "Opened with view_image. Verified removed routine ready/export controls on desktop/phone and removed Admin checkbox/panel, while course readers, practice progress, support attribution, and offline/update feedback remain. Synthetic UI evidence, not hosted sign-in or independent learner achievement."
+    },
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/09-admin-controls.png",
+      "sha256": "135724ebd48642d20f6aae8c8bb49b698c35e1b7032d4cc347b55f6b03cddb07",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T22:20:49.584102+00:00",
+      "captureRun": "2026-11-12T22-18-21-622Z-8d8263f7",
+      "method": "Opened with view_image. Verified removed routine ready/export controls on desktop/phone and removed Admin checkbox/panel, while course readers, practice progress, support attribution, and offline/update feedback remain. Synthetic UI evidence, not hosted sign-in or independent learner achievement."
     }
   ]
 }

@@ -74,7 +74,7 @@ Released content and recorded progress exclude private instructor AI review meta
 
 The dashboard **Enrolled Courses** total includes pending assigned courses. Curriculum units/year/period appear on the course cards. **Awaiting release** distinguishes a pending assignment from an active course; it does not expose unpublished content or assert a score. The refreshed dashboard uses fictional presentation records. [Manual 38](../../system-manual/38-curriculum-population/README.md).
 
-Authenticated dashboard, Performance and explicit Admin demonstration controls are illustrated in [Manual 41](../../system-manual/41-student-learning/README.md). The remaining preview persona images are sample academic data.
+Authenticated dashboard, Performance and Admin student actions without a separate checkbox are illustrated in [Manual 41](../../system-manual/41-student-learning/README.md). The remaining preview persona images are sample academic data.
 
 ## Local preview course examples
 

@@ -32,7 +32,7 @@ test('a failed confirmed save preserves selection and is never replayed automati
 })
 test('focus, timers and reconnect preserve cached records until manual refresh',async({page,context})=>{
   await page.clock.install();const fixture=await automaticRecordsUI(page)
-  await page.goto('/#/dashboard');await expect(page.getByRole('status').filter({hasText:'Records up to date'})).toBeVisible();await page.waitForLoadState('networkidle')
+  await page.goto('/#/dashboard');await expect(page.locator('.academic-sync-status')).toHaveAttribute('data-records-state','ready');await page.waitForLoadState('networkidle')
   const before=fixture.counts().gets
   await page.clock.fastForward(601000);await page.evaluate(()=>{window.dispatchEvent(new Event('focus'));window.dispatchEvent(new Event('online'));document.dispatchEvent(new Event('visibilitychange'))})
   await context.setOffline(true);await expect(page.getByRole('status').filter({hasText:'Offline'}).first()).toBeVisible();await context.setOffline(false)
@@ -41,23 +41,23 @@ test('focus, timers and reconnect preserve cached records until manual refresh',
   await expect(page.getByText('Updates available',{exact:true})).toBeVisible();expect(fixture.counts().gets).toBe(before)
   const release=fixture.holdRead();await page.getByRole('button',{name:'Refresh records',exact:true}).click()
   await expect.poll(()=>fixture.counts().gets).toBe(before+1);await expect(page.getByText('Synthetic saved activity',{exact:true})).toBeVisible()
-  release();await expect(page.getByRole('status').filter({hasText:'Records up to date'})).toBeVisible();expect(fixture.counts().puts).toBe(0)
+  release();await expect(page.locator('.academic-sync-status')).toHaveAttribute('data-records-state','ready');expect(fixture.counts().puts).toBe(0)
 })
 test('failed reads retain cache and retry only on explicit action',async({page})=>{
   await page.clock.install();const fixture=await automaticRecordsUI(page)
-  await page.goto('/#/dashboard');await expect(page.getByRole('status').filter({hasText:'Records up to date'})).toBeVisible();await page.waitForLoadState('networkidle')
+  await page.goto('/#/dashboard');await expect(page.locator('.academic-sync-status')).toHaveAttribute('data-records-state','ready');await page.waitForLoadState('networkidle')
   fixture.failRead(true)
   await page.evaluate(()=>{const c=new BroadcastChannel('edupulse-records-fe67b9d2-719b-4b10-91cd-76031ab115fe');c.postMessage('invalidate');c.close()})
   await page.getByRole('button',{name:'Refresh records',exact:true}).click();await expect(page.getByRole('alert').filter({hasText:'Synthetic record connection unavailable'})).toBeVisible()
   const failed=fixture.counts().gets;await page.clock.fastForward(601000);expect(fixture.counts().gets).toBe(failed)
-  fixture.failRead(false);await page.getByRole('button',{name:'Retry connection',exact:true}).click();await expect(page.getByRole('status').filter({hasText:'Records up to date'})).toBeVisible()
+  fixture.failRead(false);await page.getByRole('button',{name:'Retry connection',exact:true}).click();await expect(page.locator('.academic-sync-status')).toHaveAttribute('data-records-state','ready')
   expect(fixture.counts().puts).toBe(0);expect(fixture.counts().business).toBe(0)
 })
 test('students cannot manage rosters and never run instructor reconciliation', async ({ page }) => {
   const fixture = await automaticRecordsUI(page, 'student'); await page.goto('/#/student-monitoring')
   await expect(page).toHaveURL(/dashboard/)
   await expect(page.getByRole('button', { name: 'Choose students', exact: true })).toHaveCount(0)
-  await expect(page.getByRole('status').filter({ hasText: 'Records up to date' })).toBeVisible()
+  await expect(page.locator('.academic-sync-status')).toHaveAttribute('data-records-state','ready')
   expect(fixture.counts().syncs).toBe(0); expect(fixture.counts().puts).toBe(0)
 })
 test('a delayed instructor read cannot populate the next admin role view', async ({ page }) => {
@@ -70,7 +70,7 @@ test('a delayed instructor read cannot populate the next admin role view', async
     await page.clock.fastForward(300)
     await page.getByRole('button', { name: `View ${name==='Instructor'?'Rowan Instructor Demo':'Alex Sample'}`, exact: true }).click()
   }
-  await switchView('Instructor'); await expect(page.getByRole('status').filter({ hasText: 'Records up to date' })).toBeVisible()
+  await switchView('Instructor'); await expect(page.locator('.academic-sync-status')).toHaveAttribute('data-records-state','ready')
   const before = fixture.counts().gets, release = fixture.holdRead()
   try {
     await page.evaluate(()=>window.dispatchEvent(new CustomEvent('edupulse-records-change',{detail:{action:'academic',operation:'test-readback'}}))); await expect.poll(() => fixture.counts().gets).toBeGreaterThan(before)
@@ -83,9 +83,9 @@ test('a delayed instructor read cannot populate the next admin role view', async
 })
 test('cross-tab invalidation carries no records and never crosses account channels', async ({ page }) => {
   await page.clock.install(); const fixture = await automaticRecordsUI(page)
-  await page.goto('/#/dashboard'); await expect(page.getByRole('status').filter({ hasText: 'Records up to date' })).toBeVisible()
+  await page.goto('/#/dashboard'); await expect(page.locator('.academic-sync-status')).toHaveAttribute('data-records-state','ready')
   await page.clock.fastForward(16000)
-  await expect(page.getByRole('status').filter({ hasText: 'Records up to date' })).toBeVisible()
+  await expect(page.locator('.academic-sync-status')).toHaveAttribute('data-records-state','ready')
   const before = fixture.counts().gets
   await page.evaluate(() => { const channel = new BroadcastChannel('edupulse-records-another-account'); channel.postMessage('invalidate'); channel.close() })
   expect(fixture.counts().gets).toBe(before)
