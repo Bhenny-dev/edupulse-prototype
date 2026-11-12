@@ -1,0 +1,15 @@
+import type {PopulationInput} from './population-plan.js'
+export const studentTenVersion='student-ten-courses-2026-11-13'
+export function tenSubjectLoads(input:PopulationInput){
+ const owners=input.owners.filter(o=>o.role==='instructor'),records=input.institutional.filter(r=>r.kind==='courses'),current=input.institutional.filter(r=>r.kind==='loads')
+ if(current.some(r=>!['cit-curriculum-loading-2026-11-12','instructor-5-10-course-blocks-2026-11-13',studentTenVersion].includes(r.data.AllocationSource)))throw Error('Unrelated confirmed load must be reviewed')
+ const candidates=records.flatMap(r=>{const options=owners.flatMap(o=>o.workspace.data.syllabi.filter((s:any)=>s.courseCode===r.data.CourseCode&&s.status!=='archived').map((s:any)=>({owner:o,syllabus:s}))).sort((a,b)=>Number(b.syllabus.status==='active')-Number(a.syllabus.status==='active')||a.owner.name.localeCompare(b.owner.name));return options.length?[{...r.data,...options[0],year:Number(r.data.YearLevel)}]:[]})
+ const blocks=[...new Set(input.institutional.filter(r=>r.kind==='rosters'&&!['inactive','withdrawn'].includes(r.data.Status)).map(r=>r.data.Block))].sort(),loads:Record<string,string>[]=[]
+ for(const Block of blocks){const roster=input.institutional.filter(r=>r.kind==='rosters'&&r.data.Block===Block),years=new Set(roster.map(r=>Number(r.data.YearLevel)));if(years.size!==1)throw Error('Mixed block year');const year=[...years][0]
+ const selected=candidates.filter(c=>c.year===year).sort((a,b)=>Number(b.syllabus.status==='active')-Number(a.syllabus.status==='active')||Number(Boolean(b.syllabus.teachingSetRole))-Number(Boolean(a.syllabus.teachingSetRole))||Number(current.some(r=>r.data.Block===Block&&r.data.CourseCode===b.CourseCode))-Number(current.some(r=>r.data.Block===Block&&r.data.CourseCode===a.CourseCode))||String(a.CourseCode).localeCompare(String(b.CourseCode))).slice(0,10)
+ if(selected.length<5||!selected.some(c=>c.syllabus.status==='active'))throw Error('Ten curriculum courses including approved delivery required for every block')
+ for(const c of selected){const prior=current.find(r=>r.data.CourseCode===c.CourseCode&&r.data.Block===Block),priorOwner=owners.find(o=>o.id===prior?.data.InstructorID),owner=priorOwner&&priorOwner.workspace.data.syllabi.some((s:any)=>s.courseCode===c.CourseCode&&s.status==='active')?priorOwner:c.owner;loads.push({InstructorID:owner.id,InstructorName:owner.name,CourseCode:String(c.CourseCode),Block,Semester:String(c.Semester),Units:String(c.Units),YearLevel:String(year),AcademicYear:c.syllabus.courseInfo?.academicYear||'2026-2027',AllocationSource:studentTenVersion})}
+ }
+ const keys=loads.map(l=>[l.CourseCode,l.Block,l.Semester].join('|')).sort()
+ return {loads,keys,summary:{before:current.length,after:loads.length,blocks:blocks.length,students:input.students.length,maximumSubjectsPerStudent:10,yearFourRecordedSubjects:5,instructors:owners.filter(o=>loads.some(l=>l.InstructorID===o.id)).map(o=>({id:o.id,name:o.name,courseBlocks:loads.filter(l=>l.InstructorID===o.id).length,courses:new Set(loads.filter(l=>l.InstructorID===o.id).map(l=>l.CourseCode)).size}))}}
+}

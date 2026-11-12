@@ -11,7 +11,7 @@ const digest=(value:string)=>createHash('sha256').update(value).digest('hex').sl
 
 /** Owner-authorized assignments. No invented qualifications, approvals or learner activity. */
 export function populationPlan(input:PopulationInput){
- if(input.institutional.some(r=>r.kind==='loads'&&r.data.AllocationSource==='instructor-5-10-course-blocks-2026-11-13'))throw new Error('Bounded instructor allocations exist; do not expand every curriculum course across every block. Use the bounded teaching-load planner.')
+ if(input.institutional.some(r=>r.kind==='loads'&&['instructor-5-10-course-blocks-2026-11-13','student-ten-courses-2026-11-13'].includes(r.data.AllocationSource)))throw new Error('Bounded instructor allocations exist; do not expand every curriculum course across every block. Use the bounded teaching-load planner.')
  const students=[...input.students].sort((a,b)=>a.year_level-b.year_level||a.student_number.localeCompare(b.student_number))
  if(new Set(students.map(s=>s.email)).size!==students.length)throw new Error('Duplicate active student email')
  const owners=structuredClone(input.owners.filter(o=>o.role==='instructor')).sort((a,b)=>a.name.localeCompare(b.name))

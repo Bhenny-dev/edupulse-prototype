@@ -36,3 +36,7 @@ The allocation command defaults to a private dry run and supports rollback valid
 The owner then requested direct authoring before provider-dependent generation. [Manual 39](../39-authored-weeks/README.md) explains the original Weeks 1–5 packs and review disclosures. Preparing drafts does not activate a syllabus, publish material or generate learner activity.
 
 The current allocation has 64 teaching classes and 1,962 memberships across all 417 students. Every student retains at least one approved course; unassigned curriculum classes are not invented to fill counts. [Current workload validation](../../versions/2026-11-13-bounded-loads/validation/results.md) supersedes the initial 239-load population totals. The original all-block command refuses to overwrite this bounded allocation.
+
+## Later student-course correction
+
+The owner subsequently relaxed the instructor class ceiling in favour of at most ten subjects per student. Years 1-3 have ten recorded subjects each; Year 4 has the five subjects in the recorded curriculum. Existing approved instructor/block ownership and the class-size limit are preserved. This supersedes the earlier 64-class allocation. [Current learning guide](../41-student-learning/README.md) and [validation](../../versions/2026-11-13-student-learning/validation/results.md) describe the implemented state.

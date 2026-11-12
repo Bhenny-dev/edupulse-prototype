@@ -1,0 +1,32 @@
+{
+  "allScriptedLabelled": true,
+  "attempts": 1725,
+  "courseCounts": [
+    {
+      "students": 131,
+      "subjects": 10,
+      "year_level": 1
+    },
+    {
+      "students": 157,
+      "subjects": 10,
+      "year_level": 2
+    },
+    {
+      "students": 82,
+      "subjects": 10,
+      "year_level": 3
+    },
+    {
+      "students": 47,
+      "subjects": 5,
+      "year_level": 4
+    }
+  ],
+  "laterAssessmentActions": 0,
+  "opens": 3360,
+  "reading": 3360,
+  "scoredStudents": 417,
+  "students": 417,
+  "studentsWithHighResult": 417
+}

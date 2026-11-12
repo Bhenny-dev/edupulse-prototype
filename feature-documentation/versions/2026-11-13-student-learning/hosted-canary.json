@@ -1,0 +1,12 @@
+{
+  "checks": [
+    "verified Admin delegation",
+    "labelled assessment start/respond",
+    "Admin actor/claim restoration",
+    "practice key secrecy",
+    "independent practice score 3/3"
+  ],
+  "rolledBack": true,
+  "noPersistedLearnerWrites": true,
+  "paidInference": false
+}

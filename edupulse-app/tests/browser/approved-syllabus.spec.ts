@@ -57,7 +57,7 @@ test('missing identity or outline cannot be selected and students have no intake
 })
 
 test('students cannot upload or select an approved syllabus',async({page})=>{
- await approvedIntakeUI(page,'student');await page.goto('/#/courseware');await expect(page.getByRole('heading',{name:'Published Courseware',exact:true})).toBeVisible();await expect(page.getByRole('link',{name:'Upload syllabi',exact:true})).toHaveCount(0)
+ await approvedIntakeUI(page,'student');await page.goto('/#/courseware');await expect(page.getByRole('heading',{name:'My Courses',exact:true})).toBeVisible();await expect(page.getByRole('link',{name:'Upload syllabi',exact:true})).toHaveCount(0)
  await page.goto('/#/syllabus?tab=mine&upload=approved');await expect(page).toHaveURL(/dashboard/)
 })
 

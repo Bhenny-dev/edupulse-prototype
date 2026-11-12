@@ -25,14 +25,14 @@ export default function AcademicLibrary({ data, assessments = false, onOpen, bus
   }) : <Empty>No enrolled courses yet.</Empty>}</Panel></>
 }
 
-export function OpenedPublication({ selected, data, isStudent, answers, setAnswers, result, session, busy, onClose, onSubmit, onRetake }) {
+export function OpenedPublication({ adminTest=false, selected, data, isStudent, answers, setAnswers, result, session, busy, onClose, onSubmit, onRetake }) {
   const {command}=useAcademicRecords()
   const [mode,setMode]=useWorkspaceViewState(`publication:${selected.id}:mode`,'document')
   const [activeQuestion,setActiveQuestion]=useState(0),[now,setNow]=useState(Date.now()),[appeal,setAppeal]=useState(''),[message,setMessage]=useState(''),[error,setError]=useState('')
   const [appealing,setAppealing]=useState(false),[confirming,setConfirming]=useState(false),[readingError,setReadingError]=useState('')
   const live=useRef(true);useEffect(()=>{live.current=true;return()=>{live.current=false}},[])
   const progress=(data.reading||[]).find(p=>p.publication_id===selected.id&&String(p.source_version)===String(selected.source_version))
-  const confirmSection=async section=>{if(confirming)return;setConfirming(true);setReadingError('');try{await command({operation:'read-section',publication:selected.id,version:selected.source_version,section})}catch(failure){if(live.current)setReadingError(failure.message)}finally{if(live.current)setConfirming(false)}}
+  const confirmSection=async section=>{if(confirming)return;setConfirming(true);setReadingError('');try{await command({operation:'read-section',publication:selected.id,version:selected.source_version,section,...(adminTest?{adminTest:true}:{})})}catch(failure){if(live.current)setReadingError(failure.message)}finally{if(live.current)setConfirming(false)}}
   const reading=isStudent&&selected.type!=='assessment'&&Array.isArray(selected.content?.sections)&&selected.content.sections.length?{read:progress?.sections_read||0,total:selected.content.sections.length,busy:confirming,confirm:confirmSection}:null
   const questionsRef=useRef([])
   const latest=studentAttempt(data,selected)

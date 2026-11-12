@@ -1,6 +1,6 @@
 # 05 · Student
 
-Main tabs: **Dashboard**, **My Courses**, **Assessments**, **Performance**. Students see only what is published to their block, and Pulse guides them without answering assessment items. Shown as the preview student Bhenny Benlor D. Rivera (BSIT-3A).
+Main tabs: **Dashboard**, **My Courses**, **Practice Assessments**, **Performance**. Students see only what is published to their block, and Pulse guides them without answering assessment items. Shown as the preview student Bhenny Benlor D. Rivera (BSIT-3A).
 
 The refreshed Performance captures explicitly display **Sample performance data · Preview only · Institutional grades remain in EduSuite.** The preview scores are examples. Signed-in students use the [authenticated records view](../08-authenticated-records/README.md) for their own saved attempts and enrolled publications. Empty accounts show **No authorized academic records yet**; these preview screenshots are separate evidence.
 
@@ -19,17 +19,15 @@ Signed-in student accounts see this same dashboard filled from their own enrolle
 
 ## 2. My Courses
 
-![My materials](02-my-materials.png)
+![Authenticated course cards and instructor labels](../../system-manual/41-student-learning/01-course-cards.png)
 
-The preview student's enrolled courses that have an active syllabus, with the number of published items and teaching weeks, appear in one list. **View** opens published weekly materials; until an instructor publishes, the row reads *No materials yet*. There are no generation actions in this student view. Signed-in student readers continue to use the enrolled-publication view described in the account guide.
+Authenticated students see enrollment summary cards and their own course cards, labelled with the handling instructor and recorded curriculum metadata. Selecting a card opens that course's delivered materials and assessments. Material reading is usable while its first-open recording saves. Pending subjects show assignment status without draft content. [Manual 41](../../system-manual/41-student-learning/README.md#open-an-enrolled-course) documents reading and reload.
 
-*Changed in v0.4.0:* the list is limited to the courses on the student's EduSuite enrolment, matching the dashboard's *Enrolled Courses*; it previously listed every active syllabus in the workspace.
+## 3. Practice Assessments
 
-## 3. My Courses · My Assessments
+![Repeatable practice and instructor baseline](../../system-manual/41-student-learning/05-practice-improvement.png)
 
-![My assessments](03-my-assessments.png)
-
-Published quizzes and activities with points, time limit, number of questions and due date. An assessment past its due date carries a red **Overdue** tag beside its **Quiz** or **Activity** tag (all three here); the cards no longer have a coloured edge. **Start** opens an assessment; a completed one shows the last score and **Retry** when retakes are allowed.
+**Practice Assessments** replaces the former navigation label. It shows summary cards, saved instructor results, available instructor assessments, and separately scored practice generated from delivered reading through the account's connected AI provider. Practice can be retaken and compared with the marked same-week instructor baseline; it does not change official assessment results or topic mastery. [Manual 41](../../system-manual/41-student-learning/README.md#practice-assessments) shows generation, attempts and progress.
 
 ## 4–7. My Performance
 
@@ -75,3 +73,12 @@ Released content and recorded progress exclude private instructor AI review meta
 ## All assigned courses
 
 The dashboard **Enrolled Courses** total includes pending assigned courses. Curriculum units/year/period appear on the course cards. **Awaiting release** distinguishes a pending assignment from an active course; it does not expose unpublished content or assert a score. The refreshed dashboard uses fictional presentation records. [Manual 38](../../system-manual/38-curriculum-population/README.md).
+
+Authenticated dashboard, Performance and explicit Admin demonstration controls are illustrated in [Manual 41](../../system-manual/41-student-learning/README.md). The remaining preview persona images are sample academic data.
+
+## Local preview course examples
+
+The local preview persona retains its sample material and timed-assessment lists. These images illustrate sample content; authenticated student enrollment cards and independent practice use Manual 41 above.
+
+![Local preview material list with sample courses](02-my-materials.png)
+![Local preview assessment list with sample deadlines](03-my-assessments.png)

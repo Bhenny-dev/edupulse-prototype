@@ -25,7 +25,7 @@ function AnimatedNumber({ value, suffix = '' }) {
   const ref = useRef(null)
   useEffect(() => {
     const numVal = typeof value === 'string' ? parseInt(value) : value
-    if (isNaN(numVal)) { setDisplay(value); return }
+    if (isNaN(numVal)||window.matchMedia('(prefers-reduced-motion: reduce)').matches) { setDisplay(value); return }
     let start = 0
     const duration = 800
     const startTime = Date.now()
@@ -667,6 +667,7 @@ function AccountDashboard() {
     </div>
   )
   const status = <>
+    {role==='student'&&data.attempts.some(a=>a.is_test)&&<p className="text-sm text-muted mb-16">Includes labelled Pipeline test / Admin demonstration results. These do not establish independent learner achievement.</p>}
     {error && <div role="alert" className="connected-pulse-warning">{error}</div>}
     {loading && !loaded && <section className="academic-loading" aria-label="Loading academic records"><p role="status" className="text-sm text-muted mb-16">Loading authorized academic records…</p><div aria-hidden="true"><div className="kpi-grid mb-24">{Array.from({ length: 4 }, (_, index) => <SkeletonKPI key={index} />)}</div><SkeletonTable rows={4} cols={4} /></div></section>}
     {loaded && !error && !data.courses.length && <div className="empty-state mb-24" role="status"><h2>No authorized academic records yet</h2><p>Instructors register confirmed class lists, activate an approved syllabus, review courseware and publish it. Students need a matching account email in the registered class list. Saved workspaces synchronize automatically.</p></div>}

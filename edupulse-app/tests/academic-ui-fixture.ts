@@ -10,6 +10,7 @@ export async function academicUI(page: Page, respond: () => Promise<{status?:num
   if(action==='academic'){if(route.request().method()==='POST'&&route.request().postDataJSON()?.operation==='sync')return route.fulfill({json:{synced:true}});const result=await respond();return route.fulfill(result)}
   if(action==='syllabi'&&route.request().postDataJSON()?.operation==='list')return route.fulfill({json:{shares:[]}})
   if(action==='workspace')return route.fulfill({json:{revision:0,data:null,mode:'cloud'}})
+  if(action==='practice'&&route.request().method()==='POST'&&route.request().postDataJSON()?.operation==='list')return route.fulfill({json:{sets:[],attempts:[]}})
   if(action==='documents')return route.fulfill({json:{documents:[]}})
   if(action==='audit')return route.fulfill({json:{saved:true}})
   return route.fallback()

@@ -1,0 +1,54 @@
+# 41 - Student courses, practice and Admin demonstrations
+
+These screenshots use fictional student records, controlled provider/API responses and the production interface. Hosted database checks and saved aggregate records are reported separately. No image proves independent student achievement or paid inference.
+
+## Open an enrolled course
+
+![Course summaries and instructor-labelled card](01-course-cards.png)
+
+**My Courses** starts with **Enrolled courses**, **Delivered materials**, **Delivered assessments** and **Materials opened**. **Search enrolled courses** matches course code, title or handling instructor. Cards show the course, instructor, recorded units/year/semester and delivery status. Only current authorized assignments appear; pending assignments do not expose draft files.
+
+![Weekly teaching and assessment items in a selected course](02-delivered-course.png)
+
+Select a course card. The course header identifies its instructor. Its weekly published materials and instructor assessments have **Open material** and **Open assessment** actions. **Back to My Courses** returns to the cards. The selected authorized course restores after reload; course selection never records an open or starts an attempt.
+
+![The material reader and section confirmations](03-material-reader.png)
+
+Materials become readable immediately while the explicit first-open record saves. A recording failure is shown without replacing the readable document with a pending screen. **Document** and **Presentation** remain available. Confirm reading sections in order using their confirmation buttons; an open alone never marks a document finished. Reload restores the reader without replaying opens or confirmations.
+
+Instructor assessments retain duration, deadline, question navigation, supported response formats, saved results, allowed retakes and instructor marking. Written responses can remain **Awaiting marking**; missing marks cannot become zero. These are recorded raw scores, not institutional grades.
+
+## Practice Assessments
+
+![Independent practice questions and instructor baseline](04-practice-questions.png)
+
+The former Assessments navigation is **Practice Assessments**. Summary cards report instructor assessments taken, practice sets, practice attempts and practice average. Saved instructor assessment results provide the baseline; pending written results remain pending. Untaken delivered instructor assessments remain accessible.
+
+In **Advanced reading practice**, choose **Reading material** and select **Generate advanced practice with AI**. Generation uses the current account's connected provider and reading already delivered to this enrollment, including later-week reading available before its instructor assessment. It creates new application questions; private or unreleased instructor assessment questions and keys are never read. Missing provider access or invalid model output shows an explicit error rather than invented questions. This generation is explicit and is never replayed on reload.
+
+Answer every practice question and select **Save practice attempt**. Objective practice is scored on the server. The saved set remains available after reload; unsaved responses do not restore. **Close practice** exits. A request identifier makes retries of the same submission idempotent.
+
+![Saved practice history, progress bar and comparison](05-practice-improvement.png)
+
+**Practice again** starts another independent attempt. History bars show every saved practice score and the page reports the latest difference from the marked instructor baseline for the same course/week when one exists. Different questions provide a practice comparison, not proof of equivalent difficulty or a replacement grade. Practice scores never overwrite instructor attempts, topic mastery or institutional grades.
+
+![Course summaries on a phone](06-phone-courses.png)
+
+## Dashboard and Performance
+
+![Student dashboard using recorded scores](07-student-dashboard.png)
+![Assessment history and material-open records](08-student-performance.png)
+
+The dashboard average uses marked current-version instructor assessments, and mastered topics use saved mapped topic marks. Performance retains assessment history, raw scores, topic views and learning material access. Missing data remains explicit until an actual saved action exists. Pipeline test results retain their labels; they do not establish human comprehension or independent achievement.
+
+The current administrative allocation caps Years 1-3 at ten subjects each. Year 4 has its five recorded curriculum subjects. Recorded year, units, class ownership and the 35-student block maximum are retained. This supersedes the earlier five-to-ten-class instructor cap; instructors can now handle more classes. Historical unselected syllabus content and activity remain retained.
+
+## Try the student view as Admin
+
+![Explicit labelled Admin controls and persistent support banner](09-admin-controls.png)
+
+Select a student through the verified Admin account picker. Reading and question preview require no learner write. To create activity, explicitly check **Enable Admin demonstration controls**. New opens, section confirmations, assessment sessions/responses and practice attempts use the selected student's current enrollment and release rules, remain **Pipeline test**, and record the Admin actor. Real student work cannot be relabelled or replaced by a demonstration. Instructor attempt limits and marking still apply.
+
+The checkbox resets after reload or leaving this page. A reload never recreates an action. **Return to System Admin** exits. Ordinary students cannot enable an Admin delegation by posting a subject or actor ID; live Admin and selected-account verification remains on the database boundary.
+
+The owner-authorized data exercise covers one enrolled approved course per student in Weeks 1-3, plus allowed labelled retakes where needed for topic examples. All Weeks 4-5 assessments remain untouched for manual testing. Independent learner completion is never claimed. [Release validation](../../versions/2026-11-13-student-learning/validation/results.md) records the current aggregate evidence.

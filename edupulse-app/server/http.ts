@@ -1,3 +1,4 @@
+import {practiceRequest,practiceInput} from './domains/practice.js'
 import { sharingCommand, syllabusSharing } from './domains/syllabusSharing.js'
 import { executeSources } from './sources/service.js'
 import { sourceCommand } from './sources/contracts.js'
@@ -38,7 +39,7 @@ export const VERSION = '0.4.0'
 /** Request body limits per action (bytes). Uploads are raw file bytes. */
 export const BODY_LIMITS: Record<string, number> = { 'syllabus-sources': 2_800_000, workspace: WORKSPACE_BYTES, extract: EXTRACTION_LIMITS.bytes, documents: 1_000_000, conversations: 200_000, operator: 330_000, courseware:330_000 }
 export const bodyLimit = (action: string | null) => BODY_LIMITS[action || ''] ?? 100_000
-const ACTION_METHODS: Record<string, string[]> = { syllabi: ['POST'], 'syllabus-sources': ['POST'], 'chat-context': ['POST'], 'chat-memory': ['POST'], support: ['GET', 'POST'], health: ['GET'], providers: ['GET', 'POST', 'DELETE'], 'provider-oauth': ['POST'], 'provider-test': ['POST'], 'provider-workspaces': ['POST'], conversations: ['GET', 'POST'], operator: ['POST'], context: ['POST'], similarity: ['POST'], references: ['POST'], 'web-search': ['POST'], extract: ['POST'], chat: ['POST'], courseware: ['POST'], documents: ['GET', 'POST', 'DELETE'], workspace: ['GET', 'PUT'], academic: ['GET', 'POST'], students: ['GET'] }
+const ACTION_METHODS: Record<string, string[]> = { practice:['POST'], syllabi: ['POST'], 'syllabus-sources': ['POST'], 'chat-context': ['POST'], 'chat-memory': ['POST'], support: ['GET', 'POST'], health: ['GET'], providers: ['GET', 'POST', 'DELETE'], 'provider-oauth': ['POST'], 'provider-test': ['POST'], 'provider-workspaces': ['POST'], conversations: ['GET', 'POST'], operator: ['POST'], context: ['POST'], similarity: ['POST'], references: ['POST'], 'web-search': ['POST'], extract: ['POST'], chat: ['POST'], courseware: ['POST'], documents: ['GET', 'POST', 'DELETE'], workspace: ['GET', 'PUT'], academic: ['GET', 'POST'], students: ['GET'] }
 export const allowedMethods = (action: string) => Object.hasOwn(ACTION_METHODS, action) ? ACTION_METHODS[action] : undefined
 const buckets = new Map<string, { count: number; until: number }>()
 const active = new Set<string>()
@@ -116,7 +117,7 @@ export async function handleRequest(request: Request): Promise<Response> {
       const subject = await supportIdentity(identity, command.id)
       return json(await supportAction(subject, command.operation))
     }
-    const effective = ['syllabi','academic','workspace','chat','chat-context','chat-memory','courseware','operator','context','web-search','students','syllabus-sources'].includes(action) ? await supportIdentity(identity, request.headers.get('X-EduPulse-Subject')) : identity
+    const effective = ['practice','syllabi','academic','workspace','chat','chat-context','chat-memory','courseware','operator','context','web-search','students','syllabus-sources'].includes(action) ? await supportIdentity(identity, request.headers.get('X-EduPulse-Subject')) : identity
     let chatBody: ReturnType<typeof chatInput.parse> | undefined
     let courseBody:ReturnType<typeof courseInput.parse>|undefined
     let lookupFallback: Awaited<ReturnType<typeof systemLookup>> = null
@@ -245,6 +246,7 @@ export async function handleRequest(request: Request): Promise<Response> {
       return json(await extractUpload(bytes, fileName, signal))
     }
     const body = chatBody || courseBody || await readJson(request, bodyLimit(action))
+    if(action==='practice')return json(await practiceRequest(effective,practiceInput.parse(body),connection,signal))
     if (action === 'operator') {
       const stepSignal = config().hosted ? AbortSignal.any([signal, AbortSignal.timeout(70000)]) : signal
       const result = await operatorRequest(operatorInput.parse(body), effective, connection, stepSignal)

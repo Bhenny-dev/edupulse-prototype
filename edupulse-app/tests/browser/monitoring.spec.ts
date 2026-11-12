@@ -32,7 +32,7 @@ test('roster edits persist, failed saves stay visible, and removal requires prio
  expect(store.records.attempts).toHaveLength(5)
 })
 test('students explicitly confirm reading in sequence, and reload never replays opens or progress',async({page})=>{
- const store=monitoringStore();store.records.reading=[];await monitoringUI(page,'student',store);await page.goto('/#/courseware');await page.getByRole('button',{name:'Open material',exact:true}).first().click()
+ const store=monitoringStore();store.records.reading=[];await monitoringUI(page,'student',store);await page.goto('/#/courseware');await page.getByRole('button',{name:/^Open course /}).first().click();await page.getByRole('button',{name:'Open material',exact:true}).first().click()
  await expect(page.getByRole('button',{name:'Confirm section 2 read',exact:true})).toBeDisabled();await page.getByRole('button',{name:'Confirm section 1 read',exact:true}).click();await expect(page.getByRole('region',{name:'Your reading progress',exact:true})).toContainText('1/2')
  const count=store.commands.length;await page.reload();await expect(page.getByRole('region',{name:'Your reading progress',exact:true})).toContainText('1/2');expect(store.commands.filter(c=>['open','read-section'].includes(c.operation))).toHaveLength(2)
  await page.getByRole('button',{name:'Confirm section 2 read',exact:true}).click();await expect(page.getByRole('region',{name:'Your reading progress',exact:true})).toContainText('2/2');expect(store.commands.length).toBeGreaterThan(count)

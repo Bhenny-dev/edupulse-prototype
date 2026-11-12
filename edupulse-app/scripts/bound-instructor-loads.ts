@@ -2,13 +2,14 @@ import {readFile,writeFile,mkdir} from 'node:fs/promises'
 import {resolve,join} from 'node:path'
 import {execFileSync} from 'node:child_process'
 import {boundedLoads,boundedLoadVersion} from './lib/bounded-loads.js'
+import {tenSubjectLoads,studentTenVersion} from './lib/student-ten-loads.js'
 import type {PopulationInput} from './lib/population-plan.js'
 const args=process.argv.slice(2),value=(key:string)=>args[args.indexOf(key)+1]
 if(!args.includes('--input')||!args.includes('--output'))throw Error('Use --input <private snapshot> --output <private .data directory> [--check-transaction | --apply]')
 if(args.includes('--apply')&&args.includes('--check-transaction'))throw Error('Choose rollback or commit')
 const out=resolve(value('--output'));if(!out.startsWith(resolve('.data')+'/')&&!out.startsWith(resolve('.data')+'\\'))throw Error('Keep private evidence in .data')
 await mkdir(out,{recursive:true})
-const input:PopulationInput=JSON.parse(await readFile(value('--input'),'utf8')),plan=boundedLoads(input),actor=input.owners.find(o=>o.role==='admin'&&o.name==='Benlor Rivera')
+const input:PopulationInput=JSON.parse(await readFile(value('--input'),'utf8')),ten=args.includes('--ten-subjects'),plan=ten?tenSubjectLoads(input):boundedLoads(input),version=ten?studentTenVersion:boundedLoadVersion,actor=input.owners.find(o=>o.role==='admin'&&o.name==='Benlor Rivera')
 if(!actor)throw Error('Designated owner admin required')
 await writeFile(join(out,'before.json'),JSON.stringify(input),{flag:'wx',mode:0o600}).catch(e=>{if(e.code!=='EEXIST')throw e})
 await writeFile(join(out,'plan.json'),JSON.stringify(plan),{mode:0o600})
@@ -23,17 +24,18 @@ const sql=`BEGIN; SELECT pg_advisory_xact_lock(hashtext('edupulse-institutional-
  IF NOT EXISTS(SELECT 1 FROM auth.users WHERE id=${quote(actor.id)}::uuid AND raw_app_meta_data->>'role'='admin' AND (banned_until IS NULL OR banned_until<now())) THEN RAISE EXCEPTION 'Active owner admin required'; END IF;
  END $$;
  CREATE TEMP TABLE retained_activity ON COMMIT DROP AS SELECT 'attempts' kind,md5(coalesce(jsonb_agg(to_jsonb(t) ORDER BY id)::text,'')) hash FROM public.edupulse_attempts t UNION ALL SELECT 'accesses',md5(coalesce(jsonb_agg(to_jsonb(t) ORDER BY publication_id,student_id)::text,'')) FROM public.edupulse_material_access t UNION ALL SELECT 'reading',md5(coalesce(jsonb_agg(to_jsonb(t) ORDER BY publication_id,student_id,source_version)::text,'')) FROM public.edupulse_material_progress t;
- DELETE FROM public.edupulse_institutional_records WHERE kind='loads' AND data->>'AllocationSource' IN ('cit-curriculum-loading-2026-11-12',${quote(boundedLoadVersion)}) AND NOT record_key IN (SELECT jsonb_array_elements_text(${json(plan.keys)}));
- UPDATE public.edupulse_institutional_records SET data=jsonb_set(data,'{AllocationSource}',to_jsonb(${quote(boundedLoadVersion)}::text)),updated_by=${quote(actor.id)}::uuid,updated_at=now() WHERE kind='loads' AND data->>'AllocationSource' IS DISTINCT FROM ${quote(boundedLoadVersion)};
+ DELETE FROM public.edupulse_institutional_records WHERE kind='loads' AND data->>'AllocationSource' IN ('cit-curriculum-loading-2026-11-12','instructor-5-10-course-blocks-2026-11-13',${quote(version)}) AND NOT record_key IN (SELECT jsonb_array_elements_text(${json(plan.keys)}));
+ INSERT INTO public.edupulse_institutional_records(kind,record_key,data,updated_by) SELECT 'loads',concat_ws('|',r->>'CourseCode',r->>'Block',r->>'Semester'),r,${quote(actor.id)}::uuid FROM jsonb_array_elements(${json(plan.loads)}) r ON CONFLICT (kind,record_key) DO UPDATE SET data=excluded.data,updated_by=excluded.updated_by,updated_at=now();
  SELECT edupulse_private.refresh_imported_enrollments();
  DO $$ BEGIN
- IF EXISTS(SELECT 1 FROM public.edupulse_enrollments GROUP BY instructor_id HAVING count(DISTINCT (course_id,block_section)) NOT BETWEEN 5 AND 10) THEN RAISE EXCEPTION 'Actual enrollment workload outside 5–10'; END IF;
+ IF ${ten?'true':'false'} AND EXISTS(SELECT 1 FROM public.edupulse_students s LEFT JOIN public.edupulse_enrollments e ON e.student_email=s.email WHERE s.active GROUP BY s.user_id HAVING count(DISTINCT e.course_id)<>CASE WHEN max(s.year_level)=4 THEN 5 ELSE 10 END) THEN RAISE EXCEPTION 'Every active student requires the capped recorded curriculum'; END IF;
+ IF ${ten?'false':'true'} AND EXISTS(SELECT 1 FROM public.edupulse_enrollments GROUP BY instructor_id HAVING count(DISTINCT (course_id,block_section)) NOT BETWEEN 5 AND 10) THEN RAISE EXCEPTION 'Actual enrollment workload outside 5–10'; END IF;
  IF EXISTS(SELECT 1 FROM public.edupulse_enrollments GROUP BY course_id,block_section HAVING count(*)>35) THEN RAISE EXCEPTION 'Block exceeds 35'; END IF;
  IF EXISTS(SELECT 1 FROM public.edupulse_students s WHERE active AND NOT EXISTS(SELECT 1 FROM public.edupulse_enrollments e WHERE e.student_email=s.email)) THEN RAISE EXCEPTION 'Student left without assigned courses'; END IF;
  IF EXISTS(SELECT 1 FROM public.edupulse_students s WHERE active AND NOT EXISTS(SELECT 1 FROM public.edupulse_enrollments e JOIN public.edupulse_courses c ON c.id=e.course_id AND c.active WHERE e.student_email=s.email)) THEN RAISE EXCEPTION 'Student left without an approved course'; END IF;
  IF EXISTS(SELECT 1 FROM retained_activity a JOIN (SELECT 'attempts' kind,md5(coalesce(jsonb_agg(to_jsonb(t) ORDER BY id)::text,'')) hash FROM public.edupulse_attempts t UNION ALL SELECT 'accesses',md5(coalesce(jsonb_agg(to_jsonb(t) ORDER BY publication_id,student_id)::text,'')) FROM public.edupulse_material_access t UNION ALL SELECT 'reading',md5(coalesce(jsonb_agg(to_jsonb(t) ORDER BY publication_id,student_id,source_version)::text,'')) FROM public.edupulse_material_progress t) b USING(kind) WHERE a.hash IS DISTINCT FROM b.hash) THEN RAISE EXCEPTION 'Retained activity changed'; END IF;
  END $$;
- INSERT INTO public.edupulse_audit_events(actor_id,actor_role,action,outcome,detail) VALUES(${quote(actor.id)}::uuid,'admin','workspace_save','success',${quote(boundedLoadVersion+': reduced generated allocations '+plan.summary.before+' to '+plan.summary.after+'; scores and learner history retained')});
+ INSERT INTO public.edupulse_audit_events(actor_id,actor_role,action,outcome,detail) VALUES(${quote(actor.id)}::uuid,'admin','workspace_save','success',${quote(version+': owner allocation '+plan.summary.before+' to '+plan.summary.after+'; scores and learner history retained')});
  ${args.includes('--apply')?'COMMIT':'ROLLBACK'}; SELECT 'bounded teaching allocation ${args.includes('--apply')?'committed':'rollback checked'}' result;`
 await writeFile(join(out,'apply.sql'),sql,{mode:0o600})
 const cli=process.env.EDUPULSE_SUPABASE_CLI_JS||join(process.env.APPDATA||'','npm/node_modules/supabase/dist/supabase.js')

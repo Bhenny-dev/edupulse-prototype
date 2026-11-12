@@ -95,3 +95,5 @@ Each named active instructor now has 5-10 saved course/block classes, rather tha
 ![The same nine fictional classes on a phone](mobile-13-bounded-loads.png)
 
 These captures use fictional accounts and controlled transports; they do not display the production students. The [live aggregate receipt](../../versions/2026-11-13-bounded-loads/evidence.json) separately records the saved allocation. Reload the current page or use **Refresh records** when updates are announced to load the saved assignments.
+
+The owner later replaced the instructor class ceiling with a student-course cap and permitted additional instructor classes. **Course blocks** still counts actual saved classes, not a display slice. All student demonstrations retain Pipeline test provenance. See the [current student learning allocation](../41-student-learning/README.md#dashboard-and-performance); the preceding bounded-load examples document the earlier correction.

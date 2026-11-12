@@ -1,0 +1,16 @@
+{
+  "students": 417,
+  "averageRange": [
+    58,
+    100
+  ],
+  "masteredTopicRange": [
+    1,
+    4
+  ],
+  "allWithinRecordedCourseCap": true,
+  "allActivityLabelledPipelineTest": true,
+  "noAcademicWrites": true,
+  "missingAverages": 0,
+  "noMasteredTopics": 0
+}

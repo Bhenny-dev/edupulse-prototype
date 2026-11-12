@@ -56,7 +56,7 @@ const SECTIONS = [
   {
     key: 'my-courses', path: '/courseware', label: 'My Courses', icon: BookOpen, roles: ['student'],
   },
-  { key: 'assessments', path: '/assessment', label: 'Assessments', icon: ClipboardCheck, roles: ['student'] },
+  { key: 'assessments', path: '/assessment', label: 'Practice Assessments', icon: ClipboardCheck, roles: ['student'] },
   {
     key: 'performance', path: '/performance', label: 'Performance', icon: BarChart3, roles: PERFORMANCE_ROLES.filter(role=>role==='student'),
   },
@@ -540,7 +540,7 @@ export default function Layout() {
         </div>
       </footer>
 
-      {user?.supportSubject && <div className="support-view-banner" role="status"><span>Viewing <strong>{user.name}</strong> ({user.title}). Student activity tracking and submissions are disabled.</span><button className="btn btn-secondary btn-sm" onClick={async () => { if (await switchRole('admin')) navigate('/dashboard') }}>Return to System Admin</button></div>}
+      {user?.supportSubject && <div className="support-view-banner" role="status"><span>Viewing <strong>{user.name}</strong> ({user.title}). {user.role==='student'?'Student preview. Enable labelled Admin demonstration controls on the learning pages to try materials and assessments.':'Administrative support view.'}</span><button className="btn btn-secondary btn-sm" onClick={async () => { if (await switchRole('admin')) navigate('/dashboard') }}>Return to System Admin</button></div>}
       {showSearch && <SearchOverlay onClose={() => setOverlay(null)} />}
       {showRoleSwitch && user?.canSwitchRoles && <RoleSwitchPopover onClose={() => setOverlay(null)} />}
       <Pulse />

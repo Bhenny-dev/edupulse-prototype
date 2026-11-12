@@ -117,3 +117,7 @@ Opening or reloading an instructor dashboard reads existing authorized records. 
 ![Instructor dashboard loaded without a startup synchronization command; synthetic account records](10-read-only-dashboard.png)
 
 ![Selected instructor support dashboard; synthetic read-only account view](11-support-dashboard.png)
+
+## Explicit Admin student demonstrations
+
+The owner later authorized manipulation of the selected student view. Default material and question preview still records no learner action. The learning pages now have **Enable Admin demonstration controls**: after explicit selection, opens, ordered reading confirmations, timed assessment responses and self-practice can be saved as labelled Pipeline test activity with an Admin actor. Independent student work is protected. Consent resets on reload; no action replays. [Manual 41](../41-student-learning/README.md#try-the-student-view-as-admin) supersedes the earlier unconditional activity prohibition above and shows the current banner/controls.

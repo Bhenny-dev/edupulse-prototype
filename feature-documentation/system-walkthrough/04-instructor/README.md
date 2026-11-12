@@ -158,3 +158,5 @@ The course **Syllabus sources** panel separates readable retained text from cata
 ## Shared syllabus adoption and safe removal
 
 My Syllabus now selects registered instructors from a dropdown. Received copies offer **Use as draft** and **Use approved copy** with explicit acknowledgment and a matching retained approved file. **Suspend syllabus** precedes **Delete syllabus**; Resume does not republish content. Version History and Copy for next term are removed. [Manual 36](../../system-manual/36-instructor-syllabi/README.md) shows the current desktop/phone actions and reload behavior.
+
+The later owner correction caps student subjects instead of instructor classes. The previous 5-10-class instructor ceiling is superseded; current classes can exceed ten while maintaining the 35-student block maximum. Monitoring uses the saved allocation and retains labelled demonstration activity for every student. Independent student results stay separate from self-practice. [Current guide](../../system-manual/41-student-learning/README.md).

@@ -4172,6 +4172,94 @@
       "sha256": "a8b743fe160df8db515f3fb178ca1644f5e58a88b210b23ea17fd2e3af322740",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-12T21:33:18.597554+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/01-course-cards.png",
+      "sha256": "d79bbb052a7ebb788a6a9a35f83cee4d378655d19aec2479be1fe26be3f353fc",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T21:37:46.575612+00:00",
+      "captureRun": "2026-11-12T21-35-41-941Z-1efd68c2",
+      "method": "Opened with view_image; verified actual course cards/instructor label, document reader, separate practice baseline/progress, phone summaries, student dashboard/performance and explicit Admin controls. Synthetic UI; no paid inference, hosted sign-in or human approval claimed. Final changed dashboard reopened after reduced-motion correction."
+    },
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/02-delivered-course.png",
+      "sha256": "998fac0ee00e314935ea040ef8230f1f1635af5e1c935e65015c7afb05094eb8",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T21:37:46.621812+00:00",
+      "captureRun": "2026-11-12T21-35-41-941Z-1efd68c2",
+      "method": "Opened with view_image; verified actual course cards/instructor label, document reader, separate practice baseline/progress, phone summaries, student dashboard/performance and explicit Admin controls. Synthetic UI; no paid inference, hosted sign-in or human approval claimed. Final changed dashboard reopened after reduced-motion correction."
+    },
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/03-material-reader.png",
+      "sha256": "f2286244ef68e16c07db4e4c5cb21200e6f4258ca7b58aff6e4b5584d3f588ce",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T21:37:46.669204+00:00",
+      "captureRun": "2026-11-12T21-35-41-941Z-1efd68c2",
+      "method": "Opened with view_image; verified actual course cards/instructor label, document reader, separate practice baseline/progress, phone summaries, student dashboard/performance and explicit Admin controls. Synthetic UI; no paid inference, hosted sign-in or human approval claimed. Final changed dashboard reopened after reduced-motion correction."
+    },
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/04-practice-questions.png",
+      "sha256": "e0271f94b3fa75a506b2b62055f0b15d48af658c6dbca7a1276aa079d9f739ab",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T21:37:46.707546+00:00",
+      "captureRun": "2026-11-12T21-35-41-941Z-1efd68c2",
+      "method": "Opened with view_image; verified actual course cards/instructor label, document reader, separate practice baseline/progress, phone summaries, student dashboard/performance and explicit Admin controls. Synthetic UI; no paid inference, hosted sign-in or human approval claimed. Final changed dashboard reopened after reduced-motion correction."
+    },
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/05-practice-improvement.png",
+      "sha256": "7e6d5bfb28995b8d100abba6010444c4858fa192fcf5f91a47fe42629bff7b41",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T21:37:46.770347+00:00",
+      "captureRun": "2026-11-12T21-35-41-941Z-1efd68c2",
+      "method": "Opened with view_image; verified actual course cards/instructor label, document reader, separate practice baseline/progress, phone summaries, student dashboard/performance and explicit Admin controls. Synthetic UI; no paid inference, hosted sign-in or human approval claimed. Final changed dashboard reopened after reduced-motion correction."
+    },
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/06-phone-courses.png",
+      "sha256": "a9481d087554ec67d4d7353a8a6dcd22480a5f57cf41380fd809932a62ea8248",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T21:37:46.789183+00:00",
+      "captureRun": "2026-11-12T21-35-41-941Z-1efd68c2",
+      "method": "Opened with view_image; verified actual course cards/instructor label, document reader, separate practice baseline/progress, phone summaries, student dashboard/performance and explicit Admin controls. Synthetic UI; no paid inference, hosted sign-in or human approval claimed. Final changed dashboard reopened after reduced-motion correction."
+    },
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/07-student-dashboard.png",
+      "sha256": "18e6b13b257a8103d1037b663f1ed9b6efe40d933207e2cc44d710492eb863ae",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T21:37:46.792998+00:00",
+      "captureRun": "2026-11-12T21-35-41-941Z-1efd68c2",
+      "method": "Opened with view_image; verified actual course cards/instructor label, document reader, separate practice baseline/progress, phone summaries, student dashboard/performance and explicit Admin controls. Synthetic UI; no paid inference, hosted sign-in or human approval claimed. Final changed dashboard reopened after reduced-motion correction."
+    },
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/08-student-performance.png",
+      "sha256": "b483f69b57690d5b8013510776dbb7f27193644f74165cc94a766f2b0c1e54a9",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T21:37:46.811887+00:00",
+      "captureRun": "2026-11-12T21-35-41-941Z-1efd68c2",
+      "method": "Opened with view_image; verified actual course cards/instructor label, document reader, separate practice baseline/progress, phone summaries, student dashboard/performance and explicit Admin controls. Synthetic UI; no paid inference, hosted sign-in or human approval claimed. Final changed dashboard reopened after reduced-motion correction."
+    },
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/09-admin-controls.png",
+      "sha256": "3c039c585912ce811daa963e326c2c6d954314862e3cceed54e179b357180074",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T21:37:46.863209+00:00",
+      "captureRun": "2026-11-12T21-35-41-941Z-1efd68c2",
+      "method": "Opened with view_image; verified actual course cards/instructor label, document reader, separate practice baseline/progress, phone summaries, student dashboard/performance and explicit Admin controls. Synthetic UI; no paid inference, hosted sign-in or human approval claimed. Final changed dashboard reopened after reduced-motion correction."
+    },
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/03-material-reader.png",
+      "sha256": "1295d92a385b069889b26817c5fc61038e005fae40626ff4185c3d29be30a6e6",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T21:58:57.706457+00:00",
+      "captureRun": "2026-11-12T21-57-03-672Z-0ac2bda3",
+      "method": "Opened the refreshed full-page material image with view_image after the combined source build; verified the course/instructor, rendered document and confirmed-reading controls. Synthetic UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/09-admin-controls.png",
+      "sha256": "3c039c585912ce811daa963e326c2c6d954314862e3cceed54e179b357180074",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T22:02:33.162061+00:00",
+      "captureRun": "2026-11-12T22-02-02-369Z-7342734f",
+      "method": "Opened final full-page image with view_image. Verified explicit checked Admin controls, instructor-labelled course, material/assessment actions, untouched quizzes and the full selected-student/Return to System Admin banner. Synthetic UI evidence only."
     }
   ]
 }
