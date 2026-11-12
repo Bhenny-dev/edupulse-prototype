@@ -18,14 +18,15 @@ import { getAgentForZone, intentsForRole } from '../../agents'
 import { approvalResumeStep, prepareIntent, previewAgents, stepReadiness, stepTarget } from '../../agents/guidance'
 import { courseCatalog, findCourseMentions, pageFor, PAGES, planOperator, searchRecords, syllabusReference } from '../../agents/operator'
 import { conversationWindow } from '../../agents/skills'
-import { applyEditorProposal, currentEditor, currentEditorSources, literalEdit, previewEditorOutline } from '../../agents/editorTools'
+import { applyEditorProposal, applySyllabusDraft,currentEditor, currentEditorSources, literalEdit, previewEditorOutline } from '../../agents/editorTools'
+import {continueSyllabusTask,editableSyllabusPath,explicitOutlineTask,isWeekContinuation,syllabusTask,unfinishedSyllabusWeeks} from '../../agents/syllabusConversation'
 import { editableField, scopedEditorPatch } from '../../agents/componentScope'
 import { activeSources, focusedSection, focusedFields, sourceContext } from '../../agents/pageContext'
 import { ACTION_REQUEST, DRAFT_REQUEST, EDIT_REQUEST, ALL_FIELDS, receiptText, workProposal } from '../../agents/workTools'
 import usePulseArchive from './usePulseArchive'
 import PulseHistory from './PulseHistory'
 import { useAI } from '../../context/AIContext'
-import { useWorkspace } from '../../context/WorkspaceContext'
+import { useWorkspace,useWorkspaceViewState } from '../../context/WorkspaceContext'
 import { useContentStore } from '../../context/ContentStoreContext'
 import { CURRICULUM_COURSES, STUDENT_RECORDS } from '../../data/mockData'
 import { applyRegistration, parseRoster, undoRegistration } from '../../utils/rosterParser'
@@ -59,6 +60,9 @@ export default function Pulse() {
   const location = useLocation(), navigate = useNavigate()
   const [open, setOpen] = useState(false), [messages, setMessages] = useState([])
   const archive = usePulseArchive(user, messages, setMessages)
+  const [syllabusReader,setSyllabusReader]=useWorkspaceViewState('syllabus-reader',null)
+  const previousSyllabusTask=useRef(null)
+  const syllabusScope=`${user?.accountId||user?.id}:${user?.id}:${user?.role}:${archive.contextKey}`
   const office = useOffice(user?.accountId || user?.id)
   const [officeOpen, setOfficeOpen] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false), [guidanceOpen, setGuidanceOpen] = useState(false)
@@ -68,6 +72,7 @@ export default function Pulse() {
   const [contextFiles, setContextFiles] = useState([])
   const visibleFiles = attachments.length ? attachments : contextFiles
   const [busy, setBusy] = useState(false), [fileBusy, setFileBusy] = useState(false)
+  const [draftProgress,setDraftProgress]=useState('')
   const [expression, setExpression] = useState('idle')
   const [error, setError] = useState(''), [guide, setGuide] = useState(null)
   const [errorCode, setErrorCode] = useState('')
@@ -87,6 +92,10 @@ export default function Pulse() {
 
   useEffect(() => pulseBus.subscribe(event => {
     if (event.type === 'progress') { setEvents(previous => new Set([...previous, event.name])); setExpression('cheerful') }
+    if(event.type==='progress'&&['syllabus-saved','syllabus-editor-ready'].includes(event.name)){
+      const editor=currentEditor()
+      if(editor?.kind==='syllabus'&&editor.data.courseCode)setMessages(previous=>!(event.name==='syllabus-editor-ready'&&previous.at(-1)?.proposals?.some(proposal=>proposal.type==='syllabus-followups'&&proposal.reference.id===editor.data.id))?[...previous,{id:crypto.randomUUID(),from:'pulse',mode:'actions',text:'Syllabus ready for editing.',proposals:[{type:'syllabus-followups',reference:{id:editor.data.id,courseCode:editor.data.courseCode},nextWeek:unfinishedSyllabusWeeks(editor)[0],saved:event.name==='syllabus-saved'}]}]:previous)
+    }
     if (event.type === 'expression') setExpression(event.expression)
     if (event.type === 'say') {
       setOpen(true); setExpression(event.expression || 'curious')
@@ -334,18 +343,21 @@ export default function Pulse() {
     const scheduled=scheduledSyllabusDraft({editor:proposal.editor,message:proposal.request,section:proposal.section||'all',context:proposal.target?.path?'Editable field path: '+proposal.target.path:''})
     const references=scheduled&&!planRequest({message:proposal.request}).sourceOnly?relatedSyllabi(syllabi,proposal.editor.data):[]
     let lastProgress=null,previewed=false,result
+    const direct=proposal.editor.kind==='syllabus'
     try { result = await requestOperator({
     operation: 'revise', message: proposal.request, viewRole: user?.role || 'guest', editor: proposal.editor, section: proposal.section || 'all', context: `Page: ${location.pathname}. Selected component: ${proposal.target?.label || focus?.label || ''}. ${proposal.scopeFields ? `Selected section fields: ${proposal.scopeFields.join(', ')}. Only these fields are selected.` : ''} ${proposal.target ? `Editable field path: ${proposal.target.path}. Only this field is selected; retain the surrounding array and other fields.` : ''}`,
     history: conversationWindow(messages, 10000).history.slice(-8).map(item => ({ ...item, content: item.content.slice(0, 3000) })),
     attachments: editSources,referenceSyllabi:references,...(proposal.target?.path?{targetPath:proposal.target.path}:{}),
-  }, signal,progress=>{lastProgress={...progress,references};previewed=previewEditorOutline(proposal.editor,{...lastProgress,phase:'working'},user?.role)})
-      if(lastProgress)previewEditorOutline(proposal.editor,{...lastProgress,phase:'complete'},user?.role)
-    }catch(error){if(lastProgress)try{previewEditorOutline(proposal.editor,{...lastProgress,phase:'stopped'},user?.role)}catch{/* The original editor may have unmounted. */}throw error}
+  }, signal,progress=>{lastProgress={...progress,references};if(direct){signal.throwIfAborted();const placed=applySyllabusDraft(proposal.editor,{courseOutline:progress.rows},user?.role);setDraftProgress(`${progress.rows.length} draft week${progress.rows.length===1?'':'s'} placed; continuing...`);previousSyllabusTask.current=syllabusTask(placed.after,syllabusScope,'courseOutline')}else previewed=previewEditorOutline(proposal.editor,{...lastProgress,phase:'working'},user?.role)})
+      if(lastProgress&&!direct)previewEditorOutline(proposal.editor,{...lastProgress,phase:'complete'},user?.role)
+    }catch(error){if(lastProgress&&!direct)try{previewEditorOutline(proposal.editor,{...lastProgress,phase:'stopped'},user?.role)}catch{/* The original editor may have unmounted. */}if(lastProgress&&direct)throw new Error(`${error.message} Completed draft weeks remain in the form. Save them, then ask Pulse to complete the remaining weeks.`);throw error}
     if(previewed&&proposal.section==='courseOutline')return {...result,previewed:true}
     return result.patch ? { ...result, patch: scopedEditorPatch(proposal.editor, result.patch, proposal.target?.path, proposal.scopeFields) } : result
   }
   const tracked = async (buddy, label, fn) => { const ticket=office.begin(buddy,label); try { const result=await fn();office.finish(ticket,'done',label+' completed. See its receipt in Pulse.');return result } catch(error) {office.finish(ticket,'error',label+' did not complete.');throw error} }
   const actionContext = { role: user?.role, userId: user?.id, catalog, registrations, content, navigate: navigateAllowed, runRegister: input=>tracked('ro','Save confirmed class list',()=>runRegister(input)), undoRegister: input=>tracked('ro','Undo registration',()=>undoRegister(input)), runFile: input=>tracked('luma','File material in library',()=>runFile(input)), runGenerate: (input,signal)=>tracked('quill','Generate and save courseware drafts',()=>runGenerate(input,signal)), similarity, prepareEdit,
+    openEditableSyllabus:id=>{const syllabus=syllabi.find(item=>item.id===id&&!item.sample&&!item.suspended);if(user?.role!=='instructor'||!syllabus)throw new Error('This editable syllabus is no longer available in your workspace.');setSyllabusReader(null);return navigateAllowed(editableSyllabusPath(id))},
+    continueSyllabus:(reference,message)=>{const editor=currentEditor();if(user?.role!=='instructor'||editor?.kind!=='syllabus'||editor.data.id!==reference.id||editor.data.courseCode!==reference.courseCode)throw new Error('Open this editable syllabus before continuing.');return send(message)},
     finishTicket: (id,status='done') => office.finish(id,status,status==='done'?'Confirmed tool completed. Inspect its receipt in Pulse.':status==='working'?'Confirmed tool is running.':status==='error'?'Tool did not finish; inspect the error in Pulse.':'Tool cancelled; no change made.'),
     applyEditor: async (baseline, patch, save, code, fieldPath, scopeFields) => {
       const result = await applyEditorProposal(baseline, scopedEditorPatch(baseline, patch, fieldPath, scopeFields), user?.role, save, code)
@@ -370,15 +382,18 @@ export default function Pulse() {
 
   async function send(text, options = {}) {
     const question = (text ?? input).trim()
+    const editor=currentEditor()
+    const continued=continueSyllabusTask(question,editor,previousSyllabusTask.current,syllabusScope)
+    const instruction=continued||question
     const supplied = options.attachments || (attachments.length ? attachments : contextFiles)
     const pending = activeSources(supplied, currentEditorSources())
-    const selectedSection = focusedSection(focus, question)
-    const scopeFields = focusedFields(focus, question)
+    const selectedSection = focusedSection(focus, instruction)
+    const scopeFields = focusedFields(focus, instruction)
     const sourceReferences = pending.map(item => ({ ...item, text: sourceContext(item, selectedSection) }))
     if (busy || fileBusy || requestRef.current || (!question && !pending.length)) return false
     const history = conversationWindow(messages.map(message => ({ ...message, text: message.text || message.proposals?.map(proposal => proposal.label || proposal.text || proposal.type).join('; ') })), 14000).history
     const controller = new AbortController(); requestRef.current = controller
-    setBusy(true); setExpression('thinking')
+    setBusy(true); setDraftProgress('');setExpression('thinking')
     setError(''); setErrorCode(''); if (text === undefined || options.voice) setInput('')
     if (!options.attachments && attachments.length) { setContextFiles(attachments); setAttachments([]) }
     setMessages(previous => [...previous, { id: crypto.randomUUID(), from: 'user', text: question || `Attached ${pending.map(item => item.fileName || item.title).join(', ')}`, fileNames: pending.map(item => item.fileName || item.title), scope: options.scope }])
@@ -395,14 +410,20 @@ export default function Pulse() {
         setMessages(previous => [...previous, { id: crypto.randomUUID(), from: 'pulse', mode: 'actions', text: '', proposals: [{ type: 'recall', ...recalled }] }]); return
       }
       const permitted = !question || checkAppropriateUse(question, user?.role || 'guest').allowed
-      const informational = !options.task && informationalQuestion(question)
-      const editor = currentEditor()
+      const informational = !continued&&!options.task && informationalQuestion(question)
       const broad = ALL_FIELDS.test(question) || /\b(?:all|every|entire|whole)\s+(?:(?:the|these|my)\s+)?(?:program\s+outcomes?|outcomes?|requirements?|policies|references?|questions?|sections?|fields?)\b/i.test(question)
-      const target = user?.role === 'instructor' && !informational && !options.skipOperator && (DRAFT_REQUEST.test(question) || EDIT_REQUEST.test(question)) && !broad && focus?.field && selectedSection === focus.field.split('.')[0] ? { path: focus.field, label: focus.label } : null
+      const target = user?.role === 'instructor' && !informational && !options.skipOperator && !explicitOutlineTask(instruction)&&(DRAFT_REQUEST.test(instruction) || EDIT_REQUEST.test(instruction)) && !broad && focus?.field && selectedSection === focus.field.split('.')[0] ? { path: focus.field, label: focus.label } : null
       if (target && (!focus.fieldElement?.isConnected || focus.fieldElement.getAttribute('data-pulse-field') !== target.path || focus.brief?.disabled || focus.brief?.sensitive || !editor || !editableField(editor, target.path))) throw new Error('The selected field changed or is read-only. Drag Pulse onto the intended editable field again.')
       const role = user?.role || 'guest'
+      if(role==='instructor'&&editor?.kind==='syllabus'&&!options.skipOperator&&isWeekContinuation(question)&&!continued){const requested=Number(question.match(/\b(?:week|wk)\.?\s*(\d+)/i)?.[1]);const weeks=unfinishedSyllabusWeeks(editor);setMessages(previous=>[...previous,{id:crypto.randomUUID(),from:'pulse',mode:'actions',text:'Choose the syllabus task to continue.',proposals:[{type:'syllabus-followups',reference:{id:editor.data.id,courseCode:editor.data.courseCode},nextWeek:weeks.includes(requested)?requested:weeks[0],text:'Choose a draft action for this syllabus. No Internet search is needed.'}]}]);office.finish(ticket,'done','Offered an explicit draft action in the current syllabus.');return}
+      if(role==='instructor'&&!options.skipOperator&&!informational&&!editor&&(DRAFT_REQUEST.test(instruction)||EDIT_REQUEST.test(instruction))&&/syllabus|outline|\bweeks?\b/i.test(instruction)){
+        const mentioned=findCourseMentions(instruction,catalog).map(course=>course.code)
+        const selected=syllabi.find(item=>item.id===syllabusReader&&!item.sample&&!item.suspended)
+        const candidates=selected&&!mentioned.length?[selected]:syllabi.filter(item=>!item.sample&&!item.suspended&&(mentioned.length?mentioned.includes(item.courseCode):item.status==='drafted'))
+        setMessages(previous=>[...previous,{id:crypto.randomUUID(),from:'pulse',mode:'actions',text:'Open an editable syllabus to continue.',proposals:candidates.length?candidates.map(item=>({type:'open-editable-syllabus',id:item.id,label:`${item.courseCode} - ${item.courseTitle}`})):[{type:'notice',text:'Open or create your syllabus in Syllabus Builder, select its course, then ask Pulse to complete the intended fields.'}]}]);office.finish(ticket,'done','Offered owned editable syllabus targets.');return
+      }
       const destination = pageFor(question, role === 'admin' && user?.canSwitchRoles ? 'instructor' : role, { canSwitchRoles: Boolean(user?.canSwitchRoles), history })
-      const work = options.skipOperator || !permitted || informational ? null : workProposal({ message: question, attachments: pending, role, editor, registrations: registrations.filter(item => item.uploadedBy === user?.id), catalog, section: selectedSection, target, scopeFields })
+      const work = options.skipOperator || !permitted || informational ? null : workProposal({ message: instruction, attachments: pending, role, editor, registrations: registrations.filter(item => item.uploadedBy === user?.id), catalog, section: selectedSection, target, scopeFields })
       const draftFromSource = !informational && !target && pending.length && /\b(?:generate|create|draft|make|prepare|build)\b/i.test(question) && (/learning materials?|lessons?|lecture|courseware/i.test(question) || /^(?:please\s+)?generate\s+(?:me\s+)?(?:this|it|these)[.!?]?$/i.test(question) && /learning materials?|lessons?|lecture|courseware/i.test(history.at(-2)?.content || history.at(-1)?.content || ''))
       let plan = draftFromSource ? { proposals: [], chat: true, task: 'draft', mentioned: [] } : options.skipOperator || !permitted || informational ? { proposals: [], chat: true, task: options.task || 'auto', mentioned: findCourseMentions(question, catalog) }
         : work ? { proposals: [work], chat: false, mentioned: [] } : destination ? { proposals: [destination.denied ? { type: 'notice', text: `${destination.label} is not available for your role.` } : { type: /\b(?:guide|walkthrough|walk\s+me|step.by.step|help\s+me)\b/i.test(question) ? 'guide' : 'navigate', path: destination.path, label: destination.label, ...(destination.viewRole ? { viewRole: destination.viewRole } : {}) }], chat: false, mentioned: [] }
@@ -437,7 +458,7 @@ export default function Pulse() {
         if (proposal.type === 'editor-edit' && proposal.editor) {
           const result = await prepareEdit(proposal, controller.signal)
           controller.signal.throwIfAborted()
-          if (result.clarification) { office.finish(proposal.ticketId,'stopped','More information is needed; no edit prepared.'); proposal.type = 'notice'; proposal.text = result.clarification } else if(result.previewed){proposal.type='notice';proposal.text='Your generated weeks are ready in the Course Outline preview. Use individual weeks or Use completed weeks, then review and save the syllabus.'} else { proposal.patch = result.patch; proposal.notes = result.notes; proposal.sources = result.sources }
+          if (result.clarification) { office.finish(proposal.ticketId,'stopped','More information is needed; no edit prepared.'); proposal.type = 'notice'; proposal.text = result.clarification } else if(proposal.editor.kind==='syllabus'&&result.patch){const applied=applySyllabusDraft(proposal.editor,result.patch,user?.role);const current=applied.after;previousSyllabusTask.current=syllabusTask(current,syllabusScope,proposal.section);office.finish(proposal.ticketId,'done','Validated draft content placed in the open syllabus form; no approval or publication.');proposal.type='syllabus-followups';proposal.reference={id:current.data.id,courseCode:current.data.courseCode};proposal.nextWeek=unfinishedSyllabusWeeks(current)[0];proposal.review={before:proposal.editor.data,after:current.data};proposal.text='Draft fields updated. Review them and save when ready.';proposal.applied=applied.fields;proposal.sources=result.sources}else if(result.previewed){proposal.type='notice';proposal.text='Your generated weeks are ready in the Course Outline preview. Use individual weeks or Use completed weeks, then review and save the syllabus.'} else { proposal.patch = result.patch; proposal.notes = result.notes; proposal.sources = result.sources }
         }
         if (proposal.type === 'search') {
           const documents = await aiRequest('documents').then(result => result.documents, () => [])
@@ -446,7 +467,7 @@ export default function Pulse() {
       }
       const searchedNothing = now.length === 1 && now[0].type === 'search' && !now[0].results.length && now[0].fallbackToChat
       if (now.length) setMessages(previous => [...previous, { id: crypto.randomUUID(), from: 'pulse', mode: 'actions', text: '', proposals: now }])
-      if (!plan.chat && !searchedNothing) { office.finish(ticket,'done',now.some(proposal=>mutable.includes(proposal.type))?'Prepared a reviewable proposal; no record change yet.':'Request handled by the application tool.');setExpression('encouraging'); return }
+      if (!plan.chat && !searchedNothing) { office.finish(ticket,'done',now.some(proposal=>proposal.type==='syllabus-followups')?'Validated draft content placed in the open syllabus form.':now.some(proposal=>mutable.includes(proposal.type))?'Prepared a reviewable proposal; no record change yet.':'Request handled by the application tool.');setExpression('encouraging'); return }
       const course = plan.mentioned.find(item => item.syllabus)
       const references = sourceReferences.map(chatReference), syllabusRef = course && references.length < 3 ? syllabusReference(course) : null
       if (syllabusRef) references.push(syllabusRef)
@@ -465,7 +486,7 @@ export default function Pulse() {
     } catch (err) {
       mutationTickets.forEach(id=>office.finish(id,controller.signal.aborted?'stopped':'error','Proposal preparation did not finish.'))
       office.finish(ticket,controller.signal.aborted?'stopped':'error',controller.signal.aborted?'Request stopped.':'Request failed; inspect the error in Pulse.')
-      if (requestRef.current === controller) { setError(controller.signal.aborted ? 'Request stopped. You can edit and resend your question.' : err.message); setErrorCode(err.code || ''); if (text === undefined || options.voice) setInput(question); if (!options.attachments) setAttachments(pending); setExpression('concern') }
+      if (requestRef.current === controller) { setError(controller.signal.aborted ? editor?.kind==='syllabus'?'Request stopped. Any completed draft weeks remain in the form; review and save them before continuing.':'Request stopped. You can edit and resend your question.' : err.message); setErrorCode(err.code || ''); if (text === undefined || options.voice) setInput(question); if (!options.attachments) setAttachments(pending); setExpression('concern') }
       return false
     } finally { office.finish(ticket,controller.signal.aborted?'stopped':'done','Request handling ended. See Pulse for the result.',true); if (requestRef.current === controller) { setBusy(false); requestRef.current = null } }
   }
@@ -477,6 +498,7 @@ export default function Pulse() {
     ...intentsForRole(agent, user?.role).map(intent => user?.authenticated && agent?.id === 'performance' && intent.key === 'flag' ? { ...intent, label: 'Review students below threshold' } : intent).filter(intent => !(focus && agent?.id === 'general' && intent.key === 'explain' && tour.length >= 2)),
   ]
   const lookAt = interaction.dragging ? interaction.hovered?.element : focus?.element
+  const latestSyllabusAction=messages.findLast(message=>message.proposals?.some(proposal=>proposal.type==='syllabus-followups'))?.id
   return <>
     {officeOpen&&<Suspense fallback={<div className="pulse-office-loading" role="status">Opening the workspace…</div>}><WorkspaceOffice tasks={office.tasks} messages={messages} busy={busy||fileBusy} modelReady={ai.ready} error={error} onClose={()=>setOfficeOpen(false)} onTask={(question,buddy,conversational)=>void send(question,{...(conversational ? {skipOperator:true,task:'general'} : {}),scope:`${buddy.name} · ${buddy.title}`,buddy:buddy.id})}/></Suspense>}
     <DwellHelp role={user?.role} disabled={open || interaction.dragging} onTarget={focusTarget} />
@@ -517,7 +539,7 @@ export default function Pulse() {
         </div>}
         {messages.map(message => <article key={message.id} className={`connected-pulse-message ${message.from === 'user' ? 'from-user' : ''}`}>
           <small>{message.from === 'user' ? 'You' : 'Pulse'}</small>
-          {message.from === 'pulse' && message.trace ? <AgentAnswer compact message={message} onDownload={message.mode === 'generated' ? () => downloadMaterialPdf({ title: 'Pulse learning material', text: message.text, sources: message.sources }).catch(error => setError(error.message)) : undefined} onRevise={note => void send(`Revise your previous answer: ${note}`, { task: message.task, skipOperator: true })} /> : message.mode === 'actions' ? <div className="pulse-actions">{message.proposals.map((proposal, i) => <PulseAction key={i} proposal={proposal} ctx={actionContext} />)}</div> : <div className="connected-pulse-text">{message.text}</div>}
+          {message.from === 'pulse' && message.trace ? <AgentAnswer compact message={message} onDownload={message.mode === 'generated' ? () => downloadMaterialPdf({ title: 'Pulse learning material', text: message.text, sources: message.sources }).catch(error => setError(error.message)) : undefined} onRevise={note => void send(`Revise your previous answer: ${note}`, { task: message.task, skipOperator: true })} /> : message.mode === 'actions' ? <div className="pulse-actions">{message.proposals.map((proposal, i) => <PulseAction key={i} proposal={proposal} ctx={{...actionContext,activeSyllabus:message.id===latestSyllabusAction}} />)}</div> : <div className="connected-pulse-text">{message.text}</div>}
           {message.from === 'pulse' && message.text && message.mode === 'generated' && !message.trace && <details><summary>Response actions</summary><button className="btn btn-secondary btn-sm" onClick={() => downloadMaterialPdf({ title: 'Pulse learning material', text: message.text, sources: message.sources }).catch(error => setError(error.message))}>Download response as PDF</button></details>}
 
           {message.attachedNames?.length > 0 && <small>References: {message.attachedNames.join(', ')}</small>}
@@ -526,7 +548,7 @@ export default function Pulse() {
           {message.warning && <p className="connected-pulse-warning">{message.warning}</p>}
           {message.actions?.map(action => <button key={action.label} className="btn btn-secondary btn-sm" onClick={() => { action.onClick?.(); if (action.path) navigate(action.path) }}>{action.label}</button>)}
         </article>)}
-        {busy && <PulseLoading buddy={office.tasks.findLast(task=>task.status==='working')?.buddy || 'quill'} startedAt={office.tasks.findLast(task=>task.status==='working')?.at}/>}
+        {busy && <PulseLoading label={draftProgress} buddy={office.tasks.findLast(task=>task.status==='working')?.buddy || 'quill'} startedAt={office.tasks.findLast(task=>task.status==='working')?.at}/>}
       </div>
       {error && <div role="alert" className="connected-pulse-error">{error}{['PROVIDER_CREDITS', 'PROVIDER_QUOTA'].includes(errorCode) && <button type="button" className="btn btn-ghost btn-sm" onClick={() => navigate('/settings?tab=ai-provider')}>AI settings</button>}</div>}
       {archive.error && archive.unsaved && messages.length > 0 && !historyOpen && <div role="status" className="connected-pulse-warning">Chat not saved. <button className="btn btn-ghost btn-sm" onClick={archive.retry}>Retry history save</button></div>}

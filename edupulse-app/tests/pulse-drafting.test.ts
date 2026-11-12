@@ -62,7 +62,7 @@ test('full syllabus draft researches the course and validates all 18 weeks befor
   assert.ok('patch' in result)
   assert.ok(result.patch && 'courseOutline' in result.patch)
   assert.equal(result.patch?.courseOutline?.length, 18)
-  assert.equal(result.requiresConfirmation, true)
+  assert.equal(result.requiresConfirmation, false)
   assert.deepEqual(editor.data.programOutcomes, [''])
   await assert.rejects(planValidatedTool(input, identity, signal(), async () => JSON.stringify({ programOutcomes: ['Partial response'] }), 26000, research), { code: 'TOOL_OUTPUT_INCOMPLETE' })
 })

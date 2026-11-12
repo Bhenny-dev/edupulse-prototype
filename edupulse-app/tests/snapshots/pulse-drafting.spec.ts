@@ -12,10 +12,9 @@ test('Pulse model proposal: course-aware complete syllabus draft and research so
   const panel = page.getByRole('dialog', { name: 'Pulse', exact: true })
   await panel.getByRole('textbox', { name: 'Ask Pulse', exact: true }).fill('Generate content for all fields in this syllabus using web research')
   await panel.getByRole('button', { name: 'Send', exact: true }).click()
-  const card = panel.getByRole('region', { name: 'Review content edit' })
-  await expect(card.getByRole('checkbox')).toHaveCount(7)
-  await card.locator('details').filter({ has: page.locator('summary', { hasText: 'Public research sources' }) }).locator('summary').click()
-  await card.locator('details.pulse-edit-preview').first().locator('summary').click()
+  const card = panel.getByRole('region', { name: 'Syllabus next actions' }).last()
+  await card.getByRole('button',{name:'Review changes',exact:true}).click()
+  await expect(card.getByRole('checkbox')).toHaveCount(0)
   await panel.screenshot({ path: `${dir}/17-course-aware-syllabus-draft.png`, animations: 'disabled', style: '.connected-pulse{position:relative!important;inset:auto!important;height:auto!important;max-height:none!important;overflow:visible!important}.connected-pulse-feed{overflow:visible!important;flex:none!important;max-height:none!important}' })
 })
 

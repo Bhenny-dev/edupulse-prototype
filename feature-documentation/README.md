@@ -4,6 +4,7 @@
 
 | Folder | Covers | Contents |
 | --- | --- | --- |
+| [13 November editable syllabus](versions/2026-11-13-editable-syllabus/README.md) | Direct draft fields, saved builder and contextual week continuation | See validation |
 | 2026-11-13 | [Registered syllabus sharing](versions/2026-11-13-syllabus-sharing/README.md) | Registered recipients, safe adoption and suspension before deletion. |
 | [13 November reference repair](versions/2026-11-13-reference-continuations/README.md) | Joined references, catalog discovery and privately indexed readable sources | See validation |
 

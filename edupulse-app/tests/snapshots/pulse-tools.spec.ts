@@ -46,9 +46,11 @@ test('Pulse tools: model proposal is reviewable before saving', async ({ page })
   const panel = await open(page, '/#/syllabus?tab=builder')
   await page.getByRole('combobox', { name: 'Course', exact: true }).selectOption('IT 102')
   await say(page, 'Revise the program outcomes to emphasize worked examples')
-  const card = panel.getByRole('region', { name: 'Review content edit' })
+  const card = panel.getByRole('region', { name: 'Syllabus next actions' }).last()
+  await card.getByRole('button',{name:'Review changes',exact:true}).click()
   await expect(card).toContainText('Explain variable declarations using a worked example.')
-  await panel.screenshot({ path: `${dir}/14-generated-edit-preview.png`, animations: 'disabled', style: fullCard })
+  await card.scrollIntoViewIfNeeded()
+  await panel.screenshot({ path: `${dir}/14-generated-edit-preview.png`, timeout:30000,animations: 'disabled', style: fullCard })
 })
 
 test('Pulse tools: page source context, focused correction and PDF download', async ({page})=>{

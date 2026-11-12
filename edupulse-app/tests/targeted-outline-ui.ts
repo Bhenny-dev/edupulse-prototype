@@ -3,6 +3,7 @@ import {operatorInput,planValidatedTool} from '../src/agents/toolPlanner'
 
 export async function targetedOutlineUI(page:Page){
  const calls:any[]=[],writes:any[]=[]
+ await page.route('**/api/ai?action=conversations',route=>route.fulfill({json:{threads:[],messages:[],memories:[],automaticMemory:true,mode:'session'}}))
  await page.route('**/api/ai?action=workspace',route=>{if(route.request().method()!=='GET')writes.push(route.request().postDataJSON());return route.fulfill({json:{mode:'preview',revision:0}})})
  await page.route('**/api/ai?action=operator',async route=>{
   const input=operatorInput.parse(route.request().postDataJSON());calls.push(input)
@@ -22,8 +23,9 @@ export async function targetedOutlineUI(page:Page){
  await page.getByRole('button',{name:'Open Pulse assistant'}).click()
  const chat=page.getByRole('dialog',{name:'Pulse',exact:true})
  await chat.getByRole('textbox',{name:'Ask Pulse',exact:true}).fill('Complete Week 1 Section 1 only');await chat.getByRole('button',{name:'Send',exact:true}).click()
- const review=chat.getByRole('region',{name:'Review content edit',exact:true})
- await expect(review).toContainText('Targeted edit: week 1, section 1')
- await expect(page.locator('[data-pulse-field="courseOutline.0.sections.0.contents"]')).toHaveValue('')
+ const review=chat.getByRole('region',{name:'Syllabus next actions',exact:true}).last()
+ await review.getByRole('button',{name:'Review changes',exact:true}).click()
+ await expect(review).toContainText('Week 1 - Contents')
+ await expect(page.locator('[data-pulse-field="courseOutline.0.sections.0.contents"]')).toHaveValue('Research questions\nFeasibility and scope')
  return {calls,writes,chat,review,outline}
 }

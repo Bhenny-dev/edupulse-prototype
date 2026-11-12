@@ -99,3 +99,5 @@ The [baseline restoration](../versions/2026-10-28-baseline-workflows/README.md) 
 [Manual 40: Instructor teaching sets](40-teaching-sets/README.md) covers four own/two shared/two complete drafts, prepared-content review and labelled delivery with unanswered later assessments.
 
 | [41](41-student-learning/README.md) | Enrolled course cards, instructor labels, repeatable advanced practice and Admin demonstrations | Student / verified Admin | My Courses, Practice Assessments, Performance |
+
+[Manual 42: Editable syllabus workspace](42-editable-syllabus-workspace/README.md) covers direct validated field placement, owned-draft reopening, scoped week continuations, optional review, progressive completion and explicit save-in-place.

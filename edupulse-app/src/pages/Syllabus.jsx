@@ -1,3 +1,4 @@
+import {syllabusEditorData} from '../agents/syllabusConversation'
 import ShareSyllabusDialog from '../components/syllabus/ShareSyllabusDialog'
 import {suspendSyllabus,resumeSyllabus,deleteSuspendedSyllabus} from '../utils/syllabusLifecycle'
 import '../components/academic/academic.css'
@@ -10,7 +11,7 @@ import { revisedWorkspace } from '../utils/syllabusRevisions'
 import { useAcademicRecords } from '../context/AcademicContext'
 import ModalLayer from '../components/ui/ModalLayer'
 import AutoTextarea from '../components/ui/AutoTextarea'
-import { Spinner } from '../components/ui/LoadingFeedback'
+import { Spinner,LoadingStatus } from '../components/ui/LoadingFeedback'
 import { downloadSyllabusPdf } from '../utils/pdfExport'
 import { cloneElement, isValidElement, useState, useEffect, useRef, useMemo, useId } from 'react'
 import { useSearchParams, Navigate, useNavigate, Link } from 'react-router-dom'
@@ -408,6 +409,7 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
   }))
 
   const [form, setForm] = useState(() => ({
+    id:initial?.id||crypto.randomUUID(),
     courseCode: '',
     courseTitle: '',
     courseInfo: { courseCode: '', courseTitle: '', periodOffered: '1st Semester', academicYear: '2026-2027', creditUnits: 3, classification: 'Major', noOfHours: 54, prerequisites: [] },
@@ -566,24 +568,25 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
 
   // Saving always lands as `drafted` — whether AI-generated (Auto) or written
   // by hand. Nothing moves further until the instructor explicitly checks it.
-  const handleSave = () => {
+  const [savingForm,setSavingForm]=useState(false)
+  const handleSave = async () => {
     if (!validate()) { addToast('Please fix the highlighted fields', 'error'); return }
-    addToast('Syllabus saved as Drafted — check and correct it before downloading for approval', 'success')
-    onComplete(form, 'drafted')
+    setSavingForm(true)
+    try{await onComplete(form,'drafted');addToast('Draft saved. Continue editing in Syllabus Builder.','success')}catch(error){addToast(error.message,'error')}finally{setSavingForm(false)}
   }
 
   // "Checked" = the instructor has verified the draft. Next step is to
   // download the file for the offline signatory route (Dean → CAO → EVP).
-  const handleMarkChecked = () => {
+  const handleMarkChecked = async () => {
     if (!validate()) { addToast('Please fix the highlighted fields before marking as checked', 'error'); return }
     if (!meaningfulOutline(form.courseOutline)) { addToast('Add weekly learning outcomes and contents before checking.', 'error'); return }
-    addToast('Syllabus marked as Checked — you can now download it for the approval route', 'success')
-    onComplete(form, 'checked')
+    setSavingForm(true)
+    try{await onComplete(form,'checked');addToast('Syllabus marked as Checked — you can now download it for the approval route','success')}catch(error){addToast(error.message,'error')}finally{setSavingForm(false)}
   }
 
-  usePulseEditor({ kind: 'syllabus', label: `${form.courseCode || 'New'} syllabus builder`, data: form, sources: sourceFiles,
+  usePulseEditor({ kind: 'syllabus', label: `${form.courseCode || 'New'} syllabus builder`, data: syllabusEditorData(form), sources: sourceFiles,
     previewOutline:(progress,baseline)=>setOutlineDraft({...progress,baseline}),
-    apply: next => { setForm({...next,courseOutline:normalizeOutlineSections(next.courseOutline)}); setUploadStep('done') },
+    apply: next => { setForm(previous=>({...previous,...next,status:'drafted',approvedFile:undefined,extractedAt:undefined,courseOutline:normalizeOutlineSections(next.courseOutline)})); setUploadStep('done') },
     prepareCourse: (code, current) => {
       const course = CURRICULUM_COURSES.find(item => item.code === code)
       if (!course) throw new Error('Choose a course from the curriculum.')
@@ -592,9 +595,10 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
     },
     save: async next => {
       if (!next.courseInfo?.courseCode || !next.programOutcomes?.some(value => value.trim())) throw new Error('Select a course and supply at least one program outcome before saving. You can apply the preview to the form first.')
-      return onComplete(next, 'drafted', { confirmed: true })
+      return onComplete({...form,...next}, 'drafted')
     },
   })
+  useEffect(()=>{pulseBus.progress('syllabus-editor-ready',initial?.id||'new')},[initial?.id])
 
   // Retain the existing curriculum-copy actions used by Pulse.
   const [errors, setErrors] = useState({})
@@ -960,8 +964,8 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
         <button className="btn btn-ghost" onClick={onCancel}>Cancel</button>
         <div style={{ display: 'flex', gap: '8px' }}>
           <button className="btn btn-secondary" onClick={() => downloadSyllabusPdf(form).catch(error => addToast(error.message, 'error'))}><Download size={16} /> Download PDF draft</button>
-          <button className="btn btn-secondary" data-pulse-action="save-syllabus" onClick={handleSave}>Save as Drafted</button>
-          <button className="btn btn-primary" onClick={handleMarkChecked} title="Confirms you have checked this draft — next step is downloading it for the offline signatory route"><CheckCircle size={16} /> Mark as Checked</button>
+          <button className="btn btn-secondary" disabled={savingForm} data-pulse-action="save-syllabus" onClick={handleSave}>{savingForm&&<Spinner size={14}/>}Save as Drafted</button>
+          <button className="btn btn-primary" disabled={savingForm} onClick={handleMarkChecked} title="Confirms you have checked this draft — next step is downloading it for the offline signatory route"><CheckCircle size={16} /> Mark as Checked</button>
         </div>
       </div>
     </div>
@@ -988,7 +992,7 @@ export default function Syllabus() {
   const [adoptId,setAdoptId]=useWorkspaceViewState('syllabus-adopt',null)
   const [approvalAttested,setApprovalAttested]=useState(false)
   const [extractingSyllabus, setExtractingSyllabus] = useState(null)
-  const { syllabi, setSyllabi, commit, updateWorkspace,revision,dirty,saving,refresh,loading:workspaceLoading } = useWorkspace()
+  const { syllabi, setSyllabi, commit,revision,dirty,saving,refresh,loading:workspaceLoading } = useWorkspace()
   const sharedId=readerId?.startsWith('shared:')?readerId.slice(7):null
   const readableShare=sharing.shares.find(item=>item.id===sharedId)
   const ownedReader=syllabi.find(item=>item.id===readerId)
@@ -1013,7 +1017,9 @@ export default function Syllabus() {
   const teachingSyllabi = syllabi.filter(syllabus => ['own','draft'].includes(syllabus.teachingSetRole))
   const listedSyllabi = activeOnly ? syllabi.filter(syllabus => syllabus.status === 'active') : teachingSyllabi.length && searchParams.get('status') !== 'all' ? teachingSyllabi : syllabi
   const {data:academic}=useAcademicRecords()
-  const [editingSyllabus, setEditingSyllabus] = useState(null)
+  const editingId=searchParams.get('edit')
+  const editingSyllabus=syllabi.find(item=>item.id===editingId&&!item.sample&&!item.suspended)
+  const openBuilder=syllabus=>{setReaderId(null);setPreviewSyllabus(null);setTab('builder');setSearchParams({tab:'builder',...(syllabus?{edit:syllabus.id}:{})})}
   const [uploadingSyllabus, setUploadingSyllabus] = useState(null)
 
   useEffect(() => {
@@ -1026,17 +1032,17 @@ export default function Syllabus() {
 
   const switchTab = (t) => {
     setTab(t)
-    setSearchParams(prev => { const p = new URLSearchParams(prev); p.set('tab', t); p.delete('status'); return p })
+    setSearchParams(prev => { const p = new URLSearchParams(prev); p.set('tab', t); p.delete('status'); if(t!=='builder')p.delete('edit'); return p })
   }
 
   const record = (syl, status) => ({ ...syl, status, lastUpdated: new Date().toISOString(), history: [...(syl.history || []), { status, version: syl.version || 1, timestamp: new Date().toISOString(), author: user?.name || 'Instructor' }].slice(-100) })
   const setStatus = (id, status) => setSyllabi(prev => prev.map(s => s.id === id ? record(s, status) : s))
-  const saveBuilder = async (form, status, options = {}) => {
-    const next = record({ ...form, id: editingSyllabus?.id || crypto.randomUUID(), instructorId: user?.id, version: (editingSyllabus?.version || 0) + 1, sample: false, approvedFile: undefined, extractedAt: undefined }, status)
+  const saveBuilder = async (form, status) => {
+    const next = record({ ...form, id: editingSyllabus?.id || form.id || crypto.randomUUID(), instructorId: user?.id, version: (editingSyllabus?.version || 0) + 1, sample: false, approvedFile: undefined, extractedAt: undefined }, status)
     const change = data => revisedWorkspace(data,next)
-    const saved = options.confirmed ? await commit(change) : null
-    if (!options.confirmed) updateWorkspace(change)
-    setEditingSyllabus(null); setTab('mine'); setSearchParams({tab:'mine',status:'all'})
+    const saved = await commit(change)
+    if(status==='drafted'){setTab('builder');setSearchParams({tab:'builder',edit:next.id})}
+    else {setTab('mine');setSearchParams({tab:'mine',status:'all'})}
     pulseBus.progress('syllabus-saved', next.courseCode)
     return { ...saved, id: next.id, status: next.status }
   }
@@ -1137,7 +1143,7 @@ export default function Syllabus() {
           Shared Repository
         </button>
         <button
-          onClick={() => { setEditingSyllabus(null); switchTab('builder') }}
+          onClick={() => { openBuilder(null) }}
           style={{
             padding: '10px 20px', border: 'none', background: 'none', cursor: 'pointer', fontWeight: 600,
             fontSize: '0.875rem', color: tab === 'builder' ? 'var(--sky-600)' : 'var(--gray-500)',
@@ -1200,7 +1206,7 @@ export default function Syllabus() {
                             <button className="btn btn-ghost btn-sm" onClick={() => setSelectedSyllabus(syl)} title="View Syllabus"><Eye size={14} /></button>
 
                             {!syl.sample && !syl.suspended && (
-                              <button className="btn btn-ghost btn-sm" onClick={() => { setEditingSyllabus(syl); switchTab('builder') }} title="Edit in Builder"><BookOpen size={14} /></button>
+                              <button className="btn btn-ghost btn-sm" onClick={() => { openBuilder(syl) }} title="Edit in Builder"><BookOpen size={14} /></button>
                             )}
 
                             {!syl.sample&&<button className="btn btn-ghost btn-sm" disabled={!sharing.allowed||syl.suspended} onClick={()=>{setActionError('');setShareId(syl.id)}} title="Share syllabus"><Share2 size={14}/></button>}
@@ -1223,7 +1229,7 @@ export default function Syllabus() {
       {/* Tab: Syllabus Builder */}
       {tab === 'builder' && (
         <div data-pulse-help="syllabus-field">
-          <SyllabusBuilder key={editingSyllabus?.id || "new"} initial={editingSyllabus} onComplete={saveBuilder} onCancel={() => { setEditingSyllabus(null); switchTab('mine') }} />
+          {workspaceLoading?<LoadingStatus label="Loading editable syllabus..."/>:editingId&&!editingSyllabus?<p role="alert">This editable syllabus is unavailable in your current workspace. Return to My Syllabus to select an available draft.</p>:<SyllabusBuilder key={editingSyllabus?.id || "new"} initial={editingSyllabus} onComplete={saveBuilder} onCancel={() => { switchTab('mine') }} />}
         </div>
       )}
 

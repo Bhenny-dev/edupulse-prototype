@@ -12,6 +12,7 @@ export default function usePulseArchive(user, messages, setMessages) {
   const userKey = user?.accountId || user?.id || null
   const [state, setState] = useState({ threads: [], memories: [], automaticMemory: true, mode: 'session', loading: false, saving: false, error: '' })
   const [threadId, setThreadId] = useState(null), [revision, setRevision] = useState(0)
+  const [contextKey,setContextKey]=useState(()=>crypto.randomUUID())
   const current = useRef({ messages }), active = useRef(null), saved = useRef(new Set()), owner = useRef(0), created = useRef(false), saving = useRef(false)
   current.current = { messages }
   const refresh = useCallback(async () => {
@@ -23,6 +24,7 @@ export default function usePulseArchive(user, messages, setMessages) {
   }, [userKey])
   useEffect(() => {
     const version = ++owner.current, controller = new AbortController()
+    setContextKey(crypto.randomUUID())
     active.current = null; created.current = false; saved.current = new Set(); saving.current = false; setThreadId(null)
     setState({ threads: [], memories: [], automaticMemory: true, mode: 'session', loading: Boolean(userKey), saving: false, error: '' })
     if (userKey) void aiRequest('conversations', 'GET', undefined, controller.signal).then(result => {
@@ -83,14 +85,16 @@ export default function usePulseArchive(user, messages, setMessages) {
     const version = owner.current, result = await aiRequest('conversations', 'GET', undefined, undefined, { query: { id } })
     if (version !== owner.current) return
     active.current = id; created.current = true; saved.current = new Set(result.messages.map(message => message.id)); setThreadId(id)
+    setContextKey(crypto.randomUUID())
     setMessages(result.messages.map(message => ({ id: message.id, from: message.role === 'user' ? 'user' : 'pulse', text: message.text, mode: 'archived', attachedNames: message.attachments })))
     setState(previous => ({ ...previous, ...result, error: '' }))
   }
   const newThread = () => {
     if (saving.current || state.error || hasUnsaved()) throw new Error('Save or retry this conversation before starting a new one.')
     active.current = null; created.current = false; saved.current = new Set(); setThreadId(null); setMessages([])
+    setContextKey(crypto.randomUUID())
   }
   const command = async input => { await aiRequest('conversations', 'POST', input); await refresh() }
-  const deleteThread = async id => { if (active.current === id && (saving.current || hasUnsaved())) throw new Error('Wait for this conversation to finish saving before deleting it.'); await command({ operation: 'delete', id }); if (active.current === id) { active.current = null; created.current = false; saved.current = new Set(); setThreadId(null); setMessages([]) } }
-  return { ...state, threadId, ensureThread, unsaved: hasUnsaved(), refresh, openThread, newThread, deleteThread, command, retry: () => { setState(previous => ({ ...previous, error: '' })); setRevision(value => value + 1) } }
+  const deleteThread = async id => { if (active.current === id && (saving.current || hasUnsaved())) throw new Error('Wait for this conversation to finish saving before deleting it.'); await command({ operation: 'delete', id }); if (active.current === id) { active.current = null; created.current = false; saved.current = new Set(); setThreadId(null); setMessages([]);setContextKey(crypto.randomUUID()) } }
+  return { ...state, contextKey,threadId, ensureThread, unsaved: hasUnsaved(), refresh, openThread, newThread, deleteThread, command, retry: () => { setState(previous => ({ ...previous, error: '' })); setRevision(value => value + 1) } }
 }

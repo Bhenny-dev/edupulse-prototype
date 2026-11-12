@@ -2,6 +2,7 @@ import {normalizeOutlineSections} from '../utils/outlineSections.js'
 import {outlineSectionSchema} from '../utils/outlineSectionSchema.js'
 import { z } from 'zod'
 import {resolveOutlineEdit,outlineEditPrompt,mergeOutlineEdits} from './outlineEdits.js'
+import {rebaseSyllabusDraft} from './syllabusDraftEditing.js'
 
 const textList = z.array(z.string().max(4000)).max(60)
 const referenceUrl = z.string().max(2000).refine(value => !value || /^https?:\/\//i.test(value) && z.url().safeParse(value).success, 'Use an HTTP or HTTPS source URL.')
@@ -50,6 +51,17 @@ const editors = new Map<string, Editor>()
 export function registerEditor(id: string, editor: Editor) { editors.set(id, editor); return () => { if (editors.get(id) === editor) editors.delete(id) } }
 export function currentEditorSources() { return structuredClone([...editors.values()].at(-1)?.sources?.() || []) }
 export function currentEditor(): EditorSnapshot | null { const editor = [...editors.values()].at(-1); return editor ? structuredClone(editor.read()) : null }
+/** Direct placement is restricted to an explicitly mounted syllabus form. Persistence stays explicit. */
+export function applySyllabusDraft(expected:EditorSnapshot,changes:Record<string,unknown>,role:string){
+ if(role!=='instructor'||expected.kind!=='syllabus')throw new Error('Only the authorized syllabus builder can receive draft edits.')
+ const editor=[...editors.values()].find(value=>value.read().instance===expected.instance)
+ if(!editor)throw new Error('The syllabus builder closed. Reopen it before continuing.')
+ const current=editor.read(),patch=rebaseSyllabusDraft(expected,current,syllabusPatch.parse(changes))
+ const next:Record<string,unknown>={...current.data,...patch,status:'drafted',approvedFile:undefined,extractedAt:undefined}
+ if(patch.institutionalContext){const before=(current.data.institutionalContext||{}) as Record<string,Record<string,unknown>>;next.institutionalContext={...before,...Object.fromEntries(Object.entries(patch.institutionalContext as Record<string,object>).map(([unit,fields])=>[unit,{...before[unit],...fields}]))}}
+ editor.apply(next)
+ return {fields:Object.keys(patch),before:current,after:{...current,data:next},saved:false}
+}
 export function previewEditorOutline(expected:EditorSnapshot,progress:NonNullable<ReturnType<typeof import('./draftProgress.js').outlineDraftProgress>>,role:string) {
  if(role!=='instructor'||expected.kind!=='syllabus')throw new Error('Only the authorized syllabus editor can preview an outline.')
  const editor=[...editors.values()].find(value=>value.read().instance===expected.instance)

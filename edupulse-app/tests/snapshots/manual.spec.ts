@@ -44,6 +44,7 @@ test('syllabus lifecycle: build, check, download, approve, extract, activate', a
   await shot(page, f, '03-save-as-drafted-button')
   await page.getByRole('button', { name: 'Save as Drafted', exact: true }).click()
   await saved(page)
+  await expect(page).toHaveURL(/tab=builder&edit=/)
   await page.goto('/#/syllabus?tab=mine')
   const row = page.getByRole('row').filter({ hasText: 'IT 102' }).filter({ hasNotText: /sample/i }).first()
   await expect(row).toBeVisible()

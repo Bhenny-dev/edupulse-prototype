@@ -2,9 +2,9 @@
 
 **Who:** instructors (class lists, generation), students and instructors (materials), every role (search, opening pages) · **Where:** the Pulse panel on any page · Requirements FR-GUIDE-31–36.
 
-Pulse can act on what you ask, not only answer it. It reads your message and any file you attach, then shows an **action card** that says exactly what it will do. Nothing that changes your data happens until you press the card's confirm button; **Cancel** leaves everything as it was. Searches and page changes only read or navigate, so they happen at once.
+Pulse can act on what you ask, not only answer it. It reads your message and any file you attach, then shows an **action card** that says exactly what it will do. Generated edits to an open Syllabus Builder are validated and placed directly in draft fields. Saving, checking and approval remain separate. File imports, class-list changes and courseware writes keep their confirmation cards; **Cancel** leaves those records unchanged. Searches and page changes only read or navigate, so they happen at once.
 
-Pulse first matches familiar requests with fixed rules. Other requests can use a model to propose one typed tool; its output must pass the same field, role and target checks. A model without a JSON mode may wrap its proposal in a sentence or a code block; Pulse reads the complete proposal inside the reply, repairs nothing, and checks it the same way. Conversational text cannot execute code or change a record. Mutation cards require your confirmation, and saved-result receipts wait for the database response. A preview-device receipt explicitly says no cloud save was made.
+Pulse first matches familiar requests with fixed rules. Other requests can use a model to propose one typed tool; its output must pass the same field, role and target checks. A model without a JSON mode may wrap its proposal in a sentence or a code block; Pulse reads the complete proposal inside the reply, repairs nothing, and checks it the same way. Conversational text cannot execute code or change a record. Generated syllabus placement updates only the open draft form; other mutation cards require confirmation. Saved-result receipts wait for the database response. A preview-device receipt explicitly says no cloud save was made.
 
 `PULSE-ACT-001` links this task to `tests/operator.test.ts` and `tests/browser/pulse-actions.spec.ts`. Role-scoped navigation is also exercised by `AUTH-001` in `tests/browser/access.spec.ts`: **Performance** remains available to Dean/student views; instructor performance requests open **Student Monitoring → Assessment Scores**, and Pulse declines it for Program Coordinator and the admin console view. Server courseware generation rechecks the verified role (`AUTH-002`); a role named in a message or request body grants no permission. **Undo** preserves a class list changed after confirmation and displays a notice instead of overwriting newer work. Command-completion guidance follows real saved results, not a model's claim of success.
 
@@ -84,11 +84,11 @@ Choose **Course for this syllabus**, select the fields, and compare **Before** w
 
 ## Revise content or class-list records
 
-Open a syllabus builder, lecture/activity document, presentation or assessment editor. Ask for a precise change, such as *Revise the program outcomes to emphasize worked examples*. Pulse shows the target, selected fields and before/after text. Generated content remains a draft. Published courseware is protected; open a draft version first. Title changes require **Confirm and save draft**.
+Open a syllabus builder, lecture/activity document, presentation or assessment editor. Ask for a precise change, such as *Revise the program outcomes to emphasize worked examples*. In Syllabus Builder, Pulse directly fills the requested editable draft fields and offers optional **Review changes** with Before and Now text. Other content editors retain their review and confirmation cards. Published courseware is protected; open a draft version first. Title changes require **Confirm and save draft**.
 
-![Generated outcome proposal awaiting confirmation](14-generated-edit-preview.png)
+![Generated outcome placed with optional review](14-generated-edit-preview.png)
 
-This capture uses a synthetic model response to demonstrate the real preview controls; it is not an inference-quality evaluation. Model schema, field scope and forged-role rejection are tested separately in `tests/pulse-tools.test.ts`.
+This capture uses a synthetic model response to demonstrate direct draft placement and optional review; it is not an inference-quality evaluation. Model schema, field scope and forged-role rejection are tested separately in `tests/pulse-tools.test.ts`.
 
 For a class list, ask *Remove student B102 from the IT 102 class list* or attach an updated export. **Review class-list changes** requires an owned class list and exact selected rows for removal or field edits. **Roster operation** offers merge, replacement, removal and field update. Review **Preview roster changes**, then **Confirm roster changes**. Replacement removes old rows absent from the file. A changed roster invalidates the preview; no model-generated student identities are inserted.
 
@@ -110,7 +110,7 @@ Ask *Recall our previous discussion about programming* to retrieve attributed ex
 
 ## Correct the selected section using its page source
 
-A syllabus accepted through the page uploader is available to Pulse while its builder remains mounted. An explicit source import can restore a selected section; a request to draft or improve a selected editable field prepares a writing proposal instead. Select the intended section with drag-and-drop or **Alt+P** and ask, for example, *Make it more accurate to the uploaded file*. Pulse maps this request to that section and prepares a source import; it does not answer with unrelated upload instructions. Choose **Prepare edit preview**, compare the before/proposed fields, and select **Apply to open form** or the separate save confirmation. Unrelated fields stay unchanged and stale previews are rejected.
+A syllabus accepted through the page uploader is available to Pulse while its builder remains mounted. An explicit source import can restore a selected section; a request to draft or improve a selected editable field directly places validated draft wording instead. Select the intended section with drag-and-drop or **Alt+P** and ask, for example, *Make it more accurate to the uploaded file*. Pulse maps this request to that section and prepares a source import; it does not answer with unrelated upload instructions. Choose **Prepare edit preview**, compare the before/proposed fields, and select **Apply to open form** or the separate save confirmation. Unrelated fields stay unchanged and stale previews are rejected.
 
 ![Focused source correction beside the editable page; synthetic PDF sample](15-focused-page-source.png)
 
@@ -130,43 +130,26 @@ Pulse actions require a healthy hosted API. The release process checks native se
 
 ## Generate a syllabus from the selected course
 
-Select **IT 104 — Research Methods** (or your intended curriculum course) in **Syllabus Builder**. Ask Pulse, for example, *Generate content for all fields in this syllabus using web research*. An empty library is permitted. Pulse prepares a **Review the proposed content change** card using the selected course and its description. A request for all fields covers the whole form even if Pulse was focused on a particular section.
+Select the curriculum course in **Syllabus Builder** or open your saved draft with **Edit in Builder**. Ask Pulse to generate the requested section or week. Validated syllabus content is placed into the open fields directly, with no separate chat confirmation. An empty library does not prevent original educational drafting. Unknown institutional grading rules stay pending; references require supplied/retrieved metadata rather than invented books or URLs.
 
-The card lists editable **Program outcomes**, **Course outline**, **Course requirements**, **Grading system**, **Course policy**, **Books** and **Online references** with **Before** and **Proposed** text. The outline includes every existing week, teaching activities, assessment details, teaching materials and assessment types. Exam weeks retain their labels. Curriculum identity stays locked. Unknown official grading rules remain pending; suggested requirements and policies require instructor review. Missing references do not prevent drafting the teaching content, and invented book metadata or URLs are rejected.
+![Direct course-aware draft and optional change review](17-course-aware-syllabus-draft.png)
 
-![Course-aware syllabus proposal with readable outcomes, research links and field selection](17-course-aware-syllabus-draft.png)
+**Review changes** opens Before and Now values after placement. **Sources** lists supplied research links. These are synthetic model/research UI captures; they do not establish live provider accuracy. Provider web research may have separate billing; keyless research retains its existing catalog/Wikipedia coverage limits. File-only requests retain their source restrictions.
 
-This screenshot uses a **synthetic model/research response** for UI verification, including a sample research link; it does not demonstrate live provider accuracy. **Public research sources** opens the retrieved links. Research limitations appear above the fields. OpenRouter and OpenAI connections can use provider web search where supported; provider search may be billed separately even with a free model. If unavailable, public educational search uses Wikipedia plus the existing bibliographic catalogs and states the coverage limit. On-device and other providers use the same keyless research fallback.
-
-Expand fields and review them, then select **Apply to open form** or **Confirm and save draft**. The former changes the form; the latter waits for a persistence receipt. Nothing is published or approved. A model response missing requested teaching weeks is repaired once and rejected if still incomplete. A failed or truncated response leaves the form unchanged. A source-only request uses the selected sources and does not expand to public research. General conversation and subject explanations remain possible without uploading documents.
-
+**Save as Drafted** saves and keeps the current syllabus open in the builder. **Mark as Checked**, offline approval, approved-file acknowledgment, activation and publication remain explicit separate actions. Generated content cannot perform them. File-import and courseware confirmation controls remain unchanged.
 
 ## Slow models and interrupted connections
 
-A full syllabus or course-outline request can take several model calls. Pulse researches the selected course once, then prepares small groups of teaching weeks while the existing **Thinking...** / **Still working...** indicator and **Stop response** remain available. Intermediate steps do not change the form or appear as partial editable proposals. When all fields and weeks pass validation, one **Review the proposed content change** card appears.
+Full outlines use one teaching week per validated step. Completed chunks appear directly in the fields, and the **draft weeks placed; continuing...** indicator reports progress. The failed or incomplete chunk is rejected; earlier completed chunks remain in the mounted form. Save them explicitly before a full reload. **Stop response** cancels further inference without discarding placed draft fields.
 
-![Complete Philippine Popular Culture preview after simulated step recovery](19-bounded-course-preview.png)
+![Completed Philippine Popular Culture draft after step recovery](19-bounded-course-preview.png)
 
-This capture uses synthetic model/research transport for the reported Philippine Popular Culture request. The existing field selection, **Public research sources**, **Apply to open form** and **Confirm and save draft** controls are preserved. It does not establish live provider accuracy or availability.
+A connection/timeout interruption retries its current step once. A continuing failure preserves the user prompt and available draft fields, reports the failure, and leaves the builder open. Saved changes remain revision checked. No response or reload implies a save, checking, approval or publication.
 
-A temporary connection/timeout interruption retries its current step once. If the connection still fails, Pulse keeps the prompt in **Ask Pulse** and leaves the form unchanged with a readable error. Check the connection and resend or refresh the preview. Provider authentication and quota errors remain separate; Pulse does not change the selected model. **Stop response** prevents further steps. Reloading the page clears in-memory draft preparation; a new preview is then required.
+![Connection failure with the prompt retained](20-connection-recovery.png)
 
-![Connection error with the original prompt retained and no partial edit](20-connection-recovery.png)
+**Week 2 then** inherits the active syllabus outline task in this conversation. An explicit week overrides a stale selected field. **Complete remaining weeks** fills unfinished teaching weeks while preserving completed weeks and exams. The latest receipt offers the next unfinished week and optional review. Outside a mounted builder, **Open editable syllabus** selects an owned saved target first. See [Manual 42](../42-editable-syllabus-workspace/README.md).
 
-## Selected fields, sections and dropped files
-
-[Manual 14](../14-pulse-and-outline-workspace/README.md) shows selected-field drafting, preview, confirmed application and native file attachments. Drop up to three files onto the panel or the closed Pulse avatar; dropping only attaches them and preserves the unsent prompt. A rejected batch leaves earlier attachments intact. Drafting and improvement requests keep the selected field or section; explicit whole-form requests broaden the scope. Identity, publication status, locked controls and another role’s data are never editable through a field target.
-
-Pulse uses three animated dots with **Thinking…** / **Still working…** while waiting for the actual response. **Stop response** remains available. Conversation history uses a skeleton while fetching and a spinner during archive, memory or deletion updates. [Manual 19](../19-loading-and-saved-connections/README.md) shows light/dark and mobile pending states.
-
-## Optional voice input
-
-Open **Pulse options** and choose **Voice input**. Review recognized text before **Send**, or explicitly select conversation mode to submit completed speech and optionally read replies. English/Filipino are primary; other listed languages are experimental and browser dependent. Voice uses the same role checks and confirmation cards as typed requests. [Manual 20](../20-voice-and-provider-errors/README.md) shows the controls, privacy information and failure recovery.
-
-## Outline previews while generation continues
-
-**Course Outline** preparation now uses one teaching week per step in both runtimes. The mounted builder displays completed previews before the final week finishes. **Use completed weeks** or **Use week 2** places reviewed rows into the form; changed manual rows and exams remain. A later failure keeps completed previews. Saving remains a separate confirmation. [Manual 34](../34-progressive-outlines/README.md) shows this interface; other whole-syllabus sections retain their final confirmation card.
-
-Reference edits retain supplied citation metadata. Validation checks the retrieved source title and retained bibliographic details as well as its URL and body text, so an exact source title is not rejected simply because it is absent from the passage body. New references enter through links/files in [Manual 35](../35-reference-intake/README.md). Placement and saving remain explicit.
+Reference edits retain supplied citation metadata. Validation checks the retrieved source title and retained bibliographic details as well as its URL and body text, so an exact source title is not rejected simply because it is absent from the passage body. New references enter through links/files in [Manual 35](../35-reference-intake/README.md). Generated placement is direct in Syllabus Builder; saving remains explicit.
 
 Instructor monitoring now selects a year-level course/block card before displaying the class tabs. [Manual 37](../37-instructor-monitoring/README.md) shows roster editing, saved suspension before removal, scoped analytics and sequential reading confirmations.

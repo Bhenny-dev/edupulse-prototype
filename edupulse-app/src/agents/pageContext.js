@@ -1,14 +1,17 @@
 import { ALL_FIELDS, sectionFor, sourceSyllabusPatch } from './workTools'
+import {explicitOutlineTask} from './syllabusConversation'
 
 export function focusedSection(focus, message = '') {
   if (ALL_FIELDS.test(message)) return 'all'
   const explicit = sectionFor(message)
   if (explicit !== 'all') return explicit
+  if(explicitOutlineTask(message))return 'courseOutline'
   if (focus?.field) return focus.field.split('.')[0]
   if (['6', '7'].includes(String(focus?.section))) return 'all'
   return ({ 2:'courseDescription', 3:'institutionalContext', 4:'programOutcomes', 5:'courseOutline' })[focus?.section] || sectionFor(focus?.label || '')
 }
 export function focusedFields(focus, message = '') {
+  if(explicitOutlineTask(message))return undefined
   if (focus?.field || ALL_FIELDS.test(message) || sectionFor(message) !== 'all') return undefined
   return ({ 6: ['courseRequirements', 'gradingSystem', 'coursePolicy'], 7: ['books', 'onlineReferences'] })[focus?.section]
 }

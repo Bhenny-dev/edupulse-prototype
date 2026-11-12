@@ -122,7 +122,7 @@ The mascot sits bottom-right on every page. Its eyes follow the pointer. **Click
 
 ![Pulse panel](17-pulse-panel.png)
 
-The header contains **Pulse**, **Pulse options** and **Close Pulse**. The empty conversation asks **What would you like help with?**. Open **Pulse options** for new conversation, history/memory, page or selected-component guidance, workspace buddies and AI settings. Draft or edit actions appear after a relevant prompt and require review and confirmation. Dragging the avatar, the hover help badge and **Alt+P** still select a component.
+The header contains **Pulse**, **Pulse options** and **Close Pulse**. The empty conversation asks **What would you like help with?**. Open **Pulse options** for new conversation, history/memory, page or selected-component guidance, workspace buddies and AI settings. Generated syllabus edits go directly into validated draft fields, with optional Review changes and separate Save as Drafted. File imports, roster and courseware actions retain their review/confirmation controls. Dragging the avatar, the hover help badge and **Alt+P** still select a component.
 
 
 ### 18. “Ask Pulse about this” hover badge

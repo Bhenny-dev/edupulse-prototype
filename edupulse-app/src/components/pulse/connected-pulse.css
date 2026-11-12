@@ -213,6 +213,9 @@ html:has(body.pulse-panel-open) { scroll-padding-top: 90px; }
 body:has(.overlay-backdrop):not(.pulse-panel-open) .overlay-backdrop { padding-bottom: 68px; }
 body:has(.overlay-backdrop):not(.pulse-panel-open) .overlay-backdrop > * { max-height: calc(100dvh - 88px) !important; }
 .syllabus-builder-actions, .syllabus-builder-actions > div { flex-wrap: wrap; gap: 8px; }
+.pulse-draft-review { max-height: 360px; overflow: auto; margin-top: 12px; }
+.pulse-draft-review section { padding: 8px 0; border-top: 1px solid var(--gray-200); }
+.pulse-draft-review p { white-space: pre-wrap; overflow-wrap: anywhere; margin: 4px 0 8px; }
 @media (max-width: 600px) {
   .syllabus-builder-actions > div { width: 100%; }
   .syllabus-builder-actions .btn { flex: 1 1 150px; white-space: normal; }

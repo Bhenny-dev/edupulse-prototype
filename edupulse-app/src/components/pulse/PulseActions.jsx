@@ -3,6 +3,7 @@ import { Users, FolderPlus, Sparkles, Search, Info, Check, Undo2, Loader2, Paper
 import { mergeStudents } from '../../utils/rosterParser'
 import { rankCourses, refineCourses } from '../../agents/operator'
 import PulseToolAction from './PulseToolActions'
+import SyllabusFollowups from './SyllabusFollowups'
 
 // Action cards for the Operator's proposals (src/agents/operator.js). A card that
 // changes data shows exactly what will happen and runs only when the user presses
@@ -225,6 +226,7 @@ function StudyOptions({ proposal, ctx }) {
 }
 
 export default function PulseAction({ proposal, ctx }) {
+  if(['syllabus-followups','open-editable-syllabus'].includes(proposal.type))return <SyllabusFollowups proposal={proposal} ctx={ctx}/>
   if (['guide', 'syllabus-import', 'editor-edit', 'roster-edit', 'recall'].includes(proposal.type)) return <PulseToolAction proposal={proposal} ctx={ctx} />
   if (proposal.type === 'register') return <RegisterCard proposal={proposal} ctx={ctx} />
   if (proposal.type === 'file') return <FileCard proposal={proposal} ctx={ctx} />

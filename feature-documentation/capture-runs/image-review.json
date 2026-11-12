@@ -9,9 +9,9 @@
     },
     {
       "path": "feature-documentation/system-manual/09-pulse-actions/17-course-aware-syllabus-draft.png",
-      "sha256": "439a1147ed9917fddb852207c35896c885987e88ed64fccbd38e7e34008fb578",
+      "sha256": "489c74d839397944323359160605118370a46aa2117186543476b5b1d7237d6b",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-09T23:27:06.812Z"
+      "reviewedAt": "2026-11-12T23:23:42.993553+00:00"
     },
     {
       "path": "feature-documentation/system-walkthrough/01-public-site/16-privacy.png",
@@ -129,9 +129,9 @@
     },
     {
       "path": "feature-documentation/system-manual/09-pulse-actions/14-generated-edit-preview.png",
-      "sha256": "08f8776ece16c12e5ec8a7fa9ee2675dde45a4e6519bb66c8d0be8c0138e6ad4",
+      "sha256": "c68d1afb2cc990e8f0a4faf7f1a1902a97333609c4762bc0fb4251f38b507c4b",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-29T02:19:03.679064Z"
+      "reviewedAt": "2026-11-12T23:23:42.994534+00:00"
     },
     {
       "path": "feature-documentation/system-manual/09-pulse-actions/15-focused-page-source.png",
@@ -297,15 +297,15 @@
     },
     {
       "path": "feature-documentation/system-manual/09-pulse-actions/19-bounded-course-preview.png",
-      "sha256": "634a8c03f72efd834a7905d81db63802f7b1dfed52b1819ab57bfa1b0ef1d78f",
+      "sha256": "a89b5db057519b269cb640d4d5c8718e47f1b99347707ede0ab592939e00a7f8",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-09T23:27:06.812Z"
+      "reviewedAt": "2026-11-12T23:23:42.995650+00:00"
     },
     {
       "path": "feature-documentation/system-manual/09-pulse-actions/20-connection-recovery.png",
-      "sha256": "bb732d5b436a527ff58f9874eae55345708e3b0abe9b9b70d4cbfd00e8b02695",
+      "sha256": "96e716451155c0d6abedd5a81d6b614f8fb51e8ea989ef40f3e784be975e0785",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-07T07:06:11.093129Z"
+      "reviewedAt": "2026-11-12T23:23:42.996552+00:00"
     },
     {
       "path": "feature-documentation/system-manual/08-ai-connections/01-pipeline-status.png",
@@ -495,21 +495,21 @@
     },
     {
       "path": "feature-documentation/system-manual/14-pulse-and-outline-workspace/01-clean-pulse.png",
-      "sha256": "44e549edf56164e6cdf1e5a151a5e7fedb4f8617971ff8a7787937be685bdc05",
+      "sha256": "3e0da1e233966dd0c6b70ff579acb2252a800fb2805d3fc59176c89716814177",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-07T15:41:38.006061+00:00"
+      "reviewedAt": "2026-11-12T23:23:42.997614+00:00"
     },
     {
       "path": "feature-documentation/system-manual/14-pulse-and-outline-workspace/02-component-edit-preview.png",
-      "sha256": "51f335fe4a8d8a1f9bd605a8c17062b117b43c58d79aab18fea17515c9cbf0c2",
+      "sha256": "28ea2237a6d8542059e285602a92996d94cffaa01798d1de19c5e7520e9ad683",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-07T15:41:38.007576+00:00"
+      "reviewedAt": "2026-11-12T23:23:42.998742+00:00"
     },
     {
       "path": "feature-documentation/system-manual/14-pulse-and-outline-workspace/03-field-applied.png",
-      "sha256": "181d7a754785c3b195b99d2f22e31a8167bee9ddc69f15e74a15f68e9a5fb609",
+      "sha256": "74dc20c28b412129dcc8ab27087ca1443af21868971a2e0bdc2de3d2bdb6a0b9",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-07T15:41:38.008954+00:00"
+      "reviewedAt": "2026-11-12T23:23:42.999479+00:00"
     },
     {
       "path": "feature-documentation/system-manual/14-pulse-and-outline-workspace/04-file-drop.png",
@@ -2577,27 +2577,27 @@
     },
     {
       "path": "feature-documentation/system-manual/34-progressive-outlines/01-weeks-arrive.png",
-      "sha256": "ed28a63642d5d0f1301963a9ce331b0952c751a7011be85577b971e849d7e24f",
+      "sha256": "ccd1a7aed037c0e375571a535c3018590a4042d48b3cf5e358c591912d770d6a",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-11T15:36:01.997424+00:00"
+      "reviewedAt": "2026-11-12T23:23:43.000695+00:00"
     },
     {
       "path": "feature-documentation/system-manual/34-progressive-outlines/02-stopped-prefix.png",
-      "sha256": "bd0dc579c1753c95229eed161a4d00752bdca3269fc87822aebb69738cf68ad4",
+      "sha256": "9cc156c70afce993fc825375c49076f8274d80fce82a7962e83dd67e17e247d8",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-11T15:36:02.008680+00:00"
+      "reviewedAt": "2026-11-12T23:23:43.001581+00:00"
     },
     {
       "path": "feature-documentation/system-manual/34-progressive-outlines/04-mobile-progress.png",
-      "sha256": "92f5b384a583abc63bc865eec3f39193ae95e729a13db1ca7ef027ad36646b2c",
+      "sha256": "2782d8c29c0f25decfad63a41eb056dca16e443ebb3235002d4f558accc0d84a",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-11T15:36:02.010745+00:00"
+      "reviewedAt": "2026-11-12T23:23:43.002581+00:00"
     },
     {
       "path": "feature-documentation/system-manual/34-progressive-outlines/05-mobile-stopped.png",
-      "sha256": "7ea0fee7d7095d5383f4d0817cb57c91fcffb70599a2dc56bc3f736ca3bc700d",
+      "sha256": "eb4e315969e3c9a2c1d0ec5c8f537d053fe2805a51721801af0b197dc93636fb",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-11T15:36:02.012534+00:00"
+      "reviewedAt": "2026-11-12T23:23:43.003543+00:00"
     },
     {
       "path": "feature-documentation/system-manual/02-syllabus-lifecycle/09-review-extracted-outline.png",
@@ -2607,9 +2607,9 @@
     },
     {
       "path": "feature-documentation/system-manual/34-progressive-outlines/03-editable-weeks.png",
-      "sha256": "e497c222166163fa5776afc1499b1f457895fad935ac9180a1df553e1d16d5f1",
+      "sha256": "a92a4808cadad9ad90f1fb3c4d6c9919b358229be34b92be7ac4ca2e8b8e58f9",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-11T15:36:46.276763+00:00"
+      "reviewedAt": "2026-11-12T23:23:43.005200+00:00"
     },
     {
       "path": "feature-documentation/system-manual/28-outline-selectors/assessment-formats.png",
@@ -3317,51 +3317,27 @@
     },
     {
       "path": "feature-documentation/system-manual/38-targeted-outline-edits/desktop-applied.png",
-      "sha256": "7d5bd1553aeccb98f6f9bb079d78654155c35672c84399ce741f96c042361250",
+      "sha256": "825c6bbde5e54a8dcc6190b96fa5999244a011b4f542bc24f96c6db81a1f4637",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-12T02:42:00.507115+00:00"
+      "reviewedAt": "2026-11-12T23:24:12.073839+00:00"
     },
     {
       "path": "feature-documentation/system-manual/38-targeted-outline-edits/desktop-review.png",
-      "sha256": "2dbb28c7a133858214a19bf67e17dfcffdc04ba4071bfb3f2b0bbdd09ebc0beb",
+      "sha256": "cf73fe10fd58372d54543f8ca6c735597179f11826a6fc07d329160e5ebf11af",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-12T02:42:00.507115+00:00"
+      "reviewedAt": "2026-11-12T23:23:43.006387+00:00"
     },
     {
       "path": "feature-documentation/system-manual/38-targeted-outline-edits/mobile-applied.png",
-      "sha256": "6c259090e36b6ce37111ee80632f01118ebd2c2d440af48da04c7ed3bbca3b56",
+      "sha256": "6157afd40351c93dde3129ebba79bb4e0ec86ea5aaf0f4bb17cb79b0a98c0b7e",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-12T02:42:00.507115+00:00"
+      "reviewedAt": "2026-11-12T23:24:12.074480+00:00"
     },
     {
       "path": "feature-documentation/system-manual/38-targeted-outline-edits/mobile-review.png",
-      "sha256": "2ed220914c44ba6b956808a3752c43645ec2ceaa816154c8c9b910cc1696df82",
+      "sha256": "6e0776d85684c6bdf721430f345a2b540035b8c6837059ebfc6d05fe57d34f45",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-12T02:42:00.507115+00:00"
-    },
-    {
-      "path": "feature-documentation/system-manual/38-targeted-outline-edits/desktop-applied.png",
-      "sha256": "305ab08cf49fa198f590f8ac7e718af91978937e130dd102dc68268535e99a0f",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-12T03:01:00.604936+00:00"
-    },
-    {
-      "path": "feature-documentation/system-manual/38-targeted-outline-edits/desktop-review.png",
-      "sha256": "c71194ee98f6169945c72c40d08aac6e95e92ffe51fb348f6fa152ef8ac91f58",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-12T03:01:00.604936+00:00"
-    },
-    {
-      "path": "feature-documentation/system-manual/38-targeted-outline-edits/mobile-applied.png",
-      "sha256": "2580730c75349b48127eea19d5515ab077f39c86b2a73ad9217d233a6825756b",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-12T03:01:00.604936+00:00"
-    },
-    {
-      "path": "feature-documentation/system-manual/38-targeted-outline-edits/desktop-applied.png",
-      "sha256": "0cce4f6ffe63acd0303d77353dfa6dede6937e65eefae1d6864e5711a4d0f3ec",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-12T03:11:50.877033+00:00"
+      "reviewedAt": "2026-11-12T23:23:43.008067+00:00"
     },
     {
       "path": "feature-documentation/system-manual/36-dean-activity-records/01-dashboard.png",
@@ -4692,6 +4668,66 @@
       "reviewedAt": "2026-11-12T23:21:11.292229+00:00",
       "captureRun": "2026-11-12T23-18-05-242Z-9d193418",
       "method": "Opened with view_image. Verified score, material-access, dashboard and monitoring displays retain useful data without test-origin labels or redundant Activity columns. Reviewed desktop and phone framing; wide phone tables retain their existing horizontal scrolling. Synthetic UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/42-editable-syllabus-workspace/mobile-open-editable.png",
+      "sha256": "f56b5938230c4f25b178b68b7a825131df2d60b5b55f2052df42f270d251e3fe",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T23:23:43.009977+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/42-editable-syllabus-workspace/mobile-progressive.png",
+      "sha256": "c0a91f930afff4b03a09720cc12cab350103378cb8d908f94df4dd086bb83eab",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T23:23:43.011130+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/42-editable-syllabus-workspace/mobile-review-changes.png",
+      "sha256": "45be3eb6937c7fe040cc5b502cb24624862c49ec04fd8e2518d8b7c84a8d5619",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T23:23:43.012267+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/42-editable-syllabus-workspace/mobile-saved-builder.png",
+      "sha256": "ab20ef7e01ba0479853b7ff36242eca6b4104b422f47a5718fc2dbc34af51925",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T23:23:43.013952+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/42-editable-syllabus-workspace/mobile-week-one.png",
+      "sha256": "735e79a1a570d03d310c19d2fbc7aa4500e680cd6b518a7f0fc79f6b41be684b",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T23:23:43.015486+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/42-editable-syllabus-workspace/open-editable.png",
+      "sha256": "4987d0db208b7d781168e6e59f81ef5fdef134919ee078f57b44e900818bb593",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T23:23:43.016517+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/42-editable-syllabus-workspace/progressive.png",
+      "sha256": "da9a8dd5a7ed723c88cece4516d010ef43d5f292872088753eaf4986a5853855",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T23:23:43.017432+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/42-editable-syllabus-workspace/review-changes.png",
+      "sha256": "a6a3551145f0c02d2d2c4e9ae315aae253d3fd817d680f6664ebe909b91bcabc",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T23:23:43.018281+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/42-editable-syllabus-workspace/saved-builder.png",
+      "sha256": "583a4785b27bbb749856f0d18de057ec58a5f5a6025af25cd4f702b98439ef4c",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T23:23:43.019500+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/42-editable-syllabus-workspace/week-one.png",
+      "sha256": "b57ee72abecd6487de91d16a29935648c69fb612442826d25dde043fb090bbdc",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T23:23:43.020413+00:00"
     }
   ]
 }

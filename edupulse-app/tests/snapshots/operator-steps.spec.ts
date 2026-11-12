@@ -15,10 +15,9 @@ for (const failed of [false, true]) test(`synthetic bounded syllabus ${failed ? 
   await panel.getByRole('button', { name: 'Send', exact: true }).click()
   if (failed) await expect(panel).toContainText('The connection was interrupted before the server confirmed the request.')
   else {
-    const card = panel.getByRole('region', { name: 'Review content edit' })
-    await expect(card.getByRole('checkbox')).toHaveCount(7)
-    await card.locator('details').filter({ has: page.locator('summary', { hasText: 'Public research sources' }) }).locator('summary').click()
-    await card.locator('details.pulse-edit-preview').first().locator('summary').click()
+    const card = panel.getByRole('region', { name: 'Syllabus next actions' })
+    await expect(card.getByRole('checkbox')).toHaveCount(0)
+    await card.getByRole('button',{name:'Review changes',exact:true}).click()
   }
   await panel.screenshot({ path: `${dir}/${failed ? '20-connection-recovery' : '19-bounded-course-preview'}.png`, animations: 'disabled', style: '.connected-pulse{position:relative!important;inset:auto!important;height:auto!important;max-height:none!important;overflow:visible!important}.connected-pulse-feed{overflow:visible!important;flex:none!important;max-height:none!important}' })
 })

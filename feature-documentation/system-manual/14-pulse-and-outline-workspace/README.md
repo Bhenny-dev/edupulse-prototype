@@ -1,6 +1,6 @@
 # 14 · Pulse field actions and the Course Outline workspace
 
-Instructors draft and revise selected syllabus or courseware fields. Every role can attach references, ask questions and open Help or keyboard guidance from Settings. These captures use preview academic data. Proposal captures use a labelled synthetic model response to test the real preview and apply controls; they do not establish live model quality or hosted persistence.
+Instructors draft and revise selected syllabus or courseware fields. Every role can attach references, ask questions and open Help or keyboard guidance from Settings. These captures use preview academic data. Generated-edit captures use a labelled synthetic model response to test direct draft placement and optional review; they do not establish live model quality or hosted persistence.
 
 ## A clean conversation
 
@@ -12,9 +12,9 @@ Open the Pulse avatar. The panel starts with **What would you like help with?**,
 
 Select a course, then drag the Pulse avatar onto an editable field or section. You can also click **Ask Pulse about this**, or focus the field and press **Alt+P**. Type a specific request, such as “Draft this field using the selected Research Methods course.” Pulse keeps the selected field in scope. A section request selects the corresponding editable fields; an explicit request for all fields selects the full editable form.
 
-Choose **Prepare edit preview** when offered. Read the selected field's before/proposed values, then choose **Apply to open form** or **Confirm and save draft**. Application changes the mounted form; saving waits for the workspace response. Course identity and status remain protected. Changed, removed or moved targets require a new preview.
+Generated syllabus wording goes directly into the selected draft field after validation. Optional **Review changes** displays Before and Now values. **Save as Drafted** saves explicitly and keeps the builder open. File imports and other content editors retain their own preview/confirmation controls. A target changed during generation rejects that chunk while preserving manual work; an explicit Week 2 request overrides a previously selected Week 1 field.
 
-![Selected-field edit preview with a synthetic model proposal](02-component-edit-preview.png)
+![Direct selected-field edit with optional review](02-component-edit-preview.png)
 
 Only the first outcome changes in this example. The neighboring outcome stays intact. The same boundaries preserve other outline weeks, document sections and assessment questions, including question types, topic mappings and author answer settings.
 

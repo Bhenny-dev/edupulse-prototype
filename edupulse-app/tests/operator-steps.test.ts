@@ -42,7 +42,7 @@ test('reported prompt completes all weeks across bounded steps, shares research 
       assert.ok('patch' in result && result.patch)
       assert.ok('courseOutline' in result.patch)
       assert.deepEqual(result.patch.courseOutline, popularCultureDraft.courseOutline)
-      assert.equal(result.requiresConfirmation, true)
+      assert.equal(result.requiresConfirmation, false)
       assert.deepEqual(popularCultureEditor.data.programOutcomes, [''])
       return
     }
@@ -89,7 +89,7 @@ test('encrypted steps cross client, real API, model adapter and final validation
   }
   const result = await requestOperator(input(), AbortSignal.timeout(30000))
   assert.deepEqual(result?.patch?.courseOutline, popularCultureDraft.courseOutline)
-  assert.equal(result?.requiresConfirmation, true)
+  assert.equal(result?.requiresConfirmation, false)
   assert.equal(generations, 18); assert.equal(researches, 1); assert.equal(requests, 20)
   assert.deepEqual((await (await handleRequest(new Request('http://localhost/api/ai?action=workspace'))).json()).data, null, 'generation alone never saves')
   const resume = { ...input(), continuation: firstCheckpoint }

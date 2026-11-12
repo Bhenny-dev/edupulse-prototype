@@ -71,7 +71,7 @@ test('model tool proposals reject forged roles, invalid fields and edits outside
   await assert.rejects(planValidatedTool(input, identity, AbortSignal.timeout(1000), model({ status: 'active' })), { code: 'TOOL_OUTPUT_INVALID' })
   await assert.rejects(planValidatedTool(input, identity, AbortSignal.timeout(1000), model({ coursePolicy: ['Invented'] })), { code: 'TOOL_SCOPE_MISMATCH' })
   const valid = await planValidatedTool(input, identity, AbortSignal.timeout(1000), model({ gradingSystem: 'Proposed draft.' }))
-  assert.deepEqual(valid, { patch: { gradingSystem: 'Proposed draft.' }, generated: true, requiresConfirmation: true })
+  assert.deepEqual(valid, { patch: { gradingSystem: 'Proposed draft.' }, generated: true, requiresConfirmation: false })
   assert.equal(input.editor!.data.gradingSystem, 'Before')
 })
 

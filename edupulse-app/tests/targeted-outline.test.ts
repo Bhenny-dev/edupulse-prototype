@@ -132,3 +132,8 @@ test('confirmed targeted proposal persists atomically; stale retries and invalid
   assert.deepEqual(await readWorkspace(identity),saved)
  }finally{await closeLocalDb();if(hosted===undefined)delete process.env.VERCEL;else process.env.VERCEL=hosted}
 })
+
+test('a later week receives bounded preceding educational content and prior user language/source context without record IDs',async()=>{
+ const input=request('Complete Week 2 only');input.history=[{role:'user',content:'Generate Week 1 in English using only the attached source.'}]
+ await run(input,p=>{assert.equal(p.precedingWeeks[0].week,1);assert(p.precedingWeeks[0].topics.includes('Keep topic'));assert.match(p.history[0].content,/English/);assert(!JSON.stringify(p).includes('stored-'));return {edits:p.targets.map((target:any)=>({target:target.target,changes:completedSection}))}})
+})

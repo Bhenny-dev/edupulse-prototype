@@ -110,7 +110,7 @@ The weekly Course workspace shows a collapsed **Syllabus sources** panel when re
 
 ## Progressive outline preparation
 
-The syllabus builder now displays completed weekly previews while Pulse prepares the next week, with **Use completed weeks**, individual week controls and a retained stopped state. Same-course source patterns are displayed with version/status. Placement preserves manual edits and does not save or publish. [Manual 34](../../system-manual/34-progressive-outlines/README.md) shows desktop and mobile examples.
+The syllabus builder now places validated weekly chunks directly in the requested draft fields while Pulse prepares the next week. Completed fields remain after an interruption. Same-course sequence references still inform generation. Placement preserves unrelated/manual work and does not save or publish. [Manual 34](../../system-manual/34-progressive-outlines/README.md) shows desktop and mobile examples.
 
 ## Reference link/file intake
 
@@ -132,7 +132,7 @@ The Course Outline has multiline Contents, Teaching-Learning Activities and Asse
 
 ### Targeted syllabus drafting
 
-Pulse resolves **Week 1 Section 1** against the mounted outline. Its review names the fields and shows their before/proposed content, including linked teaching weeks for shared sections. [Manual 38](../../system-manual/38-targeted-outline-edits/README.md) contains current desktop and phone captures. Generation does not save; explicit confirmation and revision checks remain required.
+Pulse resolves **Week 1 Section 1** against the mounted outline. Validated values are placed directly; optional Review changes shows before/now content, including shared changes across linked teaching weeks. [Manual 38](../../system-manual/38-targeted-outline-edits/README.md) contains current desktop and phone captures. Generation does not save; explicit Save as Drafted and revision checks remain required.
 
 ## Directly authored Weeks 1–5
 
@@ -162,3 +162,7 @@ My Syllabus now selects registered instructors from a dropdown. Received copies 
 The later owner correction caps student subjects instead of instructor classes. The previous 5-10-class instructor ceiling is superseded; current classes can exceed ten while maintaining the 35-student block maximum. Monitoring uses the saved allocation and retains labelled demonstration activity for every student. Independent student results stay separate from self-practice. [Current guide](../../system-manual/41-student-learning/README.md).
 
 Test badges, the activity-origin selector and the Activity column are removed from score/access monitoring and review choices. Saved values and current/earlier versions remain; audit provenance stays stored. [Current progress guide](../../system-manual/33-pipeline-progress/README.md).
+
+## Direct syllabus draft workspace
+
+Validated generated syllabus fields are placed directly in the mounted builder; **Review changes** is optional. **Open editable syllabus** resolves an owned saved target, and **Save as Drafted** stays in the builder. Explicit weeks override stale field selections; **Week 2 then** and **Complete remaining weeks** continue the same syllabus task. Checking, approval, activation and publication remain separate. [Manual 42](../../system-manual/42-editable-syllabus-workspace/README.md) shows desktop/phone captures and reload boundaries.

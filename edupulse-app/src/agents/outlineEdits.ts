@@ -17,7 +17,12 @@ const fail=(path:string,message:string):never=>{throw new ApiError(400,'OUTLINE_
  * kept outside model output, and used to update every association of a shared section. */
 export function resolveOutlineEdit(input:Input):OutlineEditScope|null {
  if(input.editor?.kind!=='syllabus')return null
- const path=input.targetPath||input.context.match(/Editable field path:\s*([\w.]+)/)?.[1]
+ const requestedPath=input.targetPath||input.context.match(/Editable field path:\s*([\w.]+)/)?.[1]
+ // A fresh explicit week request overrides a stale pointer selection.
+ const selectedIndex=requestedPath?.match(/^courseOutline\.(\d+)\./)?.[1]
+ const selectedWeek=selectedIndex===undefined?undefined:(input.editor.data.courseOutline as OutlineWeek[]|undefined)?.[Number(selectedIndex)]?.week
+ const explicitWeeks=[...input.message.matchAll(/\b(?:week|wk)\.?\s*(\d{1,2})\b/gi)].map(match=>Number(match[1]))
+ const path=explicitWeeks.some(week=>week!==selectedWeek)?undefined:requestedPath
  const field=path?.match(/^courseOutline\.(\d+)\.(?:sections\.(\d+)\.)?(ilos|contents|activities|assessments|assessmentTypes)(?:\.(\d+))?$/)
  if(path?.startsWith('courseOutline.')&&!field)return fail(path,'This outline field is not writable through the targeted contract.')
  const mentions=[...input.message.matchAll(/\b(?:week|wk)\.?\s*(\d{1,2})\b([^]*?)(?=\b(?:week|wk)\.?\s*\d|$)/gi)]

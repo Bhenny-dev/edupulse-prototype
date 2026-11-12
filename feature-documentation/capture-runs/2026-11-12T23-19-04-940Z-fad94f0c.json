@@ -1,0 +1,302 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-11-12T23-19-04-940Z-fad94f0c",
+  "startedAt": "2026-11-12T23:19:04.940Z",
+  "finishedAt": "2026-11-12T23:19:39.935Z",
+  "commitSha": "f78a45102c0b28897b8d18290b2c9f84593ca5eb",
+  "sourceDigest": "53686403e71c324566a5b436919c6b3f3d72b005582a6b7dcb8a93fe19f38080",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-11-12T23:18:24.208Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 4,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": null
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/editable-syllabus.spec.ts",
+    "edupulse-app/tests/snapshots/targeted-outline.spec.ts",
+    "edupulse-app/tests/snapshots/editable-syllabus-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/targeted-outline-mobile.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/account-support-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/account-support-reload-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/account-support-reload.spec.ts",
+    "edupulse-app/tests/snapshots/account-support.spec.ts",
+    "edupulse-app/tests/snapshots/approved-syllabus-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/approved-syllabus.spec.ts",
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/authored-weeks.spec.ts",
+    "edupulse-app/tests/snapshots/automatic-records.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/automatic-records.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+    "edupulse-app/tests/snapshots/bounded-loads-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/bounded-loads.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/citation-repair.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.spec.ts",
+    "edupulse-app/tests/snapshots/course-seed.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-formatting.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-navigation.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-readonly.spec.ts",
+    "edupulse-app/tests/snapshots/dean-records-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/dean-records.spec.ts",
+    "edupulse-app/tests/snapshots/editor-layout.spec.ts",
+    "edupulse-app/tests/snapshots/harness-delivery.spec.ts",
+    "edupulse-app/tests/snapshots/instructor-updates-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/instructor-updates.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/local-models-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/local-models.spec.ts",
+    "edupulse-app/tests/snapshots/login-icons-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/login-icons.spec.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/monitoring-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/monitoring.spec.ts",
+    "edupulse-app/tests/snapshots/operator-steps.spec.ts",
+    "edupulse-app/tests/snapshots/outline-courseware.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/outline-courseware.spec.ts",
+    "edupulse-app/tests/snapshots/outline-progress-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/outline-progress.spec.ts",
+    "edupulse-app/tests/snapshots/outline-selector.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/outline-selector.spec.ts",
+    "edupulse-app/tests/snapshots/outline-sources-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/outline-sources.spec.ts",
+    "edupulse-app/tests/snapshots/oversight.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/oversight.spec.ts",
+    "edupulse-app/tests/snapshots/pipeline-progress-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pipeline-progress.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/public-pulse-search-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/public-pulse-search.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-drafting.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-source.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+    "edupulse-app/tests/snapshots/radar-progress-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/radar-progress.spec.ts",
+    "edupulse-app/tests/snapshots/reference-intake-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/reference-intake.spec.ts",
+    "edupulse-app/tests/snapshots/retained-catalog.spec.ts",
+    "edupulse-app/tests/snapshots/retained-sources-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/retained-sources.spec.ts",
+    "edupulse-app/tests/snapshots/role-monitoring.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+    "edupulse-app/tests/snapshots/second-admin-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/second-admin.spec.ts",
+    "edupulse-app/tests/snapshots/staff-registration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/staff-registration.spec.ts",
+    "edupulse-app/tests/snapshots/student-directory.spec.ts",
+    "edupulse-app/tests/snapshots/student-learning-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/student-learning.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-no-loads.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/system-search-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/system-search.spec.ts",
+    "edupulse-app/tests/snapshots/teaching-sets.spec.ts",
+    "edupulse-app/tests/snapshots/voice-quota.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/voice-quota.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-cache.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-recovery.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/editable-syllabus.spec.ts",
+      "title": "direct syllabus drafts, continuation, saved builder and progressive fields",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 6119,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/targeted-outline.spec.ts",
+      "title": "targeted outline review and shared-section placement",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 3542,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/editable-syllabus-mobile.spec.ts",
+      "title": "direct syllabus drafts, continuation, saved builder and progressive fields",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 6213,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/targeted-outline-mobile.spec.ts",
+      "title": "targeted outline review and shared-section placement",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 4539,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-manual/09-pulse-actions/19-bounded-course-preview.png",
+      "sha256": "a89b5db057519b269cb640d4d5c8718e47f1b99347707ede0ab592939e00a7f8",
+      "bytes": 58652
+    },
+    {
+      "path": "feature-documentation/system-manual/09-pulse-actions/20-connection-recovery.png",
+      "sha256": "96e716451155c0d6abedd5a81d6b614f8fb51e8ea989ef40f3e784be975e0785",
+      "bytes": 27245
+    },
+    {
+      "path": "feature-documentation/system-manual/14-pulse-and-outline-workspace/01-clean-pulse.png",
+      "sha256": "3e0da1e233966dd0c6b70ff579acb2252a800fb2805d3fc59176c89716814177",
+      "bytes": 16248
+    },
+    {
+      "path": "feature-documentation/system-manual/14-pulse-and-outline-workspace/02-component-edit-preview.png",
+      "sha256": "28ea2237a6d8542059e285602a92996d94cffaa01798d1de19c5e7520e9ad683",
+      "bytes": 69757
+    },
+    {
+      "path": "feature-documentation/system-manual/14-pulse-and-outline-workspace/03-field-applied.png",
+      "sha256": "74dc20c28b412129dcc8ab27087ca1443af21868971a2e0bdc2de3d2bdb6a0b9",
+      "bytes": 42197
+    },
+    {
+      "path": "feature-documentation/system-manual/34-progressive-outlines/01-weeks-arrive.png",
+      "sha256": "895c086352aecf9025547f2fb0569cea924272f3e5be7ff499be2dd2255f149e",
+      "bytes": 150700
+    },
+    {
+      "path": "feature-documentation/system-manual/34-progressive-outlines/02-stopped-prefix.png",
+      "sha256": "9cc156c70afce993fc825375c49076f8274d80fce82a7962e83dd67e17e247d8",
+      "bytes": 25286
+    },
+    {
+      "path": "feature-documentation/system-manual/34-progressive-outlines/03-editable-weeks.png",
+      "sha256": "a92a4808cadad9ad90f1fb3c4d6c9919b358229be34b92be7ac4ca2e8b8e58f9",
+      "bytes": 538877
+    },
+    {
+      "path": "feature-documentation/system-manual/38-targeted-outline-edits/desktop-applied.png",
+      "sha256": "0cce4f6ffe63acd0303d77353dfa6dede6937e65eefae1d6864e5711a4d0f3ec",
+      "bytes": 106726
+    },
+    {
+      "path": "feature-documentation/system-manual/38-targeted-outline-edits/desktop-review.png",
+      "sha256": "cf73fe10fd58372d54543f8ca6c735597179f11826a6fc07d329160e5ebf11af",
+      "bytes": 129597
+    },
+    {
+      "path": "feature-documentation/system-manual/38-targeted-outline-edits/mobile-applied.png",
+      "sha256": "2580730c75349b48127eea19d5515ab077f39c86b2a73ad9217d233a6825756b",
+      "bytes": 189716
+    },
+    {
+      "path": "feature-documentation/system-manual/38-targeted-outline-edits/mobile-review.png",
+      "sha256": "86aaa97fd4905cc2034428a408d3f7afb64ad35cdfdcabf198f34c988611a0d4",
+      "bytes": 468219
+    },
+    {
+      "path": "feature-documentation/system-manual/42-editable-syllabus-workspace/mobile-open-editable.png",
+      "sha256": "f56b5938230c4f25b178b68b7a825131df2d60b5b55f2052df42f270d251e3fe",
+      "bytes": 89333
+    },
+    {
+      "path": "feature-documentation/system-manual/42-editable-syllabus-workspace/mobile-progressive.png",
+      "sha256": "c0a91f930afff4b03a09720cc12cab350103378cb8d908f94df4dd086bb83eab",
+      "bytes": 54046
+    },
+    {
+      "path": "feature-documentation/system-manual/42-editable-syllabus-workspace/mobile-review-changes.png",
+      "sha256": "45be3eb6937c7fe040cc5b502cb24624862c49ec04fd8e2518d8b7c84a8d5619",
+      "bytes": 165043
+    },
+    {
+      "path": "feature-documentation/system-manual/42-editable-syllabus-workspace/mobile-saved-builder.png",
+      "sha256": "ab20ef7e01ba0479853b7ff36242eca6b4104b422f47a5718fc2dbc34af51925",
+      "bytes": 198919
+    },
+    {
+      "path": "feature-documentation/system-manual/42-editable-syllabus-workspace/mobile-week-one.png",
+      "sha256": "735e79a1a570d03d310c19d2fbc7aa4500e680cd6b518a7f0fc79f6b41be684b",
+      "bytes": 185792
+    },
+    {
+      "path": "feature-documentation/system-manual/42-editable-syllabus-workspace/open-editable.png",
+      "sha256": "4987d0db208b7d781168e6e59f81ef5fdef134919ee078f57b44e900818bb593",
+      "bytes": 24198
+    },
+    {
+      "path": "feature-documentation/system-manual/42-editable-syllabus-workspace/progressive.png",
+      "sha256": "da9a8dd5a7ed723c88cece4516d010ef43d5f292872088753eaf4986a5853855",
+      "bytes": 15086
+    },
+    {
+      "path": "feature-documentation/system-manual/42-editable-syllabus-workspace/review-changes.png",
+      "sha256": "a6a3551145f0c02d2d2c4e9ae315aae253d3fd817d680f6664ebe909b91bcabc",
+      "bytes": 46589
+    },
+    {
+      "path": "feature-documentation/system-manual/42-editable-syllabus-workspace/saved-builder.png",
+      "sha256": "583a4785b27bbb749856f0d18de057ec58a5f5a6025af25cd4f702b98439ef4c",
+      "bytes": 158411
+    },
+    {
+      "path": "feature-documentation/system-manual/42-editable-syllabus-workspace/week-one.png",
+      "sha256": "b57ee72abecd6487de91d16a29935648c69fb612442826d25dde043fb090bbdc",
+      "bytes": 49124
+    }
+  ]
+}

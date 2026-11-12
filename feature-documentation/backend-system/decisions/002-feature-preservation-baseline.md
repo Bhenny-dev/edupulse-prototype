@@ -178,3 +178,7 @@ Add All, Teaching Materials and Assessments to the selected student's course. Op
 ## Owner correction: remove visible test indicators - 13 November 2026
 
 Remove Pipeline test/test suffixes and the Activity origin column from academic displays, dashboard/review labels and Dean totals. Remove the associated test-origin selector/notice. This supersedes the earlier requirement to show origin labels in those interfaces; preserve provenance in stored audit fields and Admin attribution, and do not rewrite test rows as independent learner work. Keep the same default saved rows, raw scores, dates, current/earlier version and marking status. Visible score CSVs match the reduced columns. Keep authorization, filtering by actual course/block/date, scoring and no-write navigation intact.
+
+## Owner correction: direct editable syllabus drafts - 13 November 2026
+
+Generated syllabus wording is validated and placed directly into the open draft form, without a separate chat confirmation. Saved owned drafts reopen as editable targets; saving stays in Syllabus Builder. Week-by-week follow-ups retain the current syllabus/conversation context, explicit week requests override stale selections, and relevant next actions are offered. Preserve immutable IDs, shared scopes, stale/conflict checks, source validation and revision saves. This supersedes generated-syllabus preview/placement confirmation only; file imports, roster operations and courseware retain their existing controls. AI edits never check, approve, activate or publish.

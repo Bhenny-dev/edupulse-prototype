@@ -34,17 +34,17 @@ PDF is the primary institutional intake format; Word `.docx` is also supported. 
 
 2. In **Section 5 · Course Outline**, write each section's **intended learning outcome**, multiline **Contents**, **Teaching-Learning Activities** and **Assessments**. Add sections within a week or share one across a teaching-week range. Weeks 9 and 18 are the midterm and final examinations. This outline is what courseware is generated from, so write measurable outcomes.
 
-   For a new draft, ask Pulse to generate the editable fields for the selected course. Review its field-by-field proposal, research sources and pending institutional rules before applying or saving it. See [Generate a syllabus from the selected course](../09-pulse-actions/README.md#generate-a-syllabus-from-the-selected-course). The builder header has no curriculum-outline loading button. After accepting an imported file, **Upload Different** remains available.
+   For a new draft, ask Pulse to generate the editable fields for the selected course. Validated wording goes directly into the requested draft fields. Review optional changes, research sources and pending institutional rules before saving. See [Generate a syllabus from the selected course](../09-pulse-actions/README.md#generate-a-syllabus-from-the-selected-course). The builder header has no curriculum-outline loading button. After accepting an imported file, **Upload Different** remains available.
 
    ![Writing the course outline](02-write-course-outline.png)
 
-3. Complete Sections 6 (requirements, grading, policies) and 7 (references), then click **Save as Drafted** at the bottom. (**Mark as Checked** saves and checks in one step.)
+3. Complete Sections 6 (requirements, grading, policies) and 7 (references), then click **Save as Drafted** at the bottom. Saving keeps the current draft open in Syllabus Builder. (**Mark as Checked** remains a separate explicit action.)
 
    ![Save as Drafted](03-save-as-drafted-button.png)
 
 ## Move it through the stations
 
-4. The syllabus appears in **My Syllabus** with status **Drafted**. Version and Outline columns, Version History and Copy for next term are removed. The **Next step** column always shows the one action that moves it forward.
+4. Saving keeps the syllabus in **Syllabus Builder** with an editable saved-record URL. Open **My Syllabus** to see its **Drafted** row. Version and Outline columns, Version History and Copy for next term are removed. The **Next step** column always shows the one action that moves it forward.
 
    ![Drafted in My Syllabus](04-my-syllabus-drafted.png)
 

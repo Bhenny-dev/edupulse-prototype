@@ -1,28 +1,20 @@
 # Generate an outline week by week
 
-Select the course in **Course Information**, open Pulse or target the **Course Outline**, then ask it to complete the outline. The connected provider or on-device model prepares one teaching week per step. Examination slots remain unchanged. Completion requests preserve already complete weeks; explicit regenerate/rewrite requests can replace their proposed educational content.
+Select the course in **Course Information**, open Pulse, then ask it to complete the outline. Both connected providers and on-device models use the same validated contract. Each completed week is placed directly in the open draft fields as the next step runs. The placed-week indicator reports progress. Examination slots and completed weeks remain unchanged for completion requests.
 
-![Completed weeks while the next one generates](01-weeks-arrive.png)
+![Completed draft fields while generation continues](01-weeks-arrive.png)
 
-The preview appears above the outline table as validated weeks arrive, with the count, **Generating the next week…**, and available same-course sequence references and versions/status. Open a week to inspect outcomes, topics, activities, assessments and assessment-format notes. Reference selection uses the current accessible workspace, prioritizing matching course codes and usable approved versions. It sends no roster, student profile or original-file bytes to generation. Up to two source patterns are compared through bounded neighboring-week excerpts. Explicit Internet research can supplement them; file-only/source-only requests do not add other syllabi.
+Same-course syllabus references remain available to the existing bounded sequence-research pipeline. Source patterns are educational examples; they do not confer institutional approval. File-only requests keep their source restriction. The model cannot supply new section IDs or change teaching-week relationships.
 
-![Completed weeks retained after a later failure](02-stopped-prefix.png)
+![A later failure retains the completed fields](02-stopped-prefix.png)
 
-A later failure retains completed previews. **Use week 2** places that week in the form; **Use completed weeks** places available unchanged target rows. Manually edited weeks are preserved and reported as skipped. These controls do not save or publish. **Dismiss preview** hides the completed/stopped preview. Review and save separately.
+A later failure rejects the current chunk and leaves completed draft fields editable. There is no separate Use week or Use completed weeks confirmation for generated syllabus content. Manual edits to a target reject conflicting placement; independent fields remain intact. Save completed work explicitly, then ask **complete the remaining weeks**. Stop cancels subsequent inference and preserves completed chunks.
 
-![Two generated weeks placed in the form](03-editable-weeks.png)
+![Directly editable generated weeks](03-editable-weeks.png)
 
-The detail capture shows the first populated teaching week. The second week and manual-edit protection are checked by the browser scenario. Later blank weeks and examination slots remain in the fixture and are checked separately. Normal inputs, selectors, resources and manual editing remain available. These synthetic render examples are not a claim of real model-generated sample topics.
+The existing outline inputs, supported assessment types, resources and manual editing remain. **Save as Drafted** persists explicitly and keeps the builder open. **Mark as Checked**, approval, activation and publication remain separate controls. Reload restores the last explicit saved syllabus and never restarts inference.
 
-| Mobile view | Behavior |
-| --- | --- |
-| ![Mobile progressive outline](04-mobile-progress.png) | Ready-week count, spinner, source pattern and per-week review. |
-| ![Mobile stopped prefix](05-mobile-stopped.png) | Completed weeks and placement controls remain after failure. |
+![Phone progressive fields](04-mobile-progress.png)
+![Phone interruption message](05-mobile-stopped.png)
 
-The preview currently lives in the mounted builder. Full reload restoration remains in the [completion register](../../versions/2026-11-10-completion-audit/README.md); this release does not claim recovery after a full reload. [Validation](../../versions/2026-11-10-progressive-outlines/validation/results.md) distinguishes handler/validation checks, synthetic UI rendering and physical inference.
-
-The current editable outline uses one Contents field per scoped section, **Teaching-Learning Activities** and **Assessments**. Teaching-material selection is removed. Section IDs and shared week scopes must survive model proposals; existing section edits remain protected by the baseline comparison. See [Manual 28](../28-outline-selectors/README.md).
-
-Whole-week AI previews replace the canonical blank section as well as the aggregate text, so **Use completed weeks** displays the generated content. Multi-section/shared scopes and manual edits remain protected. The outline scroll region is contained on narrow screens, keeping Pulse within the actual phone viewport. The browser checks use normal pointer clicks for the mascot and Send button.
-
-A request naming an existing week/section or field uses the [targeted contract](../38-targeted-outline-edits/README.md), without requiring unrelated sections in model output. Whole-outline stages with nested sections use the same content-only contract and application-bound IDs. Generic older week-only records retain their existing scheduled workflow.
+Captures use original sample teaching text and controlled model transport through the real progressive client and mounted form. They do not establish live model quality or hosted account mutation. [Manual 42](../42-editable-syllabus-workspace/README.md) covers owned drafts, week follow-ups and save-in-place. The [targeted contract](../38-targeted-outline-edits/README.md) preserves immutable section IDs and shared scopes without requiring unrelated sections in model output.

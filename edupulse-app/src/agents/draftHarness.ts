@@ -22,7 +22,10 @@ export async function draftHarness(input: Input, payload: Record<string, unknown
   if(scope){
     // Send content and positional aliases only. The model cannot supply an ID or
     // replace a week; application code merges validated values into the baseline.
-    const prompt=JSON.stringify({...outlineEditPrompt(input.editor,scope),request:input.message,attachments:payload.attachments,research:payload.research})
+    const firstWeek=Math.min(...scope.targets.map(target=>target.week))
+    const precedingWeeks=(input.editor.data.courseOutline as OutlineWeek[]).filter(row=>row.week<firstWeek).slice(-2).map(row=>({week:row.week,outcomes:row.ilos?.slice(0,300),topics:row.contents?.slice(0,5).map(text=>text.slice(0,180))}))
+    const history=(Array.isArray(payload.history)?payload.history:[]).filter(item=>item.role==='user').slice(-2).map(item=>({role:'user',content:String(item.content).slice(0,700)}))
+    const prompt=JSON.stringify({...outlineEditPrompt(input.editor,scope),request:input.message,precedingWeeks,history,attachments:payload.attachments,research:payload.research})
     if(prompt.length>contextLimit)throw new ApiError(400,'CONTEXT_LIMIT','The selected section and sources exceed this model context budget. Select fewer fields or a shorter source.')
     let details=['Return only the selected target values.']
     for(let attempt=0;attempt<2;attempt++){

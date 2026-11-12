@@ -8,7 +8,7 @@ export const researchMethodsDraft = {
     activities: index === 8 || index === 17 ? '' : 'Critique a sample research question with a partner.',
     assessments: index === 8 ? 'Midterm Examination' : index === 17 ? 'Final Examination' : 'Submit a question and a justified study design.',
     teachingMaterials: index === 8 || index === 17 ? [] : ['Case Studies'],
-    assessmentTypes: index === 8 || index === 17 ? [] : ['Short Essays'],
+    assessmentTypes: index === 8 || index === 17 ? [] : ['Essay'],
   })),
   courseRequirements: ['Proposed for instructor review: research proposal and methods portfolio.'],
   gradingSystem: 'Pending approved institutional grading formula.',
