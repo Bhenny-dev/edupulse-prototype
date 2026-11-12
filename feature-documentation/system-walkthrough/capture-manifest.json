@@ -699,7 +699,7 @@
       "ok": true
     },
     {
-      "role": "student",
+      "role": "Student",
       "folder": "05-student",
       "file": "01-dashboard.png",
       "title": "Student dashboard",

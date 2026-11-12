@@ -140,3 +140,7 @@ Topic, marking and reminder component crops use a taller desktop browser viewpor
 ## Student assigned-course metadata
 
 The course-week view includes curriculum units and the student's pending **Research Methods** assignment. Its release notice does not expose a draft or invent a publication. The synthetic student result and notice screens retain their existing controlled responses. Actual population counts are documented separately in [Manual 38](../../system-manual/38-curriculum-population/README.md).
+
+![Student assignments on a phone](39-mobile-student-assignments.png)
+
+The student dashboard counts the same assigned courses as My Courses. Its pending card is labelled **Awaiting release**, with recorded curriculum units and no inferred score.

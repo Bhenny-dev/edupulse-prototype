@@ -1,5 +1,5 @@
 import { test, expect, type Page } from './fixtures'
-import { mkdir } from 'node:fs/promises'
+import { mkdir,readFile,writeFile } from 'node:fs/promises'
 import { restorationUI } from '../role-restoration-fixture'
 
 const root = '../feature-documentation/system-walkthrough/09-restored-role-pages'
@@ -12,7 +12,7 @@ async function shot(page: Page, name: string, selector?: string) {
 }
 // The same role dashboards as the preview personas, filled from the synthetic account records.
 for (const [role, number, section] of [['instructor', '01', 'Score Snapshot'], ['student', '02', 'Pulse Reminders'], ['dean', '03', 'Syllabus Stations'], ['associate_dean', '04', 'Syllabus Stations']]) {
-  test(`synthetic restored ${role} dashboard`, async ({ page }) => { await restorationUI(page, role); await page.goto('/#/dashboard'); await expect(page.getByRole('heading', { name: section, exact: true })).toBeVisible(); await page.waitForTimeout(1800); await shot(page, `${number}-${role}-dashboard`) })
+  test(`synthetic restored ${role} dashboard`, async ({ page }) => { const fixture=await restorationUI(page, role);if(role==='student')fixture.records.assignedCourses=[{id:'d'.repeat(32),course_code:'IT 104',course_title:'Research Methods',active:false,block_section:'BSIT-1A',suspended:false,units:'3',year_level:'1',semester:'2'}]; await page.goto('/#/dashboard'); await expect(page.getByRole('heading', { name: section, exact: true })).toBeVisible(); await page.waitForTimeout(1800); await shot(page, `${number}-${role}-dashboard`);if(role==='student'){await writeFile('../feature-documentation/system-walkthrough/05-student/01-dashboard.png',await readFile(`${root}/02-student-dashboard.png`));const file='../feature-documentation/system-walkthrough/capture-manifest.json',manifest=JSON.parse(await readFile(file,'utf8')),entries=Array.isArray(manifest)?manifest:manifest.scenes,entry=entries.find((e:any)=>e.folder==='05-student'&&e.file==='01-dashboard.png');if(entry)Object.assign(entry,{role:'Student',route:'/dashboard',ok:true});await writeFile(file,JSON.stringify(manifest,null,2)+'\n')}})
 }
 test('synthetic restored combined monitoring sections', async ({page})=>{
  await restorationUI(page);await page.goto('/#/student-monitoring?course='+ 'a'.repeat(32)+'&block=BSIT-1A&tab=assessments')

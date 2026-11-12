@@ -23,3 +23,10 @@ The images use fictional records. They demonstrate interface behavior rather tha
 Students must open their own published materials, explicitly confirm the sections they read, and answer assessments under their own authenticated accounts. An administrator viewing an account does not create that learner's activity. Staff support is read-only for learner actions. Missing results stay missing; artificial answers, opens and scores must not be reported as genuine student activity.
 
 The allocation command defaults to a private dry run and supports rollback validation. It preserves original workspace backups outside Git, uses existing revision-checked save/import RPCs, and records the owner actor. Legacy `-TEST` block assignment overrides are reconciled to the owner-authorized blocks without relabelling historical activity or overriding saved suspension/exclusion decisions.
+
+## Student dashboard consistency
+
+**Enrolled Courses** includes both active courses and pending assignments. Course cards show curriculum units/year/period and distinguish **Active**, **Awaiting release** and **Suspended**. A pending course has no invented score. **My Block** uses recorded membership/year metadata; missing adviser or class size stays explicit.
+
+![Student assignment dashboard](../../system-walkthrough/09-restored-role-pages/02-student-dashboard.png)
+![Student assignments on a phone](../../system-walkthrough/09-restored-role-pages/39-mobile-student-assignments.png)

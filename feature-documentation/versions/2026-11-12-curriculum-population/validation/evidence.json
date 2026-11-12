@@ -148,7 +148,15 @@
     "nativeFailed": 0,
     "browserPassed": 36,
     "browserFailed": 0,
-    "verify": "passed"
+    "verify": "passed",
+    "dashboardFollowup": {
+      "nativePassed": 333,
+      "nativeFailed": 0,
+      "browserPassed": 16,
+      "browserFailed": 0,
+      "verify": "passed",
+      "dashboardImagesReviewed": 3
+    }
   },
   "database": {
     "migration": "20261112035656",
@@ -164,5 +172,18 @@
   "remaining": {
     "generation": "Not completed; missing syllabi remain drafts and require offline approval. No active instructor provider connections were found; only the admin has a connected provider. Local Ollama is unavailable.",
     "studentActivity": "No learner opens, confirmations or attempts manufactured."
+  },
+  "consistency": {
+    "maxBlocksPerStudent": 1,
+    "wrongYearMemberships": 0,
+    "testBlockMemberships": 0
+  },
+  "generationQueue": {
+    "preparedCourseWeeks": 80,
+    "plannedSteps": 605,
+    "draftSyllabiBlocked": 46,
+    "inferenceCalls": 0,
+    "publishedItems": 0,
+    "sourceContentsVerified": false
   }
 }

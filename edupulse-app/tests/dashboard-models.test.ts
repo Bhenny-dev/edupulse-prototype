@@ -128,3 +128,8 @@ test('block cards are distinct per course and score details use marked current r
  assert.deepEqual(model.snapshot.results.map(item=>[item.score,item.marked,item.test]),[[70,2,false],[0,1,true]])
  assert.equal(model.snapshot.average,48,'ungraded work is excluded; recorded zero remains real')
 })
+
+
+test('student dashboard counts pending assignments without inventing a release or score',()=>{
+ const data=records();data.assignedCourses=[{id:'pending',course_code:'IT 105',course_title:'Discrete Mathematics',active:false,block_section:'BSIT-1A',suspended:false,units:'3',year_level:'1',semester:'2'}];const model=accountStudentModel(data,{email:'one@example.invalid'},NOW);assert.equal(model.kpis.enrolled,4);assert.equal(model.courses.find(c=>c.id==='pending')?.available,false);assert.equal(model.courses.find(c=>c.id==='pending')?.score,null)
+})

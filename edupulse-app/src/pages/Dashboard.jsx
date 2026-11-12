@@ -6,6 +6,7 @@ import SystemAdminDashboard from './SystemAdminDashboard'
 import SummaryCard from '../components/ui/SummaryCard'
 import { SYLLABUS_STATUS_META } from '../data/syllabusStatus'
 import { accountManagementModel, accountInstructorModel, accountStudentModel } from './dashboardModels'
+import {curriculumLabel} from '../utils/curriculumMetadata'
 import { previewManagementModel, previewInstructorModel, previewStudentModel } from './dashboardPreview'
 import { useNavigate } from 'react-router-dom'
 import { pulse as pulseBus } from '../components/pulse/pulseBus'
@@ -522,7 +523,7 @@ function StudentDashboard({ model, actions, status }) {
 
       {/* Pulse guidance — reminders only, never answers */}
       <div className="card mb-24">
-        <div className="card-header">
+        <div className="card-header" style={{flexWrap:'wrap',gap:'12px'}}>
           <h3><Bell size={16} /> Pulse Reminders</h3>
           <span className="text-sm text-muted">Guidance only — Pulse never answers or reviews assessment items</span>
         </div>
@@ -556,13 +557,14 @@ function StudentDashboard({ model, actions, status }) {
 
       <div className="grid-2 mb-24">
         {model.courses.map(course => (
-          <div key={course.code} className="card">
+          <div key={course.id||course.code} className="card">
             <div className="card-header">
               <h3>{course.code}</h3>
-              <span className="badge badge-published">Active</span>
+              <span className={`badge ${course.available===false?'badge-drafted':'badge-published'}`}>{course.suspended?'Suspended':course.available===false?'Awaiting release':'Active'}</span>
             </div>
             <div className="card-body">
               <p style={{ fontWeight: 600, marginBottom: '12px' }}>{course.title}</p>
+              <p className="text-sm text-muted mb-16">{curriculumLabel(course.code)}</p>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8125rem', color: 'var(--gray-500)', marginBottom: '6px' }}>
                 <span>Latest recorded score</span><span style={{ fontWeight: 600 }}>{course.score === null ? 'No score yet' : `${course.score}%`}</span>
               </div>

@@ -71,3 +71,7 @@ The [account guide](../09-restored-role-pages/README.md) now shows server-starte
 Topic radar/history/status derives only from graded responses explicitly mapped to approved syllabus topics. Missing mappings and pending marking do not become guessed mastery scores. The four new migrations are required for hosted persistence; screenshots use synthetic account fixtures.
 
 Released content and recorded progress exclude private instructor AI review metadata. The original teacher review stays in authoring; existing student attempts and publication versions are unchanged by the metadata backfill. See [the progress workflow](../../system-manual/33-pipeline-progress/README.md#learner-facing-publication-content).
+
+## All assigned courses
+
+The dashboard **Enrolled Courses** total includes pending assigned courses. Curriculum units/year/period appear on the course cards. **Awaiting release** distinguishes a pending assignment from an active course; it does not expose unpublished content or assert a score. The refreshed dashboard uses fictional presentation records. [Manual 38](../../system-manual/38-curriculum-population/README.md).

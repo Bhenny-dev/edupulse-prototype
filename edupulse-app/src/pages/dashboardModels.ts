@@ -156,6 +156,8 @@ export function accountInstructorModel(data: AcademicData, workspace?: Dashboard
 
 export function accountStudentModel(data: AcademicData, user?: { email?: string } | null, now = Date.now()) {
   const email = user?.email?.toLowerCase()
+  const assigned=data.assignedCourses||[]
+  const assignedCourses=[...data.courses,...assigned.filter(item=>!data.courses.some(course=>course.id===item.id))]
   const marked = currentAttempts(data).filter(a => (!email || a.student_email?.toLowerCase() === email) && a.grading_status !== 'pending_review' && a.max_score > 0)
   const publicationOf = (id: string) => data.publications.find(p => p.id === id)
   const released = data.publications.filter(p => p.active && (!p.release_at || new Date(p.release_at).getTime() <= now))
@@ -163,12 +165,12 @@ export function accountStudentModel(data: AcademicData, user?: { email?: string 
   const unanswered = released.filter(p => p.type === 'assessment' && !studentAttempt(data, p, email))
   const total = marked.reduce((sum, a) => ({ score: sum.score + a.score, max: sum.max + a.max_score }), { score: 0, max: 0 })
   const enrollment = data.enrollments.find(e => e.block_section)
-  const info = enrollment && courses(data).find(c => c.id === enrollment.course_id)?.block_info?.find(b => b.block === enrollment.block_section)
-  const year = parseInt(String(info?.yearLevel ?? ''), 10)
+  const info = enrollment && courses(data).flatMap(c=>c.block_info||[]).find(b => b.block === enrollment.block_section)
+  const year = parseInt(String(enrollment?.year_level||assigned.find(c=>c.id===enrollment?.course_id)?.year_level||info?.yearLevel||''), 10)
   const code = (id: string) => data.courses.find(c => c.id === id)?.course_code || 'Course'
   return {
     kpis: {
-      enrolled: data.courses.length,
+      enrolled: assignedCourses.length,
       average: marked.length ? percent(total.score, total.max) : null,
       mastered: topicSummary(data, email).filter(t => t.value >= 75).length,
       pending: unopened.length + unanswered.length,
@@ -183,9 +185,10 @@ export function accountStudentModel(data: AcademicData, user?: { email?: string 
       students: info?.students ?? 'Not recorded',
       adviser: info?.adviser || 'Not recorded',
     } : null,
-    courses: data.courses.map(course => {
+    courses: assignedCourses.map(course => {
       const latest = marked.filter(a => publicationOf(a.publication_id)?.course_id === course.id).sort((a, b) => b.submitted_at.localeCompare(a.submitted_at))[0]
-      return { code: course.course_code, title: course.course_title || course.course_code, score: latest ? percent(latest.score, latest.max_score) : null }
+      const membership=assigned.find(c=>c.id===course.id)
+      return { id:course.id,code: course.course_code, title: course.course_title || course.course_code, available:course.active&&!membership?.suspended,suspended:membership?.suspended,score: latest ? percent(latest.score, latest.max_score) : null }
     }),
     sources: data.courses.map(course => ({
       code: course.course_code,

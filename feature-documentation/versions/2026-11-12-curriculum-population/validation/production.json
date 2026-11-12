@@ -1,0 +1,64 @@
+{
+  "deploymentSha": "d1cb7fe289b5b8226f85ec56985f6e2ca433ab06",
+  "deploymentState": "READY",
+  "origin": "https://edupulse-prototype.vercel.app",
+  "checkedAt": "2026-11-12T04:25:21.989Z",
+  "results": [
+    {
+      "role": "dean",
+      "courses": 69,
+      "enrollments": 7375,
+      "passed": true
+    },
+    {
+      "role": "associate_dean",
+      "courses": 69,
+      "enrollments": 7375,
+      "passed": true
+    },
+    {
+      "role": "instructor",
+      "courses": 11,
+      "enrollments": 1110,
+      "passed": true
+    },
+    {
+      "role": "instructor",
+      "courses": 8,
+      "enrollments": 993,
+      "passed": true
+    },
+    {
+      "role": "instructor",
+      "courses": 9,
+      "enrollments": 1110,
+      "passed": true
+    },
+    {
+      "role": "instructor",
+      "courses": 8,
+      "enrollments": 993,
+      "passed": true
+    },
+    {
+      "role": "instructor",
+      "courses": 8,
+      "enrollments": 1054,
+      "passed": true
+    },
+    {
+      "role": "instructor",
+      "courses": 8,
+      "enrollments": 1028,
+      "passed": true
+    },
+    {
+      "role": "instructor",
+      "courses": 10,
+      "enrollments": 1087,
+      "passed": true
+    }
+  ],
+  "noAcademicWrites": true,
+  "noInference": true
+}

@@ -416,12 +416,6 @@
       "reviewedAt": "2026-11-07T15:28:15.167692+00:00"
     },
     {
-      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/02-student-dashboard.png",
-      "sha256": "84f288769b8db5fdcac9dfc08bc36b6a02cc30817a43c37dd76c9c07d66fc394",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-07T15:28:15.179169+00:00"
-    },
-    {
       "path": "feature-documentation/system-walkthrough/09-restored-role-pages/04-associate_dean-dashboard.png",
       "sha256": "4c8bd0275ae1f25e16cd30279412df799970a0ca392f9f6488d12e0f21ce94ec",
       "reviewer": "Codex agent",
@@ -1048,12 +1042,6 @@
     {
       "path": "feature-documentation/system-walkthrough/01-public-site/44-night-walk-teachers-desk.png",
       "sha256": "f8409721d484bd76f0b4fdd871ba6c9debb93629d4be2db5d7bfb5e972a03a11",
-      "reviewer": "Claude agent (Sonnet 5.5)",
-      "reviewedAt": "2026-11-08T12:52:04.829Z"
-    },
-    {
-      "path": "feature-documentation/system-walkthrough/05-student/01-dashboard.png",
-      "sha256": "9be2cb19a36e3c364c98f86ccfde6c13185bb4906c826017fbc2fc6f9de163f5",
       "reviewer": "Claude agent (Sonnet 5.5)",
       "reviewedAt": "2026-11-08T12:52:04.829Z"
     },
@@ -3549,6 +3537,27 @@
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-12T04:09:43.460987+00:00",
       "method": "Opened with view_image. Checked learner-attempt wording, curriculum units/periods, pending assignment without release, role dialogs and native overflow on wide phone tables. Fictional UI records; not human approval or hosted activity evidence."
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/02-student-dashboard.png",
+      "sha256": "dbdbb7e8de34c39b4b542e0d6ca8dce3a3a693a30bd7edd6fff9d0ced0be1be6",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T04:31:40.863197+00:00",
+      "method": "Opened with view_image. Checked pending assignment included in enrolled count, distinct release status, curriculum units, missing score, readable wrapped reminder header and phone layout. Fictional UI records, not human approval or actual student achievement."
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/05-student/01-dashboard.png",
+      "sha256": "dbdbb7e8de34c39b4b542e0d6ca8dce3a3a693a30bd7edd6fff9d0ced0be1be6",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T04:31:40.864223+00:00",
+      "method": "Opened with view_image. Checked pending assignment included in enrolled count, distinct release status, curriculum units, missing score, readable wrapped reminder header and phone layout. Fictional UI records, not human approval or actual student achievement."
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/39-mobile-student-assignments.png",
+      "sha256": "31c5e5d25aa3be4aebad2cfd3a8622032edc33e08baecd28b0e93ead39ec0f44",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T04:31:40.865012+00:00",
+      "method": "Opened with view_image. Checked pending assignment included in enrolled count, distinct release status, curriculum units, missing score, readable wrapped reminder header and phone layout. Fictional UI records, not human approval or actual student achievement."
     }
   ]
 }
