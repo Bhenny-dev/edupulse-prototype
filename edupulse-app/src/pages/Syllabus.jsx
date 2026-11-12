@@ -1125,7 +1125,6 @@ export default function Syllabus() {
         <h1>Syllabus</h1>
       </div>
 
-      {user?.authenticated && (academic.institutional || []).some(item=>item.kind==='loads') && <section className="card mb-24"><div className="card-header"><h2>Confirmed course loads</h2></div><div className="card-body"><p>These shared EduSuite loads identify the courses and blocks assigned to your account. Upload an approved syllabus or start a draft in Syllabus Builder; matching rosters join the published course automatically.</p>{academic.institutional.filter(item=>item.kind==='loads'&&item.data.InstructorID===user.id).map(item=><p key={item.record_key}>{item.data.CourseCode} · {item.data.Block} ? Semester {item.data.Semester}</p>)}</div></section>}
       {editingSyllabus?.status==='active'&&<p role="alert" className="mb-16">Saving a revision returns this syllabus to Drafted and hides its published courseware until the approved outline is activated again. Changed teaching weeks require another courseware review.</p>}
       {sharing.allowed&&<div className="academic-actions mb-16"><button className="btn btn-secondary btn-sm" disabled={sharing.loading} onClick={()=>sharing.load()}>{sharing.loading?'Loading shared syllabi…':'Refresh shared syllabi'}</button>{sharing.error&&<p role="alert">{sharing.error}</p>}</div>}
       {actionError&&!sharingSyllabus&&!deleteSyllabus&&!deleteShare&&<p role="alert">{actionError}</p>}

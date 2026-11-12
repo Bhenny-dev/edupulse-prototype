@@ -3634,6 +3634,12 @@
       "sha256": "9a8ff9b39c9a77bf96c231a1f50ad2d2f0f31dc360f34f0732c1cb705e3d6e24",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-12T12:09:53.106631+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/02-syllabus-lifecycle/40-without-course-load-summary.png",
+      "sha256": "5e75f09f7dbcf9d33840f3839917e20d00ec066345269077b98d1a0cf95d828d",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T12:17:06.985075+00:00"
     }
   ]
 }

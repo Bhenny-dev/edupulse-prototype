@@ -139,3 +139,7 @@ When re-importing an EduPulse PDF, the approval/page footer is excluded from the
 ## Sharing and deletion
 
 The list has one **Version History** control, with recorded changes and saved editable versions. **Delete syllabus** replaces Archive and requires confirmation. It withdraws publications while retaining scored history. **Share syllabus** sends a saved copy to a registered instructor; received copies appear in My Syllabus labelled by sender. [Manual 36](../36-instructor-syllabi/README.md) shows these actions and their persistence boundaries.
+
+The Syllabus page no longer displays the **Confirmed course loads** summary. Its tabs and upload/builder controls remain; assigned course loads and roster matching are unchanged.
+
+![Syllabus without the removed course-load summary](40-without-course-load-summary.png)

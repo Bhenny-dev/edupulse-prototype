@@ -562,3 +562,6 @@ Metadata identifies `coding-session` authoring and explicitly discloses that con
 
 
 The displayed associate_dean role title is now **Program Coordinator**. This is a label change only: stored role keys, routes, RLS, account assignments and permissions remain unchanged. Pulse navigation accepts both names.
+
+
+The owner removed the Syllabus page course-load summary panel. This deletes presentation only; institutional load retrieval, course assignments, roster reconciliation and authorization are unchanged.
