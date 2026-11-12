@@ -60,9 +60,9 @@ test('source popover reload stores only bounded coordinates and a content signat
 
 test('syllabus dialog references restore only authorized record IDs and bounded version indexes',()=>{
  const tab={getItem:()=>raw,setItem:(_key:string,value:string)=>{raw=value}},key='syllabus-test';let raw=''
- saveWorkspaceViews(key,new Map<string,unknown>([['syllabus-reader','shared:99999999-1111-4111-8111-111111111111'],['syllabus-history','owned'],['syllabus-share','owned'],['syllabus-delete','owned'],['syllabus-version',2],['syllabus-email','private@example.invalid'],['syllabus-version-bad',99]]),tab)
+ saveWorkspaceViews(key,new Map<string,unknown>([['syllabus-reader','shared:99999999-1111-4111-8111-111111111111'],['syllabus-adopt','share-id'],['syllabus-suspend','owned'],['syllabus-history','obsolete'],['syllabus-share','owned'],['syllabus-delete','owned'],['syllabus-version',2],['syllabus-email','private@example.invalid'],['syllabus-version-bad',99]]),tab)
  const result=readWorkspaceViews(key,tab)
- assert.equal(result.get('syllabus-version'),2);assert.equal(result.get('syllabus-share'),'owned');assert.equal(result.has('syllabus-email'),false)
+ assert.equal(result.has('syllabus-version'),false);assert.equal(result.has('syllabus-history'),false);assert.equal(result.get('syllabus-adopt'),'share-id');assert.equal(result.get('syllabus-share'),'owned');assert.equal(result.has('syllabus-email'),false)
 })
 
 test('monitoring reload keeps only bounded class/student/action references',()=>{

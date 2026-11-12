@@ -10,7 +10,7 @@ export async function supportAction(identity: Identity, operation: string, input
   if (signal) request=request.abortSignal(signal)
   const { data, error } = await request
   signal?.throwIfAborted()
-  if (error) throw new ApiError(error.code === '42501' ? 403 : error.code === '40001' ? 409 : error.code === '22023' ? 400 : 503, 'SUPPORT_UNAVAILABLE', error.code === '42501' ? 'This support action is not allowed. Student activity and assessment submissions require the student’s own sign-in.' : error.code === '40001' ? 'A newer workspace exists. Reload before saving.' : 'The selected account could not be verified. Return to System Admin and retry.')
+  if (error) throw new ApiError(error.code === '42501' ? 403 : error.code === '40001' ? 409 : error.code === '22023' ? 400 : 503, 'SUPPORT_UNAVAILABLE', error.code === '42501' ? 'This support action is not allowed. Student activity and assessment submissions require the student’s own sign-in.' : error.code === '40001' ? 'A newer workspace exists. Reload before saving.' : error.code==='22023'?error.message: 'The selected account could not be verified. Return to System Admin and retry.')
   return data
 }
 /** The header selects a subject, never grants authorization. SQL rechecks the live owner and target on every operation. */

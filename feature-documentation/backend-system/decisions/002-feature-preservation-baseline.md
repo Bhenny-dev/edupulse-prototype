@@ -153,3 +153,8 @@ Remove once-per-session legacy projection replay from AcademicContext. Confirmed
 ## Owner correction: bounded instructor loads - 13 November 2026
 
 Replace the all-block curriculum allocation with 5-10 actual course/block assignments per active named instructor. The screenshot count means course/block classes, not a display slice or unique block names. Preserve course ownership, the prepared syllabus mix, recorded year, units, 35-student class limit, approved delivery, and all scored/access/reading history. Retain private backups and use guarded administrative allocation changes. Do not regress by rerunning all-block population over bounded allocations or merely hiding excess cards. Monitoring and every role must read the same saved assignments. Current reload/manual-refresh rules still apply.
+
+
+## Owner correction: registered sharing and suspension - 13 November 2026
+
+Replace typed share emails with registered instructor selection. A received copy may become an owned draft or, after explicit acknowledgment and verification of the sender?s matching retained approved file, an owned active syllabus. Preserve sender provenance, shared outline IDs, private source boundaries, revision checks and idempotent retries. Approved use copies the approved attachment only through the server action; no publication or enrollment is implied. Remove Version History and Copy for next term controls; retain internal saved history. Require a saved suspension before a separate delete action for owned and shared entries, preserve scored history, and never republish on resume. These owner instructions supersede the earlier single-history/direct-delete baseline.

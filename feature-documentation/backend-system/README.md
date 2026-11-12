@@ -609,3 +609,14 @@ Manual source reads/uploads invoke the existing private indexing endpoint for re
 
 
 The source reader and source action menu restore after deliberate reload using scoped navigation IDs only. The source list is read again before either opens; retained content, account data and commands are not stored as navigation hints. Restoration never replays source discovery, indexing, attachment or removal.
+
+
+### Registered recipients, shared adoption and suspension
+
+`20261112211931_syllabus_sharing_adoption_suspension.sql` adds a bounded instructor-only directory through a private stable function and invoker wrapper. It emits only ID/name/email for active confirmed instructor accounts, excluding self. The API sends a recipient UUID; SQL rechecks the live role/confirmation/ban. The audited support gateway uses the same subject authority.
+
+The share command adds draft/approved adoption with a locked share and recipient workspace, revision comparison, generated owned syllabus ID, shared sender provenance and idempotency by share/mode. Drafts exclude approval. Approved adoption requires explicit acknowledgment, the sender's matching current whitelisted snapshot, non-suspended approved/active status, retained approved file, a usable outline, and byte-count/SHA-256 verification. It copies only the approved attachment plus safe syllabus fields, not private sources, histories, roster or courseware. Normal workspace projection creates the course atomically; no publication or learner evidence is created. Existing snapshots are supported only when their matching source remains available.
+
+Owned suspension saves archived/inactive status plus prior station, preserves authored content, and returns published items to checked. A workspace trigger rejects deletion unless the previous saved version was suspended and archived. Local persistence mirrors that rule before its revision-checked save. Resume restores the station without republishing. Shared entries have independent sender/recipient suspension flags; remove requires the actor's previously saved flag. Existing independently adopted work stays independent.
+
+The frontend refreshes the workspace only after explicit server adoption. View hints contain dialog IDs only, resolved from fresh authorized lists; recipient choice and acknowledgment are ephemeral. History/copy controls and obsolete captures are removed, with internal retained history unchanged.

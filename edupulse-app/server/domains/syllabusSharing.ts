@@ -5,12 +5,20 @@ import { supportAction } from './support.js'
 
 export const sharingCommand = z.discriminatedUnion('operation', [
  z.object({operation:z.literal('list')}),
+ z.object({operation:z.literal('recipients')}),
  z.object({operation:z.literal('open'),id:z.string().uuid()}),
- z.object({operation:z.literal('send'),syllabus:z.string().min(1).max(120),revision:z.number().int().nonnegative(),email:z.email().max(254)}),
+ z.object({operation:z.literal('send'),syllabus:z.string().min(1).max(120),revision:z.number().int().nonnegative(),recipient:z.string().uuid()}),
+ z.object({operation:z.literal('adopt'),id:z.string().uuid(),revision:z.number().int().nonnegative(),mode:z.enum(['draft','approved']),approvalAttested:z.boolean().optional()}),
+ z.object({operation:z.enum(['suspend','resume']),id:z.string().uuid()}),
  z.object({operation:z.literal('remove'),id:z.string().uuid()}),
 ])
 export async function syllabusSharing(identity:Identity,input:z.infer<typeof sharingCommand>) {
  if(identity.local || !['instructor','admin'].includes(identity.role))throw new ApiError(403,'FORBIDDEN','Sign in with an instructor account to share syllabi.')
+ if(input.operation==='recipients'){
+  const result=identity.supportActor?{data:await supportAction(identity,'syllabi.recipients'),error:null}:await userDb(identity).rpc('edupulse_syllabus_recipients')
+  if(result.error)throw new ApiError(503,'DIRECTORY_UNAVAILABLE','Registered instructors could not be loaded. Retry when connected.')
+  return {instructors:result.data}
+ }
  if(input.operation==='list') {
   let shares
   if(identity.supportActor)shares=await supportAction(identity,'syllabi.read')
@@ -19,7 +27,7 @@ export async function syllabusSharing(identity:Identity,input:z.infer<typeof sha
    // PostgREST can cap a response at 1,000 rows. Read bounded pages so the
    // capacity error cannot silently become a truncated success.
    for(let offset=0;offset<=1000;offset+=500){
-    const result=await userDb(identity).from('edupulse_syllabus_shares').select('id,sender_id,recipient_id,syllabus_id,sender_name,recipient_name,created_at,courseCode:snapshot->>courseCode,courseTitle:snapshot->>courseTitle').order('created_at',{ascending:false}).order('id').range(offset,offset+499)
+    const result=await userDb(identity).from('edupulse_syllabus_shares').select('id,sender_id,recipient_id,syllabus_id,sender_name,recipient_name,created_at,sender_suspended,recipient_suspended,courseCode:snapshot->>courseCode,courseTitle:snapshot->>courseTitle').order('created_at',{ascending:false}).order('id').range(offset,offset+499)
     if(result.error)throw new ApiError(503,'SHARING_UNAVAILABLE','Shared syllabi could not be loaded. Retry when connected.')
     shares.push(...result.data||[])
     if(!result.data||result.data.length<500)break

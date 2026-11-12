@@ -1,3 +1,4 @@
+import {validateSyllabusRemoval} from '../src/utils/syllabusLifecycle.js'
 import {outlineSectionSchema} from '../src/utils/outlineSectionSchema.js'
 import { z } from 'zod'
 import { createHash } from 'node:crypto'
@@ -10,7 +11,8 @@ import { supportAction } from './domains/support.js'
 export const WORKSPACE_BYTES = 3_000_000
 const outlineRow = z.looseObject({ week: z.number().int().min(1).max(52), ilos: z.string().max(5000).default(''), contents: z.array(z.string().max(2000)).max(40).default([]), sections:z.array(outlineSectionSchema).min(1).max(12).optional() })
 const approvedFile = z.object({ name: z.string().min(1).max(255), size: z.number().int().positive().max(APPROVED_FILE_LIMIT), base64: z.string().min(1).max(Math.ceil(APPROVED_FILE_LIMIT / 3) * 4).regex(/^[A-Za-z0-9+/]*={0,2}$/), sha256: z.string().regex(/^[a-f0-9]{64}$/), uploadedAt: z.string().datetime(), approvalAttested: z.literal(true) })
-const syllabus = z.looseObject({ id: z.string().min(1).max(120), courseCode: z.string().min(1).max(80), courseTitle: z.string().min(1).max(240), status: z.enum(['drafted', 'checked', 'downloaded_for_approval', 'approved_uploaded', 'active', 'archived']), courseOutline: z.array(outlineRow).max(52).default([]), sample: z.boolean().optional(), approvedFile: approvedFile.optional() }).superRefine((value, ctx) => {
+const syllabus = z.looseObject({ id: z.string().min(1).max(120), courseCode: z.string().min(1).max(80), courseTitle: z.string().min(1).max(240), status: z.enum(['drafted', 'checked', 'downloaded_for_approval', 'approved_uploaded', 'active', 'archived']), courseOutline: z.array(outlineRow).max(52).default([]), sample: z.boolean().optional(), suspended:z.boolean().optional(), suspendedStatus:z.enum(['drafted','checked','downloaded_for_approval','approved_uploaded','active','archived']).optional(), approvedFile: approvedFile.optional() }).superRefine((value, ctx) => {
+  if(value.suspended&&value.status!=='archived')ctx.addIssue({code:'custom',message:'A suspended syllabus must remain inactive.'})
   if (new Set(value.courseOutline.map(row => row.week)).size !== value.courseOutline.length) ctx.addIssue({ code: 'custom', message: 'Outline weeks must be unique.' })
   if (!value.sample && ['active', 'approved_uploaded'].includes(value.status) && (!value.approvedFile || !value.courseOutline.some(row => row.ilos.trim() && row.contents.some(text => text.trim())))) ctx.addIssue({ code: 'custom', message: 'An approved file and extracted outline are required.' })
 })
@@ -85,6 +87,8 @@ export async function saveWorkspace(identity: Identity, input: z.infer<typeof wo
   let row: Row | undefined
   if (config().database === 'local') {
     const pg = await localDb()
+    const previous=(await pg.query<{data:WorkspaceData;revision:number}>('SELECT data,revision FROM ep_workspaces WHERE owner_id=$1',[identity.id])).rows[0]
+    if(previous&&previous.revision===input.revision)try{validateSyllabusRemoval(previous.data,input.data)}catch(error){throw new ApiError(400,'SYLLABUS_SUSPENSION_REQUIRED',(error as Error).message)}
     row = (await pg.query<Row>(`INSERT INTO ep_workspaces(owner_id,revision,data) SELECT $1,1,$2::jsonb WHERE $3::int=0
       ON CONFLICT(owner_id) DO NOTHING RETURNING revision,data,updated_at`, [identity.id, body, input.revision])).rows[0]
     if (!row && input.revision > 0) row = (await pg.query<Row>(`UPDATE ep_workspaces SET data=$2::jsonb, revision=revision+1, updated_at=now() WHERE owner_id=$1 AND revision=$3 RETURNING revision,data,updated_at`, [identity.id, body, input.revision])).rows[0]
@@ -92,6 +96,7 @@ export async function saveWorkspace(identity: Identity, input: z.infer<typeof wo
     const { data, error } = identity.supportActor ? { data: await supportAction(identity, 'workspace.save', input), error: null } : await userDb(identity).rpc('edupulse_save_workspace', { expected_revision: input.revision, snapshot: input.data })
     if (error?.code === '40001') throw new ApiError(409, 'WORKSPACE_CONFLICT', 'A newer workspace exists. Export your pending edits, then load the latest server copy.')
     if (error?.code === '22023' && error.message === 'A course block supports up to 35 students') throw new ApiError(400, 'ROSTER_LIMIT', 'A course block supports up to 35 students. Select another block for the remaining students.')
+    if(error?.code==='22023')throw new ApiError(400,'WORKSPACE_INVALID',error.message)
     if (error) throw new ApiError(503, 'WORKSPACE_UNAVAILABLE', 'Cloud save failed. Your edits remain on this device; retry when connected.')
     row = data?.[0]
   }

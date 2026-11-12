@@ -1,3 +1,4 @@
+import {createHash} from 'node:crypto'
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import {readFile} from 'node:fs/promises'
@@ -16,7 +17,7 @@ test('syllabus sharing delivers only an owned saved snapshot, preserves provenan
    GRANT USAGE ON SCHEMA auth TO authenticated,anon;`)
   for(let i=0;i<ids.length;i++)await db.query('INSERT INTO auth.users(id,email,raw_app_meta_data,raw_user_meta_data) VALUES($1,$2,$3,$4)',[ids[i],i===4?'riverabenlor461@gmail.com':`share${i}@example.invalid`,JSON.stringify({role:roles[i]}),JSON.stringify({full_name:`Instructor ${i}`})])
   await db.query("INSERT INTO auth.identities VALUES($1,'google')",[ids[4]])
-  for(const file of ['20260915042129_persistent_workspace','20261004054136_system_admin_audit_roles','20261024064532_academic_projection','20261024071459_academic_record_labels','20261024073036_academic_lint_cleanup','20261024163740_pulse_conversations','20261024213422_pulse_history_privileges','20261028130000_baseline_workflows','20261028130100_assessment_workflows','20261028130200_delivery_notices','20261028130300_offline_review_requests','20261102074226_student_directory','20261107050829_safe_workspace_roster_refresh','20261107131810_instructor_roster_overrides','20261107141745_validate_course_membership_decisions','20261108055904_pulse_support_context','20261109221703_labelled_pipeline_activity','20261111201348_instructor_syllabus_sharing'])await db.exec(await readFile(`supabase/migrations/${file}.sql`,'utf8'))
+  for(const file of ['20260915042129_persistent_workspace','20261004054136_system_admin_audit_roles','20261024064532_academic_projection','20261024071459_academic_record_labels','20261024073036_academic_lint_cleanup','20261024163740_pulse_conversations','20261024213422_pulse_history_privileges','20261028130000_baseline_workflows','20261028130100_assessment_workflows','20261028130200_delivery_notices','20261028130300_offline_review_requests','20261102074226_student_directory','20261107050829_safe_workspace_roster_refresh','20261107131810_instructor_roster_overrides','20261107141745_validate_course_membership_decisions','20261108055904_pulse_support_context','20261109221703_labelled_pipeline_activity','20261111201348_instructor_syllabus_sharing','20261112211931_syllabus_sharing_adoption_suspension'])await db.exec(await readFile(`supabase/migrations/${file}.sql`,'utf8'))
   const as=async(i:number)=>{await db.exec('RESET ROLE');await db.query("SELECT set_config('request.jwt.claim.sub',$1,false),set_config('request.jwt.claims',$2,false)",[ids[i],JSON.stringify({sub:ids[i],email:i===4?'riverabenlor461@gmail.com':`share${i}@example.invalid`,app_metadata:{role:roles[i]}})]);await db.exec('SET ROLE authenticated')}
   const command=async(input:object)=>(await db.query<{r:any}>('SELECT public.edupulse_syllabus_share($1) r',[JSON.stringify(input)])).rows[0]!.r
   const read=async()=>(await db.query<any>('SELECT * FROM public.edupulse_syllabus_shares')).rows
@@ -35,12 +36,39 @@ test('syllabus sharing delivers only an owned saved snapshot, preserves provenan
   await assert.rejects(db.query('UPDATE public.edupulse_syllabus_shares SET sender_name=$1 WHERE id=$2',['forged',sent.id]),{code:'42501'})
   await as(2);assert.equal((await read()).length,0);await assert.rejects(command({operation:'remove',id:sent.id}),{code:'42501'})
   await as(3);assert.equal((await read()).length,0);await assert.rejects(command({operation:'remove',id:sent.id}),{code:'42501'})
-  await as(4);assert.equal((await support('syllabi.read'))[0].courseCode,'IT 102');assert.equal((await support('syllabi.read'))[0].snapshot,undefined);assert.equal((await support('syllabi.open',{id:sent.id})).courseCode,'IT 102')
+  await as(4);assert((await support('syllabi.recipients')).some((u:any)=>u.id===ids[1]));assert.equal((await support('syllabi.read'))[0].courseCode,'IT 102');assert.equal((await support('syllabi.read'))[0].snapshot,undefined);assert.equal((await support('syllabi.open',{id:sent.id})).courseCode,'IT 102')
   await as(4);await support('syllabi.command',{operation:'send',syllabus:'owned',revision:1,email:'share1@example.invalid'});assert.equal((await db.query('SELECT * FROM public.edupulse_support_events')).rows.length,1,'support writes record the actual admin actor')
-  await as(1);await command({operation:'remove',id:sent.id});assert.equal((await read()).length,0)
-  await as(0);assert.equal((await read()).length,1,'recipient removal retains sender repository');await command({operation:'send',syllabus:'owned',revision:1,email:'share1@example.invalid'})
+  await as(0)
+  const directory=(await db.query<{r:any}>('SELECT public.edupulse_syllabus_recipients() r')).rows[0]!.r
+  assert.deepEqual(directory.map((u:any)=>u.id).sort(),[ids[1],ids[2]].sort())
+  await assert.rejects(command({operation:'remove',id:sent.id}),{code:'22023'})
+  await as(1)
+  await assert.rejects(command({operation:'adopt',id:sent.id,mode:'approved',revision:0}),{code:'22023'})
+  await assert.rejects(command({operation:'adopt',id:sent.id,mode:'approved',revision:0,approvalAttested:true}),{code:'22023'})
+  const draft=await command({operation:'adopt',id:sent.id,mode:'draft',revision:0})
+  assert.equal((await command({operation:'adopt',id:sent.id,mode:'draft',revision:0})).id,draft.id,'retry cannot duplicate an adopted draft')
+  let owned=(await db.query<any>('SELECT data,revision FROM public.edupulse_workspaces')).rows[0]
+  assert.equal(owned.data.syllabi[0].status,'drafted');assert.equal(owned.data.syllabi[0].approvedFile,undefined)
+  assert.equal(owned.data.syllabi[0].courseOutline[0].sections[0].id,'scope')
+  await assert.rejects(db.query('SELECT * FROM public.edupulse_save_workspace($1,$2)',[owned.revision,JSON.stringify({...owned.data,syllabi:[]})]),{code:'22023'})
+  await as(0)
+  const approved={...syllabus,status:'active',approvedFile:{name:'approved.pdf',base64:Buffer.from('%PDF-approved sample').toString('base64'),size:Buffer.byteLength('%PDF-approved sample'),sha256:createHash('sha256').update('%PDF-approved sample').digest('hex'),approvalAttested:true,uploadedAt:new Date().toISOString()}}
+  await db.query('SELECT * FROM public.edupulse_save_workspace(1,$1)',[JSON.stringify({syllabi:[approved],content:{},registrations:[]})])
+  await command({operation:'send',syllabus:'owned',revision:2,recipient:ids[1]})
+  await as(1)
+  const accepted=await command({operation:'adopt',id:sent.id,mode:'approved',revision:1,approvalAttested:true})
+  owned=(await db.query<any>('SELECT data,revision FROM public.edupulse_workspaces')).rows[0]
+  assert.equal(owned.data.syllabi.find((s:any)=>s.id===accepted.id).status,'active')
+  assert((await db.query<any>('SELECT * FROM public.edupulse_courses WHERE instructor_id=$1 AND syllabus_id=$2',[ids[1],accepted.id])).rows[0].active,'adoption projects the recipient course in the same transaction')
+  assert.equal(owned.data.syllabi.find((s:any)=>s.id===accepted.id).approvedFile.base64,approved.approvedFile.base64)
+  assert.equal((await command({operation:'adopt',id:sent.id,mode:'approved',revision:1,approvalAttested:true})).id,accepted.id)
+  const suspended={...owned.data,syllabi:owned.data.syllabi.map((s:any)=>({...s,suspended:true,status:'archived'}))}
+  await db.query('SELECT * FROM public.edupulse_save_workspace($1,$2)',[owned.revision,JSON.stringify(suspended)])
+  await db.query('SELECT * FROM public.edupulse_save_workspace($1,$2)',[owned.revision+1,JSON.stringify({...suspended,syllabi:[]})])
+  await as(1);await command({operation:'suspend',id:sent.id});await command({operation:'remove',id:sent.id});assert.equal((await read()).length,0)
+  await as(0);assert.equal((await read()).length,1,'recipient removal retains sender repository');await command({operation:'send',syllabus:'owned',revision:2,email:'share1@example.invalid'})
   await as(1);assert.equal((await read()).length,1)
-  await as(0);await command({operation:'remove',id:sent.id});assert.equal((await read()).length,0)
+  await as(0);await command({operation:'suspend',id:sent.id});await command({operation:'remove',id:sent.id});assert.equal((await read()).length,0)
   await as(1);assert.equal((await read()).length,0)
  }finally{await db.close()}
 })
@@ -48,6 +76,7 @@ test('sharing API refuses local, guest and non-author roles before reading data 
  for(const role of ['guest','student','dean','associate_dean'])await assert.rejects(syllabusSharing({id:'x',role:role as any,local:false},{operation:'list'}),{code:'FORBIDDEN'})
  await assert.rejects(syllabusSharing({id:'x',role:'instructor',local:true},{operation:'list'}),{code:'FORBIDDEN'})
  assert.equal(sharingCommand.safeParse({operation:'send',syllabus:'owned',revision:1,email:'bad'}).success,false)
+ assert.equal(sharingCommand.safeParse({operation:'send',syllabus:'owned',revision:1,recipient:'not-an-id'}).success,false)
 })
 
 test('shared summaries page below the PostgREST cap and reject oversized lists rather than truncating',async()=>{

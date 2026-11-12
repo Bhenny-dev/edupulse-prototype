@@ -17,6 +17,6 @@ export default function useSyllabusSharing(){
   catch(error){if(!controller.signal.aborted)setState({scope,shares:[],loading:false,error:error.message})}
  },[allowed,scope])
  useEffect(()=>{active.current.mounted=true;void load();return()=>{active.current.mounted=false;request.current?.abort()}},[load])
- const command=async input=>{const result=await aiRequest('syllabi','POST',input);if(!active.current.mounted||active.current.scope!==scope)throw new Error('The account view changed. Reopen Syllabus to verify the action.');if(input.operation!=='open')await load();return result}
+ const command=async input=>{const result=await aiRequest('syllabi','POST',input);if(!active.current.mounted||active.current.scope!==scope)throw new Error('The account view changed. Reopen Syllabus to verify the action.');if(!['open','recipients','adopt'].includes(input.operation))await load();return result}
  return {...(state.scope===scope?state:{shares:[],loading:allowed,error:''}),allowed,load,command}
 }

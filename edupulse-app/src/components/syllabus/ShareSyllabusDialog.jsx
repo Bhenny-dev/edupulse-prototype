@@ -1,0 +1,13 @@
+import {useEffect,useState,useId} from 'react'
+import ModalLayer from '../ui/ModalLayer'
+import {LoadingStatus,Spinner} from '../ui/LoadingFeedback'
+import {aiRequest} from '../../lib/aiClient'
+
+export default function ShareSyllabusDialog({syllabus,blocked,busy,error,onShare,onClose}){
+ const selectId=useId()
+ const [instructors,setInstructors]=useState(null),[failure,setFailure]=useState(''),[recipient,setRecipient]=useState(''),[retry,setRetry]=useState(0)
+ useEffect(()=>{const abort=new AbortController();setFailure('');setInstructors(null);void aiRequest('syllabi','POST',{operation:'recipients'},abort.signal).then(result=>{if(!abort.signal.aborted)setInstructors(result.instructors)}).catch(error=>{if(!abort.signal.aborted)setFailure(error.message)});return()=>abort.abort()},[retry])
+ return <ModalLayer onDismiss={onClose}><section className="modal-content" role="dialog" aria-modal="true" aria-label="Share syllabus"><div className="modal-header"><h2>Share {syllabus.courseCode} syllabus</h2><button className="modal-close" aria-label="Close sharing" onClick={onClose}>{'\u00d7'}</button></div><p className="mb-16">Choose a registered instructor. They receive a read-only copy and can save their own draft. Approved use requires their acknowledgment and a matching approved file retained by you. Private sources and courseware are excluded.</p>
+ {!instructors&&!failure&&<LoadingStatus label="Loading registered instructors..."/>}{failure&&<p role="alert">{failure} <button className="btn btn-secondary btn-sm" onClick={()=>setRetry(value=>value+1)}>Retry instructor list</button></p>}
+ <form onSubmit={event=>{event.preventDefault();if(instructors?.some(item=>item.id===recipient))onShare(recipient)}}><label className="form-label" htmlFor={selectId}>Instructor</label><select id={selectId} className="form-input" style={{display:'block',width:'100%',minWidth:0,maxWidth:'100%'}} required disabled={!instructors||busy} value={recipient} onChange={event=>setRecipient(event.target.value)}><option value="">Select an instructor</option>{instructors?.map(item=><option key={item.id} value={item.id}>{item.name} - {item.email}</option>)}</select>{instructors?.length===0&&<p>No other active registered instructor is available.</p>}{blocked&&<p role="status">Wait for the workspace to finish saving before sharing.</p>}{error&&<p role="alert">{error}</p>}<div className="modal-actions"><button className="btn btn-secondary" type="button" onClick={onClose}>Cancel</button><button className="btn btn-primary" disabled={busy||blocked||!recipient||!instructors?.some(item=>item.id===recipient)}>{busy&&<Spinner/>}{busy?'Sharing...':'Share syllabus'}</button></div></form></section></ModalLayer>
+}

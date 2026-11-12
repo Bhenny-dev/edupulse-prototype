@@ -1,7 +1,15 @@
 import { test, expect } from '@playwright/test'
+import {suspendSyllabus} from '../../src/utils/syllabusLifecycle'
 
 test.beforeEach(async ({ request }) => {
-  const snapshot = await (await request.get('/api/ai?action=workspace')).json()
+  let snapshot = await (await request.get('/api/ai?action=workspace')).json()
+  if(snapshot.data?.syllabi?.some((syllabus:any)=>!syllabus.suspended)){
+    let data=snapshot.data
+    for(const syllabus of data.syllabi)if(!syllabus.suspended)data=suspendSyllabus(data,syllabus.id)
+    const suspension=await request.put('/api/ai?action=workspace',{data:{revision:snapshot.revision,data}})
+    expect(suspension.status()).toBe(200)
+    snapshot=await suspension.json()
+  }
   const saved = await request.put('/api/ai?action=workspace', { data: { revision: snapshot.revision, data: { syllabi: [], content: {}, registrations: [] } } })
   expect(saved.status()).toBe(200)
 })
@@ -182,14 +190,15 @@ test('syllabus draft survives reload and approved PDF activates the same course 
   await expect(page.getByTestId('workspace-save-state')).toHaveText('Saved', {timeout:30_000})
   await page.reload()
   await expect(row.getByText('Drives courseware', { exact: true })).toBeVisible()
-  await row.getByTitle('Version History').click()
-  await expect(page.getByRole('dialog', { name: 'Syllabus history' })).toContainText('Approved — Uploaded')
+  await expect(row.getByTitle('Version History')).toHaveCount(0)
+  await expect(row.getByTitle('Suspend syllabus')).toBeVisible()
+  await row.getByTitle('View Syllabus').click()
   const retained = page.waitForEvent('download')
   await page.getByRole('button', { name: 'Download retained approved file' }).click()
   const retainedFile = await (await retained).path()
   const fs = await import('node:fs/promises')
   expect(await fs.readFile(retainedFile!)).toEqual(await fs.readFile(file!))
-  await page.getByRole('button', { name: 'Close', exact: true }).click()
+  await page.getByRole('button', { name: 'Close syllabus details', exact: true }).click()
   await page.goto('/#/courseware')
   await expect(page.getByText('Computer Programming 1', { exact: true }).first()).toBeVisible()
   await page.getByRole('button', { name: 'Generate', exact: true }).first().click()

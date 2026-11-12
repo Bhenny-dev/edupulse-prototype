@@ -19,7 +19,7 @@ All 2,286 official profiles remain. Other programs and years were not enrolled. 
 
 ## Review the syllabus
 
-**My Syllabus** shows Programming 1 as **Drafted**; version 2 remains available through its history. Its placeholder outline was replaced with 18 calendar weeks: 16 teaching weeks and examinations at weeks 9 and 18. The earlier editable syllabus remains in **Version History**. Proposed requirements and policies are labelled for review, and grading percentages remain pending institutional confirmation.
+**My Syllabus** shows Programming 1 as **Drafted**; earlier revisions remain stored internally. Its placeholder outline was replaced with 18 calendar weeks: 16 teaching weeks and examinations at weeks 9 and 18. The later sharing update removes Version History controls; the current reader shows the current syllabus. Proposed requirements and policies are labelled for review, and grading percentages remain pending institutional confirmation.
 
 ![Programming draft beside the retained active Networking syllabus](02-programming-draft.png)
 

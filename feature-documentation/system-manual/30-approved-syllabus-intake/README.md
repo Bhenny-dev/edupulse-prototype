@@ -44,7 +44,7 @@ If saving fails, the extraction remains on screen with the error. Retry **Use sy
 
 The outline scrolls horizontally within its own region on a narrow screen. The upload button, file chooser, preview and confirmation support keyboard use. Students do not get upload or activation controls.
 
-The five-station indicator has been removed from **My Syllabus**. Optional draft preparation, unified version history, confirmed deletion, sharing and offline approval remain for instructors who prepare a new syllabus in [Syllabus Builder](../02-syllabus-lifecycle/README.md).
+The five-station indicator has been removed from **My Syllabus**. Optional draft preparation, sharing, saved suspension before deletion and offline approval remain for instructors who prepare a new syllabus in [Syllabus Builder](../02-syllabus-lifecycle/README.md).
 
 ## Scaled tables, larger files and unmapped rows
 

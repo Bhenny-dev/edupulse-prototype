@@ -90,7 +90,6 @@ The following scenes use the additional synthetic baseline fixture. SQL integrat
 | Timed written assessment | ![Timed response](42-timed-written-assessment.png) | Server-started session, remaining time, topic names, one visible written question, Previous/Next and numbered navigation. |
 | Saved result and appeal | ![Pending marking and appeal](43-assessment-pending-review-and-appeal.png) | Objective subtotal, pending written-response marking and appeal form. |
 | Persisted notices | ![Academic notices](44-persisted-academic-notices.png) | Persisted publication notice plus derived current-work reminders; account and device receipt behavior is disclosed. |
-| Saved versions | ![Saved syllabus versions](45-saved-syllabus-versions.png) | Historical editable version can be viewed or restored as a new draft; approval must be repeated. |
 | Question topic mapping | ![Assessment mapping](46-assessment-topic-mapping.png) | Each question maps to an approved outline topic and selects multiple choice, True/False or instructor-marked response type. |
 | Delivery settings | ![Delivery settings](47-publication-delivery-settings.png) | Opened from an item's three-dot menu in the combined Courseware workspace. Release/deadline, duration and allowed attempts are saved before review/publication; **Close delivery settings** closes the panel. This fixture has no AI connection, so the course also says **Pulse AI is not set up yet** with **Set up Pulse AI**; saved drafts stay as they are. |
 | Mobile topics | ![Mobile topic mastery](48-mobile-topic-mastery.png) | Stacked topic charts/status and scrollable matrices. |
@@ -144,3 +143,5 @@ The course-week view includes curriculum units and the student's pending **Resea
 ![Student assignments on a phone](39-mobile-student-assignments.png)
 
 The student dashboard counts the same assigned courses as My Courses. Its pending card is labelled **Awaiting release**, with recorded curriculum units and no inferred score.
+
+The later syllabus-sharing correction removes Version History and Copy for next term. Existing history remains stored internally. Instructor selection, owned draft/approved adoption, and suspension before deletion are shown in [Manual 36](../../system-manual/36-instructor-syllabi/README.md).

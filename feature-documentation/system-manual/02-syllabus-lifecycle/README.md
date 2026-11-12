@@ -44,7 +44,7 @@ PDF is the primary institutional intake format; Word `.docx` is also supported. 
 
 ## Move it through the stations
 
-4. The syllabus appears in **My Syllabus** with status **Drafted**. Version and Outline columns are removed; the history control retains saved version details. The **Next step** column always shows the one action that moves it forward.
+4. The syllabus appears in **My Syllabus** with status **Drafted**. Version and Outline columns, Version History and Copy for next term are removed. The **Next step** column always shows the one action that moves it forward.
 
    ![Drafted in My Syllabus](04-my-syllabus-drafted.png)
 
@@ -73,10 +73,6 @@ PDF is the primary institutional intake format; Word `.docx` is also supported. 
 10. The syllabus is **Active**, and the next-step column reads **Drives courseware**. It now appears in Courseware ([manual 3](../03-courseware-generation-and-review/README.md)).
 
     ![Active, drives courseware](10-active-drives-courseware.png)
-
-11. **Version History** (clock icon) lists recorded changes with station, version, time and author. **Saved syllabus versions** retains up to ten editable snapshots, with **View saved version** and **Restore version as draft** when snapshots exist. Restoring clears approval and extraction; the current approved attachment can be downloaded separately. **Remove attachment and return to draft** handles an incorrectly uploaded file. The lifecycle capture below shows the recorded changes and an empty snapshot list for this newly created sample.
-
-    ![Version history dialog](11-version-history-dialog.png)
 
 ## Good to know
 
@@ -109,7 +105,7 @@ On mobile, the draft actions wrap into separate rows.
 
 In **My Syllabus**, use **Edit syllabus** for a non-sample record, including an active syllabus. Saving the revision retains the earlier editable snapshot and returns the syllabus to Drafted; approval and extraction must be completed again. Previously published courseware is withdrawn. Changed outline weeks additionally return their items to draft with an alignment warning; review or regenerate them against the new approved outline before publishing again.
 
-In **Version History**, **View saved version** previews the retained editable fields. **Restore version as draft** uses the same revision and withdrawal process. Snapshots exclude file bytes and nested history; up to ten are retained. Restoring never reinstates approval or silently republishes courseware. See the [saved-version capture](../../system-walkthrough/09-restored-role-pages/README.md#baseline-workflows-restored-after-owner-confirmation).
+Saved snapshots remain internal; the history and next-term copy controls are removed. Use **View Syllabus** to download the current retained approved file. Suspension precedes deletion; see [Manual 36](../36-instructor-syllabi/README.md).
 
 Confirmed shared course loads are shown above the builder when available. The identity/description fields remain locked under the later correction. The syllabus author still owns the draft and confirms every change.
 
@@ -138,7 +134,7 @@ When re-importing an EduPulse PDF, the approval/page footer is excluded from the
 
 ## Sharing and deletion
 
-The list has one **Version History** control, with recorded changes and saved editable versions. **Delete syllabus** replaces Archive and requires confirmation. It withdraws publications while retaining scored history. **Share syllabus** sends a saved copy to a registered instructor; received copies appear in My Syllabus labelled by sender. [Manual 36](../36-instructor-syllabi/README.md) shows these actions and their persistence boundaries.
+**Share syllabus** selects a registered instructor from a dropdown. Received copies can be adopted as a draft, or explicitly acknowledged for approved use when the sender retains a matching approved file. **Suspend syllabus** must be saved before **Delete syllabus** is available. Resume keeps courseware unpublished until explicitly released again. See [Manual 36](../36-instructor-syllabi/README.md).
 
 The Syllabus page no longer displays the **Confirmed course loads** summary. Its tabs and upload/builder controls remain; assigned course loads and roster matching are unchanged.
 

@@ -16,8 +16,7 @@ function valid(key:unknown,value:unknown):value is ViewValue {
    const item=value as Record<string,unknown>
    return ['end,section,signature,start','end,input,section,signature,start'].includes(Object.keys(item).sort().join(','))&&(!('input' in item)||item.input===true)&&['section','start','end'].every(field=>Number.isInteger(item[field])&&Number(item[field])>=0)&&Number(item.section)<=100&&Number(item.end)<=150000&&Number(item.end)>Number(item.start)&&Number(item.end)-Number(item.start)<=2000&&typeof item.signature==='string'&&/^\d{1,10}$/.test(item.signature)
   }
-  if(/^syllabus-(?:reader|history|share|delete)$/.test(key))return value===null||id(value)
-  if(key==='syllabus-version')return value===null||Number.isInteger(value)&&Number(value)>=0&&Number(value)<10
+  if(/^syllabus-(?:reader|share|delete|suspend|adopt)$/.test(key))return value===null||id(value)
   if(/^monitoring-followup:/.test(key))return typeof value==='boolean'
   if(/^monitoring-(?:detail|roster-member):/.test(key))return value===null||id(value)
   if(/^monitoring-roster-action:/.test(key))return value===null||['edit','suspend','resume','remove'].includes(value as string)

@@ -153,3 +153,8 @@ Student Monitoring uses the bounded saved allocation: 5-10 course/block classes 
 ### Reference continuation repair and catalog search
 
 The course **Syllabus sources** panel separates readable retained text from catalog-only records. **Search and read sources** processes books and links one at a time, retaining results and indexing readable text. Titles wrap; author/year/publisher fields are separated. The original imported citation and year discrepancies remain inspectable; catalog metadata is excluded from generated-content evidence. See [the repaired reference and formatted review captures](../../system-manual/31-retained-syllabus-sources/README.md#repaired-citations-and-online-lookup).
+
+
+## Shared syllabus adoption and safe removal
+
+My Syllabus now selects registered instructors from a dropdown. Received copies offer **Use as draft** and **Use approved copy** with explicit acknowledgment and a matching retained approved file. **Suspend syllabus** precedes **Delete syllabus**; Resume does not republish content. Version History and Copy for next term are removed. [Manual 36](../../system-manual/36-instructor-syllabi/README.md) shows the current desktop/phone actions and reload behavior.

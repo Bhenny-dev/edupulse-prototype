@@ -1,3 +1,5 @@
+import ShareSyllabusDialog from '../components/syllabus/ShareSyllabusDialog'
+import {suspendSyllabus,resumeSyllabus,deleteSuspendedSyllabus} from '../utils/syllabusLifecycle'
 import '../components/academic/academic.css'
 import useSyllabusSharing from '../components/syllabus/useSyllabusSharing'
 import { aiRequest } from '../lib/aiClient'
@@ -16,15 +18,15 @@ import { useAuth } from '../context/AuthContext'
 import { CURRICULUM_COURSES, INSTRUCTORS, DEFAULT_INSTITUTIONAL_CONTEXT, SYLLABUS_STATUS_META } from '../data/mockData'
 import { useToast } from '../context/ToastContext'
 import {
-  Upload, Plus, Trash2, Eye, History, Copy, Share2,
-  GitCompare, Download, BookOpen, ChevronDown, ChevronUp,
+  Upload, Plus, Trash2, Eye, PauseCircle, PlayCircle, Share2,
+  Download, BookOpen, ChevronDown, ChevronUp,
   Sparkles, AlertCircle, CheckCircle, FileUp, ScanLine,
   Lock, Paperclip,
 } from 'lucide-react'
 import { useWorkspace, useWorkspaceViewState } from '../context/WorkspaceContext'
 import ApprovedSyllabusUpload from '../components/syllabus/ApprovedSyllabusUpload'
 import ApprovedSyllabusIntake from '../components/syllabus/ApprovedSyllabusIntake'
-import { meaningfulOutline, downloadApprovedFile } from '../utils/syllabusFiles'
+import { meaningfulOutline,downloadApprovedFile } from '../utils/syllabusFiles'
 import UploadExistingSyllabus from '../components/syllabus/UploadExistingSyllabus'
 import SharedSyllabusRepository from '../components/syllabus/SharedSyllabusRepository'
 import { parsedToFormState } from '../utils/syllabusParser'
@@ -344,6 +346,7 @@ function SyllabusViewModal({ syllabus, onClose }) {
 
         </div>
         <div className="modal-actions">
+          {syllabus.approvedFile&&<button className="btn btn-secondary btn-sm" onClick={()=>downloadApprovedFile(syllabus.approvedFile)}>Download retained approved file</button>}
           <button className="btn btn-secondary btn-sm" disabled={exporting} onClick={exportPdf}>{exporting ? <Spinner size={14} /> : <Download size={14} />} Download PDF</button>
           <button className="btn btn-ghost" onClick={onClose}>Close</button>
         </div>
@@ -966,29 +969,6 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
 }
 
 /* ─── Version Compare ─── */
-function VersionCompare({ v1, v2, onClose }) {
-  return (
-    <ModalLayer className="overlay-backdrop" onClick={onClose}>
-      <div className="modal-content" style={{ maxWidth: '800px' }} onClick={e => e.stopPropagation()}>
-        <div className="modal-header"><h2><GitCompare size={20} /> Version Comparison</h2><button className="modal-close" onClick={onClose}>✕</button></div>
-        <div className="grid-2">
-          <div style={{ padding: '12px', borderRadius: 'var(--radius-md)', background: 'var(--gray-50)', border: '1px solid var(--gray-200)' }}>
-            <div style={{ fontWeight: 700, marginBottom: '8px' }}>v{v1.version} <span className="badge badge-draft">Earlier</span></div>
-            <div className="text-sm text-muted">Updated: {v1.lastUpdated}</div>
-            <div className="text-sm">Topics: {v1.topics.length}</div>
-          </div>
-          <div style={{ padding: '12px', borderRadius: 'var(--radius-md)', background: 'var(--sky-50)', border: '1px solid var(--sky-200)' }}>
-            <div style={{ fontWeight: 700, marginBottom: '8px' }}>v{v2.version} <span className="badge badge-published">Current</span></div>
-            <div className="text-sm text-muted">Updated: {v2.lastUpdated}</div>
-            <div className="text-sm">Topics: {v2.topics.length}</div>
-          </div>
-        </div>
-        <div className="modal-actions"><button className="btn btn-ghost" onClick={onClose}>Close</button></div>
-      </div>
-    </ModalLayer>
-  )
-}
-
 /* ─── Main Component ─── */
 export default function Syllabus() {
   const { user } = useAuth()
@@ -998,26 +978,22 @@ export default function Syllabus() {
 
   const [tab, setTab] = useState(['mine', 'repository', 'builder'].includes(searchParams.get('tab')) ? searchParams.get('tab') : 'mine')
   const [readerId,setReaderId]=useWorkspaceViewState('syllabus-reader',null)
-  const [readerVersion,setReaderVersion]=useWorkspaceViewState('syllabus-version',null)
   const [sharedReader,setSharedReader]=useState(null)
   const [previewSyllabus,setPreviewSyllabus]=useState(null)
   const sharing=useSyllabusSharing()
   const [shareId,setShareId]=useWorkspaceViewState('syllabus-share',null)
   const [deleteId,setDeleteId]=useWorkspaceViewState('syllabus-delete',null)
-  const [email,setEmail]=useState(''),[actionError,setActionError]=useState(''),[actionBusy,setActionBusy]=useState(false)
-  const [compareSyllabus, setCompareSyllabus] = useState(null)
-  const [historyId,setHistoryId]=useWorkspaceViewState('syllabus-history',null)
-  const showVersionHistory=!!historyId
-  const setShowVersionHistory=value=>{if(!value)setHistoryId(null)}
-  const setVersionHistorySyllabus=syllabus=>setHistoryId(syllabus?.id||null)
+  const [actionError,setActionError]=useState(''),[actionBusy,setActionBusy]=useState(false)
+  const [suspendId,setSuspendId]=useWorkspaceViewState('syllabus-suspend',null)
+  const [adoptId,setAdoptId]=useWorkspaceViewState('syllabus-adopt',null)
+  const [approvalAttested,setApprovalAttested]=useState(false)
   const [extractingSyllabus, setExtractingSyllabus] = useState(null)
-  const { syllabi, setSyllabi, commit, updateWorkspace,revision,dirty,saving,loading:workspaceLoading } = useWorkspace()
-  const versionHistorySyllabus=syllabi.find(item=>item.id===historyId)
+  const { syllabi, setSyllabi, commit, updateWorkspace,revision,dirty,saving,refresh,loading:workspaceLoading } = useWorkspace()
   const sharedId=readerId?.startsWith('shared:')?readerId.slice(7):null
   const readableShare=sharing.shares.find(item=>item.id===sharedId)
   const ownedReader=syllabi.find(item=>item.id===readerId)
-  const selectedSyllabus=previewSyllabus||(sharedId?(readableShare&&sharedReader?.id===sharedId?sharedReader.syllabus:null):(readerVersion!==null?ownedReader?.versions?.[readerVersion]:ownedReader))
-  const setSelectedSyllabus=syllabus=>{setReaderVersion(null);const saved=syllabus&&syllabi.some(item=>item.id===syllabus.id);setPreviewSyllabus(syllabus&&!saved?syllabus:null);setReaderId(saved?syllabus.id:null)}
+  const selectedSyllabus=previewSyllabus||(sharedId?(readableShare&&sharedReader?.id===sharedId?sharedReader.syllabus:null):ownedReader)
+  const setSelectedSyllabus=syllabus=>{const saved=syllabus&&syllabi.some(item=>item.id===syllabus.id);setPreviewSyllabus(syllabus&&!saved?syllabus:null);setReaderId(saved?syllabus.id:null)}
   useEffect(()=>{
     setSharedReader(null)
     if(!readableShare)return
@@ -1029,6 +1005,9 @@ export default function Syllabus() {
   const outgoing=sharing.shares.filter(item=>item.sender_id===user?.id)
   const deleteSyllabus=syllabi.find(item=>item.id===deleteId)
   const deleteShare=sharing.shares.find(item=>`shared:${item.id}`===deleteId)
+  const suspendOwned=syllabi.find(item=>item.id===suspendId)
+  const suspendShare=sharing.shares.find(item=>`shared:${item.id}`===suspendId)
+  const adoptShare=incoming.find(item=>item.id===adoptId)
   const sharingSyllabus=syllabi.find(item=>item.id===shareId)
   const activeOnly = searchParams.get('status') === 'active'
   const teachingSyllabi = syllabi.filter(syllabus => ['own','draft'].includes(syllabus.teachingSetRole))
@@ -1103,6 +1082,7 @@ export default function Syllabus() {
 
   // The next action available at each station, rendered inline per row.
   const nextAction = (syl) => {
+    if(syl.suspended)return {label:'Resume syllabus',icon:PlayCircle,onClick:()=>void runAction(async()=>{await commit(data=>resumeSyllabus(data,syl.id));addToast('Syllabus resumed. Review courseware before publishing again.','success')})}
     switch (syl.status) {
       case 'drafted': return { label: 'Mark as Checked', icon: CheckCircle, onClick: () => markChecked(syl), title: 'Confirm you have checked and corrected this draft' }
       case 'checked': return { label: 'Download for Approval', icon: Download, onClick: () => downloadForApproval(syl), title: 'Download the file for the offline signatory route (Dean → CAO → EVP)' }
@@ -1112,13 +1092,16 @@ export default function Syllabus() {
     }
   }
 
-  // Handle syllabus attachment from SharedSyllabusRepository
-  const handleAttachSyllabus = async (syllabus) => {
-    const copy = record({ ...syllabus, id: crypto.randomUUID(), instructorId: user?.id, version: 1, sample: false, approvedFile: undefined, extractedAt: undefined, history: [] }, 'drafted')
-    await commit(data=>({...data,syllabi:[...data.syllabi,copy]}))
-    addToast('Copied as a new draft. Review and complete its approval route.', 'success')
-    switchTab('mine')
-  }
+  const blocked=dirty||saving||workspaceLoading||actionBusy
+  const runAction=async task=>{if(actionBusy)return;setActionBusy(true);setActionError('');try{await task()}catch(error){setActionError(error.message)}finally{setActionBusy(false)}}
+  const adopt=async(share,mode)=>runAction(async()=>{
+    if(dirty||saving||workspaceLoading)throw new Error('Wait for pending workspace changes to save first.')
+    const result=await sharing.command({operation:'adopt',id:share.id,revision,mode,...(mode==='approved'?{approvalAttested}:{})})
+    await refresh();setAdoptId(null);setApprovalAttested(false)
+    addToast(mode==='approved'?'Approved copy acknowledged and added to your courses.':'Shared syllabus added as your draft.','success')
+    if(mode==='approved')navigate(`/courseware?course=${encodeURIComponent(result.id)}`)
+    else setSearchParams({tab:'mine',status:'all'})
+  })
 
   return (
     <div className="container" data-pulse-zone="syllabus-builder">
@@ -1200,7 +1183,7 @@ export default function Syllabus() {
                           <div className="text-sm text-muted">{syl.courseTitle}{syl.sample && <span> · Sample</span>}</div>{syl.sharedBy?.name&&<div className="text-sm text-muted">Shared by {syl.sharedBy.name}</div>}
                         </div></td>
                         <td className="text-sm" data-label="Instructor">{inst?.name || user?.name || 'Instructor'}</td>
-                        <td data-label="Status"><StatusBadge status={syl.status} /></td>
+                        <td data-label="Status"><StatusBadge status={syl.suspended?'Suspended':syl.status} /></td>
                         <td data-label="Next step">
                           {action ? (
                             <button className="btn btn-secondary btn-sm" onClick={action.onClick} title={action.title} style={{ whiteSpace: 'nowrap' }}>
@@ -1215,13 +1198,13 @@ export default function Syllabus() {
                         <td data-label="Actions">
                           <div className="academic-actions">
                             <button className="btn btn-ghost btn-sm" onClick={() => setSelectedSyllabus(syl)} title="View Syllabus"><Eye size={14} /></button>
-                            <button className="btn btn-ghost btn-sm" onClick={() => { setVersionHistorySyllabus(syl); setShowVersionHistory(true) }} title="Version History"><History size={14} /></button>
-                            {!syl.sample && (
+
+                            {!syl.sample && !syl.suspended && (
                               <button className="btn btn-ghost btn-sm" onClick={() => { setEditingSyllabus(syl); switchTab('builder') }} title="Edit in Builder"><BookOpen size={14} /></button>
                             )}
-                            <button className="btn btn-ghost btn-sm" onClick={() => handleAttachSyllabus(syl).catch(error=>setActionError(error.message))} title="Copy for next term"><Copy size={14} /></button>
-                            {!syl.sample&&<button className="btn btn-ghost btn-sm" disabled={!sharing.allowed} onClick={()=>{setActionError('');setEmail('');setShareId(syl.id)}} title="Share syllabus"><Share2 size={14}/></button>}
-                            <button className="btn btn-ghost btn-sm" onClick={()=>{setActionError('');setDeleteId(syl.id)}} title="Delete syllabus"><Trash2 size={14}/></button>
+
+                            {!syl.sample&&<button className="btn btn-ghost btn-sm" disabled={!sharing.allowed||syl.suspended} onClick={()=>{setActionError('');setShareId(syl.id)}} title="Share syllabus"><Share2 size={14}/></button>}
+                            <button className="btn btn-ghost btn-sm" disabled={blocked} onClick={()=>{setActionError('');syl.suspended?setDeleteId(syl.id):setSuspendId(syl.id)}} title={syl.suspended?'Delete syllabus':'Suspend syllabus'}>{syl.suspended?<Trash2 size={14}/>:<PauseCircle size={14}/>}</button>
                           </div>
                         </td>
                       </tr>
@@ -1231,11 +1214,11 @@ export default function Syllabus() {
               </table></div>
             )}
           </div>
-          {incoming.length>0&&!activeOnly&&<section className="card mt-24"><div className="card-header"><h2>Shared with me</h2></div><div className="card-body"><p className="text-sm text-muted mb-16">Received copies stay read-only. Use as draft creates your own copy for review and offline approval.</p>{incoming.map(share=><div className="academic-list-row" key={share.id} data-shared-id={share.id}><div><strong>{share.courseCode} — {share.courseTitle}</strong><div className="text-sm text-muted">Shared by {share.sender_name}</div></div><div className="academic-actions"><button className="btn btn-secondary btn-sm" onClick={()=>{setReaderVersion(null);setReaderId(`shared:${share.id}`)}}>View shared syllabus</button><button className="btn btn-secondary btn-sm" disabled={actionBusy} onClick={async()=>{setActionBusy(true);setActionError('');try{const result=await sharing.command({operation:'open',id:share.id});await handleAttachSyllabus({...result.syllabus,sharedBy:{id:share.sender_id,name:share.sender_name}});setSearchParams({tab:'mine',status:'all'})}catch(error){setActionError(error.message)}finally{setActionBusy(false)}}}>Use as draft</button><button className="btn btn-ghost btn-sm" title="Delete received syllabus" onClick={()=>setDeleteId(`shared:${share.id}`)}><Trash2 size={14}/></button></div></div>)}</div></section>}
+          {incoming.length>0&&!activeOnly&&<section className="card mt-24"><div className="card-header"><h2>Shared with me</h2></div><div className="card-body"><p className="text-sm text-muted mb-16">Save your own draft, or acknowledge the sender’s matching approved copy to open a course. Courseware and private source copies are not shared.</p>{incoming.map(share=><div className="academic-list-row" key={share.id} data-shared-id={share.id}><div><strong>{share.courseCode} {'\u2014'} {share.courseTitle}</strong><div className="text-sm text-muted">Shared by {share.sender_name}{share.sender_suspended?' - Suspended by sender':share.recipient_suspended?' - Suspended':''}</div></div><div className="academic-actions"><button className="btn btn-secondary btn-sm" onClick={()=>setReaderId(`shared:${share.id}`)}>View shared syllabus</button><button className="btn btn-secondary btn-sm" disabled={blocked||share.sender_suspended||share.recipient_suspended} onClick={()=>void adopt(share,'draft')}>Use as draft</button><button className="btn btn-secondary btn-sm" disabled={blocked||share.sender_suspended||share.recipient_suspended} onClick={()=>{setActionError('');setApprovalAttested(false);setAdoptId(share.id)}}>Use approved copy</button>{share.recipient_suspended&&<button className="btn btn-secondary btn-sm" disabled={blocked} onClick={()=>void runAction(()=>sharing.command({operation:'resume',id:share.id}))}>Resume received syllabus</button>}<button className="btn btn-ghost btn-sm" disabled={blocked} title={share.recipient_suspended?'Delete received syllabus':'Suspend received syllabus'} onClick={()=>{setActionError('');share.recipient_suspended?setDeleteId(`shared:${share.id}`):setSuspendId(`shared:${share.id}`)}}>{share.recipient_suspended?<Trash2 size={14}/>:<PauseCircle size={14}/>}</button></div></div>)}</div></section>}
         </>
       )}
 
-      {tab === 'repository' && <SharedSyllabusRepository shares={outgoing} onView={share=>{setReaderVersion(null);setReaderId(`shared:${share.id}`)}} onRemove={share=>{setActionError('');setDeleteId(`shared:${share.id}`)}}/>}
+      {tab === 'repository' && <SharedSyllabusRepository shares={outgoing} onView={share=>{setReaderId(`shared:${share.id}`)}} onRemove={share=>{setActionError('');share.sender_suspended?setDeleteId(`shared:${share.id}`):setSuspendId(`shared:${share.id}`)}} onResume={share=>void runAction(()=>sharing.command({operation:'resume',id:share.id}))} busy={blocked}/>}
 
       {/* Tab: Syllabus Builder */}
       {tab === 'builder' && (
@@ -1244,8 +1227,10 @@ export default function Syllabus() {
         </div>
       )}
 
-      {sharingSyllabus&&<ModalLayer onDismiss={()=>setShareId(null)}><section className="modal-content" role="dialog" aria-modal="true" aria-label="Share syllabus"><div className="modal-header"><h2>Share {sharingSyllabus.courseCode} syllabus</h2><button className="modal-close" aria-label="Close sharing" onClick={()=>setShareId(null)}>×</button></div><p className="mb-16">Send a syllabus copy to another registered instructor. Their My Syllabus tab will show your name. Private source copies, approved attachments and courseware are excluded.</p><form onSubmit={async event=>{event.preventDefault();setActionBusy(true);setActionError('');try{const result=await sharing.command({operation:'send',syllabus:sharingSyllabus.id,revision,email});setShareId(null);addToast(`Syllabus shared with ${result.recipient}.`,'success')}catch(error){setActionError(error.message)}finally{setActionBusy(false)}}}><label className="form-label">Instructor email<input className="form-input" type="email" maxLength={254} required value={email} onChange={event=>setEmail(event.target.value)}/></label>{(dirty||saving||workspaceLoading)&&<p role="status">Wait for the workspace to finish saving before sharing.</p>}{actionError&&<p role="alert">{actionError}</p>}<div className="modal-actions"><button className="btn btn-secondary" type="button" onClick={()=>setShareId(null)}>Cancel</button><button className="btn btn-primary" type="submit" disabled={actionBusy||dirty||saving||workspaceLoading||!sharing.allowed}>{actionBusy?'Sharing…':'Share syllabus'}</button></div></form></section></ModalLayer>}
-      {(deleteSyllabus||deleteShare)&&<ModalLayer onDismiss={()=>setDeleteId(null)}><section className="modal-content" role="dialog" aria-modal="true" aria-label="Delete syllabus"><h2>{deleteSyllabus?'Delete syllabus?':deleteShare.sender_id===user.id?'Remove shared syllabus?':'Delete received syllabus?'}</h2><p className="mt-16">{deleteSyllabus?`Delete ${deleteSyllabus.courseCode} and its authored courseware from your workspace? Its publications will be withdrawn. Recorded assessment history and independently shared copies are retained.`:deleteShare.sender_id===user.id?'Withdraw this shared entry from the recipient. Their independently saved draft is retained.':'Remove this received entry from My Syllabus. Your saved draft and the sender’s syllabus are retained.'}</p>{actionError&&<p role="alert">{actionError}</p>}<div className="modal-actions"><button className="btn btn-secondary" onClick={()=>setDeleteId(null)}>Cancel</button><button className="btn btn-primary" disabled={actionBusy} onClick={async()=>{setActionBusy(true);setActionError('');try{if(deleteSyllabus)await commit(data=>({...data,syllabi:data.syllabi.filter(item=>item.id!==deleteId),content:Object.fromEntries(Object.entries(data.content).filter(([,item])=>item.syllabusId!==deleteId))}));else await sharing.command({operation:'remove',id:deleteShare.id});setDeleteId(null);addToast('Syllabus removed.','success')}catch(error){setActionError(error.message)}finally{setActionBusy(false)}}}>{actionBusy?'Removing…':'Confirm delete'}</button></div></section></ModalLayer>}
+      {sharingSyllabus&&<ShareSyllabusDialog syllabus={sharingSyllabus} blocked={dirty||saving||workspaceLoading||!sharing.allowed} busy={actionBusy} error={actionError} onClose={()=>setShareId(null)} onShare={recipient=>void runAction(async()=>{const result=await sharing.command({operation:'send',syllabus:sharingSyllabus.id,revision,recipient});setShareId(null);addToast(`Syllabus shared with ${result.recipient}.`,'success')})}/>}
+      {(suspendOwned||suspendShare)&&<ModalLayer onDismiss={()=>setSuspendId(null)}><section className="modal-content" role="dialog" aria-modal="true" aria-label="Suspend syllabus"><h2>Suspend syllabus?</h2><p className="mt-16">{suspendOwned?'This keeps the syllabus and authored content, withdraws its course delivery, and enables deletion as a separate later action. Recorded student history stays intact.':'This keeps the shared entry but pauses its use. You can resume it or delete it in a later action. Independently saved copies remain unchanged.'}</p>{actionError&&<p role="alert">{actionError}</p>}<div className="modal-actions"><button className="btn btn-secondary" onClick={()=>setSuspendId(null)}>Cancel</button><button className="btn btn-primary" disabled={blocked} onClick={()=>void runAction(async()=>{if(suspendOwned)await commit(data=>suspendSyllabus(data,suspendId));else await sharing.command({operation:'suspend',id:suspendShare.id});setSuspendId(null);addToast('Syllabus suspended.','success')})}>Confirm suspension</button></div></section></ModalLayer>}
+      {adoptShare&&<ModalLayer onDismiss={()=>setAdoptId(null)}><section className="modal-content" role="dialog" aria-modal="true" aria-label="Acknowledge approved syllabus"><div className="modal-header"><h2>Use approved {adoptShare.courseCode} syllabus</h2><button className="modal-close" aria-label="Close approved use" onClick={()=>setAdoptId(null)}>{'\u00d7'}</button></div><p className="mb-16">Review the received syllabus first. The sender must still retain the matching approved file. This adds that approved file and syllabus to your own workspace and opens your course. It does not publish courseware or enroll students.</p><label className="form-label"><input type="checkbox" checked={approvalAttested} onChange={event=>setApprovalAttested(event.target.checked)}/> I acknowledge that this approved copy is authorized for my course and its offline approvals are complete.</label>{actionError&&<p role="alert">{actionError}</p>}<div className="modal-actions"><button className="btn btn-secondary" onClick={()=>setAdoptId(null)}>Cancel</button><button className="btn btn-primary" disabled={blocked||!approvalAttested||adoptShare.sender_suspended||adoptShare.recipient_suspended} onClick={()=>void adopt(adoptShare,'approved')}>Acknowledge and open course</button></div></section></ModalLayer>}
+      {(deleteSyllabus||deleteShare)&&<ModalLayer onDismiss={()=>setDeleteId(null)}><section className="modal-content" role="dialog" aria-modal="true" aria-label="Delete syllabus"><h2>{deleteSyllabus?'Delete syllabus?':deleteShare.sender_id===user.id?'Remove shared syllabus?':'Delete received syllabus?'}</h2><p className="mt-16">{deleteSyllabus?`Delete ${deleteSyllabus.courseCode} and its authored courseware from your workspace? Its publications will be withdrawn. Recorded assessment history and independently shared copies are retained.`:deleteShare.sender_id===user.id?'Withdraw this shared entry from the recipient. Their independently saved draft is retained.':'Remove this received entry from My Syllabus. Your saved draft and the sender’s syllabus are retained.'}</p>{actionError&&<p role="alert">{actionError}</p>}<div className="modal-actions"><button className="btn btn-secondary" onClick={()=>setDeleteId(null)}>Cancel</button><button className="btn btn-primary" disabled={blocked||!!deleteSyllabus&&!deleteSyllabus.suspended||!!deleteShare&&!(deleteShare.sender_id===user.id?deleteShare.sender_suspended:deleteShare.recipient_suspended)} onClick={async()=>{setActionBusy(true);setActionError('');try{if(deleteSyllabus)await commit(data=>deleteSuspendedSyllabus(data,deleteId));else await sharing.command({operation:'remove',id:deleteShare.id});setDeleteId(null);addToast('Syllabus removed.','success')}catch(error){setActionError(error.message)}finally{setActionBusy(false)}}}>{actionBusy?'Removing…':'Confirm delete'}</button></div></section></ModalLayer>}
 
       {/* View Modal */}
       {selectedSyllabus && <SyllabusViewModal syllabus={selectedSyllabus} onClose={() => setSelectedSyllabus(null)} />}
@@ -1259,32 +1244,8 @@ export default function Syllabus() {
         />
       )}
 
-      {/* Version Compare */}
-      {compareSyllabus && <VersionCompare v1={compareSyllabus} v2={compareSyllabus} onClose={() => setCompareSyllabus(null)} />}
-
       {uploadingSyllabus && <ApprovedSyllabusUpload syllabus={uploadingSyllabus} onSave={saveApproved} onClose={() => setUploadingSyllabus(null)} />}
-      {showVersionHistory && versionHistorySyllabus && <ModalLayer className="overlay-backdrop" onDismiss={() => setShowVersionHistory(false)}><section role="dialog" aria-label="Syllabus history" className="modal-content" style={{ maxHeight: '80vh', overflow: 'auto' }}>
-        <h2>Recorded syllabus changes</h2>
-        {versionHistorySyllabus && <p className="text-sm text-muted">{versionHistorySyllabus.courseCode} — {versionHistorySyllabus.courseTitle}</p>}
-        {versionHistorySyllabus?.history?.length ? (
-          <ol className="version-timeline" style={{ listStyle: 'none', padding: 0, margin: '14px 0', display: 'grid', gap: 8 }}>
-            {versionHistorySyllabus.history.map((entry, i) => (
-              <li key={i} className="version-entry" style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 12px', border: '1px solid var(--gray-200)', borderRadius: 'var(--radius-md)' }}>
-                <StatusBadge status={entry.status} />
-                <span className="text-sm">v{entry.version} · {new Date(entry.timestamp).toLocaleString()} · {entry.author}</span>
-              </li>
-            ))}
-          </ol>
-        ) : <p>No recorded changes yet. Sample history is not a saved audit trail.</p>}
-        <h3 className="mt-16">Saved syllabus versions</h3>
-        <p className="text-sm text-muted">Up to ten editable versions are retained. Restoring creates a draft and clears approval; changed outline weeks require courseware review again. Approved-file bytes are retained only on the current syllabus.</p>
-        {(versionHistorySyllabus?.versions || []).map((version,index)=><div className="academic-list-row" key={index}><span>Version {version.version} · {version.courseTitle} · {version.lastUpdated && new Date(version.lastUpdated).toLocaleString()}</span><button className="btn btn-secondary btn-sm" onClick={()=>{setReaderId(versionHistorySyllabus.id);setReaderVersion(index)}}>View saved version</button><button className="btn btn-secondary btn-sm" onClick={async()=>{try{await commit(data=>{const current=data.syllabi.find(syl=>syl.id===versionHistorySyllabus.id);return revisedWorkspace(data,record({...version,id:current.id,version:(current.version || 1)+1,sample:false,approvedFile:undefined,extractedAt:undefined},'drafted'))});setShowVersionHistory(false);addToast('Historical version restored as a draft. Review it before the offline approval route.','success')}catch(failure){addToast(failure.message,'error')}}}>Restore version as draft</button></div>)}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, justifyContent: 'flex-end' }}>
-          {versionHistorySyllabus?.approvedFile && <button className="btn btn-secondary" onClick={() => downloadApprovedFile(versionHistorySyllabus.approvedFile)}>Download retained approved file</button>}
-          {versionHistorySyllabus?.approvedFile && <button className="btn btn-ghost" onClick={() => { setSyllabi(previous => previous.map(syl => syl.id === versionHistorySyllabus.id ? record({ ...syl, approvedFile: undefined, extractedAt: undefined }, 'drafted') : syl)); setShowVersionHistory(false) }}>Remove attachment and return to draft</button>}
-          <button className="btn btn-ghost" onClick={() => setShowVersionHistory(false)}>Close</button>
-        </div>
-      </section></ModalLayer>}
+
 
     </div>
   )

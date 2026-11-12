@@ -25,7 +25,8 @@ test('syllabus lifecycle: build, check, download, approve, extract, activate', a
   if (snapshot.data) {
     const stale = new Set(snapshot.data.syllabi.filter((s: { sample?: boolean; courseCode: string }) => !s.sample && s.courseCode === 'IT 102').map((s: { id: string }) => s.id))
     const content = Object.fromEntries(Object.entries(snapshot.data.content).filter(([, item]) => !stale.has((item as { syllabusId: string }).syllabusId)))
-    const saved = await request.put('/api/ai?action=workspace', { data: { revision: snapshot.revision, data: { ...snapshot.data, syllabi: snapshot.data.syllabi.filter((s: { id: string }) => !stale.has(s.id)), content } } })
+    const suspended=await request.put('/api/ai?action=workspace',{data:{revision:snapshot.revision,data:{...snapshot.data,syllabi:snapshot.data.syllabi.map((s:any)=>stale.has(s.id)?{...s,suspended:true,status:'archived'}:s)}}});expect(suspended.ok()).toBe(true)
+    const saved = await request.put('/api/ai?action=workspace', { data: { revision: (await suspended.json()).revision, data: { ...snapshot.data, syllabi: snapshot.data.syllabi.filter((s: { id: string }) => !stale.has(s.id)), content } } })
     expect(saved.status()).toBe(200)
   }
   await page.goto('/')
@@ -69,10 +70,7 @@ test('syllabus lifecycle: build, check, download, approve, extract, activate', a
   await saved(page)
   await expect(row.getByText('Drives courseware', { exact: true })).toBeVisible()
   await shot(row, f, '10-active-drives-courseware')
-  await row.getByTitle('Version History').click()
-  await expect(page.getByRole('dialog', { name: 'Syllabus history' })).toBeVisible()
-  await shot(page.getByRole('dialog', { name: 'Syllabus history' }), f, '11-version-history-dialog')
-  await page.getByRole('button', { name: 'Close', exact: true }).click()
+
 })
 
 test('courseware: generate a week, review alignment, check', async ({ page }) => {

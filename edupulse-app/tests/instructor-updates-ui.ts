@@ -24,10 +24,14 @@ export async function instructorSyllabusScene(page:Page,capture?:Capture){
  const table=page.locator('.syllabus-list')
  await expect(table.getByRole('columnheader',{name:'Version',exact:true})).toHaveCount(0);await expect(table.getByRole('columnheader',{name:'Outline',exact:true})).toHaveCount(0)
  await expect(table.getByTitle('Archive',{exact:true})).toHaveCount(0);await expect(table.getByTitle('Review recorded changes',{exact:true})).toHaveCount(0)
- await expect(table.getByTitle('Version History',{exact:true})).toHaveCount(1)
+ await expect(table.getByTitle('Version History',{exact:true})).toHaveCount(0)
+ await expect(table.getByTitle('Copy for next term',{exact:true})).toHaveCount(0)
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true)
- await capture?.('my-syllabus',page.viewportSize()!.width<600?table:undefined)
- await table.getByTitle('Version History',{exact:true}).click();await expect(page.getByRole('dialog',{name:'Syllabus history'})).toBeVisible();await page.reload();await expect(page.getByRole('dialog',{name:'Syllabus history'})).toBeVisible();await capture?.('syllabus-history',page.getByRole('dialog',{name:'Syllabus history'}));await page.getByRole('dialog',{name:'Syllabus history'}).getByRole('button',{name:'Close',exact:true}).click()
+ await capture?.('my-syllabus',table)
+ await expect(table.getByTitle('Delete syllabus',{exact:true})).toHaveCount(0)
+ await table.getByTitle('Suspend syllabus',{exact:true}).click();await page.reload();const suspension=page.getByRole('dialog',{name:'Suspend syllabus',exact:true});await expect(suspension).toBeVisible();await capture?.('suspend-syllabus',suspension)
+ await suspension.getByRole('button',{name:'Confirm suspension',exact:true}).click();await expect(table).toContainText('Suspended');expect(store.workspaces[sender].syllabi[0].suspended).toBe(true)
+ await expect(table.getByRole('button',{name:'Resume syllabus',exact:true})).toBeVisible()
  await table.getByTitle('Delete syllabus',{exact:true}).click();await page.reload();const dialog=page.getByRole('dialog',{name:'Delete syllabus',exact:true});await expect(dialog).toBeVisible();await capture?.('delete-syllabus',dialog)
  await dialog.getByRole('button',{name:'Cancel',exact:true}).click();expect(store.workspaces[sender].syllabi).toHaveLength(1)
  await table.getByTitle('Delete syllabus',{exact:true}).click();store.failDelete=true
@@ -38,10 +42,10 @@ export async function instructorSyllabusScene(page:Page,capture?:Capture){
 export async function instructorSharingScene(page:Page,capture?:Capture){
  const store=sharedStore();await instructorUpdatesUI(page,sender,store)
  await page.goto('/#/syllabus?tab=mine');await page.locator('.syllabus-list').getByTitle('Share syllabus',{exact:true}).click()
- await page.reload();const dialog=page.getByRole('dialog',{name:'Share syllabus',exact:true});await expect(dialog).toBeVisible();await expect(dialog.getByLabel('Instructor email')).toHaveValue('')
- await dialog.getByLabel('Instructor email').fill('recipient@example.invalid');await capture?.('share-syllabus',dialog)
+ await page.reload();const dialog=page.getByRole('dialog',{name:'Share syllabus',exact:true});await expect(dialog).toBeVisible();await expect(dialog.getByLabel('Instructor',{exact:true})).toHaveValue('')
+ await dialog.getByLabel('Instructor',{exact:true}).selectOption(recipient);expect(await dialog.evaluate(element=>element.scrollWidth<=element.clientWidth+1)).toBe(true);await capture?.('share-syllabus',dialog)
  await dialog.getByRole('button',{name:'Share syllabus',exact:true}).click();await expect(dialog).toHaveCount(0)
- await page.getByRole('button',{name:'Shared Repository',exact:true}).click();await expect(page.getByRole('heading',{name:'My shared syllabi'})).toBeVisible();await expect(page.getByText('Synthetic recipient',{exact:true})).toBeVisible();for(const toast of await page.locator('.toast').all())await toast.click();await capture?.('shared-repository',page.viewportSize()!.width<600?page.locator('section').filter({has:page.getByRole('heading',{name:'My shared syllabi',exact:true})}):undefined)
+ await page.getByRole('button',{name:'Shared Repository',exact:true}).click();await expect(page.getByRole('heading',{name:'My shared syllabi'})).toBeVisible();await expect(page.getByText('Synthetic recipient',{exact:true})).toBeVisible();for(const toast of await page.locator('.toast').all())await toast.click();await capture?.('shared-repository',page.locator('section').filter({has:page.getByRole('heading',{name:'My shared syllabi',exact:true})}))
  const problems:string[]=[]
  const browser=page.context().browser()!,context=await browser.newContext({viewport:page.viewportSize()!,isMobile:page.viewportSize()!.width<600,hasTouch:page.viewportSize()!.width<600})
  try{
@@ -51,6 +55,12 @@ export async function instructorSharingScene(page:Page,capture?:Capture){
   await received.getByRole('button',{name:'View shared syllabus',exact:true}).click();await expect(received.locator('.syllabus-view-modal')).toBeVisible();await received.reload();await expect(received.locator('.syllabus-view-modal')).toBeVisible();await received.locator('.syllabus-view-modal').getByRole('button',{name:'Close syllabus details',exact:true}).click()
   await received.getByRole('button',{name:'Use as draft',exact:true}).click();await expect(received.locator('.syllabus-list')).toContainText('Shared by Synthetic sender');expect(store.workspaces[recipient].syllabi[0].status).toBe('drafted');expect(store.workspaces[recipient].syllabi[0].approvedFile).toBeUndefined()
   await received.reload();await expect(received.locator('.syllabus-list')).toContainText('Shared by Synthetic sender')
+  await received.getByRole('button',{name:'Use approved copy',exact:true}).click();await received.reload()
+  const approved=received.getByRole('dialog',{name:'Acknowledge approved syllabus',exact:true});await expect(approved).toBeVisible();await expect(approved.getByRole('checkbox')).not.toBeChecked();await approved.getByRole('checkbox').check();await capture?.('acknowledge-approved',approved)
+  await approved.getByRole('button',{name:'Acknowledge and open course',exact:true}).click();await expect(received).toHaveURL(/course=approved-received-copy/)
+  expect(store.workspaces[recipient].syllabi.find((row:any)=>row.id==='approved-received-copy').status).toBe('active')
+  await received.goto(new URL('/#/syllabus?tab=mine',page.url()).href)
+
   await received.getByRole('button',{name:'Shared Repository',exact:true}).click();await expect(received.getByText('You have not shared any syllabi yet.',{exact:false})).toBeVisible()
  }finally{await context.close();expect(problems).toEqual([])}
  expect(store.workspaces[sender].syllabi).toHaveLength(1)

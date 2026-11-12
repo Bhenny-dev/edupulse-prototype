@@ -36,11 +36,12 @@ test('confirmed loading suggestions and block corrections update shared records'
 test('removed Dean review link returns to oversight without correction controls',async({page})=>{
  await baselineUI(page,'dean');await page.goto('/#/monitor?tab=review');await expect(page).toHaveURL(/tab=overview/);await expect(page.getByRole('button',{name:'Review Inbox',exact:true})).toHaveCount(0);await expect(page.getByLabel('Correction request',{exact:true})).toHaveCount(0)
 })
-test('saved syllabus versions can be viewed and restored as a draft',async({page})=>{
+test('removed syllabus history actions leave saved versions untouched',async({page})=>{
  const fixture=await baselineUI(page);fixture.setWorkspace(structuredClone(baselineWorkspace));await page.goto('/#/syllabus?tab=mine')
- await page.getByTitle('Version History').first().click();await expect(page.getByRole('heading',{name:'Saved syllabus versions'})).toBeVisible();await page.getByRole('button',{name:'Restore version as draft',exact:true}).click();await expect(page.getByRole('dialog',{name:'Syllabus history'})).toHaveCount(0)
- const saved=fixture.getWorkspace() as typeof baselineWorkspace;expect(saved.syllabi[0].status).toBe('drafted');expect(saved.syllabi[0].approvedFile).toBeUndefined();expect(saved.syllabi[0].version).toBe(3)
+ await expect(page.getByTitle('Version History')).toHaveCount(0);await expect(page.getByTitle('Copy for next term')).toHaveCount(0)
+ expect((fixture.getWorkspace() as typeof baselineWorkspace).syllabi[0].versions).toEqual(baselineWorkspace.syllabi[0].versions)
 })
+
 test('assessment topic mappings and delivery policy save through the instructor workspace',async({page})=>{
  const fixture=await baselineUI(page);fixture.setWorkspace(structuredClone(baselineWorkspace));await page.goto('/#/courseware?tab=builder&course=baseline-syllabus&week=1')
  await page.locator('[data-content-id="baseline-quiz"]').getByRole('button',{name:'View',exact:true}).click();await page.getByRole('combobox',{name:'Question 1 syllabus topic'}).selectOption('Functions');await page.getByRole('combobox',{name:'Question 2 response type'}).selectOption('true_false');await page.locator('.assessment-question-input').nth(1).fill('Functions group reusable instructions.');await page.getByText('True',{exact:true}).click();await page.getByRole('button',{name:'Save Assessment',exact:true}).click()
