@@ -72,7 +72,7 @@ This capture uses a synthetic model/research response to demonstrate the real an
 
 ## Conversation continuity
 
-Pulse supplies up to 12 recent turns within its bounded prompt budget. Saved preferences and explicit recall come from the current account's database history, with source labels; they are not proof that an action happened. Open **Pulse options → Conversations and memory**. See [Manual 9](../09-pulse-actions/README.md#private-conversations-and-reusable-preferences) for review, archive, deletion and recall. Requests to navigate or edit use validated tools and confirmation cards.
+Pulse supplies up to 12 recent turns within its bounded prompt budget. Saved preferences and explicit recall come from the current account's database history, with source labels; they are not proof that an action happened. Open **Pulse options → Conversations and memory**. See [Manual 9](../09-pulse-actions/README.md#private-conversations-and-reusable-preferences) for review, archive, deletion and recall. For a selected syllabus, validated AI-generated draft text is placed directly into the current form after the edit passes scope and stale-baseline checks; **Save as Drafted** is still required to persist it. Other mutation cards retain their own confirmation rules. The **Suggested follow-ups** controls are based on the latest response and, for syllabus edits, the selected course and changed week. A saved syllabus can be reopened using **Open editable syllabus**. See the [targeted outline guide](../38-targeted-outline-edits/README.md).
 
 
 ## Capture provenance

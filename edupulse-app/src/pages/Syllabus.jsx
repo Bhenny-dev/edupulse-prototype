@@ -580,7 +580,7 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
 
   usePulseEditor({ kind: 'syllabus', label: `${form.courseCode || 'New'} syllabus builder`, data: form, sources: sourceFiles,
     previewOutline:(progress,baseline)=>setOutlineDraft({...progress,baseline}),
-    apply: next => { setForm({...next,courseOutline:normalizeOutlineSections(next.courseOutline)}); setUploadStep('done') },
+    apply: next => { setForm({...next,courseOutline:normalizeOutlineSections(next.courseOutline)}); setOutlineDraft(null); setUploadStep('done') },
     prepareCourse: (code, current) => {
       const course = CURRICULUM_COURSES.find(item => item.code === code)
       if (!course) throw new Error('Choose a course from the curriculum.')
@@ -1040,14 +1040,20 @@ export default function Syllabus() {
   useEffect(() => {
     const t = searchParams.get('tab')
     if (['mine', 'repository', 'builder'].includes(t) && t !== tab) setTab(t)
-  }, [searchParams, tab])
+    // A precise draft link reopens the same editable syllabus instead of a new blank form.
+    const id = searchParams.get('edit')
+    if (t === 'builder' && id) {
+      const owned = syllabi.find(s => s.id === id && !s.sample)
+      if (owned) setEditingSyllabus(previous => previous?.id === owned.id ? previous : owned)
+    }
+  }, [searchParams, tab, syllabi, user?.id])
 
   if (!['instructor', 'admin'].includes(user?.role)) return <Navigate to="/dashboard" replace />
   if (searchParams.get('tab') === 'register') return <Navigate to="/student-monitoring?tab=students" replace />
 
   const switchTab = (t) => {
     setTab(t)
-    setSearchParams(prev => { const p = new URLSearchParams(prev); p.set('tab', t); p.delete('status'); return p })
+    setSearchParams(prev => { const p = new URLSearchParams(prev); p.set('tab', t); p.delete('status'); if (t !== 'builder') p.delete('edit'); return p })
   }
 
   const record = (syl, status) => ({ ...syl, status, lastUpdated: new Date().toISOString(), history: [...(syl.history || []), { status, version: syl.version || 1, timestamp: new Date().toISOString(), author: user?.name || 'Instructor' }].slice(-100) })
@@ -1057,7 +1063,8 @@ export default function Syllabus() {
     const change = data => revisedWorkspace(data,next)
     const saved = options.confirmed ? await commit(change) : null
     if (!options.confirmed) updateWorkspace(change)
-    setEditingSyllabus(null); setTab('mine'); setSearchParams({tab:'mine',status:'all'})
+    // Keep the saved draft mounted as the current AI editor for conversational follow-ups.
+    setEditingSyllabus(next); setTab('builder'); setSearchParams({tab:'builder',edit:next.id})
     pulseBus.progress('syllabus-saved', next.courseCode)
     return { ...saved, id: next.id, status: next.status }
   }
@@ -1154,7 +1161,7 @@ export default function Syllabus() {
           Shared Repository
         </button>
         <button
-          onClick={() => { setEditingSyllabus(null); switchTab('builder') }}
+          onClick={() => { setEditingSyllabus(null); setTab('builder'); setSearchParams({tab:'builder'}) }}
           style={{
             padding: '10px 20px', border: 'none', background: 'none', cursor: 'pointer', fontWeight: 600,
             fontSize: '0.875rem', color: tab === 'builder' ? 'var(--sky-600)' : 'var(--gray-500)',
@@ -1217,7 +1224,7 @@ export default function Syllabus() {
                             <button className="btn btn-ghost btn-sm" onClick={() => setSelectedSyllabus(syl)} title="View Syllabus"><Eye size={14} /></button>
                             <button className="btn btn-ghost btn-sm" onClick={() => { setVersionHistorySyllabus(syl); setShowVersionHistory(true) }} title="Version History"><History size={14} /></button>
                             {!syl.sample && (
-                              <button className="btn btn-ghost btn-sm" onClick={() => { setEditingSyllabus(syl); switchTab('builder') }} title="Edit in Builder"><BookOpen size={14} /></button>
+                              <button className="btn btn-ghost btn-sm" onClick={() => { setEditingSyllabus(syl); setTab('builder'); setSearchParams({tab:'builder',edit:syl.id}) }} title="Edit in Builder"><BookOpen size={14} /></button>
                             )}
                             <button className="btn btn-ghost btn-sm" onClick={() => handleAttachSyllabus(syl).catch(error=>setActionError(error.message))} title="Copy for next term"><Copy size={14} /></button>
                             {!syl.sample&&<button className="btn btn-ghost btn-sm" disabled={!sharing.allowed} onClick={()=>{setActionError('');setEmail('');setShareId(syl.id)}} title="Share syllabus"><Share2 size={14}/></button>}
