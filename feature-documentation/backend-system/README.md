@@ -565,3 +565,6 @@ The displayed associate_dean role title is now **Program Coordinator**. This is 
 
 
 The owner removed the Syllabus page course-load summary panel. This deletes presentation only; institutional load retrieval, course assignments, roster reconciliation and authorization are unchanged.
+
+
+Courseware editor layout now uses the existing AutoTextarea control for question/option and heading/slide text. Content values, persistence contracts, scoring and export generation are unchanged.

@@ -1,3 +1,4 @@
+import './contentEditing.css'
 import SourcePassageInspector from './SourcePassageInspector'
 import {ASSESSMENT_FORMATS,writtenFormat,assessmentLabel} from '../../data/assessmentFormats'
 import { useState } from 'react'
@@ -101,7 +102,7 @@ export default function AssessmentEditor({ content, onBack, isStudent = false, o
     <div style={{ background: 'var(--gray-100)', minHeight: '100vh', padding: '24px 0' }}>
       {/* Toolbar */}
       <div style={{
-        maxWidth: '850px', margin: '0 auto', padding: '0 24px',
+        maxWidth: isStudent ? '850px' : '1200px', margin: '0 auto', padding: '0 24px',
         display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '12px', marginBottom: '16px',
       }}>
         <button className="btn btn-ghost btn-sm" onClick={onBack}>
@@ -125,7 +126,7 @@ export default function AssessmentEditor({ content, onBack, isStudent = false, o
       </div>
 
       {/* A4 Assessment Page */}
-      <div className="assessment-page">
+      <div className={`assessment-page ${!isStudent ? 'cw-wide-editor' : ''}`}>
         {/* Header */}
         <div className="assessment-header">
           <div className="assessment-institution">King's College of the Philippines</div>
@@ -169,7 +170,7 @@ export default function AssessmentEditor({ content, onBack, isStudent = false, o
               {isStudent ? (
                 <div className="assessment-question-text"><CoursewareText>{q.text}</CoursewareText></div>
               ) : (
-                <input
+                <AutoTextarea rows={1}
                   className="form-input assessment-question-input" data-pulse-field={`questions.${qIdx}.text`} aria-label={`Question ${qIdx + 1} text`}
                   value={q.text}
                   onChange={e => updateQuestion(qIdx, 'text', e.target.value)}
@@ -194,7 +195,7 @@ export default function AssessmentEditor({ content, onBack, isStudent = false, o
                       {isStudent || q.type==='true_false' ? (
                         <span className="assessment-option-text"><CoursewareText inline>{typeof opt==='string'?opt:opt.text}</CoursewareText></span>
                       ) : (
-                        <input
+                        <AutoTextarea rows={1}
                           className="assessment-option-input" data-pulse-field={`questions.${qIdx}.options.${optIdx}${typeof opt === 'string' ? '' : '.text'}`} aria-label={`Question ${qIdx + 1} option ${optIdx + 1}`}
                           value={typeof opt==='string'?opt:opt.text}
                           onChange={e => updateOption(qIdx, optIdx, e.target.value)}

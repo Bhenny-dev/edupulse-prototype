@@ -1,0 +1,31 @@
+import {expect,type Page} from '@playwright/test'
+import {coursewareFormattingUI,openFormattingWeek} from './courseware-formatting-fixture'
+const longText='Explain the principle in “Variables and statistical questions” in your own words. Identify one appropriate example, justify how the variables are measured, and explain how the statistical question guides data collection and interpretation without changing the intended learning outcome. '
+export async function editorLayoutUI(page:Page,capture?:(name:string)=>Promise<void>){
+ await coursewareFormattingUI(page)
+ await page.goto('/#/courseware?tab=builder&course=baseline-syllabus&week=1')
+ await page.locator('[data-content-id="baseline-quiz"]').getByRole('button',{name:'View',exact:true}).click()
+ const question=page.getByRole('textbox',{name:'Question 1 text',exact:true})
+ await question.fill(longText.repeat(3))
+ const option=page.getByRole('textbox',{name:'Question 1 option 1',exact:true});await option.fill(longText.repeat(2))
+ for(const field of [question,option])expect(await field.evaluate(el=>el.tagName==='TEXTAREA'&&el.scrollHeight<=el.clientHeight+2&&el.scrollWidth<=el.clientWidth+2)).toBe(true)
+ expect(await question.evaluate(el=>el.getBoundingClientRect().height)).toBeGreaterThan(50)
+ await capture?.('assessment')
+ await page.getByRole('button',{name:'Back',exact:true}).click()
+ await openFormattingWeek(page)
+ await page.getByRole('button',{name:'Edit',exact:true}).click()
+ const heading=page.getByRole('textbox',{name:'Section 1 heading',exact:true});await heading.fill(longText)
+ const body=page.getByRole('textbox',{name:'Section 1 content',exact:true});await body.fill(longText.repeat(12))
+ for(const field of [heading,body])expect(await field.evaluate(el=>el.tagName==='TEXTAREA'&&el.scrollHeight<=el.clientHeight+2&&el.scrollWidth<=el.clientWidth+2)).toBe(true)
+ await capture?.('material')
+ await page.getByRole('button',{name:'Cancel',exact:true}).click()
+ await page.getByRole('button',{name:'Back',exact:true}).click()
+ await page.locator('[data-content-id="formatted-material"]').getByRole('button',{name:/Actions for/}).click()
+ await page.getByRole('menuitem',{name:'View presentation',exact:true}).click()
+ await page.getByRole('button',{name:'Next slide',exact:true}).click()
+ await page.getByRole('button',{name:'Edit',exact:true}).click()
+ const slideHeading=page.getByRole('textbox',{name:'Slide 1 heading',exact:true});await slideHeading.fill(longText)
+ const point=page.locator('.pres-edit-point').first();await point.fill(longText.repeat(3))
+ for(const field of [slideHeading,point])expect(await field.evaluate(el=>el.tagName==='TEXTAREA'&&el.scrollHeight<=el.clientHeight+2&&el.scrollWidth<=el.clientWidth+2)).toBe(true)
+ await capture?.('presentation')
+}

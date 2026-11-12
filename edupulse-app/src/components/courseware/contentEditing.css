@@ -1,0 +1,14 @@
+.assessment-page.cw-wide-editor,.doc-viewer-page.cw-wide-editor { max-width:1200px; width:100%; }
+.cw-wide-editor textarea,.cw-slide-editor textarea { width:100%; min-width:0; box-sizing:border-box; white-space:pre-wrap; overflow-wrap:anywhere; line-height:1.5; }
+.cw-wide-editor .assessment-option-input { min-width:0; }
+.cw-wide-editor .assessment-question-input { font-weight:600; }
+.cw-wide-editor .assessment-question,.cw-wide-editor .academic-filter { min-width:0; }
+.cw-slide-editor .pres-viewport { overflow:auto; align-items:flex-start; }
+.cw-slide-editor .pres-slide-wrapper { height:auto; align-items:flex-start; }
+.cw-slide-editor .pres-slide { max-width:1200px; aspect-ratio:auto; min-height:540px; overflow:visible; }
+.cw-slide-editor .pres-slide-point > div { min-width:0; }
+@media(max-width:767px){
+ .assessment-page.cw-wide-editor,.doc-viewer-page.cw-wide-editor { width:100%; }
+ .cw-slide-editor .pres-slide { min-height:0; padding:24px 20px; }
+}
+@media print { .assessment-page.cw-wide-editor,.doc-viewer-page.cw-wide-editor { max-width:100%; } }

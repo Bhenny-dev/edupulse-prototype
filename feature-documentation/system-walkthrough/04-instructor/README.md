@@ -139,3 +139,5 @@ Pulse resolves **Week 1 Section 1** against the mounted outline. Its review name
 [Manual 39](../../system-manual/39-authored-weeks/README.md) shows original Java teaching text, three Draft items per week, phone reading and the direct-authoring disclosure. The saved packs require instructor checking and normal publication; written responses require marking. Newly filled draft syllabi retain their offline approval path. No source-support percentage, paid-provider run or learner activity is invented.
 
 The Syllabus page no longer displays the **Confirmed course loads** summary. Its tabs and upload/builder controls remain; assigned course loads and roster matching are unchanged.
+
+Instructor assessment and teaching-material editors use wider screen containers (up to 1200 px) and growing multiline fields. Questions, options, material headings, slide headings and slide points wrap without clipping. Long bodies retain their auto-growing fields. Presentation editing scrolls vertically for longer slides. Document reading, PDF export and print page sizing remain unchanged.

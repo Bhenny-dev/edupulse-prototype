@@ -1,3 +1,5 @@
+import './contentEditing.css'
+import AutoTextarea from '../ui/AutoTextarea'
 import { useWorkspaceViewState } from '../../context/WorkspaceContext'
 import { useState, useRef, useEffect } from 'react'
 import { useContentEditorTool } from '../../agents/useContentEditorTool'
@@ -164,7 +166,7 @@ export default function PresentationViewer({ content, onBack, isStudent = false,
 
         {isEdit ? (
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-            <input
+            <AutoTextarea rows={1}
               className="form-input pres-edit-heading" data-pulse-field={`sections.${idx - 1}.heading`} aria-label={`Slide ${idx} heading`}
               value={section.heading}
               onChange={e => updateSlideHeading(idx - 1, e.target.value)}
@@ -189,7 +191,7 @@ export default function PresentationViewer({ content, onBack, isStudent = false,
               <span className="pres-slide-bullet" />
               {isEdit ? (
                 <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <input
+                  <AutoTextarea rows={1}
                     className="form-input pres-edit-point"
                     value={pt}
                     onChange={e => updateSlidePoint(idx - 1, i, e.target.value)}
@@ -226,7 +228,7 @@ export default function PresentationViewer({ content, onBack, isStudent = false,
   return (
     <div
       ref={containerRef}
-      className={`pres-container ${fullscreen ? 'pres-fullscreen' : ''}`}
+      className={`pres-container ${editing ? 'cw-slide-editor' : ''} ${fullscreen ? 'pres-fullscreen' : ''}`}
       tabIndex={0}
       onKeyDown={e => {
         if (editing) return

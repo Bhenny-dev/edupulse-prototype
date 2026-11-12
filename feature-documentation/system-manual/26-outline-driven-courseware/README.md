@@ -71,3 +71,11 @@ The updated section flow prepares readable retained references first. If no usab
 These attachment captures use an original sample TXT file and controlled workspace/source transport. They verify an actual extraction, saved draft, readable content and reload without inference; they do not prove hosted authorization or publication.
 
 Course progress and **Generate missing content** count every section assessment separately. A week with two assessment scopes remains incomplete when only one has been saved; generating the missing scope preserves the first assessment and its stable section identity.
+
+Instructor assessment and teaching-material editors use wider screen containers (up to 1200 px) and growing multiline fields. Questions, options, material headings, slide headings and slide points wrap without clipping. Long bodies retain their auto-growing fields. Presentation editing scrolls vertically for longer slides. Document reading, PDF export and print page sizing remain unchanged.
+
+![Wide assessment editor with wrapped questions and options](wide-assessment-editor.png)
+
+![Teaching material editor with complete heading and body](wide-material-editor.png)
+
+![Presentation editor with wrapped headings and points](wide-presentation-editor.png)

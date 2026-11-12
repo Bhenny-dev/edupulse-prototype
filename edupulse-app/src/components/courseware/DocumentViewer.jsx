@@ -1,3 +1,4 @@
+import './contentEditing.css'
 import SourcePassageInspector from './SourcePassageInspector'
 import { downloadMaterialPdf } from '../../utils/pdfExport'
 import { Spinner } from '../ui/LoadingFeedback'
@@ -104,7 +105,7 @@ export default function DocumentViewer({ content, onBack, isStudent = false, rea
     <div style={{ background: 'var(--gray-100)', minHeight: '100vh', padding: '24px 0' }}>
       {/* Toolbar */}
       <div style={{
-        maxWidth: '850px', margin: '0 auto', padding: '0 24px',
+        maxWidth: editing ? '1200px' : '850px', margin: '0 auto', padding: '0 24px',
         display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '12px', marginBottom: '16px',
       }}>
         <button className="btn btn-ghost btn-sm" onClick={onBack}>
@@ -136,7 +137,7 @@ export default function DocumentViewer({ content, onBack, isStudent = false, rea
       </div>
 
       {/* A4 Document */}
-      <div className="doc-viewer-page">
+      <div className={`doc-viewer-page ${editing ? 'cw-wide-editor' : ''}`}>
         {/* Header */}
         <div className="doc-viewer-header">
           <div className="doc-viewer-institution">King's College of the Philippines</div>
@@ -155,7 +156,7 @@ export default function DocumentViewer({ content, onBack, isStudent = false, rea
             <div key={idx} className="doc-viewer-section" data-source-section={idx} data-pulse-target={`Section ${idx + 1}: ${section.heading}`} data-pulse-field={`sections.${idx}.body`}>
               {editing ? (
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                  <input
+                  <AutoTextarea rows={1}
                     className="form-input doc-edit-heading" data-pulse-field={`sections.${idx}.heading`} aria-label={`Section ${idx + 1} heading`}
                     value={section.heading}
                     onChange={e => updateSectionHeading(idx, e.target.value)}

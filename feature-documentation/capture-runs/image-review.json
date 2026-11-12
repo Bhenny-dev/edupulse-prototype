@@ -3640,6 +3640,24 @@
       "sha256": "5e75f09f7dbcf9d33840f3839917e20d00ec066345269077b98d1a0cf95d828d",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-12T12:17:06.985075+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/26-outline-driven-courseware/wide-assessment-editor.png",
+      "sha256": "88442cf38d266d8cdbe55d95726abe48edc296ca9351cf3003de90802546c4e7",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T12:28:14.384018+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/26-outline-driven-courseware/wide-material-editor.png",
+      "sha256": "5ec1123ee00f356d3567de055c2b0e0b27c2cba6f9dc389c36e99e32a6fe661b",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T12:28:14.384593+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/26-outline-driven-courseware/wide-presentation-editor.png",
+      "sha256": "b8af3c62506e3fbebee7205101e5bbc064ac7add5ccaaacef503584d8009c58d",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T12:28:14.384835+00:00"
     }
   ]
 }
