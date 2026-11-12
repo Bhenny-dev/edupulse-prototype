@@ -1,0 +1,10 @@
+{
+  "checkedAt": "2026-11-12T03:23:36.734Z",
+  "appCommit": "caaf76d987ba51091a68a5148630f738c777c137",
+  "deploymentId": "dpl_75djzt351AgVuW3D9dQaFx6U4QsD",
+  "deploymentState": "READY",
+  "productionPage": 200,
+  "entryAsset": 200,
+  "anonymousOperator": 403,
+  "noAcademicWritesOrInference": true
+}

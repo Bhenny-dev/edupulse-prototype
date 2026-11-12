@@ -19,3 +19,5 @@ Final browser outcome: **6 editing checks passed** on desktop/phone (targeted se
 After the monitoring release reached `main`, the fix was rebased without changing that release. Shared documentation/capture conflicts were combined, the four affected images were recaptured/reviewed, and `npm run verify` passed again on the combined source: **331 native tests**, lint/type checks, production build and deployment checks.
 
 The final combined browser run passed **8 desktop/phone checks**, including the selected instructor?s protected route and account after reload.
+
+Production deployment `dpl_75djzt351AgVuW3D9dQaFx6U4QsD` for app commit `caaf76d9` is **READY**. The public page and entry asset returned HTTP 200; an anonymous operator edit returned HTTP 403. This smoke check performed no academic writes or inference. See [production receipt](production.json).
