@@ -8,7 +8,7 @@ test('shared syllabi persist only in sender repository and recipient My Syllabus
 
 test('shared role pages keep overflow conditional and fit short tables to the available viewport',async({page})=>{
  const origin=new URL(test.info().project.use.baseURL || 'http://127.0.0.1:5187').origin
- for(const [role,route] of [['instructor','/student-monitoring?tab=materials'],['student','/performance?tab=overview'],['dean','/monitor?tab=overview'],['associate_dean','/course-loading'],['admin','/settings?tab=account']]){
+ for(const [role,route] of [['instructor','/student-monitoring?course='+ 'a'.repeat(32)+'&block=BSIT-1A&tab=materials'],['student','/performance?tab=overview'],['dean','/monitor?tab=overview'],['associate_dean','/course-loading'],['admin','/settings?tab=account']]){
   const context=await page.context().browser()!.newContext({viewport:page.viewportSize()!.width<600?{width:320,height:844}:page.viewportSize()!}),view=await context.newPage()
   try{
    await academicUI(view,async()=>({json:structuredClone(roleRecords)}),role)

@@ -11,7 +11,7 @@ test('AUTH-001: performance navigation denies academic management and admin cons
   }
   for (const role of ['dean', 'instructor', 'student']) {
     assert.equal(canViewPerformance(role), true)
-    assert.equal(pageFor('open performance', role)?.path, '/performance')
+    assert.equal(pageFor('open performance', role)?.path, role==='instructor'?'/student-monitoring?tab=assessments':'/performance')
   }
 })
 

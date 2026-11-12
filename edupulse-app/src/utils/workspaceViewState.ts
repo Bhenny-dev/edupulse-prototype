@@ -18,6 +18,9 @@ function valid(key:unknown,value:unknown):value is ViewValue {
   }
   if(/^syllabus-(?:reader|history|share|delete)$/.test(key))return value===null||id(value)
   if(key==='syllabus-version')return value===null||Number.isInteger(value)&&Number(value)>=0&&Number(value)<10
+  if(/^monitoring-followup:/.test(key))return typeof value==='boolean'
+  if(/^monitoring-(?:detail|roster-member):/.test(key))return value===null||id(value)
+  if(/^monitoring-roster-action:/.test(key))return value===null||['edit','suspend','resume','remove'].includes(value as string)
   if(key==='ai-local-model')return id(value)
   if(/^dean-detail:(?:records|instructors|students)$/.test(key))return value===null||(typeof value==='string'&&id(value)&&(/^(?:block|course|instructor):.+$/.test(value)||['students','blocks','years','faculty'].includes(value)))
   if(key==='layout-overlay')return value===null||['search','account','notifications','roles','language','mobile'].includes(value as string)

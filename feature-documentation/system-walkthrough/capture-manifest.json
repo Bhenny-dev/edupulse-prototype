@@ -1,15 +1,7 @@
 {
-  "capturedAt": "2026-11-11T22:00:57.673Z",
+  "capturedAt": "2026-11-12T02:12:34.740Z",
   "problems": [],
   "scenes": [
-    {
-      "role": "all roles",
-      "folder": "02-shared-interface",
-      "file": "01-top-bar.png",
-      "title": "Top bar: navigation, tools, notifications, role and account",
-      "route": "/dashboard",
-      "ok": true
-    },
     {
       "role": "all roles",
       "folder": "02-shared-interface",
@@ -243,59 +235,27 @@
       "ok": true
     },
     {
-      "role": "instructor",
+      "role": "Instructor",
       "folder": "04-instructor",
       "file": "02-monitoring-course-students.png",
-      "title": "Student Monitoring · Students",
+      "title": "Course-scoped Student Monitoring",
       "route": "/student-monitoring",
       "ok": true
     },
     {
-      "role": "instructor",
-      "folder": "04-instructor",
-      "file": "05-syllabus-builder.png",
-      "title": "Syllabus Builder (upload or build the 7 sections)",
-      "route": "/syllabus",
-      "ok": true
-    },
-    {
-      "role": "instructor",
+      "role": "Instructor",
       "folder": "04-instructor",
       "file": "09-student-monitoring-assessment-scores.png",
-      "title": "Student Monitoring · Assessment Scores",
+      "title": "Course-scoped Student Monitoring",
       "route": "/student-monitoring",
       "ok": true
     },
     {
-      "role": "instructor",
+      "role": "Instructor",
       "folder": "04-instructor",
       "file": "10-student-monitoring-material-access.png",
-      "title": "Student Monitoring · Material Access",
+      "title": "Course-scoped Student Monitoring",
       "route": "/student-monitoring",
-      "ok": true
-    },
-    {
-      "role": "instructor",
-      "folder": "04-instructor",
-      "file": "11-performance-overview.png",
-      "title": "Performance · Overview",
-      "route": "/performance",
-      "ok": true
-    },
-    {
-      "role": "instructor",
-      "folder": "04-instructor",
-      "file": "12-performance-by-topic.png",
-      "title": "Performance · By Topic",
-      "route": "/performance",
-      "ok": true
-    },
-    {
-      "role": "instructor",
-      "folder": "04-instructor",
-      "file": "13-performance-alerts.png",
-      "title": "Performance · Alerts",
-      "route": "/performance",
       "ok": true
     },
     {
@@ -755,22 +715,6 @@
       "ok": true
     },
     {
-      "role": "instructor",
-      "folder": "04-instructor",
-      "file": "07-courseware-my-courseware.png",
-      "title": "Course · combined course list and approved syllabus intake",
-      "route": "/courseware",
-      "ok": true
-    },
-    {
-      "role": "instructor",
-      "folder": "04-instructor",
-      "file": "08-courseware-builder.png",
-      "title": "Courseware · weekly workspace",
-      "route": "/courseware",
-      "ok": true
-    },
-    {
       "role": "public",
       "folder": "01-public-site",
       "file": "33-page-pulse.png",
@@ -811,14 +755,6 @@
       "ok": true
     },
     {
-      "role": "instructor",
-      "folder": "04-instructor",
-      "file": "06-syllabus-builder-course-outline.png",
-      "title": "Syllabus Builder · Section 5 Course Outline",
-      "route": "/syllabus",
-      "ok": true
-    },
-    {
       "role": "dean",
       "folder": "03-dean-and-associate-dean",
       "file": "08-course-records.png",
@@ -843,6 +779,14 @@
       "ok": true
     },
     {
+      "role": "all roles",
+      "folder": "02-shared-interface",
+      "file": "01-top-bar.png",
+      "title": "Top bar: navigation, tools, notifications, role and account",
+      "route": "/dashboard",
+      "ok": true
+    },
+    {
       "role": "instructor",
       "folder": "04-instructor",
       "file": "01-dashboard.png",
@@ -864,6 +808,38 @@
       "file": "04-syllabus-shared-repository.png",
       "title": "Syllabus · Shared Repository",
       "route": "/syllabus",
+      "ok": true
+    },
+    {
+      "role": "instructor",
+      "folder": "04-instructor",
+      "file": "05-syllabus-builder.png",
+      "title": "Syllabus Builder (upload or build the 7 sections)",
+      "route": "/syllabus",
+      "ok": true
+    },
+    {
+      "role": "instructor",
+      "folder": "04-instructor",
+      "file": "06-syllabus-builder-course-outline.png",
+      "title": "Syllabus Builder · Section 5 Course Outline",
+      "route": "/syllabus",
+      "ok": true
+    },
+    {
+      "role": "instructor",
+      "folder": "04-instructor",
+      "file": "07-courseware-my-courseware.png",
+      "title": "Course · combined course list and approved syllabus intake",
+      "route": "/courseware",
+      "ok": true
+    },
+    {
+      "role": "instructor",
+      "folder": "04-instructor",
+      "file": "08-courseware-builder.png",
+      "title": "Courseware · weekly workspace",
+      "route": "/courseware",
       "ok": true
     }
   ]

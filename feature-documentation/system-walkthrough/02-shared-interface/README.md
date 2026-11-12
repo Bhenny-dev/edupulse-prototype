@@ -219,3 +219,7 @@ Dean uses **Dashboard**, **Course**, **Instructors** and **Students**, also unde
 Shared academic tables and charts use available container width. Short phone tables no longer reserve a 420-pixel minimum, and charts retain their measured width without forcing a minimum. Horizontal scrolling appears only for genuinely wider content. All five roles retain their existing data permissions. [Manual 36](../../system-manual/36-instructor-syllabi/README.md) shows the related instructor controls and cross-role layout verification.
 
 System Admin account selection requires a named registered person. The former **Use my own student/instructor/associate dean/dean view** shortcuts are removed. A legacy subjectless hint is cleared; named authorized support views retain their route and selected person after reload.
+
+## Combined instructor monitoring
+
+Instructor navigation now has Dashboard, Syllabus, Course and Student Monitoring. Its former Performance link redirects to the combined class workspace. Student and Dean performance remain authorized. Restored nested class/student dialogs keep the child above the parent with keyboard focus. See [Manual 37](../../system-manual/37-instructor-monitoring/README.md).

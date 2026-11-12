@@ -5,7 +5,7 @@ import { academicUI } from '../academic-ui-fixture'
 const DIR='../feature-documentation/system-manual/16-student-directory'
 test('student directory selection and confirmed roster save',async({page})=>{
  await mkdir(DIR,{recursive:true});await directoryFixture(page)
- await page.goto('/#/student-monitoring?tab=students');await page.getByRole('button',{name:'Choose students',exact:true}).click()
+ await page.goto('/#/student-monitoring?tab=students');await page.getByText('Register course students',{exact:true}).click();await page.getByRole('button',{name:'Choose students',exact:true}).click()
  const directory=page.getByRole('region',{name:'Official student directory'})
  await directory.getByLabel('Department',{exact:true}).selectOption(DIRECTORY_DEPARTMENT)
  await directory.getByLabel('Program',{exact:true}).selectOption(DIRECTORY_PROGRAM)
@@ -18,7 +18,7 @@ test('student directory selection and confirmed roster save',async({page})=>{
  await directory.screenshot({path:`${DIR}/02-student-selection.png`,animations:'disabled'})
  await directory.getByRole('button',{name:'Register selected students (1)',exact:true}).click()
  await expect(directory).toContainText('Students registered and saved')
- await page.reload();await expect(page.getByRole('region',{name:'Enrolled students table'})).toBeVisible()
+ await page.reload();await page.getByRole('button',{name:'Open IT 102 · BSIT-1A',exact:true}).click();await expect(page.getByRole('region',{name:'Enrolled students table'})).toBeVisible()
  await page.getByRole('region',{name:'Enrolled students table'}).scrollIntoViewIfNeeded()
  await page.screenshot({path:`${DIR}/03-saved-roster.png`,animations:'disabled'})
 })

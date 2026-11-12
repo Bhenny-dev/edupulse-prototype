@@ -15,7 +15,7 @@ for (const role of ['instructor', 'student', 'dean', 'associate_dean']) {
     if (role === 'instructor') { await expect(page.getByText('Topic averages · IT 102 Computer Programming 1', { exact: true })).toBeVisible(); await expect(page.getByText('BSIT-1A', { exact: true })).toBeVisible() }
     if (role === 'student') { await expect(page.getByText('You haven\'t opened "Variables lesson" yet.', { exact: true })).toBeVisible(); await expect(page.getByRole('heading', { name: 'IT 102', exact: true })).toBeVisible() }
     if (role === 'dean' || role === 'associate_dean') await expect(page.getByRole('cell', { name: 'Synthetic instructor', exact: true })).toBeVisible()
-    if (role === 'instructor' || role === 'student' || role === 'dean') {
+    if (role === 'student' || role === 'dean') {
       await page.goto('/#/performance'); await expect(page.getByRole('img', { name: /^Assessment score radar:/ })).toBeVisible()
       await expect(page.locator('.recharts-radar-polygon')).toBeVisible()
       for (const [tab, heading] of [['By Topic', 'Topics and assessment coverage'], ['Learning Materials', 'Learning Material Access'], ['Assessment Scores', 'Recorded assessment attempts'], ...(role !== 'student' ? [['Alerts', 'Score review threshold']] : [])]) {
@@ -31,7 +31,7 @@ for (const role of ['instructor', 'student', 'dean', 'associate_dean']) {
       if (role === 'associate_dean') { await page.goto('/#/performance'); await expect(page).toHaveURL(/dashboard/); await expect(page.getByRole('link', { name: 'College Performance', exact: true })).toHaveCount(0) }
     }
     if (role === 'instructor') {
-      await page.goto('/#/scoring-sheet'); await expect(page.getByRole('heading', { name: 'Assessment scoring matrix' })).toBeVisible(); await expect(page.getByText('No attempt', { exact: true }).first()).toBeVisible(); await page.getByRole('button', { name: 'Learning Material Access', exact: true }).click(); await expect(page.getByRole('heading', { name: 'Material access chart' })).toBeVisible()
+      await page.goto('/#/scoring-sheet');await page.getByRole('button',{name:'Open IT 102 · BSIT-1A',exact:true}).click();await page.getByRole('button',{name:'Assessment Scores',exact:true}).click();await expect(page.getByRole('heading',{name:'Assessment scores by student',exact:true})).toBeVisible(); await page.getByRole('button', { name: 'Learning Material Access', exact: true }).click(); await expect(page.getByRole('heading', { name: 'Class access per material' })).toBeVisible()
     }
     if (role === 'student') {
       await page.goto('/#/courseware'); await page.getByRole('button', { name: 'Open material', exact: true }).click(); await expect(page.getByRole('region', { name: 'Opened courseware' })).toContainText('A variable stores a value.'); await page.getByRole('button', { name: 'Presentation', exact: true }).click(); await expect(page.getByRole('button', { name: /Next/i }).first()).toBeVisible()
@@ -52,7 +52,7 @@ test('confirmed shared CSV import survives refresh; templates and history work',
   await page.getByRole('button', { name: 'Templates', exact: true }).click(); const download = page.waitForEvent('download'); await page.getByRole('button', { name: 'Download Course Records Template', exact: true }).click(); expect((await download).suggestedFilename()).toBe('courses-template.csv')
 })
 test('dark mode keeps account sections and charts on solid readable surfaces', async ({ page }) => {
-  await restorationUI(page); await page.addInitScript(() => localStorage.setItem('edupulse-dark-mode', 'true')); await page.goto('/#/performance')
+  await restorationUI(page); await page.addInitScript(() => localStorage.setItem('edupulse-dark-mode', 'true')); await page.goto('/#/student-monitoring?course='+ 'a'.repeat(32)+'&block=BSIT-1A&tab=assessments')
   await expect(page.getByRole('img', { name: /^Assessment score radar:/ })).toBeVisible()
   expect(await page.evaluate(() => getComputedStyle(document.body).backgroundImage)).toBe('none')
   expect(await page.locator('.app-topbar').evaluate(element => getComputedStyle(element).backgroundImage)).toBe('none')

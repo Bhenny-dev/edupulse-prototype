@@ -14,8 +14,8 @@ export async function instructorDashboardScene(page:Page,capture?:Capture){
  await expect.poll(()=>scores.locator('svg.recharts-surface').evaluate(element=>element.getBoundingClientRect().width)).toBeGreaterThan(0)
  await capture?.('dashboard-blocks',blocks);await capture?.('dashboard-scores',scores)
  await blocks.getByRole('button',{name:'Student Monitoring'}).first().click()
- await expect(page.getByRole('combobox',{name:'Course',exact:true})).toHaveValue('a'.repeat(32));await expect(page.getByRole('combobox',{name:'Block',exact:true})).toHaveValue('BSIT-1A')
- await page.reload();await expect(page.getByRole('combobox',{name:'Course',exact:true})).toHaveValue('a'.repeat(32))
+ await expect(page.getByRole('dialog',{name:'IT 102 · BSIT-1A monitoring',exact:true})).toBeVisible()
+ await page.reload();await expect(page.getByRole('dialog',{name:'IT 102 · BSIT-1A monitoring',exact:true})).toBeVisible()
  fixture.records.attempts=[];await page.goto('/#/dashboard');await page.reload();await expect(page.getByText('No marked scores yet.',{exact:false})).toBeVisible()
 }
 export async function instructorSyllabusScene(page:Page,capture?:Capture){

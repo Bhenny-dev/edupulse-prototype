@@ -27,7 +27,11 @@ export function OpenedPublication({ selected, data, isStudent, answers, setAnswe
   const {command}=useAcademicRecords()
   const [mode,setMode]=useWorkspaceViewState(`publication:${selected.id}:mode`,'document')
   const [activeQuestion,setActiveQuestion]=useState(0),[now,setNow]=useState(Date.now()),[appeal,setAppeal]=useState(''),[message,setMessage]=useState(''),[error,setError]=useState('')
-  const [appealing,setAppealing]=useState(false)
+  const [appealing,setAppealing]=useState(false),[confirming,setConfirming]=useState(false),[readingError,setReadingError]=useState('')
+  const live=useRef(true);useEffect(()=>{live.current=true;return()=>{live.current=false}},[])
+  const progress=(data.reading||[]).find(p=>p.publication_id===selected.id&&String(p.source_version)===String(selected.source_version))
+  const confirmSection=async section=>{if(confirming)return;setConfirming(true);setReadingError('');try{await command({operation:'read-section',publication:selected.id,version:selected.source_version,section})}catch(failure){if(live.current)setReadingError(failure.message)}finally{if(live.current)setConfirming(false)}}
+  const reading=isStudent&&selected.type!=='assessment'&&Array.isArray(selected.content?.sections)&&selected.content.sections.length?{read:progress?.sections_read||0,total:selected.content.sections.length,busy:confirming,confirm:confirmSection}:null
   const questionsRef=useRef([])
   const latest=studentAttempt(data,selected)
   const attempt=session && session.attempt_no>(latest?.attempt_no || 1) ? null : latest
@@ -53,6 +57,6 @@ export function OpenedPublication({ selected, data, isStudent, answers, setAnswe
       {attempt&&<Table headers={['Submitted','Raw score','Version']} rows={[[new Date(attempt.submitted_at).toLocaleString(),`${attempt.score}/${attempt.max_score}`,'Current published version']]}/>}
       {isStudent&&attempt&&attempt.grading_status!=='pending_review'&&(attempt.attempt_no || 1)<(policy.maxAttempts || 1)&&!expired&&<button className="btn btn-secondary mt-16" disabled={busy} onClick={onRetake}>{busy && <Spinner />} Start next allowed attempt</button>}
       {isStudent&&attempt&&<div className="mt-24"><label className="academic-filter">Appeal to instructor<textarea className="form-input" maxLength={2000} value={appeal} onChange={event=>setAppeal(event.target.value)}/></label><button className="btn btn-secondary mt-16" disabled={!appeal.trim()||busy||appealing} onClick={sendAppeal}>{appealing && <Spinner />} {appealing ? 'Saving appeal…' : 'Submit appeal'}</button>{message&&<p role="status">{message}</p>}{error&&<p role="alert">{error}</p>}</div>}
-    </>:<><nav className="tabs academic-tabs mb-24" aria-label="Material reader views">{[['document','Document'],['presentation','Presentation']].map(([id,label])=><button key={id} className={`tab ${mode===id?'active':''}`} aria-pressed={mode===id} onClick={()=>setMode(id)}>{label}</button>)}</nav>{mode==='document'?<DocumentViewer content={content} isStudent onBack={onClose}/>:<PresentationViewer cacheKey={selected.id} content={content} isStudent onBack={onClose}/>}</>}
+    </>:<>{reading&&<section className="academic-reading-progress mb-24" aria-label="Your reading progress"><p><strong>{reading.read}/{reading.total} sections confirmed read</strong></p><progress aria-label="Confirmed reading sections" value={reading.read} max={reading.total}/><p className="text-sm text-muted">Read each full document section, then confirm it in order. Opening a file does not mark it finished.</p>{readingError&&<p role="alert">{readingError} Retry with the section’s confirmation button.</p>}</section>}<nav className="tabs academic-tabs mb-24" aria-label="Material reader views">{[['document','Document'],['presentation','Presentation']].map(([id,label])=><button key={id} className={`tab ${mode===id?'active':''}`} aria-pressed={mode===id} onClick={()=>setMode(id)}>{label}</button>)}</nav>{mode==='document'?<DocumentViewer content={content} isStudent onBack={onClose} reading={reading}/>:<PresentationViewer cacheKey={selected.id} content={content} isStudent onBack={onClose} reading={reading}/>}</>}
   </div></section>
 }

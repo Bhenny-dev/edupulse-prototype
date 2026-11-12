@@ -57,7 +57,7 @@ const SECTIONS = [
   },
   { key: 'assessments', path: '/assessment', label: 'Assessments', icon: ClipboardCheck, roles: ['student'] },
   {
-    key: 'performance', path: '/performance', label: 'Performance', icon: BarChart3, roles: PERFORMANCE_ROLES.filter(role=>role!=='dean'),
+    key: 'performance', path: '/performance', label: 'Performance', icon: BarChart3, roles: PERFORMANCE_ROLES.filter(role=>role==='student'),
   },
 ]
 

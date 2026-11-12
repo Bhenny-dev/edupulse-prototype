@@ -6,6 +6,7 @@ import { pulse } from '../pulse/pulseBus'
 import { SkeletonKPI, SkeletonTable } from '../ui/LoadingSkeleton'
 import { Spinner } from '../ui/LoadingFeedback'
 import AcademicPerformance from './AcademicPerformance'
+import InstructorMonitoring from './InstructorMonitoring'
 import AcademicManagement from './AcademicManagement'
 import AcademicLibrary, { OpenedPublication } from './AcademicLibrary'
 import AcademicSyncStatus from './AcademicSyncStatus'
@@ -21,7 +22,7 @@ const TITLES = { instructors:'Instructors', students:'Students', performance: 'P
 export default function AcademicPortal({ view }) {
   const { user } = useAuth()
   const records = useAcademicRecords()
-  const preview=user?.role==='dean'&&!user?.authenticated
+  const preview=!user?.authenticated&&(user?.role==='dean'||user?.role==='instructor'&&view==='monitoring')
   const data=preview?deanPreview():records.data, loadError=records.error, loading=records.loading, loaded=records.loaded||preview, execute=records.command
   const deanPage=user?.role==='dean'&&['records','instructors','students'].includes(view)
   const title=user?.role==='dean'&&view==='records'?'Course':TITLES[view]
@@ -59,7 +60,7 @@ export default function AcademicPortal({ view }) {
     {busy && <p role="status" className="text-sm text-muted mb-16"><Spinner /> Saving your request…</p>}
     {(loaded || (!loading && !loadError)) && <>
       {!deanPage && !loadError && !data.courses.length && <div className="empty-state" role="status"><h2>No authorized academic records yet</h2><p>Instructors register confirmed class lists, activate an approved syllabus, review courseware and publish it. Students need a matching account email in the registered class list. Saved workspaces synchronize automatically.</p></div>}
-      {['performance', 'monitoring'].includes(view) && user?.role !== 'associate_dean' && <AcademicPerformance data={data} role={user?.role} monitoring={view === 'monitoring'} />}
+      {view==='monitoring'&&user?.role==='instructor'?<InstructorMonitoring data={data}/>:['performance', 'monitoring'].includes(view) && user?.role !== 'associate_dean' && <AcademicPerformance data={data} role={user?.role} monitoring={view === 'monitoring'} />}
       {deanPage?<DeanRecords data={data} view={view}/>:['records', 'courses', 'monitor'].includes(view) && <AcademicManagement data={data} role={user?.role} view={view} />}
       {['courseware', 'assessment'].includes(view) && <AcademicLibrary data={data} assessments={view === 'assessment'} onOpen={open} busy={busy} />}
       {selected && <OpenedPublication key={`${selected.id}:${session?.id || "reader"}`} selected={selected} data={data} isStudent={isStudent && !user?.supportSubject} answers={answers} setAnswers={setAnswers} result={result} session={session} busy={busy} onClose={() => {setAssessmentId(null);setReaderId(null)}} onRetake={async()=>{const started=await run({operation:'start',publication:selected.id,version:selected.source_version,retake:true});if(started){setSession(started);setAnswers({});setResult(null)}}} onSubmit={() => run({ operation: 'respond', publication: selected.id, version: selected.source_version, session:session?.id, responses: selected.content.questions.map((_, index) => answers[index]) })} />}

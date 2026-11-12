@@ -1,4 +1,4 @@
-export type RosterStudent = { StudentID: string; Name: string; Email: string; YearLevel: string; Block: string }
+export type RosterStudent = { StudentID: string; Name: string; Email: string; YearLevel: string; Block: string; Status?:string }
 export type Roster = { students: RosterStudent[]; courseValues: string[]; block: string; warnings: string[]; format: string; skipped: number; duplicates: number }
 export type Registration = { id: string; courseCode: string; courseTitle?: string; blockSection: string; studentCount: number; fileName?: string; students?: RosterStudent[]; headers?: string[]; uploadedBy: string | number; uploadedDate?: string; status: string }
 export type RegistrationRequest = { courseCode: string; courseTitle?: string; blockSection: string; students: RosterStudent[]; fileName: string; uploadedBy: string | number; date?: string; id?: string }

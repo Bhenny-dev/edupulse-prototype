@@ -8,18 +8,23 @@ async function shot(page: Page, name: string, selector?: string) {
   await page.mouse.move(2, 400)
   await expect(page.getByRole('region', { name: 'Loading academic records' })).toHaveCount(0)
   await page.evaluate(() => window.scrollTo({ top: 0, left: 0, behavior: 'instant' }))
-  await (selector ? page.locator(selector) : page).screenshot({ path: `${root}/${name}.png`, animations: 'disabled', fullPage: !selector, style: '.app-topbar{position:static !important}' })
+  await (selector ? page.locator(selector).first() : page).screenshot({ path: `${root}/${name}.png`, animations: 'disabled', fullPage: !selector, style: '.app-topbar{position:static !important}' })
 }
 // The same role dashboards as the preview personas, filled from the synthetic account records.
 for (const [role, number, section] of [['instructor', '01', 'Score Snapshot'], ['student', '02', 'Pulse Reminders'], ['dean', '03', 'Syllabus Stations'], ['associate_dean', '04', 'Syllabus Stations']]) {
   test(`synthetic restored ${role} dashboard`, async ({ page }) => { await restorationUI(page, role); await page.goto('/#/dashboard'); await expect(page.getByRole('heading', { name: section, exact: true })).toBeVisible(); await page.waitForTimeout(1800); await shot(page, `${number}-${role}-dashboard`) })
 }
-test('synthetic restored performance and scoring sections', async ({ page }) => {
-  await restorationUI(page)
-  for (const [tab, name] of [['overview', '05-performance-radar-and-history'], ['bytopic', '06-assessment-coverage'], ['materials', '07-material-access'], ['scores', '08-assessment-scores'], ['alerts', '09-threshold-review']]) { await page.goto(`/#/performance?tab=${tab}`); await expect(page.getByRole('navigation', { name: 'Performance views' })).toBeVisible(); await shot(page, name) }
-  await page.goto('/#/performance?tab=scores'); await page.getByRole('button', { name: 'Synthetic learner', exact: true }).click(); await shot(page, '10-student-drilldown', '.academic-student-dialog'); await page.keyboard.press('Escape')
-  await page.goto('/#/scoring-sheet'); await expect(page.getByRole('heading', { name: 'Assessment score radar', exact: true })).toBeVisible(); await shot(page, '11-monitoring-scoring-matrix'); await page.getByRole('button', { name: 'Learning Material Access', exact: true }).click(); await shot(page, '12-monitoring-material-matrix')
+test('synthetic restored combined monitoring sections', async ({page})=>{
+ await restorationUI(page);await page.goto('/#/student-monitoring?course='+ 'a'.repeat(32)+'&block=BSIT-1A&tab=assessments')
+ await expect(page.getByRole('img',{name:/^Assessment score radar:/})).toBeVisible();await shot(page,'05-performance-radar-and-history','.monitoring-course-modal')
+ await page.getByText('Topic mastery and follow-up',{exact:true}).click();await shot(page,'06-assessment-coverage','.academic-details[open]>.academic-grid')
+ await shot(page,'09-threshold-review','.card:has(h2:text-is("Score review threshold"))')
+ await shot(page,'08-assessment-scores','.card:has(h2:text-is("Assessment scores by student"))')
+ await page.getByRole('button',{name:'Synthetic learner',exact:true}).first().click();await shot(page,'10-student-drilldown','.monitoring-student-popover');await page.keyboard.press('Escape')
+ await page.getByRole('heading',{name:'Assessment score radar',exact:true}).scrollIntoViewIfNeeded();await shot(page,'11-monitoring-scoring-matrix','.monitoring-course-modal')
+ await page.getByRole('button',{name:'Learning Material Access',exact:true}).click();await shot(page,'07-material-access','.monitoring-course-modal');await shot(page,'12-monitoring-material-matrix','.card:has(h2:text-is("Learning material access by student"))')
 })
+
 test('synthetic restored oversight, loading and records sections', async ({ page }) => {
   await restorationUI(page, 'dean')
   for (const [path, name] of [['monitor?tab=overview', '13-monitor-syllabus-status'], ['monitor?tab=students', '15-monitor-students'], ['monitor?tab=alerts', '16-monitor-alerts'], ['course-loading', '17-course-loading'], ['course-loading?tab=instructors', '18-instructor-delivery'], ['records?tab=sections', '19-record-blocks'], ['records?tab=courses', '20-record-courses']]) { await page.goto('/#/' + path); await expect(page.locator('.academic-portal')).toBeVisible(); await shot(page, name) }
@@ -38,5 +43,5 @@ test('synthetic restored student readers, results and notices', async ({ page })
   fixture.records.attempts.pop(); await page.goto('/#/notifications'); await page.reload(); await expect(page.getByText('Unanswered assessment: Arrays quiz', { exact: true })).toBeVisible(); await shot(page, '31-account-notices')
 })
 test('synthetic restored dark solid surfaces', async ({ page }) => {
-  await restorationUI(page); await page.addInitScript(() => localStorage.setItem('edupulse-dark-mode', 'true')); await page.goto('/#/performance'); await expect(page.getByRole('img', { name: /^Assessment score radar:/ })).toBeVisible(); await shot(page, '32-dark-performance')
+  await restorationUI(page); await page.addInitScript(() => localStorage.setItem('edupulse-dark-mode', 'true')); await page.goto('/#/student-monitoring?course='+ 'a'.repeat(32)+'&block=BSIT-1A&tab=assessments'); await expect(page.getByRole('img', { name: /^Assessment score radar:/ })).toBeVisible(); await shot(page, '32-dark-performance')
 })

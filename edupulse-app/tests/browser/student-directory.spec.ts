@@ -2,7 +2,7 @@ import { test,expect } from '@playwright/test'
 import { directoryFixture,DIRECTORY_PROGRAM,DIRECTORY_DEPARTMENT } from '../student-directory-fixture'
 test('instructors filter official profiles, retain selection across pages, and save roster enrollment through reload',async({page})=>{
  const fixture=await directoryFixture(page)
- await page.goto('/#/syllabus?tab=register');await page.getByRole('button',{name:'Choose students',exact:true}).click()
+ await page.goto('/#/syllabus?tab=register');await page.getByText('Register course students',{exact:true}).click();await page.getByRole('button',{name:'Choose students',exact:true}).click()
  const directory=page.getByRole('region',{name:'Official student directory'})
  await expect(directory.getByRole('status').filter({ hasText: /matching students/ })).toContainText('52 matching students')
  await directory.getByLabel('Select Riley Demo',{exact:true}).check()
@@ -23,6 +23,6 @@ test('instructors filter official profiles, retain selection across pages, and s
  fixture.failSaves(false);await directory.getByRole('button',{name:'Register selected students (2)',exact:true}).click()
  await expect(directory).toContainText('Students registered and saved')
  expect(fixture.workspace().data.registrations[0].students).toHaveLength(2)
- await page.reload();await expect(page.getByRole('region',{name:'Enrolled students table'})).toBeVisible()
+ await page.reload();await page.getByRole('button',{name:'Open IT 102 · BSIT-1A',exact:true}).click();await expect(page.getByRole('region',{name:'Enrolled students table'})).toBeVisible()
  await expect(page.locator('main')).toContainText('BSIT-1A')
 })

@@ -87,3 +87,5 @@ The [baseline restoration](../versions/2026-10-28-baseline-workflows/README.md) 
 [Manual 36: Dean activity records](36-dean-activity-records/README.md) covers four-item navigation, shared clickable summaries, read-only courses/instructors, year-grouped blocks, complete CSV lists and authorized dialog restoration.
 
 - [36 · Instructor dashboard, deletion and shared syllabi](36-instructor-syllabi/README.md)
+
+[Manual 37: Instructor monitoring](37-instructor-monitoring/README.md) combines course/block discovery, roster suspension/edit/removal, assessment analytics and versioned reading progress.

@@ -9,7 +9,8 @@ test('course membership edits preserve other owners, profiles and explicit remov
   const member = { courseCode: 'IT 102', courseTitle: 'Programming', blockSection: 'BSIT-1A', student: { Name: 'Synthetic learner', StudentID: 'SYN-1', Email: 'learner@example.invalid', YearLevel: '1', Block: 'BSIT-1A' } }
   const source = { syllabi: [], content: {}, registrations: [{ ...member, id: 'own', uploadedBy: 'owner', status: 'active', students: [member.student], studentCount: 1 }, { ...member, id: 'other', uploadedBy: 'other', status: 'active', students: [member.student], studentCount: 1 }] }
   const academic = { courses: [{ id: 'course', instructor_id: 'owner', course_code: member.courseCode }], enrollments: [{ course_id: 'course', student_email: member.student.Email, display_name: member.student.Name, block_section: member.blockSection }] }
-  const removed = changeCourseMembership(source, member, 'owner')
+  assert.throws(()=>changeCourseMembership(source,member,'owner'),/Suspend/)
+  const removed = changeCourseMembership(source, {...member,suspended:true}, 'owner')
   assert.equal(removed.registrations[1].studentCount, 1)
   assert.equal(courseMemberships(removed, academic, 'owner').length, 0)
   assert.equal(source.registrations[0].studentCount, 1, 'no optimistic mutation of the existing snapshot')
@@ -51,7 +52,7 @@ test('persisted roster overrides survive shared imports and sync, revoke access,
     await command({ operation: 'submit', publication: publication.id, version: publication.source_version, session: session.id, responses: [0, 1, 2] })
     await as(0)
     const member = { courseCode: 'IT 102', courseTitle: 'Programming', blockSection: 'BSIT-1A', student: { Name: roster.Name, Email: roster.Email, StudentID: roster.StudentID, YearLevel: '1', Block: 'BSIT-1A' } }
-    snapshot = changeCourseMembership(snapshot, member, ids[0]); await save()
+    snapshot = changeCourseMembership(snapshot, {...member,suspended:true}, ids[0]); await save()
     await db.query('SELECT public.edupulse_sync_academic_workspace()')
     assert.equal((await db.query('SELECT * FROM public.edupulse_enrollments')).rows.length, 0)
     assert.equal(Number((await db.query<any>('SELECT revision FROM public.edupulse_workspaces')).rows[0].revision), revision, 'sync does not advance authoring revision')

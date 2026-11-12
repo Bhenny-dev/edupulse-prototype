@@ -1,5 +1,6 @@
 import {test,expect,type Page} from './fixtures'
 import {mkdir} from 'node:fs/promises'
+import {monitoringUI} from '../monitoring-fixture'
 import {academicUI} from '../academic-ui-fixture'
 import {makeScannedPdf} from '../fixtures'
 import {scanPage} from '../scans'
@@ -16,7 +17,8 @@ export function interfaceCaptures(mobile=false){
    else if(key==='overview')await shot(page,'09-mobile-monitor-tabs')
   }
   if(!mobile){
-   await page.evaluate(()=>localStorage.removeItem('edupulse_user'));await page.goto('/');await page.reload();await page.getByRole('button',{name:'Instructor',exact:true}).click();await page.goto('/#/student-monitoring');await page.getByRole('button',{name:'Learning Material Access',exact:true}).click();await expect(page.getByText('Learning Material Access',{exact:false}).last()).toBeVisible();await page.locator('.recharts-wrapper').last().scrollIntoViewIfNeeded();await page.waitForTimeout(2000);await expect(page.locator('.recharts-bar-rectangle').first()).toBeVisible();await page.evaluate(()=>scrollTo(0,0));await page.screenshot({path:'../feature-documentation/system-walkthrough/04-instructor/10-student-monitoring-material-access.png',animations:'disabled',fullPage:true})
+   await monitoringUI(page);await page.goto('/#/student-monitoring?course='+ 'a'.repeat(32)+'&block=BSIT-1A&tab=materials');await expect(page.getByRole('heading',{name:'Class access per material',exact:true})).toBeVisible()
+   await page.locator('.monitoring-course-modal').screenshot({path:'../feature-documentation/system-walkthrough/04-instructor/10-student-monitoring-material-access.png',animations:'disabled'})
   }
  })
  test('interface: avatar launcher and dialog beside Pulse',async({page})=>{
@@ -34,7 +36,7 @@ export function interfaceCaptures(mobile=false){
  })
 }
 export function academicCaptures(){test('academic UI fixtures: current records screens, no hosted authorization claim',async({browser})=>{
- const course={id:'course-1',course_code:'IT 102',course_title:'Computer Programming 1',active:true,source_revision:4}
+ const course={id:'course-1',instructor_id:'fe67b9d2-719b-4b10-91cd-76031ab115fe',course_code:'IT 102',course_title:'Computer Programming 1',active:true,source_revision:4}
  const material={id:'pub-material',course_id:course.id,active:true,type:'material',week:1,source_version:1,title:'Canary variables lesson',content:{sections:[{heading:'Variables',body:'A variable stores a value.'}]}}
  const assessment={id:'pub-assessment',course_id:course.id,active:true,type:'assessment',week:1,source_version:1,title:'Canary variables assessment',content:{questions:[{text:'Which declaration creates a binding?',options:['let','if','else','return']},{text:'Which value is a number?',options:['42','true','null','undefined']},{text:'Which operator assigns a value?',options:['=','===','!==','>']}]}}
  const data={courses:[course],publications:[material,assessment],enrollments:[{course_id:course.id,student_email:'learner@example.invalid',student_ref:'SYN-001',display_name:'Synthetic learner',block_section:'BSIT-1A'}],attempts:[{publication_id:assessment.id,source_version:1,student_email:'learner@example.invalid',score:3,max_score:3,submitted_at:'2026-10-27T03:00:00Z'}],accesses:[{publication_id:material.id,student_id:'synthetic-learner',first_opened_at:'2026-10-27T02:00:00Z'}]}

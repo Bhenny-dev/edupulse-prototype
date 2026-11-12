@@ -1,6 +1,6 @@
 import ModalLayer from '../components/ui/ModalLayer'
 import { useState, useMemo } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useSearchParams, Navigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
 import { canUseSamplePerformance } from '../lib/access'
@@ -577,6 +577,7 @@ export default function Performance() {
     addToast('Performance report exported', 'success')
   }
 
+  if(user?.role==='instructor'){const next=new URLSearchParams(searchParams);next.set('tab',searchParams.get('tab')==='materials'?'materials':'assessments');return <Navigate to={'/student-monitoring?'+next} replace/>}
   if (user?.authenticated || user?.role === 'dean') return <AcademicPortal view="performance" />
   if (!canUseSamplePerformance(user)) return (
     <div className="container" data-pulse-zone="performance">

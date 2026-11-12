@@ -72,3 +72,7 @@ Removing the selected cached model updates the count and restores the download a
 ## Conditional horizontal scrolling
 
 Shared academic tables and charts use available container width. Short phone tables no longer reserve a 420-pixel minimum, and charts retain their measured width without forcing a minimum. Horizontal scrolling appears only for genuinely wider content. All five roles retain their existing data permissions. [Manual 36](../../system-manual/36-instructor-syllabi/README.md) shows the related instructor controls and cross-role layout verification.
+
+## Instructor class dialogs
+
+Handled classes are grouped by recorded year and labelled with course/block. Each class opens a full-screen phone dialog with Students, Assessment Scores and Learning Material Access. Nested student progress and roster confirmations scroll within their own surface and restore on reload. [Manual 37](../../system-manual/37-instructor-monitoring/README.md) contains the current phone captures; the separate instructor Performance page is removed.

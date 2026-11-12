@@ -9,7 +9,7 @@
 .academic-tabs .tab { white-space: nowrap; }
 .academic-filters { display: flex; flex-wrap: wrap; align-items: end; gap: 16px; margin-bottom: 24px; }
 .academic-filter { display: flex; flex-direction: column; gap: 6px; font-weight: 600; font-size: .8rem; min-width: 140px; max-width: 100%; }
-.academic-filter select { padding: 10px 12px; border: 1px solid var(--gray-200); border-radius: var(--radius-md); background: var(--white); color: var(--gray-800); min-height: 42px; max-width: 100%; }
+.academic-filter select { padding: 10px 12px; border: 1px solid var(--gray-200); border-radius: var(--radius-md); background-color: var(--white); color: var(--gray-800); min-height: 42px; max-width: 100%; }
 .academic-filter:first-child { flex: 1 1 270px; }
 .academic-table-wrap { overflow-x: auto; max-width: 100%; }
 .academic-portal .data-table { width: 100%; }
@@ -82,3 +82,5 @@
   .syllabus-list td { gap: 12px; align-items: flex-start; }
   .syllabus-list td[data-label="Next step"] > span { white-space: normal !important; display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
 }
+
+.academic-filter select.form-input { padding-right: 40px; }

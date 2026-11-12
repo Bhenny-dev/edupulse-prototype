@@ -45,8 +45,9 @@ test('an attached class list is registered only after Confirm, opens Students, c
   await card.getByRole('button', { name: 'Register 3 students' }).click()
   await expect(pulse.getByText(/IT 102 · BSIT-1A now lists 3 students \(3 new\)/)).toBeVisible()
   await expect(page).toHaveURL(/#\/student-monitoring\?tab=students/)
-  const table = page.locator('table').filter({ hasText: 'Block Section' })
-  await expect(table.getByRole('row').filter({ hasText: 'BSIT-1A' })).toHaveCount(3)
+  await page.getByRole('button',{name:'Open IT 102 · BSIT-1A',exact:true}).click()
+  const table = page.getByRole('region',{name:'Enrolled students table',exact:true})
+  await expect(table.locator('tbody tr')).toHaveCount(3)
 
   await say(page, 'Is Ben Cruz registered?')
   const results = pulse.getByRole('region', { name: 'Search results' }).last()
@@ -54,16 +55,16 @@ test('an attached class list is registered only after Confirm, opens Students, c
   await expect(results).toContainText('Ben L. Cruz')
   await expect(results).toContainText('Source: IT 102 BSIT-1A class list.csv')
 
-  await pulse.getByRole('button', { name: 'Undo' }).click()
+  await page.getByRole('button',{name:'Back to handled classes',exact:true}).click();await pulse.getByRole('button', { name: 'Undo' }).click()
   await expect(pulse.getByText('Registration undone.')).toBeVisible()
-  await expect(table.getByRole('row').filter({ hasText: 'BSIT-1A' })).toHaveCount(0)
+  await expect(table.locator('tbody tr')).toHaveCount(0)
 })
 
 test('the Students uploader reads a real class list instead of sample names and merges a second upload', async ({ page }) => {
   await page.goto('/')
   await page.getByRole('button', { name: 'Instructor', exact: true }).click()
   await page.goto('/#/student-monitoring?tab=students')
-  await page.getByText('Import an EduSuite class list', { exact: true }).click()
+  await page.getByText('Register course students',{exact:true}).click();await page.getByText('Import an EduSuite class list', { exact: true }).click()
   await page.locator('.upload-zone input[type="file"]').setInputFiles({ name: 'IT102-BSIT1A.csv', mimeType: 'text/csv', buffer: Buffer.from(classList) })
   await expect(page.getByText('Student Preview (3 records)')).toBeVisible()
   await expect(page.getByText('Carla Mendoza')).toBeVisible()
@@ -79,11 +80,12 @@ test('the Students uploader reads a real class list instead of sample names and 
   await page.locator('.upload-zone input[type="file"]').setInputFiles({ name: 'IT102-BSIT1A-late.csv', mimeType: 'text/csv', buffer: Buffer.from('Name,Block\nAna T. Ramos,BSIT-1A\nDan Uy,BSIT-1A') })
   await page.getByLabel('Select Course *').selectOption('IT 102')
   await page.getByRole('button', { name: 'Register Course' }).click()
+  await page.getByRole('button',{name:'Open IT 102 · BSIT-1A',exact:true}).click()
   const roster = page.getByRole('region', { name: 'Enrolled students table', exact: true })
-  await expect(roster.getByRole('row').filter({ hasText: 'BSIT-1A' })).toHaveCount(4)
+  await expect(roster.locator('tbody tr')).toHaveCount(4)
   await expect(roster).toContainText('Dan Uy')
   await page.reload()
-  await expect(roster.getByRole('row').filter({ hasText: 'BSIT-1A' })).toHaveCount(4)
+  await expect(roster.locator('tbody tr')).toHaveCount(4)
 })
 
 test('a student’s material is matched to a course with reasons, and added to the library only after Confirm', async ({ page, request }) => {

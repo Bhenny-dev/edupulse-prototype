@@ -8,7 +8,7 @@ The examples below use synthetic student profiles and a synthetic authenticated 
 
 ## 1. Find students
 
-Open **Student Monitoring → Students → Choose students**. Search by name or student number, and filter by **Year level**, **Department** and **Program**. **Previous students** and **Next students** page through matches. Selections remain while filters or pages change.
+Open **Student Monitoring → Register course students → Choose students**, or select a course/block card and use **Students → Add students to this block → Choose students**. Search by name or student number, and filter by **Year level**, **Department** and **Program**. **Previous students** and **Next students** page through matches. Selections remain while filters or pages change.
 
 ![Filter the official directory](01-directory-filters.png)
 
@@ -37,3 +37,5 @@ Provisioning is a server-side administrative operation. It creates EduPulse sign
 Saved members can be moved between blocks or removed through their three-dot menu. These edits affect course access, preserve official profiles and past attempts, and survive later shared imports or automatic sync. [Manual 21](../21-automatic-records-and-course-rosters/README.md) illustrates those confirmations.
 
 The active student directory is limited to **College of Information Technology**. The department selector contains only CIT, with year/program filtering retained. Non-CIT profiles and the four legacy role placeholders are retired from active use, with their records preserved. Student profile count after retirement is 417.
+
+Inside a selected monitoring class, course/block fields are locked to that class. The same registered-account search and explicit save are retained. Use the outer registration control to create another confirmed class membership. See [Manual 37](../37-instructor-monitoring/README.md).

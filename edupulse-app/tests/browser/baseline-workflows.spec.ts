@@ -2,19 +2,19 @@ import { test,expect } from '@playwright/test'
 import { baselineUI,baselineWorkspace } from '../baseline-fixture'
 
 test('syllabus-topic mastery uses mapped marks and restores radar, heatmap and status',async({page})=>{
- await baselineUI(page);await page.goto('/#/performance?tab=bytopic')
+ await baselineUI(page);await page.goto('/#/student-monitoring?course='+ 'a'.repeat(32)+'&block=BSIT-1A&tab=assessments');await page.getByText('Topic mastery and follow-up',{exact:true}).click()
  await expect(page.getByRole('img',{name:/^Syllabus topic mastery radar:/})).toBeVisible()
- await expect(page.getByRole('heading',{name:'Topic mastery heatmap â€” My sections'})).toBeVisible()
+ await expect(page.getByRole('heading',{name:/^Topic mastery heatmap/})).toBeVisible()
  await expect(page.getByRole('heading',{name:'Mastery / needs-review counts by topic'})).toBeVisible()
- await expect(page.getByRole('cell',{name:'Not assessed',exact:true}).first()).toBeVisible()
+ await expect(page.getByRole('heading',{name:'Per-topic status',exact:true})).toBeVisible()
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true)
 })
 test('instructor marks saved responses and the score and topic marks persist',async({page})=>{
- const fixture=await baselineUI(page);await page.goto('/#/scoring-sheet')
+ const fixture=await baselineUI(page);await page.goto('/#/student-monitoring?course='+ 'a'.repeat(32)+'&block=BSIT-1A&tab=assessments')
  await page.getByLabel('Assessment attempt',{exact:true}).selectOption(fixture.records.attempts[0].id!)
  await page.getByLabel('Question 2 points',{exact:true}).selectOption('1');await page.getByLabel('Review reason',{exact:true}).fill('Reviewed the function response against the approved topic.')
  await page.getByRole('button',{name:'Confirm reviewed marks',exact:true}).click();await expect(page.getByRole('status').filter({hasText:'Question marks saved'})).toBeVisible()
- expect(fixture.records.attempts[0].score).toBe(2);await page.reload();await expect(page.getByRole('cell',{name:'2/3',exact:true}).first()).toBeVisible()
+ expect(fixture.records.attempts[0].score).toBe(2);await page.reload();await page.getByLabel('Assessment attempt',{exact:true}).selectOption(fixture.records.attempts[0].id!);await expect(page.getByLabel('Question 2 points',{exact:true})).toHaveValue('1')
 })
 test('student starts a timed written-response assessment, submits, and appeals the saved result',async({page})=>{
  const fixture=await baselineUI(page,'student');fixture.records.attempts=[]

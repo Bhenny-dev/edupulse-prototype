@@ -3,6 +3,21 @@
   "enforcedSince": "2026-10-04T00:00:00+08:00",
   "rules": [
     {
+      "name": "Combined instructor monitoring and its capture fixture",
+      "source": [
+        "edupulse-app/src/components/academic/InstructorMonitoring.jsx",
+        "edupulse-app/src/components/academic/Monitoring*.jsx",
+        "edupulse-app/src/components/academic/monitoring*",
+        "edupulse-app/tests/monitoring-fixture.ts",
+        "edupulse-app/tests/monitoring-ui.ts"
+      ],
+      "docs": [
+        "feature-documentation/system-manual/37-instructor-monitoring",
+        "feature-documentation/system-walkthrough/04-instructor",
+        "feature-documentation/backend-system"
+      ]
+    },
+    {
       "name": "Public site and sign-in",
       "source": [
         "edupulse-app/src/pages/Landing.jsx",

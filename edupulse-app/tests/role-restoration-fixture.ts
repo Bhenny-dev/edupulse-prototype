@@ -3,7 +3,7 @@ import { academicUI } from './academic-ui-fixture'
 import type { AcademicData } from '../src/components/academic/academicData'
 
 export const roleRecords: AcademicData = {
-  courses: [{ id: 'a'.repeat(32), course_code: 'IT 102', course_title: 'Computer Programming 1', instructor_id: 'synthetic-instructor', active: true, source_revision: 4, syllabus_status:'active', instructor_name:'Synthetic instructor', outline:[1,2,3].map(week=>({week,contents:['Variables','Functions','Arrays'],ilos:'Explain and apply the weekly programming topics.'})) }],
+  courses: [{ id: 'a'.repeat(32), course_code: 'IT 102', course_title: 'Computer Programming 1', instructor_id: 'fe67b9d2-719b-4b10-91cd-76031ab115fe', active: true, source_revision: 4, syllabus_status:'active', instructor_name:'Synthetic instructor', outline:[1,2,3].map(week=>({week,contents:['Variables','Functions','Arrays'],ilos:'Explain and apply the weekly programming topics.'})) }],
   publications: [
     { id: 'b'.repeat(32), course_id: 'a'.repeat(32), active: true, type: 'material', week: 1, title: 'Variables lesson', source_version: 'v1', content: { sections: [{ heading: 'Variables', body: 'A variable stores a value.\nUse a descriptive name.' }, { heading: 'Practice', body: 'Declare a variable for a learner name.' }] } },
     ...['Variables quiz', 'Functions quiz', 'Arrays quiz'].map((title, index) => ({ id: String(index + 1).repeat(32), course_id: 'a'.repeat(32), active: true, type: 'assessment', week: index + 1, title, source_version: 'v1', content: { questions: [1, 2, 3].map(number => ({ text: `Synthetic question ${number}`, topic:['Variables','Functions','Arrays'][number-1], options: ['Option A', 'Option B', 'Option C', 'Option D'] })) } })),

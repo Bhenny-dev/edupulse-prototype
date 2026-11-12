@@ -194,12 +194,6 @@
       "reviewedAt": "2026-10-29T02:19:03.679064Z"
     },
     {
-      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/10-student-drilldown.png",
-      "sha256": "39b50207ebfe1f3f4427deffd395189e62825b2744846a8ef493c698f6f4fc6a",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-10-29T02:19:03.679064Z"
-    },
-    {
       "path": "feature-documentation/system-walkthrough/09-restored-role-pages/44-persisted-academic-notices.png",
       "sha256": "c21c2f3871f8374029a6fe3710cac05ce3d4621dd744a83b834f3168d757999f",
       "reviewer": "Codex agent",
@@ -404,24 +398,6 @@
       "reviewedAt": "2026-11-07T11:44:55.057424+00:00"
     },
     {
-      "path": "feature-documentation/system-manual/21-automatic-records-and-course-rosters/01-course-students.png",
-      "sha256": "a45924b0e795632ef80163269db9e0921d71f6c9352818d49c60a8893a76d592",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-07T15:28:15.138629+00:00"
-    },
-    {
-      "path": "feature-documentation/system-manual/21-automatic-records-and-course-rosters/02-change-block.png",
-      "sha256": "1be2401acc84e37333f4beb8ee2998bc250849255d524219ff54d0274cc6a654",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-07T15:28:15.140396+00:00"
-    },
-    {
-      "path": "feature-documentation/system-manual/21-automatic-records-and-course-rosters/03-remove-membership.png",
-      "sha256": "136bcae319a681d8e37e2b812c617b7aac0b87673373a1b440a8032575eaaf6b",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-07T15:28:15.142627+00:00"
-    },
-    {
       "path": "feature-documentation/system-manual/21-automatic-records-and-course-rosters/07-course-page.png",
       "sha256": "49b9e5d1e1b17215ce6cdfe9fd021e2bd888d867af43380ce30334af728c9047",
       "reviewer": "Codex agent",
@@ -468,24 +444,6 @@
       "sha256": "846eeffa804c7db1db9a0101dcbc60e6309cad0c94e053b845517105acbe150f",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-07T15:28:15.237811+00:00"
-    },
-    {
-      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/36-topic-mastery-heatmap.png",
-      "sha256": "544f95473ef64d4fc8a8a0ccbedc55ace9e2a7814663f209cb768541bf98e2bb",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-07T15:30:19.179238+00:00"
-    },
-    {
-      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/37-instructor-response-marking.png",
-      "sha256": "cbdb3846d3ede7b25803253759dedccb363ebeaaf5e141d8a7523e6030343a0a",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-07T15:30:19.183012+00:00"
-    },
-    {
-      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/38-confirmed-in-app-reminder.png",
-      "sha256": "f47b77618cf2a0ab312ed7ef0e639444a38cf37aaca91b9ae7f43ffc23ac7f4b",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-07T15:30:19.186168+00:00"
     },
     {
       "path": "feature-documentation/system-walkthrough/09-restored-role-pages/42-timed-written-assessment.png",
@@ -638,28 +596,10 @@
       "reviewedAt": "2026-11-07T15:41:38.027538+00:00"
     },
     {
-      "path": "feature-documentation/system-manual/16-student-directory/03-saved-roster.png",
-      "sha256": "96068eca2a95a1d556169c7e6ff6d019f1992db8970fc99ae63409ba75a03a1f",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-07T15:41:38.037179+00:00"
-    },
-    {
       "path": "feature-documentation/system-manual/17-pulse-navigation-and-provider-recovery/04-claude-workspace.png",
       "sha256": "4763a2dc4a718b1be0c28fd19f8d43ae59205ba002a375407df8cfc51e94a0d5",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-07T15:41:38.044752+00:00"
-    },
-    {
-      "path": "feature-documentation/system-manual/18-it-course-seed/01-seeded-course-students.png",
-      "sha256": "2e389a2d92aec79c912bed6614e75e4bdab18f5b7bf8804494869f6f5204cbd5",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-07T15:41:38.047539+00:00"
-    },
-    {
-      "path": "feature-documentation/system-manual/18-it-course-seed/04-no-student-attempts.png",
-      "sha256": "7fad2fb7b69f1dd41e8b391ab4cb273374753dc8fe78483a9c0925f2ffcc3609",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-07T15:41:38.053843+00:00"
     },
     {
       "path": "feature-documentation/system-manual/19-loading-and-saved-connections/04-notification-loading.png",
@@ -680,22 +620,10 @@
       "reviewedAt": "2026-11-07T15:41:38.058694+00:00"
     },
     {
-      "path": "feature-documentation/system-manual/21-automatic-records-and-course-rosters/mobile-01-course-students.png",
-      "sha256": "7dbf8ecc5540ddd105f9068624f66a64a66ff8da03d1baabd4a0c3d425f4026d",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-07T15:41:38.060679+00:00"
-    },
-    {
       "path": "feature-documentation/system-manual/21-automatic-records-and-course-rosters/mobile-04-dashboard.png",
       "sha256": "fa330a3367b7ba1fa8dab82c0969336ce023ae78ea274f1a841dc8ddb07429c8",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-07T15:41:38.067278+00:00"
-    },
-    {
-      "path": "feature-documentation/system-walkthrough/02-shared-interface/01-top-bar.png",
-      "sha256": "a9112e40ac232ff0972f86c8a93d2f749addbcccc76e61a49bae6a65aabe4a3a",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-07T15:41:38.068680+00:00"
     },
     {
       "path": "feature-documentation/system-walkthrough/02-shared-interface/02-search-overlay.png",
@@ -708,12 +636,6 @@
       "sha256": "721be7ed2c737b3dd340161706810c7a97b86455edb6064bcd3602a62e7689ba",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-07T15:41:38.072451+00:00"
-    },
-    {
-      "path": "feature-documentation/system-walkthrough/04-instructor/10-student-monitoring-material-access.png",
-      "sha256": "a96c43c7f99f0271a8cbe88babc20b44e59346e6ea0e18c164f825781fb14467",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-07T15:41:38.081638+00:00"
     },
     {
       "path": "feature-documentation/system-walkthrough/08-authenticated-records/02-student-material.png",
@@ -848,18 +770,6 @@
       "reviewedAt": "2026-11-07T15:49:27.335113+00:00"
     },
     {
-      "path": "feature-documentation/system-walkthrough/04-instructor/02-monitoring-course-students.png",
-      "sha256": "ad9913023c268492575b9f0015c8716412bc3e9910e36a38dcb9c25063f9d956",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-07T15:49:27.366538+00:00"
-    },
-    {
-      "path": "feature-documentation/system-walkthrough/04-instructor/09-student-monitoring-assessment-scores.png",
-      "sha256": "a3cbe5146c627c6ceba086137b85db63f58f421b8bcb5a3a9d1580559ed15af1",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-07T15:49:27.383447+00:00"
-    },
-    {
       "path": "feature-documentation/system-walkthrough/04-instructor/11-performance-overview.png",
       "sha256": "760e5ff90743048b79ce872832fd9b3a20618be23911eb0e23fcce04d6d5154f",
       "reviewer": "Codex agent",
@@ -918,18 +828,6 @@
       "sha256": "8d4ec7802e6774548328264f3395591acc2c1a2ac4699b5cad2859b82cbe755d",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-07T15:49:27.404940+00:00"
-    },
-    {
-      "path": "feature-documentation/system-walkthrough/06-mobile/02-instructor-dashboard.png",
-      "sha256": "0d2096304134cfcc28e1dd8ed47a0e3fb2ae13f033f50dc8eea79be81edc625a",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-07T15:49:27.407453+00:00"
-    },
-    {
-      "path": "feature-documentation/system-walkthrough/06-mobile/03-navigation-menu.png",
-      "sha256": "2218d24223f7b40363826003853fa93699069f7c452a0afd4ba6187121e77020",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-07T15:49:27.409056+00:00"
     },
     {
       "path": "feature-documentation/system-walkthrough/07-system-admin/01-system-console.png",
@@ -1352,18 +1250,6 @@
       "reviewedAt": "2026-11-09T07:04:40.120569+00:00"
     },
     {
-      "path": "feature-documentation/system-manual/21-automatic-records-and-course-rosters/mobile-02-change-block.png",
-      "sha256": "df9ed4161076f586b74d3190e5f85127fc5b8943fc4787c47b996525e272fcf6",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-09T07:04:40.121148+00:00"
-    },
-    {
-      "path": "feature-documentation/system-manual/21-automatic-records-and-course-rosters/mobile-03-remove-membership.png",
-      "sha256": "0532662e70d35c610d8696b85c1ff6ab998cb96a96bf4cc4b2cb5c131beb557e",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-09T07:04:40.121617+00:00"
-    },
-    {
       "path": "feature-documentation/system-walkthrough/02-shared-interface/14-settings-data-and-privacy.png",
       "sha256": "8e4014338d089db4430e8b7d9a4d8674cb91ec0dccf56a296fada5604593bebc",
       "reviewer": "Codex agent",
@@ -1468,24 +1354,6 @@
     {
       "path": "feature-documentation/system-manual/03-courseware-generation-and-review/12-course-actions-menu.png",
       "sha256": "9eb0a53f685a4c2b9be560f99eadd09cb98d73f7a607e6f1fbd945aed7a1ef5a",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-09T09:04:55.765715Z"
-    },
-    {
-      "path": "feature-documentation/system-manual/18-it-course-seed/02-programming-draft.png",
-      "sha256": "4f15ba77b952dd4c1b72f3d1a3bf2d204084f0d6b003d15d20fff13a4b151941",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-09T09:04:55.765715Z"
-    },
-    {
-      "path": "feature-documentation/system-manual/18-it-course-seed/03-authored-subnetting-lesson.png",
-      "sha256": "40e3ee09557ea3de39ee8325ef903c31b4d2b24697139123b9056c9642fc406d",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-09T09:04:55.765715Z"
-    },
-    {
-      "path": "feature-documentation/system-walkthrough/04-instructor/07-courseware-my-courseware.png",
-      "sha256": "3cd1644ccfe834e74a5b1c473058c6f80b82721b1077f656170ce1d500adc363",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-09T09:04:55.765715Z"
     },
@@ -1606,12 +1474,6 @@
     {
       "path": "feature-documentation/system-manual/31-retained-syllabus-sources/mobile-03-retained-and-unread.png",
       "sha256": "ab14453e87fd66a417999f01d2af9f6a3063b6d46cdee86795f8cbefd2b2420f",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-09T12:36:30.399211+00:00"
-    },
-    {
-      "path": "feature-documentation/system-walkthrough/04-instructor/08-courseware-builder.png",
-      "sha256": "f2645771c3d334d72ffd9e3545db8a70c4288ed2dbf118ea82e84aa558c6741e",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-09T12:36:30.399211+00:00"
     },
@@ -1796,18 +1658,6 @@
       "reviewedAt": "2026-11-09T22:09:14.303216Z"
     },
     {
-      "path": "feature-documentation/system-manual/33-pipeline-progress/01-instructor-scores.png",
-      "sha256": "7a33eee49bfd1e7038445bdda8cc9d4abf7fcc72ab45b229df60ca62b5a6ff04",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-09T22:39:55.715Z"
-    },
-    {
-      "path": "feature-documentation/system-manual/33-pipeline-progress/02-instructor-opens.png",
-      "sha256": "d1db04a6d7ed903980e8bb9190986f55b46148a8299745864756e96ba3cddd7b",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-09T22:39:55.716Z"
-    },
-    {
       "path": "feature-documentation/system-manual/33-pipeline-progress/03-student-score.png",
       "sha256": "55ca9c3c1085a2e8eb4b128bb4ac8db65a3d715f5df117f4da75a5dc754fd2e3",
       "reviewer": "Codex agent",
@@ -1818,12 +1668,6 @@
       "sha256": "6922f0ceb3f3d88d69e2d887fa147b95613eb87990f9f7f404bf480842d06aed",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-10T03:43:13.421109+00:00"
-    },
-    {
-      "path": "feature-documentation/system-manual/33-pipeline-progress/05-mobile-instructor.png",
-      "sha256": "fecc26fa2cd9ce9220c05cbda25df2ac6fd1bf3a4f455edd06474ec94cd413e1",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-09T22:39:55.719Z"
     },
     {
       "path": "feature-documentation/system-manual/33-pipeline-progress/05-mobile-student.png",
@@ -2016,96 +1860,6 @@
       "sha256": "9c4a93e85867654631967dfdbc168ef2bed9588f5dd0bf6f7412afd7e99353ab",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-11T05:17:30.448887+00:00"
-    },
-    {
-      "path": "feature-documentation/system-manual/33-pipeline-progress/06-two-assessments.png",
-      "sha256": "42753db0d673db7872d98e7dca8836f189b471ec3e1c08c43329fc3617804671",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-11T09:46:08.844086+00:00"
-    },
-    {
-      "path": "feature-documentation/system-manual/33-pipeline-progress/07-three-assessment-radar.png",
-      "sha256": "05302bad9439985451e5435a8c15f5392a6c41baf920097aa4805d4a744b68b0",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-11T09:46:08.859728+00:00"
-    },
-    {
-      "path": "feature-documentation/system-manual/33-pipeline-progress/mobile-06-two-assessments.png",
-      "sha256": "95d26b3c3b9862a257a3d7fee4b551f50be0b49626fbd98045224bcc849c3024",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-11T09:46:08.871915+00:00"
-    },
-    {
-      "path": "feature-documentation/system-manual/33-pipeline-progress/mobile-07-three-assessment-radar.png",
-      "sha256": "ec1c58731639bfc7323c58e41f294001ae6be8df530d8e2ce67000c4f82ade83",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-11T09:46:08.886299+00:00"
-    },
-    {
-      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/05-performance-radar-and-history.png",
-      "sha256": "60ad06db07fd88a906680f74fe97a7b9d3a4aefb23a276d98a2c12adda08a4de",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-11T09:46:08.903422+00:00"
-    },
-    {
-      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/06-assessment-coverage.png",
-      "sha256": "107e0b34095c4bad12c431552f278121b09389b2b196884c1f366ed6fa464f3e",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-11T09:46:08.923825+00:00"
-    },
-    {
-      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/07-material-access.png",
-      "sha256": "bdf768b1985d77c339b7292f832cecfab95919695ff065a0b3033706f7959af7",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-11T09:46:08.938246+00:00"
-    },
-    {
-      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/08-assessment-scores.png",
-      "sha256": "0eca6fa765c02b95f9e8f79b0debbb2b159f6d63bf0b55bd15705c8ae59d5875",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-11T09:46:08.951382+00:00"
-    },
-    {
-      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/09-threshold-review.png",
-      "sha256": "ce4afec9d3cc9de79cf51d72f21e345162c1c093ac1592f377f436de16e5cbb0",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-11T09:46:08.964698+00:00"
-    },
-    {
-      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/11-monitoring-scoring-matrix.png",
-      "sha256": "0ca073e884f54c6506a8df784558c2e11ae3c49a2ca3bff64fb064aace37b7fb",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-11T09:46:08.966619+00:00"
-    },
-    {
-      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/12-monitoring-material-matrix.png",
-      "sha256": "6c585e3daa0069cb63f85c720ba1d1152c8675b06de311a509a1e5800908bf18",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-11T09:46:08.977156+00:00"
-    },
-    {
-      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/32-dark-performance.png",
-      "sha256": "f59c5c193ae40eb1444f1f58445480530a71c571259dc2ff84c61dca21eacc93",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-11T09:46:08.992715+00:00"
-    },
-    {
-      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/33-mobile-performance.png",
-      "sha256": "241163448a77bad9111a5baef1ef5868d7001a6b8a87cfb631f98e3f366e042c",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-11T09:46:08.996206+00:00"
-    },
-    {
-      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/34-mobile-materials.png",
-      "sha256": "e35d25bb40fd5daa887fa39c1ecc868848938ade3fe2ef802451bddcc401b361",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-11T09:46:09.010157+00:00"
-    },
-    {
-      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/35-mobile-dark-dashboard.png",
-      "sha256": "e2c0194b1b971650e8c67063322f031573564339e3ebec49eea7eba92d665c4a",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-11T09:46:09.023634+00:00"
     },
     {
       "path": "feature-documentation/system-walkthrough/07-system-admin/06-two-admins.png",
@@ -2516,24 +2270,6 @@
       "reviewedAt": "2026-11-11T20:44:52.379082+00:00"
     },
     {
-      "path": "feature-documentation/system-walkthrough/04-instructor/05-syllabus-builder.png",
-      "sha256": "6ff050357cac62faaf840a4de4f107429f54a308f30d7e7b1166dc2b3acf51e6",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-11T20:44:52.379082+00:00"
-    },
-    {
-      "path": "feature-documentation/system-walkthrough/06-mobile/04-syllabus-builder.png",
-      "sha256": "7e1686791d3243348a0e1d51b92981add1c80e285dd7bbf068bc121a71eecd22",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-11T20:44:52.379082+00:00"
-    },
-    {
-      "path": "feature-documentation/system-walkthrough/06-mobile/05-pulse-panel.png",
-      "sha256": "5d65c6c038195af1b3b29af808e3a50cbd32b428eb7606f6e12ea728068f9904",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-11T20:44:52.379082+00:00"
-    },
-    {
       "path": "feature-documentation/system-manual/29-combined-oversight/associate_dean-overview.png",
       "sha256": "0e7d6b2420f8ededf553d9973045b9ae2143e1235cad5a89321383f2ec335b54",
       "reviewer": "Codex agent",
@@ -2658,18 +2394,6 @@
       "sha256": "2d3f214edaebcbd371e34b5fa7209f7fe06fba92987ab04af8d601605252d9da",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-11T21:14:33.112260+00:00"
-    },
-    {
-      "path": "feature-documentation/system-manual/16-student-directory/01-directory-filters.png",
-      "sha256": "abb8fbf1723e0422e877411f7d35182cc770a90765b587f2caea987e62df0e75",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-11T21:46:24.200873+00:00"
-    },
-    {
-      "path": "feature-documentation/system-manual/16-student-directory/02-student-selection.png",
-      "sha256": "8e5fad499e40b1c880cf141c44d50a788282161ddfa863a7e250d6b7bea198c3",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-11T21:46:24.200873+00:00"
     },
     {
       "path": "feature-documentation/system-manual/17-pulse-navigation-and-provider-recovery/01-instructor-view.png",
@@ -3038,12 +2762,6 @@
       "reviewedAt": "2026-11-11T15:36:02.012534+00:00"
     },
     {
-      "path": "feature-documentation/system-walkthrough/04-instructor/06-syllabus-builder-course-outline.png",
-      "sha256": "4f7e82f03c22e26733af20c03be426b0869741de71a921525c3660cc7aa1cb2f",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-11T15:36:02.015882+00:00"
-    },
-    {
       "path": "feature-documentation/system-manual/02-syllabus-lifecycle/09-review-extracted-outline.png",
       "sha256": "2674a4910fd274c5d9025ed39e4fc075aa80335b0ff8fee446a527b9b172d50d",
       "reviewer": "Codex agent",
@@ -3072,18 +2790,6 @@
       "sha256": "362e500ab253aac16389fbe5dedb89a6e92497870947b74e98257fd005bd2470",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-11T21:09:06.841555Z"
-    },
-    {
-      "path": "feature-documentation/system-walkthrough/04-instructor/01-dashboard.png",
-      "sha256": "498890952e25f47f0093d99938cc5dfaaeb4d25ae9d4c50e416f53f2c77c7482",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-11T21:09:06.843785Z"
-    },
-    {
-      "path": "feature-documentation/system-walkthrough/04-instructor/04-syllabus-shared-repository.png",
-      "sha256": "fa2719e6b73ffe669e0045dcab7bfb344545834225883014f5ac605a4f5bd0f6",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-11T21:09:06.846538Z"
     },
     {
       "path": "feature-documentation/system-manual/36-instructor-syllabi/dashboard-blocks.png",
@@ -3236,12 +2942,6 @@
       "reviewedAt": "2026-11-11T22:04:48.868570+00:00"
     },
     {
-      "path": "feature-documentation/system-walkthrough/04-instructor/03-syllabus-my-syllabus.png",
-      "sha256": "4b80bb69cebdd82c63805872384810681bf26ffacf14233b9579dd6f15557f56",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-11T22:04:48.868570+00:00"
-    },
-    {
       "path": "feature-documentation/system-manual/22-dashboard-summary-navigation/01-summary-links.png",
       "sha256": "075c6f61ef63870ae27a5fbddd725f02fb3ebe939bfc8d7090d133299d1475a2",
       "reviewer": "Codex agent",
@@ -3258,6 +2958,524 @@
       "sha256": "4a860e05bc4a425e53d108c279e87fdd5a26196ea79957e48d65fc73bfa1a640",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-11T22:05:06.365147+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/16-student-directory/01-directory-filters.png",
+      "sha256": "7e7c9242c7023158b072fa4a6aa02de7e273b94ef7b1d21f71a91079c349807b",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:38.918814+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/16-student-directory/02-student-selection.png",
+      "sha256": "0df9c721730ece698cbd334c0faf55568b1dee208bc0e10162658c7a86464c22",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:38.919897+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/16-student-directory/03-saved-roster.png",
+      "sha256": "a9aa0c1c6fbf5aa8efa24604c891bb6b437fbcff559836efd09492e956492b2a",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:38.921006+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/18-it-course-seed/01-seeded-course-students.png",
+      "sha256": "69b9165bc9aa134437d1b0496e5d0a0a13d65400f7ac079f9d1722288f3a91b6",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:38.930412+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/18-it-course-seed/02-programming-draft.png",
+      "sha256": "07fc2d5228e31e912e48710f994e0d616ae8f2fad4e2da0bc4b8abd787a9e84e",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:38.940907+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/18-it-course-seed/03-authored-subnetting-lesson.png",
+      "sha256": "d10e173a65c93318194922d55eaaa842806525e03ccedf4d49fc1f4f16c7c17a",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:38.967832+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/18-it-course-seed/04-no-student-attempts.png",
+      "sha256": "b68fbf2de4b94091c3f7840cf3965646d32e76b8210449910101d67406348b82",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:38.969908+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/21-automatic-records-and-course-rosters/01-course-students.png",
+      "sha256": "cac950359fc8b022bc2ed10fe3f2cd5cc1591903935aad52ce0a9711543a96ea",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:38.983298+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/21-automatic-records-and-course-rosters/02-change-block.png",
+      "sha256": "44520d48c0cb57960d840988733bb74f0983936dcce4698db0367fd997bdc56f",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:38.985536+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/21-automatic-records-and-course-rosters/03-remove-membership.png",
+      "sha256": "2bad27a8be5ffec6f6cd1765bec64ca069bc4e5ffaa6c767a7ebe27b49778ee1",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:38.987294+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/21-automatic-records-and-course-rosters/mobile-01-course-students.png",
+      "sha256": "1de2eec7fde0a3c79df422c2ff81a13496542141af650b84931c9a9f031e6424",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:38.988604+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/21-automatic-records-and-course-rosters/mobile-02-change-block.png",
+      "sha256": "be08d5d22d0bfea64b9f38e8a28237cc2ed1d38bde2964b7f2730baaaeb7015f",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:38.989738+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/21-automatic-records-and-course-rosters/mobile-03-remove-membership.png",
+      "sha256": "24186d50811fff37c4d05cee1164a7eb3f6b49557ca4d0c5b82c5b7bc348c903",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:38.991230+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/33-pipeline-progress/01-instructor-scores.png",
+      "sha256": "8acadf1d43ff9a50064dff1dc2069ac5e8ac83a83fe693d8522fbbb30ec78468",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:38.992532+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/33-pipeline-progress/02-instructor-opens.png",
+      "sha256": "c3ffe4ddd6cfc99dee8d34338c2eda8eadb9844012481f503ed79caeabbb1ca7",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:38.993266+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/33-pipeline-progress/05-mobile-instructor.png",
+      "sha256": "235bf0aeb0c51d987ef63db35f9c59eeef01671b9fa1c678b6f755b06a4e80b9",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:38.993938+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/33-pipeline-progress/06-two-assessments.png",
+      "sha256": "ffe127117d7e927951018c8d78fa9a7ac440c6edabab5714ed6e61784db3e865",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.003019+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/33-pipeline-progress/07-three-assessment-radar.png",
+      "sha256": "9990790c8b81d8eca0eb53c14fb25c25c6381e64dbe0c61582d8c888590be731",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.011976+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/33-pipeline-progress/mobile-06-two-assessments.png",
+      "sha256": "47d3a756fd20a58ee8d6999ceff21eadfa28c9d07980ae3dc532aa742380f1ec",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.012836+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/33-pipeline-progress/mobile-07-three-assessment-radar.png",
+      "sha256": "3c386e4a424cf469994487e1138dfde91caaae327102beabf9037ff77d4525be",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.013390+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/01-handled-classes.png",
+      "sha256": "b65c3ca957c65754bbffc9cc0ae95d970f2ff34a27718964dedca032007cbe06",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.014202+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/02-class-students.png",
+      "sha256": "ed73451053dd9b0fb3d5efec975a496dd4303171b5ed9e7df99c06817ae601ba",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.026117+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/03-assessment-overview.png",
+      "sha256": "d7c64fd0e1a18a597f37af9f2fa42126addf1c5b163ab53d52e5326a61c69d49",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.035112+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/04-assessment-students.png",
+      "sha256": "ae6d34488c5eccba030476c1ad39fd244c1487cb21e82d9fb517c218a404e803",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.042954+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/05-assessment-breakdown.png",
+      "sha256": "ac55ff176837d4dfcc36db544b7b2d7cafda4672f34dc596050dbe89fc248014",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.051840+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/06-material-overview.png",
+      "sha256": "48762582f8270abd8965adab0fe78e5c73ee505e7260c679d73aabbf2dfbb0f2",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.059072+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/07-material-breakdown.png",
+      "sha256": "7dcedf6a87c814ebfe8cf471f0f40f98f3f6250c42c4a67580c0bdfec2a1d394",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.066684+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/08-edit-membership.png",
+      "sha256": "33da75ccf8d345a57538ce7ab7637fc356d3198a67f4eadb65e1ff2a8a5fd5d0",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.073672+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/09-suspend-membership.png",
+      "sha256": "0fb645401f14c74dbc5106f7e9c46b704274e1d2060c5a5a5aa9d63ebadc6d3b",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.083745+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/10-material-completion.png",
+      "sha256": "a6d9c4e4e74efe60c5524ebb7065ba635ecbd62f2c6da621e7f72dbaea233095",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.093163+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/11-material-students.png",
+      "sha256": "7786a896420a5352c7e8d1b962ec21543b227c436948f2a0feb4c79f455512c9",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.104688+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/12-student-reading.png",
+      "sha256": "d192dd72bfc74d37bb44106e642b7775dedea5fe00d4e09deaa36fc89d5d4074",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.114889+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/mobile-01-handled-classes.png",
+      "sha256": "7579fb749243887e5720bedb7d614a2eed20ae056dd8b71db9d120916902da59",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.115703+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/mobile-02-class-students.png",
+      "sha256": "97162aa01fd6b7eee9aa0b77a9c9ffb23591c4c8a45709ef9bb8b6969f07d7fb",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.116330+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/mobile-03-assessment-overview.png",
+      "sha256": "f154365d7578834266ac02ded9b272cfd3525be6c87d72b0ef438e1ff5b9cf50",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.116892+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/mobile-05-assessment-breakdown.png",
+      "sha256": "29afb5d36da84b094a090320332896f7ba5cd5d302854f1cf074e92b754b226c",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.117352+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/mobile-06-material-overview.png",
+      "sha256": "64d29ff3e9e16e8032ec17dfe86250e32f5da594464f1ffeece2755b50cea5a2",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.117836+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/mobile-07-material-breakdown.png",
+      "sha256": "58f4c24c377a82c9d56a15d2b43f3605015ef0148808d67f729181e17daf2e6a",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.118322+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/mobile-08-edit-membership.png",
+      "sha256": "a6d0842e79f14e5631929352eba5903a0ed52cefa4451af9a9c37b70fc1457bb",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.118745+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/mobile-09-suspend-membership.png",
+      "sha256": "2cd2c7967be3c3749e2a0649887a9c08ed9b1c1bb3127911b50c695e3b3d3df9",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.119463+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/mobile-10-material-completion.png",
+      "sha256": "dcb8353527a46342b9223b31e7e47f5179aecef433181efb070fdb8207f07117",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.120147+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/mobile-12-student-reading.png",
+      "sha256": "13d1de0de531a5be8a5caf3ab5f170695f55847ce49ca5e1c1c5087ebee14773",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.120778+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/02-shared-interface/01-top-bar.png",
+      "sha256": "c20c685d8e1e343f5fcd6512ccd329685455898af6b9f91636138f0d2867c25c",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.121333+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/04-instructor/01-dashboard.png",
+      "sha256": "31e847cd46ba171a36a337688a8a2d82cb9f374d41c55ea77996b125ff0484b2",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.122915+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/04-instructor/02-monitoring-course-students.png",
+      "sha256": "b65c3ca957c65754bbffc9cc0ae95d970f2ff34a27718964dedca032007cbe06",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.123693+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/04-instructor/03-syllabus-my-syllabus.png",
+      "sha256": "119a8da370550251ef470dedf3fe10614e8de58a33ea22674287cc40a5cccbf5",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.125160+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/04-instructor/04-syllabus-shared-repository.png",
+      "sha256": "37e944d137365b1472d911840e0579949b97df100545409495ba10343f8b9a30",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.126421+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/04-instructor/05-syllabus-builder.png",
+      "sha256": "cb73b81fcfd5bae3544f1a696bb76a36f4c90e998ecf011c04a1d553408758f7",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.127263+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/04-instructor/06-syllabus-builder-course-outline.png",
+      "sha256": "2d4ba8b8e437e6f635d223ee93b0fddef2ac942b6cd9cf2cd292f6b562de2576",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.129327+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/04-instructor/07-courseware-my-courseware.png",
+      "sha256": "572987b8e4377be7f8064246c6d8a4bf21db6c40fc78652c225111d347508a52",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.130565+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/04-instructor/08-courseware-builder.png",
+      "sha256": "3bc7e3c2a2f8db3884217f20d0c591f36440bc4e2cc09884d2fe38cedddac252",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.132311+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/04-instructor/09-student-monitoring-assessment-scores.png",
+      "sha256": "d7c64fd0e1a18a597f37af9f2fa42126addf1c5b163ab53d52e5326a61c69d49",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.143088+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/04-instructor/10-student-monitoring-material-access.png",
+      "sha256": "48762582f8270abd8965adab0fe78e5c73ee505e7260c679d73aabbf2dfbb0f2",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.152719+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/06-mobile/02-instructor-dashboard.png",
+      "sha256": "a439a5d3be0e2c8bc322538f269cb1de620b849bf70e1127a63abac7bed4219d",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.154396+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/06-mobile/03-navigation-menu.png",
+      "sha256": "eef6df70ba2cbfe81884ad608cf7a1e8bddd6762e2a7e5f3159d8696b50bcd9e",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.155132+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/06-mobile/04-syllabus-builder.png",
+      "sha256": "2a2af77f92eb15e3a7f06b712d3fe5638e0e8ffe0dba32004ad37875db1659fc",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.156263+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/06-mobile/05-pulse-panel.png",
+      "sha256": "415b64916d38b9c98fbfa55a3335be9022dcb38fb3887ec3fa43dda23453853f",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.157238+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/05-performance-radar-and-history.png",
+      "sha256": "854bd7d9b57610d820d3492bc078aba76f70de561c2de97843621baa1498db3f",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.158104+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/06-assessment-coverage.png",
+      "sha256": "12f8977de9d3d9435305340f6800278831d285a9779546acbc0c04d528dd85a8",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.158778+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/07-material-access.png",
+      "sha256": "85a5b56a2f5d151f78869376bdce87a56875cee3c29713e628c947e98920fa45",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.159449+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/08-assessment-scores.png",
+      "sha256": "f5b5ca597d29537c3016f10234409365f622b071ff137f65a67c1f94646cf462",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.169036+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/09-threshold-review.png",
+      "sha256": "e9be17096d049077f7abf9a32861bbcd06fcacb048cb656cb76c7fc0a409933d",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.180853+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/10-student-drilldown.png",
+      "sha256": "10f94a3144292e3590d69aad651265a3dbd64a95e7ffd67de19551b802e49b1b",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.189434+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/11-monitoring-scoring-matrix.png",
+      "sha256": "6ccc02460cd7ce57da30c681af8ffa094c793b6685c2f3a4e249caf62b596b33",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.190219+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/12-monitoring-material-matrix.png",
+      "sha256": "5aef8bda4562fb196f578befde48c9ae0e86379502683ef4987900219acd21b9",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.206202+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/32-dark-performance.png",
+      "sha256": "95879438205dc311d69231ae3bbcd79a57873b802ed96dd4367ddd9870f2f4bf",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.206930+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/33-mobile-performance.png",
+      "sha256": "dbedb3d9754d2bf56f4fd8326cdb9565f2eaf6735d22bf0094acc0d53d95142a",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.207586+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/34-mobile-materials.png",
+      "sha256": "8a364bcc0aa60a61fb91da02db6cc2be979caf349f050aabc73fa58853e14433",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.208139+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/35-mobile-dark-dashboard.png",
+      "sha256": "0d88bedbdd20dec8507cfbddd88ca16fbcfa56f49439473ab1fd1909ba0031ec",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.209066+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/36-topic-mastery-heatmap.png",
+      "sha256": "93b4fdd20ba5bdcc0b53c33e04e290fc657625230e5926f66d691f0c23a0d7af",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.209793+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/37-instructor-response-marking.png",
+      "sha256": "8c63936171c0bbc89548c190ff57afdfadf4ef5b7d55bed99d29fbb8adc9e39a",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.210378+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/38-confirmed-in-app-reminder.png",
+      "sha256": "5dfc21683d46dd89a6757a7834b2d62307131975865322482820234870cb45f2",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:35:39.210984+00:00",
+      "method": "Opened with view_image and checked current labels, course/block scope, score and section totals, confirmation controls, responsive layout and synthetic-data provenance. This is a Codex agent review, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/mobile-04-assessment-students.png",
+      "sha256": "cd480e6a4d99420eb90bcda9bfa5e730b0769fee7001f0b2a19c0c69b198c335",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:46:27.233737+00:00",
+      "method": "Opened with view_image. Checked narrow table heading and CSV wrapping, roster-only rows, zero versus missing scores, and completed-material versus confirmed-section counts. This is not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/mobile-11-material-students.png",
+      "sha256": "1f6242958c6c3d23490bdddf4e226b3b64bb6bcf2295c67c8b1d2dce8d86e983",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T02:46:27.234016+00:00",
+      "method": "Opened with view_image. Checked narrow table heading and CSV wrapping, roster-only rows, zero versus missing scores, and completed-material versus confirmed-section counts. This is not human approval."
     }
   ]
 }

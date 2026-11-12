@@ -2,7 +2,7 @@
 
 The [IT seed guide](../../system-manual/18-it-course-seed/README.md) shows the same interface populated with nine course blocks, a revised Programming draft and authored weekly material. Its fictional screenshot identities are separate from the aggregate hosted enrollment evidence.
 
-Main tabs: **Dashboard**, **Syllabus**, **Course**, **Student Monitoring**, **Performance**. Page views use their own tabs. Duplicate left sidebars have been removed. Rows marked *Sample* are built-in examples; the instructor's own syllabi have no label. Task-by-task instructions for the syllabus and courseware flows are in [System Manual 2](../../system-manual/02-syllabus-lifecycle/README.md) and [3](../../system-manual/03-courseware-generation-and-review/README.md).
+Main tabs: **Dashboard**, **Syllabus**, **Course**, **Student Monitoring**. Page views use their own tabs. Duplicate left sidebars have been removed. Rows marked *Sample* are built-in examples; the instructor's own syllabi have no label. Task-by-task instructions for the syllabus and courseware flows are in [System Manual 2](../../system-manual/02-syllabus-lifecycle/README.md) and [3](../../system-manual/03-courseware-generation-and-review/README.md).
 
 ## 1. Instructor dashboard
 
@@ -55,22 +55,21 @@ Opened materials and activities display Markdown emphasis as bold or italic text
 
 *Changed in v0.4.0:* the teaching-weeks column is labelled as such (it excludes exam weeks) and counts read “1 week”, “1 item” in the singular.
 
-## 9–10. Student Monitoring
+## Student Monitoring: handled classes and performance
 
-| Tab | Screenshot | What it shows |
-| --- | --- | --- |
-| Assessment Scores | ![Assessment scores](09-student-monitoring-assessment-scores.png) | Pick a course; totals for students, missed activities, unopened files and students needing attention; the score grid per student and assessment with *Missed* markers and **Remind**; class average and completion charts. **Export CSV** for the full list. |
-| Material Access | ![Material access](10-student-monitoring-material-access.png) | Which students opened each published material, with reminders for unopened files. |
+![Year-level course and block discovery](02-monitoring-course-students.png)
 
-## 11–13. Performance
+Student summaries appear first, then search/year/course filters and year-level categories containing course cards labelled by block section. Select a card to open the full-page class dialog with **Students**, **Assessment Scores** and **Learning Material Access** tabs. Confirmed empty blocks remain visible.
 
-The refreshed captures display **Sample performance data · Preview only · Institutional grades remain in EduSuite.** These charts demonstrate the preview persona. Signed-in instructors use the [authenticated records view](../08-authenticated-records/README.md), which reads only owned classes and saved attempts/material opens. It never substitutes these sample scores; empty accounts show **No authorized academic records yet**.
+![Block assessment scores](09-student-monitoring-assessment-scores.png)
 
-| Tab | Screenshot | What it shows |
-| --- | --- | --- |
-| Overview | ![Performance overview](11-performance-overview.png) | Student count, class average, at-risk and excelling counts, and the student list with section, midterm score, status and **Details**. |
-| By Topic | ![Performance by topic](12-performance-by-topic.png) | Mastery per syllabus topic across the instructor's classes. |
-| Alerts | ![Performance alerts](13-performance-alerts.png) | **Mastery cutoff** (default 75): students below it are listed automatically with **Email** and **Flag**; **Topic Mastery Alerts** for class averages below the cutoff, each with **Acknowledge**. |
+Each tab has its own summary cards. Assessment charts show the selected block's radar, history, average and submission rate. Student rows show starts, submissions, average and progress; a popover breaks down the student's assessments and final raw average. Mapped-topic analytics, instructor marking, cutoff review, acknowledgments and reminders remain under the assessment tab.
+
+![Block material access](10-student-monitoring-material-access.png)
+
+Material charts show access radar, first-open history, class access and confirmed first-to-last-section completion, followed by student progress and the filtered roster. Popovers show each material's section progress. Completion requires explicit sequential confirmations in the student's Document reader; an open alone does not establish completion. The instructor's former Performance page is removed; its links redirect here. Student and Dean Performance remain.
+
+The Students tab supports roster edits, directory/file registration, suspension/resumption and removal only after suspension. It changes this course's membership, not the authentication account or official directory profile. Account/assessment/reading history is retained. Course and nested student/roster dialogs restore from bounded references after fresh authorization, without replaying a write. See [Manual 37](../../system-manual/37-instructor-monitoring/README.md) for the complete task and phone captures.
 
 ## PDF and focused source updates
 
@@ -78,7 +77,7 @@ The builder previews wrapped PDF outline cells and keeps the accepted source ava
 
 ## Restored signed-in sections
 
-Signed-in instructors now have teaching quick actions, saved-work lifecycle/review sections, block summaries and account-derived assessment radar/history. Student Monitoring restores its scoring/access tabs, matrices, charts, filters and CSV; Performance restores its tabs and student detail dialog. These use owned authorized records, with explicit mapped-topic analytics and missing-data states. See the [current account screenshots](../09-restored-role-pages/README.md). Preview mastery illustrations above must not be interpreted as real account scores.
+Signed-in instructors now have teaching quick actions, saved-work lifecycle/review sections, block summaries and account-derived assessment radar/history. Student Monitoring combines the instructor scoring, access, topic and follow-up content in a selected course/block dialog. These use owned authorized records, with explicit mapped-topic analytics and missing-data states. See the [current account screenshots](../09-restored-role-pages/README.md). Preview mastery illustrations above must not be interpreted as real account scores.
 
 ## Approved baseline workflows in signed-in accounts
 
@@ -91,9 +90,7 @@ The [Course Outline workspace](../../system-manual/14-pulse-and-outline-workspac
 
 ### Course students
 
-![Course students](02-monitoring-course-students.png)
-
-**Student Monitoring → Students** contains the course/block roster, **Choose students**, optional **Import an EduSuite class list**, student search and paginated memberships. Three-dot menus provide **Change block** and **Remove from course**, both saved only after confirmation. Accounts and attempt history are retained. See [Manual 21](../../system-manual/21-automatic-records-and-course-rosters/README.md). The Syllabus page has only its three authoring tabs.
+Course rosters now live inside a handled course/block's **Students** tab. **Remove** requires a saved suspension first. Directory selection, file import and explicit revision-checked saves remain. [Manual 37](../../system-manual/37-instructor-monitoring/README.md) supersedes the former unscoped roster steps.
 
 ## Outline-driven weekly content
 

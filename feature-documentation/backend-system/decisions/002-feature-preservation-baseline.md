@@ -111,3 +111,19 @@ Do not regress approved-file intake preview: a freshly scanned, unsaved syllabus
 Syllabus imports the shared academic stylesheet explicitly. Shared table/action/history layouts must work on direct navigation; do not rely on Dashboard or another lazy route having loaded those styles first.
 
 Shared-summary reads use 500-row pages below the PostgREST response cap, and check the explicit 1,000-share capacity before returning success. Do not replace pagination with a 1,001-row limit that the API can silently cap at 1,000.
+
+## Owner correction: combined instructor monitoring · 12 November 2026
+
+The owner combines the instructor's Student Monitoring and Performance content and removes the separate instructor Performance page. Preserve Student and Dean performance authority. Student summaries precede class search/filters, then recorded year categories with course/block cards. A selected class opens a full-page dialog with Students, Assessment Scores and Learning Material Access, each with summary cards. Every chart/table/popover must use the same selected membership set; never fill a cross-course matrix with unrelated “Not enrolled” learners.
+
+Retain raw assessment averages/radar/history, submission coverage, instructor marking, mapped-topic/cutoff review, acknowledgments, retained attempts and explicit reminders in the merged assessment tab. Student popovers show every released assessment or material and the final average/progress. Zero is a valid mark; missing, pending and old-version results cannot become zeros or current mastery. These are not official institutional grades.
+
+Instructors manage only their course roster. Suspension precedes removal and blocks new released-content/assessment/progress actions at the database boundary. Resume is explicit. Removing a membership preserves the account, official directory profile and recorded history. Reimports cannot undo explicit suspension/removal; a single payload cannot bypass the prior saved-suspension requirement. Preserve the 35-student block limit and revision-checked confirmation/retry.
+
+Reading completion must have actual persisted evidence. First opens never imply finishing. Students explicitly confirm each full document section in sequence; the database derives totals and checks current publication/version/enrollment, with idempotent locked progress. Retain old-version progress separately. Reading acknowledgment is not proof of comprehension. Staff support cannot create student activity, and test provenance stays explicit.
+
+Do not regress nested dialog restoration: portal mount order can put a parent over its child on reload. Logical depth determines DOM order, focus and the active Escape handler. Restore only bounded current authorized class/student/action references; do not store unsaved roster edits or replay a write. Keep no-polling/manual-refresh behavior and native overflow only where content needs it.
+
+Monitoring visual checks also preserve a single dark-mode select chevron and reset the internal class body to its summary cards when changing tabs. Completed-material counts remain distinct from confirmed-section progress; do not reuse section totals under the Materials completed heading.
+
+Keep assessment-session SELECT authority in one policy containing the same student-self, owning instructor/admin and Dean conditions. Do not add overlapping permissive policies or broaden Associate Dean score access when extending monitoring.

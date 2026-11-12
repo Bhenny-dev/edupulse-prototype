@@ -5,11 +5,11 @@ import { STUDENT_PROGRAMS } from '../../data/studentPrograms'
 import { CURRICULUM_COURSES } from '../../data/mockData'
 import { useAuth } from '../../context/AuthContext'
 
-export default function StudentDirectoryPicker({ onRegister }) {
+export default function StudentDirectoryPicker({ onRegister, scope = null }) {
   const { user }=useAuth()
   const [open,setOpen]=useState(false),[filters,setFilters]=useState({q:'',year:'',department:'College of Information Technology',program:''})
   const [offset,setOffset]=useState(0),[result,setResult]=useState({students:[],total:0}),[selected,setSelected]=useState({})
-  const [course,setCourse]=useState(''),[block,setBlock]=useState(''),[busy,setBusy]=useState(false),[saving,setSaving]=useState(false),[error,setError]=useState(''),[loadError,setLoadError]=useState(''),[notice,setNotice]=useState(''),[retry,setRetry]=useState(0)
+  const [course,setCourse]=useState(scope?.course||''),[block,setBlock]=useState(scope?.block||''),[busy,setBusy]=useState(false),[saving,setSaving]=useState(false),[error,setError]=useState(''),[loadError,setLoadError]=useState(''),[notice,setNotice]=useState(''),[retry,setRetry]=useState(0)
   useEffect(()=>{
     if (!open || !user?.authenticated) return
     const abort=new AbortController()
@@ -51,7 +51,7 @@ export default function StudentDirectoryPicker({ onRegister }) {
         {students.length>0 && <div className="mt-16"><h4>Selected students</h4><ul>{students.map(student=><li key={student.student_number}>{student.full_name} · {student.student_number} <button type="button" className="btn btn-ghost btn-sm" disabled={saving} onClick={()=>setSelected(previous=>{const next={...previous};delete next[student.student_number];return next})}>Remove</button></li>)}</ul></div>}
         <form className="mt-16" onSubmit={register}>
           {error && <p role="alert" className="mb-16">{error}</p>}
-          <div className="grid-2"><label className="form-group" style={{minWidth:0}}>Course for selected students<select aria-label="Course for selected students" required className="form-input" value={course} onChange={event=>setCourse(event.target.value)}><option value="">Select a course</option>{CURRICULUM_COURSES.map(item=><option key={item.code} value={item.code}>{item.code} — {item.title}</option>)}</select></label><label className="form-group" style={{minWidth:0}}>Block section<input required className="form-input" maxLength={80} value={block} onChange={event=>setBlock(event.target.value)} placeholder="For example BSIT-1A" /></label></div>
+          <div className="grid-2"><label className="form-group" style={{minWidth:0}}>Course for selected students<select aria-label="Course for selected students" required disabled={!!scope} className="form-input" value={course} onChange={event=>setCourse(event.target.value)}><option value="">Select a course</option>{CURRICULUM_COURSES.map(item=><option key={item.code} value={item.code}>{item.code} — {item.title}</option>)}</select></label><label className="form-group" style={{minWidth:0}}>Block section<input required readOnly={!!scope} className="form-input" maxLength={80} value={block} onChange={event=>setBlock(event.target.value)} placeholder="For example BSIT-1A" /></label></div>
           <button className="btn btn-primary" disabled={saving || !students.length || busy}>{saving && <Spinner />} {saving?'Registering…':`Register selected students (${students.length})`}</button>
           {notice && <p role="status" className="mt-16">{notice}</p>}
         </form>

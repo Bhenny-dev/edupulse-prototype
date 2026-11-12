@@ -13,22 +13,22 @@ Accounts see the same role dashboards as the preview personas: the [instructor](
 | Dean | ![Dean Dashboard](03-dean-dashboard.png) | One released, loaded and approved course; **Quick actions**; **Syllabus Stations**; **Delivery Progress (Active Courses)** with published materials and assessments for IT 102; **Faculty Overview** (*Synthetic instructor*, *On track*); **Recent Activity** with no recorded event; **Syllabus Status by Course**. |
 | Associate Dean | ![Associate Dean Dashboard](04-associate_dean-dashboard.png) | The same management dashboard under **Associate Dean Dashboard**. The navigation has no **Performance** tab and the dashboard has no score panel. |
 
-## Performance and instructor monitoring
+## Combined instructor monitoring
 
-**Course**, **Block**, **From** and **Through** filter authorized records. Dates apply to attempts and first opens. A missing event in a filtered view does not establish a missed deadline. Empty states retain the sections and never substitute preview scores.
+Choose **Student Monitoring**, then a course/block under its recorded year level. The full-page class dialog restricts every participant and denominator to that course/block. Its Students, Assessment Scores and Learning Material Access tabs each start with summary cards. [Manual 37](../../system-manual/37-instructor-monitoring/README.md) shows the class hub, suspension rules and honest sequential reading progress.
 
 | View | Capture | Behavior |
 | --- | --- | --- |
-| **Overview** | ![Radar and history](05-performance-radar-and-history.png) | **Assessment score radar**, **Assessment history**, colored raw-score matrix and saved attempts. Radar requires three scored current assessments; unanswered assessments are excluded. It measures assessment results, not topic mastery. |
-| **By Topic** | ![Assessment coverage](06-assessment-coverage.png) | Mapped topic radar, per-topic history/status, learner heatmap, class averages and mastery/needs-review counts. Unmapped and pending marks are excluded. |
-| **Learning Materials** | ![Material access](07-material-access.png) | Student-by-material open matrix, access chart and dated first-open records. An open is not proof of completed reading. |
-| **Assessment Scores** | ![Scores](08-assessment-scores.png) | Current-version scoring matrix and historical attempts. **Download CSV** exports the displayed table. Earlier versions are labelled separately. |
-| **Alerts** | ![Threshold review](09-threshold-review.png) | Adjustable **Review scores below (%)** filter and unanswered assessments against the confirmed roster. The threshold is local review guidance, not an official pass mark or risk prediction. |
-| Student detail | ![Student drilldown](10-student-drilldown.png) | Select a learner in the matrix to open their radar, recorded history and attempts. **Escape** closes the dialog. |
-| **Assessment Scores** in Student Monitoring | ![Monitoring scoring matrix](11-monitoring-scoring-matrix.png) | Raw-score charts, **Class average per assessment**, **Assessment submission rate**, matrix and attempts. `/scoring-sheet` reaches this same working view. |
-| **Learning Material Access** | ![Monitoring material matrix](12-monitoring-material-matrix.png) | Open/unopened records, chart and CSV. **No recorded open** remains distinct from reading completion. |
+| Assessment summary | ![Radar and history](05-performance-radar-and-history.png) | **Assessment score radar**, saved **Assessment history**, class averages and submission rate. Three scored assessments are needed for the radar. |
+| Topic mastery and follow-up | ![Topic coverage](06-assessment-coverage.png) | Mapped topic radar and history remain in the assessment tab; the separate topic heatmap example below shows per-learner status. |
+| Learning Material Access | ![Material access](07-material-access.png) | Access radar/history and per-material charts. An open alone never proves completed reading. |
+| Student assessment rows | ![Scores](08-assessment-scores.png) | Accessed/submitted counts, raw marked average and submission progress. **Download CSV** exports displayed rows. |
+| Review threshold | ![Threshold review](09-threshold-review.png) | Scores below the local mastery cutoff. This is review guidance rather than an institutional pass mark. |
+| Student detail | ![Assessment breakdown](10-student-drilldown.png) | Each assessment's status, raw score and percentage, with the final raw average. **Escape** returns to the class dialog. |
+| Assessment charts | ![Monitoring assessment charts](11-monitoring-scoring-matrix.png) | Assessment charts in the same selected class. Old instructor Performance and Scoring Sheet links lead into monitoring. |
+| Material rows | ![Monitoring material rows](12-monitoring-material-matrix.png) | Accesses, confirmed reading completion, reading average and progress for this class only. |
 
-Students receive only their own result/access records. The Dean's view is read-only. Associate Dean navigation to Performance returns to Dashboard; the backend continues to exclude attempts and accesses from that role.
+Dates constrain recorded events; student search/progress filters affect the list. Marked current-version results determine raw averages; real zeros remain zero, while missing/unmarked work is excluded. Student Performance retains only the learner's own data. Dean Performance remains read-only. Associate Dean Performance links return to Dashboard and its backend projection excludes performance records.
 
 ## Oversight and course loading
 
@@ -69,9 +69,9 @@ The import, Templates and History images above now show the Associate Dean; thos
 
 | View | Capture | Behavior |
 | --- | --- | --- |
-| Dark performance | ![Dark performance](32-dark-performance.png) | Solid body/cards/controls, readable muted and semantic text, themed chart grid/axes/tooltips. |
-| Mobile performance | ![Mobile charts](33-mobile-performance.png) | Charts stack; page tabs remain scrollable and wide matrices stay in their own scroll region. |
-| Mobile monitoring | ![Mobile material access](34-mobile-materials.png) | Course/date controls, material matrix and chart fit the phone viewport. |
+| Dark monitoring | ![Dark performance](32-dark-performance.png) | Solid body/cards/controls, readable muted and semantic text, themed chart grid/axes/tooltips. |
+| Mobile assessment charts | ![Mobile charts](33-mobile-performance.png) | Charts stack inside the selected class; genuinely wide content retains native overflow. |
+| Mobile monitoring | ![Mobile material access](34-mobile-materials.png) | Selected course/block material summaries and charts fit the phone dialog. |
 | Mobile dark dashboard | ![Mobile dark dashboard](35-mobile-dark-dashboard.png) | The instructor account dashboard on a phone in dark mode: automatic record status and **Export**, then **Getting Started with EduPulse**, one summary card per row, **Quick actions**, **My Block Sections**, **Score Snapshot** with its topic chart and the remaining sections, all on solid dark surfaces. |
 
 The System Admin console remains separate: account/role management, health, audit and agent activity were retained. The verified owner's view switching preserves the original account identity; restored academic screens do not grant ordinary users that capability.
@@ -82,7 +82,7 @@ The following scenes use the additional synthetic baseline fixture. SQL integrat
 
 | View | Capture | Visible behavior |
 | --- | --- | --- |
-| Topic mastery | ![Topic radar and heatmap](36-topic-mastery-heatmap.png) | Three mapped topics, separate topic history/status, learner heatmap, class average and mastered/needs-review counts. No assessed result is invented for the second learner. |
+| Topic mastery | ![Topic radar and heatmap](36-topic-mastery-heatmap.png) | The selected course/block heatmap shows mapped topic results. The other graphs and mastery counts remain in Topic mastery and follow-up; an unassessed result is never invented. |
 | Instructor marking | ![Review responses](37-instructor-response-marking.png) | Select a saved attempt, review each response and 0/1 mark, enter a reason and confirm. |
 | In-app reminder | ![Saved reminder](38-confirmed-in-app-reminder.png) | Reviewed marks receipt and one saved reminder receipt; duplicate/day and completed-work exclusions are stated. |
 | Associate Dean loading proposals | ![Loading and qualifications](39-loading-proposals.png) | Imported course, block/semester, provisioned instructor list, degree/specialization records, preview/auto proposals and confirmation. |
@@ -130,3 +130,9 @@ The assessment radar retains its three-distinct-assessment minimum and leaves ma
 ## Dean course, instructor and student navigation
 
 Dean navigation is now **Dashboard**, **Course**, **Instructors** and **Students**. Its summaries share the clickable dashboard card component. Course records/loads/class lists are read-only; Students groups blocks by recorded year and opens downloadable student lists. Old Dean sections/loading addresses redirect to these pages. Screens 21-26, 39-40, 49 and 50 retain the Associate Dean intake/proposal/guidance workflow under that role. Dean offline review and read-only Performance remain accessible. See [Manual 36](../../system-manual/36-dean-activity-records/README.md).
+
+## Combined instructor class monitoring
+
+The refreshed instructor account captures now show Student Monitoring inside a selected course/block. The former Performance content is retained as assessment radar/history, topic follow-up and material charts in that workspace. The standalone instructor Performance page is removed. Student and Dean performance remain separate under their existing permissions. [Manual 37](../../system-manual/37-instructor-monitoring/README.md) supersedes the earlier instructor navigation descriptions and records explicit reading confirmations and suspend-before-remove.
+
+Topic, marking and reminder component crops use a taller desktop browser viewport to fit the complete selected panel inside the class dialog. They retain the actual layout and controls.

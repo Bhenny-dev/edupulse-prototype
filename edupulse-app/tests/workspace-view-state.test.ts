@@ -63,3 +63,12 @@ test('syllabus dialog references restore only authorized record IDs and bounded 
  const result=readWorkspaceViews(key,tab)
  assert.equal(result.get('syllabus-version'),2);assert.equal(result.get('syllabus-share'),'owned');assert.equal(result.has('syllabus-email'),false)
 })
+
+test('monitoring reload keeps only bounded class/student/action references',()=>{
+ const tab=memory(),key=workspaceViewKey('owner','instructor'),scope=JSON.stringify(['a'.repeat(32),'BSIT-1A'])
+ const entries=new Map<string,unknown>([[`monitoring-detail:${scope}:assessments`,'SYN-001'],[`monitoring-roster-member:${scope}`,'student@example.invalid'],[`monitoring-roster-action:${scope}`,'suspend'],['monitoring-form',{name:'Unsaved private form'}]])
+ saveWorkspaceViews(key,entries,tab)
+ assert.equal(readWorkspaceViews(key,tab).get(`monitoring-detail:${scope}:assessments`),'SYN-001')
+ assert.equal(readWorkspaceViews(key,tab).get(`monitoring-roster-action:${scope}`),'suspend')
+ assert.equal(tab.rows.get(key)!.includes('Unsaved private form'),false)
+})

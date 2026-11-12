@@ -15,6 +15,11 @@ export async function directoryFixture(page: Page) {
    const offset=Number(url.searchParams.get('offset') || 0)
    return route.fulfill({json:{students:filtered.slice(offset,offset+50),total:filtered.length,offset,pageSize:50}})
   }
+  if(action==='academic'){
+   if(route.request().method()!=='GET')return route.fulfill({json:{synced:true}})
+   const registrations=workspace.data.registrations as any[],course={id:'a'.repeat(32),course_code:'IT 102',course_title:'Computer Programming 1',instructor_id:'fe67b9d2-719b-4b10-91cd-76031ab115fe',active:true}
+   return route.fulfill({json:{courses:registrations.length?[course]:[],publications:[],enrollments:registrations.flatMap(r=>(r.students||[]).map((st:any)=>({course_id:course.id,student_email:st.Email,display_name:st.Name,student_ref:st.StudentID,block_section:r.blockSection,year_level:Number(st.YearLevel)}))),attempts:[],accesses:[],institutional:[]}})
+  }
   if(action==='workspace') {
    if(route.request().method()==='PUT') {
     if(failed)return route.fulfill({status:503,json:{error:{code:'WORKSPACE_UNAVAILABLE',message:'Synthetic save failure: retry when connected.'}}})

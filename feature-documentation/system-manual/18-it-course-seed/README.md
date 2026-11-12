@@ -6,7 +6,7 @@ These screenshots use fictional identities and synthetic browser transport. The 
 
 ## Check the course blocks
 
-Open **Student Monitoring → Students**. The saved seed contains four Programming 1 blocks and five Networking blocks, each with at most 35 students. Filter **Block section** to inspect a block; the table pages through 25 memberships at a time. The image shows a synthetic final Networking block.
+Open **Student Monitoring** and select the handled course/block card. The saved seed contains four Programming 1 blocks and five Networking blocks, each with at most 35 students. Return to handled classes to inspect another block; the table pages through 25 memberships at a time. The image shows a synthetic final Networking block.
 
 | Course | Cohort | Enrollments | Blocks | New draft items |
 | --- | --- | --- | --- | --- |
@@ -19,7 +19,7 @@ All 2,286 official profiles remain. Other programs and years were not enrolled. 
 
 ## Review the syllabus
 
-**My Syllabus** shows Programming 1 as **Drafted**, version 2. Its placeholder outline was replaced with 18 calendar weeks: 16 teaching weeks and examinations at weeks 9 and 18. The earlier editable syllabus remains in **Version History**. Proposed requirements and policies are labelled for review, and grading percentages remain pending institutional confirmation.
+**My Syllabus** shows Programming 1 as **Drafted**; version 2 remains available through its history. Its placeholder outline was replaced with 18 calendar weeks: 16 teaching weeks and examinations at weeks 9 and 18. The earlier editable syllabus remains in **Version History**. Proposed requirements and policies are labelled for review, and grading percentages remain pending institutional confirmation.
 
 ![Programming draft beside the retained active Networking syllabus](02-programming-draft.png)
 
@@ -37,8 +37,10 @@ After review, use the existing **Check** and **Publish** actions. Only released 
 
 ## Read genuine progress
 
-**Performance → Overview** distinguishes no attempt from a score of zero. At the verified starting state there are no publications, attempts or recorded material opens, so no completed weeks or scores are asserted. The radar remains present with its insufficient-data explanation.
+**Student Monitoring → selected course/block → Assessment Scores** distinguishes no attempt from a score of zero. At the verified starting state there are no publications, attempts or recorded material opens, so no completed weeks or scores are asserted. The radar remains present with its insufficient-data explanation.
 
-![Performance correctly showing no recorded student activity](04-no-student-attempts.png)
+![Monitoring correctly showing no recorded student activity](04-no-student-attempts.png)
 
 Actual submissions follow server scoring and instructor marking. A recorded material open establishes first access, not reading completion.
+
+The current roster image selects the Networking course card labelled **BSIT-2E**. The class dialog paginates student rows; return to handled classes to choose another course/block. The empty-results image now shows this class’s Assessment Scores tab. [Combined monitoring](../37-instructor-monitoring/README.md) replaces the former separate instructor Performance page.

@@ -393,3 +393,7 @@ For section-based generation, Section 7 and section references supply the factua
 ## Owner correction · Instructor dashboard and syllabus workflow · 12 November 2026
 
 Instructor block summaries identify their course and block. Score Snapshot reads actual current marked results, with honest missing-data and pipeline-test states. My Syllabus removes Version/Outline columns, merges recorded changes and editable versions into one history control, and replaces Archive with explicit confirmed Delete. Deletion withdraws courseware without deleting scored history. Shared Repository contains only the sender's own outgoing syllabi; received copies appear in the recipient's My Syllabus labelled by sender. Creating an owned draft from a received copy is explicit and grants no approval or private-source access. Shared tables/charts use available width and show horizontal scrolling only when their content overflows.
+
+## Owner correction · 12 November 2026: instructor monitoring
+
+Combine instructor monitoring/performance in one year/course/block workspace with three class tabs, scoped summary/chart/student detail, course roster CRUD with suspension before removal, and actual version-bound section confirmation for reading progress. Preserve student/dean performance access, raw-score-only reporting, owner RLS and explicit saves. See Manual 37 and ADR-002 for the implemented contract.

@@ -6,7 +6,7 @@ export async function baselineUI(page:Page,role='instructor') {
  const fixture=await restorationUI(page,role)
  const faculty=[{id:'11111111-1111-4111-8111-111111111111',name:'Synthetic instructor',email:'teacher@example.invalid'},{id:'22222222-1111-4111-8111-111111111111',name:'Synthetic second instructor',email:'teacher2@example.invalid'}]
  fixture.records.faculty=role==='student'?[]:faculty
- fixture.records.courses[0].instructor_id=faculty[0].id
+ fixture.records.courses[0].instructor_id=role==='instructor'?'fe67b9d2-719b-4b10-91cd-76031ab115fe':faculty[0].id
  fixture.records.institutional=[{kind:'courses',record_key:'IT 102',data:{CourseCode:'IT 102',CourseTitle:'Computer Programming 1',Units:'3',Classification:'Core',Hours:'54',Prerequisites:'',YearLevel:'1',Semester:'1'}}]
  if(role!=='student')fixture.records.institutional.push({kind:'loads',record_key:'IT 102|BSIT-1A|1',data:{InstructorID:faculty[0].id,InstructorName:faculty[0].name,Email:faculty[0].email,CourseCode:'IT 102',Block:'BSIT-1A',Semester:'1',HasMasters:'true',Specialization:'Programming'}},{kind:'rosters',record_key:'SYN-001',data:{StudentID:'SYN-001',Name:'Synthetic learner',Email:'ui.fixture@example.invalid',YearLevel:'1',Block:'BSIT-1A',Schedule:'Mon / Wed 10:00',Status:'active'}})
  fixture.records.events=[{id:'synthetic-event',kind:'syllabus',title:'IT 102',detail:'active',created_at:'2026-10-28T04:00:00Z'}]

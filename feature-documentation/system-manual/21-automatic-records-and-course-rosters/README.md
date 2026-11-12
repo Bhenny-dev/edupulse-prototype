@@ -14,31 +14,26 @@ The instructor navigation and page title now say **Course**. The existing course
 
 ## Manage course memberships
 
-Open **Student Monitoring → Students**. **Assessment Scores** and **Learning Material Access** remain available in the same page. The legacy **Scoring Sheet** address opens assessment scores.
+Open **Student Monitoring**, then select the course/block card under its year-level category. The full-page dialog has **Students**, **Assessment Scores** and **Learning Material Access**. Legacy instructor Performance and Scoring Sheet addresses redirect to this page. [Manual 37](../37-instructor-monitoring/README.md) describes the combined analytics and reading confirmation controls.
 
 ![Instructor course students](01-course-students.png)
 
-Use **Choose students** to select registered accounts. The directory retains its search, year-level, department, program and pagination controls. Choose **Course for selected students**, enter **Block section**, then **Register selected students**. The action waits for a revision-checked save. Failed saves retain the selection; background refresh never confirms or resubmits the registration.
+Use **Add students to this block → Choose students** to select registered accounts. The directory retains its search, year-level, department, program and pagination controls. The selected class locks **Course for selected students** and **Block section**. The outer **Register course students** control can register another class. **Register selected students** waits for a revision-checked save; failed saves retain the selection and require an explicit retry.
 
-**Import an EduSuite class list** expands the existing CSV, Excel, PDF, Word and text importer. It still reads the actual file and previews its rows before **Register Course**. Import failures leave the file/preview available. An email is required for account-based access; a name-only imported row does not create an account or grant access.
+**Import an EduSuite class list** expands the existing CSV, Excel, PDF, Word and text importer. It reads the actual file and previews rows before **Register Course**. Import failures leave the file/preview available. An email is required for account-based access; a name-only row does not create an account or grant access. Within a selected class, registration must match its course/block.
 
-The roster combines this owner's saved registrations and authorized enrollment records. Filter by **Course**, **Block section** or **Find enrolled student**. The table contains individual course memberships, so a learner in two courses can appear twice. It does not become a college-wide editable student directory.
+The selected class table combines this owner's saved registrations and authorized enrollments, then restricts them to this course/block. **Find enrolled student** searches names, emails and student numbers. **Edit** changes roster name, student number, year or **New block section**. Save **Save roster changes**, then open the destination block to find a moved student. The database enforces 35 students per course block and rolls back failed saves. Official directory profiles remain unchanged.
 
-Open a student's three-dot menu:
+![Edit a block assignment](02-change-block.png)
 
-* **Change block** opens **Change student block**. Enter **New block section** and choose **Save block assignment**. The database enforces a maximum of 35 students per course block; a failed change rolls back.
-* **Remove from course** opens a confirmation. **Confirm removal** withdraws that course membership after the save. **Cancel** leaves it unchanged. The student account, official profile and past attempts remain. Missing-email file rows can be edited/removed locally without claiming account access.
+Save **Suspend** before choosing **Remove**. Suspension denies new course publication access and assessment starts/submission while retaining recorded work. **Resume** restores access subject to release rules. **Confirm removal** withdraws the suspended course membership; **Cancel** leaves it unchanged. The student account and assessment/reading history remain. Reload restores an open confirmation but never confirms it.
 
-![Confirm a block change](02-change-block.png)
+![Remove a suspended membership](03-remove-membership.png)
 
-![Confirm course removal](03-remove-membership.png)
-
-For imported institutional class lists, a saved instructor membership decision is applied again during workspace projection and direct shared imports. A later sync cannot silently restore a removed learner. Explicitly registering the account again restores membership. Enrollment alone does not release drafts: an active approved syllabus and published, released materials are still required.
+A saved instructor membership decision is applied again during workspace projection and direct shared imports. A later sync cannot silently restore a removed learner. Explicitly registering the account again restores membership. Enrollment alone does not release drafts: an active approved syllabus and published, released materials are still required.
 
 ![Roster on a phone in dark mode](mobile-01-course-students.png)
-
-![Mobile block change](mobile-02-change-block.png)
-
+![Mobile block edit](mobile-02-change-block.png)
 ![Mobile removal confirmation](mobile-03-remove-membership.png)
 
 ## Cached records and deliberate refresh

@@ -16,7 +16,7 @@ import { useContentEditorTool } from '../../agents/useContentEditorTool'
  * Used for viewing materials and activities.
  */
 
-export default function DocumentViewer({ content, onBack, isStudent = false, readOnly = false, onSave }) {
+export default function DocumentViewer({ content, onBack, isStudent = false, readOnly = false, onSave, reading = null }) {
   const { addToast } = useToast()
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState(null)
@@ -174,6 +174,7 @@ export default function DocumentViewer({ content, onBack, isStudent = false, rea
                 <h2 className="doc-viewer-heading">{section.heading}</h2>
               )}
               {renderBody(section.body, idx, editing)}
+              {reading&&!editing&&<button type="button" className="btn btn-secondary mt-16" disabled={reading.busy||idx!==reading.read} onClick={()=>reading.confirm(idx)}>{idx<reading.read?'Section confirmed':`Confirm section ${idx+1} read`}</button>}
             </div>
           ))}
           {editing && (

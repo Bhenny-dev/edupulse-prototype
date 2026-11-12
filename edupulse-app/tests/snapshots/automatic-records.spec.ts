@@ -3,7 +3,7 @@ import { mkdir } from 'node:fs/promises'
 import { automaticRecordsUI, rosterWorkflow } from '../automatic-records-fixture'
 import { unifiedCoursewareUI } from '../courseware-unified-fixture'
 const root = '../feature-documentation/system-manual/21-automatic-records-and-course-rosters'
-async function shot(page: Page, name: string, selector?: string) { await mkdir(root, { recursive: true }); await page.mouse.move(2, 400); for (const toast of await page.locator('.toast').all()) await toast.click(); await (selector ? page.locator(selector) : page).screenshot({ path: `${root}/${name}.png`, animations: 'disabled', fullPage: !selector, style: '.app-topbar{position:static !important}' }) }
+async function shot(page: Page, name: string, selector?: string) { await mkdir(root, { recursive: true }); await page.mouse.move(2, 400); for(let i=0;i<10&&await page.locator('.toast').count();i++)await page.locator('.toast').first().click({timeout:1500}).catch(()=>{}); await (selector ? page.locator(selector) : page).screenshot({ path: `${root}/${name}.png`, animations: 'disabled', fullPage: !selector, style: '.app-topbar{position:static !important}' }) }
 test('automatic records: saved roster CRUD and confirmation boundaries', async ({ page }) => { await rosterWorkflow(page, name => shot(page, name)) })
 test('automatic records: retained cache while updating and offline', async ({ page, context }) => {
   await page.clock.install(); const fixture = await automaticRecordsUI(page)

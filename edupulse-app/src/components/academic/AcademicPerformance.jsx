@@ -13,15 +13,15 @@ import { useAcademicRecords } from '../../context/AcademicContext'
 const tip = { background: 'var(--white)', color: 'var(--gray-800)', border: '1px solid var(--gray-200)', borderRadius: 8 }
 const tick = { fill: 'var(--gray-600)', fontSize: 11 }
 const short = (text, max = 24) => text.length > max ? `${text.slice(0, max - 1)}…` : text
-function AcademicReminders({data}) {
+export function AcademicReminders({data}) {
  const {command}=useAcademicRecords()
  const [message,setMessage]=useState(''),[error,setError]=useState(''),[busy,setBusy]=useState(false)
  const remind=async publication=>{setBusy(true);setError('');try{const result=await command({operation:'remind',publication});setMessage(`${result.sent} in-app reminders saved. Completed/opened items and reminders sent in the last day were excluded.`)}catch(failure){setError(failure.message)}finally{setBusy(false)}}
  return <Panel title="Remind about missing work"><p className="text-sm text-muted mb-16">Sends an in-app notice to enrolled student accounts with no current attempt or material open. Confirm the item before sending.</p>{error&&<p role="alert">{error}</p>}{message&&<p role="status">{message}</p>}<Table headers={['Publication','Due','Action']} rows={data.publications.filter(item=>item.active).map(item=>[item.title,item.due_at?new Date(item.due_at).toLocaleString():'No deadline',<button key={item.id} className="btn btn-secondary btn-sm" disabled={busy} onClick={()=>remind(item.id)}>Confirm reminder</button>])}/></Panel>
 }
-export function ScoreCharts({ data }) {
+export function ScoreCharts({ data, historyData=data }) {
   const summary = assessmentSummary(data).filter(item => item.score !== null).map(item => ({ ...item, name: short(item.label, 14) }))
-  const history = [...data.attempts].filter(item => item.max_score > 0 && item.grading_status!=='pending_review').sort((a, b) => a.submitted_at.localeCompare(b.submitted_at)).map(item => ({ name: new Date(item.submitted_at).toLocaleDateString(), score: percent(item.score, item.max_score) }))
+  const history = [...historyData.attempts].filter(item => item.max_score > 0 && item.grading_status!=='pending_review').sort((a, b) => a.submitted_at.localeCompare(b.submitted_at)).map(item => ({ name: new Date(item.submitted_at).toLocaleDateString(), score: percent(item.score, item.max_score) }))
   return <div className="academic-grid">
     <Panel title="Assessment score radar">
       <p className="text-sm text-muted mb-16">Average raw score per current published assessment. Unanswered assessments are excluded. This is assessment coverage, not inferred topic mastery.</p>
@@ -37,7 +37,7 @@ export function CoverageChart({ data, material = false, completion = false }) {
   const values = material ? data.publications.filter(item => item.active && item.type !== 'assessment').map(item => ({ name: short(item.title), value: data.accesses.filter(access => access.publication_id === item.id).length })) : assessmentSummary(data).map(item => ({ name: short(item.label), value: completion ? item.completion : item.score }))
   return values.length ? <div role="img" aria-label={material ? 'Recorded material opens by publication' : completion ? 'Current assessment submission rate against confirmed roster' : 'Average raw assessment scores'}><ResponsiveContainer width="100%" height={280}><BarChart data={values}><CartesianGrid stroke="var(--gray-200)" strokeDasharray="3 3" /><XAxis dataKey="name" tick={tick} /><YAxis domain={material ? [0, 'auto'] : [0, 100]} allowDecimals={false} tick={tick} /><Tooltip contentStyle={tip} /><Bar name={material ? 'Recorded opens' : completion ? 'Submitted (%)' : 'Raw score (%)'} dataKey="value" fill="var(--sky-500)" radius={[4, 4, 0, 0]} isAnimationActive={false} /></BarChart></ResponsiveContainer></div> : <Empty>No published {material ? 'materials' : 'assessments'} match this view.</Empty>
 }
-function Attempts({ data, isStudent }) {
+export function Attempts({ data, isStudent }) {
   const publication = id => data.publications.find(item => item.id === id)
   const headers = ['Course', 'Assessment', ...(!isStudent ? ['Student account'] : []), 'Raw score', 'Submitted', 'Version', 'Marking', 'Activity']
   const rows = data.attempts.map(item => {

@@ -35,3 +35,9 @@ The current mobile Monitor navigation has one **Syllabus & Delivery** destinatio
 ## Available-width tables and charts
 
 Shared academic tables and charts fit their container, with native auto scrolling only for wider content. Short mobile tables no longer reserve a 420-pixel minimum; grid children and responsive charts can shrink. Wide matrices and the Course Outline retain their scroll regions. [Manual 36](../36-instructor-syllabi/README.md) documents the instructor changes and cross-role responsive verification.
+
+## Nested monitoring dialogs
+
+A restored class dialog and its student/roster popover retain their logical stack, focus and Escape order after reload. Portals are ordered by nesting depth rather than their incidental mount order. [Manual 37](../37-instructor-monitoring/README.md) shows this with the instructor class workspace; the shared modal behavior applies to other roles too.
+
+Dark-mode select controls retain a single dropdown chevron at the right edge. The shared dark background no longer repeats the chevron across new monitoring filters and roster forms.

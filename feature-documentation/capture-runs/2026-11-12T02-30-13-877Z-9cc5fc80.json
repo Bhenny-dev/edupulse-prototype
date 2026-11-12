@@ -1,0 +1,612 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-11-12T02-30-13-877Z-9cc5fc80",
+  "startedAt": "2026-11-12T02:30:13.877Z",
+  "finishedAt": "2026-11-12T02:31:14.735Z",
+  "commitSha": "937a12334a5bd0a29c3b2f57deb79793e72ad138",
+  "sourceDigest": "4869e15beb168a51de9a0ba70c96f77093a3d26df4d5f2ab04f80fd4e5183a58",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-11-12T02:30:11.527Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 14,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": null
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/automatic-records.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+    "edupulse-app/tests/snapshots/course-seed.spec.ts",
+    "edupulse-app/tests/snapshots/monitoring.spec.ts",
+    "edupulse-app/tests/snapshots/radar-progress.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+    "edupulse-app/tests/snapshots/automatic-records.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/monitoring-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pipeline-progress-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/radar-progress-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration-mobile.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/account-support-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/account-support-reload-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/account-support-reload.spec.ts",
+    "edupulse-app/tests/snapshots/account-support.spec.ts",
+    "edupulse-app/tests/snapshots/approved-syllabus-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/approved-syllabus.spec.ts",
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-formatting.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-navigation.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/dean-records-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/dean-records.spec.ts",
+    "edupulse-app/tests/snapshots/harness-delivery.spec.ts",
+    "edupulse-app/tests/snapshots/instructor-updates-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/instructor-updates.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/local-models-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/local-models.spec.ts",
+    "edupulse-app/tests/snapshots/login-icons-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/login-icons.spec.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/operator-steps.spec.ts",
+    "edupulse-app/tests/snapshots/outline-courseware.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/outline-courseware.spec.ts",
+    "edupulse-app/tests/snapshots/outline-progress-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/outline-progress.spec.ts",
+    "edupulse-app/tests/snapshots/outline-selector.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/outline-selector.spec.ts",
+    "edupulse-app/tests/snapshots/outline-sources-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/outline-sources.spec.ts",
+    "edupulse-app/tests/snapshots/oversight.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/oversight.spec.ts",
+    "edupulse-app/tests/snapshots/pipeline-progress.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/public-pulse-search-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/public-pulse-search.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-drafting.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-source.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+    "edupulse-app/tests/snapshots/reference-intake-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/reference-intake.spec.ts",
+    "edupulse-app/tests/snapshots/retained-catalog.spec.ts",
+    "edupulse-app/tests/snapshots/retained-sources-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/retained-sources.spec.ts",
+    "edupulse-app/tests/snapshots/second-admin-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/second-admin.spec.ts",
+    "edupulse-app/tests/snapshots/staff-registration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/staff-registration.spec.ts",
+    "edupulse-app/tests/snapshots/student-directory.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/system-search-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/system-search.spec.ts",
+    "edupulse-app/tests/snapshots/voice-quota.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/voice-quota.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-cache.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-recovery.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/automatic-records.spec.ts",
+      "title": "automatic records: saved roster CRUD and confirmation boundaries",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 5544,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+      "title": "synthetic baseline topic mastery and reviewed-response controls",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2940,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/course-seed.spec.ts",
+      "title": "synthetic identities show seeded blocks, syllabus draft and authored lesson without student results",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 4586,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/monitoring.spec.ts",
+      "title": "monitoring class discovery, scoped charts and membership dialogs",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 5354,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/monitoring.spec.ts",
+      "title": "student confirms sections in the full material reader",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1062,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/radar-progress.spec.ts",
+      "title": "three distinct scored assessments activate the score radar",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2237,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+      "title": "synthetic restored combined monitoring sections",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 5041,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+      "title": "synthetic restored dark solid surfaces",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1436,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/automatic-records.mobile.spec.ts",
+      "title": "automatic records: mobile roster and solid dark surfaces",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 10019,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/monitoring-mobile.spec.ts",
+      "title": "monitoring class discovery, scoped charts and membership dialogs",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 5592,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/monitoring-mobile.spec.ts",
+      "title": "student confirms sections in the full material reader",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1262,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/pipeline-progress-mobile.spec.ts",
+      "title": "pipeline progress mobile: instructor",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "local-real-input/sample-academic",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1305,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/radar-progress-mobile.spec.ts",
+      "title": "mobile three scored assessment radar",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2277,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/role-restoration-mobile.spec.ts",
+      "title": "synthetic restored mobile charts, matrix and dark role navigation",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 4282,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-manual/18-it-course-seed/01-seeded-course-students.png",
+      "sha256": "69b9165bc9aa134437d1b0496e5d0a0a13d65400f7ac079f9d1722288f3a91b6",
+      "bytes": 200582
+    },
+    {
+      "path": "feature-documentation/system-manual/18-it-course-seed/02-programming-draft.png",
+      "sha256": "07fc2d5228e31e912e48710f994e0d616ae8f2fad4e2da0bc4b8abd787a9e84e",
+      "bytes": 284091
+    },
+    {
+      "path": "feature-documentation/system-manual/18-it-course-seed/03-authored-subnetting-lesson.png",
+      "sha256": "d10e173a65c93318194922d55eaaa842806525e03ccedf4d49fc1f4f16c7c17a",
+      "bytes": 315085
+    },
+    {
+      "path": "feature-documentation/system-manual/18-it-course-seed/04-no-student-attempts.png",
+      "sha256": "b68fbf2de4b94091c3f7840cf3965646d32e76b8210449910101d67406348b82",
+      "bytes": 23021
+    },
+    {
+      "path": "feature-documentation/system-manual/21-automatic-records-and-course-rosters/01-course-students.png",
+      "sha256": "cac950359fc8b022bc2ed10fe3f2cd5cc1591903935aad52ce0a9711543a96ea",
+      "bytes": 154029
+    },
+    {
+      "path": "feature-documentation/system-manual/21-automatic-records-and-course-rosters/02-change-block.png",
+      "sha256": "44520d48c0cb57960d840988733bb74f0983936dcce4698db0367fd997bdc56f",
+      "bytes": 251636
+    },
+    {
+      "path": "feature-documentation/system-manual/21-automatic-records-and-course-rosters/03-remove-membership.png",
+      "sha256": "2bad27a8be5ffec6f6cd1765bec64ca069bc4e5ffaa6c767a7ebe27b49778ee1",
+      "bytes": 248630
+    },
+    {
+      "path": "feature-documentation/system-manual/21-automatic-records-and-course-rosters/mobile-01-course-students.png",
+      "sha256": "1de2eec7fde0a3c79df422c2ff81a13496542141af650b84931c9a9f031e6424",
+      "bytes": 58490
+    },
+    {
+      "path": "feature-documentation/system-manual/21-automatic-records-and-course-rosters/mobile-02-change-block.png",
+      "sha256": "be08d5d22d0bfea64b9f38e8a28237cc2ed1d38bde2964b7f2730baaaeb7015f",
+      "bytes": 46343
+    },
+    {
+      "path": "feature-documentation/system-manual/21-automatic-records-and-course-rosters/mobile-03-remove-membership.png",
+      "sha256": "24186d50811fff37c4d05cee1164a7eb3f6b49557ca4d0c5b82c5b7bc348c903",
+      "bytes": 54233
+    },
+    {
+      "path": "feature-documentation/system-manual/33-pipeline-progress/05-mobile-instructor.png",
+      "sha256": "235bf0aeb0c51d987ef63db35f9c59eeef01671b9fa1c678b6f755b06a4e80b9",
+      "bytes": 121393
+    },
+    {
+      "path": "feature-documentation/system-manual/33-pipeline-progress/06-two-assessments.png",
+      "sha256": "ffe127117d7e927951018c8d78fa9a7ac440c6edabab5714ed6e61784db3e865",
+      "bytes": 25279
+    },
+    {
+      "path": "feature-documentation/system-manual/33-pipeline-progress/07-three-assessment-radar.png",
+      "sha256": "9990790c8b81d8eca0eb53c14fb25c25c6381e64dbe0c61582d8c888590be731",
+      "bytes": 30175
+    },
+    {
+      "path": "feature-documentation/system-manual/33-pipeline-progress/mobile-06-two-assessments.png",
+      "sha256": "47d3a756fd20a58ee8d6999ceff21eadfa28c9d07980ae3dc532aa742380f1ec",
+      "bytes": 87813
+    },
+    {
+      "path": "feature-documentation/system-manual/33-pipeline-progress/mobile-07-three-assessment-radar.png",
+      "sha256": "3c386e4a424cf469994487e1138dfde91caaae327102beabf9037ff77d4525be",
+      "bytes": 111822
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/01-handled-classes.png",
+      "sha256": "b65c3ca957c65754bbffc9cc0ae95d970f2ff34a27718964dedca032007cbe06",
+      "bytes": 271331
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/02-class-students.png",
+      "sha256": "ed73451053dd9b0fb3d5efec975a496dd4303171b5ed9e7df99c06817ae601ba",
+      "bytes": 122724
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/03-assessment-overview.png",
+      "sha256": "d7c64fd0e1a18a597f37af9f2fa42126addf1c5b163ab53d52e5326a61c69d49",
+      "bytes": 109785
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/04-assessment-students.png",
+      "sha256": "ae6d34488c5eccba030476c1ad39fd244c1487cb21e82d9fb517c218a404e803",
+      "bytes": 31905
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/05-assessment-breakdown.png",
+      "sha256": "ac55ff176837d4dfcc36db544b7b2d7cafda4672f34dc596050dbe89fc248014",
+      "bytes": 39769
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/06-material-overview.png",
+      "sha256": "48762582f8270abd8965adab0fe78e5c73ee505e7260c679d73aabbf2dfbb0f2",
+      "bytes": 90117
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/07-material-breakdown.png",
+      "sha256": "7dcedf6a87c814ebfe8cf471f0f40f98f3f6250c42c4a67580c0bdfec2a1d394",
+      "bytes": 39030
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/08-edit-membership.png",
+      "sha256": "33da75ccf8d345a57538ce7ab7637fc356d3198a67f4eadb65e1ff2a8a5fd5d0",
+      "bytes": 35303
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/09-suspend-membership.png",
+      "sha256": "0fb645401f14c74dbc5106f7e9c46b704274e1d2060c5a5a5aa9d63ebadc6d3b",
+      "bytes": 33470
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/10-material-completion.png",
+      "sha256": "a6d9c4e4e74efe60c5524ebb7065ba635ecbd62f2c6da621e7f72dbaea233095",
+      "bytes": 26729
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/11-material-students.png",
+      "sha256": "7786a896420a5352c7e8d1b962ec21543b227c436948f2a0feb4c79f455512c9",
+      "bytes": 31733
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/12-student-reading.png",
+      "sha256": "d192dd72bfc74d37bb44106e642b7775dedea5fe00d4e09deaa36fc89d5d4074",
+      "bytes": 68541
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/mobile-01-handled-classes.png",
+      "sha256": "7579fb749243887e5720bedb7d614a2eed20ae056dd8b71db9d120916902da59",
+      "bytes": 179619
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/mobile-02-class-students.png",
+      "sha256": "97162aa01fd6b7eee9aa0b77a9c9ffb23591c4c8a45709ef9bb8b6969f07d7fb",
+      "bytes": 113490
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/mobile-03-assessment-overview.png",
+      "sha256": "f154365d7578834266ac02ded9b272cfd3525be6c87d72b0ef438e1ff5b9cf50",
+      "bytes": 89075
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/mobile-04-assessment-students.png",
+      "sha256": "db7205b91d5650b1b656c0345f7de462940977a85218837e404b57898537af3d",
+      "bytes": 37870
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/mobile-05-assessment-breakdown.png",
+      "sha256": "29afb5d36da84b094a090320332896f7ba5cd5d302854f1cf074e92b754b226c",
+      "bytes": 45875
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/mobile-06-material-overview.png",
+      "sha256": "64d29ff3e9e16e8032ec17dfe86250e32f5da594464f1ffeece2755b50cea5a2",
+      "bytes": 80011
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/mobile-07-material-breakdown.png",
+      "sha256": "58f4c24c377a82c9d56a15d2b43f3605015ef0148808d67f729181e17daf2e6a",
+      "bytes": 44320
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/mobile-08-edit-membership.png",
+      "sha256": "a6d0842e79f14e5631929352eba5903a0ed52cefa4451af9a9c37b70fc1457bb",
+      "bytes": 36152
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/mobile-09-suspend-membership.png",
+      "sha256": "2cd2c7967be3c3749e2a0649887a9c08ed9b1c1bb3127911b50c695e3b3d3df9",
+      "bytes": 27601
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/mobile-10-material-completion.png",
+      "sha256": "dcb8353527a46342b9223b31e7e47f5179aecef433181efb070fdb8207f07117",
+      "bytes": 20166
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/mobile-11-material-students.png",
+      "sha256": "ff9b374c5799c080b6152d8832762b6ea02dcdce8337583aedea5901bda60397",
+      "bytes": 37482
+    },
+    {
+      "path": "feature-documentation/system-manual/37-instructor-monitoring/mobile-12-student-reading.png",
+      "sha256": "13d1de0de531a5be8a5caf3ab5f170695f55847ce49ca5e1c1c5087ebee14773",
+      "bytes": 64390
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/04-instructor/02-monitoring-course-students.png",
+      "sha256": "b65c3ca957c65754bbffc9cc0ae95d970f2ff34a27718964dedca032007cbe06",
+      "bytes": 271331
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/04-instructor/09-student-monitoring-assessment-scores.png",
+      "sha256": "d7c64fd0e1a18a597f37af9f2fa42126addf1c5b163ab53d52e5326a61c69d49",
+      "bytes": 109785
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/04-instructor/10-student-monitoring-material-access.png",
+      "sha256": "48762582f8270abd8965adab0fe78e5c73ee505e7260c679d73aabbf2dfbb0f2",
+      "bytes": 90117
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/05-performance-radar-and-history.png",
+      "sha256": "854bd7d9b57610d820d3492bc078aba76f70de561c2de97843621baa1498db3f",
+      "bytes": 105864
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/06-assessment-coverage.png",
+      "sha256": "12f8977de9d3d9435305340f6800278831d285a9779546acbc0c04d528dd85a8",
+      "bytes": 38269
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/07-material-access.png",
+      "sha256": "85a5b56a2f5d151f78869376bdce87a56875cee3c29713e628c947e98920fa45",
+      "bytes": 108595
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/08-assessment-scores.png",
+      "sha256": "f5b5ca597d29537c3016f10234409365f622b071ff137f65a67c1f94646cf462",
+      "bytes": 25831
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/09-threshold-review.png",
+      "sha256": "e9be17096d049077f7abf9a32861bbcd06fcacb048cb656cb76c7fc0a409933d",
+      "bytes": 25927
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/10-student-drilldown.png",
+      "sha256": "10f94a3144292e3590d69aad651265a3dbd64a95e7ffd67de19551b802e49b1b",
+      "bytes": 39749
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/11-monitoring-scoring-matrix.png",
+      "sha256": "6ccc02460cd7ce57da30c681af8ffa094c793b6685c2f3a4e249caf62b596b33",
+      "bytes": 106731
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/12-monitoring-material-matrix.png",
+      "sha256": "5aef8bda4562fb196f578befde48c9ae0e86379502683ef4987900219acd21b9",
+      "bytes": 26069
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/32-dark-performance.png",
+      "sha256": "95879438205dc311d69231ae3bbcd79a57873b802ed96dd4367ddd9870f2f4bf",
+      "bytes": 118622
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/33-mobile-performance.png",
+      "sha256": "dbedb3d9754d2bf56f4fd8326cdb9565f2eaf6735d22bf0094acc0d53d95142a",
+      "bytes": 124190
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/34-mobile-materials.png",
+      "sha256": "8a364bcc0aa60a61fb91da02db6cc2be979caf349f050aabc73fa58853e14433",
+      "bytes": 119682
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/35-mobile-dark-dashboard.png",
+      "sha256": "0d88bedbdd20dec8507cfbddd88ca16fbcfa56f49439473ab1fd1909ba0031ec",
+      "bytes": 242760
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/36-topic-mastery-heatmap.png",
+      "sha256": "93b4fdd20ba5bdcc0b53c33e04e290fc657625230e5926f66d691f0c23a0d7af",
+      "bytes": 24422
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/37-instructor-response-marking.png",
+      "sha256": "8c63936171c0bbc89548c190ff57afdfadf4ef5b7d55bed99d29fbb8adc9e39a",
+      "bytes": 78556
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/38-confirmed-in-app-reminder.png",
+      "sha256": "5dfc21683d46dd89a6757a7834b2d62307131975865322482820234870cb45f2",
+      "bytes": 52650
+    }
+  ]
+}

@@ -6,7 +6,7 @@ import {baselineWorkspace} from './baseline-fixture'
 export const sender='fe67b9d2-719b-4b10-91cd-76031ab115fe',recipient='22222222-1111-4111-8111-111111111111'
 export const sharedStore=()=>({shares:[] as any[],workspaces:{[sender]:structuredClone(baselineWorkspace),[recipient]:{syllabi:[],content:{},registrations:[]}} as Record<string,any>,revisions:{[sender]:1,[recipient]:0} as Record<string,number>,commands:[] as any[],failDelete:false})
 export async function instructorUpdatesUI(page:Page,owner=sender,store=sharedStore()){
- const records=structuredClone(roleRecords)
+ const records=structuredClone(roleRecords);records.courses[0].instructor_id=owner
  records.courses.push({...records.courses[0],id:'c'.repeat(32),course_code:'IT 103',course_title:'Programming Lab'})
  records.enrollments.push({...records.enrollments[0],course_id:'c'.repeat(32)})
  await academicUI(page,async()=>({json:records}),'instructor',{full_name:owner===sender?'Synthetic sender':'Synthetic recipient'},{id:owner,email:owner===sender?'sender@example.invalid':'recipient@example.invalid'})
