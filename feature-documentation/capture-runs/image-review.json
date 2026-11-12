@@ -3834,6 +3834,22 @@
       "reviewedAt": "2026-11-12T13:29:24.712393+00:00",
       "captureRun": "2026-11-12T13-28-13-651Z-a296a7b8",
       "method": "Opened with view_image after final main integration; verified disabled Publish, wider fixed True/False editor and phone teaching counts. Fictional UI; not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/10-read-only-dashboard.png",
+      "sha256": "295904e21311088a278e6bef233d1d6e29695d252b120b9be798ff1732f7888d",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T20:11:38.207733+00:00",
+      "captureRun": "2026-11-12T20-10-50-394Z-bb0b9149",
+      "method": "Opened with view_image; verified loaded instructor dashboard, Records up to date and support banner. Synthetic UI; not hosted Google authentication or human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/11-support-dashboard.png",
+      "sha256": "5d01f01cccd8e2c884994046386ffdc78c963d9629ee334cd17c0e2bf4e065b8",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T20:11:38.209097+00:00",
+      "captureRun": "2026-11-12T20-10-50-394Z-bb0b9149",
+      "method": "Opened with view_image; verified loaded instructor dashboard, Records up to date and support banner. Synthetic UI; not hosted Google authentication or human approval."
     }
   ]
 }

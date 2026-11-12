@@ -145,3 +145,5 @@ Instructor assessment and teaching-material editors use wider screen containers 
 ## Primary teaching set and practice delivery
 
 The primary **My Syllabus** list contains four own entries and two complete drafts, with two received entries under **Shared with me**. **Show all syllabi** reveals the remaining assignments. Prepared content for nonactive owned syllabi is visible under **Course**, labelled **Awaiting syllabus approval**, with publication disabled. [Manual 40](../../system-manual/40-teaching-sets/README.md) shows the list, complete-draft fields, received sender labels and phone view. The separately authorized live demonstration uses Pipeline test provenance; later assessments remain available for manual trials.
+
+Dashboard entry, reload and **Refresh records** read the current authorized snapshot without running a workspace synchronization command. Saved workspace changes still project normally. See the [read-only dashboard example](../../system-manual/23-account-support-and-pulse-context/README.md#dashboard-loading).

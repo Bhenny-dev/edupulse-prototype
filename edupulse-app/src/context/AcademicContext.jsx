@@ -16,12 +16,11 @@ export function AcademicProvider({ children }) {
 }
 
 function AcademicSession({ children, user,authLoading }) {
-  const workspace = useWorkspace(), workspaceRef = useRef(workspace)
-  workspaceRef.current = workspace
+  const workspace = useWorkspace()
   const role = user?.role, enabled = Boolean(!authLoading && user?.authenticated && role !== 'admin')
   const currentRole = useRef(role), alive = useRef(true), request = useRef(null), channel = useRef(null)
   currentRole.current = role
-  const timing = useRef({ invalidation: 0, projected: false, syncing: false })
+  const timing = useRef({ invalidation: 0 })
   const [refreshAvailable,setRefreshAvailable]=useState(false)
   const seenRevision = useRef(null)
   const [snapshot, setSnapshot] = useState({ role, data: EMPTY_ACADEMIC, loaded: false })
@@ -43,17 +42,8 @@ function AcademicSession({ children, user,authLoading }) {
         let version
         do {
           version = timing.current.invalidation
-          const saved = workspaceRef.current
-          // Normal saves already run the projection transaction. Reconcile legacy snapshots once,
-          // only after their own revision is loaded and no local edit/save/conflict is pending.
-          if (!timing.current.projected && role === 'instructor' && saved.mode === 'cloud' && !saved.loading && !saved.saving && !saved.dirty && !saved.conflict && !saved.error && saved.syllabi.length) {
-            timing.current.syncing = true
-            try {
-              const result = await aiRequest('academic', 'POST', { operation: 'sync' }, controller.signal)
-              if (result?.synced !== true) throw new Error('Workspace synchronization was not confirmed. Your saved work remains available.')
-              timing.current.projected = true
-            } finally { timing.current.syncing = false }
-          }
+          // Confirmed workspace saves project records transactionally. Opening or
+          // restoring a view must only read them, never replay a projection write.
           const records = await aiRequest('academic', 'GET', undefined, controller.signal)
           if (!valid()) return
           // A mutation arriving during a GET invalidates that response; read the newer projection.
@@ -86,9 +76,7 @@ function AcademicSession({ children, user,authLoading }) {
       setOnline(navigator.onLine !== false)
     }
     const offline = () => { setOnline(false); request.current?.controller.abort(); request.current = null; setLoading(false) }
-    const changed = event => {
-      if (event.detail?.operation === 'sync' && timing.current.syncing) return
-      if (event.detail?.action === 'workspace') timing.current.projected = true
+    const changed = () => {
       channel.current?.postMessage('invalidate') // No records, tokens, names or command payloads cross tabs.
       void load(true)
     }

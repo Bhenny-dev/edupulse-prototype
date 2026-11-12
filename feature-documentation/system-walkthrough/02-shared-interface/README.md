@@ -232,3 +232,5 @@ The role formerly labelled Associate Dean is displayed as **Program Coordinator*
 ### System Admin monitoring navigation
 
 The System Admin top bar now contains **Dashboard**, **Dean**, **Program Coordinator**, **Instructor**, and **Student**. These four role stations open monitoring tabs and retain the admin identity; named-person support remains an explicit account-picker action. On a phone, these links appear under **Open menu**. The selected role/tab survives browser reload through its URL; navigating between monitoring tabs reuses loaded reads. See [desktop and phone role monitoring captures](../07-system-admin/README.md#role-monitoring-stations).
+
+Academic dashboards load with authorized reads on entry and reload. **Refresh records**, when updates are available, also reads without replaying a workspace synchronization write. Confirmed saves retain their normal projection and readback.

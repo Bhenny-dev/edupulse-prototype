@@ -109,3 +109,11 @@ These are controlled account-transport captures. They verify rendering and navig
 Either of the two designated, Google-verified admins can select an academic person through **Open view**. Reload retains that person's authorized page and tab using hints bound to the actual admin ID. Signing into the other admin account cannot reuse the former admin's selection, provider credentials or private history. Both admin accounts remain protected from selection as academic subjects and from ordinary role reassignment. [Second-admin desktop and phone captures](../../system-walkthrough/07-system-admin/README.md#two-designated-google-admins) show the same existing controls with two registered admins.
 
 The active student directory is limited to **College of Information Technology**. The department selector contains only CIT, with year/program filtering retained. Non-CIT profiles and the four legacy role placeholders are retired from active use, with their records preserved. Student profile count after retirement is 417.
+
+## Dashboard loading
+
+Opening or reloading an instructor dashboard reads existing authorized records. **Refresh records** also performs a read; it does not resynchronize the workspace or create learner activity. Confirmed saves continue to update records.
+
+![Instructor dashboard loaded without a startup synchronization command; synthetic account records](10-read-only-dashboard.png)
+
+![Selected instructor support dashboard; synthetic read-only account view](11-support-dashboard.png)
