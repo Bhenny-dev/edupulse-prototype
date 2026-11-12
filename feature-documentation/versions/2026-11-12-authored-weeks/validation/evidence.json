@@ -1,0 +1,41 @@
+{
+  "checkedAt": "2026-11-12T11:59:08.323Z",
+  "coverage": {
+    "catalogueCourses": 60,
+    "catalogueWeeks": 300,
+    "ownedOfferings": 62,
+    "ownedCourseWeeks": 310,
+    "newDraftItems": 928,
+    "filledDraftOutlineWeeks": 230
+  },
+  "readback": {
+    "allOwnerDataMatches": true,
+    "originalItemsPreserved": 7,
+    "idempotentOwners": 7,
+    "repeatAddedItems": 0,
+    "largestWorkspaceBytes": 2910959,
+    "applicationWorkspaceByteLimit": 3000000
+  },
+  "hostedAggregate": {
+    "activeCourses": 19,
+    "activePublications": 5,
+    "attempts": 0,
+    "authoredDrafts": 928,
+    "courses": 69,
+    "enrollments": 7375,
+    "nonDraftAuthored": 0,
+    "opens": 0,
+    "reading": 0,
+    "students": 417
+  },
+  "production": {
+    "origin": "https://edupulse-prototype.vercel.app",
+    "instructorSignIns": 7,
+    "workspaceReads": 7,
+    "newDraftsRead": 928,
+    "probeAcademicWrites": false,
+    "inference": false,
+    "ownProbeSessionsSignedOut": true
+  },
+  "rollbackValidatedOwners": 7
+}

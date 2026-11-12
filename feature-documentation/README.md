@@ -4,6 +4,7 @@
 
 | Folder | Covers | Contents |
 | --- | --- | --- |
+| [12 November authored weeks](versions/2026-11-12-authored-weeks/README.md) | Original Weeks 1–5 teaching/activity/assessment drafts with accurate provenance | See validation |
 | [12 November instructor monitoring](versions/2026-11-12-instructor-monitoring/README.md) | Combined class rosters, assessment analytics and confirmed reading progress | See validation |
 
 | [12 November targeted outline edits](versions/2026-11-12-targeted-outline-edits/README.md) | Content-only section/field proposals with immutable IDs and atomic persistence | See validation |

@@ -3558,6 +3558,46 @@
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-12T04:31:40.865012+00:00",
       "method": "Opened with view_image. Checked pending assignment included in enrolled count, distinct release status, curriculum units, missing score, readable wrapped reminder header and phone layout. Fictional UI records, not human approval or actual student achievement."
+    },
+    {
+      "path": "feature-documentation/system-manual/39-authored-weeks/01-weekly-drafts.png",
+      "sha256": "6669ac6eb92d7c074e5f06ebd846a4c66339fbd9bff9945079d39a7422519b08",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T11:58:49.197554+00:00",
+      "captureRun": "2026-11-12T11-57-03-448Z-a155dcb5",
+      "method": "Opened with view_image; checked original draft text, labels, disclosure, assessment marking and phone fit. Fictional account UI, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/39-authored-weeks/02-java-lesson.png",
+      "sha256": "e6e67315ec1932c94ebeb84dfc65a68cfcd139edf24e7caec74c7ef4cbc0c256",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T11:58:49.198330+00:00",
+      "captureRun": "2026-11-12T11-57-03-448Z-a155dcb5",
+      "method": "Opened with view_image; checked original draft text, labels, disclosure, assessment marking and phone fit. Fictional account UI, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/39-authored-weeks/03-review-disclosure.png",
+      "sha256": "e052c388e4994c7aba12253a45feaa559994478c0f7035e7383040a1962e9515",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T11:58:49.199056+00:00",
+      "captureRun": "2026-11-12T11-57-03-448Z-a155dcb5",
+      "method": "Opened with view_image; checked original draft text, labels, disclosure, assessment marking and phone fit. Fictional account UI, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/39-authored-weeks/04-written-assessment.png",
+      "sha256": "14dc2d06918bb9a61c06105d52e8b11097bbcf3deafa3bae44082c6915fa360b",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T11:58:49.199649+00:00",
+      "captureRun": "2026-11-12T11-57-03-448Z-a155dcb5",
+      "method": "Opened with view_image; checked original draft text, labels, disclosure, assessment marking and phone fit. Fictional account UI, not human approval."
+    },
+    {
+      "path": "feature-documentation/system-manual/39-authored-weeks/05-phone-lesson.png",
+      "sha256": "4b5671eef3ffc59fe5beff94ff9854afec33d9640380e5ad379010c5235b2935",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-12T11:58:49.200185+00:00",
+      "captureRun": "2026-11-12T11-57-03-448Z-a155dcb5",
+      "method": "Opened with view_image; checked original draft text, labels, disclosure, assessment marking and phone fit. Fictional account UI, not human approval."
     }
   ]
 }

@@ -133,3 +133,7 @@ The Course Outline has multiline Contents, Teaching-Learning Activities and Asse
 ### Targeted syllabus drafting
 
 Pulse resolves **Week 1 Section 1** against the mounted outline. Its review names the fields and shows their before/proposed content, including linked teaching weeks for shared sections. [Manual 38](../../system-manual/38-targeted-outline-edits/README.md) contains current desktop and phone captures. Generation does not save; explicit confirmation and revision checks remain required.
+
+## Directly authored Weeks 1–5
+
+[Manual 39](../../system-manual/39-authored-weeks/README.md) shows original Java teaching text, three Draft items per week, phone reading and the direct-authoring disclosure. The saved packs require instructor checking and normal publication; written responses require marking. Newly filled draft syllabi retain their offline approval path. No source-support percentage, paid-provider run or learner activity is invented.

@@ -30,3 +30,7 @@ The allocation command defaults to a private dry run and supports rollback valid
 
 ![Student assignment dashboard](../../system-walkthrough/09-restored-role-pages/02-student-dashboard.png)
 ![Student assignments on a phone](../../system-walkthrough/09-restored-role-pages/39-mobile-student-assignments.png)
+
+## Next: prepared teaching drafts
+
+The owner then requested direct authoring before provider-dependent generation. [Manual 39](../39-authored-weeks/README.md) explains the original Weeks 1–5 packs and review disclosures. Preparing drafts does not activate a syllabus, publish material or generate learner activity.

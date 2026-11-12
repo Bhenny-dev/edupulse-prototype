@@ -93,3 +93,5 @@ The [baseline restoration](../versions/2026-10-28-baseline-workflows/README.md) 
 [Manual 38: Targeted outline edits](38-targeted-outline-edits/README.md) covers section/field targets, shared links, strict validation and explicit persistence.
 
 - [38 · Assigned courses, units and real activity](38-curriculum-population/README.md)
+
+[Manual 39: Authored Weeks 1–5](39-authored-weeks/README.md) covers original teaching/activity/assessment drafts, truthful direct-authoring disclosures, written marking and pre-approval review.
