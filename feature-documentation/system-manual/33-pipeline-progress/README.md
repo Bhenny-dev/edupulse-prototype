@@ -49,3 +49,5 @@ Reading completion now uses version-bound sequential confirmations in the full s
 ![Instructor dashboard without test suffixes](10-instructor-dashboard.png)
 
 Recorded attempts retain course, assessment, raw score, submission date, current/earlier version and marking status. The redundant Activity column is omitted. Dashboards show the same saved values without test labels; underlying provenance remains in audit storage.
+
+Student practice and Performance summary cards use the shared dashboard SummaryCard component. Their colored icons and spacing match the dashboard; the saved scores, material opens and table columns below them are unchanged.

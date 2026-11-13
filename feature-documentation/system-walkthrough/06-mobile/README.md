@@ -80,3 +80,9 @@ Handled classes are grouped by recorded year and labelled with course/block. Eac
 ## Curriculum loads and pending courses
 
 Student course lists include units, year, period and pending-release labels on phones. Wide Dean course-load/roster tables retain native horizontal scrolling; navigation tabs scroll within their own strip. No forced page-wide scrollbar is added. [Manual 38](../../system-manual/38-curriculum-population/README.md) links the current task images and distinguishes actual hosted allocations from fictional capture records.
+
+Student learning and performance summaries reuse the dashboard SummaryCard. Colored icon tiles remain beside the values in the responsive grid, and long textual values wrap within their card. See the [phone course cards](../../system-manual/41-student-learning/06-phone-courses.png) and [practice status cards](../../system-manual/33-pipeline-progress/05-mobile-student.png).
+
+Textual statuses use the shared small-text size while numeric values retain the normal summary-value size, keeping long status words readable beside icons.
+
+The shared card padding decreases on narrow screens to leave enough room for the icon and complete summary words, retaining the desktop padding at wider widths.

@@ -1,19 +1,28 @@
 import { useSearchParams } from 'react-router-dom'
 import { exportCSV } from '../../utils/exportUtils'
 import { useAuth } from '../../context/AuthContext'
-import { BookOpen, CheckCircle, Users, Activity } from 'lucide-react'
+import { BookOpen, CheckCircle, Users, Activity, FileText, ClipboardCheck, Layers, RotateCcw, TrendingUp, Target } from 'lucide-react'
 import SummaryCard from '../ui/SummaryCard'
 
 export function Panel({ title, children, actions }) {
   return <section className="card mb-24"><div className="card-header"><h2>{title}</h2>{actions}</div><div className="card-body">{children}</div></section>
 }
 export function Empty({ children = 'No records match this view.' }) { return <p className="academic-empty">{children}</p> }
+const studentSummaryIcons = {
+  'Enrolled courses': BookOpen, 'Delivered materials': FileText,
+  'Delivered assessments': ClipboardCheck, 'Materials opened': CheckCircle,
+  'Instructor assessments taken': ClipboardCheck, 'Practice sets': Layers,
+  'Practice attempts': RotateCcw, 'Practice average': TrendingUp,
+  'My current attempts': ClipboardCheck, 'Average raw score': TrendingUp,
+  'Published assessments': ClipboardCheck, 'Recorded material opens': CheckCircle,
+  'Topics mastered': Target, 'Topics needing review': BookOpen, 'Mastery cutoff': Target,
+}
 export function KPIs({ items }) {
   const {user}=useAuth()
-  if(user?.role==='dean'){
+  if(user?.role==='dean'||user?.role==='student'){
     const destinations={'Authorized courses':'/records','Active syllabi':'/records?tab=syllabi&status=active','Blocks':'/students','Published items':'/monitor?tab=overview','Released items':'/monitor?tab=overview','Current-version attempts':'/performance?tab=scores','Average raw score':'/performance?tab=scores','Published assessments':'/performance?tab=bytopic','Recorded material opens':'/performance?tab=materials','Topic averages at mastery cutoff':'/performance?tab=bytopic','Topics needing review':'/performance?tab=bytopic','Mastery cutoff':'/performance?tab=bytopic'}
     const icons=[BookOpen,CheckCircle,Users,Activity],tones=['sky','purple','green','amber']
-    return <div className="kpi-grid mb-24">{items.map(([label,value],i)=><SummaryCard key={label} icon={icons[i%4]} label={label} value={value} color={`var(--${tones[i%4]}-500)`} bg={`var(--${tones[i%4]}-100)`} to={destinations[label]||'/records'}/>)}</div>
+    return <div className="kpi-grid mb-24">{items.map(([label,value],i)=><SummaryCard key={label} icon={user.role==='student'?(studentSummaryIcons[label]||BookOpen):icons[i%4]} label={label} value={value} color={`var(--${tones[i%4]}-500)`} bg={`var(--${tones[i%4]}-100)`} to={user.role==='dean'?(destinations[label]||'/records'):undefined}/>)}</div>
   }
   return <div className="kpi-grid mb-24">{items.map(([label, value]) => <div className="kpi-card" key={label}><div><div className="kpi-value">{value ?? '—'}</div><div className="kpi-label">{label}</div></div></div>)}</div>
 }

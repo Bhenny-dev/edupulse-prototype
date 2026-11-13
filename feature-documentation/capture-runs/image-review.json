@@ -4728,6 +4728,126 @@
       "sha256": "b57ee72abecd6487de91d16a29935648c69fb612442826d25dde043fb090bbdc",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-12T23:23:43.020413+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/33-pipeline-progress/03-student-score.png",
+      "sha256": "9f37baa664cacbc1db7649fa83fdd97fcf8b823b68db394b50816bf280892d5b",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-13T13:29:05.866700+00:00",
+      "captureRun": "2026-11-13T13-27-38-806Z-1e4908a5",
+      "method": "Opened with view_image. Verified shared dashboard icon cards, original values and missing-result text, responsive spacing and contained phone status words. Reviewed final hashes after font-size and padding corrections. Synthetic UI transport evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/33-pipeline-progress/04-student-opens.png",
+      "sha256": "058a52a89c399e8551abb52d2dce2a93df031b6a1ea8cf391bb4712bd0b6ff78",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-13T13:29:05.883097+00:00",
+      "captureRun": "2026-11-13T13-27-38-806Z-1e4908a5",
+      "method": "Opened with view_image. Verified shared dashboard icon cards, original values and missing-result text, responsive spacing and contained phone status words. Reviewed final hashes after font-size and padding corrections. Synthetic UI transport evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/33-pipeline-progress/05-mobile-student.png",
+      "sha256": "817d13ce8e0697fa322524e4f9175f99ffdc8157f07c476f5ca2e7e19a59155a",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-13T13:29:05.885202+00:00",
+      "captureRun": "2026-11-13T13-27-38-806Z-1e4908a5",
+      "method": "Opened with view_image. Verified shared dashboard icon cards, original values and missing-result text, responsive spacing and contained phone status words. Reviewed final hashes after font-size and padding corrections. Synthetic UI transport evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/33-pipeline-progress/08-student-attempts.png",
+      "sha256": "71991ff5b87ad4b8c1db944be5cb7aef0ad8bc4c6b8ee8efd74b8cec6f03fa37",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-13T13:29:05.903116+00:00",
+      "captureRun": "2026-11-13T13-27-38-806Z-1e4908a5",
+      "method": "Opened with view_image. Verified shared dashboard icon cards, original values and missing-result text, responsive spacing and contained phone status words. Reviewed final hashes after font-size and padding corrections. Synthetic UI transport evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/01-course-cards.png",
+      "sha256": "0666f1330142682fcd58915fdcc044028840670f3cc178174339fe0e3f0a2801",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-13T13:29:05.905980+00:00",
+      "captureRun": "2026-11-13T13-27-38-806Z-1e4908a5",
+      "method": "Opened with view_image. Verified shared dashboard icon cards, original values and missing-result text, responsive spacing and contained phone status words. Reviewed final hashes after font-size and padding corrections. Synthetic UI transport evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/02-delivered-course.png",
+      "sha256": "5ae8ecda08bfaf6dbcf100ab9ac495300fde469c0d7d91796da5d9ddfd79e93e",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-13T13:29:05.926171+00:00",
+      "captureRun": "2026-11-13T13-27-38-806Z-1e4908a5",
+      "method": "Opened with view_image. Verified shared dashboard icon cards, original values and missing-result text, responsive spacing and contained phone status words. Reviewed final hashes after font-size and padding corrections. Synthetic UI transport evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/04-practice-questions.png",
+      "sha256": "2d107f304bad2d72cddaea5a5a27b82c85b2ac801c0531e7bb7fc527a3bde4d2",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-13T13:29:05.945345+00:00",
+      "captureRun": "2026-11-13T13-27-38-806Z-1e4908a5",
+      "method": "Opened with view_image. Verified shared dashboard icon cards, original values and missing-result text, responsive spacing and contained phone status words. Reviewed final hashes after font-size and padding corrections. Synthetic UI transport evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/05-practice-improvement.png",
+      "sha256": "0afa83329fd6c34b4c6068d00006372e25a0497f3673af515b1d9a8dd954d7dc",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-13T13:29:05.962296+00:00",
+      "captureRun": "2026-11-13T13-27-38-806Z-1e4908a5",
+      "method": "Opened with view_image. Verified shared dashboard icon cards, original values and missing-result text, responsive spacing and contained phone status words. Reviewed final hashes after font-size and padding corrections. Synthetic UI transport evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/06-phone-courses.png",
+      "sha256": "14eb9d194b337c6639c01e71b42e177d58555f30befc90f0ae1b5a8051e550f5",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-13T13:29:05.964506+00:00",
+      "captureRun": "2026-11-13T13-27-38-806Z-1e4908a5",
+      "method": "Opened with view_image. Verified shared dashboard icon cards, original values and missing-result text, responsive spacing and contained phone status words. Reviewed final hashes after font-size and padding corrections. Synthetic UI transport evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/08-student-performance.png",
+      "sha256": "0481acbc2e611d1338c479d79ac82d396eaf5dd8e7e40e840aafff5361c71f62",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-13T13:29:05.982582+00:00",
+      "captureRun": "2026-11-13T13-27-38-806Z-1e4908a5",
+      "method": "Opened with view_image. Verified shared dashboard icon cards, original values and missing-result text, responsive spacing and contained phone status words. Reviewed final hashes after font-size and padding corrections. Synthetic UI transport evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/09-admin-controls.png",
+      "sha256": "05d6a359977b8e52bb718644a6f8341722c99ad203d7751d35b32433780a9096",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-13T13:29:05.997285+00:00",
+      "captureRun": "2026-11-13T13-27-38-806Z-1e4908a5",
+      "method": "Opened with view_image. Verified shared dashboard icon cards, original values and missing-result text, responsive spacing and contained phone status words. Reviewed final hashes after font-size and padding corrections. Synthetic UI transport evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/10-teaching-materials-tab.png",
+      "sha256": "e16ddf7682da3c509eea80543547a04e1d26b608c9eb2ea97639c2d9ffee12c1",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-13T13:29:06.006946+00:00",
+      "captureRun": "2026-11-13T13-27-38-806Z-1e4908a5",
+      "method": "Opened with view_image. Verified shared dashboard icon cards, original values and missing-result text, responsive spacing and contained phone status words. Reviewed final hashes after font-size and padding corrections. Synthetic UI transport evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/11-assessments-tab.png",
+      "sha256": "378a7b2432c014a7f3ba2146d19b606e86c72b500ad507609c9303197b3d319a",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-13T13:29:06.018526+00:00",
+      "captureRun": "2026-11-13T13-27-38-806Z-1e4908a5",
+      "method": "Opened with view_image. Verified shared dashboard icon cards, original values and missing-result text, responsive spacing and contained phone status words. Reviewed final hashes after font-size and padding corrections. Synthetic UI transport evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/13-phone-assessment-dialog.png",
+      "sha256": "5a506207dde889a41b18ef2132ccaff54a76dba677c8a026a8b9774fe20bcb8e",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-13T13:29:06.019549+00:00",
+      "captureRun": "2026-11-13T13-27-38-806Z-1e4908a5",
+      "method": "Opened with view_image. Verified shared dashboard icon cards, original values and missing-result text, responsive spacing and contained phone status words. Reviewed final hashes after font-size and padding corrections. Synthetic UI transport evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/14-topic-summary-cards.png",
+      "sha256": "678739a2733f92c25402c70dcc7ab2a2d406e4cceef5cafc5f4e2aa49415f8ee",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-13T13:29:06.031726+00:00",
+      "captureRun": "2026-11-13T13-27-38-806Z-1e4908a5",
+      "method": "Opened with view_image. Verified shared dashboard icon cards, original values and missing-result text, responsive spacing and contained phone status words. Reviewed final hashes after font-size and padding corrections. Synthetic UI transport evidence only."
     }
   ]
 }

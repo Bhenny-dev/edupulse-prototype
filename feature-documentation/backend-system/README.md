@@ -652,3 +652,11 @@ Pulse routes explicit week requests and bounded conversational follow-ups to the
 The operator and local-model paths keep the existing strict content schema, target aliases and immutable section IDs. Only syllabus editor replies declare no chat confirmation; imports, rosters and courseware retain their controls. `applySyllabusDraft` validates again, rebases changed fields against the exact original and current editor, checks shared section membership, and atomically applies a whole chunk or rejects it. An earlier validated chunk remains after a later failure. No placement invokes workspace save or approval. The builder exposes only editable fields/course identity to inference, excluding attachment bytes, history, saved versions and permissions. Bounded preceding topics/user language-source context support later weeks.
 
 Explicit Save as Drafted waits for the normal revision-checked workspace response, preserves the record ID and stays in the builder. AI edits clear approval/activation metadata in the unsaved form and save only as Drafted. Checking, offline approval, approved upload, activation and publication are separate actions. Reload resolves the saved record and never replays inference, saves or transitions. Unsaved form content is not a view hint. See [the release record](../versions/2026-11-13-editable-syllabus/README.md).
+
+## Student summary card consistency - 13 November 2026
+
+AcademicUI renders student KPIs through the existing SummaryCard used by dashboards and Dean records. Role-specific icons use the existing Lucide set and design-token colors. Student cards stay informational; Dean destinations are preserved. This is a presentation change with no API, query, permission, calculation or stored-data changes. [Guide](../system-manual/41-student-learning/README.md#consistent-summary-cards).
+
+SummaryCard lets its text column shrink and wrap long status values so informational results remain contained beside the icon on phones.
+
+Textual statuses use the shared small-text size while numeric values retain the normal summary-value size, keeping long status words readable beside icons.

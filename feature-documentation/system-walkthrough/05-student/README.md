@@ -86,3 +86,5 @@ The local preview persona retains its sample material and timed-assessment lists
 The selected course now has **All**, **Teaching Materials** and **Assessments** tabs. Materials and assessments open in separate page-sized dialogs; assessments show every question together without Previous/Next controls. The authorized course, tab and dialog restore on reload without replaying activity. [Current desktop and phone views](../../system-manual/41-student-learning/README.md#content-filters-and-complete-assessment-view).
 
 Saved score/material/practice labels omit test indicators. Performance attempt and material-access tables omit the Activity column; scores, marking, versions and dates remain. Audit provenance stays stored.
+
+Student learning and performance summaries now use the dashboard SummaryCard component, including colored icon tiles, consistent value/label typography and the shared responsive grid. The course, practice and topic views keep their current recorded data and controls. See [the current summary examples](../../system-manual/41-student-learning/README.md#consistent-summary-cards).

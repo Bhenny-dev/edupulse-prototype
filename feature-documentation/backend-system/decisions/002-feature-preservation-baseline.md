@@ -182,3 +182,9 @@ Remove Pipeline test/test suffixes and the Activity origin column from academic 
 ## Owner correction: direct editable syllabus drafts - 13 November 2026
 
 Generated syllabus wording is validated and placed directly into the open draft form, without a separate chat confirmation. Saved owned drafts reopen as editable targets; saving stays in Syllabus Builder. Week-by-week follow-ups retain the current syllabus/conversation context, explicit week requests override stale selections, and relevant next actions are offered. Preserve immutable IDs, shared scopes, stale/conflict checks, source validation and revision saves. This supersedes generated-syllabus preview/placement confirmation only; file imports, roster operations and courseware retain their existing controls. AI edits never check, approve, activate or publish.
+
+## Owner correction: consistent student summary cards - 13 November 2026
+
+Student My Courses, Practice Assessments and Performance/topic summaries use the existing dashboard SummaryCard rather than a plain duplicate. Preserve the shared icon tile, color tokens, value/label typography and responsive grid. Do not regress: retain current authorized values and missing-result semantics, do not introduce student links to staff records, and preserve existing Dean summary destinations.
+
+Keep long summary status text contained beside its icon on small screens; retain the original status text rather than replacing it with a numeric zero.

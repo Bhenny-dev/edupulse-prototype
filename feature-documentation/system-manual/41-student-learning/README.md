@@ -63,3 +63,13 @@ The routine **Records up to date** indicator and page-header **Export authorized
 ![Assessment dialog on a phone](13-phone-assessment-dialog.png)
 
 Each tab keeps the course and instructor context. Dialogs use the existing focus and Escape behavior, keep the background page in place, and scroll within the viewport. A long assessment remains one continuous question list. The server remains responsible for active enrollment, release dates, time limits, attempt limits and marks.
+
+## Consistent summary cards
+
+My Courses, Practice Assessments, Performance and topic summaries use the same SummaryCard component as the dashboard and other role dashboards. Each card has a colored icon tile beside its value and label, with the shared spacing, type and responsive grid. Counts, score calculations and missing-result text keep their existing meanings. Student summary cards remain informational.
+
+![Shared summary cards on student topic performance](14-topic-summary-cards.png)
+
+Long textual summary values wrap inside their card on narrow screens, including Not attempted before any saved practice attempt.
+
+Textual statuses use the shared small-text size while numeric values retain the normal summary-value size, keeping long status words readable beside icons.
