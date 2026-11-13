@@ -1,6 +1,8 @@
 import {test,expect,type Page} from '@playwright/test'
 import {monitoringUI,monitoringStore} from '../monitoring-fixture'
 
+test.describe.configure({timeout:60000})
+
 const open=async(page:Page)=>{await page.goto('/#/student-monitoring');await page.getByRole('button',{name:'Open IT 102 · BSIT-1A',exact:true}).click();return page.getByRole('dialog',{name:'IT 102 · BSIT-1A monitoring',exact:true})}
 test('monitoring combines year/course/block discovery and scoped scores with a restored student breakdown',async({page})=>{
  await monitoringUI(page);await page.goto('/#/student-monitoring')
@@ -24,11 +26,11 @@ test('material charts and student popover use only this block and real section c
 })
 test('roster edits persist, failed saves stay visible, and removal requires prior suspension',async({page})=>{
  const {store}=await monitoringUI(page);const dialog=await open(page)
- await expect(dialog.getByRole('button',{name:'Remove Synthetic learner',exact:true})).toBeDisabled()
- await dialog.getByRole('button',{name:'Edit Synthetic learner',exact:true}).click();const edit=page.getByRole('dialog',{name:'Edit student membership',exact:true});await edit.getByLabel('Roster name',{exact:true}).fill('Edited learner');store.failSave=true;await edit.getByRole('button',{name:'Save roster changes',exact:true}).click();await expect(edit.getByRole('alert')).toContainText('not confirmed');await expect(edit.getByLabel('Roster name',{exact:true})).toHaveValue('Edited learner')
+ await dialog.getByRole('button',{name:'Actions for Synthetic learner',exact:true}).click();await expect(page.getByRole('menuitem',{name:'Remove',exact:true})).toBeDisabled()
+ await page.getByRole('menuitem',{name:'Edit',exact:true}).click();const edit=page.getByRole('dialog',{name:'Edit student membership',exact:true});await edit.getByLabel('Roster name',{exact:true}).fill('Edited learner');store.failSave=true;await edit.getByRole('button',{name:'Save roster changes',exact:true}).click();await expect(edit.getByRole('alert')).toContainText('not confirmed');await expect(edit.getByLabel('Roster name',{exact:true})).toHaveValue('Edited learner')
  await edit.getByRole('button',{name:'Save roster changes',exact:true}).click();await expect(edit).toHaveCount(0);await page.reload()
- await dialog.getByRole('button',{name:'Suspend Edited learner',exact:true}).click();const suspend=page.getByRole('dialog',{name:'Suspend student membership',exact:true});const writes=store.commands.filter(c=>c.operation==='workspace').length;await page.reload();await expect(suspend).toBeVisible();expect(store.commands.filter(c=>c.operation==='workspace')).toHaveLength(writes)
- await suspend.getByRole('button',{name:'Confirm suspension',exact:true}).click();await expect(suspend).toHaveCount(0);await expect(dialog.getByRole('button',{name:'Remove Edited learner',exact:true})).toBeEnabled();await dialog.getByRole('button',{name:'Remove Edited learner',exact:true}).click();await page.getByRole('button',{name:'Confirm removal',exact:true}).click();await expect(dialog.getByRole('region',{name:'Enrolled students table',exact:true})).not.toContainText('Edited learner')
+ await dialog.getByRole('button',{name:'Actions for Edited learner',exact:true}).click();await page.getByRole('menuitem',{name:'Suspend',exact:true}).click();const suspend=page.getByRole('dialog',{name:'Suspend student membership',exact:true});const writes=store.commands.filter(c=>c.operation==='workspace').length;await page.reload();await expect(suspend).toBeVisible();expect(store.commands.filter(c=>c.operation==='workspace')).toHaveLength(writes)
+ await suspend.getByRole('button',{name:'Confirm suspension',exact:true}).click();await expect(suspend).toHaveCount(0);await dialog.getByRole('button',{name:'Actions for Edited learner',exact:true}).click();await expect(page.getByRole('menuitem',{name:'Remove',exact:true})).toBeEnabled();await page.getByRole('menuitem',{name:'Remove',exact:true}).click();await page.getByRole('button',{name:'Confirm removal',exact:true}).click();await expect(dialog.getByRole('region',{name:'Enrolled students table',exact:true})).not.toContainText('Edited learner')
  expect(store.records.attempts).toHaveLength(5)
 })
 test('students explicitly confirm reading in sequence, and reload never replays opens or progress',async({page})=>{
@@ -47,4 +49,26 @@ test('course filters and new roster registration stay within the selected course
  await monitoringUI(page);await page.goto('/#/student-monitoring');await page.getByRole('combobox',{name:'Year level',exact:true}).selectOption('2');await expect(page.getByRole('button',{name:'Open IT 202 · BSIT-2A',exact:true})).toBeVisible();await expect(page.getByRole('button',{name:'Open IT 102 · BSIT-1A',exact:true})).toHaveCount(0)
  await page.getByRole('combobox',{name:'Year level',exact:true}).selectOption('');await page.getByRole('searchbox',{name:'Search handled classes',exact:true}).fill('BSIT-1A');await expect(page.getByRole('button',{name:'Open IT 102 · BSIT-1B',exact:true})).toHaveCount(0)
  await page.getByRole('button',{name:'Open IT 102 · BSIT-1A',exact:true}).click();const dialog=page.getByRole('dialog',{name:'IT 102 · BSIT-1A monitoring',exact:true});await dialog.getByText('Add students to this block',{exact:true}).click();await dialog.getByRole('button',{name:'Choose students',exact:true}).click();await dialog.getByRole('checkbox',{name:'Select New enrolled learner',exact:true}).check();await expect(dialog.getByLabel('Course for selected students',{exact:true})).toBeDisabled();await expect(dialog.getByRole('textbox',{name:'Block section',exact:true})).not.toBeEditable();await dialog.getByRole('button',{name:'Register selected students (1)',exact:true}).click();await expect(dialog.getByRole('region',{name:'Enrolled students table',exact:true})).toContainText('New enrolled learner');await page.reload();await expect(dialog.getByRole('region',{name:'Enrolled students table',exact:true})).toContainText('New enrolled learner')
+})
+
+
+test('dashboard cards filter memberships; action menus restore without a write and Escape keeps the class open',async({page})=>{
+ const {store}=await monitoringUI(page);const dialog=await open(page)
+ await expect(dialog.locator('.monitoring-summary .kpi-icon')).toHaveCount(4)
+ await dialog.getByRole('button',{name:'Suspended students',exact:true}).click();await expect(dialog).toContainText('No enrolled students match your search.')
+ await dialog.getByRole('button',{name:'Active students',exact:true}).click();await expect(dialog.getByRole('combobox',{name:'Membership status'})).toHaveValue('active')
+ const trigger=dialog.getByRole('button',{name:'Actions for Synthetic learner',exact:true});await trigger.focus();await page.keyboard.press('ArrowDown')
+ const menu=page.getByRole('menu',{name:'Actions for Synthetic learner',exact:true});await expect(menu).toBeVisible();await page.keyboard.press('Escape');await expect(menu).toHaveCount(0);await expect(dialog).toBeVisible();await expect(trigger).toBeFocused()
+ await trigger.click();const writes=store.commands.length;await page.reload();await expect(menu).toBeVisible();expect(store.commands).toHaveLength(writes)
+ await page.keyboard.press('Tab');await expect(menu).toHaveCount(0);await expect(dialog).toBeVisible()
+ await dialog.getByRole('button',{name:'Assessment Scores',exact:true}).click();await expect(dialog.locator('.monitoring-summary .kpi-icon')).toHaveCount(4)
+ await dialog.getByRole('button',{name:'Students in this block',exact:true}).click();await expect(dialog.getByRole('heading',{name:'Assessment scores by student',exact:true})).toBeInViewport()
+})
+
+test('inactive and unreleased courses explain missing data and never manufacture student activity',async({page})=>{
+ const store=monitoringStore();store.records.courses[0].active=false;store.records.courses[0].syllabus_status='checked';store.records.publications=[];store.records.attempts=[];store.records.accesses=[];store.records.reading=[];await monitoringUI(page,'instructor',store)
+ const dialog=await open(page);await dialog.getByRole('button',{name:'Assessment Scores',exact:true}).click();await expect(dialog.getByRole('region',{name:'Course delivery status'})).toContainText('checked syllabus')
+ await dialog.getByRole('button',{name:'Course delivery actions',exact:true}).click();await expect(page.getByRole('menuitem',{name:'Review syllabus',exact:true})).toBeVisible();await page.keyboard.press('Escape')
+ await dialog.getByRole('button',{name:'Learning Material Access',exact:true}).click();await expect(dialog.getByRole('region',{name:'Course delivery status'})).toContainText('Course delivery is not active')
+ expect(store.commands).toHaveLength(0)
 })

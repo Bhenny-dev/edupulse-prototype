@@ -19,11 +19,13 @@ export function monitoringCohorts(data:AcademicData, workspace:Parameters<typeof
  })
 }
 export type Cohort=ReturnType<typeof monitoringCohorts>[number]
+/** Demonstrations retain their audit history but cannot establish independent student progress. */
+export const studentRecorded=(row:{is_test?:boolean|null;admin_actor_id?:unknown})=>row.is_test!==true&&!row.admin_actor_id
 export const yearLabel=(year:string)=>year==='mixed'?'Mixed year levels':year==='unknown'?'Year level not recorded':`Year ${year}`
 export function cohortRecords(data:AcademicData,cohort:Cohort):AcademicData {
  const result=filterAcademic(data,cohort.course.id,cohort.block),emails=new Set(cohort.members.map(m=>emailKey(m.student.Email)))
  const ids=new Set(result.publications.map(p=>p.id)),matches=(e:{student_email?:string;publication_id:string})=>ids.has(e.publication_id)&&emails.has(emailKey(e.student_email))
- return {...result,enrollments:cohort.members.map(m=>({course_id:cohort.course.id,student_email:emailKey(m.student.Email),student_ref:m.student.StudentID,display_name:m.student.Name,block_section:cohort.block,suspended:m.suspended,year_level:m.year})),attempts:result.attempts.filter(matches),accesses:result.accesses.filter(matches),sessions:(data.sessions||[]).filter(matches),reading:(data.reading||[]).filter(matches)}
+ return {...result,enrollments:cohort.members.map(m=>({course_id:cohort.course.id,student_email:emailKey(m.student.Email),student_ref:m.student.StudentID,display_name:m.student.Name,block_section:cohort.block,suspended:m.suspended,year_level:m.year})),attempts:result.attempts.filter(matches).filter(studentRecorded),accesses:result.accesses.filter(matches).filter(studentRecorded),sessions:(data.sessions||[]).filter(matches).filter(studentRecorded),reading:(data.reading||[]).filter(matches).filter(studentRecorded)}
 }
 export const released=(data:AcademicData,kind:'assessment'|'material',now=Date.now())=>data.publications.filter(p=>p.active&&(kind==='assessment'?p.type==='assessment':p.type!=='assessment')&&(!p.release_at||new Date(p.release_at).getTime()<=now)).sort((a,b)=>a.week-b.week||a.title.localeCompare(b.title))
 export function assessmentRows(data:AcademicData) {

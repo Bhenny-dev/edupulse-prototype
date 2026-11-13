@@ -166,3 +166,8 @@ Test badges, the activity-origin selector and the Activity column are removed fr
 ## Direct syllabus draft workspace
 
 Validated generated syllabus fields are placed directly in the mounted builder; **Review changes** is optional. **Open editable syllabus** resolves an owned saved target, and **Save as Drafted** stays in the builder. Explicit weeks override stale field selections; **Week 2 then** and **Complete remaining weeks** continue the same syllabus task. Checking, approval, activation and publication remain separate. [Manual 42](../../system-manual/42-editable-syllabus-workspace/README.md) shows desktop/phone captures and reload boundaries.
+
+
+## Monitoring consistency and independent progress
+
+Student Monitoring uses the Dashboard SummaryCard component for its hub and each class tab. Cards lead to the relevant memberships, charts, delivery status or course; the roster uses three-dot menus for short Edit/Suspend/Resume/Remove actions. These menus and filters restore against the current authorized class without replaying writes. Assessment and access statistics exclude scripted/Admin demonstrations. An unreleased or Checked syllabus explains why delivery is not active, while genuine missing results stay unrecorded. [Current controls and status examples](../../system-manual/37-instructor-monitoring/README.md).

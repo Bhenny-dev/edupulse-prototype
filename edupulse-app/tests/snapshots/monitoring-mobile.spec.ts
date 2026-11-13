@@ -1,6 +1,6 @@
 import {test,type Page,type Locator} from './fixtures'
 import {mkdir,readFile,writeFile} from 'node:fs/promises'
-import {monitoringScenes,monitoringReadingScene} from '../monitoring-ui'
+import {monitoringScenes,monitoringReadingScene,monitoringAvailabilityScenes} from '../monitoring-ui'
 const root='../feature-documentation/system-manual/37-instructor-monitoring'
 const aliases:Record<string,string>={}
 const shot=(page:Page)=>async(name:string,target:Page|Locator=page)=>{
@@ -15,3 +15,5 @@ const shot=(page:Page)=>async(name:string,target:Page|Locator=page)=>{
 }
 test('monitoring class discovery, scoped charts and membership dialogs',async({page})=>{await page.setViewportSize({width:390,height:1400});await monitoringScenes(page,shot(page))})
 test('student confirms sections in the full material reader',async({page})=>{await page.setViewportSize({width:390,height:1400});await monitoringReadingScene(page,shot(page))})
+
+test('monitoring explains the unreleased course without invented results',async({page})=>{await page.setViewportSize({width:390,height:1400});await monitoringAvailabilityScenes(page,shot(page))})

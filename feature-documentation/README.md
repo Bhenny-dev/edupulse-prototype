@@ -6,6 +6,7 @@
 | --- | --- | --- |
 | [13 November student summary cards](versions/2026-11-13-student-summary-cards/README.md) | Dashboard SummaryCard reused across student learning and performance | See validation |
 | [13 November editable syllabus](versions/2026-11-13-editable-syllabus/README.md) | Direct draft fields, saved builder and contextual week continuation | See validation |
+| [Monitoring consistency](versions/2026-11-13-monitoring-consistency/README.md) | Shared summary cards, compact actions and independent student activity | See validation |
 | 2026-11-13 | [Registered syllabus sharing](versions/2026-11-13-syllabus-sharing/README.md) | Registered recipients, safe adoption and suspension before deletion. |
 | [13 November reference repair](versions/2026-11-13-reference-continuations/README.md) | Joined references, catalog discovery and privately indexed readable sources | See validation |
 

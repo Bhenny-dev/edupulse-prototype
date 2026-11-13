@@ -73,3 +73,12 @@ test('monitoring reload keeps only bounded class/student/action references',()=>
  assert.equal(readWorkspaceViews(key,tab).get(`monitoring-roster-action:${scope}`),'suspend')
  assert.equal(tab.rows.get(key)!.includes('Unsaved private form'),false)
 })
+
+
+test('monitoring menus and roster filters retain only bounded navigation hints',()=>{
+ const tab=memory(),key=workspaceViewKey('owner','instructor'),scope='["course","block"]'
+ const entries:[string,unknown][]=[[`monitoring-roster-menu:${scope}`,'learner-ref'],[`monitoring-roster-page:${scope}`,1],[`monitoring-roster-status:${scope}`,'active'],[`monitoring-roster-add:${scope}`,true],[`monitoring-menu:${scope}:materials`,'results']]
+ saveWorkspaceViews(key,new Map(entries),tab);assert.deepEqual([...readWorkspaceViews(key,tab)],entries)
+ for(const [name] of entries){saveWorkspaceViews(key,new Map([[name,{command:'submit',email:'private'}]]),tab);assert.equal(readWorkspaceViews(key,tab).size,0)}
+ saveWorkspaceViews(key,new Map<string,unknown>([[`monitoring-roster-page:${scope}`,99],[`monitoring-roster-status:${scope}`,'approve'],[`monitoring-menu:${scope}:materials`,'submit']]),tab);assert.equal(readWorkspaceViews(key,tab).size,0)
+})

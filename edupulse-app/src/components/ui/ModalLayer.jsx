@@ -21,6 +21,8 @@ export default function ModalLayer({ children, onClick, onDismiss = onClick, cla
     content?.setAttribute('data-pulse-zone', origin.current?.closest('[data-pulse-zone]')?.getAttribute('data-pulse-zone') || 'general')
     const isTop = () => [...document.querySelectorAll('.overlay-backdrop')].at(-1) === ref.current
     const escape = event => {
+      // A portaled action menu handles its own Escape/Tab before focus returns to its trigger.
+      if (event.target.closest?.('[role="menu"]')) return
       // The fullscreen office owns its own focus and Escape handling.
       if (document.querySelector('[data-pulse-ui="office"]')) return
       if (event.key === 'Tab' && isTop()) {

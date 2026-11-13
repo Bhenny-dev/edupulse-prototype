@@ -8,8 +8,8 @@ export async function monitoringScenes(page:Page,shot:MonitoringShot=noop){
  await page.getByRole('button',{name:'Open IT 102 · BSIT-1A',exact:true}).click()
  const dialog=page.getByRole('dialog',{name:'IT 102 · BSIT-1A monitoring',exact:true})
  await expect(dialog.getByRole('region',{name:'Enrolled students table',exact:true})).not.toContainText('Different block learner');await shot('02-class-students',dialog)
- await dialog.getByRole('button',{name:'Edit Synthetic learner',exact:true}).click();await shot('08-edit-membership',page.getByRole('dialog',{name:'Edit student membership',exact:true}));await page.keyboard.press('Escape')
- await dialog.getByRole('button',{name:'Suspend Synthetic learner',exact:true}).click();await shot('09-suspend-membership',page.getByRole('dialog',{name:'Suspend student membership',exact:true}));await page.keyboard.press('Escape')
+ await dialog.getByRole('button',{name:'Actions for Synthetic learner',exact:true}).click();await page.getByRole('menuitem',{name:'Edit',exact:true}).click();await shot('08-edit-membership',page.getByRole('dialog',{name:'Edit student membership',exact:true}));await page.keyboard.press('Escape')
+ await dialog.getByRole('button',{name:'Actions for Synthetic learner',exact:true}).click();await shot('14-roster-actions',page.getByRole('menu',{name:'Actions for Synthetic learner',exact:true}));await page.getByRole('menuitem',{name:'Suspend',exact:true}).click();await shot('09-suspend-membership',page.getByRole('dialog',{name:'Suspend student membership',exact:true}));await page.keyboard.press('Escape')
  await dialog.getByRole('button',{name:'Assessment Scores',exact:true}).click();await expect(dialog.getByRole('img',{name:/^Assessment score radar:/})).toBeVisible();await shot('03-assessment-overview',dialog)
  const panel=(title:string)=>dialog.locator('section.card').filter({has:page.getByRole('heading',{name:title,exact:true})})
  await shot('04-assessment-students',panel('Assessment scores by student'))
@@ -20,4 +20,12 @@ export async function monitoringScenes(page:Page,shot:MonitoringShot=noop){
 }
 export async function monitoringReadingScene(page:Page,shot:MonitoringShot=noop){
  const store=monitoringStore();store.records.reading=[];await monitoringUI(page,'student',store);await page.goto('/#/courseware');await page.getByRole('button',{name:/^Open course /}).first().click();await page.getByRole('button',{name:'Open material',exact:true}).first().click();await page.getByRole('button',{name:'Confirm section 1 read',exact:true}).click();await expect(page.getByRole('region',{name:'Your reading progress',exact:true})).toContainText('1/2');await shot('12-student-reading',page.getByRole('region',{name:'Opened courseware',exact:true}))
+}
+
+export async function monitoringAvailabilityScenes(page:Page,shot:MonitoringShot=noop){
+ const store=monitoringStore();store.records.courses[0].active=false;store.records.courses[0].syllabus_status='checked'
+ store.records.publications=[];store.records.attempts=[];store.records.accesses=[];store.records.reading=[]
+ await monitoringUI(page,'instructor',store);await page.goto('/#/student-monitoring');await page.getByRole('button',{name:'Open IT 102 \u00b7 BSIT-1A',exact:true}).click()
+ const dialog=page.getByRole('dialog',{name:'IT 102 \u00b7 BSIT-1A monitoring',exact:true});await dialog.getByRole('button',{name:'Assessment Scores',exact:true}).click()
+ await expect(dialog.getByRole('region',{name:'Course delivery status'})).toContainText('checked syllabus');await shot('15-delivery-status',dialog)
 }

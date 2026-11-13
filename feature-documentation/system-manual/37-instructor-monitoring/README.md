@@ -8,7 +8,7 @@ Student Monitoring combines the instructor's former monitoring and Performance p
 
 The student summary comes first, followed by **Search handled classes**, **Year level** and **Handled course**, then the year-level categories. Course cards name the course, title, block section and enrolled-student count. The same course in two blocks has two cards. Recorded block/curriculum year is preferred; otherwise consistent recorded student years are used. Missing or mixed year data stays explicit rather than being inferred from a block's spelling. Confirmed empty blocks remain visible.
 
-Select a course/block to open its full-page class dialog. The three tabs are **Students**, **Assessment Scores** and **Learning Material Access**. Every tab starts with its own summary cards. Its URL preserves the selected class and tab across reload. A class that is no longer authorized cannot restore an old roster.
+Select a course/block to open its full-page class dialog. The three tabs are **Students**, **Assessment Scores** and **Learning Material Access**. Every tab uses the same icon summary-card component as Dashboard. Select a card to filter memberships, move to the corresponding chart/table, inspect delivery status, or open Course. **Available places** opens the existing registration area. Its URL preserves the selected class and tab across reload. A class that is no longer authorized cannot restore an old roster.
 
 ![Phone handled classes](mobile-01-handled-classes.png)
 
@@ -16,7 +16,10 @@ Select a course/block to open its full-page class dialog. The three tabs are **S
 
 ![Students in one course block](02-class-students.png)
 
-The table contains only students registered in the selected course block. Search by name, email or student number. **Edit** changes this roster's name, student number, recorded year or block assignment; official directory profiles are unchanged. Moving a learner opens their new block through the handled-class cards. A block supports at most 35 students.
+The table contains only students registered in the selected course block. Search by name, email or student number. **Membership status** filters active and suspended students. Open the three-dot **Actions for [student]** menu for **Edit**, **Suspend** or **Resume**, and **Remove**. Names stay in the student column, not repeated in long action buttons. Menus support arrow keys and Escape; closing one returns focus to its trigger. **Edit** changes this roster's name, student number, recorded year or block assignment; official directory profiles are unchanged. Moving a learner opens their new block through the handled-class cards. A block supports at most 35 students.
+
+![Compact student action menu](14-roster-actions.png)
+![Phone action menu](mobile-14-roster-actions.png)
 
 ![Edit the course membership](08-edit-membership.png)
 
@@ -32,11 +35,11 @@ The table contains only students registered in the selected course block. Search
 
 ![Assessment summaries, radar and history](03-assessment-overview.png)
 
-The summaries and charts use only this course block: assessment score radar, saved attempt history, class average per assessment and submission rate. The radar needs at least three scored assessments; smaller datasets show a truthful explanation. Current-version marked results determine averages. A real zero stays zero; missing or unmarked work is not counted as zero. These are raw scores, not official grades.
+The summaries and charts use only this course block and student-recorded activity. Scripted/Admin exercises remain in the audit data and do not supply monitoring scores, opens or completion. The charts include: assessment score radar, saved attempt history, class average per assessment and submission rate. The radar needs at least three scored assessments; smaller datasets show a truthful explanation. Current-version marked results determine averages. A real zero stays zero; missing or unmarked work is not counted as zero. These are raw scores, not official grades.
 
 ![Student assessment rows](04-assessment-students.png)
 
-The student table shows accessed/started assessments, submitted assessments, the average and submission progress. Select a student to open the assessment breakdown, with each assessment's status, raw score, percentage and the final average at the end. Date filters constrain recorded events. Student search/progress filters constrain the list, while charts continue to describe the selected block. The removed activity-origin selector no longer splits records by test provenance. Audit fields remain stored; scripted activity does not establish independent student completion.
+The student table shows accessed/started assessments, submitted assessments, the average and submission progress. Select a student to open the assessment breakdown, with each assessment's status, raw score, percentage and the final average at the end. Date filters constrain recorded events. Student search/progress filters constrain the list, while charts continue to describe the selected block. There is no activity-origin selector. Monitoring excludes scripted activity; audit fields and earlier records are retained. **Student result actions** contains **Download CSV**.
 
 ![Assessment breakdown](05-assessment-breakdown.png)
 
@@ -97,3 +100,14 @@ Each named active instructor now has 5-10 saved course/block classes, rather tha
 These captures use fictional accounts and controlled transports; they do not display the production students. The [live aggregate receipt](../../versions/2026-11-13-bounded-loads/evidence.json) separately records the saved allocation. Reload the current page or use **Refresh records** when updates are announced to load the saved assignments.
 
 The owner later replaced the instructor class ceiling with a student-course cap and permitted additional instructor classes. **Course blocks** still counts actual saved classes, not a display slice. All student demonstrations retain Pipeline test provenance. See the [current student learning allocation](../41-student-learning/README.md#dashboard-and-performance); the preceding bounded-load examples document the earlier correction.
+
+## When a course has no results
+
+![Unreleased course with accurate delivery status](15-delivery-status.png)
+![Phone unreleased status](mobile-15-delivery-status.png)
+
+**Course delivery status** explains an inactive syllabus, missing released content, or the wait for actual student submissions/reading. Its three-dot menu offers **Review syllabus**, and **Open course** when the corresponding saved syllabus is available. Approval, publication and release dates remain explicit instructor controls. Neither opening this page nor selecting a summary card publishes content or records student activity.
+
+A Checked syllabus is not yet an active approved release. Missing results remain unrecorded; zero is retained only for a genuinely marked zero score. **Assessment score radar** still needs three distinct scored current assessments. The system does not invent results to draw a chart. Date filters report when no saved events match those dates.
+
+Class/tab, membership filters, pagination and an open action menu restore after reload using only account/support-subject-scoped references and current authorized records. Reload never replays Edit, Suspend, Remove, publication, reading confirmation or assessment submission. Live aggregate findings for the reported IT 104 class are recorded separately in [validation](../../versions/2026-11-13-monitoring-consistency/validation/results.md); these screenshots remain fictional UI fixtures.

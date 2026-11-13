@@ -20,6 +20,11 @@ function valid(key:unknown,value:unknown):value is ViewValue {
   if(/^monitoring-followup:/.test(key))return typeof value==='boolean'
   if(/^monitoring-(?:detail|roster-member):/.test(key))return value===null||id(value)
   if(/^monitoring-roster-action:/.test(key))return value===null||['edit','suspend','resume','remove'].includes(value as string)
+  if(/^monitoring-roster-menu:/.test(key))return value===null||id(value)
+  if(/^monitoring-roster-status:/.test(key))return ['all','active','suspended'].includes(value as string)
+  if(/^monitoring-roster-page:/.test(key))return value===0||value===1
+  if(/^monitoring-roster-add:/.test(key))return typeof value==='boolean'
+  if(/^monitoring-menu:/.test(key))return value===null||value==='delivery'||value==='results'
   if(key==='ai-local-model')return id(value)
   if(/^dean-detail:(?:records|instructors|students)$/.test(key))return value===null||(typeof value==='string'&&id(value)&&(/^(?:block|course|instructor):.+$/.test(value)||['students','blocks','years','faculty'].includes(value)))
   if(key==='layout-overlay')return value===null||['search','account','notifications','roles','language','mobile'].includes(value as string)

@@ -660,3 +660,8 @@ AcademicUI renders student KPIs through the existing SummaryCard used by dashboa
 SummaryCard lets its text column shrink and wrap long status values so informational results remain contained beside the icon on phones.
 
 Textual statuses use the shared small-text size while numeric values retain the normal summary-value size, keeping long status words readable beside icons.
+
+
+## Independent monitoring and compact actions
+
+The instructor cohort adapter excludes records marked is_test or carrying admin_actor_id from attempts, sessions, opens and reading progress. It does not delete or rewrite source/audit rows, change publication identity, or convert missing marks to zero. Course/block/date/version filtering and pending-mark exclusions remain. The UI distinguishes inactive delivery, no released content and no independent student activity. Shared SummaryCard and CoursewareActions render compact navigable summaries and menus; portaled menus own Escape/Tab before returning focus. Only bounded menu/filter/page references enter the existing account/support/role-scoped view store; current records resolve them before render. No startup writes, automatic publication, synthetic submissions or database migration is involved. [Validation](../versions/2026-11-13-monitoring-consistency/validation/results.md).

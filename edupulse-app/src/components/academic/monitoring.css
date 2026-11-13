@@ -5,3 +5,7 @@
 @media(max-width:640px){.monitoring-class-overlay{padding-inline:0}.instructor-monitoring>.kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.monitoring-course-modal{width:100vw;height:100dvh;max-height:100dvh;border-radius:0}.monitoring-modal-header{padding:16px;flex-wrap:wrap}.monitoring-modal-header>button{min-height:44px}.monitoring-modal-body{padding:16px}.monitoring-tabs{padding-inline:16px}.monitoring-year-heading{flex-wrap:wrap;gap:8px}.monitoring-course-card{padding:16px;gap:12px}.monitoring-modal-body .academic-grid{grid-template-columns:minmax(0,1fr)}.monitoring-modal-body .kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.monitoring-row-actions{justify-content:flex-end}.monitoring-analytics-filters>*{min-width:0;flex:1 1 140px}}
 
 .monitoring-modal-body .card-header{flex-wrap:wrap;gap:12px}.monitoring-modal-body .card-header>.btn{flex-shrink:0}
+
+.monitoring-summary .kpi-card{min-width:0;text-align:left}.monitoring-summary .kpi-icon{flex-shrink:0}.monitoring-summary .kpi-label{overflow-wrap:anywhere}.monitoring-delivery-state{display:flex;align-items:start;justify-content:space-between;gap:16px;padding:20px;margin-bottom:24px}.monitoring-delivery-state h3{margin-bottom:8px}.monitoring-delivery-state p{color:var(--gray-600);line-height:1.6}.monitoring-modal-body .kpi-grid{flex-shrink:0}.monitoring-summary button{font:inherit}
+
+@media(max-width:640px){.monitoring-summary .kpi-card{flex-direction:column;align-items:flex-start;gap:10px}.monitoring-summary .kpi-label{overflow-wrap:normal;word-break:normal}}

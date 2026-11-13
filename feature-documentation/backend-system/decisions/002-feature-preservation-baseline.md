@@ -188,3 +188,8 @@ Generated syllabus wording is validated and placed directly into the open draft 
 Student My Courses, Practice Assessments and Performance/topic summaries use the existing dashboard SummaryCard rather than a plain duplicate. Preserve the shared icon tile, color tokens, value/label typography and responsive grid. Do not regress: retain current authorized values and missing-result semantics, do not introduce student links to staff records, and preserve existing Dean summary destinations.
 
 Keep long summary status text contained beside its icon on small screens; retain the original status text rather than replacing it with a numeric zero.
+
+
+## Owner correction: independent monitoring and shared cards - 13 November 2026
+
+Use Dashboard's SummaryCard component throughout instructor monitoring and put roster actions inside three-dot menus. The owner requires true student activity, excluding scripted demonstrations from monitoring scores/access/reading. This supersedes the earlier instruction to include the same saved demonstration rows in monitoring while hiding origin labels. Preserve those audit rows, approval/publication controls, zero-vs-missing marks, course/block/version boundaries, suspension-before-removal and no-write reload. Do not fabricate student activity to populate an unreleased class.
