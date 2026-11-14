@@ -1,4 +1,4 @@
-import { readFile, readdir, stat, mkdtemp, writeFile, rm } from 'node:fs/promises'
+import { readFile, readdir, stat, mkdir, mkdtemp, writeFile, rm } from 'node:fs/promises'
 import assert from 'node:assert/strict'
 import { tmpdir } from 'node:os'
 import { join, dirname, resolve, basename } from 'node:path'
@@ -18,6 +18,11 @@ try {
     const emitted = stripTypeScriptTypes(source)
     await writeFile(join(nativeDir, `${name}.js`), emitted)
   }
+  await mkdir(join(nativeDir, 'rag'))
+  for (const name of ['systemChatPolicy', 'rag/lookup', 'rag/text']) {
+    await writeFile(join(nativeDir, `${name}.js`), stripTypeScriptTypes(await readFile(`src/lib/${name}.ts`, 'utf8')))
+  }
+  execFileSync(process.execPath, ['--input-type=module', '-e', `const {contentGenerationRequest}=await import(${JSON.stringify(pathToFileURL(join(nativeDir,'systemChatPolicy.js')).href)});if(contentGenerationRequest('hello'))throw new Error('Ordinary chat cannot generate')`], {env:{...process.env,NODE_OPTIONS:''},stdio:'pipe'})
   execFileSync(process.execPath, ['--input-type=module', '-e', `const { BUDDIES } = await import(${JSON.stringify(pathToFileURL(join(nativeDir, 'buddies.js')).href)}); if (BUDDIES.length !== 6) throw new Error('Missing buddy definitions')`], { env: { ...process.env, NODE_OPTIONS: '' }, stdio: 'pipe' })
 } finally {
   assert.equal(dirname(resolve(nativeDir)), resolve(tmpdir()))

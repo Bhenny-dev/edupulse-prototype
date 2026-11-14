@@ -1,4 +1,4 @@
-import { wordMatch, words } from './rag/lookup'
+import { wordMatch, words } from './rag/lookup.js'
 
 /** Explicit educational authoring is the only chat route that can invoke a generation model. */
 export function contentGenerationRequest(message: string, task = 'auto', hasEditor = false) {
@@ -30,4 +30,3 @@ export function sourceDestination(value: { path?: unknown; label?: unknown } | n
   if (!value || typeof value.path !== 'string' || value.path.length > 1500 || !/^\/(?:courseware|dashboard|student-monitoring|records|students|instructors|monitor|settings)(?:\?|$)/.test(value.path) || /[\r\n\\]/.test(value.path)) return null
   return { path: value.path, label: String(value.label || 'Open in EduPulse').slice(0, 100) }
 }
-

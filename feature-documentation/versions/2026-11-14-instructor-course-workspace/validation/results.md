@@ -16,6 +16,8 @@ Seven current screenshots were captured and opened by the Codex agent. The final
 
 A hosted signed upload/download canary was not run: CLI key discovery masks the modern secret. Strict validation rejected it before creating an account or file. No legacy credential, paid inference, physical microphone test or live student attempt was used. Native RLS/API and controlled browser checks are separate evidence, not a claim of live upload success. Existing security advisors reported eight unrelated warnings and no teaching-Storage finding.
 
+The shared system-chat policy also passes a plain Node ESM import diagnostic with fully qualified relative imports, alongside the existing buddy-module check. This transport-only correction changes no screen.
+
 ## Deployment
 
 Production runtime verification is recorded after the main push. Existing GitHub Actions billing availability must not be represented as passed unless the run actually starts and succeeds.
