@@ -3,7 +3,7 @@ import { downloadMaterialPdf } from '../../utils/pdfExport'
 import { jsonValue } from '../../utils/jsonValue'
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { X, Send, Paperclip, Square, Route, Sparkles, MoreHorizontal, Mic } from 'lucide-react'
+import { X, Send, Paperclip, Square, Route, Sparkles, MoreHorizontal, Mic, Volume2 } from 'lucide-react'
 import PulseAvatar from './PulseAvatar'
 import { pulse as pulseBus } from './pulseBus'
 import { useAuth } from '../../context/AuthContext'
@@ -541,7 +541,7 @@ export default function Pulse() {
           <small>{message.from === 'user' ? 'You' : 'Pulse'}</small>
           {message.from === 'pulse' && message.trace ? <AgentAnswer compact message={message} onDownload={message.mode === 'generated' ? () => downloadMaterialPdf({ title: 'Pulse learning material', text: message.text, sources: message.sources }).catch(error => setError(error.message)) : undefined} onRevise={note => void send(`Revise your previous answer: ${note}`, { task: message.task, skipOperator: true })} /> : message.mode === 'actions' ? <div className="pulse-actions">{message.proposals.map((proposal, i) => <PulseAction key={i} proposal={proposal} ctx={{...actionContext,activeSyllabus:message.id===latestSyllabusAction}} />)}</div> : <div className="connected-pulse-text">{message.text}</div>}
           {message.from === 'pulse' && message.text && message.mode === 'generated' && !message.trace && <details><summary>Response actions</summary><button className="btn btn-secondary btn-sm" onClick={() => downloadMaterialPdf({ title: 'Pulse learning material', text: message.text, sources: message.sources }).catch(error => setError(error.message))}>Download response as PDF</button></details>}
-
+          {message.from === 'pulse' && message.text && <button type="button" className="pulse-read-aloud" aria-pressed={voice.readingId === message.id} aria-disabled={!voice.canSpeak} title={voice.canSpeak ? 'Read a spoken excerpt of this reply' : 'Spoken replies are unavailable in this browser'} onClick={() => voice.readingId === message.id ? voice.stop() : void voice.read(message.text, message.id)}>{voice.readingId === message.id ? <Square size={15} /> : <Volume2 size={15} />}{voice.readingId === message.id ? 'Stop reading' : 'Read aloud'}</button>}
           {message.attachedNames?.length > 0 && <small>References: {message.attachedNames.join(', ')}</small>}
           {/* Files used only by an action card are attached, not sent to the answer agents as references. */}
           {message.fileNames?.length > 0 && <small>Attached: {message.fileNames.join(', ')}</small>}
@@ -555,10 +555,11 @@ export default function Pulse() {
       <span className="sr-only pulse-context-status" role="status">{archive.saving || archive.unsaved ? 'Saving conversation' : archive.threadId ? 'Conversation saved' : ''}</span>
       {visibleFiles.length > 0 && <ul className="connected-pulse-attachments">{visibleFiles.map((a, i) => <li key={i}><span>{a.title}{a.roster ? ` · class list, ${a.roster.students.length} students` : a.text.length > CHAT_REFERENCE ? ' · long file: chat reads the first 18,000 characters' : ''}</span><button aria-label={`Remove ${a.title}`} onClick={() => { setAttachments(previous => previous.filter((_, index) => i !== index)); setContextFiles(previous => previous.filter(file => file.fileName !== a.fileName)) }}><X size={13} /></button></li>)}</ul>}
       <PulseVoice voice={voice} blocked={busy || fileBusy} hasDraft={Boolean(input.trim())} />
+      {!voice.enabled && voice.error && <div role="alert" className="connected-pulse-error">{voice.error}</div>}
       <form className="connected-pulse-form" onSubmit={event => { event.preventDefault(); if (!voice.hearing) { voice.stop(); void send() } }}>
         <input ref={fileRef} type="file" hidden multiple accept={UPLOAD_ACCEPT} onChange={e => { void attachFiles(Array.from(e.target.files || [])); e.target.value = '' }} />
         <button type="button" disabled={busy || fileBusy} onClick={() => fileRef.current?.click()} aria-label="Attach reference" title="Attach files, or drop up to three files onto Pulse"><Paperclip size={18} /></button>
-        {voice.enabled && <button type="button" className="pulse-voice-toggle" aria-label="Disable voice input" aria-pressed="true" onClick={voice.toggle}><Mic size={18} /></button>}
+        <button type="button" className="pulse-voice-toggle" aria-label={voice.enabled ? 'Disable voice input' : 'Voice input'} title={voice.enabled ? 'Hide voice controls' : 'Show voice controls'} aria-pressed={voice.enabled} onClick={voice.toggle}><Mic size={18} /></button>
         <textarea ref={inputRef} value={input} onChange={e => setInput(e.target.value)} maxLength={4000} rows={voice.enabled ? 3 : 2} placeholder="Ask, draft, compare or find references…" aria-label="Ask Pulse" onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) { e.preventDefault(); if (!voice.hearing) { voice.stop(); void send() } } }} />
         {busy ? <button type="button" onClick={() => { voice.stop(); requestRef.current?.abort() }} aria-label="Stop response"><Square size={17} /></button> : <button type="submit" disabled={(!input.trim() && !attachments.length) || fileBusy || voice.hearing} aria-label="Send"><Send size={18} /></button>}
       </form>{fileBusy && <small className="connected-pulse-footnote" role="status">{fileNotice || 'Reading files…'}</small>}

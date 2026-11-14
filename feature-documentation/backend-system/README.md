@@ -337,6 +337,8 @@ The Courseware page delegates its combined list, weekly workspace and keyboard-a
 
 ## Voice and precise OpenAI limits, 7 November 2026
 
+Voice discoverability was corrected on 14 November: the composer microphone button is always visible, and every Pulse text reply has independent Read aloud / Stop reading. The existing browser synthesis lifecycle is reused without a new API, database write, paid inference or audio storage. Playback does not depend on recognition support; late cancelled utterance callbacks cannot end a replacement playback. Errors remain visible with the voice panel closed. See the [voice access release record](../versions/2026-11-14-pulse-voice-access/README.md).
+
 `server/openaiErrors.ts` classifies documented OpenAI machine codes for both discovery and generation. Responses expose only fixed guidance and validated Retry-After seconds, never private provider bodies. Existing account credentials remain encrypted; no paid inference retry or model switch is added. Optional browser-native voice feeds the existing Pulse text/tool path, with explicit review or conversation mode and existing confirmation boundaries. No audio endpoint, audio storage or transcription billing is added. [Manual 20](../system-manual/20-voice-and-provider-errors/README.md) and [validation](../versions/2026-11-07-voice-and-quota/validation/results.md) separate synthetic speech/provider checks from live capabilities.
 
 ### Automatic records and course membership

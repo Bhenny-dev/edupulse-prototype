@@ -4824,6 +4824,118 @@
       "reviewedAt": "2026-11-14T01:00:21.553152+00:00",
       "captureRun": "2026-11-14T00-58-51-451Z-6ae82e2e",
       "method": "Opened with view_image. Verified all three listed references, one retained readable copy, separate unavailable/book-metadata states, no obsolete weekly link, and unobstructed desktop/phone source-panel crops. Fixed top bar and mascot are hidden only for these component captures. Synthetic source/provider transport evidence."
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/01-voice-controls.png",
+      "sha256": "0419d8bc96aa6823410b8a7286daac1663afc7c19ec26635bc025caa04d9ab36",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-14T07:02:31.371761+00:00",
+      "captureRun": "2026-11-14T07-01-06-981Z-eb8ba9e6",
+      "method": "Opened with view_image. Verified visible speaker/microphone controls, reading/stop states, transcript, permission and quota recovery, dark surfaces and phone containment. Synthetic speech and account/provider UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/02-listening-tagalog-english.png",
+      "sha256": "4ead60c62c3c07af3e75514b50498f7d31926bd778319234238261e1280a7e97",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-14T07:02:31.372144+00:00",
+      "captureRun": "2026-11-14T07-01-06-981Z-eb8ba9e6",
+      "method": "Opened with view_image. Verified visible speaker/microphone controls, reading/stop states, transcript, permission and quota recovery, dark surfaces and phone containment. Synthetic speech and account/provider UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/03-review-transcript.png",
+      "sha256": "fd1ea5b6605a9311091d0975df7e03b4562547e6aad292b0065c02362046f9d6",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-14T07:02:31.372415+00:00",
+      "captureRun": "2026-11-14T07-01-06-981Z-eb8ba9e6",
+      "method": "Opened with view_image. Verified visible speaker/microphone controls, reading/stop states, transcript, permission and quota recovery, dark surfaces and phone containment. Synthetic speech and account/provider UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/04-conversation-reading.png",
+      "sha256": "0f08de83e088425f16dad7124813862dab38f05060a70817e46e2f5056e356fc",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-14T07:02:31.372684+00:00",
+      "captureRun": "2026-11-14T07-01-06-981Z-eb8ba9e6",
+      "method": "Opened with view_image. Verified visible speaker/microphone controls, reading/stop states, transcript, permission and quota recovery, dark surfaces and phone containment. Synthetic speech and account/provider UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/05-openai-credit-error.png",
+      "sha256": "a081499f1d670450356520dbbc9b99550f1cebff11f85ee1842f756ff0c7470a",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-14T07:02:31.372933+00:00",
+      "captureRun": "2026-11-14T07-01-06-981Z-eb8ba9e6",
+      "method": "Opened with view_image. Verified visible speaker/microphone controls, reading/stop states, transcript, permission and quota recovery, dark surfaces and phone containment. Synthetic speech and account/provider UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/06-experimental-language.png",
+      "sha256": "face7c33bc9f59ae96a2680eaffc000bc378b6be1efe928954bd107a76a72a62",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-14T07:02:31.373146+00:00",
+      "captureRun": "2026-11-14T07-01-06-981Z-eb8ba9e6",
+      "method": "Opened with view_image. Verified visible speaker/microphone controls, reading/stop states, transcript, permission and quota recovery, dark surfaces and phone containment. Synthetic speech and account/provider UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/07-microphone-denied.png",
+      "sha256": "0a4bae92476ed73dfa71cfca05041ff29be2c14e44ff42d598d14d371b40a6bf",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-14T07:02:31.373349+00:00",
+      "captureRun": "2026-11-14T07-01-06-981Z-eb8ba9e6",
+      "method": "Opened with view_image. Verified visible speaker/microphone controls, reading/stop states, transcript, permission and quota recovery, dark surfaces and phone containment. Synthetic speech and account/provider UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/08-voice-dark.png",
+      "sha256": "619e5c31fc0f3d0c5d1756ce0b0c1ae27014775112aa98be9d77adea2d366505",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-14T07:02:31.373513+00:00",
+      "captureRun": "2026-11-14T07-01-06-981Z-eb8ba9e6",
+      "method": "Opened with view_image. Verified visible speaker/microphone controls, reading/stop states, transcript, permission and quota recovery, dark surfaces and phone containment. Synthetic speech and account/provider UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/09-reply-read-aloud.png",
+      "sha256": "52f2904b84eeaf2b5986ba16296d627cf75fccb3638f057432d32314ded38967",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-14T07:02:31.373679+00:00",
+      "captureRun": "2026-11-14T07-01-06-981Z-eb8ba9e6",
+      "method": "Opened with view_image. Verified visible speaker/microphone controls, reading/stop states, transcript, permission and quota recovery, dark surfaces and phone containment. Synthetic speech and account/provider UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/10-reading-reply.png",
+      "sha256": "c0ba55b27ee6691d233cdbe3a7bceeab4bf827e487a3d24b926caf010add6b56",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-14T07:02:31.373835+00:00",
+      "captureRun": "2026-11-14T07-01-06-981Z-eb8ba9e6",
+      "method": "Opened with view_image. Verified visible speaker/microphone controls, reading/stop states, transcript, permission and quota recovery, dark surfaces and phone containment. Synthetic speech and account/provider UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/mobile-03-review-transcript.png",
+      "sha256": "3c8cd5544456a67ca32df6b11a48672753dea762f483355db1bc83b90dff8047",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-14T07:02:31.374220+00:00",
+      "captureRun": "2026-11-14T07-01-06-981Z-eb8ba9e6",
+      "method": "Opened with view_image. Verified visible speaker/microphone controls, reading/stop states, transcript, permission and quota recovery, dark surfaces and phone containment. Synthetic speech and account/provider UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/mobile-05-openai-credit-error.png",
+      "sha256": "a6b1fb8b2a7a2a8950718cc6a667cb421e9326caf881d03b01b6d7755da8386d",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-14T07:02:31.374658+00:00",
+      "captureRun": "2026-11-14T07-01-06-981Z-eb8ba9e6",
+      "method": "Opened with view_image. Verified visible speaker/microphone controls, reading/stop states, transcript, permission and quota recovery, dark surfaces and phone containment. Synthetic speech and account/provider UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/mobile-09-reply-read-aloud.png",
+      "sha256": "42f2c42d8a7ef1f414bcc5a886132f46adfdd85649c2bfa518922c5be2935ea2",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-14T07:02:31.374919+00:00",
+      "captureRun": "2026-11-14T07-01-06-981Z-eb8ba9e6",
+      "method": "Opened with view_image. Verified visible speaker/microphone controls, reading/stop states, transcript, permission and quota recovery, dark surfaces and phone containment. Synthetic speech and account/provider UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/mobile-10-reading-reply.png",
+      "sha256": "7fa352639a419bd5761c8d170fc1ea377a59c8678bdfef4ed2ad5ab645f872ba",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-14T07:02:31.375164+00:00",
+      "captureRun": "2026-11-14T07-01-06-981Z-eb8ba9e6",
+      "method": "Opened with view_image. Verified visible speaker/microphone controls, reading/stop states, transcript, permission and quota recovery, dark surfaces and phone containment. Synthetic speech and account/provider UI evidence only."
     }
   ]
 }

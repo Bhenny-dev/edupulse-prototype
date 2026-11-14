@@ -197,3 +197,7 @@ Use Dashboard's SummaryCard component throughout instructor monitoring and put r
 ## Correction: canonical section reference collection - 14 November 2026
 
 Collect source references from the actual outline sections, using weekly resources only for older rows without sections. Do not regress: section-only saved outlines must not lose source links, stale weekly projections must not reintroduce removed links, shared-section references must deduplicate, and selected-week generation must retain the overall bibliography without including unrelated weeks. Keep collection immutable, the existing 80-reference bound, exact citation associations, unread-source disclosure and private source boundaries. No saved-data rewrite is required.
+
+## Correction: discoverable Pulse voice and independent playback - 14 November 2026
+
+Keep the microphone control visible beside the message box before voice is enabled. Every Pulse text reply offers explicit Read aloud / Stop reading using existing browser speech playback, even without recognition support. Do not regress: no permission request until Start listening, no model call to reread text, no automatic audio on opening/reloading, account/view cleanup and typed chat remain available. Playback uses the existing bounded excerpt and speech-language preference. Stop or replacement must invalidate late callbacks from an older utterance; unavailable or failed playback must explain itself even with voice controls closed.

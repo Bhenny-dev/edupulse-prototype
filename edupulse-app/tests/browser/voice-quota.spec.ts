@@ -1,13 +1,49 @@
 import { test, expect } from '@playwright/test'
-import { reviewVoice, conversationVoice, languageVoice, voiceUI } from '../voice-quota-fixture'
+import { reviewVoice, conversationVoice, languageVoice, voiceUI, readReplyVoice } from '../voice-quota-fixture'
 test('dictation keeps mixed-language speech editable and requires Send', async ({ page }) => { await reviewVoice(page) })
 test('voice conversation reads replies, resumes, navigates in Tagalog and stops on quota errors', async ({ page }) => { await conversationVoice(page) })
 test('unsupported languages, denied microphone and panel closing stop audio safely', async ({ page }) => { await languageVoice(page) })
 test('unsupported browser retains typed chat', async ({ page }) => {
-  const { dialog } = await voiceUI(page, true)
+  const { dialog } = await voiceUI(page, { recognition: false })
   await expect(dialog).toContainText('Speech recognition is unavailable')
   await expect(dialog.getByRole('button', { name: 'Start listening' })).toHaveCount(0)
   await dialog.getByRole('textbox', { name: 'Ask Pulse', exact: true }).fill('hello')
   await dialog.getByRole('button', { name: 'Send', exact: true }).click()
   await expect(dialog).toContainText('Hi! What would you like')
+})
+test('visible reply playback works without microphone support and stops on close', async ({ page }) => {
+  const { calls } = await readReplyVoice(page)
+  await page.reload()
+  await page.getByRole('button', { name: 'Open Pulse assistant', exact: true }).click()
+  await expect(page.getByRole('button', { name: 'Voice input', exact: true })).toBeVisible()
+  expect(await page.evaluate(() => (window as any).syntheticSpeech.spoken)).toEqual([])
+  expect(await page.evaluate(() => (window as any).syntheticSpeech.starts)).toBe(0)
+  expect(calls()).toBe(1)
+})
+test('unavailable playback explains the limitation and retains typed chat', async ({ page }) => {
+  const { dialog } = await voiceUI(page, { controls: false, playback: false })
+  await dialog.getByRole('textbox', { name: 'Ask Pulse', exact: true }).fill('Explain variables')
+  await dialog.getByRole('button', { name: 'Send', exact: true }).click()
+  await expect(dialog).toContainText('Ang variable ay may pangalan')
+  await dialog.getByRole('button', { name: 'Read aloud', exact: true }).focus()
+  await dialog.getByRole('button', { name: 'Read aloud', exact: true }).press('Enter')
+  await expect(dialog.getByRole('alert')).toContainText('Spoken replies are unavailable')
+  expect(await page.evaluate(() => (window as any).syntheticSpeech.starts)).toBe(0)
+})
+test('a cancelled speech callback cannot stop the next reply playback', async ({ page }) => {
+  const { dialog } = await voiceUI(page, { controls: false })
+  for (const prompt of ['Explain variables', 'Explain constants']) {
+    await dialog.getByRole('textbox', { name: 'Ask Pulse', exact: true }).fill(prompt)
+    await dialog.getByRole('button', { name: 'Send', exact: true }).click()
+    await expect(dialog.getByRole('button', { name: 'Read aloud', exact: true })).toHaveCount(prompt.endsWith('variables') ? 1 : 2)
+  }
+  await dialog.getByRole('button', { name: 'Read aloud', exact: true }).first().click()
+  await page.evaluate(() => { (window as any).cancelledSpeech = (window as any).syntheticSpeech.speech })
+  await dialog.getByRole('button', { name: 'Read aloud', exact: true }).click()
+  await page.evaluate(() => (window as any).cancelledSpeech.onerror())
+  await expect(dialog.getByRole('button', { name: 'Stop reading', exact: true })).toHaveCount(1)
+  await expect(dialog.getByRole('alert')).toHaveCount(0)
+  await page.evaluate(() => (window as any).syntheticSpeech.speech.onerror())
+  await expect(dialog.getByRole('alert')).toContainText('could not read the reply aloud')
+  await expect(dialog.getByRole('button', { name: 'Stop reading', exact: true })).toHaveCount(0)
 })

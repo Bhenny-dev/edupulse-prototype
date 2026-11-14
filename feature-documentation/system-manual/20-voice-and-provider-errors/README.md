@@ -4,7 +4,7 @@ These captures use synthetic speech recognition, speech playback, account and pr
 
 ## Enable voice in Pulse
 
-Open **Pulse options** (the three-dot button), then **Voice input**. Voice is off initially. The controls appear inside the chat; there is no microphone permission request until you choose **Start listening**. The microphone button beside the message box disables voice again.
+The **Voice input** microphone button is always visible beside the message box. Select it to show the controls; select it again to hide them. **Pulse options → Voice input** remains available too. Voice is off initially, and there is no microphone permission request until you choose **Start listening**.
 
 ![Optional voice controls](01-voice-controls.png)
 
@@ -27,6 +27,20 @@ After the browser finalizes the utterance, its transcript is appended to your ex
 ![Editable transcript before Send](03-review-transcript.png)
 
 ![Transcript review on a phone](mobile-03-review-transcript.png)
+
+## Read a reply aloud
+
+Every text reply from Pulse has a **Read aloud** speaker button. It works for typed conversations with the voice controls closed, including browsers that support playback but have no speech recognition. Choose it to hear a spoken excerpt of up to 2,400 characters; the full reply stays in chat. **Stop reading** cancels playback. Selecting another reply stops the previous one. Reading an existing reply does not send a new AI request or start the microphone.
+
+![Visible speaker and microphone controls](09-reply-read-aloud.png)
+
+![Stop reading during reply playback](10-reading-reply.png)
+
+![Reply playback controls on a phone](mobile-09-reply-read-aloud.png)
+
+![Stop reading on a phone](mobile-10-reading-reply.png)
+
+The selected **Speech language** also applies to reply playback. Playback failures appear in chat even when voice controls are closed. A browser without speech playback marks the control unavailable and explains the limitation when selected. Closing Pulse, hiding the browser tab or changing account/view stops playback. Reopening or reloading never resumes audio.
 
 ## Optional conversation mode
 

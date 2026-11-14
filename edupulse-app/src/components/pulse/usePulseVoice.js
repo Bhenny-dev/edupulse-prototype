@@ -23,6 +23,7 @@ const errors = {
 export default function usePulseVoice({ owner, active, blocked, onTranscript, onPrompt }) {
   const [enabled, setEnabled] = useState(false), [prefs, setPrefs] = useState(() => preferences(owner))
   const [state, setState] = useState('idle'), [interim, setInterim] = useState(''), [error, setError] = useState('')
+  const [readingId, setReadingId] = useState(null)
   const engine = useRef(null), epoch = useRef(0), running = useRef(false), timer = useRef(null), finishSpeech = useRef(null)
   const current = useRef(null), begin = useRef(null)
   current.current = { active, blocked, prefs, onTranscript, onPrompt }
@@ -34,7 +35,7 @@ export default function usePulseVoice({ owner, active, blocked, onTranscript, on
     const recognition = engine.current; engine.current = null
     if (recognition) { recognition.onend = recognition.onresult = recognition.onerror = recognition.onstart = null; try { recognition.abort() } catch { /* Already ended. */ } }
     if (finishSpeech.current) { const finish = finishSpeech.current; finishSpeech.current = null; window.speechSynthesis?.cancel(); finish() }
-    setState('idle'); setInterim('')
+    setState('idle'); setInterim(''); setReadingId(null)
   }, [])
   useEffect(() => { stop(); setEnabled(false); setError(''); setPrefs(preferences(owner)); return stop }, [owner, stop])
   useEffect(() => {
@@ -48,16 +49,26 @@ export default function usePulseVoice({ owner, active, blocked, onTranscript, on
     return () => document.removeEventListener('visibilitychange', hidden)
   }, [stop])
   async function speak(text, version) {
-    if (!current.current.prefs.readReplies || !canSpeak || !text) return
+    if (!canSpeak || !text) return
     setState('speaking')
     const speech = new window.SpeechSynthesisUtterance(text.replace(/https?:\/\/\S+/g, ' link ').replace(/[*_#`]/g, '').slice(0, 2400))
     speech.lang = current.current.prefs.language
     await new Promise(resolve => {
       finishSpeech.current = resolve
-      speech.onend = () => { finishSpeech.current = null; resolve() }
-      speech.onerror = () => { finishSpeech.current = null; if (version === epoch.current) { running.current = false; setError('This device could not read the reply aloud. Turn off Read replies aloud or select another language.'); setState('idle') } resolve() }
-      window.speechSynthesis.speak(speech)
+      const finish = () => { if (finishSpeech.current === resolve) finishSpeech.current = null; resolve() }
+      speech.onend = finish
+      speech.onerror = () => { if (version === epoch.current) { running.current = false; setError('This device could not read the reply aloud. Try another speech language in Voice input.'); setState('idle') } finish() }
+      try { window.speechSynthesis.speak(speech) } catch { speech.onerror() }
     })
+  }
+  const read = async (text, id) => {
+    stop(); setError('')
+    if (!current.current.active) return
+    if (!canSpeak) { setError('Spoken replies are unavailable in this browser. You can still read the reply in chat.'); return }
+    const version = epoch.current
+    setReadingId(id)
+    await speak(text, version)
+    if (version === epoch.current) { setReadingId(null); setState('idle') }
   }
   begin.current = () => {
     if (!current.current.active || current.current.blocked || !running.current) { running.current = false; setState('idle'); return }
@@ -96,7 +107,7 @@ export default function usePulseVoice({ owner, active, blocked, onTranscript, on
         const reply = await current.current.onPrompt(text)
         if (version !== epoch.current || !running.current) return
         if (reply === false) { running.current = false; setState('idle'); return }
-        await speak(typeof reply === 'string' ? reply : '', version)
+        if (current.current.prefs.readReplies) await speak(typeof reply === 'string' ? reply : '', version)
         if (version === epoch.current && running.current) { setState('idle'); requestAnimationFrame(() => begin.current()) }
       } catch { if (version === epoch.current) { stop(); setError('Voice conversation stopped. Review the chat before trying again.') } }
     }
@@ -111,5 +122,5 @@ export default function usePulseVoice({ owner, active, blocked, onTranscript, on
   }
   const configure = change => { stop(); setError(''); setPrefs(previous => ({ ...previous, ...change })) }
   const toggle = () => { stop(); setError(''); setEnabled(value => !value) }
-  return { enabled, toggle, supported, canSpeak, prefs, configure, start, stop, state, interim, error, hearing: state === 'starting' || state === 'listening', engaged: state !== 'idle' }
+  return { enabled, toggle, supported, canSpeak, prefs, configure, start, stop, read, readingId, state, interim, error, hearing: state === 'starting' || state === 'listening', engaged: state !== 'idle' }
 }

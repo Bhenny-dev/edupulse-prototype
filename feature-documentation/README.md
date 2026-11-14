@@ -4,6 +4,7 @@
 
 | Folder | Covers | Contents |
 | --- | --- | --- |
+| [14 November Pulse voice access](versions/2026-11-14-pulse-voice-access/README.md) | Visible microphone control and independent reply playback | See validation |
 | [14 November outline section references](versions/2026-11-14-outline-section-references/README.md) | Canonical section links reach retained-source preparation and weekly generation | See validation |
 | [13 November student summary cards](versions/2026-11-13-student-summary-cards/README.md) | Dashboard SummaryCard reused across student learning and performance | See validation |
 | [13 November editable syllabus](versions/2026-11-13-editable-syllabus/README.md) | Direct draft fields, saved builder and contextual week continuation | See validation |

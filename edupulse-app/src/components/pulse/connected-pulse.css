@@ -20,6 +20,9 @@
 .connected-pulse-welcome p { font-size: .85rem; line-height: 1.6; margin-bottom: 14px; }
 .connected-pulse-message { margin-bottom: 16px; padding: 12px; border-radius: 12px; background: var(--gray-50); font-size: .85rem; overflow-wrap: anywhere; }
 .connected-pulse-message.from-user { margin-left: 24px; background: var(--sky-50); }
+.pulse-read-aloud { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; margin-top: 8px; padding: 6px 10px; border: 1px solid var(--gray-200); border-radius: 8px; background: var(--white); color: var(--sky-700); font: inherit; font-size: .78rem; }
+.pulse-read-aloud[aria-pressed="true"] { background: var(--sky-50); }
+.pulse-read-aloud[aria-disabled="true"] { color: var(--gray-600); }
 .connected-pulse-text { white-space: pre-wrap; line-height: 1.65; margin-top: 6px; }
 .connected-pulse details { margin-top: 10px; font-size: .78rem; }
 .connected-pulse summary { cursor: pointer; color: var(--sky-700); padding: 5px 0; }

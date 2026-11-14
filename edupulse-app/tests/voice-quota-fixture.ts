@@ -4,7 +4,7 @@ import { providerFixture } from './browser/provider-fixture'
 
 export type Shot = (name: string) => Promise<void>
 const noShot: Shot = async () => {}
-export async function voiceUI(page: Page, unsupported = false) {
+export async function voiceUI(page: Page, options: { recognition?: boolean, playback?: boolean, controls?: boolean } = {}) {
   const provider = await providerFixture(page, { identity: { mode: 'authenticated', role: 'instructor' }, database: { ready: false, kind: 'supabase', message: 'Synthetic UI fixture' } }); provider.authorize('openai')
   await academicUI(page, async () => ({ json: {} }))
   await page.route('**/api/ai?*', route => {
@@ -13,7 +13,7 @@ export async function voiceUI(page: Page, unsupported = false) {
     if (action === 'operator') return route.fulfill({ json: { plan: { tool: 'chat' } } })
     return route.fallback()
   })
-  await page.addInitScript(({ unsupported }) => {
+  await page.addInitScript(({ recognition, playback }) => {
     const state = { engines: [] as any[], starts: 0, aborts: 0, speech: null as any, spoken: [] as string[] }
     Object.assign(window, { syntheticSpeech: state })
     class Recognition {
@@ -23,11 +23,11 @@ export async function voiceUI(page: Page, unsupported = false) {
       stop() { this.onend?.() }
       abort() { state.aborts++; this.onend?.() }
     }
-    Object.defineProperty(window, 'SpeechRecognition', { configurable: true, value: unsupported ? undefined : Recognition })
+    Object.defineProperty(window, 'SpeechRecognition', { configurable: true, value: recognition === false ? undefined : Recognition })
     Object.defineProperty(window, 'webkitSpeechRecognition', { configurable: true, value: undefined })
     Object.defineProperty(window, 'SpeechSynthesisUtterance', { configurable: true, value: class { text: string; constructor(text: string) { this.text = text } } })
-    Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: { speak(speech: any) { state.speech = speech; state.spoken.push(speech.text) }, cancel() { state.speech?.onend?.(); state.speech = null } } })
-  }, { unsupported })
+    Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: playback === false ? undefined : { speak(speech: any) { state.speech = speech; state.spoken.push(speech.text) }, cancel() { state.speech?.onend?.(); state.speech = null } } })
+  }, options)
   let calls = 0, quota = false
   await page.route('**/api/ai?action=chat', route => {
     calls++
@@ -39,10 +39,38 @@ export async function voiceUI(page: Page, unsupported = false) {
   const dialog = page.getByRole('dialog', { name: 'Pulse', exact: true })
   expect(await page.evaluate(() => (window as any).syntheticSpeech.starts)).toBe(0)
   await expect(dialog.getByRole('region', { name: 'Voice controls' })).toHaveCount(0)
-  await dialog.getByRole('button', { name: 'Pulse options', exact: true }).click()
+  await expect(dialog.getByRole('button', { name: 'Voice input', exact: true })).toBeVisible()
+  if (options.controls === false) return { dialog, calls: () => calls, quota: () => { quota = true } }
   await dialog.getByRole('button', { name: 'Voice input', exact: true }).click()
   await expect(dialog.getByRole('region', { name: 'Voice controls' })).toBeVisible()
   return { dialog, calls: () => calls, quota: () => { quota = true } }
+}
+export async function readReplyVoice(page: Page, shot = noShot) {
+  const fixture = await voiceUI(page, { recognition: false, controls: false }), { dialog } = fixture
+  await dialog.getByRole('textbox', { name: 'Ask Pulse', exact: true }).fill('Explain variables in Tagalog and English')
+  await dialog.getByRole('button', { name: 'Send', exact: true }).click()
+  await expect(dialog).toContainText('Ang variable ay may pangalan')
+  await expect(dialog.getByRole('button', { name: 'Read aloud', exact: true })).toBeVisible()
+  expect(await page.evaluate(() => (window as any).syntheticSpeech.spoken)).toEqual([])
+  await shot('09-reply-read-aloud')
+  await dialog.getByRole('button', { name: 'Read aloud', exact: true }).click()
+  await expect(dialog.getByRole('button', { name: 'Stop reading', exact: true })).toBeVisible()
+  expect(await page.evaluate(() => (window as any).syntheticSpeech.spoken)).toEqual(['Ang variable ay may pangalan at value. Review your example before using it.'])
+  expect(await page.evaluate(() => (window as any).syntheticSpeech.starts)).toBe(0)
+  await shot('10-reading-reply')
+  await page.evaluate(() => (window as any).syntheticSpeech.speech.onend())
+  await expect(dialog.getByRole('button', { name: 'Read aloud', exact: true })).toBeVisible()
+  await dialog.getByRole('button', { name: 'Read aloud', exact: true }).click()
+  await dialog.getByRole('button', { name: 'Stop reading', exact: true }).click()
+  expect(await page.evaluate(() => (window as any).syntheticSpeech.speech)).toBeNull()
+  await dialog.getByRole('button', { name: 'Read aloud', exact: true }).click()
+  await dialog.getByRole('button', { name: 'Close Pulse', exact: true }).click()
+  expect(await page.evaluate(() => (window as any).syntheticSpeech.speech)).toBeNull()
+  await page.getByRole('button', { name: 'Open Pulse assistant', exact: true }).click()
+  await expect(dialog.getByRole('button', { name: 'Read aloud', exact: true })).toBeVisible()
+  expect(fixture.calls(), 'playback never resubmits a model request').toBe(1)
+  expect(await page.evaluate(() => (window as any).syntheticSpeech.spoken.length)).toBe(3)
+  return fixture
 }
 export async function heard(page: Page, text: string, final = true) {
   await page.evaluate(({ text, final }) => {

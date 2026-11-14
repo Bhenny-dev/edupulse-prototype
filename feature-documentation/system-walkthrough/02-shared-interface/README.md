@@ -172,7 +172,7 @@ Saved provider keys and selected models now survive sign-out under the same acco
 
 ## Optional microphone in Pulse
 
-**Pulse options** includes **Voice input**. Controls appear only when enabled. The default is transcript review; optional conversation mode sends completed speech. Browser/device voices can read generated and quick replies. Microphone denial, unsupported languages and API failures stop the voice loop with readable recovery. **AI settings** is offered beside credit/rate-limit failures. [Manual 20](../../system-manual/20-voice-and-provider-errors/README.md) contains current light/dark and mobile captures.
+The **Voice input** microphone button is always visible beside the Pulse message box; **Pulse options** retains the same entry. Listening starts only after **Start listening**. The default is transcript review; optional conversation mode sends completed speech. Each Pulse text reply also offers **Read aloud / Stop reading**, independently of microphone support and without another model request. Playback and listening stop on close, hidden tab or account/view changes and never restart on reload. Microphone denial, unsupported languages, playback failures and API failures have readable recovery. **AI settings** is offered beside credit/rate-limit failures. [Manual 20](../../system-manual/20-voice-and-provider-errors/README.md) contains current light/dark and mobile captures.
 
 ## Account support and contextual Pulse, 8 November 2026
 
