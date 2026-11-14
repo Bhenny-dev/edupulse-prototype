@@ -1,5 +1,17 @@
 # Supabase configuration
 
+## Private teaching attachments - 14 November 2026
+
+Migration `20261114100000_private_teaching_files.sql` adds the private `edupulse-teaching-files` Storage bucket with a 4,000,000-byte object limit and no MIME whitelist. Existing workspace JSON stores only attachment name/path/size/MIME references; binary payloads are uploaded separately. The ordinary 3 MB workspace and 750 KB approved-syllabus attachment limits are not raised.
+
+`POST /api/ai?action=teaching-files` validates the actual signed-in account and any effective instructor support subject before upload signing. It requires an accessible unsuspended syllabus and an exact current Dean load for that subject/course. Paths are server-created `<subject-uuid>/<random-uuid>/<sanitized-name>`. The actual account JWT creates a non-upsert signed-upload token, and the browser sends the original bytes through `uploadToSignedUrl`. A second session-version check rejects a late result after an account change. No service-role key or saved signed URL is exposed to the browser.
+
+Storage INSERT permits the current instructor's own first path folder or a verified current Admin. SELECT permits the owner instructor/Admin, or a current RLS-visible active publication that contains the exact attachment path and whose instructor matches that first folder. The publication policy supplies the student release/current enrollment/course boundaries. An unrelated instructor cannot publish a guessed path to expose someone else's private file. A fresh 60-second download URL is signed only after Storage SELECT authority succeeds, with an attachment filename; there is no public-bucket URL or executable embedded-file preview.
+
+No Storage UPDATE or DELETE policy is added. Original objects cannot be replaced behind a released publication version, and unattached objects remain private. Removing or withdrawing the publication removes the learner's fresh-signing authority; an already issued signed URL retains its short remaining lifetime. Suspension/account role changes remain checked by the existing live role helper. The new migration does not modify assessment scores, memberships, provider credentials or business records.
+
+Native database tests exercise private bucket configuration, own-folder insertion, cross-instructor denial, future release, enrolled release, membership suspension, mismatched publication ownership and immutable object policy. The release validation records hosted application and signed-transfer checks separately; no claim of a hosted migration or transfer is made solely from a local test. [User guide](../system-manual/44-instructor-course-workspace/README.md#add-teaching-content).
+
 ## Private Pulse history and memory — 25 October 2026
 
 Migration `20261024163740_pulse_conversations.sql` adds `edupulse_pulse_threads`, `edupulse_pulse_messages`, `edupulse_pulse_memories`, and `edupulse_pulse_preferences`. All use owner RLS with `(select auth.uid())`; anonymous grants are revoked. Messages are immutable (select/insert/delete only), idempotent by UUID, ordered by a database sequence, and linked to the owner/thread with a composite foreign key. Source-derived memories use a matching owner/message foreign key and cascade when the message or account is deleted.

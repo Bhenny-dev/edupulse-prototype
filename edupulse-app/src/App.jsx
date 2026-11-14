@@ -19,7 +19,7 @@ import { PERFORMANCE_ROLES } from './lib/access'
 // public site.
 const Layout = lazy(() => import('./components/layout/Layout'))
 const Dashboard = lazy(() => import('./pages/Dashboard'))
-const Syllabus = lazy(() => import('./pages/Syllabus'))
+const Syllabus = lazy(() => import('./pages/SyllabusRedirect'))
 const Courseware = lazy(() => import('./pages/Courseware'))
 const Assessment = lazy(() => import('./pages/Assessment'))
 const Performance = lazy(() => import('./pages/Performance'))

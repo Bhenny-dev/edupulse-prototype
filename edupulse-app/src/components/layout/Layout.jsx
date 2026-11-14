@@ -42,11 +42,8 @@ const SECTIONS = [
 
   // ── Instructor ────────────────────────────────────────────────────────
   {
-    key: 'syllabus', path: '/syllabus', label: 'Syllabus', icon: BookOpen, roles: ['instructor'],
-  },
-  {
     key: 'courseware', path: '/courseware', label: 'Course', icon: FileText, roles: ['instructor'],
-    relatedPaths: ['/content-editor'],
+    relatedPaths: ['/content-editor', '/syllabus'],
   },
   {
     key: 'scoring', path: '/student-monitoring', label: 'Student Monitoring', icon: ClipboardCheck, roles: ['instructor'],

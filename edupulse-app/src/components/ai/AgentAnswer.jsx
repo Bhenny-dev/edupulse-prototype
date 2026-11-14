@@ -65,10 +65,10 @@ function SearchImages({ sources = [] }) {
   </figure>)}</div>
 }
 
-export default function AgentAnswer({ message, onRevise, compact = false, onDownload }) {
+export default function AgentAnswer({ message, onRevise, compact = false, onDownload, onCiteSource }) {
   const [openSource, setOpenSource] = useState(null), [revising, setRevising] = useState(false), [note, setNote] = useState(''), [copied, setCopied] = useState('')
   const v = message.verification, grounded = message.sources?.length > 0 && ['answer', 'summarize', 'compare'].includes(message.task)
-  const showSource = n => { setOpenSource(n); requestAnimationFrame(() => document.getElementById(`${message.requestId}-source-${n}`)?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })) }
+  const showSource = n => { if (onCiteSource) { const source = message.sources?.find(item => item.citation === n); if (source) onCiteSource(source); return } setOpenSource(n); requestAnimationFrame(() => document.getElementById(`${message.requestId}-source-${n}`)?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })) }
   const copy = async reference => {
     const text = `${reference.authors.join(', ')}${reference.year ? ` (${reference.year})` : ''}. ${reference.title}.${reference.venue ? ` ${reference.venue}.` : ''} ${reference.url}`
     try { await navigator.clipboard.writeText(text); setCopied(reference.url) } catch { setCopied('') }
@@ -104,7 +104,7 @@ export default function AgentAnswer({ message, onRevise, compact = false, onDown
       <button type="button" className="btn btn-ghost btn-sm" onClick={() => copy(reference)}><Copy size={12} /> {copied === reference.url ? 'Copied' : 'Copy citation'}</button>
     </li>)}</ol><small>Verify availability and fit before adding a reference to Section 7.</small></details>}
     {message.sources?.length > 0 && <details open={openSource !== null}><summary>Sources ({message.sources.length})</summary>{message.sources.map(source => <div key={source.id} id={`${message.requestId}-source-${source.citation}`} className={`aa-source ${openSource === source.citation ? 'is-open' : ''}`}>
-      <header><strong>[{source.citation}] {source.title}</strong>{source.page && <span>p. {source.page}</span>}{source.section && <span>· {source.section}</span>}</header>
+      <header>{onCiteSource ? <button className="btn btn-ghost btn-sm" onClick={() => onCiteSource(source)}>[{source.citation}] {source.title}</button> : <strong>[{source.citation}] {source.title}</strong>}{source.page && <span>p. {source.page}</span>}{source.section && <span>· {source.section}</span>}</header>
       {source.url && <a href={source.url} target="_blank" rel="noreferrer noopener">Open public source <ExternalLink size={11} aria-hidden="true" /></a>}
       <small>{ORIGIN[source.origin] || 'Source'} · {source.method === 'hybrid' ? 'vector + keyword match' : source.method === 'vector' ? 'semantic match' : source.method === 'keyword' ? 'keyword match' : 'provided'}{source.relevance !== null && source.relevance !== undefined ? ` · reranker score ${source.relevance.toFixed(1)}` : ''}{source.similarity !== null && source.similarity !== undefined ? ` · cosine ${source.similarity.toFixed(2)}` : ''}</small>
       {source.flagged && <p className="kl-flag">This passage contains instruction-like text. Pulse treated it only as quoted data.</p>}

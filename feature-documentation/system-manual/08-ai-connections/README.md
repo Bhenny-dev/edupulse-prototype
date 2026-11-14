@@ -1,6 +1,12 @@
-# 8 · Choose where Pulse thinks (AI connections)
+# 8 · Connect educational generation and voice transcription
 
 **Who:** every account: each admin, instructor and student connects a separate key of their own · **Where:** Settings → *AI & Knowledge* · Requirements FR-SET (as corrected 2026-09-16), NFR-AI-01/02, FR-RAG-05/06.
+
+## What needs a connection
+
+Ordinary Pulse greetings, application navigation and authorized record/content searches are system chat. They do not use a connected generation model as a fallback when no match is found. Connect a provider or download an on-device model for explicit educational drafting/revision. Explicit microphone transcription uses the actual account's supported provider connection; replaying a text reply uses browser speech playback. A saved connection never authorizes a record, approval or publication.
+
+See [the current system-first chat and source dialog](../44-instructor-course-workspace/README.md#use-pulse-as-system-chat). In a selected Instructor course, manual teaching text, files, links, assessment authoring and source reading remain available without asking a generation model.
 
 ## Check the pipeline
 
@@ -28,7 +34,7 @@ Choose an **Available model**, then **Test selected model**. This sends a short 
 
 ![Successful selected-model test](06-generation-verified.png)
 
-If the provider rejects the selected model, the alert directs you to **Refresh models**, select another model and test again. The saved credential remains available; the generation-verification mark is cleared. API credit exhaustion and rate limits have separate messages. These errors are also reported from Pulse chat, including requests with library sources.
+If the provider rejects the selected model, the alert directs you to **Refresh models**, select another model and test again. The saved credential remains available; the generation-verification mark is cleared. API credit exhaustion and rate limits have separate messages. These errors are also reported from explicit Pulse educational generation, including drafts using readable sources.
 
 ![Model-access failure with the credential retained](07-model-access-error.png)
 
@@ -64,7 +70,7 @@ The redirect, callback, expiry, identity binding and failure paths are regressio
 
 The owner confirmed that EduPulse has no approved hosted ChatGPT OAuth client. Direct **Continue with ChatGPT** therefore remains unavailable. [OpenAI's hosted-app requirements](https://developers.openai.com/siwc/token-sharing-open-source) require approval; [Claude's public authentication methods](https://platform.claude.com/docs/en/manage-claude/authentication) currently provide API keys and workload/native-app methods rather than consumer Claude sign-in for this web app. API keys and authorized OpenRouter models remain supported.
 
-Keys are never shared between accounts. When the owner admin switches to another view, the account and its key stay the same. The hosted site has no shared server key: without your own key, Pulse answers with quoted source excerpts or uses the on-device model.
+Keys are never shared between accounts. When the owner admin switches to another view, the account and its key stay the same. The hosted site has no shared server key: ordinary Pulse system chat remains available without a key. Explicit educational generation can use a prepared on-device model or the connected personal provider; there is no silent provider switch.
 
 API-key saves, failed replacements and disconnects by a signed-in account are recorded in the system audit log, which the system admin sees in *Audit activity* ([System Walkthrough 07](../../system-walkthrough/07-system-admin/README.md)). The log records only the provider name, never the key.
 

@@ -1,3 +1,4 @@
+import { contentGenerationRequest } from './systemChatPolicy.js'
 import { aiRequest, aiSessionVersion, ApiRequestError } from './aiClient.js'
 import { aiPreference, invokeBrowserModel, browserAIState } from './browserAI.js'
 import type { z } from 'zod'
@@ -14,6 +15,8 @@ let browserCheckpoint:{key:string;state:PlannerExecution;expires:number}|undefin
 
 /** Both runtimes use the same strict planner and patch validation, never an executable model result. */
 export async function requestOperator(input: z.input<typeof operatorInput>, signal: AbortSignal, onProgress?:(progress:NonNullable<ReturnType<typeof outlineDraftProgress>>)=>void): Promise<OperatorReply> {
+  if (input.operation === 'plan') return { clarification: 'Name the page, course or record to open. Navigation uses System Search.', generated: false }
+  if (!contentGenerationRequest(input.message, 'auto', Boolean(input.editor))) throw new Error('Request educational content explicitly before using AI.')
   if (aiPreference() !== 'browser') {
     if (input.operation !== 'revise' || !scheduledSyllabusDraft({ ...input, editor: input.editor || null, section: input.section || null, context: input.context || '' })) return aiRequest<OperatorReply>('operator', 'POST', input, signal)
     const session = aiSessionVersion(), key = JSON.stringify({ input, session })

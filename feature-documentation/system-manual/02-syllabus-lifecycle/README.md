@@ -1,5 +1,11 @@
 # 2 · Build a syllabus and take it from draft to active
 
+## Current Instructor entry point
+
+Open **Course**, choose a Dean-loaded course and select its **Syllabus** tab. **My Syllabus**, **Shared Repository** and **Syllabus Builder** are now contained there; **Syllabus** is removed from the Instructor navbar. Existing `/syllabus` links redirect into Course. A fresh builder is scoped to the selected loaded course. The lifecycle and explicit offline approval below remain; neither AI generation nor receiving a shared copy verifies approval.
+
+For an already approved copy, the selected course's **Weeks and topics** view offers local **Upload syllabi** or **Choose a shared syllabus from the system** only until an active syllabus is available. [Manual 44](../44-instructor-course-workspace/README.md) documents this entry and chronological topic/material workflow. Screenshots below retain the earlier surrounding navigation while illustrating the continuing builder, file-review and approval controls.
+
 **Who:** instructors · **Where:** Syllabus → *Syllabus Builder* and *My Syllabus* · Requirements FR-SYL (lifecycle), FR-CW-01 (outline drives courseware).
 
 Already have an approved copy? Use **Course → Upload syllabi**, then scan, review and select it in **My Syllabus** ([Manual 30](../30-approved-syllabus-intake/README.md)). This direct path needs no existing draft or course registration. The five-station indicator is removed from My Syllabus.
@@ -28,7 +34,7 @@ PDF is the primary institutional intake format; Word `.docx` is also supported. 
 
 ![PDF import preview with sample course and outline](14-pdf-import-preview.png)
 
-1. Open **Syllabus → Syllabus Builder** and choose the **Course**. Course title, period offered and academic year fill in from the curriculum and are locked; so is the course description in Section 2.
+1. Open **Course > assigned course > Syllabus > Syllabus Builder**. The selected loaded **Course** is retained. Course title, period offered and academic year fill in from the curriculum and are locked; so is the course description in Section 2.
 
    ![Section 1 auto-filled](01-select-course-autofills-section-1.png)
 

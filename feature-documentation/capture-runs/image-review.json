@@ -5040,6 +5040,55 @@
       "reviewedAt": "2026-11-14T07:56:49.240085+00:00",
       "captureRun": "2026-11-14T07-55-39-912Z-8c5d5791",
       "method": "Opened with view_image; retained exact matching hashes across recaptures. Verified removed selectors, composer microphone/stop, pending transcription, editable transcript, permission/quota recovery, independent reply playback, dark and phone layouts. Synthetic recording/account/provider UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/01-dashboard.png",
+      "sha256": "cdec313dc767dd2fe8b777b5b18043a6c0b407bc16eb6d5f2aed5bc7f1af73d8",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-14T11:11:09.118101+00:00",
+      "captureRun": "2026-11-14T11-10-09-790Z-4a21af15"
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/02-courses.png",
+      "sha256": "c00e40f73f282a0df88a3ed531bf185ebfb820a3c94cabcd7710fdff4d643664",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-14T11:11:09.118624+00:00",
+      "captureRun": "2026-11-14T11-10-09-790Z-4a21af15"
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/03-weeks-topics.png",
+      "sha256": "b9523cc1dc4480ed87c1bbd44b2cdbdb058735da91864c3ab8a5272c4b21522e",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-14T11:11:09.119300+00:00",
+      "captureRun": "2026-11-14T11-10-09-790Z-4a21af15"
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/04-material-form.png",
+      "sha256": "0ee33136c77bd16c79c1042f010a3cf896a95292294ef108310dbda21c4af9e9",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-14T11:11:09.119597+00:00",
+      "captureRun": "2026-11-14T11-10-09-790Z-4a21af15"
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/05-sources.png",
+      "sha256": "f519c188ae4a9f8b65c685b58923d76c63bcca37be94a7059a05203f1c073bb4",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-14T11:11:09.120011+00:00",
+      "captureRun": "2026-11-14T11-10-09-790Z-4a21af15"
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/06-source-popover.png",
+      "sha256": "b22df763bd65302f304078e0a2828b03a7a601002199f8a5ac7b0e83642aa038",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-14T11:11:09.120722+00:00",
+      "captureRun": "2026-11-14T11-10-09-790Z-4a21af15"
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/07-mobile-course.png",
+      "sha256": "8f058e4ba51afffaf73d4c2090eee2c9fce53c2a77fdbfa09f7aaac50a0c356f",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-14T11:11:09.121340+00:00",
+      "captureRun": "2026-11-14T11-10-09-790Z-4a21af15"
     }
   ]
 }

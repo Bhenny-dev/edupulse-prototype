@@ -2,6 +2,12 @@
 
 **Who:** every role (students get help without assessment answers) · **Where:** the Pulse character at the lower right of every page · Requirements FR-RAG-07–10, FR-GUIDE-10, FR-AGENT-01–02.
 
+## System chat is the default
+
+Ordinary application questions, greetings, keyword searches and navigation use EduPulse records and system rules, even when a provider is connected. Bounded spelling matching can suggest a page or recorded name; it never corrects an ID or executes a guessed record action. A missing result asks for clearer keywords and does not silently become a model answer or Internet search. Ask explicitly to generate or revise educational content before the model is used. Explicit public web search remains separate from the default system lookup.
+
+A system-answer citation opens **Source reference** in a separate dialog. It searches the original question again under current authorization, shows the available quoted source, and offers a confirmed **Open ...** navigation button where a related application page exists. Teaching-material source links open a read-only reader without recording student access. A revoked/missing source explains why it cannot be shown. Reload restores only bounded source/conversation IDs and may repeat this read-only system lookup; it never repeats generation or learner actions. [Manual 44](../44-instructor-course-workspace/README.md#use-pulse-as-system-chat) shows the current source dialog.
+
 ## Steps
 
 Voice messages use the microphone beside the chat input. It becomes Stop recording; stopping transcribes Filipino/English/mixed speech into the editable text field through the active supported provider. Send remains explicit. There are no speech-language or mode dropdowns and no automatic voice conversation submission. Reply playback retains Read aloud / Stop reading, also stoppable from the composer. See [the current voice controls, privacy and desktop/phone captures](../20-voice-and-provider-errors/README.md).
@@ -13,11 +19,11 @@ Ask **do you know me?**, **who am I?** or **kilala mo ba ako?** to see your veri
 
    ![Verified answer](01-verified-answer.png)
 
-3. Click a citation number to open the exact passage, with its page, the document it came from and how it matched.
+3. Click a citation number. Current system answers open the separate **Source reference** dialog described above. Generated-content answers retain their source/evidence controls, including available page/section details. The earlier capture below illustrates the retained generated-answer source rendering.
 
    ![Citation opens its source](02-citation-opens-source.png)
 
-4. Open **How Pulse worked on this** to see each agent’s step, in order:
+4. Open **How Pulse worked on this** to see the actual steps used. Ordinary system responses show the role check and system lookup; they have no Writer/model step. A generated educational response can include the longer pipeline shown in this earlier capture:
    * the Guardian’s appropriate-use check, which always comes first;
    * the Planner’s search plan;
    * the Researchers’ searches;
@@ -25,7 +31,7 @@ Ask **do you know me?**, **who am I?** or **kilala mo ba ako?** to see your veri
    * the Writer’s model;
    * the Verifier’s check.
 
-   The screenshot shows the Guardian, Planner, Researchers, Ranker and the later writing/checking steps. The badge under the answer counts the agents that worked on it (7 here).
+   This historical generated-answer screenshot shows the Guardian, Planner, Researchers, Ranker and later writing/checking steps. The badge under the answer counts the agents that worked on it (7 here).
 
    ![Agent timeline](03-agent-timeline.png)
 
@@ -59,9 +65,9 @@ See the [student example](../../system-walkthrough/05-student/09-pulse-declines-
 
 ## Good to know
 
-Ordinary system and keyword searches answer without resolving an AI provider. Requests that need generation still show actionable provider model or API-credit errors. Open **Pulse options → AI settings**, refresh the available models and use **Test selected model**. A saved key and model list alone do not verify generation access. See [connection recovery examples](../08-ai-connections/README.md).
+Ordinary system and keyword searches answer without resolving an AI provider. Explicit educational generation still shows actionable provider model or API-credit errors. Open **Pulse options → AI settings**, refresh the available models and use **Test selected model**. A saved key and model list alone do not verify generation access. See [connection recovery examples](../08-ai-connections/README.md).
 
-* Without a connected model, Pulse still searches and quotes the best source sentences, labelled **Source excerpts**.
+* With or without a connected model, ordinary system chat searches accessible content and quotes its matches. It does not automatically generate a general-knowledge substitute for missing evidence.
 * Document-specific or source-only questions report missing evidence. New educational drafts can use subject knowledge and public research even when the library is empty. A draft is not judged complete merely because it matches a source.
 * **Stop** (square button) cancels a running request; **Pulse options → New conversation** starts a new chat; **AI settings** is in the same menu.
 * Answers are drafts for your judgement. Validated edit tools can apply or save an instructor-confirmed proposal; conversational text does not establish a completed action. Pulse cannot approve a syllabus or calculate official grades.
@@ -81,7 +87,7 @@ Pulse supplies up to 12 recent turns within its bounded prompt budget. Saved pre
 
 Images 1-3 use the real local Ollama qwen2.5:3b model and the uploaded Wikipedia taxonomy PDF. The model wording could not be fully verified, so the recorded result is explicitly **Source excerpts (no model-generated answer)** with citations. Images 4-5 use labelled synthetic transport to exercise revision controls. The source excerpts and interface fixtures do not establish that a model can satisfy every instruction.
 
-Pulse now receives live authorized account evidence for course, syllabus, roster and activity questions. Public factual questions can search without an explicit search keyword, while casual exchanges and source-only questions keep their appropriate scope. Supabase handoffs provide owner/conversation/subject-scoped continuity and respect automatic-memory controls. See [Manual 23](../23-account-support-and-pulse-context/README.md) for the current examples and limits.
+Pulse now receives live authorized account evidence for course, syllabus, roster and activity questions. Public Internet research needs an explicit web/online request; ordinary public-topic questions remain system lookups with honest missing-evidence responses. Casual exchanges use lightweight friendly responses, while source-only questions keep their scope. Supabase handoffs provide owner/conversation/subject-scoped continuity and respect automatic-memory controls. See [Manual 23](../23-account-support-and-pulse-context/README.md) for the current examples and limits.
 
 [System-first search and image results](../24-system-first-search/README.md) documents the keyless path, typo suggestions and explicit Internet fallback.
 

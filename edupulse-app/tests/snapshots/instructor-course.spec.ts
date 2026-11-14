@@ -1,0 +1,32 @@
+import { test, expect } from './fixtures'
+import { instructorCourseUI } from '../instructor-course-fixture'
+const folder = '../feature-documentation/system-manual/44-instructor-course-workspace'
+
+test('assigned instructor dashboard and course topics with explicit content authoring and source navigation', async ({ page }) => {
+  const fixture = await instructorCourseUI(page)
+  await page.goto('/#/dashboard'); await expect(page.getByRole('heading', { name: 'Instructor Dashboard' })).toBeVisible()
+  await page.screenshot({ path: `${folder}/01-dashboard.png`, animations: 'disabled' })
+  await page.goto('/#/courseware'); await expect(page.locator('.instructor-course-card')).toHaveCount(2)
+  await page.screenshot({ path: `${folder}/02-courses.png`, animations: 'disabled' })
+  await page.goto(`/#/courseware?course=${fixture.syllabus.id}`)
+  await page.locator('[data-topic="variables"] > summary').click()
+  await expect(page.getByRole('button', { name: 'Add overall assessment', exact: true })).toBeVisible()
+  await page.screenshot({ path: `${folder}/03-weeks-topics.png`, animations: 'disabled' })
+  await page.getByRole('button', { name: 'Add teaching material', exact: true }).click()
+  const form = page.getByRole('form', { name: 'Add teaching material' })
+  await form.getByLabel('Title', { exact: true }).fill('Assignment worked example')
+  await form.getByLabel('Teaching content', { exact: true }).fill('Start with count = 1. Assign count = count + 1, then trace the stored value. Explain why count is now 2.')
+  await page.getByRole('dialog', { name: 'Add teaching material' }).screenshot({ path: `${folder}/04-material-form.png`, animations: 'disabled' })
+  await form.getByRole('button', { name: 'Cancel', exact: true }).click()
+  const sources = page.locator('.syllabus-sources')
+  await sources.scrollIntoViewIfNeeded(); await expect(sources).toContainText('Programming source')
+  await sources.screenshot({ path: `${folder}/05-sources.png`, animations: 'disabled' })
+  await page.getByRole('button', { name: 'Open Pulse assistant', exact: true }).click()
+  await page.getByLabel('Ask Pulse', { exact: true }).fill('What does the variable lesson say about named values?')
+  await page.getByRole('button', { name: 'Send', exact: true }).click()
+  await page.getByRole('button', { name: 'Open source 1', exact: true }).first().click()
+  const dialog = page.getByRole('dialog', { name: 'System source reference' })
+  await expect(dialog).toContainText('A variable stores a value')
+  await dialog.screenshot({ path: `${folder}/06-source-popover.png`, animations: 'disabled' })
+  expect(fixture.forbidden).toEqual([])
+})

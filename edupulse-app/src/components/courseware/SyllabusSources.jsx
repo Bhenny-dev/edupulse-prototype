@@ -10,11 +10,11 @@ import CoursewareActions from './CoursewareActions'
 import RetainedSourceReview from '../ai/RetainedSourceReview'
 import './syllabus-sources.css'
 
-export default function SyllabusSources({syllabus}){
+export default function SyllabusSources({syllabus,defaultOpen=false}){
  const references=useMemo(()=>{try{return {rows:collectSyllabusReferences(syllabus),error:''}}catch(failure){return {rows:[],error:failure.message}}},[syllabus])
  const signature=JSON.stringify(references.rows)
  const [cache,setCache]=useWorkspaceViewState(`syllabus-sources:${syllabus.id}`,null)
- const [expanded,setExpanded]=useWorkspaceViewState(`syllabus-sources-open:${syllabus.id}`,false)
+ const [expanded,setExpanded]=useWorkspaceViewState(`syllabus-sources-open:${syllabus.id}`,defaultOpen)
  const sources=cache?.signature===signature?cache.rows:null
  const setSources=useCallback(rows=>setCache(previous=>({signature,rows:typeof rows==='function'?rows(previous?.signature===signature?previous.rows:[]):rows})),[signature,setCache])
  const [viewing,setViewing]=useWorkspaceViewState(`syllabus-source-reader:${syllabus.id}`,null)

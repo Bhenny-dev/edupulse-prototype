@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto'
-import type { ChatInput, Identity } from './contracts.js'
+import { ApiError, type ChatInput, type Identity } from './contracts.js'
 import { publicKnowledge } from './knowledge.js'
 import { authorizedAccountContext, accountQuestion, profileQuery } from './domains/accountContext.js'
 import { readAcademic } from './domains/academic.js'
@@ -10,6 +10,8 @@ import { keywordMatch, words, informationalQuestion } from '../src/lib/rag/looku
 import { conversationSubject, selfAccountQuestion } from '../src/lib/rag/conversation.js'
 import { planRequest, allowsPublicResearch, casualConversation } from '../src/lib/rag/plan.js'
 import { checkAppropriateUse } from '../src/lib/rag/policy.js'
+import { explicitWebRequest } from '../src/lib/systemChatPolicy.js'
+import { quickReply } from '../src/agents/quickReplies.js'
 import { extractiveAnswer, runAgents, type AgentAnswer } from '../src/lib/rag/agents.js'
 import { verifyAnswer } from '../src/lib/rag/verify.js'
 import { agentReport } from '../src/lib/rag/registry.js'
@@ -34,11 +36,11 @@ export async function selfAccountAnswer(input:ChatInput,owner:Identity,subject:I
   const signedIn=owner.role!=='guest'&&!owner.local
   const viewed=subject.supportActor?subject:owner
   const details=signedIn?[`Name: ${viewed.name||'Not recorded'}.`,viewed.email?`Username: ${viewed.email}.`:'Username is not available in this verified session.',`Role: ${roleName(viewed.role)}.`,roleWork[viewed.role]]:[]
-  const text=!signedIn?'I can help with EduPulse, but you are not signed in to a verified account. Sign in so I can identify your username and role.':subject.supportActor?`You are signed in as ${owner.name||roleName(owner.role)}${owner.email?` (${owner.email})`:''}, and you are viewing this account:\n\n${details.join('\n')}\n\nStudent activity and assessment submissions remain disabled in this support view.`:`Yes. ${details.join('\n')}`
+  const text=!signedIn?'I can help with EduPulse, but you are not signed in to a verified account. Sign in so I can identify your username and role.':subject.supportActor?`You are signed in as ${owner.name||roleName(owner.role)}${owner.email?` (${owner.email})`:''}, and you are viewing this account:\n\n${details.join('\n')}\n\nThis is an Admin support view. Learner changes use the separate Admin actor and remain distinct from independent student work.`:`Yes. ${details.join('\n')}`
   const result=await lookupAnswer(input,signedIn?[evidence('verified-session','Current verified account',text)]:[],signal,'system',undefined,signedIn?undefined:text)
   result.answer=text;result.verification=null;result.agentReport=agentReport(result.trace,{mode:result.mode,verification:null,sources:result.sources.length});return result
 }
-const evidence = (id:string,title:string,text:string,origin:Evidence['origin']='account'):Evidence => ({id,documentId:null,title,text,page:null,section:null,flagged:false,origin,method:origin==='public-guide'?'keyword':'provided',similarity:null,relevance:null,rrf:1,query:''})
+const evidence = (id:string,title:string,text:string,origin:Evidence['origin']='account',destination?:Evidence['destination']):Evidence => ({...(destination?{destination}:{}),id,documentId:null,title,text,page:null,section:null,flagged:false,origin,method:origin==='public-guide'?'keyword':'provided',similarity:null,relevance:null,rrf:1,query:''})
 const label=(key:string)=>key.replace(/([a-z])([A-Z])/g,'$1 $2').replace(/[_-]+/g,' ')
 function prose(value:unknown,depth=0):string {
   if(depth>5)return ''
@@ -79,17 +81,21 @@ export async function socialProfileAnswer(input:ChatInput,sources:Evidence[],sig
 }
 
 /** Read-only System Search agent. Existing RLS helpers are the sole source of private data. */
-export async function systemLookup(input:ChatInput,owner:Identity,subject:Identity,signal:AbortSignal):Promise<AgentAnswer|null> {
-  if (!simpleLookup(input)) return null
+export async function systemLookup(input:ChatInput,owner:Identity,subject:Identity,signal:AbortSignal,options:{force?:boolean;allowWeb?:boolean}={}):Promise<AgentAnswer|null> {
+  if (!options.force && !simpleLookup(input)) return null
+  if (subject.role === 'guest' && (input.attachments.length || input.documentIds.length)) throw new ApiError(401, 'SIGN_IN_REQUIRED', 'Sign in to search private files. Public product guidance remains available.')
   if (!checkAppropriateUse(input.message,input.viewRole==='student'||input.viewRole==='guest'?input.viewRole:subject.role).allowed) return runAgents(input,subject,signal,{provider:'system-search',search:async()=>({evidence:[]})})
   if(selfAccountQuestion(input.message))return selfAccountAnswer(input,owner,subject,signal)
+  const friendly = options.force && !input.attachments.length && !input.documentIds.length ? quickReply(input.message) : null
+  if (friendly) return lookupAnswer(input, [], signal, 'system', undefined, friendly)
   const plan=planRequest(input), conversation=conversationSubject(input), candidates:Evidence[]=[], warnings:string[]=[]
-  const scoped=plan.sourceOnly, selectedFiles=Boolean(input.documentIds.length||input.attachments.length&&scoped)
+  const scoped=plan.sourceOnly && !/\bsystem\s+(?:sources?|records?|content)\b/i.test(input.message), selectedFiles=Boolean(input.documentIds.length||input.attachments.length&&scoped)
   if(!selectedFiles&&conversation.personFollowUp&&!conversation.person) return lookupAnswer(input,[],signal,'system',undefined,conversation.ambiguous?'Which of the people in the previous answer do you mean? Please give the full name or student number.':'Who do you mean? Please give a name so I can check the accessible EduPulse records first.')
   const contextualPerson=conversation.person&&(conversation.followUp||conversation.social)
   const lookupInput=contextualPerson?{...input,message:`Who is ${conversation.person}?`}:input
   const live=selectedFiles?{evidence:[]}:await authorizedAccountContext(subject,lookupInput.message,signal)
   signal.throwIfAborted()
+  for (const source of live.evidence) source.destination = { path: /course|syllab|material|week/i.test(input.message) ? '/courseware' : subject.role === 'instructor' ? '/student-monitoring' : subject.role === 'dean' ? '/students' : '/dashboard', label: 'Open related records' }
   if (live.warning) return lookupAnswer(input,[],signal,'system',undefined,live.warning)
   if(!selectedFiles&&contextualPerson) {
     if(!live.evidence.length)return lookupAnswer(input,[],signal,'system',undefined,'I could not find that person in the currently accessible EduPulse records. Please give their full name or student number; the earlier conversation is not current access evidence.')
@@ -105,13 +111,13 @@ export async function systemLookup(input:ChatInput,owner:Identity,subject:Identi
   if (!selectedFiles && subject.role!=='guest' && !profileQuery(input.message)) {
     try {
       const records=await readAcademic(subject)
-      for (const row of records.courses) candidates.push(evidence(`course:${row.id}`,String(row.course_code)+' '+row.course_title,`${row.course_code}: ${row.course_title}. Instructor: ${row.instructor_name||'not recorded'}.\n${outlineText(Array.isArray(row.outline)?row.outline:[])}`))
-      for (const row of records.publications) if (row.type==='material') candidates.push(evidence(`release:${row.id}`,String(row.title),`${row.title}\n${prose(row.content?.concepts)}\n${prose(row.content?.examples)}\n${prose(row.content?.applications)}`))
+      for (const row of records.courses) candidates.push(evidence(`course:${row.id}`,String(row.course_code)+' '+row.course_title,`${row.course_code}: ${row.course_title}. Instructor: ${row.instructor_name||'not recorded'}.\n${outlineText(Array.isArray(row.outline)?row.outline:[])}`, 'account', { path: `/courseware?course=${encodeURIComponent(String(subject.role === 'student' ? row.id : row.syllabus_id || row.id))}`, label: 'Open course' }))
+      for (const row of records.publications) if (row.type==='material') candidates.push(evidence(`release:${row.id}`,String(row.title),`${row.title}\n${prose(row.content?.sections)}\n${prose(row.content?.concepts)}\n${prose(row.content?.examples)}\n${prose(row.content?.applications)}`, 'account', { path: `/courseware?course=${encodeURIComponent(String(subject.role === 'student' ? row.course_id : records.courses.find((course: { id: string; syllabus_id?: string }) => course.id === row.course_id)?.syllabus_id || row.course_id))}&publication=${encodeURIComponent(String(row.id))}&week=${row.week}`, label: 'Open teaching material' }))
     } catch { warnings.push('Academic content could not be searched completely.') }
     if (['admin','instructor','dean','associate_dean'].includes(subject.role)) try {
       const workspace=await readWorkspace(subject)
-      for (const row of workspace.data?.syllabi||[]) candidates.push(evidence(`syllabus:${row.id}`,`${row.courseCode} ${row.courseTitle} syllabus (${row.status})`,`${row.courseCode}: ${row.courseTitle}. Status: ${row.status}.\n${prose(row)}\n${outlineText(row.courseOutline)}`))
-      for (const [id,row] of Object.entries(workspace.data?.content||{})) if (row.type==='material') candidates.push(evidence(`authored:${id}`,row.content.title,`${row.content.title}\n${prose(row.content.concepts)}\n${prose(row.content.examples)}\n${prose(row.content.applications)}`))
+      for (const row of workspace.data?.syllabi||[]) candidates.push(evidence(`syllabus:${row.id}`,`${row.courseCode} ${row.courseTitle} syllabus (${row.status})`,`${row.courseCode}: ${row.courseTitle}. Status: ${row.status}.\n${prose(row)}\n${outlineText(row.courseOutline)}`, 'account', { path: `/courseware?view=syllabus&course=${encodeURIComponent(row.id)}&tab=mine&read=${encodeURIComponent(row.id)}`, label: 'Open syllabus' }))
+      for (const [id,row] of Object.entries(workspace.data?.content||{})) if (row.type==='material') candidates.push(evidence(`authored:${id}`,row.content.title,`${row.content.title}\n${prose(row.content.sections)}\n${prose(row.content.concepts)}\n${prose(row.content.examples)}\n${prose(row.content.applications)}`, 'account', { path: `/courseware?course=${encodeURIComponent(row.syllabusId)}&item=${encodeURIComponent(id)}&week=${row.week}`, label: 'Open teaching draft' }))
     } catch { warnings.push('Saved workspace content could not be searched completely.') }
   }
   const question=conversation.followUp?plan.queries[0]||input.message:input.message
@@ -124,14 +130,14 @@ export async function systemLookup(input:ChatInput,owner:Identity,subject:Identi
     return lookupAnswer(input,found,signal,'system',!exact&&ranked[0]!.score<1?found[0]!.title:undefined,warnings.join(' '))
   }
   const privateQuestion=accountQuestion(input.message)||/@|\b\d{4}-\d-\d{4}\b/.test(input.message)
-  if (!scoped && !privateQuestion && allowsPublicResearch(input.message)) {
+  if (!scoped && !privateQuestion && allowsPublicResearch(input.message) && (!options.force || options.allowWeb && explicitWebRequest(input.message))) {
     // Preserve the existing provider's broader/current web research on explicit requests.
-    if (/\b(?:latest|recent|today|news|breaking|up.to.date)\b|\b(?:search|browse)\s+(?:the\s+)?(?:broader?\s+)?(?:web|internet)\b|\boutside Wikipedia\b/i.test(input.message)) return null
+    if (!options.force && /\b(?:latest|recent|today|news|breaking|up.to.date)\b|\b(?:search|browse)\s+(?:the\s+)?(?:broader?\s+)?(?:web|internet)\b|\boutside Wikipedia\b/i.test(input.message)) return null
     const web=await searchWeb(plan.topic,signal)
     if (web.evidence.length) return lookupAnswer(input,web.evidence.slice(0,4),signal,'web',undefined,[...warnings,web.warning].filter(Boolean).join(' '))
     if(web.warning) warnings.push(web.warning)
   }
   const missing=await lookupAnswer(input,[],signal,'system',undefined,warnings.length?`${warnings.join(' ')} No match is claimed; retry when connected or refine the keywords.`:undefined)
-  if(!scoped&&!privateQuestion&&!profileQuery(input.message)) missing.lookup={...missing.lookup!,canGenerate:true}
+  if(!options.force&&!scoped&&!privateQuestion&&!profileQuery(input.message)) missing.lookup={...missing.lookup!,canGenerate:true}
   return missing
 }

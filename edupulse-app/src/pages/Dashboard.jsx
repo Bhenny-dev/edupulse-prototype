@@ -4,8 +4,9 @@ import { useAcademicRecords } from '../context/AcademicContext'
 import AcademicSyncStatus from '../components/academic/AcademicSyncStatus'
 import SystemAdminDashboard from './SystemAdminDashboard'
 import SummaryCard from '../components/ui/SummaryCard'
+import InstructorOverview from '../components/courseware/InstructorOverview'
 import { SYLLABUS_STATUS_META } from '../data/syllabusStatus'
-import { accountManagementModel, accountInstructorModel, accountStudentModel } from './dashboardModels'
+import { accountManagementModel, accountStudentModel } from './dashboardModels'
 import {curriculumLabel} from '../utils/curriculumMetadata'
 import { previewManagementModel, previewInstructorModel, previewStudentModel } from './dashboardPreview'
 import { useNavigate } from 'react-router-dom'
@@ -663,10 +664,10 @@ function AccountDashboard() {
   const status = <>
     {error && <div role="alert" className="connected-pulse-warning">{error}</div>}
     {loading && !loaded && <section className="academic-loading" aria-label="Loading academic records"><p role="status" className="text-sm text-muted mb-16">Loading authorized academic records…</p><div aria-hidden="true"><div className="kpi-grid mb-24">{Array.from({ length: 4 }, (_, index) => <SkeletonKPI key={index} />)}</div><SkeletonTable rows={4} cols={4} /></div></section>}
-    {loaded && !error && !data.courses.length && <div className="empty-state mb-24" role="status"><h2>No authorized academic records yet</h2><p>Instructors register confirmed class lists, activate an approved syllabus, review courseware and publish it. Students need a matching account email in the registered class list. Saved workspaces synchronize automatically.</p></div>}
+    {loaded && !error && role !== 'instructor' && !data.courses.length && <div className="empty-state mb-24" role="status"><h2>No authorized academic records yet</h2><p>Instructors register confirmed class lists, activate an approved syllabus, review courseware and publish it. Students need a matching account email in the registered class list. Saved workspaces synchronize automatically.</p></div>}
   </>
   if (role === 'dean' || role === 'associate_dean') return <ManagementDashboard model={loaded ? accountManagementModel(data) : null} actions={actions} status={status} />
-  if (role === 'instructor') return <InstructorDashboard model={loaded ? accountInstructorModel(data, workspace) : null} actions={actions} status={status} />
+  if (role === 'instructor') return <InstructorOverview data={data} loaded={loaded} actions={actions} status={status} />
   return <StudentDashboard model={loaded ? accountStudentModel(data, user) : null} actions={actions} status={status} />
 }
 

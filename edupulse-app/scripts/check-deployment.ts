@@ -5,6 +5,7 @@ import { join, dirname, resolve, basename } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { execFileSync } from 'node:child_process'
 import { stripTypeScriptTypes } from 'node:module'
+import { embedTexts } from '../server/ml/onnx.js'
 import { handleRequest } from '../server/http.js'
 
 // Vite/tsx accept extensionless imports that fail in the native serverless ESM runtime.
@@ -56,7 +57,10 @@ const research = await handleRequest(new Request('https://edupulse.test/api/ai?a
 assert.equal(research.status, 200)
 const researchBody = await research.json()
 assert(researchBody.sources.length > 0)
-assert(researchBody.trace.some((s: { agent: string }) => s.agent === 'Ranker'), 'Detailed research must still run the agent pipeline in the serverless runtime')
+assert.equal(researchBody.provider, 'system-search', 'Detailed application questions must use system retrieval without a model')
+assert.equal(researchBody.lookup.scope, 'system')
+assert(!researchBody.trace.some((s: { agent: string }) => s.agent === 'Writer' || s.agent === 'Ranker'), 'System help must not use generative or model-reranking fallback')
+assert.equal((await embedTexts(['Packaged model deployment check'], AbortSignal.timeout(30000)))[0]?.length,384,'Packaged embedding files remain available for explicit content workflows')
 const healthBody = await (await handleRequest(new Request('https://edupulse.test/api/ai?action=health'))).json()
 assert.equal(healthBody.pipeline.embeddings.state, 'loaded', 'In-process embeddings must load from the packaged model files')
 const extract = await handleRequest(new Request('https://edupulse.test/api/ai?action=extract', { method: 'POST', headers: { 'X-File-Name': 'check.md' }, body: '# Deployment check\n\nThe sandbox extracts this Markdown document and reports its quality before indexing.' }))

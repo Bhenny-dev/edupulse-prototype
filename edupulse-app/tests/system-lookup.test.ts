@@ -70,6 +70,7 @@ test('actual chat and on-device preflight answer system records without looking 
   const retained=await ask('Do you know Alexandra Benlor D. Sample?','chat',[{title:'Unrelated earlier file',text:'An earlier attachment discusses another topic.'}]);assert.match(retained.answer,/SYN-001/);assert.equal(web,0)
   const help=await ask('How do I publsih a sylabus?');assert.equal(help.lookup.scope,'system');assert.match(help.answer,/Did you mean/);assert.equal(web,0)
   const howTo=await ask('How do I create a syllabus?');assert.equal(howTo.lookup.scope,'system');assert.equal(providers,0);assert.equal(web,0)
+  const detailed=await ask('Explain in detail how to publish courseware using EduPulse. Use system sources only.');assert.ok(detailed.sources.length);assert.equal(detailed.provider,'system-search');assert.equal(providers,0);assert.equal(web,0)
   workspaceHit=true
   const policy=await ask('What does my syllabus say about late submissions?');assert.match(policy.answer,/accepted on Monday/);assert.equal(web,0)
   const week=await ask('What activities are in week 2 of my syllabus?');assert.match(week.answer,/Week 2 activities: Compare the zyglotron readings/);assert.equal(providers,0);assert.equal(web,0)
@@ -77,7 +78,8 @@ test('actual chat and on-device preflight answer system records without looking 
   privateHit=true
   const local=await ask('What is a zyglotron?');assert.equal(local.sources[0].origin,'private');assert.equal(web,0);assert.ok(library>0)
   privateHit=false
-  const external=await ask('What is photosynthesis?','chat',[],history);assert.equal(external.lookup.scope,'web');assert.match(external.answer,/Internet suggestions/);assert.ok(external.sources[0].image.url.startsWith('https://upload.wikimedia.org/'));assert.equal(providers,0);assert.equal(web,1)
+  const absent=await ask('What is photosynthesis?');assert.equal(absent.lookup.scope,'system');assert.equal(web,0);assert.equal(providers,0)
+  const external=await ask('Search online for photosynthesis','chat',[],history);assert.equal(external.lookup.scope,'web');assert.match(external.answer,/Internet suggestions/);assert.ok(external.sources[0].image.url.startsWith('https://upload.wikimedia.org/'));assert.equal(providers,0);assert.equal(web,1)
   const staff={id:'11111111-1111-4111-8111-111111111111',role:'instructor' as const,local:false,token:'synthetic-only'}
   assert.equal(await systemLookup(chatInput.parse({message:'What is the latest computing news?'}),staff,staff,AbortSignal.timeout(5000)),null,'explicit current research retains the existing provider path after the system search')
   assert.equal(providers,0);assert.equal(web,1)

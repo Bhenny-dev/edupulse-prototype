@@ -7,6 +7,30 @@
   },
   "rules": [
     {
+      "name": "Assigned instructor course workspace and system-first source dialogs",
+      "source": [
+        "edupulse-app/src/components/courseware/Instructor*.jsx",
+        "edupulse-app/src/components/courseware/CourseTopicWeeks.jsx",
+        "edupulse-app/src/components/courseware/TopicContentForm.jsx",
+        "edupulse-app/src/components/courseware/TeachingAttachments.jsx",
+        "edupulse-app/src/components/courseware/ReadOnlyAssessment.jsx",
+        "edupulse-app/src/components/courseware/instructor-courses.css",
+        "edupulse-app/src/pages/SyllabusRedirect.jsx",
+        "edupulse-app/src/utils/instructorCourses.ts",
+        "edupulse-app/src/utils/teachingFiles.ts",
+        "edupulse-app/src/lib/systemChatPolicy.ts",
+        "edupulse-app/src/components/pulse/PulseSourceDialog.jsx",
+        "edupulse-app/server/domains/teachingFiles.ts",
+        "edupulse-app/tests/instructor-course-fixture.ts",
+        "edupulse-app/tests/snapshots/instructor-course*.spec.ts"
+      ],
+      "docs": [
+        "feature-documentation/system-manual/44-instructor-course-workspace",
+        "feature-documentation/system-walkthrough/04-instructor",
+        "feature-documentation/backend-system"
+      ]
+    },
+    {
       "name": "Combined instructor monitoring and its capture fixture",
       "source": [
         "edupulse-app/src/components/academic/InstructorMonitoring.jsx",

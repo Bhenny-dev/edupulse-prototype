@@ -1,4 +1,5 @@
 import './contentEditing.css'
+import TeachingAttachments from './TeachingAttachments'
 import SourcePassageInspector from './SourcePassageInspector'
 import {ASSESSMENT_FORMATS,writtenFormat,assessmentLabel} from '../../data/assessmentFormats'
 import { useState } from 'react'
@@ -18,6 +19,7 @@ export default function AssessmentEditor({ content, onBack, isStudent = false, o
   const { addToast } = useToast()
   const [questions, setQuestions] = useState(content?.questions || [])
   const [answers, setAnswers] = useState({})
+  const [saving, setSaving] = useState(false), [saveError, setSaveError] = useState('')
   const [submitted, setSubmitted] = useState(false)
   useContentEditorTool(content, { ...content, questions }, next => setQuestions(next.questions), isStudent, onBack)
 
@@ -91,9 +93,12 @@ export default function AssessmentEditor({ content, onBack, isStudent = false, o
     setSubmitted(false)
   }
 
-  const saveEdits = () => {
-    if (onSave) onSave(questions)
-    addToast('Assessment saved', 'success')
+  const saveEdits = async () => {
+    if (saving) return
+    setSaving(true); setSaveError('')
+    try { if (onSave) await onSave(questions); addToast('Assessment saved', 'success') }
+    catch (error) { setSaveError(error.message || 'The assessment could not be saved. Review it and retry.') }
+    finally { setSaving(false) }
   }
 
   const score = submitted ? questions.reduce((acc, q, i) => acc + (answers[i] === q.correctIndex ? 1 : 0), 0) : 0
@@ -110,7 +115,7 @@ export default function AssessmentEditor({ content, onBack, isStudent = false, o
         </button>
         <div style={{ flex: 1 }} />
         {!isStudent && (
-          <button className="btn btn-primary btn-sm" onClick={saveEdits}>
+          <button className="btn btn-primary btn-sm" disabled={saving} onClick={saveEdits}>
             <Save size={14} /> Save Assessment
           </button>
         )}
@@ -135,6 +140,7 @@ export default function AssessmentEditor({ content, onBack, isStudent = false, o
 
         {/* Title */}
         <h1 className="assessment-title">{content.title}</h1>
+        <TeachingAttachments attachments={content.attachments} />
         <div className="assessment-subtitle">{content.subtitle}</div>
 
         {/* Meta info */}
@@ -149,6 +155,7 @@ export default function AssessmentEditor({ content, onBack, isStudent = false, o
           <CoursewareText>{content.description || 'Answer all questions. Select the best answer for each question.'}</CoursewareText>
         </div>
 
+        {saveError && <p role="alert">{saveError}</p>}
         {/* Questions */}
         <SourcePassageInspector content={{...content,questions}}><div className="assessment-questions">
           {questions.map((q, qIdx) => (

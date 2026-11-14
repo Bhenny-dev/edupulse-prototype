@@ -2,6 +2,7 @@ import type { ChatInput, CourseInput, Identity } from '../../server/contracts'
 import type { AgentDeps, Evidence, Reference } from './rag/types'
 import type { AgentAnswer } from './rag/agents'
 import { aiPreference, browserAIState, invokeBrowserModel } from './browserAI'
+import { contentGenerationRequest, explicitWebRequest } from './systemChatPolicy'
 
 let accessToken: string | undefined
 let sessionVersion = 0
@@ -131,6 +132,7 @@ function browserDeps(signal: AbortSignal, session: Identity, generate = invokeBr
 }
 
 export async function askPulse(input: Partial<ChatInput> & { message: string }, signal?: AbortSignal): Promise<AiAnswer> {
+  if (!contentGenerationRequest(input.message, input.task)) return aiRequest<AiAnswer>('system-chat', 'POST', { ...input, allowWeb: explicitWebRequest(input.message) }, signal)
   if (aiPreference() !== 'browser') return aiRequest<AiAnswer>('chat', 'POST', input, signal)
   const abort = AbortSignal.any([AbortSignal.timeout(240000), ...(signal ? [signal] : [])])
   const [{ runAgents }, { chatInput }, { contextualDeps }] = await Promise.all([import('./rag/agents'), import('../../server/contracts'), import('./rag/context')])

@@ -9,6 +9,7 @@ import AcademicPortal from '../components/academic/AcademicPortal'
 import CourseOutlineViewer from '../components/courseware/CourseOutlineViewer'
 import CourseWorkspace from '../components/courseware/CourseWorkspace'
 import CoursewareLibrary from '../components/courseware/CoursewareLibrary'
+import InstructorCourses from '../components/courseware/InstructorCourses'
 
 export default function Courseware() {
   const { user } = useAuth()
@@ -28,6 +29,7 @@ export default function Courseware() {
   const back = () => {setLastCourse(null);setSearchParams({})}
   const handleCheckItem = id => { checkItem(id); pulseBus.progress('courseware-checked', id) }
   const handleBulkCheck = ids => { bulkCheck(ids); if (ids.length) pulseBus.progress('courseware-checked') }
+  if (user?.authenticated && user?.role === 'instructor') return <InstructorCourses />
   if ((user?.authenticated && user?.role !== 'instructor') || !['instructor', 'student'].includes(user?.role)) return <AcademicPortal view="courseware" />
   return (<div className="container" data-pulse-zone="courseware">
     <div className="page-header"><h1>{isStudent ? 'My Courses' : 'Course'}</h1>{!isStudent && !selectedCourseId && syllabi.some(item => item.status === 'active' && item.courseOutline?.length) && <Link className="btn btn-primary" to="/syllabus?tab=mine&upload=approved"><FileUp size={16} />Upload syllabi</Link>}</div>

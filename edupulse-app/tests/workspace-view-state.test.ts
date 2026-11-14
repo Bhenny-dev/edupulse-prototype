@@ -82,3 +82,11 @@ test('monitoring menus and roster filters retain only bounded navigation hints',
  for(const [name] of entries){saveWorkspaceViews(key,new Map([[name,{command:'submit',email:'private'}]]),tab);assert.equal(readWorkspaceViews(key,tab).size,0)}
  saveWorkspaceViews(key,new Map<string,unknown>([[`monitoring-roster-page:${scope}`,99],[`monitoring-roster-status:${scope}`,'approve'],[`monitoring-menu:${scope}:materials`,'submit']]),tab);assert.equal(readWorkspaceViews(key,tab).size,0)
 })
+
+test('chat source reload stores only bounded source/message/thread IDs and topic expansion, never response text',()=>{
+ const tab=memory(),key=workspaceViewKey('owner','instructor'),hint={threadId:'thread',messageId:'reply',sourceId:'release:item'}
+ saveWorkspaceViews(key,new Map<string,unknown>([['pulse-source',hint],['course:s:topic-expanded',new Set(['1:topic'])]]),tab)
+ assert.deepEqual(readWorkspaceViews(key,tab).get('pulse-source'),hint)
+ assert.deepEqual(readWorkspaceViews(key,tab).get('course:s:topic-expanded'),new Set(['1:topic']))
+ for(const invalid of [{...hint,text:'private source'},{...hint,sourceId:'x'.repeat(201)},{...hint,command:'publish'}]){saveWorkspaceViews(key,new Map([['pulse-source',invalid]]),tab);assert.equal(readWorkspaceViews(key,tab).size,0)}
+})

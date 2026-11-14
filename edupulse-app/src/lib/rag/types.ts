@@ -6,6 +6,7 @@ export type Evidence = {
   page: number | null; section: string | null; flagged: boolean
   origin: 'private' | 'account' | 'public-guide' | 'attachment' | 'web'
   method: 'hybrid' | 'vector' | 'keyword' | 'provided' | 'web-search'
+  destination?: { path: string; label: string }
   url?: string
   citation?: number
   retained?: { id:string; sha256:string; readAt:string; reference:import('./syllabusReferences').SyllabusReference; truncated:boolean }

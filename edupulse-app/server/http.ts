@@ -1,5 +1,7 @@
 import {practiceRequest,practiceInput} from './domains/practice.js'
 import { AUDIO_BYTES, transcribeAudio } from './transcription.js'
+import { teachingFiles, teachingFileInput } from './domains/teachingFiles.js'
+import { contentGenerationRequest, explicitWebRequest } from '../src/lib/systemChatPolicy.js'
 import { sharingCommand, syllabusSharing } from './domains/syllabusSharing.js'
 import { executeSources } from './sources/service.js'
 import { sourceCommand } from './sources/contracts.js'
@@ -40,7 +42,7 @@ export const VERSION = '0.4.0'
 /** Request body limits per action (bytes). Uploads are raw file bytes. */
 export const BODY_LIMITS: Record<string, number> = { transcribe: AUDIO_BYTES, 'syllabus-sources': 2_800_000, workspace: WORKSPACE_BYTES, extract: EXTRACTION_LIMITS.bytes, documents: 1_000_000, conversations: 200_000, operator: 330_000, courseware:330_000 }
 export const bodyLimit = (action: string | null) => BODY_LIMITS[action || ''] ?? 100_000
-const ACTION_METHODS: Record<string, string[]> = { transcribe: ['POST'], practice:['POST'], syllabi: ['POST'], 'syllabus-sources': ['POST'], 'chat-context': ['POST'], 'chat-memory': ['POST'], support: ['GET', 'POST'], health: ['GET'], providers: ['GET', 'POST', 'DELETE'], 'provider-oauth': ['POST'], 'provider-test': ['POST'], 'provider-workspaces': ['POST'], conversations: ['GET', 'POST'], operator: ['POST'], context: ['POST'], similarity: ['POST'], references: ['POST'], 'web-search': ['POST'], extract: ['POST'], chat: ['POST'], courseware: ['POST'], documents: ['GET', 'POST', 'DELETE'], workspace: ['GET', 'PUT'], academic: ['GET', 'POST'], students: ['GET'] }
+const ACTION_METHODS: Record<string, string[]> = { 'system-chat': ['POST'], 'teaching-files': ['POST'], transcribe: ['POST'], practice:['POST'], syllabi: ['POST'], 'syllabus-sources': ['POST'], 'chat-context': ['POST'], 'chat-memory': ['POST'], support: ['GET', 'POST'], health: ['GET'], providers: ['GET', 'POST', 'DELETE'], 'provider-oauth': ['POST'], 'provider-test': ['POST'], 'provider-workspaces': ['POST'], conversations: ['GET', 'POST'], operator: ['POST'], context: ['POST'], similarity: ['POST'], references: ['POST'], 'web-search': ['POST'], extract: ['POST'], chat: ['POST'], courseware: ['POST'], documents: ['GET', 'POST', 'DELETE'], workspace: ['GET', 'PUT'], academic: ['GET', 'POST'], students: ['GET'] }
 export const allowedMethods = (action: string) => Object.hasOwn(ACTION_METHODS, action) ? ACTION_METHODS[action] : undefined
 const buckets = new Map<string, { count: number; until: number }>()
 const active = new Set<string>()
@@ -119,12 +121,30 @@ export async function handleRequest(request: Request): Promise<Response> {
       const subject = await supportIdentity(identity, command.id)
       return json(await supportAction(subject, command.operation))
     }
-    const effective = ['practice','syllabi','academic','workspace','chat','chat-context','chat-memory','courseware','operator','context','web-search','students','syllabus-sources'].includes(action) ? await supportIdentity(identity, request.headers.get('X-EduPulse-Subject')) : identity
+    const effective = ['system-chat','teaching-files','practice','syllabi','academic','workspace','chat','chat-context','chat-memory','courseware','operator','context','web-search','students','syllabus-sources'].includes(action) ? await supportIdentity(identity, request.headers.get('X-EduPulse-Subject')) : identity
     let chatBody: ReturnType<typeof chatInput.parse> | undefined
+    let operatorBody: ReturnType<typeof operatorInput.parse> | undefined
     let courseBody:ReturnType<typeof courseInput.parse>|undefined
     let lookupFallback: Awaited<ReturnType<typeof systemLookup>> = null
+    const searchLimit = () => {
+      const key = `${identity.id}:system-search`, now = Date.now()
+      for (const [old, value] of buckets) if (value.until < now) buckets.delete(old)
+      const slot = buckets.get(key) || { count: 0, until: now + 60000 }
+      if (slot.count >= 60) throw new ApiError(429, 'RATE_LIMIT', 'Please wait before repeating this search.')
+      slot.count++; buckets.set(key, slot)
+    }
+    if (action === 'system-chat') {
+      searchLimit()
+      const {allowWeb,...input}=chatInput.extend({allowWeb:z.boolean().default(false)}).parse(await readJson(request,bodyLimit(action)))
+      return json(await systemLookup(input,identity,effective,AbortSignal.any([request.signal,AbortSignal.timeout(25000)]),{force:true,allowWeb}))
+    }
     if (action === 'chat' || action === 'chat-context') {
       chatBody=chatInput.parse(await readJson(request,bodyLimit(action)))
+      if (!contentGenerationRequest(chatBody.message,chatBody.task)) {
+        searchLimit()
+        const answer=await systemLookup(chatBody,identity,effective,AbortSignal.any([request.signal,AbortSignal.timeout(25000)]),{force:true,allowWeb:explicitWebRequest(chatBody.message)})
+        return action==='chat'?json(answer):json({input:chatBody,evidence:answer?.sources||[],warnings:[],privateContext:true,answer,identity:{id:effective.id,role:effective.role,local:effective.local}})
+      }
       if (simpleLookup(chatBody)) {
         const key=`${identity.id}:system-search`, now=Date.now()
         for (const [old,value] of buckets) if(value.until<now) buckets.delete(old)
@@ -167,6 +187,13 @@ export async function handleRequest(request: Request): Promise<Response> {
       return json(await executeSources(identity,command,AbortSignal.any([request.signal,AbortSignal.timeout(90000)])))
     }
     if (action === 'students') return json(await readStudents(effective,new URL(request.url)))
+    if (action === 'operator') {
+      const input = operatorInput.parse(await readJson(request, bodyLimit(action)))
+      if (input.operation === 'plan') return json({ clarification: 'Name the page, course or record you want to open. EduPulse uses system navigation and search for these requests.', generated: false })
+      if (!contentGenerationRequest(input.message, 'auto', Boolean(input.editor))) throw new ApiError(400, 'CONTENT_REQUEST_REQUIRED', 'AI is available for explicit educational content authoring. Use System Search or name a page for other requests.')
+      operatorBody = input
+    }
+    if (action === 'teaching-files') return json(await teachingFiles(identity, effective, teachingFileInput.parse(await readJson(request, 5000))))
     if (action === 'conversations') {
       const url = new URL(request.url), query = url.searchParams.get('q')
       if (query && query.length > 4000) throw new ApiError(400, 'INVALID_INPUT', 'Use a shorter conversation search.')
@@ -254,11 +281,11 @@ export async function handleRequest(request: Request): Promise<Response> {
       if (bytes.length > EXTRACTION_LIMITS.bytes) throw new ApiError(413, 'FILE_TOO_LARGE', 'Files must be 4 MB or smaller.')
       return json(await extractUpload(bytes, fileName, signal))
     }
-    const body = chatBody || courseBody || await readJson(request, bodyLimit(action))
+    const body = chatBody || courseBody || operatorBody || await readJson(request, bodyLimit(action))
     if(action==='practice')return json(await practiceRequest(effective,practiceInput.parse(body),connection,signal))
     if (action === 'operator') {
       const stepSignal = config().hosted ? AbortSignal.any([signal, AbortSignal.timeout(70000)]) : signal
-      const result = await operatorRequest(operatorInput.parse(body), effective, connection, stepSignal)
+      const result = await operatorRequest(operatorBody || operatorInput.parse(body), effective, connection, stepSignal)
       return json(result, 200, personalConnection && 'generated' in result && result.generated ? connectionCookie(await saveProvider(identity, { ...personalConnection, testedAt: Date.now() }, false)) : undefined)
     }
     if (action === 'provider-test') {

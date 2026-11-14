@@ -5,8 +5,8 @@ Task-by-task instructions for EduPulse v0.4.0, illustrated with captured screens
 | # | Task | Who | Where |
 | --- | --- | --- | --- |
 | [1](01-getting-started/README.md) | Sign in, find your way around, set preferences | Everyone | Landing page, top bar, Settings |
-| [2](02-syllabus-lifecycle/README.md) | Build a syllabus and take it from draft to active | Instructors | Syllabus Builder, My Syllabus |
-| [3](03-courseware-generation-and-review/README.md) | Generate a week of courseware from the outline and review it | Instructors | Courseware Builder |
+| [2](02-syllabus-lifecycle/README.md) | Build a syllabus and take it from draft to active | Instructors | Course > assigned course > Syllabus |
+| [3](03-courseware-generation-and-review/README.md) | Generate and review courseware | Instructors | Course > assigned course > Review and deliver |
 | [4](04-knowledge-library/README.md) | Private source intake after removal of the settings library | Every signed-in account | Pulse, Syllabus Builder |
 | [5](05-ask-pulse/README.md) | Ask Pulse and read a verified, cited answer | Everyone | Pulse panel |
 | [6](06-compare-and-references/README.md) | Find references in open catalogs | Every signed-in account | Pulse panel |
@@ -20,13 +20,15 @@ Task-by-task instructions for EduPulse v0.4.0, illustrated with captured screens
 
 | [14](14-pulse-and-outline-workspace/README.md) | Draft selected fields, drop references, manage a wider outline and find Help/shortcuts | All roles; authoring for instructors | Pulse, Course Outline, Settings |
 
+[Manual 44: Assigned Instructor course workspace](44-instructor-course-workspace/README.md) documents the current Dashboard summaries, course-contained syllabus intake, chronological topics, sequential assessments, private attachments, week moves and system-first source dialogs. Earlier screenshots in the task guides identify their preview or legacy layout; use Manual 44 for the current signed-in entry point.
+
 Sections 3–8 cover the AI features added in v0.4.0 (named LangGraph agents, sandboxed document extraction, free in-process embeddings and reranking, hybrid vector search, verification, correction, comparison, references and accurate on-page guidance). Sections 1–2 document the core workflow those features plug into.
 
 ## Conventions
 
 * **Bold** names a button, tab or field exactly as it appears on screen.
 * Images are captures of the running application. Guides identify sample academic data, real local inference (the model shown in each capture; current refresh uses *qwen2.5:3b* through Ollama), authenticated canaries, and synthetic provider responses used to exercise connection or proposal states. Synthetic transport captures are UI checks, not model-quality evidence.
-* Pulse drafts, explains and checks. It never saves, registers, approves, publishes or grades on its own: an action it proposes runs only after you press the confirm button on its card ([manual 9](09-pulse-actions/README.md)), and every AI draft is marked for instructor review.
+* Pulse normally chats/searches/navigates through system rules and authorized content; explicit educational requests can draft with AI. It never saves, registers, approves, publishes or grades on its own: an action it proposes runs only after you press the confirm button on its card ([manual 9](09-pulse-actions/README.md)), and every AI draft is marked for instructor review.
 
 ## How the images were made
 
@@ -52,11 +54,11 @@ The [baseline restoration](../versions/2026-10-28-baseline-workflows/README.md) 
 
 [Manual 19: Loading and saved connections](19-loading-and-saved-connections/README.md) documents the cross-role loading audit, pending modals/popovers, persistent provider selection and the separate ChatGPT-plan requirement.
 
-[Manual 20: Voice and provider errors](20-voice-and-provider-errors/README.md) covers optional microphone controls, English/Filipino transcript review and conversation mode, experimental languages, and specific OpenAI billing/limit recovery.
+[Manual 20: Voice and provider errors](20-voice-and-provider-errors/README.md) covers optional microphone controls, English/Filipino/mixed provider transcription into editable text, explicit Send, independent playback, and specific OpenAI billing/limit recovery.
 
 [Manual 21: Automatic records and course students](21-automatic-records-and-course-rosters/README.md) covers automatic refresh/recovery, the three Syllabus tabs, **Course**, and instructor membership CRUD.
 
-[Manual 22: Dashboard summary links](22-dashboard-summary-navigation/README.md) covers the four instructor cards, their filtered destinations, browser history, keyboard navigation and mobile/dark views.
+[Manual 22: Dashboard summary links](22-dashboard-summary-navigation/README.md) covers the current assigned-course summary destinations and retains labelled earlier filtered-card examples for browser, keyboard and mobile/dark behavior.
 
 [Manual 23: Account support and Pulse context](23-account-support-and-pulse-context/README.md) covers choosing a real account after a role, safe support controls, authorized answers, public research, mixed-language chat, scoped agent memory and verified courseware delivery.
 

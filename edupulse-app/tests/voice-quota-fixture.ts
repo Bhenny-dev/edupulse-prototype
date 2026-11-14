@@ -42,7 +42,7 @@ export async function voiceUI(page: Page, options: { recording?: boolean, playba
     if (quota) return route.fulfill({ status: 429, json: { error: { code: 'PROVIDER_CREDITS', message: 'Your OpenAI API credit balance is exhausted. Check API billing and add credits.' } } }).catch(() => {})
     return route.fulfill({ json: { text: transcript } }).catch(() => {})
   })
-  await page.route('**/api/ai?action=chat', route => {
+  await page.route(/\/api\/ai\?action=(?:chat|system-chat)$/, route => {
     calls++
     return route.fulfill({ json: { requestId: `synthetic-voice-${calls}`, mode: 'generated', answer: 'Ang variable ay may pangalan at value. Review your example before using it.', grounding: 'general', sources: [], agents: [] } })
   })

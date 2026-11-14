@@ -1,5 +1,11 @@
 # 31 - Read and retain syllabus references
 
+## Current course location and initial preparation
+
+In a selected assigned course, **Syllabus sources** is the last section after **Weeks and topics** and initially opens there. Adding or explicitly adopting the approved syllabus checks/retains its cited sources and indexes readable non-catalog copies; merely reopening or reloading a course does not repeat that external reading. **Search and read sources** remains the explicit retry for reading and indexing available retained text. A matching **Attach readable copy** supplies the same citation's primary readable context when a book/link cannot be fetched; it is not a different fallback source.
+
+[Manual 44](../44-instructor-course-workspace/README.md#read-the-syllabus-sources-at-the-end) shows the current location. The source/version/citation controls below remain. Ordinary Pulse record questions use system lookup without generation; explicit educational generation can use retained source evidence. The earlier source-panel captures may show the retained review-workspace layout.
+
 ## References from every outline section
 
 **Syllabus sources** combines overall syllabus references with the links in every teaching section. A section shared across weeks lists its source once. Generation prepares the overall references and all sections of the selected week; references belonging only to a different week are not added to that generation request. Older weeks without sections retain their existing resource links.
@@ -13,7 +19,7 @@ These captures use fictional course/source transports and a real courseware-gene
 
 **Who:** instructor or System Admin. **Where:** open a course, then **Syllabus sources**. This panel appears when Section 7 or weekly resources contain references. Books and links are presented together, including older nested syllabus records.
 
-1. Expand **Syllabus sources**. A link starts as **Link listed · Not read yet**; a book without readable text starts as **Book metadata only**. These entries are planning references, not factual evidence.
+1. Open **Syllabus sources** at the end of the weekly sequence; it starts expanded in the current topic view. A link starts as **Link listed · Not read yet**; a book without readable text starts as **Book metadata only**. These entries are planning references, not factual evidence.
 
    ![Sample book, accessible guide and inaccessible link](01-syllabus-sources.png)
 
@@ -49,7 +55,7 @@ These captures use fictional course/source transports and a real courseware-gene
 
 ![Explicit confirmation before removing a retained version](11-remove-confirmation.png)
 
-The source list retains its expanded state when returning from a document. Copies are private to the signed-in account, including during admin account support views; shared syllabi do not share private book files automatically. Up to 200 versions are retained per account. Only the first 150,000 extracted characters per copy are searchable, with truncation disclosed; original bytes remain downloadable. A source failure leaves original educational drafting available with warnings and listed references clearly separate from read evidence. Generation does not check or publish a draft.
+The source list retains its expanded state when returning from a document. Copies are private to the signed-in account, including during admin account support views; shared syllabi do not share private book files automatically. Up to 200 versions are retained per account. Only the first 150,000 extracted characters per copy are searchable, with truncation disclosed; original bytes remain downloadable. A source failure leaves manual authoring available and cannot become factual evidence. AI courseware generation requires usable readable source context; listed metadata alone does not satisfy that requirement. Generation does not check or publish a draft.
 
 The same controls stack on phones and use the existing dark surfaces.
 

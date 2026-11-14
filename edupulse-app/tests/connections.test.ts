@@ -144,9 +144,9 @@ test('personal connection discovers and switches models, powers guest drafts, an
   const changed = await handleRequest(request('providers', { provider: 'openai', model: 'gpt-other' }, cookie))
   assert.equal(changed.status, 200); assert.equal((await changed.json()).connection.model, 'gpt-other')
   assert.equal((await handleRequest(request('providers', { provider: 'openai', model: 'not-returned' }, cookie))).status, 400)
-  const answer = await handleRequest(request('chat', { message: 'Explain iteration in plain language.' }, cookie))
+  const answer = await handleRequest(request('chat', { message: 'Generate a short lesson explaining iteration in plain language.', task: 'draft' }, cookie))
   assert.equal(answer.status, 200); assert.equal((await answer.json()).mode, 'generated')
-  assert.deepEqual(requestedKeys, ['Bearer own-fake-key-123'])
+  assert.deepEqual([...new Set(requestedKeys)], ['Bearer own-fake-key-123'], 'draft and its verification use only the saved personal connection')
   await Promise.all([
     invokeModel('Explain', 'One', AbortSignal.timeout(1000), false, { ...connection, apiKey: 'first-key' }),
     invokeModel('Explain', 'Two', AbortSignal.timeout(1000), false, { ...connection, apiKey: 'second-key' }),

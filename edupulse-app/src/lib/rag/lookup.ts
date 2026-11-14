@@ -17,10 +17,10 @@ export function wordMatch(a: string, b: string) {
 }
 
 export function keywordMatch(question: string, text: string) {
-  const all=lookupTerms(question), query=all.length>1&&/^(?:how|paano)\b/i.test(question)?all.filter(t=>!['create','generate','draft','write','add'].includes(t)):all, content=[...new Set(terms(text))]
+  const all=lookupTerms(question.replace(/\b(?:use|using)\s+(?:edupulse|system\s+(?:sources?|records?|content)(?:\s+only)?)\b/gi, '')), query=all.length>1&&/^(?:how|paano)\b/i.test(question)?all.filter(t=>!['create','generate','draft','write','add'].includes(t)):all, content=[...new Set(terms(text))]
   return query.length ? query.reduce((sum,q)=>sum+Math.max(0,...content.map(t=>wordMatch(q,t))),0)/query.length : 0
 }
-const requestWords=new Set(['know','find','search','system','local','content','say','pdf','document','attach','upload','ang','si','ba','mga','sa','ng'])
+const requestWords=new Set(['detail','only','know','find','search','system','local','content','say','pdf','document','attach','upload','ang','si','ba','mga','sa','ng'])
 export const lookupTerms=(text:string)=>[...new Set(terms(text))].filter(word=>!requestWords.has(word)).slice(0,24)
 
 export function nameMatch(query: string, name: string, id: string) {

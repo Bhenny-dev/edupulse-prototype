@@ -1,4 +1,5 @@
 import './contentEditing.css'
+import TeachingAttachments from './TeachingAttachments'
 import SourcePassageInspector from './SourcePassageInspector'
 import { downloadMaterialPdf } from '../../utils/pdfExport'
 import { Spinner } from '../ui/LoadingFeedback'
@@ -103,6 +104,7 @@ export default function DocumentViewer({ content, onBack, isStudent = false, rea
 
   return (
     <div style={{ background: 'var(--gray-100)', minHeight: '100vh', padding: '24px 0' }}>
+      <TeachingAttachments attachments={content.attachments} />
       {/* Toolbar */}
       <div style={{
         maxWidth: editing ? '1200px' : '850px', margin: '0 auto', padding: '0 24px',

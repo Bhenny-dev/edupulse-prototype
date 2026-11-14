@@ -216,3 +216,5 @@ body:has(.overlay-backdrop):not(.pulse-panel-open) .overlay-backdrop > * { max-h
   .syllabus-builder-actions > div { width: 100%; }
   .syllabus-builder-actions .btn { flex: 1 1 150px; white-space: normal; }
 }
+
+.pulse-source-dialog{width:min(760px,calc(100vw - 32px));max-height:88dvh;overflow:auto;overflow-wrap:anywhere}.pulse-source-dialog blockquote{margin:16px 0;padding:16px;border-left:3px solid var(--primary-500);background:var(--bg-secondary);white-space:normal}

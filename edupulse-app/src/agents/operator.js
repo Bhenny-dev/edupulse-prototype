@@ -25,8 +25,8 @@ const CONTENT_QUESTION = /\b(what|why|how|explain|define|describe|says?|discuss\
 /** Pages Pulse may open, with the roles each route allows (src/App.jsx). */
 export const PAGES = [
   { path: '/student-monitoring?tab=students', label: 'Student Monitoring → Students', words: /\b(registered\s+students|class\s*lists?|rosters?|registrations?)\b/i, roles: ['instructor'] },
-  { path: '/syllabus?tab=builder', label: 'Syllabus Builder', words: /\b(?:syllabus\s+builder|(?:new|build(?:ing)?|creat(?:e|ing)|start(?:ing)?|draft(?:ing)?)\b[^.?!]{0,65}\bsyllabus|syllabus\b[^.?!]{0,40}\b(?:build|creat|start))\b/i, roles: ['instructor'] },
-  { path: '/syllabus?tab=repository', label: 'Shared Repository', words: /\b(shared\s+)?repository\b/i, roles: ['instructor'] },
+  { path: '/syllabus?tab=builder', label: 'Course > Syllabus Builder', words: /\b(?:syllabus\s+builder|(?:new|build(?:ing)?|creat(?:e|ing)|start(?:ing)?|draft(?:ing)?)\b[^.?!]{0,65}\bsyllabus|syllabus\b[^.?!]{0,40}\b(?:build|creat|start))\b/i, roles: ['instructor'] },
+  { path: '/syllabus?tab=repository', label: 'Course > Shared Repository', words: /\b(shared\s+)?repository\b/i, roles: ['instructor'] },
   { path: '/syllabus?tab=mine', label: 'Syllabus → My Syllabus', words: /\bsyllab(us|i)\b/i, roles: ['instructor'] },
   { path: '/student-monitoring', label: 'Student Monitoring', words: /\bstudent\s+monitoring\b/i, roles: ['instructor'] },
   { path: '/student-monitoring?tab=assessments', label: 'Student Monitoring → Assessment Scores', words: /\b(scoring\s+sheet|scores?\s+sheet|assessment\s+scores?)\b/i, roles: ['instructor'] },

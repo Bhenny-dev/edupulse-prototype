@@ -13,7 +13,7 @@ import ModalLayer from '../components/ui/ModalLayer'
 import AutoTextarea from '../components/ui/AutoTextarea'
 import { Spinner,LoadingStatus } from '../components/ui/LoadingFeedback'
 import { downloadSyllabusPdf } from '../utils/pdfExport'
-import { cloneElement, isValidElement, useState, useEffect, useRef, useMemo, useId } from 'react'
+import { cloneElement, isValidElement, useState, useEffect, useRef, useMemo, useId, useCallback } from 'react'
 import { useSearchParams, Navigate, useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { CURRICULUM_COURSES, INSTRUCTORS, DEFAULT_INSTITUTIONAL_CONTEXT, SYLLABUS_STATUS_META } from '../data/mockData'
@@ -395,7 +395,7 @@ const FormGroup = ({ label, required, error, children, note }) => {
 }
 
 
-function SyllabusBuilder({ onComplete, onCancel, initial }) {
+function SyllabusBuilder({ onComplete, onCancel, initial, courseContext }) {
   const [outlineDraft,setOutlineDraft]=useState(null)
   const { addToast } = useToast()
   const ic = DEFAULT_INSTITUTIONAL_CONTEXT
@@ -425,6 +425,7 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
     books: [],
     onlineReferences: [],
     ...initial,
+    ...(courseContext && !initial ? { courseCode: courseContext.code, courseTitle: courseContext.title, courseDescription: CURRICULUM_COURSES.find(item => item.code === courseContext.code)?.description || '', courseInfo: { courseCode: courseContext.code, courseTitle: courseContext.title, periodOffered: courseContext.semester, academicYear: courseContext.academicYear, creditUnits: Number(courseContext.units) || 0, prerequisites: [] } } : {}),
     courseOutline:normalizeOutlineSections(initial?.courseOutline||defaultOutline),
   }))
 
@@ -502,6 +503,7 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
 
   // ── Select course — auto-fills locked fields from curriculum ──
   const selectCourse = (code) => {
+    if (courseContext && code !== courseContext.code) return
     const subj = CURRICULUM_COURSES.find(s => s.code === code)
     if (subj) {
       const noOfHours = subj.units * 18
@@ -545,8 +547,9 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
   const [sourceFiles, setSourceFiles] = useState([])
   const handleUploadExtract = (parsed) => {
     const title = parsed.metadata?.title || 'Imported syllabus'
-    setSourceFiles([{ title, fileName: title, text: parsed.sourceText || parsed.sections.map(section => section.raw).join('\n'), syllabus: parsed, kind: 'syllabus', sourceType: 'text' }])
     const merged = parsedToFormState(parsed)
+    if (courseContext && (merged.courseCode || merged.courseInfo?.courseCode || '').replace(/\s/g, '').toLowerCase() !== courseContext.code.replace(/\s/g, '').toLowerCase()) { addToast(`Choose the syllabus for ${courseContext.code}. The current course was preserved.`, 'error'); return }
+    setSourceFiles([{ title, fileName: title, text: parsed.sourceText || parsed.sections.map(section => section.raw).join('\n'), syllabus: parsed, kind: 'syllabus', sourceType: 'text' }])
     setForm(prev => ({
       ...prev,
       ...merged,
@@ -707,7 +710,7 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
           </div>
           <div className="grid-2">
             <FormGroup label="Course" required error={errors.courseCode} note="Select a course — all fields auto-fill from curriculum">
-              <select aria-label="Course" className={`form-input ${errors.courseCode ? 'form-input-error' : ''}`} value={form.courseCode} onChange={e => selectCourse(e.target.value)}>
+              <select aria-label="Course" className={`form-input ${errors.courseCode ? 'form-input-error' : ''}`} value={form.courseCode} disabled={Boolean(courseContext)} onChange={e => selectCourse(e.target.value)}>
                 <option value="">Select a course...</option>
                 {form.courseCode&&!CURRICULUM_COURSES.some(s=>s.code===form.courseCode)&&<option value={form.courseCode}>{form.courseCode} — {form.courseInfo.courseTitle}</option>}
                 {CURRICULUM_COURSES.map(s => <option key={s.code} value={s.code}>{s.code} — {s.code===form.courseCode?(form.courseInfo.courseTitle||s.title):s.title}</option>)}
@@ -974,11 +977,13 @@ function SyllabusBuilder({ onComplete, onCancel, initial }) {
 
 /* ─── Version Compare ─── */
 /* ─── Main Component ─── */
-export default function Syllabus() {
+export default function Syllabus({ courseContext }) {
   const { user } = useAuth()
   const { addToast } = useToast()
   const navigate = useNavigate()
-  const [searchParams, setSearchParams] = useSearchParams()
+  const [searchParams, writeSearchParams] = useSearchParams()
+  const inCourse = item => !courseContext || item.courseCode === courseContext.code
+  const setSearchParams = useCallback((next, options) => writeSearchParams(previous => { const value = new URLSearchParams(typeof next === 'function' ? next(previous) : next); if (courseContext?.id) { value.set('course', courseContext.id); value.set('view', 'syllabus') } return value }, options), [writeSearchParams, courseContext?.id])
 
   const [tab, setTab] = useState(['mine', 'repository', 'builder'].includes(searchParams.get('tab')) ? searchParams.get('tab') : 'mine')
   const [readerId,setReaderId]=useWorkspaceViewState('syllabus-reader',null)
@@ -994,8 +999,8 @@ export default function Syllabus() {
   const [extractingSyllabus, setExtractingSyllabus] = useState(null)
   const { syllabi, setSyllabi, commit,revision,dirty,saving,refresh,loading:workspaceLoading } = useWorkspace()
   const sharedId=readerId?.startsWith('shared:')?readerId.slice(7):null
-  const readableShare=sharing.shares.find(item=>item.id===sharedId)
-  const ownedReader=syllabi.find(item=>item.id===readerId)
+  const readableShare=sharing.shares.find(item=>item.id===sharedId&&inCourse(item))
+  const ownedReader=syllabi.find(item=>item.id===readerId&&inCourse(item))
   const selectedSyllabus=previewSyllabus||(sharedId?(readableShare&&sharedReader?.id===sharedId?sharedReader.syllabus:null):ownedReader)
   const setSelectedSyllabus=syllabus=>{const saved=syllabus&&syllabi.some(item=>item.id===syllabus.id);setPreviewSyllabus(syllabus&&!saved?syllabus:null);setReaderId(saved?syllabus.id:null)}
   useEffect(()=>{
@@ -1005,20 +1010,20 @@ export default function Syllabus() {
     aiRequest('syllabi','POST',{operation:'open',id:readableShare.id},controller.signal).then(result=>{if(!controller.signal.aborted)setSharedReader({id:readableShare.id,syllabus:{...result.syllabus,id:`shared:${readableShare.id}`,status:'drafted',sharedCopy:true,sharedBy:{name:readableShare.sender_name,id:readableShare.sender_id}}})}).catch(error=>{if(!controller.signal.aborted)setActionError(error.message)})
     return()=>controller.abort()
   },[readableShare])
-  const incoming=sharing.shares.filter(item=>item.recipient_id===user?.id)
-  const outgoing=sharing.shares.filter(item=>item.sender_id===user?.id)
-  const deleteSyllabus=syllabi.find(item=>item.id===deleteId)
+  const incoming=sharing.shares.filter(item=>item.recipient_id===user?.id&&inCourse(item))
+  const outgoing=sharing.shares.filter(item=>item.sender_id===user?.id&&inCourse(item))
+  const deleteSyllabus=syllabi.find(item=>item.id===deleteId&&inCourse(item))
   const deleteShare=sharing.shares.find(item=>`shared:${item.id}`===deleteId)
-  const suspendOwned=syllabi.find(item=>item.id===suspendId)
+  const suspendOwned=syllabi.find(item=>item.id===suspendId&&inCourse(item))
   const suspendShare=sharing.shares.find(item=>`shared:${item.id}`===suspendId)
   const adoptShare=incoming.find(item=>item.id===adoptId)
-  const sharingSyllabus=syllabi.find(item=>item.id===shareId)
+  const sharingSyllabus=syllabi.find(item=>item.id===shareId&&inCourse(item))
   const activeOnly = searchParams.get('status') === 'active'
   const teachingSyllabi = syllabi.filter(syllabus => ['own','draft'].includes(syllabus.teachingSetRole))
-  const listedSyllabi = activeOnly ? syllabi.filter(syllabus => syllabus.status === 'active') : teachingSyllabi.length && searchParams.get('status') !== 'all' ? teachingSyllabi : syllabi
+  const listedSyllabi = (activeOnly ? syllabi.filter(syllabus => syllabus.status === 'active') : teachingSyllabi.length && searchParams.get('status') !== 'all' ? teachingSyllabi : syllabi).filter(inCourse)
   const {data:academic}=useAcademicRecords()
   const editingId=searchParams.get('edit')
-  const editingSyllabus=syllabi.find(item=>item.id===editingId&&!item.sample&&!item.suspended)
+  const editingSyllabus=syllabi.find(item=>item.id===editingId&&!item.sample&&!item.suspended&&inCourse(item))
   const openBuilder=syllabus=>{setReaderId(null);setPreviewSyllabus(null);setTab('builder');setSearchParams({tab:'builder',...(syllabus?{edit:syllabus.id}:{})})}
   const [uploadingSyllabus, setUploadingSyllabus] = useState(null)
 
@@ -1038,6 +1043,7 @@ export default function Syllabus() {
   const record = (syl, status) => ({ ...syl, status, lastUpdated: new Date().toISOString(), history: [...(syl.history || []), { status, version: syl.version || 1, timestamp: new Date().toISOString(), author: user?.name || 'Instructor' }].slice(-100) })
   const setStatus = (id, status) => setSyllabi(prev => prev.map(s => s.id === id ? record(s, status) : s))
   const saveBuilder = async (form, status) => {
+    if (courseContext && (form.courseCode !== courseContext.code || form.courseInfo?.courseCode !== courseContext.code)) throw new Error('The syllabus belongs to another course. Reopen the assigned course before saving.')
     const next = record({ ...form, id: editingSyllabus?.id || form.id || crypto.randomUUID(), instructorId: user?.id, version: (editingSyllabus?.version || 0) + 1, sample: false, approvedFile: undefined, extractedAt: undefined }, status)
     const change = data => revisedWorkspace(data,next)
     const saved = await commit(change)
@@ -1110,7 +1116,7 @@ export default function Syllabus() {
   })
 
   return (
-    <div className="container" data-pulse-zone="syllabus-builder">
+    <div className={courseContext ? '' : 'container'} data-pulse-zone="syllabus-builder">
       <div className="page-header">
         <h1>Syllabus</h1>
       </div>
@@ -1157,7 +1163,7 @@ export default function Syllabus() {
 
       {tab === 'mine' && (
         <>
-          <ApprovedSyllabusIntake onUse={handleUseApprovedSyllabus} onView={setSelectedSyllabus} focusUpload={searchParams.get('upload') === 'approved'} />
+          {!courseContext && <ApprovedSyllabusIntake onUse={handleUseApprovedSyllabus} onView={setSelectedSyllabus} focusUpload={searchParams.get('upload') === 'approved'} />}
           {teachingSyllabi.length>0&&!activeOnly&&<div className="academic-actions mt-16" role="status"><strong>Teaching set</strong><span>{teachingSyllabi.filter(s=>s.teachingSetRole==='own').length} own syllabi</span><span>{incoming.length} shared with me</span><span>{teachingSyllabi.filter(s=>s.teachingSetRole==='draft').length} complete drafts</span><button className="btn btn-secondary btn-sm" onClick={()=>setSearchParams({tab:'mine',...(searchParams.get('status')==='all'?{}:{status:'all'})})}>{searchParams.get('status')==='all'?'Show teaching set':'Show all syllabi'}</button></div>}
           {activeOnly && <div className="flex flex-wrap items-center gap-16 mb-16" role="status"><strong>Active syllabi</strong><button className="btn btn-secondary btn-sm" onClick={() => setSearchParams({ tab: 'mine' })}>Show all syllabi</button></div>}
 
@@ -1229,7 +1235,7 @@ export default function Syllabus() {
       {/* Tab: Syllabus Builder */}
       {tab === 'builder' && (
         <div data-pulse-help="syllabus-field">
-          {workspaceLoading?<LoadingStatus label="Loading editable syllabus..."/>:editingId&&!editingSyllabus?<p role="alert">This editable syllabus is unavailable in your current workspace. Return to My Syllabus to select an available draft.</p>:<SyllabusBuilder key={editingSyllabus?.id || "new"} initial={editingSyllabus} onComplete={saveBuilder} onCancel={() => { switchTab('mine') }} />}
+          {workspaceLoading?<LoadingStatus label="Loading editable syllabus..."/>:editingId&&!editingSyllabus?<p role="alert">This editable syllabus is unavailable in your current workspace. Return to My Syllabus to select an available draft.</p>:<SyllabusBuilder courseContext={courseContext} key={editingSyllabus?.id || "new"} initial={editingSyllabus} onComplete={saveBuilder} onCancel={() => { switchTab('mine') }} />}
         </div>
       )}
 

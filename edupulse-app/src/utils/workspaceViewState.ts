@@ -1,5 +1,6 @@
 type SourceSelection={section:number;start:number;end:number;signature:string}
-type ViewValue=SourceSelection|string|number|boolean|null|Set<string|number>
+type ChatSourceView={threadId:string|null;messageId:string;sourceId:string}
+type ViewValue=ChatSourceView|SourceSelection|string|number|boolean|null|Set<string|number>
 type TabStorage=Pick<Storage,'getItem'|'setItem'>
 const LIMIT=65_536,MAX_ENTRIES=200
 const storage=()=>{try{return sessionStorage}catch{return null}}
@@ -9,6 +10,12 @@ export const workspaceViewKey=(owner:string,role:string)=>`edupulse-view-v1:${en
 function valid(key:unknown,value:unknown):value is ViewValue {
   if(typeof key!=='string'||key.length>400)return false
   const id=(item:unknown)=>typeof item==='string'&&item.length<=200
+  if(key==='pulse-source'){
+    if(value===null)return true
+    if(!value||typeof value!=='object'||Array.isArray(value))return false
+    const hint=value as Record<string,unknown>
+    return Object.keys(hint).sort().join(',')==='messageId,sourceId,threadId'&&(hint.threadId===null||id(hint.threadId))&&id(hint.messageId)&&id(hint.sourceId)
+  }
   if(/^source-inspector:.+:retained$/.test(key))return value===null||id(value)
   if(/^source-inspector:.+/.test(key)){
    if(value===null)return true
@@ -30,6 +37,7 @@ function valid(key:unknown,value:unknown):value is ViewValue {
   if(key==='layout-overlay')return value===null||['search','account','notifications','roles','language','mobile'].includes(value as string)
   if(key==='course-location'||/^course:.+:(?:reader|delivery)$/.test(key)||/^academic-reader:.+$/.test(key))return value===null||id(value)
   if(/^course:.+:expanded$/.test(key))return value instanceof Set&&value.size<=52&&[...value].every(item=>Number.isInteger(item)&&Number(item)>=1&&Number(item)<=52)
+  if(/^course:.+:topic-expanded$/.test(key))return value instanceof Set&&value.size<=200&&[...value].every(id)
   if(/^course:.+:selected$/.test(key))return value instanceof Set&&value.size<=200&&[...value].every(id)
   if(/^course:.+:type$/.test(key))return value===null||value==='assessment'
   if(/^course:.+:mode$/.test(key)||/^publication:.+:mode$/.test(key))return value===null||value==='document'||value==='presentation'

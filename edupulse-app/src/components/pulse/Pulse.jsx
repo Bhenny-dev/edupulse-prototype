@@ -13,6 +13,7 @@ import {relatedSyllabi} from '../../agents/relatedSyllabi'
 import {scheduledSyllabusDraft} from '../../agents/draftValidation'
 import {planRequest} from '../../lib/rag/plan'
 import { checkAppropriateUse } from '../../lib/rag/policy'
+import { contentGenerationRequest, navigationCorrection } from '../../lib/systemChatPolicy'
 import { informationalQuestion } from '../../lib/rag/lookup'
 import { getAgentForZone, intentsForRole } from '../../agents'
 import { approvalResumeStep, prepareIntent, previewAgents, stepReadiness, stepTarget } from '../../agents/guidance'
@@ -22,9 +23,10 @@ import { applyEditorProposal, applySyllabusDraft,currentEditor, currentEditorSou
 import {continueSyllabusTask,editableSyllabusPath,explicitOutlineTask,isWeekContinuation,syllabusTask,unfinishedSyllabusWeeks} from '../../agents/syllabusConversation'
 import { editableField, scopedEditorPatch } from '../../agents/componentScope'
 import { activeSources, focusedSection, focusedFields, sourceContext } from '../../agents/pageContext'
-import { ACTION_REQUEST, DRAFT_REQUEST, EDIT_REQUEST, ALL_FIELDS, receiptText, workProposal } from '../../agents/workTools'
+import { DRAFT_REQUEST, EDIT_REQUEST, ALL_FIELDS, receiptText, workProposal } from '../../agents/workTools'
 import usePulseArchive from './usePulseArchive'
 import PulseHistory from './PulseHistory'
+import PulseSourceDialog from './PulseSourceDialog'
 import { useAI } from '../../context/AIContext'
 import { useWorkspace,useWorkspaceViewState } from '../../context/WorkspaceContext'
 import { useContentStore } from '../../context/ContentStoreContext'
@@ -60,6 +62,7 @@ export default function Pulse() {
   const location = useLocation(), navigate = useNavigate()
   const [open, setOpen] = useState(false), [messages, setMessages] = useState([])
   const archive = usePulseArchive(user, messages, setMessages)
+  const [sourceReference, setSourceReference] = useWorkspaceViewState('pulse-source', null)
   const [syllabusReader,setSyllabusReader]=useWorkspaceViewState('syllabus-reader',null)
   const previousSyllabusTask=useRef(null)
   const syllabusScope=`${user?.accountId||user?.id}:${user?.id}:${user?.role}:${archive.contextKey}`
@@ -389,7 +392,7 @@ export default function Pulse() {
     if (busy || fileBusy || requestRef.current || (!question && !pending.length)) return false
     const history = conversationWindow(messages.map(message => ({ ...message, text: message.text || message.proposals?.map(proposal => proposal.label || proposal.text || proposal.type).join('; ') })), 14000).history
     const controller = new AbortController(); requestRef.current = controller
-    setBusy(true); setDraftProgress('');setExpression('thinking')
+    setBusy(true); setDraftProgress(contentGenerationRequest(instruction, options.task, Boolean(editor)) ? 'Preparing educational content...' : 'Searching EduPulse...');setExpression('thinking')
     setError(''); setErrorCode(''); if (text === undefined || options.voice) setInput('')
     if (!options.attachments && attachments.length) { setContextFiles(attachments); setAttachments([]) }
     setMessages(previous => [...previous, { id: crypto.randomUUID(), from: 'user', text: question || `Attached ${pending.map(item => item.fileName || item.title).join(', ')}`, fileNames: pending.map(item => item.fileName || item.title), scope: options.scope }])
@@ -425,20 +428,9 @@ export default function Pulse() {
         : work ? { proposals: [work], chat: false, mentioned: [] } : destination ? { proposals: [destination.denied ? { type: 'notice', text: `${destination.label} is not available for your role.` } : { type: /\b(?:guide|walkthrough|walk\s+me|step.by.step|help\s+me)\b/i.test(question) ? 'guide' : 'navigate', path: destination.path, label: destination.label, ...(destination.viewRole ? { viewRole: destination.viewRole } : {}) }], chat: false, mentioned: [] }
           : /\b(?:guide|walkthrough|walk\s+me)\b/i.test(question) && /\b(?:this|current)\s+(?:page|section|component)\b/i.test(question) ? { proposals: [{ type: 'guide', path: `${location.pathname}${location.search}`, label: agent?.label || 'this page' }], chat: false, mentioned: [] }
             : work ? { proposals: [work], chat: false, mentioned: [] } : planOperator({ message: question, attachments: pending, role, canSwitchRoles: Boolean(user?.canSwitchRoles), catalog, currentCourse: currentCourse || catalog.find(item => item.code === editor?.data.courseCode), history })
-      if (!options.skipOperator && permitted && !informational && !draftFromSource && !plan.proposals.length && ACTION_REQUEST.test(question)) {
-        if (!ai.ready) plan = { ...plan, chat: false, proposals: [{ type: 'notice', text: 'Name the page or open the editor you want to change. Navigation, file import and roster tools work without a model; flexible planning and rewriting need a connected text-generation model.' }] }
-        else {
-          const result = await requestOperator({ operation: 'plan', message: question, viewRole: role, editor, context: `Page: ${location.pathname}. Component: ${focus?.label || ''}. Known courses: ${catalog.map(item => item.code).join(', ')}.`, history: history.slice(-8).map(item => ({ ...item, content: item.content.slice(0, 3000) })), attachments: sourceReferences.map(item => ({ title: item.title, text: item.text.slice(0, 18000), kind: item.syllabus ? 'syllabus' : item.roster ? 'roster' : 'material' })) }, controller.signal)
-          const selected = result.plan
-          const routes = { 'syllabus-builder': '/syllabus?tab=builder', 'my-syllabus': '/syllabus?tab=mine', 'my-courses': role === 'student' ? '/courseware' : '/student-monitoring?tab=students', courseware: '/courseware', 'student-monitoring': '/student-monitoring', assessment: '/assessment', records: '/records', instructors:'/instructors', students:'/students', 'course-loading': '/course-loading', monitor: '/monitor', performance: '/performance', 'ai-settings': '/settings?tab=ai-provider', settings: '/settings', dashboard: '/dashboard', help: '/settings?tab=help' }
-          let proposal = { type: 'notice', text: selected.instruction || 'Specify the target page, field or course.' }
-          if (['navigate', 'guide'].includes(selected.tool) && routes[selected.page]) proposal = { type: selected.tool, path: routes[selected.page], label: selected.page.replace(/-/g, ' ') }
-          if (['syllabus-edit', 'content-edit'].includes(selected.tool)) proposal = { type: 'editor-edit', editor, request: question, section: selected.section || 'all', attachments: pending }
-          if (selected.tool === 'syllabus-import' && pending[selected.attachmentIndex]?.syllabus) proposal = { type: 'syllabus-import', attachment: pending[selected.attachmentIndex], section: selected.section || 'all', courseCode: selected.courseCode || '', operation: selected.operation === 'append' ? 'append' : 'replace' }
-          if (selected.tool === 'roster-edit') proposal = { type: 'roster-edit', registrationId: selected.targetId || '', attachment: pending[selected.attachmentIndex], selector: selected.selector || '', operation: selected.operation === 'append' ? 'merge' : selected.operation || 'merge' }
-          if (selected.tool === 'generate-week' && catalog.some(item => item.code === selected.courseCode)) proposal = { type: 'generate-week', courseCode: selected.courseCode, week: selected.week, request: question }
-          plan = { ...plan, chat: selected.tool === 'chat', proposals: selected.tool === 'chat' ? [] : [proposal] }
-        }
+      if (!options.skipOperator && permitted && !draftFromSource && !plan.proposals.length) {
+        const corrected = navigationCorrection(question), suggestion = corrected && pageFor(`Open ${corrected}`, role, { canSwitchRoles: Boolean(user?.canSwitchRoles), history })
+        if (suggestion && !suggestion.denied) plan = { ...plan, chat: false, proposals: [{ type: 'confirm-navigation', path: suggestion.path, label: suggestion.label, text: `Did you mean ${suggestion.label}?`, ...(suggestion.viewRole ? { viewRole: suggestion.viewRole } : {}) }] }
       }
       const now = plan.proposals.filter(proposal => !proposal.after), later = plan.proposals.filter(proposal => proposal.after)
       const mutable = ['syllabus-import','editor-edit','roster-edit','register','file','generate-week']
@@ -522,7 +514,7 @@ export default function Pulse() {
 
           {guide?.key === 'activate' && !completed && <label className="form-label">Syllabus to guide<select className="form-input" value={guide.recordId || ''} onChange={e => { const recordId = e.target.value; setGuide(previous => ({ ...previous, recordId })); setStepIndex(approvalResumeStep(syllabi.find(s => s.id === recordId))) }}><option value="">Select your saved syllabus</option>{syllabi.filter(s => !s.sample && s.status !== 'archived').map(s => <option key={s.id} value={s.id}>{s.courseCode} · {s.status}</option>)}</select><small>The guide resumes from this record’s saved status.</small></label>}
           {!user?.authenticated && previewAgents.has(agent.id) && <p className="connected-pulse-warning">This workflow currently contains sample data. I can explain the controls; institutional import, delivery or scoring is not verified here.</p>}
-          {!guide && <div className="pulse-intents">{intents.map(intent => <button key={intent.key} className="btn btn-secondary btn-sm" onClick={() => chooseIntent(intent)}>{intent.key === 'component-tour' && <Route size={13} />}{intent.label}</button>)}{focus && <button className="btn btn-secondary btn-sm" disabled={busy} onClick={() => void send(`Explain ${focus.label} and help me with the next step.`, { skipOperator: true })}><Sparkles size={13} />Explain this with AI</button>}</div>}
+          {!guide && <div className="pulse-intents">{intents.map(intent => <button key={intent.key} className="btn btn-secondary btn-sm" onClick={() => chooseIntent(intent)}>{intent.key === 'component-tour' && <Route size={13} />}{intent.label}</button>)}{focus && <button className="btn btn-secondary btn-sm" disabled={busy} onClick={() => void send(`Explain ${focus.label} and help me with the next step.`, { skipOperator: true })}><Sparkles size={13} />Explain this in EduPulse</button>}</div>}
           {step && !completed && <div className="pulse-step"><small>Step {stepIndex + 1} of {guide.steps.length} · {guide.label}</small><strong>{step.title}</strong><p>{liveStepBody(step)}</p>{step.tip && <p>{step.tip}</p>}{!ready && <p role="status">{step.hint}</p>}
             {missingTarget && <p role="status" className="connected-pulse-warning">I can’t find “{step.title}” on this page yet. It may appear after you finish the previous step or switch tabs.</p>}
             <div className="ai-actions">
@@ -535,7 +527,7 @@ export default function Pulse() {
         </div>}
         {messages.map(message => <article key={message.id} className={`connected-pulse-message ${message.from === 'user' ? 'from-user' : ''}`}>
           <small>{message.from === 'user' ? 'You' : 'Pulse'}</small>
-          {message.from === 'pulse' && message.trace ? <AgentAnswer compact message={message} onDownload={message.mode === 'generated' ? () => downloadMaterialPdf({ title: 'Pulse learning material', text: message.text, sources: message.sources }).catch(error => setError(error.message)) : undefined} onRevise={note => void send(`Revise your previous answer: ${note}`, { task: message.task, skipOperator: true })} /> : message.mode === 'actions' ? <div className="pulse-actions">{message.proposals.map((proposal, i) => <PulseAction key={i} proposal={proposal} ctx={{...actionContext,activeSyllabus:message.id===latestSyllabusAction}} />)}</div> : <div className="connected-pulse-text">{message.text}</div>}
+          {message.from === 'pulse' && message.trace ? <AgentAnswer compact message={message} onCiteSource={message.lookup?.scope === 'system' ? source => setSourceReference({ threadId: archive.threadId, messageId: message.id, sourceId: source.id }) : undefined} onDownload={message.mode === 'generated' ? () => downloadMaterialPdf({ title: 'Pulse learning material', text: message.text, sources: message.sources }).catch(error => setError(error.message)) : undefined} onRevise={note => void send(`Revise your previous answer: ${note}`, { task: message.task, skipOperator: true })} /> : message.mode === 'actions' ? <div className="pulse-actions">{message.proposals.map((proposal, i) => <PulseAction key={i} proposal={proposal} ctx={{...actionContext,activeSyllabus:message.id===latestSyllabusAction}} />)}</div> : <div className="connected-pulse-text">{message.text}</div>}
           {message.from === 'pulse' && message.text && message.mode === 'generated' && !message.trace && <details><summary>Response actions</summary><button className="btn btn-secondary btn-sm" onClick={() => downloadMaterialPdf({ title: 'Pulse learning material', text: message.text, sources: message.sources }).catch(error => setError(error.message))}>Download response as PDF</button></details>}
           {message.from === 'pulse' && message.text && <button type="button" className="pulse-read-aloud" aria-pressed={voice.readingId === message.id} aria-disabled={!voice.canSpeak} title={voice.canSpeak ? 'Read a spoken excerpt of this reply' : 'Spoken replies are unavailable in this browser'} onClick={() => voice.readingId === message.id ? voice.stop() : void voice.read(message.text, message.id)}>{voice.readingId === message.id ? <Square size={15} /> : <Volume2 size={15} />}{voice.readingId === message.id ? 'Stop reading' : 'Read aloud'}</button>}
           {message.attachedNames?.length > 0 && <small>References: {message.attachedNames.join(', ')}</small>}
@@ -559,6 +551,7 @@ export default function Pulse() {
         {busy ? <button type="button" onClick={() => { voice.stop(); requestRef.current?.abort() }} aria-label="Stop response"><Square size={17} /></button> : <button type="submit" disabled={(!input.trim() && !attachments.length) || fileBusy || voice.hearing} aria-label="Send"><Send size={18} /></button>}
       </form>{fileBusy && <small className="connected-pulse-footnote" role="status">{fileNotice || 'Reading files…'}</small>}
     </section>}
+    {sourceReference && <PulseSourceDialog reference={sourceReference} messages={messages} role={user?.role || 'guest'} onClose={() => setSourceReference(null)} />}
     <button ref={dockRef} data-pulse-ui="mascot" className={`connected-pulse-dock ${interaction.dragging ? 'is-dragging' : ''}`} {...interaction.handlers} {...fileDrop.handlers} aria-label={open ? 'Close Pulse assistant' : 'Open Pulse assistant'} aria-description="Drag Pulse onto a component for guidance, or focus a component and press Alt+P. Drop reference files onto Pulse to attach them." aria-expanded={open}><PulseAvatar expression={interaction.rejection ? 'concern' : interaction.dragging ? 'curious' : expression} dragging={interaction.dragging} lookAt={lookAt} size={72} /></button>
     {interaction.dragging && <div data-pulse-ui="drag-hint" className="pulse-drag-hint">{interaction.hovered ? `Help with ${interaction.hovered.label} · ${interaction.hovered.brief.kind}` : 'Drop on a page component'}</div>}
     {interaction.rejection && <div data-pulse-ui="reject" className="pulse-reject-bubble" role="status">{interaction.rejection}</div>}

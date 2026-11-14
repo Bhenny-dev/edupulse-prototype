@@ -1,8 +1,25 @@
 # 04 · Instructor
 
+## Current signed-in Instructor workspace
+
+Main navigation is **Dashboard**, **Course** and **Student Monitoring**. **Syllabus** is inside a selected loaded course; its older direct links redirect into Course. The current account flow is illustrated in [Manual 44](../../system-manual/44-instructor-course-workspace/README.md).
+
+- **Dashboard** summarizes only Dean-loaded courses and their currently enrolled learners. Its shared cards are **Courses loaded**, **Students handled**, **Teaching materials delivered** and **Assessment average**. Course/block cards give context for each assignment. Missing marks stay missing; independent current-version work supplies scores and material-open progress.
+- **Course** lists only the instructor's current Dean assignments, including those with no syllabus yet. Select a card to open **Weeks and topics** and the contained **Syllabus** tab. Until the course has an active approved syllabus, its upload/drop area or **Choose a shared syllabus from the system** supplies the approved copy. Uploading an unrelated subject cannot add it to the teaching load.
+- **Weeks and topics** presents chronological weekly sections, their extracted activities/assessment context and the teaching-material/assessment sequence. Add text, a private file or a link, or explicitly request AI generation. Regular assessments cover materials since the previous assessment; **Overall assessment** remains last and covers the whole topic. Quick pills show actual **Materials accessed** and **Assessment average**. **Syllabus sources** is last.
+- Move complete teaching weeks with a drag handle or the labelled Move up/down buttons. Labels remain chronological, exam slots stay fixed, and affected delivered content returns to Draft only after confirmation; recorded score history remains retained. **Review and deliver** preserves the existing review/check/delivery controls; **Review drafts** keeps prepared content reviewable before approval with publication blocked.
+- **Pulse** handles ordinary conversation, record lookup and navigation through system rules and authorized local content. AI is reserved for explicit educational authoring. A system citation opens a fresh-authorized **Source reference** dialog and offers confirmed navigation; it does not record a student open or run inference on reload.
+
+The [phone example](../../system-manual/44-instructor-course-workspace/07-mobile-course.png) uses the same controls and shared summary-card design. Source copies remain private and unread bytes/catalog metadata cannot substantiate generated content. New authoring, delivery, source and week-move state retains the current account/role authorization and no-write reload contract.
+
+## Retained preview and review-workspace examples
+
+The images and earlier update notes below document the separate preview persona, the retained review/editor controls, and prior UI iterations. Their former global **Syllabus** navbar, dashboard card labels and unscoped course-list entry are not the current signed-in Instructor navigation. Use Manual 44 above for the current account route; the retained images remain evidence for their specifically described inputs and controls.
+
+
 The [IT seed guide](../../system-manual/18-it-course-seed/README.md) shows the same interface populated with nine course blocks, a revised Programming draft and authored weekly material. Its fictional screenshot identities are separate from the aggregate hosted enrollment evidence.
 
-Main tabs: **Dashboard**, **Syllabus**, **Course**, **Student Monitoring**. Page views use their own tabs. Duplicate left sidebars have been removed. Rows marked *Sample* are built-in examples; the instructor's own syllabi have no label. Task-by-task instructions for the syllabus and courseware flows are in [System Manual 2](../../system-manual/02-syllabus-lifecycle/README.md) and [3](../../system-manual/03-courseware-generation-and-review/README.md).
+The earlier preview captures show **Dashboard**, **Syllabus**, **Course**, **Student Monitoring**. Current signed-in accounts use the three-item navigation above. Page views use their own tabs. Duplicate left sidebars have been removed. Rows marked *Sample* are built-in examples; the instructor's own syllabi have no label. Task-by-task instructions for the syllabus and courseware flows are in [System Manual 2](../../system-manual/02-syllabus-lifecycle/README.md) and [3](../../system-manual/03-courseware-generation-and-review/README.md).
 
 ## 1. Instructor dashboard
 
@@ -14,13 +31,13 @@ Main tabs: **Dashboard**, **Syllabus**, **Course**, **Student Monitoring**. Page
 - **My Block Sections:** each card names its course and block, with a link to that course/block in monitoring.
 - **Score Snapshot**, **Recent Activity**, **My Courses — Syllabus Stations** and the **Courseware Review Queue**.
 
-Signed-in instructor accounts see this same dashboard with their own data: the summary cards, syllabus stations and review queue come from their workspace; block sections, the Score Snapshot and Recent Activity come from their authorized records. An account without marked scores shows a clear missing-results state; counts and recorded results come from its own records, never these sample values ([account capture](../09-restored-role-pages/README.md#role-dashboards)).
+Before the current assigned-course summary redesign, signed-in instructor captures used this dashboard with their own data: the summary cards, syllabus stations and review queue come from their workspace; block sections, the Score Snapshot and Recent Activity come from their authorized records. An account without marked scores shows a clear missing-results state; counts and recorded results come from its own records, never these sample values ([account capture](../09-restored-role-pages/README.md#role-dashboards)).
 
 *Changed in v0.4.0:* the Score Snapshot's topic chart averages only the students who have a score for that course (every bar previously showed about 29% because students from other courses were counted as zero) and names the course it shows. The Courseware Review Queue lists only drafts awaiting review, earliest outline week first, shows eight and states how many more there are (**View All** opens them in Courseware). It previously listed every courseware item, which made the dashboard over 16,000 pixels tall.
 
 ## 2–4. Syllabus
 
-**My Syllabus** starts with **Upload syllabi** for approved PDF/DOCX copies, whether the list is empty or populated. Scan, view and check the outline, then explicitly select it for the course. The five-station indicator is removed; draft preparation, offline approval, one history control, sharing and confirmed deletion remain. See [Manual 30](../../system-manual/30-approved-syllabus-intake/README.md).
+The earlier **My Syllabus** layout starts with **Upload syllabi** for approved PDF/DOCX copies. Current signed-in intake is inside the selected assigned course and appears only while it lacks an active syllabus. Scan, view and check the outline, then explicitly select it for the course. The five-station indicator is removed; draft preparation, offline approval, one history control, sharing and confirmed deletion remain. See [Manual 30](../../system-manual/30-approved-syllabus-intake/README.md).
 
 | Tab | Screenshot | What it holds |
 | --- | --- | --- |
@@ -106,7 +123,7 @@ Each section offers seven assessment types through one selector, with a system-s
 
 ## Retained syllabus references
 
-The weekly Course workspace shows a collapsed **Syllabus sources** panel when references are listed. Expand it to read links, attach readable book copies, inspect retained text and manage versions. The source dialog formats extracted headings, emphasis, lists and tables; **Source details** exposes the original bibliography and checksum. **Download PDF** creates a formatted reading copy, while **Download retained copy** preserves the original. Private saved copies are reused by generation, while unread references remain explicitly separate from passage evidence. The refreshed weekly screenshot above shows this additional panel; [Manual 31](../../system-manual/31-retained-syllabus-sources/README.md) shows every source state and action.
+The retained review workspace shows a collapsible **Syllabus sources** panel when references are listed. In **Weeks and topics**, the panel follows the final week and starts expanded. Open it to read links, attach readable book copies, inspect retained text and manage versions. The source dialog formats extracted headings, emphasis, lists and tables; **Source details** exposes the original bibliography and checksum. **Download PDF** creates a formatted reading copy, while **Download retained copy** preserves the original. Private saved copies are reused by generation, while unread references remain explicitly separate from passage evidence. The refreshed weekly screenshot above shows this additional panel; [Manual 31](../../system-manual/31-retained-syllabus-sources/README.md) shows every source state and action.
 
 ## Progressive outline preparation
 

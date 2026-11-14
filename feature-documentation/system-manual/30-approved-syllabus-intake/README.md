@@ -1,8 +1,20 @@
 # 30 · Add a course from an approved syllabus
 
-**Who:** instructors · **Where:** Course → Upload syllabi → Syllabus → My Syllabus.
+## Current assigned-course intake
 
-An approved copy can start a course directly. You do not need to register a course or create a draft first. The original PDF or DOCX is retained alongside its extracted outline. This selects the syllabus for generation; it does not generate, check or release learning materials automatically.
+Open **Course**, select a course assigned by the Dean, then use **Upload syllabi** in **Weeks and topics** while no active unsuspended syllabus is selected. Drop/browse an approved PDF or DOCX, compare the extraction with the original, acknowledge approval and choose **Use syllabus for course**. The course code must match that selected load. A separate assigned course can appear before any syllabus exists; uploading a different subject does not add it to the Dean's teaching load.
+
+**Choose a shared syllabus from the system** offers received copies for that course. **Use approved shared syllabus** requires acknowledgment and server verification of the retained approved copy. The ready topic view replaces the initial upload area; the **Syllabus** tab inside that course retains optional draft, sharing and offline-approval work. Initial source reading/retention and readable-text indexing follow the explicit intake, with inaccessible entries disclosed.
+
+[Manual 44](../44-instructor-course-workspace/README.md#add-the-approved-syllabus-for-a-loaded-course) is the current signed-in route. The 750 KB approved-file limit, extraction review, signature acknowledgment and revision-checked save below still apply.
+
+## Earlier intake layout and parser examples
+
+The captures below retain the earlier preview/unscoped upload layout and genuine generated-file parser exercises. Their former global Course upload entry and an outside-catalog course becoming visible are not the current assigned-only Instructor navigation. Use the selected loaded course for current intake; the parser compatibility and review limits remain relevant.
+
+**Who:** instructors · **Where:** Course > assigned course > Weeks and topics > Upload syllabi.
+
+An approved copy can supply the syllabus directly for a Dean-loaded course. You do not need to create a syllabus draft first. The original PDF or DOCX is retained alongside its extracted outline. This selects the syllabus for generation; it does not generate, check or release learning materials automatically.
 
 ## Upload and review
 
@@ -20,11 +32,11 @@ Review the extracted course code, title, week numbers, learning outcomes, conten
 
 ![Read-only syllabus details and outline](04-view-syllabus.png)
 
-Confirm that this is the approved copy and that you checked the extraction. EduPulse does not verify signatures. Choose **Use syllabus for course**. EduPulse waits for the revision-checked save, then opens the course's weekly workspace. Each upload creates a separate syllabus; existing courses, materials and rosters remain available. Course identity comes from the document, including courses outside the built-in catalog.
+Confirm that this is the approved copy and that you checked the extraction. EduPulse does not verify signatures. Choose **Use syllabus for course**. EduPulse waits for the revision-checked save, then opens the course's weekly workspace. Each upload creates a separate syllabus; existing materials and rosters remain available. Course identity is read from the document, then checked against the selected load. A source code outside the built-in catalog does not bypass the current teaching-load requirement.
 
 ## Add another course or return to one
 
-**Back to courses** shows the saved course. The page header keeps **Upload syllabi** available when courses already exist. In **My Syllabus**, the upload area also stays available above the list. **Open course** in an active syllabus row opens that exact syllabus's course.
+**Back to courses** shows the saved course. The earlier captures keep a global upload entry. The current assigned course shows the intake only until an active syllabus is available; other syllabus work is inside its **Syllabus** tab. **Open course** in an active syllabus row opens that exact syllabus's course.
 
 ![Saved course with Upload syllabi available](05-course-added.png)
 

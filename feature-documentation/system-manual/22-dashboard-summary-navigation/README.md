@@ -1,6 +1,16 @@
 # 22 · Instructor summary-card navigation
 
-The instructor dashboard's four summary cards are links. Click or tap a card, or focus it with **Tab** and press **Enter**. Browser Back returns to the dashboard; opening a link in another tab also works. This navigates only: it does not generate, check or publish content.
+## Current signed-in dashboard
+
+The Instructor dashboard now summarizes the current Dean-loaded courses and their enrolled students. Its four shared summary cards are **Courses loaded** and **Teaching materials delivered** (open **Course**), **Students handled** (opens **Student Monitoring**) and **Assessment average** (opens its assessment view). **My courses and block sections** labels every card with course and loaded blocks. Marked current-version independent learner work supplies the score; a missing score stays missing.
+
+[Manual 44](../44-instructor-course-workspace/README.md#review-the-assigned-courses-and-students) shows the current dashboard, assigned-only course list and navigation. These links read/navigate only; they do not generate, check, publish or manufacture student activity.
+
+## Retained preview examples
+
+The images below document the earlier preview dashboard and its filtered destinations. They do not describe the current signed-in Instructor summary labels. The separate preview persona and the legacy review tools retain their sample data; use Manual 44 for the authenticated flow.
+
+In these earlier preview captures, the four summary cards are links. Click or tap a card, or focus it with **Tab** and press **Enter**. Browser Back returns to the dashboard; opening a link in another tab also works. This navigates only: it does not generate, check or publish content.
 
 ![Instructor summary links, with My Courses focused](01-summary-links.png)
 
@@ -11,7 +21,7 @@ The instructor dashboard's four summary cards are links. Click or tap a card, or
 | **Drafts to Review** | **Course**, showing eligible courses containing drafts |
 | **Published Items** | **Course**, showing eligible courses containing published content |
 
-**Upload syllabi** in Course opens the approved-file intake in **My Syllabus**. That upload area stays visible above the filtered active list; [Manual 30](../30-approved-syllabus-intake/README.md) shows scanning, review and selection.
+The earlier **Upload syllabi** link opened intake in **My Syllabus**. In the current signed-in workspace, open the assigned course; the upload area appears only while it lacks an active syllabus. [Manual 30](../30-approved-syllabus-intake/README.md) describes scanning, review and selection.
 
 ## Active syllabi
 

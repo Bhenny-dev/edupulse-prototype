@@ -226,6 +226,7 @@ function StudyOptions({ proposal, ctx }) {
 }
 
 export default function PulseAction({ proposal, ctx }) {
+  if (proposal.type === 'confirm-navigation') return <section className="pulse-action"><p>{proposal.text}</p><button className="btn btn-secondary btn-sm" onClick={() => ctx.navigate(proposal.path, proposal.viewRole)}>Open {proposal.label}</button></section>
   if(['syllabus-followups','open-editable-syllabus'].includes(proposal.type))return <SyllabusFollowups proposal={proposal} ctx={ctx}/>
   if (['guide', 'syllabus-import', 'editor-edit', 'roster-edit', 'recall'].includes(proposal.type)) return <PulseToolAction proposal={proposal} ctx={ctx} />
   if (proposal.type === 'register') return <RegisterCard proposal={proposal} ctx={ctx} />

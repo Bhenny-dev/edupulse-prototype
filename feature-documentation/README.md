@@ -4,6 +4,7 @@
 
 | Folder | Covers | Contents |
 | --- | --- | --- |
+| [14 November instructor course workspace](versions/2026-11-14-instructor-course-workspace/README.md) | Assigned courses, chronological topic content, private attachments and system-first chat | See validation |
 | [14 November Pulse dictation](versions/2026-11-14-pulse-dictation/README.md) | One microphone/stop control, automatic multilingual transcription and explicit Send | See validation |
 | [14 November Pulse voice access](versions/2026-11-14-pulse-voice-access/README.md) | Visible microphone control and independent reply playback | See validation |
 | [14 November outline section references](versions/2026-11-14-outline-section-references/README.md) | Canonical section links reach retained-source preparation and weekly generation | See validation |

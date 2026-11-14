@@ -9,7 +9,7 @@ import './approved-syllabus-intake.css'
 
 // Approved copies can start a course without a pre-existing draft or roster.
 // Parsing is local; only the explicit selection below writes to the workspace.
-export default function ApprovedSyllabusIntake({ onUse, onView, focusUpload = false }) {
+export default function ApprovedSyllabusIntake({ onUse, onView, focusUpload = false, courseCode = '' }) {
   const input = useRef(null), zone = useRef(null), locked = useRef(false)
   const heading = useId(), hint = useId()
   const [candidate, setCandidate] = useState(null), [warnings, setWarnings] = useState([])
@@ -25,7 +25,9 @@ export default function ApprovedSyllabusIntake({ onUse, onView, focusUpload = fa
     try {
       const approvedFile = await retainApprovedFile(file)
       const parsed = await parseSyllabusFile(file, setProgress)
-      setCandidate(approvedSyllabusCandidate(parsed, approvedFile))
+      const next = approvedSyllabusCandidate(parsed, approvedFile)
+      if (courseCode && next.courseCode.replace(/\s/g, '').toLowerCase() !== courseCode.replace(/\s/g, '').toLowerCase()) throw new Error(`Choose the approved syllabus for ${courseCode}. The uploaded file belongs to ${next.courseCode}.`)
+      setCandidate(next)
       setWarnings([...(parsed.warnings || []), ...(parsed.metadata?.scannedPages ? ['OCR was used. Check the extracted wording and week numbers against the original.'] : [])])
     } catch (failure) { setError(failure.message || 'The syllabus could not be read. Choose a readable PDF or DOCX and try again.') }
     finally { locked.current = false; setBusy(false) }
@@ -43,7 +45,7 @@ export default function ApprovedSyllabusIntake({ onUse, onView, focusUpload = fa
     <button ref={zone} type="button" className={`approved-intake-drop${dragOver ? ' is-over' : ''}`} aria-describedby={hint} disabled={busy || saving}
       onClick={() => input.current?.click()} onDragOver={event => { event.preventDefault(); if (!locked.current) setDragOver(true) }} onDragLeave={() => setDragOver(false)}
       onDrop={event => { event.preventDefault(); setDragOver(false); if (event.dataTransfer.files.length !== 1) { if (!locked.current) setError('Upload one syllabus at a time so you can review each course.'); return } void scan(event.dataTransfer.files[0]) }}>
-      {busy ? <><Spinner size={24} /><LoadingProgress label={progress} /></> : <><Upload size={24} aria-hidden="true" /><strong>{candidate ? 'Drop another approved syllabus or browse' : 'Drop an approved syllabus here or browse'}</strong></>}
+      {busy ? <><Spinner size={24} /><LoadingProgress label={courseCode ? 'Reading approved syllabus...' : progress} /></> : <><Upload size={24} aria-hidden="true" /><strong>{candidate ? 'Drop another approved syllabus or browse' : 'Drop an approved syllabus here or browse'}</strong></>}
       <span id={hint}>PDF or DOCX, up to {APPROVED_FILE_LIMIT / 1000} KB. Scanned PDFs use OCR.</span>
     </button>
     {error && <p role="alert" className="approved-intake-error">{error}</p>}

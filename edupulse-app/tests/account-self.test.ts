@@ -28,6 +28,6 @@ test('self recognition distinguishes the signed-in admin from the freshly author
  global.fetch=async(value,init)=>{const url=new URL(String(value));if(url.pathname==='/auth/v1/user')return Response.json(actor);if(url.pathname.endsWith('edupulse_support_action')){const body=JSON.parse(String(init?.body));assert.equal(body.operation,'subject');assert.equal(body.subject,subject);return Response.json({id:subject,name:'Synthetic Student',email:'student@example.invalid',role:'student'})}if(url.pathname.endsWith('edupulse_agent_runs'))return Response.json({});throw Error('Unexpected dependency: '+url.pathname)}
  try{
   const response=await handleRequest(new Request('http://localhost/api/ai?action=chat',{method:'POST',headers:{authorization:'Bearer synthetic-owner','X-EduPulse-Subject':subject,'Content-Type':'application/json'},body:JSON.stringify({message:'do you know me?'})}));assert.equal(response.status,200);const data=await response.json()
-  assert.match(data.answer,/signed in as Synthetic Owner/);assert.match(data.answer,/Username: student@example.invalid/);assert.match(data.answer,/Role: Student/);assert.match(data.answer,/submissions remain disabled/);assert.doesNotMatch(data.answer,/Username: riverabenlor/)
+  assert.match(data.answer,/signed in as Synthetic Owner/);assert.match(data.answer,/Username: student@example.invalid/);assert.match(data.answer,/Role: Student/);assert.match(data.answer,/separate Admin actor/);assert.doesNotMatch(data.answer,/Username: riverabenlor/)
  }finally{global.fetch=original;process.env=previous}
 })

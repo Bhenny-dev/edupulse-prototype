@@ -13,6 +13,7 @@ import StudentCourses from './StudentCourses'
 import StudentPractice from './StudentPractice'
 import AcademicLibrary, { OpenedPublication } from './AcademicLibrary'
 import ModalLayer from '../ui/ModalLayer'
+import DocumentViewer from '../courseware/DocumentViewer'
 import AcademicSyncStatus from './AcademicSyncStatus'
 import DeanRecords from './DeanRecords'
 import { deanPreview } from './deanPreview'
@@ -29,7 +30,7 @@ const TITLES = { instructors:'Instructors', students:'Students', performance: 'P
 // dashboard lives in pages/Dashboard.jsx with the preview role dashboards.
 export default function AcademicPortal({ view }) {
   const { user } = useAuth()
-  const [pageParams]=useSearchParams()
+  const [pageParams,setPageParams]=useSearchParams()
   const records = useAcademicRecords()
   const preview=!user?.authenticated&&(user?.role==='dean'||user?.role==='instructor'&&view==='monitoring')
   const data=preview?deanPreview():records.data, loadError=records.error, loading=records.loading, loaded=records.loaded||preview, execute=records.command
@@ -37,6 +38,8 @@ export default function AcademicPortal({ view }) {
   const title=user?.role==='student'&&view==='courseware'?'My Courses':user?.role==='student'&&view==='assessment'?'Practice Assessments':user?.role==='dean'&&view==='records'?'Course':TITLES[view]
   const [readerId,setReaderId]=useWorkspaceViewState(`academic-reader:${view}`,null)
   const selected=data.publications.find(item=>item.active&&item.id===readerId&&(view!=='courseware'||user?.role!=='student'||item.course_id===pageParams.get('course')))||null
+  const sourcePreview = data.publications.find(item => item.id === pageParams.get('publication') && item.active && item.type !== 'assessment' && item.course_id === pageParams.get('course'))
+  const closeSourcePreview = () => { const query = new URLSearchParams(pageParams); query.delete('publication'); setPageParams(query) }
   const [answers, setAnswers] = useState({}), [busy, setBusy] = useState(false), [result, setResult] = useState(null), [error, setError] = useState('')
   const [startedSession,setSession]=useState(null)
   const session=startedSession?.publication_id===selected?.id&&startedSession?.source_version===selected?.source_version?startedSession:(data.sessions||[]).filter(s=>s.student_id===user?.id&&s.publication_id===selected?.id&&s.source_version===selected?.source_version).sort((a,b)=>b.attempt_no-a.attempt_no)[0]||null
@@ -75,5 +78,6 @@ export default function AcademicPortal({ view }) {
       {isStudent&&view==='courseware'?<StudentCourses data={data} onOpen={open} busy={busy}/>:isStudent&&view==='assessment'?<StudentPractice data={data} onOpen={open} busy={busy} adminTest={adminTest}/>:['courseware', 'assessment'].includes(view) && <AcademicLibrary data={data} assessments={view === 'assessment'} onOpen={open} busy={busy} />}
       {selected && <ModalLayer className="overlay-backdrop academic-publication-overlay" onDismiss={()=>setReaderId(null)}><section className="modal-content academic-publication-dialog" role="dialog" aria-modal="true" aria-label={selected.title}><div id="opened-publication">{error&&<p role="alert" className="connected-pulse-warning">{error}</p>}<OpenedPublication key={`${selected.id}:${session?.id || "reader"}`} selected={selected} data={data} isStudent={learnerControls} adminTest={Boolean(user?.supportSubject&&adminTest)} answers={answers} setAnswers={setAnswers} result={result} session={session} busy={busy} onClose={() => {setReaderId(null)}} onRetake={async()=>{const started=await run({operation:'start',publication:selected.id,version:selected.source_version,retake:true});if(started){setSession({...started,publication_id:selected.id,source_version:selected.source_version});setAnswers({});setResult(null)}}} onSubmit={() => run({ operation: 'respond', publication: selected.id, version: selected.source_version, session:session?.id, responses: selected.content.questions.map((_, index) => answers[index]) })} /></div></section></ModalLayer>}
     </>}
+    {sourcePreview && <ModalLayer onDismiss={closeSourcePreview}><section className="modal-content academic-publication-dialog" role="dialog" aria-modal="true" aria-label="Referenced teaching material"><div className="modal-header"><h2>{sourcePreview.title}</h2><button className="modal-close" aria-label="Close source material" onClick={closeSourcePreview}>Close</button></div><p className="text-sm text-muted">Source preview</p><DocumentViewer readOnly isStudent content={sourcePreview.content} onBack={closeSourcePreview} /></section></ModalLayer>}
   </div>
 }

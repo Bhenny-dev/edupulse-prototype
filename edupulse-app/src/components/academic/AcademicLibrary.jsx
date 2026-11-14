@@ -1,4 +1,5 @@
 import {assessmentLabel} from '../../data/assessmentFormats'
+import TeachingAttachments from '../courseware/TeachingAttachments'
 import { useWorkspaceViewState } from '../../context/WorkspaceContext'
 import { Spinner } from '../ui/LoadingFeedback'
 import { useEffect, useRef, useState } from 'react'
@@ -46,7 +47,7 @@ export function OpenedPublication({ adminTest=false, selected, data, isStudent, 
   useEffect(()=>{if(selected.type!=='assessment'||attempt||!isStudent)return;const timer=setInterval(()=>setNow(Date.now()),1000);return()=>clearInterval(timer)},[selected.type,attempt,isStudent])
   const sendAppeal=async()=>{setError('');setAppealing(true);try{await command({operation:'appeal',attempt:latest.id,reason:appeal});setMessage('Appeal saved for your instructor.');setAppeal('')}catch(failure){setError(failure.message)}finally{setAppealing(false)}}
   return <section className="card academic-publication" aria-label="Opened courseware"><div className="card-header"><h2>{selected.title}</h2><button className="btn btn-ghost btn-sm" onClick={onClose}>{selected.type==='assessment'?'Close assessment':'Close material'}</button></div><div className="card-body">
-    {selected.type==='assessment'?<>
+    {selected.type==='assessment'?<><TeachingAttachments attachments={selected.content?.attachments} />
       <p className="text-sm text-muted mb-16">{questions.length} questions · {policy.maxAttempts || 1} allowed attempt(s) · {duration?`${Math.ceil(duration/60)} minute time limit`:'No time limit'} · {selected.due_at?`Due ${new Date(selected.due_at).toLocaleString()}`:'No deadline specified'}.</p>
       {!attempt&&isStudent&&<p role="status" aria-label="Assessment progress">{answered}/{questions.length} answered · {duration?`Remaining ${Math.max(0,duration-elapsed)} seconds`:`Elapsed ${Math.floor(elapsed/60)}:${String(elapsed%60).padStart(2,'0')}`} · Attempt {session?.attempt_no || 1}</p>}
       {expired&&!attempt&&<p role="alert">This assessment is closed. Your instructor controls its duration and deadline.</p>}
