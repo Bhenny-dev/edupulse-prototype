@@ -20,4 +20,10 @@ The shared system-chat policy also passes a plain Node ESM import diagnostic wit
 
 ## Deployment
 
-Production runtime verification is recorded after the main push. Existing GitHub Actions billing availability must not be represented as passed unless the run actually starts and succeeds.
+Runtime `a58d9e4c7029da683be16dc58bdf48948e7d305a` was pushed to main and deployed **Ready** as `dpl_9heAzPYduNi2QtZtqqCVk1C3J1rF`, serving the canonical `edupulse-prototype.vercel.app` alias. Vercel independently passed the full verification gate with all **384 native tests**, TypeScript, production build, native Node imports and deployment diagnostics. The superseded feature build was canceled before the final runtime build; no previous working deployment was removed.
+
+All **32 production-UI browser cases** passed: twelve Instructor course-workspace checks and twenty dictation/playback checks across desktop and phone, with controlled academic/account/provider transports. This verifies deployed UI behavior, not live authenticated database mutations or provider transcription accuracy.
+
+At 11:20:41 UTC on 14 November 2026, actual canonical API checks returned HTTP 200 for the homepage and health, HTTP 200 with system-search sources and no Writer/Ranker for a detailed app-help question, HTTP 401 for anonymous teaching-file upload, and HTTP 405 for GET on teaching-files and transcribe. No paid inference or learner mutation was performed.
+
+GitHub Actions run [43588969960](https://github.com/Bhenny-dev/edupulse-prototype/actions/runs/43588969960) had zero job steps: its annotation says the account is locked due to a billing issue. That CI job is not reported as passed; local and Vercel checks passed separately. The main checkout was fast-forwarded while preserving the unrelated local `.anchor/session-state.md` edit.
