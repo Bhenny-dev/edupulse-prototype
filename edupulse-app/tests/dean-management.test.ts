@@ -28,9 +28,11 @@ async function database() {
       ('${DEAN}','dean@example.invalid','{"role":"dean"}','{"full_name":"Sample Dean"}'),
       ('${TEACHER}','teacher@example.invalid','{"role":"instructor"}','{"full_name":"Alex Sample"}'),
       ('${OUTSIDER}','taken@example.invalid','{"role":"associate_dean"}','{}');
+    CREATE FUNCTION public.edupulse_support_action(subject uuid,operation text,input jsonb DEFAULT '{}') RETURNS jsonb LANGUAGE plpgsql SECURITY INVOKER AS $stub$ DECLARE result jsonb; subject_role text:='dean'; BEGIN IF operation NOT IN ('enter','academic.read','students.read') THEN RAISE EXCEPTION 'no'; END IF; IF operation IN ('enter','academic.read') THEN NULL; END IF; CASE operation WHEN 'academic.read' THEN result:=jsonb_build_object('mode','cloud','courses','[]'::jsonb); WHEN 'students.read' THEN result:='{}'; ELSE NULL; END CASE; RETURN result; END $stub$;
     INSERT INTO public.edupulse_institutional_records(kind,record_key,data) VALUES('courses','IT 102','{"CourseCode":"IT 102","CourseTitle":"Programming foundations","Semester":"1st Semester"}');
     INSERT INTO public.edupulse_courses(id,instructor_id,course_code,course_title) VALUES('c102','${TEACHER}','IT 102','Programming foundations');`)
   await db.exec(await readFile('supabase/migrations/20261114080000_dean_course_loads_and_accounts.sql', 'utf8'))
+  await db.exec(await readFile('supabase/migrations/20261114090000_dean_support_directory_fix.sql', 'utf8'))
   return db
 }
 const as = (db: PGlite, id: string) => db.query(`SELECT set_config('request.jwt.claim.sub',$1,false)`, [id])
@@ -42,6 +44,9 @@ test('Dean manages instructor accounts, recorded degrees and course loads', asyn
   try {
     await as(db, TEACHER)
     await assert.rejects(dean(db, { action: 'directory' }), { code: '42501' }, 'only the Dean reads the directory')
+    await db.exec(`UPDATE auth.users SET raw_app_meta_data='{"role":"admin"}' WHERE id='${OUTSIDER}'`)
+    await as(db, OUTSIDER)
+    assert.ok(Array.isArray((await dean<{ instructors: unknown[] }>(db, { action: 'directory' })).instructors), 'the System Admin bypasses the Dean role')
     await as(db, DEAN)
     const added = await dean<{ id: string }>(db, { action: 'account.create', account: { role: 'instructor', surname: 'Rivera', first_name: 'Morgan', email: 'Morgan@Example.invalid', password: 'Ep9!sample-pass', has_masters: true, degree: 'MIT', specialization: 'Networking' } })
     const user = (await db.query<{ email: string; app: { role: string }; identities: number }>(`SELECT email,raw_app_meta_data app,(SELECT count(*)::int FROM auth.identities WHERE user_id=u.id) identities FROM auth.users u WHERE id=$1`, [added.id])).rows[0]

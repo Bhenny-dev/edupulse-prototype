@@ -93,7 +93,7 @@ export async function readAcademic(identity: Identity) {
   }
   // The Dean directory is additive: an unavailable directory leaves the records readable.
   let directory: unknown, directoryError: string | undefined
-  if (identity.role === 'dean') {
+  if (['dean', 'admin'].includes(identity.role)) {
     const listed = await client.rpc('edupulse_dean_command', { command: { action: 'directory' } })
     if (listed.error) directoryError = 'Instructor and student accounts could not be loaded. Retry when connected.'
     else directory = listed.data
@@ -106,7 +106,7 @@ export async function executeAcademic(identity: Identity, input: z.infer<typeof 
   if (identity.local || identity.role === 'guest') throw new ApiError(403, 'FORBIDDEN', 'Use an authenticated academic account for shared records.')
   if (input.operation === 'dean') {
     if (identity.supportActor) return supportAction(identity, 'dean.command', input.command)
-    if (identity.role !== 'dean') throw new ApiError(403, 'FORBIDDEN', 'Only the Dean manages course loads and accounts.')
+    if (!['dean', 'admin'].includes(identity.role)) throw new ApiError(403, 'FORBIDDEN', 'Only the Dean or System Admin manages course loads and accounts.')
     const { data, error } = await userDb(identity).rpc('edupulse_dean_command', { command: input.command })
     if (error) throw new ApiError(error.code === '42501' ? 403 : error.code === '22023' ? 400 : 503, 'DEAN_ACTION_FAILED', error.code === '22023' ? error.message : 'The change could not be verified. Refresh and retry; nothing is reported as saved.')
     return data
