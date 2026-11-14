@@ -1,8 +1,8 @@
 import { test, expect } from './fixtures'
 import { mkdir } from 'node:fs/promises'
-import { reviewVoice, conversationVoice, languageVoice, readReplyVoice } from '../voice-quota-fixture'
+import { reviewVoice, pendingVoice, permissionVoice, readReplyVoice } from '../voice-quota-fixture'
 const root = '../feature-documentation/system-manual/20-voice-and-provider-errors'
-for (const [title, run] of [['review', reviewVoice], ['conversation', conversationVoice], ['language and permissions', languageVoice]] as const) {
+for (const [title, run] of [['review', reviewVoice], ['transcription', pendingVoice], ['permissions', permissionVoice]] as const) {
   test(`voice and quota: ${title}`, async ({ page }) => {
     await mkdir(root, { recursive: true })
     if (title === 'review') expect((await page.request.get('/')).headers()['permissions-policy']).toContain('microphone=(self)')

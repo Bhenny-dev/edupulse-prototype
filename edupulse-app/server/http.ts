@@ -1,4 +1,5 @@
 import {practiceRequest,practiceInput} from './domains/practice.js'
+import { AUDIO_BYTES, transcribeAudio } from './transcription.js'
 import { sharingCommand, syllabusSharing } from './domains/syllabusSharing.js'
 import { executeSources } from './sources/service.js'
 import { sourceCommand } from './sources/contracts.js'
@@ -37,9 +38,9 @@ import { isSystemAdminEmail } from '../src/lib/authRoles.js'
 
 export const VERSION = '0.4.0'
 /** Request body limits per action (bytes). Uploads are raw file bytes. */
-export const BODY_LIMITS: Record<string, number> = { 'syllabus-sources': 2_800_000, workspace: WORKSPACE_BYTES, extract: EXTRACTION_LIMITS.bytes, documents: 1_000_000, conversations: 200_000, operator: 330_000, courseware:330_000 }
+export const BODY_LIMITS: Record<string, number> = { transcribe: AUDIO_BYTES, 'syllabus-sources': 2_800_000, workspace: WORKSPACE_BYTES, extract: EXTRACTION_LIMITS.bytes, documents: 1_000_000, conversations: 200_000, operator: 330_000, courseware:330_000 }
 export const bodyLimit = (action: string | null) => BODY_LIMITS[action || ''] ?? 100_000
-const ACTION_METHODS: Record<string, string[]> = { practice:['POST'], syllabi: ['POST'], 'syllabus-sources': ['POST'], 'chat-context': ['POST'], 'chat-memory': ['POST'], support: ['GET', 'POST'], health: ['GET'], providers: ['GET', 'POST', 'DELETE'], 'provider-oauth': ['POST'], 'provider-test': ['POST'], 'provider-workspaces': ['POST'], conversations: ['GET', 'POST'], operator: ['POST'], context: ['POST'], similarity: ['POST'], references: ['POST'], 'web-search': ['POST'], extract: ['POST'], chat: ['POST'], courseware: ['POST'], documents: ['GET', 'POST', 'DELETE'], workspace: ['GET', 'PUT'], academic: ['GET', 'POST'], students: ['GET'] }
+const ACTION_METHODS: Record<string, string[]> = { transcribe: ['POST'], practice:['POST'], syllabi: ['POST'], 'syllabus-sources': ['POST'], 'chat-context': ['POST'], 'chat-memory': ['POST'], support: ['GET', 'POST'], health: ['GET'], providers: ['GET', 'POST', 'DELETE'], 'provider-oauth': ['POST'], 'provider-test': ['POST'], 'provider-workspaces': ['POST'], conversations: ['GET', 'POST'], operator: ['POST'], context: ['POST'], similarity: ['POST'], references: ['POST'], 'web-search': ['POST'], extract: ['POST'], chat: ['POST'], courseware: ['POST'], documents: ['GET', 'POST', 'DELETE'], workspace: ['GET', 'PUT'], academic: ['GET', 'POST'], students: ['GET'] }
 export const allowedMethods = (action: string) => Object.hasOwn(ACTION_METHODS, action) ? ACTION_METHODS[action] : undefined
 const buckets = new Map<string, { count: number; until: number }>()
 const active = new Set<string>()
@@ -238,6 +239,7 @@ export async function handleRequest(request: Request): Promise<Response> {
       active.add(key); activeId = key
     }
     const signal = AbortSignal.any([request.signal, AbortSignal.timeout(config().timeoutMs)])
+    if (action === 'transcribe') return json(await transcribeAudio(new Uint8Array(await request.arrayBuffer()), request.headers.get('x-audio-type') || '', connection, signal))
     if (action === 'extract') {
       // Raw bytes go straight to the sandbox; nothing is stored until the user reviews and indexes the text.
       const fileName = safeFileName(request.headers.get('x-file-name'))

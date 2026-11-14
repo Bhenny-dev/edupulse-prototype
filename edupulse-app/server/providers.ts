@@ -191,7 +191,7 @@ function ollamaContext(system: string, prompt: string, predict: number) {
 }
 
 /** Return only bounded, actionable categories; provider bodies can contain private account details. */
-async function modelResponseError(response: Response, model: string, provider: Connection['provider']): Promise<ApiError> {
+export async function modelResponseError(response: Response, model: string, provider: Connection['provider']): Promise<ApiError> {
   let code = '', message = '', type = ''
   try {
     const body = JSON.parse((await response.text()).slice(0, 8192))
@@ -214,7 +214,7 @@ async function modelResponseError(response: Response, model: string, provider: C
 }
 
 /** Keep provider transport failures distinct from programming errors and aborts. */
-function transportFailure(error: unknown, signal: AbortSignal, provider: Connection['provider']): unknown {
+export function transportFailure(error: unknown, signal: AbortSignal, provider: Connection['provider']): unknown {
   signal.throwIfAborted()
   if (error instanceof TypeError && /fetch failed/i.test(error.message)) return new ApiError(502, 'PROVIDER_UNAVAILABLE', provider === 'ollama' ? 'The local model runner stopped or could not be reached. Check Ollama and available memory, then try again.' : 'The model provider could not be reached. Check the connection, then try again.')
   return error

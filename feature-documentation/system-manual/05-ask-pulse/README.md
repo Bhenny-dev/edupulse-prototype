@@ -4,6 +4,8 @@
 
 ## Steps
 
+Voice messages use the microphone beside the chat input. It becomes Stop recording; stopping transcribes Filipino/English/mixed speech into the editable text field through the active supported provider. Send remains explicit. There are no speech-language or mode dropdowns and no automatic voice conversation submission. Reply playback retains Read aloud / Stop reading, also stoppable from the composer. See [the current voice controls, privacy and desktop/phone captures](../20-voice-and-provider-errors/README.md).
+
 Ask **do you know me?**, **who am I?** or **kilala mo ba ako?** to see your verified name, username, role and role functions. Pulse answers these directly from the signed-in session without a provider or public search. A support view identifies the signed-in admin and the selected person separately. [Manual 24](../24-system-first-search/README.md) shows the desktop/mobile self-account response.
 
 1. Click **Pulse**, type a question and press **Enter** (Shift+Enter for a new line). Attach up to three files with the paperclip; they are read in the same sandbox as the library.

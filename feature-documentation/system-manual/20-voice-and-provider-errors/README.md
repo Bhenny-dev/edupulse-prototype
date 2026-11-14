@@ -1,91 +1,63 @@
-# 20 · Voice input and useful provider errors
+# 20 - Voice messages and provider errors
 
-These captures use synthetic speech recognition, speech playback, account and provider transports. They exercise the actual chat controls and request lifecycle, not a real microphone, speech-service language accuracy, live paid inference or account billing. Physical-device speech recognition and pronunciation remain browser/device dependent.
+Captures use synthetic microphone recording, playback, account and provider transports. They exercise the actual controls, raw upload and cancellation lifecycle. They do not establish physical microphone quality, audible playback or live transcription accuracy.
 
-## Enable voice in Pulse
+## Record with one button
 
-The **Voice input** microphone button is always visible beside the message box. Select it to show the controls; select it again to hide them. **Pulse options → Voice input** remains available too. Voice is off initially, and there is no microphone permission request until you choose **Start listening**.
+Select the **Voice input** microphone icon beside the message box and allow microphone access. It starts recording immediately. There are no language or mode dropdowns and no automatic chat submission. Previous device language/conversation preferences are ignored.
 
-![Optional voice controls](01-voice-controls.png)
+![Microphone beside the message box](01-voice-controls.png)
 
-Choose **Speech language**:
+Speak Filipino/Tagalog, English or a mixture. The provider detects the language automatically. The microphone becomes a square **Stop recording** icon in the same position beside the input field.
 
-* **Filipino / Tagalog** is the default. Mixed Tagalog/English speech is sent to the browser’s recognition service using that language preference; code-switching accuracy is not guaranteed.
-* **English (Philippines)** requests English recognition.
-* **Ilocano (experimental)** and **Kankanaey (experimental)** request those languages only if the browser’s service supports them. Their presence in the list is not evidence of supported recognition. An unsupported-language error asks you to use Filipino/English or type instead.
+![Recording with the stop icon beside the input field](02-listening-tagalog-english.png)
 
-Your browser may send audio to its own speech service. EduPulse does not upload audio to the OpenAI API, record raw audio or store audio files. Recognition therefore does not consume the connected OpenAI model’s token allowance. Sent text still uses the normal Pulse provider and conversation-history rules.
+Select **Stop recording**. The microphone is released and **Transcribing your voice message** appears while the recorded audio is transcribed. The same square icon can **Cancel transcription**. Canceling discards a late result; it does not place text into another account or reopened conversation.
 
-## Review before sending
+![Transcription pending after Stop](04-transcribing.png)
 
-Keep **Voice mode → Review before sending**, then choose **Start listening** and allow the browser microphone prompt. **Listening…** and a live transcript show what the browser hears. The message’s **Send** button waits until recognition finishes. **Stop voice** ends listening; it does not submit an unfinished transcript.
+The transcript is appended to the existing draft in the text field. Review or edit it, then choose **Send**. Stopping the recording never runs spoken instructions or sends a chat prompt automatically. Recognition can make mistakes, especially with mixed speech or noise; the editable transcript is the review step.
 
-![Pending mixed-language recognition](02-listening-tagalog-english.png)
-
-After the browser finalizes the utterance, its transcript is appended to your existing typed draft. Edit it, then choose **Send**. Transcripts and typed questions share the existing 4,000-character limit. One listening turn is bounded to 45 seconds.
-
-![Editable transcript before Send](03-review-transcript.png)
+![Editable transcript after stopping](03-review-transcript.png)
 
 ![Transcript review on a phone](mobile-03-review-transcript.png)
 
+Recording is capped at 45 seconds and 1 MB; the time limit ends recording and transcribes once. Canceling the microphone permission prompt, closing Pulse, changing account/view, opening history/workspace or hiding the tab cancels recording/transcription. Reloading never restarts the microphone or replays transcription. Typed chat stays available if recording is unsupported.
+
+## Connected provider and privacy
+
+Automatic multilingual transcription uses the account's active **OpenRouter**, **OpenAI** or **Gemini** connection. OpenRouter and OpenAI use dedicated speech models; Gemini uses the selected Gemini model's audio input. The selected chat model is not changed. Other connections receive an explanation directing them to a supported connection; EduPulse does not silently switch keys/providers or retry paid transcription.
+
+Microphone access requires HTTPS and browser permission. The recorded clip is sent through EduPulse to that connected provider only after Stop or the 45-second limit. Provider transcription usage may consume API credits. EduPulse does not save an audio file, audio database row or audio history; the normal chat history receives text only if you choose Send. The provider's own audio processing/retention terms apply. Audio and transcripts are not stored as reload hints.
+
+The backend permits only supported audio containers with matching signatures, bounds upload bytes, uses fixed provider endpoints and existing account-owned encrypted credentials, request leases, rate limits and disconnect cancellation. It returns a bounded transcript. A missing connection, unavailable speech model, invalid recording, silence or provider failure produces an explanation without inserting a fabricated transcript.
+
+[OpenRouter transcription](https://github.com/OpenRouterTeam/docs/blob/main/guides/overview/multimodal/stt.mdx), [OpenAI file transcription](https://developers.openai.com/api/docs/guides/speech-to-text), and [Gemini audio input](https://ai.google.dev/gemini-api/docs/audio) document the provider interfaces. Browser SpeechRecognition's single-language setting is no longer used for dictation.
+
 ## Read a reply aloud
 
-Every text reply from Pulse has a **Read aloud** speaker button. It works for typed conversations with the voice controls closed, including browsers that support playback but have no speech recognition. Choose it to hear a spoken excerpt of up to 2,400 characters; the full reply stays in chat. **Stop reading** cancels playback. Selecting another reply stops the previous one. Reading an existing reply does not send a new AI request or start the microphone.
+Every Pulse text reply offers **Read aloud**. This uses available browser/device voices, independently of microphone support, without another AI request. A spoken excerpt is capped at 2,400 characters; the full text stays in chat. Select **Stop reading** below the reply or the square stop icon beside the input field to end playback. Another reply replaces the current playback. Recording/transcription cannot be replaced by reply playback.
 
-![Visible speaker and microphone controls](09-reply-read-aloud.png)
+![Speaker and microphone controls](09-reply-read-aloud.png)
 
-![Stop reading during reply playback](10-reading-reply.png)
+![Reply and composer stop controls during playback](10-reading-reply.png)
 
-![Reply playback controls on a phone](mobile-09-reply-read-aloud.png)
+![Reply controls on a phone](mobile-09-reply-read-aloud.png)
 
-![Stop reading on a phone](mobile-10-reading-reply.png)
+![Playback stop controls on a phone](mobile-10-reading-reply.png)
 
-The selected **Speech language** also applies to reply playback. Playback failures appear in chat even when voice controls are closed. A browser without speech playback marks the control unavailable and explains the limitation when selected. Closing Pulse, hiding the browser tab or changing account/view stops playback. Reopening or reloading never resumes audio.
+Playback uses the browser's voice/language behavior. Closing Pulse, changing view or hiding the tab stops playback; reopening or reloading never resumes it. Unavailable or failed playback leaves typed chat available.
 
-## Optional conversation mode
+## Permission and provider recovery
 
-Choose **Conversation · send after pause**. This explicitly enables automatic submission of completed speech. Send or clear an existing typed draft first. **Read replies aloud** uses available device/browser voices; it does not call an OpenAI audio API. Start listening when ready.
+![Microphone permission denied](07-microphone-denied.png)
 
-Pulse pauses recognition while handling the request and reading a reply. After a successful turn it can listen again. Generated text and quick replies can be read aloud; long replies are limited to a spoken excerpt of 2,400 characters, with the full text left in chat. Device voice/language availability and autoplay rules can prevent playback; the controls report that failure rather than claiming success.
+Denied microphone permission does not upload audio. Allow access for this site before trying again. Provider credit/authentication failures stop transcription, preserve the typed draft and restore the microphone button. No automatic retry or automatic chat follows the failure.
 
-![Conversation reading its reply](04-conversation-reading.png)
-
-Existing navigation can understand mixed commands such as “buksan ang syllabus,” “ipakita ang dashboard,” and “pumunta sa records.” The account’s existing page permissions still apply. Spoken instructions use the same tools as typed instructions; data changes still require the existing confirmation card. Voice does not grant role switching, approval or publication rights.
-
-**Stop voice**, “stop voice,” or “itigil ang boses” ends the voice session. The spoken stop phrase works while listening. Closing Pulse, opening its history/office, changing account/view, or hiding the browser tab stops microphone and playback. Stopping voice during an already submitted request ends audio; **Stop response** is the control for canceling that request. Changing language or mode also stops the current voice session. Language, mode and playback preferences are remembered on this device for that account/view; recording never restarts automatically on reload.
-
-## First-request OpenAI errors
-
-Connecting a key or listing a GPT-5.6 model does not establish available API credits or generation permission. A first inference request can be rejected. Previously, several newer OpenAI HTTP 429 codes became the same “quota or rate limit” message.
-
-| OpenAI response | Pulse guidance |
-| --- | --- |
-| `credit_balance_exhausted` | API credits are exhausted; review billing. Reconnecting the key does not add credits. |
-| `project_spend_limit_exceeded` | Review the selected project’s spend cap. |
-| `organization_spend_limit_exceeded` | Review the organization’s enforced spend cap. |
-| `organization_usage_limit_exceeded` | Review the approved organization usage tier/limit. |
-| `insufficient_quota`, including the legacy error type | Review API billing and usage. ChatGPT subscription usage is separate. |
-| `slow_down`, other HTTP 429 throttling | Wait before retrying; a valid **Retry-After** interval is included. Persistent failures should be checked against the model’s request/token limits. |
-| HTTP 503 / `server_is_overloaded` | The selected model is temporarily overloaded; follow its retry window. |
-
-The same classification is used for discovery and generation. EduPulse does not retry paid inference or switch models automatically after these errors. It retains the saved credential and the failed prompt. **AI settings** is available beside a credit/rate-limit failure. In conversation mode, the voice loop stops on a failed request and places the transcript in the box for review instead of repeatedly resubmitting it.
-
-![Credit failure preserves the spoken request](05-openai-credit-error.png)
+![Transcription credit failure preserves the draft](05-openai-credit-error.png)
 
 ![Credit recovery on a phone](mobile-05-openai-credit-error.png)
 
-The screenshot alone cannot establish which limit the owner’s real request hit, and this change cannot increase a provider’s credits or spending limits. [OpenAI’s error guide](https://developers.openai.com/api/docs/guides/error-codes) distinguishes these codes and explains that retrying billing/spend/usage failures will not restore access.
+OpenAI errors retain their existing categories: exhausted credits, project/organization spending caps and usage limits direct the owner to provider billing; temporary rate limits include a validated retry interval when supplied. Reconnecting a key does not add credits. [OpenAI error guidance](https://developers.openai.com/api/docs/guides/error-codes).
 
-## Permission and language failures
-
-![Experimental language rejected by the synthetic browser service](06-experimental-language.png)
-
-![Microphone access denied](07-microphone-denied.png)
-
-A denied microphone, missing audio device, unsupported language, speech-service network failure or silence ends the listening session with a readable explanation. Unsupported browsers retain typed chat. Recognition requires a secure context; production permits microphone access only from EduPulse’s own origin, with browser permission still required. See [MDN’s speech-recognition guidance](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition) for browser availability and remote-service behavior.
-
-![Voice review on solid dark surfaces](08-voice-dark.png)
-
-Existing theme variables and reduced-motion dots are retained. **Speech language**, **Voice mode**, playback and start/stop controls have visible labels and keyboard access; changing a setting does not silently start the microphone.
-
-[Release validation](../../versions/2026-11-07-voice-and-quota/validation/results.md) distinguishes synthetic transports, native provider-envelope tests and deployment evidence.
+![Voice transcript review on dark surfaces](08-voice-dark.png)

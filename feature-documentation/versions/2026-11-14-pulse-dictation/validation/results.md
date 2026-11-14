@@ -1,0 +1,9 @@
+# Validation
+
+The full local `npm run verify` passed: documentation links, capture provenance, screenshot review and freshness; lint (existing warnings only); both TypeScript projects; model assets; all 368 native tests; production build; and deployment checks for built assets, routing, serverless health and public retrieval. The four new native transcription checks cover multilingual provider payloads, byte/container validation, credentials, method limits, owner-bound cookies, provider errors, no retry, silence, oversized/incomplete transcripts and cancellation.
+
+All 20 desktop/phone voice browser checks passed. They cover the single record/stop icon, raw audio upload after Stop, editable transcript insertion without automatic chat, permission denial, cancel/close and late results, English/Filipino/mixed transcript text, independent read-aloud playback, unavailable audio and no-audio reload. All eight targeted capture scenarios passed; all 13 current screenshot hashes were opened/reviewed by the Codex agent. Removed selector/conversation screenshots were deleted and the capture pipeline, manuals, walkthrough and backend decisions updated together.
+
+One local capture build initially hit system memory allocation failure; rerunning with serialized native build workers succeeded. The apparent phone screenshot clipping was preview rendering: a debug capture had the identical full-image SHA, and panel coordinates were inside the viewport. The speculative panel layout change was removed; only the requested voice changes remain.
+
+Browser/capture transports use simulated MediaRecorder and providers around the real recording, upload and draft lifecycle. These do not establish physical microphone or live paid-transcription accuracy. Production rollout will be recorded after deployment. No migration or business-data mutation is required.

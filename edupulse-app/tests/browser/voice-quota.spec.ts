@@ -1,27 +1,63 @@
 import { test, expect } from '@playwright/test'
-import { reviewVoice, conversationVoice, languageVoice, voiceUI, readReplyVoice } from '../voice-quota-fixture'
-test('dictation keeps mixed-language speech editable and requires Send', async ({ page }) => { await reviewVoice(page) })
-test('voice conversation reads replies, resumes, navigates in Tagalog and stops on quota errors', async ({ page }) => { await conversationVoice(page) })
-test('unsupported languages, denied microphone and panel closing stop audio safely', async ({ page }) => { await languageVoice(page) })
-test('unsupported browser retains typed chat', async ({ page }) => {
-  const { dialog } = await voiceUI(page, { recognition: false })
-  await expect(dialog).toContainText('Speech recognition is unavailable')
-  await expect(dialog.getByRole('button', { name: 'Start listening' })).toHaveCount(0)
+import { reviewVoice, pendingVoice, permissionVoice, voiceUI, readReplyVoice } from '../voice-quota-fixture'
+test('one icon records, stops, transcribes and waits for Send', async ({ page }) => { await reviewVoice(page) })
+test('pending transcription and quota errors preserve the draft without sending', async ({ page }) => { await pendingVoice(page) })
+test('denied microphone does not transcribe', async ({ page }) => { await permissionVoice(page) })
+test('unavailable recording keeps typed chat and no selectors', async ({ page }) => {
+  const { dialog } = await voiceUI(page, { recording: false })
+  await dialog.getByRole('button', { name: 'Voice input', exact: true }).click()
+  await expect(dialog.getByRole('alert')).toContainText('Voice recording is unavailable')
   await dialog.getByRole('textbox', { name: 'Ask Pulse', exact: true }).fill('hello')
   await dialog.getByRole('button', { name: 'Send', exact: true }).click()
   await expect(dialog).toContainText('Hi! What would you like')
 })
-test('visible reply playback works without microphone support and stops on close', async ({ page }) => {
-  const { calls } = await readReplyVoice(page)
+test('reply playback remains independent and reload does not start audio', async ({ page }) => {
+  const fixture = await readReplyVoice(page)
   await page.reload()
   await page.getByRole('button', { name: 'Open Pulse assistant', exact: true }).click()
-  await expect(page.getByRole('button', { name: 'Voice input', exact: true })).toBeVisible()
-  expect(await page.evaluate(() => (window as any).syntheticSpeech.spoken)).toEqual([])
   expect(await page.evaluate(() => (window as any).syntheticSpeech.starts)).toBe(0)
-  expect(calls()).toBe(1)
+  expect(await page.evaluate(() => (window as any).syntheticSpeech.spoken)).toEqual([])
+  expect(fixture.calls()).toBe(1)
+})
+test('closing discards a recording without transcribing', async ({ page }) => {
+  const fixture = await voiceUI(page), { dialog } = fixture
+  await dialog.getByRole('button', { name: 'Voice input', exact: true }).click()
+  await expect(dialog.getByRole('button', { name: 'Stop recording', exact: true })).toBeVisible()
+  await dialog.getByRole('button', { name: 'Close Pulse', exact: true }).click()
+  expect(await page.evaluate(() => (window as any).syntheticSpeech.released)).toBeGreaterThan(0)
+  expect(fixture.transcriptions()).toBe(0)
+})
+test('cancelled permission and transcription cannot insert a late result', async ({ page }) => {
+  const fixture = await voiceUI(page, { holdPermission: true }), { dialog } = fixture
+  await dialog.getByRole('button', { name: 'Voice input', exact: true }).click()
+  await dialog.getByRole('button', { name: 'Cancel recording', exact: true }).click()
+  await page.evaluate(() => (window as any).syntheticSpeech.allow())
+  await expect.poll(() => page.evaluate(() => (window as any).syntheticSpeech.released)).toBeGreaterThan(0)
+  expect(fixture.transcriptions()).toBe(0)
+  await dialog.getByRole('button', { name: 'Voice input', exact: true }).click()
+  await page.evaluate(() => (window as any).syntheticSpeech.allow())
+  fixture.hold()
+  await dialog.getByRole('button', { name: 'Stop recording', exact: true }).click()
+  await expect.poll(fixture.transcriptions).toBe(1)
+  await dialog.getByRole('button', { name: 'Cancel transcription', exact: true }).click()
+  fixture.release()
+  await expect(dialog.getByRole('textbox', { name: 'Ask Pulse', exact: true })).toHaveValue('')
+  expect(fixture.calls()).toBe(0)
+})
+test('English, Filipino and mixed transcripts all remain editable without automatic chat', async ({ page }) => {
+  const fixture = await voiceUI(page), { dialog } = fixture
+  for (const text of ['Explain variables in English.', 'Ipaliwanag ang mga baryabol.', 'Explain ang variables sa Tagalog at English.']) {
+    fixture.say(text)
+    await dialog.getByRole('textbox', { name: 'Ask Pulse', exact: true }).fill('')
+    await dialog.getByRole('button', { name: 'Voice input', exact: true }).click()
+    await dialog.getByRole('button', { name: 'Stop recording', exact: true }).click()
+    await expect(dialog.getByRole('textbox', { name: 'Ask Pulse', exact: true })).toHaveValue(text)
+    await expect(dialog.getByRole('button', { name: 'Send', exact: true })).toBeEnabled()
+  }
+  expect(fixture.calls()).toBe(0)
 })
 test('unavailable playback explains the limitation and retains typed chat', async ({ page }) => {
-  const { dialog } = await voiceUI(page, { controls: false, playback: false })
+  const { dialog } = await voiceUI(page, { playback: false })
   await dialog.getByRole('textbox', { name: 'Ask Pulse', exact: true }).fill('Explain variables')
   await dialog.getByRole('button', { name: 'Send', exact: true }).click()
   await expect(dialog).toContainText('Ang variable ay may pangalan')
@@ -31,7 +67,7 @@ test('unavailable playback explains the limitation and retains typed chat', asyn
   expect(await page.evaluate(() => (window as any).syntheticSpeech.starts)).toBe(0)
 })
 test('a cancelled speech callback cannot stop the next reply playback', async ({ page }) => {
-  const { dialog } = await voiceUI(page, { controls: false })
+  const { dialog } = await voiceUI(page, {})
   for (const prompt of ['Explain variables', 'Explain constants']) {
     await dialog.getByRole('textbox', { name: 'Ask Pulse', exact: true }).fill(prompt)
     await dialog.getByRole('button', { name: 'Send', exact: true }).click()
@@ -41,9 +77,9 @@ test('a cancelled speech callback cannot stop the next reply playback', async ({
   await page.evaluate(() => { (window as any).cancelledSpeech = (window as any).syntheticSpeech.speech })
   await dialog.getByRole('button', { name: 'Read aloud', exact: true }).click()
   await page.evaluate(() => (window as any).cancelledSpeech.onerror())
-  await expect(dialog.getByRole('button', { name: 'Stop reading', exact: true })).toHaveCount(1)
+  await expect(dialog.locator('.pulse-read-aloud', { hasText: 'Stop reading' })).toHaveCount(1)
   await expect(dialog.getByRole('alert')).toHaveCount(0)
   await page.evaluate(() => (window as any).syntheticSpeech.speech.onerror())
   await expect(dialog.getByRole('alert')).toContainText('could not read the reply aloud')
-  await expect(dialog.getByRole('button', { name: 'Stop reading', exact: true })).toHaveCount(0)
+  await expect(dialog.locator('.pulse-read-aloud', { hasText: 'Stop reading' })).toHaveCount(0)
 })

@@ -1,0 +1,317 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-11-14T07-55-39-912Z-8c5d5791",
+  "startedAt": "2026-11-14T07:55:39.912Z",
+  "finishedAt": "2026-11-14T07:55:56.137Z",
+  "commitSha": "0884e23b0f7e08b63db77adbfb30b08caee62d57",
+  "sourceDigest": "496c8644c859c044f5f8387e25844c3391ec0914be3aa231792aefba3b6062fe",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-11-14T07:55:30.390Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 8,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": null
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/voice-quota.spec.ts",
+    "edupulse-app/tests/snapshots/voice-quota.mobile.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/account-support-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/account-support-reload-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/account-support-reload.spec.ts",
+    "edupulse-app/tests/snapshots/account-support.spec.ts",
+    "edupulse-app/tests/snapshots/approved-syllabus-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/approved-syllabus.spec.ts",
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/authored-weeks.spec.ts",
+    "edupulse-app/tests/snapshots/automatic-records.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/automatic-records.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+    "edupulse-app/tests/snapshots/bounded-loads-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/bounded-loads.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/citation-repair.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.spec.ts",
+    "edupulse-app/tests/snapshots/course-seed.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-formatting.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-navigation.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-readonly.spec.ts",
+    "edupulse-app/tests/snapshots/dean-records-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/dean-records.spec.ts",
+    "edupulse-app/tests/snapshots/editable-syllabus-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/editable-syllabus.spec.ts",
+    "edupulse-app/tests/snapshots/editor-layout.spec.ts",
+    "edupulse-app/tests/snapshots/harness-delivery.spec.ts",
+    "edupulse-app/tests/snapshots/instructor-updates-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/instructor-updates.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/local-models-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/local-models.spec.ts",
+    "edupulse-app/tests/snapshots/login-icons-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/login-icons.spec.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/monitoring-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/monitoring.spec.ts",
+    "edupulse-app/tests/snapshots/operator-steps.spec.ts",
+    "edupulse-app/tests/snapshots/outline-courseware.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/outline-courseware.spec.ts",
+    "edupulse-app/tests/snapshots/outline-progress-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/outline-progress.spec.ts",
+    "edupulse-app/tests/snapshots/outline-selector.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/outline-selector.spec.ts",
+    "edupulse-app/tests/snapshots/outline-sources-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/outline-sources.spec.ts",
+    "edupulse-app/tests/snapshots/oversight.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/oversight.spec.ts",
+    "edupulse-app/tests/snapshots/pipeline-progress-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pipeline-progress.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/public-pulse-search-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/public-pulse-search.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-drafting.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-source.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+    "edupulse-app/tests/snapshots/radar-progress-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/radar-progress.spec.ts",
+    "edupulse-app/tests/snapshots/reference-intake-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/reference-intake.spec.ts",
+    "edupulse-app/tests/snapshots/retained-catalog.spec.ts",
+    "edupulse-app/tests/snapshots/retained-sources-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/retained-sources.spec.ts",
+    "edupulse-app/tests/snapshots/role-monitoring.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+    "edupulse-app/tests/snapshots/second-admin-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/second-admin.spec.ts",
+    "edupulse-app/tests/snapshots/staff-registration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/staff-registration.spec.ts",
+    "edupulse-app/tests/snapshots/student-directory.spec.ts",
+    "edupulse-app/tests/snapshots/student-learning-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/student-learning.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-no-loads.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/system-search-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/system-search.spec.ts",
+    "edupulse-app/tests/snapshots/targeted-outline-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/targeted-outline.spec.ts",
+    "edupulse-app/tests/snapshots/teaching-sets.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-cache.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-recovery.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/voice-quota.spec.ts",
+      "title": "voice and quota: review",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2361,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/voice-quota.spec.ts",
+      "title": "voice and quota: transcription",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1149,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/voice-quota.spec.ts",
+      "title": "voice and quota: permissions",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 951,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/voice-quota.spec.ts",
+      "title": "voice controls on solid dark surfaces",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1355,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/voice-quota.spec.ts",
+      "title": "visible voice-over reply controls",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1207,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/voice-quota.mobile.spec.ts",
+      "title": "mobile voice and quota: review",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1426,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/voice-quota.mobile.spec.ts",
+      "title": "mobile voice and quota: transcription",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1137,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/voice-quota.mobile.spec.ts",
+      "title": "mobile visible voice-over reply controls",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1216,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/01-voice-controls.png",
+      "sha256": "6118dceabe844cd2b4f4fbada4b0b2ece45c06b8250c31fa6e67c5f5b6f57f98",
+      "bytes": 16848
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/02-listening-tagalog-english.png",
+      "sha256": "173db7eb22324191d15b751b9055a1959565d60fde7220fc5e8749bd1fa8909f",
+      "bytes": 27556
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/03-review-transcript.png",
+      "sha256": "7786243d56055d339927d609032dfccb269ed3cd388785b25b0839ba389f384b",
+      "bytes": 19089
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/04-transcribing.png",
+      "sha256": "f0d450e5802e1891f0d972db92179919c55f75cc13b044f41ffafbf43cabc5c9",
+      "bytes": 27594
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/05-openai-credit-error.png",
+      "sha256": "df1979baa5f186fc01d374cb4c4c68a70775fce602399cf8ce1d2220162bfff0",
+      "bytes": 22063
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/07-microphone-denied.png",
+      "sha256": "0487124d54a2f587281069f2c0e9dcb08bf99b97ccd039bdbbfdc0cbd0cadc1d",
+      "bytes": 21297
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/08-voice-dark.png",
+      "sha256": "159ca2631c574a10cb84654a9e8d427abf2eef8a56d301d7e087ab328eb54b4a",
+      "bytes": 20099
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/09-reply-read-aloud.png",
+      "sha256": "b6cc3c7f9a50b387ff3d92a17aaaac6339fef7ebc30e25fb21ddb6dba0e79798",
+      "bytes": 27447
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/10-reading-reply.png",
+      "sha256": "684a2a7858a1ed41eb2bfca12999ad2f34ee490b59f951ff0ea3c197584817d6",
+      "bytes": 27983
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/mobile-03-review-transcript.png",
+      "sha256": "f0b702a4d060415b34f17c40ece7b2063dbae8f879c3076899d926e6e83ec0fa",
+      "bytes": 61602
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/mobile-05-openai-credit-error.png",
+      "sha256": "0ca7c9a67516f2c831dbb704c2c036ef0045522106cf02c2d7ce7225c27fa083",
+      "bytes": 76373
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/mobile-09-reply-read-aloud.png",
+      "sha256": "42f2c42d8a7ef1f414bcc5a886132f46adfdd85649c2bfa518922c5be2935ea2",
+      "bytes": 97973
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/mobile-10-reading-reply.png",
+      "sha256": "618cda08504fcef288be51a756e749d702181817ee0aca284db61eb9d85aa09f",
+      "bytes": 99564
+    }
+  ]
+}

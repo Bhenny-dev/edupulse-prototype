@@ -1,126 +1,99 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { transcribeVoice } from '../../lib/aiClient'
 
-export const VOICE_LANGUAGES = [
-  ['fil-PH', 'Filipino / Tagalog'], ['en-PH', 'English (Philippines)'],
-  ['ilo-PH', 'Ilocano (experimental)'], ['kne-PH', 'Kankanaey (experimental)'],
-]
-const defaults = { language: 'fil-PH', mode: 'review', readReplies: false }
-function preferences(owner) {
-  try {
-    const value = JSON.parse(localStorage.getItem(`edupulse-voice-${owner}`) || '{}')
-    return { owner, language: VOICE_LANGUAGES.some(([id]) => id === value.language) ? value.language : defaults.language, mode: value.mode === 'conversation' ? 'conversation' : 'review', readReplies: value.readReplies === true }
-  } catch { return { owner, ...defaults } }
-}
-const errors = {
-  'not-allowed': 'Microphone access was denied. Allow microphone access for this site, then try again.',
-  'service-not-allowed': 'The browser’s speech service is unavailable. You can still type your request.',
-  'audio-capture': 'No microphone is available. Check your microphone and try again.',
-  'language-not-supported': 'This browser’s speech service does not support the selected language. Try Filipino or English, or type your request.',
-  'no-speech': 'No speech was detected. Start listening again when you are ready.',
-  network: 'The browser could not reach its speech service. Check your connection or type your request.',
-}
-
-export default function usePulseVoice({ owner, active, blocked, onTranscript, onPrompt }) {
-  const [enabled, setEnabled] = useState(false), [prefs, setPrefs] = useState(() => preferences(owner))
-  const [state, setState] = useState('idle'), [interim, setInterim] = useState(''), [error, setError] = useState('')
-  const [readingId, setReadingId] = useState(null)
-  const engine = useRef(null), epoch = useRef(0), running = useRef(false), timer = useRef(null), finishSpeech = useRef(null)
-  const current = useRef(null), begin = useRef(null)
-  current.current = { active, blocked, prefs, onTranscript, onPrompt }
-  const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition
-  const supported = typeof Recognition === 'function' && window.isSecureContext
+export default function usePulseVoice({ owner, active, blocked, onTranscript }) {
+  const [state, setState] = useState('idle'), [error, setError] = useState(''), [readingId, setReadingId] = useState(null)
+  const epoch = useRef(0), session = useRef(null), timer = useRef(null), request = useRef(null), finishSpeech = useRef(null), recording = useRef(false), finish = useRef(null)
+  const current = useRef(null)
+  current.current = { active, blocked, onTranscript }
+  const supported = Boolean(window.isSecureContext && navigator.mediaDevices?.getUserMedia && window.MediaRecorder)
   const canSpeak = Boolean(window.speechSynthesis && window.SpeechSynthesisUtterance)
   const stop = useCallback(() => {
-    running.current = false; epoch.current++; clearTimeout(timer.current)
-    const recognition = engine.current; engine.current = null
-    if (recognition) { recognition.onend = recognition.onresult = recognition.onerror = recognition.onstart = null; try { recognition.abort() } catch { /* Already ended. */ } }
-    if (finishSpeech.current) { const finish = finishSpeech.current; finishSpeech.current = null; window.speechSynthesis?.cancel(); finish() }
-    setState('idle'); setInterim(''); setReadingId(null)
+    epoch.current++; recording.current = false; clearTimeout(timer.current)
+    request.current?.abort(); request.current = null
+    const previous = session.current; session.current = null
+    if (previous) {
+      previous.recorder.ondataavailable = previous.recorder.onstop = previous.recorder.onerror = null
+      if (previous.recorder.state !== 'inactive') previous.recorder.stop()
+      previous.stream.getTracks().forEach(track => track.stop())
+      previous.chunks.length = 0
+    }
+    if (finishSpeech.current) { const done = finishSpeech.current; finishSpeech.current = null; window.speechSynthesis?.cancel(); done() }
+    setState('idle'); setReadingId(null)
   }, [])
-  useEffect(() => { stop(); setEnabled(false); setError(''); setPrefs(preferences(owner)); return stop }, [owner, stop])
-  useEffect(() => {
-    if (prefs.owner !== owner) return
-    try { localStorage.setItem(`edupulse-voice-${owner}`, JSON.stringify({ language: prefs.language, mode: prefs.mode, readReplies: prefs.readReplies })) } catch { /* Preferences still apply this session. */ }
-  }, [prefs, owner])
+  useEffect(() => { stop(); setError(''); return stop }, [owner, stop])
   useEffect(() => { if (!active) stop() }, [active, stop])
   useEffect(() => {
     const hidden = () => { if (document.hidden) stop() }
     document.addEventListener('visibilitychange', hidden)
     return () => document.removeEventListener('visibilitychange', hidden)
   }, [stop])
-  async function speak(text, version) {
-    if (!canSpeak || !text) return
-    setState('speaking')
-    const speech = new window.SpeechSynthesisUtterance(text.replace(/https?:\/\/\S+/g, ' link ').replace(/[*_#`]/g, '').slice(0, 2400))
-    speech.lang = current.current.prefs.language
-    await new Promise(resolve => {
-      finishSpeech.current = resolve
-      const finish = () => { if (finishSpeech.current === resolve) finishSpeech.current = null; resolve() }
-      speech.onend = finish
-      speech.onerror = () => { if (version === epoch.current) { running.current = false; setError('This device could not read the reply aloud. Try another speech language in Voice input.'); setState('idle') } finish() }
-      try { window.speechSynthesis.speak(speech) } catch { speech.onerror() }
-    })
+  finish.current = () => {
+    const currentSession = session.current
+    if (!currentSession || currentSession.recorder.state === 'inactive') return
+    clearTimeout(timer.current); recording.current = false; setState('transcribing')
+    currentSession.recorder.stop()
+  }
+  const start = async () => {
+    if (!current.current.active || current.current.blocked || recording.current || session.current || request.current) return
+    stop(); setError('')
+    if (!supported) { setError('Voice recording is unavailable in this browser. Use a current browser over HTTPS, or type your message.'); return }
+    const version = epoch.current
+    recording.current = true; setState('starting')
+    let stream
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      if (version !== epoch.current) { stream.getTracks().forEach(track => track.stop()); return }
+      const mimeType = ['audio/webm;codecs=opus', 'audio/mp4', 'audio/ogg;codecs=opus'].find(type => MediaRecorder.isTypeSupported(type))
+      const recorder = new MediaRecorder(stream, { ...(mimeType ? { mimeType } : {}), audioBitsPerSecond: 64000 })
+      const captured = { recorder, stream, chunks: [], bytes: 0 }
+      session.current = captured
+      recorder.ondataavailable = event => {
+        if (version !== epoch.current || !event.data.size) return
+        captured.bytes += event.data.size
+        if (captured.bytes > 1_000_000) { stop(); setError('The recording is too large. Try a shorter voice message.'); return }
+        captured.chunks.push(event.data)
+      }
+      recorder.onerror = () => { if (version === epoch.current) { stop(); setError('The microphone could not record this message. Check the device and try again.') } }
+      recorder.onstop = async () => {
+        stream.getTracks().forEach(track => track.stop())
+        if (version !== epoch.current) return
+        clearTimeout(timer.current); recording.current = false; session.current = null
+        const audio = new Blob(captured.chunks, { type: recorder.mimeType || captured.chunks[0]?.type || 'audio/webm' })
+        captured.chunks.length = 0
+        if (!audio.size) { setState('idle'); setError('No audio was recorded. Try again, or type your message.'); return }
+        const controller = new AbortController(); request.current = controller; setState('transcribing')
+        try {
+          const result = await transcribeVoice(audio, controller.signal)
+          if (version === epoch.current && current.current.active) current.current.onTranscript(result.text)
+        } catch (failure) { if (version === epoch.current) setError(failure.message || 'Transcription failed. Try again, or type your message.') }
+        finally { if (version === epoch.current) { request.current = null; setState('idle') } }
+      }
+      recorder.start(1000); setState('listening')
+      timer.current = setTimeout(() => finish.current(), 45000)
+    } catch (failure) {
+      stream?.getTracks().forEach(track => track.stop())
+      if (version !== epoch.current) return
+      stop(); setError(failure.name === 'NotAllowedError' ? 'Microphone access was denied. Allow access for this site, then try again.' : 'The microphone could not start. Check your device and browser permissions.')
+    }
   }
   const read = async (text, id) => {
+    // Do not discard a recording or pending transcript to play another reply.
+    if (recording.current || session.current || request.current) return
     stop(); setError('')
     if (!current.current.active) return
     if (!canSpeak) { setError('Spoken replies are unavailable in this browser. You can still read the reply in chat.'); return }
     const version = epoch.current
-    setReadingId(id)
-    await speak(text, version)
+    setReadingId(id); setState('speaking')
+    const speech = new window.SpeechSynthesisUtterance(text.replace(/https?:\/\/\S+/g, ' link ').replace(/[*_#`]/g, '').slice(0, 2400))
+    await new Promise(resolve => {
+      finishSpeech.current = resolve
+      const done = () => { if (finishSpeech.current === resolve) finishSpeech.current = null; resolve() }
+      speech.onend = done
+      speech.onerror = () => { if (version === epoch.current) setError('This device could not read the reply aloud. You can still read the reply in chat.'); done() }
+      try { window.speechSynthesis.speak(speech) } catch { speech.onerror() }
+    })
     if (version === epoch.current) { setReadingId(null); setState('idle') }
   }
-  begin.current = () => {
-    if (!current.current.active || current.current.blocked || !running.current) { running.current = false; setState('idle'); return }
-    const version = epoch.current
-    let recognition
-    try { recognition = new Recognition() } catch { stop(); setError('The browser could not initialize speech recognition. You can still type your request.'); return }
-    engine.current = recognition
-    recognition.lang = current.current.prefs.language; recognition.continuous = false; recognition.interimResults = true; recognition.maxAlternatives = 1
-    let final = '', heard = ''
-    setState('starting'); setInterim('')
-    recognition.onstart = () => { if (version === epoch.current) setState('listening') }
-    recognition.onresult = event => {
-      if (version !== epoch.current) return
-      final = ''; heard = ''
-      for (let i = 0; i < event.results.length; i++) {
-        const text = event.results[i][0]?.transcript || ''
-        if (event.results[i].isFinal) final += `${text} `
-        else heard += `${text} `
-      }
-      setInterim((final + heard).trim().slice(0, 4000))
-    }
-    recognition.onerror = event => {
-      if (version !== epoch.current) return
-      stop(); setError(errors[event.error] || 'Speech recognition stopped. Try listening again, or type your request.')
-    }
-    recognition.onend = async () => {
-      clearTimeout(timer.current)
-      if (version !== epoch.current || !running.current) return
-      engine.current = null; setState('idle'); setInterim('')
-      const text = final.trim().slice(0, 4000)
-      if (!text) { running.current = false; setError(errors['no-speech']); return }
-      if (/^(?:stop(?: voice| listening)?|(?:itigil|ihinto|tigil)(?: ang)? (?:boses|pakikinig))[.!?]*$/i.test(text)) { stop(); return }
-      if (current.current.prefs.mode === 'review') { running.current = false; current.current.onTranscript(text); return }
-      setState('waiting')
-      try {
-        const reply = await current.current.onPrompt(text)
-        if (version !== epoch.current || !running.current) return
-        if (reply === false) { running.current = false; setState('idle'); return }
-        if (current.current.prefs.readReplies) await speak(typeof reply === 'string' ? reply : '', version)
-        if (version === epoch.current && running.current) { setState('idle'); requestAnimationFrame(() => begin.current()) }
-      } catch { if (version === epoch.current) { stop(); setError('Voice conversation stopped. Review the chat before trying again.') } }
-    }
-    try {
-      recognition.start()
-      timer.current = setTimeout(() => { if (engine.current === recognition) { try { recognition.stop() } catch { stop() } } }, 45000)
-    } catch { stop(); setError('The microphone could not start. Check browser permissions and try again.') }
-  }
-  const start = () => {
-    if (!supported || !active || blocked || running.current) return
-    setError(''); running.current = true; begin.current()
-  }
-  const configure = change => { stop(); setError(''); setPrefs(previous => ({ ...previous, ...change })) }
-  const toggle = () => { stop(); setError(''); setEnabled(value => !value) }
-  return { enabled, toggle, supported, canSpeak, prefs, configure, start, stop, read, readingId, state, interim, error, hearing: state === 'starting' || state === 'listening', engaged: state !== 'idle' }
+  return { supported, canSpeak, start, finish: () => finish.current(), stop, read, readingId, state, error, hearing: ['starting', 'listening', 'transcribing'].includes(state), engaged: state !== 'idle' }
 }

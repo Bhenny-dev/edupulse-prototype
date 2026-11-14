@@ -4936,6 +4936,110 @@
       "reviewedAt": "2026-11-14T07:02:31.375164+00:00",
       "captureRun": "2026-11-14T07-01-06-981Z-eb8ba9e6",
       "method": "Opened with view_image. Verified visible speaker/microphone controls, reading/stop states, transcript, permission and quota recovery, dark surfaces and phone containment. Synthetic speech and account/provider UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/01-voice-controls.png",
+      "sha256": "6118dceabe844cd2b4f4fbada4b0b2ece45c06b8250c31fa6e67c5f5b6f57f98",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-14T07:56:49.172123+00:00",
+      "captureRun": "2026-11-14T07-55-39-912Z-8c5d5791",
+      "method": "Opened with view_image; retained exact matching hashes across recaptures. Verified removed selectors, composer microphone/stop, pending transcription, editable transcript, permission/quota recovery, independent reply playback, dark and phone layouts. Synthetic recording/account/provider UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/02-listening-tagalog-english.png",
+      "sha256": "173db7eb22324191d15b751b9055a1959565d60fde7220fc5e8749bd1fa8909f",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-14T07:56:49.172520+00:00",
+      "captureRun": "2026-11-14T07-55-39-912Z-8c5d5791",
+      "method": "Opened with view_image; retained exact matching hashes across recaptures. Verified removed selectors, composer microphone/stop, pending transcription, editable transcript, permission/quota recovery, independent reply playback, dark and phone layouts. Synthetic recording/account/provider UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/03-review-transcript.png",
+      "sha256": "7786243d56055d339927d609032dfccb269ed3cd388785b25b0839ba389f384b",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-14T07:56:49.172808+00:00",
+      "captureRun": "2026-11-14T07-55-39-912Z-8c5d5791",
+      "method": "Opened with view_image; retained exact matching hashes across recaptures. Verified removed selectors, composer microphone/stop, pending transcription, editable transcript, permission/quota recovery, independent reply playback, dark and phone layouts. Synthetic recording/account/provider UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/04-transcribing.png",
+      "sha256": "f0d450e5802e1891f0d972db92179919c55f75cc13b044f41ffafbf43cabc5c9",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-14T07:56:49.182649+00:00",
+      "captureRun": "2026-11-14T07-55-39-912Z-8c5d5791",
+      "method": "Opened with view_image; retained exact matching hashes across recaptures. Verified removed selectors, composer microphone/stop, pending transcription, editable transcript, permission/quota recovery, independent reply playback, dark and phone layouts. Synthetic recording/account/provider UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/05-openai-credit-error.png",
+      "sha256": "df1979baa5f186fc01d374cb4c4c68a70775fce602399cf8ce1d2220162bfff0",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-14T07:56:49.188999+00:00",
+      "captureRun": "2026-11-14T07-55-39-912Z-8c5d5791",
+      "method": "Opened with view_image; retained exact matching hashes across recaptures. Verified removed selectors, composer microphone/stop, pending transcription, editable transcript, permission/quota recovery, independent reply playback, dark and phone layouts. Synthetic recording/account/provider UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/07-microphone-denied.png",
+      "sha256": "0487124d54a2f587281069f2c0e9dcb08bf99b97ccd039bdbbfdc0cbd0cadc1d",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-14T07:56:49.189314+00:00",
+      "captureRun": "2026-11-14T07-55-39-912Z-8c5d5791",
+      "method": "Opened with view_image; retained exact matching hashes across recaptures. Verified removed selectors, composer microphone/stop, pending transcription, editable transcript, permission/quota recovery, independent reply playback, dark and phone layouts. Synthetic recording/account/provider UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/08-voice-dark.png",
+      "sha256": "159ca2631c574a10cb84654a9e8d427abf2eef8a56d301d7e087ab328eb54b4a",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-14T07:56:49.196640+00:00",
+      "captureRun": "2026-11-14T07-55-39-912Z-8c5d5791",
+      "method": "Opened with view_image; retained exact matching hashes across recaptures. Verified removed selectors, composer microphone/stop, pending transcription, editable transcript, permission/quota recovery, independent reply playback, dark and phone layouts. Synthetic recording/account/provider UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/09-reply-read-aloud.png",
+      "sha256": "b6cc3c7f9a50b387ff3d92a17aaaac6339fef7ebc30e25fb21ddb6dba0e79798",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-14T07:56:49.203134+00:00",
+      "captureRun": "2026-11-14T07-55-39-912Z-8c5d5791",
+      "method": "Opened with view_image; retained exact matching hashes across recaptures. Verified removed selectors, composer microphone/stop, pending transcription, editable transcript, permission/quota recovery, independent reply playback, dark and phone layouts. Synthetic recording/account/provider UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/10-reading-reply.png",
+      "sha256": "684a2a7858a1ed41eb2bfca12999ad2f34ee490b59f951ff0ea3c197584817d6",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-14T07:56:49.210625+00:00",
+      "captureRun": "2026-11-14T07-55-39-912Z-8c5d5791",
+      "method": "Opened with view_image; retained exact matching hashes across recaptures. Verified removed selectors, composer microphone/stop, pending transcription, editable transcript, permission/quota recovery, independent reply playback, dark and phone layouts. Synthetic recording/account/provider UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/mobile-03-review-transcript.png",
+      "sha256": "f0b702a4d060415b34f17c40ece7b2063dbae8f879c3076899d926e6e83ec0fa",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-14T07:56:49.216474+00:00",
+      "captureRun": "2026-11-14T07-55-39-912Z-8c5d5791",
+      "method": "Opened with view_image; retained exact matching hashes across recaptures. Verified removed selectors, composer microphone/stop, pending transcription, editable transcript, permission/quota recovery, independent reply playback, dark and phone layouts. Synthetic recording/account/provider UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/mobile-05-openai-credit-error.png",
+      "sha256": "0ca7c9a67516f2c831dbb704c2c036ef0045522106cf02c2d7ce7225c27fa083",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-14T07:56:49.224430+00:00",
+      "captureRun": "2026-11-14T07-55-39-912Z-8c5d5791",
+      "method": "Opened with view_image; retained exact matching hashes across recaptures. Verified removed selectors, composer microphone/stop, pending transcription, editable transcript, permission/quota recovery, independent reply playback, dark and phone layouts. Synthetic recording/account/provider UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/mobile-09-reply-read-aloud.png",
+      "sha256": "42f2c42d8a7ef1f414bcc5a886132f46adfdd85649c2bfa518922c5be2935ea2",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-14T07:56:49.232976+00:00",
+      "captureRun": "2026-11-14T07-55-39-912Z-8c5d5791",
+      "method": "Opened with view_image; retained exact matching hashes across recaptures. Verified removed selectors, composer microphone/stop, pending transcription, editable transcript, permission/quota recovery, independent reply playback, dark and phone layouts. Synthetic recording/account/provider UI evidence only."
+    },
+    {
+      "path": "feature-documentation/system-manual/20-voice-and-provider-errors/mobile-10-reading-reply.png",
+      "sha256": "618cda08504fcef288be51a756e749d702181817ee0aca284db61eb9d85aa09f",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-14T07:56:49.240085+00:00",
+      "captureRun": "2026-11-14T07-55-39-912Z-8c5d5791",
+      "method": "Opened with view_image; retained exact matching hashes across recaptures. Verified removed selectors, composer microphone/stop, pending transcription, editable transcript, permission/quota recovery, independent reply playback, dark and phone layouts. Synthetic recording/account/provider UI evidence only."
     }
   ]
 }

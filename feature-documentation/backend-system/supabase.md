@@ -161,7 +161,7 @@ Follow-up migration `20261107084843_atomic_provider_cookie_import.sql` adds invo
 
 ## Voice and limit recovery, 7 November 2026
 
-This update changes no schema or role policy. Final voice text is sent through the existing authenticated chat/tool and conversation-storage paths. Raw microphone audio is handled by the browser speech service, not uploaded to Supabase. Language/mode/playback preferences are non-sensitive device settings scoped to the account/view; listening is never resumed automatically on reload. Existing encrypted provider retention and explicit disconnect behavior are preserved. [Release validation](../versions/2026-11-07-voice-and-quota/validation/results.md).
+Voice dictation now uses a bounded transient audio upload through the existing account-owned provider connection. It adds no Supabase audio table, storage object or schema/policy change. Only text explicitly sent in chat reaches normal conversation storage. Removed language/mode preferences do not affect recording; old conversation mode never resumes or sends automatically. Admin support views continue to use the actual admin's connection, not the selected person's credential. Reload never records, transcribes or replays audio. Existing encrypted provider retention and explicit disconnect remain. [Current manual](../system-manual/20-voice-and-provider-errors/README.md).
 
 ## Instructor membership decisions ? 7 November 2026
 

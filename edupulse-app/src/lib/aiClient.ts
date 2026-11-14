@@ -48,6 +48,7 @@ export type AiHealth = {
 }
 export type AiAnswer = AgentAnswer
 export const getAiHealth = (signal?: AbortSignal) => aiRequest<AiHealth>('health', 'GET', undefined, signal)
+export const transcribeVoice = (audio: Blob, signal: AbortSignal) => aiRequest<{ text: string }>('transcribe', 'POST', undefined, signal, { raw: audio, headers: { 'X-Audio-Type': audio.type } })
 
 export type ExtractionReport = {
   fileName: string; kind: string; mime: string; bytes: number; text: string; truncated: boolean; meta: Record<string, unknown>

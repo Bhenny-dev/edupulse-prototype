@@ -84,10 +84,6 @@ export default function Pulse() {
   const voice = usePulseVoice({
     owner: `${user?.id || 'guest'}:${user?.role || 'guest'}`, active: open && !officeOpen && !historyOpen, blocked: busy || fileBusy,
     onTranscript: text => { setInput(previous => [previous.trim(), text].filter(Boolean).join(' ').slice(0, 4000)); inputRef.current?.focus() },
-    onPrompt: text => {
-      if (busy || fileBusy || requestRef.current) { setInput(previous => [previous.trim(), text].filter(Boolean).join(' ').slice(0, 4000)); return false }
-      return sendRef.current?.(text, { voice: true })
-    },
   })
 
   useEffect(() => pulseBus.subscribe(event => {
@@ -511,7 +507,7 @@ export default function Pulse() {
         <button type="button" onClick={close} aria-label="Close Pulse"><X size={19} /></button>
       </header>
       {menuOpen && <nav className="pulse-options" aria-label="Pulse options">
-        <button aria-pressed={voice.enabled} onClick={() => { voice.toggle(); setMenuOpen(false) }}><Mic size={14} /> {voice.enabled ? 'Disable voice input' : 'Voice input'}</button>
+        <button disabled={busy || fileBusy || voice.engaged} onClick={() => { void voice.start(); setMenuOpen(false) }}><Mic size={14} /> Voice input</button>
         <button aria-label="Clear conversation" disabled={busy || fileBusy} onClick={() => { voice.stop(); try { archive.newThread(); setAttachments([]); setContextFiles([]); setGuide(null); setFocus(null); setMenuOpen(false) } catch (failure) { setError(failure.message) } }}>New conversation</button>
         <button onClick={() => { setHistoryOpen(value => !value); setMenuOpen(false) }}>Conversations and memory</button>
         <button onClick={() => { const target = focus || describeTarget(document.querySelector('[data-pulse-zone]') || document.querySelector('#main-content'), user?.role); if (target && !focus) focusTarget(target); setGuidanceOpen(true); setMenuOpen(false) }}>{focus ? 'Guide selected component' : 'Guide this page'}</button>
@@ -554,13 +550,12 @@ export default function Pulse() {
       {archive.error && archive.unsaved && messages.length > 0 && !historyOpen && <div role="status" className="connected-pulse-warning">Chat not saved. <button className="btn btn-ghost btn-sm" onClick={archive.retry}>Retry history save</button></div>}
       <span className="sr-only pulse-context-status" role="status">{archive.saving || archive.unsaved ? 'Saving conversation' : archive.threadId ? 'Conversation saved' : ''}</span>
       {visibleFiles.length > 0 && <ul className="connected-pulse-attachments">{visibleFiles.map((a, i) => <li key={i}><span>{a.title}{a.roster ? ` · class list, ${a.roster.students.length} students` : a.text.length > CHAT_REFERENCE ? ' · long file: chat reads the first 18,000 characters' : ''}</span><button aria-label={`Remove ${a.title}`} onClick={() => { setAttachments(previous => previous.filter((_, index) => i !== index)); setContextFiles(previous => previous.filter(file => file.fileName !== a.fileName)) }}><X size={13} /></button></li>)}</ul>}
-      <PulseVoice voice={voice} blocked={busy || fileBusy} hasDraft={Boolean(input.trim())} />
-      {!voice.enabled && voice.error && <div role="alert" className="connected-pulse-error">{voice.error}</div>}
+      <PulseVoice voice={voice} />
       <form className="connected-pulse-form" onSubmit={event => { event.preventDefault(); if (!voice.hearing) { voice.stop(); void send() } }}>
         <input ref={fileRef} type="file" hidden multiple accept={UPLOAD_ACCEPT} onChange={e => { void attachFiles(Array.from(e.target.files || [])); e.target.value = '' }} />
         <button type="button" disabled={busy || fileBusy} onClick={() => fileRef.current?.click()} aria-label="Attach reference" title="Attach files, or drop up to three files onto Pulse"><Paperclip size={18} /></button>
-        <button type="button" className="pulse-voice-toggle" aria-label={voice.enabled ? 'Disable voice input' : 'Voice input'} title={voice.enabled ? 'Hide voice controls' : 'Show voice controls'} aria-pressed={voice.enabled} onClick={voice.toggle}><Mic size={18} /></button>
-        <textarea ref={inputRef} value={input} onChange={e => setInput(e.target.value)} maxLength={4000} rows={voice.enabled ? 3 : 2} placeholder="Ask, draft, compare or find references…" aria-label="Ask Pulse" onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) { e.preventDefault(); if (!voice.hearing) { voice.stop(); void send() } } }} />
+        <button type="button" className="pulse-voice-toggle" aria-label={voice.state === 'listening' ? 'Stop recording' : voice.state === 'starting' ? 'Cancel recording' : voice.state === 'transcribing' ? 'Cancel transcription' : voice.state === 'speaking' ? 'Stop reading' : 'Voice input'} title={voice.engaged ? 'Stop voice' : 'Record a voice message'} aria-pressed={voice.engaged} disabled={!voice.engaged && (busy || fileBusy)} onClick={() => voice.state === 'listening' ? voice.finish() : voice.engaged ? voice.stop() : void voice.start()}>{voice.engaged ? <Square size={18} /> : <Mic size={18} />}</button>
+        <textarea ref={inputRef} value={input} onChange={e => setInput(e.target.value)} maxLength={4000} rows={2} placeholder="Ask, draft, compare or find references…" aria-label="Ask Pulse" onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) { e.preventDefault(); if (!voice.hearing) { voice.stop(); void send() } } }} />
         {busy ? <button type="button" onClick={() => { voice.stop(); requestRef.current?.abort() }} aria-label="Stop response"><Square size={17} /></button> : <button type="submit" disabled={(!input.trim() && !attachments.length) || fileBusy || voice.hearing} aria-label="Send"><Send size={18} /></button>}
       </form>{fileBusy && <small className="connected-pulse-footnote" role="status">{fileNotice || 'Reading files…'}</small>}
     </section>}

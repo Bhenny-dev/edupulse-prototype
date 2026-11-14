@@ -172,7 +172,7 @@ Saved provider keys and selected models now survive sign-out under the same acco
 
 ## Optional microphone in Pulse
 
-The **Voice input** microphone button is always visible beside the Pulse message box; **Pulse options** retains the same entry. Listening starts only after **Start listening**. The default is transcript review; optional conversation mode sends completed speech. Each Pulse text reply also offers **Read aloud / Stop reading**, independently of microphone support and without another model request. Playback and listening stop on close, hidden tab or account/view changes and never restart on reload. Microphone denial, unsupported languages, playback failures and API failures have readable recovery. **AI settings** is offered beside credit/rate-limit failures. [Manual 20](../../system-manual/20-voice-and-provider-errors/README.md) contains current light/dark and mobile captures.
+The **Voice input** microphone button beside the Pulse message box starts recording and becomes **Stop recording**. There are no language/mode selectors. Stopping releases the microphone, transcribes Filipino/English/mixed speech through the active supported provider, and places editable text into the message box; only **Send** submits chat. The same icon cancels pending transcription or stops reply playback. Each Pulse text reply retains **Read aloud / Stop reading**. Closing, account/view changes, hidden tabs and reload never replay audio. [Manual 20](../../system-manual/20-voice-and-provider-errors/README.md) shows the compact controls, privacy, provider limits, dark and mobile views.
 
 ## Account support and contextual Pulse, 8 November 2026
 
