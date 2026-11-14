@@ -23,7 +23,13 @@ if (process.env.VERCEL) {
 if (!existsSync(join(DOCS, 'doc-map.json'))) fail([`feature-documentation/doc-map.json is missing. See ${POLICY}.`])
 
 const map = JSON.parse(readFileSync(join(DOCS, 'doc-map.json'), 'utf8'))
-const git = (...args) => execFileSync('git', args, { cwd: ROOT, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 }).trim()
+// Owner pause: doc-map.json → "paused": { "since", "reason" } turns the gate off for the
+// commit hook, `npm run verify` and CI alike. Remove the entry to restore enforcement.
+if (map.paused?.since && map.paused?.reason) {
+  console.log(`docs:check paused by the project owner since ${map.paused.since}: ${map.paused.reason}`)
+  process.exit(0)
+}
+const git =(...args) => execFileSync('git', args, { cwd: ROOT, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 }).trim()
 const rules = compileRules(map.rules)
 const posix = path => path.split('\\').join('/')
 

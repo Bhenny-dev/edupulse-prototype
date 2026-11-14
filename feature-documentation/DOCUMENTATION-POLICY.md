@@ -1,5 +1,7 @@
 # Documentation policy (strict)
 
+> **Paused on 2026-11-14 at the project owner's request.** System edits take priority; screenshot recapture and guide updates are deferred. The `paused` entry in [doc-map.json](doc-map.json) turns `docs-check.mjs` off for the commit hook, `npm run verify` and CI. Remove the entry to resume the rules below.
+
 **Every change to a feature updates its screenshots and documentation in the same commit.** That means:
 * **Replace** screenshots that no longer match the screen.
 * **Edit** guide text that no longer describes what is on the screen.

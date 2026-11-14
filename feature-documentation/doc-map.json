@@ -1,6 +1,10 @@
 {
   "$comment": "Which documentation must change when source files change. Read by edupulse-app/scripts/docs-check.mjs; policy in DOCUMENTATION-POLICY.md. Paths are relative to the repository root. A rule is satisfied when at least one of its docs paths changes in the same commit (or push), or the commit carries a reasoned 'Docs-Impact: none' trailer. Rules marked fallback apply only to files no other rule matched.",
   "enforcedSince": "2026-10-04T00:00:00+08:00",
+  "paused": {
+    "since": "2026-11-14",
+    "reason": "Owner request: system edits first; screenshot recapture and guide updates are deferred until the owner resumes the policy by removing this entry."
+  },
   "rules": [
     {
       "name": "Combined instructor monitoring and its capture fixture",

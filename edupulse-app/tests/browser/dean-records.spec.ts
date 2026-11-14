@@ -2,24 +2,25 @@ import {test,expect} from '@playwright/test'
 import {deanRecordsUI} from '../dean-records-fixture'
 import {readFile} from 'node:fs/promises'
 
-test('Dean navigation and dashboard summaries open matching read-only record views',async({page})=>{
+test('Dean navigation and dashboard summaries open the Course list, Course loads and Syllabus & Delivery views',async({page})=>{
  await deanRecordsUI(page);await page.goto('/#/dashboard')
  const mobile=page.viewportSize()!.width<800
  if(mobile)await page.getByRole('button',{name:'Open menu',exact:true}).click()
  for(const label of ['Dashboard','Course','Instructors','Students'])await expect(page.getByRole('link',{name:label,exact:true}).first()).toBeVisible()
  if(mobile)await page.getByRole('button',{name:'Close menu',exact:true}).click()
- for(const [label,url] of [['Released Courses','/records?tab=courses'],['Courses Loaded','/records?tab=loads'],['Approved Syllabi','/records?tab=syllabi&status=approved'],['Not Yet Routed for Approval','/records?tab=syllabi&status=not-routed']]){
+ for(const [label,url] of [['Released Courses','/records?tab=courses'],['Courses Loaded','/records?tab=loads'],['Approved Syllabi','/monitor?tab=overview'],['Not Yet Routed for Approval','/monitor?tab=overview']]){
   const card=page.getByRole('link',{name:label,exact:true});await expect(card).toHaveAttribute('href',`#${url}`)
  }
- await page.getByRole('link',{name:'Approved Syllabi',exact:true}).click()
- await expect(page.getByRole('combobox',{name:'Syllabus status',exact:true})).toHaveValue('approved')
- for(const title of ['Course records','Course loads','Student class lists','Syllabi']){
+ await page.getByRole('link',{name:'Released Courses',exact:true}).click()
+ await expect(page.getByRole('heading',{name:'Course list',exact:true})).toBeVisible()
+ for(const title of ['Student class lists','Syllabi','Course records'])await expect(page.getByRole('button',{name:title,exact:true})).toHaveCount(0)
+ for(const title of ['Course list','Course loads']){
   await page.getByRole('button',{name:title,exact:true}).click()
-  await expect(page.locator('input[type=file]')).toHaveCount(0)
-  await expect(page.getByRole('button',{name:'Templates',exact:true})).toHaveCount(0)
-  await expect(page.getByRole('button',{name:'History',exact:true})).toHaveCount(0)
-  await expect(page.locator('.kpi-card .kpi-icon')).toHaveCount(4)
+  await expect(page.locator('.kpi-card .glass-icon')).toHaveCount(4)
+  await expect(page.getByRole('button',{name:'Add instructor',exact:true})).toHaveCount(0)
  }
+ await expect(page.locator('input[type=file]')).toBeDisabled()
+ await expect(page.getByText('Preview sample. Loading courses needs a signed-in Dean account.')).toBeVisible()
 })
 
 test('Program Coordinator retains the existing shared import workflow and cannot open Dean-only pages',async({page})=>{
@@ -31,8 +32,8 @@ test('Program Coordinator retains the existing shared import workflow and cannot
 test('year groups, complete downloadable block membership, reload and withdrawn access remain consistent',async({page})=>{
  const fixture=await deanRecordsUI(page)
  fixture.records.enrollments.find(row=>row.student_ref==='SYN-002')!.display_name='=Sample learner'
- await page.goto('/#/students')
- for(const year of ['Year 1','Year 2','Year level not recorded'])await expect(page.getByRole('heading',{name:year,exact:true})).toBeVisible()
+ await page.goto('/#/students?tab=blocks')
+ for(const year of ['Year 1','Year 2','Year level not recorded','Irregular students'])await expect(page.getByRole('heading',{name:year,exact:true})).toBeVisible()
  await page.getByRole('button',{name:'View block BSIT-1A',exact:true}).click()
  const modal=page.getByRole('dialog',{name:'Block BSIT-1A',exact:true})
  await expect(modal).toContainText('2 registered students')
@@ -62,6 +63,6 @@ test('legacy Dean links resolve to the new hubs while Program Coordinator import
 })
 
 test('Dean record totals keep their values without test suffixes',async({page})=>{
- const fixture=await deanRecordsUI(page);await page.goto('/#/records');await expect(page.getByRole('heading',{name:'Course records',exact:true})).toBeVisible();await expect(page.locator('.academic-portal')).not.toContainText(/pipeline test|\d+ test/i);expect(fixture.records.attempts.some(a=>a.is_test)).toBe(true)
+ const fixture=await deanRecordsUI(page);await page.goto('/#/records');await expect(page.getByRole('heading',{name:'Course list',exact:true})).toBeVisible();await expect(page.locator('.academic-portal')).not.toContainText(/pipeline test|\d+ test/i);expect(fixture.records.attempts.some(a=>a.is_test)).toBe(true)
  await page.goto('/#/instructors');await expect(page.getByRole('button',{name:'View instructor Alex Sample Instructor',exact:true})).toBeVisible();await expect(page.locator('.academic-portal')).not.toContainText(/pipeline test|\d+ test/i)
 })

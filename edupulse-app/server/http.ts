@@ -61,6 +61,7 @@ export async function authenticate(request: Request): Promise<Identity> {
           !data.user.app_metadata?.providers?.includes('google')))) {
       throw new ApiError(403, 'ROLE_NOT_ASSIGNED', 'This account has no EduPulse role. Contact the administrator.')
     }
+    if (data.user.app_metadata?.suspended === true) throw new ApiError(403, 'ACCOUNT_SUSPENDED', 'This account is suspended. Contact the Dean of the College of Information Technology.')
     return { id: data.user.id, role, token, local: false, name: data.user.user_metadata?.full_name || data.user.email?.split('@')[0], email: data.user.email?.toLowerCase() }
   }
   if (!config().hosted && process.env.AI_LOCAL_MODE === 'true') return { id: 'local-workspace', role: 'instructor', local: true }
@@ -172,7 +173,13 @@ export async function handleRequest(request: Request): Promise<Response> {
       return request.method === 'GET' ? json(query ? await conversationRecall(identity, query, url.searchParams.get('id') || undefined) : await readConversations(identity, url.searchParams.get('id'))) : json(await executeConversation(identity, conversationCommand.parse(await readJson(request, bodyLimit(action)))))
     }
     if (action === 'syllabi') return json(await syllabusSharing(effective, sharingCommand.parse(await readJson(request, 5000))))
-    if (action === 'academic') return request.method === 'GET' ? json(await readAcademic(effective)) : json(await executeAcademic(effective, academicCommand.parse(await readJson(request, 5000))))
+    if (action === 'academic') {
+      if (request.method === 'GET') return json(await readAcademic(effective))
+      // Dean intake batches (accounts, loads, lists) are larger; every other command keeps the 5 KB cap.
+      const body = await readJson(request, 600_000) as { operation?: unknown }
+      if (!['dean', 'import'].includes(String(body?.operation)) && Buffer.byteLength(JSON.stringify(body)) > 5000) throw new ApiError(413, 'BODY_TOO_LARGE', 'The request exceeds 5 KB. Use a smaller document.')
+      return json(await executeAcademic(effective, academicCommand.parse(body)))
+    }
     if (action === 'workspace') {
       if (request.method === 'GET') {
         const known = new URL(request.url).searchParams.get('known')

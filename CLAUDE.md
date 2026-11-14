@@ -2,6 +2,8 @@
 
 ## Strict requirement: documentation changes with every feature change
 
+> **Paused by the project owner on 2026-11-14.** System edits come first; do not recapture screenshots or update guides until the owner resumes the policy. The switch is `paused` in [feature-documentation/doc-map.json](feature-documentation/doc-map.json) (read by `docs-check.mjs`, so the commit hook, `npm run verify` and CI all skip the gate). Remove that entry to resume.
+
 Any change to a feature must update its screenshots and documentation **in the same commit**. Replace changed screenshots, edit stale guide text, remove screenshots and sections for removed screens, and insert new ones for new screens. Update the capture pipeline (`edupulse-app/tests/snapshots/`) together with the interface it captures. The System Manual, the System Walkthrough, the Backend System docs and the pipeline must always match `main`.
 
 The full rule, update steps and exemption format are in [feature-documentation/DOCUMENTATION-POLICY.md](feature-documentation/DOCUMENTATION-POLICY.md). Before every commit:

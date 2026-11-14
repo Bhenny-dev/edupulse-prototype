@@ -54,14 +54,14 @@ test('course filters and new roster registration stay within the selected course
 
 test('dashboard cards filter memberships; action menus restore without a write and Escape keeps the class open',async({page})=>{
  const {store}=await monitoringUI(page);const dialog=await open(page)
- await expect(dialog.locator('.monitoring-summary .kpi-icon')).toHaveCount(4)
+ await expect(dialog.locator('.monitoring-summary .glass-icon')).toHaveCount(4)
  await dialog.getByRole('button',{name:'Suspended students',exact:true}).click();await expect(dialog).toContainText('No enrolled students match your search.')
  await dialog.getByRole('button',{name:'Active students',exact:true}).click();await expect(dialog.getByRole('combobox',{name:'Membership status'})).toHaveValue('active')
  const trigger=dialog.getByRole('button',{name:'Actions for Synthetic learner',exact:true});await trigger.focus();await page.keyboard.press('ArrowDown')
  const menu=page.getByRole('menu',{name:'Actions for Synthetic learner',exact:true});await expect(menu).toBeVisible();await page.keyboard.press('Escape');await expect(menu).toHaveCount(0);await expect(dialog).toBeVisible();await expect(trigger).toBeFocused()
  await trigger.click();const writes=store.commands.length;await page.reload();await expect(menu).toBeVisible();expect(store.commands).toHaveLength(writes)
  await page.keyboard.press('Tab');await expect(menu).toHaveCount(0);await expect(dialog).toBeVisible()
- await dialog.getByRole('button',{name:'Assessment Scores',exact:true}).click();await expect(dialog.locator('.monitoring-summary .kpi-icon')).toHaveCount(4)
+ await dialog.getByRole('button',{name:'Assessment Scores',exact:true}).click();await expect(dialog.locator('.monitoring-summary .glass-icon')).toHaveCount(4)
  await dialog.getByRole('button',{name:'Students in this block',exact:true}).click();await expect(dialog.getByRole('heading',{name:'Assessment scores by student',exact:true})).toBeInViewport()
 })
 

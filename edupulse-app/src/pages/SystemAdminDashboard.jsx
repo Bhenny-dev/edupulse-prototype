@@ -1,3 +1,4 @@
+import GlassIcon from '../components/ui/GlassIcon'
 import { Spinner, SkeletonContent } from '../components/ui/LoadingFeedback'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import RoleMonitoring from '../components/admin/RoleMonitoring'
@@ -123,10 +124,10 @@ export default function SystemAdminDashboard() {
 
     {busy && !checks.length ? <SkeletonContent label="Loading system overview" variant="page" rows={4} /> : <>
     <div className="kpi-grid mb-24">
-      <div className="kpi-card"><div className="kpi-icon" style={{ background: 'var(--sky-100)' }}><Users size={22} color="var(--sky-500)" /></div><div><div className="kpi-value">{overview.accounts.length}</div><div className="kpi-label">Authenticated accounts</div></div></div>
-      <div className="kpi-card"><div className="kpi-icon" style={{ background: 'var(--green-100)' }}><Activity size={22} color="var(--green-500)" /></div><div><div className="kpi-value">{user?.demo ? '—' : `${healthy}/${checks.length || 4}`}</div><div className="kpi-label">Health checks passing</div></div></div>
-      <div className="kpi-card"><div className="kpi-icon" style={{ background: 'var(--green-100)' }}><CheckCircle2 size={22} color="var(--green-500)" /></div><div><div className="kpi-value">{successes}</div><div className="kpi-label">Recorded successes · 24h</div></div></div>
-      <div className="kpi-card"><div className="kpi-icon" style={{ background: 'var(--amber-100)' }}><AlertTriangle size={22} color="var(--amber-500)" /></div><div><div className="kpi-value">{failures}</div><div className="kpi-label">Recorded failures · 24h</div></div></div>
+      <div className="kpi-card"><GlassIcon icon={Users} color="var(--sky-500)" /><div><div className="kpi-value">{overview.accounts.length}</div><div className="kpi-label">Authenticated accounts</div></div></div>
+      <div className="kpi-card"><GlassIcon icon={Activity} color="var(--green-500)" /><div><div className="kpi-value">{user?.demo ? '—' : `${healthy}/${checks.length || 4}`}</div><div className="kpi-label">Health checks passing</div></div></div>
+      <div className="kpi-card"><GlassIcon icon={CheckCircle2} color="var(--green-500)" /><div><div className="kpi-value">{successes}</div><div className="kpi-label">Recorded successes · 24h</div></div></div>
+      <div className="kpi-card"><GlassIcon icon={AlertTriangle} color="var(--amber-500)" /><div><div className="kpi-value">{failures}</div><div className="kpi-label">Recorded failures · 24h</div></div></div>
     </div>
 
     </>}

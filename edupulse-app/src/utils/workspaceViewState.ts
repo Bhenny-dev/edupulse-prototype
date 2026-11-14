@@ -26,7 +26,7 @@ function valid(key:unknown,value:unknown):value is ViewValue {
   if(/^monitoring-roster-add:/.test(key))return typeof value==='boolean'
   if(/^monitoring-menu:/.test(key))return value===null||value==='delivery'||value==='results'
   if(key==='ai-local-model')return id(value)
-  if(/^dean-detail:(?:records|instructors|students)$/.test(key))return value===null||(typeof value==='string'&&id(value)&&(/^(?:block|course|instructor):.+$/.test(value)||['students','blocks','years','faculty'].includes(value)))
+  if(/^dean-detail:(?:records|instructors|students)$/.test(key))return value===null||(typeof value==='string'&&id(value)&&(/^(?:block|course|instructor|student):.+$/.test(value)||['students','blocks','years','faculty'].includes(value)))
   if(key==='layout-overlay')return value===null||['search','account','notifications','roles','language','mobile'].includes(value as string)
   if(key==='course-location'||/^course:.+:(?:reader|delivery)$/.test(key)||/^academic-reader:.+$/.test(key))return value===null||id(value)
   if(/^course:.+:expanded$/.test(key))return value instanceof Set&&value.size<=52&&[...value].every(item=>Number.isInteger(item)&&Number(item)>=1&&Number(item)<=52)

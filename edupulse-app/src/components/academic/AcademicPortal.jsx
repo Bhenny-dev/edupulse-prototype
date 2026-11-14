@@ -16,6 +16,10 @@ import ModalLayer from '../ui/ModalLayer'
 import AcademicSyncStatus from './AcademicSyncStatus'
 import DeanRecords from './DeanRecords'
 import { deanPreview } from './deanPreview'
+import GlassIcon from '../ui/GlassIcon'
+import { BookOpen, GraduationCap, Users } from 'lucide-react'
+
+const DEAN_HEADERS = { records: [BookOpen, 'var(--sky-500)', 'Course list and instructor course loads'], instructors: [GraduationCap, 'var(--purple-500)', 'Instructor accounts, qualifications and course loads'], students: [Users, 'var(--green-500)', 'Student accounts, blocks and learning progress'] }
 import './academic.css'
 
 const TITLES = { instructors:'Instructors', students:'Students', performance: 'Performance', monitoring: 'Student Monitoring', monitor: 'Academic Oversight', courses: 'Course Loading', records: 'Academic Records', courseware: 'Published Courseware', assessment: 'Assessments' }
@@ -60,7 +64,7 @@ export default function AcademicPortal({ view }) {
     setReaderId(item.id); setAnswers({}); setResult(null)
   }
   return <div className={`container academic-portal${isStudent?' student-learning':''}`} aria-busy={loading || busy} data-pulse-target={title} data-pulse-zone={deanPage?'records':view === 'performance' ? 'performance' : view === 'courseware' ? 'courseware' : view === 'monitor' ? 'monitor' : view === 'records' ? 'records' : view === 'courses' ? 'course-loading' : view === 'monitoring' ? 'performance' : undefined}>
-    <div className="page-header"><div><h1>{title}</h1><p className="text-sm text-muted">{preview?'Preview sample records':deanPage?'Recorded course, instructor and student activity':'Account records · Instructor-confirmed EduSuite exports · No institutional grade computations'}</p></div><div className="academic-actions">{!preview&&<AcademicSyncStatus/>}{user?.role==='dean'&&view==='students'&&<a className="btn btn-secondary btn-sm" href="#/performance">View student performance</a>}</div></div>
+    <div className="page-header"><div className={deanPage?'dean-page-title':undefined}>{deanPage&&<GlassIcon icon={DEAN_HEADERS[view][0]} color={DEAN_HEADERS[view][1]} size="lg"/>}<div><h1>{title}</h1><p className="text-sm text-muted">{preview?'Preview sample records':deanPage?DEAN_HEADERS[view][2]:'Account records · Instructor-confirmed EduSuite exports · No institutional grade computations'}</p></div></div><div className="academic-actions">{!preview&&<AcademicSyncStatus/>}{user?.role==='dean'&&view==='students'&&<a className="btn btn-secondary btn-sm" href="#/performance">View student performance</a>}</div></div>
     {(error || loadError) && <div role="alert" className="connected-pulse-warning">{error || loadError}</div>}
     {loading && !loaded && <section className="academic-loading" aria-label="Loading academic records"><p role="status" className="text-sm text-muted mb-16">Loading authorized academic records…</p><div aria-hidden="true"><div className="kpi-grid mb-24">{Array.from({ length: user?.role === 'associate_dean' ? 3 : 4 }, (_, index) => <SkeletonKPI key={index} />)}</div><SkeletonTable rows={4} cols={4} /></div></section>}
     {busy && <p role="status" className="text-sm text-muted mb-16"><Spinner /> Saving your request…</p>}

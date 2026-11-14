@@ -1,0 +1,85 @@
+/* 3D coloured glass icon tile. The hue comes from --glass-hue so any token colour works. */
+.glass-icon {
+  --glass-hue: var(--sky-500);
+  --glass-size: 48px;
+  position: relative;
+  flex: 0 0 auto;
+  display: inline-grid;
+  place-items: center;
+  width: var(--glass-size);
+  height: var(--glass-size);
+  border-radius: 30%;
+  color: #fff;
+  isolation: isolate;
+  background: var(--glass-hue);
+  background:
+    radial-gradient(110% 80% at 28% 12%, rgba(255, 255, 255, .5), rgba(255, 255, 255, 0) 48%),
+    linear-gradient(150deg, color-mix(in srgb, var(--glass-hue) 52%, #fff) 0%, var(--glass-hue) 46%, color-mix(in srgb, var(--glass-hue) 70%, #0b1530) 100%);
+  border: 1px solid color-mix(in srgb, var(--glass-hue) 35%, #fff);
+  box-shadow:
+    inset 0 1.5px 0 rgba(255, 255, 255, .8),
+    inset 0 -5px 10px rgba(11, 21, 48, .22),
+    0 3px 0 -1px color-mix(in srgb, var(--glass-hue) 62%, #0b1530),
+    0 12px 20px -9px color-mix(in srgb, var(--glass-hue) 75%, transparent),
+    0 2px 5px rgba(15, 23, 42, .12);
+  transform: perspective(260px) rotateX(12deg) rotateY(-14deg);
+  transition: transform .35s cubic-bezier(.2, .8, .2, 1), box-shadow .35s ease;
+}
+/* Specular band across the upper half of the glass. */
+.glass-icon::before {
+  content: '';
+  position: absolute;
+  inset: 3px 4px 50% 4px;
+  border-radius: 40% 40% 50% 50% / 55% 55% 45% 45%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .7), rgba(255, 255, 255, .06));
+  pointer-events: none;
+  z-index: 0;
+}
+/* Soft refraction glint on the lower edge. */
+.glass-icon::after {
+  content: '';
+  position: absolute;
+  right: 18%;
+  bottom: 12%;
+  width: 22%;
+  height: 10%;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .45);
+  filter: blur(1px);
+  pointer-events: none;
+  z-index: 0;
+}
+.glass-icon-face {
+  position: relative;
+  z-index: 1;
+  display: inline-grid;
+  place-items: center;
+  transform: translateZ(8px);
+}
+.glass-icon-face svg { filter: drop-shadow(0 1.5px 1px rgba(11, 21, 48, .35)); }
+
+:is(a, button, .kpi-card, .dean-record-card, .dean-pill):hover > .glass-icon,
+:is(a, button, .kpi-card, .dean-record-card, .dean-pill):focus-visible > .glass-icon,
+:is(.kpi-card, .dean-record-card):hover .glass-icon {
+  transform: perspective(260px) rotateX(0deg) rotateY(0deg) translateY(-2px) scale(1.04);
+  box-shadow:
+    inset 0 1.5px 0 rgba(255, 255, 255, .85),
+    inset 0 -5px 10px rgba(11, 21, 48, .2),
+    0 4px 0 -1px color-mix(in srgb, var(--glass-hue) 62%, #0b1530),
+    0 16px 24px -10px color-mix(in srgb, var(--glass-hue) 80%, transparent),
+    0 3px 7px rgba(15, 23, 42, .14);
+}
+
+.dark-mode .glass-icon {
+  border-color: color-mix(in srgb, var(--glass-hue) 55%, #fff);
+  box-shadow:
+    inset 0 1.5px 0 rgba(255, 255, 255, .55),
+    inset 0 -5px 10px rgba(0, 0, 0, .35),
+    0 3px 0 -1px color-mix(in srgb, var(--glass-hue) 50%, #000),
+    0 12px 22px -9px color-mix(in srgb, var(--glass-hue) 65%, transparent),
+    0 2px 6px rgba(0, 0, 0, .45);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glass-icon { transition: none; }
+}

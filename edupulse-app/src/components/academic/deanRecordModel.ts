@@ -67,3 +67,52 @@ export function deanRecords(data:AcademicData, now=Date.now()) {
   }
   return {courses:[...records.values()].sort((a,b)=>a.code.localeCompare(b.code)),loadedCodes,students:[...students.values()].sort(order),blocks:blockRows,faculty:[...people.values()].sort((a,b)=>a.name.localeCompare(b.name)),memberships:memberships.size,released,attempts,accesses,activity}
 }
+
+// ---- Dean course loading and account directory -------------------------------------------
+export type DeanInstructor = { id:string; name:string; email:string; status:'active'|'suspended'; employee_id:string; has_masters:boolean|null; degree:string; specialization:string; last_sign_in_at?:string|null }
+export type DeanAccount = { id:string; student_number:string; name:string; surname:string; first_name:string; middle_name:string; email:string; year_level:number|null; program:string; status:'active'|'suspended'; block:string|null; type:string|null; last_sign_in_at?:string|null }
+export type LoadRow = { key:string; code:string; block:string; semester:string; instructorId:string; instructorName:string; hasMasters:string; specialization:string }
+type Directory = { instructors?:DeanInstructor[]; students?:DeanAccount[]; irregular?:Record<string,string>[] }
+const key = (value:unknown) => text(value).toUpperCase().replace(/[\s-]+/g,'')
+
+export function loadRows(data:AcademicData):LoadRow[] {
+  return (data.institutional||[]).filter(row=>row.kind==='loads').map(row=>({key:row.record_key,code:text(row.data.CourseCode),block:text(row.data.Block),semester:text(row.data.Semester),
+    instructorId:text(row.data.InstructorID),instructorName:text(row.data.InstructorName)||text(row.data.InstructorID),hasMasters:text(row.data.HasMasters),specialization:text(row.data.Specialization)}))
+    .sort((a,b)=>a.code.localeCompare(b.code)||a.block.localeCompare(b.block))
+}
+/** Every recorded course with its curriculum placement, class loads and syllabus owners. */
+export function courseCatalog(data:AcademicData, model:ReturnType<typeof deanRecords>, curriculum:(code:string)=>{units?:number;yearLevel?:number;semester?:number|string}|undefined=()=>undefined) {
+  const loads=loadRows(data),records=new Map((data.institutional||[]).filter(r=>r.kind==='courses').map(r=>[key(r.data.CourseCode),r.data]))
+  return model.courses.map(course=>{
+    const record=records.get(key(course.code))||{},plan=curriculum(course.code)
+    const year=Number(record.YearLevel)||plan?.yearLevel||null,semesterValue=text(record.Semester)||(plan?.semester===1?'1st Semester':plan?.semester===2?'2nd Semester':plan?.semester==='summer'?'Summer':'')
+    const ids=new Set(course.ids),owners=[...new Set(data.courses.filter(c=>ids.has(c.id)).map(c=>c.instructor_name||model.faculty.find(p=>p.id===c.instructor_id)?.name||''))].filter(Boolean)
+    return {...course,units:text(record.Units)||(plan?.units?String(plan.units):''),year,semester:semesterValue,classification:text(record.Classification),prerequisites:text(record.Prerequisites),
+      loads:loads.filter(l=>key(l.code)===key(course.code)),owners,students:new Set(data.enrollments.filter(e=>ids.has(e.course_id)).map(e=>email(e.student_email))).size,
+      approved:data.courses.some(c=>ids.has(c.id)&&approvedSyllabus(c))}
+  })
+}
+/** Live accounts when the directory is available; otherwise a read-only view built from records. */
+export function deanDirectory(data:AcademicData, model:ReturnType<typeof deanRecords>) {
+  const directory=(data as {directory?:unknown}).directory as Directory|undefined,loads=loadRows(data)
+  const masters=(id:string)=>{const value=loads.find(l=>l.instructorId===id&&l.hasMasters)?.hasMasters.toLowerCase();return value?['yes','true','1','y'].includes(value):null}
+  const instructors:DeanInstructor[]=directory?.instructors?.map(i=>({...i,has_masters:i.has_masters??masters(i.id),specialization:i.specialization||loads.find(l=>l.instructorId===i.id&&l.specialization)?.specialization||''}))
+    ||model.faculty.map(p=>({id:p.id,name:p.name,email:(data.faculty||[]).find(f=>f.id===p.id)?.email||'',status:'active',employee_id:'',has_masters:masters(p.id),degree:'',specialization:loads.find(l=>l.instructorId===p.id&&l.specialization)?.specialization||''}))
+  const students:DeanAccount[]=directory?.students||model.students.map(s=>{const [first='',...rest]=s.name.split(' ');return {id:s.reference||s.email,student_number:s.reference,name:s.name,surname:rest.pop()||'',first_name:first,middle_name:rest.join(' '),email:s.email,
+    year_level:[...s.years][0]??null,program:'',status:'active',block:[...s.blocks][0]||null,type:'Regular'}})
+  return {managed:Boolean(directory),instructors,students,irregular:directory?.irregular||[]}
+}
+export const isIrregular = (student:Pick<DeanAccount,'block'|'type'>) => /irreg/i.test(student.type||'')||student.block==='IRREGULAR'
+/** Per-course delivery for one student: released work, what they opened, assessments taken and their average. */
+export function studentCourseProgress(data:AcademicData, model:ReturnType<typeof deanRecords>, address:string) {
+  const mine=data.enrollments.filter(e=>email(e.student_email)===email(address))
+  return [...new Map(mine.map(e=>[e.course_id,e])).values()].map(entry=>{
+    const course=data.courses.find(c=>c.id===entry.course_id),released=model.released.filter(p=>p.course_id===entry.course_id),ids=new Set(released.map(p=>p.id))
+    const materials=released.filter(p=>p.type!=='assessment'),assessments=released.filter(p=>p.type==='assessment')
+    const opened=new Set(model.accesses.filter(a=>ids.has(a.publication_id)&&email(a.student_email)===email(address)).map(a=>a.publication_id))
+    const attempts=model.attempts.filter(a=>ids.has(a.publication_id)&&email(a.student_email)===email(address)),graded=attempts.filter(a=>a.grading_status!=='pending_review')
+    const score=graded.reduce((sum,a)=>sum+a.score,0),max=graded.reduce((sum,a)=>sum+a.max_score,0)
+    return {courseId:entry.course_id,code:course?.course_code||'',title:course?.course_title||'',block:entry.block_section||'',instructor:course?.instructor_name||model.faculty.find(p=>p.id===course?.instructor_id)?.name||'',
+      materials:materials.length,opened:materials.filter(p=>opened.has(p.id)).length,assessments:assessments.length,taken:attempts.length,pending:attempts.length-graded.length,average:max>0?Math.round(score/max*100):null}
+  }).sort((a,b)=>a.code.localeCompare(b.code))
+}

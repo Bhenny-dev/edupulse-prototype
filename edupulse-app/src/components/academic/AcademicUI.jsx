@@ -20,7 +20,7 @@ const studentSummaryIcons = {
 export function KPIs({ items }) {
   const {user}=useAuth()
   if(user?.role==='dean'||user?.role==='student'){
-    const destinations={'Authorized courses':'/records','Active syllabi':'/records?tab=syllabi&status=active','Blocks':'/students','Published items':'/monitor?tab=overview','Released items':'/monitor?tab=overview','Current-version attempts':'/performance?tab=scores','Average raw score':'/performance?tab=scores','Published assessments':'/performance?tab=bytopic','Recorded material opens':'/performance?tab=materials','Topic averages at mastery cutoff':'/performance?tab=bytopic','Topics needing review':'/performance?tab=bytopic','Mastery cutoff':'/performance?tab=bytopic'}
+    const destinations={'Authorized courses':'/records','Active syllabi':'/monitor?tab=overview','Blocks':'/students','Published items':'/monitor?tab=overview','Released items':'/monitor?tab=overview','Current-version attempts':'/performance?tab=scores','Average raw score':'/performance?tab=scores','Published assessments':'/performance?tab=bytopic','Recorded material opens':'/performance?tab=materials','Topic averages at mastery cutoff':'/performance?tab=bytopic','Topics needing review':'/performance?tab=bytopic','Mastery cutoff':'/performance?tab=bytopic'}
     const icons=[BookOpen,CheckCircle,Users,Activity],tones=['sky','purple','green','amber']
     return <div className="kpi-grid mb-24">{items.map(([label,value],i)=><SummaryCard key={label} icon={user.role==='student'?(studentSummaryIcons[label]||BookOpen):icons[i%4]} label={label} value={value} color={`var(--${tones[i%4]}-500)`} bg={`var(--${tones[i%4]}-100)`} to={user.role==='dean'?(destinations[label]||'/records'):undefined}/>)}</div>
   }

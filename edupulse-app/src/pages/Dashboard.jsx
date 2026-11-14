@@ -107,8 +107,8 @@ function ManagementDashboard({ model, actions = exportButton, status }) {
       <div className="kpi-grid mb-24">
         <KpiCard icon={BookOpen} label="Released Courses" value={model.kpis.released} color="var(--sky-500)" bg="var(--sky-100)" to={user?.role==='dean'?'/records?tab=courses':undefined}/>
         <KpiCard icon={ClipboardCheck} label="Courses Loaded" value={model.kpis.loaded} color="var(--purple-500)" bg="var(--purple-100)" to={user?.role==='dean'?'/records?tab=loads':undefined}/>
-        <KpiCard icon={CheckCircle} label="Approved Syllabi" value={model.kpis.approved} color="var(--green-500)" bg="var(--green-100)" to={user?.role==='dean'?'/records?tab=syllabi&status=approved':undefined}/>
-        <KpiCard icon={AlertTriangle} label="Not Yet Routed for Approval" value={model.kpis.notRouted} color="var(--amber-500)" bg="var(--amber-100)" to={user?.role==='dean'?'/records?tab=syllabi&status=not-routed':undefined}/>
+        <KpiCard icon={CheckCircle} label="Approved Syllabi" value={model.kpis.approved} color="var(--green-500)" bg="var(--green-100)" to={user?.role==='dean'?'/monitor?tab=overview':undefined}/>
+        <KpiCard icon={AlertTriangle} label="Not Yet Routed for Approval" value={model.kpis.notRouted} color="var(--amber-500)" bg="var(--amber-100)" to={user?.role==='dean'?'/monitor?tab=overview':undefined}/>
       </div>
 
       <div className="card mb-24">

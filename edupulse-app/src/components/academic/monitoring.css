@@ -6,6 +6,6 @@
 
 .monitoring-modal-body .card-header{flex-wrap:wrap;gap:12px}.monitoring-modal-body .card-header>.btn{flex-shrink:0}
 
-.monitoring-summary .kpi-card{min-width:0;text-align:left}.monitoring-summary .kpi-icon{flex-shrink:0}.monitoring-summary .kpi-label{overflow-wrap:anywhere}.monitoring-delivery-state{display:flex;align-items:start;justify-content:space-between;gap:16px;padding:20px;margin-bottom:24px}.monitoring-delivery-state h3{margin-bottom:8px}.monitoring-delivery-state p{color:var(--gray-600);line-height:1.6}.monitoring-modal-body .kpi-grid{flex-shrink:0}.monitoring-summary button{font:inherit}
+.monitoring-summary .kpi-card{min-width:0;text-align:left}.monitoring-summary .kpi-label{overflow-wrap:anywhere}.monitoring-delivery-state{display:flex;align-items:start;justify-content:space-between;gap:16px;padding:20px;margin-bottom:24px}.monitoring-delivery-state h3{margin-bottom:8px}.monitoring-delivery-state p{color:var(--gray-600);line-height:1.6}.monitoring-modal-body .kpi-grid{flex-shrink:0}.monitoring-summary button{font:inherit}
 
 @media(max-width:640px){.monitoring-summary .kpi-card{flex-direction:column;align-items:flex-start;gap:10px}.monitoring-summary .kpi-label{overflow-wrap:normal;word-break:normal}}

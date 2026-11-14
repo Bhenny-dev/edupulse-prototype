@@ -1,3 +1,4 @@
+import GlassIcon from '../components/ui/GlassIcon'
 import ModalLayer from '../components/ui/ModalLayer'
 import { useState, useMemo } from 'react'
 import { useSearchParams, Navigate } from 'react-router-dom'
@@ -105,8 +106,8 @@ function StudentDetailPopover({ student, onClose }) {
         <div className="modal-header"><h2>{student.name}</h2><button className="modal-close" onClick={onClose}>✕</button></div>
         <div style={{ display: 'flex', gap: '6px', marginBottom: '16px' }}><span className="badge badge-published">{student.section}</span><span className="badge badge-draft">{courseData.code}</span></div>
         <div className="kpi-grid mb-24">
-          <div className="kpi-card"><div className="kpi-icon" style={{ background: 'var(--sky-100)' }}><TrendingUp size={18} style={{ color: 'var(--sky-500)' }} /></div><div><div className="kpi-value">{courseData.scores.midterm || '—'}%</div><div className="kpi-label">Midterm</div></div></div>
-          <div className="kpi-card"><div className="kpi-icon" style={{ background: 'var(--green-100)' }}><Award size={18} style={{ color: 'var(--green-500)' }} /></div><div><div className="kpi-value" style={{ fontSize: '1rem' }}>{Object.values(courseData.topics).every(t => t >= 90) ? 'Excellent' : Object.values(courseData.topics).every(t => t >= 75) ? 'Good' : 'Needs Review'}</div><div className="kpi-label">Mastery</div></div></div>
+          <div className="kpi-card"><GlassIcon icon={TrendingUp} color="var(--sky-500)" /><div><div className="kpi-value">{courseData.scores.midterm || '—'}%</div><div className="kpi-label">Midterm</div></div></div>
+          <div className="kpi-card"><GlassIcon icon={Award} color="var(--green-500)" /><div><div className="kpi-value" style={{ fontSize: '1rem' }}>{Object.values(courseData.topics).every(t => t >= 90) ? 'Excellent' : Object.values(courseData.topics).every(t => t >= 75) ? 'Good' : 'Needs Review'}</div><div className="kpi-label">Mastery</div></div></div>
         </div>
         <h4 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, marginBottom: '8px', fontSize: '0.875rem' }}>Topic Mastery Radar</h4>
         <StudentRadarChart topics={courseData.topics} />
@@ -164,9 +165,9 @@ function StudentOverview({ user, selectedCourseCode }) {
   return (
     <div>
       <div className="kpi-grid mb-24">
-        <div className="kpi-card"><div className="kpi-icon" style={{ background: 'var(--sky-100)' }}><TrendingUp size={20} style={{ color: 'var(--sky-500)' }} /></div><div><div className="kpi-value">{course.scores.midterm}%</div><div className="kpi-label">Midterm Score</div></div></div>
-        <div className="kpi-card"><div className="kpi-icon" style={{ background: 'var(--green-100)' }}><Award size={20} style={{ color: 'var(--green-500)' }} /></div><div><div className="kpi-value">{Object.values(course.topics).filter(v => v >= 75).length}/{Object.values(course.topics).length}</div><div className="kpi-label">Topics Mastered</div></div></div>
-        <div className="kpi-card"><div className="kpi-icon" style={{ background: 'var(--amber-100)' }}><Target size={20} style={{ color: 'var(--amber-500)' }} /></div><div><div className="kpi-value">{Object.values(course.topics).filter(v => v < 75).length}</div><div className="kpi-label">Need Review</div></div></div>
+        <div className="kpi-card"><GlassIcon icon={TrendingUp} color="var(--sky-500)" /><div><div className="kpi-value">{course.scores.midterm}%</div><div className="kpi-label">Midterm Score</div></div></div>
+        <div className="kpi-card"><GlassIcon icon={Award} color="var(--green-500)" /><div><div className="kpi-value">{Object.values(course.topics).filter(v => v >= 75).length}/{Object.values(course.topics).length}</div><div className="kpi-label">Topics Mastered</div></div></div>
+        <div className="kpi-card"><GlassIcon icon={Target} color="var(--amber-500)" /><div><div className="kpi-value">{Object.values(course.topics).filter(v => v < 75).length}</div><div className="kpi-label">Need Review</div></div></div>
       </div>
       <div className="card">
         <div className="card-header"><h3>My Recent Scores — {course.code}</h3></div>
@@ -191,10 +192,10 @@ function InstructorOverview({ onSelectStudent, user }) {
   return (
     <div>
       <div className="kpi-grid mb-24">
-        <div className="kpi-card"><div className="kpi-icon" style={{ background: 'var(--sky-100)' }}><Users size={20} style={{ color: 'var(--sky-500)' }} /></div><div><div className="kpi-value">{students.length}</div><div className="kpi-label">Students</div></div></div>
-        <div className="kpi-card"><div className="kpi-icon" style={{ background: 'var(--green-100)' }}><TrendingUp size={20} style={{ color: 'var(--green-500)' }} /></div><div><div className="kpi-value">{avg}%</div><div className="kpi-label">Class Average</div></div></div>
-        <div className="kpi-card"><div className="kpi-icon" style={{ background: 'var(--red-100)' }}><AlertTriangle size={20} style={{ color: 'var(--red-500)' }} /></div><div><div className="kpi-value" style={{ color: 'var(--red-500)' }}>{students.filter(s => (s.courses[0]?.scores.midterm || 0) < 75).length}</div><div className="kpi-label">At Risk</div></div></div>
-        <div className="kpi-card"><div className="kpi-icon" style={{ background: 'var(--purple-100)' }}><Award size={20} style={{ color: 'var(--purple-500)' }} /></div><div><div className="kpi-value" style={{ color: 'var(--purple-500)' }}>{students.filter(s => (s.courses[0]?.scores.midterm || 0) >= 90).length}</div><div className="kpi-label">Excelling</div></div></div>
+        <div className="kpi-card"><GlassIcon icon={Users} color="var(--sky-500)" /><div><div className="kpi-value">{students.length}</div><div className="kpi-label">Students</div></div></div>
+        <div className="kpi-card"><GlassIcon icon={TrendingUp} color="var(--green-500)" /><div><div className="kpi-value">{avg}%</div><div className="kpi-label">Class Average</div></div></div>
+        <div className="kpi-card"><GlassIcon icon={AlertTriangle} color="var(--red-500)" /><div><div className="kpi-value" style={{ color: 'var(--red-500)' }}>{students.filter(s => (s.courses[0]?.scores.midterm || 0) < 75).length}</div><div className="kpi-label">At Risk</div></div></div>
+        <div className="kpi-card"><GlassIcon icon={Award} color="var(--purple-500)" /><div><div className="kpi-value" style={{ color: 'var(--purple-500)' }}>{students.filter(s => (s.courses[0]?.scores.midterm || 0) >= 90).length}</div><div className="kpi-label">Excelling</div></div></div>
       </div>
       <div className="card">
         <div className="card-header"><h3>Student List</h3></div>
@@ -330,9 +331,9 @@ function StudentMaterialsTab({ user, selectedCourseCode }) {
   return (
     <div>
       <div className="kpi-grid mb-24">
-        <div className="kpi-card"><div className="kpi-icon" style={{ background: 'var(--sky-100)' }}><BookOpen size={20} style={{ color: 'var(--sky-500)' }} /></div><div><div className="kpi-value">{materialAccess.length}</div><div className="kpi-label">Materials Accessed</div></div></div>
-        <div className="kpi-card"><div className="kpi-icon" style={{ background: 'var(--green-100)' }}><Eye size={20} style={{ color: 'var(--green-500)' }} /></div><div><div className="kpi-value">{materialAccess.reduce((a, m) => a + m.accessCount, 0)}</div><div className="kpi-label">Total Opens</div></div></div>
-        <div className="kpi-card"><div className="kpi-icon" style={{ background: 'var(--amber-100)' }}><Clock size={20} style={{ color: 'var(--amber-500)' }} /></div><div><div className="kpi-value">{teachingWeeks.length}</div><div className="kpi-label">Course Weeks</div></div></div>
+        <div className="kpi-card"><GlassIcon icon={BookOpen} color="var(--sky-500)" /><div><div className="kpi-value">{materialAccess.length}</div><div className="kpi-label">Materials Accessed</div></div></div>
+        <div className="kpi-card"><GlassIcon icon={Eye} color="var(--green-500)" /><div><div className="kpi-value">{materialAccess.reduce((a, m) => a + m.accessCount, 0)}</div><div className="kpi-label">Total Opens</div></div></div>
+        <div className="kpi-card"><GlassIcon icon={Clock} color="var(--amber-500)" /><div><div className="kpi-value">{teachingWeeks.length}</div><div className="kpi-label">Course Weeks</div></div></div>
       </div>
 
       <div className="card">
@@ -410,9 +411,9 @@ function StudentScoresTab({ user, selectedCourseCode }) {
   return (
     <div>
       <div className="kpi-grid mb-24">
-        <div className="kpi-card"><div className="kpi-icon" style={{ background: 'var(--sky-100)' }}><ClipboardCheck size={20} style={{ color: 'var(--sky-500)' }} /></div><div><div className="kpi-value">{totalMax > 0 ? `${overallPct}%` : '—'}</div><div className="kpi-label">Overall Score</div></div></div>
-        <div className="kpi-card"><div className="kpi-icon" style={{ background: 'var(--green-100)' }}><Award size={20} style={{ color: 'var(--green-500)' }} /></div><div><div className="kpi-value">{csMax > 0 ? `${Math.round((csScore / csMax) * 100)}%` : '—'}</div><div className="kpi-label">Class Standing</div></div></div>
-        <div className="kpi-card"><div className="kpi-icon" style={{ background: 'var(--purple-100)' }}><Target size={20} style={{ color: 'var(--purple-500)' }} /></div><div><div className="kpi-value">{examMax > 0 ? `${Math.round((examScore / examMax) * 100)}%` : '—'}</div><div className="kpi-label">Examination</div></div></div>
+        <div className="kpi-card"><GlassIcon icon={ClipboardCheck} color="var(--sky-500)" /><div><div className="kpi-value">{totalMax > 0 ? `${overallPct}%` : '—'}</div><div className="kpi-label">Overall Score</div></div></div>
+        <div className="kpi-card"><GlassIcon icon={Award} color="var(--green-500)" /><div><div className="kpi-value">{csMax > 0 ? `${Math.round((csScore / csMax) * 100)}%` : '—'}</div><div className="kpi-label">Class Standing</div></div></div>
+        <div className="kpi-card"><GlassIcon icon={Target} color="var(--purple-500)" /><div><div className="kpi-value">{examMax > 0 ? `${Math.round((examScore / examMax) * 100)}%` : '—'}</div><div className="kpi-label">Examination</div></div></div>
       </div>
 
       <div className="card">

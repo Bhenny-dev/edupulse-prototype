@@ -19,6 +19,29 @@ export async function academicRows(client: ReturnType<typeof userDb>, table: str
 }
 
 const identifier = z.string().regex(/^[a-f0-9]{32}$/)
+const field = (max: number) => z.string().trim().max(max)
+const email = z.string().trim().toLowerCase().max(254).regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Enter a valid email address')
+const studentNumber = z.string().trim().regex(/^[A-Za-z0-9-]{1,80}$/, 'Enter the official student number')
+const placement = z.enum(['block', 'irregular', 'none'])
+const accountFields = {
+  surname: field(100).min(1), first_name: field(150).min(1), middle_name: field(100).default(''), email,
+  employee_id: field(80).optional(), has_masters: z.boolean().optional(), degree: field(200).optional(), specialization: field(200).optional(),
+  student_number: studentNumber.optional(), year_level: z.number().int().min(1).max(4).optional(), program: field(250).optional(),
+  placement: placement.optional(), block: field(40).optional(),
+}
+/** Dean course loading and account management. SQL rechecks the live Dean role on every call. */
+export const deanCommand = z.discriminatedUnion('action', [
+  z.object({ action: z.literal('account.create'), account: z.object({ role: z.enum(['instructor', 'student']), password: z.string().min(6).max(72), ...accountFields }) }),
+  z.object({ action: z.literal('account.update'), account: z.object({ id: z.string().uuid(), ...accountFields }) }),
+  z.object({ action: z.literal('account.status'), id: z.string().uuid(), status: z.enum(['suspended', 'active', 'removed']) }),
+  z.object({ action: z.literal('load.assign'), filename: field(255).optional(), loads: z.array(z.object({ course_code: field(40).min(1), course_title: field(300).optional(), instructor_id: z.string().uuid(), block: field(40).min(1), semester: field(60).optional() })).min(1).max(500) }),
+  z.object({ action: z.literal('load.remove'), keys: z.array(z.string().max(200)).min(1).max(500) }),
+  z.object({ action: z.literal('students.import'), filename: field(255).min(1), students: z.array(z.object({
+    student_number: studentNumber, surname: field(100), first_name: field(150).min(1), middle_name: field(100).default(''), email: email.optional(),
+    year_level: z.number().int().min(1).max(4), program: field(250).min(1), password: z.string().min(6).max(72).optional(), placement, block: field(40).optional(),
+    courses: z.array(z.object({ course_code: field(40).min(1), course_title: field(300).optional(), block: field(40).min(1) })).max(30).default([]),
+  })).min(1).max(200) }),
+])
 /** Enrich only memberships already visible in the authorized projection. */
 export async function academicStudentYears(client: ReturnType<typeof userDb>, enrollments: Record<string,unknown>[]) {
   const emails=[...new Set(enrollments.map(row=>String(row.student_email||'').trim().toLowerCase()).filter(Boolean))]
@@ -43,6 +66,7 @@ export const academicCommand = z.discriminatedUnion('operation', [
   z.object({ operation: z.literal('grade'), attempt: z.string().uuid(), points: z.array(z.number().int().min(0).max(1)).min(3).max(5), reason: z.string().trim().min(1).max(2000) }),
   z.object({ operation: z.literal('appeal'), attempt: z.string().uuid(), reason: z.string().trim().min(1).max(2000) }),
   z.object({ operation: z.literal('revise'), course:identifier, comment:z.string().trim().min(1).max(2000) }),
+  z.object({ operation: z.literal('dean'), command: deanCommand }),
 ])
 export async function readAcademic(identity: Identity) {
   if (identity.role === 'guest') throw new ApiError(401, 'SIGN_IN_REQUIRED', 'Sign in to read academic records.')
@@ -67,12 +91,26 @@ export async function readAcademic(identity: Identity) {
     if (result.error) throw new ApiError(503,'ACADEMIC_UNAVAILABLE','Shared faculty records need the baseline-workflow migration.')
     faculty = result.data || []
   }
-  const result={ mode: 'cloud', attempts: [], accesses: [], enrollments:[] as Record<string,unknown>[], faculty, assignedCourses:assigned?.data||[], ...Object.fromEntries(rows) }
+  // The Dean directory is additive: an unavailable directory leaves the records readable.
+  let directory: unknown, directoryError: string | undefined
+  if (identity.role === 'dean') {
+    const listed = await client.rpc('edupulse_dean_command', { command: { action: 'directory' } })
+    if (listed.error) directoryError = 'Instructor and student accounts could not be loaded. Retry when connected.'
+    else directory = listed.data
+  }
+  const result={ mode: 'cloud', attempts: [], accesses: [], enrollments:[] as Record<string,unknown>[], faculty, assignedCourses:assigned?.data||[], ...Object.fromEntries(rows), ...(directory ? { directory } : {}), ...(directoryError ? { directoryError } : {}) }
   if(['dean','instructor'].includes(identity.role))result.enrollments=await academicStudentYears(client,result.enrollments as Record<string,unknown>[])
   return result
 }
 export async function executeAcademic(identity: Identity, input: z.infer<typeof academicCommand>) {
   if (identity.local || identity.role === 'guest') throw new ApiError(403, 'FORBIDDEN', 'Use an authenticated academic account for shared records.')
+  if (input.operation === 'dean') {
+    if (identity.supportActor) return supportAction(identity, 'dean.command', input.command)
+    if (identity.role !== 'dean') throw new ApiError(403, 'FORBIDDEN', 'Only the Dean manages course loads and accounts.')
+    const { data, error } = await userDb(identity).rpc('edupulse_dean_command', { command: input.command })
+    if (error) throw new ApiError(error.code === '42501' ? 403 : error.code === '22023' ? 400 : 503, 'DEAN_ACTION_FAILED', error.code === '22023' ? error.message : 'The change could not be verified. Refresh and retry; nothing is reported as saved.')
+    return data
+  }
   if (identity.supportActor) return supportAction(identity, 'academic.command', input)
   if(input.operation==='read-section'){
     if(identity.role!=='student')throw new ApiError(403,'FORBIDDEN','Only students can confirm their own reading progress.')
