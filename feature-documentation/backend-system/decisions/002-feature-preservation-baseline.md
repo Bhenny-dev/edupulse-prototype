@@ -193,3 +193,7 @@ Keep long summary status text contained beside its icon on small screens; retain
 ## Owner correction: independent monitoring and shared cards - 13 November 2026
 
 Use Dashboard's SummaryCard component throughout instructor monitoring and put roster actions inside three-dot menus. The owner requires true student activity, excluding scripted demonstrations from monitoring scores/access/reading. This supersedes the earlier instruction to include the same saved demonstration rows in monitoring while hiding origin labels. Preserve those audit rows, approval/publication controls, zero-vs-missing marks, course/block/version boundaries, suspension-before-removal and no-write reload. Do not fabricate student activity to populate an unreleased class.
+
+## Correction: canonical section reference collection - 14 November 2026
+
+Collect source references from the actual outline sections, using weekly resources only for older rows without sections. Do not regress: section-only saved outlines must not lose source links, stale weekly projections must not reintroduce removed links, shared-section references must deduplicate, and selected-week generation must retain the overall bibliography without including unrelated weeks. Keep collection immutable, the existing 80-reference bound, exact citation associations, unread-source disclosure and private source boundaries. No saved-data rewrite is required.

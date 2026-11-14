@@ -1,5 +1,31 @@
 import {expect,type Page} from '@playwright/test'
-import {retainedSourcesUI} from './retained-sources-fixture'
+import {retainedSourcesUI,sourceRefs} from './retained-sources-fixture'
+
+export async function sectionReferenceScene(page:Page,capture:((name:string)=>Promise<void>)=async()=>{}) {
+ const fixture=await retainedSourcesUI(page)
+ const first={id:'shared-network-scope',ilos:'Identify network components and explain their roles.',contents:['Network components'],activities:'Guided discussion',assessments:'Explain the device roles.',assessmentTypes:['Multiple choice'],resources:[{name:sourceRefs[0]!.title,url:sourceRefs[0]!.url}]}
+ const second={...first,id:'second-network-scope',assessmentTypes:['Essay'],resources:[{name:sourceRefs[2]!.title,url:sourceRefs[2]!.url}]}
+ const syllabus={...fixture.syllabus,onlineReferences:[],courseOutline:[{week:1,resources:[{name:'Removed weekly reference',url:'https://removed.example.org/obsolete'}],sections:[first,second]},{week:2,sections:[first]}]}
+ fixture.setWorkspace({...fixture.getWorkspace(),syllabi:[syllabus]})
+ await page.goto('/#/courseware?course=retained-course&week=1')
+ const panel=page.locator('.syllabus-sources');await panel.locator('summary').click()
+ await expect(panel.locator('li')).toHaveCount(3)
+ await expect(panel).toContainText(sourceRefs[0]!.title);await expect(panel).toContainText(sourceRefs[2]!.title)
+ await expect(panel).not.toContainText('Removed weekly reference')
+ await capture('section-reference-links')
+ await panel.getByRole('button',{name:'Search and read sources',exact:true}).click()
+ await expect(panel).toContainText('Source search or reading unavailable')
+ await expect(panel.getByRole('button',{name:'Search and read sources',exact:true})).toBeEnabled()
+ expect(fixture.snapshots).toHaveLength(1)
+ await capture('section-reference-prepared')
+ await page.locator('[data-week="1"]').getByRole('button',{name:'Generate',exact:true}).click()
+ await expect(page.locator('[data-content-id]')).toHaveCount(4,{timeout:30000})
+ expect(fixture.generation.length).toBeGreaterThan(0)
+ for(const input of fixture.generation){expect(input.syllabusReferences.map((ref:any)=>ref.url)).toEqual(['',sourceRefs[0]!.url,sourceRefs[2]!.url]);expect(JSON.stringify(input)).not.toContain('removed.example.org')}
+ const calls=fixture.generation.length;await page.reload()
+ await expect(panel.locator('li')).toHaveCount(3);await expect(panel).toContainText('Retained')
+ expect(fixture.generation).toHaveLength(calls)
+}
 export async function sourceSelectionScene(page:Page,capture:((name:string)=>Promise<void>)=async()=>{}) {
  const fixture=await retainedSourcesUI(page)
  await page.route('**/api/ai?action=chat',async route=>{

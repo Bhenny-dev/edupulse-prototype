@@ -1,5 +1,16 @@
 # 31 - Read and retain syllabus references
 
+## References from every outline section
+
+**Syllabus sources** combines overall syllabus references with the links in every teaching section. A section shared across weeks lists its source once. Generation prepares the overall references and all sections of the selected week; references belonging only to a different week are not added to that generation request. Older weeks without sections retain their existing resource links.
+
+![References collected from two teaching sections and a shared week](section-reference-links.png)
+![Section sources retained with unavailable reading reported separately](section-reference-prepared.png)
+![Section references on a phone](mobile-section-reference-links.png)
+![Retained section references on a phone](mobile-section-reference-prepared.png)
+
+These captures use fictional course/source transports and a real courseware-generation adapter with controlled model output. They show one overall book entry, a readable section guide and an unavailable second section reading. The obsolete week-level resource projection is excluded. Reading and generation do not restore a link removed from the current sections, alter saved syllabus data or invent contents for the unread source. The existing 80-distinct-reference limit still applies across the complete collected list.
+
 **Who:** instructor or System Admin. **Where:** open a course, then **Syllabus sources**. This panel appears when Section 7 or weekly resources contain references. Books and links are presented together, including older nested syllabus records.
 
 1. Expand **Syllabus sources**. A link starts as **Link listed · Not read yet**; a book without readable text starts as **Book metadata only**. These entries are planning references, not factual evidence.

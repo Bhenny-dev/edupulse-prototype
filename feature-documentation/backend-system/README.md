@@ -1,5 +1,9 @@
 # Backend System
 
+## Canonical outline section references - 14 November 2026
+
+The shared syllabus-reference collector uses weekSections for each selected week. Canonical section resources are authoritative when sections exist; legacy row resources remain the fallback for older outlines. Source listing and weekly generation therefore agree even when flattened weekly fields are absent or stale. Shared references still deduplicate by their existing token, exact citation metadata stays associated with retained versions, collection stays immutable, and the 80-reference bound is enforced across all sections. No API contract, source-access policy, database schema or saved syllabus migration changes. Existing retained-copy readiness, private indexing and source inspection remain in force. [Guide](../system-manual/31-retained-syllabus-sources/README.md#references-from-every-outline-section).
+
 ## Sign-in icon controls, 11 November 2026
 
 The password eye toggles only the local input type, with a labelled non-submit button. It preserves the typed value without storing the visibility preference or password as view hints. The inline Google mark has no network dependency and remains present in disabled/busy states. Authentication endpoints, provider availability checks, role assignment and session restoration are unchanged. The capture pipeline tests keyboard toggling, unchanged value, no accidental form submission, phone fit and busy-state visibility using held synthetic authentication responses; it does not perform a live sign-in. [Guide](../system-manual/01-getting-started/README.md#password-visibility-and-google-icon).

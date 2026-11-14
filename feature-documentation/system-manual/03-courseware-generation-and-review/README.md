@@ -119,6 +119,8 @@ Validated parts now appear as an **Unfinished** preview while the next part is g
 
 ### Reference discovery before generation
 
+Source preparation includes the actual references from every section in the selected week, plus the overall bibliography. Sections shared across weeks do not duplicate the same source. Outdated flattened weekly summaries cannot hide current section links or reintroduce removed links. Older outlines without sections keep their weekly resources. [The section-reference example](../31-retained-syllabus-sources/README.md#references-from-every-outline-section) shows readable and unavailable sources before generation.
+
 **Syllabus sources** repairs wrapped citations for display and searches book titles as well as linked readings. **Search and read sources** retains sources one at a time and indexes readable text for private knowledge retrieval. Possible catalog matches remain metadata only and cannot support teaching citations. Review edition/year discrepancies and the original citation before using a match. See the [source review guide](../31-retained-syllabus-sources/README.md) for the current controls and screenshots. Generation reuses saved copies and preserves completed source reads if a later lookup fails.
 
 

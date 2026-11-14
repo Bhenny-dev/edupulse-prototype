@@ -1,5 +1,7 @@
 import {test,expect} from '@playwright/test'
-import {sourceSelectionScene,teachingAttachmentScene,assessmentFormatsScene} from '../outline-source-ui'
+import {sourceSelectionScene,teachingAttachmentScene,assessmentFormatsScene,sectionReferenceScene} from '../outline-source-ui'
+
+test('canonical section links are retained and reach generation without stale weekly references',async({page})=>{await sectionReferenceScene(page)})
 
 test('selected generated passage finds retained source, survives reload and explains both in Pulse',async({page})=>{await sourceSelectionScene(page)})
 test('instructor can attach teaching content as a retained draft without generation',async({page})=>{await teachingAttachmentScene(page)})

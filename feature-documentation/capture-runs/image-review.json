@@ -4792,6 +4792,38 @@
       "sha256": "c4399666529641f9a491a85c7b97e481648266f0db266bf7488951e27b5aea23",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-13T13:39:13.747180+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/31-retained-syllabus-sources/mobile-section-reference-links.png",
+      "sha256": "ea3bccf12a4719bd11449bd90d456e05b50e33e23748a76b93d6d9ef31711828",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-14T01:00:21.552115+00:00",
+      "captureRun": "2026-11-14T00-58-51-451Z-6ae82e2e",
+      "method": "Opened with view_image. Verified all three listed references, one retained readable copy, separate unavailable/book-metadata states, no obsolete weekly link, and unobstructed desktop/phone source-panel crops. Fixed top bar and mascot are hidden only for these component captures. Synthetic source/provider transport evidence."
+    },
+    {
+      "path": "feature-documentation/system-manual/31-retained-syllabus-sources/mobile-section-reference-prepared.png",
+      "sha256": "3543a9632fe3e40d8e2ed3173a9a8975973d555fd0b972181a7cb9ccf379666f",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-14T01:00:21.552632+00:00",
+      "captureRun": "2026-11-14T00-58-51-451Z-6ae82e2e",
+      "method": "Opened with view_image. Verified all three listed references, one retained readable copy, separate unavailable/book-metadata states, no obsolete weekly link, and unobstructed desktop/phone source-panel crops. Fixed top bar and mascot are hidden only for these component captures. Synthetic source/provider transport evidence."
+    },
+    {
+      "path": "feature-documentation/system-manual/31-retained-syllabus-sources/section-reference-links.png",
+      "sha256": "a817533820ad08f831c9b1469539581114362a5e4b43a9da9aa34004f35de147",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-14T01:00:21.552917+00:00",
+      "captureRun": "2026-11-14T00-58-51-451Z-6ae82e2e",
+      "method": "Opened with view_image. Verified all three listed references, one retained readable copy, separate unavailable/book-metadata states, no obsolete weekly link, and unobstructed desktop/phone source-panel crops. Fixed top bar and mascot are hidden only for these component captures. Synthetic source/provider transport evidence."
+    },
+    {
+      "path": "feature-documentation/system-manual/31-retained-syllabus-sources/section-reference-prepared.png",
+      "sha256": "fa01b17d8b999c435c2214da11b41ae46901f8a8e67d6ffabcb3bfbd7ec469e9",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-14T01:00:21.553152+00:00",
+      "captureRun": "2026-11-14T00-58-51-451Z-6ae82e2e",
+      "method": "Opened with view_image. Verified all three listed references, one retained readable copy, separate unavailable/book-metadata states, no obsolete weekly link, and unobstructed desktop/phone source-panel crops. Fixed top bar and mascot are hidden only for these component captures. Synthetic source/provider transport evidence."
     }
   ]
 }

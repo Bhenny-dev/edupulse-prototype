@@ -124,6 +124,8 @@ Older saved source listings now show a metadata-only exclusion in **Course ? Syl
 
 ## Scoped outline and source-based courseware update
 
+Source preparation now reads the links in each actual outline section, including sections shared across weeks. The selected week's generation uses its section references plus the overall bibliography. Removed links in an older week summary are excluded, while older outlines without sections keep their listed resources. See [the section-reference examples](../../system-manual/31-retained-syllabus-sources/README.md#references-from-every-outline-section).
+
 The Course Outline has multiline Contents, Teaching-Learning Activities and Assessments. Each week can contain several sections; shared sections update together across teaching weeks. Seven assessment formats replace the former broad catalog, and the teaching-material dropdown is removed. [Manual 28](../../system-manual/28-outline-selectors/README.md) shows desktop and phone controls. Course groups documents/files under Teaching-Learning Activities and separately lists Assessments. Files can be attached as private drafts; selected generated text opens its retained source basis and an explicit Pulse explanation ([Manual 31](../../system-manual/31-retained-syllabus-sources/README.md)).
 
 ## Instructor dashboard and syllabus updates

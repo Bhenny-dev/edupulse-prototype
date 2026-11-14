@@ -54,6 +54,8 @@ These captures use original sample loop teaching text through the actual coursew
 
 ## Read references before regenerating
 
+The source list follows the actual section records, including section-only saved outlines with missing or outdated week summaries. All sections in the selected week contribute their references; shared-section links are deduplicated. An old flattened weekly resource list cannot replace current section links or reintroduce removed links. Overall syllabus references remain available to every week. Existing source readiness, unavailable-source reporting and draft-review requirements still apply.
+
 Section 7 books/links now accompany weekly resources in every generation input. The bounded writer receives selected actual passages and citation numbers. Outline coverage is distinct from factual support: the outline states what to teach and is not counted as proof for a generated explanation. Read passages appear as numbered references; unscanned book metadata and planned teaching resources remain separately labelled. Saved copies and source review are described in [Manual 31](../31-retained-syllabus-sources/README.md).
 
 ## Section scopes and two output groups

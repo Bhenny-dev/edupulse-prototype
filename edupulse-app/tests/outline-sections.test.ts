@@ -7,7 +7,29 @@ import {coursewarePlan,missingCoursewareCount} from '../src/lib/rag/coursewarePl
 import {ASSESSMENT_FORMATS,writtenFormat} from '../src/data/assessmentFormats.js'
 import {courseOutput} from '../server/contracts.js'
 import {workspaceData} from '../server/workspace.js'
+import {collectSyllabusReferences} from '../src/lib/rag/syllabusReferences.js'
 const rows=normalizeOutlineSections([{week:1,ilos:'Explain variables.',contents:['Variable declarations','Assignment'],activities:'Discussion',assessments:'Practice'},{week:2,ilos:'',contents:[],activities:'',assessments:''},{week:9,ilos:'',contents:[],activities:'',assessments:'Midterm Examination'}])
+
+test('canonical section references reach source preparation and generation without stale weekly projections',()=>{
+ const link=(name:string)=>({name,url:`https://sources.example.org/${name}`})
+ const shared={...weekSections(rows[0]!)[0]!,id:'shared',resources:[link('shared')]}
+ const second={...shared,id:'second',resources:[link('second'),link('shared')]}
+ const syllabus={courseCode:'IT 102',courseTitle:'Programming',onlineReferences:[{title:'Overall reference',url:'https://sources.example.org/overall'}],courseOutline:[
+  {week:1,resources:[link('removed')],sections:[shared,second]},
+  {week:2,sections:[shared,{...second,id:'later',resources:[link('later')]}]},
+  {week:3,ilos:'Legacy scope',contents:['Legacy topic'],resources:[link('legacy')]},
+ ]}
+ const before=JSON.stringify(syllabus),urls=(week?:number)=>collectSyllabusReferences(syllabus,week).map(ref=>ref.url)
+ assert.deepEqual(urls(1),['overall','shared','second'].map(name=>link(name).url))
+ assert.deepEqual(urls(2),['overall','shared','later'].map(name=>link(name).url))
+ assert.deepEqual(urls(),['overall','shared','second','later','legacy'].map(name=>link(name).url))
+ const input=buildCourseInput(syllabus,1)
+ assert.deepEqual(input.syllabusReferences.map(ref=>ref.url),urls(1))
+ assert(!JSON.stringify(input).includes('/removed'))
+ assert.equal(JSON.stringify(syllabus),before)
+ const excessive={courseOutline:[{week:1,sections:Array.from({length:3},(_,scope)=>({...shared,id:`scope-${scope}`,resources:Array.from({length:27},(_,index)=>link(`source-${scope}-${index}`))}))}]}
+ assert.throws(()=>collectSyllabusReferences(excessive),/80 distinct references/)
+})
 test('multiple sections and shared weeks preserve unique calendar slots, content, exams and scoped edits',()=>{
  const added=addOutlineSection(rows,1,'extra'),section=weekSections(added[0]!)[0]!
  const shared=shareOutlineSection(added,section,[1,2])

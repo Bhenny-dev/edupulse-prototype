@@ -1,4 +1,5 @@
 import {repairReferenceEntries} from '../../utils/referenceParsing.js'
+import {weekSections} from '../../utils/outlineSections.js'
 export type SyllabusReference = { kind:'book'|'link'; title:string; url:string; authors:string; year:string; publisher:string; doi?:string; isbn?:string }
 const text=(value:unknown)=>typeof value==='string'?value.trim():''
 export function referenceToken(ref:SyllabusReference) {
@@ -32,7 +33,8 @@ export function collectSyllabusReferences(syllabus:Record<string,any>,week?:numb
  for(const book of books)if(!attached.has(book))add(book,'book')
  for(const link of links)add(link,'link')
  if(Array.isArray(syllabus.references))for(const link of syllabus.references)add(link,'link')
- for(const row of syllabus.courseOutline||[])if(week===undefined||row.week===week)for(const resource of row.resources||[])add(resource,'link')
+ for(const row of syllabus.courseOutline||[])if(week===undefined||row.week===week)
+  for(const section of weekSections(row))for(const resource of section.resources||[])add(resource,'link')
  if(refs.length>80)throw new Error('This source view supports up to 80 distinct references. Split the syllabus source list before scanning; no references were silently omitted.')
  return refs
 }
