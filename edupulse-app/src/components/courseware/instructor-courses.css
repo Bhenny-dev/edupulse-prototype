@@ -33,3 +33,10 @@
 @media(max-width:600px) { .instructor-course-card { padding:16px; }.instructor-week > header { padding:12px; }.instructor-topic { margin:8px; padding:12px; }.instructor-topic > summary { align-items:flex-start; }.instructor-course-form { padding:12px; } }
 
 .instructor-topic-chevron{transition:transform .15s}.instructor-topic:not([open])>.instructor-topic-chevron,.instructor-topic:not([open])>summary>.instructor-topic-chevron{transform:rotate(-90deg)}
+.block-schedule-dialog { padding: 0; display: flex; flex-direction: column; }
+.block-schedule-dialog > .modal-header { padding: 20px 24px; margin: 0; flex-shrink: 0; }
+.block-schedule-body { padding: 0 24px 24px; overflow-y: auto; min-height: 0; }
+.block-schedule-pattern { margin-bottom: 24px; padding: 20px; border: 1px solid var(--gray-200); border-radius: var(--radius-lg); background: var(--gray-50); }
+.block-schedule-pattern h3 { margin-bottom: 8px; }
+.block-schedule-table input { min-width: 130px; }
+@media(max-width:600px){.block-schedule-body{padding:0 16px 20px}.block-schedule-pattern{padding:16px}.block-schedule-pattern .academic-filter{flex:1 1 100%}}

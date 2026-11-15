@@ -19,6 +19,7 @@ import DeanRecords from './DeanRecords'
 import { deanPreview } from './deanPreview'
 import GlassIcon from '../ui/GlassIcon'
 import { BookOpen, GraduationCap, Users } from 'lucide-react'
+import { deliveryState } from '../../utils/blockDelivery'
 
 const DEAN_HEADERS = { records: [BookOpen, 'var(--sky-500)', 'Courses, instructor loads and syllabus contents'], instructors: [GraduationCap, 'var(--purple-500)', 'Instructor accounts, qualifications and course loads'], students: [Users, 'var(--green-500)', 'Student accounts, blocks and learning progress'] }
 import './academic.css'
@@ -39,7 +40,8 @@ export default function AcademicPortal({ view }) {
   const title=user?.role==='student'&&view==='courseware'?'My Courses':user?.role==='student'&&view==='assessment'?'Practice Assessments':staff&&view==='records'?'Course':TITLES[view]
   const [readerId,setReaderId]=useWorkspaceViewState(`academic-reader:${view}`,null)
   const selected=data.publications.find(item=>item.active&&item.id===readerId&&(view!=='courseware'||user?.role!=='student'||item.course_id===pageParams.get('course')))||null
-  const sourcePreview = data.publications.find(item => item.id === pageParams.get('publication') && item.active && item.type !== 'assessment' && item.course_id === pageParams.get('course'))
+  const sourcePreview = data.publications.find(item => item.id === pageParams.get('publication') && item.active && item.type !== 'assessment' && item.course_id === pageParams.get('course') && item.content && (!isScheduledStudent(item) || deliveryState(item)==='open'))
+  function isScheduledStudent(item){return user?.role==='student'&&item.delivery_mode==='block_schedule'}
   const closeSourcePreview = () => { const query = new URLSearchParams(pageParams); query.delete('publication'); setPageParams(query) }
   const [answers, setAnswers] = useState({}), [busy, setBusy] = useState(false), [result, setResult] = useState(null), [error, setError] = useState('')
   const [startedSession,setSession]=useState(null)
@@ -54,6 +56,12 @@ export default function AcademicPortal({ view }) {
   }
   const isStudent = user?.role === 'student'
   const open = async item => {
+    if(isScheduledStudent(item)){
+      const current=await run({operation:'read-publication',publication:item.id,version:item.source_version})
+      if(!current)return
+      item=current
+      if(deliveryState(item)!=='open'||!item.content){setReaderId(item.id);setResult(null);setAnswers({});return}
+    }
     if(isStudent&&item.type!=='assessment'){
       setReaderId(item.id);setResult(null);setAnswers({});
       if(learnerControls)void run({operation:'open',publication:item.id,version:item.source_version});

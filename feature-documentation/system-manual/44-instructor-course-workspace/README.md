@@ -21,7 +21,7 @@ The dashboard uses the same summary-card component as the other academic roles. 
 3. Confirm the approved-copy acknowledgment and choose **Use syllabus for course**. Wait for the revision-checked save. Source reading, retention and readable-text indexing follow this explicit intake; an unread or inaccessible source remains disclosed.
 4. Alternatively choose **Choose a shared syllabus from the system**. Select a received copy for the same loaded course, acknowledge that it is authorized, then choose **Use approved shared syllabus**. The server verifies the sender's retained approved file before adoption. Merely receiving a shared copy does not activate or publish it.
 
-The upload area is absent from the ready **Weeks and topics** view. Use the separate **Syllabus** navigation page for saved syllabi, received copies, the draft builder, offline approval steps and sharing/removal controls. The repository includes all of your syllabi, while teaching remains limited to assigned courses. If that syllabus has saved prepared content before approval, **Review drafts** remains available with publication blocked. Saved suspension remains required before deletion; approval and publication remain separate.
+The upload area is absent from the ready **Weeks and topics** view. Use the separate **Syllabus** navigation page for saved syllabi, received copies, the draft builder, offline approval steps and sharing/removal controls. The repository includes all of your syllabi, while teaching remains limited to assigned courses. Prepared content remains visible in **Weeks and topics** before approval, with delivery blocked until the approved syllabus is active. Saved suspension remains required before deletion; approval and publication remain separate.
 
 ## Work through weeks and topics
 
@@ -54,11 +54,24 @@ An extracted assessment type preselects **Assessment type**. When generating wit
 
 **Generate content with AI** is optional. Assessment generation requires readable teaching content for its stated coverage and uses the approved topic and readable syllabus references. An attached file or URL without readable text cannot substitute for that context. Generated content starts in Draft; the model does not check or deliver it. If materials later change, review the displayed coverage warning before delivery.
 
-### Review and deliver
+### Check and deliver from the topic
 
-Open and review the saved item. A private draft can be edited; **Mark checked** acknowledges review. **Deliver to students** opens delivery controls. Review release/due dates and, for assessments, allowed attempts and time limits. Changing assessment rules can return the item to Draft. **Deliver checked content** is explicit and remains subject to the active approved syllabus and the server's checked-before-publication rules. Future releases remain unavailable to students until their saved time.
+There are exactly two course tabs: **Weeks and topics** and **Block sections**. The former Review and deliver / Review drafts workspace is removed from the signed-in course. Former review links redirect to Block sections. Draft authoring and review stay in the extracted weekly topic sections, including prepared drafts awaiting approval.
 
-The **Review and deliver** course tab retains the existing course/week review, generation, checking and publication tools. Published content is protected; a revision must return through the draft/check/delivery process. Existing attempts and publication history remain retained.
+Open and review an item, then **Mark checked**. **Deliver to students** opens a separate dialog. For assessments, **Assessment settings** retains allowed attempts and the time limit; changing these rules returns the item to Draft for checking again. **Deliver checked content** requires an active approved syllabus and a saved opening for that week in at least one currently assigned block. The server rechecks the current load, schedule and checked-before-publication rules. A block without a matching saved schedule cannot access a new scheduled publication.
+
+Delivered or hidden content is read-only. **Prepare draft revision** explains withdrawal and requires confirmation; it returns the item to Draft for editing/checking/redelivery while retaining recorded assessment scores and reading history. **Hide** withdraws the delivered item without deleting that history. Week moves retain the same protections below.
+
+## Schedule delivery by block section
+
+1. Open **Block sections**. Shared summary cards show assigned blocks, outline weeks, total scheduled block-weeks and weeks with an optional closing time. Each card names an actual assigned block and its current active roster count.
+2. Select a block to open its page-sized **Delivery schedule** dialog. Dates and times use **Philippine time (Asia/Manila)**, regardless of the device timezone.
+3. In **Weekly class pattern**, choose the first outlined week's class date and required class start. For example, Friday 20 November 2026 at **07:30**. Add **10:00** as the close if desired, then choose **Fill weekly dates**. This fills one date every seven days by the actual week number; examination slots and gaps keep their chronological dates.
+4. Review the table and adjust individual dates for holidays or class changes. Every week needs a date and opening time. A closing time is optional and must follow the opening on the same day. Leaving it blank keeps that week's content available after opening.
+5. Choose **Save delivery schedule** explicitly. Filling the pattern or reloading does not save. A stale save reports a conflict and keeps the entered form available; close/reopen the block to read the current saved revision before retrying. Unsaved date edits are not restored after a reload.
+6. Return to **Weeks and topics** and deliver checked content. The saved per-block windows govern the newly delivered teaching materials and assessments for that week. Separate blocks can have different dates and times.
+
+Students can see scheduled item titles and their own saved results outside a class window, but cannot read the locked teaching text, download its files, begin/submit an assessment or confirm reading. Availability is rechecked on an explicit open. Closing is exclusive: at 10:00 a 10:00 close has taken effect. The assessment's own duration/attempt rules still apply within the class window. A saved no-close window stays open after its start. Existing publications retain their previous delivery settings until explicitly revised/redelivered; saving a block calendar does not rewrite old content or scores.
 
 ### Move teaching weeks
 
@@ -88,7 +101,7 @@ Source navigation stores only bounded conversation/message/source IDs. Reload ma
 
 ## Phone and reload behavior
 
-The same cards, topic controls and dialogs fit a phone. A keyboard alternative accompanies dragging. The selected course/tab, expanded topics, current reader, source dialog and unfinished action location restore only after fresh account and record checks. Unsaved form text and assessment answers are not navigation hints. Focus, timers and reconnects do not involuntarily reload a loaded workspace.
+The same cards, topic controls and dialogs fit a phone. A keyboard alternative accompanies dragging. The selected course/tab, block schedule dialog, expanded topics, current reader, source dialog and unfinished action location restore only after fresh account and record checks. Unsaved form text and assessment answers are not navigation hints. Focus, timers and reconnects do not involuntarily reload a loaded workspace.
 
 ![Assigned course and topic controls on a phone](07-mobile-course.png)
 

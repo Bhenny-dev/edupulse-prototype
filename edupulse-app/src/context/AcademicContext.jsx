@@ -3,7 +3,7 @@ import { useAuth } from './AuthContext'
 import { useWorkspace } from './WorkspaceContext'
 import { aiRequest } from '../lib/aiClient'
 
-const EMPTY_ACADEMIC = { courses: [],assignedCourses:[], publications: [], enrollments: [], attempts: [], accesses: [],reading:[],sessions:[], institutional: [], faculty: [], events: [], notices: [] }
+const EMPTY_ACADEMIC = { courses: [],assignedCourses:[], publications: [], deliverySchedules: [], enrollments: [], attempts: [], accesses: [],reading:[],sessions:[], institutional: [], faculty: [], events: [], notices: [] }
 const AcademicContext = createContext(null)
 
 // Load on identity entry and after this tab's confirmed mutations. Focus, timers and
@@ -100,7 +100,10 @@ function AcademicSession({ children, user,authLoading }) {
   const command = useCallback(async input => {
     // Business commands are sent once. Only their authorized readback is automatic.
     const result = await aiRequest('academic', 'POST', input)
-    if (alive.current && currentRole.current === role) await load()
+    if (alive.current && currentRole.current === role) {
+      if(input.operation==='read-publication')setSnapshot(previous=>({...previous,data:{...previous.data,publications:previous.data.publications.map(item=>item.id===result.id&&item.source_version===result.source_version?result:item)}}))
+      else await load()
+    }
     return result
   }, [load, role])
   const sameView = snapshot.role === role

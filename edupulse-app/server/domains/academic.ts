@@ -3,7 +3,7 @@ import { ApiError, type Identity } from '../contracts.js'
 import { userDb } from '../database.js'
 import { supportAction } from './support.js'
 
-const orderedKeys: Record<string, string[]> = { enrollments: ['course_id','student_email','block_section'], material_access: ['publication_id','student_id'], material_progress:['publication_id','student_id','source_version'], institutional_records: ['kind','record_key'] }
+const orderedKeys: Record<string, string[]> = { delivery_schedules: ['course_id','block_section'], enrollments: ['course_id','student_email','block_section'], material_access: ['publication_id','student_id'], material_progress:['publication_id','student_id','source_version'], institutional_records: ['kind','record_key'] }
 /** PostgREST caps individual responses. Never present a truncated roster/attempt list as complete statistics. */
 export async function academicRows(client: ReturnType<typeof userDb>, table: string) {
   const rows: Record<string, unknown>[] = []
@@ -56,6 +56,8 @@ export async function academicStudentYears(client: ReturnType<typeof userDb>, en
   return enrollments.map(row=>({...row,year_level:Number(row.year_level)||years.get(String(row.student_email||'').trim().toLowerCase())||null}))
 }
 export const academicCommand = z.discriminatedUnion('operation', [
+  z.object({ operation: z.literal('delivery-schedule'), syllabus: field(120).min(1), block: field(80).min(1), revision: z.number().int().nonnegative(), windows: z.array(z.object({ week: z.number().int().min(1).max(52), date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/), start: z.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/), end: z.union([z.literal(''), z.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/)]).optional() })).min(1).max(52) }),
+  z.object({ operation: z.literal('read-publication'), publication: identifier, version: identifier }),
   z.object({ operation: z.literal('sync') }),
   z.object({ operation: z.literal('open'), publication: identifier, version: identifier, adminTest: z.boolean().optional() }),
   z.object({operation:z.literal('read-section'),publication:identifier,version:identifier,adminTest:z.boolean().optional(),section:z.number().int().min(0).max(999)}),
@@ -81,12 +83,17 @@ export async function readAcademic(identity: Identity) {
   const client = userDb(identity)
   const assigned=identity.role==='student'?await client.rpc('edupulse_student_course_loads'):null
   if(assigned?.error)throw new ApiError(503,'ACADEMIC_UNAVAILABLE','Assigned course loads could not be verified. Retry when connected.')
-  const tables = ['courses', 'enrollments', 'publications', 'notices', 'academic_events', ...(['dean','associate_dean','admin','instructor'].includes(identity.role) ? ['institutional_records'] : []), ...(identity.role === 'associate_dean' ? [] : ['attempts', 'material_access','material_progress','assessment_sessions'])]
+  const tables = ['courses', 'enrollments', ...(identity.role === 'student' ? [] : ['publications']), 'delivery_schedules', 'notices', 'academic_events', ...(['dean','associate_dean','admin','instructor'].includes(identity.role) ? ['institutional_records'] : []), ...(identity.role === 'associate_dean' ? [] : ['attempts', 'material_access','material_progress','assessment_sessions'])]
   const rows = await Promise.all(tables.map(async table => {
     const data = await academicRows(client, table)
     if (['notices','academic_events'].includes(table)) data.sort((a,b)=>String(b.created_at).localeCompare(String(a.created_at)))
-    return [table==='material_progress'?'reading':table==='assessment_sessions'?'sessions':table === 'material_access' ? 'accesses' : table === 'academic_events' ? 'events' : table === 'institutional_records' ? 'institutional' : table, data] as const
+    return [table==='delivery_schedules'?'deliverySchedules':table==='material_progress'?'reading':table==='assessment_sessions'?'sessions':table === 'material_access' ? 'accesses' : table === 'academic_events' ? 'events' : table === 'institutional_records' ? 'institutional' : table, data] as const
   }))
+  if (identity.role === 'student') {
+    const { data, error } = await client.rpc('edupulse_student_publications')
+    if (error || !Array.isArray(data)) throw new ApiError(503, 'ACADEMIC_UNAVAILABLE', 'Your class delivery times could not be verified. Retry when connected.')
+    rows.push(['publications', data])
+  }
   let faculty = []
   if (['dean','associate_dean','admin'].includes(identity.role)) {
     const result = await client.rpc('edupulse_faculty')
@@ -112,6 +119,23 @@ export async function executeAcademic(identity: Identity, input: z.infer<typeof 
     const { data, error } = await userDb(identity).rpc('edupulse_dean_command', { command: input.command })
     if (error) throw new ApiError(error.code === '42501' ? 403 : error.code === '40001' ? 409 : error.code === '22023' ? 400 : 503, 'DEAN_ACTION_FAILED', ['22023', '40001'].includes(error.code) ? error.message : 'The course record could not be verified. Refresh and retry.')
     return data
+  }
+  if (input.operation === 'delivery-schedule' || input.operation === 'read-publication') {
+    if (input.operation === 'delivery-schedule' && !['instructor','admin'].includes(identity.role) || input.operation === 'read-publication' && identity.role !== 'student') throw new ApiError(403, 'FORBIDDEN', 'This course action is unavailable for your current role.')
+    let result
+    if (identity.supportActor) result = await supportAction(identity, 'academic.command', input)
+    else {
+      const response = input.operation === 'delivery-schedule' ? await userDb(identity).rpc('edupulse_delivery_schedule', { command: input }) : await userDb(identity).rpc('edupulse_student_publications', { publication: input.publication })
+      if (response.error) throw new ApiError(response.error.code === '42501' ? 403 : response.error.code === '40001' ? 409 : response.error.code === '22023' ? 400 : 503, 'DELIVERY_FAILED', ['22023','40001'].includes(response.error.code) ? response.error.message : 'This class delivery could not be verified.')
+      result = response.data
+    }
+    if (input.operation === 'read-publication') {
+      const publication = Array.isArray(result) ? result[0] : null
+      if (!publication) throw new ApiError(403, 'PUBLICATION_UNAVAILABLE', 'This course item is not available in your current enrollment.')
+      if (publication.source_version !== input.version) throw new ApiError(409, 'PUBLICATION_CHANGED', 'This course item changed. Reopen its current version.')
+      return publication
+    }
+    return result
   }
   if (identity.supportActor) return supportAction(identity, 'academic.command', input)
   if(input.operation==='read-section'){

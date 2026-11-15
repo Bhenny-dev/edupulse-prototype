@@ -11,6 +11,8 @@
       "source": [
         "edupulse-app/src/components/courseware/Instructor*.jsx",
         "edupulse-app/src/components/courseware/CourseTopicWeeks.jsx",
+        "edupulse-app/src/components/courseware/CourseBlockSections.jsx",
+        "edupulse-app/src/utils/blockDelivery.ts",
         "edupulse-app/src/components/courseware/TopicContentForm.jsx",
         "edupulse-app/src/components/courseware/TeachingAttachments.jsx",
         "edupulse-app/src/components/courseware/ReadOnlyAssessment.jsx",

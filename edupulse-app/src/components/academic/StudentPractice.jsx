@@ -15,7 +15,7 @@ export default function StudentPractice({data,onOpen,busy,adminTest=false}){
  const allowed=!user?.supportSubject||adminTest
  const load=async signal=>{const result=await aiRequest('practice','POST',{operation:'list'},signal);setPractice(result)}
  useEffect(()=>{const controller=new AbortController();load(controller.signal).catch(e=>{if(!controller.signal.aborted)setError(e.message)});return()=>controller.abort()},[])
- const reading=data.publications.filter(p=>p.active&&p.type!=='assessment'),official=currentAttempts(data),courses=enrolledCourses(data)
+ const reading=data.publications.filter(p=>p.active&&p.type!=='assessment'&&p.content),official=currentAttempts(data),courses=enrolledCourses(data)
  const run=async body=>{setSaving(true);setError('');try{const result=await aiRequest('practice','POST',{...body,...(user?.supportSubject?{adminTest:true}:{})});setPractice(p=>body.operation==='generate'?{...p,sets:[...p.sets.filter(s=>s.id!==result.id),result]}:{...p,attempts:[...p.attempts.filter(a=>a.id!==result.id),result]});try{await load()}catch{setError('Practice was saved. Refresh this page to reload its latest history.')}return result}catch(e){setError(e.message);return null}finally{setSaving(false)}}
  const choose=set=>{select(set.id);setAnswers({});setSubmission(crypto.randomUUID())}
  const total=practice.attempts.reduce((s,a)=>s+a.score,0),max=practice.attempts.reduce((s,a)=>s+a.max_score,0)

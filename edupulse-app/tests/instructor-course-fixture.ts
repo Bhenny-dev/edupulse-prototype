@@ -17,6 +17,7 @@ export async function instructorCourseUI(page: Page) {
   const quiz = { syllabusId: syllabus.id, week: 1, type: 'assessment', status: 'draft', position: 2048, content: { title: 'Variable check', courseItemId: 'quiz', courseTopicId: 'variables', overallAssessment: false, coverage: { materialIds: ['lesson'] }, questions: [1, 2, 3].map(i => ({ id: `q${i}`, type: 'true_false', responseFormat: 'true_false', text: `Variable statement ${i}`, options: ['True', 'False'], correctIndex: 0, topic: 'Variables and named values' })) } }
   fixture.setWorkspace({ syllabi: [syllabus], content: { lesson: material, quiz }, registrations: [] })
   fixture.records.courses[0].syllabus_id = syllabus.id
+  fixture.records.deliverySchedules = [{ course_id:fixture.records.courses[0].id,instructor_id:fixture.records.courses[0].instructor_id!,syllabus_id:syllabus.id,block_section:'BSIT-1A',revision:1,updated_at:'2026-11-01T00:00:00Z',windows:[1,2,3,9].map(week=>({week,opens_at:new Date(Date.UTC(2026,10,6+(week-1)*7,23,30)).toISOString(),closes_at:null})) }]
   fixture.records.publications[0].content = material.content
   fixture.records.accesses = [{ publication_id: fixture.records.publications[0].id, student_email: 'ui.fixture@example.invalid', first_opened_at: '2026-11-01T00:00:00Z' }]
   fixture.records.institutional!.push({ kind: 'courses', record_key: 'IT 201', data: { CourseCode: 'IT 201', CourseTitle: 'Algorithms', Units: '3', YearLevel: '2', Semester: '1' } }, { kind: 'loads', record_key: 'IT 201|BSIT-2A|1', data: { CourseCode: 'IT 201', InstructorID: fixture.records.courses[0].instructor_id!, Block: 'BSIT-2A', Semester: '1' } })
@@ -45,6 +46,16 @@ export async function instructorCourseUI(page: Page) {
       if (failSave) return route.fulfill({ status: 409, json: { error: { code: 'WORKSPACE_CONFLICT', message: 'Current teaching content changed in another session.' } } })
     }
     return route.fallback()
+  })
+  await page.route('**/api/ai?action=academic',async route=>{
+    const body=route.request().method()==='POST'?route.request().postDataJSON():null
+    if(body?.operation!=='delivery-schedule')return route.fallback()
+    commands.push({action:'academic',body})
+    const current=fixture.records.deliverySchedules!.find(row=>row.syllabus_id===body.syllabus&&row.block_section===body.block)
+    if(failSave||body.revision!==(current?.revision||0))return route.fulfill({status:409,json:{error:{code:'DELIVERY_CHANGED',message:'This block schedule changed. Reopen it before saving.'}}})
+    const saved={course_id:fixture.records.courses[0].id,instructor_id:fixture.records.courses[0].instructor_id!,syllabus_id:body.syllabus,block_section:body.block,revision:body.revision+1,updated_at:'2026-11-16T00:00:00Z',windows:body.windows.map((row:any)=>({week:row.week,opens_at:new Date(`${row.date}T${row.start}:00+08:00`).toISOString(),closes_at:row.end?new Date(`${row.date}T${row.end}:00+08:00`).toISOString():null}))}
+    fixture.records.deliverySchedules=[...fixture.records.deliverySchedules!.filter(row=>row!==current),saved]
+    return route.fulfill({json:saved})
   })
   return { ...fixture, syllabus, commands, forbidden, threads, failSave: (value: boolean) => { failSave = value }, denySource: () => { denySource = true } }
 }

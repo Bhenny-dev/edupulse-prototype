@@ -37,7 +37,7 @@ function valid(key:unknown,value:unknown):value is ViewValue {
   if(/^dean-course-(?:inspect|reader):.+$/.test(key))return value===null||id(value)
   if(key==='dean-course-edit')return value===null||id(value)
   if(key==='layout-overlay')return value===null||['search','account','notifications','roles','language','mobile'].includes(value as string)
-  if(key==='course-location'||/^course:.+:(?:reader|delivery)$/.test(key)||/^academic-reader:.+$/.test(key))return value===null||id(value)
+  if(key==='course-location'||/^course:.+:(?:reader|delivery|revision|schedule-block)$/.test(key)||/^academic-reader:.+$/.test(key))return value===null||id(value)
   if(/^course:.+:expanded$/.test(key))return value instanceof Set&&value.size<=52&&[...value].every(item=>Number.isInteger(item)&&Number(item)>=1&&Number(item)<=52)
   if(/^course:.+:topic-expanded$/.test(key))return value instanceof Set&&value.size<=200&&[...value].every(id)
   if(/^course:.+:selected$/.test(key))return value instanceof Set&&value.size<=200&&[...value].every(id)
