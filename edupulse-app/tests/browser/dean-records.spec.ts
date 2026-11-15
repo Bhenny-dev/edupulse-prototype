@@ -12,15 +12,11 @@ test('Dean navigation and dashboard summaries open the Course list, Course loads
   const card=page.getByRole('link',{name:label,exact:true});await expect(card).toHaveAttribute('href',`#${url}`)
  }
  await page.getByRole('link',{name:'Released Courses',exact:true}).click()
- await expect(page.getByRole('heading',{name:'Course list',exact:true})).toBeVisible()
+ await expect(page.getByRole('heading',{name:'Courses',exact:true})).toBeVisible()
  for(const title of ['Student class lists','Syllabi','Course records'])await expect(page.getByRole('button',{name:title,exact:true})).toHaveCount(0)
- for(const title of ['Course list','Course loads']){
-  await page.getByRole('button',{name:title,exact:true}).click()
-  await expect(page.locator('.kpi-card .glass-icon')).toHaveCount(4)
-  await expect(page.getByRole('button',{name:'Add instructor',exact:true})).toHaveCount(0)
- }
+ for(const title of ['Course list','Course loads'])await expect(page.getByRole('button',{name:title,exact:true})).toHaveCount(0)
+ await expect(page.locator('.kpi-card .glass-icon')).toHaveCount(4)
  await expect(page.locator('input[type=file]')).toBeDisabled()
- await expect(page.getByText('Preview sample. Loading courses needs a signed-in Dean account.')).toBeVisible()
 })
 
 test('Program Coordinator opens the same Course, Instructors and Students pages as the Dean',async({page})=>{
@@ -31,7 +27,7 @@ test('Program Coordinator opens the same Course, Instructors and Students pages 
  for(const label of ['Records','Course Loading','Monitor'])await expect(page.getByRole('link',{name:label,exact:true})).toHaveCount(0)
  if(mobile)await page.getByRole('button',{name:'Close menu',exact:true}).click()
  await page.goto('/#/records')
- await expect(page.getByRole('heading',{name:'Course list',exact:true})).toBeVisible()
+ await expect(page.getByRole('heading',{name:'Courses',exact:true})).toBeVisible()
  await expect(page.getByLabel('Choose CSV for preview')).toHaveCount(0)
  await page.goto('/#/students');await expect(page).toHaveURL(/#\/students/);await expect(page.getByRole('button',{name:'Student list',exact:true})).toBeVisible()
  await page.goto('/#/instructors');await expect(page).toHaveURL(/#\/instructors/);await expect(page.getByRole('button',{name:'View instructor Alex Sample Instructor',exact:true})).toBeVisible()
@@ -71,6 +67,6 @@ test('legacy Dean links resolve to the new hubs while Program Coordinator import
 })
 
 test('Dean record totals keep their values without test suffixes',async({page})=>{
- const fixture=await deanRecordsUI(page);await page.goto('/#/records');await expect(page.getByRole('heading',{name:'Course list',exact:true})).toBeVisible();await expect(page.locator('.academic-portal')).not.toContainText(/pipeline test|\d+ test/i);expect(fixture.records.attempts.some(a=>a.is_test)).toBe(true)
+ const fixture=await deanRecordsUI(page);await page.goto('/#/records');await expect(page.getByRole('heading',{name:'Courses',exact:true})).toBeVisible();await expect(page.locator('.academic-portal')).not.toContainText(/pipeline test|\d+ test/i);expect(fixture.records.attempts.some(a=>a.is_test)).toBe(true)
  await page.goto('/#/instructors');await expect(page.getByRole('button',{name:'View instructor Alex Sample Instructor',exact:true})).toBeVisible();await expect(page.locator('.academic-portal')).not.toContainText(/pipeline test|\d+ test/i)
 })

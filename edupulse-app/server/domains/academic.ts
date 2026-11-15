@@ -36,6 +36,8 @@ export const deanCommand = z.discriminatedUnion('action', [
   z.object({ action: z.literal('account.status'), id: z.string().uuid(), status: z.enum(['suspended', 'active', 'removed']) }),
   z.object({ action: z.literal('load.assign'), filename: field(255).optional(), loads: z.array(z.object({ course_code: field(40).min(1), course_title: field(300).optional(), instructor_id: z.string().uuid(), block: field(40).min(1), semester: field(60).optional() })).min(1).max(500) }),
   z.object({ action: z.literal('load.remove'), keys: z.array(z.string().max(200)).min(1).max(500) }),
+  z.object({ action: z.literal('load.update'), key: field(200).min(1), instructor_id: z.string().uuid(), block: field(40).min(1), semester: field(60), expected_instructor: z.string().uuid() }),
+  z.object({ action: z.literal('load.inspect'), key: field(200).min(1), expected_instructor: z.string().uuid() }),
   z.object({ action: z.literal('students.import'), filename: field(255).min(1), students: z.array(z.object({
     student_number: studentNumber, surname: field(100), first_name: field(150).min(1), middle_name: field(100).default(''), email: email.optional(),
     year_level: z.number().int().min(1).max(4), program: field(250).min(1), password: z.string().min(6).max(72).optional(), placement, block: field(40).optional(),
@@ -108,7 +110,7 @@ export async function executeAcademic(identity: Identity, input: z.infer<typeof 
     if (identity.supportActor) return supportAction(identity, 'dean.command', input.command)
     if (!['dean', 'associate_dean', 'admin'].includes(identity.role)) throw new ApiError(403, 'FORBIDDEN', 'Only the Dean, Program Coordinator or System Admin manages course loads and accounts.')
     const { data, error } = await userDb(identity).rpc('edupulse_dean_command', { command: input.command })
-    if (error) throw new ApiError(error.code === '42501' ? 403 : error.code === '22023' ? 400 : 503, 'DEAN_ACTION_FAILED', error.code === '22023' ? error.message : 'The change could not be verified. Refresh and retry; nothing is reported as saved.')
+    if (error) throw new ApiError(error.code === '42501' ? 403 : error.code === '40001' ? 409 : error.code === '22023' ? 400 : 503, 'DEAN_ACTION_FAILED', ['22023', '40001'].includes(error.code) ? error.message : 'The course record could not be verified. Refresh and retry.')
     return data
   }
   if (identity.supportActor) return supportAction(identity, 'academic.command', input)

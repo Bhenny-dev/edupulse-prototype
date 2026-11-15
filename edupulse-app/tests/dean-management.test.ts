@@ -7,7 +7,7 @@ const DEAN = '00000000-0000-4000-8000-000000000001', TEACHER = '00000000-0000-40
 
 async function database() {
   const db = new PGlite()
-  await db.exec(`CREATE ROLE anon; CREATE ROLE authenticated; CREATE SCHEMA auth; CREATE SCHEMA extensions; CREATE SCHEMA edupulse_private;
+  await db.exec(`CREATE ROLE anon; CREATE ROLE authenticated; CREATE SCHEMA storage; CREATE TABLE storage.objects(name text,bucket_id text); ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY; GRANT USAGE ON SCHEMA storage TO authenticated; GRANT SELECT ON storage.objects TO authenticated; CREATE SCHEMA auth; CREATE SCHEMA extensions; CREATE SCHEMA edupulse_private;
     CREATE TABLE auth.users(instance_id uuid,id uuid PRIMARY KEY,aud text,role text,email text,encrypted_password text,email_confirmed_at timestamptz,
       raw_app_meta_data jsonb DEFAULT '{}',raw_user_meta_data jsonb DEFAULT '{}',created_at timestamptz DEFAULT now(),updated_at timestamptz,last_sign_in_at timestamptz,banned_until timestamptz,
       confirmation_token text,recovery_token text,email_change_token_new text,email_change text);
@@ -17,6 +17,7 @@ async function database() {
     CREATE FUNCTION extensions.gen_salt(text) RETURNS text LANGUAGE sql AS $$ SELECT 'salt' $$;
     CREATE FUNCTION extensions.crypt(text,text) RETURNS text LANGUAGE sql AS $$ SELECT 'hash:'||$1 $$;
     CREATE FUNCTION edupulse_private.academic_role() RETURNS text LANGUAGE sql STABLE AS $$ SELECT raw_app_meta_data->>'role' FROM auth.users WHERE id=auth.uid() $$;
+    CREATE TABLE public.edupulse_workspaces(owner_id uuid PRIMARY KEY,revision bigint DEFAULT 1,data jsonb NOT NULL);
     CREATE TABLE public.edupulse_courses(id text PRIMARY KEY,instructor_id uuid,course_code text,course_title text,updated_at timestamptz DEFAULT now(),block_info jsonb DEFAULT '[]');
     CREATE TABLE public.edupulse_enrollments(course_id text,instructor_id uuid,student_email text,student_ref text,display_name text,block_section text,source text DEFAULT 'instructor',PRIMARY KEY(course_id,student_email,block_section));
     CREATE TABLE public.edupulse_institutional_records(kind text NOT NULL CHECK(kind IN ('courses','loads','rosters')),record_key text NOT NULL,data jsonb NOT NULL,updated_by uuid,updated_at timestamptz DEFAULT now(),
@@ -34,6 +35,7 @@ async function database() {
   await db.exec(await readFile('supabase/migrations/20261114080000_dean_course_loads_and_accounts.sql', 'utf8'))
   await db.exec(await readFile('supabase/migrations/20261114090000_dean_support_directory_fix.sql', 'utf8'))
   await db.exec(await readFile('supabase/migrations/20261115080000_program_coordinator_dean_parity.sql', 'utf8'))
+  await db.exec(await readFile('supabase/migrations/20261115131427_unified_dean_courses.sql', 'utf8'))
   return db
 }
 const as = (db: PGlite, id: string) => db.query(`SELECT set_config('request.jwt.claim.sub',$1,false)`, [id])
@@ -123,5 +125,71 @@ test('EduSuite student intake creates accounts, fills blocks and places irregula
     assert.equal((await db.query<{ active: boolean }>(`SELECT active FROM public.edupulse_students WHERE user_id=$1`, [id])).rows[0].active, false)
     const capacity = Array.from({ length: 36 }, (_, i) => student(`2027-${String(i).padStart(4, '0')}`, `Full${i}`, 'block', { block: 'BSIT-1C' }))
     await assert.rejects(dean(db, { action: 'students.import', filename: 'full.csv', students: capacity }), /would exceed 35/)
+  } finally { await db.close() }
+})
+
+
+test('course inspection is scoped to a current load, strips private keys and never writes learner/workspace activity', async () => {
+  const db = await database()
+  try {
+    await as(db, DEAN)
+    await dean(db, { action: 'load.assign', loads: [{ course_code: 'IT 102', instructor_id: TEACHER, block: 'BSIT-1A' }] })
+    const key = 'IT 102|BSIT-1A|1st Semester', path = `${TEACHER}/00000000-0000-4000-8000-000000000050/lesson.pdf`
+    const snapshot = { syllabi: [
+      { id: 'basis', courseCode: 'IT 102', courseTitle: 'Programming', status: 'active', courseInfo: { periodOffered: 'First Semester' }, courseOutline: [{ week: 1, contents: ['Functions'] }], approvedFile: { name: 'approved.pdf', base64: 'JVBERg==' } },
+      { id: 'draft', courseCode: 'IT102', status: 'drafted', lastUpdated: '2099-01-01' },
+      { id: 'other-term', courseCode: 'IT102', status: 'active', courseInfo: { periodOffered: 'Second Semester' }, lastUpdated: '2099-01-02' },
+      { id: 'other-course', courseCode: 'IT202', status: 'active' }],
+      content: { lesson: { syllabusId: 'basis', week: 1, type: 'material', status: 'draft', content: { title: 'Functions', sections: [{ heading: 'Function calls', body: 'A function can be called again.' }], attachments: [{ path, name: 'lesson.pdf' }], ai: { sources: ['PRIVATE SOURCE'] } } },
+        quiz: { syllabusId: 'basis', week: 1, type: 'assessment', status: 'checked', content: { title: 'Functions quiz', answerKey: ['PRIVATE KEY'], questions: [{ text: 'A function can be called again?', type: 'multiple_choice', options: [{ text: 'Yes', correct: true }, { text: 'No', correct: false }], correctIndex: 0, explanation: 'PRIVATE MARKING GUIDE', answer: 'Yes' }] } },
+        other: { syllabusId: 'other-course', week: 1, type: 'material', content: { title: 'PRIVATE OTHER COURSE', attachments: [{ path: `${TEACHER}/other/file.pdf` }] } } },
+      registrations: [{ password: 'PRIVATE REGISTRATION' }] }
+    await db.query('INSERT INTO public.edupulse_workspaces(owner_id,data) VALUES($1,$2)', [TEACHER, JSON.stringify(snapshot)])
+    await db.query("INSERT INTO storage.objects(name,bucket_id) VALUES($1,'edupulse-teaching-files'),($2,'edupulse-teaching-files')", [path, `${TEACHER}/other/file.pdf`])
+    const before = (await db.query('SELECT * FROM public.edupulse_academic_events')).rows
+    for (const role of ['dean', 'associate_dean', 'admin']) {
+      await db.query("UPDATE auth.users SET raw_app_meta_data=jsonb_build_object('role',$1::text) WHERE id=$2", [role, DEAN])
+      const scan = await dean<{ syllabus: { id: string }; items: { content: { questions: { options: string[] }[] } }[] }>(db, { action: 'load.inspect', key, expected_instructor: TEACHER })
+      assert.equal(scan.syllabus.id, 'basis'); assert.equal(scan.items.length, 2)
+      assert.deepEqual(scan.items[1].content.questions[0].options, ['Yes', 'No'])
+      assert.doesNotMatch(JSON.stringify(scan), /PRIVATE|correctIndex|explanation|answerKey|registrations/)
+    }
+    await db.query("UPDATE auth.users SET raw_app_meta_data=jsonb_build_object('role','dean') WHERE id=$1", [DEAN])
+    await db.exec('SET ROLE authenticated')
+    assert.deepEqual((await db.query('SELECT name FROM storage.objects')).rows, [{ name: path }], 'scan file policy includes only the selected course basis')
+    await assert.rejects(db.query('SELECT edupulse_private.dean_inspect_load($1,$2)', [key, TEACHER]), /permission denied/)
+    await db.exec('RESET ROLE')
+    assert.deepEqual((await db.query('SELECT * FROM public.edupulse_academic_events')).rows, before)
+    assert.deepEqual((await db.query<{ data: unknown }>('SELECT data FROM public.edupulse_workspaces')).rows[0].data, snapshot)
+    await as(db, TEACHER)
+    await assert.rejects(dean(db, { action: 'load.inspect', key, expected_instructor: TEACHER }), { code: '42501' })
+    await as(db, DEAN)
+    await assert.rejects(dean(db, { action: 'load.inspect', key, expected_instructor: OUTSIDER }), { code: '22023' })
+    await dean(db, { action: 'load.remove', keys: [key] })
+    await assert.rejects(dean(db, { action: 'load.inspect', key, expected_instructor: TEACHER }), { code: '22023' })
+    await db.exec('SET ROLE authenticated')
+    assert.deepEqual((await db.query('SELECT name FROM storage.objects')).rows, [], 'removed assignment revokes draft file inspection')
+    await db.exec('RESET ROLE')
+  } finally { await db.close() }
+})
+
+test('load edits atomically move or reassign a class and reject collisions, stale selections and invalid teachers', async () => {
+  const db = await database()
+  try {
+    await as(db, DEAN)
+    const added = await dean<{ id: string }>(db, { action: 'account.create', account: { role: 'instructor', surname: 'Rivera', first_name: 'Morgan', email: 'morgan@example.invalid', password: 'Ep9!sample-pass' } })
+    await dean(db, { action: 'load.assign', loads: [{ course_code: 'IT 102', instructor_id: TEACHER, block: 'BSIT-1A' }, { course_code: 'IT 102', instructor_id: TEACHER, block: 'BSIT-1B' }] })
+    const command = { action: 'load.update', key: 'IT 102|BSIT-1A|1st Semester', expected_instructor: TEACHER, instructor_id: added.id, block: 'BSIT-1C', semester: '2nd Semester' }
+    await assert.rejects(dean(db, { ...command, block: 'BSIT-1B', semester: '1st Semester' }), { code: '22023' })
+    await assert.rejects(dean(db, { ...command, instructor_id: OUTSIDER }), { code: '22023' })
+    assert.equal((await db.query("SELECT 1 FROM public.edupulse_institutional_records WHERE kind='loads' AND record_key=$1", [command.key])).rows.length, 1, 'failed destination assignment rolls back the old load removal')
+    await assert.rejects(dean(db, { ...command, expected_instructor: added.id }), { code: '40001' })
+    const edited = await dean<{ key: string }>(db, command)
+    assert.equal(edited.key, 'IT 102|BSIT-1C|2nd Semester')
+    assert.equal((await db.query("SELECT 1 FROM public.edupulse_institutional_records WHERE kind='loads' AND record_key=$1", [command.key])).rows.length, 0)
+    assert.equal((await db.query<{ id: string }>("SELECT data->>'InstructorID' id FROM public.edupulse_institutional_records WHERE kind='loads' AND record_key=$1", [edited.key])).rows[0].id, added.id)
+    await assert.rejects(dean(db, command), { code: '40001' })
+    await as(db, TEACHER)
+    await assert.rejects(dean(db, { ...command, key: edited.key, expected_instructor: added.id }), { code: '42501' })
   } finally { await db.close() }
 })

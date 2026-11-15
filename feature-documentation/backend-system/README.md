@@ -1,5 +1,13 @@
 # Backend System
 
+## Unified Course loading and read-only inspection — 15 November 2026
+
+DeanCourses presents one catalog/card page for Dean and Program Coordinator; legacy tab query values remain compatible. Page-sized course dialogs reuse SummaryCard and existing Dean commands. `load.update` runs under the institutional import lock, checks the prior instructor, refuses occupied destinations and atomically moves/reassigns the load, preserving additional load metadata. Failed assignments roll back; the existing enrollment projection and Instructor Course load model remain authoritative. No workspace is edited to create a teaching load.
+
+`load.inspect` checks the current live management role, exact load key/expected instructor, active instructor and matching course/term syllabus basis. It returns only the retained approved file, extracted outline and whitelisted material/assessment display fields. It excludes unrelated syllabi, registrations, private AI evidence, correct answers and marking guides. The additive private Storage SELECT policy uses the same load/basis scope for teaching attachments; no upload, replace, delete or public bucket permission is added. Private helper privileges and empty search paths remain explicit. Inspecting and restoring readers perform no workspace, publication or learner writes. See [the guide](../system-manual/46-course-load-workspace/README.md).
+
+The migration is additive and changes no business rows. Existing snapshots retain the ordinary revision/conflict, offline approval, independent-activity and deletion/history safeguards. View storage contains bounded course/load/item references only; asynchronous scans cancel on unmount/scope changes, and removed scopes fail closed after fresh reads.
+
 ## Remove redundant shared-list and workspace controls - 15 November 2026
 
 Syllabus no longer renders its routine Refresh shared syllabi button/loading label. The existing hook still reads on mount/scope changes and after sharing mutations; no new polling or focus/reconnect refresh is introduced. A list failure retains its actual error and a conditional Retry that calls the same scoped read. AcademicSyncStatus suppresses the generic Workspace needs attention text without clearing workspace.error or claiming a failed dirty workspace is saving. Actual save errors and retry/backup/conflict recovery remain in Settings > Data & Privacy. Offline and academic record-read recovery are unchanged. This is a UI cleanup; no authorization, data, approval, revision or persistence rules change.

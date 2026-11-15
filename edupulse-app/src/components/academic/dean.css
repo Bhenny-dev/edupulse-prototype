@@ -69,6 +69,13 @@
 .dean-dialog-title { display: flex; align-items: center; gap: 14px; min-width: 0; }
 .dean-record-dialog.dean-dialog-narrow { width: min(520px, 94vw); }
 .dean-record-dialog.dean-dialog-form { width: min(720px, 94vw); }
+.dean-record-dialog.dean-dialog-page { width: min(1480px, 96vw); max-width: 1480px; height: 94dvh; max-height: 94dvh; }
+.dean-dialog-page .dean-dialog-body { flex: 1; }
+.dean-scan-week { padding: 20px 0; border-bottom: 1px solid var(--gray-200); }
+.dean-scan-week h4 { margin-bottom: 12px; }
+.dean-dialog-page .data-table td { white-space: pre-wrap; }
+.dean-dialog-page .academic-list-row > div { min-width: 0; overflow-wrap: anywhere; }
+.dean-dialog-page .academic-list-row > button { flex-shrink: 0; }
 .dean-record-dialog .modal-footer { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
 .dean-record-dialog .modal-footer .dean-card-actions { margin-right: auto; }
 .dean-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr)); gap: 12px; margin: 8px 0 20px; }

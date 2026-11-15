@@ -20,7 +20,7 @@ import { deanPreview } from './deanPreview'
 import GlassIcon from '../ui/GlassIcon'
 import { BookOpen, GraduationCap, Users } from 'lucide-react'
 
-const DEAN_HEADERS = { records: [BookOpen, 'var(--sky-500)', 'Course list and instructor course loads'], instructors: [GraduationCap, 'var(--purple-500)', 'Instructor accounts, qualifications and course loads'], students: [Users, 'var(--green-500)', 'Student accounts, blocks and learning progress'] }
+const DEAN_HEADERS = { records: [BookOpen, 'var(--sky-500)', 'Courses, instructor loads and syllabus contents'], instructors: [GraduationCap, 'var(--purple-500)', 'Instructor accounts, qualifications and course loads'], students: [Users, 'var(--green-500)', 'Student accounts, blocks and learning progress'] }
 import './academic.css'
 
 const TITLES = { instructors:'Instructors', students:'Students', performance: 'Performance', monitoring: 'Student Monitoring', monitor: 'Academic Oversight', courses: 'Course Loading', records: 'Academic Records', courseware: 'Published Courseware', assessment: 'Assessments' }

@@ -1,5 +1,6 @@
 import type { Page } from '@playwright/test'
 import { academicUI } from './academic-ui-fixture'
+import { makePdf } from './fixtures'
 import { deanRecordData } from './dean-records-data'
 
 type Command = { action: string; [key: string]: unknown }
@@ -26,7 +27,13 @@ export async function deanManagementUI(page: Page, role = 'dean') {
       student('s-sam', 'SYN-005', 'Sam Irregular', 'sam@example.invalid', 2, 'IRREGULAR', 'Irregular'), student('s-taylor', 'SYN-003', 'Taylor Example', 'taylor@example.invalid', 2, 'BSIT-2A')],
     irregular: [{ StudentID: 'SYN-005', CourseCode: 'IT 102', Block: 'BSIT-1A', Name: 'Sam Irregular', Email: 'sam@example.invalid' }],
   }
-  const commands: Command[] = []
+  const commands: Command[] = [], scans: Command[] = []
+  const inspection = { syllabus: { id: 'scan-basis', courseCode: 'IT 102', courseTitle: 'Programming foundations', status: 'active',
+    approvedFile: { name: 'original-programming.pdf', base64: Buffer.from(makePdf([['Original approved programming syllabus', 'Week 1: Functions']])).toString('base64') },
+    courseOutline: [{ week: 1, ilos: 'Explain functions.', contents: ['Functions'], activities: 'Guided examples', assessments: 'Multiple choice quiz' }] },
+    items: [{ id: 'scan-lesson', week: 1, type: 'material', status: 'draft', content: { title: 'Function calls', sections: [{ heading: 'Reusable functions', body: 'A function can be called more than once.' }] } },
+      { id: 'scan-quiz', week: 1, type: 'assessment', status: 'checked', content: { title: 'Function quiz', questions: [{ text: 'Can a function be called twice?', responseFormat: 'multiple_choice', options: ['Yes', 'No'] }] } }] }
+
   await academicUI(page, async () => ({ json: records }), role)
   await page.route('**/api/ai?*', async route => {
     const request = route.request(), action = new URL(request.url()).searchParams.get('action')
@@ -35,6 +42,11 @@ export async function deanManagementUI(page: Page, role = 'dean') {
     if (action === 'conversations') return route.fulfill({ json: { threads: [], messages: [], memories: [], automaticMemory: true } })
     if (action !== 'academic' || request.method() !== 'POST' || request.postDataJSON()?.operation !== 'dean') return route.fallback()
     const command = request.postDataJSON().command as Command
+    if (command.action === 'load.inspect') {
+      scans.push(command)
+      const current = records.institutional!.find(row => row.kind === 'loads' && row.record_key === command.key && row.data.InstructorID === command.expected_instructor)
+      return current ? route.fulfill({ json: inspection }) : route.fulfill({ status: 400, json: { error: { message: 'This course load is no longer available.' } } })
+    }
     commands.push(command)
     if (command.action === 'load.assign') {
       for (const item of command.loads as Record<string, string>[]) {
@@ -43,11 +55,21 @@ export async function deanManagementUI(page: Page, role = 'dean') {
       }
       return route.fulfill({ json: { created: (command.loads as unknown[]).length, updated: 0, unchanged: 0 } })
     }
+    if (command.action === 'load.update') {
+      const old = records.institutional!.find(row => row.kind === 'loads' && row.record_key === command.key)
+      if (!old || old.data.InstructorID !== command.expected_instructor) return route.fulfill({ status: 409, json: { error: { message: 'This load changed. Refresh the course before editing it.' } } })
+      const name = String((records.directory.instructors as { id: string; name: string }[]).find(item => item.id === command.instructor_id)?.name)
+      records.institutional = records.institutional!.filter(row => row !== old)
+      const updated = load(old.data.CourseCode, String(command.block), String(command.instructor_id), name)
+      updated.data.Semester = String(command.semester); updated.record_key = `${updated.data.CourseCode}|${command.block}|${command.semester}`
+      records.institutional!.push(updated)
+      return route.fulfill({ json: { key: updated.record_key, updated: 1 } })
+    }
     if (command.action === 'load.remove') { records.institutional = records.institutional!.filter(row => !(row.kind === 'loads' && (command.keys as string[]).includes(row.record_key))); return route.fulfill({ json: { removed: 1 } }) }
     if (command.action === 'account.status') { const person = [...records.directory.instructors, ...records.directory.students].find(p => p.id === command.id); if (person) person.status = command.status; return route.fulfill({ json: { id: command.id, status: command.status } }) }
     if (command.action === 'account.create') { const account = command.account as Record<string, unknown>; return route.fulfill({ json: { id: 'new-account', email: account.email, role: account.role, restored: false } }) }
     if (command.action === 'students.import') return route.fulfill({ json: { created: (command.students as unknown[]).length, updated: 0, linked: 0, restored: 0, regular: 1, irregular: 1, skipped: [] } })
     return route.fulfill({ json: {} })
   })
-  return { records, commands }
+  return { records, commands, scans, inspection }
 }

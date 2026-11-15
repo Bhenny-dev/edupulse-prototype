@@ -244,3 +244,10 @@ Remove the persistent bottom Viewing indicator and its Return to System Admin re
 ## Owner correction: remove redundant sharing/status UI - 15 November 2026
 
 Remove the routine Refresh shared syllabi action and the generic Workspace needs attention header indicator. Do not replace them with other routine labels or add polling to compensate. Keep actual shared-list errors with an error-only Retry, and retain detailed workspace save/backup/conflict recovery in Settings. Do not regress: suppressing the label must not clear dirty/error/conflict state, claim that a failed save is still pending, weaken revision checks or replay a write/inference. Existing read-on-entry/action refresh and manual-view freshness rules remain.
+
+
+## Owner correction: unified Course and teaching-load inspection - 15 November 2026
+
+Dean and Program Coordinator use one Course page: shared summaries first, then course cards. A course opens a page-sized modal with its own summaries and instructor/block/semester teaching-load CRUD. Assignment is the same persisted Dean load consumed by Instructor Course; it does not invent a syllabus or enrollment evidence. Course list and Course loads must not become separate tabs again. Keep legacy links, explicit import review, confirmed removal and scoped no-write reload.
+
+Management can scan the current loaded instructor's syllabus original, extracted course/term outline and authored teaching materials/assessments, including drafts. This grants no content editing, delivery, grading, answer-key access or access to the full private workspace/source archive. Do not regress: recheck live role, current load and expected instructor; select the same course/term basis as Instructor Course; whitelist display fields and protect draft attachment downloads. Inspection and restored readers must never record learner events, attempts, opens or workspace saves. Atomic load edits must reject stale selections and occupied destinations without losing the original load or its extra metadata. Preserve offline approval, historical attempts, revision conflicts, private files and the prior one-time teaching reset.
