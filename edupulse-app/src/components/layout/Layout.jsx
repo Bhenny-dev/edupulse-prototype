@@ -33,9 +33,10 @@ const SECTIONS = [
 
 
   // ── Instructor ────────────────────────────────────────────────────────
+  { key: 'syllabus', path: '/syllabus', label: 'Syllabus', icon: BookOpen, roles: ['instructor'] },
   {
     key: 'courseware', path: '/courseware', label: 'Course', icon: FileText, roles: ['instructor'],
-    relatedPaths: ['/content-editor', '/syllabus'],
+    relatedPaths: ['/content-editor'],
   },
   {
     key: 'scoring', path: '/student-monitoring', label: 'Student Monitoring', icon: ClipboardCheck, roles: ['instructor'],
@@ -477,7 +478,7 @@ export default function Layout() {
           background: 'var(--white)', padding: '16px 24px',
           animation: 'slideIn 250ms cubic-bezier(0.4, 0, 0.2, 1)',
         }}>
-          <nav style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+          <nav aria-label="Mobile navigation" style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
             {sections.map(item => (
               <NavLink key={item.path} to={item.path} aria-current={current?.key===item.key?'page':false} onClick={() => setOverlay(null)}
                 style={() => ({

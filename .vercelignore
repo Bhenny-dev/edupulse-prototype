@@ -5,3 +5,6 @@ edupulse-app/.env.local
 edupulse-app/test-results*
 edupulse-app/node_modules
 edupulse-app/supabase/.temp
+
+.env.local
+.env.*.local

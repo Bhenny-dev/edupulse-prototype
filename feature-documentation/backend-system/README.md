@@ -1,5 +1,12 @@
 # Backend System
 
+## Separate Instructor syllabus repository - 15 November 2026
+
+`/syllabus` now renders the existing repository directly and has its own Instructor navigation entry. It lists all owned syllabi and received shares, with the outgoing Shared Repository and the standalone Syllabus Builder. Draft PDF/DOCX import uses the existing local parser and explicit acceptance, revision-checked draft save and PDF renderer. A keyboard-accessible file chooser accompanies the drop area. Repository drafts need no teaching-load grant and do not add one. Existing sharing/approval, private-file, deletion and save policies are unchanged.
+
+Course no longer imports/renders the Syllabus page. Its views contain Weeks and topics and the applicable review/delivery workspace; approved intake is present only without an active basis. The explicit local-use commit rechecks that the selected course has no current active syllabus. Legacy nested syllabus query URLs redirect to the standalone tab/edit target without saving or inference. The page remains lazy-loaded from App, while Course no longer imports the full builder. Pulse navigation labels and system knowledge follow the restored structure. The previous teaching reset remains in force; this change creates no production seed or learner activity. See [the guide](../system-manual/45-syllabus-repository/README.md).
+
+
 ## Owner-requested teaching reset - 15 November 2026
 
 The owner withdrew the previous seeded teaching set before preparing content with the revised Instructor course workflow. The one-time `scripts/reset-teaching-content.ts` utility requires an ignored private backup, verified table/account fingerprints and a successful rollback rehearsal of the exact SQL and backup bytes before applying. It is not called by the application, startup, a migration or CI. It refuses independent learner attempts/opens and changes after the backup. Workspace owners use the existing revision-checked save function and saved suspension before removal; no trigger/RLS policy is disabled and no account role is changed.

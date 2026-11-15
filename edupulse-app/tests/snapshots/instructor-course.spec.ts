@@ -4,6 +4,9 @@ const folder = '../feature-documentation/system-manual/44-instructor-course-work
 
 test('assigned instructor dashboard and course topics with explicit content authoring and source navigation', async ({ page }) => {
   const fixture = await instructorCourseUI(page)
+  await page.goto('/#/syllabus?tab=mine')
+  await expect(page.getByRole('navigation', { name: 'Syllabus sections' })).toBeVisible()
+  await expect(page.getByRole('navigation', { name: 'Main navigation' }).getByRole('link', { name: 'Syllabus', exact: true })).toBeVisible()
   await page.goto('/#/dashboard'); await expect(page.getByRole('heading', { name: 'Instructor Dashboard' })).toBeVisible()
   await page.screenshot({ path: `${folder}/01-dashboard.png`, animations: 'disabled' })
   await page.goto('/#/courseware'); await expect(page.locator('.instructor-course-card')).toHaveCount(2)

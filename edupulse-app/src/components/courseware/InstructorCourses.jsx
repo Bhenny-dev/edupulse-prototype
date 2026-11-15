@@ -1,5 +1,5 @@
-import { lazy, Suspense, useMemo, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useMemo, useState } from 'react'
+import { Navigate, useSearchParams } from 'react-router-dom'
 import { BookOpen, Users, ArrowLeft, ArrowRight, Share2 } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 import { useWorkspace } from '../../context/WorkspaceContext'
@@ -16,7 +16,6 @@ import useSyllabusSharing from '../syllabus/useSyllabusSharing'
 import CourseWorkspace from './CourseWorkspace'
 import CourseTopicWeeks from './CourseTopicWeeks'
 import './instructor-courses.css'
-const Syllabus = lazy(() => import('../../pages/Syllabus'))
 
 export default function InstructorCourses() {
   const { user } = useAuth(), workspace = useWorkspace(), records = useAcademicRecords()
@@ -31,10 +30,10 @@ export default function InstructorCourses() {
   const hasDrafts = syllabus && Object.values(workspace.content).some(item => item.syllabusId === syllabus.id && item.content)
   const ready = syllabus && syllabus.status === 'active' && !syllabus.suspended
   const incoming = sharing.shares.filter(item => item.recipient_id === user.id && item.sender_id !== user.id && sameCourseCode(item.courseCode, selected?.code || '') && !item.sender_suspended && !item.recipient_suspended)
-  const sharedOpen = params.get('picker') === 'shared' && Boolean(selected)
+  const sharedOpen = params.get('picker') === 'shared' && Boolean(selected) && !ready
   const setSharedOpen = open => { const query = new URLSearchParams(params); if (open) query.set('picker', 'shared'); else query.delete('picker'); setParams(query) }
-  const view = params.get('view') || (params.get('tab') ? 'syllabus' : 'topics')
-  const choose = course => setParams({ course: course.id, ...(view === 'syllabus' ? { view: 'syllabus', tab: params.get('tab') || 'mine' } : {}) })
+  const view = params.get('view') || 'topics'
+  const choose = course => setParams({ course: course.id })
   const back = () => { setError(''); setNotice(''); setParams({}) }
   const checkSources = async value => {
     const references = collectSyllabusReferences(value)
@@ -45,7 +44,10 @@ export default function InstructorCourses() {
   const useApproved = async candidate => {
     if (!selected || candidate.courseCode.replace(/\s/g, '').toLowerCase() !== selected.code.replace(/\s/g, '').toLowerCase()) throw new Error('The approved syllabus must match the loaded course.')
     const value = { ...candidate, status: 'active', sample: false, courseInfo: { ...candidate.courseInfo, academicYear: selected.academicYear || candidate.courseInfo?.academicYear } }
-    await workspace.commit(data => ({ ...data, syllabi: [...data.syllabi, value] }))
+    await workspace.commit(data => {
+      if (syllabusForCourse(data.syllabi, selected)?.status === 'active') throw new Error('This course already has an approved syllabus. Open its current weeks or revise that syllabus in the repository.')
+      return { ...data, syllabi: [...data.syllabi, value] }
+    })
     void records.load(true)
     await checkSources(value)
   }
@@ -63,6 +65,11 @@ export default function InstructorCourses() {
     } catch (failure) { setError(failure.message) } finally { setBusy(false) }
   }
   const scoped = instructorRecords(records.data, selected ? [selected] : courses)
+  if (view === 'syllabus' || ['mine', 'repository', 'builder', 'register'].includes(params.get('tab'))) {
+    const query = new URLSearchParams(params)
+    for (const key of ['view', 'course', 'picker', 'week']) query.delete(key)
+    return <Navigate replace to={`/syllabus?${query}`} />
+  }
   return <div className="container" data-pulse-zone="courseware" data-pulse-target={selected ? `${selected.code} course` : 'Loaded courses'}>
     <div className="page-header"><div><h1>{selected ? `${selected.code} — ${selected.title}` : 'Course'}</h1><p className="text-muted">{selected ? [selected.units && `${selected.units} units`, selected.semester, selected.blocks.join(' · ')].filter(Boolean).join(' · ') : 'Courses assigned to you by the Dean'}</p></div>{selected && <button className="btn btn-secondary" onClick={back}><ArrowLeft size={16} />Back to courses</button>}</div>
     {records.error && <p role="alert">{records.error}</p>}{error && <p role="alert">{error}</p>}{notice && <p role="status">{notice}</p>}
@@ -73,8 +80,8 @@ export default function InstructorCourses() {
       {!courses.length && <div className="empty-state"><h2>No courses loaded yet</h2><p>Your courses will appear after the Dean assigns them.</p></div>}
       <div className="instructor-course-grid">{courses.filter(course => `${course.code} ${course.title} ${course.blocks.join(' ')}`.toLowerCase().includes(query.toLowerCase())).map(course => { const current = syllabusForCourse(workspace.syllabi, course); return <button className="instructor-course-card" key={course.id} onClick={() => choose(course)}><BookOpen size={24} aria-hidden="true" /><div><strong>{course.code} — {course.title}</strong><p>{course.blocks.join(' · ') || 'Block not recorded'}</p><small>{course.units && `${course.units} units · `}{current?.status === 'active' ? `${current.courseOutline?.length || 0} weeks · Syllabus ready` : 'Add approved syllabus'}</small></div><ArrowRight size={16} aria-hidden="true" /></button> })}</div>
     </> : <>
-      <nav className="tabs mb-24" aria-label="Course workspace views">{[['topics', 'Weeks and topics'], ['syllabus', 'Syllabus'], ...(ready || hasDrafts ? [['review', ready ? 'Review and deliver' : 'Review drafts']] : [])].map(([id, label]) => <button key={id} className={`tab ${view === id ? 'active' : ''}`} aria-pressed={view === id} onClick={() => setParams({ course: selected.id, view: id })}>{label}</button>)}</nav>
-      {view === 'syllabus' ? <Suspense fallback={<LoadingStatus label="Opening syllabus..." />}><Syllabus key={selected.id} courseContext={selected} /></Suspense> : view === 'review' && syllabus ? <CourseWorkspace syllabusId={syllabus.id} contentStore={store} focusWeek={Number(params.get('week')) || null} onBack={() => setParams({ course: selected.id })} onGenerateWeek={commitWeekDrafts} onCheckItem={checkItem} onBulkCheck={bulkCheck} onToggleVisibility={toggleVisibility} /> : !ready ? <>
+      <nav className="tabs mb-24" aria-label="Course workspace views">{[['topics', 'Weeks and topics'], ...(ready || hasDrafts ? [['review', ready ? 'Review and deliver' : 'Review drafts']] : [])].map(([id, label]) => <button key={id} className={`tab ${view === id ? 'active' : ''}`} aria-pressed={view === id} onClick={() => setParams({ course: selected.id, view: id })}>{label}</button>)}</nav>
+      {view === 'review' && syllabus ? <CourseWorkspace syllabusId={syllabus.id} contentStore={store} focusWeek={Number(params.get('week')) || null} onBack={() => setParams({ course: selected.id })} onGenerateWeek={commitWeekDrafts} onCheckItem={checkItem} onBulkCheck={bulkCheck} onToggleVisibility={toggleVisibility} /> : !ready ? <>
         <ApprovedSyllabusIntake courseCode={selected.code} onUse={useApproved} />
         <button className="btn btn-secondary mt-16" onClick={() => setSharedOpen(true)}><Share2 size={16} />Choose a shared syllabus from the system</button>
       </> : <CourseTopicWeeks syllabus={syllabus} data={scoped} course={selected} />}

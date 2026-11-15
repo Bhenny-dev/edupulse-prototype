@@ -1,11 +1,13 @@
 import { test, expect } from '../snapshots/fixtures'
 import { instructorCourseUI } from '../instructor-course-fixture'
 
-test('assigned-only course cards, nested syllabus and an empty assigned course intake work on reload', async ({ page }) => {
+test('assigned-only course cards, separate syllabus and an empty assigned course intake work on reload', async ({ page, isMobile }) => {
   const fixture = await instructorCourseUI(page)
   await page.goto('/#/dashboard')
   await expect(page.getByRole('heading', { name: 'Instructor Dashboard' })).toBeVisible()
-  await expect(page.getByRole('navigation', { name: 'Main navigation' }).getByRole('link', { name: 'Syllabus', exact: true })).toHaveCount(0)
+  if (isMobile) await page.getByRole('button', { name: 'Open menu', exact: true }).click()
+  await expect(page.getByRole('navigation', { name: isMobile ? 'Mobile navigation' : 'Main navigation' }).getByRole('link', { name: 'Syllabus', exact: true })).toBeVisible()
+  if (isMobile) await page.getByRole('button', { name: 'Close menu', exact: true }).click()
   await expect(page.getByText('Courses loaded', { exact: true })).toBeVisible()
   await page.goto('/#/courseware')
   await expect(page.locator('.instructor-course-card')).toHaveCount(2)
@@ -16,8 +18,9 @@ test('assigned-only course cards, nested syllabus and an empty assigned course i
   await page.reload(); await expect(page.getByRole('dialog', { name: 'Choose shared syllabus' })).toBeVisible()
   await page.getByRole('button', { name: 'Close shared syllabus picker' }).click()
   await page.goto(`/#/syllabus?tab=mine&course=${fixture.syllabus.id}`)
-  await expect(page).toHaveURL(/courseware.*view=syllabus|courseware.*course=/)
-  await expect(page.getByRole('navigation', { name: 'Course workspace views' })).toBeVisible()
+  await expect(page).toHaveURL(/syllabus\?tab=mine/)
+  await expect(page.getByRole('navigation', { name: 'Syllabus sections' })).toBeVisible()
+  await expect(page.getByRole('navigation', { name: 'Course workspace views' })).toHaveCount(0)
   expect(fixture.forbidden).toEqual([])
 })
 

@@ -2,6 +2,11 @@ import { test, expect } from './fixtures'
 import { instructorCourseUI } from '../instructor-course-fixture'
 test('assigned instructor course topics on a phone', async ({ page }) => {
   const fixture = await instructorCourseUI(page)
+  await page.goto('/#/syllabus?tab=mine')
+  await expect(page.getByRole('navigation', { name: 'Syllabus sections' })).toBeVisible()
+  await page.getByRole('button', { name: 'Open menu', exact: true }).click()
+  await expect(page.getByRole('navigation', { name: 'Mobile navigation' }).getByRole('link', { name: 'Syllabus', exact: true })).toBeVisible()
+  await page.getByRole('button', { name: 'Close menu', exact: true }).click()
   await page.goto(`/#/courseware?course=${fixture.syllabus.id}`)
   await page.locator('[data-topic="variables"] > summary').click()
   await expect(page.getByRole('button', { name: 'Add overall assessment', exact: true })).toBeVisible()

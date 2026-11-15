@@ -2,7 +2,7 @@
 
 **Who:** a verified instructor, including a verified System Admin instructor support view. **Where:** **Dashboard**, **Course** and **Pulse**.
 
-The signed-in Instructor navigation is **Dashboard**, **Course** and **Student Monitoring**. **Syllabus** is inside a selected course. Older `/syllabus` links redirect to **Course** and retain their requested syllabus tab or saved record; they do not add an unassigned course to the teaching load.
+The signed-in Instructor navigation is **Dashboard**, **Syllabus**, **Course** and **Student Monitoring**. **Syllabus** is the separate instructor repository for drafts, sharing and PDF building. **Course** retains the single approved syllabus used for its teaching outline; the repository/builder is not a course tab. Former nested syllabus URLs redirect to the standalone repository with their tab/edit references. See [the syllabus repository guide](../45-syllabus-repository/README.md). The dated screenshots below precede this navigation correction; image recapture is paused by the owner.
 
 ## Review the assigned courses and students
 
@@ -21,7 +21,7 @@ The dashboard uses the same summary-card component as the other academic roles. 
 3. Confirm the approved-copy acknowledgment and choose **Use syllabus for course**. Wait for the revision-checked save. Source reading, retention and readable-text indexing follow this explicit intake; an unread or inaccessible source remains disclosed.
 4. Alternatively choose **Choose a shared syllabus from the system**. Select a received copy for the same loaded course, acknowledge that it is authorized, then choose **Use approved shared syllabus**. The server verifies the sender's retained approved file before adoption. Merely receiving a shared copy does not activate or publish it.
 
-The upload area is absent from the ready **Weeks and topics** view. Use the course's **Syllabus** tab for its saved syllabus, received copies, optional draft builder, offline approval steps and sharing/removal controls. The builder stays scoped to the selected course. If that syllabus has saved prepared content before approval, **Review drafts** remains available with publication blocked. Saved suspension remains required before deletion; approval and publication remain separate.
+The upload area is absent from the ready **Weeks and topics** view. Use the separate **Syllabus** navigation page for saved syllabi, received copies, the draft builder, offline approval steps and sharing/removal controls. The repository includes all of your syllabi, while teaching remains limited to assigned courses. If that syllabus has saved prepared content before approval, **Review drafts** remains available with publication blocked. Saved suspension remains required before deletion; approval and publication remain separate.
 
 ## Work through weeks and topics
 

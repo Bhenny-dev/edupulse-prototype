@@ -8,7 +8,6 @@ import {normalizeOutlineSections,addOutlineSection,weekSections,editOutlineSecti
 import OutlineWeekTable from '../components/syllabus/OutlineWeekTable'
 import '../components/syllabus/outline-editor.css'
 import { revisedWorkspace } from '../utils/syllabusRevisions'
-import { useAcademicRecords } from '../context/AcademicContext'
 import ModalLayer from '../components/ui/ModalLayer'
 import AutoTextarea from '../components/ui/AutoTextarea'
 import { Spinner,LoadingStatus } from '../components/ui/LoadingFeedback'
@@ -26,7 +25,6 @@ import {
 } from 'lucide-react'
 import { useWorkspace, useWorkspaceViewState } from '../context/WorkspaceContext'
 import ApprovedSyllabusUpload from '../components/syllabus/ApprovedSyllabusUpload'
-import ApprovedSyllabusIntake from '../components/syllabus/ApprovedSyllabusIntake'
 import { meaningfulOutline,downloadApprovedFile } from '../utils/syllabusFiles'
 import UploadExistingSyllabus from '../components/syllabus/UploadExistingSyllabus'
 import SharedSyllabusRepository from '../components/syllabus/SharedSyllabusRepository'
@@ -394,7 +392,7 @@ const FormGroup = ({ label, required, error, children, note }) => {
 }
 
 
-function SyllabusBuilder({ onComplete, onCancel, initial, courseContext }) {
+function SyllabusBuilder({ onComplete, onCancel, initial, courseContext, focusUpload = false }) {
   const [outlineDraft,setOutlineDraft]=useState(null)
   const { addToast } = useToast()
   const ic = DEFAULT_INSTITUTIONAL_CONTEXT
@@ -680,6 +678,7 @@ function SyllabusBuilder({ onComplete, onCancel, initial, courseContext }) {
       {sourceFiles.length > 0 && <p className="syllabus-source-context" role="status">Source available to Pulse: <strong>{sourceFiles.map(file => file.title).join(', ')}</strong>. Select a section to correct it against this file. Source context lasts while this builder is open.</p>}
       {uploadStep === 'pending' && (
         <UploadExistingSyllabus
+          focusUpload={focusUpload}
           onExtract={handleUploadExtract}
           onCancel={() => setUploadStep('done')}
         />
@@ -1018,12 +1017,10 @@ export default function Syllabus({ courseContext }) {
   const adoptShare=incoming.find(item=>item.id===adoptId)
   const sharingSyllabus=syllabi.find(item=>item.id===shareId&&inCourse(item))
   const activeOnly = searchParams.get('status') === 'active'
-  const teachingSyllabi = syllabi.filter(syllabus => ['own','draft'].includes(syllabus.teachingSetRole))
-  const listedSyllabi = (activeOnly ? syllabi.filter(syllabus => syllabus.status === 'active') : teachingSyllabi.length && searchParams.get('status') !== 'all' ? teachingSyllabi : syllabi).filter(inCourse)
-  const {data:academic}=useAcademicRecords()
+  const listedSyllabi = (activeOnly ? syllabi.filter(syllabus => syllabus.status === 'active') : syllabi).filter(inCourse)
   const editingId=searchParams.get('edit')
   const editingSyllabus=syllabi.find(item=>item.id===editingId&&!item.sample&&!item.suspended&&inCourse(item))
-  const openBuilder=syllabus=>{setReaderId(null);setPreviewSyllabus(null);setTab('builder');setSearchParams({tab:'builder',...(syllabus?{edit:syllabus.id}:{})})}
+  const openBuilder=(syllabus,importDraft=false)=>{setReaderId(null);setPreviewSyllabus(null);setTab('builder');setSearchParams({tab:'builder',...(syllabus?{edit:syllabus.id}:{}),...(importDraft?{import:'draft'}:{})})}
   const [uploadingSyllabus, setUploadingSyllabus] = useState(null)
 
   useEffect(() => {
@@ -1036,7 +1033,7 @@ export default function Syllabus({ courseContext }) {
 
   const switchTab = (t) => {
     setTab(t)
-    setSearchParams(prev => { const p = new URLSearchParams(prev); p.set('tab', t); p.delete('status'); if(t!=='builder')p.delete('edit'); return p })
+    setSearchParams(prev => { const p = new URLSearchParams(prev); p.set('tab', t); p.delete('status'); p.delete('import'); if(t!=='builder')p.delete('edit'); return p })
   }
 
   const record = (syl, status) => ({ ...syl, status, lastUpdated: new Date().toISOString(), history: [...(syl.history || []), { status, version: syl.version || 1, timestamp: new Date().toISOString(), author: user?.name || 'Instructor' }].slice(-100) })
@@ -1050,14 +1047,6 @@ export default function Syllabus({ courseContext }) {
     else {setTab('mine');setSearchParams({tab:'mine',status:'all'})}
     pulseBus.progress('syllabus-saved', next.courseCode)
     return { ...saved, id: next.id, status: next.status }
-  }
-
-  const handleUseApprovedSyllabus = async candidate => {
-    const next = record({ ...candidate, instructorId: user?.id, history: [] }, 'active')
-    await commit(data => revisedWorkspace(data, next))
-    pulseBus.progress('syllabus-activated', next.courseCode)
-    navigate(`/courseware?course=${encodeURIComponent(next.id)}`)
-    addToast(`${next.courseCode} syllabus selected. Its outline is ready for courseware generation.`, 'success')
   }
 
   // One explicit human action per station — this is the approval loop of
@@ -1123,54 +1112,24 @@ export default function Syllabus({ courseContext }) {
       {editingSyllabus?.status==='active'&&<p role="alert" className="mb-16">Saving a revision returns this syllabus to Drafted and hides its published courseware until the approved outline is activated again. Changed teaching weeks require another courseware review.</p>}
       {sharing.allowed&&<div className="academic-actions mb-16"><button className="btn btn-secondary btn-sm" disabled={sharing.loading} onClick={()=>sharing.load()}>{sharing.loading?'Loading shared syllabi…':'Refresh shared syllabi'}</button>{sharing.error&&<p role="alert">{sharing.error}</p>}</div>}
       {actionError&&!sharingSyllabus&&!deleteSyllabus&&!deleteShare&&<p role="alert">{actionError}</p>}
-      {/* Tabs */}
-      <div style={{ display: 'flex', gap: '0', borderBottom: '2px solid var(--gray-200)', marginBottom: '20px' }}>
-        <button
-          onClick={() => switchTab('mine')}
-          style={{
-            padding: '10px 20px', border: 'none', background: 'none', cursor: 'pointer', fontWeight: 600,
-            fontSize: '0.875rem', color: tab === 'mine' ? 'var(--sky-600)' : 'var(--gray-500)',
-            borderBottom: tab === 'mine' ? '2px solid var(--sky-500)' : '2px solid transparent',
-            marginBottom: '-2px', transition: 'all 0.15s',
-          }}
-        >
-          My Syllabus
-        </button>
-        <button
-          onClick={() => switchTab('repository')}
-          style={{
-            padding: '10px 20px', border: 'none', background: 'none', cursor: 'pointer', fontWeight: 600,
-            fontSize: '0.875rem', color: tab === 'repository' ? 'var(--sky-600)' : 'var(--gray-500)',
-            borderBottom: tab === 'repository' ? '2px solid var(--sky-500)' : '2px solid transparent',
-            marginBottom: '-2px', transition: 'all 0.15s',
-          }}
-        >
-          Shared Repository
-        </button>
-        <button
-          onClick={() => { openBuilder(null) }}
-          style={{
-            padding: '10px 20px', border: 'none', background: 'none', cursor: 'pointer', fontWeight: 600,
-            fontSize: '0.875rem', color: tab === 'builder' ? 'var(--sky-600)' : 'var(--gray-500)',
-            borderBottom: tab === 'builder' ? '2px solid var(--sky-500)' : '2px solid transparent',
-            marginBottom: '-2px', transition: 'all 0.15s',
-          }}
-        >
-          Syllabus Builder
-        </button>
-      </div>
+      <nav className="tabs mb-24" aria-label="Syllabus sections" style={{ flexWrap: 'wrap' }}>
+        {[['mine', 'My Syllabus'], ['repository', 'Shared Repository'], ['builder', 'Syllabus Builder']].map(([id,label]) => <button key={id} className={`tab ${tab === id ? 'active' : ''}`} aria-pressed={tab === id} onClick={() => id === 'builder' ? openBuilder(null) : switchTab(id)}>{label}</button>)}
+      </nav>
 
       {tab === 'mine' && (
         <>
-          {!courseContext && <ApprovedSyllabusIntake onUse={handleUseApprovedSyllabus} focusUpload={searchParams.get('upload') === 'approved'} />}
-          {teachingSyllabi.length>0&&!activeOnly&&<div className="academic-actions mt-16" role="status"><strong>Teaching set</strong><span>{teachingSyllabi.filter(s=>s.teachingSetRole==='own').length} own syllabi</span><span>{incoming.length} shared with me</span><span>{teachingSyllabi.filter(s=>s.teachingSetRole==='draft').length} complete drafts</span><button className="btn btn-secondary btn-sm" onClick={()=>setSearchParams({tab:'mine',...(searchParams.get('status')==='all'?{}:{status:'all'})})}>{searchParams.get('status')==='all'?'Show teaching set':'Show all syllabi'}</button></div>}
+          <section className="card mb-16" aria-label="Syllabus repository actions"><div className="card-body">
+            <h2 className="mb-8">Your syllabus repository</h2>
+            <p className="text-sm text-muted mb-16">Keep your drafts and shared syllabi here. Import a PDF or DOCX to edit its extracted sections, or build a syllabus and download its PDF. Select the approved syllabus used for teaching inside its loaded Course.</p>
+            <div className="academic-actions"><button className="btn btn-secondary" onClick={() => openBuilder(null,true)}><Upload size={16} />Upload draft PDF or DOCX</button><button className="btn btn-primary" onClick={() => openBuilder(null)}><Plus size={16} />Build a syllabus</button></div>
+          </div></section>
           {activeOnly && <div className="flex flex-wrap items-center gap-16 mb-16" role="status"><strong>Active syllabi</strong><button className="btn btn-secondary btn-sm" onClick={() => setSearchParams({ tab: 'mine' })}>Show all syllabi</button></div>}
 
           <div style={{ marginTop: '20px' }}>
             {listedSyllabi.length === 0 ? (
               <div className="card"><div className="card-body text-center text-muted" style={{ padding: '40px' }}>
                 <BookOpen size={32} style={{ margin: '0 auto 12px', opacity: 0.4 }} />
-                <p>{activeOnly ? 'No active syllabi yet.' : 'No saved syllabi yet. Upload an approved copy above, or create a draft in Syllabus Builder.'}</p>
+                <p>{activeOnly ? 'No active syllabi yet.' : 'No saved syllabi yet. Upload a draft PDF or DOCX, or create one in Syllabus Builder.'}</p>
               </div></div>
             ) : (
               <div className="academic-table-wrap"><table className="data-table syllabus-list">
@@ -1234,7 +1193,7 @@ export default function Syllabus({ courseContext }) {
       {/* Tab: Syllabus Builder */}
       {tab === 'builder' && (
         <div data-pulse-help="syllabus-field">
-          {workspaceLoading?<LoadingStatus label="Loading editable syllabus..."/>:editingId&&!editingSyllabus?<p role="alert">This editable syllabus is unavailable in your current workspace. Return to My Syllabus to select an available draft.</p>:<SyllabusBuilder courseContext={courseContext} key={editingSyllabus?.id || "new"} initial={editingSyllabus} onComplete={saveBuilder} onCancel={() => { switchTab('mine') }} />}
+          {workspaceLoading?<LoadingStatus label="Loading editable syllabus..."/>:editingId&&!editingSyllabus?<p role="alert">This editable syllabus is unavailable in your current workspace. Return to My Syllabus to select an available draft.</p>:<SyllabusBuilder focusUpload={searchParams.get('import') === 'draft'} courseContext={courseContext} key={editingSyllabus?.id || "new"} initial={editingSyllabus} onComplete={saveBuilder} onCancel={() => { switchTab('mine') }} />}
         </div>
       )}
 

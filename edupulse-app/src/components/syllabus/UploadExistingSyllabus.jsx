@@ -13,7 +13,7 @@ const SECTION_LABELS = [
   'References',
 ]
 
-export default function UploadExistingSyllabus({ onExtract, onCancel, compact }) {
+export default function UploadExistingSyllabus({ onExtract, onCancel, compact, focusUpload = false }) {
   const [file, setFile] = useState(null)
   const [parsing, setParsing] = useState(false)
   const [progress, setProgress] = useState('Parsing syllabus document…')
@@ -147,6 +147,8 @@ export default function UploadExistingSyllabus({ onExtract, onCancel, compact })
           </div>
         )}
       </div>
+
+      <button type="button" className="btn btn-secondary mt-16" disabled={parsing} autoFocus={focusUpload} onClick={() => inputRef.current?.click()}><Upload size={16} />Choose draft PDF or DOCX</button>
 
       {parsed && (
         <div style={{ marginTop: '16px' }}>
