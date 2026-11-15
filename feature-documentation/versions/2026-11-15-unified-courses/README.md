@@ -12,8 +12,16 @@ TypeScript and lint passed (existing unrelated lint warnings remain). All four a
 
 Migration `20261115131427_unified_dean_courses.sql` was applied to the linked EduPulse project after native validation and a dry run. All seven before/after business-table count/hash fingerprints matched: institutional records, courses, workspaces, enrollments, attempts, material access and reading progress. Hosted checks as `authenticated` with existing live Dean and Program Coordinator identities read an existing saved syllabus and one teaching item; an Instructor was denied the management scan. Actual Admin support RPCs also read the same existing content for both management roles. These explicit verification transactions rolled back, preserving support audit and business records. The initial SQL harness omitted Admin JWT role metadata and included unavailable subjects; the production policy rejected those calls. Using complete recorded claims and currently confirmed, unbanned subjects passed without changing any permission or account.
 
-Linked public/private database lint reported no schema errors. Inspection fetches one selected course snapshot on explicit open/authorized reload; it introduces no polling or background full-workspace download. Original approved files remain bounded by the existing workspace/file limits. No production load, content or learner data was populated. The deployment's full final-source verification and production-asset UI results will be appended after release.
+Linked public/private database lint reported no schema errors. Inspection fetches one selected course snapshot on explicit open/authorized reload; it introduces no polling or background full-workspace download. Original approved files remain bounded by the existing workspace/file limits. No production load, content or learner data was populated.
 
 The controlled browser fixtures exercise actual UI and file readers without creating hosted learners or teaching content. They are not proof of a hosted sign-in. The teaching reset remains in force; no rejected seed is restored.
 
 See [the current guide](../../system-manual/46-course-load-workspace/README.md).
+
+## Verified release
+
+Runtime `059d1de4c415cd5619f9ddc47ffcffdee960aced` was pushed to main and deployed Ready as `dpl_GPmP5GzN6TrTHFT8y6WKL8bLo2aN`. The canonical [EduPulse site](https://edupulse-prototype.vercel.app) was verified to resolve to that deployment. Vercel passed the full final-source gate: lint, TypeScript, all **390 native tests**, production build and deployment diagnostics.
+
+All **six production-UI checks** passed across desktop and phone. They cover course-load addition/removal and both management roles' edit, original uploaded PDF, outline, material/question scanning, reload restoration, no learner commands and revoked-load handling. These checks run deployed assets with controlled account/API transport; the separate hosted authenticated SQL and Admin support-RPC checks above establish the database permissions/persistence path. No real learner attempts or authored content were created for verification.
+
+The main checkout was fast-forwarded to the release while preserving unrelated local document-renderer edits and scratch files. Broad screenshot publication remains paused by the owner; private captures and the current browser/capture assertions were reviewed/updated.
