@@ -7,17 +7,16 @@ export default defineAgent({
   zone: 'records',
   label: 'Records',
   roles: ['dean', 'associate_dean'],
-  greeting: () => "This Records view uses sample data. Want to preview the EduSuite import flow or inspect the example blocks and class lists?",
+  greeting: () => "This Records view uses sample data. Want to preview the EduSuite upload flow or inspect the example blocks and class lists?",
   intents: [
-    {key:'courses',label:'Review course activity',roles:['dean'],steps:[]},
-    {key:'instructors',label:'Review instructor activity',roles:['dean'],steps:[]},
+    {key:'courses',label:'Review course activity',roles:['dean','associate_dean'],steps:[]},
+    {key:'instructors',label:'Review instructor activity',roles:['dean','associate_dean'],steps:[]},
     {
-      key: 'import', label: 'Import files from EduSuite', roles:['associate_dean'],
+      key: 'import', label: 'Upload an EduSuite file', roles: ['dean', 'associate_dean'],
       steps: [
-        { title: 'Pick the file type', body: 'Course records, course loads, or student class lists (blocks) — each has its own template.' },
-        { title: 'Upload the export', body: 'Drop the CSV exported from EduSuite. EduPulse never syncs live with EduSuite — this is a manual file handoff each time data changes.' },
-        { title: 'Review the parsed rows', body: 'Anything malformed is flagged and reported, not silently dropped.' },
-        { title: 'Review the preview result', body: 'The current import control updates only this page’s preview history. It does not persist records or update course loading, syllabi, or class lists. Use EduSuite as the institutional source of truth.' },
+        { title: 'Choose what to upload', body: 'Course loads on the Course page, or the student list on the Students page.' },
+        { title: 'Review the plan', body: 'Matches, irregular students and rows that cannot be placed are shown with the reason.' },
+        { title: 'Confirm the upload', body: 'Confirming saves shared records and the matching class lists. Nothing is saved before that.' },
       ],
     },
     {

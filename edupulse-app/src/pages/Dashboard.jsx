@@ -95,21 +95,21 @@ function ManagementDashboard({ model, actions = exportButton, status }) {
   const { user } = useAuth()
 
   const quickActions = [
-    { label: user?.role==='dean'?'View Course':'Load Courses', icon: ClipboardCheck, action: () => navigate(user?.role==='dean'?'/records':'/course-loading'), color: 'var(--green-500)' },
+    { label: ['dean','associate_dean'].includes(user?.role)?'View Course':'Load Courses', icon: ClipboardCheck, action: () => navigate(['dean','associate_dean'].includes(user?.role)?'/records':'/course-loading'), color: 'var(--green-500)' },
     { label: 'Monitor Delivery', icon: BarChart3, action: () => navigate('/monitor'), color: 'var(--purple-500)' },
     { label: 'Ask Pulse', icon: Sparkles, action: () => pulseBus.say('Hi! What would you like help with today?'), color: 'var(--amber-500)' },
   ]
 
   return (
     <div className="container">
-      <PageHeader title={`${user?.title} Dashboard`} subtitle={user?.role==='dean'?'Courses, instructors and recorded student activity':'College of Information Technology — course loading and delivery monitoring'} actions={actions} />
+      <PageHeader title={`${user?.title} Dashboard`} subtitle={['dean','associate_dean'].includes(user?.role)?'Courses, instructors and recorded student activity':'College of Information Technology — course loading and delivery monitoring'} actions={actions} />
       {status}
       {model && <>
       <div className="kpi-grid mb-24">
-        <KpiCard icon={BookOpen} label="Released Courses" value={model.kpis.released} color="var(--sky-500)" bg="var(--sky-100)" to={user?.role==='dean'?'/records?tab=courses':undefined}/>
-        <KpiCard icon={ClipboardCheck} label="Courses Loaded" value={model.kpis.loaded} color="var(--purple-500)" bg="var(--purple-100)" to={user?.role==='dean'?'/records?tab=loads':undefined}/>
-        <KpiCard icon={CheckCircle} label="Approved Syllabi" value={model.kpis.approved} color="var(--green-500)" bg="var(--green-100)" to={user?.role==='dean'?'/monitor?tab=overview':undefined}/>
-        <KpiCard icon={AlertTriangle} label="Not Yet Routed for Approval" value={model.kpis.notRouted} color="var(--amber-500)" bg="var(--amber-100)" to={user?.role==='dean'?'/monitor?tab=overview':undefined}/>
+        <KpiCard icon={BookOpen} label="Released Courses" value={model.kpis.released} color="var(--sky-500)" bg="var(--sky-100)" to={['dean','associate_dean'].includes(user?.role)?'/records?tab=courses':undefined}/>
+        <KpiCard icon={ClipboardCheck} label="Courses Loaded" value={model.kpis.loaded} color="var(--purple-500)" bg="var(--purple-100)" to={['dean','associate_dean'].includes(user?.role)?'/records?tab=loads':undefined}/>
+        <KpiCard icon={CheckCircle} label="Approved Syllabi" value={model.kpis.approved} color="var(--green-500)" bg="var(--green-100)" to={['dean','associate_dean'].includes(user?.role)?'/monitor?tab=overview':undefined}/>
+        <KpiCard icon={AlertTriangle} label="Not Yet Routed for Approval" value={model.kpis.notRouted} color="var(--amber-500)" bg="var(--amber-100)" to={['dean','associate_dean'].includes(user?.role)?'/monitor?tab=overview':undefined}/>
       </div>
 
       <div className="card mb-24">

@@ -471,7 +471,7 @@ export default function Records() {
   const isAdmin = ['dean', 'associate_dean'].includes(user?.role)
 
   if (!isAdmin) return null
-  if(user?.role==='dean')return tab==='sections'?<Navigate to="/students" replace/>:<AcademicPortal view="records"/>
+  if(isAdmin)return tab==='sections'?<Navigate to="/students" replace/>:<AcademicPortal view="records"/>
   if (user?.authenticated) return <AcademicPortal view="records" />
 
   return (

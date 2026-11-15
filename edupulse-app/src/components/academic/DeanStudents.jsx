@@ -4,7 +4,8 @@ import { useWorkspaceViewState } from '../../context/WorkspaceContext'
 import { Empty, Table, CsvButton, useAcademicTabs } from './AcademicUI'
 import { deanRecords, deanDirectory, studentCourseProgress, isIrregular, yearLabel, loadRows } from './deanRecordModel'
 import GlassIcon from '../ui/GlassIcon'
-import { DeanCards, DeanDialog, DeanFeedback, ConfirmDialog, StatusBadge, Pager, UploadButton } from './DeanCommon'
+import { useAuth } from '../../context/AuthContext'
+import { DeanCards, DeanDialog, ActivityTable, DeanFeedback, ConfirmDialog, StatusBadge, Pager, UploadButton } from './DeanCommon'
 import { useDeanAction } from './deanActions'
 import DeanAccountDialog from './DeanAccountDialog'
 import { knownBlocks } from './DeanCourses'
@@ -15,6 +16,7 @@ const placementLabel = student => isIrregular(student) ? 'Irregular' : student.b
 const percentText = value => value === null || value === undefined ? '—' : `${value}%`
 
 export default function DeanStudents({ data }) {
+  const { user } = useAuth(), scores = user?.role !== 'associate_dean'
   const model = useMemo(() => deanRecords(data), [data])
   const directory = useMemo(() => deanDirectory(data, model), [data, model])
   const blocks = useMemo(() => knownBlocks(data, model), [data, model])
@@ -60,7 +62,7 @@ export default function DeanStudents({ data }) {
       <div className="academic-actions">{directory.managed && <><UploadButton label={<><FileUp size={15} aria-hidden="true" /> Upload student list</>} onFile={upload} disabled={Boolean(action.busy)} /><button className="btn btn-primary btn-sm" onClick={() => setEditing('new')}><UserPlus size={15} aria-hidden="true" /> Add student</button></>}</div>
     </div>
     {tab === 'list' && <>
-      <Table label="Student list" headers={['Student number', 'Name', 'Year', 'Block', 'Assessments taken', 'Materials opened', 'Status', 'Actions']} rows={visible.map(s => { const a = activity(s); return [s.student_number || '—',
+      <ActivityTable scores={scores} label="Student list" headers={['Student number', 'Name', 'Year', 'Block', 'Assessments taken', 'Materials opened', 'Status', 'Actions']} rows={visible.map(s => { const a = activity(s); return [s.student_number || '—',
         <button key="name" className="dean-link" onClick={() => setDetail(`student:${s.id}`)} aria-label={`View student ${s.name}`}>{s.name}</button>, s.year_level ? `Year ${s.year_level}` : '—',
         isIrregular(s) ? <span key="p" className="dean-tag dean-tag-reassign">Irregular</span> : s.block || '—', a.submissions, a.opens, <StatusBadge key="s" status={s.status} />, manage(s) || '—'] })} empty={students.length ? 'No student matches this view.' : 'No student accounts yet. Upload the EduSuite student list or add a student.'} />
       <Pager page={current} pages={pages} onPage={setPage} total={filtered.length} label="students" />
@@ -72,10 +74,10 @@ export default function DeanStudents({ data }) {
     </>}
     {block && <DeanDialog title={block.name} subtitle={block.irregular ? 'Students who attend classes by subject instead of one block' : `${yearLabel(block)} · ${blockStudents.length} registered student${blockStudents.length === 1 ? '' : 's'} · ${block.courseIds.size} course offering${block.courseIds.size === 1 ? '' : 's'}`} icon={block.irregular ? Shuffle : Users} tone={block.irregular ? 'amber' : 'sky'} label={block.irregular ? 'Irregular students' : `Block ${block.name}`} onClose={() => setDetail(null)}>
       <div className="academic-filters"><CsvButton headers={['Student number', 'Name', 'Email', 'Year level', 'Classes']} rows={blockStudents.map(s => [s.student_number, s.name, s.email, s.year_level, classesOf(directory, s).map(c => `${c.CourseCode} ${c.Block}`).join('; ')])} name={block.irregular ? 'irregular-students' : `block-${block.name}`} /></div>
-      <Table headers={['Student number', 'Name', 'Year', ...(block.irregular ? ['Classes'] : []), 'Assessments taken', 'Materials opened', 'Status']} rows={blockStudents.map(s => { const a = activity(s); return [s.student_number, <button key="n" className="dean-link" onClick={() => setDetail(`student:${s.id}`)}>{s.name}</button>, s.year_level || '—', ...(block.irregular ? [classesOf(directory, s).map(c => `${c.CourseCode} · ${c.Block}`).join(', ') || 'No classes yet'] : []), a.submissions, a.opens, <StatusBadge key="s" status={s.status} />] })} empty={block.irregular ? 'No irregular students are recorded.' : 'No registered students in this block.'} />
+      <ActivityTable scores={scores} headers={['Student number', 'Name', 'Year', ...(block.irregular ? ['Classes'] : []), 'Assessments taken', 'Materials opened', 'Status']} rows={blockStudents.map(s => { const a = activity(s); return [s.student_number, <button key="n" className="dean-link" onClick={() => setDetail(`student:${s.id}`)}>{s.name}</button>, s.year_level || '—', ...(block.irregular ? [classesOf(directory, s).map(c => `${c.CourseCode} · ${c.Block}`).join(', ') || 'No classes yet'] : []), a.submissions, a.opens, <StatusBadge key="s" status={s.status} />] })} empty={block.irregular ? 'No irregular students are recorded.' : 'No registered students in this block.'} />
     </DeanDialog>}
     {typeof detail === 'string' && (detail.startsWith('block:') && !block || detail.startsWith('student:') && !selected) && <DeanDialog title="Record unavailable" size="narrow" onClose={() => setDetail(null)}><Empty>This record is no longer in your authorized view. Close this dialog and choose a current record.</Empty></DeanDialog>}
-    {selected && <StudentDialog student={selected} data={data} model={model} directory={directory} actions={manage(selected)} onClose={() => setDetail(null)} />}
+    {selected && <StudentDialog scores={scores} student={selected} data={data} model={model} directory={directory} actions={manage(selected)} onClose={() => setDetail(null)} />}
     {editing && <DeanAccountDialog role="student" account={editing === 'new' ? null : editing} blocks={blocks} action={action} onClose={() => setEditing(null)} />}
     {confirm && <ConfirmDialog title={confirm.next === 'suspended' ? 'Suspend student' : confirm.next === 'active' ? 'Reactivate student' : 'Remove student'} confirmLabel={confirm.next === 'suspended' ? 'Suspend' : confirm.next === 'active' ? 'Reactivate' : 'Remove account'} danger={confirm.next !== 'active'} busy={action.busy}
       onClose={() => setConfirm(null)} onConfirm={async () => {
@@ -92,7 +94,7 @@ export default function DeanStudents({ data }) {
 
 const classesOf = (directory, student) => directory.irregular.filter(row => row.StudentID === student.student_number)
 
-function StudentDialog({ student, data, model, directory, actions, onClose }) {
+function StudentDialog({ student, data, model, directory, actions, scores, onClose }) {
   const rows = studentCourseProgress(data, model, student.email), classes = classesOf(directory, student)
   const total = key => rows.reduce((sum, row) => sum + row[key], 0)
   const scored = rows.filter(row => row.average !== null), average = scored.length ? Math.round(scored.reduce((sum, row) => sum + row.average, 0) / scored.length) : null
@@ -104,16 +106,16 @@ function StudentDialog({ student, data, model, directory, actions, onClose }) {
       <div><dt>Status</dt><dd><StatusBadge status={student.status} /></dd></div>
       <div><dt>Last sign-in</dt><dd>{student.last_sign_in_at ? new Date(student.last_sign_in_at).toLocaleDateString() : 'Never'}</dd></div>
     </dl>
-    <div className="dean-mini-stats">
+    {scores && <div className="dean-mini-stats">
       <span><strong>{rows.length}</strong> course{rows.length === 1 ? '' : 's'}</span>
       <span><strong>{total('opened')}</strong> of {total('materials')} materials opened</span>
       <span><strong>{total('taken')}</strong> of {total('assessments')} assessments taken</span>
       <span><strong>{percentText(average)}</strong> average raw score</span>
-    </div>
-    <h3 className="dean-subhead">Assessments and learning materials by course</h3>
-    <Table headers={['Course', 'Block', 'Instructor', 'Materials opened', 'Assessments taken', 'Average raw score']} rows={rows.map(row => [`${row.code} — ${row.title}`, row.block || '—', row.instructor || '—', `${row.opened} / ${row.materials}`, `${row.taken} / ${row.assessments}${row.pending ? ` (${row.pending} awaiting review)` : ''}`, percentText(row.average)])} empty="Not in any class list yet." />
-    {isIrregular(student) && <><h3 className="dean-subhead">Irregular classes</h3><Table headers={['Course', 'Class block', 'In class list']} rows={classes.map(c => [c.CourseCode, c.Block, rows.some(r => r.code === c.CourseCode && r.block === c.Block) ? 'Yes' : 'Waiting for the instructor’s course'])} empty="No classes recorded. Upload the EduSuite list with the subjects this student attends." /></>}
-    <p className="text-xs text-muted mt-16">Raw scores from EduPulse assessments, not official grades.</p>
+    </div>}
+    <h3 className="dean-subhead">{scores ? 'Assessments and learning materials by course' : 'Courses and class blocks'}</h3>
+    <ActivityTable scores={scores} headers={['Course', 'Block', 'Instructor', 'Materials opened', 'Assessments taken', 'Average raw score']} rows={rows.map(row => [`${row.code} — ${row.title}`, row.block || '—', row.instructor || '—', `${row.opened} / ${row.materials}`, `${row.taken} / ${row.assessments}${row.pending ? ` (${row.pending} awaiting review)` : ''}`, percentText(row.average)])} empty="Not in any class list yet." />
+    {isIrregular(student) && <><h3 className="dean-subhead">Irregular classes</h3><ActivityTable scores={scores} headers={['Course', 'Class block', 'In class list']} rows={classes.map(c => [c.CourseCode, c.Block, rows.some(r => r.code === c.CourseCode && r.block === c.Block) ? 'Yes' : 'Waiting for the instructor’s course'])} empty="No classes recorded. Upload the EduSuite list with the subjects this student attends." /></>}
+    {scores && <p className="text-xs text-muted mt-16">Raw scores from EduPulse assessments, not official grades.</p>}
   </DeanDialog>
 }
 

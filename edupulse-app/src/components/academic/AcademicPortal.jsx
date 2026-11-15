@@ -32,10 +32,11 @@ export default function AcademicPortal({ view }) {
   const { user } = useAuth()
   const [pageParams,setPageParams]=useSearchParams()
   const records = useAcademicRecords()
-  const preview=!user?.authenticated&&(user?.role==='dean'||user?.role==='instructor'&&view==='monitoring')
+  const staff=['dean','associate_dean'].includes(user?.role)
+  const preview=!user?.authenticated&&(staff||user?.role==='instructor'&&view==='monitoring')
   const data=preview?deanPreview():records.data, loadError=records.error, loading=records.loading, loaded=records.loaded||preview, execute=records.command
-  const deanPage=user?.role==='dean'&&['records','instructors','students'].includes(view)
-  const title=user?.role==='student'&&view==='courseware'?'My Courses':user?.role==='student'&&view==='assessment'?'Practice Assessments':user?.role==='dean'&&view==='records'?'Course':TITLES[view]
+  const deanPage=staff&&['records','instructors','students'].includes(view)
+  const title=user?.role==='student'&&view==='courseware'?'My Courses':user?.role==='student'&&view==='assessment'?'Practice Assessments':staff&&view==='records'?'Course':TITLES[view]
   const [readerId,setReaderId]=useWorkspaceViewState(`academic-reader:${view}`,null)
   const selected=data.publications.find(item=>item.active&&item.id===readerId&&(view!=='courseware'||user?.role!=='student'||item.course_id===pageParams.get('course')))||null
   const sourcePreview = data.publications.find(item => item.id === pageParams.get('publication') && item.active && item.type !== 'assessment' && item.course_id === pageParams.get('course'))

@@ -33,6 +33,7 @@ async function database() {
     INSERT INTO public.edupulse_courses(id,instructor_id,course_code,course_title) VALUES('c102','${TEACHER}','IT 102','Programming foundations');`)
   await db.exec(await readFile('supabase/migrations/20261114080000_dean_course_loads_and_accounts.sql', 'utf8'))
   await db.exec(await readFile('supabase/migrations/20261114090000_dean_support_directory_fix.sql', 'utf8'))
+  await db.exec(await readFile('supabase/migrations/20261115080000_program_coordinator_dean_parity.sql', 'utf8'))
   return db
 }
 const as = (db: PGlite, id: string) => db.query(`SELECT set_config('request.jwt.claim.sub',$1,false)`, [id])
@@ -44,6 +45,9 @@ test('Dean manages instructor accounts, recorded degrees and course loads', asyn
   try {
     await as(db, TEACHER)
     await assert.rejects(dean(db, { action: 'directory' }), { code: '42501' }, 'only the Dean reads the directory')
+    await db.exec(`UPDATE auth.users SET raw_app_meta_data='{"role":"associate_dean"}' WHERE id='${OUTSIDER}'`)
+    await as(db, OUTSIDER)
+    assert.ok(Array.isArray((await dean<{ instructors: unknown[] }>(db, { action: 'directory' })).instructors), 'the Program Coordinator uses the same actions')
     await db.exec(`UPDATE auth.users SET raw_app_meta_data='{"role":"admin"}' WHERE id='${OUTSIDER}'`)
     await as(db, OUTSIDER)
     assert.ok(Array.isArray((await dean<{ instructors: unknown[] }>(db, { action: 'directory' })).instructors), 'the System Admin bypasses the Dean role')

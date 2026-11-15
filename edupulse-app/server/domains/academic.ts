@@ -73,7 +73,7 @@ export async function readAcademic(identity: Identity) {
   if (identity.local) return { mode: 'local', courses: [], enrollments: [], publications: [], attempts: [], accesses: [] }
   if (identity.supportActor) {
     const data=await supportAction(identity, 'academic.read')
-    if(['dean','instructor'].includes(identity.role))data.enrollments=await academicStudentYears(userDb(identity),data.enrollments||[])
+    if(['dean','associate_dean','instructor'].includes(identity.role))data.enrollments=await academicStudentYears(userDb(identity),data.enrollments||[])
     return data
   }
   const client = userDb(identity)
@@ -93,20 +93,20 @@ export async function readAcademic(identity: Identity) {
   }
   // The Dean directory is additive: an unavailable directory leaves the records readable.
   let directory: unknown, directoryError: string | undefined
-  if (['dean', 'admin'].includes(identity.role)) {
+  if (['dean', 'associate_dean', 'admin'].includes(identity.role)) {
     const listed = await client.rpc('edupulse_dean_command', { command: { action: 'directory' } })
     if (listed.error) directoryError = 'Instructor and student accounts could not be loaded. Retry when connected.'
     else directory = listed.data
   }
   const result={ mode: 'cloud', attempts: [], accesses: [], enrollments:[] as Record<string,unknown>[], faculty, assignedCourses:assigned?.data||[], ...Object.fromEntries(rows), ...(directory ? { directory } : {}), ...(directoryError ? { directoryError } : {}) }
-  if(['dean','instructor'].includes(identity.role))result.enrollments=await academicStudentYears(client,result.enrollments as Record<string,unknown>[])
+  if(['dean','associate_dean','instructor'].includes(identity.role))result.enrollments=await academicStudentYears(client,result.enrollments as Record<string,unknown>[])
   return result
 }
 export async function executeAcademic(identity: Identity, input: z.infer<typeof academicCommand>) {
   if (identity.local || identity.role === 'guest') throw new ApiError(403, 'FORBIDDEN', 'Use an authenticated academic account for shared records.')
   if (input.operation === 'dean') {
     if (identity.supportActor) return supportAction(identity, 'dean.command', input.command)
-    if (!['dean', 'admin'].includes(identity.role)) throw new ApiError(403, 'FORBIDDEN', 'Only the Dean or System Admin manages course loads and accounts.')
+    if (!['dean', 'associate_dean', 'admin'].includes(identity.role)) throw new ApiError(403, 'FORBIDDEN', 'Only the Dean, Program Coordinator or System Admin manages course loads and accounts.')
     const { data, error } = await userDb(identity).rpc('edupulse_dean_command', { command: input.command })
     if (error) throw new ApiError(error.code === '42501' ? 403 : error.code === '22023' ? 400 : 503, 'DEAN_ACTION_FAILED', error.code === '22023' ? error.message : 'The change could not be verified. Refresh and retry; nothing is reported as saved.')
     return data

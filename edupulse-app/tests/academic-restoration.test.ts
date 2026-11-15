@@ -51,7 +51,7 @@ test('account guidance distinguishes persisted records from preview and preserve
  const dean={role:'dean',authenticated:true},associate={role:'associate_dean',authenticated:true}
  assert.match(accountGreeting(recordsGuide,dean),/course and instructor activity/);assert.match(accountGreeting(recordsGuide,{role:'dean'}),/sample/)
  const imported=prepareIntent(recordsGuide,recordsGuide.intents.find((i:any)=>i.key==='import'),associate);assert.match(imported.steps.at(-1).body,/saves shared records/)
- assert.equal(recordsGuide.intents.find((i:any)=>i.key==='import').roles.includes('dean'),false)
+ assert.equal(recordsGuide.intents.find((i:any)=>i.key==='import').roles.includes('dean'),true)
  const courses=prepareIntent(recordsGuide,recordsGuide.intents.find((i:any)=>i.key==='courses'),dean)
  assert.match(courses.steps[0].body,/read-only records/)
  assert.match(prepareIntent(monitorGuide,monitorGuide.intents[0],associate).steps.at(-1).body,/no student-score access/)

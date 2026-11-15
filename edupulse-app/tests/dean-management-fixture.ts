@@ -7,7 +7,7 @@ const course = (code: string, title: string, year: string) => ({ kind: 'courses'
 const load = (code: string, block: string, id: string, name: string) => ({ kind: 'loads', record_key: `${code}|${block}|1st Semester`, data: { CourseCode: code, Block: block, Semester: '1st Semester', InstructorID: id, InstructorName: name } })
 
 /** Synthetic Dean account with a live directory. Dean commands are recorded and applied in memory; no hosted account is used. */
-export async function deanManagementUI(page: Page) {
+export async function deanManagementUI(page: Page, role = 'dean') {
   const records = deanRecordData() as ReturnType<typeof deanRecordData> & { directory: { instructors: Record<string, unknown>[]; students: Record<string, unknown>[]; irregular: Record<string, string>[] } }
   records.institutional = [course('IT 102', 'Programming foundations', '1'), course('IT 202', 'Network foundations', '2'), course('IT 301', 'Systems analysis', '3'), course('IT 401', 'Capstone project', '4'),
     load('IT 102', 'BSIT-1A', 'teacher-a', 'Alex Sample Instructor'),
@@ -27,10 +27,10 @@ export async function deanManagementUI(page: Page) {
     irregular: [{ StudentID: 'SYN-005', CourseCode: 'IT 102', Block: 'BSIT-1A', Name: 'Sam Irregular', Email: 'sam@example.invalid' }],
   }
   const commands: Command[] = []
-  await academicUI(page, async () => ({ json: records }), 'dean')
+  await academicUI(page, async () => ({ json: records }), role)
   await page.route('**/api/ai?*', async route => {
     const request = route.request(), action = new URL(request.url()).searchParams.get('action')
-    if (action === 'health') return route.fulfill({ json: { version: 'synthetic-ui', ready: false, provider: 'retrieval', model: 'synthetic-ui', database: { ready: true, kind: 'synthetic' }, identity: { mode: 'account', role: 'dean' } } })
+    if (action === 'health') return route.fulfill({ json: { version: 'synthetic-ui', ready: false, provider: 'retrieval', model: 'synthetic-ui', database: { ready: true, kind: 'synthetic' }, identity: { mode: 'account', role } } })
     if (action === 'providers') return route.fulfill({ json: { connection: null, connections: [], models: [] } })
     if (action === 'conversations') return route.fulfill({ json: { threads: [], messages: [], memories: [], automaticMemory: true } })
     if (action !== 'academic' || request.method() !== 'POST' || request.postDataJSON()?.operation !== 'dean') return route.fallback()

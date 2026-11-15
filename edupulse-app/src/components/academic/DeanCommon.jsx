@@ -3,6 +3,7 @@ import { X, Copy, Check } from 'lucide-react'
 import ModalLayer from '../ui/ModalLayer'
 import GlassIcon from '../ui/GlassIcon'
 import SummaryCard from '../ui/SummaryCard'
+import { Table } from './AcademicUI'
 
 const TONES = ['sky', 'purple', 'green', 'amber', 'red']
 /** Page summary cards; each item may name its own tone. */
@@ -49,4 +50,12 @@ export function Pager({ page, pages, onPage, total, label }) {
 
 export function UploadButton({ label, onFile, disabled, accept = '.csv,.tsv,.txt,.xlsx,.xls' }) {
   return <label className={`btn btn-secondary btn-sm dean-upload${disabled ? ' disabled' : ''}`} aria-disabled={disabled || undefined}>{label}<input type="file" accept={accept} disabled={disabled} onChange={event => { const file = event.target.files?.[0]; event.target.value = ''; if (file) onFile(file) }} /></label>
+}
+
+// The Program Coordinator's records carry no assessment attempts or material opens, so those columns are not shown.
+const ACTIVITY = new Set(['Assessments taken', 'Materials opened', 'Assessment attempts', 'Material opens', 'Average raw score'])
+export function ActivityTable({ scores = true, headers, rows, ...props }) {
+  if (scores) return <Table headers={headers} rows={rows} {...props} />
+  const keep = headers.map((header, index) => ACTIVITY.has(header) ? -1 : index).filter(index => index >= 0)
+  return <Table headers={keep.map(index => headers[index])} rows={rows.map(row => keep.map(index => row[index]))} {...props} />
 }

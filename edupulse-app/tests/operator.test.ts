@@ -153,7 +153,7 @@ test('navigation requests open only the pages a role may see', () => {
   assert.equal(pageFor('open my courses', 'student')?.path, '/courseware')
   assert.equal(pageFor('open my courses', 'instructor')?.path, '/courseware')
   assert.equal(pageFor('go to course loading', 'dean')?.path, '/records?tab=loads')
-  assert.equal(pageFor('go to course loading', 'associate_dean')?.path, '/course-loading')
+  assert.equal(pageFor('go to course loading', 'associate_dean')?.path, '/records?tab=loads')
   assert.equal(pageFor('open instructors', 'dean')?.path, '/instructors')
   assert.equal(pageFor('open students', 'dean')?.path, '/students')
   assert.equal(pageFor('go to course loading', 'student')?.denied, true)

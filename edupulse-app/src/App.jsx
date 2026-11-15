@@ -97,8 +97,8 @@ function AppRoutes() {
         <Route path="/assessment" element={<ProtectedRoute allowedRoles={['student']}><Assessment /></ProtectedRoute>} />
         <Route path="/performance" element={<ProtectedRoute allowedRoles={PERFORMANCE_ROLES}><Performance /></ProtectedRoute>} />
         <Route path="/records" element={<ProtectedRoute allowedRoles={['dean', 'associate_dean']}><Records /></ProtectedRoute>} />
-        <Route path="/instructors" element={<ProtectedRoute allowedRoles={['dean']}><AcademicPortal view="instructors" /></ProtectedRoute>} />
-        <Route path="/students" element={<ProtectedRoute allowedRoles={['dean']}><AcademicPortal view="students" /></ProtectedRoute>} />
+        <Route path="/instructors" element={<ProtectedRoute allowedRoles={['dean', 'associate_dean']}><AcademicPortal view="instructors" /></ProtectedRoute>} />
+        <Route path="/students" element={<ProtectedRoute allowedRoles={['dean', 'associate_dean']}><AcademicPortal view="students" /></ProtectedRoute>} />
         {/* Old bookmark — Curriculum was absorbed into Records (Phase 0 intake). */}
         <Route path="/curriculum" element={<Navigate to="/records" replace />} />
         <Route path="/course-loading" element={<ProtectedRoute allowedRoles={['dean', 'associate_dean']}><CourseLoading /></ProtectedRoute>} />

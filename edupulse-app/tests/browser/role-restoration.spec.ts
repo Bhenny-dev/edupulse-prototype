@@ -41,16 +41,6 @@ for (const role of ['instructor', 'student', 'dean', 'associate_dean']) {
     expect(problems).toEqual([])
   })
 }
-test('confirmed shared CSV import survives refresh; templates and history work', async ({ page }) => {
-  test.setTimeout(60000)
-  const fixture = await restorationUI(page, 'associate_dean'); await page.goto('/#/records')
-  await page.getByLabel('Choose CSV for preview').setInputFiles({ name: 'synthetic-courses.csv', mimeType: 'text/csv', buffer: Buffer.from('CourseCode,CourseTitle,Units,Classification,Hours,Prerequisites,YearLevel,Semester\nIT 102,"Programming, basics",3,Core,5,,1,1\nIT 103,,3,Core,3,,1,1') })
-  await expect(page.getByText('1 valid · 1 rejected · 2 total')).toBeVisible(); await page.getByRole('button', { name: 'Confirm Import (1 records)', exact: true }).click(); await expect(page.getByRole('status').filter({ hasText: 'Saved 1 new' })).toBeVisible()
-  expect(fixture.records.institutional!.filter(row=>row.kind==='courses')).toHaveLength(1)
-  await page.reload(); await expect(page.getByRole('heading', { name: 'Shared academic records' })).toBeVisible(); await expect(page.getByRole('cell', { name: 'Programming, basics', exact: true })).toBeVisible()
-  await page.getByRole('navigation', { name: 'File import views' }).getByRole('button', { name: 'History', exact: true }).click(); await expect(page.getByRole('cell', { name: 'synthetic-courses.csv', exact: true })).toBeVisible()
-  await page.getByRole('button', { name: 'Templates', exact: true }).click(); const download = page.waitForEvent('download'); await page.getByRole('button', { name: 'Download Course Records Template', exact: true }).click(); expect((await download).suggestedFilename()).toBe('courses-template.csv')
-})
 test('dark mode keeps account sections and charts on solid readable surfaces', async ({ page }) => {
   await restorationUI(page); await page.addInitScript(() => localStorage.setItem('edupulse-dark-mode', 'true')); await page.goto('/#/student-monitoring?course='+ 'a'.repeat(32)+'&block=BSIT-1A&tab=assessments')
   await expect(page.getByRole('img', { name: /^Assessment score radar:/ })).toBeVisible()

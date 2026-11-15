@@ -27,18 +27,10 @@ import { PERFORMANCE_ROLES } from '../../lib/access'
 const SECTIONS = [
   ...[['dean','Dean'],['associate_dean','Program Coordinator'],['instructor','Instructor'],['student','Student']].map(([role,label]) => ({key:`admin-${role}`,path:`/dashboard?role=${role}`,label,icon:Users,roles:['admin'],monitorRole:role})),
   { key: 'dashboard', path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: 'all' },
-  { key: 'dean-course', path: '/records', label: 'Course', icon: BookOpen, roles: ['dean'], relatedPaths:['/course-loading','/monitor'] },
-  { key: 'dean-instructors', path: '/instructors', label: 'Instructors', icon: GraduationCap, roles: ['dean'] },
-  { key: 'dean-students', path: '/students', label: 'Students', icon: Users, roles: ['dean'], relatedPaths:['/performance'] },
-  { key: 'records', path: '/records', label: 'Records', icon: BookOpen, roles: ['associate_dean'] },
+  { key: 'dean-course', path: '/records', label: 'Course', icon: BookOpen, roles: ['dean','associate_dean'], relatedPaths:['/course-loading','/monitor'] },
+  { key: 'dean-instructors', path: '/instructors', label: 'Instructors', icon: GraduationCap, roles: ['dean','associate_dean'] },
+  { key: 'dean-students', path: '/students', label: 'Students', icon: Users, roles: ['dean','associate_dean'], relatedPaths:['/performance'] },
 
-  // Dean and Program Coordinator have separate accounts and the same academic stations.
-  {
-    key: 'course-loading', path: '/course-loading', label: 'Course Loading', icon: ClipboardCheck, roles: ['associate_dean'],
-  },
-  {
-    key: 'monitor', path: '/monitor', label: 'Monitor', icon: BarChart3, roles: ['associate_dean'],
-  },
 
   // ── Instructor ────────────────────────────────────────────────────────
   {
@@ -70,7 +62,7 @@ function Breadcrumbs() {
   if (parts.length === 0 || (parts.length === 1 && parts[0] === 'dashboard')) return null
 
   const crumbs = parts.map((part, i) => ({
-    label: part === 'courseware'||(part==='records'&&user?.role==='dean') ? 'Course' : part.charAt(0).toUpperCase() + part.slice(1).replace(/-/g, ' '),
+    label: part === 'courseware'||(part==='records'&&['dean','associate_dean'].includes(user?.role)) ? 'Course' : part.charAt(0).toUpperCase() + part.slice(1).replace(/-/g, ' '),
     path: '/' + parts.slice(0, i + 1).join('/'),
   }))
 

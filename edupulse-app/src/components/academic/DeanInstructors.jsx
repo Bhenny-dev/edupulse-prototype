@@ -1,11 +1,12 @@
 import { useMemo, useState } from 'react'
 import { GraduationCap, Award, ClipboardCheck, UserX, UserPlus } from 'lucide-react'
 import { useWorkspaceViewState } from '../../context/WorkspaceContext'
-import { Empty, Table, CsvButton } from './AcademicUI'
+import { Empty, CsvButton } from './AcademicUI'
 import { deanRecords, deanDirectory, loadRows, syllabusState } from './deanRecordModel'
 import { SYLLABUS_STATUS_META } from '../../data/syllabusStatus'
 import GlassIcon from '../ui/GlassIcon'
-import { DeanCards, DeanDialog, DeanFeedback, ConfirmDialog, StatusBadge } from './DeanCommon'
+import { useAuth } from '../../context/AuthContext'
+import { DeanCards, DeanDialog, ActivityTable, DeanFeedback, ConfirmDialog, StatusBadge } from './DeanCommon'
 import { useDeanAction } from './deanActions'
 import DeanAccountDialog from './DeanAccountDialog'
 
@@ -13,6 +14,7 @@ const degreeLabel = person => person.has_masters === true ? (person.degree || 'M
 const signIn = value => value ? new Date(value).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) : 'Never'
 
 export default function DeanInstructors({ data }) {
+  const { user } = useAuth(), scores = user?.role !== 'associate_dean'
   const model = useMemo(() => deanRecords(data), [data])
   const directory = useMemo(() => deanDirectory(data, model), [data, model])
   const loads = useMemo(() => loadRows(data), [data])
@@ -62,9 +64,9 @@ export default function DeanInstructors({ data }) {
         <div><dt>Last sign-in</dt><dd>{signIn(selected.last_sign_in_at)}</dd></div>
       </dl>
       <h3 className="dean-subhead">Course loads</h3>
-      <Table headers={['Course', 'Block', 'Semester']} rows={selected.loads.map(load => [load.code, load.block, load.semester || '—'])} empty="No course load assigned. Load courses on the Course page." />
+      <ActivityTable scores={scores} headers={['Course', 'Block', 'Semester']} rows={selected.loads.map(load => [load.code, load.block, load.semester || '—'])} empty="No course load assigned. Load courses on the Course page." />
       <h3 className="dean-subhead">Syllabi and delivery</h3>
-      <Table headers={['Course', 'Syllabus status', 'Released items', 'Assessment attempts', 'Material opens']} rows={selected.syllabi.map(course => { const activity = model.activity(new Set([course.id])); return [course.course_code, SYLLABUS_STATUS_META[syllabusState(course)]?.label || syllabusState(course), activity.publications, activity.submissions, activity.opens] })} empty="No syllabus prepared yet." />
+      <ActivityTable scores={scores} headers={['Course', 'Syllabus status', 'Released items', 'Assessment attempts', 'Material opens']} rows={selected.syllabi.map(course => { const activity = model.activity(new Set([course.id])); return [course.course_code, SYLLABUS_STATUS_META[syllabusState(course)]?.label || syllabusState(course), activity.publications, activity.submissions, activity.opens] })} empty="No syllabus prepared yet." />
     </DeanDialog>}
     {typeof detail === 'string' && detail.startsWith('instructor:') && !selected && <DeanDialog title="Record unavailable" size="narrow" onClose={() => setDetail(null)}><Empty>This instructor is no longer in your records. Close this dialog and choose a current instructor.</Empty></DeanDialog>}
     {editing && <DeanAccountDialog role="instructor" account={editing === 'new' ? null : editing} action={action} onClose={() => setEditing(null)} />}
