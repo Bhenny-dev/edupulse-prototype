@@ -4,6 +4,7 @@
 
 | Folder | Covers | Contents |
 | --- | --- | --- |
+| [15 November redundant control cleanup](versions/2026-11-15-redundant-controls/README.md) | Removed routine shared refresh and generic workspace warning; retained error recovery | Live; 388 native and four production-UI checks passed |
 | [15 November Admin view footer cleanup](versions/2026-11-15-admin-view-footer/README.md) | Removed the bottom selected-view indicator and return shortcut; retained account-menu switching | Live; 388 native and 12 production-UI checks passed |
 | [15 November separate Syllabus repository](versions/2026-11-15-syllabus-repository/README.md) | Restored Instructor repository, draft PDF import/export and sharing outside Course | Live; 388 native and 12 production-UI checks passed |
 | [15 November teaching reset](versions/2026-11-15-teaching-reset/README.md) | Removed rejected teaching seeds while preserving loaded courses and block rosters | Applied; hosted preservation/readback checks passed |
