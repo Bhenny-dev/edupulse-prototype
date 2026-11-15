@@ -4,6 +4,7 @@
 
 | Folder | Covers | Contents |
 | --- | --- | --- |
+| [15 November teaching reset](versions/2026-11-15-teaching-reset/README.md) | Removed rejected teaching seeds while preserving loaded courses and block rosters | Applied; hosted preservation/readback checks passed |
 | [14 November instructor course workspace](versions/2026-11-14-instructor-course-workspace/README.md) | Assigned courses, chronological topic content, private attachments and system-first chat | See validation |
 | [14 November Pulse dictation](versions/2026-11-14-pulse-dictation/README.md) | One microphone/stop control, automatic multilingual transcription and explicit Send | See validation |
 | [14 November Pulse voice access](versions/2026-11-14-pulse-voice-access/README.md) | Visible microphone control and independent reply playback | See validation |

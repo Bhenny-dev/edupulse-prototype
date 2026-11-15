@@ -1,0 +1,54 @@
+{
+  "appliedAt": "2026-11-15T09:01:27.914Z",
+  "readback": {
+    "activity_grants": 0,
+    "answer_keys": 0,
+    "attempts": 0,
+    "blocks": 14,
+    "catalog": 60,
+    "content_items": 0,
+    "courses": 46,
+    "inactive_empty_course_shells": 46,
+    "loads": 129,
+    "memberships": 3900,
+    "opens": 0,
+    "protected_snapshots_unchanged": true,
+    "publications": 0,
+    "reading": 0,
+    "rosters": 417,
+    "sessions": 0,
+    "shares": 0,
+    "source_archives": 0,
+    "source_chunks": 0,
+    "source_documents": 0,
+    "syllabi": 0,
+    "teaching_files": 0
+  },
+  "authenticatedRoleReadChecks": [
+    {
+      "accounts": 2,
+      "assigned_subjects": 0,
+      "role": "admin"
+    },
+    {
+      "accounts": 2,
+      "assigned_subjects": 0,
+      "role": "associate_dean"
+    },
+    {
+      "accounts": 2,
+      "assigned_subjects": 0,
+      "role": "dean"
+    },
+    {
+      "accounts": 8,
+      "assigned_subjects": 0,
+      "role": "instructor"
+    },
+    {
+      "accounts": 417,
+      "assigned_subjects": 3900,
+      "role": "student"
+    }
+  ]
+}

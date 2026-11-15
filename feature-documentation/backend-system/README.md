@@ -1,5 +1,14 @@
 # Backend System
 
+## Owner-requested teaching reset - 15 November 2026
+
+The owner withdrew the previous seeded teaching set before preparing content with the revised Instructor course workflow. The one-time `scripts/reset-teaching-content.ts` utility requires an ignored private backup, verified table/account fingerprints and a successful rollback rehearsal of the exact SQL and backup bytes before applying. It is not called by the application, startup, a migration or CI. It refuses independent learner attempts/opens and changes after the backup. Workspace owners use the existing revision-checked save function and saved suspension before removal; no trigger/RLS policy is disabled and no account role is changed.
+
+The reset clears saved syllabi, shared copies, workspace content, delivery publications, demonstration assessment/access/reading/session records, their keys/grants, and associated retained/indexed teaching sources. It preserves the institutional course catalog, Dean/Program Coordinator loads, rosters, student directory, staff records, account identity/role metadata, registrations and enrollment overrides. Exact matching assigned course rows remain inactive, with no outline/source/delivery or syllabus status; current memberships keep their identities and metadata. Removed unassigned syllabus projections cannot appear as assigned classes. Audit and conversation history, provider connections and preferences are not teaching seeds and remain.
+
+Do not reseed the removed set or fabricate learner work to restore former totals. Current assigned courses remain available for the new approved-syllabus intake; delivery and score summaries correctly remain empty until new authorized content and actual learner activity exist. Existing clean caches read the new revision on deliberate reload; stale dirty drafts must retain conflict recovery rather than silently restoring deleted work. The private data backup is excluded from Git; only aggregate receipts belong in the release record. See [the applied reset and verification](../versions/2026-11-15-teaching-reset/README.md).
+
+
 ## Assigned Instructor workspace and system chat - 14 November 2026
 
 The authenticated Instructor entry now uses `instructorCourses` to derive cards from current `loads` records with an exact verified `InstructorID`, grouping course code/academic year/semester and retaining assigned blocks. A workspace syllabus is not a teaching-load grant. The course can appear before a syllabus exists; unavailable or unassigned deep links fail closed to the current loaded list. Dashboard summaries and topic pills restrict student activity to the matching courses/current active memberships, exclude scripted/Admin demonstrations, retain genuine zero marks, and exclude pending written/old-version results from the current average. They do not synthesize scores.
