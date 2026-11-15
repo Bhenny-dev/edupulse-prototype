@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import {weekSections,normalizeOutlineSections,editOutlineSection,addOutlineSection,shareOutlineSection,aggregateSections} from '../src/utils/outlineSections.js'
+import {weekSections,normalizeOutlineSections,editOutlineSection,addOutlineSection,shareOutlineSection,aggregateSections,weekRuns,weekRangeLabel,outlineSpans,spansKeepWeekOrder} from '../src/utils/outlineSections.js'
 import {swapTeachingWeeks} from '../src/utils/outlineEditing.js'
 import {buildCourseInput} from '../src/utils/courseInput.js'
 import {coursewarePlan,missingCoursewareCount} from '../src/lib/rag/coursewarePlan.js'
@@ -86,4 +86,50 @@ test('exported scope labels preserve multiline fields and shared membership on i
  assert.equal(weekSections(parsed[0]!)[0]!.assessments,first.assessments)
  assert.equal(weekSections(parsed[0]!).length,2)
  assert.equal(weekSections(parsed[0]!)[0]!.id,weekSections(parsed[1]!)[0]!.id)
+})
+
+const printed=(weeks:number[],id:string,topic:string)=>({id,ilos:`Outcomes for ${topic}`,contents:[topic,`A. Overview of ${topic}`],activities:'Group dynamics',assessments:'Journal',assessmentTypes:[],resources:[]})
+test('a section the original prints once for weeks 2 to 8 is one entry with a range label',()=>{
+ const comprised=printed([2],'feasibility','III. Feasibility of the study')
+ const outline=[1,...Array.from({length:7},(_,i)=>i+2),9].map(week=>week===1?aggregateSections({week},[printed([1],'intro','I. Introduction')]):week===9?aggregateSections({week},[{...printed([9],'exam',''),ilos:'',contents:[],activities:'',assessments:'Midterm Examination'}]):aggregateSections({week},[comprised]))
+ const spans=outlineSpans(outline)
+ assert.deepEqual(spans.map(span=>[span.label,span.exam]),[['1',false],['2–8',false],['9',true]])
+ assert.deepEqual(spans[1]!.weeks,[2,3,4,5,6,7,8])
+ assert.equal(outline.length,9,'calendar weeks stay separate rows in the data')
+ assert.deepEqual([weekRuns([2,3,4,6,8,9]),weekRangeLabel([6,2,3,4]),weekRangeLabel([5]),weekRangeLabel([1,2,4,5,6])],[[[2,3,4],[6],[8,9]],'2–4, 6','5','1–2, 4–6'])
+})
+
+test('an exported comprised section is written once as a week range and reads back as one shared section',async()=>{
+ const {syllabusBlocks}=await import('../src/utils/syllabusFiles.js')
+ const {parseSyllabusText}=await import('../src/utils/syllabusParser.js')
+ const comprised=printed([2],'feasibility','III. Feasibility of the study'),extra={...printed([5],'pilot','Pilot data gathering')}
+ const outline=[1,2,3,4,5,6,7,8].map(week=>aggregateSections({week},week===1?[printed([1],'intro','I. Introduction')]:week===5?[comprised,extra]:[comprised]))
+ const text=syllabusBlocks({courseCode:'CP 1',courseTitle:'Capstone 1',courseOutline:outline}).map((block:{text:string})=>block.text)
+ assert.deepEqual(text.filter(line=>/^Week /.test(line)),['Week 1','Week 2–8','Week 5'])
+ assert.equal(text.filter(line=>line==='Content: III. Feasibility of the study').length,1)
+ const parsed=parseSyllabusText(text.join('\n')).sections[4].parsed.courseOutline
+ assert.deepEqual(parsed.map(row=>row.week),[1,2,3,4,5,6,7,8])
+ assert.deepEqual(weekSections(parsed[4]!).map(section=>section.contents[0]),['III. Feasibility of the study','Pilot data gathering'])
+ const ids=new Set(parsed.filter(row=>row.week>=2).map(row=>weekSections(row)[0]!.id));assert.equal(ids.size,1,'weeks 2 to 8 read back as one shared section')
+})
+
+test('a week range that is not consecutive is written as separate consecutive ranges so no week is lost',async()=>{
+ const {syllabusBlocks}=await import('../src/utils/syllabusFiles.js')
+ const {parseSyllabusText}=await import('../src/utils/syllabusParser.js')
+ const shared=printed([2],'review','Review sessions'),other=printed([3],'own','Own topic')
+ const outline=[aggregateSections({week:2},[shared]),aggregateSections({week:3},[other]),aggregateSections({week:4},[shared])]
+ const text=syllabusBlocks({courseCode:'X 1',courseTitle:'X',courseOutline:outline}).map((block:{text:string})=>block.text)
+ assert.deepEqual(text.filter(line=>/^Week /.test(line)),['Week 2','Week 4','Week 3'])
+ const parsed=parseSyllabusText(text.join('\n')).sections[4].parsed.courseOutline
+ assert.deepEqual(parsed.map(row=>row.week).sort(),[2,3,4])
+ assert.equal(weekSections(parsed.find(row=>row.week===2)!)[0]!.id,weekSections(parsed.find(row=>row.week===4)!)[0]!.id)
+})
+
+test('sections shared in a different order from week to week keep each week own order in the export',async()=>{
+ const {syllabusBlocks}=await import('../src/utils/syllabusFiles.js')
+ const first=printed([2],'a','Topic A'),second=printed([2],'b','Topic B')
+ const outline=[aggregateSections({week:2},[first,second]),aggregateSections({week:3},[second,first])]
+ assert.equal(spansKeepWeekOrder(outline,outlineSpans(outline)),false)
+ const order=syllabusBlocks({courseCode:'X 1',courseTitle:'X',courseOutline:outline}).map((block:{text:string})=>block.text).filter(line=>/^Content: Topic [AB]$/.test(line))
+ assert.deepEqual(order,['Content: Topic A','Content: Topic B','Content: Topic B','Content: Topic A'])
 })

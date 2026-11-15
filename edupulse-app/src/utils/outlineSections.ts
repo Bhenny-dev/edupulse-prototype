@@ -9,6 +9,38 @@ export function aggregateSections<T extends OutlineWeek>(row:T,sections:OutlineS
  const join=(field:'ilos'|'activities'|'assessments')=>sections.map(section=>section[field]).filter(Boolean).join('\n\n')
  return {...row,sections,ilos:join('ilos'),activities:join('activities'),assessments:join('assessments'),contents:sections.flatMap(section=>section.contents),assessmentTypes:[...new Set(sections.flatMap(section=>section.assessmentTypes))],teachingMaterials:[...new Set(sections.flatMap(section=>section.teachingMaterials||[]))],resources:sections.flatMap(section=>section.resources||[])}
 }
+/** Consecutive calendar weeks: [2,3,4,6] becomes [[2,3,4],[6]]. */
+export function weekRuns(weeks:number[]):number[][] {
+ const sorted=[...new Set(weeks)].sort((a,b)=>a-b),runs:number[][]=[]
+ for(const week of sorted){
+  const last=runs.at(-1)
+  if(last&&last.at(-1)===week-1)last.push(week);else runs.push([week])
+ }
+ return runs
+}
+/** "2", "2–8" or "2–4, 6": the calendar weeks one section covers. */
+export const weekRangeLabel=(weeks:number[]):string=>weekRuns(weeks).map(run=>run.length>1?`${run[0]}–${run.at(-1)}`:String(run[0])).join(', ')
+export type OutlineSpan={weeks:number[];label:string;section:OutlineSection;exam:boolean}
+/** One entry per section. A section the original prints once for weeks 2–8 stays one entry instead of seven copies.
+ * Calendar weeks stay separate rows in the data; this only groups how they are read and written. */
+export function outlineSpans(rows:OutlineWeek[]):OutlineSpan[] {
+ const spans:OutlineSpan[]=[],bySection=new Map<string,OutlineSpan>()
+ for(const row of [...rows].sort((a,b)=>a.week-b.week)){
+  if(isOutlineExam(row)){spans.push({weeks:[row.week],label:String(row.week),section:weekSections(row)[0]!,exam:true});continue}
+  for(const section of weekSections(row)){
+   const known=bySection.get(section.id)
+   if(known){known.weeks.push(row.week);known.label=weekRangeLabel(known.weeks);continue}
+   const span={weeks:[row.week],label:String(row.week),section,exam:false}
+   bySection.set(section.id,span);spans.push(span)
+  }
+ }
+ return spans
+}
+/** True when grouping sections by first appearance keeps every week's own section order. */
+export function spansKeepWeekOrder(rows:OutlineWeek[],spans:OutlineSpan[]):boolean {
+ const position=new Map(spans.map((span,index)=>[span.section.id,index]))
+ return rows.every(row=>isOutlineExam(row)||weekSections(row).every((section,index,all)=>index===0||position.get(all[index-1]!.id)!<position.get(section.id)!))
+}
 export function editOutlineSection<T extends OutlineWeek>(rows:T[],_week:number,id:string,patch:Partial<OutlineSection>):T[] {
  return rows.map(row=>isOutlineExam(row)?row:weekSections(row).some(section=>section.id===id)?aggregateSections(row,weekSections(row).map(section=>section.id===id?{...section,...patch,id}:section)):row)
 }

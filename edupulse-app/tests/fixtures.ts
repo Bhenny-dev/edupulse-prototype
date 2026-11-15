@@ -114,7 +114,7 @@ export function inflateDeclaredSize(zip: Uint8Array, declared: number) {
 }
 
 /** A ruled two-page syllabus with wrapped cells, a continued row and an explicit week range. */
-export function makeRuledSyllabusPdf(options: { transformed?: boolean; wordRange?: boolean; segmentedRules?: boolean; missingWeek?:boolean } = {}) {
+export function makeRuledSyllabusPdf(options: { transformed?: boolean; wordRange?: boolean; segmentedRules?: boolean; missingWeek?:boolean; code?:string; title?:string } = {}) {
   const texts: string[] = []
   const escape = (value: string) => value.replace(/[\\()]/g, value => `\\${value}`)
   const label = (x:number,y:number,value:string) => `BT /F1 9 Tf 1 0 0 1 ${x} ${y} Tm (${escape(value)}) Tj ET`
@@ -123,7 +123,7 @@ export function makeRuledSyllabusPdf(options: { transformed?: boolean; wordRange
   const row=(top:number,cells:string[][])=>cells.map((lines,column)=>lines.map((line,i)=>label(edges[column]!+5,top-12-i*12,line)).join(' ')).join(' ')
   const header=['Week','Intended Learning Outcomes','Contents','Activities','Assessments']
   texts.push([
-    label(36,560,'I. Course Code: IT 102'),label(36,544,'Course Title: Computer Programming 1'),label(36,520,'IV. PROGRAM OUTCOMES'),label(36,504,'1. Explain a program using examples.'),label(36,478,'V. COURSE OUTLINE'),
+    label(36,560,`I. Course Code: ${options.code??'IT 102'}`),label(36,544,`Course Title: ${options.title??'Computer Programming 1'}`),label(36,520,'IV. PROGRAM OUTCOMES'),label(36,504,'1. Explain a program using examples.'),label(36,478,'V. COURSE OUTLINE'),
     band(450,470),row(470,header.map(s=>[s])),band(350,450),row(450,[['Week','1'],['Explain variables and','their role in a program.','Trace a complete example.'],['I. Variables','a. Variable declaration','and assignment','b. Data types'],['Lecture','Worked example'],['Reflection','Short quiz']]),
     band(300,350),row(350,[options.missingWeek?[]:['Week','2'],['Compare conditional','statements.'],['II. Decisions','a. If and else'],['Lab'],['Program trace']]),
   ].join(' '))

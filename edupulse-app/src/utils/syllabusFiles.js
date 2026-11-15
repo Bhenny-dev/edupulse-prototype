@@ -1,4 +1,4 @@
-import {weekSections} from './outlineSections'
+import {weekSections,outlineSpans,spansKeepWeekOrder,weekRuns} from './outlineSections'
 import { APPROVED_FILE_LIMIT } from '../lib/syllabusLimits'
 import {collectSyllabusReferences,bibliographicLabel} from '../lib/rag/syllabusReferences'
 export { APPROVED_FILE_LIMIT }
@@ -29,18 +29,32 @@ export function syllabusBlocks(syllabus) {
   }
   heading('Section 4: Program Outcomes'); list(syllabus.programOutcomes)
   heading('Section 5: Course Outline')
-  const sectionNumbers=new Map()
-  for (const row of syllabus.courseOutline || []) {
-    heading(`Week ${row.week}`)
-    for(const section of weekSections(row)){
-      if(!sectionNumbers.has(section.id))sectionNumbers.set(section.id,sectionNumbers.size+1)
-      const weeks=(syllabus.courseOutline||[]).filter(value=>weekSections(value).some(part=>part.id===section.id)).map(value=>value.week)
-      heading(`Outline section ${sectionNumbers.get(section.id)} · Weeks ${weeks.join(', ')}`)
-      line(`ILOs: ${section.ilos || ''}`)
-      for(const content of section.contents||[])line(`Content: ${content}`)
-      line(`Teaching-Learning Activities: ${section.activities||''}`);line(`Assessments: ${section.assessments||''}`)
-      if(section.assessmentTypes?.length)line(`Assessment Types: ${section.assessmentTypes.join('; ')}`)
-      for(const resource of section.resources||[])line(`Resource: ${resource.name||''} ${resource.url||''}`)
+  const outline = syllabus.courseOutline || [], spans = outlineSpans(outline)
+  const sectionLines = (section, number, weeks) => {
+    heading(`Outline section ${number} · Weeks ${weeks}`)
+    line(`ILOs: ${section.ilos || ''}`)
+    for(const content of section.contents||[])line(`Content: ${content}`)
+    line(`Teaching-Learning Activities: ${section.activities||''}`);line(`Assessments: ${section.assessments||''}`)
+    if(section.assessmentTypes?.length)line(`Assessment Types: ${section.assessmentTypes.join('; ')}`)
+    for(const resource of section.resources||[])line(`Resource: ${resource.name||''} ${resource.url||''}`)
+  }
+  if (spansKeepWeekOrder(outline, spans)) {
+    // A section shared by consecutive weeks is written once under its range ("Week 2–8"), as the original prints it.
+    spans.forEach((span, index) => {
+      for (const run of weekRuns(span.weeks)) {
+        heading(`Week ${run.length > 1 ? `${run[0]}–${run.at(-1)}` : run[0]}`)
+        sectionLines(span.section, index + 1, span.label)
+      }
+    })
+  } else {
+    // Sections shared in a different order from week to week keep each week's own order.
+    const sectionNumbers=new Map()
+    for (const row of outline) {
+      heading(`Week ${row.week}`)
+      for(const section of weekSections(row)){
+        if(!sectionNumbers.has(section.id))sectionNumbers.set(section.id,sectionNumbers.size+1)
+        sectionLines(section, sectionNumbers.get(section.id), outline.filter(value=>weekSections(value).some(part=>part.id===section.id)).map(value=>value.week).join(', '))
+      }
     }
   }
   heading('Section 6: Requirements, Grading and Policy')

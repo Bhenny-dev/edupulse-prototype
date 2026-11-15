@@ -1,6 +1,6 @@
 import { lazy, Suspense, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { BookOpen, Users, ArrowLeft, ArrowRight, FileText, Share2 } from 'lucide-react'
+import { BookOpen, Users, ArrowLeft, ArrowRight, Share2 } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 import { useWorkspace } from '../../context/WorkspaceContext'
 import { useAcademicRecords } from '../../context/AcademicContext'
@@ -8,13 +8,11 @@ import { useContentStore } from '../../context/ContentStoreContext'
 import { instructorCourses, instructorRecords, syllabusForCourse, courseStudentCount, sameCourseCode } from '../../utils/instructorCourses'
 import { collectSyllabusReferences } from '../../lib/rag/syllabusReferences'
 import { prepareSyllabusSources, indexSyllabusReference, aiSessionVersion } from '../../lib/aiClient'
-import { syllabusBlocks, downloadApprovedFile } from '../../utils/syllabusFiles'
 import SummaryCard from '../ui/SummaryCard'
 import ModalLayer from '../ui/ModalLayer'
 import { LoadingStatus } from '../ui/LoadingFeedback'
 import ApprovedSyllabusIntake from '../syllabus/ApprovedSyllabusIntake'
 import useSyllabusSharing from '../syllabus/useSyllabusSharing'
-import DocumentViewer from './DocumentViewer'
 import CourseWorkspace from './CourseWorkspace'
 import CourseTopicWeeks from './CourseTopicWeeks'
 import './instructor-courses.css'
@@ -23,7 +21,7 @@ const Syllabus = lazy(() => import('../../pages/Syllabus'))
 export default function InstructorCourses() {
   const { user } = useAuth(), workspace = useWorkspace(), records = useAcademicRecords()
   const { store, commitWeekDrafts, checkItem, bulkCheck, toggleVisibility } = useContentStore()
-  const [params, setParams] = useSearchParams(), [query, setQuery] = useState(''), [preview, setPreview] = useState(null)
+  const [params, setParams] = useSearchParams(), [query, setQuery] = useState('')
   const sharing = useSyllabusSharing(), [sharedChoice, setSharedChoice] = useState(''), [attested, setAttested] = useState(false)
   const [busy, setBusy] = useState(false), [error, setError] = useState(''), [notice, setNotice] = useState('')
   const courses = useMemo(() => instructorCourses(records.data, user.id, workspace.syllabi), [records.data, user.id, workspace.syllabi])
@@ -77,11 +75,10 @@ export default function InstructorCourses() {
     </> : <>
       <nav className="tabs mb-24" aria-label="Course workspace views">{[['topics', 'Weeks and topics'], ['syllabus', 'Syllabus'], ...(ready || hasDrafts ? [['review', ready ? 'Review and deliver' : 'Review drafts']] : [])].map(([id, label]) => <button key={id} className={`tab ${view === id ? 'active' : ''}`} aria-pressed={view === id} onClick={() => setParams({ course: selected.id, view: id })}>{label}</button>)}</nav>
       {view === 'syllabus' ? <Suspense fallback={<LoadingStatus label="Opening syllabus..." />}><Syllabus key={selected.id} courseContext={selected} /></Suspense> : view === 'review' && syllabus ? <CourseWorkspace syllabusId={syllabus.id} contentStore={store} focusWeek={Number(params.get('week')) || null} onBack={() => setParams({ course: selected.id })} onGenerateWeek={commitWeekDrafts} onCheckItem={checkItem} onBulkCheck={bulkCheck} onToggleVisibility={toggleVisibility} /> : !ready ? <>
-        <ApprovedSyllabusIntake courseCode={selected.code} onUse={useApproved} onView={setPreview} />
+        <ApprovedSyllabusIntake courseCode={selected.code} onUse={useApproved} />
         <button className="btn btn-secondary mt-16" onClick={() => setSharedOpen(true)}><Share2 size={16} />Choose a shared syllabus from the system</button>
       </> : <CourseTopicWeeks syllabus={syllabus} data={scoped} course={selected} />}
     </>}
-    {preview && <ModalLayer className="overlay-backdrop academic-publication-overlay" onDismiss={() => setPreview(null)}><section className="modal-content academic-publication-dialog" role="dialog" aria-modal="true" aria-label="Approved syllabus preview"><button className="btn btn-secondary" onClick={() => downloadApprovedFile(preview.approvedFile)}><FileText size={14} />Original approved file</button><DocumentViewer readOnly content={{ title: `${preview.courseCode} — ${preview.courseTitle}`, sections: [{ heading: 'Approved syllabus', body: syllabusBlocks(preview).map(block => block.text).join('\n') }] }} onBack={() => setPreview(null)} /></section></ModalLayer>}
     {sharedOpen && <ModalLayer onDismiss={() => setSharedOpen(false)}><section className="modal-content" role="dialog" aria-modal="true" aria-label="Choose shared syllabus"><div className="modal-header"><h2>Shared syllabi for {selected?.code}</h2><button className="modal-close" aria-label="Close shared syllabus picker" onClick={() => setSharedOpen(false)}>×</button></div>{sharing.loading ? <LoadingStatus label="Loading shared syllabi..." /> : !incoming.length ? <p>No matching syllabus has been shared with this account.</p> : <><label className="form-label">Shared syllabus<select className="form-input" value={sharedChoice} onChange={event => { setSharedChoice(event.target.value); setAttested(false) }}><option value="">Choose an approved copy</option>{incoming.map(share => <option key={share.id} value={share.id}>{share.courseTitle} · Shared by {share.sender_name}</option>)}</select></label><label className="form-label"><input type="checkbox" checked={attested} onChange={event => setAttested(event.target.checked)} />I confirm that this approved copy is authorized for this course.</label><button className="btn btn-primary" disabled={!sharedChoice || !attested || busy || workspace.dirty || workspace.saving} onClick={() => void adoptShared()}>Use approved shared syllabus</button></>}{error && <p role="alert">{error}</p>}</section></ModalLayer>}
   </div>
 }

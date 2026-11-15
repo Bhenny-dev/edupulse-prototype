@@ -12,11 +12,14 @@ test('approved file starts an empty course through drop, preview, explicit selec
  const cell=(await outline.getByRole('cell',{name:'1',exact:true}).boundingBox())!,area=(await outline.boundingBox())!
  expect(cell.x).toBeGreaterThanOrEqual(area.x);expect(cell.y).toBeLessThan(area.y+area.height)
  await expect(use).toBeDisabled();expect(fixture.getWorkspace().syllabi).toEqual([])
- await page.getByRole('button',{name:'View syllabus',exact:true}).click();const dialog=page.getByRole('dialog',{name:'Syllabus details',exact:true})
- await expect(dialog.getByText('Network topology types',{exact:true})).toBeVisible()
- await expect(dialog.getByText('Weekly lab notes',{exact:true})).toBeVisible()
- await expect(dialog.getByText(/Networking reference/)).toBeVisible()
- await dialog.getByRole('button',{name:'Close syllabus details',exact:true}).click()
+ await page.getByRole('button',{name:'View syllabus',exact:true}).click();const dialog=page.getByRole('dialog',{name:'Approved syllabus preview',exact:true})
+ // The preview draws the uploaded file itself: the page has real ink on it and none of the extracted text is written into the dialog.
+ const sheet=dialog.locator('.retained-page[data-drawn="true"]').first();await expect(sheet).toBeVisible()
+ const ink=await sheet.locator('canvas').evaluate(element=>{const canvas=element as HTMLCanvasElement,data=canvas.getContext('2d')!.getImageData(0,0,canvas.width,canvas.height).data;let dark=0;for(let i=0;i<data.length;i+=4)if(data[i]!<128&&data[i+3]!>0)dark++;return dark})
+ expect(ink).toBeGreaterThan(200)
+ await expect(dialog.getByText('Network topology types')).toHaveCount(0);await expect(dialog.getByText('Weekly lab notes')).toHaveCount(0)
+ const original=page.waitForEvent('download');await dialog.getByRole('button',{name:'Original approved file',exact:true}).click();expect((await original).suggestedFilename()).toBe(upload.name)
+ await dialog.getByRole('button',{name:'Back',exact:true}).click();await expect(dialog).toHaveCount(0)
  const download=page.waitForEvent('download');await page.getByRole('button',{name:'Original file',exact:true}).click();expect((await download).suggestedFilename()).toBe(upload.name)
  await page.getByRole('checkbox').check();await use.click();await expect(page).toHaveURL(/courseware\?course=/)
  const data=fixture.getWorkspace() as any,syllabus=data.syllabi[0]
@@ -37,6 +40,11 @@ test('file validation permits retry and a DOCX course outside the built-in catal
  }
  const lines=approvedLines.map(line=>line.replace('IT 202','SPEC 901').replace('Fundamentals of Networking','Special Topics in Networks'))
  await input.setInputFiles(await approvedDocx(lines));await expect(page.getByRole('heading',{name:'SPEC 901 - Special Topics in Networks',exact:true})).toBeVisible()
+ // A Word upload cannot be opened by the browser, so its own content is shown in a script-free frame.
+ await page.getByRole('button',{name:'View syllabus',exact:true}).click()
+ const word=page.getByRole('dialog',{name:'Approved syllabus preview',exact:true});await expect(word.locator('iframe.retained-word')).toHaveAttribute('sandbox','')
+ await expect(word.frameLocator('iframe.retained-word').getByText('Course Title: Special Topics in Networks')).toBeVisible()
+ await word.getByRole('button',{name:'Back',exact:true}).click()
  await page.getByRole('checkbox').check();await page.getByRole('button',{name:'Use syllabus for course',exact:true}).click();await expect(page).toHaveURL(/courseware\?course=/)
  expect((fixture.getWorkspace().syllabi as any[])[0].courseCode).toBe('SPEC 901')
 })
@@ -67,10 +75,11 @@ test('a larger scaled PDF reaches the real review, and an unnumbered continuatio
  await input.setInputFiles({name:'larger-approved.pdf',mimeType:'application/pdf',buffer})
  await expect(page.getByRole('heading',{name:'IT 102 - Computer Programming 1',exact:true})).toBeVisible()
  const outline=page.getByRole('region',{name:'Extracted approved course outline',exact:true})
- await expect(outline.locator('tbody tr')).toHaveCount(4);await expect(outline).toContainText('Nested conditions')
+ // Weeks 3 and 4 are one comprised section in the original, so they are one row labelled 3–4, not two copies.
+ await expect(outline.locator('tbody tr')).toHaveCount(3);await expect(outline).toContainText('Nested conditions');await expect(outline.getByRole('cell',{name:'3–4',exact:true})).toBeVisible()
  expect(fixture.getWorkspace().syllabi).toEqual([])
  await input.setInputFiles({name:'missing-week.pdf',mimeType:'application/pdf',buffer:makeRuledSyllabusPdf({transformed:true,segmentedRules:true,missingWeek:true})})
- await expect(outline.locator('tbody tr')).toHaveCount(3)
+ await expect(outline.locator('tbody tr')).toHaveCount(2)
  await expect(page.getByText(/Unnumbered outline content.*II\. Decisions.*no week was inferred/)).toBeVisible()
  await expect(outline.locator('tbody tr').first()).not.toContainText('Decisions')
  expect(fixture.getWorkspace().syllabi).toEqual([])

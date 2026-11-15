@@ -4,7 +4,7 @@ import {suspendSyllabus,resumeSyllabus,deleteSuspendedSyllabus} from '../utils/s
 import '../components/academic/academic.css'
 import useSyllabusSharing from '../components/syllabus/useSyllabusSharing'
 import { aiRequest } from '../lib/aiClient'
-import {normalizeOutlineSections,addOutlineSection,weekSections,editOutlineSection} from '../utils/outlineSections'
+import {normalizeOutlineSections,addOutlineSection,weekSections,editOutlineSection,outlineSpans} from '../utils/outlineSections'
 import OutlineWeekTable from '../components/syllabus/OutlineWeekTable'
 import '../components/syllabus/outline-editor.css'
 import { revisedWorkspace } from '../utils/syllabusRevisions'
@@ -73,11 +73,10 @@ function ExtractionModal({ syllabus, onConfirm, onClose }) {
             <table className="data-table" style={{ fontSize: '0.75rem', minWidth: '640px' }}>
               <thead><tr><th>Week</th><th>Intended Learning Outcomes</th><th>Contents</th><th>Assessments</th></tr></thead>
               <tbody>
-                {outline.map((row, i) => {
-                  const exam = /examination/i.test(row.assessments || '') && !row.ilos
+                {outlineSpans(outline).map(({ label, exam, section: row }, i) => {
                   return (
                     <tr key={i} style={exam ? { background: 'var(--sky-50)' } : undefined}>
-                      <td style={{ fontWeight: 700 }}>{row.week}{exam && <span className="badge badge-published" style={{ marginLeft: 6, fontSize: '0.5625rem' }}>Milestone</span>}</td>
+                      <td style={{ fontWeight: 700 }}>{label}{exam && <span className="badge badge-published" style={{ marginLeft: 6, fontSize: '0.5625rem' }}>Milestone</span>}</td>
                       <td>{row.ilos || <span className="text-muted">— exam week —</span>}</td>
                       <td>{Array.isArray(row.contents) ? row.contents.join('; ') : row.contents}</td>
                       <td>{row.assessments || '—'}</td>
@@ -269,9 +268,9 @@ function SyllabusViewModal({ syllabus, onClose }) {
                     </tr>
                   </thead>
                   <tbody>
-                    {outline.flatMap(row=>weekSections(row).map(section=>({...section,week:row.week}))).map((row, i) => (
+                    {outlineSpans(outline).map(({label,section:row}, i) => (
                       <tr key={i}>
-                        <Td bold>{row.week}</Td>
+                        <Td bold>{label}</Td>
                         <Td>{row.ilos || '—'}</Td>
                         <Td>
                           {Array.isArray(row.contents) ? (
@@ -1163,7 +1162,7 @@ export default function Syllabus({ courseContext }) {
 
       {tab === 'mine' && (
         <>
-          {!courseContext && <ApprovedSyllabusIntake onUse={handleUseApprovedSyllabus} onView={setSelectedSyllabus} focusUpload={searchParams.get('upload') === 'approved'} />}
+          {!courseContext && <ApprovedSyllabusIntake onUse={handleUseApprovedSyllabus} focusUpload={searchParams.get('upload') === 'approved'} />}
           {teachingSyllabi.length>0&&!activeOnly&&<div className="academic-actions mt-16" role="status"><strong>Teaching set</strong><span>{teachingSyllabi.filter(s=>s.teachingSetRole==='own').length} own syllabi</span><span>{incoming.length} shared with me</span><span>{teachingSyllabi.filter(s=>s.teachingSetRole==='draft').length} complete drafts</span><button className="btn btn-secondary btn-sm" onClick={()=>setSearchParams({tab:'mine',...(searchParams.get('status')==='all'?{}:{status:'all'})})}>{searchParams.get('status')==='all'?'Show teaching set':'Show all syllabi'}</button></div>}
           {activeOnly && <div className="flex flex-wrap items-center gap-16 mb-16" role="status"><strong>Active syllabi</strong><button className="btn btn-secondary btn-sm" onClick={() => setSearchParams({ tab: 'mine' })}>Show all syllabi</button></div>}
 

@@ -1,7 +1,9 @@
-import {weekSections} from '../../utils/outlineSections'
+import {outlineSpans} from '../../utils/outlineSections'
 import { useEffect, useId, useRef, useState } from 'react'
 import { Download, Eye, FileUp, Upload } from 'lucide-react'
 import { LoadingProgress, Spinner } from '../ui/LoadingFeedback'
+import ModalLayer from '../ui/ModalLayer'
+import RetainedFileViewer from './RetainedFileViewer'
 import { parseSyllabusFile } from '../../utils/syllabusParser'
 import { APPROVED_FILE_LIMIT, downloadApprovedFile, retainApprovedFile } from '../../utils/syllabusFiles'
 import { approvedSyllabusCandidate } from '../../utils/approvedSyllabus'
@@ -9,10 +11,10 @@ import './approved-syllabus-intake.css'
 
 // Approved copies can start a course without a pre-existing draft or roster.
 // Parsing is local; only the explicit selection below writes to the workspace.
-export default function ApprovedSyllabusIntake({ onUse, onView, focusUpload = false, courseCode = '' }) {
+export default function ApprovedSyllabusIntake({ onUse, focusUpload = false, courseCode = '' }) {
   const input = useRef(null), zone = useRef(null), locked = useRef(false)
   const heading = useId(), hint = useId()
-  const [candidate, setCandidate] = useState(null), [warnings, setWarnings] = useState([])
+  const [candidate, setCandidate] = useState(null), [warnings, setWarnings] = useState([]), [viewing, setViewing] = useState(false)
   const [attested, setAttested] = useState(false), [busy, setBusy] = useState(false)
   const [saving, setSaving] = useState(false), [error, setError] = useState('')
   const [progress, setProgress] = useState('Reading approved syllabus...'), [dragOver, setDragOver] = useState(false)
@@ -20,7 +22,7 @@ export default function ApprovedSyllabusIntake({ onUse, onView, focusUpload = fa
 
   const scan = async file => {
     if (!file || locked.current) return
-    locked.current = true; setBusy(true); setCandidate(null); setAttested(false); setError(''); setWarnings([])
+    locked.current = true; setBusy(true); setCandidate(null); setViewing(false); setAttested(false); setError(''); setWarnings([])
     setProgress('Reading approved syllabus...')
     try {
       const approvedFile = await retainApprovedFile(file)
@@ -51,15 +53,16 @@ export default function ApprovedSyllabusIntake({ onUse, onView, focusUpload = fa
     {error && <p role="alert" className="approved-intake-error">{error}</p>}
     {candidate && <div className="approved-intake-preview">
       <div className="approved-intake-heading"><div><h3>{candidate.courseCode} - {candidate.courseTitle}</h3><p className="text-sm text-muted">{candidate.approvedFile.name} · {candidate.courseOutline.length} outline {candidate.courseOutline.length === 1 ? 'week' : 'weeks'} · Preview only</p></div><div className="approved-intake-actions">
-        <button className="btn btn-secondary btn-sm" disabled={saving} onClick={() => onView(candidate)}><Eye size={15} />View syllabus</button>
+        <button className="btn btn-secondary btn-sm" disabled={saving} onClick={() => setViewing(true)}><Eye size={15} />View syllabus</button>
         <button className="btn btn-ghost btn-sm" disabled={saving} onClick={() => downloadApprovedFile(candidate.approvedFile)}><Download size={15} />Original file</button>
       </div></div>
       {warnings.map((warning, index) => <p className="text-sm text-muted" key={index}>{warning}</p>)}
       <div className="approved-intake-table" tabIndex={0} role="region" aria-label="Extracted approved course outline"><table className="approved-outline-table"><thead><tr><th>Week</th><th>Learning outcomes</th><th>Contents</th><th>Teaching-Learning Activities</th><th>Assessments</th></tr></thead><tbody>
-        {candidate.courseOutline.flatMap(row=>weekSections(row).map(section=>({...section,week:row.week,isExam:row.isExam}))).map(row => <tr key={`${row.week}-${row.id}`}><td>{row.week}{row.isExam && <span className="text-sm text-muted"> Exam</span>}</td><td>{row.ilos || 'Not extracted'}</td><td><ul>{row.contents?.map((text, index) => <li key={index}>{text}</li>)}</ul></td><td>{row.activities}<ul>{row.teachingMaterials?.map((text, index) => <li key={index}>{text}</li>)}</ul></td><td>{row.assessments}<ul>{row.assessmentTypes?.map((text, index) => <li key={index}>{text}</li>)}</ul></td></tr>)}
+        {outlineSpans(candidate.courseOutline).map(({label,exam,section:row}) => <tr key={`${label}-${row.id}`}><td>{label}{exam && <span className="text-sm text-muted"> Exam</span>}</td><td>{row.ilos || 'Not extracted'}</td><td><ul>{row.contents?.map((text, index) => <li key={index}>{text}</li>)}</ul></td><td>{row.activities}<ul>{row.teachingMaterials?.map((text, index) => <li key={index}>{text}</li>)}</ul></td><td>{row.assessments}<ul>{row.assessmentTypes?.map((text, index) => <li key={index}>{text}</li>)}</ul></td></tr>)}
       </tbody></table></div>
       <label className="approved-intake-confirm"><input type="checkbox" checked={attested} disabled={saving} onChange={event => setAttested(event.target.checked)} /><span>I confirm this is the approved copy and have checked the extracted course and outline. EduPulse does not verify signatures.</span></label>
       <div className="approved-intake-actions"><button className="btn btn-primary" disabled={!attested || saving} onClick={() => void handleUseSyllabus()}>{saving ? <Spinner size={16} /> : <FileUp size={16} />}{saving ? 'Saving syllabus...' : 'Use syllabus for course'}</button><span className="text-sm text-muted">Saves this copy and opens its course. Generate materials when ready.</span></div>
     </div>}
+    {viewing && candidate && <ModalLayer className="overlay-backdrop academic-publication-overlay" onDismiss={() => setViewing(false)}><section className="modal-content academic-publication-dialog" role="dialog" aria-modal="true" aria-label="Approved syllabus preview"><RetainedFileViewer file={candidate.approvedFile} title={`${candidate.courseCode} — ${candidate.courseTitle}`} onBack={() => setViewing(false)} /></section></ModalLayer>}
   </section>
 }
