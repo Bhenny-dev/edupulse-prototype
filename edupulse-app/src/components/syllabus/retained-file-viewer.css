@@ -2,8 +2,3 @@
 .retained-viewer-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; position: sticky; top: 0; z-index: 2; padding: 12px 0; background: var(--white); border-bottom: 1px solid var(--gray-200); }
 .retained-viewer-title { display: flex; flex-direction: column; min-width: 0; flex: 1 1 220px; }
 .retained-viewer-title strong { font-family: var(--font-heading), sans-serif; overflow-wrap: anywhere; }
-.retained-pages { display: flex; flex-direction: column; gap: 16px; align-items: center; }
-.retained-page { width: 100%; max-width: 900px; background: #fff; border: 1px solid var(--gray-200); border-radius: 4px; box-shadow: 0 6px 18px -10px rgba(15, 23, 42, .35); overflow: hidden; }
-.retained-page canvas { display: block; width: 100%; height: auto; }
-.retained-word { width: 100%; min-height: 70dvh; border: 1px solid var(--gray-200); border-radius: var(--radius-md); background: #fff; }
-.retained-viewer-error { padding: 14px 16px; border-radius: var(--radius-md); background: color-mix(in srgb, var(--amber-500) 14%, var(--white)); border: 1px solid color-mix(in srgb, var(--amber-500) 45%, transparent); color: var(--gray-900); }

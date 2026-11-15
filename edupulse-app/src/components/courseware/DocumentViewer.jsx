@@ -1,9 +1,11 @@
 import './contentEditing.css'
 import TeachingAttachments from './TeachingAttachments'
+import OriginalDocument from './OriginalDocument'
+import { teachingFileKind } from '../../utils/teachingFiles'
 import SourcePassageInspector from './SourcePassageInspector'
 import { downloadMaterialPdf } from '../../utils/pdfExport'
 import { Spinner } from '../ui/LoadingFeedback'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { ArrowLeft, Download, Printer, Save, Pencil, X } from 'lucide-react'
 import { useToast } from '../../context/ToastContext'
 import DraftEvidence from '../ai/DraftEvidence'
@@ -22,7 +24,9 @@ export default function DocumentViewer({ content, onBack, isStudent = false, rea
   const { addToast } = useToast()
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState(null)
-  const [saving, setSaving] = useState(false), [exporting, setExporting] = useState(false)
+  const [saving, setSaving] = useState(false), [exporting, setExporting] = useState(false), [unreadable, setUnreadable] = useState([])
+  // An uploaded file is shown as itself. If it cannot be opened here, the extracted text below stands in for it.
+  const markUnreadable = useCallback(path => setUnreadable(list => list.includes(path) ? list : [...list, path]), [])
   useContentEditorTool(content, { ...content, sections: editing ? draft : content?.sections }, next => { setDraft(next.sections); setEditing(true) }, isStudent || readOnly, onBack)
 
   if (!content) return null
@@ -102,9 +106,17 @@ export default function DocumentViewer({ content, onBack, isStudent = false, rea
     )
   }
 
+  const attachments = content.attachments || [], originals = attachments.filter(file => teachingFileKind(file) && !unreadable.includes(file.path))
+  if (originals.length && !editing) return (
+    <div style={{ background: 'var(--gray-100)', minHeight: '100vh', padding: '24px 0' }}>
+      <OriginalDocument content={content} files={originals} others={attachments.filter(file => !originals.includes(file))} isStudent={isStudent} canEdit={!isStudent && !readOnly} onBack={onBack} onEdit={startEditing} onFail={markUnreadable} reading={reading} />
+    </div>
+  )
+
   return (
     <div style={{ background: 'var(--gray-100)', minHeight: '100vh', padding: '24px 0' }}>
       <TeachingAttachments attachments={content.attachments} />
+      {unreadable.length > 0 && <p role="alert" className="text-sm text-muted" style={{ maxWidth: '850px', margin: '8px auto', padding: '0 24px' }}>The original file could not be displayed here. Its extracted text is shown instead; download the original to see the file itself.</p>}
       {/* Toolbar */}
       <div style={{
         maxWidth: editing ? '1200px' : '850px', margin: '0 auto', padding: '0 24px',
