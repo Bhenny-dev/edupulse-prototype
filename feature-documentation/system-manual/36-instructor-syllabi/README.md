@@ -66,7 +66,7 @@ If the sender has changed the content, suspended it, removed the file, or has on
 
 **Suspend received syllabus** pauses use of the received entry, then exposes **Delete received syllabus** as a later action. **Resume received syllabus** restores availability unless the sender has suspended the share. Removing a received entry does not delete the sender's work or an independently adopted copy.
 
-**Refresh shared syllabi** is manual. Reader/share/suspend/delete/approved-use dialogs restore scoped IDs against currently authorized records after reload. Instructor selection and approval acknowledgment are not saved as navigation hints. Reload never repeats sharing, adoption, suspension, deletion or publication.
+The routine **Refresh shared syllabi** button has been removed. The shared list loads on page entry and after your sharing actions; reopen the page or reload to fetch new incoming copies. If a list read fails, its actual error and **Retry** remain available. No polling, focus refresh or automatic command replay is added. Reader/share/suspend/delete/approved-use dialogs restore scoped IDs against currently authorized records after reload. Instructor selection and approval acknowledgment are not saved as navigation hints. Reload never repeats sharing, adoption, suspension, deletion or publication.
 
 ## Responsive tables
 

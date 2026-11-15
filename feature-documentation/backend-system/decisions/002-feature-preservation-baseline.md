@@ -239,3 +239,8 @@ Restore Syllabus as an Instructor navigation destination, separate from Course. 
 ## Owner correction: remove Admin support footer - 15 November 2026
 
 Remove the persistent bottom Viewing indicator and its Return to System Admin redirect button from every Admin-selected academic view. Use the existing header/account-menu Switch view chooser for account changes and explicit return to System Admin. Do not regress: do not reintroduce the sticky strip or substitute another routine banner; keep selected identity in the existing account menu, fresh actual-Admin/subject verification, actor attribution, permitted commands and no-write reload. This UI cleanup does not revoke the selected view or change authorization, and it does not remove explicit recovery when a saved subject cannot be verified. This supersedes the earlier routine persistent-banner requirement only.
+
+
+## Owner correction: remove redundant sharing/status UI - 15 November 2026
+
+Remove the routine Refresh shared syllabi action and the generic Workspace needs attention header indicator. Do not replace them with other routine labels or add polling to compensate. Keep actual shared-list errors with an error-only Retry, and retain detailed workspace save/backup/conflict recovery in Settings. Do not regress: suppressing the label must not clear dirty/error/conflict state, claim that a failed save is still pending, weaken revision checks or replay a write/inference. Existing read-on-entry/action refresh and manual-view freshness rules remain.

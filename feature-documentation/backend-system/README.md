@@ -1,5 +1,10 @@
 # Backend System
 
+## Remove redundant shared-list and workspace controls - 15 November 2026
+
+Syllabus no longer renders its routine Refresh shared syllabi button/loading label. The existing hook still reads on mount/scope changes and after sharing mutations; no new polling or focus/reconnect refresh is introduced. A list failure retains its actual error and a conditional Retry that calls the same scoped read. AcademicSyncStatus suppresses the generic Workspace needs attention text without clearing workspace.error or claiming a failed dirty workspace is saving. Actual save errors and retry/backup/conflict recovery remain in Settings > Data & Privacy. Offline and academic record-read recovery are unchanged. This is a UI cleanup; no authorization, data, approval, revision or persistence rules change.
+
+
 ## Admin view footer cleanup - 15 November 2026
 
 Layout no longer renders the sticky support-view indicator or its Return to System Admin navigation button for any selected role. The unused desktop/phone banner styles are removed. The existing account menu/Switch view chooser remains available, with the full selected name on the account button and in the menu. This removes only the routine footer UI: current Admin/subject checks, recorded actor, allowed student commands, persisted scoped navigation, no-write reload and verification-failure recovery remain unchanged. No schema, account, activity or credential changes are involved. Existing browser/capture checks now resolve selected identity from the header and exit through the chooser.

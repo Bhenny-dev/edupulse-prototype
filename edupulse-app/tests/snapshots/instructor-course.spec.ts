@@ -6,6 +6,7 @@ test('assigned instructor dashboard and course topics with explicit content auth
   const fixture = await instructorCourseUI(page)
   await page.goto('/#/syllabus?tab=mine')
   await expect(page.getByRole('navigation', { name: 'Syllabus sections' })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Refresh shared syllabi', exact: true })).toHaveCount(0)
   await expect(page.getByRole('navigation', { name: 'Main navigation' }).getByRole('link', { name: 'Syllabus', exact: true })).toBeVisible()
   await page.goto('/#/dashboard'); await expect(page.getByRole('heading', { name: 'Instructor Dashboard' })).toBeVisible()
   await page.screenshot({ path: `${folder}/01-dashboard.png`, animations: 'disabled' })

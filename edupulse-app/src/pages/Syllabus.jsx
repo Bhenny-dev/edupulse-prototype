@@ -1110,7 +1110,7 @@ export default function Syllabus({ courseContext }) {
       </div>
 
       {editingSyllabus?.status==='active'&&<p role="alert" className="mb-16">Saving a revision returns this syllabus to Drafted and hides its published courseware until the approved outline is activated again. Changed teaching weeks require another courseware review.</p>}
-      {sharing.allowed&&<div className="academic-actions mb-16"><button className="btn btn-secondary btn-sm" disabled={sharing.loading} onClick={()=>sharing.load()}>{sharing.loading?'Loading shared syllabi…':'Refresh shared syllabi'}</button>{sharing.error&&<p role="alert">{sharing.error}</p>}</div>}
+      {sharing.allowed&&sharing.error&&<div className="academic-actions mb-16"><p role="alert">{sharing.error}</p><button className="btn btn-secondary btn-sm" aria-label="Retry loading shared syllabi" disabled={sharing.loading} onClick={()=>sharing.load()}>Retry</button></div>}
       {actionError&&!sharingSyllabus&&!deleteSyllabus&&!deleteShare&&<p role="alert">{actionError}</p>}
       <nav className="tabs mb-24" aria-label="Syllabus sections" style={{ flexWrap: 'wrap' }}>
         {[['mine', 'My Syllabus'], ['repository', 'Shared Repository'], ['builder', 'Syllabus Builder']].map(([id,label]) => <button key={id} className={`tab ${tab === id ? 'active' : ''}`} aria-pressed={tab === id} onClick={() => id === 'builder' ? openBuilder(null) : switchTab(id)}>{label}</button>)}

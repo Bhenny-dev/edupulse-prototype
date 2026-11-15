@@ -27,3 +27,8 @@ A full browser reload now retains the selected course, expanded weeks, selected 
 Admin-selected person views and header surfaces follow the [account restoration steps](../23-account-support-and-pulse-context/README.md#reload-the-selected-account-without-returning-to-dashboard). Restoring a view does not replay generation, delivery, submission or assessment-start actions. If view-hint storage is unavailable, those references remain in memory and may be lost on reload.
 
 These captures use controlled sample accounts, workspaces and records. Browser tests count requests, preserve reader/slide state, exercise stale-response role isolation and confirm no extra writes or student material-open event on reader return. They do not establish hosted student activity or paid inference. See [validation](../../versions/2026-11-09-cached-workspaces/validation/results.md).
+
+
+## Reduced routine status text - 15 November 2026
+
+Academic page headers no longer show the generic Workspace needs attention label. Actual workspace/save errors, backup, Retry save and conflict recovery remain in Settings > Data & Privacy. An error is not relabelled as a pending save. Offline, record-read/retry and conflict safeguards retain their existing behavior. The routine Refresh shared syllabi control is also removed; shared-list failures retain an explicit error/retry action.

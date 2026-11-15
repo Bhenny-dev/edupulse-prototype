@@ -18,7 +18,7 @@ Build a syllabus starts the same builder without an imported document. Existing 
 
 ## Share and receive
 
-Share syllabus selects another registered instructor. Shared Repository lists only outgoing shares. Received copies remain in My Syllabus with sender provenance; use a copy as a draft or complete the existing separate acknowledgment for an authorized retained approved copy. Courseware, private source copies and another instructor's workspace are not shared. See [the sharing and suspension rules](../36-instructor-syllabi/README.md).
+Share syllabus selects another registered instructor. Shared Repository lists only outgoing shares. It loads on page entry and after your sharing actions, with no routine Refresh shared syllabi button. Reopen or reload the page to fetch later incoming copies; a failed read offers its actual error and Retry. Received copies remain in My Syllabus with sender provenance; use a copy as a draft or complete the existing separate acknowledgment for an authorized retained approved copy. Courseware, private source copies and another instructor's workspace are not shared. See [the sharing and suspension rules](../36-instructor-syllabi/README.md).
 
 ## Use one approved syllabus for teaching
 
