@@ -38,7 +38,9 @@ for(const {role} of roleReloadCases)test(`reload reopens the ${role} account pic
 for(const {role,path} of roleReloadCases)test(`hard reload preserves the selected ${role} account and protected URL`,async({page})=>{
   const fixture=await adminReloadUI(page,role)
   await page.goto('/#'+path)
-  await expect(page.locator('.support-view-banner')).toContainText(fixture.account.name)
+  await expect(page.getByRole('button',{name:'Account menu',exact:true})).toHaveAttribute('title',fixture.account.name)
+  await expect(page.locator('.support-view-banner')).toHaveCount(0)
+  await expect(page.getByRole('button',{name:'Return to System Admin',exact:true})).toHaveCount(0)
   expect(await viewHint(page)).toEqual(fixture.hint)
   fixture.calls.length=0
   const visits:string[]=[];let reloaded=false
@@ -51,7 +53,7 @@ for(const {role,path} of roleReloadCases)test(`hard reload preserves the selecte
   expect(fixture.calls.filter(call=>['workspace','academic'].includes(call.action))).toEqual([])
   await expect(page.locator('.support-view-banner')).toHaveCount(0)
   release()
-  await expect(page.locator('.support-view-banner')).toContainText(fixture.account.name)
+  await expect(page.getByRole('button',{name:'Account menu',exact:true})).toHaveAttribute('title',fixture.account.name)
   expect(new URL(page.url()).hash).toBe('#'+path)
   const lookup=fixture.calls.find(call=>call.lookupSubject===fixture.account.id)!
   expect(lookup.subject).toBeUndefined()
@@ -66,13 +68,13 @@ test('choosing a person records only minimal view hints and restores that choice
   await page.getByRole('button',{name:'Open view',exact:true}).last().click()
   const picker=page.getByRole('dialog',{name:'Choose student account',exact:true})
   await picker.getByRole('button',{name:'View Sam Example',exact:true}).click()
-  await expect(page.locator('.support-view-banner')).toContainText(account.name)
+  await expect(page.getByRole('button',{name:'Account menu',exact:true})).toHaveAttribute('title',account.name)
   expect(await viewHint(page)).toEqual({accountId:ADMIN_ACTOR_ID,role:'student',subjectId:account.id})
   await page.goto('/#/assessment')
-  await expect(page.locator('.support-view-banner')).toContainText(account.name)
+  await expect(page.getByRole('button',{name:'Account menu',exact:true})).toHaveAttribute('title',account.name)
   fixture.calls.length=0
   await page.reload()
-  await expect(page.locator('.support-view-banner')).toContainText(account.name)
+  await expect(page.getByRole('button',{name:'Account menu',exact:true})).toHaveAttribute('title',account.name)
   expect(new URL(page.url()).hash).toBe('#/assessment')
   expect(fixture.calls.filter(call=>call.lookupSubject===account.id).length).toBeGreaterThan(0)
   noReplayedActions(fixture)
@@ -99,7 +101,7 @@ test('a restore transport failure keeps the URL and hint until an explicit retry
   expect(fixture.calls.filter(call=>['workspace','academic'].includes(call.action))).toEqual([])
   fixture.failResolve(0)
   await page.getByRole('button',{name:'Retry restoring view',exact:true}).click()
-  await expect(page.locator('.support-view-banner')).toContainText(fixture.account.name)
+  await expect(page.getByRole('button',{name:'Account menu',exact:true})).toHaveAttribute('title',fixture.account.name)
   expect(new URL(page.url()).hash).toBe('#/syllabus?tab=mine')
   noReplayedActions(fixture)
 })
@@ -128,8 +130,8 @@ for(const failure of ['unavailable','role changed','empty response'] as const)te
 test('returning from a restored subject view clears its persisted selection before another reload',async({page})=>{
   const fixture=await adminReloadUI(page,'student')
   await page.goto('/#/assessment')
-  await expect(page.locator('.support-view-banner')).toContainText(fixture.account.name)
-  await page.getByRole('button',{name:'Return to System Admin',exact:true}).click()
+  await expect(page.getByRole('button',{name:'Account menu',exact:true})).toHaveAttribute('title',fixture.account.name)
+  await page.getByRole('button',{name:'Account menu',exact:true}).click();await page.getByRole('button',{name:'Switch view',exact:true}).click();await page.locator('.popover-content').getByRole('button',{name:/^System Admin\b/}).click()
   await expect(page.getByRole('heading',{name:'System Admin',exact:true})).toBeVisible()
   expect(await viewHint(page)).toBeNull()
   fixture.calls.length=0

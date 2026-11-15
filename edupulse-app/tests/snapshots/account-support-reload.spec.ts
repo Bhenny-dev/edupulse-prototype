@@ -8,9 +8,9 @@ const shot=async(page:any,file:string)=>{await mkdir(folder,{recursive:true});aw
 for(const [index,{role,path}] of roleReloadCases.entries())test(`account support reload: ${role} remains selected on the protected page`,async({page})=>{
   const fixture=await adminReloadUI(page,role)
   await page.goto('/#'+path)
-  await expect(page.locator('.support-view-banner')).toContainText(fixture.account.name)
+  await expect(page.getByRole('button',{name:'Account menu',exact:true})).toHaveAttribute('title',fixture.account.name)
   await page.reload()
-  await expect(page.locator('.support-view-banner')).toContainText(fixture.account.name)
+  await expect(page.getByRole('button',{name:'Account menu',exact:true})).toHaveAttribute('title',fixture.account.name)
   expect(new URL(page.url()).hash).toBe('#'+path)
   await expect(page.getByTestId('workspace-save-state')).toHaveText('Saved')
   await shot(page,`${10+index}-reload-${role}`)
@@ -29,7 +29,7 @@ test('account support reload: pending verification and explicit recovery retain 
   await shot(page,'15-reload-recovery')
   fixture.failResolve(0)
   await page.getByRole('button',{name:'Retry restoring view',exact:true}).click()
-  await expect(page.locator('.support-view-banner')).toContainText(fixture.account.name)
+  await expect(page.getByRole('button',{name:'Account menu',exact:true})).toHaveAttribute('title',fixture.account.name)
 })
 
 test('account support reload: account popover and pending person selection reopen',async({page})=>{

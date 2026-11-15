@@ -176,7 +176,7 @@ The **Voice input** microphone button beside the Pulse message box starts record
 
 ## Account support and contextual Pulse, 8 November 2026
 
-The existing role chooser now leads to a searchable account dialog. A selected account has a support banner and **Return to System Admin** action; the admin keeps their own AI connection. Pulse source details distinguish authorized account records from public references and remembered outcomes. [Manual 23](../../system-manual/23-account-support-and-pulse-context/README.md) shows the picker in light, dark and mobile layouts and the three conversation types.
+The existing role chooser now leads to a searchable account dialog. A selected account is identified through its existing account menu; use **Switch view > System Admin** to exit, with no bottom indicator or return shortcut; the admin keeps their own AI connection. Pulse source details distinguish authorized account records from public references and remembered outcomes. [Manual 23](../../system-manual/23-account-support-and-pulse-context/README.md) shows the picker in light, dark and mobile layouts and the three conversation types.
 
 ## System Search and public images
 

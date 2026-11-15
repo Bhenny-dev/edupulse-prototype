@@ -13,7 +13,7 @@ test('synthetic owner opens named role dashboards and retains the correction con
   await page.getByRole('button',{name:'Send',exact:true}).click()
   await page.getByRole('button',{name:`View ${title==='Instructor'?'Rowan Instructor Demo':title==='Dean'?'Dana Dean Demo':'Alex Sample'}`,exact:true}).click()
   await expect(page.getByRole('heading',{name:`${title} Dashboard`,exact:true})).toBeVisible()
-  await expect(page.locator('.support-view-banner')).toContainText(title==='Instructor'?'Rowan Instructor Demo':'Dana Dean Demo')
+  await expect(page.getByRole('button',{name:'Account menu',exact:true})).toHaveAttribute('title',title==='Instructor'?'Rowan Instructor Demo':'Dana Dean Demo')
   await page.screenshot({path:`${DIR}/${file}.png`,animations:'disabled'})
  }
  expect(fixture.modelCalls()).toBe(0)

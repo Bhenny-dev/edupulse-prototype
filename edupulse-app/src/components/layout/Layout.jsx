@@ -184,7 +184,7 @@ function RoleSwitchPopover({ onClose }) {
 export default function Layout() {
   const workspace = useWorkspace()
   const ai = useAI()
-  const { user, logout, switchRole, authLoading } = useAuth()
+  const { user, logout, authLoading } = useAuth()
   const { language, switchLanguage } = useLanguage()
   const navigate = useNavigate()
   const location = useLocation()
@@ -416,7 +416,7 @@ export default function Layout() {
           </div>
 
           <div style={{ position: 'relative' }}>
-            <button aria-label="Account menu" aria-expanded={showUserMenu} onClick={() => toggleOverlay('account')} style={{
+            <button aria-label="Account menu" title={user?.name} aria-expanded={showUserMenu} onClick={() => toggleOverlay('account')} style={{
               display: 'flex', alignItems: 'center', gap: '8px',
               padding: '4px 10px 4px 4px', borderRadius: 'var(--radius-full)',
               background: 'var(--white)', border: '2px solid var(--sky-200)',
@@ -530,7 +530,6 @@ export default function Layout() {
         </div>
       </footer>
 
-      {user?.supportSubject && <div className="support-view-banner" role="status"><span>Viewing <strong>{user.name}</strong> ({user.title}). {user.role==='student'?'Admin actions are recorded for this selected student.':'Administrative support view.'}</span><button className="btn btn-secondary btn-sm" onClick={async () => { if (await switchRole('admin')) navigate('/dashboard') }}>Return to System Admin</button></div>}
       {showSearch && <SearchOverlay onClose={() => setOverlay(null)} />}
       {showRoleSwitch && user?.canSwitchRoles && <RoleSwitchPopover onClose={() => setOverlay(null)} />}
       <Pulse />

@@ -5,7 +5,7 @@ import {workspaceViewKey} from '../../src/utils/workspaceViewState'
 async function setup(page:Page){
  const fixture=await adminReloadUI(page,'instructor')
  await page.goto('/#/syllabus?tab=mine')
- await expect(page.locator('.support-view-banner')).toContainText(fixture.account.name)
+ await expect(page.getByRole('button',{name:'Account menu',exact:true})).toHaveAttribute('title',fixture.account.name)
  const key=workspaceViewKey(`support-${ADMIN_ACTOR_ID}-${fixture.account.id}`,'instructor')
  return {fixture,key}
 }
@@ -24,12 +24,12 @@ test('search surface survives reload while its query stays transient and Escape 
  await page.reload()
  await expect(input).toBeVisible();await expect(input).toHaveValue('')
  expect(new URL(page.url()).hash).toBe('#/syllabus?tab=mine')
- await expect(page.locator('.support-view-banner')).toContainText(fixture.account.name)
+ await expect(page.getByRole('button',{name:'Account menu',exact:true})).toHaveAttribute('title',fixture.account.name)
  expect(fixture.calls.filter(call=>['chat','operator','courseware'].includes(call.action))).toEqual([])
  await page.keyboard.press('Escape')
  await expect(input).toHaveCount(0)
  await expect.poll(()=>savedOverlay(page,key)).toBeNull()
- await page.reload();await expect(page.locator('.support-view-banner')).toContainText(fixture.account.name)
+ await page.reload();await expect(page.getByRole('button',{name:'Account menu',exact:true})).toHaveAttribute('title',fixture.account.name)
  await expect(input).toHaveCount(0)
 })
 

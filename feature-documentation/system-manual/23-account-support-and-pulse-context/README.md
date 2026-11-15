@@ -12,9 +12,9 @@ Sign in as the verified System Admin. Open **Switch View** in the top bar, or **
 
 ![Year and student-number filters narrow the sample results](02-filtered-account.png)
 
-Choose a person's row to open their academic view. The account name and a persistent support banner identify the person selected. **Return to System Admin** exits. The admin's Google sign-in, AI provider connection, private conversations and knowledge library remain with the admin. Academic reads and permitted saves use the selected account's access rules and changes are attributed to the admin. Switching views discards responses belonging to the previous view and uses a separate pending-workspace cache.
+Choose a person's row to open their academic view. The top-bar account menu identifies the selected person and role. There is no bottom support indicator or return shortcut. To change views or return to the console, open **Account menu > Switch view** and select **System Admin** or another role. The admin's Google sign-in, AI provider connection, private conversations and knowledge library remain with the admin. Academic reads and permitted saves use the selected account's access rules and changes are attributed to the admin. Switching views discards responses belonging to the previous view and uses a separate pending-workspace cache.
 
-![Selected sample student and support banner](03-selected-student-view.png)
+![Selected sample student before the bottom indicator was removed](03-selected-student-view.png)
 
 Support views can inspect released materials and assessment questions, but do not record student access, start attempts, submit responses or appeal as the student. This preserves actual student activity in instructor statistics. The selected person's password and sign-in session are never shared or replaced. Account profile and credential editing requires returning to the admin account.
 
@@ -72,7 +72,7 @@ Named staff test accounts and their corrected role assignments are documented in
 
 ## Reload the selected account without returning to Dashboard
 
-A browser refresh keeps the current URL, including its page and tab query, and restores the selected person after fresh authorization. The role and person's identifier are tab-local hints; the application verifies the admin session and resolves the selected account again before opening its records. The support banner still names that person. Reload does not choose another account, enter a support session again, generate content, publish, or record student work.
+A browser refresh keeps the current URL, including its page and tab query, and restores the selected person after fresh authorization. The role and person's identifier are tab-local hints; the application verifies the admin session and resolves the selected account again before opening its records. The account menu still identifies that person; reloading does not add a bottom indicator. Reload does not choose another account, enter a support session again, generate content, publish, or record student work.
 
 ![Selected student remains on Assessments after reload](10-reload-student.png)
 
@@ -98,7 +98,7 @@ The account menu, notifications, language menu, **Switch View**, search overlay 
 
 ![Account menu remains open after reload](18-reloaded-account-popover.png)
 
-An open **Choose student account** dialog also reopens after reload. Its role is retained, while its filters and result contents are loaded afresh. Selecting a person remains an explicit action. Closing the dialog clears this pending picker. **Return to System Admin** and signing out clear both the selected-account hint and pending picker.
+An open **Choose student account** dialog also reopens after reload. Its role is retained, while its filters and result contents are loaded afresh. Selecting a person remains an explicit action. Closing the dialog clears this pending picker. Choosing **System Admin** in **Switch view**, or signing out, clears both the selected-account hint and pending picker.
 
 ![Account selection dialog restored without choosing a person](19-reloaded-account-selection.png)
 
@@ -121,3 +121,8 @@ Opening or reloading an instructor dashboard reads existing authorized records. 
 ## Admin student actions
 
 The owner authorized manipulation of the selected student view, then removed the additional demonstration checkbox and yellow panel. A verified Admin now uses the selected student's material, assessment and practice actions directly. Actions retain the test flag and Admin actor in audit storage, without visible test indicators, and independent student work stays protected. Reload restores authorized navigation without replaying any action. [Manual 41](../41-student-learning/README.md#try-the-student-view-as-admin) shows the current course view and persistent account banner.
+
+
+## Bottom support indicator removed - 15 November 2026
+
+The persistent Viewing bar and its Return to System Admin shortcut have been removed from all selected academic views. The existing account menu and Switch view chooser remain the navigation controls on desktop and phones. The full account name is available on the account button and in its menu. Fresh subject verification, Admin attribution, allowed commands, view hints and explicit verification-failure recovery are unchanged. Earlier screenshots showing the bottom bar predate this cleanup; documentation recapture remains paused by the owner.

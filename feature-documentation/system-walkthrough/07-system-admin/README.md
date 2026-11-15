@@ -94,7 +94,7 @@ Initial overview, role/account counts, agent activity and audit reads now show s
 
 ![Account selection after choosing Student](../../system-manual/23-account-support-and-pulse-context/01-select-account.png)
 
-Search by name, student number or email. Student filters include **Year level**, **Department** and **Program**. Choose a row to enter that person's academic view. The banner names the selected person and offers **Return to System Admin**. Support previews do not create learner access/completion events, assessment attempts or appeals. Only named accounts can be selected. The former own-account view option is removed. See [Manual 23](../../system-manual/23-account-support-and-pulse-context/README.md) for filtered, selected-account, dark and mobile captures. These are synthetic UI examples; native and rolled-back hosted checks separately verify row-level boundaries.
+Search by name, student number or email. Student filters include **Year level**, **Department** and **Program**. Choose a row to enter that person's academic view. The selected person and role remain in the top-bar account menu. The bottom Viewing bar and its return button have been removed. Use **Account menu > Switch view > System Admin** to return to the console. Support previews do not create learner access/completion events, assessment attempts or appeals. Only named accounts can be selected. The former own-account view option is removed. See [Manual 23](../../system-manual/23-account-support-and-pulse-context/README.md) for filtered, selected-account, dark and mobile captures. These are synthetic UI examples; native and rolled-back hosted checks separately verify row-level boundaries.
 
 ## Two designated Google admins
 

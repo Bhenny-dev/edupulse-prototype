@@ -5,9 +5,9 @@ const folder='../feature-documentation/system-manual/23-account-support-and-puls
 test('account support reload mobile: selected student and recoverable service failure',async({page})=>{
   const fixture=await adminReloadUI(page,'student')
   await page.goto('/#/assessment')
-  await expect(page.locator('.support-view-banner')).toContainText(fixture.account.name)
+  await expect(page.getByRole('button',{name:'Account menu',exact:true})).toHaveAttribute('title',fixture.account.name)
   await page.reload()
-  await expect(page.locator('.support-view-banner')).toContainText(fixture.account.name)
+  await expect(page.getByRole('button',{name:'Account menu',exact:true})).toHaveAttribute('title',fixture.account.name)
   expect(new URL(page.url()).hash).toBe('#/assessment')
   await page.screenshot({path:`${folder}/16-mobile-reloaded-view.png`,animations:'disabled'})
   fixture.failResolve(503);await page.reload()

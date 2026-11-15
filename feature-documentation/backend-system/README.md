@@ -1,5 +1,10 @@
 # Backend System
 
+## Admin view footer cleanup - 15 November 2026
+
+Layout no longer renders the sticky support-view indicator or its Return to System Admin navigation button for any selected role. The unused desktop/phone banner styles are removed. The existing account menu/Switch view chooser remains available, with the full selected name on the account button and in the menu. This removes only the routine footer UI: current Admin/subject checks, recorded actor, allowed student commands, persisted scoped navigation, no-write reload and verification-failure recovery remain unchanged. No schema, account, activity or credential changes are involved. Existing browser/capture checks now resolve selected identity from the header and exit through the chooser.
+
+
 ## Separate Instructor syllabus repository - 15 November 2026
 
 `/syllabus` now renders the existing repository directly and has its own Instructor navigation entry. It lists all owned syllabi and received shares, with the outgoing Shared Repository and the standalone Syllabus Builder. Draft PDF/DOCX import uses the existing local parser and explicit acceptance, revision-checked draft save and PDF renderer. A keyboard-accessible file chooser accompanies the drop area. Repository drafts need no teaching-load grant and do not add one. Existing sharing/approval, private-file, deletion and save policies are unchanged.
