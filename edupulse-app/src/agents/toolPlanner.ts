@@ -9,6 +9,8 @@ import { DRAFT_REQUEST, WEB_REQUEST } from './skills.js'
 import type { WebResearch, WebSearch } from '../lib/rag/types.js'
 import {referenceSyllabus} from './relatedSyllabi.js'
 import {resolveOutlineEdit,outlineEditPrompt} from './outlineEdits.js'
+import { operatorFrame } from './requestFrame.js'
+import { itemEditPrompt, runItemEdit } from './itemEdits.js'
 
 const editor = z.object({ instance: z.string().max(100), kind: z.enum(['syllabus', 'content']), label: z.string().max(240), data: z.record(z.string(), z.unknown()) }).strict()
 export const operatorInput = z.object({
@@ -27,13 +29,18 @@ export async function planValidatedTool(input: z.infer<typeof operatorInput>, id
   const decision = checkAppropriateUse(input.message, role)
   if (decision.allowed === false) throw new ApiError(403, 'ACTION_POLICY', decision.guidance)
   if (input.operation === 'plan') return { clarification: 'Name the page, course or record to open. System navigation does not require AI.', generated: false }
-  if (!contentGenerationRequest(input.message, 'auto', Boolean(input.editor))) throw new ApiError(400, 'CONTENT_REQUEST_REQUIRED', 'Request educational content explicitly before using AI.')
+  // A request about the items of a list ("remove question 3", "add two policies") is read first by code.
+  const itemFrame = operatorFrame(input)
+  if (!itemFrame && !contentGenerationRequest(input.message, 'auto', Boolean(input.editor))) throw new ApiError(400, 'CONTENT_REQUEST_REQUIRED', 'Request educational content explicitly before using AI.')
   const staged = input.operation === 'revise' && scheduledSyllabusDraft(input)
-  const outlineScope=input.operation==='revise'?resolveOutlineEdit(input):null
+  const outlineScope=input.operation==='revise'&&!itemFrame?resolveOutlineEdit(input):null
+  const frame = itemFrame && 'frame' in itemFrame ? itemFrame.frame : null
   const { continuation: _continuation, staged: _staged, ...taskInput } = input
   if(planRequest({message:input.message}).sourceOnly)taskInput.referenceSyllabi=[]
   const context = { ...taskInput, viewRole: role, history: [...input.history], editor: input.editor ? { ...input.editor, data: input.section && input.section !== 'all' ? { courseCode: input.editor.data.courseCode, courseTitle: input.editor.data.courseTitle, courseDescription: input.editor.data.courseDescription, courseInfo: input.editor.data.courseInfo, [input.section]: input.editor.data[input.section] } : input.editor.data } : null }
   if(outlineScope&&input.editor)context.editor={...input.editor,data:outlineEditPrompt(input.editor,outlineScope)}
+  // A list edit sends only the items it concerns, so the whole editor is not counted against the budget.
+  else if(frame&&input.editor)context.editor={...input.editor,data:frame.command==='add'||frame.command==='rewrite'?itemEditPrompt(input.editor,frame):{}}
   // Keep exact target fields; never truncate an editable array into a destructive replacement.
   while (JSON.stringify(context).length > contextLimit && context.history.length) context.history.shift()
   if (!staged && JSON.stringify(context).length > contextLimit) throw new ApiError(400, 'CONTEXT_LIMIT', 'Select a smaller section or attach a shorter source excerpt. The exact editable target must fit the 30,000-character context budget.')
@@ -46,6 +53,13 @@ export async function planValidatedTool(input: z.infer<typeof operatorInput>, id
     if (input.editor.kind === 'syllabus' && input.section === 'courseDescription') return { clarification: 'The course description and course identity are fixed curriculum fields. Choose a curriculum course; Pulse can revise the editable outcomes, outline, requirements and references.' }
     const sourceOnly = planRequest({ message: input.message }).sourceOnly
     if (sourceOnly && /\b(?:files?|documents?|pdfs?|attachments?|uploads?|uploaded|attached)\b/i.test(input.message) && !input.attachments.some(file => file.text.trim())) return { clarification: 'Attach the source file to this request so I can draft from it without substituting other sources.' }
+    if (itemFrame) {
+      if ('clarification' in itemFrame) return { clarification: itemFrame.clarification, generated: false }
+      if (input.editor.kind === 'syllabus' && !input.editor.data.courseCode && ['add', 'rewrite'].includes(itemFrame.frame.command)) return { clarification: 'Select the course in the syllabus builder so I can draft content for the correct subject.' }
+      const known = `${input.message}\n${JSON.stringify(input.editor.data)}\n${input.attachments.map(file => `${file.title}\n${file.text}`).join('\n')}`
+      const result = await runItemEdit({ ...taskInput, editor: input.editor }, itemFrame.frame, known, generate, signal, contextLimit, { attachments: input.attachments, history: input.history, sourceOnly })
+      return 'patch' in result ? { ...result, requiresConfirmation: input.editor.kind !== 'syllabus' } : result
+    }
     let research: WebResearch | undefined = execution?.research
     if ((WEB_REQUEST.test(input.message) || drafting&&!input.referenceSyllabi.length) && allowsPublicResearch(input.message) && !planRequest({ message: input.message }).sourceOnly) {
       try { if (!execution || execution.initialize) research = webSearch ? await webSearch(String(input.editor.data.courseTitle || input.message).slice(0, 200), signal) : { evidence: [], warning: 'Web research is unavailable. New educational content is an unverified draft for instructor review.' } }

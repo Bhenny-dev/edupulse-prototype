@@ -9,8 +9,10 @@ import { anthropicRequestError } from './anthropic.js'
 import { openaiRequestError } from './openaiErrors.js'
 import { currentModels, preferredModel } from './modelLifecycle.js'
 
-export const providerNames = ['ollama', 'gemini', 'openai', 'groq', 'anthropic', 'openrouter', 'huggingface'] as const
+export const providerNames = ['ollama', 'gemini', 'openai', 'groq', 'anthropic', 'openrouter', 'huggingface', 'deepseek', 'hermes'] as const
 export type ProviderName = typeof providerNames[number]
+/** Hermes connects through the Nous Portal API, an OpenAI-compatible endpoint that takes a Portal API key. */
+export const NOUS_API = 'https://inference-api.nousresearch.com/v1'
 export type Connection = { provider: ProviderName; model: string; apiKey?: string; workspaceId?: string; owner: string; expires: number; id: string; testedAt?: number }
 export type ModelPreset = { id: string; name: string; free?: boolean }
 const workspaceId = z.string().regex(/^wrkspc_[a-zA-Z0-9]{1,100}$/, 'Use the workspace ID from Claude Console (wrkspc_…).')
@@ -61,8 +63,8 @@ export function readConnection(request: Request, identity: Identity): Connection
 export function serverConnection(): Connection | undefined {
   const c = config(), provider = c.provider as ProviderName
   if (!providerNames.includes(provider)) return undefined
-  const keys: Partial<Record<ProviderName, string | undefined>> = { gemini: process.env.GEMINI_API_KEY, openai: process.env.OPENAI_API_KEY, groq: process.env.GROQ_API_KEY, anthropic: process.env.ANTHROPIC_API_KEY, ollama: process.env.OLLAMA_API_KEY, openrouter: process.env.OPENROUTER_API_KEY, huggingface: process.env.HF_TOKEN }
-  const models: Record<ProviderName, string> = { ollama: c.model, gemini: c.geminiModel, openai: process.env.OPENAI_MODEL || '', groq: process.env.GROQ_MODEL || '', anthropic: process.env.ANTHROPIC_MODEL || '', openrouter: process.env.OPENROUTER_MODEL || '', huggingface: process.env.HF_MODEL || '' }
+  const keys: Partial<Record<ProviderName, string | undefined>> = { gemini: process.env.GEMINI_API_KEY, openai: process.env.OPENAI_API_KEY, groq: process.env.GROQ_API_KEY, anthropic: process.env.ANTHROPIC_API_KEY, ollama: process.env.OLLAMA_API_KEY, openrouter: process.env.OPENROUTER_API_KEY, huggingface: process.env.HF_TOKEN, deepseek: process.env.DEEPSEEK_API_KEY, hermes: process.env.NOUS_API_KEY }
+  const models: Record<ProviderName, string> = { ollama: c.model, gemini: c.geminiModel, openai: process.env.OPENAI_MODEL || '', groq: process.env.GROQ_MODEL || '', anthropic: process.env.ANTHROPIC_MODEL || '', openrouter: process.env.OPENROUTER_MODEL || '', huggingface: process.env.HF_MODEL || '', deepseek: process.env.DEEPSEEK_MODEL || '', hermes: process.env.NOUS_MODEL || '' }
   if (provider !== 'ollama' && !keys[provider]) return undefined
   return { provider, model: models[provider], apiKey: keys[provider], owner: 'server', expires: Number.MAX_SAFE_INTEGER, id: 'server' }
 }
@@ -77,7 +79,7 @@ export function providerError(status: number): ApiError {
 export async function discoverModels(provider: ProviderName, apiKey?: string, signal = AbortSignal.timeout(12000), transport: typeof fetch = fetch, workspaceId?: string): Promise<ModelPreset[]> {
   if (provider !== 'ollama' && !apiKey) throw new ApiError(400, 'KEY_REQUIRED', 'Enter an API key to load this provider’s models.')
   if (provider === 'ollama' && config().hosted && !process.env.OLLAMA_BASE_URL) throw new ApiError(400, 'LOCAL_SERVER_REQUIRED', 'Ollama runs with the downloaded local app. Use the built-in browser model on this hosted site, or connect a hosted provider.')
-  const urls: Record<ProviderName, string> = { ollama: `${config().ollamaUrl}/api/tags`, gemini: 'https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000', openai: 'https://api.openai.com/v1/models', groq: 'https://api.groq.com/openai/v1/models', anthropic: 'https://api.anthropic.com/v1/models?limit=1000', openrouter: 'https://openrouter.ai/api/v1/models', huggingface: 'https://router.huggingface.co/v1/models' }
+  const urls: Record<ProviderName, string> = { ollama: `${config().ollamaUrl}/api/tags`, gemini: 'https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000', openai: 'https://api.openai.com/v1/models', groq: 'https://api.groq.com/openai/v1/models', anthropic: 'https://api.anthropic.com/v1/models?limit=1000', openrouter: 'https://openrouter.ai/api/v1/models', huggingface: 'https://router.huggingface.co/v1/models', deepseek: 'https://api.deepseek.com/models', hermes: `${NOUS_API}/models` }
   const headers: Record<string, string> = provider === 'gemini' ? { 'x-goog-api-key': apiKey! } : provider === 'anthropic' ? { 'x-api-key': apiKey!, 'anthropic-version': '2023-06-01' } : apiKey ? { Authorization: `Bearer ${apiKey}` } : {}
   if (provider === 'anthropic' && workspaceId) headers['anthropic-workspace-id'] = workspaceId
   let response: Response
@@ -104,19 +106,34 @@ export async function discoverModels(provider: ProviderName, apiKey?: string, si
   let models: ModelPreset[] = []
   if (provider === 'ollama') models = (data.models || []).filter((m: { name: string; remote_host?: string }) => !m.remote_host && !/embed|minilm|nomic|bge/i.test(m.name)).map((m: { name: string }) => ({ id: m.name, name: m.name }))
   else if (provider === 'gemini') models = (data.models || []).filter((m: { name: string; supportedGenerationMethods?: string[] }) => m.supportedGenerationMethods?.includes('generateContent') && !/image|tts|robotics/i.test(m.name)).map((m: { name: string; displayName?: string }) => ({ id: m.name.replace(/^models\//, ''), name: m.displayName || m.name }))
-  else if (provider === 'openrouter' || provider === 'huggingface') {
+  else if (provider === 'openrouter' || provider === 'huggingface' || provider === 'hermes') {
     if (provider === 'openrouter') rememberReasoning(data.data)
-    type Listed = { id: string; name?: string; architecture?: { output_modalities?: string[] }; pricing?: { prompt?: string; completion?: string }; providers?: { is_free?: boolean; status?: string }[] }
-    models = (data.data || []).filter((m: Listed) => !m.architecture?.output_modalities || m.architecture.output_modalities.includes('text')).map((m: Listed) => {
-      // Free tiers: OpenRouter ":free" variants with zero pricing; Hugging Face providers flagged is_free.
-      const free = provider === 'openrouter' ? m.id.endsWith(':free') || (m.pricing?.prompt === '0' && m.pricing?.completion === '0') : Boolean(m.providers?.some(p => p.is_free && p.status !== 'error'))
+    type Listed = { id: string; name?: string; expiration_date?: string | null; architecture?: { output_modalities?: string[] }; pricing?: { prompt?: string; completion?: string }; providers?: { is_free?: boolean; status?: string }[] }
+    // The Nous Portal catalogue also lists embedding, image and audio models, batch-only copies (":batch"),
+    // moving aliases ("~") and models with an end date. Only models that can answer a chat now are offered.
+    const portalChat = (m: Listed) => typeof m.id === 'string' && m.architecture?.output_modalities?.every(kind => kind === 'text') !== false && !m.id.endsWith(':batch') && !m.id.startsWith('~') && !(m.expiration_date && Date.parse(m.expiration_date) <= Date.now())
+    models = (data.data || []).filter((m: Listed) => (!m.architecture?.output_modalities || m.architecture.output_modalities.includes('text')) && (provider !== 'hermes' || portalChat(m))).map((m: Listed) => {
+      // Free tiers: OpenRouter and Portal ":free" variants with zero pricing; Hugging Face providers flagged is_free.
+      const free = provider !== 'huggingface' ? m.id.endsWith(':free') || (m.pricing?.prompt === '0' && m.pricing?.completion === '0') : Boolean(m.providers?.some(p => p.is_free && p.status !== 'error'))
       return { id: m.id, name: `${m.name || m.id}${free && !/\(free\)/i.test(m.name || '') ? ' (free)' : ''}`, free }
     })
   }
   else models = (data.data || []).filter((m: { id: string; active?: boolean; shutdown_date?: string | null }) => provider === 'anthropic' || (provider === 'openai' ? /^(gpt-|chatgpt-|codex-|o\d)/.test(m.id) && !/audio|realtime|transcri|image|search|instruct|computer-use|robotics/.test(m.id) && !(m.shutdown_date && Date.parse(m.shutdown_date) <= Date.now()) : m.active !== false && !/whisper|tts|guard|orpheus/.test(m.id))).map((m: { id: string; display_name?: string }) => ({ id: m.id, name: m.display_name || m.id }))
-  models = currentModels(provider, models.filter(m => typeof m.id === 'string' && m.id.length <= 200)).sort((a, b) => Number(Boolean(b.free)) - Number(Boolean(a.free)) || a.name.localeCompare(b.name)).slice(0, 500)
+  // On the Portal the Hermes models come first, whatever they cost; elsewhere free models come first.
+  const hermes = (m: ModelPreset) => Number(provider === 'hermes' && /hermes/i.test(m.id))
+  models = currentModels(provider, models.filter(m => typeof m.id === 'string' && m.id.length <= 200)).sort((a, b) => hermes(b) - hermes(a) || Number(Boolean(b.free)) - Number(Boolean(a.free)) || a.name.localeCompare(b.name)).slice(0, 500)
   if (!models.length) throw new ApiError(400, 'NO_MODELS', 'No supported text-generation models are available for this connection.')
   return models
+}
+
+/** The Portal lists its models without a key, so a listing proves nothing about the key. One request for a
+ *  single token does: a rejected key is reported when the connection is made, not at the first prompt. A
+ *  failure that is not about the key (a busy Portal, a model that refuses the request) does not block it. */
+export async function verifyPortalKey(apiKey: string, model: string, signal = AbortSignal.timeout(12000), transport: typeof fetch = fetch) {
+  let response: Response
+  try { response = await transport(`${NOUS_API}/chat/completions`, { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` }, body: JSON.stringify({ model, max_tokens: 1, messages: [{ role: 'user', content: 'Hello' }] }), signal, redirect: 'error' }) }
+  catch { signal.throwIfAborted(); return }
+  if (response.status === 401 || response.status === 402 || response.status === 403) throw providerError(response.status)
 }
 
 export async function createConnection(input: z.infer<typeof connectionInput>, identity: Identity, previous?: Connection) {
@@ -129,6 +146,7 @@ export async function createConnection(input: z.infer<typeof connectionInput>, i
   const preferred = preferredModel(input.provider, models)
   const model = input.model || (previous?.provider === input.provider && models.some(m => m.id === previous.model) ? previous.model : preferred) || (input.provider === 'ollama' && models.some(m => m.id === config().model || m.id === `${config().model}:latest`) ? models.find(m => m.id === config().model || m.id === `${config().model}:latest`)!.id : models[0]!.id)
   if (!models.some(m => m.id === model)) throw new ApiError(400, 'MODEL_NOT_AVAILABLE', 'Choose a model returned by the connected provider.')
+  if (input.provider === 'hermes' && input.apiKey) await verifyPortalKey(input.apiKey, model)
   const connection: Connection = { provider: input.provider, model, apiKey, ...(workspaceId ? { workspaceId } : {}), owner: identity.id, id: randomBytes(12).toString('hex'), expires: Date.now() + TTL * 1000, ...(!input.apiKey && previous?.provider === input.provider && previous.model === model && previous.workspaceId === workspaceId && previous.testedAt ? { testedAt: previous.testedAt } : {}) }
   return { connection, models }
 }

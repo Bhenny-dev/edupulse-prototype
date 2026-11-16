@@ -2,10 +2,12 @@
 // wind them down, so the list alone is not enough: models the provider has deprecated or shut down
 // are left out, and so are dated snapshots of a model that is also listed by its alias.
 //
-// Sources, checked 8 November 2026 (update this list when a provider announces a deprecation):
+// Sources, checked 16 November 2026 (update this list when a provider announces a deprecation):
 //   OpenAI     https://developers.openai.com/api/docs/deprecations
 //   Anthropic  https://docs.claude.com/en/docs/about-claude/model-deprecations
 //   Google     https://ai.google.dev/gemini-api/docs/deprecations
+//   DeepSeek   https://api-docs.deepseek.com/quick_start/pricing
+//   Nous       https://inference-api.nousresearch.com/v1/models (the Portal answers 404 "retired" for Hermes 3 and 4)
 // Other providers (Groq, OpenRouter, Hugging Face, a local Ollama) list only what they serve.
 
 type Listed = { id: string }
@@ -19,6 +21,10 @@ const RETIRED: Record<string, RegExp> = {
   // Gemini 1.x, 2.x (legacy: served, but not for new work), the Gemini 3 previews, 3.1 Flash-Lite, and
   // 3.5 and 3.7 Flash (their endpoints now route to newer Flash models), plus experiments.
   gemini: /^gemini-(1\.|2\.|3-|3\.1-|3\.5-flash$|3\.7-flash$)|-exp($|-)/,
+  // The old deepseek-chat and deepseek-reasoner names; deepseek-flash and deepseek-v4-pro replace them.
+  deepseek: /^deepseek-(chat|reasoner)$/,
+  // Hermes 3 and Hermes 4 (70B, 405B) are retired on the Nous Portal.
+  hermes: /(^|\/)hermes-[34](-|$)/i,
 }
 // Not text generation: speech, live audio, transcription, images, video, music, embeddings, robotics.
 const NOT_TEXT = /(^|-)(tts|live|transcribe|image|imagen|veo|lyria|embedding|robotics|omni|nano-banana)($|-)/
@@ -55,5 +61,9 @@ export function preferredModel(provider: string, models: Listed[]): string | und
   if (provider === 'gemini') return ids.find(id => id === 'gemini-flash-latest') || ids.filter(id => /^gemini-\d+(\.\d+)?-flash$/.test(id)).sort(newer)[0]
   // Claude writes the version with dashes (claude-sonnet-5-5); a trailing date is not part of it.
   if (provider === 'anthropic') return ids.filter(id => /^claude-sonnet-\d/.test(id)).sort((a, b) => newer(...[a, b].map(id => id.replace('claude-sonnet-', '').split('-').filter(part => part.length <= 2).join('.')) as [string, string]))[0]
+  // DeepSeek Flash is the fast, low-cost tier; V4 Pro is the larger one.
+  if (provider === 'deepseek') return ids.find(id => id === 'deepseek-flash') || ids.find(id => /flash/.test(id))
+  // A Hermes model when the Portal lists one, otherwise the first model of the list.
+  if (provider === 'hermes') return ids.filter(id => /hermes/i.test(id)).sort(newer)[0]
   return undefined
 }

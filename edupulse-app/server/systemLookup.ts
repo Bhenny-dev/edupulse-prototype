@@ -16,6 +16,7 @@ import { extractiveAnswer, runAgents, type AgentAnswer } from '../src/lib/rag/ag
 import { verifyAnswer } from '../src/lib/rag/verify.js'
 import { agentReport } from '../src/lib/rag/registry.js'
 import type { Evidence, AgentStep } from '../src/lib/rag/types.js'
+import { coursePassages, evidence, materialPassages, syllabusPassages } from './systemIndex.js'
 
 export function simpleLookup(input: ChatInput) {
   if(['auto','answer'].includes(input.task)&&selfAccountQuestion(input.message))return true
@@ -40,26 +41,6 @@ export async function selfAccountAnswer(input:ChatInput,owner:Identity,subject:I
   const result=await lookupAnswer(input,signedIn?[evidence('verified-session','Current verified account',text)]:[],signal,'system',undefined,signedIn?undefined:text)
   result.answer=text;result.verification=null;result.agentReport=agentReport(result.trace,{mode:result.mode,verification:null,sources:result.sources.length});return result
 }
-const evidence = (id:string,title:string,text:string,origin:Evidence['origin']='account',destination?:Evidence['destination']):Evidence => ({...(destination?{destination}:{}),id,documentId:null,title,text,page:null,section:null,flagged:false,origin,method:origin==='public-guide'?'keyword':'provided',similarity:null,relevance:null,rrf:1,query:''})
-const label=(key:string)=>key.replace(/([a-z])([A-Z])/g,'$1 $2').replace(/[_-]+/g,' ')
-function prose(value:unknown,depth=0):string {
-  if(depth>5)return ''
-  if(typeof value==='string')return value.slice(0,12000)
-  if(typeof value==='number'&&Number.isFinite(value))return String(value)
-  if(Array.isArray(value))return value.map(item=>prose(item,depth+1)).filter(Boolean).join('\n')
-  if(value&&typeof value==='object')return Object.entries(value).filter(([key])=>!/^(?:id|.*Id|approvedFile|history|provenance|correctIndex|answerKey|password|token|apiKey|base64|data|courseOutline)$/i.test(key)).map(([key,item])=>{
-    const text=prose(item,depth+1)
-    return text?`${['parsed','sections','content'].includes(key)?'':label(key)+': '}${text}`:''
-  }).filter(Boolean).join('\n')
-  return ''
-}
-function outlineText(outline:any[]) {
-  return outline.flatMap(row=>Object.entries(row).filter(([key])=>key!=='week').map(([key,value])=>{
-    const text=prose(value).replace(/\n/g,'; ')
-    return text?`Week ${row.week} ${key==='ilos'?'learning outcomes':label(key)}: ${text}`:''
-  })).join('\n')
-}
-
 /** Deterministic quoted answers, with real provenance and no generation/reranking model. */
 export async function lookupAnswer(input: ChatInput, sources: Evidence[], signal: AbortSignal, scope:'system'|'web', correction?:string, warning?:string):Promise<AgentAnswer> {
   const core=profileQuery(input.message) && sources[0]?.origin==='account' ? `${sources[0].text} [1]` : extractiveAnswer(input.message,sources).replace(/^Source excerpts \(no model-generated answer\):\s*/,'')
@@ -111,20 +92,21 @@ export async function systemLookup(input:ChatInput,owner:Identity,subject:Identi
   if (!selectedFiles && subject.role!=='guest' && !profileQuery(input.message)) {
     try {
       const records=await readAcademic(subject)
-      for (const row of records.courses) candidates.push(evidence(`course:${row.id}`,String(row.course_code)+' '+row.course_title,`${row.course_code}: ${row.course_title}. Instructor: ${row.instructor_name||'not recorded'}.\n${outlineText(Array.isArray(row.outline)?row.outline:[])}`, 'account', { path: `/courseware?course=${encodeURIComponent(String(subject.role === 'student' ? row.id : row.syllabus_id || row.id))}`, label: 'Open course' }))
-      for (const row of records.publications) if (row.type==='material') candidates.push(evidence(`release:${row.id}`,String(row.title),`${row.title}\n${prose(row.content?.sections)}\n${prose(row.content?.concepts)}\n${prose(row.content?.examples)}\n${prose(row.content?.applications)}`, 'account', { path: `/courseware?course=${encodeURIComponent(String(subject.role === 'student' ? row.course_id : records.courses.find((course: { id: string; syllabus_id?: string }) => course.id === row.course_id)?.syllabus_id || row.course_id))}&publication=${encodeURIComponent(String(row.id))}&week=${row.week}`, label: 'Open teaching material' }))
+      for (const row of records.courses) candidates.push(...coursePassages(`course:${row.id}`,String(row.course_code)+' '+row.course_title,`${row.course_code}: ${row.course_title}. Instructor: ${row.instructor_name||'not recorded'}.`,row.outline, { path: `/courseware?course=${encodeURIComponent(String(subject.role === 'student' ? row.id : row.syllabus_id || row.id))}`, label: 'Open course' }))
+      for (const row of records.publications) if (row.type==='material') candidates.push(...materialPassages(`release:${row.id}`,String(row.title),row.content, { path: `/courseware?course=${encodeURIComponent(String(subject.role === 'student' ? row.course_id : records.courses.find((course: { id: string; syllabus_id?: string }) => course.id === row.course_id)?.syllabus_id || row.course_id))}&publication=${encodeURIComponent(String(row.id))}&week=${row.week}`, label: 'Open teaching material' }))
     } catch { warnings.push('Academic content could not be searched completely.') }
     if (['admin','instructor','dean','associate_dean'].includes(subject.role)) try {
       const workspace=await readWorkspace(subject)
-      for (const row of workspace.data?.syllabi||[]) candidates.push(evidence(`syllabus:${row.id}`,`${row.courseCode} ${row.courseTitle} syllabus (${row.status})`,`${row.courseCode}: ${row.courseTitle}. Status: ${row.status}.\n${prose(row)}\n${outlineText(row.courseOutline)}`, 'account', { path: `/courseware?view=syllabus&course=${encodeURIComponent(row.id)}&tab=mine&read=${encodeURIComponent(row.id)}`, label: 'Open syllabus' }))
-      for (const [id,row] of Object.entries(workspace.data?.content||{})) if (row.type==='material') candidates.push(evidence(`authored:${id}`,row.content.title,`${row.content.title}\n${prose(row.content.sections)}\n${prose(row.content.concepts)}\n${prose(row.content.examples)}\n${prose(row.content.applications)}`, 'account', { path: `/courseware?course=${encodeURIComponent(row.syllabusId)}&item=${encodeURIComponent(id)}&week=${row.week}`, label: 'Open teaching draft' }))
+      for (const row of workspace.data?.syllabi||[]) candidates.push(...syllabusPassages(`syllabus:${row.id}`,`${row.courseCode} ${row.courseTitle} syllabus (${row.status})`,row, { path: `/courseware?view=syllabus&course=${encodeURIComponent(row.id)}&tab=mine&read=${encodeURIComponent(row.id)}`, label: 'Open syllabus' }))
+      for (const [id,row] of Object.entries(workspace.data?.content||{})) if (row.type==='material') candidates.push(...materialPassages(`authored:${id}`,row.content.title,row.content, { path: `/courseware?course=${encodeURIComponent(row.syllabusId)}&item=${encodeURIComponent(id)}&week=${row.week}`, label: 'Open teaching draft' }))
     } catch { warnings.push('Saved workspace content could not be searched completely.') }
   }
   const question=conversation.followUp?plan.queries[0]||input.message:input.message
   try { candidates.push(...await keywordSearch(owner,question,input.documentIds,signal)) }
   catch { signal.throwIfAborted();warnings.push('The indexed knowledge library could not be searched completely.') }
   const ranked=candidates.map(source=>({source,score:keywordMatch(question,`${source.title}\n${source.text}`)})).filter(hit=>hit.score>=0.68).sort((a,b)=>b.score-a.score||(['account','attachment','private'].includes(b.source.origin)?1:0)-(['account','attachment','private'].includes(a.source.origin)?1:0))
-  const found=ranked.slice(0,4).map(hit=>({...hit.source,query:input.message}))
+  // A course and its syllabus can index the same week; each text is quoted once.
+  const seen=new Set<string>(),found=ranked.filter(hit=>{const key=hit.source.text.replace(/\s+/g,' ').trim().toLowerCase();return !seen.has(key)&&Boolean(seen.add(key))}).slice(0,4).map(hit=>({...hit.source,query:input.message}))
   if (found.length) {
     const exact=words(input.message).every(q=>words(found[0]!.title+' '+found[0]!.text).includes(q)||q.length<4)
     return lookupAnswer(input,found,signal,'system',!exact&&ranked[0]!.score<1?found[0]!.title:undefined,warnings.join(' '))

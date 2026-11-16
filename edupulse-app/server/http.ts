@@ -2,6 +2,7 @@ import {practiceRequest,practiceInput} from './domains/practice.js'
 import { AUDIO_BYTES, transcribeAudio } from './transcription.js'
 import { teachingFiles, teachingFileInput } from './domains/teachingFiles.js'
 import { contentGenerationRequest, explicitWebRequest } from '../src/lib/systemChatPolicy.js'
+import { operatorFrame } from '../src/agents/requestFrame.js'
 import { sharingCommand, syllabusSharing } from './domains/syllabusSharing.js'
 import { executeSources } from './sources/service.js'
 import { sourceCommand } from './sources/contracts.js'
@@ -190,7 +191,7 @@ export async function handleRequest(request: Request): Promise<Response> {
     if (action === 'operator') {
       const input = operatorInput.parse(await readJson(request, bodyLimit(action)))
       if (input.operation === 'plan') return json({ clarification: 'Name the page, course or record you want to open. EduPulse uses system navigation and search for these requests.', generated: false })
-      if (!contentGenerationRequest(input.message, 'auto', Boolean(input.editor))) throw new ApiError(400, 'CONTENT_REQUEST_REQUIRED', 'AI is available for explicit educational content authoring. Use System Search or name a page for other requests.')
+      if (!contentGenerationRequest(input.message, 'auto', Boolean(input.editor)) && !operatorFrame(input)) throw new ApiError(400, 'CONTENT_REQUEST_REQUIRED', 'AI is available for explicit educational content authoring. Use System Search or name a page for other requests.')
       operatorBody = input
     }
     if (action === 'teaching-files') return json(await teachingFiles(identity, effective, teachingFileInput.parse(await readJson(request, 5000))))

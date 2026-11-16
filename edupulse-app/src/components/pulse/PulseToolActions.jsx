@@ -45,6 +45,8 @@ function EditorCard({ proposal, ctx }) {
   const [baseline, setBaseline] = useState(proposal.editor || currentEditor())
   const [patch, setPatch] = useState(proposal.patch || null), [chosen, setChosen] = useState(Object.keys(proposal.patch || {}))
   const [research, setResearch] = useState({ notes: proposal.notes || [], sources: proposal.sources || [] })
+  // Adding, removing or moving items changes the list itself, so a selected field cannot narrow it.
+  const [structural, setStructural] = useState(Boolean(proposal.structural))
   const [course, setCourse] = useState(proposal.courseCode || baseline?.data.courseCode || '')
   const [operation, setOperation] = useState(proposal.operation || 'replace'), [state, setState] = useState('pending'), [error, setError] = useState(''), [receipt, setReceipt] = useState('')
   const running = useRef(false)
@@ -61,7 +63,9 @@ function EditorCard({ proposal, ctx }) {
       const result = imported ? sourceSyllabusPatch(proposal.attachment.syllabus) : await ctx.prepareEdit({ ...proposal, editor }, controller.current.signal)
       controller.current.signal.throwIfAborted()
       if (result.clarification) { setError(result.clarification); return }
-      const changes = scopedEditorPatch(editor, imported ? result : result.patch, proposal.target?.path, proposal.scopeFields)
+      const listEdit = !imported && Boolean(result.structural)
+      const changes = scopedEditorPatch(editor, imported ? result : result.patch, listEdit ? undefined : proposal.target?.path, proposal.scopeFields)
+      setStructural(listEdit)
       if (!imported) setResearch({ notes: result.notes || [], sources: result.sources || [] })
       const fields = Object.keys(changes).filter(field => proposal.section === 'all' || !proposal.section || field === proposal.section)
       if (!fields.length) throw new Error('This file did not contain readable data for the requested section. Supply the source or choose another section; nothing was guessed.')
@@ -73,7 +77,7 @@ function EditorCard({ proposal, ctx }) {
     running.current = true; setState('running'); setError(''); ctx.finishTicket?.(proposal.ticketId, 'working')
     try {
       const selected = Object.fromEntries(chosen.map(field => [field, patch[field]]))
-      const result = await ctx.applyEditor(baseline, mergedPatch(baseline, selected, imported ? operation : 'replace'), save, imported && !proposal.target ? course : undefined, proposal.target?.path, proposal.scopeFields)
+      const result = await ctx.applyEditor(baseline, mergedPatch(baseline, selected, imported ? operation : 'replace'), save, imported && !proposal.target ? course : undefined, structural ? undefined : proposal.target?.path, proposal.scopeFields)
       ctx.finishTicket?.(proposal.ticketId)
       setReceipt(result); setState('done')
     } catch (failure) { setState('pending'); setError(failure.message); ctx.finishTicket?.(proposal.ticketId, 'error') } finally { running.current = false }
@@ -85,7 +89,7 @@ function EditorCard({ proposal, ctx }) {
     <header><strong>{imported ? `Import syllabus sections from ${proposal.attachment.fileName}` : 'Review the proposed content change'}</strong></header>
     <p>{imported ? 'Only sections actually read from the file are offered. Course identity uses the selected curriculum record. Missing sections remain unchanged; approval is not inferred.' : `Target: ${baseline?.label || 'open an editor'}. Generated wording is a draft for review; no content has changed.`}</p>
     {proposal.scopeFields && <p className="pulse-action-note">Selected section: {proposal.scopeFields.map(field => labels[field]).join(', ')}. Other sections are preserved.</p>}
-    {proposal.target && <p className="pulse-action-note">Selected field: <strong>{proposal.target.label}</strong>. Other fields and list items are preserved.</p>}
+    {proposal.target && !structural && <p className="pulse-action-note">Selected field: <strong>{proposal.target.label}</strong>. Other fields and list items are preserved.</p>}
     {research.notes.map((note, index) => <p key={index} className="pulse-action-note">{note}</p>)}
     {research.sources.length > 0 && <details><summary>Public research sources ({research.sources.length})</summary><ul>{research.sources.map((source, index) => <li key={index}><a href={source.url} target="_blank" rel="noreferrer noopener">{source.title}</a></li>)}</ul></details>}
     {(!patch || !baseline) && <div className="ai-actions"><button className="btn btn-secondary btn-sm" onClick={() => ctx.navigate('/syllabus?tab=builder')}>Open Syllabus Builder</button><button className="btn btn-primary btn-sm" disabled={busy} onClick={prepare}>{state === 'preparing' ? 'Preparing preview…' : 'Prepare edit preview'}</button></div>}

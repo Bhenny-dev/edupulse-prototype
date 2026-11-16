@@ -3,7 +3,7 @@ import { ChatGoogleGenerativeAI } from '@langchain/google-genai'
 import { HumanMessage, SystemMessage } from '@langchain/core/messages'
 import { config } from './config.js'
 import { ApiError } from './contracts.js'
-import { discoverModels, providerError, serverConnection, type Connection } from './connections.js'
+import { discoverModels, NOUS_API, providerError, serverConnection, type Connection } from './connections.js'
 import { modelStatus } from './ml/onnx.js'
 import { openRouterOutput, openRouterReasoning, reasoningAllowance } from './reasoning.js'
 import { anthropicRequestError } from './anthropic.js'
@@ -15,6 +15,8 @@ const OPENAI_COMPATIBLE: Record<string, string> = {
   groq: 'https://api.groq.com/openai/v1/chat/completions',
   openrouter: 'https://openrouter.ai/api/v1/chat/completions',
   huggingface: 'https://router.huggingface.co/v1/chat/completions',
+  deepseek: 'https://api.deepseek.com/chat/completions',
+  hermes: `${NOUS_API}/chat/completions`,
 }
 
 export async function providerHealth(connection?: Connection) {
@@ -60,10 +62,15 @@ export async function invokeModel(system: string, prompt: string, signal: AbortS
     // reason when asked, and EduPulse does not ask them to.
     const visible = testBudget || (json ? 5000 : 1600), allowance = reasoningAllowance(visible)
     const reasoning = connection.provider === 'openrouter' ? await openRouterReasoning(connection.model, signal) : undefined
+    // DeepSeek thinks by default and its limit covers the thinking, so structured work runs with thinking
+    // off and a low temperature. Its JSON mode needs the word "json" in the request. The Portal reasons
+    // only for some models and takes no reasoning field here, so those get the allowance as extra headroom.
+    const deepseek = connection.provider === 'deepseek'
+    const instructions = deepseek && json && !/json/i.test(`${system}\n${prompt}`) ? `${system}\nAnswer with a single valid JSON object.` : system
     const body = anthropic
       ? { model: connection.model, system, messages: [{ role: 'user', content: prompt }], max_tokens: visible }
       : responses ? { model: connection.model, instructions: system, input: [{ role: 'user', content: [{ type: 'input_text', text: prompt }] }], max_output_tokens: visible + allowance, store: false, ...(json ? { text: { format: { type: 'json_object' } } } : {}) }
-      : { model: connection.model, messages: [{ role: 'system', content: system }, { role: 'user', content: prompt }], ...(reasoning ? openRouterOutput(reasoning, visible) : { max_tokens: visible }), ...(json ? { response_format: { type: 'json_object' } } : {}) }
+      : { model: connection.model, messages: [{ role: 'system', content: instructions }, { role: 'user', content: prompt }], ...(reasoning ? openRouterOutput(reasoning, visible) : { max_tokens: connection.provider === 'hermes' ? visible + allowance : visible }), ...(json ? { response_format: { type: 'json_object' } } : {}), ...(deepseek ? { thinking: { type: 'disabled' }, ...(json ? { temperature: 0.2 } : {}) } : {}) }
     const send = async (payload: object) => {
       let response: Response
       try { response = await fetch(endpoint, { method: 'POST', headers, body: JSON.stringify(payload), signal, redirect: 'error' }) }
@@ -72,6 +79,8 @@ export async function invokeModel(system: string, prompt: string, signal: AbortS
       return response.json()
     }
     let result = await send(body)
+    // DeepSeek's JSON mode can answer with an empty reply; its documentation asks callers to try once more.
+    if (deepseek && json && result.choices?.[0]?.finish_reason !== 'length' && !result.choices?.[0]?.message?.content?.trim()) result = await send(body)
     if ((responses || reasoning === 'on' || reasoning === 'mandatory') && thinkingUsedLimit(result, allowance)) {
       // On OpenRouter, ask once more with thinking off, so the whole limit goes to the answer. A model
       // that must think cannot do that, and OpenAI reasoning models are not retried at the owner's cost.
@@ -209,7 +218,7 @@ export async function modelResponseError(response: Response, model: string, prov
   if (response.status === 400 && /\bmax_tokens\b.{0,80}(?:maximum|greater|less|exceed|allowed)/i.test(message)) return new ApiError(400, 'MODEL_TOKEN_LIMIT', 'The provider rejected this model\'s response limit. Choose a model with a larger output allowance in AI settings and retry.')
   if (response.status === 404 || code === 'model_not_found') return new ApiError(400, 'MODEL_NOT_AVAILABLE', `The selected model (${model}) is unavailable for this account or API route. Refresh models, choose another model and use Test selected model.`)
   if (code === 'insufficient_quota') return new ApiError(429, 'PROVIDER_CREDITS', 'The provider account has no available API credits or quota. Check API billing or choose another connection; a consumer chat subscription is separate.')
-  if (response.status === 400) return new ApiError(400, 'MODEL_INCOMPATIBLE', 'The provider could not accept this request for the selected model. Refresh models in AI settings and retry, or choose another model.')
+  if (response.status === 400 || (provider === 'deepseek' && response.status === 422)) return new ApiError(400, 'MODEL_INCOMPATIBLE', 'The provider could not accept this request for the selected model. Refresh models in AI settings and retry, or choose another model.')
   return providerError(response.status)
 }
 

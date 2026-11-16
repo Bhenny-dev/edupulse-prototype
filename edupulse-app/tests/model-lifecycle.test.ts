@@ -24,3 +24,12 @@ test('a new connection starts on the newest balanced model of its provider', () 
   assert.equal(preferredModel('anthropic', list('claude-sonnet-4-6', 'claude-sonnet-5-5', 'claude-opus-5-5')), 'claude-sonnet-5-5')
   assert.equal(preferredModel('openrouter', list('anything')), undefined)
 })
+
+test('DeepSeek and Hermes keep their retired models out and start on a current one', () => {
+  assert.deepEqual(ids('deepseek', 'deepseek-chat', 'deepseek-reasoner', 'deepseek-flash', 'deepseek-v4-pro'), ['deepseek-flash', 'deepseek-v4-pro'])
+  assert.deepEqual(ids('hermes', 'nousresearch/hermes-4-405b', 'nousresearch/hermes-3-llama-3.1-70b', 'nousresearch/hermes-5', 'anthropic/claude-sonnet-5.5'), ['nousresearch/hermes-5', 'anthropic/claude-sonnet-5.5'])
+  assert.equal(preferredModel('deepseek', list('deepseek-v4-pro', 'deepseek-flash')), 'deepseek-flash')
+  assert.equal(preferredModel('deepseek', list('deepseek-v4-pro', 'deepseek-v5-flash')), 'deepseek-v5-flash')
+  assert.equal(preferredModel('hermes', list('anthropic/claude-sonnet-5.5', 'nousresearch/hermes-5', 'nousresearch/hermes-6')), 'nousresearch/hermes-6')
+  assert.equal(preferredModel('hermes', list('anthropic/claude-sonnet-5.5')), undefined)
+})

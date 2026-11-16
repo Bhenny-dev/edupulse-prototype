@@ -1,5 +1,6 @@
 import { mergeStudents, studentKey } from '../utils/rosterParser'
 import { ALL_FIELDS, DRAFT_REQUEST, WEB_REQUEST } from './skills'
+import { parseFrame } from './requestFrame'
 export { ALL_FIELDS, DRAFT_REQUEST, WEB_REQUEST }
 
 export const EDIT_REQUEST = /make\s+(?:it|this|these|the.*?)\s+(?:more\s+)?(?:accurate|complete|correct)|\b(?:update|modify|change|revise|edit|fix|correct|adjust|improve|rewrite|rephrase|shorten|expand|simplify|polish|insert|append|replace|remove|delete|integrate|fill|record)\b/i
@@ -9,8 +10,8 @@ export function sectionFor(text) {
   if (ALL_FIELDS.test(text)) return 'all'
   for (const [field, pattern] of [
     ['courseDescription', /course\s+description|section\s*2/i], ['institutionalContext', /institutional context|vision|mission|core values|section\s*3/i], ['programOutcomes', /program\s+outcomes?|section\s*4/i],
-    ['courseOutline', /(?:course|syllabus)\s+outline|weekly\s+(?:outline|plan)|section\s*5/i], ['courseRequirements', /course\s+requirements?/i],
-    ['gradingSystem', /grading\s+(?:system|policy|rules?)/i], ['coursePolicy', /course\s+polic(?:y|ies)/i],
+    ['courseOutline', /(?:course|syllabus)\s+outline|weekly\s+(?:outline|plan)|section\s*5/i], ['courseRequirements', /(?:course\s+)?requirements?\b/i],
+    ['gradingSystem', /grading\s+(?:system|policy|rules?)/i], ['coursePolicy', /(?:course\s+)?polic(?:y|ies)\b/i],
     ['books', /textbooks?|\bbooks?\b/i], ['onlineReferences', /online\s+references?|web\s+references?/i],
   ]) if (pattern.test(text)) return field
   return 'all'
@@ -30,8 +31,10 @@ export function workProposal({ message, attachments, role, editor, registrations
   const sourceCorrection = source && /\b(?:accurate|incomplete|re.?extract|restore|not correct)\b/i.test(message) && !/\b(?:generate|create|draft|write|compose|populate)\b/i.test(message)
   const correctFromSource = sourceCorrection && /\b(?:uploaded?|file|source|pdf|document)\b/i.test(message)
   const materialDraft = /\b(?:creat|generat|draft|build|mak|prepar)\w*\b/i.test(message) && /learning materials?|lessons?|courseware|lecture|quiz/i.test(message)
-  if (materialDraft && !target) return null
-  if (target && editor && !correctFromSource && (DRAFT_REQUEST.test(message) || EDIT_REQUEST.test(message)) && !/\b(?:import|extract|restore|copy\s+from)\b/i.test(message)) return role === 'instructor' ? { type: 'editor-edit', request: message, editor, section: target.path.split('.')[0], target, scopeFields, attachments } : { type: 'notice', text: 'An authorized instructor view is required to draft academic edits.' }
+  // "remove question 3", "add two policies": a command on the items of a list in the open editor.
+  const itemEdit = Boolean(editor) && !WEB_REQUEST.test(message) && Boolean(parseFrame(message, editor, target?.path))
+  if (materialDraft && !target && !itemEdit) return null
+  if (target && editor && !correctFromSource && (DRAFT_REQUEST.test(message) || EDIT_REQUEST.test(message) || itemEdit) && !/\b(?:import|extract|restore|copy\s+from)\b/i.test(message)) return role === 'instructor' ? { type: 'editor-edit', request: message, editor, section: target.path.split('.')[0], target, scopeFields, attachments } : { type: 'notice', text: 'An authorized instructor view is required to draft academic edits.' }
   // Generating new content uses the mounted editor and selected course. A retained
   // source can inform that draft, but must not hijack it into another file import.
   const authoring = editor && DRAFT_REQUEST.test(message) && !/\b(?:import|extract|restore|copy\s+from)\b/i.test(message) && (target || /\b(?:syllabus|fields?|sections?|outline|outcomes?|requirements?|references?|content|it|this)\b/i.test(message))
@@ -45,7 +48,7 @@ export function workProposal({ message, attachments, role, editor, registrations
     const selector = message.match(/\b(?:remove|delete|drop|unenroll)\s+(?:the\s+student\s+|student\s+)?(.+?)(?:\s+from\b|[.!?]|$)/i)?.[1]?.trim() || ''
     return role === 'instructor' ? { type: 'roster-edit', registrationId: candidates.length === 1 ? candidates[0].id : '', attachment: attachments.find(item => item.roster), selector, operation: /\b(?:remove|delete|drop|unenroll)\b/i.test(message) ? 'remove' : /\breplace\b/i.test(message) ? 'replace' : 'merge' } : { type: 'notice', text: 'This view cannot change class lists. Use an authorized instructor view.' }
   }
-  if (EDIT_REQUEST.test(message) && (editor || /\b(?:syllabus|courseware|current\s+(?:page|section|component)|this\s+(?:section|content|lesson))\b/i.test(message))) {
+  if ((EDIT_REQUEST.test(message) || itemEdit) && (editor || /\b(?:syllabus|courseware|current\s+(?:page|section|component)|this\s+(?:section|content|lesson))\b/i.test(message))) {
     return role === 'instructor' ? { type: 'editor-edit', request: message, editor, section: target ? target.path.split('.')[0] : editor?.kind === 'syllabus' ? targetSection : 'all', target, scopeFields, attachments } : { type: 'notice', text: 'This view can read and ask about content. An authorized instructor view is required to change it.' }
   }
   return null
