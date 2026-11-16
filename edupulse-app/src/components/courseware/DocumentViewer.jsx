@@ -20,7 +20,7 @@ import { useContentEditorTool } from '../../agents/useContentEditorTool'
  * Used for viewing materials and activities.
  */
 
-export default function DocumentViewer({ content, onBack, isStudent = false, readOnly = false, onSave, reading = null }) {
+export default function DocumentViewer({ content, onBack, isStudent = false, readOnly = false, onSave, reading = null, embedded = false, onAttachFile, attachBlocked }) {
   const { addToast } = useToast()
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState(null)
@@ -108,23 +108,20 @@ export default function DocumentViewer({ content, onBack, isStudent = false, rea
 
   const attachments = content.attachments || [], originals = attachments.filter(file => teachingFileKind(file) && !unreadable.includes(file.path))
   if (originals.length && !editing) return (
-    <div style={{ background: 'var(--gray-100)', minHeight: '100vh', padding: '24px 0' }}>
-      <OriginalDocument content={content} files={originals} others={attachments.filter(file => !originals.includes(file))} isStudent={isStudent} canEdit={!isStudent && !readOnly} onBack={onBack} onEdit={startEditing} onFail={markUnreadable} reading={reading} />
+    <div className="document-viewer">
+      <OriginalDocument content={content} files={originals} others={attachments.filter(file => !originals.includes(file))} isStudent={isStudent} canEdit={!isStudent && !readOnly} onBack={onBack} onEdit={startEditing} onFail={markUnreadable} reading={reading} embedded={embedded} onAttachFile={onAttachFile} attachBlocked={attachBlocked} />
     </div>
   )
 
   return (
-    <div style={{ background: 'var(--gray-100)', minHeight: '100vh', padding: '24px 0' }}>
-      <TeachingAttachments attachments={content.attachments} />
+    <div className="document-viewer">
+      <div className="document-attachments"><TeachingAttachments attachments={content.attachments} onAttachFile={onAttachFile} attachBlocked={attachBlocked} /></div>
       {unreadable.length > 0 && <p role="alert" className="text-sm text-muted" style={{ maxWidth: '850px', margin: '8px auto', padding: '0 24px' }}>The original file could not be displayed here. Its extracted text is shown instead; download the original to see the file itself.</p>}
       {/* Toolbar */}
-      <div style={{
-        maxWidth: editing ? '1200px' : '850px', margin: '0 auto', padding: '0 24px',
-        display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '12px', marginBottom: '16px',
-      }}>
-        <button className="btn btn-ghost btn-sm" onClick={onBack}>
+      <div className="document-viewer-toolbar" role="toolbar" aria-label="Document actions">
+        {!embedded&&<button className="btn btn-ghost btn-sm" onClick={onBack}>
           <ArrowLeft size={14} /> Back
-        </button>
+        </button>}
         <div style={{ flex: 1 }} />
         {!isStudent && !readOnly && (
           editing ? (
@@ -204,7 +201,6 @@ export default function DocumentViewer({ content, onBack, isStudent = false, rea
 
         {/* Footer */}
         <div className="doc-viewer-footer">
-          <div>Page 1 of 1</div>
           <div>{content.title}</div>
         </div>
       </div>

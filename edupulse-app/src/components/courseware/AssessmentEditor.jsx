@@ -15,7 +15,7 @@ import { useContentEditorTool } from '../../agents/useContentEditorTool'
  * Instructors see editable fields; students see a clean take view.
  */
 
-export default function AssessmentEditor({ content, onBack, isStudent = false, onSave, topics=[] }) {
+export default function AssessmentEditor({ content, onBack, isStudent = false, onSave, topics=[], onAttachFile, attachBlocked }) {
   const { addToast } = useToast()
   const [questions, setQuestions] = useState(content?.questions || [])
   const [answers, setAnswers] = useState({})
@@ -104,7 +104,7 @@ export default function AssessmentEditor({ content, onBack, isStudent = false, o
   const score = submitted ? questions.reduce((acc, q, i) => acc + (answers[i] === q.correctIndex ? 1 : 0), 0) : 0
 
   return (
-    <div style={{ background: 'var(--gray-100)', minHeight: '100vh', padding: '24px 0' }}>
+    <div className="assessment-editor">
       {/* Toolbar */}
       <div style={{
         maxWidth: isStudent ? '850px' : '1200px', margin: '0 auto', padding: '0 24px',
@@ -140,7 +140,7 @@ export default function AssessmentEditor({ content, onBack, isStudent = false, o
 
         {/* Title */}
         <h1 className="assessment-title">{content.title}</h1>
-        <TeachingAttachments attachments={content.attachments} />
+        <TeachingAttachments attachments={content.attachments} onAttachFile={onAttachFile} attachBlocked={attachBlocked} />
         <div className="assessment-subtitle">{content.subtitle}</div>
 
         {/* Meta info */}

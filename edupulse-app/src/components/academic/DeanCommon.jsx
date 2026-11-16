@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { X, Copy, Check } from 'lucide-react'
 import ModalLayer from '../ui/ModalLayer'
+import PageModal from '../ui/PageModal'
 import GlassIcon from '../ui/GlassIcon'
 import SummaryCard from '../ui/SummaryCard'
 import { Table } from './AcademicUI'
@@ -24,6 +25,7 @@ function SecretLine({ label = 'Initial password', value }) {
 }
 
 export function DeanDialog({ title, subtitle, icon, tone = 'sky', onClose, children, footer, size = 'wide', label }) {
+  if(size==='page')return <PageModal title={<span className="dean-page-modal-title">{icon&&<GlassIcon icon={icon} color={`var(--${tone}-500)`} size="sm"/>}{title}</span>} subtitle={subtitle} label={label||title} onClose={onClose} className="dean-record-dialog dean-dialog-page" bodyClassName="dean-dialog-body" footer={footer||<button className="btn btn-secondary" onClick={onClose}>Close</button>}>{children}</PageModal>
   return <ModalLayer onDismiss={onClose} onClick={onClose}>
     <section className={`modal-content dean-record-dialog dean-dialog-${size}`} role="dialog" aria-modal="true" aria-label={label || title} onClick={event => event.stopPropagation()}>
       <div className="modal-header"><div className="dean-dialog-title">{icon && <GlassIcon icon={icon} color={`var(--${tone}-500)`} size="sm" />}<div><h2>{title}</h2>{subtitle && <p className="text-sm text-muted mt-8">{subtitle}</p>}</div></div><button className="modal-close" onClick={onClose} aria-label={`Close ${label || title}`}><X size={20} /></button></div>

@@ -1,0 +1,11 @@
+.teaching-attachments { padding:16px 20px; margin:0 0 20px; border:1px solid var(--gray-200); border-radius:var(--radius-md); background:var(--white); }
+.teaching-attachments-heading,.teaching-file-selection { display:flex; flex-wrap:wrap; align-items:center; gap:12px; }
+.teaching-attachments-heading { justify-content:space-between; }
+.teaching-attachments h3 { margin:0; font-size:1rem; }
+.teaching-file-list { display:flex; flex-wrap:wrap; gap:10px; margin-top:12px; }
+.teaching-file-list:empty { display:none; }
+.teaching-file-list button { max-width:100%; text-align:left; white-space:normal; }
+.teaching-file-list span,.teaching-file-selection>span { min-width:0; overflow-wrap:anywhere; }
+.teaching-file-list svg { flex-shrink:0; }
+.teaching-attachments>p { margin-top:12px; }
+.teaching-file-selection { margin-top:12px; padding-top:12px; border-top:1px solid var(--gray-200); }

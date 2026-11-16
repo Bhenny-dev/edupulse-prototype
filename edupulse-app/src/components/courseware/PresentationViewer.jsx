@@ -1,4 +1,5 @@
 import './contentEditing.css'
+import TeachingAttachments from './TeachingAttachments'
 import AutoTextarea from '../ui/AutoTextarea'
 import { useWorkspaceViewState } from '../../context/WorkspaceContext'
 import { useState, useRef, useEffect } from 'react'
@@ -267,6 +268,7 @@ export default function PresentationViewer({ content, onBack, isStudent = false,
         </div>
       </div>
 
+      <TeachingAttachments attachments={content.attachments} />
       {/* Slide area */}
       <div className="pres-viewport">
         <button

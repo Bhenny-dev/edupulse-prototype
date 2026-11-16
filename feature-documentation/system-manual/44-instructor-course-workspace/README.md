@@ -46,6 +46,16 @@ Choose **Add teaching material**. The extracted activity or topic text is shown 
 
 **Save material draft** creates a private draft and opens it in a separate reader. Binary uploads are private stored files, not public links or inline workspace blobs. A successful attachment does not mean every file type was read: unsupported or unreadable bytes remain downloadable but are not represented as source text for AI. Adding a teaching-resource link does not by itself establish that its contents were downloaded or read.
 
+### Read and attach files in the page modal
+
+**Open** displays a page-sized reader with a padded course-content heading, week/type context and a persistent close button. The document scrolls beneath that header; long titles and controls wrap on a phone. The reader uses larger teaching text and one document action toolbar. **Edit**, **Print** and **Download PDF** remain where applicable; an uploaded PDF, Word, PowerPoint, image or supported text file still displays its original contents. Unsupported files remain downloadable attachments rather than invented extracted text.
+
+For an owned draft or checked material/assessment, **Attach file** opens the file chooser. Any file type up to 4 MB is supported. Choosing a file stages it locally; **Save attachment** uploads and saves it explicitly. A new attachment returns checked content to Draft for review while keeping its questions, teaching text, topic association and existing files. An instructor may also prepare private file-backed content before syllabus activation; approval and delivery remain separate required steps.
+
+Pending local edits do not disable the file chooser. If a current save or a workspace conflict prevents persistence, the selected file remains visible with an explanation. Resolve the existing save recovery in Settings before retrying. A failed download restores its own button; it does not lock other attachments. Published/hidden content remains protected: **Prepare draft revision** is available from its normal reader, then attachment/editing happens in that draft. Read-only citation previews do not offer that authoring action.
+
+The same reader layout is used for student course materials/assessments and practice sets, Admin-selected academic views, approved-syllabus previews and Dean/Program Coordinator course scans. Students and management can download files permitted by their current course access; their reader does not gain instructor upload/edit controls. Existing block opening/closing times, private file policies, score history and no-write reload remain in force. A reload restores an authorized reader, never a selected unsaved file, upload, download or assessment submission.
+
 ### Add an assessment after the relevant materials
 
 Use **Add assessment after this material** or **Add assessment** after one or more materials. A regular assessment covers the teaching materials since the preceding regular assessment. The form names that coverage and shows the extracted assessment label/instructions as context. The final **Overall assessment** section is kept last and covers every teaching material in the topic.

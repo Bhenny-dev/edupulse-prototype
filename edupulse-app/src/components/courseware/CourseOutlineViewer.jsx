@@ -1,3 +1,4 @@
+import PageModal from '../ui/PageModal'
 import { useState, useMemo } from 'react'
 import {
   ArrowLeft, FileText, FlaskConical, ClipboardCheck, BookOpen,
@@ -73,24 +74,24 @@ export default function CourseOutlineViewer({
 
     if (viewMode === 'presentation') {
       return (
-        <PresentationViewer
+        <PageModal title={viewingItem.title} closeLabel="Close presentation" onClose={() => {setViewingItem(null);setViewMode(null)}} bodyClassName="reader-page-body"><PresentationViewer
           content={viewingItem}
           onBack={() => { setViewingItem(null); setViewMode(null) }}
           isStudent={isStudent}
           onSave={!isStudent ? handleSave : undefined}
-        />
+        /></PageModal>
       )
     }
     if (viewingType === 'assessment') {
-      return <AssessmentEditor content={viewingItem} onBack={() => { setViewingItem(null); setViewingType(null) }} isStudent={isStudent} onSave={!isStudent ? handleSave : undefined} />
+      return <PageModal title={viewingItem.title} closeLabel="Close assessment" onClose={() => {setViewingItem(null);setViewingType(null);setViewMode(null)}}><AssessmentEditor content={viewingItem} onBack={() => { setViewingItem(null); setViewingType(null) }} isStudent={isStudent} onSave={!isStudent ? handleSave : undefined} /></PageModal>
     }
     return (
-      <DocumentViewer
+      <PageModal title={viewingItem.title} closeLabel="Close material" onClose={() => {setViewingItem(null);setViewingType(null);setViewMode(null)}} bodyClassName="reader-page-body"><DocumentViewer embedded
         content={viewingItem}
         onBack={() => { setViewingItem(null); setViewMode(null) }}
         isStudent={isStudent}
         onSave={!isStudent ? handleSave : undefined}
-      />
+      /></PageModal>
     )
   }
 

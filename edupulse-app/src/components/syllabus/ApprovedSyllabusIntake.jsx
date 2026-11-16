@@ -2,7 +2,7 @@ import {outlineSpans} from '../../utils/outlineSections'
 import { useEffect, useId, useRef, useState } from 'react'
 import { Download, Eye, FileUp, Upload } from 'lucide-react'
 import { LoadingProgress, Spinner } from '../ui/LoadingFeedback'
-import ModalLayer from '../ui/ModalLayer'
+import PageModal from '../ui/PageModal'
 import RetainedFileViewer from './RetainedFileViewer'
 import { parseSyllabusFile } from '../../utils/syllabusParser'
 import { APPROVED_FILE_LIMIT, downloadApprovedFile, retainApprovedFile } from '../../utils/syllabusFiles'
@@ -63,6 +63,6 @@ export default function ApprovedSyllabusIntake({ onUse, focusUpload = false, cou
       <label className="approved-intake-confirm"><input type="checkbox" checked={attested} disabled={saving} onChange={event => setAttested(event.target.checked)} /><span>I confirm this is the approved copy and have checked the extracted course and outline. EduPulse does not verify signatures.</span></label>
       <div className="approved-intake-actions"><button className="btn btn-primary" disabled={!attested || saving} onClick={() => void handleUseSyllabus()}>{saving ? <Spinner size={16} /> : <FileUp size={16} />}{saving ? 'Saving syllabus...' : 'Use syllabus for course'}</button><span className="text-sm text-muted">Saves this copy and opens its course. Generate materials when ready.</span></div>
     </div>}
-    {viewing && candidate && <ModalLayer className="overlay-backdrop academic-publication-overlay" onDismiss={() => setViewing(false)}><section className="modal-content academic-publication-dialog" role="dialog" aria-modal="true" aria-label="Approved syllabus preview"><RetainedFileViewer file={candidate.approvedFile} title={`${candidate.courseCode} — ${candidate.courseTitle}`} onBack={() => setViewing(false)} /></section></ModalLayer>}
+    {viewing && candidate && <PageModal title={`${candidate.courseCode} \u2014 ${candidate.courseTitle}`} label="Approved syllabus preview" closeLabel="Close syllabus preview" onClose={()=>setViewing(false)} bodyClassName="reader-page-body"><RetainedFileViewer file={candidate.approvedFile} title={`${candidate.courseCode} \u2014 ${candidate.courseTitle}`} onBack={() => setViewing(false)} /></PageModal>}
   </section>
 }

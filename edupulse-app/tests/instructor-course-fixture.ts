@@ -1,7 +1,5 @@
 import type { Page } from '@playwright/test'
 import { baselineUI, baselineWorkspace } from './baseline-fixture'
-import { lookupAnswer } from '../server/systemLookup'
-import { chatInput } from '../server/contracts'
 import type { Evidence } from '../src/lib/rag/types'
 
 // UI transport fixtures only. No real accounts, inference, or learner achievement is claimed.
@@ -33,6 +31,7 @@ export async function instructorCourseUI(page: Page) {
       return route.fulfill({ json: { threads: [...threads.keys()].map(id => ({ id, title: 'Variable source', updated_at: '2026-11-01T00:00:00Z' })), messages: id ? threads.get(id) || [] : [], memories: [], automaticMemory: true, mode: 'cloud' } })
     }
     if (action === 'system-chat') {
+      const [{lookupAnswer},{chatInput}]=await Promise.all([import('../server/systemLookup'),import('../server/contracts')])
       commands.push({ action, body })
       const source: Evidence = { id: `release:${fixture.records.publications[0].id}`, documentId: null, title: material.content.title, text: material.content.sections[0].body, page: null, section: 'Named values', flagged: false, origin: 'account', method: 'keyword', similarity: null, relevance: null, rrf: 1, query: body.message, destination: { path: `/courseware?course=${syllabus.id}&publication=${fixture.records.publications[0].id}&week=1`, label: 'Open teaching material' } }
       return route.fulfill({ json: await lookupAnswer(chatInput.parse(body), denySource ? [] : [source], AbortSignal.timeout(3000), 'system') })

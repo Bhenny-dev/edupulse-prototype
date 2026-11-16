@@ -12,6 +12,8 @@ Main navigation is **Dashboard**, **Syllabus**, **Course** and **Student Monitor
 
 The [phone example](../../system-manual/44-instructor-course-workspace/07-mobile-course.png) uses the same controls and shared summary-card design. Source copies remain private and unread bytes/catalog metadata cannot substantiate generated content. New authoring, delivery, source and week-move state retains the current account/role authorization and no-write reload contract.
 
+The current teaching reader and authoring forms open in a page-sized modal with a fixed title/close header and one scrolling body. Editable materials and assessments offer **Attach file**, followed by explicit **Save attachment**; choosing a file is still possible while unrelated local edits are pending. New files return checked content to Draft. A delivered version uses **Prepare draft revision** first. Student/Admin learner readers and management scans share this page layout while keeping their own read/authoring permissions. See [the reader and file steps](../../system-manual/44-instructor-course-workspace/README.md#read-and-attach-files-in-the-page-modal).
+
 ## Retained preview and review-workspace examples
 
 The images and earlier update notes below document the separate preview persona, the retained review/editor controls, and prior UI iterations. Their dashboard card labels and unscoped course-list entry may predate the current signed-in Instructor flow. The Syllabus navbar has been restored; image recapture remains paused by the owner. Use Manual 44 above for the current account route; the retained images remain evidence for their specifically described inputs and controls.

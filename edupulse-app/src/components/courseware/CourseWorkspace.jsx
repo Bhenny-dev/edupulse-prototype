@@ -1,3 +1,4 @@
+import PageModal from '../ui/PageModal'
 import TeachingFileAttachment from './TeachingFileAttachment'
 import SyllabusSources from './SyllabusSources'
 import { Fragment, useState, useEffect, useRef, useMemo } from 'react'
@@ -210,25 +211,25 @@ export default function CourseWorkspace({ syllabusId, focusWeek, contentStore, o
   if (viewingItem) {
     if (viewMode === 'presentation') {
       return (
-        <PresentationViewer cacheKey={viewingId}
+        <PageModal title={viewingItem.title} closeLabel="Close presentation" onClose={() => {setViewingId(null);setViewMode(null)}} bodyClassName="reader-page-body"><PresentationViewer cacheKey={viewingId}
           content={viewingItem}
           onBack={() => { setViewingId(null); setViewMode(null) }}
           isStudent={false}
           onSave={handleSaveContent}
-        />
+        /></PageModal>
       )
     }
     if (viewingType === 'assessment') {
-      return <AssessmentEditor topics={syllabus.courseOutline?.find(row=>row.week===contentStore[viewingItem._storeId]?.week)?.contents || []} content={viewingItem} onBack={() => { setViewingId(null); setViewingType(null) }} isStudent={false} onSave={handleSaveContent} />
+      return <PageModal title={viewingItem.title} closeLabel="Close assessment" onClose={() => {setViewingId(null);setViewingType(null);setViewMode(null)}}><AssessmentEditor topics={syllabus.courseOutline?.find(row=>row.week===contentStore[viewingItem._storeId]?.week)?.contents || []} content={viewingItem} onBack={() => { setViewingId(null); setViewingType(null) }} isStudent={false} onSave={handleSaveContent} /></PageModal>
     }
     return (
-      <DocumentViewer
+      <PageModal title={viewingItem.title} closeLabel="Close material" onClose={() => {setViewingId(null);setViewingType(null);setViewMode(null)}} bodyClassName="reader-page-body"><DocumentViewer embedded
         content={viewingItem}
         readOnly={!!contentStore[viewingId]?.generationCheckpoint}
         onBack={() => { setViewingId(null); setViewMode(null) }}
         isStudent={false}
         onSave={handleSaveContent}
-      />
+      /></PageModal>
     )
   }
 
@@ -268,7 +269,7 @@ export default function CourseWorkspace({ syllabusId, focusWeek, contentStore, o
               <div className="cw-week-topic"><strong>{topic}</strong>{exam && <span className="text-sm text-muted">Examination week</span>}{hasContent && <span className="text-sm text-muted">{weekItems.length} {weekItems.length === 1 ? 'item' : 'items'} · {weekDraftIds.length} draft</span>}</div>
               {!exam && <div className="cw-row-actions">
                 {pending && <button className="btn btn-secondary btn-sm" disabled={busy || saving || dirty} onClick={()=>generateSingleWeek(weekNum)}><RotateCcw size={14}/>Resume</button>}
-                <TeachingFileAttachment syllabus={syllabus} week={weekNum} disabled={busy||saving||dirty} onSaved={receipt=>{liveContent.current=receipt.data.content;setExpandedWeeks(previous=>new Set([...previous,weekNum]));addToast('Teaching file saved as a draft and retained as a reference.','success')}}/>{hasContent ? <button className="btn btn-secondary btn-sm" aria-expanded={expanded} aria-controls={`week-items-${weekNum}`} onClick={() => toggleWeek(weekNum)}><Eye size={14} /> {expanded ? 'Hide' : 'View'}</button> : <button className="btn btn-secondary btn-sm" disabled={busy} onClick={() => generateSingleWeek(weekNum)}>{generatingWeek === weekNum ? <><Loader2 size={14} className="spin" /> Generating…</> : <><Sparkles size={14} /> Generate</>}</button>}
+                <TeachingFileAttachment syllabus={syllabus} week={weekNum} disabled={busy||saving} onSaved={receipt=>{liveContent.current=receipt.data.content;setExpandedWeeks(previous=>new Set([...previous,weekNum]));addToast('Teaching file saved as a draft and retained as a reference.','success')}}/>{hasContent ? <button className="btn btn-secondary btn-sm" aria-expanded={expanded} aria-controls={`week-items-${weekNum}`} onClick={() => toggleWeek(weekNum)}><Eye size={14} /> {expanded ? 'Hide' : 'View'}</button> : <button className="btn btn-secondary btn-sm" disabled={busy} onClick={() => generateSingleWeek(weekNum)}>{generatingWeek === weekNum ? <><Loader2 size={14} className="spin" /> Generating…</> : <><Sparkles size={14} /> Generate</>}</button>}
                 {hasContent && <CoursewareActions label={`Week ${weekNum} actions`} actions={[
                   { label: 'Generate missing content', icon: Sparkles, disabled: busy || !missingWeekContent(row,weekItems), onSelect: () => generateSingleWeek(weekNum, true) },
                   { label: 'Regenerate week', icon: RotateCcw, disabled: busy || (!weekDraftIds.length&&!pending), onSelect: () => generateSingleWeek(weekNum,false,true) },

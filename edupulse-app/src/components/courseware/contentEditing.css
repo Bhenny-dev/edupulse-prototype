@@ -12,3 +12,21 @@
  .cw-slide-editor .pres-slide { min-height:0; padding:24px 20px; }
 }
 @media print { .assessment-page.cw-wide-editor,.doc-viewer-page.cw-wide-editor { max-width:100%; } }
+
+.document-viewer,.assessment-editor { padding:24px; background:var(--gray-100); min-width:0; }
+.document-viewer-toolbar { max-width:1000px; display:flex; flex-wrap:wrap; align-items:center; gap:12px; margin:0 auto 16px; padding:12px 0; position:sticky; top:0; z-index:2; background:var(--gray-100); }
+.document-attachments { max-width:1000px; margin:0 auto; }
+.document-viewer .doc-viewer-page { max-width:1000px; width:100%; }
+.document-viewer .doc-viewer-header { padding:32px clamp(24px,5vw,64px) 20px; }
+.document-viewer .doc-viewer-title { padding:24px clamp(24px,5vw,64px) 12px; font-size:1.5rem; }
+.document-viewer .doc-viewer-subtitle { padding:0 clamp(24px,5vw,64px) 24px; }
+.document-viewer .doc-viewer-body { padding:16px clamp(24px,5vw,64px) 32px; }
+.document-viewer .doc-viewer-text { font-size:1rem; line-height:1.75; text-align:left; overflow-wrap:anywhere; }
+.document-viewer .doc-viewer-heading { font-size:1.125rem; }
+.document-viewer .doc-viewer-footer { padding:16px clamp(24px,5vw,64px); overflow-wrap:anywhere; }
+.reader-notice { margin:16px 24px; padding:16px; border:1px solid var(--gray-200); border-radius:var(--radius-md); background:var(--white); }
+.reader-notice button { margin-top:12px; }
+.dean-page-modal-title { display:flex; align-items:center; gap:12px; }
+.page-modal-body .pres-container:not(.pres-fullscreen) { height:calc(100dvh - 148px); min-height:440px; }
+@media(max-width:640px){.document-viewer,.assessment-editor{padding:12px}.document-viewer-toolbar{gap:8px}.document-viewer .doc-viewer-header{padding:24px 20px 16px}.document-viewer .doc-viewer-title{padding:20px 20px 12px;font-size:1.25rem}.document-viewer .doc-viewer-body{padding:12px 20px 24px}.document-viewer .doc-viewer-subtitle{padding:0 20px 16px}.reader-notice{margin:12px}}
+@media print{.document-viewer-toolbar,.document-attachments{display:none}.document-viewer,.assessment-editor{padding:0;background:white}}

@@ -263,3 +263,10 @@ Each currently assigned block has an explicit date/opening time for every outlin
 ## Owner correction: remove Admin dashboard Refresh - 16 November 2026
 
 Remove the routine Refresh button from the main System Admin dashboard header. Preserve initial authorized reads and readback after account changes; do not add polling or remove separate role monitoring controls.
+
+
+## Owner correction: page readers and usable attachment selection - 16 November 2026
+
+Teaching readers and long authoring forms use a shared page-modal shell: fixed padded contextual heading/close, one scrolling body, phone viewport sizing, focus/Escape restoration and the existing portal layer. Apply it consistently to Instructor content, Student official/practice readers, Admin support views, Dean/Program Coordinator course scans and approved-file previews. Existing syllabus-details and retained-source readers already separate their header/body controls; preserve those working paths. Small confirmation dialogs and source-passage popovers retain their purpose-specific sizes.
+
+Do not regress: a pending local workspace journal must not permanently disable file selection or the entry to a teaching form. Stage an owned file, then explicitly save it through the existing private, immutable upload and revision-checked workspace paths. Expose the real current save/conflict reason while persistence must wait. Preserve file bytes, teaching text, questions, topic/coverage fields and metadata; changed checked content returns to Draft. Private preparation is allowed before approval; published/hidden revisions, approval and checked delivery remain guarded. Students/management retain read/download scopes only, including class windows, and an inaccessible file must show its actual error with usable retry controls. Failed downloads do not lock other files. Keep unsaved file bytes out of reload hints, and never replay uploads, downloads, learner opens, attempts, saves or inference on reload. No business-data rewrite or new database permission is authorized by this UI fix.
