@@ -3,7 +3,7 @@ import { Spinner, SkeletonContent } from '../components/ui/LoadingFeedback'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import RoleMonitoring from '../components/admin/RoleMonitoring'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { Activity, AlertTriangle, Bot, CheckCircle2, Clock3, RefreshCw, ShieldCheck, Users } from 'lucide-react'
+import { Activity, AlertTriangle, Bot, CheckCircle2, Clock3, ShieldCheck, Users } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { supabase } from '../lib/supabaseClient'
 import { aiRequest } from '../lib/aiClient'
@@ -118,7 +118,6 @@ export default function SystemAdminDashboard() {
   return <div className="container">
     <div className="page-header">
       <div><h1>System Admin</h1><p className="text-sm text-muted mt-8">{user?.demo ? 'Preview sample data — sign in to see live system status' : 'Live account oversight, service checks and recorded activity'}</p></div>
-      <button className="btn btn-secondary btn-sm" disabled={busy} onClick={() => void refresh()}>{busy ? <Spinner size={15} /> : <RefreshCw size={15} />} {busy ? 'Checking…' : 'Refresh'}</button>
     </div>
     {error && <p role="alert" className="ai-notice mb-24">{error}</p>}
 

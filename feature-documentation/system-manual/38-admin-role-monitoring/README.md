@@ -12,3 +12,6 @@ See [screens and data-window boundaries](../../system-walkthrough/07-system-admi
 Read **Role actions - 7 days** and **AI runs - 7 days** as complete seven-day totals for the selected role. Tables are capped at the latest 100 role actions and 30 role AI runs. Inspect **Notices & checks** on each tab for successful actions, historical failures, stopped AI requests, confirmation/sign-in gaps and current shared-service checks. The displayed timestamp identifies when the data was read.
 
 The **Admin support operations** section lists System Admin operations on accounts currently assigned the role. These remain separate from direct role actions and student progress. **Unavailable** indicates a failed read; use **Refresh** to retry. Do not interpret absent data as a successful operation.
+
+
+The main System Admin dashboard no longer shows the header Refresh button. Initial loading and readback after account changes remain; the separate role monitoring views retain their own controls.
