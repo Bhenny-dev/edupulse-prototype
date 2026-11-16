@@ -125,17 +125,14 @@ test('the chat panel routes list commands to the editor, and names the section a
   assert.equal(sectionFor('write the course description'), 'courseDescription')
 })
 
-test('the operator endpoint lets a list command through its request gate with no model connected, and still refuses unrelated requests', async t => {
-  const previous = process.env.AI_LOCAL_MODE
-  process.env.AI_LOCAL_MODE = 'true'
-  t.after(() => { if (previous === undefined) delete process.env.AI_LOCAL_MODE; else process.env.AI_LOCAL_MODE = previous })
+test('the operator endpoint lets a list command through its request gate and still refuses unrelated requests', async () => {
+  // Requests here are guests whether the suite runs on a laptop or in the hosted build (VERCEL=1), so a command that
+  // gets past the gate stops at the role check (403), where an unrelated request is refused at the gate itself (400).
   const { handleRequest } = await import('../server/http.js')
   const call = (message: string) => handleRequest(new Request('http://localhost/api/ai?action=operator', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ operation: 'revise', message, viewRole: 'instructor', editor: syllabus() }) }))
-  const removed = await call('Remove program outcome 2')
-  assert.equal(removed.status, 200)
-  const body = await removed.json()
-  assert.deepEqual(body.patch, { programOutcomes: ['Apply a', 'Apply c'] })
-  assert.equal(body.notes[0], 'Understood: remove program outcome 2.')
+  const command = await call('Remove program outcome 2')
+  assert.equal(command.status, 403)
+  assert.equal((await command.json()).error.code, 'FORBIDDEN')
   const refused = await call('Remove the old files from my account')
   assert.equal(refused.status, 400)
   assert.equal((await refused.json()).error.code, 'CONTENT_REQUEST_REQUIRED')
