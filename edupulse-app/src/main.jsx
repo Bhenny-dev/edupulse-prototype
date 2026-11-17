@@ -3,6 +3,10 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
 import { LanguageProvider } from './context/LanguageContext'
+import { installStaleBuildGuard } from './lib/staleBuild'
+
+// A tab that outlives a deployment must say "reload" instead of failing on files that no longer exist.
+installStaleBuildGuard()
 
 // The web fonts are requested beside the first paint, not in front of it (index.html keeps a
 // <noscript> copy of the same stylesheet).
