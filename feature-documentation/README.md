@@ -4,7 +4,7 @@
 
 | Folder | Covers | Contents |
 | --- | --- | --- |
-| [17 November teaching-load intake](versions/2026-11-17-load-document-intake/README.md) | All-department restoration, cleared loads, PDF/OCR review and academic terms | See validation |
+| [17 November teaching-load intake](versions/2026-11-17-load-document-intake/README.md) | All-department restoration, cleared loads, PDF/OCR review and academic terms | Ready · 446 native tests and six deployed browser checks |
 | [15 November unified Course workspace](versions/2026-11-15-unified-courses/README.md) | Merged course cards, instructor-load CRUD and read-only syllabus/content scans for Dean and Program Coordinator | Live; 390 native and six production-UI checks passed |
 | [15 November redundant control cleanup](versions/2026-11-15-redundant-controls/README.md) | Removed routine shared refresh and generic workspace warning; retained error recovery | Live; 388 native and four production-UI checks passed |
 | [15 November Admin view footer cleanup](versions/2026-11-15-admin-view-footer/README.md) | Removed the bottom selected-view indicator and return shortcut; retained account-menu switching | Live; 388 native and 12 production-UI checks passed |

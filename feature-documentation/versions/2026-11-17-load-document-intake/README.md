@@ -9,3 +9,5 @@ Current, next and previous term filters follow the owner's confirmed AY/semester
 The supplied files were inspected in full: 56 rows across 11 forms for First Semester AY 2026–2027, and 66 rows across 12 forms for Second Semester AY 2025–2026. They were not imported into live loads. No syllabus approval, generated courseware, artificial grades or student activity was added.
 
 See the [guide](../../system-manual/47-teaching-load-documents/README.md) and [validation](validation/results.md).
+
+Released runtime `bfe3a711` is Ready on the production alias. The complete hosted gate passes 446 native tests; all six corrected desktop/phone PDF/OCR browser cases pass. The no-text sandbox response now correctly starts local PDF OCR. Upload a source through Pulse or Course, compare its mappings and warnings, and explicitly confirm the intended loads.
