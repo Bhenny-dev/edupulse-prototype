@@ -300,6 +300,16 @@ export function accountRequest(message) {
   return null
 }
 
+/**
+ * Pages the message names, for a reply that found no matching record, so the answer ends at a
+ * place to look instead of a dead end. Only pages this role can open; one page per destination.
+ */
+export function pagesForTopic(message, role, limit = 2) {
+  const seen = new Set()
+  return PAGES.filter(page => page.words.test(message) && allowed(page, role) && !['/settings', '/notifications', '/dashboard'].includes(page.path.split('?')[0]))
+    .filter(page => !seen.has(page.path) && seen.add(page.path)).slice(0, limit).map(({ path, label }) => ({ path, label }))
+}
+
 /** Keep a named account view with its destination. Only the verified owner may switch views. */
 export function pageFor(message, role, { canSwitchRoles = false, history = [] } = {}) {
   const correction = /^(?:please\s+)?(?:no\b|not\s+(?:mine|my)|i\s+meant\b|instead\b)/i.test(message.trim())

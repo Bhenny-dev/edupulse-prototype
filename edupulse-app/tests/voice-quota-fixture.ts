@@ -1,9 +1,14 @@
-import { expect, type Page } from '@playwright/test'
+import { expect, type Locator, type Page } from '@playwright/test'
 import { academicUI } from './academic-ui-fixture'
 import { providerFixture } from './browser/provider-fixture'
 export type Shot = (name: string) => Promise<void>
 const noShot: Shot = async () => {}
-export async function voiceUI(page: Page, options: { recording?: boolean, playback?: boolean, denied?: boolean, holdPermission?: boolean } = {}) {
+/** Opens the microphone menu and starts long-listening dictation. */
+export async function dictate(dialog: Locator) {
+  await dialog.getByRole('button', { name: 'Voice input', exact: true }).click()
+  await dialog.getByRole('menuitem', { name: 'Dictate', exact: true }).click()
+}
+export async function voiceUI(page: Page, options: { recording?: boolean, playback?: boolean, denied?: boolean, holdPermission?: boolean, speechEnds?: boolean } = {}) {
   const provider = await providerFixture(page, { identity: { mode: 'authenticated', role: 'instructor' }, database: { ready: false, kind: 'supabase', message: 'Synthetic UI fixture' } }); provider.authorize('openai')
   await academicUI(page, async () => ({ json: {} }))
   await page.route('**/api/ai?*', route => {
@@ -13,7 +18,10 @@ export async function voiceUI(page: Page, options: { recording?: boolean, playba
     return route.fallback()
   })
   await page.addInitScript(options => {
-    const state = { starts: 0, stops: 0, released: 0, recorders: [] as any[], speech: null as any, spoken: [] as string[], allow: null as any }
+    const state = { starts: 0, stops: 0, released: 0, recorders: [] as any[], speech: null as any, spoken: [] as string[], allow: null as any, level: 0 }
+    // Microphone loudness for voice conversation: tests raise `level` to speak and lower it to pause.
+    class Analyser { fftSize = 1024; getFloatTimeDomainData(data: Float32Array) { data.fill(state.level) } }
+    Object.defineProperty(window, 'AudioContext', { configurable: true, value: class { createAnalyser() { return new Analyser() } createMediaStreamSource() { return { connect() {} } } close() { return Promise.resolve() } } })
     Object.assign(window, { syntheticSpeech: state })
     const stream = { getTracks: () => [{ stop: () => { state.released++ } }] }
     Object.defineProperty(navigator, 'mediaDevices', { configurable: true, value: { async getUserMedia() {
@@ -31,7 +39,7 @@ export async function voiceUI(page: Page, options: { recording?: boolean, playba
     }
     Object.defineProperty(window, 'MediaRecorder', { configurable: true, value: options.recording === false ? undefined : Recorder })
     Object.defineProperty(window, 'SpeechSynthesisUtterance', { configurable: true, value: class { text: string; constructor(text: string) { this.text = text } } })
-    Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: options.playback === false ? undefined : { speak(speech: any) { state.speech = speech; state.spoken.push(speech.text) }, cancel() { state.speech?.onend?.(); state.speech = null } } })
+    Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: options.playback === false ? undefined : { speak(speech: any) { state.speech = speech; state.spoken.push(speech.text); if (options.speechEnds) setTimeout(() => speech.onend?.(), 30) }, cancel() { state.speech?.onend?.(); state.speech = null } } })
   }, options)
   let calls = 0, transcriptions = 0, quota = false, transcript = 'Explain ang variables sa Tagalog at English', held = false, release: (() => void) | undefined
   await page.route('**/api/ai?action=transcribe', async route => {
@@ -52,49 +60,56 @@ export async function voiceUI(page: Page, options: { recording?: boolean, playba
   await expect(dialog.getByRole('button', { name: 'Voice input', exact: true })).toBeVisible()
   await expect(dialog.getByRole('combobox')).toHaveCount(0)
   expect(await page.evaluate(() => (window as any).syntheticSpeech.starts)).toBe(0)
-  return { dialog, calls: () => calls, transcriptions: () => transcriptions, say: (text: string) => { transcript = text }, quota: () => { quota = true }, hold: () => { held = true }, release: () => { held = false; release?.() } }
+  return { dialog, calls: () => calls, transcriptions: () => transcriptions, say: (text: string) => { transcript = text },
+    level: (value: number) => page.evaluate(next => { (window as any).syntheticSpeech.level = next }, value),
+    spoken: () => page.evaluate(() => (window as any).syntheticSpeech.spoken as string[]), quota: () => { quota = true }, hold: () => { held = true }, release: () => { held = false; release?.() } }
 }
 export async function reviewVoice(page: Page, shot = noShot) {
   const fixture = await voiceUI(page), { dialog } = fixture
   await shot('01-voice-controls')
   await dialog.getByRole('textbox', { name: 'Ask Pulse', exact: true }).fill('My question:')
   await dialog.getByRole('button', { name: 'Voice input', exact: true }).click()
+  await expect(dialog.getByRole('menuitem', { name: 'Voice conversation', exact: true })).toBeVisible()
+  await dialog.getByRole('menuitem', { name: 'Dictate', exact: true }).click()
   await expect(dialog.getByRole('button', { name: 'Stop recording', exact: true })).toBeVisible()
   await expect(dialog.getByRole('button', { name: 'Send', exact: true })).toBeDisabled()
   await shot('02-listening-tagalog-english')
   expect(fixture.calls()).toBe(0); expect(fixture.transcriptions()).toBe(0)
+  // Long listening ends only on Stop, and the typed start plus the transcript is the request.
   await dialog.getByRole('button', { name: 'Stop recording', exact: true }).click()
-  await expect(dialog.getByRole('textbox', { name: 'Ask Pulse', exact: true })).toHaveValue('My question: Explain ang variables sa Tagalog at English')
-  expect(fixture.calls()).toBe(0); expect(fixture.transcriptions()).toBe(1)
+  await expect(dialog.locator('.connected-pulse-message.from-user')).toContainText('My question: Explain ang variables sa Tagalog at English')
+  await expect(dialog).toContainText('Ang variable ay may pangalan')
+  await expect(dialog.getByRole('textbox', { name: 'Ask Pulse', exact: true })).toHaveValue('')
+  expect(fixture.calls()).toBe(1); expect(fixture.transcriptions()).toBe(1)
   expect(await page.evaluate(() => (window as any).syntheticSpeech.released)).toBeGreaterThan(0)
   await shot('03-review-transcript')
-  await dialog.getByRole('button', { name: 'Send', exact: true }).click()
-  await expect(dialog).toContainText('Ang variable ay may pangalan')
-  expect(fixture.calls()).toBe(1)
   return fixture
 }
 export async function pendingVoice(page: Page, shot = noShot) {
   const fixture = await voiceUI(page), { dialog } = fixture
   fixture.hold()
-  await dialog.getByRole('button', { name: 'Voice input', exact: true }).click()
+  await dictate(dialog)
   await dialog.getByRole('button', { name: 'Stop recording', exact: true }).click()
   await expect.poll(fixture.transcriptions).toBe(1)
   await expect(dialog).toContainText('Transcribing your voice message')
   await shot('04-transcribing')
   fixture.release()
-  await expect(dialog.getByRole('textbox', { name: 'Ask Pulse', exact: true })).toHaveValue('Explain ang variables sa Tagalog at English')
+  await expect(dialog).toContainText('Ang variable ay may pangalan')
+  expect(fixture.calls()).toBe(1)
+  // A failed transcription sends nothing and keeps what was typed.
   fixture.quota()
-  await dialog.getByRole('button', { name: 'Voice input', exact: true }).click()
+  await dialog.getByRole('textbox', { name: 'Ask Pulse', exact: true }).fill('My draft')
+  await dictate(dialog)
   await dialog.getByRole('button', { name: 'Stop recording', exact: true }).click()
   await expect(dialog.getByRole('alert')).toContainText('credit balance is exhausted')
-  await expect(dialog.getByRole('textbox', { name: 'Ask Pulse', exact: true })).toHaveValue('Explain ang variables sa Tagalog at English')
-  expect(fixture.calls()).toBe(0)
+  await expect(dialog.getByRole('textbox', { name: 'Ask Pulse', exact: true })).toHaveValue('My draft')
+  expect(fixture.calls()).toBe(1)
   await shot('05-openai-credit-error')
   return fixture
 }
 export async function permissionVoice(page: Page, shot = noShot) {
   const fixture = await voiceUI(page, { denied: true }), { dialog } = fixture
-  await dialog.getByRole('button', { name: 'Voice input', exact: true }).click()
+  await dictate(dialog)
   await expect(dialog.getByRole('alert')).toContainText('Microphone access was denied')
   expect(fixture.transcriptions()).toBe(0)
   await shot('07-microphone-denied')

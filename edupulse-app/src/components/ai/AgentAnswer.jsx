@@ -75,7 +75,7 @@ export default function AgentAnswer({ message, onRevise, compact = false, onDown
   }
   return <>
     <AnswerText text={message.text} claims={compact ? [] : v?.claims} grounded={grounded} onCite={showSource} />
-    {message.lookup && <small className="aa-lookup" title="This search used keyword matching and quoted sources, without a generation-model request.">{message.lookup.scope==='web'?'Internet suggestions':'System search'} · No AI credits used</small>}
+    {message.lookup && <small className="aa-lookup" title="This search used keyword matching and quoted sources, without a generation-model request.">{message.lookup.requested?'Internet search':message.lookup.scope==='web'?'Internet suggestions':'System search'} · No AI credits used</small>}
     <SearchImages sources={message.sources} />
     <details open={!compact} className="aa-verification"><summary>Verification details</summary>
     <div className="aa-badges">

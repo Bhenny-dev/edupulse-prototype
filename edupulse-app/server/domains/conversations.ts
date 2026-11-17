@@ -10,6 +10,7 @@ export const conversationCommand = z.discriminatedUnion('operation', [
   z.object({ operation: z.literal('create'), id: z.string().uuid(), title: z.string().trim().min(1).max(160) }).strict(),
   z.object({ operation: z.literal('append'), id: z.string().uuid(), messages: z.array(storedMessage).min(1).max(20) }).strict(),
   z.object({ operation: z.literal('archive'), id: z.string().uuid(), archived: z.boolean() }).strict(),
+  z.object({ operation: z.literal('rename'), id: z.string().uuid(), title: z.string().trim().min(1).max(160) }).strict(),
   z.object({ operation: z.literal('delete'), id: z.string().uuid() }).strict(),
   z.object({ operation: z.literal('remember'), text: z.string().trim().min(3).max(500) }).strict(),
   z.object({ operation: z.literal('forget'), id: z.string().uuid() }).strict(),
@@ -110,6 +111,12 @@ export async function executeConversation(identity: Identity, command: Command) 
     if (local()) await (await db()).query(command.operation === 'delete' ? 'DELETE FROM ep_pulse_threads WHERE id=$1 AND owner_id=$2' : 'UPDATE ep_pulse_threads SET archived=$3,updated_at=now() WHERE id=$1 AND owner_id=$2', command.operation === 'delete' ? [command.id, identity.id] : [command.id, identity.id, command.archived])
     else unavailable((await (command.operation === 'delete' ? client!.from(tables.threads).delete().eq('id', command.id) : client!.from(tables.threads).update({ archived: command.archived, updated_at: new Date().toISOString() }).eq('id', command.id))).error)
     return { saved: true }
+  }
+  if (command.operation === 'rename') {
+    const title = redactConversation(command.title).slice(0, 160)
+    if (local()) await (await db()).query('UPDATE ep_pulse_threads SET title=$3,updated_at=now() WHERE id=$1 AND owner_id=$2', [command.id, identity.id, title])
+    else unavailable((await client!.from(tables.threads).update({ title, updated_at: new Date().toISOString() }).eq('id', command.id)).error)
+    return { saved: true, title }
   }
   const messages = command.messages.map(message => ({ ...message, text: redactConversation(message.text), attachments: message.attachments.map(redactConversation) }))
   if (local()) {

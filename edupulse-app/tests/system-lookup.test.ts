@@ -79,7 +79,7 @@ test('actual chat and on-device preflight answer system records without looking 
   const local=await ask('What is a zyglotron?');assert.equal(local.sources[0].origin,'private');assert.equal(web,0);assert.ok(library>0)
   privateHit=false
   const absent=await ask('What is photosynthesis?');assert.equal(absent.lookup.scope,'system');assert.equal(web,0);assert.equal(providers,0)
-  const external=await ask('Search online for photosynthesis','chat',[],history);assert.equal(external.lookup.scope,'web');assert.match(external.answer,/Internet suggestions/);assert.ok(external.sources[0].image.url.startsWith('https://upload.wikimedia.org/'));assert.equal(providers,0);assert.equal(web,1)
+  const external=await ask('Search online for photosynthesis','chat',[],history);assert.equal(external.lookup.scope,'web');assert.equal(external.lookup.requested,true);assert.doesNotMatch(external.answer,/Internet suggestions|did not find/,'an Internet search the person asked for has no "not found in the system" preamble');assert.ok(external.sources[0].image.url.startsWith('https://upload.wikimedia.org/'));assert.equal(providers,0);assert.equal(web,1)
   const staff={id:'11111111-1111-4111-8111-111111111111',role:'instructor' as const,local:false,token:'synthetic-only'}
   assert.equal(await systemLookup(chatInput.parse({message:'What is the latest computing news?'}),staff,staff,AbortSignal.timeout(5000)),null,'explicit current research retains the existing provider path after the system search')
   assert.equal(providers,0);assert.equal(web,1)

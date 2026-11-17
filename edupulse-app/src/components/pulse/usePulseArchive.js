@@ -96,5 +96,7 @@ export default function usePulseArchive(user, messages, setMessages) {
   }
   const command = async input => { await aiRequest('conversations', 'POST', input); await refresh() }
   const deleteThread = async id => { if (active.current === id && (saving.current || hasUnsaved())) throw new Error('Wait for this conversation to finish saving before deleting it.'); await command({ operation: 'delete', id }); if (active.current === id) { active.current = null; created.current = false; saved.current = new Set(); setThreadId(null); setMessages([]);setContextKey(crypto.randomUUID()) } }
-  return { ...state, contextKey,threadId, ensureThread, unsaved: hasUnsaved(), refresh, openThread, newThread, deleteThread, command, retry: () => { setState(previous => ({ ...previous, error: '' })); setRevision(value => value + 1) } }
+  const rename = async (id, title) => { const name = title.replace(/\s+/g, ' ').trim().slice(0, 160); if (!name) throw new Error('Enter a name for this conversation.'); await command({ operation: 'rename', id, title: name }) }
+  const title = state.threads.find(thread => thread.id === threadId)?.title || ''
+  return { ...state, contextKey,threadId, title, ensureThread, unsaved: hasUnsaved(), refresh, openThread, newThread, deleteThread, rename, command, retry: () => { setState(previous => ({ ...previous, error: '' })); setRevision(value => value + 1) } }
 }

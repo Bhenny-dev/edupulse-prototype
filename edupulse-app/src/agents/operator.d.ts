@@ -31,5 +31,6 @@ export function syllabusReference(course: CatalogCourse): { title: string; text:
 export function searchQuery(message: string): string
 export function searchRecords(query: string, data: { role?: string; userId?: string | number; catalog?: CatalogCourse[]; registrations?: Registration[]; rosters?: { fileName: string; students: RosterStudent[] }[]; syllabi?: SyllabusRecord[]; content?: Record<string, ContentItem>; documents?: LibraryDocument[] }): SearchHit[]
 export function accountRequest(message: string): { name: string; role?: 'student' | 'instructor' | 'dean' | 'associate_dean' } | null
+export function pagesForTopic(message: string, role?: string, limit?: number): { path: string; label: string }[]
 export function pageFor(message: string, role?: string, options?: { canSwitchRoles?: boolean; history?: { role?: string; content?: string; text?: string }[] }): Page | null
 export function planOperator(input: { message: string; attachments?: Attachment[]; role?: string; canSwitchRoles?: boolean; catalog?: CatalogCourse[]; currentCourse?: CatalogCourse | null; history?: { role?: string; content?: string; text?: string }[] }): { proposals: Proposal[]; chat: boolean; task: 'auto' | 'summarize' | 'draft'; mentioned: CatalogCourse[] }

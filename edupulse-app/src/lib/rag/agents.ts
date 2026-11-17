@@ -253,4 +253,4 @@ export async function runAgents(input: ChatInput & { task?: Plan['task'] | 'auto
     agentReport: agentReport(steps, { mode: result.mode as string, verification: result.verification as Verification | null, sources }),
   }
 }
-export type AgentAnswer = Awaited<ReturnType<typeof runAgents>> & { lookup?: { scope: 'system' | 'web'; correction?: string; canGenerate?: boolean } }
+export type AgentAnswer = Awaited<ReturnType<typeof runAgents>> & { lookup?: { scope: 'system' | 'web'; requested?: boolean; correction?: string; canGenerate?: boolean } }

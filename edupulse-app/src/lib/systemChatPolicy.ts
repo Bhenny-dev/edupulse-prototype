@@ -9,7 +9,23 @@ export function contentGenerationRequest(message: string, task = 'auto', hasEdit
   const content = /\b(?:courseware|syllab(?:us|i)|outline|lesson|teaching|learning material|assessment|quiz|questions?|activity|activities|presentation|slides?|educational|document|summary)\b/i.test(text)
   return action && (content || hasEditor)
 }
-export const explicitWebRequest = (text: string) => /\b(?:search|browse|look|find|research)\b.{0,45}\b(?:web|internet|online)\b|\b(?:web|internet|online)\s+(?:search|research)\b/i.test(text)
+// "Online" names a place only when it is not an EduPulse thing ("the online quiz").
+const WEB_PLACE = String.raw`(?:web|internet(?!\s+(?:connection|access|speed|settings?))|google|wikipedia|online(?!\s+(?:class|classes|course|courses|learning|module|modules|quiz|quizzes|exam|exams|assessments?|lessons?|submissions?|portal|materials?)))`
+const WEB_VERB = String.raw`(?:search|browse|look\s*up|look\s+(?:for|on|in)|find|research|check|google|hanapin|i-?search)`
+const WEB_REQUEST = new RegExp(String.raw`\b${WEB_VERB}\b.{0,45}\b${WEB_PLACE}\b|\b(?:web|internet|online|google)\s+(?:search|research)\b|^\s*(?:please\s+)?google\s+\S`, 'i')
+export const explicitWebRequest = (text: string) => WEB_REQUEST.test(text)
+/** The subject of an explicit Internet search, without the request words ("search for X on the internet" is X). */
+export function webTopic(text: string) {
+  return text
+    .replace(/^\s*(?:(?:hey|hi|ok(?:ay)?)\s+)?(?:pulse[,\s]+)?(?:(?:can|could|would|will)\s+you\s+|please\s+|kindly\s+|pakis?\s+|i\s+(?:want|need|would\s+like)\s+(?:you\s+)?to\s+)*/i, '')
+    .replace(new RegExp(String.raw`^\s*${WEB_VERB}\b(?:\s+(?:for|about|on|up)\b)?`, 'i'), ' ')
+    .replace(/\b(?:on|in|from|using|via|through|sa)\s+(?:the\s+)?(?:web|internet|online|google|wikipedia)\b/gi, ' ')
+    .replace(/\b(?:the\s+)?(?:web|internet|google|wikipedia)\b(?:\s+(?:for|about|on)\b)?/gi, ' ')
+    .replace(/\bonline\b/gi, ' ')
+    .replace(/\b(?:for\s+me|please|po)\b/gi, ' ')
+    .replace(/^[\s,:;.-]*(?:(?:si|ang|ni|kay|about|for)\s+)?/i, '')
+    .replace(/[\s?!.,:;-]+$/, '').replace(/\s+/g, ' ').trim().slice(0, 200)
+}
 
 /** Suggest only. A typo correction is never authority to run a command or change a record. */
 export function navigationCorrection(message: string) {
