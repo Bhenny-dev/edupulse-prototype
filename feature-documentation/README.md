@@ -4,7 +4,7 @@
 
 | Folder | Covers | Contents |
 | --- | --- | --- |
-| [17 November instructor handover](versions/2026-11-17-instructor-handover/README.md) | Assignment-only instructor details and independent same-class teaching continuity | Validation in progress |
+| [17 November instructor handover](versions/2026-11-17-instructor-handover/README.md) | Assignment-only instructor details and independent same-class teaching continuity | Live · 449 native tests and four deployed browser checks |
 | [17 November teaching-load intake](versions/2026-11-17-load-document-intake/README.md) | All-department restoration, cleared loads, PDF/OCR review and academic terms | Ready · 446 native tests and six deployed browser checks |
 | [15 November unified Course workspace](versions/2026-11-15-unified-courses/README.md) | Merged course cards, instructor-load CRUD and read-only syllabus/content scans for Dean and Program Coordinator | Live; 390 native and six production-UI checks passed |
 | [15 November redundant control cleanup](versions/2026-11-15-redundant-controls/README.md) | Removed routine shared refresh and generic workspace warning; retained error recovery | Live; 388 native and four production-UI checks passed |

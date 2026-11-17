@@ -5,3 +5,5 @@ Instructor details now show syllabi and delivery only for assigned courses in th
 Switching a class instructor now carries an independent teaching copy for that course, block and term, including the approved source, courseware, delivery state/window, private attachments and the block's actual recorded student history. Removing first retains a teaching checkpoint for a later replacement. Existing teaching bases, remaining blocks, grades, timestamps and attribution are preserved; insufficient capacity or invalid records roll back the assignment together with the copy. No live loads, courses or learner activity are seeded by the migration.
 
 [Course loading guide](../../system-manual/46-course-load-workspace/README.md) · [Instructor guide](../../system-manual/44-instructor-course-workspace/README.md) · [Validation](validation/results.md).
+
+Live on [EduPulse](https://edupulse-prototype.vercel.app) from source `aab846f8`. The hosted release gate passes all 449 native tests; four deployed Dean/Program Coordinator browser checks pass on desktop and phone. Existing teaching loads remain empty until explicitly assigned.
