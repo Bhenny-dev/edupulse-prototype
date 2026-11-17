@@ -38,6 +38,7 @@ async function database() {
   await db.exec(await readFile('supabase/migrations/20261115131427_unified_dean_courses.sql', 'utf8'))
   await db.exec(await readFile('supabase/migrations/20261117073840_teaching_load_document_intake.sql', 'utf8'))
   await db.exec(await readFile('supabase/migrations/20261117083004_teaching_load_source_context.sql', 'utf8'))
+  await db.exec(await readFile('supabase/migrations/20261117094641_active_teaching_load_accounts.sql', 'utf8'))
   return db
 }
 const as = (db: PGlite, id: string) => db.query(`SELECT set_config('request.jwt.claim.sub',$1,false)`, [id])
@@ -73,6 +74,13 @@ test('reviewed document loads retain schedules and term history, reject stale im
   await db.query("UPDATE public.edupulse_students SET department='College of Accountancy and Business Management' WHERE user_id=$1",[student.id])
   const directory=await dean<{students:{id:string;department:string}[]}>(db,{action:'directory'})
   assert.equal(directory.students.find(s=>s.id===student.id)?.department,'College of Accountancy and Business Management')
+  await db.query("UPDATE auth.users SET banned_until='infinity' WHERE id=$1",[TEACHER])
+  assert.equal((await dean<{instructors:{id:string}[]}>(db,{action:'directory'})).instructors.some(i=>i.id===TEACHER),false,'retired teachers are excluded without needing a separate suspension flag')
+  await assert.rejects(dean(db,{...command,entries:[{...current,block:'BSIT-1C'}]}),{code:'22023'})
+  await assert.rejects(dean(db,{action:'load.assign',loads:[{course_code:'IT 102',instructor_id:TEACHER,block:'BSIT-1C'}]}),{code:'22023'})
+  await db.query("UPDATE auth.users SET banned_until=now()+interval '1 day' WHERE id=$1",[TEACHER])
+  assert.equal((await dean<{instructors:{id:string;status:string}[]}>(db,{action:'directory'})).instructors.find(i=>i.id===TEACHER)?.status,'suspended')
+  await db.query('UPDATE auth.users SET banned_until=NULL WHERE id=$1',[TEACHER])
   await as(db,TEACHER);await assert.rejects(dean(db,{...command,entries:[current]}),{code:'42501'})
  }finally{await db.close()}
 })

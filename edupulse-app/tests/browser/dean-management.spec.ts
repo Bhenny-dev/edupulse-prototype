@@ -17,7 +17,7 @@ test('Dean loads a course to an instructor and releases a class load', async ({ 
   await dialog.locator('label.dean-chip', { hasText: 'BSIT-2A' }).click()
   await dialog.getByRole('button', { name: 'Assign to 1 block' }).click()
   await expect(dialog).toHaveCount(0)
-  expect(fixture.commands[0]).toEqual({ action: 'load.assign', filename: 'Course page', loads: [{ course_code: 'IT 401', course_title: 'Capstone project', instructor_id: 'teacher-b', block: 'BSIT-2A', semester: '1st Semester' }] })
+  expect(fixture.commands[0]).toEqual({ action: 'load.assign', filename: 'Course page', loads: [{ course_code: 'IT 401', course_title: 'Capstone project', instructor_id: 'teacher-b', block: 'BSIT-2A', semester: '1st Semester',academic_year:'2026-2027' }] })
   await expect(page.getByRole('status').filter({ hasText: 'Morgan Sample Instructor now teaches IT 401 for BSIT-2A' })).toBeVisible()
   await expect(capstone).toContainText('Morgan Sample Instructor')
   await expect(capstone).toContainText('BSIT-2A')
@@ -43,7 +43,7 @@ test('a faculty load upload is matched and reviewed before anything is saved', a
   expect(fixture.commands).toHaveLength(0)
   await review.getByRole('button', { name: 'Add 1 course load' }).click()
   await expect(review).toHaveCount(0)
-  expect(fixture.commands[0]).toEqual({ action: 'load.assign', filename: 'faculty-load.csv', loads: [{ course_code: 'IT 301', course_title: 'Systems analysis', instructor_id: 'teacher-b', block: 'BSIT-3A' }] })
+  expect(fixture.commands[0]).toEqual({ action: 'load.assign', filename: 'faculty-load.csv', loads: [{ course_code: 'IT 301', course_title: 'Systems analysis', instructor_id: 'teacher-b', block: 'BSIT-3A',semester:'1st Semester',academic_year:'2026-2027' }] })
 })
 
 test('instructor accounts record master’s degrees and are suspended before removal', async ({ page }) => {
@@ -55,7 +55,7 @@ test('instructor accounts record master’s degrees and are suspended before rem
   await expect(alex.getByRole('button', { name: 'Remove' })).toHaveCount(0)
   await alex.getByRole('button', { name: 'View instructor Alex Sample Instructor' }).click()
   const detail = page.getByRole('dialog', { name: 'Instructor Alex Sample Instructor' })
-  await expect(detail.locator('.dean-facts')).toContainText('Master’s degreeYes')
+  await expect(detail.locator('.dean-facts').filter({has:page.getByText('Master’s degree',{exact:true})})).toContainText('Master’s degreeYes')
   await expect(detail).toContainText('BSIT-1A')
   await page.keyboard.press('Escape')
 

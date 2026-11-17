@@ -45,9 +45,15 @@ test('Pulse reads an image-only teaching-load table with OCR and offers a comple
  await expect(modal).toContainText(/IT\s*102\s*A/)
  await expect(modal.locator('.load-import-facts>div').filter({has:page.getByText('Computed hours / week',{exact:true})})).toContainText('5')
  await expect(modal.getByLabel('Block section',{exact:true})).toBeVisible()
+ if(info.project.name==='mobile'){
+  const dialogBox=await modal.boundingBox()
+  expect(dialogBox!.height).toBeGreaterThanOrEqual(page.viewportSize()!.height-2)
+ }
  await modal.getByLabel('Block section',{exact:true}).scrollIntoViewIfNeeded()
  const box=await modal.getByLabel('Block section',{exact:true}).boundingBox()
  expect(box!.y).toBeGreaterThanOrEqual(0);expect(box!.y+box!.height).toBeLessThanOrEqual(page.viewportSize()!.height)
- await page.screenshot({path:`.data/course-load-intake/ocr-${info.project.name}.png`,fullPage:true})
+ await page.screenshot({path:`.data/course-load-intake/ocr-${info.project.name}.png`,fullPage:false})
  expect(fixture.commands).toHaveLength(0);expect(fixture.inference).toEqual([])
+ await modal.getByRole('button',{name:'Close',exact:true}).click()
+ await expect(pulse).toBeVisible()
 })
