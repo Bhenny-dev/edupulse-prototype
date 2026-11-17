@@ -35,6 +35,8 @@ test('Pulse reads an image-only teaching-load table with OCR and offers a comple
  await page.getByRole('button',{name:'Open Pulse assistant'}).click()
  const pulse=page.getByRole('dialog',{name:'Pulse',exact:true})
  await pulse.locator('input[type=file]').setInputFiles({name:'scanned-load.pdf',mimeType:'application/pdf',buffer:Buffer.from(await teachingLoadPdf(true,page))})
+ await expect(pulse.getByRole('button',{name:'Remove scanned-load.pdf',exact:true}).or(pulse.getByRole('alert')).first()).toBeVisible({timeout:120000})
+ await expect(pulse.getByRole('alert')).toHaveCount(0)
  await expect(pulse.getByRole('button',{name:'Remove scanned-load.pdf',exact:true})).toBeVisible({timeout:120000})
  await expect(pulse).toContainText('teaching load, 1 class')
  await pulse.getByRole('textbox',{name:'Ask Pulse',exact:true}).fill('Extract the teaching loads')

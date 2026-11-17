@@ -76,7 +76,12 @@ export type ReferenceFile = { title: string; text: string; fileName: string; kin
 export async function readReferenceFile(file: File, onProgress: (message: string) => void = () => {}): Promise<ReferenceFile> {
   // A picture has no document structure to extract: its text is read by OCR on this device and the picture is not uploaded.
   if (isImageFile(file)) return (await import('./imageReference')).readImageReference(file, onProgress)
-  const report = await extractDocument(file)
+  const report = await extractDocument(file).catch(error => {
+    // An image-only PDF has no server-extractable text. Continue into the bounded
+    // local PDF/OCR reader; auth, rate, network and format errors still stop here.
+    if (error instanceof ApiRequestError && error.status === 422 && error.code === 'NO_READABLE_TEXT' && (file.type === 'application/pdf' || /\.pdf$/i.test(file.name))) return { kind: 'pdf', text: '' }
+    throw error
+  })
   let text = report.text.trim(), scannedPages = 0
   let pdfLayout: Awaited<ReturnType<typeof import('../utils/pdfSyllabus.js').readPdfSyllabus>> | undefined
   let outline: import('../utils/syllabusParser.js').OutlineRow[] = []

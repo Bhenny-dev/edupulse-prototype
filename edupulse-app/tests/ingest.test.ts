@@ -17,6 +17,7 @@ test('PDF text is extracted page by page inside the isolated worker', async () =
   assert.match(report.text, /\[\[Page 1\]\][\s\S]*constant binding cannot be reassigned[\s\S]*\[\[Page 2\]\][\s\S]*bounded loops \(for statements\)/)
   assert.deepEqual(report.stages.map(s => s.name), ['extract', 'clean', 'evaluate'])
   assert.equal(report.quality.metrics.pages, 2)
+  await assert.rejects(extractUpload(makePdf([[]]), 'scan.pdf', signal()), rejectsWith('NO_READABLE_TEXT'), 'the client must start OCR after this real no-text response')
 })
 
 test('DOCX keeps headings and table rows; PPTX follows presentation order and reads speaker notes', async () => {

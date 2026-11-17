@@ -1,10 +1,24 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { imageScale, IMAGE_MAX_SIDE, IMAGE_MIN_SIDE } from '../src/lib/ocrText.js'
-import { isImageFile, CHAT_UPLOAD_ACCEPT, UPLOAD_ACCEPT } from '../src/lib/aiClient.js'
+import { isImageFile, CHAT_UPLOAD_ACCEPT, UPLOAD_ACCEPT, readReferenceFile, ApiRequestError } from '../src/lib/aiClient.js'
 import { readImageReference, IMAGE_LIMIT } from '../src/lib/imageReference.js'
 
 const picture = (name: string, size = 2048, type = 'image/png') => ({ name, type, size }) as File
+
+test('PDF OCR recovery never bypasses authorization, rate, network or other document failures', async t => {
+  const previousFetch=globalThis.fetch
+  t.after(()=>{globalThis.fetch=previousFetch})
+  for(const [status,code] of [[401,'AUTH_REQUIRED'],[403,'FORBIDDEN'],[429,'RATE_LIMIT'],[500,'NO_READABLE_TEXT']] as const){
+    globalThis.fetch=async()=>Response.json({error:{code,message:'Extraction refused'}},{status})
+    await assert.rejects(readReferenceFile(new File(['%PDF-1.4'],'scan.pdf',{type:'application/pdf'})),error=>error instanceof ApiRequestError&&error.status===status&&error.code===code)
+  }
+  globalThis.fetch=async()=>{throw new TypeError('Disconnected')}
+  await assert.rejects(readReferenceFile(new File(['%PDF-1.4'],'scan.pdf')),error=>error instanceof ApiRequestError&&error.code==='NETWORK_ERROR')
+  globalThis.fetch=async()=>Response.json({error:{code:'NO_READABLE_TEXT',message:'No usable text'}},{status:422})
+  await assert.rejects(readReferenceFile(new File([''],'empty.docx',{type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'})),/empty/)
+  await assert.rejects(readReferenceFile(new File(['No text'],'notes.txt')),error=>error instanceof ApiRequestError&&error.code==='NO_READABLE_TEXT')
+})
 
 test('small screenshots are enlarged, camera photos reduced, and a readable size is left alone', () => {
   assert.equal(imageScale(800, 600), 2, 'an 800 px screenshot reaches the reading size')

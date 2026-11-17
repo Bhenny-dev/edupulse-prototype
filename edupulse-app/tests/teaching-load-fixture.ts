@@ -35,7 +35,11 @@ export async function teachingLoadUI(page:Page,role='dean'){
  await page.route('**/api/ai?*',async route=>{
   const request=route.request(),action=new URL(request.url()).searchParams.get('action')
   if(['chat','chat-context','operator','courseware','web-search','system-chat'].includes(action||'')){inference.push(action!);return route.fulfill({status:500,json:{error:{message:'No model call is permitted for load extraction.'}}})}
-  if(action==='extract')return route.fulfill({json:{kind:'pdf',text:'CONFIRMATION OF TEACHING LOAD',quality:{metrics:{pages:1},warnings:[]},meta:{},stages:[]}})
+  if(action==='extract'){
+   // The real sandbox rejects an image-only PDF until its text has been read by OCR.
+   if(decodeURIComponent(request.headers()['x-file-name']||'')==='scanned-load.pdf')return route.fulfill({status:422,json:{error:{code:'NO_READABLE_TEXT',message:'No usable text was extracted. This PDF needs OCR.'}}})
+   return route.fulfill({json:{kind:'pdf',text:'CONFIRMATION OF TEACHING LOAD',quality:{metrics:{pages:1},warnings:[]},meta:{},stages:[]}})
+  }
   if(action==='academic'&&request.method()==='POST'&&request.postDataJSON()?.command?.action==='load.import_document'){
    const command=request.postDataJSON().command;commands.push(command)
    for(const e of command.entries)fixture.records.institutional!.push({kind:'loads',record_key:[e.course_code,e.block,e.semester,e.academic_year].join('|'),data:{CourseCode:e.course_code,Block:e.block,Semester:e.semester,AcademicYear:e.academic_year,InstructorID:e.instructor_id,InstructorName:'Alex Sample',ScheduleTime:e.time,ScheduleDays:e.days,Room:e.room,Units:String(e.units),LectureUnits:String(e.lecture),LabUnits:String(e.lab),DeclaredHours:String(e.hours),ComputedHours:String(e.computed_hours),StudentCount:String(e.students),Program:e.program,SourceFile:command.filename,SourcePage:String(e.page)}})
