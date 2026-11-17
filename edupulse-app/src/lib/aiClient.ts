@@ -58,6 +58,10 @@ export type ExtractionReport = {
   stages: { name: string; ms: number; detail: string }[]
 }
 export const UPLOAD_ACCEPT = '.pdf,.docx,.pptx,.xlsx,.html,.htm,.txt,.md,.markdown,.csv'
+/** The chat also takes pictures: their text is read by OCR on this device (see imageReference.ts). */
+export const IMAGE_ACCEPT = 'image/png,image/jpeg,image/webp,image/gif,image/bmp,.png,.jpg,.jpeg,.webp,.gif,.bmp'
+export const CHAT_UPLOAD_ACCEPT = `${UPLOAD_ACCEPT},${IMAGE_ACCEPT}`
+export const isImageFile = (file: Pick<File, 'name' | 'type'>) => /^image\/(?:png|jpe?g|webp|gif|bmp)$/i.test(file.type) || /\.(?:png|jpe?g|webp|gif|bmp)$/i.test(file.name)
 /** Uploads raw bytes for sandboxed extraction. Nothing is stored until the text is indexed. */
 export async function extractDocument(file: File, signal?: AbortSignal) {
   if (file.size > 4_000_000) throw new Error('Files must be 4 MB or smaller.')
@@ -67,9 +71,11 @@ export async function extractDocument(file: File, signal?: AbortSignal) {
 
 /** Knowledge-library source type for an extraction (a workbook is indexed as its comma-separated rows). */
 export const sourceTypeFor = (kind: string) => kind === 'xlsx' ? 'csv' : ['pdf', 'docx', 'pptx', 'html', 'markdown', 'csv'].includes(kind) ? kind : 'text'
-export type ReferenceFile = { title: string; text: string; fileName: string; kind: string; sourceType: string; raw?: string; syllabus?: ReturnType<typeof import('../utils/syllabusParser.js').parseSyllabusText>; scannedPages?: number }
+export type ReferenceFile = { title: string; text: string; fileName: string; kind: string; sourceType: string; raw?: string; syllabus?: ReturnType<typeof import('../utils/syllabusParser.js').parseSyllabusText>; scannedPages?: number; ocr?: { confidence: number; low: boolean } }
 /** Chat attachments use the same sandboxed extraction as the knowledge library. */
 export async function readReferenceFile(file: File, onProgress: (message: string) => void = () => {}): Promise<ReferenceFile> {
+  // A picture has no document structure to extract: its text is read by OCR on this device and the picture is not uploaded.
+  if (isImageFile(file)) return (await import('./imageReference')).readImageReference(file, onProgress)
   const report = await extractDocument(file)
   let text = report.text.trim(), scannedPages = 0
   let pdfLayout: Awaited<ReturnType<typeof import('../utils/pdfSyllabus.js').readPdfSyllabus>> | undefined

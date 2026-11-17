@@ -130,6 +130,7 @@ function FileCard({ proposal, ctx }) {
     </fieldset>
     <label className="form-label">Title<input className="form-input" aria-label="Document title" value={title} maxLength={140} onChange={e => setTitle(e.target.value)} /></label>
     <p className="pulse-action-note">{courseCode ? `Saved as “${courseCode} · ${title.trim() || 'Untitled'}” so answers about ${courseCode} can cite it.` : `Saved as “${title.trim() || 'Untitled'}” with no course.`}</p>
+    {attachment.ocr && <p className="pulse-action-note">The text was read from the picture by OCR ({attachment.ocr.confidence}% confidence) and may contain mistakes. Check it before relying on its citations.</p>}
     {state.status === 'error' && <p role="alert" className="connected-pulse-warning">{state.message}</p>}
     <div className="ai-actions">
       <button type="button" className="btn btn-primary btn-sm" disabled={!title.trim() || state.status === 'running'} onClick={confirm}>{state.status === 'running' ? <Loader2 size={13} className="spin" /> : <Check size={13} />} {courseCode ? `Add to library under ${courseCode}` : 'Add to library'}</button>

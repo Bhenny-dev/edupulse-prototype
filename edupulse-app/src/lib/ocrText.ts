@@ -47,3 +47,12 @@ export function summarizeOcr(pages: OcrPage[]): OcrSummary {
     low: read.filter(page => page.confidence < LOW_CONFIDENCE).map(page => ({ page: page.page, confidence: Math.round(page.confidence) })),
   }
 }
+
+/** Longest side, in pixels, that OCR reads best: small screenshots are enlarged (at most three times), camera photos reduced. */
+export const IMAGE_MIN_SIDE = 1600, IMAGE_MAX_SIDE = 4000, IMAGE_MAX_UPSCALE = 3
+export function imageScale(width: number, height: number) {
+  const longest = Math.max(width, height)
+  if (!longest) return 1
+  if (longest > IMAGE_MAX_SIDE) return IMAGE_MAX_SIDE / longest
+  return longest < IMAGE_MIN_SIDE ? Math.min(IMAGE_MAX_UPSCALE, IMAGE_MIN_SIDE / longest) : 1
+}
