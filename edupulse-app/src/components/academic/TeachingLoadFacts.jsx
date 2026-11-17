@@ -1,0 +1,4 @@
+export default function TeachingLoadFacts({load}){
+ const facts=[['Academic year',load.academicYear],['Semester',load.semester],['Days',load.days],['Time',load.time],['Room',load.room],['Units',load.units],['Lecture units',load.lecture],['Lab units',load.lab],['Listed hours / week',load.hours],['Computed hours / week',load.computedHours],['Students on source',load.students],['Program',load.program],['Degree on source',load.degree],['Source subject code',load.sourceCode],['Source title',load.sourceTitle],['Source instructor',load.sourceInstructor],['Source term',[load.sourceSemester,load.sourceYear].filter(Boolean).join(' · ')],['Source',load.source]]
+ return <details><summary>{[load.days,load.time,load.computedHours&&`${load.computedHours} hours/week`].filter(Boolean).join(' · ')||'View load details'}</summary><dl className="dean-facts">{facts.map(([label,value])=><div key={label}><dt>{label}</dt><dd>{value||'Not recorded'}</dd></div>)}</dl></details>
+}

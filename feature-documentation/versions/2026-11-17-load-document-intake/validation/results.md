@@ -1,0 +1,7 @@
+# Validation
+
+- Hosted maintenance rehearsal rolled back successfully. Committed readback: 2,286 active students, zero loads, zero derived enrollments and 417 retained block-roster rows. Transactional fingerprints confirmed catalog/course data (excluding derived block summaries), workspaces, other institutional records and password hashes were unchanged.
+- The preserved retirement backup supplied the exact 1,869 student IDs. Only their retired directory status and infinite account ban were restored. Later independent suspensions/removals would fail the guard; placeholder accounts were excluded.
+- Native parser and database checks cover term separation, current-only derived memberships, preserved source columns, explicit confirmation, stale imports, duplicate targets, unauthorized instructor writes, all-department directory, schedule computation and scanned grid boundaries. Final counts and deployment evidence will be recorded after the release checks finish.
+- Full readable text layers were scanned for both supplied PDFs and their table layouts were extracted. Original pages were rendered for visual inspection, including discrepant totals. Private source files, signatures and live account records are not published as fixture data.
+- Browser transports use fictional accounts and records. They can demonstrate PDF/OCR reading and UI behavior; they do not establish real user sign-ins or hosted student activity. Broad screenshot publication remains owner-paused; private affected screenshots are reviewed and the capture assertions are maintained.

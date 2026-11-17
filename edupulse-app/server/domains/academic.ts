@@ -23,6 +23,13 @@ const field = (max: number) => z.string().trim().max(max)
 const email = z.string().trim().toLowerCase().max(254).regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Enter a valid email address')
 const studentNumber = z.string().trim().regex(/^[A-Za-z0-9-]{1,80}$/, 'Enter the official student number')
 const placement = z.enum(['block', 'irregular', 'none'])
+const academicYear = z.string().regex(/^20\d{2}-20\d{2}$/).refine(value=>Number(value.slice(5))===Number(value.slice(0,4))+1,'Use consecutive academic years')
+const loadEntry = z.object({
+  course_code:field(40).min(1),course_title:field(300),instructor_id:z.string().uuid(),block:field(40).min(1),semester:z.enum(['1st Semester','2nd Semester','Summer']),academic_year:academicYear,
+  page:z.number().int().min(1).max(300),row:z.number().int().min(1).max(500),subject_code:field(80).min(1),source_title:field(300).min(1),source_instructor:field(250),source_year:field(20),source_semester:field(60),degree:field(200),
+  time:field(150),days:field(80),room:field(150),program:field(250),units:z.number().min(0).max(50).nullable(),lecture:z.number().min(0).max(50).nullable(),lab:z.number().min(0).max(50).nullable(),
+  hours:z.number().min(0).max(168).nullable(),computed_hours:z.number().min(0).max(168).nullable(),students:z.number().int().min(0).max(2000).nullable(),expected_updated_at:z.string().max(60).nullable(),
+})
 const accountFields = {
   surname: field(100).min(1), first_name: field(150).min(1), middle_name: field(100).default(''), email,
   employee_id: field(80).optional(), has_masters: z.boolean().optional(), degree: field(200).optional(), specialization: field(200).optional(),
@@ -34,7 +41,8 @@ export const deanCommand = z.discriminatedUnion('action', [
   z.object({ action: z.literal('account.create'), account: z.object({ role: z.enum(['instructor', 'student']), password: z.string().min(6).max(72), ...accountFields }) }),
   z.object({ action: z.literal('account.update'), account: z.object({ id: z.string().uuid(), ...accountFields }) }),
   z.object({ action: z.literal('account.status'), id: z.string().uuid(), status: z.enum(['suspended', 'active', 'removed']) }),
-  z.object({ action: z.literal('load.assign'), filename: field(255).optional(), loads: z.array(z.object({ course_code: field(40).min(1), course_title: field(300).optional(), instructor_id: z.string().uuid(), block: field(40).min(1), semester: field(60).optional() })).min(1).max(500) }),
+  z.object({ action:z.literal('load.import_document'),filename:field(255).min(1),reviewed:z.literal(true),entries:z.array(loadEntry).min(1).max(500) }),
+  z.object({ action: z.literal('load.assign'), filename: field(255).optional(), loads: z.array(z.object({ course_code: field(40).min(1), course_title: field(300).optional(), instructor_id: z.string().uuid(), block: field(40).min(1), semester: field(60).optional(),academic_year:academicYear.optional() })).min(1).max(500) }),
   z.object({ action: z.literal('load.remove'), keys: z.array(z.string().max(200)).min(1).max(500) }),
   z.object({ action: z.literal('load.update'), key: field(200).min(1), instructor_id: z.string().uuid(), block: field(40).min(1), semester: field(60), expected_instructor: z.string().uuid() }),
   z.object({ action: z.literal('load.inspect'), key: field(200).min(1), expected_instructor: z.string().uuid() }),

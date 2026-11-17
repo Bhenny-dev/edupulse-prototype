@@ -5,7 +5,7 @@ import { deanRecordData } from './dean-records-data'
 
 type Command = { action: string; [key: string]: unknown }
 const course = (code: string, title: string, year: string) => ({ kind: 'courses', record_key: code, data: { CourseCode: code, CourseTitle: title, YearLevel: year, Semester: '1st Semester', Units: '3' } })
-const load = (code: string, block: string, id: string, name: string) => ({ kind: 'loads', record_key: `${code}|${block}|1st Semester`, data: { CourseCode: code, Block: block, Semester: '1st Semester', InstructorID: id, InstructorName: name } })
+const load = (code: string, block: string, id: string, name: string) => ({ kind: 'loads', record_key: `${code}|${block}|1st Semester`, data: { CourseCode: code, Block: block, Semester: '1st Semester',AcademicYear:'2026-2027', InstructorID: id, InstructorName: name } })
 
 /** Synthetic Dean account with a live directory. Dean commands are recorded and applied in memory; no hosted account is used. */
 export async function deanManagementUI(page: Page, role = 'dean') {

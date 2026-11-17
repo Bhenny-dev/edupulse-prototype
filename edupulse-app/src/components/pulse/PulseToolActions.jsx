@@ -3,6 +3,7 @@ import { currentEditor } from '../../agents/editorTools'
 import { fieldValue, scopedEditorPatch } from '../../agents/componentScope'
 import { sourceSyllabusPatch, rosterRevision } from '../../agents/workTools'
 import { studentKey } from '../../utils/rosterParser'
+import TeachingLoadImport from '../academic/TeachingLoadImport'
 
 const labels = { institutionalContext: 'Institutional context', courseDescription: 'Course description', programOutcomes: 'Program outcomes', courseOutline: 'Course outline', courseRequirements: 'Course requirements', gradingSystem: 'Grading system', coursePolicy: 'Course policy', books: 'Books', onlineReferences: 'Online references', sections: 'Content sections', questions: 'Assessment questions', title: 'Title' }
 function readable(value) {
@@ -134,6 +135,7 @@ function RosterCard({ proposal, ctx }) {
 }
 
 export default function PulseToolAction({ proposal, ctx }) {
+  if(proposal.type==='teaching-load-import')return <TeachingLoadImport file={proposal.file}/>
   if (proposal.type === 'syllabus-import' || proposal.type === 'editor-edit') return <EditorCard proposal={proposal} ctx={ctx} />
   if (proposal.type === 'roster-edit') return <RosterCard proposal={proposal} ctx={ctx} />
   if (proposal.type === 'recall') return <section className="pulse-action" aria-label="Recalled private context"><strong>Private conversation recall</strong><p>These are saved statements, not proof of the current state of a record.</p>{proposal.memories.map(item => <blockquote key={item.id}>{item.text}<small>Source: saved user preference</small></blockquote>)}{proposal.matches.map(item => <blockquote key={item.id}>{item.text}<small>Source: {item.role === 'user' ? 'your statement' : 'Pulse transcript'} · {new Date(item.created_at).toLocaleString()}</small></blockquote>)}{!proposal.memories.length && !proposal.matches.length && <p>No matching saved context was found. Name a topic from the conversation; Pulse will not invent a recollection.</p>}</section>

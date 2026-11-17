@@ -9,11 +9,17 @@ import { useAuth } from '../../context/AuthContext'
 import { DeanCards, DeanDialog, ActivityTable, DeanFeedback, ConfirmDialog, StatusBadge } from './DeanCommon'
 import { useDeanAction } from './deanActions'
 import DeanAccountDialog from './DeanAccountDialog'
+import {useSearchParams} from 'react-router-dom'
+import LoadTermFilter from './LoadTermFilter'
+import TeachingLoadFacts from './TeachingLoadFacts'
+import {CURRENT_LOAD_TERM,recordsForLoadTerm} from '../../utils/loadTerms'
 
 const degreeLabel = person => person.has_masters === true ? (person.degree || 'Master’s degree') : person.has_masters === false ? (person.degree || 'No master’s degree') : 'Degree not recorded'
 const signIn = value => value ? new Date(value).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) : 'Never'
 
-export default function DeanInstructors({ data }) {
+export default function DeanInstructors({ data:allData }) {
+  const [params]=useSearchParams()
+  const data=useMemo(()=>recordsForLoadTerm(allData,params.get('term')||CURRENT_LOAD_TERM),[allData,params])
   const { user } = useAuth(), scores = user?.role !== 'associate_dean'
   const model = useMemo(() => deanRecords(data), [data])
   const directory = useMemo(() => deanDirectory(data, model), [data, model])
@@ -31,6 +37,7 @@ export default function DeanInstructors({ data }) {
       : <button className="btn btn-ghost btn-sm" onClick={() => changeStatus(person, 'suspended')}>Suspend</button>}
   </div>
   return <>
+    <LoadTermFilter data={allData}/>
     <DeanCards items={[
       { label: 'Instructors', value: people.filter(p => p.status === 'active').length, icon: GraduationCap, tone: 'purple', onClick: () => setStatus('active') },
       { label: 'With master’s degree', value: people.filter(p => p.has_masters).length, icon: Award, tone: 'green', onClick: () => setStatus('masters') },
@@ -64,7 +71,8 @@ export default function DeanInstructors({ data }) {
         <div><dt>Last sign-in</dt><dd>{signIn(selected.last_sign_in_at)}</dd></div>
       </dl>
       <h3 className="dean-subhead">Course loads</h3>
-      <ActivityTable scores={scores} headers={['Course', 'Block', 'Semester']} rows={selected.loads.map(load => [load.code, load.block, load.semester || '—'])} empty="No course load assigned. Load courses on the Course page." />
+      <DeanCards items={[{label:'Class loads',value:selected.loads.length,icon:ClipboardCheck},{label:'Units loaded',value:selected.loads.reduce((n,l)=>n+(Number(l.units)||0),0),icon:Award},{label:'Computed hours / week',value:selected.loads.reduce((n,l)=>n+(Number(l.computedHours)||0),0),icon:GraduationCap}]}/>
+      <ActivityTable scores={scores} headers={['Course', 'Block', 'Term','Schedule and source details']} rows={selected.loads.map(load => [load.code, load.block, [load.semester,load.academicYear].filter(Boolean).join(' · ') || '—',<TeachingLoadFacts key={load.key} load={load}/>])} empty="No course load assigned for this term. Load courses on the Course page." />
       <h3 className="dean-subhead">Syllabi and delivery</h3>
       <ActivityTable scores={scores} headers={['Course', 'Syllabus status', 'Released items', 'Assessment attempts', 'Material opens']} rows={selected.syllabi.map(course => { const activity = model.activity(new Set([course.id])); return [course.course_code, SYLLABUS_STATUS_META[syllabusState(course)]?.label || syllabusState(course), activity.publications, activity.submissions, activity.opens] })} empty="No syllabus prepared yet." />
     </DeanDialog>}

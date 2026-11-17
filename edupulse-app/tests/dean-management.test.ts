@@ -36,11 +36,46 @@ async function database() {
   await db.exec(await readFile('supabase/migrations/20261114090000_dean_support_directory_fix.sql', 'utf8'))
   await db.exec(await readFile('supabase/migrations/20261115080000_program_coordinator_dean_parity.sql', 'utf8'))
   await db.exec(await readFile('supabase/migrations/20261115131427_unified_dean_courses.sql', 'utf8'))
+  await db.exec(await readFile('supabase/migrations/20261117073840_teaching_load_document_intake.sql', 'utf8'))
+  await db.exec(await readFile('supabase/migrations/20261117083004_teaching_load_source_context.sql', 'utf8'))
   return db
 }
 const as = (db: PGlite, id: string) => db.query(`SELECT set_config('request.jwt.claim.sub',$1,false)`, [id])
 const dean = async <T = Record<string, unknown>>(db: PGlite, command: unknown) => (await db.query<{ r: T }>('SELECT public.edupulse_dean_command($1::jsonb) r', [JSON.stringify(command)])).rows[0].r
 const enrolled = async (db: PGlite) => (await db.query<{ course_id: string; student_email: string; block_section: string }>('SELECT course_id,student_email,block_section FROM public.edupulse_enrollments ORDER BY student_email,course_id')).rows
+
+test('reviewed document loads retain schedules and term history, reject stale imports, and enroll only current classes',async()=>{
+ const db=await database()
+ try{
+  await as(db,DEAN)
+  await db.exec(`INSERT INTO public.edupulse_institutional_records(kind,record_key,data) VALUES('rosters','SYN-RESTORED','{"StudentID":"SYN-RESTORED","Name":"Restored Example","Email":"restored@example.invalid","Block":"BSIT-1A"}');`)
+  const entry={course_code:'IT 102',course_title:'Programming foundations',instructor_id:TEACHER,block:'BSIT-1A',academic_year:'2025-2026',semester:'2nd Semester',page:1,row:1,subject_code:'IT 102 A',source_instructor:'Alex Sample',source_year:'2025-2026',source_semester:'2nd Semester',degree:'Masters',time:'7:30 - 10:00',days:'TTH',room:'A310',units:3,lecture:2,lab:1,hours:5,computed_hours:5,students:35,program:'BSIT',expected_updated_at:null}
+  const command={action:'load.import_document',filename:'reviewed-load.pdf',reviewed:true,entries:[entry]}
+  assert.equal((await dean<{imported:number}>(db,command)).imported,1)
+  assert.equal((await enrolled(db)).length,0,'past loads never create current enrollments')
+  await dean(db,{...command,entries:[{...entry,academic_year:'2026-2027'}]})
+  assert.equal((await enrolled(db)).length,0,'next-semester loads remain separate records')
+  const current={...entry,academic_year:'2026-2027',semester:'1st Semester'}
+  await dean(db,{...command,entries:[current]})
+  assert.equal((await enrolled(db)).length,1)
+  const loads=(await db.query<{record_key:string;data:Record<string,string>}>("SELECT * FROM public.edupulse_institutional_records WHERE kind='loads'")).rows
+  assert.equal(loads.length,3)
+  const saved=loads.find(r=>r.record_key==='IT 102|BSIT-1A|1st Semester|2026-2027')!
+  assert.equal(saved.data.ScheduleTime,'7:30 - 10:00');assert.equal(saved.data.ComputedHours,'5');assert.equal(saved.data.SourceAcademicYear,'2025-2026');assert.equal(saved.data.LabUnits,'1')
+  await assert.rejects(dean(db,command),{code:'40001'})
+  await assert.rejects(dean(db,{...command,entries:[{...current,block:'BSIT-1B'},{...current,block:'BSIT-1B'}]}),{code:'22023'})
+  await assert.rejects(dean(db,{...command,reviewed:false}),{code:'22023'})
+  await assert.rejects(dean(db,{...command,entries:[{...current,academic_year:'2026-2028'}]}),{code:'22023'})
+  const edited=await dean<{key:string}>(db,{action:'load.update',key:saved.record_key,expected_instructor:TEACHER,instructor_id:TEACHER,block:'BSIT-1B',semester:'1st Semester'})
+  assert.equal(edited.key,'IT 102|BSIT-1B|1st Semester|2026-2027')
+  assert.equal((await db.query<{data:Record<string,string>}>("SELECT data FROM public.edupulse_institutional_records WHERE kind='loads' AND record_key=$1",[edited.key])).rows[0].data.SourceFile,'reviewed-load.pdf')
+  const student=await dean<{id:string}>(db,{action:'account.create',account:{role:'student',surname:'Restored',first_name:'Sam',student_number:'SYN-OTHER',year_level:1,program:'Bachelor of Science in Accountancy',email:'other@example.invalid',password:'Ep9!sample-pass'}})
+  await db.query("UPDATE public.edupulse_students SET department='College of Accountancy and Business Management' WHERE user_id=$1",[student.id])
+  const directory=await dean<{students:{id:string;department:string}[]}>(db,{action:'directory'})
+  assert.equal(directory.students.find(s=>s.id===student.id)?.department,'College of Accountancy and Business Management')
+  await as(db,TEACHER);await assert.rejects(dean(db,{...command,entries:[current]}),{code:'42501'})
+ }finally{await db.close()}
+})
 
 test('Dean manages instructor accounts, recorded degrees and course loads', async () => {
   const db = await database()

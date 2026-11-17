@@ -41,7 +41,7 @@ function jpegSize(jpeg: Uint8Array) {
  * A US Letter PDF whose pages are either text with a real text layer or a full-page JPEG with no
  * text at all, as a scanner produces. Mixed documents exercise OCR of only the pages that need it.
  */
-export function makeScannedPdf(pages: ({ lines: string[] } | { jpeg: Uint8Array })[]): Uint8Array {
+export function makeScannedPdf(pages: ({ lines: string[] } | { jpeg: Uint8Array })[], size={width:612,height:792}): Uint8Array {
   const escape = (s: string) => s.replace(/[\\()]/g, m => `\\${m}`)
   const text = (s: string) => Buffer.from(s, 'latin1')
   const stream = (dict: string, data: Buffer) => Buffer.concat([text(`<< ${dict}/Length ${data.length} >>\nstream\n`), data, text('\nendstream')])
@@ -55,8 +55,8 @@ export function makeScannedPdf(pages: ({ lines: string[] } | { jpeg: Uint8Array 
     if ('jpeg' in page) {
       const imageId = next++, { width, height } = jpegSize(page.jpeg)
       bodies[imageId] = stream(`/Type /XObject /Subtype /Image /Width ${width} /Height ${height} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode `, Buffer.from(page.jpeg))
-      bodies[contentId] = stream('', text('q 612 0 0 792 0 0 cm /Im1 Do Q'))
-      bodies[pageId] = text(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /XObject << /Im1 ${imageId} 0 R >> >> /Contents ${contentId} 0 R >>`)
+      bodies[contentId] = stream('', text(`q ${size.width} 0 0 ${size.height} 0 0 cm /Im1 Do Q`))
+      bodies[pageId] = text(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${size.width} ${size.height}] /Resources << /XObject << /Im1 ${imageId} 0 R >> >> /Contents ${contentId} 0 R >>`)
     } else {
       bodies[contentId] = stream('', text(`BT /F1 12 Tf 72 720 Td 16 TL ${page.lines.map(line => `(${escape(line)}) Tj T*`).join(' ')} ET`))
       bodies[pageId] = text(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents ${contentId} 0 R >>`)

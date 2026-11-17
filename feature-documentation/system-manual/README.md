@@ -103,3 +103,6 @@ The [baseline restoration](../versions/2026-10-28-baseline-workflows/README.md) 
 | [41](41-student-learning/README.md) | Enrolled course cards, instructor labels, repeatable advanced practice and Admin demonstrations | Student / verified Admin | My Courses, Practice Assessments, Performance |
 
 [Manual 42: Editable syllabus workspace](42-editable-syllabus-workspace/README.md) covers direct validated field placement, owned-draft reopening, scoped week continuations, optional review, progressive completion and explicit save-in-place.
+
+
+[Manual 47: Teaching-load documents and academic terms](47-teaching-load-documents/README.md) covers restored all-department students, PDF/OCR intake through Pulse or Course, instructor/course/block mapping, schedules/hours, explicit import and current/next/previous record filters.

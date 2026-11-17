@@ -1,4 +1,4 @@
-import { imageScale, type OcrPage } from './ocrText'
+import { imageScale,scannedTableGrid,type OcrPage } from './ocrText'
 
 export type OcrProgress = { done: number; total: number; page: number | null; status: string }
 /** Scans are read page by page on the device; longer scans should be split. */
@@ -15,7 +15,7 @@ const workerOptions = (assets: string) => ({ workerPath: `${assets}worker.min.js
  * the server sandbox uses. Pages that already have text are left to the server's extraction.
  */
 export async function ocrScannedPages(file: File, { signal, onProgress }: { signal: AbortSignal; onProgress: (progress: OcrProgress) => void }): Promise<{ pageCount: number; pages: OcrPage[] }> {
-  const [{ getDocumentProxy, extractText, renderPageAsImage }, { createWorker, OEM }] = await Promise.all([import('unpdf'), import('tesseract.js')])
+  const [{ getDocumentProxy, extractText, renderPageAsImage }, { createWorker, OEM,PSM }] = await Promise.all([import('unpdf'), import('tesseract.js')])
   // Served from this origin by the build (vite.config.js); the CSP blocks third-party scripts.
   const assets = new URL('/ocr/', window.location.origin).href
   const pdf = await getDocumentProxy(new Uint8Array(await file.arrayBuffer()), { disableFontFace: true, useSystemFonts: false, verbosity: 0, wasmUrl: `${assets}pdf/` })
@@ -26,6 +26,7 @@ export async function ocrScannedPages(file: File, { signal, onProgress }: { sign
     const { text } = await extractText(pdf, { mergePages: false })
     const scanned = text.map((page, index) => ({ page: index + 1, length: page.trim().length })).filter(page => page.length < READABLE).map(page => page.page)
     if (scanned.length > OCR_PAGE_LIMIT) throw new Error(`This scan has ${scanned.length} pages without text. OCR reads up to ${OCR_PAGE_LIMIT} pages at a time; split the PDF first.`)
+    if (!scanned.length) return {pageCount:pdf.numPages,pages:[]}
     onProgress({ done: 0, total: scanned.length, page: null, status: 'Loading the OCR engine' })
     worker = await Promise.race([createWorker('eng', OEM.LSTM_ONLY, workerOptions(assets)), aborted])
     const pages: OcrPage[] = []
@@ -35,8 +36,27 @@ export async function ocrScannedPages(file: File, { signal, onProgress }: { sign
       const { width, height } = (await pdf.getPage(number)).getViewport({ scale: 1 })
       // About 300 dpi, the resolution Tesseract is trained for, capped so a poster-size page stays in memory.
       const image = await renderPageAsImage(pdf, number, { scale: Math.min(300 / 72, 3300 / Math.max(width, height)) })
-      const { data } = await Promise.race([worker.recognize(new Blob([image], { type: 'image/png' })), aborted])
-      pages.push({ page: number, text: data.text, confidence: data.confidence })
+      const blob=new Blob([image],{type:'image/png'}),bitmap=await createImageBitmap(blob)
+      const canvas=document.createElement('canvas');canvas.width=bitmap.width;canvas.height=bitmap.height
+      const context=canvas.getContext('2d',{willReadFrequently:true})!
+      context.fillStyle='#fff';context.fillRect(0,0,canvas.width,canvas.height);context.drawImage(bitmap,0,0);bitmap.close()
+      const grid=scannedTableGrid(context.getImageData(0,0,canvas.width,canvas.height).data,canvas.width,canvas.height)
+      let recognition=blob
+      const ruled=grid.horizontal.length>=3&&grid.vertical.length>=4
+      if(ruled){
+        // Keep the detected geometry, but remove rules from the OCR copy so small
+        // numbers are read as text rather than discarded as table-line fragments.
+        const stroke=Math.max(3,Math.ceil(Math.max(canvas.width,canvas.height)/550))
+        context.fillStyle='#fff'
+        for(const x of grid.vertical)context.fillRect(x-stroke/2,grid.horizontal[0]-stroke,stroke,grid.horizontal.at(-1)!-grid.horizontal[0]+2*stroke)
+        for(const y of grid.horizontal)context.fillRect(grid.vertical[0]-stroke,y-stroke/2,grid.vertical.at(-1)!-grid.vertical[0]+2*stroke,stroke)
+        recognition=await new Promise<Blob>((resolve,reject)=>canvas.toBlob(value=>value?resolve(value):reject(new Error('The scanned table could not be prepared.')),'image/png'))
+      }
+      canvas.width=0;canvas.height=0
+      await worker.setParameters({tessedit_pageseg_mode:ruled?PSM.SPARSE_TEXT:PSM.AUTO,preserve_interword_spaces:'1'})
+      const { data } = await Promise.race([worker.recognize(recognition, {}, {text:true,blocks:true}), aborted])
+      const words = (data.blocks || []).flatMap(block=>block.paragraphs.flatMap(paragraph=>paragraph.lines.flatMap(line=>line.words.map(word=>({text:word.text,...word.bbox,baseline:line.baseline.y1})))))
+      pages.push({ page: number, text: data.text, confidence: data.confidence,words,grid })
     }
     onProgress({ done: scanned.length, total: scanned.length, page: null, status: 'Checking the text' })
     return { pageCount: pdf.numPages, pages }

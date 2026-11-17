@@ -71,7 +71,7 @@ export async function extractDocument(file: File, signal?: AbortSignal) {
 
 /** Knowledge-library source type for an extraction (a workbook is indexed as its comma-separated rows). */
 export const sourceTypeFor = (kind: string) => kind === 'xlsx' ? 'csv' : ['pdf', 'docx', 'pptx', 'html', 'markdown', 'csv'].includes(kind) ? kind : 'text'
-export type ReferenceFile = { title: string; text: string; fileName: string; kind: string; sourceType: string; raw?: string; syllabus?: ReturnType<typeof import('../utils/syllabusParser.js').parseSyllabusText>; scannedPages?: number; ocr?: { confidence: number; low: boolean } }
+export type ReferenceFile = { title: string; text: string; fileName: string; kind: string; sourceType: string; raw?: string; syllabus?: ReturnType<typeof import('../utils/syllabusParser.js').parseSyllabusText>; scannedPages?: number; ocr?: { confidence: number; low: boolean }; teachingLoad?: import('../utils/teachingLoad').TeachingLoadDocument }
 /** Chat attachments use the same sandboxed extraction as the knowledge library. */
 export async function readReferenceFile(file: File, onProgress: (message: string) => void = () => {}): Promise<ReferenceFile> {
   // A picture has no document structure to extract: its text is read by OCR on this device and the picture is not uploaded.
@@ -101,7 +101,8 @@ export async function readReferenceFile(file: File, onProgress: (message: string
   }
   // Plain-text tables are also kept exactly as written, so class lists keep their columns and tabs.
   const raw = report.kind === 'csv' || report.kind === 'text' ? (await file.text()).slice(0, 400_000) : undefined
-  return { title: file.name.slice(0, 160), text: text.slice(0, 150000), fileName: file.name.slice(-255), kind: report.kind, sourceType: sourceTypeFor(report.kind), raw, syllabus, scannedPages }
+  if (pdfLayout?.teachingLoad && text.length > 400000) throw new Error('This teaching-load document exceeds 400,000 characters. Split it before importing; no rows were saved.')
+  return { title: file.name.slice(0, 160), text: text.slice(0, pdfLayout?.teachingLoad ? 400000 : 150000), fileName: file.name.slice(-255), kind: report.kind, sourceType: sourceTypeFor(report.kind), raw, syllabus, scannedPages,teachingLoad:pdfLayout?.teachingLoad }
 }
 
 /** Collects Researcher queries issued in parallel into one context request. */

@@ -5,6 +5,7 @@
 import type { AcademicData, Course } from '../components/academic/academicData'
 import { assessmentSummary, currentAttempts, deliverySummary, learnerRows, percent, studentAttempt, topicSummary } from '../components/academic/academicData'
 import { SYLLABUS_STATUS_META, SYLLABUS_STATUS_ORDER } from '../data/syllabusStatus'
+import {CURRENT_LOAD_TERM,recordsForLoadTerm} from '../utils/loadTerms'
 
 type StatusMeta = { label: string; badge: string; step: number; hint: string }
 const STATUS: Record<string, StatusMeta | undefined> = SYLLABUS_STATUS_META
@@ -53,14 +54,15 @@ export function accountActivity(events: AcademicEvent[] = [], limit = 5, now = D
 /* Dean and Program Coordinator */
 
 export function accountManagementModel(data: AcademicData, now = Date.now()) {
-  const imported = (kind: string) => (data.institutional || []).filter(row => row.kind === kind).map(row => row.data?.CourseCode)
+  const assignments=(recordsForLoadTerm(data,CURRENT_LOAD_TERM).institutional||[]).filter(row=>row.kind==='loads')
+  const imported = (kind: string) => (kind==='loads'?assignments:(data.institutional || []).filter(row => row.kind === kind)).map(row => row.data?.CourseCode)
   const distinct = (codes: (string | undefined)[]) => new Set(codes.map(code => String(code || '').trim()).filter(Boolean)).size
   const people = new Map((data.faculty || []).map(person => [person.id, person.name || person.email || person.id]))
   for (const course of data.courses) if (course.instructor_id && !people.has(course.instructor_id)) people.set(course.instructor_id, course.instructor_name || course.instructor_id)
   return {
     kpis: {
       released: distinct([...data.courses.map(c => c.course_code), ...imported('courses')]),
-      loaded: distinct([...data.courses.filter(c => c.instructor_id).map(c => c.course_code), ...imported('loads')]),
+      loaded: distinct(imported('loads')),
       approved: data.courses.filter(c => ['approved_uploaded', 'active'].includes(statusOf(c))).length,
       notRouted: data.courses.filter(c => notRouted(statusOf(c))).length,
     },
@@ -69,7 +71,7 @@ export function accountManagementModel(data: AcademicData, now = Date.now()) {
     deliverySeries: [{ key: 'materials', name: 'Published materials', color: '#22c55e' }, { key: 'assessments', name: 'Published assessments', color: '#38bdf8' }],
     faculty: [...people].map(([id, name]) => {
       const loads = data.courses.filter(c => c.instructor_id === id)
-      return { id, name, loads: loads.length, active: loads.filter(c => statusOf(c) === 'active').length, behind: loads.filter(c => notRouted(statusOf(c))).length }
+      return { id, name, loads: assignments.filter(row=>row.data.InstructorID===id).length, active: loads.filter(c => statusOf(c) === 'active').length, behind: loads.filter(c => notRouted(statusOf(c))).length }
     }),
     activity: accountActivity(data.events, 5, now),
     courses: data.courses.map(c => ({

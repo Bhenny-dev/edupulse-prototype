@@ -4,13 +4,14 @@ import ModalLayer from '../ui/ModalLayer'
 import { LoadingStatus, Spinner } from '../ui/LoadingFeedback'
 import { aiRequest } from '../../lib/aiClient'
 import { ROLE_TITLES } from '../../lib/authRoles'
+import { STUDENT_PROGRAMS } from '../../data/studentPrograms'
 import './AccountSwitchModal.css'
 
 export default function AccountSwitchModal({ role, onClose, onSelect }) {
-  const [filters, setFilters] = useState({ q: '', year: '', department: role==='student'?'College of Information Technology':'', program: '', offset: 0 })
+  const [filters, setFilters] = useState({ q: '', year: '', department: '', program: '', offset: 0 })
   const [result, setResult] = useState(null), [loading, setLoading] = useState(true), [error, setError] = useState('')
   const [selecting, setSelecting] = useState(null), [retry, setRetry] = useState(0)
-  const change = (key, value) => setFilters(previous => ({ ...previous, [key]: value, offset: 0 }))
+  const change = (key, value) => setFilters(previous => ({ ...previous, [key]: value, ...(key === 'department' ? { program: '' } : {}), offset: 0 }))
   useEffect(() => {
     const controller = new AbortController()
     setLoading(true); setError('')
@@ -34,7 +35,7 @@ export default function AccountSwitchModal({ role, onClose, onSelect }) {
       <div className="account-switch-search"><Search size={18} aria-hidden="true" /><input type="search" aria-label="Search accounts" placeholder="Search name, student number or email" value={filters.q} onChange={event => change('q', event.target.value)} disabled={Boolean(selecting)} /></div>
       {role === 'student' && <div className="account-switch-filters">
         <label>Year level<select aria-label="Year level" className="form-input" value={filters.year} onChange={event => change('year', event.target.value)} disabled={Boolean(selecting)}><option value="">All years</option>{[1,2,3,4].map(year => <option key={year} value={year}>Year {year}</option>)}</select></label>
-        <label>Department<select aria-label="Department" className="form-input" value={filters.department} onChange={event => change('department', event.target.value)} disabled={Boolean(selecting)}><option value="College of Information Technology">College of Information Technology</option></select></label>
+        <label>Department<select aria-label="Department" className="form-input" value={filters.department} onChange={event => change('department', event.target.value)} disabled={Boolean(selecting)}><option value="">All departments</option>{Object.keys(STUDENT_PROGRAMS).map(name => <option key={name}>{name}</option>)}</select></label>
         <label>Program<select aria-label="Program" className="form-input" value={filters.program} onChange={event => change('program', event.target.value)} disabled={Boolean(selecting)}><option value="">All programs</option>{(result?.programs || []).map(value => <option key={value}>{value}</option>)}</select></label>
       </div>}
       <div className="account-switch-results" aria-busy={loading}>

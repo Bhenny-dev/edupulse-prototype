@@ -36,6 +36,6 @@ Provisioning is a server-side administrative operation. It creates EduPulse sign
 
 Saved members can be moved between blocks or removed through their three-dot menu. These edits affect course access, preserve official profiles and past attempts, and survive later shared imports or automatic sync. [Manual 21](../21-automatic-records-and-course-rosters/README.md) illustrates those confirmations.
 
-The active student directory is limited to **College of Information Technology**. The department selector contains only CIT, with year/program filtering retained. Non-CIT profiles and the four legacy role placeholders are retired from active use, with their records preserved. Student profile count after retirement is 417.
+The active student directory again includes all six original departments. The department selector starts with **All departments**, retaining year/program filtering. On 17 November the 1,869 preserved non-CIT students were reactivated, bringing the active directory to 2,286. Four legacy role placeholders remain retired. Restoring accounts does not invent course enrollments. See [Manual 47](../47-teaching-load-documents/README.md).
 
 Inside a selected monitoring class, course/block fields are locked to that class. The same registered-account search and explicit save are retained. Use the outer registration control to create another confirmed class membership. See [Manual 37](../37-instructor-monitoring/README.md).

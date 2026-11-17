@@ -8,13 +8,15 @@ import {readWorkspaceViews,saveWorkspaceViews,workspaceViewKey} from '../src/uti
 test('Dean records deduplicate course memberships and students without inventing year levels or progress',()=>{
  const data=deanRecordData(),model=deanRecords(data)
  assert.equal(model.students.length,4);assert.equal(model.memberships,5);assert.equal(model.blocks.length,3)
- assert.equal(model.courses.length,3);assert.equal(model.loadedCodes.size,3)
+ assert.equal(model.courses.length,3);assert.equal(model.loadedCodes.size,0,'saved syllabi do not constitute a teaching assignment')
  assert.deepEqual(model.blocks.map(yearLabel),['Year 1','Year 2','Year level not recorded'])
  assert.equal(model.blocks[0].students.length,2);assert.equal(model.blocks[0].courseIds.size,2)
  assert.equal(model.released.length,2);assert.equal(model.attempts.length,1)
  assert.equal(model.activity(new Set(['c1'])).testSubmissions,1)
  assert.equal(data.courses.filter(approvedSyllabus).length,2);assert.equal(data.courses.filter(notRoutedSyllabus).length,2)
  assert.deepEqual([model.courses.length,model.loadedCodes.size],Object.values(accountManagementModel(data).kpis).slice(0,2))
+ data.institutional!.push({kind:'loads',record_key:'IT 102|BSIT-1A|1st Semester|2026-2027',data:{CourseCode:'IT 102',InstructorID:'teacher-a',AcademicYear:'2026-2027',Semester:'1st Semester',Block:'BSIT-1A'}})
+ assert.equal(deanRecords(data).loadedCodes.size,1);assert.equal(accountManagementModel(data).kpis.loaded,1)
 })
 test('withdrawn enrollment and stale course IDs cannot reappear through imported roster labels',()=>{
  const data=deanRecordData();data.institutional!.push({kind:'rosters',record_key:'gone',data:{Email:'removed@example.invalid',Name:'Removed learner',YearLevel:'4',Block:'BSIT-4A'}})

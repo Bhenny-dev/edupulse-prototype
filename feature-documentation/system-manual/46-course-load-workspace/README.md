@@ -13,3 +13,8 @@ Select a course card to open a page-sized modal. Its summaries show assigned ins
 Reload restores the selected course, instructor scan and file/content reader after fresh authorization. Session view storage contains bounded record IDs only. Removed/reassigned loads and removed files/content are resolved again; the former response is not restored from storage. Close and Escape dismiss the top dialog and clear its saved reader reference. Switching roles/accounts keeps view references isolated. No assignment or learner command is replayed on reload.
 
 This supersedes the older two-tab Course screenshots in [Dean activity records](../36-dean-activity-records/README.md). Broad screenshot publication remains paused by the owner; the browser pipeline checks the merged page, course modal, role parity and read-only scans.
+
+
+## Approved-load PDFs and terms
+
+Course now accepts PDF through Upload course load, opening the same full page review used by Pulse attachments. Academic term switches current, next, previous, other recorded or unassigned terms. Instructor/course detail rows retain schedules, rooms, units, listed/computed hours, source headcounts and source filename/page. The instructor directory includes all original departments again. [Manual 47](../47-teaching-load-documents/README.md) describes review and confirmation; the supplied files were scanned without automatically reloading assignments.

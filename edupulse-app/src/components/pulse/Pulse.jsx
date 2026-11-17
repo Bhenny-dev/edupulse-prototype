@@ -232,11 +232,12 @@ export default function Pulse() {
     try {
       if (attachments.length + files.length > 3) throw new Error('Attach up to three files per message.')
       // Attachments go through the same sandboxed extraction as the knowledge library.
-      const refs = await Promise.all(files.map(file => readReferenceFile(file, notice => { if (epoch === fileRead.current.epoch) setFileNotice(notice) })))
+      const refs = []
+      for (const file of files) refs.push(await readReferenceFile(file, notice => { if (epoch === fileRead.current.epoch) setFileNotice(notice) }))
       if (epoch !== fileRead.current.epoch) return
       setAttachments(previous => [...previous, ...refs.map(ref => {
         // A class list keeps its rows; the course is read from the file name, a course column or the first lines.
-        const roster = parseRoster(ref.raw ?? ref.text, ref.fileName)
+        const roster = ref.teachingLoad ? null : parseRoster(ref.raw ?? ref.text, ref.fileName)
         const kept = { ...ref }
         delete kept.raw
         return roster ? { ...kept, roster, detectedCourse: findCourseMentions(`${ref.fileName} ${roster.courseValues.join(' ')} ${ref.text.slice(0, 600)}`, catalog)[0]?.code || '' } : kept
@@ -429,6 +430,11 @@ export default function Pulse() {
     const mutationTickets = []
     try {
       if (instant) { setMessages(previous=>[...previous,{id:crypto.randomUUID(),from:'pulse',mode:'quick',text:instant}]);setExpression('cheerful');return instant }
+      const loads=pending.filter(item=>item.teachingLoad)
+      if(loads.length&&!options.skipOperator&&(attachments.length||options.attachments?.length||/\b(loads?|teaching|extract|import|scan)\b/i.test(question))){
+        setMessages(previous=>[...previous,{id:crypto.randomUUID(),from:'pulse',mode:'actions',text:'I read the teaching-load tables. Review the source rows, term, instructor and block mappings before confirming.',proposals:loads.map(file=>({type:'teaching-load-import',file}))}])
+        office.finish(ticket,'done','Extracted course loads ready for review; no AI request or record change.');return
+      }
       if (!options.skipOperator && /^\s*(?:please\s+)?remember\s+(?:that\s+|I\s+)/i.test(question)) {
         setMessages(previous => [...previous, { id: crypto.randomUUID(), from: 'pulse', mode: 'receipt', text: 'Non-sensitive preferences are saved from your statement when this conversation finishes saving. Open Conversations & memory to review or delete them. Credentials and sensitive student records are excluded from reusable memory.' }]); return
       }
@@ -571,7 +577,7 @@ export default function Pulse() {
       {error && <div role="alert" className="connected-pulse-error">{error}{['PROVIDER_CREDITS', 'PROVIDER_QUOTA'].includes(errorCode) && <button type="button" className="btn btn-ghost btn-sm" onClick={() => navigate('/settings?tab=ai-provider')}>AI settings</button>}</div>}
       {archive.error && archive.unsaved && messages.length > 0 && !historyOpen && <div role="status" className="connected-pulse-warning">Chat not saved. <button className="btn btn-ghost btn-sm" onClick={archive.retry}>Retry history save</button></div>}
       <span className="sr-only pulse-context-status" role="status">{archive.saving || archive.unsaved ? 'Saving conversation' : archive.threadId ? 'Conversation saved' : ''}</span>
-      {visibleFiles.length > 0 && <ul className="connected-pulse-attachments">{visibleFiles.map((a, i) => <li key={i}><span>{a.title}{a.ocr ? ` · text read by OCR, ${a.ocr.confidence}% confidence${a.ocr.low ? ': check it against the picture' : ''}` : ''}{a.roster ? ` · class list, ${a.roster.students.length} students` : a.text.length > CHAT_REFERENCE ? ' · long file: chat reads the first 18,000 characters' : ''}</span><button aria-label={`Remove ${a.title}`} onClick={() => { setAttachments(previous => previous.filter((_, index) => i !== index)); setContextFiles(previous => previous.filter(file => file.fileName !== a.fileName)) }}><X size={13} /></button></li>)}</ul>}
+      {visibleFiles.length > 0 && <ul className="connected-pulse-attachments">{visibleFiles.map((a, i) => <li key={i}><span>{a.title}{a.ocr ? ` · text read by OCR, ${a.ocr.confidence}% confidence${a.ocr.low ? ': check it against the picture' : ''}` : ''}{a.teachingLoad ? ` · teaching load, ${a.teachingLoad.entries.length} class${a.teachingLoad.entries.length===1?'':'es'}` : a.roster ? ` · class list, ${a.roster.students.length} students` : a.text.length > CHAT_REFERENCE ? ' · long file: chat reads the first 18,000 characters' : ''}</span><button aria-label={`Remove ${a.title}`} onClick={() => { setAttachments(previous => previous.filter((_, index) => i !== index)); setContextFiles(previous => previous.filter(file => file.fileName !== a.fileName)) }}><X size={13} /></button></li>)}</ul>}
       <PulseVoice voice={voice} />
       <form className="connected-pulse-form" onSubmit={event => { event.preventDefault(); if (!voice.hearing) { voice.stop(); void send() } }}>
         <input ref={fileRef} type="file" hidden multiple accept={CHAT_UPLOAD_ACCEPT} onChange={e => { void attachFiles(Array.from(e.target.files || [])); e.target.value = '' }} />

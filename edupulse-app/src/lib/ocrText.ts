@@ -1,6 +1,19 @@
 // Pure helpers for OCR text. Kept free of browser APIs so they are unit-tested in Node.
 
-export type OcrPage = { page: number; text: string; confidence: number }
+export type OcrGrid = { vertical:number[]; horizontal:number[] }
+export type OcrPage = { page: number; text: string; confidence: number; words?: {text:string;x0:number;x1:number;y0:number;y1:number;baseline?:number}[]; grid?:OcrGrid }
+/** Ruled form lines in the rendered scan. Text never supplies invented cell boundaries. */
+export function scannedTableGrid(data:Uint8ClampedArray,width:number,height:number):OcrGrid {
+  const dark=(x:number,y:number)=>{const i=(y*width+x)*4;return data[i]+data[i+1]+data[i+2]<420&&data[i+3]>128}
+  const centers=(values:number[])=>{const groups:number[][]=[];for(const n of values){const last=groups.at(-1);if(last&&n-last.at(-1)!<4)last.push(n);else groups.push([n])}return groups.map(g=>Math.round(g.reduce((s,n)=>s+n,0)/g.length))}
+  const rows:number[]=[]
+  for(let y=0;y<height;y++){let count=0;for(let x=0;x<width;x++)if(dark(x,y))count++;if(count>width*.55)rows.push(y)}
+  const horizontal=centers(rows)
+  if(horizontal.length<3)return {horizontal:[],vertical:[]}
+  const top=horizontal[0],bottom=horizontal.at(-1)!,cols:number[]=[]
+  for(let x=0;x<width;x++){let count=0;for(let y=top;y<=bottom;y++)if(dark(x,y))count++;if(count>(bottom-top)*.75)cols.push(x)}
+  return {horizontal,vertical:centers(cols)}
+}
 export type OcrSummary = { pages: number; read: number; blank: number[]; confidence: number; low: { page: number; confidence: number }[] }
 
 /** Pages whose OCR confidence is below this are named in the review so the instructor checks them. */

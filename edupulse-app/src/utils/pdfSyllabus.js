@@ -1,4 +1,5 @@
 import { pdfLines, pdfPathBoxes, readCourseInformation, readCourseDetails, readRuledOutline, readRuledPolicies, readInstitutionalContext } from './pdfTableLayout'
+import { readTeachingLoadLayouts, ocrLoadLayout } from './teachingLoad'
 /** Keep PDF lines and table columns instead of joining the whole page into one paragraph.
  * @param {File} file @param {(message: string) => void} [onProgress]
  */
@@ -28,7 +29,10 @@ export async function readPdfSyllabus(file, onProgress = () => {}) {
       signal: AbortSignal.timeout(300000),
       onProgress: progress => onProgress(progress.page ? `Reading scanned PDF page ${progress.page} with OCR…` : progress.status),
     })
-    for (const page of result.pages) pages[page.page - 1] = page.text
+    for (const page of result.pages) {
+      pages[page.page - 1] = page.text
+      layouts[page.page-1] = ocrLoadLayout(page.words||[],page.page,page.grid,page.text)
+    }
     scannedPages = result.pages.length
   }
   const text = pages.join('\n')
@@ -36,5 +40,7 @@ export async function readPdfSyllabus(file, onProgress = () => {}) {
   if (text.length > 2_000_000) throw new Error('The extracted document is too large.')
   const table = readRuledOutline(layouts)
   if (scannedPages) table.warnings.push('OCR text needs comparison with the original scan, especially tables and mathematical notation.')
-  return { text, scannedPages, ...table, courseInformation:readCourseInformation(layouts), courseDetails:readCourseDetails(layouts), policies: readRuledPolicies(layouts), institutionalContext: readInstitutionalContext(layouts) }
+  const teachingLoad = readTeachingLoadLayouts(layouts)
+  if (teachingLoad && scannedPages) teachingLoad.warnings.push('OCR was used. Compare every extracted row and column with the original before confirming the import.')
+  return { text, scannedPages, teachingLoad, ...table, courseInformation:readCourseInformation(layouts), courseDetails:readCourseDetails(layouts), policies: readRuledPolicies(layouts), institutionalContext: readInstitutionalContext(layouts) }
 }

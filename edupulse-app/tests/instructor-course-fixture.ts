@@ -18,7 +18,7 @@ export async function instructorCourseUI(page: Page) {
   fixture.records.deliverySchedules = [{ course_id:fixture.records.courses[0].id,instructor_id:fixture.records.courses[0].instructor_id!,syllabus_id:syllabus.id,block_section:'BSIT-1A',revision:1,updated_at:'2026-11-01T00:00:00Z',windows:[1,2,3,9].map(week=>({week,opens_at:new Date(Date.UTC(2026,10,6+(week-1)*7,23,30)).toISOString(),closes_at:null})) }]
   fixture.records.publications[0].content = material.content
   fixture.records.accesses = [{ publication_id: fixture.records.publications[0].id, student_email: 'ui.fixture@example.invalid', first_opened_at: '2026-11-01T00:00:00Z' }]
-  fixture.records.institutional!.push({ kind: 'courses', record_key: 'IT 201', data: { CourseCode: 'IT 201', CourseTitle: 'Algorithms', Units: '3', YearLevel: '2', Semester: '1' } }, { kind: 'loads', record_key: 'IT 201|BSIT-2A|1', data: { CourseCode: 'IT 201', InstructorID: fixture.records.courses[0].instructor_id!, Block: 'BSIT-2A', Semester: '1' } })
+  fixture.records.institutional!.push({ kind: 'courses', record_key: 'IT 201', data: { CourseCode: 'IT 201', CourseTitle: 'Algorithms', Units: '3', YearLevel: '2', Semester: '1' } }, { kind: 'loads', record_key: 'IT 201|BSIT-2A|1', data: { CourseCode: 'IT 201', InstructorID: fixture.records.courses[0].instructor_id!, Block: 'BSIT-2A', Semester: '1',AcademicYear:'2026-2027' } })
   const commands: { action: string; body: any }[] = [], forbidden: string[] = [], threads = new Map<string, any[]>()
   let failSave = false, denySource = false
   await page.route('**/api/ai?*', async route => {

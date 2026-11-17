@@ -5,12 +5,13 @@ import { useWorkspace } from '../../context/WorkspaceContext'
 import { currentAttempts } from '../academic/academicData'
 import { instructorCourses, instructorRecords, syllabusForCourse, courseStudentCount } from '../../utils/instructorCourses'
 import SummaryCard from '../ui/SummaryCard'
+import {CURRENT_LOAD_TERM,recordsForLoadTerm} from '../../utils/loadTerms'
 import { SkeletonKPI } from '../ui/LoadingSkeleton'
 import './instructor-courses.css'
 
 export default function InstructorOverview({ data, loaded, status, actions }) {
   const { user } = useAuth(), { syllabi } = useWorkspace()
-  const courses = instructorCourses(data, user.id, syllabi), records = instructorRecords(data, courses)
+  const courses = instructorCourses(recordsForLoadTerm(data,CURRENT_LOAD_TERM), user.id, syllabi), records = instructorRecords(data, courses)
   const attempts = currentAttempts(records).filter(item => item.grading_status !== 'pending_review' && item.max_score > 0)
   const total = attempts.reduce((sum, item) => ({ score: sum.score + item.score, maximum: sum.maximum + item.max_score }), { score: 0, maximum: 0 })
   const materials = records.publications.filter(item => item.active && item.type !== 'assessment' && (!item.release_at || new Date(item.release_at).getTime() <= Date.now()))

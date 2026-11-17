@@ -1,5 +1,5 @@
 .overlay-backdrop.page-modal-overlay { padding:16px; }
-.overlay-backdrop.page-modal-overlay > .page-modal { display:flex; flex-direction:column; width:min(1600px,100%); max-width:1600px; height:calc(100dvh - 32px); max-height:calc(100dvh - 32px) !important; padding:0; overflow:hidden; }
+.overlay-backdrop.page-modal-overlay > .page-modal { display:flex; flex-direction:column; width:min(1600px,100%); max-width:1600px; height:calc(100dvh - 32px); max-height:calc(100dvh - 32px) !important; padding:0; overflow:hidden; background:var(--white);color:var(--gray-900); }
 .page-modal-header { display:flex; align-items:center; justify-content:space-between; gap:20px; flex-shrink:0; padding:20px 24px; border-bottom:1px solid var(--gray-200); background:var(--white); }
 .page-modal-header > div { min-width:0; }
 .page-modal-header h2 { margin:0; font-size:1.25rem; line-height:1.4; overflow-wrap:anywhere; }

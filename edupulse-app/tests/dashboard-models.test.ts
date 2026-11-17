@@ -28,7 +28,7 @@ const records = (): AcademicData => ({
     { publication_id: 'a2', source_version: 'v1', student_email: 'three@example.invalid', score: 0, max_score: 10, submitted_at: '2026-11-01T00:00:00Z', grading_status: 'pending_review' },
   ],
   accesses: [],
-  institutional: [{ kind: 'courses', record_key: 'IT 105', data: { CourseCode: 'IT 105' } }, { kind: 'loads', record_key: 'IT 104|A|1', data: { CourseCode: 'IT 104' } }],
+  institutional: [{ kind: 'courses', record_key: 'IT 105', data: { CourseCode: 'IT 105' } }, { kind: 'loads', record_key: 'IT 104|A|1', data: { CourseCode: 'IT 104',InstructorID:'i1',AcademicYear:'2026-2027',Semester:'1st Semester' } }],
   faculty: [{ id: 'i2', name: 'Unloaded instructor', email: 'i2@example.invalid' }],
   events: [
     { id: 'e1', kind: 'publication', title: 'Variables lesson', detail: 'Published week 1', created_at: '2026-11-02T10:00:00Z' },
@@ -76,11 +76,11 @@ test('empty account records stay empty instead of showing preview values', () =>
 
 test('account management dashboard reads courses, imported records and faculty', () => {
   const model = accountManagementModel(records(), NOW)
-  // Released: IT 102-104 plus imported IT 105. Loaded: IT 102 and IT 103 have instructors, IT 104 has an imported load.
-  assert.deepEqual(model.kpis, { released: 4, loaded: 3, approved: 1, notRouted: 2 })
+  // Existing syllabi retain their owners; only IT 104 has a current recorded teaching load.
+  assert.deepEqual(model.kpis, { released: 4, loaded: 1, approved: 1, notRouted: 2 })
   assert.deepEqual(model.stations.map(s => s.count), [1, 1, 0, 0, 1])
   assert.deepEqual(model.delivery, [{ name: 'IT 102', materials: 1, assessments: 3 }])
-  assert.deepEqual(model.faculty.map(f => [f.name, f.loads, f.active, f.behind]), [['Unloaded instructor', 0, 0, 0], ['Account instructor', 2, 1, 1]])
+  assert.deepEqual(model.faculty.map(f => [f.name, f.loads, f.active, f.behind]), [['Unloaded instructor', 0, 0, 0], ['Account instructor', 1, 1, 1]])
   assert.deepEqual(model.courses.map(c => [c.code, c.status, c.instructor]), [['IT 102', 'active', 'Account instructor'], ['IT 103', 'checked', 'Account instructor'], ['IT 104', 'drafted', 'Not assigned']])
   assert.deepEqual(model.activity.map(a => [a.kind, a.actor, a.action]), [['published', 'Variables lesson', 'Published week 1'], ['syllabus', 'IT 102', 'syllabus is now Active']])
 })

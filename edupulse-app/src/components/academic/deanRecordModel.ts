@@ -56,7 +56,7 @@ export function deanRecords(data:AcademicData, now=Date.now()) {
   }
   const released=data.publications.filter(item=>byCourse.has(item.course_id)&&item.active&&(!item.release_at||new Date(item.release_at).getTime()<=now))
   const attempts=currentAttempts({...data,publications:released}),accesses=data.accesses.filter(access=>released.some(pub=>pub.id===access.publication_id))
-  const loadedCodes=new Set([...data.courses.filter(course=>course.instructor_id).map(course=>text(course.course_code).toLowerCase()),...(data.institutional||[]).filter(row=>row.kind==='loads').map(row=>text(row.data.CourseCode).toLowerCase())].filter(Boolean))
+  const loadedCodes=new Set((data.institutional||[]).filter(row=>row.kind==='loads').map(row=>text(row.data.CourseCode).toLowerCase()).filter(Boolean))
   const people=new Map((data.faculty||[]).map(person=>[person.id,{id:person.id,name:person.name||person.email||person.id}]))
   for(const course of data.courses)if(course.instructor_id&&!people.has(course.instructor_id))people.set(course.instructor_id,{id:course.instructor_id,name:course.instructor_name||course.instructor_id})
   const activity=(courseIds:Set<string>,studentEmail?:string)=>{
@@ -71,12 +71,14 @@ export function deanRecords(data:AcademicData, now=Date.now()) {
 // ---- Dean course loading and account directory -------------------------------------------
 export type DeanInstructor = { id:string; name:string; email:string; status:'active'|'suspended'; employee_id:string; has_masters:boolean|null; degree:string; specialization:string; last_sign_in_at?:string|null }
 export type DeanAccount = { id:string; student_number:string; name:string; surname:string; first_name:string; middle_name:string; email:string; year_level:number|null; program:string; status:'active'|'suspended'; block:string|null; type:string|null; last_sign_in_at?:string|null }
-export type LoadRow = { key:string; code:string; block:string; semester:string; instructorId:string; instructorName:string; hasMasters:string; specialization:string }
+export type LoadRow = { key:string; code:string; block:string; semester:string; academicYear:string; instructorId:string; instructorName:string; hasMasters:string; specialization:string;time:string;days:string;room:string;units:string;lecture:string;lab:string;hours:string;computedHours:string;students:string;program:string;source:string;degree:string;sourceCode:string;sourceTitle:string;sourceInstructor:string;sourceYear:string;sourceSemester:string }
 type Directory = { instructors?:DeanInstructor[]; students?:DeanAccount[]; irregular?:Record<string,string>[] }
 const key = (value:unknown) => text(value).toUpperCase().replace(/[\s-]+/g,'')
 
 export function loadRows(data:AcademicData):LoadRow[] {
-  return (data.institutional||[]).filter(row=>row.kind==='loads').map(row=>({key:row.record_key,code:text(row.data.CourseCode),block:text(row.data.Block),semester:text(row.data.Semester),
+  return (data.institutional||[]).filter(row=>row.kind==='loads').map(row=>({key:row.record_key,code:text(row.data.CourseCode),block:text(row.data.Block),semester:text(row.data.Semester),academicYear:text(row.data.AcademicYear),
+    sourceCode:text(row.data.SourceSubjectCode),sourceTitle:text(row.data.SourceCourseTitle),sourceInstructor:text(row.data.SourceInstructor),sourceYear:text(row.data.SourceAcademicYear),sourceSemester:text(row.data.SourceSemester),
+    time:text(row.data.ScheduleTime),days:text(row.data.ScheduleDays),room:text(row.data.Room),units:text(row.data.Units),lecture:text(row.data.LectureUnits),lab:text(row.data.LabUnits),hours:text(row.data.DeclaredHours),computedHours:text(row.data.ComputedHours),students:text(row.data.StudentCount),program:text(row.data.Program),degree:text(row.data.HighestDegree),source:[row.data.SourceFile,row.data.SourcePage?`page ${row.data.SourcePage}`:''].filter(Boolean).join(' · '),
     instructorId:text(row.data.InstructorID),instructorName:text(row.data.InstructorName)||text(row.data.InstructorID),hasMasters:text(row.data.HasMasters),specialization:text(row.data.Specialization)}))
     .sort((a,b)=>a.code.localeCompare(b.code)||a.block.localeCompare(b.block))
 }
