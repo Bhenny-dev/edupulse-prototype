@@ -258,6 +258,48 @@ const VIEW_NAMES = [
 ]
 const requestedView = message => VIEW_NAMES.find(([, words]) => words.test(message))?.[0]
 
+// "Open / redirect me to / log in as the account of <person>". Only the verified System Admin may enter
+// another person's account view, so the name is read by rules here and checked against the live directory later.
+const ROLE_WORDS = String.raw`associate\s+deans?|assoc\.?\s+deans?|program\s+coordinators?|instructors?|teachers?|faculty|professors?|deans?|students?|learners?`
+const ACCOUNT_ROLES = [['associate_dean', /^(?:assoc|associate|program)/i], ['instructor', /^(?:instructor|teacher|faculty|professor)/i], ['dean', /^dean/i], ['student', /^(?:student|learner)/i]]
+const NOT_A_PERSON = new Set(['mo', 'ang', 'ng', 'sa', 'ako', 'akin', 'ko', 'nga', 'lang', 'naman', 'ba', 'ni', 'kay', 'si', 'mga', 'as', 'to', 'of', 'for', 'the', 'a', 'an', 'this', 'that', 'my', 'our', 'your', 'his', 'her', 'their', 'its', 'me', 'us', 'him', 'them', 'it', 'one', 'someone', 'somebody', 'anyone', 'person', 'people', 'user', 'users', 'account', 'accounts', 'profile', 'view', 'dashboard', 'student', 'students', 'learner', 'learners', 'instructor', 'instructors', 'teacher', 'teachers', 'faculty', 'dean', 'deans', 'associate', 'program', 'coordinator', 'coordinators', 'admin', 'administrator', 'system', 'self', 'own', 'current', 'selected', 'another', 'other', 'different', 'any', 'each', 'all', 'every'])
+const PERSON = String.raw`([\p{L}\p{N}][\p{L}\p{N}.'’@_-]*(?:\s+[\p{L}\p{N}][\p{L}\p{N}.'’@_-]*){0,7})`
+const ACCOUNT_THING = String.raw`(?:(?:authenticated|logged-?in|actual|real|own)\s+)*(?:account|ui|interface|dashboard|workspace|portal|view|log-?in|(?:authenticated|logged-?in)\s+profile)`
+const ACCOUNT_VERB = /\b(?:open|redirect|take|bring|send|switch|go|navigate|show|see|view|enter|access|visit|log\s*in|login|sign\s*in|impersonate|buksan|ipakita|dalhin|ilipat|pasukin)\b/gi
+const ACCOUNT_OF = new RegExp(String.raw`^(?:(${ROLE_WORDS})(?:['’]s)?\s+)?${ACCOUNT_THING}\s+(?:of|for|belonging\s+to|ni|kay)\s+(?:the\s+)?${PERSON}`, 'iu')
+const ACCOUNT_POSSESSIVE = new RegExp(String.raw`^${PERSON}['’]s?\s+(?:(${ROLE_WORDS})\s+)?${ACCOUNT_THING}\b`, 'iu')
+const ACCOUNT_NAMED = new RegExp(String.raw`^${PERSON}\s+(?:(?:authenticated|logged-?in)\s+)?(?:account|log-?in)\b`, 'iu')
+const ACCOUNT_AS = new RegExp(String.raw`^as\s+(?:the\s+)?${PERSON}`, 'iu')
+const PERSON_ONLY = new RegExp(String.raw`^${PERSON}`, 'iu')
+const accountParts = (rest, action) => {
+  let match = ACCOUNT_OF.exec(rest)
+  if (match) return [match[2], match[1]]
+  if ((match = ACCOUNT_POSSESSIVE.exec(rest))) return [match[1], match[2]]
+  if ((match = ACCOUNT_NAMED.exec(rest)) && match[1].includes(' ')) return [match[1]]
+  if ((match = ACCOUNT_AS.exec(rest))) return [match[1]]
+  if (action === 'impersonate' && (match = PERSON_ONLY.exec(rest))) return [match[1]]
+  if (action === 'switch' && (match = PERSON_ONLY.exec(rest)) && match[1].includes(' ')) return [match[1]]
+  return null
+}
+/** { name, role? } when the message asks to open the account view of a named person, else null. */
+export function accountRequest(message) {
+  const text = String(message || '').replace(/\s+/g, ' ').trim()
+  if (text.length < 8 || text.length > 300) return null
+  for (const verb of text.matchAll(ACCOUNT_VERB)) {
+    const rest = text.slice(verb.index + verb[0].length).replace(/^\s*(?:(?:me|us|mo)\b\s*)?(?:(?:to|into|in|on|up|through|at|sa)\b\s*)?(?:(?:the|a|an|my|ang)\b\s*)?/i, '')
+    const parts = accountParts(rest, fold(verb[0]).replace(/\s+/g, ''))
+    if (!parts) continue
+    const raw = String(parts[0]), name = raw.replace(/\s+(?:and|then|so|because|but|please|pls|po|para|tapos|kasi|now|as|thanks?|thank\s+you)\b.*$/i, '').replace(/[.'’-]+$/, '').trim()
+    const tokens = name.split(' ').filter(Boolean), real = tokens.filter(token => !NOT_A_PERSON.has(fold(token).replace(/[^a-z0-9]/g, '')))
+    // A role, a pronoun or a page name ("the dashboard of the dean", "open the view of student monitoring") is not a person.
+    if (!real.length || real.every(token => PAGES.some(page => page.words.test(token)))) continue
+    const roleWord = parts[1] || new RegExp(String.raw`\bas\s+(?:an?\s+|the\s+)?(${ROLE_WORDS})\b`, 'i').exec(raw)?.[1]
+    const role = roleWord && ACCOUNT_ROLES.find(([, words]) => words.test(fold(roleWord)))?.[0]
+    return { name: name.slice(0, 120), ...(role ? { role } : {}) }
+  }
+  return null
+}
+
 /** Keep a named account view with its destination. Only the verified owner may switch views. */
 export function pageFor(message, role, { canSwitchRoles = false, history = [] } = {}) {
   const correction = /^(?:please\s+)?(?:no\b|not\s+(?:mine|my)|i\s+meant\b|instead\b)/i.test(message.trim())
@@ -289,6 +331,9 @@ export function planOperator({ message, attachments = [], role, canSwitchRoles =
   let chat = Boolean(text)
   const mentioned = findCourseMentions(text, catalog)
   const canLibrary = role !== 'guest'
+
+  const account = !attachments.length && !mentioned.length && accountRequest(text)
+  if (account) return { proposals: [canSwitchRoles ? { type: 'open-account', ...account } : { type: 'notice', text: `Opening another person’s account view is limited to the verified System Admin, so I did not search for it. To see whether ${account.name} is in the records your role can open, ask “Who is ${account.name}?”.` }], chat: false, task: 'auto', mentioned }
 
   if (rosters.length) {
     const asksAbout = SEARCH.test(text) || /\b(how\s+many|who|count|list)\b/i.test(text)

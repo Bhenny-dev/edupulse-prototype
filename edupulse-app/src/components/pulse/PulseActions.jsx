@@ -4,6 +4,7 @@ import { mergeStudents } from '../../utils/rosterParser'
 import { rankCourses, refineCourses } from '../../agents/operator'
 import PulseToolAction from './PulseToolActions'
 import SyllabusFollowups from './SyllabusFollowups'
+import { ROLE_TITLES } from '../../lib/authRoles'
 
 // Action cards for the Operator's proposals (src/agents/operator.js). A card that
 // changes data shows exactly what will happen and runs only when the user presses
@@ -225,6 +226,26 @@ function StudyOptions({ proposal, ctx }) {
   </section>
 }
 
+const accountDetail = account => [ROLE_TITLES[account.role], account.student_number || account.email, account.year_level ? `Year ${account.year_level}` : ''].filter(Boolean).join(' · ')
+
+// Several accounts fit the name Pulse was given: the System Admin picks one, then its view opens.
+function AccountChoices({ proposal, ctx }) {
+  const [opening, setOpening] = useState(''), [error, setError] = useState('')
+  const open = async account => {
+    setOpening(account.id); setError('')
+    try { await ctx.openAccount(account) }
+    catch (failure) { setError(failure.message); setOpening('') }
+  }
+  return <section className="pulse-action" aria-label="Matching accounts">
+    <p className="pulse-action-note">{proposal.text}</p>
+    <div className="pulse-action-results"><ul>{proposal.accounts.map(account => <li key={account.id}>
+      <div><strong>{account.name}</strong><span>{accountDetail(account)}</span>{account.program && <small>{account.program}</small>}</div>
+      <div className="ai-actions"><button type="button" className="btn btn-secondary btn-sm" disabled={Boolean(opening)} onClick={() => void open(account)} aria-label={`Open ${account.name}`}>{opening === account.id ? <Loader2 size={13} className="spin" /> : <ExternalLink size={13} />} Open view</button></div>
+    </li>)}</ul></div>
+    {error && <p className="pulse-action-note" role="alert">{error}</p>}
+  </section>
+}
+
 export default function PulseAction({ proposal, ctx }) {
   if (proposal.type === 'confirm-navigation') return <section className="pulse-action"><p>{proposal.text}</p><button className="btn btn-secondary btn-sm" onClick={() => ctx.navigate(proposal.path, proposal.viewRole)}>Open {proposal.label}</button></section>
   if(['syllabus-followups','open-editable-syllabus'].includes(proposal.type))return <SyllabusFollowups proposal={proposal} ctx={ctx}/>
@@ -235,5 +256,6 @@ export default function PulseAction({ proposal, ctx }) {
   if (proposal.type === 'search') return <SearchResults proposal={proposal} ctx={ctx} />
   if (proposal.type === 'study') return <StudyOptions proposal={proposal} ctx={ctx} />
   if (proposal.type === 'navigate') return <p className="pulse-action-note" role="status">Opened <strong>{proposal.label}</strong>.</p>
+  if (proposal.type === 'account-choices') return <AccountChoices proposal={proposal} ctx={ctx} />
   return <Notice proposal={proposal} ctx={ctx} />
 }

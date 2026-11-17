@@ -174,8 +174,8 @@ export function AuthProvider({ children }) {
   }, [user,cancelRestore,publishUser])
 
   const closePicker = useCallback(() => { pickerVersion.current++;clearAdminPicker();pendingSwitch.current?.(false); pendingSwitch.current = null; setAccountPicker(null) }, [])
-  const selectAccount = useCallback(async (account) => {
-    const base = principal.current,role=accountPicker,version=restoring.current.version,selection=pickerVersion.current
+  const selectAccount = useCallback(async (account, accountRole = accountPicker) => {
+    const base = principal.current,role=accountRole,version=restoring.current.version,selection=pickerVersion.current
     const valid=()=>!signingOut.current&&restoring.current.ready&&restoring.current.version===version&&pickerVersion.current===selection&&principal.current?.id===base?.id&&canSwitchRole(principal.current,role)
     if (!valid()) throw new Error('Sign in again as the system admin.')
     if(!account?.id)throw new Error('Choose a registered account to open its view.')
@@ -192,6 +192,8 @@ export function AuthProvider({ children }) {
     if (!selected) void recordAudit(base, 'view_switch', 'success', ROLE_TITLES[role])
     pendingSwitch.current?.(true); pendingSwitch.current = null; setAccountPicker(null)
   }, [accountPicker, user?.supportSubject,cancelRestore,publishUser])
+  /** Opens one named account's view directly (Pulse), with the same checks as choosing it in the account picker. */
+  const openAccount = useCallback(account => selectAccount(account, account?.role), [selectAccount])
   const switchRole = useCallback(async (role) => {
     if (!canSwitchRole(user, role)) return false
     if (role === 'admin') {
@@ -212,7 +214,7 @@ export function AuthProvider({ children }) {
   const canAccess = useCallback((requiredRoles) => Boolean(user && (requiredRoles === 'all' || requiredRoles.includes(user.role))), [user])
 
   return (
-    <AuthContext.Provider value={{ user, login, signIn, signInWithGoogle, logout, updateProfile, authLoading, authRestoreError, retryRestoration:()=>restoreSession(sessionRef.current), returnToAdmin, canReturnToAdmin:Boolean(principal.current?.canSwitchRoles), switchRole, hasPermission, canAccess, roleHistory, ROLE_PERMISSIONS }}>
+    <AuthContext.Provider value={{ user, login, signIn, signInWithGoogle, logout, updateProfile, authLoading, authRestoreError, retryRestoration:()=>restoreSession(sessionRef.current), returnToAdmin, canReturnToAdmin:Boolean(principal.current?.canSwitchRoles), switchRole, openAccount, hasPermission, canAccess, roleHistory, ROLE_PERMISSIONS }}>
       {children}
       {!authLoading && accountPicker && user?.canSwitchRoles && <AccountSwitchModal key={accountPicker} role={accountPicker} onSelect={selectAccount} onClose={closePicker} />}
     </AuthContext.Provider>

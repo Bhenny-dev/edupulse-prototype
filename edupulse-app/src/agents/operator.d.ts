@@ -15,6 +15,7 @@ export type Proposal =
   | { type: 'search'; query: string; fallbackToChat?: boolean; results?: SearchHit[] }
   | { type: 'navigate' | 'guide'; path: string; label: string; viewRole?: string }
   | { type: 'notice'; text: string; attach?: boolean; path?: string; pathLabel?: string }
+  | { type: 'open-account'; name: string; role?: 'student' | 'instructor' | 'dean' | 'associate_dean' }
 export type SearchHit = { group: string; score: number; title: string; detail: string; source: string; path?: string | null; documentId?: string; id?: string }
 export type LibraryDocument = { id: string; title: string; file_name?: string | null; chunks: number; page_count?: number | null; quality?: { course?: string } }
 export type ContentItem = { title?: string; content?: { title?: string }; week: number; type: string; status: string; syllabusId: string }
@@ -29,5 +30,6 @@ export function refineCourses(text: string, ranked: CourseMatch[], catalog: Cata
 export function syllabusReference(course: CatalogCourse): { title: string; text: string } | null
 export function searchQuery(message: string): string
 export function searchRecords(query: string, data: { role?: string; userId?: string | number; catalog?: CatalogCourse[]; registrations?: Registration[]; rosters?: { fileName: string; students: RosterStudent[] }[]; syllabi?: SyllabusRecord[]; content?: Record<string, ContentItem>; documents?: LibraryDocument[] }): SearchHit[]
+export function accountRequest(message: string): { name: string; role?: 'student' | 'instructor' | 'dean' | 'associate_dean' } | null
 export function pageFor(message: string, role?: string, options?: { canSwitchRoles?: boolean; history?: { role?: string; content?: string; text?: string }[] }): Page | null
 export function planOperator(input: { message: string; attachments?: Attachment[]; role?: string; canSwitchRoles?: boolean; catalog?: CatalogCourse[]; currentCourse?: CatalogCourse | null; history?: { role?: string; content?: string; text?: string }[] }): { proposals: Proposal[]; chat: boolean; task: 'auto' | 'summarize' | 'draft'; mentioned: CatalogCourse[] }

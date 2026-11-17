@@ -17,7 +17,9 @@ import { contentGenerationRequest, navigationCorrection } from '../../lib/system
 import { informationalQuestion } from '../../lib/rag/lookup'
 import { getAgentForZone, intentsForRole } from '../../agents'
 import { approvalResumeStep, prepareIntent, previewAgents, stepReadiness, stepTarget } from '../../agents/guidance'
-import { courseCatalog, findCourseMentions, pageFor, PAGES, planOperator, searchRecords, syllabusReference } from '../../agents/operator'
+import { accountRequest, courseCatalog, findCourseMentions, pageFor, PAGES, planOperator, searchRecords, syllabusReference } from '../../agents/operator'
+import { findAccounts, findRegisteredStudents } from '../../lib/accountSearch'
+import { ROLE_TITLES } from '../../lib/authRoles'
 import { conversationWindow } from '../../agents/skills'
 import { applyEditorProposal, applySyllabusDraft,currentEditor, currentEditorSources, literalEdit, previewEditorOutline } from '../../agents/editorTools'
 import {continueSyllabusTask,editableSyllabusPath,explicitOutlineTask,isWeekContinuation,syllabusTask,unfinishedSyllabusWeeks} from '../../agents/syllabusConversation'
@@ -54,7 +56,7 @@ const CHAT_REFERENCE = 18000
 const chatReference = a => ({ title: a.text.length > CHAT_REFERENCE ? `${a.title} (first ${CHAT_REFERENCE.toLocaleString()} characters)` : a.title, text: a.text.slice(0, CHAT_REFERENCE) })
 
 export default function Pulse() {
-  const { user, switchRole } = useAuth()
+  const { user, switchRole, openAccount } = useAuth()
   const { syllabi, registrations, commit } = useWorkspace()
   const { store: content } = useContentStore()
   const ai = useAI()
@@ -334,6 +336,31 @@ export default function Pulse() {
     }
     navigate(path)
   }
+  const openAccountView = async account => {
+    setOfficeOpen(false)
+    await openAccount(account)
+    navigate('/dashboard')
+  }
+  // Finds the named person in the System Admin account directory and opens their view, or says what is missing.
+  const resolveAccount = async (proposal, signal) => {
+    const { name } = proposal
+    const found = await findAccounts((accountRole, q) => aiRequest('support', 'GET', undefined, signal, { query: { role: accountRole, q } }), name, { role: proposal.role })
+    signal.throwIfAborted()
+    if (found.matches.length === 1) {
+      const [account] = found.matches
+      // Opening an account remounts the app under that account, so the panel closes; this note is for the case where it does not.
+      try { await openAccountView(account); Object.assign(proposal, { type: 'navigate', path: '/dashboard', label: `${ROLE_TITLES[account.role]} view of ${account.name}` }) }
+      catch (error) { Object.assign(proposal, { type: 'notice', text: `I found ${account.name} but could not open that account: ${error.message}` }) }
+    } else if (found.matches.length) Object.assign(proposal, { type: 'account-choices', accounts: found.matches, text: `${found.matches.length} accounts match “${name}”. Choose the one to open.` })
+    else {
+      // A class-list student who never signed up has a record but no account to open; say so instead of "not found".
+      const registered = await findRegisteredStudents(q => aiRequest('students', 'GET', undefined, signal, { query: { q } }), name).catch(() => [])
+      signal.throwIfAborted()
+      if (registered.length) Object.assign(proposal, { type: 'notice', text: `${registered.map(student => `${student.name} (${student.student_number})`).join(', ')} ${registered.length === 1 ? 'is' : 'are'} on the registered student list, but no confirmed EduPulse account matches, so there is no view to open. A student gets an account by signing up with the email in the class list.` })
+      else if (found.closest.length) Object.assign(proposal, { type: 'account-choices', accounts: found.closest, text: `No account is named “${name}”. These are the closest names:` })
+      else Object.assign(proposal, { type: 'notice', text: `No student, instructor, dean or program coordinator account matches “${name}”. Check the spelling, or give a student number or email address.` })
+    }
+  }
   const prepareEdit = async (proposal, signal) => {
     const exact = proposal.editor && literalEdit(proposal.editor,proposal.request,proposal.section||'all')
     if(exact) return {patch:scopedEditorPatch(proposal.editor, exact, proposal.target?.path, proposal.scopeFields),generated:false,requiresConfirmation:true}
@@ -355,7 +382,7 @@ export default function Pulse() {
     return result.patch ? { ...result, patch: scopedEditorPatch(proposal.editor, result.patch, result.structural ? undefined : proposal.target?.path, proposal.scopeFields) } : result
   }
   const tracked = async (buddy, label, fn) => { const ticket=office.begin(buddy,label); try { const result=await fn();office.finish(ticket,'done',label+' completed. See its receipt in Pulse.');return result } catch(error) {office.finish(ticket,'error',label+' did not complete.');throw error} }
-  const actionContext = { role: user?.role, userId: user?.id, catalog, registrations, content, navigate: navigateAllowed, runRegister: input=>tracked('ro','Save confirmed class list',()=>runRegister(input)), undoRegister: input=>tracked('ro','Undo registration',()=>undoRegister(input)), runFile: input=>tracked('luma','File material in library',()=>runFile(input)), runGenerate: (input,signal)=>tracked('quill','Generate and save courseware drafts',()=>runGenerate(input,signal)), similarity, prepareEdit,
+  const actionContext = { role: user?.role, userId: user?.id, catalog, registrations, content, navigate: navigateAllowed, openAccount: openAccountView, runRegister: input=>tracked('ro','Save confirmed class list',()=>runRegister(input)), undoRegister: input=>tracked('ro','Undo registration',()=>undoRegister(input)), runFile: input=>tracked('luma','File material in library',()=>runFile(input)), runGenerate: (input,signal)=>tracked('quill','Generate and save courseware drafts',()=>runGenerate(input,signal)), similarity, prepareEdit,
     openEditableSyllabus:id=>{const syllabus=syllabi.find(item=>item.id===id&&!item.sample&&!item.suspended);if(user?.role!=='instructor'||!syllabus)throw new Error('This editable syllabus is no longer available in your workspace.');setSyllabusReader(null);return navigateAllowed(editableSyllabusPath(id))},
     continueSyllabus:(reference,message)=>{const editor=currentEditor();if(user?.role!=='instructor'||editor?.kind!=='syllabus'||editor.data.id!==reference.id||editor.data.courseCode!==reference.courseCode)throw new Error('Open this editable syllabus before continuing.');return send(message)},
     finishTicket: (id,status='done') => office.finish(id,status,status==='done'?'Confirmed tool completed. Inspect its receipt in Pulse.':status==='working'?'Confirmed tool is running.':status==='error'?'Tool did not finish; inspect the error in Pulse.':'Tool cancelled; no change made.'),
@@ -422,8 +449,9 @@ export default function Pulse() {
         const candidates=selected&&!mentioned.length?[selected]:syllabi.filter(item=>!item.sample&&!item.suspended&&(mentioned.length?mentioned.includes(item.courseCode):item.status==='drafted'))
         setMessages(previous=>[...previous,{id:crypto.randomUUID(),from:'pulse',mode:'actions',text:'Open an editable syllabus to continue.',proposals:candidates.length?candidates.map(item=>({type:'open-editable-syllabus',id:item.id,label:`${item.courseCode} - ${item.courseTitle}`})):[{type:'notice',text:'Open or create your syllabus in Syllabus Builder, select its course, then ask Pulse to complete the intended fields.'}]}]);office.finish(ticket,'done','Offered owned editable syllabus targets.');return
       }
-      const destination = pageFor(question, role === 'admin' && user?.canSwitchRoles ? 'instructor' : role, { canSwitchRoles: Boolean(user?.canSwitchRoles), history })
-      const work = options.skipOperator || !permitted || informational ? null : workProposal({ message: instruction, attachments: pending, role, editor, registrations: registrations.filter(item => item.uploadedBy === user?.id), catalog, section: selectedSection, target, scopeFields })
+      const accountAsk = options.skipOperator || !permitted || informational || findCourseMentions(question, catalog).length ? null : accountRequest(question)
+      const destination = accountAsk ? null : pageFor(question, role === 'admin' && user?.canSwitchRoles ? 'instructor' : role, { canSwitchRoles: Boolean(user?.canSwitchRoles), history })
+      const work = options.skipOperator || !permitted || informational || accountAsk ? null : workProposal({ message: instruction, attachments: pending, role, editor, registrations: registrations.filter(item => item.uploadedBy === user?.id), catalog, section: selectedSection, target, scopeFields })
       const draftFromSource = !informational && !target && pending.length && /\b(?:generate|create|draft|make|prepare|build)\b/i.test(question) && (/learning materials?|lessons?|lecture|courseware/i.test(question) || /^(?:please\s+)?generate\s+(?:me\s+)?(?:this|it|these)[.!?]?$/i.test(question) && /learning materials?|lessons?|lecture|courseware/i.test(history.at(-2)?.content || history.at(-1)?.content || ''))
       let plan = draftFromSource ? { proposals: [], chat: true, task: 'draft', mentioned: [] } : options.skipOperator || !permitted || informational ? { proposals: [], chat: true, task: options.task || 'auto', mentioned: findCourseMentions(question, catalog) }
         : work ? { proposals: [work], chat: false, mentioned: [] } : destination ? { proposals: [destination.denied ? { type: 'notice', text: `${destination.label} is not available for your role.` } : { type: /\b(?:guide|walkthrough|walk\s+me|step.by.step|help\s+me)\b/i.test(question) ? 'guide' : 'navigate', path: destination.path, label: destination.label, ...(destination.viewRole ? { viewRole: destination.viewRole } : {}) }], chat: false, mentioned: [] }
@@ -449,6 +477,7 @@ export default function Pulse() {
           controller.signal.throwIfAborted()
           if (result.clarification) { office.finish(proposal.ticketId,'stopped','More information is needed; no edit prepared.'); proposal.type = 'notice'; proposal.text = result.clarification } else if(proposal.editor.kind==='syllabus'&&result.patch){const applied=applySyllabusDraft(proposal.editor,result.patch,user?.role);const current=applied.after;previousSyllabusTask.current=syllabusTask(current,syllabusScope,proposal.section);office.finish(proposal.ticketId,'done','Validated draft content placed in the open syllabus form; no approval or publication.');proposal.type='syllabus-followups';proposal.reference={id:current.data.id,courseCode:current.data.courseCode};proposal.nextWeek=unfinishedSyllabusWeeks(current)[0];proposal.review={before:proposal.editor.data,after:current.data};proposal.text=['Draft fields updated. Review them and save when ready.',result.notes?.[0]].filter(Boolean).join(' ');proposal.applied=applied.fields;proposal.sources=result.sources}else if(result.previewed){proposal.type='notice';proposal.text='Your generated weeks are ready in the Course Outline preview. Use individual weeks or Use completed weeks, then review and save the syllabus.'} else { proposal.patch = result.patch; proposal.notes = result.notes; proposal.sources = result.sources; proposal.structural = Boolean(result.structural) }
         }
+        if (proposal.type === 'open-account') await resolveAccount(proposal, controller.signal)
         if (proposal.type === 'search') {
           const documents = await aiRequest('documents').then(result => result.documents, () => [])
           proposal.results = searchRecords(proposal.query, { role, userId: user?.id, catalog, registrations, rosters: pending.filter(item => item.roster).map(item => ({ fileName: item.fileName, students: item.roster.students })), syllabi, content, documents })

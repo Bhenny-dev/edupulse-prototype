@@ -8,16 +8,20 @@ export const supportAccounts = [
   { id: '55555555-5555-4555-8555-555555555555', name: 'Dana Dean Demo', role: 'dean', email: 'dean@example.invalid', department: 'College of IT', program: 'BSIT' },
   { id: '66666666-6666-4666-8666-666666666666', name: 'Casey Associate Demo', role: 'associate_dean', email: 'associate@example.invalid', department: 'College of IT', program: 'BSIT' },
 ]
+/** A class-list student who has not signed up: the account directory cannot open them, the student directory still lists them. */
+export const registeredStudents = [
+  { student_number: 'SYN-900', email: 'quinn@example.invalid', full_name: 'Quinn Registered', year_level: 2, department: 'College of Information Technology', program: 'BSIT' },
+]
 /** Synthetic UI transport. Actual SQL delegation, delivery and attribution have separate native/hosted tests. */
 export async function accountSupportUI(page: Page, role = 'admin') {
   await automaticRecordsUI(page, role)
-  const calls: { action: string; method:string; subject?: string; lookupSubject?:string; authorization?: string; operation?: string }[] = []
-  let failEnter = false, failRead = false
+  const calls: { action: string; method:string; subject?: string; lookupSubject?:string; authorization?: string; operation?: string; role?: string; q?: string }[] = []
+  let failEnter = false, failRead = false, withRegistered = false
   let resolveFailure:number|'network'=0,resolveRole:string|null=null,resolveGate:Promise<void>|null=null
   await page.route('**/api/ai?*', async route => {
     const request = route.request(), url = new URL(request.url()), action = url.searchParams.get('action') || ''
     const headers = request.headers(), body = request.method() === 'POST' ? request.postDataJSON() : null
-    calls.push({ action, method:request.method(), subject: headers['x-edupulse-subject'], lookupSubject:url.searchParams.get('subject')||undefined, authorization: headers.authorization, operation: body?.operation })
+    calls.push({ action, method:request.method(), subject: headers['x-edupulse-subject'], lookupSubject:url.searchParams.get('subject')||undefined, authorization: headers.authorization, operation: body?.operation, role: url.searchParams.get('role') || undefined, q: url.searchParams.get('q') || undefined })
     if (action === 'support') {
       if (request.method() === 'POST') {
         if (failEnter) return route.fulfill({ status: 403, json: { error: { code: 'SUPPORT_UNAVAILABLE', message: 'The selected account is no longer available.' } } })
@@ -37,6 +41,11 @@ export async function accountSupportUI(page: Page, role = 'admin') {
       const accounts = supportAccounts.filter(item => item.role === url.searchParams.get('role') && (!q || `${item.name} ${item.email} ${item.student_number}`.toLowerCase().includes(q)) && (!url.searchParams.get('year') || String(item.year_level) === url.searchParams.get('year')))
       return route.fulfill({ json: { accounts, total: accounts.length, offset: 0, pageSize: 50, departments: ['College of IT'], programs: ['BSIT'] } })
     }
+    if (action === 'students' && withRegistered) {
+      const q = url.searchParams.get('q')?.toLowerCase() || ''
+      const students = registeredStudents.filter(item => !q || `${item.full_name} ${item.student_number}`.toLowerCase().includes(q))
+      return route.fulfill({ json: { students, total: students.length, offset: 0, pageSize: 50 } })
+    }
     if (action === 'academic' && headers['x-edupulse-subject']) return route.fulfill({ json: { mode: 'cloud', courses: [], enrollments: [], publications: [], attempts: [], accesses: [], notices: [], events: [], faculty: [], institutional: [] } })
     if (action === 'operator') return route.fulfill({ json: { tool: 'chat', generated: true } })
     if (action === 'chat') {
@@ -47,7 +56,7 @@ export async function accountSupportUI(page: Page, role = 'admin') {
     if (action === 'health') return route.fulfill({ json: { version: 'synthetic-ui', ready: true, provider: 'synthetic-ui', model: 'synthetic-text-model', embeddings: false, database: { ready: true, kind: 'synthetic' }, identity: { mode: 'account', role }, message: 'Synthetic account transport' } })
     return route.fallback()
   })
-  return { calls, failEnter(value: boolean) { failEnter = value }, failRead(value: boolean) { failRead = value },
+  return { calls, failEnter(value: boolean) { failEnter = value }, failRead(value: boolean) { failRead = value }, registered(value: boolean) { withRegistered = value },
     failResolve(value:number|'network'){resolveFailure=value},resolveRole(value:string|null){resolveRole=value},
     holdResolve(){let release!:()=>void;const gate=new Promise<void>(resolve=>{release=resolve});resolveGate=gate;return()=>{if(resolveGate===gate)resolveGate=null;release()}},
   }
