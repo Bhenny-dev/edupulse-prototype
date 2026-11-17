@@ -14,6 +14,10 @@ The dashboard uses the same summary-card component as the other academic roles. 
 
 ![Only the instructor's loaded courses, including one awaiting a syllabus](02-courses.png)
 
+## Continue an inherited class
+
+A same-class instructor switch can provide a continued teaching copy, labelled **Continued from** inside the selected course. Its approved syllabus, teaching files, delivered content, weekly window and the block's existing student history remain available. The copy is independent of the former instructor's remaining blocks. Multiple teaching bases for the same course keep separate block-labelled cards and stable reload references. A removed load leaves the teaching list; keeping a repository file or an old local registration does not restore it.
+
 ## Add the approved syllabus for a loaded course
 
 1. Open an assigned course. Until it has an active, unsuspended syllabus, **Weeks and topics** shows **Upload syllabi**. Drop an approved PDF or DOCX, or activate the browse area. The retained approved-file limit is 750 KB; this is separate from the teaching-file limit below.

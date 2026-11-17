@@ -43,7 +43,7 @@ export const deanCommand = z.discriminatedUnion('action', [
   z.object({ action: z.literal('account.status'), id: z.string().uuid(), status: z.enum(['suspended', 'active', 'removed']) }),
   z.object({ action:z.literal('load.import_document'),filename:field(255).min(1),reviewed:z.literal(true),entries:z.array(loadEntry).min(1).max(500) }),
   z.object({ action: z.literal('load.assign'), filename: field(255).optional(), loads: z.array(z.object({ course_code: field(40).min(1), course_title: field(300).optional(), instructor_id: z.string().uuid(), block: field(40).min(1), semester: field(60).optional(),academic_year:academicYear.optional() })).min(1).max(500) }),
-  z.object({ action: z.literal('load.remove'), keys: z.array(z.string().max(200)).min(1).max(500) }),
+  z.object({ action: z.literal('load.remove'), keys: z.array(z.string().max(200)).min(1).max(500), expected_instructor:z.string().uuid().optional() }),
   z.object({ action: z.literal('load.update'), key: field(200).min(1), instructor_id: z.string().uuid(), block: field(40).min(1), semester: field(60), expected_instructor: z.string().uuid() }),
   z.object({ action: z.literal('load.inspect'), key: field(200).min(1), expected_instructor: z.string().uuid() }),
   z.object({ action: z.literal('students.import'), filename: field(255).min(1), students: z.array(z.object({

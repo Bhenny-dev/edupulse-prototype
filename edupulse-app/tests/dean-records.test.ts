@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import {deanRecords,yearLabel,approvedSyllabus,notRoutedSyllabus} from '../src/components/academic/deanRecordModel'
+import {deanRecords,yearLabel,approvedSyllabus,notRoutedSyllabus,assignedInstructorSyllabi} from '../src/components/academic/deanRecordModel'
 import {accountManagementModel} from '../src/pages/dashboardModels'
 import {deanRecordData} from './dean-records-data'
 import {readWorkspaceViews,saveWorkspaceViews,workspaceViewKey} from '../src/utils/workspaceViewState'
@@ -26,6 +26,17 @@ test('withdrawn enrollment and stale course IDs cannot reappear through imported
  assert.equal(model.blocks.some(b=>b.name==='BSIT-4A'),false)
  data.institutional!.push({kind:'rosters',record_key:'conflict',data:{Email:'riley@example.invalid',YearLevel:'2',Block:'BSIT-1A'}})
  assert.equal(deanRecords(data).blocks.find(b=>b.name==='BSIT-1A')?.mixed,true)
+})
+test('the instructor modal lists teaching syllabi only while a matching Dean load exists',()=>{
+ const data=deanRecordData()
+ assert.deepEqual(assignedInstructorSyllabi(data,'teacher-a'),[])
+ data.institutional!.push({kind:'loads',record_key:'IT 102|BSIT-1A',data:{CourseCode:'IT102',InstructorID:'teacher-a',Block:'BSIT-1A'}})
+ assert.deepEqual(assignedInstructorSyllabi(data,'teacher-a').map(c=>c.id),['c1'])
+ data.institutional!.find(r=>r.kind==='loads')!.data.InstructorID='teacher-b'
+ assert.deepEqual(assignedInstructorSyllabi(data,'teacher-a'),[])
+ assert.deepEqual(assignedInstructorSyllabi(data,'teacher-b').map(c=>c.id),['c3'])
+ data.institutional=data.institutional!.filter(r=>r.kind!=='loads')
+ assert.deepEqual(assignedInstructorSyllabi(data,'teacher-b'),[])
 })
 test('Dean modal reload hints store only bounded references and remain scoped to the actual role/account',()=>{
  const values=new Map<string,string>(),storage={getItem:(key:string)=>values.get(key)||null,setItem:(key:string,value:string)=>{values.set(key,value)}}

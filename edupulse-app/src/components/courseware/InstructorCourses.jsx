@@ -28,10 +28,11 @@ export default function InstructorCourses() {
   const term=params.get('term')||CURRENT_LOAD_TERM
   const courses = useMemo(() => instructorCourses(recordsForLoadTerm(records.data,term), user.id, workspace.syllabi), [records.data,term, user.id, workspace.syllabi])
   const requested = params.get('course'), legacySyllabus = workspace.syllabi.find(item => item.id === requested)
-  const selected = courses.find(course => course.id === requested || course.courseIds.includes(requested) || (legacySyllabus && syllabusForCourse([legacySyllabus], course)) || sameCourseCode(course.code, requested || ''))
+  const matching = courses.filter(course => course.id === requested || course.courseIds.includes(requested) || (legacySyllabus && syllabusForCourse([legacySyllabus], course)) || sameCourseCode(course.code, requested || ''))
+  const selected = matching.length===1?matching[0]:undefined
   const syllabus = selected && syllabusForCourse(workspace.syllabi, selected)
   const ready = syllabus && syllabus.status === 'active' && !syllabus.suspended
-  const schedules=selected?loadRows(records.data).filter(load=>load.instructorId===user.id&&sameCourseCode(load.code,selected.code)&&load.academicYear===selected.academicYear&&load.semester===selected.semester&&(load.time||load.source)):[]
+  const schedules=selected?loadRows(records.data).filter(load=>load.instructorId===user.id&&sameCourseCode(load.code,selected.code)&&selected.blocks.includes(load.block)&&load.academicYear===selected.academicYear&&load.semester===selected.semester&&(load.time||load.source)):[]
   const incoming = sharing.shares.filter(item => item.recipient_id === user.id && item.sender_id !== user.id && sameCourseCode(item.courseCode, selected?.code || '') && !item.sender_suspended && !item.recipient_suspended)
   const sharedOpen = params.get('picker') === 'shared' && Boolean(selected) && !ready
   const setSharedOpen = open => { const query = new URLSearchParams(params); if (open) query.set('picker', 'shared'); else query.delete('picker'); setParams(query) }
@@ -80,9 +81,10 @@ export default function InstructorCourses() {
   return <div className="container" data-pulse-zone="courseware" data-pulse-target={selected ? `${selected.code} course` : 'Loaded courses'}>
     <div className="page-header"><div><h1>{selected ? `${selected.code} — ${selected.title}` : 'Course'}</h1><p className="text-muted">{selected ? [selected.units && `${selected.units} units`, selected.semester,selected.academicYear&&`AY ${selected.academicYear}`, selected.blocks.join(' · ')].filter(Boolean).join(' · ') : 'Courses assigned to you by the Dean'}</p></div>{selected && <button className="btn btn-secondary" onClick={back}><ArrowLeft size={16} />Back to courses</button>}</div>
     {records.error && <p role="alert">{records.error}</p>}{error && <p role="alert">{error}</p>}{notice && <p role="status">{notice}</p>}
+    {selected&&syllabus?.handedOverFrom?.instructorName&&<p className="text-sm text-muted mb-16">Continued from {syllabus.handedOverFrom.instructorName} for {selected.blocks.join(', ')}.</p>}
     {!records.loaded ? <LoadingStatus label="Loading assigned courses..." /> : !selected ? <>
       <LoadTermFilter data={records.data}/>
-      {requested && <p role="alert">This course is not in your current teaching load. Choose one of your assigned courses.</p>}
+      {requested && <p role="alert">{matching.length>1?'Choose the block-labelled course you want to open.':'This course is not in your current teaching load. Choose one of your assigned courses.'}</p>}
       <div className="kpi-grid mb-24"><SummaryCard icon={BookOpen} label="Courses loaded" value={courses.length} /><SummaryCard icon={Users} label="Students handled" value={courseStudentCount(scoped, scoped.courses.map(course => course.id))} color="var(--purple-500)" bg="var(--purple-100)" /></div>
       <div className="instructor-course-toolbar"><label className="form-label">Search loaded courses<input className="form-input" type="search" value={query} onChange={event => setQuery(event.target.value)} placeholder="Course or block section" /></label></div>
       {!courses.length && <div className="empty-state"><h2>No courses loaded yet</h2><p>Your courses will appear after the Dean assigns them.</p></div>}

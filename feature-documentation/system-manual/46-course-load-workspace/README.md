@@ -15,6 +15,18 @@ Reload restores the selected course, instructor scan and file/content reader aft
 This supersedes the older two-tab Course screenshots in [Dean activity records](../36-dean-activity-records/README.md). Broad screenshot publication remains paused by the owner; the browser pipeline checks the merged page, course modal, role parity and read-only scans.
 
 
+## Continue a class with a replacement instructor
+
+For the same course, block and academic term, **Edit → Instructor → Save load** gives the replacement an independent teaching copy. The approved original file, extracted syllabus, materials, assessments, checked/draft/delivered states, release/deadline settings and that block's weekly delivery window are retained. Existing students keep their recorded scores, attempts, reading/access history, dates and attribution. Private teaching files remain immutable and use authorized downloads.
+
+**Remove load** removes this class from the instructor's current teaching list and records its teaching package for the next assignment to the same course/block/term. Assigning a replacement later continues that saved package. Changing the block or term identifies a different class and does not automatically move the old class's student history. A stale removal is rejected when the instructor changed after opening the confirmation.
+
+If the original instructor retains other blocks, their syllabus and teaching workspace remain unchanged. If the replacement already teaches another block of this course, the inherited block has its own bound syllabus and course card; existing content is not overwritten. Each card names its blocks. Owned repository drafts remain independent of teaching assignments.
+
+The Instructor detail modal lists only syllabi belonging to assigned courses in the selected term. With no loads, its Course loads and Syllabi and delivery sections are empty even when that instructor owns repository files. A removal clears those teaching rows; reload rechecks current records.
+
+Handover is atomic: invalid approved-file integrity, unavailable accounts, insufficient workspace/source capacity or another invalid record aborts the assignment and copies together. Unsaved local edits stay on their original device; the recipient's workspace revision advances so an older save must resolve the existing conflict recovery. Retained sources explicitly referenced by ID or source URL in the teaching package are copied with their provenance. Unavailable or unassociated source copies are not described as readable context. No paid inference, indexing, student-open event or assessment submission is triggered.
+
 ## Approved-load PDFs and terms
 
 Course now accepts PDF through Upload course load, opening the same full page review used by Pulse attachments. Academic term switches current, next, previous, other recorded or unassigned terms. Instructor/course detail rows retain schedules, rooms, units, listed/computed hours, source headcounts and source filename/page. The instructor directory includes all original departments again. [Manual 47](../47-teaching-load-documents/README.md) describes review and confirmation; the supplied files were scanned without automatically reloading assignments.

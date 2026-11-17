@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { GraduationCap, Award, ClipboardCheck, UserX, UserPlus } from 'lucide-react'
 import { useWorkspaceViewState } from '../../context/WorkspaceContext'
 import { Empty, CsvButton } from './AcademicUI'
-import { deanRecords, deanDirectory, loadRows, syllabusState } from './deanRecordModel'
+import { deanRecords, deanDirectory, loadRows, syllabusState, assignedInstructorSyllabi } from './deanRecordModel'
 import { SYLLABUS_STATUS_META } from '../../data/syllabusStatus'
 import GlassIcon from '../ui/GlassIcon'
 import { useAuth } from '../../context/AuthContext'
@@ -27,7 +27,7 @@ export default function DeanInstructors({ data:allData }) {
   const [detail, setDetail] = useWorkspaceViewState('dean-detail:instructors', null)
   const [search, setSearch] = useState(''), [status, setStatus] = useState('all'), [editing, setEditing] = useState(null), [confirm, setConfirm] = useState(null)
   const action = useDeanAction()
-  const people = directory.instructors.map(person => ({ ...person, loads: loads.filter(load => load.instructorId === person.id), syllabi: data.courses.filter(course => course.instructor_id === person.id) }))
+  const people = directory.instructors.map(person => ({ ...person, loads: loads.filter(load => load.instructorId === person.id), syllabi: assignedInstructorSyllabi(data,person.id) }))
   const shown = people.filter(person => (status === 'all' || person.status === status || (status === 'masters' && person.has_masters)) && `${person.name} ${person.email} ${person.specialization}`.toLowerCase().includes(search.trim().toLowerCase()))
   const selected = typeof detail === 'string' && detail.startsWith('instructor:') ? people.find(person => person.id === detail.slice(11)) : null
   const changeStatus = (person, next) => setConfirm({ person, next })
@@ -74,7 +74,7 @@ export default function DeanInstructors({ data:allData }) {
       <DeanCards items={[{label:'Class loads',value:selected.loads.length,icon:ClipboardCheck},{label:'Units loaded',value:selected.loads.reduce((n,l)=>n+(Number(l.units)||0),0),icon:Award},{label:'Computed hours / week',value:selected.loads.reduce((n,l)=>n+(Number(l.computedHours)||0),0),icon:GraduationCap}]}/>
       <ActivityTable scores={scores} headers={['Course', 'Block', 'Term','Schedule and source details']} rows={selected.loads.map(load => [load.code, load.block, [load.semester,load.academicYear].filter(Boolean).join(' · ') || '—',<TeachingLoadFacts key={load.key} load={load}/>])} empty="No course load assigned for this term. Load courses on the Course page." />
       <h3 className="dean-subhead">Syllabi and delivery</h3>
-      <ActivityTable scores={scores} headers={['Course', 'Syllabus status', 'Released items', 'Assessment attempts', 'Material opens']} rows={selected.syllabi.map(course => { const activity = model.activity(new Set([course.id])); return [course.course_code, SYLLABUS_STATUS_META[syllabusState(course)]?.label || syllabusState(course), activity.publications, activity.submissions, activity.opens] })} empty="No syllabus prepared yet." />
+      <ActivityTable scores={scores} headers={['Course', 'Syllabus status', 'Released items', 'Assessment attempts', 'Material opens']} rows={selected.syllabi.map(course => { const activity = model.activity(new Set([course.id])); return [course.course_code, SYLLABUS_STATUS_META[syllabusState(course)]?.label || syllabusState(course), activity.publications, activity.submissions, activity.opens] })} empty={selected.loads.length?'No syllabus added to the assigned courses yet.':'No course load assigned for this term.'} />
     </DeanDialog>}
     {typeof detail === 'string' && detail.startsWith('instructor:') && !selected && <DeanDialog title="Record unavailable" size="narrow" onClose={() => setDetail(null)}><Empty>This instructor is no longer in your records. Close this dialog and choose a current instructor.</Empty></DeanDialog>}
     {editing && <DeanAccountDialog role="instructor" account={editing === 'new' ? null : editing} action={action} onClose={() => setEditing(null)} />}

@@ -56,13 +56,16 @@ export function deanRecords(data:AcademicData, now=Date.now()) {
   }
   const released=data.publications.filter(item=>byCourse.has(item.course_id)&&item.active&&(!item.release_at||new Date(item.release_at).getTime()<=now))
   const attempts=currentAttempts({...data,publications:released}),accesses=data.accesses.filter(access=>released.some(pub=>pub.id===access.publication_id))
+  const publicationCourses=new Map(released.map(pub=>[pub.id,pub.course_id]))
+  const activeMemberships=new Set(data.enrollments.filter(member=>!member.suspended).map(member=>`${member.course_id}\0${email(member.student_email)}`))
   const loadedCodes=new Set((data.institutional||[]).filter(row=>row.kind==='loads').map(row=>text(row.data.CourseCode).toLowerCase()).filter(Boolean))
   const people=new Map((data.faculty||[]).map(person=>[person.id,{id:person.id,name:person.name||person.email||person.id}]))
   for(const course of data.courses)if(course.instructor_id&&!people.has(course.instructor_id))people.set(course.instructor_id,{id:course.instructor_id,name:course.instructor_name||course.instructor_id})
   const activity=(courseIds:Set<string>,studentEmail?:string)=>{
     const publications=released.filter(pub=>courseIds.has(pub.course_id)),ids=new Set(publications.map(pub=>pub.id))
-    const submissions=attempts.filter(attempt=>ids.has(attempt.publication_id)&&(!studentEmail||email(attempt.student_email)===studentEmail))
-    const opens=accesses.filter(access=>ids.has(access.publication_id)&&(!studentEmail||email(access.student_email)===studentEmail))
+    const belongs=(row:{publication_id:string;student_email?:string})=>activeMemberships.has(`${publicationCourses.get(row.publication_id)}\0${email(row.student_email)}`)
+    const submissions=attempts.filter(attempt=>ids.has(attempt.publication_id)&&belongs(attempt)&&(!studentEmail||email(attempt.student_email)===studentEmail))
+    const opens=accesses.filter(access=>ids.has(access.publication_id)&&belongs(access)&&(!studentEmail||email(access.student_email)===studentEmail))
     return {publications:publications.length,submissions:submissions.length,opens:opens.length,testSubmissions:submissions.filter(attempt=>attempt.is_test).length,testOpens:opens.filter(access=>access.is_test).length}
   }
   return {courses:[...records.values()].sort((a,b)=>a.code.localeCompare(b.code)),loadedCodes,students:[...students.values()].sort(order),blocks:blockRows,faculty:[...people.values()].sort((a,b)=>a.name.localeCompare(b.name)),memberships:memberships.size,released,attempts,accesses,activity}
@@ -74,6 +77,22 @@ export type DeanAccount = { id:string; student_number:string; name:string; surna
 export type LoadRow = { key:string; code:string; block:string; semester:string; academicYear:string; instructorId:string; instructorName:string; hasMasters:string; specialization:string;time:string;days:string;room:string;units:string;lecture:string;lab:string;hours:string;computedHours:string;students:string;program:string;source:string;degree:string;sourceCode:string;sourceTitle:string;sourceInstructor:string;sourceYear:string;sourceSemester:string }
 type Directory = { instructors?:DeanInstructor[]; students?:DeanAccount[]; irregular?:Record<string,string>[] }
 const key = (value:unknown) => text(value).toUpperCase().replace(/[\s-]+/g,'')
+
+/** Repository ownership alone is not a teaching load. Management inspects assigned courses only. */
+export function assignedInstructorSyllabi(data:AcademicData,instructorId:string) {
+  const assigned=(data.institutional||[]).filter(r=>r.kind==='loads'&&r.data.InstructorID===instructorId&&!/^(inactive|suspended|withdrawn|deleted)$/i.test(r.data.Status||''))
+  const bound=new Set(assigned.map(r=>r.data.TeachingSyllabusID).filter(Boolean)),chosen=new Map<string,Course>()
+  const semester=(v:string)=>/^(1|first)/i.test(v)?'1':/^(2|second)/i.test(v)?'2':v.toLowerCase()
+  for(const {data:load} of assigned){
+    const candidates=data.courses.filter(course=>course.instructor_id===instructorId&&key(course.course_code)===key(load.CourseCode)
+      &&(load.TeachingSyllabusID?course.syllabus_id===load.TeachingSyllabusID:!bound.has(course.syllabus_id||''))
+      &&(!course.academic_year||!load.AcademicYear||course.academic_year===load.AcademicYear)
+      &&(!course.semester||!load.Semester||semester(course.semester)===semester(load.Semester)))
+      .sort((a,b)=>Number(b.active)-Number(a.active)||String(b.updated_at||'').localeCompare(String(a.updated_at||'')))
+    if(candidates[0])chosen.set(candidates[0].id,candidates[0])
+  }
+  return [...chosen.values()]
+}
 
 export function loadRows(data:AcademicData):LoadRow[] {
   return (data.institutional||[]).filter(row=>row.kind==='loads').map(row=>({key:row.record_key,code:text(row.data.CourseCode),block:text(row.data.Block),semester:text(row.data.Semester),academicYear:text(row.data.AcademicYear),

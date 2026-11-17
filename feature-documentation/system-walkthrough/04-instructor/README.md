@@ -194,6 +194,10 @@ Validated generated syllabus fields are placed directly in the mounted builder; 
 Student Monitoring uses the Dashboard SummaryCard component for its hub and each class tab. Cards lead to the relevant memberships, charts, delivery status or course; the roster uses three-dot menus for short Edit/Suspend/Resume/Remove actions. These menus and filters restore against the current authorized class without replaying writes. Assessment and access statistics exclude scripted/Admin demonstrations. An unreleased or Checked syllabus explains why delivery is not active, while genuine missing results stay unrecorded. [Current controls and status examples](../../system-manual/37-instructor-monitoring/README.md).
 
 
+### Continued teaching after a class handover
+
+A Dean/Coordinator same-class switch supplies an independent syllabus and teaching copy, labelled **Continued from** inside the course. Its block window, student scores, reading progress and access history carry over; the prior instructor's remaining blocks keep their existing work. Separate inherited bases for one subject use block-labelled course cards and restore by their verified class/basis reference. Removing a load clears it from teaching views even if repository files remain. [Course workspace guide](../../system-manual/44-instructor-course-workspace/README.md).
+
 ### Restored student directory and teaching terms - 17 November 2026
 
 The registered-student picker offers all original departments, with program and year filters retained. Course has an Academic term filter for current and historical/next assignments; the dashboard summarizes current loads. An attached teaching-load form can be inspected in Pulse, while assigning its rows requires the Dean, Program Coordinator or System Admin. [Guide](../../system-manual/47-teaching-load-documents/README.md).

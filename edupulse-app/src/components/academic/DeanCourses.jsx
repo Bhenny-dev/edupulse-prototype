@@ -3,7 +3,7 @@ import { BookOpen, ClipboardCheck, AlertTriangle, Layers, Plus, FileUp, Graduati
 import { useSearchParams } from 'react-router-dom'
 import { useWorkspaceViewState } from '../../context/WorkspaceContext'
 import { Panel, Empty, Table, CsvButton } from './AcademicUI'
-import { deanRecords, courseCatalog, deanDirectory, loadRows } from './deanRecordModel'
+import { deanRecords, courseCatalog, deanDirectory, loadRows, assignedInstructorSyllabi } from './deanRecordModel'
 import { curriculumCourse } from '../../utils/curriculumMetadata'
 import { DeanCards, DeanDialog, DeanFeedback, ConfirmDialog, UploadButton } from './DeanCommon'
 import { useDeanAction } from './deanActions'
@@ -80,8 +80,8 @@ export default function DeanCourses({ data:allData }) {
     {typeof detail === 'string' && detail.startsWith('course:') && !selected && <DeanDialog title="Record unavailable" onClose={() => setDetail(null)} size="narrow"><Empty>This course is no longer in your records. Close this dialog and choose a current course.</Empty></DeanDialog>}
     {assigning && <AssignDialog course={assigning} instructors={directory.instructors} blocks={blocks} action={action} onClose={() => setAssigning(null)} />}
     {editingKey && selected && (editing ? <EditLoadDialog key={`${editing.key}:${editing.instructorId}`} course={selected} load={editing} instructors={directory.instructors} blocks={blocks} action={action} onClose={() => setEditingKey(null)} /> : <DeanDialog title="Course load unavailable" onClose={() => setEditingKey(null)} size="narrow"><Empty>This load is no longer available. Choose a current course load.</Empty></DeanDialog>)}
-    {removing && <ConfirmDialog title="Remove course load" confirmLabel="Remove load" danger busy={action.busy} onClose={() => setRemoving(null)} onConfirm={async () => { if (await action.run('Removing course load', { action: 'load.remove', keys: [removing.key] }, () => ({ text: `${removing.instructorName} no longer teaches ${removing.code} for ${removing.block}.` }))) setRemoving(null) }}>
-      <p>Remove <strong>{removing.instructorName}</strong> from <strong>{removing.code} — {removing.title}</strong> for block <strong>{removing.block}</strong>?</p><p className="text-sm text-muted">The class list for this block leaves the instructor's course. Published materials and recorded attempts stay in the records.</p>
+    {removing && <ConfirmDialog title="Remove course load" confirmLabel="Remove load" danger busy={action.busy} onClose={() => setRemoving(null)} onConfirm={async () => { if (await action.run('Removing course load', { action: 'load.remove', keys: [removing.key],expected_instructor:removing.instructorId }, () => ({ text: `${removing.instructorName} no longer teaches ${removing.code} for ${removing.block}.` }))) setRemoving(null) }}>
+      <p>Remove <strong>{removing.instructorName}</strong> from <strong>{removing.code} — {removing.title}</strong> for block <strong>{removing.block}</strong>?</p><p className="text-sm text-muted">This block leaves the instructor's teaching load. Its syllabus, teaching materials, assessments, schedule and student history are retained for the replacement instructor.</p>
     </ConfirmDialog>}
     {review && <LoadReview review={review} action={action} onClose={() => setReview(null)} />}
   </>
@@ -92,7 +92,7 @@ function CourseDialog({ course, data, action, managed, onClose, onAssign, onEdit
   const load = course.loads.find(item => item.key === inspecting)
   const close = () => { setInspecting(null); onClose() }
   const instructorIds = new Set(course.loads.map(item => item.instructorId))
-  const related = data.courses.filter(item => instructorIds.has(item.instructor_id) && course.ids.includes(item.id))
+  const related = [...instructorIds].flatMap(id=>assignedInstructorSyllabi(data,id)).filter(item=>course.ids.includes(item.id))
   const students = new Set(data.enrollments.filter(item => !item.suspended && related.some(row => row.id === item.course_id && course.loads.some(current => current.instructorId === row.instructor_id && current.block === item.block_section))).map(item => item.student_email.toLowerCase())).size
   return <DeanDialog title={`${course.code} — ${course.title}`} subtitle={[groupLabel(course), course.units && `${course.units} units`, course.classification].filter(Boolean).join(' · ')} icon={BookOpen} size="page" onClose={close}
     footer={<>{managed && <button className="btn btn-primary" onClick={onAssign} disabled={Boolean(action.busy)}><Plus size={15} aria-hidden="true" /> Add instructor</button>}<button className="btn btn-secondary" onClick={close}>Close</button></>}>
@@ -119,6 +119,7 @@ function EditLoadDialog({ course, load, instructors, blocks, action, onClose }) 
   }
   return <DeanDialog title={`Edit ${course.code} course load`} subtitle={`${load.instructorName} · ${load.block}`} size="form" onClose={onClose} footer={<><button className="btn btn-secondary" onClick={onClose} disabled={Boolean(action.busy)}>Cancel</button><button className="btn btn-primary" onClick={save} disabled={Boolean(action.busy)}>Save load</button></>}>
     <div className="dean-form">{(problem || action.error) && <p role="alert" className="connected-pulse-warning">{problem || action.error}</p>}
+      <p>For the same block and term, switching the instructor gives this class an independent continuation of its syllabus, teaching materials and assessments, with its delivery schedule and student history.</p>
       <label className="dean-field"><span>Instructor</span><select className="form-select" value={teacher} onChange={event => setTeacher(event.target.value)}>{instructors.filter(person => person.status !== 'suspended' || person.id === load.instructorId).map(person => <option key={person.id} value={person.id}>{person.name}{person.status === 'suspended' ? ' · Suspended' : ''}</option>)}</select></label>
       <label className="dean-field"><span>Block</span><input className="form-input" value={block} maxLength={40} onChange={event => setBlock(event.target.value)} /></label>
       <label className="dean-field"><span>Semester</span><input className="form-input" value={semester} maxLength={60} onChange={event => setSemester(event.target.value)} /></label>

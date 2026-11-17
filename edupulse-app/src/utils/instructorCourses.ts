@@ -3,14 +3,14 @@ import { currentAttempts } from '../components/academic/academicData'
 import { studentRecorded } from '../components/academic/monitoringModel'
 import { isOutlineExam, weekSections, type OutlineWeek } from './outlineSections'
 
-export type InstructorCourse = { id: string; code: string; title: string; units: string; year: string; semester: string; academicYear: string; blocks: string[]; courseIds: string[] }
+export type InstructorCourse = { id: string; code: string; title: string; units: string; year: string; semester: string; academicYear: string; blocks: string[]; courseIds: string[]; syllabusId?:string }
 const codeKey = (value: string) => value.trim().toUpperCase().replace(/\s+/g, ' ')
 export const sameCourseCode = (left: string, right: string) => left.replace(/\s/g, '').toUpperCase() === right.replace(/\s/g, '').toUpperCase()
 const semesterKey = (value: string) => /(?:1|first|1st)/i.test(value) ? '1' : /(?:2|second|2nd)/i.test(value) ? '2' : value.trim().toLowerCase()
 const inactive = (value?: string) => /^(?:inactive|suspended|withdrawn|deleted)$/i.test(value || '')
 
 /** Only Dean-recorded assignments for this verified instructor authorize a course card. */
-export function instructorCourses(data: AcademicData, instructorId: string, syllabi: { id: string; courseInfo?: { academicYear?: string; periodOffered?: string } }[] = []): InstructorCourse[] {
+export function instructorCourses(data: AcademicData, instructorId: string, syllabi: { id: string; handedOverFrom?:unknown;courseInfo?: { academicYear?: string; periodOffered?: string } }[] = []): InstructorCourse[] {
   if (!instructorId) return []
   const catalog = new Map((data.institutional || []).filter(row => row.kind === 'courses').map(row => [codeKey(row.data.CourseCode || row.record_key), row.data]))
   const courses = new Map<string, InstructorCourse>()
@@ -18,13 +18,14 @@ export function instructorCourses(data: AcademicData, instructorId: string, syll
     const row = entry.data
     if (row.InstructorID !== instructorId || inactive(row.Status) || !row.CourseCode?.trim()) continue
     const code = codeKey(row.CourseCode), meta = catalog.get(code) || {}, academicYear = row.AcademicYear || meta.AcademicYear || '', semester = row.Semester || meta.Semester || ''
-    const id = [code, academicYear, semester].map(encodeURIComponent).join('~')
+    const syllabusId=row.TeachingSyllabusID||''
+    const id = [code, academicYear, semester,...(syllabusId?[syllabusId]:[])].map(encodeURIComponent).join('~')
     const existing = data.courses.filter(course => sameCourseCode(course.course_code, code) && course.instructor_id === instructorId && course.active && (() => { const source = syllabi.find(item => item.id === course.syllabus_id); return (!source?.courseInfo?.academicYear || !academicYear || source.courseInfo.academicYear === academicYear) && (!source?.courseInfo?.periodOffered || !semester || semesterKey(source.courseInfo.periodOffered) === semesterKey(semester)) })())
-    const value = courses.get(id) || { id, code, title: meta.CourseTitle || row.CourseTitle || existing[0]?.course_title || code, units: meta.Units || row.Units || '', year: row.YearLevel || meta.YearLevel || '', academicYear, semester, blocks: [], courseIds: existing.map(course => course.id) }
+    const value = courses.get(id) || { id, code, title: meta.CourseTitle || row.CourseTitle || existing[0]?.course_title || code, units: meta.Units || row.Units || '', year: row.YearLevel || meta.YearLevel || '', academicYear, semester, blocks: [], courseIds: existing.filter(course=>syllabusId?course.syllabus_id===syllabusId:!syllabi.find(s=>s.id===course.syllabus_id)?.handedOverFrom).map(course => course.id),...(syllabusId?{syllabusId}:{}) }
     if (row.Block && !value.blocks.includes(row.Block)) value.blocks.push(row.Block)
     courses.set(id, value)
   }
-  return [...courses.values()].map(course => ({ ...course, courseIds: course.courseIds.filter(id => { const projection = data.courses.find(row => row.id === id), source = syllabi.find(row => row.id === projection?.syllabus_id); return Boolean(source?.courseInfo?.periodOffered || [...courses.values()].filter(row => row.code === course.code).length === 1) }), blocks: course.blocks.sort() })).sort((a, b) => a.code.localeCompare(b.code) || a.id.localeCompare(b.id))
+  return [...courses.values()].map(course => ({ ...course, courseIds: course.courseIds.filter(id => { const projection = data.courses.find(row => row.id === id), source = syllabi.find(row => row.id === projection?.syllabus_id); return Boolean(course.syllabusId===source?.id || source?.courseInfo?.periodOffered || [...courses.values()].filter(row => row.code === course.code&&!row.syllabusId).length === 1) }), blocks: course.blocks.sort() })).sort((a, b) => a.code.localeCompare(b.code) || a.id.localeCompare(b.id))
 }
 
 export function instructorRecords(data: AcademicData, loaded: InstructorCourse[]): AcademicData {
@@ -38,8 +39,8 @@ export function instructorRecords(data: AcademicData, loaded: InstructorCourse[]
   return { ...data, courses, publications, enrollments, attempts: data.attempts.filter(row => publicationIds.has(row.publication_id) && members(row)), accesses: data.accesses.filter(row => publicationIds.has(row.publication_id) && members(row)), reading: data.reading?.filter(row => publicationIds.has(row.publication_id) && members(row)), sessions: data.sessions?.filter(row => publicationIds.has(row.publication_id) && members(row)) }
 }
 
-export function syllabusForCourse<T extends { id: string; courseCode: string; status: string; suspended?: boolean; courseInfo?: { academicYear?: string; periodOffered?: string }; lastUpdated?: string }>(syllabi: T[], course: InstructorCourse): T | undefined {
-  return syllabi.filter(item => sameCourseCode(item.courseCode, course.code) && !item.suspended && item.status !== 'archived' && (!course.academicYear || !item.courseInfo?.academicYear || course.academicYear === item.courseInfo.academicYear) && (!course.semester || !item.courseInfo?.periodOffered || semesterKey(course.semester) === semesterKey(item.courseInfo.periodOffered))).sort((a, b) => Number(b.status === 'active') - Number(a.status === 'active') || String(b.lastUpdated || '').localeCompare(String(a.lastUpdated || '')))[0]
+export function syllabusForCourse<T extends { id: string; courseCode: string; status: string; suspended?: boolean; handedOverFrom?:unknown;courseInfo?: { academicYear?: string; periodOffered?: string }; lastUpdated?: string }>(syllabi: T[], course: InstructorCourse): T | undefined {
+  return syllabi.filter(item => (course.syllabusId?item.id===course.syllabusId:!item.handedOverFrom) && sameCourseCode(item.courseCode, course.code) && !item.suspended && item.status !== 'archived' && (!course.academicYear || !item.courseInfo?.academicYear || course.academicYear === item.courseInfo.academicYear) && (!course.semester || !item.courseInfo?.periodOffered || semesterKey(course.semester) === semesterKey(item.courseInfo.periodOffered))).sort((a, b) => Number(b.status === 'active') - Number(a.status === 'active') || String(b.lastUpdated || '').localeCompare(String(a.lastUpdated || '')))[0]
 }
 
 /** Keep week slots chronological while moving their complete teaching scopes and content together. */

@@ -27,7 +27,7 @@ test('Dean loads a course to an instructor and releases a class load', async ({ 
 
   await page.getByRole('button', { name: 'Remove Alex Sample Instructor from IT 102 BSIT-1A', exact: true }).click()
   await page.getByRole('dialog', { name: 'Remove course load' }).getByRole('button', { name: 'Remove load' }).click()
-  expect(fixture.commands[1]).toEqual({ action: 'load.remove', keys: ['IT 102|BSIT-1A|1st Semester'] })
+  expect(fixture.commands[1]).toEqual({ action: 'load.remove', keys: ['IT 102|BSIT-1A|1st Semester'],expected_instructor:'teacher-a' })
   await page.getByRole('dialog', { name: 'IT 102 — Programming foundations' }).getByRole('button', { name: 'Close', exact: true }).click()
   await expect(page.getByRole('button', { name: /^IT 102 Programming foundations, not yet loaded$/ })).toBeVisible()
 })

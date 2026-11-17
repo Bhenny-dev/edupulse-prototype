@@ -12,6 +12,20 @@ const records = (): AcademicData => ({ courses: [{ id: 'course', course_code: 'I
   { kind: 'loads', record_key: 'inactive', data: { CourseCode: 'IT 202', InstructorID: 'teacher', Status: 'suspended' } },
 ] })
 
+test('independent inherited bases keep same-course blocks, contents and reload IDs separate',()=>{
+ const data=records()
+ data.courses=[{...data.courses[0],syllabus_id:'original'},{...data.courses[0],id:'continued-projection',syllabus_id:'continued'}]
+ data.institutional!.find(r=>r.record_key==='B')!.data.TeachingSyllabusID='continued'
+ const syllabi=[{id:'original',courseCode:'IT 102',status:'active',courseInfo:{}},{id:'continued',courseCode:'IT 102',status:'active',courseInfo:{},handedOverFrom:{instructorId:'former'}}]
+ const cards=instructorCourses(data,'teacher',syllabi)
+ assert.equal(cards.length,2)
+ const own=cards.find(c=>!c.syllabusId)!,continued=cards.find(c=>c.syllabusId==='continued')!
+ assert.deepEqual(own.blocks,['A']);assert.deepEqual(own.courseIds,['course'])
+ assert.deepEqual(continued.blocks,['B']);assert.deepEqual(continued.courseIds,['continued-projection'])
+ assert.equal(syllabusForCourse(syllabi,continued)?.id,'continued');assert.equal(syllabusForCourse(syllabi,own)?.id,'original')
+ assert.equal(instructorCourses(data,'teacher',syllabi).find(c=>c.syllabusId==='continued')?.id,continued.id)
+})
+
 test('instructor courses require exact current Dean load IDs and include a course without a syllabus', () => {
   const data = records(), courses = instructorCourses(data, 'teacher')
   assert.equal(courses.length, 1); assert.equal(courses[0].title, 'Programming'); assert.deepEqual(courses[0].blocks, ['A', 'B']); assert.deepEqual(courses[0].courseIds, ['course'])
