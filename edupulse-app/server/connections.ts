@@ -69,6 +69,9 @@ export function serverConnection(): Connection | undefined {
   return { provider, model: models[provider], apiKey: keys[provider], owner: 'server', expires: Number.MAX_SAFE_INTEGER, id: 'server' }
 }
 
+/** An OpenRouter model that costs nothing to call: a ":free" variant or the free models router. */
+export const isFreeOpenRouterModel = (model: string) => /:free$/i.test(model) || model === 'openrouter/free'
+
 export function providerError(status: number): ApiError {
   if (status === 402) return new ApiError(402, 'PROVIDER_CREDITS', 'This provider account needs API credits. Check provider billing or choose another connection.')
   if (status === 401 || status === 403) return new ApiError(400, 'PROVIDER_AUTH', 'The provider rejected this key or model permission. Check your key and account access.')

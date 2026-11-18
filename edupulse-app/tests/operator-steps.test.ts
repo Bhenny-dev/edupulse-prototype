@@ -57,7 +57,7 @@ test('encrypted steps cross client, real API, model adapter and final validation
   process.env.AI_LOCAL_MODE = 'true'; process.env.AI_VECTOR_STORE = 'local'; process.env.AI_CONNECTION_SECRET = '1'.repeat(64)
   process.env.AI_DATA_DIR = join(await mkdtemp(join(tmpdir(), 'edupulse-steps-')), 'db')
   t.after(async () => { globalThis.fetch = oldFetch; setAiAccessToken(); await closeLocalDb(); for (const name of names) { if (old[name] === undefined) delete process.env[name]; else process.env[name] = old[name] } })
-  const connection: Connection = { provider: 'openrouter', model: 'synthetic-free-model:free', apiKey: 'synthetic-key-only', owner: identity.id, id: 'test-connection', expires: Date.now() + 60000 }
+  const connection: Connection = { provider: 'openrouter', model: 'synthetic-research-model', apiKey: 'synthetic-key-only', owner: identity.id, id: 'test-connection', expires: Date.now() + 60000 }
   rememberReasoning([{ id: connection.model, supported_parameters: [] }])
   let generations = 0, researches = 0, requests = 0, interrupted = false
   let firstCheckpoint = '', interruptionCheckpoint = ''

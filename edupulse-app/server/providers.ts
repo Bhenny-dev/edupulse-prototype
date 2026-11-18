@@ -3,7 +3,7 @@ import { ChatGoogleGenerativeAI } from '@langchain/google-genai'
 import { HumanMessage, SystemMessage } from '@langchain/core/messages'
 import { config } from './config.js'
 import { ApiError } from './contracts.js'
-import { discoverModels, NOUS_API, providerError, serverConnection, type Connection } from './connections.js'
+import { discoverModels, isFreeOpenRouterModel, NOUS_API, providerError, serverConnection, type Connection } from './connections.js'
 import { modelStatus } from './ml/onnx.js'
 import { openRouterOutput, openRouterReasoning, reasoningAllowance } from './reasoning.js'
 import { anthropicRequestError } from './anthropic.js'
@@ -200,14 +200,29 @@ function ollamaContext(system: string, prompt: string, predict: number) {
 }
 
 /** Return only bounded, actionable categories; provider bodies can contain private account details. */
+/**
+ * OpenRouter names the limit behind a 402 in error.metadata.limit_source. A free model costs nothing, so only the
+ * account (a balance below zero) or the key (its own credit limit) can refuse it; say which, and what to change.
+ */
+export function openRouterPaymentError(limitSource: string, model: string): ApiError {
+  if (limitSource === 'openrouter_in_flight_budget') return new ApiError(429, 'PROVIDER_QUOTA', 'OpenRouter is still settling recent requests on this account. Wait a few seconds and send again.')
+  if (limitSource === 'openrouter_key_limit') return new ApiError(402, 'PROVIDER_KEY_LIMIT', 'This OpenRouter key has used up the credit limit set on it, and OpenRouter then refuses every request on the key, free models included. In OpenRouter, open Settings → API Keys and raise or remove the limit on the key EduPulse uses, or use Reconnect in AI settings to make a new key.')
+  if (/whisper/i.test(model)) return new ApiError(402, 'PROVIDER_CREDITS', 'Voice transcription on OpenRouter uses Whisper, which is paid even when your chat model is free, and this account has no credits for it. Add OpenRouter credits, select a Gemini connection for voice (its free tier can transcribe), or type your message.')
+  if (!isFreeOpenRouterModel(model)) return new ApiError(402, 'PROVIDER_CREDITS', `${model} is a paid OpenRouter model and this account has no credits for it. Choose a model marked Free in the model menu, or add OpenRouter credits.`)
+  const why = limitSource === 'openrouter_credits' ? 'the account balance is below zero' : 'the account balance is below zero or this key’s credit limit is used up'
+  return new ApiError(402, 'PROVIDER_CREDITS', `OpenRouter refused this free model because ${why}. Free models need no credits, but OpenRouter blocks them until the balance is back to zero or above. Check Credits and API Keys in your OpenRouter settings, or choose another connection.`)
+}
+
 export async function modelResponseError(response: Response, model: string, provider: Connection['provider']): Promise<ApiError> {
-  let code = '', message = '', type = ''
+  let code = '', message = '', type = '', limitSource = ''
   try {
     const body = JSON.parse((await response.text()).slice(0, 8192))
     if (typeof body.error?.code === 'string') code = body.error.code
     if (typeof body.error?.message === 'string') message = body.error.message
     if (typeof body.error?.type === 'string') type = body.error.type
+    if (typeof body.error?.metadata?.limit_source === 'string') limitSource = body.error.metadata.limit_source
   } catch { /* Non-JSON provider errors still have an HTTP category. */ }
+  if (provider === 'openrouter' && (response.status === 402 || limitSource === 'openrouter_in_flight_budget')) return openRouterPaymentError(limitSource, model)
   // Anthropic reports an empty API balance as invalid_request_error (HTTP 400),
   // not as a model-format error. Classify it without returning the private body.
   const anthropicError = provider === 'anthropic' ? anthropicRequestError(response.status, message) : undefined
