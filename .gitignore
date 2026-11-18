@@ -2,3 +2,5 @@
 .env*
 /.playwright-mcp/
 /supabase/.temp/
+
+.env*
