@@ -5,6 +5,8 @@ import {useAcademicRecords} from '../../context/AcademicContext'
 import {aiRequest} from '../../lib/aiClient'
 import useAcademicTerm from './useAcademicTerm'
 import {recordsForLoadTerm,loadTerm} from '../../utils/loadTerms'
+import TeachingLoadFields,{loadFieldErrors} from './TeachingLoadFields'
+import {scheduleHours} from '../../utils/teachingLoad'
 import PageModal from '../ui/PageModal'
 import SummaryCard from '../ui/SummaryCard'
 import {LoadingStatus} from '../ui/LoadingFeedback'
@@ -19,14 +21,13 @@ function matchingCourse(entry,courses){
  const titles=courses.filter(c=>compact(c.title)===compact(entry.title))
  return titles.length===1?titles[0].code:''
 }
-const display=value=>value===null||value===undefined||value===''?'Not recorded':value
 /** A subject the recorded courses lack can be added as a new course: its printed code without the section letter, title and units. */
 const NEW='new:'
 const isNew=value=>String(value||'').startsWith(NEW)
 const newCourseCode=entry=>entry.subjectCode.replace(/(?:\s+[A-Z]|-\d+)$/i,'').trim().toUpperCase().replace(/\s+/g,' ')
 const validNewCourse=(code,entry)=>/^[A-Z0-9][A-Z0-9 .&()/_-]{0,39}$/.test(code)&&Boolean(entry.title.trim())&&Number.isFinite(entry.units)&&entry.units>=0&&entry.units<=30&&!(entry.units*2%1)
 /** Footer wording for each reason a selected row cannot be imported yet. */
-const NEEDS={instructor:'need a registered instructor',course:'need a recorded course',term:'are from another term'}
+const NEEDS={instructor:'need a registered instructor',course:'need a recorded course',term:'are from another term',details:'need valid schedule/source numbers'}
 
 /** Full extracted table stays local to the explicit review, never an LLM context slice. */
 export default function TeachingLoadImport({file,initialOpen=false,openSignal=0,summary='',onClose}){
@@ -34,6 +35,8 @@ export default function TeachingLoadImport({file,initialOpen=false,openSignal=0,
  const {term,writable,academicYear,semester}=useAcademicTerm()
  const manage=Boolean(writable&&user?.authenticated&&['dean','associate_dean','admin'].includes(user.role))
  const doc=file.teachingLoad
+ const [edits,setEdits]=useState({})
+ const reviewedEntry=entry=>{const changes=edits[entry.id]||{},value={...entry,...changes};if('time' in changes||'days' in changes)value.computedHours=scheduleHours(value.time,value.days);return value}
  const [open,setOpen]=useState(initialOpen),[data,setData]=useState(null),[draft,setDraft]=useState({}),[selected,setSelected]=useState(()=>doc.entries.filter(e=>e.instructor===doc.entries[0]?.instructor).map(e=>e.id))
  const [person,setPerson]=useState(doc.entries[0]?.instructor||''),[page,setPage]=useState(0),[busy,setBusy]=useState(false),[loading,setLoading]=useState(false),[error,setError]=useState(''),[receipt,setReceipt]=useState(null),[reviewed,setReviewed]=useState(false),[retry,setRetry]=useState(0)
  // Pulse can reopen the same extraction after a confirmed conversational follow-up.
@@ -42,7 +45,7 @@ export default function TeachingLoadImport({file,initialOpen=false,openSignal=0,
  const courses=useMemo(()=> (data?.institutional||[]).filter(r=>r.kind==='courses'&&!/^(suspended|removed)$/i.test(r.data.Status||'')).map(r=>({code:r.data.CourseCode,title:r.data.CourseTitle})),[data])
  useEffect(()=>{
   if(!open||!manage)return
-  const controller=new AbortController();setLoading(true);setError('');setData(null);setDraft({});setReviewed(false);setReceipt(null)
+  const controller=new AbortController();setLoading(true);setError('');setData(null);setDraft({});setEdits({});setReviewed(false);setReceipt(null)
   void aiRequest('academic','GET',undefined,controller.signal).then(result=>{if(!controller.signal.aborted){if(!result.directory)throw new Error(result.directoryError||'Instructor accounts could not be verified.');setData(recordsForLoadTerm(result,term))}}).catch(failure=>{if(!controller.signal.aborted)setError(failure.message)}).finally(()=>{if(!controller.signal.aborted)setLoading(false)})
   return ()=>controller.abort()
  },[open,manage,user?.id,retry,term])
@@ -54,12 +57,12 @@ export default function TeachingLoadImport({file,initialOpen=false,openSignal=0,
   return {instructor_id:people.length===1?people[0].id:'',course_code:recorded||fresh,semester,academic_year:academicYear,...picked}
  }
  /** The course a "new course" mapping will create, with the code as edited in the review. */
- const newCourse=entry=>{const code=(draft[entry.id]?.new_code??newCourseCode(entry)).trim().toUpperCase().replace(/\s+/g,' ');return {code,title:entry.title.trim().slice(0,300),units:entry.units}}
+ const newCourse=source=>{const entry=reviewedEntry(source);const code=(draft[entry.id]?.new_code??newCourseCode(entry)).trim().toUpperCase().replace(/\s+/g,' ');return {code,title:entry.title.trim().slice(0,300),units:entry.units}}
  const change=(id,key,value)=>{setDraft(old=>({...old,[id]:{...old[id],[key]:value}}));setReviewed(false);setError('')}
- const chosen=doc.entries.filter(e=>selected.includes(e.id)),matching=doc.entries.filter(e=>!person||e.instructor===person),shown=matching.slice(page*20,page*20+20)
+ const chosen=doc.entries.filter(e=>selected.includes(e.id)).map(reviewedEntry),matching=doc.entries.filter(e=>!person||e.instructor===person),shown=matching.slice(page*20,page*20+20).map(reviewedEntry)
  /** What a row still needs before it can be imported into the selected term. */
  const courseReady=(entry,m)=>isNew(m.course_code)?validNewCourse(newCourse(entry).code,entry)&&!courses.some(c=>compact(c.code)===compact(newCourse(entry).code)):courses.some(c=>c.code===m.course_code)
- const missing=entry=>{const m=mapping(entry);return [!instructors.some(i=>i.id===m.instructor_id)&&'instructor',!courseReady(entry,m)&&'course',loadTerm(entry.academicYear,entry.semester)!==term&&'term'].filter(Boolean)}
+ const missing=entry=>{const m=mapping(entry);return [loadFieldErrors(entry).length>0&&'details',!instructors.some(i=>i.id===m.instructor_id)&&'instructor',!courseReady(entry,m)&&'course',loadTerm(entry.academicYear,entry.semester)!==term&&'term'].filter(Boolean)}
  const added=[...new Set(chosen.filter(e=>isNew(mapping(e).course_code)).map(e=>newCourse(e).code))]
  const invalid=chosen.filter(e=>missing(e).length)
  const needs=Object.keys(NEEDS).map(key=>[key,chosen.filter(e=>missing(e).includes(key)).length]).filter(([,count])=>count).map(([key,count])=>`${count} ${NEEDS[key]}`)
@@ -103,7 +106,8 @@ export default function TeachingLoadImport({file,initialOpen=false,openSignal=0,
     <p role="status">Showing {matching.length?page*20+1:0}–{Math.min(page*20+20,matching.length)} of {matching.length} rows in this view. {doc.entries.length} rows retained in the document.</p>
     {shown.map(entry=>{const m=mapping(entry);return <article className="load-import-row" key={entry.id}>
      <header>{manage&&<input type="checkbox" aria-label={`Select page ${entry.page} row ${entry.row}`} checked={selected.includes(entry.id)} onChange={e=>{setSelected(old=>e.target.checked?[...old,entry.id]:old.filter(id=>id!==entry.id));setReviewed(false)}}/>}<div><h3>{entry.subjectCode} — {entry.title}</h3><p>{entry.instructor} · page {entry.page}, row {entry.row} · {entry.semester} · AY {entry.academicYear}</p></div></header>
-     <dl className="load-import-facts">{[['Time',entry.time],['Days',entry.days],['Room',entry.room],['Units',entry.units],['Lecture units',entry.lecture],['Lab units',entry.lab],['Listed hours',entry.hours],['Computed hours / week',entry.computedHours],['Students listed',entry.students],['Program',entry.program],['Degree on source',entry.degree]].map(([label,value])=><div key={label}><dt>{label}</dt><dd>{display(value)}</dd></div>)}</dl>
+     <TeachingLoadFields entry={entry} editable={manage&&Boolean(data)} disabled={busy||!selected.includes(entry.id)} block="Assigned separately by the instructor" onChange={(key,value)=>{setEdits(old=>({...old,[entry.id]:{...old[entry.id],[key]:value}}));setReviewed(false);setError('')}}/>
+
      {entry.warnings.length>0&&<details><summary>Check schedule and source</summary><ul>{entry.warnings.map(w=><li key={w}>{w}</li>)}</ul></details>}
      {manage&&data&&courses.some(c=>c.code===m.course_code&&compact(c.title)!==compact(entry.title))&&<p>Check the course mapping: the recorded catalog title differs from the title printed on this source.</p>}
      {manage&&data&&<fieldset disabled={busy||!selected.includes(entry.id)} className="load-import-mapping"><legend>Assign this course in the selected semester</legend>

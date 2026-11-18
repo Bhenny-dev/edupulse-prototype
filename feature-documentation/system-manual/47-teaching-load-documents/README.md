@@ -53,3 +53,20 @@ Open an instructor and expand **retained source schedule rows** for the printed 
 Previous semesters stay view-only for every normal application role. This owner-requested backfill is a privileged PostgreSQL maintenance operation with no JWT, not an enabled historical import/edit button or an exception for a client role. It creates no current/next load, class membership, syllabus, courseware or learner activity. [Validation](../../versions/2026-11-18-historical-cit-loads/validation/results.md).
 
 Academic term is now placed at the right of the Course, Instructors and Students title row. On narrow screens the header wraps the selector to the available width. The shared term, reload behavior and completed-term restrictions are unchanged.
+
+## Correct extracted schedule and source details
+
+For selected rows in a writable term, **Schedule and source details** provides inputs for **Time**, **Days**, **Room**, **Units**, **Lecture units**, **Lab units**, **Listed hours**, **Students listed**, **Program**, and **Degree on source**. Days and degree offer native suggestions while permitting the original/custom wording. Blank numeric cells remain unrecorded; a true zero remains zero. Student headcounts must be whole numbers from 0 to 2,000; units are bounded to 50 and listed hours to 168. Inline errors prevent confirmation.
+
+**Computed hours / week** is a calculated output. Changing time or days recomputes it with the existing schedule parser; an unreadable schedule remains **Not recorded**. Source totals and extraction warnings remain comparisons against the original document, not recalculated approval evidence. Corrections clear **I compared the selected rows?**. Recheck the selected rows and explicitly confirm to save. No inference, student enrollment or publication is triggered by an edit. Historical periods and non-managing roles remain view-only. Unsaved corrections are local to this review and are not replayed after reload.
+
+![Editable schedule and source fields](05-desktop-editable-details.png)
+![Phone schedule and source fields](05-mobile-editable-details.png)
+
+The extraction and confirmation steps remain visible in these fictional PDF captures:
+
+![Extracted teaching-load review](01-extracted-load.png)
+![Reviewed mappings before confirmation](02-reviewed-mapping.png)
+![Previous term after confirmation](03-past-term.png)
+
+If a single table heading is unreadable, extraction recovers its values only when verified neighboring headings leave exactly one ruled column. A warning requires comparison with the source. Ambiguous or absent schedule cells remain unrecorded. Spaces around OCR clock colons are accepted; AM/PM is never invented.

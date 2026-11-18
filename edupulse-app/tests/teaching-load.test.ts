@@ -63,3 +63,14 @@ test('current, next and past loads filter independently, preserving the director
  assert.equal(loadTerm('','1st Semester'),'unspecified')
  assert.equal(deanCommand.safeParse({action:'load.import_document',filename:'approved.pdf',reviewed:false,entries:[]}).success,false)
 })
+
+test('missing time heading recovers only the unique ruled column; spaced OCR clock tokens compute without guessing missing cells',()=>{
+ const source=layout();source.items=source.items.filter(i=>i.str!=='TIME')
+ const entry=readTeachingLoadLayouts([source])!.entries[0]
+ assert.equal(entry.time,'7:30 - 10:00');assert.equal(entry.computedHours,5)
+ assert.match(entry.warnings.join(' '),/Unreadable Time heading/)
+ assert.equal(scheduleHours('7 : 30 - 10 : 00','TTH'),5)
+ const ambiguous=layout();ambiguous.items=ambiguous.items.filter(i=>!['TIME','DAY'].includes(i.str))
+ assert.equal(readTeachingLoadLayouts([ambiguous])!.entries[0].time,'')
+ assert.equal(readTeachingLoadLayouts([ambiguous])!.entries[0].computedHours,null)
+})

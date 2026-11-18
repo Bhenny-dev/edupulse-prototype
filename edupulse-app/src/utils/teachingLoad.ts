@@ -49,7 +49,7 @@ export function scheduleDays(value: string): string[] | null {
 /** Duration is computable without guessing AM/PM; clock times remain exactly as printed. */
 export function scheduleHours(time: string, days: string): number | null {
   const names = scheduleDays(days)
-  const normalized = time.replace(/[\u2010-\u2015\u2212\u00b1]/g, '-')
+  const normalized = time.replace(/(\d)\s*:\s*(\d{2})/g,'$1:$2').replace(/[\u2010-\u2015\u2212\u00b1]/g, '-')
   const parts = normalized.split('/').map(clean).filter(Boolean)
   const durations = parts.map(part => {
     const match = /^(\d{1,2}):(\d{2})\s*(AM|PM)?\s*-\s*(\d{1,2}):(\d{2})\s*(AM|PM)?$/i.exec(part)
@@ -100,7 +100,15 @@ export function readTeachingLoadLayouts(pages: Layout[]): TeachingLoadDocument |
         printedHours = numeric(hourCell) ?? numeric(/^\d+(?:\.\d+)?/.exec(hourCell)?.[0] || '')
         continue
       }
-      const values = columns.map(c => { const x = c?.transform?.[4]; return x === undefined ? '' : cells[xs.findIndex((left,i) => x >= left && x < xs[i+1])] || '' })
+      const positions = columns.map(c => {const x=c?.transform?.[4];return x===undefined?-1:xs.findIndex((left,i)=>x>=left&&x<xs[i+1])})
+      // Recover a missing OCR heading only when known neighbors leave exactly one ruled cell.
+      // Never use an ordinal fallback for merged, missing or ambiguous grid columns.
+      const recovered:string[]=[]
+      const values = columns.map((_,index) => {
+        let position=positions[index]
+        if(position<0&&index>0&&index<positions.length-1&&positions[index-1]>=0&&positions[index+1]===positions[index-1]+2){position=positions[index-1]+1;recovered.push(['Subject','Title','Time','Days','Units','Lecture units','Lab units','Listed hours','Room','Students','Program'][index])}
+        return position<0?'':cells[position]||''
+      })
       const [subjectCode,printedTitle,time,days,units,lecture,lab,hours,room,students,program] = values
       const title = printedTitle.replace(/^[^\p{L}\p{N}(]+/u, '')
       // A printed row number marks a class row. OCR can miss a lone digit, so a row whose cells read as a course code
@@ -110,6 +118,7 @@ export function readTeachingLoadLayouts(pages: Layout[]): TeachingLoadDocument |
       if (!subjectCode || !title) { warnings.push(`Page ${page.number}, row ${cells[0]}: unreadable course cells.`); continue }
       const position = pageEntries.length + 1
       const computedHours = scheduleHours(time,days), printed = numeric(hours), rowWarnings: string[] = numbered ? [] : ['The row number was not read; this row was found by its course code. Check it against the source.']
+      if(recovered.length)rowWarnings.push(`Unreadable ${recovered.join(', ')} heading: values recovered from the ruled column between verified neighboring headings. Compare with the source.`)
       if (computedHours === null) rowWarnings.push('Check the printed days and time; hours could not be computed.')
       else if (printed !== null && Math.abs(computedHours - printed) > 0.02) rowWarnings.push(`Schedule computes to ${computedHours} hours; the document lists ${printed}.`)
       if (!/\b(?:AM|PM)\b/i.test(time)) rowWarnings.push('AM/PM is not printed. Confirm clock times before using this as a delivery schedule.')

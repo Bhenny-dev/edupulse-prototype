@@ -157,3 +157,5 @@ Execution is tracked in [WORKPLAN.md](WORKPLAN.md). A release is verified only a
 [12 November instructor updates](versions/2026-11-12-instructor-syllabi/README.md) · course-labelled blocks, recorded results, deletion, unified history and attributed sharing.
 
 - [12 November 2026 · Curriculum population](versions/2026-11-12-curriculum-population/README.md)
+
+[Editable teaching-load details and OCR schedule recovery](versions/2026-11-18-editable-load-details/README.md) documents the reviewed fields, guarded extraction and validation.

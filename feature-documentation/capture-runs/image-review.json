@@ -5089,6 +5089,36 @@
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-14T11:11:09.121340+00:00",
       "captureRun": "2026-11-14T11-10-09-790Z-4a21af15"
+    },
+    {
+      "path": "feature-documentation/system-manual/47-teaching-load-documents/01-extracted-load.png",
+      "sha256": "07cb311c0e19db65b6e8feca35ba4b7bc5826c390ede7c3bff28825bc1f0d622",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-18T11:30:13.629813+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/47-teaching-load-documents/02-reviewed-mapping.png",
+      "sha256": "45bc91ec8eeb89ddf8d3afd35f3feeef0c9e718f3f04b2bd0dfab7fffc683983",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-18T11:30:13.630603+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/47-teaching-load-documents/03-past-term.png",
+      "sha256": "4fbe54319beda5626c5a2ad68d06537e2cff3bfc148983e1644d8a8608f04421",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-18T11:30:13.631135+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/47-teaching-load-documents/05-desktop-editable-details.png",
+      "sha256": "7720623576c298c5e59ae6cc809b008242d354c11d21a8b0a62f11f95eaa4881",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-18T11:30:13.631470+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/47-teaching-load-documents/05-mobile-editable-details.png",
+      "sha256": "032d7f47f3d619bccbed466f73e841101ad38f9fa953cbdca54056d421396da1",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-18T11:30:13.631867+00:00"
     }
   ]
 }

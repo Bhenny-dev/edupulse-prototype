@@ -20,3 +20,6 @@
  body.pulse-panel-open .page-modal-overlay:has(>.load-import-page){padding:0!important}
  body.pulse-panel-open .page-modal-overlay>.page-modal.load-import-page{height:100dvh;max-height:100dvh!important}
 }
+
+.load-import-edit{border:0;padding:0;min-width:0}.load-import-edit legend{font-weight:600}.load-import-edit label{display:grid;gap:8px}.load-import-edit input{width:100%;min-width:0}.load-import-edit output,.load-import-edit small{display:block;margin-top:8px}.load-import-edit small{color:var(--text-secondary)}.load-import-edit [role=alert]{color:var(--red-600)}
+.load-import-edit>div{min-width:0}.load-import-edit label{font-size:14px;overflow-wrap:break-word}
