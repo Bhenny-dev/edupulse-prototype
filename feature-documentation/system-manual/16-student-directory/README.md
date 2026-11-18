@@ -39,3 +39,10 @@ Saved members can be moved between blocks or removed through their three-dot men
 The active student directory again includes all six original departments. The department selector starts with **All departments**, retaining year/program filtering. On 17 November the 1,869 preserved non-CIT students were reactivated, bringing the active directory to 2,286. Four legacy role placeholders remain retired. Restoring accounts does not invent course enrollments. See [Manual 47](../47-teaching-load-documents/README.md).
 
 Inside a selected monitoring class, course/block fields are locked to that class. The same registered-account search and explicit save are retained. Use the outer registration control to create another confirmed class membership. See [Manual 37](../37-instructor-monitoring/README.md).
+
+
+### Department home blocks - 18 November 2026
+
+The current directory includes all six departments and groups home blocks by program and recorded year, independently of course enrollment. Use Department to narrow the Students list and Blocks / Sections. Department selection stays in the URL on reload. A block card shows its actual directory members even when it has no courses. The 2027-x-xxxx intake is Year 1; other IDs retain their recorded year. The owner-confirmed allocation places 2,286 existing active students into 109 blocks of at most 35. It creates no teaching load, course enrollment or learner activity.
+
+The student Dashboard shows its own recorded home block and size before any syllabus or course is assigned. Individual registered students, including students from other blocks/departments, remain selectable by the assigned instructor. No nationality is inferred from IDs or names.

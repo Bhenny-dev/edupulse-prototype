@@ -47,7 +47,7 @@ function AcademicSession({ children, user,authLoading }) {
           const records = await aiRequest('academic', 'GET', undefined, controller.signal)
           if (!valid()) return
           // A mutation arriving during a GET invalidates that response; read the newer projection.
-          if (version === timing.current.invalidation) {setSnapshot({ role, data: { ...Object.fromEntries(Object.keys(EMPTY_ACADEMIC).map(key => [key, Array.isArray(records[key]) ? records[key] : []])),
+          if (version === timing.current.invalidation) {setSnapshot({ role, data: { ...Object.fromEntries(Object.keys(EMPTY_ACADEMIC).map(key => [key, Array.isArray(records[key]) ? records[key] : []])), homeBlock:role==='student'&&records.homeBlock&&typeof records.homeBlock.code==='string'?records.homeBlock:null,
             // Dean-only account directory (object) and its unavailable notice travel with the records.
             ...(records.directory && typeof records.directory === 'object' && !Array.isArray(records.directory) ? { directory: records.directory } : {}),
             ...(typeof records.directoryError === 'string' ? { directoryError: records.directoryError } : {}) }, loaded: true });setRefreshAvailable(false)}

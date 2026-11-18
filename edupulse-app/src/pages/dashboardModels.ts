@@ -181,7 +181,7 @@ export function accountStudentModel(data: AcademicData, user?: { email?: string 
       ...unopened.map(p => ({ id: p.id, text: `You haven't opened "${p.title}" yet.`, path: '/courseware' })),
       ...unanswered.map(p => ({ id: p.id, text: `Unanswered assessment: "${p.title}".`, path: '/assessment' })),
     ].slice(0, 6),
-    block: enrollment ? {
+    block: data.homeBlock ? {code:data.homeBlock.code,year:`Year ${data.homeBlock.year_level}`,students:data.homeBlock.students,adviser:info?.adviser||'Not recorded'} : enrollment ? {
       code: enrollment.block_section,
       year: year ? `Year ${year}` : 'Not recorded',
       students: info?.students ?? 'Not recorded',

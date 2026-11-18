@@ -1,3 +1,4 @@
+import {useSearchParams} from 'react-router-dom'
 import useAcademicTerm from './useAcademicTerm'
 import LoadTermFilter from './LoadTermFilter'
 import {recordsForLoadTerm} from '../../utils/loadTerms'
@@ -5,7 +6,7 @@ import { useMemo, useState } from 'react'
 import { Users, Layers, Shuffle, UserX, UserPlus, FileUp, UserRound } from 'lucide-react'
 import { useWorkspaceViewState } from '../../context/WorkspaceContext'
 import { Empty, Table, CsvButton, useAcademicTabs } from './AcademicUI'
-import { deanRecords, deanDirectory, studentCourseProgress, isIrregular, yearLabel, loadRows } from './deanRecordModel'
+import { deanRecords, deanDirectory, studentCourseProgress, isIrregular, yearLabel, loadRows, directoryBlocks } from './deanRecordModel'
 import GlassIcon from '../ui/GlassIcon'
 import { useAuth } from '../../context/AuthContext'
 import { DeanCards, DeanDialog, ActivityTable, DeanFeedback, ConfirmDialog, StatusBadge, Pager, UploadButton } from './DeanCommon'
@@ -27,16 +28,22 @@ export default function DeanStudents({ data:allData }) {
   const blocks = useMemo(() => knownBlocks(data, model), [data, model])
   const { key: tab, nav } = useAcademicTabs({ items: [['list', 'Student list'], ['blocks', 'Blocks / Sections']], label: 'Student views' })
   const [detail, setDetail] = useWorkspaceViewState('dean-detail:students', null)
+  const [params,setParams]=useSearchParams()
+  const department=params.get('department')||''
+  const setDepartment=value=>{const next=new URLSearchParams(params);if(value)next.set('department',value);else next.delete('department');setParams(next)}
   const [search, setSearch] = useState(''), [year, setYear] = useState(''), [show, setShow] = useState('all'), [page, setPage] = useState(1)
   const [editing, setEditing] = useState(null), [confirm, setConfirm] = useState(null), [review, setReview] = useState(null)
   const action = useDeanAction()
   const students = directory.students
-  const filtered = students.filter(s => (!year || String(s.year_level) === year) && (show === 'all' || (show === 'irregular' ? isIrregular(s) : show === 'suspended' ? s.status === 'suspended' : show === 'unplaced' ? !s.block : show === s.block))
+  const homeBlocks=useMemo(()=>directory.managed&&(writable||term==='all')?directoryBlocks(directory.students,data):model.blocks,[directory.managed,directory.students,data,model.blocks,writable,term])
+  const shownBlocks=homeBlocks.filter(b=>b.students.some(s=>(!department||s.department===department)&&(!year||String(s.year_level??[...s.years||[]][0])===year)&&`${s.name} ${s.student_number||s.reference} ${b.name}`.toLowerCase().includes(search.trim().toLowerCase())))
+  const blockGroup=b=>[b.department,yearLabel(b)].filter(Boolean).join(' / ')
+  const filtered = students.filter(s => (!department||s.department===department) && (!year || String(s.year_level) === year) && (show === 'all' || (show === 'irregular' ? isIrregular(s) : show === 'suspended' ? s.status === 'suspended' : show === 'unplaced' ? !s.block : show === s.block))
     && `${s.name} ${s.student_number} ${s.email}`.toLowerCase().includes(search.trim().toLowerCase()))
   const pages = Math.max(1, Math.ceil(filtered.length / PAGE)), current = Math.min(page, pages), visible = filtered.slice((current - 1) * PAGE, current * PAGE)
   const irregular = students.filter(isIrregular), byId = id => students.find(s => s.id === id)
   const selected = typeof detail === 'string' && detail.startsWith('student:') ? byId(detail.slice(8)) : null
-  const block = typeof detail === 'string' && detail.startsWith('block:') ? (detail.slice(6) === 'irregular' ? { id: 'irregular', name: 'Irregular students', irregular: true } : model.blocks.find(b => b.id === detail.slice(6))) : null
+  const block = typeof detail === 'string' && detail.startsWith('block:') ? (detail.slice(6) === 'irregular' ? { id: 'irregular', name: 'Irregular students', irregular: true } : homeBlocks.find(b => b.id === detail.slice(6))) : null
   const blockStudents = block ? block.irregular ? irregular : students.filter(s => s.block && s.block.toLowerCase() === block.id) : []
   const activity = s => model.activity(new Set(data.enrollments.filter(e => e.student_email.toLowerCase() === s.email.toLowerCase()).map(e => e.course_id)), s.email.toLowerCase())
   const rosterCounts = useMemo(() => Object.fromEntries(blocks.map(name => [name, students.filter(s => s.block === name).length])), [blocks, students])
@@ -55,7 +62,7 @@ export default function DeanStudents({ data:allData }) {
     <LoadTermFilter data={allData}/>{nav}
     <DeanCards items={[
       { label: 'Registered students', value: students.filter(s => s.status === 'active').length, icon: Users, tone: 'sky', to: '/students?tab=list' },
-      { label: 'Blocks / Sections', value: model.blocks.length, icon: Layers, tone: 'purple', to: '/students?tab=blocks' },
+      { label: 'Blocks / Sections', value: homeBlocks.length, icon: Layers, tone: 'purple', to: '/students?tab=blocks' },
       { label: 'Irregular students', value: irregular.length, icon: Shuffle, tone: 'amber', onClick: () => setDetail('block:irregular') },
       { label: 'Suspended', value: students.filter(s => s.status === 'suspended').length, icon: UserX, tone: 'red', onClick: () => { setShow('suspended'); setPage(1) } }]} />
     <DeanFeedback action={action} />
@@ -63,8 +70,9 @@ export default function DeanStudents({ data:allData }) {
     <div className="dean-toolbar">
       <label className="academic-filter">Search students<input className="form-input" type="search" value={search} onChange={event => setFilter(setSearch)(event.target.value)} placeholder="Name, student number or email" /></label>
       <label className="academic-filter">Year level<select className="form-select" value={year} onChange={event => setFilter(setYear)(event.target.value)}><option value="">All years</option>{[1, 2, 3, 4].map(y => <option key={y} value={y}>Year {y}</option>)}</select></label>
+      <label className="academic-filter">Department<select className="form-select" value={department} onChange={event=>setFilter(setDepartment)(event.target.value)}><option value="">All departments</option>{[...new Set(students.map(s=>s.department).filter(Boolean))].sort().map(name=><option key={name}>{name}</option>)}</select></label>
       <label className="academic-filter">Show<select className="form-select" value={show} onChange={event => setFilter(setShow)(event.target.value)}><option value="all">All students</option><option value="irregular">Irregular students</option><option value="unplaced">Not placed</option><option value="suspended">Suspended</option>{blocks.map(b => <option key={b} value={b}>{b}</option>)}</select></label>
-      <div className="academic-actions">{directory.managed && <><UploadButton label={<><FileUp size={15} aria-hidden="true" /> Upload student list</>} onFile={upload} disabled={Boolean(action.busy)} /><button className="btn btn-primary btn-sm" onClick={() => setEditing('new')}><UserPlus size={15} aria-hidden="true" /> Add student</button></>}</div>
+      <div className="academic-actions">{directory.managed && writable && <><UploadButton label={<><FileUp size={15} aria-hidden="true" /> Upload student list</>} onFile={upload} disabled={Boolean(action.busy)} /><button className="btn btn-primary btn-sm" onClick={() => setEditing('new')}><UserPlus size={15} aria-hidden="true" /> Add student</button></>}</div>
     </div>
     {tab === 'list' && <>
       <ActivityTable scores={scores} label="Student list" headers={['Student number', 'Name', 'Year', 'Block', 'Assessments taken', 'Materials opened', 'Status', 'Actions']} rows={visible.map(s => { const a = activity(s); return [s.student_number || '—',
@@ -73,9 +81,9 @@ export default function DeanStudents({ data:allData }) {
       <Pager page={current} pages={pages} onPage={setPage} total={filtered.length} label="students" />
     </>}
     {tab === 'blocks' && <>
-      {[...new Set(model.blocks.map(yearLabel))].map(label => <section className="dean-year-group" key={label} aria-label={label}><h2>{label}</h2><div className="academic-card-grid">{model.blocks.filter(b => yearLabel(b) === label).map(b => <button className="card dean-record-card" key={b.id} onClick={() => setDetail(`block:${b.id}`)} aria-label={`View block ${b.name}`}><GlassIcon icon={Users} color="var(--sky-500)" /><strong>{b.name}</strong><span>{b.students.length} registered student{b.students.length === 1 ? '' : 's'}</span><span>{b.courseIds.size} course offering{b.courseIds.size === 1 ? '' : 's'}</span></button>)}</div></section>)}
+      {[...new Set(shownBlocks.map(blockGroup))].map(label => <section className="dean-year-group" key={label} aria-label={label}><h2>{label}</h2><div className="academic-card-grid">{shownBlocks.filter(b => blockGroup(b) === label).map(b => <button className="card dean-record-card" key={b.id} onClick={() => setDetail(`block:${b.id}`)} aria-label={`View block ${b.name}`}><GlassIcon icon={Users} color="var(--sky-500)" /><strong>{b.name}</strong>{b.program&&<span className="text-sm text-muted">{b.program}</span>}<span>{b.students.length} registered student{b.students.length === 1 ? '' : 's'}</span><span>{b.courseIds.size} course offering{b.courseIds.size === 1 ? '' : 's'}</span></button>)}</div></section>)}
       <section className="dean-year-group" aria-label="Irregular students"><h2>Irregular students</h2><div className="academic-card-grid"><button className="card dean-record-card" onClick={() => setDetail('block:irregular')} aria-label="View irregular students"><GlassIcon icon={Shuffle} color="var(--amber-500)" /><strong>Irregular students</strong><span>{irregular.length} student{irregular.length === 1 ? '' : 's'} outside a block</span><span>Enrolled in the classes they attend</span></button></div></section>
-      {!model.blocks.length && <Empty>No registered blocks or sections yet.</Empty>}
+      {!shownBlocks.length && <Empty>No registered blocks or sections yet.</Empty>}
     </>}
     {block && <DeanDialog title={block.name} subtitle={block.irregular ? 'Students who attend classes by subject instead of one block' : `${yearLabel(block)} · ${blockStudents.length} registered student${blockStudents.length === 1 ? '' : 's'} · ${block.courseIds.size} course offering${block.courseIds.size === 1 ? '' : 's'}`} icon={block.irregular ? Shuffle : Users} tone={block.irregular ? 'amber' : 'sky'} label={block.irregular ? 'Irregular students' : `Block ${block.name}`} onClose={() => setDetail(null)}>
       <div className="academic-filters"><CsvButton headers={['Student number', 'Name', 'Email', 'Year level', 'Classes']} rows={blockStudents.map(s => [s.student_number, s.name, s.email, s.year_level, classesOf(directory, s).map(c => `${c.CourseCode} ${c.Block}`).join('; ')])} name={block.irregular ? 'irregular-students' : `block-${block.name}`} /></div>

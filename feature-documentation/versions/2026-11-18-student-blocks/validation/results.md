@@ -1,0 +1,8 @@
+# Validation
+
+A private full before-state export, deterministic placement preview and rolled-back linked-database rehearsal preceded the explicit owner-authorized allocation. Post-write verification: 2,286 active students, six departments, 109 blocks, largest block 35, zero unplaced students, 485 IDs matching 2027-x-xxxx, zero matching IDs outside Year 1. The passwords, access metadata, account IDs, emails and bans fingerprint is unchanged. Original teaching workspaces, courses, enrollments, publications, scores, reading/access/session and delivery-schedule fingerprints are unchanged. Only home roster metadata and the 30 confirmed year corrections changed, with one administrative audit event.
+
+The new student-self home-block RPC checks the live Student role and actual owner identity, returns only their own placement and aggregate block size, and is reused by the verified Admin support gateway. Native checks cover planner capacity, stable existing placements, retained individual/irregular placements, missing programs, duplicate IDs, own-profile access, staff rejection, independent course counts and no-enrollment display.
+
+
+Both focused native checks and TypeScript pass. Ten desktop/phone browser checks pass for department home blocks, student no-enrollment display, shared academic terms and hidden historical actions. The Department URL/reload assertion is included for the final release pass. Full local verification and production build gates run again with the merged Pulse/OCR changes. Private home-block screenshots were opened for desktop and phone; publication remains owner-paused.

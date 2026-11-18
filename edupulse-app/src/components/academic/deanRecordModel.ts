@@ -73,7 +73,7 @@ export function deanRecords(data:AcademicData, now=Date.now()) {
 
 // ---- Dean course loading and account directory -------------------------------------------
 export type DeanInstructor = { id:string; name:string; email:string; status:'active'|'suspended'; employee_id:string; has_masters:boolean|null; degree:string; specialization:string; last_sign_in_at?:string|null }
-export type DeanAccount = { id:string; student_number:string; name:string; surname:string; first_name:string; middle_name:string; email:string; year_level:number|null; program:string; status:'active'|'suspended'; block:string|null; type:string|null; last_sign_in_at?:string|null }
+export type DeanAccount = { id:string; student_number:string; name:string; surname:string; first_name:string; middle_name:string; email:string; year_level:number|null; department?:string;program:string; status:'active'|'suspended'; block:string|null; type:string|null; last_sign_in_at?:string|null }
 export type LoadRow = { key:string; code:string; block:string; semester:string; academicYear:string; instructorId:string; instructorName:string; hasMasters:string; specialization:string;time:string;days:string;room:string;units:string;lecture:string;lab:string;hours:string;computedHours:string;students:string;program:string;source:string;degree:string;sourceCode:string;sourceTitle:string;sourceInstructor:string;sourceYear:string;sourceSemester:string;loadType:string;parentKey:string;updatedAt?:string;sourceRows?:Record<string,unknown>[] }
 type Directory = { instructors?:DeanInstructor[]; students?:DeanAccount[]; irregular?:Record<string,string>[] }
 const sourceHours=(rows:unknown)=>{if(!Array.isArray(rows))return '';const hours=rows.map(r=>r.computed_hours).filter(v=>typeof v==='number');return hours.length===rows.length?String(hours.reduce((n,v)=>n+v,0)):''}
@@ -136,6 +136,22 @@ export function deanDirectory(data:AcademicData, model:ReturnType<typeof deanRec
   return {managed:Boolean(directory),instructors,students,irregular:directory?.irregular||[]}
 }
 export const isIrregular = (student:Pick<DeanAccount,'block'|'type'>) => /irreg/i.test(student.type||'')||student.block==='IRREGULAR'
+
+/** Home blocks exist independently of any course load, syllabus or learner activity. */
+export function directoryBlocks(students:DeanAccount[],data:AcademicData){
+ const groups=new Map<string,{id:string;name:string;department:string;program:string;year:number|null;mixed:boolean;students:DeanAccount[];courseIds:Set<string>}>()
+ const byEmail=new Map<string,Set<string>>()
+ for(const row of data.enrollments){const address=email(row.student_email);if(!byEmail.has(address))byEmail.set(address,new Set());byEmail.get(address)!.add(row.course_id)}
+ for(const student of students){
+  if(!student.block||isIrregular(student))continue
+  const id=student.block.toLowerCase(),group=groups.get(id)||{id,name:student.block,department:student.department||'',program:student.program,year:student.year_level,mixed:false,students:[],courseIds:new Set<string>()}
+  group.students.push(student)
+  for(const course of byEmail.get(email(student.email))||[])group.courseIds.add(course)
+  if(group.year!==student.year_level){group.mixed=true;group.year=null}
+  groups.set(id,group)
+ }
+ return [...groups.values()].sort((a,b)=>a.department.localeCompare(b.department)||(a.year??99)-(b.year??99)||a.name.localeCompare(b.name))
+}
 /** Per-course delivery for one student: released work, what they opened, assessments taken and their average. */
 export function studentCourseProgress(data:AcademicData, model:ReturnType<typeof deanRecords>, address:string) {
   const mine=data.enrollments.filter(e=>email(e.student_email)===email(address))

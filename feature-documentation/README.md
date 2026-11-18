@@ -4,6 +4,8 @@
 
 | Folder | Covers | Contents |
 | --- | --- | --- |
+| [18 November department blocks](versions/2026-11-18-student-blocks/README.md) | All-department home placements and confirmed first-year correction | Applied data; UI release verification in progress |
+| [18 November course semesters](versions/2026-11-18-course-semesters/README.md) | Three-field course catalog, shared semester scope and instructor-confirmed class lists | Live from e3b3f481; 463 native and 44 local browser checks |
 | [18 November card actions](versions/2026-11-18-card-actions/README.md) | Course catalog lifecycle, Add Course and consistent Course/Instructor overflow menus | Live · 459 native tests, 42 local and 12 deployed browser checks |
 | [17 November instructor handover](versions/2026-11-17-instructor-handover/README.md) | Assignment-only instructor details and independent same-class teaching continuity | Live · 449 native tests and four deployed browser checks |
 | [17 November teaching-load intake](versions/2026-11-17-load-document-intake/README.md) | All-department restoration, cleared loads, PDF/OCR review and academic terms | Ready · 446 native tests and six deployed browser checks |
