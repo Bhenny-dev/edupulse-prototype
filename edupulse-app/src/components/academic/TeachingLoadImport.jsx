@@ -5,9 +5,9 @@ import {useAcademicRecords} from '../../context/AcademicContext'
 import {aiRequest} from '../../lib/aiClient'
 import useAcademicTerm from './useAcademicTerm'
 import {recordsForLoadTerm,loadTerm} from '../../utils/loadTerms'
+import {sectionOf,assignBlocks} from '../../utils/blockSections'
 import TeachingLoadFields,{loadFieldErrors} from './TeachingLoadFields'
 import {scheduleHours} from '../../utils/teachingLoad'
-import {sectionOf,assignBlocks} from '../../utils/blockSections'
 import PageModal from '../ui/PageModal'
 import SummaryCard from '../ui/SummaryCard'
 import {LoadingStatus} from '../ui/LoadingFeedback'
@@ -119,6 +119,7 @@ export default function TeachingLoadImport({file,initialOpen=false,openSignal=0,
     {shown.map(entry=>{const m=mapping(entry);return <article className="load-import-row" key={entry.id}>
      <header>{manage&&<input type="checkbox" aria-label={`Select page ${entry.page} row ${entry.row}`} checked={selected.includes(entry.id)} onChange={e=>{setSelected(old=>e.target.checked?[...old,entry.id]:old.filter(id=>id!==entry.id));setReviewed(false)}}/>}<div><h3>{entry.subjectCode} — {entry.title}</h3><p>{entry.instructor} · page {entry.page}, row {entry.row} · {entry.semester} · AY {entry.academicYear}</p></div></header>
      <TeachingLoadFields entry={entry} editable={manage&&Boolean(data)} disabled={busy||!selected.includes(entry.id)} block={blocks.get(entry.id)||sectionOf(entry.subjectCode).block||'Set once the instructor and course are chosen'} onChange={(key,value)=>{setEdits(old=>({...old,[entry.id]:{...old[entry.id],[key]:value}}));setReviewed(false);setError('')}}/>
+
      {entry.warnings.length>0&&<details><summary>Check schedule and source</summary><ul>{entry.warnings.map(w=><li key={w}>{w}</li>)}</ul></details>}
      {manage&&data&&courses.some(c=>c.code===m.course_code&&compact(c.title)!==compact(entry.title))&&<p>Check the course mapping: the recorded catalog title differs from the title printed on this source.</p>}
      {manage&&data&&<fieldset disabled={busy||!selected.includes(entry.id)} className="load-import-mapping"><legend>Assign this course in the selected semester</legend>

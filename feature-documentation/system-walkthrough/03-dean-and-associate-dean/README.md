@@ -108,5 +108,4 @@ Open an instructor and expand **retained source schedule rows** for the printed 
 
 Previous semesters stay view-only for every normal application role. This owner-requested backfill is a privileged PostgreSQL maintenance operation with no JWT, not an enabled historical import/edit button or an exception for a client role. It creates no current/next load, class membership, syllabus, courseware or learner activity. [Validation](../../versions/2026-11-18-historical-cit-loads/validation/results.md).
 
-
 The teaching-load review offers editable schedule/source fields for selected rows in writable terms, day/degree suggestions, calculated hours and inline numeric validation. Every correction requires renewed comparison before confirmation. Historical source rows remain view-only. See [editable details](../../system-manual/47-teaching-load-documents/README.md#correct-extracted-schedule-and-source-details).

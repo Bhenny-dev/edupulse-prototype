@@ -52,7 +52,6 @@ Open an instructor and expand **retained source schedule rows** for the printed 
 
 Previous semesters stay view-only for every normal application role. This owner-requested backfill is a privileged PostgreSQL maintenance operation with no JWT, not an enabled historical import/edit button or an exception for a client role. It creates no current/next load, class membership, syllabus, courseware or learner activity. [Validation](../../versions/2026-11-18-historical-cit-loads/validation/results.md).
 
-Academic term is now placed at the right of the Course, Instructors and Students title row. On narrow screens the header wraps the selector to the available width. The shared term, reload behavior and completed-term restrictions are unchanged.
 
 ## Correct extracted schedule and source details
 
@@ -68,5 +67,3 @@ The extraction and confirmation steps remain visible in these fictional PDF capt
 ![Extracted teaching-load review](01-extracted-load.png)
 ![Reviewed mappings before confirmation](02-reviewed-mapping.png)
 ![Previous term after confirmation](03-past-term.png)
-
-If a single table heading is unreadable, extraction recovers its values only when verified neighboring headings leave exactly one ruled column. A warning requires comparison with the source. Ambiguous or absent schedule cells remain unrecorded. Spaces around OCR clock colons are accepted; AM/PM is never invented.

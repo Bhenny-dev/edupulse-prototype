@@ -753,8 +753,4 @@ The load-change transaction freezes a bounded, deduplicated private teaching che
 
 A private transaction/owner row permits the handover workspace write and historical-copy labels; ordinary owner/publication/lifecycle guards stay active for every normal save. It is removed before the command returns, and errors roll back the complete transaction. Existing compare-and-save revisions and ordered institutional locks prevent stale overwrites. Capacity and original approved-file verification remain enforced. [Validation](../versions/2026-11-17-instructor-handover/validation/results.md).
 
-
-## Manual instructor load details - 18 November 2026
-
-Structured manual load details are validated by the private assignment wrapper before delegating to the existing course assignment core. The metadata update and assignment/handover share one transaction; missing records fail explicitly. Existing file/grid callers without the manual details payload retain their source-row workflow. The wrapper is not publicly executable. Role/term/account guards remain in the core. Schedule details never create student enrollments; optional student number is headcount. Manual details display separately from retained original source rows.
 Teaching-load preview corrections use the existing `load.import_document` contract and numeric bounds. Corrected fields are sent only after explicit confirmation; page/row, source identity, term, instructor resolution and optimistic concurrency remain unchanged. Time/day corrections reuse `scheduleHours`; source headcounts do not create enrollments. No API/schema or authorization change is introduced by these editable controls.
