@@ -105,8 +105,7 @@ test('student lists separate irregular students and show each student’s assess
     expect.objectContaining({ student_number: '2026-0101', placement: 'block', block: 'BSIT-1A', password: 'ramos@123', courses: [] }),
     expect.objectContaining({ student_number: '2025-0202', placement: 'irregular', year_level: 2, courses: [{ course_code: 'IT 102', course_title: 'Programming foundations', block: 'BSIT-1A' }] })])
 
-  await page.getByRole('button', { name: 'Blocks / Sections', exact: true }).first().click()
-  await page.getByRole('button', { name: 'View irregular students' }).click()
+  await page.getByRole('button', { name: 'Irregular students', exact: true }).click()
   await expect(page.getByRole('dialog', { name: 'Irregular students' })).toContainText('IT 102 · BSIT-1A')
 })
 

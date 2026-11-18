@@ -1,5 +1,9 @@
 # Backend System
 
+## Unified Students directory - 18 November 2026
+
+DeanStudents reuses the existing authorized directory and home-block projection for Dean and Program Coordinator. All-department filtering, section-card selection, search, status and pagination are client-side over that projection; URL parameters retain navigation only. CSV exports the filtered directory with the existing formula-escaping helper. No database migration, additional request, polling, authorization change or business-data write is introduced. Student details still resolve against freshly authorized records and fail closed after revocation. Previous-term management remains disabled.
+
 ## Course catalog actions — 18 November 2026
 
 The existing management command accepts `course.create`, `course.update` and `course.status`, rechecking the current Dean/Program Coordinator/Admin role in PostgreSQL. Updates require the exact institutional `updated_at` version and share the ordered institutional lock. Normalized codes remain unique and immutable; title edits update the display projection without touching original syllabus bytes. Catalog suspension blocks new/changed class assignments through management, PDF/grid import and direct record writes. Removal requires prior suspension and retains a tombstone plus all teaching/student history. Curriculum imports cannot silently reset lifecycle status. Existing handover, account and learner authorization rules remain unchanged. No new startup request, polling, seed or paid service is added. [Release validation](../versions/2026-11-18-card-actions/validation/results.md).

@@ -2,10 +2,10 @@ import {useSearchParams} from 'react-router-dom'
 import useAcademicTerm from './useAcademicTerm'
 import LoadTermFilter from './LoadTermFilter'
 import {recordsForLoadTerm} from '../../utils/loadTerms'
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { Users, Layers, Shuffle, UserX, UserPlus, FileUp, UserRound } from 'lucide-react'
 import { useWorkspaceViewState } from '../../context/WorkspaceContext'
-import { Empty, Table, CsvButton, useAcademicTabs } from './AcademicUI'
+import { Empty, Table, CsvButton } from './AcademicUI'
 import { deanRecords, deanDirectory, studentCourseProgress, isIrregular, yearLabel, loadRows, directoryBlocks } from './deanRecordModel'
 import GlassIcon from '../ui/GlassIcon'
 import { useAuth } from '../../context/AuthContext'
@@ -18,6 +18,7 @@ import { readGrid, planStudentList, chunk } from './eduSuiteImport'
 const PAGE = 25
 const placementLabel = student => isIrregular(student) ? 'Irregular' : student.block || 'Not placed'
 const percentText = value => value === null || value === undefined ? '—' : `${value}%`
+const departmentLabel = student => student.department || 'Department not recorded'
 
 export default function DeanStudents({ data:allData }) {
   const {term,writable}=useAcademicTerm()
@@ -26,19 +27,30 @@ export default function DeanStudents({ data:allData }) {
   const model = useMemo(() => deanRecords(data), [data])
   const directory = useMemo(() => deanDirectory(data, model), [data, model])
   const blocks = useMemo(() => knownBlocks(data, model), [data, model])
-  const { key: tab, nav } = useAcademicTabs({ items: [['list', 'Student list'], ['blocks', 'Blocks / Sections']], label: 'Student views' })
   const [detail, setDetail] = useWorkspaceViewState('dean-detail:students', null)
   const [params,setParams]=useSearchParams()
-  const department=params.get('department')||''
-  const setDepartment=value=>{const next=new URLSearchParams(params);if(value)next.set('department',value);else next.delete('department');setParams(next)}
-  const [search, setSearch] = useState(''), [year, setYear] = useState(''), [show, setShow] = useState('all'), [page, setPage] = useState(1)
+  const department=(params.get('department')||'').slice(0,150),search=(params.get('q')||'').slice(0,200)
+  const year=/^[1-4]$/.test(params.get('year')||'')?params.get('year'):'',blockFilter=(params.get('block')||'').slice(0,80)
+  const status=['active','suspended'].includes(params.get('status'))?params.get('status'):''
+  const page=/^[1-9]\d{0,5}$/.test(params.get('page')||'')?Number(params.get('page')):1
+  const departmentInput=useRef(null),list=useRef(null)
+  const setFilters=changes=>setParams(previous=>{
+    const next=new URLSearchParams(previous);next.delete('tab')
+    if(!Object.hasOwn(changes,'page'))next.delete('page')
+    for(const [key,value] of Object.entries(changes)){if(value)next.set(key,String(value));else next.delete(key)}
+    return next
+  })
+  const clearFilters=()=>setFilters({department:'',q:'',year:'',block:'',status:''})
+  const setPage=value=>setFilters({page:value>1?String(value):''})
   const [editing, setEditing] = useState(null), [confirm, setConfirm] = useState(null), [review, setReview] = useState(null)
   const action = useDeanAction()
   const students = directory.students
   const homeBlocks=useMemo(()=>directory.managed&&(writable||term==='all')?directoryBlocks(directory.students,data):model.blocks,[directory.managed,directory.students,data,model.blocks,writable,term])
-  const shownBlocks=homeBlocks.filter(b=>b.students.some(s=>(!department||s.department===department)&&(!year||String(s.year_level??[...s.years||[]][0])===year)&&`${s.name} ${s.student_number||s.reference} ${b.name}`.toLowerCase().includes(search.trim().toLowerCase())))
-  const blockGroup=b=>[b.department,yearLabel(b)].filter(Boolean).join(' / ')
-  const filtered = students.filter(s => (!department||s.department===department) && (!year || String(s.year_level) === year) && (show === 'all' || (show === 'irregular' ? isIrregular(s) : show === 'suspended' ? s.status === 'suspended' : show === 'unplaced' ? !s.block : show === s.block))
+  const departments=[...new Set(students.map(departmentLabel))].sort()
+  const scopedStudents=students.filter(s=>(!department||departmentLabel(s)===department)&&(!year||String(s.year_level)===year))
+  const blockOptions=[...new Set(scopedStudents.filter(s=>!isIrregular(s)).map(s=>s.block).filter(Boolean))].sort()
+  const shownBlocks=department?homeBlocks.filter(b=>b.students.some(s=>departmentLabel(s)===department&&(!year||String(s.year_level??[...s.years||[]][0])===year))):[]
+  const filtered = scopedStudents.filter(s => (!status||s.status===status) && (!blockFilter || (blockFilter==='irregular'?isIrregular(s):blockFilter==='unplaced'?!s.block:s.block===blockFilter))
     && `${s.name} ${s.student_number} ${s.email}`.toLowerCase().includes(search.trim().toLowerCase()))
   const pages = Math.max(1, Math.ceil(filtered.length / PAGE)), current = Math.min(page, pages), visible = filtered.slice((current - 1) * PAGE, current * PAGE)
   const irregular = students.filter(isIrregular), byId = id => students.find(s => s.id === id)
@@ -52,39 +64,39 @@ export default function DeanStudents({ data:allData }) {
     try { setReview({ filename: file.name, plan: planStudentList(await readGrid(file), { courses: model.courses, blocks, students, loads: loadRows(data), rosterCounts }) }) }
     catch (failure) { action.setError(failure.message || 'The file could not be read.') }
   }
-  const setFilter = setter => value => { setter(value); setPage(1) }
+  const filterBlock=value=>{setFilters({block:value});list.current?.scrollIntoView({block:'start',behavior:'auto'})}
   const manage = student => directory.managed && writable && <span className="dean-row-actions">
     <button className="btn btn-ghost btn-sm" onClick={() => setEditing(student)}>Edit</button>
     {student.status === 'suspended' ? <><button className="btn btn-ghost btn-sm" onClick={() => setConfirm({ student, next: 'active' })}>Reactivate</button><button className="btn btn-ghost btn-sm dean-danger-text" onClick={() => setConfirm({ student, next: 'removed' })}>Remove</button></>
       : <button className="btn btn-ghost btn-sm" onClick={() => setConfirm({ student, next: 'suspended' })}>Suspend</button>}
   </span>
   return <>
-    <LoadTermFilter data={allData}/>{nav}
+    <LoadTermFilter data={allData}/>
     <DeanCards items={[
-      { label: 'Registered students', value: students.filter(s => s.status === 'active').length, icon: Users, tone: 'sky', to: '/students?tab=list' },
-      { label: 'Blocks / Sections', value: homeBlocks.length, icon: Layers, tone: 'purple', to: '/students?tab=blocks' },
+      { label: 'Registered students', value: students.filter(s => s.status === 'active').length, icon: Users, tone: 'sky', onClick:clearFilters },
+      { label: 'Block sections', value: homeBlocks.length, icon: Layers, tone: 'purple', onClick:()=>departmentInput.current?.focus() },
       { label: 'Irregular students', value: irregular.length, icon: Shuffle, tone: 'amber', onClick: () => setDetail('block:irregular') },
-      { label: 'Suspended', value: students.filter(s => s.status === 'suspended').length, icon: UserX, tone: 'red', onClick: () => { setShow('suspended'); setPage(1) } }]} />
+      { label: 'Suspended', value: students.filter(s => s.status === 'suspended').length, icon: UserX, tone: 'red', onClick: () => setFilters({department:'',q:'',year:'',block:'',status:'suspended'}) }]} />
     <DeanFeedback action={action} />
     {!directory.managed && <p className="text-sm text-muted mb-16">{data.directoryError || 'Preview sample. Account changes need a signed-in Dean account.'}</p>}
-    <div className="dean-toolbar">
-      <label className="academic-filter">Search students<input className="form-input" type="search" value={search} onChange={event => setFilter(setSearch)(event.target.value)} placeholder="Name, student number or email" /></label>
-      <label className="academic-filter">Year level<select className="form-select" value={year} onChange={event => setFilter(setYear)(event.target.value)}><option value="">All years</option>{[1, 2, 3, 4].map(y => <option key={y} value={y}>Year {y}</option>)}</select></label>
-      <label className="academic-filter">Department<select className="form-select" value={department} onChange={event=>setFilter(setDepartment)(event.target.value)}><option value="">All departments</option>{[...new Set(students.map(s=>s.department).filter(Boolean))].sort().map(name=><option key={name}>{name}</option>)}</select></label>
-      <label className="academic-filter">Show<select className="form-select" value={show} onChange={event => setFilter(setShow)(event.target.value)}><option value="all">All students</option><option value="irregular">Irregular students</option><option value="unplaced">Not placed</option><option value="suspended">Suspended</option>{blocks.map(b => <option key={b} value={b}>{b}</option>)}</select></label>
-      <div className="academic-actions">{directory.managed && writable && <><UploadButton label={<><FileUp size={15} aria-hidden="true" /> Upload student list</>} onFile={upload} disabled={Boolean(action.busy)} /><button className="btn btn-primary btn-sm" onClick={() => setEditing('new')}><UserPlus size={15} aria-hidden="true" /> Add student</button></>}</div>
+    <div className="dean-toolbar student-directory-filters">
+      <label className="academic-filter">Search students<input className="form-input" type="search" value={search} maxLength={200} onChange={event=>setFilters({q:event.target.value})} placeholder="Name, student number or email" /></label>
+      <label className="academic-filter">Department<select ref={departmentInput} className="form-select" value={department} onChange={event=>setFilters({department:event.target.value,block:''})}><option value="">All departments</option>{department&&!departments.includes(department)&&<option value={department} disabled>Unavailable department</option>}{departments.map(name=><option key={name}>{name}</option>)}</select></label>
+      <label className="academic-filter">Year level<select className="form-select" value={year} onChange={event=>setFilters({year:event.target.value,block:''})}><option value="">All year levels</option>{[1,2,3,4].map(y=><option key={y} value={y}>Year {y}</option>)}</select></label>
+      <label className="academic-filter">Block section<select className="form-select" value={blockFilter} onChange={event=>setFilters({block:event.target.value})}><option value="">All block sections</option>{blockFilter&&!['irregular','unplaced',...blockOptions].includes(blockFilter)&&<option value={blockFilter} disabled>Unavailable block section</option>}{blockOptions.map(name=><option key={name}>{name}</option>)}<option value="irregular">Irregular students</option><option value="unplaced">Not placed</option></select></label>
+      <label className="academic-filter">Status<select className="form-select" value={status} onChange={event=>setFilters({status:event.target.value})}><option value="">All statuses</option><option value="active">Active</option><option value="suspended">Suspended</option></select></label>
+      <div className="academic-actions">{directory.managed&&writable&&<><UploadButton label={<><FileUp size={15} aria-hidden="true" /> Upload student list</>} onFile={upload} disabled={Boolean(action.busy)}/><button className="btn btn-primary btn-sm" onClick={()=>setEditing('new')}><UserPlus size={15} aria-hidden="true"/> Add student</button></>}</div>
     </div>
-    {tab === 'list' && <>
-      <ActivityTable scores={scores} label="Student list" headers={['Student number', 'Name', 'Year', 'Block', 'Assessments taken', 'Materials opened', 'Status', 'Actions']} rows={visible.map(s => { const a = activity(s); return [s.student_number || '—',
-        <button key="name" className="dean-link" onClick={() => setDetail(`student:${s.id}`)} aria-label={`View student ${s.name}`}>{s.name}</button>, s.year_level ? `Year ${s.year_level}` : '—',
-        isIrregular(s) ? <span key="p" className="dean-tag dean-tag-reassign">Irregular</span> : s.block || '—', a.submissions, a.opens, <StatusBadge key="s" status={s.status} />, manage(s) || '—'] })} empty={students.length ? 'No student matches this view.' : 'No student accounts yet. Upload the EduSuite student list or add a student.'} />
-      <Pager page={current} pages={pages} onPage={setPage} total={filtered.length} label="students" />
-    </>}
-    {tab === 'blocks' && <>
-      {[...new Set(shownBlocks.map(blockGroup))].map(label => <section className="dean-year-group" key={label} aria-label={label}><h2>{label}</h2><div className="academic-card-grid">{shownBlocks.filter(b => blockGroup(b) === label).map(b => <button className="card dean-record-card" key={b.id} onClick={() => setDetail(`block:${b.id}`)} aria-label={`View block ${b.name}`}><GlassIcon icon={Users} color="var(--sky-500)" /><strong>{b.name}</strong>{b.program&&<span className="text-sm text-muted">{b.program}</span>}<span>{b.students.length} registered student{b.students.length === 1 ? '' : 's'}</span><span>{b.courseIds.size} course offering{b.courseIds.size === 1 ? '' : 's'}</span></button>)}</div></section>)}
-      <section className="dean-year-group" aria-label="Irregular students"><h2>Irregular students</h2><div className="academic-card-grid"><button className="card dean-record-card" onClick={() => setDetail('block:irregular')} aria-label="View irregular students"><GlassIcon icon={Shuffle} color="var(--amber-500)" /><strong>Irregular students</strong><span>{irregular.length} student{irregular.length === 1 ? '' : 's'} outside a block</span><span>Enrolled in the classes they attend</span></button></div></section>
-      {!shownBlocks.length && <Empty>No registered blocks or sections yet.</Empty>}
-    </>}
+    {department&&<section className="student-department-sections" aria-label="Department block sections">
+      <div className="student-directory-heading"><h2>{department} sections</h2>{blockFilter&&<button className="btn btn-ghost btn-sm" onClick={()=>filterBlock('')}>All blocks in this department</button>}</div>
+      {[...new Set(shownBlocks.map(yearLabel))].map(label=><section className="dean-year-group" key={label} aria-label={label}><h3>{label}</h3><div className="academic-card-grid">{shownBlocks.filter(b=>yearLabel(b)===label).map(b=><button className="card dean-record-card student-section-card" key={b.id} onClick={()=>filterBlock(b.name)} aria-label={`Filter students in ${b.name}`} aria-pressed={blockFilter===b.name}><GlassIcon icon={Users} color="var(--sky-500)"/><strong>{b.name}</strong>{b.program&&<span className="text-sm text-muted">{b.program}</span>}<span>{b.students.length} registered student{b.students.length===1?'':'s'}</span></button>)}</div></section>)}
+      {!shownBlocks.length&&<Empty>No block sections match this department and year level.</Empty>}
+    </section>}
+    <section ref={list} className="student-directory-list">
+      <div className="student-directory-heading"><h2>Student list</h2><span className="text-sm text-muted" role="status">{filtered.length} matching student{filtered.length===1?'':'s'}</span>{(department||search||year||blockFilter||status)&&<button className="btn btn-ghost btn-sm" onClick={clearFilters}>Clear filters</button>}<CsvButton headers={['Student number','Name','Email','Department','Year level','Block','Classes','Status']} rows={filtered.map(s=>[s.student_number,s.name,s.email,departmentLabel(s),s.year_level,placementLabel(s),classesOf(directory,s).map(c=>`${c.CourseCode} ${c.Block}`).join('; '),s.status])} name="students"/></div>
+      <ActivityTable scores={scores} label="Student list" headers={['Student number','Name','Year','Block','Assessments taken','Materials opened','Status','Actions']} rows={visible.map(s=>{const a=activity(s);return [s.student_number||'—',<button key="name" className="dean-link" onClick={()=>setDetail(`student:${s.id}`)} aria-label={`View student ${s.name}`}>{s.name}</button>,s.year_level?`Year ${s.year_level}`:'—',isIrregular(s)?<span key="p" className="dean-tag dean-tag-reassign">Irregular</span>:s.block||'—',a.submissions,a.opens,<StatusBadge key="s" status={s.status}/>,manage(s)||'—']})} empty={students.length?'No student matches these filters.':'No student accounts yet. Upload the EduSuite student list or add a student.'}/>
+      <Pager page={current} pages={pages} onPage={setPage} total={filtered.length} label="students"/>
+    </section>
     {block && <DeanDialog title={block.name} subtitle={block.irregular ? 'Students who attend classes by subject instead of one block' : `${yearLabel(block)} · ${blockStudents.length} registered student${blockStudents.length === 1 ? '' : 's'} · ${block.courseIds.size} course offering${block.courseIds.size === 1 ? '' : 's'}`} icon={block.irregular ? Shuffle : Users} tone={block.irregular ? 'amber' : 'sky'} label={block.irregular ? 'Irregular students' : `Block ${block.name}`} onClose={() => setDetail(null)}>
       <div className="academic-filters"><CsvButton headers={['Student number', 'Name', 'Email', 'Year level', 'Classes']} rows={blockStudents.map(s => [s.student_number, s.name, s.email, s.year_level, classesOf(directory, s).map(c => `${c.CourseCode} ${c.Block}`).join('; ')])} name={block.irregular ? 'irregular-students' : `block-${block.name}`} /></div>
       <ActivityTable scores={scores} headers={['Student number', 'Name', 'Year', ...(block.irregular ? ['Classes'] : []), 'Assessments taken', 'Materials opened', 'Status']} rows={blockStudents.map(s => { const a = activity(s); return [s.student_number, <button key="n" className="dean-link" onClick={() => setDetail(`student:${s.id}`)}>{s.name}</button>, s.year_level || '—', ...(block.irregular ? [classesOf(directory, s).map(c => `${c.CourseCode} · ${c.Block}`).join(', ') || 'No classes yet'] : []), a.submissions, a.opens, <StatusBadge key="s" status={s.status} />] })} empty={block.irregular ? 'No irregular students are recorded.' : 'No registered students in this block.'} />

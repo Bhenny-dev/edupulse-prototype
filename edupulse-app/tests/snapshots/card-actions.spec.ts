@@ -33,7 +33,7 @@ for(const role of ['dean','associate_dean'])test(`${role} home blocks before cou
  const fixture=await deanManagementUI(page,role)
  fixture.records.courses=[];fixture.records.enrollments=[];fixture.records.publications=[]
  fixture.records.directory.students.push({id:'home-business',student_number:'2027-1-0099',name:'Business Example',surname:'Example',first_name:'Business',middle_name:'',email:'business@example.invalid',year_level:1,department:'Business',program:'Bachelor of Science in Accountancy',status:'active',block:'BSA-1A',type:'Regular'})
- await page.goto('/#/students?tab=blocks&department=Business')
- await expect(page.getByRole('button',{name:'View block BSA-1A',exact:true})).toContainText('1 registered student')
+ await page.goto('/#/students?department=Business')
+ await expect(page.getByRole('button',{name:'Filter students in BSA-1A',exact:true})).toContainText('1 registered student')
  await page.screenshot({path:`../feature-documentation/system-manual/16-student-directory/${role}-home-blocks.png`,animations:'disabled'})
 })

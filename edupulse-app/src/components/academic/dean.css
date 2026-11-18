@@ -3,6 +3,15 @@
 .dean-toolbar .academic-filter:first-child { flex: 1 1 260px; }
 .dean-toolbar .academic-actions { margin-left: auto; }
 
+.student-directory-filters .academic-filter { min-width:0; flex:1 1 160px; }
+.student-directory-filters .academic-filter:nth-child(2) { flex-basis:250px; }
+.student-directory-filters .academic-actions { flex-basis:100%; justify-content:flex-end; }
+.student-directory-heading { display:flex; flex-wrap:wrap; align-items:center; gap:12px; margin-bottom:16px; }
+.student-directory-heading h2 { margin-right:auto; }
+.student-department-sections { margin:24px 0; }
+.student-section-card[aria-pressed="true"] { border-color:var(--sky-500); background:var(--sky-50); box-shadow:0 0 0 2px var(--sky-200); }
+.student-directory-list { scroll-margin-top:100px; }
+
 .dean-segment { display: inline-flex; flex-wrap: wrap; gap: 4px; padding: 4px; border-radius: 999px; background: var(--gray-100); }
 .dean-segment button { border: 0; background: transparent; padding: 8px 14px; border-radius: 999px; font: 600 .8125rem var(--font-body), sans-serif; color: var(--gray-600); cursor: pointer; }
 .dean-segment button.active { background: var(--white); color: var(--sky-600); box-shadow: 0 1px 3px rgba(15, 23, 42, .12); }

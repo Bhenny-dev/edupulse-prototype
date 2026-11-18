@@ -4,6 +4,7 @@
 
 | Folder | Covers | Contents |
 | --- | --- | --- |
+| [18 November unified Students](versions/2026-11-18-unified-students/README.md) | One all-department directory with section-card filters and complete filtered CSV | 474 native and 40 local browser checks passed |
 | [18 November department blocks](versions/2026-11-18-student-blocks/README.md) | All-department home placements and confirmed first-year correction | Live; 474 native and 60 deployed browser checks |
 | [18 November course semesters](versions/2026-11-18-course-semesters/README.md) | Three-field course catalog, shared semester scope and instructor-confirmed class lists | Live from e3b3f481; 463 native and 44 local browser checks |
 | [18 November card actions](versions/2026-11-18-card-actions/README.md) | Course catalog lifecycle, Add Course and consistent Course/Instructor overflow menus | Live · 459 native tests, 42 local and 12 deployed browser checks |
