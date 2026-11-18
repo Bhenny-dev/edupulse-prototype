@@ -18,3 +18,7 @@ The `commit-msg` hook enforces this rule. Never use `--no-verify`. Use a `Docs-I
 
 * `edupulse-app/`: the application (React/Vite front end, Node API in `server/`, Vercel function in `api/`). The release gate is `npm run verify`, plus `npm run test:browser`.
 * `feature-documentation/`: `system-walkthrough/` (screens by role), `system-manual/` (tasks step by step), `backend-system/`, `session-generated/` (generated charts and figures; never screenshots) and `versions/` (release records).
+
+## Core flow workspace
+
+The Dean / Program Coordinator -> Instructor -> Student flow is built from [feature-documentation/CORE-FLOW-WORKSPACE.md](feature-documentation/CORE-FLOW-WORKSPACE.md). Read it before working on that flow, take its goals in order, and update its task rows and log in the same commit as the work. Push and migrate each goal when it is Ready, then start the next.

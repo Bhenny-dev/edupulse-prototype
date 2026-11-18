@@ -1,5 +1,9 @@
 # Execution plan
 
+## 18 November 2026: core flow workspace
+
+The Dean / Program Coordinator -> Instructor -> Student flow now has its own plan, audit and progress log: [CORE-FLOW-WORKSPACE.md](CORE-FLOW-WORKSPACE.md). Goals there are built, tested, pushed and migrated one at a time.
+
 ## 27 October 2026: interface corrections and feature-presence review
 
 Current work removes duplicate page sidebars, separates dialogs and Pulse, makes the launcher avatar-only and adds appropriate loading states. The [history/source audit](session-generated/2026-10-27-feature-presence-audit/README.md) found retained preview features that authenticated views bypass. Those gaps are explicitly open; prior release validation is not proof that every older functional requirement is complete.
