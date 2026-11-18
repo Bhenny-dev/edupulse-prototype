@@ -238,3 +238,7 @@ Academic dashboards load with authorized reads on entry and reload. **Refresh re
 Student navigation now names **Practice Assessments**. A selected Admin student view offers learner actions directly without a demonstration checkbox or yellow panel; new actions remain labelled and audited. Academic headers omit the routine ready indicator and export button. The [current student guide](../../system-manual/41-student-learning/README.md) shows the updated navigation, course cards, phone layout and support controls.
 
 Instructor monitoring uses the dashboard summary-card component and compact three-dot action menus. Within a class dialog, Escape closes an open action menu and returns focus to its trigger without dismissing the class. Tab dismisses the menu for onward keyboard navigation. A subsequent Escape closes the dialog. Authorized class, tab, filters and menu references restore after reload without replaying membership edits or exports. See [the roster action menu and delivery-status captures](../../system-manual/37-instructor-monitoring/README.md).
+
+### Authenticated footer removal - 18 November 2026
+
+Signed-in pages for every role no longer render the shared branding/provider/Support/copyright footer. The public landing footer remains. AI provider settings and Help remain available through Settings; no provider connection or role permission changes. Older screenshots showing the authenticated footer are historical during the owner pause.

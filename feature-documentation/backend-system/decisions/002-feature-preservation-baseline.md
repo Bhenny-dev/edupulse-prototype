@@ -333,3 +333,8 @@ Do not regress: all 66 source schedule rows remain intact under 37 course-only a
 ### 18 November 2026 - Header academic term placement
 
 Move the shared Academic term control into the management page header, aligned right of the title. Remove the duplicate body selectors on Course, Instructors and Students. Wrap on small screens; preserve one accessible selector, shared term state, reload persistence and previous-term read-only behavior. No data or authorization change.
+
+
+### 18 November 2026 - Landing-only footer
+
+Remove the shared footer from authenticated Layout for all roles, including Admin support views. Keep LandingFooter on the public landing page. Do not reintroduce the bottom provider/status, branding, support or copyright strip on signed-in pages. Retain Settings access to providers and Help. This is presentation only.

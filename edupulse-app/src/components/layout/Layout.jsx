@@ -1,7 +1,6 @@
 import ModalLayer from '../ui/ModalLayer'
 import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
-import { useAI } from '../../context/AIContext'
 import { WorkspaceStatus, useWorkspace, useWorkspaceViewState } from '../../context/WorkspaceContext'
 import { SkeletonContent } from '../ui/LoadingFeedback'
 import { useLanguage } from '../../context/LanguageContext'
@@ -183,7 +182,7 @@ function RoleSwitchPopover({ onClose }) {
 
 export default function Layout() {
   const workspace = useWorkspace()
-  const ai = useAI()
+
   const { user, logout, authLoading } = useAuth()
   const { language, switchLanguage } = useLanguage()
   const navigate = useNavigate()
@@ -509,26 +508,7 @@ export default function Layout() {
         </main>
       </div>
 
-      <footer role="contentinfo" style={{
-        borderTop: '1px solid var(--gray-100)',
-        padding: '20px 24px',
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        fontSize: '0.75rem', color: 'var(--gray-400)',
-        background: 'var(--white)',
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 600 }}>EduPulse</span>
-          <span>King's College of the Philippines — Benguet</span>
-          <NavLink to="/settings?tab=ai-provider" className={`badge ${ai.ready ? 'badge-published' : 'badge-draft'}`} style={{ fontSize: '0.625rem', maxWidth: '220px', whiteSpace: 'normal' }}>{ai.label}</NavLink>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <NavLink to="/settings?tab=help" style={{ color: 'var(--gray-400)', transition: 'color 150ms' }}
-            onMouseEnter={e => e.target.style.color = 'var(--sky-500)'}
-            onMouseLeave={e => e.target.style.color = 'var(--gray-400)'}
-          >Support</NavLink>
-          <span>© 2026 College of Information Technology</span>
-        </div>
-      </footer>
+
 
       {showSearch && <SearchOverlay onClose={() => setOverlay(null)} />}
       {showRoleSwitch && user?.canSwitchRoles && <RoleSwitchPopover onClose={() => setOverlay(null)} />}
