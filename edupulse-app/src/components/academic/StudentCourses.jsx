@@ -10,6 +10,7 @@ export function enrolledCourses(data){
  for(const c of data.courses)courses.set(c.id,{...courses.get(c.id),...c})
  return [...courses.values()]
 }
+const courseLabel=c=>[c.units?`${c.units} units`:'',c.semester,c.academic_year?`AY ${c.academic_year}`:''].filter(Boolean).join(' · ')||curriculumLabel(c.course_code)
 export default function StudentCourses({data,onOpen,busy}){
  const [params,setParams]=useSearchParams(),[query,setQuery]=useState('')
  const {key:contentType,nav:contentTabs}=useAcademicTabs({items:[['all','All'],['materials','Teaching Materials'],['assessments','Assessments']],label:'Course content views',parameter:'content'})
@@ -21,7 +22,7 @@ export default function StudentCourses({data,onOpen,busy}){
   <KPIs items={[["Enrolled courses",courses.length],["Delivered materials",materials.length],["Delivered assessments",assessments.length],["Materials opened",new Set(data.accesses.filter(a=>materials.some(p=>p.id===a.publication_id)).map(a=>a.publication_id)).size]]}/>
   {selected?<>
    <button className="btn btn-secondary mb-24" onClick={()=>change(null)}>Back to My Courses</button>
-   <section className="card mb-24"><div className="card-body"><h2>{selected.course_code} — {selected.course_title}</h2><p>Instructor: {selected.instructor_name||'Instructor not recorded'}</p><p className="text-sm text-muted">{curriculumLabel(selected.course_code)} · {selected.block_section||'Assigned class'}</p></div></section>
+   <section className="card mb-24"><div className="card-body"><h2>{selected.course_code} — {selected.course_title}</h2><p>Instructor: {selected.instructor_name||'Instructor not recorded'}</p><p className="text-sm text-muted">{courseLabel(selected)} · {selected.block_section||'Assigned class'}</p></div></section>
    {contentTabs}
    <AcademicLibrary data={scoped} all={contentType==='all'} assessments={contentType==='assessments'} onOpen={onOpen} busy={busy}/>
   </>:<>

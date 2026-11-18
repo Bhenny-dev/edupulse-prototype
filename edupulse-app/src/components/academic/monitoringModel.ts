@@ -1,10 +1,13 @@
+import {loadTerm} from '../../utils/loadTerms'
 import {courseMemberships, emailKey} from '../../utils/courseRoster'
 import {currentAttempts, filterAcademic, percent, type AcademicData, type Publication} from './academicData'
 
 export function monitoringCohorts(data:AcademicData, workspace:Parameters<typeof courseMemberships>[0], owner:string|number) {
- const memberships=courseMemberships(workspace,data,owner)
  return data.courses.filter(course=>String(course.instructor_id)===String(owner)).flatMap(course=>{
-  const blocks=[...new Set([...data.enrollments.filter(e=>e.course_id===course.id).map(e=>e.block_section||''),...memberships.filter(m=>m.courseCode===course.course_code).map(m=>m.blockSection),...course.block_info?.map((b)=>b.block)||[],...(workspace.registrations||[]).filter((r)=>String(r.uploadedBy)===String(owner)&&r.courseCode===course.course_code&&r.status==='active').map((r)=>r.blockSection),...(data.institutional||[]).filter(r=>r.kind==='loads'&&r.data.CourseCode===course.course_code&&r.data.InstructorID===String(owner)).map(r=>r.data.Block)])]
+  const scope={academicYear:course.academic_year,semester:course.semester}
+  const memberships=courseMemberships(workspace,data,owner,scope)
+  const inTerm=(r:{academicYear?:string;semester?:string})=>loadTerm(r.academicYear||'2026-2027',r.semester||'1st Semester')===loadTerm(scope.academicYear||'2026-2027',scope.semester||'1st Semester')
+  const blocks=[...new Set([...data.enrollments.filter(e=>e.course_id===course.id).map(e=>e.block_section||''),...memberships.filter(m=>m.courseCode===course.course_code).map(m=>m.blockSection),...course.block_info?.map((b)=>b.block)||[],...(workspace.registrations||[]).filter((r)=>String(r.uploadedBy)===String(owner)&&r.courseCode===course.course_code&&r.status==='active'&&inTerm(r)).map((r)=>r.blockSection),...(data.institutional||[]).filter(r=>r.kind==='loads'&&r.data.CourseCode===course.course_code&&r.data.InstructorID===String(owner)&&r.data.LoadType!=='course'&&inTerm({academicYear:r.data.AcademicYear,semester:r.data.Semester})).map(r=>r.data.Block)])]
   return blocks.map(block=>{
    const members=memberships.filter(m=>m.courseCode===course.course_code&&m.blockSection===block).map(member=>{
     const recorded=data.enrollments.find(e=>e.course_id===course.id&&emailKey(e.student_email)===emailKey(member.student.Email))
@@ -12,8 +15,7 @@ export function monitoringCohorts(data:AcademicData, workspace:Parameters<typeof
     return {...member,year:year&&year>=1&&year<=4?year:null,suspended:Boolean(member.suspended??recorded?.suspended)}
    })
    const years=[...new Set(members.map(m=>m.year).filter(Boolean))].sort()
-   const recorded=Number(course.block_info?.find((b)=>b.block===block)?.yearLevel)||Number(data.institutional?.find(r=>r.kind==='courses'&&r.data.CourseCode===course.course_code)?.data.YearLevel)
-   const year=recorded>=1&&recorded<=4?String(recorded):years.length===1&&members.every(m=>m.year)?String(years[0]):years.length>1?'mixed':'unknown'
+   const year=years.length>1?'mixed':years.length===1&&members.every(m=>m.year)?String(years[0]):'unknown'
    return {id:JSON.stringify([course.id,block]),course,block,year,years,members}
   }).filter(cohort=>cohort.block)
  })

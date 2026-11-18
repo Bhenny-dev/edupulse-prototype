@@ -88,3 +88,8 @@ The selected course now has **All**, **Teaching Materials** and **Assessments** 
 Saved score/material/practice labels omit test indicators. Performance attempt and material-access tables omit the Activity column; scores, marking, versions and dates remain. Audit provenance stays stored.
 
 Student learning and performance summaries now use the dashboard SummaryCard component, including colored icon tiles, consistent value/label typography and the shared responsive grid. The course, practice and topic views keep their current recorded data and controls. See [the current summary examples](../../system-manual/41-student-learning/README.md#consistent-summary-cards).
+
+
+### Semester-scoped courses - 18 November 2026
+
+The shared Academic term selection follows this account across dashboards and academic pages. Current and next semesters allow changes; previous and All terms are view-only. Add/Edit Course use code, title and units only. Dean course assignments have no block selector. The instructor adds actual block class lists from Course > Block sections, by upload or individual registered-student selection across departments. Class years follow their students. Each term keeps separate roster, source and learner history. See [Manual 46](../../system-manual/46-course-load-workspace/README.md).

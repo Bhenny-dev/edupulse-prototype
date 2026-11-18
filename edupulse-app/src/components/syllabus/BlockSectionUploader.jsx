@@ -24,14 +24,14 @@ async function readClassList(file) {
   return { students: roster.students, headers: ROSTER_HEADERS, warnings: roster.warnings, block: roster.block, course }
 }
 
-export default function BlockSectionUploader({ onRegister, onCancel }) {
+export default function BlockSectionUploader({ onRegister, onCancel, scope=null }) {
   const { addToast } = useToast()
   const [file, setFile] = useState(null)
   const [parsing, setParsing] = useState(false)
   const [parsed, setParsed] = useState(null)
   const [error, setError] = useState(null)
-  const [selectedCourse, setSelectedCourse] = useState('')
-  const [selectedBlock, setSelectedBlock] = useState('')
+  const [selectedCourse, setSelectedCourse] = useState(scope?.course||'')
+  const [selectedBlock, setSelectedBlock] = useState(scope?.block||'')
   const [dragOver, setDragOver] = useState(false)
   const inputRef = useRef(null)
   const parsingRef = useRef(false)
@@ -40,8 +40,8 @@ export default function BlockSectionUploader({ onRegister, onCancel }) {
     if (!f || parsingRef.current) return
     setFile(f)
     setParsed(null)
-    setSelectedCourse('')
-    setSelectedBlock('')
+    setSelectedCourse(scope?.course||'')
+    setSelectedBlock(scope?.block||'')
 
     const ext = f.name.split('.').pop().toLowerCase()
     if (!EXTENSIONS.includes(ext)) {
@@ -62,8 +62,8 @@ export default function BlockSectionUploader({ onRegister, onCancel }) {
 
     try {
       const result = await readClassList(f)
-      if (result.course) setSelectedCourse(result.course)
-      if (result.block) setSelectedBlock(result.block)
+      if (result.course) setSelectedCourse(scope?.course||result.course)
+      if (result.block) setSelectedBlock(scope?.block||result.block)
       setParsed(result)
       addToast(`Read ${result.students.length} students from ${f.name}`, 'success')
     } catch (err) {
@@ -73,7 +73,7 @@ export default function BlockSectionUploader({ onRegister, onCancel }) {
       parsingRef.current = false
       setParsing(false)
     }
-  }, [addToast])
+  }, [addToast,scope?.course,scope?.block])
 
   const handleDrop = useCallback((e) => {
     e.preventDefault()
@@ -109,11 +109,11 @@ export default function BlockSectionUploader({ onRegister, onCancel }) {
     const course = CURRICULUM_COURSES.find(c => c.code === selectedCourse)
     setSaving(true)
     try {
-      await onRegister({ courseCode: selectedCourse, courseTitle: course?.title || '', blockSection: selectedBlock.trim().toUpperCase(), students: parsed.students, fileName: file.name })
+      await onRegister({ courseCode: selectedCourse, courseTitle: scope?.title || course?.title || '', blockSection: selectedBlock.trim().toUpperCase(), students: parsed.students, fileName: file.name })
       reset()
     } catch (failure) { setError(failure.message) } finally { setSaving(false) }
   }
-  const reset = () => { setFile(null); setParsed(null); setError(null); setSelectedCourse(''); setSelectedBlock('') }
+  const reset = () => { setFile(null); setParsed(null); setError(null); setSelectedCourse(scope?.course||''); setSelectedBlock(scope?.block||'') }
 
   const getFileIcon = () => {
     if (!file) return <Upload size={24} style={{ color: 'var(--sky-500)' }} />
@@ -199,7 +199,7 @@ export default function BlockSectionUploader({ onRegister, onCancel }) {
                 onChange={e => setSelectedCourse(e.target.value)}
               >
                 <option value="">Choose a course...</option>
-                {CURRICULUM_COURSES.map(c => (
+                {(scope?[{code:scope.course,title:scope.title}]:CURRICULUM_COURSES).map(c => (
                   <option key={c.code} value={c.code}>{c.code} — {c.title}</option>
                 ))}
               </select>

@@ -8,7 +8,7 @@ The examples below use synthetic student profiles and a synthetic authenticated 
 
 ## 1. Find students
 
-Open **Student Monitoring → Register course students → Choose students**, or select a course/block card and use **Students → Add students to this block → Choose students**. Search by name or student number, and filter by **Year level**, **Department** and **Program**. **Previous students** and **Next students** page through matches. Selections remain while filters or pages change.
+Open **Course → the assigned course → Block sections → Add block section → Choose individual students**, or add students to an existing class in Student Monitoring. Confirm the class list in the selected current/next semester. Search by name or student number, and filter by **Year level**, **Department** and **Program**. **Previous students** and **Next students** page through matches. Selections remain while filters or pages change.
 
 ![Filter the official directory](01-directory-filters.png)
 

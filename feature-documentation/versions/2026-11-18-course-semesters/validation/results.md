@@ -1,0 +1,8 @@
+# Validation
+
+The four focused native database flows pass: three-field semester catalog, course-only PDF/grid import, pending class labels, completed-history protection, authenticated class registration, cross-department selection and independent semester handover. A rolled-back linked-database rehearsal compiles all three migrations and derives exactly 60 semester catalog entries while leaving zero teaching loads. Original data fingerprints are saved privately.
+
+Desktop/phone: 40 initial browser checks passed. Two stale Program Coordinator button selectors were corrected and their two checks pass. Both new individual-directory class-list checks pass, including reload without replay. Private desktop/phone directory screenshots were opened and inspected; broad screenshot publication remains owner-paused in doc-map.json. Full release verification and production receipt follow below.
+
+
+Full npm run verify passes: docs check (owner-paused publication policy), lint, TypeScript, 463 native checks, production build and deployment checks. All 44 targeted desktop/phone cases pass after the selector corrections and added class-list flow. Three linked migrations applied successfully after dry-run and a rolled-back rehearsal. A linked authenticated-role canary confirms management course creation/assignment, rejection of a historical edit and instructor registration of an existing official directory identity; its complete transaction was rolled back. Fingerprints for all 11 original relations match before/after migration and canary. The only additive business metadata is 60 semester catalog entries. No live loads, enrollments, courseware or learner activity were created.

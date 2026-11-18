@@ -13,6 +13,7 @@ export async function deanManagementUI(page: Page, role = 'dean') {
   records.institutional = [course('IT 102', 'Programming foundations', '1'), course('IT 202', 'Network foundations', '2'), course('IT 301', 'Systems analysis', '3'), course('IT 401', 'Capstone project', '4'),
     load('IT 102', 'BSIT-1A', 'teacher-a', 'Alex Sample Instructor'),
     { kind: 'rosters', record_key: 'SYN-005', data: { StudentID: 'SYN-005', Name: 'Sam Irregular Example', Email: 'sam@example.invalid', YearLevel: '2', Block: 'IRREGULAR', Type: 'Irregular' } }]
+  records.institutional.push(...records.institutional.filter(r=>r.kind==='courses').map(r=>({...r,kind:'course_terms',record_key:r.record_key+'|1st Semester|2026-2027',data:{...r.data,AcademicYear:'2026-2027'}})))
   records.enrollments.push({ course_id: 'c1', student_ref: 'SYN-005', display_name: 'Sam Irregular Example', student_email: 'sam@example.invalid', block_section: 'BSIT-1A' })
   const student = (id: string, number: string, name: string, email: string, year: number, block: string, type = 'Regular', status = 'active') => {
     const [first, surname] = name.split(' ')
@@ -47,19 +48,31 @@ export async function deanManagementUI(page: Page, role = 'dean') {
       const current = records.institutional!.find(row => row.kind === 'loads' && row.record_key === command.key && row.data.InstructorID === command.expected_instructor)
       return current ? route.fulfill({ json: inspection }) : route.fulfill({ status: 400, json: { error: { message: 'This course load is no longer available.' } } })
     }
+    if(command.action==='course-load.continuations')return route.fulfill({json:{continuations:[]}})
     commands.push(command)
+    if(command.action==='course-load.assign'||command.action==='course-load.update'){
+      const current=records.institutional!.find(r=>r.kind==='loads'&&r.record_key===command.key)
+      const code=String(command.course_code||current?.data.CourseCode),person=(records.directory.instructors as {id:string;name:string}[]).find(p=>p.id===command.instructor_id)
+      if(current){current.data.InstructorID=String(command.instructor_id);current.data.InstructorName=String(person?.name)}
+      else records.institutional!.push({kind:'loads',record_key:'course:'+code+':'+command.instructor_id,data:{CourseCode:code,InstructorID:String(command.instructor_id),InstructorName:String(person?.name),Block:'',LoadType:'course',AcademicYear:String(command.academic_year),Semester:String(command.semester)}})
+      return route.fulfill({json:{created:current?0:1,updated:current?1:0,key:current?.record_key||'course:'+code+':'+command.instructor_id}})
+    }
+    if(command.action==='course-load.remove'){
+      const prior=records.institutional!.find(r=>r.kind==='loads'&&r.record_key===command.key)
+      records.institutional=records.institutional!.filter(r=>!(r.kind==='loads'&&r.data.CourseCode===prior?.data.CourseCode&&r.data.InstructorID===command.expected_instructor));return route.fulfill({json:{removed:1}})
+    }
     if (command.action === 'course.create') {
       const fields=command.course as {code:string;title:string;year:number;units:number;semester:string}
-      const row=course(fields.code,fields.title,String(fields.year));row.data.Units=String(fields.units);row.data.Semester=fields.semester
+      const row=course(fields.code,fields.title,'');row.kind='course_terms';row.record_key=fields.code+'|'+command.semester+'|'+command.academic_year;Object.assign(row.data,{Units:String(fields.units),Semester:String(command.semester),AcademicYear:String(command.academic_year)})
       records.institutional!.push(row)
       return route.fulfill({json:{code:fields.code,updated_at:row.updated_at}})
     }
     if(command.action==='course.update'||command.action==='course.status'){
-      const row=records.institutional!.find(row=>row.kind==='courses'&&row.record_key===command.code)
+      const row=records.institutional!.find(row=>row.kind==='course_terms'&&row.data.CourseCode===command.code&&row.data.Semester===command.semester&&row.data.AcademicYear===command.academic_year)
       if(!row||!row.updated_at||row.updated_at!==command.expected_updated_at)return route.fulfill({status:409,json:{error:{message:'This course changed. Close this dialog and reload the course before trying again.'}}})
       if(command.action==='course.update'){
         const fields=command.course as {title:string;year:number;units:number;semester:string}
-        Object.assign(row.data,{CourseTitle:fields.title,YearLevel:String(fields.year),Units:String(fields.units),Semester:fields.semester})
+        Object.assign(row.data,{CourseTitle:fields.title,Units:String(fields.units)})
       }else row.data.Status=String(command.status)
       row.updated_at=new Date(Date.parse(row.updated_at)+1000).toISOString()
       return route.fulfill({json:{code:row.record_key,updated_at:row.updated_at}})
@@ -67,7 +80,7 @@ export async function deanManagementUI(page: Page, role = 'dean') {
     if (command.action === 'load.assign') {
       for (const item of command.loads as Record<string, string>[]) {
         const name = String(((records.directory.instructors as { id: string; name: string }[]).find(i => i.id === item.instructor_id))?.name)
-        records.institutional!.push(load(item.course_code, item.block, item.instructor_id, name))
+        const row=load(item.course_code,'',item.instructor_id,name);Object.assign(row.data,{LoadType:'course',AcademicYear:item.academic_year,Semester:item.semester});row.record_key='course:'+item.course_code+':'+item.instructor_id;records.institutional!.push(row)
       }
       return route.fulfill({ json: { created: (command.loads as unknown[]).length, updated: 0, unchanged: 0 } })
     }

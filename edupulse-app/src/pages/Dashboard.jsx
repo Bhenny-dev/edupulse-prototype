@@ -1,6 +1,9 @@
 import { useAuth } from '../context/AuthContext'
 import { useWorkspace } from '../context/WorkspaceContext'
 import { useAcademicRecords } from '../context/AcademicContext'
+import useAcademicTerm from '../components/academic/useAcademicTerm'
+import LoadTermFilter from '../components/academic/LoadTermFilter'
+import {recordsForLoadTerm} from '../utils/loadTerms'
 import AcademicSyncStatus from '../components/academic/AcademicSyncStatus'
 import SystemAdminDashboard from './SystemAdminDashboard'
 import SummaryCard from '../components/ui/SummaryCard'
@@ -654,11 +657,13 @@ function StudentDashboard({ model, actions, status }) {
 function AccountDashboard() {
   const { user } = useAuth()
   const workspace = useWorkspace()
-  const { data, error, loading, loaded } = useAcademicRecords()
+  const { data:allData, error, loading, loaded } = useAcademicRecords()
+  const {term}=useAcademicTerm()
+  const data=recordsForLoadTerm(allData,term)
   const role = user?.role
   const actions = (
     <div className="academic-actions">
-      <AcademicSyncStatus />
+      <LoadTermFilter data={allData}/><AcademicSyncStatus />
     </div>
   )
   const status = <>

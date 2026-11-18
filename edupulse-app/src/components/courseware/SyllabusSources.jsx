@@ -10,7 +10,7 @@ import CoursewareActions from './CoursewareActions'
 import RetainedSourceReview from '../ai/RetainedSourceReview'
 import './syllabus-sources.css'
 
-export default function SyllabusSources({syllabus,defaultOpen=false}){
+export default function SyllabusSources({syllabus,defaultOpen=false,readOnly=false}){
  const references=useMemo(()=>{try{return {rows:collectSyllabusReferences(syllabus),error:''}}catch(failure){return {rows:[],error:failure.message}}},[syllabus])
  const signature=JSON.stringify(references.rows)
  const [cache,setCache]=useWorkspaceViewState(`syllabus-sources:${syllabus.id}`,null)
@@ -43,7 +43,7 @@ export default function SyllabusSources({syllabus,defaultOpen=false}){
  return <details className="card syllabus-sources" data-pulse-target="Syllabus sources" open={expanded} onToggle={event=>setExpanded(event.currentTarget.open)}>
   <summary><BookOpen size={17} aria-hidden="true" /><strong>Syllabus sources ({references.rows.length})</strong><span className="text-sm text-muted">{rows.filter(row=>row.snapshot&&!row.metadataOnly).length} retained text{rows.some(row=>row.metadataOnly)?` / ${rows.filter(row=>row.metadataOnly).length} catalog records`:''}</span></summary>
   <div className="syllabus-sources-body" aria-busy={busy}>
-   <div className="syllabus-sources-toolbar"><p className="text-sm text-muted">Search every citation, retain readable linked sources, and index their text for private knowledge search. Catalog matches identify a work; they do not supply the book text or verify its edition.</p><button className="btn btn-secondary btn-sm" disabled={busy||!!references.error} onClick={()=>void perform(()=>read(null))}><RefreshCw size={14} />Search and read sources</button></div>
+   <div className="syllabus-sources-toolbar"><p className="text-sm text-muted">Search every citation, retain readable linked sources, and index their text for private knowledge search. Catalog matches identify a work; they do not supply the book text or verify its edition.</p>{!readOnly&&<button className="btn btn-secondary btn-sm" disabled={busy||!!references.error} onClick={()=>void perform(()=>read(null))}><RefreshCw size={14} />Search and read sources</button>}</div>
    {busy&&<LoadingStatus label="Searching, retaining and indexing sources..." />}{(error||references.error)&&<p role="alert">{error||references.error}</p>}
    <input hidden ref={fileInput} type="file" accept=".pdf,.docx,.html,.htm,.txt,.md" aria-label="Attach readable reference copy" onChange={event=>{const file=event.target.files?.[0],reference=attachTarget.current;event.target.value='';if(!file||!reference)return;void perform(async()=>{if(file.size>2_000_000)throw new Error('Use a readable copy or chapter up to 2 MB.');const bytes=new Uint8Array(await file.arrayBuffer());let text='';for(const byte of bytes)text+=String.fromCharCode(byte);const result=await syllabusSources({operation:'attach',reference,name:file.name,base64:btoa(text)});const retained=result.sources[0]?.snapshot;if(retained)await indexSyllabusReference(retained.id,syllabus.courseCode)})}} />
    <ul className="syllabus-source-list">{rows.map((row,index)=>{const display=row.snapshot?.reference||row.reference,parsed=parseCitation(display.title),title=parsed.title||display.title,authors=display.authors||parsed.authors,year=display.year||parsed.year,publisher=display.publisher||parsed.publisher;return <li key={row.key||index}>
@@ -52,9 +52,9 @@ export default function SyllabusSources({syllabus,defaultOpen=false}){
      {row.message&&(row.status==='unavailable'||row.snapshot)&&<span className="text-sm text-muted">{row.message}</span>}
     </div><div className="syllabus-source-actions">{row.snapshot&&<button className="btn btn-secondary btn-sm" disabled={busy} onClick={()=>setViewing(row.snapshot.id)}>View</button>}<CoursewareActions disabled={busy||!row.key} open={!!row.key&&menu===row.key} onOpenChange={next=>setMenu(current=>(typeof next==='function'?next(current===row.key):next)?row.key:null)} label={`Source actions for ${row.reference.title}`} actions={[
      ...(row.snapshot?[{label:'Download retained copy',icon:Download,onSelect:()=>void perform(()=>downloadRetainedSource(row.snapshot.id))}]:[]),
-     ...([{label:row.snapshot?'Search or read again':'Search or read source',icon:RefreshCw,onSelect:()=>void perform(()=>read(row.reference,true))}]),
-     {label:'Attach readable copy',icon:Upload,onSelect:()=>{attachTarget.current=row.reference;fileInput.current?.click()}},
-     ...(row.snapshot?[{label:'Remove retained version',icon:Trash2,onSelect:()=>setRemoving(row.snapshot)}]:[]),
+     ...(readOnly?[]:[{label:row.snapshot?'Search or read again':'Search or read source',icon:RefreshCw,onSelect:()=>void perform(()=>read(row.reference,true))}]),
+     ...(!readOnly?[{label:'Attach readable copy',icon:Upload,onSelect:()=>{attachTarget.current=row.reference;fileInput.current?.click()}}]:[]),
+     ...(!readOnly&&row.snapshot?[{label:'Remove retained version',icon:Trash2,onSelect:()=>setRemoving(row.snapshot)}]:[]),
     ]} /></div>
    </li>})}</ul><p className="text-sm text-muted">Copies are private to your account. Refreshing creates a version when source bytes change; generation keeps using retained copies until you choose to refresh. Scans are limited to 2 MB per file and 150,000 searchable characters.</p>
   </div>

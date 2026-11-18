@@ -35,3 +35,8 @@ Course and Instructor load details show schedule, room, units, lecture/lab units
 The original First Semester AY 2026–2027 file contains 11 instructor forms and 56 rows. The Second Semester AY 2025–2026 file contains 12 forms and 66 rows. The latter is past loading, not next-semester loading. Source values and printed total discrepancies remain reviewable; the files were scanned without assigning their rows to live instructors. Their real names, signatures and source files are kept out of public documentation captures.
 
 The [release record](../../versions/2026-11-17-load-document-intake/README.md) separates source-file inspection, controlled browser checks and hosted database verification.
+
+
+### Semester and assignment correction - 18 November 2026
+
+Use the shared Academic term to choose the period. Only Current (First Semester AY 2026-2027) and Next (Second Semester AY 2026-2027) allow changes; completed periods are view-only. The selected term supplies course creation and loading context. A Dean assigns courses only. Original PDF schedule rows remain readable, but neither their subject suffix nor source headcount creates class membership. Instructors confirm actual blocks through Course > Block sections and choose registered students individually or upload their identifiers. Current/next class lists and overrides remain separate, including when course codes repeat. Pending classes expose course/instructor labels while awaiting teaching release. See [Course flow](../46-course-load-workspace/README.md).

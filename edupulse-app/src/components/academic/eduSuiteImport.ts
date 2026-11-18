@@ -259,7 +259,7 @@ export function matchInstructor(text: string, instructors: DirectoryInstructor[]
   return { problem: bySurname.length > 1 || full.length > 1 ? `Several instructors match "${text}"` : `No instructor account matches "${text}"` }
 }
 
-export function planCourseLoads(grid: Grid, input: { instructors: DirectoryInstructor[]; courses: CourseRef[]; loads: LoadRef[]; blocks: string[] }) {
+export function planCourseLoads(grid: Grid, input: { instructors: DirectoryInstructor[]; courses: CourseRef[]; loads: LoadRef[]; blocks: string[]; courseOnly?:boolean }) {
   const fields = ['instructor', 'employeeId', 'email', 'subject', 'title', 'block', 'semester', 'units'] as const
   const header = findHeader(grid, fields, c => c.subject !== undefined && (c.block !== undefined || c.instructor !== undefined))
   if (!header) throw new Error('No header row with a subject (course) code was found. Use the EduSuite faculty load download.')
@@ -281,7 +281,7 @@ export function planCourseLoads(grid: Grid, input: { instructors: DirectoryInstr
     if (!plan.instructor) plan.problem = 'problem' in matched ? matched.problem : 'Instructor not found'
     else if (plan.instructor.status === 'suspended') plan.problem = `${plan.instructor.name} is suspended`
     else if (known?.status === 'suspended' || known?.status === 'removed') plan.problem = `${known.code} is ${known.status} and cannot receive new loads`
-    else if (!block) plan.problem = 'Block section missing'
+    else if (!input.courseOnly && !block) plan.problem = 'Block section missing'
     else if (!known && !title) plan.problem = `${code} is not in the course list and has no title`
     else {
       const key = `${codeKey(plan.course_code)}|${codeKey(block)}|${plan.instructor.id}`

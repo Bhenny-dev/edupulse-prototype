@@ -6,7 +6,7 @@ Student Monitoring combines the instructor's former monitoring and Performance p
 
 ![Student summary, filters and year-level classes](01-handled-classes.png)
 
-The student summary comes first, followed by **Search handled classes**, **Year level** and **Handled course**, then the year-level categories. Course cards name the course, title, block section and enrolled-student count. The same course in two blocks has two cards. Recorded block/curriculum year is preferred; otherwise consistent recorded student years are used. Missing or mixed year data stays explicit rather than being inferred from a block's spelling. Confirmed empty blocks remain visible.
+The student summary comes first, followed by **Search handled classes**, **Year level** and **Handled course**, then the year-level categories. Course cards name the course, title, block section and enrolled-student count. The same course in two blocks has two cards. Consistent recorded student years determine the class year; course catalog year does not determine class placement. Missing or mixed year data stays explicit rather than being inferred from a block's spelling. Confirmed empty blocks remain visible.
 
 Select a course/block to open its full-page class dialog. The three tabs are **Students**, **Assessment Scores** and **Learning Material Access**. Every tab uses the same icon summary-card component as Dashboard. Select a card to filter memberships, move to the corresponding chart/table, inspect delivery status, or open Course. **Available places** opens the existing registration area. Its URL preserves the selected class and tab across reload. A class that is no longer authorized cannot restore an old roster.
 

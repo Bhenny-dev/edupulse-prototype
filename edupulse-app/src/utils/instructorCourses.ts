@@ -3,7 +3,7 @@ import { currentAttempts } from '../components/academic/academicData'
 import { studentRecorded } from '../components/academic/monitoringModel'
 import { isOutlineExam, weekSections, type OutlineWeek } from './outlineSections'
 
-export type InstructorCourse = { id: string; code: string; title: string; units: string; year: string; semester: string; academicYear: string; blocks: string[]; courseIds: string[]; syllabusId?:string }
+export type InstructorCourse = { id: string; code: string; title: string; units: string; year: string; semester: string; academicYear: string; blocks: string[]; courseIds: string[]; syllabusId?:string;assignmentKey?:string }
 const codeKey = (value: string) => value.trim().toUpperCase().replace(/\s+/g, ' ')
 export const sameCourseCode = (left: string, right: string) => left.replace(/\s/g, '').toUpperCase() === right.replace(/\s/g, '').toUpperCase()
 const semesterKey = (value: string) => /(?:1|first|1st)/i.test(value) ? '1' : /(?:2|second|2nd)/i.test(value) ? '2' : value.trim().toLowerCase()
@@ -20,8 +20,9 @@ export function instructorCourses(data: AcademicData, instructorId: string, syll
     const code = codeKey(row.CourseCode), meta = catalog.get(code) || {}, academicYear = row.AcademicYear || meta.AcademicYear || '', semester = row.Semester || meta.Semester || ''
     const syllabusId=row.TeachingSyllabusID||''
     const id = [code, academicYear, semester,...(syllabusId?[syllabusId]:[])].map(encodeURIComponent).join('~')
-    const existing = data.courses.filter(course => sameCourseCode(course.course_code, code) && course.instructor_id === instructorId && course.active && (() => { const source = syllabi.find(item => item.id === course.syllabus_id); return (!source?.courseInfo?.academicYear || !academicYear || source.courseInfo.academicYear === academicYear) && (!source?.courseInfo?.periodOffered || !semester || semesterKey(source.courseInfo.periodOffered) === semesterKey(semester)) })())
-    const value = courses.get(id) || { id, code, title: meta.CourseTitle || row.CourseTitle || existing[0]?.course_title || code, units: meta.Units || row.Units || '', year: row.YearLevel || meta.YearLevel || '', academicYear, semester, blocks: [], courseIds: existing.filter(course=>syllabusId?course.syllabus_id===syllabusId:!syllabi.find(s=>s.id===course.syllabus_id)?.handedOverFrom).map(course => course.id),...(syllabusId?{syllabusId}:{}) }
+    const existing = data.courses.filter(course => sameCourseCode(course.course_code, code) && course.instructor_id === instructorId && (() => { const source = syllabi.find(item => item.id === course.syllabus_id); return (!(source?.courseInfo?.academicYear||course.academic_year) || !academicYear || (source?.courseInfo?.academicYear||course.academic_year) === academicYear) && (!(source?.courseInfo?.periodOffered||course.semester) || !semester || semesterKey(source?.courseInfo?.periodOffered||course.semester||'') === semesterKey(semester)) })())
+    const value = courses.get(id) || { id, assignmentKey:row.ParentLoadKey||entry.record_key,code, title: meta.CourseTitle || row.CourseTitle || existing[0]?.course_title || code, units: meta.Units || row.Units || '', year: '', academicYear, semester, blocks: [], courseIds: existing.filter(course=>syllabusId?course.syllabus_id===syllabusId:!syllabi.find(s=>s.id===course.syllabus_id)?.handedOverFrom).map(course => course.id),...(syllabusId?{syllabusId}:{}) }
+    if(row.LoadType==='course')value.assignmentKey=entry.record_key
     if (row.Block && !value.blocks.includes(row.Block)) value.blocks.push(row.Block)
     courses.set(id, value)
   }
@@ -97,4 +98,11 @@ export function topicProgress(data: AcademicData, entries: TeachingEntry[]) {
   const attempts = currentAttempts(data).filter(row => ids.has(row.publication_id) && row.grading_status !== 'pending_review' && row.max_score > 0 && studentRecorded(row) && data.enrollments.some(member => !member.suspended && member.course_id === publications.find(pub => pub.id === row.publication_id)?.course_id && member.student_email.toLowerCase() === row.student_email?.toLowerCase()))
   const totals = attempts.reduce((sum, row) => ({ score: sum.score + row.score, max: sum.max + row.max_score }), { score: 0, max: 0 })
   return { access: expected ? Math.round(opened / expected * 100) : null, opened, expected, average: totals.max ? Math.round(totals.score / totals.max * 100) : null, scored: attempts.length }
+}
+
+/** Counts confirmed memberships before and after a syllabus has a projection. */
+export function assignedStudentCount(data:AcademicData,loaded:InstructorCourse[],registrations:{assignmentKey?:string;status:string;blockSection:string;students?:{Email?:string}[]}[]){
+ const emails=new Set(data.enrollments.filter(e=>!e.suspended&&loaded.some(c=>c.courseIds.includes(e.course_id)&&c.blocks.includes(e.block_section||''))).map(e=>e.student_email.toLowerCase()))
+ for(const r of registrations)if(r.status==='active'&&loaded.some(c=>c.assignmentKey===r.assignmentKey&&c.blocks.includes(r.blockSection)))for(const student of r.students||[])if(student.Email)emails.add(student.Email.toLowerCase())
+ return emails.size
 }

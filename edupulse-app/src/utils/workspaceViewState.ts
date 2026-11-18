@@ -32,6 +32,8 @@ function valid(key:unknown,value:unknown):value is ViewValue {
   if(/^monitoring-roster-page:/.test(key))return value===0||value===1
   if(/^monitoring-roster-add:/.test(key))return typeof value==='boolean'
   if(/^monitoring-menu:/.test(key))return value===null||value==='delivery'||value==='results'
+  if(key==='academic-term')return typeof value==='string'&&(/^(all|unspecified)$/.test(value)||/^20\d{2}-20\d{2}\|(1st Semester|2nd Semester|Summer)$/.test(value))
+  if(/^dean-(?:catalog-(?:action|menu)|instructor-(?:action|menu)|detail:records):20\d{2}-20\d{2}\|(1st Semester|2nd Semester|Summer)$/.test(key))return value===null||typeof value==='string'&&id(value)
   if(key==='ai-local-model')return id(value)
   if(/^dean-detail:(?:records|instructors|students)$/.test(key))return value===null||(typeof value==='string'&&id(value)&&(/^(?:block|course|instructor|student):.+$/.test(value)||['students','blocks','years','faculty'].includes(value)))
   if(/^dean-course-(?:inspect|reader):.+$/.test(key))return value===null||id(value)
@@ -40,7 +42,8 @@ function valid(key:unknown,value:unknown):value is ViewValue {
   if(key==='dean-instructor-action')return value===null||value==='add'||typeof value==='string'&&id(value)&&/^(?:edit|suspended|active|removed):.+$/.test(value)
   if(key==='dean-course-edit')return value===null||id(value)
   if(key==='layout-overlay')return value===null||['search','account','notifications','roles','language','mobile'].includes(value as string)
-  if(key==='course-location'||/^course:.+:(?:reader|delivery|revision|schedule-block)$/.test(key)||/^academic-reader:.+$/.test(key))return value===null||id(value)
+  if(key==='course-location'||/^course:.+:(?:reader|delivery|revision|schedule-block|class-list|block-menu)$/.test(key)||/^academic-reader:.+$/.test(key))return value===null||id(value)
+  if(/^course:.+:class-list-tab$/.test(key))return value==='upload'||value==='directory'
   if(/^course:.+:expanded$/.test(key))return value instanceof Set&&value.size<=52&&[...value].every(item=>Number.isInteger(item)&&Number(item)>=1&&Number(item)<=52)
   if(/^course:.+:topic-expanded$/.test(key))return value instanceof Set&&value.size<=200&&[...value].every(id)
   if(/^course:.+:selected$/.test(key))return value instanceof Set&&value.size<=200&&[...value].every(id)

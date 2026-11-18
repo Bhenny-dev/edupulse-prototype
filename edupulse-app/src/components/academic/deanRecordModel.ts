@@ -74,8 +74,9 @@ export function deanRecords(data:AcademicData, now=Date.now()) {
 // ---- Dean course loading and account directory -------------------------------------------
 export type DeanInstructor = { id:string; name:string; email:string; status:'active'|'suspended'; employee_id:string; has_masters:boolean|null; degree:string; specialization:string; last_sign_in_at?:string|null }
 export type DeanAccount = { id:string; student_number:string; name:string; surname:string; first_name:string; middle_name:string; email:string; year_level:number|null; program:string; status:'active'|'suspended'; block:string|null; type:string|null; last_sign_in_at?:string|null }
-export type LoadRow = { key:string; code:string; block:string; semester:string; academicYear:string; instructorId:string; instructorName:string; hasMasters:string; specialization:string;time:string;days:string;room:string;units:string;lecture:string;lab:string;hours:string;computedHours:string;students:string;program:string;source:string;degree:string;sourceCode:string;sourceTitle:string;sourceInstructor:string;sourceYear:string;sourceSemester:string }
+export type LoadRow = { key:string; code:string; block:string; semester:string; academicYear:string; instructorId:string; instructorName:string; hasMasters:string; specialization:string;time:string;days:string;room:string;units:string;lecture:string;lab:string;hours:string;computedHours:string;students:string;program:string;source:string;degree:string;sourceCode:string;sourceTitle:string;sourceInstructor:string;sourceYear:string;sourceSemester:string;loadType:string;parentKey:string;updatedAt?:string;sourceRows?:Record<string,unknown>[] }
 type Directory = { instructors?:DeanInstructor[]; students?:DeanAccount[]; irregular?:Record<string,string>[] }
+const sourceHours=(rows:unknown)=>{if(!Array.isArray(rows))return '';const hours=rows.map(r=>r.computed_hours).filter(v=>typeof v==='number');return hours.length===rows.length?String(hours.reduce((n,v)=>n+v,0)):''}
 const key = (value:unknown) => text(value).toUpperCase().replace(/[\s-]+/g,'')
 
 /** Repository ownership alone is not a teaching load. Management inspects assigned courses only. */
@@ -84,7 +85,7 @@ export function assignedInstructorSyllabi(data:AcademicData,instructorId:string)
   const bound=new Set(assigned.map(r=>r.data.TeachingSyllabusID).filter(Boolean)),chosen=new Map<string,Course>()
   const semester=(v:string)=>/^(1|first)/i.test(v)?'1':/^(2|second)/i.test(v)?'2':v.toLowerCase()
   for(const {data:load} of assigned){
-    const candidates=data.courses.filter(course=>course.instructor_id===instructorId&&key(course.course_code)===key(load.CourseCode)
+    const candidates=data.courses.filter(course=>course.syllabus_id?.startsWith('assignment:')!==true&&course.instructor_id===instructorId&&key(course.course_code)===key(load.CourseCode)
       &&(load.TeachingSyllabusID?course.syllabus_id===load.TeachingSyllabusID:!bound.has(course.syllabus_id||''))
       &&(!course.academic_year||!load.AcademicYear||course.academic_year===load.AcademicYear)
       &&(!course.semester||!load.Semester||semester(course.semester)===semester(load.Semester)))
@@ -94,22 +95,33 @@ export function assignedInstructorSyllabi(data:AcademicData,instructorId:string)
   return [...chosen.values()]
 }
 
-export function loadRows(data:AcademicData):LoadRow[] {
-  return (data.institutional||[]).filter(row=>row.kind==='loads').map(row=>({key:row.record_key,code:text(row.data.CourseCode),block:text(row.data.Block),semester:text(row.data.Semester),academicYear:text(row.data.AcademicYear),
+export function loadRows(data:AcademicData,includeCourses=false):LoadRow[] {
+  return (data.institutional||[]).filter(row=>row.kind==='loads'&&(includeCourses||row.data.LoadType!=='course')).map(row=>({loadType:row.data.LoadType||'',parentKey:row.data.ParentLoadKey||'',sourceRows:Array.isArray(row.data.SourceRows)?row.data.SourceRows:[],updatedAt:row.updated_at,key:row.record_key,code:text(row.data.CourseCode),block:text(row.data.Block),semester:text(row.data.Semester),academicYear:text(row.data.AcademicYear),
     sourceCode:text(row.data.SourceSubjectCode),sourceTitle:text(row.data.SourceCourseTitle),sourceInstructor:text(row.data.SourceInstructor),sourceYear:text(row.data.SourceAcademicYear),sourceSemester:text(row.data.SourceSemester),
-    time:text(row.data.ScheduleTime),days:text(row.data.ScheduleDays),room:text(row.data.Room),units:text(row.data.Units),lecture:text(row.data.LectureUnits),lab:text(row.data.LabUnits),hours:text(row.data.DeclaredHours),computedHours:text(row.data.ComputedHours),students:text(row.data.StudentCount),program:text(row.data.Program),degree:text(row.data.HighestDegree),source:[row.data.SourceFile,row.data.SourcePage?`page ${row.data.SourcePage}`:''].filter(Boolean).join(' · '),
+    time:text(row.data.ScheduleTime),days:text(row.data.ScheduleDays),room:text(row.data.Room),units:text(row.data.Units),lecture:text(row.data.LectureUnits),lab:text(row.data.LabUnits),hours:text(row.data.DeclaredHours),computedHours:sourceHours(row.data.SourceRows)||text(row.data.ComputedHours),students:text(row.data.StudentCount),program:text(row.data.Program),degree:text(row.data.HighestDegree),source:[row.data.SourceFile,row.data.SourcePage?`page ${row.data.SourcePage}`:''].filter(Boolean).join(' · '),
     instructorId:text(row.data.InstructorID),instructorName:text(row.data.InstructorName)||text(row.data.InstructorID),hasMasters:text(row.data.HasMasters),specialization:text(row.data.Specialization)}))
     .sort((a,b)=>a.code.localeCompare(b.code)||a.block.localeCompare(b.block))
 }
-/** Every recorded course with its curriculum placement, class loads and syllabus owners. */
+export function courseAssignments(data:AcademicData){
+ const all=loadRows(data,true),classes=all.filter(row=>row.loadType!=='course'),parents=all.filter(row=>row.loadType==='course')
+ const same=(a:LoadRow,b:LoadRow)=>key(a.code)===key(b.code)&&a.instructorId===b.instructorId&&a.academicYear===b.academicYear&&a.semester===b.semester
+ const result=parents.map(parent=>({...parent,blocks:[...new Set(classes.filter(row=>row.parentKey===parent.key||!row.parentKey&&same(row,parent)).map(row=>row.block))],legacy:false}))
+ for(const row of classes){
+  if(parents.some(parent=>row.parentKey===parent.key||!row.parentKey&&same(row,parent)))continue
+  const prior=result.find(item=>item.legacy&&same(item,row))
+  if(prior){if(!prior.blocks.includes(row.block))prior.blocks.push(row.block)}else result.push({...row,blocks:[row.block],legacy:true})
+ }
+ return result.sort((a,b)=>a.code.localeCompare(b.code)||a.instructorName.localeCompare(b.instructorName))
+}
+/** Each semester catalog entry keeps actual instructor assignments separate from confirmed classes. */
 export function courseCatalog(data:AcademicData, model:ReturnType<typeof deanRecords>, curriculum:(code:string)=>{units?:number;yearLevel?:number;semester?:number|string}|undefined=()=>undefined) {
-  const loads=loadRows(data),records=new Map((data.institutional||[]).filter(r=>r.kind==='courses').map(r=>[key(r.data.CourseCode),r]))
+  const loads=loadRows(data),assignments=courseAssignments(data),records=new Map((data.institutional||[]).filter(r=>r.kind==='courses').map(r=>[key(r.data.CourseCode),r]))
   return model.courses.map(course=>{
     const entry=records.get(key(course.code)),record=entry?.data||{},plan=curriculum(course.code)
-    const year=Number(record.YearLevel)||plan?.yearLevel||null,semesterValue=text(record.Semester)||(plan?.semester===1?'1st Semester':plan?.semester===2?'2nd Semester':plan?.semester==='summer'?'Summer':'')
+    const year=null,semesterValue=text(record.Semester)||(plan?.semester===1?'1st Semester':plan?.semester===2?'2nd Semester':plan?.semester==='summer'?'Summer':'')
     const ids=new Set(course.ids),owners=[...new Set(data.courses.filter(c=>ids.has(c.id)).map(c=>c.instructor_name||model.faculty.find(p=>p.id===c.instructor_id)?.name||''))].filter(Boolean)
     return {...course,status:record.Status||'active',recordKey:entry?.record_key,updatedAt:entry?.updated_at,units:text(record.Units)||(plan?.units?String(plan.units):''),year,semester:semesterValue,classification:text(record.Classification),prerequisites:text(record.Prerequisites),
-      loads:loads.filter(l=>key(l.code)===key(course.code)),owners,students:new Set(data.enrollments.filter(e=>ids.has(e.course_id)).map(e=>email(e.student_email))).size,
+      loads:loads.filter(l=>key(l.code)===key(course.code)),assignments:assignments.filter(l=>key(l.code)===key(course.code)),owners,students:new Set(data.enrollments.filter(e=>ids.has(e.course_id)).map(e=>email(e.student_email))).size,
       approved:data.courses.some(c=>ids.has(c.id)&&approvedSyllabus(c))}
   }).filter(course=>course.status!=='removed')
 }

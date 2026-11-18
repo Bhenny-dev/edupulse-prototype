@@ -57,3 +57,8 @@ The first image now shows an authorized readback after a synthetic confirmed cha
 A successful authorized read no longer displays a routine ready indicator. Pending workspace edits, conflicts, errors, loading, offline and update-available states remain distinct. No student scores or completion are guessed. Refresh does not submit assessments, approve syllabi, publish material, send reminders or call a paid model.
 
 [Manual 27](../27-cached-workspaces/README.md) shows retained Course readers and deliberate refresh. The [original membership release validation](../../versions/2026-11-07-automatic-records-and-course-rosters/validation/results.md) remains historical evidence for roster persistence and access boundaries.
+
+
+### Semester and assignment correction - 18 November 2026
+
+Use the shared Academic term to choose the period. Only Current (First Semester AY 2026-2027) and Next (Second Semester AY 2026-2027) allow changes; completed periods are view-only. The selected term supplies course creation and loading context. A Dean assigns courses only. Original PDF schedule rows remain readable, but neither their subject suffix nor source headcount creates class membership. Instructors confirm actual blocks through Course > Block sections and choose registered students individually or upload their identifiers. Current/next class lists and overrides remain separate, including when course codes repeat. Pending classes expose course/instructor labels while awaiting teaching release. See [Course flow](../46-course-load-workspace/README.md).

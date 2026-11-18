@@ -25,7 +25,7 @@ const studentNumber = z.string().trim().regex(/^[A-Za-z0-9-]{1,80}$/, 'Enter the
 const placement = z.enum(['block', 'irregular', 'none'])
 const academicYear = z.string().regex(/^20\d{2}-20\d{2}$/).refine(value=>Number(value.slice(5))===Number(value.slice(0,4))+1,'Use consecutive academic years')
 const loadEntry = z.object({
-  course_code:field(40).min(1),course_title:field(300),instructor_id:z.string().uuid(),block:field(40).min(1),semester:z.enum(['1st Semester','2nd Semester','Summer']),academic_year:academicYear,
+  course_code:field(40).min(1),course_title:field(300),instructor_id:z.string().uuid(),block:field(40).optional(),semester:z.enum(['1st Semester','2nd Semester','Summer']),academic_year:academicYear,
   page:z.number().int().min(1).max(300),row:z.number().int().min(1).max(500),subject_code:field(80).min(1),source_title:field(300).min(1),source_instructor:field(250),source_year:field(20),source_semester:field(60),degree:field(200),
   time:field(150),days:field(80),room:field(150),program:field(250),units:z.number().min(0).max(50).nullable(),lecture:z.number().min(0).max(50).nullable(),lab:z.number().min(0).max(50).nullable(),
   hours:z.number().min(0).max(168).nullable(),computed_hours:z.number().min(0).max(168).nullable(),students:z.number().int().min(0).max(2000).nullable(),expected_updated_at:z.string().max(60).nullable(),
@@ -36,18 +36,23 @@ const accountFields = {
   student_number: studentNumber.optional(), year_level: z.number().int().min(1).max(4).optional(), program: field(250).optional(),
   placement: placement.optional(), block: field(40).optional(),
 }
-const catalogFields = { title: field(300).min(1), units: z.number().min(0).max(30).multipleOf(0.5), year: z.number().int().min(1).max(4), semester: field(60).min(1) }
+const catalogFields = { title: field(300).min(1), units: z.number().min(0).max(30).multipleOf(0.5) }
+const catalogTerm = { academic_year:academicYear,semester:z.enum(['1st Semester','2nd Semester','Summer']) }
 const catalogVersion = z.string().datetime({ offset: true })
 /** Dean course loading and account management. SQL rechecks the live Dean role on every call. */
 export const deanCommand = z.discriminatedUnion('action', [
-  z.object({ action: z.literal('course.create'), course: z.object({ code: field(40).min(1).regex(/^[A-Za-z0-9][A-Za-z0-9 .&()/_-]*$/), ...catalogFields }) }),
-  z.object({ action: z.literal('course.update'), code: field(40).min(1), expected_updated_at: catalogVersion, course: z.object(catalogFields) }),
-  z.object({ action: z.literal('course.status'), code: field(40).min(1), expected_updated_at: catalogVersion, status: z.enum(['active','suspended','removed']) }),
+  z.object({action:z.literal('course-load.assign'),...catalogTerm,course_code:field(40).min(1),instructor_id:z.string().uuid(),continuation:field(200).optional()}),
+  z.object({action:z.literal('course-load.update'),...catalogTerm,key:field(200).min(1),expected_instructor:z.string().uuid(),instructor_id:z.string().uuid()}),
+  z.object({action:z.literal('course-load.remove'),...catalogTerm,key:field(200).min(1),expected_instructor:z.string().uuid()}),
+  z.object({action:z.literal('course-load.continuations'),...catalogTerm,course_code:field(40).min(1)}),
+  z.object({ action: z.literal('course.create'), ...catalogTerm, course: z.object({ code: field(40).min(1).regex(/^[A-Za-z0-9][A-Za-z0-9 .&()/_-]*$/), ...catalogFields }) }),
+  z.object({ action: z.literal('course.update'), ...catalogTerm, code: field(40).min(1), expected_updated_at: catalogVersion, course: z.object(catalogFields) }),
+  z.object({ action: z.literal('course.status'), ...catalogTerm, code: field(40).min(1), expected_updated_at: catalogVersion, status: z.enum(['active','suspended','removed']) }),
   z.object({ action: z.literal('account.create'), account: z.object({ role: z.enum(['instructor', 'student']), password: z.string().min(6).max(72), ...accountFields }) }),
   z.object({ action: z.literal('account.update'), account: z.object({ id: z.string().uuid(), ...accountFields }) }),
   z.object({ action: z.literal('account.status'), id: z.string().uuid(), status: z.enum(['suspended', 'active', 'removed']) }),
   z.object({ action:z.literal('load.import_document'),filename:field(255).min(1),reviewed:z.literal(true),entries:z.array(loadEntry).min(1).max(500) }),
-  z.object({ action: z.literal('load.assign'), filename: field(255).optional(), loads: z.array(z.object({ course_code: field(40).min(1), course_title: field(300).optional(), instructor_id: z.string().uuid(), block: field(40).min(1), semester: field(60).optional(),academic_year:academicYear.optional() })).min(1).max(500) }),
+  z.object({ action: z.literal('load.assign'), filename: field(255).optional(), loads: z.array(z.object({ course_code: field(40).min(1), course_title: field(300).optional(), instructor_id: z.string().uuid(), block: field(40).optional(), semester: field(60),academic_year:academicYear })).min(1).max(500) }),
   z.object({ action: z.literal('load.remove'), keys: z.array(z.string().max(200)).min(1).max(500), expected_instructor:z.string().uuid().optional() }),
   z.object({ action: z.literal('load.update'), key: field(200).min(1), instructor_id: z.string().uuid(), block: field(40).min(1), semester: field(60), expected_instructor: z.string().uuid() }),
   z.object({ action: z.literal('load.inspect'), key: field(200).min(1), expected_instructor: z.string().uuid() }),
@@ -83,6 +88,7 @@ export const academicCommand = z.discriminatedUnion('operation', [
   z.object({ operation: z.literal('grade'), attempt: z.string().uuid(), points: z.array(z.number().int().min(0).max(1)).min(3).max(5), reason: z.string().trim().min(1).max(2000) }),
   z.object({ operation: z.literal('appeal'), attempt: z.string().uuid(), reason: z.string().trim().min(1).max(2000) }),
   z.object({ operation: z.literal('revise'), course:identifier, comment:z.string().trim().min(1).max(2000) }),
+  z.object({operation:z.literal('class-list'),assignment:field(200).min(1),block:field(40).min(1),revision:z.number().int().min(0).max(Number.MAX_SAFE_INTEGER),mode:z.enum(['append','replace']),filename:field(255).optional(),students:z.array(z.object({StudentID:field(80).optional(),Email:field(254).optional()}).refine(row=>Boolean(row.StudentID||row.Email),'A registered student number or email is required.')).min(1).max(35)}),
   z.object({ operation: z.literal('dean'), command: deanCommand }),
 ])
 export async function readAcademic(identity: Identity) {
@@ -126,6 +132,13 @@ export async function readAcademic(identity: Identity) {
 }
 export async function executeAcademic(identity: Identity, input: z.infer<typeof academicCommand>) {
   if (identity.local || identity.role === 'guest') throw new ApiError(403, 'FORBIDDEN', 'Use an authenticated academic account for shared records.')
+  if(input.operation==='class-list'){
+    if(identity.supportActor)return supportAction(identity,'class.register',input)
+    if(identity.role!=='instructor')throw new ApiError(403,'FORBIDDEN','Only the assigned instructor confirms a class list.')
+    const {data,error}=await userDb(identity).rpc('edupulse_register_class',{command:input})
+    if(error)throw new ApiError(error.code==='42501'?403:error.code==='40001'?409:error.code==='22023'?400:503,'CLASS_LIST_FAILED',['42501','40001','22023'].includes(error.code)?error.message:'The class list could not be saved.')
+    return data
+  }
   if (input.operation === 'dean') {
     if (identity.supportActor) return supportAction(identity, 'dean.command', input.command)
     if (!['dean', 'associate_dean', 'admin'].includes(identity.role)) throw new ApiError(403, 'FORBIDDEN', 'Only the Dean, Program Coordinator or System Admin manages course loads and accounts.')

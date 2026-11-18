@@ -160,10 +160,10 @@ export function mergeStudents(existing = [], incoming = []) {
  * block (by the same instructor) is merged into the first, so students are never duplicated.
  * Returns the new registrations and what changed, including what Undo needs.
  */
-export function applyRegistration(registrations, { courseCode, courseTitle = '', blockSection, students, fileName, uploadedBy, date = new Date().toISOString().slice(0, 10), id = `reg-${crypto.randomUUID().slice(0, 8)}` }) {
-  const index = registrations.findIndex(r => r.courseCode === courseCode && r.blockSection === blockSection && r.uploadedBy === uploadedBy)
+export function applyRegistration(registrations, { courseCode, courseTitle = '', blockSection, students, fileName, uploadedBy, academicYear, semester, assignmentKey, date = new Date().toISOString().slice(0, 10), id = `reg-${crypto.randomUUID().slice(0, 8)}` }) {
+  const index = registrations.findIndex(r => r.courseCode === courseCode && r.blockSection === blockSection && r.uploadedBy === uploadedBy && (r.academicYear||'2026-2027') === (academicYear||'2026-2027') && (r.semester||'1st Semester') === (semester||'1st Semester'))
   if (index < 0) {
-    const registration = { id, courseCode, courseTitle, blockSection, studentCount: students.length, fileName, students, headers: ROSTER_HEADERS, uploadedBy, uploadedDate: date, status: 'active' }
+    const registration = { id, ...(academicYear?{academicYear,semester,assignmentKey}:{}),courseCode, courseTitle, blockSection, studentCount: students.length, fileName, students, headers: ROSTER_HEADERS, uploadedBy, uploadedDate: date, status: 'active' }
     return { registrations: [...registrations, registration], registration, previous: null, added: students.length, already: 0 }
   }
   const previous = registrations[index]

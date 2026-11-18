@@ -1,3 +1,6 @@
+import useAcademicTerm from './useAcademicTerm'
+import LoadTermFilter from './LoadTermFilter'
+import {recordsForLoadTerm} from '../../utils/loadTerms'
 import { useMemo, useState } from 'react'
 import { Users, Layers, Shuffle, UserX, UserPlus, FileUp, UserRound } from 'lucide-react'
 import { useWorkspaceViewState } from '../../context/WorkspaceContext'
@@ -15,7 +18,9 @@ const PAGE = 25
 const placementLabel = student => isIrregular(student) ? 'Irregular' : student.block || 'Not placed'
 const percentText = value => value === null || value === undefined ? '—' : `${value}%`
 
-export default function DeanStudents({ data }) {
+export default function DeanStudents({ data:allData }) {
+  const {term,writable}=useAcademicTerm()
+  const data=useMemo(()=>recordsForLoadTerm(allData,term),[allData,term])
   const { user } = useAuth(), scores = user?.role !== 'associate_dean'
   const model = useMemo(() => deanRecords(data), [data])
   const directory = useMemo(() => deanDirectory(data, model), [data, model])
@@ -41,13 +46,13 @@ export default function DeanStudents({ data }) {
     catch (failure) { action.setError(failure.message || 'The file could not be read.') }
   }
   const setFilter = setter => value => { setter(value); setPage(1) }
-  const manage = student => directory.managed && <span className="dean-row-actions">
+  const manage = student => directory.managed && writable && <span className="dean-row-actions">
     <button className="btn btn-ghost btn-sm" onClick={() => setEditing(student)}>Edit</button>
     {student.status === 'suspended' ? <><button className="btn btn-ghost btn-sm" onClick={() => setConfirm({ student, next: 'active' })}>Reactivate</button><button className="btn btn-ghost btn-sm dean-danger-text" onClick={() => setConfirm({ student, next: 'removed' })}>Remove</button></>
       : <button className="btn btn-ghost btn-sm" onClick={() => setConfirm({ student, next: 'suspended' })}>Suspend</button>}
   </span>
   return <>
-    {nav}
+    <LoadTermFilter data={allData}/>{nav}
     <DeanCards items={[
       { label: 'Registered students', value: students.filter(s => s.status === 'active').length, icon: Users, tone: 'sky', to: '/students?tab=list' },
       { label: 'Blocks / Sections', value: model.blocks.length, icon: Layers, tone: 'purple', to: '/students?tab=blocks' },
@@ -78,8 +83,8 @@ export default function DeanStudents({ data }) {
     </DeanDialog>}
     {typeof detail === 'string' && (detail.startsWith('block:') && !block || detail.startsWith('student:') && !selected) && <DeanDialog title="Record unavailable" size="narrow" onClose={() => setDetail(null)}><Empty>This record is no longer in your authorized view. Close this dialog and choose a current record.</Empty></DeanDialog>}
     {selected && <StudentDialog scores={scores} student={selected} data={data} model={model} directory={directory} actions={manage(selected)} onClose={() => setDetail(null)} />}
-    {editing && <DeanAccountDialog role="student" account={editing === 'new' ? null : editing} blocks={blocks} action={action} onClose={() => setEditing(null)} />}
-    {confirm && <ConfirmDialog title={confirm.next === 'suspended' ? 'Suspend student' : confirm.next === 'active' ? 'Reactivate student' : 'Remove student'} confirmLabel={confirm.next === 'suspended' ? 'Suspend' : confirm.next === 'active' ? 'Reactivate' : 'Remove account'} danger={confirm.next !== 'active'} busy={action.busy}
+    {writable&&editing && <DeanAccountDialog role="student" account={editing === 'new' ? null : editing} blocks={blocks} action={action} onClose={() => setEditing(null)} />}
+    {writable&&confirm && <ConfirmDialog title={confirm.next === 'suspended' ? 'Suspend student' : confirm.next === 'active' ? 'Reactivate student' : 'Remove student'} confirmLabel={confirm.next === 'suspended' ? 'Suspend' : confirm.next === 'active' ? 'Reactivate' : 'Remove account'} danger={confirm.next !== 'active'} busy={action.busy}
       onClose={() => setConfirm(null)} onConfirm={async () => {
         const name = confirm.student.name
         if (await action.run(confirm.next === 'suspended' ? 'Suspending' : confirm.next === 'active' ? 'Reactivating' : 'Removing', { action: 'account.status', id: confirm.student.id, status: confirm.next }, () => ({ text: confirm.next === 'suspended' ? `${name} is suspended and signed out.` : confirm.next === 'active' ? `${name} can sign in again.` : `${name} was removed from the student list and class lists.` }))) { setConfirm(null); if (confirm.next === 'removed') setDetail(null) }
@@ -88,7 +93,7 @@ export default function DeanStudents({ data }) {
       {confirm.next === 'active' && <p><strong>{confirm.student.name}</strong> can sign in again with their existing password.</p>}
       {confirm.next === 'removed' && <><p>Remove <strong>{confirm.student.name}</strong> ({confirm.student.student_number})? Their sign-in access is revoked and they leave every block and class list.</p><p className="text-sm text-muted">Submitted assessment attempts stay in the records. Uploading the student again restores the account.</p></>}
     </ConfirmDialog>}
-    {review && <StudentReview review={review} action={action} onClose={() => setReview(null)} />}
+    {writable&&review && <StudentReview review={review} action={action} onClose={() => setReview(null)} />}
   </>
 }
 

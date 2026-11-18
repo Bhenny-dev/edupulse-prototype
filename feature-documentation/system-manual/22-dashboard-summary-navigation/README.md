@@ -52,3 +52,8 @@ Focused links have a visible outline. Their accessible names identify the card a
 Cards stack on phones and the filtered course list keeps the existing mobile layout. These images use synthetic account/workspace data: three syllabi, two active, one draft item and one published item. They are UI evidence, not real student activity or a hosted-account persistence test.
 
 [Manual 36](../36-instructor-syllabi/README.md) adds course-labelled block cards, course/block monitoring links that survive reload, and actual marked score rows. My Syllabus no longer has Version or Outline columns; its history remains available through one control.
+
+
+### Semester and assignment correction - 18 November 2026
+
+Use the shared Academic term to choose the period. Only Current (First Semester AY 2026-2027) and Next (Second Semester AY 2026-2027) allow changes; completed periods are view-only. The selected term supplies course creation and loading context. A Dean assigns courses only. Original PDF schedule rows remain readable, but neither their subject suffix nor source headcount creates class membership. Instructors confirm actual blocks through Course > Block sections and choose registered students individually or upload their identifiers. Current/next class lists and overrides remain separate, including when course codes repeat. Pending classes expose course/instructor labels while awaiting teaching release. See [Course flow](../46-course-load-workspace/README.md).

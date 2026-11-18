@@ -57,7 +57,7 @@ test('scanned grids preserve actual ruled columns; OCR without readable grid ref
 test('current, next and past loads filter independently, preserving the directory and catalog',()=>{
  const data={institutional:[{kind:'courses',record_key:'IT 102',data:{CourseCode:'IT 102'}},...['2026-2027|1st Semester','2026-2027|2nd Semester','2025-2026|2nd Semester'].map((term,i)=>{const [AcademicYear,Semester]=term.split('|');return {kind:'loads',record_key:String(i),data:{AcademicYear,Semester}}})],courses:[],publications:[],enrollments:[],attempts:[],accesses:[]} as AcademicData
  assert.equal(recordsForLoadTerm(data,CURRENT_LOAD_TERM).institutional!.length,2)
- assert.equal(recordsForLoadTerm(data,'2025-2026|2nd Semester').institutional![1].record_key,'2')
+ assert.equal(recordsForLoadTerm(data,'2025-2026|2nd Semester').institutional!.find(r=>r.kind==='loads')!.record_key,'2')
  assert.equal(recordsForLoadTerm(data,'all').institutional!.length,4)
  assert.equal(loadTerm('2026-2027','1'),'2026-2027|1st Semester')
  assert.equal(loadTerm('','1st Semester'),'unspecified')

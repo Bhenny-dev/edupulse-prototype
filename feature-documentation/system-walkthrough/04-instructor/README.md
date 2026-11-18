@@ -201,3 +201,8 @@ A Dean/Coordinator same-class switch supplies an independent syllabus and teachi
 ### Restored student directory and teaching terms - 17 November 2026
 
 The registered-student picker offers all original departments, with program and year filters retained. Course has an Academic term filter for current and historical/next assignments; the dashboard summarizes current loads. An attached teaching-load form can be inspected in Pulse, while assigning its rows requires the Dean, Program Coordinator or System Admin. [Guide](../../system-manual/47-teaching-load-documents/README.md).
+
+
+### Semester-scoped courses - 18 November 2026
+
+The shared Academic term selection follows this account across dashboards and academic pages. Current and next semesters allow changes; previous and All terms are view-only. Add/Edit Course use code, title and units only. Dean course assignments have no block selector. The instructor adds actual block class lists from Course > Block sections, by upload or individual registered-student selection across departments. Class years follow their students. Each term keeps separate roster, source and learner history. See [Manual 46](../../system-manual/46-course-load-workspace/README.md).
