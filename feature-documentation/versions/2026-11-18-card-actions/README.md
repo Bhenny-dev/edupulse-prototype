@@ -5,3 +5,5 @@ Dean and Program Coordinator Course cards now expose Edit and Suspend in a three
 Instructor cards replace separate Edit/Suspend buttons with the same accessible menu, retaining the existing account commands. Shared action menus remain inside the viewport after reload, including cards below the visible page. Fresh authorization and explicit confirmation remain required; navigation restoration never replays a write.
 
 [Course loading guide](../../system-manual/46-course-load-workspace/README.md) · [Validation](validation/results.md).
+
+Live on [EduPulse](https://edupulse-prototype.vercel.app) from `41914c86`. The hosted release gate passes 459 native tests; all 42 local desktop/mobile checks and 12 deployed menu/CRUD/reload checks pass. Course, Instructor and dialog menus retain the same management permissions and suspend-before-remove behavior.

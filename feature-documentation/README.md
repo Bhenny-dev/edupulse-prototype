@@ -4,7 +4,7 @@
 
 | Folder | Covers | Contents |
 | --- | --- | --- |
-| [18 November card actions](versions/2026-11-18-card-actions/README.md) | Course catalog lifecycle, Add Course and consistent Course/Instructor overflow menus | Live · 459 native tests and 42 browser checks; final deployed checks pending |
+| [18 November card actions](versions/2026-11-18-card-actions/README.md) | Course catalog lifecycle, Add Course and consistent Course/Instructor overflow menus | Live · 459 native tests, 42 local and 12 deployed browser checks |
 | [17 November instructor handover](versions/2026-11-17-instructor-handover/README.md) | Assignment-only instructor details and independent same-class teaching continuity | Live · 449 native tests and four deployed browser checks |
 | [17 November teaching-load intake](versions/2026-11-17-load-document-intake/README.md) | All-department restoration, cleared loads, PDF/OCR review and academic terms | Ready · 446 native tests and six deployed browser checks |
 | [15 November unified Course workspace](versions/2026-11-15-unified-courses/README.md) | Merged course cards, instructor-load CRUD and read-only syllabus/content scans for Dean and Program Coordinator | Live; 390 native and six production-UI checks passed |
