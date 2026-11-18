@@ -28,6 +28,14 @@ test('a Dean attaches a picture of a teaching load, says yes to review it, and l
   // The instructor printed on the form is matched to the registered account.
   await expect(modal.getByRole('combobox', { name: 'Instructor', exact: true })).toHaveValue('22222222-2222-4222-8222-222222222222')
   await expect(modal.getByLabel('Block section',{exact:true})).toHaveCount(0)
+  await expect(modal).toContainText('1 selected · ready to import')
+  // A row that cannot be imported says why, on the row and in the footer, instead of a silent locked button.
+  const course = modal.getByRole('combobox', { name: 'Course', exact: true })
+  await course.selectOption('')
+  await expect(modal).toContainText('1 selected · 1 need a recorded course')
+  await expect(modal.getByRole('note')).toContainText('To import this row, choose a recorded course.')
+  await course.selectOption('IT 102')
+  await expect(modal).toContainText('1 selected · ready to import')
   await modal.getByRole('checkbox', { name: /I compared/ }).check()
   await modal.getByRole('button', { name: 'Confirm selected loads' }).click()
   await expect(modal).toContainText('Saved 1 selected loads')
