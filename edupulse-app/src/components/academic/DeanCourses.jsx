@@ -11,7 +11,6 @@ import { readGrid, planCourseLoads, chunk } from './eduSuiteImport'
 import DeanCourseInspection from './DeanCourseInspection'
 import DeanCourseAssignment from './DeanCourseAssignment'
 import TeachingLoadImport from './TeachingLoadImport'
-import LoadTermFilter from './LoadTermFilter'
 import useAcademicTerm from './useAcademicTerm'
 import {readReferenceFile} from '../../lib/aiClient'
 import {recordsForLoadTerm,loadTerm} from '../../utils/loadTerms'
@@ -65,7 +64,7 @@ export default function DeanCourses({ data:allData }) {
     <div className="dean-segment" role="group" aria-label="Course load filter">{[['all', `All (${catalog.length})`], ['loaded', `Loaded (${loaded.length})`], ['unloaded', `Not yet loaded (${unloaded.length})`]].map(([value, label]) => <button key={value} className={show === value ? 'active' : ''} aria-pressed={show === value} onClick={() => setShow(value)}>{label}</button>)}</div>
   </div>
   return <>
-    <LoadTermFilter data={allData}/>{!writable&&<p className="text-sm text-muted mb-16">This semester is view-only.</p>}
+    {!writable&&<p className="text-sm text-muted mb-16">This semester is view-only.</p>}
     <DeanCards items={[
       { label: 'Courses', value: catalog.length, icon: BookOpen, to: '/records' },
       { label: 'Loaded courses', value: loaded.length, icon: ClipboardCheck, to: '/records?show=loaded' },

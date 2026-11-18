@@ -131,3 +131,7 @@
 .dean-person-card.has-actions { position: relative; }
 .dean-person-card.has-actions > .dean-card-main { padding-right: 32px; }
 .dean-person-card.has-actions .dean-card-text span { overflow-wrap: normal; word-break: break-word; }
+
+.academic-header-actions { align-items:center; flex-wrap:wrap; }
+.academic-header-actions .academic-filter { width:360px; max-width:100%; margin:0; }
+@media(max-width:700px) { .academic-header-actions { width:100%; } .academic-header-actions .academic-filter { width:100%; } }

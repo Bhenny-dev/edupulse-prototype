@@ -4,7 +4,7 @@ import {historicalLoadsScene} from '../historical-loads-ui'
 const folder='../feature-documentation/system-manual/47-teaching-load-documents'
 test('teaching-load PDF review keeps source columns, explicit mapping and term filters',async({page})=>{
  const fixture=await teachingLoadUI(page)
- await page.goto('/#/records')
+ await page.goto('/#/records');await expect(page.locator('.page-header').getByLabel('Academic term',{exact:true})).toBeVisible()
  await page.locator('input[type=file][accept*=".pdf"]').setInputFiles({name:'approved-load.pdf',mimeType:'application/pdf',buffer:Buffer.from(await teachingLoadPdf())})
  const review=page.getByRole('dialog',{name:'Review teaching loads',exact:true})
  await expect(review).toBeVisible()

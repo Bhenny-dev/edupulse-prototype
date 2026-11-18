@@ -328,3 +328,8 @@ Do not regress: never use course enrollment as the complete department directory
 Import the supplied approved revised Second Semester AY 2025-2026 loads as historical records, not Current or Next. Reuse existing identities, including teaching rows for current management staff; never change their live roles. Add the three absent teachers as sign-in-disabled historical accounts. The printed highest degree is a semester snapshot and must not overwrite or be overwritten by current staff qualifications.
 
 Do not regress: all 66 source schedule rows remain intact under 37 course-only assignments and 21 historical course entries. Source suffixes/headcounts are not class placement or actual student membership. Preserve printed and computed totals, source identity/file/hash/page/row and missing AM/PM. A privileged no-JWT postgres maintenance insert may avoid the live handover trigger only for tagged completed-term course records. No client role, support view, public import or normal command can write completed terms. Keep previous-term UI read-only. Current accounts/roles/passwords/bans, master catalog, unrelated records, workspaces, enrollments, publications and learner evidence must remain unchanged. Never restore removed teaching seeds to fill historical gaps.
+
+
+### 18 November 2026 - Header academic term placement
+
+Move the shared Academic term control into the management page header, aligned right of the title. Remove the duplicate body selectors on Course, Instructors and Students. Wrap on small screens; preserve one accessible selector, shared term state, reload persistence and previous-term read-only behavior. No data or authorization change.

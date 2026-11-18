@@ -1,6 +1,5 @@
 import {useSearchParams} from 'react-router-dom'
 import useAcademicTerm from './useAcademicTerm'
-import LoadTermFilter from './LoadTermFilter'
 import {recordsForLoadTerm} from '../../utils/loadTerms'
 import { useMemo, useRef, useState } from 'react'
 import { Users, Layers, Shuffle, UserX, UserPlus, FileUp, UserRound } from 'lucide-react'
@@ -71,7 +70,7 @@ export default function DeanStudents({ data:allData }) {
       : <button className="btn btn-ghost btn-sm" onClick={() => setConfirm({ student, next: 'suspended' })}>Suspend</button>}
   </span>
   return <>
-    <LoadTermFilter data={allData}/>
+
     <DeanCards items={[
       { label: 'Registered students', value: students.filter(s => s.status === 'active').length, icon: Users, tone: 'sky', onClick:clearFilters },
       { label: 'Block sections', value: homeBlocks.length, icon: Layers, tone: 'purple', onClick:()=>departmentInput.current?.focus() },

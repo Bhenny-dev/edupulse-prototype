@@ -10,7 +10,6 @@ import { DeanCards, DeanDialog, ActivityTable, DeanFeedback, ConfirmDialog, Stat
 import { useDeanAction } from './deanActions'
 import DeanAccountDialog from './DeanAccountDialog'
 import CoursewareActions from '../courseware/CoursewareActions'
-import LoadTermFilter from './LoadTermFilter'
 import useAcademicTerm from './useAcademicTerm'
 import TeachingLoadFacts from './TeachingLoadFacts'
 import {recordsForLoadTerm} from '../../utils/loadTerms'
@@ -46,7 +45,7 @@ export default function DeanInstructors({ data:allData }) {
     ...(person.status==='suspended'?[{label:'Remove instructor',icon:Trash2,onSelect:()=>changeStatus(person,'removed')}]:[])
   ]}/>
   return <>
-    <LoadTermFilter data={allData}/>
+
     <DeanCards items={[
       { label: 'Instructors', value: people.filter(p => p.status === 'active').length, icon: GraduationCap, tone: 'purple', onClick: () => setStatus('active') },
       { label: 'With master’s degree', value: people.filter(p => p.has_masters).length, icon: Award, tone: 'green', onClick: () => setStatus('masters') },
