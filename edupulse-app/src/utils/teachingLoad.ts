@@ -10,6 +10,28 @@ type Item = { str?: string; width?: number; transform?: number[] }
 type Layout = { number: number; items: Item[]; edges: number[][]; rules?: number[][];text?:string }
 const clean = (value: string) => value.replace(/\s+/g, ' ').trim()
 const numeric = (value: string): number | null => /^\d+(?:\.\d+)?$/.test(clean(value)) ? Number(value) : null
+/** "IT 101 A", "PROF ED 16", "CP 2A": letters, an optional second word, then the course number. */
+const COURSE_CODE = /^[A-Z]{2,8}(?:\s+[A-Z]{1,8})?\s*\d/i
+/** At most one letter added, dropped or changed: OCR reads DESCRIPTIVE as DRSCRIPTIVE. */
+function nearlyEqual(a: string, b: string) {
+  if (Math.abs(a.length - b.length) > 1) return false
+  let i = 0, j = 0, edits = 0
+  while (i < a.length && j < b.length) {
+    if (a[i] === b[j]) { i++; j++; continue }
+    if (++edits > 1) return false
+    if (a.length > b.length) i++; else if (b.length > a.length) j++; else { i++; j++ }
+  }
+  return edits + (a.length - i) + (b.length - j) <= 1
+}
+/** The first word of a text item, in capitals (a PDF item can hold "DESCRIPTIVE TITLE"). */
+const headingWord = (value: string | undefined) => (value || '').trim().split(/\s+/)[0].toUpperCase().replace(/[^A-Z]/g, '')
+const HEADINGS = ['SUBJECT', 'DESCRIPTIVE', 'TITLE', 'TIME', 'DAY', 'UNIT', 'LEC', 'LAB', 'HOURS', 'ROOM', 'STUDENT', 'COURSE']
+/** One OCR misread is tolerated: a letter added, dropped or changed in long headings, only changed in short ones (LRC for LEC). */
+const misread = (word: string, name: string) => word !== name && !HEADINGS.includes(word) && (name.length >= 5 || word.length === name.length) && nearlyEqual(word, name)
+/** The item for a heading: an exact heading first, so a misread DAY ("LAY") never takes LAB's column. */
+function headingItem<T extends { str?: string }>(items: T[], name: string) {
+  return items.find(item => headingWord(item.str) === name) ?? items.find(item => misread(headingWord(item.str), name))
+}
 export const CURRENT_TERM = { academicYear: '2026-2027', semester: '1st Semester' }
 export const termKey = (year: string, semester: string) => `${year}|${semester}`
 export const SEMESTERS = ['1st Semester', '2nd Semester', 'Summer']
@@ -55,11 +77,12 @@ export function readTeachingLoadLayouts(pages: Layout[]): TeachingLoadDocument |
     const degree = clean(/Highest\s+Degree\s+(?:Earned|Eamed)\s*[:;]\s*([^\n]+)/i.exec(text)?.[1] || '')
     const academicYear = /(20\d{2})\s*[-\u2013\u2014]\s*(20\d{2})/.exec(text)?.slice(1).join('-') || ''
     const semester = /(?:First|1st)\s+Semester/i.test(text) ? '1st Semester' : /(?:Second|2nd)\s+Semester/i.test(text) ? '2nd Semester' : /Summer/i.test(text) ? 'Summer' : ''
-    const header = page.items.find(i => /^SUBJECT$/i.test(i.str?.trim() || ''))
+    const header = headingItem(page.items, 'SUBJECT')
     if (!header?.transform) { warnings.push(`Page ${page.number}: table headings could not be located; review the original page.`); continue }
     const headerY = header.transform[5]
     const headerItems = page.items.filter(i => i.transform && Math.abs(i.transform[5] - headerY) < 22)
-    const columns = [header, ...['DESCRIPTIVE', 'TIME', 'DAY', 'UNIT', 'LEC', 'LAB', 'HOURS', 'ROOM', 'STUDENT', 'COURSE'].map(name => headerItems.find(i => new RegExp(`^${name}(?:\\s|$)`, 'i').test(i.str?.trim() || '')))]
+    // Each heading, or the other word of a two-word heading ("DESCRIPTIVE TITLE"), locates its column.
+    const columns = [header, ...[['DESCRIPTIVE', 'TITLE'], ['TIME'], ['DAY'], ['UNIT'], ['LEC'], ['LAB'], ['HOURS'], ['ROOM'], ['STUDENT'], ['COURSE']].map(names => names.map(name => headingItem(headerItems, name)).find(Boolean))]
     const end = lines.find(l => /^Conforme\s*:/i.test(l.text))?.y ?? 0
     const ys = [...new Set((page.rules || []).filter(r => r[1] < headerY + 20 && r[1] > end).map(r => Math.round(r[1] * 2) / 2))].sort((a,b) => b-a)
     const pageEntries: LoadEntry[] = []
@@ -77,16 +100,21 @@ export function readTeachingLoadLayouts(pages: Layout[]): TeachingLoadDocument |
         printedHours = numeric(hourCell) ?? numeric(/^\d+(?:\.\d+)?/.exec(hourCell)?.[0] || '')
         continue
       }
-      if (!/^\d+$/.test(cells[0] || '')) continue
       const values = columns.map(c => { const x = c?.transform?.[4]; return x === undefined ? '' : cells[xs.findIndex((left,i) => x >= left && x < xs[i+1])] || '' })
-      const [subjectCode,title,time,days,units,lecture,lab,hours,room,students,program] = values
+      const [subjectCode,printedTitle,time,days,units,lecture,lab,hours,room,students,program] = values
+      const title = printedTitle.replace(/^[^\p{L}\p{N}(]+/u, '')
+      // A printed row number marks a class row. OCR can miss a lone digit, so a row whose cells read as a course code
+      // and a title still counts, numbered by its position, with a note to check it against the source.
+      const numbered = /^\d+$/.test(cells[0] || '')
+      if (!numbered && !(COURSE_CODE.test(subjectCode) && title)) continue
       if (!subjectCode || !title) { warnings.push(`Page ${page.number}, row ${cells[0]}: unreadable course cells.`); continue }
-      const computedHours = scheduleHours(time,days), printed = numeric(hours), rowWarnings: string[] = []
+      const position = pageEntries.length + 1
+      const computedHours = scheduleHours(time,days), printed = numeric(hours), rowWarnings: string[] = numbered ? [] : ['The row number was not read; this row was found by its course code. Check it against the source.']
       if (computedHours === null) rowWarnings.push('Check the printed days and time; hours could not be computed.')
       else if (printed !== null && Math.abs(computedHours - printed) > 0.02) rowWarnings.push(`Schedule computes to ${computedHours} hours; the document lists ${printed}.`)
       if (!/\b(?:AM|PM)\b/i.test(time)) rowWarnings.push('AM/PM is not printed. Confirm clock times before using this as a delivery schedule.')
       if (!academicYear || !semester) rowWarnings.push('Choose the academic year and semester.')
-      pageEntries.push({ id:`${page.number}:${cells[0]}`,page:page.number,row:+cells[0],instructor,degree,semester,academicYear,subjectCode,title,time,days,units:numeric(units),lecture:numeric(lecture),lab:numeric(lab),hours:printed,computedHours,room,students:numeric(students),program,warnings:rowWarnings })
+      pageEntries.push({ id:numbered?`${page.number}:${cells[0]}`:`${page.number}:r${position}`,page:page.number,row:numbered?+cells[0]:position,instructor,degree,semester,academicYear,subjectCode,title,time,days,units:numeric(units),lecture:numeric(lecture),lab:numeric(lab),hours:printed,computedHours,room,students:numeric(students),program,warnings:rowWarnings })
     }
     if (!pageEntries.length) warnings.push(`Page ${page.number}: no table rows could be read. Nothing on this page can be imported until reviewed.`)
     entries.push(...pageEntries)
@@ -98,6 +126,17 @@ export function readTeachingLoadLayouts(pages: Layout[]): TeachingLoadDocument |
     totals.push({instructor,page:page.number,units:printedUnits,hours:printedHours,computedUnits,computedHours})
   }
   return recognized ? { entries,totals,pages:pages.length,warnings } : undefined
+}
+
+const personName = (name: string) => name === name.toUpperCase() ? name.toLowerCase().replace(/(^|[\s-])(\p{L})/gu, (_, gap, letter) => gap + letter.toUpperCase()) : name
+/** One sentence to check against the form before reviewing it: whose load, how many classes and units, which term. */
+export function loadSummary(doc: TeachingLoadDocument) {
+  if (!doc.entries.length) return 'I found a teaching-load form, but none of its class rows could be read. Open the review to see what was read, or attach a sharper copy.'
+  const people = [...new Set(doc.entries.map(entry => entry.instructor).filter(Boolean))].map(personName)
+  const terms = [...new Set(doc.entries.map(entry => [entry.semester, entry.academicYear && `AY ${entry.academicYear}`].filter(Boolean).join(' ')).filter(Boolean))]
+  const units = doc.entries.some(entry => entry.units === null) ? '' : `, ${doc.entries.reduce((sum, entry) => sum + (entry.units || 0), 0)} units`
+  const whose = people.length === 1 ? `${people[0]}’s teaching load` : people.length ? `Teaching loads for ${people.join(', ')}` : 'Teaching load'
+  return `${whose}: ${doc.entries.length} class${doc.entries.length === 1 ? '' : 'es'}${units}${terms.length ? `, ${terms.join('; ')}` : ''}.`
 }
 
 /** OCR word boxes supply columns when the original scan has no PDF text/path cells. */

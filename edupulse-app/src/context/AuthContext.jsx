@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react'
 import { supabase } from '../lib/supabaseClient'
 import { aiRequest, setAiAccessToken, setAiSubject } from '../lib/aiClient'
+import { pulse } from '../components/pulse/pulseBus'
 import { accountUser, canSwitchRole, isSystemAdminEmail, ROLE_TITLES } from '../lib/authRoles'
 import { recordAudit } from '../lib/audit'
 import AccountSwitchModal from '../components/admin/AccountSwitchModal'
@@ -83,7 +84,7 @@ export function AuthProvider({ children }) {
   const returnToAdmin=useCallback(()=>{
     const base=principal.current
     if(!base?.canSwitchRoles)return false
-    cancelRestore();clearAdminView();clearAdminPicker();pendingSwitch.current?.(false);pendingSwitch.current=null;setAccountPicker(null);setAiSubject(undefined);publishUser(base);restoring.current.ready=true;setAuthRestoreError('');setAuthLoading(false)
+    cancelRestore();clearAdminView();clearAdminPicker();pendingSwitch.current?.(false);pendingSwitch.current=null;setAccountPicker(null);setAiSubject(undefined);pulse.viewChange();publishUser(base);restoring.current.ready=true;setAuthRestoreError('');setAuthLoading(false)
     return true
   },[cancelRestore,publishUser])
 
@@ -187,6 +188,7 @@ export function AuthProvider({ children }) {
     setAiSubject(selected?.id)
     cancelRestore();restoring.current.ready=true
     clearAdminPicker();saveAdminView(base,role,selected?.id||null)
+    pulse.viewChange()
     publishUser({ ...base, ...(selected || {}), accountId: base.id, accountEmail: base.email,baseRole:base.baseRole,canSwitchRoles:base.canSwitchRoles,role, title: ROLE_TITLES[role], supportSubject: selected?.id || null })
     setRoleHistory(previous => [...previous, { action: 'role_switch', to: role, subject: selected?.id || base.id, timestamp: new Date().toISOString() }])
     if (!selected) void recordAudit(base, 'view_switch', 'success', ROLE_TITLES[role])
@@ -202,7 +204,7 @@ export function AuthProvider({ children }) {
       const version=restoring.current.version,selection=pickerVersion.current
       if (user?.supportSubject) await aiRequest('support', 'POST', { id: user.supportSubject, operation: 'leave' }).catch(() => recordAudit(principal.current, 'view_switch', 'failure', 'Support exit audit unavailable; returned to admin locally'))
       if(signingOut.current||restoring.current.version!==version||pickerVersion.current!==selection||principal.current?.id!==base?.id||!canSwitchRole(principal.current,'admin'))return false
-      setAiSubject(undefined); publishUser(principal.current); return true
+      setAiSubject(undefined); pulse.viewChange(); publishUser(principal.current); return true
     }
     pendingSwitch.current?.(false)
     pickerVersion.current++;saveAdminPicker(principal.current,role)

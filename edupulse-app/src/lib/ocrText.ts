@@ -14,6 +14,17 @@ export function scannedTableGrid(data:Uint8ClampedArray,width:number,height:numb
   for(let x=0;x<width;x++){let count=0;for(let y=top;y<=bottom;y++)if(dark(x,y))count++;if(count>(bottom-top)*.75)cols.push(x)}
   return {horizontal,vertical:centers(cols)}
 }
+const luminance = (data: Uint8ClampedArray, i: number) => (data[i] * 299 + data[i + 1] * 587 + data[i + 2] * 114) / 1000
+/** A screenshot or flatbed scan: most of it is near-white paper. A phone photo of paper is grayer and uneven. */
+export function whiteBackground(data: Uint8ClampedArray) {
+  let white = 0, seen = 0
+  for (let i = 0; i < data.length; i += 16) { seen++; if (luminance(data, i) >= 235) white++ }
+  return seen > 0 && white / seen > 0.6
+}
+/** Every pixel darker than the paper becomes black ink, so light-gray print reads as clearly as black (in place). */
+export function inkOnWhite(data: Uint8ClampedArray, cut = 200) {
+  for (let i = 0; i < data.length; i += 4) { const ink = luminance(data, i) < cut ? 0 : 255; data[i] = data[i + 1] = data[i + 2] = ink; data[i + 3] = 255 }
+}
 export type OcrSummary = { pages: number; read: number; blank: number[]; confidence: number; low: { page: number; confidence: number }[] }
 
 /** Pages whose OCR confidence is below this are named in the review so the instructor checks them. */

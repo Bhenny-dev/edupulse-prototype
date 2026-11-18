@@ -27,6 +27,20 @@ export async function teachingLoadPdf(scan=false,page?:Page){
  const start=Buffer.byteLength(pdf);pdf+=`xref\n0 ${objects.length}\n0000000000 65535 f \n${offsets.slice(1).map(n=>`${String(n).padStart(10,'0')} 00000 n \n`).join('')}trailer\n<< /Size ${objects.length} /Root 1 0 R >>\nstartxref\n${start}\n%%EOF\n`
  return new Uint8Array(Buffer.from(pdf))
 }
+/** The same form as a screenshot: drawn at screen size with crisp 1 px rules, as a PNG (fictional identities). */
+export async function teachingLoadPicture(page:Page){
+ const width=1000,height=650,xs=[30,55,155,385,535,580,620,660,705,770,835,895,970],ys=[520,480,440,400]
+ const texts:[string,number,number][]=[['CONFIRMATION OF TEACHING LOAD',280,615],['First Semester, AY 2026-2027',310,590],['Instructor: ALEX SAMPLE',30,565],['Highest Degree Earned: Masters',30,545],...['SUBJECT','DESCRIPTIVE TITLE','TIME','DAY','UNIT','LEC','LAB','HOURS','ROOM','STUDENT','COURSE'].map((s,i)=>[s,xs[i+1]+3,500] as [string,number,number]),['1',35,460],...['IT 102 A','Programming foundations','7:30 - 10:00','TTH','3','2','1','5','A310','35','BSIT'].map((s,i)=>[s,xs[i+1]+3,460] as [string,number,number]),['TOTAL UNITS:',385,420],['3',583,420],['TOTAL HOURS:',625,420],['5',708,420],['Conforme:',30,375]]
+ const encoded=await page.evaluate(({width,height,xs,ys,texts})=>{
+  const canvas=document.createElement('canvas');canvas.width=width;canvas.height=height
+  const ctx=canvas.getContext('2d')!;ctx.fillStyle='white';ctx.fillRect(0,0,width,height);ctx.strokeStyle='black';ctx.lineWidth=1
+  for(const x of xs){ctx.beginPath();ctx.moveTo(x+.5,height-ys[0]);ctx.lineTo(x+.5,height-ys.at(-1)!);ctx.stroke()}
+  for(const y of ys){ctx.beginPath();ctx.moveTo(xs[0],height-y+.5);ctx.lineTo(xs.at(-1)!,height-y+.5);ctx.stroke()}
+  ctx.fillStyle='black';ctx.font='11px Arial';for(const [s,x,y]of texts)ctx.fillText(s,x,height-y)
+  return canvas.toDataURL('image/png').split(',')[1]
+ },{width,height,xs,ys,texts})
+ return Buffer.from(encoded,'base64')
+}
 export async function teachingLoadUI(page:Page,role='dean'){
  const fixture=await deanManagementUI(page,role)
  fixture.records.institutional=fixture.records.institutional!.filter(r=>r.kind!=='loads')

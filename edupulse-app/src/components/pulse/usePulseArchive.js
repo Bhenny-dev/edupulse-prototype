@@ -7,13 +7,17 @@ const archivedMessage = message => ({
   attachments: (message.attachedNames || message.fileNames || []).slice(0, 3),
   kind: message.mode === 'actions' ? 'action' : message.mode === 'receipt' ? 'receipt' : 'chat',
 })
-/** Archive text and file names only. Restored action cards cannot replay mutations. */
-export default function usePulseArchive(user, messages, setMessages) {
+/**
+ * Archive text and file names only. Restored action cards cannot replay mutations.
+ * `resume` continues a thread across an account view switch (pulseContinuity): same id, and its saved messages are not sent again.
+ */
+export default function usePulseArchive(user, messages, setMessages, resume = null) {
   const userKey = user?.accountId || user?.id || null
   const [state, setState] = useState({ threads: [], memories: [], automaticMemory: true, mode: 'session', loading: false, saving: false, error: '' })
-  const [threadId, setThreadId] = useState(null), [revision, setRevision] = useState(0)
+  const [threadId, setThreadId] = useState(() => resume?.id || null), [revision, setRevision] = useState(0)
   const [contextKey,setContextKey]=useState(()=>crypto.randomUUID())
   const current = useRef({ messages }), active = useRef(null), saved = useRef(new Set()), owner = useRef(0), created = useRef(false), saving = useRef(false)
+  const resumedThread = useRef(resume)
   current.current = { messages }
   const refresh = useCallback(async () => {
     if (!userKey) return
@@ -25,7 +29,9 @@ export default function usePulseArchive(user, messages, setMessages) {
   useEffect(() => {
     const version = ++owner.current, controller = new AbortController()
     setContextKey(crypto.randomUUID())
-    active.current = null; created.current = false; saved.current = new Set(); saving.current = false; setThreadId(null)
+    // A Pulse instance keeps one principal (the app remounts it for another), so the resumed thread applies to this key only.
+    const resumed = resumedThread.current
+    active.current = resumed?.id || null; created.current = Boolean(resumed?.id && resumed.created); saved.current = new Set(resumed?.saved || []); saving.current = false; setThreadId(resumed?.id || null)
     setState({ threads: [], memories: [], automaticMemory: true, mode: 'session', loading: Boolean(userKey), saving: false, error: '' })
     if (userKey) void aiRequest('conversations', 'GET', undefined, controller.signal).then(result => {
       if (version === owner.current) setState(previous => ({ ...previous, ...result, loading: false }))
@@ -98,5 +104,6 @@ export default function usePulseArchive(user, messages, setMessages) {
   const deleteThread = async id => { if (active.current === id && (saving.current || hasUnsaved())) throw new Error('Wait for this conversation to finish saving before deleting it.'); await command({ operation: 'delete', id }); if (active.current === id) { active.current = null; created.current = false; saved.current = new Set(); setThreadId(null); setMessages([]);setContextKey(crypto.randomUUID()) } }
   const rename = async (id, title) => { const name = title.replace(/\s+/g, ' ').trim().slice(0, 160); if (!name) throw new Error('Enter a name for this conversation.'); await command({ operation: 'rename', id, title: name }) }
   const title = state.threads.find(thread => thread.id === threadId)?.title || ''
-  return { ...state, contextKey,threadId, title, ensureThread, unsaved: hasUnsaved(), refresh, openThread, newThread, deleteThread, rename, command, retry: () => { setState(previous => ({ ...previous, error: '' })); setRevision(value => value + 1) } }
+  const snapshot = () => ({ id: active.current, created: created.current, saved: [...saved.current] })
+  return { ...state, contextKey,threadId, title, ensureThread, unsaved: hasUnsaved(), refresh, openThread, newThread, deleteThread, rename, command, snapshot, retry: () => { setState(previous => ({ ...previous, error: '' })); setRevision(value => value + 1) } }
 }

@@ -1,6 +1,7 @@
 import type { ReferenceFile } from './aiClient'
 import type { OcrProgress } from './ocr'
 import { LOW_CONFIDENCE, tidyOcrText, type OcrPage } from './ocrText'
+import { ocrLoadLayout, readTeachingLoadLayouts } from '../utils/teachingLoad'
 
 /** Pictures are read on this device, so the 4 MB server limit does not apply; phone photos are larger. */
 export const IMAGE_LIMIT = 12_000_000
@@ -18,5 +19,8 @@ export async function readImageReference(file: File, onProgress: (message: strin
   const text = tidyOcrText(page.text)
   if (text.replace(/\s/g, '').length < 3) throw new Error(`No readable text was found in ${file.name}. Use a sharper, well-lit picture, or a screenshot with the text in focus.`)
   const confidence = Math.round(page.confidence)
-  return { title: `${file.name.slice(0, 140)} (OCR)`, text: text.slice(0, 150000), fileName: file.name.slice(-255), kind: 'image', sourceType: 'text', ocr: { confidence, low: confidence < LOW_CONFIDENCE } }
+  // A picture of a teaching-load form becomes the same reviewable table a teaching-load PDF does.
+  const teachingLoad = page.words?.length ? readTeachingLoadLayouts([ocrLoadLayout(page.words, 1, page.grid, page.text)]) : undefined
+  if (teachingLoad) teachingLoad.warnings.push('The table was read from a picture by OCR. Compare every row and column with the picture before confirming the import.')
+  return { title: `${file.name.slice(0, 140)} (OCR)`, text: text.slice(0, 150000), fileName: file.name.slice(-255), kind: 'image', sourceType: 'text', ocr: { confidence, low: confidence < LOW_CONFIDENCE }, ...(teachingLoad ? { teachingLoad } : {}) }
 }

@@ -1,4 +1,4 @@
-import { imageScale,scannedTableGrid,type OcrPage } from './ocrText'
+import { imageScale,IMAGE_MAX_UPSCALE,inkOnWhite,scannedTableGrid,whiteBackground,type OcrGrid,type OcrPage } from './ocrText'
 
 export type OcrProgress = { done: number; total: number; page: number | null; status: string }
 /** Scans are read page by page on the device; longer scans should be split. */
@@ -6,6 +6,8 @@ export const OCR_PAGE_LIMIT = 60
 const READABLE = 20
 /** Pictures above this many pixels are refused: the canvas that prepares them would not fit in memory. */
 const IMAGE_PIXEL_LIMIT = 50_000_000
+/** Longest side of a ruled form read from a picture: what a 300 dpi scan of a page measures, as PDF pages are rendered. */
+const TABLE_SIDE = 3300
 // The engine files are served from this origin by the build (vite.config.js); the CSP blocks third-party scripts.
 const workerOptions = (assets: string) => ({ workerPath: `${assets}worker.min.js`, corePath: assets, langPath: assets.replace(/\/$/, ''), workerBlobURL: false })
 
@@ -41,22 +43,12 @@ export async function ocrScannedPages(file: File, { signal, onProgress }: { sign
       const context=canvas.getContext('2d',{willReadFrequently:true})!
       context.fillStyle='#fff';context.fillRect(0,0,canvas.width,canvas.height);context.drawImage(bitmap,0,0);bitmap.close()
       const grid=scannedTableGrid(context.getImageData(0,0,canvas.width,canvas.height).data,canvas.width,canvas.height)
-      let recognition=blob
-      const ruled=grid.horizontal.length>=3&&grid.vertical.length>=4
-      if(ruled){
-        // Keep the detected geometry, but remove rules from the OCR copy so small
-        // numbers are read as text rather than discarded as table-line fragments.
-        const stroke=Math.max(3,Math.ceil(Math.max(canvas.width,canvas.height)/550))
-        context.fillStyle='#fff'
-        for(const x of grid.vertical)context.fillRect(x-stroke/2,grid.horizontal[0]-stroke,stroke,grid.horizontal.at(-1)!-grid.horizontal[0]+2*stroke)
-        for(const y of grid.horizontal)context.fillRect(grid.vertical[0]-stroke,y-stroke/2,grid.vertical.at(-1)!-grid.vertical[0]+2*stroke,stroke)
-        recognition=await new Promise<Blob>((resolve,reject)=>canvas.toBlob(value=>value?resolve(value):reject(new Error('The scanned table could not be prepared.')),'image/png'))
-      }
+      const ruled=isRuled(grid)
+      const recognition=ruled?await withoutRules(canvas,context,grid):blob
       canvas.width=0;canvas.height=0
       await worker.setParameters({tessedit_pageseg_mode:ruled?PSM.SPARSE_TEXT:PSM.AUTO,preserve_interword_spaces:'1'})
       const { data } = await Promise.race([worker.recognize(recognition, {}, {text:true,blocks:true}), aborted])
-      const words = (data.blocks || []).flatMap(block=>block.paragraphs.flatMap(paragraph=>paragraph.lines.flatMap(line=>line.words.map(word=>({text:word.text,...word.bbox,baseline:line.baseline.y1})))))
-      pages.push({ page: number, text: data.text, confidence: data.confidence,words,grid })
+      pages.push({ page: number, text: data.text, confidence: data.confidence,words:ocrWords(data),grid })
     }
     onProgress({ done: scanned.length, total: scanned.length, page: null, status: 'Checking the text' })
     return { pageCount: pdf.numPages, pages }
@@ -65,6 +57,23 @@ export async function ocrScannedPages(file: File, { signal, onProgress }: { sign
     await pdf.loadingTask.destroy()
   }
 }
+
+/** A ruled form: enough rules for a header, one row and the columns between them. */
+const isRuled = (grid: OcrGrid) => grid.horizontal.length >= 3 && grid.vertical.length >= 4
+/**
+ * The OCR copy of a ruled page with its rules painted out, so small numbers beside them are read as text rather than
+ * discarded as line fragments. The detected grid is kept separately to place every word in its cell.
+ */
+function withoutRules(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D, grid: OcrGrid) {
+  const stroke = Math.max(3, Math.ceil(Math.max(canvas.width, canvas.height) / 550))
+  context.fillStyle = '#fff'
+  for (const x of grid.vertical) context.fillRect(x - stroke / 2, grid.horizontal[0] - stroke, stroke, grid.horizontal.at(-1)! - grid.horizontal[0] + 2 * stroke)
+  for (const y of grid.horizontal) context.fillRect(grid.vertical[0] - stroke, y - stroke / 2, grid.vertical.at(-1)! - grid.vertical[0] + 2 * stroke, stroke)
+  return new Promise<Blob>((resolve, reject) => canvas.toBlob(value => value ? resolve(value) : reject(new Error('The scanned table could not be prepared.')), 'image/png'))
+}
+type Recognized = { blocks?: { paragraphs: { lines: { baseline: { y1: number }; words: { text: string; bbox: { x0: number; y0: number; x1: number; y1: number } }[] }[] }[] }[] | null }
+/** Each word with its box and line baseline, in the pixels of the image OCR read. */
+const ocrWords = (data: Recognized) => (data.blocks || []).flatMap(block => block.paragraphs.flatMap(paragraph => paragraph.lines.flatMap(line => line.words.map(word => ({ text: word.text, ...word.bbox, baseline: line.baseline.y1 })))))
 
 const ocrQueue: { tail: Promise<unknown> } = { tail: Promise.resolve() }
 /** One picture at a time: each reader holds an OCR engine in memory, and up to three pictures can be attached together. */
@@ -94,23 +103,44 @@ async function readPicture(file: File, { signal, onProgress }: { signal: AbortSi
   try {
     if (bitmap.width * bitmap.height > IMAGE_PIXEL_LIMIT) throw new Error(`${file.name} is too large to read here. Resize it to under 50 megapixels.`)
     signal.throwIfAborted()
-    const scale = imageScale(bitmap.width, bitmap.height), width = Math.max(1, Math.round(bitmap.width * scale)), height = Math.max(1, Math.round(bitmap.height * scale))
-    const canvas = document.createElement('canvas')
-    canvas.width = width
-    canvas.height = height
-    const context = canvas.getContext('2d')
-    if (!context) throw new Error('This browser cannot prepare the picture for reading.')
-    context.fillStyle = '#fff'
-    context.fillRect(0, 0, width, height)
-    context.imageSmoothingQuality = 'high'
-    context.drawImage(bitmap, 0, 0, width, height)
-    const png = await new Promise<Blob>((resolve, reject) => canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('This browser cannot prepare the picture for reading.')), 'image/png'))
+    const draw = (scale: number) => {
+      const canvas = document.createElement('canvas')
+      canvas.width = Math.max(1, Math.round(bitmap.width * scale))
+      canvas.height = Math.max(1, Math.round(bitmap.height * scale))
+      const context = canvas.getContext('2d', { willReadFrequently: true })
+      if (!context) throw new Error('This browser cannot prepare the picture for reading.')
+      context.fillStyle = '#fff'
+      context.fillRect(0, 0, canvas.width, canvas.height)
+      context.imageSmoothingQuality = 'high'
+      context.drawImage(bitmap, 0, 0, canvas.width, canvas.height)
+      const pixels = context.getImageData(0, 0, canvas.width, canvas.height)
+      return { canvas, context, pixels, grid: scannedTableGrid(pixels.data, canvas.width, canvas.height) }
+    }
+    const scale = imageScale(bitmap.width, bitmap.height)
+    let picture = draw(scale)
+    // A form or table (a screenshot of a teaching load, say) is read at the size scanned PDF pages are, about 300 dpi,
+    // so the small print in its cells is legible; its grid places each word in its cell, as for a scanned page.
+    const tableScale = Math.min(IMAGE_MAX_UPSCALE, TABLE_SIDE / Math.max(bitmap.width, bitmap.height))
+    if (isRuled(picture.grid) && tableScale > scale * 1.05) { picture.canvas.width = 0; picture = draw(tableScale) }
+    const { canvas, context, pixels, grid } = picture
+    const ruled = isRuled(grid)
+    // On white paper, light-gray print (the unit and hour digits of a printed load) is made black before reading.
+    if (ruled && whiteBackground(pixels.data)) { inkOnWhite(pixels.data); context.putImageData(pixels, 0, 0) }
+    const image = ruled ? await withoutRules(canvas, context, grid) : await new Promise<Blob>((resolve, reject) => canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('This browser cannot prepare the picture for reading.')), 'image/png'))
+    canvas.width = 0; canvas.height = 0
     status('Loading the OCR engine')
-    const { createWorker, OEM } = await import('tesseract.js')
+    const { createWorker, OEM, PSM } = await import('tesseract.js')
     worker = await Promise.race([createWorker('eng', OEM.LSTM_ONLY, workerOptions(new URL('/ocr/', window.location.origin).href)), aborted])
     status('Reading the text')
-    const { data } = await Promise.race([worker.recognize(png), aborted])
-    return { page: 1, text: data.text, confidence: data.confidence }
+    if (!ruled) {
+      const { data } = await Promise.race([worker.recognize(image), aborted])
+      return { page: 1, text: data.text, confidence: data.confidence }
+    }
+    // Read as one block of lines, a ruled picture keeps the lone digits and the first characters of each cell that
+    // sparse reading drops (measured on a screenshot of a CIT teaching load: all 8 rows, against none).
+    await worker.setParameters({ tessedit_pageseg_mode: PSM.SINGLE_BLOCK, preserve_interword_spaces: '1' })
+    const { data } = await Promise.race([worker.recognize(image, {}, { text: true, blocks: true }), aborted])
+    return { page: 1, text: data.text, confidence: data.confidence, words: ocrWords(data), grid }
   } finally {
     bitmap.close()
     await worker?.terminate()

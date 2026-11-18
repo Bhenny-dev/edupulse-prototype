@@ -22,12 +22,14 @@ function matchingCourse(entry,courses){
 const display=value=>value===null||value===undefined||value===''?'Not recorded':value
 
 /** Full extracted table stays local to the explicit review, never an LLM context slice. */
-export default function TeachingLoadImport({file,initialOpen=false,onClose}){
+export default function TeachingLoadImport({file,initialOpen=false,openSignal=0,summary='',onClose}){
  const {user}=useAuth(),records=useAcademicRecords()
  const manage=Boolean(user?.authenticated&&['dean','associate_dean','admin'].includes(user.role))
  const doc=file.teachingLoad
  const [open,setOpen]=useState(initialOpen),[data,setData]=useState(null),[draft,setDraft]=useState({}),[selected,setSelected]=useState(()=>doc.entries.filter(e=>e.instructor===doc.entries[0]?.instructor).map(e=>e.id))
  const [person,setPerson]=useState(doc.entries[0]?.instructor||''),[page,setPage]=useState(0),[busy,setBusy]=useState(false),[loading,setLoading]=useState(false),[error,setError]=useState(''),[receipt,setReceipt]=useState(null),[reviewed,setReviewed]=useState(false),[retry,setRetry]=useState(0)
+ // Pulse opens the review when the person answers yes to it.
+ useEffect(()=>{if(openSignal)setOpen(true)},[openSignal])
  const instructors=(data?.directory?.instructors||[]).filter(i=>i.status==='active')
  const courses=useMemo(()=> (data?.institutional||[]).filter(r=>r.kind==='courses'&&!/^(suspended|removed)$/i.test(r.data.Status||'')).map(r=>({code:r.data.CourseCode,title:r.data.CourseTitle})),[data])
  const blocks=[...new Set((data?.institutional||[]).filter(r=>r.kind==='rosters').map(r=>r.data.Block).filter(b=>b&&b!=='IRREGULAR'))].sort()
@@ -60,7 +62,7 @@ export default function TeachingLoadImport({file,initialOpen=false,onClose}){
   finally{setBusy(false)}
  }
  return <section className="pulse-action" aria-label="Extracted teaching loads">
-  <strong>{file.fileName}</strong><p>{doc.entries.length} extracted class loads · {doc.totals.length} instructor forms · {doc.pages} pages. No loads are saved until you review and confirm.</p>
+  <strong>{file.fileName}</strong>{summary&&<p>{summary}</p>}<p>{doc.entries.length} extracted class loads · {doc.totals.length} instructor forms · {doc.pages} pages. No loads are saved until you review and confirm.</p>
   <button className="btn btn-secondary btn-sm" onClick={()=>setOpen(true)}>Review extracted course loads</button>
   {open&&<PageModal className="load-import-page" title="Review teaching loads" subtitle={file.fileName} onClose={close} closeLabel="Close teaching load review" footer={<><span role="status">{receipt?`${receipt.imported} loads saved.`:`${chosen.length} selected${manage?` · ${invalid.length} need course, instructor, block or term mapping`:''}`}</span><button className="btn btn-secondary" onClick={close} disabled={busy}>Close</button>{manage&&!receipt&&<button className="btn btn-primary" onClick={save} disabled={busy||loading||!data||!reviewed||!chosen.length||chosen.length>500||invalid.length>0}>{busy?'Saving loads…':'Confirm selected loads'}</button>}</>}>
    <div className="load-import-summary">

@@ -20,6 +20,9 @@ import { approvalResumeStep, prepareIntent, previewAgents, stepReadiness, stepTa
 import { accountRequest, courseCatalog, findCourseMentions, pageFor, pagesForTopic, PAGES, planOperator, searchRecords, syllabusReference } from '../../agents/operator'
 import { RECALL, REMEMBER, requestGoal } from '../../agents/requestGoal'
 import { affirmative, declines, endsConversation, spokenSummary } from './voiceConversation'
+import { lastOffer, refersToEarlierFile, shortAnswer } from './followUp'
+import { clearParkedConversation, parkConversation, resumeConversation } from './pulseContinuity'
+import { loadSummary } from '../../utils/teachingLoad'
 import PulseSessions from './PulseSessions'
 import PulseModelPicker from './PulseModelPicker'
 import { findAccounts, findRegisteredStudents } from '../../lib/accountSearch'
@@ -66,8 +69,11 @@ export default function Pulse() {
   const ai = useAI()
   const refreshAI = ai.refresh
   const location = useLocation(), navigate = useNavigate()
-  const [open, setOpen] = useState(false), [messages, setMessages] = useState([])
-  const archive = usePulseArchive(user, messages, setMessages)
+  const principalKey = user?.accountId || user?.id || null, viewKey = `${user?.id || 'guest'}:${user?.role || 'guest'}`
+  // Opening another account view remounts the app; the conversation that was open continues in the new view.
+  const [resumed] = useState(() => resumeConversation(principalKey, viewKey))
+  const [open, setOpen] = useState(() => Boolean(resumed?.open)), [messages, setMessages] = useState(() => resumed?.messages || [])
+  const archive = usePulseArchive(user, messages, setMessages, resumed?.thread)
   const [sourceReference, setSourceReference] = useWorkspaceViewState('pulse-source', null)
   const [syllabusReader,setSyllabusReader]=useWorkspaceViewState('syllabus-reader',null)
   const previousSyllabusTask=useRef(null)
@@ -81,8 +87,8 @@ export default function Pulse() {
   const [historyOpen, setHistoryOpen] = useState(false), [fileNotice, setFileNotice] = useState('')
   const [pendingGuide, setPendingGuide] = useState(null)
   const [input, setInput] = useState(''), [attachments, setAttachments] = useState([])
-  const [contextFiles, setContextFiles] = useState([])
-  const visibleFiles = attachments.length ? attachments : contextFiles
+  // Files go with the one message they were attached to; a later message reuses them only when it names them ("this form").
+  const lastFiles = useRef([])
   const [busy, setBusy] = useState(false), [fileBusy, setFileBusy] = useState(false)
   const [draftProgress,setDraftProgress]=useState('')
   const [expression, setExpression] = useState('idle')
@@ -98,6 +104,14 @@ export default function Pulse() {
   const voiceTurn = useRef({ suggestion: '', askedElse: false })
   const [turnTick, setTurnTick] = useState(0)
   messagesRef.current = messages; errorRef.current = error
+  // Parked when the System Admin opens another account view (pulseBus 'view-change'), with the reply that opened it.
+  const handoffReply = useRef([]), openRef = useRef(open), parkRef = useRef(null)
+  openRef.current = open
+  parkRef.current = () => {
+    const carried = [...messagesRef.current, ...handoffReply.current]
+    if (openRef.current || carried.length) parkConversation({ owner: principalKey, view: viewKey, open: openRef.current, messages: carried, thread: archive.snapshot() })
+  }
+  useEffect(() => { if (resumed) clearParkedConversation() }, [resumed])
   useEffect(() => { turnDone.current?.(); turnDone.current = null }, [turnTick])
   const voice = usePulseVoice({
     owner: `${user?.id || 'guest'}:${user?.role || 'guest'}`, active: open && !officeOpen && !historyOpen, blocked: busy || fileBusy,
@@ -142,11 +156,16 @@ export default function Pulse() {
       setMessages(previous => [...previous, { id: crypto.randomUUID(), from: 'pulse', text: event.message, mode: 'App notification', actions: event.actions }])
     }
     if (event.type === 'ask') { setOpen(true); void sendRef.current?.(event.message, { documentIds: event.documentIds, task: event.task, scope: event.label, attachments:event.attachments, skipOperator: true }) }
+    if (event.type === 'view-change') parkRef.current?.()
   }), [])
+  // Another account remounts Pulse, so this runs for a change of view within one mount only; a mount starts fresh or resumed.
+  const viewOwner = useRef(user?.id)
   useEffect(() => {
+    if (viewOwner.current === user?.id) return
+    viewOwner.current = user?.id
     requestRef.current?.abort(); requestRef.current = null
-    fileRead.current = { epoch: fileRead.current.epoch + 1, busy: false }; setFileBusy(false)
-    setMessages([]); setAttachments([]); setContextFiles([]); setInput(''); setError(''); setBusy(false); setFocus(null); setGuide(null); setEvents(new Set()); setCompleted(false); setOfficeOpen(false); setHistoryOpen(false); setPopover(null); setRenaming(null); setConfirmDelete(false); setGuidanceOpen(false)
+    fileRead.current = { epoch: fileRead.current.epoch + 1, busy: false }; setFileBusy(false); lastFiles.current = []
+    setMessages([]); setAttachments([]); setInput(''); setError(''); setBusy(false); setFocus(null); setGuide(null); setEvents(new Set()); setCompleted(false); setOfficeOpen(false); setHistoryOpen(false); setPopover(null); setRenaming(null); setConfirmDelete(false); setGuidanceOpen(false)
   }, [user?.id])
   useEffect(() => {
     const zone = document.querySelector('[data-pulse-zone]')?.getAttribute('data-pulse-zone') || 'general'
@@ -369,23 +388,30 @@ export default function Pulse() {
       }
     }
   }, [])
-  const navigateAllowed = async (path, viewRole) => {
+  // The reply a view switch carries into the remounted panel, since this one unmounts before it can show it.
+  const opened = (path, label) => ({ id: crypto.randomUUID(), from: 'pulse', mode: 'actions', text: '', proposals: [{ type: 'navigate', path, label }] })
+  const switchingView = async (reply, change) => {
+    handoffReply.current = [reply]
+    try { return await change() } finally { handoffReply.current = [] }
+  }
+  const navigateAllowed = async (path, viewRole, label) => {
     if (!path?.startsWith('/') || path.startsWith('//')) throw new Error('Pulse can open only an authorized EduPulse page.')
     const candidates = PAGES.filter(page => page.path.split('?')[0] === path.split('?')[0])
     const allowed = role => candidates.some(page => page.roles === 'all' || page.roles.includes(role))
+    const reply = opened(path, label || candidates[0]?.label || 'the page')
     if (viewRole && viewRole !== user?.role) {
       setOfficeOpen(false)
-      if (!user?.canSwitchRoles || !allowed(viewRole) || !(await switchRole(viewRole))) throw new Error('This dashboard is unavailable for your account.')
+      if (!user?.canSwitchRoles || !allowed(viewRole) || !(await switchingView(reply, () => switchRole(viewRole)))) throw new Error('This dashboard is unavailable for your account.')
     }
     if (!viewRole && !allowed(user?.role)) {
       setOfficeOpen(false)
-      if (user?.role !== 'admin' || !user.canSwitchRoles || !allowed('instructor') || !(await switchRole('instructor'))) throw new Error('This page is unavailable for your current view.')
+      if (user?.role !== 'admin' || !user.canSwitchRoles || !allowed('instructor') || !(await switchingView(reply, () => switchRole('instructor')))) throw new Error('This page is unavailable for your current view.')
     }
     navigate(path)
   }
   const openAccountView = async account => {
     setOfficeOpen(false)
-    await openAccount(account)
+    await switchingView(opened('/dashboard', `${ROLE_TITLES[account.role]} view of ${account.name}`), () => openAccount(account))
     navigate('/dashboard')
   }
   // Finds the named person in the System Admin account directory and opens their view, or says what is missing.
@@ -395,7 +421,8 @@ export default function Pulse() {
     signal.throwIfAborted()
     if (found.matches.length === 1) {
       const [account] = found.matches
-      // Opening an account remounts the app under that account, so the panel closes; this note is for the case where it does not.
+      // Opening an account remounts the app under that account; the panel and this conversation continue there
+      // (pulseContinuity), with the reply openAccountView carries. This note is for the case where it does not remount.
       try { await openAccountView(account); Object.assign(proposal, { type: 'navigate', path: '/dashboard', label: `${ROLE_TITLES[account.role]} view of ${account.name}` }) }
       catch (error) { Object.assign(proposal, { type: 'notice', text: `I found ${account.name} but could not open that account: ${error.message}` }) }
     } else if (found.matches.length) Object.assign(proposal, { type: 'account-choices', accounts: found.matches, text: `${found.matches.length} accounts match “${name}”. Choose the one to open.` })
@@ -455,7 +482,20 @@ export default function Pulse() {
   }
 
   // Session actions for the header, the session dropdown and the options menu.
-  const clearContext = () => { setGuide(null); setFocus(null); setAttachments([]); setContextFiles([]); setInput(''); setRenaming(null); setConfirmDelete(false) }
+  const clearContext = () => { setGuide(null); setFocus(null); setAttachments([]); lastFiles.current = []; setInput(''); setRenaming(null); setConfirmDelete(false) }
+  // A short "yes" or "no" answers Pulse's latest offer. Records still change only from a card's own confirm button.
+  const answerOffer = async (answer, offer) => {
+    const say = text => setMessages(previous => [...previous, { id: crypto.randomUUID(), from: 'pulse', mode: 'quick', text }])
+    if (!offer) return say(answer === 'yes' ? 'Nothing is waiting for a yes right now. Tell me what to do next, for example “Open Course Loading”, or attach a file.' : 'Okay. Tell me when you need something.')
+    if (answer === 'no') return say('Okay, I left it as it is. Tell me what you would like instead.')
+    if (offer.kind === 'navigate') {
+      await navigateAllowed(offer.path, offer.viewRole, offer.label)
+      return setMessages(previous => [...previous, opened(offer.path, offer.label)])
+    }
+    setMessages(previous => previous.map(message => message.id !== offer.messageId ? message : { ...message, proposals: message.proposals.map((proposal, index) => index === offer.index ? { ...proposal, openSignal: (proposal.openSignal || 0) + 1 } : proposal) }))
+    requestAnimationFrame(() => document.getElementById(`pulse-message-${offer.messageId}`)?.scrollIntoView({ block: 'nearest' }))
+    say(offer.type === 'teaching-load-import' ? 'Opened the review. Check each row’s instructor, course, block and term against the form, then press Confirm selected loads. Nothing is saved before you confirm.' : 'Review the card above and press its confirm button to apply it. I change records only after you confirm there.')
+  }
   const startNewChat = () => { voice.stop(); try { archive.newThread(); clearContext(); setPopover(null) } catch (failure) { setError(failure.message) } }
   const openSession = async id => { voice.stop(); await archive.openThread(id); clearContext(); setPopover(null) }
   const currentThread = archive.threads.find(thread => thread.id === archive.threadId)
@@ -466,11 +506,16 @@ export default function Pulse() {
   const deleteSession = () => sessionAction(async () => { await archive.deleteThread(archive.threadId); clearContext() }, 'Conversation deleted.')
 
   async function send(text, options = {}) {
-    const question = (text ?? input).trim()
+    const typed = (text ?? input).trim()
+    // "yes" to a step Pulse proposed runs that step; other short answers are handled after the message is shown.
+    const answer = !options.skipOperator && !options.attachments && !attachments.length && !options.documentIds?.length ? shortAnswer(typed) : null
+    const offer = answer ? lastOffer(messages) : null
+    const question = answer === 'yes' && offer?.kind === 'request' ? offer.message : typed
     const editor=currentEditor()
     const continued=continueSyllabusTask(question,editor,previousSyllabusTask.current,syllabusScope)
     const instruction=continued||question
-    const supplied = options.attachments || (attachments.length ? attachments : contextFiles)
+    const earlier = !options.attachments && !attachments.length && refersToEarlierFile(question) ? lastFiles.current : []
+    const supplied = options.attachments || (attachments.length ? attachments : earlier)
     const pending = activeSources(supplied, currentEditorSources())
     const selectedSection = focusedSection(focus, instruction)
     const scopeFields = focusedFields(focus, instruction)
@@ -484,16 +529,19 @@ export default function Pulse() {
     const progress = options.skipOperator && goal.route === 'app' ? contentGenerationRequest(instruction, options.task, Boolean(editor)) ? 'Preparing educational content' : 'Searching EduPulse' : goal.label
     setBusy(true); setDraftProgress(`${progress}...`);setExpression('thinking')
     setError(''); setErrorCode(''); if (text === undefined || options.voice) setInput('')
-    if (!options.attachments && attachments.length) { setContextFiles(attachments); setAttachments([]) }
-    setMessages(previous => [...previous, { id: crypto.randomUUID(), from: 'user', text: question || `Attached ${pending.map(item => item.fileName || item.title).join(', ')}`, fileNames: pending.map(item => item.fileName || item.title), scope: options.scope }])
+    if (!options.attachments && attachments.length) { lastFiles.current = attachments; setAttachments([]) }
+    const named = item => item.fileName || item.title
+    setMessages(previous => [...previous, { id: crypto.randomUUID(), from: 'user', text: typed || `Attached ${pending.map(named).join(', ')}`, fileNames: earlier.length ? [] : pending.map(named), ...(earlier.length ? { usedNames: earlier.map(named) } : {}), scope: options.scope }])
     const instant = !options.buddy && !supplied.length && !options.documentIds?.length && !options.task ? quickReply(question) : null
     const ticket = instant ? null : office.begin(options.buddy || buddyForRequest(question, pending.length>0), 'Handle request: '+(question || 'attached files').slice(0,100))
     const mutationTickets = []
     try {
       if (instant) { setMessages(previous=>[...previous,{id:crypto.randomUUID(),from:'pulse',mode:'quick',text:instant}]);setExpression('cheerful');return instant }
+      if (answer && offer?.kind !== 'request') { await answerOffer(answer, offer); office.finish(ticket,'done','Answered a follow-up to the previous reply; no record change.'); return }
       const loads=pending.filter(item=>item.teachingLoad)
-      if(loads.length&&!options.skipOperator&&(attachments.length||options.attachments?.length||/\b(loads?|teaching|extract|import|scan)\b/i.test(question))){
-        setMessages(previous=>[...previous,{id:crypto.randomUUID(),from:'pulse',mode:'actions',text:'I read the teaching-load tables. Review the source rows, term, instructor and block mappings before confirming.',proposals:loads.map(file=>({type:'teaching-load-import',file}))}])
+      if(loads.length&&!options.skipOperator&&(attachments.length||options.attachments?.length||/\b(loads?|teaching|extract|import|scan|assign)\b/i.test(question))){
+        const confirms = ['dean','associate_dean','admin'].includes(user?.role) ? 'Open the review to check each class’s course, block and term against the form, then confirm to load them. Nothing is saved until you confirm. Say yes to open the review.' : 'A Dean, Program Coordinator or System Admin confirms course-load imports.'
+        setMessages(previous=>[...previous,{id:crypto.randomUUID(),from:'pulse',mode:'actions',text:`${loads.map(file=>loadSummary(file.teachingLoad)).join(' ')} ${confirms}`,proposals:loads.map(file=>({type:'teaching-load-import',file,summary:`${loadSummary(file.teachingLoad)} ${confirms}`}))}])
         office.finish(ticket,'done','Extracted course loads ready for review; no AI request or record change.');return
       }
       if (!options.skipOperator && REMEMBER.test(question)) {
@@ -538,7 +586,7 @@ export default function Pulse() {
       }
       for (const proposal of now) {
         controller.signal.throwIfAborted()
-        if (proposal.type === 'navigate' || proposal.type === 'guide') { await navigateAllowed(proposal.path, proposal.viewRole); if (proposal.type === 'guide') setPendingGuide(proposal.path) }
+        if (proposal.type === 'navigate' || proposal.type === 'guide') { await navigateAllowed(proposal.path, proposal.viewRole, proposal.label); if (proposal.type === 'guide') setPendingGuide(proposal.path) }
         if (proposal.type === 'editor-edit' && proposal.editor) {
           const result = await prepareEdit(proposal, controller.signal)
           controller.signal.throwIfAborted()
@@ -574,7 +622,7 @@ export default function Pulse() {
     } catch (err) {
       mutationTickets.forEach(id=>office.finish(id,controller.signal.aborted?'stopped':'error','Proposal preparation did not finish.'))
       office.finish(ticket,controller.signal.aborted?'stopped':'error',controller.signal.aborted?'Request stopped.':'Request failed; inspect the error in Pulse.')
-      if (requestRef.current === controller) { setError(controller.signal.aborted ? editor?.kind==='syllabus'?'Request stopped. Any completed draft weeks remain in the form; review and save them before continuing.':'Request stopped. You can edit and resend your question.' : err.message); setErrorCode(err.code || ''); if (text === undefined || options.voice) setInput(question); if (!options.attachments) setAttachments(pending); setExpression('concern') }
+      if (requestRef.current === controller) { setError(controller.signal.aborted ? editor?.kind==='syllabus'?'Request stopped. Any completed draft weeks remain in the form; review and save them before continuing.':'Request stopped. You can edit and resend your question.' : err.message); setErrorCode(err.code || ''); if (text === undefined || options.voice) setInput(typed); if (!options.attachments) setAttachments(pending); setExpression('concern') }
       return false
     } finally { office.finish(ticket,controller.signal.aborted?'stopped':'done','Request handling ended. See Pulse for the result.',true); if (requestRef.current === controller) { setBusy(false); requestRef.current = null } }
   }
@@ -647,7 +695,7 @@ export default function Pulse() {
             </div></div>}
           {completed && <div role="status"><strong>{step?.event ? 'Task recorded. Walkthrough complete.' : 'Walkthrough complete.'}</strong><p>{step?.event ? 'Your form action was recorded. Reopen the saved draft to review it.' : 'Review the page’s own status for any action you performed. Guidance does not submit or approve records.'}</p><button className="btn btn-secondary btn-sm" onClick={() => { setGuide(null); setCompleted(false) }}>Choose another task</button></div>}
         </div>}
-        {messages.map(message => <article key={message.id} className={`connected-pulse-message ${message.from === 'user' ? 'from-user' : ''}`}>
+        {messages.map(message => <article key={message.id} id={`pulse-message-${message.id}`} className={`connected-pulse-message ${message.from === 'user' ? 'from-user' : ''}`}>
           <small>{message.from === 'user' ? 'You' : 'Pulse'}</small>
           {message.from === 'pulse' && message.trace ? <AgentAnswer compact message={message} onCiteSource={message.lookup?.scope === 'system' ? source => setSourceReference({ threadId: archive.threadId, messageId: message.id, sourceId: source.id }) : undefined} onDownload={message.mode === 'generated' ? () => downloadMaterialPdf({ title: 'Pulse learning material', text: message.text, sources: message.sources }).catch(error => setError(error.message)) : undefined} onRevise={note => void send(`Revise your previous answer: ${note}`, { task: message.task, skipOperator: true })} /> : message.mode === 'actions' ? <div className="pulse-actions">{message.proposals.map((proposal, i) => <PulseAction key={i} proposal={proposal} ctx={{...actionContext,activeSyllabus:message.id===latestSyllabusAction}} />)}</div> : <div className="connected-pulse-text">{message.text}</div>}
           {message.from === 'pulse' && message.text && message.mode === 'generated' && !message.trace && <details><summary>Response actions</summary><button className="btn btn-secondary btn-sm" onClick={() => downloadMaterialPdf({ title: 'Pulse learning material', text: message.text, sources: message.sources }).catch(error => setError(error.message))}>Download response as PDF</button></details>}
@@ -656,6 +704,7 @@ export default function Pulse() {
           {message.attachedNames?.length > 0 && <small>References: {message.attachedNames.join(', ')}</small>}
           {/* Files used only by an action card are attached, not sent to the answer agents as references. */}
           {message.fileNames?.length > 0 && <small>Attached: {message.fileNames.join(', ')}</small>}
+          {message.usedNames?.length > 0 && <small>About your earlier file: {message.usedNames.join(', ')}</small>}
           {message.warning && <p className="connected-pulse-warning">{message.warning}</p>}
           {message.actions?.map(action => <button key={action.label} className="btn btn-secondary btn-sm" onClick={() => { action.onClick?.(); if (action.path) navigate(action.path) }}>{action.label}</button>)}
         </article>)}
@@ -665,7 +714,7 @@ export default function Pulse() {
       {info && <div role="status" className="connected-pulse-info">{info}</div>}
       {archive.error && archive.unsaved && messages.length > 0 && !historyOpen && <div role="status" className="connected-pulse-warning">Chat not saved. <button className="btn btn-ghost btn-sm" onClick={archive.retry}>Retry history save</button></div>}
       <span className="sr-only pulse-context-status" role="status">{archive.saving || archive.unsaved ? 'Saving conversation' : archive.threadId ? 'Conversation saved' : ''}</span>
-      {visibleFiles.length > 0 && <ul className="connected-pulse-attachments">{visibleFiles.map((a, i) => <li key={i}><span>{a.title}{a.ocr ? ` · text read by OCR, ${a.ocr.confidence}% confidence${a.ocr.low ? ': check it against the picture' : ''}` : ''}{a.teachingLoad ? ` · teaching load, ${a.teachingLoad.entries.length} class${a.teachingLoad.entries.length===1?'':'es'}` : a.roster ? ` · class list, ${a.roster.students.length} students` : a.text.length > CHAT_REFERENCE ? ' · long file: chat reads the first 18,000 characters' : ''}</span><button aria-label={`Remove ${a.title}`} onClick={() => { setAttachments(previous => previous.filter((_, index) => i !== index)); setContextFiles(previous => previous.filter(file => file.fileName !== a.fileName)) }}><X size={13} /></button></li>)}</ul>}
+      {attachments.length > 0 && <ul className="connected-pulse-attachments">{attachments.map((a, i) => <li key={i}><span>{a.title}{a.ocr ? ` · text read by OCR, ${a.ocr.confidence}% confidence${a.ocr.low ? ': check it against the picture' : ''}` : ''}{a.teachingLoad ? ` · teaching load, ${a.teachingLoad.entries.length} class${a.teachingLoad.entries.length===1?'':'es'}` : a.roster ? ` · class list, ${a.roster.students.length} students` : a.text.length > CHAT_REFERENCE ? ' · long file: chat reads the first 18,000 characters' : ''}</span><button aria-label={`Remove ${a.title}`} onClick={() => setAttachments(previous => previous.filter((_, index) => i !== index))}><X size={13} /></button></li>)}</ul>}
       <PulseVoice voice={voice} />
       <form className="connected-pulse-form" onSubmit={event => { event.preventDefault(); if (!voice.hearing) { voice.stop(); void send() } }}>
         <input ref={fileRef} type="file" hidden multiple accept={CHAT_UPLOAD_ACCEPT} onChange={e => { void attachFiles(Array.from(e.target.files || [])); e.target.value = ''; e.target.accept = CHAT_UPLOAD_ACCEPT }} />

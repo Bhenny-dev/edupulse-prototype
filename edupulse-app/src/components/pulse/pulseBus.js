@@ -25,6 +25,8 @@ export const pulse = {
   ask(message, options = {}) {
     emit({ type: 'ask', message, documentIds: options.documentIds || [], task: options.task || 'auto', label: options.label || '', attachments:options.attachments })
   },
+  // The System Admin is about to open another account view, which remounts the app: Pulse keeps its conversation.
+  viewChange() { emit({ type: 'view-change' }) },
   // Dispatch a form action to the active page (e.g., syllabus builder)
   formAction(action, payload = {}) {
     emit({ type: 'formAction', action, payload })
