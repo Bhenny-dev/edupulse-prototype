@@ -20,6 +20,8 @@ The old Course Loading address opens **Course → Course loads**, listing saved 
 
 **Instructors** contains searchable cards. Selecting one opens the instructor's saved courses, syllabus statuses and recorded activity.
 
+Current authenticated Course cards include a three-dot action menu and the top-right **Add Course** button. Instructor cards place editing and suspension/reactivation/removal inside the same menu pattern. Removal is available only after suspension. These controls apply equally to Dean and Program Coordinator, including an authorized Admin account view. Catalog actions preserve existing teaching files and learner records. The current flow is described in [Manual 46](../../system-manual/46-course-load-workspace/README.md); the older images above predate these controls. Broad screenshot publication remains owner-paused, and the targeted capture assertions cover both menus.
+
 ## 4-7. Syllabus and delivery oversight
 
 Open **Course → Syllabus & Delivery** or **Monitor Delivery**. Oversight and alerts retain their functions without adding a fifth main navigation item.

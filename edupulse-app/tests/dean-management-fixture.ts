@@ -4,7 +4,7 @@ import { makePdf } from './fixtures'
 import { deanRecordData } from './dean-records-data'
 
 type Command = { action: string; [key: string]: unknown }
-const course = (code: string, title: string, year: string) => ({ kind: 'courses', record_key: code, data: { CourseCode: code, CourseTitle: title, YearLevel: year, Semester: '1st Semester', Units: '3' } })
+const course = (code: string, title: string, year: string) => ({ kind: 'courses', record_key: code, updated_at:'2026-11-18T00:00:00.000Z', data: { CourseCode: code, CourseTitle: title, YearLevel: year, Semester: '1st Semester', Units: '3' } })
 const load = (code: string, block: string, id: string, name: string) => ({ kind: 'loads', record_key: `${code}|${block}|1st Semester`, data: { CourseCode: code, Block: block, Semester: '1st Semester',AcademicYear:'2026-2027', InstructorID: id, InstructorName: name } })
 
 /** Synthetic Dean account with a live directory. Dean commands are recorded and applied in memory; no hosted account is used. */
@@ -48,6 +48,22 @@ export async function deanManagementUI(page: Page, role = 'dean') {
       return current ? route.fulfill({ json: inspection }) : route.fulfill({ status: 400, json: { error: { message: 'This course load is no longer available.' } } })
     }
     commands.push(command)
+    if (command.action === 'course.create') {
+      const fields=command.course as {code:string;title:string;year:number;units:number;semester:string}
+      const row=course(fields.code,fields.title,String(fields.year));row.data.Units=String(fields.units);row.data.Semester=fields.semester
+      records.institutional!.push(row)
+      return route.fulfill({json:{code:fields.code,updated_at:row.updated_at}})
+    }
+    if(command.action==='course.update'||command.action==='course.status'){
+      const row=records.institutional!.find(row=>row.kind==='courses'&&row.record_key===command.code)
+      if(!row||!row.updated_at||row.updated_at!==command.expected_updated_at)return route.fulfill({status:409,json:{error:{message:'This course changed. Close this dialog and reload the course before trying again.'}}})
+      if(command.action==='course.update'){
+        const fields=command.course as {title:string;year:number;units:number;semester:string}
+        Object.assign(row.data,{CourseTitle:fields.title,YearLevel:String(fields.year),Units:String(fields.units),Semester:fields.semester})
+      }else row.data.Status=String(command.status)
+      row.updated_at=new Date(Date.parse(row.updated_at)+1000).toISOString()
+      return route.fulfill({json:{code:row.record_key,updated_at:row.updated_at}})
+    }
     if (command.action === 'load.assign') {
       for (const item of command.loads as Record<string, string>[]) {
         const name = String(((records.directory.instructors as { id: string; name: string }[]).find(i => i.id === item.instructor_id))?.name)

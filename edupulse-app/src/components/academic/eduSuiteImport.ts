@@ -169,7 +169,7 @@ const slug = (value: string) => clean(value).normalize('NFKD').replace(/[̀-ͯ]/
 export const initialStudentPassword = (surname: string, first: string) => `${slug(surname) || slug(first) || 'student'}@123`
 export const studentEmail = (number: string) => `${clean(number).toLowerCase()}@gmail.com`
 
-export type CourseRef = { code: string; title: string }
+export type CourseRef = { code: string; title: string; status?: string }
 export type LoadRef = { key: string; code: string; block: string; instructorId: string; instructorName: string }
 export type DirectoryStudent = { id: string; student_number: string; name: string; status: string; block?: string | null; type?: string | null }
 export type DirectoryInstructor = { id: string; name: string; email: string; status: string; employee_id?: string }
@@ -280,6 +280,7 @@ export function planCourseLoads(grid: Grid, input: { instructors: DirectoryInstr
     if ('instructor' in matched && matched.instructor) { plan.instructor = matched.instructor; plan.match = matched.match }
     if (!plan.instructor) plan.problem = 'problem' in matched ? matched.problem : 'Instructor not found'
     else if (plan.instructor.status === 'suspended') plan.problem = `${plan.instructor.name} is suspended`
+    else if (known?.status === 'suspended' || known?.status === 'removed') plan.problem = `${known.code} is ${known.status} and cannot receive new loads`
     else if (!block) plan.problem = 'Block section missing'
     else if (!known && !title) plan.problem = `${code} is not in the course list and has no title`
     else {

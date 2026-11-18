@@ -112,3 +112,12 @@
 .dean-page-title { display: flex; align-items: center; gap: 16px; min-width: 0; }
 
 @media (max-width: 1000px) and (min-width: 761px) { .dean-pills { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* Keep card navigation separate from the overflow action button. */
+.dean-course-card { position: relative; min-width: 0; display: flex; }
+.dean-course-card > .dean-pill { padding-right: 62px; }
+.dean-course-card > .cw-more, .dean-person-actions { position: absolute; top: 10px; right: 10px; }
+.dean-course-card.is-suspended > .dean-pill { border-style: dashed; }
+.dean-person-card.has-actions { position: relative; }
+.dean-person-card.has-actions > .dean-card-main { padding-right: 32px; }
+.dean-person-card.has-actions .dean-card-text span { overflow-wrap: normal; word-break: break-word; }

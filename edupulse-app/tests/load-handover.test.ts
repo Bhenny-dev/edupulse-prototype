@@ -26,6 +26,7 @@ test('a Dean block handover copies teaching independently, retains scores/access
    ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;GRANT USAGE ON SCHEMA storage TO authenticated,anon;
    GRANT SELECT,INSERT,UPDATE,DELETE ON storage.objects TO authenticated;GRANT SELECT ON storage.buckets TO authenticated;`)
   for(const name of ['20261114100000_private_teaching_files','20261114080000_dean_course_loads_and_accounts','20261114090000_dean_support_directory_fix','20261115080000_program_coordinator_dean_parity','20261115131427_unified_dean_courses','20261117073840_teaching_load_document_intake','20261117083004_teaching_load_source_context','20261117094641_active_teaching_load_accounts'])await db.exec(await readFile(`supabase/migrations/${name}.sql`,'utf8'))
+  await db.exec(await readFile('supabase/migrations/20261118000521_course_catalog_actions.sql','utf8'))
   const as=async(i:number)=>{await db.exec('RESET ROLE');await db.query("SELECT set_config('request.jwt.claim.sub',$1,false),set_config('request.jwt.claims',$2,false)",[ids[i],JSON.stringify({sub:ids[i],email:email(i),app_metadata:{role:roles[i]}})]);await db.exec('SET ROLE authenticated')}
   const rpc=async(fn:string,command:object)=>(await db.query<{r:any}>(`SELECT public.${fn}($1) r`,[JSON.stringify(command)])).rows[0].r
   const dean=(command:object)=>rpc('edupulse_dean_command',command)

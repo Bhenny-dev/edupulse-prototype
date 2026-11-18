@@ -103,15 +103,15 @@ export function loadRows(data:AcademicData):LoadRow[] {
 }
 /** Every recorded course with its curriculum placement, class loads and syllabus owners. */
 export function courseCatalog(data:AcademicData, model:ReturnType<typeof deanRecords>, curriculum:(code:string)=>{units?:number;yearLevel?:number;semester?:number|string}|undefined=()=>undefined) {
-  const loads=loadRows(data),records=new Map((data.institutional||[]).filter(r=>r.kind==='courses').map(r=>[key(r.data.CourseCode),r.data]))
+  const loads=loadRows(data),records=new Map((data.institutional||[]).filter(r=>r.kind==='courses').map(r=>[key(r.data.CourseCode),r]))
   return model.courses.map(course=>{
-    const record=records.get(key(course.code))||{},plan=curriculum(course.code)
+    const entry=records.get(key(course.code)),record=entry?.data||{},plan=curriculum(course.code)
     const year=Number(record.YearLevel)||plan?.yearLevel||null,semesterValue=text(record.Semester)||(plan?.semester===1?'1st Semester':plan?.semester===2?'2nd Semester':plan?.semester==='summer'?'Summer':'')
     const ids=new Set(course.ids),owners=[...new Set(data.courses.filter(c=>ids.has(c.id)).map(c=>c.instructor_name||model.faculty.find(p=>p.id===c.instructor_id)?.name||''))].filter(Boolean)
-    return {...course,units:text(record.Units)||(plan?.units?String(plan.units):''),year,semester:semesterValue,classification:text(record.Classification),prerequisites:text(record.Prerequisites),
+    return {...course,status:record.Status||'active',recordKey:entry?.record_key,updatedAt:entry?.updated_at,units:text(record.Units)||(plan?.units?String(plan.units):''),year,semester:semesterValue,classification:text(record.Classification),prerequisites:text(record.Prerequisites),
       loads:loads.filter(l=>key(l.code)===key(course.code)),owners,students:new Set(data.enrollments.filter(e=>ids.has(e.course_id)).map(e=>email(e.student_email))).size,
       approved:data.courses.some(c=>ids.has(c.id)&&approvedSyllabus(c))}
-  })
+  }).filter(course=>course.status!=='removed')
 }
 /** Live accounts when the directory is available; otherwise a read-only view built from records. */
 export function deanDirectory(data:AcademicData, model:ReturnType<typeof deanRecords>) {

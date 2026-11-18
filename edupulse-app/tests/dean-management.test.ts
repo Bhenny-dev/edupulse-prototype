@@ -39,6 +39,10 @@ async function database() {
   await db.exec(await readFile('supabase/migrations/20261117073840_teaching_load_document_intake.sql', 'utf8'))
   await db.exec(await readFile('supabase/migrations/20261117083004_teaching_load_source_context.sql', 'utf8'))
   await db.exec(await readFile('supabase/migrations/20261117094641_active_teaching_load_accounts.sql', 'utf8'))
+  const baseline=await readFile('supabase/migrations/20261028130000_baseline_workflows.sql','utf8')
+  const end='GRANT EXECUTE ON FUNCTION public.edupulse_import_records(text,jsonb,text) TO authenticated;'
+  await db.exec(baseline.slice(baseline.indexOf('CREATE FUNCTION public.edupulse_import_records('),baseline.indexOf(end)+end.length))
+  await db.exec(await readFile('supabase/migrations/20261118000521_course_catalog_actions.sql','utf8'))
   return db
 }
 const as = (db: PGlite, id: string) => db.query(`SELECT set_config('request.jwt.claim.sub',$1,false)`, [id])
@@ -234,5 +238,72 @@ test('load edits atomically move or reassign a class and reject collisions, stal
     await assert.rejects(dean(db, command), { code: '40001' })
     await as(db, TEACHER)
     await assert.rejects(dean(db, { ...command, key: edited.key, expected_instructor: added.id }), { code: '42501' })
+  } finally { await db.close() }
+})
+
+const catalogVersion = async (db: PGlite, code: string) => (await db.query<{ version: string }>("SELECT updated_at::text version FROM public.edupulse_institutional_records WHERE kind='courses' AND record_key=$1", [code])).rows[0].version
+const catalogFields = { title: 'Applied computing', units: 3, year: 3, semester: '1st Semester' }
+
+test('course catalog creation and rename validate identity, permission and current versions without changing private teaching files', async () => {
+  const db = await database()
+  try {
+    await as(db, TEACHER)
+    await assert.rejects(dean(db, { action: 'course.create', course: { code: 'IT 999', ...catalogFields } }), { code: '42501' })
+    await as(db, OUTSIDER)
+    await dean(db, { action: 'course.create', course: { code: 'IT 999', ...catalogFields } })
+    const added = (await db.query<{ data: Record<string, string> }>("SELECT data FROM public.edupulse_institutional_records WHERE kind='courses' AND record_key='IT 999'")).rows[0].data
+    assert.deepEqual(added, { CourseCode: 'IT 999', CourseTitle: 'Applied computing', Units: '3', YearLevel: '3', Semester: '1st Semester', Status: 'active' })
+    await assert.rejects(dean(db, { action: 'course.create', course: { code: 'IT-999', ...catalogFields } }), { code: '22023' }, 'normalized course identity cannot collide')
+    await assert.rejects(dean(db, { action: 'course.create', course: { code: 'BAD|CODE', ...catalogFields } }), { code: '22023' })
+    await assert.rejects(dean(db, { action: 'course.create', course: { code: 'IT 998', ...catalogFields, units: 3.2 } }), { code: '22023' })
+    await db.query('INSERT INTO public.edupulse_workspaces(owner_id,data) VALUES($1,$2)', [TEACHER, JSON.stringify({ syllabi: [{ id: 'original', courseCode: 'IT 102', courseTitle: 'Original signed file name', approvedFile: { base64: 'PRIVATE ORIGINAL' } }], content: {} })])
+    const original = (await db.query('SELECT * FROM public.edupulse_workspaces')).rows
+    await db.exec("UPDATE public.edupulse_institutional_records SET data=data||'{\"Prerequisites\":\"IT 101\"}' WHERE kind='courses' AND record_key='IT 102'")
+    await as(db, DEAN)
+    const version = await catalogVersion(db, 'IT 102')
+    await dean(db, { action: 'course.update', code: 'IT 102', expected_updated_at: version, course: { ...catalogFields, title: 'Computer Programming 1' } })
+    const renamed = (await db.query<{ data: Record<string, string> }>("SELECT data FROM public.edupulse_institutional_records WHERE kind='courses' AND record_key='IT 102'")).rows[0].data
+    assert.equal(renamed.Prerequisites, 'IT 101')
+    assert.equal((await db.query<{ title: string }>("SELECT course_title title FROM public.edupulse_courses WHERE id='c102'")).rows[0].title, 'Computer Programming 1')
+    await db.exec("UPDATE public.edupulse_courses SET course_title='Original syllabus title' WHERE id='c102'")
+    assert.equal((await db.query<{ title: string }>("SELECT course_title title FROM public.edupulse_courses WHERE id='c102'")).rows[0].title, 'Computer Programming 1', 'later workspace projection cannot undo the catalog display name')
+    assert.deepEqual((await db.query('SELECT * FROM public.edupulse_workspaces')).rows, original)
+    await assert.rejects(dean(db, { action: 'course.update', code: 'IT 102', expected_updated_at: version, course: catalogFields }), { code: '40001' })
+    await assert.rejects(db.exec("UPDATE public.edupulse_institutional_records SET data=data||'{\"CourseCode\":\"IT 103\"}' WHERE kind='courses' AND record_key='IT 102'"), { code: '22023' })
+    await db.exec('SET ROLE authenticated')
+    await assert.rejects(db.query('SELECT edupulse_private.dean_catalog_command($1)', [JSON.stringify({ action: 'course.create' })]), /permission denied/)
+    await db.exec('RESET ROLE; SET ROLE anon')
+    await assert.rejects(dean(db, { action: 'course.create', course: { code: 'IT 900', ...catalogFields } }), /permission denied/)
+    await db.exec('RESET ROLE')
+  } finally { await db.close() }
+})
+
+test('courses require suspension before removal, reject new loads and import resurrection, and preserve existing teaching records', async () => {
+  const db = await database()
+  try {
+    await as(db, DEAN)
+    await dean(db, { action: 'load.assign', loads: [{ course_code: 'IT 102', instructor_id: TEACHER, block: 'BSIT-1A' }] })
+    const change = async (status: string) => dean(db, { action: 'course.status', code: 'IT 102', expected_updated_at: await catalogVersion(db, 'IT 102'), status })
+    const existing = async () => ({ loads: (await db.query("SELECT * FROM public.edupulse_institutional_records WHERE kind='loads' ORDER BY record_key")).rows, enrollments: await enrolled(db), courses: (await db.query('SELECT * FROM public.edupulse_courses ORDER BY id')).rows })
+    await assert.rejects(change('removed'), { code: '22023' })
+    await assert.rejects(db.exec("DELETE FROM public.edupulse_institutional_records WHERE kind='courses' AND record_key='IT 102'"), { code: '22023' })
+    const before = await existing(), oldVersion = await catalogVersion(db, 'IT 102')
+    await change('suspended')
+    assert.deepEqual(await existing(), before)
+    await assert.rejects(dean(db, { action: 'course.status', code: 'IT 102', status: 'active', expected_updated_at: oldVersion }), { code: '40001' })
+    await assert.rejects(dean(db, { action: 'load.assign', loads: [{ course_code: 'IT 102', instructor_id: TEACHER, block: 'BSIT-1B' }] }), { code: '22023' })
+    await assert.rejects(dean(db, { action: 'load.update', key: 'IT 102|BSIT-1A|1st Semester', expected_instructor: TEACHER, instructor_id: TEACHER, block: 'BSIT-1B', semester: '1st Semester' }), { code: '22023' })
+    await assert.rejects(db.query('SELECT public.edupulse_import_records($1,$2,$3)', ['loads', JSON.stringify([{ CourseCode: 'IT 102', InstructorID: TEACHER, Block: 'BSIT-1B', Semester: '1st Semester' }]), 'course-load.csv']), { code: '22023' })
+    await db.query('SELECT public.edupulse_import_records($1,$2,$3)', ['courses', JSON.stringify([{ CourseCode: 'IT 102', CourseTitle: 'Programming foundations', Status: 'active' }]), 'curriculum.csv'])
+    assert.equal((await db.query<{ status: string }>("SELECT data->>'Status' status FROM public.edupulse_institutional_records WHERE kind='courses' AND record_key='IT 102'")).rows[0].status, 'suspended', 'import cannot reactivate a suspended course')
+    await change('active')
+    await dean(db, { action: 'load.assign', loads: [{ course_code: 'IT 102', instructor_id: TEACHER, block: 'BSIT-1B' }] })
+    const retained = await existing()
+    await change('suspended'); await change('removed')
+    assert.deepEqual(await existing(), retained, 'removal is a catalog tombstone; loads, enrollments and projected course identities stay intact')
+    await assert.rejects(change('active'), { code: '22023' })
+    await assert.rejects(dean(db, { action: 'course.create', course: { code: 'IT 102', ...catalogFields } }), { code: '22023' })
+    await assert.rejects(db.query('SELECT public.edupulse_import_records($1,$2,$3)', ['courses', JSON.stringify([{ CourseCode: 'IT 102', CourseTitle: 'Another name' }]), 'curriculum.csv']), { code: '22023' })
+    await assert.rejects(dean(db, { action: 'load.assign', loads: [{ course_code: 'IT 102', instructor_id: TEACHER, block: 'BSIT-1C' }] }), { code: '22023' })
   } finally { await db.close() }
 })

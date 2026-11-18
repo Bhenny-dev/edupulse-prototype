@@ -15,6 +15,7 @@ import {readReferenceFile} from '../../lib/aiClient'
 import {CURRENT_LOAD_TERM,recordsForLoadTerm,loadTerm} from '../../utils/loadTerms'
 import {CURRENT_TERM,SEMESTERS} from '../../utils/teachingLoad'
 import TeachingLoadFacts from './TeachingLoadFacts'
+import {CourseCardActions,CourseCatalogForm,CourseStatusDialog} from './DeanCatalogActions'
 
 const groupLabel = course => course.year ? `Year ${course.year}${course.semester ? ` · ${course.semester}` : ''}` : 'Other recorded courses'
 export const knownBlocks = (data, model) => [...new Set([...model.blocks.map(b => b.name), ...loadRows(data).map(l => l.block), ...(data.institutional || []).filter(r => r.kind === 'rosters').map(r => String(r.data.Block || ''))])].filter(b => b && b !== 'IRREGULAR').sort()
@@ -31,6 +32,10 @@ export default function DeanCourses({ data:allData }) {
   const [editingKey, setEditingKey] = useWorkspaceViewState('dean-course-edit', null)
   const [assigning, setAssigning] = useState(null), [removing, setRemoving] = useState(null), [review, setReview] = useState(null)
   const [search, setSearch] = useState('')
+  const [catalogAction,setCatalogAction]=useWorkspaceViewState('dean-catalog-action',null)
+  const [catalogMenu,setCatalogMenu]=useWorkspaceViewState('dean-catalog-menu',null)
+  const actionKind=typeof catalogAction==='string'?catalogAction.split(':')[0]:''
+  const actionCourse=typeof catalogAction==='string'?catalog.find(course=>course.code===catalogAction.slice(catalogAction.indexOf(':')+1)):null
   const [document,setDocument]=useState(null),[reading,setReading]=useState('')
   const action = useDeanAction()
   const show = params.get('show') || 'all'
@@ -65,17 +70,18 @@ export default function DeanCourses({ data:allData }) {
       { label: 'Not yet loaded', value: unloaded.length, icon: AlertTriangle, tone: 'amber', to: '/records?show=unloaded' },
       { label: 'Class loads', value: loads.length, icon: Layers, tone: 'green', to: '/records?show=loaded' }]} />
     {!selected && <DeanFeedback action={action} />}
-    <Panel title="Courses" actions={<div className="academic-actions"><UploadButton label={<><FileUp size={15} aria-hidden="true" /> Upload course load</>} accept=".pdf,.csv,.tsv,.txt,.xlsx,.xls" onFile={upload} disabled={!directory.managed || Boolean(action.busy)||Boolean(reading)} /><CsvButton headers={['Course', 'Title', 'Units', 'Year and semester', 'Instructor', 'Block', 'Semester','Academic year','Days','Time','Room','Listed hours','Computed hours','Students listed']} rows={catalog.flatMap(c => (c.loads.length ? c.loads : [{}]).map(l => [c.code, c.title, c.units, groupLabel(c), l.instructorName || '', l.block || '', l.semester || '',l.academicYear||'',l.days||'',l.time||'',l.room||'',l.hours||'',l.computedHours||'',l.students||'']))} name="course-loads" /></div>}>
+    <Panel title="Courses" actions={<div className="academic-actions">{directory.managed&&<button className="btn btn-primary btn-sm" disabled={Boolean(action.busy)} onClick={()=>setCatalogAction('add')}><Plus size={15} aria-hidden="true"/> Add Course</button>}<UploadButton label={<><FileUp size={15} aria-hidden="true" /> Upload course load</>} accept=".pdf,.csv,.tsv,.txt,.xlsx,.xls" onFile={upload} disabled={!directory.managed || Boolean(action.busy)||Boolean(reading)} /><CsvButton headers={['Course', 'Title', 'Units', 'Year and semester', 'Instructor', 'Block', 'Semester','Academic year','Days','Time','Room','Listed hours','Computed hours','Students listed']} rows={catalog.flatMap(c => (c.loads.length ? c.loads : [{}]).map(l => [c.code, c.title, c.units, groupLabel(c), l.instructorName || '', l.block || '', l.semester || '',l.academicYear||'',l.days||'',l.time||'',l.room||'',l.hours||'',l.computedHours||'',l.students||'']))} name="course-loads" /></div>}>
       {reading&&<p role="status">{reading}</p>}
       {document&&<TeachingLoadImport file={document} initialOpen onClose={()=>setDocument(null)}/>}
       {filters}
       {groups.map(label => <section className="dean-pill-group" key={label} aria-label={label}><h3>{label}</h3><div className="dean-pills">
-        {catalog.filter(course => matches(course) && groupLabel(course) === label).map(course => <button key={course.code} className={`dean-pill${course.loads.length ? ' loaded' : ''}`} onClick={() => setDetail(`course:${course.code}`)} aria-label={`${course.code} ${course.title}, ${course.loads.length ? `loaded to ${new Set(course.loads.map(l => l.instructorId)).size} instructor(s)` : 'not yet loaded'}`}>
-          <span className="dean-pill-code">{course.code}</span><span className="dean-pill-title">{course.title}</span><span className="dean-pill-state" aria-hidden="true">{course.loads.length ? `${new Set(course.loads.map(l => l.instructorId)).size} instr.` : 'Open'}</span>
-        </button>)}
+        {catalog.filter(course => matches(course) && groupLabel(course) === label).map(course => <article key={course.code} className={`dean-course-card${course.status==='suspended'?' is-suspended':''}`}><button className={`dean-pill${course.loads.length ? ' loaded' : ''}`} onClick={() => setDetail(`course:${course.code}`)} aria-label={`${course.code} ${course.title}, ${course.loads.length ? `loaded to ${new Set(course.loads.map(l => l.instructorId)).size} instructor(s)` : 'not yet loaded'}`}>
+          <span className="dean-pill-code">{course.code}</span>{course.status==='suspended'&&<span className="dean-status dean-status-suspended">Suspended</span>}<span className="dean-pill-title">{course.title}</span><span className="dean-pill-state" aria-hidden="true">{course.loads.length ? `${new Set(course.loads.map(l => l.instructorId)).size} instr.` : 'Open'}</span>
+        </button>{directory.managed&&<CourseCardActions course={course} open={catalogMenu===course.code} onOpenChange={next=>setCatalogMenu((typeof next==='function'?next(catalogMenu===course.code):next)?course.code:null)} disabled={Boolean(action.busy)} onAction={setCatalogAction}/>}</article>)}
       </div></section>)}
-      {!groups.length && <Empty>{catalog.length ? 'No course matches this search.' : 'No courses are recorded yet. Upload the course load or ask the System Admin to import the curriculum.'}</Empty>}
+      {!groups.length && <Empty>{catalog.length ? 'No course matches this search.' : 'No courses are recorded yet. Add Course or upload the course load to begin.'}</Empty>}
     </Panel>
+    {directory.managed&&catalogAction&&(catalogAction==='add'?<CourseCatalogForm action={action} onClose={()=>setCatalogAction(null)}/>:actionCourse?(actionKind==='edit'?<CourseCatalogForm key={catalogAction} course={actionCourse} action={action} onClose={()=>setCatalogAction(null)}/>:<CourseStatusDialog key={catalogAction} course={actionCourse} kind={actionKind} action={action} onClose={()=>setCatalogAction(null)}/>):<DeanDialog title="Course unavailable" size="narrow" onClose={()=>setCatalogAction(null)}><Empty>This course is no longer available. Close this dialog and choose a current course.</Empty></DeanDialog>)}
     {selected && <CourseDialog course={selected} data={data} action={action} onEdit={load => setEditingKey(load.key)} managed={directory.managed} onClose={() => { setEditingKey(null); setDetail(null) }} onAssign={() => setAssigning(selected)} onRemove={load => setRemoving({ ...load, title: selected.title })} />}
     {typeof detail === 'string' && detail.startsWith('course:') && !selected && <DeanDialog title="Record unavailable" onClose={() => setDetail(null)} size="narrow"><Empty>This course is no longer in your records. Close this dialog and choose a current course.</Empty></DeanDialog>}
     {assigning && <AssignDialog course={assigning} instructors={directory.instructors} blocks={blocks} action={action} onClose={() => setAssigning(null)} />}
@@ -95,7 +101,7 @@ function CourseDialog({ course, data, action, managed, onClose, onAssign, onEdit
   const related = [...instructorIds].flatMap(id=>assignedInstructorSyllabi(data,id)).filter(item=>course.ids.includes(item.id))
   const students = new Set(data.enrollments.filter(item => !item.suspended && related.some(row => row.id === item.course_id && course.loads.some(current => current.instructorId === row.instructor_id && current.block === item.block_section))).map(item => item.student_email.toLowerCase())).size
   return <DeanDialog title={`${course.code} — ${course.title}`} subtitle={[groupLabel(course), course.units && `${course.units} units`, course.classification].filter(Boolean).join(' · ')} icon={BookOpen} size="page" onClose={close}
-    footer={<>{managed && <button className="btn btn-primary" onClick={onAssign} disabled={Boolean(action.busy)}><Plus size={15} aria-hidden="true" /> Add instructor</button>}<button className="btn btn-secondary" onClick={close}>Close</button></>}>
+    footer={<>{managed && <button className="btn btn-primary" onClick={onAssign} disabled={Boolean(action.busy)||course.status==='suspended'}><Plus size={15} aria-hidden="true" /> Add instructor</button>}<button className="btn btn-secondary" onClick={close}>Close</button></>}>
     <DeanCards items={[
       { label: 'Instructors loaded', value: instructorIds.size, icon: GraduationCap },
       { label: 'Class loads', value: course.loads.length, icon: Layers },
@@ -104,6 +110,7 @@ function CourseDialog({ course, data, action, managed, onClose, onAssign, onEdit
     ]} />
     <DeanFeedback action={action} />
     {course.prerequisites && <p className="text-sm text-muted mb-16">Prerequisites: {course.prerequisites}</p>}
+    {course.status==='suspended'&&<p className="dean-warning">Course suspended. Reactivate it from the course card menu before adding new loads. Existing classes and teaching history remain available.</p>}
     <h3 className="dean-subhead">Loaded instructors</h3>
     <Table headers={['Instructor', 'Block', 'Term','Schedule and source details', 'Actions']} rows={course.loads.map(item => [item.instructorName, item.block, [item.semester,item.academicYear].filter(Boolean).join(' · ') || '—',<TeachingLoadFacts key={`facts:${item.key}`} load={item}/>,
       <div className="academic-actions" key={item.key}><button className="btn btn-secondary btn-sm" onClick={() => setInspecting(item.key)} aria-label={`Inspect ${item.instructorName} ${item.block}`} disabled={!managed}>View syllabus and contents</button>{managed && <><button className="btn btn-ghost btn-sm" onClick={() => onEdit(item)} disabled={Boolean(action.busy)} aria-label={`Edit ${item.instructorName} ${item.block}`}>Edit</button><button className="btn btn-ghost btn-sm" onClick={() => onRemove(item)} disabled={Boolean(action.busy)} aria-label={`Remove ${item.instructorName} from ${course.code} ${item.block}`}>Remove</button></>}</div>])} empty="No instructor is loaded with this course yet. Add an instructor to make it available on their Course page." />

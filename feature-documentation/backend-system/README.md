@@ -1,5 +1,9 @@
 # Backend System
 
+## Course catalog actions — 18 November 2026
+
+The existing management command accepts `course.create`, `course.update` and `course.status`, rechecking the current Dean/Program Coordinator/Admin role in PostgreSQL. Updates require the exact institutional `updated_at` version and share the ordered institutional lock. Normalized codes remain unique and immutable; title edits update the display projection without touching original syllabus bytes. Catalog suspension blocks new/changed class assignments through management, PDF/grid import and direct record writes. Removal requires prior suspension and retains a tombstone plus all teaching/student history. Curriculum imports cannot silently reset lifecycle status. Existing handover, account and learner authorization rules remain unchanged. No new startup request, polling, seed or paid service is added. [Release validation](../versions/2026-11-18-card-actions/validation/results.md).
+
 ## Unified Course loading and read-only inspection — 15 November 2026
 
 DeanCourses presents one catalog/card page for Dean and Program Coordinator; legacy tab query values remain compatible. Page-sized course dialogs reuse SummaryCard and existing Dean commands. `load.update` runs under the institutional import lock, checks the prior instructor, refuses occupied destinations and atomically moves/reassigns the load, preserving additional load metadata. Failed assignments roll back; the existing enrollment projection and Instructor Course load model remain authoritative. No workspace is edited to create a teaching load.

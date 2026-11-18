@@ -36,8 +36,13 @@ const accountFields = {
   student_number: studentNumber.optional(), year_level: z.number().int().min(1).max(4).optional(), program: field(250).optional(),
   placement: placement.optional(), block: field(40).optional(),
 }
+const catalogFields = { title: field(300).min(1), units: z.number().min(0).max(30).multipleOf(0.5), year: z.number().int().min(1).max(4), semester: field(60).min(1) }
+const catalogVersion = z.string().datetime({ offset: true })
 /** Dean course loading and account management. SQL rechecks the live Dean role on every call. */
 export const deanCommand = z.discriminatedUnion('action', [
+  z.object({ action: z.literal('course.create'), course: z.object({ code: field(40).min(1).regex(/^[A-Za-z0-9][A-Za-z0-9 .&()/_-]*$/), ...catalogFields }) }),
+  z.object({ action: z.literal('course.update'), code: field(40).min(1), expected_updated_at: catalogVersion, course: z.object(catalogFields) }),
+  z.object({ action: z.literal('course.status'), code: field(40).min(1), expected_updated_at: catalogVersion, status: z.enum(['active','suspended','removed']) }),
   z.object({ action: z.literal('account.create'), account: z.object({ role: z.enum(['instructor', 'student']), password: z.string().min(6).max(72), ...accountFields }) }),
   z.object({ action: z.literal('account.update'), account: z.object({ id: z.string().uuid(), ...accountFields }) }),
   z.object({ action: z.literal('account.status'), id: z.string().uuid(), status: z.enum(['suspended', 'active', 'removed']) }),

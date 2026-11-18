@@ -7,15 +7,19 @@ export default function CoursewareActions({ label, actions, disabled = false, op
   const id = useId()
   const trigger = useRef(null), menu = useRef(null)
   const [localOpen, setLocalOpen] = useState(false)
-  const open=controlledOpen??localOpen,setOpen=onOpenChange||setLocalOpen
+  const open=(controlledOpen??localOpen)&&!disabled,setOpen=onOpenChange||setLocalOpen
   const [position, setPosition] = useState({ top: 0, left: 0 })
   const close = (restoreFocus = true) => { setOpen(false); if (restoreFocus) trigger.current?.focus({ preventScroll: true }) }
   useLayoutEffect(() => {
     if (!open) return
+    // Restored menus may belong to a card below the current scroll position.
+    const anchor=trigger.current?.getBoundingClientRect()
+    if(anchor&&(anchor.top<0||anchor.bottom>innerHeight))trigger.current.scrollIntoView({block:'nearest',inline:'nearest',behavior:'instant'})
     const updatePosition = () => {
       const anchor = trigger.current.getBoundingClientRect(), box = menu.current.getBoundingClientRect()
       const left = Math.max(12, Math.min(anchor.right - box.width, innerWidth - box.width - 12))
-      const top = anchor.bottom + box.height + 8 <= innerHeight ? anchor.bottom + 4 : Math.max(12, anchor.top - box.height - 4)
+      const preferredTop = anchor.bottom + box.height + 8 <= innerHeight ? anchor.bottom + 4 : anchor.top - box.height - 4
+      const top = Math.max(12, Math.min(preferredTop, innerHeight - box.height - 12))
       setPosition(previous => previous.left === left && previous.top === top ? previous : { left, top })
     }
     updatePosition()
