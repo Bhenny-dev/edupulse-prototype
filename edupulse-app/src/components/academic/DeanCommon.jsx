@@ -50,8 +50,8 @@ export function Pager({ page, pages, onPage, total, label }) {
   return <nav className="dean-pager" aria-label={`${label} pages`}><button className="btn btn-secondary btn-sm" disabled={page <= 1} onClick={() => onPage(page - 1)}>Previous</button><span className="text-sm text-muted">Page {page} of {pages} · {total} {label}</span><button className="btn btn-secondary btn-sm" disabled={page >= pages} onClick={() => onPage(page + 1)}>Next</button></nav>
 }
 
-export function UploadButton({ label, onFile, disabled, accept = '.csv,.tsv,.txt,.xlsx,.xls' }) {
-  return <label className={`btn btn-secondary btn-sm dean-upload${disabled ? ' disabled' : ''}`} aria-disabled={disabled || undefined}>{label}<input type="file" accept={accept} disabled={disabled} onChange={event => { const file = event.target.files?.[0]; event.target.value = ''; if (file) onFile(file) }} /></label>
+export function UploadButton({ label, onFile, onFiles, disabled, accept = '.csv,.tsv,.txt,.xlsx,.xls' }) {
+  return <label className={`btn btn-secondary btn-sm dean-upload${disabled ? ' disabled' : ''}`} aria-disabled={disabled || undefined}>{label}<input type="file" accept={accept} multiple={Boolean(onFiles)} disabled={disabled} onChange={event => { const files = [...(event.target.files || [])]; event.target.value = ''; if (onFiles) { if (files.length) onFiles(files) } else if (files[0]) onFile(files[0]) }} /></label>
 }
 
 // The Program Coordinator's records carry no assessment attempts or material opens, so those columns are not shown.

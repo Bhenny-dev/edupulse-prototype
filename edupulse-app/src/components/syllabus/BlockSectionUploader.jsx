@@ -5,18 +5,40 @@ import { CURRICULUM_COURSES } from '../../data/mockData'
 import { extractDocument } from '../../lib/aiClient'
 import { parseRoster, ROSTER_HEADERS } from '../../utils/rosterParser'
 import { findCourseMentions } from '../../agents/operator'
+import { readGrid } from '../academic/eduSuiteImport'
+import { readClassListReport, isEnrolled } from '../../utils/classListReport'
 
 // Block Section Uploader — reads an EduSuite class list (CSV, Excel, PDF, Word or text)
 // to register a course's block section. Office and PDF files are read by the same
 // sandboxed extractor as the knowledge library; nothing is registered until the
 // instructor checks the preview and presses Register Course.
 
-const FILE_EXTENSIONS = '.csv,.xlsx,.pdf,.docx,.txt'
-const EXTENSIONS = ['csv', 'xlsx', 'pdf', 'docx', 'txt']
+const FILE_EXTENSIONS = '.csv,.xls,.xlsx,.pdf,.docx,.txt'
+const EXTENSIONS = ['csv', 'xls', 'xlsx', 'pdf', 'docx', 'txt']
+const codeKey = value => String(value || '').toUpperCase().replace(/\s+/g, '')
+
+/** The registrar's class list export: enrolled students only. Its section number (WMADE 3 - 4) is not the block
+ * letter of the teaching load (WMADE 3 B), so the instructor chooses the block. */
+function registrarClassList(report) {
+  const enrolled = report.students.filter(isEnrolled), skipped = report.students.length - enrolled.length
+  return {
+    students: enrolled.map(student => ({ StudentID: student.studentNumber, Name: student.name, Email: '', YearLevel: '', Block: '' })),
+    headers: ROSTER_HEADERS, block: '', course: report.courseCode, report,
+    warnings: [...report.warnings, ...(skipped ? [`${skipped} student${skipped === 1 ? '' : 's'} not enrolled with the registrar ${skipped === 1 ? 'was' : 'were'} left out.`] : []),
+      `Registrar section ${report.label}${report.faculty ? `, ${report.faculty}` : ''}${report.schedule.length ? `, ${report.schedule.map(m => `${m.day.slice(0, 3)} ${m.start}`).join(', ')}` : ''}: choose the block section it belongs to.`],
+  }
+}
 
 /** Reads a class list file into students, or explains why it could not. */
 async function readClassList(file) {
   const ext = file.name.split('.').pop().toLowerCase()
+  if (ext === 'xls') {
+    const grid = await readGrid(file), report = readClassListReport(grid)
+    if (report) return registrarClassList(report)
+    const roster = parseRoster(grid.map(row => row.join('\t')).join('\n'), file.name)
+    if (!roster) throw new Error('No class list was found in this file. Use a table with a Name column (or Last Name and First Name), one student per row.')
+    return { students: roster.students, headers: ROSTER_HEADERS, warnings: roster.warnings, block: roster.block, course: '' }
+  }
   const text = ext === 'csv' || ext === 'txt' ? await file.text() : (await extractDocument(file)).text
   const roster = parseRoster(text, file.name)
   if (!roster) throw new Error('No class list was found in this file. Use a table with a Name column (or Last Name and First Name), one student per row.')
@@ -46,7 +68,7 @@ export default function BlockSectionUploader({ onRegister, onCancel, scope=null 
     const ext = f.name.split('.').pop().toLowerCase()
     if (!EXTENSIONS.includes(ext)) {
       setFile(f)
-      setError('Supported formats: CSV, Excel (.xlsx), PDF, Word (.docx) or text. Save older .xls files as .xlsx.')
+      setError('Supported formats: CSV, Excel (.xls or .xlsx), PDF, Word (.docx) or text.')
       return
     }
     if (f.size > 4_000_000) {
@@ -62,6 +84,7 @@ export default function BlockSectionUploader({ onRegister, onCancel, scope=null 
 
     try {
       const result = await readClassList(f)
+      if (scope?.course && result.report && codeKey(scope.course) !== codeKey(result.course)) result.warnings.unshift(`This class list is for ${result.course}, not ${scope.course}. Check that you chose the right file.`)
       if (result.course) setSelectedCourse(scope?.course||result.course)
       if (result.block) setSelectedBlock(scope?.block||result.block)
       setParsed(result)
@@ -119,7 +142,7 @@ export default function BlockSectionUploader({ onRegister, onCancel, scope=null 
     if (!file) return <Upload size={24} style={{ color: 'var(--sky-500)' }} />
     const ext = file.name.split('.').pop().toLowerCase()
     if (ext === 'csv') return <FileText size={24} style={{ color: 'var(--sky-500)' }} />
-    if (ext === 'xlsx') return <FileSpreadsheet size={24} style={{ color: 'var(--green-600, #16a34a)' }} />
+    if (ext === 'xlsx' || ext === 'xls') return <FileSpreadsheet size={24} style={{ color: 'var(--green-600, #16a34a)' }} />
     if (ext === 'pdf') return <File size={24} style={{ color: 'var(--red-500)' }} />
     return <FileText size={24} style={{ color: 'var(--sky-500)' }} />
   }

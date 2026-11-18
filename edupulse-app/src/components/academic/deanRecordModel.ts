@@ -127,7 +127,7 @@ function blockSections(data:AcademicData,parent:LoadRow,linked:LoadRow[],classes
  const sources=(parent.sourceRows||[]).map(r=>({subjectCode:text(r.subject_code),days:text(r.days),time:text(r.time),room:text(r.room)}))
  for(const [source,block] of assignBlocks(sources,others)){
   const prior=sections.find(s=>s.block.toUpperCase()===block)
-  if(prior){if(!prior.recorded&&!prior.slots.some(s=>s.days===source.days&&s.time===source.time))prior.slots.push({days:source.days,time:source.time,room:source.room});continue}
+  if(prior){if((!prior.recorded||!prior.slots.length)&&!prior.slots.some(s=>s.days===source.days&&s.time===source.time))prior.slots.push({days:source.days,time:source.time,room:source.room});continue}
   if(block){const students=people(null,block);sections.push({key:`${parent.key}#${block}`,block,slots:[{days:source.days,time:source.time,room:source.room}],students,listed:students.length>0,recorded:false})}
  }
  return sections.sort((a,b)=>a.block.localeCompare(b.block,undefined,{numeric:true}))

@@ -2,6 +2,7 @@
 // reviewable plan. No AI is involved; every decision carries a plain reason the Dean can check.
 import JSZip from 'jszip'
 import { STUDENT_PROGRAMS } from '../../data/studentPrograms.js'
+import { isCompoundFile, readXlsWorkbook } from '../../utils/xlsWorkbook'
 
 export type Grid = string[][]
 export const CIT_DEPARTMENT = 'College of Information Technology'
@@ -77,11 +78,18 @@ export async function readGrid(file: File): Promise<Grid> {
   const name = file.name.toLowerCase()
   if (/\.(pdf|docx?)$/.test(name)) throw new Error('Save the EduSuite download as CSV or Excel (.xlsx) first.')
   if (name.endsWith('.xlsx')) return xlsxGrid(await file.arrayBuffer())
+  if (name.endsWith('.xls')) {
+    const bytes = new Uint8Array(await file.arrayBuffer())
+    if (isCompoundFile(bytes)) return xlsGrid(bytes)
+  }
   const text = await file.text()
   if (/<table[\s>]/i.test(text)) return htmlGrid(text)
-  if (name.endsWith('.xls')) throw new Error('This older Excel format cannot be read. Save it as .xlsx or CSV and upload again.')
+  if (name.endsWith('.xls')) throw new Error('This .xls file is not an Excel workbook. Open it in Excel, save it as .xlsx or CSV and upload again.')
   return delimitedGrid(text)
 }
+
+/** The first worksheet of an Excel 97-2003 (.xls) workbook, such as the registrar's class lists. */
+export const xlsGrid = (data: ArrayBuffer | Uint8Array): Grid => (readXlsWorkbook(data)[0]?.rows || []).map(row => row.map(clean))
 
 type Columns<F extends string> = Partial<Record<F, number>>
 const ALIASES = {

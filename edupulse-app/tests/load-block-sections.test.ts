@@ -1,6 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
+import { createHash } from 'node:crypto'
 import { semesterDatabase } from './semester-fixture'
 
 const term = { academic_year: '2026-2027', semester: '1st Semester' }
@@ -62,6 +63,20 @@ test('the Dean adds a block section with home-block and irregular students as th
     const workspace = (await db.query<{ data: { registrations: { blockSection: string; assignmentKey: string; students: unknown[] }[] } }>('SELECT data FROM public.edupulse_workspaces WHERE owner_id=$1', [ids[0]])).rows[0].data
     assert.deepEqual(workspace.registrations.map(r => [r.blockSection, r.assignmentKey, r.students.length]), [['C', mine.record_key, 2]], 'the class list is the instructor’s own registration')
     assert.equal((await db.query<{ n: number }>(`SELECT count(*)::int n FROM public.edupulse_academic_events WHERE actor_id=$1 AND title='Block class list added'`, [ids[2]])).rows[0].n, 1)
+    // Students reach a course through the instructor's course: once the instructor has its syllabus for the term,
+    // everyone on the block's class list is enrolled in that block.
+    const enrolled = async () => (await db.query<{ student_email: string; block_section: string }>('SELECT student_email,block_section FROM public.edupulse_enrollments ORDER BY student_email')).rows.map(e => [e.student_email, e.block_section])
+    assert.deepEqual(await enrolled(), [], 'without a syllabus there is no course yet; the class list waits on the block')
+    const saved = (await db.query<{ revision: string; data: Record<string, unknown> }>('SELECT revision,data FROM public.edupulse_workspaces WHERE owner_id=$1', [ids[0]])).rows[0]
+    const approved = Buffer.from('%PDF-1.4\nApproved syllabus\n%%EOF')
+    await as(0)
+    await db.query('SELECT public.edupulse_save_workspace($1,$2)', [Number(saved.revision), JSON.stringify({ ...saved.data, syllabi: [{ id: 's-it101', courseCode: 'IT 101', courseTitle: 'Programming', status: 'active', courseInfo: { academicYear: '2026-2027', periodOffered: '1' },
+      approvedFile: { approvalAttested: true, name: 'approved.pdf', size: approved.length, sha256: createHash('sha256').update(approved).digest('hex'), base64: approved.toString('base64') } }] })])
+    await maintenance()
+    assert.deepEqual(await enrolled(), [[email(3), 'C'], [email(5), 'C']], 'with the syllabus saved, the students on the class list are enrolled in the block')
+    await as(3)
+    assert.deepEqual(await enrolled(), [[email(3), 'C']], 'a student sees the course through their own enrollment only')
+    await maintenance()
     await as(2)
     assert.deepEqual(await command({ action: 'block.add', assignment: mine.record_key, expected_instructor: ids[0], block: 'D' }), { key: key('IT 101', 'D'), block: 'D', students: 0 })
     await assert.rejects(command({ action: 'block.add', assignment: theirs.record_key, expected_instructor: ids[1], block: 'C' }), { code: '40001' })

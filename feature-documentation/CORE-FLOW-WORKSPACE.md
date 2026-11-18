@@ -116,7 +116,7 @@ in the code.
 | Req | Today | Evidence | Goal |
 |---|---|---|---|
 | R-D1 loads | Functional | Load import with block sections (`97405adc`), `tests/load-block-sections.test.ts`; migration `20261118090000` applied in production | - |
-| R-D1 lists | Partial | Class lists accept `.csv,.xlsx,.pdf,.docx,.txt`; the official `.xls` (BIFF8 compound file) is not read. The list names sections `WMADE 3 - 4`, the load names the same block `WMADE 3 B`. Every listed student must already have an account (`register_instructor_class`) | G1 |
+| R-D1 lists | Partial (G1 in progress) | Class lists accepted `.csv,.xlsx,.pdf,.docx,.txt`; the official `.xls` (BIFF8 compound file) was not read. The list names sections `WMADE 3 - 4`, the load names the same block `WMADE 3 B`. Every listed student must already have an account (`register_instructor_class`) | G1 |
 | R-D2 | Partial | Instructor cards open `DeanCourseInspection` (syllabus, blocks, weekly outline with items); no planned, scheduled or delivered counts per block | G7 |
 | R-D3 | Functional, verify | `20261117104340_instructor_load_continuity.sql`, `tests/load-handover.test.ts` (block handover copies teaching, keeps scores, access and schedules); former instructor's syllabus copy not checked in the browser | G8 |
 | R-D4 | Partial | `StudentMonitoring.jsx`, `MonitoringAnalytics.jsx`, `TopicMastery.jsx`; per-material and per-item drill-down unverified | G7 |
@@ -133,7 +133,7 @@ in the code.
 | R-S2 | Missing | No progress element in `StudentCourses.jsx` (material opens are already stored) | G5 |
 | R-S3 | Partial | 3 to 5 question practice quiz from a delivered reading (`server/domains/practice.ts`, `StudentPractice.jsx`); none from finished quizzes; no advanced-reading marker | G6 |
 | R-S4 | Partial, verify | `Performance.jsx`, dashboard reminders | G5 |
-| R-S5 | Missing | No attempt setting in code or schema (`edupulse_attempts`) | G4 |
+| R-S5 | Functional, verify | Instructor sets 1 to 3 attempts and a time limit in `DeliverySettings.jsx` (`assessmentPolicy.maxAttempts`, 1 to 3 in `server/workspace.ts`); the database enforces it (`20261028130100_assessment_workflows.sql`, `tests/baseline-workflows.test.ts` "timed attempts"); students see allowed attempts and "Start next allowed attempt" (`AcademicLibrary.jsx`) | G4 |
 | R-S6 | Partial | Dashboard "Pulse Reminders" lists unopened materials and unanswered assessments without due-date colours | G5 |
 | R-C1, R-C2 | Partial | Goal routing (`agents/requestGoal.ts`), list edits (`requestFrame.ts`, `itemEdits.ts`) | G11 |
 | R-C3 | Partial, verify | RAG over the library and references; web only on explicit research requests (`systemChatPolicy.ts`) | G9 |
@@ -148,12 +148,16 @@ block, and the listed students get the course.
 
 | Task | Work | Acceptance | Stage |
 |---|---|---|---|
-| T1.1 | Read legacy `.xls` workbooks in the browser (`src/utils/xlsWorkbook.ts`): compound file, BIFF8 shared strings split across CONTINUE records, labels, numbers, RK and MULRK, formula strings | Unit tests on a synthetic workbook; a local-only test reads both official class lists | Draft |
-| T1.2 | Recognize the official Class List report (`src/utils/classListReport.ts`): course code, registrar section, title, units, faculty, term, schedule, students (name, sex, student number, program, status), declared count | Unit tests; a declared count that differs from the rows read is reported | Draft |
-| T1.3 | Match a class list to its course-load block: course and term must agree; faculty surname, first meeting day and start time, and room rank the blocks. `sectionOf` also reads `WMADE 3 - 4` | `WMADE 3 - 4` (GUISDAN, Mon and Tue 07:30, A322) matches `WMADE 3 B` (MT 7:30 - 10:00), not `WMADE 3 A` (2:00 - 4:30) | Draft |
-| T1.4 | Dean course page: "Upload class lists" takes several files and previews each one's matched block, its registered students and those without an EduPulse account; the block can be changed; Confirm adds the registered students with `block.add` | Browser spec; uploading the same list again after accounts exist adds the rest without duplicates | Draft |
-| T1.5 | The instructor's class list uploader reads `.xls` with the same reader and warns when the file's course or section differs from the chosen block | Browser spec | Draft |
-| T1.6 | A student added from a class list sees the course and its delivered courseware | PGlite test: after `block.add` the student's academic records hold the enrollment | Draft |
+| T1.1 | Read legacy `.xls` workbooks in the browser (`src/utils/xlsWorkbook.ts`): compound file, BIFF8 shared strings split across CONTINUE records, labels, numbers, RK and MULRK, formula strings. `readGrid` uses it, so every spreadsheet import (student directory, course loads, class lists) takes `.xls` | `tests/xls-workbook.test.ts` (mini stream and regular sectors, CONTINUE split switching to UTF-16, rich and phonetic strings, damaged files); local-only test reads both official class lists (20 and 29 students, every declared row) | Complete |
+| T1.2 | Recognize the official Class List report (`src/utils/classListReport.ts`): course code, registrar section, title, units, faculty, term, schedule, students (name, sex, student number, program, status), declared count | `tests/class-list-report.test.ts`; a declared count that differs from the rows read, and students without a number, are reported | Complete |
+| T1.3 | Match a class list to its course-load block: course and term must agree; faculty surname, first meeting day and start time, and room rank the blocks; a tie is left to the Dean. `sectionOf` also reads `WMADE 3 - 4` | `tests/class-list-report.test.ts`: `WMADE 3 - 4` (Mon and Tue 07:30, A322) goes to `WMADE 3 B` (MT 7:30 - 10:00), `WMADE 3 - 5` (02:00 pm) to `WMADE 3 A`, on the official files too | Complete |
+| T1.4 | Dean Courses page: "Upload class lists" takes several files and previews each one's proposed block (with the reasons), its registered students, those without an EduPulse account and those not enrolled; the block can be changed; Confirm adds the registered students with `block.add` (a block known only from the teaching-load rows is saved with its printed schedule) | `tests/browser/class-lists.spec.ts` (desktop and mobile): two lists land on IT 202 A and B; uploading the same list again adds nobody twice; a non-list file and a course without a load explain themselves | Complete |
+| T1.5 | The instructor's class list uploader reads `.xls` with the same reader, keeps enrolled students, leaves the block to the instructor and warns when the file is for another course | `tests/browser/class-lists.spec.ts` (instructor case) | Complete |
+| T1.6 | A student added from a class list gets the course | `tests/load-block-sections.test.ts`: after the Dean's `block.add`, the students are enrolled in the block as soon as the instructor's syllabus for that term is saved, and a student sees only their own enrollment | Complete |
+
+Design rule confirmed by T1.6: a student reaches a course through the instructor's course, which exists once the
+instructor has a syllabus for it in that term (`project_workspace`). Until then the class list waits on the block,
+visible to the Dean and the instructor.
 
 ### G2. Syllabus and weekly schedule per block (R-I2, R-I3)
 
@@ -177,8 +181,8 @@ block, and the listed students get the course.
 
 | Task | Work | Acceptance | Stage |
 |---|---|---|---|
-| T4.1 | Instructor sets 1, 2 or 3 allowed attempts per assessment (default 1) | Stored with the publication; PGlite test | Draft |
-| T4.2 | The database enforces the limit on start and submit; the highest score counts; students see attempts used and left | PGlite test: the fourth start is refused; browser spec | Draft |
+| T4.1 | Attempts already exist (1 to 3 in Delivery settings, enforced by the database): verify the instructor setting and the student's allowed and remaining attempts in the browser | Browser spec: the start after the last allowed attempt is refused | Draft |
+| T4.2 | Show which attempt counts (the database's scoring rule) to the student and the instructor | Browser spec | Draft |
 | T4.3 | Instructor test attempt in the student view, scored with the key, never saved as a student score | Browser spec; no attempt row written | Draft |
 
 ### G5. Student progress and reminders (R-S2, R-S4, R-S6)
@@ -249,8 +253,16 @@ block, and the listed students get the course.
 
 - Students on an uploaded class list who have no EduPulse account yet are enrolled automatically when
   their account is created (today: upload the same list again).
+- Students see a course they are listed in before the instructor's syllabus exists, marked as waiting for
+  the syllabus (today the course appears with the syllabus; see the G1 design rule).
+- The instructor's class list upload sets aside listed students who have no account instead of refusing
+  the whole list (the Dean's upload already does).
 
 ## Log
 
 - 2026-11-18: workspace created from the owner's request and the audit above. Production migrations up
   to `20261118090000` are applied (`npx supabase migration list --linked`).
+- 2026-11-18: audit correction. R-S5 was marked Missing because a search pattern did not cover
+  `assessmentPolicy.maxAttempts`; attempts 1 to 3 exist and are enforced. G4 now verifies them.
+- 2026-11-18: G1 built (T1.1 to T1.6 Complete). Both official class lists are read in full and land on
+  their teaching-load blocks; no migration needed.

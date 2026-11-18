@@ -16,7 +16,7 @@ test('Dean navigation and dashboard summaries open the Course list, Course loads
  for(const title of ['Student class lists','Syllabi','Course records'])await expect(page.getByRole('button',{name:title,exact:true})).toHaveCount(0)
  for(const title of ['Course list','Course loads'])await expect(page.getByRole('button',{name:title,exact:true})).toHaveCount(0)
  await expect(page.locator('.kpi-card .glass-icon')).toHaveCount(4)
- await expect(page.locator('input[type=file]')).toBeDisabled()
+ for(const upload of ['Upload course load','Upload class lists'])await expect(page.locator('label.dean-upload',{hasText:upload}).locator('input[type=file]')).toBeDisabled()
 })
 
 test('Program Coordinator opens the same Course, Instructors and Students pages as the Dean',async({page})=>{

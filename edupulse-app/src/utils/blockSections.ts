@@ -1,5 +1,6 @@
 /** Block sections of a course load. A teaching-load subject code such as "IT 101 A" is course IT 101, block A;
- * "QA 101-2" is block 2. A code without a printed block (PROF ED 16) takes the next free letter in schedule order. */
+ * "QA 101-2" and the registrar's "WMADE 3 - 4" are blocks 2 and 4. A code without a printed block (PROF ED 16)
+ * takes the next free letter in schedule order. */
 export type SectionSource = { subjectCode: string; days?: string; time?: string }
 
 const LETTERS = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ']
@@ -9,7 +10,7 @@ export function sectionOf(subjectCode: string): { course: string; block: string 
   const code = String(subjectCode || '').trim().replace(/\s+/g, ' ').toUpperCase()
   const letter = code.match(/^(.*\S)\s([A-Z])$/)
   if (letter) return { course: letter[1], block: letter[2] }
-  const number = code.match(/^(.*\S)-(\d+)$/)
+  const number = code.match(/^(.*\S)\s*-\s*(\d+)$/)
   return number ? { course: number[1], block: number[2] } : { course: code, block: '' }
 }
 

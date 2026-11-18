@@ -38,7 +38,7 @@ test('Dean loads a course to an instructor and releases a class load', async ({ 
 test('a faculty load upload is matched and reviewed before anything is saved', async ({ page }) => {
   const fixture = await deanManagementUI(page)
   await page.goto('/#/records?tab=loads')
-  await page.locator('input[type=file]').setInputFiles(csv('faculty-load.csv', ['Faculty Load Report,,', 'Instructor,Subject Code,Section', 'Morgan Sample Instructor,IT301,BSIT 3-A', 'Unknown Person,IT 102,BSIT 1-B', 'Sample Instructor,IT 102,BSIT 1-A']))
+  await page.locator('label.dean-upload', { hasText: 'Upload course load' }).locator('input[type=file]').setInputFiles(csv('faculty-load.csv', ['Faculty Load Report,,', 'Instructor,Subject Code,Section', 'Morgan Sample Instructor,IT301,BSIT 3-A', 'Unknown Person,IT 102,BSIT 1-B', 'Sample Instructor,IT 102,BSIT 1-A']))
   const review = page.getByRole('dialog', { name: 'Review course load upload' })
   await expect(review).toContainText('Add: 1')
   await expect(review).toContainText('No instructor account matches "Unknown Person"')

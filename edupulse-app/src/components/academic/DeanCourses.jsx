@@ -12,6 +12,7 @@ import { readGrid, planCourseLoads, chunk } from './eduSuiteImport'
 import DeanCourseInspection from './DeanCourseInspection'
 import DeanCourseAssignment from './DeanCourseAssignment'
 import TeachingLoadImport from './TeachingLoadImport'
+import DeanClassListImport from './DeanClassListImport'
 import useAcademicTerm from './useAcademicTerm'
 import {readReferenceFile} from '../../lib/aiClient'
 import {recordsForLoadTerm,loadTerm} from '../../utils/loadTerms'
@@ -38,7 +39,7 @@ export default function DeanCourses({ data:allData }) {
   const [catalogMenu,setCatalogMenu]=useWorkspaceViewState(`dean-catalog-menu:${term}`,null)
   const actionKind=typeof catalogAction==='string'?catalogAction.split(':')[0]:''
   const actionCourse=typeof catalogAction==='string'?catalog.find(course=>course.code===catalogAction.slice(catalogAction.indexOf(':')+1)):null
-  const [document,setDocument]=useState(null),[reading,setReading]=useState('')
+  const [document,setDocument]=useState(null),[reading,setReading]=useState(''),[classLists,setClassLists]=useState(null)
   const action = useDeanAction()
   const show = params.get('show') || 'all'
   const setShow = value => { const next = new URLSearchParams(params); if (value === 'all') next.delete('show'); else next.set('show', value); setParams(next) }
@@ -72,9 +73,10 @@ export default function DeanCourses({ data:allData }) {
       { label: 'Not yet loaded', value: unloaded.length, icon: AlertTriangle, tone: 'amber', to: '/records?show=unloaded' },
       { label: 'Instructor loads', value: courseAssignments(data).length, icon: Layers, tone: 'green', to: '/records?show=loaded' }]} />
     {!selected && <DeanFeedback action={action} />}
-    <Panel title="Courses" actions={<div className="academic-actions">{directory.managed&&writable&&<button className="btn btn-primary btn-sm" disabled={Boolean(action.busy)} onClick={()=>setCatalogAction('add')}><Plus size={15} aria-hidden="true"/> Add Course</button>}{writable&&<UploadButton label={<><FileUp size={15} aria-hidden="true" /> Upload course load</>} accept=".pdf,.csv,.tsv,.txt,.xlsx,.xls" onFile={upload} disabled={!directory.managed || Boolean(action.busy)||Boolean(reading)} />}<CsvButton headers={['Course', 'Title', 'Units', 'Year and semester', 'Instructor', 'Block', 'Semester','Academic year','Days','Time','Room','Listed hours','Computed hours','Students listed']} rows={catalog.flatMap(c => (c.loads.length ? c.loads : [{}]).map(l => [c.code, c.title, c.units, groupLabel(c), l.instructorName || '', l.block || '', l.semester || '',l.academicYear||'',l.days||'',l.time||'',l.room||'',l.hours||'',l.computedHours||'',l.students||'']))} name="course-loads" /></div>}>
+    <Panel title="Courses" actions={<div className="academic-actions">{directory.managed&&writable&&<button className="btn btn-primary btn-sm" disabled={Boolean(action.busy)} onClick={()=>setCatalogAction('add')}><Plus size={15} aria-hidden="true"/> Add Course</button>}{writable&&<UploadButton label={<><FileUp size={15} aria-hidden="true" /> Upload course load</>} accept=".pdf,.csv,.tsv,.txt,.xlsx,.xls" onFile={upload} disabled={!directory.managed || Boolean(action.busy)||Boolean(reading)} />}{writable&&<UploadButton label={<><Users size={15} aria-hidden="true" /> Upload class lists</>} accept=".xls,.xlsx,.csv,.tsv,.txt" onFiles={files=>{action.setError('');action.setNotice(null);setClassLists(files)}} disabled={!directory.managed || Boolean(action.busy)||Boolean(reading)} />}<CsvButton headers={['Course', 'Title', 'Units', 'Year and semester', 'Instructor', 'Block', 'Semester','Academic year','Days','Time','Room','Listed hours','Computed hours','Students listed']} rows={catalog.flatMap(c => (c.loads.length ? c.loads : [{}]).map(l => [c.code, c.title, c.units, groupLabel(c), l.instructorName || '', l.block || '', l.semester || '',l.academicYear||'',l.days||'',l.time||'',l.room||'',l.hours||'',l.computedHours||'',l.students||'']))} name="course-loads" /></div>}>
       {reading&&<p role="status">{reading}</p>}
       {writable&&document&&<TeachingLoadImport file={document} initialOpen onClose={()=>setDocument(null)}/>}
+      {writable&&classLists&&<DeanClassListImport files={classLists} data={data} students={directory.students} action={action} term={{semester,academicYear}} onClose={()=>setClassLists(null)}/>}
       {filters}
       {groups.map(label => <section className="dean-pill-group" key={label} aria-label={label}>{groups.length>1&&<h3>{label}</h3>}<div className="dean-pills">
         {catalog.filter(course => matches(course) && groupLabel(course) === label).map(course => <article key={course.code} className={`dean-course-card${course.status==='suspended'?' is-suspended':''}`}><button className={`dean-pill${course.assignments.length ? ' loaded' : ''}`} onClick={() => setDetail(`course:${course.code}`)} aria-label={`${course.code} ${course.title}, ${course.assignments.length ? `loaded to ${new Set(course.assignments.map(l => l.instructorId)).size} instructor(s)` : 'not yet loaded'}`}>

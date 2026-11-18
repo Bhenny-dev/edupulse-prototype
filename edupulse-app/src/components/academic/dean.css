@@ -106,6 +106,13 @@
 .dean-placement, .dean-block-picker { border: 1px solid var(--gray-200); border-radius: var(--radius-md); padding: 12px 14px; display: flex; flex-direction: column; gap: 10px; }
 .dean-placement legend, .dean-block-picker legend { font-size: .8125rem; font-weight: 700; padding: 0 6px; color: var(--gray-700); }
 .dean-placement > label { display: flex; align-items: center; gap: 8px; font-size: .875rem; }
+/* One registrar class list in the upload preview. A fieldset is as wide as its content by default; min-width
+   keeps long option text and the student table inside the dialog on phones. */
+.dean-class-list { border: 1px solid var(--gray-200); border-radius: var(--radius-md); padding: 12px 14px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.dean-class-list legend { font-size: .8125rem; font-weight: 700; padding: 0 6px; color: var(--gray-700); overflow-wrap: anywhere; }
+.dean-class-list > p { overflow-wrap: anywhere; margin: 0; }
+.dean-class-list .form-input { width: 100%; max-width: 100%; min-width: 0; text-overflow: ellipsis; }
+.dean-class-list details > summary { cursor: pointer; font-size: .875rem; font-weight: 600; color: var(--gray-700); }
 
 .dean-upload { position: relative; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
 .dean-upload input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; }
