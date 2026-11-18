@@ -20,6 +20,11 @@ function matchingCourse(entry,courses){
  return titles.length===1?titles[0].code:''
 }
 const display=value=>value===null||value===undefined||value===''?'Not recorded':value
+/** A subject the recorded courses lack can be added as a new course: its printed code without the section letter, title and units. */
+const NEW='new:'
+const isNew=value=>String(value||'').startsWith(NEW)
+const newCourseCode=entry=>entry.subjectCode.replace(/(?:\s+[A-Z]|-\d+)$/i,'').trim().toUpperCase().replace(/\s+/g,' ')
+const validNewCourse=(code,entry)=>/^[A-Z0-9][A-Z0-9 .&()/_-]{0,39}$/.test(code)&&Boolean(entry.title.trim())&&Number.isFinite(entry.units)&&entry.units>=0&&entry.units<=30&&!(entry.units*2%1)
 /** Footer wording for each reason a selected row cannot be imported yet. */
 const NEEDS={instructor:'need a registered instructor',course:'need a recorded course',term:'are from another term'}
 
@@ -43,23 +48,36 @@ export default function TeachingLoadImport({file,initialOpen=false,openSignal=0,
  },[open,manage,user?.id,retry,term])
  const mapping=entry=>{
   const people=instructors.filter(i=>personKey(i.name)===personKey(entry.instructor))
-  return {instructor_id:people.length===1?people[0].id:'',course_code:matchingCourse(entry,courses),semester,academic_year:academicYear,...draft[entry.id]}
+  // A subject that is not recorded yet defaults to being added as a new course when the import is confirmed.
+  const recorded=matchingCourse(entry,courses),fresh=!recorded&&validNewCourse(newCourseCode(entry),entry)?NEW+newCourseCode(entry):''
+  const picked=Object.fromEntries(Object.entries(draft[entry.id]||{}).filter(([key])=>key!=='new_code'))
+  return {instructor_id:people.length===1?people[0].id:'',course_code:recorded||fresh,semester,academic_year:academicYear,...picked}
  }
+ /** The course a "new course" mapping will create, with the code as edited in the review. */
+ const newCourse=entry=>{const code=(draft[entry.id]?.new_code??newCourseCode(entry)).trim().toUpperCase().replace(/\s+/g,' ');return {code,title:entry.title.trim().slice(0,300),units:entry.units}}
  const change=(id,key,value)=>{setDraft(old=>({...old,[id]:{...old[id],[key]:value}}));setReviewed(false);setError('')}
  const chosen=doc.entries.filter(e=>selected.includes(e.id)),matching=doc.entries.filter(e=>!person||e.instructor===person),shown=matching.slice(page*20,page*20+20)
  /** What a row still needs before it can be imported into the selected term. */
- const missing=entry=>{const m=mapping(entry);return [!instructors.some(i=>i.id===m.instructor_id)&&'instructor',!courses.some(c=>c.code===m.course_code)&&'course',loadTerm(entry.academicYear,entry.semester)!==term&&'term'].filter(Boolean)}
+ const courseReady=(entry,m)=>isNew(m.course_code)?validNewCourse(newCourse(entry).code,entry)&&!courses.some(c=>compact(c.code)===compact(newCourse(entry).code)):courses.some(c=>c.code===m.course_code)
+ const missing=entry=>{const m=mapping(entry);return [!instructors.some(i=>i.id===m.instructor_id)&&'instructor',!courseReady(entry,m)&&'course',loadTerm(entry.academicYear,entry.semester)!==term&&'term'].filter(Boolean)}
+ const added=[...new Set(chosen.filter(e=>isNew(mapping(e).course_code)).map(e=>newCourse(e).code))]
  const invalid=chosen.filter(e=>missing(e).length)
  const needs=Object.keys(NEEDS).map(key=>[key,chosen.filter(e=>missing(e).includes(key)).length]).filter(([,count])=>count).map(([key,count])=>`${count} ${NEEDS[key]}`)
  const needText=entry=>{const gaps=missing(entry),picks=[gaps.includes('instructor')&&'a registered instructor',gaps.includes('course')&&'a recorded course'].filter(Boolean)
-  return [picks.length?`To import this row, choose ${picks.join(' and ')}.`:'',gaps.includes('course')&&!matchingCourse(entry,courses)?`${entry.subjectCode} is not in the recorded courses; choose one, or clear this row’s checkbox to leave it out.`:'',gaps.includes('term')?`This row is from ${entry.semester} AY ${entry.academicYear}; switch the academic term to that term to import it, or clear its checkbox.`:''].filter(Boolean).join(' ')}
+  return [picks.length?`To import this row, choose ${picks.join(' and ')}.`:'',gaps.includes('course')&&!matchingCourse(entry,courses)?isNew(mapping(entry).course_code)?`Check the new course code for ${entry.subjectCode}: use letters, numbers and spaces, and a code that is not already recorded.`:`${entry.subjectCode} is not in the recorded courses, and its code or units could not be read to add it as a new course; choose a recorded course, or clear this row’s checkbox.`:'',gaps.includes('term')?`This row is from ${entry.semester} AY ${entry.academicYear}; switch the academic term to that term to import it, or clear its checkbox.`:''].filter(Boolean).join(' ')}
  const close=()=>{if(busy)return;setOpen(false);onClose?.()}
  const save=async()=>{
   if(!reviewed||invalid.length||!chosen.length||chosen.length>500||!data||busy)return
   setBusy(true);setError('')
   try{
+   // New courses are added first, each once, in the selected term; a course that cannot be added stops the import.
+   for(const code of added){
+    const source=chosen.find(e=>isNew(mapping(e).course_code)&&newCourse(e).code===code)
+    try{await records.command({operation:'dean',command:{action:'course.create',academic_year:academicYear,semester,course:newCourse(source)}})}
+    catch(failure){throw new Error(`${code} could not be added to the recorded courses, so no loads were saved: ${failure.message}`)}
+   }
    const entries=chosen.map(e=>{
-    const m=mapping(e)
+    const found=mapping(e),m=isNew(found.course_code)?{...found,course_code:newCourse(e).code}:found
     const prior=data.institutional.find(r=>r.kind==='loads'&&r.data.LoadType==='course'&&r.data.CourseCode===m.course_code&&r.data.InstructorID===m.instructor_id&&r.data.AcademicYear===academicYear&&r.data.Semester===semester)
     return {...m,course_title:courses.find(c=>c.code===m.course_code)?.title||e.title,page:e.page,row:e.row,subject_code:e.subjectCode,source_title:e.title,source_instructor:e.instructor,source_year:e.academicYear,source_semester:e.semester,degree:e.degree,time:e.time,days:e.days,room:e.room,program:e.program,units:e.units,lecture:e.lecture,lab:e.lab,hours:e.hours,computed_hours:e.computedHours,students:e.students,expected_updated_at:prior?.updated_at||null}
    })
@@ -71,7 +89,7 @@ export default function TeachingLoadImport({file,initialOpen=false,openSignal=0,
  return <section className="pulse-action" aria-label="Extracted teaching loads">
   <strong>{file.fileName}</strong>{summary&&<p>{summary}</p>}<p>{doc.entries.length} extracted class loads · {doc.totals.length} instructor forms · {doc.pages} pages. No loads are saved until you review and confirm.</p>
   <button className="btn btn-secondary btn-sm" onClick={()=>setOpen(true)}>Review extracted course loads</button>
-  {open&&<PageModal className="load-import-page" title="Review teaching loads" subtitle={file.fileName} onClose={close} closeLabel="Close teaching load review" footer={<><span role="status">{receipt?`${receipt.imported} loads saved.`:`${chosen.length} selected${manage&&data?` · ${needs.length?needs.join(' · '):'ready to import'}`:''}`}</span><button className="btn btn-secondary" onClick={close} disabled={busy}>Close</button>{manage&&!receipt&&<button className="btn btn-primary" onClick={save} disabled={busy||loading||!data||!reviewed||!chosen.length||chosen.length>500||invalid.length>0}>{busy?'Saving loads…':'Confirm selected loads'}</button>}</>}>
+  {open&&<PageModal className="load-import-page" title="Review teaching loads" subtitle={file.fileName} onClose={close} closeLabel="Close teaching load review" footer={<><span role="status">{receipt?`${receipt.imported} loads saved.`:`${chosen.length} selected${manage&&data?` · ${added.length?`${added.length} new course${added.length===1?'':'s'} will be added · `:''}${needs.length?needs.join(' · '):'ready to import'}`:''}`}</span><button className="btn btn-secondary" onClick={close} disabled={busy}>Close</button>{manage&&!receipt&&<button className="btn btn-primary" onClick={save} disabled={busy||loading||!data||!reviewed||!chosen.length||chosen.length>500||invalid.length>0}>{busy?'Saving loads…':'Confirm selected loads'}</button>}</>}>
    <div className="load-import-summary">
     {[['Instructor forms',doc.totals.length,GraduationCap,'var(--purple-500)'],['Class loads',doc.entries.length,Layers,'var(--sky-500)'],['Source units',doc.entries.some(e=>e.units===null)?'Incomplete':doc.entries.reduce((n,e)=>n+(e.units||0),0),BookOpen,'var(--green-500)'],['Computed hours / week',doc.entries.some(e=>e.computedHours===null)?'Incomplete':doc.entries.reduce((n,e)=>n+(e.computedHours||0),0),Clock,'var(--amber-500)']].map(([label,value,icon,color])=><SummaryCard key={label} label={label} value={value} icon={icon} color={color}/>)}
    </div>
@@ -90,8 +108,10 @@ export default function TeachingLoadImport({file,initialOpen=false,openSignal=0,
      {manage&&data&&courses.some(c=>c.code===m.course_code&&compact(c.title)!==compact(entry.title))&&<p>Check the course mapping: the recorded catalog title differs from the title printed on this source.</p>}
      {manage&&data&&<fieldset disabled={busy||!selected.includes(entry.id)} className="load-import-mapping"><legend>Assign this course in the selected semester</legend>
       <label>Instructor<select className="form-input" value={m.instructor_id} onChange={e=>change(entry.id,'instructor_id',e.target.value)}><option value="">Choose registered instructor</option>{instructors.map(i=><option key={i.id} value={i.id}>{i.name}</option>)}</select></label>
-      <label>Course<select className="form-input" value={m.course_code} onChange={e=>change(entry.id,'course_code',e.target.value)}><option value="">Choose recorded course</option>{courses.map(c=><option key={c.code} value={c.code}>{c.code} — {c.title}</option>)}</select></label>
+      <label>Course<select className="form-input" value={m.course_code} onChange={e=>change(entry.id,'course_code',e.target.value)}><option value="">Choose recorded course</option>{!matchingCourse(entry,courses)&&validNewCourse(newCourseCode(entry),entry)&&<option value={NEW+newCourseCode(entry)}>Add {newCourse(entry).code} as a new course</option>}{courses.map(c=><option key={c.code} value={c.code}>{c.code} — {c.title}</option>)}</select></label>
+      {isNew(m.course_code)&&<label>New course code<input className="form-input" value={newCourse(entry).code} maxLength={40} onChange={e=>change(entry.id,'new_code',e.target.value)}/></label>}
      </fieldset>}
+     {manage&&data&&selected.includes(entry.id)&&isNew(m.course_code)&&!missing(entry).includes('course')&&<p className="load-import-new" role="note">{newCourse(entry).code} is not in the recorded courses yet. Confirming adds it as “{entry.title}”, {entry.units} units, for {semester} AY {academicYear}, then assigns this load.</p>}
      {manage&&data&&selected.includes(entry.id)&&missing(entry).length>0&&<p className="load-import-needs" role="note">{needText(entry)}</p>}
     </article>})}
     {matching.length>20&&<div className="academic-actions"><button className="btn btn-secondary" disabled={page===0} onClick={()=>setPage(n=>n-1)}>Previous rows</button><button className="btn btn-secondary" disabled={(page+1)*20>=matching.length} onClick={()=>setPage(n=>n+1)}>Next rows</button></div>}

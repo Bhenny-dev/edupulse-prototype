@@ -4,9 +4,9 @@ import {deanManagementUI} from './dean-management-fixture'
 
 const teacher='22222222-2222-4222-8222-222222222222'
 /** A real PDF table with fictional identities; optionally an image-only scan. */
-export async function teachingLoadPdf(scan=false,page?:Page){
+export async function teachingLoadPdf(scan=false,page?:Page,subject:[string,string]=['IT 102 A','Programming foundations']){
  const width=1000,height=650,xs=[30,55,155,385,535,580,620,660,705,770,835,895,970],ys=[520,480,440,400]
- const texts:[string,number,number][]=[['CONFIRMATION OF TEACHING LOAD',280,615],['First Semester, AY 2026-2027',310,590],['Instructor: ALEX SAMPLE',30,565],['Highest Degree Earned: Masters',30,545],...['SUBJECT','DESCRIPTIVE TITLE','TIME','DAY','UNIT','LEC','LAB','HOURS','ROOM','STUDENT','COURSE'].map((s,i)=>[s,xs[i+1]+3,500] as [string,number,number]),['1',35,460],...['IT 102 A','Programming foundations','7:30 - 10:00','TTH','3','2','1','5','A310','35','BSIT'].map((s,i)=>[s,xs[i+1]+3,460] as [string,number,number]),['TOTAL UNITS:',385,420],['3',583,420],['TOTAL HOURS:',625,420],['5',708,420],['Conforme:',30,375]]
+ const texts:[string,number,number][]=[['CONFIRMATION OF TEACHING LOAD',280,615],['First Semester, AY 2026-2027',310,590],['Instructor: ALEX SAMPLE',30,565],['Highest Degree Earned: Masters',30,545],...['SUBJECT','DESCRIPTIVE TITLE','TIME','DAY','UNIT','LEC','LAB','HOURS','ROOM','STUDENT','COURSE'].map((s,i)=>[s,xs[i+1]+3,500] as [string,number,number]),['1',35,460],...[...subject,'7:30 - 10:00','TTH','3','2','1','5','A310','35','BSIT'].map((s,i)=>[s,xs[i+1]+3,460] as [string,number,number]),['TOTAL UNITS:',385,420],['3',583,420],['TOTAL HOURS:',625,420],['5',708,420],['Conforme:',30,375]]
  if(scan){
   if(!page)throw new Error('The scan fixture needs a browser canvas.')
   const encoded=await page.evaluate(({width,height,xs,ys,texts})=>{
