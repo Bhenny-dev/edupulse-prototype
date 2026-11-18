@@ -6,6 +6,8 @@ The hosted migration and explicit catalog-action rehearsal pass inside a rolled-
 
 The full local `npm run verify` passes **459 native tests**, both type checks, lint, model preparation, production build and deployment checks. All **38 desktop/mobile browser cases pass**, covering the new Course/Instructor menus and CRUD commands, existing loading/account management, inherited teaching views and authoring/delivery. The initial browser check caught an offscreen restored menu; shared vertical clamping and trigger restoration correct it. A course-code helper is exposed as a description rather than becoming part of the input label.
 
-Production source/deployment and deployed browser results are recorded after publishing completes.
+The Instructor-dialog reload check exposed a parent-dialog focus race. The shared menu re-establishes focus after parent layout initialization and cancels the pending frame when closed. The final refinement separately passes both type checks, lint, production build and all **42 desktop/mobile browser checks**, including four new dialog-menu focus regressions. No database or API behavior changes in this refinement.
+
+Initial implementation `8fa843bb95b9ac59a4e1694f10a8441a1a4d83c9` is on `main` and production deployment `dpl_5Gs59PXbSG5FbHo3g1apGkk2SWiU` is Ready. Its hosted release gate also passes all **459 native tests** and deployment checks. Final focus-refinement deployment and deployed browser results follow after publishing completes.
 
 Browser fixtures use fictional accounts and controlled API responses. They verify rendered controls and command/reload behavior, not genuine user sign-ins or live course mutations. Private test screenshots and logs are retained under ignored `.data/card-actions/`; broad public screenshot publication remains owner-paused. The capture assertions are updated with the feature.

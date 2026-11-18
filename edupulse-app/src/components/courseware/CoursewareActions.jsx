@@ -23,9 +23,12 @@ export default function CoursewareActions({ label, actions, disabled = false, op
       setPosition(previous => previous.left === left && previous.top === top ? previous : { left, top })
     }
     updatePosition()
-    menu.current.querySelector('button:not(:disabled)')?.focus({ preventScroll: true })
+    const focusMenu=()=>menu.current?.querySelector('button:not(:disabled)')?.focus({ preventScroll: true })
+    focusMenu()
+    // A restored parent dialog sets its own focus after child layout effects.
+    const frame=requestAnimationFrame(()=>{updatePosition();focusMenu()})
     window.addEventListener('scroll', updatePosition, true)
-    return () => window.removeEventListener('scroll', updatePosition, true)
+    return () => {cancelAnimationFrame(frame);window.removeEventListener('scroll', updatePosition, true)}
   }, [open])
   useEffect(() => {
     if (!open) return

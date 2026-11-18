@@ -2,6 +2,21 @@ import {test,expect} from '@playwright/test'
 import {deanManagementUI} from '../dean-management-fixture'
 
 for(const role of ['dean','associate_dean']){
+ test(`${role} instructor dialog menu keeps keyboard focus across reload`,async({page})=>{
+  const fixture=await deanManagementUI(page,role)
+  await page.goto('/#/instructors')
+  await page.getByRole('button',{name:'View instructor Alex Sample Instructor',exact:true}).click()
+  const detail=page.getByRole('dialog',{name:'Instructor Alex Sample Instructor',exact:true})
+  const more=detail.getByRole('button',{name:'Instructor actions for Alex Sample Instructor',exact:true})
+  await more.click()
+  const menu=page.getByRole('menu',{name:'Instructor actions for Alex Sample Instructor',exact:true})
+  await expect(menu.getByRole('menuitem',{name:'Edit instructor',exact:true})).toBeFocused()
+  await page.reload();await expect(detail).toBeVisible()
+  await expect(menu.getByRole('menuitem',{name:'Edit instructor',exact:true})).toBeFocused()
+  await page.keyboard.press('Escape')
+  await expect(menu).toHaveCount(0);await expect(detail).toBeVisible();await expect(more).toBeFocused()
+  expect(fixture.commands).toHaveLength(0)
+ })
  test(`${role} course card menu creates, edits, suspends and removes with fresh records`,async({page},info)=>{
   const fixture=await deanManagementUI(page,role)
   await page.goto('/#/records')
