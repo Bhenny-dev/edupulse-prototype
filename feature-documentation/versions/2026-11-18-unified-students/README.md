@@ -5,3 +5,5 @@ Students now uses one page across all departments, with search, department, year
 Existing account actions, irregular-student review, student details and previous-semester restrictions remain. No accounts, home placements, course enrollments, teaching loads or learner activity are changed.
 
 [Guide](../../system-manual/36-dean-activity-records/README.md) - [Validation](validation/results.md).
+
+Live on [EduPulse](https://edupulse-prototype.vercel.app) from 2ef744c8. Verification: 474 native tests, 40 local desktop/phone browser checks and 20 deployed desktop/phone checks passed.
