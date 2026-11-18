@@ -338,3 +338,8 @@ Move the shared Academic term control into the management page header, aligned r
 ### 18 November 2026 - Landing-only footer
 
 Remove the shared footer from authenticated Layout for all roles, including Admin support views. Keep LandingFooter on the public landing page. Do not reintroduce the bottom provider/status, branding, support or copyright strip on signed-in pages. Retain Settings access to providers and Help. This is presentation only.
+
+
+### 18 November 2026 - Required manual instructor load metadata
+
+Manual Add/Edit instructor loading collects schedule time/day, units, lecture/lab units, declared hours, room and program, with optional whole student headcount. Validate structured details before the atomic assignment; retain existing import compatibility, role checks, semester restrictions, handover continuity and actual class-list ownership. Never treat the headcount as enrollment.

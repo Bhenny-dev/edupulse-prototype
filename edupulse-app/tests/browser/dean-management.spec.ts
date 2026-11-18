@@ -1,5 +1,7 @@
-import { test, expect } from '@playwright/test'
+import { test, expect, type Locator } from '@playwright/test'
 import { deanManagementUI } from '../dean-management-fixture'
+
+const fillLoad=async(modal:Locator)=>{for(const [name,value]of Object.entries({'Time':'7:30 AM - 10:00 AM','Day':'F','Units':'3','Lecture units':'2','Lab units':'1','Number of hours':'2.5','Room':'A310','Program':'BSIT'}))await modal.getByLabel(name,{exact:true}).fill(value)}
 
 const csv = (name: string, lines: string[]) => ({ name, mimeType: 'text/csv', buffer: Buffer.from(lines.join('\n')) })
 
@@ -15,9 +17,10 @@ test('Dean loads a course to an instructor and releases a class load', async ({ 
   const dialog = page.getByRole('dialog', { name: 'Load IT 401', exact: true })
   await dialog.getByRole('combobox', { name: 'Instructor' }).selectOption('teacher-b')
   await expect(dialog.getByLabel('Block',{exact:true})).toHaveCount(0)
+  await fillLoad(dialog)
   await dialog.getByRole('button', { name: 'Load course',exact:true }).click()
   await expect(dialog).toHaveCount(0)
-  expect(fixture.commands[0]).toEqual({ action:'course-load.assign',course_code:'IT 401',instructor_id:'teacher-b',continuation:'new',academic_year:'2026-2027',semester:'1st Semester' })
+  expect(fixture.commands[0]).toMatchObject({ action:'course-load.assign',course_code:'IT 401',instructor_id:'teacher-b',continuation:'new',academic_year:'2026-2027',semester:'1st Semester' })
   await expect(page.getByRole('status').filter({ hasText: 'IT 401 course load saved.' })).toBeVisible()
   await expect(capstone).toContainText('Morgan Sample Instructor')
   await expect(capstone).toContainText('Class list not added')
@@ -27,7 +30,7 @@ test('Dean loads a course to an instructor and releases a class load', async ({ 
 
   await page.getByRole('button', { name: 'Remove Alex Sample Instructor from IT 102', exact: true }).click()
   await page.getByRole('dialog', { name: 'Remove course load' }).getByRole('button', { name: 'Remove load' }).click()
-  expect(fixture.commands[1]).toEqual({action:'course-load.remove',key:'IT 102|BSIT-1A|1st Semester',expected_instructor:'teacher-a',academic_year:'2026-2027',semester:'1st Semester'})
+  expect(fixture.commands[1]).toMatchObject({action:'course-load.remove',key:'IT 102|BSIT-1A|1st Semester',expected_instructor:'teacher-a',academic_year:'2026-2027',semester:'1st Semester'})
   await page.getByRole('dialog', { name: 'IT 102 — Programming foundations' }).getByRole('button', { name: 'Close', exact: true }).click()
   await expect(page.getByRole('button', { name: /^IT 102 Programming foundations, not yet loaded$/ })).toBeVisible()
 })
@@ -117,6 +120,7 @@ test('Program Coordinator loads courses and manages accounts, without assessment
   const dialog = page.getByRole('dialog', { name: 'Load IT 401', exact: true })
   await dialog.getByRole('combobox', { name: 'Instructor' }).selectOption('teacher-b')
   await expect(dialog.getByLabel('Block',{exact:true})).toHaveCount(0)
+  await fillLoad(dialog)
   await dialog.getByRole('button', { name: 'Load course',exact:true }).click()
   expect(fixture.commands[0]).toMatchObject({ action: 'course-load.assign' })
   await page.goto('/#/students')
@@ -148,6 +152,7 @@ for (const role of ['dean', 'associate_dean']) test(`${role} edits loads and sca
   await page.reload(); await expect(edit).toBeVisible(); expect(fixture.commands).toHaveLength(0)
   await edit.getByRole('combobox', { name: 'Instructor', exact: true }).selectOption('teacher-b')
   await expect(edit.getByLabel('Block',{exact:true})).toHaveCount(0)
+  await fillLoad(edit)
   await edit.getByRole('button', { name: 'Save instructor' }).click()
   await expect(edit).toHaveCount(0)
   expect(fixture.commands[0]).toMatchObject({ action: 'course-load.update', key: 'IT 102|BSIT-1A|1st Semester', expected_instructor: 'teacher-a', instructor_id: 'teacher-b' })

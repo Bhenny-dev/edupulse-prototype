@@ -135,3 +135,6 @@
 .academic-header-actions { align-items:center; flex-wrap:wrap; }
 .academic-header-actions .academic-filter { width:360px; max-width:100%; margin:0; }
 @media(max-width:700px) { .academic-header-actions { width:100%; } .academic-header-actions .academic-filter { width:100%; } }
+
+.dean-load-details { display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr)); }
+.dean-load-details > p { grid-column:1/-1; }

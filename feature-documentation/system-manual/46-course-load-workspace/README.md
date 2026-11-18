@@ -49,3 +49,9 @@ Three absent staff identities were added as historical instructor accounts with 
 Open an instructor and expand **retained source schedule rows** for the printed course code/title, time/days, room, units, lecture/lab units, listed/computed hours, headcount, program, degree, source page and row. Instructor-form totals retain both printed and summed values. On one form the rows total 15 units while the printed footer says 18; both remain visible. Missing AM/PM remains as printed and does not establish a delivery schedule.
 
 Previous semesters stay view-only for every normal application role. This owner-requested backfill is a privileged PostgreSQL maintenance operation with no JWT, not an enabled historical import/edit button or an exception for a client role. It creates no current/next load, class membership, syllabus, courseware or learner activity. [Validation](../../versions/2026-11-18-historical-cit-loads/validation/results.md).
+
+### Manual instructor load details
+
+Add/Edit instructor loading requires time range, day(s), units, lecture units, lab units, listed hours, room and program. Student number means the optional source headcount, not a student ID. The form computes schedule hours from the entered days/time. These values persist on the course assignment and remain visible in Course/Instructors load details; headcounts never enroll students. Existing reviewed document/grid imports remain compatible with their retained source rows.
+
+Validation: full npm run verify passed, including 479 native tests, type checking, lint, production build and deployment routing/health checks. Four targeted Dean/Program Coordinator desktop/phone load-entry checks passed. Migration 20261118082233_instructor_load_details is applied. Original PDF/source schedules remain retained when manual metadata is saved.

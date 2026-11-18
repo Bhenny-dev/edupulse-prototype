@@ -27,3 +27,9 @@ test('teaching-load PDF review keeps source columns, explicit mapping and term f
 for(const role of ['dean','associate_dean'])test(`${role} historical staff qualifications and retained load rows`,async({page})=>{
  await historicalLoadsScene(page,role,async name=>{await page.screenshot({path:`${folder}/04-${role}-${name}.png`,animations:'disabled'})})
 })
+
+
+// Manual load metadata is a required part of the management form.
+test('manual course load fields',async({page})=>{
+ const{deanManagementUI}=await import('../dean-management-fixture');await deanManagementUI(page);await page.goto('/#/records');await page.getByRole('button',{name:/^IT 401 Capstone project,/}).click();await page.getByRole('button',{name:'Add instructor',exact:true}).click();const form=page.getByRole('dialog',{name:'Load IT 401',exact:true});for(const name of ['Time','Day','Units','Lecture units','Lab units','Number of hours','Room','Program'])await expect(form.getByLabel(name,{exact:true})).toBeVisible()
+})
