@@ -4,6 +4,7 @@
 
 | Folder | Covers | Contents |
 | --- | --- | --- |
+| [18 November historical CIT loads](versions/2026-11-18-historical-cit-loads/README.md) | Approved previous-term assignments, inactive historical staff and semester-specific degrees | Imported; 478 native and 18 integrated browser checks passed |
 | [18 November unified Students](versions/2026-11-18-unified-students/README.md) | One all-department directory with section-card filters and complete filtered CSV | Live; 474 native, 40 local and 20 deployed browser checks passed |
 | [18 November department blocks](versions/2026-11-18-student-blocks/README.md) | All-department home placements and confirmed first-year correction | Live; 474 native and 60 deployed browser checks |
 | [18 November course semesters](versions/2026-11-18-course-semesters/README.md) | Three-field course catalog, shared semester scope and instructor-confirmed class lists | Live from e3b3f481; 463 native and 44 local browser checks |

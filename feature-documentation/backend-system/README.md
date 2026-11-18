@@ -1,5 +1,9 @@
 # Backend System
 
+## Approved historical teaching loads - 18 November 2026
+
+An explicit owner-requested maintenance backfill adds only completed-term course catalog and course-only assignment records. SourceRows/SourceForms retain actual document fields and source SHA-256. The handover trigger skips only approved-historical-teaching-load course records in a completed term when session_user is postgres, the session role is none and auth.uid() is null. No authenticated, anonymous or service-role request can select that branch; completed-term write guards and RLS remain intact. No continuation bundle, workspace save, enrollment refresh or learner command runs. Current staff qualification tables remain unchanged; term-scoped historical cards read their retained degree/identity snapshot. Missing staff accounts remain suspended/banned and receive no current load. See [the historical import receipt](../versions/2026-11-18-historical-cit-loads/validation/results.md).
+
 ## Unified Students directory - 18 November 2026
 
 DeanStudents reuses the existing authorized directory and home-block projection for Dean and Program Coordinator. All-department filtering, section-card selection, search, status and pagination are client-side over that projection; URL parameters retain navigation only. CSV exports the filtered directory with the existing formula-escaping helper. No database migration, additional request, polling, authorization change or business-data write is introduced. Student details still resolve against freshly authorized records and fail closed after revocation. Previous-term management remains disabled.

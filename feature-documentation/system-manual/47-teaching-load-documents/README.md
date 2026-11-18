@@ -32,7 +32,7 @@ Course and Instructor load details show schedule, room, units, lecture/lab units
 
 ## Supplied-file inspection
 
-The original First Semester AY 2026–2027 file contains 11 instructor forms and 56 rows. The Second Semester AY 2025–2026 file contains 12 forms and 66 rows. The latter is past loading, not next-semester loading. Source values and printed total discrepancies remain reviewable; the files were scanned without assigning their rows to live instructors. Their real names, signatures and source files are kept out of public documentation captures.
+The original First Semester AY 2026–2027 file contains 11 instructor forms and 56 rows. The Second Semester AY 2025–2026 file contains 12 forms and 66 rows. The latter is past loading, not next-semester loading. Source values and printed total discrepancies remain reviewable; the files were scanned without assigning their rows to live instructors. The owner subsequently authorized importing the previous-semester file on 18 November, as described below. Real names, signatures and source files remain outside public documentation captures.
 
 The [release record](../../versions/2026-11-17-load-document-intake/README.md) separates source-file inspection, controlled browser checks and hosted database verification.
 
@@ -40,3 +40,14 @@ The [release record](../../versions/2026-11-17-load-document-intake/README.md) s
 ### Semester and assignment correction - 18 November 2026
 
 Use the shared Academic term to choose the period. Only Current (First Semester AY 2026-2027) and Next (Second Semester AY 2026-2027) allow changes; completed periods are view-only. The selected term supplies course creation and loading context. A Dean assigns courses only. Original PDF schedule rows remain readable, but neither their subject suffix nor source headcount creates class membership. Instructors confirm actual blocks through Course > Block sections and choose registered students individually or upload their identifiers. Current/next class lists and overrides remain separate, including when course codes repeat. Pending classes expose course/instructor labels while awaiting teaching release. See [Course flow](../46-course-load-workspace/README.md).
+
+
+## Approved previous-semester CIT loads - 18 November 2026
+
+The owner explicitly authorized a maintenance import of the approved revised Second Semester AY 2025-2026 teaching-load document. Select **Academic term > Previous - 2nd Semester - AY 2025-2026** on Course or Instructors. The archived catalog contains 21 courses and 37 instructor-course assignments, retaining all 66 printed schedule rows from 12 instructor forms. Source subject suffixes remain source labels, not guessed home blocks or class lists. Printed headcounts do not enroll students.
+
+Three absent staff identities were added as historical instructor accounts with sign-in disabled and no current assignment. Existing Instructor, Dean and Program Coordinator identities were reused, including their teaching rows, without changing live account roles, passwords, bans or current qualifications. Historical teacher cards identify themselves as **Historical teaching record**. The degree and master's indicator in that view come from that semester's approved form; returning to Current restores the current staff profile. Current profile edits cannot rewrite these archived degrees. Current sign-in dates are not presented as historical facts.
+
+Open an instructor and expand **retained source schedule rows** for the printed course code/title, time/days, room, units, lecture/lab units, listed/computed hours, headcount, program, degree, source page and row. Instructor-form totals retain both printed and summed values. On one form the rows total 15 units while the printed footer says 18; both remain visible. Missing AM/PM remains as printed and does not establish a delivery schedule.
+
+Previous semesters stay view-only for every normal application role. This owner-requested backfill is a privileged PostgreSQL maintenance operation with no JWT, not an enabled historical import/edit button or an exception for a client role. It creates no current/next load, class membership, syllabus, courseware or learner activity. [Validation](../../versions/2026-11-18-historical-cit-loads/validation/results.md).

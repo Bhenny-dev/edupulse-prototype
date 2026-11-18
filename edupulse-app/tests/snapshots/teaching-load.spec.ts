@@ -1,5 +1,6 @@
 import {test,expect} from './fixtures'
 import {teachingLoadUI,teachingLoadPdf} from '../teaching-load-fixture'
+import {historicalLoadsScene} from '../historical-loads-ui'
 const folder='../feature-documentation/system-manual/47-teaching-load-documents'
 test('teaching-load PDF review keeps source columns, explicit mapping and term filters',async({page})=>{
  const fixture=await teachingLoadUI(page)
@@ -21,4 +22,8 @@ test('teaching-load PDF review keeps source columns, explicit mapping and term f
  await page.reload();await expect(page.getByLabel('Academic term',{exact:true})).toHaveValue('2025-2026|2nd Semester')
  await page.screenshot({path:`${folder}/03-past-term.png`,animations:'disabled'})
  expect(fixture.commands).toHaveLength(1);expect(fixture.inference).toEqual([])
+})
+
+for(const role of ['dean','associate_dean'])test(`${role} historical staff qualifications and retained load rows`,async({page})=>{
+ await historicalLoadsScene(page,role,async name=>{await page.screenshot({path:`${folder}/04-${role}-${name}.png`,animations:'disabled'})})
 })

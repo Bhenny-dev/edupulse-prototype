@@ -11,6 +11,7 @@
 .student-department-sections { margin:24px 0; }
 .student-section-card[aria-pressed="true"] { border-color:var(--sky-500); background:var(--sky-50); box-shadow:0 0 0 2px var(--sky-200); }
 .student-directory-list { scroll-margin-top:100px; }
+.teaching-load-source { width:clamp(240px,40vw,600px); white-space:normal; overflow-wrap:anywhere; }
 
 .dean-segment { display: inline-flex; flex-wrap: wrap; gap: 4px; padding: 4px; border-radius: 999px; background: var(--gray-100); }
 .dean-segment button { border: 0; background: transparent; padding: 8px 14px; border-radius: 999px; font: 600 .8125rem var(--font-body), sans-serif; color: var(--gray-600); cursor: pointer; }

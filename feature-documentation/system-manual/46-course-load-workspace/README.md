@@ -38,3 +38,14 @@ Handover is atomic: invalid approved-file integrity, unavailable accounts, insuf
 ## Approved-load PDFs and terms
 
 Course now accepts PDF through Upload course load, opening the same full page review used by Pulse attachments. Academic term switches current, next, previous, other recorded or unassigned terms. Instructor/course detail rows retain schedules, rooms, units, listed/computed hours, source headcounts and source filename/page. The instructor directory includes all original departments again. [Manual 47](../47-teaching-load-documents/README.md) describes review and confirmation; the supplied files were scanned without automatically reloading assignments.
+
+
+## Approved previous-semester CIT loads - 18 November 2026
+
+The owner explicitly authorized a maintenance import of the approved revised Second Semester AY 2025-2026 teaching-load document. Select **Academic term > Previous - 2nd Semester - AY 2025-2026** on Course or Instructors. The archived catalog contains 21 courses and 37 instructor-course assignments, retaining all 66 printed schedule rows from 12 instructor forms. Source subject suffixes remain source labels, not guessed home blocks or class lists. Printed headcounts do not enroll students.
+
+Three absent staff identities were added as historical instructor accounts with sign-in disabled and no current assignment. Existing Instructor, Dean and Program Coordinator identities were reused, including their teaching rows, without changing live account roles, passwords, bans or current qualifications. Historical teacher cards identify themselves as **Historical teaching record**. The degree and master's indicator in that view come from that semester's approved form; returning to Current restores the current staff profile. Current profile edits cannot rewrite these archived degrees. Current sign-in dates are not presented as historical facts.
+
+Open an instructor and expand **retained source schedule rows** for the printed course code/title, time/days, room, units, lecture/lab units, listed/computed hours, headcount, program, degree, source page and row. Instructor-form totals retain both printed and summed values. On one form the rows total 15 units while the printed footer says 18; both remain visible. Missing AM/PM remains as printed and does not establish a delivery schedule.
+
+Previous semesters stay view-only for every normal application role. This owner-requested backfill is a privileged PostgreSQL maintenance operation with no JWT, not an enabled historical import/edit button or an exception for a client role. It creates no current/next load, class membership, syllabus, courseware or learner activity. [Validation](../../versions/2026-11-18-historical-cit-loads/validation/results.md).

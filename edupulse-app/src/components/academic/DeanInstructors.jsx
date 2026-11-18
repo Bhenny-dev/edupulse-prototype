@@ -65,19 +65,19 @@ export default function DeanInstructors({ data:allData }) {
         <GlassIcon icon={GraduationCap} color={person.status === 'suspended' ? 'var(--gray-400)' : 'var(--purple-500)'} />
         <span className="dean-card-text"><strong>{person.name}</strong><span>{person.email || 'Email not recorded'}</span></span>
       </button>
-      <div className="dean-card-tags"><span className={`dean-tag ${person.has_masters ? 'dean-tag-new' : 'dean-tag-unchanged'}`}>{degreeLabel(person)}</span>{person.specialization && <span className="dean-tag">{person.specialization}</span>}<StatusBadge status={person.status} /></div>
+      <div className="dean-card-tags"><span className={`dean-tag ${person.has_masters ? 'dean-tag-new' : 'dean-tag-unchanged'}`}>{degreeLabel(person)}</span>{person.specialization && <span className="dean-tag">{person.specialization}</span>}{person.historical?<span className="dean-tag">Historical teaching record</span>:<StatusBadge status={person.status} />}</div>
       <span>{person.loads.length} course load{person.loads.length === 1 ? '' : 's'} · {new Set(person.loads.map(l => l.code)).size} course{new Set(person.loads.map(l => l.code)).size === 1 ? '' : 's'} · {person.syllabi.length} syllab{person.syllabi.length === 1 ? 'us' : 'i'}</span>
       <div className="dean-person-actions">{actions(person)}</div>
     </article>)}</div>
     {!shown.length && <Empty>{people.length ? 'No instructor matches this view.' : 'No instructor accounts yet. Add an instructor to begin course loading.'}</Empty>}
-    {selected && <DeanDialog title={selected.name} subtitle={`${selected.email || 'Email not recorded'} · ${selected.status === 'suspended' ? 'Suspended' : 'Active'}`} icon={GraduationCap} tone="purple" label={`Instructor ${selected.name}`} onClose={() => setDetail(null)}
+    {selected && <DeanDialog title={selected.name} subtitle={`${selected.email || 'Email not recorded'} · ${selected.historical?'Historical teaching record':selected.status === 'suspended' ? 'Suspended' : 'Active'}`} icon={GraduationCap} tone="purple" label={`Instructor ${selected.name}`} onClose={() => setDetail(null)}
       footer={<div className="academic-actions">{actions(selected,'dialog')}<button className="btn btn-secondary" onClick={() => setDetail(null)}>Close</button></div>}>
       <dl className="dean-facts">
         <div><dt>Master’s degree</dt><dd>{selected.has_masters === null ? 'Not recorded' : selected.has_masters ? 'Yes' : 'No'}</dd></div>
         <div><dt>Highest degree</dt><dd>{selected.degree || 'Not recorded'}</dd></div>
         <div><dt>Specialization</dt><dd>{selected.specialization || 'Not recorded'}</dd></div>
         <div><dt>Employee ID</dt><dd>{selected.employee_id || 'Not recorded'}</dd></div>
-        <div><dt>Last sign-in</dt><dd>{signIn(selected.last_sign_in_at)}</dd></div>
+        {!selected.historical&&<div><dt>Last sign-in</dt><dd>{signIn(selected.last_sign_in_at)}</dd></div>}
       </dl>
       <h3 className="dean-subhead">Course loads</h3>
       <DeanCards items={[{label:'Course loads',value:selected.loads.length,icon:ClipboardCheck},{label:'Units loaded',value:selected.loads.reduce((n,l)=>n+(Number(l.units)||0),0),icon:Award},{label:'Computed hours / week',value:selected.loads.reduce((n,l)=>n+(Number(l.computedHours)||0),0),icon:GraduationCap}]}/>
