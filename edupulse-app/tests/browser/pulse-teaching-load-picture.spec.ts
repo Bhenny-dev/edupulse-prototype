@@ -27,12 +27,13 @@ test('a Dean attaches a picture of a teaching load, says yes to review it, and l
   await expect(modal).toContainText(/IT\s*102\s*A/)
   // The instructor printed on the form is matched to the registered account.
   await expect(modal.getByRole('combobox', { name: 'Instructor', exact: true })).toHaveValue('22222222-2222-4222-8222-222222222222')
-  await modal.getByLabel('Block section', { exact: true }).fill('BSIT-1A')
+  await expect(modal.getByLabel('Block section',{exact:true})).toHaveCount(0)
   await modal.getByRole('checkbox', { name: /I compared/ }).check()
   await modal.getByRole('button', { name: 'Confirm selected loads' }).click()
   await expect(modal).toContainText('Saved 1 selected loads')
   expect(fixture.commands).toHaveLength(1)
-  expect(fixture.commands[0].entries[0]).toMatchObject({ instructor_id: '22222222-2222-4222-8222-222222222222', course_code: 'IT 102', block: 'BSIT-1A', semester: '1st Semester', academic_year: '2026-2027', computed_hours: 5 })
+  expect(fixture.commands[0].entries[0]).toMatchObject({ instructor_id: '22222222-2222-4222-8222-222222222222', course_code: 'IT 102', semester: '1st Semester', academic_year: '2026-2027', computed_hours: 5 })
+  expect(fixture.commands[0].entries[0]).not.toHaveProperty('block')
   expect(fixture.inference).toEqual([])
   // Back in the conversation (a phone shows the review full screen): the yes was sent alone, without the picture.
   await modal.getByRole('button', { name: 'Close', exact: true }).click()

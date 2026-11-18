@@ -10,7 +10,7 @@ test('teaching-load PDF review keeps source columns, explicit mapping and term f
  await expect(review).toContainText('IT 102 A — Programming foundations')
  await expect(review.getByRole('button',{name:'Confirm selected loads'})).toBeDisabled()
  await page.screenshot({path:`${folder}/01-extracted-load.png`,animations:'disabled'})
- await review.getByLabel('Block section',{exact:true}).fill('BSIT-1A')
+ await expect(review.getByLabel('Block section',{exact:true})).toHaveCount(0)
  await review.getByRole('checkbox',{name:/I compared/}).check()
  await expect(review.getByRole('button',{name:'Confirm selected loads'})).toBeEnabled()
  await page.screenshot({path:`${folder}/02-reviewed-mapping.png`,animations:'disabled'})

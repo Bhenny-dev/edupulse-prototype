@@ -56,7 +56,7 @@ export async function teachingLoadUI(page:Page,role='dean'){
   }
   if(action==='academic'&&request.method()==='POST'&&request.postDataJSON()?.command?.action==='load.import_document'){
    const command=request.postDataJSON().command;commands.push(command)
-   for(const e of command.entries)fixture.records.institutional!.push({kind:'loads',record_key:[e.course_code,e.block,e.semester,e.academic_year].join('|'),data:{CourseCode:e.course_code,Block:e.block,Semester:e.semester,AcademicYear:e.academic_year,InstructorID:e.instructor_id,InstructorName:'Alex Sample',ScheduleTime:e.time,ScheduleDays:e.days,Room:e.room,Units:String(e.units),LectureUnits:String(e.lecture),LabUnits:String(e.lab),DeclaredHours:String(e.hours),ComputedHours:String(e.computed_hours),StudentCount:String(e.students),Program:e.program,SourceFile:command.filename,SourcePage:String(e.page)}})
+   for(const e of command.entries)fixture.records.institutional!.push({kind:'loads',record_key:'course:'+e.course_code+':'+e.instructor_id,data:{CourseCode:e.course_code,Block:'',LoadType:'course',Semester:e.semester,AcademicYear:e.academic_year,InstructorID:e.instructor_id,InstructorName:'Alex Sample',ScheduleTime:e.time,ScheduleDays:e.days,Room:e.room,Units:String(e.units),LectureUnits:String(e.lecture),LabUnits:String(e.lab),DeclaredHours:String(e.hours),ComputedHours:String(e.computed_hours),StudentCount:String(e.students),Program:e.program,SourceFile:command.filename,SourcePage:String(e.page)}})
    return route.fulfill({json:{imported:command.entries.length,created:command.entries.length,updated:0,unchanged:0}})
   }
   return route.fallback()

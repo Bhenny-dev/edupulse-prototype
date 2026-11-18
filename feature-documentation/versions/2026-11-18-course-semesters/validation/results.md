@@ -6,3 +6,6 @@ Desktop/phone: 40 initial browser checks passed. Two stale Program Coordinator b
 
 
 Full npm run verify passes: docs check (owner-paused publication policy), lint, TypeScript, 463 native checks, production build and deployment checks. All 44 targeted desktop/phone cases pass after the selector corrections and added class-list flow. Three linked migrations applied successfully after dry-run and a rolled-back rehearsal. A linked authenticated-role canary confirms management course creation/assignment, rejection of a historical edit and instructor registration of an existing official directory identity; its complete transaction was rolled back. Fingerprints for all 11 original relations match before/after migration and canary. The only additive business metadata is 60 semester catalog entries. No live loads, enrollments, courseware or learner activity were created.
+
+
+The subsequent home-block release verifies the integrated application with 474 native and 60 deployed desktop/phone checks. PDF and picture review fixtures now assert the course-only payload and absence of Dean block selection; source terms and schedules stay intact.

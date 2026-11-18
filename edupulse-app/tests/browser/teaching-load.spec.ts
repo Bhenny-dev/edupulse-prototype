@@ -1,7 +1,7 @@
 import {test,expect} from '@playwright/test'
 import {teachingLoadPdf,teachingLoadUI} from '../teaching-load-fixture'
 
-for(const role of ['dean','associate_dean'])test(`${role} reviews a PDF, maps its actual block, imports once and filters its term`,async({page},info)=>{
+for(const role of ['dean','associate_dean'])test(`${role} reviews a PDF, confirms a course-only assignment, imports once and filters its term`,async({page},info)=>{
  test.setTimeout(120000)
  await page.emulateMedia({reducedMotion:'reduce'})
  const fixture=await teachingLoadUI(page,role)
@@ -11,18 +11,19 @@ for(const role of ['dean','associate_dean'])test(`${role} reviews a PDF, maps it
  await expect(modal).toBeVisible()
  await expect(modal).toContainText('IT 102 A — Programming foundations')
  await expect(modal.getByRole('button',{name:'Confirm selected loads'})).toBeDisabled()
- await modal.getByLabel('Block section',{exact:true}).fill('BSIT-1A')
+ await expect(modal.getByLabel('Block section',{exact:true})).toHaveCount(0)
  await modal.getByRole('checkbox',{name:/I compared/}).check()
  await expect(modal.getByRole('button',{name:'Confirm selected loads'})).toBeEnabled()
  await expect(modal).toHaveCSS('opacity','1')
  await page.screenshot({path:`.data/course-load-intake/review-${info.project.name}-${role}.png`,fullPage:true,animations:'disabled'})
  await modal.getByRole('button',{name:'Confirm selected loads'}).click()
  await expect(modal).toContainText('Saved 1 selected loads')
- expect(fixture.commands).toHaveLength(1);expect(fixture.commands[0].entries[0]).toMatchObject({academic_year:'2026-2027',semester:'1st Semester',computed_hours:5,block:'BSIT-1A',page:1})
+ expect(fixture.commands).toHaveLength(1);expect(fixture.commands[0].entries[0]).toMatchObject({academic_year:'2026-2027',semester:'1st Semester',computed_hours:5,page:1})
  await modal.getByRole('button',{name:'Close',exact:true}).click()
  await expect(page.getByRole('button',{name:/IT 102.*loaded to/})).toBeVisible()
  await page.getByLabel('Academic term',{exact:true}).selectOption('2025-2026|2nd Semester')
- await expect(page.getByRole('button',{name:/IT 102.*not yet loaded/})).toBeVisible()
+ await expect(page.getByRole('button',{name:/IT 102.*not yet loaded/})).toHaveCount(0)
+ await expect(page.getByRole('button',{name:'Add Course',exact:true})).toHaveCount(0)
  await page.reload();await expect(page.getByLabel('Academic term',{exact:true})).toHaveValue('2025-2026|2nd Semester')
  expect(fixture.commands).toHaveLength(1);expect(fixture.inference).toEqual([])
 })
@@ -46,13 +47,14 @@ test('Pulse reads an image-only teaching-load table with OCR and offers a comple
  await expect(modal).toContainText('OCR was used')
  await expect(modal).toContainText(/IT\s*102\s*A/)
  await expect(modal.locator('.load-import-facts>div').filter({has:page.getByText('Computed hours / week',{exact:true})})).toContainText('5')
- await expect(modal.getByLabel('Block section',{exact:true})).toBeVisible()
+ await expect(modal.getByLabel('Block section',{exact:true})).toHaveCount(0)
+ await expect(modal.getByRole('combobox',{name:'Course',exact:true})).toBeVisible()
  if(info.project.name==='mobile'){
   const dialogBox=await modal.boundingBox()
   expect(dialogBox!.height).toBeGreaterThanOrEqual(page.viewportSize()!.height-2)
  }
- await modal.getByLabel('Block section',{exact:true}).scrollIntoViewIfNeeded()
- const box=await modal.getByLabel('Block section',{exact:true}).boundingBox()
+ await modal.getByRole('combobox',{name:'Course',exact:true}).scrollIntoViewIfNeeded()
+ const box=await modal.getByRole('combobox',{name:'Course',exact:true}).boundingBox()
  expect(box!.y).toBeGreaterThanOrEqual(0);expect(box!.y+box!.height).toBeLessThanOrEqual(page.viewportSize()!.height)
  await page.screenshot({path:`.data/course-load-intake/ocr-${info.project.name}.png`,fullPage:false})
  expect(fixture.commands).toHaveLength(0);expect(fixture.inference).toEqual([])

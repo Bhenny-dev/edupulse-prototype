@@ -5,3 +5,6 @@ All 2,286 existing active students now have home placements across six departmen
 Home blocks appear in the Dean/Program Coordinator directory even without course enrollments, with a Department filter. Students can see their own home block on Dashboard before courses are loaded. Individual registered-student selection remains available across departments from an instructor-assigned course. It is not a nationality field or automatic course enrollment.
 
 [Validation](validation/results.md) ? [Directory guide](../../system-manual/16-student-directory/README.md).
+
+
+Live on [EduPulse](https://edupulse-prototype.vercel.app) from ebd53352. All 474 native tests and 60 deployed desktop/phone checks pass.

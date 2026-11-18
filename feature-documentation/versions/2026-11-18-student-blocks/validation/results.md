@@ -6,3 +6,10 @@ The new student-self home-block RPC checks the live Student role and actual owne
 
 
 Both focused native checks and TypeScript pass. Ten desktop/phone browser checks pass for department home blocks, student no-enrollment display, shared academic terms and hidden historical actions. The Department URL/reload assertion is included for the final release pass. Full local verification and production build gates run again with the merged Pulse/OCR changes. Private home-block screenshots were opened for desktop and phone; publication remains owner-paused.
+
+
+Final release: full npm run verify passes with the merged Pulse/OCR changes: 474 native tests, TypeScript, lint, production build and serverless deployment checks. All 60 targeted checks pass against the deployed canonical application on desktop and phone, including catalog/instructor menus, semester selection and readonly actions, real class-list confirmation paths, home-block views with no course enrollment, week/topic authoring and delivery, original-file scans, PDF imports, image-only OCR and conversational review confirmation. Browser transports use fictional identities and intercepted API responses; they verify the deployed interface and do not create production academic data. Separate linked-database role canaries verify the actual SQL operations and student-self boundaries.
+
+Migration 20261118024239 applied successfully. The linked student-self check returns a verified Year 1 home block and a size between 1 and 35 while its assigned-course list remains empty; its transaction records no learner work. Supabase advisors remain at the same 15 pre-existing findings.
+
+Production source ebd53352 is Ready at deployment dpl_DnVK1JQFvz342eUGJtjrUs4J4yY9 and owns https://edupulse-prototype.vercel.app. Private desktop and phone home-block screenshots were opened and inspected. The final validation update also aligns the PDF/image review capture fixtures with the course-only assignment contract.
