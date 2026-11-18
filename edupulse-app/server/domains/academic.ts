@@ -56,6 +56,7 @@ export const deanCommand = z.discriminatedUnion('action', [
   z.object({ action: z.literal('load.remove'), keys: z.array(z.string().max(200)).min(1).max(500), expected_instructor:z.string().uuid().optional() }),
   z.object({ action: z.literal('load.update'), key: field(200).min(1), instructor_id: z.string().uuid(), block: field(40).min(1), semester: field(60), expected_instructor: z.string().uuid() }),
   z.object({ action: z.literal('load.inspect'), key: field(200).min(1), expected_instructor: z.string().uuid() }),
+  z.object({ action: z.literal('term.calendar'), semester: z.enum(['1st Semester','2nd Semester','Summer']), academic_year: academicYear, classes_start: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Enter the first day of classes'), weeks: z.number().int().min(1).max(30) }),
   z.object({ action: z.literal('block.add'), assignment: field(200).min(1), expected_instructor: z.string().uuid(), block: field(40).min(1).regex(/^[A-Za-z0-9][A-Za-z0-9 .()/_-]*$/, 'Use letters or numbers for the block section'), days: field(80).optional(), time: field(150).optional(), room: field(150).optional(),
     students: z.array(z.object({ StudentID: field(80).optional(), Email: z.string().trim().toLowerCase().max(254).optional() }).refine(student => Boolean(student.StudentID || student.Email), 'Each student needs a student number or email')).max(35).default([]) }),
   z.object({ action: z.literal('students.import'), filename: field(255).min(1), students: z.array(z.object({

@@ -57,6 +57,12 @@ export async function deanManagementUI(page: Page, role = 'dean') {
       else records.institutional!.push({kind:'loads',record_key:'course:'+code+':'+command.instructor_id,data:{CourseCode:code,InstructorID:String(command.instructor_id),InstructorName:String(person?.name),Block:'',LoadType:'course',AcademicYear:String(command.academic_year),Semester:String(command.semester)}})
       return route.fulfill({json:{created:current?0:1,updated:current?1:0,key:current?.record_key||'course:'+code+':'+command.instructor_id}})
     }
+    if(command.action==='term.calendar'){
+      const key=`${command.semester}|${command.academic_year}`,data={Semester:String(command.semester),AcademicYear:String(command.academic_year),ClassesStart:String(command.classes_start),Weeks:String(command.weeks)}
+      const existing=records.institutional!.find(r=>r.kind==='term_calendar'&&r.record_key===key)
+      if(existing)existing.data=data;else records.institutional!.push({kind:'term_calendar',record_key:key,data})
+      return route.fulfill({json:{semester:command.semester,academic_year:command.academic_year,classes_start:command.classes_start,weeks:command.weeks}})
+    }
     if(command.action==='block.add'){
       const parent=records.institutional!.find(r=>r.kind==='loads'&&r.record_key===command.assignment),block=String(command.block).toUpperCase(),key=`${parent?.data.CourseCode}|${block}|1st Semester|2026-2027`
       const people=(command.students as {StudentID?:string;Email?:string}[]).map(s=>(records.directory.students as {student_number:string;email:string;name:string}[]).find(d=>d.student_number===s.StudentID||d.email===s.Email)).filter(Boolean) as {student_number:string;email:string;name:string}[]

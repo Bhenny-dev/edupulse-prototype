@@ -148,12 +148,12 @@ block, and the listed students get the course.
 
 | Task | Work | Acceptance | Stage |
 |---|---|---|---|
-| T1.1 | Read legacy `.xls` workbooks in the browser (`src/utils/xlsWorkbook.ts`): compound file, BIFF8 shared strings split across CONTINUE records, labels, numbers, RK and MULRK, formula strings. `readGrid` uses it, so every spreadsheet import (student directory, course loads, class lists) takes `.xls` | `tests/xls-workbook.test.ts` (mini stream and regular sectors, CONTINUE split switching to UTF-16, rich and phonetic strings, damaged files); local-only test reads both official class lists (20 and 29 students, every declared row) | Complete |
-| T1.2 | Recognize the official Class List report (`src/utils/classListReport.ts`): course code, registrar section, title, units, faculty, term, schedule, students (name, sex, student number, program, status), declared count | `tests/class-list-report.test.ts`; a declared count that differs from the rows read, and students without a number, are reported | Complete |
-| T1.3 | Match a class list to its course-load block: course and term must agree; faculty surname, first meeting day and start time, and room rank the blocks; a tie is left to the Dean. `sectionOf` also reads `WMADE 3 - 4` | `tests/class-list-report.test.ts`: `WMADE 3 - 4` (Mon and Tue 07:30, A322) goes to `WMADE 3 B` (MT 7:30 - 10:00), `WMADE 3 - 5` (02:00 pm) to `WMADE 3 A`, on the official files too | Complete |
-| T1.4 | Dean Courses page: "Upload class lists" takes several files and previews each one's proposed block (with the reasons), its registered students, those without an EduPulse account and those not enrolled; the block can be changed; Confirm adds the registered students with `block.add` (a block known only from the teaching-load rows is saved with its printed schedule) | `tests/browser/class-lists.spec.ts` (desktop and mobile): two lists land on IT 202 A and B; uploading the same list again adds nobody twice; a non-list file and a course without a load explain themselves | Complete |
-| T1.5 | The instructor's class list uploader reads `.xls` with the same reader, keeps enrolled students, leaves the block to the instructor and warns when the file is for another course | `tests/browser/class-lists.spec.ts` (instructor case) | Complete |
-| T1.6 | A student added from a class list gets the course | `tests/load-block-sections.test.ts`: after the Dean's `block.add`, the students are enrolled in the block as soon as the instructor's syllabus for that term is saved, and a student sees only their own enrollment | Complete |
+| T1.1 | Read legacy `.xls` workbooks in the browser (`src/utils/xlsWorkbook.ts`): compound file, BIFF8 shared strings split across CONTINUE records, labels, numbers, RK and MULRK, formula strings. `readGrid` uses it, so every spreadsheet import (student directory, course loads, class lists) takes `.xls` | `tests/xls-workbook.test.ts` (mini stream and regular sectors, CONTINUE split switching to UTF-16, rich and phonetic strings, damaged files); local-only test reads both official class lists (20 and 29 students, every declared row) | Tested |
+| T1.2 | Recognize the official Class List report (`src/utils/classListReport.ts`): course code, registrar section, title, units, faculty, term, schedule, students (name, sex, student number, program, status), declared count | `tests/class-list-report.test.ts`; a declared count that differs from the rows read, and students without a number, are reported | Tested |
+| T1.3 | Match a class list to its course-load block: course and term must agree; faculty surname, first meeting day and start time, and room rank the blocks; a tie is left to the Dean. `sectionOf` also reads `WMADE 3 - 4` | `tests/class-list-report.test.ts`: `WMADE 3 - 4` (Mon and Tue 07:30, A322) goes to `WMADE 3 B` (MT 7:30 - 10:00), `WMADE 3 - 5` (02:00 pm) to `WMADE 3 A`, on the official files too | Tested |
+| T1.4 | Dean Courses page: "Upload class lists" takes several files and previews each one's proposed block (with the reasons), its registered students, those without an EduPulse account and those not enrolled; the block can be changed; Confirm adds the registered students with `block.add` (a block known only from the teaching-load rows is saved with its printed schedule) | `tests/browser/class-lists.spec.ts` (desktop and mobile): two lists land on IT 202 A and B; uploading the same list again adds nobody twice; a non-list file and a course without a load explain themselves | Tested |
+| T1.5 | The instructor's class list uploader reads `.xls` with the same reader, keeps enrolled students, leaves the block to the instructor and warns when the file is for another course | `tests/browser/class-lists.spec.ts` (instructor case) | Tested |
+| T1.6 | A student added from a class list gets the course | `tests/load-block-sections.test.ts`: after the Dean's `block.add`, the students are enrolled in the block as soon as the instructor's syllabus for that term is saved, and a student sees only their own enrollment | Tested |
 
 Design rule confirmed by T1.6: a student reaches a course through the instructor's course, which exists once the
 instructor has a syllabus for it in that term (`project_workspace`). Until then the class list waits on the block,
@@ -161,12 +161,17 @@ visible to the Dean and the instructor.
 
 ### G2. Syllabus and weekly schedule per block (R-I2, R-I3)
 
+The course load gives each block its meeting days and time; the Dean's term calendar gives the first day of
+classes. Together they date every teaching week, so courseware opens on class days without the instructor
+typing dates; an instructor can still save other dates for a block.
+
 | Task | Work | Acceptance | Stage |
 |---|---|---|---|
-| T2.1 | Meeting calendar per block from the load's days and time and the semester dates: each week's meetings and contact hours (MT 7:30 - 10:00 is 2 meetings, 5 hours) | Unit tests across TTH, MW, F, lab and lecture splits, holidays when recorded | Draft |
-| T2.2 | The course outline shows each week's available hours per block beside the syllabus hours and warns when planned hours exceed the meetings; topics are never dropped | Unit and browser tests | Draft |
-| T2.3 | One syllabus per course serves all its blocks; blocks keep their own schedules | PGlite or unit test plus browser check | Draft |
-| T2.4 | Delivery dates default to each block's first meeting of the week and are saved automatically for blocks the instructor has not customized | Test: a new block gets dates without a manual save; a customized block keeps its dates | Draft |
+| T2.1 | Meeting calendar per block from the load's days and time and the term calendar: each week's meetings and contact hours (MT 7:30 - 10:00 is 2 meetings, 5 hours); `src/utils/blockCalendar.ts` and the same rule in the database (`default_block_window`) | `tests/block-calendar.test.ts` (TTH, MT, lecture plus laboratory slots, afternoon times, classes starting mid-week) | Complete |
+| T2.2 | Block sections show each block's weekly contact hours and warn when the term's scheduled hours fall short of the syllabus's "No. of Hours"; topics are never dropped. The official syllabi print a total ("No. of Hours: 90 Hours") and no weekly hours, so the check is per term | `tests/block-calendar.test.ts` (`termHours`); `tests/browser/term-calendar.spec.ts` | Complete |
+| T2.3 | One syllabus per course serves all its blocks; blocks keep their own schedules | `tests/browser/term-calendar.spec.ts`: IT 102's one syllabus serves BSIT-1A (saved dates) and BSIT-1B (class schedule) | Complete |
+| T2.4 | A block without saved dates opens each week at its first class meeting with no manual save; a block the instructor customized keeps its dates; publishing no longer needs a saved schedule once the term calendar exists | `tests/term-calendar-delivery.test.ts`: refused before the calendar, week 1 open at Monday 7:30 Manila time, week 10 scheduled, a saved schedule replaces the default; `tests/browser/block-delivery.spec.ts` unchanged | Complete |
+| T2.5 | The Dean or Program Coordinator records when classes start and how many teaching weeks the semester has (Dean Courses, "Set classes start"; command `term.calendar`; migration `20261119010000_term_calendar_default_delivery.sql`) | `tests/term-calendar-delivery.test.ts` (validation, roles, instructor read); `tests/browser/term-calendar.spec.ts` | Complete |
 
 ### G3. Courseware delivery lifecycle (R-I8, R-I4)
 
@@ -266,3 +271,11 @@ visible to the Dean and the instructor.
   `assessmentPolicy.maxAttempts`; attempts 1 to 3 exist and are enforced. G4 now verifies them.
 - 2026-11-18: G1 built (T1.1 to T1.6 Complete). Both official class lists are read in full and land on
   their teaching-load blocks; no migration needed.
+- 2026-11-19: G1 Tested and pushed as `edbe7f13`: `npm run verify` 497 of 497, `VERCEL=1 npm test` 497 of
+  497, browser specs class-lists, dean-block-sections, dean-management, dean-records, course-semesters
+  and historical-loads on desktop and mobile (`automatic-records` 18/19/33 fail on `6d872a35` too).
+  Not yet Ready: Vercel created no build for `6d872a35` or `edbe7f13` (last build `d94a52e0`,
+  13:13 UTC on 18 November) and the live bundle does not contain "Upload class lists"; the owner checks
+  the Vercel dashboard.
+- 2026-11-19: G2 built (T2.1 to T2.5 Complete): the Dean records when classes start, and blocks
+  without saved dates open each week at their first class meeting.
