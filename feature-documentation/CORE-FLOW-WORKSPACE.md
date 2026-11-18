@@ -167,11 +167,11 @@ typing dates; an instructor can still save other dates for a block.
 
 | Task | Work | Acceptance | Stage |
 |---|---|---|---|
-| T2.1 | Meeting calendar per block from the load's days and time and the term calendar: each week's meetings and contact hours (MT 7:30 - 10:00 is 2 meetings, 5 hours); `src/utils/blockCalendar.ts` and the same rule in the database (`default_block_window`) | `tests/block-calendar.test.ts` (TTH, MT, lecture plus laboratory slots, afternoon times, classes starting mid-week) | Complete |
-| T2.2 | Block sections show each block's weekly contact hours and warn when the term's scheduled hours fall short of the syllabus's "No. of Hours"; topics are never dropped. The official syllabi print a total ("No. of Hours: 90 Hours") and no weekly hours, so the check is per term | `tests/block-calendar.test.ts` (`termHours`); `tests/browser/term-calendar.spec.ts` | Complete |
-| T2.3 | One syllabus per course serves all its blocks; blocks keep their own schedules | `tests/browser/term-calendar.spec.ts`: IT 102's one syllabus serves BSIT-1A (saved dates) and BSIT-1B (class schedule) | Complete |
-| T2.4 | A block without saved dates opens each week at its first class meeting with no manual save; a block the instructor customized keeps its dates; publishing no longer needs a saved schedule once the term calendar exists | `tests/term-calendar-delivery.test.ts`: refused before the calendar, week 1 open at Monday 7:30 Manila time, week 10 scheduled, a saved schedule replaces the default; `tests/browser/block-delivery.spec.ts` unchanged | Complete |
-| T2.5 | The Dean or Program Coordinator records when classes start and how many teaching weeks the semester has (Dean Courses, "Set classes start"; command `term.calendar`; migration `20261119010000_term_calendar_default_delivery.sql`) | `tests/term-calendar-delivery.test.ts` (validation, roles, instructor read); `tests/browser/term-calendar.spec.ts` | Complete |
+| T2.1 | Meeting calendar per block from the load's days and time and the term calendar: each week's meetings and contact hours (MT 7:30 - 10:00 is 2 meetings, 5 hours); `src/utils/blockCalendar.ts` and the same rule in the database (`default_block_window`) | `tests/block-calendar.test.ts` (TTH, MT, lecture plus laboratory slots, afternoon times, classes starting mid-week) | Tested |
+| T2.2 | Block sections show each block's weekly contact hours and warn when the term's scheduled hours fall short of the syllabus's "No. of Hours"; topics are never dropped. The official syllabi print a total ("No. of Hours: 90 Hours") and no weekly hours, so the check is per term | `tests/block-calendar.test.ts` (`termHours`); `tests/browser/term-calendar.spec.ts` | Tested |
+| T2.3 | One syllabus per course serves all its blocks; blocks keep their own schedules | `tests/browser/term-calendar.spec.ts`: IT 102's one syllabus serves BSIT-1A (saved dates) and BSIT-1B (class schedule) | Tested |
+| T2.4 | A block without saved dates opens each week at its first class meeting with no manual save; a block the instructor customized keeps its dates; publishing no longer needs a saved schedule once the term calendar exists | `tests/term-calendar-delivery.test.ts`: refused before the calendar, week 1 open at Monday 7:30 Manila time, week 10 scheduled, a saved schedule replaces the default; `tests/browser/block-delivery.spec.ts` unchanged | Tested |
+| T2.5 | The Dean or Program Coordinator records when classes start and how many teaching weeks the semester has (Dean Courses, "Set classes start"; command `term.calendar`; migration `20261119010000_term_calendar_default_delivery.sql`) | `tests/term-calendar-delivery.test.ts` (validation, roles, instructor read); `tests/browser/term-calendar.spec.ts` | Tested |
 
 ### G3. Courseware delivery lifecycle (R-I8, R-I4)
 
@@ -279,3 +279,8 @@ typing dates; an instructor can still save other dates for a block.
   the Vercel dashboard.
 - 2026-11-19: G2 built (T2.1 to T2.5 Complete): the Dean records when classes start, and blocks
   without saved dates open each week at their first class meeting.
+- 2026-11-19: G2 Tested and pushed as `b841dbce`: `npm run verify` 503 of 503, `VERCEL=1 npm test` 503 of
+  503, browser specs term-calendar, block-delivery, dean-management and dean-records on desktop and
+  mobile (56 passed; `courseware-unified` fails on `d94a52e0` too). Migration
+  `20261119010000_term_calendar_default_delivery` applied with `npx supabase db push --linked`.
+  Not yet Ready for the same reason as G1: no Vercel build since `d94a52e0`.
