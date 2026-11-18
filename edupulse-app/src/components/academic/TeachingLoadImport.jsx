@@ -7,6 +7,7 @@ import useAcademicTerm from './useAcademicTerm'
 import {recordsForLoadTerm,loadTerm} from '../../utils/loadTerms'
 import TeachingLoadFields,{loadFieldErrors} from './TeachingLoadFields'
 import {scheduleHours} from '../../utils/teachingLoad'
+import {sectionOf,assignBlocks} from '../../utils/blockSections'
 import PageModal from '../ui/PageModal'
 import SummaryCard from '../ui/SummaryCard'
 import {LoadingStatus} from '../ui/LoadingFeedback'
@@ -60,6 +61,17 @@ export default function TeachingLoadImport({file,initialOpen=false,openSignal=0,
  const newCourse=source=>{const entry=reviewedEntry(source);const code=(draft[entry.id]?.new_code??newCourseCode(entry)).trim().toUpperCase().replace(/\s+/g,' ');return {code,title:entry.title.trim().slice(0,300),units:entry.units}}
  const change=(id,key,value)=>{setDraft(old=>({...old,[id]:{...old[id],[key]:value}}));setReviewed(false);setError('')}
  const chosen=doc.entries.filter(e=>selected.includes(e.id)).map(reviewedEntry),matching=doc.entries.filter(e=>!person||e.instructor===person),shown=matching.slice(page*20,page*20+20).map(reviewedEntry)
+ /** Each row is a block section of its course: the printed letter (IT 101 A), or the next letter free of other
+  * instructors' blocks in schedule order (PROF ED 16 twice is A and B). Unselected rows count, so a block never shifts. */
+ const courseOf=entry=>{const m=mapping(entry);return isNew(m.course_code)?newCourse(entry).code:m.course_code}
+ const blocks=new Map(),groups=new Map()
+ for(const entry of doc.entries){const m=mapping(entry),code=courseOf(entry);if(code&&m.instructor_id)groups.set(`${compact(code)}|${m.instructor_id}`,[...(groups.get(`${compact(code)}|${m.instructor_id}`)||[]),entry])}
+ for(const [group,rows] of groups){
+  const [course,instructor]=group.split('|')
+  const held=(data?.institutional||[]).filter(r=>r.kind==='loads'&&r.data.LoadType==='class'&&compact(r.data.CourseCode)===course&&r.data.InstructorID!==instructor&&loadTerm(r.data.AcademicYear,r.data.Semester)===term).map(r=>r.data.Block)
+  const printed=[...groups].filter(([other])=>other.startsWith(`${course}|`)&&other!==group).flatMap(([,others])=>others.map(e=>sectionOf(e.subjectCode).block)).filter(Boolean)
+  for(const [entry,block] of assignBlocks(rows,[...held,...printed]))blocks.set(entry.id,block)
+ }
  /** What a row still needs before it can be imported into the selected term. */
  const courseReady=(entry,m)=>isNew(m.course_code)?validNewCourse(newCourse(entry).code,entry)&&!courses.some(c=>compact(c.code)===compact(newCourse(entry).code)):courses.some(c=>c.code===m.course_code)
  const missing=entry=>{const m=mapping(entry);return [loadFieldErrors(entry).length>0&&'details',!instructors.some(i=>i.id===m.instructor_id)&&'instructor',!courseReady(entry,m)&&'course',loadTerm(entry.academicYear,entry.semester)!==term&&'term'].filter(Boolean)}
@@ -82,7 +94,7 @@ export default function TeachingLoadImport({file,initialOpen=false,openSignal=0,
    const entries=chosen.map(e=>{
     const found=mapping(e),m=isNew(found.course_code)?{...found,course_code:newCourse(e).code}:found
     const prior=data.institutional.find(r=>r.kind==='loads'&&r.data.LoadType==='course'&&r.data.CourseCode===m.course_code&&r.data.InstructorID===m.instructor_id&&r.data.AcademicYear===academicYear&&r.data.Semester===semester)
-    return {...m,course_title:courses.find(c=>c.code===m.course_code)?.title||e.title,page:e.page,row:e.row,subject_code:e.subjectCode,source_title:e.title,source_instructor:e.instructor,source_year:e.academicYear,source_semester:e.semester,degree:e.degree,time:e.time,days:e.days,room:e.room,program:e.program,units:e.units,lecture:e.lecture,lab:e.lab,hours:e.hours,computed_hours:e.computedHours,students:e.students,expected_updated_at:prior?.updated_at||null}
+    return {...m,block:blocks.get(e.id)||undefined,course_title:courses.find(c=>c.code===m.course_code)?.title||e.title,page:e.page,row:e.row,subject_code:e.subjectCode,source_title:e.title,source_instructor:e.instructor,source_year:e.academicYear,source_semester:e.semester,degree:e.degree,time:e.time,days:e.days,room:e.room,program:e.program,units:e.units,lecture:e.lecture,lab:e.lab,hours:e.hours,computed_hours:e.computedHours,students:e.students,expected_updated_at:prior?.updated_at||null}
    })
    const result=await records.command({operation:'dean',command:{action:'load.import_document',filename:file.fileName,reviewed:true,entries}})
    setReceipt(result);setReviewed(false)
@@ -96,7 +108,7 @@ export default function TeachingLoadImport({file,initialOpen=false,openSignal=0,
    <div className="load-import-summary">
     {[['Instructor forms',doc.totals.length,GraduationCap,'var(--purple-500)'],['Class loads',doc.entries.length,Layers,'var(--sky-500)'],['Source units',doc.entries.some(e=>e.units===null)?'Incomplete':doc.entries.reduce((n,e)=>n+(e.units||0),0),BookOpen,'var(--green-500)'],['Computed hours / week',doc.entries.some(e=>e.computedHours===null)?'Incomplete':doc.entries.reduce((n,e)=>n+(e.computedHours||0),0),Clock,'var(--amber-500)']].map(([label,value,icon,color])=><SummaryCard key={label} label={label} value={value} icon={icon} color={color}/>)}
    </div>
-   <p>Source terms: {[...new Set(doc.entries.map(e=>`${e.semester} · AY ${e.academicYear}`))].join('; ')}. Each row keeps its original subject code, source page and term. Assignments use the selected academic term. Rows from another term remain available for inspection and cannot be imported into this view. The assigned instructor adds class lists and blocks.</p>
+   <p>Source terms: {[...new Set(doc.entries.map(e=>`${e.semester} · AY ${e.academicYear}`))].join('; ')}. Each row keeps its original subject code, source page and term. Assignments use the selected academic term. Rows from another term remain available for inspection and cannot be imported into this view. Each row becomes a block section of its course: IT 101 A is IT 101, block A, and a code without a printed block takes the next free letter in schedule order. Class lists can be added later by the Dean, the Program Coordinator or the instructor.</p>
    {doc.warnings.length>0&&<details className="load-import-warnings" open><summary>{doc.warnings.length} source checks</summary><ul>{doc.warnings.map((w,i)=><li key={i}>{w}</li>)}</ul></details>}
    {!manage&&<p>These extracted rows are available for review. A Dean, Program Coordinator or System Admin confirms course-load imports.</p>}
    {loading&&<LoadingStatus label="Verifying instructor accounts and course records…"/>}
@@ -106,8 +118,7 @@ export default function TeachingLoadImport({file,initialOpen=false,openSignal=0,
     <p role="status">Showing {matching.length?page*20+1:0}–{Math.min(page*20+20,matching.length)} of {matching.length} rows in this view. {doc.entries.length} rows retained in the document.</p>
     {shown.map(entry=>{const m=mapping(entry);return <article className="load-import-row" key={entry.id}>
      <header>{manage&&<input type="checkbox" aria-label={`Select page ${entry.page} row ${entry.row}`} checked={selected.includes(entry.id)} onChange={e=>{setSelected(old=>e.target.checked?[...old,entry.id]:old.filter(id=>id!==entry.id));setReviewed(false)}}/>}<div><h3>{entry.subjectCode} — {entry.title}</h3><p>{entry.instructor} · page {entry.page}, row {entry.row} · {entry.semester} · AY {entry.academicYear}</p></div></header>
-     <TeachingLoadFields entry={entry} editable={manage&&Boolean(data)} disabled={busy||!selected.includes(entry.id)} block="Assigned separately by the instructor" onChange={(key,value)=>{setEdits(old=>({...old,[entry.id]:{...old[entry.id],[key]:value}}));setReviewed(false);setError('')}}/>
-
+     <TeachingLoadFields entry={entry} editable={manage&&Boolean(data)} disabled={busy||!selected.includes(entry.id)} block={blocks.get(entry.id)||sectionOf(entry.subjectCode).block||'Set once the instructor and course are chosen'} onChange={(key,value)=>{setEdits(old=>({...old,[entry.id]:{...old[entry.id],[key]:value}}));setReviewed(false);setError('')}}/>
      {entry.warnings.length>0&&<details><summary>Check schedule and source</summary><ul>{entry.warnings.map(w=><li key={w}>{w}</li>)}</ul></details>}
      {manage&&data&&courses.some(c=>c.code===m.course_code&&compact(c.title)!==compact(entry.title))&&<p>Check the course mapping: the recorded catalog title differs from the title printed on this source.</p>}
      {manage&&data&&<fieldset disabled={busy||!selected.includes(entry.id)} className="load-import-mapping"><legend>Assign this course in the selected semester</legend>

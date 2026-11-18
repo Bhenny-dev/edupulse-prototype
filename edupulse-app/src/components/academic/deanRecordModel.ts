@@ -1,5 +1,6 @@
 import type { AcademicData, Course } from './academicData'
 import { currentAttempts } from './academicData'
+import { assignBlocks } from '../../utils/blockSections'
 
 type BlockCourse = Course & { block_info?: { block?:string; yearLevel?:number|string }[] }
 export type DeanStudent = { email:string; name:string; reference:string; years:Set<number>; courseIds:Set<string>; blocks:Set<string> }
@@ -74,7 +75,9 @@ export function deanRecords(data:AcademicData, now=Date.now()) {
 // ---- Dean course loading and account directory -------------------------------------------
 export type DeanInstructor = { id:string; name:string; email:string; status:'active'|'suspended'; employee_id:string; has_masters:boolean|null; degree:string; specialization:string; last_sign_in_at?:string|null; historical?:boolean }
 export type DeanAccount = { id:string; student_number:string; name:string; surname:string; first_name:string; middle_name:string; email:string; year_level:number|null; department?:string;program:string; status:'active'|'suspended'; block:string|null; type:string|null; last_sign_in_at?:string|null }
-export type LoadRow = { manual?:boolean; key:string; code:string; block:string; semester:string; academicYear:string; instructorId:string; instructorName:string; hasMasters:string; specialization:string;time:string;days:string;room:string;units:string;lecture:string;lab:string;hours:string;computedHours:string;students:string;program:string;source:string;degree:string;sourceCode:string;sourceTitle:string;sourceInstructor:string;sourceYear:string;sourceSemester:string;loadType:string;parentKey:string;updatedAt?:string;sourceRows?:Record<string,unknown>[];sourceForms?:Record<string,unknown>[] }
+export type LoadRow = { manual?:boolean; key:string; code:string; title?:string; block:string; semester:string; academicYear:string; instructorId:string; instructorName:string; hasMasters:string; specialization:string;time:string;days:string;room:string;units:string;lecture:string;lab:string;hours:string;computedHours:string;students:string;program:string;source:string;degree:string;sourceCode:string;sourceTitle:string;sourceInstructor:string;sourceYear:string;sourceSemester:string;loadType:string;parentKey:string;updatedAt?:string;sourceRows?:Record<string,unknown>[];sourceForms?:Record<string,unknown>[];roster?:Record<string,unknown>[]|null;schedules?:Record<string,unknown>[];allocation?:string }
+/** A block section of a course load: from its block record, or still only on the retained teaching-load rows. */
+export type BlockSection = { key:string; block:string; slots:{days:string;time:string;room:string}[]; students:{email:string;name:string;id:string}[]; listed:boolean; recorded:boolean }
 type Directory = { instructors?:DeanInstructor[]; students?:DeanAccount[]; irregular?:Record<string,string>[] }
 const sourceTotal=(rows:unknown,field:string)=>{if(!Array.isArray(rows)||!rows.length)return '';const values=rows.map(r=>r[field]).filter(v=>typeof v==='number');return values.length===rows.length?String(values.reduce((n,v)=>n+v,0)):''}
 const key = (value:unknown) => text(value).toUpperCase().replace(/[\s-]+/g,'')
@@ -96,23 +99,40 @@ export function assignedInstructorSyllabi(data:AcademicData,instructorId:string)
 }
 
 export function loadRows(data:AcademicData,includeCourses=false):LoadRow[] {
-  return (data.institutional||[]).filter(row=>row.kind==='loads'&&(includeCourses||row.data.LoadType!=='course')).map(row=>({manual:row.data.ManualLoadDetails==='Yes',loadType:row.data.LoadType||'',parentKey:row.data.ParentLoadKey||'',sourceRows:Array.isArray(row.data.SourceRows)?row.data.SourceRows:[],sourceForms:Array.isArray(row.data.SourceForms)?row.data.SourceForms:[],updatedAt:row.updated_at,key:row.record_key,code:text(row.data.CourseCode),block:text(row.data.Block),semester:text(row.data.Semester),academicYear:text(row.data.AcademicYear),
+  return (data.institutional||[]).filter(row=>row.kind==='loads'&&(includeCourses||row.data.LoadType!=='course')).map(row=>({manual:row.data.ManualLoadDetails==='Yes',loadType:row.data.LoadType||'',parentKey:row.data.ParentLoadKey||'',roster:Array.isArray(row.data.Students)?row.data.Students as unknown as Record<string,unknown>[]:null,schedules:Array.isArray(row.data.Schedules)?row.data.Schedules as unknown as Record<string,unknown>[]:[],allocation:text(row.data.AllocationSource),sourceRows:Array.isArray(row.data.SourceRows)?row.data.SourceRows:[],sourceForms:Array.isArray(row.data.SourceForms)?row.data.SourceForms:[],updatedAt:row.updated_at,key:row.record_key,code:text(row.data.CourseCode),block:text(row.data.Block),semester:text(row.data.Semester),academicYear:text(row.data.AcademicYear),
     sourceCode:text(row.data.SourceSubjectCode),sourceTitle:text(row.data.SourceCourseTitle),sourceInstructor:text(row.data.SourceInstructor),sourceYear:text(row.data.SourceAcademicYear),sourceSemester:text(row.data.SourceSemester),
     time:text(row.data.ScheduleTime),days:text(row.data.ScheduleDays),room:text(row.data.Room),units:row.data.ManualLoadDetails==='Yes'?text(row.data.Units):sourceTotal(row.data.SourceRows,'units')||text(row.data.Units),lecture:text(row.data.LectureUnits),lab:text(row.data.LabUnits),hours:text(row.data.DeclaredHours),computedHours:row.data.ManualLoadDetails==='Yes'?text(row.data.ComputedHours):sourceTotal(row.data.SourceRows,'computed_hours')||text(row.data.ComputedHours),students:text(row.data.StudentCount),program:text(row.data.Program),degree:text(row.data.HighestDegree),source:[row.data.SourceFile,row.data.SourcePage?`page ${row.data.SourcePage}`:''].filter(Boolean).join(' · '),
-    instructorId:text(row.data.InstructorID),instructorName:text(row.data.InstructorName)||text(row.data.InstructorID),hasMasters:text(row.data.HasMasters),specialization:text(row.data.Specialization)}))
+    title:text(row.data.CourseTitle),instructorId:text(row.data.InstructorID),instructorName:text(row.data.InstructorName)||text(row.data.InstructorID),hasMasters:text(row.data.HasMasters),specialization:text(row.data.Specialization)}))
     .sort((a,b)=>a.code.localeCompare(b.code)||a.block.localeCompare(b.block))
 }
 export function courseAssignments(data:AcademicData){
  const all=loadRows(data,true),classes=all.filter(row=>row.loadType!=='course'),parents=all.filter(row=>row.loadType==='course')
  const same=(a:LoadRow,b:LoadRow)=>key(a.code)===key(b.code)&&a.instructorId===b.instructorId&&a.academicYear===b.academicYear&&a.semester===b.semester
- const result=parents.map(parent=>({...parent,blocks:[...new Set(classes.filter(row=>row.parentKey===parent.key||!row.parentKey&&same(row,parent)).map(row=>row.block))],legacy:false}))
+ const linked=(parent:LoadRow)=>classes.filter(row=>row.parentKey===parent.key||!row.parentKey&&same(row,parent))
+ const result=parents.map(parent=>{const sections=blockSections(data,parent,linked(parent),classes);return {...parent,sections,blocks:sections.map(s=>s.block),legacy:false}})
  for(const row of classes){
   if(parents.some(parent=>row.parentKey===parent.key||!row.parentKey&&same(row,parent)))continue
   const prior=result.find(item=>item.legacy&&same(item,row))
-  if(prior){if(!prior.blocks.includes(row.block))prior.blocks.push(row.block)}else result.push({...row,blocks:[row.block],legacy:true})
+  if(prior){if(!prior.blocks.includes(row.block)){prior.blocks.push(row.block);prior.sections.push(...blockSections(data,row,[row],classes))}}else{const sections=blockSections(data,row,[row],classes);result.push({...row,sections,blocks:sections.map(s=>s.block),legacy:true})}
  }
  return result.sort((a,b)=>a.code.localeCompare(b.code)||a.instructorName.localeCompare(b.instructorName))
 }
+/** Block records first; blocks still only on the retained teaching-load rows follow (printed letter, or the next letter
+ * free of other instructors' blocks in schedule order). Students come from the block's class list and enrollments. */
+function blockSections(data:AcademicData,parent:LoadRow,linked:LoadRow[],classes:LoadRow[]):BlockSection[]{
+ const enrolled=(block:string)=>{const ids=new Set(data.courses.filter(c=>c.instructor_id===parent.instructorId&&key(c.course_code)===key(parent.code)).map(c=>c.id));return data.enrollments.filter(e=>!e.suspended&&ids.has(e.course_id)&&text(e.block_section).toUpperCase()===block.toUpperCase()).map(e=>({email:email(e.student_email),name:text(e.display_name)||email(e.student_email),id:text(e.student_ref)}))}
+ const people=(roster:Record<string,unknown>[]|null|undefined,block:string)=>{const seen=new Map<string,{email:string;name:string;id:string}>();for(const s of [...(roster||[]).map(r=>({email:email(r.Email),name:text(r.Name)||email(r.Email),id:text(r.StudentID)})),...enrolled(block)])if(s.email&&!seen.has(s.email))seen.set(s.email,s);return [...seen.values()].sort((a,b)=>a.name.localeCompare(b.name))}
+ const sections:BlockSection[]=linked.filter(row=>row.block).map(row=>{const slots=(row.schedules?.length?row.schedules:[{days:row.days,time:row.time,room:row.room}]).map(s=>({days:text(s.days),time:text(s.time),room:text(s.room)})).filter(s=>s.days||s.time||s.room);const students=people(row.roster,row.block);return {key:row.key,block:row.block,slots,students,listed:Boolean(row.roster?.length)||students.length>0,recorded:true}})
+ const others=classes.filter(row=>row.instructorId!==parent.instructorId&&key(row.code)===key(parent.code)&&row.academicYear===parent.academicYear&&row.semester===parent.semester).map(row=>row.block)
+ const sources=(parent.sourceRows||[]).map(r=>({subjectCode:text(r.subject_code),days:text(r.days),time:text(r.time),room:text(r.room)}))
+ for(const [source,block] of assignBlocks(sources,others)){
+  const prior=sections.find(s=>s.block.toUpperCase()===block)
+  if(prior){if(!prior.recorded&&!prior.slots.some(s=>s.days===source.days&&s.time===source.time))prior.slots.push({days:source.days,time:source.time,room:source.room});continue}
+  if(block){const students=people(null,block);sections.push({key:`${parent.key}#${block}`,block,slots:[{days:source.days,time:source.time,room:source.room}],students,listed:students.length>0,recorded:false})}
+ }
+ return sections.sort((a,b)=>a.block.localeCompare(b.block,undefined,{numeric:true}))
+}
+export const slotText=(section:Pick<BlockSection,'slots'>)=>section.slots.map(s=>[s.days,s.time,s.room&&`Room ${s.room}`].filter(Boolean).join(' · ')).filter(Boolean).join('; ')||'Schedule not recorded'
 /** Each semester catalog entry keeps actual instructor assignments separate from confirmed classes. */
 export function courseCatalog(data:AcademicData, model:ReturnType<typeof deanRecords>, curriculum:(code:string)=>{units?:number;yearLevel?:number;semester?:number|string}|undefined=()=>undefined) {
   const loads=loadRows(data),assignments=courseAssignments(data),records=new Map((data.institutional||[]).filter(r=>r.kind==='courses').map(r=>[key(r.data.CourseCode),r]))

@@ -23,7 +23,7 @@ test('Dean loads a course to an instructor and releases a class load', async ({ 
   expect(fixture.commands[0]).toMatchObject({ action:'course-load.assign',course_code:'IT 401',instructor_id:'teacher-b',continuation:'new',academic_year:'2026-2027',semester:'1st Semester' })
   await expect(page.getByRole('status').filter({ hasText: 'IT 401 course load saved.' })).toBeVisible()
   await expect(capstone).toContainText('Morgan Sample Instructor')
-  await expect(capstone).toContainText('Class list not added')
+  await expect(capstone).toContainText('No block section yet')
   await capstone.getByRole('button', { name: 'Close', exact: true }).click()
   const programming = page.getByRole('button', { name: /^IT 102 Programming foundations,/ })
   await programming.focus(); await programming.press('Enter')

@@ -3,7 +3,8 @@ import { currentAttempts } from '../components/academic/academicData'
 import { studentRecorded } from '../components/academic/monitoringModel'
 import { isOutlineExam, weekSections, type OutlineWeek } from './outlineSections'
 
-export type InstructorCourse = { id: string; code: string; title: string; units: string; year: string; semester: string; academicYear: string; blocks: string[]; courseIds: string[]; syllabusId?:string;assignmentKey?:string }
+export type ClassSlot = { days: string; time: string; room: string }
+export type InstructorCourse = { id: string; code: string; title: string; units: string; year: string; semester: string; academicYear: string; blocks: string[]; courseIds: string[]; syllabusId?:string;assignmentKey?:string; slots?: Record<string, ClassSlot[]> }
 const codeKey = (value: string) => value.trim().toUpperCase().replace(/\s+/g, ' ')
 export const sameCourseCode = (left: string, right: string) => left.replace(/\s/g, '').toUpperCase() === right.replace(/\s/g, '').toUpperCase()
 const semesterKey = (value: string) => /(?:1|first|1st)/i.test(value) ? '1' : /(?:2|second|2nd)/i.test(value) ? '2' : value.trim().toLowerCase()
@@ -24,6 +25,10 @@ export function instructorCourses(data: AcademicData, instructorId: string, syll
     const value = courses.get(id) || { id, assignmentKey:row.ParentLoadKey||entry.record_key,code, title: meta.CourseTitle || row.CourseTitle || existing[0]?.course_title || code, units: meta.Units || row.Units || '', year: '', academicYear, semester, blocks: [], courseIds: existing.filter(course=>syllabusId?course.syllabus_id===syllabusId:!syllabi.find(s=>s.id===course.syllabus_id)?.handedOverFrom).map(course => course.id),...(syllabusId?{syllabusId}:{}) }
     if(row.LoadType==='course')value.assignmentKey=entry.record_key
     if (row.Block && !value.blocks.includes(row.Block)) value.blocks.push(row.Block)
+    // The block's class schedule from the course load presets its delivery schedule.
+    const listed = (entry.data as unknown as { Schedules?: Partial<ClassSlot>[] }).Schedules
+    const slots = (Array.isArray(listed) && listed.length ? listed : [{ days: row.ScheduleDays, time: row.ScheduleTime, room: row.Room }]).map(slot => ({ days: slot.days || '', time: slot.time || '', room: slot.room || '' })).filter(slot => slot.days || slot.time)
+    if (row.Block && slots.length) value.slots = { ...value.slots, [row.Block]: slots }
     courses.set(id, value)
   }
   return [...courses.values()].map(course => ({ ...course, courseIds: course.courseIds.filter(id => { const projection = data.courses.find(row => row.id === id), source = syllabi.find(row => row.id === projection?.syllabus_id); return Boolean(course.syllabusId===source?.id || source?.courseInfo?.periodOffered || [...courses.values()].filter(row => row.code === course.code&&!row.syllabusId).length === 1) }), blocks: course.blocks.sort() })).sort((a, b) => a.code.localeCompare(b.code) || a.id.localeCompare(b.id))

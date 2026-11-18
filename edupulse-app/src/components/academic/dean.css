@@ -138,3 +138,17 @@
 
 .dean-load-details { display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr)); }
 .dean-load-details > p { grid-column:1/-1; }
+/* Course cards on an instructor and the block sections of a course */
+.dean-load-cards { margin: 16px 0 24px; grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr)); }
+.dean-load-card { display: flex; flex-direction: row; align-items: flex-start; gap: 12px; text-align: left; cursor: pointer; font: inherit; color: inherit; }
+.dean-load-card:focus-visible { outline: 2px solid var(--sky-500); outline-offset: 2px; }
+.dean-block-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+.dean-block-section { border: 1px solid var(--gray-200); border-radius: 16px; padding: 16px; background: var(--bg-card, var(--white)); min-width: 0; }
+.dean-block-section header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+.dean-block-section h4 { margin: 0; }
+.dean-block-students { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.dean-block-students li { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; overflow-wrap: anywhere; }
+.dean-block-students li > span:first-child { font-weight: 600; }
+.dean-form-row .form-input { width: 100%; min-width: 0; }
+.dean-block-irregular { max-height: 220px; overflow: auto; margin: 0; }
+@media (max-width: 540px) { .dean-block-list { grid-template-columns: 1fr; } }

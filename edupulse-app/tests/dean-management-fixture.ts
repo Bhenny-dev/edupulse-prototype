@@ -57,6 +57,14 @@ export async function deanManagementUI(page: Page, role = 'dean') {
       else records.institutional!.push({kind:'loads',record_key:'course:'+code+':'+command.instructor_id,data:{CourseCode:code,InstructorID:String(command.instructor_id),InstructorName:String(person?.name),Block:'',LoadType:'course',AcademicYear:String(command.academic_year),Semester:String(command.semester)}})
       return route.fulfill({json:{created:current?0:1,updated:current?1:0,key:current?.record_key||'course:'+code+':'+command.instructor_id}})
     }
+    if(command.action==='block.add'){
+      const parent=records.institutional!.find(r=>r.kind==='loads'&&r.record_key===command.assignment),block=String(command.block).toUpperCase(),key=`${parent?.data.CourseCode}|${block}|1st Semester|2026-2027`
+      const people=(command.students as {StudentID?:string;Email?:string}[]).map(s=>(records.directory.students as {student_number:string;email:string;name:string}[]).find(d=>d.student_number===s.StudentID||d.email===s.Email)).filter(Boolean) as {student_number:string;email:string;name:string}[]
+      const existing=records.institutional!.find(r=>r.kind==='loads'&&r.record_key===key),roster=[...((existing?.data.Students as unknown as Record<string,string>[])||[]),...people.map(p=>({StudentID:p.student_number,Email:p.email,Name:p.name,Block:block}))]
+      if(existing)Object.assign(existing.data,{Students:roster})
+      else records.institutional!.push({kind:'loads',record_key:key,data:{CourseCode:String(parent?.data.CourseCode),InstructorID:String(parent?.data.InstructorID),InstructorName:String(parent?.data.InstructorName),Block:block,LoadType:'class',ParentLoadKey:String(command.assignment),AcademicYear:'2026-2027',Semester:'1st Semester',ScheduleDays:String(command.days||''),ScheduleTime:String(command.time||''),Room:String(command.room||''),...(people.length?{Students:roster as unknown as string}:{})}})
+      return route.fulfill({json:{key,block,students:people.length}})
+    }
     if(command.action==='course-load.remove'){
       const prior=records.institutional!.find(r=>r.kind==='loads'&&r.record_key===command.key)
       records.institutional=records.institutional!.filter(r=>!(r.kind==='loads'&&r.data.CourseCode===prior?.data.CourseCode&&r.data.InstructorID===command.expected_instructor));return route.fulfill({json:{removed:1}})

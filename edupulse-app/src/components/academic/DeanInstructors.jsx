@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { GraduationCap, Award, ClipboardCheck, UserX, UserPlus, Pencil, Pause, Play, Trash2 } from 'lucide-react'
+import { GraduationCap, Award, ClipboardCheck, UserX, UserPlus, Pencil, Pause, Play, Trash2, BookOpen } from 'lucide-react'
 import { useWorkspaceViewState } from '../../context/WorkspaceContext'
 import { Empty, CsvButton } from './AcademicUI'
 import { deanRecords, deanDirectory, courseAssignments, syllabusState, assignedInstructorSyllabi } from './deanRecordModel'
@@ -11,8 +11,20 @@ import { useDeanAction } from './deanActions'
 import DeanAccountDialog from './DeanAccountDialog'
 import CoursewareActions from '../courseware/CoursewareActions'
 import useAcademicTerm from './useAcademicTerm'
-import TeachingLoadFacts from './TeachingLoadFacts'
+import DeanCourseInspection from './DeanCourseInspection'
 import {recordsForLoadTerm} from '../../utils/loadTerms'
+
+/** One card per loaded course; it opens the course with its syllabus, block sections, students and weekly outline. */
+function LoadCards({ loads, onOpen }) {
+  if (!loads.length) return <Empty>No course load assigned for this term. Load courses on the Course page.</Empty>
+  return <div className="academic-card-grid dean-load-cards">{loads.map(load => { const listed = load.sections.reduce((n, s) => n + s.students.length, 0)
+    return <button key={load.key} className="card dean-record-card dean-load-card" onClick={() => onOpen(load.key)} aria-label={`Open ${load.code} of ${load.instructorName}`}>
+      <GlassIcon icon={BookOpen} color="var(--sky-500)" />
+      <span className="dean-card-text"><strong>{load.code}</strong>{load.title && <span>{load.title}</span>}
+        <span>{load.sections.length ? `Block${load.sections.length === 1 ? '' : 's'} ${load.blocks.join(', ')}` : 'No block section yet'}</span>
+        <span className="text-sm text-muted">{[load.units && `${load.units} units`, load.computedHours && `${load.computedHours} hours/week`, listed ? `${listed} student${listed === 1 ? '' : 's'}` : 'Class lists not added'].filter(Boolean).join(' · ')}</span></span>
+    </button> })}</div>
+}
 
 const degreeLabel = person => person.has_masters === true ? (person.degree || 'Master’s degree') : person.has_masters === false ? (person.degree || 'No master’s degree') : 'Degree not recorded'
 const signIn = value => value ? new Date(value).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) : 'Never'
@@ -28,6 +40,7 @@ export default function DeanInstructors({ data:allData }) {
   const [search, setSearch] = useState(''), [status, setStatus] = useState('all')
   const [accountAction,setAccountAction]=useWorkspaceViewState(`dean-instructor-action:${term}`,null)
   const [accountMenu,setAccountMenu]=useWorkspaceViewState(`dean-instructor-menu:${term}`,null)
+  const [inspect,setInspect]=useWorkspaceViewState(`dean-instructor-course:${term}`,null)
   const action = useDeanAction()
   const people = directory.instructors.map(person => ({ ...person, loads: loads.filter(load => load.instructorId === person.id), syllabi: assignedInstructorSyllabi(data,person.id) }))
   const shown = people.filter(person => (status === 'all' || person.status === status || (status === 'masters' && person.has_masters)) && `${person.name} ${person.email} ${person.specialization}`.toLowerCase().includes(search.trim().toLowerCase()))
@@ -69,8 +82,8 @@ export default function DeanInstructors({ data:allData }) {
       <div className="dean-person-actions">{actions(person)}</div>
     </article>)}</div>
     {!shown.length && <Empty>{people.length ? 'No instructor matches this view.' : 'No instructor accounts yet. Add an instructor to begin course loading.'}</Empty>}
-    {selected && <DeanDialog title={selected.name} subtitle={`${selected.email || 'Email not recorded'} · ${selected.historical?'Historical teaching record':selected.status === 'suspended' ? 'Suspended' : 'Active'}`} icon={GraduationCap} tone="purple" label={`Instructor ${selected.name}`} onClose={() => setDetail(null)}
-      footer={<div className="academic-actions">{actions(selected,'dialog')}<button className="btn btn-secondary" onClick={() => setDetail(null)}>Close</button></div>}>
+    {selected && <DeanDialog title={selected.name} subtitle={`${selected.email || 'Email not recorded'} · ${selected.historical?'Historical teaching record':selected.status === 'suspended' ? 'Suspended' : 'Active'}`} icon={GraduationCap} tone="purple" label={`Instructor ${selected.name}`} onClose={() => { setInspect(null); setDetail(null) }}
+      footer={<div className="academic-actions">{actions(selected,'dialog')}<button className="btn btn-secondary" onClick={() => { setInspect(null); setDetail(null) }}>Close</button></div>}>
       <dl className="dean-facts">
         <div><dt>Master’s degree</dt><dd>{selected.has_masters === null ? 'Not recorded' : selected.has_masters ? 'Yes' : 'No'}</dd></div>
         <div><dt>Highest degree</dt><dd>{selected.degree || 'Not recorded'}</dd></div>
@@ -80,7 +93,9 @@ export default function DeanInstructors({ data:allData }) {
       </dl>
       <h3 className="dean-subhead">Course loads</h3>
       <DeanCards items={[{label:'Course loads',value:selected.loads.length,icon:ClipboardCheck},{label:'Units loaded',value:selected.loads.reduce((n,l)=>n+(Number(l.units)||0),0),icon:Award},{label:'Computed hours / week',value:selected.loads.reduce((n,l)=>n+(Number(l.computedHours)||0),0),icon:GraduationCap}]}/>
-      <ActivityTable scores={scores} headers={['Course', 'Block', 'Term','Schedule and source details']} rows={selected.loads.map(load => [load.code, load.blocks.join(', ')||'Class list not added', [load.semester,load.academicYear].filter(Boolean).join(' · ') || '—',<TeachingLoadFacts key={load.key} load={load}/>])} empty="No course load assigned for this term. Load courses on the Course page." />
+      <LoadCards loads={selected.loads} onOpen={setInspect} />
+      {inspect && (selected.loads.some(load => load.key === inspect) ? <DeanCourseInspection key={inspect} load={selected.loads.find(load => load.key === inspect)} students={directory.students} action={action} manage={directory.managed && writable} onClose={() => setInspect(null)} />
+        : <DeanDialog title="Course load unavailable" size="narrow" onClose={() => setInspect(null)}><Empty>This course is no longer loaded to {selected.name}. Choose a current course.</Empty></DeanDialog>)}
       <h3 className="dean-subhead">Syllabi and delivery</h3>
       <ActivityTable scores={scores} headers={['Course', 'Syllabus status', 'Released items', 'Assessment attempts', 'Material opens']} rows={selected.syllabi.map(course => { const activity = model.activity(new Set([course.id])); return [course.course_code, SYLLABUS_STATUS_META[syllabusState(course)]?.label || syllabusState(course), activity.publications, activity.submissions, activity.opens] })} empty={selected.loads.length?'No syllabus added to the assigned courses yet.':'No course load assigned for this term.'} />
     </DeanDialog>}

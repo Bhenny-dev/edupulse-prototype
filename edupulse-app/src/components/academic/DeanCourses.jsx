@@ -3,7 +3,8 @@ import { BookOpen, ClipboardCheck, AlertTriangle, Layers, Plus, FileUp, Graduati
 import { useSearchParams } from 'react-router-dom'
 import { useWorkspaceViewState } from '../../context/WorkspaceContext'
 import { Panel, Empty, Table, CsvButton } from './AcademicUI'
-import { deanRecords, courseCatalog, deanDirectory, loadRows, courseAssignments, assignedInstructorSyllabi } from './deanRecordModel'
+import { deanRecords, courseCatalog, deanDirectory, loadRows, courseAssignments, assignedInstructorSyllabi, slotText } from './deanRecordModel'
+import DeanBlockSectionDialog from './DeanBlockSectionDialog'
 import { curriculumCourse } from '../../utils/curriculumMetadata'
 import { DeanCards, DeanDialog, DeanFeedback, ConfirmDialog, UploadButton } from './DeanCommon'
 import { useDeanAction } from './deanActions'
@@ -83,7 +84,7 @@ export default function DeanCourses({ data:allData }) {
       {!groups.length && <Empty>{catalog.length ? 'No course matches this search.' : 'No courses are recorded yet. Add Course or upload the course load to begin.'}</Empty>}
     </Panel>
     {directory.managed&&writable&&catalogAction&&(catalogAction==='add'?<CourseCatalogForm academicYear={academicYear} semester={semester} action={action} onClose={()=>setCatalogAction(null)}/>:actionCourse?(actionKind==='edit'?<CourseCatalogForm academicYear={academicYear} semester={semester} key={catalogAction} course={actionCourse} action={action} onClose={()=>setCatalogAction(null)}/>:<CourseStatusDialog academicYear={academicYear} semester={semester} key={catalogAction} course={actionCourse} kind={actionKind} action={action} onClose={()=>setCatalogAction(null)}/>):<DeanDialog title="Course unavailable" size="narrow" onClose={()=>setCatalogAction(null)}><Empty>This course is no longer available. Close this dialog and choose a current course.</Empty></DeanDialog>)}
-    {selected && <CourseDialog course={selected} data={data} action={action} onEdit={load => setEditingKey(load.key)} managed={directory.managed} writable={writable} onClose={() => { setEditingKey(null); setDetail(null) }} onAssign={() => setAssigning(selected)} onRemove={load => setRemoving({ ...load, title: selected.title })} />}
+    {selected && <CourseDialog course={selected} data={data} directoryStudents={directory.students} action={action} onEdit={load => setEditingKey(load.key)} managed={directory.managed} writable={writable} onClose={() => { setEditingKey(null); setDetail(null) }} onAssign={() => setAssigning(selected)} onRemove={load => setRemoving({ ...load, title: selected.title })} />}
     {typeof detail === 'string' && detail.startsWith('course:') && !selected && <DeanDialog title="Record unavailable" onClose={() => setDetail(null)} size="narrow"><Empty>This course is no longer in your records. Close this dialog and choose a current course.</Empty></DeanDialog>}
     {writable && assigning && <DeanCourseAssignment course={assigning} instructors={directory.instructors} academicYear={academicYear} semester={semester} action={action} onClose={() => setAssigning(null)} />}
     {writable && editingKey && selected && (editing ? <DeanCourseAssignment key={`${editing.key}:${editing.instructorId}`} course={selected} load={editing} instructors={directory.instructors} academicYear={academicYear} semester={semester} action={action} onClose={() => setEditingKey(null)} /> : <DeanDialog title="Course load unavailable" onClose={() => setEditingKey(null)} size="narrow"><Empty>This load is no longer available. Choose a current course load.</Empty></DeanDialog>)}
@@ -94,8 +95,10 @@ export default function DeanCourses({ data:allData }) {
   </>
 }
 
-function CourseDialog({ course, data, action, managed, writable, onClose, onAssign, onEdit, onRemove }) {
+function CourseDialog({ course, data, directoryStudents = [], action, managed, writable, onClose, onAssign, onEdit, onRemove }) {
   const [inspecting, setInspecting] = useWorkspaceViewState(`dean-course-inspect:${course.code}`, null)
+  const [adding, setAdding] = useState(null), addingTo = adding && course.assignments.find(item => item.key === adding.key)
+  const sections = course.assignments.flatMap(item => item.sections.map(section => ({ item, section })))
   const load = course.assignments.find(item => item.key === inspecting)
   const close = () => { setInspecting(null); onClose() }
   const instructorIds = new Set(course.assignments.map(item => item.instructorId))
@@ -105,7 +108,7 @@ function CourseDialog({ course, data, action, managed, writable, onClose, onAssi
     footer={<>{managed && writable && <button className="btn btn-primary" onClick={onAssign} disabled={Boolean(action.busy)||course.status==='suspended'}><Plus size={15} aria-hidden="true" /> Add instructor</button>}<button className="btn btn-secondary" onClick={close}>Close</button></>}>
     <DeanCards items={[
       { label: 'Instructors loaded', value: instructorIds.size, icon: GraduationCap },
-      { label: 'Block sections', value: course.loads.length, icon: Layers },
+      { label: 'Block sections', value: sections.length, icon: Layers },
       { label: 'Registered students', value: students, icon: Users },
       { label: 'Extracted syllabi', value: related.filter(item => item.outline?.length).length, icon: BookOpen },
     ]} />
@@ -113,9 +116,14 @@ function CourseDialog({ course, data, action, managed, writable, onClose, onAssi
     {course.prerequisites && <p className="text-sm text-muted mb-16">Prerequisites: {course.prerequisites}</p>}
     {course.status==='suspended'&&<p className="dean-warning">Course suspended. Reactivate it from the course card menu before adding new loads. Existing classes and teaching history remain available.</p>}
     <h3 className="dean-subhead">Loaded instructors</h3>
-    <Table headers={['Instructor', 'Block sections', 'Term','Schedule and source details', 'Actions']} rows={course.assignments.map(item => [item.instructorName, item.blocks.join(', ')||'Class list not added', [item.semester,item.academicYear].filter(Boolean).join(' · ') || '—',<TeachingLoadFacts key={`facts:${item.key}`} load={item}/>,
-      <div className="academic-actions" key={item.key}><button className="btn btn-secondary btn-sm" onClick={() => setInspecting(item.key)} aria-label={`Inspect ${item.instructorName} ${item.blocks.join(', ')}`} disabled={!managed}>View syllabus and contents</button>{managed && writable && <><button className="btn btn-ghost btn-sm" onClick={() => onEdit(item)} disabled={Boolean(action.busy)} aria-label={`Edit ${item.instructorName} ${item.block}`}>Edit</button><button className="btn btn-ghost btn-sm" onClick={() => onRemove(item)} disabled={Boolean(action.busy)} aria-label={`Remove ${item.instructorName} from ${course.code}`}>Remove</button></>}</div>])} empty="No instructor is loaded with this course yet. Add an instructor to make it available on their Course page. The instructor adds its syllabus and class lists." />
-    {inspecting && (load ? <DeanCourseInspection key={`${load.key}:${load.instructorId}`} load={load} onClose={() => setInspecting(null)} /> : <DeanDialog title="Course load unavailable" onClose={() => setInspecting(null)} size="narrow"><Empty>This load is no longer in the current records. Select a current instructor.</Empty></DeanDialog>)}
+    <Table headers={['Instructor', 'Block sections', 'Term','Schedule and source details', 'Actions']} rows={course.assignments.map(item => [item.instructorName, item.blocks.join(', ')||'No block section yet', [item.semester,item.academicYear].filter(Boolean).join(' · ') || '—',<TeachingLoadFacts key={`facts:${item.key}`} load={item}/>,
+      <div className="academic-actions" key={item.key}><button className="btn btn-secondary btn-sm" onClick={() => setInspecting(item.key)} aria-label={`Inspect ${item.instructorName} ${item.blocks.join(', ')}`} disabled={!managed}>View syllabus and contents</button>{managed && writable && <>{!item.legacy && <button className="btn btn-ghost btn-sm" onClick={() => setAdding({ key: item.key, block: '' })} disabled={Boolean(action.busy)} aria-label={`Add a block section to ${item.instructorName} ${course.code}`}>Add block section</button>}<button className="btn btn-ghost btn-sm" onClick={() => onEdit(item)} disabled={Boolean(action.busy)} aria-label={`Edit ${item.instructorName} ${item.block}`}>Edit</button><button className="btn btn-ghost btn-sm" onClick={() => onRemove(item)} disabled={Boolean(action.busy)} aria-label={`Remove ${item.instructorName} from ${course.code}`}>Remove</button></>}</div>])} empty="No instructor is loaded with this course yet. Add an instructor to make it available on their Course page. The instructor adds its syllabus and class lists." />
+    <h3 className="dean-subhead mt-24">Block sections</h3>
+    <p className="text-sm text-muted mb-16">Each block shares the instructor's syllabus and keeps its own schedule. Add home-block or irregular students to a block, or let the instructor add the class list.</p>
+    <Table headers={['Block section', 'Instructor', 'Term', 'Schedule', 'Class list', 'Actions']} rows={sections.map(({ item, section }) => [`${course.code} ${section.block}`, item.instructorName, [item.semester, item.academicYear].filter(Boolean).join(' · ') || 'Not recorded', slotText(section), section.students.length ? `${section.students.length} student${section.students.length === 1 ? '' : 's'}` : 'Class list not added',
+      managed && writable && !item.legacy ? <button key={section.key} className="btn btn-ghost btn-sm" onClick={() => setAdding({ key: item.key, block: section.block })} disabled={Boolean(action.busy)} aria-label={`Add students to ${course.code} ${section.block}`}>Add students</button> : ''])} empty="No block section is loaded yet. Confirm a teaching load, or add a block section to a loaded instructor." />
+    {addingTo && <DeanBlockSectionDialog load={addingTo} block={adding.block} students={directoryStudents} action={action} onClose={() => setAdding(null)} />}
+    {inspecting && (load ? <DeanCourseInspection key={`${load.key}:${load.instructorId}`} load={load} students={directoryStudents} action={action} manage={managed && writable} onClose={() => setInspecting(null)} /> : <DeanDialog title="Course load unavailable" onClose={() => setInspecting(null)} size="narrow"><Empty>This load is no longer in the current records. Select a current instructor.</Empty></DeanDialog>)}
   </DeanDialog>
 }
 

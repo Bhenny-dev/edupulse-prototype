@@ -41,7 +41,8 @@ test('a Dean attaches a picture of a teaching load, says yes to review it, and l
   await expect(modal).toContainText('Saved 1 selected loads')
   expect(fixture.commands).toHaveLength(1)
   expect(fixture.commands[0].entries[0]).toMatchObject({ instructor_id: '22222222-2222-4222-8222-222222222222', course_code: 'IT 102', semester: '1st Semester', academic_year: '2026-2027', computed_hours: 5 })
-  expect(fixture.commands[0].entries[0]).not.toHaveProperty('block')
+  // The OCR read the printed code without its space ("IT102A"), so the block is the first free letter in schedule order.
+  expect(fixture.commands[0].entries[0]).toMatchObject({ block: 'A' })
   expect(fixture.inference).toEqual([])
   // Back in the conversation (a phone shows the review full screen): the yes was sent alone, without the picture.
   await modal.getByRole('button', { name: 'Close', exact: true }).click()
