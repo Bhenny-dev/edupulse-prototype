@@ -15,7 +15,7 @@ import SyllabusSources from './SyllabusSources'
 import DeliverySettings from './DeliverySettings'
 import TopicContentForm from './TopicContentForm'
 import ReadOnlyAssessment from './ReadOnlyAssessment'
-import { termCalendar, weekMeetings } from '../../utils/blockCalendar'
+import { termCalendar, weekMeetings, weekDeliveries, deliveryLine } from '../../utils/blockCalendar'
 
 function ProgressPills({ data, entries }) {
   const stats = topicProgress(data, entries)
@@ -84,6 +84,8 @@ export default function CourseTopicWeeks({ syllabus, data, course, onSchedule, r
   // A week is scheduled by a saved block schedule, or by the class schedule of a block without saved dates.
   const calendar = course ? termCalendar(data.institutional, course.semester, course.academicYear) : null
   const savedBlock = name => (data.deliverySchedules || []).some(schedule => schedule.syllabus_id === syllabus.id && schedule.block_section === name)
+  // When a checked or delivered item opens for each block: the block's saved window, otherwise its class schedule.
+  const blockDelivery = entry => course ? deliveryLine(weekDeliveries(entry.week, course.blocks, course.slots || {}, (data.deliverySchedules || []).filter(schedule => schedule.syllabus_id === syllabus.id), calendar)) : ''
   const scheduled = entry => (data.deliverySchedules || []).some(schedule => schedule.syllabus_id === syllabus.id && (!course || course.blocks.includes(schedule.block_section)) && schedule.windows.some(window => window.week === entry.week))
     || Boolean(calendar && course.blocks.some(name => !savedBlock(name) && weekMeetings(course.slots?.[name] || [], calendar, entry.week).length))
   const revise = entry => run(async () => {
@@ -135,6 +137,7 @@ export default function CourseTopicWeeks({ syllabus, data, course, onSchedule, r
     const covered = entry.content.coverage?.materialIds, expected = entry.type === 'assessment' ? assessmentCoverage(topicItems, entry.id, overall || Boolean(entry.content.overallAssessment)) : []
     const stale = covered && jsonValue(covered) !== jsonValue(expected)
     return <div className="instructor-sequence-item" key={entry.id}><div className="instructor-sequence-heading"><span className="badge badge-draft">{entry.type === 'assessment' ? 'Assessment' : 'Teaching material'}</span><strong>{entry.content.title || entry.title}</strong><span className="text-sm text-muted">{entry.status === 'published' ? 'Delivered' : entry.status === 'checked' ? 'Checked' : entry.status === 'hidden' ? 'Hidden' : 'Draft'}</span><ProgressPills data={data} entries={[entry]} /></div>
+      {['checked', 'published'].includes(entry.status) && blockDelivery(entry) && <p className="text-sm text-muted instructor-block-delivery" aria-label={`Delivery of ${entry.content.title || entry.title} by block`}>{entry.status === 'published' ? 'Delivery: ' : 'Opens when delivered: '}{blockDelivery(entry)}</p>}
       {entry.type === 'assessment' && <p className="text-sm text-muted">{overall || entry.content.overallAssessment ? 'Covers all topic teaching materials.' : `Covers ${(covered || expected).length} teaching material(s) since the previous assessment.`}{stale && ' Teaching materials changed; review this assessment’s coverage.'}</p>}
       <div className="instructor-topic-actions"><button className="btn btn-secondary btn-sm" onClick={() => setReaderId(entry.id)}><Eye size={14} />Open</button>{!readOnly && entry.status === 'draft' && <button className="btn btn-secondary btn-sm" disabled={blocked} onClick={() => void check(entry)}><Check size={14} />Mark checked</button>}{!readOnly && entry.status === 'checked' && <button className="btn btn-primary btn-sm" disabled={blocked} onClick={() => setDeliveryId(entry.id)}>Deliver to students</button>}{!readOnly && ['published','hidden'].includes(entry.status) && <button className="btn btn-secondary btn-sm" disabled={blocked} onClick={() => setRevisionId(entry.id)}>Prepare draft revision</button>}{!readOnly && entry.status === 'published' && <button className="btn btn-ghost btn-sm" disabled={blocked} onClick={() => void hide(entry)}>Hide</button>}{!readOnly && entry.type !== 'assessment' && topicItems[index + 1]?.type !== 'assessment' && <button className="btn btn-secondary btn-sm" disabled={blocked} onClick={() => add(row, topic, 'assessment', entry.id)}><ClipboardCheck size={14} />Add assessment after this material</button>}</div>
     </div>

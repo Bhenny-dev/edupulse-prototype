@@ -1,8 +1,20 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { slotHours, weeklyContactHours, weekMeetings, classScheduleDates, termHours, termCalendar } from '../src/utils/blockCalendar'
+import { slotHours, weeklyContactHours, weekMeetings, classScheduleDates, termHours, termCalendar, weekDeliveries, deliveryLine } from '../src/utils/blockCalendar'
 
 const calendar = { classesStart: '2026-08-10', weeks: 18 } // a Monday
+
+test('each block opens a week by its saved window, otherwise at its first class meeting', () => {
+  const slots = { A: [{ days: 'MT', time: '7:30 - 10:00' }], B: [{ days: 'TTH', time: '2:00 - 4:30' }], C: [{ days: 'F', time: '8:00 - 11:00' }] }
+  const saved = [{ block_section: 'C', windows: [{ week: 1, opens_at: '2026-08-14T00:00:00.000Z', closes_at: '2026-08-15T00:00:00.000Z' }] }]
+  const tuesdayMorning = Date.parse('2026-08-11T03:00:00Z') // 11:00 AM in Manila
+  assert.deepEqual(weekDeliveries(1, ['A', 'B', 'C', 'D'], slots, saved, calendar, tuesdayMorning).map(row => [row.block, row.state, row.source, row.opensAt]), [
+    ['A', 'open', 'class schedule', '2026-08-09T23:30:00.000Z'], ['B', 'scheduled', 'class schedule', '2026-08-11T06:00:00.000Z'], ['C', 'scheduled', 'saved', '2026-08-14T00:00:00.000Z']])
+  assert.equal(deliveryLine(weekDeliveries(1, ['A', 'B'], slots, saved, calendar, tuesdayMorning)), 'A open since Mon, Aug 10, 7:30 AM · B opens Tue, Aug 11, 2:00 PM')
+  assert.equal(weekDeliveries(1, ['C'], slots, saved, calendar, Date.parse('2026-08-16T00:00:00Z'))[0].state, 'closed')
+  assert.deepEqual(weekDeliveries(2, ['C'], slots, saved, calendar, tuesdayMorning), [], 'a saved schedule without that week opens nothing')
+  assert.deepEqual(weekDeliveries(1, ['A'], slots, [], null, tuesdayMorning), [], 'without the term calendar there is no class-schedule default')
+})
 
 test('weekly contact hours count every meeting day of every slot, with afternoon times read as PM', () => {
   assert.equal(slotHours('7:30 - 10:00'), 2.5)

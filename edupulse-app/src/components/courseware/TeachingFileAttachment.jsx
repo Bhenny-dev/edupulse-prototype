@@ -4,13 +4,14 @@ import {useWorkspace} from '../../context/WorkspaceContext'
 import {importSyllabusReference,indexSyllabusReference,aiRequest} from '../../lib/aiClient'
 import {addSyllabusReference} from '../../lib/rag/syllabusReferences'
 import {jsonValue} from '../../utils/jsonValue'
+import {readableTeachingSource,teachingSourceAccept} from '../../utils/teachingSources'
 export default function TeachingFileAttachment({syllabus,week,onSaved,disabled}) {
  const input=useRef(null),{commit}=useWorkspace(),[busy,setBusy]=useState(false),[error,setError]=useState('')
  const attach=async file=>{
   if(!file||busy)return
   setBusy(true);setError('')
   try{
-   if(!file.size||file.size>2000000||!(/\.(pdf|docx|html?|txt|md)$/i).test(file.name))throw new Error('Choose a readable PDF, DOCX, HTML, TXT or Markdown file up to 2 MB.')
+   if(!file.size||file.size>2000000||!readableTeachingSource(file.name))throw new Error('Choose a readable PDF, Word, PowerPoint, Excel, CSV, HTML, text or Markdown file up to 2 MB.')
    const bytes=new Uint8Array(await file.arrayBuffer());let raw='';for(const byte of bytes)raw+=String.fromCharCode(byte)
    const result=await importSyllabusReference({operation:'import-file',name:file.name,base64:btoa(raw)})
    if(!result.snapshot)throw new Error('The file could not be retained as readable teaching content.')
@@ -27,5 +28,5 @@ export default function TeachingFileAttachment({syllabus,week,onSaved,disabled})
    onSaved?.(receipt)
   }catch(failure){setError(failure.message)}finally{setBusy(false)}
  }
- return <div><button className="btn btn-secondary btn-sm" disabled={disabled||busy} onClick={()=>input.current?.click()}><Paperclip size={14}/>{busy?'Reading teaching file…':'Attach teaching file'}</button><input ref={input} hidden type="file" accept=".pdf,.docx,.html,.htm,.txt,.md" aria-label={`Teaching file for week ${week}`} onChange={event=>{const file=event.target.files?.[0];event.target.value='';void attach(file)}}/>{error&&<p role="alert">{error}</p>}</div>
+ return <div><button className="btn btn-secondary btn-sm" disabled={disabled||busy} onClick={()=>input.current?.click()}><Paperclip size={14}/>{busy?'Reading teaching file…':'Attach teaching file'}</button><input ref={input} hidden type="file" accept={teachingSourceAccept} aria-label={`Teaching file for week ${week}`} onChange={event=>{const file=event.target.files?.[0];event.target.value='';void attach(file)}}/>{error&&<p role="alert">{error}</p>}</div>
 }

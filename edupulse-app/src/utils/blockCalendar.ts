@@ -56,6 +56,35 @@ export const calendarDate = (date: string) => new Intl.DateTimeFormat('en-PH', {
 /** "Mon, Aug 10, 7:30 AM" for a class meeting, in Philippine time. */
 export const meetingTime = (date: string, start: string) => new Intl.DateTimeFormat('en-PH', { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZone: 'Asia/Manila' }).format(new Date(`${date}T${start}:00+08:00`))
 
+type SavedWindow = { week: number; opens_at: string; closes_at: string | null }
+type SavedSchedule = { block_section: string; windows: SavedWindow[] }
+export type BlockDelivery = { block: string; opensAt: string; closesAt: string | null; state: 'open' | 'scheduled' | 'closed'; source: 'saved' | 'class schedule' }
+
+/** When each block opens a teaching week: its saved window, otherwise its first class meeting (the database default). */
+export function weekDeliveries(week: number, blocks: string[], slots: Record<string, BlockSlot[]>, saved: SavedSchedule[], calendar: TermCalendar | null, now = Date.now()): BlockDelivery[] {
+  return blocks.flatMap((block): BlockDelivery[] => {
+    const schedule = saved.find(row => row.block_section === block)
+    let opensAt = '', closesAt: string | null = null
+    if (schedule) {
+      const window = schedule.windows.find(row => row.week === week)
+      if (!window) return []
+      opensAt = window.opens_at; closesAt = window.closes_at || null
+    } else {
+      const first = calendar ? weekMeetings(slots[block] || [], calendar, week)[0] : undefined
+      if (!first) return []
+      opensAt = new Date(`${first.date}T${first.start}:00+08:00`).toISOString()
+    }
+    const opens = Date.parse(opensAt), closes = closesAt ? Date.parse(closesAt) : Infinity
+    return [{ block, opensAt, closesAt, state: now < opens ? 'scheduled' : now >= closes ? 'closed' : 'open', source: schedule ? 'saved' : 'class schedule' }]
+  })
+}
+
+/** "Mon, Aug 10, 7:30 AM" for a moment, in Philippine time. */
+export const manilaTime = (iso: string) => new Intl.DateTimeFormat('en-PH', { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZone: 'Asia/Manila' }).format(new Date(iso))
+
+/** "BSIT-1A open since Mon, Aug 10, 7:30 AM · BSIT-1B opens Tue, Aug 11, 2:00 PM" */
+export const deliveryLine = (rows: BlockDelivery[]) => rows.map(row => `${row.block} ${row.state === 'open' ? 'open since' : row.state === 'scheduled' ? 'opens' : 'closed'} ${manilaTime(row.state === 'closed' && row.closesAt ? row.closesAt : row.opensAt)}`).join(' · ')
+
 type CalendarRecord = { kind: string; record_key: string; data: Record<string, unknown> }
 /** The term calendar the Dean recorded for a semester, if any. Load records may print the semester as "1". */
 export function termCalendar(records: CalendarRecord[] = [], semester: string, academicYear: string): TermCalendar | null {

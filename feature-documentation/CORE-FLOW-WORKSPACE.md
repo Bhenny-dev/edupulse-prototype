@@ -177,10 +177,10 @@ typing dates; an instructor can still save other dates for a block.
 
 | Task | Work | Acceptance | Stage |
 |---|---|---|---|
-| T3.1 | A new material or assessment is placed on each block's schedule for its week | Test with two blocks on different days | Draft |
-| T3.2 | Editing one item creates a new version of that item only; other items' schedules and student records stay | Test | Draft |
-| T3.3 | Instructor sees each item's state per block: draft, scheduled, open, closed | Browser spec | Draft |
-| T3.4 | Any file type can be attached as material or assessment and opened as the original | Browser spec | Draft |
+| T3.1 | A new material or assessment is placed on each block's schedule for its week | `tests/term-calendar-delivery.test.ts`: the same lessons open Monday 7:30 for block A and Tuesday 2:00 PM for block B; `tests/block-calendar.test.ts` (`weekDeliveries`) | Tested |
+| T3.2 | Editing one item creates a new version of that item only; other items' schedules and student records stay | `tests/term-calendar-delivery.test.ts`: a revised lesson keeps its publication and gets a new version, the other lesson is unchanged and the student's reading record stays | Tested |
+| T3.3 | Instructor sees each item's state per block: draft, scheduled, open, closed (Weeks and topics: "Delivery: A open since ..., B opens ..."; "Opens when delivered" for a checked draft) | `tests/browser/term-calendar.spec.ts` (the weeks view line for BSIT-1A and BSIT-1B) | Tested |
+| T3.4 | Any file type can be attached as material or assessment and opened as the original. Add teaching material and Add assessment already take any file up to 4 MB; "Attach teaching file" (a material read from the file) now takes every format the server reads: PDF, Word, PowerPoint, Excel, CSV, HTML, text and Markdown (`src/utils/teachingSources.ts`) | `tests/teaching-source-types.test.ts` (each offered type is one the extractor reads); `tests/browser/teaching-original-file.spec.ts` (PowerPoint, PDF, Word and pictures shown as themselves, other files downloadable) | Tested |
 
 ### G4. Assessment attempts and instructor test attempts (R-S5, R-I5)
 
@@ -284,5 +284,8 @@ typing dates; an instructor can still save other dates for a block.
   mobile (56 passed; `courseware-unified` fails on `d94a52e0` too). Migration
   `20261119010000_term_calendar_default_delivery` applied with `npx supabase db push --linked`.
   Not yet Ready for the same reason as G1: no Vercel build since `d94a52e0`.
-
 - 2026-11-19: Owner correction: schedule editors use Monday-Saturday, one or two checked days (M, T, W, Th, F, S). Shared day picker used by document review, manual loads and block creation. Calendar regression covers TTh and Saturday; original imported source facts are preserved.
+- 2026-11-19: G3 Tested: `npm run verify` 505 of 505, `VERCEL=1 npm test` 505 of 505, browser specs
+  term-calendar, block-delivery and teaching-original-file on desktop and mobile (22 passed).
+  `outline-sources.spec.ts` (5 tests, desktop and mobile) fails on clean `main` too: its fixture course
+  `retained-course` is not in the instructor's teaching load. No migration.

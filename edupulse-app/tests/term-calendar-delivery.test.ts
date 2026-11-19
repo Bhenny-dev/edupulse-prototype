@@ -60,6 +60,33 @@ test('courseware follows each block class schedule from the Dean classes-start d
     assert.deepEqual(await delivered(), [['Week one lesson', 'open', new Date(`${start}T07:30:00+08:00`).toISOString(), true], ['Week ten lesson', 'scheduled', tenth, false]])
     assert.deepEqual((await db.query<{ title: string }>('SELECT title FROM public.edupulse_publications ORDER BY title')).rows.map(r => r.title), ['Week one lesson'], 'only the opened week can be read')
 
+    // G3: block B meets Tuesday and Thursday at 2:00, so the same lessons open for its students on Tuesday afternoons.
+    await maintenance()
+    await db.query("INSERT INTO public.edupulse_students(student_number,user_id,email,surname,first_name,full_name,year_level,department,program) VALUES('2026-0005',$1,$2,'Learner','Other','Other Learner',1,'CIT','BSIT')", [ids[5], email(5)])
+    await as(2)
+    await command({ action: 'block.add', assignment: parent, expected_instructor: ids[0], block: 'B', students: [{ StudentID: '2026-0005' }] })
+    await as(5)
+    const tuesday = (days: number) => new Date(Date.parse(`${start}T14:00:00+08:00`) + (days + 1) * DAY).toISOString()
+    assert.deepEqual(await delivered(), [['Week one lesson', 'open', tuesday(0), true], ['Week ten lesson', 'scheduled', tuesday(63), false]])
+
+    // G3: revising one delivered lesson makes a new version of that lesson only; the other lesson and the reading record stay.
+    const publication = async (title: string) => { await maintenance(); return (await db.query<{ id: string; source_version: string }>('SELECT id,source_version FROM public.edupulse_publications WHERE title=$1', [title])).rows[0] }
+    const firstLesson = await publication('Week one lesson'), tenthLesson = await publication('Week ten lesson')
+    await as(3)
+    await db.query("SELECT public.edupulse_academic_action($1,$2,'[]','open')", [firstLesson.id, firstLesson.source_version])
+    for (const status of ['draft', 'checked', 'published']) {
+      await maintenance()
+      const current = (await db.query<{ revision: string; data: any }>('SELECT revision,data FROM public.edupulse_workspaces WHERE owner_id=$1', [ids[0]])).rows[0]
+      const item = { ...current.data.content.first, status, content: { ...current.data.content.first.content, sections: [{ heading: 'Week one lesson', body: 'Week one lesson explained again, with an example.' }] } }
+      await as(0)
+      await db.query('SELECT public.edupulse_save_workspace($1,$2)', [Number(current.revision), JSON.stringify({ ...current.data, content: { ...current.data.content, first: item } })])
+    }
+    const revised = await publication('Week one lesson')
+    assert.equal(revised.id, firstLesson.id)
+    assert.notEqual(revised.source_version, firstLesson.source_version, 'the revised lesson is a new version')
+    assert.deepEqual(await publication('Week ten lesson'), tenthLesson, 'the other lesson is untouched')
+    assert.equal((await db.query<{ n: number }>('SELECT count(*)::int n FROM public.edupulse_material_access WHERE publication_id=$1', [firstLesson.id])).rows[0].n, 1, 'the student reading record stays')
+
     // A schedule the instructor saves for the block replaces the class schedule: week 1 now opens next month.
     await as(0)
     const later = new Date(Date.now() + 30 * DAY).toISOString().slice(0, 10)

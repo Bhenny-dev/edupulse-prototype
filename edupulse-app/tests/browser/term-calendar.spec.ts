@@ -44,4 +44,10 @@ test('an instructor block without saved dates follows its class schedule from th
   await expect(weeks.getByLabel('Week 1 class date')).toHaveValue('2026-08-10')
   await expect(weeks.getByLabel('Week 1 opening time')).toHaveValue('07:30')
   await expect(weeks.getByLabel('Week 2 class date')).toHaveValue('2026-08-17')
+
+  // Each delivered item says when it opens for every block: BSIT-1A by its saved dates, BSIT-1B by its class schedule.
+  await page.getByRole('button', { name: 'Close block schedule' }).click()
+  await page.getByRole('button', { name: 'Weeks and topics', exact: true }).click()
+  const delivery = page.locator('.instructor-block-delivery').filter({ hasText: 'BSIT-1B' }).first()
+  await expect(delivery).toContainText(/^Delivery: BSIT-1A (open since|opens|closed) .+ · BSIT-1B open since Mon, Aug 10, 7:30 AM$/)
 })
