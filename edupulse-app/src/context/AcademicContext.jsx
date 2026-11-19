@@ -48,6 +48,8 @@ function AcademicSession({ children, user,authLoading }) {
           if (!valid()) return
           // A mutation arriving during a GET invalidates that response; read the newer projection.
           if (version === timing.current.invalidation) {setSnapshot({ role, data: { ...Object.fromEntries(Object.keys(EMPTY_ACADEMIC).map(key => [key, Array.isArray(records[key]) ? records[key] : []])), homeBlock:role==='student'&&records.homeBlock&&typeof records.homeBlock.code==='string'?records.homeBlock:null,
+            // The server's clock, kept as an offset from this device's, so due dates and reminders do not depend on the device clock.
+            clockOffset:Number.isFinite(Date.parse(records.serverNow))?Date.parse(records.serverNow)-Date.now():0,
             // Dean-only account directory (object) and its unavailable notice travel with the records.
             ...(records.directory && typeof records.directory === 'object' && !Array.isArray(records.directory) ? { directory: records.directory } : {}),
             ...(typeof records.directoryError === 'string' ? { directoryError: records.directoryError } : {}) }, loaded: true });setRefreshAvailable(false)}

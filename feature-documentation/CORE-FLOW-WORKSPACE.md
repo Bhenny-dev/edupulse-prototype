@@ -212,10 +212,10 @@ typing dates; an instructor can still save other dates for a block.
 
 | Task | Work | Acceptance | Stage |
 |---|---|---|---|
-| T5.1 | Course card progress bar: opened materials and submitted assessments over delivered items, with a text label | Unit test of the calculation; browser spec | Draft |
-| T5.2 | Progress per material and per week inside the course | Browser spec | Draft |
-| T5.3 | Reminder states from server times in Asia/Manila: blue (pending, more than 3 days left), orange (3 days or less), red (missed), done (submitted) | Unit tests at the boundaries; browser spec | Draft |
-| T5.4 | The student performance page shows access and scores per course and topic | Browser spec | Draft |
+| T5.1 | Course card progress bar: confirmed-read materials and answered assessments over delivered items (`src/components/academic/studentProgress.ts` `courseProgress`), with a text label such as "2 of 4 items done", also in the opened course | `tests/student-progress.test.ts`; `tests/browser/student-progress.spec.ts` | Tested |
+| T5.2 | Progress per material (sections confirmed read) and per week ("Week 1 · 2 item(s) · 1 of 2 done") inside the course | `tests/browser/student-progress.spec.ts` | Tested |
+| T5.3 | Reminder states in Asia/Manila days, on the server's clock (`serverNow` in the academic read, kept as `clockOffset`): blue (delivered, more than 3 days left or no due date), orange (3 days or less), red (due date missed), done; most urgent first on the dashboard and in notifications | Unit tests at the 3-day, due-moment and Manila-midnight boundaries; `tests/browser/student-progress.spec.ts` (a device 10 days behind the server) | Tested |
+| T5.4 | The student performance page shows access and scores per course and topic (already built: By Topic, Learning Materials and Assessment Scores views) | `tests/browser/role-restoration.spec.ts` (student pages) | Tested |
 
 ### G6. Practice and mock quizzes (R-S3)
 
@@ -323,3 +323,8 @@ typing dates; an instructor can still save other dates for a block.
   In `baseline-workflows.spec.ts` line 29 (Dean course loading, no "Released course" field) and line 47
   (assessment builder, no `data-content-id`) fail the same way on `d94a52e0`, before today's work, and
   line 54 is the documented Pulse failure. No migration.
+- 2026-11-19: G4 pushed as `72c97eea`.
+- 2026-11-19: G5 Tested: `npm run verify` 528 of 528, `VERCEL=1 npm test` 528 of 528, browser specs
+  student-progress (new), assessment-attempts, student-block-delivery and role-restoration on desktop and
+  mobile. Two role-restoration tests (instructor pages, student "assigned units") fail the same way on
+  `72c97eea`. The academic read now returns `serverNow`; no migration.

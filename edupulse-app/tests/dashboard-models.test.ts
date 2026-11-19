@@ -92,7 +92,8 @@ test('account student dashboard lists own pending work, future deadlines and saf
   data.courses[0] = { ...data.courses[0], source_links: ['https://example.invalid/notes', 'javascript:alert(1)'] } as AcademicData['courses'][number]
   const model = accountStudentModel(data, { email: 'one@example.invalid' }, NOW)
   assert.deepEqual(model.kpis, { enrolled: 3, average: 90, mastered: 1, pending: 3 })
-  assert.deepEqual(model.reminders.map(r => r.path), ['/courseware', '/assessment', '/assessment'])
+  // The missed quiz (red) comes first, then the delivered work that is still more than 3 days from any due date (blue).
+  assert.deepEqual(model.reminders.map(r => [r.path, r.state]), [['/assessment', 'red'], ['/courseware', 'blue'], ['/assessment', 'blue']])
   assert.deepEqual(model.block, { code: 'BSIT-1A', year: 'Year 1', students: 30, adviser: 'Adviser A' })
   assert.deepEqual(model.courses.map(c => [c.code, c.score]), [['IT 102', 90], ['IT 103', null], ['IT 104', null]])
   assert.deepEqual(model.sources[0]?.items.map(i => i.href), ['https://example.invalid/notes'])

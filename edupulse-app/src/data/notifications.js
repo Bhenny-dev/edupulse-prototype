@@ -2,6 +2,7 @@ import { useCallback, useSyncExternalStore, useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { useAcademicRecords } from '../context/AcademicContext'
 import { useWorkspace } from '../context/WorkspaceContext'
+import { pendingReminders, recordsNow } from '../components/academic/studentProgress'
 
 // Notifications — SYSTEM_SPEC §5. Unopened-material and unanswered-assessment
 // reminders fan out to BOTH the instructor and the student; syllabus-status
@@ -63,12 +64,11 @@ export function useNotifications(role) {
   const account = user?.authenticated ? `${user.id}:${role}` : role
   const seen = new Set(store[account] || [])
   const current = []
-  const add = (id, message, category, type = 'info') => current.push({ id, message, category, type, time: 'Current records', read: false })
+  const add = (id, message, category, type = 'info', time = 'Current records') => current.push({ id, message, category, type, time, read: false })
   if (role === 'student') {
-    data.publications.filter(item => item.active).forEach(item => {
-      if (item.type === 'assessment' && !data.attempts.some(attempt => attempt.publication_id === item.id && String(attempt.source_version) === String(item.source_version))) add(`assessment:${item.id}:${item.source_version}`, `Unanswered assessment: ${item.title}`, 'missing_assessment', 'warning')
-      else if (item.type !== 'assessment' && !data.accesses.some(access => access.publication_id === item.id)) add(`material:${item.id}:${item.source_version}`, `Not opened: ${item.title}`, 'unopened_material')
-    })
+    // Blue (delivered), orange (due within 3 days, Manila) and red (due date missed) reuse the info, warning and error looks.
+    const look = { blue: 'info', orange: 'warning', red: 'error' }
+    pendingReminders(data, recordsNow(data)).forEach(reminder => add(reminder.key, reminder.kind === 'assessment' ? `Unanswered assessment: ${reminder.title}` : `Not opened: ${reminder.title}`, reminder.kind === 'assessment' ? 'missing_assessment' : 'unopened_material', look[reminder.state], reminder.when || 'Current records'))
   } else if (['dean', 'associate_dean', 'instructor'].includes(role)) {
     data.courses.forEach(course => {
       if (!course.active) add(`syllabus:${course.id}`, `${course.course_code}: no active syllabus in the shared records`, 'syllabus_status', 'warning')

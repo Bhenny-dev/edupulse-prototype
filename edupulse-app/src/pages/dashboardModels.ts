@@ -4,6 +4,7 @@
 // Account models never fall back to a sample value; a missing record stays empty.
 import type { AcademicData, Course } from '../components/academic/academicData'
 import { assessmentSummary, currentAttempts, deliverySummary, learnerRows, percent, studentAttempt, topicSummary } from '../components/academic/academicData'
+import { pendingReminders, recordsNow } from '../components/academic/studentProgress'
 import { SYLLABUS_STATUS_META, SYLLABUS_STATUS_ORDER } from '../data/syllabusStatus'
 import {CURRENT_LOAD_TERM,recordsForLoadTerm} from '../utils/loadTerms'
 
@@ -156,15 +157,14 @@ export function accountInstructorModel(data: AcademicData, workspace?: Dashboard
 
 /* Student */
 
-export function accountStudentModel(data: AcademicData, user?: { email?: string } | null, now = Date.now()) {
+export function accountStudentModel(data: AcademicData, user?: { email?: string } | null, now = recordsNow(data)) {
   const email = user?.email?.toLowerCase()
   const assigned=data.assignedCourses||[]
   const assignedCourses=[...data.courses,...assigned.filter(item=>!data.courses.some(course=>course.id===item.id))]
   const marked = currentAttempts(data).filter(a => (!email || a.student_email?.toLowerCase() === email) && a.grading_status !== 'pending_review' && a.max_score > 0)
   const publicationOf = (id: string) => data.publications.find(p => p.id === id)
   const released = data.publications.filter(p => p.active && (!p.release_at || new Date(p.release_at).getTime() <= now))
-  const unopened = released.filter(p => p.type !== 'assessment' && !data.accesses.some(a => a.publication_id === p.id))
-  const unanswered = released.filter(p => p.type === 'assessment' && !studentAttempt(data, p, email))
+  const pending = pendingReminders(data, now, email)
   const total = marked.reduce((sum, a) => ({ score: sum.score + a.score, max: sum.max + a.max_score }), { score: 0, max: 0 })
   const enrollment = data.enrollments.find(e => e.block_section)
   const info = enrollment && courses(data).flatMap(c=>c.block_info||[]).find(b => b.block === enrollment.block_section)
@@ -175,12 +175,10 @@ export function accountStudentModel(data: AcademicData, user?: { email?: string 
       enrolled: assignedCourses.length,
       average: marked.length ? percent(total.score, total.max) : null,
       mastered: topicSummary(data, email).filter(t => t.value >= 75).length,
-      pending: unopened.length + unanswered.length,
+      pending: pending.length,
     },
-    reminders: [
-      ...unopened.map(p => ({ id: p.id, text: `You haven't opened "${p.title}" yet.`, path: '/courseware' })),
-      ...unanswered.map(p => ({ id: p.id, text: `Unanswered assessment: "${p.title}".`, path: '/assessment' })),
-    ].slice(0, 6),
+    // Most urgent first: missed (red), due within 3 Manila days (orange), then delivered and waiting (blue).
+    reminders: pending.slice(0, 6),
     block: data.homeBlock ? {code:data.homeBlock.code,year:`Year ${data.homeBlock.year_level}`,students:data.homeBlock.students,adviser:info?.adviser||'Not recorded'} : enrollment ? {
       code: enrollment.block_section,
       year: year ? `Year ${year}` : 'Not recorded',

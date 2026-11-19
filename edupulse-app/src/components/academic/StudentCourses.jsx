@@ -3,6 +3,8 @@ import {useSearchParams} from 'react-router-dom'
 import {BookOpen,ChevronRight} from 'lucide-react'
 import {KPIs,Empty,useAcademicTabs} from './AcademicUI'
 import AcademicLibrary from './AcademicLibrary'
+import StudentProgressBar from './StudentProgressBar'
+import {courseProgress,recordsNow} from './studentProgress'
 import {curriculumLabel} from '../../utils/curriculumMetadata'
 
 export function enrolledCourses(data){
@@ -18,18 +20,19 @@ export default function StudentCourses({data,onOpen,busy}){
  const change=id=>{const next=new URLSearchParams(params);if(id)next.set('course',id);else next.delete('course');setParams(next)}
  const released=data.publications.filter(p=>p.active),materials=released.filter(p=>p.type!=='assessment'),assessments=released.filter(p=>p.type==='assessment')
  const scoped=selected?{...data,courses:[selected],assignedCourses:[],publications:released.filter(p=>p.course_id===selected.id)}:null
+ const now=recordsNow(data),selectedProgress=selected?courseProgress(data,selected.id,now):null
  return <>
   <KPIs items={[["Enrolled courses",courses.length],["Delivered materials",materials.length],["Delivered assessments",assessments.length],["Materials opened",new Set(data.accesses.filter(a=>materials.some(p=>p.id===a.publication_id)).map(a=>a.publication_id)).size]]}/>
   {selected?<>
    <button className="btn btn-secondary mb-24" onClick={()=>change(null)}>Back to My Courses</button>
-   <section className="card mb-24"><div className="card-body"><h2>{selected.course_code} — {selected.course_title}</h2><p>Instructor: {selected.instructor_name||'Instructor not recorded'}</p><p className="text-sm text-muted">{courseLabel(selected)} · {selected.block_section||'Assigned class'}</p></div></section>
+   <section className="card mb-24"><div className="card-body"><h2>{selected.course_code} — {selected.course_title}</h2><p>Instructor: {selected.instructor_name||'Instructor not recorded'}</p><p className="text-sm text-muted">{courseLabel(selected)} · {selected.block_section||'Assigned class'}</p>{selectedProgress.total>0&&<StudentProgressBar value={selectedProgress.done} total={selectedProgress.total} label={`${selected.course_code} items done`} text={selectedProgress.label}/>}</div></section>
    {contentTabs}
-   <AcademicLibrary data={scoped} all={contentType==='all'} assessments={contentType==='assessments'} onOpen={onOpen} busy={busy}/>
+   <AcademicLibrary data={scoped} all={contentType==='all'} assessments={contentType==='assessments'} progress onOpen={onOpen} busy={busy}/>
   </>:<>
    <label className="academic-filter mb-24">Search enrolled courses<input className="form-input" type="search" placeholder="Course or instructor" value={query} onChange={e=>setQuery(e.target.value)}/></label>
    <div className="monitoring-course-grid">{courses.filter(c=>`${c.course_code} ${c.course_title} ${c.instructor_name||''}`.toLowerCase().includes(query.toLowerCase())).map(c=>{
-    const items=released.filter(p=>p.course_id===c.id)
-    return <button className="monitoring-course-card" key={c.id} onClick={()=>change(c.id)} aria-label={`Open course ${c.course_code}`}><span className="monitoring-course-icon"><BookOpen size={24}/></span><span className="monitoring-course-copy"><strong>{c.course_code}</strong><span>{c.course_title}</span><span>Instructor: {c.instructor_name||'Instructor not recorded'}</span><span className="text-sm text-muted">{curriculumLabel(c.course_code)}</span><span>{c.suspended?'Membership suspended':items.length?`${items.length} delivered items`:'Awaiting instructor release'}</span></span><ChevronRight size={20}/></button>
+    const items=released.filter(p=>p.course_id===c.id),progress=courseProgress(data,c.id,now)
+    return <button className="monitoring-course-card" key={c.id} onClick={()=>change(c.id)} aria-label={`Open course ${c.course_code}`}><span className="monitoring-course-icon"><BookOpen size={24}/></span><span className="monitoring-course-copy"><strong>{c.course_code}</strong><span>{c.course_title}</span><span>Instructor: {c.instructor_name||'Instructor not recorded'}</span><span className="text-sm text-muted">{curriculumLabel(c.course_code)}</span><span>{c.suspended?'Membership suspended':items.length?`${items.length} delivered items`:'Awaiting instructor release'}</span>{!c.suspended&&progress.total>0&&<StudentProgressBar value={progress.done} total={progress.total} label={`${c.course_code} items done`} text={progress.label}/>}</span><ChevronRight size={20}/></button>
    })}</div>
    {!courses.length&&<Empty>No instructor-confirmed enrollments yet.</Empty>}
   </>}

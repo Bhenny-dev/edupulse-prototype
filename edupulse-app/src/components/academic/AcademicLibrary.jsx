@@ -7,6 +7,8 @@ import DocumentViewer from '../courseware/DocumentViewer'
 import PresentationViewer from '../courseware/PresentationViewer'
 import { Panel, Empty, CourseFilter, Table } from './AcademicUI'
 import { studentAttempt } from './academicData'
+import StudentProgressBar from './StudentProgressBar'
+import { itemProgress } from './studentProgress'
 import { useAcademicRecords } from '../../context/AcademicContext'
 import {curriculumLabel} from '../../utils/curriculumMetadata'
 import { deliveryState, deliveryTimeLabel } from '../../utils/blockDelivery'
@@ -16,7 +18,7 @@ const availability = item => {
   return state==='scheduled'?`Opens ${deliveryTimeLabel(item.delivery_open_at)} (Philippine time)`:state==='closed'?`Class closed ${deliveryTimeLabel(item.delivery_close_at)} (Philippine time)`:state==='unconfigured'?'Your block’s delivery schedule has not been set':state==='open'?`Class open${item.delivery_close_at?` until ${deliveryTimeLabel(item.delivery_close_at)}`:''} (Philippine time)`:''
 }
 
-export default function AcademicLibrary({ data, assessments = false, all = false, onOpen, busy }) {
+export default function AcademicLibrary({ data, assessments = false, all = false, progress = false, onOpen, busy }) {
   const [courseId, setCourseId] = useState(''), [query, setQuery] = useState('')
   const visible = data.publications.filter(item => item.active && (all || (assessments ? item.type === 'assessment' : item.type !== 'assessment')) && (!courseId || item.course_id === courseId) && item.title.toLowerCase().includes(query.toLowerCase()))
   const allCourses=[...data.courses,...(data.assignedCourses||[]).filter(assigned=>!data.courses.some(c=>c.id===assigned.id))]
@@ -24,10 +26,11 @@ export default function AcademicLibrary({ data, assessments = false, all = false
   return <><div className="academic-filters"><CourseFilter data={{...data,courses:allCourses}} value={courseId} onChange={setCourseId} /><label className="academic-filter">Search publications<input className="form-input" type="search" value={query} onChange={event => setQuery(event.target.value)} placeholder="Title" /></label></div><Panel title={all ? 'All course content' : assessments ? 'Published assessments' : 'Published courseware'}>{courses.length ? courses.map(course => {
     const publications = visible.filter(item => item.course_id === course.id)
     const weeks = [...new Set(publications.map(item => item.week))].sort((a, b) => a - b)
-    return <section className="academic-course" key={course.id}><h3>{course.course_code} — {course.course_title}</h3><p className="text-sm text-muted">{curriculumLabel(course.course_code)}{course.block_section?` · ${course.block_section}`:''}</p>{(!course.active||course.suspended)&&<p className="text-sm text-muted">{course.suspended?'Course membership suspended.':'Course assigned. Materials become available after syllabus approval and instructor release.'}</p>}{weeks.length ? weeks.map(week => <details className="academic-details" key={week} open><summary>Week {week} · {publications.filter(item => item.week === week).length} item(s)</summary>{publications.filter(item => item.week === week).map(item => {
+    return <section className="academic-course" key={course.id}><h3>{course.course_code} — {course.course_title}</h3><p className="text-sm text-muted">{curriculumLabel(course.course_code)}{course.block_section?` · ${course.block_section}`:''}</p>{(!course.active||course.suspended)&&<p className="text-sm text-muted">{course.suspended?'Course membership suspended.':'Course assigned. Materials become available after syllabus approval and instructor release.'}</p>}{weeks.length ? weeks.map(week => <details className="academic-details" key={week} open><summary>Week {week} · {publications.filter(item => item.week === week).length} item(s){progress?` · ${publications.filter(item => item.week === week && itemProgress(data, item).done).length} of ${publications.filter(item => item.week === week).length} done`:''}</summary>{publications.filter(item => item.week === week).map(item => {
       const attempt = studentAttempt(data, item)
+      const bar = progress && item.type !== 'assessment' ? itemProgress(data, item) : null
       const access = data.accesses.find(entry => entry.publication_id === item.id)
-      return <div className="academic-list-row" key={item.id}><div><strong>{item.title}</strong><p className="text-sm text-muted">{item.type} · {item.type==='assessment' ? attempt ? `Saved result: ${attempt.score}/${attempt.max_score}` : 'Not answered' : access ? 'Opened' : 'Not opened'}</p>{item.delivery_mode==='block_schedule'&&<p className="text-sm text-muted">{availability(item)}</p>}</div><button className="btn btn-secondary btn-sm" disabled={busy} onClick={() => onOpen(item)}>{item.type==='assessment' ? 'Open assessment' : 'Open material'}</button></div>
+      return <div className="academic-list-row" key={item.id}><div><strong>{item.title}</strong><p className="text-sm text-muted">{item.type} · {item.type==='assessment' ? attempt ? `Saved result: ${attempt.score}/${attempt.max_score}` : 'Not answered' : access ? 'Opened' : 'Not opened'}</p>{item.delivery_mode==='block_schedule'&&<p className="text-sm text-muted">{availability(item)}</p>}{bar&&bar.total>0&&<StudentProgressBar value={bar.read} total={bar.total} label={`${item.title} sections read`} text={`${bar.read}/${bar.total} sections read`}/>}</div><button className="btn btn-secondary btn-sm" disabled={busy} onClick={() => onOpen(item)}>{item.type==='assessment' ? 'Open assessment' : 'Open material'}</button></div>
     })}</details>) : <Empty>No published {all ? 'items' : assessments ? 'assessments' : 'materials'} match this course.</Empty>}</section>
   }) : <Empty>No enrolled courses yet.</Empty>}</Panel></>
 }

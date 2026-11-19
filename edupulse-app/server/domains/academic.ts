@@ -100,6 +100,7 @@ export async function readAcademic(identity: Identity) {
   if (identity.supportActor) {
     const data=await supportAction(identity, 'academic.read')
     if(['dean','associate_dean','instructor'].includes(identity.role))data.enrollments=await academicStudentYears(userDb(identity),data.enrollments||[])
+    data.serverNow=new Date().toISOString()
     return data
   }
   const client = userDb(identity)
@@ -129,7 +130,7 @@ export async function readAcademic(identity: Identity) {
     if (listed.error) directoryError = 'Instructor and student accounts could not be loaded. Retry when connected.'
     else directory = listed.data
   }
-  const result={ mode: 'cloud', attempts: [], accesses: [], enrollments:[] as Record<string,unknown>[], faculty, homeBlock:home?.data||null,assignedCourses:assigned?.data||[], ...Object.fromEntries(rows), ...(directory ? { directory } : {}), ...(directoryError ? { directoryError } : {}) }
+  const result={ mode: 'cloud', serverNow: new Date().toISOString(), attempts: [], accesses: [], enrollments:[] as Record<string,unknown>[], faculty, homeBlock:home?.data||null,assignedCourses:assigned?.data||[], ...Object.fromEntries(rows), ...(directory ? { directory } : {}), ...(directoryError ? { directoryError } : {}) }
   if(['dean','associate_dean','instructor'].includes(identity.role))result.enrollments=await academicStudentYears(client,result.enrollments as Record<string,unknown>[])
   return result
 }

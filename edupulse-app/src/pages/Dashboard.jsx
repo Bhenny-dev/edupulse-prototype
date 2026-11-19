@@ -508,6 +508,13 @@ function InstructorDashboard({ model, actions = exportButton, status }) {
 
 /* ───────────────────────── Student ───────────────────────── */
 
+// Reminder colors: blue for delivered work, orange within 3 days of the due date, red once it is missed (Manila time).
+const REMINDER_LOOK = {
+  blue: { label: 'Delivered', color: 'var(--sky-700)', background: 'var(--sky-50)' },
+  orange: { label: 'Due soon', color: 'var(--amber-700)', background: 'var(--amber-100)' },
+  red: { label: 'Missed', color: 'var(--red-700)', background: 'var(--red-100)' },
+}
+
 function StudentDashboard({ model, actions, status }) {
   const navigate = useNavigate()
   const { user } = useAuth()
@@ -533,12 +540,18 @@ function StudentDashboard({ model, actions, status }) {
         </div>
         <div className="card-body">
           {model.reminders.length === 0 && <p className="text-sm text-muted">Nothing pending: no unopened materials or unanswered assessments in your published records.</p>}
-          {model.reminders.map(r => (
-            <div key={r.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px', padding: '10px 12px', borderRadius: 'var(--radius-md)', background: 'var(--amber-50, #fffbeb)', marginBottom: '6px' }}>
-              <span style={{ fontSize: '0.8125rem' }}>{r.text}</span>
-              <button className="btn btn-secondary btn-sm" onClick={() => navigate(r.path)} style={{ flexShrink: 0 }}>Go <ArrowRight size={12} /></button>
-            </div>
-          ))}
+          {model.reminders.map(r => {
+            const look = REMINDER_LOOK[r.state] || REMINDER_LOOK.blue
+            return (
+              <div key={r.id} data-reminder={r.state || 'blue'} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px', padding: '10px 12px', borderRadius: 'var(--radius-md)', background: look.background, borderLeft: `4px solid ${look.color}`, marginBottom: '6px' }}>
+                <div style={{ display: 'grid', gap: '2px', minWidth: 0 }}>
+                  <span style={{ fontSize: '0.8125rem' }}>{r.text}</span>
+                  <span style={{ fontSize: '0.75rem', color: look.color }}><strong>{look.label}</strong>{r.when ? ` · ${r.when}` : ''}</span>
+                </div>
+                <button className="btn btn-secondary btn-sm" onClick={() => navigate(r.path)} style={{ flexShrink: 0 }}>Go <ArrowRight size={12} /></button>
+              </div>
+            )
+          })}
         </div>
       </div>
 
