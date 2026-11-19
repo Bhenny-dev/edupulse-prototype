@@ -37,7 +37,7 @@ test('an instructor’s course cards open the course with its blocks, and the De
   await course.getByRole('button', { name: 'Add block section' }).click()
   const fresh = page.getByRole('dialog', { name: 'Add block section' })
   await expect(fresh.getByRole('textbox', { name: 'Block section' })).toHaveValue('C')
-  await fresh.getByRole('textbox', { name: 'Days' }).fill('F'); await fresh.getByRole('textbox', { name: 'Time' }).fill('8:00 - 11:00')
+  await fresh.getByText('Choose days', {exact:true}).click(); await fresh.getByRole('checkbox', {name:'Friday F',exact:true}).check(); await fresh.getByRole('textbox', { name: 'Time' }).fill('8:00 - 11:00')
   await fresh.getByRole('button', { name: 'Add block without a class list' }).click()
   expect(fixture.commands.at(-1)).toEqual({ action: 'block.add', assignment: 'course:IT 202:teacher-b', expected_instructor: 'teacher-b', block: 'C', days: 'F', time: '8:00 - 11:00', students: [] })
   await expect(course.getByRole('region', { name: 'IT 202 block C' })).toContainText('F · 8:00 - 11:00')

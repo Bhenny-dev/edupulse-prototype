@@ -39,3 +39,9 @@ test('the Dean term calendar is read for the semester shown', () => {
   assert.deepEqual(termCalendar(records, '1', '2026-2027'), calendar, 'a load that prints the semester as "1"')
   assert.equal(termCalendar(records, '2nd Semester', '2026-2027'), null)
 })
+
+test('canonical TTh and S day selections drive the actual delivery calendar',()=>{
+ assert.equal(weeklyContactHours([{days:'TTh',time:'7:30 - 10:00'}]),5)
+ assert.deepEqual(weekMeetings([{days:'TTh',time:'7:30 - 10:00'}],calendar,1).map(m=>m.date),['2026-08-11','2026-08-13'])
+ assert.deepEqual(weekMeetings([{days:'S',time:'7:30 - 10:00'}],calendar,1).map(m=>m.date),['2026-08-15'])
+})

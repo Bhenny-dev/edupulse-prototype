@@ -7,7 +7,7 @@ test('teaching-load PDF review keeps source columns, explicit mapping and term f
  await page.goto('/#/records');await expect(page.locator('footer')).toHaveCount(0);await expect(page.locator('.page-header').getByLabel('Academic term',{exact:true})).toBeVisible()
  await page.locator('input[type=file][accept*=".pdf"]').setInputFiles({name:'approved-load.pdf',mimeType:'application/pdf',buffer:Buffer.from(await teachingLoadPdf())})
  const review=page.getByRole('dialog',{name:'Review teaching loads',exact:true})
- await expect(review).toBeVisible()
+ await expect(review).toBeVisible();await review.getByText('TTh',{exact:true}).first().click();await expect(review.getByRole('checkbox',{name:'Tuesday T',exact:true})).toBeChecked();await expect(review.getByRole('checkbox',{name:'Thursday Th',exact:true})).toBeChecked();await expect(review.getByRole('checkbox',{name:/Sunday/})).toHaveCount(0)
  await expect(review).toContainText('IT 102 A — Programming foundations')
  await expect(review.getByRole('button',{name:'Confirm selected loads'})).toBeDisabled()
  await page.screenshot({path:`${folder}/01-extracted-load.png`,animations:'disabled'})

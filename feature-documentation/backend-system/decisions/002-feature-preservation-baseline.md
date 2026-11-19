@@ -343,3 +343,8 @@ Remove the shared footer from authenticated Layout for all roles, including Admi
 ### 18 November 2026 - Required manual instructor load metadata
 
 Manual Add/Edit instructor loading collects schedule time/day, units, lecture/lab units, declared hours, room and program, with optional whole student headcount. Validate structured details before the atomic assignment; retain existing import compatibility, role checks, semester restrictions, handover continuity and actual class-list ownership. Never treat the headcount as enrollment.
+
+
+### 19 November 2026 - Meeting-day selection
+
+Reviewed load rows, manual instructor loads and new block schedules use a Monday through Saturday checkbox dropdown. Select one or two days: M, T, W, Th, F, S. Tuesday and Thursday save as TTh; the same stored codes drive computed contact hours and weekly delivery dates. Existing imported source strings remain visible until deliberately corrected; never silently truncate a source schedule. Do not regress Thursday into Tuesday or allow a third selected day in these editors. Historical source facts stay unchanged.

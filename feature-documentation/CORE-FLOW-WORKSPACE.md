@@ -284,3 +284,5 @@ typing dates; an instructor can still save other dates for a block.
   mobile (56 passed; `courseware-unified` fails on `d94a52e0` too). Migration
   `20261119010000_term_calendar_default_delivery` applied with `npx supabase db push --linked`.
   Not yet Ready for the same reason as G1: no Vercel build since `d94a52e0`.
+
+- 2026-11-19: Owner correction: schedule editors use Monday-Saturday, one or two checked days (M, T, W, Th, F, S). Shared day picker used by document review, manual loads and block creation. Calendar regression covers TTh and Saturday; original imported source facts are preserved.

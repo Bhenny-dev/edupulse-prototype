@@ -67,3 +67,8 @@ The extraction and confirmation steps remain visible in these fictional PDF capt
 ![Extracted teaching-load review](01-extracted-load.png)
 ![Reviewed mappings before confirmation](02-reviewed-mapping.png)
 ![Previous term after confirmation](03-past-term.png)
+
+
+### 19 November 2026 - Meeting-day selection
+
+Reviewed load rows, manual instructor loads and new block schedules use a Monday through Saturday checkbox dropdown. Select one or two days: M, T, W, Th, F, S. Tuesday and Thursday save as TTh; the same stored codes drive computed contact hours and weekly delivery dates. Existing imported source strings remain visible until deliberately corrected; never silently truncate a source schedule. Do not regress Thursday into Tuesday or allow a third selected day in these editors. Historical source facts stay unchanged.

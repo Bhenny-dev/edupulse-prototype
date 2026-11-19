@@ -1,7 +1,7 @@
 import { test, expect, type Locator } from '@playwright/test'
 import { deanManagementUI } from '../dean-management-fixture'
 
-const fillLoad=async(modal:Locator)=>{for(const [name,value]of Object.entries({'Time':'7:30 AM - 10:00 AM','Day':'F','Units':'3','Lecture units':'2','Lab units':'1','Number of hours':'2.5','Room':'A310','Program':'BSIT'}))await modal.getByLabel(name,{exact:true}).fill(value)}
+const fillLoad=async(modal:Locator)=>{for(const [name,value]of Object.entries({'Time':'7:30 AM - 10:00 AM','Units':'3','Lecture units':'2','Lab units':'1','Number of hours':'2.5','Room':'A310','Program':'BSIT'}))await modal.getByLabel(name,{exact:true}).fill(value);await modal.getByText('Choose days',{exact:true}).click();await modal.getByRole('checkbox',{name:'Friday F',exact:true}).check()}
 
 const csv = (name: string, lines: string[]) => ({ name, mimeType: 'text/csv', buffer: Buffer.from(lines.join('\n')) })
 
