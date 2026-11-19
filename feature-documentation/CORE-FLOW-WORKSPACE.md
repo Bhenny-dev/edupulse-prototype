@@ -204,9 +204,9 @@ typing dates; an instructor can still save other dates for a block.
 
 | Task | Work | Acceptance | Stage |
 |---|---|---|---|
-| T4.1 | Attempts already exist (1 to 3 in Delivery settings, enforced by the database): verify the instructor setting and the student's allowed and remaining attempts in the browser | Browser spec: the start after the last allowed attempt is refused | Draft |
-| T4.2 | Show which attempt counts (the database's scoring rule) to the student and the instructor | Browser spec | Draft |
-| T4.3 | Instructor test attempt in the student view, scored with the key, never saved as a student score | Browser spec; no attempt row written | Draft |
+| T4.1 | Attempts already exist (1 to 3 in Delivery settings, enforced by the database): the student sees the allowed count and "Start next allowed attempt" only while attempts remain | `tests/baseline-workflows.test.ts` ("timed attempts": a third start is refused with code 22023); `tests/browser/assessment-attempts.spec.ts` (student with 2 attempts: no restart after the second) | Tested |
+| T4.2 | Show which attempt counts (the database's scoring rule: the latest submitted attempt) to the student and the instructor: the student's result reads "Attempt 2 of 2. No attempts left." or "Your latest attempt is the one recorded."; Delivery settings says the latest submitted attempt is the one recorded in performance | `tests/browser/assessment-attempts.spec.ts` | Tested |
+| T4.3 | Instructor "Test attempt" on any assessment in Weeks and topics: answered like a student, marked with the answer key in the browser (`src/utils/assessmentTrial.ts`), written questions left unmarked, nothing sent or saved | `tests/assessment-trial.test.ts`; `tests/browser/assessment-attempts.spec.ts` (no workspace or academic command is sent) | Tested |
 
 ### G5. Student progress and reminders (R-S2, R-S4, R-S6)
 
@@ -318,3 +318,8 @@ typing dates; an instructor can still save other dates for a block.
 - 2026-11-19: Blockers found. GitHub Actions cannot run for any recent commit ("The job was not started because
   your account is locked due to a billing issue"), and Vercel has not built a commit after `d94a52e0`. The
   owner checks both dashboards; G1 to G3 stay Tested, not Ready, until a build reports success.
+- 2026-11-19: G4 Tested: `npm run verify` 521 of 521, `VERCEL=1 npm test` 521 of 521, browser specs
+  assessment-attempts (new), student-block-delivery and pipeline-progress on desktop and mobile (all pass).
+  In `baseline-workflows.spec.ts` line 29 (Dean course loading, no "Released course" field) and line 47
+  (assessment builder, no `data-content-id`) fail the same way on `d94a52e0`, before today's work, and
+  line 54 is the documented Pulse failure. No migration.
