@@ -51,6 +51,24 @@ The official samples in `C:\Users\Benny\OneDrive\Documents\EduPulse\` (`Class Li
 fixtures. Tests build synthetic files; checks against the originals run only on this machine and
 skip when the folder is absent.
 
+### Seeded data and exclusions
+
+The owner keeps Marielle Angela Fianza-Buya and Rogelio L. Guisdan out of seeding: their courses
+(WMADE 4, WMADE 3, and their IT 204 blocks B and D) stay untouched so the owner can try the Course Load
+and Class List uploads on them. `scripts/seed-courseware-pack.ts` refuses those two accounts unless
+`--include-protected-owner` is passed.
+
+- Sharmaine Pangcog (current semester, six blocks of 35 demonstration students, seeded earlier): IT 204
+  has the 18-week courseware pack (`Coursewares\IT204_...`, 36 drafts, 145 questions); IT 103 and
+  GE ELEC-IT have no pack. Everything is a draft: nothing is delivered, no scores or access are written.
+- The other seven instructors have only 2nd Semester 2025-2026 loads on record, so no current course
+  exists to seed for them.
+- The two WMADE 3 class lists (sections 4 and 5, 20 and 29 students) still upload: the blocks A and B
+  exist on Guisdan's load with no students, every listed student has an active account and none is in
+  WMADE 3 yet; the Dean's matching picks section 4 -> block B and section 5 -> block A.
+- The WMADE 3 pack (`Coursewares\WMADE3_...`) is staged only: its assessments use about 15 other part
+  layouts that the reader does not support yet, and its only course is Guisdan's. WMADE 4 is not used.
+
 ## Owner requirements
 
 Dean and Program Coordinator
@@ -289,3 +307,14 @@ typing dates; an instructor can still save other dates for a block.
   term-calendar, block-delivery and teaching-original-file on desktop and mobile (22 passed).
   `outline-sources.spec.ts` (5 tests, desktop and mobile) fails on clean `main` too: its fixture course
   `retained-course` is not in the instructor's teaching load. No migration.
+- 2026-11-19: Courseware packs. `scripts/lib/courseware-pack.ts` reads a pack folder of weekly PDFs (teaching
+  material, assessment, instructor key, source register) and `scripts/seed-courseware-pack.ts` adds the weeks
+  a course lacks as drafts (dry run, `--check-transaction` rollback, `--apply`; private evidence under `.data`).
+  A written part worth several points becomes one question per marking point, because every question is
+  worth one mark. Tests: `tests/courseware-pack.test.ts` (invented sample pack, plus the real IT 204 pack when
+  it is present), `tests/browser/courseware-pack.spec.ts`. Applied to Pangcog IT 204: revision 18 to 19, 18
+  materials and 18 assessments (145 questions) as drafts; enrollments (210), publications (0), attempts (0)
+  and the Guisdan and Fianza-Buya workspaces are unchanged.
+- 2026-11-19: Blockers found. GitHub Actions cannot run for any recent commit ("The job was not started because
+  your account is locked due to a billing issue"), and Vercel has not built a commit after `d94a52e0`. The
+  owner checks both dashboards; G1 to G3 stay Tested, not Ready, until a build reports success.
