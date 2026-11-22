@@ -37,3 +37,7 @@ for(const role of ['dean','associate_dean'])test(`${role} home blocks before cou
  await expect(page.getByRole('button',{name:'Filter students in BSA-1A',exact:true})).toContainText('1 registered student')
  await page.screenshot({path:`../feature-documentation/system-manual/16-student-directory/${role}-home-blocks.png`,animations:'disabled'})
 })
+
+test('instructor load and syllabus columns open popovers',async({page})=>{
+ await deanManagementUI(page);await page.goto('/#/instructors');const row=page.getByRole('row').filter({has:page.getByText('Alex Sample Instructor',{exact:true})}).first();await expect(row.locator('details')).toHaveCount(0);await row.getByRole('button',{name:'View course loads for Alex Sample Instructor',exact:true}).click();await expect(page.getByRole('dialog',{name:'Course loads - Alex Sample Instructor',exact:true})).toBeVisible()
+})

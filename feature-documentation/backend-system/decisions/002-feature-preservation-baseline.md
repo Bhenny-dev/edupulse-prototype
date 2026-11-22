@@ -368,3 +368,8 @@ Replace instructor cards and profile-detail modal with a table: name/email, qual
 ### 22 November 2026 - Course weekly schedule popover
 
 Remove the redundant Status column and retained-source-details dropdown from course rows. The Schedule button opens a weekday/time grid with duration-sized meetings, block labels and rooms. Monday-Friday are shown, with weekend columns only when present in recorded loads. Use confirmed section schedules first, source schedule rows only when sections have none; never display both as duplicate meetings or repeat course/instructor/units/term fact panels. Preserve source records and provenance in storage and the existing review/inspection flow. Closing the schedule or restoring its authorized view must not write loads or delivery schedules.
+
+
+### 22 November 2026 - Instructor record popovers
+
+Course loads and Syllabi cells now use explicit View buttons and separate read-only popovers, replacing the inline disclosure dropdowns. Each popover contains only the selected instructor and term data, preserves role restrictions, closes with Escape/outside click or its Close button, and restores its authorized view after reload. Account actions remain in the final three-dot menu. Opening or restoring these views never writes academic records.

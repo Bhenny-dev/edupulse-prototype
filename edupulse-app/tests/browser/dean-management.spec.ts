@@ -37,8 +37,9 @@ test('instructor accounts record master’s degrees and are suspended before rem
   const alex = page.getByRole('row').filter({has:page.getByRole('cell').filter({has:page.getByText('Alex Sample Instructor',{exact:true})})}).first()
   await expect(alex).toContainText('Master in Information Technology')
   await expect(alex.getByRole('button', { name: 'Remove' })).toHaveCount(0)
-  await alex.locator('summary').first().click()
-  await expect(alex).toContainText('BSIT-1A')
+  await alex.getByRole('button',{name:'View course loads for Alex Sample Instructor',exact:true}).click()
+  await expect(page.getByRole('dialog',{name:'Course loads - Alex Sample Instructor',exact:true})).toContainText('BSIT-1A')
+  await page.keyboard.press('Escape')
 
   await page.getByRole('button', { name: 'Add instructor' }).click()
   const form = page.getByRole('dialog', { name: 'Add instructor' })
