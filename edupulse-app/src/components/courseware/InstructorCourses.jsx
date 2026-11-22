@@ -1,10 +1,10 @@
 import { useMemo, useState } from 'react'
 import { Navigate, useSearchParams } from 'react-router-dom'
-import { BookOpen, Users, ArrowLeft, ArrowRight, Share2 } from 'lucide-react'
+import { BookOpen, ArrowLeft, ArrowRight, Share2 } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 import { useWorkspace } from '../../context/WorkspaceContext'
 import { useAcademicRecords } from '../../context/AcademicContext'
-import { instructorCourses, instructorRecords, syllabusForCourse, courseStudentCount, assignedStudentCount, sameCourseCode } from '../../utils/instructorCourses'
+import { instructorCourses, instructorRecords, syllabusForCourse, courseStudentCount, sameCourseCode } from '../../utils/instructorCourses'
 import { collectSyllabusReferences } from '../../lib/rag/syllabusReferences'
 import { prepareSyllabusSources, indexSyllabusReference, aiSessionVersion } from '../../lib/aiClient'
 import SummaryCard from '../ui/SummaryCard'
@@ -88,7 +88,7 @@ export default function InstructorCourses() {
     {!records.loaded ? <LoadingStatus label="Loading assigned courses..." /> : !selected ? <>
 
       {requested && <p role="alert">{matching.length>1?'Choose the block-labelled course you want to open.':'This course is not in your current teaching load. Choose one of your assigned courses.'}</p>}
-      <div className="kpi-grid mb-24"><SummaryCard icon={BookOpen} label="Courses loaded" value={courses.length} /><SummaryCard icon={Users} label="Students handled" value={assignedStudentCount(scoped,courses,workspace.registrations)} color="var(--purple-500)" bg="var(--purple-100)" /></div>
+      <div className="kpi-grid mb-24"><SummaryCard icon={BookOpen} label="Courses loaded" value={courses.length} /></div>
       <div className="instructor-course-toolbar"><label className="form-label">Search loaded courses<input className="form-input" type="search" value={query} onChange={event => setQuery(event.target.value)} placeholder="Course or block section" /></label></div>
       {!courses.length && <div className="empty-state"><h2>No courses loaded yet</h2><p>Your courses will appear after the Dean assigns them.</p></div>}
       <div className="instructor-course-grid">{courses.filter(course => `${course.code} ${course.title} ${course.blocks.join(' ')}`.toLowerCase().includes(query.toLowerCase())).map(course => { const current = syllabusForCourse(workspace.syllabi, course); return <button className="instructor-course-card" key={course.id} onClick={() => choose(course)}><BookOpen size={24} aria-hidden="true" /><div><strong>{course.code} — {course.title}</strong><p>{course.blocks.join(' · ') || 'Class list not added'}</p><small>{course.units && `${course.units} units · `}{current?.status === 'active' ? `${current.courseOutline?.length || 0} weeks · Syllabus ready` : 'Add approved syllabus'}</small></div><ArrowRight size={16} aria-hidden="true" /></button> })}</div>

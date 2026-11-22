@@ -7,8 +7,8 @@ export type AcademicRole='student'|'instructor'|'dean'|'associate_dean'
 export const roleReloadCases:{role:AcademicRole;path:string}[]=[
   {role:'student',path:'/assessment'},
   {role:'instructor',path:'/syllabus?tab=mine'},
-  {role:'dean',path:'/monitor?tab=overview'},
-  {role:'associate_dean',path:'/monitor?tab=students'},
+  {role:'dean',path:'/records'},
+  {role:'associate_dean',path:'/students'},
 ]
 
 /** Seed once per tab, so exiting and reloading cannot silently recreate a removed hint. */

@@ -331,3 +331,13 @@ typing dates; an instructor can still save other dates for a block.
 - 2026-11-22: The Classroom-style UI redesign (U1 to U5: `e69758bb`, `cf7ad117`, `618f3283`, `83608e8d`) was
   reverted at the owner's request. The signed-in pages for every role are back to the `7c548a38` interface.
   The owner will decide the next UI change from that baseline. No migration.
+- 2026-11-22: Owner request: within each role, no page repeats another page's sections, and the Dashboard
+  no longer previews or links to other pages. Dean and Program Coordinator: the Dashboard is the oversight
+  page (syllabus stations, released courseware, syllabus and delivery table, alerts, recent activity);
+  `/monitor` redirects to it, its Student Oversight tab and the class-list columns are removed (Students and
+  Course pages hold them), and the preview persona uses the same view with the sample Dean records.
+  Instructor: the Dashboard keeps recent course activity (getting started in the preview); course counts stay
+  on Course, students and scores on Student Monitoring. Student: the Dashboard keeps reminders, upcoming
+  activities, the block and material sources; course cards stay in My Courses, scores and trends in
+  Performance. Documentation captures under `tests/snapshots` still visit `/monitor` tabs; they are updated
+  when the owner resumes the documentation policy. No migration.

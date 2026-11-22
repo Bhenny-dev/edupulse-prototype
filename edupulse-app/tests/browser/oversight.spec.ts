@@ -9,11 +9,11 @@ for(const role of ['dean','associate_dean'])test(`${role} gets one combined over
  await page.getByRole('combobox',{name:'Course',exact:true}).selectOption('c'.repeat(32));await expect(table.getByRole('row')).toHaveCount(2);await expect(table).not.toContainText('Synthetic instructor');await expect(page.locator('.kpi-card').filter({hasText:'Released items'}).locator('.kpi-value')).toHaveText('0')
  await page.getByRole('searchbox',{name:'Search courses',exact:true}).fill('no match');for(const card of await page.locator('.kpi-card').all())await expect(card.locator('.kpi-value')).toHaveText('0')
  await page.goto('/#/monitor?tab=syllabi');await expect(page).toHaveURL(/tab=overview/)
- await tabs.getByRole('button',{name:'Student Oversight',exact:true}).click();await expect(page.getByRole('heading',{name:'Blocks and enrollment',exact:true})).toBeVisible();await expect(page.getByRole('heading',{name:'Recorded assessment attempts',exact:true})).toHaveCount(0)
+ await expect(page).toHaveURL(/#\/dashboard\?/);await expect(tabs.getByRole('button',{name:'Student Oversight',exact:true})).toHaveCount(0);await expect(page.getByRole('heading',{name:'Blocks and enrollment',exact:true})).toHaveCount(0)
  await tabs.getByRole('button',{name:'Alerts',exact:true}).click();await expect(page.getByRole('heading',{name:'Readiness and delivery alerts',exact:true})).toBeVisible()
  await expect(tabs.getByRole('button',{name:'Review Inbox',exact:true})).toHaveCount(0)
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true)
 })
-test('preview combines its two distinct sections and keeps legacy delivery links',async({page})=>{
- await page.goto('/');await page.getByRole('button',{name:'Dean',exact:true}).click();await page.goto('/#/monitor?tab=delivery');await expect(page).toHaveURL(/tab=overview/);await expect(page.getByRole('heading',{name:'Syllabus Status',exact:true})).toBeVisible();await expect(page.getByRole('heading',{name:'Delivery Progress',exact:true})).toBeVisible();await expect(page.getByRole('navigation',{name:'Monitor views'}).getByRole('button')).toHaveCount(3)
+test('preview Dean Dashboard is the oversight page and old Monitor links open it',async({page})=>{
+ await page.goto('/');await page.getByRole('button',{name:'Dean',exact:true}).click();await page.goto('/#/monitor?tab=delivery');await expect(page).toHaveURL(/#\/dashboard\?tab=overview/);await expect(page.getByRole('img',{name:'Saved syllabus lifecycle stations',exact:true})).toBeVisible();await expect(page.getByRole('heading',{name:'Syllabus and delivery overview',exact:true})).toBeVisible();await expect(page.getByRole('navigation',{name:'Monitor views'}).getByRole('button')).toHaveCount(2)
 })

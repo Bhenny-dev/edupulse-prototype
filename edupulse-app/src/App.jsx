@@ -1,6 +1,6 @@
 import { lazy, Suspense } from 'react'
 import { SkeletonContent, Spinner } from './components/ui/LoadingFeedback'
-import { HashRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { HashRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { ToastProvider } from './context/ToastContext'
 import { ContentStoreProvider } from './context/ContentStoreContext'
@@ -26,7 +26,6 @@ const Performance = lazy(() => import('./pages/Performance'))
 const Records = lazy(() => import('./pages/Records'))
 const CourseLoading = lazy(() => import('./pages/CourseLoading'))
 const AcademicPortal = lazy(() => import('./components/academic/AcademicPortal'))
-const MonitorProgress = lazy(() => import('./pages/MonitorProgress'))
 const StudentMonitoring = lazy(() => import('./pages/StudentMonitoring'))
 const Settings = lazy(() => import('./pages/Settings'))
 const NotificationCenter = lazy(() => import('./pages/Notifications'))
@@ -102,7 +101,7 @@ function AppRoutes() {
         {/* Old bookmark — Curriculum was absorbed into Records (Phase 0 intake). */}
         <Route path="/curriculum" element={<Navigate to="/records" replace />} />
         <Route path="/course-loading" element={<ProtectedRoute allowedRoles={['dean', 'associate_dean']}><CourseLoading /></ProtectedRoute>} />
-        <Route path="/monitor" element={<ProtectedRoute allowedRoles={['dean', 'associate_dean']}><MonitorProgress /></ProtectedRoute>} />
+        <Route path="/monitor" element={<MonitorRedirect />} />
         <Route path="/student-monitoring" element={<ProtectedRoute allowedRoles={['instructor']}><StudentMonitoring /></ProtectedRoute>} />
         <Route path="/scoring-sheet" element={<ProtectedRoute allowedRoles={['instructor']}><StudentMonitoring /></ProtectedRoute>} />
         <Route path="/content-editor/:itemId?" element={<ProtectedRoute allowedRoles={['instructor']}><ContentEditor /></ProtectedRoute>} />
@@ -113,6 +112,12 @@ function AppRoutes() {
       <Route path="*" element={<NotFound />} />
     </Routes>
   )
+}
+
+// Oversight (syllabus, delivery, alerts) is the Dean and Program Coordinator Dashboard; older /monitor links keep their tab.
+function MonitorRedirect() {
+  const { search } = useLocation()
+  return <Navigate to={`/dashboard${search}`} replace />
 }
 
 export default function App() {

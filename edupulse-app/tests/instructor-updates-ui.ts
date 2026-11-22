@@ -2,21 +2,15 @@ import {expect,type Page} from '@playwright/test'
 import {instructorUpdatesUI,sender,recipient,sharedStore} from './instructor-updates-fixture'
 type Capture=(name:string,target?:any)=>Promise<void>
 export async function instructorDashboardScene(page:Page,capture?:Capture){
- const fixture=await instructorUpdatesUI(page)
+ await instructorUpdatesUI(page)
+ // Blocks and scores live on Student Monitoring; the Dashboard keeps recent course activity only.
  await page.goto('/#/dashboard')
- const blocks=page.locator('.card').filter({has:page.getByRole('heading',{name:'My Block Sections',exact:true})})
- await expect(blocks.getByText('BSIT-1A',{exact:true})).toHaveCount(2)
- await expect(blocks).toContainText('IT 102 — Computer Programming 1');await expect(blocks).toContainText('IT 103 — Programming Lab')
+ const main=page.getByRole('main')
+ await expect(main.getByRole('heading',{name:'Recent course activity',exact:true})).toBeVisible()
+ for(const heading of ['My Block Sections','Score Snapshot','My courses and block sections'])await expect(main.getByRole('heading',{name:heading,exact:true})).toHaveCount(0)
+ await expect(main.locator('.kpi-card')).toHaveCount(0)
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true)
- const scores=page.locator('.card').filter({has:page.getByRole('heading',{name:'Score Snapshot',exact:true})})
- await expect(scores).toContainText('33%');await expect(scores).toContainText('67%');await expect(scores).toContainText('100%')
- await expect(scores.locator('.kpi-value').nth(1)).toHaveText('67%')
- await expect.poll(()=>scores.locator('svg.recharts-surface').evaluate(element=>element.getBoundingClientRect().width)).toBeGreaterThan(0)
- await capture?.('dashboard-blocks',blocks);await capture?.('dashboard-scores',scores)
- await blocks.getByRole('button',{name:'Student Monitoring'}).first().click()
- await expect(page.getByRole('dialog',{name:'IT 102 · BSIT-1A monitoring',exact:true})).toBeVisible()
- await page.reload();await expect(page.getByRole('dialog',{name:'IT 102 · BSIT-1A monitoring',exact:true})).toBeVisible()
- fixture.records.attempts=[];await page.goto('/#/dashboard');await page.reload();await expect(page.getByText('No marked scores yet.',{exact:false})).toBeVisible()
+ await capture?.('dashboard',main)
 }
 export async function instructorSyllabusScene(page:Page,capture?:Capture){
  const {store}=await instructorUpdatesUI(page)

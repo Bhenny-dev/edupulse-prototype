@@ -1,19 +1,19 @@
 import { test, expect } from '@playwright/test'
 import { restorationUI } from '../role-restoration-fixture'
 
-// Accounts render the same role dashboards as the preview personas, filled from account records.
-const DASHBOARD_SECTION: Record<string, string> = { instructor: 'Score Snapshot', student: 'Pulse Reminders', dean: 'Syllabus Stations', associate_dean: 'Syllabus Stations' }
+// Each Dashboard shows only what no other page of the role shows (no quick actions, no repeated sections).
+const DASHBOARD_SECTION: Record<string, string> = { instructor: 'Recent course activity', student: 'Pulse Reminders', dean: 'Syllabus stations', associate_dean: 'Syllabus stations' }
 for (const role of ['instructor', 'student', 'dean', 'associate_dean']) {
   test(`restored ${role} pages use account records and keep each authorized section reachable`, async ({ page }) => {
     test.setTimeout(90000)
     const problems: string[] = []; page.on('pageerror', error => problems.push(error.message))
     await restorationUI(page, role)
     await page.goto('/#/dashboard'); await expect(page.getByRole('heading', { name: DASHBOARD_SECTION[role], exact: true })).toBeVisible()
-    if (role !== 'student') await expect(page.getByRole('navigation', { name: 'Quick actions' })).toBeVisible()
+    await expect(page.getByRole('navigation', { name: 'Quick actions' })).toHaveCount(0)
     // No preview sample (names, scores, feed) leaks into an account dashboard.
     await expect(page.getByRole('main')).not.toContainText(/Rogelio|Guisdan|Fianza|Guaki|Pangcog/)
-    if (role === 'instructor') { await expect(page.getByText('Topic averages · IT 102 Computer Programming 1', { exact: true })).toBeVisible(); await expect(page.getByText('BSIT-1A', { exact: true })).toBeVisible() }
-    if (role === 'student') { await expect(page.getByText('You haven\'t opened "Variables lesson" yet.', { exact: true })).toBeVisible(); await expect(page.getByRole('heading', { name: 'IT 102', exact: true })).toBeVisible() }
+    if (role === 'instructor') await expect(page.getByRole('heading', { name: 'Score Snapshot', exact: true })).toHaveCount(0)
+    if (role === 'student') { await expect(page.getByText('You haven\'t opened "Variables lesson" yet.', { exact: true })).toBeVisible(); await expect(page.getByRole('heading', { name: 'IT 102', exact: true })).toHaveCount(0) }
     if (role === 'dean' || role === 'associate_dean') await expect(page.getByRole('cell', { name: 'Synthetic instructor', exact: true })).toBeVisible()
     if (role === 'student' || role === 'dean') {
       await page.goto('/#/performance'); await expect(page.getByRole('img', { name: /^Assessment score radar:/ })).toBeVisible()
@@ -24,7 +24,7 @@ for (const role of ['instructor', 'student', 'dean', 'associate_dean']) {
       if (role !== 'student') { await page.goto('/#/performance?tab=scores'); await page.getByRole('button', { name: 'Synthetic learner', exact: true }).click(); await expect(page.getByRole('dialog', { name: 'Student performance detail' })).toBeVisible(); await page.keyboard.press('Escape'); await expect(page.getByRole('dialog', { name: 'Student performance detail' })).toHaveCount(0) }
     }
     if (['dean', 'associate_dean'].includes(role)) {
-      for (const [tab, heading] of [['syllabi', 'Syllabus and delivery overview'], ['delivery', 'Released courseware by course'], ['students', 'Confirmed class lists'], ['alerts', 'Readiness and delivery alerts']]) {
+      for (const [tab, heading] of [['syllabi', 'Syllabus and delivery overview'], ['delivery', 'Released courseware by course'], ['students', 'Syllabus and delivery overview'], ['alerts', 'Readiness and delivery alerts']]) {
         await page.goto(`/#/monitor?tab=${tab}`); await expect(page.getByRole('heading', { name: heading, exact: true })).toBeVisible(); await expect(page.getByRole('heading', { name: 'Recorded assessment attempts' })).toHaveCount(0)
       }
       for (const path of ['records?tab=sections', 'records?tab=courses', 'course-loading', 'course-loading?tab=instructors']) { await page.goto('/#/' + path); await expect(page.locator('.academic-portal')).toBeVisible() }
@@ -59,5 +59,5 @@ test('account notices come from unanswered records and read state survives reloa
 
 test('student sees assigned units and pending releases without draft content or an inferred result',async({page})=>{
  const {records}=await restorationUI(page,'student');records.assignedCourses=[{id:'d'.repeat(32),course_code:'IT 104',course_title:'Research Methods',active:false,block_section:'BSIT-1A',suspended:false,units:'3',year_level:'1',semester:'2'}]
- await page.goto('/#/courseware');await page.getByRole('button',{name:'Open course IT 104',exact:true}).click();const course=page.locator('.academic-course').filter({has:page.getByRole('heading',{name:'IT 104 — Research Methods',exact:true})}).first();await expect(course).toContainText('3 units');await expect(course).toContainText('2nd Semester');await expect(course).toContainText('Course assigned.');await expect(course.getByRole('button',{name:'Open material',exact:true})).toHaveCount(0);await page.reload();await expect(course).toContainText('Course assigned.');await page.goto('/#/dashboard');await expect(page.getByText('Awaiting release',{exact:true})).toBeVisible();await expect(page.getByRole('heading',{name:'IT 104',exact:true})).toBeVisible()
+ await page.goto('/#/courseware');await page.getByRole('button',{name:'Open course IT 104',exact:true}).click();const course=page.locator('.academic-course').filter({has:page.getByRole('heading',{name:'IT 104 — Research Methods',exact:true})}).first();await expect(course).toContainText('3 units');await expect(course).toContainText('2nd Semester');await expect(course).toContainText('Course assigned.');await expect(course.getByRole('button',{name:'Open material',exact:true})).toHaveCount(0);await page.reload();await expect(course).toContainText('Course assigned.');await page.goto('/#/dashboard');await expect(page.getByRole('heading',{name:'IT 104',exact:true})).toHaveCount(0)
 })

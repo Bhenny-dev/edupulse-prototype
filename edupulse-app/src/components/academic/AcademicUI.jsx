@@ -20,9 +20,10 @@ const studentSummaryIcons = {
 export function KPIs({ items }) {
   const {user}=useAuth()
   if(['dean','associate_dean','student'].includes(user?.role)){
-    const destinations={'Authorized courses':'/records','Active syllabi':'/monitor?tab=overview','Blocks':'/students','Published items':'/monitor?tab=overview','Released items':'/monitor?tab=overview','Current-version attempts':'/performance?tab=scores','Average raw score':'/performance?tab=scores','Published assessments':'/performance?tab=bytopic','Recorded material opens':'/performance?tab=materials','Topic averages at mastery cutoff':'/performance?tab=bytopic','Topics needing review':'/performance?tab=bytopic','Mastery cutoff':'/performance?tab=bytopic'}
+    // A card links only to a different page that holds its details; counts shown on the Dashboard itself stay plain.
+    const destinations={'Authorized courses':'/records','Blocks':'/students','Current-version attempts':'/performance?tab=scores','Average raw score':'/performance?tab=scores','Published assessments':'/performance?tab=bytopic','Recorded material opens':'/performance?tab=materials','Topic averages at mastery cutoff':'/performance?tab=bytopic','Topics needing review':'/performance?tab=bytopic','Mastery cutoff':'/performance?tab=bytopic'}
     const icons=[BookOpen,CheckCircle,Users,Activity],tones=['sky','purple','green','amber']
-    return <div className="kpi-grid mb-24">{items.map(([label,value],i)=><SummaryCard key={label} icon={user.role==='student'?(studentSummaryIcons[label]||BookOpen):icons[i%4]} label={label} value={value} color={`var(--${tones[i%4]}-500)`} bg={`var(--${tones[i%4]}-100)`} to={user.role==='student'?undefined:(user.role==='associate_dean'&&String(destinations[label]).startsWith('/performance')?undefined:(destinations[label]||'/records'))}/>)}</div>
+    return <div className="kpi-grid mb-24">{items.map(([label,value],i)=><SummaryCard key={label} icon={user.role==='student'?(studentSummaryIcons[label]||BookOpen):icons[i%4]} label={label} value={value} color={`var(--${tones[i%4]}-500)`} bg={`var(--${tones[i%4]}-100)`} to={user.role==='student'?undefined:(user.role==='associate_dean'&&String(destinations[label]).startsWith('/performance')?undefined:destinations[label])}/>)}</div>
   }
   return <div className="kpi-grid mb-24">{items.map(([label, value]) => <div className="kpi-card" key={label}><div><div className="kpi-value">{value ?? '—'}</div><div className="kpi-label">{label}</div></div></div>)}</div>
 }

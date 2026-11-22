@@ -8,10 +8,9 @@ test('Dean navigation and dashboard summaries open the Course list, Course loads
  if(mobile)await page.getByRole('button',{name:'Open menu',exact:true}).click()
  for(const label of ['Dashboard','Course','Instructors','Students'])await expect(page.getByRole('link',{name:label,exact:true}).first()).toBeVisible()
  if(mobile)await page.getByRole('button',{name:'Close menu',exact:true}).click()
- for(const [label,url] of [['Released Courses','/records?tab=courses'],['Courses Loaded','/records?tab=loads'],['Approved Syllabi','/monitor?tab=overview'],['Not Yet Routed for Approval','/monitor?tab=overview']]){
-  const card=page.getByRole('link',{name:label,exact:true});await expect(card).toHaveAttribute('href',`#${url}`)
- }
- await page.getByRole('link',{name:'Released Courses',exact:true}).click()
+ // The Dashboard is the oversight page; course counts and the catalog live on the Course page only.
+ for(const label of ['Released Courses','Courses Loaded','Approved Syllabi','Not Yet Routed for Approval'])await expect(page.getByRole('main').getByRole('link',{name:label,exact:true})).toHaveCount(0)
+ await page.goto('/#/records')
  await expect(page.getByRole('heading',{name:'Courses',level:2,exact:true})).toBeVisible()
  for(const title of ['Student class lists','Syllabi','Course records'])await expect(page.getByRole('button',{name:title,exact:true})).toHaveCount(0)
  for(const title of ['Course list','Course loads'])await expect(page.getByRole('button',{name:title,exact:true})).toHaveCount(0)

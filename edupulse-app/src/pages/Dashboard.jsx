@@ -1,57 +1,25 @@
 import { useAuth } from '../context/AuthContext'
-import { useWorkspace } from '../context/WorkspaceContext'
 import { useAcademicRecords } from '../context/AcademicContext'
 import useAcademicTerm from '../components/academic/useAcademicTerm'
 import LoadTermFilter from '../components/academic/LoadTermFilter'
 import {recordsForLoadTerm} from '../utils/loadTerms'
 import AcademicSyncStatus from '../components/academic/AcademicSyncStatus'
 import SystemAdminDashboard from './SystemAdminDashboard'
-import SummaryCard from '../components/ui/SummaryCard'
 import InstructorOverview from '../components/courseware/InstructorOverview'
-import { SYLLABUS_STATUS_META } from '../data/syllabusStatus'
+import AcademicManagement from '../components/academic/AcademicManagement'
 import { accountManagementModel, accountStudentModel } from './dashboardModels'
-import {curriculumLabel} from '../utils/curriculumMetadata'
-import { previewManagementModel, previewInstructorModel, previewStudentModel } from './dashboardPreview'
+import { previewInstructorModel, previewStudentModel } from './dashboardPreview'
+import { deanPreview } from '../components/academic/deanPreview'
 import { useNavigate } from 'react-router-dom'
 import { pulse as pulseBus } from '../components/pulse/pulseBus'
 import { SkeletonKPI, SkeletonTable } from '../components/ui/LoadingSkeleton'
 import '../components/academic/academic.css'
 import {
-  BookOpen, Users, AlertTriangle, CheckCircle, FileText, TrendingUp, ArrowRight,
-  Clock, Target, Sparkles, BarChart3, Eye, Calendar, Download,
+  Users, AlertTriangle, CheckCircle, FileText, ArrowRight,
+  Target, Sparkles, Calendar, Download,
   ChevronRight, Activity, Rocket, X, Bot, ClipboardCheck, Bell,
 } from 'lucide-react'
-import { useState, useEffect, useRef } from 'react'
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts'
-
-function AnimatedNumber({ value, suffix = '' }) {
-  const [display, setDisplay] = useState(0)
-  const ref = useRef(null)
-  useEffect(() => {
-    const numVal = typeof value === 'string' ? parseInt(value) : value
-    if (isNaN(numVal)||window.matchMedia('(prefers-reduced-motion: reduce)').matches) { setDisplay(value); return }
-    let start = 0
-    const duration = 800
-    const startTime = Date.now()
-    const animate = () => {
-      const elapsed = Date.now() - startTime
-      const progress = Math.min(elapsed / duration, 1)
-      const eased = 1 - Math.pow(1 - progress, 3)
-      setDisplay(Math.round(start + (numVal - start) * eased))
-      if (progress < 1) ref.current = requestAnimationFrame(animate)
-    }
-    ref.current = requestAnimationFrame(animate)
-    return () => cancelAnimationFrame(ref.current)
-  }, [value])
-  return <span>{typeof display === 'number' ? display : value}{suffix}</span>
-}
-
-function KpiCard({ icon: Icon, label, value, color, bg, suffix = '', to }) {
-  return <SummaryCard icon={Icon} label={label} value={value} color={color} bg={bg} to={to} description={`${value}${suffix}`}><AnimatedNumber value={value} suffix={suffix}/></SummaryCard>
-}
-
-// A value an account has not recorded yet shows as a dash, never as zero.
-const recorded = (value, suffix) => (value === null || value === undefined ? { value: '—', suffix: '' } : { value, suffix })
+import { useState } from 'react'
 
 const ACTIVITY_STYLE = {
   published: [CheckCircle, 'var(--green-500)'], syllabus: [FileText, 'var(--sky-500)'], drafted: [Sparkles, 'var(--purple-500)'],
@@ -93,154 +61,25 @@ const exportButton = <button className="btn btn-secondary btn-sm"><Download size
 
 /* Academic management screens are shared by the distinct Dean and Program Coordinator roles. */
 
-function ManagementDashboard({ model, actions = exportButton, status }) {
-  const navigate = useNavigate()
+function RecentActivity({ items }) {
+  return <div className="card">
+    <div className="card-header"><h3><Activity size={16} /> Recent Activity</h3></div>
+    <div className="card-body"><ActivityList items={items} /></div>
+  </div>
+}
+
+// The Dean and Program Coordinator Dashboard is the oversight page: syllabus stations, delivery, alerts and
+// recent activity. Courses, instructors and students each have their own page, so none of them repeats here.
+// Preview personas read the sample Dean records through the same view.
+function StaffDashboard({ data, loaded, actions, status }) {
   const { user } = useAuth()
-
-  const quickActions = [
-    { label: ['dean','associate_dean'].includes(user?.role)?'View Course':'Load Courses', icon: ClipboardCheck, action: () => navigate(['dean','associate_dean'].includes(user?.role)?'/records':'/course-loading'), color: 'var(--green-500)' },
-    { label: 'Monitor Delivery', icon: BarChart3, action: () => navigate('/monitor'), color: 'var(--purple-500)' },
-    { label: 'Ask Pulse', icon: Sparkles, action: () => pulseBus.say('Hi! What would you like help with today?'), color: 'var(--amber-500)' },
-  ]
-
   return (
-    <div className="container">
-      <PageHeader title={`${user?.title} Dashboard`} subtitle={['dean','associate_dean'].includes(user?.role)?'Courses, instructors and recorded student activity':'College of Information Technology — course loading and delivery monitoring'} actions={actions} />
+    <div className="container academic-portal" data-pulse-zone="monitor" data-pulse-target="Dashboard">
+      <PageHeader title={`${user?.title} Dashboard`} subtitle="Syllabus status, courseware delivery, alerts and recent activity" actions={actions} />
       {status}
-      {model && <>
-      <div className="kpi-grid mb-24">
-        <KpiCard icon={BookOpen} label="Released Courses" value={model.kpis.released} color="var(--sky-500)" bg="var(--sky-100)" to={['dean','associate_dean'].includes(user?.role)?'/records?tab=courses':undefined}/>
-        <KpiCard icon={ClipboardCheck} label="Courses Loaded" value={model.kpis.loaded} color="var(--purple-500)" bg="var(--purple-100)" to={['dean','associate_dean'].includes(user?.role)?'/records?tab=loads':undefined}/>
-        <KpiCard icon={CheckCircle} label="Approved Syllabi" value={model.kpis.approved} color="var(--green-500)" bg="var(--green-100)" to={['dean','associate_dean'].includes(user?.role)?'/monitor?tab=overview':undefined}/>
-        <KpiCard icon={AlertTriangle} label="Not Yet Routed for Approval" value={model.kpis.notRouted} color="var(--amber-500)" bg="var(--amber-100)" to={['dean','associate_dean'].includes(user?.role)?'/monitor?tab=overview':undefined}/>
-      </div>
-
-      <div className="card mb-24">
-        <nav className="card-body" aria-label="Quick actions" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-          {quickActions.map(a => (
-            <button key={a.label} className="btn btn-secondary btn-sm" onClick={a.action}>
-              <a.icon size={14} style={{ color: a.color }} /> {a.label}
-            </button>
-          ))}
-        </nav>
-      </div>
-
-      <div className="grid-2 mb-24">
-        <div className="card">
-          <div className="card-header">
-            <h3>Syllabus Stations</h3>
-            <button className="btn btn-ghost btn-sm" onClick={() => navigate('/monitor?tab=overview')}>Monitor <ArrowRight size={14} /></button>
-          </div>
-          <div className="card-body">
-            <p className="text-sm text-muted mb-16">Where every loaded course's syllabus sits in the lifecycle. The signatory chain (Dean → CAO → EVP) runs offline on the downloaded file.</p>
-            <ResponsiveContainer width="100%" height={200}>
-              <BarChart data={model.stations} margin={{ top: 8, right: 8, bottom: 8, left: -20 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                <XAxis dataKey="name" tick={{ fontSize: 9 }} />
-                <YAxis allowDecimals={false} tick={{ fontSize: 10 }} />
-                <Tooltip />
-                <Bar dataKey="count" fill="#38bdf8" radius={[4, 4, 0, 0]} name="Syllabi" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        <div className="card">
-          <div className="card-header">
-            <h3>Delivery Progress (Active Courses)</h3>
-            <button className="btn btn-ghost btn-sm" onClick={() => navigate('/monitor?tab=overview')}>Details <ArrowRight size={14} /></button>
-          </div>
-          <div className="card-body">
-            <p className="text-sm text-muted mb-16">Published courseware against the extracted Course Outline — are the mapped materials and assessments being delivered on schedule?</p>
-            {model.delivery.length === 0 ? (
-              <p className="text-sm text-muted">No active syllabi yet.</p>
-            ) : (
-              <ResponsiveContainer width="100%" height={200}>
-                <BarChart data={model.delivery} layout="vertical" margin={{ top: 4, right: 8, bottom: 4, left: 20 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" horizontal={false} />
-                  <XAxis type="number" allowDecimals={false} tick={{ fontSize: 10 }} />
-                  <YAxis type="category" dataKey="name" tick={{ fontSize: 11 }} width={70} />
-                  <Tooltip />
-                  {model.deliverySeries.map((series, index) => (
-                    <Bar key={series.key} dataKey={series.key} stackId="a" fill={series.color} name={series.name} radius={index === model.deliverySeries.length - 1 ? [0, 4, 4, 0] : undefined} />
-                  ))}
-                </BarChart>
-              </ResponsiveContainer>
-            )}
-          </div>
-        </div>
-      </div>
-
-      <div className="grid-2 mb-24">
-        <div className="card">
-          <div className="card-header"><h3>Faculty Overview</h3></div>
-          <div className="card-body">
-            {model.faculty.length === 0 && <p className="text-sm text-muted">No instructor accounts or course loads recorded yet.</p>}
-            {model.faculty.map(inst => (
-              <div key={inst.id} style={{
-                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                padding: '10px 12px', borderRadius: 'var(--radius-md)',
-                background: 'var(--gray-50)', marginBottom: '6px',
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <div style={{ width: 32, height: 32, borderRadius: 'var(--radius-full)', background: 'linear-gradient(135deg, var(--sky-300), var(--sky-400))', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 700, fontSize: '0.6875rem' }}>{inst.name.charAt(0)}</div>
-                  <div>
-                    <div style={{ fontWeight: 600, fontSize: '0.8125rem' }}>{inst.name}</div>
-                    <div className="text-sm text-muted">{inst.loads} loaded · {inst.active} active</div>
-                  </div>
-                </div>
-                {inst.loads === 0
-                  ? <span className="badge badge-draft" style={{ fontSize: '0.6875rem' }}>No load</span>
-                  : inst.behind > 0
-                    ? <span className="badge badge-drafted" style={{ fontSize: '0.6875rem' }}>{inst.behind} not yet routed</span>
-                    : <span className="badge badge-approved" style={{ fontSize: '0.6875rem' }}>On track</span>}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="card">
-          <div className="card-header"><h3><Activity size={16} /> Recent Activity</h3></div>
-          <div className="card-body">
-            <ActivityList items={model.activity} />
-          </div>
-        </div>
-      </div>
-
-      {/* Per-course syllabus status */}
-      <div className="card">
-        <div className="card-header">
-          <h3>Syllabus Status by Course</h3>
-          <button className="btn btn-secondary btn-sm" onClick={() => navigate('/monitor?tab=overview')}>Full Monitor <ArrowRight size={14} /></button>
-        </div>
-        <div className="card-body">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Course</th><th>Instructor</th><th>Status</th><th>Outline</th><th>Updated</th><th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {model.courses.length === 0 && <tr><td colSpan={6} className="text-sm text-muted">No loaded courses in the records yet.</td></tr>}
-              {model.courses.map(course => {
-                const meta = SYLLABUS_STATUS_META[course.status]
-                return (
-                  <tr key={course.id}>
-                    <td><strong>{course.code}</strong><br /><span className="text-sm text-muted">{course.title}</span></td>
-                    <td className="text-sm">{course.instructor}</td>
-                    <td><span className={`badge badge-${meta?.badge || 'draft'}`} title={meta?.hint}>{meta?.label || course.status}</span></td>
-                    <td className="text-sm">{course.status === 'active' ? `${course.outlineWeeks} weeks` : '—'}</td>
-                    <td className="text-sm text-muted">{course.updated}</td>
-                    <td>
-                      <button className="btn btn-ghost btn-sm" style={{ padding: '4px 8px' }} title="View in Monitor" onClick={() => navigate('/monitor?tab=overview')}><Eye size={12} /></button>
-                    </td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      {loaded && <>
+        <AcademicManagement data={data} view="monitor" />
+        <div className="mt-24"><RecentActivity items={accountManagementModel(data).activity} /></div>
       </>}
     </div>
   )
@@ -351,12 +190,11 @@ function OnboardingChecklist({ autoDone = [] }) {
   )
 }
 
-const QUEUE_PREVIEW = 8
 
+// Preview Instructor Dashboard: getting started and recent activity only. Courses, syllabi,
+// block sections and scores each live on their own page (Course, Syllabus, Student Monitoring).
 function InstructorDashboard({ model, actions = exportButton, status }) {
-  const navigate = useNavigate()
   const { user } = useAuth()
-  const average = recorded(model?.snapshot.average, '%')
 
   return (
     <div className="container">
@@ -364,143 +202,7 @@ function InstructorDashboard({ model, actions = exportButton, status }) {
       {status}
       {model && <>
       <OnboardingChecklist autoDone={model.autoDone} />
-
-      <div className="kpi-grid mb-24">
-        <KpiCard icon={BookOpen} label="My Courses" value={model.kpis.courses} color="var(--sky-500)" bg="var(--sky-100)" to="/courseware" />
-        <KpiCard icon={CheckCircle} label="Active Syllabi" value={model.kpis.active} color="var(--green-500)" bg="var(--green-100)" to="/syllabus?tab=mine&status=active" />
-        <KpiCard icon={Clock} label="Drafts to Review" value={model.kpis.drafts} color="var(--amber-500)" bg="var(--amber-100)" to="/courseware?status=draft" />
-        <KpiCard icon={Target} label="Published Items" value={model.kpis.published} color="var(--purple-500)" bg="var(--purple-100)" to="/courseware?status=published" />
-      </div>
-
-      <div className="card mb-24">
-        <nav className="card-body" aria-label="Quick actions" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-          <button className="btn btn-secondary btn-sm" onClick={() => navigate('/syllabus?tab=builder')}><FileText size={14} style={{ color: 'var(--sky-500)' }} /> Syllabus Builder</button>
-          <button className="btn btn-secondary btn-sm" onClick={() => navigate('/courseware?tab=builder')}><Sparkles size={14} style={{ color: 'var(--purple-500)' }} /> Generate Courseware</button>
-          <button className="btn btn-secondary btn-sm" onClick={() => navigate('/student-monitoring')}><ClipboardCheck size={14} style={{ color: 'var(--green-500)' }} /> Student Monitoring</button>
-        </nav>
-      </div>
-
-      <div className="card mb-24">
-        <div className="card-header"><h3><Users size={16} /> My Block Sections</h3></div>
-        <div className="card-body">
-          {model.blocks.length === 0 ? (
-            <p className="text-sm text-muted">No block sections assigned yet.</p>
-          ) : (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '12px' }}>
-              {model.blocks.map(bs => (
-                <div key={bs.id} style={{ padding: '12px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--sky-100)', background: 'var(--sky-50)' }}>
-                  <div style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--sky-600)' }}>{bs.code}</div>
-                  <div className="text-sm" style={{fontWeight:600,marginTop:4}}>{bs.course}</div>
-                  <div className="text-sm text-muted">{bs.detail}</div>
-                  <button className="btn btn-secondary btn-sm" style={{ marginTop: '8px', width: '100%' }} onClick={() => navigate(bs.courseId?`/student-monitoring?tab=assessments&course=${encodeURIComponent(bs.courseId)}&block=${encodeURIComponent(bs.code)}`:'/student-monitoring')}>Student Monitoring <ArrowRight size={12} /></button>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Score snapshot — from Student Monitoring */}
-      <div className="card mb-24">
-        <div className="card-header">
-          <h3>Score Snapshot</h3>
-          <button className="btn btn-secondary btn-sm" onClick={() => navigate('/student-monitoring')}>Full Monitoring <ArrowRight size={14} /></button>
-        </div>
-        <div className="card-body">
-          {model.snapshot.average===null ? <p className="academic-empty">No marked scores yet. Published assessment results appear here after submission and any required instructor marking.</p> : <><div className="kpi-grid">
-            <div style={{ textAlign: 'center', padding: '12px' }}>
-              <div className="kpi-value"><span>{model.snapshot.students}</span></div>
-              <div className="kpi-label">Students</div>
-            </div>
-            <div style={{ textAlign: 'center', padding: '12px' }}>
-              <div className="kpi-value" style={{ color: 'var(--green-500)' }}><span>{average.value}{average.suffix}</span></div>
-              <div className="kpi-label">Avg. Score</div>
-            </div>
-            <div style={{ textAlign: 'center', padding: '12px' }}>
-              <div className="kpi-value" style={{ color: 'var(--red-500)' }}><span>{model.snapshot.below}</span></div>
-              <div className="kpi-label">Below 75</div>
-            </div>
-            <div style={{ textAlign: 'center', padding: '12px' }}>
-              <div className="kpi-value" style={{ color: 'var(--sky-500)' }}><span>{model.snapshot.top}</span></div>
-              <div className="kpi-label">90 and Above</div>
-            </div>
-          </div>
-          {model.snapshot.scored!==undefined&&<p className="text-sm text-muted">{model.snapshot.scored} {model.snapshot.scored===1?'student':'students'} with marked results. Unsubmitted and unmarked work is excluded.</p>}
-          <p className="text-sm text-muted" style={{ margin: '12px 0 4px' }}>{model.snapshot.caption}</p>
-          {model.snapshot.chart.length > 0 && (
-            <ResponsiveContainer width="100%" height={200}>
-              <BarChart data={model.snapshot.chart} margin={{ top: 8, right: 8, bottom: 8, left: -20 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                <XAxis dataKey="topic" tick={{ fontSize: 10 }} />
-                <YAxis domain={[0, 100]} tick={{ fontSize: 10 }} />
-                <Tooltip />
-                <Bar dataKey="avg" fill="#38bdf8" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          )}
-          {(model.snapshot.results||[]).length>0&&<div className="academic-table-wrap"><table className="data-table"><thead><tr><th>Course</th><th>Assessment</th><th>Average</th><th>Marked results</th></tr></thead><tbody>{model.snapshot.results.map(item=><tr key={item.id}><td data-label="Course">{item.course}</td><td data-label="Assessment">Week {item.week} · {item.title}</td><td data-label="Average">{item.score}%</td><td data-label="Marked results">{item.marked}</td></tr>)}</tbody></table></div>}
-          </>}
-        </div>
-      </div>
-
-      <div className="card mb-24">
-        <div className="card-header"><h3><Activity size={16} /> Recent Activity</h3></div>
-        <div className="card-body">
-          <ActivityList items={model.activity} />
-        </div>
-      </div>
-
-      <div className="grid-2">
-        <div className="card">
-          <div className="card-header">
-            <h3>My Courses — Syllabus Stations</h3>
-            <button className="btn btn-secondary btn-sm" onClick={() => navigate('/syllabus')}>Open <ArrowRight size={14} /></button>
-          </div>
-          <div className="card-body">
-            {model.syllabi.length === 0 && <p className="text-sm text-muted">No syllabi yet. Start one in Syllabus Builder.</p>}
-            {model.syllabi.map(syl => {
-              const meta = SYLLABUS_STATUS_META[syl.status]
-              return (
-                <div key={syl.id} style={{ padding: '14px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--sky-100)', marginBottom: '10px', background: 'var(--gray-50)' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                    <strong style={{ fontSize: '0.875rem' }}>{syl.code} — {syl.title}</strong>
-                    <span className={`badge badge-${meta?.badge || 'draft'}`} title={meta?.hint}>{meta?.label || syl.status}</span>
-                  </div>
-                  <div style={{ display: 'flex', gap: '12px', fontSize: '0.75rem', color: 'var(--gray-500)' }}>
-                    <span>v{syl.version}</span>
-                    <span>{syl.status === 'active' ? `${syl.outlineWeeks} outline weeks` : meta?.hint}</span>
-                  </div>
-                  <div className="progress-bar mt-8"><div className="progress-fill" style={{ width: `${(meta?.step || 0) * 20}%` }} /></div>
-                </div>
-              )
-            })}
-          </div>
-        </div>
-
-        <div className="card">
-          <div className="card-header">
-            <h3>Courseware Review Queue</h3>
-            <button className="btn btn-secondary btn-sm" onClick={() => navigate('/courseware?tab=builder&sub=review')}>View All <ArrowRight size={14} /></button>
-          </div>
-          <div className="card-body">
-            {model.queue.length === 0 && <p className="text-sm text-muted">No drafts are waiting for review.</p>}
-            {model.queue.slice(0, QUEUE_PREVIEW).map(cw => (
-              <div key={cw.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 12px', borderRadius: 'var(--radius-md)', background: 'var(--gray-50)', marginBottom: '6px' }}>
-                <div>
-                  <div style={{ fontWeight: 600, fontSize: '0.875rem' }}>{cw.title}</div>
-                  <div className="text-sm text-muted">{cw.detail}</div>
-                </div>
-                <span className={`badge badge-${cw.status}`}>{cw.status}</span>
-              </div>
-            ))}
-            {model.queue.length > QUEUE_PREVIEW && (
-              <p className="text-sm text-muted" style={{ marginTop: 8 }}>
-                Showing {QUEUE_PREVIEW} of {model.queue.length} drafts. Use View All to review the rest in Courseware.
-              </p>
-            )}
-          </div>
-        </div>
-      </div>
+      <RecentActivity items={model.activity} />
       </>}
     </div>
   )
@@ -515,23 +217,17 @@ const REMINDER_LOOK = {
   red: { label: 'Missed', color: 'var(--red-700)', background: 'var(--red-100)' },
 }
 
+// The Student Dashboard holds what needs attention: reminders, upcoming activities, the block
+// and the approved sources. Course cards live in My Courses and scores in Performance.
 function StudentDashboard({ model, actions, status }) {
   const navigate = useNavigate()
   const { user } = useAuth()
-  const average = recorded(model?.kpis.average, '%')
 
   return (
     <div className="container">
       <PageHeader title="Student Dashboard" subtitle={`Welcome back, ${user?.name}`} actions={actions} />
       {status}
       {model && <>
-      <div className="kpi-grid mb-24">
-        <KpiCard icon={BookOpen} label="Enrolled Courses" value={model.kpis.enrolled} color="var(--sky-500)" bg="var(--sky-100)" />
-        <KpiCard icon={TrendingUp} label="Average Score" value={average.value} color="var(--green-500)" bg="var(--green-100)" suffix={average.suffix} />
-        <KpiCard icon={Target} label="Topics Mastered" value={model.kpis.mastered} color="var(--purple-500)" bg="var(--purple-100)" />
-        <KpiCard icon={Clock} label="Pending Activities" value={model.kpis.pending} color="var(--amber-500)" bg="var(--amber-100)" />
-      </div>
-
       {/* Pulse guidance — reminders only, never answers */}
       <div className="card mb-24">
         <div className="card-header" style={{flexWrap:'wrap',gap:'12px'}}>
@@ -555,6 +251,23 @@ function StudentDashboard({ model, actions, status }) {
         </div>
       </div>
 
+      {/* Upcoming published assessments */}
+      <div className="card mb-24">
+        <div className="card-header"><h3><Calendar size={16} /> Upcoming Activities</h3></div>
+        <div className="card-body">
+          {model.upcoming.length === 0 && <p className="text-sm text-muted">No upcoming deadlines in the published records.</p>}
+          {model.upcoming.map(act => (
+            <div key={act.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', borderRadius: 'var(--radius-md)', background: 'var(--gray-50)', marginBottom: '6px' }}>
+              <div>
+                <div style={{ fontWeight: 600, fontSize: '0.875rem' }}>{act.title}</div>
+                <div className="text-sm text-muted">{act.course} · {act.type}</div>
+              </div>
+              <div className="text-sm" style={{ fontWeight: 600, color: 'var(--amber-500)' }}>Due: {act.due}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* Block info — from the EduSuite class list */}
       {model.block && (
         <div className="card mb-24">
@@ -572,31 +285,8 @@ function StudentDashboard({ model, actions, status }) {
         </div>
       )}
 
-      <div className="grid-2 mb-24">
-        {model.courses.map(course => (
-          <div key={course.id||course.code} className="card">
-            <div className="card-header">
-              <h3>{course.code}</h3>
-              <span className={`badge ${course.available===false?'badge-drafted':'badge-published'}`}>{course.suspended?'Suspended':course.available===false?'Awaiting release':'Active'}</span>
-            </div>
-            <div className="card-body">
-              <p style={{ fontWeight: 600, marginBottom: '12px' }}>{course.title}</p>
-              <p className="text-sm text-muted mb-16">{curriculumLabel(course.code)}</p>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8125rem', color: 'var(--gray-500)', marginBottom: '6px' }}>
-                <span>Latest recorded score</span><span style={{ fontWeight: 600 }}>{course.score === null ? 'No score yet' : `${course.score}%`}</span>
-              </div>
-              <div className="progress-bar mb-16"><div className="progress-fill" style={{ width: `${course.score || 0}%` }} /></div>
-              <div style={{ display: 'flex', gap: '8px' }}>
-                <button className="btn btn-secondary btn-sm" onClick={() => navigate('/courseware')}><BookOpen size={12} /> Materials</button>
-                <button className="btn btn-secondary btn-sm" onClick={() => navigate('/assessment')}><FileText size={12} /> Assessments</button>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
       {/* Grounding transparency — teacher-approved sources only */}
-      <div className="card mb-24">
+      <div className="card">
         <div className="card-header">
           <h3><CheckCircle size={16} /> Learning Material Sources</h3>
           <span className="badge badge-connected" style={{ fontSize: '0.625rem' }}>Instructor-verified</span>
@@ -623,40 +313,6 @@ function StudentDashboard({ model, actions, status }) {
           </div>
         </div>
       </div>
-
-      <div className="card mb-24">
-        <div className="card-header"><h3>My Score Trend</h3></div>
-        <div className="card-body">
-          {model.trend.length === 0 ? <p className="text-sm text-muted">No marked attempts yet. Your trend appears after your first marked assessment.</p> : (
-            <ResponsiveContainer width="100%" height={200}>
-              <LineChart data={model.trend} margin={{ top: 8, right: 8, bottom: 8, left: -20 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                <XAxis dataKey="week" tick={{ fontSize: 10 }} />
-                <YAxis domain={model.trendDomain} tick={{ fontSize: 10 }} />
-                <Tooltip />
-                <Line type="monotone" dataKey="score" stroke="#0ea5e9" strokeWidth={2} dot={{ fill: '#0ea5e9', r: 4 }} />
-              </LineChart>
-            </ResponsiveContainer>
-          )}
-        </div>
-      </div>
-
-      {/* Upcoming published assessments */}
-      <div className="card">
-        <div className="card-header"><h3><Calendar size={16} /> Upcoming Activities</h3></div>
-        <div className="card-body">
-          {model.upcoming.length === 0 && <p className="text-sm text-muted">No upcoming deadlines in the published records.</p>}
-          {model.upcoming.map(act => (
-            <div key={act.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', borderRadius: 'var(--radius-md)', background: 'var(--gray-50)', marginBottom: '6px' }}>
-              <div>
-                <div style={{ fontWeight: 600, fontSize: '0.875rem' }}>{act.title}</div>
-                <div className="text-sm text-muted">{act.course} · {act.type}</div>
-              </div>
-              <div className="text-sm" style={{ fontWeight: 600, color: 'var(--amber-500)' }}>Due: {act.due}</div>
-            </div>
-          ))}
-        </div>
-      </div>
       </>}
     </div>
   )
@@ -669,14 +325,17 @@ function StudentDashboard({ model, actions, status }) {
 // Missing records stay empty; they never fall back to the preview samples.
 function AccountDashboard() {
   const { user } = useAuth()
-  const workspace = useWorkspace()
-  const { data:allData, error, loading, loaded } = useAcademicRecords()
+  const records = useAcademicRecords()
+  const role = user?.role
+  // A Dean or Program Coordinator preview persona reads the sample Dean records, like its other pages.
+  const preview = !user?.authenticated
+  const allData = preview ? deanPreview() : records.data
+  const { error, loading } = records, loaded = records.loaded || preview
   const {term}=useAcademicTerm()
   const data=recordsForLoadTerm(allData,term)
-  const role = user?.role
   const actions = (
     <div className="academic-actions">
-      <LoadTermFilter data={allData}/><AcademicSyncStatus />
+      <LoadTermFilter data={allData}/>{!preview && <AcademicSyncStatus />}
     </div>
   )
   const status = <>
@@ -684,7 +343,7 @@ function AccountDashboard() {
     {loading && !loaded && <section className="academic-loading" aria-label="Loading academic records"><p role="status" className="text-sm text-muted mb-16">Loading authorized academic records…</p><div aria-hidden="true"><div className="kpi-grid mb-24">{Array.from({ length: 4 }, (_, index) => <SkeletonKPI key={index} />)}</div><SkeletonTable rows={4} cols={4} /></div></section>}
     {loaded && !error && role !== 'instructor' && !data.courses.length && <div className="empty-state mb-24" role="status"><h2>No authorized academic records yet</h2><p>Instructors register confirmed class lists, activate an approved syllabus, review courseware and publish it. Students need a matching account email in the registered class list. Saved workspaces synchronize automatically.</p></div>}
   </>
-  if (role === 'dean' || role === 'associate_dean') return <ManagementDashboard model={loaded ? accountManagementModel(data) : null} actions={actions} status={status} />
+  if (role === 'dean' || role === 'associate_dean') return <StaffDashboard data={data} loaded={loaded} actions={actions} status={status} />
   if (role === 'instructor') return <InstructorOverview data={data} loaded={loaded} actions={actions} status={status} />
   return <StudentDashboard model={loaded ? accountStudentModel(data, user) : null} actions={actions} status={status} />
 }
@@ -694,8 +353,7 @@ function AccountDashboard() {
 export default function Dashboard() {
   const { user } = useAuth()
   if (user?.role === 'admin') return <SystemAdminDashboard />
-  if (user?.authenticated) return <AccountDashboard />
-  if (user?.role === 'dean' || user?.role === 'associate_dean') return <ManagementDashboard model={previewManagementModel()} />
+  if (user?.authenticated || user?.role === 'dean' || user?.role === 'associate_dean') return <AccountDashboard />
   if (user?.role === 'instructor') return <InstructorDashboard model={previewInstructorModel(user)} />
   return <StudentDashboard model={previewStudentModel(user)} />
 }

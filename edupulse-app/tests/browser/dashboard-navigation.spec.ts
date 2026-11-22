@@ -2,52 +2,47 @@ import { test, expect } from '@playwright/test'
 import { dashboardNavigationUI } from '../dashboard-navigation-fixture'
 import { unifiedWorkspace } from '../courseware-unified-fixture'
 
-test('instructor summary cards open their matching lists and preserve browser Back', async ({ page }) => {
+test('instructor Dashboard shows recent activity without repeating the Course, Syllabus or Monitoring pages', async ({ page }) => {
   await dashboardNavigationUI(page)
   await page.goto('/#/dashboard')
-  const destinations = [
-    ['My Courses', '/courseware'], ['Active Syllabi', '/syllabus?tab=mine&status=active'],
-    ['Drafts to Review', '/courseware?status=draft'], ['Published Items', '/courseware?status=published'],
-  ]
-  for (const [label, path] of destinations) {
-    const card = page.getByRole('link', { name: label, exact: true })
-    await expect(card).toHaveAttribute('href', '#' + path)
-    await card.click()
-    await expect(page).toHaveURL(url => url.hash === '#' + path)
-    if (label === 'Active Syllabi') {
+  const main = page.getByRole('main')
+  await expect(main.getByRole('heading', { name: 'Recent course activity', exact: true })).toBeVisible()
+  await expect(main.locator('.kpi-card')).toHaveCount(0)
+  await expect(main.getByRole('navigation', { name: 'Quick actions' })).toHaveCount(0)
+  for (const heading of ['My courses and block sections', 'My Block Sections', 'Score Snapshot', 'Courseware Review Queue'])
+    await expect(main.getByRole('heading', { name: heading, exact: true })).toHaveCount(0)
+  for (const href of ['#/courseware', '#/syllabus', '#/student-monitoring'])
+    await expect(main.locator(`a[href^="${href}"]`)).toHaveCount(0)
+})
+
+test('course and syllabus filters keep their lists and browser Back', async ({ page }) => {
+  await dashboardNavigationUI(page)
+  for (const path of ['/syllabus?tab=mine&status=active', '/courseware?status=draft', '/courseware?status=published']) {
+    await page.goto('/#' + path)
+    if (path.startsWith('/syllabus')) {
       await expect(page.locator('[data-syllabus-id]')).toHaveCount(2)
       await expect(page.locator('[data-syllabus-id="unfinished-syllabus"]')).toHaveCount(0)
       await page.getByRole('button', { name: 'Show all syllabi', exact: true }).click()
       await expect(page.locator('[data-syllabus-id]')).toHaveCount(3)
-      await page.goBack()
-    } else if (label === 'Drafts to Review' || label === 'Published Items') {
+    } else {
       await expect(page.locator('[data-course]')).toHaveCount(1)
-      await expect(page.locator('[data-course="baseline-syllabus"]')).toContainText(label === 'Drafts to Review' ? '1 draft' : '1 published')
+      await expect(page.locator('[data-course="baseline-syllabus"]')).toContainText(path.endsWith('draft') ? '1 draft' : '1 published')
       await page.reload()
       await expect(page.locator('[data-course]')).toHaveCount(1)
       await page.getByRole('button', { name: 'Show all courses', exact: true }).click()
       await expect(page.locator('[data-course]')).toHaveCount(2)
       await page.goBack()
-    } else await expect(page.getByRole('heading', { name: 'Course', exact: true })).toBeVisible()
-    await page.goBack()
-    await expect(page.getByRole('heading', { name: 'Instructor Dashboard', exact: true })).toBeVisible()
+      await expect(page.locator('[data-course]')).toHaveCount(1)
+    }
   }
-  const courses = page.getByRole('link', { name: 'My Courses', exact: true })
-  await page.keyboard.press('Tab')
-  await courses.focus()
-  await expect(courses).toBeFocused()
-  expect(await courses.evaluate(element => getComputedStyle(element).outlineStyle)).not.toBe('none')
-  await page.keyboard.press('Enter')
-  await expect(page).toHaveURL(/#\/courseware$/)
 })
 
-test('zero-count cards remain useful and show honest empty states', async ({ page }) => {
+test('filtered lists show honest empty states', async ({ page }) => {
   const fixture = await dashboardNavigationUI(page)
   const workspace = unifiedWorkspace()
   fixture.setWorkspace({ ...workspace, syllabi: workspace.syllabi.map(syllabus => ({ ...syllabus, status: 'drafted' })), content: {} })
-  for (const [label, empty] of [['Active Syllabi', 'No active syllabi yet.'], ['Drafts to Review', 'No drafts to review'], ['Published Items', 'No published items yet']]) {
-    await page.goto('/#/dashboard')
-    await page.getByRole('link', { name: label, exact: true }).click()
+  for (const [path, empty] of [['/syllabus?tab=mine&status=active', 'No active syllabi yet.'], ['/courseware?status=draft', 'No drafts to review'], ['/courseware?status=published', 'No published items yet']]) {
+    await page.goto('/#' + path)
     await expect(page.getByText(empty, { exact: true })).toBeVisible()
   }
 })

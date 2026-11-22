@@ -2,7 +2,7 @@ import {test,expect} from '@playwright/test'
 import {academicUI} from '../academic-ui-fixture'
 import {roleRecords} from '../role-restoration-fixture'
 import {instructorDashboardScene,instructorSyllabusScene,instructorSharingScene} from '../instructor-updates-ui'
-test('instructor blocks identify their course and score snapshot uses recorded marked results',async({page})=>{await instructorDashboardScene(page)})
+test('instructor dashboard keeps recent course activity without repeating blocks or scores',async({page})=>{await instructorDashboardScene(page)})
 test('syllabus actions merge history and safely persist deletion through reload',async({page})=>{await instructorSyllabusScene(page)})
 test('shared syllabi persist only in sender repository and recipient My Syllabus with provenance',async({page})=>{await instructorSharingScene(page)})
 

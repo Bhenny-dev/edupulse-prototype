@@ -8,8 +8,10 @@ test('assigned-only course cards, separate syllabus and an empty assigned course
   if (isMobile) await page.getByRole('button', { name: 'Open menu', exact: true }).click()
   await expect(page.getByRole('navigation', { name: isMobile ? 'Mobile navigation' : 'Main navigation' }).getByRole('link', { name: 'Syllabus', exact: true })).toBeVisible()
   if (isMobile) await page.getByRole('button', { name: 'Close menu', exact: true }).click()
-  await expect(page.getByText('Courses loaded', { exact: true })).toBeVisible()
+  // Course counts belong to the Course page; the Dashboard shows recent activity only.
+  await expect(page.getByText('Courses loaded', { exact: true })).toHaveCount(0)
   await page.goto('/#/courseware')
+  await expect(page.getByText('Courses loaded', { exact: true })).toBeVisible()
   await expect(page.locator('.instructor-course-card')).toHaveCount(2)
   await page.locator('.instructor-course-card').filter({ hasText: 'IT 201' }).click()
   await expect(page.getByRole('heading', { name: 'Upload syllabi', exact: true })).toBeVisible()
