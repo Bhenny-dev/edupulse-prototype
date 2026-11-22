@@ -27,3 +27,4 @@ Keep context low: Grep before Read, targeted reads only.
 
 # Rules
 Concise responses. No overengineering. No unrequested extras.
+- **Classroom-style UI (U1-U5, 2026-11-22):** plan, references and log in `feature-documentation/CORE-FLOW-WORKSPACE.md` ("UI redesign"). Shell = `Layout.jsx` left rail (`Main navigation`; phone drawer `Mobile navigation` via `Open menu`; account menu is the group "Account"). Record lists use `components/ui/DataTable.jsx` (toolbar search, select filters, status tabs; logic in `dataTableModel.ts`); Home uses `components/ui/ClassCard.jsx` cards only. No filter modals, no card per row.

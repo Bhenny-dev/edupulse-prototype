@@ -1,0 +1,60 @@
+/* Classroom-style shell (UI redesign U1): top bar, left rail that collapses to icons, phone drawer. */
+.app-shell { --rail-open: 256px; --rail-closed: 72px; --topbar-h: 64px; min-height: 100vh; display: flex; flex-direction: column; background: var(--gray-50); }
+.app-topbar { position: sticky; top: 0; z-index: 100; height: var(--topbar-h); display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 16px 0 8px; background: var(--white); border-bottom: 1px solid var(--gray-200); }
+.app-brand { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.app-brand-link { display: flex; align-items: center; gap: 10px; padding: 4px 8px; border-radius: var(--radius-md); color: var(--gray-900); text-decoration: none; }
+.app-brand-mark { width: 34px; height: 34px; border-radius: var(--radius-md); background: var(--sky-500); display: flex; align-items: center; justify-content: center; color: #fff; flex-shrink: 0; }
+.app-brand-name { font: 700 1.125rem var(--font-heading); }
+.app-page-title { display: flex; align-items: center; gap: 6px; min-width: 0; padding-left: 12px; margin-left: 4px; border-left: 1px solid var(--gray-200); color: var(--gray-700); font: 600 1rem var(--font-heading); white-space: nowrap; }
+.app-page-title a { color: var(--gray-500); text-decoration: none; }
+.app-page-title a:hover { color: var(--sky-600); text-decoration: underline; }
+.app-page-title span { overflow: hidden; text-overflow: ellipsis; }
+.rail-toggle, .mobile-menu-btn, .app-tool { width: 40px; height: 40px; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; border: 0; border-radius: var(--radius-full); background: transparent; color: var(--gray-600); cursor: pointer; position: relative; }
+.rail-toggle:hover, .mobile-menu-btn:hover, .app-tool:hover { background: var(--gray-100); }
+.mobile-menu-btn { display: none; }
+.app-tools { display: flex; align-items: center; gap: 4px; }
+.app-tool-badge { position: absolute; top: 4px; right: 4px; min-width: 16px; height: 16px; padding: 0 4px; border-radius: var(--radius-full); background: var(--red-600); color: #fff; font-size: 0.625rem; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+.app-popover { position: absolute; top: 48px; right: 0; background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--radius-lg); box-shadow: 0 12px 32px rgba(15, 23, 42, 0.14); padding: 8px; z-index: 120; }
+.app-menu-item { display: flex; align-items: center; gap: 8px; width: 100%; padding: 10px 12px; border: 0; border-radius: var(--radius-md); background: transparent; color: var(--gray-700); font: 500 0.875rem var(--font-body); text-align: left; text-decoration: none; cursor: pointer; }
+.app-menu-item:hover { background: var(--gray-100); }
+.app-menu-item[aria-pressed="true"] { background: var(--sky-50); color: var(--sky-700); font-weight: 700; }
+.app-menu-item.danger { color: var(--red-600); font-weight: 600; }
+.app-account-btn { display: flex; align-items: center; gap: 8px; padding: 3px 8px 3px 3px; margin-left: 4px; border: 1px solid var(--gray-200); border-radius: var(--radius-full); background: var(--white); cursor: pointer; }
+.app-avatar { width: 30px; height: 30px; border-radius: var(--radius-full); background: var(--sky-600); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem; }
+.app-role-chip { padding: 4px 10px; border: 1px solid var(--gray-200); border-radius: var(--radius-full); background: var(--gray-50); color: var(--gray-600); font: 700 0.75rem var(--font-body); white-space: nowrap; cursor: default; }
+button.app-role-chip { cursor: pointer; border-color: var(--purple-100); background: var(--purple-100); color: var(--purple-500); }
+
+.app-body { flex: 1; display: flex; min-height: 0; }
+.app-rail { position: sticky; top: var(--topbar-h); height: calc(100vh - var(--topbar-h)); width: var(--rail-open); flex-shrink: 0; overflow-y: auto; padding: 8px 12px 16px 0; background: var(--white); border-right: 1px solid var(--gray-200); transition: width var(--duration-normal) var(--ease-out); }
+.rail-group { display: flex; flex-direction: column; gap: 2px; padding: 6px 0; }
+.rail-group + .rail-group { border-top: 1px solid var(--gray-200); }
+.rail-heading { padding: 8px 24px 4px; color: var(--gray-500); font: 600 0.75rem var(--font-body); letter-spacing: 0.02em; white-space: nowrap; }
+.rail-link { display: flex; align-items: center; gap: 18px; min-height: 48px; padding: 0 16px 0 24px; border-radius: 0 var(--radius-full) var(--radius-full) 0; color: var(--gray-700); font: 500 0.875rem var(--font-body); text-decoration: none; white-space: nowrap; }
+.rail-link:hover { background: var(--gray-100); }
+.rail-link[aria-current="page"] { background: var(--sky-100); color: var(--sky-700); font-weight: 700; }
+.rail-link svg { flex-shrink: 0; }
+.rail-label { overflow: hidden; text-overflow: ellipsis; }
+.app-shell.rail-collapsed .app-rail { width: var(--rail-closed); }
+.app-shell.rail-collapsed .app-rail .rail-label, .app-shell.rail-collapsed .app-rail .rail-heading { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); }
+.app-shell.rail-collapsed .app-rail .rail-link { padding: 0; justify-content: center; margin-left: 12px; border-radius: var(--radius-full); width: 48px; }
+.app-main { flex: 1; min-width: 0; min-height: calc(100vh - var(--topbar-h)); }
+
+.app-drawer-backdrop { position: fixed; inset: var(--topbar-h) 0 0 0; z-index: 99; background: rgba(15, 23, 42, 0.32); }
+.app-drawer { width: min(300px, 86vw); height: 100%; overflow-y: auto; padding: 8px 12px 16px 0; background: var(--white); animation: slideIn 220ms var(--ease-out); }
+
+/* Tablets start collapsed unless the person opened the rail. */
+@media (max-width: 1180px) {
+  .app-shell:not(.rail-open) .app-rail { width: var(--rail-closed); }
+  .app-shell:not(.rail-open) .app-rail .rail-label, .app-shell:not(.rail-open) .app-rail .rail-heading { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); }
+  .app-shell:not(.rail-open) .app-rail .rail-link { padding: 0; justify-content: center; margin-left: 12px; border-radius: var(--radius-full); width: 48px; }
+  .profile-name { display: none; }
+}
+@media (max-width: 767px) {
+  .app-topbar { padding: 0 8px; gap: 4px; }
+  .app-rail, .rail-toggle, .desktop-tool, .app-page-title { display: none !important; }
+  .mobile-menu-btn { display: inline-flex; }
+  .app-brand-name { font-size: 1rem; }
+  .app-account-btn { padding: 3px; }
+}
+.dark-mode .app-topbar { background: var(--white) !important; }
+@media print { .app-rail, .app-topbar { display: none !important; } }

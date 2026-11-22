@@ -1,0 +1,44 @@
+/* Shared DataTable (UI redesign, Classroom-style). Tokens come from index.css and flip in .dark-mode. */
+.dt { background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--radius-md); overflow: hidden; }
+.dt-toolbar { display: flex; flex-direction: column; gap: 10px; padding: 12px 14px; border-bottom: 1px solid var(--gray-200); }
+.dt-tabs { display: flex; gap: 4px; overflow-x: auto; }
+.dt-tab { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 6px 12px; border: 0; border-radius: var(--radius-full); background: transparent; color: var(--gray-600); font: 600 0.8125rem var(--font-body); cursor: pointer; white-space: nowrap; }
+.dt-tab:hover { background: var(--gray-100); }
+.dt-tab[aria-pressed="true"] { background: var(--sky-100); color: var(--sky-700); }
+.dt-count { min-width: 20px; padding: 0 6px; border-radius: var(--radius-full); background: var(--gray-100); color: var(--gray-600); font-size: 0.6875rem; line-height: 18px; text-align: center; }
+.dt-tab[aria-pressed="true"] .dt-count { background: var(--white); color: var(--sky-700); }
+.dt-filters { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.dt-search { display: flex; flex: 1 1 220px; align-items: center; gap: 8px; min-height: 38px; padding: 0 12px; border: 1px solid var(--gray-200); border-radius: var(--radius-sm); background: var(--gray-50); color: var(--gray-500); }
+.dt-search:focus-within { border-color: var(--sky-400); box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15); }
+.dt-search input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--gray-800); font: 0.875rem var(--font-body); }
+.dt-select select { min-height: 38px; max-width: 220px; padding: 0 30px 0 10px; border: 1px solid var(--gray-200); border-radius: var(--radius-sm); background-color: var(--white); color: var(--gray-700); font: 500 0.8125rem var(--font-body); }
+.dt-clear { min-height: 38px; padding: 0 10px; border: 0; background: transparent; color: var(--sky-600); font: 600 0.8125rem var(--font-body); cursor: pointer; }
+.dt-actions { display: flex; gap: 8px; margin-left: auto; }
+.dt-scroll { overflow-x: auto; }
+.dt-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+.dt-table th { position: sticky; top: 0; padding: 10px 14px; background: var(--gray-50); color: var(--gray-500); font: 600 0.75rem var(--font-body); letter-spacing: 0.02em; text-align: left; text-transform: uppercase; white-space: nowrap; border-bottom: 1px solid var(--gray-200); }
+.dt-sort { display: inline-flex; align-items: center; gap: 4px; padding: 0; border: 0; background: none; color: inherit; font: inherit; letter-spacing: inherit; text-transform: inherit; cursor: pointer; }
+.dt-sort:hover { color: var(--gray-800); }
+.dt-table td { padding: 12px 14px; border-bottom: 1px solid var(--gray-100); color: var(--gray-700); vertical-align: middle; }
+.dt-dense .dt-table td { padding: 8px 14px; }
+.dt-table tbody tr:last-child td { border-bottom: 0; }
+.dt-clickable { cursor: pointer; }
+.dt-clickable:hover td { background: var(--sky-50); }
+.dt-open { padding: 0; border: 0; background: none; color: var(--gray-900); font: 600 0.875rem var(--font-body); text-align: left; cursor: pointer; }
+.dt-open:hover { color: var(--sky-700); text-decoration: underline; }
+.dt-empty { padding: 28px 16px; color: var(--gray-500); text-align: center; font-size: 0.875rem; }
+.dt-footer { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 14px; border-top: 1px solid var(--gray-200); color: var(--gray-500); font-size: 0.8125rem; }
+.dt-pager { display: inline-flex; align-items: center; gap: 8px; }
+.dt-pager button { display: inline-flex; width: 32px; height: 32px; align-items: center; justify-content: center; border: 1px solid var(--gray-200); border-radius: var(--radius-sm); background: var(--white); color: var(--gray-600); cursor: pointer; }
+.dt-pager button:disabled { opacity: 0.4; cursor: default; }
+.dt-pill { display: inline-flex; align-items: center; padding: 2px 10px; border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 600; white-space: nowrap; }
+.dt-pill-neutral { background: var(--gray-100); color: var(--gray-600); }
+.dt-pill-info { background: var(--sky-100); color: var(--sky-700); }
+.dt-pill-success { background: var(--green-100); color: var(--green-700); }
+.dt-pill-warning { background: var(--amber-100); color: var(--amber-700); }
+.dt-pill-danger { background: var(--red-100); color: var(--red-700); }
+@media (max-width: 767px) {
+  .dt-toolbar { padding: 10px; }
+  .dt-select, .dt-select select { flex: 1 1 140px; max-width: none; width: 100%; }
+  .dt-table th, .dt-table td { padding: 10px; }
+}

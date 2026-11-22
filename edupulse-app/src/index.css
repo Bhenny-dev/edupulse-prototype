@@ -1007,17 +1007,10 @@ textarea:focus-visible {
 }
 
 /* ─── MOBILE (≤767px) ─── */
-@media (min-width: 768px) and (max-width: 1350px) {
-  .app-brand { gap: 16px !important; }
-  .app-primary-nav > a { padding: 8px !important; }
-}
-@media (min-width: 768px) and (max-width: 1180px) {
-  .app-primary-nav .nav-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
-}
 @media (max-width: 767px) {
   .app-topbar { padding: 0 12px !important; gap: 8px; }
   .app-brand { gap: 8px !important; min-width: 0; }
-  .app-primary-nav, .desktop-tool { display: none !important; }
+  .desktop-tool { display: none !important; }
   .app-tools { gap: 4px !important; }
   .app-tools > div:empty { display: none; }
   .app-workspace { flex-direction: column; }

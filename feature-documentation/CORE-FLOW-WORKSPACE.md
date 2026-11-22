@@ -272,6 +272,60 @@ typing dates; an instructor can still save other dates for a block.
 | T12.1 | Load, class list, syllabus, delivery, student opens a material and takes an assessment, instructor and Dean monitoring show it | One scenario test | Draft |
 | T12.2 | A student cannot read another student's scores; a former instructor cannot read the block; answer keys stay hidden before release | Database tests | Draft |
 
+## UI redesign: Classroom-style authenticated pages (U1-U5)
+
+Owner request, 22 November 2026: give the signed-in pages the familiar layout of Google Classroom
+(student and teacher views), with Moodle where Classroom has no answer, and give the Dean / Program
+Coordinator the same layout around their own work. Show data as tables with inline filters instead of
+one card per record and instead of filter modals. The landing page and the public pages are not part
+of this work. Every feature and process stays: Pulse (AI), syllabus, course loads, teaching
+materials and assessments, delivery, monitoring. Owner decisions (same day): EduPulse colors, type
+and logo on the Classroom layout; shell first, then Instructor, Student, Dean, Admin; this section is
+the guide and log; screenshots and guides stay paused (`doc-map.json`) until the UI settles.
+
+### Reference (read before changing a screen)
+
+- Classroom Home, Stream, Classwork, People, Grades: https://support.google.com/edu/classroom/answer/9582854
+  (teachers) and https://support.google.com/edu/classroom/answer/9582544 (students).
+- Classroom To-do (Assigned, Missing, Done) and "Your work": https://support.google.com/edu/classroom/answer/6020284
+- Classroom To review and "View all your students' work": https://support.google.com/edu/classroom/answer/9157286
+- Classroom gradebook colors (red missing, green turned in or draft, black returned) and statuses
+  (Assigned, Turned in, Graded, Returned): https://services.google.com/fh/files/misc/google_classroom_user_guide.pdf,
+  https://support.google.com/edu/classroom/answer/16643267
+- Moodle My courses filters (All, In progress, Future, Past) and list view: https://docs.moodle.org/en/My_courses
+- Moodle grader report (search, group filter, rows per page, sticky first column): https://docs.moodle.org/en/Grader_report
+- Moodle activity completion report (one row per student, one column per item): https://docs.moodle.org/en/Activity_completion_report
+
+### Layout rules
+
+1. **Shell.** Top bar: menu button, logo, the current page or class name, tools (search, theme,
+   language, notifications, account). Left rail: Home, then the role's sections, then Settings; the
+   menu button collapses it to icons (remembered per browser) and opens it as a drawer on phones.
+   Landmarks stay `Main navigation` (rail) and `Mobile navigation` (drawer); the phone button stays
+   `Open menu`; `.app-topbar` stays the top bar.
+2. **Home** is the class card grid (Classroom Home): one card per class or block with the course code,
+   title, section and up to three due items. Cards are used only here; everything else is a table.
+3. **Class page** (Instructor, Student): tabs Stream, Classwork, People, Grades (students: Stream,
+   Classwork, People, and their own work). Classwork is grouped by week (Classroom topics). Grades is a
+   Moodle-style grid: students down, items across, cells colored by status.
+4. **To-do / To review** list work across classes with status tabs (Assigned, Missing, Done for
+   students; To review, Reviewed for instructors) and a class filter.
+5. **Dean / Program Coordinator**: Home shows the term's courses and blocks as cards; Course loads,
+   Instructors, Students and Monitoring are tables with inline filters (term, program, year, status).
+6. **Tables** use the shared `DataTable` (`src/components/ui/DataTable.jsx`): search box, select
+   filters and status tabs in one toolbar above the table, sortable headers with `aria-sort`, row
+   click to open, empty state, paging. Never a card per row, never a modal only for filtering.
+
+### Iterations
+
+| Task | Work | Acceptance | Stage |
+|---|---|---|---|
+| U1 | Shell: left rail and drawer, top bar with page title; shared `DataTable` with toolbar, tabs, sort and paging; used by Notifications | Unit test for the table model; browser specs that open menus pass | Tested (`data-table.test.ts`, `layout-reload`, `workflows`, `role-restoration`, `layout-feedback`) |
+| U2 | Instructor: Home class cards; class page with Stream, Classwork by week, People, Grades grid; To review | Instructor browser specs pass | Draft |
+| U3 | Student: Home class cards with due items; class page; To-do with Assigned, Missing, Done | Student browser specs pass | Draft |
+| U4 | Dean / Program Coordinator: Home term cards; Course loads, Instructors, Students, Monitoring as filtered tables | Dean browser specs pass | Draft |
+| U5 | System Admin and remaining pages (Settings, Performance, Records) on the shell and tables; recapture screenshots when the owner resumes the docs | Admin specs pass | Draft |
+
 ## Backlog
 
 - Students on an uploaded class list who have no EduPulse account yet are enrolled automatically when
@@ -328,3 +382,16 @@ typing dates; an instructor can still save other dates for a block.
   student-progress (new), assessment-attempts, student-block-delivery and role-restoration on desktop and
   mobile. Two role-restoration tests (instructor pages, student "assigned units") fail the same way on
   `72c97eea`. The academic read now returns `serverNow`; no migration.
+- 2026-11-22: UI redesign U1 (shell) Tested. `Layout.jsx` replaces the top-bar section links and the
+  breadcrumb with a Classroom-style left rail (`layout.css`: Home, the role's sections, Settings;
+  the menu button collapses it to icons, remembered in localStorage `edupulse-rail`; tablets start
+  collapsed; phones get the `Mobile navigation` drawer) and a page title in the top bar. New shared
+  `DataTable` (`components/ui/DataTable.jsx`, rules in `dataTableModel.ts`, unit test
+  `data-table.test.ts`): search, select filters and status tabs in one toolbar, sortable headers,
+  paging, row click. Notifications is the first page on it (tabs All/Unread, category filter). The
+  account menu is now a group named "Account" (layout-reload scopes its Settings link there);
+  workflows expects the tab "Unread 2". Gate: `npm run verify` exit 0; `VERCEL=1 npm test` 531 of 531; browser specs layout-reload,
+  workflows, role-restoration and layout-feedback on desktop and mobile: 33 passed, 2 skipped, 19
+  failed, all on the known list (workflows 17/102/114/216, layout-feedback 9/18/24/29 where 29 looks
+  for a student link named "Assessments" that is "Practice Assessments", role-restoration instructor
+  pages and student units). No migration.
