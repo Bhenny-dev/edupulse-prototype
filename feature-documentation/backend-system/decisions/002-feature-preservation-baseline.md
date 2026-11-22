@@ -348,3 +348,8 @@ Manual Add/Edit instructor loading collects schedule time/day, units, lecture/la
 ### 19 November 2026 - Meeting-day selection
 
 Reviewed load rows, manual instructor loads and new block schedules use a Monday through Saturday checkbox dropdown. Select one or two days: M, T, W, Th, F, S. Tuesday and Thursday save as TTh; the same stored codes drive computed contact hours and weekly delivery dates. Existing imported source strings remain visible until deliberately corrected; never silently truncate a source schedule. Do not regress Thursday into Tuesday or allow a third selected day in these editors. Historical source facts stay unchanged.
+
+
+### 22 November 2026 - Shared agent deployment after account transfer
+
+Do not infer deployment from main being pushed. The school-account EduPulse project is unlinked from Git, and GitHub Actions reports a billing lock before any steps execute. Claude and Codex use the same project-local authenticated `deploy:production` command, verifying the exact project/team, repo, root and remote-main SHA. Upload only a clean Git archive; never include account credentials, private data or unfinished working-tree changes. Keep original build verification, environment settings and production checks. Triggered is not Ready. Never change unrelated projects, billing or repository permissions as a workaround.

@@ -165,3 +165,16 @@ Automatic record/workspace refresh uses bounded browser-side scheduling with exi
 ## Syllabus source reader, 9 November 2026
 
 The existing Node AI handler accepts the provider-independent `syllabus-sources` action before resolving provider keys. Body size is capped at 2.8 MB, each original at 2 MB, with a 90-second handler cancellation boundary and a 15-second public download deadline. Read batches hold at most three references; DNS is resolved once and pinned per public request, including revalidated redirects. Parsing runs in the existing isolated extraction worker. Source-reader rate limits and per-account update locks apply independently of paid inference. The archive uses the existing user-JWT database connection; no deployment secret or platform configuration is added. Cached sources cause no network/model replay. Signature review, content checks and publication remain explicit actions.
+
+
+## Shared agent production deployment (22 November 2026)
+
+EduPulse moved to `bhennys-projects`. Claude and Codex must not use the former team's credentials or claim that a Git push means production is updated. GitHub Actions currently fails before starting because GitHub reports an account billing lock; changing billing is an owner action.
+
+Use an isolated, ignored CLI sign-in from `edupulse-app`: `vercel login --global-config .data/vercel-auth`, signing into the school account. Do not copy credentials into source files or change another project's global sign-in.
+
+After pushing reviewed work to main, both agents run `npm run deploy:production -- --check`, then `npm run deploy:production`. The command checks the EduPulse project/build root and remote, fetches remote main and archives that exact commit into ignored private storage. Only that archive is uploaded, with the transferred project's own settings and production environment; unfinished working-tree edits and private account files are excluded. It creates no new project and changes no billing or environment variables.
+
+The command reports a deployment URL and SHA and stores a private receipt in `.data/deployment-control/latest.json`. A successful trigger is not a successful build: inspect Vercel for Ready and the canonical production alias before reporting live. If access fails, complete the project-local sign-in; do not generate empty commits or deploy from the old team. Automatic Git deployment still requires a working Vercel GitHub integration on the destination account.
+
+Verified transfer diagnosis: the destination project has no Git link. `vercel git connect` for Bhenny-dev/edupulse-prototype returns that the connected GitHub identity needs admin/write access. Direct source deployment does not require widening repository access. Keep this explicit; do not claim automatic push deployment is repaired until the Vercel Git integration is successfully reconnected.

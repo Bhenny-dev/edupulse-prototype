@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "node scripts/dev.mjs",
+    "deploy:production": "node scripts/deploy-production.mjs",
     "build": "vite build",
     "build:capture": "node scripts/build-capture.mjs",
     "lint": "oxlint src server api scripts tests vite.config.js playwright.config.ts",

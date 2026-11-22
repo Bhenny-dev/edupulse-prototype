@@ -22,3 +22,8 @@ The `commit-msg` hook enforces this rule. Never use `--no-verify`. Use a `Docs-I
 ## Core flow workspace
 
 The Dean / Program Coordinator -> Instructor -> Student flow is built from [feature-documentation/CORE-FLOW-WORKSPACE.md](feature-documentation/CORE-FLOW-WORKSPACE.md). Read it before working on that flow, take its goals in order, and update its task rows and log in the same commit as the work. Push and migrate each goal when it is Ready, then start the next.
+
+
+## EduPulse production trigger after the Vercel transfer
+
+Claude and Codex share `feature-documentation/backend-system/vercel.md`. From `edupulse-app`, run `npm run deploy:production -- --check` then `npm run deploy:production` after an authorized push. Use the ignored project-local school-account sign-in. This archives remote main and deploys only to the existing EduPulse project in bhennys-projects, never unfinished local edits. A push is not deployment evidence: verify Ready and production alias separately. Automatic Git push deployment is currently disconnected; GitHub Actions is blocked by GitHub billing. Do not change billing, another project or repository permissions to work around this.
