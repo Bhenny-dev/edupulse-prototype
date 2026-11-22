@@ -57,7 +57,7 @@ test('bell and Notifications page share one unread count, and Mark All Read clea
   const bell = page.getByRole('button', { name: /^Notifications/ })
   await expect(bell).toHaveAccessibleName('Notifications, 2 unread')
   await page.goto('/#/notifications')
-  await expect(page.getByRole('button', { name: 'Unread 2', exact: true })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Unread (2)', exact: true })).toBeVisible()
   await page.getByRole('button', { name: 'Mark All Read', exact: true }).click()
   await expect(bell).toHaveAccessibleName('Notifications')
   await page.reload()

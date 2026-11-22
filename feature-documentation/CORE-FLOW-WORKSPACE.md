@@ -272,66 +272,8 @@ typing dates; an instructor can still save other dates for a block.
 | T12.1 | Load, class list, syllabus, delivery, student opens a material and takes an assessment, instructor and Dean monitoring show it | One scenario test | Draft |
 | T12.2 | A student cannot read another student's scores; a former instructor cannot read the block; answer keys stay hidden before release | Database tests | Draft |
 
-## UI redesign: Classroom-style authenticated pages (U1-U5)
-
-Owner request, 22 November 2026: give the signed-in pages the familiar layout of Google Classroom
-(student and teacher views), with Moodle where Classroom has no answer, and give the Dean / Program
-Coordinator the same layout around their own work. Show data as tables with inline filters instead of
-one card per record and instead of filter modals. The landing page and the public pages are not part
-of this work. Every feature and process stays: Pulse (AI), syllabus, course loads, teaching
-materials and assessments, delivery, monitoring. Owner decisions (same day): EduPulse colors, type
-and logo on the Classroom layout; shell first, then Instructor, Student, Dean, Admin; this section is
-the guide and log; screenshots and guides stay paused (`doc-map.json`) until the UI settles.
-
-### Reference (read before changing a screen)
-
-- Classroom Home, Stream, Classwork, People, Grades: https://support.google.com/edu/classroom/answer/9582854
-  (teachers) and https://support.google.com/edu/classroom/answer/9582544 (students).
-- Classroom To-do (Assigned, Missing, Done) and "Your work": https://support.google.com/edu/classroom/answer/6020284
-- Classroom To review and "View all your students' work": https://support.google.com/edu/classroom/answer/9157286
-- Classroom gradebook colors (red missing, green turned in or draft, black returned) and statuses
-  (Assigned, Turned in, Graded, Returned): https://services.google.com/fh/files/misc/google_classroom_user_guide.pdf,
-  https://support.google.com/edu/classroom/answer/16643267
-- Moodle My courses filters (All, In progress, Future, Past) and list view: https://docs.moodle.org/en/My_courses
-- Moodle grader report (search, group filter, rows per page, sticky first column): https://docs.moodle.org/en/Grader_report
-- Moodle activity completion report (one row per student, one column per item): https://docs.moodle.org/en/Activity_completion_report
-
-### Layout rules
-
-1. **Shell.** Top bar: menu button, logo, the current page or class name, tools (search, theme,
-   language, notifications, account). Left rail: Home, then the role's sections, then Settings; the
-   menu button collapses it to icons (remembered per browser) and opens it as a drawer on phones.
-   Landmarks stay `Main navigation` (rail) and `Mobile navigation` (drawer); the phone button stays
-   `Open menu`; `.app-topbar` stays the top bar.
-2. **Home** is the class card grid (Classroom Home): one card per class or block with the course code,
-   title, section and up to three due items. Cards are used only here; everything else is a table.
-3. **Class page** (Instructor, Student): tabs Stream, Classwork, People, Grades (students: Stream,
-   Classwork, People, and their own work). Classwork is grouped by week (Classroom topics). Grades is a
-   Moodle-style grid: students down, items across, cells colored by status.
-4. **To-do / To review** list work across classes with status tabs (Assigned, Missing, Done for
-   students; To review, Reviewed for instructors) and a class filter.
-5. **Dean / Program Coordinator**: Home shows the term's courses and blocks as cards; Course loads,
-   Instructors, Students and Monitoring are tables with inline filters (term, program, year, status).
-6. **Tables** use the shared `DataTable` (`src/components/ui/DataTable.jsx`): search box, select
-   filters and status tabs in one toolbar above the table, sortable headers with `aria-sort`, row
-   click to open, empty state, paging. Never a card per row, never a modal only for filtering.
-
-### Iterations
-
-| Task | Work | Acceptance | Stage |
-|---|---|---|---|
-| U1 | Shell: left rail and drawer, top bar with page title; shared `DataTable` with toolbar, tabs, sort and paging; used by Notifications | Unit test for the table model; browser specs that open menus pass | Tested (`data-table.test.ts`, `layout-reload`, `workflows`, `role-restoration`, `layout-feedback`) |
-| U2 | Instructor: Home class cards; class page with Stream, Classwork by week, People, Grades grid; To review | Instructor browser specs pass | Tested (instructor-courses, instructor-updates, instructor-scope, syllabus-repository, class-lists, term-calendar, assessment-attempts; Grades grid is still Student Monitoring) |
-| U3 | Student: Home class cards with due items; class page; To-do with Assigned, Missing, Done | Student browser specs pass | Tested (student-progress, student-blocks, student-learning, student-block-delivery, page-readers) |
-| U4 | Dean / Program Coordinator: Home term cards; Course loads, Instructors, Students, Monitoring as filtered tables | Dean browser specs pass | Tested (card-actions, course-semesters, dean-block-sections, dean-management, dean-records, historical-loads, monitoring, oversight, role-monitoring, student-blocks; Home keeps the course table instead of cards because a term has dozens of courses) |
-| U5 | System Admin and remaining pages (Settings, Performance, Records) on the shell and tables; recapture screenshots when the owner resumes the docs | Admin specs pass | Tested (card-actions, course-semesters, dean-management, dean-records, teaching-load, second-admin, admin-reload, account-support, role-monitoring, settings-outline, editable-syllabus); screenshots wait for the owner |
-
 ## Backlog
 
-- The signed-in instructor Home (`InstructorOverview`) has no "My Courses / Active Syllabi / Drafts to
-  Review / Published Items" summary links, "My Block Sections" or "Score Snapshot" sections, which
-  `dashboard-navigation.spec.ts` 5/44 and `instructor-updates.spec.ts:5` expect (they fail on `e69758bb`
-  and before it; only the preview persona's dashboard has them).
 - Students on an uploaded class list who have no EduPulse account yet are enrolled automatically when
   their account is created (today: upload the same list again).
 - Students see a course they are listed in before the instructor's syllabus exists, marked as waiting for
@@ -386,60 +328,6 @@ the guide and log; screenshots and guides stay paused (`doc-map.json`) until the
   student-progress (new), assessment-attempts, student-block-delivery and role-restoration on desktop and
   mobile. Two role-restoration tests (instructor pages, student "assigned units") fail the same way on
   `72c97eea`. The academic read now returns `serverNow`; no migration.
-- 2026-11-22: UI redesign U1 (shell) Tested. `Layout.jsx` replaces the top-bar section links and the
-  breadcrumb with a Classroom-style left rail (`layout.css`: Home, the role's sections, Settings;
-  the menu button collapses it to icons, remembered in localStorage `edupulse-rail`; tablets start
-  collapsed; phones get the `Mobile navigation` drawer) and a page title in the top bar. New shared
-  `DataTable` (`components/ui/DataTable.jsx`, rules in `dataTableModel.ts`, unit test
-  `data-table.test.ts`): search, select filters and status tabs in one toolbar, sortable headers,
-  paging, row click. Notifications is the first page on it (tabs All/Unread, category filter). The
-  account menu is now a group named "Account" (layout-reload scopes its Settings link there);
-  workflows expects the tab "Unread 2". Gate: `npm run verify` exit 0; `VERCEL=1 npm test` 531 of 531; browser specs layout-reload,
-  workflows, role-restoration and layout-feedback on desktop and mobile: 33 passed, 2 skipped, 19
-  failed, all on the known list (workflows 17/102/114/216, layout-feedback 9/18/24/29 where 29 looks
-  for a student link named "Assessments" that is "Practice Assessments", role-restoration instructor
-  pages and student units). No migration.
-- 2026-11-22: UI redesign U2 and U3 Tested together (they share `Dashboard.jsx`). New `ClassCard`
-  (`components/ui/ClassCard.jsx`, banner color from `classTone.js`): Classroom Home cards for the
-  instructor's courses (signed-in `InstructorOverview` and the course list in `InstructorCourses`), the
-  preview instructor's block sections and the student's classes (button cards keep the name
-  "Open course <code>"). `SummaryCard` is now one cell of a flat stat strip (`.kpi-grid` in
-  `index.css`), which removes the floating KPI cards on every role. Instructor Home adds "To review"
-  (answers waiting for marking) and "Recent course activity" tables; the preview Home shows Syllabus
-  Stations, the review queue and marked results as tables. The open course has a colored class banner
-  and underlined tabs with a Grades link to Student Monitoring. Student Home: Pulse Reminders is a
-  To-do table with tabs Assigned, Due soon, Missing (rows keep `data-reminder`), My Block is one line
-  of facts, Upcoming Activities and Learning Material Sources are tables. `DataTable` gained
-  `rowProps` and `openLabel`. Phones get 96 px below the page so the Pulse button never covers the
-  last row (it covered the Dean students "Next" button once the breadcrumb was gone). Tests updated:
-  `instructor-updates-ui.ts`, `student-blocks.spec.ts`, `student-progress.spec.ts`. Gate: `npm run
-  verify` exit 0 (531 of 531), `VERCEL=1 npm test` 531 of 531; browser specs above on desktop and mobile
-  pass except `dashboard-navigation` 5/44 and `instructor-updates:5`, which fail before this change
-  too (backlog). No migration.
-- 2026-11-22: UI redesign U4 (Dean / Program Coordinator) Tested. Dean Home: quick actions without a
-  card, Syllabus Stations and Delivery Progress charts on flat panels, Syllabus Status by Course as a
-  table (status and instructor filters), Faculty Overview as a table with tabs No load, Not yet routed,
-  On track. Instructors: the card grid is one table (instructor and email, degree, specialization,
-  loads, status, actions menu); search, the Show filter, CSV and Add instructor sit in its toolbar;
-  rows keep `.dean-person-card` and the open button "View instructor <name>". Students: the
-  department's block cards are filter chips (`.filter-chip`, still "Filter students in <block>").
-  Tests follow U1/U2 names: rail link "Home" instead of "Dashboard" (`dean-records`,
-  `workspace-cache`), stat icons `.kpi-icon` instead of `.glass-icon` (`dean-management`,
-  `dean-records`, `monitoring`, snapshot `student-learning`); U2 changed these without running the
-  Dean specs, found here. Remaining failures predate the redesign: `monitoring:48` (directory roster
-  registration, like `automatic-records` 18/19/33) and `workspace-cache` 7/17/31/47 (instructor
-  unified-material fixture and a student list without "Open material", like `courseware-unified`).
-  Gate: `npm run verify` exit 0 (531 of 531), `VERCEL=1 npm test` 531 of 531. No migration.
-- 2026-11-22: UI redesign U5 (flat surfaces, Dean course catalog, admin) Tested. `.card` is a plain
-  bordered panel (no 3D shadow or hover lift) and legacy `.data-table` tables share the DataTable
-  header and spacing, so Records, Monitor, Settings, Performance and the System Admin panels match
-  the Classroom look without per-page rewrites; `GlassIcon` is a flat tinted tile (same class and
-  API). The Dean's Course page lists the catalog in one table (course and title, year and semester,
-  units, instructors, status, actions) with search ("Search courses"), the year-and-semester filter
-  and the URL-driven Loaded / Not yet loaded toggle; rows keep `.dean-course-card` and the open
-  button names used by tests. Layout: `.app-shell` exposes `--rail-space` (rail width; 0 on phones)
-  and the outline editor's full-width breakout subtracts it; `.outline-table-scroll` and `.dt-scroll`
-  are `position: relative` so absolutely positioned hidden labels inside them stay clipped (they
-  widened the page by the rail width once the main area narrowed). DataTable gained `searchLabel`.
-  Gate: `npm run verify` exit 0 (531 of 531), `VERCEL=1 npm test` 531 of 531; browser specs in the U5
-  row on desktop and mobile pass (111 of 112, then settings-outline:24 after the fix). No migration.
+- 2026-11-22: The Classroom-style UI redesign (U1 to U5: `e69758bb`, `cf7ad117`, `618f3283`, `83608e8d`) was
+  reverted at the owner's request. The signed-in pages for every role are back to the `7c548a38` interface.
+  The owner will decide the next UI change from that baseline. No migration.

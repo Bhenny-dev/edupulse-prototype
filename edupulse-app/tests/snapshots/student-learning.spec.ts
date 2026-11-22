@@ -10,6 +10,6 @@ test('course tabs and all assessment questions in a separate dialog',async({page
 test('student topic summaries use dashboard cards',async({page})=>{
  await studentLearningUI(page);await page.goto('/#/performance?tab=bytopic')
  await expect(page.getByRole('heading',{name:'Topics and assessment coverage',exact:true})).toBeVisible()
- await expect(page.locator('.kpi-card .kpi-icon')).toHaveCount(7)
+ await expect(page.locator('.kpi-card .glass-icon')).toHaveCount(7)
  await page.screenshot({path:'../feature-documentation/system-manual/41-student-learning/14-topic-summary-cards.png',animations:'disabled',fullPage:true})
 })

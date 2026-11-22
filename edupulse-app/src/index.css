@@ -1007,10 +1007,17 @@ textarea:focus-visible {
 }
 
 /* ─── MOBILE (≤767px) ─── */
+@media (min-width: 768px) and (max-width: 1350px) {
+  .app-brand { gap: 16px !important; }
+  .app-primary-nav > a { padding: 8px !important; }
+}
+@media (min-width: 768px) and (max-width: 1180px) {
+  .app-primary-nav .nav-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+}
 @media (max-width: 767px) {
   .app-topbar { padding: 0 12px !important; gap: 8px; }
   .app-brand { gap: 8px !important; min-width: 0; }
-  .desktop-tool { display: none !important; }
+  .app-primary-nav, .desktop-tool { display: none !important; }
   .app-tools { gap: 4px !important; }
   .app-tools > div:empty { display: none; }
   .app-workspace { flex-direction: column; }
@@ -1593,22 +1600,3 @@ textarea:focus-visible {
 
 /* Native auto overflow exposes horizontal scrollbars only when content needs them. */
 .grid-2 > *, .grid-3 > *, .grid-4 > *, .academic-table-wrap { min-width: 0; }
-
-/* ─── UI redesign U2: stat strip (replaces floating KPI cards; Moodle/Classroom flat surfaces) ─── */
-.kpi-grid { display: flex; flex-wrap: wrap; gap: 0; background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--radius-md); overflow: hidden; }
-.kpi-card { flex: 1 1 180px; display: flex; align-items: center; gap: 12px; min-height: 0; padding: 14px 16px; margin: 0 -1px -1px 0; background: transparent; border: 0; border-right: 1px solid var(--gray-200); border-bottom: 1px solid var(--gray-200); border-radius: 0; box-shadow: none; color: inherit; text-decoration: none; transform: none; }
-.kpi-card:hover { transform: none; box-shadow: none; }
-a.kpi-card:hover, button.kpi-card:hover { background: var(--sky-50); }
-.kpi-icon { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; flex-shrink: 0; border-radius: var(--radius-sm); background: var(--gray-100); }
-.kpi-card .kpi-value { font: 700 1.375rem/1.2 var(--font-heading); color: var(--gray-900); }
-.kpi-card .kpi-value-text { font: 500 0.8125rem/1.4 var(--font-body); }
-.kpi-card .kpi-label { font-size: 0.8125rem; color: var(--gray-500); margin-top: 2px; }
-
-/* ─── UI redesign U5: flat surfaces. Cards are plain bordered panels (no 3D shadow or lift), and
-   legacy `.data-table` tables match the shared DataTable header and spacing. ─── */
-.card { border-radius: var(--radius-md); box-shadow: none; border: 1px solid var(--gray-200); padding: 20px; transform: none; }
-.card:hover { box-shadow: none; transform: none; }
-a.card:hover, button.card:hover { border-color: var(--sky-300); background: var(--gray-50); }
-.card-header h3 { font-size: 1rem; font-weight: 600; }
-.data-table th { padding: 10px 14px; background: var(--gray-50); color: var(--gray-500); font: 600 0.75rem var(--font-body); letter-spacing: 0.02em; border-bottom: 1px solid var(--gray-200); }
-.data-table td { padding: 12px 14px; font-size: 0.875rem; }

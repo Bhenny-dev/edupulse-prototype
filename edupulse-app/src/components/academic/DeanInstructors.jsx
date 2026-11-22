@@ -10,7 +10,6 @@ import { DeanCards, DeanDialog, ActivityTable, DeanFeedback, ConfirmDialog, Stat
 import { useDeanAction } from './deanActions'
 import DeanAccountDialog from './DeanAccountDialog'
 import CoursewareActions from '../courseware/CoursewareActions'
-import DataTable from '../ui/DataTable'
 import useAcademicTerm from './useAcademicTerm'
 import DeanCourseInspection from './DeanCourseInspection'
 import {recordsForLoadTerm} from '../../utils/loadTerms'
@@ -38,13 +37,13 @@ export default function DeanInstructors({ data:allData }) {
   const directory = useMemo(() => deanDirectory(data, model), [data, model])
   const loads = useMemo(() => courseAssignments(data), [data])
   const [detail, setDetail] = useWorkspaceViewState('dean-detail:instructors', null)
-  const [status, setStatus] = useState('all')
+  const [search, setSearch] = useState(''), [status, setStatus] = useState('all')
   const [accountAction,setAccountAction]=useWorkspaceViewState(`dean-instructor-action:${term}`,null)
   const [accountMenu,setAccountMenu]=useWorkspaceViewState(`dean-instructor-menu:${term}`,null)
   const [inspect,setInspect]=useWorkspaceViewState(`dean-instructor-course:${term}`,null)
   const action = useDeanAction()
   const people = directory.instructors.map(person => ({ ...person, loads: loads.filter(load => load.instructorId === person.id), syllabi: assignedInstructorSyllabi(data,person.id) }))
-  const shown = people.filter(person => (status === 'all' || person.status === status || (status === 'masters' && person.has_masters)))
+  const shown = people.filter(person => (status === 'all' || person.status === status || (status === 'masters' && person.has_masters)) && `${person.name} ${person.email} ${person.specialization}`.toLowerCase().includes(search.trim().toLowerCase()))
   const selected = typeof detail === 'string' && detail.startsWith('instructor:') ? people.find(person => person.id === detail.slice(11)) : null
   const operation=typeof accountAction==='string'?accountAction.split(':')[0]:''
   const target=typeof accountAction==='string'?people.find(person=>person.id===accountAction.slice(accountAction.indexOf(':')+1)):null
@@ -67,24 +66,22 @@ export default function DeanInstructors({ data:allData }) {
       { label: 'Suspended', value: people.filter(p => p.status === 'suspended').length, icon: UserX, tone: 'red', onClick: () => setStatus('suspended') }]} />
     <DeanFeedback action={action} />
     {!directory.managed && writable && <p className="text-sm text-muted mb-16">{data.directoryError || 'Preview sample. Account changes need a signed-in Dean account.'}</p>}
-    {/* One table for the directory (UI redesign rule 6): search, the Show filter and actions in its toolbar. */}
-    <DataTable label="Instructors" rows={shown} searchPlaceholder="Name, email or specialization"
-      empty={people.length ? 'No instructor matches this view.' : 'No instructor accounts yet. Add an instructor to begin course loading.'} noMatch="No instructor matches this view."
-      rowProps={person => ({ className: `dean-person-card${person.status === 'suspended' ? ' is-suspended' : ''}` })}
-      onRowClick={person => setDetail(`instructor:${person.id}`)} openLabel={person => `View instructor ${person.name}`}
-      actions={<>
-        <label className="dt-select"><span className="sr-only">Show</span><select aria-label="Show" value={status} onChange={event => setStatus(event.target.value)}><option value="all">All instructors</option><option value="active">Active</option><option value="masters">With master’s degree</option><option value="suspended">Suspended</option></select></label>
-        <CsvButton headers={['Name', 'Email', 'Employee ID', 'Master’s degree', 'Highest degree', 'Specialization', 'Course loads', 'Status']} rows={shown.map(p => [p.name, p.email, p.employee_id, p.has_masters === null ? 'Not recorded' : p.has_masters ? 'Yes' : 'No', p.degree, p.specialization, p.loads.length, p.status])} name="instructors" />
-        {directory.managed && writable && <button className="btn btn-primary btn-sm" onClick={() => setEditing('new')}><UserPlus size={15} aria-hidden="true" /> Add instructor</button>}
-      </>}
-      columns={[
-        { key: 'name', label: 'Instructor', value: person => `${person.name} ${person.email || ''}`, render: person => <span style={{ display: 'flex', flexDirection: 'column' }}><span>{person.name}</span><small className="text-muted" style={{ fontWeight: 400 }}>{person.email || 'Email not recorded'}</small></span> },
-        { key: 'degree', label: 'Degree', value: degreeLabel },
-        { key: 'specialization', label: 'Specialization', value: person => person.specialization || '' },
-        { key: 'loads', label: 'Loads', searchable: false, value: person => person.loads.length, render: person => `${person.loads.length} load${person.loads.length === 1 ? '' : 's'} · ${new Set(person.loads.map(l => l.code)).size} course${new Set(person.loads.map(l => l.code)).size === 1 ? '' : 's'} · ${person.syllabi.length} syllab${person.syllabi.length === 1 ? 'us' : 'i'}` },
-        { key: 'status', label: 'Status', searchable: false, render: person => person.historical ? <span className="dean-tag">Historical teaching record</span> : <StatusBadge status={person.status} /> },
-        { key: 'actions', label: '', sortable: false, searchable: false, width: 56, render: person => actions(person) || null },
-      ]} />
+    <div className="dean-toolbar">
+      <label className="academic-filter">Search instructors<input className="form-input" type="search" value={search} onChange={event => setSearch(event.target.value)} placeholder="Name, email or specialization" /></label>
+      <label className="academic-filter">Show<select className="form-select" value={status} onChange={event => setStatus(event.target.value)}><option value="all">All instructors</option><option value="active">Active</option><option value="masters">With master’s degree</option><option value="suspended">Suspended</option></select></label>
+      <div className="academic-actions"><CsvButton headers={['Name', 'Email', 'Employee ID', 'Master’s degree', 'Highest degree', 'Specialization', 'Course loads', 'Status']} rows={shown.map(p => [p.name, p.email, p.employee_id, p.has_masters === null ? 'Not recorded' : p.has_masters ? 'Yes' : 'No', p.degree, p.specialization, p.loads.length, p.status])} name="instructors" />
+        {directory.managed && writable && <button className="btn btn-primary btn-sm" onClick={() => setEditing('new')}><UserPlus size={15} aria-hidden="true" /> Add instructor</button>}</div>
+    </div>
+    <div className="academic-card-grid">{shown.map(person => <article className={`card dean-record-card dean-person-card has-actions${person.status === 'suspended' ? ' is-suspended' : ''}`} key={person.id}>
+      <button className="dean-card-main" onClick={() => setDetail(`instructor:${person.id}`)} aria-label={`View instructor ${person.name}`}>
+        <GlassIcon icon={GraduationCap} color={person.status === 'suspended' ? 'var(--gray-400)' : 'var(--purple-500)'} />
+        <span className="dean-card-text"><strong>{person.name}</strong><span>{person.email || 'Email not recorded'}</span></span>
+      </button>
+      <div className="dean-card-tags"><span className={`dean-tag ${person.has_masters ? 'dean-tag-new' : 'dean-tag-unchanged'}`}>{degreeLabel(person)}</span>{person.specialization && <span className="dean-tag">{person.specialization}</span>}{person.historical?<span className="dean-tag">Historical teaching record</span>:<StatusBadge status={person.status} />}</div>
+      <span>{person.loads.length} course load{person.loads.length === 1 ? '' : 's'} · {new Set(person.loads.map(l => l.code)).size} course{new Set(person.loads.map(l => l.code)).size === 1 ? '' : 's'} · {person.syllabi.length} syllab{person.syllabi.length === 1 ? 'us' : 'i'}</span>
+      <div className="dean-person-actions">{actions(person)}</div>
+    </article>)}</div>
+    {!shown.length && <Empty>{people.length ? 'No instructor matches this view.' : 'No instructor accounts yet. Add an instructor to begin course loading.'}</Empty>}
     {selected && <DeanDialog title={selected.name} subtitle={`${selected.email || 'Email not recorded'} · ${selected.historical?'Historical teaching record':selected.status === 'suspended' ? 'Suspended' : 'Active'}`} icon={GraduationCap} tone="purple" label={`Instructor ${selected.name}`} onClose={() => { setInspect(null); setDetail(null) }}
       footer={<div className="academic-actions">{actions(selected,'dialog')}<button className="btn btn-secondary" onClick={() => { setInspect(null); setDetail(null) }}>Close</button></div>}>
       <dl className="dean-facts">

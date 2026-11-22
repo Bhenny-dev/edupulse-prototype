@@ -12,14 +12,14 @@ test('instructor reader, selected course and slide survive route return and focu
   await page.getByRole('menuitem',{name:'View presentation',exact:true}).click();await page.getByRole('button',{name:'Next slide',exact:true}).click();await expect(page.locator('.pres-topbar-counter')).toHaveText('2 / 2')
   const before=reads;await page.clock.fastForward(601000);await page.evaluate(()=>{window.dispatchEvent(new Event('focus'));window.dispatchEvent(new Event('online'));document.dispatchEvent(new Event('visibilitychange'))})
   expect(reads).toBe(before);await expect(page.locator('.pres-topbar-counter')).toHaveText('2 / 2')
-  await nav(page,'Home');await nav(page,'Course');await expect(page.locator('.pres-topbar-counter')).toHaveText('2 / 2');expect(reads).toBe(before)
+  await nav(page,'Dashboard');await nav(page,'Course');await expect(page.locator('.pres-topbar-counter')).toHaveText('2 / 2');expect(reads).toBe(before)
 })
 test('student reader return restores presentation without recording another material open',async({page})=>{
   await restorationUI(page,'student');let opens=0
   page.on('request',r=>{if(r.method()==='POST'&&r.url().includes('action=academic')&&r.postDataJSON()?.operation==='open')opens++})
   await page.goto('/#/courseware');await page.getByRole('button',{name:'Open material',exact:true}).click();await page.getByRole('button',{name:'Presentation',exact:true}).click();await page.getByRole('button',{name:'Next slide',exact:true}).click()
-  const counter=await page.locator('.pres-topbar-counter').textContent();await nav(page,'Home');await nav(page,'My Courses');await expect(page.locator('.pres-topbar-counter')).toHaveText(counter!);expect(opens).toBe(1)
-  await page.getByRole('button',{name:'Close material',exact:true}).click();await nav(page,'Home');await nav(page,'My Courses');await expect(page.getByRole('region',{name:'Opened courseware'})).toHaveCount(0)
+  const counter=await page.locator('.pres-topbar-counter').textContent();await nav(page,'Dashboard');await nav(page,'My Courses');await expect(page.locator('.pres-topbar-counter')).toHaveText(counter!);expect(opens).toBe(1)
+  await page.getByRole('button',{name:'Close material',exact:true}).click();await nav(page,'Dashboard');await nav(page,'My Courses');await expect(page.getByRole('region',{name:'Opened courseware'})).toHaveCount(0)
 })
 test('Settings manual refresh revalidates data without business commands or writes',async({page})=>{
   const fixture=await automaticRecordsUI(page);await page.goto('/#/settings?tab=privacy')

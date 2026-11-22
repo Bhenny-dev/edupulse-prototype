@@ -1,8 +1,6 @@
 import { useMemo, useState } from 'react'
-import { Link, Navigate, useSearchParams } from 'react-router-dom'
-import { BookOpen, Users, ArrowLeft, Share2 } from 'lucide-react'
-import ClassCard, { ClassCardGrid } from '../ui/ClassCard'
-import { toneFor } from '../ui/classTone'
+import { Navigate, useSearchParams } from 'react-router-dom'
+import { BookOpen, Users, ArrowLeft, ArrowRight, Share2 } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 import { useWorkspace } from '../../context/WorkspaceContext'
 import { useAcademicRecords } from '../../context/AcademicContext'
@@ -40,6 +38,7 @@ export default function InstructorCourses() {
   const sharedOpen = params.get('picker') === 'shared' && Boolean(selected) && !ready
   const setSharedOpen = open => { const query = new URLSearchParams(params); if (open) query.set('picker', 'shared'); else query.delete('picker'); setParams(query) }
   const rawView = params.get('view') || 'topics', view = rawView === 'blocks' ? 'blocks' : 'topics'
+  const choose = course => setParams({ course: course.id,term })
   const back = () => { setError(''); setNotice(''); setParams({term}) }
   const checkSources = async value => {
     const references = collectSyllabusReferences(value)
@@ -82,8 +81,7 @@ export default function InstructorCourses() {
     return <Navigate replace to={`/courseware?${query}`} />
   }
   return <div className="container" data-pulse-zone="courseware" data-pulse-target={selected ? `${selected.code} course` : 'Loaded courses'}>
-    {/* Selected course: Classroom class banner. Course list: plain page header. */}
-    <div className={selected ? `page-header class-banner class-tone-${toneFor(selected.code)}` : 'page-header'}><div><h1>{selected ? `${selected.code} — ${selected.title}` : 'Course'}</h1><p className={selected ? undefined : 'text-muted'}>{selected ? [selected.units && `${selected.units} units`, selected.semester,selected.academicYear&&`AY ${selected.academicYear}`, selected.blocks.join(' · ')].filter(Boolean).join(' · ') : 'Courses assigned to you by the Dean'}</p></div>{selected && <button className="btn btn-secondary" onClick={back}><ArrowLeft size={16} />Back to courses</button>}</div>
+    <div className="page-header"><div><h1>{selected ? `${selected.code} — ${selected.title}` : 'Course'}</h1><p className="text-muted">{selected ? [selected.units && `${selected.units} units`, selected.semester,selected.academicYear&&`AY ${selected.academicYear}`, selected.blocks.join(' · ')].filter(Boolean).join(' · ') : 'Courses assigned to you by the Dean'}</p></div>{selected && <button className="btn btn-secondary" onClick={back}><ArrowLeft size={16} />Back to courses</button>}</div>
     {records.error && <p role="alert">{records.error}</p>}{error && <p role="alert">{error}</p>}{notice && <p role="status">{notice}</p>}
     <LoadTermFilter data={records.data}/>{!writable&&<p className="text-sm text-muted mb-16">This semester is view-only.</p>}
     {selected&&syllabus?.handedOverFrom?.instructorName&&<p className="text-sm text-muted mb-16">Continued from {syllabus.handedOverFrom.instructorName} for {selected.blocks.join(', ')}.</p>}
@@ -93,15 +91,10 @@ export default function InstructorCourses() {
       <div className="kpi-grid mb-24"><SummaryCard icon={BookOpen} label="Courses loaded" value={courses.length} /><SummaryCard icon={Users} label="Students handled" value={assignedStudentCount(scoped,courses,workspace.registrations)} color="var(--purple-500)" bg="var(--purple-100)" /></div>
       <div className="instructor-course-toolbar"><label className="form-label">Search loaded courses<input className="form-input" type="search" value={query} onChange={event => setQuery(event.target.value)} placeholder="Course or block section" /></label></div>
       {!courses.length && <div className="empty-state"><h2>No courses loaded yet</h2><p>Your courses will appear after the Dean assigns them.</p></div>}
-      <ClassCardGrid>{courses.filter(course => `${course.code} ${course.title} ${course.blocks.join(' ')}`.toLowerCase().includes(query.toLowerCase())).map(course => { const current = syllabusForCourse(workspace.syllabi, course); return <ClassCard className="instructor-course-card" key={course.id} to={`/courseware?${new URLSearchParams({ course: course.id, ...(term ? { term } : {}) })}`}
-        code={course.code} title={course.title} subtitle={course.blocks.join(' · ') || 'Class list not added'}
-        items={[{ key: 'students', label: `${courseStudentCount(scoped, course.courseIds)} students` }, { key: 'syllabus', label: current?.status === 'active' ? `${current.courseOutline?.length || 0} weeks · Syllabus ready` : 'Add approved syllabus' }]}
-        meta={course.units ? <span>{course.units} units</span> : null} /> })}</ClassCardGrid>
+      <div className="instructor-course-grid">{courses.filter(course => `${course.code} ${course.title} ${course.blocks.join(' ')}`.toLowerCase().includes(query.toLowerCase())).map(course => { const current = syllabusForCourse(workspace.syllabi, course); return <button className="instructor-course-card" key={course.id} onClick={() => choose(course)}><BookOpen size={24} aria-hidden="true" /><div><strong>{course.code} — {course.title}</strong><p>{course.blocks.join(' · ') || 'Class list not added'}</p><small>{course.units && `${course.units} units · `}{current?.status === 'active' ? `${current.courseOutline?.length || 0} weeks · Syllabus ready` : 'Add approved syllabus'}</small></div><ArrowRight size={16} aria-hidden="true" /></button> })}</div>
     </> : <>
       {schedules.length>0&&<section className="card mb-24"><div className="card-header"><h2>Teaching schedule and load</h2></div><div className="card-body">{schedules.map(load=><div key={load.key} className="mb-16"><strong>{load.block}</strong><TeachingLoadFacts load={load}/></div>)}<p className="text-sm text-muted">These are the reviewed load records. Set actual class dates and delivery times in Block sections.</p></div></section>}
-      {/* Classroom tabs: Classwork (weeks and topics), People and delivery (block sections), Grades (Student Monitoring). */}
-      <nav className="tabs class-tabs mb-24" aria-label="Course workspace views">{[['topics', 'Weeks and topics'], ['blocks', 'Block sections']].map(([id, label]) => <button key={id} className={`tab ${view === id ? 'active' : ''}`} aria-pressed={view === id} onClick={() => setParams({ course: selected.id, view: id,term })}>{label}</button>)}
-        <Link className="tab" to={`/student-monitoring?tab=assessments&course=${encodeURIComponent(selected.courseIds[0] || selected.id)}`}>Grades</Link></nav>
+      <nav className="tabs mb-24" aria-label="Course workspace views">{[['topics', 'Weeks and topics'], ['blocks', 'Block sections']].map(([id, label]) => <button key={id} className={`tab ${view === id ? 'active' : ''}`} aria-pressed={view === id} onClick={() => setParams({ course: selected.id, view: id,term })}>{label}</button>)}</nav>
       {view === 'blocks' ? <CourseBlockSections course={selected} syllabus={syllabus} data={scoped} readOnly={!writable}/> : <>
         {writable && !ready && <><ApprovedSyllabusIntake courseCode={selected.code} onUse={useApproved} /><button className="btn btn-secondary mt-16" onClick={() => setSharedOpen(true)}><Share2 size={16} />Choose a shared syllabus from the system</button></>}
         {syllabus?.courseOutline?.length > 0 && !syllabus.suspended && <CourseTopicWeeks readOnly={!writable} syllabus={syllabus} data={scoped} course={selected} onSchedule={() => setParams({course:selected.id,view:'blocks',term})} />}

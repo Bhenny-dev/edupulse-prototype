@@ -43,7 +43,7 @@ for(const overlay of ['account','notifications','language','roles'] as const)tes
   await page.getByRole('button',{name:'Account menu',exact:true}).click()
   await page.getByRole('button',{name:'Switch view',exact:true}).click()
  }
- const surface=overlay==='account'?page.getByRole('group',{name:'Account',exact:true}).getByRole('link',{name:'Settings',exact:true}):overlay==='notifications'?page.getByRole('heading',{name:'Notifications',exact:true}):overlay==='language'?page.getByRole('button',{name:'English',exact:true}):page.getByRole('heading',{name:'Switch View',exact:true})
+ const surface=overlay==='account'?page.getByRole('link',{name:'Settings',exact:true}):overlay==='notifications'?page.getByRole('heading',{name:'Notifications',exact:true}):overlay==='language'?page.getByRole('button',{name:'English',exact:true}):page.getByRole('heading',{name:'Switch View',exact:true})
  await expect(surface).toBeVisible();await expect.poll(()=>savedOverlay(page,key)).toBe(overlay)
  await page.reload();await expect(surface).toBeVisible()
  expect(new URL(page.url()).hash).toBe('#/syllabus?tab=mine')

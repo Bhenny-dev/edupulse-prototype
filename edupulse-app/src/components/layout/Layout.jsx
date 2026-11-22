@@ -7,78 +7,87 @@ import { useLanguage } from '../../context/LanguageContext'
 import { useTheme } from '../../context/ThemeContext'
 import { useNotifications } from '../../data/notifications'
 import {
-  Home, BookOpen, FileText, BarChart3, LogOut,
+  LayoutDashboard, BookOpen, FileText, BarChart3, LogOut,
   ChevronDown, Bell, Search, Menu, X, Moon, Sun,
-  ChevronRight, Globe, ClipboardCheck, Users, GraduationCap, Settings as SettingsIcon,
+  ChevronRight, Globe, ClipboardCheck, Users, GraduationCap,
 } from 'lucide-react'
 import { Suspense, useState, useEffect, useRef } from 'react'
 import Pulse from '../pulse/Pulse'
 import EduPulseMark from '../brand/EduPulseMark'
 import { recordAudit } from '../../lib/audit'
 import { PERFORMANCE_ROLES } from '../../lib/access'
-import './layout.css'
 
-// Classroom-style shell (UI redesign U1, feature-documentation/CORE-FLOW-WORKSPACE.md):
-// top bar with the page title, a left rail (Home, the role's sections, Settings) that collapses to
-// icons, and a drawer on phones. Below a section, views stay in page tabs addressed by `?tab=`.
-// Rail groups: `main` (role sections) and `system` (Settings). Labels are the names tests and Pulse use.
+// Navigation architecture — one top-bar station per FLOW_SPEC phase, max 5
+// primary sections per role; anything below that altitude lives in the
+// page tabs, addressed by `?tab=`.
+// Instructor: Dashboard → Syllabus (Phase 2) → Courseware (Phase 3) →
+//   Student Monitoring + Performance (Phase 5).
+// Student: Dashboard → My Courses (Phase 4) → My Performance.
 const SECTIONS = [
-  { key: 'dashboard', path: '/dashboard', label: 'Home', icon: Home, roles: 'all' },
-  ...[['dean','Dean'],['associate_dean','Program Coordinator'],['instructor','Instructor'],['student','Student']].map(([role,label]) => ({key:`admin-${role}`,path:`/dashboard?role=${role}`,label,icon:Users,roles:['admin'],monitorRole:role,group:'Role views'})),
+  ...[['dean','Dean'],['associate_dean','Program Coordinator'],['instructor','Instructor'],['student','Student']].map(([role,label]) => ({key:`admin-${role}`,path:`/dashboard?role=${role}`,label,icon:Users,roles:['admin'],monitorRole:role})),
+  { key: 'dashboard', path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: 'all' },
   { key: 'dean-course', path: '/records', label: 'Course', icon: BookOpen, roles: ['dean','associate_dean'], relatedPaths:['/course-loading','/monitor'] },
   { key: 'dean-instructors', path: '/instructors', label: 'Instructors', icon: GraduationCap, roles: ['dean','associate_dean'] },
   { key: 'dean-students', path: '/students', label: 'Students', icon: Users, roles: ['dean','associate_dean'], relatedPaths:['/performance'] },
 
+
   // ── Instructor ────────────────────────────────────────────────────────
   { key: 'syllabus', path: '/syllabus', label: 'Syllabus', icon: BookOpen, roles: ['instructor'] },
-  { key: 'courseware', path: '/courseware', label: 'Course', icon: FileText, roles: ['instructor'], relatedPaths: ['/content-editor'] },
-  { key: 'scoring', path: '/student-monitoring', label: 'Student Monitoring', icon: ClipboardCheck, roles: ['instructor'], relatedPaths: ['/scoring-sheet'] },
+  {
+    key: 'courseware', path: '/courseware', label: 'Course', icon: FileText, roles: ['instructor'],
+    relatedPaths: ['/content-editor'],
+  },
+  {
+    key: 'scoring', path: '/student-monitoring', label: 'Student Monitoring', icon: ClipboardCheck, roles: ['instructor'],
+  },
 
   // ── Student ───────────────────────────────────────────────────────────
-  { key: 'my-courses', path: '/courseware', label: 'My Courses', icon: BookOpen, roles: ['student'] },
+  {
+    key: 'my-courses', path: '/courseware', label: 'My Courses', icon: BookOpen, roles: ['student'],
+  },
   { key: 'assessments', path: '/assessment', label: 'Practice Assessments', icon: ClipboardCheck, roles: ['student'] },
-  { key: 'performance', path: '/performance', label: 'Performance', icon: BarChart3, roles: PERFORMANCE_ROLES.filter(role=>role==='student') },
-
-  { key: 'settings', path: '/settings', label: 'Settings', icon: SettingsIcon, roles: 'all', group: 'system' },
+  {
+    key: 'performance', path: '/performance', label: 'Performance', icon: BarChart3, roles: PERFORMANCE_ROLES.filter(role=>role==='student'),
+  },
 ]
-const PAGE_NAMES = { 'content-editor': 'Content editor', notifications: 'Notifications', 'course-loading': 'Course loading', monitor: 'Monitoring', performance: 'Performance', 'scoring-sheet': 'Scoring sheet' }
-const RAIL_KEY = 'edupulse-rail'
 
 function canSee(item, role) {
   return item.roles === 'all' || item.roles.includes(role)
 }
 
-function savedRail() {
-  try { return localStorage.getItem(RAIL_KEY) } catch { return null }
-}
-
-// Rail links, grouped like Classroom's drawer. Collapsed rails keep each link's accessible name.
-function RailLinks({ sections, current, onNavigate }) {
-  const groups = [
-    ['main', null, sections.filter(item => !item.group)],
-    ['roles', 'Role views', sections.filter(item => item.group === 'Role views')],
-    ['system', null, sections.filter(item => item.group === 'system')],
-  ].filter(([, , items]) => items.length)
-  return groups.map(([key, heading, items]) => <div key={key} className="rail-group">
-    {heading && <div className="rail-heading">{heading}</div>}
-    {items.map(item => <NavLink key={item.key} to={item.path} title={item.label} aria-label={item.label} className="rail-link"
-      aria-current={current?.key === item.key ? 'page' : false} onClick={onNavigate}>
-      <item.icon size={20} aria-hidden="true" /><span className="rail-label">{item.label}</span>
-    </NavLink>)}
-  </div>)
-}
-
-// Top-bar title (Classroom shows the class name here). A page below a section links back to it.
-function PageTitle({ current }) {
+function Breadcrumbs() {
   const location = useLocation()
-  const leaf = location.pathname.split('/').filter(Boolean)[0]
-  if (!current) return PAGE_NAMES[leaf] ? <div className="app-page-title"><span>{PAGE_NAMES[leaf]}</span></div> : null
-  const sectionPath = current.path.split('?')[0]
-  const nested = location.pathname !== sectionPath && !current.monitorRole
-  const leafName = PAGE_NAMES[leaf] || leaf?.replace(/-/g, ' ')
-  return <div className="app-page-title">
-    {nested && leafName ? <><NavLink to={current.path}>{current.label}</NavLink><ChevronRight size={14} aria-hidden="true" /><span>{leafName}</span></> : <span>{current.label}</span>}
-  </div>
+  const {user}=useAuth()
+  const parts = location.pathname.split('/').filter(Boolean)
+  if (parts.length === 0 || (parts.length === 1 && parts[0] === 'dashboard')) return null
+
+  const crumbs = parts.map((part, i) => ({
+    label: part === 'courseware'||(part==='records'&&['dean','associate_dean'].includes(user?.role)) ? 'Course' : part.charAt(0).toUpperCase() + part.slice(1).replace(/-/g, ' '),
+    path: '/' + parts.slice(0, i + 1).join('/'),
+  }))
+
+  // Links are inline-flex so the 44 px mobile touch-target height keeps their text centred on the row.
+  return (
+    <nav aria-label="Breadcrumb" className="breadcrumb" style={{
+      padding: '12px 24px',
+      display: 'flex', alignItems: 'center', gap: '8px',
+      fontSize: '0.8125rem', color: 'var(--gray-500)',
+      background: 'var(--white)',
+      borderBottom: '1px solid var(--gray-100)',
+    }}>
+      <NavLink to="/dashboard" style={{ color: 'var(--sky-500)', fontWeight: 600, display: 'inline-flex', alignItems: 'center' }}>Home</NavLink>
+      {crumbs.map((crumb, i) => (
+        <span key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <ChevronRight size={12} />
+          {i < crumbs.length - 1 ? (
+            <NavLink to={crumb.path} style={{ color: 'var(--sky-500)', fontWeight: 600, display: 'inline-flex', alignItems: 'center' }}>{crumb.label}</NavLink>
+          ) : (
+            <span style={{ fontWeight: 600, color: 'var(--gray-700)' }}>{crumb.label}</span>
+          )}
+        </span>
+      ))}
+    </nav>
+  )
 }
 
 function SearchOverlay({ onClose }) {
@@ -186,14 +195,6 @@ export default function Layout() {
   const showMobileMenu = activeOverlay === 'mobile', showLangMenu = activeOverlay === 'language'
   const toggleOverlay = name => setOverlay(previous => previous === name ? null : name)
   const { dark: darkMode, toggleDark, fontScale } = useTheme()
-  // 'open' | 'collapsed' | null (null follows the screen width: wide opens, tablets collapse).
-  const [rail, setRail] = useState(savedRail)
-  const toggleRail = () => {
-    const wide = window.matchMedia?.('(min-width: 1181px)').matches ?? true
-    const next = (rail ? rail === 'open' : wide) ? 'collapsed' : 'open'
-    setRail(next)
-    try { localStorage.setItem(RAIL_KEY, next) } catch { /* private window: the choice lasts this visit */ }
-  }
 
   // One audit entry per page visit; the user object is replaced on token refresh and must not log the page again.
   const lastAuditedPage = useRef('')
@@ -222,7 +223,7 @@ export default function Layout() {
 
   const handleLogout = () => { setOverlay(null); logout(); navigate('/') }
   const { notifications: notifs, unreadCount, loading: noticesLoading, error: noticesError } = useNotifications(user?.role)
-  const sections = SECTIONS.filter(s => canSee(s, user?.role))
+  const sections = SECTIONS.filter(s => canSee(s, user?.role)).sort((a,b) => a.key === 'dashboard' ? -1 : b.key === 'dashboard' ? 1 : 0)
   const monitorRole = user?.role === 'admin' ? new URLSearchParams(location.search).get('role') : null
   const current = sections.find(item => item.monitorRole ? item.monitorRole === monitorRole : item.path === location.pathname && !monitorRole || item.relatedPaths?.some(path => location.pathname.startsWith(path)))
 
@@ -230,42 +231,122 @@ export default function Layout() {
   // Keyed by the first path segment: changing section replays the page entrance, while
   // moving within one (a content-editor item, a ?tab= view) keeps the page's state.
   const pageKey = location.pathname.split('/')[1] || 'dashboard'
-  const shellClass = `app-shell${rail === 'open' ? ' rail-open' : rail === 'collapsed' ? ' rail-collapsed' : ''}`
 
   return (
-    <div className={shellClass} style={{ fontSize: fontScale === 'small' ? '14px' : fontScale === 'large' ? '18px' : '16px' }}>
-      <header className="app-topbar" role="banner">
-        <div className="app-brand">
-          <button type="button" className="rail-toggle" aria-label={rail === 'collapsed' ? 'Expand navigation' : 'Collapse navigation'} title="Main menu" onClick={toggleRail}>
-            <Menu size={22} />
+    <div style={{
+      minHeight: '100vh', display: 'flex', flexDirection: 'column',
+      fontSize: fontScale === 'small' ? '14px' : fontScale === 'large' ? '18px' : '16px',
+    }}>
+      <header className="app-topbar" role="banner" style={{
+        position: 'sticky', top: 0, zIndex: 100,
+        background: 'rgba(255, 255, 255, 0.85)',
+        backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)',
+        borderBottom: '1px solid var(--sky-100)',
+        padding: '0 24px', height: '64px',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+      }}>
+        <div className="app-brand" style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
+          <button
+            className="mobile-menu-btn"
+            aria-label={showMobileMenu ? 'Close menu' : 'Open menu'} aria-expanded={showMobileMenu}
+            onClick={() => toggleOverlay('mobile')}
+            style={{
+              display: 'none', width: 40, height: 40, borderRadius: 'var(--radius-md)',
+              background: 'var(--gray-100)', border: 'none', alignItems: 'center', justifyContent: 'center',
+              color: 'var(--gray-600)', cursor: 'pointer',
+            }}
+          >
+            {showMobileMenu ? <X size={20} /> : <Menu size={20} />}
           </button>
-          <button type="button" className="mobile-menu-btn" aria-label={showMobileMenu ? 'Close menu' : 'Open menu'} aria-expanded={showMobileMenu} onClick={() => toggleOverlay('mobile')}>
-            {showMobileMenu ? <X size={22} /> : <Menu size={22} />}
-          </button>
-          <NavLink to="/dashboard" className="app-brand-link">
-            <span className="app-brand-mark"><EduPulseMark size={20} /></span>
-            <span className="app-brand-name">EduPulse</span>
+
+          <NavLink to="/dashboard" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div style={{
+              width: 36, height: 36, borderRadius: 'var(--radius-md)',
+              background: 'linear-gradient(135deg, var(--sky-400), var(--sky-500))',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              boxShadow: 'var(--shadow-3d)',
+            }}>
+              <EduPulseMark size={20} style={{ color: 'white' }} />
+            </div>
+            <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '1.125rem', color: 'var(--gray-900)' }}>EduPulse</span>
           </NavLink>
-          <PageTitle current={current} />
+
+          {/* Top bar: primary sections only — 5 max per role. See NFR-USE-01/02. */}
+          <nav className="app-primary-nav" style={{ display: 'flex', gap: '4px' }} role="navigation" aria-label="Main navigation">
+            {sections.map(item => {
+              const isActive = current?.key === item.key
+              return (
+                <NavLink
+                  key={item.path}
+                  to={item.path}
+                  title={item.label}
+                  aria-label={item.label}
+                  aria-current={isActive ? 'page' : false}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: '6px',
+                    padding: '8px 14px', borderRadius: 'var(--radius-md)',
+                    fontWeight: 600, fontSize: '0.875rem',
+                    color: isActive ? 'var(--sky-600)' : 'var(--gray-500)',
+                    background: isActive ? 'var(--sky-50)' : 'transparent',
+                    boxShadow: isActive ? '0 0 0 3px rgba(14, 165, 233, 0.15)' : 'none',
+                    transition: 'all 200ms cubic-bezier(0.34, 1.56, 0.64, 1)',
+                    textDecoration: 'none',
+                  }}
+                >
+                  <item.icon size={18} />
+                  <span className="nav-label">{item.label}</span>
+                </NavLink>
+              )
+            })}
+          </nav>
         </div>
 
-        <div className="app-tools">
-          <button type="button" className="app-tool desktop-tool" onClick={() => setOverlay('search')} title="Search (Ctrl+K)" aria-label="Search">
-            <Search size={18} />
+        <div className="app-tools" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <button className="desktop-tool" onClick={() => setOverlay('search')} title="Search (Ctrl+K)" style={{
+            width: 36, height: 36, borderRadius: 'var(--radius-full)',
+            background: 'var(--gray-100)', border: 'none',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            color: 'var(--gray-500)', cursor: 'pointer', transition: 'all 200ms',
+          }}>
+            <Search size={16} />
           </button>
-          <button type="button" className="app-tool" onClick={toggleDark} title={darkMode ? 'Light mode' : 'Dark mode'} aria-label={darkMode ? 'Light mode' : 'Dark mode'}>
-            {darkMode ? <Sun size={18} /> : <Moon size={18} />}
+
+          <button onClick={toggleDark} title={darkMode ? 'Light mode' : 'Dark mode'} style={{
+            width: 36, height: 36, borderRadius: 'var(--radius-full)',
+            background: darkMode ? 'var(--sky-100)' : 'var(--gray-100)', border: 'none',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            color: darkMode ? 'var(--sky-500)' : 'var(--gray-500)', cursor: 'pointer', transition: 'all 200ms',
+          }}>
+            {darkMode ? <Sun size={16} /> : <Moon size={16} />}
           </button>
 
           <div style={{ position: 'relative' }}>
-            <button type="button" className="app-tool desktop-tool" onClick={() => toggleOverlay('language')} title="Language" aria-label="Language">
+            <button className="desktop-tool" onClick={() => toggleOverlay('language')}
+              title="Language" style={{
+              width: 36, height: 36, borderRadius: 'var(--radius-full)',
+              background: 'var(--gray-100)', border: 'none',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: 'var(--gray-500)', cursor: 'pointer', transition: 'all 200ms', fontSize: '0.75rem', fontWeight: 700,
+            }}>
               <Globe size={18} />
             </button>
             {showLangMenu && (
-              <div className="app-popover" style={{ width: 170 }}>
-                <div className="rail-heading" style={{ padding: '6px 12px' }}>Language</div>
+              <div style={{
+                position: 'absolute', top: '48px', right: 0, width: '160px',
+                background: 'var(--white)', borderRadius: 'var(--radius-xl)',
+                boxShadow: 'var(--shadow-3d-hover)', border: '1px solid var(--sky-100)', padding: '8px',
+                animation: 'bounceIn 250ms cubic-bezier(0.34, 1.56, 0.64, 1)', transformOrigin: 'top right',
+              }}>
+                <div style={{ padding: '6px 10px', fontSize: '0.75rem', fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Language</div>
                 {[{ code: 'en', label: 'English' }, { code: 'fil', label: 'Filipino' }].map(lang => (
-                  <button key={lang.code} type="button" className="app-menu-item" aria-pressed={language === lang.code} onClick={() => { switchLanguage(lang.code); setOverlay(null) }}>
+                  <button key={lang.code} onClick={() => { switchLanguage(lang.code); setOverlay(null) }}
+                    style={{
+                      display: 'block', width: '100%', textAlign: 'left', padding: '8px 10px', border: 'none',
+                      borderRadius: 'var(--radius-md)', cursor: 'pointer', fontSize: '0.8125rem', fontWeight: language === lang.code ? 700 : 500,
+                      background: language === lang.code ? 'var(--sky-50)' : 'transparent',
+                      color: language === lang.code ? 'var(--sky-600)' : 'var(--gray-600)',
+                      transition: 'all 0.15s',
+                    }}>
                     {lang.label}
                   </button>
                 ))}
@@ -274,24 +355,46 @@ export default function Layout() {
           </div>
 
           <div style={{ position: 'relative' }}>
-            <button type="button" className="app-tool" aria-label={unreadCount ? `Notifications, ${unreadCount} unread` : 'Notifications'} aria-expanded={showNotifications} onClick={() => toggleOverlay('notifications')}>
+            <button aria-label={unreadCount ? `Notifications, ${unreadCount} unread` : 'Notifications'} aria-expanded={showNotifications} onClick={() => toggleOverlay('notifications')} style={{
+              width: 36, height: 36, borderRadius: 'var(--radius-full)',
+              background: 'var(--gray-100)', border: 'none',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: 'var(--gray-500)', cursor: 'pointer', position: 'relative', transition: 'all 200ms',
+            }}>
               <Bell size={18} />
-              {unreadCount > 0 && <span className="app-tool-badge" aria-hidden="true">{unreadCount}</span>}
+              {unreadCount > 0 && (
+                <span style={{
+                  position: 'absolute', top: 2, right: 2, width: 16, height: 16,
+                  borderRadius: 'var(--radius-full)', background: 'var(--red-500)',
+                  color: 'white', fontSize: '0.625rem', fontWeight: 700,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}>{unreadCount}</span>
+              )}
             </button>
             {showNotifications && (
-              <div className="app-popover" style={{ width: 'min(360px, calc(100vw - 24px))', padding: 16 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+              <div style={{
+                position: 'absolute', top: '48px', right: 0, width: '360px',
+                background: 'var(--white)', borderRadius: 'var(--radius-xl)',
+                boxShadow: 'var(--shadow-3d-hover)', border: '1px solid var(--sky-100)', padding: '16px',
+                animation: 'bounceIn 250ms cubic-bezier(0.34, 1.56, 0.64, 1)', transformOrigin: 'top right',
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
                   <h4 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '0.9375rem' }}>Notifications</h4>
-                  <NavLink to="/notifications" onClick={() => setOverlay(null)} style={{ fontSize: '0.8125rem', color: 'var(--sky-600)', fontWeight: 600 }}>View All</NavLink>
+                  <NavLink to="/notifications" onClick={() => setOverlay(null)} style={{ fontSize: '0.75rem', color: 'var(--sky-500)', fontWeight: 600 }}>View All</NavLink>
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                   {noticesLoading && !notifs.length && <SkeletonContent label="Loading notifications…" rows={3} />}
                   {noticesError && <p role="alert">{noticesError}</p>}
                   {!noticesLoading && !noticesError && !notifs.length && <p className="text-sm text-muted">No notifications yet.</p>}
                   {notifs.slice(0, 3).map(n => (
-                    <div key={n.id} style={{ padding: '10px 4px', borderTop: '1px solid var(--gray-100)', fontSize: '0.8125rem', fontWeight: n.read ? 500 : 700, color: 'var(--gray-700)' }}>
+                    <div key={n.id} style={{
+                      padding: '10px 12px', borderRadius: 'var(--radius-md)', opacity: n.read ? 0.75 : 1,
+                      background: n.type === 'warning' ? 'var(--amber-100)' : n.type === 'success' ? 'var(--green-100)' : n.type === 'error' ? 'var(--red-100)' : 'var(--sky-50)',
+                      fontSize: '0.8125rem', fontWeight: 500,
+                      color: n.type === 'warning' ? 'var(--amber-700)' : n.type === 'success' ? 'var(--green-700)' : n.type === 'error' ? 'var(--red-700)' : 'var(--sky-700)',
+                    }}>
                       <div>{n.message}</div>
-                      <div style={{ fontSize: '0.6875rem', color: 'var(--gray-500)', fontWeight: 500, marginTop: 4 }}>{n.time}</div>
+                      <div style={{ fontSize: '0.6875rem', opacity: 0.7, marginTop: '4px' }}>{n.time}</div>
                     </div>
                   ))}
                 </div>
@@ -299,27 +402,69 @@ export default function Layout() {
             )}
           </div>
 
-          {/* Hidden on phones like the other desktop tools; the role and the view switch are in the account menu there. */}
-          {user?.canSwitchRoles
-            ? <button type="button" className="app-role-chip desktop-tool" aria-label="Switch admin view" aria-expanded={showRoleSwitch} onClick={() => toggleOverlay('roles')} title="Switch admin view">Admin · {user?.title}</button>
-            : <span className="app-role-chip desktop-tool">{user?.title}</span>}
+          <div style={{ position: 'relative' }}>
+            {/* Hidden on phones like the other desktop tools; the role and the view switch are in the account menu there. */}
+            {user?.canSwitchRoles ? <button className="desktop-tool" aria-label="Switch admin view" aria-expanded={showRoleSwitch} onClick={() => toggleOverlay('roles')} title="Switch admin view" style={{
+              padding: '4px 10px', borderRadius: 'var(--radius-full)',
+              background: 'var(--purple-100)', border: '1px solid var(--purple-100)',
+              cursor: 'pointer', fontSize: '0.75rem', fontWeight: 700, color: 'var(--purple-500)',
+              transition: 'all 200ms',
+            }}>
+              Admin · {user?.title}
+            </button> : <span className="badge badge-published desktop-tool">{user?.title}</span>}
+          </div>
 
           <div style={{ position: 'relative' }}>
-            <button type="button" className="app-account-btn" aria-label="Account menu" title={user?.name} aria-expanded={showUserMenu} onClick={() => toggleOverlay('account')}>
-              <span className="app-avatar">{user?.name?.charAt(0)}</span>
+            <button aria-label="Account menu" title={user?.name} aria-expanded={showUserMenu} onClick={() => toggleOverlay('account')} style={{
+              display: 'flex', alignItems: 'center', gap: '8px',
+              padding: '4px 10px 4px 4px', borderRadius: 'var(--radius-full)',
+              background: 'var(--white)', border: '2px solid var(--sky-200)',
+              cursor: 'pointer', transition: 'all 200ms',
+            }}>
+              <div style={{
+                width: 28, height: 28, borderRadius: 'var(--radius-full)',
+                background: 'linear-gradient(135deg, var(--sky-300), var(--sky-400))',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: 'white', fontWeight: 700, fontSize: '0.75rem',
+              }}>
+                {user?.name?.charAt(0)}
+              </div>
               <span className="profile-name" style={{ fontWeight: 600, fontSize: '0.8125rem', color: 'var(--gray-700)' }}>{user?.name?.split(' ')[0]}</span>
               <ChevronDown size={12} style={{ color: 'var(--gray-400)' }} />
             </button>
             {showUserMenu && (
-              <div className="app-popover" role="group" aria-label="Account" style={{ width: 260 }}>
-                <div style={{ padding: 12, borderBottom: '1px solid var(--gray-100)', marginBottom: 4 }}>
+              <div style={{
+                position: 'absolute', top: '48px', right: 0, width: '260px',
+                background: 'var(--white)', borderRadius: 'var(--radius-xl)',
+                boxShadow: 'var(--shadow-3d-hover)', border: '1px solid var(--sky-100)', padding: '8px',
+                animation: 'bounceIn 250ms cubic-bezier(0.34, 1.56, 0.64, 1)', transformOrigin: 'top right',
+              }}>
+                <div style={{ padding: '12px', borderBottom: '1px solid var(--gray-100)', marginBottom: '4px' }}>
                   <div style={{ fontWeight: 700, fontSize: '0.875rem' }}>{user?.name}</div>
                   {user?.baseRole !== 'admin' && <div style={{ fontSize: '0.75rem', color: 'var(--gray-500)' }}>{user?.email}</div>}
-                  <div style={{ marginTop: 4 }}><span className="badge badge-published">{user?.title}</span></div>
+                  <div style={{ marginTop: '4px' }}><span className="badge badge-published">{user?.title}</span></div>
                 </div>
-                {user?.canSwitchRoles && <button type="button" className="app-menu-item" onClick={() => setOverlay('roles')}>Switch view</button>}
-                <NavLink to="/settings" className="app-menu-item" onClick={() => setOverlay(null)}>Settings</NavLink>
-                <button type="button" className="app-menu-item danger" onClick={handleLogout}><LogOut size={16} /> Sign Out</button>
+                {user?.canSwitchRoles && <button onClick={() => setOverlay('roles')} style={{
+                  display: 'flex', alignItems: 'center', gap: '8px', width: '100%', padding: '10px 12px',
+                  borderRadius: 'var(--radius-md)', background: 'transparent', border: 'none', cursor: 'pointer',
+                  color: 'var(--gray-700)', fontWeight: 500, fontSize: '0.875rem', transition: 'background 150ms',
+                }}
+                onMouseEnter={e => e.currentTarget.style.background = 'var(--sky-50)'}
+                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                >Switch view</button>}
+                <NavLink to="/settings" onClick={() => setOverlay(null)} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 12px', borderRadius: 'var(--radius-md)', fontSize: '0.875rem', color: 'var(--gray-700)', fontWeight: 500, transition: 'background 150ms' }}
+                  onMouseEnter={e => e.currentTarget.style.background = 'var(--sky-50)'}
+                  onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                >Settings</NavLink>
+
+                <button onClick={handleLogout} style={{
+                  display: 'flex', alignItems: 'center', gap: '8px', width: '100%', padding: '10px 12px',
+                  borderRadius: 'var(--radius-md)', background: 'transparent', border: 'none', cursor: 'pointer',
+                  color: 'var(--red-500)', fontWeight: 600, fontSize: '0.875rem', transition: 'background 150ms',
+                }}
+                onMouseEnter={e => e.currentTarget.style.background = 'var(--red-100)'}
+                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                ><LogOut size={16} /> Sign Out</button>
               </div>
             )}
           </div>
@@ -327,29 +472,59 @@ export default function Layout() {
       </header>
 
       {showMobileMenu && (
-        <div className="app-drawer-backdrop" onClick={() => setOverlay(null)}>
-          <nav aria-label="Mobile navigation" className="app-drawer" onClick={event => event.stopPropagation()}>
-            <RailLinks sections={sections} current={current} onNavigate={() => setOverlay(null)} />
+        <div style={{
+          position: 'fixed', inset: 0, top: '64px', zIndex: 99,
+          background: 'var(--white)', padding: '16px 24px',
+          animation: 'slideIn 250ms cubic-bezier(0.4, 0, 0.2, 1)',
+        }}>
+          <nav aria-label="Mobile navigation" style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            {sections.map(item => (
+              <NavLink key={item.path} to={item.path} aria-current={current?.key===item.key?'page':false} onClick={() => setOverlay(null)}
+                style={() => ({
+                  display: 'flex', alignItems: 'center', gap: '12px',
+                  padding: '14px 16px', borderRadius: 'var(--radius-md)',
+                  fontWeight: 600, fontSize: '1rem',
+                  color: current?.key === item.key ? 'var(--sky-600)' : 'var(--gray-600)',
+                  background: current?.key === item.key ? 'var(--sky-50)' : 'transparent',
+                  textDecoration: 'none',
+                })}
+              >
+                <item.icon size={20} /> {item.label}
+              </NavLink>
+            ))}
+
           </nav>
         </div>
       )}
 
+      <Breadcrumbs />
       <WorkspaceStatus />
 
-      <div className="app-body app-workspace">
-        <aside className="app-rail">
-          <nav aria-label="Main navigation"><RailLinks sections={sections} current={current} /></nav>
-        </aside>
-        <main id="main-content" className="app-main" role="main" tabIndex={-1}>
+      <div className="app-workspace" style={{ flex: 1, display: 'flex' }}>
+        <main id="main-content" style={{ flex: 1, minHeight: 'calc(100vh - 64px)', minWidth: 0 }} role="main" tabIndex={-1}>
           <div key={pageKey} className="page-enter">
             {workspace.loading && !workspace.mode && ['/syllabus', '/courseware', '/content-editor'].some(path => location.pathname.startsWith(path)) ? <div className="container"><SkeletonContent variant="page" label="Loading your workspace…" /></div> : <Suspense fallback={<div className="container"><SkeletonContent variant="page" label="Opening the page…" /></div>}><Outlet /></Suspense>}
           </div>
         </main>
       </div>
 
+
+
       {showSearch && <SearchOverlay onClose={() => setOverlay(null)} />}
       {showRoleSwitch && user?.canSwitchRoles && <RoleSwitchPopover onClose={() => setOverlay(null)} />}
       <Pulse />
+
+      <style>{`
+        @media (max-width: 980px) {
+          .nav-label, .profile-name { display: none !important; }
+          .mobile-menu-btn { display: flex !important; }
+        }
+        @media (max-width: 768px) {
+          .mobile-menu-btn { display: flex !important; }
+          .nav-label { display: none !important; }
+          .profile-name { display: none !important; }
+        }
+      `}</style>
     </div>
   )
 }

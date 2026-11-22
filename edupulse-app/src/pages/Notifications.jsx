@@ -1,57 +1,91 @@
+import { useState } from 'react'
 import { SkeletonContent } from '../components/ui/LoadingFeedback'
-import DataTable, { StatusPill } from '../components/ui/DataTable'
 import { useAuth } from '../context/AuthContext'
 import { useNotifications } from '../data/notifications'
-import { Check, AlertTriangle, Info, CheckCircle } from 'lucide-react'
+import { Bell, Check, AlertTriangle, Info, CheckCircle, Clock } from 'lucide-react'
 
 const ICON_MAP = { warning: AlertTriangle, success: CheckCircle, error: AlertTriangle, info: Info }
-const ICON_TONE = { warning: 'var(--amber-600)', success: 'var(--green-600)', error: 'var(--red-600)', info: 'var(--sky-600)' }
 const CATEGORY_LABELS = {
   academic: 'Academic Notices', syllabus_status: 'Syllabus Status', delivery_gap: 'Delivery Gap', course_loading: 'Course Loading',
   records: 'Records', courseware: 'Courseware', unopened_material: 'Unopened Material',
   missing_assessment: 'Missing Assessment', assessment: 'Assessment',
 }
-const categoryOf = notice => CATEGORY_LABELS[notice.category] || notice.category || 'Other'
-const TABS = [{ key: 'all', label: 'All' }, { key: 'unread', label: 'Unread', match: notice => !notice.read }]
 
-// One table for every notice (UI redesign rule 6): status tabs, a category filter and search replace
-// the per-notice cards. A row or its "Mark read" button marks one notice read.
 export default function NotificationCenter() {
   const { user } = useAuth()
   const { notifications, unreadCount, markRead, markAllRead, loading, error } = useNotifications(user?.role)
-  const columns = [
-    { key: 'message', label: 'Notice', render: notice => {
-      const Icon = ICON_MAP[notice.type] || Info
-      return <span style={{ display: 'inline-flex', alignItems: 'flex-start', gap: 10, fontWeight: notice.read ? 500 : 700 }}>
-        <Icon size={16} aria-hidden="true" style={{ color: ICON_TONE[notice.type] || ICON_TONE.info, flexShrink: 0, marginTop: 2 }} />
-        <span>{notice.message}</span>
-      </span>
-    } },
-    { key: 'category', label: 'Category', value: categoryOf, width: 180 },
-    { key: 'time', label: 'When', sortable: false, searchable: false, width: 140 },
-    { key: 'read', label: 'Status', searchable: false, width: 150, value: notice => notice.read ? 'Read' : 'Unread', render: notice => notice.read
-      ? <StatusPill>Read</StatusPill>
-      : <button type="button" className="btn btn-ghost btn-sm" onClick={() => markRead([notice.id])}><Check size={14} /> Mark read</button> },
-  ]
+  const [filter, setFilter] = useState('all')
+
+  const categories = ['all', 'unread', ...new Set(notifications.map(n => n.category))]
+
+  const filtered = notifications.filter(n => {
+    if (filter === 'unread') return !n.read
+    if (filter !== 'all' && n.category !== filter) return false
+    return true
+  })
 
   return (
     <div className="container">
       <div className="page-header">
         <h1>Notifications</h1>
-        <button className="btn btn-secondary btn-sm" onClick={markAllRead} disabled={!unreadCount}>
-          <Check size={14} /> Mark All Read
-        </button>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <button className="btn btn-secondary btn-sm" onClick={markAllRead} disabled={!unreadCount}>
+            <Check size={14} /> Mark All Read
+          </button>
+        </div>
       </div>
 
       {user?.authenticated && <p className="text-sm text-muted mb-16">Academic notices and read receipts are saved to your account. Current-record reminders are also shown; their read state is retained on this device.</p>}
       {loading && !notifications.length && <SkeletonContent label="Loading record notices…" rows={3} />}
       {error && <p role="alert">{error}</p>}
-      {!(loading && !notifications.length) && <DataTable
-        label="Notifications" columns={columns} rows={notifications} tabs={TABS}
-        filters={[{ key: 'category', label: 'Categories', value: categoryOf }]}
-        searchPlaceholder="Search notices" empty="No notifications yet." noMatch="No notices match the current records and filter."
-        onRowClick={notice => { if (!notice.read) markRead([notice.id]) }}
-      />}
+      <div className="tabs mb-24" style={{ overflowX: 'auto', flexWrap: 'nowrap' }}>
+        {categories.map(f => (
+          <button key={f} className={`tab ${filter === f ? 'active' : ''}`} onClick={() => setFilter(f)} style={{ whiteSpace: 'nowrap' }}>
+            {f === 'all' ? 'All' : f === 'unread' ? 'Unread' : CATEGORY_LABELS[f] || f}
+            {f === 'unread' && unreadCount > 0 && ` (${unreadCount})`}
+          </button>
+        ))}
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        {!loading && !error && filtered.length === 0 ? (
+          <div className="empty-state">
+            <div className="empty-state-icon"><Bell size={36} /></div>
+            <h3>No notifications</h3>
+            <p>No notices match the current records and filter.</p>
+          </div>
+        ) : (
+          filtered.map(n => {
+            const Icon = ICON_MAP[n.type] || Info
+            return (
+              <div key={n.id} role={n.read ? undefined : 'button'} tabIndex={n.read ? undefined : 0} title={n.read ? undefined : 'Mark as read'}
+                onClick={n.read ? undefined : () => markRead([n.id])} onKeyDown={n.read ? undefined : e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); markRead([n.id]) } }} style={{
+                display: 'flex', alignItems: 'flex-start', gap: '14px', cursor: n.read ? 'default' : 'pointer',
+                padding: '16px 20px', borderRadius: 'var(--radius-lg)',
+                background: n.read ? 'var(--white)' : 'var(--sky-50)',
+                border: `1px solid ${n.read ? 'var(--gray-100)' : 'var(--sky-200)'}`,
+                transition: 'all 200ms',
+              }}>
+                <div style={{
+                  width: 36, height: 36, borderRadius: 'var(--radius-full)',
+                  background: n.type === 'warning' ? 'var(--amber-100)' : n.type === 'success' ? 'var(--green-100)' : n.type === 'error' ? 'var(--red-100)' : 'var(--sky-100)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                }}>
+                  <Icon size={16} style={{ color: n.type === 'warning' ? 'var(--amber-500)' : n.type === 'success' ? 'var(--green-500)' : n.type === 'error' ? 'var(--red-500)' : 'var(--sky-500)' }} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <p style={{ fontWeight: 600, fontSize: '0.875rem', color: 'var(--gray-800)' }}>{n.message}</p>
+                  <div style={{ display: 'flex', gap: '12px', marginTop: '4px', fontSize: '0.75rem', color: 'var(--gray-400)' }}>
+                    <span><Clock size={12} /> {n.time}</span>
+                    <span>{CATEGORY_LABELS[n.category] || n.category}</span>
+                  </div>
+                </div>
+                {!n.read && <div style={{ width: 8, height: 8, borderRadius: 'var(--radius-full)', background: 'var(--sky-500)', flexShrink: 0, marginTop: '6px' }} />}
+              </div>
+            )
+          })
+        )}
+      </div>
     </div>
   )
 }
