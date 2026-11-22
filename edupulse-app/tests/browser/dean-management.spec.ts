@@ -134,7 +134,7 @@ for (const role of ['dean', 'associate_dean']) test(`${role} edits loads and sca
   await edit.getByRole('button', { name: 'Save instructor' }).click()
   await expect(edit).toHaveCount(0)
   expect(fixture.commands[0]).toMatchObject({ action: 'course-load.update', key: 'IT 102|BSIT-1A|1st Semester', expected_instructor: 'teacher-a', instructor_id: 'teacher-b' })
-  await expect(course).toContainText('Morgan Sample Instructor')
+  await expect(page.getByRole('row').filter({has:page.getByRole('cell',{name:'IT 102',exact:true})})).toContainText('Morgan Sample Instructor')
   await page.getByRole('button',{name:'Course actions for IT 102 Morgan Sample Instructor',exact:true}).click()
   await page.getByRole('menuitem',{name:'View syllabus and contents',exact:true}).click()
   const scan = page.getByRole('dialog', { name: 'Syllabus and teaching contents', exact: true })
