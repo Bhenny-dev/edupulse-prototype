@@ -23,7 +23,7 @@ for(const role of ['dean','associate_dean']){
   const more=page.getByRole('button',{name:'Course actions for IT 401',exact:true})
   await more.focus();await more.press('ArrowDown')
   const menu=page.getByRole('menu',{name:'Course actions for IT 401',exact:true})
-  await expect(menu.getByRole('menuitem',{name:'Edit course'})).toBeFocused()
+  await expect(menu.getByRole('menuitem',{name:'Add instructor',exact:true})).toBeFocused()
   await expect(menu.getByRole('menuitem',{name:'Remove course'})).toHaveCount(0)
   await page.reload();await expect(menu).toBeVisible()
   const box=await menu.boundingBox(),size=page.viewportSize()!
@@ -39,7 +39,7 @@ for(const role of ['dean','associate_dean']){
   await expect(form.getByRole('combobox')).toHaveCount(0)
   await expect(form.getByRole('textbox')).toHaveCount(2)
   await form.getByRole('button',{name:'Add Course',exact:true}).click()
-  const card=page.locator('.dean-course-card').filter({has:page.getByRole('button',{name:'Course actions for IT 999',exact:true})})
+  const card=page.getByRole('row').filter({has:page.getByRole('button',{name:'Course actions for IT 999',exact:true})})
   await expect(card).toContainText('Applied computing')
   expect(fixture.commands[0]).toMatchObject({action:'course.create',academic_year:'2026-2027',semester:'1st Semester',course:{code:'IT 999',title:'Applied computing',units:3}})
   await card.getByRole('button',{name:'Course actions for IT 999'}).click()

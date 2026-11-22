@@ -3,14 +3,15 @@ import { BookOpen, Pencil, Pause, Play, Trash2 } from 'lucide-react'
 import CoursewareActions from '../courseware/CoursewareActions'
 import { DeanDialog, ConfirmDialog } from './DeanCommon'
 
-export function CourseCardActions({ course, open, onOpenChange, disabled, onAction }) {
-  return <CoursewareActions label={`Course actions for ${course.code}`} open={open} onOpenChange={onOpenChange} disabled={disabled || !course.recordKey || !course.updatedAt} actions={[
+export function CourseCardActions({ course, open, onOpenChange, disabled, onAction, extraActions=[], canEdit=true, label }) {
+  if(!canEdit&&!extraActions.length)return null
+  return <CoursewareActions label={label||`Course actions for ${course.code}`}  open={open} onOpenChange={onOpenChange} disabled={disabled} actions={[...extraActions, ...(canEdit&&course.recordKey&&course.updatedAt?[
     { label: 'Edit course', icon: Pencil, onSelect: () => onAction(`edit:${course.code}`) },
     course.status === 'suspended'
       ? { label: 'Reactivate course', icon: Play, onSelect: () => onAction(`reactivate:${course.code}`) }
       : { label: 'Suspend course', icon: Pause, onSelect: () => onAction(`suspend:${course.code}`) },
     ...(course.status === 'suspended' ? [{ label: 'Remove course', icon: Trash2, onSelect: () => onAction(`remove:${course.code}`) }] : []),
-  ]} />
+  ]:[])]} />
 }
 
 export function CourseCatalogForm({ course, action, academicYear, semester, onClose }) {

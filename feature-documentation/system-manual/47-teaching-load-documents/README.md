@@ -72,3 +72,8 @@ The extraction and confirmation steps remain visible in these fictional PDF capt
 ### 19 November 2026 - Meeting-day selection
 
 Reviewed load rows, manual instructor loads and new block schedules use a Monday through Saturday checkbox dropdown. Select one or two days: M, T, W, Th, F, S. Tuesday and Thursday save as TTh; the same stored codes drive computed contact hours and weekly delivery dates. Existing imported source strings remain visible until deliberately corrected; never silently truncate a source schedule. Do not regress Thursday into Tuesday or allow a third selected day in these editors. Historical source facts stay unchanged.
+
+
+### 22 November 2026 - Course catalog table
+
+Course cards and their course-detail modal are replaced by a single course/instructor table. Columns show code, title, units, status, instructor, block sections, retained schedule/source facts and student counts. Unloaded courses retain a row. The final Actions column uses the shared three-dot menu for catalog CRUD, instructor loading/edit/removal, block/class-list management and read-only syllabus inspection. Current/next-term permissions, past-term read-only access, confirmation dialogs and saved data boundaries remain unchanged. Do not recreate the course-detail modal or inline action-button strips.

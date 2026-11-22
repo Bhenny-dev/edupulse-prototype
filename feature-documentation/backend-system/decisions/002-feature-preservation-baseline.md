@@ -353,3 +353,8 @@ Reviewed load rows, manual instructor loads and new block schedules use a Monday
 ### 22 November 2026 - Shared agent deployment after account transfer
 
 Do not infer deployment from main being pushed. The school-account EduPulse project is unlinked from Git, and GitHub Actions reports a billing lock before any steps execute. Claude and Codex use the same project-local authenticated `deploy:production` command, verifying the exact project/team, repo, root and remote-main SHA. Upload only a clean Git archive; never include account credentials, private data or unfinished working-tree changes. Keep original build verification, environment settings and production checks. Triggered is not Ready. Never change unrelated projects, billing or repository permissions as a workaround.
+
+
+### 22 November 2026 - Course catalog table
+
+Course cards and their course-detail modal are replaced by a single course/instructor table. Columns show code, title, units, status, instructor, block sections, retained schedule/source facts and student counts. Unloaded courses retain a row. The final Actions column uses the shared three-dot menu for catalog CRUD, instructor loading/edit/removal, block/class-list management and read-only syllabus inspection. Current/next-term permissions, past-term read-only access, confirmation dialogs and saved data boundaries remain unchanged. Do not recreate the course-detail modal or inline action-button strips.

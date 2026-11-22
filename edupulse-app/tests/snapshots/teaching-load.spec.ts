@@ -31,5 +31,5 @@ for(const role of ['dean','associate_dean'])test(`${role} historical staff quali
 
 // Manual load metadata is a required part of the management form.
 test('manual course load fields',async({page})=>{
- const{deanManagementUI}=await import('../dean-management-fixture');await deanManagementUI(page);await page.goto('/#/records');await page.getByRole('button',{name:/^IT 401 Capstone project,/}).click();await page.getByRole('button',{name:'Add instructor',exact:true}).click();const form=page.getByRole('dialog',{name:'Load IT 401',exact:true});for(const name of ['Time','Day','Units','Lecture units','Lab units','Number of hours','Room','Program'])await expect(form.getByLabel(name,{exact:true})).toBeVisible()
+ const{deanManagementUI}=await import('../dean-management-fixture');await deanManagementUI(page);await page.goto('/#/records');await page.getByRole('row').filter({has:page.getByRole('cell',{name:'IT 401',exact:true})}).first().getByRole('button',{name:/Course actions for IT 401/}).click();await page.getByRole('menuitem',{name:'Add instructor',exact:true}).click();const form=page.getByRole('dialog',{name:'Load IT 401',exact:true});for(const name of ['Time','Day','Units','Lecture units','Lab units','Number of hours','Room','Program'])await expect(form.getByLabel(name,{exact:true})).toBeVisible()
 })

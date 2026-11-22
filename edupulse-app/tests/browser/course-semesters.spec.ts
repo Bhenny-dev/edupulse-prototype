@@ -14,7 +14,7 @@ for(const role of ['dean','associate_dean'])test(`${role} uses one semester acro
  await form.getByLabel('Units',{exact:true}).fill('3')
  await page.screenshot({path:info.outputPath('three-course-fields.png'),animations:'disabled'})
  await form.getByRole('button',{name:'Add Course',exact:true}).click()
- await expect(page.locator('.dean-course-card')).toContainText(['Next-semester course'])
+ await expect(page.locator('.data-table tbody tr')).toContainText(['Next-semester course'])
  expect(fixture.commands[0]).toEqual({action:'course.create',academic_year:'2026-2027',semester:'2nd Semester',course:{code:'QA NEXT',title:'Next-semester course',units:3}})
  await page.goto('/#/instructors')
  await expect(page.getByLabel('Academic term',{exact:true})).toHaveValue('2026-2027|2nd Semester')

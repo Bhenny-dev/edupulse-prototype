@@ -3,8 +3,8 @@ import{deanManagementUI}from'../dean-management-fixture'
 for(const role of ['dean','associate_dean'])test(`${role} fills required instructor loading details`,async({page})=>{
  const fixture=await deanManagementUI(page,role)
  await page.goto('/#/records')
- await page.getByRole('button',{name:/^IT 401 Capstone project,/}).click()
- await page.getByRole('button',{name:'Add instructor',exact:true}).click()
+ await page.getByRole('button',{name:'Course actions for IT 401',exact:true}).click()
+ await page.getByRole('menuitem',{name:'Add instructor',exact:true}).click()
  const modal=page.getByRole('dialog',{name:'Load IT 401',exact:true})
  await modal.getByRole('button',{name:'Load course',exact:true}).click()
  await expect(modal.getByRole('alert')).toBeVisible();expect(fixture.commands).toHaveLength(0)
