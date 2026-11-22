@@ -358,3 +358,8 @@ Do not infer deployment from main being pushed. The school-account EduPulse proj
 ### 22 November 2026 - Course catalog table
 
 Course cards and their course-detail modal are replaced by a single course/instructor table. Columns show code, title, units, status, instructor, block sections, retained schedule/source facts and student counts. Unloaded courses retain a row. The final Actions column uses the shared three-dot menu for catalog CRUD, instructor loading/edit/removal, block/class-list management and read-only syllabus inspection. Current/next-term permissions, past-term read-only access, confirmation dialogs and saved data boundaries remain unchanged. Do not recreate the course-detail modal or inline action-button strips.
+
+
+### 22 November 2026 - Instructor directory table
+
+Replace instructor cards and profile-detail modal with a table: name/email, qualifications/employee ID, specialization, status, course loads, syllabi, last sign-in and final-column three-dot actions. Course-load and syllabus breakdowns expand inline in their cells. Original syllabus/content inspection and explicit edit/status confirmation dialogs remain available through the row menu. Preserve historical term snapshots, past-term read-only access, role-restricted score columns and suspend-before-remove. No account or teaching records are changed by this layout.
