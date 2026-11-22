@@ -20,7 +20,7 @@ import { SkeletonKPI, SkeletonTable } from '../components/ui/LoadingSkeleton'
 import '../components/academic/academic.css'
 import {
   BookOpen, AlertTriangle, CheckCircle, FileText, TrendingUp, ArrowRight,
-  Clock, Target, Sparkles, BarChart3, Eye, Download,
+  Clock, Target, Sparkles, BarChart3, Download,
   ChevronRight, Activity, Rocket, X, Bot, ClipboardCheck, Bell,
 } from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
@@ -117,23 +117,22 @@ function ManagementDashboard({ model, actions = exportButton, status }) {
         <KpiCard icon={AlertTriangle} label="Not Yet Routed for Approval" value={model.kpis.notRouted} color="var(--amber-500)" bg="var(--amber-100)" to={['dean','associate_dean'].includes(user?.role)?'/monitor?tab=overview':undefined}/>
       </div>
 
-      <div className="card mb-24">
-        <nav className="card-body" aria-label="Quick actions" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-          {quickActions.map(a => (
-            <button key={a.label} className="btn btn-secondary btn-sm" onClick={a.action}>
-              <a.icon size={14} style={{ color: a.color }} /> {a.label}
-            </button>
-          ))}
-        </nav>
-      </div>
+      <nav className="home-actions mb-24" aria-label="Quick actions">
+        {quickActions.map(a => (
+          <button key={a.label} className="btn btn-secondary btn-sm" onClick={a.action}>
+            <a.icon size={14} style={{ color: a.color }} /> {a.label}
+          </button>
+        ))}
+      </nav>
 
-      <div className="grid-2 mb-24">
-        <div className="card">
-          <div className="card-header">
-            <h3>Syllabus Stations</h3>
+      {/* Charts sit on flat surfaces; every list below is a filtered table (UI redesign U4). */}
+      <div className="grid-2">
+        <section className="home-section">
+          <div className="home-section-head">
+            <h2>Syllabus Stations</h2>
             <button className="btn btn-ghost btn-sm" onClick={() => navigate('/monitor?tab=overview')}>Monitor <ArrowRight size={14} /></button>
           </div>
-          <div className="card-body">
+          <div className="home-feed" style={{ padding: 16 }}>
             <p className="text-sm text-muted mb-16">Where every loaded course's syllabus sits in the lifecycle. The signatory chain (Dean → CAO → EVP) runs offline on the downloaded file.</p>
             <ResponsiveContainer width="100%" height={200}>
               <BarChart data={model.stations} margin={{ top: 8, right: 8, bottom: 8, left: -20 }}>
@@ -145,14 +144,14 @@ function ManagementDashboard({ model, actions = exportButton, status }) {
               </BarChart>
             </ResponsiveContainer>
           </div>
-        </div>
+        </section>
 
-        <div className="card">
-          <div className="card-header">
-            <h3>Delivery Progress (Active Courses)</h3>
+        <section className="home-section">
+          <div className="home-section-head">
+            <h2>Delivery Progress (Active Courses)</h2>
             <button className="btn btn-ghost btn-sm" onClick={() => navigate('/monitor?tab=overview')}>Details <ArrowRight size={14} /></button>
           </div>
-          <div className="card-body">
+          <div className="home-feed" style={{ padding: 16 }}>
             <p className="text-sm text-muted mb-16">Published courseware against the extracted Course Outline — are the mapped materials and assessments being delivered on schedule?</p>
             {model.delivery.length === 0 ? (
               <p className="text-sm text-muted">No active syllabi yet.</p>
@@ -170,78 +169,43 @@ function ManagementDashboard({ model, actions = exportButton, status }) {
               </ResponsiveContainer>
             )}
           </div>
-        </div>
+        </section>
       </div>
 
-      <div className="grid-2 mb-24">
-        <div className="card">
-          <div className="card-header"><h3>Faculty Overview</h3></div>
-          <div className="card-body">
-            {model.faculty.length === 0 && <p className="text-sm text-muted">No instructor accounts or course loads recorded yet.</p>}
-            {model.faculty.map(inst => (
-              <div key={inst.id} style={{
-                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                padding: '10px 12px', borderRadius: 'var(--radius-md)',
-                background: 'var(--gray-50)', marginBottom: '6px',
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <div style={{ width: 32, height: 32, borderRadius: 'var(--radius-full)', background: 'linear-gradient(135deg, var(--sky-300), var(--sky-400))', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 700, fontSize: '0.6875rem' }}>{inst.name.charAt(0)}</div>
-                  <div>
-                    <div style={{ fontWeight: 600, fontSize: '0.8125rem' }}>{inst.name}</div>
-                    <div className="text-sm text-muted">{inst.loads} loaded · {inst.active} active</div>
-                  </div>
-                </div>
-                {inst.loads === 0
-                  ? <span className="badge badge-draft" style={{ fontSize: '0.6875rem' }}>No load</span>
-                  : inst.behind > 0
-                    ? <span className="badge badge-drafted" style={{ fontSize: '0.6875rem' }}>{inst.behind} not yet routed</span>
-                    : <span className="badge badge-approved" style={{ fontSize: '0.6875rem' }}>On track</span>}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="card">
-          <div className="card-header"><h3><Activity size={16} /> Recent Activity</h3></div>
-          <div className="card-body">
-            <ActivityList items={model.activity} />
-          </div>
-        </div>
-      </div>
-
-      {/* Per-course syllabus status */}
-      <div className="card">
-        <div className="card-header">
-          <h3>Syllabus Status by Course</h3>
+      <section className="home-section">
+        <div className="home-section-head">
+          <h2>Syllabus Status by Course</h2>
           <button className="btn btn-secondary btn-sm" onClick={() => navigate('/monitor?tab=overview')}>Full Monitor <ArrowRight size={14} /></button>
         </div>
-        <div className="card-body">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Course</th><th>Instructor</th><th>Status</th><th>Outline</th><th>Updated</th><th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {model.courses.length === 0 && <tr><td colSpan={6} className="text-sm text-muted">No loaded courses in the records yet.</td></tr>}
-              {model.courses.map(course => {
-                const meta = SYLLABUS_STATUS_META[course.status]
-                return (
-                  <tr key={course.id}>
-                    <td><strong>{course.code}</strong><br /><span className="text-sm text-muted">{course.title}</span></td>
-                    <td className="text-sm">{course.instructor}</td>
-                    <td><span className={`badge badge-${meta?.badge || 'draft'}`} title={meta?.hint}>{meta?.label || course.status}</span></td>
-                    <td className="text-sm">{course.status === 'active' ? `${course.outlineWeeks} weeks` : '—'}</td>
-                    <td className="text-sm text-muted">{course.updated}</td>
-                    <td>
-                      <button className="btn btn-ghost btn-sm" style={{ padding: '4px 8px' }} title="View in Monitor" onClick={() => navigate('/monitor?tab=overview')}><Eye size={12} /></button>
-                    </td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
-        </div>
+        <DataTable label="Syllabus status by course" rows={model.courses} searchPlaceholder="Search courses or instructors" empty="No loaded courses in the records yet."
+          filters={[{ key: 'status', label: 'Statuses', value: course => SYLLABUS_STATUS_META[course.status]?.label || course.status }, { key: 'instructor', label: 'Instructors' }]}
+          onRowClick={() => navigate('/monitor?tab=overview')}
+          columns={[
+            { key: 'code', label: 'Course', value: course => `${course.code} ${course.title}`, render: course => <span style={{ display: 'flex', flexDirection: 'column' }}><span>{course.code}</span><small className="text-muted" style={{ fontWeight: 400 }}>{course.title}</small></span> },
+            { key: 'instructor', label: 'Instructor' },
+            { key: 'status', label: 'Status', value: course => SYLLABUS_STATUS_META[course.status]?.label || course.status, render: course => { const meta = SYLLABUS_STATUS_META[course.status]; return <span className={`badge badge-${meta?.badge || 'draft'}`} title={meta?.hint}>{meta?.label || course.status}</span> } },
+            { key: 'outlineWeeks', label: 'Outline', searchable: false, render: course => course.status === 'active' ? `${course.outlineWeeks} weeks` : '—' },
+            { key: 'updated', label: 'Updated', searchable: false, sortable: false },
+          ]} />
+      </section>
+
+      <div className="grid-2">
+        <section className="home-section">
+          <h2>Faculty Overview</h2>
+          <DataTable label="Faculty overview" dense pageSize={8} rows={model.faculty} searchPlaceholder="Search instructors" empty="No instructor accounts or course loads recorded yet."
+            tabs={[{ key: 'all', label: 'All' }, { key: 'none', label: 'No load', match: inst => inst.loads === 0 }, { key: 'behind', label: 'Not yet routed', match: inst => inst.loads > 0 && inst.behind > 0 }, { key: 'track', label: 'On track', match: inst => inst.loads > 0 && !inst.behind }]}
+            onRowClick={() => navigate('/instructors')}
+            columns={[
+              { key: 'name', label: 'Instructor' },
+              { key: 'loads', label: 'Loads', searchable: false, render: inst => `${inst.loads} loaded · ${inst.active} active` },
+              { key: 'behind', label: 'Status', searchable: false, render: inst => inst.loads === 0 ? <StatusPill>No load</StatusPill> : inst.behind > 0 ? <StatusPill tone="warning">{inst.behind} not yet routed</StatusPill> : <StatusPill tone="success">On track</StatusPill> },
+            ]} />
+        </section>
+
+        <section className="home-section">
+          <h2>Recent Activity</h2>
+          <div className="home-feed"><ActivityList items={model.activity} /></div>
+        </section>
       </div>
       </>}
     </div>

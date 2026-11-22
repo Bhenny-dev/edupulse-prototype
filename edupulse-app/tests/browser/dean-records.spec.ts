@@ -6,7 +6,7 @@ test('Dean navigation and dashboard summaries open the Course list, Course loads
  await deanRecordsUI(page);await page.goto('/#/dashboard')
  const mobile=page.viewportSize()!.width<800
  if(mobile)await page.getByRole('button',{name:'Open menu',exact:true}).click()
- for(const label of ['Dashboard','Course','Instructors','Students'])await expect(page.getByRole('link',{name:label,exact:true}).first()).toBeVisible()
+ for(const label of ['Home','Course','Instructors','Students'])await expect(page.getByRole('link',{name:label,exact:true}).first()).toBeVisible()
  if(mobile)await page.getByRole('button',{name:'Close menu',exact:true}).click()
  for(const [label,url] of [['Released Courses','/records?tab=courses'],['Courses Loaded','/records?tab=loads'],['Approved Syllabi','/monitor?tab=overview'],['Not Yet Routed for Approval','/monitor?tab=overview']]){
   const card=page.getByRole('link',{name:label,exact:true});await expect(card).toHaveAttribute('href',`#${url}`)
@@ -15,7 +15,7 @@ test('Dean navigation and dashboard summaries open the Course list, Course loads
  await expect(page.getByRole('heading',{name:'Courses',level:2,exact:true})).toBeVisible()
  for(const title of ['Student class lists','Syllabi','Course records'])await expect(page.getByRole('button',{name:title,exact:true})).toHaveCount(0)
  for(const title of ['Course list','Course loads'])await expect(page.getByRole('button',{name:title,exact:true})).toHaveCount(0)
- await expect(page.locator('.kpi-card .glass-icon')).toHaveCount(4)
+ await expect(page.locator('.kpi-card .kpi-icon')).toHaveCount(4)
  for(const upload of ['Upload course load','Upload class lists'])await expect(page.locator('label.dean-upload',{hasText:upload}).locator('input[type=file]')).toBeDisabled()
 })
 
@@ -23,7 +23,7 @@ test('Program Coordinator opens the same Course, Instructors and Students pages 
  await deanRecordsUI(page,'associate_dean');await page.goto('/#/dashboard')
  const mobile=page.viewportSize()!.width<800
  if(mobile)await page.getByRole('button',{name:'Open menu',exact:true}).click()
- for(const label of ['Dashboard','Course','Instructors','Students'])await expect(page.getByRole('link',{name:label,exact:true}).first()).toBeVisible()
+ for(const label of ['Home','Course','Instructors','Students'])await expect(page.getByRole('link',{name:label,exact:true}).first()).toBeVisible()
  for(const label of ['Records','Course Loading','Monitor'])await expect(page.getByRole('link',{name:label,exact:true})).toHaveCount(0)
  if(mobile)await page.getByRole('button',{name:'Close menu',exact:true}).click()
  await page.goto('/#/records')

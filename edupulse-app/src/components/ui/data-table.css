@@ -42,3 +42,10 @@
   .dt-select, .dt-select select { flex: 1 1 140px; max-width: none; width: 100%; }
   .dt-table th, .dt-table td { padding: 10px; }
 }
+/* Filter chips: a row of toggles that narrow the table below (replaces filter cards). */
+.filter-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 16px; }
+.filter-chip { display: inline-flex; align-items: baseline; gap: 8px; min-height: 36px; padding: 6px 14px; border: 1px solid var(--gray-200); border-radius: var(--radius-full); background: var(--white); color: var(--gray-700); font: 500 0.8125rem var(--font-body); cursor: pointer; }
+.filter-chip strong { color: var(--gray-900); }
+.filter-chip span { color: var(--gray-500); font-size: 0.75rem; }
+.filter-chip:hover { background: var(--gray-100); }
+.filter-chip[aria-pressed="true"] { border-color: var(--sky-400); background: var(--sky-100); color: var(--sky-700); }

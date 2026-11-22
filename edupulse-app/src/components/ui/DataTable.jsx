@@ -55,14 +55,14 @@ export default function DataTable({
           </th>
         })}</tr></thead>
         <tbody>
-          {shown.rows.map((row, index) => <tr key={keyOf(row, index)} {...rowProps?.(row)} className={onRowClick ? 'dt-clickable' : undefined} onClick={onRowClick ? event => { if (!event.target.closest('button, a, input, select, textarea')) onRowClick(row) } : undefined}>
+          {shown.rows.map((row, index) => { const extra = rowProps?.(row) || {}; return <tr key={keyOf(row, index)} {...extra} className={[onRowClick ? 'dt-clickable' : '', extra.className || ''].join(' ').trim() || undefined} onClick={onRowClick ? event => { if (!event.target.closest('button, a, input, select, textarea')) onRowClick(row) } : undefined}>
             {columns.map((column, columnIndex) => {
               const content = column.render ? column.render(row) : cellValue(row, column) ?? '—'
               return <td key={column.key} style={{ textAlign: column.align }} data-label={column.label}>
                 {onRowClick && columnIndex === 0 ? <button type="button" className="dt-open" aria-label={openLabel?.(row)} onClick={() => onRowClick(row)}>{content}</button> : content}
               </td>
             })}
-          </tr>)}
+          </tr> })}
         </tbody>
       </table>
       {!shown.total && <p className="dt-empty" role="status">{rows.length ? noMatch : empty}</p>}

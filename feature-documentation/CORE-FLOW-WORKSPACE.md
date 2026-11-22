@@ -323,7 +323,7 @@ the guide and log; screenshots and guides stay paused (`doc-map.json`) until the
 | U1 | Shell: left rail and drawer, top bar with page title; shared `DataTable` with toolbar, tabs, sort and paging; used by Notifications | Unit test for the table model; browser specs that open menus pass | Tested (`data-table.test.ts`, `layout-reload`, `workflows`, `role-restoration`, `layout-feedback`) |
 | U2 | Instructor: Home class cards; class page with Stream, Classwork by week, People, Grades grid; To review | Instructor browser specs pass | Tested (instructor-courses, instructor-updates, instructor-scope, syllabus-repository, class-lists, term-calendar, assessment-attempts; Grades grid is still Student Monitoring) |
 | U3 | Student: Home class cards with due items; class page; To-do with Assigned, Missing, Done | Student browser specs pass | Tested (student-progress, student-blocks, student-learning, student-block-delivery, page-readers) |
-| U4 | Dean / Program Coordinator: Home term cards; Course loads, Instructors, Students, Monitoring as filtered tables | Dean browser specs pass | Draft |
+| U4 | Dean / Program Coordinator: Home term cards; Course loads, Instructors, Students, Monitoring as filtered tables | Dean browser specs pass | Tested (card-actions, course-semesters, dean-block-sections, dean-management, dean-records, historical-loads, monitoring, oversight, role-monitoring, student-blocks; Home keeps the course table instead of cards because a term has dozens of courses) |
 | U5 | System Admin and remaining pages (Settings, Performance, Records) on the shell and tables; recapture screenshots when the owner resumes the docs | Admin specs pass | Draft |
 
 ## Backlog
@@ -416,3 +416,17 @@ the guide and log; screenshots and guides stay paused (`doc-map.json`) until the
   verify` exit 0 (531 of 531), `VERCEL=1 npm test` 531 of 531; browser specs above on desktop and mobile
   pass except `dashboard-navigation` 5/44 and `instructor-updates:5`, which fail before this change
   too (backlog). No migration.
+- 2026-11-22: UI redesign U4 (Dean / Program Coordinator) Tested. Dean Home: quick actions without a
+  card, Syllabus Stations and Delivery Progress charts on flat panels, Syllabus Status by Course as a
+  table (status and instructor filters), Faculty Overview as a table with tabs No load, Not yet routed,
+  On track. Instructors: the card grid is one table (instructor and email, degree, specialization,
+  loads, status, actions menu); search, the Show filter, CSV and Add instructor sit in its toolbar;
+  rows keep `.dean-person-card` and the open button "View instructor <name>". Students: the
+  department's block cards are filter chips (`.filter-chip`, still "Filter students in <block>").
+  Tests follow U1/U2 names: rail link "Home" instead of "Dashboard" (`dean-records`,
+  `workspace-cache`), stat icons `.kpi-icon` instead of `.glass-icon` (`dean-management`,
+  `dean-records`, `monitoring`, snapshot `student-learning`); U2 changed these without running the
+  Dean specs, found here. Remaining failures predate the redesign: `monitoring:48` (directory roster
+  registration, like `automatic-records` 18/19/33) and `workspace-cache` 7/17/31/47 (instructor
+  unified-material fixture and a student list without "Open material", like `courseware-unified`).
+  Gate: `npm run verify` exit 0 (531 of 531), `VERCEL=1 npm test` 531 of 531. No migration.

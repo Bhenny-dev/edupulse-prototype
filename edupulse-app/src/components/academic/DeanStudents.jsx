@@ -6,7 +6,6 @@ import { Users, Layers, Shuffle, UserX, UserPlus, FileUp, UserRound } from 'luci
 import { useWorkspaceViewState } from '../../context/WorkspaceContext'
 import { Empty, Table, CsvButton } from './AcademicUI'
 import { deanRecords, deanDirectory, studentCourseProgress, isIrregular, yearLabel, loadRows, directoryBlocks } from './deanRecordModel'
-import GlassIcon from '../ui/GlassIcon'
 import { useAuth } from '../../context/AuthContext'
 import { DeanCards, DeanDialog, ActivityTable, DeanFeedback, ConfirmDialog, StatusBadge, Pager, UploadButton } from './DeanCommon'
 import { useDeanAction } from './deanActions'
@@ -88,7 +87,7 @@ export default function DeanStudents({ data:allData }) {
     </div>
     {department&&<section className="student-department-sections" aria-label="Department block sections">
       <div className="student-directory-heading"><h2>{department} sections</h2>{blockFilter&&<button className="btn btn-ghost btn-sm" onClick={()=>filterBlock('')}>All blocks in this department</button>}</div>
-      {[...new Set(shownBlocks.map(yearLabel))].map(label=><section className="dean-year-group" key={label} aria-label={label}><h3>{label}</h3><div className="academic-card-grid">{shownBlocks.filter(b=>yearLabel(b)===label).map(b=><button className="card dean-record-card student-section-card" key={b.id} onClick={()=>filterBlock(b.name)} aria-label={`Filter students in ${b.name}`} aria-pressed={blockFilter===b.name}><GlassIcon icon={Users} color="var(--sky-500)"/><strong>{b.name}</strong>{b.program&&<span className="text-sm text-muted">{b.program}</span>}<span>{b.students.length} registered student{b.students.length===1?'':'s'}</span></button>)}</div></section>)}
+      {[...new Set(shownBlocks.map(yearLabel))].map(label=><section className="dean-year-group" key={label} aria-label={label}><h3>{label}</h3><div className="filter-chips">{shownBlocks.filter(b=>yearLabel(b)===label).map(b=><button className="filter-chip student-section-card" key={b.id} onClick={()=>filterBlock(b.name)} aria-label={`Filter students in ${b.name}`} aria-pressed={blockFilter===b.name} title={b.program||undefined}><strong>{b.name}</strong><span>{b.students.length} registered student{b.students.length===1?'':'s'}</span></button>)}</div></section>)}
       {!shownBlocks.length&&<Empty>No block sections match this department and year level.</Empty>}
     </section>}
     <section ref={list} className="student-directory-list">
