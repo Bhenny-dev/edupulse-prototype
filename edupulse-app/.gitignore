@@ -28,5 +28,7 @@ dist-capture
 !.env.example
 .data/
 test-results/
+# Separate Playwright output folders (PW_OUTPUT_DIR) used by parallel or targeted runs
+test-results-*/
 supabase/.temp/
 models/
