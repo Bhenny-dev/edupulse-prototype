@@ -17,7 +17,7 @@ import DeanTermCalendar from './DeanTermCalendar'
 import useAcademicTerm from './useAcademicTerm'
 import {readReferenceFile} from '../../lib/aiClient'
 import {recordsForLoadTerm,loadTerm} from '../../utils/loadTerms'
-import TeachingLoadFacts from './TeachingLoadFacts'
+import LoadSchedulePopover from './LoadSchedulePopover'
 import {CourseCardActions,CourseCatalogForm,CourseStatusDialog} from './DeanCatalogActions'
 
 const groupLabel = course => course.semester || 'Courses'
@@ -83,8 +83,8 @@ export default function DeanCourses({ data:allData }) {
       {writable&&document&&<TeachingLoadImport file={document} initialOpen onClose={()=>setDocument(null)}/>}
       {writable&&classLists&&<DeanClassListImport files={classLists} data={data} students={directory.students} action={action} term={{semester,academicYear}} onClose={()=>setClassLists(null)}/>}
       {filters}
-      <Table label="Course catalog and instructor loads" headers={['Course code','Course title','Units','Status','Instructor','Block sections','Schedule / source','Students','Actions']} rows={catalog.filter(matches).flatMap(course=>(course.assignments.length?course.assignments:[null]).map(item=>[
-        course.code,course.title,course.units,course.status==='suspended'?'Suspended':item?'Loaded':'Not yet loaded',item?.instructorName||'Not assigned',item?.blocks.join(', ')||'No block section yet',item?<TeachingLoadFacts key={item.key} load={item}/>:null,item?item.sections.reduce((sum,section)=>sum+section.students.length,0):0,
+      <Table label="Course catalog and instructor loads" headers={['Course code','Course title','Units','Instructor','Block sections','Schedule','Students','Actions']} rows={catalog.filter(matches).flatMap(course=>(course.assignments.length?course.assignments:[null]).map(item=>[
+        course.code,course.title,course.units,item?.instructorName||'Not assigned',item?.blocks.join(', ')||'No block section yet',item?<LoadSchedulePopover key={item.key} load={item}/>:null,item?item.sections.reduce((sum,section)=>sum+section.students.length,0):0,
         <CourseCardActions key={item?.key||course.code} label={`Course actions for ${course.code}${item?` ${item.instructorName}`:''}`} course={course} open={catalogMenu===(item?.key||course.code)} onOpenChange={next=>setCatalogMenu((typeof next==='function'?next(catalogMenu===(item?.key||course.code)):next)?(item?.key||course.code):null)} disabled={Boolean(action.busy)} canEdit={directory.managed&&writable} onAction={setCatalogAction} extraActions={[
           ...(directory.managed&&writable&&course.status!=='suspended'?[{label:'Add instructor',icon:Plus,onSelect:()=>setAssigning(course)}]:[]),
           ...(item?[{label:'View syllabus and contents',icon:BookOpen,onSelect:()=>setInspecting(item.key)},...(directory.managed&&writable?[

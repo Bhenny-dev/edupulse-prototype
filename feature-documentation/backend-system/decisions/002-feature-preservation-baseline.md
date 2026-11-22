@@ -363,3 +363,8 @@ Course cards and their course-detail modal are replaced by a single course/instr
 ### 22 November 2026 - Instructor directory table
 
 Replace instructor cards and profile-detail modal with a table: name/email, qualifications/employee ID, specialization, status, course loads, syllabi, last sign-in and final-column three-dot actions. Course-load and syllabus breakdowns expand inline in their cells. Original syllabus/content inspection and explicit edit/status confirmation dialogs remain available through the row menu. Preserve historical term snapshots, past-term read-only access, role-restricted score columns and suspend-before-remove. No account or teaching records are changed by this layout.
+
+
+### 22 November 2026 - Course weekly schedule popover
+
+Remove the redundant Status column and retained-source-details dropdown from course rows. The Schedule button opens a weekday/time grid with duration-sized meetings, block labels and rooms. Monday-Friday are shown, with weekend columns only when present in recorded loads. Use confirmed section schedules first, source schedule rows only when sections have none; never display both as duplicate meetings or repeat course/instructor/units/term fact panels. Preserve source records and provenance in storage and the existing review/inspection flow. Closing the schedule or restoring its authorized view must not write loads or delivery schedules.

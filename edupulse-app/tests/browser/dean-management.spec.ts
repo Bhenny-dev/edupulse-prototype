@@ -13,7 +13,7 @@ test('Dean loads a course and removes an instructor from table actions',async({p
  await page.getByRole('button',{name:'Course actions for IT 102 Alex Sample Instructor',exact:true}).click();await page.getByRole('menuitem',{name:'Remove instructor load',exact:true}).click()
  await page.getByRole('dialog',{name:'Remove course load',exact:true}).getByRole('button',{name:'Remove load',exact:true}).click()
  expect(fixture.commands[1]).toMatchObject({action:'course-load.remove',expected_instructor:'teacher-a'})
- await expect(page.getByRole('row').filter({has:page.getByRole('cell',{name:'IT 102',exact:true})})).toContainText('Not yet loaded')
+ await expect(page.getByRole('row').filter({has:page.getByRole('cell',{name:'IT 102',exact:true})})).toContainText('Not assigned')
 })
 
 test('a faculty load upload is matched and reviewed before anything is saved', async ({ page }) => {

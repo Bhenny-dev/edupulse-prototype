@@ -33,3 +33,9 @@ for(const role of ['dean','associate_dean'])test(`${role} historical staff quali
 test('manual course load fields',async({page})=>{
  const{deanManagementUI}=await import('../dean-management-fixture');await deanManagementUI(page);await page.goto('/#/records');await page.getByRole('row').filter({has:page.getByRole('cell',{name:'IT 401',exact:true})}).first().getByRole('button',{name:/Course actions for IT 401/}).click();await page.getByRole('menuitem',{name:'Add instructor',exact:true}).click();const form=page.getByRole('dialog',{name:'Load IT 401',exact:true});for(const name of ['Time','Day','Units','Lecture units','Lab units','Number of hours','Room','Program'])await expect(form.getByLabel(name,{exact:true})).toBeVisible()
 })
+
+// Course list schedule cells use a popover grid, never the source-review dropdown.
+test('course schedule column has no redundant status',async({page})=>{
+ const {deanManagementUI}=await import('../dean-management-fixture');await deanManagementUI(page);await page.goto('/#/records')
+ const table=page.getByRole('region',{name:'Course catalog and instructor loads',exact:true});await expect(table.getByRole('columnheader',{name:'Status',exact:true})).toHaveCount(0);await expect(table.getByRole('columnheader',{name:'Schedule',exact:true})).toBeVisible();await expect(table.locator('details')).toHaveCount(0)
+})
