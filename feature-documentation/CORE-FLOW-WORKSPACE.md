@@ -321,13 +321,17 @@ the guide and log; screenshots and guides stay paused (`doc-map.json`) until the
 | Task | Work | Acceptance | Stage |
 |---|---|---|---|
 | U1 | Shell: left rail and drawer, top bar with page title; shared `DataTable` with toolbar, tabs, sort and paging; used by Notifications | Unit test for the table model; browser specs that open menus pass | Tested (`data-table.test.ts`, `layout-reload`, `workflows`, `role-restoration`, `layout-feedback`) |
-| U2 | Instructor: Home class cards; class page with Stream, Classwork by week, People, Grades grid; To review | Instructor browser specs pass | Draft |
-| U3 | Student: Home class cards with due items; class page; To-do with Assigned, Missing, Done | Student browser specs pass | Draft |
+| U2 | Instructor: Home class cards; class page with Stream, Classwork by week, People, Grades grid; To review | Instructor browser specs pass | Tested (instructor-courses, instructor-updates, instructor-scope, syllabus-repository, class-lists, term-calendar, assessment-attempts; Grades grid is still Student Monitoring) |
+| U3 | Student: Home class cards with due items; class page; To-do with Assigned, Missing, Done | Student browser specs pass | Tested (student-progress, student-blocks, student-learning, student-block-delivery, page-readers) |
 | U4 | Dean / Program Coordinator: Home term cards; Course loads, Instructors, Students, Monitoring as filtered tables | Dean browser specs pass | Draft |
 | U5 | System Admin and remaining pages (Settings, Performance, Records) on the shell and tables; recapture screenshots when the owner resumes the docs | Admin specs pass | Draft |
 
 ## Backlog
 
+- The signed-in instructor Home (`InstructorOverview`) has no "My Courses / Active Syllabi / Drafts to
+  Review / Published Items" summary links, "My Block Sections" or "Score Snapshot" sections, which
+  `dashboard-navigation.spec.ts` 5/44 and `instructor-updates.spec.ts:5` expect (they fail on `e69758bb`
+  and before it; only the preview persona's dashboard has them).
 - Students on an uploaded class list who have no EduPulse account yet are enrolled automatically when
   their account is created (today: upload the same list again).
 - Students see a course they are listed in before the instructor's syllabus exists, marked as waiting for
@@ -395,3 +399,20 @@ the guide and log; screenshots and guides stay paused (`doc-map.json`) until the
   failed, all on the known list (workflows 17/102/114/216, layout-feedback 9/18/24/29 where 29 looks
   for a student link named "Assessments" that is "Practice Assessments", role-restoration instructor
   pages and student units). No migration.
+- 2026-11-22: UI redesign U2 and U3 Tested together (they share `Dashboard.jsx`). New `ClassCard`
+  (`components/ui/ClassCard.jsx`, banner color from `classTone.js`): Classroom Home cards for the
+  instructor's courses (signed-in `InstructorOverview` and the course list in `InstructorCourses`), the
+  preview instructor's block sections and the student's classes (button cards keep the name
+  "Open course <code>"). `SummaryCard` is now one cell of a flat stat strip (`.kpi-grid` in
+  `index.css`), which removes the floating KPI cards on every role. Instructor Home adds "To review"
+  (answers waiting for marking) and "Recent course activity" tables; the preview Home shows Syllabus
+  Stations, the review queue and marked results as tables. The open course has a colored class banner
+  and underlined tabs with a Grades link to Student Monitoring. Student Home: Pulse Reminders is a
+  To-do table with tabs Assigned, Due soon, Missing (rows keep `data-reminder`), My Block is one line
+  of facts, Upcoming Activities and Learning Material Sources are tables. `DataTable` gained
+  `rowProps` and `openLabel`. Phones get 96 px below the page so the Pulse button never covers the
+  last row (it covered the Dean students "Next" button once the breadcrumb was gone). Tests updated:
+  `instructor-updates-ui.ts`, `student-blocks.spec.ts`, `student-progress.spec.ts`. Gate: `npm run
+  verify` exit 0 (531 of 531), `VERCEL=1 npm test` 531 of 531; browser specs above on desktop and mobile
+  pass except `dashboard-navigation` 5/44 and `instructor-updates:5`, which fail before this change
+  too (backlog). No migration.

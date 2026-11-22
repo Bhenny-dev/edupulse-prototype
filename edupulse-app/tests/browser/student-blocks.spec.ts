@@ -75,6 +75,6 @@ for(const role of ['dean','associate_dean'])test(`${role} filters one complete d
 test('a student dashboard shows its recorded home block without a course enrollment',async({page})=>{
  await academicUI(page,async()=>({json:{courses:[],publications:[],enrollments:[],attempts:[],accesses:[],homeBlock:{code:'BSA-1A',year_level:1,students:35,department:'Business',program:'Bachelor of Science in Accountancy'}}}),'student')
  await page.goto('/#/dashboard')
- const section=page.locator('.card').filter({has:page.getByRole('heading',{name:'My Block',exact:true})})
+ const section=page.locator('section.home-section').filter({has:page.getByRole('heading',{name:'My Block',exact:true})})
  await expect(section).toContainText('BSA-1A');await expect(section).toContainText('Year 1');await expect(section).toContainText('35')
 })

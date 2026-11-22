@@ -8,6 +8,8 @@ import AcademicSyncStatus from '../components/academic/AcademicSyncStatus'
 import SystemAdminDashboard from './SystemAdminDashboard'
 import SummaryCard from '../components/ui/SummaryCard'
 import InstructorOverview from '../components/courseware/InstructorOverview'
+import ClassCard, { ClassCardGrid } from '../components/ui/ClassCard'
+import DataTable, { StatusPill } from '../components/ui/DataTable'
 import { SYLLABUS_STATUS_META } from '../data/syllabusStatus'
 import { accountManagementModel, accountStudentModel } from './dashboardModels'
 import {curriculumLabel} from '../utils/curriculumMetadata'
@@ -17,8 +19,8 @@ import { pulse as pulseBus } from '../components/pulse/pulseBus'
 import { SkeletonKPI, SkeletonTable } from '../components/ui/LoadingSkeleton'
 import '../components/academic/academic.css'
 import {
-  BookOpen, Users, AlertTriangle, CheckCircle, FileText, TrendingUp, ArrowRight,
-  Clock, Target, Sparkles, BarChart3, Eye, Calendar, Download,
+  BookOpen, AlertTriangle, CheckCircle, FileText, TrendingUp, ArrowRight,
+  Clock, Target, Sparkles, BarChart3, Eye, Download,
   ChevronRight, Activity, Rocket, X, Bot, ClipboardCheck, Bell,
 } from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
@@ -372,41 +374,29 @@ function InstructorDashboard({ model, actions = exportButton, status }) {
         <KpiCard icon={Target} label="Published Items" value={model.kpis.published} color="var(--purple-500)" bg="var(--purple-100)" to="/courseware?status=published" />
       </div>
 
-      <div className="card mb-24">
-        <nav className="card-body" aria-label="Quick actions" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-          <button className="btn btn-secondary btn-sm" onClick={() => navigate('/syllabus?tab=builder')}><FileText size={14} style={{ color: 'var(--sky-500)' }} /> Syllabus Builder</button>
-          <button className="btn btn-secondary btn-sm" onClick={() => navigate('/courseware?tab=builder')}><Sparkles size={14} style={{ color: 'var(--purple-500)' }} /> Generate Courseware</button>
-          <button className="btn btn-secondary btn-sm" onClick={() => navigate('/student-monitoring')}><ClipboardCheck size={14} style={{ color: 'var(--green-500)' }} /> Student Monitoring</button>
-        </nav>
-      </div>
+      <nav className="home-actions mb-24" aria-label="Quick actions">
+        <button className="btn btn-secondary btn-sm" onClick={() => navigate('/syllabus?tab=builder')}><FileText size={14} style={{ color: 'var(--sky-500)' }} /> Syllabus Builder</button>
+        <button className="btn btn-secondary btn-sm" onClick={() => navigate('/courseware?tab=builder')}><Sparkles size={14} style={{ color: 'var(--purple-500)' }} /> Generate Courseware</button>
+        <button className="btn btn-secondary btn-sm" onClick={() => navigate('/student-monitoring')}><ClipboardCheck size={14} style={{ color: 'var(--green-500)' }} /> Student Monitoring</button>
+      </nav>
 
-      <div className="card mb-24">
-        <div className="card-header"><h3><Users size={16} /> My Block Sections</h3></div>
-        <div className="card-body">
-          {model.blocks.length === 0 ? (
-            <p className="text-sm text-muted">No block sections assigned yet.</p>
-          ) : (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '12px' }}>
-              {model.blocks.map(bs => (
-                <div key={bs.id} style={{ padding: '12px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--sky-100)', background: 'var(--sky-50)' }}>
-                  <div style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--sky-600)' }}>{bs.code}</div>
-                  <div className="text-sm" style={{fontWeight:600,marginTop:4}}>{bs.course}</div>
-                  <div className="text-sm text-muted">{bs.detail}</div>
-                  <button className="btn btn-secondary btn-sm" style={{ marginTop: '8px', width: '100%' }} onClick={() => navigate(bs.courseId?`/student-monitoring?tab=assessments&course=${encodeURIComponent(bs.courseId)}&block=${encodeURIComponent(bs.code)}`:'/student-monitoring')}>Student Monitoring <ArrowRight size={12} /></button>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
+      {/* Classroom Home: one card per block, opening that block's monitoring. */}
+      <section className="home-section">
+        <h2>My Block Sections</h2>
+        {model.blocks.length === 0 ? <p className="text-sm text-muted">No block sections assigned yet.</p> : <ClassCardGrid>
+          {model.blocks.map(bs => <ClassCard key={bs.id} code={bs.code} subtitle={bs.detail}
+            to={bs.courseId ? `/student-monitoring?tab=assessments&course=${encodeURIComponent(bs.courseId)}&block=${encodeURIComponent(bs.code)}` : '/student-monitoring'}
+            items={bs.course.split('; ').map(course => ({ key: course, label: course }))} meta={<span>Student Monitoring <ArrowRight size={12} aria-hidden="true" /></span>} />)}
+        </ClassCardGrid>}
+      </section>
 
       {/* Score snapshot — from Student Monitoring */}
-      <div className="card mb-24">
-        <div className="card-header">
-          <h3>Score Snapshot</h3>
+      <section className="home-section">
+        <div className="home-section-head">
+          <h2>Score Snapshot</h2>
           <button className="btn btn-secondary btn-sm" onClick={() => navigate('/student-monitoring')}>Full Monitoring <ArrowRight size={14} /></button>
         </div>
-        <div className="card-body">
+        <div>
           {model.snapshot.average===null ? <p className="academic-empty">No marked scores yet. Published assessment results appear here after submission and any required instructor marking.</p> : <><div className="kpi-grid">
             <div style={{ textAlign: 'center', padding: '12px' }}>
               <div className="kpi-value"><span>{model.snapshot.students}</span></div>
@@ -438,69 +428,44 @@ function InstructorDashboard({ model, actions = exportButton, status }) {
               </BarChart>
             </ResponsiveContainer>
           )}
-          {(model.snapshot.results||[]).length>0&&<div className="academic-table-wrap"><table className="data-table"><thead><tr><th>Course</th><th>Assessment</th><th>Average</th><th>Marked results</th></tr></thead><tbody>{model.snapshot.results.map(item=><tr key={item.id}><td data-label="Course">{item.course}</td><td data-label="Assessment">Week {item.week} · {item.title}</td><td data-label="Average">{item.score}%</td><td data-label="Marked results">{item.marked}</td></tr>)}</tbody></table></div>}
+          {(model.snapshot.results||[]).length>0&&<DataTable label="Marked assessment results" dense pageSize={10} rows={model.snapshot.results.map(item=>({...item,assessment:`Week ${item.week} · ${item.title}`}))}
+            filters={[{key:'course',label:'Courses'}]} searchPlaceholder="Search assessments"
+            columns={[{key:'course',label:'Course'},{key:'assessment',label:'Assessment'},{key:'score',label:'Average',searchable:false,render:item=>`${item.score}%`},{key:'marked',label:'Marked results',searchable:false}]} />}
           </>}
         </div>
-      </div>
+      </section>
 
-      <div className="card mb-24">
-        <div className="card-header"><h3><Activity size={16} /> Recent Activity</h3></div>
-        <div className="card-body">
-          <ActivityList items={model.activity} />
-        </div>
-      </div>
+      <section className="home-section">
+        <h2>Recent Activity</h2>
+        <div className="home-feed"><ActivityList items={model.activity} /></div>
+      </section>
 
-      <div className="grid-2">
-        <div className="card">
-          <div className="card-header">
-            <h3>My Courses — Syllabus Stations</h3>
-            <button className="btn btn-secondary btn-sm" onClick={() => navigate('/syllabus')}>Open <ArrowRight size={14} /></button>
-          </div>
-          <div className="card-body">
-            {model.syllabi.length === 0 && <p className="text-sm text-muted">No syllabi yet. Start one in Syllabus Builder.</p>}
-            {model.syllabi.map(syl => {
-              const meta = SYLLABUS_STATUS_META[syl.status]
-              return (
-                <div key={syl.id} style={{ padding: '14px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--sky-100)', marginBottom: '10px', background: 'var(--gray-50)' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                    <strong style={{ fontSize: '0.875rem' }}>{syl.code} — {syl.title}</strong>
-                    <span className={`badge badge-${meta?.badge || 'draft'}`} title={meta?.hint}>{meta?.label || syl.status}</span>
-                  </div>
-                  <div style={{ display: 'flex', gap: '12px', fontSize: '0.75rem', color: 'var(--gray-500)' }}>
-                    <span>v{syl.version}</span>
-                    <span>{syl.status === 'active' ? `${syl.outlineWeeks} outline weeks` : meta?.hint}</span>
-                  </div>
-                  <div className="progress-bar mt-8"><div className="progress-fill" style={{ width: `${(meta?.step || 0) * 20}%` }} /></div>
-                </div>
-              )
-            })}
-          </div>
+      {/* Lists are tables with inline filters (UI redesign rule 6). */}
+      <section className="home-section">
+        <div className="home-section-head">
+          <h2>My Courses — Syllabus Stations</h2>
+          <button className="btn btn-secondary btn-sm" onClick={() => navigate('/syllabus')}>Open <ArrowRight size={14} /></button>
         </div>
+        <DataTable label="Syllabus stations" rows={model.syllabi} empty="No syllabi yet. Start one in Syllabus Builder." searchPlaceholder="Search courses"
+          filters={[{ key: 'status', label: 'Statuses', value: syl => SYLLABUS_STATUS_META[syl.status]?.label || syl.status }]}
+          onRowClick={() => navigate('/syllabus?tab=mine')}
+          columns={[
+            { key: 'code', label: 'Course', value: syl => `${syl.code} — ${syl.title}` },
+            { key: 'status', label: 'Status', value: syl => SYLLABUS_STATUS_META[syl.status]?.label || syl.status, render: syl => { const meta = SYLLABUS_STATUS_META[syl.status]; return <span className={`badge badge-${meta?.badge || 'draft'}`} title={meta?.hint}>{meta?.label || syl.status}</span> } },
+            { key: 'version', label: 'Version', searchable: false, render: syl => `v${syl.version}` },
+            { key: 'outlineWeeks', label: 'Outline', searchable: false, render: syl => syl.status === 'active' ? `${syl.outlineWeeks} weeks` : SYLLABUS_STATUS_META[syl.status]?.hint },
+          ]} />
+      </section>
 
-        <div className="card">
-          <div className="card-header">
-            <h3>Courseware Review Queue</h3>
-            <button className="btn btn-secondary btn-sm" onClick={() => navigate('/courseware?tab=builder&sub=review')}>View All <ArrowRight size={14} /></button>
-          </div>
-          <div className="card-body">
-            {model.queue.length === 0 && <p className="text-sm text-muted">No drafts are waiting for review.</p>}
-            {model.queue.slice(0, QUEUE_PREVIEW).map(cw => (
-              <div key={cw.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 12px', borderRadius: 'var(--radius-md)', background: 'var(--gray-50)', marginBottom: '6px' }}>
-                <div>
-                  <div style={{ fontWeight: 600, fontSize: '0.875rem' }}>{cw.title}</div>
-                  <div className="text-sm text-muted">{cw.detail}</div>
-                </div>
-                <span className={`badge badge-${cw.status}`}>{cw.status}</span>
-              </div>
-            ))}
-            {model.queue.length > QUEUE_PREVIEW && (
-              <p className="text-sm text-muted" style={{ marginTop: 8 }}>
-                Showing {QUEUE_PREVIEW} of {model.queue.length} drafts. Use View All to review the rest in Courseware.
-              </p>
-            )}
-          </div>
+      <section className="home-section">
+        <div className="home-section-head">
+          <h2>Courseware Review Queue</h2>
+          <button className="btn btn-secondary btn-sm" onClick={() => navigate('/courseware?tab=builder&sub=review')}>View All <ArrowRight size={14} /></button>
         </div>
-      </div>
+        <DataTable label="Courseware review queue" rows={model.queue} pageSize={QUEUE_PREVIEW} empty="No drafts are waiting for review." searchPlaceholder="Search drafts"
+          onRowClick={() => navigate('/courseware?tab=builder&sub=review')}
+          columns={[{ key: 'title', label: 'Draft' }, { key: 'detail', label: 'Details' }, { key: 'status', label: 'Status', render: cw => <StatusPill tone="warning">{cw.status}</StatusPill> }]} />
+      </section>
       </>}
     </div>
   )
@@ -532,101 +497,55 @@ function StudentDashboard({ model, actions, status }) {
         <KpiCard icon={Clock} label="Pending Activities" value={model.kpis.pending} color="var(--amber-500)" bg="var(--amber-100)" />
       </div>
 
-      {/* Pulse guidance — reminders only, never answers */}
-      <div className="card mb-24">
-        <div className="card-header" style={{flexWrap:'wrap',gap:'12px'}}>
-          <h3><Bell size={16} /> Pulse Reminders</h3>
+      {/* Classroom To-do: Pulse reminders as one table with status tabs (blue delivered, orange due soon, red missed). Guidance only. */}
+      <section className="home-section">
+        <div className="home-section-head">
+          <h2>Pulse Reminders</h2>
           <span className="text-sm text-muted">Guidance only — Pulse never answers or reviews assessment items</span>
         </div>
-        <div className="card-body">
-          {model.reminders.length === 0 && <p className="text-sm text-muted">Nothing pending: no unopened materials or unanswered assessments in your published records.</p>}
-          {model.reminders.map(r => {
-            const look = REMINDER_LOOK[r.state] || REMINDER_LOOK.blue
-            return (
-              <div key={r.id} data-reminder={r.state || 'blue'} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px', padding: '10px 12px', borderRadius: 'var(--radius-md)', background: look.background, borderLeft: `4px solid ${look.color}`, marginBottom: '6px' }}>
-                <div style={{ display: 'grid', gap: '2px', minWidth: 0 }}>
-                  <span style={{ fontSize: '0.8125rem' }}>{r.text}</span>
-                  <span style={{ fontSize: '0.75rem', color: look.color }}><strong>{look.label}</strong>{r.when ? ` · ${r.when}` : ''}</span>
-                </div>
-                <button className="btn btn-secondary btn-sm" onClick={() => navigate(r.path)} style={{ flexShrink: 0 }}>Go <ArrowRight size={12} /></button>
-              </div>
-            )
-          })}
-        </div>
-      </div>
+        <DataTable label="Pulse reminders" rows={model.reminders} searchPlaceholder="Search reminders" dense
+          empty="Nothing pending: no unopened materials or unanswered assessments in your published records."
+          tabs={[{ key: 'all', label: 'All' }, { key: 'blue', label: 'Assigned', match: r => (r.state || 'blue') === 'blue' }, { key: 'orange', label: 'Due soon', match: r => r.state === 'orange' }, { key: 'red', label: 'Missing', match: r => r.state === 'red' }]}
+          rowProps={r => ({ 'data-reminder': r.state || 'blue' })} onRowClick={r => navigate(r.path)}
+          columns={[
+            { key: 'text', label: 'Work' },
+            { key: 'state', label: 'Status', width: 220, searchable: false, value: r => REMINDER_LOOK[r.state || 'blue'].label, render: r => { const look = REMINDER_LOOK[r.state] || REMINDER_LOOK.blue; return <span style={{ color: look.color, fontSize: '0.8125rem' }}><StatusPill tone={r.state === 'red' ? 'danger' : r.state === 'orange' ? 'warning' : 'info'}>{look.label}</StatusPill>{r.when ? ` · ${r.when}` : ''}</span> } },
+            { key: 'go', label: '', sortable: false, searchable: false, width: 80, render: r => <button className="btn btn-secondary btn-sm" onClick={() => navigate(r.path)}>Go <ArrowRight size={12} /></button> },
+          ]} />
+      </section>
 
       {/* Block info — from the EduSuite class list */}
       {model.block && (
-        <div className="card mb-24">
-          <div className="card-header">
-            <h3><Users size={16} /> My Block</h3>
-          </div>
-          <div className="card-body">
-            <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
-              <div><span className="text-muted">Block: </span><strong>{model.block.code}</strong></div>
-              <div><span className="text-muted">Year Level: </span><strong>{model.block.year}</strong></div>
-              <div><span className="text-muted">Students: </span><strong>{model.block.students}</strong></div>
-              <div><span className="text-muted">Adviser: </span><strong>{model.block.adviser}</strong></div>
-            </div>
-          </div>
-        </div>
+        <section className="home-section">
+          <h2>My Block</h2>
+          <dl className="home-stats">
+            <div><dt>Block</dt><dd>{model.block.code}</dd></div>
+            <div><dt>Year level</dt><dd>{model.block.year}</dd></div>
+            <div><dt>Students</dt><dd>{model.block.students}</dd></div>
+            <div><dt>Adviser</dt><dd>{model.block.adviser}</dd></div>
+          </dl>
+        </section>
       )}
 
-      <div className="grid-2 mb-24">
-        {model.courses.map(course => (
-          <div key={course.id||course.code} className="card">
-            <div className="card-header">
-              <h3>{course.code}</h3>
-              <span className={`badge ${course.available===false?'badge-drafted':'badge-published'}`}>{course.suspended?'Suspended':course.available===false?'Awaiting release':'Active'}</span>
-            </div>
-            <div className="card-body">
-              <p style={{ fontWeight: 600, marginBottom: '12px' }}>{course.title}</p>
-              <p className="text-sm text-muted mb-16">{curriculumLabel(course.code)}</p>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8125rem', color: 'var(--gray-500)', marginBottom: '6px' }}>
-                <span>Latest recorded score</span><span style={{ fontWeight: 600 }}>{course.score === null ? 'No score yet' : `${course.score}%`}</span>
-              </div>
-              <div className="progress-bar mb-16"><div className="progress-fill" style={{ width: `${course.score || 0}%` }} /></div>
-              <div style={{ display: 'flex', gap: '8px' }}>
-                <button className="btn btn-secondary btn-sm" onClick={() => navigate('/courseware')}><BookOpen size={12} /> Materials</button>
-                <button className="btn btn-secondary btn-sm" onClick={() => navigate('/assessment')}><FileText size={12} /> Assessments</button>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+      {/* Classroom Home: one card per enrolled class. */}
+      {model.courses.length > 0 && <section className="home-section">
+        <h2>My Classes</h2>
+        <ClassCardGrid>{model.courses.map(course => <ClassCard key={course.id || course.code} code={course.code} title={course.title}
+          to={course.id ? `/courseware?course=${encodeURIComponent(course.id)}` : '/courseware'} subtitle={curriculumLabel(course.code)}
+          items={[{ key: 'score', label: 'Latest recorded score', detail: course.score === null ? 'No score yet' : `${course.score}%` }]}
+          meta={<span>{course.suspended ? 'Suspended' : course.available === false ? 'Awaiting release' : 'Active'}</span>} />)}</ClassCardGrid>
+      </section>}
 
-      {/* Grounding transparency — teacher-approved sources only */}
-      <div className="card mb-24">
-        <div className="card-header">
-          <h3><CheckCircle size={16} /> Learning Material Sources</h3>
-          <span className="badge badge-connected" style={{ fontSize: '0.625rem' }}>Instructor-verified</span>
-        </div>
-        <div className="card-body">
-          <p style={{ fontSize: '0.8125rem', color: 'var(--gray-600)', marginBottom: 10 }}>
-            Your learning materials are grounded in the approved syllabus and instructor-provided sources.
-          </p>
-          {model.sources.length === 0 && <p className="text-sm text-muted">No enrolled courses yet.</p>}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 10 }}>
-            {model.sources.map(course => (
-              <div key={course.code} style={{ padding: '10px 12px', borderRadius: 10, background: 'var(--gray-50)', border: '1px solid var(--gray-200)' }}>
-                <div style={{ fontWeight: 600, fontSize: '0.8125rem', marginBottom: 6 }}>{course.code}</div>
-                {course.items.length > 0 ? course.items.map(p => (
-                  <div key={p.id} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '3px 0', fontSize: '0.75rem' }}>
-                    <CheckCircle size={10} style={{ color: 'var(--green-500)', flexShrink: 0 }} />
-                    {p.href
-                      ? <a href={p.href} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--gray-600)', overflowWrap: 'anywhere' }}>{p.label}</a>
-                      : <span style={{ color: 'var(--gray-600)' }}>{p.label}</span>}
-                  </div>
-                )) : <span style={{ fontSize: '0.75rem', color: 'var(--gray-400)' }}>No published sources yet</span>}
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+      <section className="home-section">
+        <h2>Upcoming Activities</h2>
+        <DataTable label="Upcoming activities" rows={model.upcoming} searchPlaceholder="Search activities" empty="No upcoming deadlines in the published records."
+          filters={[{ key: 'course', label: 'Courses' }, { key: 'type', label: 'Types' }]}
+          columns={[{ key: 'title', label: 'Activity' }, { key: 'course', label: 'Course' }, { key: 'type', label: 'Type' }, { key: 'due', label: 'Due', searchable: false }]} />
+      </section>
 
-      <div className="card mb-24">
-        <div className="card-header"><h3>My Score Trend</h3></div>
-        <div className="card-body">
+      <section className="home-section">
+        <h2>My Score Trend</h2>
+        <div className="home-feed" style={{ padding: 16 }}>
           {model.trend.length === 0 ? <p className="text-sm text-muted">No marked attempts yet. Your trend appears after your first marked assessment.</p> : (
             <ResponsiveContainer width="100%" height={200}>
               <LineChart data={model.trend} margin={{ top: 8, right: 8, bottom: 8, left: -20 }}>
@@ -639,24 +558,20 @@ function StudentDashboard({ model, actions, status }) {
             </ResponsiveContainer>
           )}
         </div>
-      </div>
+      </section>
 
-      {/* Upcoming published assessments */}
-      <div className="card">
-        <div className="card-header"><h3><Calendar size={16} /> Upcoming Activities</h3></div>
-        <div className="card-body">
-          {model.upcoming.length === 0 && <p className="text-sm text-muted">No upcoming deadlines in the published records.</p>}
-          {model.upcoming.map(act => (
-            <div key={act.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', borderRadius: 'var(--radius-md)', background: 'var(--gray-50)', marginBottom: '6px' }}>
-              <div>
-                <div style={{ fontWeight: 600, fontSize: '0.875rem' }}>{act.title}</div>
-                <div className="text-sm text-muted">{act.course} · {act.type}</div>
-              </div>
-              <div className="text-sm" style={{ fontWeight: 600, color: 'var(--amber-500)' }}>Due: {act.due}</div>
-            </div>
-          ))}
+      {/* Grounding transparency — teacher-approved sources only */}
+      <section className="home-section">
+        <div className="home-section-head">
+          <h2>Learning Material Sources</h2>
+          <span className="badge badge-connected" style={{ fontSize: '0.625rem' }}>Instructor-verified</span>
         </div>
-      </div>
+        <p className="text-sm text-muted mb-16">Your learning materials are grounded in the approved syllabus and instructor-provided sources.</p>
+        <DataTable label="Learning material sources" dense pageSize={10} searchPlaceholder="Search sources" empty="No enrolled courses yet."
+          rows={model.sources.flatMap(course => course.items.length ? course.items.map(p => ({ ...p, key: `${course.code}:${p.id}`, course: course.code })) : [{ key: course.code, course: course.code, label: 'No published sources yet' }])}
+          rowKey="key" filters={[{ key: 'course', label: 'Courses' }]}
+          columns={[{ key: 'course', label: 'Course', width: 140 }, { key: 'label', label: 'Source', render: p => p.href ? <a href={p.href} target="_blank" rel="noopener noreferrer" style={{ overflowWrap: 'anywhere' }}>{p.label}</a> : p.label }]} />
+      </section>
       </>}
     </div>
   )

@@ -55,6 +55,8 @@ button.app-role-chip { cursor: pointer; border-color: var(--purple-100); backgro
   .mobile-menu-btn { display: inline-flex; }
   .app-brand-name { font-size: 1rem; }
   .app-account-btn { padding: 3px; }
+  /* Room below the last row so the floating Pulse button never covers it. */
+  .app-main { padding-bottom: 96px; }
 }
 .dark-mode .app-topbar { background: var(--white) !important; }
 @media print { .app-rail, .app-topbar { display: none !important; } }

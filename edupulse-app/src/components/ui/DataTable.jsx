@@ -6,11 +6,11 @@ import './data-table.css'
 // Shared table for every record list (UI redesign rule 6, CORE-FLOW-WORKSPACE.md):
 // search, select filters and status tabs sit in one toolbar above the table; no filter modals.
 // columns: { key, label, render?(row), value?(row), sortable?, searchable?, align?, width? }
-// filters: { key, label, value?(row), options? } · tabs: { key, label, match?(row) }
+// filters: { key, label, value?(row), options? } · tabs: { key, label, match?(row) } · rowProps?(row): extra <tr> attributes · openLabel?(row): name of the row's open button
 export default function DataTable({
   label, columns, rows = [], rowKey = 'id', filters = [], tabs = [], searchPlaceholder = 'Search',
   onRowClick, empty = 'Nothing to show yet.', noMatch = 'No rows match these filters.', pageSize = 25,
-  initialSort = null, initialTab, actions, dense = false, className = '',
+  initialSort = null, initialTab, actions, dense = false, className = '', rowProps, openLabel,
 }) {
   const [query, setQuery] = useState(''), [chosen, setChosen] = useState({})
   const [tab, setTab] = useState(initialTab || tabs[0]?.key), [sort, setSort] = useState(initialSort), [page, setPage] = useState(1)
@@ -55,11 +55,11 @@ export default function DataTable({
           </th>
         })}</tr></thead>
         <tbody>
-          {shown.rows.map((row, index) => <tr key={keyOf(row, index)} className={onRowClick ? 'dt-clickable' : undefined} onClick={onRowClick ? event => { if (!event.target.closest('button, a, input, select, textarea')) onRowClick(row) } : undefined}>
+          {shown.rows.map((row, index) => <tr key={keyOf(row, index)} {...rowProps?.(row)} className={onRowClick ? 'dt-clickable' : undefined} onClick={onRowClick ? event => { if (!event.target.closest('button, a, input, select, textarea')) onRowClick(row) } : undefined}>
             {columns.map((column, columnIndex) => {
               const content = column.render ? column.render(row) : cellValue(row, column) ?? '—'
               return <td key={column.key} style={{ textAlign: column.align }} data-label={column.label}>
-                {onRowClick && columnIndex === 0 ? <button type="button" className="dt-open" onClick={() => onRowClick(row)}>{content}</button> : content}
+                {onRowClick && columnIndex === 0 ? <button type="button" className="dt-open" aria-label={openLabel?.(row)} onClick={() => onRowClick(row)}>{content}</button> : content}
               </td>
             })}
           </tr>)}
