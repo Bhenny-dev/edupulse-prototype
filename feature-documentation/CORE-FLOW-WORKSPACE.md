@@ -324,7 +324,7 @@ the guide and log; screenshots and guides stay paused (`doc-map.json`) until the
 | U2 | Instructor: Home class cards; class page with Stream, Classwork by week, People, Grades grid; To review | Instructor browser specs pass | Tested (instructor-courses, instructor-updates, instructor-scope, syllabus-repository, class-lists, term-calendar, assessment-attempts; Grades grid is still Student Monitoring) |
 | U3 | Student: Home class cards with due items; class page; To-do with Assigned, Missing, Done | Student browser specs pass | Tested (student-progress, student-blocks, student-learning, student-block-delivery, page-readers) |
 | U4 | Dean / Program Coordinator: Home term cards; Course loads, Instructors, Students, Monitoring as filtered tables | Dean browser specs pass | Tested (card-actions, course-semesters, dean-block-sections, dean-management, dean-records, historical-loads, monitoring, oversight, role-monitoring, student-blocks; Home keeps the course table instead of cards because a term has dozens of courses) |
-| U5 | System Admin and remaining pages (Settings, Performance, Records) on the shell and tables; recapture screenshots when the owner resumes the docs | Admin specs pass | Draft |
+| U5 | System Admin and remaining pages (Settings, Performance, Records) on the shell and tables; recapture screenshots when the owner resumes the docs | Admin specs pass | Tested (card-actions, course-semesters, dean-management, dean-records, teaching-load, second-admin, admin-reload, account-support, role-monitoring, settings-outline, editable-syllabus); screenshots wait for the owner |
 
 ## Backlog
 
@@ -430,3 +430,16 @@ the guide and log; screenshots and guides stay paused (`doc-map.json`) until the
   registration, like `automatic-records` 18/19/33) and `workspace-cache` 7/17/31/47 (instructor
   unified-material fixture and a student list without "Open material", like `courseware-unified`).
   Gate: `npm run verify` exit 0 (531 of 531), `VERCEL=1 npm test` 531 of 531. No migration.
+- 2026-11-22: UI redesign U5 (flat surfaces, Dean course catalog, admin) Tested. `.card` is a plain
+  bordered panel (no 3D shadow or hover lift) and legacy `.data-table` tables share the DataTable
+  header and spacing, so Records, Monitor, Settings, Performance and the System Admin panels match
+  the Classroom look without per-page rewrites; `GlassIcon` is a flat tinted tile (same class and
+  API). The Dean's Course page lists the catalog in one table (course and title, year and semester,
+  units, instructors, status, actions) with search ("Search courses"), the year-and-semester filter
+  and the URL-driven Loaded / Not yet loaded toggle; rows keep `.dean-course-card` and the open
+  button names used by tests. Layout: `.app-shell` exposes `--rail-space` (rail width; 0 on phones)
+  and the outline editor's full-width breakout subtracts it; `.outline-table-scroll` and `.dt-scroll`
+  are `position: relative` so absolutely positioned hidden labels inside them stay clipped (they
+  widened the page by the rail width once the main area narrowed). DataTable gained `searchLabel`.
+  Gate: `npm run verify` exit 0 (531 of 531), `VERCEL=1 npm test` 531 of 531; browser specs in the U5
+  row on desktop and mobile pass (111 of 112, then settings-outline:24 after the fix). No migration.

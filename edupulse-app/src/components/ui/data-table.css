@@ -14,7 +14,7 @@
 .dt-select select { min-height: 38px; max-width: 220px; padding: 0 30px 0 10px; border: 1px solid var(--gray-200); border-radius: var(--radius-sm); background-color: var(--white); color: var(--gray-700); font: 500 0.8125rem var(--font-body); }
 .dt-clear { min-height: 38px; padding: 0 10px; border: 0; background: transparent; color: var(--sky-600); font: 600 0.8125rem var(--font-body); cursor: pointer; }
 .dt-actions { display: flex; gap: 8px; margin-left: auto; }
-.dt-scroll { overflow-x: auto; }
+.dt-scroll { position: relative; overflow-x: auto; } /* relative: hidden labels inside stay clipped */
 .dt-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
 .dt-table th { position: sticky; top: 0; padding: 10px 14px; background: var(--gray-50); color: var(--gray-500); font: 600 0.75rem var(--font-body); letter-spacing: 0.02em; text-align: left; text-transform: uppercase; white-space: nowrap; border-bottom: 1px solid var(--gray-200); }
 .dt-sort { display: inline-flex; align-items: center; gap: 4px; padding: 0; border: 0; background: none; color: inherit; font: inherit; letter-spacing: inherit; text-transform: inherit; cursor: pointer; }

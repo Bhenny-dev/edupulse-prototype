@@ -21,6 +21,8 @@
 .dean-pill-group { margin: 8px 0 24px; }
 .dean-pill-group > h3 { font-size: .9rem; color: var(--gray-600); margin-bottom: 12px; text-transform: none; }
 .dean-pills { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+/* The course catalog is now a DataTable that keeps the class for tests and links. */
+.dt.dean-pills { display: block; }
 .dean-pill { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; min-height: 112px; width: 100%; padding: 16px 18px; border-radius: var(--radius-lg); border: 1px solid var(--gray-200); background: var(--white); color: var(--gray-900); cursor: pointer; text-align: left; box-shadow: var(--shadow-3d, 0 1px 3px rgba(15,23,42,.08)); transition: border-color .2s, box-shadow .2s, transform .2s; }
 .dean-pill:hover, .dean-pill:focus-visible { border-color: var(--sky-400); box-shadow: var(--shadow-3d-hover); transform: translateY(-2px); }
 .dean-pill-code { font: 700 1rem var(--font-heading), sans-serif; overflow-wrap: anywhere; }
@@ -132,6 +134,9 @@
 
 /* Keep card navigation separate from the overflow action button. */
 .dean-course-card { position: relative; min-width: 0; display: flex; }
+/* Table rows that keep the old card class stay ordinary rows. */
+tr.dean-course-card, tr.dean-person-card { display: table-row; position: static; }
+tr.dean-course-card.is-suspended td, tr.dean-person-card.is-suspended td { color: var(--gray-500); }
 .dean-course-card > .dean-pill { padding-right: 62px; }
 .dean-course-card > .cw-more, .dean-person-actions { position: absolute; top: 10px; right: 10px; }
 .dean-course-card.is-suspended > .dean-pill { border-style: dashed; }

@@ -10,7 +10,7 @@ import './data-table.css'
 export default function DataTable({
   label, columns, rows = [], rowKey = 'id', filters = [], tabs = [], searchPlaceholder = 'Search',
   onRowClick, empty = 'Nothing to show yet.', noMatch = 'No rows match these filters.', pageSize = 25,
-  initialSort = null, initialTab, actions, dense = false, className = '', rowProps, openLabel,
+  initialSort = null, initialTab, actions, dense = false, className = '', rowProps, openLabel, searchLabel,
 }) {
   const [query, setQuery] = useState(''), [chosen, setChosen] = useState({})
   const [tab, setTab] = useState(initialTab || tabs[0]?.key), [sort, setSort] = useState(initialSort), [page, setPage] = useState(1)
@@ -30,7 +30,7 @@ export default function DataTable({
       </div>}
       <div className="dt-filters">
         <label className="dt-search"><Search size={15} aria-hidden="true" />
-          <input type="search" value={query} placeholder={searchPlaceholder} aria-label={`Search ${label}`} onChange={event => reset(() => setQuery(event.target.value))} />
+          <input type="search" value={query} placeholder={searchPlaceholder} aria-label={searchLabel || `Search ${label}`} onChange={event => reset(() => setQuery(event.target.value))} />
         </label>
         {filters.map(filter => <label key={filter.key} className="dt-select"><span className="sr-only">{filter.label}</span>
           <select value={chosen[filter.key] || ''} aria-label={filter.label} onChange={event => reset(() => setChosen(previous => ({ ...previous, [filter.key]: event.target.value })))}>

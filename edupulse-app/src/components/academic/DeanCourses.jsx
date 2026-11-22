@@ -18,6 +18,7 @@ import useAcademicTerm from './useAcademicTerm'
 import {readReferenceFile} from '../../lib/aiClient'
 import {recordsForLoadTerm,loadTerm} from '../../utils/loadTerms'
 import TeachingLoadFacts from './TeachingLoadFacts'
+import DataTable, { StatusPill } from '../ui/DataTable'
 import {CourseCardActions,CourseCatalogForm,CourseStatusDialog} from './DeanCatalogActions'
 
 const groupLabel = course => course.semester || 'Courses'
@@ -35,7 +36,6 @@ export default function DeanCourses({ data:allData }) {
   const [detail, setDetail] = useWorkspaceViewState(`dean-detail:records:${term}`, null)
   const [editingKey, setEditingKey] = useWorkspaceViewState('dean-course-edit', null)
   const [assigning, setAssigning] = useState(null), [removing, setRemoving] = useState(null), [review, setReview] = useState(null)
-  const [search, setSearch] = useState('')
   const [catalogAction,setCatalogAction]=useWorkspaceViewState(`dean-catalog-action:${term}`,null)
   const [catalogMenu,setCatalogMenu]=useWorkspaceViewState(`dean-catalog-menu:${term}`,null)
   const actionKind=typeof catalogAction==='string'?catalogAction.split(':')[0]:''
@@ -45,10 +45,9 @@ export default function DeanCourses({ data:allData }) {
   const show = params.get('show') || 'all'
   const setShow = value => { const next = new URLSearchParams(params); if (value === 'all') next.delete('show'); else next.set('show', value); setParams(next) }
   const loaded = catalog.filter(course => course.assignments.length), unloaded = catalog.filter(course => !course.assignments.length)
-  const matches = course => `${course.code} ${course.title}`.toLowerCase().includes(search.trim().toLowerCase()) && (show === 'all' || (show === 'loaded') === Boolean(course.assignments.length))
   const selected = typeof detail === 'string' && detail.startsWith('course:') ? catalog.find(course => course.code === detail.slice(7)) : null
   const editing = selected?.assignments.find(load => load.key === editingKey)
-  const groups = [...new Set(catalog.filter(matches).map(groupLabel))].sort((a, b) => (a.startsWith('Other') ? 1 : 0) - (b.startsWith('Other') ? 1 : 0) || a.localeCompare(b))
+  const groups = [...new Set(catalog.map(groupLabel))].sort((a, b) => (a.startsWith('Other') ? 1 : 0) - (b.startsWith('Other') ? 1 : 0) || a.localeCompare(b))
   const upload = async file => {
     action.setError(''); action.setNotice(null)
     try {
@@ -62,10 +61,9 @@ export default function DeanCourses({ data:allData }) {
     catch (failure) { action.setError(failure.message || 'The file could not be read.') }
     finally{setReading('')}
   }
-  const filters = <div className="dean-toolbar">
-    <label className="academic-filter">Search courses<input className="form-input" type="search" value={search} onChange={event => setSearch(event.target.value)} placeholder="Course code or title" /></label>
-    <div className="dean-segment" role="group" aria-label="Course load filter">{[['all', `All (${catalog.length})`], ['loaded', `Loaded (${loaded.length})`], ['unloaded', `Not yet loaded (${unloaded.length})`]].map(([value, label]) => <button key={value} className={show === value ? 'active' : ''} aria-pressed={show === value} onClick={() => setShow(value)}>{label}</button>)}</div>
-  </div>
+  // The load filter stays in the URL (`show`) so dashboard links open Loaded or Not yet loaded directly.
+  const loadFilter = <div className="dean-segment" role="group" aria-label="Course load filter">{[['all', `All (${catalog.length})`], ['loaded', `Loaded (${loaded.length})`], ['unloaded', `Not yet loaded (${unloaded.length})`]].map(([value, label]) => <button key={value} className={show === value ? 'active' : ''} aria-pressed={show === value} onClick={() => setShow(value)}>{label}</button>)}</div>
+  const instructorCount = course => new Set(course.assignments.map(l => l.instructorId)).size
   return <>
     {!writable&&<p className="text-sm text-muted mb-16">This semester is view-only.</p>}
     <DeanCards items={[
@@ -78,13 +76,22 @@ export default function DeanCourses({ data:allData }) {
       {reading&&<p role="status">{reading}</p>}
       {writable&&document&&<TeachingLoadImport file={document} initialOpen onClose={()=>setDocument(null)}/>}
       {writable&&classLists&&<DeanClassListImport files={classLists} data={data} students={directory.students} action={action} term={{semester,academicYear}} onClose={()=>setClassLists(null)}/>}
-      {filters}
-      {groups.map(label => <section className="dean-pill-group" key={label} aria-label={label}>{groups.length>1&&<h3>{label}</h3>}<div className="dean-pills">
-        {catalog.filter(course => matches(course) && groupLabel(course) === label).map(course => <article key={course.code} className={`dean-course-card${course.status==='suspended'?' is-suspended':''}`}><button className={`dean-pill${course.assignments.length ? ' loaded' : ''}`} onClick={() => setDetail(`course:${course.code}`)} aria-label={`${course.code} ${course.title}, ${course.assignments.length ? `loaded to ${new Set(course.assignments.map(l => l.instructorId)).size} instructor(s)` : 'not yet loaded'}`}>
-          <span className="dean-pill-code">{course.code}</span>{course.status==='suspended'&&<span className="dean-status dean-status-suspended">Suspended</span>}<span className="dean-pill-title">{course.title}</span><span className="dean-pill-state" aria-hidden="true">{course.assignments.length ? `${new Set(course.assignments.map(l => l.instructorId)).size} instr.` : 'Open'}</span>
-        </button>{directory.managed&&writable&&<CourseCardActions course={course} open={catalogMenu===course.code} onOpenChange={next=>setCatalogMenu((typeof next==='function'?next(catalogMenu===course.code):next)?course.code:null)} disabled={Boolean(action.busy)} onAction={setCatalogAction}/>}</article>)}
-      </div></section>)}
-      {!groups.length && <Empty>{catalog.length ? 'No course matches this search.' : 'No courses are recorded yet. Add Course or upload the course load to begin.'}</Empty>}
+      {/* One row per course (UI redesign rule 6); the year-and-semester filter replaces the grouped card sections. */}
+      <DataTable label="Courses" className="dean-pills" searchLabel="Search courses" searchPlaceholder="Course code or title"
+        rows={catalog.filter(course => show === 'all' || (show === 'loaded') === Boolean(course.assignments.length))} rowKey="code"
+        filters={groups.length > 1 ? [{ key: 'group', label: 'Year and semester', value: groupLabel }] : []}
+        actions={loadFilter} empty="No courses are recorded yet. Add Course or upload the course load to begin." noMatch="No course matches this search."
+        rowProps={course => ({ className: `dean-course-card${course.status === 'suspended' ? ' is-suspended' : ''}` })}
+        onRowClick={course => setDetail(`course:${course.code}`)}
+        openLabel={course => `${course.code} ${course.title}, ${course.assignments.length ? `loaded to ${instructorCount(course)} instructor(s)` : 'not yet loaded'}`}
+        columns={[
+          { key: 'code', label: 'Course', value: course => `${course.code} ${course.title}`, render: course => <span style={{ display: 'flex', flexDirection: 'column' }}><span>{course.code}</span><small className="text-muted" style={{ fontWeight: 400 }}>{course.title}</small></span> },
+          { key: 'group', label: 'Year and semester', value: groupLabel },
+          { key: 'units', label: 'Units', searchable: false },
+          { key: 'loads', label: 'Instructors', searchable: false, value: instructorCount, render: course => course.assignments.length ? `${instructorCount(course)} instructor${instructorCount(course) === 1 ? '' : 's'}` : '—' },
+          { key: 'status', label: 'Status', searchable: false, value: course => course.status === 'suspended' ? 'Suspended' : course.assignments.length ? 'Loaded' : 'Open', render: course => course.status === 'suspended' ? <span className="dean-status dean-status-suspended">Suspended</span> : <StatusPill tone={course.assignments.length ? 'success' : 'warning'}>{course.assignments.length ? 'Loaded' : 'Open'}</StatusPill> },
+          { key: 'actions', label: '', sortable: false, searchable: false, width: 56, render: course => directory.managed && writable ? <CourseCardActions course={course} open={catalogMenu === course.code} onOpenChange={next => setCatalogMenu((typeof next === 'function' ? next(catalogMenu === course.code) : next) ? course.code : null)} disabled={Boolean(action.busy)} onAction={setCatalogAction} /> : null },
+        ]} />
     </Panel>
     {directory.managed&&writable&&catalogAction&&(catalogAction==='add'?<CourseCatalogForm academicYear={academicYear} semester={semester} action={action} onClose={()=>setCatalogAction(null)}/>:actionCourse?(actionKind==='edit'?<CourseCatalogForm academicYear={academicYear} semester={semester} key={catalogAction} course={actionCourse} action={action} onClose={()=>setCatalogAction(null)}/>:<CourseStatusDialog academicYear={academicYear} semester={semester} key={catalogAction} course={actionCourse} kind={actionKind} action={action} onClose={()=>setCatalogAction(null)}/>):<DeanDialog title="Course unavailable" size="narrow" onClose={()=>setCatalogAction(null)}><Empty>This course is no longer available. Close this dialog and choose a current course.</Empty></DeanDialog>)}
     {selected && <CourseDialog course={selected} data={data} directoryStudents={directory.students} action={action} onEdit={load => setEditingKey(load.key)} managed={directory.managed} writable={writable} onClose={() => { setEditingKey(null); setDetail(null) }} onAssign={() => setAssigning(selected)} onRemove={load => setRemoving({ ...load, title: selected.title })} />}

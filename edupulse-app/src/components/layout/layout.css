@@ -60,3 +60,8 @@ button.app-role-chip { cursor: pointer; border-color: var(--purple-100); backgro
 }
 .dark-mode .app-topbar { background: var(--white) !important; }
 @media print { .app-rail, .app-topbar { display: none !important; } }
+/* Width the rail takes from the page, for content that sizes itself from the viewport (outline editor). */
+.app-shell { --rail-space: var(--rail-open); }
+.app-shell.rail-collapsed { --rail-space: var(--rail-closed); }
+@media (max-width: 1180px) { .app-shell:not(.rail-open) { --rail-space: var(--rail-closed); } }
+@media (max-width: 767px) { .app-shell, .app-shell.rail-collapsed { --rail-space: 0px; } }

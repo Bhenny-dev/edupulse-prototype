@@ -1603,3 +1603,12 @@ a.kpi-card:hover, button.kpi-card:hover { background: var(--sky-50); }
 .kpi-card .kpi-value { font: 700 1.375rem/1.2 var(--font-heading); color: var(--gray-900); }
 .kpi-card .kpi-value-text { font: 500 0.8125rem/1.4 var(--font-body); }
 .kpi-card .kpi-label { font-size: 0.8125rem; color: var(--gray-500); margin-top: 2px; }
+
+/* ─── UI redesign U5: flat surfaces. Cards are plain bordered panels (no 3D shadow or lift), and
+   legacy `.data-table` tables match the shared DataTable header and spacing. ─── */
+.card { border-radius: var(--radius-md); box-shadow: none; border: 1px solid var(--gray-200); padding: 20px; transform: none; }
+.card:hover { box-shadow: none; transform: none; }
+a.card:hover, button.card:hover { border-color: var(--sky-300); background: var(--gray-50); }
+.card-header h3 { font-size: 1rem; font-weight: 600; }
+.data-table th { padding: 10px 14px; background: var(--gray-50); color: var(--gray-500); font: 600 0.75rem var(--font-body); letter-spacing: 0.02em; border-bottom: 1px solid var(--gray-200); }
+.data-table td { padding: 12px 14px; font-size: 0.875rem; }
