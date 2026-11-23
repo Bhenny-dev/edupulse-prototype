@@ -29,12 +29,12 @@ Owner request: Codex implements the student experience while Claude owns the ins
 - Published items only; scheduled content remains governed by existing delivery checks. Preview/reload never counts as learner activity.
 - Existing assessment answer review is server-gated and owner-specific. A manually evaluated response remains pending until a grade is recorded.
 
-## Verification record
+## Release and verification
 
-Full local verification passed 549 automated tests, the production build, and deployment checks on the integrated working tree before the final notification and Pulse link updates. Type checking and the focused six-test Pulse and assessment review suite passed after those updates. Native class-code and role tests verified unique joins, class scope and role restrictions. The shared migration has not been deployed by this student phase.
+Commit `d81bff2c` shipped the Student and Instructor classroom workflows together on 24 November 2026. Supabase lists migration `20261123120000_class_codes_and_announcements.sql` as applied. Vercel deployment `dpl_7Rp2hwZVnef5wEyjnDUCWHauxTZm` reached Ready and serves the production domain. The page and API health endpoint returned HTTP 200. A guest class-code lookup returned HTTP 403.
 
-The Vite preview build passed all 26 Student UI browser cases on desktop and mobile. It caught an outdated Instructor trial selector after the shared tab was renamed. The selector was updated and the final preview build also covers Join Class dialog restoration and notification routing.
+Local verification passed 549 automated tests, including database tests for unique class membership, authorized announcements and answer-key protection. Vercel's production check completed with 546 passing tests and three skips. The integrated build passed 56 targeted Playwright cases across desktop and mobile after updating older Home and attempt assertions. These cases cover class creation and joining, published weekly content, student permissions, explicit attempt start, grading and review, read-only outline, notification links, and recovery from failed reads or writes.
 
-Browser fixtures are synthetic transport for UI verification, not evidence of real student scores or production enrollment. Database tests exercise actual SQL in PGlite separately. The local Student UI depends on the concurrent Instructor/backend changes, including the class-code and announcement migration. The production release is pending that integration. No hosted sign-in or production data changes were made for this task.
+Browser verification uses synthetic accounts and transport fixtures. The database tests exercise the application SQL separately in PGlite. Hosted verification covered deployment, migration status, Supabase connectivity and the guest access gate. Production learners and grades were kept out of the test fixtures.
 
-Documentation publication/recapture remains paused by the owner on 14 November. Student capture scripts are updated with the new navigation; private screenshots are used for visual QA.
+The owner paused screenshot publication on 14 November 2026. The affected capture scripts use the new navigation, with private screenshots used for visual QA.

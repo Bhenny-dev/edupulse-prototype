@@ -13,7 +13,10 @@ for (const role of ['instructor', 'student', 'dean', 'associate_dean']) {
     // No preview sample (names, scores, feed) leaks into an account dashboard.
     await expect(page.getByRole('main')).not.toContainText(/Rogelio|Guisdan|Fianza|Guaki|Pangcog/)
     if (role === 'instructor') await expect(page.getByRole('heading', { name: 'Score Snapshot', exact: true })).toHaveCount(0)
-    if (role === 'student') { await expect(page.getByText('You haven\'t opened "Variables lesson" yet.', { exact: true })).toBeVisible(); await expect(page.getByRole('heading', { name: 'IT 102', exact: true })).toHaveCount(0) }
+    if (role === 'student') {
+      await expect(page.getByRole('region', { name: 'Your classes' })).toContainText('IT 102')
+      await expect(page.getByRole('heading', { name: 'Pending Assessments', exact: true })).toBeVisible()
+    }
     if (role === 'dean' || role === 'associate_dean') await expect(page.getByRole('cell', { name: 'Synthetic instructor', exact: true })).toBeVisible()
     if (role === 'student' || role === 'dean') {
       await page.goto('/#/performance'); await expect(page.getByRole('img', { name: /^Assessment score radar:/ })).toBeVisible()
@@ -58,6 +61,18 @@ test('account notices come from unanswered records and read state survives reloa
 
 
 test('student sees assigned units and pending releases without draft content or an inferred result',async({page})=>{
- const {records}=await restorationUI(page,'student');records.assignedCourses=[{id:'d'.repeat(32),course_code:'IT 104',course_title:'Research Methods',active:false,block_section:'BSIT-1A',suspended:false,units:'3',year_level:'1',semester:'2'}]
- await page.goto('/#/courseware');await page.getByRole('button',{name:'Open course IT 104',exact:true}).click();const course=page.locator('.academic-course').filter({has:page.getByRole('heading',{name:'IT 104 — Research Methods',exact:true})}).first();await expect(course).toContainText('3 units');await expect(course).toContainText('2nd Semester');await expect(course).toContainText('Course assigned.');await expect(course.getByRole('button',{name:'Open material',exact:true})).toHaveCount(0);await page.reload();await expect(course).toContainText('Course assigned.');await page.goto('/#/dashboard');await expect(page.getByRole('heading',{name:'IT 104',exact:true})).toHaveCount(0)
+ const {records}=await restorationUI(page,'student')
+ records.assignedCourses=[{id:'d'.repeat(32),course_code:'IT 104',course_title:'Research Methods',active:false,block_section:'BSIT-1A',suspended:false,units:'3',year_level:'1',semester:'2',academic_year:'2026-2027'}]
+ await page.goto('/#/dashboard?term=2026-2027%7C2nd%20Semester')
+ const card=page.getByRole('button',{name:'Open IT 104 Research Methods',exact:true})
+ await expect(card).toContainText('3 units')
+ await expect(card).toContainText('2nd Semester')
+ await expect(card).toContainText('Awaiting instructor release')
+ await card.click()
+ await expect(page.getByRole('heading',{name:'IT 104 — Research Methods',exact:true})).toBeVisible()
+ await expect(page.getByRole('status').filter({hasText:'Course assigned.'})).toBeVisible()
+ await page.getByRole('button',{name:'Teaching Materials & Assessments',exact:true}).click()
+ await expect(page.getByRole('button',{name:'Open material',exact:true})).toHaveCount(0)
+ await page.reload()
+ await expect(page.getByRole('status').filter({hasText:'Course assigned.'})).toBeVisible()
 })

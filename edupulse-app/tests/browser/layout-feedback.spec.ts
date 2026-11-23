@@ -21,9 +21,9 @@ test('academic records show skeletons and respect reduced motion',async({page})=
  await page.emulateMedia({reducedMotion:'reduce'});expect(await loading.locator('.skeleton-line').first().evaluate(e=>getComputedStyle(e).animationName)).toBe('none');release();await expect(loading).toHaveCount(0);await expect(page.getByRole('heading',{name:'No authorized academic records yet'})).toBeVisible();await expect(page.getByRole('button',{name:'Export',exact:true})).toHaveCount(0)
 })
 
-test('academic request errors clear loading without claiming an empty library and retry succeeds',async({page})=>{
- let retry=false;await academicUI(page,async()=>!retry?{status:503,json:{error:{code:'UNAVAILABLE',message:'Records are temporarily unavailable.'}}}:{json:{courses:[],publications:[],enrollments:[],attempts:[],accesses:[]}})
- await page.goto('/#/dashboard');await expect(page.getByRole('alert').filter({hasText:'Records are temporarily unavailable.'})).toBeVisible();await expect(page.getByRole('region',{name:'Loading academic records'})).toHaveCount(0);await expect(page.getByRole('heading',{name:'No authorized academic records yet'})).toHaveCount(0);retry=true;await page.getByRole('button',{name:'Retry connection',exact:true}).click();await expect(page.getByRole('heading',{name:'No authorized academic records yet'})).toBeVisible()
+test('student Home reports a connection error before showing an empty class list and retry succeeds',async({page})=>{
+ let retry=false;await academicUI(page,async()=>!retry?{status:503,json:{error:{code:'UNAVAILABLE',message:'Records are temporarily unavailable.'}}}:{json:{courses:[],publications:[],enrollments:[],attempts:[],accesses:[]}},'student')
+ await page.goto('/#/dashboard');await expect(page.getByRole('alert').filter({hasText:'Records are temporarily unavailable.'})).toBeVisible();await expect(page.getByText('Loading your classes...', {exact:true})).toHaveCount(0);await expect(page.getByRole('heading',{name:'No classes in this term'})).toHaveCount(0);retry=true;await page.getByRole('button',{name:'Retry loading classes',exact:true}).click();await expect(page.getByRole('heading',{name:'No classes in this term'})).toBeVisible()
 })
 
 test('unique Records and Assessments destinations remain in primary navigation',async({page},info)=>{
