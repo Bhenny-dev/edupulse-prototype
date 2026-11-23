@@ -15,7 +15,7 @@ import { useContentEditorTool } from '../../agents/useContentEditorTool'
  * Instructors see editable fields; students see a clean take view.
  */
 
-export default function AssessmentEditor({ content, onBack, isStudent = false, onSave, topics=[], onAttachFile, onAttachLink, attachBlocked }) {
+export default function AssessmentEditor({ content, onBack, isStudent = false, onSave, topics=[], onAttachFile, onAttachLink, attachBlocked, onSubmissionBinChange }) {
   const { addToast } = useToast()
   const [questions, setQuestions] = useState(content?.questions || [])
   const [answers, setAnswers] = useState({})
@@ -140,6 +140,7 @@ export default function AssessmentEditor({ content, onBack, isStudent = false, o
 
         {/* Title */}
         <h1 className="assessment-title">{content.title}</h1>
+        {onSubmissionBinChange && <SubmissionBinToggle checked={Boolean(content.submissionBin)} disabled={Boolean(attachBlocked)} save={onSubmissionBinChange}/>}
         <TeachingAttachments attachments={content.attachments} onAttachFile={onAttachFile} onAttachLink={onAttachLink} attachBlocked={attachBlocked} />
         <div className="assessment-subtitle">{content.subtitle}</div>
 
@@ -463,4 +464,18 @@ export default function AssessmentEditor({ content, onBack, isStudent = false, o
       `}</style>
     </div>
   )
+}
+
+function SubmissionBinToggle({ checked, disabled, save }) {
+  const [busy, setBusy] = useState(false), [error, setError] = useState('')
+  const toggle = async event => {
+    const enabled = event.target.checked
+    setBusy(true); setError('')
+    try { await save(enabled) } catch (failure) { setError(failure.message) }
+    finally { setBusy(false) }
+  }
+  return <div className="mb-16">
+    <label><input type="checkbox" checked={checked} disabled={disabled || busy} onChange={toggle}/> Include a submission bin</label>
+    {error && <p role="alert">{error}</p>}
+  </div>
 }

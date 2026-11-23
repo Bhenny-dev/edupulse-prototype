@@ -1,5 +1,6 @@
 import {practiceRequest,practiceInput} from './domains/practice.js'
 import { AUDIO_BYTES, transcribeAudio } from './transcription.js'
+import { topicWork, topicWorkInput } from './domains/topicWork.js'
 import { teachingFiles, teachingFileInput } from './domains/teachingFiles.js'
 import { contentGenerationRequest, explicitWebRequest } from '../src/lib/systemChatPolicy.js'
 import { operatorFrame } from '../src/agents/requestFrame.js'
@@ -45,7 +46,7 @@ export const BODY_LIMITS: Record<string, number> = { transcribe: AUDIO_BYTES, 's
   // Four 18,000-character sources plus twelve 5,000-character history turns fit with room for JSON escaping.
   chat: 400_000, 'system-chat': 400_000, 'chat-context': 400_000 }
 export const bodyLimit = (action: string | null) => BODY_LIMITS[action || ''] ?? 100_000
-const ACTION_METHODS: Record<string, string[]> = { 'system-chat': ['POST'], 'teaching-files': ['POST'], transcribe: ['POST'], practice:['POST'], syllabi: ['POST'], 'syllabus-sources': ['POST'], 'chat-context': ['POST'], 'chat-memory': ['POST'], support: ['GET', 'POST'], health: ['GET'], providers: ['GET', 'POST', 'DELETE'], 'provider-oauth': ['POST'], 'provider-test': ['POST'], 'provider-workspaces': ['POST'], conversations: ['GET', 'POST'], operator: ['POST'], context: ['POST'], similarity: ['POST'], references: ['POST'], 'web-search': ['POST'], extract: ['POST'], chat: ['POST'], courseware: ['POST'], documents: ['GET', 'POST', 'DELETE'], workspace: ['GET', 'PUT'], academic: ['GET', 'POST'], students: ['GET'] }
+const ACTION_METHODS: Record<string, string[]> = { 'system-chat': ['POST'], 'teaching-files': ['POST'], 'topic-work': ['POST'], transcribe: ['POST'], practice:['POST'], syllabi: ['POST'], 'syllabus-sources': ['POST'], 'chat-context': ['POST'], 'chat-memory': ['POST'], support: ['GET', 'POST'], health: ['GET'], providers: ['GET', 'POST', 'DELETE'], 'provider-oauth': ['POST'], 'provider-test': ['POST'], 'provider-workspaces': ['POST'], conversations: ['GET', 'POST'], operator: ['POST'], context: ['POST'], similarity: ['POST'], references: ['POST'], 'web-search': ['POST'], extract: ['POST'], chat: ['POST'], courseware: ['POST'], documents: ['GET', 'POST', 'DELETE'], workspace: ['GET', 'PUT'], academic: ['GET', 'POST'], students: ['GET'] }
 export const allowedMethods = (action: string) => Object.hasOwn(ACTION_METHODS, action) ? ACTION_METHODS[action] : undefined
 const buckets = new Map<string, { count: number; until: number }>()
 const active = new Set<string>()
@@ -195,6 +196,10 @@ export async function handleRequest(request: Request): Promise<Response> {
       if (input.operation === 'plan') return json({ clarification: 'Name the page, course or record you want to open. EduPulse uses system navigation and search for these requests.', generated: false })
       if (!contentGenerationRequest(input.message, 'auto', Boolean(input.editor)) && !operatorFrame(input)) throw new ApiError(400, 'CONTENT_REQUEST_REQUIRED', 'AI is available for explicit educational content authoring. Use System Search or name a page for other requests.')
       operatorBody = input
+    }
+    if (action === 'topic-work') {
+      if (request.headers.has('X-EduPulse-Subject')) throw new ApiError(403, 'FORBIDDEN', 'Open your own account to access class work.')
+      return json(await topicWork(identity, topicWorkInput.parse(await readJson(request, 40000))))
     }
     if (action === 'teaching-files') return json(await teachingFiles(identity, effective, teachingFileInput.parse(await readJson(request, 5000))))
     if (action === 'conversations') {

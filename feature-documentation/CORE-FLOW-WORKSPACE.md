@@ -400,3 +400,11 @@ Failures seen while checking that do not come from this change (same on HEAD `e1
 - 2026-11-24: G13 built. Also fixed: the preview student Home used `BookOpen` without importing it, so its sources card crashed (present on HEAD).
 - 2026-11-24: Released together with Codex's student Home and Join class (`feature-documentation/versions/student-ui-2026-11-23.md`), at the owner's choice, because both sides share Dashboard, Layout and the academic context and the join needs migration `20261123120000`. `npm run verify` and `VERCEL=1 npm test` passed (549 tests); the instructor and student classroom, class-lists and course-semesters browser specs passed; only the known support case of `dashboard-readonly` failed.
 - 2026-11-24: Consistency pass after a rendered audit of every instructor page (desktop and mobile): the class title now uses the page-header size (24px) with a space between code and title for screen readers, every section heading inside a class is the card-title size (18px; the class sidebar stays smaller), block counts say "1 student", and the Class List roster card is titled "Enrolled students" under its block heading (Student Monitoring keeps its title).
+
+## Topic files, submission bins and comments
+
+Instructors can attach batches of files when creating a topic item or editing its draft. Each file uses private storage and the existing 4 MB file limit. The workspace stores file references. An instructor can publish a standalone submission bin or enable a bin on an assessment. Checks, delivery schedules, deadlines and delivered revisions follow the existing courseware flow.
+
+Students can attach files, submit a link or write inside a delivered bin. A saved receipt restores on reload and the assigned instructor can review the work. Class threads are scoped to the enrolled block. A private thread and its replies are available to its student and assigned instructor. Test coverage lives in tests/topic-work.test.ts and tests/browser/topic-work.spec.ts.
+
+Local verification passed all 551 automated tests and six targeted browser cases across desktop and mobile. Browser cases used local fixtures. Database isolation and storage access were exercised in PGlite.

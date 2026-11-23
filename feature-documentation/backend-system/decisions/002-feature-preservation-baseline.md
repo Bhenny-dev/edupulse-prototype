@@ -383,3 +383,7 @@ See versions/supporting-ui-qa-2026-11-23.md for the independent QA matrix and Cl
 ## 23 November 2026 - Student classroom phase
 
 Owner now requests student Home course cards, Join Class, published announcements, weekly topics/material-associated assessments, own Scores and a read-only published outline. This supersedes the earlier table-only Home interpretation; My Courses retains its secondary table. Codex owns Student UI; Claude owns Instructor UI and concurrent class-code/announcement backend. See versions/student-ui-2026-11-23.md for the audit matrix, test evidence and dependencies. Do not regress backend membership uniqueness, publication visibility, student-owned answer review or pending manual scores. Never turn an unavailable student draft/upload API into a fake saved draft or successful file submission.
+
+## Topic work privacy and submission receipts
+
+Keep public discussion within the enrolled block and private discussion within the student and assigned instructor. Preserve the parent thread audience on replies, validate publication access and version before writes, and keep student file access limited to confirmed submissions. A retry must preserve the original receipt. Restore the reader and discussion panel without replaying uploads, posts or submissions.

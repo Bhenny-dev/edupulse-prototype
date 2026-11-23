@@ -64,7 +64,7 @@ export function weekTopics(row: OutlineWeek) {
   return weekSections(row).map((section, index) => ({ ...section, title: section.contents.find(text => text.trim())?.split('\n')[0] || `Topic ${index + 1}` }))
 }
 
-export type TeachingEntry = { id: string; type: string; week?: number; title?: string; position?: number; content: { title?: string; courseTopicId?: string; outlineSectionId?: string; overallAssessment?: boolean; teachingOrder?: number; coverage?: { materialIds: string[] }; ai?: { parts?: { sectionId?: string }[] } } }
+export type TeachingEntry = { id: string; type: string; week?: number; title?: string; position?: number; content: { title?: string; courseTopicId?: string; outlineSectionId?: string; overallAssessment?: boolean; submissionOnly?: boolean; teachingOrder?: number; coverage?: { materialIds: string[] }; ai?: { parts?: { sectionId?: string }[] } } }
 export const teachingOrder = (entry: TeachingEntry) => entry.position ?? entry.content.teachingOrder ?? (entry.type === 'assessment' ? 2048 : entry.type === 'activity' ? 1024 : 0)
 export function topicEntries<T extends TeachingEntry>(entries: T[], topicId: string, soleTopic: boolean) {
   return entries.filter(item => (item.content.courseTopicId || item.content.outlineSectionId || (soleTopic ? topicId : '')) === topicId || item.content.ai?.parts?.some(part => part.sectionId === topicId)).sort((a, b) => Number(Boolean(a.content.overallAssessment)) - Number(Boolean(b.content.overallAssessment)) || teachingOrder(a) - teachingOrder(b) || a.id.localeCompare(b.id))
@@ -74,6 +74,7 @@ export function assessmentCoverage(entries: TeachingEntry[], assessmentId?: stri
   let covered: string[] = [], all: string[] = []
   for (const item of entries) {
     if (item.id === assessmentId) return overall ? all : covered
+    if (item.content.submissionOnly) continue
     if (item.type !== 'assessment') { covered.push(item.id); all.push(item.id) }
     else if (!item.content.overallAssessment) covered = []
   }
@@ -93,7 +94,7 @@ export function topicProgress(data: AcademicData, entries: TeachingEntry[]) {
     const legacy = available.filter(pub => pub.active && pub.week === entry.week && pub.type === entry.type && pub.title === (entry.content.title || entry.title))
     return legacy.length === 1 ? legacy : []
   })
-  const ids = new Set(publications.map(pub => pub.id)), materials = publications.filter(pub => pub.type !== 'assessment')
+  const ids = new Set(publications.map(pub => pub.id)), materials = publications.filter(pub => pub.type !== 'assessment' && !pub.content?.submissionOnly)
   let expected = 0, opened = 0
   for (const material of materials) {
     const students = new Set(data.enrollments.filter(row => row.course_id === material.course_id && !row.suspended).map(row => row.student_email.toLowerCase()))

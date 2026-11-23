@@ -26,6 +26,7 @@ async function fits(page:Page,dialog:Locator){
 }
 async function openLesson(page:Page,id:string){
  await page.goto(`/#/courseware?course=${id}`)
+ await page.getByRole('button',{name:'Teaching Materials & Assessments',exact:true}).click()
  const topic=page.locator('[data-topic="variables"]')
  await topic.locator('summary').click()
  await topic.locator('.instructor-sequence-item').filter({has:page.getByText('Variables lesson',{exact:true})}).getByRole('button',{name:'Open',exact:true}).click()

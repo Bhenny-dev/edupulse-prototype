@@ -2,18 +2,21 @@ import { aiRequest, aiSessionVersion } from '../lib/aiClient'
 import { supabase } from '../lib/supabaseClient'
 export type TeachingAttachment = { name: string; path: string; size: number; mime: string }
 export async function uploadTeachingFile(syllabusId: string, file: File): Promise<TeachingAttachment> {
+  return uploadCourseFile('teaching-files', { operation: 'upload', syllabusId }, file)
+}
+export async function uploadCourseFile(action: 'teaching-files' | 'topic-work', command: Record<string, unknown>, file: File): Promise<TeachingAttachment> {
   if (!file.size || file.size > 4_000_000) throw new Error('Choose a file up to 4 MB.')
-  if (!supabase) throw new Error('Sign in to add teaching files.')
+  if (!supabase) throw new Error('Sign in to attach files.')
   const scope = aiSessionVersion()
-  const upload = await aiRequest<{ bucket: string; path: string; token: string }>('teaching-files', 'POST', { operation: 'upload', syllabusId, name: file.name, size: file.size })
+  const upload = await aiRequest<{ bucket: string; path: string; token: string }>(action, 'POST', { ...command, name: file.name, size: file.size })
   if (scope !== aiSessionVersion()) throw new Error('The account view changed. Reopen the course before adding a file.')
   const { error } = await supabase.storage.from(upload.bucket).uploadToSignedUrl(upload.path, upload.token, file, { contentType: file.type || 'application/octet-stream', upsert: false })
   if (error) throw new Error('The file upload did not finish. Retry when connected.')
   if (scope !== aiSessionVersion()) throw new Error('The account view changed. The uploaded file was not added to another course.')
   return { name: file.name, path: upload.path, size: file.size, mime: file.type || 'application/octet-stream' }
 }
-export async function teachingFileUrl(path: string) {
-  const result = await aiRequest<{ url: string }>('teaching-files', 'POST', { operation: 'download', path })
+export async function teachingFileUrl(path: string, action: 'teaching-files' | 'topic-work' = 'teaching-files') {
+  const result = await aiRequest<{ url: string }>(action, 'POST', { operation: 'download', path })
   return result.url
 }
 /** The stored file itself, so the viewer can draw the original instead of text taken from it. */
@@ -24,9 +27,9 @@ export async function teachingFileBytes(path: string) {
   if (data.length > 4_100_000) throw new Error('The original file is too large to show here. Download it instead.')
   return data
 }
-export async function downloadTeachingFile(file: { path: string; name: string }) {
+export async function downloadTeachingFile(file: { path: string; name: string }, action: 'teaching-files' | 'topic-work' = 'teaching-files') {
   const link = document.createElement('a')
-  link.href = await teachingFileUrl(file.path); link.download = file.name; link.rel = 'noopener noreferrer'
+  link.href = await teachingFileUrl(file.path, action); link.download = file.name; link.rel = 'noopener noreferrer'
   link.click()
 }
 const IMAGES: Record<string, string> = { png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', gif: 'image/gif', webp: 'image/webp', svg: 'image/svg+xml' }
