@@ -64,11 +64,18 @@ export function useNotifications(role) {
   const account = user?.authenticated ? `${user.id}:${role}` : role
   const seen = new Set(store[account] || [])
   const current = []
-  const add = (id, message, category, type = 'info', time = 'Current records') => current.push({ id, message, category, type, time, read: false })
+  const publications = role === 'student' ? new Map(data.publications.filter(item => item.active).map(item => [item.id,item])) : null
+  function courseItemPath(publication, tab = 'materials') {
+    const item = publications?.get(publication)
+    if (!item) return undefined
+    return '/courseware?' + new URLSearchParams({course:item.course_id,studentTab:tab,item:item.id})
+  }
+  const add = (id, message, category, type = 'info', time = 'Current records', path) =>
+    current.push({ id, message, category, type, time, path, read: false })
   if (role === 'student') {
     // Blue (delivered), orange (due within 3 days, Manila) and red (due date missed) reuse the info, warning and error looks.
     const look = { blue: 'info', orange: 'warning', red: 'error' }
-    pendingReminders(data, recordsNow(data)).forEach(reminder => add(reminder.key, reminder.kind === 'assessment' ? `Unanswered assessment: ${reminder.title}` : `Not opened: ${reminder.title}`, reminder.kind === 'assessment' ? 'missing_assessment' : 'unopened_material', look[reminder.state], reminder.when || 'Current records'))
+    pendingReminders(data, recordsNow(data)).forEach(reminder => add(reminder.key, reminder.kind === 'assessment' ? `Unanswered assessment: ${reminder.title}` : `Not opened: ${reminder.title}`, reminder.kind === 'assessment' ? 'missing_assessment' : 'unopened_material', look[reminder.state], reminder.when || 'Current records', courseItemPath(reminder.id)))
   } else if (['dean', 'associate_dean', 'instructor'].includes(role)) {
     data.courses.forEach(course => {
       if (!course.active) add(`syllabus:${course.id}`, `${course.course_code}: no active syllabus in the shared records`, 'syllabus_status', 'warning')
@@ -76,7 +83,7 @@ export function useNotifications(role) {
     })
     if (role === 'instructor') Object.entries(workspace.content).filter(([, item]) => item.status === 'draft').forEach(([id, item]) => add(`draft:${id}`, `Courseware draft awaiting review: ${item.content.title}`, 'courseware'))
   }
-  const persisted=(data.notices || []).map(item=>({id:item.id,message:`${item.title}${item.detail?` — ${item.detail}`:''}`,category:'academic',type:'info',time:new Date(item.created_at).toLocaleString(),read:Boolean(item.read_at)}))
+  const persisted=(data.notices || []).map(item=>({id:item.id,message:`${item.title}${item.detail?` — ${item.detail}`:''}`,category:'academic',type:'info',time:new Date(item.created_at).toLocaleString(),read:Boolean(item.read_at),path:courseItemPath(item.publication_id,item.path==='/performance'?'scores':'materials')}))
   const notifications = (user?.authenticated ? (error ? [] : [...persisted,...current]) : ROLE_NOTIFICATIONS[role] || []).map(n => ({ ...n, read: n.read || seen.has(n.id) }))
   const markRead = useCallback(async ids => {
     try {

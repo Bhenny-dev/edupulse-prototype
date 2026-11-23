@@ -47,7 +47,9 @@ export const PAGES = [
   { path: '/settings?tab=help', label: 'Help & Support', words: /\bhelp(\s+(?:&|and)\s+support)?\b/i, roles: 'all' },
   { path: '/settings', label: 'Settings', words: /\b(settings|preferences|profile)\b/i, roles: 'all' },
   { path: '/notifications', label: 'Notifications', words: /\bnotifications?\b/i, roles: 'all' },
-  { path: '/dashboard', label: 'Dashboard', words: /\b(dashboard|home(\s*page)?)\b/i, roles: 'all' },
+  // Instructors and students call their landing page Home; academic management keeps its Dashboard.
+  { path: '/dashboard', label: 'Home', words: /\b(dashboard|home(\s*page)?)\b/i, roles: ['instructor', 'student'] },
+  { path: '/dashboard', label: 'Dashboard', words: /\b(dashboard|home(\s*page)?)\b/i, roles: ['admin', 'dean', 'associate_dean'] },
 ]
 const allowed = (page, role) => page.roles === 'all' || page.roles.includes(role)
 
@@ -317,7 +319,7 @@ export function pageFor(message, role, { canSwitchRoles = false, history = [] } 
   const view = requestedView(message) || (prior && requestedView(prior.content || prior.text || ''))
   if (view && ((NAVIGATE.test(message) && /\b(?:dashboard|view|home)\b/i.test(message)) || prior)) {
     const page = PAGES.find(item => item.path === '/dashboard')
-    return { ...page, label: `${ROLE_TITLES[view]} Dashboard`, viewRole: view, ...(!canSwitchRoles && view !== role ? { denied: true } : {}) }
+    return { ...page, label: `${ROLE_TITLES[view]} ${['instructor', 'student'].includes(view) ? 'Home' : 'Dashboard'}`, viewRole: view, ...(!canSwitchRoles && view !== role ? { denied: true } : {}) }
   }
   if (!NAVIGATE.test(message) && !GUIDE.test(message)) return null
   const rest = message.replace(NAVIGATE, ' ')

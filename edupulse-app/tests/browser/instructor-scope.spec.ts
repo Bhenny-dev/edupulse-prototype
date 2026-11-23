@@ -24,7 +24,7 @@ test('leaving Syllabus while a share finishes never reloads or announces deliver
  await dialog.getByLabel('Instructor',{exact:true}).selectOption('22222222-1111-4111-8111-111111111111')
  await dialog.getByRole('button',{name:'Share syllabus',exact:true}).click();await expect.poll(()=>started).toBe(true)
  const reads=store.commands.filter(input=>input.operation==='list').length
- await page.goto('/#/dashboard');await expect(page.getByRole('heading',{name:'Instructor Dashboard',exact:true})).toBeVisible()
+ await page.goto('/#/dashboard');await expect(page.getByRole('heading',{name:'Home',exact:true})).toBeVisible()
  release();await expect.poll(()=>store.shares.length).toBe(1)
  await page.waitForTimeout(300)
  expect(store.commands.filter(input=>input.operation==='list')).toHaveLength(reads)
@@ -68,7 +68,7 @@ test('workspace save failure has no generic header indicator while Settings reta
  await page.locator('.syllabus-list').getByRole('button',{name:'Mark as Checked',exact:true}).click()
  await expect(page.getByTestId('workspace-save-state')).toContainText('Cloud save failed')
  await page.goto('/#/dashboard')
- await expect(page.getByRole('heading',{name:'Instructor Dashboard',exact:true})).toBeVisible()
+ await expect(page.getByRole('heading',{name:'Home',exact:true})).toBeVisible()
  await expect(page.getByText('Workspace needs attention',{exact:true})).toHaveCount(0)
  await expect(page.locator('.academic-sync-status')).not.toContainText('Waiting for workspace save')
  await page.mouse.move(0,0)

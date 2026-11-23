@@ -22,8 +22,8 @@ test('student block context and course navigation live in My Courses without sou
  await table.getByRole('button',{name:'Open course IT 102',exact:true}).click();await page.reload();await expect(page.getByRole('button',{name:'Back to My Courses',exact:true})).toBeVisible();await page.getByRole('button',{name:'Back to My Courses',exact:true}).click();await expect(table).toBeVisible()
 })
 
-test('instructor course table links its genuine draft to the existing editable builder',async({page})=>{
- const fixture=await instructorCourseUI(page);fixture.syllabus.status='drafted';await page.goto('/#/courseware');await expect(page.getByRole('heading',{name:'Course',exact:true})).toBeVisible({timeout:20000});await expect(page.getByRole('region',{name:'Assigned teaching courses',exact:true})).toBeVisible();await page.getByRole('button',{name:'Open course IT 102',exact:true}).click()
+test('instructor class links its genuine draft to the existing editable builder',async({page})=>{
+ const fixture=await instructorCourseUI(page);fixture.syllabus.status='drafted';await page.goto('/#/courseware');await expect(page.getByRole('heading',{name:'Home',exact:true})).toBeVisible({timeout:20000});await page.getByRole('button',{name:'Open course IT 102',exact:true}).click();await expect(page.getByRole('region',{name:'Next step',exact:true})).toBeVisible()
  const edit=page.getByRole('link',{name:'Continue editing draft',exact:true});await expect(edit).toHaveAttribute('href',`#/syllabus?tab=builder&edit=${encodeURIComponent(fixture.syllabus.id)}`);await edit.click();await expect(page).toHaveURL(new RegExp(`edit=${fixture.syllabus.id}`));await expect(page.getByRole('navigation',{name:'Syllabus sections',exact:true})).toBeVisible();expect(fixture.commands).toHaveLength(0)
 })
 

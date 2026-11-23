@@ -20,7 +20,7 @@ import { useContentEditorTool } from '../../agents/useContentEditorTool'
  * Used for viewing materials and activities.
  */
 
-export default function DocumentViewer({ content, onBack, isStudent = false, readOnly = false, onSave, reading = null, embedded = false, onAttachFile, attachBlocked }) {
+export default function DocumentViewer({ content, onBack, isStudent = false, readOnly = false, onSave, reading = null, embedded = false, onAttachFile, onAttachLink, attachBlocked }) {
   const { addToast } = useToast()
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState(null)
@@ -109,13 +109,13 @@ export default function DocumentViewer({ content, onBack, isStudent = false, rea
   const attachments = content.attachments || [], originals = attachments.filter(file => teachingFileKind(file) && !unreadable.includes(file.path))
   if (originals.length && !editing) return (
     <div className="document-viewer">
-      <OriginalDocument content={content} files={originals} others={attachments.filter(file => !originals.includes(file))} isStudent={isStudent} canEdit={!isStudent && !readOnly} onBack={onBack} onEdit={startEditing} onFail={markUnreadable} reading={reading} embedded={embedded} onAttachFile={onAttachFile} attachBlocked={attachBlocked} />
+      <OriginalDocument content={content} files={originals} others={attachments.filter(file => !originals.includes(file))} isStudent={isStudent} canEdit={!isStudent && !readOnly} onBack={onBack} onEdit={startEditing} onFail={markUnreadable} reading={reading} embedded={embedded} onAttachFile={onAttachFile} onAttachLink={onAttachLink} attachBlocked={attachBlocked} />
     </div>
   )
 
   return (
     <div className="document-viewer">
-      <div className="document-attachments"><TeachingAttachments attachments={content.attachments} onAttachFile={onAttachFile} attachBlocked={attachBlocked} /></div>
+      <div className="document-attachments"><TeachingAttachments attachments={content.attachments} onAttachFile={onAttachFile} onAttachLink={onAttachLink} attachBlocked={attachBlocked} /></div>
       {unreadable.length > 0 && <p role="alert" className="text-sm text-muted" style={{ maxWidth: '850px', margin: '8px auto', padding: '0 24px' }}>The original file could not be displayed here. Its extracted text is shown instead; download the original to see the file itself.</p>}
       {/* Toolbar */}
       <div className="document-viewer-toolbar" role="toolbar" aria-label="Document actions">

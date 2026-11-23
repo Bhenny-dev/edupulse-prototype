@@ -3,10 +3,10 @@ import {instructorUpdatesUI,sender,recipient,sharedStore} from './instructor-upd
 type Capture=(name:string,target?:any)=>Promise<void>
 export async function instructorDashboardScene(page:Page,capture?:Capture){
  await instructorUpdatesUI(page)
- // Blocks and scores live on Student Monitoring; the Dashboard keeps recent course activity only.
+ // Home lists the classes; blocks and scores live in each class and on Student Monitoring.
  await page.goto('/#/dashboard')
  const main=page.getByRole('main')
- await expect(main.getByRole('heading',{name:'Recent course activity',exact:true})).toBeVisible()
+ await expect(main.getByRole('heading',{name:'Home',exact:true})).toBeVisible()
  for(const heading of ['My Block Sections','Score Snapshot','My courses and block sections'])await expect(main.getByRole('heading',{name:heading,exact:true})).toHaveCount(0)
  await expect(main.locator('.kpi-card')).toHaveCount(0)
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true)

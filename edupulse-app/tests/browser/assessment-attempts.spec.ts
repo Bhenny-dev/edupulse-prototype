@@ -6,7 +6,8 @@ test('an instructor answers their own assessment as a student, marked with the a
   const fixture = await instructorCourseUI(page)
   await page.goto('/#/courseware')
   await page.locator('.instructor-course-card').filter({ hasText: 'IT 102' }).first().click()
-  await page.getByRole('button', { name: 'Weeks and topics', exact: true }).click()
+  await page.getByRole('button', { name: /^(Weeks and topics|Teaching Materials & Assessments)$/ }).click()
+  await expect(page.locator('details.instructor-topic').first()).toBeAttached()
   await page.locator('details.instructor-topic').evaluateAll(nodes => nodes.forEach(node => { (node as HTMLDetailsElement).open = true }))
   const saved = fixture.commands.length
   await page.locator('.instructor-sequence-item').filter({ hasText: 'Variable check' }).getByRole('button', { name: 'Open', exact: true }).click()
@@ -35,12 +36,13 @@ test('a student sees how many attempts there are, that the latest counts, and no
   fixture.records.attempts = []
   const publication = fixture.records.publications.find(item => item.type === 'assessment')!
   publication.content = { ...publication.content, assessmentPolicy: { maxAttempts: 2 }, questions: [{ text: 'Choose A', topic: 'Variables', options: ['A', 'B', 'C', 'D'] }, { text: 'Choose B', topic: 'Functions', options: ['A', 'B', 'C', 'D'] }] }
-  let made = 0
+  let made = 0, started = 0
   const reviewed: string[] = []
   await page.route('**/api/ai?action=academic', async route => {
     if (route.request().method() !== 'POST') return route.fallback()
     const command = route.request().postDataJSON()
     if (command.operation === 'start') {
+      started++
       const next = command.retake ? made + 1 : Math.max(1, made)
       if (next > 2) return route.fulfill({ status: 422, json: { error: { code: '22023', message: 'Assessment is closed, awaiting marking or attempt limit reached' } } })
       return route.fulfill({ json: { id: `99999999-1111-4111-8111-00000000000${next}`, started_at: new Date().toISOString(), attempt_no: next, duration_seconds: 0, max_attempts: 2 } })
@@ -61,11 +63,15 @@ test('a student sees how many attempts there are, that the latest counts, and no
     }
     return route.fallback()
   })
+  page.on('dialog',dialog=>dialog.accept())
   await page.goto('/#/assessment')
   await page.getByRole('button', { name: 'Open assessment', exact: true }).first().click()
   const dialog = page.getByRole('dialog', { name: publication.title, exact: true })
   await expect(dialog).toContainText('2 allowed attempt(s)');await expect(page.getByRole('button',{name:'Open Pulse assistant',exact:true})).toHaveCount(0)
+  expect(started, 'opening the details leaves the attempt unstarted').toBe(0)
+  await dialog.getByRole('button', { name: 'Start assessment', exact: true }).click()
   await dialog.getByLabel('Question 1: A', { exact: true }).check()
+  expect(started).toBe(1)
   await dialog.getByLabel('Question 2: C', { exact: true }).check()
   await dialog.getByRole('button', { name: 'Confirm and submit responses', exact: true }).click()
   await expect(page.getByRole('button',{name:'Open Pulse assistant',exact:true})).toBeVisible()
@@ -85,5 +91,5 @@ test('a student sees how many attempts there are, that the latest counts, and no
   await dialog.getByRole('button', { name: 'Confirm and submit responses', exact: true }).click()
   await expect(dialog.getByRole('status').filter({ hasText: 'Saved score: 2/2.' })).toContainText('Attempt 2 of 2. No attempts left.')
   await expect(dialog.getByRole('button', { name: 'Start next allowed attempt', exact: true })).toHaveCount(0)
-  await expect(dialog.getByRole('group', { name: 'Answer review for attempt 2', exact: true }).getByRole('listitem').nth(1)).toContainText('CorrectYour answer: BWhy: B is the requested letter.')
+  await expect(dialog.getByRole('group', { name: 'Answer review for attempt 2', exact: true }).getByRole('listitem').nth(1)).toContainText('CorrectYour answer: BCorrect answer: BWhy: B is the requested letter.')
 })

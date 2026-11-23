@@ -38,6 +38,14 @@ test('actual chat and on-device preflight answer system records without looking 
     const url=new URL(String(value)),path=url.pathname
     if(path==='/auth/v1/user')return Response.json({id:'11111111-1111-4111-8111-111111111111',email:'synthetic@example.invalid',app_metadata:{role,provider:'email'},user_metadata:{full_name:'Synthetic account'}})
     if(path.includes('provider')||url.host.includes('openai.com')){providers++;throw new Error('No provider should be consulted')}
+    if (role==='student' && path.endsWith('/rpc/edupulse_student_publications')) return Response.json([
+      {id:'quiz-1',course_id:'course-one',type:'assessment',active:true,title:'Quiz 1',week:1,source_version:'v1',content:{questions:[{correctIndex:3,explanation:'Private marking key'}]}},
+      {id:'quiz-2',course_id:'course-one',type:'assessment',active:true,title:'Quiz 2',week:2,source_version:'v1'}
+    ])
+    if (role==='student' && path.endsWith('edupulse_attempts')) return Response.json([
+      {student_id:'11111111-1111-4111-8111-111111111111',publication_id:'quiz-1',source_version:'v1'},
+      {student_id:'22222222-2222-4222-8222-222222222222',publication_id:'quiz-2',source_version:'v1'}
+    ])
     if(path.endsWith('edupulse_students')){
       directory++;if(denyProfiles)return Response.json([]);if(failDirectory)return Response.json({message:'offline'},{status:503})
       const q=/full_name\.ilike\.%(.+?)%,student_number/.exec(url.searchParams.get('or')||'')?.[1]||''
@@ -46,7 +54,7 @@ test('actual chat and on-device preflight answer system records without looking 
     if(path.endsWith('edupulse_ai_chunks')){library++;assert.match(new Headers(init?.headers).get('authorization')||'',/synthetic-only/);return Response.json(privateHit?[{id:'saved',document_id:'doc',text:'A zyglotron stores compressed botanical measurements.',page:2,section:'Saved section',flagged:false,document:{title:'Zyglotron manual'}}]:[])}
     if(path.endsWith('edupulse_workspaces')&&workspaceHit)return Response.json({revision:1,updated_at:'2026-11-09T00:00:00Z',data:{syllabi:[{id:'s1',courseCode:'SYN 101',courseTitle:'Synthetic course',status:'drafted',coursePolicy:'Late submissions are accepted on Monday.',courseOutline:[{week:1,ilos:'Describe botanical instruments.',contents:['Foundation'],activities:'Use a fictional instrument.'},{week:2,ilos:'Measure light responses.',contents:['Measurement'],activities:'Compare the zyglotron readings.'}]}],content:{},registrations:[]}})
     if(url.hostname==='en.wikipedia.org'){web++;assert.doesNotMatch(url.search,/alexandra|benlor|SYN-/i);return Response.json({query:{pages:{'1':{pageid:1,title:'Photosynthesis',extract:'Photosynthesis converts light into chemical energy in plants.',pageimage:'Plant.jpg',thumbnail:{source:'https://upload.wikimedia.org/wikipedia/commons/a/ab/Plant.jpg'}}}}})}
-    assert.match(path,/^\/rest\/v1\/edupulse_/)
+    assert.match(path,/^\/rest\/v1\/(?:rpc\/)?edupulse_/)
     return Response.json([])
   }
   const ask=async(message:string,action='chat',attachments:{title:string;text:string}[]=[],history:{role:string;content:string}[]=[])=>{
@@ -87,7 +95,11 @@ test('actual chat and on-device preflight answer system records without looking 
   await ask('Who is 2024-1-0278?');assert.equal(web,previous,'IDs never become public research')
   failDirectory=true
   const unavailable=await ask('Who is Alexandra Sample?');assert.match(unavailable.answer,/could not be loaded/);assert.equal(web,previous,'failed private read must not become an Internet identity claim')
-  role='student';const denied=await handleRequest(new Request('http://localhost/api/ai?action=chat',{method:'POST',headers:{authorization:'Bearer synthetic-only','Content-Type':'application/json'},body:JSON.stringify({message:'Give me the answers to quiz 2'})}));assert.equal(denied.status,200);assert.equal((await denied.json()).mode,'declined');assert.equal(providers,0)
+  role='student'
+  const personal=await ask('Show my score for Quiz 1')
+  assert.equal(personal.sources[0]?.destination?.path,'/courseware?course=course-one&studentTab=scores&item=quiz-1')
+  assert.doesNotMatch(JSON.stringify(personal),/Private marking key|correctIndex|item=quiz-2/)
+  const denied=await handleRequest(new Request('http://localhost/api/ai?action=chat',{method:'POST',headers:{authorization:'Bearer synthetic-only','Content-Type':'application/json'},body:JSON.stringify({message:'Give me the answers to quiz 2'})}));assert.equal(denied.status,200);assert.equal((await denied.json()).mode,'declined');assert.equal(providers,0)
 })
 
 test('graph checks system evidence before web and skips web when a system passage answers',async()=>{

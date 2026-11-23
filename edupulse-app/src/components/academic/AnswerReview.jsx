@@ -3,20 +3,31 @@ import { aiRequest } from '../../lib/aiClient'
 import { Spinner } from '../ui/LoadingFeedback'
 
 const STATUS = { correct: 'Correct', incorrect: 'Incorrect', awaiting_review: 'Awaiting instructor review' }
-const optionText = (question, index) => { const option = question?.options?.[index]; return typeof option === 'string' ? option : option?.text || '' }
+const optionText = (question, index) => {
+  if (!Number.isInteger(index) || index < 0) return ''
+  const option = question?.options?.[index]
+  return (typeof option === 'string' ? option : option?.text) || `Option ${index + 1}`
+}
 
 /** The student's answer review for one recorded attempt (owner specification I3). The database releases the key only for
  *  the student's own submitted attempt and never while a later attempt is open, so this component only renders what it is given. */
 export default function AnswerReview({ attempt, questions }) {
   const [state, setState] = useState({ loading: true, error: '', review: null })
-  const live = useRef(true)
+  const pending = useRef(null)
   const load = useCallback(async () => {
+    pending.current?.abort()
+    const request = new AbortController()
+    pending.current = request
     setState({ loading: true, error: '', review: null })
-    try { const review = await aiRequest('academic', 'POST', { operation: 'feedback', attempt: attempt.id }); if (live.current) setState({ loading: false, error: '', review }) }
-    catch (failure) { if (live.current) setState({ loading: false, error: failure.message || 'The answer review could not be loaded.', review: null }) }
+    try {
+      const review = await aiRequest('academic', 'POST', { operation: 'feedback', attempt: attempt.id }, request.signal)
+      if (!request.signal.aborted) setState({ loading: false, error: '', review })
+    } catch (failure) {
+      if (!request.signal.aborted) setState({ loading: false, error: failure.message || 'The answer review could not be loaded.', review: null })
+    }
   }, [attempt.id])
   // A re-marked attempt (new score or status) loads its review again.
-  useEffect(() => { live.current = true; void load(); return () => { live.current = false } }, [load, attempt.score, attempt.grading_status])
+  useEffect(() => { void load(); return () => pending.current?.abort() }, [load, attempt.score, attempt.grading_status])
   const { loading, error, review } = state
   return <details className="academic-answer-review mt-24" open aria-label={`Answer review for attempt ${attempt.attempt_no || 1}`}>
     <summary><strong>Answer review · attempt {attempt.attempt_no || 1}</strong></summary>
@@ -29,9 +40,9 @@ export default function AnswerReview({ attempt, questions }) {
       <ol className="academic-answer-list">{review.questions.map(item => {
         const question = questions[item.index], written = item.type === 'short_answer'
         return <li key={item.index} className={`academic-answer ${item.status}`}>
-          <p><strong>{item.index + 1}. {question?.text}</strong> <span className={`academic-answer-status ${item.status}`}>{STATUS[item.status] || item.status}</span></p>
+          <p><strong>{question?.text ? `${item.index + 1}. ${question.text}` : `Question ${item.index + 1}`}</strong> <span className={`academic-answer-status ${item.status}`}>{STATUS[item.status] || item.status}</span></p>
           <p className="text-sm">Your answer: {written ? item.response : optionText(question, item.response) || 'No answer recorded'}</p>
-          {!written && item.status !== 'correct' && <p className="text-sm">Correct answer: {optionText(question, item.correctIndex)}</p>}
+          {!written && optionText(question, item.correctIndex) && <p className="text-sm">Correct answer: {optionText(question, item.correctIndex)}</p>}
           {written && item.status === 'awaiting_review' && <p className="text-sm text-muted">Your instructor marks written responses; this question’s point is pending.</p>}
           {item.explanation ? <p className="text-sm">Why: {item.explanation}</p> : item.status === 'incorrect' && <p className="text-sm text-muted">No explanation was added for this question.</p>}
         </li>

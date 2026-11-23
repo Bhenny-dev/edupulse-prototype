@@ -3,7 +3,7 @@ import { useAuth } from './AuthContext'
 import { useWorkspace } from './WorkspaceContext'
 import { aiRequest } from '../lib/aiClient'
 
-const EMPTY_ACADEMIC = { courses: [],assignedCourses:[], publications: [], deliverySchedules: [], enrollments: [], attempts: [], accesses: [],reading:[],sessions:[], institutional: [], faculty: [], events: [], notices: [] }
+const EMPTY_ACADEMIC = { announcements: [], classCodes: [], classJoins: [], courses: [],assignedCourses:[], publications: [], deliverySchedules: [], enrollments: [], attempts: [], accesses: [],reading:[],sessions:[], institutional: [], faculty: [], events: [], notices: [] }
 const AcademicContext = createContext(null)
 
 // Load on identity entry and after this tab's confirmed mutations. Focus, timers and
@@ -52,6 +52,7 @@ function AcademicSession({ children, user,authLoading }) {
             clockOffset:Number.isFinite(Date.parse(records.serverNow))?Date.parse(records.serverNow)-Date.now():0,
             // Dean-only account directory (object) and its unavailable notice travel with the records.
             ...(records.directory && typeof records.directory === 'object' && !Array.isArray(records.directory) ? { directory: records.directory } : {}),
+            ...(typeof records.classroomError==='string'?{classroomError:records.classroomError}:{}),
             ...(typeof records.directoryError === 'string' ? { directoryError: records.directoryError } : {}) }, loaded: true });setRefreshAvailable(false)}
         } while (valid() && version !== timing.current.invalidation)
       } catch (failure) {
@@ -104,7 +105,7 @@ function AcademicSession({ children, user,authLoading }) {
     const result = await aiRequest('academic', 'POST', input)
     if (alive.current && currentRole.current === role) {
       if(input.operation==='read-publication')setSnapshot(previous=>({...previous,data:{...previous.data,publications:previous.data.publications.map(item=>item.id===result.id&&item.source_version===result.source_version?result:item)}}))
-      else await load()
+      else if(input.operation!=='class-join'||input.action!=='lookup')await load(input.operation==='class-join')
     }
     return result
   }, [load, role])

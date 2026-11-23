@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test'
 import { restorationUI } from '../role-restoration-fixture'
 
 // Each Dashboard shows only what no other page of the role shows (no quick actions, no repeated sections).
-const DASHBOARD_SECTION: Record<string, string> = { instructor: 'Recent course activity', student: 'Pulse Reminders', dean: 'Syllabus stations', associate_dean: 'Syllabus stations' }
+const DASHBOARD_SECTION: Record<string, string> = { instructor: 'Home', student: 'Home', dean: 'Syllabus stations', associate_dean: 'Syllabus stations' }
 for (const role of ['instructor', 'student', 'dean', 'associate_dean']) {
   test(`restored ${role} pages use account records and keep each authorized section reachable`, async ({ page }) => {
     test.setTimeout(90000)

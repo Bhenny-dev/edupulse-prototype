@@ -4,16 +4,18 @@ import { instructorCourseUI } from '../instructor-course-fixture'
 test('assigned-only course cards, separate syllabus and an empty assigned course intake work on reload', async ({ page, isMobile }) => {
   const fixture = await instructorCourseUI(page)
   await page.goto('/#/dashboard')
-  await expect(page.getByRole('heading', { name: 'Instructor Dashboard' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Home', exact: true })).toBeVisible()
   if (isMobile) await page.getByRole('button', { name: 'Open menu', exact: true }).click()
   await expect(page.getByRole('navigation', { name: isMobile ? 'Mobile navigation' : 'Main navigation' }).getByRole('link', { name: 'Syllabus', exact: true })).toBeVisible()
   if (isMobile) await page.getByRole('button', { name: 'Close menu', exact: true }).click()
-  // Course counts belong to the Course page; the Dashboard shows recent activity only.
-  await expect(page.getByText('Courses loaded', { exact: true })).toHaveCount(0)
+  // Home lists one card per assigned course; the Course station without a class returns to Home.
+  await expect(page.locator('.instructor-course-card')).toHaveCount(2)
   await page.goto('/#/courseware')
-  await expect(page.getByText('Courses loaded', { exact: true })).toBeVisible()
+  await expect(page).toHaveURL(/#\/dashboard/)
   await expect(page.locator('.instructor-course-card')).toHaveCount(2)
   await page.locator('.instructor-course-card').filter({ hasText: 'IT 201' }).click()
+  await expect(page.getByRole('heading', { name: 'Add the approved syllabus', exact: true })).toBeVisible()
+  await page.getByRole('button', { name: 'Open Teaching Materials and Assessments', exact: true }).click()
   await expect(page.getByRole('heading', { name: 'Upload syllabi', exact: true })).toBeVisible()
   await page.reload(); await expect(page.getByRole('button', { name: 'Choose a shared syllabus from the system' })).toBeVisible()
   await page.getByRole('button', { name: 'Choose a shared syllabus from the system' }).click()
@@ -22,13 +24,13 @@ test('assigned-only course cards, separate syllabus and an empty assigned course
   await page.goto(`/#/syllabus?tab=mine&course=${fixture.syllabus.id}`)
   await expect(page).toHaveURL(/syllabus\?tab=mine/)
   await expect(page.getByRole('navigation', { name: 'Syllabus sections' })).toBeVisible()
-  await expect(page.getByRole('navigation', { name: 'Course workspace views' })).toHaveCount(0)
+  await expect(page.getByRole('navigation', { name: 'Class sections' })).toHaveCount(0)
   expect(fixture.forbidden).toEqual([])
 })
 
 test('topic form saves actual material, preserves content metadata when editing and rejects an incomplete assessment', async ({ page }) => {
   const fixture = await instructorCourseUI(page)
-  await page.goto(`/#/courseware?course=${fixture.syllabus.id}`)
+  await page.goto(`/#/courseware?course=${fixture.syllabus.id}&tab=materials`)
   const topic = page.locator('[data-topic="variables"]')
   await topic.locator('summary').click(); await page.reload(); await expect(topic).toHaveAttribute('open', '')
   await topic.getByRole('button', { name: 'Add teaching material', exact: true }).click()
@@ -54,7 +56,7 @@ test('topic form saves actual material, preserves content metadata when editing 
 
 test('week move confirms release withdrawal, keeps chronological labels and never repeats on reload', async ({ page }) => {
   const fixture = await instructorCourseUI(page)
-  await page.goto(`/#/courseware?course=${fixture.syllabus.id}`)
+  await page.goto(`/#/courseware?course=${fixture.syllabus.id}&tab=materials`)
   await page.getByRole('button', { name: 'Move week 1 down', exact: true }).click()
   await expect(page.getByRole('dialog', { name: 'Move delivered teaching week' })).toBeVisible()
   expect(fixture.commands.filter(row => row.action === 'workspace')).toHaveLength(0)
@@ -90,7 +92,7 @@ test('system citations restore after reload and open readonly material without a
 
 test('checked topic content is explicitly delivered and failed saves do not claim success', async ({ page }) => {
   const fixture = await instructorCourseUI(page)
-  await page.goto(`/#/courseware?course=${fixture.syllabus.id}`)
+  await page.goto(`/#/courseware?course=${fixture.syllabus.id}&tab=materials`)
   await page.locator('[data-topic="variables"] > summary').click()
   const quiz = page.locator('.instructor-sequence-item').filter({ has: page.getByText('Variable check', { exact: true }) })
   fixture.failSave(true)
@@ -101,7 +103,7 @@ test('checked topic content is explicitly delivered and failed saves do not clai
 
 test('delivery requires a checked save and is not repeated by reload', async ({ page }) => {
   const fixture = await instructorCourseUI(page)
-  await page.goto(`/#/courseware?course=${fixture.syllabus.id}`)
+  await page.goto(`/#/courseware?course=${fixture.syllabus.id}&tab=materials`)
   await page.locator('[data-topic="variables"] > summary').click()
   const quiz = page.locator('.instructor-sequence-item').filter({ has: page.getByText('Variable check', { exact: true }) })
   await quiz.getByRole('button', { name: 'Mark checked', exact: true }).click()

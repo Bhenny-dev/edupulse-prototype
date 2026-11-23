@@ -11,7 +11,7 @@ const signal = () => AbortSignal.timeout(30000)
 test('dashboard destinations keep the named role and a correction refers to the preceding navigation request',()=>{
  assert.equal(pageFor('Open the instructors dashboard','admin',{canSwitchRoles:true})?.viewRole,'instructor')
  const history=[{role:'user',content:'open me the instructors dashboard'},{role:'assistant',content:'Opened Dashboard.'}]
- assert.equal(pageFor("no, not mine, the instructor's",'admin',{canSwitchRoles:true,history})?.label,'Instructor Dashboard')
+ assert.equal(pageFor("no, not mine, the instructor's",'admin',{canSwitchRoles:true,history})?.label,'Instructor Home')
  assert.equal(pageFor('no, not mine','admin',{canSwitchRoles:true,history})?.viewRole,'instructor')
  assert.equal(pageFor('Open the program coordinator dashboard','admin',{canSwitchRoles:true})?.viewRole,'associate_dean')
  assert.equal(pageFor('Open the instructor dashboard','student')?.denied,true)

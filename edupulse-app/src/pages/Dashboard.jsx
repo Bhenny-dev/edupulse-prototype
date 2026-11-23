@@ -1,3 +1,4 @@
+import StudentHome from '../components/academic/StudentHome'
 import { useAuth } from '../context/AuthContext'
 import { useAcademicRecords } from '../context/AcademicContext'
 import useAcademicTerm from '../components/academic/useAcademicTerm'
@@ -5,7 +6,7 @@ import LoadTermFilter from '../components/academic/LoadTermFilter'
 import {recordsForLoadTerm} from '../utils/loadTerms'
 import AcademicSyncStatus from '../components/academic/AcademicSyncStatus'
 import SystemAdminDashboard from './SystemAdminDashboard'
-import InstructorOverview from '../components/courseware/InstructorOverview'
+import InstructorHome from '../components/classroom/InstructorHome'
 import AcademicManagement from '../components/academic/AcademicManagement'
 import { accountManagementModel, accountStudentModel } from './dashboardModels'
 import { previewInstructorModel, previewStudentModel } from './dashboardPreview'
@@ -15,7 +16,7 @@ import { pulse as pulseBus } from '../components/pulse/pulseBus'
 import { SkeletonKPI, SkeletonTable } from '../components/ui/LoadingSkeleton'
 import '../components/academic/academic.css'
 import {
-  Users, AlertTriangle, CheckCircle, FileText, ArrowRight,
+  Users, AlertTriangle, CheckCircle, FileText, ArrowRight, BookOpen,
   Target, Sparkles, Calendar, Download,
   ChevronRight, Activity, Rocket, X, Bot, ClipboardCheck, Bell,
 } from 'lucide-react'
@@ -191,14 +192,14 @@ function OnboardingChecklist({ autoDone = [] }) {
 }
 
 
-// Preview Instructor Dashboard: getting started and recent activity only. Courses, syllabi,
-// block sections and scores each live on their own page (Course, Syllabus, Student Monitoring).
+// Preview instructor Home: getting started and recent activity from the sample workspace. A signed-in
+// instructor's Home lists their classes (InstructorHome).
 function InstructorDashboard({ model, actions = exportButton, status }) {
   const { user } = useAuth()
 
   return (
     <div className="container">
-      <PageHeader title="Instructor Dashboard" subtitle={`Welcome back, ${user?.name}`} actions={actions} />
+      <PageHeader title="Home" subtitle={`Welcome back, ${user?.name}`} actions={actions} />
       {status}
       {model && <>
       <OnboardingChecklist autoDone={model.autoDone} />
@@ -217,15 +218,15 @@ const REMINDER_LOOK = {
   red: { label: 'Missed', color: 'var(--red-700)', background: 'var(--red-100)' },
 }
 
-// The Student Dashboard holds what needs attention: reminders, upcoming activities, the block
-// and the approved sources. Course cards live in My Courses and scores in Performance.
+// Preview student Home: reminders, upcoming activities and the recorded sources from the sample records.
+// A signed-in student's Home is StudentHome (classes and Join class).
 function StudentDashboard({ model, actions, status }) {
   const navigate = useNavigate()
   const { user } = useAuth()
 
   return (
     <div className="container">
-      <PageHeader title="Student Dashboard" subtitle={`Welcome back, ${user?.name}`} actions={actions} />
+      <PageHeader title="Home" subtitle={`Welcome back, ${user?.name}`} actions={actions} />
       {status}
       {model && <>
       {/* Pulse guidance — reminders only, never answers */}
@@ -327,7 +328,7 @@ function AccountDashboard() {
     {loaded && !error && role !== 'instructor' && !data.courses.length && <div className="empty-state mb-24" role="status"><h2>No authorized academic records yet</h2><p>Instructors register confirmed class lists, activate an approved syllabus, review courseware and publish it. Students need a matching account email in the registered class list. Saved workspaces synchronize automatically.</p></div>}
   </>
   if (role === 'dean' || role === 'associate_dean') return <StaffDashboard data={data} loaded={loaded} actions={actions} status={status} />
-  if (role === 'instructor') return <InstructorOverview data={data} loaded={loaded} actions={actions} status={status} />
+  if (role === 'instructor') return <InstructorHome data={data} loaded={loaded} actions={actions} status={status} />
   return <StudentDashboard model={loaded ? accountStudentModel(data, user) : null} actions={actions} status={status} />
 }
 
@@ -335,6 +336,7 @@ function AccountDashboard() {
 // same dashboard components for previews and accounts; only the data source differs.
 export default function Dashboard() {
   const { user } = useAuth()
+  if (user?.role === 'student' && user?.authenticated) return <StudentHome />
   if (user?.role === 'admin') return <SystemAdminDashboard />
   if (user?.authenticated || user?.role === 'dean' || user?.role === 'associate_dean') return <AccountDashboard />
   if (user?.role === 'instructor') return <InstructorDashboard model={previewInstructorModel(user)} />

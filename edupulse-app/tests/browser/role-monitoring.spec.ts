@@ -21,7 +21,7 @@ test('role monitoring selectors cannot turn an instructor into an admin',async({
  await accountSupportUI(page,'instructor')
  await page.goto('/#/dashboard?role=dean&monitorTab=accounts')
  await expect(page.getByRole('heading',{name:'Dean monitoring',exact:true})).toHaveCount(0)
- await expect(page.getByRole('heading',{name:'Instructor Dashboard',exact:true})).toBeVisible()
+ await expect(page.getByRole('heading',{name:'Home',exact:true})).toBeVisible()
 })
 
 test('recent role totals show success, failure and notices without a global-window truncation',async({page})=>{

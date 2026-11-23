@@ -100,7 +100,7 @@ export async function systemLookup(input:ChatInput,owner:Identity,subject:Identi
   const lookupInput=contextualPerson?{...input,message:`Who is ${conversation.person}?`}:input
   const live=selectedFiles?{evidence:[]}:await authorizedAccountContext(subject,lookupInput.message,signal)
   signal.throwIfAborted()
-  for (const source of live.evidence) source.destination = { path: /course|syllab|material|week/i.test(input.message) ? '/courseware' : subject.role === 'instructor' ? '/student-monitoring' : subject.role === 'dean' ? '/students' : '/dashboard', label: 'Open related records' }
+  for (const source of live.evidence) source.destination ??= { path: /course|syllab|material|week/i.test(input.message) ? '/courseware' : subject.role === 'instructor' ? '/student-monitoring' : subject.role === 'dean' ? '/students' : '/dashboard', label: 'Open related records' }
   if (live.warning) return lookupAnswer(input,[],signal,'system',undefined,live.warning)
   if(!selectedFiles&&contextualPerson) {
     if(!live.evidence.length)return lookupAnswer(input,[],signal,'system',undefined,'I could not find that person in the currently accessible EduPulse records. Please give their full name or student number; the earlier conversation is not current access evidence.')

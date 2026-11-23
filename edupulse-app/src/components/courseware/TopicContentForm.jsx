@@ -6,6 +6,7 @@ import { uploadTeachingFile } from '../../utils/teachingFiles'
 import { generateWeekDraft } from '../../utils/aiCourseware'
 import { aggregateSections } from '../../utils/outlineSections'
 import { jsonValue } from '../../utils/jsonValue'
+import { linkAttachment, linkProvider } from '../../utils/classroom'
 import { ASSESSMENT_FORMATS, requestedAssessmentFormat, writtenFormat } from '../../data/assessmentFormats'
 import { assessmentCoverage, topicEntries, weekTopics, teachingOrder, topicOverall } from '../../utils/instructorCourses'
 import AssessmentEditor from './AssessmentEditor'
@@ -70,9 +71,10 @@ export default function TopicContentForm({ syllabus, week, topic, entries, type,
       }
       let linkText = ''
       if (mode === 'link' || url.trim()) {
-        const parsed = new URL(url.trim())
-        if (!['https:', 'http:'].includes(parsed.protocol)) throw new Error('Use a complete HTTP or HTTPS link.')
-        linkText = `\n\n[Open teaching resource](${parsed.href})`
+        // The provider link is kept as a card (Drive, Docs, Slides, Sheets, YouTube or web) and named in the text.
+        const link = linkAttachment(url, heading)
+        attachments.push(link)
+        linkText = `\n\n[${linkProvider(link.url).open}](${link.url})`
       }
       if (type !== 'assessment') {
         if (!body.trim() && !extracted && !attachments.length && !linkText) throw new Error('Add teaching content, a file or a link before saving.')

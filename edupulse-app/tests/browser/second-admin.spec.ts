@@ -7,7 +7,7 @@ test('second Google admin restores its selected instructor without replaying com
  await coverage.getByText('Instructor',{exact:true}).locator('..').getByRole('button',{name:'Open view',exact:true}).click()
  await page.getByRole('button',{name:'View Synthetic Instructor',exact:true}).click()
  await expect(page.getByRole('dialog',{name:'Choose instructor account',exact:true})).toHaveCount(0)
- await expect(page.getByRole('heading',{name:'Instructor Dashboard',exact:true})).toBeVisible()
+ await expect(page.getByRole('heading',{name:'Home',exact:true})).toBeVisible()
  await page.goto('/#/performance?tab=materials')
  await expect(page.getByRole('button',{name:'Account menu',exact:true})).toHaveAttribute('title','Synthetic Instructor')
  const hint=await page.evaluate(()=>JSON.parse(sessionStorage.getItem('edupulse-admin-view-v1')||'null'));expect(hint.accountId).toBe(SECOND_ADMIN_ID)

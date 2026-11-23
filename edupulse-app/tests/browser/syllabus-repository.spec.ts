@@ -59,8 +59,8 @@ test('draft PDF imports into its separate repository, saves, reloads and exports
 test('Course has a single approved teaching basis and legacy nested builder links resolve to the standalone repository without writes', async ({ page }) => {
   const fixture = await instructorCourseUI(page)
   await page.goto(`/#/courseware?course=${fixture.syllabus.id}`)
-  const views = page.getByRole('navigation', { name: 'Course workspace views' })
-  await expect(views.getByRole('button', { name: 'Weeks and topics', exact: true })).toBeVisible()
+  const views = page.getByRole('navigation', { name: 'Class sections' })
+  await expect(views.getByRole('button', { name: 'Teaching Materials & Assessments', exact: true })).toBeVisible()
   await expect(views.getByRole('button', { name: 'Syllabus', exact: true })).toHaveCount(0)
   await expect(page.getByLabel('Upload approved syllabus PDF or DOCX')).toHaveCount(0)
   const before = fixture.commands.length

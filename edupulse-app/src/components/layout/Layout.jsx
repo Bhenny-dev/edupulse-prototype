@@ -224,7 +224,7 @@ export default function Layout() {
   }, [authLoading, overlay, user?.canSwitchRoles, setOverlay])
 
   const handleLogout = () => { setOverlay(null); logout(); navigate('/') }
-  const { notifications: notifs, unreadCount, loading: noticesLoading, error: noticesError } = useNotifications(user?.role)
+  const { notifications: notifs, unreadCount, loading: noticesLoading, error: noticesError, markRead } = useNotifications(user?.role)
   const sections = SECTIONS.filter(s => canSee(s, user?.role)).sort((a,b) => a.key === 'dashboard' ? -1 : b.key === 'dashboard' ? 1 : 0)
   const monitorRole = user?.role === 'admin' ? new URLSearchParams(location.search).get('role') : null
   const current = sections.find(item => item.monitorRole ? item.monitorRole === monitorRole : item.path === location.pathname && !monitorRole || item.relatedPaths?.some(path => location.pathname.startsWith(path)))
@@ -281,8 +281,8 @@ export default function Layout() {
                 <NavLink
                   key={item.path}
                   to={item.path}
-                  title={item.label}
-                  aria-label={item.label}
+                  title={['student','instructor'].includes(user?.role)&&item.key==='dashboard'?'Home':item.label}
+                  aria-label={['student','instructor'].includes(user?.role)&&item.key==='dashboard'?'Home':item.label}
                   aria-current={isActive ? 'page' : false}
                   style={{
                     display: 'flex', alignItems: 'center', gap: '6px',
@@ -296,7 +296,7 @@ export default function Layout() {
                   }}
                 >
                   <item.icon size={18} />
-                  <span className="nav-label">{item.label}</span>
+                  <span className="nav-label">{['student','instructor'].includes(user?.role)&&item.key==='dashboard'?'Home':item.label}</span>
                 </NavLink>
               )
             })}
@@ -395,7 +395,7 @@ export default function Layout() {
                       fontSize: '0.8125rem', fontWeight: 500,
                       color: n.type === 'warning' ? 'var(--amber-700)' : n.type === 'success' ? 'var(--green-700)' : n.type === 'error' ? 'var(--red-700)' : 'var(--sky-700)',
                     }}>
-                      <div>{n.message}</div>
+                      {n.path ? <NavLink to={n.path} onClick={() => { setOverlay(null); if(!n.read)void markRead([n.id]) }}>{n.message}</NavLink> : <div>{n.message}</div>}
                       <div style={{ fontSize: '0.6875rem', opacity: 0.7, marginTop: '4px' }}>{n.time}</div>
                     </div>
                   ))}
@@ -491,7 +491,7 @@ export default function Layout() {
                   textDecoration: 'none',
                 })}
               >
-                <item.icon size={20} /> {item.label}
+                <item.icon size={20} /> {['student','instructor'].includes(user?.role)&&item.key==='dashboard'?'Home':item.label}
               </NavLink>
             ))}
 

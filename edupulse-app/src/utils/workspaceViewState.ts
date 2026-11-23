@@ -46,6 +46,9 @@ function valid(key:unknown,value:unknown):value is ViewValue {
   if(key==='layout-overlay')return value===null||['search','account','notifications','roles','language','mobile'].includes(value as string)
   if(key==='course-location'||/^course:.+:(?:reader|delivery|revision|schedule-block|class-list|block-menu)$/.test(key)||/^academic-reader:.+$/.test(key))return value===null||id(value)
   if(/^course:.+:class-list-tab$/.test(key))return value==='upload'||value==='directory'
+  // Classroom-style class space: the class last opened (the Course station reopens it), collapsed weeks, the Scores block.
+  if(key==='class-location'||/^class:.+:scores-block$/.test(key))return value===null||id(value)
+  if(/^course:.+:weeks-collapsed$/.test(key))return value instanceof Set&&value.size<=52&&[...value].every(item=>Number.isInteger(item)&&Number(item)>=1&&Number(item)<=52)
   if(/^course:.+:expanded$/.test(key))return value instanceof Set&&value.size<=52&&[...value].every(item=>Number.isInteger(item)&&Number(item)>=1&&Number(item)<=52)
   if(/^course:.+:topic-expanded$/.test(key))return value instanceof Set&&value.size<=200&&[...value].every(id)
   if(/^course:.+:selected$/.test(key))return value instanceof Set&&value.size<=200&&[...value].every(id)

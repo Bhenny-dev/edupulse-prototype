@@ -8,6 +8,7 @@ async function openAssignedCourse(page: Page) {
   const fixture = await instructorCourseUI(page)
   await page.goto('/#/courseware')
   await page.locator('.instructor-course-card').filter({ hasText: 'IT 201' }).click()
+  await page.getByRole('button', { name: 'Open Teaching Materials and Assessments', exact: true }).click()
   await expect(page.getByRole('heading', { name: 'Upload syllabi', exact: true })).toBeVisible()
   return { fixture, input: page.getByLabel('Upload approved syllabus PDF or DOCX', { exact: true }) }
 }

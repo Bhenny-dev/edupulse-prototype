@@ -205,9 +205,11 @@ export async function handleRequest(request: Request): Promise<Response> {
     if (action === 'syllabi') return json(await syllabusSharing(effective, sharingCommand.parse(await readJson(request, 5000))))
     if (action === 'academic') {
       if (request.method === 'GET') return json(await readAcademic(effective))
-      // Dean intake batches (accounts, loads, lists) are larger; every other command keeps the 5 KB cap.
+      // Dean intake batches (accounts, loads, lists) are larger; an announcement (5,000 characters and up to ten
+      // links) gets 32 KB; every other command keeps the 5 KB cap.
       const body = await readJson(request, 600_000) as { operation?: unknown }
-      if (!['dean', 'import'].includes(String(body?.operation)) && Buffer.byteLength(JSON.stringify(body)) > 5000) throw new ApiError(413, 'BODY_TOO_LARGE', 'The request exceeds 5 KB. Use a smaller document.')
+      const cap = body?.operation === 'announcement' ? 32_000 : 5000
+      if (!['dean', 'import'].includes(String(body?.operation)) && Buffer.byteLength(JSON.stringify(body)) > cap) throw new ApiError(413, 'BODY_TOO_LARGE', `The request exceeds ${cap / 1000} KB. Use a smaller document.`)
       return json(await executeAcademic(effective, academicCommand.parse(body)))
     }
     if (action === 'workspace') {

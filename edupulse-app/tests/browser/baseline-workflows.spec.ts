@@ -22,8 +22,9 @@ test('student starts a timed written-response assessment, submits, and appeals t
  await page.goto('/#/assessment');await page.getByRole('button',{name:'Open assessment',exact:true}).first().click()
  const dialog=page.getByRole('dialog',{name:publication.title,exact:true});await expect(dialog.locator('.academic-question')).toHaveCount(3)
  await expect(dialog.getByRole('button',{name:/^(Next|Previous) question$/})).toHaveCount(0)
+ await dialog.getByRole('button',{name:'Start assessment',exact:true}).click()
  await page.getByLabel('Question 1: A',{exact:true}).check();await page.getByRole('textbox',{name:'Written response for question 2',exact:true}).fill('A function groups reusable instructions.');await page.getByLabel('Question 3: False',{exact:true}).check();await expect(page.getByRole('textbox',{name:'Written response for question 2',exact:true})).toHaveValue('A function groups reusable instructions.')
- await page.getByRole('button',{name:'Confirm and submit responses',exact:true}).click();await expect(page.getByRole('status').filter({hasText:'Written responses await instructor marking.'})).toBeVisible();await expect(page.getByRole('status').filter({hasText:'Saved score: 2/3.'})).toBeVisible()
+ page.once('dialog',dialog=>dialog.accept());await page.getByRole('button',{name:'Confirm and submit responses',exact:true}).click();await expect(page.getByRole('status').filter({hasText:'Written responses await instructor marking.'})).toBeVisible();await expect(dialog.getByText('Pending Review',{exact:true})).toBeVisible();expect(fixture.records.attempts[0].score).toBe(2)
  await page.getByLabel('Appeal to instructor',{exact:true}).fill('Please check my function explanation.');await page.getByRole('button',{name:'Submit appeal',exact:true}).click();await expect(page.getByText('Appeal saved for your instructor.',{exact:true})).toBeVisible()
 })
 test('confirmed loading suggestions and block corrections update shared records',async({page})=>{

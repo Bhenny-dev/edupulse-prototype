@@ -19,7 +19,8 @@ async function seeded(page: Parameters<typeof baselineUI>[0]) {
 const openWeeks = async (page: Parameters<typeof baselineUI>[0]) => {
   await page.goto('/#/courseware')
   await page.locator('.instructor-course-card').filter({ hasText: 'IT 102' }).first().click()
-  await page.getByRole('button', { name: 'Weeks and topics', exact: true }).click()
+  await page.getByRole('button', { name: 'Teaching Materials & Assessments', exact: true }).click()
+  await expect(page.locator('details.instructor-topic').first()).toBeAttached()
   await page.locator('details.instructor-topic').evaluateAll(nodes => nodes.forEach(node => { (node as HTMLDetailsElement).open = true }))
 }
 

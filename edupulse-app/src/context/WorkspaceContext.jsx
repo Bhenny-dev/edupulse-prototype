@@ -1,4 +1,5 @@
 import { jsonValue } from '../utils/jsonValue'
+import { rosterOnlyChange, sameRoster, withRoster } from '../utils/workspaceRoster'
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useAuth } from './AuthContext'
 import { aiRequest } from '../lib/aiClient'
@@ -34,6 +35,9 @@ function WorkspaceSession({ children, owner, user, preview,authLoading }) {
   const [mode, setMode] = useState(null), [loading, setLoading] = useState(true), [saving, setSaving] = useState(false)
   const [error, setError] = useState(''), [cacheError, setCacheError] = useState(''), [conflict, setConflict] = useState(false), [backedUp, setBackedUp] = useState(false)
   const current = useRef(journal), mounted = useRef(true), writeLock = useRef(false)
+  // The last copy confirmed by the server. A newer copy that differs from it only in the class lists (a student
+  // joined with a class code, the Dean added a block) merges into pending edits instead of becoming a conflict.
+  const base = useRef(journal.dirty ? null : journal.data)
   const viewStateKey=workspaceViewKey(owner,user?.role)
   const viewState=useMemo(()=>readWorkspaceViews(viewStateKey),[viewStateKey])
   const [refreshAvailable,setRefreshAvailable]=useState(false)
@@ -53,14 +57,18 @@ function WorkspaceSession({ children, owner, user, preview,authLoading }) {
       if (remote.mode === 'preview') { setConflict(false); setJournal(previous => ({ ...previous, dirty: false })); return }
       if (remote.unchanged && remote.revision === current.current.revision) { setConflict(false); return }
       const local = current.current
+      if (remote.data && remote.revision === local.revision) base.current = remote.data
       if (!discard && local.dirty && remote.revision > local.revision && jsonValue(remote.data) === jsonValue(local.data)) {
-        setConflict(false); setJournal({ data: local.data, revision: remote.revision, dirty: false }); return
+        base.current = remote.data; setConflict(false); setJournal({ data: local.data, revision: remote.revision, dirty: false }); return
       }
       if (!discard && local.dirty && remote.revision !== local.revision) {
+        if (remote.data && rosterOnlyChange(base.current, remote.data) && sameRoster(local.data, base.current)) {
+          base.current = remote.data; setConflict(false); setJournal({ data: withRoster(local.data, remote.data), revision: remote.revision, dirty: true }); return
+        }
         setConflict(true); setError('A newer saved workspace exists. Pending edits remain on this device. Export them before loading the latest copy.'); return
       }
       setConflict(false)
-      if (discard || !local.dirty) setJournal({ data: remote.data || local.data, revision: remote.revision, dirty: !remote.data && (local.data.syllabi.length > 0 || Object.keys(local.data.content).length > 0) })
+      if (discard || !local.dirty) { base.current = remote.data || null; setJournal({ data: remote.data || local.data, revision: remote.revision, dirty: !remote.data && (local.data.syllabi.length > 0 || Object.keys(local.data.content).length > 0) }) }
     } catch (err) { if (mounted.current && !signal?.aborted) setError(err.message) }
     finally { if (mounted.current && !signal?.aborted) setLoading(false) }
   }, [])
@@ -77,8 +85,18 @@ function WorkspaceSession({ children, owner, user, preview,authLoading }) {
         if (new TextEncoder().encode(JSON.stringify(sent.data)).length > 2_950_000) throw new Error('Workspace is near its 3 MB limit. Export a backup and remove unused approved-file attachments.')
         const saved = await aiRequest('workspace', 'PUT', { revision: sent.revision, data: sent.data })
         void recordAudit(user, 'workspace_save', 'success', `Revision ${saved.revision}`)
+        base.current = sent.data
         if (mounted.current) setJournal(previous => ({ data: previous.data, revision: saved.revision, dirty: previous.data !== sent.data }))
-      } catch (err) { void recordAudit(user, 'workspace_save', 'failure', 'Save failed'); if (mounted.current) { setError(err.message); setConflict(err.status === 409) } }
+      } catch (err) {
+        // Only the class lists changed on the server: keep the pending edits on the newer lists and save again.
+        const latest = err.status === 409 ? await aiRequest('workspace').catch(() => null) : null
+        if (mounted.current && latest?.data && rosterOnlyChange(base.current, latest.data) && sameRoster(current.current.data, base.current)) {
+          base.current = latest.data
+          setJournal(previous => ({ data: withRoster(previous.data, latest.data), revision: latest.revision, dirty: true }))
+          return
+        }
+        void recordAudit(user, 'workspace_save', 'failure', 'Save failed'); if (mounted.current) { setError(err.message); setConflict(err.status === 409) }
+      }
       finally { writeLock.current = false; if (mounted.current) setSaving(false) }
     }, 1500)
     return () => clearTimeout(timer)
@@ -95,7 +113,8 @@ function WorkspaceSession({ children, owner, user, preview,authLoading }) {
   const commit = useCallback(async change => {
     if (authLoading || !mounted.current || loading || saving || writeLock.current) throw new Error('Wait for the current workspace load or save, then confirm again.')
     if (conflict || error || !mode) throw new Error(error || 'Resolve the workspace connection before applying an agent change.')
-    const before = current.current, next = change(before.data)
+    const before = current.current
+    let next = change(before.data), rebased = false
     if (new TextEncoder().encode(JSON.stringify(next)).length > 2_950_000) throw new Error('The workspace is near its size limit. Export a backup and remove unused attachments first.')
     if (mode === 'preview') {
       current.current={...before,data:next,dirty:false}
@@ -110,13 +129,20 @@ function WorkspaceSession({ children, owner, user, preview,authLoading }) {
         // A lost response can follow a successful commit. Read before retrying a write.
         const latest = await aiRequest('workspace').catch(() => null)
         if (latest?.revision === before.revision + 1 && jsonValue(latest.data) === jsonValue(next)) result = latest
+        // The newer copy changed only the class lists: apply the same change to it, once.
+        else if (failure.status === 409 && latest?.data && rosterOnlyChange(base.current, latest.data) && sameRoster(before.data, base.current)) {
+          next = change(withRoster(before.data, latest.data)); rebased = true
+          result = await aiRequest('workspace', 'PUT', { revision: latest.revision, data: next })
+        }
         else throw failure
       }
       if (!mounted.current) throw new Error('The account changed before this update completed. Reopen the account workspace to verify its status.')
+      base.current = result.data
       const latest=current.current
-      current.current={data:latest.data===before.data?result.data:latest.data,revision:result.revision,dirty:latest.data!==before.data}
+      const keep = local => rebased ? withRoster(local, result.data) : local
+      current.current={data:latest.data===before.data?result.data:keep(latest.data),revision:result.revision,dirty:latest.data!==before.data}
       setJournal(previous => {
-        const confirmed={data:previous.data===before.data?result.data:previous.data,revision:result.revision,dirty:previous.data!==before.data}
+        const confirmed={data:previous.data===before.data?result.data:keep(previous.data),revision:result.revision,dirty:previous.data!==before.data}
         current.current=confirmed
         return confirmed
       })

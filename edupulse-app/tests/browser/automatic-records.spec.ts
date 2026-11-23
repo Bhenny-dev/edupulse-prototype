@@ -75,7 +75,7 @@ test('a delayed instructor read cannot populate the next admin role view', async
   try {
     await page.evaluate(()=>window.dispatchEvent(new CustomEvent('edupulse-records-change',{detail:{action:'academic',operation:'test-readback'}}))); await expect.poll(() => fixture.counts().gets).toBeGreaterThan(before)
     fixture.setRecords({ courses: [], enrollments: [], publications: [], attempts: [], accesses: [], events: [], notices: [] })
-    await switchView('Student'); await expect(page.getByRole('heading', { name: 'Student Dashboard', exact: true })).toBeVisible()
+    await switchView('Student'); await expect(page.getByRole('heading', { name: 'Home', exact: true })).toBeVisible()
     await expect(page.getByRole('heading', { name: 'No authorized academic records yet', exact: true })).toBeVisible()
   } finally { release() }
   await expect(page.getByText('Synthetic saved activity', { exact: true })).toHaveCount(0)

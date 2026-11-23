@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { SkeletonContent } from '../components/ui/LoadingFeedback'
 import { useAuth } from '../context/AuthContext'
 import { useNotifications } from '../data/notifications'
@@ -59,7 +60,7 @@ export default function NotificationCenter() {
             const Icon = ICON_MAP[n.type] || Info
             return (
               <div key={n.id} role={n.read ? undefined : 'button'} tabIndex={n.read ? undefined : 0} title={n.read ? undefined : 'Mark as read'}
-                onClick={n.read ? undefined : () => markRead([n.id])} onKeyDown={n.read ? undefined : e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); markRead([n.id]) } }} style={{
+                onClick={n.read ? undefined : () => markRead([n.id])} onKeyDown={n.read ? undefined : e => { if (e.target === e.currentTarget && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); markRead([n.id]) } }} style={{
                 display: 'flex', alignItems: 'flex-start', gap: '14px', cursor: n.read ? 'default' : 'pointer',
                 padding: '16px 20px', borderRadius: 'var(--radius-lg)',
                 background: n.read ? 'var(--white)' : 'var(--sky-50)',
@@ -78,6 +79,7 @@ export default function NotificationCenter() {
                   <div style={{ display: 'flex', gap: '12px', marginTop: '4px', fontSize: '0.75rem', color: 'var(--gray-400)' }}>
                     <span><Clock size={12} /> {n.time}</span>
                     <span>{CATEGORY_LABELS[n.category] || n.category}</span>
+                    {n.path && <Link to={n.path} onClick={event => { event.stopPropagation(); if(!n.read)void markRead([n.id]) }}>Open course item</Link>}
                   </div>
                 </div>
                 {!n.read && <div style={{ width: 8, height: 8, borderRadius: 'var(--radius-full)', background: 'var(--sky-500)', flexShrink: 0, marginTop: '6px' }} />}

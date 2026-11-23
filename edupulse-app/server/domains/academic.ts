@@ -76,7 +76,17 @@ export async function academicStudentYears(client: ReturnType<typeof userDb>, en
   }
   return enrollments.map(row=>({...row,year_level:Number(row.year_level)||years.get(String(row.student_email||'').trim().toLowerCase())||null}))
 }
+const blockName = field(40).min(1).regex(/^[A-Za-z0-9][A-Za-z0-9 .()/_-]*$/, 'Use letters or numbers for the block section')
+/** A provider link (Drive, Docs, Slides, Sheets, YouTube or any web page). The file itself stays with its provider. */
+export const linkAttachment = z.object({ url: z.string().trim().max(2000).url().refine(url => /^https?:\/\//i.test(url), 'Use a complete http or https link.'), title: field(200).optional(), provider: field(40).optional() })
+export const announcementCommand = z.discriminatedUnion('action', [
+  z.object({ action: z.literal('save'), id: z.string().uuid().optional(), course_code: field(40).min(1), academic_year: field(20).min(1), semester: field(40).min(1), block: blockName.optional(), week: z.number().int().min(1).max(52).optional(), title: z.string().trim().min(1, 'Give the announcement a title.').max(200), body: z.string().trim().max(5000).default(''), attachments: z.array(linkAttachment).max(10).default([]) }),
+  z.object({ action: z.literal('delete'), id: z.string().uuid() }),
+])
 export const academicCommand = z.discriminatedUnion('operation', [
+  z.object({ operation: z.literal('class-code'), action: z.enum(['create', 'regenerate', 'disable']), assignment: field(200).min(1), block: blockName }),
+  z.object({ operation: z.literal('class-join'), action: z.enum(['lookup', 'join']), code: z.string().trim().min(3).max(20) }),
+  z.object({ operation: z.literal('announcement'), command: announcementCommand }),
   z.object({ operation: z.literal('delivery-schedule'), syllabus: field(120).min(1), block: field(80).min(1), revision: z.number().int().nonnegative(), windows: z.array(z.object({ week: z.number().int().min(1).max(52), date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/), start: z.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/), end: z.union([z.literal(''), z.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/)]).optional() })).min(1).max(52) }),
   z.object({ operation: z.literal('read-publication'), publication: identifier, version: identifier }),
   z.object({ operation: z.literal('sync') }),
@@ -131,12 +141,32 @@ export async function readAcademic(identity: Identity) {
     if (listed.error) directoryError = 'Instructor and student accounts could not be loaded. Retry when connected.'
     else directory = listed.data
   }
-  const result={ mode: 'cloud', serverNow: new Date().toISOString(), attempts: [], accesses: [], enrollments:[] as Record<string,unknown>[], faculty, homeBlock:home?.data||null,assignedCourses:assigned?.data||[], ...Object.fromEntries(rows), ...(directory ? { directory } : {}), ...(directoryError ? { directoryError } : {}) }
+  // Class codes and announcements are additive: when they cannot be read, the academic records stay readable.
+  let classroom: { classCodes: unknown[]; classJoins: unknown[]; announcements: unknown[]; classroomError?: string } = { classCodes: [], classJoins: [], announcements: [] }
+  if (identity.role === 'instructor' || identity.role === 'student') {
+    const [codes, posts] = await Promise.all([client.rpc('edupulse_class_codes'), client.rpc('edupulse_class_announcements')])
+    if (codes.error || posts.error) classroom = { ...classroom, classroomError: 'Class codes and announcements could not be loaded. Retry when connected.' }
+    else classroom = { classCodes: codes.data?.codes || [], classJoins: codes.data?.joins || [], announcements: Array.isArray(posts.data) ? posts.data : [] }
+  }
+  const result={ mode: 'cloud', serverNow: new Date().toISOString(), attempts: [], accesses: [], enrollments:[] as Record<string,unknown>[], faculty, homeBlock:home?.data||null,assignedCourses:assigned?.data||[], ...Object.fromEntries(rows), ...classroom, ...(directory ? { directory } : {}), ...(directoryError ? { directoryError } : {}) }
   if(['dean','associate_dean','instructor'].includes(identity.role))result.enrollments=await academicStudentYears(client,result.enrollments as Record<string,unknown>[])
   return result
 }
+type ClassroomInput = Extract<z.infer<typeof academicCommand>, { operation: 'class-code' | 'class-join' | 'announcement' }>
+/** Class codes and announcements act only in the account itself: a support view never joins or posts for someone. */
+async function executeClassroom(identity: Identity, input: ClassroomInput) {
+  const joining = input.operation === 'class-join'
+  if (identity.supportActor) throw new ApiError(403, 'FORBIDDEN', 'Class codes, joining and announcements are available only in the account itself.')
+  if (joining ? identity.role !== 'student' : identity.role !== 'instructor') throw new ApiError(403, 'FORBIDDEN', joining ? 'Only a student account joins a class with its code.' : 'Only the assigned instructor manages class codes and announcements.')
+  const { operation, ...rest } = input
+  const command = input.operation === 'announcement' ? input.command : rest
+  const { data, error } = await userDb(identity).rpc(operation === 'class-code' ? 'edupulse_class_code_command' : joining ? 'edupulse_class_join' : 'edupulse_announcement_command', { command })
+  if (error) throw new ApiError(error.code === '42501' ? 403 : error.code === '40001' ? 409 : error.code === '22023' ? 400 : 503, 'CLASSROOM_ACTION_FAILED', ['42501', '40001', '22023'].includes(error.code) ? error.message : 'The class action could not be verified. Retry; nothing was changed.')
+  return data
+}
 export async function executeAcademic(identity: Identity, input: z.infer<typeof academicCommand>) {
   if (identity.local || identity.role === 'guest') throw new ApiError(403, 'FORBIDDEN', 'Use an authenticated academic account for shared records.')
+  if (input.operation === 'class-code' || input.operation === 'class-join' || input.operation === 'announcement') return executeClassroom(identity, input)
   if(input.operation==='class-list'){
     if(identity.supportActor)return supportAction(identity,'class.register',input)
     if(identity.role!=='instructor')throw new ApiError(403,'FORBIDDEN','Only the assigned instructor confirms a class list.')

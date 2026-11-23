@@ -18,7 +18,7 @@ test('the System Admin asks Pulse for a person’s authenticated UI: every accou
   await say(page, 'can you redirect me to the authenticated ui of sam example?')
   // The app remounts under the opened account; the proof is the account's own page.
   await expect(page.getByRole('button', { name: 'Account menu', exact: true })).toHaveAttribute('title', 'Sam Example')
-  await expect(page.getByRole('heading', { name: 'Student Dashboard', exact: true })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Home', exact: true })).toBeVisible()
   // The panel and the conversation continue in the opened view, with the reply that opened it.
   await expect(pulse).toBeVisible()
   await expect(pulse).toContainText('can you redirect me to the authenticated ui of sam example?')

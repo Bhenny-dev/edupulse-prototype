@@ -1,9 +1,10 @@
 import type { Identity } from '../contracts.js'
 import type { Evidence } from '../../src/lib/rag/types.js'
 import { readAcademic } from './academic.js'
+import { evidence } from '../systemIndex.js'
 import { readWorkspace } from '../workspace.js'
 import { readStudents } from './students.js'
-import { nameMatch, words, wordMatch } from '../../src/lib/rag/lookup.js'
+import { keywordMatch, nameMatch, words, wordMatch } from '../../src/lib/rag/lookup.js'
 import { profileName as profileQuery } from '../../src/lib/rag/conversation.js'
 export { profileQuery }
 
@@ -84,7 +85,29 @@ export async function authorizedAccountContext(identity: Identity, question: str
       }
       if (!contextual && !text) return { evidence: [] }
     }
-    if (contextual) text += `\n${accountFacts(await readAcademic(identity), identity, normalized)}`
+    if (contextual) {
+      const records = await readAcademic(identity)
+      const assessment = identity.role==='student' && !identity.supportActor
+        ? question.match(/\bmy\s+(?:assessment\s+)?(?:scores?|results?)\s+(?:for|on|in)\s+(.+)/i)?.[1] : ''
+      if (assessment) {
+        const titles = records.publications.filter((item: Record<string, unknown>) => item.active && item.type==='assessment')
+        const matches: Evidence[] = []
+        for (const item of titles) {
+          if (keywordMatch(assessment, String(item.title)) < 0.85) continue
+          const submitted = records.attempts.some((attempt: Record<string, unknown>) =>
+            attempt.student_id === identity.id && attempt.publication_id === item.id &&
+            String(attempt.source_version) === String(item.source_version))
+          if (!submitted) continue
+          const route = new URLSearchParams({course:String(item.course_id),studentTab:'scores',item:String(item.id)})
+          matches.push(evidence(`score:${item.id}`, String(item.title),
+            `Your recorded result for ${item.title} (Week ${item.week}) is available under Scores.`,
+            'account', {path:`/courseware?${route}`,label:'Open my assessment result'}))
+        }
+        if (matches.length) return {evidence:matches.slice(0,4)}
+        return {evidence:[],warning:'No matching submitted result was found in your available courses.'}
+      }
+      text += `\n${accountFacts(records, identity, normalized)}`
+    }
     if (identity.name && contextual) text = `The selected account is ${identity.name}.\n${text}`
     if (['instructor','admin','dean','associate_dean'].includes(identity.role) && /\b(?:syllab\w*|drafts?|outline|workspace|sections?)\b/i.test(normalized)) {
       const workspace = await readWorkspace(identity)

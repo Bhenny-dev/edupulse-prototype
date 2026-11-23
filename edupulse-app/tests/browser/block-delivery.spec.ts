@@ -1,15 +1,16 @@
 import { test, expect } from '../snapshots/fixtures'
 import { instructorCourseUI } from '../instructor-course-fixture'
 
-test('Instructor course has only weeks/topics and block sections, including legacy review routes',async({page})=>{
+test('Instructor class space has its four sections and Block sections, including legacy review routes',async({page})=>{
  const fixture=await instructorCourseUI(page)
  await page.goto(`/#/courseware?course=${fixture.syllabus.id}&view=review`)
  await expect(page).toHaveURL(/view=blocks/)
- const tabs=page.getByRole('navigation',{name:'Course workspace views'})
- await expect(tabs.getByRole('button')).toHaveText(['Weeks and topics','Block sections'])
+ const tabs=page.getByRole('navigation',{name:'Class sections'})
+ await expect(tabs.getByRole('button')).toHaveText(['Announcements','Teaching Materials & Assessments','Class List','Scores'])
+ await expect(page.getByRole('button',{name:'Block sections',exact:true})).toHaveAttribute('aria-pressed','true')
  await expect(page.getByRole('button',{name:'Schedule BSIT-1A'})).toBeVisible()
  await expect(page.getByText('15 items generated')).toHaveCount(0)
- await tabs.getByRole('button',{name:'Weeks and topics'}).click()
+ await tabs.getByRole('button',{name:'Teaching Materials & Assessments'}).click()
  await expect(page.locator('[data-topic="variables"]')).toBeVisible()
  await expect(page.getByText('Review and deliver',{exact:true})).toHaveCount(0)
  await expect(page.getByText('Review drafts',{exact:true})).toHaveCount(0)
@@ -68,7 +69,7 @@ test('missing opening cannot save and conflict leaves the entered dates availabl
 
 test('publishing stays in topic authoring and requires a schedule; delivered revisions retain the explicit check step',async({page})=>{
  const fixture=await instructorCourseUI(page);fixture.records.deliverySchedules=[]
- await page.goto(`/#/courseware?course=${fixture.syllabus.id}`)
+ await page.goto(`/#/courseware?course=${fixture.syllabus.id}&tab=materials`)
  const topic=page.locator('[data-topic="variables"]');await topic.locator('summary').click()
  const quiz=topic.locator('.instructor-sequence-item').filter({has:page.getByText('Variable check',{exact:true})})
  await quiz.getByRole('button',{name:'Mark checked',exact:true}).click()
@@ -77,7 +78,7 @@ test('publishing stays in topic authoring and requires a schedule; delivered rev
  await expect(delivery.getByRole('button',{name:'Deliver checked content'})).toBeDisabled()
  await delivery.getByRole('button',{name:'Open Block sections'}).click()
  await expect(page).toHaveURL(/view=blocks/)
- await page.getByRole('button',{name:'Weeks and topics',exact:true}).click()
+ await page.getByRole('button',{name:'Teaching Materials & Assessments',exact:true}).click()
  const material=topic.locator('.instructor-sequence-item').filter({has:page.getByText('Variables lesson',{exact:true})})
  await material.getByRole('button',{name:'Prepare draft revision',exact:true}).click()
  const revision=page.getByRole('dialog',{name:'Prepare draft revision'})

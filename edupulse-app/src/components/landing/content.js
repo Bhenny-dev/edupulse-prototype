@@ -57,7 +57,7 @@ export const ROLES = [
     key: 'instructor', label: 'Instructor', kicker: 'Prepare and deliver', title: 'Teach from one organized place',
     summary: 'Build the syllabus, generate courseware, publish it, follow every student.',
     tasks: [['courses', 'Loaded courses and syllabus status'], ['syllabus', 'Build or upload the syllabus'], ['drafts', 'Review, edit and publish drafts'], ['scores', 'Scores and access per student']],
-    sections: ['Dashboard', 'Syllabus', 'Courseware', 'Student Monitoring', 'Performance'],
+    sections: ['Home', 'Syllabus', 'Courseware', 'Student Monitoring', 'Performance'],
     benefit: 'Less repetitive preparation; you keep control. SDG 4.c.',
   },
   {
@@ -65,7 +65,7 @@ export const ROLES = [
     summary: 'Materials, assessments and your own progress, together.',
     tasks: [['materials', 'My Materials, ready to open'], ['assessments', 'My Assessments and results'], ['mastery', 'Mastery by topic'], ['reminders', 'Reminders for missed work']],
     boundary: 'Pulse will not answer or hint at assessment items.',
-    sections: ['Dashboard', 'My Courses', 'Assessments', 'Performance'],
+    sections: ['Home', 'My Courses', 'Assessments', 'Performance'],
     benefit: 'Syllabus-aligned courseware. SDG 4.3 and 4.4.',
   },
   {

@@ -2,11 +2,11 @@ import { test, expect } from '@playwright/test'
 import { dashboardNavigationUI } from '../dashboard-navigation-fixture'
 import { unifiedWorkspace } from '../courseware-unified-fixture'
 
-test('instructor Dashboard shows recent activity without repeating the Course, Syllabus or Monitoring pages', async ({ page }) => {
+test('instructor Home lists the classes without repeating the Syllabus or Monitoring pages', async ({ page }) => {
   await dashboardNavigationUI(page)
   await page.goto('/#/dashboard')
   const main = page.getByRole('main')
-  await expect(main.getByRole('heading', { name: 'Recent course activity', exact: true })).toBeVisible()
+  await expect(main.getByRole('heading', { name: 'Home', exact: true })).toBeVisible()
   await expect(main.locator('.kpi-card')).toHaveCount(0)
   await expect(main.getByRole('navigation', { name: 'Quick actions' })).toHaveCount(0)
   for (const heading of ['My courses and block sections', 'My Block Sections', 'Score Snapshot', 'Courseware Review Queue'])

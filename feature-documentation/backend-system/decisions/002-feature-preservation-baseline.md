@@ -378,3 +378,8 @@ Course loads and Syllabi cells now use explicit View buttons and separate read-o
 ## 23 November 2026 - Supporting UI specification ownership
 
 See versions/supporting-ui-qa-2026-11-23.md for the independent QA matrix and Claude handoffs. Codex supporting changes: student course table with home-block context, no standalone Dean Students station (authorized class-directory links retained), presentation-only Pulse suppression during the actual unanswered student assessment reader, a named Next action for accessible same-course reader items, and neutral Recorded sources wording. Do not turn these UI changes into new enrollment, source processing, scoring, submission, release or academic approval implementations. Schema-limited MCQ options and the audited baseline three-source cap must be resolved with their connected backend, not cosmetic controls. Never claim fixture verification proves real learner achievement or server-side integrity.
+
+
+## 23 November 2026 - Student classroom phase
+
+Owner now requests student Home course cards, Join Class, published announcements, weekly topics/material-associated assessments, own Scores and a read-only published outline. This supersedes the earlier table-only Home interpretation; My Courses retains its secondary table. Codex owns Student UI; Claude owns Instructor UI and concurrent class-code/announcement backend. See versions/student-ui-2026-11-23.md for the audit matrix, test evidence and dependencies. Do not regress backend membership uniqueness, publication visibility, student-owned answer review or pending manual scores. Never turn an unavailable student draft/upload API into a fake saved draft or successful file submission.

@@ -16,7 +16,7 @@ test('owner requests preserve the dashboard role, including a conversational cor
   await pulse.getByRole('textbox',{name:'Ask Pulse',exact:true}).fill(request)
   await pulse.getByRole('button',{name:'Send',exact:true}).click()
   await page.getByRole('button',{name:`View ${title==='Instructor'?'Rowan Instructor Demo':title==='Dean'?'Dana Dean Demo':'Alex Sample'}`,exact:true}).click()
-  await expect(page.getByRole('heading',{name:`${title} Dashboard`,exact:true})).toBeVisible()
+  await expect(page.getByRole('heading',{name:title==='Dean'?'Dean Dashboard':'Home',exact:true})).toBeVisible()
   await expect(page.getByRole('banner').getByText(`Admin · ${title}`,{exact:true})).toHaveCount(1)
   // Switching the viewed role resets Pulse's private context and closes its panel.
   await page.getByRole('button',{name:'Open Pulse assistant',exact:true}).click()
@@ -31,8 +31,8 @@ test('a student cannot switch accounts by requesting another role dashboard',asy
  await page.getByRole('button',{name:'Open Pulse assistant',exact:true}).click()
  await page.getByRole('textbox',{name:'Ask Pulse',exact:true}).fill('Open the instructor dashboard')
  await page.getByRole('button',{name:'Send',exact:true}).click()
- await expect(page.getByRole('dialog',{name:'Pulse',exact:true})).toContainText('Instructor Dashboard is not available for your role.')
- await expect(page.getByRole('heading',{name:'Student Dashboard',exact:true})).toBeVisible()
+ await expect(page.getByRole('dialog',{name:'Pulse',exact:true})).toContainText('Instructor Home is not available for your role.')
+ await expect(page.getByRole('heading',{name:'Home',exact:true})).toBeVisible()
  expect(fixture.modelCalls()).toBe(0)
 })
 

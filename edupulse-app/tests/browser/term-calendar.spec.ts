@@ -47,7 +47,7 @@ test('an instructor block without saved dates follows its class schedule from th
 
   // Each delivered item says when it opens for every block: BSIT-1A by its saved dates, BSIT-1B by its class schedule.
   await page.getByRole('button', { name: 'Close block schedule' }).click()
-  await page.getByRole('button', { name: 'Weeks and topics', exact: true }).click()
+  await page.getByRole('button', { name: 'Teaching Materials & Assessments', exact: true }).click()
   const delivery = page.locator('.instructor-block-delivery').filter({ hasText: 'BSIT-1B' }).first()
   await expect(delivery).toContainText(/^Delivery: BSIT-1A (open since|opens|closed) .+ · BSIT-1B open since Mon, Aug 10, 7:30 AM$/)
 })
