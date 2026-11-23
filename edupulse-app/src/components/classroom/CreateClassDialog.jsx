@@ -2,7 +2,7 @@ import { useId, useState } from 'react'
 import { X } from 'lucide-react'
 import ModalLayer from '../ui/ModalLayer'
 import { useAcademicRecords } from '../../context/AcademicContext'
-import { sameTerm } from '../../utils/classroom'
+import { sameTerm, studentCount } from '../../utils/classroom'
 import './classroom.css'
 
 const BLOCK = /^[A-Za-z0-9][A-Za-z0-9 .()/_-]*$/
@@ -40,7 +40,7 @@ export default function CreateClassDialog({ courses, codes = [], counts = () => 
           <legend>Block section</legend>
           {course?.blocks.map(name => { const existing = coded(name); return <label key={name} className={`class-dialog-option${existing ? ' is-disabled' : ''}`}>
             <input type="radio" name="class-block" value={name} checked={choice === name} disabled={Boolean(existing)} onChange={() => { setChoice(name); setError('') }} />
-            <span><strong>Block {name}</strong><span className="text-sm text-muted"> · {students.get(name)?.size || 0} students{existing ? ` · Already has code ${existing.code}` : ''}</span></span>
+            <span><strong>Block {name}</strong><span className="text-sm text-muted"> · {studentCount(students.get(name)?.size || 0)}{existing ? ` · Already has code ${existing.code}` : ''}</span></span>
           </label> })}
           <label className="class-dialog-option"><input type="radio" name="class-block" value="new" checked={choice === 'new'} onChange={() => { setChoice('new'); setError('') }} /><span><strong>Add a block section</strong><span className="text-sm text-muted"> · A section your course load does not list yet</span></span></label>
           {choice === 'new' && <label className="form-label">New block section<input className="form-input" value={custom} maxLength={40} autoFocus placeholder="For example, C or BSIT-2C" onChange={event => { setCustom(event.target.value); setError('') }} onKeyDown={event => { if (event.key === 'Enter') { event.preventDefault(); void create() } }} /></label>}

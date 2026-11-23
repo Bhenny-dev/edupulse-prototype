@@ -10,7 +10,10 @@ export function classStudents(course: { assignmentKey?: string; blocks: string[]
   return result
 }
 /** The same course term, whatever spelling the semester was saved with ("1", "First", "1st Semester"). */
-export const sameTerm = (left: { academicYear?: string; academic_year?: string; semester?: string }, right: { academicYear?: string; academic_year?: string; semester?: string }) =>
+/** "1 student", "3 students": counts shown on class cards, banners and the Class List. */
+export const studentCount = (count: number) => `${count} ${count === 1 ? 'student' : 'students'}`
+
+export const sameTerm =(left: { academicYear?: string; academic_year?: string; semester?: string }, right: { academicYear?: string; academic_year?: string; semester?: string }) =>
   loadTerm(left.academicYear ?? left.academic_year ?? '', left.semester ?? '') === loadTerm(right.academicYear ?? right.academic_year ?? '', right.semester ?? '')
 const TONES = ['sky', 'purple', 'green', 'amber'] as const
 /** A stable card colour per course code, so a class keeps its colour on Home and in its banner. */

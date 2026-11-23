@@ -28,8 +28,10 @@
 .class-empty-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
 
 .class-banner { position: relative; display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px; min-height: 150px; padding: 24px 28px; margin-bottom: 20px; border-radius: var(--radius-xl); background: linear-gradient(135deg, var(--tone-100), var(--tone-50)); border: 1px solid var(--tone-200); }
-.class-banner h1 { font-size: 1.75rem; line-height: 1.2; color: var(--gray-900); }
-.class-banner h1 span { display: block; font-size: 1.125rem; font-weight: 600; color: var(--gray-700); margin-top: 4px; }
+.class-banner h1 { font-size: 1.5rem; line-height: 1.2; color: var(--gray-900); }
+.class-banner h1 span { display: block; font-size: 1rem; font-weight: 600; color: var(--gray-700); margin-top: 4px; }
+/* One section-heading size inside a class, the app's card title size (.card-header h3), whichever component draws it. */
+.container.classroom h2, .classroom .instructor-week > header h2 { font-size: 1.125rem; }
 .class-banner-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 .class-banner-actions { display: flex; flex-wrap: wrap; gap: 8px; }
 .class-tabs { position: sticky; top: 64px; z-index: 5; background: var(--white); margin-bottom: 24px; }

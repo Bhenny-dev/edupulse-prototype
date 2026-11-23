@@ -1,6 +1,10 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { isClassCode, normalizeClassCode, parseLink, linkProvider, youtubeId, linkAttachment, isLinkAttachment, classStudents, sameTerm, classTone } from '../src/utils/classroom'
+import { isClassCode, normalizeClassCode, parseLink, linkProvider, youtubeId, linkAttachment, isLinkAttachment, classStudents, sameTerm, classTone, studentCount } from '../src/utils/classroom'
+
+test('student counts read as English on cards, banners and the Class List', () => {
+  assert.deepEqual([0, 1, 2, 35].map(studentCount), ['0 students', '1 student', '2 students', '35 students'])
+})
 import { rosterOnlyChange, sameRoster, withRoster } from '../src/utils/workspaceRoster'
 
 test('class codes are typed in any case, with spaces or dashes, and never use look-alike characters', () => {

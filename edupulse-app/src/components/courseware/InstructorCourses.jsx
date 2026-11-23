@@ -19,7 +19,7 @@ import useAcademicTerm from '../academic/useAcademicTerm'
 import {recordsForLoadTerm} from '../../utils/loadTerms'
 import {loadRows} from '../academic/deanRecordModel'
 import TeachingLoadFacts from '../academic/TeachingLoadFacts'
-import { classStudents, classTone } from '../../utils/classroom'
+import { classStudents, classTone, studentCount } from '../../utils/classroom'
 import ClassStream, { classAnnouncements } from '../classroom/ClassStream'
 import ClassPeople, { ClassScores } from '../classroom/ClassPeople'
 import CreateClassDialog from '../classroom/CreateClassDialog'
@@ -108,10 +108,10 @@ export default function InstructorCourses() {
       <div className="class-empty-actions"><Link className="btn btn-primary" to={`/dashboard?${new URLSearchParams({ term })}`}>Back to Home</Link></div>
     </section> : <>
       <header className="class-banner" data-tone={classTone(selected.code)}>
-        <div><h1>{selected.code}<span>{selected.title}</span></h1>
+        <div><h1>{selected.code}{' '}<span>{selected.title}</span></h1>
           <div className="class-banner-meta">
             {[selected.semester, selected.academicYear && `AY ${selected.academicYear}`, selected.units && `${selected.units} units`].filter(Boolean).map(item => <span key={item} className="class-chip">{item}</span>)}
-            {selected.blocks.length ? selected.blocks.map(block => <span key={block} className="class-chip">Block {block} · {counts.get(block)?.size || 0} students</span>) : <span className="class-chip">No block section yet</span>}
+            {selected.blocks.length ? selected.blocks.map(block => <span key={block} className="class-chip">Block {block} · {studentCount(counts.get(block)?.size || 0)}</span>) : <span className="class-chip">No block section yet</span>}
             <span className="class-chip">{syllabus ? `Syllabus: ${SYLLABUS_STATUS_META[syllabus.status]?.label || syllabus.status}` : 'Syllabus not added'}</span>
           </div></div>
         <div className="class-banner-actions">
