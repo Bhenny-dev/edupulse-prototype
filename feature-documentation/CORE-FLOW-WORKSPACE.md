@@ -341,3 +341,16 @@ typing dates; an instructor can still save other dates for a block.
   activities, the block and material sources; course cards stay in My Courses, scores and trends in
   Performance. Documentation captures under `tests/snapshots` still visit `/monitor` tabs; they are updated
   when the owner resumes the documentation policy. No migration.
+- 2026-11-23: Owner request: course loads are uploaded from the College's Excel schedule
+  (`CIT-TENTATIVE-SCHEDULE-FOR-First-Semester-S.Y-2026-2027.xlsx`), not from PDF or picture scans. Course >
+  "Upload course load (Excel)" reads every sheet on the device (`utils/loadWorkbook.ts`): the faculty-load
+  sheet (instructor name row, then SC_ID, Descriptive Title, Hour, Day, Room, Block, Units, Hours and a totals
+  row) becomes the existing teaching-load review, and the block timetable sheet checks each block, year and
+  schedule. BLOCK A-1 is block A of a Year 1 course, BLOCK 2-E block E of Year 2, BLOCK A&B-1 a shared class.
+  The review shows sheet and row, the year level, source checks (a timetable block printed twice, a printed
+  total that disagrees with its rows, schedules that differ from the timetable, a block listed under two
+  instructors) and the timetable classes that no instructor in the file teaches. A PDF on the course-load
+  button is refused; Pulse also reads an attached Excel schedule. Tested: `npm run verify` 536 of 536,
+  `VERCEL=1 npm test` 536 of 536, teaching-load, load-field-edit (its Days step now uses the picker; it
+  failed on `0cb7fd7c` too), course-semesters and dean-management on desktop; `dean-management:116` fails
+  the same way on `fe8ca171`. No migration.

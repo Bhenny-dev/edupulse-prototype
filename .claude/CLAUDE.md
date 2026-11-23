@@ -28,3 +28,4 @@ Keep context low: Grep before Read, targeted reads only.
 
 # Rules
 Concise responses. No overengineering. No unrequested extras.
+- **Excel course loads (2026-11-23):** Course > "Upload course load (Excel)" reads the College schedule workbook on the device (`utils/loadWorkbook.ts`: faculty-load sheet = instructor name row then SC_ID/Title/Hour/Day/Room/Block/Units/Hours; block timetable sheet = year panels of BLOCK | Subject Code | Title | Time/Day/Room) into the same `TeachingLoadDocument` the review (`TeachingLoadImport.jsx`, `source: 'excel'`, `entry.sheet`) confirms through `load.import_document` (`page` = sheet index). Block "A-1"/"2-E" sets block and year (`program` "BSIT n"); PDFs are refused on that button; `tests/xlsx-fixture.ts` builds workbooks.

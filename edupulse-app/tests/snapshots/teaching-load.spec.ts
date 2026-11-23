@@ -1,11 +1,12 @@
 import {test,expect} from './fixtures'
-import {teachingLoadUI,teachingLoadPdf} from '../teaching-load-fixture'
+import {teachingLoadUI} from '../teaching-load-fixture'
+import {teachingLoadXlsx,xlsxMime} from '../xlsx-fixture'
 import {historicalLoadsScene} from '../historical-loads-ui'
 const folder='../feature-documentation/system-manual/47-teaching-load-documents'
 test('teaching-load PDF review keeps source columns, explicit mapping and term filters',async({page})=>{
  const fixture=await teachingLoadUI(page)
  await page.goto('/#/records');await expect(page.locator('footer')).toHaveCount(0);await expect(page.locator('.page-header').getByLabel('Academic term',{exact:true})).toBeVisible()
- await page.locator('input[type=file][accept*=".pdf"]').setInputFiles({name:'approved-load.pdf',mimeType:'application/pdf',buffer:Buffer.from(await teachingLoadPdf())})
+ await page.locator('label.dean-upload',{hasText:'Upload course load'}).locator('input[type=file]').setInputFiles({name:'CIT-SCHEDULE-First-Semester-S.Y-2026-2027.xlsx',mimeType:xlsxMime,buffer:await teachingLoadXlsx()})
  const review=page.getByRole('dialog',{name:'Review teaching loads',exact:true})
  await expect(review).toBeVisible();await review.getByText('TTh',{exact:true}).first().click();await expect(review.getByRole('checkbox',{name:'Tuesday T',exact:true})).toBeChecked();await expect(review.getByRole('checkbox',{name:'Thursday Th',exact:true})).toBeChecked();await expect(review.getByRole('checkbox',{name:/Sunday/})).toHaveCount(0)
  await expect(review).toContainText('IT 102 A — Programming foundations')

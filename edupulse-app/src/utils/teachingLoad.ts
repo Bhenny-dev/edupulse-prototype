@@ -4,6 +4,8 @@ export type LoadEntry = {
   id: string; page: number; row: number; instructor: string; degree: string; semester: string; academicYear: string
   subjectCode: string; title: string; time: string; days: string; units: number | null; lecture: number | null; lab: number | null
   hours: number | null; computedHours: number | null; room: string; students: number | null; program: string; warnings: string[]
+  /** Worksheet name when the row comes from an Excel schedule; `page` is then the sheet's position. */
+  sheet?: string
 }
 export type TeachingLoadDocument = { entries: LoadEntry[]; pages: number; warnings: string[]; totals: { instructor: string; page: number; units: number | null; hours: number | null; computedUnits: number; computedHours: number }[] }
 type Item = { str?: string; width?: number; transform?: number[] }
@@ -144,7 +146,7 @@ export function loadSummary(doc: TeachingLoadDocument) {
   const people = [...new Set(doc.entries.map(entry => entry.instructor).filter(Boolean))].map(personName)
   const terms = [...new Set(doc.entries.map(entry => [entry.semester, entry.academicYear && `AY ${entry.academicYear}`].filter(Boolean).join(' ')).filter(Boolean))]
   const units = doc.entries.some(entry => entry.units === null) ? '' : `, ${doc.entries.reduce((sum, entry) => sum + (entry.units || 0), 0)} units`
-  const whose = people.length === 1 ? `${people[0]}’s teaching load` : people.length ? `Teaching loads for ${people.join(', ')}` : 'Teaching load'
+  const whose = people.length === 1 ? `${people[0]}’s teaching load` : people.length > 3 ? `Teaching loads for ${people.length} instructors` : people.length ? `Teaching loads for ${people.join(', ')}` : 'Teaching load'
   return `${whose}: ${doc.entries.length} class${doc.entries.length === 1 ? '' : 'es'}${units}${terms.length ? `, ${terms.join('; ')}` : ''}.`
 }
 

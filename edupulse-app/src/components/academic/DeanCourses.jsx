@@ -15,7 +15,7 @@ import TeachingLoadImport from './TeachingLoadImport'
 import DeanClassListImport from './DeanClassListImport'
 import DeanTermCalendar from './DeanTermCalendar'
 import useAcademicTerm from './useAcademicTerm'
-import {readReferenceFile} from '../../lib/aiClient'
+import {readWorkbookFile,readLoadWorkbook} from '../../utils/loadWorkbook'
 import {recordsForLoadTerm,loadTerm} from '../../utils/loadTerms'
 import LoadSchedulePopover from './LoadSchedulePopover'
 import {CourseCardActions,CourseCatalogForm,CourseStatusDialog} from './DeanCatalogActions'
@@ -56,12 +56,14 @@ export default function DeanCourses({ data:allData }) {
   const upload = async file => {
     action.setError(''); action.setNotice(null)
     try {
-      if(/\.pdf$/i.test(file.name)){
-        setReading('Reading teaching-load PDF…')
-        const ref=await readReferenceFile(file,setReading)
-        if(!ref.teachingLoad)throw new Error('No teaching-load form was identified in this PDF. Check its instructor and table headings.')
-        setDocument(ref)
-      }else setReview({ filename: file.name, existing:courseAssignments(data), plan: planCourseLoads(await readGrid(file), { instructors: directory.instructors, courses: catalog, loads, blocks,courseOnly:true }) })
+      // Course loads come from the College's Excel schedule; scanned PDFs are no longer read for loads.
+      if(/\.(pdf|docx?|png|jpe?g)$/i.test(file.name))throw new Error('Upload the course load as the Excel schedule (.xlsx). PDF and picture loads are no longer read because scanning can misread rows.')
+      if(/\.xlsx?$/i.test(file.name)){
+        setReading('Reading the Excel schedule…')
+        const doc=readLoadWorkbook(await readWorkbookFile(file),file.name,{semester,academicYear})
+        if(doc){setDocument({fileName:file.name.slice(-255),teachingLoad:doc});return}
+      }
+      setReview({ filename: file.name, existing:courseAssignments(data), plan: planCourseLoads(await readGrid(file), { instructors: directory.instructors, courses: catalog, loads, blocks,courseOnly:true }) })
     }
     catch (failure) { action.setError(failure.message || 'The file could not be read.') }
     finally{setReading('')}
@@ -78,8 +80,9 @@ export default function DeanCourses({ data:allData }) {
       { label: 'Not yet loaded', value: unloaded.length, icon: AlertTriangle, tone: 'amber', to: '/records?show=unloaded' },
       { label: 'Instructor loads', value: courseAssignments(data).length, icon: Layers, tone: 'green', to: '/records?show=loaded' }]} />
     <DeanFeedback action={action} />
-    <Panel title="Courses" actions={<div className="academic-actions"><DeanTermCalendar records={allData.institutional||[]} semester={semester} academicYear={academicYear} writable={writable&&directory.managed} action={action}/>{directory.managed&&writable&&<button className="btn btn-primary btn-sm" disabled={Boolean(action.busy)} onClick={()=>setCatalogAction('add')}><Plus size={15} aria-hidden="true"/> Add Course</button>}{writable&&<UploadButton label={<><FileUp size={15} aria-hidden="true" /> Upload course load</>} accept=".pdf,.csv,.tsv,.txt,.xlsx,.xls" onFile={upload} disabled={!directory.managed || Boolean(action.busy)||Boolean(reading)} />}{writable&&<UploadButton label={<><Users size={15} aria-hidden="true" /> Upload class lists</>} accept=".xls,.xlsx,.csv,.tsv,.txt" onFiles={files=>{action.setError('');action.setNotice(null);setClassLists(files)}} disabled={!directory.managed || Boolean(action.busy)||Boolean(reading)} />}<CsvButton headers={['Course', 'Title', 'Units', 'Year and semester', 'Instructor', 'Block', 'Semester','Academic year','Days','Time','Room','Listed hours','Computed hours','Students listed']} rows={catalog.flatMap(c => (c.loads.length ? c.loads : [{}]).map(l => [c.code, c.title, c.units, groupLabel(c), l.instructorName || '', l.block || '', l.semester || '',l.academicYear||'',l.days||'',l.time||'',l.room||'',l.hours||'',l.computedHours||'',l.students||'']))} name="course-loads" /></div>}>
+    <Panel title="Courses" actions={<div className="academic-actions"><DeanTermCalendar records={allData.institutional||[]} semester={semester} academicYear={academicYear} writable={writable&&directory.managed} action={action}/>{directory.managed&&writable&&<button className="btn btn-primary btn-sm" disabled={Boolean(action.busy)} onClick={()=>setCatalogAction('add')}><Plus size={15} aria-hidden="true"/> Add Course</button>}{writable&&<UploadButton label={<><FileUp size={15} aria-hidden="true" /> Upload course load (Excel)</>} accept=".xlsx,.xls,.csv,.tsv,.txt" onFile={upload} disabled={!directory.managed || Boolean(action.busy)||Boolean(reading)} />}{writable&&<UploadButton label={<><Users size={15} aria-hidden="true" /> Upload class lists</>} accept=".xls,.xlsx,.csv,.tsv,.txt" onFiles={files=>{action.setError('');action.setNotice(null);setClassLists(files)}} disabled={!directory.managed || Boolean(action.busy)||Boolean(reading)} />}<CsvButton headers={['Course', 'Title', 'Units', 'Year and semester', 'Instructor', 'Block', 'Semester','Academic year','Days','Time','Room','Listed hours','Computed hours','Students listed']} rows={catalog.flatMap(c => (c.loads.length ? c.loads : [{}]).map(l => [c.code, c.title, c.units, groupLabel(c), l.instructorName || '', l.block || '', l.semester || '',l.academicYear||'',l.days||'',l.time||'',l.room||'',l.hours||'',l.computedHours||'',l.students||'']))} name="course-loads" /></div>}>
       {reading&&<p role="status">{reading}</p>}
+      {writable&&directory.managed&&<p className="text-sm text-muted mb-16 course-load-hint">Course loads come from the College schedule workbook (.xlsx): the faculty-load sheet lists each instructor's name, then SC_ID, Descriptive Title, Hour, Day, Room, Block, Units and Hours; the block timetable sheet is used to check blocks and schedules. Nothing is saved until you review the rows.</p>}
       {writable&&document&&<TeachingLoadImport file={document} initialOpen onClose={()=>setDocument(null)}/>}
       {writable&&classLists&&<DeanClassListImport files={classLists} data={data} students={directory.students} action={action} term={{semester,academicYear}} onClose={()=>setClassLists(null)}/>}
       {filters}

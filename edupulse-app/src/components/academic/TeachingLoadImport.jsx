@@ -8,6 +8,7 @@ import {recordsForLoadTerm,loadTerm} from '../../utils/loadTerms'
 import {sectionOf,assignBlocks} from '../../utils/blockSections'
 import TeachingLoadFields,{loadFieldErrors} from './TeachingLoadFields'
 import {scheduleHours} from '../../utils/teachingLoad'
+import {matchInstructor} from './eduSuiteImport'
 import PageModal from '../ui/PageModal'
 import SummaryCard from '../ui/SummaryCard'
 import {LoadingStatus} from '../ui/LoadingFeedback'
@@ -35,11 +36,14 @@ export default function TeachingLoadImport({file,initialOpen=false,openSignal=0,
  const {user}=useAuth(),records=useAcademicRecords()
  const {term,writable,academicYear,semester}=useAcademicTerm()
  const manage=Boolean(writable&&user?.authenticated&&['dean','associate_dean','admin'].includes(user.role))
- const doc=file.teachingLoad
+ const doc=file.teachingLoad,excel=doc.source==='excel'
+ /** Where a row came from: "Sheet4 row 12" in an Excel schedule, "page 2, row 4" in an older PDF form. */
+ const origin=entry=>entry.sheet?`${entry.sheet} row ${entry.row}`:`page ${entry.page}, row ${entry.row}`
  const [edits,setEdits]=useState({})
  const reviewedEntry=entry=>{const changes=edits[entry.id]||{},value={...entry,...changes};if('time' in changes||'days' in changes)value.computedHours=scheduleHours(value.time,value.days);return value}
- const [open,setOpen]=useState(initialOpen),[data,setData]=useState(null),[draft,setDraft]=useState({}),[selected,setSelected]=useState(()=>doc.entries.filter(e=>e.instructor===doc.entries[0]?.instructor).map(e=>e.id))
- const [person,setPerson]=useState(doc.entries[0]?.instructor||''),[page,setPage]=useState(0),[busy,setBusy]=useState(false),[loading,setLoading]=useState(false),[error,setError]=useState(''),[receipt,setReceipt]=useState(null),[reviewed,setReviewed]=useState(false),[retry,setRetry]=useState(0)
+ const [open,setOpen]=useState(initialOpen),[data,setData]=useState(null),[draft,setDraft]=useState({}),[selected,setSelected]=useState(()=>doc.entries.filter(e=>excel||e.instructor===doc.entries[0]?.instructor).map(e=>e.id))
+ // An Excel schedule lists every instructor of the term, so all of its rows start selected and visible.
+ const [person,setPerson]=useState(excel?'':doc.entries[0]?.instructor||''),[page,setPage]=useState(0),[busy,setBusy]=useState(false),[loading,setLoading]=useState(false),[error,setError]=useState(''),[receipt,setReceipt]=useState(null),[reviewed,setReviewed]=useState(false),[retry,setRetry]=useState(0)
  // Pulse can reopen the same extraction after a confirmed conversational follow-up.
  useEffect(()=>{if(openSignal)setOpen(true)},[openSignal])
  const instructors=(data?.directory?.instructors||[]).filter(i=>i.status==='active')
@@ -51,7 +55,9 @@ export default function TeachingLoadImport({file,initialOpen=false,openSignal=0,
   return ()=>controller.abort()
  },[open,manage,user?.id,retry,term])
  const mapping=entry=>{
-  const people=instructors.filter(i=>personKey(i.name)===personKey(entry.instructor))
+  // The exact printed name first; otherwise the full name inside a longer one, then a surname only one instructor has.
+  const exact=instructors.filter(i=>personKey(i.name)===personKey(entry.instructor)),near=exact.length?null:matchInstructor(entry.instructor,instructors)
+  const people=exact.length?exact:near?.instructor?[near.instructor]:[]
   // A subject that is not recorded yet defaults to being added as a new course when the import is confirmed.
   const recorded=matchingCourse(entry,courses),fresh=!recorded&&validNewCourse(newCourseCode(entry),entry)?NEW+newCourseCode(entry):''
   const picked=Object.fromEntries(Object.entries(draft[entry.id]||{}).filter(([key])=>key!=='new_code'))
@@ -102,22 +108,24 @@ export default function TeachingLoadImport({file,initialOpen=false,openSignal=0,
   finally{setBusy(false)}
  }
  return <section className="pulse-action" aria-label="Extracted teaching loads">
-  <strong>{file.fileName}</strong>{summary&&<p>{summary}</p>}<p>{doc.entries.length} extracted class loads · {doc.totals.length} instructor forms · {doc.pages} pages. No loads are saved until you review and confirm.</p>
-  <button className="btn btn-secondary btn-sm" onClick={()=>setOpen(true)}>Review extracted course loads</button>
+  <strong>{file.fileName}</strong>{summary&&<p>{summary}</p>}<p>{excel?`${doc.entries.length} class loads · ${doc.totals.length} instructors · ${doc.pages} sheet${doc.pages===1?'':'s'}`:`${doc.entries.length} extracted class loads · ${doc.totals.length} instructor forms · ${doc.pages} pages`}. No loads are saved until you review and confirm.</p>
+  <button className="btn btn-secondary btn-sm" onClick={()=>setOpen(true)}>{excel?'Review course loads':'Review extracted course loads'}</button>
   {open&&<PageModal className="load-import-page" title="Review teaching loads" subtitle={file.fileName} onClose={close} closeLabel="Close teaching load review" footer={<><span role="status">{receipt?`${receipt.imported} loads saved.`:`${chosen.length} selected${manage&&data?` · ${added.length?`${added.length} new course${added.length===1?'':'s'} will be added · `:''}${needs.length?needs.join(' · '):'ready to import'}`:''}`}</span><button className="btn btn-secondary" onClick={close} disabled={busy}>Close</button>{manage&&!receipt&&<button className="btn btn-primary" onClick={save} disabled={busy||loading||!data||!reviewed||!chosen.length||chosen.length>500||invalid.length>0}>{busy?'Saving loads…':'Confirm selected loads'}</button>}</>}>
    <div className="load-import-summary">
-    {[['Instructor forms',doc.totals.length,GraduationCap,'var(--purple-500)'],['Class loads',doc.entries.length,Layers,'var(--sky-500)'],['Source units',doc.entries.some(e=>e.units===null)?'Incomplete':doc.entries.reduce((n,e)=>n+(e.units||0),0),BookOpen,'var(--green-500)'],['Computed hours / week',doc.entries.some(e=>e.computedHours===null)?'Incomplete':doc.entries.reduce((n,e)=>n+(e.computedHours||0),0),Clock,'var(--amber-500)']].map(([label,value,icon,color])=><SummaryCard key={label} label={label} value={value} icon={icon} color={color}/>)}
+    {[[excel?'Instructors':'Instructor forms',doc.totals.length,GraduationCap,'var(--purple-500)'],['Class loads',doc.entries.length,Layers,'var(--sky-500)'],['Source units',doc.entries.some(e=>e.units===null)?'Incomplete':doc.entries.reduce((n,e)=>n+(e.units||0),0),BookOpen,'var(--green-500)'],['Computed hours / week',doc.entries.some(e=>e.computedHours===null)?'Incomplete':doc.entries.reduce((n,e)=>n+(e.computedHours||0),0),Clock,'var(--amber-500)']].map(([label,value,icon,color])=><SummaryCard key={label} label={label} value={value} icon={icon} color={color}/>)}
    </div>
-   <p>Source terms: {[...new Set(doc.entries.map(e=>`${e.semester} · AY ${e.academicYear}`))].join('; ')}. Each row keeps its original subject code, source page and term. Assignments use the selected academic term. Rows from another term remain available for inspection and cannot be imported into this view. Each row becomes a block section of its course: IT 101 A is IT 101, block A, and a code without a printed block takes the next free letter in schedule order. Class lists can be added later by the Dean, the Program Coordinator or the instructor.</p>
+   {excel?<p>Source term: {[...new Set(doc.entries.map(e=>`${e.semester} · AY ${e.academicYear}`))].join('; ')}. Each row keeps its sheet, row and term. Assignments use the selected academic term; rows from another term stay visible but cannot be imported into this view. The Block column sets the block section: BLOCK A-1 is block A of a first-year course, BLOCK 2-E is block E of a second-year course, and a class without a block takes the next free letter in schedule order. Class lists are added later by the Dean, the Program Coordinator or the instructor, and students see the class once they are on its list.</p>
+   :<p>Source terms: {[...new Set(doc.entries.map(e=>`${e.semester} · AY ${e.academicYear}`))].join('; ')}. Each row keeps its original subject code, source page and term. Assignments use the selected academic term. Rows from another term remain available for inspection and cannot be imported into this view. Each row becomes a block section of its course: IT 101 A is IT 101, block A, and a code without a printed block takes the next free letter in schedule order. Class lists can be added later by the Dean, the Program Coordinator or the instructor.</p>}
    {doc.warnings.length>0&&<details className="load-import-warnings" open><summary>{doc.warnings.length} source checks</summary><ul>{doc.warnings.map((w,i)=><li key={i}>{w}</li>)}</ul></details>}
+   {excel&&doc.uncovered?.length>0&&<details className="load-import-warnings load-import-uncovered"><summary>{doc.uncovered.length} timetable classes have no instructor in this file</summary><p className="text-sm text-muted">These block classes appear in the block timetable but in no instructor's load. Courses taught outside the College (GE, PathFit, NSTP) often appear here; assign the rest from Course after importing.</p><ul>{[...new Set(doc.uncovered.map(c=>c.year))].sort().map(year=><li key={String(year)}><strong>{year?`Year ${year}`:'Year not printed'}:</strong> {doc.uncovered.filter(c=>c.year===year).map(c=>`${c.code} ${c.block}`).join(', ')}</li>)}</ul></details>}
    {!manage&&<p>These extracted rows are available for review. A Dean, Program Coordinator or System Admin confirms course-load imports.</p>}
    {loading&&<LoadingStatus label="Verifying instructor accounts and course records…"/>}
    {error&&<div role="alert"><p>{error}</p>{!data&&manage&&<button className="btn btn-secondary" onClick={()=>setRetry(n=>n+1)}>Retry records</button>}</div>}
    {receipt?<p role="status">Saved {receipt.imported} selected loads ({receipt.created} new, {receipt.updated} reassigned). Instructor course access follows the recorded term. No syllabus was approved, no courseware was generated and no student activity was recorded.</p>:<>
-    <div className="load-import-tools"><label>Instructor form<select className="form-input" value={person} onChange={e=>{setPerson(e.target.value);setPage(0)}}><option value="">All instructor forms</option>{[...new Set(doc.entries.map(e=>e.instructor))].map(name=><option key={name}>{name}</option>)}</select></label>{manage&&<><button className="btn btn-secondary" onClick={()=>{setSelected(old=>[...new Set([...old,...shown.map(e=>e.id)])]);setReviewed(false)}}>Select visible rows</button><button className="btn btn-secondary" onClick={()=>{setSelected([]);setReviewed(false)}}>Clear selection</button>{data&&invalid.length>0&&invalid.length<chosen.length&&<button className="btn btn-secondary" onClick={()=>{setSelected(chosen.filter(e=>!missing(e).length).map(e=>e.id));setReviewed(false)}}>Keep only ready rows ({chosen.length-invalid.length})</button>}</>}</div>
+    <div className="load-import-tools"><label>{excel?'Instructor':'Instructor form'}<select className="form-input" value={person} onChange={e=>{setPerson(e.target.value);setPage(0)}}><option value="">{excel?'All instructors':'All instructor forms'}</option>{[...new Set(doc.entries.map(e=>e.instructor))].map(name=><option key={name}>{name}</option>)}</select></label>{manage&&<><button className="btn btn-secondary" onClick={()=>{setSelected(old=>[...new Set([...old,...shown.map(e=>e.id)])]);setReviewed(false)}}>Select visible rows</button><button className="btn btn-secondary" onClick={()=>{setSelected([]);setReviewed(false)}}>Clear selection</button>{data&&invalid.length>0&&invalid.length<chosen.length&&<button className="btn btn-secondary" onClick={()=>{setSelected(chosen.filter(e=>!missing(e).length).map(e=>e.id));setReviewed(false)}}>Keep only ready rows ({chosen.length-invalid.length})</button>}</>}</div>
     <p role="status">Showing {matching.length?page*20+1:0}–{Math.min(page*20+20,matching.length)} of {matching.length} rows in this view. {doc.entries.length} rows retained in the document.</p>
     {shown.map(entry=>{const m=mapping(entry);return <article className="load-import-row" key={entry.id}>
-     <header>{manage&&<input type="checkbox" aria-label={`Select page ${entry.page} row ${entry.row}`} checked={selected.includes(entry.id)} onChange={e=>{setSelected(old=>e.target.checked?[...old,entry.id]:old.filter(id=>id!==entry.id));setReviewed(false)}}/>}<div><h3>{entry.subjectCode} — {entry.title}</h3><p>{entry.instructor} · page {entry.page}, row {entry.row} · {entry.semester} · AY {entry.academicYear}</p></div></header>
+     <header>{manage&&<input type="checkbox" aria-label={`Select ${origin(entry)}`} checked={selected.includes(entry.id)} onChange={e=>{setSelected(old=>e.target.checked?[...old,entry.id]:old.filter(id=>id!==entry.id));setReviewed(false)}}/>}<div><h3>{entry.subjectCode} — {entry.title}</h3><p>{entry.instructor} · {origin(entry)}{entry.program?` · ${entry.program}`:''} · {entry.semester} · AY {entry.academicYear}</p></div></header>
      <TeachingLoadFields entry={entry} editable={manage&&Boolean(data)} disabled={busy||!selected.includes(entry.id)} block={blocks.get(entry.id)||sectionOf(entry.subjectCode).block||'Set once the instructor and course are chosen'} onChange={(key,value)=>{setEdits(old=>({...old,[entry.id]:{...old[entry.id],[key]:value}}));setReviewed(false);setError('')}}/>
 
      {entry.warnings.length>0&&<details><summary>Check schedule and source</summary><ul>{entry.warnings.map(w=><li key={w}>{w}</li>)}</ul></details>}

@@ -1,15 +1,20 @@
 import {test,expect} from '@playwright/test'
 import {teachingLoadPdf,teachingLoadUI} from '../teaching-load-fixture'
+import {teachingLoadXlsx,xlsxMime} from '../xlsx-fixture'
 
-for(const role of ['dean','associate_dean'])test(`${role} reviews a PDF, confirms a course-only assignment, imports once and filters its term`,async({page},info)=>{
+const courseLoadInput=(page:import('@playwright/test').Page)=>page.locator('label.dean-upload',{hasText:'Upload course load'}).locator('input[type=file]')
+
+for(const role of ['dean','associate_dean'])test(`${role} reviews the Excel schedule, confirms a course-only assignment, imports once and filters its term`,async({page},info)=>{
  test.setTimeout(120000)
  await page.emulateMedia({reducedMotion:'reduce'})
  const fixture=await teachingLoadUI(page,role)
  await page.goto('/#/records')
- await page.locator('input[type=file][accept*=".pdf"]').setInputFiles({name:'approved-load.pdf',mimeType:'application/pdf',buffer:Buffer.from(await teachingLoadPdf())})
+ await expect(courseLoadInput(page)).toHaveAttribute('accept','.xlsx,.xls,.csv,.tsv,.txt')
+ await courseLoadInput(page).setInputFiles({name:'CIT-SCHEDULE-First-Semester-S.Y-2026-2027.xlsx',mimeType:xlsxMime,buffer:await teachingLoadXlsx()})
  const modal=page.getByRole('dialog',{name:'Review teaching loads',exact:true})
  await expect(modal).toBeVisible()
  await expect(modal).toContainText('IT 102 A — Programming foundations')
+ await expect(modal).toContainText('ALEX SAMPLE · Faculty load row 3 · BSIT 1 · 1st Semester · AY 2026-2027')
  await expect(modal.getByRole('button',{name:'Confirm selected loads'})).toBeDisabled()
  await expect(modal.getByLabel('Block section',{exact:true})).toHaveCount(0)
  await modal.getByRole('checkbox',{name:/I compared/}).check()
@@ -18,7 +23,7 @@ for(const role of ['dean','associate_dean'])test(`${role} reviews a PDF, confirm
  await page.screenshot({path:`.data/course-load-intake/review-${info.project.name}-${role}.png`,fullPage:true,animations:'disabled'})
  await modal.getByRole('button',{name:'Confirm selected loads'}).click()
  await expect(modal).toContainText('Saved 1 selected loads')
- expect(fixture.commands).toHaveLength(1);expect(fixture.commands[0].entries[0]).toMatchObject({academic_year:'2026-2027',semester:'1st Semester',computed_hours:5,page:1})
+ expect(fixture.commands).toHaveLength(1);expect(fixture.commands[0].entries[0]).toMatchObject({academic_year:'2026-2027',semester:'1st Semester',computed_hours:5,page:1,row:3,block:'A',subject_code:'IT 102 A',source_instructor:'ALEX SAMPLE',program:'BSIT 1'})
  await modal.getByRole('button',{name:'Close',exact:true}).click()
  await expect(page.getByRole('row').filter({has:page.getByRole('cell',{name:'IT 102',exact:true})}).first()).toBeVisible()
  await page.getByLabel('Academic term',{exact:true}).selectOption('2025-2026|2nd Semester')
@@ -62,11 +67,20 @@ test('Pulse reads an image-only teaching-load table with OCR and offers a comple
  await expect(pulse).toBeVisible()
 })
 
+test('a PDF course load is refused in favour of the Excel schedule, and nothing is read or saved',async({page})=>{
+ const fixture=await teachingLoadUI(page)
+ await page.goto('/#/records')
+ await courseLoadInput(page).setInputFiles({name:'approved-load.pdf',mimeType:'application/pdf',buffer:Buffer.from(await teachingLoadPdf())})
+ await expect(page.getByRole('alert').filter({hasText:'Upload the course load as the Excel schedule (.xlsx)'})).toBeVisible()
+ await expect(page.getByRole('dialog',{name:'Review teaching loads',exact:true})).toHaveCount(0)
+ expect(fixture.commands).toHaveLength(0);expect(fixture.inference).toEqual([])
+})
+
 test('a subject missing from the recorded courses is added as a new course when the load is confirmed',async({page})=>{
  test.setTimeout(120000)
  const fixture=await teachingLoadUI(page)
  await page.goto('/#/records')
- await page.locator('input[type=file][accept*=".pdf"]').setInputFiles({name:'education-load.pdf',mimeType:'application/pdf',buffer:Buffer.from(await teachingLoadPdf(false,undefined,['PROF ED 16','Technology for Teaching and Learning 1']))})
+ await courseLoadInput(page).setInputFiles({name:'education-load-First-Semester-2026-2027.xlsx',mimeType:xlsxMime,buffer:await teachingLoadXlsx(['PROF ED 16','Technology for Teaching and Learning 1'],'')})
  const modal=page.getByRole('dialog',{name:'Review teaching loads',exact:true})
  await expect(modal.getByRole('combobox',{name:'Course',exact:true})).toHaveValue('new:PROF ED 16')
  await expect(modal.getByRole('textbox',{name:'New course code',exact:true})).toHaveValue('PROF ED 16')

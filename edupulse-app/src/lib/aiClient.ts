@@ -107,7 +107,15 @@ export async function readReferenceFile(file: File, onProgress: (message: string
   // Plain-text tables are also kept exactly as written, so class lists keep their columns and tabs.
   const raw = report.kind === 'csv' || report.kind === 'text' ? (await file.text()).slice(0, 400_000) : undefined
   if (pdfLayout?.teachingLoad && text.length > 400000) throw new Error('This teaching-load document exceeds 400,000 characters. Split it before importing; no rows were saved.')
-  return { title: file.name.slice(0, 160), text: text.slice(0, pdfLayout?.teachingLoad ? 400000 : 150000), fileName: file.name.slice(-255), kind: report.kind, sourceType: sourceTypeFor(report.kind), raw, syllabus, scannedPages,teachingLoad:pdfLayout?.teachingLoad }
+  // The College's Excel schedule is read cell by cell on this device; an unreadable workbook stays a plain attachment.
+  let workbookLoad: import('../utils/teachingLoad').TeachingLoadDocument | undefined
+  if (report.kind === 'xlsx') {
+    onProgress('Reading the Excel schedule…')
+    const [{ readWorkbookFile, readLoadWorkbook }, { CURRENT_TERM }] = await Promise.all([import('../utils/loadWorkbook'), import('../utils/teachingLoad')])
+    workbookLoad = await readWorkbookFile(file).then(sheets => readLoadWorkbook(sheets, file.name, CURRENT_TERM)).catch(() => undefined)
+  }
+  const teachingLoad = pdfLayout?.teachingLoad ?? workbookLoad
+  return { title: file.name.slice(0, 160), text: text.slice(0, pdfLayout?.teachingLoad ? 400000 : 150000), fileName: file.name.slice(-255), kind: report.kind, sourceType: sourceTypeFor(report.kind), raw, syllabus, scannedPages,teachingLoad }
 }
 
 /** Collects Researcher queries issued in parallel into one context request. */
