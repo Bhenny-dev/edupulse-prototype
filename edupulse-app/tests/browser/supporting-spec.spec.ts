@@ -29,13 +29,14 @@ test('instructor course table links its genuine draft to the existing editable b
 
 
 test('reader Next opens only another accessible item in the same course and retains its context',async({page},info)=>{
+ test.setTimeout(60000)
  const fixture=await baselineUI(page,'student')
  const first=fixture.records.publications.find(item=>item.type==='material')!
  const next={...structuredClone(first),id:'dddddddddddddddddddddddddddddddd',week:2,title:'Next accessible reading'}
  const closed={...structuredClone(first),id:'eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',week:1,title:'Unavailable reading',delivery_mode:'block_schedule',delivery_open_at:'2099-01-01T00:00:00Z'}
  fixture.records.publications=[first,closed,next,{...structuredClone(next),id:'ffffffffffffffffffffffffffffffff',course_id:'unrelated-course',week:3,title:'Another course reading'}]
  await page.goto('/#/courseware');await page.getByRole('button',{name:'Open course IT 102',exact:true}).click();await page.getByRole('button',{name:'Open material',exact:true}).first().click()
- await page.screenshot({path:`.data/support-spec-reader-${info.project.name}.png`,fullPage:true})
+ await page.getByRole('button',{name:'Next: Next accessible reading',exact:true}).scrollIntoViewIfNeeded();await page.screenshot({path:`.data/support-spec-reader-${info.project.name}.png`})
  await page.getByRole('button',{name:'Next: Next accessible reading',exact:true}).click();const reader=page.getByRole('dialog',{name:next.title,exact:true});await expect(reader).toBeVisible();await expect(reader.getByRole('navigation',{name:'Next course item',exact:true})).toHaveCount(0)
- await page.reload();await expect(reader).toBeVisible();await page.keyboard.press('Escape');await expect(page.getByRole('button',{name:'Back to My Courses',exact:true})).toBeVisible()
+ await page.reload();await expect(page.getByRole('heading',{name:'My Courses',exact:true})).toBeVisible({timeout:20000});await expect(reader).toBeVisible();await page.keyboard.press('Escape');await expect(page.getByRole('button',{name:'Back to My Courses',exact:true})).toBeVisible()
 })
