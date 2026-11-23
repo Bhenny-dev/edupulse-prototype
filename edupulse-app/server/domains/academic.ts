@@ -90,6 +90,7 @@ export const academicCommand = z.discriminatedUnion('operation', [
   z.object({ operation: z.literal('respond'), publication: identifier, version: identifier, adminTest: z.boolean().optional(), session: z.string().uuid(), responses: z.array(z.union([z.number().int().min(0).max(3),z.string().trim().min(1).max(4000)])).min(3).max(5) }),
   z.object({ operation: z.literal('grade'), attempt: z.string().uuid(), points: z.array(z.number().int().min(0).max(1)).min(3).max(5), reason: z.string().trim().min(1).max(2000) }),
   z.object({ operation: z.literal('appeal'), attempt: z.string().uuid(), reason: z.string().trim().min(1).max(2000) }),
+  z.object({ operation: z.literal('feedback'), attempt: z.string().uuid() }),
   z.object({ operation: z.literal('revise'), course:identifier, comment:z.string().trim().min(1).max(2000) }),
   z.object({operation:z.literal('class-list'),assignment:field(200).min(1),block:field(40).min(1),revision:z.number().int().min(0).max(Number.MAX_SAFE_INTEGER),mode:z.enum(['append','replace']),filename:field(255).optional(),students:z.array(z.object({StudentID:field(80).optional(),Email:field(254).optional()}).refine(row=>Boolean(row.StudentID||row.Email),'A registered student number or email is required.')).min(1).max(35)}),
   z.object({ operation: z.literal('dean'), command: deanCommand }),
@@ -166,6 +167,13 @@ export async function executeAcademic(identity: Identity, input: z.infer<typeof 
       return publication
     }
     return result
+  }
+  if (input.operation === 'feedback') {
+    // The answer key is released by the database to the student who submitted the attempt, never to a support view.
+    if (identity.supportActor || identity.role !== 'student') throw new ApiError(403, 'FORBIDDEN', 'Answer review is available only in the student\'s own account.')
+    const { data, error } = await userDb(identity).rpc('edupulse_attempt_feedback', { attempt: input.attempt })
+    if (error) throw new ApiError(error.code === '42501' ? 403 : error.code === '22023' ? 409 : 503, 'ANSWER_REVIEW_UNAVAILABLE', error.code === '22023' ? error.message : error.code === '42501' ? 'Only your own submitted attempt can be reviewed.' : 'The answer review could not be loaded. Retry; your recorded score is unchanged.')
+    return data
   }
   if (identity.supportActor) return supportAction(identity, 'academic.command', input)
   if(input.operation==='read-section'){

@@ -97,3 +97,15 @@
 .academic-publication-dialog .academic-question textarea{display:block;margin-top:8px}
 .academic-publication-dialog progress{width:100%;accent-color:var(--sky-500)}
 @media(max-width:640px){.academic-publication-overlay{padding:8px}.academic-publication-dialog{width:100%;border-radius:16px}.academic-publication-dialog .card-body{padding:16px}.academic-publication-dialog .academic-question{padding:12px}}
+/* Answer review after a recorded attempt: the status is written out; colour only reinforces it. */
+.academic-answer-review summary { cursor: pointer; padding: 8px 0; }
+.academic-answer-list { display: grid; gap: 12px; margin: 12px 0 0; padding-left: 0; list-style: none; }
+.academic-answer { padding: 12px 14px; border: 1px solid var(--gray-200); border-left-width: 4px; border-radius: var(--radius-md); }
+.academic-answer p { margin: 4px 0; overflow-wrap: anywhere; }
+.academic-answer.correct { border-left-color: var(--green-700); }
+.academic-answer.incorrect { border-left-color: var(--amber-700); }
+.academic-answer.awaiting_review { border-left-color: var(--sky-500); }
+.academic-answer-status { display: inline-block; margin-left: 6px; padding: 1px 8px; border-radius: 999px; font-size: 0.75rem; font-weight: 600; background: var(--gray-50); color: var(--gray-800); }
+.academic-answer-status.correct { background: var(--green-100); color: var(--green-700); }
+.academic-answer-status.incorrect { background: var(--amber-100); color: var(--amber-700); }
+.academic-answer-status.awaiting_review { background: var(--sky-50); color: var(--sky-600); }

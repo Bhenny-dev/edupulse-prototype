@@ -36,6 +36,7 @@ test('a student sees how many attempts there are, that the latest counts, and no
   const publication = fixture.records.publications.find(item => item.type === 'assessment')!
   publication.content = { ...publication.content, assessmentPolicy: { maxAttempts: 2 }, questions: [{ text: 'Choose A', topic: 'Variables', options: ['A', 'B', 'C', 'D'] }, { text: 'Choose B', topic: 'Functions', options: ['A', 'B', 'C', 'D'] }] }
   let made = 0
+  const reviewed: string[] = []
   await page.route('**/api/ai?action=academic', async route => {
     if (route.request().method() !== 'POST') return route.fallback()
     const command = route.request().postDataJSON()
@@ -51,6 +52,13 @@ test('a student sees how many attempts there are, that the latest counts, and no
       fixture.records.attempts.push(attempt)
       return route.fulfill({ json: attempt })
     }
+    if (command.operation === 'feedback') {
+      // Mirrors edupulse_attempt_feedback: the key is A then B, released only for a recorded attempt.
+      reviewed.push(command.attempt)
+      const attempt = fixture.records.attempts.find(item => item.id === command.attempt)!
+      const explanation = ['A is the requested letter.', 'B is the requested letter.'], answers = attempt.answers ?? []
+      return route.fulfill({ json: { attempt: attempt.id, available: true, explanations: true, grading_status: 'graded', questions: [0, 1].map(index => ({ index, type: 'multiple_choice', response: answers[index], correctIndex: index, status: answers[index] === index ? 'correct' : 'incorrect', explanation: explanation[index] })) } })
+    }
     return route.fallback()
   })
   await page.goto('/#/assessment')
@@ -62,11 +70,20 @@ test('a student sees how many attempts there are, that the latest counts, and no
   await dialog.getByRole('button', { name: 'Confirm and submit responses', exact: true }).click()
   await expect(page.getByRole('button',{name:'Open Pulse assistant',exact:true})).toBeVisible()
   await expect(dialog.getByRole('status').filter({ hasText: 'Saved score: 1/2.' })).toContainText('Attempt 1 of 2. Your latest attempt is the one recorded.')
+  // Immediately after the recorded submission: results, the correct answer and why (owner specification I3).
+  const firstReview = dialog.getByRole('group', { name: 'Answer review for attempt 1', exact: true })
+  await expect(firstReview.getByRole('listitem')).toHaveCount(2)
+  await expect(firstReview.getByRole('listitem').nth(0)).toContainText('Correct')
+  await expect(firstReview.getByRole('listitem').nth(1)).toContainText('IncorrectYour answer: CCorrect answer: BWhy: B is the requested letter.')
+  const reviewsBeforeRetake = reviewed.length
   await dialog.getByRole('button', { name: 'Start next allowed attempt', exact: true }).click()
   await expect(dialog.getByRole('status', { name: 'Assessment progress' })).toContainText('Attempt 2');await expect(page.getByRole('button',{name:'Open Pulse assistant',exact:true})).toHaveCount(0)
+  await expect(dialog.locator('.academic-answer-review')).toHaveCount(0)
+  expect(reviewed.length, 'no answer review is requested while attempt 2 is open').toBe(reviewsBeforeRetake)
   await dialog.getByLabel('Question 1: A', { exact: true }).check()
   await dialog.getByLabel('Question 2: B', { exact: true }).check()
   await dialog.getByRole('button', { name: 'Confirm and submit responses', exact: true }).click()
   await expect(dialog.getByRole('status').filter({ hasText: 'Saved score: 2/2.' })).toContainText('Attempt 2 of 2. No attempts left.')
   await expect(dialog.getByRole('button', { name: 'Start next allowed attempt', exact: true })).toHaveCount(0)
+  await expect(dialog.getByRole('group', { name: 'Answer review for attempt 2', exact: true }).getByRole('listitem').nth(1)).toContainText('CorrectYour answer: BWhy: B is the requested letter.')
 })

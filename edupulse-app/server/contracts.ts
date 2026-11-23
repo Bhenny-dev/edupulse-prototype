@@ -1,6 +1,8 @@
 import { z } from 'zod'
 
-export const tasks = ['auto', 'answer', 'summarize', 'compare', 'draft', 'references', 'general'] as const
+/** Instructor-provided sources one Pulse message may carry (owner specification G1: up to four). */
+export const MAX_CHAT_SOURCES = 4
+export const tasks = ['auto','answer', 'summarize', 'compare', 'draft', 'references', 'general'] as const
 export const chatInput = z.object({
   buddy: z.enum(['pip','luma','quill','ro','sage','milo']).optional(),
   grounding: z.enum(['auto', 'sources']).default('auto'),
@@ -9,7 +11,7 @@ export const chatInput = z.object({
   history: z.array(z.object({ role: z.enum(['user', 'assistant']), content: z.string().max(5000) })).max(12).default([]),
   context: z.string().max(6000).default(''),
   conversationId: z.string().uuid().optional(),
-  attachments: z.array(z.object({ title: z.string().trim().min(1).max(160), text: z.string().trim().min(1).max(18000) })).max(3).default([]),
+  attachments: z.array(z.object({ title: z.string().trim().min(1).max(160), text: z.string().trim().min(1).max(18000) })).max(MAX_CHAT_SOURCES).default([]),
   documentIds: z.array(z.string().uuid()).max(2).default([]),
   // The role the interface is showing. The Guardian uses it only to add learner rules, never to lift a restriction.
   viewRole: z.enum(['admin', 'dean', 'associate_dean', 'instructor', 'student', 'guest']).optional(),

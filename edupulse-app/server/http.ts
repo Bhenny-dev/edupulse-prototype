@@ -41,7 +41,9 @@ import { isSystemAdminEmail } from '../src/lib/authRoles.js'
 
 export const VERSION = '0.4.0'
 /** Request body limits per action (bytes). Uploads are raw file bytes. */
-export const BODY_LIMITS: Record<string, number> = { transcribe: AUDIO_BYTES, 'syllabus-sources': 2_800_000, workspace: WORKSPACE_BYTES, extract: EXTRACTION_LIMITS.bytes, documents: 1_000_000, conversations: 200_000, operator: 330_000, courseware:330_000 }
+export const BODY_LIMITS: Record<string, number> = { transcribe: AUDIO_BYTES, 'syllabus-sources': 2_800_000, workspace: WORKSPACE_BYTES, extract: EXTRACTION_LIMITS.bytes, documents: 1_000_000, conversations: 200_000, operator: 330_000, courseware:330_000,
+  // Four 18,000-character sources plus twelve 5,000-character history turns fit with room for JSON escaping.
+  chat: 400_000, 'system-chat': 400_000, 'chat-context': 400_000 }
 export const bodyLimit = (action: string | null) => BODY_LIMITS[action || ''] ?? 100_000
 const ACTION_METHODS: Record<string, string[]> = { 'system-chat': ['POST'], 'teaching-files': ['POST'], transcribe: ['POST'], practice:['POST'], syllabi: ['POST'], 'syllabus-sources': ['POST'], 'chat-context': ['POST'], 'chat-memory': ['POST'], support: ['GET', 'POST'], health: ['GET'], providers: ['GET', 'POST', 'DELETE'], 'provider-oauth': ['POST'], 'provider-test': ['POST'], 'provider-workspaces': ['POST'], conversations: ['GET', 'POST'], operator: ['POST'], context: ['POST'], similarity: ['POST'], references: ['POST'], 'web-search': ['POST'], extract: ['POST'], chat: ['POST'], courseware: ['POST'], documents: ['GET', 'POST', 'DELETE'], workspace: ['GET', 'PUT'], academic: ['GET', 'POST'], students: ['GET'] }
 export const allowedMethods = (action: string) => Object.hasOwn(ACTION_METHODS, action) ? ACTION_METHODS[action] : undefined

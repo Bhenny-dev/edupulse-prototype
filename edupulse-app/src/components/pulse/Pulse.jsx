@@ -60,6 +60,8 @@ const WorkspaceOffice = lazy(() => import('./office/WorkspaceOffice'))
 
 // The server accepts up to 18,000 characters per chat reference; longer files are sent as an excerpt and can be added to the library whole.
 const CHAT_REFERENCE = 18000
+// Same limit as MAX_CHAT_SOURCES in server/contracts.ts (kept local so the chat bundle does not load zod).
+const MAX_CHAT_SOURCES = 4
 const chatReference = a => ({ title: a.text.length > CHAT_REFERENCE ? `${a.title} (first ${CHAT_REFERENCE.toLocaleString()} characters)` : a.title, text: a.text.slice(0, CHAT_REFERENCE) })
 
 export default function Pulse() {
@@ -295,11 +297,16 @@ export default function Pulse() {
     setError(''); setFileBusy(true)
     const ticket = office.begin('luma', 'Read attached files')
     try {
-      if (attachments.length + files.length > 3) throw new Error('Attach up to three files per message.')
+      if (attachments.length + files.length > MAX_CHAT_SOURCES) throw new Error(`Attach up to four files per message. ${attachments.length ? `${attachments.length} already attached.` : ''}`.trim())
       // Attachments go through the same sandboxed extraction as the knowledge library.
-      const refs = []
-      for (const file of files) refs.push(await readReferenceFile(file, notice => { if (epoch === fileRead.current.epoch) setFileNotice(notice) }))
+      // Each file is read on its own: one unreadable file never discards the others, and it is named.
+      const refs = [], failed = []
+      for (const file of files) {
+        try { refs.push(await readReferenceFile(file, notice => { if (epoch === fileRead.current.epoch) setFileNotice(notice) })) }
+        catch (err) { failed.push(`${file.name}: ${err?.message || 'could not be read'}`) }
+      }
       if (epoch !== fileRead.current.epoch) return
+      if (failed.length) setError(`${refs.length} of ${files.length} file(s) attached. Not used: ${failed.join('; ')}`)
       setAttachments(previous => [...previous, ...refs.map(ref => {
         // A class list keeps its rows; the course is read from the file name, a course column or the first lines.
         const roster = ref.teachingLoad ? null : parseRoster(ref.raw ?? ref.text, ref.fileName)
@@ -307,7 +314,7 @@ export default function Pulse() {
         delete kept.raw
         return roster ? { ...kept, roster, detectedCourse: findCourseMentions(`${ref.fileName} ${roster.courseValues.join(' ')} ${ref.text.slice(0, 600)}`, catalog)[0]?.code || '' } : kept
       })])
-      office.finish(ticket, 'done', `Read ${files.length} attached file(s); no records changed.`)
+      office.finish(ticket, refs.length ? 'done' : 'error', failed.length ? `Read ${refs.length} of ${files.length} file(s); ${failed.length} could not be read. No records changed.` : `Read ${files.length} attached file(s); no records changed.`)
     } catch (err) { if (epoch === fileRead.current.epoch) { setError(err.message); office.finish(ticket, 'error', 'File reading failed; no records changed.') } }
     finally { if (epoch === fileRead.current.epoch) { fileRead.current.busy = false; setFileBusy(false); setFileNotice('') } }
   }
@@ -640,7 +647,7 @@ export default function Pulse() {
     <DwellHelp role={user?.role} disabled={open || interaction.dragging} onTarget={focusTarget} />
     <FocusSpotlight target={interaction.dragging ? interaction.hovered : open ? focus : null} dragging={interaction.dragging} />
     {open && <section data-pulse-ui="panel" {...fileDrop.handlers} className={`connected-pulse ${focus || (guide && !completed) ? 'is-focused' : ''} ${side === 'left' ? 'is-left' : ''}`} role="dialog" aria-modal="false" aria-labelledby="pulse-title">
-      {fileDrop.active && <div className="pulse-file-drop" role="status"><strong>{busy || fileBusy ? 'Finish the current request before attaching files' : 'Drop files to attach'}</strong><small>Up to three references.</small></div>}
+      {fileDrop.active && <div className="pulse-file-drop" role="status"><strong>{busy || fileBusy ? 'Finish the current request before attaching files' : 'Drop files to attach'}</strong><small>Up to four references.</small></div>}
       <header className="connected-pulse-header">
         <div className="pulse-heading">
           <strong id="pulse-title">Pulse</strong>

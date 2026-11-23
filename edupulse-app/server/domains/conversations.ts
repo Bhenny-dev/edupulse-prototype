@@ -1,11 +1,11 @@
 import { randomUUID } from 'node:crypto'
 import { z } from 'zod'
-import { ApiError, type Identity } from '../contracts.js'
+import { ApiError, MAX_CHAT_SOURCES, type Identity } from '../contracts.js'
 import { localDb, userDb } from '../database.js'
 import { config } from '../config.js'
 import { conversationLocalSchema } from './conversationSchema.js'
 
-const storedMessage = z.object({ id: z.string().uuid(), role: z.enum(['user', 'assistant']), text: z.string().max(20000), attachments: z.array(z.string().max(255)).max(3).default([]), kind: z.enum(['chat', 'action', 'receipt', 'error']).default('chat') }).strict()
+const storedMessage = z.object({ id: z.string().uuid(), role: z.enum(['user', 'assistant']), text: z.string().max(20000), attachments: z.array(z.string().max(255)).max(MAX_CHAT_SOURCES).default([]), kind: z.enum(['chat', 'action', 'receipt', 'error']).default('chat') }).strict()
 export const conversationCommand = z.discriminatedUnion('operation', [
   z.object({ operation: z.literal('create'), id: z.string().uuid(), title: z.string().trim().min(1).max(160) }).strict(),
   z.object({ operation: z.literal('append'), id: z.string().uuid(), messages: z.array(storedMessage).min(1).max(20) }).strict(),
