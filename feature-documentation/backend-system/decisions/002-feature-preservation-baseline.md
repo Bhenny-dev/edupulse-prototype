@@ -373,3 +373,8 @@ Remove the redundant Status column and retained-source-details dropdown from cou
 ### 22 November 2026 - Instructor record popovers
 
 Course loads and Syllabi cells now use explicit View buttons and separate read-only popovers, replacing the inline disclosure dropdowns. Each popover contains only the selected instructor and term data, preserves role restrictions, closes with Escape/outside click or its Close button, and restores its authorized view after reload. Account actions remain in the final three-dot menu. Opening or restoring these views never writes academic records.
+
+
+## 23 November 2026 - Supporting UI specification ownership
+
+See versions/supporting-ui-qa-2026-11-23.md for the independent QA matrix and Claude handoffs. Codex supporting changes: student course table with home-block context, no standalone Dean Students station (authorized class-directory links retained), presentation-only Pulse suppression during the actual unanswered student assessment reader, a named Next action for accessible same-course reader items, and neutral Recorded sources wording. Do not turn these UI changes into new enrollment, source processing, scoring, submission, release or academic approval implementations. Schema-limited MCQ options and the audited baseline three-source cap must be resolved with their connected backend, not cosmetic controls. Never claim fixture verification proves real learner achievement or server-side integrity.

@@ -4,7 +4,7 @@ import { createServer, request, type IncomingMessage } from 'node:http'
 import { once } from 'node:events'
 import { PassThrough } from 'node:stream'
 import { BODY_READ_TIMEOUT_MS, handleNodeRequest, readNodeBody } from '../server/node-adapter.js'
-import { allowedMethods, handleRequest } from '../server/http.js'
+import { allowedMethods, bodyLimit, handleRequest } from '../server/http.js'
 
 test('Node transport enforces route methods, byte limits and safe failures over a real socket', { timeout: 10000 }, async t => {
   let calls = 0
@@ -39,10 +39,11 @@ test('Node transport enforces route methods, byte limits and safe failures over 
     assert.equal((await handleRequest(new Request(`http://localhost/api/ai?action=${action}`, { method: 'POST' }))).status, 404)
   }
   assert.equal(calls, 0)
-  const oversized = await send('/api/ai?action=chat', 'POST', { 'Transfer-Encoding': 'chunked' }, 'é'.repeat(51_000), true)
+  const chatLimit = bodyLimit('chat')
+  const oversized = await send('/api/ai?action=chat', 'POST', { 'Transfer-Encoding': 'chunked' }, 'é'.repeat(Math.floor(chatLimit / 2) + 1), true)
   assert.equal(oversized.status, 413); assert.equal(oversized.headers['cache-control'], 'no-store')
   assert.equal(JSON.parse(oversized.body).error.code, 'BODY_TOO_LARGE'); assert.equal(calls, 0)
-  const declared = await send('/api/ai?action=chat', 'POST', { 'Content-Length': '100001' }, 'x', true)
+  const declared = await send('/api/ai?action=chat', 'POST', { 'Content-Length': String(chatLimit + 1) }, 'x', true)
   assert.equal(declared.status, 413); assert.equal(calls, 0)
   const valid = await send('/api/ai?action=chat', 'POST', {}, 'Café — unchanged')
   assert.equal(valid.status, 200); assert.equal(JSON.parse(valid.body).body, 'Café — unchanged')

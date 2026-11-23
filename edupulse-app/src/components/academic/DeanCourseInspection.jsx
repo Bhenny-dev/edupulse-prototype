@@ -1,3 +1,4 @@
+import {Link} from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { BookOpen, ClipboardCheck, Files, Send } from 'lucide-react'
 import { aiRequest } from '../../lib/aiClient'
@@ -23,7 +24,7 @@ function BlockSectionList({ load, students, onAdd }) {
     <p className="text-sm text-muted mb-16">{sections.length} block section{sections.length === 1 ? '' : 's'} share this syllabus, each with its own schedule. {joined.size ? `${joined.size} irregular student${joined.size === 1 ? '' : 's'} joined this course.` : 'No irregular student has joined this course.'}</p>
     {sections.length ? <div className="dean-block-list">{sections.map(section => <section key={section.key} className="dean-block-section" aria-label={`${load.code} block ${section.block}`}>
       <header><div><h4>{load.code} {section.block}</h4><p className="text-sm text-muted">{slotText(section)}</p></div>{onAdd && <button className="btn btn-ghost btn-sm" onClick={() => onAdd(section.block)} aria-label={`Add students to ${load.code} ${section.block}`}>Add students</button>}</header>
-      {section.students.length ? <ul className="dean-block-students">{section.students.map(person => <li key={person.email}><span>{person.name}</span><span className="text-sm text-muted">{[person.id, person.email].filter(Boolean).join(' · ')}</span>{irregular.has(person.email) && <span className="dean-tag">Irregular</span>}</li>)}</ul> : <p className="text-sm text-muted">Class list not added yet.</p>}
+      {section.students.length ? <ul className="dean-block-students">{section.students.map(person => <li key={person.email}><Link to={`/students?q=${encodeURIComponent(person.id||person.email)}`} aria-label={`View student ${person.name}`}>{person.name}</Link><span className="text-sm text-muted">{[person.id, person.email].filter(Boolean).join(' · ')}</span>{irregular.has(person.email) && <span className="dean-tag">Irregular</span>}</li>)}</ul> : <p className="text-sm text-muted">Class list not added yet.</p>}
     </section>)}</div> : <Empty>No block section is loaded for this course yet.</Empty>}
     <h3 className="dean-subhead mt-24">Schedule and source details</h3>
     <TeachingLoadFacts load={load} />

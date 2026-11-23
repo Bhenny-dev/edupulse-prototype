@@ -10,12 +10,12 @@ test('a student sees progress bars on the course card, in the course and on each
   fixture.records.attempts = fixture.records.attempts.slice(0, 2) // the Variables and Functions quizzes are answered, the Arrays quiz is not
   fixture.records.reading = [{ publication_id: lesson.id, source_version: 'v1', student_email: 'ui.fixture@example.invalid', sections_read: 1, total_sections: 2, updated_at: later(-DAY) }]
   await page.goto('/#/courseware')
-  const card = page.getByRole('button', { name: 'Open course IT 102', exact: true })
+  const card = page.getByRole('row').filter({has:page.getByRole('button',{name:'Open course IT 102',exact:true})})
   const bar = card.getByRole('progressbar', { name: 'IT 102 items done' })
   await expect(bar).toHaveAttribute('value', '2')
   await expect(bar).toHaveAttribute('max', '4')
   await expect(card).toContainText('2 of 4 items done')
-  await card.click()
+  await card.getByRole('button',{name:'Open course IT 102',exact:true}).click()
   const course = page.locator('section.card').filter({ hasText: 'Instructor:' }).first()
   await expect(course.getByRole('progressbar', { name: 'IT 102 items done' })).toHaveAttribute('value', '2')
   await expect(page.getByText('Week 1 · 2 item(s) · 1 of 2 done', { exact: true })).toBeVisible()

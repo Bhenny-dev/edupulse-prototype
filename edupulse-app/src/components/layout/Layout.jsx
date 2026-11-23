@@ -1,3 +1,4 @@
+import {useAssessmentFocusBlocked} from '../academic/assessmentFocus'
 import ModalLayer from '../ui/ModalLayer'
 import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
@@ -28,7 +29,7 @@ const SECTIONS = [
   { key: 'dashboard', path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: 'all' },
   { key: 'dean-course', path: '/records', label: 'Course', icon: BookOpen, roles: ['dean','associate_dean'], relatedPaths:['/course-loading'] },
   { key: 'dean-instructors', path: '/instructors', label: 'Instructors', icon: GraduationCap, roles: ['dean','associate_dean'] },
-  { key: 'dean-students', path: '/students', label: 'Students', icon: Users, roles: ['dean','associate_dean'], relatedPaths:['/performance'] },
+  { key: 'dean-students', path: '/students', label: 'Students', icon: Users, roles: ['associate_dean'], relatedPaths:['/performance'] },
 
 
   // ── Instructor ────────────────────────────────────────────────────────
@@ -62,7 +63,7 @@ function Breadcrumbs() {
   if (parts.length === 0 || (parts.length === 1 && parts[0] === 'dashboard')) return null
 
   const crumbs = parts.map((part, i) => ({
-    label: part === 'courseware'||(part==='records'&&['dean','associate_dean'].includes(user?.role)) ? 'Course' : part.charAt(0).toUpperCase() + part.slice(1).replace(/-/g, ' '),
+    label: user?.role==='student'&&part==='courseware'?'My Courses':user?.role==='student'&&part==='assessment'?'Practice Assessments':part === 'courseware'||(part==='records'&&['dean','associate_dean'].includes(user?.role)) ? 'Course' : part.charAt(0).toUpperCase() + part.slice(1).replace(/-/g, ' '),
     path: '/' + parts.slice(0, i + 1).join('/'),
   }))
 
@@ -181,6 +182,7 @@ function RoleSwitchPopover({ onClose }) {
 }
 
 export default function Layout() {
+  const assessmentFocused=useAssessmentFocusBlocked()
   const workspace = useWorkspace()
 
   const { user, logout, authLoading } = useAuth()
@@ -512,7 +514,7 @@ export default function Layout() {
 
       {showSearch && <SearchOverlay onClose={() => setOverlay(null)} />}
       {showRoleSwitch && user?.canSwitchRoles && <RoleSwitchPopover onClose={() => setOverlay(null)} />}
-      <Pulse />
+      {!assessmentFocused&&<Pulse />}
 
       <style>{`
         @media (max-width: 980px) {

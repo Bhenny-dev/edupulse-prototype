@@ -41,3 +41,7 @@ for(const role of ['dean','associate_dean'])test(`${role} home blocks before cou
 test('instructor load and syllabus columns open popovers',async({page})=>{
  await deanManagementUI(page);await page.goto('/#/instructors');const row=page.getByRole('row').filter({has:page.getByText('Alex Sample Instructor',{exact:true})}).first();await expect(row.locator('details')).toHaveCount(0);await row.getByRole('button',{name:'View course loads for Alex Sample Instructor',exact:true}).click();await expect(page.getByRole('dialog',{name:'Course loads - Alex Sample Instructor',exact:true})).toBeVisible()
 })
+
+test('supporting UI keeps the Dean directory accessible without a standalone Students station',async({page})=>{
+ await deanManagementUI(page,'dean');await page.goto('/#/records');await expect(page.getByRole('navigation',{name:'Main navigation',exact:true}).getByRole('link',{name:'Students',exact:true})).toHaveCount(0);await page.goto('/#/students?q=Riley');await expect(page.getByRole('heading',{name:'Students',exact:true})).toBeVisible()
+})

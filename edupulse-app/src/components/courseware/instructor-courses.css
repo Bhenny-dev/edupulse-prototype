@@ -48,3 +48,6 @@
 /* A block's class schedule from the course load, and its preset in the delivery schedule editor */
 .instructor-block-card small.block-class-schedule { display: block; margin-top: 4px; color: var(--gray-600); overflow-wrap: anywhere; }
 .block-schedule-preset { margin: 0 0 8px; padding: 12px 16px; border-radius: 12px; background: var(--sky-50, var(--gray-50)); }
+
+/* Keep the legacy course selector class for existing course-navigation clients. */
+.instructor-course-card.instructor-course-table-link{display:inline-flex;min-height:44px;padding:6px 10px;border:0;box-shadow:none;background:transparent;gap:0}.instructor-course-card.instructor-course-table-link:hover{transform:none;box-shadow:none;background:var(--sky-50,#eff9ff)}

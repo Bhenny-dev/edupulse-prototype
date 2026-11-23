@@ -1,6 +1,9 @@
+import {editableSyllabusPath} from '../../agents/syllabusConversation'
+import {Table} from '../academic/AcademicUI'
+import {SYLLABUS_STATUS_META} from '../../data/syllabusStatus'
 import { useMemo, useState } from 'react'
-import { Navigate, useSearchParams } from 'react-router-dom'
-import { BookOpen, ArrowLeft, ArrowRight, Share2 } from 'lucide-react'
+import { Link, Navigate, useSearchParams } from 'react-router-dom'
+import { BookOpen, ArrowLeft, Share2 } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 import { useWorkspace } from '../../context/WorkspaceContext'
 import { useAcademicRecords } from '../../context/AcademicContext'
@@ -90,9 +93,12 @@ export default function InstructorCourses() {
       {requested && <p role="alert">{matching.length>1?'Choose the block-labelled course you want to open.':'This course is not in your current teaching load. Choose one of your assigned courses.'}</p>}
       <div className="kpi-grid mb-24"><SummaryCard icon={BookOpen} label="Courses loaded" value={courses.length} /></div>
       <div className="instructor-course-toolbar"><label className="form-label">Search loaded courses<input className="form-input" type="search" value={query} onChange={event => setQuery(event.target.value)} placeholder="Course or block section" /></label></div>
-      {!courses.length && <div className="empty-state"><h2>No courses loaded yet</h2><p>Your courses will appear after the Dean assigns them.</p></div>}
-      <div className="instructor-course-grid">{courses.filter(course => `${course.code} ${course.title} ${course.blocks.join(' ')}`.toLowerCase().includes(query.toLowerCase())).map(course => { const current = syllabusForCourse(workspace.syllabi, course); return <button className="instructor-course-card" key={course.id} onClick={() => choose(course)}><BookOpen size={24} aria-hidden="true" /><div><strong>{course.code} — {course.title}</strong><p>{course.blocks.join(' · ') || 'Class list not added'}</p><small>{course.units && `${course.units} units · `}{current?.status === 'active' ? `${current.courseOutline?.length || 0} weeks · Syllabus ready` : 'Add approved syllabus'}</small></div><ArrowRight size={16} aria-hidden="true" /></button> })}</div>
+      <Table label="Assigned teaching courses" headers={['Course','Title','Block sections','Academic term','Units','Syllabus']} rows={courses.filter(course=>`${course.code} ${course.title} ${course.blocks.join(' ')}`.toLowerCase().includes(query.toLowerCase())).map(course=>{
+       const current=syllabusForCourse(workspace.syllabi,course)
+       return [<button className="btn btn-ghost instructor-course-card instructor-course-table-link" key={course.id} onClick={()=>choose(course)} aria-label={`Open course ${course.code}`}>{course.code}</button>,course.title,course.blocks.join(', ')||'Class list not added',[course.semester,course.academicYear].filter(Boolean).join(' / '),course.units,current?SYLLABUS_STATUS_META[current.status]?.label||current.status:'Syllabus not added']
+      })} empty={courses.length?'No assigned course matches this search.':'No course has been assigned for this term. Your courses appear after the Dean loads them.'}/>
     </> : <>
+      {writable&&syllabus&&!syllabus.suspended&&['drafted','checked','downloaded_for_approval'].includes(syllabus.status)&&<Link className="btn btn-secondary mb-16" to={editableSyllabusPath(syllabus.id)}>Continue editing draft</Link>}
       {schedules.length>0&&<section className="card mb-24"><div className="card-header"><h2>Teaching schedule and load</h2></div><div className="card-body">{schedules.map(load=><div key={load.key} className="mb-16"><strong>{load.block}</strong><TeachingLoadFacts load={load}/></div>)}<p className="text-sm text-muted">These are the reviewed load records. Set actual class dates and delivery times in Block sections.</p></div></section>}
       <nav className="tabs mb-24" aria-label="Course workspace views">{[['topics', 'Weeks and topics'], ['blocks', 'Block sections']].map(([id, label]) => <button key={id} className={`tab ${view === id ? 'active' : ''}`} aria-pressed={view === id} onClick={() => setParams({ course: selected.id, view: id,term })}>{label}</button>)}</nav>
       {view === 'blocks' ? <CourseBlockSections course={selected} syllabus={syllabus} data={scoped} readOnly={!writable}/> : <>

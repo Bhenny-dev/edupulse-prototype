@@ -2,7 +2,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { chatInput, courseOutput, type Identity } from '../server/contracts.js'
 import { runChat, runCourseware, validateCitations } from '../server/graph.js'
-import { handleRequest, enforceOrigin, authenticate } from '../server/http.js'
+import { handleRequest, enforceOrigin, authenticate, bodyLimit } from '../server/http.js'
 import { invokeModel } from '../server/providers.js'
 import { discoverModels } from '../server/connections.js'
 import { planRequest } from '../src/lib/rag/plan.js'
@@ -310,7 +310,7 @@ test('public client cannot forge role or access private documents or generation'
 test('API rejects invalid JSON, oversized requests, unknown routes, methods and nameless uploads', async () => {
   const request = (action: string, method: string, body?: string, headers: Record<string, string> = {}) => new Request(`https://edupulse.test/api/ai?action=${action}`, { method, headers, ...(body ? { body } : {}) })
   assert.equal((await handleRequest(request('chat', 'POST', '{bad'))).status, 400)
-  assert.equal((await handleRequest(request('chat', 'POST', 'x'.repeat(100001)))).status, 413)
+  assert.equal((await handleRequest(request('chat', 'POST', 'x'.repeat(bodyLimit('chat') + 1)))).status, 413)
   assert.equal((await handleRequest(request('unknown', 'GET'))).status, 404)
   assert.equal((await handleRequest(request('chat', 'GET'))).status, 405)
   assert.equal((await handleRequest(request('extract', 'POST', 'plain text body', { 'x-file-name': encodeURIComponent('../../etc/passwd') }))).status, 400)

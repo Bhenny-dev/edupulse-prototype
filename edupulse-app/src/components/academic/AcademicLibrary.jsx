@@ -1,3 +1,4 @@
+import {useAssessmentFocus} from './assessmentFocus'
 import {assessmentLabel} from '../../data/assessmentFormats'
 import TeachingAttachments from '../courseware/TeachingAttachments'
 import { useWorkspaceViewState } from '../../context/WorkspaceContext'
@@ -35,7 +36,7 @@ export default function AcademicLibrary({ data, assessments = false, all = false
   }) : <Empty>No enrolled courses yet.</Empty>}</Panel></>
 }
 
-export function OpenedPublication({ pageModal=false, adminTest=false, selected, data, isStudent, answers, setAnswers, result, session, busy, onClose, onSubmit, onRetake }) {
+export function OpenedPublication({ pageModal=false, adminTest=false, selected, data, isStudent, answers, setAnswers, result, session, busy, onClose, onSubmit, onRetake, onNext }) {
   const {command}=useAcademicRecords()
   const [mode,setMode]=useWorkspaceViewState(`publication:${selected.id}:mode`,'document')
   const [now,setNow]=useState(Date.now()),[appeal,setAppeal]=useState(''),[message,setMessage]=useState(''),[error,setError]=useState('')
@@ -46,6 +47,7 @@ export function OpenedPublication({ pageModal=false, adminTest=false, selected, 
   const reading=isStudent&&selected.type!=='assessment'&&Array.isArray(selected.content?.sections)&&selected.content.sections.length?{read:progress?.sections_read||0,total:selected.content.sections.length,busy:confirming,confirm:confirmSection}:null
   const latest=studentAttempt(data,selected)
   const attempt=session && session.attempt_no>(latest?.attempt_no || 1) ? null : latest
+  useAssessmentFocus(Boolean(isStudent&&selected.type==='assessment'&&!attempt))
   const questions=selected.content?.questions || []
   const policy=selected.content?.assessmentPolicy || {}
   const content={...selected.content,title:selected.title,sections:selected.content?.sections?.map(section=>({...section,heading:section.heading || section.title,body:section.body || section.content})) || [{heading:selected.title,body:selected.content?.instructions || selected.content?.description || 'No readable content was provided.'}]}
@@ -53,6 +55,8 @@ export function OpenedPublication({ pageModal=false, adminTest=false, selected, 
   const duration=Number(session?.duration_seconds || policy.durationSeconds || 0)
   const classOpen=!isStudent||['legacy','open'].includes(deliveryState(selected,now))
   const canRead=classOpen&&Boolean(selected.content)
+  const courseItems=data.publications.filter(item=>item.active&&item.course_id===selected.course_id).sort((a,b)=>a.week-b.week)
+  const nextItem=courseItems.slice(courseItems.findIndex(item=>item.id===selected.id)+1).find(item=>item.content&&['legacy','open'].includes(deliveryState(item,now)))
   const expired=!classOpen||Boolean((selected.due_at&&now>new Date(selected.due_at).getTime()) || (duration>0&&elapsed>=duration))
   const answered=questions.filter((_,index)=>typeof answers[index]==='number'||(typeof answers[index]==='string'&&answers[index].trim())).length
   useEffect(()=>{if(!isStudent||selected.delivery_mode!=='block_schedule'&&(selected.type!=='assessment'||attempt))return;const timer=setInterval(()=>setNow(Date.now()),1000);return()=>clearInterval(timer)},[selected.type,selected.delivery_mode,attempt,isStudent])
@@ -71,5 +75,6 @@ export function OpenedPublication({ pageModal=false, adminTest=false, selected, 
       {canRead&&isStudent&&attempt&&attempt.grading_status!=='pending_review'&&(attempt.attempt_no || 1)<(policy.maxAttempts || 1)&&!expired&&<button className="btn btn-secondary mt-16" disabled={busy} onClick={onRetake}>{busy && <Spinner />} Start next allowed attempt</button>}
       {isStudent&&attempt&&<div className="mt-24"><label className="academic-filter">Appeal to instructor<textarea className="form-input" maxLength={2000} value={appeal} onChange={event=>setAppeal(event.target.value)}/></label><button className="btn btn-secondary mt-16" disabled={!appeal.trim()||busy||appealing} onClick={sendAppeal}>{appealing && <Spinner />} {appealing ? 'Saving appeal…' : 'Submit appeal'}</button>{message&&<p role="status">{message}</p>}{error&&<p role="alert">{error}</p>}</div>}
     </>:canRead&&<>{reading&&<section className="academic-reading-progress mb-24" aria-label="Your reading progress"><p><strong>{reading.read}/{reading.total} sections confirmed read</strong></p><progress aria-label="Confirmed reading sections" value={reading.read} max={reading.total}/><p className="text-sm text-muted">Read each full document section, then confirm it in order. Opening a file does not mark it finished.</p>{readingError&&<p role="alert">{readingError} Retry with the section’s confirmation button.</p>}</section>}<nav className="tabs academic-tabs mb-24" aria-label="Material reader views">{[['document','Document'],['presentation','Presentation']].map(([id,label])=><button key={id} className={`tab ${mode===id?'active':''}`} aria-pressed={mode===id} onClick={()=>setMode(id)}>{label}</button>)}</nav>{mode==='document'?<DocumentViewer embedded={pageModal} content={content} isStudent onBack={onClose} reading={reading}/>:<PresentationViewer cacheKey={selected.id} content={content} isStudent onBack={onClose} reading={reading}/>}</>}
+    {isStudent&&canRead&&selected.type!=='assessment'&&onNext&&nextItem&&<nav className="mt-24" aria-label="Next course item"><button className="btn btn-secondary" disabled={busy} onClick={()=>onNext(nextItem)}>Next: {nextItem.title}</button></nav>}
   </div></section>
 }

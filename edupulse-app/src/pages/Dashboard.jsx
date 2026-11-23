@@ -268,32 +268,15 @@ function StudentDashboard({ model, actions, status }) {
         </div>
       </div>
 
-      {/* Block info — from the EduSuite class list */}
-      {model.block && (
-        <div className="card mb-24">
-          <div className="card-header">
-            <h3><Users size={16} /> My Block</h3>
-          </div>
-          <div className="card-body">
-            <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
-              <div><span className="text-muted">Block: </span><strong>{model.block.code}</strong></div>
-              <div><span className="text-muted">Year Level: </span><strong>{model.block.year}</strong></div>
-              <div><span className="text-muted">Students: </span><strong>{model.block.students}</strong></div>
-              <div><span className="text-muted">Adviser: </span><strong>{model.block.adviser}</strong></div>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Grounding transparency — teacher-approved sources only */}
       <div className="card">
         <div className="card-header">
-          <h3><CheckCircle size={16} /> Learning Material Sources</h3>
-          <span className="badge badge-connected" style={{ fontSize: '0.625rem' }}>Instructor-verified</span>
+          <h3><BookOpen size={16} /> Learning Material Sources</h3>
+          <span className="badge" style={{ fontSize: '0.625rem' }}>Recorded sources</span>
         </div>
         <div className="card-body">
           <p style={{ fontSize: '0.8125rem', color: 'var(--gray-600)', marginBottom: 10 }}>
-            Your learning materials are grounded in the approved syllabus and instructor-provided sources.
+            References recorded for your enrolled courses are listed below.
           </p>
           {model.sources.length === 0 && <p className="text-sm text-muted">No enrolled courses yet.</p>}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 10 }}>
@@ -302,7 +285,7 @@ function StudentDashboard({ model, actions, status }) {
                 <div style={{ fontWeight: 600, fontSize: '0.8125rem', marginBottom: 6 }}>{course.code}</div>
                 {course.items.length > 0 ? course.items.map(p => (
                   <div key={p.id} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '3px 0', fontSize: '0.75rem' }}>
-                    <CheckCircle size={10} style={{ color: 'var(--green-500)', flexShrink: 0 }} />
+                    <BookOpen size={10} style={{ color: 'var(--gray-500)', flexShrink: 0 }} />
                     {p.href
                       ? <a href={p.href} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--gray-600)', overflowWrap: 'anywhere' }}>{p.label}</a>
                       : <span style={{ color: 'var(--gray-600)' }}>{p.label}</span>}
