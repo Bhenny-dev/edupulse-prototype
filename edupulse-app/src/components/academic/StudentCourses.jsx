@@ -16,15 +16,30 @@ const courseLabel=course=>{
  const [,semester]=loadTerm(course.academic_year||CURRENT_LOAD_TERM.split('|')[0],course.semester||'').split('|')
  return [course.units&&`${course.units} units`,semester,course.academic_year&&`AY ${course.academic_year}`].filter(Boolean).join(' · ')||curriculumLabel(course.course_code)
 }
+export function StudentClassDetail({ selected, data, onOpen, busy }) {
+ const {state}=useLocation()
+ const scoped={...data,courses:[selected],assignedCourses:[],publications:data.publications.filter(item=>item.active&&item.course_id===selected.id)}
+ const progress=courseProgress(data,selected.id,recordsNow(data))
+ return <>
+   {state?.joinNotice&&<p role="status">{state.joinNotice}</p>}
+   {progress.total>0&&<StudentProgressBar value={progress.done} total={progress.total} label={selected.course_code+' items done'} text={progress.label}/>}
+   {(!selected.active||selected.suspended)&&<p role="status" className="mb-16">
+     {selected.suspended?'This class membership is suspended.':'Course assigned. Materials become available after syllabus approval and instructor release.'}
+   </p>}
+   <StudentCoursePanels key={selected.id} course={selected} data={scoped} onOpen={onOpen} busy={busy}/>
+ </>
+}
+export function studentClassSubtitle(course,data){
+ const blocks=course.block_section||[...new Set(data.enrollments.filter(entry=>entry.course_id===course.id).map(entry=>entry.block_section).filter(Boolean))].join(', ')
+ return [course.instructor_name||'Instructor not recorded',courseLabel(course),blocks].filter(Boolean).join(' · ')
+}
 export default function StudentCourses({data,onOpen,busy}){
  const [params,setParams]=useSearchParams(),[query,setQuery]=useState('')
- const {state}=useLocation()
  const courses=enrolledCourses(data),selected=courses.find(c=>c.id===params.get('course'))
  const change=id=>{const next=new URLSearchParams(params);next.delete('item');next.delete('publication');if(id)next.set('course',id);else next.delete('course');setParams(next)}
  const released=data.publications.filter(p=>p.active),materials=released.filter(p=>p.type!=='assessment'),assessments=released.filter(p=>p.type==='assessment')
- const scoped=selected?{...data,courses:[selected],assignedCourses:[],publications:released.filter(p=>p.course_id===selected.id)}:null
  const sectionLabel=course=>course.block_section||[...new Set(data.enrollments.filter(entry=>entry.course_id===course.id).map(entry=>entry.block_section).filter(Boolean))].join(', ')||'Not recorded'
- const now=recordsNow(data),selectedProgress=selected?courseProgress(data,selected.id,now):null
+ const now=recordsNow(data)
  return <>
   {!selected&&<KPIs items={[["Enrolled courses",courses.length],["Delivered materials",materials.length],["Delivered assessments",assessments.length],["Materials opened",new Set(data.accesses.filter(a=>materials.some(p=>p.id===a.publication_id)).map(a=>a.publication_id)).size]]}/>}
   {selected?<>
@@ -32,12 +47,8 @@ export default function StudentCourses({data,onOpen,busy}){
     <Link className="btn btn-secondary" to="/dashboard">Back to Home</Link>
     <button className="btn btn-ghost" onClick={()=>change(null)}>Back to My Courses</button>
    </div>
-   {state?.joinNotice&&<p role="status">{state.joinNotice}</p>}
-   <section className="card mb-24"><div className="card-body"><h2>{selected.course_code} — {selected.course_title}</h2><p>Instructor: {selected.instructor_name||'Instructor not recorded'}</p><p className="text-sm text-muted">{courseLabel(selected)} · {sectionLabel(selected)}</p>{selectedProgress.total>0&&<StudentProgressBar value={selectedProgress.done} total={selectedProgress.total} label={`${selected.course_code} items done`} text={selectedProgress.label}/>}</div></section>
-   {(!selected.active||selected.suspended)&&<p role="status" className="mb-16">
-    {selected.suspended?'This class membership is suspended.':'Course assigned. Materials become available after syllabus approval and instructor release.'}
-   </p>}
-   <StudentCoursePanels key={selected.id} course={selected} data={scoped} onOpen={onOpen} busy={busy}/>
+   <section className="card mb-24"><div className="card-body"><h2>{selected.course_code} — {selected.course_title}</h2><p>{studentClassSubtitle(selected,data)}</p></div></section>
+   <StudentClassDetail selected={selected} data={data} onOpen={onOpen} busy={busy}/>
   </>:<>
    {params.has('course')&&<p role="alert">This class is unavailable in the selected term or is no longer assigned to your account.</p>}
    <label className="academic-filter mb-24">Search enrolled courses<input className="form-input" type="search" placeholder="Course or instructor" value={query} onChange={e=>setQuery(e.target.value)}/></label>

@@ -9,7 +9,7 @@ import { Spinner } from '../ui/LoadingFeedback'
 import AcademicPerformance from './AcademicPerformance'
 import InstructorMonitoring from './InstructorMonitoring'
 import AcademicManagement from './AcademicManagement'
-import StudentCourses from './StudentCourses'
+import StudentCourses, { enrolledCourses, StudentClassDetail, studentClassSubtitle } from './StudentCourses'
 import StudentPractice from './StudentPractice'
 import AcademicLibrary, { OpenedPublication } from './AcademicLibrary'
 import TopicWorkPanel from '../classroom/TopicWorkPanel'
@@ -33,7 +33,7 @@ const TITLES = { instructors:'Instructors', students:'Students', performance: 'P
 // Live sections share the account-scoped RLS projection. Missing live records
 // never fall back to the separate preview persona's sample scores. The account
 // dashboard lives in pages/Dashboard.jsx with the preview role dashboards.
-export default function AcademicPortal({ view }) {
+export default function AcademicPortal({ view, classModal = false, onCloseClass }) {
   const { user } = useAuth()
   const [pageParams,setPageParams]=useSearchParams()
   const records = useAcademicRecords()
@@ -42,7 +42,7 @@ export default function AcademicPortal({ view }) {
   const allData=preview?deanPreview():records.data
   const isStudent=user?.role==='student'
   const linkedCourse=isStudent&&view==='courseware'&&!pageParams.has('term')
-    ? allData.courses.find(course=>course.id===pageParams.get('course')) : null
+    ? enrolledCourses(allData).find(course=>course.id===pageParams.get('course')) : null
   const linkedTerm=linkedCourse?.academic_year&&linkedCourse?.semester
     ? loadTerm(linkedCourse.academic_year,linkedCourse.semester) : null
   const {term,writable}=useAcademicTerm(linkedTerm)
@@ -108,6 +108,23 @@ export default function AcademicPortal({ view }) {
     setAnswerDraft(null)
     setResult(null)
   }
+  const reader = selected && <PageModal title={selected.title} subtitle={`${data.courses.find(course=>course.id===selected.course_id)?.course_code||'Course'} / Week ${selected.week} \u00b7 ${selected.type==='assessment'?'Assessment':selected.content?.submissionOnly?'Submission bin':'Teaching material'}`} closeLabel={selected.type==='assessment'?'Close assessment':'Close material'} onClose={closeReader} bodyClassName="reader-page-body"><div id="opened-publication">{error&&<p role="alert" className="connected-pulse-warning">{error}</p>}<OpenedPublication pageModal onStart={()=>startAssessment()} onRecheck={()=>open(selected)} onNext={open} key={`${selected.id}:${session?.id || "reader"}`} selected={selected} data={data} isStudent={isStudent} canAttempt={learnerControls} adminTest={Boolean(user?.supportSubject&&adminTest)} answers={answers} setAnswers={setAnswers} result={result} session={session} busy={busy} onClose={closeReader} onRetake={()=>startAssessment(true)} onSubmit={() => {if(window.confirm('Submit this assessment? Check your responses before confirming.'))return run({ operation: 'respond', publication: selected.id, version: selected.source_version, session:session?.id, responses: selected.content.questions.map((_, index) => answers[index]) })}} />{isStudent&&user?.authenticated&&!user.supportSubject&&<TopicWorkPanel key={selected.id} publication={selected} readOnly={!writable}/>}</div></PageModal>
+  const sourceReader = sourcePreview && <PageModal title={sourcePreview.title} label="Referenced teaching material" subtitle="Source preview" closeLabel="Close source material" onClose={closeSourcePreview} bodyClassName="reader-page-body"><DocumentViewer embedded readOnly isStudent content={sourcePreview.content} onBack={closeSourcePreview} /></PageModal>
+  if (classModal) {
+    const course = enrolledCourses(data).find(item => item.id === pageParams.get('course'))
+    const title = course ? [course.course_code,course.course_title].join(' — ') : loading ? 'Opening class' : 'Class unavailable'
+    return <PageModal title={title} subtitle={course && studentClassSubtitle(course,data)} closeLabel="Close class and return to Home" onClose={onCloseClass} className="class-modal" bodyClassName="student-learning">
+      <div data-pulse-zone="courseware" data-pulse-target={course?.course_title || 'Class'}>
+        {loadError && <div role="alert">{loadError} <button className="btn btn-secondary" onClick={() => records.load(true)}>Retry loading class</button></div>}
+        {loading && !loaded && <p role="status">Loading your class...</p>}
+        {course ? <StudentClassDetail selected={course} data={data} onOpen={open} busy={busy}/> : loaded && <p role="alert">This class is unavailable in the selected term or is no longer assigned to your account.</p>}
+        {course && error && !selected && <p role="alert">{error}</p>}
+        {course && pageParams.has('item') && !selected && pageParams.get('studentTab') !== 'announcements' && <p role="alert">This item is unavailable in your class.</p>}
+        {course && reader}
+        {course && sourceReader}
+      </div>
+    </PageModal>
+  }
   return <div className={`container academic-portal${isStudent?' student-learning':''}`} aria-busy={loading || busy} data-pulse-target={title} data-pulse-zone={deanPage?'records':view === 'performance' ? 'performance' : view === 'courseware' ? 'courseware' : view === 'monitor' ? 'monitor' : view === 'records' ? 'records' : view === 'courses' ? 'course-loading' : view === 'monitoring' ? 'performance' : undefined}>
     <div className="page-header"><div className={deanPage?'dean-page-title':undefined}>{deanPage&&<GlassIcon icon={DEAN_HEADERS[view][0]} color={DEAN_HEADERS[view][1]} size="lg"/>}<div><h1>{title}</h1><p className="text-sm text-muted">{preview?'Preview sample records':deanPage?DEAN_HEADERS[view][2]:isStudent?'Your courses, learning activities and personal results':'Account records · Instructor-confirmed EduSuite exports · No institutional grade computations'}</p></div></div><div className="academic-actions academic-header-actions">{(deanPage||isStudent)&&<LoadTermFilter data={allData}/>}{!preview&&<AcademicSyncStatus/>}{user?.role==='dean'&&view==='students'&&<a className="btn btn-secondary btn-sm" href="#/performance">View student performance</a>}</div></div>
     {!deanPage&&!isStudent&&<LoadTermFilter data={allData}/>}
@@ -120,8 +137,8 @@ export default function AcademicPortal({ view }) {
       {deanPage?<DeanRecords data={allData} view={view}/>:['records', 'courses', 'monitor'].includes(view) && <AcademicManagement data={data} role={user?.role} view={view} />}
       {isStudent&&view==='courseware'?<StudentCourses data={data} onOpen={open} busy={busy}/>:isStudent&&view==='assessment'&&writable?<StudentPractice data={data} onOpen={open} busy={busy} adminTest={adminTest}/>:['courseware', 'assessment'].includes(view) && <AcademicLibrary data={data} assessments={view === 'assessment'} onOpen={open} busy={busy} />}
       {isStudent&&pageParams.has('item')&&!selected&&pageParams.get('studentTab')!=='announcements'&&<p role="alert">This item is unavailable in your class.</p>}
-      {selected && <PageModal title={selected.title} subtitle={`${data.courses.find(course=>course.id===selected.course_id)?.course_code||'Course'} / Week ${selected.week} \u00b7 ${selected.type==='assessment'?'Assessment':selected.content?.submissionOnly?'Submission bin':'Teaching material'}`} closeLabel={selected.type==='assessment'?'Close assessment':'Close material'} onClose={closeReader} bodyClassName="reader-page-body"><div id="opened-publication">{error&&<p role="alert" className="connected-pulse-warning">{error}</p>}<OpenedPublication pageModal onStart={()=>startAssessment()} onRecheck={()=>open(selected)} onNext={open} key={`${selected.id}:${session?.id || "reader"}`} selected={selected} data={data} isStudent={isStudent} canAttempt={learnerControls} adminTest={Boolean(user?.supportSubject&&adminTest)} answers={answers} setAnswers={setAnswers} result={result} session={session} busy={busy} onClose={closeReader} onRetake={()=>startAssessment(true)} onSubmit={() => {if(window.confirm('Submit this assessment? Check your responses before confirming.'))return run({ operation: 'respond', publication: selected.id, version: selected.source_version, session:session?.id, responses: selected.content.questions.map((_, index) => answers[index]) })}} />{isStudent&&user?.authenticated&&!user.supportSubject&&<TopicWorkPanel key={selected.id} publication={selected} readOnly={!writable}/>}</div></PageModal>}
+      {reader}
     </>}
-    {sourcePreview && <PageModal title={sourcePreview.title} label="Referenced teaching material" subtitle="Source preview" closeLabel="Close source material" onClose={closeSourcePreview} bodyClassName="reader-page-body"><DocumentViewer embedded readOnly isStudent content={sourcePreview.content} onBack={closeSourcePreview} /></PageModal>}
+    {sourceReader}
   </div>
 }

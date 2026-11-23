@@ -9,9 +9,19 @@ function trackCommands(page:Page){
 
 test('student Home opens its course and preserves weekly, score and outline tabs',async({page},info)=>{
  const commands=trackCommands(page);await baselineUI(page,'student');await page.goto('/#/dashboard');await expect(page.getByRole('heading',{name:'Home',exact:true})).toBeVisible({timeout:20000});await expect(page.getByRole('button',{name:'Join Class',exact:true})).toBeVisible();await expect(page.getByRole('button',{name:'Create Class',exact:true})).toHaveCount(0)
- await page.getByRole('region',{name:'Your classes'}).getByRole('button').first().click();await expect(page.getByRole('navigation',{name:'Student course sections'})).toBeVisible();await page.getByRole('button',{name:'Teaching Materials & Assessments',exact:true}).click();await expect(page.getByText('Variables lesson',{exact:true})).toBeVisible();await page.getByRole('button',{name:'Collapse all topics'}).click();await expect(page.getByText('Variables lesson',{exact:true})).not.toBeVisible();await page.getByRole('button',{name:'Expand all topics'}).click();await expect(page.getByText('Variables lesson',{exact:true})).toBeVisible()
+ const opener=page.getByRole('region',{name:'Your classes'}).getByRole('button').first()
+ await opener.click()
+ const classPage=page.getByRole('dialog',{name:/IT 102/})
+ await expect(classPage.getByRole('navigation',{name:'Student course sections'})).toBeVisible()
+ await expect(page).toHaveURL(/#\/dashboard\?course=/)
+ await expect(opener).toBeVisible()
+ await page.getByRole('button',{name:'Teaching Materials & Assessments',exact:true}).click();await expect(page.getByText('Variables lesson',{exact:true})).toBeVisible();await page.getByRole('button',{name:'Collapse all topics'}).click();await expect(page.getByText('Variables lesson',{exact:true})).not.toBeVisible();await page.getByRole('button',{name:'Expand all topics'}).click();await expect(page.getByText('Variables lesson',{exact:true})).toBeVisible()
  await page.getByRole('button',{name:'Scores',exact:true}).click();await expect(page.getByRole('region',{name:'Personal assessment results'})).toBeVisible();await page.reload();await expect(page.getByRole('button',{name:'Scores',exact:true})).toHaveAttribute('aria-pressed','true',{timeout:20000});await page.screenshot({path:`.data/student-classroom-scores-${info.project.name}.png`})
- await page.getByRole('button',{name:'Syllabus / Course Outline',exact:true}).click();await expect(page.getByRole('region',{name:'Published outline'})).toBeVisible();expect(commands.filter(c=>['respond','class-join'].includes(c.operation))).toHaveLength(0)
+ await page.getByRole('button',{name:'Syllabus / Course Outline',exact:true}).click();await expect(page.getByRole('region',{name:'Published outline'})).toBeVisible()
+ await page.keyboard.press('Escape')
+ await expect(classPage).toHaveCount(0)
+ await expect(opener).toBeVisible()
+ expect(commands.filter(c=>['respond','class-join'].includes(c.operation))).toHaveLength(0)
 })
 
 test('class joining invalid codes give feedback and existing membership opens without a write',async({page})=>{
@@ -111,7 +121,7 @@ test('a newly joined class refreshes Home after explicit confirmation',async({pa
  await dialog.getByRole('button',{name:'Confirm Join Class'}).click()
  await expect(page.getByRole('navigation',{name:'Student course sections'})).toBeVisible()
  expect(commands.filter(command=>command.action==='join')).toHaveLength(1)
- await page.getByRole('link',{name:'Back to Home',exact:true}).click()
+ await page.getByRole('button',{name:'Close class and return to Home',exact:true}).click()
  await expect(page.getByRole('region',{name:'Your classes'}).getByRole('button')).toHaveCount(1)
 })
 

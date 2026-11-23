@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import {lazy,Suspense,useState} from 'react'
 import {Link,useNavigate,useSearchParams} from 'react-router-dom'
 import {useAuth} from '../../context/AuthContext'
 import {useAcademicRecords} from '../../context/AcademicContext'
@@ -11,10 +11,12 @@ import useAcademicTerm from './useAcademicTerm'
 import LoadTermFilter from './LoadTermFilter'
 import './student-classroom.css'
 
+const ClassPortal = lazy(() => import('./AcademicPortal'))
+
 function coursePath(course, term, tab, item) {
   const params = new URLSearchParams({course, term, studentTab:tab})
   if (item) params.set('item', item)
-  return '/courseware?' + params
+  return '/dashboard?' + params
 }
 
 const termLabel = course => {
@@ -28,7 +30,9 @@ export default function StudentHome() {
   const {term} = useAcademicTerm()
   const navigate = useNavigate()
   const [params,setParams] = useSearchParams()
-  const joining = params.get('join') === 'class'
+  const classOpen = params.has('course')
+  const closeClass = () => setParams(params.has('term') ? {term:params.get('term')} : {},{replace:true})
+  const joining = !classOpen && params.get('join') === 'class'
   const setJoining = open => {
     const next = new URLSearchParams(params)
     if (open) next.set('join','class')
@@ -117,6 +121,7 @@ export default function StudentHome() {
         </li>)}</ul> : <p>No published announcements.</p>}
       </div></section>
     </>}
+    {classOpen && <Suspense fallback={<p role="status">Opening class...</p>}><ClassPortal view="courseware" classModal onCloseClass={closeClass}/></Suspense>}
     {canJoin && joining && <JoinClassDialog onClose={() => setJoining(false)} onJoined={joined}/>}
   </div>
 }
