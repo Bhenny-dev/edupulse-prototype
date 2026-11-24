@@ -97,21 +97,9 @@
 .student-parent-material { font-weight: 650; }
 
 
-.student-score-summary {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px 20px;
-  margin: 12px 0 20px;
-}
-.student-score-summary > div {
-  flex: 1 1 155px;
-  padding: 12px;
-  border: 1px solid var(--gray-200);
-  border-radius: 12px;
-}
-.student-score-summary dd {
-  margin: 6px 0 0;
-  font-weight: 700;
+.student-learning .student-course-scores .kpi-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr));
+  margin-top: 12px;
 }
 .student-score-week {
   margin: 16px 0 24px;

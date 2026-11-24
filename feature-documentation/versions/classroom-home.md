@@ -42,3 +42,5 @@ Instructor changes started in parallel before this work. Integrate the Instructo
 9. Personal scores now use week-grouped results that reflow on phones. Graded totals and pending manual marks are distinct; submitted rows reopen their own attempt. Six desktop and mobile checks covered review, file submission, and class and private discussions.
 
 10. Notification, Pulse material, and personal score destinations use the Home class dialog. Desktop and mobile coverage exercised both role entry points, join and review, disabled-opener focus recovery, rejected foreign IDs, authenticated reader controls and read-only inspection. The older instructor reader cases now open via the actual class tabs and management menu.
+
+11. The class Scores summary now uses the same dashboard summary cards as the other student views. Six desktop and mobile checks passed for class navigation, narrow-screen reflow, and pending instructor review.

@@ -16,6 +16,8 @@ const studentSummaryIcons = {
   'My current attempts': ClipboardCheck, 'Average raw score': TrendingUp,
   'Published assessments': ClipboardCheck, 'Recorded material opens': CheckCircle,
   'Topics mastered': Target, 'Topics needing review': BookOpen, 'Mastery cutoff': Target,
+  'Submitted assessments': ClipboardCheck, 'Pending instructor review': FileText,
+  'Points on scored assessments': TrendingUp,
 }
 export function KPIs({ items }) {
   const {user}=useAuth()

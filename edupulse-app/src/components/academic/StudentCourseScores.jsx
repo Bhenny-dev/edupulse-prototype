@@ -1,4 +1,5 @@
 import {useState} from 'react'
+import {KPIs} from './AcademicUI'
 import {deliveryTimeLabel} from '../../utils/blockDelivery'
 
 const statuses=['Not started','In progress','Scheduled','Awaiting schedule','Missing','Pending Review','Reviewed']
@@ -14,13 +15,13 @@ export default function StudentCourseScores({items,attemptFor,stateFor,relatedMa
   const visible=results.filter(row=>filter==='all'||row.status===filter)
   const weeks=[...new Set(visible.map(row=>row.item.week))]
 
-  return <section aria-label="Your course scores">
+  return <section className="student-course-scores" aria-label="Your course scores">
     <h2>Your Scores</h2>
-    <dl className="student-score-summary">
-      <div><dt>Submitted assessments</dt><dd>{submitted.length}</dd></div>
-      <div><dt>Pending instructor review</dt><dd>{pending}</dd></div>
-      <div><dt>Points on scored assessments</dt><dd>{graded.length?earned+' / '+maximum:'No scores yet'}</dd></div>
-    </dl>
+    <KPIs items={[
+      ['Submitted assessments',submitted.length],
+      ['Pending instructor review',pending],
+      ['Points on scored assessments',graded.length?earned+' / '+maximum:'No scores yet'],
+    ]}/>
     <label className="form-label">Assessment status
       <select className="form-select" value={filter} onChange={event=>setFilter(event.target.value)}>
         <option value="all">All statuses</option>
