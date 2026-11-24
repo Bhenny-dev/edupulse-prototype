@@ -428,4 +428,11 @@ Sources: Classroom Help "Get started with Classroom for teachers", "Invite stude
 | T14.7 | Class List: the instructor then each block with its student count, search and Invite students (makes and copies the class code) | People: Teachers, Students, Invite students | Complete |
 | T14.8 | Scores: the block's scores with a banner for written responses waiting for marking and a jump to the review list | Grades: gradebook grid, colour-coded status | Complete |
 | T14.9 | States and access: loading, empty and error states inside the modal; focus returns to the card; full-screen modal on phones; Pulse and notifications open the class modal | UI principles | Complete |
-| T14.10 | Audit pass of every class tab against the rest of the instructor pages, tests and documentation log | UI principles | Planned |
+| T14.10 | Audit: release gate, 14 instructor specs on desktop, the instructor Home grid is a labelled "Your classes" region, notes and log updated | UI principles | Complete |
+
+Not done in G14, and why:
+- Student Monitoring (the instructor station) still shows the same rosters and scores as the Class List and Scores tabs. The owner asked to remove the Course navbar only, and several specs depend on that page, so it stays until the owner says to fold it into the class.
+- A single Create menu (Classwork's Create) was not added: materials and assessments are added inside their topic, where the week and topic are already known.
+- A gradebook grid of students by assessments with status colours needs a new data view and was not built; Scores shows the existing per-assessment tables with a marking banner.
+
+- 2026-11-24: G14 built in ten iterations, each pushed (a03312d7 class modal, a4b7db94 header, c6716d3b card menu and Home To review/Upcoming, 227401f8 code display, 821fb075 week filter, 017c3dec Invite students, 4fbbb1d9 Scores banner, 80ed2be7 focus return) and deployed from PowerShell. Deploying from Git Bash fails silently (GNU tar cannot read C: paths), so the first two iterations reached production with the next deploy.

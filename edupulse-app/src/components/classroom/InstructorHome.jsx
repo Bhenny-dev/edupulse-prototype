@@ -47,7 +47,7 @@ export default function InstructorHome({ data, loaded, status, actions }) {
     {data.classroomError && <p role="status" className="connected-pulse-warning mb-16">{data.classroomError}</p>}
     {!writable && courses.length > 0 && <p className="text-sm text-muted mb-16">This semester is view-only. Open a class to review its records.</p>}
     {loaded && !courses.length && <EmptyClasses title="No classes yet">The Dean has not assigned a course to you for this semester. Your classes appear here once a course is loaded; then create a class code so your students can join.</EmptyClasses>}
-    {courses.length > 0 && <div className="class-card-grid">{courses.map(course => {
+    {courses.length > 0 && <section id="your-classes" aria-label="Your classes" className="class-card-grid">{courses.map(course => {
       const syllabus = syllabusForCourse(workspace.syllabi, course), students = counts(course)
       const menu = { label: `More for ${course.code}${repeated(course.code) ? ` (${course.blocks.join(', ')})` : ''}`, actions: [
         ...course.blocks.map(block => ({ block, code: codeFor(data.classCodes, course, block) })).filter(item => item.code).map(({ block, code }) => ({ label: `Copy class code, block ${block}`, icon: Copy, onSelect: () => copyCode(code.code, block) })),
@@ -59,7 +59,7 @@ export default function InstructorHome({ data, loaded, status, actions }) {
         lines={[[course.semester, course.academicYear && `AY ${course.academicYear}`, course.units && `${course.units} units`].filter(Boolean).join(' · ')]}
         chips={course.blocks.length ? course.blocks.map(block => `Block ${block} · ${students.get(block)?.size || 0}`) : ['No block section yet']}
         status={syllabus ? `Syllabus: ${SYLLABUS_STATUS_META[syllabus.status]?.label || syllabus.status}` : 'Syllabus not added'} />
-    })}</div>}
+    })}</section>}
     {courses.length > 0 && <div className="class-home-work">
       <section className="card" aria-label="To review"><div className="card-header"><h2><ClipboardCheck size={16} aria-hidden="true" /> To review</h2></div>
         <div className="card-body">{review.length ? review.map(({ course, count }) => <button type="button" key={course.id} className="class-work-row" onClick={() => open(course, { tab: 'scores' })}><strong>{named(course)}</strong><span>{count} written {count === 1 ? 'response' : 'responses'} to mark</span></button>)
