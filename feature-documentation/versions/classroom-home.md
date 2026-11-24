@@ -38,3 +38,5 @@ Student Home now owns the course directory and progress cards. Legacy course boo
 7. The class stream displays published posts in chronological order, a shortcut to each linked week, and the class's pending assessments. Desktop and mobile checked the same notice in the stream and weekly view with authorized provider links.
 
 8. Week and resource filters keep covered assessments under their teaching material and show stored reading progress. Six desktop and mobile checks passed for topic nesting, notice links, progress, and the keyboard.
+
+9. Personal scores now use week-grouped results that reflow on phones. Graded totals and pending manual marks are distinct; submitted rows reopen their own attempt. Six desktop and mobile checks covered review, file submission, and class and private discussions.

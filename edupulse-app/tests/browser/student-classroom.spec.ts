@@ -33,7 +33,14 @@ test('class joining invalid codes give feedback and existing membership opens wi
 test('an assessment deep link does not start or submit on reload, and manual scores remain pending',async({page})=>{
  const commands=trackCommands(page);const f=await baselineUI(page,'student');const p=f.records.publications.find(p=>p.type==='assessment')!;const a=f.records.attempts.find(a=>a.publication_id===p.id)!;a.grading_status='pending_review'
  await page.route('**/api/ai?action=academic',r=>{if(r.request().method()==='POST'&&r.request().postDataJSON().operation==='feedback')return r.fulfill({json:{available:false,reason:'Pending instructor review'}});return r.fallback()})
- await page.goto(`/#/courseware?course=${p.course_id}&studentTab=scores&item=${p.id}`);const reader=page.getByRole('dialog',{name:p.title,exact:true});await expect(reader).toBeVisible({timeout:20000});await expect(reader).toContainText('Score pending review');await page.reload();await expect(reader).toBeVisible({timeout:20000});expect(commands.filter(c=>['start','respond'].includes(c.operation))).toHaveLength(0)
+ await page.goto(`/#/courseware?course=${p.course_id}&studentTab=scores&item=${p.id}`);const reader=page.getByRole('dialog',{name:p.title,exact:true});await expect(reader).toBeVisible({timeout:20000});await expect(reader).toContainText('Score pending review');await page.reload();await expect(reader).toBeVisible({timeout:20000})
+ await reader.getByRole('button',{name:'Close assessment',exact:true}).click()
+ const results=page.getByRole('region',{name:'Personal assessment results'})
+ const row=results.getByRole('listitem').filter({hasText:p.title})
+ await expect(row).toContainText('Score pending review')
+ await row.getByRole('button',{name:'Review attempt'}).click()
+ await expect(reader).toBeVisible()
+ expect(commands.filter(c=>['start','respond'].includes(c.operation))).toHaveLength(0)
 })
 
 

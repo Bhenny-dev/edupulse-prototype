@@ -5,8 +5,9 @@ import ResourceLinks from './StudentResourceLinks'
 import {useLocation,useSearchParams} from 'react-router-dom'
 import {currentAttempts} from './academicData'
 import {deliveryState} from '../../utils/blockDelivery'
-import {itemProgress,pendingAssessments,recordsNow} from './studentProgress'
+import {dueOf,itemProgress,pendingAssessments,recordsNow} from './studentProgress'
 import StudentProgressBar from './StudentProgressBar'
+import StudentCourseScores from './StudentCourseScores'
 import StudentDueWork from './StudentDueWork'
 import TeachingAttachments from '../courseware/TeachingAttachments'
 import {Table} from './AcademicUI'
@@ -27,7 +28,7 @@ function Announcement({post,instructor,onWeek}){
 export default function StudentCoursePanels({course,data,onOpen,busy}){
  const {state:historyState}=useLocation()
  const [resourceFilter,setResourceFilter]=useState('all')
- const [params,setParams]=useSearchParams(),[status,setStatus]=useState('all')
+ const [params,setParams]=useSearchParams()
  const tabs=[['announcements','Announcements'],['materials','Teaching Materials & Assessments'],['classlist','Class List'],['scores','Scores'],['outline','Syllabus / Course Outline']]
  const tab=tabs.some(([id])=>id===params.get('studentTab'))?params.get('studentTab'):'materials'
  const posts=(data.announcements||[]).filter(a=>a.course_id===course.id).sort((a,b)=>b.created_at.localeCompare(a.created_at))
@@ -41,23 +42,16 @@ export default function StudentCoursePanels({course,data,onOpen,busy}){
   const attempt=attemptFor(item)
   if(attempt?.grading_status==='pending_review')return 'Pending Review'
   const delivery=deliveryState(item,now)
-  const closed=delivery==='closed'||Boolean(item.due_at&&Date.parse(item.due_at)<now)
+  const due=dueOf(item)
+  const closed=delivery==='closed'||Boolean(due&&Date.parse(due)<now)
+  if(!attempt&&delivery==='unconfigured')return 'Awaiting schedule'
+  if(!attempt&&(delivery==='scheduled'||item.release_at&&Date.parse(item.release_at)>now))return 'Scheduled'
   const session=(data.sessions||[]).find(entry=>entry.publication_id===item.id&&String(entry.source_version)===String(item.source_version)&&entry.attempt_no>(attempt?.attempt_no||0))
   if(session&&!closed)return 'In progress'
   if(attempt)return 'Reviewed'
   if(closed)return 'Missing'
   return 'Not started'
  }
- const scoreRows=assessments.filter(item=>status==='all'||state(item)===status).map(item=>{
-  const attempt=attemptFor(item)
-  const material=relatedMaterials(item).map(parent=>parent.title).join(', ')
-  const result=attempt?.grading_status==='pending_review'?'Pending Review':attempt?`${attempt.score} / ${attempt.max_score}`:'Not submitted'
-  return [item.week,item.title,material||'Standalone assessment',state(item),result,attempt?time(attempt.submitted_at):'Not submitted',
-   <button key={item.id} className="btn btn-secondary" disabled={busy} onClick={event=>onOpen(item,event.currentTarget)}>{attempt?'Review attempt':'Open assessment'}</button>]
- })
- const reviewed=assessments.map(attemptFor).filter(attempt=>attempt&&attempt.grading_status!=='pending_review'&&attempt.max_score>0)
- const earned=reviewed.reduce((total,attempt)=>total+attempt.score,0)
- const available=reviewed.reduce((total,attempt)=>total+attempt.max_score,0)
  const kindOf=item=>item.type==='assessment'?'assessment':item.content?.submissionOnly?'submission':'material'
  const resource=item=>{
   const progress=kindOf(item)==='material'?itemProgress(data,item):null
@@ -193,16 +187,8 @@ export default function StudentCoursePanels({course,data,onOpen,busy}){
   })}
   {!matchingWeeks.length&&<p role="status">{weeks.length?'No resources match these filters.':'No teaching materials or assessments have been published for this class.'}</p>}
  </section>}
- {tab==='scores'&&<section aria-label="Your course scores">
-  <h2>Your Scores</h2>
-  <p>{reviewed.length ? `${earned} of ${available} points across ${reviewed.length} scored assessments.` : 'No scored assessments yet.'}</p>
-  <label className="form-label">Assessment status
-   <select className="form-select" value={status} onChange={event=>setStatus(event.target.value)}>
-    {['all','Not started','In progress','Missing','Pending Review','Reviewed'].map(option=><option key={option} value={option}>{option==='all'?'All statuses':option}</option>)}
-   </select>
-  </label>
-  <Table label="Personal assessment results" headers={['Week','Assessment','Teaching material','Status','Earned / maximum','Submitted','Action']} rows={scoreRows} empty="No assessment results match this view."/>
- </section>}
+ {tab==='scores'&&<StudentCourseScores items={assessments} attemptFor={attemptFor} stateFor={state}
+  relatedMaterials={relatedMaterials} onOpen={onOpen} busy={busy}/>}
  {tab==='classlist'&&<section><h2>Class List</h2><p>Instructor: {course.instructor_name||'Not recorded'}</p><Table label="Your class membership" headers={['Name','Section','Membership']} rows={data.enrollments.filter(e=>e.course_id===course.id).map(e=>[e.display_name||'Your membership',e.block_section||'Not recorded',e.suspended?'Suspended':'Active'])}/><p className="text-sm text-muted">Only membership information authorized for your account is shown. Classmate details are not shared by the student records service.</p></section>}
  {tab==='outline'&&<section><h2>Published Course Outline</h2>{course.active&&course.outline?.length?<Table label="Published outline" headers={['Week','Contents','Learning outcomes']} rows={course.outline.map(row=>[row.week,Array.isArray(row.contents)?row.contents.join('\n'):row.contents,row.ilos||'Not recorded'])}/>:<p>No approved course outline has been published for this class.</p>}
   {course.active&&course.source_links?.length>0&&<section aria-label="Recorded course sources">

@@ -95,3 +95,48 @@
 .student-topic-filters select { min-height: 44px; }
 .student-topic > summary { scroll-margin-top: 150px; }
 .student-parent-material { font-weight: 650; }
+
+
+.student-score-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  margin: 12px 0 20px;
+}
+.student-score-summary > div {
+  flex: 1 1 155px;
+  padding: 12px;
+  border: 1px solid var(--gray-200);
+  border-radius: 12px;
+}
+.student-score-summary dd {
+  margin: 6px 0 0;
+  font-weight: 700;
+}
+.student-score-week {
+  margin: 16px 0 24px;
+}
+.student-score-week ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.student-score-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--gray-200);
+  overflow-wrap: anywhere;
+}
+.student-score-row h4, .student-score-row p { margin: 0; }
+.student-score-result {
+  display: grid;
+  justify-items: start;
+  gap: 4px;
+}
+@media (max-width: 700px) {
+  .student-score-row { grid-template-columns: minmax(0, 1fr); }
+  .student-score-row .btn { justify-self: start; }
+}
