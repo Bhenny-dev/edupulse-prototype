@@ -56,3 +56,26 @@
   min-height: 44px;
   width: 100%;
 }
+
+
+.student-class-stream {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(240px, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+.student-class-stream > section {
+  min-width: 0;
+}
+.student-class-stream .student-home-items .btn {
+  text-align: left;
+  white-space: normal;
+}
+.student-announcement:focus {
+  outline: 2px solid var(--sky-500);
+  scroll-margin-top: 110px;
+}
+@media (max-width: 760px) {
+  .student-class-stream { grid-template-columns: minmax(0, 1fr); }
+  .student-announcement:focus { scroll-margin-top: 168px; }
+}

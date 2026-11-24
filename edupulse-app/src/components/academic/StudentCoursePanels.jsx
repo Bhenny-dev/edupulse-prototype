@@ -5,13 +5,24 @@ import ResourceLinks from './StudentResourceLinks'
 import {useLocation,useSearchParams} from 'react-router-dom'
 import {currentAttempts} from './academicData'
 import {deliveryState} from '../../utils/blockDelivery'
-import {recordsNow} from './studentProgress'
+import {pendingAssessments,recordsNow} from './studentProgress'
+import StudentDueWork from './StudentDueWork'
 import TeachingAttachments from '../courseware/TeachingAttachments'
 import {Table} from './AcademicUI'
 import './student-classroom.css'
 
 const time=value=>value?new Date(value).toLocaleString('en-PH',{timeZone:'Asia/Manila'}):'No due date'
-function Announcement({post,instructor}){return <article className="student-resource" tabIndex={-1} id={`announcement-${post.id}`}><h3>{post.title}</h3><p className="text-sm text-muted">{instructor||'Course instructor'} · {time(post.created_at)} (Philippine time){post.week?` · Week ${post.week}`:''}</p><p className="student-post">{post.body}</p><ResourceLinks links={post.attachments}/></article>}
+function Announcement({post,instructor,onWeek}){
+ return <article className="student-resource student-announcement" tabIndex={-1} id={'announcement-'+post.id}>
+  <h3>{post.title}</h3>
+  <p className="text-sm text-muted">{instructor||'Course instructor'} / <time dateTime={post.created_at}>{time(post.created_at)}</time> (Philippine time)</p>
+  {post.week&&<p className="text-sm">{onWeek
+   ? <button type="button" className="btn btn-secondary" onClick={()=>onWeek(post.week)}>View Week {post.week}</button>
+   : 'Week '+post.week}</p>}
+  <p className="student-post">{post.body}</p>
+  <ResourceLinks links={post.attachments}/>
+ </article>
+}
 export default function StudentCoursePanels({course,data,onOpen,busy}){
  const {state:historyState}=useLocation()
  const [params,setParams]=useSearchParams(),[status,setStatus]=useState('all')
@@ -67,12 +78,13 @@ export default function StudentCoursePanels({course,data,onOpen,busy}){
   if(focusedPostId)document.getElementById(`announcement-${focusedPostId}`)?.focus()
   else if(focusedWeek&&!params.has('item')&&!params.has('publication'))document.getElementById(`week-${focusedWeek}-heading`)?.focus()
  },[focusedPostId,focusedWeek,params])
- const changeSection=id=>{
-  if(id===tab)return
+ const changeSection=(id,week)=>{
+  if(id===tab && !week)return
   const next=new URLSearchParams(params)
   next.set('studentTab',id)
   next.delete('item')
-  next.delete('week')
+  if(week)next.set('week',String(week))
+  else next.delete('week')
   setParams(next,{replace:true,state:historyState})
  }
  function moveSectionFocus(event){
@@ -91,7 +103,18 @@ export default function StudentCoursePanels({course,data,onOpen,busy}){
    changeSection(id)
   }}>{label}</button>)}
  </nav>
- {tab==='announcements'&&<section aria-label="Class announcements">{data.classroomError&&<p role="alert">{data.classroomError}</p>}{posts.length?posts.map(post=><Announcement key={post.id} post={post} instructor={course.instructor_name}/>):<p>No published announcements for this class.</p>}</section>}
+ {tab==='announcements'&&<div className="student-class-stream">
+  <section aria-label="Class announcements">
+   <h2>Announcements</h2>
+   {data.classroomError&&<p role="alert">{data.classroomError}</p>}
+   {params.has('item')&&!focusedPostId&&!items.some(item=>item.id===params.get('item'))&&!data.classroomError&&<p role="alert">This announcement is unavailable in your class.</p>}
+   {posts.length?posts.map(post=><Announcement key={post.id} post={post} instructor={course.instructor_name} onWeek={week=>changeSection('materials',week)}/>):<p>No published announcements for this class.</p>}
+  </section>
+  <StudentDueWork title="Class assessments" work={pendingAssessments(data,now,course.id)} renderItem={item=><>
+   <button type="button" className="btn btn-secondary" disabled={busy} onClick={event=>onOpen(item,event.currentTarget)}>{item.title}</button>
+   <span className="text-sm text-muted">Week {item.week}</span>
+  </>}/>
+ </div>}
  {tab==='materials'&&<section aria-label="Weekly teaching materials and assessments"><div className="academic-actions"><button className="btn btn-secondary" onClick={()=>setExpanded(new Set(keys))}>Expand all topics</button><button className="btn btn-secondary" onClick={()=>setExpanded(new Set())}>Collapse all topics</button></div>{weeks.map(week=>{
  const groups=topicGroups(week)
  return <details className="student-topic" key={week} open={isExpanded(String(week))} onToggle={e=>{if(e.target===e.currentTarget)toggle(String(week),e.currentTarget.open)}}><summary id={`week-${week}-heading`}>Week {week}</summary>{groups.map(group=>{
