@@ -1,5 +1,6 @@
-import { useMemo, useState } from 'react'
-import { UserPlus } from 'lucide-react'
+import { useMemo, useRef, useState } from 'react'
+import { ClipboardCheck, UserPlus } from 'lucide-react'
+import { currentAttempts } from '../academic/academicData'
 import { useAuth } from '../../context/AuthContext'
 import { useWorkspace, useWorkspaceViewState } from '../../context/WorkspaceContext'
 import { monitoringCohorts, cohortRecords } from '../academic/monitoringModel'
@@ -54,11 +55,16 @@ export default function ClassPeople({ course, data, readOnly = false, onAddBlock
 export function ClassScores({ course, data }) {
   const cohorts = useClassCohorts(course, data)
   const [block, setBlock] = useWorkspaceViewState(`class:${course.id}:scores-block`, null)
-  const cohort = cohorts.find(item => item.block === block) || cohorts[0]
+  const cohort = cohorts.find(item => item.block === block) || cohorts[0], analytics = useRef(null)
+  const scoped = cohort ? cohortRecords(data, cohort) : null
+  const pending = scoped ? currentAttempts(scoped).filter(attempt => attempt.grading_status === 'pending_review' && !attempt.is_test).length : 0
+  const showReview = () => [...(analytics.current?.querySelectorAll('h2') || [])].find(heading => /Review responses/.test(heading.textContent))?.scrollIntoView({ block: 'start' })
   if (!cohort) return <EmptyClasses title="No scores yet">Scores appear here when students of a block submit delivered assessments. A block needs its class list and the approved syllabus of the course first.</EmptyClasses>
   return <>
     {cohorts.length > 1 && <nav className="tabs mb-24" aria-label="Scores by block section">{cohorts.map(item => <button type="button" key={item.id} className={`tab ${item === cohort ? 'active' : ''}`} aria-pressed={item === cohort} onClick={() => setBlock(item.block)}>Block {item.block}</button>)}</nav>}
     <p className="text-sm text-muted mb-16">Block {cohort.block}: scores of delivered assessments. The latest submitted attempt counts. These are EduPulse assessment scores, not official grades.</p>
-    <MonitoringAnalytics key={cohort.id} data={cohortRecords(data, cohort)} tab="assessments" scope={cohort.id} />
+    {pending > 0 && <div className="class-mark-banner" role="status"><ClipboardCheck size={18} aria-hidden="true" /><span><strong>{pending}</strong> written {pending === 1 ? 'response is' : 'responses are'} waiting for your marking in block {cohort.block}.</span>
+      <button type="button" className="btn btn-secondary btn-sm" onClick={showReview}>Go to review</button></div>}
+    <div ref={analytics}><MonitoringAnalytics key={cohort.id} data={scoped} tab="assessments" scope={cohort.id} /></div>
   </>
 }

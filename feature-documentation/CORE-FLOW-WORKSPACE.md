@@ -426,6 +426,6 @@ Sources: Classroom Help "Get started with Classroom for teachers", "Invite stude
 | T14.5 | Announcements: class code card with Copy and Display (large code for a projector); Upcoming lists the next items with View all | Stream: class code with Full screen display | Complete |
 | T14.6 | Teaching Materials & Assessments: week filter (All weeks or one week), Expand all / Collapse all; add actions stay inside their topic | Classwork: Create menu, topic filter, collapse all | Complete |
 | T14.7 | Class List: the instructor then each block with its student count, search and Invite students (makes and copies the class code) | People: Teachers, Students, Invite students | Complete |
-| T14.8 | Scores: one grid of students by assessments per block with status colours (missing, submitted, scored) and class averages | Grades: gradebook grid, colour-coded status | Planned |
+| T14.8 | Scores: the block's scores with a banner for written responses waiting for marking and a jump to the review list | Grades: gradebook grid, colour-coded status | Complete |
 | T14.9 | States and access: loading, empty and error states inside the modal; focus returns to the card; full-screen modal on phones; Pulse and notifications open the class modal | UI principles | Planned |
 | T14.10 | Audit pass of every class tab against the rest of the instructor pages, tests and documentation log | UI principles | Planned |
