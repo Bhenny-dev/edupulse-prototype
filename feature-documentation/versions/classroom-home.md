@@ -25,7 +25,7 @@ Instructor changes started in parallel before this work. Integrate the Instructo
 
 1. Student Home opens the selected class in a page dialog. The existing reader and source preview are child dialogs. Eight desktop and mobile cases confirmed class entry, selection restoration, pending assigned classes and both join outcomes. The production build and typecheck passed.
 
-Student Home now owns the course directory and progress cards. Legacy course bookmarks open the authorized class on Home. Build, typecheck, and 14 targeted desktop and mobile Playwright checks passed.
+2. Student Home now owns the course directory and progress cards. Legacy course bookmarks open the authorized class on Home. Build, typecheck, and 14 targeted desktop and mobile Playwright checks passed.
 
 3. One history entry per student class or resource reader keeps Back and Forward predictable. Restoring focus accounts for buttons temporarily disabled by a request. Build and six desktop and mobile checks passed for history, joins and older links.
 
@@ -40,3 +40,5 @@ Student Home now owns the course directory and progress cards. Legacy course boo
 8. Week and resource filters keep covered assessments under their teaching material and show stored reading progress. Six desktop and mobile checks passed for topic nesting, notice links, progress, and the keyboard.
 
 9. Personal scores now use week-grouped results that reflow on phones. Graded totals and pending manual marks are distinct; submitted rows reopen their own attempt. Six desktop and mobile checks covered review, file submission, and class and private discussions.
+
+10. Notification, Pulse material, and personal score destinations use the Home class dialog. Desktop and mobile coverage exercised both role entry points, join and review, disabled-opener focus recovery, rejected foreign IDs, authenticated reader controls and read-only inspection. The older instructor reader cases now open via the actual class tabs and management menu.

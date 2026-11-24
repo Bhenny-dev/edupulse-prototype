@@ -76,7 +76,7 @@ test('attachment picker remains usable with a pending failed journal; only persi
 test('prepared syllabus can receive a private file draft before approval without activation or delivery',async({page})=>{
  const fixture=await instructorCourseUI(page),workspace=fixture.getWorkspace() as any
  workspace.syllabi[0].status='drafted';fixture.setWorkspace(workspace);await files(page)
- await page.goto(`/#/courseware?course=${fixture.syllabus.id}`)
+ await page.goto(`/#/courseware?course=${fixture.syllabus.id}&tab=materials`)
  const topic=page.locator('[data-topic="variables"]');await topic.locator('summary').click()
  await topic.getByRole('button',{name:'Add teaching material',exact:true}).click()
  const form=page.getByRole('form',{name:'Add teaching material',exact:true})
@@ -92,7 +92,7 @@ test('prepared syllabus can receive a private file draft before approval without
 
 test('assessment draft attachments preserve questions and published materials have an explicit revision path',async({page})=>{
  const fixture=await instructorCourseUI(page),questions=structuredClone((fixture.getWorkspace() as any).content.quiz.content.questions);await files(page)
- await page.goto(`/#/courseware?course=${fixture.syllabus.id}`)
+ await page.goto(`/#/courseware?course=${fixture.syllabus.id}&tab=materials`)
  const topic=page.locator('[data-topic="variables"]');await topic.locator('summary').click()
  await topic.locator('.instructor-sequence-item').filter({has:page.getByText('Variable check',{exact:true})}).getByRole('button',{name:'Open',exact:true}).click()
  let dialog=page.getByRole('dialog',{name:'Variable check',exact:true});await fits(page,dialog)
@@ -141,8 +141,8 @@ for(const support of [false,true])test(`${support?'Admin support':'Student'} rea
 for(const role of ['dean','associate_dean'])test(`${role} course inspection uses a page modal and available readonly attachments`,async({page})=>{
  const fixture=await deanManagementUI(page,role);(fixture.inspection.items[0]!.content as any).attachments=[attachment];await files(page)
  await page.goto('/#/records')
- await page.getByRole('button',{name:/^IT 102 Programming foundations,/}).click()
- await page.getByRole('button',{name:'Inspect Alex Sample Instructor BSIT-1A',exact:true}).click()
+ await page.getByRole('button',{name:'Course actions for IT 102 Alex Sample Instructor',exact:true}).click()
+ await page.getByRole('menuitem',{name:'View syllabus and contents',exact:true}).click()
  const dialog=page.getByRole('dialog',{name:'Syllabus and teaching contents',exact:true});await fits(page,dialog)
  await dialog.getByRole('button',{name:'View Function calls',exact:true}).click()
  await expect(dialog.getByRole('button',{name:'Attach file',exact:true})).toHaveCount(0)

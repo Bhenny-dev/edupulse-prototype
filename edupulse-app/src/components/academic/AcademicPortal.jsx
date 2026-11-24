@@ -54,13 +54,16 @@ export default function AcademicPortal({ view, classModal = false, onCloseClass 
   const [readerId,setReaderId]=useWorkspaceViewState(`academic-reader:${view}`,null)
   const selected=data.publications.find(item=>item.active&&item.id===(pageParams.get('item')||(user?.role==='student'?null:readerId))&&(view!=='courseware'||user?.role!=='student'||item.course_id===pageParams.get('course')))||null
   const readerOpener=useRef(null)
-  useEffect(()=>{
-    if(classModal&&!selected)readerOpener.current?.focus({preventScroll:true})
-  },[classModal,selected?.id])
   const sourcePreview = data.publications.find(item => item.id === pageParams.get('publication') && item.active && item.type !== 'assessment' && item.course_id === pageParams.get('course') && item.content && (!isScheduledStudent(item) || deliveryState(item)==='open'))
   function isScheduledStudent(item){return user?.role==='student'&&item.delivery_mode==='block_schedule'}
   const closeSourcePreview = () => { const query = new URLSearchParams(pageParams); query.delete('publication'); setPageParams(query,{replace:classModal,state}) }
   const [answerDraft,setAnswerDraft]=useState(null), [busy, setBusy] = useState(false), [result, setResult] = useState(null), [error, setError] = useState('')
+  useEffect(()=>{
+    if(!classModal||selected||busy||!readerOpener.current)return
+    // A fast Back can close the reader while its opener is still disabled.
+    const frame=requestAnimationFrame(()=>readerOpener.current?.focus({preventScroll:true}))
+    return ()=>cancelAnimationFrame(frame)
+  },[classModal,selected?.id,busy])
   const [startedSession,setSession]=useState(null)
   const session=startedSession?.publication_id===selected?.id&&startedSession?.source_version===selected?.source_version?startedSession:(data.sessions||[]).filter(s=>s.student_id===user?.id&&s.publication_id===selected?.id&&s.source_version===selected?.source_version).sort((a,b)=>b.attempt_no-a.attempt_no)[0]||null
   // The form is ephemeral and tied to the exact version and session. History
@@ -140,6 +143,7 @@ export default function AcademicPortal({ view, classModal = false, onCloseClass 
         {course && error && !selected && <p role="alert">{error}</p>}
         {course && pageParams.has('item') && !selected && pageParams.get('studentTab') !== 'announcements' && <p role="alert">This item is unavailable in your class.</p>}
         {course && reader}
+        {course && pageParams.has('publication') && !sourcePreview && <p role="alert">This teaching source is unavailable in your class.</p>}
         {course && sourceReader}
       </div>
     </PageModal>

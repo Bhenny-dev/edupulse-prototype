@@ -4,6 +4,8 @@ import { useAcademicRecords } from '../context/AcademicContext'
 import { useWorkspace } from '../context/WorkspaceContext'
 import { pendingReminders, recordsNow } from '../components/academic/studentProgress'
 
+import { studentClassPath } from '../utils/studentClassPath'
+
 // Notifications — SYSTEM_SPEC §5. Unopened-material and unanswered-assessment
 // reminders fan out to BOTH the instructor and the student; syllabus-status
 // and delivery-gap notices go to Dean and Program Coordinator accounts.
@@ -68,7 +70,7 @@ export function useNotifications(role) {
   function courseItemPath(publication, tab = 'materials') {
     const item = publications?.get(publication)
     if (!item) return undefined
-    return '/courseware?' + new URLSearchParams({course:item.course_id,studentTab:tab,item:item.id})
+    return studentClassPath(item.course_id,{studentTab:tab,item:item.id})
   }
   const add = (id, message, category, type = 'info', time = 'Current records', path) =>
     current.push({ id, message, category, type, time, path, read: false })

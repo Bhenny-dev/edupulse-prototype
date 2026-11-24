@@ -3,6 +3,7 @@ import {Link,useLocation,useNavigate,useSearchParams} from 'react-router-dom'
 import {useAuth} from '../../context/AuthContext'
 import {useAcademicRecords} from '../../context/AcademicContext'
 import {recordsForLoadTerm,loadTerm,CURRENT_LOAD_TERM} from '../../utils/loadTerms'
+import {studentClassPath} from '../../utils/studentClassPath'
 import {ClassCard,EmptyClasses} from '../classroom/ClassCards'
 import JoinClassDialog from './JoinClassDialog'
 import {enrolledCourses} from './StudentClassDetail'
@@ -15,12 +16,6 @@ import LoadTermFilter from './LoadTermFilter'
 import './student-classroom.css'
 
 const ClassPortal = lazy(() => import('./AcademicPortal'))
-
-function coursePath(course, term, tab, item) {
-  const params = new URLSearchParams({course, term, studentTab:tab})
-  if (item) params.set('item', item)
-  return '/dashboard?' + params
-}
 
 const searchWords = value => String(value || '').normalize('NFKD').replace(/\p{Mark}/gu,'').toLowerCase().replace(/[^\p{Letter}\p{Number}]+/gu,' ').trim()
 
@@ -78,7 +73,7 @@ export default function StudentHome() {
     const joinedTerm = loadTerm(result.academic_year,result.semester)
     if (result.course_id) {
       const message = result.status === 'member' ? 'You are already a member of this class.' : 'You joined the class.'
-      navigate(coursePath(result.course_id,joinedTerm,'announcements'),{replace:true,state:{joinNotice:message,classEntry:state?.joinEntry}})
+      navigate(studentClassPath(result.course_id,{term:joinedTerm,studentTab:'announcements'}),{replace:true,state:{joinNotice:message,classEntry:state?.joinEntry}})
       return
     }
     const next = new URLSearchParams(params)
@@ -137,7 +132,7 @@ export default function StudentHome() {
           label={'Open ' + course.course_code + ' ' + course.course_title}
           onOpen={event => {
             classOpener.current = event.currentTarget
-            navigate(coursePath(course.id,term,'announcements'),{state:{classEntry:true}})
+            navigate(studentClassPath(course.id,{term,studentTab:'announcements'}),{state:{classEntry:true}})
           }}
           lines={[course.instructor_name || 'Instructor not recorded',termLabel(course),course.units && course.units + ' units']}
           chips={[block(course) || 'Section not recorded']}
@@ -153,14 +148,14 @@ export default function StudentHome() {
       </EmptyClasses>}
       <section className="card mt-24"><div className="card-body">
         <StudentDueWork work={pending} renderItem={item=><>
-          <Link state={{classEntry:true}} to={coursePath(item.course_id,term,'materials',item.id)}>{item.title}</Link>
+          <Link state={{classEntry:true}} to={studentClassPath(item.course_id,{term,studentTab:'materials',item:item.id})}>{item.title}</Link>
           <span className="text-sm text-muted">{courses.find(course => course.id === item.course_id)?.course_code} / Week {item.week}</span>
         </>}/>
       </div></section>
       <section className="card mt-24"><div className="card-body">
         <h2>Recent Announcements</h2>
         {announcements.length ? <ul className="student-home-items">{announcements.map(post => <li key={post.id}>
-          <Link state={{classEntry:true}} to={coursePath(post.course_id,term,'announcements',post.id)}>{post.title}</Link>
+          <Link state={{classEntry:true}} to={studentClassPath(post.course_id,{term,studentTab:'announcements',item:post.id})}>{post.title}</Link>
           <span className="text-sm text-muted">{post.course_code}</span>
         </li>)}</ul> : <p>No published announcements.</p>}
       </div></section>

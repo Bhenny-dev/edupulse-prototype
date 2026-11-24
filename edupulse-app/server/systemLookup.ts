@@ -1,3 +1,4 @@
+import { studentClassPath } from '../src/utils/studentClassPath.js'
 import { randomUUID } from 'node:crypto'
 import { ApiError, type ChatInput, type Identity } from './contracts.js'
 import { publicKnowledge } from './knowledge.js'
@@ -121,8 +122,19 @@ export async function systemLookup(input:ChatInput,owner:Identity,subject:Identi
     if(!records)return {passages:[]}
     try {
       const rows=await readAcademic(subject), passages:Evidence[]=[]
-      for (const row of rows.courses) passages.push(...coursePassages(`course:${row.id}`,String(row.course_code)+' '+row.course_title,`${row.course_code}: ${row.course_title}. Instructor: ${row.instructor_name||'not recorded'}.`,row.outline, { path: `/courseware?course=${encodeURIComponent(String(subject.role === 'student' ? row.id : row.syllabus_id || row.id))}`, label: 'Open course' }))
-      for (const row of rows.publications) if (row.type==='material') passages.push(...materialPassages(`release:${row.id}`,String(row.title),row.content, { path: `/courseware?course=${encodeURIComponent(String(subject.role === 'student' ? row.course_id : rows.courses.find((course: { id: string; syllabus_id?: string }) => course.id === row.course_id)?.syllabus_id || row.course_id))}&publication=${encodeURIComponent(String(row.id))}&week=${row.week}`, label: 'Open teaching material' }))
+      for (const row of rows.courses) {
+        const path = subject.role === 'student'
+          ? studentClassPath(String(row.id),{studentTab:'materials'})
+          : `/courseware?course=${encodeURIComponent(String(row.syllabus_id || row.id))}`
+        passages.push(...coursePassages(`course:${row.id}`,String(row.course_code)+' '+row.course_title,`${row.course_code}: ${row.course_title}. Instructor: ${row.instructor_name||'not recorded'}.`,row.outline,{path,label:'Open course'}))
+      }
+      for (const row of rows.publications) if (row.type === 'material' && row.active) {
+        const course = rows.courses.find((candidate: {id:string;syllabus_id?:string}) => candidate.id === row.course_id)
+        const path = subject.role === 'student'
+          ? studentClassPath(String(row.course_id),{studentTab:'materials',publication:String(row.id),week:row.week})
+          : `/courseware?course=${encodeURIComponent(String(course?.syllabus_id || row.course_id))}&publication=${encodeURIComponent(String(row.id))}&week=${row.week}`
+        passages.push(...materialPassages(`release:${row.id}`,String(row.title),row.content,{path,label:'Open teaching material'}))
+      }
       return {passages}
     } catch { return {passages:[],warning:'Academic content could not be searched completely.'} }
   }

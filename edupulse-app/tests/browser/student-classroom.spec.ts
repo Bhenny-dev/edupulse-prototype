@@ -253,3 +253,18 @@ test('Home search keeps the class filter when the modal closes',async({page})=>{
  await page.getByRole('button',{name:'Clear search'}).click()
  await expect(opener).toBeVisible()
 })
+
+
+test('an unauthorized course or foreign publication link cannot open a reader',async({page})=>{
+ const commands=trackCommands(page)
+ const f=await baselineUI(page,'student')
+ const own=f.records.courses[0].id
+ const foreign={...f.records.publications[0],id:'foreign-item',course_id:'foreign-class',title:'Foreign material'}
+ f.records.publications.push(foreign)
+ await page.goto('/#/dashboard?course=foreign-class')
+ await expect(page.getByRole('dialog',{name:'Class unavailable'})).toContainText('no longer assigned')
+ await page.goto('/#/dashboard?course='+own+'&studentTab=materials&item='+foreign.id)
+ await expect(page.getByText('This item is unavailable in your class.',{exact:true})).toBeVisible()
+ await expect(page.getByRole('dialog',{name:foreign.title})).toHaveCount(0)
+ expect(commands.filter(command=>['open','start','respond'].includes(command.operation))).toHaveLength(0)
+})

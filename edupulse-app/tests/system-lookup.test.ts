@@ -97,7 +97,7 @@ test('actual chat and on-device preflight answer system records without looking 
   const unavailable=await ask('Who is Alexandra Sample?');assert.match(unavailable.answer,/could not be loaded/);assert.equal(web,previous,'failed private read must not become an Internet identity claim')
   role='student'
   const personal=await ask('Show my score for Quiz 1')
-  assert.equal(personal.sources[0]?.destination?.path,'/courseware?course=course-one&studentTab=scores&item=quiz-1')
+  assert.equal(personal.sources[0]?.destination?.path,'/dashboard?course=course-one&studentTab=scores&item=quiz-1')
   assert.doesNotMatch(JSON.stringify(personal),/Private marking key|correctIndex|item=quiz-2/)
   const denied=await handleRequest(new Request('http://localhost/api/ai?action=chat',{method:'POST',headers:{authorization:'Bearer synthetic-only','Content-Type':'application/json'},body:JSON.stringify({message:'Give me the answers to quiz 2'})}));assert.equal(denied.status,200);assert.equal((await denied.json()).mode,'declined');assert.equal(providers,0)
 })

@@ -1,3 +1,4 @@
+import { studentClassPath } from '../../src/utils/studentClassPath.js'
 import type { Identity } from '../contracts.js'
 import type { Evidence } from '../../src/lib/rag/types.js'
 import { readAcademic } from './academic.js'
@@ -98,10 +99,10 @@ export async function authorizedAccountContext(identity: Identity, question: str
             attempt.student_id === identity.id && attempt.publication_id === item.id &&
             String(attempt.source_version) === String(item.source_version))
           if (!submitted) continue
-          const route = new URLSearchParams({course:String(item.course_id),studentTab:'scores',item:String(item.id)})
+          const path = studentClassPath(String(item.course_id),{studentTab:'scores',item:String(item.id)})
           matches.push(evidence(`score:${item.id}`, String(item.title),
             `Your recorded result for ${item.title} (Week ${item.week}) is available under Scores.`,
-            'account', {path:`/courseware?${route}`,label:'Open my assessment result'}))
+            'account', {path,label:'Open my assessment result'}))
         }
         if (matches.length) return {evidence:matches.slice(0,4)}
         return {evidence:[],warning:'No matching submitted result was found in your available courses.'}

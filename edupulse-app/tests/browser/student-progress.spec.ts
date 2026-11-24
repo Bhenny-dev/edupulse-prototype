@@ -41,4 +41,7 @@ test('pending assessments use server time for due and missed work', async ({ pag
   await expect(page.getByText('Unanswered assessment: Variables quiz', { exact: true })).toBeVisible()
   await expect(page.getByText(/Due date missed: /)).toHaveCount(1)
   await expect(page.getByText(/Due in 2 days: /)).toHaveCount(1)
+  await page.getByText('Unanswered assessment: Variables quiz',{exact:true}).locator('..').getByRole('link',{name:'Open course item'}).click()
+  await expect(page).toHaveURL(/#\/dashboard\?course=.*studentTab=materials.*item=/)
+  await expect(page.getByRole('dialog',{name:'Variables quiz',exact:true})).toBeVisible()
 })

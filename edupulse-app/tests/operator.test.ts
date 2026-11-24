@@ -150,7 +150,7 @@ test('the Operator proposes confirmable actions and never registers without an a
 
 test('navigation requests open only the pages a role may see', () => {
   assert.equal(pageFor('take me to the scoring sheet', 'instructor')?.path, '/student-monitoring?tab=assessments')
-  assert.equal(pageFor('open my courses', 'student')?.path, '/courseware')
+  assert.equal(pageFor('open my courses', 'student')?.path, '/dashboard')
   assert.equal(pageFor('open my courses', 'instructor')?.path, '/courseware')
   assert.equal(pageFor('go to course loading', 'dean')?.path, '/records?tab=loads')
   assert.equal(pageFor('go to course loading', 'associate_dean')?.path, '/records?tab=loads')
