@@ -79,6 +79,8 @@ test('a class card More menu opens the Class List, Scores and Block sections wit
   await expect(page).toHaveURL(/tab=class-list/)
   await expect(page.getByRole('navigation', { name: 'Class sections' }).getByRole('button', { name: 'Class List', exact: true })).toHaveAttribute('aria-pressed', 'true')
   await page.keyboard.press('Escape')
+  await expect(classPage).toHaveCount(0)
+  await expect(page.locator('.instructor-course-card').filter({ hasText: 'IT 102' })).toBeFocused()
   await more().click()
   await page.getByRole('menuitem', { name: 'Block sections', exact: true }).click()
   await expect(page).toHaveURL(/view=blocks/)

@@ -25,7 +25,12 @@ export default function InstructorHome({ data, loaded, status, actions }) {
   const counts = course => classStudents(course, workspace.registrations, data.enrollments)
   // Opening pushes a history entry, so the browser's Back closes the class; Close and Escape do the same.
   const open = (course, extra = {}) => setParams({ course: course.id, term, ...extra })
-  const close = () => setParams(params.get('term') ? { term: params.get('term') } : {})
+  const close = () => {
+    const id = params.get('course')
+    setParams(params.get('term') ? { term: params.get('term') } : {})
+    // Back to Home with the keyboard where it was: on the class that was just closed.
+    requestAnimationFrame(() => requestAnimationFrame(() => document.querySelector(`[data-class-id="${CSS.escape(id || '')}"]`)?.focus({ preventScroll: true })))
+  }
   const repeated = code => courses.filter(course => course.code === code).length > 1
   const named = course => `${course.code}${repeated(course.code) && course.blocks.length ? ` · ${course.blocks.join(', ')}` : ''}`
   const [now] = useState(() => Date.now())
@@ -49,7 +54,7 @@ export default function InstructorHome({ data, loaded, status, actions }) {
         { label: 'Class List', icon: Users, onSelect: () => open(course, { tab: 'class-list' }) },
         { label: 'Scores', icon: BarChart3, onSelect: () => open(course, { tab: 'scores' }) },
         { label: 'Block sections', icon: Settings2, onSelect: () => open(course, { view: 'blocks' }) }] }
-      return <ClassCard key={course.id} code={course.code} title={course.title} buttonClassName="instructor-course-card" onOpen={() => open(course)} menu={menu}
+      return <ClassCard key={course.id} code={course.code} title={course.title} buttonClassName="instructor-course-card" cardId={course.id} onOpen={() => open(course)} menu={menu}
         label={`Open course ${course.code}${repeated(course.code) ? ` (${course.blocks.join(', ') || 'no block'})` : ''}`}
         lines={[[course.semester, course.academicYear && `AY ${course.academicYear}`, course.units && `${course.units} units`].filter(Boolean).join(' · ')]}
         chips={course.blocks.length ? course.blocks.map(block => `Block ${block} · ${students.get(block)?.size || 0}`) : ['No block section yet']}
