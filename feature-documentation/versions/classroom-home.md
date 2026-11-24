@@ -32,3 +32,5 @@ Student Home now owns the course directory and progress cards. Legacy course boo
 4. The class section selector stays reachable while scrolling, wraps on a 320-pixel viewport, and supports keyboard navigation. Native topic controls are in the modal focus order. Build and desktop and mobile checks passed.
 
 5. Home class search matches code, title, instructor, and section. The filter stays in place after closing a class. Desktop and mobile checks covered accent and punctuation matching, empty results, and reset.
+
+6. Home filters pending work by upcoming, undated, and missed assessments. The earlier applicable deadline uses the server clock and Philippine time. Build, typecheck, and desktop and mobile due-work and notification checks passed.

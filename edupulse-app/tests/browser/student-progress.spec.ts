@@ -20,7 +20,7 @@ test('a student sees recorded progress on the Home card and inside the class', a
   await expect(course.getByRole('progressbar', { name: 'IT 102 items done' })).toHaveAttribute('value', '2')
 })
 
-test('reminders are blue, orange three days before the due date and red once it is missed, on the server clock', async ({ page }) => {
+test('pending assessments use server time for due and missed work', async ({ page }) => {
   const fixture = await baselineUI(page, 'student')
   fixture.records.attempts = []
   fixture.records.serverNow = later(10 * DAY) // this device is ten days behind the server
@@ -29,15 +29,14 @@ test('reminders are blue, orange three days before the due date and red once it 
   functions.due_at = later(12 * DAY) // two days after the server's now
   arrays.due_at = later(20 * DAY) // ten days after the server's now
   await page.goto('/#/dashboard')
-  const reminders = page.locator('[data-reminder]')
-  await expect(reminders).toHaveCount(4)
-  await expect(reminders.first()).toHaveAttribute('data-reminder', 'red')
-  await expect(page.locator('[data-reminder="red"]')).toContainText('Unanswered assessment: "Variables quiz".')
-  await expect(page.locator('[data-reminder="red"]')).toContainText('Due date missed')
-  await expect(page.locator('[data-reminder="orange"]')).toContainText('Unanswered assessment: "Functions quiz".')
-  await expect(page.locator('[data-reminder="orange"]')).toContainText('Due in 2 days')
-  await expect(page.locator('[data-reminder="blue"]')).toHaveCount(2)
-  await expect(page.locator('[data-reminder="blue"]').filter({ hasText: 'Unanswered assessment: "Arrays quiz".' })).toContainText('Delivered')
+  const work=page.getByRole('region',{name:'Pending Assessments'})
+  await expect(work.getByRole('listitem')).toHaveCount(3)
+  await expect(work.getByRole('listitem').first()).toContainText('Functions quiz')
+  await expect(work.getByRole('listitem').first()).toContainText('Due in 2 days')
+  await work.getByLabel('Show assessments').selectOption('missing')
+  await expect(work.getByRole('listitem')).toHaveCount(1)
+  await expect(work.getByRole('listitem')).toContainText('Variables quiz')
+  await expect(work.getByRole('listitem')).toContainText('Due date missed')
   await page.goto('/#/notifications')
   await expect(page.getByText('Unanswered assessment: Variables quiz', { exact: true })).toBeVisible()
   await expect(page.getByText(/Due date missed: /)).toHaveCount(1)

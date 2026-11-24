@@ -19,7 +19,9 @@ export const manilaDay = (time: number) => Math.floor((time + MANILA_OFFSET) / D
 /** The server's clock: the device clock moved by the offset recorded when the records were read. */
 export const recordsNow = (data: { clockOffset?: number }, device = Date.now()) => device + (Number.isFinite(data.clockOffset) ? data.clockOffset as number : 0)
 
-const dueOf = (item: Publication) => item.due_at || (item.delivery_mode === 'block_schedule' ? item.delivery_close_at : null) || null
+export const dueOf = (item: Publication) => [item.due_at,item.delivery_mode === 'block_schedule' ? item.delivery_close_at : null]
+  .filter((value): value is string => Boolean(value && Number.isFinite(Date.parse(value))))
+  .sort((a,b) => Date.parse(a) - Date.parse(b))[0] || null
 
 /** Blue: pending, no due date or more than 3 Manila days left. Orange: 3 days or less. Red: the due moment has passed. */
 export function reminderState(dueAt: string | null | undefined, done: boolean, now: number): ReminderState {
@@ -70,6 +72,21 @@ export function courseProgress(data: AcademicData, courseId: string, now: number
     return { week, done: inWeek.filter(item => item.done).length, total: inWeek.length }
   })
   return { done, total: items.length, percent: percent(done, items.length), label: `${done} of ${items.length} ${items.length === 1 ? 'item' : 'items'} done`, weeks, items }
+}
+
+export function pendingAssessments(data: AcademicData, now: number, courseId?: string) {
+  return data.publications.filter(item => item.type === 'assessment' && (!courseId || item.course_id === courseId) &&
+    isDelivered(item,now) && !studentAttempt(data,item)).map(item => {
+      const due = dueOf(item)
+      const reminder = reminderState(due,false,now)
+      const category: 'missing'|'upcoming'|'open' = reminder === 'red' || deliveryState(item,now) === 'closed' ? 'missing' : due ? 'upcoming' : 'open'
+      return {item,due,category,when:whenText(due,category === 'missing' ? 'red' : reminder,now)}
+    }).sort((a,b) => {
+      const order = {upcoming:0,open:1,missing:2}
+      return order[a.category] - order[b.category] ||
+        ((a.category === 'missing' ? -1 : 1) * (Date.parse(a.due || '') - Date.parse(b.due || ''))) ||
+        a.item.week - b.item.week
+    })
 }
 
 const RANK = { red: 0, orange: 1, blue: 2 } as const

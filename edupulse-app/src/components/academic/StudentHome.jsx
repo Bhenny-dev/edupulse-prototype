@@ -8,8 +8,8 @@ import JoinClassDialog from './JoinClassDialog'
 import {enrolledCourses} from './StudentClassDetail'
 import {KPIs} from './AcademicUI'
 import StudentProgressBar from './StudentProgressBar'
-import {courseProgress,isDelivered,recordsNow} from './studentProgress'
-import {currentAttempts} from './academicData'
+import {courseProgress,isDelivered,pendingAssessments,recordsNow} from './studentProgress'
+import StudentDueWork from './StudentDueWork'
 import useAcademicTerm from './useAcademicTerm'
 import LoadTermFilter from './LoadTermFilter'
 import './student-classroom.css'
@@ -91,9 +91,7 @@ export default function StudentHome() {
   const now = recordsNow(data)
   const delivered = data.publications.filter(item => isDelivered(item, now))
   const materialIds = new Set(delivered.filter(item => item.type !== 'assessment' && !item.content?.submissionOnly).map(item => item.id))
-  const submitted = new Set(currentAttempts(data).map(attempt => attempt.publication_id))
-  const pending = data.publications.filter(p => p.active && p.type === 'assessment' && !submitted.has(p.id))
-    .sort((a,b) => (a.due_at || '9999').localeCompare(b.due_at || '9999'))
+  const pending = pendingAssessments(data, now)
   const announcements = data.announcements.filter(post => courses.some(course => course.id === post.course_id))
     .sort((a,b) => b.created_at.localeCompare(a.created_at)).slice(0,5)
 
@@ -154,11 +152,10 @@ export default function StudentHome() {
         {canJoin ? 'Enter the class code shared by your instructor to join.' : 'No instructor-confirmed memberships are available.'}
       </EmptyClasses>}
       <section className="card mt-24"><div className="card-body">
-        <h2>Pending Assessments</h2>
-        {pending.length ? <ul className="student-home-items">{pending.slice(0,6).map(item => <li key={item.id}>
+        <StudentDueWork work={pending} renderItem={item=><>
           <Link state={{classEntry:true}} to={coursePath(item.course_id,term,'materials',item.id)}>{item.title}</Link>
-          <span className="text-sm text-muted">{courses.find(course => course.id === item.course_id)?.course_code} · Week {item.week}{item.due_at ? ' · Due ' + new Date(item.due_at).toLocaleString('en-PH',{timeZone:'Asia/Manila'}) + ' (Philippine time)' : ''}</span>
-        </li>)}</ul> : <p>No pending published assessments in this term.</p>}
+          <span className="text-sm text-muted">{courses.find(course => course.id === item.course_id)?.course_code} / Week {item.week}</span>
+        </>}/>
       </div></section>
       <section className="card mt-24"><div className="card-body">
         <h2>Recent Announcements</h2>
