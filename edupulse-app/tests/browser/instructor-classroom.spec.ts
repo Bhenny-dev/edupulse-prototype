@@ -171,6 +171,11 @@ test('Class List shows each block with its code; a code is replaced or turned of
   await page.getByRole('dialog', { name: 'Turn off class code' }).getByRole('button', { name: 'Turn off code', exact: true }).click()
   await expect(block.getByRole('button', { name: 'Create code', exact: true })).toBeVisible()
   expect(fixture.sent.map(command => command.action)).toEqual(['create', 'regenerate', 'disable'])
+  // Invite students makes the block's code when it has none and offers the join instruction.
+  await block.getByRole('button', { name: 'Invite students', exact: true }).click()
+  await expect(block.getByLabel('Class code of block BSIT-1A: H 3 J 5 K M N')).toBeVisible()
+  await expect(page.getByText(/Invitation for block BSIT-1A copied|Share this class code with your students: H3J5KMN/)).toBeVisible()
+  expect(fixture.sent.map(command => command.action)).toEqual(['create', 'regenerate', 'disable', 'create'])
 
   await page.getByRole('navigation', { name: 'Class sections' }).getByRole('button', { name: 'Scores', exact: true }).click()
   await expect(page.getByText('These are EduPulse assessment scores, not official grades.', { exact: false })).toBeVisible()

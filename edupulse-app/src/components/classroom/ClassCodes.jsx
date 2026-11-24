@@ -1,5 +1,5 @@
 import { useId, useState } from 'react'
-import { Copy, KeyRound, Maximize2, Power, RefreshCw, X } from 'lucide-react'
+import { Copy, KeyRound, Maximize2, Power, RefreshCw, UserPlus, X } from 'lucide-react'
 import ModalLayer from '../ui/ModalLayer'
 import CoursewareActions from '../courseware/CoursewareActions'
 import { useAcademicRecords } from '../../context/AcademicContext'
@@ -55,6 +55,20 @@ export function BlockCode({ course, block, codes, readOnly = false, highlight = 
       </section>
     </ModalLayer>}
   </span>
+}
+
+/** Invite students: makes the block's class code when it has none, then copies the join instruction for them. */
+export function InviteStudents({ course, block, codes }) {
+  const records = useAcademicRecords(), { addToast } = useToast(), [busy, setBusy] = useState(false)
+  const invite = async () => {
+    setBusy(true)
+    try {
+      const code = codeFor(codes, course, block)?.code || (await records.command({ operation: 'class-code', action: 'create', assignment: course.assignmentKey, block })).code
+      try { await navigator.clipboard.writeText(`Join ${course.code} block ${block}: open EduPulse, choose Join class on Home and enter the code ${code}`); addToast(`Invitation for block ${block} copied`, 'success') }
+      catch { addToast(`Share this class code with your students: ${code}`, 'info') }
+    } catch (failure) { addToast(failure.message, 'error') } finally { setBusy(false) }
+  }
+  return <button type="button" className="btn btn-secondary btn-sm" disabled={busy} onClick={() => void invite()}><UserPlus size={14} aria-hidden="true" />{busy ? 'Inviting...' : 'Invite students'}</button>
 }
 
 /** The class codes of every block section of this course, beside the announcements. */

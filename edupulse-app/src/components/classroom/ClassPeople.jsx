@@ -9,7 +9,7 @@ import { Table } from '../academic/AcademicUI'
 import CourseClassList from '../courseware/CourseClassList'
 import { classStudents, studentCount } from '../../utils/classroom'
 import { loadTerm } from '../../utils/loadTerms'
-import { BlockCode } from './ClassCodes'
+import { BlockCode, InviteStudents } from './ClassCodes'
 import { EmptyClasses } from './ClassCards'
 import '../academic/monitoring.css'
 import './classroom.css'
@@ -36,7 +36,7 @@ export default function ClassPeople({ course, data, readOnly = false, onAddBlock
       const cohort = cohorts.find(item => item.block === block), joined = (data.classJoins || []).filter(join => join.load_key === blockKey(course, block)), known = names(block)
       return <section key={block} className="class-section" aria-label={`Block ${block} class list`}>
         <div className="class-section-heading"><h2>Block {block} <span className="text-muted">· {studentCount(counts.get(block)?.size || 0)}</span></h2>
-          <div className="class-section-tools"><BlockCode course={course} block={block} codes={data.classCodes} readOnly={readOnly} />{!readOnly && !cohort && <button type="button" className="btn btn-secondary btn-sm" onClick={() => setAdding(block)}><UserPlus size={14} aria-hidden="true" />Add students</button>}</div></div>
+          <div className="class-section-tools"><BlockCode course={course} block={block} codes={data.classCodes} readOnly={readOnly} />{!readOnly && <InviteStudents course={course} block={block} codes={data.classCodes} />}{!readOnly && !cohort && <button type="button" className="btn btn-secondary btn-sm" onClick={() => setAdding(block)}><UserPlus size={14} aria-hidden="true" />Add students</button>}</div></div>
         {joined.length > 0 && <p className="text-sm text-muted mb-16">Joined with the class code: {joined.map(join => known.get(String(join.student_email || '').toLowerCase()) || join.student_number).join(', ')}.</p>}
         {cohort ? <MonitoringRoster cohort={cohort} readOnly={readOnly} title="Enrolled students" /> : <>
           <Table label={`Block ${block} students`} headers={['Student', 'Student number', 'Email']} rows={listed(block).map(student => [student.Name || 'Name not recorded', student.StudentID || 'Not recorded', student.Email || 'Not recorded'])} empty={`No students in block ${block} yet. Share its class code or add students.`} />
