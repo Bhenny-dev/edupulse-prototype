@@ -98,7 +98,8 @@ export default function InstructorCourses({ onClose }) {
   const counts = selected ? classStudents(selected, workspace.registrations, termData.enrollments) : new Map()
   const syllabusLink = syllabus && writable && !syllabus.suspended && ['drafted','checked','downloaded_for_approval'].includes(syllabus.status) ? editableSyllabusPath(syllabus.id) : '/syllabus?tab=mine'
   const title = !records.loaded ? 'Opening class' : selected ? `${selected.code} ${selected.title}` : 'Class unavailable'
-  return <PageModal title={title} label={selected ? `Class ${selected.code}` : title} closeLabel="Close class and return to Home" onClose={onClose} className="class-modal" bodyClassName="classroom">
+  const facts = selected ? [selected.semester, selected.academicYear && `AY ${selected.academicYear}`, selected.units && `${selected.units} units`].filter(Boolean).join(' · ') : ''
+  return <PageModal title={title} subtitle={facts} label={selected ? `Class ${selected.code}` : title} closeLabel="Close class and return to Home" onClose={onClose} className="class-modal" bodyClassName="classroom">
     <div data-pulse-zone="courseware" data-pulse-target={selected ? `${selected.code} course` : 'Loaded courses'}>
     {!records.loaded ? <LoadingStatus label="Loading your class..." /> : !selected ? <section className="class-empty" aria-label="Class unavailable">
       <p role="alert">{matching.length>1?'Choose the block-labelled course you want to open from Home.':'This course is not in your current teaching load. Choose one of your assigned classes on Home.'}</p>
@@ -107,7 +108,6 @@ export default function InstructorCourses({ onClose }) {
       <header className="class-banner" data-tone={classTone(selected.code)}>
         <div>
           <div className="class-banner-meta">
-            {[selected.semester, selected.academicYear && `AY ${selected.academicYear}`, selected.units && `${selected.units} units`].filter(Boolean).map(item => <span key={item} className="class-chip">{item}</span>)}
             {selected.blocks.length ? selected.blocks.map(block => <span key={block} className="class-chip">Block {block} · {studentCount(counts.get(block)?.size || 0)}</span>) : <span className="class-chip">No block section yet</span>}
             <span className="class-chip">{syllabus ? `Syllabus: ${SYLLABUS_STATUS_META[syllabus.status]?.label || syllabus.status}` : 'Syllabus not added'}</span>
           </div></div>
@@ -129,6 +129,7 @@ export default function InstructorCourses({ onClose }) {
       {section === 'class-list' && <ClassPeople course={selected} data={scoped} readOnly={!writable} onAddBlock={() => setAddingBlock(true)} />}
       {section === 'scores' && <ClassScores course={selected} data={scoped} />}
       {section === 'blocks' && <>
+        <div className="class-section-heading"><h2>Block sections</h2><button type="button" className="btn btn-ghost btn-sm" onClick={() => go('announcements')}>Back to Announcements</button></div>
         {schedules.length>0&&<section className="card mb-24"><div className="card-header"><h2>Teaching schedule and load</h2></div><div className="card-body">{schedules.map(load=><div key={load.key} className="mb-16"><strong>{load.block}</strong><TeachingLoadFacts load={load}/></div>)}<p className="text-sm text-muted">These are the reviewed load records. Set actual class dates and delivery times below.</p></div></section>}
         <CourseBlockSections course={selected} syllabus={syllabus} data={scoped} readOnly={!writable}/>
       </>}

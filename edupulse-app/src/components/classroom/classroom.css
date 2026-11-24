@@ -35,6 +35,9 @@
 /* In the class page the modal header carries the class name; the banner keeps the class colour, facts and actions. */
 .class-modal .class-banner { min-height: 0; align-items: center; padding: 16px 20px; }
 .class-modal .class-banner-meta { margin-top: 0; }
+/* The class tabs stay under the modal header while the class scrolls (Classroom keeps Stream/Classwork/People/Grades at the top). */
+.class-modal .class-tabs { position: sticky; top: -24px; z-index: 3; margin-top: -8px; padding-top: 8px; background: var(--white); }
+@media (max-width: 768px) { .class-modal .class-tabs { top: -16px; } }
 .class-banner-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 .class-banner-actions { display: flex; flex-wrap: wrap; gap: 8px; }
 .class-tabs { position: sticky; top: 64px; z-index: 5; background: var(--white); margin-bottom: 24px; }
