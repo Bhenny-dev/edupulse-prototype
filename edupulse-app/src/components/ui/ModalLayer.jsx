@@ -27,7 +27,8 @@ export default function ModalLayer({ children, onClick, onDismiss = onClick, cla
       if (document.querySelector('[data-pulse-ui="office"]')) return
       if (event.key === 'Tab' && isTop()) {
         const surfaces = [ref.current, document.querySelector('[data-pulse-ui="panel"]'), document.querySelector('[data-pulse-ui="mascot"]')].filter(Boolean)
-        const controls = surfaces.flatMap(surface => [surface, ...surface.querySelectorAll('button, input, select, textarea, a[href], [tabindex="0"]')]).filter(element => element.matches('button, input, select, textarea, a[href], [tabindex="0"]') && !element.disabled && element.getClientRects().length && getComputedStyle(element).visibility !== 'hidden')
+        const focusable = 'button, input, select, textarea, a[href], details > summary:first-child, [tabindex="0"]'
+        const controls = surfaces.flatMap(surface => [surface, ...surface.querySelectorAll(focusable)]).filter(element => element.matches(focusable) && !element.disabled && element.getAttribute('tabindex') !== '-1' && element.getClientRects().length && getComputedStyle(element).visibility !== 'hidden')
         const index = controls.indexOf(document.activeElement)
         if (controls.length) {
           event.preventDefault(); event.stopImmediatePropagation()

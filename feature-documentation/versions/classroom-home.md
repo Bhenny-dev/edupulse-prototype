@@ -28,3 +28,5 @@ Instructor changes started in parallel before this work. Integrate the Instructo
 Student Home now owns the course directory and progress cards. Legacy course bookmarks open the authorized class on Home. Build, typecheck, and 14 targeted desktop and mobile Playwright checks passed.
 
 3. One history entry per student class or resource reader keeps Back and Forward predictable. Restoring focus accounts for buttons temporarily disabled by a request. Build and six desktop and mobile checks passed for history, joins and older links.
+
+4. The class section selector stays reachable while scrolling, wraps on a 320-pixel viewport, and supports keyboard navigation. Native topic controls are in the modal focus order. Build and desktop and mobile checks passed.

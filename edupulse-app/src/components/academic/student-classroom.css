@@ -1,3 +1,40 @@
-.student-course-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}.student-topic{margin:16px 0;border:1px solid var(--gray-200);border-radius:16px;padding:16px}.student-topic summary{cursor:pointer;min-height:44px;font-weight:700}.student-resource{padding:16px;margin:12px 0;border:1px solid var(--gray-200);border-radius:12px}.student-related{margin-left:20px;border-left:3px solid var(--sky-300);padding-left:16px}.student-resource a,.student-resource button{overflow-wrap:anywhere}.student-post{white-space:pre-wrap}.student-course-tabs .btn{min-height:44px}@media(max-width:600px){.student-related{margin-left:0;padding-left:10px}.student-home .academic-actions{width:100%;flex-wrap:wrap}.student-home .page-header{flex-wrap:wrap}}
+.student-topic{margin:16px 0;border:1px solid var(--gray-200);border-radius:16px;padding:16px}.student-topic summary{cursor:pointer;min-height:44px;font-weight:700}.student-resource{padding:16px;margin:12px 0;border:1px solid var(--gray-200);border-radius:12px}.student-related{margin-left:20px;border-left:3px solid var(--sky-300);padding-left:16px}.student-resource a,.student-resource button{overflow-wrap:anywhere}.student-post{white-space:pre-wrap}.student-course-tabs .btn{min-height:44px}@media(max-width:600px){.student-related{margin-left:0;padding-left:10px}.student-home .academic-actions{width:100%;flex-wrap:wrap}.student-home .page-header{flex-wrap:wrap}}
 
 .student-home-items li{display:flex;flex-wrap:wrap;gap:6px 12px;padding:8px 0}.student-resource-links>div{margin:10px 0}.student-subtopic{margin:8px 0}.student-resource h3{margin:12px 0}.student-resource:target{outline:2px solid var(--sky-500)}
+
+
+.student-course-tabs {
+  position: sticky;
+  top: -24px;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 -24px 20px;
+  padding: 8px 24px;
+  border-bottom: 1px solid var(--gray-200);
+  background: var(--white);
+}
+.student-course-tabs .btn {
+  white-space: normal;
+  text-align: center;
+  line-height: 1.25;
+}
+.student-course-tabs .btn:focus-visible {
+  outline: 2px solid var(--sky-500);
+  outline-offset: 2px;
+}
+@media (max-width: 640px) {
+  .student-course-tabs {
+    top: -16px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-inline: -16px;
+    padding-inline: 16px;
+  }
+  .student-course-tabs .btn {
+    padding-inline: 8px;
+    font-size: .875rem;
+  }
+}
+@media print { .student-course-tabs { display: none; } }

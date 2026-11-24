@@ -67,7 +67,30 @@ export default function StudentCoursePanels({course,data,onOpen,busy}){
   if(focusedPostId)document.getElementById(`announcement-${focusedPostId}`)?.focus()
   else if(focusedWeek&&!params.has('item')&&!params.has('publication'))document.getElementById(`week-${focusedWeek}-heading`)?.focus()
  },[focusedPostId,focusedWeek,params])
- return <><nav className="student-course-tabs" aria-label="Student course sections">{tabs.map(([id,label])=><button key={id} className={`btn ${id===tab?'btn-primary':'btn-secondary'}`} aria-pressed={id===tab} onClick={()=>{const next=new URLSearchParams(params);next.set('studentTab',id);next.delete('item');next.delete('week');setParams(next,{replace:true,state:historyState})}}>{label}</button>)}</nav>
+ const changeSection=id=>{
+  if(id===tab)return
+  const next=new URLSearchParams(params)
+  next.set('studentTab',id)
+  next.delete('item')
+  next.delete('week')
+  setParams(next,{replace:true,state:historyState})
+ }
+ function moveSectionFocus(event){
+  if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return
+  const controls=Array.from(event.currentTarget.querySelectorAll('button'))
+  const current=controls.indexOf(event.target)
+  if(current===-1)return
+  event.preventDefault()
+  const next=event.key==='Home'?0:event.key==='End'?controls.length-1:
+   (current+(event.key==='ArrowRight'?1:-1)+controls.length)%controls.length
+  controls[next]?.focus()
+ }
+ return <><nav className="student-course-tabs" aria-label="Student course sections" onKeyDown={moveSectionFocus}>
+  {tabs.map(([id,label])=><button type="button" key={id} className={id===tab?'btn btn-primary':'btn btn-ghost'} aria-pressed={id===tab} onClick={event=>{
+   if(id!==tab)event.currentTarget.closest('.page-modal-body')?.scrollTo(0,0)
+   changeSection(id)
+  }}>{label}</button>)}
+ </nav>
  {tab==='announcements'&&<section aria-label="Class announcements">{data.classroomError&&<p role="alert">{data.classroomError}</p>}{posts.length?posts.map(post=><Announcement key={post.id} post={post} instructor={course.instructor_name}/>):<p>No published announcements for this class.</p>}</section>}
  {tab==='materials'&&<section aria-label="Weekly teaching materials and assessments"><div className="academic-actions"><button className="btn btn-secondary" onClick={()=>setExpanded(new Set(keys))}>Expand all topics</button><button className="btn btn-secondary" onClick={()=>setExpanded(new Set())}>Collapse all topics</button></div>{weeks.map(week=>{
  const groups=topicGroups(week)
