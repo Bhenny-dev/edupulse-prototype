@@ -26,3 +26,5 @@ Instructor changes started in parallel before this work. Integrate the Instructo
 1. Student Home opens the selected class in a page dialog. The existing reader and source preview are child dialogs. Eight desktop and mobile cases confirmed class entry, selection restoration, pending assigned classes and both join outcomes. The production build and typecheck passed.
 
 Student Home now owns the course directory and progress cards. Legacy course bookmarks open the authorized class on Home. Build, typecheck, and 14 targeted desktop and mobile Playwright checks passed.
+
+3. One history entry per student class or resource reader keeps Back and Forward predictable. Restoring focus accounts for buttons temporarily disabled by a request. Build and six desktop and mobile checks passed for history, joins and older links.

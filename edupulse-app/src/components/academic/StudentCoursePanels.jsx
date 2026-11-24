@@ -2,7 +2,7 @@ import {useEffect,useState} from 'react'
 import {useWorkspaceViewState} from '../../context/WorkspaceContext'
 import {weekSections} from '../../utils/outlineSections'
 import ResourceLinks from './StudentResourceLinks'
-import {useSearchParams} from 'react-router-dom'
+import {useLocation,useSearchParams} from 'react-router-dom'
 import {currentAttempts} from './academicData'
 import {deliveryState} from '../../utils/blockDelivery'
 import {recordsNow} from './studentProgress'
@@ -13,6 +13,7 @@ import './student-classroom.css'
 const time=value=>value?new Date(value).toLocaleString('en-PH',{timeZone:'Asia/Manila'}):'No due date'
 function Announcement({post,instructor}){return <article className="student-resource" tabIndex={-1} id={`announcement-${post.id}`}><h3>{post.title}</h3><p className="text-sm text-muted">{instructor||'Course instructor'} · {time(post.created_at)} (Philippine time){post.week?` · Week ${post.week}`:''}</p><p className="student-post">{post.body}</p><ResourceLinks links={post.attachments}/></article>}
 export default function StudentCoursePanels({course,data,onOpen,busy}){
+ const {state:historyState}=useLocation()
  const [params,setParams]=useSearchParams(),[status,setStatus]=useState('all')
  const tabs=[['announcements','Announcements'],['materials','Teaching Materials & Assessments'],['classlist','Class List'],['scores','Scores'],['outline','Syllabus / Course Outline']]
  const tab=tabs.some(([id])=>id===params.get('studentTab'))?params.get('studentTab'):'materials'
@@ -39,12 +40,12 @@ export default function StudentCoursePanels({course,data,onOpen,busy}){
   const material=relatedMaterials(item).map(parent=>parent.title).join(', ')
   const result=attempt?.grading_status==='pending_review'?'Pending Review':attempt?`${attempt.score} / ${attempt.max_score}`:'Not submitted'
   return [item.week,item.title,material||'Standalone assessment',state(item),result,attempt?time(attempt.submitted_at):'Not submitted',
-   <button key={item.id} className="btn btn-secondary" disabled={busy} onClick={()=>onOpen(item)}>{attempt?'Review attempt':'Open assessment'}</button>]
+   <button key={item.id} className="btn btn-secondary" disabled={busy} onClick={event=>onOpen(item,event.currentTarget)}>{attempt?'Review attempt':'Open assessment'}</button>]
  })
  const reviewed=assessments.map(attemptFor).filter(attempt=>attempt&&attempt.grading_status!=='pending_review'&&attempt.max_score>0)
  const earned=reviewed.reduce((total,attempt)=>total+attempt.score,0)
  const available=reviewed.reduce((total,attempt)=>total+attempt.max_score,0)
- const resource=item=><article key={item.id} className="student-resource"><span className="badge">{item.type==='assessment'?'Assessment':item.content?.submissionOnly?'Submission bin':'Teaching Material'}</span><h3>{item.title}</h3>{item.type==='assessment'?<p className="text-sm text-muted">{state(item)} · {item.content?.questions?.length??'Unspecified'} questions · {item.content?.totalPoints??item.content?.questions?.length??'Unspecified'} points · {time(item.due_at)}{item.due_at?' (Philippine time)':''}</p>:<p>{item.content?.description}</p>}<ResourceLinks links={[...(item.content?.links||[]),...(item.content?.attachments||[]).filter(f=>f.url)]}/><TeachingAttachments attachments={(item.content?.attachments||[]).filter(f=>f.path)}/><button className="btn btn-secondary" disabled={busy} onClick={()=>onOpen(item)}>{item.type==='assessment'?(state(item)==='In progress'?'Resume assessment':attemptFor(item)?'Review assessment':'Open assessment'):item.content?.submissionOnly?'Open submission bin':'Open material'}</button>{!['legacy','open'].includes(deliveryState(item,now))&&<p className="text-sm text-muted">{deliveryState(item,now)==='scheduled'?'Scheduled for a later class':deliveryState(item,now)==='closed'?'Class delivery window closed':'Delivery schedule not yet available'}</p>}</article>
+ const resource=item=><article key={item.id} className="student-resource"><span className="badge">{item.type==='assessment'?'Assessment':item.content?.submissionOnly?'Submission bin':'Teaching Material'}</span><h3>{item.title}</h3>{item.type==='assessment'?<p className="text-sm text-muted">{state(item)} · {item.content?.questions?.length??'Unspecified'} questions · {item.content?.totalPoints??item.content?.questions?.length??'Unspecified'} points · {time(item.due_at)}{item.due_at?' (Philippine time)':''}</p>:<p>{item.content?.description}</p>}<ResourceLinks links={[...(item.content?.links||[]),...(item.content?.attachments||[]).filter(f=>f.url)]}/><TeachingAttachments attachments={(item.content?.attachments||[]).filter(f=>f.path)}/><button className="btn btn-secondary" disabled={busy} onClick={event=>onOpen(item,event.currentTarget)}>{item.type==='assessment'?(state(item)==='In progress'?'Resume assessment':attemptFor(item)?'Review assessment':'Open assessment'):item.content?.submissionOnly?'Open submission bin':'Open material'}</button>{!['legacy','open'].includes(deliveryState(item,now))&&<p className="text-sm text-muted">{deliveryState(item,now)==='scheduled'?'Scheduled for a later class':deliveryState(item,now)==='closed'?'Class delivery window closed':'Delivery schedule not yet available'}</p>}</article>
  const weeks=[...new Set([...items.map(p=>p.week),...posts.filter(p=>p.week).map(p=>p.week)])].sort((a,b)=>a-b)
  const topicGroups=week=>{
   const weekly=items.filter(p=>p.week===week),row=course.outline?.find(r=>r.week===week)
@@ -66,7 +67,7 @@ export default function StudentCoursePanels({course,data,onOpen,busy}){
   if(focusedPostId)document.getElementById(`announcement-${focusedPostId}`)?.focus()
   else if(focusedWeek&&!params.has('item')&&!params.has('publication'))document.getElementById(`week-${focusedWeek}-heading`)?.focus()
  },[focusedPostId,focusedWeek,params])
- return <><nav className="student-course-tabs" aria-label="Student course sections">{tabs.map(([id,label])=><button key={id} className={`btn ${id===tab?'btn-primary':'btn-secondary'}`} aria-pressed={id===tab} onClick={()=>{const next=new URLSearchParams(params);next.set('studentTab',id);next.delete('item');setParams(next)}}>{label}</button>)}</nav>
+ return <><nav className="student-course-tabs" aria-label="Student course sections">{tabs.map(([id,label])=><button key={id} className={`btn ${id===tab?'btn-primary':'btn-secondary'}`} aria-pressed={id===tab} onClick={()=>{const next=new URLSearchParams(params);next.set('studentTab',id);next.delete('item');next.delete('week');setParams(next,{replace:true,state:historyState})}}>{label}</button>)}</nav>
  {tab==='announcements'&&<section aria-label="Class announcements">{data.classroomError&&<p role="alert">{data.classroomError}</p>}{posts.length?posts.map(post=><Announcement key={post.id} post={post} instructor={course.instructor_name}/>):<p>No published announcements for this class.</p>}</section>}
  {tab==='materials'&&<section aria-label="Weekly teaching materials and assessments"><div className="academic-actions"><button className="btn btn-secondary" onClick={()=>setExpanded(new Set(keys))}>Expand all topics</button><button className="btn btn-secondary" onClick={()=>setExpanded(new Set())}>Collapse all topics</button></div>{weeks.map(week=>{
  const groups=topicGroups(week)

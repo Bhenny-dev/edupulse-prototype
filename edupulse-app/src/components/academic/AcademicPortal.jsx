@@ -1,4 +1,4 @@
-import {useSearchParams} from 'react-router-dom'
+import {useLocation,useNavigate,useSearchParams} from 'react-router-dom'
 import { useEffect, useRef, useState } from 'react'
 import { useWorkspaceViewState } from '../../context/WorkspaceContext'
 import { useAuth } from '../../context/AuthContext'
@@ -36,6 +36,8 @@ const TITLES = { instructors:'Instructors', students:'Students', performance: 'P
 export default function AcademicPortal({ view, classModal = false, onCloseClass }) {
   const { user } = useAuth()
   const [pageParams,setPageParams]=useSearchParams()
+  const {state} = useLocation()
+  const navigate = useNavigate()
   const records = useAcademicRecords()
   const staff=['dean','associate_dean'].includes(user?.role)
   const preview=!user?.authenticated&&(staff||user?.role==='instructor'&&view==='monitoring')
@@ -51,9 +53,13 @@ export default function AcademicPortal({ view, classModal = false, onCloseClass 
   const title=user?.role==='student'&&view==='courseware'?'My Courses':user?.role==='student'&&view==='assessment'?'Practice Assessments':staff&&view==='records'?'Course':TITLES[view]
   const [readerId,setReaderId]=useWorkspaceViewState(`academic-reader:${view}`,null)
   const selected=data.publications.find(item=>item.active&&item.id===(pageParams.get('item')||(user?.role==='student'?null:readerId))&&(view!=='courseware'||user?.role!=='student'||item.course_id===pageParams.get('course')))||null
+  const readerOpener=useRef(null)
+  useEffect(()=>{
+    if(classModal&&!selected)readerOpener.current?.focus({preventScroll:true})
+  },[classModal,selected?.id])
   const sourcePreview = data.publications.find(item => item.id === pageParams.get('publication') && item.active && item.type !== 'assessment' && item.course_id === pageParams.get('course') && item.content && (!isScheduledStudent(item) || deliveryState(item)==='open'))
   function isScheduledStudent(item){return user?.role==='student'&&item.delivery_mode==='block_schedule'}
-  const closeSourcePreview = () => { const query = new URLSearchParams(pageParams); query.delete('publication'); setPageParams(query) }
+  const closeSourcePreview = () => { const query = new URLSearchParams(pageParams); query.delete('publication'); setPageParams(query,{replace:classModal,state}) }
   const [answerDraft,setAnswerDraft]=useState(null), [busy, setBusy] = useState(false), [result, setResult] = useState(null), [error, setError] = useState('')
   const [startedSession,setSession]=useState(null)
   const session=startedSession?.publication_id===selected?.id&&startedSession?.source_version===selected?.source_version?startedSession:(data.sessions||[]).filter(s=>s.student_id===user?.id&&s.publication_id===selected?.id&&s.source_version===selected?.source_version).sort((a,b)=>b.attempt_no-a.attempt_no)[0]||null
@@ -78,15 +84,28 @@ export default function AcademicPortal({ view, classModal = false, onCloseClass 
   }
   const unsaved=isStudent&&selected?.type==='assessment'&&Object.keys(answers).length>0&&!data.attempts.some(a=>a.publication_id===selected.id&&String(a.source_version)===String(selected.source_version)&&a.attempt_no===(session?.attempt_no||1))
   useEffect(()=>{if(!unsaved)return;const warn=e=>{e.preventDefault();e.returnValue=''};window.addEventListener('beforeunload',warn);return()=>window.removeEventListener('beforeunload',warn)},[unsaved])
-  const closeReader=()=>{if(busy)return;if(unsaved&&!window.confirm('Leave this assessment? Your unsaved responses will be lost.'))return;setReaderId(null);setAnswerDraft(null);const next=new URLSearchParams(pageParams);next.delete('item');setPageParams(next)}
-  const showReader=id=>{
-    if(pageParams.get('item')===id)return
-    if(!isStudent)setReaderId(id)
-    const next=new URLSearchParams(pageParams)
-    next.set('item',id)
-    setPageParams(next)
+  const closeReader = () => {
+    if (busy || (unsaved && !window.confirm('Leave this assessment? Your unsaved responses will be lost.'))) return
+    setReaderId(null)
+    setAnswerDraft(null)
+    if (classModal && state?.itemEntry) return navigate(-1)
+    const next = new URLSearchParams(pageParams)
+    next.delete('item')
+    setPageParams(next,{replace:classModal,state})
   }
-  const open = async item => {
+  const showReader = id => {
+    const previousItem = pageParams.get('item')
+    if (previousItem === id) return
+    if (!isStudent) setReaderId(id)
+    const next = new URLSearchParams(pageParams)
+    next.set('item',id)
+    setPageParams(next,classModal ? {
+      replace:Boolean(previousItem),
+      state:{...state,itemEntry:!previousItem || Boolean(state?.itemEntry)},
+    } : undefined)
+  }
+  const open = async (item, opener) => {
+    if (classModal && opener) readerOpener.current=opener
     if(writable&&isScheduledStudent(item)){
       const current=await run({operation:'read-publication',publication:item.id,version:item.source_version})
       if(!current)return

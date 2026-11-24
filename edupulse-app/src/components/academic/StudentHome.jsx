@@ -1,5 +1,5 @@
-import {lazy,Suspense,useState} from 'react'
-import {Link,useNavigate,useSearchParams} from 'react-router-dom'
+import {lazy,Suspense,useEffect,useRef,useState} from 'react'
+import {Link,useLocation,useNavigate,useSearchParams} from 'react-router-dom'
 import {useAuth} from '../../context/AuthContext'
 import {useAcademicRecords} from '../../context/AcademicContext'
 import {recordsForLoadTerm,loadTerm,CURRENT_LOAD_TERM} from '../../utils/loadTerms'
@@ -33,14 +33,24 @@ export default function StudentHome() {
   const {term} = useAcademicTerm()
   const navigate = useNavigate()
   const [params,setParams] = useSearchParams()
+  const {state} = useLocation()
   const classOpen = params.has('course')
-  const closeClass = () => setParams(params.has('term') ? {term:params.get('term')} : {},{replace:true})
+  const classOpener = useRef(null)
+  useEffect(() => {
+    if (!classOpen) classOpener.current?.focus({preventScroll:true})
+  }, [classOpen])
+  const closeClass = () => {
+    if (state?.classEntry) return navigate(-1)
+    const next = new URLSearchParams(params)
+    for (const key of ['course','studentTab','item','publication','week','join']) next.delete(key)
+    setParams(next,{replace:true})
+  }
   const joining = !classOpen && params.get('join') === 'class'
   const setJoining = open => {
     const next = new URLSearchParams(params)
     if (open) next.set('join','class')
     else next.delete('join')
-    setParams(next,{replace:!open})
+    open ? setParams(next,{state:{joinEntry:true}}) : state?.joinEntry ? navigate(-1) : setParams(next,{replace:true})
   }
   const [notice,setNotice] = useState('')
   const data = recordsForLoadTerm(records.data,term)
@@ -56,7 +66,7 @@ export default function StudentHome() {
     const joinedTerm = loadTerm(result.academic_year,result.semester)
     if (result.course_id) {
       const message = result.status === 'member' ? 'You are already a member of this class.' : 'You joined the class.'
-      navigate(coursePath(result.course_id,joinedTerm,'announcements'),{replace:true,state:{joinNotice:message}})
+      navigate(coursePath(result.course_id,joinedTerm,'announcements'),{replace:true,state:{joinNotice:message,classEntry:state?.joinEntry}})
       return
     }
     const next = new URLSearchParams(params)
@@ -108,7 +118,10 @@ export default function StudentHome() {
           const progress = courseProgress(data,course.id,now)
           return <ClassCard key={course.id} code={course.course_code} title={course.course_title}
           label={'Open ' + course.course_code + ' ' + course.course_title}
-          onOpen={() => navigate(coursePath(course.id,term,'announcements'))}
+          onOpen={event => {
+            classOpener.current = event.currentTarget
+            navigate(coursePath(course.id,term,'announcements'),{state:{classEntry:true}})
+          }}
           lines={[course.instructor_name || 'Instructor not recorded',termLabel(course),course.units && course.units + ' units']}
           chips={[block(course) || 'Section not recorded']}
           status={course.suspended ? 'Membership suspended' : !course.active ? 'Awaiting instructor release' : undefined}
@@ -124,14 +137,14 @@ export default function StudentHome() {
       <section className="card mt-24"><div className="card-body">
         <h2>Pending Assessments</h2>
         {pending.length ? <ul className="student-home-items">{pending.slice(0,6).map(item => <li key={item.id}>
-          <Link to={coursePath(item.course_id,term,'materials',item.id)}>{item.title}</Link>
+          <Link state={{classEntry:true}} to={coursePath(item.course_id,term,'materials',item.id)}>{item.title}</Link>
           <span className="text-sm text-muted">{courses.find(course => course.id === item.course_id)?.course_code} · Week {item.week}{item.due_at ? ' · Due ' + new Date(item.due_at).toLocaleString('en-PH',{timeZone:'Asia/Manila'}) + ' (Philippine time)' : ''}</span>
         </li>)}</ul> : <p>No pending published assessments in this term.</p>}
       </div></section>
       <section className="card mt-24"><div className="card-body">
         <h2>Recent Announcements</h2>
         {announcements.length ? <ul className="student-home-items">{announcements.map(post => <li key={post.id}>
-          <Link to={coursePath(post.course_id,term,'announcements',post.id)}>{post.title}</Link>
+          <Link state={{classEntry:true}} to={coursePath(post.course_id,term,'announcements',post.id)}>{post.title}</Link>
           <span className="text-sm text-muted">{post.course_code}</span>
         </li>)}</ul> : <p>No published announcements.</p>}
       </div></section>
