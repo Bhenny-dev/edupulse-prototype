@@ -9,6 +9,7 @@ import { useWorkspace } from '../../context/WorkspaceContext'
 import { isOutlineExam } from '../../utils/outlineSections'
 import { sameTerm } from '../../utils/classroom'
 import ClassCodesCard from './ClassCodes'
+import { classUpcoming } from './classWork'
 import { LinkCard, LinkForm } from './LinkAttachments'
 import './classroom.css'
 
@@ -46,9 +47,7 @@ function Composer({ course, weeks, initial, onCancel, onSaved }) {
 
 function Upcoming({ course, syllabus, data }) {
   const workspace = useWorkspace(), [now] = useState(() => Date.now())
-  const due = Object.values(workspace.content || {}).filter(item => item.syllabusId === syllabus?.id && item.status === 'published' && item.dueAt && Date.parse(item.dueAt) > now).map(item => ({ key: `due:${item.content?.title}:${item.dueAt}`, at: item.dueAt, text: `Due: ${item.content?.title || item.title}` }))
-  const opens = (data.deliverySchedules || []).filter(row => row.syllabus_id === syllabus?.id && course.blocks.includes(row.block_section)).flatMap(row => row.windows.filter(window => Date.parse(window.opens_at) > now).map(window => ({ key: `open:${row.block_section}:${window.week}`, at: window.opens_at, text: `Week ${window.week} opens for block ${row.block_section}` })))
-  const items = [...due, ...opens].sort((a, b) => a.at.localeCompare(b.at)).slice(0, 4)
+  const items = classUpcoming({ content: workspace.content, data, course, syllabus, now }).slice(0, 4)
   return <section className="card" aria-label="Upcoming">
     <div className="card-header"><h2><CalendarClock size={16} aria-hidden="true" /> Upcoming</h2></div>
     <div className="card-body">{items.length ? items.map(item => <p key={item.key} className="text-sm"><strong>{when(item.at)}</strong><br />{item.text}</p>) : <p className="text-sm text-muted">No saved openings or due dates soon. Blocks without saved dates follow their class schedule (Block sections).</p>}</div>

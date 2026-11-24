@@ -60,6 +60,45 @@ test('instructor Home lists the assigned courses as classes; Create class issues
   expect(fixture.forbidden).toEqual([])
 })
 
+test('a class card More menu opens the Class List, Scores and Block sections without opening Announcements first', async ({ page }) => {
+  const fixture = await classroomUI(page)
+  ;(fixture.records as any).classCodes = [{ course_code: 'IT 102', block: 'BSIT-1A', academic_year: '2026-2027', semester: '1st Semester', code: 'K7M2QXP', created_at: new Date().toISOString() }]
+  await page.goto('/#/dashboard')
+  const classPage = page.getByRole('dialog', { name: /^Class IT 102/ })
+  const more = () => page.getByRole('button', { name: /^More for IT 102/ })
+  await more().click()
+  await expect(page.getByRole('menuitem')).toHaveText(['Copy class code, block BSIT-1A', 'Class List', 'Scores', 'Block sections'])
+  await page.getByRole('menuitem', { name: 'Class List', exact: true }).click()
+  await expect(classPage).toBeVisible()
+  await expect(page).toHaveURL(/tab=class-list/)
+  await expect(page.getByRole('navigation', { name: 'Class sections' }).getByRole('button', { name: 'Class List', exact: true })).toHaveAttribute('aria-pressed', 'true')
+  await page.keyboard.press('Escape')
+  await more().click()
+  await page.getByRole('menuitem', { name: 'Block sections', exact: true }).click()
+  await expect(page).toHaveURL(/view=blocks/)
+  await expect(classPage.getByRole('heading', { name: 'Block sections', exact: true })).toBeVisible()
+  expect(fixture.forbidden).toEqual([])
+})
+
+test('Home lists the written responses to mark and the next openings, each opening its class', async ({ page }) => {
+  const fixture = await classroomUI(page)
+  const records = fixture.records as any, publication = records.publications[0], member = records.enrollments[0]
+  records.attempts = [{ publication_id: publication.id, source_version: publication.source_version, student_email: member.student_email, score: 0, max_score: 2, submitted_at: new Date().toISOString(), attempt_no: 1, grading_status: 'pending_review' }]
+  records.deliverySchedules = [{ ...records.deliverySchedules[0], windows: [{ week: 4, opens_at: new Date(Date.now() + 3 * 86400000).toISOString(), closes_at: null }] }]
+  await page.goto('/#/dashboard')
+  const review = page.getByRole('region', { name: 'To review', exact: true })
+  await expect(review).toContainText('IT 102')
+  await expect(review).toContainText('1 written response to mark')
+  await review.getByRole('button').click()
+  await expect(page).toHaveURL(/tab=scores/)
+  await page.keyboard.press('Escape')
+  const upcoming = page.getByRole('region', { name: 'Upcoming across classes', exact: true })
+  await expect(upcoming).toContainText('Week 4 opens for block BSIT-1A')
+  await upcoming.getByRole('button').first().click()
+  await expect(page).toHaveURL(/tab=materials/)
+  expect(fixture.forbidden).toEqual([])
+})
+
 test('an announcement with a provider link is filed under its week and the weeks collapse and expand', async ({ page }) => {
   const fixture = await classroomUI(page)
   await page.goto(`/#/courseware?course=${fixture.syllabus.id}`)
