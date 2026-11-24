@@ -30,3 +30,5 @@ Student Home now owns the course directory and progress cards. Legacy course boo
 3. One history entry per student class or resource reader keeps Back and Forward predictable. Restoring focus accounts for buttons temporarily disabled by a request. Build and six desktop and mobile checks passed for history, joins and older links.
 
 4. The class section selector stays reachable while scrolling, wraps on a 320-pixel viewport, and supports keyboard navigation. Native topic controls are in the modal focus order. Build and desktop and mobile checks passed.
+
+5. Home class search matches code, title, instructor, and section. The filter stays in place after closing a class. Desktop and mobile checks covered accent and punctuation matching, empty results, and reset.

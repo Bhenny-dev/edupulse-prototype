@@ -214,3 +214,24 @@ test('class section navigation supports the keyboard and reflows at 320 pixels',
  await page.keyboard.press('Tab')
  await expect(page.locator('#week-1-heading')).toBeFocused()
 })
+
+
+test('Home search keeps the class filter when the modal closes',async({page})=>{
+ const f=await baselineUI(page,'student')
+ const course=f.records.courses[0]
+ course.instructor_name='T\u00e9a Instructor'
+ await page.goto('/#/dashboard')
+ const search=page.getByRole('searchbox',{name:'Find a class'})
+ await search.fill('tea   IT-102')
+ const opener=page.getByRole('button',{name:'Open IT 102 Computer Programming 1',exact:true})
+ await expect(opener).toBeVisible()
+ await expect(page.getByRole('status').filter({hasText:'1 class matches'})).toBeVisible()
+ await opener.click()
+ await page.getByRole('button',{name:'Close class and return to Home'}).click()
+ await expect(search).toHaveValue('tea   IT-102')
+ await search.fill('unassigned section')
+ await expect(page.getByText('No classes match your search.')).toBeVisible()
+ await expect(opener).toHaveCount(0)
+ await page.getByRole('button',{name:'Clear search'}).click()
+ await expect(opener).toBeVisible()
+})

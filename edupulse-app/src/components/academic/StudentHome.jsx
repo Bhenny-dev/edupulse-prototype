@@ -22,6 +22,8 @@ function coursePath(course, term, tab, item) {
   return '/dashboard?' + params
 }
 
+const searchWords = value => String(value || '').normalize('NFKD').replace(/\p{Mark}/gu,'').toLowerCase().replace(/[^\p{Letter}\p{Number}]+/gu,' ').trim()
+
 const termLabel = course => {
   const [,semester] = loadTerm(course.academic_year || CURRENT_LOAD_TERM.split('|')[0],course.semester || '').split('|')
   return [semester,course.academic_year && 'AY ' + course.academic_year].filter(Boolean).join(' · ')
@@ -53,6 +55,7 @@ export default function StudentHome() {
     open ? setParams(next,{state:{joinEntry:true}}) : state?.joinEntry ? navigate(-1) : setParams(next,{replace:true})
   }
   const [notice,setNotice] = useState('')
+  const [search,setSearch] = useState('')
   const data = recordsForLoadTerm(records.data,term)
   const courses = enrolledCourses(data)
   const canJoin = !user?.supportSubject
@@ -61,6 +64,15 @@ export default function StudentHome() {
     (term === 'all' || loadTerm(join.academic_year,join.semester) === term) &&
     !courses.some(course => course.course_code === join.course_code && block(course) === join.block)
   )
+
+  const terms = searchWords(search).split(' ').filter(Boolean)
+  const matches = (course, section) => {
+    const name = searchWords([course.course_code,course.course_title,course.instructor_name,section].join(' '))
+    return terms.every(word => name.includes(word))
+  }
+  const visibleCourses = courses.filter(course => matches(course,block(course)))
+  const visibleWaiting = waiting.filter(course => matches(course,course.block))
+  const visibleCount = visibleCourses.length + visibleWaiting.length
 
   function joined(result) {
     const joinedTerm = loadTerm(result.academic_year,result.semester)
@@ -113,8 +125,15 @@ export default function StudentHome() {
         ['Delivered assessments', delivered.filter(item => item.type === 'assessment').length],
         ['Materials opened', new Set(data.accesses.filter(access => materialIds.has(access.publication_id)).map(access => access.publication_id)).size],
       ]}/>}
+      {Boolean(courses.length || waiting.length) && <div className="student-class-search">
+        <label className="form-label">Find a class
+          <input className="form-input" type="search" placeholder="Course, instructor or section" value={search} onChange={event => setSearch(event.target.value)} aria-controls="your-classes"/>
+        </label>
+        {search && <button type="button" className="btn btn-secondary" onClick={() => setSearch('')}>Clear search</button>}
+      </div>}
+      {search && <p role="status" className="text-sm text-muted">{visibleCount ? visibleCount + (visibleCount === 1 ? ' class matches' : ' classes match') : 'No classes match your search.'}</p>}
       <section id="your-classes" aria-label="Your classes" className="class-card-grid">
-        {courses.map(course => {
+        {visibleCourses.map(course => {
           const progress = courseProgress(data,course.id,now)
           return <ClassCard key={course.id} code={course.course_code} title={course.course_title}
           label={'Open ' + course.course_code + ' ' + course.course_title}
@@ -127,7 +146,7 @@ export default function StudentHome() {
           status={course.suspended ? 'Membership suspended' : !course.active ? 'Awaiting instructor release' : undefined}
           progress={progress.total > 0 && !course.suspended && <StudentProgressBar value={progress.done} total={progress.total} label={course.course_code+' items done'} text={progress.label}/>}/>
         })}
-        {waiting.map(join => <ClassCard key={join.load_key} waiting code={join.course_code} title={join.course_title}
+        {visibleWaiting.map(join => <ClassCard key={join.load_key} waiting code={join.course_code} title={join.course_title}
           label={join.course_code + ' ' + join.block + ', joined'}
           lines={[join.instructor_name,termLabel(join)]} chips={[join.block]} status="Joined. Waiting for course materials." />)}
       </section>

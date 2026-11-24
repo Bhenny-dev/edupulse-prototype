@@ -38,3 +38,21 @@
   }
 }
 @media print { .student-course-tabs { display: none; } }
+
+
+.student-class-search {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 8px 12px;
+  margin: 0 0 16px;
+}
+.student-class-search label {
+  flex: 1 1 260px;
+  max-width: 480px;
+  margin: 0;
+}
+.student-class-search input {
+  min-height: 44px;
+  width: 100%;
+}
