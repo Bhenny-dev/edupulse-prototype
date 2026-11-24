@@ -102,7 +102,7 @@ test('an announcement with a provider link is filed under its week and the weeks
   expect(fixture.forbidden).toEqual([])
 })
 
-test('Class List shows each block with its code; a code is replaced or turned off; Scores and the Course station follow the class', async ({ page, isMobile }) => {
+test('Class List shows each block with its code; a code is replaced or turned off; the class closes back to Home', async ({ page }) => {
   const fixture = await classroomUI(page)
   await page.goto(`/#/courseware?course=${fixture.syllabus.id}&tab=class-list`)
   const block = page.getByRole('region', { name: 'Block BSIT-1A class list' })
@@ -124,13 +124,23 @@ test('Class List shows each block with its code; a code is replaced or turned of
   await page.getByRole('navigation', { name: 'Class sections' }).getByRole('button', { name: 'Scores', exact: true }).click()
   await expect(page.getByText('These are EduPulse assessment scores, not official grades.', { exact: false })).toBeVisible()
 
-  // The Course station reopens the class last opened; without one it returns to Home.
-  if (isMobile) { await page.goto('/#/dashboard'); await page.goto('/#/courseware') }
-  else { await page.getByRole('link', { name: 'Home', exact: true }).first().click(); await expect(page.getByRole('heading', { name: 'Home', exact: true })).toBeVisible(); await page.getByRole('link', { name: 'Course', exact: true }).click() }
-  if (!isMobile) await expect(page).toHaveURL(/courseware\?course=/)
+  // The class is a page over Home: closing it (button, Escape or Back) returns to Home without a Course station.
+  const classPage = page.getByRole('dialog', { name: /^Class IT 102/ })
+  await expect(classPage).toBeVisible()
+  await expect(page).toHaveURL(/#\/dashboard\?course=/)
+  await page.keyboard.press('Escape')
+  await expect(classPage).toHaveCount(0)
+  await expect(page.getByRole('heading', { name: 'Home', exact: true })).toBeVisible()
+  await expect(page.getByRole('link', { name: 'Course', exact: true })).toHaveCount(0)
+  await page.locator('.instructor-course-card').filter({ hasText: 'IT 102' }).click()
+  await expect(classPage).toBeVisible()
+  await page.goBack()
+  await expect(classPage).toHaveCount(0)
   await page.goto('/#/courseware?course=UNKNOWN-COURSE')
-  await expect(page.getByRole('heading', { name: 'Class unavailable', exact: true })).toBeVisible()
-  await expect(page.getByRole('link', { name: 'Back to Home', exact: true })).toBeVisible()
+  const unavailable = page.getByRole('dialog', { name: 'Class unavailable' })
+  await expect(unavailable).toContainText('This course is not in your current teaching load.')
+  await unavailable.getByRole('button', { name: 'Back to Home', exact: true }).click()
+  await expect(unavailable).toHaveCount(0)
   expect(fixture.forbidden).toEqual([])
 })
 

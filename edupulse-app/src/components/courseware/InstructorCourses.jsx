@@ -1,10 +1,11 @@
 import {editableSyllabusPath} from '../../agents/syllabusConversation'
 import {SYLLABUS_STATUS_META} from '../../data/syllabusStatus'
-import { useEffect, useMemo, useState } from 'react'
-import { Link, Navigate, useNavigationType, useSearchParams } from 'react-router-dom'
+import { useMemo, useState } from 'react'
+import { Link, Navigate, useSearchParams } from 'react-router-dom'
+import PageModal from '../ui/PageModal'
 import { Share2, Settings2, BookOpen, X } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
-import { useWorkspace, useWorkspaceViewState } from '../../context/WorkspaceContext'
+import { useWorkspace } from '../../context/WorkspaceContext'
 import { useAcademicRecords } from '../../context/AcademicContext'
 import { instructorCourses, instructorRecords, syllabusForCourse, sameCourseCode } from '../../utils/instructorCourses'
 import { collectSyllabusReferences } from '../../lib/rag/syllabusReferences'
@@ -31,19 +32,18 @@ import '../classroom/classroom.css'
 const TABS = [['announcements', 'Announcements'], ['materials', 'Teaching Materials & Assessments'], ['class-list', 'Class List'], ['scores', 'Scores']]
 const MATERIAL_PARAMS = ['week', 'topic', 'item', 'publication', 'add', 'picker', 'moveFrom']
 
-export default function InstructorCourses() {
-  const { user } = useAuth(), workspace = useWorkspace(), records = useAcademicRecords(), navigationType = useNavigationType()
+/** The class as a page over Home (`/dashboard?course=`). `onClose` returns to Home. */
+export default function InstructorCourses({ onClose }) {
+  const { user } = useAuth(), workspace = useWorkspace(), records = useAcademicRecords()
   const [params, setParams] = useSearchParams()
   const sharing = useSyllabusSharing(), [sharedChoice, setSharedChoice] = useState(''), [attested, setAttested] = useState(false)
   const [busy, setBusy] = useState(false), [error, setError] = useState(''), [notice, setNotice] = useState(''), [addingBlock, setAddingBlock] = useState(false)
-  const [lastClass, setLastClass] = useWorkspaceViewState('class-location', null)
   const {term,writable}=useAcademicTerm()
   const termData = useMemo(() => recordsForLoadTerm(records.data,term), [records.data,term])
   const courses = useMemo(() => instructorCourses(termData, user.id, workspace.syllabi), [termData, user.id, workspace.syllabi])
   const requested = params.get('course'), legacySyllabus = workspace.syllabi.find(item => item.id === requested)
   const matching = courses.filter(course => course.id === requested || requested===course.id.split('~').slice(0,3).join('~') || course.courseIds.includes(requested) || (legacySyllabus && syllabusForCourse([legacySyllabus], course)) || sameCourseCode(course.code, requested || ''))
   const selected = matching.length===1?matching[0]:undefined
-  useEffect(() => { if (selected) setLastClass(selected.id) }, [selected, setLastClass])
   const syllabus = selected && syllabusForCourse(workspace.syllabi, selected)
   const ready = syllabus && syllabus.status === 'active' && !syllabus.suspended
   const schedules=selected?loadRows(records.data,true).filter(load=>load.instructorId===user.id&&sameCourseCode(load.code,selected.code)&&(load.loadType==='course'||selected.blocks.includes(load.block))&&load.academicYear===selected.academicYear&&load.semester===selected.semester&&(load.time||load.source||load.sourceRows?.length)):[]
@@ -91,24 +91,21 @@ export default function InstructorCourses() {
   }
   if (selected && ['review','drafts'].includes(rawView)) {
     const query = new URLSearchParams(params); query.set('view', 'blocks')
-    return <Navigate replace to={`/courseware?${query}`} />
+    return <Navigate replace to={`/dashboard?${query}`} />
   }
-  // Home lists the classes. The Course station reopens the class last opened in this tab.
-  if (!requested) {
-    if (!records.loaded) return <div className="container"><LoadingStatus label="Loading your classes..." /></div>
-    const reopen = navigationType === 'PUSH' && lastClass && courses.some(course => course.id === lastClass)
-    return <Navigate replace to={reopen ? `/courseware?${new URLSearchParams({ course: lastClass, term })}` : `/dashboard${params.get('term') ? `?${new URLSearchParams({ term: params.get('term') })}` : ''}`} />
-  }
+  // The class is a page over Home: without ?course= there is nothing to show.
+  if (!requested) return null
   const counts = selected ? classStudents(selected, workspace.registrations, termData.enrollments) : new Map()
   const syllabusLink = syllabus && writable && !syllabus.suspended && ['drafted','checked','downloaded_for_approval'].includes(syllabus.status) ? editableSyllabusPath(syllabus.id) : '/syllabus?tab=mine'
-  return <div className="container classroom" data-pulse-zone="courseware" data-pulse-target={selected ? `${selected.code} course` : 'Loaded courses'}>
+  const title = !records.loaded ? 'Opening class' : selected ? `${selected.code} ${selected.title}` : 'Class unavailable'
+  return <PageModal title={title} label={selected ? `Class ${selected.code}` : title} closeLabel="Close class and return to Home" onClose={onClose} className="class-modal" bodyClassName="classroom">
+    <div data-pulse-zone="courseware" data-pulse-target={selected ? `${selected.code} course` : 'Loaded courses'}>
     {!records.loaded ? <LoadingStatus label="Loading your class..." /> : !selected ? <section className="class-empty" aria-label="Class unavailable">
-      <h1>Class unavailable</h1>
       <p role="alert">{matching.length>1?'Choose the block-labelled course you want to open from Home.':'This course is not in your current teaching load. Choose one of your assigned classes on Home.'}</p>
-      <div className="class-empty-actions"><Link className="btn btn-primary" to={`/dashboard?${new URLSearchParams({ term })}`}>Back to Home</Link></div>
+      <div className="class-empty-actions"><button type="button" className="btn btn-primary" onClick={onClose}>Back to Home</button></div>
     </section> : <>
       <header className="class-banner" data-tone={classTone(selected.code)}>
-        <div><h1>{selected.code}{' '}<span>{selected.title}</span></h1>
+        <div>
           <div className="class-banner-meta">
             {[selected.semester, selected.academicYear && `AY ${selected.academicYear}`, selected.units && `${selected.units} units`].filter(Boolean).map(item => <span key={item} className="class-chip">{item}</span>)}
             {selected.blocks.length ? selected.blocks.map(block => <span key={block} className="class-chip">Block {block} · {studentCount(counts.get(block)?.size || 0)}</span>) : <span className="class-chip">No block section yet</span>}
@@ -138,5 +135,6 @@ export default function InstructorCourses() {
     </>}
     {writable && addingBlock && selected && <CreateClassDialog courses={[selected]} codes={records.data.classCodes} counts={course => classStudents(course, workspace.registrations, termData.enrollments)} initialCourse={selected.id} initialBlock="new" onClose={() => setAddingBlock(false)} onCreated={(_, result) => { setAddingBlock(false); setParams({ course: selected.id, term, tab: 'announcements', code: result.block }) }} />}
     {writable && sharedOpen && <ModalLayer onDismiss={() => setSharedOpen(false)}><section className="modal-content" role="dialog" aria-modal="true" aria-label="Choose shared syllabus"><div className="modal-header"><h2>Shared syllabi for {selected?.code}</h2><button type="button" className="modal-close" aria-label="Close shared syllabus picker" onClick={() => setSharedOpen(false)}><X size={20} aria-hidden="true" /></button></div>{sharing.loading ? <LoadingStatus label="Loading shared syllabi..." /> : !incoming.length ? <p>No matching syllabus has been shared with this account.</p> : <><label className="form-label">Shared syllabus<select className="form-input" value={sharedChoice} onChange={event => { setSharedChoice(event.target.value); setAttested(false) }}><option value="">Choose an approved copy</option>{incoming.map(share => <option key={share.id} value={share.id}>{share.courseTitle} · Shared by {share.sender_name}</option>)}</select></label><label className="form-label"><input type="checkbox" checked={attested} onChange={event => setAttested(event.target.checked)} />I confirm that this approved copy is authorized for this course.</label><button type="button" className="btn btn-primary" disabled={!sharedChoice || !attested || busy || workspace.dirty || workspace.saving} onClick={() => void adoptShared()}>Use approved shared syllabus</button></>}{error && <p role="alert">{error}</p>}</section></ModalLayer>}
-  </div>
+    </div>
+  </PageModal>
 }

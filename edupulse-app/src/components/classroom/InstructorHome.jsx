@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { lazy, Suspense, useMemo, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { Plus } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 import { useWorkspace } from '../../context/WorkspaceContext'
@@ -11,14 +11,18 @@ import { ClassCard, EmptyClasses } from './ClassCards'
 import CreateClassDialog from './CreateClassDialog'
 import './classroom.css'
 
-/** Instructor Home: one card per assigned course with its block sections, and Create class. */
+const ClassPage = lazy(() => import('../courseware/InstructorCourses'))
+
+/** Instructor Home: one card per assigned course, Create class, and the open class as a page over Home (?course=). */
 export default function InstructorHome({ data, loaded, status, actions }) {
-  const { user } = useAuth(), workspace = useWorkspace(), navigate = useNavigate()
+  const { user } = useAuth(), workspace = useWorkspace(), [params, setParams] = useSearchParams()
   const { term, writable } = useAcademicTerm()
   const courses = useMemo(() => instructorCourses(data, user.id, workspace.syllabi), [data, user.id, workspace.syllabi])
   const [creating, setCreating] = useState(false)
   const counts = course => classStudents(course, workspace.registrations, data.enrollments)
-  const open = (course, extra = {}) => navigate(`/courseware?${new URLSearchParams({ course: course.id, term, ...extra })}`)
+  // Opening pushes a history entry, so the browser's Back closes the class; Close and Escape do the same.
+  const open = (course, extra = {}) => setParams({ course: course.id, term, ...extra })
+  const close = () => setParams(params.get('term') ? { term: params.get('term') } : {})
   const repeated = code => courses.filter(course => course.code === code).length > 1
   return <div className="container classroom-home" data-pulse-zone="general" data-pulse-target="Home">
     <div className="page-header"><div><h1>Home</h1><p className="text-muted">Welcome back, {user?.name}. Your classes are the courses the Dean assigned to you.</p></div>
@@ -35,6 +39,7 @@ export default function InstructorHome({ data, loaded, status, actions }) {
         chips={course.blocks.length ? course.blocks.map(block => `Block ${block} · ${students.get(block)?.size || 0}`) : ['No block section yet']}
         status={syllabus ? `Syllabus: ${SYLLABUS_STATUS_META[syllabus.status]?.label || syllabus.status}` : 'Syllabus not added'} />
     })}</div>}
+    {params.get('course') && <Suspense fallback={null}><ClassPage onClose={close} /></Suspense>}
     {creating && <CreateClassDialog courses={courses} codes={data.classCodes} counts={counts} onClose={() => setCreating(false)} onCreated={(course, result) => { setCreating(false); open(course, { tab: 'announcements', code: result.block }) }} />}
   </div>
 }

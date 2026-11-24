@@ -1,13 +1,14 @@
 import { test, expect } from '@playwright/test'
 import { automaticRecordsUI, rosterWorkflow } from '../automatic-records-fixture'
 
-test('three syllabus tabs, Course destination and legacy roster link keep their workflows', async ({ page }, info) => {
+test('three syllabus tabs, Home destination and legacy roster link keep their workflows', async ({ page }, info) => {
   await automaticRecordsUI(page); await page.goto('/#/syllabus')
   for (const name of ['My Syllabus', 'Shared Repository', 'Syllabus Builder']) await expect(page.getByRole('button', { name, exact: true })).toBeVisible()
   await expect(page.getByRole('button', { name: 'My Courses', exact: true })).toHaveCount(0)
   if (info.project.name === 'mobile') await page.getByRole('button', { name: 'Open menu', exact: true }).click()
-  await page.getByRole('link', { name: 'Course', exact: true }).click()
-  await expect(page.getByRole('heading', { name: 'Course', exact: true })).toBeVisible()
+  await expect(page.getByRole('link', { name: 'Course', exact: true })).toHaveCount(0)
+  await page.getByRole('link', { name: 'Home', exact: true }).first().click()
+  await expect(page.getByRole('heading', { name: 'Home', exact: true })).toBeVisible()
   await page.goto('/#/syllabus?tab=register'); await expect(page).toHaveURL(/student-monitoring\?tab=students/)
   await page.getByRole('button',{name:'Open IT 102 · BSIT-1A',exact:true}).click();await expect(page.getByRole('region',{name:'Enrolled students table',exact:true})).toBeVisible()
   await page.getByRole('button', { name: 'Assessment Scores', exact: true }).click()

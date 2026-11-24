@@ -31,7 +31,10 @@
 .class-banner h1 { font-size: 1.5rem; line-height: 1.2; color: var(--gray-900); }
 .class-banner h1 span { display: block; font-size: 1rem; font-weight: 600; color: var(--gray-700); margin-top: 4px; }
 /* One section-heading size inside a class, the app's card title size (.card-header h3), whichever component draws it. */
-.container.classroom h2, .classroom .instructor-week > header h2 { font-size: 1.125rem; }
+.page-modal-body.classroom h2, .classroom .instructor-week > header h2 { font-size: 1.125rem; }
+/* In the class page the modal header carries the class name; the banner keeps the class colour, facts and actions. */
+.class-modal .class-banner { min-height: 0; align-items: center; padding: 16px 20px; }
+.class-modal .class-banner-meta { margin-top: 0; }
 .class-banner-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 .class-banner-actions { display: flex; flex-wrap: wrap; gap: 8px; }
 .class-tabs { position: sticky; top: 64px; z-index: 5; background: var(--white); margin-bottom: 24px; }

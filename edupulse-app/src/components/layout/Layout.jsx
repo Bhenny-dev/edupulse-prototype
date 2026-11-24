@@ -8,7 +8,7 @@ import { useLanguage } from '../../context/LanguageContext'
 import { useTheme } from '../../context/ThemeContext'
 import { useNotifications } from '../../data/notifications'
 import {
-  LayoutDashboard, BookOpen, FileText, BarChart3, LogOut,
+  LayoutDashboard, BookOpen, BarChart3, LogOut,
   ChevronDown, Bell, Search, Menu, X, Moon, Sun,
   ChevronRight, Globe, ClipboardCheck, Users, GraduationCap,
 } from 'lucide-react'
@@ -34,10 +34,7 @@ const SECTIONS = [
 
   // ── Instructor ────────────────────────────────────────────────────────
   { key: 'syllabus', path: '/syllabus', label: 'Syllabus', icon: BookOpen, roles: ['instructor'] },
-  {
-    key: 'courseware', path: '/courseware', label: 'Course', icon: FileText, roles: ['instructor'],
-    relatedPaths: ['/content-editor'],
-  },
+  // A class opens from Home as a page over it, so instructors have no separate Course station.
   {
     key: 'scoring', path: '/student-monitoring', label: 'Student Monitoring', icon: ClipboardCheck, roles: ['instructor'],
   },

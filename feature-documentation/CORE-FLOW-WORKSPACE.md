@@ -408,3 +408,24 @@ Instructors can attach batches of files when creating a topic item or editing it
 Students can attach files, submit a link or write inside a delivered bin. A saved receipt restores on reload and the assigned instructor can review the work. Class threads are scoped to the enrolled block. A private thread and its replies are available to its student and assigned instructor. Test coverage lives in tests/topic-work.test.ts and tests/browser/topic-work.spec.ts.
 
 Local verification passed all 551 automated tests and six targeted browser cases across desktop and mobile. Browser cases used local fixtures. Database isolation and storage access were exercised in PGlite.
+
+## 24 November 2026 - Claude: class pages nested in Home (G14)
+
+Owner request (24 November): opening a class on Home must not leave Home for a separate Course page. Remove the instructor Course station and nest the class as a page modal over Home so no section repeats another page. Apply Google Classroom's documented teacher features and common UI principles (consistency, recognition over recall, user control and an obvious way out, visible status, minimal repetition), in at least ten iterations, each pushed and deployed.
+
+Sources: Classroom Help "Get started with Classroom for teachers", "Invite students to your class", "Manage class details and settings", "Add topics to the Classwork page", "View or update your gradebook".
+
+### G14. Class pages nested in Home
+
+| Iteration | Work | Classroom reference | Stage |
+|---|---|---|---|
+| T14.1 | A class opens as a page modal over Home (`?course=` on `/dashboard`); Back, Escape and Close return to Home; the instructor Course station is gone and old `/courseware` links open the same modal | Home: "To enter a class, click the class name on the card" | Complete |
+| T14.2 | Class header: one identity line (code, title, term) in the modal header, tabs fixed under it, class actions (Syllabus, Block sections) in a class Settings menu | Stream: class Settings, tabs at the top | Planned |
+| T14.3 | Class card More menu on Home: Copy class code, Open Class List, Open Scores, Open Block sections; the card shows blocks, students and syllabus | Class card More: Copy invite link, Open gradebook | Planned |
+| T14.4 | Home "To review" and "Upcoming" across classes: submissions waiting for review and the next due assessments, each opening its class | Home To Review module, Upcoming | Planned |
+| T14.5 | Announcements: class code card with Copy and Display (large code for a projector); Upcoming lists the next items with View all | Stream: class code with Full screen display | Planned |
+| T14.6 | Teaching Materials & Assessments: week filter at the left ("All weeks" and each week), Expand all / Collapse all, add actions grouped in one Create menu | Classwork: Create menu, topic filter, collapse all | Planned |
+| T14.7 | Class List: Teachers then Students per block with counts, search, and Invite (share the class code) | People: Teachers, Students, Invite students | Planned |
+| T14.8 | Scores: one grid of students by assessments per block with status colours (missing, submitted, scored) and class averages | Grades: gradebook grid, colour-coded status | Planned |
+| T14.9 | States and access: loading, empty and error states inside the modal; focus returns to the card; full-screen modal on phones; Pulse and notifications open the class modal | UI principles | Planned |
+| T14.10 | Audit pass of every class tab against the rest of the instructor pages, tests and documentation log | UI principles | Planned |
