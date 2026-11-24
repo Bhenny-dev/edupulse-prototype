@@ -5,7 +5,8 @@ import ResourceLinks from './StudentResourceLinks'
 import {useLocation,useSearchParams} from 'react-router-dom'
 import {currentAttempts} from './academicData'
 import {deliveryState} from '../../utils/blockDelivery'
-import {pendingAssessments,recordsNow} from './studentProgress'
+import {itemProgress,pendingAssessments,recordsNow} from './studentProgress'
+import StudentProgressBar from './StudentProgressBar'
 import StudentDueWork from './StudentDueWork'
 import TeachingAttachments from '../courseware/TeachingAttachments'
 import {Table} from './AcademicUI'
@@ -25,6 +26,7 @@ function Announcement({post,instructor,onWeek}){
 }
 export default function StudentCoursePanels({course,data,onOpen,busy}){
  const {state:historyState}=useLocation()
+ const [resourceFilter,setResourceFilter]=useState('all')
  const [params,setParams]=useSearchParams(),[status,setStatus]=useState('all')
  const tabs=[['announcements','Announcements'],['materials','Teaching Materials & Assessments'],['classlist','Class List'],['scores','Scores'],['outline','Syllabus / Course Outline']]
  const tab=tabs.some(([id])=>id===params.get('studentTab'))?params.get('studentTab'):'materials'
@@ -56,7 +58,11 @@ export default function StudentCoursePanels({course,data,onOpen,busy}){
  const reviewed=assessments.map(attemptFor).filter(attempt=>attempt&&attempt.grading_status!=='pending_review'&&attempt.max_score>0)
  const earned=reviewed.reduce((total,attempt)=>total+attempt.score,0)
  const available=reviewed.reduce((total,attempt)=>total+attempt.max_score,0)
- const resource=item=><article key={item.id} className="student-resource"><span className="badge">{item.type==='assessment'?'Assessment':item.content?.submissionOnly?'Submission bin':'Teaching Material'}</span><h3>{item.title}</h3>{item.type==='assessment'?<p className="text-sm text-muted">{state(item)} · {item.content?.questions?.length??'Unspecified'} questions · {item.content?.totalPoints??item.content?.questions?.length??'Unspecified'} points · {time(item.due_at)}{item.due_at?' (Philippine time)':''}</p>:<p>{item.content?.description}</p>}<ResourceLinks links={[...(item.content?.links||[]),...(item.content?.attachments||[]).filter(f=>f.url)]}/><TeachingAttachments attachments={(item.content?.attachments||[]).filter(f=>f.path)}/><button className="btn btn-secondary" disabled={busy} onClick={event=>onOpen(item,event.currentTarget)}>{item.type==='assessment'?(state(item)==='In progress'?'Resume assessment':attemptFor(item)?'Review assessment':'Open assessment'):item.content?.submissionOnly?'Open submission bin':'Open material'}</button>{!['legacy','open'].includes(deliveryState(item,now))&&<p className="text-sm text-muted">{deliveryState(item,now)==='scheduled'?'Scheduled for a later class':deliveryState(item,now)==='closed'?'Class delivery window closed':'Delivery schedule not yet available'}</p>}</article>
+ const kindOf=item=>item.type==='assessment'?'assessment':item.content?.submissionOnly?'submission':'material'
+ const resource=item=>{
+  const progress=kindOf(item)==='material'?itemProgress(data,item):null
+  return <article key={item.id} className="student-resource"><span className="badge">{item.type==='assessment'?'Assessment':item.content?.submissionOnly?'Submission bin':'Teaching Material'}</span><h3>{item.title}</h3>{item.type==='assessment'?<p className="text-sm text-muted">{state(item)} · {item.content?.questions?.length??'Unspecified'} questions · {item.content?.totalPoints??item.content?.questions?.length??'Unspecified'} points · {time(item.due_at)}{item.due_at?' (Philippine time)':''}</p>:<p>{item.content?.description}</p>}{progress?.total>0&&<StudentProgressBar value={progress.read} total={progress.total} label={item.title+' reading progress'} text={progress.read+' of '+progress.total+' sections read'}/>}<ResourceLinks links={[...(item.content?.links||[]),...(item.content?.attachments||[]).filter(f=>f.url)]}/><TeachingAttachments attachments={(item.content?.attachments||[]).filter(f=>f.path)}/><button className="btn btn-secondary" disabled={busy} onClick={event=>onOpen(item,event.currentTarget)}>{item.type==='assessment'?(state(item)==='In progress'?'Resume assessment':attemptFor(item)?'Review assessment':'Open assessment'):item.content?.submissionOnly?'Open submission bin':'Open material'}</button>{!['legacy','open'].includes(deliveryState(item,now))&&<p className="text-sm text-muted">{deliveryState(item,now)==='scheduled'?'Scheduled for a later class':deliveryState(item,now)==='closed'?'Class delivery window closed':'Delivery schedule not yet available'}</p>}</article>
+ }
  const weeks=[...new Set([...items.map(p=>p.week),...posts.filter(p=>p.week).map(p=>p.week)])].sort((a,b)=>a-b)
  const topicGroups=week=>{
   const weekly=items.filter(p=>p.week===week),row=course.outline?.find(r=>r.week===week)
@@ -72,12 +78,31 @@ export default function StudentCoursePanels({course,data,onOpen,busy}){
  const [expanded,setExpanded]=useWorkspaceViewState(`course:student-${course.id}:topic-expanded`,null)
  const isExpanded=key=>expanded===null||expanded.has(key)
  const toggle=(key,open)=>setExpanded(previous=>{const next=new Set(previous??keys);if(next.has(key)===open)return previous;if(open)next.add(key);else next.delete(key);return next})
- const focusedWeek=tab==='materials'?Number(params.get('week')):0
+ const requestedWeek=tab==='materials'?Number(params.get('week')):0
+ const focusedWeek=weeks.includes(requestedWeek)?requestedWeek:0
+ const matchingWeeks=weeks.filter(week=>(!focusedWeek||week===focusedWeek)&&
+  (resourceFilter==='all'||(resourceFilter==='announcement'?posts.some(post=>post.week===week):items.some(item=>item.week===week&&kindOf(item)===resourceFilter))))
+ const visibleKeys=keys.filter(key=>matchingWeeks.includes(Number(key.split(':')[0])))
+ const matchesResource=item=>resourceFilter==='all'||kindOf(item)===resourceFilter
  const focusedPostId=tab==='announcements'?posts.find(p=>p.id===params.get('item'))?.id:null
  useEffect(()=>{
   if(focusedPostId)document.getElementById(`announcement-${focusedPostId}`)?.focus()
-  else if(focusedWeek&&!params.has('item')&&!params.has('publication'))document.getElementById(`week-${focusedWeek}-heading`)?.focus()
- },[focusedPostId,focusedWeek,params])
+  else if(focusedWeek&&historyState?.focusWeek!==false&&!params.has('item')&&!params.has('publication'))document.getElementById(`week-${focusedWeek}-heading`)?.focus()
+ },[focusedPostId,focusedWeek,params,historyState?.focusWeek])
+ useEffect(()=>{
+  if(focusedWeek)setExpanded(previous=>previous===null||previous.has(String(focusedWeek))?previous:new Set([...previous,String(focusedWeek)]))
+ },[focusedWeek,setExpanded])
+ const selectWeek=week=>{
+  const next=new URLSearchParams(params)
+  if(week)next.set('week',week)
+  else next.delete('week')
+  setParams(next,{replace:true,state:{...historyState,focusWeek:false}})
+ }
+ const setVisibleTopics=open=>setExpanded(previous=>{
+  const next=new Set(previous??keys)
+  for(const key of visibleKeys)open?next.add(key):next.delete(key)
+  return next
+ })
  const changeSection=(id,week)=>{
   if(id===tab && !week)return
   const next=new URLSearchParams(params)
@@ -85,7 +110,8 @@ export default function StudentCoursePanels({course,data,onOpen,busy}){
   next.delete('item')
   if(week)next.set('week',String(week))
   else next.delete('week')
-  setParams(next,{replace:true,state:historyState})
+  if(week)setResourceFilter('all')
+  setParams(next,{replace:true,state:{...historyState,focusWeek:Boolean(week)}})
  }
  function moveSectionFocus(event){
   if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return
@@ -115,18 +141,58 @@ export default function StudentCoursePanels({course,data,onOpen,busy}){
    <span className="text-sm text-muted">Week {item.week}</span>
   </>}/>
  </div>}
- {tab==='materials'&&<section aria-label="Weekly teaching materials and assessments"><div className="academic-actions"><button className="btn btn-secondary" onClick={()=>setExpanded(new Set(keys))}>Expand all topics</button><button className="btn btn-secondary" onClick={()=>setExpanded(new Set())}>Collapse all topics</button></div>{weeks.map(week=>{
- const groups=topicGroups(week)
- return <details className="student-topic" key={week} open={isExpanded(String(week))} onToggle={e=>{if(e.target===e.currentTarget)toggle(String(week),e.currentTarget.open)}}><summary id={`week-${week}-heading`}>Week {week}</summary>{groups.map(group=>{
-  const materials=group.items.filter(p=>p.type!=='assessment'),assessments=group.items.filter(p=>p.type==='assessment')
-  const parents=a=>materials.filter(m=>a.content?.coverage?.materialIds?.includes(m.content?.courseItemId||m.id))
-  const key=`${week}:${group.id}`
-  return <details className="student-subtopic" key={key} open={isExpanded(key)} onToggle={e=>{if(e.target===e.currentTarget)toggle(key,e.currentTarget.open)}}><summary>{group.title}</summary>
-   {materials.map(m=><div key={m.id}>{resource(m)}<div className="student-related">{assessments.filter(a=>parents(a)[0]?.id===m.id).map(a=><div key={a.id}>{parents(a).length>1&&<p className="text-sm text-muted">Covers: {parents(a).map(p=>p.title).join(', ')}</p>}{resource(a)}</div>)}</div></div>)}
-   {assessments.some(a=>!parents(a).length)&&<section aria-label={`Week ${week} standalone assessments`}><h3>Assessments</h3>{assessments.filter(a=>!parents(a).length).map(resource)}</section>}
-  </details>
- })}{posts.filter(p=>p.week===week).map(post=><Announcement key={post.id} post={post} instructor={course.instructor_name}/>)}</details>
- })}{!weeks.length&&<p>No teaching materials or assessments have been published for this class.</p>}</section>}
+ {tab==='materials'&&<section aria-label="Weekly teaching materials and assessments">
+  {weeks.length>0&&<div className="student-topic-filters">
+   <label className="form-label">Week
+    <select className="form-select" value={focusedWeek||''} onChange={event=>selectWeek(event.target.value)}>
+     <option value="">All weeks</option>
+     {weeks.map(week=><option key={week} value={week}>Week {week}</option>)}
+    </select>
+   </label>
+   <label className="form-label">Show resources
+    <select className="form-select" value={resourceFilter} onChange={event=>setResourceFilter(event.target.value)}>
+     <option value="all">All resources</option>
+     <option value="material">Teaching materials</option>
+     <option value="assessment">Assessments</option>
+     <option value="submission">Submission bins</option>
+     <option value="announcement">Announcements</option>
+    </select>
+   </label>
+   <button type="button" className="btn btn-secondary" onClick={()=>setVisibleTopics(true)} disabled={!matchingWeeks.length}>Expand all topics</button>
+   <button type="button" className="btn btn-secondary" onClick={()=>setVisibleTopics(false)} disabled={!matchingWeeks.length}>Collapse all topics</button>
+  </div>}
+  {matchingWeeks.map(week=>{
+   const groups=topicGroups(week).filter(group=>group.items.some(matchesResource))
+   return <details className="student-topic" key={week} open={isExpanded(String(week))} onToggle={e=>{if(e.target===e.currentTarget)toggle(String(week),e.currentTarget.open)}}>
+    <summary id={'week-'+week+'-heading'}>Week {week}</summary>
+    {groups.map(group=>{
+     const materials=group.items.filter(p=>p.type!=='assessment')
+     const assessments=group.items.filter(p=>p.type==='assessment'&&matchesResource(p))
+     const parents=a=>materials.filter(m=>a.content?.coverage?.materialIds?.includes(m.content?.courseItemId||m.id))
+     const key=week+':'+group.id
+     return <details className="student-subtopic" key={key} open={isExpanded(key)} onToggle={e=>{if(e.target===e.currentTarget)toggle(key,e.currentTarget.open)}}>
+      <summary>{group.title}</summary>
+      {materials.map(m=>{
+       const linked=assessments.filter(a=>parents(a)[0]?.id===m.id)
+       const showMaterial=matchesResource(m)
+       return (showMaterial||linked.length>0)&&<div key={m.id}>
+        {showMaterial?resource(m):<p className="student-parent-material">{m.title}</p>}
+        {linked.length>0&&<div className="student-related">{linked.map(a=><div key={a.id}>
+         {parents(a).length>1&&<p className="text-sm text-muted">Covers {parents(a).map(p=>p.title).join(', ')}</p>}
+         {resource(a)}
+        </div>)}</div>}
+       </div>
+      })}
+      {assessments.some(a=>!parents(a).length)&&<section aria-label={'Week '+week+' standalone assessments'}>
+       <h3>Assessments</h3>{assessments.filter(a=>!parents(a).length).map(resource)}
+      </section>}
+     </details>
+    })}
+    {['all','announcement'].includes(resourceFilter)&&posts.filter(p=>p.week===week).map(post=><Announcement key={post.id} post={post} instructor={course.instructor_name}/>)}
+   </details>
+  })}
+  {!matchingWeeks.length&&<p role="status">{weeks.length?'No resources match these filters.':'No teaching materials or assessments have been published for this class.'}</p>}
+ </section>}
  {tab==='scores'&&<section aria-label="Your course scores">
   <h2>Your Scores</h2>
   <p>{reviewed.length ? `${earned} of ${available} points across ${reviewed.length} scored assessments.` : 'No scored assessments yet.'}</p>

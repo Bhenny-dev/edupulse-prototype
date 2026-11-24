@@ -79,3 +79,19 @@
   .student-class-stream { grid-template-columns: minmax(0, 1fr); }
   .student-announcement:focus { scroll-margin-top: 168px; }
 }
+
+
+.student-topic-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 8px 12px;
+}
+.student-topic-filters label {
+  flex: 1 1 140px;
+  max-width: 240px;
+  margin: 0;
+}
+.student-topic-filters select { min-height: 44px; }
+.student-topic > summary { scroll-margin-top: 150px; }
+.student-parent-material { font-weight: 650; }
