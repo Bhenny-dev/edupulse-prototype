@@ -1,5 +1,5 @@
 import { useId, useState } from 'react'
-import { Copy, KeyRound, Power, RefreshCw, X } from 'lucide-react'
+import { Copy, KeyRound, Maximize2, Power, RefreshCw, X } from 'lucide-react'
 import ModalLayer from '../ui/ModalLayer'
 import CoursewareActions from '../courseware/CoursewareActions'
 import { useAcademicRecords } from '../../context/AcademicContext'
@@ -14,7 +14,7 @@ const spelled = code => code.split('').join(' ')
 export function BlockCode({ course, block, codes, readOnly = false, highlight = false }) {
   const records = useAcademicRecords(), { addToast } = useToast(), heading = useId()
   const code = codeFor(codes, course, block)
-  const [menu, setMenu] = useState(false), [confirm, setConfirm] = useState(null), [busy, setBusy] = useState(false), [error, setError] = useState('')
+  const [showing, setShowing] = useState(false), [menu, setMenu] = useState(false), [confirm, setConfirm] = useState(null), [busy, setBusy] = useState(false), [error, setError] = useState('')
   const run = async action => {
     setBusy(true); setError('')
     try {
@@ -32,12 +32,20 @@ export function BlockCode({ course, block, codes, readOnly = false, highlight = 
     {code ? <><code className="class-code" aria-label={`Class code of block ${block}: ${spelled(code.code)}`} data-highlight={highlight || undefined}>{code.code}</code>
       <span className="class-code-actions">
         <button type="button" className="btn btn-ghost btn-sm" aria-label={`Copy the class code of block ${block}`} title="Copy class code" onClick={() => void copy()}><Copy size={14} aria-hidden="true" /></button>
+        <button type="button" className="btn btn-ghost btn-sm" aria-label={`Display the class code of block ${block}`} title="Display class code" onClick={() => setShowing(true)}><Maximize2 size={14} aria-hidden="true" /></button>
         {!readOnly && <CoursewareActions label={`Class code actions for block ${block}`} disabled={busy} open={menu} onOpenChange={value => setMenu(typeof value === 'function' ? value(menu) : value)}
           actions={[{ label: 'Replace code', icon: RefreshCw, onSelect: () => setConfirm('regenerate') }, { label: 'Turn off code', icon: Power, onSelect: () => setConfirm('disable') }]} />}
       </span></>
       : readOnly ? <span className="text-sm text-muted">No class code</span>
         : <button type="button" className="btn btn-secondary btn-sm" disabled={busy} onClick={() => void run('create')}><KeyRound size={14} aria-hidden="true" />{busy ? 'Creating code...' : 'Create code'}</button>}
     {error && !confirm && <span role="alert" className="text-sm">{error}</span>}
+    {showing && code && <ModalLayer onDismiss={() => setShowing(false)}>
+      <section className="modal-content class-dialog class-display" role="dialog" aria-modal="true" aria-label={`Class code display, ${course.code} block ${block}`}>
+        <div className="modal-header"><h2>{course.code} · Block {block}</h2><button type="button" className="modal-close" aria-label="Close class code display" onClick={() => setShowing(false)}><X size={20} aria-hidden="true" /></button></div>
+        <p className="text-muted">On Home, choose Join class and enter this code.</p>
+        <p className="class-display-code" aria-label={spelled(code.code)}>{code.code}</p>
+      </section>
+    </ModalLayer>}
     {confirm && <ModalLayer onDismiss={() => { if (!busy) setConfirm(null) }}>
       <section className="modal-content class-dialog" role="dialog" aria-modal="true" aria-labelledby={heading}>
         <div className="modal-header"><h2 id={heading}>{confirm === 'regenerate' ? 'Replace class code' : 'Turn off class code'}</h2><button type="button" className="modal-close" aria-label="Close" disabled={busy} onClick={() => setConfirm(null)}><X size={20} aria-hidden="true" /></button></div>
