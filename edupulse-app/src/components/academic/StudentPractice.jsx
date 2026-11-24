@@ -6,7 +6,7 @@ import {aiRequest} from '../../lib/aiClient'
 import {KPIs,Panel,Empty,Table} from './AcademicUI'
 import {currentAttempts,percent} from './academicData'
 import AcademicLibrary from './AcademicLibrary'
-import {enrolledCourses} from './StudentCourses'
+import {enrolledCourses} from './StudentClassDetail'
 
 export default function StudentPractice({data,onOpen,busy,adminTest=false}){
  const {user}=useAuth(),[practice,setPractice]=useState({sets:[],attempts:[]}),[source,setSource]=useState(''),[answers,setAnswers]=useState({}),[saving,setSaving]=useState(false),[error,setError]=useState(''),[submission,setSubmission]=useState(()=>crypto.randomUUID())

@@ -5,7 +5,10 @@ import {useAcademicRecords} from '../../context/AcademicContext'
 import {recordsForLoadTerm,loadTerm,CURRENT_LOAD_TERM} from '../../utils/loadTerms'
 import {ClassCard,EmptyClasses} from '../classroom/ClassCards'
 import JoinClassDialog from './JoinClassDialog'
-import {enrolledCourses} from './StudentCourses'
+import {enrolledCourses} from './StudentClassDetail'
+import {KPIs} from './AcademicUI'
+import StudentProgressBar from './StudentProgressBar'
+import {courseProgress,isDelivered,recordsNow} from './studentProgress'
 import {currentAttempts} from './academicData'
 import useAcademicTerm from './useAcademicTerm'
 import LoadTermFilter from './LoadTermFilter'
@@ -63,6 +66,9 @@ export default function StudentHome() {
     setNotice('Your membership is saved. The class will open when your instructor makes the course available.')
   }
 
+  const now = recordsNow(data)
+  const delivered = data.publications.filter(item => isDelivered(item, now))
+  const materialIds = new Set(delivered.filter(item => item.type !== 'assessment' && !item.content?.submissionOnly).map(item => item.id))
   const submitted = new Set(currentAttempts(data).map(attempt => attempt.publication_id))
   const pending = data.publications.filter(p => p.active && p.type === 'assessment' && !submitted.has(p.id))
     .sort((a,b) => (a.due_at || '9999').localeCompare(b.due_at || '9999'))
@@ -91,13 +97,23 @@ export default function StudentHome() {
       ].filter(Boolean).join(' · ')}</p>
     </div></section>}
     {records.loading && !records.loaded ? <p role="status">Loading your classes...</p> : <>
-      <section aria-label="Your classes" className="class-card-grid">
-        {courses.map(course => <ClassCard key={course.id} code={course.course_code} title={course.course_title}
+      {courses.length > 0 && <KPIs items={[
+        ['Enrolled courses', courses.length],
+        ['Delivered materials', materialIds.size],
+        ['Delivered assessments', delivered.filter(item => item.type === 'assessment').length],
+        ['Materials opened', new Set(data.accesses.filter(access => materialIds.has(access.publication_id)).map(access => access.publication_id)).size],
+      ]}/>}
+      <section id="your-classes" aria-label="Your classes" className="class-card-grid">
+        {courses.map(course => {
+          const progress = courseProgress(data,course.id,now)
+          return <ClassCard key={course.id} code={course.course_code} title={course.course_title}
           label={'Open ' + course.course_code + ' ' + course.course_title}
           onOpen={() => navigate(coursePath(course.id,term,'announcements'))}
           lines={[course.instructor_name || 'Instructor not recorded',termLabel(course),course.units && course.units + ' units']}
           chips={[block(course) || 'Section not recorded']}
-          status={course.suspended ? 'Membership suspended' : !course.active ? 'Awaiting instructor release' : undefined}/>)}
+          status={course.suspended ? 'Membership suspended' : !course.active ? 'Awaiting instructor release' : undefined}
+          progress={progress.total > 0 && !course.suspended && <StudentProgressBar value={progress.done} total={progress.total} label={course.course_code+' items done'} text={progress.label}/>}/>
+        })}
         {waiting.map(join => <ClassCard key={join.load_key} waiting code={join.course_code} title={join.course_title}
           label={join.course_code + ' ' + join.block + ', joined'}
           lines={[join.instructor_name,termLabel(join)]} chips={[join.block]} status="Joined. Waiting for course materials." />)}
@@ -111,7 +127,6 @@ export default function StudentHome() {
           <Link to={coursePath(item.course_id,term,'materials',item.id)}>{item.title}</Link>
           <span className="text-sm text-muted">{courses.find(course => course.id === item.course_id)?.course_code} · Week {item.week}{item.due_at ? ' · Due ' + new Date(item.due_at).toLocaleString('en-PH',{timeZone:'Asia/Manila'}) + ' (Philippine time)' : ''}</span>
         </li>)}</ul> : <p>No pending published assessments in this term.</p>}
-        {pending.length>6 && <Link to="/courseware">View all classes</Link>}
       </div></section>
       <section className="card mt-24"><div className="card-body">
         <h2>Recent Announcements</h2>

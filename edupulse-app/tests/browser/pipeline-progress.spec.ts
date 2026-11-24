@@ -14,7 +14,7 @@ test('monitoring excludes scripted activity without deleting or relabelling audi
 test('student saved scores and material access omit test indicators without altering records',async({page})=>{
  const fixture=await pipelineProgressUI(page,'student');await page.goto('/#/assessment');await expect(page.getByRole('cell',{name:'1/3',exact:true}).first()).toBeVisible()
  await page.getByRole('button',{name:'Open assessment',exact:true}).first().click();await expect(page.getByRole('status').filter({hasText:'Saved score: 1/3'})).toBeVisible();await expect(page.getByText(/Pipeline test/i)).toHaveCount(0);await page.keyboard.press('Escape')
- await page.goto('/#/courseware');await page.getByRole('button',{name:/^Open course /}).first().click();await expect(page.getByText(/^material .* Opened$/)).toBeVisible();await expect(page.getByText(/Pipeline test/i)).toHaveCount(0)
+ await page.goto('/#/courseware');await page.getByRole('region',{name:'Your classes'}).getByRole('button',{name:/^Open IT 102 /}).click();await page.getByRole('button',{name:'Teaching Materials & Assessments',exact:true}).click();await expect(page.getByText(/^material .* Opened$/)).toBeVisible();await expect(page.getByText(/Pipeline test/i)).toHaveCount(0)
  await page.goto('/#/performance?tab=materials');const access=page.locator('section.card').filter({has:page.getByRole('heading',{name:'Recorded material access',exact:true})});await expect(access.getByRole('columnheader',{name:'Activity',exact:true})).toHaveCount(0);expect(fixture.records.accesses.at(-1)!.is_test).toBe(true)
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true)
 })

@@ -17,8 +17,8 @@ export async function studentLearningUI(page:Page,support=false){
 }
 export async function studentLearningScene(page:Page,shot:((name:string)=>Promise<void>)=async()=>{}){
  const fixture=await studentLearningUI(page)
- await page.goto('/#/courseware');await expect(page.getByRole('heading',{name:'My Courses',exact:true})).toBeVisible({timeout:20000});await expect(page.getByRole('row').filter({has:page.getByRole('button',{name:'Open course IT 102',exact:true})})).toContainText('Rowan Sample Instructor');await shot('01-course-cards')
- await page.getByRole('button',{name:'Open course IT 102',exact:true}).click();await page.reload({waitUntil:'domcontentloaded',timeout:20000});await expect(page.getByRole('link',{name:'Back to Home',exact:true})).toBeVisible();await shot('02-delivered-course')
+ await page.goto('/#/courseware');await expect(page.getByRole('heading',{name:'Home',exact:true})).toBeVisible({timeout:20000});await expect(page.getByRole('region',{name:'Your classes'})).toContainText('Rowan Sample Instructor');await shot('01-course-cards')
+ await page.getByRole('region',{name:'Your classes'}).getByRole('button',{name:/^Open IT 102 /}).click();await page.getByRole('button',{name:'Teaching Materials & Assessments',exact:true}).click();await page.reload({waitUntil:'domcontentloaded',timeout:20000});await expect(page.getByRole('button',{name:'Close class and return to Home',exact:true})).toBeVisible();await shot('02-delivered-course')
  await page.getByRole('button',{name:'Open material',exact:true}).first().click();await expect(page.getByRole('region',{name:'Opened courseware',exact:true})).toBeVisible();await shot('03-material-reader');await page.keyboard.press('Escape')
  await page.goto('/#/assessment');await expect(page.getByRole('heading',{name:'Practice Assessments',exact:true})).toBeVisible();await page.getByRole('combobox',{name:'Reading material',exact:true}).selectOption(fixture.store.records.publications[0].id);await page.getByRole('button',{name:'Generate advanced practice with AI',exact:true}).click();await expect(page.getByRole('button',{name:'Save practice attempt',exact:true})).toBeVisible();await page.reload({waitUntil:'domcontentloaded',timeout:20000});await expect(page.getByRole('button',{name:'Save practice attempt',exact:true})).toBeVisible();await expect(page.getByRole('dialog',{name:'Sample advanced practice',exact:true})).toBeVisible();await shot('04-practice-questions')
  for(let i=0;i<3;i++)await page.locator(`input[name="practice-${i}"]`).first().check()
@@ -31,7 +31,7 @@ export async function studentLearningScene(page:Page,shot:((name:string)=>Promis
 
 export async function courseContentDialogScene(page:Page,shot:((name:string)=>Promise<void>)=async()=>{}){
  const fixture=await studentLearningUI(page)
- await page.goto('/#/courseware');await page.getByRole('button',{name:'Open course IT 102',exact:true}).click()
+ await page.goto('/#/courseware');await page.getByRole('region',{name:'Your classes'}).getByRole('button',{name:/^Open IT 102 /}).click();await page.getByRole('button',{name:'Teaching Materials & Assessments',exact:true}).click()
  const tabs=page.getByRole('navigation',{name:'Student course sections',exact:true})
  for(const name of ['Announcements','Teaching Materials & Assessments','Class List','Scores','Syllabus / Course Outline'])await expect(tabs.getByRole('button',{name,exact:true})).toBeVisible()
  await expect(page.getByRole('button',{name:'Open material',exact:true})).toHaveCount(3);await expect(page.getByRole('button',{name:/^(Open|Resume|Review) assessment$/})).toHaveCount(3)

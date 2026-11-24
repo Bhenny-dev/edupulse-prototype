@@ -115,7 +115,7 @@ test('failed attachment download releases its button and does not lock other fil
  store.records.publications[0].content!.attachments=[attachment,{...attachment,name:'other.zip',path:path.replace('guide.zip','other.zip')}]
  let requested=false, rejectDownload:()=>Promise<void>=async()=>{}
  await page.route('**/api/ai?action=teaching-files',route=>new Promise<void>(resolve=>{requested=true;rejectDownload=async()=>{await route.fulfill({status:403,json:{error:{message:'The file is unavailable. Retry when connected.'}}});resolve()}}))
- await page.goto('/#/courseware');await page.getByRole('button',{name:'Open course IT 102',exact:true}).click()
+ await page.goto('/#/courseware');await page.getByRole('region',{name:'Your classes'}).getByRole('button',{name:/^Open IT 102 /}).click();await page.getByRole('button',{name:'Teaching Materials & Assessments',exact:true}).click()
  await page.getByRole('button',{name:'Open material',exact:true}).first().click()
  const dialog=page.getByRole('dialog',{name:'Advanced variables reading',exact:true})
  await dialog.getByRole('button',{name:'guide.zip',exact:true}).click()
@@ -130,7 +130,7 @@ for(const support of [false,true])test(`${support?'Admin support':'Student'} rea
  const {store}=await studentLearningUI(page,support),commands:string[]=[]
  store.records.publications[0].content!.attachments=[attachment];await files(page)
  page.on('request',request=>{if(request.method()==='POST'&&request.url().includes('action=academic'))commands.push(request.postDataJSON().operation)})
- await page.goto('/#/courseware');await page.getByRole('button',{name:'Open course IT 102',exact:true}).click()
+ await page.goto('/#/courseware');await page.getByRole('region',{name:'Your classes'}).getByRole('button',{name:/^Open IT 102 /}).click();await page.getByRole('button',{name:'Teaching Materials & Assessments',exact:true}).click()
  await page.getByRole('button',{name:'Open material',exact:true}).first().click()
  const dialog=page.getByRole('dialog',{name:'Advanced variables reading',exact:true});await fits(page,dialog)
  await expect(dialog.getByRole('button',{name:'Attach file',exact:true})).toHaveCount(0)

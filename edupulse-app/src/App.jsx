@@ -92,7 +92,7 @@ function AppRoutes() {
       >
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/syllabus" element={<ProtectedRoute allowedRoles={['instructor']}><Syllabus /></ProtectedRoute>} />
-        <Route path="/courseware" element={<Courseware />} />
+        <Route path="/courseware" element={<CourseEntry />} />
         <Route path="/assessment" element={<ProtectedRoute allowedRoles={['student']}><Assessment /></ProtectedRoute>} />
         <Route path="/performance" element={<ProtectedRoute allowedRoles={PERFORMANCE_ROLES}><Performance /></ProtectedRoute>} />
         <Route path="/records" element={<ProtectedRoute allowedRoles={['dean', 'associate_dean']}><Records /></ProtectedRoute>} />
@@ -112,6 +112,15 @@ function AppRoutes() {
       <Route path="*" element={<NotFound />} />
     </Routes>
   )
+}
+
+function CourseEntry() {
+  const { user } = useAuth()
+  const { search, state } = useLocation()
+  if (user?.authenticated && user.role === 'student') {
+    return <Navigate to={'/dashboard' + search} state={state} replace />
+  }
+  return <Courseware />
 }
 
 // Oversight (syllabus, delivery, alerts) is the Dean and Program Coordinator Dashboard; older /monitor links keep their tab.

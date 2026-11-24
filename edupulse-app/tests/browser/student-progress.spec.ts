@@ -4,25 +4,20 @@ import { baselineUI } from '../baseline-fixture'
 const DAY = 86_400_000
 const later = (offset: number) => new Date(Date.now() + offset).toISOString()
 
-test('a student sees progress bars on the course card, in the course and on each material', async ({ page }) => {
+test('a student sees recorded progress on the Home card and inside the class', async ({ page }) => {
   const fixture = await baselineUI(page, 'student')
   const [lesson] = fixture.records.publications
   fixture.records.attempts = fixture.records.attempts.slice(0, 2) // the Variables and Functions quizzes are answered, the Arrays quiz is not
   fixture.records.reading = [{ publication_id: lesson.id, source_version: 'v1', student_email: 'ui.fixture@example.invalid', sections_read: 1, total_sections: 2, updated_at: later(-DAY) }]
   await page.goto('/#/courseware')
-  const card = page.getByRole('row').filter({has:page.getByRole('button',{name:'Open course IT 102',exact:true})})
+  const card = page.locator('.class-card').filter({has:page.getByRole('button',{name:/^Open IT 102 /})})
   const bar = card.getByRole('progressbar', { name: 'IT 102 items done' })
   await expect(bar).toHaveAttribute('value', '2')
   await expect(bar).toHaveAttribute('max', '4')
   await expect(card).toContainText('2 of 4 items done')
-  await card.getByRole('button',{name:'Open course IT 102',exact:true}).click()
-  const course = page.locator('section.card').filter({ hasText: 'Instructor:' }).first()
+  await card.getByRole('button',{name:/^Open IT 102 /}).click()
+  const course = page.getByRole('dialog',{name:/IT 102/})
   await expect(course.getByRole('progressbar', { name: 'IT 102 items done' })).toHaveAttribute('value', '2')
-  await expect(page.getByText('Week 1 · 2 item(s) · 1 of 2 done', { exact: true })).toBeVisible()
-  await expect(page.getByText('Week 3 · 1 item(s) · 0 of 1 done', { exact: true })).toBeVisible()
-  const material = page.getByRole('progressbar', { name: 'Variables lesson sections read', exact: true })
-  await expect(material).toHaveAttribute('value', '1')
-  await expect(material).toHaveAttribute('max', '2')
 })
 
 test('reminders are blue, orange three days before the due date and red once it is missed, on the server clock', async ({ page }) => {

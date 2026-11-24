@@ -9,7 +9,7 @@ import { Spinner } from '../ui/LoadingFeedback'
 import AcademicPerformance from './AcademicPerformance'
 import InstructorMonitoring from './InstructorMonitoring'
 import AcademicManagement from './AcademicManagement'
-import StudentCourses, { enrolledCourses, StudentClassDetail, studentClassSubtitle } from './StudentCourses'
+import { enrolledCourses, StudentClassDetail, studentClassSubtitle } from './StudentClassDetail'
 import StudentPractice from './StudentPractice'
 import AcademicLibrary, { OpenedPublication } from './AcademicLibrary'
 import TopicWorkPanel from '../classroom/TopicWorkPanel'
@@ -135,7 +135,7 @@ export default function AcademicPortal({ view, classModal = false, onCloseClass 
       {!deanPage && !loadError && !data.courses.length && !data.assignedCourses?.length && <div className="empty-state" role="status"><h2>No authorized academic records yet</h2><p>Instructors register confirmed class lists, activate an approved syllabus, review courseware and publish it. Students need a matching account email in the registered class list. Saved workspaces synchronize automatically.</p></div>}
       {view==='monitoring'&&user?.role==='instructor'?<InstructorMonitoring data={data} readOnly={!writable}/>:['performance', 'monitoring'].includes(view) && user?.role !== 'associate_dean' && <AcademicPerformance data={data} role={user?.role} monitoring={view === 'monitoring'} />}
       {deanPage?<DeanRecords data={allData} view={view}/>:['records', 'courses', 'monitor'].includes(view) && <AcademicManagement data={data} role={user?.role} view={view} />}
-      {isStudent&&view==='courseware'?<StudentCourses data={data} onOpen={open} busy={busy}/>:isStudent&&view==='assessment'&&writable?<StudentPractice data={data} onOpen={open} busy={busy} adminTest={adminTest}/>:['courseware', 'assessment'].includes(view) && <AcademicLibrary data={data} assessments={view === 'assessment'} onOpen={open} busy={busy} />}
+      {isStudent&&view==='assessment'&&writable?<StudentPractice data={data} onOpen={open} busy={busy} adminTest={adminTest}/>:['courseware', 'assessment'].includes(view) && <AcademicLibrary data={data} assessments={view === 'assessment'} onOpen={open} busy={busy} />}
       {isStudent&&pageParams.has('item')&&!selected&&pageParams.get('studentTab')!=='announcements'&&<p role="alert">This item is unavailable in your class.</p>}
       {reader}
     </>}
