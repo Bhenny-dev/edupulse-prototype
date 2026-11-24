@@ -144,6 +144,12 @@ test('an announcement with a provider link is filed under its week and the weeks
   await page.getByRole('button', { name: 'Expand all', exact: true }).click()
   await expect(week.getByRole('button', { name: /^Week 1/ })).toHaveAttribute('aria-expanded', 'true')
   await expect(page.locator('[data-topic="variables"]')).toHaveAttribute('open', '')
+  const filter = page.getByRole('combobox', { name: 'Show week', exact: true })
+  await filter.selectOption('2')
+  await expect(page.getByRole('heading', { name: /^Week 2/ })).toBeVisible()
+  await expect(page.getByRole('heading', { name: /^Week 1/ })).toHaveCount(0)
+  await filter.selectOption('')
+  await expect(page.getByRole('heading', { name: /^Week 1/ })).toBeVisible()
   expect(fixture.forbidden).toEqual([])
 })
 

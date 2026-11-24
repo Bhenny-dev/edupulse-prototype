@@ -424,7 +424,7 @@ Sources: Classroom Help "Get started with Classroom for teachers", "Invite stude
 | T14.3 | Class card More menu on Home: Copy class code, Open Class List, Open Scores, Open Block sections; the card shows blocks, students and syllabus | Class card More: Copy invite link, Open gradebook | Complete |
 | T14.4 | Home "To review" and "Upcoming" across classes: submissions waiting for review and the next due assessments, each opening its class | Home To Review module, Upcoming | Complete |
 | T14.5 | Announcements: class code card with Copy and Display (large code for a projector); Upcoming lists the next items with View all | Stream: class code with Full screen display | Complete |
-| T14.6 | Teaching Materials & Assessments: week filter at the left ("All weeks" and each week), Expand all / Collapse all, add actions grouped in one Create menu | Classwork: Create menu, topic filter, collapse all | Planned |
+| T14.6 | Teaching Materials & Assessments: week filter (All weeks or one week), Expand all / Collapse all; add actions stay inside their topic | Classwork: Create menu, topic filter, collapse all | Complete |
 | T14.7 | Class List: Teachers then Students per block with counts, search, and Invite (share the class code) | People: Teachers, Students, Invite students | Planned |
 | T14.8 | Scores: one grid of students by assessments per block with status colours (missing, submitted, scored) and class averages | Grades: gradebook grid, colour-coded status | Planned |
 | T14.9 | States and access: loading, empty and error states inside the modal; focus returns to the card; full-screen modal on phones; Pulse and notifications open the class modal | UI principles | Planned |

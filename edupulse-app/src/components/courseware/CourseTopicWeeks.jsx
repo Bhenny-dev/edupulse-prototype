@@ -38,6 +38,7 @@ export default function CourseTopicWeeks({ syllabus, data, course, onSchedule, r
   const [revisionId, setRevisionId] = useWorkspaceViewState(`course:${syllabus.id}:revision`, null)
   // Weeks open by default; Collapse all keeps only their headings and counts.
   const [collapsedWeeks, setCollapsedWeeks] = useWorkspaceViewState(`course:${syllabus.id}:weeks-collapsed`, () => new Set())
+  const [weekFilter, setWeekFilter] = useState('')
   const lock = useRef(false), uploadedFiles = useRef(new WeakMap())
   const rows = [...syllabus.courseOutline].sort((a, b) => a.week - b.week), teachingWeeks = rows.filter(row => !isOutlineExam(row))
   const entries = Object.entries(workspace.content).filter(([, item]) => item.syllabusId === syllabus.id && !item.generationCheckpoint && item.content).map(([id, item]) => ({ ...item, id }))
@@ -179,8 +180,9 @@ export default function CourseTopicWeeks({ syllabus, data, course, onSchedule, r
     {sourceReading && !reader && <p role="alert">The referenced teaching content is no longer available in this course.</p>}
     {error && <p role="alert">{error}</p>}{notice && <p role="status">{notice}</p>}
     <p className="text-sm text-muted">Open a topic to add its teaching materials and assessments. Drag a week by its handle, or use Move up / Move down. Examination weeks keep their scheduled slots.</p>
-    <div className="instructor-week-tools" role="group" aria-label="Show or hide weeks"><button type="button" className="btn btn-ghost btn-sm" onClick={expandAll}><ChevronsUpDown size={14} aria-hidden="true" />Expand all</button><button type="button" className="btn btn-ghost btn-sm" onClick={collapseAll}><ChevronsDownUp size={14} aria-hidden="true" />Collapse all</button></div>
-    {rows.map(row => {
+    <div className="instructor-week-tools" role="group" aria-label="Show or hide weeks"><button type="button" className="btn btn-ghost btn-sm" onClick={expandAll}><ChevronsUpDown size={14} aria-hidden="true" />Expand all</button><button type="button" className="btn btn-ghost btn-sm" onClick={collapseAll}><ChevronsDownUp size={14} aria-hidden="true" />Collapse all</button>
+      <label className="instructor-week-filter">Show<select className="form-input" aria-label="Show week" value={weekFilter} onChange={event => setWeekFilter(event.target.value)}><option value="">All weeks</option>{rows.map(row => <option key={row.week} value={String(row.week)}>Week {row.week}</option>)}</select></label></div>
+    {rows.filter(row => !weekFilter || String(row.week) === weekFilter).map(row => {
       const topics = weekTopics(row), weekEntries = entries.filter(item => item.week === row.week), index = teachingWeeks.findIndex(item => item.week === row.week), exam = isOutlineExam(row)
       const assignedIds = new Set(topics.flatMap(topic => topicEntries(weekEntries, topic.id, topics.length === 1).map(item => item.id)))
       const weekPosts = announcements.filter(post => post.week === row.week), collapsed = collapsedWeeks.has(row.week), panel = `week-panel-${syllabus.id}-${row.week}`
