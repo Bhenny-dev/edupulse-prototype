@@ -210,3 +210,6 @@ The registered-student picker offers all original departments, with program and 
 ### Semester-scoped courses - 18 November 2026
 
 The shared Academic term selection follows this account across dashboards and academic pages. Current and next semesters allow changes; previous and All terms are view-only. Add/Edit Course use code, title and units only. Dean course assignments have no block selector. The instructor adds actual block class lists from Course > Block sections, by upload or individual registered-student selection across departments. Class years follow their students. Each term keeps separate roster, source and learner history. See [Manual 46](../../system-manual/46-course-load-workspace/README.md).
+## Flat interface icons
+
+Student Monitoring and performance summaries use flat outline icons; Home shortcuts and upload-state icons have solid fills without raised or floating effects. [Current Instructor example, dark mode and phone views](../../system-manual/53-flat-interface-icons/README.md).

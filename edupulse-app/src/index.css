@@ -471,11 +471,10 @@ html:has(.overlay-backdrop) { overflow: hidden; }
   height: 64px;
   margin: 0 auto 16px;
   border-radius: var(--radius-full);
-  background: linear-gradient(135deg, var(--sky-200), var(--sky-300));
+  background: var(--sky-100);
   display: flex;
   align-items: center;
   justify-content: center;
-  animation: float 3s ease-in-out infinite;
 }
 
 /* ─── Step Wizard ─── */
@@ -1401,7 +1400,7 @@ textarea:focus-visible {
 }
 
 .dark-mode .upload-zone-icon {
-  background: #075985;
+  background: var(--gray-100);
 }
 
 .dark-mode select.form-input {
@@ -1445,7 +1444,7 @@ textarea:focus-visible {
 
 /* Dark surfaces and controls use solid fills, including inline legacy accents. */
 .dark-mode .app-layout, .dark-mode .main-content { background: #0b1220; }
-.dark-mode .avatar, .dark-mode .upload-zone-icon, .dark-mode .progress-fill { background: #0284c7; }
+.dark-mode .avatar, .dark-mode .progress-fill { background: #0284c7; }
 .dark-mode .btn-danger { background: #b91c1c; color: #fff; }
 .dark-mode [style*="linear-gradient"] { background-image: none !important; }
 .dark-mode .pres-container { background: #0b1220; }

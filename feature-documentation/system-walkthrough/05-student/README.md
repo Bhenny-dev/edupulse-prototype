@@ -100,3 +100,6 @@ The shared Academic term selection follows this account across dashboards and ac
 The current directory includes all six departments and groups home blocks by program and recorded year, independently of course enrollment. Use Department to narrow the Students list and Blocks / Sections. Department selection stays in the URL on reload. A block card shows its actual directory members even when it has no courses. The 2027-x-xxxx intake is Year 1; other IDs retain their recorded year. The owner-confirmed allocation places 2,286 existing active students into 109 blocks of at most 35. It creates no teaching load, course enrollment or learner activity.
 
 The student Dashboard shows its own recorded home block and size before any syllabus or course is assigned. Individual registered students, including students from other blocks/departments, remain selectable by the assigned instructor. No nationality is inferred from IDs or names.
+## Flat interface icons
+
+Performance summaries use flat outline icons on softly tinted surfaces. Labels and recorded values remain beside each icon, and both adapt to the selected theme. [Current desktop, dark-mode and phone examples](../../system-manual/53-flat-interface-icons/README.md).

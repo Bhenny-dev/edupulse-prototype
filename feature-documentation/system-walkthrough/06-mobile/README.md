@@ -86,3 +86,6 @@ Student learning and performance summaries reuse the dashboard SummaryCard. Colo
 Textual statuses use the shared small-text size while numeric values retain the normal summary-value size, keeping long status words readable beside icons.
 
 The shared card padding decreases on narrow screens to leave enough room for the icon and complete summary words, retaining the desktop padding at wider widths.
+## Flat interface icons
+
+Summary icons retain their flat outline treatment on phones, with the existing responsive tile layout and adjacent labels. [Dean and Student phone captures](../../system-manual/53-flat-interface-icons/README.md#dark-mode-and-phones).

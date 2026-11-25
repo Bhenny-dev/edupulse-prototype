@@ -107,7 +107,7 @@ html:has(.landing-page) { background: var(--cr-cream); }
 .why-card:nth-child(3n) .why-face.is-next { background: #fde2e4; }
 .why-icon { width: 40px; height: 40px; margin-bottom: 10px; border-radius: 50%; }
 .is-today .why-icon { color: var(--cr-soft); background: var(--cr-cream); border: 0; }
-.is-next .why-icon { box-shadow: 0 3px 0 #1b3f9e; }
+.is-next .why-icon { box-shadow: none; }
 .why-area { font-weight: 600; font-size: 1.0625rem; color: var(--cr-ink); }
 .why-text { font-weight: 600; color: var(--cr-soft); line-height: 1.4; }
 .is-next .why-text { color: var(--cr-ink); }
@@ -200,7 +200,7 @@ html:has(.landing-page) { background: var(--cr-cream); }
 .promises li:nth-child(2) { background: #e4f3d6; rotate: 0.6deg; }
 .promises li:nth-child(1) { rotate: -0.6deg; }
 .promises li:nth-child(3) { background: #fde2e4; rotate: -0.4deg; }
-.promise-icon { border-radius: 50%; color: #ffffff; background: var(--lp-blue); box-shadow: 0 2px 0 #1b3f9e; }
+.promise-icon { border-radius: 50%; color: #ffffff; background: var(--lp-blue); box-shadow: none; }
 .promises :is(h3) { font-weight: 600; }
 .promises p { font-weight: 600; color: var(--cr-soft); }
 .pulse-demo { border-radius: 10px; }
@@ -221,7 +221,7 @@ html:has(.landing-page) { background: var(--cr-cream); }
 .evidence-meter-fill { border-radius: 999px; background: var(--cr-oak); }
 .evidence-label { font-weight: 600; color: var(--cr-soft); }
 .goals { padding: 16px 20px; border-radius: 6px; border: 0; background: var(--cr-butter); box-shadow: var(--cr-card); }
-.goal-icon { border-radius: 50%; color: #ffffff; background: var(--lp-blue); box-shadow: 0 2px 0 #1b3f9e; }
+.goal-icon { border-radius: 50%; color: #ffffff; background: var(--lp-blue); box-shadow: none; }
 
 /* ─── Colleges: a banner on the front stage, the planned colleges hanging from the flies ─── */
 .colleges-board .lp-head { margin-bottom: 14px; }

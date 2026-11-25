@@ -120,7 +120,7 @@ html:has(.landing-page), html:has(.landing-page) body { overflow-anchor: none; }
 .nav-inner { width: 100%; max-width: calc(var(--container) + 2 * var(--gutter)); height: 100%; margin-inline: auto; padding-inline: var(--gutter); display: flex; align-items: center; justify-content: space-between; gap: 20px; }
 .nav-brand { display: flex; align-items: center; gap: 10px; min-height: 44px; }
 .nav-brand img { width: 32px; height: 32px; object-fit: contain; }
-.nav-mark { flex: none; width: 32px; height: 32px; border-radius: 9px; display: inline-grid; place-items: center; color: #ffffff; background: linear-gradient(150deg, #3b82f6, var(--lp-blue-deep)); box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.3); }
+.nav-mark { flex: none; width: 32px; height: 32px; border-radius: 9px; display: inline-grid; place-items: center; color: #ffffff; background: var(--lp-blue-deep); box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.3); }
 .nav-name { font-family: var(--lp-display); font-weight: 800; font-size: 1.25rem; letter-spacing: -0.035em; }
 .nav-links { position: relative; display: flex; gap: 2px; }
 .nav-links::after {
@@ -210,7 +210,7 @@ html:has(.landing-page), html:has(.landing-page) body { overflow-anchor: none; }
 .why-face.is-next { transform: rotateY(180deg); background: linear-gradient(165deg, #ffffff 0%, #ffffff 40%, var(--lp-ice-soft) 100%); border-color: var(--lp-ice); box-shadow: var(--lp-shadow); }
 .why-icon { width: 44px; height: 44px; margin-bottom: 18px; border-radius: 14px; display: grid; place-items: center; }
 .is-today .why-icon { color: var(--lp-slate); background: #ffffff; border: 1px dashed var(--lp-field); }
-.is-next .why-icon { color: #ffffff; background: var(--lp-blue); box-shadow: 0 10px 20px -10px rgb(37 99 235 / 0.7); }
+.is-next .why-icon { color: #ffffff; background: var(--lp-blue); box-shadow: none; }
 .why-area { margin-bottom: 6px; font-family: var(--lp-display); font-size: 1.0625rem; font-weight: 700; letter-spacing: -0.01em; color: var(--lp-ink); }
 .why-text { font-size: 0.9375rem; line-height: 1.5; }
 .is-today .why-text { color: var(--lp-slate); text-decoration: line-through; text-decoration-color: rgb(71 85 105 / 0.5); text-decoration-thickness: 1px; }
@@ -317,7 +317,7 @@ html:has(.landing-page), html:has(.landing-page) body { overflow-anchor: none; }
 .role-summary { max-width: 42rem; margin-bottom: 22px; color: var(--lp-slate); }
 /* The role as a picture of its work: avatar, task tiles and its top bar in miniature. */
 .role-panel-head { display: grid; grid-template-columns: 60px minmax(0, 1fr); gap: 16px; align-items: center; margin-bottom: 14px; }
-.role-avatar { width: 60px; height: 60px; display: grid; place-items: center; border-radius: 18px; color: #ffffff; background: linear-gradient(150deg, #3b82f6, var(--lp-blue-deep)); box-shadow: 0 14px 26px -16px rgb(37 99 235 / 0.9); }
+.role-avatar { width: 60px; height: 60px; display: grid; place-items: center; border-radius: 18px; color: #ffffff; background: var(--lp-blue-deep); box-shadow: 0 14px 26px -16px rgb(37 99 235 / 0.9); }
 .role-panel-head .role-kicker { margin-bottom: 4px; }
 .landing-page .role-panel .role-panel-head h3 { margin-bottom: 0; }
 .role-tasks { list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-bottom: 20px; }
@@ -328,7 +328,7 @@ html:has(.landing-page), html:has(.landing-page) body { overflow-anchor: none; }
 .role-sections { display: grid; gap: 8px; margin-bottom: 20px; }
 .role-sections-label { font-size: 0.8125rem; font-weight: 600; color: var(--lp-slate); }
 .role-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; padding: 8px 14px; border-radius: 14px; background: #ffffff; border: 1px solid var(--lp-line); box-shadow: 0 10px 24px -18px rgb(15 23 42 / 0.5); }
-.role-bar-logo { width: 22px; height: 22px; margin-right: 4px; border-radius: 7px; background: linear-gradient(150deg, #3b82f6, var(--lp-blue-deep)); }
+.role-bar-logo { width: 22px; height: 22px; margin-right: 4px; border-radius: 7px; background: var(--lp-blue-deep); }
 .role-bar em { position: relative; padding: 6px 2px; font-style: normal; font-size: 0.875rem; font-weight: 500; color: var(--lp-slate); }
 .role-bar em.is-current { font-weight: 600; color: var(--lp-ink); }
 .role-bar em.is-current::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; border-radius: 2px; background: var(--lp-blue); }
@@ -373,7 +373,7 @@ html:has(.landing-page), html:has(.landing-page) body { overflow-anchor: none; }
 .landing-page .goals h3 { margin-bottom: 20px; font-size: 1.125rem; }
 .goals ul { list-style: none; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; }
 .goals li { display: flex; flex-direction: column; gap: 6px; }
-.goal-icon { width: 40px; height: 40px; display: grid; place-items: center; margin-bottom: 4px; border-radius: 12px; color: #ffffff; background: linear-gradient(150deg, #3b82f6, var(--lp-blue-deep)); }
+.goal-icon { width: 40px; height: 40px; display: grid; place-items: center; margin-bottom: 4px; border-radius: 12px; color: #ffffff; background: var(--lp-blue-deep); }
 .goals strong { font-family: var(--lp-display); font-size: 1.25rem; font-weight: 700; letter-spacing: -0.02em; }
 .goals li > span:last-child { font-size: 0.9375rem; line-height: 1.5; color: var(--lp-slate); }
 

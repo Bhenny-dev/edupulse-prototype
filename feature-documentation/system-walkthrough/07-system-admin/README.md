@@ -135,3 +135,6 @@ The captures below use synthetic account/activity transports, not genuine studen
 **Admin support operations** appears on **Overview** and **Activity & logs**. It shows committed support operations by System Admin for accounts currently in that role, separately from the role's own actions. Changing a user's role changes this grouping. A support operation does not establish student completion or original role use. The totals cover seven days; the table lists the latest 30 operations.
 
 The controlled capture fixture intentionally includes both success and failure examples. Live pages use database outcomes unchanged. No demonstration records were inserted to populate monitoring.
+## Flat interface icons
+
+System Admin dashboard and role-monitoring summaries use flat outline icons. Selected-account support views inherit the same treatment for their authorized role. [Current System Admin light/dark examples and all-role audit](../../system-manual/53-flat-interface-icons/README.md).

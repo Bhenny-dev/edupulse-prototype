@@ -368,3 +368,6 @@ The sun and moon switch beside **Sign In** turns the site to night; the switch t
 Official-list student accounts use the existing email/password sign-in panel. The administrator distributes credentials privately. After sign-in, the imported student identity fields appear in [Settings Account](../../system-manual/16-student-directory/README.md#4-student-profile). Directory membership alone does not grant access to course materials.
 
 Account registration remains unchanged. The signed-in active directory now contains CIT students and named staff only; retired placeholder logins cannot reopen a role view.
+## Flat interface badges
+
+Public-page information badges use solid icon fills without raised edges or cast shadows. [The shared icon guide and public-page audit](../../system-manual/53-flat-interface-icons/README.md) describe the same flat treatment used by signed-in roles.

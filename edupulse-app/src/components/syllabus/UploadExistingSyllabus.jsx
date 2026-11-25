@@ -127,7 +127,7 @@ export default function UploadExistingSyllabus({ onExtract, onCancel, compact, f
           </div>
         ) : error ? (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
-            <div className="upload-zone-icon" style={{ background: 'linear-gradient(135deg, var(--red-100, #fee2e2), var(--red-200, #fecaca))' }}>
+            <div className="upload-zone-icon" style={{ background: 'var(--red-100)' }}>
               <AlertCircle size={24} style={{ color: 'var(--red-500)' }} />
             </div>
             <div style={{ fontSize: '0.875rem', color: 'var(--red-600)' }}>{error}</div>
@@ -137,7 +137,7 @@ export default function UploadExistingSyllabus({ onExtract, onCancel, compact, f
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
-            <div className="upload-zone-icon" style={{ background: 'linear-gradient(135deg, var(--green-100, #dcfce7), var(--green-200, #bbf7d0))' }}>
+            <div className="upload-zone-icon" style={{ background: 'var(--green-100)' }}>
               <FileText size={24} style={{ color: 'var(--green-600, #16a34a)' }} />
             </div>
             <div style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--gray-700)' }}>{file.name}</div>

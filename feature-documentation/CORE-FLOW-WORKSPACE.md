@@ -478,3 +478,10 @@ Owner request (25 November): the Syllabus page saves every syllabus uploaded, sh
 |---|---|---|---|
 | T16.3 | Syllabus page (My Syllabus): an Upload syllabi intake saves each approved PDF or DOCX automatically. It becomes the class's approved syllabus (Active) when its course code is loaded to the instructor for the selected semester and the class has none; otherwise it is kept as Approved - Uploaded and links to the class when the course is loaded. The old `?upload=approved` link still opens it focused | `tests/browser/class-syllabus.spec.ts`, `approved-syllabus.spec.ts`, `approved-syllabus-original.spec.ts` | Complete |
 | T16.4 | Class Syllabus view (`classroom/ClassSyllabus.jsx`, `?view=class-syllabus`, the banner Syllabus button): the uploaded file (View uploaded file in a page over the class, Download) and the extracted outline, read-only, with "Manage syllabi in Syllabus" and an Open Teaching Materials & Assessments button. A class with no approved syllabus says so and links to the Syllabus page. The class no longer has an upload, a shared-syllabus picker or a draft link: Announcements' Next step and Teaching Materials point to the Syllabus page | `class-syllabus.spec.ts`, `instructor-courses.spec.ts`, `supporting-spec.spec.ts` | Complete |
+## 25 November 2026 - Flat interface icons (G17)
+
+| Task | Work | Acceptance | Stage |
+|---|---|---|---|
+| T17.1 | Audit role routes and replace shared raised glass icons with flat outline tiles; flatten upload-state icons, Home shortcut buttons and public information badges. Preserve all actions, labels, roles and view references. | `flat-icons.spec.ts`: five roles and public routes on desktop/phone, both themes and reload. `flat-icons-support.spec.ts`: four Admin support subjects and 3:1 glyph contrast in both themes. 22 browser cases passed; 11 reviewed role/dark/phone/public/upload captures; isolated release gate passed 561 tests, with final lint/typecheck and browser audit on latest source. | Complete |
+
+- Full page inventory and visual examples are in Manual 53. Unrelated classroom/Syllabus work is preserved separately. No database migration is required.

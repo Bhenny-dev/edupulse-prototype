@@ -1,0 +1,7 @@
+# Flat interface icons — 25 November 2026
+
+The owner requests flat icons across every role page. The shared icon tile now uses a Lucide outline glyph, solid theme-aware tint and subtle border. Perspective, gloss, extruded shadows, drop shadows and hover lift are removed. Upload icons use solid status fills and no floating animation. Home shortcut buttons and public information badges also lose raised effects.
+
+The audit covers 33 authorized role-route entries and 13 public/error routes on desktop and phone, plus Admin support subjects, light/dark themes and reload. Existing redirects are followed. Functional controls, labels, focus behavior and navigation-state formats remain unchanged; no migration or data operation is introduced.
+
+Validation: 22 browser cases passed across the route/role audit and Admin support/contrast suites. Eleven role/dark/phone/public/upload captures passed and were reviewed by Codex. The isolated release gate passed all 561 tests on d14ece80; final lint/typecheck and the 22-case route/support audit also passed after integrating 291fd579. Production deployment follows the push. docs:check retains its existing owner-paused flag; guides and exact-hash image review were nevertheless updated. Test records and service/score values are fictional controlled UI responses, not proof of hosted identity, service health or learner achievement. [Guide and examples](../system-manual/53-flat-interface-icons/README.md).

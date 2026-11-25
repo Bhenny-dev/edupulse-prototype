@@ -106,3 +106,4 @@ The [baseline restoration](../versions/2026-10-28-baseline-workflows/README.md) 
 
 
 [Manual 47: Teaching-load documents and academic terms](47-teaching-load-documents/README.md) covers restored all-department students, PDF/OCR intake through Pulse or Course, instructor/course/block mapping, schedules/hours, explicit import and current/next/previous record filters.
+[Manual 53: Flat Interface Icons](53-flat-interface-icons/README.md) documents the shared icon treatment, all-role audit, dark mode and phone examples.

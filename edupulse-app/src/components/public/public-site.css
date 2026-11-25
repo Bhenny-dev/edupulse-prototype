@@ -53,7 +53,7 @@
 
 /* ─── Cards and chips ─── */
 .ps-card { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 12px; padding: 14px 16px 16px; border-radius: 10px; color: var(--cr-ink); background: var(--cr-paper); box-shadow: var(--cr-card); animation: ps-pop 380ms cubic-bezier(0.34, 1.56, 0.64, 1); }
-.ps-card-icon { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 50%; color: #ffffff; background: var(--tint); box-shadow: 0 3px 0 rgb(0 0 0 / 0.18); }
+.ps-card-icon { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 50%; color: #ffffff; background: var(--tint); box-shadow: none; }
 .ps-card-kicker { margin: 0 0 2px; font-family: var(--cr-hand); font-size: 1.0625rem; color: var(--cr-soft); }
 .ps-card-name { margin: 0 0 8px; font-family: var(--lp-display); font-size: 1.25rem; font-weight: 700; line-height: 1.15; color: var(--cr-ink); }
 .ps-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
@@ -133,7 +133,7 @@
 /* Pulse: the relay and the two exchanges. */
 .ps-relay { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px 4px; margin: 0; padding: 0; list-style: none; }
 .ps-relay li { display: inline-flex; align-items: center; gap: 8px; }
-.ps-relay i { width: 46px; height: 46px; display: grid; place-items: center; border-radius: 50%; color: #ffffff; background: var(--tint); box-shadow: 0 3px 0 rgb(0 0 0 / 0.18); }
+.ps-relay i { width: 46px; height: 46px; display: grid; place-items: center; border-radius: 50%; color: #ffffff; background: var(--tint); box-shadow: none; }
 .ps-relay b { font-family: var(--lp-display); font-weight: 600; color: var(--cr-ink); }
 .ps-relay-arrow { margin: 0 6px; color: var(--cr-soft); animation: ps-nudge 1.6s ease-in-out infinite; }
 @keyframes ps-nudge { 50% { translate: 4px 0; } }

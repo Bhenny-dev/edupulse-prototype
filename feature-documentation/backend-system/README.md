@@ -1,5 +1,7 @@
 # Backend System
 
+The flat-icon update changes shared presentation only. It adds no migration, account operation, academic command, authorization rule, API request or navigation-state format. Existing role/subject restoration and manual actions retain their contracts. [All-role icon audit](../system-manual/53-flat-interface-icons/README.md).
+
 The approved-only course-outline correction selects an attested retained approved syllabus for the teaching UI while repository drafts remain on Syllabus. It performs no migration, approval, activation, publication or inference. Existing server validation and delivery rules remain authoritative.
 
 The [25 November classroom support correction](supabase.md#25-november-2026-classroom-support-parity) adds class codes, joins and announcements to the verified subject read and routes instructor support classroom controls through the audited gateway. The [validation record](../versions/2026-11-25-classroom-support.md) distinguishes local checks from production rollout.
