@@ -6,6 +6,17 @@ export function pendingReview(data, course) {
   return currentAttempts(instructorRecords(data, [course])).filter(attempt => attempt.grading_status === 'pending_review' && !attempt.is_test).length
 }
 
+/** The same waiting responses grouped by assessment, for the To review page. */
+export function pendingAssessments(data, course) {
+  const scoped = instructorRecords(data, [course]), groups = new Map()
+  for (const attempt of currentAttempts(scoped).filter(item => item.grading_status === 'pending_review' && !item.is_test)) {
+    const publication = scoped.publications.find(item => item.id === attempt.publication_id)
+    const group = groups.get(attempt.publication_id) || { key: attempt.publication_id, title: publication?.title || 'Assessment', week: publication?.week, count: 0 }
+    group.count += 1; groups.set(attempt.publication_id, group)
+  }
+  return [...groups.values()].sort((a, b) => (a.week || 0) - (b.week || 0) || a.title.localeCompare(b.title))
+}
+
 /** The next published due dates and week openings of one class, soonest first (EduPulse dates only, nothing invented). */
 export function classUpcoming({ content, data, course, syllabus, now }) {
   if (!syllabus) return []

@@ -1,6 +1,6 @@
 import { lazy, Suspense, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { BarChart3, CalendarClock, ClipboardCheck, Copy, Plus, Settings2, Users } from 'lucide-react'
+import { BarChart3, Copy, Plus, Settings2, Users } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 import { useToast } from '../../context/ToastContext'
 import { useWorkspace } from '../../context/WorkspaceContext'
@@ -11,7 +11,8 @@ import { classStudents } from '../../utils/classroom'
 import { ClassCard, EmptyClasses } from './ClassCards'
 import CreateClassDialog from './CreateClassDialog'
 import { codeFor } from './ClassCodes'
-import { classUpcoming, pendingReview } from './classWork'
+import { classUpcoming, pendingAssessments, pendingReview } from './classWork'
+import { HomeRail, ReviewPanel, UpcomingPanel } from './HomePanels'
 import './classroom.css'
 
 const ClassPage = lazy(() => import('../courseware/InstructorCourses'))
@@ -31,11 +32,19 @@ export default function InstructorHome({ data, loaded, status, actions }) {
     // Back to Home with the keyboard where it was: on the class that was just closed.
     requestAnimationFrame(() => requestAnimationFrame(() => document.querySelector(`[data-class-id="${CSS.escape(id || '')}"]`)?.focus({ preventScroll: true })))
   }
+  const panel = ['review', 'upcoming'].includes(params.get('panel')) && !params.get('course') ? params.get('panel') : null
+  const openPanel = name => setParams({ panel: name, ...(params.get('term') ? { term: params.get('term') } : {}) })
+  const closePanel = () => {
+    const name = params.get('panel')
+    setParams(params.get('term') ? { term: params.get('term') } : {})
+    // The keyboard goes back to the circle button that opened the page.
+    requestAnimationFrame(() => requestAnimationFrame(() => document.querySelector(`[data-panel="${CSS.escape(name || '')}"]`)?.focus({ preventScroll: true })))
+  }
   const repeated = code => courses.filter(course => course.code === code).length > 1
   const named = course => `${course.code}${repeated(course.code) && course.blocks.length ? ` · ${course.blocks.join(', ')}` : ''}`
   const [now] = useState(() => Date.now())
-  const review = useMemo(() => courses.map(course => ({ course, count: pendingReview(data, course) })).filter(item => item.count > 0), [courses, data])
-  const upcoming = useMemo(() => courses.flatMap(course => classUpcoming({ content: workspace.content, data, course, syllabus: syllabusForCourse(workspace.syllabi, course), now }).map(item => ({ ...item, course }))).sort((a, b) => a.at.localeCompare(b.at)).slice(0, 5), [courses, data, workspace.content, workspace.syllabi, now])
+  const review = useMemo(() => courses.map(course => ({ course, count: pendingReview(data, course), assessments: pendingAssessments(data, course) })).filter(item => item.count > 0), [courses, data])
+  const upcoming = useMemo(() => courses.flatMap(course => classUpcoming({ content: workspace.content, data, course, syllabus: syllabusForCourse(workspace.syllabi, course), now }).map(item => ({ ...item, course }))).sort((a, b) => a.at.localeCompare(b.at)).slice(0, 50), [courses, data, workspace.content, workspace.syllabi, now])
   const copyCode = async (code, block) => {
     try { await navigator.clipboard.writeText(code); addToast(`Copied the class code of block ${block}`, 'success') }
     catch { addToast('Copy is unavailable here. Open the class and select the code.', 'warning') }
@@ -60,14 +69,9 @@ export default function InstructorHome({ data, loaded, status, actions }) {
         chips={course.blocks.length ? course.blocks.map(block => `Block ${block} · ${students.get(block)?.size || 0}`) : ['No block section yet']}
         status={syllabus ? `Syllabus: ${SYLLABUS_STATUS_META[syllabus.status]?.label || syllabus.status}` : 'Syllabus not added'} />
     })}</section>}
-    {courses.length > 0 && <div className="class-home-work">
-      <section className="card" aria-label="To review"><div className="card-header"><h2><ClipboardCheck size={16} aria-hidden="true" /> To review</h2></div>
-        <div className="card-body">{review.length ? review.map(({ course, count }) => <button type="button" key={course.id} className="class-work-row" onClick={() => open(course, { tab: 'scores' })}><strong>{named(course)}</strong><span>{count} written {count === 1 ? 'response' : 'responses'} to mark</span></button>)
-          : <p className="text-sm text-muted">Nothing is waiting for your marking.</p>}</div></section>
-      <section className="card" aria-label="Upcoming across classes"><div className="card-header"><h2><CalendarClock size={16} aria-hidden="true" /> Upcoming</h2></div>
-        <div className="card-body">{upcoming.length ? upcoming.map(item => <button type="button" key={item.key} className="class-work-row" onClick={() => open(item.course, { tab: 'materials' })}><strong>{named(item.course)}</strong><span>{item.text}</span><time dateTime={item.at}>{new Date(item.at).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })}</time></button>)
-          : <p className="text-sm text-muted">No saved openings or due dates soon.</p>}</div></section>
-    </div>}
+    {courses.length > 0 && <HomeRail reviewCount={review.reduce((sum, item) => sum + item.count, 0)} upcomingCount={upcoming.length} onOpen={openPanel} />}
+    {panel === 'review' && <ReviewPanel classes={review} named={named} onOpenClass={open} onClose={closePanel} />}
+    {panel === 'upcoming' && <UpcomingPanel items={upcoming} named={named} onOpenClass={open} onClose={closePanel} />}
     {params.get('course') && <Suspense fallback={null}><ClassPage onClose={close} /></Suspense>}
     {creating && <CreateClassDialog courses={courses} codes={data.classCodes} counts={counts} onClose={() => setCreating(false)} onCreated={(course, result) => { setCreating(false); open(course, { tab: 'announcements', code: result.block }) }} />}
   </div>

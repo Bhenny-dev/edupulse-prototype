@@ -112,25 +112,47 @@ test('the class page fills the area under the top bar and leaves the Pulse panel
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true)
 })
 
-test('Home lists the written responses to mark and the next openings, each opening its class', async ({ page }) => {
+test('To review and Upcoming are circle buttons on the left of Home that open their own pages, each opening its class', async ({ page, isMobile }) => {
   const fixture = await classroomUI(page)
   const records = fixture.records as any, publication = records.publications[0], member = records.enrollments[0]
   records.attempts = [{ publication_id: publication.id, source_version: publication.source_version, student_email: member.student_email, score: 0, max_score: 2, submitted_at: new Date().toISOString(), attempt_no: 1, grading_status: 'pending_review' }]
   records.deliverySchedules = [{ ...records.deliverySchedules[0], windows: [{ week: 4, opens_at: new Date(Date.now() + 3 * 86400000).toISOString(), closes_at: null }] }]
   await page.goto('/#/dashboard')
-  const review = page.getByRole('region', { name: 'To review', exact: true })
+  const rail = page.getByRole('navigation', { name: 'Across your classes', exact: true })
+  const reviewButton = rail.getByRole('button', { name: 'To review, 1 waiting', exact: true }), upcomingButton = rail.getByRole('button', { name: /^Upcoming, \d+ coming up$/ })
+  await expect(reviewButton).toBeVisible()
+  await expect(upcomingButton).toBeVisible()
+  // Circles on the left edge, not cards after the class cards.
+  const circle = (await reviewButton.boundingBox())!, grid = (await page.getByRole('region', { name: 'Your classes', exact: true }).boundingBox())!
+  expect(Math.abs(circle.width - circle.height)).toBeLessThan(1)
+  if (!isMobile) { expect(circle.x).toBeLessThan(30); expect(circle.x + circle.width).toBeLessThanOrEqual(grid.x) }
+  await expect(page.getByRole('region', { name: 'To review', exact: true })).toHaveCount(0)
+
+  await reviewButton.click()
+  const review = page.getByRole('dialog', { name: 'To review', exact: true })
+  await expect(review).toBeVisible()
+  await expect(page).toHaveURL(/panel=review/)
   await expect(review).toContainText('IT 102')
   await expect(review).toContainText('1 written response to mark')
-  await review.getByRole('button').click()
+  await page.keyboard.press('Escape')
+  await expect(review).toHaveCount(0)
+  await expect(reviewButton).toBeFocused()
+  await reviewButton.click()
+  await review.getByRole('button', { name: 'Open Scores', exact: true }).click()
   await expect(page).toHaveURL(/tab=scores/)
+  await expect(review).toHaveCount(0)
   const banner = page.getByRole('status').filter({ hasText: 'waiting for your marking in block BSIT-1A' })
   await expect(banner).toContainText('1 written response is')
   await banner.getByRole('button', { name: 'Go to review', exact: true }).click()
   await page.keyboard.press('Escape')
-  const upcoming = page.getByRole('region', { name: 'Upcoming across classes', exact: true })
+
+  await upcomingButton.click()
+  const upcoming = page.getByRole('dialog', { name: 'Upcoming', exact: true })
   await expect(upcoming).toContainText('Week 4 opens for block BSIT-1A')
-  await upcoming.getByRole('button').first().click()
+  await expect(page).toHaveURL(/panel=upcoming/)
+  await upcoming.locator('.class-work-row').first().click()
   await expect(page).toHaveURL(/tab=materials/)
+  await expect(upcoming).toHaveCount(0)
   expect(fixture.forbidden).toEqual([])
 })
 
