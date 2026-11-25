@@ -45,19 +45,19 @@ test('the Dean uploads the registrar class lists and each one lands on its teach
   await expect(again.getByRole('button', { name: 'Nothing to add' })).toBeDisabled()
 })
 
-test('an instructor reads the registrar .xls class list, keeps enrolled students and chooses the block', async ({ page }) => {
+test('an instructor reads the registrar .xls class list, keeps enrolled students in the existing block', async ({ page }) => {
   await instructorCourseUI(page)
   await page.goto('/#/courseware')
   await page.locator('.instructor-course-card').filter({ hasText: 'IT 201' }).click()
-  await page.getByRole('button', { name: 'Block sections', exact: true }).click()
-  await page.getByRole('button', { name: 'Add block section', exact: true }).click()
+  await page.getByRole('button', { name: 'Class List', exact: true }).click()
+  await page.getByRole('button', { name: 'Add students', exact: true }).click()
   const dialog = page.getByRole('dialog', { name: 'Course class list', exact: true })
   const meetings: [string, string, string][] = [['Mon', '07:30 am', 'A324'], ['Wed', '07:30 am', 'A324']]
   await dialog.locator('input[type=file]').setInputFiles(classList('3', meetings, [['EXAMPLE, CASEY', 'F', 'SYN-002'], ['EXAMPLE, RILEY', 'M', 'SYN-001'], ['LEAVER, DREW', 'F', 'SYN-009', 'Withdrawn']], 'IT 201', 'Data structures'))
   await expect(dialog.getByText('Student Preview (2 records)')).toBeVisible()
   await expect(dialog).toContainText('1 student not enrolled with the registrar was left out.')
-  await expect(dialog).toContainText('Registrar section IT 201 - 3, INSTRUCTOR, Morgan Sample, Mon 07:30, Wed 07:30: choose the block section it belongs to.')
-  await expect(dialog.getByLabel('Block Section *')).toHaveValue('')
+  await expect(dialog).toContainText('IT 201')
+  await expect(dialog.getByLabel('Block Section *')).toHaveValue('BSIT-2A')
   await dialog.locator('input[type=file]').setInputFiles(classList('7', meetings, [['EXAMPLE, CASEY', 'F', 'SYN-002']]))
   await expect(dialog).toContainText('This class list is for IT 202, not IT 201. Check that you chose the right file.')
 })

@@ -1,0 +1,5 @@
+# Management-loaded classes and direct approved-file intake
+
+Instructors open classes established by Dean/Program Coordinator loading, add students to existing rosters and copy active invitation links. Student links enroll only the verified own student account, after sign-in when needed; reload requires explicit retry. Empty classes accept an approved PDF/DOCX directly in Teaching Materials & Assessments. Saved classes hide intake and expose the retained original through the header Syllabus button. Drafts remain in the separate repository.
+
+[Manual 54](../../system-manual/54-management-loaded-classes/README.md) contains the desktop/phone captures and workflow. [Validation](validation/results.md) separates local UI/database evidence from hosting status. Migration `20261125075102_management_loaded_classes.sql` was applied to the linked EduPulse project and confirmed in remote history before the code push. Production deployment follows the authorized push; a successful trigger is not Ready evidence.

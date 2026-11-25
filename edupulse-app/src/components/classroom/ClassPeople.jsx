@@ -23,10 +23,10 @@ function useClassCohorts(course, data) {
 const blockKey = (course, block) => `${course.code}|${block}|${loadTerm(course.academicYear, course.semester).split('|')[1] || course.semester}|${course.academicYear}`
 
 /** Class List: the instructor, then each block's students with its class code and how they were added. */
-export default function ClassPeople({ course, data, readOnly = false, onAddBlock }) {
+export default function ClassPeople({ course, data, readOnly = false }) {
   const { user } = useAuth(), workspace = useWorkspace(), cohorts = useClassCohorts(course, data)
   const counts = classStudents(course, workspace.registrations, data.enrollments)
-  const [adding, setAdding] = useState(null), [notice, setNotice] = useState('')
+  const [adding, setAdding] = useWorkspaceViewState(`course:${course.id}:class-list`, null), [notice, setNotice] = useState('')
   const listed = block => (workspace.registrations || []).filter(row => row.status === 'active' && row.assignmentKey === course.assignmentKey && row.blockSection === block).flatMap(row => row.students || [])
   const names = block => new Map(listed(block).map(student => [String(student.Email || '').toLowerCase(), student.Name]))
   return <>
@@ -45,9 +45,8 @@ export default function ClassPeople({ course, data, readOnly = false, onAddBlock
         </>}
       </section>
     })}
-    {!course.blocks.length && <EmptyClasses title="No block sections yet">Create a class code for a block section so students can join, or upload its class list.</EmptyClasses>}
-    {!readOnly && <div className="class-section-tools mb-24"><button type="button" className="btn btn-secondary" onClick={onAddBlock}>Add a block section with a code</button><button type="button" className="btn btn-ghost" onClick={() => setAdding('new')}>Upload a class list for a new block</button></div>}
-    {adding && <CourseClassList course={course} block={adding === 'new' ? undefined : adding} onClose={() => setAdding(null)} onSaved={message => { setAdding(null); setNotice(message) }} />}
+    {!course.blocks.length && <EmptyClasses title="No block sections yet">The Dean or Program Coordinator loads the block sections and class lists for this course.</EmptyClasses>}
+    {adding && course.blocks.includes(adding) && <CourseClassList course={course} block={adding} onClose={() => setAdding(null)} onSaved={message => { setAdding(null); setNotice(message) }} />}
   </>
 }
 

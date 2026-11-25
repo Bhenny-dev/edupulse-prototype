@@ -1,6 +1,6 @@
 import {SYLLABUS_STATUS_META} from '../../data/syllabusStatus'
 import { useMemo, useState } from 'react'
-import { Link, Navigate, useSearchParams } from 'react-router-dom'
+import { Navigate, useSearchParams } from 'react-router-dom'
 import PageModal from '../ui/PageModal'
 import { Settings2, BookOpen } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
@@ -18,7 +18,7 @@ import { classStudents, classTone, studentCount } from '../../utils/classroom'
 import ClassStream, { classAnnouncements } from '../classroom/ClassStream'
 import ClassPeople, { ClassScores } from '../classroom/ClassPeople'
 import ClassSyllabus from '../classroom/ClassSyllabus'
-import CreateClassDialog from '../classroom/CreateClassDialog'
+import ApprovedSyllabusIntake from '../syllabus/ApprovedSyllabusIntake'
 import './instructor-courses.css'
 import '../classroom/classroom.css'
 
@@ -31,7 +31,7 @@ const MATERIAL_PARAMS = ['week', 'topic', 'item', 'publication', 'add', 'picker'
 export default function InstructorCourses({ onClose }) {
   const { user } = useAuth(), workspace = useWorkspace(), records = useAcademicRecords()
   const [params, setParams] = useSearchParams()
-  const [error, setError] = useState(''), [notice, setNotice] = useState(''), [addingBlock, setAddingBlock] = useState(false)
+  const [error, setError] = useState(''), [notice, setNotice] = useState('')
   const {term,writable}=useAcademicTerm()
   const termData = useMemo(() => recordsForLoadTerm(records.data,term), [records.data,term])
   const courses = useMemo(() => instructorCourses(termData, user.id, workspace.syllabi), [termData, user.id, workspace.syllabi])
@@ -45,6 +45,17 @@ export default function InstructorCourses({ onClose }) {
   const tab = params.get('tab'), section = rawView === 'blocks' ? 'blocks' : rawView === 'class-syllabus' ? 'class-syllabus' : TABS.some(([key]) => key === tab) ? tab : rawView === 'topics' || MATERIAL_PARAMS.some(key => params.has(key)) ? 'materials' : 'announcements'
   const go = next => { setError(''); setNotice(''); setParams({ course: selected.id, term, ...(next === 'blocks' || next === 'class-syllabus' ? { view: next } : { tab: next }) }) }
   const scoped = instructorRecords(termData, selected ? [selected] : courses)
+  const useApproved = async candidate => {
+    if (!writable || !selected || !sameCourseCode(candidate.courseCode, selected.code)) throw new Error('Choose the approved syllabus for this editable assigned course.')
+    const teaching = { ...candidate, status: 'active', sample: false, courseInfo: { ...candidate.courseInfo, academicYear: candidate.courseInfo?.academicYear || selected.academicYear, periodOffered: candidate.courseInfo?.periodOffered || selected.semester } }
+    if (!approvedSyllabusForCourse([teaching], selected)) throw new Error('Choose the approved syllabus for this class, academic year and semester.')
+    await workspace.commit(data => {
+      if (approvedSyllabusForCourse(data.syllabi, selected)) throw new Error('This class already has an uploaded approved syllabus. Reopen the class to view it.')
+      return { ...data, syllabi: [...data.syllabi, teaching] }
+    })
+    await records.load(true)
+    setNotice('Approved syllabus saved. The extracted outline is ready for this class.')
+  }
   if (rawView === 'syllabus' || ['mine', 'repository', 'builder', 'register'].includes(tab)) {
     const query = new URLSearchParams(params)
     for (const key of ['view', 'course', 'picker', 'week']) query.delete(key)
@@ -72,21 +83,21 @@ export default function InstructorCourses({ onClose }) {
             <span className="class-chip">{syllabus ? `Syllabus: ${SYLLABUS_STATUS_META[syllabus.status]?.label || syllabus.status}` : 'Syllabus not added'}</span>
           </div></div>
         <div className="class-banner-actions">
-          <button type="button" className={`btn btn-sm ${section === 'class-syllabus' ? 'btn-primary' : 'btn-secondary'}`} aria-pressed={section === 'class-syllabus'} onClick={() => go('class-syllabus')}><BookOpen size={14} aria-hidden="true" />Syllabus</button>
+          {syllabus?.approvedFile && <button type="button" className={`btn btn-sm ${section === 'class-syllabus' ? 'btn-primary' : 'btn-secondary'}`} aria-pressed={section === 'class-syllabus'} onClick={() => go('class-syllabus')}><BookOpen size={14} aria-hidden="true" />Syllabus</button>}
           <button type="button" className={`btn btn-sm ${section === 'blocks' ? 'btn-primary' : 'btn-secondary'}`} aria-pressed={section === 'blocks'} onClick={() => go('blocks')}><Settings2 size={14} aria-hidden="true" />Block sections</button>
         </div>
       </header>
-      {records.error && <p role="alert">{records.error}</p>}{error && <p role="alert">{error}</p>}{notice && <p role="status">{notice}</p>}
+      {records.error && <p role="alert">{records.error}</p>}{error && <p role="alert">{error}</p>}{notice && <p role="status" className="mb-16">{notice}</p>}
       {!writable&&<p className="text-sm text-muted mb-16">This semester is view-only.</p>}
       {syllabus?.handedOverFrom?.instructorName&&<p className="text-sm text-muted mb-16">Continued from {syllabus.handedOverFrom.instructorName} for {selected.blocks.join(', ')}.</p>}
       <nav className="tabs class-tabs" aria-label="Class sections">{TABS.map(([key, label]) => <button type="button" key={key} className={`tab ${section === key ? 'active' : ''}`} aria-pressed={section === key} onClick={() => go(key)}>{label}</button>)}</nav>
-      {section === 'announcements' && <ClassStream course={selected} syllabus={syllabus} data={scoped} readOnly={!writable} highlight={params.get('announcement')} createdBlock={params.get('code')} onAddBlock={() => setAddingBlock(true)} />}
+      {section === 'announcements' && <ClassStream course={selected} syllabus={syllabus} data={scoped} readOnly={!writable} highlight={params.get('announcement')} onOpenMaterials={() => go('materials')} />}
       {section === 'materials' && <>
-        {!ready && <section className="class-empty" aria-label="No approved syllabus"><h2>Teaching materials start from the approved syllabus</h2><p>Upload the approved syllabus of {selected.code} on the Syllabus page. It links to this class by its course code, and its outline builds the weeks here.</p><div className="class-empty-actions"><Link className="btn btn-primary" to="/syllabus?tab=mine">Open Syllabus</Link></div></section>}
+        {!ready && (writable ? <ApprovedSyllabusIntake key={selected.id} courseCode={selected.code} onUse={useApproved} /> : <p>No approved syllabus is recorded for this class.</p>)}
         {syllabus?.courseOutline?.length > 0 && !syllabus.suspended && <CourseTopicWeeks readOnly={!writable} syllabus={syllabus} data={scoped} course={selected} announcements={classAnnouncements(scoped, selected)} onOpenAnnouncement={id => setParams({ course: selected.id, term, tab: 'announcements', announcement: id })} onSchedule={() => go('blocks')} />}
       </>}
-      {section === 'class-syllabus' && <ClassSyllabus course={selected} syllabus={syllabus} onOpenMaterials={() => go('materials')} />}
-      {section === 'class-list' && <ClassPeople course={selected} data={scoped} readOnly={!writable} onAddBlock={() => setAddingBlock(true)} />}
+      {section === 'class-syllabus' && (syllabus?.approvedFile ? <ClassSyllabus course={selected} syllabus={syllabus} onOpenMaterials={() => go('materials')} /> : <p>No uploaded syllabus is recorded. Open Teaching Materials &amp; Assessments to add the approved file.</p>)}
+      {section === 'class-list' && <ClassPeople course={selected} data={scoped} readOnly={!writable} />}
       {section === 'scores' && <ClassScores course={selected} data={scoped} />}
       {section === 'blocks' && <>
         <div className="class-section-heading"><h2>Block sections</h2><button type="button" className="btn btn-ghost btn-sm" onClick={() => go('announcements')}>Back to Announcements</button></div>
@@ -94,7 +105,6 @@ export default function InstructorCourses({ onClose }) {
         <CourseBlockSections course={selected} syllabus={syllabus} data={scoped} readOnly={!writable}/>
       </>}
     </>}
-    {writable && addingBlock && selected && <CreateClassDialog courses={[selected]} codes={records.data.classCodes} counts={course => classStudents(course, workspace.registrations, termData.enrollments)} initialCourse={selected.id} initialBlock="new" onClose={() => setAddingBlock(false)} onCreated={(_, result) => { setAddingBlock(false); setParams({ course: selected.id, term, tab: 'announcements', code: result.block }) }} />}
     </div>
   </PageModal>
 }

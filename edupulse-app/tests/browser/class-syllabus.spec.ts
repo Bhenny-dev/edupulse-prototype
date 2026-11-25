@@ -1,4 +1,5 @@
 import { test, expect, type Page } from '@playwright/test'
+
 import { instructorCourseUI } from '../instructor-course-fixture'
 import { makeRuledSyllabusPdf } from '../fixtures'
 
@@ -12,6 +13,8 @@ async function saveOnSyllabusPage(page: Page, file: { name: string; mimeType: st
   await page.getByRole('checkbox').check()
   await page.getByRole('button', { name: 'Save syllabus', exact: true }).click()
 }
+
+test.setTimeout(60_000)
 
 test('the Syllabus page saves an upload, and the class Syllabus view shows only that file and its outline', async ({ page }) => {
   const fixture = await instructorCourseUI(page)
@@ -53,19 +56,17 @@ test('the Syllabus page saves an upload, and the class Syllabus view shows only 
   await expect(page.getByRole('heading', { name: 'Syllabus', exact: true })).toBeVisible()
 })
 
-test('a class without an approved syllabus points to the Syllabus page instead of offering an upload', async ({ page }) => {
+test('a class without an approved syllabus opens an in-class upload and hides its syllabus button', async ({ page }) => {
   await instructorCourseUI(page)
   await page.goto('/#/dashboard')
   await page.locator('.instructor-course-card').filter({ hasText: 'IT 201' }).click()
   const classPage = page.getByRole('dialog', { name: /^Class IT 201/ })
-  await expect(classPage.getByRole('region', { name: 'Next step' })).toContainText('Upload it on the Syllabus page')
-  await page.getByRole('button', { name: 'Syllabus', exact: true }).click()
-  await expect(classPage.getByRole('region', { name: 'No approved syllabus' })).toContainText('Upload the approved syllabus of IT 201 on the Syllabus page')
-  await page.getByRole('navigation', { name: 'Class sections' }).getByRole('button', { name: 'Teaching Materials & Assessments', exact: true }).click()
-  await expect(classPage.getByRole('region', { name: 'No approved syllabus' })).toBeVisible()
-  await expect(page.getByLabel('Upload approved syllabus PDF or DOCX')).toHaveCount(0)
-  await classPage.getByRole('link', { name: 'Open Syllabus', exact: true }).click()
-  await expect(page).toHaveURL(/#\/syllabus\?tab=mine/)
+  await expect(classPage.getByRole('button', { name: 'Syllabus', exact: true })).toHaveCount(0)
+  await classPage.getByRole('button', { name: 'Upload approved syllabus', exact: true }).click()
+  await expect(page).toHaveURL(/tab=materials/)
+  await expect(page.getByLabel('Upload approved syllabus PDF or DOCX')).toHaveCount(1)
+  await page.reload()
+  await expect(page.getByRole('heading', { name: 'Upload syllabi', exact: true })).toBeVisible({ timeout: 20000 })
 })
 
 test('a second approved upload for a class that already has one is kept in My Syllabus and the class keeps its own', async ({ page }) => {

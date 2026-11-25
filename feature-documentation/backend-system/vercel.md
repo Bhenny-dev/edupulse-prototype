@@ -178,3 +178,8 @@ After pushing reviewed work to main, both agents run `npm run deploy:production 
 The command reports a deployment URL and SHA and stores a private receipt in `.data/deployment-control/latest.json`. A successful trigger is not a successful build: inspect Vercel for Ready and the canonical production alias before reporting live. If access fails, complete the project-local sign-in; do not generate empty commits or deploy from the old team. Automatic Git deployment still requires a working Vercel GitHub integration on the destination account.
 
 Verified transfer diagnosis: the destination project has no Git link. `vercel git connect` for Bhenny-dev/edupulse-prototype returns that the connected GitHub identity needs admin/write access. Direct source deployment does not require widening repository access. Keep this explicit; do not claim automatic push deployment is repaired until the Vercel Git integration is successfully reconnected.
+
+
+## Automatic classes and direct course intake, 25 November 2026
+
+Apply `20261125075102_management_loaded_classes.sql` before deploying the matching UI. It is applied and listed in the linked remote migration history. This release uses the shared remote-main archive deployment command; provider credentials, billing and project settings are unchanged. Local database/browser/capture evidence is in the [release validation](../versions/2026-11-25-managed-classes/validation/results.md); inspect Ready and the canonical production alias independently after pushing.

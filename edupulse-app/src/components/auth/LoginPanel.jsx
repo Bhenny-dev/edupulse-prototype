@@ -12,7 +12,7 @@ const QUICK_ROLES = [
   { key: 'student', label: 'Student', icon: GraduationCap },
 ]
 
-export default function LoginPanel({ className = '' }) {
+export default function LoginPanel({ className = '', onSignedIn, studentOnly = false }) {
   const { user, login, signIn, signInWithGoogle } = useAuth()
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
@@ -22,9 +22,9 @@ export default function LoginPanel({ className = '' }) {
   const [error, setError] = useState('')
   const [googleEnabled, setGoogleEnabled] = useState(false)
 
-  useEffect(() => { if (user?.authenticated) navigate('/dashboard', { replace: true }) }, [user, navigate])
+  useEffect(() => { if (user?.authenticated && !onSignedIn) navigate('/dashboard', { replace: true }) }, [user, navigate, onSignedIn])
   useEffect(() => {
-    if (!supabase) return
+    if (!supabase || studentOnly) return
     const controller = new AbortController()
     fetch(`${import.meta.env.VITE_SUPABASE_URL}/auth/v1/settings`, {
       headers: { apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY }, signal: controller.signal,
@@ -32,13 +32,13 @@ export default function LoginPanel({ className = '' }) {
       .then(settings => { if (settings) setGoogleEnabled(Boolean(settings.external?.google)) })
       .catch(() => {})
     return () => controller.abort()
-  }, [])
+  }, [studentOnly])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (busy) return
     setBusy(true); setError('')
-    try { await signIn(email, password); navigate('/dashboard') }
+    try { await signIn(email, password); if (onSignedIn) onSignedIn(); else navigate('/dashboard') }
     catch (err) { setError(err.message) }
     finally { setBusy(false) }
   }
@@ -101,7 +101,7 @@ export default function LoginPanel({ className = '' }) {
         </p>
       </form>
 
-      {supabase && <div className="login-google-access">
+      {supabase && !studentOnly && <div className="login-google-access">
         <button type="button" className="btn btn-secondary w-full" disabled={busy || !googleEnabled} onClick={handleGoogle}>
           <svg className="login-google-icon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
             <path fill="#4285F4" d="M22.56 12.25c0-.73-.06-1.42-.19-2.09H12v3.96h5.92a5.06 5.06 0 0 1-2.2 3.32v2.76h3.56c2.08-1.92 3.28-4.74 3.28-7.95Z" />
@@ -117,7 +117,7 @@ export default function LoginPanel({ className = '' }) {
       {(import.meta.env.DEV || import.meta.env.MODE === 'capture') && <div className="login-quick-access">
         <span className="login-quick-access-label">Quick preview access (testing only)</span>
         <div className="login-quick-access-row">
-          {QUICK_ROLES.map(role => (
+          {QUICK_ROLES.filter(role => !studentOnly || role.key === 'student').map(role => (
             <button
               key={role.key}
               type="button"

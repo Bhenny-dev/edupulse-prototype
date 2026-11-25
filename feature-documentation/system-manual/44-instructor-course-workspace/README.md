@@ -4,9 +4,9 @@
 
 ## Class codes and announcements in an Admin support view
 
-Open a loaded class from **Home**. **Announcements** shows **Class codes** and **Upcoming** beside the announcement feed on desktop. Cards and their controls wrap within that sidebar; on narrow screens the sidebar follows the feed. The header keeps **Syllabus**, **Block sections**, **Teaching Materials & Assessments**, **Class List** and **Scores** available.
+Open a loaded class from **Home**. **Announcements** shows **Class codes** and **Upcoming** beside the announcement feed on desktop. Cards and their controls wrap within that sidebar; on narrow screens the sidebar follows the feed. After an approved file is saved, the header shows **Syllabus** alongside **Block sections**, **Teaching Materials & Assessments**, **Class List** and **Scores** available.
 
-A System Admin viewing a selected instructor sees the same active class codes, join records and announcements as that instructor. **Copy class code** and **Display class code** are available. The code's three-dot menu offers **Replace code** and **Turn off code**, each with confirmation. A block without an active code offers **Create code**. These instructor support actions use the selected instructor's current assignment and record the actual Admin actor.
+A System Admin viewing a selected instructor sees the same active class codes, join records and announcements as that instructor. **Copy class code**, **Display class code** and **Copy invitation link** are available. The code's three-dot menu offers **Replace code** and **Turn off code**, each with confirmation. A block without an active code offers **Create code**. These instructor support actions use the selected instructor's current assignment and record the actual Admin actor.
 
 ![Sample Admin instructor view: class code fits beside the announcement feed](12-admin-class-codes.png)
 
@@ -16,7 +16,7 @@ On a phone, scroll past the announcement feed to **Class codes**. The sample bel
 
 Reload restores the authorized class, selected tab, code display and pending code confirmation. It reads the latest active code and never repeats a replacement, code creation or announcement write. Codes themselves and unsaved announcement text are not navigation hints. These screenshots use fictional accounts and controlled UI responses; database tests separately check authorization and persistence.
 
-The signed-in Instructor navigation is **Home**, **Syllabus** and **Student Monitoring**. **Home** opens the assigned class, which retains its approved syllabus and teaching outline. **Syllabus** is the separate repository for drafts, sharing and PDF building. Former Course URLs reopen the class; nested syllabus URLs redirect to the standalone repository with their tab/edit references. See [the syllabus repository guide](../45-syllabus-repository/README.md). Older task screenshots below predate Home; the class-code captures above show the current class view.
+The signed-in Instructor navigation is **Home**, **Schedule**, **Syllabus** and **Student Monitoring**. **Home** opens the assigned class, which retains its approved syllabus and teaching outline. **Syllabus** is the separate repository for drafts, sharing and PDF building. Former Course URLs reopen the class; nested syllabus URLs redirect to the standalone repository with their tab/edit references. See [the syllabus repository guide](../45-syllabus-repository/README.md). Older task screenshots below predate Home; the class-code captures above show the current class view.
 
 ## Review the assigned courses and students
 
@@ -36,8 +36,8 @@ A same-class instructor switch can provide a continued teaching copy, labelled *
 
 1. Open an assigned course. When no approved, unsuspended retained syllabus is available, **Teaching Materials & Assessments** shows **Upload syllabi**. A repository draft is not the course's teaching outline. Drop an approved PDF or DOCX, or activate the browse area. The retained approved-file limit is 750 KB; this is separate from the teaching-file limit below.
 2. Review the extracted course identity, weekly contents and warnings. **View syllabus** and the retained original allow comparison. The uploaded course code must match the selected loaded course. Reading and OCR do not verify signatures or invent missing weekly mappings.
-3. Confirm the approved-copy acknowledgment and choose **Use syllabus for course**. Wait for the revision-checked save. Source reading, retention and readable-text indexing follow this explicit intake; an unread or inaccessible source remains disclosed.
-4. Alternatively choose **Choose a shared syllabus from the system**. Select a received copy for the same loaded course, acknowledge that it is authorized, then choose **Use approved shared syllabus**. The server verifies the sender's retained approved file before adoption. Merely receiving a shared copy does not activate or publish it.
+3. Confirm the approved-copy acknowledgment and choose **Use syllabus for course**. Wait for the revision-checked save. The retained original and extracted outline are saved; use the source panel for explicit reference reading/indexing. An unread or inaccessible source remains disclosed.
+4. The upload area disappears after save. The header?s **Syllabus** button appears only when the class has its approved uploaded file, and opens that original and its extracted outline. Personal drafts and shared copies remain on the separate **Syllabus** page.
 
 The course selects an attested retained syllabus with **Approved — Uploaded** or **Active** status, within its assigned course, term and teaching basis. Its extracted weekly outline appears without another upload area or **Continue editing draft** link. A newer repository draft does not replace that approved teaching copy. Use **Syllabus** for draft editing and approval preparation. If only a draft exists, the course offers approved intake and does not display that draft's outline. Delivery still requires activation; approval and publication remain separate.
 
@@ -119,7 +119,7 @@ If delivered or hidden items would move, a confirmation explains that affected c
 
 ![Syllabus sources after the weekly sequence](05-sources.png)
 
-Approved-file intake checks/retains sources and indexes actual readable copies. Use **Search and read sources** to retry reading/indexing afterward. For the same link or book, open its source menu and choose **Attach readable copy** to add the matching readable PDF, DOCX, HTML, TXT or Markdown copy, up to 2 MB. Check the work and edition. This retained copy is the context for that citation; it is not a different substitute source. Existing saved copies can support later generation without a repeated download. **Search or read again** is an explicit refresh, and unread references cannot substantiate generated claims.
+Use **Search and read sources** to read and index actual accessible reference copies. For the same link or book, open its source menu and choose **Attach readable copy** to add the matching readable PDF, DOCX, HTML, TXT or Markdown copy, up to 2 MB. Check the work and edition. This retained copy is the context for that citation; it is not a different substitute source. Existing saved copies can support later generation without a repeated download. **Search or read again** is an explicit refresh, and unread references cannot substantiate generated claims.
 
 **View** opens the retained reading, provenance and original-copy download. Retained text is private to the actual account; shared syllabi do not automatically share its private source files. Keep a usable course file separate from the cited source copy when their roles differ. [Manual 31](../31-retained-syllabus-sources/README.md) covers reading limits, versioning, citation inspection and source selection.
 
@@ -140,3 +140,6 @@ The same cards, topic controls and dialogs fit a phone. A keyboard alternative a
 ![Assigned course and topic controls on a phone](07-mobile-course.png)
 
 These captures use fictional academic records and controlled transport to exercise the real interface. They do not prove hosted sign-in, external approval, arbitrary-file extraction quality, protected-book access, paid inference quality or independent student achievement. The release validation records native/API/database and production checks separately.
+
+
+[Manual 54](../54-management-loaded-classes/README.md) shows current automatic classes, existing-class enrollment, invitation links and direct approved-file intake. Instructors no longer create classes or add block sections.

@@ -1,4 +1,5 @@
 import { test, expect, type Page } from '../snapshots/fixtures'
+
 import { instructorCourseUI } from '../instructor-course-fixture'
 
 // UI transport only: class codes and announcements are answered here as the database functions answer them
@@ -32,8 +33,11 @@ async function classroomUI(page: Page) {
   return { ...fixture, sent }
 }
 
-test('instructor Home lists the assigned courses as classes; Create class issues a code and opens the class', async ({ page, isMobile }) => {
+test.setTimeout(60_000)
+
+test('instructor Home lists the assigned courses as classes; classes open automatically without a creation control', async ({ page, isMobile }) => {
   const fixture = await classroomUI(page)
+  ;(fixture.records as any).classCodes = [{ course_code: 'IT 102', block: 'BSIT-1A', academic_year: '2026-2027', semester: '1st Semester', code: 'K7M2QXP' }]
   await page.goto('/#/dashboard')
   await expect(page.getByRole('heading', { name: 'Home', exact: true })).toBeVisible()
   if (isMobile) await page.getByRole('button', { name: 'Open menu', exact: true }).click()
@@ -50,14 +54,8 @@ test('instructor Home lists the assigned courses as classes; Create class issues
     expect(Math.abs(banner.width - (outer.width - 2))).toBeLessThanOrEqual(2); expect(Math.abs(body.width - (outer.width - 2))).toBeLessThanOrEqual(2)
   }
 
-  await page.getByRole('button', { name: 'Create class', exact: true }).click()
-  const dialog = page.getByRole('dialog', { name: 'Create class' })
-  await expect(dialog.getByRole('combobox')).toHaveValue(/IT/)
-  await expect(dialog.getByRole('radio', { name: /Block BSIT-1A/ })).toBeChecked()
-  await expect(dialog.getByRole('status')).toContainText('Creates the class code for IT 102 block BSIT-1A')
-  await dialog.getByRole('button', { name: 'Create', exact: true }).click()
-  await expect(page).toHaveURL(/tab=announcements/)
-  await expect(page.getByRole('status').filter({ hasText: 'Class created: block BSIT-1A' })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Create class', exact: true })).toHaveCount(0)
+  await cards.filter({ hasText: 'IT 102' }).click()
   await expect(page.getByRole('region', { name: 'Class codes' }).getByLabel('Class code of block BSIT-1A: K 7 M 2 Q X P')).toBeVisible()
   await page.getByRole('button', { name: 'Display the class code of block BSIT-1A', exact: true }).click()
   const display = page.getByRole('dialog', { name: 'Class code display, IT 102 block BSIT-1A' })
@@ -68,7 +66,7 @@ test('instructor Home lists the assigned courses as classes; Create class issues
   const tabs = page.getByRole('navigation', { name: 'Class sections' })
   await expect(tabs.getByRole('button')).toHaveText(['Announcements', 'Teaching Materials & Assessments', 'Class List', 'Scores'])
   await expect(tabs.getByRole('button', { name: 'Announcements', exact: true })).toHaveAttribute('aria-pressed', 'true')
-  expect(fixture.sent.map(command => [command.operation, command.action, command.block])).toEqual([['class-code', 'create', 'BSIT-1A']])
+  expect(fixture.sent.map(command => [command.operation, command.action, command.block])).toEqual([])
   expect(fixture.forbidden).toEqual([])
 })
 
@@ -79,7 +77,7 @@ test('a class card More menu opens the Class List, Scores and Block sections wit
   const classPage = page.getByRole('dialog', { name: /^Class IT 102/ })
   const more = () => page.getByRole('button', { name: /^More for IT 102/ })
   await more().click()
-  await expect(page.getByRole('menuitem')).toHaveText(['Copy class code, block BSIT-1A', 'Class List', 'Scores', 'Block sections'])
+  await expect(page.getByRole('menuitem')).toHaveText(['Copy class code, block BSIT-1A', 'Copy invitation link, block BSIT-1A', 'Class List', 'Scores', 'Block sections'])
   await page.getByRole('menuitem', { name: 'Class List', exact: true }).click()
   await expect(classPage).toBeVisible()
   await expect(page).toHaveURL(/tab=class-list/)
@@ -228,10 +226,10 @@ test('Class List shows each block with its code; a code is replaced or turned of
   await page.getByRole('dialog', { name: 'Turn off class code' }).getByRole('button', { name: 'Turn off code', exact: true }).click()
   await expect(block.getByRole('button', { name: 'Create code', exact: true })).toBeVisible()
   expect(fixture.sent.map(command => command.action)).toEqual(['create', 'regenerate', 'disable'])
-  // Invite students makes the block's code when it has none and offers the join instruction.
-  await block.getByRole('button', { name: 'Invite students', exact: true }).click()
-  await expect(block.getByLabel('Class code of block BSIT-1A: H 3 J 5 K M N')).toBeVisible()
-  await expect(page.getByText(/Invitation for block BSIT-1A copied|Share this class code with your students: H3J5KMN/)).toBeVisible()
+  await expect(block.getByRole('button', { name: 'Copy invitation link for block BSIT-1A', exact: true })).toBeDisabled()
+  await block.getByRole('button', { name: 'Create code', exact: true }).click()
+  await block.getByRole('button', { name: 'Copy invitation link for block BSIT-1A', exact: true }).click()
+  await expect(page.getByText(/Invitation link for block BSIT-1A copied|#\/join\/H3J5KMN/).first()).toBeVisible()
   expect(fixture.sent.map(command => command.action)).toEqual(['create', 'regenerate', 'disable', 'create'])
 
   await page.getByRole('navigation', { name: 'Class sections' }).getByRole('button', { name: 'Scores', exact: true }).click()

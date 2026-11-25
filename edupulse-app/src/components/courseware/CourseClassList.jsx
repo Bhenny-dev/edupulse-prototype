@@ -14,13 +14,15 @@ export default function CourseClassList({course,block,onClose,onSaved}){
   setError('')
   if(workspace.loading||workspace.saving||workspace.dirty)throw new Error('Save or resolve the current workspace before confirming this class list.')
   if(!course.assignmentKey)throw new Error('This course assignment is no longer available. Reopen Course.')
+  if(!block||!course.blocks.includes(block)||input.blockSection!==block)throw new Error('Choose an existing block loaded by the Dean or Program Coordinator.')
   try{
    const result=await records.command({operation:'class-list',assignment:course.assignmentKey,revision:workspace.revision,block:input.blockSection,filename:input.fileName,mode,students:input.students.map(student=>({StudentID:student.StudentID||undefined,Email:student.Email||undefined}))})
    await workspace.refresh();onSaved(`${input.blockSection}: ${result.students} registered students saved.`)
   }catch(failure){setError(failure.message);throw failure}
  }
  const scope={course:course.code,title:course.title,...(block?{block}:{})}
- return <PageModal title={block?`${block} class list`:'Add block section'} subtitle={`${course.code} — ${course.title} · ${course.semester} · AY ${course.academicYear}`} label="Course class list" onClose={onClose}>
+ if(!block||!course.blocks.includes(block))return <PageModal title="Class list unavailable" onClose={onClose}><p>Choose an existing block loaded by the Dean or Program Coordinator.</p></PageModal>
+ return <PageModal title={`${block} class list`} subtitle={`${course.code} — ${course.title} · ${course.semester} · AY ${course.academicYear}`} label="Course class list" onClose={onClose}>
   <nav className="tabs mb-24" aria-label="Class-list entry">{[['upload','Upload class list'],['directory','Choose individual students']].map(([key,label])=><button className={`tab ${tab===key?'active':''}`} key={key} onClick={()=>setTab(key)} aria-pressed={tab===key}>{label}</button>)}</nav>
   <p className="text-sm text-muted mb-16">The class year comes from its registered students. Students from other blocks or departments can be selected individually. Their home records stay unchanged.</p>
   {error&&<p role="alert" className="connected-pulse-warning">{error}</p>}

@@ -159,3 +159,5 @@ Execution is tracked in [WORKPLAN.md](WORKPLAN.md). A release is verified only a
 - [12 November 2026 · Curriculum population](versions/2026-11-12-curriculum-population/README.md)
 
 [Editable teaching-load details and OCR schedule recovery](versions/2026-11-18-editable-load-details/README.md) documents the reviewed fields, guarded extraction and validation.
+
+[25 November 2026: Management-loaded classes and direct approved-file intake](versions/2026-11-25-managed-classes/README.md).

@@ -41,6 +41,7 @@ const ImpactPage = lazy(() => import('./pages/public/ImpactPage'))
 const CollegesPage = lazy(() => import('./pages/public/CollegesPage'))
 const PlayPage = lazy(() => import('./pages/public/PlayPage'))
 const FaqPage = lazy(() => import('./pages/public/FaqPage'))
+const ClassInvitation = lazy(() => import('./pages/ClassInvitation'))
 const publicPage = Page => <Suspense fallback={<div className="public-loading" role="status"><Spinner /> Opening the room…</div>}><Page /></Suspense>
 
 // The system admin has a dedicated console. Academic management belongs to
@@ -72,6 +73,7 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<Landing />} />
+      <Route path="/join/:code" element={publicPage(ClassInvitation)} />
       <Route path="/features" element={publicPage(FeaturesPage)} />
       <Route path="/how-it-works" element={publicPage(HowItWorksPage)} />
       <Route path="/roles" element={publicPage(RolesPage)} />

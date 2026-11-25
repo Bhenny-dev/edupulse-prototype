@@ -397,3 +397,10 @@ The course page accepts approved syllabi; repository drafting belongs on Syllabu
 ## Owner correction: flat interface icons across roles, 25 November 2026
 
 Replace the raised glass icon treatment across role pages with flat outline icons using the existing palette. Remove icon perspective, glints, extruded shadows, hover lift and floating upload-icon animation. Retain glyph meaning, adjacent labels, control hit areas, focus states, responsive sizing, authorized navigation, support-subject scope and business behavior. Public information badges receive the same flat treatment. This is presentation work and does not authorize account, academic, publication or inference writes.
+
+
+## Owner correction: automatic classes and direct course intake, 25 November 2026
+
+The owner removes instructor Create class and new-block creation: management loading of course, instructor, blocks and class list establishes each class automatically. Instructor additions to existing rosters and student code enrollment remain. Copyable invitation links enroll only a verified own student account, after sign-in when necessary; reload cannot replay enrollment. Enforce existing-block validation in both code and class-list RPCs, preserving management block creation and audited Admin support for existing classes.
+
+An empty class accepts its approved syllabus directly by drag/drop or file selection in Teaching Materials & Assessments. It does not redirect intake to Syllabus. Once saved, hide that intake and show the header Syllabus button for the retained uploaded original and extracted outline. Draft authoring stays on Syllabus. This supersedes G16's empty-class redirect interpretation and G13's instructor-created classes. [Manual 54](../../system-manual/54-management-loaded-classes/README.md).

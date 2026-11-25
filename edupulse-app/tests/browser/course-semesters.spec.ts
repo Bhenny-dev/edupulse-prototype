@@ -32,7 +32,7 @@ for(const role of ['dean','associate_dean'])test(`${role} uses one semester acro
  expect(fixture.commands).toHaveLength(1)
 })
 
-test('an assigned instructor confirms individual directory students in a new block before a syllabus is uploaded',async({page},info)=>{
+test('an assigned instructor confirms individual directory students in an existing block before a syllabus is uploaded',async({page},info)=>{
  const fixture=await instructorCourseUI(page),commands:Record<string,any>[]=[]
  const student={student_number:'DIR-42',full_name:'Cross Department Student',email:'directory@example.invalid',year_level:2,department:'College of Business Administration',program:'BSBA'}
  await page.route('**/api/ai?*',route=>new URL(route.request().url()).searchParams.get('action')==='students'?route.fulfill({json:{students:[student],total:1}}):route.fallback())
@@ -46,21 +46,23 @@ test('an assigned instructor confirms individual directory students in a new blo
  })
  await page.goto('/#/courseware')
  await page.locator('.instructor-course-card').filter({hasText:'IT 201'}).click()
- await page.getByRole('button',{name:'Block sections',exact:true}).click()
- await page.getByRole('button',{name:'Add block section',exact:true}).click()
+ await page.getByRole('button',{name:'Class List',exact:true}).click()
+ await page.getByRole('button',{name:'Add students',exact:true}).click()
  const dialog=page.getByRole('dialog',{name:'Course class list',exact:true})
  await expect(dialog.locator('input[type=file]')).toBeEnabled()
  await page.getByRole('button',{name:'Choose individual students',exact:true}).click()
  await dialog.getByRole('button',{name:'Choose students',exact:true}).click()
  await dialog.getByRole('checkbox',{name:'Select Cross Department Student'}).check()
- await dialog.getByLabel('Block section',{exact:true}).fill('BSBA-2Z')
+ await expect(dialog.getByLabel('Block section',{exact:true})).toHaveValue('BSIT-2A')
+ await expect(dialog.getByLabel('Block section',{exact:true})).toHaveAttribute('readonly','')
  await page.screenshot({path:info.outputPath('individual-directory-class.png'),animations:'disabled'})
  await dialog.getByRole('button',{name:'Register selected students (1)',exact:true}).click()
  await expect(dialog).toHaveCount(0)
  expect(commands).toHaveLength(1)
- expect(commands[0]).toMatchObject({operation:'class-list',block:'BSBA-2Z',mode:'append',students:[{StudentID:'DIR-42',Email:'directory@example.invalid'}]})
- await expect(page.locator('.instructor-block-card').filter({hasText:'BSBA-2Z'})).toContainText('1 enrolled students')
- await page.getByRole('button',{name:'Block actions for BSBA-2Z',exact:true}).click()
+ expect(commands[0]).toMatchObject({operation:'class-list',block:'BSIT-2A',mode:'append',students:[{StudentID:'DIR-42',Email:'directory@example.invalid'}]})
+ await page.getByRole('button',{name:'Block sections',exact:true}).click()
+ await expect(page.locator('.instructor-block-card').filter({hasText:'BSIT-2A'})).toContainText('1 enrolled students')
+ await page.getByRole('button',{name:'Block actions for BSIT-2A',exact:true}).click()
  await page.getByRole('menuitem',{name:'Manage class list',exact:true}).click()
  await page.reload();await expect(dialog).toBeVisible()
  expect(commands).toHaveLength(1)

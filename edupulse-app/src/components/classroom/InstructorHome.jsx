@@ -1,6 +1,6 @@
 import { lazy, Suspense, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { BarChart3, Copy, Plus, Settings2, Users } from 'lucide-react'
+import { BarChart3, Copy, Settings2, Users } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 import { useToast } from '../../context/ToastContext'
 import { useWorkspace } from '../../context/WorkspaceContext'
@@ -9,20 +9,19 @@ import { SYLLABUS_STATUS_META } from '../../data/syllabusStatus'
 import { instructorCourses, syllabusForCourse } from '../../utils/instructorCourses'
 import { classStudents } from '../../utils/classroom'
 import { ClassCard, EmptyClasses } from './ClassCards'
-import CreateClassDialog from './CreateClassDialog'
 import { codeFor } from './ClassCodes'
+import { classInvitationUrl } from '../../utils/classInvitation'
 import { classUpcoming, pendingAssessments, pendingReview } from './classWork'
 import { HomeRail, ReviewPanel, UpcomingPanel } from './HomePanels'
 import './classroom.css'
 
 const ClassPage = lazy(() => import('../courseware/InstructorCourses'))
 
-/** Instructor Home: one card per assigned course, Create class, and the open class as a page over Home (?course=). */
+/** Instructor Home: management-loaded classes and the open class as a page over Home. */
 export default function InstructorHome({ data, loaded, status, actions }) {
   const { user } = useAuth(), workspace = useWorkspace(), [params, setParams] = useSearchParams(), { addToast } = useToast()
   const { term, writable } = useAcademicTerm()
   const courses = useMemo(() => instructorCourses(data, user.id, workspace.syllabi), [data, user.id, workspace.syllabi])
-  const [creating, setCreating] = useState(false)
   const counts = course => classStudents(course, workspace.registrations, data.enrollments)
   // Opening pushes a history entry, so the browser's Back closes the class; Close and Escape do the same.
   const open = (course, extra = {}) => setParams({ course: course.id, term, ...extra })
@@ -49,17 +48,23 @@ export default function InstructorHome({ data, loaded, status, actions }) {
     try { await navigator.clipboard.writeText(code); addToast(`Copied the class code of block ${block}`, 'success') }
     catch { addToast('Copy is unavailable here. Open the class and select the code.', 'warning') }
   }
+  const copyInvitation = async (code, block) => {
+    const url = classInvitationUrl(code)
+    try { await navigator.clipboard.writeText(url); addToast(`Invitation link for block ${block} copied`, 'success') }
+    catch { addToast(`Invitation link: ${url}`, 'info') }
+  }
   return <div className="container classroom-home" data-pulse-zone="general" data-pulse-target="Home">
     <div className="page-header"><div><h1>Home</h1><p className="text-muted">Welcome back, {user?.name}. Your classes are the courses the Dean assigned to you.</p></div>
-      <div className="class-home-actions">{actions}{writable && courses.length > 0 && <button type="button" className="btn btn-primary" onClick={() => setCreating(true)}><Plus size={16} aria-hidden="true" />Create class</button>}</div></div>
+      <div className="class-home-actions">{actions}</div></div>
     {status}
     {data.classroomError && <p role="status" className="connected-pulse-warning mb-16">{data.classroomError}</p>}
     {!writable && courses.length > 0 && <p className="text-sm text-muted mb-16">This semester is view-only. Open a class to review its records.</p>}
-    {loaded && !courses.length && <EmptyClasses title="No classes yet">The Dean has not assigned a course to you for this semester. Your classes appear here once a course is loaded; then create a class code so your students can join.</EmptyClasses>}
+    {loaded && !courses.length && <EmptyClasses title="No classes yet">Your classes appear automatically when the Dean or Program Coordinator loads your courses and block sections.</EmptyClasses>}
     {courses.length > 0 && <section id="your-classes" aria-label="Your classes" className="class-card-grid">{courses.map(course => {
       const syllabus = syllabusForCourse(workspace.syllabi, course), students = counts(course)
       const menu = { label: `More for ${course.code}${repeated(course.code) ? ` (${course.blocks.join(', ')})` : ''}`, actions: [
         ...course.blocks.map(block => ({ block, code: codeFor(data.classCodes, course, block) })).filter(item => item.code).map(({ block, code }) => ({ label: `Copy class code, block ${block}`, icon: Copy, onSelect: () => copyCode(code.code, block) })),
+        ...course.blocks.map(block => ({ block, code: codeFor(data.classCodes, course, block) })).filter(item => item.code).map(({ block, code }) => ({ label: `Copy invitation link, block ${block}`, icon: Copy, onSelect: () => copyInvitation(code.code, block) })),
         { label: 'Class List', icon: Users, onSelect: () => open(course, { tab: 'class-list' }) },
         { label: 'Scores', icon: BarChart3, onSelect: () => open(course, { tab: 'scores' }) },
         { label: 'Block sections', icon: Settings2, onSelect: () => open(course, { view: 'blocks' }) }] }
@@ -73,6 +78,5 @@ export default function InstructorHome({ data, loaded, status, actions }) {
     {panel === 'review' && <ReviewPanel classes={review} named={named} onOpenClass={open} onClose={closePanel} />}
     {panel === 'upcoming' && <UpcomingPanel items={upcoming} named={named} onOpenClass={open} onClose={closePanel} />}
     {params.get('course') && <Suspense fallback={null}><ClassPage onClose={close} /></Suspense>}
-    {creating && <CreateClassDialog courses={courses} codes={data.classCodes} counts={counts} onClose={() => setCreating(false)} onCreated={(course, result) => { setCreating(false); open(course, { tab: 'announcements', code: result.block }) }} />}
   </div>
 }

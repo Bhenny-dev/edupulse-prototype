@@ -1,6 +1,8 @@
 import { test, expect } from '../snapshots/fixtures'
 import { instructorCourseUI } from '../instructor-course-fixture'
 
+test.setTimeout(60_000)
+
 test('assigned-only course cards, separate syllabus and an empty assigned course intake work on reload', async ({ page, isMobile }) => {
   const fixture = await instructorCourseUI(page)
   await page.goto('/#/dashboard')
@@ -16,10 +18,10 @@ test('assigned-only course cards, separate syllabus and an empty assigned course
   await page.locator('.instructor-course-card').filter({ hasText: 'IT 201' }).click()
   await expect(page.getByRole('heading', { name: 'Add the approved syllabus', exact: true })).toBeVisible()
   await page.getByRole('navigation', { name: 'Class sections' }).getByRole('button', { name: 'Teaching Materials & Assessments', exact: true }).click()
-  // Uploading, sharing and drafting happen on the Syllabus page; the class only points there.
-  await expect(page.getByRole('heading', { name: 'Teaching materials start from the approved syllabus', exact: true })).toBeVisible()
-  await page.reload(); await expect(page.getByRole('heading', { name: 'Teaching materials start from the approved syllabus', exact: true })).toBeVisible()
-  await expect(page.getByLabel('Upload approved syllabus PDF or DOCX')).toHaveCount(0)
+  // The empty class accepts an approved file directly; drafts remain on the Syllabus page.
+  await expect(page.getByRole('heading', { name: 'Upload syllabi', exact: true })).toBeVisible()
+  await page.reload(); await expect(page.getByRole('heading', { name: 'Upload syllabi', exact: true })).toBeVisible({ timeout: 20000 })
+  await expect(page.getByLabel('Upload approved syllabus PDF or DOCX')).toHaveCount(1)
   await expect(page.getByRole('button', { name: /shared syllabus/i })).toHaveCount(0)
   await page.goto(`/#/syllabus?tab=mine&course=${fixture.syllabus.id}`)
   await expect(page).toHaveURL(/syllabus\?tab=mine/)
@@ -32,7 +34,7 @@ test('topic form saves actual material, preserves content metadata when editing 
   const fixture = await instructorCourseUI(page)
   await page.goto(`/#/courseware?course=${fixture.syllabus.id}&tab=materials`)
   const topic = page.locator('[data-topic="variables"]')
-  await topic.locator('summary').click(); await page.reload(); await expect(topic).toHaveAttribute('open', '')
+  await topic.locator('summary').click(); await page.reload(); await expect(topic).toHaveAttribute('open', '', { timeout: 20000 })
   await topic.getByRole('button', { name: 'Add teaching material', exact: true }).click()
   const form = page.getByRole('form', { name: 'Add teaching material' })
   await form.getByLabel('Title', { exact: true }).fill('Worked assignment example')

@@ -486,3 +486,16 @@ Owner request (25 November): the Syllabus page saves every syllabus uploaded, sh
 | T17.1 | Audit role routes and replace shared raised glass icons with flat outline tiles; flatten upload-state icons, Home shortcut buttons and public information badges. Preserve all actions, labels, roles and view references. | `flat-icons.spec.ts`: five roles and public routes on desktop/phone, both themes and reload. `flat-icons-support.spec.ts`: four Admin support subjects and 3:1 glyph contrast in both themes. 22 browser cases passed; 11 reviewed role/dark/phone/public/upload captures; isolated release gate passed 561 tests, with final lint/typecheck and browser audit on latest source. | Complete |
 
 - Full page inventory and visual examples are in Manual 53. Unrelated classroom/Syllabus work is preserved separately. No database migration is required.
+
+
+## 25 November 2026 - Management-loaded classes and in-class intake (G18)
+
+| Task | Work | Acceptance | Stage |
+|---|---|---|---|
+| T18.1 | Remove instructor class/new-block creation; retain existing-roster enrollment and management automatic classes. Guard both classroom RPC construction paths. | Native class-code tests pass with the new migration; browser enrollment and Home regression coverage. | Complete |
+| T18.2 | Copy active invitation URLs; own verified students automatically join after navigation/sign-in. Reload requires an explicit retry. | Desktop/phone invitation, sign-in, wrong-role, invalid-code and no-replay browser cases. | Complete |
+| T18.3 | Empty class accepts an approved file in Teaching Materials & Assessments; header Syllabus appears only after save, with no repeated intake or draft controls. | Real PDF drag/drop, retained-original checks and save/reload browser coverage; Manual 54 captures. | Complete |
+
+The owner's correction supersedes T13.1's Create class control and T16.4's empty-class Syllabus redirect. The separate Syllabus repository and original-file reader remain. No sample result is offered as hosted authorization proof.
+
+- Codex evidence: 563-test isolated release gate passed; latest card/phone/reader fixes were integrated from `5b1948aa`, followed by lint/typecheck, production/capture builds and focused database/browser checks. 79 distinct browser cases pass; one desktop-only case is skipped on phones. Six capture cases and 11 reviewed images update Manual 54 and the Admin sidebar scenes. The linked migration is applied and confirmed remotely. Production Ready is inspected separately after the authorized push.

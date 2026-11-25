@@ -103,3 +103,8 @@ The student Dashboard shows its own recorded home block and size before any syll
 ## Flat interface icons
 
 Performance summaries use flat outline icons on softly tinted surfaces. Labels and recorded values remain beside each icon, and both adapt to the selected theme. [Current desktop, dark-mode and phone examples](../../system-manual/53-flat-interface-icons/README.md).
+
+
+## Automatic classes and invitations
+
+The Dean or Program Coordinator loads each class and its roster. Instructors add students only within an existing class, share its code or copy its invitation link. Students see their loaded classes before the syllabus is available. An invitation automatically enrolls a verified own student account after sign-in; a reload requires explicit retry. Class syllabus upload stays inside Teaching Materials & Assessments, disappears after save and enables the header Syllabus button for the original file. [Current steps and desktop/phone captures](../../system-manual/54-management-loaded-classes/README.md).

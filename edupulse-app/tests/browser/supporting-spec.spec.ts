@@ -36,8 +36,8 @@ test('student block context and legacy Course links resolve on Home',async({page
 test('a draft syllabus is not offered in the class: it stays on the Syllabus page, which the class links to',async({page})=>{
  const fixture=await instructorCourseUI(page);fixture.syllabus.status='drafted';await page.goto('/#/courseware');await expect(page.getByRole('heading',{name:'Home',exact:true})).toBeVisible({timeout:20000});await page.getByRole('region',{name:'Your classes'}).getByRole('button',{name:'Open course IT 102',exact:true}).click();await expect(page.getByRole('region',{name:'Next step',exact:true})).toBeVisible()
  await expect(page.getByRole('link',{name:'Continue editing draft',exact:true})).toHaveCount(0)
- await page.getByRole('region',{name:'Next step',exact:true}).getByRole('link',{name:'Open Syllabus',exact:true}).click();await expect(page).toHaveURL(/#\/syllabus\?tab=mine/)
- await expect(page.locator(`[data-syllabus-id="${fixture.syllabus.id}"]`)).toBeVisible();expect(fixture.commands).toHaveLength(0)
+ await page.getByRole('region',{name:'Next step',exact:true}).getByRole('button',{name:'Upload approved syllabus',exact:true}).click();await expect(page).toHaveURL(/tab=materials/)
+ await expect(page.getByLabel('Upload approved syllabus PDF or DOCX')).toHaveCount(1);expect(fixture.commands).toHaveLength(0)
 })
 
 

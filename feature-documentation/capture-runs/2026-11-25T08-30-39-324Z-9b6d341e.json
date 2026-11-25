@@ -1,0 +1,292 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-11-25T08-30-39-324Z-9b6d341e",
+  "startedAt": "2026-11-25T08:30:39.324Z",
+  "finishedAt": "2026-11-25T08:31:02.637Z",
+  "commitSha": "5b1948aad2489749f03d2b5fd18904f1c5ff2d4c",
+  "sourceDigest": "db55223f1285570acccc00da1e41707239eaf0b3f9797caf3c7eba5107d72a84",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-11-25T08:30:36.120Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 6,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": null
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/classroom-support.spec.ts",
+    "edupulse-app/tests/snapshots/managed-classes.spec.ts",
+    "edupulse-app/tests/snapshots/classroom-support.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/managed-classes.mobile.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/account-support-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/account-support-reload-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/account-support-reload.spec.ts",
+    "edupulse-app/tests/snapshots/account-support.spec.ts",
+    "edupulse-app/tests/snapshots/approved-course.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/approved-course.spec.ts",
+    "edupulse-app/tests/snapshots/approved-syllabus-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/approved-syllabus.spec.ts",
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/authored-weeks.spec.ts",
+    "edupulse-app/tests/snapshots/automatic-records.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/automatic-records.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+    "edupulse-app/tests/snapshots/bounded-loads-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/bounded-loads.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/card-actions.spec.ts",
+    "edupulse-app/tests/snapshots/citation-repair.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.spec.ts",
+    "edupulse-app/tests/snapshots/course-seed.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-formatting.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-navigation.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-readonly.spec.ts",
+    "edupulse-app/tests/snapshots/dean-records-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/dean-records.spec.ts",
+    "edupulse-app/tests/snapshots/editable-syllabus-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/editable-syllabus.spec.ts",
+    "edupulse-app/tests/snapshots/editor-layout.spec.ts",
+    "edupulse-app/tests/snapshots/flat-icons.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/flat-icons.spec.ts",
+    "edupulse-app/tests/snapshots/harness-delivery.spec.ts",
+    "edupulse-app/tests/snapshots/instructor-course.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/instructor-course.spec.ts",
+    "edupulse-app/tests/snapshots/instructor-handover.spec.ts",
+    "edupulse-app/tests/snapshots/instructor-updates-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/instructor-updates.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/load-field-edit-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/load-field-edit.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/local-models-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/local-models.spec.ts",
+    "edupulse-app/tests/snapshots/login-icons-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/login-icons.spec.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/monitoring-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/monitoring.spec.ts",
+    "edupulse-app/tests/snapshots/operator-steps.spec.ts",
+    "edupulse-app/tests/snapshots/outline-courseware.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/outline-courseware.spec.ts",
+    "edupulse-app/tests/snapshots/outline-progress-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/outline-progress.spec.ts",
+    "edupulse-app/tests/snapshots/outline-selector.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/outline-selector.spec.ts",
+    "edupulse-app/tests/snapshots/outline-sources-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/outline-sources.spec.ts",
+    "edupulse-app/tests/snapshots/oversight.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/oversight.spec.ts",
+    "edupulse-app/tests/snapshots/pipeline-progress-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pipeline-progress.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/public-pulse-search-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/public-pulse-search.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-drafting.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-source.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+    "edupulse-app/tests/snapshots/radar-progress-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/radar-progress.spec.ts",
+    "edupulse-app/tests/snapshots/reference-intake-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/reference-intake.spec.ts",
+    "edupulse-app/tests/snapshots/retained-catalog.spec.ts",
+    "edupulse-app/tests/snapshots/retained-sources-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/retained-sources.spec.ts",
+    "edupulse-app/tests/snapshots/role-monitoring.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+    "edupulse-app/tests/snapshots/second-admin-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/second-admin.spec.ts",
+    "edupulse-app/tests/snapshots/staff-registration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/staff-registration.spec.ts",
+    "edupulse-app/tests/snapshots/student-directory.spec.ts",
+    "edupulse-app/tests/snapshots/student-learning-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/student-learning.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-no-loads.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/system-search-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/system-search.spec.ts",
+    "edupulse-app/tests/snapshots/targeted-outline-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/targeted-outline.spec.ts",
+    "edupulse-app/tests/snapshots/teaching-load.spec.ts",
+    "edupulse-app/tests/snapshots/teaching-sets.spec.ts",
+    "edupulse-app/tests/snapshots/voice-quota.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/voice-quota.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-cache.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-recovery.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/classroom-support.spec.ts",
+      "title": "Admin instructor support class codes beside the announcements feed",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1647,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/managed-classes.spec.ts",
+      "title": "management-loaded Home and in-class approved syllabus intake",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2806,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/managed-classes.spec.ts",
+      "title": "student invitation offers sign-in and reload offers explicit enrollment",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1147,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/managed-classes.spec.ts",
+      "title": "signed-out invitation retains its class code for sign-in",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1192,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/classroom-support.mobile.spec.ts",
+      "title": "Admin instructor support class codes on a phone",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1245,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/managed-classes.mobile.spec.ts",
+      "title": "existing class enrollment and in-class upload on a phone",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1203,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/12-admin-class-codes.png",
+      "sha256": "686f33df7b62bde4dc0c68c469965779c835e14042d65f4f72b0959ddf405102",
+      "bytes": 166169
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/13-admin-class-codes-phone.png",
+      "sha256": "c2d847a7336c5e31e6f4be2bd58b2f1abf1e7eae028a15b1d293c63b4c96ea43",
+      "bytes": 266887
+    },
+    {
+      "path": "feature-documentation/system-manual/54-management-loaded-classes/01-instructor-home.png",
+      "sha256": "eae3aa7535fb9d4e0b697d863ee1431082f9ca7a91f4f028839aa73637952420",
+      "bytes": 272100
+    },
+    {
+      "path": "feature-documentation/system-manual/54-management-loaded-classes/02-empty-course-upload.png",
+      "sha256": "139d60e23422927cbe2cb2b0d54cfcf8ac62cf1a6c54e7edb983181c9cb4407e",
+      "bytes": 106957
+    },
+    {
+      "path": "feature-documentation/system-manual/54-management-loaded-classes/03-approved-outline.png",
+      "sha256": "8c7867caf127cb2b67cc918133ec8722aafbdc6776695ec9375a20f94a8623c2",
+      "bytes": 119251
+    },
+    {
+      "path": "feature-documentation/system-manual/54-management-loaded-classes/04-original-syllabus.png",
+      "sha256": "b254da88c9b51b0164609d9d8d9c2e92c49e45f01678fdd53d2a2e90711f0cb8",
+      "bytes": 166017
+    },
+    {
+      "path": "feature-documentation/system-manual/54-management-loaded-classes/05-existing-class-list.png",
+      "sha256": "bb078e254cd3eb6c3f5c26d0795bec41277749f27636fe0bb7f9bbfdbdfbfb6c",
+      "bytes": 116162
+    },
+    {
+      "path": "feature-documentation/system-manual/54-management-loaded-classes/06-invitation-reload.png",
+      "sha256": "b2f49cb784f896ef608d7c668e16e7d77d9b5c175ca0ead83f6b17abecb82ebe",
+      "bytes": 215454
+    },
+    {
+      "path": "feature-documentation/system-manual/54-management-loaded-classes/07-invitation-sign-in.png",
+      "sha256": "ae98357a4b80797257bd3be6966f054a60b5e08b507e89d8d36be13c67c83942",
+      "bytes": 241391
+    },
+    {
+      "path": "feature-documentation/system-manual/54-management-loaded-classes/08-phone-upload.png",
+      "sha256": "cd639818490b3868abc0e458a3c681d08ad25872a1bf5d980a3bda57a5f888d5",
+      "bytes": 310729
+    },
+    {
+      "path": "feature-documentation/system-manual/54-management-loaded-classes/09-phone-class-list.png",
+      "sha256": "ba58700cae1754d89841e6c045ca29ec4eafb95b0313560344a84df16ded1e4d",
+      "bytes": 283373
+    }
+  ]
+}

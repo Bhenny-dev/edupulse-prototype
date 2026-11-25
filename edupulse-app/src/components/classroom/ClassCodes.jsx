@@ -6,6 +6,7 @@ import { useAcademicRecords } from '../../context/AcademicContext'
 import { useToast } from '../../context/ToastContext'
 import { useWorkspaceViewState } from '../../context/WorkspaceContext'
 import { sameTerm } from '../../utils/classroom'
+import { classInvitationUrl } from '../../utils/classInvitation'
 import './classroom.css'
 
 export const codeFor = (codes = [], course, block) => codes.find(code => code.course_code === course.code && code.block === block && sameTerm(code, course))
@@ -61,29 +62,29 @@ export function BlockCode({ course, block, codes, readOnly = false, highlight = 
   </span>
 }
 
-/** Invite students: makes the block's class code when it has none, then copies the join instruction for them. */
+/** Copy the existing class's invitation; copying never creates a code or a class. */
 export function InviteStudents({ course, block, codes }) {
-  const records = useAcademicRecords(), { addToast } = useToast(), [busy, setBusy] = useState(false)
+  const { addToast } = useToast(), [busy, setBusy] = useState(false)
+  const code = codeFor(codes, course, block)?.code
   const invite = async () => {
     setBusy(true)
     try {
-      const code = codeFor(codes, course, block)?.code || (await records.command({ operation: 'class-code', action: 'create', assignment: course.assignmentKey, block })).code
-      try { await navigator.clipboard.writeText(`Join ${course.code} block ${block}: open EduPulse, choose Join class on Home and enter the code ${code}`); addToast(`Invitation for block ${block} copied`, 'success') }
-      catch { addToast(`Share this class code with your students: ${code}`, 'info') }
+      const url = classInvitationUrl(code)
+      try { await navigator.clipboard.writeText(url); addToast(`Invitation link for block ${block} copied`, 'success') }
+      catch { addToast(`Invitation link: ${url}`, 'info') }
     } catch (failure) { addToast(failure.message, 'error') } finally { setBusy(false) }
   }
-  return <button type="button" className="btn btn-secondary btn-sm" disabled={busy} onClick={() => void invite()}><UserPlus size={14} aria-hidden="true" />{busy ? 'Inviting...' : 'Invite students'}</button>
+  return <button type="button" className="btn btn-secondary btn-sm" aria-label={`Copy invitation link for block ${block}`} disabled={busy || !code} onClick={() => void invite()}><UserPlus size={14} aria-hidden="true" />{busy ? 'Copying...' : 'Copy invitation link'}</button>
 }
 
 /** The class codes of every block section of this course, beside the announcements. */
-export default function ClassCodesCard({ course, codes, readOnly = false, highlight, onAddBlock }) {
+export default function ClassCodesCard({ course, codes, readOnly = false, highlight }) {
   return <section className="card" aria-label="Class codes">
     <div className="card-header"><h2>Class codes</h2></div>
     <div className="card-body">
-      {course.blocks.length ? course.blocks.map(block => <BlockCode key={block} course={course} block={block} codes={codes} readOnly={readOnly} highlight={highlight === block} />)
+      {course.blocks.length ? course.blocks.map(block => <div key={block}><BlockCode course={course} block={block} codes={codes} readOnly={readOnly} highlight={highlight === block} />{!readOnly && <InviteStudents course={course} block={block} codes={codes} />}</div>)
         : <p className="text-sm text-muted">No block section yet.</p>}
-      {!readOnly && onAddBlock && <button type="button" className="btn btn-ghost btn-sm mt-8" onClick={onAddBlock}>Add a block section with a code</button>}
-      <p className="text-sm text-muted mt-8">Each class gets its own code when the Dean loads the course. Students enter it in Join class on their Home and are added to that block's class list. Replacing a code keeps everyone who already joined.</p>
+      <p className="text-sm text-muted mt-8">Each class gets its own code when the Dean loads the course. Share its invitation link or let students enter the code in Join Class on Home. Replacing a code keeps everyone who already joined.</p>
     </div>
   </section>
 }
