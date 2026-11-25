@@ -225,3 +225,6 @@ The Dean or Program Coordinator loads each class and its roster. Instructors add
 ## Populated current-term workspaces, 25 November 2026
 
 Active instructors receive current management-loaded subjects and registered class lists. The owner-directed population supplies retained authored syllabus files, an 18-week outline, delivered early lessons, later checked work, planning copies and class schedules. Existing uploaded originals remain unchanged. Recorded student answers feed the same **Scores** and **Student Monitoring** views used for subsequent submissions; some written work remains available for marking. [Current desktop and phone captures](../../system-manual/56-academic-population/README.md). Generated history has private provenance and does not establish independent human learning. Suspended and disabled accounts retain their restrictions.
+
+
+Population preserves management-loaded subject and section counts; it does not expand Home to seat additional students. The source correction retains the reported instructor's eight confirmed sections and preserves saved teaching/results. [Current capture guide and source limitations](../../system-manual/56-academic-population/README.md).

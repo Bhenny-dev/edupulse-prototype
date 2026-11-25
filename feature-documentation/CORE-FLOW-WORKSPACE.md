@@ -528,3 +528,17 @@ The owner now requests populated, functional records for every active instructor
 The owner narrows the population to CIT and students in departments explicitly present in the retained instructor loads. SourceRows identify BSIT, CTELA for PROF ED 16, and CABM for GE ELEC-IT. Existing individual cross-department enrollments remain. Reconcile this session's wider allocations from the private baseline without deleting Auth/directory users or genuine activity. The scoped plan includes 1,637 registered students, 27 teaching workspaces and 115 class sections. New learning items use system-created text, with no material/assessment file attachments. Preserve uploaded syllabus originals. Vary opens, confirmed reading, answered/unanswered assessments, reviewed/pending written answers and practice.
 
 G20 evidence: scoped classes, teaching and 115 activity batches are committed in the linked database; native publication/response/review and real browser reload checks pass. All 115 class codes are present; original files/content and restrictions remain unchanged. The release gate passes 573 tests; the classroom browser run passes 25 cases with one desktop-only skip. Ten exact-hash desktop/phone images are reviewed under capture run 2026-11-25T13-12-10-514Z-f666ebef. Deployment follows the authorized push and is inspected separately.
+
+
+## 25 November 2026 - Respect source load bounds (G21)
+
+The owner identifies excess classes and requests comparison of registered instructors against the first-semester CIT tentative workbook. This supersedes G20's inferred permission to add catalog subjects or expand section counts for population.
+
+| Task | Work | Acceptance | Stage |
+|---|---|---|---|
+| T21.1 | Audit all registered instructors against source identities and rows; retain restrictions and report missing/contradictory mappings. | Read-only workbook SHA, 11-account private review, explicit blank/combined block and identity gaps. | Complete |
+| T21.2 | Retire the reported instructor's 20 proven seed extras, preserving eight confirmed sections and learning history. | Native regression, hosted rollback and committed transaction, unchanged before/after teaching/history, fresh authorized browser read. | Complete |
+| T21.3 | Prevent future course/section invention and receipt reuse under changed plans. | Bounded allocation/department/restriction regressions, release gate and reviewed desktop/phone captures. | Complete |
+| T21.4 | Reconcile other instructors' conflicting source assignments and the missing instructor identity mapping. | Confirm source precedence and resolve overlapping course/block ownership before replacing earlier confirmed loads. Private audit records the differences; no replacements applied. | Draft |
+
+Other instructors' workbook conflicts are documented; their assignments are not silently remapped. [Evidence and limits](versions/2026-11-25-source-load-correction/validation/results.md).

@@ -16,6 +16,8 @@ const phase=option('--phase')||'plan', apply=args.includes('--apply'), rollback=
 if(apply&&rollback)throw Error('Choose apply or transaction rehearsal, not both.')
 const before=JSON.parse(await readFile(join(dir,'before.json'),'utf8'))
 const plan=populationPlan(before)
+const retainedPlan=await readFile(join(dir,'plan.json'),'utf8').then(JSON.parse,()=>null)
+if(retainedPlan&&hash(retainedPlan)!==hash(plan))throw Error('This directory contains a different population plan. Keep its receipts and use a fresh private snapshot/output directory.')
 await writeFile(join(dir,'plan.json'),JSON.stringify(plan),{mode:0o600})
 const cli=join(process.env.APPDATA||'','npm/node_modules/supabase/dist/supabase.js')
 const text=(v:unknown)=>"'"+String(v).replaceAll("'","''")+"'"

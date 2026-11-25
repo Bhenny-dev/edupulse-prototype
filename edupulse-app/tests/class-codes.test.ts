@@ -3,6 +3,7 @@ import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import { createHash } from 'node:crypto'
 import { semesterDatabase } from './semester-fixture'
+import { seededSectionRetirement, retireSectionsSql } from '../scripts/lib/seeded-section-retirement'
 
 const term = { academic_year: '2026-2027', semester: '1st Semester' }
 const key = (code: string, block: string) => `${code}|${block}|1st Semester|2026-2027`
@@ -23,6 +24,47 @@ async function classroomDatabase(blocks = ['A', 'B'], upgrade = true) {
   for (const block of blocks) { await fixture.as(2); await fixture.command({ action: 'block.add', assignment: parent.record_key, expected_instructor: fixture.ids[0], block }) }
   return { ...fixture, maintenance, rpc, records, parent }
 }
+
+test('retiring only attributed seed sections preserves confirmed classes, answers and archived membership',async()=>{
+ const {db,ids,as,email,maintenance,rpc}=await classroomDatabase()
+ try{
+  await maintenance()
+  for(const name of ['20261123231913_classroom_topic_work','20261125103432_academic_population_audit'])await db.exec(await readFile(`supabase/migrations/${name}.sql`,'utf8'))
+  const syllabus={id:'retained-course',courseCode:'IT 101',courseTitle:'Programming',status:'active',approvedFile:{approvalAttested:true},courseInfo:{academicYear:term.academic_year,periodOffered:term.semester},courseOutline:[{week:1,ilos:'Explain foundations.',contents:['Foundations']}]}
+  const data={syllabi:[syllabus],content:{assessment:{syllabusId:syllabus.id,week:1,type:'assessment',status:'checked',deliveryMode:'block_schedule',content:{title:'Foundations check',questions:Array.from({length:3},(_,n)=>({text:'Choose evidence '+n,topic:'Foundations',type:'multiple_choice',options:['Observation','Guess','Title','Opinion'],correctIndex:0}))}}},registrations:['A','B'].map((block,n)=>({id:'roster-'+block,courseCode:'IT 101',academicYear:term.academic_year,semester:term.semester,blockSection:block,status:'active',students:[{Email:email(n?5:3),StudentID:n?'2026-0005':'2026-0003',Name:'Registered learner'}]}))}
+  await as(0);await db.query('SELECT revision FROM public.edupulse_save_workspace(0,$1)',[JSON.stringify(data)])
+  for(const block of ['A','B'])await rpc('edupulse_delivery_schedule',{syllabus:syllabus.id,block,revision:0,windows:[{week:1,date:'2026-11-02',start:'08:00',end:''}]})
+  data.content.assessment.status='published';await db.query('SELECT revision FROM public.edupulse_save_workspace(1,$1)',[JSON.stringify(data)])
+  const pub=(await db.query<{id:string;source_version:string}>('SELECT id,source_version FROM public.edupulse_publications WHERE active')).rows[0]
+  await as(5)
+  const session=await rpc('edupulse_assessment_command',{operation:'start',publication:pub.id,version:pub.source_version})
+  await rpc('edupulse_assessment_command',{operation:'submit',publication:pub.id,version:pub.source_version,session:session.id,responses:[0,0,0]})
+  await maintenance()
+  const original=(await db.query<{data:any}>('SELECT data FROM public.edupulse_workspaces WHERE owner_id=$1',[ids[0]])).rows[0].data
+  const attempts=(await db.query('SELECT * FROM public.edupulse_attempts')).rows
+  assert.equal(attempts.length,1)
+  const loads=(await db.query<any>("SELECT record_key,data,updated_at::text FROM public.edupulse_institutional_records WHERE kind='loads'")).rows
+  const baseline={edupulse_institutional_records:loads.filter(l=>l.data.Block!=='B').map(l=>({...l,kind:'loads'}))}
+  const manifest={owner:ids[0],course:'IT 101',blocks:[{block:'B'}]},batch={id:'academic-population-2026-11-25-scoped:classes:0:0',manifest}
+  assert.throws(()=>seededSectionRetirement({loads,batchManifests:[]},baseline,ids[0]),/provenance/)
+  const plan=seededSectionRetirement({loads,batchManifests:[batch]},baseline,ids[0])
+  assert.deepEqual(plan.kept,[key('IT 101','A')]);assert.equal(plan.retired.length,1)
+  await db.query("INSERT INTO edupulse_private.population_batches(id,actor_id,provenance,manifest) VALUES($1,$2,'owner-authorized-generated-population',$3)",[batch.id,ids[2],JSON.stringify(manifest)])
+  await db.query("UPDATE auth.users SET raw_app_meta_data='{}' WHERE id=$1",[ids[1]])
+  await assert.rejects(db.exec(retireSectionsSql(plan,ids[1],'0'.repeat(64),false)),/active management actor/)
+  await db.exec('ROLLBACK')
+  await db.exec(retireSectionsSql(plan,ids[2],'0'.repeat(64),true))
+  assert.equal((await db.query("SELECT * FROM public.edupulse_institutional_records WHERE kind='loads' AND data->>'LoadType'='class'")).rows.length,2,'rehearsal must roll back')
+  await db.exec(retireSectionsSql(plan,ids[2],'0'.repeat(64),false))
+  assert.deepEqual((await db.query('SELECT * FROM public.edupulse_attempts')).rows,attempts)
+  assert.deepEqual((await db.query<{data:any}>('SELECT data FROM public.edupulse_workspaces WHERE owner_id=$1',[ids[0]])).rows[0].data,original)
+  assert.deepEqual((await db.query<{block:string}>("SELECT data->>'Block' block FROM public.edupulse_institutional_records WHERE kind='loads' AND data->>'LoadType'='class'")).rows,[{block:'A'}])
+  assert.deepEqual((await db.query<{student_email:string}>('SELECT student_email FROM public.edupulse_enrollments')).rows,[{student_email:email(3)}])
+  assert.equal((await db.query<{n:number}>("SELECT count(*)::int n FROM edupulse_private.class_codes WHERE load_key=$1 AND disabled_at IS NULL",[key('IT 101','B')])).rows[0].n,0)
+  const archive=(await db.query<{memberships:any[]}>("SELECT memberships FROM edupulse_private.teaching_load_continuity WHERE load_key=$1",[key('IT 101','B')])).rows[0]
+  assert.equal(archive.memberships[0].student_email,email(5))
+ }finally{await db.close()}
+})
 
 test('large workspace projection keeps roster decisions and private proof ends with the projection',async()=>{
  const {db,ids,as,email,maintenance}=await classroomDatabase()

@@ -112,3 +112,6 @@ The Dean or Program Coordinator loads each class and its roster. Instructors add
 ## Populated current-term learning, 25 November 2026
 
 The owner-directed persistent population gives active registered students current enrolled subjects, delivered readings, saved reading progress and reviewed assessments. Further lessons, practice and assessment attempts remain available. A new submitted response appears in its instructor's records; instructor marking returns through the student's saved **Scores** view. These are normal database records, separate from preview personas. [Current desktop and phone captures](../../system-manual/56-academic-population/README.md) use fictional identities; private hosted checks establish persistence. Generated history is not independent human achievement.
+
+
+Course availability follows current authorized loaded membership. Retiring a proven seed-added section removes its current access while preserving saved answers, scores, reading and practice history. Population does not create replacement classes automatically. [Source-load correction](../../versions/2026-11-25-source-load-correction/README.md).

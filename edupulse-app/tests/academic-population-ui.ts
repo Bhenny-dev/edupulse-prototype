@@ -50,7 +50,9 @@ export async function populatedAcademicUI(page:Page,role='instructor') {
 
 export async function academicPopulationScene(page:Page,role:string,shot:(name:string)=>Promise<void>=async()=>{}){
  const fixture=await populatedAcademicUI(page,role)
- await page.goto('/#/dashboard');await expect(page.getByRole('heading',{name:'Home',exact:true})).toBeVisible({timeout:20000});await shot(`${role}-home`)
+ await page.goto('/#/dashboard');await expect(page.getByRole('heading',{name:'Home',exact:true})).toBeVisible({timeout:20000})
+ await expect(page.getByRole('region',{name:'Your classes'}).getByRole('button',{name:role==='instructor'?/^Open course /:/^Open /})).toHaveCount(role==='instructor'?6:3)
+ await shot(`${role}-home`)
  if(role==='instructor'){
   await page.goto('/#/dashboard?course=GE%201&block=BSIT-1A&tab=announcements');await expect(page.getByRole('region',{name:'Class Code',exact:true})).toContainText('AB22QRS');await shot('instructor-announcements')
   await page.getByRole('button',{name:'Scores',exact:true}).click();await expect(page.getByText('Assessment score radar',{exact:true})).toBeVisible();await shot('instructor-scores')

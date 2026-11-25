@@ -5244,81 +5244,81 @@
       "path": "feature-documentation/system-manual/56-academic-population/instructor-announcements.png",
       "sha256": "49a54c174725b6b5d98d1b882e096215ddb3b0bfd794d0a5bc9cf8de47975023",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-25T13:16:53.718Z",
-      "method": "Opened each exact image with view_image; checked block-specific cards, compact class code, populated scores, pending marking, student-only results, desktop and phone. Fictional read-only UI transport; separate real-account persistence receipts.",
-      "captureRun": "2026-11-25T13-12-10-514Z-f666ebef"
+      "reviewedAt": "2026-11-25T14:26:45.926665+00:00",
+      "method": "Opened each exact desktop/phone image with view_image; checked loaded class cards, compact code, scores/pending review and student-only results. Fictional UI transport; real-account correction verified separately.",
+      "captureRun": "2026-11-25T14-24-56-699Z-ddde75b7"
     },
     {
       "path": "feature-documentation/system-manual/56-academic-population/instructor-home.png",
       "sha256": "63cfda88554e3c41b9821c2eb58b9892d0c2a115c3918b2183d7ed5112c26922",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-25T13:16:53.719Z",
-      "method": "Opened each exact image with view_image; checked block-specific cards, compact class code, populated scores, pending marking, student-only results, desktop and phone. Fictional read-only UI transport; separate real-account persistence receipts.",
-      "captureRun": "2026-11-25T13-12-10-514Z-f666ebef"
+      "reviewedAt": "2026-11-25T14:26:45.928822+00:00",
+      "method": "Opened each exact desktop/phone image with view_image; checked loaded class cards, compact code, scores/pending review and student-only results. Fictional UI transport; real-account correction verified separately.",
+      "captureRun": "2026-11-25T14-24-56-699Z-ddde75b7"
     },
     {
       "path": "feature-documentation/system-manual/56-academic-population/instructor-scores.png",
       "sha256": "1973c6a66015974a5ef3ae79d06ab5b46399358b353ced941930662f32e8914e",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-25T13:16:53.719Z",
-      "method": "Opened each exact image with view_image; checked block-specific cards, compact class code, populated scores, pending marking, student-only results, desktop and phone. Fictional read-only UI transport; separate real-account persistence receipts.",
-      "captureRun": "2026-11-25T13-12-10-514Z-f666ebef"
+      "reviewedAt": "2026-11-25T14:26:45.930485+00:00",
+      "method": "Opened each exact desktop/phone image with view_image; checked loaded class cards, compact code, scores/pending review and student-only results. Fictional UI transport; real-account correction verified separately.",
+      "captureRun": "2026-11-25T14-24-56-699Z-ddde75b7"
     },
     {
       "path": "feature-documentation/system-manual/56-academic-population/phone-instructor-announcements.png",
       "sha256": "dd4271360e1a31578368cf8c40bd2c6abd3bd9c7e44bdfa7983a7c10de9df090",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-25T13:16:53.719Z",
-      "method": "Opened each exact image with view_image; checked block-specific cards, compact class code, populated scores, pending marking, student-only results, desktop and phone. Fictional read-only UI transport; separate real-account persistence receipts.",
-      "captureRun": "2026-11-25T13-12-10-514Z-f666ebef"
+      "reviewedAt": "2026-11-25T14:26:45.933437+00:00",
+      "method": "Opened each exact desktop/phone image with view_image; checked loaded class cards, compact code, scores/pending review and student-only results. Fictional UI transport; real-account correction verified separately.",
+      "captureRun": "2026-11-25T14-24-56-699Z-ddde75b7"
     },
     {
       "path": "feature-documentation/system-manual/56-academic-population/phone-instructor-home.png",
       "sha256": "e7f9630e66f7de0be0d5547ff99115ebe6cbc358316b4e3dafb57bbfd8ceee3e",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-25T13:16:53.719Z",
-      "method": "Opened each exact image with view_image; checked block-specific cards, compact class code, populated scores, pending marking, student-only results, desktop and phone. Fictional read-only UI transport; separate real-account persistence receipts.",
-      "captureRun": "2026-11-25T13-12-10-514Z-f666ebef"
+      "reviewedAt": "2026-11-25T14:26:45.935472+00:00",
+      "method": "Opened each exact desktop/phone image with view_image; checked loaded class cards, compact code, scores/pending review and student-only results. Fictional UI transport; real-account correction verified separately.",
+      "captureRun": "2026-11-25T14-24-56-699Z-ddde75b7"
     },
     {
       "path": "feature-documentation/system-manual/56-academic-population/phone-instructor-scores.png",
-      "sha256": "9991f51e2777ef6786792f4bbfa0fd78964878bb8f49ad14973bc2a67ff59441",
+      "sha256": "05d47c79f4fd67be4f8bca736fcf917fd8d3a0ffea78dc0b472c103cd15f950c",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-25T13:16:53.719Z",
-      "method": "Opened each exact image with view_image; checked block-specific cards, compact class code, populated scores, pending marking, student-only results, desktop and phone. Fictional read-only UI transport; separate real-account persistence receipts.",
-      "captureRun": "2026-11-25T13-12-10-514Z-f666ebef"
+      "reviewedAt": "2026-11-25T14:26:45.937296+00:00",
+      "method": "Opened each exact desktop/phone image with view_image; checked loaded class cards, compact code, scores/pending review and student-only results. Fictional UI transport; real-account correction verified separately.",
+      "captureRun": "2026-11-25T14-24-56-699Z-ddde75b7"
     },
     {
       "path": "feature-documentation/system-manual/56-academic-population/phone-student-home.png",
       "sha256": "9132fa0378051e172d2a39b95e7538489890232630cc58940c8255a2fcc7a453",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-25T13:16:53.719Z",
-      "method": "Opened each exact image with view_image; checked block-specific cards, compact class code, populated scores, pending marking, student-only results, desktop and phone. Fictional read-only UI transport; separate real-account persistence receipts.",
-      "captureRun": "2026-11-25T13-12-10-514Z-f666ebef"
+      "reviewedAt": "2026-11-25T14:26:45.938832+00:00",
+      "method": "Opened each exact desktop/phone image with view_image; checked loaded class cards, compact code, scores/pending review and student-only results. Fictional UI transport; real-account correction verified separately.",
+      "captureRun": "2026-11-25T14-24-56-699Z-ddde75b7"
     },
     {
       "path": "feature-documentation/system-manual/56-academic-population/phone-student-scores.png",
-      "sha256": "c42ec2476cef0ada9fdb57458209f162ed62eae1dcdf33b0de1f5d7ead95c5a2",
+      "sha256": "c3b0b0750dde67cc2d863eaa7df450bfe18dc7a36d55664011d4fd4709f91709",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-25T13:16:53.719Z",
-      "method": "Opened each exact image with view_image; checked block-specific cards, compact class code, populated scores, pending marking, student-only results, desktop and phone. Fictional read-only UI transport; separate real-account persistence receipts.",
-      "captureRun": "2026-11-25T13-12-10-514Z-f666ebef"
+      "reviewedAt": "2026-11-25T14:26:45.939922+00:00",
+      "method": "Opened each exact desktop/phone image with view_image; checked loaded class cards, compact code, scores/pending review and student-only results. Fictional UI transport; real-account correction verified separately.",
+      "captureRun": "2026-11-25T14-24-56-699Z-ddde75b7"
     },
     {
       "path": "feature-documentation/system-manual/56-academic-population/student-home.png",
-      "sha256": "9744ba3bba542f26b4c14009a1d4370377803f721781e6900df0f1d6b6a8777b",
+      "sha256": "e1ba7d37a815350fcfbac4de65a528045a69bc2655d2be7a2fa8a36da2b2ea50",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-25T13:16:53.719Z",
-      "method": "Opened each exact image with view_image; checked block-specific cards, compact class code, populated scores, pending marking, student-only results, desktop and phone. Fictional read-only UI transport; separate real-account persistence receipts.",
-      "captureRun": "2026-11-25T13-12-10-514Z-f666ebef"
+      "reviewedAt": "2026-11-25T14:26:45.941446+00:00",
+      "method": "Opened each exact desktop/phone image with view_image; checked loaded class cards, compact code, scores/pending review and student-only results. Fictional UI transport; real-account correction verified separately.",
+      "captureRun": "2026-11-25T14-24-56-699Z-ddde75b7"
     },
     {
       "path": "feature-documentation/system-manual/56-academic-population/student-scores.png",
       "sha256": "7962a8cec5ec1811505ea311ee52914504827044d21ed1de2d57199fc355a544",
       "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-25T13:16:53.719Z",
-      "method": "Opened each exact image with view_image; checked block-specific cards, compact class code, populated scores, pending marking, student-only results, desktop and phone. Fictional read-only UI transport; separate real-account persistence receipts.",
-      "captureRun": "2026-11-25T13-12-10-514Z-f666ebef"
+      "reviewedAt": "2026-11-25T14:26:45.942555+00:00",
+      "method": "Opened each exact desktop/phone image with view_image; checked loaded class cards, compact code, scores/pending review and student-only results. Fictional UI transport; real-account correction verified separately.",
+      "captureRun": "2026-11-25T14-24-56-699Z-ddde75b7"
     }
   ]
 }

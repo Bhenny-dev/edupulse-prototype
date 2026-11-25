@@ -1,4 +1,4 @@
-﻿import { commonCourses, populationId, populationTerm, populationVersion } from './population-content.js'
+import { populationId, populationTerm, populationVersion } from './population-content.js'
 export const availableAccount=(a:any)=>a&&![true,'true'].includes(a.app_metadata?.suspended)&&(!a.banned_until||Date.parse(a.banned_until)<Date.now())
 export const currentLoad=(r:any)=>r.kind==='loads'&&r.data.AcademicYear===populationTerm.academic_year&&/^(1|first)/i.test(r.data.Semester||'')&&!/inactive|suspended|withdrawn|deleted/i.test(r.data.Status||'')
 const cit=(s:any)=>/Information Technology/i.test(s.department||'')
@@ -14,17 +14,9 @@ export function populationPlan(snapshot:any) {
  const students=snapshot.edupulse_students.filter((s:any)=>s.active&&accounts.get(s.user_id)?.app_metadata.role==='student'&&availableAccount(accounts.get(s.user_id))&&(cit(s)||explicit.has(s.email)||[...programs].some(p=>department(s,p)))).sort((a:any,b:any)=>(a.department+a.program+a.year_level+a.student_number).localeCompare(b.department+b.program+b.year_level+b.student_number))
  if(!owners.length||!students.length)throw Error('Active registered instructors and related students are required.')
  if(new Set(students.map((s:any)=>s.email)).size!==students.length||new Set(students.map((s:any)=>s.student_number)).size!==students.length)throw Error('Duplicate registered student identity.')
- const additions=new Map<string,string[]>(),weights=new Map<string,number>(owners.map((o:any)=>[o.id,loads.filter((l:any)=>l.data.InstructorID===o.id&&l.data.Block).length]))
- for(const code of commonCourses){
-  if(loads.some((l:any)=>l.data.CourseCode===code))continue
-  const owner=[...owners].sort((a:any,b:any)=>(weights.get(a.id)||0)-(weights.get(b.id)||0)||a.id.localeCompare(b.id))[0]
-  additions.set(owner.id,[...(additions.get(owner.id)||[]),code])
-  const year=Number(catalog.find((r:any)=>r.data.CourseCode===code)?.data.YearLevel)||1
-  weights.set(owner.id,(weights.get(owner.id)||0)+Math.ceil(students.filter((s:any)=>cit(s)&&s.year_level===year).length/35))
- }
  const plans:any[]=[],membership=new Map<string,Set<string>>()
  for(const owner of owners){
-  const codes=new Set([...(additions.get(owner.id)||[]),...loads.filter((l:any)=>l.data.InstructorID===owner.id&&l.data.LoadType==='course').map((l:any)=>l.data.CourseCode)])
+  const codes=new Set<string>(loads.filter((l:any)=>l.data.InstructorID===owner.id&&l.data.LoadType==='course').map((l:any)=>l.data.CourseCode))
   for(const code of codes){
    const parent=loads.find((l:any)=>l.data.InstructorID===owner.id&&l.data.LoadType==='course'&&l.data.CourseCode===code),entry=catalog.find((r:any)=>r.data.CourseCode===code)?.data
    if(!entry&&!parent)throw Error('Missing recorded course identity: '+code)
@@ -42,19 +34,15 @@ export function populationPlan(snapshot:any) {
    plans.push(plan)
   }
  }
+ let unplacedMemberships=0
  for(const code of [...new Set(plans.map(p=>p.code))]){
   const group=plans.filter(p=>p.code===code),assigned=membership.get(code)||new Set<string>(),related=[...new Set<string>(group.flatMap(p=>p.programs))]
   const candidates=students.filter((s:any)=>related.some(p=>department(s,p))&&(!related.every(p=>p==='BSIT')||!group[0].year||s.year_level===group[0].year))
   const remaining=candidates.filter((s:any)=>!assigned.has(s.email));let cursor=0
   const take=(n:number)=>{const rows=[];while(rows.length<n&&cursor<remaining.length){const s=remaining[cursor++];if(assigned.has(s.email))continue;assigned.add(s.email);rows.push({StudentID:s.student_number,Email:s.email})}return rows}
   for(const p of group)for(const b of p.blocks)b.students=take(Math.max(0,35-b.existing))
-  let serial=1
-  while(cursor<remaining.length){
-   const p=[...group].sort((a,b)=>a.blocks.reduce((n:number,x:any)=>n+x.existing+x.students.length,0)-b.blocks.reduce((n:number,x:any)=>n+x.existing+x.students.length,0))[0]
-   let block='';do{block=(related.every(x=>x==='BSIT')?'BSIT-'+(p.year||1):related.join('-'))+'-'+serial++}while(loads.some((l:any)=>l.data.CourseCode===code&&l.data.Block===block)||group.some(p=>p.blocks.some((b:any)=>b.block===block)))
-   p.blocks.push({block,existing:0,students:take(35),schedule:true})
-  }
+  unplacedMemberships+=remaining.length-cursor
  }
  for(const owner of owners)if(plans.filter(p=>p.owner===owner.id).reduce((n,p)=>n+p.blocks.length,0)>190)throw Error('Registration capacity exceeded.')
- return {version:populationVersion,term:populationTerm,owners:owners.map((o:any)=>o.id),studentCount:students.length,courses:plans,summary:{instructors:owners.length,students:students.length,citStudents:students.filter(cit).length,relatedDepartments:[...programs].filter(p=>p!=='BSIT'),courses:plans.length,classes:plans.reduce((n,p)=>n+p.blocks.length,0),addedMemberships:plans.reduce((n,p)=>n+p.blocks.reduce((s:number,b:any)=>s+b.students.length,0),0)},id:populationId(populationVersion)}
+ return {version:populationVersion,allocationPolicy:'loaded-sections-only',term:populationTerm,owners:owners.map((o:any)=>o.id),studentCount:students.length,courses:plans,summary:{instructors:owners.length,students:students.length,citStudents:students.filter(cit).length,relatedDepartments:[...programs].filter(p=>p!=='BSIT'),courses:plans.length,classes:plans.reduce((n,p)=>n+p.blocks.length,0),addedMemberships:plans.reduce((n,p)=>n+p.blocks.reduce((s:number,b:any)=>s+b.students.length,0),0),unplacedMemberships},id:populationId(populationVersion)}
 }

@@ -19,9 +19,16 @@ test('academic population uses active registered identities once per course, pre
  for(const r of snapshot.edupulse_institutional_records)r.data.CourseCode=r.record_key
  const before=structuredClone(snapshot),plan=populationPlan(snapshot)
  assert.equal(plan.studentCount,71);assert.equal(plan.owners.length,2)
- const seen=new Set<string>()
- for(const course of plan.courses)for(const block of course.blocks){assert.ok(block.students.length>0&&block.students.length<=35);for(const student of block.students){const key=`${course.code}:${student.StudentID}`;assert.ok(!seen.has(key));seen.add(key)}}
- assert.equal(seen.size,71*commonCourses.length)
+ assert.equal(plan.courses.length,0,'a course catalog is not an instructor assignment')
+ const term={AcademicYear:'2026-2027',Semester:'1st Semester',CourseCode:'GE 1',InstructorID:'teacher-a'}
+ snapshot.edupulse_institutional_records.push({kind:'loads',record_key:'parent',data:{...term,LoadType:'course',CourseTitle:'Communication'}},...['A','B'].map(Block=>({kind:'loads',record_key:Block,data:{...term,LoadType:'class',Block}})))
+ const bounded=populationPlan(snapshot)
+ assert.equal(bounded.courses.length,1);assert.equal(bounded.summary.classes,2)
+ assert.equal(bounded.summary.addedMemberships,70);assert.equal(bounded.summary.unplacedMemberships,1)
+ assert.equal(bounded.allocationPolicy,'loaded-sections-only')
+ assert.ok(bounded.courses[0].blocks.every((b:any)=>b.students.length===35))
+ assert.equal(new Set(bounded.courses[0].blocks.flatMap((b:any)=>b.students.map((s:any)=>s.StudentID))).size,70,'the two loaded sections must not duplicate a learner')
+ snapshot.edupulse_institutional_records.splice(-3)
  assert.deepEqual(snapshot,before);assert.deepEqual(populationPlan(snapshot),plan)
  assert.throws(()=>populationPlan({...snapshot,edupulse_students:[...snapshot.edupulse_students,snapshot.edupulse_students[0]]}),/Duplicate/)
 })
@@ -44,6 +51,7 @@ test('department population follows retained load programs and never uses unrela
  const snapshot:any={accounts:[{id:'teacher',app_metadata:{role:'instructor'}},...people.map(([id])=>({id,app_metadata:{role:'student'}}))],edupulse_students:people.map(([id,department])=>({user_id:id,student_number:id,email:id+'@example.invalid',department,program:department,year_level:1,active:true})),edupulse_institutional_records:[...commonCourses.map(code=>({kind:'courses',record_key:code,data:{CourseCode:code,CourseTitle:code,YearLevel:'1'}})),{kind:'courses',record_key:'PROF ED 16',data:{CourseCode:'PROF ED 16',CourseTitle:'Technology for Teaching'}},{kind:'loads',record_key:'teaching',data:{...term,CourseCode:'PROF ED 16',CourseTitle:'Technology for Teaching',InstructorID:'teacher',LoadType:'course',SourceRows:[{program:'CTELA'}]}},{kind:'loads',record_key:'teaching-A',data:{...term,CourseCode:'PROF ED 16',InstructorID:'teacher',LoadType:'class',Block:'A',TeachingSyllabusID:'retained-outline'}}],edupulse_workspaces:[],edupulse_enrollments:[],edupulse_courses:[]}
  const plan=populationPlan(snapshot)
  assert.equal(plan.studentCount,2)
+ assert.equal(plan.courses.length,1,'unassigned catalog courses must never be fabricated')
  for(const course of plan.courses){
   const members=course.blocks.flatMap((b:any)=>b.students.map((s:any)=>s.StudentID))
   assert.deepEqual(members,course.code==='PROF ED 16'?['ctela']:['cit'])

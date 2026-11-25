@@ -165,3 +165,6 @@ Execution is tracked in [WORKPLAN.md](WORKPLAN.md). A release is verified only a
 [25 November 2026: Atomic class codes and QR invitations](versions/2026-11-25-class-code-qr/README.md).
 
 [25 November persistent academic population](versions/2026-11-25-academic-population/README.md) covers the owner-scoped CIT/loaded-department population, native learner activity and bounded large-record projection. Deployment evidence is recorded in its validation page.
+
+
+[25 November source-load correction](versions/2026-11-25-source-load-correction/README.md) prevents population from inventing assignments/sections and records the guarded correction and all-instructor workbook audit.
