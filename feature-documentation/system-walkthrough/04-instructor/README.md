@@ -2,6 +2,8 @@
 
 ## Current signed-in Instructor workspace
 
+The class modal uses its approved retained teaching syllabus independently of repository drafts. **Teaching Materials & Assessments** shows the approved extracted outline without repeated upload or draft-editing controls; only classes without an approved copy show intake. Drafts stay on **Syllabus**. The weekly help paragraph and source-retention footer are removed. [Current desktop and phone views](../../system-manual/44-instructor-course-workspace/README.md#add-the-approved-syllabus-for-a-loaded-course).
+
 The current **Home** opens each loaded class in a page modal. On **Announcements**, the class-code sidebar stays within its column, and stacks after the feed on a phone. System Admin instructor support includes the selected instructor's active codes, announcements and code-management controls. Reload verifies the subject again and restores the class/code display without issuing a command. [Current desktop and phone captures and steps](../../system-manual/44-instructor-course-workspace/README.md#class-codes-and-announcements-in-an-admin-support-view).
 
 Main navigation is **Home**, **Syllabus** and **Student Monitoring**. **Syllabus** is the personal repository with My Syllabus, Shared Repository and Syllabus Builder. Draft PDFs/DOCX files can be extracted, reviewed, saved and rebuilt as PDFs; received copies identify their sender. It is independent of the currently selected class. The current account flow is illustrated in [Manual 44](../../system-manual/44-instructor-course-workspace/README.md).

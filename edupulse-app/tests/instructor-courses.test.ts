@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { instructorCourses, instructorRecords, moveTeachingWeek, weekTopics, topicEntries, assessmentCoverage, topicProgress, syllabusForCourse } from '../src/utils/instructorCourses.js'
+import { instructorCourses, instructorRecords, moveTeachingWeek, weekTopics, topicEntries, assessmentCoverage, topicProgress, syllabusForCourse, approvedSyllabusForCourse } from '../src/utils/instructorCourses.js'
 import { contentGenerationRequest, navigationCorrection, sourceDestination } from '../src/lib/systemChatPolicy.js'
 import { operatorInput, planValidatedTool } from '../src/agents/toolPlanner.js'
 import type { AcademicData } from '../src/components/academic/academicData.js'
@@ -11,6 +11,17 @@ const records = (): AcademicData => ({ courses: [{ id: 'course', course_code: 'I
   { kind: 'loads', record_key: 'other', data: { CourseCode: 'IT 201', InstructorID: 'other' } },
   { kind: 'loads', record_key: 'inactive', data: { CourseCode: 'IT 202', InstructorID: 'teacher', Status: 'suspended' } },
 ] })
+
+test('course teaching selects an attested approved copy independently of repository drafts',()=>{
+ const [course]=instructorCourses(records(),'teacher')
+ const approved={id:'approved',courseCode:'IT 102',status:'approved_uploaded',approvedFile:{approvalAttested:true}}
+ const draft={...approved,id:'draft',status:'drafted',lastUpdated:'2026-11-25'}
+ assert.equal(approvedSyllabusForCourse([draft,approved],course)?.id,'approved')
+ assert.equal(approvedSyllabusForCourse([draft],course),undefined)
+ assert.equal(approvedSyllabusForCourse([{...approved,approvedFile:{approvalAttested:false}}],course),undefined)
+ assert.equal(approvedSyllabusForCourse([{...approved,suspended:true}],course),undefined)
+ assert.equal(approvedSyllabusForCourse([{...approved,courseCode:'OTHER'}],course),undefined)
+})
 
 test('independent inherited bases keep same-course blocks, contents and reload IDs separate',()=>{
  const data=records()

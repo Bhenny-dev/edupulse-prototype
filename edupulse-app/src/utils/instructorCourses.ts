@@ -64,6 +64,11 @@ export function weekTopics(row: OutlineWeek) {
   return weekSections(row).map((section, index) => ({ ...section, title: section.contents.find(text => text.trim())?.split('\n')[0] || `Topic ${index + 1}` }))
 }
 
+/** Teaching uses an approved retained copy; repository drafts remain on Syllabus. */
+export function approvedSyllabusForCourse<T extends { id: string; courseCode: string; status: string; approvedFile?: { approvalAttested?: boolean }; suspended?: boolean; handedOverFrom?: unknown; courseInfo?: { academicYear?: string; periodOffered?: string }; lastUpdated?: string }>(syllabi: T[], course: InstructorCourse): T | undefined {
+  return syllabusForCourse(syllabi.filter(item => ['active', 'approved_uploaded'].includes(item.status) && item.approvedFile?.approvalAttested === true), course)
+}
+
 export type TeachingEntry = { id: string; type: string; week?: number; title?: string; position?: number; content: { title?: string; courseTopicId?: string; outlineSectionId?: string; overallAssessment?: boolean; submissionOnly?: boolean; teachingOrder?: number; coverage?: { materialIds: string[] }; ai?: { parts?: { sectionId?: string }[] } } }
 export const teachingOrder = (entry: TeachingEntry) => entry.position ?? entry.content.teachingOrder ?? (entry.type === 'assessment' ? 2048 : entry.type === 'activity' ? 1024 : 0)
 export function topicEntries<T extends TeachingEntry>(entries: T[], topicId: string, soleTopic: boolean) {

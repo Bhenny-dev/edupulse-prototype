@@ -451,3 +451,11 @@ Not done: Dean views do not list class codes (the Dean needs them only if asked)
 
 - 2026-11-25: Codex corrected sidebar intrinsic-width overflow and added Admin instructor classroom support. Native support tests verify code replacement/post persistence, actor audit attribution, cross-instructor isolation, revoked-subject rejection and claim restoration. `npm run verify` passed (554 tests); `VERCEL=1 npm test` passed (555, including the final view-hint regression); 17 distinct browser cases passed and one desktop-only case skipped on phones. Desktop/phone captures use fictional accounts. Production migration applied and remote history confirmed. Push/deployment in progress; no Ready claim.
 - 2026-11-25: To review and Upcoming moved off Home's page (they sat after the class cards) to two circle buttons on the left edge of Home, with a count badge each (bottom-left on phones). Each opens its own page modal under the top bar (`classroom/HomePanels.jsx`, URL `?panel=review|upcoming`): To review lists waiting written responses by class and assessment with Open Scores; Upcoming lists every saved due date and week opening, each opening its class. Closing returns focus to the circle. Spec: `instructor-classroom.spec.ts` (circle buttons).
+## 25 November 2026 - Approved-only course outline correction
+
+| Task | Work | Acceptance | Stage |
+|---|---|---|---|
+| T15.4 | Course modal selects an attested approved retained teaching syllabus independently of repository drafts; no repeated intake or draft-editing action alongside its outline. Draft-only classes retain approved intake without rendering a draft outline. Remove the weekly instruction paragraph and source-retention footer; preserve controls and backend limits. | `instructor-courses.test.ts` approved-selection regression; `approved-course.spec.ts` desktop/phone approved/active/draft/reload checks; two reviewed Manual 44 captures. 29 browser cases passed; isolated unit gate 555/556 with the sole external-web timeout passing on rerun; build and deployment checks passed. No migration. | Complete |
+
+- Owner correction supersedes the earlier pre-approval draft-outline display in Course. No inferred approval, automatic activation, schema change or academic mutation is introduced. Unrelated schedule work remains outside this release.
+

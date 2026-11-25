@@ -1,5 +1,7 @@
 # Backend System
 
+The approved-only course-outline correction selects an attested retained approved syllabus for the teaching UI while repository drafts remain on Syllabus. It performs no migration, approval, activation, publication or inference. Existing server validation and delivery rules remain authoritative.
+
 The [25 November classroom support correction](supabase.md#25-november-2026-classroom-support-parity) adds class codes, joins and announcements to the verified subject read and routes instructor support classroom controls through the audited gateway. The [validation record](../versions/2026-11-25-classroom-support.md) distinguishes local checks from production rollout.
 
 ## Approved historical teaching loads - 18 November 2026

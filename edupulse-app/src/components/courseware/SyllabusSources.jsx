@@ -56,7 +56,7 @@ export default function SyllabusSources({syllabus,defaultOpen=false,readOnly=fal
      ...(!readOnly?[{label:'Attach readable copy',icon:Upload,onSelect:()=>{attachTarget.current=row.reference;fileInput.current?.click()}}]:[]),
      ...(!readOnly&&row.snapshot?[{label:'Remove retained version',icon:Trash2,onSelect:()=>setRemoving(row.snapshot)}]:[]),
     ]} /></div>
-   </li>})}</ul><p className="text-sm text-muted">Copies are private to your account. Refreshing creates a version when source bytes change; generation keeps using retained copies until you choose to refresh. Scans are limited to 2 MB per file and 150,000 searchable characters.</p>
+   </li>})}</ul>
   </div>
   {viewing&&rows.some(row=>row.snapshot?.id===viewing)&&<RetainedSourceReview id={viewing} onClose={()=>setViewing(null)} />}
   {removing&&<ModalLayer onDismiss={()=>setRemoving(null)}><section className="modal-content" role="dialog" aria-label="Remove retained source version"><h2>Remove this retained version?</h2><p>The saved copy of {removing.reference.title} and its indexed search passages will be removed. Existing courseware keeps its citation text and checksum.</p><div className="modal-actions"><button className="btn btn-ghost" disabled={busy} onClick={()=>setRemoving(null)}>Cancel</button><button className="btn btn-secondary" disabled={busy} onClick={()=>void perform(async()=>{await syllabusSources({operation:'remove',id:removing.id});setRemoving(null)})}>Remove retained version</button></div></section></ModalLayer>}

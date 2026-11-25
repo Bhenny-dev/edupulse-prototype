@@ -1,5 +1,4 @@
 import { useEffect, useId, useState } from 'react'
-import { Link } from 'react-router-dom'
 import { CalendarClock, Megaphone, Pencil, Trash2, X } from 'lucide-react'
 import ModalLayer from '../ui/ModalLayer'
 import CoursewareActions from '../courseware/CoursewareActions'
@@ -55,7 +54,7 @@ function Upcoming({ course, syllabus, data }) {
 }
 
 /** Announcements: the chronological feed of this course and term, with the class codes and what comes next. */
-export default function ClassStream({ course, syllabus, data, readOnly = false, highlight, createdBlock, draftLink, onOpenMaterials, onAddBlock }) {
+export default function ClassStream({ course, syllabus, data, readOnly = false, highlight, createdBlock, onOpenMaterials, onAddBlock }) {
   const { user } = useAuth(), records = useAcademicRecords(), heading = useId()
   const posts = classAnnouncements(data, course)
   const weeks = [...new Set((syllabus?.courseOutline || []).filter(row => !isOutlineExam(row)).map(row => row.week))].sort((a, b) => a - b)
@@ -66,7 +65,7 @@ export default function ClassStream({ course, syllabus, data, readOnly = false, 
     try { await records.command({ operation: 'announcement', command: { action: 'delete', id: removing.id } }); setRemoving(null); setNotice('Announcement deleted.') }
     catch (failure) { setError(failure.message) } finally { setBusy(false) }
   }
-  const ready = syllabus && syllabus.status === 'active' && !syllabus.suspended
+  const ready = syllabus && ['active', 'approved_uploaded'].includes(syllabus.status) && !syllabus.suspended
   return <div className="class-stream">
     <aside className="class-aside">
       <ClassCodesCard course={course} codes={data.classCodes} readOnly={readOnly} highlight={createdBlock} onAddBlock={onAddBlock} />
@@ -74,7 +73,7 @@ export default function ClassStream({ course, syllabus, data, readOnly = false, 
     </aside>
     <div className="class-feed">
       {createdBlock && <p role="status" className="class-post">Class created: block {createdBlock}. Share its class code with your students; they join from their Home.</p>}
-      {!ready && <section className="class-post" aria-label="Next step"><h3>Add the approved syllabus</h3><p className="class-post-body">Weekly teaching materials and assessments start from the approved syllabus. Students who join now see the course once it is added.</p><div className="class-composer-actions">{draftLink && <Link className="btn btn-secondary btn-sm" to={draftLink}>Continue editing draft</Link>}<button type="button" className="btn btn-primary btn-sm" onClick={onOpenMaterials}>Open Teaching Materials and Assessments</button></div></section>}
+      {!ready && <section className="class-post" aria-label="Next step"><h3>Add the approved syllabus</h3><p className="class-post-body">Weekly teaching materials and assessments start from the approved syllabus. Students who join now see the course once it is added.</p><div className="class-composer-actions"><button type="button" className="btn btn-primary btn-sm" onClick={onOpenMaterials}>Open Teaching Materials and Assessments</button></div></section>}
       {notice && <p role="status">{notice}</p>}
       {data.classroomError && <p role="status" className="connected-pulse-warning">{data.classroomError}</p>}
       {!readOnly && (editing === 'new' ? <Composer course={course} weeks={weeks} onCancel={() => setEditing(null)} onSaved={message => { setEditing(null); setNotice(message) }} />

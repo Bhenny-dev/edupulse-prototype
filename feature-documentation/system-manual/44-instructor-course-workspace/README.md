@@ -34,12 +34,18 @@ A same-class instructor switch can provide a continued teaching copy, labelled *
 
 ## Add the approved syllabus for a loaded course
 
-1. Open an assigned course. Until it has an active, unsuspended syllabus, **Weeks and topics** shows **Upload syllabi**. Drop an approved PDF or DOCX, or activate the browse area. The retained approved-file limit is 750 KB; this is separate from the teaching-file limit below.
+1. Open an assigned course. When no approved, unsuspended retained syllabus is available, **Teaching Materials & Assessments** shows **Upload syllabi**. A repository draft is not the course's teaching outline. Drop an approved PDF or DOCX, or activate the browse area. The retained approved-file limit is 750 KB; this is separate from the teaching-file limit below.
 2. Review the extracted course identity, weekly contents and warnings. **View syllabus** and the retained original allow comparison. The uploaded course code must match the selected loaded course. Reading and OCR do not verify signatures or invent missing weekly mappings.
 3. Confirm the approved-copy acknowledgment and choose **Use syllabus for course**. Wait for the revision-checked save. Source reading, retention and readable-text indexing follow this explicit intake; an unread or inaccessible source remains disclosed.
 4. Alternatively choose **Choose a shared syllabus from the system**. Select a received copy for the same loaded course, acknowledge that it is authorized, then choose **Use approved shared syllabus**. The server verifies the sender's retained approved file before adoption. Merely receiving a shared copy does not activate or publish it.
 
-The upload area is absent from the ready **Weeks and topics** view. Use the separate **Syllabus** navigation page for saved syllabi, received copies, the draft builder, offline approval steps and sharing/removal controls. The repository includes all of your syllabi, while teaching remains limited to assigned courses. Prepared content remains visible in **Weeks and topics** before approval, with delivery blocked until the approved syllabus is active. Saved suspension remains required before deletion; approval and publication remain separate.
+The course selects an attested retained syllabus with **Approved — Uploaded** or **Active** status, within its assigned course, term and teaching basis. Its extracted weekly outline appears without another upload area or **Continue editing draft** link. A newer repository draft does not replace that approved teaching copy. Use **Syllabus** for draft editing and approval preparation. If only a draft exists, the course offers approved intake and does not display that draft's outline. Delivery still requires activation; approval and publication remain separate.
+
+![Approved course outline without repeated intake or draft-editing controls](14-approved-course-outline.png)
+
+![Approved course outline on a phone](15-approved-course-outline-phone.png)
+
+The weekly controls retain **Expand all**, **Collapse all**, **Show**, move actions and topic authoring. The introductory week-help paragraph and source-retention footer are removed. Source status, review, upload and refresh controls remain available. These captures use fictional records and controlled responses.
 
 ## Work through weeks and topics
 

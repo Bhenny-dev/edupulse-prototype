@@ -1,4 +1,3 @@
-import {editableSyllabusPath} from '../../agents/syllabusConversation'
 import {SYLLABUS_STATUS_META} from '../../data/syllabusStatus'
 import { useMemo, useState } from 'react'
 import { Link, Navigate, useSearchParams } from 'react-router-dom'
@@ -7,7 +6,7 @@ import { Share2, Settings2, BookOpen, X } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 import { useWorkspace } from '../../context/WorkspaceContext'
 import { useAcademicRecords } from '../../context/AcademicContext'
-import { instructorCourses, instructorRecords, syllabusForCourse, sameCourseCode } from '../../utils/instructorCourses'
+import { instructorCourses, instructorRecords, syllabusForCourse, approvedSyllabusForCourse, sameCourseCode } from '../../utils/instructorCourses'
 import { collectSyllabusReferences } from '../../lib/rag/syllabusReferences'
 import { prepareSyllabusSources, indexSyllabusReference, aiSessionVersion } from '../../lib/aiClient'
 import ModalLayer from '../ui/ModalLayer'
@@ -44,8 +43,8 @@ export default function InstructorCourses({ onClose }) {
   const requested = params.get('course'), legacySyllabus = workspace.syllabi.find(item => item.id === requested)
   const matching = courses.filter(course => course.id === requested || requested===course.id.split('~').slice(0,3).join('~') || course.courseIds.includes(requested) || (legacySyllabus && syllabusForCourse([legacySyllabus], course)) || sameCourseCode(course.code, requested || ''))
   const selected = matching.length===1?matching[0]:undefined
-  const syllabus = selected && syllabusForCourse(workspace.syllabi, selected)
-  const ready = syllabus && syllabus.status === 'active' && !syllabus.suspended
+  const syllabus = selected && approvedSyllabusForCourse(workspace.syllabi, selected)
+  const ready = Boolean(syllabus)
   const schedules=selected?loadRows(records.data,true).filter(load=>load.instructorId===user.id&&sameCourseCode(load.code,selected.code)&&(load.loadType==='course'||selected.blocks.includes(load.block))&&load.academicYear===selected.academicYear&&load.semester===selected.semester&&(load.time||load.source||load.sourceRows?.length)):[]
   const incoming = sharing.shares.filter(item => item.recipient_id === user.id && item.sender_id !== user.id && sameCourseCode(item.courseCode, selected?.code || '') && !item.sender_suspended && !item.recipient_suspended)
   const sharedOpen = params.get('picker') === 'shared' && Boolean(selected) && !ready
@@ -96,7 +95,7 @@ export default function InstructorCourses({ onClose }) {
   // The class is a page over Home: without ?course= there is nothing to show.
   if (!requested) return null
   const counts = selected ? classStudents(selected, workspace.registrations, termData.enrollments) : new Map()
-  const syllabusLink = syllabus && writable && !syllabus.suspended && ['drafted','checked','downloaded_for_approval'].includes(syllabus.status) ? editableSyllabusPath(syllabus.id) : '/syllabus?tab=mine'
+  const syllabusLink = '/syllabus?tab=mine'
   const title = !records.loaded ? 'Opening class' : selected ? `${selected.code} ${selected.title}` : 'Class unavailable'
   const facts = selected ? [selected.semester, selected.academicYear && `AY ${selected.academicYear}`, selected.units && `${selected.units} units`].filter(Boolean).join(' · ') : ''
   return <PageModal title={title} subtitle={facts} label={selected ? `Class ${selected.code}` : title} closeLabel="Close class and return to Home" onClose={onClose} className="class-modal" bodyClassName="classroom">
@@ -120,9 +119,8 @@ export default function InstructorCourses({ onClose }) {
       {!writable&&<p className="text-sm text-muted mb-16">This semester is view-only.</p>}
       {syllabus?.handedOverFrom?.instructorName&&<p className="text-sm text-muted mb-16">Continued from {syllabus.handedOverFrom.instructorName} for {selected.blocks.join(', ')}.</p>}
       <nav className="tabs class-tabs" aria-label="Class sections">{TABS.map(([key, label]) => <button type="button" key={key} className={`tab ${section === key ? 'active' : ''}`} aria-pressed={section === key} onClick={() => go(key)}>{label}</button>)}</nav>
-      {section === 'announcements' && <ClassStream course={selected} syllabus={syllabus} data={scoped} readOnly={!writable} highlight={params.get('announcement')} createdBlock={params.get('code')} draftLink={syllabusLink.startsWith('/syllabus?tab=builder') ? syllabusLink : undefined} onOpenMaterials={() => go('materials')} onAddBlock={() => setAddingBlock(true)} />}
+      {section === 'announcements' && <ClassStream course={selected} syllabus={syllabus} data={scoped} readOnly={!writable} highlight={params.get('announcement')} createdBlock={params.get('code')} onOpenMaterials={() => go('materials')} onAddBlock={() => setAddingBlock(true)} />}
       {section === 'materials' && <>
-        {writable&&syllabus&&!syllabus.suspended&&['drafted','checked','downloaded_for_approval'].includes(syllabus.status)&&<Link className="btn btn-secondary mb-16" to={editableSyllabusPath(syllabus.id)}>Continue editing draft</Link>}
         {writable && !ready && <><ApprovedSyllabusIntake courseCode={selected.code} onUse={useApproved} /><button type="button" className="btn btn-secondary mt-16" onClick={() => setSharedOpen(true)}><Share2 size={16} />Choose a shared syllabus from the system</button></>}
         {syllabus?.courseOutline?.length > 0 && !syllabus.suspended && <CourseTopicWeeks readOnly={!writable} syllabus={syllabus} data={scoped} course={selected} announcements={classAnnouncements(scoped, selected)} onOpenAnnouncement={id => setParams({ course: selected.id, term, tab: 'announcements', announcement: id })} onSchedule={() => go('blocks')} />}
       </>}

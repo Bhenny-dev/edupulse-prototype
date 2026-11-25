@@ -179,7 +179,6 @@ export default function CourseTopicWeeks({ syllabus, data, course, onSchedule, r
   return <>
     {sourceReading && !reader && <p role="alert">The referenced teaching content is no longer available in this course.</p>}
     {error && <p role="alert">{error}</p>}{notice && <p role="status">{notice}</p>}
-    <p className="text-sm text-muted">Open a topic to add its teaching materials and assessments. Drag a week by its handle, or use Move up / Move down. Examination weeks keep their scheduled slots.</p>
     <div className="instructor-week-tools" role="group" aria-label="Show or hide weeks"><button type="button" className="btn btn-ghost btn-sm" onClick={expandAll}><ChevronsUpDown size={14} aria-hidden="true" />Expand all</button><button type="button" className="btn btn-ghost btn-sm" onClick={collapseAll}><ChevronsDownUp size={14} aria-hidden="true" />Collapse all</button>
       <label className="instructor-week-filter">Show<select className="form-input" aria-label="Show week" value={weekFilter} onChange={event => setWeekFilter(event.target.value)}><option value="">All weeks</option>{rows.map(row => <option key={row.week} value={String(row.week)}>Week {row.week}</option>)}</select></label></div>
     {rows.filter(row => !weekFilter || String(row.week) === weekFilter).map(row => {

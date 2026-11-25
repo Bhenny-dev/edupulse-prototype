@@ -5135,6 +5135,22 @@
       "reviewedAt": "2026-11-25T01:47:42.274236+00:00",
       "method": "Opened with view_image; verified visible class code, Admin instructor context on desktop, wrapped actions, sidebar/feed separation and fictional sample data. This is not human approval.",
       "captureRun": "2026-11-25T01-45-31-271Z-0b56cf1c"
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/14-approved-course-outline.png",
+      "sha256": "73a52513f44761a85ed9c084c780e826cee2b7ddba430c7ba115a847c0a9868f",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-25T02:31:00.891656+00:00",
+      "method": "Opened with view_image; verified approved syllabus status, weekly outline, absence of upload/draft controls, responsive controls and fictional fixture data. This is not human approval.",
+      "captureRun": "2026-11-25T02-29-31-077Z-0a160317"
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/15-approved-course-outline-phone.png",
+      "sha256": "8ec16ac65e78514e87d38dbbdb2151ef1fa7edaf524e3465444664e710f65357",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-25T02:31:00.893841+00:00",
+      "method": "Opened with view_image; verified approved syllabus status, weekly outline, absence of upload/draft controls, responsive controls and fictional fixture data. This is not human approval.",
+      "captureRun": "2026-11-25T02-29-31-077Z-0a160317"
     }
   ]
 }

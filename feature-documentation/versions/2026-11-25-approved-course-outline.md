@@ -1,0 +1,7 @@
+# Approved-only course outline — 25 November 2026
+
+The course modal previously selected repository drafts as teaching syllabi, rendering their outlines together with approved intake and Continue editing draft. It now selects an attested retained active or approved_uploaded syllabus using existing course, term and teaching-basis matching. An approved outline appears without repeated intake or draft editing. A draft alone remains on Syllabus and cannot authorize a teaching outline or delivery.
+
+The requested weekly instruction paragraph and source-retention footer are removed. Week movement, topic authoring, source review/upload/refresh and their backend limits remain unchanged. No migration, automatic approval, activation, publication or inference is included.
+
+The two desktop/phone snapshots were captured from an isolated checkout excluding concurrent schedule work and visually reviewed by Codex. They use fictional accounts and controlled responses. Browser regressions cover active/approved copies, newer repository drafts, draft-only state and reload without writes. Validation: 29 browser cases and two captures passed (one desktop-only case skipped on phones). The isolated release gate passed 555 of 556 tests; one external-web timeout in an existing AI test passed on its targeted rerun. Lint/typecheck, production build and deployment checks passed. docs:check retains the existing owner-paused flag, while guides and images were updated. Production deployment follows the push; no migration is required.
