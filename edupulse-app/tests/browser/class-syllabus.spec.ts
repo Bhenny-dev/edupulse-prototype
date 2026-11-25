@@ -18,6 +18,8 @@ test('the Syllabus page saves an upload, and the class Syllabus view shows only 
   await saveOnSyllabusPage(page, upload('IT 201', 'Algorithms', 'algorithms-approved.pdf'))
   // The loaded IT 201 has no approved syllabus yet, so the saved copy becomes its syllabus and is also kept in My Syllabus.
   await expect(page.getByText('IT 201 saved. It is now the approved syllabus of your IT 201 class.')).toBeVisible()
+  // The review clears once saved, so the same copy cannot be saved twice.
+  await expect(page.getByRole('button', { name: 'Save syllabus', exact: true })).toHaveCount(0)
   const saved = (fixture.getWorkspace() as any).syllabi.find((item: any) => item.courseCode === 'IT 201')
   expect(saved.status).toBe('active'); expect(saved.approvedFile.name).toBe('algorithms-approved.pdf')
   await expect(page.locator(`[data-syllabus-id="${saved.id}"]`)).toContainText('IT 201')

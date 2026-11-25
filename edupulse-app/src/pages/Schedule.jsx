@@ -82,7 +82,7 @@ export default function Schedule() {
         </div>
         <div className="tabs schedule-views" role="group" aria-label="Schedule view"><button type="button" className={`tab ${view === 'week' ? 'active' : ''}`} aria-pressed={view === 'week'} onClick={() => setView('week')}><CalendarDays size={14} aria-hidden="true" /> Week</button><button type="button" className={`tab ${view === 'agenda' ? 'active' : ''}`} aria-pressed={view === 'agenda'} onClick={() => setView('agenda')}><List size={14} aria-hidden="true" /> Agenda</button></div>
       </div>
-      {next ? <p className="schedule-next" role="status"><CalendarClock size={16} aria-hidden="true" /> Next class: <strong>{next.meeting.code}{next.meeting.block ? ` block ${next.meeting.block}` : ''}</strong>, {next.today ? 'today' : `${dayName(next.date)} ${dateLabel(next.date)}`} {timeRange(next.meeting)}{next.meeting.room ? `, room ${next.meeting.room}` : ''}</p>
+      {next ? <p className="schedule-next" role="status"><CalendarClock size={16} aria-hidden="true" /><span>Next class: <strong>{next.meeting.code}{next.meeting.block ? ` block ${next.meeting.block}` : ''}</strong>, {next.today ? 'today' : `${dayName(next.date)} ${dateLabel(next.date)}`}, {timeRange(next.meeting)}{next.meeting.room ? `, room ${next.meeting.room}` : ''}</span></p>
         : <p className="schedule-next text-muted" role="status">{meetings.length ? 'No more class meetings are recorded.' : 'No class meeting times are recorded yet.'}</p>}
 
       {view === 'week' && meetings.length > 0 && <div className="schedule-grid" role="group" aria-label={`Class meetings, week of ${dateLabel(days[0])}`} style={{ '--days': days.length, '--hour': `${HOUR}px`, '--hours': hours.length - 1 }}>

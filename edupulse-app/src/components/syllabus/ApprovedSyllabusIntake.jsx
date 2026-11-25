@@ -37,7 +37,11 @@ export default function ApprovedSyllabusIntake({ onUse, focusUpload = false, cou
   const handleUseSyllabus = async () => {
     if (!candidate || !attested || locked.current) return
     locked.current = true; setSaving(true); setError('')
-    try { await onUse({ ...candidate, approvedFile: { ...candidate.approvedFile, approvalAttested: true } }) }
+    try {
+      await onUse({ ...candidate, approvedFile: { ...candidate.approvedFile, approvalAttested: true } })
+      // Saved: clear the review so the same copy cannot be saved twice.
+      setCandidate(null); setViewing(false); setAttested(false); setWarnings([])
+    }
     catch (failure) { setError(failure.message || 'The syllabus could not be saved. Your preview is still available; retry when connected.') }
     finally { locked.current = false; setSaving(false) }
   }

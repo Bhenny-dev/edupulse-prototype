@@ -26,7 +26,7 @@ export default function ClassSyllabus({ course, syllabus, onOpenMaterials }) {
   const file = syllabus.approvedFile, rows = outlineSpans(syllabus.courseOutline || [])
   const title = `${syllabus.courseCode} — ${syllabus.courseTitle}`
   return <div className="class-syllabus">
-    <div className="class-section-heading"><h2>Syllabus</h2><Link className="btn btn-ghost btn-sm" to="/syllabus?tab=mine">Manage syllabi in Syllabus</Link></div>
+    <div className="class-section-heading"><h2>Syllabus</h2><Link className="btn btn-secondary btn-sm" to="/syllabus?tab=mine">Manage syllabi in Syllabus</Link></div>
     <p className="text-sm text-muted mb-16">The approved syllabus uploaded for this class and the course outline read from it. Teaching Materials and Assessments are built from this outline.</p>
     <section className="card mb-16" aria-label="Uploaded syllabus"><div className="card-header"><h3>Uploaded syllabus</h3></div><div className="card-body">
       {file ? <div className="approved-intake-heading"><div><strong>{file.name}</strong><p className="text-sm text-muted">{title}{file.size ? ` · ${size(file.size)}` : ''}</p></div>

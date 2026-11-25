@@ -38,6 +38,9 @@
 .class-card:hover, .class-card:focus-within { box-shadow: var(--shadow-3d-hover); transform: translateY(-2px); }
 .class-card-open { display: flex; flex-direction: column; width: 100%; padding: 0; border: 0; background: transparent; text-align: left; cursor: pointer; color: inherit; font: inherit; flex: 1; }
 .class-card-open:focus-visible { outline: 3px solid var(--sky-400); outline-offset: -3px; }
+/* The legacy .instructor-course-card hook (kept for specs) must not restyle the card button: its centred, padded, bordered flex rules shrink-wrapped the banner. */
+.class-card .class-card-open.instructor-course-card { align-items: stretch; gap: 0; padding: 0; border: 0; border-radius: 0; }
+.class-card .class-card-open.instructor-course-card:hover { background: transparent; border-color: transparent; }
 .class-card-banner { display: grid; gap: 4px; padding: 18px 18px 20px; background: linear-gradient(135deg, var(--tone-100), var(--tone-50)); border-bottom: 1px solid var(--tone-200); min-height: 96px; }
 .class-card-code { font-family: var(--font-heading); font-size: 1.375rem; font-weight: 700; color: var(--gray-900); }
 .class-card-title { font-size: 0.9375rem; color: var(--gray-700); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
@@ -165,5 +168,6 @@
   .class-banner { padding: 20px; min-height: 120px; }
   .class-banner h1 { font-size: 1.375rem; }
   .class-tabs { top: 64px; overflow-x: auto; }
+  .class-tabs .tab { white-space: nowrap; flex: none; }
 }
 .class-code[data-highlight] { outline: 3px solid var(--sky-400); outline-offset: 2px; }

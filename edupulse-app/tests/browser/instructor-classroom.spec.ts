@@ -43,6 +43,12 @@ test('instructor Home lists the assigned courses as classes; Create class issues
   await expect(cards).toHaveCount(2)
   await expect(cards.filter({ hasText: 'IT 102' })).toContainText('Block BSIT-1A')
   await expect(cards.filter({ hasText: 'IT 201' })).toContainText('Syllabus not added')
+  // The coloured banner and the body span the whole card, whatever the title length (the legacy card class must not shrink-wrap them).
+  for (const code of ['IT 102', 'IT 201']) {
+    const card = page.locator('.class-card').filter({ hasText: code })
+    const outer = (await card.boundingBox())!, banner = (await card.locator('.class-card-banner').boundingBox())!, body = (await card.locator('.class-card-body').boundingBox())!
+    expect(Math.abs(banner.width - (outer.width - 2))).toBeLessThanOrEqual(2); expect(Math.abs(body.width - (outer.width - 2))).toBeLessThanOrEqual(2)
+  }
 
   await page.getByRole('button', { name: 'Create class', exact: true }).click()
   const dialog = page.getByRole('dialog', { name: 'Create class' })

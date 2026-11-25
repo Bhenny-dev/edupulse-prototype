@@ -5,7 +5,8 @@
 .schedule-nav { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .schedule-range { margin: 0 0 0 8px; font-size: 1.125rem; }
 .schedule-views .tab { display: inline-flex; align-items: center; gap: 6px; }
-.schedule-next { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 0 0 16px; font-size: 0.9375rem; }
+.schedule-next svg { flex: none; margin-top: 3px; }
+.schedule-next { display: flex; align-items: flex-start; gap: 6px; margin: 0 0 16px; font-size: 0.9375rem; }
 .schedule-grid { --gutter: 64px; position: relative; display: grid; grid-template-columns: var(--gutter) repeat(var(--days), minmax(0, 1fr)); grid-template-rows: auto calc(var(--hour) * var(--hours)); background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--radius-xl); overflow: hidden; box-shadow: var(--shadow-3d); margin-bottom: 24px; }
 .schedule-corner, .schedule-dayhead { border-bottom: 1px solid var(--gray-200); background: var(--gray-50); }
 .schedule-dayhead { display: grid; justify-items: center; gap: 0; padding: 8px 4px; border-left: 1px solid var(--gray-100); font-size: 0.8125rem; color: var(--gray-600); }
