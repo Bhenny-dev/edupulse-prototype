@@ -5119,6 +5119,22 @@
       "sha256": "0e06747dc6cde1869b2a110990f8252403f91c8ddd8224c695ceac654f8e24a5",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-18T08:42:06.621056+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/12-admin-class-codes.png",
+      "sha256": "1e15b9acf27e034141ae21fa031f9c5c8ac6369e72ddadcf8aa233b6a4909b74",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-25T01:47:42.274236+00:00",
+      "method": "Opened with view_image; verified visible class code, Admin instructor context on desktop, wrapped actions, sidebar/feed separation and fictional sample data. This is not human approval.",
+      "captureRun": "2026-11-25T01-45-31-271Z-0b56cf1c"
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/13-admin-class-codes-phone.png",
+      "sha256": "1d27f6d8dd35b7e17bab7d0c72f232591eefd3afa021388539d5ff22f251a64e",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-25T01:47:42.274236+00:00",
+      "method": "Opened with view_image; verified visible class code, Admin instructor context on desktop, wrapped actions, sidebar/feed separation and fictional sample data. This is not human approval.",
+      "captureRun": "2026-11-25T01-45-31-271Z-0b56cf1c"
     }
   ]
 }

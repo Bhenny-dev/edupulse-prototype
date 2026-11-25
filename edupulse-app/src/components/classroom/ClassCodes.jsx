@@ -4,6 +4,7 @@ import ModalLayer from '../ui/ModalLayer'
 import CoursewareActions from '../courseware/CoursewareActions'
 import { useAcademicRecords } from '../../context/AcademicContext'
 import { useToast } from '../../context/ToastContext'
+import { useWorkspaceViewState } from '../../context/WorkspaceContext'
 import { sameTerm } from '../../utils/classroom'
 import './classroom.css'
 
@@ -14,7 +15,10 @@ const spelled = code => code.split('').join(' ')
 export function BlockCode({ course, block, codes, readOnly = false, highlight = false }) {
   const records = useAcademicRecords(), { addToast } = useToast(), heading = useId()
   const code = codeFor(codes, course, block)
-  const [showing, setShowing] = useState(false), [menu, setMenu] = useState(false), [confirm, setConfirm] = useState(null), [busy, setBusy] = useState(false), [error, setError] = useState('')
+  const [showing, setShowing] = useWorkspaceViewState(`class:${course.id}:${block}:code-display`, false)
+  const [menu, setMenu] = useWorkspaceViewState(`class:${course.id}:${block}:code-menu`, false)
+  const [confirm, setConfirm] = useWorkspaceViewState(`class:${course.id}:${block}:code-confirm`, null)
+  const [busy, setBusy] = useState(false), [error, setError] = useState('')
   const run = async action => {
     setBusy(true); setError('')
     try {
@@ -46,7 +50,7 @@ export function BlockCode({ course, block, codes, readOnly = false, highlight = 
         <p className="class-display-code" aria-label={spelled(code.code)}>{code.code}</p>
       </section>
     </ModalLayer>}
-    {confirm && <ModalLayer onDismiss={() => { if (!busy) setConfirm(null) }}>
+    {confirm && code && !readOnly && <ModalLayer onDismiss={() => { if (!busy) setConfirm(null) }}>
       <section className="modal-content class-dialog" role="dialog" aria-modal="true" aria-labelledby={heading}>
         <div className="modal-header"><h2 id={heading}>{confirm === 'regenerate' ? 'Replace class code' : 'Turn off class code'}</h2><button type="button" className="modal-close" aria-label="Close" disabled={busy} onClick={() => setConfirm(null)}><X size={20} aria-hidden="true" /></button></div>
         <p>{confirm === 'regenerate' ? `The code ${code?.code} of ${course.code} block ${block} stops working and a new code is made.` : `Students can no longer join ${course.code} block ${block} with ${code?.code}.`} Students who already joined stay in the class.</p>

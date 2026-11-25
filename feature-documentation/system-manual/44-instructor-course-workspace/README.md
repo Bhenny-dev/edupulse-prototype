@@ -1,8 +1,22 @@
 # 44 · Teach from the assigned course workspace
 
-**Who:** a verified instructor, including a verified System Admin instructor support view. **Where:** **Dashboard**, **Course** and **Pulse**.
+**Who:** a verified instructor, including a verified System Admin instructor support view. **Where:** **Home** and **Pulse**.
 
-The signed-in Instructor navigation is **Dashboard**, **Syllabus**, **Course** and **Student Monitoring**. **Syllabus** is the separate instructor repository for drafts, sharing and PDF building. **Course** retains the single approved syllabus used for its teaching outline; the repository/builder is not a course tab. Former nested syllabus URLs redirect to the standalone repository with their tab/edit references. See [the syllabus repository guide](../45-syllabus-repository/README.md). The dated screenshots below precede this navigation correction; image recapture is paused by the owner.
+## Class codes and announcements in an Admin support view
+
+Open a loaded class from **Home**. **Announcements** shows **Class codes** and **Upcoming** beside the announcement feed on desktop. Cards and their controls wrap within that sidebar; on narrow screens the sidebar follows the feed. The header keeps **Syllabus**, **Block sections**, **Teaching Materials & Assessments**, **Class List** and **Scores** available.
+
+A System Admin viewing a selected instructor sees the same active class codes, join records and announcements as that instructor. **Copy class code** and **Display class code** are available. The code's three-dot menu offers **Replace code** and **Turn off code**, each with confirmation. A block without an active code offers **Create code**. These instructor support actions use the selected instructor's current assignment and record the actual Admin actor.
+
+![Sample Admin instructor view: class code fits beside the announcement feed](12-admin-class-codes.png)
+
+On a phone, scroll past the announcement feed to **Class codes**. The sample below shows the code and its controls contained within the card.
+
+![Sample Admin instructor view: class code and controls on a phone](13-admin-class-codes-phone.png)
+
+Reload restores the authorized class, selected tab, code display and pending code confirmation. It reads the latest active code and never repeats a replacement, code creation or announcement write. Codes themselves and unsaved announcement text are not navigation hints. These screenshots use fictional accounts and controlled UI responses; database tests separately check authorization and persistence.
+
+The signed-in Instructor navigation is **Home**, **Syllabus** and **Student Monitoring**. **Home** opens the assigned class, which retains its approved syllabus and teaching outline. **Syllabus** is the separate repository for drafts, sharing and PDF building. Former Course URLs reopen the class; nested syllabus URLs redirect to the standalone repository with their tab/edit references. See [the syllabus repository guide](../45-syllabus-repository/README.md). Older task screenshots below predate Home; the class-code captures above show the current class view.
 
 ## Review the assigned courses and students
 

@@ -34,4 +34,6 @@ Keep protected routes and academic/workspace startup gated until session and sup
 
 ## EduPulse production trigger after the Vercel transfer
 
+Owner standing instruction (25 November 2026): always commit and push completed changes, apply their migrations, and complete the production deployment and Ready verification. Do not stop at a local-only fix.
+
 For Claude and Codex: after an authorized push, follow `feature-documentation/backend-system/vercel.md`. Run `npm run deploy:production -- --check` then `npm run deploy:production` from `edupulse-app` using its ignored project-local school-account sign-in. This deploys an archive of remote main, never local unfinished changes. Verify Ready separately. A push, an empty trigger commit or a successful GitHub check is not deployment evidence. Never change another project's credentials or billing.

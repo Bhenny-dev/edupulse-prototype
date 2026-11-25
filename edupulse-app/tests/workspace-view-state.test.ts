@@ -3,6 +3,15 @@ import assert from 'node:assert/strict'
 import {readWorkspaceViews,saveWorkspaceViews,workspaceViewKey} from '../src/utils/workspaceViewState.js'
 
 const memory=()=>{const rows=new Map<string,string>();return {rows,getItem:(key:string)=>rows.get(key)||null,setItem:(key:string,value:string)=>{rows.set(key,value)}}}
+test('class-code reload hints keep navigation only, isolated from other support subjects',()=>{
+ const tab=memory(),key=workspaceViewKey('support-admin-instructor-a','instructor')
+ const state=new Map<string,unknown>([['class:course-a:A:code-display',true],['class:course-a:A:code-menu',false],['class:course-a:A:code-confirm','regenerate'],['class:course-a:A:code','PRIVATE7'],['class:course-a:A:code-payload',{action:'regenerate'}],['class:course-b:B:code-display','PRIVATE7'],['class:course-b:B:code-confirm','execute']])
+ saveWorkspaceViews(key,state,tab)
+ assert.deepEqual([...readWorkspaceViews(key,tab)],[[...state][0],[...state][1],[...state][2]])
+ assert.equal(tab.rows.get(key)!.includes('PRIVATE7'),false)
+ assert.equal(readWorkspaceViews(workspaceViewKey('support-admin-instructor-b','instructor'),tab).size,0)
+ assert.equal(readWorkspaceViews(workspaceViewKey('support-other-instructor-a','instructor'),tab).size,0)
+})
 test('reload view references are isolated by owner, support subject and role and preserve Set values',()=>{
  const tab=memory(),owner=workspaceViewKey('support-admin-student-a','student')
  const state=new Map<string,unknown>([['course-location','s1'],['course:s1:expanded',new Set([1,2,18])],['course:s1:selected',new Set(['material-1'])],['course:s1:reader','material-1'],['course:s1:mode','document'],['course:s1:delivery',null],['slide:material-1',2],['syllabus-sources-open:s1',true],['syllabus-source-reader:s1','source-id'],['syllabus-source-menu:s1','source-key']])

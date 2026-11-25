@@ -11,7 +11,7 @@ async function classroomDatabase() {
   const fixture = await semesterDatabase()
   const maintenance = () => fixture.db.exec("RESET ROLE;SELECT set_config('request.jwt.claim.sub','',false),set_config('request.jwt.claims','{}',false)")
   await maintenance()
-  for (const name of ['20261118061807_historical_teaching_load_backfill', '20261118082233_instructor_load_details', '20261118090000_course_load_block_sections', '20261123120000_class_codes_and_announcements', '20261125010000_automatic_class_codes']) await fixture.db.exec(await readFile(`supabase/migrations/${name}.sql`, 'utf8'))
+  for (const name of ['20261118061807_historical_teaching_load_backfill', '20261118082233_instructor_load_details', '20261118090000_course_load_block_sections', '20261123120000_class_codes_and_announcements', '20261125010000_automatic_class_codes', '20261125013623_admin_classroom_support']) await fixture.db.exec(await readFile(`supabase/migrations/${name}.sql`, 'utf8'))
   const rpc = async (name: string, command?: object) => (await fixture.db.query<{ r: any }>(`SELECT public.${name}(${command ? '$1' : ''}) r`, command ? [JSON.stringify(command)] : [])).rows[0].r
   const records = async (where: string) => { await maintenance(); return (await fixture.db.query<{ record_key: string; data: Record<string, any> }>(`SELECT record_key,data FROM public.edupulse_institutional_records WHERE kind='loads' AND ${where} ORDER BY record_key`)).rows }
   await fixture.as(2)
@@ -22,6 +22,34 @@ async function classroomDatabase() {
   const [parent] = await records(`data->>'LoadType'='course' AND data->>'CourseCode'='IT 101'`)
   return { ...fixture, maintenance, rpc, records, parent }
 }
+
+test('Admin support reads and manages the selected instructor class codes and announcements with live checks and attribution', async () => {
+  const { db, ids, as, rpc, maintenance, parent } = await classroomDatabase()
+  const support = async (subject: string, operation: string, input = {}) => (await db.query<{ r: any }>('SELECT public.edupulse_support_action($1,$2,$3) r', [subject, operation, JSON.stringify(input)])).rows[0].r
+  try {
+    await as(0)
+    const code = await rpc('edupulse_class_code_command', { action: 'create', assignment: parent.record_key, block: 'A' })
+    await as(4)
+    const before = await support(ids[0], 'academic.read')
+    assert.deepEqual(before.classCodes.map((c: any) => c.code), [code.code])
+    assert.deepEqual((await support(ids[1], 'academic.read')).classCodes, [], 'another instructor has no access to this class')
+    const changed = await support(ids[0], 'classroom.command', { operation: 'class-code', action: 'regenerate', assignment: parent.record_key, block: 'A' })
+    assert.notEqual(changed.code, code.code)
+    const post = await support(ids[0], 'classroom.command', { operation: 'announcement', command: { action: 'save', course_code: 'IT 101', ...term, title: 'Class reminder', body: 'Bring the worksheet.' } })
+    assert.equal((await support(ids[0], 'academic.read')).announcements[0].id, post.id)
+    await assert.rejects(support(ids[1], 'classroom.command', { operation: 'class-code', action: 'create', assignment: parent.record_key, block: 'A' }), { code: '42501' })
+    await assert.rejects(support(ids[3], 'classroom.command', { operation: 'class-code', action: 'create', assignment: parent.record_key, block: 'A' }), { code: '42501' })
+    assert.equal((await db.query<{ uid: string }>('SELECT auth.uid()::text uid')).rows[0].uid, ids[4], 'success and failure restore the actual Admin identity')
+    await maintenance()
+    assert.deepEqual((await db.query<{ actor_id: string; subject_id: string }>("SELECT actor_id::text,subject_id::text FROM public.edupulse_support_events WHERE operation='classroom.command'")).rows, [{ actor_id: ids[4], subject_id: ids[0] }, { actor_id: ids[4], subject_id: ids[0] }])
+    assert.equal((await db.query<{ n: number }>('SELECT count(*)::int n FROM edupulse_private.class_joins')).rows[0].n, 0, 'viewing and managing codes never enrolls a learner')
+    await db.query("UPDATE auth.users SET banned_until=now()+interval '1 day' WHERE id=$1", [ids[0]])
+    await as(4)
+    await assert.rejects(support(ids[0], 'academic.read'), { code: '42501' }, 'a suspended subject cannot be restored')
+    await as(1)
+    await assert.rejects(support(ids[0], 'academic.read'), { code: '42501' }, 'an ordinary instructor cannot use support')
+  } finally { await db.close() }
+})
 
 test('an instructor makes a class code for a block; a registered student joins that class list once, and only through the code', async () => {
   const { db, ids, as, rpc, records, maintenance, parent } = await classroomDatabase()

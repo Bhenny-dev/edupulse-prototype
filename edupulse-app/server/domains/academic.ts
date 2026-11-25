@@ -153,10 +153,13 @@ export async function readAcademic(identity: Identity) {
   return result
 }
 type ClassroomInput = Extract<z.infer<typeof academicCommand>, { operation: 'class-code' | 'class-join' | 'announcement' }>
-/** Class codes and announcements act only in the account itself: a support view never joins or posts for someone. */
+/** Instructor support commands use the audited gateway and its freshly verified subject. */
 async function executeClassroom(identity: Identity, input: ClassroomInput) {
   const joining = input.operation === 'class-join'
-  if (identity.supportActor) throw new ApiError(403, 'FORBIDDEN', 'Class codes, joining and announcements are available only in the account itself.')
+  if (identity.supportActor) {
+    if (joining || identity.role !== 'instructor') throw new ApiError(403, 'FORBIDDEN', 'Sign in as the student to join a class.')
+    return supportAction(identity, 'classroom.command', input)
+  }
   if (joining ? identity.role !== 'student' : identity.role !== 'instructor') throw new ApiError(403, 'FORBIDDEN', joining ? 'Only a student account joins a class with its code.' : 'Only the assigned instructor manages class codes and announcements.')
   const { operation, ...rest } = input
   const command = input.operation === 'announcement' ? input.command : rest

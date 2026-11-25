@@ -1,5 +1,7 @@
 # Backend System
 
+The [25 November classroom support correction](supabase.md#25-november-2026-classroom-support-parity) adds class codes, joins and announcements to the verified subject read and routes instructor support classroom controls through the audited gateway. The [validation record](../versions/2026-11-25-classroom-support.md) distinguishes local checks from production rollout.
+
 ## Approved historical teaching loads - 18 November 2026
 
 An explicit owner-requested maintenance backfill adds only completed-term course catalog and course-only assignment records. SourceRows/SourceForms retain actual document fields and source SHA-256. The handover trigger skips only approved-historical-teaching-load course records in a completed term when session_user is postgres, the session role is none and auth.uid() is null. No authenticated, anonymous or service-role request can select that branch; completed-term write guards and RLS remain intact. No continuation bundle, workspace save, enrollment refresh or learner command runs. Current staff qualification tables remain unchanged; term-scoped historical cards read their retained degree/identity snapshot. Missing staff accounts remain suspended/banned and receive no current load. See [the historical import receipt](../versions/2026-11-18-historical-cit-loads/validation/results.md).

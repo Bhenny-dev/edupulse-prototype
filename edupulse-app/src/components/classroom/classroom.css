@@ -86,8 +86,13 @@
 .class-banner-actions { display: flex; flex-wrap: wrap; gap: 8px; }
 .class-tabs { position: sticky; top: 64px; z-index: 5; background: var(--white); margin-bottom: 24px; }
 
-.class-stream { display: grid; grid-template-columns: minmax(200px, 250px) minmax(0, 1fr); gap: 24px; align-items: start; }
-.class-aside { display: grid; gap: 16px; }
+.class-stream { display: grid; grid-template-columns: minmax(0, 280px) minmax(0, 1fr); gap: 24px; align-items: start; }
+.class-aside { display: grid; gap: 16px; min-width: 0; }
+/* Grid items must shrink below their content's intrinsic width. Long block labels and
+   the add-section action wrap inside the sidebar instead of widening it over the feed. */
+.class-aside > .card { min-width: 0; overflow-wrap: anywhere; }
+.class-aside .btn { max-width: 100%; white-space: normal; }
+.class-code-block { overflow-wrap: anywhere; max-width: 100%; }
 .class-aside .card-header h2, .class-aside .card-header h3 { font-size: 0.9375rem; }
 .class-code-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--gray-100); }
 .class-code-row:last-of-type { border-bottom: 0; }

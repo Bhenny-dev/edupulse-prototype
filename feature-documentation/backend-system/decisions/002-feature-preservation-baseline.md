@@ -387,3 +387,7 @@ Owner now requests student Home course cards, Join Class, published announcement
 ## Topic work privacy and submission receipts
 
 Keep public discussion within the enrolled block and private discussion within the student and assigned instructor. Preserve the parent thread audience on replies, validate publication access and version before writes, and keep student file access limited to confirmed submissions. A retry must preserve the original receipt. Restore the reader and discussion panel without replaying uploads, posts or submissions.
+
+## Owner correction: Admin classroom codes, 25 November 2026
+
+The owner requires class codes to be visible to the System Admin viewing an instructor, consistent with Admin support access. The prior account-only classroom restriction does not apply to instructor support. Read the selected instructor's active codes, join records and announcements through the verified support gateway and allow its existing instructor code/announcement controls with actual Admin attribution. Retain live account, assignment and term checks and the separate no-fabricated-learner-activity contract. The classroom sidebar must fit its column without covering the announcement feed on desktop, tablet or phone. Reload restores authorized navigation and code dialogs without repeating writes.
