@@ -221,3 +221,7 @@ The Dean or Program Coordinator loads each class and its roster. Instructors add
 
 
 [Class Code and QR invitations](../../system-manual/55-class-code-invitations/README.md): automatic codes at management loading, the compact Announcements card and a reload-safe popover with a locally generated QR and copyable invitation link. Instructor and Admin support use the same authorized code.
+
+## Populated current-term workspaces, 25 November 2026
+
+Active instructors receive current management-loaded subjects and registered class lists. The owner-directed population supplies retained authored syllabus files, an 18-week outline, delivered early lessons, later checked work, planning copies and class schedules. Existing uploaded originals remain unchanged. Recorded student answers feed the same **Scores** and **Student Monitoring** views used for subsequent submissions; some written work remains available for marking. [Current desktop and phone captures](../../system-manual/56-academic-population/README.md). Generated history has private provenance and does not establish independent human learning. Suspended and disabled accounts retain their restrictions.

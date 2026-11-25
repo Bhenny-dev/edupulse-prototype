@@ -1,5 +1,6 @@
 import type { IncomingMessage, ServerResponse } from 'node:http'
 import { randomUUID } from 'node:crypto'
+import { once } from 'node:events'
 import { allowedMethods, bodyLimit, handleRequest } from './http.js'
 import { ApiError } from './contracts.js'
 
@@ -78,9 +79,19 @@ export async function handleNodeRequest(req: IncomingMessage, res: ServerRespons
     const result = await dispatch(request)
     const bytes = Buffer.from(await result.arrayBuffer())
     if (res.destroyed) return
-    res.writeHead(result.status, Object.fromEntries(result.headers.entries())); res.end(bytes)
+    res.writeHead(result.status, Object.fromEntries(result.headers.entries()))
+    // Fully authorize/build the snapshot first, then stream large records without
+    // a Content-Length. Hosted buffered responses have a 4.5 MB payload limit.
+    if(bytes.length>1_000_000){
+      for(let offset=0;offset<bytes.length;offset+=64*1024){
+        requestSignal.throwIfAborted()
+        if(!res.write(bytes.subarray(offset,offset+64*1024)))await once(res,'drain',{signal:requestSignal})
+      }
+      res.end()
+    }else res.end(bytes)
   } catch (error) {
     if (res.destroyed || res.writableEnded) return
+    if(res.headersSent){res.destroy();return}
     const failure = error instanceof ApiError ? error : error instanceof Error && error.name === 'TimeoutError'
       ? new ApiError(408, 'REQUEST_TIMEOUT', 'The request body took too long to arrive. Retry the upload.')
       : new ApiError(dispatched ? 503 : 400, dispatched ? 'SERVICE_UNAVAILABLE' : 'INVALID_REQUEST', dispatched ? 'The service could not finish this request. Try again.' : 'The request could not be read. Check its format and retry.')

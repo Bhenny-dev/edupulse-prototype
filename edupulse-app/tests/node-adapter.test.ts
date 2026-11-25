@@ -6,6 +6,18 @@ import { PassThrough } from 'node:stream'
 import { BODY_READ_TIMEOUT_MS, handleNodeRequest, readNodeBody } from '../server/node-adapter.js'
 import { allowedMethods, bodyLimit, handleRequest } from '../server/http.js'
 
+test('large authorized academic snapshots stream intact over a real socket',async t=>{
+ const value={rows:Array.from({length:16000},(_,index)=>({index,body:'Learning evidence: café, reasoning and feedback. '.repeat(9)}))}
+ const server=createServer((req,res)=>{void handleNodeRequest(req,res,async()=>Response.json(value))})
+ server.listen(0,'127.0.0.1');await once(server,'listening')
+ t.after(async()=>{server.closeAllConnections();await new Promise<void>(resolve=>server.close(()=>resolve()))})
+ const address=server.address();assert(address&&typeof address!=='string')
+ const response=await fetch(`http://127.0.0.1:${address.port}/api/ai?action=academic`)
+ assert.equal(response.status,200);assert.equal(response.headers.get('content-length'),null)
+ assert.equal(response.headers.get('transfer-encoding'),'chunked')
+ assert.deepEqual(await response.json(),value)
+})
+
 test('Node transport enforces route methods, byte limits and safe failures over a real socket', { timeout: 10000 }, async t => {
   let calls = 0
   const server = createServer((req, res) => {

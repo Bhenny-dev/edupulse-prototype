@@ -108,3 +108,7 @@ Performance summaries use flat outline icons on softly tinted surfaces. Labels a
 ## Automatic classes and invitations
 
 The Dean or Program Coordinator loads each class and its roster. Instructors add students only within an existing class, share its code or copy its invitation link. Students see their loaded classes before the syllabus is available. An invitation automatically enrolls a verified own student account after sign-in; a reload requires explicit retry. Class syllabus upload stays inside Teaching Materials & Assessments, disappears after save and enables the header Syllabus button for the original file. [Current steps and desktop/phone captures](../../system-manual/54-management-loaded-classes/README.md).
+
+## Populated current-term learning, 25 November 2026
+
+The owner-directed persistent population gives active registered students current enrolled subjects, delivered readings, saved reading progress and reviewed assessments. Further lessons, practice and assessment attempts remain available. A new submitted response appears in its instructor's records; instructor marking returns through the student's saved **Scores** view. These are normal database records, separate from preview personas. [Current desktop and phone captures](../../system-manual/56-academic-population/README.md) use fictional identities; private hosted checks establish persistence. Generated history is not independent human achievement.

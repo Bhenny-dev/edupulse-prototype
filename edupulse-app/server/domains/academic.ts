@@ -7,7 +7,7 @@ const orderedKeys: Record<string, string[]> = { delivery_schedules: ['course_id'
 /** PostgREST caps individual responses. Never present a truncated roster/attempt list as complete statistics. */
 export async function academicRows(client: ReturnType<typeof userDb>, table: string) {
   const rows: Record<string, unknown>[] = []
-  for (let offset = 0; offset < 50000; offset += 500) {
+  for (let offset = 0; offset < 250000; offset += 500) {
     let query = client.from(`edupulse_${table}`).select('*')
     for (const key of orderedKeys[table] || ['id']) query = query.order(key)
     const { data, error } = await query.range(offset, offset + 499)

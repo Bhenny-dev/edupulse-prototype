@@ -11,7 +11,7 @@ async function classroomDatabase(blocks = ['A', 'B'], upgrade = true) {
   const fixture = await semesterDatabase()
   const maintenance = () => fixture.db.exec("RESET ROLE;SELECT set_config('request.jwt.claim.sub','',false),set_config('request.jwt.claims','{}',false)")
   await maintenance()
-  for (const name of ['20261118061807_historical_teaching_load_backfill', '20261118082233_instructor_load_details', '20261118090000_course_load_block_sections', '20261123120000_class_codes_and_announcements', '20261125010000_automatic_class_codes', '20261125013623_admin_classroom_support', '20261125030000_student_class_schedule', '20261125075102_management_loaded_classes', ...(upgrade ? ['20261125084915_automatic_loaded_class_codes'] : [])]) await fixture.db.exec(await readFile(`supabase/migrations/${name}.sql`, 'utf8'))
+  for (const name of ['20261118061807_historical_teaching_load_backfill', '20261118082233_instructor_load_details', '20261118090000_course_load_block_sections', '20261123120000_class_codes_and_announcements', '20261125010000_automatic_class_codes', '20261125013623_admin_classroom_support', '20261125030000_student_class_schedule', '20261125075102_management_loaded_classes', ...(upgrade ? ['20261125084915_automatic_loaded_class_codes','20261125111555_bounded_roster_projection','20261125112525_distinct_roster_scope_refresh','20261125122500_materialize_workspace_trigger_collections','20261125123200_bounded_workspace_save_timeout'] : [])]) await fixture.db.exec(await readFile(`supabase/migrations/${name}.sql`, 'utf8'))
   const rpc = async (name: string, command?: object) => (await fixture.db.query<{ r: any }>(`SELECT public.${name}(${command ? '$1' : ''}) r`, command ? [JSON.stringify(command)] : [])).rows[0].r
   const records = async (where: string) => { await maintenance(); return (await fixture.db.query<{ record_key: string; data: Record<string, any> }>(`SELECT record_key,data FROM public.edupulse_institutional_records WHERE kind='loads' AND ${where} ORDER BY record_key`)).rows }
   await fixture.as(2)
@@ -23,6 +23,49 @@ async function classroomDatabase(blocks = ['A', 'B'], upgrade = true) {
   for (const block of blocks) { await fixture.as(2); await fixture.command({ action: 'block.add', assignment: parent.record_key, expected_instructor: fixture.ids[0], block }) }
   return { ...fixture, maintenance, rpc, records, parent }
 }
+
+test('large workspace projection keeps roster decisions and private proof ends with the projection',async()=>{
+ const {db,ids,as,email,maintenance}=await classroomDatabase()
+ try{
+  const syllabus={id:'owned-course',courseCode:'IT 101',courseTitle:'Introduction to Computing',status:'active',approvedFile:{approvalAttested:true},courseInfo:{academicYear:term.academic_year,periodOffered:term.semester},courseOutline:[{week:1,ilos:'Explain computing foundations.',contents:['Computing foundations']}]}
+  const data={syllabi:[syllabus],content:{notes:{syllabusId:syllabus.id,week:1,type:'material',status:'draft',content:{title:'Reading companion',sections:[{heading:'Notes',body:'Evidence and reasoning. '.repeat(25000)}]}}},registrations:[{id:'class-roster',courseCode:'IT 101',academicYear:term.academic_year,semester:term.semester,blockSection:'A',status:'active',students:[3,5].map(n=>({Email:email(n),StudentID:`2026-000${n}`,Name:'Registered learner'}))}],enrollmentOverrides:[{courseCode:'IT 101',studentEmail:email(5),excluded:true}]}
+  await as(0)
+  await db.query('SELECT revision FROM public.edupulse_save_workspace(0,$1)',[JSON.stringify(data)])
+  assert.deepEqual((await db.query<{student_email:string}>('SELECT student_email FROM public.edupulse_enrollments ORDER BY student_email')).rows.map(r=>r.student_email),[email(3)])
+  await maintenance()
+  assert.equal((await db.query<{n:number}>('SELECT count(*)::int n FROM edupulse_private.roster_projection_context')).rows[0]!.n,0)
+  assert.equal((await db.query<{allowed:boolean}>("SELECT has_table_privilege('authenticated','edupulse_private.roster_projection_context','INSERT') allowed")).rows[0]!.allowed,false)
+  await as(0)
+  syllabus.status='archived'
+  await db.query('SELECT revision FROM public.edupulse_save_workspace(1,$1)',[JSON.stringify(data)])
+  assert.equal((await db.query<{n:number}>('SELECT count(*)::int n FROM public.edupulse_enrollments')).rows[0]!.n,0,'removing the active basis must revoke its projected roster')
+  await maintenance()
+  assert.equal((await db.query<{n:number}>('SELECT count(*)::int n FROM edupulse_private.roster_projection_context')).rows[0]!.n,0)
+ }finally{await db.close()}
+})
+
+test('materialized workspace collections preserve checked delivery, private keys and idempotent notices',async()=>{
+ const {db,ids,as,email,maintenance,rpc}=await classroomDatabase()
+ try{
+  const syllabus={id:'cached-course',courseCode:'IT 101',courseTitle:'Programming',status:'active',approvedFile:{approvalAttested:true},courseInfo:{academicYear:term.academic_year,periodOffered:term.semester},courseOutline:[{week:1,ilos:'Explain foundations.',contents:['Foundations']}]}
+  const data={syllabi:[syllabus],content:{reading:{syllabusId:syllabus.id,week:1,type:'material',status:'checked',deliveryMode:'block_schedule',content:{title:'Foundations reading',sections:[{heading:'Evidence',body:'Explain and evaluate. '.repeat(25000)}]}},assessment:{syllabusId:syllabus.id,week:1,type:'assessment',status:'checked',deliveryMode:'block_schedule',content:{title:'Foundations check',coverage:{materialIds:['reading']},questions:Array.from({length:3},(_,n)=>({text:`Checkable claim ${n+1}?`,topic:'Foundations',type:'multiple_choice',options:['Evidence','Assumption','Title','Opinion'],correctIndex:0}))}}},registrations:[{id:'cached-roster',courseCode:'IT 101',academicYear:term.academic_year,semester:term.semester,blockSection:'A',status:'active',students:[{Email:email(3),StudentID:'2026-0003',Name:'Registered learner'}]}]}
+  await as(0);await db.query('SELECT revision FROM public.edupulse_save_workspace(0,$1)',[JSON.stringify(data)])
+  await rpc('edupulse_delivery_schedule',{syllabus:syllabus.id,block:'A',revision:0,windows:[{week:1,date:'2026-11-02',start:'08:00',end:''}]})
+  data.content.reading.status='published';data.content.assessment.status='published'
+  await db.query('SELECT revision FROM public.edupulse_save_workspace(1,$1)',[JSON.stringify(data)])
+  const publications=(await db.query<{id:string;content:any;source_version:string}>('SELECT id,content,source_version FROM public.edupulse_publications WHERE active ORDER BY id')).rows
+  assert.equal(publications.length,2);assert.ok(!JSON.stringify(publications).includes('correctIndex'))
+  await maintenance()
+  assert.deepEqual((await db.query<{answers:number[]}>('SELECT answers FROM edupulse_private.assessment_keys')).rows[0].answers,[0,0,0])
+  const notices=(await db.query<{recipient_id:string;event_key:string}>('SELECT recipient_id::text,event_key FROM public.edupulse_notices ORDER BY event_key')).rows
+  assert.equal(notices.length,2);assert.ok(notices.every(n=>n.recipient_id===ids[3]))
+  await as(0);await db.query('SELECT revision FROM public.edupulse_save_workspace(2,$1)',[JSON.stringify(data)])
+  assert.deepEqual((await db.query<{id:string;content:any;source_version:string}>('SELECT id,content,source_version FROM public.edupulse_publications WHERE active ORDER BY id')).rows,publications)
+  await maintenance();assert.deepEqual((await db.query<{recipient_id:string;event_key:string}>('SELECT recipient_id::text,event_key FROM public.edupulse_notices ORDER BY event_key')).rows,notices)
+  data.content.assessment.content.title='Revised foundations check'
+  await as(0);await assert.rejects(db.query('SELECT revision FROM public.edupulse_save_workspace(3,$1)',[JSON.stringify(data)]),{code:'22023'},'changed content still requires another checked save')
+ }finally{await db.close()}
+})
 
 test('Admin support reads and manages the selected instructor class codes and announcements with live checks and attribution', async () => {
   const { db, ids, as, rpc, maintenance, parent } = await classroomDatabase()

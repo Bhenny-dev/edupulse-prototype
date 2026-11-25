@@ -188,3 +188,9 @@ Apply `20261125075102_management_loaded_classes.sql` before deploying the matchi
 ## Atomic class codes and QR popover, 25 November 2026
 
 Apply `20261125084915_automatic_loaded_class_codes.sql` before this UI release; the linked project migration is applied and verified. The QR is generated in the browser using pinned `qrcode`, with no new external image origin, environment variable, API key or inference call. Use the shared remote-main archive command and inspect Ready/alias separately. [Validation](../versions/2026-11-25-class-code-qr/validation/results.md).
+
+## Populated academic snapshots, 25 November 2026
+
+The Node response adapter streams authorized JSON over 1 MB in 64 KB writes, waiting for socket backpressure and honoring aborts. Small responses retain the normal buffered path. A real-socket regression verifies a complete response beyond 6 MB without Content-Length; the existing disconnect, body limit and deadline cases remain. Apply the five population/projection migrations before release. No deployment secret, provider key, billing or platform limit is changed. Push reviewed source, use the project-local remote-main archive deployment command, and inspect Ready and the canonical alias separately. [Release validation](../versions/2026-11-25-academic-population/validation/results.md).
+
+The workspace trigger collection migration materializes NEW/OLD syllabus and content JSON locally within each existing trigger invocation, preserving revision and authorization checks. The workspace-save RPC alone has a bounded 45-second database statement budget for dense roster/publication projection; no role-wide timeout changes. Native delivery regression checks preserve answer-key secrecy, checked-before-publish, idempotent notices and rejection of an unreviewed edit.

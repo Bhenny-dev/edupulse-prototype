@@ -112,3 +112,5 @@ The [baseline restoration](../versions/2026-10-28-baseline-workflows/README.md) 
 
 
 [Class Code and QR invitations](55-class-code-invitations/README.md): automatic codes at management loading, the compact Announcements card and a reload-safe popover with a locally generated QR and copyable invitation link. Instructor and Admin support use the same authorized code.
+
+[Populated academic workspaces](56-academic-population/README.md): active-account rosters, retained authored files, weekly teaching, saved reading and assessment records, and continued delivery and marking.
