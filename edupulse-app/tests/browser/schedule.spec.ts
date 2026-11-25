@@ -26,9 +26,11 @@ test('an instructor sees the classes they teach on a weekly calendar, opens one,
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true)
     // A meeting is a framed card: solid edges on the left, right and bottom, and a header band across the top with the code centred (no left-only stripe).
     const card = grid.getByRole('button', { name: /^IT 102 block BSIT-1A, Monday/ })
-    expect(await card.evaluate(element => { const style = getComputedStyle(element); return [style.borderLeftWidth, style.borderRightWidth, style.borderBottomWidth, style.borderTopWidth] })).toEqual(['3px', '3px', '3px', '0px'])
+    expect(await card.evaluate(element => { const style = getComputedStyle(element); return [style.borderLeftWidth, style.borderRightWidth, style.borderBottomWidth, style.borderTopWidth] })).toEqual(['2px', '2px', '2px', '0px'])
     const outer = (await card.boundingBox())!, head = (await card.locator('.schedule-meeting-head').boundingBox())!
-    expect(Math.abs(head.width - (outer.width - 6))).toBeLessThanOrEqual(1)
+    expect(Math.abs(head.width - (outer.width - 4))).toBeLessThanOrEqual(1)
+    // Light like the Home class card: the header band is not a dark solid.
+    expect(await card.locator('.schedule-meeting-head').evaluate(element => getComputedStyle(element).color)).not.toBe('rgb(255, 255, 255)')
     expect(Math.abs(head.x + head.width / 2 - (outer.x + outer.width / 2))).toBeLessThanOrEqual(1)
     await expect(card.locator('.schedule-meeting-head')).toContainText('IT 102')
   }
