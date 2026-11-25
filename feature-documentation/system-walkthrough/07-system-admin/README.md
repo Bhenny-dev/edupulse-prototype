@@ -138,3 +138,6 @@ The controlled capture fixture intentionally includes both success and failure e
 ## Flat interface icons
 
 System Admin dashboard and role-monitoring summaries use flat outline icons. Selected-account support views inherit the same treatment for their authorized role. [Current System Admin light/dark examples and all-role audit](../../system-manual/53-flat-interface-icons/README.md).
+
+
+[Class Code and QR invitations](../../system-manual/55-class-code-invitations/README.md): automatic codes at management loading, the compact Announcements card and a reload-safe popover with a locally generated QR and copyable invitation link. Instructor and Admin support use the same authorized code.

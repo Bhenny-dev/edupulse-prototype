@@ -6,6 +6,6 @@ test('Admin instructor support class codes on a phone', async ({ page }) => {
   await page.goto('/#/dashboard?course=IT%20201&tab=announcements')
   await expect(page.getByLabel('Class code of block BSIT-2A: P 4 Q 8 R S T')).toBeVisible()
   await expectClassColumns(page)
-  await page.getByRole('region', { name: 'Class codes', exact: true }).scrollIntoViewIfNeeded()
+  await page.getByRole('region', { name: 'Class Code', exact: true }).scrollIntoViewIfNeeded()
   await page.screenshot({ path: '../feature-documentation/system-manual/44-instructor-course-workspace/13-admin-class-codes-phone.png', animations: 'disabled' })
 })

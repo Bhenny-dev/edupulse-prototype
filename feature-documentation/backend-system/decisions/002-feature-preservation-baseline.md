@@ -404,3 +404,8 @@ Replace the raised glass icon treatment across role pages with flat outline icon
 The owner removes instructor Create class and new-block creation: management loading of course, instructor, blocks and class list establishes each class automatically. Instructor additions to existing rosters and student code enrollment remain. Copyable invitation links enroll only a verified own student account, after sign-in when necessary; reload cannot replay enrollment. Enforce existing-block validation in both code and class-list RPCs, preserving management block creation and audited Admin support for existing classes.
 
 An empty class accepts its approved syllabus directly by drag/drop or file selection in Teaching Materials & Assessments. It does not redirect intake to Syllabus. Once saved, hide that intake and show the header Syllabus button for the retained uploaded original and extracted outline. Draft authoring stays on Syllabus. This supersedes G16's empty-class redirect interpretation and G13's instructor-created classes. [Manual 54](../../system-manual/54-management-loaded-classes/README.md).
+
+
+## Owner correction: minimal Class Code card, 25 November 2026
+
+The owner requires unique codes as part of management course loading, including a loaded course with no block row yet. Initialize its class and code atomically after the complete loading transaction; honor imported sections and preserve intentional disable and semester boundaries. The Announcements card contains only `Class Code`, the code and enlarge control. The popover contains the enlarged code, a QR of the same invitation URL and a copyable link. Preserve authorized Admin support, code management in the popover/Class List, reload verification and no command replay. See Manual 55.

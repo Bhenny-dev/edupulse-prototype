@@ -161,3 +161,5 @@ Execution is tracked in [WORKPLAN.md](WORKPLAN.md). A release is verified only a
 [Editable teaching-load details and OCR schedule recovery](versions/2026-11-18-editable-load-details/README.md) documents the reviewed fields, guarded extraction and validation.
 
 [25 November 2026: Management-loaded classes and direct approved-file intake](versions/2026-11-25-managed-classes/README.md).
+
+[25 November 2026: Atomic class codes and QR invitations](versions/2026-11-25-class-code-qr/README.md).

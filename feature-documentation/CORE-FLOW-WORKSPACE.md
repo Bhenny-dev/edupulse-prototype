@@ -500,3 +500,13 @@ Owner request (25 November): the Syllabus page saves every syllabus uploaded, sh
 The owner's correction supersedes T13.1's Create class control and T16.4's empty-class Syllabus redirect. The separate Syllabus repository and original-file reader remain. No sample result is offered as hosted authorization proof.
 
 - Codex evidence: 563-test isolated release gate passed; latest card/phone/reader fixes were integrated from `5b1948aa`, followed by lint/typecheck, production/capture builds and focused database/browser checks. 79 distinct browser cases pass; one desktop-only case is skipped on phones. Six capture cases and 11 reviewed images update Manual 54 and the Admin sidebar scenes. The linked migration is applied and confirmed remotely. Production Ready is inspected separately after the authorized push.
+
+
+## 25 November 2026 - Atomic class codes and minimal QR card (G19)
+
+| Task | Work | Acceptance | Stage |
+|---|---|---|---|
+| T19.1 | Initialize the class and code at the end of management loading; preserve supplied sections and explicit disables; backfill parent-only loads without student activity. Code failure rolls the load back. | Native persistence, batch, rollback, backfill and role regressions. | Complete |
+| T19.2 | Announcements shows only Class Code, code and enlarge; popover contains enlarged code, locally generated QR and copyable invitation URL. Preserve management controls inside the popover/Class List. | Desktop/phone, light/dark pixel QR decoding, copy actions, Admin support, reload, focus and no replay; Manual 55 captures. | Complete |
+
+- Evidence: 8 native classroom tests pass after correcting the maintenance-only guard; 43 distinct desktop/phone cases pass, with one desktop-only case skipped. Light/dark QR pixels decode to the exact invitation URL for instructor and Admin. Six final capture cases and nine reviewed images update Manual 55 and the Admin sidebar. Migration applied and remote history confirmed; aggregate checks find no missing classes/code history, and the security advisor reports no error-level issues. Final lint/typecheck/build/deployment checks pass; the full hosted release gate and Ready are verified separately after push.

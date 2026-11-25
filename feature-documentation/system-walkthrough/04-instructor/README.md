@@ -218,3 +218,6 @@ Student Monitoring and performance summaries use flat outline icons; Home shortc
 ## Automatic classes and invitations
 
 The Dean or Program Coordinator loads each class and its roster. Instructors add students only within an existing class, share its code or copy its invitation link. Students see their loaded classes before the syllabus is available. An invitation automatically enrolls a verified own student account after sign-in; a reload requires explicit retry. Class syllabus upload stays inside Teaching Materials & Assessments, disappears after save and enables the header Syllabus button for the original file. [Current steps and desktop/phone captures](../../system-manual/54-management-loaded-classes/README.md).
+
+
+[Class Code and QR invitations](../../system-manual/55-class-code-invitations/README.md): automatic codes at management loading, the compact Announcements card and a reload-safe popover with a locally generated QR and copyable invitation link. Instructor and Admin support use the same authorized code.

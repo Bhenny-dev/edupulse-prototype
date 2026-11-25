@@ -4,13 +4,13 @@
 
 ## Class codes and announcements in an Admin support view
 
-Open a loaded class from **Home**. **Announcements** shows **Class codes** and **Upcoming** beside the announcement feed on desktop. Cards and their controls wrap within that sidebar; on narrow screens the sidebar follows the feed. After an approved file is saved, the header shows **Syllabus** alongside **Block sections**, **Teaching Materials & Assessments**, **Class List** and **Scores** available.
+Open a loaded class from **Home**. **Announcements** shows **Class Code** and **Upcoming** beside the announcement feed on desktop. Cards and their controls wrap within that sidebar; on narrow screens the sidebar follows the feed. After an approved file is saved, the header shows **Syllabus** alongside **Block sections**, **Teaching Materials & Assessments**, **Class List** and **Scores** available.
 
-A System Admin viewing a selected instructor sees the same active class codes, join records and announcements as that instructor. **Copy class code**, **Display class code** and **Copy invitation link** are available. The code's three-dot menu offers **Replace code** and **Turn off code**, each with confirmation. A block without an active code offers **Create code**. These instructor support actions use the selected instructor's current assignment and record the actual Admin actor.
+A System Admin viewing a selected instructor sees the same active class codes as that instructor. The **Class Code** card shows only the code and an enlarge icon. Select it to open the code, QR and **Invitation link**, with **Copy code**, **Copy link** and the existing code-management menu inside the popover. Codes are generated when management loads the class; this card does not ask the instructor to create a block or a code. [Manual 55](../55-class-code-invitations/README.md) shows the current popover in both themes and on a phone.
 
 ![Sample Admin instructor view: class code fits beside the announcement feed](12-admin-class-codes.png)
 
-On a phone, scroll past the announcement feed to **Class codes**. The sample below shows the code and its controls contained within the card.
+On a phone, scroll past the announcement feed to **Class Code**. The sample below shows the code and its controls contained within the card.
 
 ![Sample Admin instructor view: class code and controls on a phone](13-admin-class-codes-phone.png)
 

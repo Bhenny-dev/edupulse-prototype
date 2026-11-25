@@ -183,3 +183,8 @@ Verified transfer diagnosis: the destination project has no Git link. `vercel gi
 ## Automatic classes and direct course intake, 25 November 2026
 
 Apply `20261125075102_management_loaded_classes.sql` before deploying the matching UI. It is applied and listed in the linked remote migration history. This release uses the shared remote-main archive deployment command; provider credentials, billing and project settings are unchanged. Local database/browser/capture evidence is in the [release validation](../versions/2026-11-25-managed-classes/validation/results.md); inspect Ready and the canonical production alias independently after pushing.
+
+
+## Atomic class codes and QR popover, 25 November 2026
+
+Apply `20261125084915_automatic_loaded_class_codes.sql` before this UI release; the linked project migration is applied and verified. The QR is generated in the browser using pinned `qrcode`, with no new external image origin, environment variable, API key or inference call. Use the shared remote-main archive command and inspect Ready/alias separately. [Validation](../versions/2026-11-25-class-code-qr/validation/results.md).

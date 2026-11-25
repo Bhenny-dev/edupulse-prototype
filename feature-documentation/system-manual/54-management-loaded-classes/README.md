@@ -40,3 +40,6 @@ Draft creation, draft editing, the personal library and sharing remain on the se
 ![Existing-class enrollment controls on a phone](09-phone-class-list.png)
 
 These screenshots use fictional records and controlled UI transport with real generated PDF bytes. Native database tests separately exercise persistent enrollment, role boundaries and rejection of instructor-created blocks. They do not certify a hosted student sign-in or external approval.
+
+
+The Announcements sidebar now uses the compact **Class Code** card and QR/link popover shown in [Manual 55](../55-class-code-invitations/README.md). The migration also initializes classes and codes atomically when management loads a course without an explicit section. Existing imported sections remain authoritative.

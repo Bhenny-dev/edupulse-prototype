@@ -109,3 +109,6 @@ The [baseline restoration](../versions/2026-10-28-baseline-workflows/README.md) 
 [Manual 53: Flat Interface Icons](53-flat-interface-icons/README.md) documents the shared icon treatment, all-role audit, dark mode and phone examples.
 
 [Manual 54: Management-loaded classes](54-management-loaded-classes/README.md) covers automatic classes, existing-class enrollment, invitation links and direct approved-file intake.
+
+
+[Class Code and QR invitations](55-class-code-invitations/README.md): automatic codes at management loading, the compact Announcements card and a reload-safe popover with a locally generated QR and copyable invitation link. Instructor and Admin support use the same authorized code.

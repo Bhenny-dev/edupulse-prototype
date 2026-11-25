@@ -56,11 +56,11 @@ test('instructor Home lists the assigned courses as classes; classes open automa
 
   await expect(page.getByRole('button', { name: 'Create class', exact: true })).toHaveCount(0)
   await cards.filter({ hasText: 'IT 102' }).click()
-  await expect(page.getByRole('region', { name: 'Class codes' }).getByLabel('Class code of block BSIT-1A: K 7 M 2 Q X P')).toBeVisible()
+  await expect(page.getByRole('region', { name: 'Class Code' }).getByLabel('Class code of block BSIT-1A: K 7 M 2 Q X P')).toBeVisible()
   await page.getByRole('button', { name: 'Display the class code of block BSIT-1A', exact: true }).click()
   const display = page.getByRole('dialog', { name: 'Class code display, IT 102 block BSIT-1A' })
   await expect(display).toContainText('K7M2QXP')
-  await expect(display).toContainText('choose Join class')
+  await expect(display.getByRole('img', { name: 'Scan to join this class' })).toBeVisible()
   await page.keyboard.press('Escape')
   await expect(display).toHaveCount(0)
   const tabs = page.getByRole('navigation', { name: 'Class sections' })

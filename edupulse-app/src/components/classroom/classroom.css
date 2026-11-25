@@ -171,3 +171,15 @@
   .class-tabs .tab { white-space: nowrap; flex: none; }
 }
 .class-code[data-highlight] { outline: 3px solid var(--sky-400); outline-offset: 2px; }
+
+/* The announcement card shows only the code and its enlarge control. */
+.class-code-row.is-compact { justify-content: space-between; gap: 8px; padding: 0; border: 0; }
+.class-code-row.is-compact + .class-code-row.is-compact { margin-top: 12px; }
+.class-code-row.is-compact .class-code-actions { margin-left: 0; }
+.class-code-row.is-compact .class-code-actions .btn { width: 44px; height: 44px; padding: 0; justify-content: center; }
+.class-display { text-align: center; max-width: 520px; }
+.class-display-code { margin: 16px 0; font-size: clamp(1.75rem, 7vw, 3.25rem); overflow-wrap: anywhere; }
+.class-invitation-qr { display: block; width: min(240px, 100%); aspect-ratio: 1; height: auto; margin: 0 auto 20px; background: #fff; }
+.class-invitation-link { display: grid; gap: 6px; text-align: left; min-width: 0; font-size: .875rem; }
+.class-invitation-link input { width: 100%; min-width: 0; }
+.class-invitation-tools { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; margin-top: 16px; }

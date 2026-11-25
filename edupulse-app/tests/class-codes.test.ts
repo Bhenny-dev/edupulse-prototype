@@ -7,11 +7,11 @@ import { semesterDatabase } from './semester-fixture'
 const term = { academic_year: '2026-2027', semester: '1st Semester' }
 const key = (code: string, block: string) => `${code}|${block}|1st Semester|2026-2027`
 
-async function classroomDatabase(blocks = ['A', 'B']) {
+async function classroomDatabase(blocks = ['A', 'B'], upgrade = true) {
   const fixture = await semesterDatabase()
   const maintenance = () => fixture.db.exec("RESET ROLE;SELECT set_config('request.jwt.claim.sub','',false),set_config('request.jwt.claims','{}',false)")
   await maintenance()
-  for (const name of ['20261118061807_historical_teaching_load_backfill', '20261118082233_instructor_load_details', '20261118090000_course_load_block_sections', '20261123120000_class_codes_and_announcements', '20261125010000_automatic_class_codes', '20261125013623_admin_classroom_support', '20261125030000_student_class_schedule', '20261125075102_management_loaded_classes']) await fixture.db.exec(await readFile(`supabase/migrations/${name}.sql`, 'utf8'))
+  for (const name of ['20261118061807_historical_teaching_load_backfill', '20261118082233_instructor_load_details', '20261118090000_course_load_block_sections', '20261123120000_class_codes_and_announcements', '20261125010000_automatic_class_codes', '20261125013623_admin_classroom_support', '20261125030000_student_class_schedule', '20261125075102_management_loaded_classes', ...(upgrade ? ['20261125084915_automatic_loaded_class_codes'] : [])]) await fixture.db.exec(await readFile(`supabase/migrations/${name}.sql`, 'utf8'))
   const rpc = async (name: string, command?: object) => (await fixture.db.query<{ r: any }>(`SELECT public.${name}(${command ? '$1' : ''}) r`, command ? [JSON.stringify(command)] : [])).rows[0].r
   const records = async (where: string) => { await maintenance(); return (await fixture.db.query<{ record_key: string; data: Record<string, any> }>(`SELECT record_key,data FROM public.edupulse_institutional_records WHERE kind='loads' AND ${where} ORDER BY record_key`)).rows }
   await fixture.as(2)
@@ -59,7 +59,7 @@ test('an instructor manages an automatically loaded class code; a registered stu
     const made = await rpc('edupulse_class_code_command', { action: 'create', assignment: parent.record_key, block: 'a' })
     assert.match(made.code, /^[A-HJKMNP-Z2-9]{7}$/); assert.equal(made.block, 'A'); assert.equal(made.created, false); assert.equal(made.block_added, undefined)
     const [block] = await records(`record_key='${key('IT 101', 'A')}'`)
-    assert.equal(block.data.InstructorID, ids[0]); assert.equal(block.data.LoadType, 'class'); assert.equal(block.data.AllocationSource, 'dean-block-section')
+    assert.equal(block.data.InstructorID, ids[0]); assert.equal(block.data.LoadType, 'class'); assert.equal(block.data.AllocationSource, 'automatic-loaded-class')
     await as(0)
     assert.equal((await rpc('edupulse_class_code_command', { action: 'create', assignment: parent.record_key, block: 'A' })).code, made.code, 'creating again returns the active code')
     assert.equal((await rpc('edupulse_class_code_command', { action: 'create', assignment: key('IT 101', 'A'), block: 'C' })).parent_key, parent.record_key, 'a block key resolves to its course load')
@@ -256,4 +256,51 @@ test('instructors can add students to a loaded class but cannot create a class t
     await as(3)
     assert.equal((await rpc('edupulse_class_join', { action: 'join', code: codes.find((c: any) => c.block === 'A').code })).status, 'member', 'an invitation does not duplicate the instructor-enrolled student')
   } finally { await db.close() }
+})
+
+
+test('course assignment commits its initial class and code automatically, and code failure rolls the load back', async () => {
+ const { db, ids, as, rpc, records, command, maintenance, parent } = await classroomDatabase([])
+ try {
+  const [block] = await records(`data->>'CourseCode'='IT 101' AND data->>'LoadType'='class'`)
+  assert.equal(block.data.Block, 'A');assert.equal(block.data.ParentLoadKey,parent.record_key)
+  assert.equal(block.data.Schedules,undefined,'an unrecorded meeting is not a fabricated empty slot')
+  await as(0)
+  const before=(await rpc('edupulse_class_codes')).codes
+  assert.equal(before.length,1);assert.match(before[0].code,/^[A-HJKMNP-Z2-9]{7}$/)
+  await rpc('edupulse_class_code_command',{action:'disable',assignment:parent.record_key,block:'A'})
+  await as(2);await command({action:'block.add',assignment:parent.record_key,expected_instructor:ids[0],block:'A',room:'Lab 3'})
+  await as(0);assert.deepEqual((await rpc('edupulse_class_codes')).codes,[],'an ordinary update preserves an explicit disable')
+  await as(2);await command({action:'course.create',...term,course:{code:'IT 999',title:'Atomic load',units:3}})
+  await maintenance()
+  await db.exec("CREATE OR REPLACE FUNCTION edupulse_private.new_class_code() RETURNS text LANGUAGE plpgsql SET search_path='' AS $$ BEGIN RAISE EXCEPTION 'Synthetic code failure'; END $$")
+  await as(2)
+  await assert.rejects(command({action:'course-load.assign',...term,course_code:'IT 999',instructor_id:ids[0]}),/Synthetic code failure/)
+  assert.deepEqual(await records(`data->>'CourseCode'='IT 999'`),[],'a failed code cannot leave a successful-looking course load')
+ } finally {await db.close()}
+})
+
+test('the deferred course initializer respects explicit blocks supplied by a reviewed batch',async()=>{
+ const {db,ids,as,command,records}=await classroomDatabase([])
+ try {
+  await as(2);await command({action:'course.create',...term,course:{code:'IT 998',title:'Explicit section',units:3}})
+  await db.exec('BEGIN')
+  const loaded=await command({action:'course-load.assign',...term,course_code:'IT 998',instructor_id:ids[0]})
+  await command({action:'block.add',assignment:loaded.key,expected_instructor:ids[0],block:'BSIT-2C'})
+  await db.exec('COMMIT')
+  const blocks=await records(`data->>'CourseCode'='IT 998' AND data->>'LoadType'='class'`)
+  assert.deepEqual(blocks.map(row=>row.data.Block),['BSIT-2C'],'no default A is inserted before the explicit batch section')
+ } finally {await db.close()}
+})
+
+
+test('migration backfills an already-loaded course with no block or code, without making student activity',async()=>{
+ const {db,as,rpc,maintenance,parent,records}=await classroomDatabase([],false)
+ try {
+  await maintenance();await db.exec(await readFile('supabase/migrations/20261125084915_automatic_loaded_class_codes.sql','utf8'))
+  const blocks=await records(`data->>'ParentLoadKey'='${parent.record_key}'`)
+  assert.deepEqual(blocks.map(row=>row.data.Block),['A'])
+  await as(0);assert.equal((await rpc('edupulse_class_codes')).codes.length,1)
+  await maintenance();assert.equal((await db.query<{n:number}>('SELECT count(*)::int n FROM edupulse_private.class_joins')).rows[0].n,0)
+ } finally {await db.close()}
 })
