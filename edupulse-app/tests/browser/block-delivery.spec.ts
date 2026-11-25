@@ -1,13 +1,13 @@
 import { test, expect } from '../snapshots/fixtures'
 import { instructorCourseUI } from '../instructor-course-fixture'
 
-test('Instructor class space has its four sections and Block sections, including legacy review routes',async({page})=>{
+test('Instructor class space has its four sections and Block section, including legacy review routes',async({page})=>{
  const fixture=await instructorCourseUI(page)
  await page.goto(`/#/courseware?course=${fixture.syllabus.id}&view=review`)
  await expect(page).toHaveURL(/view=blocks/)
  const tabs=page.getByRole('navigation',{name:'Class sections'})
  await expect(tabs.getByRole('button')).toHaveText(['Announcements','Teaching Materials & Assessments','Class List','Scores'])
- await expect(page.getByRole('button',{name:'Block sections',exact:true})).toHaveAttribute('aria-pressed','true')
+ await expect(page.getByRole('button',{name:'Block section',exact:true})).toHaveAttribute('aria-pressed','true')
  await expect(page.getByRole('button',{name:'Schedule BSIT-1A'})).toBeVisible()
  await expect(page.getByText('15 items generated')).toHaveCount(0)
  await tabs.getByRole('button',{name:'Teaching Materials & Assessments'}).click()
@@ -76,7 +76,7 @@ test('publishing stays in topic authoring and requires a schedule; delivered rev
  await quiz.getByRole('button',{name:'Deliver to students',exact:true}).click()
  const delivery=page.getByRole('dialog',{name:'Deliver course content'})
  await expect(delivery.getByRole('button',{name:'Deliver checked content'})).toBeDisabled()
- await delivery.getByRole('button',{name:'Open Block sections'}).click()
+ await delivery.getByRole('button',{name:'Open Block section'}).click()
  await expect(page).toHaveURL(/view=blocks/)
  await page.getByRole('button',{name:'Teaching Materials & Assessments',exact:true}).click()
  const material=topic.locator('.instructor-sequence-item').filter({has:page.getByText('Variables lesson',{exact:true})})

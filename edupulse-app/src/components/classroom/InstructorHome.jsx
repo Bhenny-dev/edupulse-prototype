@@ -7,7 +7,7 @@ import { useWorkspace } from '../../context/WorkspaceContext'
 import useAcademicTerm from '../academic/useAcademicTerm'
 import { SYLLABUS_STATUS_META } from '../../data/syllabusStatus'
 import { instructorCourses, syllabusForCourse } from '../../utils/instructorCourses'
-import { classStudents } from '../../utils/classroom'
+import { classOf, classStudents, studentCount } from '../../utils/classroom'
 import { ClassCard, EmptyClasses } from './ClassCards'
 import { codeFor } from './ClassCodes'
 import { classInvitationUrl } from '../../utils/classInvitation'
@@ -21,12 +21,14 @@ const ClassPage = lazy(() => import('../courseware/InstructorCourses'))
 export default function InstructorHome({ data, loaded, status, actions }) {
   const { user } = useAuth(), workspace = useWorkspace(), [params, setParams] = useSearchParams(), { addToast } = useToast()
   const { term, writable } = useAcademicTerm()
-  const courses = useMemo(() => instructorCourses(data, user.id, workspace.syllabi), [data, user.id, workspace.syllabi])
+  // One card per block section: a course loaded with several blocks is several classes.
+  const courses = useMemo(() => instructorCourses(data, user.id, workspace.syllabi).flatMap(course => (course.blocks.length ? course.blocks : ['']).map(block => classOf(course, block))), [data, user.id, workspace.syllabi])
   const counts = course => classStudents(course, workspace.registrations, data.enrollments)
+  const classKey = course => `${course.id}|${course.block}`
   // Opening pushes a history entry, so the browser's Back closes the class; Close and Escape do the same.
-  const open = (course, extra = {}) => setParams({ course: course.id, term, ...extra })
+  const open = (course, extra = {}) => setParams({ course: course.id, ...(course.block ? { block: course.block } : {}), term, ...extra })
   const close = () => {
-    const id = params.get('course')
+    const id = `${params.get('course')}|${params.get('block') || ''}`
     setParams(params.get('term') ? { term: params.get('term') } : {})
     // Back to Home with the keyboard where it was: on the class that was just closed.
     requestAnimationFrame(() => requestAnimationFrame(() => document.querySelector(`[data-class-id="${CSS.escape(id || '')}"]`)?.focus({ preventScroll: true })))
@@ -39,8 +41,7 @@ export default function InstructorHome({ data, loaded, status, actions }) {
     // The keyboard goes back to the circle button that opened the page.
     requestAnimationFrame(() => requestAnimationFrame(() => document.querySelector(`[data-panel="${CSS.escape(name || '')}"]`)?.focus({ preventScroll: true })))
   }
-  const repeated = code => courses.filter(course => course.code === code).length > 1
-  const named = course => `${course.code}${repeated(course.code) && course.blocks.length ? ` · ${course.blocks.join(', ')}` : ''}`
+  const named = course => `${course.code}${course.block ? ` · ${course.block}` : ''}`
   const [now] = useState(() => Date.now())
   const review = useMemo(() => courses.map(course => ({ course, count: pendingReview(data, course), assessments: pendingAssessments(data, course) })).filter(item => item.count > 0), [courses, data])
   const upcoming = useMemo(() => courses.flatMap(course => classUpcoming({ content: workspace.content, data, course, syllabus: syllabusForCourse(workspace.syllabi, course), now }).map(item => ({ ...item, course }))).sort((a, b) => a.at.localeCompare(b.at)).slice(0, 50), [courses, data, workspace.content, workspace.syllabi, now])
@@ -62,16 +63,16 @@ export default function InstructorHome({ data, loaded, status, actions }) {
     {loaded && !courses.length && <EmptyClasses title="No classes yet">Your classes appear automatically when the Dean or Program Coordinator loads your courses and block sections.</EmptyClasses>}
     {courses.length > 0 && <section id="your-classes" aria-label="Your classes" className="class-card-grid">{courses.map(course => {
       const syllabus = syllabusForCourse(workspace.syllabi, course), students = counts(course)
-      const menu = { label: `More for ${course.code}${repeated(course.code) ? ` (${course.blocks.join(', ')})` : ''}`, actions: [
-        ...course.blocks.map(block => ({ block, code: codeFor(data.classCodes, course, block) })).filter(item => item.code).map(({ block, code }) => ({ label: `Copy class code, block ${block}`, icon: Copy, onSelect: () => copyCode(code.code, block) })),
-        ...course.blocks.map(block => ({ block, code: codeFor(data.classCodes, course, block) })).filter(item => item.code).map(({ block, code }) => ({ label: `Copy invitation link, block ${block}`, icon: Copy, onSelect: () => copyInvitation(code.code, block) })),
+      const code = course.block ? codeFor(data.classCodes, course, course.block) : null
+      const menu = { label: `More for ${named(course)}`, actions: [
+        ...(code ? [{ label: 'Copy class code', icon: Copy, onSelect: () => copyCode(code.code, course.block) }, { label: 'Copy invitation link', icon: Copy, onSelect: () => copyInvitation(code.code, course.block) }] : []),
         { label: 'Class List', icon: Users, onSelect: () => open(course, { tab: 'class-list' }) },
         { label: 'Scores', icon: BarChart3, onSelect: () => open(course, { tab: 'scores' }) },
-        { label: 'Block sections', icon: Settings2, onSelect: () => open(course, { view: 'blocks' }) }] }
-      return <ClassCard key={course.id} code={course.code} title={course.title} buttonClassName="instructor-course-card" cardId={course.id} onOpen={() => open(course)} menu={menu}
-        label={`Open course ${course.code}${repeated(course.code) ? ` (${course.blocks.join(', ') || 'no block'})` : ''}`}
+        { label: 'Block section', icon: Settings2, onSelect: () => open(course, { view: 'blocks' }) }] }
+      return <ClassCard key={classKey(course)} code={course.code} title={course.title} buttonClassName="instructor-course-card" cardId={classKey(course)} onOpen={() => open(course)} menu={menu}
+        label={`Open course ${named(course)}`}
         lines={[[course.semester, course.academicYear && `AY ${course.academicYear}`, course.units && `${course.units} units`].filter(Boolean).join(' · ')]}
-        chips={course.blocks.length ? course.blocks.map(block => `Block ${block} · ${students.get(block)?.size || 0}`) : ['No block section yet']}
+        chips={course.block ? [`Block ${course.block} · ${studentCount(students.get(course.block)?.size || 0)}`] : ['No block section yet']}
         status={syllabus ? `Syllabus: ${SYLLABUS_STATUS_META[syllabus.status]?.label || syllabus.status}` : 'Syllabus not added'} />
     })}</section>}
     {courses.length > 0 && <HomeRail reviewCount={review.reduce((sum, item) => sum + item.count, 0)} upcomingCount={upcoming.length} onOpen={openPanel} />}

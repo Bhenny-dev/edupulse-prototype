@@ -60,7 +60,7 @@ test('an assigned instructor confirms individual directory students in an existi
  await expect(dialog).toHaveCount(0)
  expect(commands).toHaveLength(1)
  expect(commands[0]).toMatchObject({operation:'class-list',block:'BSIT-2A',mode:'append',students:[{StudentID:'DIR-42',Email:'directory@example.invalid'}]})
- await page.getByRole('button',{name:'Block sections',exact:true}).click()
+ await page.getByRole('button',{name:'Block section',exact:true}).click()
  await expect(page.locator('.instructor-block-card').filter({hasText:'BSIT-2A'})).toContainText('1 enrolled students')
  await page.getByRole('button',{name:'Block actions for BSIT-2A',exact:true}).click()
  await page.getByRole('menuitem',{name:'Manage class list',exact:true}).click()

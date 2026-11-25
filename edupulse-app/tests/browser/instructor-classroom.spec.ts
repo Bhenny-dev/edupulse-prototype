@@ -70,14 +70,14 @@ test('instructor Home lists the assigned courses as classes; classes open automa
   expect(fixture.forbidden).toEqual([])
 })
 
-test('a class card More menu opens the Class List, Scores and Block sections without opening Announcements first', async ({ page }) => {
+test('a class card More menu opens the Class List, Scores and Block section without opening Announcements first', async ({ page }) => {
   const fixture = await classroomUI(page)
   ;(fixture.records as any).classCodes = [{ course_code: 'IT 102', block: 'BSIT-1A', academic_year: '2026-2027', semester: '1st Semester', code: 'K7M2QXP', created_at: new Date().toISOString() }]
   await page.goto('/#/dashboard')
   const classPage = page.getByRole('dialog', { name: /^Class IT 102/ })
   const more = () => page.getByRole('button', { name: /^More for IT 102/ })
   await more().click()
-  await expect(page.getByRole('menuitem')).toHaveText(['Copy class code, block BSIT-1A', 'Copy invitation link, block BSIT-1A', 'Class List', 'Scores', 'Block sections'])
+  await expect(page.getByRole('menuitem')).toHaveText(['Copy class code', 'Copy invitation link', 'Class List', 'Scores', 'Block section'])
   await page.getByRole('menuitem', { name: 'Class List', exact: true }).click()
   await expect(classPage).toBeVisible()
   await expect(page).toHaveURL(/tab=class-list/)
@@ -86,9 +86,9 @@ test('a class card More menu opens the Class List, Scores and Block sections wit
   await expect(classPage).toHaveCount(0)
   await expect(page.locator('.instructor-course-card').filter({ hasText: 'IT 102' })).toBeFocused()
   await more().click()
-  await page.getByRole('menuitem', { name: 'Block sections', exact: true }).click()
+  await page.getByRole('menuitem', { name: 'Block section', exact: true }).click()
   await expect(page).toHaveURL(/view=blocks/)
-  await expect(classPage.getByRole('heading', { name: 'Block sections', exact: true })).toBeVisible()
+  await expect(classPage.getByRole('heading', { name: 'Block section', exact: true })).toBeVisible()
   expect(fixture.forbidden).toEqual([])
 })
 

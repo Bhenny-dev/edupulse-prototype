@@ -20,7 +20,7 @@ export function HomeRail({ reviewCount, upcomingCount, onOpen }) {
 export function ReviewPanel({ classes, named, onOpenClass, onClose }) {
   const total = classes.reduce((sum, item) => sum + item.count, 0)
   return <PageModal title="To review" subtitle={total ? `${total} written ${total === 1 ? 'response' : 'responses'} waiting for your marking` : 'Written responses waiting for your marking'} label="To review" closeLabel="Close To review and return to Home" onClose={onClose} className="class-modal" bodyClassName="classroom">
-    {classes.length ? classes.map(({ course, count, assessments }) => <section key={course.id} className="class-section" aria-label={`${named(course)} to review`}>
+    {classes.length ? classes.map(({ course, count, assessments }) => <section key={`${course.id}|${course.block}`} className="class-section" aria-label={`${named(course)} to review`}>
       <div className="class-section-heading"><h2>{named(course)} <span className="text-muted">· {course.title}</span></h2><button type="button" className="btn btn-secondary btn-sm" onClick={() => onOpenClass(course, { tab: 'scores' })}>Open Scores</button></div>
       <p className="text-sm text-muted mb-8">{count} written {count === 1 ? 'response' : 'responses'} to mark.</p>
       {assessments.map(item => <button type="button" key={item.key} className="class-work-row" onClick={() => onOpenClass(course, { tab: 'scores' })}><strong>{item.title}</strong><span>{item.count} to mark{item.week ? ` · Week ${item.week}` : ''}</span></button>)}
@@ -32,7 +32,7 @@ export function ReviewPanel({ classes, named, onOpenClass, onClose }) {
 export function UpcomingPanel({ items, named, onOpenClass, onClose }) {
   return <PageModal title="Upcoming" subtitle="Saved due dates and week openings across your classes" label="Upcoming" closeLabel="Close Upcoming and return to Home" onClose={onClose} className="class-modal" bodyClassName="classroom">
     {items.length ? <section className="class-section" aria-label="Upcoming across classes">
-      {items.map(item => <button type="button" key={item.key} className="class-work-row" onClick={() => onOpenClass(item.course, { tab: 'materials' })}><strong>{named(item.course)}</strong><span>{item.text}</span><time dateTime={item.at}>{when(item.at)}</time></button>)}
-    </section> : <p className="text-muted" role="status">No saved openings or due dates soon. Blocks without saved dates follow their class schedule (open a class and choose Block sections to set dates).</p>}
+      {items.map(item => <button type="button" key={`${item.key}|${item.course.block}`} className="class-work-row" onClick={() => onOpenClass(item.course, { tab: 'materials' })}><strong>{named(item.course)}</strong><span>{item.text}</span><time dateTime={item.at}>{when(item.at)}</time></button>)}
+    </section> : <p className="text-muted" role="status">No saved openings or due dates soon. Blocks without saved dates follow their class schedule (open a class and choose Block section to set dates).</p>}
   </PageModal>
 }

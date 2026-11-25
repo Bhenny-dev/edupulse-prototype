@@ -59,7 +59,7 @@ export default function Schedule() {
   const hours = Array.from({ length: (span.to - span.from) / 60 + 1 }, (_, index) => span.from + index * 60)
   const next = useMemo(() => nextMeeting(meetings, now), [meetings, now])
   const student = user?.role === 'student'
-  const open = meeting => { if (!meeting.courseId) return; navigate(student ? studentClassPath(meeting.courseId, { term, studentTab: 'announcements' }) : `/dashboard?${new URLSearchParams({ course: meeting.courseId, term })}`) }
+  const open = meeting => { if (!meeting.courseId) return; navigate(student ? studentClassPath(meeting.courseId, { term, studentTab: 'announcements' }) : `/dashboard?${new URLSearchParams({ course: meeting.courseId, ...(meeting.block ? { block: meeting.block } : {}), term })}`) }
   const shift = weeks => setAnchor(previous => new Date(previous.getFullYear(), previous.getMonth(), previous.getDate() + weeks * 7))
   const label = meeting => `${meeting.code}${meeting.block ? ` block ${meeting.block}` : ''}, ${dayName(week.find(date => date.getDay() === meeting.day) || now)} ${timeRange(meeting)}${meeting.room ? `, room ${meeting.room}` : ''}`
   const range = `${dateLabel(days[0])} - ${dateLabel(days[days.length - 1])}, ${days[days.length - 1].getFullYear()}`

@@ -17,7 +17,7 @@ export const classAnnouncements = (data, course) => (data.announcements || []).f
 const blank = { title: '', body: '', block: '', week: '', attachments: [] }
 
 function Composer({ course, weeks, initial, onCancel, onSaved }) {
-  const records = useAcademicRecords(), [draft, setDraft] = useState(() => initial ? { ...initial, block: initial.block || '', week: initial.week ? String(initial.week) : '' } : blank)
+  const records = useAcademicRecords(), [draft, setDraft] = useState(() => initial ? { ...initial, block: initial.block || '', week: initial.week ? String(initial.week) : '' } : { ...blank, block: course.blocks.length === 1 ? course.blocks[0] : '' })
   const [busy, setBusy] = useState(false), [error, setError] = useState('')
   const set = (key, value) => { setDraft(previous => ({ ...previous, [key]: value })); setError('') }
   const save = async event => {
@@ -31,7 +31,7 @@ function Composer({ course, weeks, initial, onCancel, onSaved }) {
   }
   return <form className="class-composer" onSubmit={save} aria-label={draft.id ? 'Edit announcement' : 'New announcement'}>
     <div className="form-row">
-      <label className="form-label">For<select className="form-input" value={draft.block} disabled={busy} onChange={event => set('block', event.target.value)}><option value="">All block sections</option>{course.blocks.map(block => <option key={block} value={block}>Block {block}</option>)}</select></label>
+      {course.blocks.length !== 1 && <label className="form-label">For<select className="form-input" value={draft.block} disabled={busy} onChange={event => set('block', event.target.value)}><option value="">All block sections</option>{course.blocks.map(block => <option key={block} value={block}>Block {block}</option>)}</select></label>}
       <label className="form-label">Week<select className="form-input" value={draft.week} disabled={busy} onChange={event => set('week', event.target.value)}><option value="">Not linked to a week</option>{weeks.map(week => <option key={week} value={week}>Week {week}</option>)}</select></label>
     </div>
     <label className="form-label">Title<input className="form-input" value={draft.title} maxLength={200} required disabled={busy} autoFocus onChange={event => set('title', event.target.value)} /></label>
@@ -49,7 +49,7 @@ function Upcoming({ course, syllabus, data }) {
   const items = classUpcoming({ content: workspace.content, data, course, syllabus, now }).slice(0, 4)
   return <section className="card" aria-label="Upcoming">
     <div className="card-header"><h2><CalendarClock size={16} aria-hidden="true" /> Upcoming</h2></div>
-    <div className="card-body">{items.length ? items.map(item => <p key={item.key} className="text-sm"><strong>{when(item.at)}</strong><br />{item.text}</p>) : <p className="text-sm text-muted">No saved openings or due dates soon. Blocks without saved dates follow their class schedule (Block sections).</p>}</div>
+    <div className="card-body">{items.length ? items.map(item => <p key={item.key} className="text-sm"><strong>{when(item.at)}</strong><br />{item.text}</p>) : <p className="text-sm text-muted">No saved openings or due dates soon. Blocks without saved dates follow their class schedule (Block section).</p>}</div>
   </section>
 }
 
