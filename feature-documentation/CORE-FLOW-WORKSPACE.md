@@ -436,3 +436,14 @@ Not done in G14, and why:
 - A gradebook grid of students by assessments with status colours needs a new data view and was not built; Scores shows the existing per-assessment tables with a marking banner.
 
 - 2026-11-24: G14 built in ten iterations, each pushed (a03312d7 class modal, a4b7db94 header, c6716d3b card menu and Home To review/Upcoming, 227401f8 code display, 821fb075 week filter, 017c3dec Invite students, 4fbbb1d9 Scores banner, 80ed2be7 focus return) and deployed from PowerShell. Deploying from Git Bash fails silently (GNU tar cannot read C: paths), so the first two iterations reached production with the next deploy.
+
+## 25 November 2026 - Claude: automatic class codes and the class as a page (G15)
+
+Owner request (25 November): a class code must be made automatically when the Dean or Program Coordinator loads a course and be unique across every loaded course, so each code names one class; the class page must not overlap the Pulse chat panel and must be a page modal, not a popover.
+
+| Task | Work | Acceptance | Stage |
+|---|---|---|---|
+| T15.1 | Migration `20261125010000_automatic_class_codes.sql`: a trigger on the institutional records issues a code the moment a class (block section) record is created, whoever creates it (Dean load import, Dean block.add, instructor add); a changed instructor retires the old code and issues a fresh one; a deleted class retires its code; classes already loaded are given codes by `backfill_class_codes()`. Codes stay globally unique (`class_codes.code` UNIQUE, never reused). A turned-off code is not remade by an ordinary update. Issuing never blocks a load. The instructor's create returns the automatic code | `tests/class-codes.test.ts` (PGlite: automatic codes, uniqueness, join by code, turned-off stays off, handover, backfill) | Complete |
+| T15.2 | The class page fills the area under the 64px top bar (the bar stays usable) and, with Pulse open, ends where the panel starts; below 1200px it leaves room for the bottom-docked panel; phones keep the full-screen page modal | `instructor-classroom.spec.ts` geometry test | Complete |
+
+Not done: Dean views do not list class codes (the Dean needs them only if asked); the Create class dialog still adds new block sections for an assigned course.

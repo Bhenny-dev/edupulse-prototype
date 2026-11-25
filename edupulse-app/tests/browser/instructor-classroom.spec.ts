@@ -88,6 +88,30 @@ test('a class card More menu opens the Class List, Scores and Block sections wit
   expect(fixture.forbidden).toEqual([])
 })
 
+test('the class page fills the area under the top bar and leaves the Pulse panel its own column', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'Phones keep the full-screen page modal')
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await classroomUI(page)
+  await page.goto('/#/dashboard')
+  await page.locator('.instructor-course-card').filter({ hasText: 'IT 102' }).click()
+  const classPage = page.getByRole('dialog', { name: /^Class IT 102/ })
+  await expect(classPage).toBeVisible()
+  const bar = (await page.locator('.app-topbar').boundingBox())!
+  let box = (await classPage.boundingBox())!
+  expect(box.y).toBeGreaterThanOrEqual(bar.y + bar.height - 1)
+  expect([Math.round(box.x), Math.round(box.width)]).toEqual([0, 1440])
+  expect(Math.round(box.y + box.height)).toBe(900)
+  await page.getByRole('button', { name: 'Open Pulse assistant', exact: true }).click()
+  const panel = page.locator('.connected-pulse')
+  await expect(panel).toBeVisible()
+  box = (await classPage.boundingBox())!
+  const side = (await panel.boundingBox())!
+  expect(box.x + box.width).toBeLessThanOrEqual(side.x)
+  expect(box.y).toBeGreaterThanOrEqual(bar.y + bar.height - 1)
+  expect(Math.round(box.y + box.height)).toBe(900)
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true)
+})
+
 test('Home lists the written responses to mark and the next openings, each opening its class', async ({ page }) => {
   const fixture = await classroomUI(page)
   const records = fixture.records as any, publication = records.publications[0], member = records.enrollments[0]

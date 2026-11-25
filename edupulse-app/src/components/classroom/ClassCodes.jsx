@@ -79,7 +79,7 @@ export default function ClassCodesCard({ course, codes, readOnly = false, highli
       {course.blocks.length ? course.blocks.map(block => <BlockCode key={block} course={course} block={block} codes={codes} readOnly={readOnly} highlight={highlight === block} />)
         : <p className="text-sm text-muted">No block section yet.</p>}
       {!readOnly && onAddBlock && <button type="button" className="btn btn-ghost btn-sm mt-8" onClick={onAddBlock}>Add a block section with a code</button>}
-      <p className="text-sm text-muted mt-8">Students enter the code in Join class on their Home and are added to that block's class list. A replaced code keeps everyone who already joined.</p>
+      <p className="text-sm text-muted mt-8">Each class gets its own code when the Dean loads the course. Students enter it in Join class on their Home and are added to that block's class list. Replacing a code keeps everyone who already joined.</p>
     </div>
   </section>
 }

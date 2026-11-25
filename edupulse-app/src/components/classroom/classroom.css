@@ -49,6 +49,24 @@
 /* In the class page the modal header carries the class name; the banner keeps the class colour, facts and actions. */
 .class-modal .class-banner { min-height: 0; align-items: center; padding: 16px 20px; }
 .class-modal .class-banner-meta { margin-top: 0; }
+/* The class is a page, not a floating card: on tablet and desktop it fills the area under the 64px top bar (which stays
+   usable) and, when the Pulse panel is open, leaves that panel its own column instead of sliding under it. Phones keep
+   the full-screen page modal. */
+@media (min-width: 641px) {
+  .overlay-backdrop.page-modal-overlay:has(> .class-modal) { top: 64px; padding: 0 !important; align-items: stretch !important; background: var(--white); backdrop-filter: none; }
+  .overlay-backdrop.page-modal-overlay > .page-modal.class-modal { width: 100%; max-width: none; height: 100%; max-height: none !important; border: 0; border-radius: 0; box-shadow: none; }
+}
+@media (min-width: 641px) {
+  /* Room for the closed Pulse launcher in the bottom corner. */
+  body:not(.pulse-panel-open) .page-modal.class-modal .page-modal-body { padding-bottom: 80px; }
+}
+@media (min-width: 1200px) {
+  body.pulse-panel-open .overlay-backdrop.page-modal-overlay:has(> .class-modal) { padding: 0 456px 0 0 !important; }
+}
+@media (min-width: 641px) and (max-width: 1199px) {
+  body.pulse-panel-open .overlay-backdrop.page-modal-overlay:has(> .class-modal) { padding: 0 0 calc(min(480px, 55dvh) + 24px) !important; }
+  body.pulse-panel-open .overlay-backdrop.page-modal-overlay > .page-modal.class-modal { max-height: none !important; }
+}
 /* The class tabs stay under the modal header while the class scrolls (Classroom keeps Stream/Classwork/People/Grades at the top). */
 .class-modal .class-tabs { position: sticky; top: -24px; z-index: 3; margin-top: -8px; padding-top: 8px; background: var(--white); }
 @media (max-width: 768px) { .class-modal .class-tabs { top: -16px; } }

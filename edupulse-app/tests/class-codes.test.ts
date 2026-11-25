@@ -11,7 +11,7 @@ async function classroomDatabase() {
   const fixture = await semesterDatabase()
   const maintenance = () => fixture.db.exec("RESET ROLE;SELECT set_config('request.jwt.claim.sub','',false),set_config('request.jwt.claims','{}',false)")
   await maintenance()
-  for (const name of ['20261118061807_historical_teaching_load_backfill', '20261118082233_instructor_load_details', '20261118090000_course_load_block_sections', '20261123120000_class_codes_and_announcements']) await fixture.db.exec(await readFile(`supabase/migrations/${name}.sql`, 'utf8'))
+  for (const name of ['20261118061807_historical_teaching_load_backfill', '20261118082233_instructor_load_details', '20261118090000_course_load_block_sections', '20261123120000_class_codes_and_announcements', '20261125010000_automatic_class_codes']) await fixture.db.exec(await readFile(`supabase/migrations/${name}.sql`, 'utf8'))
   const rpc = async (name: string, command?: object) => (await fixture.db.query<{ r: any }>(`SELECT public.${name}(${command ? '$1' : ''}) r`, command ? [JSON.stringify(command)] : [])).rows[0].r
   const records = async (where: string) => { await maintenance(); return (await fixture.db.query<{ record_key: string; data: Record<string, any> }>(`SELECT record_key,data FROM public.edupulse_institutional_records WHERE kind='loads' AND ${where} ORDER BY record_key`)).rows }
   await fixture.as(2)
@@ -93,6 +93,53 @@ test('an instructor makes a class code for a block; a registered student joins t
     await as(3)
     assert.deepEqual((await rpc('edupulse_class_codes')).joins, [])
   } finally { await db.close() }
+})
+
+test('a class gets its own unique code the moment the Dean loads it; a turned-off code stays off and a handover re-issues it', async () => {
+  const { db, ids, as, rpc, records, maintenance, parent, command } = await classroomDatabase()
+  try {
+    await as(2)
+    await command({ action: 'course.create', ...term, course: { code: 'IT 102', title: 'Data Structures', units: 3 } })
+    await command({ action: 'course-load.assign', ...term, course_code: 'IT 102', instructor_id: ids[0] })
+    const [other] = await records(`data->>'LoadType'='course' AND data->>'CourseCode'='IT 102'`)
+    for (const [assignment, block] of [[parent.record_key, 'A'], [parent.record_key, 'B'], [other.record_key, 'A']] as const) { await as(2); await command({ action: 'block.add', assignment, expected_instructor: ids[0], block }) }
+    await as(0)
+    const codes = (await rpc('edupulse_class_codes')).codes as { course_code: string; block: string; code: string }[]
+    assert.deepEqual(codes.map(c => `${c.course_code} ${c.block}`).sort(), ['IT 101 A', 'IT 101 B', 'IT 102 A'], 'every loaded class has a code without the instructor asking')
+    assert.equal(new Set(codes.map(c => c.code)).size, 3, 'no two classes share a code')
+    codes.forEach(c => assert.match(c.code, /^[A-HJKMNP-Z2-9]{7}$/))
+    assert.equal((await rpc('edupulse_class_code_command', { action: 'create', assignment: parent.record_key, block: 'A' })).created, false, 'the instructor’s create returns the automatic code')
+
+    // Joining with the automatic code reaches exactly that class.
+    await as(3)
+    const code = codes.find(c => c.course_code === 'IT 102')!.code
+    assert.deepEqual([(await rpc('edupulse_class_join', { action: 'lookup', code })).course_code, (await rpc('edupulse_class_join', { action: 'lookup', code })).block], ['IT 102', 'A'])
+
+    // Turned off by the instructor, a code is not made again when the class changes (the Dean adds its room).
+    await as(0)
+    await rpc('edupulse_class_code_command', { action: 'disable', assignment: parent.record_key, block: 'B' })
+    await as(2)
+    await command({ action: 'block.add', assignment: parent.record_key, expected_instructor: ids[0], block: 'B', room: 'Lab 4' })
+    await as(0)
+    assert.deepEqual(((await rpc('edupulse_class_codes')).codes as any[]).map(c => `${c.course_code} ${c.block}`).sort(), ['IT 101 A', 'IT 102 A'])
+
+    // The Dean hands IT 101 to another instructor: the old codes stop working and the new instructor holds fresh ones.
+    await as(2)
+    await command({ action: 'course-load.update', key: parent.record_key, expected_instructor: ids[0], instructor_id: ids[1], ...term })
+    await as(0)
+    assert.deepEqual(((await rpc('edupulse_class_codes')).codes as any[]).map(c => `${c.course_code} ${c.block}`), ['IT 102 A'], 'the previous instructor keeps only their own class')
+    await as(1)
+    const handed = (await rpc('edupulse_class_codes')).codes as { course_code: string; block: string; code: string }[]
+    assert.deepEqual(handed.map(c => `${c.course_code} ${c.block}`).sort(), ['IT 101 A', 'IT 101 B'])
+    assert.ok(handed.every(c => !codes.some(old => old.code === c.code)), 'the new instructor’s codes are not the old ones')
+    await as(3)
+    await assert.rejects(rpc('edupulse_class_join', { action: 'lookup', code: codes.find(c => c.course_code === 'IT 101' && c.block === 'A')!.code }), (error: any) => error.code === '22023', 'the old code no longer opens the class')
+
+    // Classes loaded before this change are given codes by the backfill.
+    await maintenance()
+    await db.exec('DELETE FROM edupulse_private.class_joins;DELETE FROM edupulse_private.class_codes')
+    await db.query('SELECT edupulse_private.backfill_class_codes()')
+    assert.equal((await db.query<{ n: number }>('SELECT count(DISTINCT code)::int n FROM edupulse_private.class_codes WHERE disabled_at IS NULL')).rows[0].n, 3, 'one active code for each of the three classes')  } finally { await db.close() }
 })
 
 test('announcements stay in the instructor’s assigned course and reach only enrolled students of the named block', async () => {
