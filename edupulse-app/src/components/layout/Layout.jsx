@@ -8,7 +8,7 @@ import { useLanguage } from '../../context/LanguageContext'
 import { useTheme } from '../../context/ThemeContext'
 import { useNotifications } from '../../data/notifications'
 import {
-  LayoutDashboard, BookOpen, BarChart3, LogOut,
+  LayoutDashboard, BookOpen, BarChart3, CalendarDays, LogOut,
   ChevronDown, Bell, Search, Menu, X, Moon, Sun,
   ChevronRight, Globe, ClipboardCheck, Users, GraduationCap,
 } from 'lucide-react'
@@ -27,6 +27,8 @@ import { PERFORMANCE_ROLES } from '../../lib/access'
 const SECTIONS = [
   ...[['dean','Dean'],['associate_dean','Program Coordinator'],['instructor','Instructor'],['student','Student']].map(([role,label]) => ({key:`admin-${role}`,path:`/dashboard?role=${role}`,label,icon:Users,roles:['admin'],monitorRole:role})),
   { key: 'dashboard', path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: 'all' },
+  // Weekly class meetings: what an instructor teaches or a student is enrolled in.
+  { key: 'schedule', path: '/schedule', label: 'Schedule', icon: CalendarDays, roles: ['instructor','student'] },
   { key: 'dean-course', path: '/records', label: 'Course', icon: BookOpen, roles: ['dean','associate_dean'], relatedPaths:['/course-loading'] },
   { key: 'dean-instructors', path: '/instructors', label: 'Instructors', icon: GraduationCap, roles: ['dean','associate_dean'] },
   { key: 'dean-students', path: '/students', label: 'Students', icon: Users, roles: ['associate_dean'], relatedPaths:['/performance'] },

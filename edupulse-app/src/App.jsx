@@ -20,6 +20,7 @@ import { PERFORMANCE_ROLES } from './lib/access'
 const Layout = lazy(() => import('./components/layout/Layout'))
 const Dashboard = lazy(() => import('./pages/Dashboard'))
 const Syllabus = lazy(() => import('./pages/Syllabus'))
+const Schedule = lazy(() => import('./pages/Schedule'))
 const Courseware = lazy(() => import('./pages/Courseware'))
 const Assessment = lazy(() => import('./pages/Assessment'))
 const Performance = lazy(() => import('./pages/Performance'))
@@ -91,6 +92,7 @@ function AppRoutes() {
         }
       >
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/schedule" element={<ProtectedRoute allowedRoles={['instructor','student']}><Schedule /></ProtectedRoute>} />
         <Route path="/syllabus" element={<ProtectedRoute allowedRoles={['instructor']}><Syllabus /></ProtectedRoute>} />
         <Route path="/courseware" element={<CourseEntry />} />
         <Route path="/assessment" element={<ProtectedRoute allowedRoles={['student']}><Assessment /></ProtectedRoute>} />

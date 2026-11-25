@@ -459,3 +459,13 @@ Not done: Dean views do not list class codes (the Dean needs them only if asked)
 
 - Owner correction supersedes the earlier pre-approval draft-outline display in Course. No inferred approval, automatic activation, schema change or academic mutation is introduced. Unrelated schedule work remains outside this release.
 
+## 25 November 2026 - Claude: Schedule page (G16)
+
+Owner request (25 November): add a Schedule station to the top bar for instructors and students: a calendar of the class schedules a student is enrolled in or an instructor teaches. (The same message asked to separate the Syllabus page from the class Syllabus view; see the next entry.)
+
+| Task | Work | Acceptance | Stage |
+|---|---|---|---|
+| T16.1 | Migration `20261125030000_student_class_schedule.sql`: `edupulse_student_class_schedule()` returns only the meeting days, times and room (with code, title, block, term, instructor name) of the classes a student is in: enrolled classes, and classes joined with a code that are still on the instructor's class list. Instructors keep reading their own loads. Read into `classSchedule` (additive; a failure sets `scheduleError`) | `tests/class-codes.test.ts` (PGlite) | Complete |
+| T16.2 | `/schedule` (`pages/Schedule.jsx`, top-bar Schedule for instructors and students, after Home): a week calendar with real dates, previous/next week and Today, a Next class line, an Agenda view (default on phones), overlapping meetings side by side, and classes with no recorded day and time listed apart, never guessed. A meeting opens its class page over Home. `utils/classSchedule.ts` | `tests/class-schedule.test.ts`, `tests/browser/schedule.spec.ts` (instructor, student, empty) | Complete |
+
+Not done: the calendar shows the weekly class meetings, not due dates or week openings (those stay in Home's Upcoming page); Dean and Program Coordinator have no Schedule.

@@ -148,7 +148,14 @@ export async function readAcademic(identity: Identity) {
     if (codes.error || posts.error) classroom = { ...classroom, classroomError: 'Class codes and announcements could not be loaded. Retry when connected.' }
     else classroom = { classCodes: codes.data?.codes || [], classJoins: codes.data?.joins || [], announcements: Array.isArray(posts.data) ? posts.data : [] }
   }
-  const result={ mode: 'cloud', serverNow: new Date().toISOString(), attempts: [], accesses: [], enrollments:[] as Record<string,unknown>[], faculty, homeBlock:home?.data||null,assignedCourses:assigned?.data||[], ...Object.fromEntries(rows), ...classroom, ...(directory ? { directory } : {}), ...(directoryError ? { directoryError } : {}) }
+  // A student's class meeting times are additive too: without them the Schedule page says so and the rest stays readable.
+  let classSchedule: unknown[] = [], scheduleError: string | undefined
+  if (identity.role === 'student') {
+    const meetings = await client.rpc('edupulse_student_class_schedule')
+    if (meetings.error || !Array.isArray(meetings.data)) scheduleError = 'Your class schedule could not be loaded. Retry when connected.'
+    else classSchedule = meetings.data
+  }
+  const result={ mode: 'cloud', serverNow: new Date().toISOString(), attempts: [], accesses: [], enrollments:[] as Record<string,unknown>[], faculty, homeBlock:home?.data||null,assignedCourses:assigned?.data||[], classSchedule, ...(scheduleError ? { scheduleError } : {}), ...Object.fromEntries(rows), ...classroom, ...(directory ? { directory } : {}), ...(directoryError ? { directoryError } : {}) }
   if(['dean','associate_dean','instructor'].includes(identity.role))result.enrollments=await academicStudentYears(client,result.enrollments as Record<string,unknown>[])
   return result
 }

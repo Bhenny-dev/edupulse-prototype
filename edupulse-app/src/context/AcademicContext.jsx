@@ -3,7 +3,7 @@ import { useAuth } from './AuthContext'
 import { useWorkspace } from './WorkspaceContext'
 import { aiRequest } from '../lib/aiClient'
 
-const EMPTY_ACADEMIC = { announcements: [], classCodes: [], classJoins: [], courses: [],assignedCourses:[], publications: [], deliverySchedules: [], enrollments: [], attempts: [], accesses: [],reading:[],sessions:[], institutional: [], faculty: [], events: [], notices: [] }
+const EMPTY_ACADEMIC = { classSchedule: [], announcements: [], classCodes: [], classJoins: [], courses: [],assignedCourses:[], publications: [], deliverySchedules: [], enrollments: [], attempts: [], accesses: [],reading:[],sessions:[], institutional: [], faculty: [], events: [], notices: [] }
 const AcademicContext = createContext(null)
 
 // Load on identity entry and after this tab's confirmed mutations. Focus, timers and
@@ -53,6 +53,7 @@ function AcademicSession({ children, user,authLoading }) {
             // Dean-only account directory (object) and its unavailable notice travel with the records.
             ...(records.directory && typeof records.directory === 'object' && !Array.isArray(records.directory) ? { directory: records.directory } : {}),
             ...(typeof records.classroomError==='string'?{classroomError:records.classroomError}:{}),
+            ...(typeof records.scheduleError==='string'?{scheduleError:records.scheduleError}:{}),
             ...(typeof records.directoryError === 'string' ? { directoryError: records.directoryError } : {}) }, loaded: true });setRefreshAvailable(false)}
         } while (valid() && version !== timing.current.invalidation)
       } catch (failure) {

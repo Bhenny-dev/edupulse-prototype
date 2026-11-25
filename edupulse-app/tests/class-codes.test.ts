@@ -11,7 +11,7 @@ async function classroomDatabase() {
   const fixture = await semesterDatabase()
   const maintenance = () => fixture.db.exec("RESET ROLE;SELECT set_config('request.jwt.claim.sub','',false),set_config('request.jwt.claims','{}',false)")
   await maintenance()
-  for (const name of ['20261118061807_historical_teaching_load_backfill', '20261118082233_instructor_load_details', '20261118090000_course_load_block_sections', '20261123120000_class_codes_and_announcements', '20261125010000_automatic_class_codes', '20261125013623_admin_classroom_support']) await fixture.db.exec(await readFile(`supabase/migrations/${name}.sql`, 'utf8'))
+  for (const name of ['20261118061807_historical_teaching_load_backfill', '20261118082233_instructor_load_details', '20261118090000_course_load_block_sections', '20261123120000_class_codes_and_announcements', '20261125010000_automatic_class_codes', '20261125013623_admin_classroom_support', '20261125030000_student_class_schedule']) await fixture.db.exec(await readFile(`supabase/migrations/${name}.sql`, 'utf8'))
   const rpc = async (name: string, command?: object) => (await fixture.db.query<{ r: any }>(`SELECT public.${name}(${command ? '$1' : ''}) r`, command ? [JSON.stringify(command)] : [])).rows[0].r
   const records = async (where: string) => { await maintenance(); return (await fixture.db.query<{ record_key: string; data: Record<string, any> }>(`SELECT record_key,data FROM public.edupulse_institutional_records WHERE kind='loads' AND ${where} ORDER BY record_key`)).rows }
   await fixture.as(2)
@@ -142,6 +142,21 @@ test('a class gets its own unique code the moment the Dean loads it; a turned-of
     await as(3)
     const code = codes.find(c => c.course_code === 'IT 102')!.code
     assert.deepEqual([(await rpc('edupulse_class_join', { action: 'lookup', code })).course_code, (await rpc('edupulse_class_join', { action: 'lookup', code })).block], ['IT 102', 'A'])
+
+    // The student reads only the meeting times of the classes they are in: nothing before joining, then that class.
+    assert.deepEqual(await rpc('edupulse_student_class_schedule'), [])
+    await as(2)
+    await command({ action: 'block.add', assignment: other.record_key, expected_instructor: ids[0], block: 'A', days: 'TTH', time: '7:30 - 9:00', room: 'A310' })
+    await as(3)
+    await rpc('edupulse_class_join', { action: 'join', code })
+    const schedule = await rpc('edupulse_student_class_schedule')
+    assert.deepEqual(schedule.map((row: any) => [row.course_code, row.course_title, row.block, row.academic_year, row.semester, row.slots]), [['IT 102', 'Data Structures', 'A', '2026-2027', '1st Semester', [{ days: 'TTH', time: '7:30 - 9:00', room: 'A310' }]]])
+    assert.deepEqual(Object.keys(schedule[0]).sort(), ['academic_year', 'block', 'course_code', 'course_title', 'instructor_name', 'load_key', 'semester', 'slots'], 'only meeting data is exposed')
+    await as(5)
+    assert.deepEqual(await rpc('edupulse_student_class_schedule'), [], 'a student who is not in the class sees nothing of it')
+    await as(0)
+    await assert.rejects(rpc('edupulse_student_class_schedule'), { code: '42501' }, 'instructors read their own loads, not this student read')
+    await as(3)
 
     // Turned off by the instructor, a code is not made again when the class changes (the Dean adds its room).
     await as(0)
