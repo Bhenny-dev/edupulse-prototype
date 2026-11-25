@@ -1,3 +1,4 @@
+import { Spinner, LoadingStatus } from '../ui/LoadingFeedback'
 import {useEffect,useMemo,useState} from 'react'
 import {BookOpen,GraduationCap,Clock,Layers} from 'lucide-react'
 import {useAuth} from '../../context/AuthContext'
@@ -11,7 +12,6 @@ import {scheduleHours} from '../../utils/teachingLoad'
 import {matchInstructor} from './eduSuiteImport'
 import PageModal from '../ui/PageModal'
 import SummaryCard from '../ui/SummaryCard'
-import {LoadingStatus} from '../ui/LoadingFeedback'
 import './teaching-load-import.css'
 
 const compact=value=>String(value||'').normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toUpperCase().replace(/[^A-Z0-9]/g,'')
@@ -110,7 +110,7 @@ export default function TeachingLoadImport({file,initialOpen=false,openSignal=0,
  return <section className="pulse-action" aria-label="Extracted teaching loads">
   <strong>{file.fileName}</strong>{summary&&<p>{summary}</p>}<p>{excel?`${doc.entries.length} class loads · ${doc.totals.length} instructors · ${doc.pages} sheet${doc.pages===1?'':'s'}`:`${doc.entries.length} extracted class loads · ${doc.totals.length} instructor forms · ${doc.pages} pages`}. No loads are saved until you review and confirm.</p>
   <button className="btn btn-secondary btn-sm" onClick={()=>setOpen(true)}>{excel?'Review course loads':'Review extracted course loads'}</button>
-  {open&&<PageModal className="load-import-page" title="Review teaching loads" subtitle={file.fileName} onClose={close} closeLabel="Close teaching load review" footer={<><span role="status">{receipt?`${receipt.imported} loads saved.`:`${chosen.length} selected${manage&&data?` · ${added.length?`${added.length} new course${added.length===1?'':'s'} will be added · `:''}${needs.length?needs.join(' · '):'ready to import'}`:''}`}</span><button className="btn btn-secondary" onClick={close} disabled={busy}>Close</button>{manage&&!receipt&&<button className="btn btn-primary" onClick={save} disabled={busy||loading||!data||!reviewed||!chosen.length||chosen.length>500||invalid.length>0}>{busy?'Saving loads…':'Confirm selected loads'}</button>}</>}>
+  {open&&<PageModal className="load-import-page" title="Review teaching loads" subtitle={file.fileName} onClose={close} closeLabel="Close teaching load review" footer={<><span role="status">{receipt?`${receipt.imported} loads saved.`:`${chosen.length} selected${manage&&data?` · ${added.length?`${added.length} new course${added.length===1?'':'s'} will be added · `:''}${needs.length?needs.join(' · '):'ready to import'}`:''}`}</span><button className="btn btn-secondary" onClick={close} disabled={busy}>Close</button>{manage&&!receipt&&<button aria-busy={Boolean(busy)} className="btn btn-primary" onClick={save} disabled={busy||loading||!data||!reviewed||!chosen.length||chosen.length>500||invalid.length>0}>{Boolean(busy) && <Spinner />}{busy?'Saving loads…':'Confirm selected loads'}</button>}</>}>
    <div className="load-import-summary">
     {[[excel?'Instructors':'Instructor forms',doc.totals.length,GraduationCap,'var(--purple-500)'],['Class loads',doc.entries.length,Layers,'var(--sky-500)'],['Source units',doc.entries.some(e=>e.units===null)?'Incomplete':doc.entries.reduce((n,e)=>n+(e.units||0),0),BookOpen,'var(--green-500)'],['Computed hours / week',doc.entries.some(e=>e.computedHours===null)?'Incomplete':doc.entries.reduce((n,e)=>n+(e.computedHours||0),0),Clock,'var(--amber-500)']].map(([label,value,icon,color])=><SummaryCard key={label} label={label} value={value} icon={icon} color={color}/>)}
    </div>

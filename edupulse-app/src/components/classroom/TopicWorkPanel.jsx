@@ -1,3 +1,4 @@
+import { LoadingStatus, Spinner } from '../ui/LoadingFeedback'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { aiRequest } from '../../lib/aiClient'
 import { downloadTeachingFile, uploadCourseFile } from '../../utils/teachingFiles'
@@ -26,7 +27,7 @@ function CommentForm({ label, send }) {
   }
   return <form className="topic-comment-form" onSubmit={post}>
     <label>{label}<textarea className="form-input" rows={2} maxLength={4000} value={body} onChange={event => setBody(event.target.value)} disabled={busy}/></label>
-    <button className="btn btn-secondary btn-sm" disabled={busy || !body.trim()}>{busy ? 'Posting...' : 'Post comment'}</button>
+    <button aria-busy={Boolean(busy)} className="btn btn-secondary btn-sm" disabled={busy || !body.trim()}>{Boolean(busy) && <Spinner />}{busy ? 'Posting...' : 'Post comment'}</button>
     {error && <p role="alert">{error}</p>}
   </form>
 }
@@ -72,7 +73,7 @@ function Submission({ submission }) {
     <p className="text-sm text-muted">{submission.block} / Submitted {date(submission.submittedAt)} (Philippine time)</p>
     {submission.body && <p className="topic-work-text">{submission.body}</p>}
     {submission.link && <LinkCard link={{ url: submission.link, title: 'Submitted link' }} embed={false}/>}
-    <div className="teaching-file-list">{submission.files.map(file => <button type="button" className="btn btn-secondary btn-sm" key={file.path} disabled={Boolean(opening)} onClick={() => void download(file)}>{opening === file.path ? 'Preparing download...' : file.name}</button>)}</div>
+    <div className="teaching-file-list">{submission.files.map(file => <button aria-busy={Boolean(opening === file.path)} type="button" className="btn btn-secondary btn-sm" key={file.path} disabled={Boolean(opening)} onClick={() => void download(file)}>{Boolean(opening === file.path) && <Spinner />}{opening === file.path ? 'Preparing download...' : file.name}</button>)}</div>
     {error && <p role="alert">{error}</p>}
   </article>
 }
@@ -120,8 +121,8 @@ function SubmitWork({ publication, send }) {
     </li>)}</ul>
     <label>Link<input className="form-input" type="url" maxLength={2000} value={link} onChange={event => setLink(event.target.value)} disabled={busy} placeholder="https://"/></label>
     <label>Written work<textarea className="form-input" rows={4} maxLength={12000} value={body} onChange={event => setBody(event.target.value)} disabled={busy}/></label>
-    <button className="btn btn-primary" disabled={busy || !(files.length || link.trim() || body.trim())}>Submit work</button>
-    {progress && <p role="status">{progress}</p>}
+    <button aria-busy={Boolean(busy)} className="btn btn-primary" disabled={busy || !(files.length || link.trim() || body.trim())}>{busy && <Spinner />}Submit work</button>
+    {progress && <p role="status">{busy && <Spinner />}{progress}</p>}
     {error && <p role="alert">{error}</p>}
   </form>
 }
@@ -154,7 +155,7 @@ export default function TopicWorkPanel({ publication, teacher = false, readOnly 
   return <details className="topic-work" open={open} onToggle={event => setOpen(event.currentTarget.open)}>
     <summary>{(data?.bin || publication.content?.submissionBin) ? (teacher ? 'Submissions and comments' : 'Your work and comments') : 'Class and private comments'}</summary>
     {open && <>
-      {!data && !error && <p role="status">Loading class work...</p>}
+      {!data && !error && <LoadingStatus label="Loading class work..." />}
       {notice && <p role="status">{notice}</p>}
       {error && <p role="alert">{error} <button className="btn btn-secondary btn-sm" onClick={() => void load()}>Retry</button></p>}
       {data && <div className={'topic-work-layout' + (data.bin || data.submissions.length ? ' has-bin' : '')}>

@@ -1,3 +1,4 @@
+import { Spinner, LoadingStatus } from '../ui/LoadingFeedback'
 import { useState } from 'react'
 import { useWorkspace } from '../../context/WorkspaceContext'
 import { useAcademicRecords } from '../../context/AcademicContext'
@@ -10,6 +11,7 @@ export default function AcademicRecords({ data, tab }) {
   const workspace = useWorkspace()
   const { command } = useAcademicRecords()
   const [kind, setKind] = useState('courses'), [preview, setPreview] = useState(null), [filename, setFilename] = useState(''), [error, setError] = useState(''), [saving, setSaving] = useState(false), [message, setMessage] = useState('')
+  const [reading,setReading]=useState(false)
   const [block, setBlock] = useState('')
   const [studentRef,setStudentRef]=useState(''),[targetBlock,setTargetBlock]=useState('')
   const intake = Object.fromEntries(['courses','loads','rosters'].map(kind => [kind,(data.institutional || []).filter(item => item.kind===kind).map(item=>item.data)]))
@@ -18,8 +20,9 @@ export default function AcademicRecords({ data, tab }) {
   const read = async event => {
     const file = event.target.files?.[0]; event.target.value = ''
     setPreview(null); setError(''); setMessage('')
-    if (!file) return
-    try { if (!/\.csv$/i.test(file.name) || file.size > 1_000_000) throw new Error('Choose a CSV file up to 1 MB.'); const parsed = parseIntake(await file.text(), kind); setFilename(file.name); setPreview(parsed) } catch (failure) { setError(failure.message) }
+    if (!file || reading) return
+    setReading(true)
+    try { if (!/\.csv$/i.test(file.name) || file.size > 1_000_000) throw new Error('Choose a CSV file up to 1 MB.'); const parsed = parseIntake(await file.text(), kind); setFilename(file.name); setPreview(parsed) } catch (failure) { setError(failure.message) } finally { setReading(false) }
   }
   const confirm = async () => {
     setSaving(true); setError('')
@@ -31,10 +34,11 @@ export default function AcademicRecords({ data, tab }) {
   const intakeHeaders = INTAKE_FIELDS[kind]
   return <>
     <p className="text-sm text-muted mb-16">Import the official EduSuite exports in order: courses, course loads, then student class lists. Confirmation updates shared college records. Loads require the provisioned instructor account ID; rosters link by block and verified student email. There is no direct EduSuite synchronization.</p>
+    {reading && <LoadingStatus label="Reading academic file..." />}{saving && <LoadingStatus label="Saving academic records..." />}
     {tab === 'import' && <>
       <nav className="tabs academic-tabs mb-24" aria-label="File import views">{KINDS.map(([id, title]) => <button className={`tab ${kind === id ? 'active' : ''}`} aria-pressed={kind === id} key={id} onClick={() => { setKind(id); setPreview(null); setError(''); setMessage('') }}>{title}</button>)}</nav>
       {error && <p role="alert" className="error-banner">{error}</p>}{message && <p role="status" className="success-banner mb-16">{message}</p>}
-      {intakeHeaders && <><Panel title={`Import ${KINDS.find(([id]) => id === kind)[1]}`}><label className="academic-upload">Choose CSV for preview<input type="file" accept=".csv,text/csv" disabled={saving} onChange={read} /></label><p className="text-sm text-muted mt-16">Required columns: {intakeHeaders.join(', ')}. {kind==='loads'&&'Optional: HasMasters, Specialization.'} {kind==='rosters'&&'Optional: Adviser.'} Up to 1,000 rows. Matching keys update existing shared records.</p>{preview && <div className="mt-16"><h3>{filename}</h3><p>{preview.accepted.length} valid · {preview.errors.length} rejected · {preview.total} total</p><Table headers={preview.headers} rows={preview.accepted.slice(0, 10).map(row => preview.headers.map(header => row[header]))} /><p className="text-sm text-muted">Preview shows the first 10 valid rows.</p>{preview.errors.length > 0 && <Table headers={['Row', 'Rejected reason']} rows={preview.errors.map(item => [item.row, item.message])} />}<div className="academic-actions mt-16"><button className="btn btn-primary" disabled={saving || !preview.accepted.length} onClick={confirm}>{saving ? 'Saving…' : `Confirm Import (${preview.accepted.length} records)`}</button><button className="btn btn-secondary" disabled={saving} onClick={() => setPreview(null)}>Cancel import</button></div></div>}</Panel><Panel title="Shared academic records" actions={<CsvButton headers={[...intakeHeaders]} rows={(intake[kind] || []).map(row => intakeHeaders.map(header => row[header]))} name={`private-${kind}`} />}><Table headers={[...intakeHeaders]} rows={(intake[kind] || []).map(row => intakeHeaders.map(header => row[header]))} empty="No confirmed file intake yet." /></Panel></>}
+      {intakeHeaders && <><Panel title={`Import ${KINDS.find(([id]) => id === kind)[1]}`}><label className="academic-upload">Choose CSV for preview<input type="file" accept=".csv,text/csv" disabled={saving || reading} onChange={read} /></label><p className="text-sm text-muted mt-16">Required columns: {intakeHeaders.join(', ')}. {kind==='loads'&&'Optional: HasMasters, Specialization.'} {kind==='rosters'&&'Optional: Adviser.'} Up to 1,000 rows. Matching keys update existing shared records.</p>{preview && <div className="mt-16"><h3>{filename}</h3><p>{preview.accepted.length} valid · {preview.errors.length} rejected · {preview.total} total</p><Table headers={preview.headers} rows={preview.accepted.slice(0, 10).map(row => preview.headers.map(header => row[header]))} /><p className="text-sm text-muted">Preview shows the first 10 valid rows.</p>{preview.errors.length > 0 && <Table headers={['Row', 'Rejected reason']} rows={preview.errors.map(item => [item.row, item.message])} />}<div className="academic-actions mt-16"><button aria-busy={Boolean(saving)} className="btn btn-primary" disabled={saving || !preview.accepted.length} onClick={confirm}>{Boolean(saving) && <Spinner />}{saving ? 'Saving…' : `Confirm Import (${preview.accepted.length} records)`}</button><button className="btn btn-secondary" disabled={saving} onClick={() => setPreview(null)}>Cancel import</button></div></div>}</Panel><Panel title="Shared academic records" actions={<CsvButton headers={[...intakeHeaders]} rows={(intake[kind] || []).map(row => intakeHeaders.map(header => row[header]))} name={`private-${kind}`} />}><Table headers={[...intakeHeaders]} rows={(intake[kind] || []).map(row => intakeHeaders.map(header => row[header]))} empty="No confirmed file intake yet." /></Panel></>}
       {kind === 'templates' && <Panel title="Import Templates"><div className="academic-card-grid">{KINDS.slice(0, 3).map(([id, label]) => <div className="academic-tile" key={id}><h3>{label}</h3><p className="text-sm text-muted mb-16">{INTAKE_FIELDS[id].join(', ')}</p><button className="btn btn-secondary btn-sm" onClick={() => downloadBlob(`${INTAKE_FIELDS[id].join(',')}\n`, `${id}-template.csv`, 'text/csv')}>Download {label} Template</button></div>)}</div></Panel>}
       {kind === 'history' && <Panel title="Import History"><Table headers={['Filename', 'Result', 'Imported']} rows={intake.history.map(item => [item.title, item.detail, new Date(item.created_at).toLocaleString()])} empty="No confirmed shared imports yet." /></Panel>}
     </>}

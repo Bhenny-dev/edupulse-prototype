@@ -542,3 +542,13 @@ The owner identifies excess classes and requests comparison of registered instru
 | T21.4 | Reconcile other instructors' conflicting source assignments and the missing instructor identity mapping. | Confirm source precedence and resolve overlapping course/block ownership before replacing earlier confirmed loads. Private audit records the differences; no replacements applied. | Draft |
 
 Other instructors' workbook conflicts are documented; their assignments are not silently remapped. [Evidence and limits](versions/2026-11-25-source-load-correction/validation/results.md).
+
+
+## 26 November 2026 - Loading feedback audit (G22)
+
+| Task | Work | Acceptance | Stage |
+|---|---|---|---|
+| T22.1 | Prioritize a source scan of all role pages, async components, shared dialogs and lazy boundaries. | 195 JSX/TSX files, 89 async/promise units; explicit findings and delegated/already-covered exclusions in the version audit. | Complete |
+| T22.2 | Replace missing pending animation with the existing themed feedback. | Actual-request flags, reduced motion, retained input/error recovery, no replay or fake success; 574-test release gate, eight held-request desktop/phone cases and eight capture cases. | Complete |
+
+[Scan, validation and scope](versions/2026-11-26-loading-audit/README.md). Source-load mapping conflicts from G21 remain pending; this UI task does not change academic assignments.

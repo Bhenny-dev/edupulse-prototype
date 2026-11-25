@@ -1,3 +1,4 @@
+import { Spinner } from '../ui/LoadingFeedback'
 import { useEffect, useId, useState } from 'react'
 import { CalendarClock, Megaphone, Pencil, Trash2, X } from 'lucide-react'
 import ModalLayer from '../ui/ModalLayer'
@@ -40,7 +41,7 @@ function Composer({ course, weeks, initial, onCancel, onSaved }) {
     {draft.attachments.length < 10 && <LinkForm disabled={busy} label="Add link" onAdd={link => set('attachments', [...draft.attachments, link])} />}
     {draft.week && <p className="text-sm text-muted">Also listed under Week {draft.week} in Teaching Materials and Assessments.</p>}
     {error && <p role="alert">{error}</p>}
-    <div className="class-composer-actions"><button type="button" className="btn btn-ghost" disabled={busy} onClick={onCancel}>Cancel</button><button className="btn btn-primary" disabled={busy || !draft.title.trim()}>{busy ? 'Saving...' : draft.id ? 'Save changes' : 'Post'}</button></div>
+    <div className="class-composer-actions"><button type="button" className="btn btn-ghost" disabled={busy} onClick={onCancel}>Cancel</button><button aria-busy={Boolean(busy)} className="btn btn-primary" disabled={busy || !draft.title.trim()}>{Boolean(busy) && <Spinner />}{busy ? 'Saving...' : draft.id ? 'Save changes' : 'Post'}</button></div>
   </form>
 }
 
@@ -90,7 +91,7 @@ export default function ClassStream({ course, syllabus, data, readOnly = false, 
     {removing && <ModalLayer onDismiss={() => { if (!busy) setRemoving(null) }}><section className="modal-content class-dialog" role="dialog" aria-modal="true" aria-label="Delete announcement">
       <div className="modal-header"><h2>Delete announcement</h2><button type="button" className="modal-close" aria-label="Close" disabled={busy} onClick={() => setRemoving(null)}><X size={20} aria-hidden="true" /></button></div>
       <p>Delete "{removing.title}"? Students no longer see it. This cannot be undone.</p>{error && <p role="alert">{error}</p>}
-      <div className="modal-actions"><button type="button" className="btn btn-ghost" disabled={busy} onClick={() => setRemoving(null)}>Cancel</button><button type="button" className="btn btn-primary" disabled={busy} onClick={() => void remove()}>{busy ? 'Deleting...' : 'Delete'}</button></div>
+      <div className="modal-actions"><button type="button" className="btn btn-ghost" disabled={busy} onClick={() => setRemoving(null)}>Cancel</button><button aria-busy={Boolean(busy)} type="button" className="btn btn-primary" disabled={busy} onClick={() => void remove()}>{Boolean(busy) && <Spinner />}{busy ? 'Deleting...' : 'Delete'}</button></div>
     </section></ModalLayer>}
   </div>
 }

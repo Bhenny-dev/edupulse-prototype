@@ -1,3 +1,4 @@
+import { Spinner, LoadingStatus } from '../ui/LoadingFeedback'
 import MeetingDaysPicker,{validMeetingDays} from './MeetingDaysPicker'
 import {useEffect,useState} from 'react'
 import {scheduleHours} from '../../utils/teachingLoad'
@@ -27,8 +28,8 @@ export default function DeanCourseAssignment({course,load,instructors,academicYe
   command.details={...details,computed_hours:computed};
   if(await action.run(load?'Updating course instructor':'Loading course',command,()=>({text:`${course.code} course load saved.`})))onClose()
  }
- return <DeanDialog title={load?`Edit ${course.code} instructor`:`Load ${course.code}`} subtitle={`${course.title} · ${semester} · AY ${academicYear}`} icon={GraduationCap} size="form" onClose={onClose} footer={<><button className="btn btn-secondary" disabled={Boolean(action.busy)} onClick={onClose}>Cancel</button><button className="btn btn-primary" disabled={reading||Boolean(action.busy)||!people.length} onClick={save}>{load?'Save instructor':'Load course'}</button></>}>
-  <div className="dean-form dean-load-details">
+ return <DeanDialog title={load?`Edit ${course.code} instructor`:`Load ${course.code}`} subtitle={`${course.title} · ${semester} · AY ${academicYear}`} icon={GraduationCap} size="form" onClose={onClose} footer={<><button className="btn btn-secondary" disabled={Boolean(action.busy)} onClick={onClose}>Cancel</button><button aria-busy={Boolean(action.busy)} className="btn btn-primary" disabled={reading||Boolean(action.busy)||!people.length} onClick={save}>{Boolean(action.busy) && <Spinner />}{load?'Save instructor':'Load course'}</button></>}>
+  <div className="dean-form dean-load-details">{reading && <LoadingStatus label="Reading teaching packages..." />}
    {(problem||action.error)&&<p role="alert" className="connected-pulse-warning">{problem||action.error}</p>}
    <label className="dean-field"><span>Instructor</span><select aria-label="Instructor" className="form-select" value={teacher} onChange={event=>setTeacher(event.target.value)}>{people.map(person=><option value={person.id} key={person.id}>{person.name}</option>)}</select></label>
    {fields.map(([key,label])=>key==='days'?<MeetingDaysPicker key={key} label={label} value={details.days} onChange={value=>setDetails(previous=>({...previous,days:value}))}/>:<label key={key} className="dean-field"><span>{label}</span><input className="form-input" aria-label={label} type={numeric.includes(key)?'number':'text'} min={['units','hours'].includes(key)?'0.01':'0'} step={key==='students'?'1':'any'} maxLength={key==='time'?150:200} required={key!=='students'} value={details[key]} placeholder={key==='time'?'7:30 AM - 10:00 AM':key==='days'?'M/W/F':key==='program'?'BSIT':undefined} onChange={event=>setDetails(previous=>({...previous,[key]:event.target.value}))}/></label>)}

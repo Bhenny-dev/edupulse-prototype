@@ -1,3 +1,4 @@
+import { Spinner } from '../ui/LoadingFeedback'
 import { useEffect, useMemo, useState } from 'react'
 import { Users } from 'lucide-react'
 import { DeanDialog } from './DeanCommon'
@@ -81,9 +82,9 @@ export default function DeanClassListImport({ files, data, students, action, ter
     onClose()
   }
   return <DeanDialog title="Class lists" subtitle={`${plural(files.length, 'file')} · each list goes to its block section in ${[term.semester, term.academicYear].filter(Boolean).join(' ')}`} icon={Users} onClose={onClose}
-    footer={<><button className="btn btn-secondary" onClick={onClose} disabled={Boolean(action.busy)}>Cancel</button><button className="btn btn-primary" onClick={confirm} disabled={!adding || Boolean(action.busy)}>{action.busy ? `${action.busy}…` : adding ? `Add ${plural(adding, 'student')}` : 'Nothing to add'}</button></>}>
+    footer={<><button className="btn btn-secondary" onClick={onClose} disabled={Boolean(action.busy)}>Cancel</button><button aria-busy={Boolean(action.busy)} className="btn btn-primary" onClick={confirm} disabled={!adding || Boolean(action.busy)}>{Boolean(action.busy) && <Spinner />}{action.busy ? `${action.busy}…` : adding ? `Add ${plural(adding, 'student')}` : 'Nothing to add'}</button></>}>
     {action.error && <p role="alert" className="connected-pulse-warning">{action.error}</p>}
-    {!read && <p role="status">Reading {plural(files.length, 'class list')}…</p>}
+    {!read && <p role="status"><Spinner /> Reading {plural(files.length, 'class list')}…</p>}
     {entries.map(entry => <fieldset key={entry.index} className="dean-class-list">
       <legend>{entry.file.name}</legend>
       {entry.error ? <p role="alert" className="connected-pulse-warning">{entry.error}</p> : <>

@@ -228,3 +228,6 @@ Active instructors receive current management-loaded subjects and registered cla
 
 
 Population preserves management-loaded subject and section counts; it does not expand Home to seat additional students. The source correction retains the reported instructor's eight confirmed sections and preserves saved teaching/results. [Current capture guide and source limitations](../../system-manual/56-academic-population/README.md).
+
+
+Pending dialog actions, reads and file operations use the shared themed spinner or skeleton. Failed requests retain the existing input and error/retry flow; reduced motion keeps labels visible without animation. [Current desktop and phone examples](../../system-manual/57-loading-audit/README.md).

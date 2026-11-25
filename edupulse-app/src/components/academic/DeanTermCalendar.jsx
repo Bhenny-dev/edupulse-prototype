@@ -1,3 +1,4 @@
+import { Spinner } from '../ui/LoadingFeedback'
 import { useState } from 'react'
 import { CalendarDays } from 'lucide-react'
 import { DeanDialog } from './DeanCommon'
@@ -24,7 +25,7 @@ export default function DeanTermCalendar({ records, semester, academicYear, writ
     {writable ? <button className="btn btn-secondary btn-sm" disabled={Boolean(action.busy)} onClick={start} aria-label={`${label} for ${semester} ${academicYear}`}><CalendarDays size={15} aria-hidden="true" /> {label}</button>
       : calendar && <span className="dean-tag">{label}</span>}
     {open && <DeanDialog title="Classes start" subtitle={`${semester} ${academicYear}`} icon={CalendarDays} size="narrow" onClose={() => setOpen(false)}
-      footer={<><button className="btn btn-secondary" onClick={() => setOpen(false)} disabled={Boolean(action.busy)}>Cancel</button><button className="btn btn-primary" type="submit" form="dean-term-calendar" disabled={Boolean(action.busy)}>{action.busy ? `${action.busy}…` : 'Save'}</button></>}>
+      footer={<><button className="btn btn-secondary" onClick={() => setOpen(false)} disabled={Boolean(action.busy)}>Cancel</button><button aria-busy={Boolean(action.busy)} className="btn btn-primary" type="submit" form="dean-term-calendar" disabled={Boolean(action.busy)}>{Boolean(action.busy) && <Spinner />}{action.busy ? `${action.busy}…` : 'Save'}</button></>}>
       <form id="dean-term-calendar" className="dean-form" onSubmit={save} noValidate>
         {(error || action.error) && <p role="alert" className="connected-pulse-warning">{error || action.error}</p>}
         <label className="dean-field">First day of classes<input className="form-input" type="date" value={first} onChange={event => setFirst(event.target.value)} required /></label>

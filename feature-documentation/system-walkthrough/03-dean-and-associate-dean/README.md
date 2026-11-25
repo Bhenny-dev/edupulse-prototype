@@ -112,3 +112,6 @@ The teaching-load review offers editable schedule/source fields for selected row
 ## Flat interface icons
 
 Dean and Program Coordinator page headings, summary tiles, student-section cards and management dialogs use flat outline icons with theme-aware tints. Labels, filters, menus and permissions retain their existing behavior. [Current role examples and page audit](../../system-manual/53-flat-interface-icons/README.md).
+
+
+Pending dialog actions, reads and file operations use the shared themed spinner or skeleton. Failed requests retain the existing input and error/retry flow; reduced motion keeps labels visible without animation. [Current desktop and phone examples](../../system-manual/57-loading-audit/README.md).

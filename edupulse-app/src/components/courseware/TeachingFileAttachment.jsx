@@ -1,3 +1,4 @@
+import { Spinner } from '../ui/LoadingFeedback'
 import {useRef,useState} from 'react'
 import {Paperclip} from 'lucide-react'
 import {useWorkspace} from '../../context/WorkspaceContext'
@@ -28,5 +29,5 @@ export default function TeachingFileAttachment({syllabus,week,onSaved,disabled})
    onSaved?.(receipt)
   }catch(failure){setError(failure.message)}finally{setBusy(false)}
  }
- return <div><button className="btn btn-secondary btn-sm" disabled={disabled||busy} onClick={()=>input.current?.click()}><Paperclip size={14}/>{busy?'Reading teaching file…':'Attach teaching file'}</button><input ref={input} hidden type="file" accept={teachingSourceAccept} aria-label={`Teaching file for week ${week}`} onChange={event=>{const file=event.target.files?.[0];event.target.value='';void attach(file)}}/>{error&&<p role="alert">{error}</p>}</div>
+ return <div><button aria-busy={Boolean(busy)} className="btn btn-secondary btn-sm" disabled={disabled||busy} onClick={()=>input.current?.click()}><Paperclip size={14}/>{Boolean(busy) && <Spinner />}{busy?'Reading teaching file…':'Attach teaching file'}</button><input ref={input} hidden type="file" accept={teachingSourceAccept} aria-label={`Teaching file for week ${week}`} onChange={event=>{const file=event.target.files?.[0];event.target.value='';void attach(file)}}/>{error&&<p role="alert">{error}</p>}</div>
 }

@@ -1,3 +1,4 @@
+import { Spinner } from '../ui/LoadingFeedback'
 import { useState } from 'react'
 import { GraduationCap, UserRound } from 'lucide-react'
 import { DeanDialog } from './DeanCommon'
@@ -44,7 +45,7 @@ export default function DeanAccountDialog({ role, account, blocks = [], action, 
   const title = `${editing ? 'Edit' : 'Add'} ${student ? 'student' : 'instructor'}`
   return <DeanDialog title={title} subtitle={editing ? name : student ? 'Creates the student sign-in and places the student in a block or as irregular.' : 'Creates the instructor sign-in. Course loads are assigned on the Course page.'}
     icon={student ? UserRound : GraduationCap} tone={student ? 'green' : 'purple'} size="form" onClose={onClose}
-    footer={<><button className="btn btn-secondary" onClick={onClose} disabled={Boolean(action.busy)}>Cancel</button><button className="btn btn-primary" type="submit" form="dean-account-form" disabled={Boolean(action.busy)}>{action.busy ? `${action.busy}…` : editing ? 'Save changes' : title}</button></>}>
+    footer={<><button className="btn btn-secondary" onClick={onClose} disabled={Boolean(action.busy)}>Cancel</button><button aria-busy={Boolean(action.busy)} className="btn btn-primary" type="submit" form="dean-account-form" disabled={Boolean(action.busy)}>{Boolean(action.busy) && <Spinner />}{action.busy ? `${action.busy}…` : editing ? 'Save changes' : title}</button></>}>
     <form id="dean-account-form" className="dean-form" onSubmit={submit} noValidate>
       {(problem || action.error) && <p role="alert" className="connected-pulse-warning">{problem || action.error}</p>}
       {student && field('Student number', <input className="form-input" value={form.student_number} onChange={set('student_number')} disabled={editing} required autoComplete="off" />, editing ? 'The official student number cannot be changed.' : 'Exactly as written in EduSuite.')}

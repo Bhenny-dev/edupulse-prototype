@@ -1,3 +1,4 @@
+import { LoadingStatus, Spinner } from '../ui/LoadingFeedback'
 import {useLocation,useNavigate,useSearchParams} from 'react-router-dom'
 import { useEffect, useRef, useState } from 'react'
 import { useWorkspaceViewState } from '../../context/WorkspaceContext'
@@ -5,7 +6,6 @@ import { useAuth } from '../../context/AuthContext'
 import { useAcademicRecords } from '../../context/AcademicContext'
 import { pulse } from '../pulse/pulseBus'
 import { SkeletonKPI, SkeletonTable } from '../ui/LoadingSkeleton'
-import { Spinner } from '../ui/LoadingFeedback'
 import AcademicPerformance from './AcademicPerformance'
 import InstructorMonitoring from './InstructorMonitoring'
 import AcademicManagement from './AcademicManagement'
@@ -138,7 +138,7 @@ export default function AcademicPortal({ view, classModal = false, onCloseClass 
     return <PageModal title={title} subtitle={course && studentClassSubtitle(course,data)} closeLabel="Close class and return to Home" onClose={onCloseClass} className="class-modal" bodyClassName="student-learning">
       <div data-pulse-zone="courseware" data-pulse-target={course?.course_title || 'Class'}>
         {loadError && <div role="alert">{loadError} <button className="btn btn-secondary" onClick={() => records.load(true)}>Retry loading class</button></div>}
-        {loading && !loaded && <p role="status">Loading your class...</p>}
+        {loading && !loaded && <LoadingStatus label="Loading your class..." />}
         {course ? <StudentClassDetail selected={course} data={data} onOpen={open} busy={busy}/> : loaded && <p role="alert">This class is unavailable in the selected term or is no longer assigned to your account.</p>}
         {course && error && !selected && <p role="alert">{error}</p>}
         {course && pageParams.has('item') && !selected && pageParams.get('studentTab') !== 'announcements' && <p role="alert">This item is unavailable in your class.</p>}

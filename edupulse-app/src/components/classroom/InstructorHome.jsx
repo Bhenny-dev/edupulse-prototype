@@ -1,3 +1,4 @@
+import { LoadingStatus } from '../ui/LoadingFeedback'
 import { lazy, Suspense, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { BarChart3, Copy, Settings2, Users } from 'lucide-react'
@@ -78,6 +79,6 @@ export default function InstructorHome({ data, loaded, status, actions }) {
     {courses.length > 0 && <HomeRail reviewCount={review.reduce((sum, item) => sum + item.count, 0)} upcomingCount={upcoming.length} onOpen={openPanel} />}
     {panel === 'review' && <ReviewPanel classes={review} named={named} onOpenClass={open} onClose={closePanel} />}
     {panel === 'upcoming' && <UpcomingPanel items={upcoming} named={named} onOpenClass={open} onClose={closePanel} />}
-    {params.get('course') && <Suspense fallback={null}><ClassPage onClose={close} /></Suspense>}
+    {params.get('course') && <Suspense fallback={<LoadingStatus className="class-opening-status" label="Opening class..." />}><ClassPage onClose={close} /></Suspense>}
   </div>
 }

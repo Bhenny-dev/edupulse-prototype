@@ -168,3 +168,6 @@ Execution is tracked in [WORKPLAN.md](WORKPLAN.md). A release is verified only a
 
 
 [25 November source-load correction](versions/2026-11-25-source-load-correction/README.md) prevents population from inventing assignments/sections and records the guarded correction and all-instructor workbook audit.
+
+
+[26 November loading feedback audit](versions/2026-11-26-loading-audit/README.md) records the all-role scan, corrected pending surfaces and desktop/phone verification.

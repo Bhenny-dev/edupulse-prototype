@@ -1,3 +1,4 @@
+import { Spinner } from '../ui/LoadingFeedback'
 import { mergeGeneratedWeek } from '../../utils/contentUpdates'
 import { downloadMaterialPdf } from '../../utils/pdfExport'
 import { jsonValue } from '../../utils/jsonValue'
@@ -643,7 +644,7 @@ export default function Pulse() {
   const lookAt = interaction.dragging ? interaction.hovered?.element : focus?.element
   const latestSyllabusAction=messages.findLast(message=>message.proposals?.some(proposal=>proposal.type==='syllabus-followups'))?.id
   return <>
-    {officeOpen&&<Suspense fallback={<div className="pulse-office-loading" role="status">Opening the workspace…</div>}><WorkspaceOffice tasks={office.tasks} messages={messages} busy={busy||fileBusy} modelReady={ai.ready} error={error} onClose={()=>setOfficeOpen(false)} onTask={(question,buddy,conversational)=>void send(question,{...(conversational ? {skipOperator:true,task:'general'} : {}),scope:`${buddy.name} · ${buddy.title}`,buddy:buddy.id})}/></Suspense>}
+    {officeOpen&&<Suspense fallback={<div className="pulse-office-loading" role="status"><Spinner /> Opening the workspace…</div>}><WorkspaceOffice tasks={office.tasks} messages={messages} busy={busy||fileBusy} modelReady={ai.ready} error={error} onClose={()=>setOfficeOpen(false)} onTask={(question,buddy,conversational)=>void send(question,{...(conversational ? {skipOperator:true,task:'general'} : {}),scope:`${buddy.name} · ${buddy.title}`,buddy:buddy.id})}/></Suspense>}
     <DwellHelp role={user?.role} disabled={open || interaction.dragging} onTarget={focusTarget} />
     <FocusSpotlight target={interaction.dragging ? interaction.hovered : open ? focus : null} dragging={interaction.dragging} />
     {open && <section data-pulse-ui="panel" {...fileDrop.handlers} className={`connected-pulse ${focus || (guide && !completed) ? 'is-focused' : ''} ${side === 'left' ? 'is-left' : ''}`} role="dialog" aria-modal="false" aria-labelledby="pulse-title">

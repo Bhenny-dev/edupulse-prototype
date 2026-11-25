@@ -1,3 +1,4 @@
+import { Spinner } from '../components/ui/LoadingFeedback'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
@@ -42,10 +43,10 @@ export default function ClassInvitation() {
   return <main className="container" style={{ maxWidth: 560, paddingTop: 48 }}>
     <section className="card"><h1>Class invitation</h1>
       {!isClassCode(code) ? <p role="alert">This invitation code is invalid. Ask your instructor for a current link.</p>
-        : authLoading ? <div role="status">{authRestoreError ? <><p>{authRestoreError}</p><button className="btn btn-secondary" onClick={retryRestoration}>Retry session verification</button></> : 'Verifying your session...'}</div>
+        : authLoading ? <div role="status">{authRestoreError ? <><p>{authRestoreError}</p><button className="btn btn-secondary" onClick={retryRestoration}>Retry session verification</button></> : <><Spinner /> Verifying your session...</>}</div>
           : !user?.authenticated ? <><p>Sign in with your student account to join this class.</p><LoginPanel studentOnly onSignedIn={signedIn} /></>
             : !student ? <><p role="alert">Use your own student account to join this class.</p><button className="btn btn-secondary" onClick={logout}>Sign out</button></>
-              : <><p>Class code: <strong>{code}</strong></p>{records.error ? <div role="alert">{records.error}<button className="btn btn-secondary" onClick={() => records.load(true)}>Retry loading classes</button></div> : busy || !records.loaded ? <p role="status">{busy ? 'Joining class...' : 'Loading your classes...'}</p> : <button className="btn btn-primary" onClick={() => void join()}>Join class</button>}{error && <p role="alert">{error}</p>}</>}
+              : <><p>Class code: <strong>{code}</strong></p>{records.error ? <div role="alert">{records.error}<button className="btn btn-secondary" onClick={() => records.load(true)}>Retry loading classes</button></div> : busy || !records.loaded ? <p role="status"><Spinner />{busy ? 'Joining class...' : 'Loading your classes...'}</p> : <button className="btn btn-primary" onClick={() => void join()}>Join class</button>}{error && <p role="alert">{error}</p>}</>}
       <p className="mt-16"><Link to={user?.authenticated ? '/dashboard' : '/'}>Back to Home</Link></p>
     </section>
   </main>

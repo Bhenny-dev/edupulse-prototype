@@ -1,3 +1,4 @@
+import { Spinner } from '../ui/LoadingFeedback'
 import { useId, useState } from 'react'
 import { BookOpen, Pencil, Pause, Play, Trash2 } from 'lucide-react'
 import CoursewareActions from '../courseware/CoursewareActions'
@@ -30,7 +31,7 @@ export function CourseCatalogForm({ course, action, academicYear, semester, onCl
     const payload = course ? { action: 'course.update', ...scope, code: course.recordKey, expected_updated_at: version, course: values } : { action: 'course.create', ...scope, course: { code: normalized, ...values } }
     if (await action.run(course ? 'Saving course' : 'Adding course', payload, () => ({ text: `${normalized} ${course ? 'updated' : 'added to the course list'}.` }))) onClose()
   }
-  return <DeanDialog title={label} subtitle={`${semester} · AY ${academicYear}`} icon={BookOpen} size="form" onClose={onClose} footer={<><button className="btn btn-secondary" onClick={onClose} disabled={Boolean(action.busy)}>Cancel</button><button className="btn btn-primary" type="submit" form="dean-catalog-form" disabled={Boolean(action.busy)}>{course ? 'Save course' : 'Add Course'}</button></>}>
+  return <DeanDialog title={label} subtitle={`${semester} · AY ${academicYear}`} icon={BookOpen} size="form" onClose={onClose} footer={<><button className="btn btn-secondary" onClick={onClose} disabled={Boolean(action.busy)}>Cancel</button><button aria-busy={Boolean(action.busy)} className="btn btn-primary" type="submit" form="dean-catalog-form" disabled={Boolean(action.busy)}>{Boolean(action.busy) && <Spinner />}{course ? 'Save course' : 'Add Course'}</button></>}>
     <form id="dean-catalog-form" className="dean-form" onSubmit={submit}>
       {(problem || action.error) && <p role="alert" className="connected-pulse-warning">{problem || action.error}</p>}
       <div className="dean-field"><label htmlFor={codeId}>Course code</label><input id={codeId} aria-describedby={course?`${codeId}-hint`:undefined} className="form-input" value={code} onChange={event => setCode(event.target.value)} maxLength={40} required readOnly={Boolean(course)} />{course && <small id={`${codeId}-hint`} className="text-muted">The code keeps loaded classes and syllabus records linked. You can rename the course title.</small>}</div>

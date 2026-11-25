@@ -1,3 +1,4 @@
+import { Spinner } from '../ui/LoadingFeedback'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
@@ -93,8 +94,8 @@ export default function LoginPanel({ className = '', onSignedIn, studentOnly = f
           </div>
         </div>
         {error && <p role="alert" className="text-sm">{error}</p>}
-        <button type="submit" disabled={busy} className="btn btn-primary w-full login-submit">
-          <LogIn size={16} /> {busy ? 'Signing in…' : 'Sign In'}
+        <button aria-busy={Boolean(busy)} type="submit" disabled={busy} className="btn btn-primary w-full login-submit">
+          <LogIn size={16} /> {Boolean(busy) && <Spinner />}{busy ? 'Signing in…' : 'Sign In'}
         </button>
         <p className="login-note">
           Use the email and password assigned to your EduPulse account.
@@ -109,7 +110,7 @@ export default function LoginPanel({ className = '', onSignedIn, studentOnly = f
             <path fill="#FBBC05" d="M5.83 13.96a6.6 6.6 0 0 1 0-3.92V7.19H2.15a11 11 0 0 0 0 9.62l3.68-2.85Z" />
             <path fill="#EA4335" d="M12 5.5c1.62 0 3.06.56 4.21 1.64l3.15-3.15A10.56 10.56 0 0 0 12 1a11 11 0 0 0-9.85 6.19l3.68 2.85C6.7 7.44 9.13 5.5 12 5.5Z" />
           </svg>
-          Sign in with Google
+          {busy && <Spinner />}Sign in with Google
         </button>
         <p className="login-note">{googleEnabled ? 'System admin: choose your Google account. Other roles use email and password.' : 'Google sign-in is temporarily unavailable.'}</p>
       </div>}

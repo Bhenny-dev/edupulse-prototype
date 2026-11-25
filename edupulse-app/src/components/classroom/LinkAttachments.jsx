@@ -1,3 +1,4 @@
+import { Spinner } from '../ui/LoadingFeedback'
 import { useState } from 'react'
 import { ExternalLink, Link as LinkIcon, Video, FileText, Presentation, Table2, ClipboardList, HardDrive, PenTool, Play, X } from 'lucide-react'
 import { linkProvider, linkAttachment, youtubeId } from '../../utils/classroom'
@@ -46,6 +47,6 @@ export function LinkForm({ onAdd, disabled = false, label = 'Add link', note }) 
     <label className="form-label">Title (optional)<input className="form-input" maxLength={200} value={title} onKeyDown={enter} onChange={event => setTitle(event.target.value)} /></label>
     <p className="text-sm text-muted">{note || 'The file stays with its provider. Share it so your students can open it, for example with anyone at the College who has the link.'}</p>
     {error && <p role="alert">{error}</p>}
-    <div className="class-link-form-actions"><button type="button" className="btn btn-ghost btn-sm" disabled={busy} onClick={() => { setOpen(false); setError('') }}>Cancel</button><button type="button" className="btn btn-primary btn-sm" disabled={busy || disabled || !url.trim()} onClick={() => void add()}>{busy ? 'Adding link...' : 'Add link'}</button></div>
+    <div className="class-link-form-actions"><button type="button" className="btn btn-ghost btn-sm" disabled={busy} onClick={() => { setOpen(false); setError('') }}>Cancel</button><button aria-busy={Boolean(busy)} type="button" className="btn btn-primary btn-sm" disabled={busy || disabled || !url.trim()} onClick={() => void add()}>{Boolean(busy) && <Spinner />}{busy ? 'Adding link...' : 'Add link'}</button></div>
   </div>
 }

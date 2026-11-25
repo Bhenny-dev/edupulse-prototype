@@ -1,3 +1,4 @@
+import { Spinner } from '../ui/LoadingFeedback'
 import MeetingDaysPicker,{validMeetingDays} from './MeetingDaysPicker'
 import { useState } from 'react'
 import { Layers } from 'lucide-react'
@@ -36,7 +37,7 @@ export default function DeanBlockSectionDialog({ load, block = '', students, act
     if (result) onClose()
   }
   return <DeanDialog title={existing ? `Add students to ${label}` : 'Add block section'} subtitle={`${load.code} · ${load.instructorName} · ${[load.semester, load.academicYear].filter(Boolean).join(' · ')}`} icon={Layers} size="narrow" onClose={onClose}
-    footer={<><button className="btn btn-secondary" onClick={onClose} disabled={Boolean(action.busy)}>Cancel</button><button className="btn btn-primary" type="submit" form="dean-block-form" disabled={Boolean(action.busy)}>{action.busy ? `${action.busy}…` : existing ? `Add ${chosen.length} student${chosen.length === 1 ? '' : 's'}` : chosen.length ? `Add block with ${chosen.length} student${chosen.length === 1 ? '' : 's'}` : 'Add block without a class list'}</button></>}>
+    footer={<><button className="btn btn-secondary" onClick={onClose} disabled={Boolean(action.busy)}>Cancel</button><button aria-busy={Boolean(action.busy)} className="btn btn-primary" type="submit" form="dean-block-form" disabled={Boolean(action.busy)}>{Boolean(action.busy) && <Spinner />}{action.busy ? `${action.busy}…` : existing ? `Add ${chosen.length} student${chosen.length === 1 ? '' : 's'}` : chosen.length ? `Add block with ${chosen.length} student${chosen.length === 1 ? '' : 's'}` : 'Add block without a class list'}</button></>}>
     <form id="dean-block-form" className="dean-form" onSubmit={submit} noValidate>
       {(error || action.error) && <p role="alert" className="connected-pulse-warning">{error || action.error}</p>}
       <label className="dean-field">Block section<input className="form-input" value={name} maxLength={40} disabled={Boolean(block)} onChange={event => setName(event.target.value)} /></label>

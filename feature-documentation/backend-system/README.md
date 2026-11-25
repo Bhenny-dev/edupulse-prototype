@@ -773,3 +773,8 @@ The workspace trigger collection migration materializes NEW/OLD syllabus and con
 ## Source-bounded population correction, 25 November 2026
 
 The population planner now uses only retained management course parents and existing sections; capacity overflow is reported without creating subjects or sections. A changed plan cannot reuse an earlier output directory's receipts. The explicit maintenance correction requires a confirmed baseline and matching private population manifests, rechecks live management status and reviewed row versions, and retains all learning fingerprints within the atomic operation. Existing continuity triggers archive removed teaching/membership context, retired codes are disabled and current enrollment is refreshed. No public endpoint, browser grant or schema migration is added. [Validation and source gaps](../versions/2026-11-25-source-load-correction/validation/results.md).
+
+
+## Loading feedback audit, 26 November 2026
+
+Presentation changes reuse current operation flags and shared loaders across roles. Practice startup and academic/student file reads now expose their actual pending promises. API operations, authorization, retries, save journaling and reload behavior retain their existing contracts. No schema or provider change is required. [Scan and validation](../versions/2026-11-26-loading-audit/README.md).

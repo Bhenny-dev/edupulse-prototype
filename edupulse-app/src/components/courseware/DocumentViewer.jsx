@@ -129,7 +129,7 @@ export default function DocumentViewer({ content, onBack, isStudent = false, rea
               <button className="btn btn-ghost btn-sm" disabled={saving} onClick={cancelEditing}>
                 <X size={14} /> Cancel
               </button>
-              <button className="btn btn-primary btn-sm" disabled={saving} onClick={saveEdits}>
+              <button aria-busy={Boolean(saving)} className="btn btn-primary btn-sm" disabled={saving} onClick={saveEdits}>
                 {saving ? <Spinner size={14} /> : <Save size={14} />} {saving ? 'Saving…' : 'Save'}
               </button>
             </>
@@ -186,7 +186,7 @@ export default function DocumentViewer({ content, onBack, isStudent = false, rea
                 <h2 className="doc-viewer-heading">{section.heading}</h2>
               )}
               {renderBody(section.body, idx, editing)}
-              {reading&&!editing&&<button type="button" className="btn btn-secondary mt-16" disabled={reading.busy||idx!==reading.read} onClick={()=>reading.confirm(idx)}>{idx<reading.read?'Section confirmed':`Confirm section ${idx+1} read`}</button>}
+              {reading&&!editing&&<button aria-busy={Boolean(reading.busy && idx === reading.read)} type="button" className="btn btn-secondary mt-16" disabled={reading.busy||idx!==reading.read} onClick={()=>reading.confirm(idx)}>{reading.busy && idx === reading.read && <Spinner />}{idx<reading.read?'Section confirmed':`Confirm section ${idx+1} read`}</button>}
             </div>
           ))}
           {editing && (

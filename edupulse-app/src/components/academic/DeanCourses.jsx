@@ -1,3 +1,4 @@
+import { Spinner } from '../ui/LoadingFeedback'
 import { useMemo, useState } from 'react'
 import { BookOpen, ClipboardCheck, AlertTriangle, Layers, Plus, FileUp, Users } from 'lucide-react'
 import { useSearchParams } from 'react-router-dom'
@@ -81,7 +82,7 @@ export default function DeanCourses({ data:allData }) {
       { label: 'Instructor loads', value: courseAssignments(data).length, icon: Layers, tone: 'green', to: '/records?show=loaded' }]} />
     <DeanFeedback action={action} />
     <Panel title="Courses" actions={<div className="academic-actions"><DeanTermCalendar records={allData.institutional||[]} semester={semester} academicYear={academicYear} writable={writable&&directory.managed} action={action}/>{directory.managed&&writable&&<button className="btn btn-primary btn-sm" disabled={Boolean(action.busy)} onClick={()=>setCatalogAction('add')}><Plus size={15} aria-hidden="true"/> Add Course</button>}{writable&&<UploadButton label={<><FileUp size={15} aria-hidden="true" /> Upload course load (Excel)</>} accept=".xlsx,.xls,.csv,.tsv,.txt" onFile={upload} disabled={!directory.managed || Boolean(action.busy)||Boolean(reading)} />}{writable&&<UploadButton label={<><Users size={15} aria-hidden="true" /> Upload class lists</>} accept=".xls,.xlsx,.csv,.tsv,.txt" onFiles={files=>{action.setError('');action.setNotice(null);setClassLists(files)}} disabled={!directory.managed || Boolean(action.busy)||Boolean(reading)} />}<CsvButton headers={['Course', 'Title', 'Units', 'Year and semester', 'Instructor', 'Block', 'Semester','Academic year','Days','Time','Room','Listed hours','Computed hours','Students listed']} rows={catalog.flatMap(c => (c.loads.length ? c.loads : [{}]).map(l => [c.code, c.title, c.units, groupLabel(c), l.instructorName || '', l.block || '', l.semester || '',l.academicYear||'',l.days||'',l.time||'',l.room||'',l.hours||'',l.computedHours||'',l.students||'']))} name="course-loads" /></div>}>
-      {reading&&<p role="status">{reading}</p>}
+      {reading&&<p role="status"><Spinner />{reading}</p>}
       {writable&&directory.managed&&<p className="text-sm text-muted mb-16 course-load-hint">Course loads come from the College schedule workbook (.xlsx): the faculty-load sheet lists each instructor's name, then SC_ID, Descriptive Title, Hour, Day, Room, Block, Units and Hours; the block timetable sheet is used to check blocks and schedules. Nothing is saved until you review the rows.</p>}
       {writable&&document&&<TeachingLoadImport file={document} initialOpen onClose={()=>setDocument(null)}/>}
       {writable&&classLists&&<DeanClassListImport files={classLists} data={data} students={directory.students} action={action} term={{semester,academicYear}} onClose={()=>setClassLists(null)}/>}
@@ -133,7 +134,7 @@ function LoadReview({ review, action, onClose,academicYear:year,semester }) {
   }
   const label = { new: 'Add', reassign: 'Reassign', unchanged: 'Already loaded', problem: 'Needs attention' }
   return <DeanDialog title="Review course load upload" subtitle={`${review.filename} · header found on row ${review.plan.header}`} icon={FileUp} tone="purple" onClose={onClose}
-    footer={<><button className="btn btn-secondary" onClick={onClose} disabled={Boolean(action.busy)}>Cancel</button><button className="btn btn-primary" onClick={apply} disabled={!ready.length || Boolean(action.busy)}>{action.busy ? `${action.busy}…` : `Add ${ready.length} course load${ready.length === 1 ? '' : 's'}`}</button></>}>
+    footer={<><button className="btn btn-secondary" onClick={onClose} disabled={Boolean(action.busy)}>Cancel</button><button aria-busy={Boolean(action.busy)} className="btn btn-primary" onClick={apply} disabled={!ready.length || Boolean(action.busy)}>{Boolean(action.busy) && <Spinner />}{action.busy ? `${action.busy}…` : `Add ${ready.length} course load${ready.length === 1 ? '' : 's'}`}</button></>}>
     {action.error && <p role="alert" className="connected-pulse-warning">{action.error}</p>}
     <p className="text-sm text-muted mb-16">{semester} · AY {year}. Only course assignments are saved. Instructors add their class lists.</p>
     <div className="dean-review-counts">{['new', 'reassign', 'unchanged', 'problem'].map(status => <span key={status} className={`dean-tag dean-tag-${status}`}>{label[status]}: {count(status)}</span>)}</div>

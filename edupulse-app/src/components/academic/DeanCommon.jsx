@@ -1,3 +1,4 @@
+import { Spinner } from '../ui/LoadingFeedback'
 import { useState } from 'react'
 import { X, Copy, Check } from 'lucide-react'
 import ModalLayer from '../ui/ModalLayer'
@@ -14,7 +15,7 @@ export function DeanCards({ items }) {
 
 export function DeanFeedback({ action }) {
   if (action.error) return <div role="alert" className="connected-pulse-warning mb-16">{action.error}</div>
-  if (action.busy) return <p role="status" className="text-sm text-muted mb-16">{action.busy}…</p>
+  if (action.busy) return <p role="status" className="text-sm text-muted mb-16"><Spinner />{action.busy}…</p>
   if (!action.notice) return null
   return <div role="status" className="dean-notice mb-16"><div>{action.notice.text}</div>{action.notice.secret && <SecretLine label={action.notice.secretLabel} value={action.notice.secret} />}<button className="btn btn-ghost btn-sm" onClick={() => action.setNotice(null)}>Dismiss</button></div>
 }
@@ -36,7 +37,7 @@ export function DeanDialog({ title, subtitle, icon, tone = 'sky', onClose, child
 }
 
 export function ConfirmDialog({ title, children, confirmLabel, danger, busy, onConfirm, onClose }) {
-  return <DeanDialog title={title} onClose={onClose} size="narrow" footer={<><button className="btn btn-secondary" onClick={onClose} disabled={Boolean(busy)}>Cancel</button><button className={`btn ${danger ? 'btn-danger' : 'btn-primary'}`} onClick={onConfirm} disabled={Boolean(busy)}>{busy ? `${busy}…` : confirmLabel}</button></>}>
+  return <DeanDialog title={title} onClose={onClose} size="narrow" footer={<><button className="btn btn-secondary" onClick={onClose} disabled={Boolean(busy)}>Cancel</button><button aria-busy={Boolean(busy)} className={`btn ${danger ? 'btn-danger' : 'btn-primary'}`} onClick={onConfirm} disabled={Boolean(busy)}>{Boolean(busy) && <Spinner />}{busy ? `${busy}…` : confirmLabel}</button></>}>
     <div className="dean-confirm">{children}</div>
   </DeanDialog>
 }

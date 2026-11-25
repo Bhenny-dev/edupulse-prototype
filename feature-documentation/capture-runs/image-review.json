@@ -5319,6 +5319,86 @@
       "reviewedAt": "2026-11-25T14:26:45.942555+00:00",
       "method": "Opened each exact desktop/phone image with view_image; checked loaded class cards, compact code, scores/pending review and student-only results. Fictional UI transport; real-account correction verified separately.",
       "captureRun": "2026-11-25T14-24-56-699Z-ddde75b7"
+    },
+    {
+      "path": "feature-documentation/system-manual/57-loading-audit/associate_dean-save.png",
+      "sha256": "e382aa65883fd068f306786f0b3f63671a7be8fc18a6e6afcc746e9e5a4b2ea1",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-25T22:55:50.879065+00:00",
+      "method": "Opened each exact desktop/phone image with view_image; checked visible pending spinner, labels, retained fields and unclipped controls. Held synthetic requests, no hosted persistence claim.",
+      "captureRun": "2026-11-25T23-16-05-689Z-28da4af0"
+    },
+    {
+      "path": "feature-documentation/system-manual/57-loading-audit/dean-save.png",
+      "sha256": "0a1cca1d13352716895c20707a5b92bb58ff16d70873d699a0c5cd93204dbabf",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-25T22:55:50.881592+00:00",
+      "method": "Opened each exact desktop/phone image with view_image; checked visible pending spinner, labels, retained fields and unclipped controls. Held synthetic requests, no hosted persistence claim.",
+      "captureRun": "2026-11-25T23-16-05-689Z-28da4af0"
+    },
+    {
+      "path": "feature-documentation/system-manual/57-loading-audit/instructor-post.png",
+      "sha256": "53a6f5d34bd4562421b514889e5b0288337ba3153b281ba82718cf1a6d879dd4",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-25T22:55:50.883724+00:00",
+      "method": "Opened each exact desktop/phone image with view_image; checked visible pending spinner, labels, retained fields and unclipped controls. Held synthetic requests, no hosted persistence claim.",
+      "captureRun": "2026-11-25T23-16-05-689Z-28da4af0"
+    },
+    {
+      "path": "feature-documentation/system-manual/57-loading-audit/phone-associate_dean-save.png",
+      "sha256": "ad062d806d8424f5aa2548bab63c930358d005267d4f480ea6882f494acc90a4",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-25T23:16:52.433100+00:00",
+      "method": "Opened each exact desktop/phone image with view_image; checked visible pending spinner, labels, retained fields and unclipped controls. Held synthetic requests, no hosted persistence claim.",
+      "captureRun": "2026-11-25T23-16-05-689Z-28da4af0"
+    },
+    {
+      "path": "feature-documentation/system-manual/57-loading-audit/phone-dean-save.png",
+      "sha256": "ad062d806d8424f5aa2548bab63c930358d005267d4f480ea6882f494acc90a4",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-25T23:16:52.432260+00:00",
+      "method": "Opened each exact desktop/phone image with view_image; checked visible pending spinner, labels, retained fields and unclipped controls. Held synthetic requests, no hosted persistence claim.",
+      "captureRun": "2026-11-25T23-16-05-689Z-28da4af0"
+    },
+    {
+      "path": "feature-documentation/system-manual/57-loading-audit/phone-instructor-post.png",
+      "sha256": "b0be499a7b20abb32bb88e65f4d873cc490ac94970ff307f38976ac45eb1e234",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-25T22:55:50.891793+00:00",
+      "method": "Opened each exact desktop/phone image with view_image; checked visible pending spinner, labels, retained fields and unclipped controls. Held synthetic requests, no hosted persistence claim.",
+      "captureRun": "2026-11-25T23-16-05-689Z-28da4af0"
+    },
+    {
+      "path": "feature-documentation/system-manual/57-loading-audit/phone-student-find.png",
+      "sha256": "3996a1e1651aaac96f78a1c90a3a6e38879502f0fdcffb8546c573b6480be908",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-25T22:55:50.893792+00:00",
+      "method": "Opened each exact desktop/phone image with view_image; checked visible pending spinner, labels, retained fields and unclipped controls. Held synthetic requests, no hosted persistence claim.",
+      "captureRun": "2026-11-25T23-16-05-689Z-28da4af0"
+    },
+    {
+      "path": "feature-documentation/system-manual/57-loading-audit/phone-student-join.png",
+      "sha256": "889b4c7e0b4b47f65582f5c96af24f5dc98ad9dbd6e310d4aed7ec766d96de3b",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-25T22:55:50.895528+00:00",
+      "method": "Opened each exact desktop/phone image with view_image; checked visible pending spinner, labels, retained fields and unclipped controls. Held synthetic requests, no hosted persistence claim.",
+      "captureRun": "2026-11-25T23-16-05-689Z-28da4af0"
+    },
+    {
+      "path": "feature-documentation/system-manual/57-loading-audit/student-find.png",
+      "sha256": "1ffe219ed970f2ab7b705d541e13e8ff11f015413f84631f82c58e7c7ed4e9f9",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-25T22:55:50.897380+00:00",
+      "method": "Opened each exact desktop/phone image with view_image; checked visible pending spinner, labels, retained fields and unclipped controls. Held synthetic requests, no hosted persistence claim.",
+      "captureRun": "2026-11-25T23-16-05-689Z-28da4af0"
+    },
+    {
+      "path": "feature-documentation/system-manual/57-loading-audit/student-join.png",
+      "sha256": "71a8dc7ad9a0d01013e787cc6ce3a7ecae8ec4bd4925e6b85ce0708bca114168",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-25T22:55:50.898983+00:00",
+      "method": "Opened each exact desktop/phone image with view_image; checked visible pending spinner, labels, retained fields and unclipped controls. Held synthetic requests, no hosted persistence claim.",
+      "captureRun": "2026-11-25T23-16-05-689Z-28da4af0"
     }
   ]
 }

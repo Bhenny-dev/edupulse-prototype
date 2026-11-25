@@ -64,3 +64,6 @@
 }
 
 @media (max-width: 767px) { .page-header .academic-actions > .btn { flex: 1 1 200px; min-width: 0; white-space: normal; } }
+
+/* Lazy class feedback stays visible above long Home grids without moving focus. */
+.class-opening-status { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); z-index:1200; padding:12px 18px; max-width:calc(100vw - 32px); border:1px solid var(--gray-200); border-radius:12px; background:var(--white); pointer-events:none; }

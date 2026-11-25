@@ -1,3 +1,4 @@
+import { LoadingStatus } from '../ui/LoadingFeedback'
 import {lazy,Suspense,useEffect,useRef,useState} from 'react'
 import {Link,useLocation,useNavigate,useSearchParams} from 'react-router-dom'
 import {useAuth} from '../../context/AuthContext'
@@ -111,7 +112,7 @@ export default function StudentHome() {
         Number.isInteger(data.homeBlock.students) && data.homeBlock.students + ' students',
       ].filter(Boolean).join(' · ')}</p>
     </div></section>}
-    {records.loading && !records.loaded ? <p role="status">Loading your classes...</p> : <>
+    {records.loading && !records.loaded ? <LoadingStatus label="Loading your classes..." /> : <>
       {courses.length > 0 && <KPIs items={[
         ['Enrolled courses', courses.length],
         ['Delivered materials', materialIds.size],
@@ -160,7 +161,7 @@ export default function StudentHome() {
         </li>)}</ul> : <p>No published announcements.</p>}
       </div></section>
     </>}
-    {classOpen && <Suspense fallback={<p role="status">Opening class...</p>}><ClassPortal view="courseware" classModal onCloseClass={closeClass}/></Suspense>}
+    {classOpen && <Suspense fallback={<LoadingStatus className="class-opening-status" label="Opening class..." />}><ClassPortal view="courseware" classModal onCloseClass={closeClass}/></Suspense>}
     {canJoin && joining && <JoinClassDialog onClose={() => setJoining(false)} onJoined={joined}/>}
   </div>
 }

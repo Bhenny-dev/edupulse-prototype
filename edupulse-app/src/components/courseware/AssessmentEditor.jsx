@@ -1,3 +1,4 @@
+import { Spinner } from '../ui/LoadingFeedback'
 import './contentEditing.css'
 import TeachingAttachments from './TeachingAttachments'
 import SourcePassageInspector from './SourcePassageInspector'
@@ -115,8 +116,8 @@ export default function AssessmentEditor({ content, onBack, isStudent = false, o
         </button>
         <div style={{ flex: 1 }} />
         {!isStudent && (
-          <button className="btn btn-primary btn-sm" disabled={saving} onClick={saveEdits}>
-            <Save size={14} /> Save Assessment
+          <button aria-busy={Boolean(saving)} className="btn btn-primary btn-sm" disabled={saving} onClick={saveEdits}>
+            {saving ? <Spinner size={14} /> : <Save size={14} />} Save Assessment
           </button>
         )}
         {isStudent && !submitted && (
@@ -475,7 +476,7 @@ function SubmissionBinToggle({ checked, disabled, save }) {
     finally { setBusy(false) }
   }
   return <div className="mb-16">
-    <label><input type="checkbox" checked={checked} disabled={disabled || busy} onChange={toggle}/> Include a submission bin</label>
+    <label>{busy && <Spinner />}<input type="checkbox" checked={checked} disabled={disabled || busy} onChange={toggle}/> Include a submission bin</label>
     {error && <p role="alert">{error}</p>}
   </div>
 }

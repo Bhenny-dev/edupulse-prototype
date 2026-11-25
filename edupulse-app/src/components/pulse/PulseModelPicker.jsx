@@ -1,3 +1,4 @@
+import { Spinner } from '../ui/LoadingFeedback'
 import { useEffect, useMemo, useState } from 'react'
 import { Check, ChevronDown, Loader2, Plus, Sparkles } from 'lucide-react'
 import { aiRequest } from '../../lib/aiClient'
@@ -56,14 +57,14 @@ export default function PulseModelPicker({ open, disabled, user, onToggle, onClo
       {onDevice && <p className="pulse-popover-note">Pulse is using the on-device model. Choose a saved provider below to switch.</p>}
       {data.loading && <p className="pulse-popover-note" role="status"><Loader2 size={13} className="pulse-spin" aria-hidden="true" /> Loading your saved connections...</p>}
       {data.connections.length > 0 && <section aria-label="Saved providers"><small>Saved providers</small>
-        {data.connections.map(item => { const current = item.active && !onDevice; return <button key={item.provider} type="button" className="pulse-popover-item" aria-pressed={current} disabled={Boolean(busy)} onClick={() => current ? onClose() : void choose(item.provider)}>
-          <span>{providerName(item.provider)}</span><small>{busy === item.provider ? 'Switching...' : item.model}</small>{current && <Check size={14} aria-label="Active" />}
+        {data.connections.map(item => { const current = item.active && !onDevice; return <button aria-busy={Boolean(busy === item.provider)} key={item.provider} type="button" className="pulse-popover-item" aria-pressed={current} disabled={Boolean(busy)} onClick={() => current ? onClose() : void choose(item.provider)}>
+          <span>{providerName(item.provider)}</span><small>{Boolean(busy === item.provider) && <Spinner />}{busy === item.provider ? 'Switching...' : item.model}</small>{current && <Check size={14} aria-label="Active" />}
         </button> })}
       </section>}
       {active && data.models.length > 0 && <section aria-label={`Models for ${providerName(active.provider)}`}><small>Models · {providerName(active.provider)}</small>
         {data.models.length > 8 && <input className="pulse-popover-filter" type="search" value={filter} placeholder="Filter models" aria-label="Filter models" onChange={event => setFilter(event.target.value)} />}
-        <ul>{models.map(model => { const current = model.id === active.model; return <li key={model.id}><button type="button" className="pulse-popover-item" aria-pressed={current} disabled={Boolean(busy)} onClick={() => current ? onClose() : void choose(active.provider, model.id)}>
-          <span>{model.name || model.id}</span>{model.free && <small>Free</small>}{busy === model.id ? <small>Selecting...</small> : current && <Check size={14} aria-label="Active" />}
+        <ul>{models.map(model => { const current = model.id === active.model; return <li key={model.id}><button aria-busy={Boolean(busy === model.id)} type="button" className="pulse-popover-item" aria-pressed={current} disabled={Boolean(busy)} onClick={() => current ? onClose() : void choose(active.provider, model.id)}>
+          <span>{model.name || model.id}</span>{model.free && <small>Free</small>}{Boolean(busy === model.id) && <Spinner />}{busy === model.id ? <small>Selecting...</small> : current && <Check size={14} aria-label="Active" />}
         </button></li> })}</ul>
         {!models.length && <p className="pulse-popover-note">No model matches that filter.</p>}
       </section>}

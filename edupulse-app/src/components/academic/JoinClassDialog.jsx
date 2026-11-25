@@ -1,3 +1,4 @@
+import { Spinner } from '../ui/LoadingFeedback'
 import {useRef,useState} from 'react'
 import {useAcademicRecords} from '../../context/AcademicContext'
 import {isClassCode,normalizeClassCode} from '../../utils/classroom'
@@ -38,8 +39,8 @@ export default function JoinClassDialog({onClose,onJoined}) {
             autoComplete="off" autoCapitalize="characters" spellCheck={false}
             onChange={event => { setCode(event.target.value); setFound(null); setError('') }}/>
         </label>
-        <button className="btn btn-secondary mt-16" disabled={Boolean(busy) || !isClassCode(code)}>
-          {busy === 'lookup' ? 'Finding class...' : 'Find class'}
+        <button aria-busy={Boolean(busy === 'lookup')} className="btn btn-secondary mt-16" disabled={Boolean(busy) || !isClassCode(code)}>
+          {Boolean(busy === 'lookup') && <Spinner />}{busy === 'lookup' ? 'Finding class...' : 'Find class'}
         </button>
       </form>
       {error && <p className="mt-16" role="alert">{error}</p>}
@@ -53,8 +54,8 @@ export default function JoinClassDialog({onClose,onJoined}) {
         </>}
         {found.status === 'joinable' && <>
           {!found.course_open && <p>The class opens when your instructor makes the course available.</p>}
-          <button className="btn btn-primary" disabled={Boolean(busy)} onClick={() => void request('join')}>
-            {busy === 'join' ? 'Joining class...' : 'Confirm Join Class'}
+          <button aria-busy={Boolean(busy === 'join')} className="btn btn-primary" disabled={Boolean(busy)} onClick={() => void request('join')}>
+            {Boolean(busy === 'join') && <Spinner />}{busy === 'join' ? 'Joining class...' : 'Confirm Join Class'}
           </button>
         </>}
         {found.status === 'full' && <p role="status">This class is full. Ask your instructor for help.</p>}

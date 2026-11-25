@@ -141,3 +141,6 @@ System Admin dashboard and role-monitoring summaries use flat outline icons. Sel
 
 
 [Class Code and QR invitations](../../system-manual/55-class-code-invitations/README.md): automatic codes at management loading, the compact Announcements card and a reload-safe popover with a locally generated QR and copyable invitation link. Instructor and Admin support use the same authorized code.
+
+
+Pending dialog actions, reads and file operations use the shared themed spinner or skeleton. Failed requests retain the existing input and error/retry flow; reduced motion keeps labels visible without animation. [Current desktop and phone examples](../../system-manual/57-loading-audit/README.md).

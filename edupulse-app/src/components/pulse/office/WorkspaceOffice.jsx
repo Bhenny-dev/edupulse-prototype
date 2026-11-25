@@ -1,3 +1,4 @@
+import { Spinner } from '../../ui/LoadingFeedback'
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { X, Coffee, Pause, Play, ArrowUpRight, Send, CheckCircle2 } from 'lucide-react'
@@ -69,7 +70,7 @@ export default function WorkspaceOffice({ tasks, messages, onClose, onTask, busy
         })}</div>
       </div><aside className="office-companion" style={{'--buddy-color':buddy.color}}>
         <div className="office-profile"><span className="office-eyebrow">{buddy.station}</span><h3>{buddy.name}<span>{buddy.title}</span></h3><p>“{buddy.motto}”</p></div>
-        <div className="office-conversation" role="log" aria-live="polite" ref={log}><div className="office-bubble"><strong>{buddy.name}</strong><p>{buddy.role}</p></div>{(chats[selected]||[]).map((item,index)=><div className={`office-bubble ${item.from==='you'?'is-you':''}`} key={index}><strong>{item.from==='you'?'You':BUDDIES.find(person=>person.id===item.from)?.name}</strong><p>{item.text}</p></div>)}{busy&&waiting.current?.buddy===selected&&<p className="office-awaiting" role="status">Your request is active in Pulse. This desk will show the result when it returns.</p>}</div>
+        <div className="office-conversation" role="log" aria-live="polite" ref={log}><div className="office-bubble"><strong>{buddy.name}</strong><p>{buddy.role}</p></div>{(chats[selected]||[]).map((item,index)=><div className={`office-bubble ${item.from==='you'?'is-you':''}`} key={index}><strong>{item.from==='you'?'You':BUDDIES.find(person=>person.id===item.from)?.name}</strong><p>{item.text}</p></div>)}{busy&&waiting.current?.buddy===selected&&<p className="office-awaiting" role="status"><Spinner /> Your request is active in Pulse. This desk will show the result when it returns.</p>}</div>
         <div className="office-quick-questions"><button onClick={()=>ask('What do you do?')} disabled={busy||!!handoff}>Your role</button><button onClick={()=>ask('What have you accomplished?')} disabled={busy||!!handoff}>Completed work</button><button onClick={()=>ask('What are your goals?')} disabled={busy||!!handoff}>Your goals</button></div>
         {error && <p role="alert" className="connected-pulse-error">{error}</p>}
         <form className="office-chat-form" onSubmit={event=>{event.preventDefault();ask()}}><input value={question} onChange={event=>setQuestion(event.target.value)} maxLength={1000} aria-label={`Message ${buddy.name}`} placeholder={`Ask ${buddy.name}…`}/><button type="submit" aria-label="Send to buddy" disabled={busy||!!handoff||!question.trim()}><Send size={17}/></button></form>

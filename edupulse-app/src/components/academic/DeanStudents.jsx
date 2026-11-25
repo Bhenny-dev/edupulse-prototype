@@ -1,3 +1,4 @@
+import { Spinner, LoadingStatus } from '../ui/LoadingFeedback'
 import {useSearchParams} from 'react-router-dom'
 import useAcademicTerm from './useAcademicTerm'
 import {recordsForLoadTerm} from '../../utils/loadTerms'
@@ -58,10 +59,13 @@ export default function DeanStudents({ data:allData }) {
   const blockStudents = block ? block.irregular ? irregular : students.filter(s => s.block && s.block.toLowerCase() === block.id) : []
   const activity = s => model.activity(new Set(data.enrollments.filter(e => e.student_email.toLowerCase() === s.email.toLowerCase()).map(e => e.course_id)), s.email.toLowerCase())
   const rosterCounts = useMemo(() => Object.fromEntries(blocks.map(name => [name, students.filter(s => s.block === name).length])), [blocks, students])
+  const [reading,setReading]=useState(false)
   const upload = async file => {
+    if(reading)return
+    setReading(true)
     action.setError(''); action.setNotice(null)
     try { setReview({ filename: file.name, plan: planStudentList(await readGrid(file), { courses: model.courses, blocks, students, loads: loadRows(data), rosterCounts }) }) }
-    catch (failure) { action.setError(failure.message || 'The file could not be read.') }
+    catch (failure) { action.setError(failure.message || 'The file could not be read.') } finally { setReading(false) }
   }
   const filterBlock=value=>{setFilters({block:value});list.current?.scrollIntoView({block:'start',behavior:'auto'})}
   const manage = student => directory.managed && writable && <span className="dean-row-actions">
@@ -76,7 +80,7 @@ export default function DeanStudents({ data:allData }) {
       { label: 'Block sections', value: homeBlocks.length, icon: Layers, tone: 'purple', onClick:()=>departmentInput.current?.focus() },
       { label: 'Irregular students', value: irregular.length, icon: Shuffle, tone: 'amber', onClick: () => setDetail('block:irregular') },
       { label: 'Suspended', value: students.filter(s => s.status === 'suspended').length, icon: UserX, tone: 'red', onClick: () => setFilters({department:'',q:'',year:'',block:'',status:'suspended'}) }]} />
-    <DeanFeedback action={action} />
+    <DeanFeedback action={action} />{reading && <LoadingStatus label="Reading student list..." />}
     {!directory.managed && <p className="text-sm text-muted mb-16">{data.directoryError || 'Preview sample. Account changes need a signed-in Dean account.'}</p>}
     <div className="dean-toolbar student-directory-filters">
       <label className="academic-filter">Search students<input className="form-input" type="search" value={search} maxLength={200} onChange={event=>setFilters({q:event.target.value})} placeholder="Name, student number or email" /></label>
@@ -84,7 +88,7 @@ export default function DeanStudents({ data:allData }) {
       <label className="academic-filter">Year level<select className="form-select" value={year} onChange={event=>setFilters({year:event.target.value,block:''})}><option value="">All year levels</option>{[1,2,3,4].map(y=><option key={y} value={y}>Year {y}</option>)}</select></label>
       <label className="academic-filter">Block section<select className="form-select" value={blockFilter} onChange={event=>setFilters({block:event.target.value})}><option value="">All block sections</option>{blockFilter&&!['irregular','unplaced',...blockOptions].includes(blockFilter)&&<option value={blockFilter} disabled>Unavailable block section</option>}{blockOptions.map(name=><option key={name}>{name}</option>)}<option value="irregular">Irregular students</option><option value="unplaced">Not placed</option></select></label>
       <label className="academic-filter">Status<select className="form-select" value={status} onChange={event=>setFilters({status:event.target.value})}><option value="">All statuses</option><option value="active">Active</option><option value="suspended">Suspended</option></select></label>
-      <div className="academic-actions">{directory.managed&&writable&&<><UploadButton label={<><FileUp size={15} aria-hidden="true" /> Upload student list</>} onFile={upload} disabled={Boolean(action.busy)}/><button className="btn btn-primary btn-sm" onClick={()=>setEditing('new')}><UserPlus size={15} aria-hidden="true"/> Add student</button></>}</div>
+      <div className="academic-actions">{directory.managed&&writable&&<><UploadButton label={<><FileUp size={15} aria-hidden="true" /> Upload student list</>} onFile={upload} disabled={Boolean(action.busy)||reading}/><button className="btn btn-primary btn-sm" onClick={()=>setEditing('new')}><UserPlus size={15} aria-hidden="true"/> Add student</button></>}</div>
     </div>
     {department&&<section className="student-department-sections" aria-label="Department block sections">
       <div className="student-directory-heading"><h2>{department} sections</h2>{blockFilter&&<button className="btn btn-ghost btn-sm" onClick={()=>filterBlock('')}>All blocks in this department</button>}</div>
@@ -161,7 +165,7 @@ function StudentReview({ review, action, onClose }) {
   }
   const tabs = [['summary', 'Summary'], ['irregular', `Irregular (${count(s => s.placement === 'irregular')})`], ['all', `All students (${plan.students.length})`], ...(plan.rejected.length ? [['rejected', `Rejected rows (${plan.rejected.length})`]] : [])]
   return <DeanDialog title="Review student list upload" subtitle={`${review.filename} · header found on row ${plan.header}`} icon={FileUp} tone="green" onClose={onClose}
-    footer={<><button className="btn btn-secondary" onClick={onClose} disabled={Boolean(action.busy)}>Cancel</button><button className="btn btn-primary" onClick={apply} disabled={!plan.students.length || over.length > 0 || Boolean(action.busy)}>{action.busy ? `${action.busy}…` : `Save ${plan.students.length} student${plan.students.length === 1 ? '' : 's'}`}</button></>}>
+    footer={<><button className="btn btn-secondary" onClick={onClose} disabled={Boolean(action.busy)}>Cancel</button><button aria-busy={Boolean(action.busy)} className="btn btn-primary" onClick={apply} disabled={!plan.students.length || over.length > 0 || Boolean(action.busy)}>{Boolean(action.busy) && <Spinner />}{action.busy ? `${action.busy}…` : `Save ${plan.students.length} student${plan.students.length === 1 ? '' : 's'}`}</button></>}>
     {action.error && <p role="alert" className="connected-pulse-warning">{action.error}</p>}
     <div className="dean-review-counts">
       <span className="dean-tag dean-tag-new">New accounts: {count(s => s.account === 'new')}</span><span className="dean-tag dean-tag-unchanged">Existing: {count(s => s.account !== 'new')}</span>

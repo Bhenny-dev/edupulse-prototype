@@ -199,3 +199,8 @@ The workspace trigger collection migration materializes NEW/OLD syllabus and con
 ## Source-load correction, 25 November 2026
 
 This release changes the maintenance population planner and preserves application transport and credentials. No new schema migration is required; the linked migration dry run reports up to date. The guarded data correction is recorded independently in private database receipts. After pushing reviewed source, deploy the exact remote-main archive with the commands above and inspect Ready and the canonical alias separately. [Correction validation](../versions/2026-11-25-source-load-correction/validation/results.md).
+
+
+## Loading feedback audit, 26 November 2026
+
+This presentation release needs no new migration, environment variable or provider credential. The linked migration push reports up to date. Deploy the reviewed remote-main archive with the shared commands above; inspect Ready and the canonical alias independently. Loading UI captures hold synthetic requests, so they do not prove hosted academic writes. [Validation](../versions/2026-11-26-loading-audit/validation/results.md).

@@ -115,3 +115,6 @@ The owner-directed persistent population gives active registered students curren
 
 
 Course availability follows current authorized loaded membership. Retiring a proven seed-added section removes its current access while preserving saved answers, scores, reading and practice history. Population does not create replacement classes automatically. [Source-load correction](../../versions/2026-11-25-source-load-correction/README.md).
+
+
+Pending dialog actions, reads and file operations use the shared themed spinner or skeleton. Failed requests retain the existing input and error/retry flow; reduced motion keeps labels visible without animation. [Current desktop and phone examples](../../system-manual/57-loading-audit/README.md).

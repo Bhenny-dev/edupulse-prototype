@@ -12,6 +12,7 @@ export function captureSource() {
   files.push(...git('ls-files', '--cached', '--others', '--exclude-standard', '--', 'edupulse-app/scripts/lib/authored-weeks-catalog.ts', 'edupulse-app/scripts/lib/authored-weeks-plan.ts', 'edupulse-app/tests/authored-weeks-fixture.ts').split('\n').filter(Boolean))
   files.push(...git('ls-files', '--cached', '--others', '--exclude-standard', '--', 'edupulse-app/scripts/lib/complete-syllabus.ts', 'edupulse-app/scripts/lib/delivery-plan.ts', 'edupulse-app/scripts/lib/demo-assessments.ts', 'edupulse-app/tests/delivery-fixture-data.ts', 'edupulse-app/tests/teaching-sets-fixture.ts').split('\n').filter(Boolean))
   files.push(...git('ls-files','--cached','--others','--exclude-standard','--','edupulse-app/tests/academic-population-ui.ts','edupulse-app/scripts/lib/population-content.ts').split('\n').filter(Boolean))
+  files.push(...git('ls-files','--cached','--others','--exclude-standard','--','edupulse-app/tests/loading-audit-ui.ts').split('\n').filter(Boolean))
   files.sort()
   const hash = createHash('sha256')
   for (const file of files) {

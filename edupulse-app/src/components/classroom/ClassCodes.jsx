@@ -1,3 +1,4 @@
+import { Spinner } from '../ui/LoadingFeedback'
 import { lazy, Suspense, useId, useRef, useState } from 'react'
 import { Copy, KeyRound, Maximize2, Power, RefreshCw, UserPlus, X } from 'lucide-react'
 import ModalLayer from '../ui/ModalLayer'
@@ -51,13 +52,13 @@ export function BlockCode({ course, block, codes, readOnly = false, highlight = 
         {!compact && codeMenu}
       </span></>
       : compact ? <code className="class-code" aria-label="Class code unavailable">—</code> : readOnly ? <span className="text-sm text-muted">No class code</span>
-        : <button type="button" className="btn btn-secondary btn-sm" disabled={busy} onClick={() => void run('create')}><KeyRound size={14} aria-hidden="true" />{busy ? 'Creating code...' : 'Create code'}</button>}
+        : <button aria-busy={Boolean(busy)} type="button" className="btn btn-secondary btn-sm" disabled={busy} onClick={() => void run('create')}><KeyRound size={14} aria-hidden="true" />{Boolean(busy) && <Spinner />}{busy ? 'Creating code...' : 'Create code'}</button>}
     {error && !confirm && <span role="alert" className="text-sm">{error}</span>}
     {showing && code && <ModalLayer onDismiss={closeDisplay}>
       <section className="modal-content class-dialog class-display" role="dialog" aria-modal="true" aria-label={`Class code display, ${course.code} block ${block}`}>
         <div className="modal-header"><h2>{course.code} · Block {block}</h2><button type="button" className="modal-close" aria-label="Close class code display" onClick={closeDisplay}><X size={20} aria-hidden="true" /></button></div>
         <p className="class-display-code" aria-label={spelled(code.code)}>{code.code}</p>
-        <Suspense fallback={<div className="class-invitation-qr" role="status">Loading QR code...</div>}><InvitationQr url={invitation} /></Suspense>
+        <Suspense fallback={<div className="class-invitation-qr" role="status"><Spinner /> Loading QR code...</div>}><InvitationQr url={invitation} /></Suspense>
         <label className="class-invitation-link">Invitation link<input className="form-input" value={invitation} readOnly onFocus={event => event.target.select()} /></label>
         <div className="class-invitation-tools"><button type="button" className="btn btn-secondary btn-sm" onClick={() => void copy()}><Copy size={14} aria-hidden="true" />Copy code</button><button type="button" className="btn btn-secondary btn-sm" onClick={() => void copyLink()}><Copy size={14} aria-hidden="true" />Copy link</button>{compact && codeMenu}</div>
       </section>
@@ -67,7 +68,7 @@ export function BlockCode({ course, block, codes, readOnly = false, highlight = 
         <div className="modal-header"><h2 id={heading}>{confirm === 'regenerate' ? 'Replace class code' : 'Turn off class code'}</h2><button type="button" className="modal-close" aria-label="Close" disabled={busy} onClick={() => setConfirm(null)}><X size={20} aria-hidden="true" /></button></div>
         <p>{confirm === 'regenerate' ? `The code ${code?.code} of ${course.code} block ${block} stops working and a new code is made.` : `Students can no longer join ${course.code} block ${block} with ${code?.code}.`} Students who already joined stay in the class.</p>
         {error && <p role="alert" className="mt-16">{error}</p>}
-        <div className="modal-actions"><button type="button" className="btn btn-ghost" disabled={busy} onClick={() => setConfirm(null)}>Cancel</button><button type="button" className="btn btn-primary" disabled={busy} onClick={() => void run(confirm)}>{busy ? 'Saving...' : confirm === 'regenerate' ? 'Replace code' : 'Turn off code'}</button></div>
+        <div className="modal-actions"><button type="button" className="btn btn-ghost" disabled={busy} onClick={() => setConfirm(null)}>Cancel</button><button aria-busy={Boolean(busy)} type="button" className="btn btn-primary" disabled={busy} onClick={() => void run(confirm)}>{Boolean(busy) && <Spinner />}{busy ? 'Saving...' : confirm === 'regenerate' ? 'Replace code' : 'Turn off code'}</button></div>
       </section>
     </ModalLayer>}
   </span>
@@ -85,7 +86,7 @@ export function InviteStudents({ course, block, codes }) {
       catch { addToast(`Invitation link: ${url}`, 'info') }
     } catch (failure) { addToast(failure.message, 'error') } finally { setBusy(false) }
   }
-  return <button type="button" className="btn btn-secondary btn-sm" aria-label={`Copy invitation link for block ${block}`} disabled={busy || !code} onClick={() => void invite()}><UserPlus size={14} aria-hidden="true" />{busy ? 'Copying...' : 'Copy invitation link'}</button>
+  return <button aria-busy={Boolean(busy)} type="button" className="btn btn-secondary btn-sm" aria-label={`Copy invitation link for block ${block}`} disabled={busy || !code} onClick={() => void invite()}><UserPlus size={14} aria-hidden="true" />{Boolean(busy) && <Spinner />}{busy ? 'Copying...' : 'Copy invitation link'}</button>
 }
 
 /** Minimal announcement card; code management stays inside the enlarged display. */
