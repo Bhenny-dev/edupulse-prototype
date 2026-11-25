@@ -23,7 +23,8 @@ test('draft PDF imports into its separate repository, saves, reloads and exports
   await expect(navigation.getByRole('link', { name: 'Syllabus', exact: true })).toHaveClass(/active/)
   await expect(navigation.getByRole('link', { name: 'Course', exact: true })).toHaveCount(0)
   if (isMobile) await page.getByRole('button', { name: 'Close menu', exact: true }).click()
-  await expect(page.getByRole('heading', { name: 'Upload syllabi', exact: true })).toHaveCount(0)
+  // The Syllabus page saves every approved upload, so its intake is part of My Syllabus.
+  await expect(page.getByRole('heading', { name: 'Upload syllabi', exact: true })).toBeVisible()
   await page.getByRole('button', { name: 'Upload draft PDF or DOCX', exact: true }).click()
   await expect(page).toHaveURL(/syllabus\?tab=builder&import=draft/)
   await expect(page.getByRole('button', { name: 'Choose draft PDF or DOCX' })).toBeFocused()

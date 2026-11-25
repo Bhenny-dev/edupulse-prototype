@@ -3,12 +3,10 @@ import { instructorCourseUI } from '../instructor-course-fixture'
 import { approvedDocx, approvedLines } from '../approved-syllabus-fixture'
 import { makePdf, makeRuledSyllabusPdf } from '../fixtures'
 
-// The assigned course IT 201 has no syllabus yet, so its page offers the approved-syllabus upload.
+// Approved syllabi are uploaded on the Syllabus page, which keeps every one of them in My Syllabus.
 async function openAssignedCourse(page: Page) {
   const fixture = await instructorCourseUI(page)
-  await page.goto('/#/courseware')
-  await page.locator('.instructor-course-card').filter({ hasText: 'IT 201' }).click()
-  await page.getByRole('button', { name: 'Open Teaching Materials and Assessments', exact: true }).click()
+  await page.goto('/#/syllabus?tab=mine&upload=approved')
   await expect(page.getByRole('heading', { name: 'Upload syllabi', exact: true })).toBeVisible()
   return { fixture, input: page.getByLabel('Upload approved syllabus PDF or DOCX', { exact: true }) }
 }

@@ -25,6 +25,13 @@ import {
 } from 'lucide-react'
 import { useWorkspace, useWorkspaceViewState } from '../context/WorkspaceContext'
 import ApprovedSyllabusUpload from '../components/syllabus/ApprovedSyllabusUpload'
+import ApprovedSyllabusIntake from '../components/syllabus/ApprovedSyllabusIntake'
+import { useAcademicRecords } from '../context/AcademicContext'
+import useAcademicTerm from '../components/academic/useAcademicTerm'
+import { recordsForLoadTerm } from '../utils/loadTerms'
+import { instructorCourses, approvedSyllabusForCourse, sameCourseCode } from '../utils/instructorCourses'
+import { collectSyllabusReferences } from '../lib/rag/syllabusReferences'
+import { prepareSyllabusSources, indexSyllabusReference, aiSessionVersion } from '../lib/aiClient'
 import { meaningfulOutline,downloadApprovedFile } from '../utils/syllabusFiles'
 import UploadExistingSyllabus from '../components/syllabus/UploadExistingSyllabus'
 import SharedSyllabusRepository from '../components/syllabus/SharedSyllabusRepository'
@@ -988,6 +995,7 @@ export default function Syllabus({ courseContext }) {
   const [sharedReader,setSharedReader]=useState(null)
   const [previewSyllabus,setPreviewSyllabus]=useState(null)
   const sharing=useSyllabusSharing()
+  const academic=useAcademicRecords(), {term:academicTerm,writable:termWritable}=useAcademicTerm()
   const [shareId,setShareId]=useWorkspaceViewState('syllabus-share',null)
   const [deleteId,setDeleteId]=useWorkspaceViewState('syllabus-delete',null)
   const [actionError,setActionError]=useState(''),[actionBusy,setActionBusy]=useState(false)
@@ -1066,6 +1074,25 @@ export default function Syllabus({ courseContext }) {
     } catch (error) { addToast(`Export failed: ${error.message}`, 'error') }
   }
   const uploadApproved = syl => setUploadingSyllabus(syl)
+  // Every approved syllabus uploaded here is kept in My Syllabus. It becomes the approved syllabus of the class with the same
+  // course code when that course is loaded to the instructor and has none yet; otherwise it is kept as Approved - Uploaded
+  // and links to the class when the course is loaded.
+  const saveUploadedApproved = async candidate => {
+    const loaded = instructorCourses(recordsForLoadTerm(academic.data, academicTerm), user?.id, syllabi).find(course => sameCourseCode(course.code, candidate.courseCode))
+    let outcome = 'kept'
+    await commit(data => {
+      const taken = loaded && approvedSyllabusForCourse(data.syllabi, loaded)
+      const active = Boolean(loaded && termWritable && !taken)
+      outcome = active ? 'linked' : loaded && taken ? 'taken' : 'kept'
+      const value = { ...candidate, status: active ? 'active' : 'approved_uploaded', sample: false, ...(active ? { courseInfo: { ...candidate.courseInfo, academicYear: loaded.academicYear || candidate.courseInfo?.academicYear, periodOffered: loaded.semester || candidate.courseInfo?.periodOffered } } : {}) }
+      return { ...data, syllabi: [...data.syllabi, value] }
+    })
+    void academic.load?.(true)
+    pulseBus.progress('syllabus-approved-uploaded', candidate.courseCode)
+    addToast(outcome === 'linked' ? `${candidate.courseCode} saved. It is now the approved syllabus of your ${candidate.courseCode} class.` : outcome === 'taken' ? `${candidate.courseCode} saved in My Syllabus. Your class already has an approved syllabus, so it keeps using that one.` : `${candidate.courseCode} saved in My Syllabus. It links to your class when the Dean loads this course to you for the selected semester.`, 'success')
+    const references = collectSyllabusReferences(candidate)
+    if (references.length) try { const sources = await prepareSyllabusSources(references); for (const source of sources) if (source.snapshot && !source.metadataOnly) await indexSyllabusReference(source.snapshot.id, candidate.courseCode); window.dispatchEvent(new CustomEvent('edupulse-sources-updated', { detail: { sources, sessionVersion: aiSessionVersion() } })) } catch { addToast('Syllabus saved. Open its sources to check any unread references.', 'info') }
+  }
   const saveApproved = syl => {
     setSyllabi(previous => previous.map(item => item.id === syl.id ? record(syl, 'approved_uploaded') : item))
     setUploadingSyllabus(null)
@@ -1120,9 +1147,10 @@ export default function Syllabus({ courseContext }) {
         <>
           <section className="card mb-16" aria-label="Syllabus repository actions"><div className="card-body">
             <h2 className="mb-8">Your syllabus repository</h2>
-            <p className="text-sm text-muted mb-16">Keep your drafts and shared syllabi here. Import a PDF or DOCX to edit its extracted sections, or build a syllabus and download its PDF. Select the approved syllabus used for teaching inside its loaded Course.</p>
+            <p className="text-sm text-muted mb-16">Every syllabus you upload is saved here automatically, next to your drafts and the syllabi shared with you. Upload an approved PDF or DOCX below, import a draft to edit its extracted sections, or build a syllabus and download its PDF. An approved syllabus links to the class with the same course code.</p>
             <div className="academic-actions"><button className="btn btn-secondary" onClick={() => openBuilder(null,true)}><Upload size={16} />Upload draft PDF or DOCX</button><button className="btn btn-primary" onClick={() => openBuilder(null)}><Plus size={16} />Build a syllabus</button></div>
           </div></section>
+          <ApprovedSyllabusIntake focusUpload={searchParams.get('upload') === 'approved'} onUse={saveUploadedApproved} description="Upload an approved syllabus and review its extracted outline. It is saved to My Syllabus when you confirm." actionLabel="Save syllabus" actionHint="Saved to My Syllabus. It links to the class with the same course code." />
           {activeOnly && <div className="flex flex-wrap items-center gap-16 mb-16" role="status"><strong>Active syllabi</strong><button className="btn btn-secondary btn-sm" onClick={() => setSearchParams({ tab: 'mine' })}>Show all syllabi</button></div>}
 
           <div style={{ marginTop: '20px' }}>

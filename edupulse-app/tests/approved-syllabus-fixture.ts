@@ -24,8 +24,7 @@ export async function approvedIntakeUI(page:Page,role='instructor') {
  return fixture
 }
 export async function openIntake(page:Page) {
- await page.goto('/#/courseware');await page.getByRole('link',{name:'Upload syllabi',exact:true}).click()
- await expect(page).toHaveURL(/syllabus\?tab=mine&upload=approved/)
+ await page.goto('/#/syllabus?tab=mine&upload=approved')
  await expect(page.getByRole('button',{name:/Drop an approved syllabus/})).toBeFocused()
  return page.getByLabel('Upload approved syllabus PDF or DOCX',{exact:true})
 }

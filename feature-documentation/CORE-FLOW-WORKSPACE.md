@@ -469,3 +469,12 @@ Owner request (25 November): add a Schedule station to the top bar for instructo
 | T16.2 | `/schedule` (`pages/Schedule.jsx`, top-bar Schedule for instructors and students, after Home): a week calendar with real dates, previous/next week and Today, a Next class line, an Agenda view (default on phones), overlapping meetings side by side, and classes with no recorded day and time listed apart, never guessed. A meeting opens its class page over Home. `utils/classSchedule.ts` | `tests/class-schedule.test.ts`, `tests/browser/schedule.spec.ts` (instructor, student, empty) | Complete |
 
 Not done: the calendar shows the weekly class meetings, not due dates or week openings (those stay in Home's Upcoming page); Dean and Program Coordinator have no Schedule.
+
+### G16 (continued): the Syllabus page and the class Syllabus view are separate
+
+Owner request (25 November): the Syllabus page saves every syllabus uploaded, shows shared syllabi and creates drafts; the Syllabus button in the class presents only the instructor's originally uploaded file and the course outline extracted from it, which is the reference for the sections built in Teaching Materials & Assessments. The two connect by links only.
+
+| Task | Work | Acceptance | Stage |
+|---|---|---|---|
+| T16.3 | Syllabus page (My Syllabus): an Upload syllabi intake saves each approved PDF or DOCX automatically. It becomes the class's approved syllabus (Active) when its course code is loaded to the instructor for the selected semester and the class has none; otherwise it is kept as Approved - Uploaded and links to the class when the course is loaded. The old `?upload=approved` link still opens it focused | `tests/browser/class-syllabus.spec.ts`, `approved-syllabus.spec.ts`, `approved-syllabus-original.spec.ts` | Complete |
+| T16.4 | Class Syllabus view (`classroom/ClassSyllabus.jsx`, `?view=class-syllabus`, the banner Syllabus button): the uploaded file (View uploaded file in a page over the class, Download) and the extracted outline, read-only, with "Manage syllabi in Syllabus" and an Open Teaching Materials & Assessments button. A class with no approved syllabus says so and links to the Syllabus page. The class no longer has an upload, a shared-syllabus picker or a draft link: Announcements' Next step and Teaching Materials point to the Syllabus page | `class-syllabus.spec.ts`, `instructor-courses.spec.ts`, `supporting-spec.spec.ts` | Complete |

@@ -11,7 +11,7 @@ import './approved-syllabus-intake.css'
 
 // Approved copies can start a course without a pre-existing draft or roster.
 // Parsing is local; only the explicit selection below writes to the workspace.
-export default function ApprovedSyllabusIntake({ onUse, focusUpload = false, courseCode = '' }) {
+export default function ApprovedSyllabusIntake({ onUse, focusUpload = false, courseCode = '', description = 'Add an approved syllabus, review its extracted outline, then select it for your course.', actionLabel = 'Use syllabus for course', actionHint = 'Saves this copy and opens its course. Generate materials when ready.', busyLabel = 'Saving syllabus...' }) {
   const input = useRef(null), zone = useRef(null), locked = useRef(false)
   const heading = useId(), hint = useId()
   const [candidate, setCandidate] = useState(null), [warnings, setWarnings] = useState([]), [viewing, setViewing] = useState(false)
@@ -42,7 +42,7 @@ export default function ApprovedSyllabusIntake({ onUse, focusUpload = false, cou
     finally { locked.current = false; setSaving(false) }
   }
   return <section className="card approved-intake" aria-labelledby={heading} aria-busy={busy || saving}>
-    <div className="approved-intake-heading"><div><h2 id={heading}>Upload syllabi</h2><p className="text-sm text-muted">Add an approved syllabus, review its extracted outline, then select it for your course.</p></div></div>
+    <div className="approved-intake-heading"><div><h2 id={heading}>Upload syllabi</h2><p className="text-sm text-muted">{description}</p></div></div>
     <input ref={input} type="file" accept=".pdf,.docx" aria-label="Upload approved syllabus PDF or DOCX" hidden disabled={busy || saving} onChange={event => { void scan(event.target.files?.[0]); event.target.value = '' }} />
     <button ref={zone} type="button" className={`approved-intake-drop${dragOver ? ' is-over' : ''}`} aria-describedby={hint} disabled={busy || saving}
       onClick={() => input.current?.click()} onDragOver={event => { event.preventDefault(); if (!locked.current) setDragOver(true) }} onDragLeave={() => setDragOver(false)}
@@ -61,7 +61,7 @@ export default function ApprovedSyllabusIntake({ onUse, focusUpload = false, cou
         {outlineSpans(candidate.courseOutline).map(({label,exam,section:row}) => <tr key={`${label}-${row.id}`}><td>{label}{exam && <span className="text-sm text-muted"> Exam</span>}</td><td>{row.ilos || 'Not extracted'}</td><td><ul>{row.contents?.map((text, index) => <li key={index}>{text}</li>)}</ul></td><td>{row.activities}<ul>{row.teachingMaterials?.map((text, index) => <li key={index}>{text}</li>)}</ul></td><td>{row.assessments}<ul>{row.assessmentTypes?.map((text, index) => <li key={index}>{text}</li>)}</ul></td></tr>)}
       </tbody></table></div>
       <label className="approved-intake-confirm"><input type="checkbox" checked={attested} disabled={saving} onChange={event => setAttested(event.target.checked)} /><span>I confirm this is the approved copy and have checked the extracted course and outline. EduPulse does not verify signatures.</span></label>
-      <div className="approved-intake-actions"><button className="btn btn-primary" disabled={!attested || saving} onClick={() => void handleUseSyllabus()}>{saving ? <Spinner size={16} /> : <FileUp size={16} />}{saving ? 'Saving syllabus...' : 'Use syllabus for course'}</button><span className="text-sm text-muted">Saves this copy and opens its course. Generate materials when ready.</span></div>
+      <div className="approved-intake-actions"><button className="btn btn-primary" disabled={!attested || saving} onClick={() => void handleUseSyllabus()}>{saving ? <Spinner size={16} /> : <FileUp size={16} />}{saving ? busyLabel : actionLabel}</button><span className="text-sm text-muted">{actionHint}</span></div>
     </div>}
     {viewing && candidate && <PageModal title={`${candidate.courseCode} \u2014 ${candidate.courseTitle}`} label="Approved syllabus preview" closeLabel="Close syllabus preview" onClose={()=>setViewing(false)} bodyClassName="reader-page-body"><RetainedFileViewer file={candidate.approvedFile} title={`${candidate.courseCode} \u2014 ${candidate.courseTitle}`} onBack={() => setViewing(false)} /></PageModal>}
   </section>

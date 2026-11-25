@@ -33,9 +33,11 @@ test('student block context and legacy Course links resolve on Home',async({page
  await expect(classes).toBeVisible()
 })
 
-test('instructor class links its genuine draft to the existing editable builder',async({page})=>{
- const fixture=await instructorCourseUI(page);fixture.syllabus.status='drafted';await page.goto('/#/courseware');await expect(page.getByRole('heading',{name:'Home',exact:true})).toBeVisible({timeout:20000});await page.getByRole('region',{name:'Your classes'}).getByRole('button',{name:'Open course IT 102',exact:true}).click();await page.getByRole('button',{name:'Teaching Materials & Assessments',exact:true}).click();await expect(page.getByRole('region',{name:'Next step',exact:true})).toBeVisible()
- const edit=page.getByRole('link',{name:'Continue editing draft',exact:true});await expect(edit).toHaveAttribute('href',`#/syllabus?tab=builder&edit=${encodeURIComponent(fixture.syllabus.id)}`);await edit.click();await expect(page).toHaveURL(new RegExp(`edit=${fixture.syllabus.id}`));await expect(page.getByRole('navigation',{name:'Syllabus sections',exact:true})).toBeVisible();expect(fixture.commands).toHaveLength(0)
+test('a draft syllabus is not offered in the class: it stays on the Syllabus page, which the class links to',async({page})=>{
+ const fixture=await instructorCourseUI(page);fixture.syllabus.status='drafted';await page.goto('/#/courseware');await expect(page.getByRole('heading',{name:'Home',exact:true})).toBeVisible({timeout:20000});await page.getByRole('region',{name:'Your classes'}).getByRole('button',{name:'Open course IT 102',exact:true}).click();await expect(page.getByRole('region',{name:'Next step',exact:true})).toBeVisible()
+ await expect(page.getByRole('link',{name:'Continue editing draft',exact:true})).toHaveCount(0)
+ await page.getByRole('region',{name:'Next step',exact:true}).getByRole('link',{name:'Open Syllabus',exact:true}).click();await expect(page).toHaveURL(/#\/syllabus\?tab=mine/)
+ await expect(page.locator(`[data-syllabus-id="${fixture.syllabus.id}"]`)).toBeVisible();expect(fixture.commands).toHaveLength(0)
 })
 
 
