@@ -18,15 +18,20 @@
 .schedule-hours span:first-child { transform: none; }
 .schedule-day { position: relative; border-left: 1px solid var(--gray-100); background-image: repeating-linear-gradient(to bottom, transparent 0, transparent calc(var(--hour) - 1px), var(--gray-100) calc(var(--hour) - 1px), var(--gray-100) var(--hour)); }
 .schedule-day[data-today] { background-color: var(--sky-50); }
-.schedule-meeting { position: absolute; display: grid; align-content: start; gap: 0; padding: 4px 6px; overflow: hidden; border: 1px solid var(--tone-200, var(--sky-100)); border-left: 4px solid var(--tone-500, var(--sky-500)); border-radius: 8px; background: var(--tone-100, var(--sky-50)); color: var(--gray-900); font: inherit; font-size: 0.75rem; line-height: 1.3; text-align: left; cursor: pointer; }
+/* A meeting is a framed card like a class card on Home: a solid header band holding the centred course code, solid edges on the left, right and bottom, and a plain body for the time and room. The edge colours are fixed (not theme variables) so the white header text keeps 4.5:1 contrast in both themes. */
+.schedule-meeting { --edge: #0369a1; position: absolute; display: flex; flex-direction: column; padding: 0; overflow: hidden; border: 3px solid var(--edge); border-top: 0; border-radius: 10px; background: var(--white); color: var(--gray-900); font: inherit; font-size: 0.75rem; line-height: 1.25; text-align: center; cursor: pointer; }
 .schedule-meeting:disabled { cursor: default; }
 .schedule-meeting:hover:not(:disabled), .schedule-meeting:focus-visible { box-shadow: var(--shadow-3d-hover); z-index: 2; }
-.schedule-meeting strong { font-size: 0.8125rem; }
-.schedule-meeting[data-tone="1"] { --tone-100: #f3e8ff; --tone-200: #e9d5ff; --tone-500: #a855f7; }
-.schedule-meeting[data-tone="2"] { --tone-100: #dcfce7; --tone-200: #bbf7d0; --tone-500: #22c55e; }
-.schedule-meeting[data-tone="3"] { --tone-100: #ffedd5; --tone-200: #fed7aa; --tone-500: #f97316; }
-.schedule-meeting[data-tone="4"] { --tone-100: #fce7f3; --tone-200: #fbcfe8; --tone-500: #ec4899; }
-.schedule-meeting[data-tone="5"] { --tone-100: #fef9c3; --tone-200: #fde68a; --tone-500: #eab308; }
+.schedule-meeting { container-type: inline-size; }
+.schedule-meeting-head { flex: none; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; column-gap: 0.45em; padding: 4px 6px 5px; background: var(--edge); color: #fff; font-size: 0.8125rem; font-weight: 700; line-height: 1.2; }
+.schedule-meeting-block::before { content: "\00b7"; margin-right: 0.45em; }
+/* In a narrow lane the code and the block stack, so the dot never lands at the end of a line. */
+@container (max-width: 130px) { .schedule-meeting-head { flex-direction: column; row-gap: 0; } .schedule-meeting-block::before { display: none; } .schedule-meeting-block { font-weight: 600; font-size: 0.75rem; } }
+.schedule-meeting-body { flex: 1; min-height: 0; display: grid; align-content: center; justify-items: center; gap: 1px; padding: 2px 6px; overflow: hidden; }
+.schedule-meeting[data-tone="sky"] { --edge: #0369a1; }
+.schedule-meeting[data-tone="purple"] { --edge: #7e22ce; }
+.schedule-meeting[data-tone="green"] { --edge: #15803d; }
+.schedule-meeting[data-tone="amber"] { --edge: #b45309; }
 .schedule-agenda { display: grid; gap: 12px; margin-bottom: 24px; }
 .schedule-agenda-day { padding: 12px 14px; background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--radius-lg); }
 .schedule-agenda-day[data-today] { border-color: var(--sky-300, var(--sky-500)); background: var(--sky-50); }

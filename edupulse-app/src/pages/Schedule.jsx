@@ -9,12 +9,13 @@ import LoadTermFilter from '../components/academic/LoadTermFilter'
 import { LoadingStatus } from '../components/ui/LoadingFeedback'
 import { loadTerm, recordsForLoadTerm } from '../utils/loadTerms'
 import { instructorCourses } from '../utils/instructorCourses'
+import { classTone } from '../utils/classroom'
 import { studentClassPath } from '../utils/studentClassPath'
 import { clockLabel, hourSpan, layoutDay, meetingsOf, timeRange, weekOf } from '../utils/classSchedule'
 import '../components/classroom/classroom.css'
 import '../components/schedule/schedule.css'
 
-const HOUR = 56
+const HOUR = 66
 const sameDay = (a, b) => a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate()
 const dayName = date => date.toLocaleDateString(undefined, { weekday: 'long' })
 const dayShort = date => date.toLocaleDateString(undefined, { weekday: 'short' })
@@ -63,8 +64,9 @@ export default function Schedule() {
   const label = meeting => `${meeting.code}${meeting.block ? ` block ${meeting.block}` : ''}, ${dayName(week.find(date => date.getDay() === meeting.day) || now)} ${timeRange(meeting)}${meeting.room ? `, room ${meeting.room}` : ''}`
   const range = `${dateLabel(days[0])} - ${dateLabel(days[days.length - 1])}, ${days[days.length - 1].getFullYear()}`
 
-  const card = (meeting, style) => <button type="button" key={meeting.key} className="schedule-meeting" data-tone={meeting.code.replace(/\s/g, '').length % 6} style={style} aria-label={label(meeting)} disabled={!meeting.courseId} onClick={() => open(meeting)}>
-    <strong>{meeting.code}{meeting.block ? ` · ${meeting.block}` : ''}</strong><span>{timeRange(meeting)}</span>{meeting.room && <span>{meeting.room}</span>}
+  const card = (meeting, style) => <button type="button" key={meeting.key} className="schedule-meeting" data-tone={classTone(meeting.code)} style={style} aria-label={label(meeting)} disabled={!meeting.courseId} onClick={() => open(meeting)}>
+    <strong className="schedule-meeting-head"><span>{meeting.code}</span>{meeting.block && <span className="schedule-meeting-block">{meeting.block}</span>}</strong>
+    <span className="schedule-meeting-body"><span>{timeRange(meeting)}</span>{meeting.room && <span>{meeting.room}</span>}</span>
   </button>
 
   return <div className="container schedule-page" data-pulse-zone="general" data-pulse-target="Schedule">
@@ -90,7 +92,7 @@ export default function Schedule() {
         {days.map(date => <div key={date.toISOString()} className="schedule-dayhead" data-today={sameDay(date, now) || undefined}><span>{dayShort(date)}</span><strong>{date.getDate()}</strong></div>)}
         <div className="schedule-hours" aria-hidden="true">{hours.slice(0, -1).map(hour => <span key={hour} style={{ top: `${(hour - span.from) / 60 * HOUR}px` }}>{clockLabel(hour)}</span>)}</div>
         {days.map(date => <div key={`day-${date.toISOString()}`} className="schedule-day" role="list" aria-label={`${dayName(date)} ${dateLabel(date)}`} data-today={sameDay(date, now) || undefined}>
-          {layoutDay(meetings.filter(item => item.day === date.getDay())).map(meeting => card(meeting, { top: `${(meeting.start - span.from) / 60 * HOUR}px`, height: `${Math.max(32, (meeting.end - meeting.start) / 60 * HOUR - 2)}px`, left: `calc(${meeting.lane / meeting.lanes * 100}% + 2px)`, width: `calc(${100 / meeting.lanes}% - 4px)` }))}
+          {layoutDay(meetings.filter(item => item.day === date.getDay())).map(meeting => card(meeting, { top: `${(meeting.start - span.from) / 60 * HOUR}px`, height: `${Math.max(HOUR - 2, (meeting.end - meeting.start) / 60 * HOUR - 2)}px`, left: `calc(${meeting.lane / meeting.lanes * 100}% + 2px)`, width: `calc(${100 / meeting.lanes}% - 4px)` }))}
         </div>)}
       </div>}
       {view === 'agenda' && meetings.length > 0 && <div className="schedule-agenda">{days.map(date => { const list = meetings.filter(item => item.day === date.getDay()); return <section key={date.toISOString()} className="schedule-agenda-day" aria-label={`${dayName(date)} ${dateLabel(date)}`} data-today={sameDay(date, now) || undefined}>

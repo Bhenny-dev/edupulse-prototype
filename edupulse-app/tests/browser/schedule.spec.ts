@@ -24,6 +24,13 @@ test('an instructor sees the classes they teach on a weekly calendar, opens one,
     await expect(grid.getByRole('button', { name: /^IT 102 block BSIT-1A, Wednesday 7:30 AM - 9:00 AM, room A310$/ })).toBeVisible()
     await expect(grid.getByRole('button', { name: /^IT 102 block BSIT-1A, Friday 1:00 PM - 4:00 PM, room Lab 2$/ })).toBeVisible()
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true)
+    // A meeting is a framed card: solid edges on the left, right and bottom, and a header band across the top with the code centred (no left-only stripe).
+    const card = grid.getByRole('button', { name: /^IT 102 block BSIT-1A, Monday/ })
+    expect(await card.evaluate(element => { const style = getComputedStyle(element); return [style.borderLeftWidth, style.borderRightWidth, style.borderBottomWidth, style.borderTopWidth] })).toEqual(['3px', '3px', '3px', '0px'])
+    const outer = (await card.boundingBox())!, head = (await card.locator('.schedule-meeting-head').boundingBox())!
+    expect(Math.abs(head.width - (outer.width - 6))).toBeLessThanOrEqual(1)
+    expect(Math.abs(head.x + head.width / 2 - (outer.x + outer.width / 2))).toBeLessThanOrEqual(1)
+    await expect(card.locator('.schedule-meeting-head')).toContainText('IT 102')
   }
   // A class the Dean loaded without days and times is listed apart, never placed on the calendar.
   const apart = page.getByRole('region', { name: 'Classes without a meeting time' })
