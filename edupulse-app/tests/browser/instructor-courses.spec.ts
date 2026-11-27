@@ -235,3 +235,34 @@ test('insufficient sources is a choice: the form names the topic and generates f
   expect(created.content.ai.warning).toContain('no saved reference passage covered this topic')
   expect(fixture.forbidden).toEqual([])
 })
+
+test('Find source for selection shows the cited passage highlighted and offers the retained original', async ({ page }) => {
+  const fixture = await instructorCourseUI(page)
+  const retained = '11111111-2222-4333-8444-555555555555', sourceText = 'Programs keep data in variables. A variable stores a value that later steps can read.'
+  const workspace = fixture.getWorkspace() as any
+  workspace.content.lesson.content = { ...workspace.content.lesson.content, ai: { sources: [{ citation: 1, title: 'Programming source', text: sourceText, retained: { id: retained, reference: { kind: 'link', title: 'Programming source' } } }] } }
+  fixture.setWorkspace(workspace)
+  const located: any[] = []
+  await page.route('**/api/ai?action=syllabus-sources', async route => {
+    const input = route.request().postDataJSON?.()
+    if (input?.operation !== 'locate') return route.fallback()
+    located.push(input)
+    const start = sourceText.indexOf('A variable stores a value')
+    await route.fulfill({ json: { matches: [{ id: retained, title: 'Programming source', text: sourceText, page: 1, exact: true, highlight: { start, end: start + 'A variable stores a value'.length } }] } })
+  })
+  await page.goto(`/#/courseware?course=${fixture.syllabus.id}&tab=materials&item=lesson`)
+  const reader = page.getByRole('dialog', { name: 'Variables lesson' })
+  await expect(reader).toBeVisible({ timeout: 20000 })
+  const quote = await reader.locator('.doc-viewer-text').first().evaluate(element => {
+    const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT), node = walker.nextNode()!, range = document.createRange()
+    range.setStart(node, 0); range.setEnd(node, Math.min(25, node.textContent!.length)); window.getSelection()!.removeAllRanges(); window.getSelection()!.addRange(range); return range.toString()
+  })
+  await reader.locator('.doc-viewer-text').first().dispatchEvent('mouseup')
+  await page.getByRole('button', { name: 'Find source for selection', exact: true }).click()
+  const popup = page.getByRole('dialog', { name: 'Source basis for selected passage', exact: true })
+  await expect(popup.locator('blockquote')).toHaveText(quote)
+  await expect(popup.locator('mark')).toHaveText('A variable stores a value')
+  await expect(popup.getByRole('button', { name: 'Open retained copy' }).first()).toBeVisible()
+  expect(located).toEqual([{ operation: 'locate', ids: [retained], text: quote }])
+  expect(fixture.forbidden).toEqual([])
+})
