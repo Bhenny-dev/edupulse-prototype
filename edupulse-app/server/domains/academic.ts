@@ -101,6 +101,7 @@ export const academicCommand = z.discriminatedUnion('operation', [
   z.object({ operation: z.literal('grade'), attempt: z.string().uuid(), points: z.array(z.number().int().min(0).max(1)).min(3).max(5), reason: z.string().trim().min(1).max(2000) }),
   z.object({ operation: z.literal('appeal'), attempt: z.string().uuid(), reason: z.string().trim().min(1).max(2000) }),
   z.object({ operation: z.literal('feedback'), attempt: z.string().uuid() }),
+  z.object({ operation: z.literal('instructor-assessment-key'), publication: identifier, version: identifier }),
   z.object({ operation: z.literal('revise'), course:identifier, comment:z.string().trim().min(1).max(2000) }),
   z.object({operation:z.literal('class-list'),assignment:field(200).min(1),block:field(40).min(1),revision:z.number().int().min(0).max(Number.MAX_SAFE_INTEGER),mode:z.enum(['append','replace']),filename:field(255).optional(),students:z.array(z.object({StudentID:field(80).optional(),Email:field(254).optional()}).refine(row=>Boolean(row.StudentID||row.Email),'A registered student number or email is required.')).min(1).max(35)}),
   z.object({ operation: z.literal('dean'), command: deanCommand }),
@@ -207,6 +208,15 @@ export async function executeAcademic(identity: Identity, input: z.infer<typeof 
       return publication
     }
     return result
+  }
+  if (input.operation === 'instructor-assessment-key') {
+    if (identity.role !== 'instructor') throw new ApiError(403, 'FORBIDDEN', 'The published key is available to the assigned instructor.')
+    const { data, error } = await userDb(identity).rpc('edupulse_instructor_assessment_key', {
+      publication: input.publication, version: input.version, subject: identity.supportActor ? identity.id : null,
+    })
+    if (error) throw new ApiError(error.code === '42501' ? 403 : error.code === '40001' ? 409 : error.code === '22023' ? 404 : 503,
+      'ASSESSMENT_KEY_UNAVAILABLE', ['40001', '22023'].includes(error.code) ? error.message : 'The published answer key could not be verified.')
+    return data
   }
   if (input.operation === 'feedback') {
     // The answer key is released by the database to the student who submitted the attempt, never to a support view.

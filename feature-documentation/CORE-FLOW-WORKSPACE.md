@@ -587,3 +587,11 @@ The shared plan retains instructor-only workspace controls in **Teaching Materia
 ## 27 November 2026 - G6 practice from finished quizzes
 
 T6.1 is Ready (see G6): 579-test gate and `VERCEL=1 npm test` passed before the push. Known unrelated failure: `student-learning.spec.ts:21` (course tabs) still expects table rows in "Personal assessment results", which `a9686aa7` regrouped into week lists with "Resume assessment"; it fails without this change too. T6.2 (advanced reading marker and mock quizzes) is next.
+
+## 27 November 2026 - Delivered assessment form and scores (G26)
+
+| Task | Work | Acceptance | Stage |
+|---|---|---|---|
+| T26.1 | Open the published form from both instructor class tabs and use the same controls for all seven response formats. | Desktop and phone cases in delivered-assessments.spec.ts submit both choice types and every written format. | Complete |
+| T26.2 | Show the exact published key, current block student scores and individual response review. Preserve grade confirmation and authorized reload. | block-delivery.test.ts and delivered-assessments.spec.ts check ownership, role support, pending and zero results, version scope, marking and reload. | Complete |
+| T26.3 | Record the instructor and student steps with current captures. | Manual 41 and 44, walkthroughs, backend contract and class-stream capture scenes. | Complete |

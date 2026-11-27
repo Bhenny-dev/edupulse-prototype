@@ -1,6 +1,7 @@
 import { expect, type Page } from '@playwright/test'
 import { instructorCourseUI } from '../instructor-course-fixture'
 import { baselineUI } from '../baseline-fixture'
+import { deliveredAssessmentUI } from '../delivered-assessment-fixture'
 
 const folder = '../feature-documentation/system-manual/44-instructor-course-workspace'
 export async function classStreamScene(page: Page, mobile = false) {
@@ -64,4 +65,35 @@ export async function studentAnnouncementScene(page: Page) {
   await expect(topic.locator('.student-resource:not(.student-announcement) h3')).toHaveText(['Variables lesson', 'Variables quiz'])
   await page.setViewportSize({ width: 1440, height: 1180 })
   await page.screenshot({ path: '../feature-documentation/system-manual/41-student-learning/12-placed-announcements.png', animations: 'disabled' })
+}
+
+export async function deliveredAssessmentScene(page: Page) {
+  await page.setViewportSize({ width: 1440, height: 1050 })
+  const fixture = await deliveredAssessmentUI(page, 'instructor')
+  await page.goto('/#/courseware?course=baseline-syllabus&tab=stream')
+  await page.getByRole('button', { name: 'Open ' + fixture.check.title, exact: true }).click()
+  const dialog = page.getByRole('dialog', { name: fixture.check.title })
+  await dialog.getByLabel('Question 1: total', { exact: true }).check()
+  await dialog.getByLabel('Question 2: False', { exact: true }).check()
+  await expect(dialog.getByRole('button', { name: 'Check my answers' })).toBeEnabled()
+  await page.screenshot({ path: folder + '/22-delivered-assessment-form.png', animations: 'disabled' })
+  await dialog.getByRole('button', { name: 'Answer key', exact: true }).click()
+  await expect(dialog.getByText('Correct answer: False', { exact: true })).toBeVisible()
+  await page.screenshot({ path: folder + '/23-delivered-answer-key.png', animations: 'disabled' })
+  await dialog.getByRole('button', { name: 'Student scores', exact: true }).click()
+  await expect(dialog.getByRole('row', { name: /Ada Reyes/ })).toContainText('0/5')
+  await expect(dialog.getByRole('row', { name: /Bea Santos/ })).toContainText('Awaiting marking')
+  await page.screenshot({ path: folder + '/24-delivered-assessment-scores.png', animations: 'disabled' })
+}
+
+export async function matchingResponseScene(page: Page) {
+  const fixture = await deliveredAssessmentUI(page, 'student')
+  await page.goto('/#/assessment')
+  await page.getByRole('button', { name: 'Open assessment', exact: true }).nth(1).click()
+  const dialog = page.getByRole('dialog', { name: fixture.application.title })
+  await dialog.getByRole('button', { name: 'Start assessment' }).click()
+  const response = dialog.getByRole('textbox', { name: 'Written response for question 1' })
+  await response.fill('1-B\n2-A')
+  await expect(dialog.getByRole('table')).toBeVisible()
+  await page.screenshot({ path: '../feature-documentation/system-manual/41-student-learning/14-matching-response-phone.png', animations: 'disabled' })
 }

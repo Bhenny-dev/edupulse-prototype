@@ -38,6 +38,10 @@ Teaching materials precede the assessments that cover them in the drafting tab, 
 The instructor's Stream and drafting tab use the same class plan for weeks, topics and sequence. Stream shows the confirmed delivered subset and reads the published content. Test both tabs after publishing, hiding, revising or moving existing work, including delayed delivery reads and reload.
 
 
+## Delivered assessments
+
+Open a delivered assessment in either instructor class tab with the shared student-shaped form, the exact published key and per-student scores for the selected block. Use objective selection controls for multiple choice and true or false. Preserve all five manually marked written formats, the student answer-review boundary, and the difference between pending, missing and zero scores. An instructor's test attempt and restoring any assessment view never record learner activity or marks.
+
 ## EduPulse production trigger after the Vercel transfer
 
 Owner standing instruction (25 November 2026): always commit and push completed changes, apply their migrations, and complete the production deployment and Ready verification. Do not stop at a local-only fix.

@@ -788,3 +788,11 @@ The population planner now uses only retained management course parents and exis
 ## Loading feedback audit, 26 November 2026
 
 Presentation changes reuse current operation flags and shared loaders across roles. Practice startup and academic/student file reads now expose their actual pending promises. API operations, authorization, retries, save journaling and reload behavior retain their existing contracts. No schema or provider change is required. [Scan and validation](../versions/2026-11-26-loading-audit/README.md).
+
+## Delivered assessment form, instructor key and per-student scores
+
+Both instructor class tabs open the same active publication. The form uses the same question controls as the student and a local test attempt. Choice responses remain option indexes. Identification, enumeration, essay, matching and follow-along remain written strings marked by the instructor. Matching pairs use the prompt's supplied labels, with one submitted response per question.
+
+The scoped instructor-assessment-key operation reads the exact version from the private key table. It rechecks ownership and delegates a verified System Admin support read to the selected instructor's ownership. It returns only ordered answer indexes and guides from the exact source version when available. The ordinary academic snapshot and student publication DTO still omit keys. The student answer-review operation retains its own submitted-attempt and active-retake guards.
+
+Student scores reuse authorized attempts and enrollment for the selected course and block. The latest current-version attempt supplies the displayed result. Pending, started and missing results remain distinct from marked zero. The shared marking form saves explicitly through the existing grade operation. Only the view and authorized attempt identifiers are eligible for restore. [Instructor manual](../system-manual/44-instructor-course-workspace/README.md#open-a-delivered-assessment-and-review-scores).

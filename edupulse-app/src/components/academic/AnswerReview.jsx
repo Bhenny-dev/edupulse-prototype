@@ -41,7 +41,7 @@ export default function AnswerReview({ attempt, questions }) {
         const question = questions[item.index], written = item.type === 'short_answer'
         return <li key={item.index} className={`academic-answer ${item.status}`}>
           <p><strong>{question?.text ? `${item.index + 1}. ${question.text}` : `Question ${item.index + 1}`}</strong> <span className={`academic-answer-status ${item.status}`}>{STATUS[item.status] || item.status}</span></p>
-          <p className="text-sm">Your answer: {written ? item.response : optionText(question, item.response) || 'No answer recorded'}</p>
+          <p className="text-sm assessment-recorded-answer">Your answer: {written ? item.response : optionText(question, item.response) || 'No answer recorded'}</p>
           {!written && optionText(question, item.correctIndex) && <p className="text-sm">Correct answer: {optionText(question, item.correctIndex)}</p>}
           {written && item.status === 'awaiting_review' && <p className="text-sm text-muted">Your instructor marks written responses; this question’s point is pending.</p>}
           {item.explanation ? <p className="text-sm">Why: {item.explanation}</p> : item.status === 'incorrect' && <p className="text-sm text-muted">No explanation was added for this question.</p>}

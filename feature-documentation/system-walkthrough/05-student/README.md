@@ -1,5 +1,7 @@
 # 05 · Student
 
+Delivered assessments use radio choices for multiple choice and true or false, a single-line identification answer, and labeled response fields for enumeration, matching, essay and step-by-step documentation. Objective answer feedback is available through the student's submitted attempt. Written scores appear after instructor review. [Student answer formats](../../system-manual/41-student-learning/README.md#enter-assessment-responses).
+
 Main tabs: **Dashboard**, **My Courses**, **Practice Assessments**, **Performance**. Students see only what is published to their block, and Pulse guides them without answering assessment items. Shown as the preview student Bhenny Benlor D. Rivera (BSIT-3A).
 
 The refreshed Performance captures explicitly display **Sample performance data · Preview only · Institutional grades remain in EduSuite.** The preview scores are examples. Signed-in students use the [authenticated records view](../08-authenticated-records/README.md) for their own saved attempts and enrolled publications. Empty accounts show **No authorized academic records yet**; these preview screenshots are separate evidence.

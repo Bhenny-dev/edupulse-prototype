@@ -1,5 +1,5 @@
 import {useAssessmentFocus} from './assessmentFocus'
-import {assessmentLabel} from '../../data/assessmentFormats'
+import AssessmentQuestion from '../courseware/AssessmentQuestion'
 import AnswerReview from './AnswerReview'
 import StudentResourceLinks from './StudentResourceLinks'
 import TeachingAttachments from '../courseware/TeachingAttachments'
@@ -33,7 +33,7 @@ export default function AcademicLibrary({ data, assessments = false, all = false
       const attempt = studentAttempt(data, item)
       const bar = progress && item.type !== 'assessment' ? itemProgress(data, item) : null
       const access = data.accesses.find(entry => entry.publication_id === item.id)
-      return <div className="academic-list-row" key={item.id}><div><strong>{item.title}</strong><p className="text-sm text-muted">{item.type} · {item.type==='assessment' ? attempt ? `Saved result: ${attempt.score}/${attempt.max_score}` : 'Not answered' : access ? 'Opened' : 'Not opened'}</p>{item.delivery_mode==='block_schedule'&&<p className="text-sm text-muted">{availability(item)}</p>}{bar&&bar.total>0&&<StudentProgressBar value={bar.read} total={bar.total} label={`${item.title} sections read`} text={`${bar.read}/${bar.total} sections read`}/>}</div><button className="btn btn-secondary btn-sm" disabled={busy} onClick={() => onOpen(item)}>{item.type==='assessment' ? 'Open assessment' : 'Open material'}</button></div>
+      return <div className="academic-list-row" key={item.id}><div><strong>{item.title}</strong><p className="text-sm text-muted">{item.type} · {item.type==='assessment' ? attempt ? attempt.grading_status === 'pending_review' ? 'Awaiting marking' : `Saved result: ${attempt.score}/${attempt.max_score}` : 'Not answered' : access ? 'Opened' : 'Not opened'}</p>{item.delivery_mode==='block_schedule'&&<p className="text-sm text-muted">{availability(item)}</p>}{bar&&bar.total>0&&<StudentProgressBar value={bar.read} total={bar.total} label={`${item.title} sections read`} text={`${bar.read}/${bar.total} sections read`}/>}</div><button className="btn btn-secondary btn-sm" disabled={busy} onClick={() => onOpen(item)}>{item.type==='assessment' ? 'Open assessment' : 'Open material'}</button></div>
     })}</details>) : <Empty>No published {all ? 'items' : assessments ? 'assessments' : 'materials'} match this course.</Empty>}</section>
   }) : <Empty>No enrolled courses yet.</Empty>}</Panel></>
 }
@@ -78,7 +78,9 @@ export function OpenedPublication({ pageModal=false, adminTest=false, selected, 
       {!attempt&&canAttempt&&<p className="text-sm text-muted">Responses stay on this page until you submit. Closing, using Back, or reloading before submission can lose your unsaved responses.</p>}
       {!attempt&&canAttempt&&session&&<p role="status" aria-label="Assessment progress">{answered}/{questions.length} answered · {duration?`Remaining ${Math.max(0,duration-elapsed)} seconds`:`Elapsed ${Math.floor(elapsed/60)}:${String(elapsed%60).padStart(2,'0')}`} · Attempt {session?.attempt_no || 1}</p>}
       {expired&&!attempt&&<p role="alert">This assessment is closed. Your instructor controls its duration and deadline.</p>}
-      {questions.map((question,index)=><fieldset className="academic-question" key={index}><legend>{index+1}. {question.text}</legend>{question.topic&&<p className="text-sm text-muted">Syllabus topic: {question.topic}</p>}{question.type==='short_answer'?<label>{assessmentLabel(question.responseFormat)} · instructor marked<textarea aria-label={`Written response for question ${index+1}`} className="form-input" maxLength={4000} value={answers[index] ?? attempt?.answers?.[index] ?? ''} disabled={Boolean(attempt)||busy||expired||!canAttempt||!session} onChange={event=>setAnswers(previous=>({...previous,[index]:event.target.value}))}/></label>:(question.options || []).map((option,optionIndex)=>{const label=typeof option==='string'?option:option.text;return <label key={optionIndex}><input type="radio" name={`academic-question-${index}`} aria-label={`Question ${index+1}: ${label}`} checked={(answers[index] ?? attempt?.answers?.[index])===optionIndex} disabled={Boolean(attempt)||busy||expired||!canAttempt||!session} onChange={()=>setAnswers(previous=>({...previous,[index]:optionIndex}))}/> {label}</label>})}</fieldset>)}
+      {questions.map((question, index) => <AssessmentQuestion key={question.id || index} question={question} index={index} showTopic
+        answer={answers[index] ?? attempt?.answers?.[index]} disabled={Boolean(attempt) || busy || expired || !canAttempt || !session}
+        onAnswer={value => setAnswers(previous => ({ ...previous, [index]: value }))} />)}
       {canAttempt&&!attempt&&<button aria-busy={Boolean(busy)} className="btn btn-primary" disabled={busy||expired||!session||answered!==questions.length} onClick={onSubmit}>{busy && <Spinner />}{busy?'Saving…':'Confirm and submit responses'}</button>}</>}
       {attempt&&<div className="academic-result" role="status">
         {attempt.grading_status==='pending_review'?'Score pending review':`Saved score: ${attempt.score}/${attempt.max_score}.`}

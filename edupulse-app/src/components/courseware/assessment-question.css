@@ -1,0 +1,8 @@
+.assessment-question-form { min-width: 0; overflow-wrap: anywhere; }
+.assessment-question-form > .courseware-text { margin-bottom: 12px; }
+.assessment-question-form .assessment-choice { align-items: center; min-height: 44px; cursor: pointer; }
+.assessment-choice input { flex-shrink: 0; }
+.assessment-question-form .assessment-written label { display: grid; gap: 6px; }
+.assessment-written .form-input { margin: 0; width: 100%; }
+.assessment-written textarea { resize: vertical; }
+.assessment-recorded-answer { white-space: pre-wrap; overflow-wrap: anywhere; }

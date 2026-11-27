@@ -14,3 +14,10 @@ export function requestedAssessmentFormat(text:string) {
  const rules:[string,RegExp][]=[['follow_along',/follow.along|step.by.step|documentation guide/],['multiple_choice',/multiple.choice|\bmcq\b/],['true_false',/true.{0,5}false/],['enumeration',/enumeration|enumerate/],['identification',/identification|identify the/],['matching',/matching/],['essay',/essay|written response|short.answer/]]
  return rules.find(([,pattern])=>pattern.test(text.toLowerCase()))?.[0]||(/\bcriteria\b/i.test(text)?'follow_along':undefined)
 }
+
+/** Published options may be strings or the labeled objects saved by the editor. */
+export function questionOptionText(question: { options?: (string | { text?: string })[] } | undefined, index: unknown) {
+  if (typeof index !== 'number' || !Number.isInteger(index) || index < 0) return ''
+  const option = question?.options?.[index]
+  return (typeof option === 'string' ? option : option?.text) || ''
+}

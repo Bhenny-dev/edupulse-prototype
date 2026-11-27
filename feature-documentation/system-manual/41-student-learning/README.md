@@ -57,10 +57,16 @@ The owner-authorized data exercise covers one enrolled approved course per stude
 
 The routine **Records up to date** indicator and page-header **Export authorized records** / **Export** buttons have been removed across academic pages and signed-in dashboards. Loading/error/offline feedback and explicit **Refresh records** / **Retry connection** remain available when needed. Specific CSV downloads and the Settings workspace backup keep their existing purposes.
 
+## Enter assessment responses
+
+Select **Start assessment** to enable the answer controls. **Multiple choice** and **True or false** offer one selection per question. **Identification** uses a single-line answer. **Enumeration** takes one entry per line. For **Matching type**, read the pairs in the question and enter one answer pair per line. **Essay** and **Follow-along / Step-by-step documentation guide or criteria** provide space for a written response. After **Confirm and submit responses**, open your **Answer review** to read the recorded feedback. Written responses remain pending until the instructor marks them.
+
+![A matching prompt and the student's matching pairs on a phone](14-matching-response-phone.png)
+
 ## Content filters and complete assessment view
 
 ![Only teaching materials in the selected course](10-teaching-materials-tab.png)
-![Only assessments in the selected course](11-assessments-tab.png)
+![Your Scores lists the selected class assessments by week](11-assessments-tab.png)
 ![All assessment questions together in a separate dialog](12-all-assessment-questions.png)
 ![Assessment dialog on a phone](13-phone-assessment-dialog.png)
 

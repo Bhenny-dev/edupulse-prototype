@@ -20,7 +20,7 @@ test('an instructor answers their own assessment as a student, marked with the a
   await trial.getByLabel('Question 3: False', { exact: true }).check()
   await trial.getByRole('button', { name: 'Check my answers', exact: true }).click()
   await expect(trial.getByRole('status')).toHaveText('Test score: 2/3. Nothing was saved.')
-  await expect(trial.getByText('Your answer: B. Answer key: A.', { exact: true })).toBeVisible()
+  await expect(trial.getByText('Your answer: False. Answer key: True.', { exact: true })).toBeVisible()
   await expect(trial.getByText('Correct.', { exact: true })).toHaveCount(2)
   await trial.getByRole('button', { name: 'Try again', exact: true }).click()
   await expect(trial.getByRole('status')).toHaveCount(0)

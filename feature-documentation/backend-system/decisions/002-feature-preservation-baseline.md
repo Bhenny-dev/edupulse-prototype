@@ -434,3 +434,7 @@ Keep normal authorization, approved-course boundaries, registered identities, cl
 ## Owner correction: source-bounded instructor loads, 25 November 2026
 
 Population may fill management-loaded classes but must not create new catalog assignments or extra sections to accommodate more students. This supersedes the additive-assignment interpretation in the earlier population paragraph. Preserve genuine and generated saved work. Correct only attributed seed extras against the retained confirmed baseline; never guess an instructor identity absent from the supplied workbook. Keep suspended/disabled restrictions. All registered instructor loads must be reviewed against source and unresolved differences recorded explicitly.
+
+### 27 November 2026 - Delivered assessment form and student scores
+
+The owner requires delivered assessments in both instructor class tabs to open the interactive assessment form alongside the key and per-student scores for that assessment. Use the same question controls as the student. Keep multiple choice and true or false as objective answers and the five written formats as instructor-marked responses. A published key belongs to the exact version and is accessible to its owning instructor or the verified support subject. The student receives only authorized post-submission feedback. Preserve the distinction between missing, pending and zero, the selected block, prior scored versions, and explicit marking on reload.

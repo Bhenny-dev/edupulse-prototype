@@ -20,7 +20,7 @@ The signed-in Instructor navigation is **Home**, **Schedule**, **Syllabus** and 
 
 ## Deliver and announce in Stream
 
-**Stream** lists saved publications by week and topic. Readings and worked examples come before the assessments that cover them. **Open** displays the delivered teaching material, submission bin or assessment in a read-only reader. A scheduled item shows the opening from the selected block's saved schedule. Class announcements appear above the weeks.
+**Stream** lists saved publications by week and topic. Readings and worked examples come before the assessments that cover them. **Open** displays a teaching material or submission bin in its reader. For an assessment it opens the assessment form, answer key and student scores. A scheduled item shows the opening from the selected block's saved schedule. Class announcements appear above the weeks.
 
 Both instructor tabs use the same class plan and item order. **Teaching Materials & Assessments** shows editable drafts and saved work. **Stream** shows the delivered items in their matching topics. Delivering a draft adds it to Stream after the delivery is confirmed. **Hide** or **Prepare draft revision** withdraws it from Stream. If the latest delivery cannot be verified, select **Retry** to read it again. If the connection dropped during the update, select **Retry** when you are back online.
 
@@ -120,7 +120,23 @@ Choose **Block section** from the class header to manage its calendar. Former re
 
 Open and review an item, then **Mark checked**. **Deliver to students** opens a separate dialog. For assessments, **Assessment settings** retains allowed attempts and the time limit; changing these rules returns the item to Draft for checking again. **Deliver checked content** requires an active approved syllabus and a saved opening for that week in at least one currently assigned block. The server rechecks the current load, schedule and checked-before-publication rules. A block without a matching saved schedule cannot access a new scheduled publication.
 
-Delivered or hidden content is read-only. **Prepare draft revision** explains withdrawal and requires confirmation; it returns the item to Draft for editing/checking/redelivery while retaining recorded assessment scores and reading history. **Hide** withdraws the delivered item without deleting that history. Week moves retain the same protections below.
+Delivered or hidden content keeps its published questions and teaching text protected. **Prepare draft revision** explains withdrawal and requires confirmation; it returns the item to Draft for editing/checking/redelivery while retaining recorded assessment scores and reading history. **Hide** withdraws the delivered item without deleting that history. Week moves retain the same protections below.
+
+### Open a delivered assessment and review scores
+
+From **Stream** or **Teaching Materials & Assessments**, choose **Open** on a delivered assessment. **Assessment form** lets you try the same radio buttons and written response fields students use. Select **Check my answers** to check objective responses locally. Test responses and test scores stay in the form for that session.
+
+![Instructor testing the delivered form with multiple choice and true or false selections](22-delivered-assessment-form.png)
+
+Select **Answer key** for the published version's correct choices and any saved explanations or written marking guides. If the key cannot be loaded, choose **Retry answer key**.
+
+![Published answer key with correct choices and an identification marking guide](23-delivered-answer-key.png)
+
+Select **Student scores** to see the selected block's latest submitted attempt for this version. **Raw score** and **Percentage** show marked results, including a genuine zero. **Awaiting marking**, **Started** and **No submission** identify students without a final score. Scripted demonstrations are excluded from this roster view. Choose **Review responses** for one student, read the submitted answers, set points and enter a **Review reason**. **Confirm reviewed marks** saves the change and updates the student's score.
+
+![The selected block with a recorded zero, a pending submission and students without a submitted result](24-delivered-assessment-scores.png)
+
+Reload restores the authorized assessment, its selected view and any authorized response review. In-progress test responses, unsaved marks and review reasons start fresh.
 
 ## Schedule delivery by block section
 

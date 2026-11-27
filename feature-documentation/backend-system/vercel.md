@@ -215,3 +215,7 @@ Apply migration `20261127021533_class_stream_announcement_placement.sql` to the 
 The teaching-sequence correction uses existing publication and private-file structures. The release updates the application and its generation contract and has no database migration. On the canonical alias, verify older publications with missing position metadata and the instructor's assessment-drafting form alongside the normal release checks.
 
 Both instructor tabs now read the same class plan. Verify the published order in both tabs, a confirmed delivery after saving and a failed read followed by retry. This synchronization uses the existing database projection.
+
+## Delivered assessment form, key and scores
+
+Apply migration 20261127090001_delivered_assessment_instructor_key.sql before deploying the matching application. It adds an authorized private answer-key lookup and retains the existing publication, attempt and grade structures. Verify the migration history, the Ready production alias and the browser flow. [Release validation](../versions/2026-11-27-delivered-assessments.md).

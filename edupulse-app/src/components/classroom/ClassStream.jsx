@@ -5,7 +5,7 @@ import ModalLayer from '../ui/ModalLayer'
 import PageModal from '../ui/PageModal'
 import CoursewareActions from '../courseware/CoursewareActions'
 import DocumentViewer from '../courseware/DocumentViewer'
-import ReadOnlyAssessment from '../courseware/ReadOnlyAssessment'
+import DeliveredAssessment from './DeliveredAssessment'
 import { useAuth } from '../../context/AuthContext'
 import { useAcademicRecords } from '../../context/AcademicContext'
 import { useWorkspace, useWorkspaceViewState } from '../../context/WorkspaceContext'
@@ -168,7 +168,7 @@ export default function ClassStream({ course, syllabus, plan, data, readOnly = f
       })}
     </div>
     {readPublication && <PageModal title={readPublication.title} subtitle={`Week ${readPublication.week} · ${itemKind(readPublication)}`} closeLabel="Close delivered content" onClose={() => setReaderId(null)} bodyClassName="reader-page-body">
-      {readPublication.type === 'assessment' ? <ReadOnlyAssessment content={readPublication.content} /> : <DocumentViewer key={readPublication.id} content={{ ...readPublication.content, title: readPublication.title }} embedded readOnly />}
+      {readPublication.type === 'assessment' ? <DeliveredAssessment key={readPublication.id + ":" + readPublication.source_version} publication={readPublication} course={course} data={data} readOnly={readOnly} /> : <DocumentViewer key={readPublication.id} content={{ ...readPublication.content, title: readPublication.title }} embedded readOnly />}
     </PageModal>}
     {editing && <Composer key={composer} course={course} rows={rows} initial={editing} onCancel={() => setComposer(null)} onSaved={message => { setComposer(null); setNotice(message) }} />}
     {removing && <ModalLayer onDismiss={() => { if (!busy) setRemoveId(null) }}><section className="modal-content class-dialog" role="dialog" aria-modal="true" aria-label="Delete announcement">

@@ -1,0 +1,7 @@
+.delivered-assessment { width: min(100%, 1100px); margin-inline: auto; padding: clamp(16px, 3vw, 32px); }
+.delivered-assessment-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+.delivered-assessment-tabs .tab { min-height: 44px; white-space: normal; }
+.delivered-answer-key { list-style: none; padding: 0; margin: 0; }
+.delivered-answer-key h3, .delivered-response-review h3, .delivered-answer-key h4 { margin-bottom: 8px; }
+.delivered-answer-key .academic-question, .delivered-response-review .academic-question { background: var(--surface-1, var(--card-bg)); }
+.delivered-response-review { margin-top: 24px; }

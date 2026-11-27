@@ -31,6 +31,8 @@ export async function studentLearningScene(page:Page,shot:((name:string)=>Promis
 
 export async function courseContentDialogScene(page:Page,shot:((name:string)=>Promise<void>)=async()=>{}){
  const fixture=await studentLearningUI(page)
+ const selectedQuiz=fixture.store.records.publications.find(item=>item.title==='Functions quiz')
+ fixture.store.records.sessions=(fixture.store.records.sessions||[]).filter(session=>session.publication_id!==selectedQuiz?.id)
  await page.goto('/#/courseware');await page.getByRole('region',{name:'Your classes'}).getByRole('button',{name:/^Open IT 102 /}).click();await page.getByRole('button',{name:'Teaching Materials & Assessments',exact:true}).click()
  const tabs=page.getByRole('navigation',{name:'Student course sections',exact:true})
  for(const name of ['Announcements','Teaching Materials & Assessments','Class List','Scores','Syllabus / Course Outline'])await expect(tabs.getByRole('button',{name,exact:true})).toBeVisible()
@@ -41,7 +43,7 @@ export async function courseContentDialogScene(page:Page,shot:((name:string)=>Pr
  await tabs.getByRole('button',{name:'Scores',exact:true}).click();await expect(page.getByRole('button',{name:'Open material',exact:true})).toHaveCount(0);await shot('11-assessments-tab')
  const commands:any[]=[]
  await page.route('**/api/ai?action=academic',async r=>{if(r.request().method()==='GET')return r.fallback();const c=r.request().postDataJSON();commands.push(c);if(c.operation!=='start')return r.fallback();const session={id:'77777777-1111-4111-8111-111111111111',student_id:fixture.store.records.attempts[0].student_id,publication_id:c.publication,source_version:c.version,attempt_no:1,started_at:new Date().toISOString()};fixture.store.records.sessions=[session];return r.fulfill({json:session})})
- await page.getByRole('region',{name:'Personal assessment results'}).getByRole('row').filter({hasText:'Functions quiz'}).getByRole('button',{name:'Open assessment',exact:true}).click();const dialog=page.getByRole('dialog',{name:'Functions quiz',exact:true});await expect(dialog).toBeVisible();expect(commands.filter(command=>command.operation==='start')).toHaveLength(0)
+ await page.getByRole('region',{name:'Personal assessment results'}).getByRole('listitem').filter({hasText:'Functions quiz'}).getByRole('button',{name:'Open assessment',exact:true}).click();const dialog=page.getByRole('dialog',{name:'Functions quiz',exact:true});await expect(dialog).toBeVisible();expect(commands.filter(command=>command.operation==='start')).toHaveLength(0)
  await dialog.getByRole('button',{name:'Start assessment',exact:true}).click()
  const questions=dialog.locator('.academic-question');await expect(questions).toHaveCount(3)
  for(const question of await questions.all())await expect(question).toBeVisible()

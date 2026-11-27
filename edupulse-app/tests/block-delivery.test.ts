@@ -64,7 +64,7 @@ test('block delivery persists with revision guards and enforces RLS, files, read
   const save=async()=>{const r=await db.query('SELECT public.edupulse_save_workspace($1,$2)',[revision,JSON.stringify(snapshot)]);revision++;return r}
   await as(0);await save();snapshot.content.legacy.status='published';await save()
   const legacyBefore=(await db.query('SELECT to_jsonb(p) value FROM public.edupulse_publications p')).rows
-  await db.exec('RESET ROLE');await db.exec(await readFile('supabase/migrations/20261115220621_block_week_delivery_schedule.sql','utf8'));await db.exec(await readFile('supabase/migrations/20261127090000_practice_from_finished_quiz.sql','utf8'));await as(0)
+  await db.exec('RESET ROLE');await db.exec(await readFile('supabase/migrations/20261115220621_block_week_delivery_schedule.sql','utf8'));await db.exec(await readFile('supabase/migrations/20261127090000_practice_from_finished_quiz.sql','utf8'));await db.exec(await readFile('supabase/migrations/20261127090001_delivered_assessment_instructor_key.sql','utf8'));await as(0)
   assert.deepEqual((await db.query("SELECT to_jsonb(p)-'delivery_mode' value FROM public.edupulse_publications p")).rows,legacyBefore,'DDL leaves all existing publications and versions intact')
   await save()
   snapshot.content.material.status='checked';snapshot.content.quiz.status='checked';await save()
@@ -87,6 +87,20 @@ test('block delivery persists with revision guards and enforces RLS, files, read
   await as(0)
   Object.assign(snapshot.content.material,{status:'published',deliveryMode:'block_schedule'});Object.assign(snapshot.content.quiz,{status:'published',deliveryMode:'block_schedule'});await save()
   const pubs=(await db.query<any>('SELECT * FROM public.edupulse_publications')).rows,material=pubs.find(p=>p.title==='Scheduled lesson'),quiz=pubs.find(p=>p.title==='Scheduled quiz')
+  const key = async (publication = quiz.id, version = quiz.source_version, subject = null as string | null) =>
+   (await db.query<{value:{questions:{correctIndex:number|null;explanation?:string}[]}}>('SELECT public.edupulse_instructor_assessment_key($1,$2,$3) value',[publication,version,subject])).rows[0]!.value
+  const expectedKey = (snapshot.content.quiz.content as {questions:{correctIndex?:number}[]}).questions.map(q=>q.correctIndex??null)
+  assert.deepEqual((await key()).questions.map(q=>q.correctIndex),expectedKey)
+  assert.equal(quiz.content.questions.some((q:object)=>'correctIndex' in q),false,'the publication still omits the key')
+  await assert.rejects(key(quiz.id,'a'.repeat(32)),{code:'40001'},'a stale version never receives the current key')
+  await assert.rejects(key(material.id,material.source_version),{code:'42501'})
+  await as(1);await assert.rejects(key(),{code:'42501'});await assert.rejects(key(quiz.id,quiz.source_version,ids[0]),{code:'42501'})
+  await as(2);await assert.rejects(key(),{code:'42501'})
+  await as(3);await assert.rejects(key(),{code:'42501'})
+  await as(4);assert.deepEqual((await key(quiz.id,quiz.source_version,ids[0])).questions.map(q=>q.correctIndex),expectedKey)
+  await assert.rejects(key(quiz.id,quiz.source_version,ids[1]),{code:'42501'})
+  await assert.rejects(key(quiz.id,quiz.source_version,ids[3]),{code:'42501'})
+  await as(0)
   assert.equal(quiz.delivery_mode,'block_schedule');assert.equal(material.content.ai,undefined);assert.equal(quiz.content.questions[0].correctIndex,undefined)
   const action=(op:string,p:any=material)=>db.query('SELECT public.edupulse_academic_action($1,$2,$3,$4)',[p.id,p.source_version,'[]',op])
   const assess=(op:string,extra:object={})=>rpc('edupulse_assessment_command',{operation:op,publication:quiz.id,version:quiz.source_version,...extra})
