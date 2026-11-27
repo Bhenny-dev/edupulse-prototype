@@ -254,8 +254,8 @@ typing dates; an instructor can still save other dates for a block.
 
 | Task | Work | Acceptance | Stage |
 |---|---|---|---|
-| T10.1 | Collect every material before the assessment (by week and order) from stored extracted text | Unit test | Draft |
-| T10.2 | Generate 50 or more multiple-choice items in validated batches: four options, one correct, explanation, topic and source; duplicates removed; partial results kept on failure | Test with a scripted model | Draft |
+| T10.1 | Collect every material before the assessment (by week and order) from stored extracted text. Built in G24: a topic assessment reads the teaching text and saved uploads of the materials it covers (since the previous assessment, or every material in the topic for an overall assessment), in teaching order | `courseware-plan.test.ts`, `instructor-courses.spec.ts` (G24 cases) | Tested within the topic; whether "all materials before" should span earlier topics is an owner decision |
+| T10.2 | Generate 50 or more multiple-choice items in validated batches: four options, one correct, explanation, topic and source; duplicates removed; partial results kept on failure. The publish projection refused assessments outside 3 to 5 questions, so even courseware-pack drafts (one question per marking point) could not be published: migration `20261127120000` raises the bound to 3 to 200 and the editor's add-question cap matches. Topic AI assessments take "Number of questions" (default 50, up to 200) and are built in checked batches of up to 10 (`questionCount` in the contract, prompt and `repairDraft`); each batch is told the existing stems, duplicate stems are dropped, ids are renumbered, and a failed batch keeps the items already checked with a warning naming how many were made | `student-learning.test.ts` (50 items publish with keys private, 201 refused; fails without the migration), `courseware-plan.test.ts` (exact count in the prompt, 10 validated, 11 refused, single assessments keep 3 to 5), `instructor-courses.spec.ts` (12 requested gives batches 10 and 3 with 12 unique ids; a failed batch keeps 10 with the warning) on desktop and phone | Tested |
 | T10.3 | Pulse elaborates an item's explanation without changing the item unless accepted | Browser spec | Draft |
 
 ### G11. Pulse and the official documents (R-C1, R-C2, R-C4)
@@ -611,7 +611,7 @@ Scan of this file, the 23 November supporting specification (`versions/supportin
 | T7.1 to T7.5 Performance monitoring and staff workspace | G7, R-I9, R-D1, R-D4, R-D2 | T7.1 to T7.3 Ready. T7.4 and T7.5 browser and unit acceptance passed. | Verify production Ready |
 | T8.1, T8.2 Instructor change continuity | G8, R-D3 | Tested: former-instructor revocation and syllabus copy asserted; Dean browser flow repaired | K4 timetable conflicts next |
 | T9.1 to T9.4 Source-grounded generation | G9, R-I6, R-C3 | T9.1 to T9.4 Tested; T9.2 Ready (`17724cbf`), T9.1 deploying (`328eb78d`) | Release T9.3/T9.4 |
-| T10.1 to T10.3 Large assessment generation | G10, R-I7 | Missing: generated assessments allow 3 to 5 questions; G24 grounds topic assessments in covered teaching | Batched generation of up to 50 or more validated items with duplicates removed |
+| T10.1 to T10.3 Large assessment generation | G10, R-I7 | T10.1 and T10.2 Tested (50+ items in checked batches; publishing bound raised to 200); T10.3 (Pulse elaborates an explanation) open | Release T10.2, then T10.3 |
 | T11.1 to T11.3 Pulse and official documents | G11, R-C4 | Partial: teaching-load files routed; class lists and syllabus files not | Route `.xls` class lists and syllabus PDFs from Pulse to the existing intakes |
 | T12.1, T12.2 End-to-end scenarios | G12 | Draft | One scenario test and the isolation database tests after G7 to G11 |
 | T21.4 Workbook conflicts | G21 | Owner: source precedence for overlapping course and block ownership | Wait |

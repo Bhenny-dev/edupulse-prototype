@@ -93,3 +93,20 @@ test('a topic assessment requires teaching text and uses that text as its instru
   assert.ok(writes > 0)
   assert.equal(searches, 0)
 })
+
+test('a batch of a larger assessment asks for an exact count and validates up to 10 items (R-I7, G10)', async () => {
+  const topic = 'Loop termination'
+  const base = { ...input, topics: [topic], sections: [{ id: 'loops', ilos: 'Explain loop termination.', contents: [topic], activities: '', assessments: '', assessmentTypes: ['True or false'] }],
+    plan: { ...input.plan, assessmentTypes: ['True or false'] }, stepKey: 'assessment', topicAssessment: true, generatedTeaching: 'Section from the uploaded teaching file. The sentinel 99 ends the loop.' }
+  assert.equal(courseInput.safeParse({ ...base, questionCount: 11 }).success, false, 'a batch never exceeds 10')
+  const items = (count: number) => JSON.stringify({ assessment: { title: 'Loop termination check', questions: Array.from({ length: count }, (_, index) => ({ type: 'true_false', text: `Trace ${index + 1} stops when the sentinel 99 appears.`, topic, options: ['True', 'False'], correctIndex: 0, explanation: 'The reading says the sentinel 99 ends the loop.' })) } })
+  const systems: string[] = []
+  const noSearch = async () => ({ evidence: [] })
+  const deps = { provider: 'fixture', search: noSearch, webSearch: noSearch, sourceEvidence: noSearch, generate: async (system: string) => { systems.push(system); return items(10) } }
+  const result = await draftCoursewareStep(courseInput.parse({ ...base, questionCount: 10 }), abort(), deps)
+  assert.equal(result.content.assessment?.questions.length, 10)
+  assert.match(systems[0], /Write exactly 10 true or false questions|Write exactly 10 /)
+  const plain: string[] = []
+  await draftCoursewareStep(courseInput.parse(base), abort(), { ...deps, generate: async (system: string) => { plain.push(system); return items(3) } })
+  assert.match(plain[0], /Write 3 to 5 /, 'single assessments keep the 3 to 5 instruction')
+})

@@ -8,7 +8,7 @@ export async function generateWeekDraft(syllabus, weekNumber, signal, request = 
   if (!row.ilos && /examination/i.test(row.assessments || '')) throw new Error('Examination weeks are excluded from automatic courseware generation.')
   const plannedTypes=plannedCoursewareTypes(row),types=plannedTypes.filter(type=>!options.skipTypes?.includes(type))
   if(!types.length)return {week:weekNumber,items:[],plannedTypes}
-  const result = await generateCoursewareParts({...buildCourseInput(syllabus, weekNumber, request),...(options.skipSteps?{skipSteps:options.skipSteps}:{}),...(options.generatedTeaching?{generatedTeaching:options.generatedTeaching}:{}),...(options.topicAssessment?{topicAssessment:true}:{}),...(options.allowLimitedSources?{allowLimitedSources:true}:{})}, signal, types, options)
+  const result = await generateCoursewareParts({...buildCourseInput(syllabus, weekNumber, request),...(options.skipSteps?{skipSteps:options.skipSteps}:{}),...(options.generatedTeaching?{generatedTeaching:options.generatedTeaching}:{}),...(options.topicAssessment?{topicAssessment:true}:{}),...(options.allowLimitedSources?{allowLimitedSources:true}:{}),...(options.questionCount?{questionCount:options.questionCount}:{})}, signal, types, options)
   const metadata = result => ({ requestId: result.requestId, provider: result.provider, model: result.model, sources: result.sources, trace: result.trace, warning: result.warning, coverage: result.coverage,
     // Summary only: metadata is saved with every item in the 3 MB workspace.
     verification: result.verification && { scope: 'sources', supported: result.verification.supported, total: result.verification.claims.length, method: result.verification.method },

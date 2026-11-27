@@ -40,6 +40,8 @@ export const courseInput = z.object({
   topicAssessment:z.literal(true).optional(),
   // R-I6: the instructor confirmed generating with insufficient source context; the draft carries a warning.
   allowLimitedSources:z.literal(true).optional(),
+  // R-I7 (G10): a batch of a larger generated assessment asks for an exact number of new questions.
+  questionCount:z.number().int().min(3).max(10).optional(),
   skipSteps:z.array(z.string().regex(/^(?:lesson-\d{1,2}|activity(?:-\d{1,2})?|assessment(?:-\d{1,2})?)$/)).max(64).optional(),
   syllabusReferences: z.array(z.object({kind:z.enum(['book','link']),title:z.string().min(1).max(500),url:z.string().max(2000).default(''),authors:z.string().max(1000).default(''),year:z.string().max(40).default(''),publisher:z.string().max(500).default(''),doi:z.string().max(300).optional(),isbn:z.string().max(80).optional()})).max(80).optional(),
   courseCode: z.string().trim().min(1).max(80), courseTitle: z.string().trim().min(1).max(200),
@@ -67,7 +69,7 @@ const questionFields={text:z.string().min(10).max(1600),topic:z.string().max(200
 const multipleChoice=z.object({...questionFields,type:z.literal('multiple_choice').optional(),options:z.array(z.string().min(1).max(600)).length(4).refine(values=>new Set(values.map(value=>value.trim().toLowerCase())).size===4,'Options must be distinct'),correctIndex:z.number().int().min(0).max(3)})
 const trueFalse=z.object({...questionFields,type:z.literal('true_false'),options:z.array(z.string()).length(2).refine(values=>values[0]==='True'&&values[1]==='False','True/false choices must be True, False in order'),correctIndex:z.number().int().min(0).max(1)})
 const writtenResponse=z.object({...questionFields,type:z.literal('short_answer'),responseFormat:z.enum(['enumeration','identification','essay','matching','follow_along']).optional(),options:z.array(z.string()).length(0).default([]),correctIndex:z.literal(0).optional()})
-export const courseOutput=z.object({material:doc,activity:doc,assessment:z.object({title:z.string().min(1).max(240),questions:z.array(z.union([multipleChoice,trueFalse,writtenResponse])).min(3).max(5)})})
+export const courseOutput=z.object({material:doc,activity:doc,assessment:z.object({title:z.string().min(1).max(240),questions:z.array(z.union([multipleChoice,trueFalse,writtenResponse])).min(3).max(10)})})
 
 export type ChatInput = z.infer<typeof chatInput>
 // Callers may omit `plan`; the courseware graph applies its defaults.

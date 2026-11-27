@@ -21,6 +21,7 @@ export default function TopicContentForm({ syllabus, week, topic, entries, type,
   const [busy, setBusy] = useState(false), [error, setError] = useState(''), [manual, setManual] = useState(null)
   // R-I6: insufficient source context is a choice for the instructor, never a dead end.
   const [limited, setLimited] = useState(''), allowLimited = useRef(false)
+  const [questionTotal, setQuestionTotal] = useState('50'), [progress, setProgress] = useState('')
   const controller = useRef(null), mounted = useRef(true), locked = useRef(false)
   useEffect(() => { mounted.current = true; return () => { mounted.current = false; controller.current?.abort() } }, [])
   const regular = entries.filter(item => item !== topicOverall(entries))
@@ -60,13 +61,43 @@ export default function TopicContentForm({ syllabus, week, topic, entries, type,
         const signal = controller.current.signal
         const source = type === 'assessment' ? await readAssessmentMaterials(covered, signal) : null
         if (source && !source.text.trim()) throw new Error('Add readable teaching text or a readable teaching file before generating this assessment.')
-        const result = await generateWeekDraft(scopedSyllabus, row.week, signal, `${body.trim() || context}\n${source ? 'Write questions whose answers can be supported by the supplied teaching materials.' : 'Generate the teaching material from this topic and its teaching-learning activities.'}`, { ...(allowLimited.current ? { allowLimitedSources: true } : {}), skipTypes: source ? ['material', 'activity'] : ['assessment', 'activity'], ...(source ? { topicAssessment: true, generatedTeaching: source.text } : {}) })
-        controller.current.signal.throwIfAborted()
-        const created = result.items.find(item => item.type === type)
-        if (!created) throw new Error('The requested draft was not completed. Existing content was preserved.')
-        const warning = source?.unavailable.length ? 'Some teaching attachments could not be read. Check that the draft can be answered from the readable materials.' : ''
-        const ai = warning ? { ...created.content.ai, warning: [created.content.ai?.warning, warning].filter(Boolean).join(' ') } : created.content.ai
-        await persist({ ...created.content, title: heading, ai }); return
+        const instruction = `${body.trim() || context}\n${source ? 'Write questions whose answers can be supported by the supplied teaching materials.' : 'Generate the teaching material from this topic and its teaching-learning activities.'}`
+        const options = { ...(allowLimited.current ? { allowLimitedSources: true } : {}), skipTypes: source ? ['material', 'activity'] : ['assessment', 'activity'], ...(source ? { topicAssessment: true, generatedTeaching: source.text } : {}) }
+        const unread = source?.unavailable.length ? 'Some teaching attachments could not be read. Check that the draft can be answered from the readable materials.' : ''
+        if (type !== 'assessment') {
+          const result = await generateWeekDraft(scopedSyllabus, row.week, signal, instruction, options)
+          controller.current.signal.throwIfAborted()
+          const created = result.items.find(item => item.type === type)
+          if (!created) throw new Error('The requested draft was not completed. Existing content was preserved.')
+          const ai = unread ? { ...created.content.ai, warning: [created.content.ai?.warning, unread].filter(Boolean).join(' ') } : created.content.ai
+          await persist({ ...created.content, title: heading, ai }); return
+        }
+        // R-I7 (G10): build the requested number of items in validated batches of up to 10. Each batch is told the
+        // existing stems, duplicates are dropped, and the items already checked are kept if a later batch fails.
+        const target = Math.min(200, Math.max(3, Number(questionTotal) || 50)), seen = new Set(), questions = []
+        const stem = text => String(text || '').toLowerCase().replace(/[^\p{L}\p{N}]+/gu, ' ').trim()
+        let first = null, failure = null, stalled = 0
+        while (questions.length < target && stalled < 2) {
+          const batch = Math.min(10, Math.max(3, target - questions.length))
+          const avoid = questions.slice(-25).map(question => `- ${String(question.text).slice(0, 90)}`).join('\n')
+          setProgress(`Generating questions ${questions.length + 1} to ${Math.min(target, questions.length + batch)} of ${target}...`)
+          let created
+          try {
+            const result = await generateWeekDraft(scopedSyllabus, row.week, signal, `${instruction}\nWrite ${batch} new questions.${avoid ? `\nDo not repeat or reword these existing questions:\n${avoid}` : ''}`.slice(0, 3900), { ...options, questionCount: batch })
+            created = result.items.find(item => item.type === 'assessment')
+          } catch (error) { if (controller.current.signal.aborted) throw error; failure = error; break }
+          controller.current.signal.throwIfAborted()
+          if (!created) { failure = new Error('A batch of questions was not completed.'); break }
+          first ||= created
+          const before = questions.length
+          for (const question of created.content.questions || []) { const key = stem(question.text); if (key && !seen.has(key)) { seen.add(key); questions.push(question) } }
+          stalled = questions.length === before ? stalled + 1 : 0
+        }
+        const kept = questions.slice(0, target).map((question, index) => ({ ...question, id: `q${index + 1}` }))
+        if (kept.length < 3) throw failure || new Error('The requested draft was not completed. Existing content was preserved.')
+        const short = kept.length < target ? `Generated ${kept.length} of ${target} questions${failure ? ` before an error: ${failure.message}` : ' before the model began repeating questions'}. Review these, then add more if needed.` : ''
+        const warning = [first.content.ai?.warning, unread, short].filter(Boolean).join(' ')
+        await persist({ ...first.content, questions: kept, totalPoints: kept.length, title: heading, ai: { ...first.content.ai, ...(warning ? { warning } : {}) } }); return
       }
       const attachments = []
       let extracted = ''
@@ -99,7 +130,7 @@ export default function TopicContentForm({ syllabus, week, topic, entries, type,
       if (mode === 'generate' && !allowLimited.current && !controller.current?.signal.aborted && ['SOURCE_REQUIRED', 'SOURCE_NOT_READY'].includes(failure?.code)) setLimited(failure.message)
       else setError(controller.current?.signal.aborted ? 'Generation stopped. Existing courseware was preserved.' : failure.message)
     }
-    finally { locked.current = false; allowLimited.current = false; if (mounted.current) setBusy(false) }
+    finally { locked.current = false; allowLimited.current = false; if (mounted.current) { setBusy(false); setProgress('') } }
   }
   if (manual) return <>
     {error && <p role="alert">{error}</p>}<AssessmentEditor content={manual} topics={topic.contents} onBack={() => setManual(null)} onSave={async questions => { try { await persist({ ...manual, questions, totalPoints: questions.length }) } catch (failure) { setError(failure.message); throw failure } }} /></>
@@ -108,6 +139,7 @@ export default function TopicContentForm({ syllabus, week, topic, entries, type,
     <p className="text-sm text-muted">{context || 'Use this topic and the approved syllabus as your context.'}</p>
     {type === 'assessment' && <p>{overall ? 'Covers all' : 'Covers the materials since the previous assessment:'} {covered.map(item => item.content.title || item.title).join(' · ') || 'No teaching materials yet'}</p>}
     {type === 'assessment' && mode === 'generate' && <p className="text-sm text-muted">AI uses readable text and uploaded files from these teaching materials to draft the questions and answers.</p>}
+    {type === 'assessment' && mode === 'generate' && <label>Number of questions<input className="form-input" type="number" min={3} max={200} step={1} value={questionTotal} disabled={busy} onChange={event => setQuestionTotal(event.target.value)} /><small className="text-muted">Generated in checked batches of up to 10. Items already checked are kept if a later batch fails.</small></label>}
     <label>Title<input className="form-input" maxLength={240} value={title} disabled={busy} placeholder={topic.title} onChange={event => setTitle(event.target.value)} /></label>
     {type !== 'submission' && <label>Add as<select aria-label="Add as" className="form-input" value={mode} disabled={busy} onChange={event => setMode(event.target.value)}>{type === 'assessment' ? <option value="manual">Write assessment questions</option> : <><option value="document">Write teaching content</option><option value="file">Upload files</option><option value="link">Add a link</option></>}<option value="generate">Generate content with AI</option></select></label>}
     {type === 'assessment' && <label>Assessment type<select aria-label="Assessment type" className="form-input" value={format} disabled={busy} onChange={event => setFormat(event.target.value)}><option value="">{mode === 'generate' ? 'Choose automatically from the teaching content' : 'Multiple choice (default)'}</option>{ASSESSMENT_FORMATS.map(item => <option key={item.id} value={item.id}>{item.label}</option>)}</select></label>}
@@ -125,7 +157,7 @@ export default function TopicContentForm({ syllabus, week, topic, entries, type,
       <p className="text-sm text-muted">Attach or read a course reference that covers this topic, or generate from the syllabus outline and the context available. That draft is marked as having limited sources and stays unpublished until you review it.</p>
       <div className="instructor-topic-actions"><button type="button" className="btn btn-secondary" onClick={() => (onAttachSources || onClose)()}>Attach more sources</button><button type="button" className="btn btn-primary" onClick={() => { allowLimited.current = true; setLimited(''); void save({ preventDefault() {} }) }}>Generate from what is available</button></div>
     </div>}
-    {error && <p role="alert">{error}</p>}{busy && <LoadingStatus label={mode === 'generate' ? 'Generating content...' : 'Saving teaching content...'} />}
+    {error && <p role="alert">{error}</p>}{busy && <LoadingStatus label={mode === 'generate' ? progress || 'Generating content...' : 'Saving teaching content...'} />}
     <div className="instructor-topic-actions"><button type="button" className="btn btn-secondary" onClick={() => { if (busy && mode === 'generate') controller.current?.abort(); else onClose() }}>{busy && mode === 'generate' ? 'Stop generation' : 'Cancel'}</button><button className="btn btn-primary" disabled={busy}>{mode === 'generate' && <Sparkles size={15} />}{mode === 'generate' ? 'Generate draft' : type === 'assessment' ? 'Write assessment questions' : type === 'submission' ? 'Save submission bin draft' : 'Save material draft'}</button></div>
   </form>
 }

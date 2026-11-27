@@ -292,3 +292,48 @@ test('an unreadable reference offers other pages and saves a chosen page under t
   expect(calls.filter(call => call.operation === 'candidates')).toHaveLength(1)
   expect(fixture.forbidden).toEqual([])
 })
+
+const batchRun = async (page: any, total: string, failSecond: boolean) => {
+  const fixture = await instructorCourseUI(page)
+  let calls = 0
+  const counts: number[] = []
+  await page.route('**/api/ai?action=courseware', async (route: any) => {
+    const request = route.request().postDataJSON(); calls++; counts.push(request.questionCount)
+    if (failSecond && calls === 2) return route.fulfill({ status: 502, json: { error: { code: 'MODEL_UNAVAILABLE', message: 'The model did not answer.' } } })
+    const { draftCoursewareStep } = await import('../../src/lib/rag/courseware')
+    const call = calls
+    const result = await draftCoursewareStep(request, AbortSignal.timeout(10000), {
+      provider: 'controlled batch fixture', search: async () => ({ evidence: [] }),
+      generate: async () => JSON.stringify({ assessment: { title: 'Variables check', questions: Array.from({ length: request.questionCount }, (_, index) => ({ text: `Batch ${call} item ${index + 1}: a variable stores a value that later steps read.`, type: 'true_false', topic: 'Variables and named values', options: ['True', 'False'], correctIndex: 0, explanation: 'A variable stores a value for later steps.' })) } }),
+    })
+    await route.fulfill({ json: result })
+  })
+  await page.goto(`/#/courseware?course=${fixture.syllabus.id}&tab=materials`)
+  const topic = page.locator('[data-topic="variables"]')
+  await topic.locator('summary').click(); await expect(topic).toHaveAttribute('open', '', { timeout: 20000 })
+  await topic.getByRole('button', { name: 'Add overall assessment', exact: true }).click()
+  const form = page.getByRole('form', { name: 'Add overall assessment' })
+  await form.getByRole('combobox', { name: 'Add as' }).selectOption('generate')
+  await form.getByLabel('Number of questions').fill(total)
+  await form.getByRole('button', { name: 'Generate draft' }).click()
+  const draft = () => Object.values((fixture.getWorkspace() as any).content).find((item: any) => item.type === 'assessment' && item.content.overallAssessment && item.content.ai) as any
+  await expect.poll(() => Boolean(draft()), { timeout: 30000 }).toBe(true)
+  return { fixture, counts, draft: draft() }
+}
+
+test('a generated assessment reaches the requested size in checked batches of up to 10 (R-I7)', async ({ page }) => {
+  const { fixture, counts, draft } = await batchRun(page, '12', false)
+  expect(counts).toEqual([10, 3])
+  expect(draft.content.questions).toHaveLength(12)
+  expect(new Set(draft.content.questions.map((q: any) => q.id)).size).toBe(12)
+  expect(draft.content.ai.warning || '').not.toContain('Generated')
+  expect(fixture.forbidden).toEqual([])
+})
+
+test('a failed batch keeps the checked items already generated and says how many', async ({ page }) => {
+  const { fixture, counts, draft } = await batchRun(page, '20', true)
+  expect(counts.slice(0, 2)).toEqual([10, 10])
+  expect(draft.content.questions).toHaveLength(10)
+  expect(draft.content.ai.warning).toContain('Generated 10 of 20 questions before an error')
+  expect(fixture.forbidden).toEqual([])
+})

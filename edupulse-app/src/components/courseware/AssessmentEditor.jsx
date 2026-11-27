@@ -16,6 +16,9 @@ import { useContentEditorTool } from '../../agents/useContentEditorTool'
  * Instructors see editable fields; students see a clean take view.
  */
 
+/** Matches the publishing bound (3 to 200 questions, migration 20261127120000; R-I7 asks for 50 or more generated items). */
+const MAX_QUESTIONS = 200
+
 export default function AssessmentEditor({ content, onBack, isStudent = false, onSave, topics=[], onAttachFile, onAttachLink, attachBlocked, onSubmissionBinChange }) {
   const { addToast } = useToast()
   const [questions, setQuestions] = useState(content?.questions || [])
@@ -61,7 +64,7 @@ export default function AssessmentEditor({ content, onBack, isStudent = false, o
   }))
 
   const addQuestion = () => {
-    if (questions.length >= 5) return
+    if (questions.length >= MAX_QUESTIONS) return
     setQuestions(prev => [...prev, {
       id: `q${prev.length + 1}`,
       text: '',
@@ -235,9 +238,9 @@ export default function AssessmentEditor({ content, onBack, isStudent = false, o
 
         </SourcePassageInspector>
         {/* Add question button (instructor only) */}
-        {!isStudent && questions.length < 5 && (
+        {!isStudent && questions.length < MAX_QUESTIONS && (
           <button className="btn btn-ghost" style={{ margin: '0 72px 20px' }} onClick={addQuestion}>
-            <Plus size={14} /> Add Question ({questions.length}/5)
+            <Plus size={14} /> Add Question ({questions.length}/{MAX_QUESTIONS})
           </button>
         )}
 
