@@ -7,9 +7,9 @@ import {aiRequest} from '../../lib/aiClient'
 import {DeanDialog} from './DeanCommon'
 
 /** A management load grants a course, never a block or a list of students. */
-export default function DeanCourseAssignment({course,load,instructors,academicYear,semester,action,onClose}){
+export default function DeanCourseAssignment({course,load,instructors,academicYear,semester,action,onClose,instructorId,onBack}){
  const people=instructors.filter(person=>person.status!=='suspended'||person.id===load?.instructorId)
- const [teacher,setTeacher]=useState(load?.instructorId||people[0]?.id||''),[continuation,setContinuation]=useState('new'),[choices,setChoices]=useState([]),[reading,setReading]=useState(!load),[problem,setProblem]=useState('')
+ const [teacher,setTeacher]=useState(load?.instructorId||instructorId||people[0]?.id||''),[continuation,setContinuation]=useState('new'),[choices,setChoices]=useState([]),[reading,setReading]=useState(!load),[problem,setProblem]=useState('')
  useEffect(()=>{
   if(load)return
   const abort=new AbortController();setReading(true)
@@ -29,9 +29,9 @@ export default function DeanCourseAssignment({course,load,instructors,academicYe
   if(await action.run(load?'Updating course instructor':'Loading course',command,()=>({text:`${course.code} course load saved.`})))onClose()
  }
  return <DeanDialog title={load?`Edit ${course.code} instructor`:`Load ${course.code}`} subtitle={`${course.title} · ${semester} · AY ${academicYear}`} icon={GraduationCap} size="form" onClose={onClose} footer={<><button className="btn btn-secondary" disabled={Boolean(action.busy)} onClick={onClose}>Cancel</button><button aria-busy={Boolean(action.busy)} className="btn btn-primary" disabled={reading||Boolean(action.busy)||!people.length} onClick={save}>{Boolean(action.busy) && <Spinner />}{load?'Save instructor':'Load course'}</button></>}>
-  <div className="dean-form dean-load-details">{reading && <LoadingStatus label="Reading teaching packages..." />}
+  <div className="dean-form dean-load-details">{onBack&&<button className="btn btn-ghost btn-sm staff-change-course" onClick={onBack} disabled={Boolean(action.busy)}>Choose a different course</button>}{reading && <LoadingStatus label="Reading teaching packages..." />}
    {(problem||action.error)&&<p role="alert" className="connected-pulse-warning">{problem||action.error}</p>}
-   <label className="dean-field"><span>Instructor</span><select aria-label="Instructor" className="form-select" value={teacher} onChange={event=>setTeacher(event.target.value)}>{people.map(person=><option value={person.id} key={person.id}>{person.name}</option>)}</select></label>
+   <label className="dean-field"><span>Instructor</span>{instructorId ? <input className="form-input" aria-label="Instructor" value={people.find(person => person.id === instructorId)?.name || ''} readOnly /> : <select aria-label="Instructor" className="form-select" value={teacher} onChange={event=>setTeacher(event.target.value)}>{people.map(person=><option value={person.id} key={person.id}>{person.name}</option>)}</select>}</label>
    {fields.map(([key,label])=>key==='days'?<MeetingDaysPicker key={key} label={label} value={details.days} onChange={value=>setDetails(previous=>({...previous,days:value}))}/>:<label key={key} className="dean-field"><span>{label}</span><input className="form-input" aria-label={label} type={numeric.includes(key)?'number':'text'} min={['units','hours'].includes(key)?'0.01':'0'} step={key==='students'?'1':'any'} maxLength={key==='time'?150:200} required={key!=='students'} value={details[key]} placeholder={key==='time'?'7:30 AM - 10:00 AM':key==='days'?'M/W/F':key==='program'?'BSIT':undefined} onChange={event=>setDetails(previous=>({...previous,[key]:event.target.value}))}/></label>)}
    {computed!==null&&<p className="text-sm text-muted">Computed schedule: {computed} hours per week.</p>}
    <p className="text-sm text-muted">The instructor adds the approved syllabus and confirms block sections through class-list uploads or individual student selection.</p>

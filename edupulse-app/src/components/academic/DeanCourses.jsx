@@ -1,7 +1,7 @@
 import { Spinner } from '../ui/LoadingFeedback'
 import { useMemo, useState } from 'react'
 import { BookOpen, ClipboardCheck, AlertTriangle, Layers, Plus, FileUp, Users } from 'lucide-react'
-import { useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { useWorkspaceViewState } from '../../context/WorkspaceContext'
 import { Panel, Empty, Table, CsvButton } from './AcademicUI'
 import { deanRecords, courseCatalog, deanDirectory, loadRows, courseAssignments } from './deanRecordModel'
@@ -35,12 +35,15 @@ export default function DeanCourses({ data:allData }) {
   const loads = useMemo(() => loadRows(data), [data])
   const [detail, setDetail] = useWorkspaceViewState(`dean-detail:records:${term}`, null)
   const [editingKey, setEditingKey] = useWorkspaceViewState('dean-course-edit', null)
-  const [assigning, setAssigning] = useState(null), [removing, setRemoving] = useState(null), [review, setReview] = useState(null)
+  const [assignmentCode, setAssignmentCode] = useWorkspaceViewState(`dean-assign-course:${term}`, null)
+  const assigning = catalog.find(course => course.code === assignmentCode && course.status === 'active')
+  const [removing, setRemoving] = useState(null), [review, setReview] = useState(null)
   const [inspecting,setInspecting]=useWorkspaceViewState(`dean-table-inspect:${term}`,null)
   const [adding,setAdding]=useState(null)
   const addingLoad=courseAssignments(data).find(load=>load.key===adding?.key)
-  const inspectedLoad=courseAssignments(data).find(load=>load.key===inspecting)
-  const [search, setSearch] = useState('')
+  const inspectedLoad=courseAssignments(data).find(load=>load.key===inspecting?.key&&load.instructorId===inspecting?.instructor)
+  const search = (params.get('q') || '').slice(0, 160)
+  const setSearch = value => { const next = new URLSearchParams(params); if (value) next.set('q', value); else next.delete('q'); setParams(next, { replace: true }) }
   const [catalogAction,setCatalogAction]=useWorkspaceViewState(`dean-catalog-action:${term}`,null)
   const [catalogMenu,setCatalogMenu]=useWorkspaceViewState(`dean-catalog-menu:${term}`,null)
   const actionKind=typeof catalogAction==='string'?catalogAction.split(':')[0]:''
@@ -70,7 +73,7 @@ export default function DeanCourses({ data:allData }) {
     finally{setReading('')}
   }
   const filters = <div className="dean-toolbar">
-    <label className="academic-filter">Search courses<input className="form-input" type="search" value={search} onChange={event => setSearch(event.target.value)} placeholder="Course code or title" /></label>
+    <label className="academic-filter">Search courses<input className="form-input" type="search" value={search} maxLength={160} onChange={event => setSearch(event.target.value)} placeholder="Course code or title" /></label>
     <div className="dean-segment" role="group" aria-label="Course load filter">{[['all', `All (${catalog.length})`], ['loaded', `Loaded (${loaded.length})`], ['unloaded', `Not yet loaded (${unloaded.length})`]].map(([value, label]) => <button key={value} className={show === value ? 'active' : ''} aria-pressed={show === value} onClick={() => setShow(value)}>{label}</button>)}</div>
   </div>
   return <>
@@ -82,6 +85,10 @@ export default function DeanCourses({ data:allData }) {
       { label: 'Instructor loads', value: courseAssignments(data).length, icon: Layers, tone: 'green', to: '/records?show=loaded' }]} />
     <DeanFeedback action={action} />
     <Panel title="Courses" actions={<div className="academic-actions"><DeanTermCalendar records={allData.institutional||[]} semester={semester} academicYear={academicYear} writable={writable&&directory.managed} action={action}/>{directory.managed&&writable&&<button className="btn btn-primary btn-sm" disabled={Boolean(action.busy)} onClick={()=>setCatalogAction('add')}><Plus size={15} aria-hidden="true"/> Add Course</button>}{writable&&<UploadButton label={<><FileUp size={15} aria-hidden="true" /> Upload course load (Excel)</>} accept=".xlsx,.xls,.csv,.tsv,.txt" onFile={upload} disabled={!directory.managed || Boolean(action.busy)||Boolean(reading)} />}{writable&&<UploadButton label={<><Users size={15} aria-hidden="true" /> Upload class lists</>} accept=".xls,.xlsx,.csv,.tsv,.txt" onFiles={files=>{action.setError('');action.setNotice(null);setClassLists(files)}} disabled={!directory.managed || Boolean(action.busy)||Boolean(reading)} />}<CsvButton headers={['Course', 'Title', 'Units', 'Year and semester', 'Instructor', 'Block', 'Semester','Academic year','Days','Time','Room','Listed hours','Computed hours','Students listed']} rows={catalog.flatMap(c => (c.loads.length ? c.loads : [{}]).map(l => [c.code, c.title, c.units, groupLabel(c), l.instructorName || '', l.block || '', l.semester || '',l.academicYear||'',l.days||'',l.time||'',l.room||'',l.hours||'',l.computedHours||'',l.students||'']))} name="course-loads" /></div>}>
+      <div className="staff-catalog-description mb-16">
+        <p className="text-sm text-muted">Open a course’s Actions menu to assign an instructor, edit a load or manage class blocks.</p>
+        <Link className="btn btn-secondary btn-sm" to={`/students?${new URLSearchParams({ term })}`}>Student directory</Link>
+      </div>
       {reading&&<p role="status"><Spinner />{reading}</p>}
       {writable&&directory.managed&&<p className="text-sm text-muted mb-16 course-load-hint">Course loads come from the College schedule workbook (.xlsx): the faculty-load sheet lists each instructor's name, then SC_ID, Descriptive Title, Hour, Day, Room, Block, Units and Hours; the block timetable sheet is used to check blocks and schedules. Nothing is saved until you review the rows.</p>}
       {writable&&document&&<TeachingLoadImport file={document} initialOpen onClose={()=>setDocument(null)}/>}
@@ -90,8 +97,8 @@ export default function DeanCourses({ data:allData }) {
       <Table label="Course catalog and instructor loads" headers={['Course code','Course title','Units','Instructor','Block sections','Schedule','Students','Actions']} rows={catalog.filter(matches).flatMap(course=>(course.assignments.length?course.assignments:[null]).map(item=>[
         course.code,course.title,course.units,item?.instructorName||'Not assigned',item?.blocks.join(', ')||'No block section yet',item?<LoadSchedulePopover key={item.key} load={item}/>:null,item?item.sections.reduce((sum,section)=>sum+section.students.length,0):0,
         <CourseCardActions key={item?.key||course.code} label={`Course actions for ${course.code}${item?` ${item.instructorName}`:''}`} course={course} open={catalogMenu===(item?.key||course.code)} onOpenChange={next=>setCatalogMenu((typeof next==='function'?next(catalogMenu===(item?.key||course.code)):next)?(item?.key||course.code):null)} disabled={Boolean(action.busy)} canEdit={directory.managed&&writable} onAction={setCatalogAction} extraActions={[
-          ...(directory.managed&&writable&&course.status!=='suspended'?[{label:'Add instructor',icon:Plus,onSelect:()=>setAssigning(course)}]:[]),
-          ...(item?[{label:'View syllabus and contents',icon:BookOpen,onSelect:()=>setInspecting(item.key)},...(directory.managed&&writable?[
+          ...(directory.managed&&writable&&course.status==='active'?[{label:'Add instructor',icon:Plus,onSelect:()=>setAssignmentCode(course.code)}]:[]),
+          ...(item?[{label:'View syllabus and contents',icon:BookOpen,onSelect:()=>setInspecting({key:item.key,instructor:item.instructorId})},...(directory.managed&&writable?[
             {label:'Edit instructor load',onSelect:()=>{setDetail(`course:${course.code}`);setEditingKey(item.key)}},
             {label:'Remove instructor load',onSelect:()=>setRemoving({...item,title:course.title})},
             ...(!item.legacy?[{label:'Add block section',onSelect:()=>setAdding({key:item.key,block:''})},...item.sections.map(section=>({label:`Add students to ${course.code} ${section.block}`,onSelect:()=>setAdding({key:item.key,block:section.block})}))]:[])
@@ -102,8 +109,12 @@ export default function DeanCourses({ data:allData }) {
     </Panel>
     {directory.managed&&writable&&catalogAction&&(catalogAction==='add'?<CourseCatalogForm academicYear={academicYear} semester={semester} action={action} onClose={()=>setCatalogAction(null)}/>:actionCourse?(actionKind==='edit'?<CourseCatalogForm academicYear={academicYear} semester={semester} key={catalogAction} course={actionCourse} action={action} onClose={()=>setCatalogAction(null)}/>:<CourseStatusDialog academicYear={academicYear} semester={semester} key={catalogAction} course={actionCourse} kind={actionKind} action={action} onClose={()=>setCatalogAction(null)}/>):<DeanDialog title="Course unavailable" size="narrow" onClose={()=>setCatalogAction(null)}><Empty>This course is no longer available. Close this dialog and choose a current course.</Empty></DeanDialog>)}
     {addingLoad&&<DeanBlockSectionDialog load={addingLoad} block={adding.block} students={directory.students} action={action} onClose={()=>setAdding(null)}/>}
-    {inspectedLoad&&<DeanCourseInspection load={inspectedLoad} records={data} students={directory.students} action={action} manage={directory.managed&&writable} onClose={()=>setInspecting(null)}/>}
-    {writable && assigning && <DeanCourseAssignment course={assigning} instructors={directory.instructors} academicYear={academicYear} semester={semester} action={action} onClose={() => setAssigning(null)} />}
+    {inspecting&&(inspectedLoad
+      ? <DeanCourseInspection key={inspectedLoad.key} load={inspectedLoad} records={data} students={directory.students} action={action} manage={directory.managed&&writable} onClose={()=>setInspecting(null)}/>
+      : <DeanDialog title="Course load unavailable" size="narrow" onClose={()=>setInspecting(null)}><Empty>This course is no longer assigned to the selected instructor.</Empty></DeanDialog>)}
+    {directory.managed && writable && assignmentCode && (assigning
+      ? <DeanCourseAssignment key={assigning.code} course={assigning} instructors={directory.instructors} academicYear={academicYear} semester={semester} action={action} onClose={() => setAssignmentCode(null)} />
+      : <DeanDialog title="Course unavailable" size="narrow" onClose={() => setAssignmentCode(null)}><Empty>This course is no longer available for instructor assignment.</Empty></DeanDialog>)}
     {writable && editingKey && selected && (editing ? <DeanCourseAssignment key={`${editing.key}:${editing.instructorId}`} course={selected} load={editing} instructors={directory.instructors} academicYear={academicYear} semester={semester} action={action} onClose={() => setEditingKey(null)} /> : <DeanDialog title="Course load unavailable" onClose={() => setEditingKey(null)} size="narrow"><Empty>This load is no longer available. Choose a current course load.</Empty></DeanDialog>)}
     {writable && removing && <ConfirmDialog title="Remove course load" confirmLabel="Remove load" danger busy={action.busy} onClose={() => setRemoving(null)} onConfirm={async () => { if (await action.run('Removing course load', { action: 'course-load.remove', key:removing.key,expected_instructor:removing.instructorId,academic_year:academicYear,semester }, () => ({ text: `${removing.instructorName} no longer teaches ${removing.code} for ${semester}.` }))) setRemoving(null) }}>
       <p>Remove <strong>{removing.instructorName}</strong> from <strong>{removing.code} — {removing.title}</strong> for <strong>{semester} · AY {academicYear}</strong>?</p><p className="text-sm text-muted">This course and its confirmed classes leave the instructor's current load. Its syllabus, teaching materials, assessments, schedule and student history are retained for the replacement instructor.</p>

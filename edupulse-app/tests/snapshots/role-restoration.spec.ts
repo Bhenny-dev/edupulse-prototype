@@ -11,7 +11,7 @@ async function shot(page: Page, name: string, selector?: string) {
   await (selector ? page.locator(selector).first() : page).screenshot({ path: `${root}/${name}.png`, animations: 'disabled', fullPage: !selector, style: '.app-topbar{position:static !important}' })
 }
 // The same role dashboards as the preview personas, filled from the synthetic account records.
-for (const [role, number, section] of [['instructor', '01', 'Score Snapshot'], ['student', '02', 'Pulse Reminders'], ['dean', '03', 'Syllabus Stations'], ['associate_dean', '04', 'Syllabus Stations']]) {
+for (const [role, number, section] of [['instructor', '01', 'Score Snapshot'], ['student', '02', 'Pulse Reminders']]) {
   test(`synthetic restored ${role} dashboard`, async ({ page }) => { const fixture=await restorationUI(page, role);if(role==='student')fixture.records.assignedCourses=[{id:'d'.repeat(32),course_code:'IT 104',course_title:'Research Methods',active:false,block_section:'BSIT-1A',suspended:false,units:'3',year_level:'1',semester:'2'}]; await page.goto('/#/dashboard'); await expect(page.getByRole('heading', { name: section, exact: true })).toBeVisible(); await page.waitForTimeout(1800); await shot(page, `${number}-${role}-dashboard`);if(role==='student'){await writeFile('../feature-documentation/system-walkthrough/05-student/01-dashboard.png',await readFile(`${root}/02-student-dashboard.png`));const file='../feature-documentation/system-walkthrough/capture-manifest.json',manifest=JSON.parse(await readFile(file,'utf8')),entries=Array.isArray(manifest)?manifest:manifest.scenes,entry=entries.find((e:any)=>e.folder==='05-student'&&e.file==='01-dashboard.png');if(entry)Object.assign(entry,{role:'Student',route:'/dashboard',ok:true});await writeFile(file,JSON.stringify(manifest,null,2)+'\n')}})
 }
 test('synthetic restored combined monitoring sections', async ({page})=>{
@@ -23,11 +23,6 @@ test('synthetic restored combined monitoring sections', async ({page})=>{
  await page.getByRole('button',{name:'Synthetic learner',exact:true}).first().click();await shot(page,'10-student-drilldown','.monitoring-student-popover');await page.keyboard.press('Escape')
  await page.getByRole('heading',{name:'Assessment score radar',exact:true}).scrollIntoViewIfNeeded();await shot(page,'11-monitoring-scoring-matrix','.monitoring-course-modal')
  await page.getByRole('button',{name:'Learning Material Access',exact:true}).click();await shot(page,'07-material-access','.monitoring-course-modal');await shot(page,'12-monitoring-material-matrix','.card:has(h2:text-is("Learning material access by student"))')
-})
-
-test('synthetic restored oversight, loading and records sections', async ({ page }) => {
-  await restorationUI(page, 'dean')
-  for (const [path, name] of [['monitor?tab=overview', '13-monitor-syllabus-status'], ['monitor?tab=students', '15-monitor-students'], ['monitor?tab=alerts', '16-monitor-alerts'], ['course-loading', '17-course-loading'], ['course-loading?tab=instructors', '18-instructor-delivery'], ['records?tab=sections', '19-record-blocks'], ['records?tab=courses', '20-record-courses']]) { await page.goto('/#/' + path); await expect(page.locator('.academic-portal')).toBeVisible(); await shot(page, name) }
 })
 
 test('Program Coordinator retains shared file intake, templates and history', async ({page})=>{

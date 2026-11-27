@@ -1,6 +1,8 @@
 type SourceSelection={section:number;start:number;end:number;signature:string}
 type ChatSourceView={threadId:string|null;messageId:string;sourceId:string}
-type ViewValue=ChatSourceView|SourceSelection|string|number|boolean|null|Set<string|number>
+type StaffLoadView={kind:'assign';instructor:string;course?:string}|{kind:'edit'|'inspect';instructor:string;load:string}
+type LoadInspection={key:string;instructor:string}
+type ViewValue=ChatSourceView|SourceSelection|StaffLoadView|LoadInspection|string|number|boolean|null|Set<string|number>
 type TabStorage=Pick<Storage,'getItem'|'setItem'>
 const LIMIT=65_536,MAX_ENTRIES=200
 const storage=()=>{try{return sessionStorage}catch{return null}}
@@ -38,6 +40,21 @@ function valid(key:unknown,value:unknown):value is ViewValue {
   if(/^monitoring-roster-add:/.test(key))return typeof value==='boolean'
   if(/^monitoring-menu:/.test(key))return value===null||value==='delivery'||value==='results'
   if(key==='academic-term')return typeof value==='string'&&(/^(all|unspecified)$/.test(value)||/^20\d{2}-20\d{2}\|(1st Semester|2nd Semester|Summer)$/.test(value))
+  if(/^staff-course-load:/.test(key)){
+    if(value===null)return true
+    if(!value||typeof value!=='object'||Array.isArray(value))return false
+    const hint=value as Record<string,unknown>, fields=Object.keys(hint).sort().join(',')
+    if(!id(hint.instructor))return false
+    if(hint.kind==='assign')return fields==='instructor,kind'||(fields==='course,instructor,kind'&&id(hint.course))
+    return (hint.kind==='edit'||hint.kind==='inspect')&&fields==='instructor,kind,load'&&id(hint.load)
+  }
+  if(/^dean-(?:table-inspect|instructor-course):/.test(key)){
+    if(value===null)return true
+    if(!value||typeof value!=='object'||Array.isArray(value))return false
+    const hint=value as Record<string,unknown>
+    return Object.keys(hint).sort().join(',')==='instructor,key'&&id(hint.instructor)&&id(hint.key)
+  }
+  if(/^dean-(?:assign-course|scan-block):/.test(key))return value===null||id(value)
   if(/^dean-(?:catalog-(?:action|menu)|instructor-(?:action|menu)|detail:records):20\d{2}-20\d{2}\|(1st Semester|2nd Semester|Summer)$/.test(key))return value===null||typeof value==='string'&&id(value)
   if(key==='ai-local-model')return id(value)
   if(/^dean-detail:(?:records|instructors|students)$/.test(key))return value===null||(typeof value==='string'&&id(value)&&(/^(?:block|course|instructor|student):.+$/.test(value)||['students','blocks','years','faculty'].includes(value)))

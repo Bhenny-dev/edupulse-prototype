@@ -278,15 +278,8 @@ test('dean and program coordinator', async ({ page }) => {
   await signIn(page, 'Dean')
   const f = '03-dean-and-associate-dean'
   await run(page, 'dean', [
-    { folder: f, name: '01-dashboard', title: 'Dean dashboard', path: '/dashboard', fullPage: true },
-    { folder: f, name: '02-course-loading-loaded-courses', title: 'Course Loading · Loaded Courses', path: '/course-loading?tab=assign', fullPage: true },
-    { folder: f, name: '03-course-loading-instructors', title: 'Course Loading · Instructors', path: '/course-loading?tab=instructors', fullPage: true },
     { folder: f, name: '04-monitor-syllabus-status', title: 'Monitor - Syllabus & Delivery', path: '/monitor?tab=overview', fullPage: true },
-    { folder: f, name: '06-monitor-student-oversight', title: 'Monitor · Student Oversight', path: '/monitor?tab=students', fullPage: true },
     { folder: f, name: '07-monitor-alerts', title: 'Monitor · Alerts', path: '/monitor?tab=alerts', fullPage: true },
-    { folder: f, name: '08-course-records', title: 'Dean Course records', path: '/records', fullPage: true },
-    { folder: f, name: '09-students-by-year', title: 'Dean Students grouped by year', path: '/students', fullPage: true },
-    { folder: f, name: '10-course-syllabi', title: 'Dean Course syllabi', path: '/records?tab=syllabi', fullPage: true },
     { folder: f, name: '11-pulse-on-course-loading', title: 'Pulse focused on Course Loading', path: '/course-loading?tab=assign', act: async p => { await p.getByRole('button', { name: 'Open Pulse assistant' }).click(); await p.getByRole('button', { name: 'Pulse options', exact: true }).click(); await p.getByRole('button', { name: 'Guide this page' }).click() } },
   ])
 })
@@ -294,7 +287,6 @@ test('dean and program coordinator', async ({ page }) => {
 test('program coordinator', async ({ page }) => {
   await signIn(page, 'Assoc. Dean')
   await run(page, 'program coordinator', [
-    { folder: '03-dean-and-associate-dean', name: '12-associate-dean-dashboard', title: 'Program Coordinator dashboard (distinct account)', path: '/dashboard' },
     { folder: '03-dean-and-associate-dean', name: '13-performance-access-denied', title: 'Program Coordinator: performance route and Pulse access denied', path: '/performance', act: async p => {
       await expect(p).toHaveURL(/dashboard/)
       await p.getByRole('button', { name: 'Open Pulse assistant' }).click()

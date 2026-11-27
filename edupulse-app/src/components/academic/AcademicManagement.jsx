@@ -7,14 +7,15 @@ import AcademicRecords from './AcademicRecords'
 import CourseAssignments from './CourseAssignments'
 import ReadinessCharts from './ReadinessCharts'
 
-export default function AcademicManagement({ data, view }) {
+export default function AcademicManagement({ data, view, monitorTab }) {
   const [params,setParams]=useSearchParams()
   // The oversight view lives on the Dean Dashboard. Block rosters belong to the Students page, so old students, syllabi and delivery tab links open the overview.
   useEffect(()=>{if(view==='monitor'&&['review','students','syllabi','delivery'].includes(params.get('tab'))){const next=new URLSearchParams(params);next.set('tab','overview');setParams(next,{replace:true})}},[view,params,setParams])
   const [courseId, setCourseId] = useState(''), [search, setSearch] = useState('')
   const intake = {loads:(data.institutional || []).filter(item=>item.kind==='loads').map(item=>item.data)}
   const items = view === 'monitor' ? [['overview', 'Syllabus & Delivery'], ['alerts', 'Alerts']] : view === 'courses' ? [['monitoring', 'Course Monitoring'], ['instructors', 'Instructors']] : [['import', 'File Import'], ['sections', 'Blocks / Sections'], ['courses', 'Courses']]
-  const { key, nav } = useAcademicTabs({ items, label: view === 'monitor' ? 'Monitor views' : view === 'courses' ? 'Course loading views' : 'Records views' })
+  const tabs = useAcademicTabs({ items, label: view === 'monitor' ? 'Monitor views' : view === 'courses' ? 'Course loading views' : 'Records views' })
+  const key = monitorTab || tabs.key
   const scoped = filterAcademic(data, courseId)
   const courses = scoped.courses.filter(item => `${item.course_code} ${item.course_title}`.toLowerCase().includes(search.toLowerCase()))
   const ids = new Set(courses.map(item => item.id))
@@ -23,7 +24,7 @@ export default function AcademicManagement({ data, view }) {
   const headers = ['Course', 'Title', 'Syllabus', 'Blocks', 'Students', 'Materials', 'Assessments', 'Published weeks']
   const rows = summaries.map(item => [item.course_code, item.course_title, item.syllabus_status?.replaceAll('_',' ') || (item.active ? 'Active' : 'Not active'), item.blocks.join(', '), item.students, item.materials, item.assessments, item.weeks])
   const instructorIds = [...new Set(filtered.courses.map(item => item.instructor_id).filter(Boolean))]
-  return <>{nav}<div className="academic-filters"><CourseFilter data={data} details={view==='monitor'} value={courseId} onChange={setCourseId} /><label className="academic-filter">Search courses<input className="form-input" type="search" value={search} onChange={event => setSearch(event.target.value)} placeholder="Course code or title" /></label></div>
+  return <>{!monitorTab && tabs.nav}<div className="academic-filters"><CourseFilter data={data} details={view==='monitor'} value={courseId} onChange={setCourseId} /><label className="academic-filter">Search courses<input className="form-input" type="search" value={search} onChange={event => setSearch(event.target.value)} placeholder="Course code or title" /></label></div>
     <KPIs items={view==='monitor'
       ? [['Active syllabi', filtered.courses.filter(item => item.active).length], ['Released items', filtered.publications.filter(item => item.active&&(!item.release_at||new Date(item.release_at).getTime()<=Date.now())).length]]
       : [["Authorized courses", filtered.courses.length], ['Active syllabi', filtered.courses.filter(item => item.active).length], ['Blocks', new Set(filtered.enrollments.map(item => item.block_section).filter(Boolean)).size], ['Published items', filtered.publications.filter(item => item.active).length]]} />

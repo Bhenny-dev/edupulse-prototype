@@ -6,7 +6,7 @@ The owner initially authorized filling all recorded curriculum periods for activ
 
 In **Course → Course loads**, **Curriculum load** shows units, year and curriculum semester beside the instructor and assigned blocks. All-period allocations must not be interpreted as a single-semester workload. Missing syllabi remain **Drafted** and require the usual instructor check and offline signatories before activation. Existing approved files and saved courseware are retained.
 
-![Course loads and curriculum units](../36-dean-activity-records/03-course-loads.png)
+![Course loads and curriculum units](../36-dean-activity-records/02-course-records.png)
 
 Student activity counts are labelled **Student assessment attempts**. They count learner responses, not an instructor syllabus submission. Instructor syllabus approval continues outside EduPulse. Historical pipeline activity retains its provenance.
 

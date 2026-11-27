@@ -86,7 +86,7 @@ The [baseline restoration](../versions/2026-10-28-baseline-workflows/README.md) 
 
 [Manual 35: Reference intake](35-reference-intake/README.md) covers link/file-only citation extraction, retained copies, retryable indexing and reusable private knowledge.
 
-[Manual 36: Dean activity records](36-dean-activity-records/README.md) covers four-item navigation, shared clickable summaries, read-only courses/instructors, year-grouped blocks, complete CSV lists and authorized dialog restoration.
+[Manual 36: Instructor course loads](36-dean-activity-records/README.md) covers assignment, syllabus and block delivery for both staff roles.
 
 - [36 · Instructor dashboard, deletion and shared syllabi](36-instructor-syllabi/README.md)
 

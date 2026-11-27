@@ -7,11 +7,10 @@ export async function overviewScene(page:Page,role='dean',mobile=false,dark=fals
  if(dark)await page.addInitScript(()=>localStorage.setItem('edupulse-dark-mode','true'));await oversightUI(page,role);await page.goto('/#/monitor?tab=delivery');await expect(page).toHaveURL(/tab=overview/);await expect(page.getByRole('heading',{name:'Syllabus and delivery overview',exact:true})).toBeVisible();await expect(page.locator('.recharts-bar-rectangle').first()).toBeVisible()
  await shot(page,[`${manual}/${mobile?'mobile-'+(dark?'dark-':''):''}${role}-overview.png`,...(!mobile?[role==='dean'?`${roles}/13-monitor-syllabus-status.png`:'../feature-documentation/system-walkthrough/08-authenticated-records/06-associate-dean-oversight.png']:[])])
  if(!mobile&&role==='dean'){
-  for(const [tab,file,old] of [['students','dean-students','15-monitor-students'],['alerts','dean-alerts','16-monitor-alerts']]){await page.getByRole('navigation',{name:'Monitor views'}).getByRole('button',{name:tab==='students'?'Student Oversight':'Alerts',exact:true}).click();await shot(page,[`${manual}/${file}.png`,`${roles}/${old}.png`])}
-  await page.goto('/#/course-loading');await expect(page.getByRole('heading',{name:'Course loads',exact:true})).toBeVisible();await shot(page,[`${roles}/17-course-loading.png`])
+  await page.getByRole('navigation',{name:'Monitor views'}).getByRole('button',{name:'Alerts',exact:true}).click();await shot(page,[`${manual}/dean-alerts.png`,`${roles}/16-monitor-alerts.png`])
  }
 }
 export async function previewScene(page:Page,mobile=false){
- await page.route('**/api/ai?action=workspace',route=>route.request().method()==='GET'?route.fulfill({json:{mode:'preview',revision:0}}):route.fallback());await page.goto('/');await page.getByRole('button',{name:'Dean',exact:true}).click();await page.goto('/#/monitor?tab=syllabi');await expect(page).toHaveURL(/tab=overview/);await expect(page.getByRole('heading',{name:'Delivery Progress',exact:true})).toBeVisible();await page.waitForTimeout(1800)
+ await page.route('**/api/ai?action=workspace',route=>route.request().method()==='GET'?route.fulfill({json:{mode:'preview',revision:0}}):route.fallback());await page.goto('/');await page.getByRole('button',{name:'Dean',exact:true}).click();await page.goto('/#/monitor?tab=syllabi');await expect(page).toHaveURL(/tab=overview/);await expect(page.getByRole('heading',{name:'Syllabus and delivery overview',exact:true})).toBeVisible();await page.waitForTimeout(1800)
  await shot(page,mobile?['../feature-documentation/system-manual/12-interface-and-loading/09-mobile-monitor-tabs.png']:[`${manual}/preview-combined.png`,'../feature-documentation/system-walkthrough/03-dean-and-associate-dean/04-monitor-syllabus-status.png'])
 }

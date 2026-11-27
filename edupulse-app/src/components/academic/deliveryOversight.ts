@@ -1,27 +1,31 @@
+import { termCalendar, weekDeliveries } from '../../utils/blockCalendar'
 import type { AcademicData } from './academicData'
+import { assignedLoadSyllabus, type courseAssignments } from './deanRecordModel'
 
-export type BlockDelivery = { block: string; students: number; plannedWeeks: number; releasedWeeks: number; deliveredWeeks: number; scheduledWeeks: number; unscheduledWeeks: number; nextOpening: string | null }
+export type StaffCourseLoad = ReturnType<typeof courseAssignments>[number]
 
-/** Read-only delivery state per block for one instructor's course (T7.4). A week counts once per block:
- * delivered when a released item exists and the block's window has opened (or the item is not on a block schedule),
- * scheduled when its window opens later, unscheduled when the item waits on a block schedule the block lacks. */
-export function blockDelivery(data: AcademicData, courseCode: string, instructorId: string, blocks: string[], now = Date.now()): BlockDelivery[] {
-  const course = data.courses.find(item => item.course_code === courseCode && String(item.instructor_id) === String(instructorId))
-  const released = course ? data.publications.filter(item => item.course_id === course.id && item.active && (!item.release_at || Date.parse(item.release_at) <= now)) : []
+/** Treat each released week once per assigned block using the same windows as the instructor's class. */
+export function courseDelivery(data: AcademicData, load: StaffCourseLoad, now = Date.now() + (data.clockOffset || 0)) {
+  const syllabus = assignedLoadSyllabus(data, load)
+  const plannedWeeks = new Set((syllabus?.outline || []).filter(row => row.ilos?.trim() && row.contents?.length).map(row => row.week)).size
+  const released = syllabus?.active ? data.publications.filter(item => item.course_id === syllabus.id && item.active && (!item.release_at || Date.parse(item.release_at) <= now)) : []
   const weeks = [...new Set(released.map(item => item.week))]
-  const planned = (course?.outline || []).filter(row => row.ilos?.trim() && row.contents?.length).length
-  return blocks.map(block => {
-    const roster = course ? new Set(data.enrollments.filter(item => item.course_id === course.id && item.block_section === block).map(item => item.student_email.toLowerCase())) : new Set()
-    const schedule = course ? (data.deliverySchedules || []).find(item => item.course_id === course.id && item.block_section === block) : undefined
-    let delivered = 0, scheduled = 0, unscheduled = 0
+  const legacyWeeks = new Set(released.filter(item => item.delivery_mode !== 'block_schedule').map(item => item.week))
+  const schedules = data.deliverySchedules?.filter(item => item.course_id === syllabus?.id) || []
+  const calendar = termCalendar(data.institutional, load.semester, load.academicYear)
+  const slots = Object.fromEntries(load.sections.map(section => [section.block, section.slots]))
+  const blocks = load.sections.map(section => {
+    let deliveredWeeks = 0, scheduledWeeks = 0, unscheduledWeeks = 0
+    let nextOpening: string | null = null
     for (const week of weeks) {
-      const onSchedule = released.some(item => item.week === week && item.delivery_mode === 'block_schedule')
-      const window = schedule?.windows.find(item => item.week === week)
-      if (!onSchedule || (window && Date.parse(window.opens_at) <= now)) delivered++
-      else if (window) scheduled++
-      else unscheduled++
+      const [window] = weekDeliveries(week, [section.block], slots, schedules, calendar, now)
+      if (legacyWeeks.has(week) || window?.state === 'open' || window?.state === 'closed') deliveredWeeks++
+      else if (window?.state === 'scheduled') {
+        scheduledWeeks++
+        if (nextOpening === null || Date.parse(window.opensAt) < Date.parse(nextOpening)) nextOpening = window.opensAt
+      } else unscheduledWeeks++
     }
-    const upcoming = (schedule?.windows || []).map(item => item.opens_at).filter(at => Date.parse(at) > now).sort()
-    return { block, students: roster.size, plannedWeeks: planned, releasedWeeks: weeks.length, deliveredWeeks: delivered, scheduledWeeks: scheduled, unscheduledWeeks: unscheduled, nextOpening: upcoming[0] || null }
+    return { block: section.block, students: section.students.length, plannedWeeks, releasedWeeks: weeks.length, deliveredWeeks, scheduledWeeks, unscheduledWeeks, nextOpening }
   })
+  return { syllabus, plannedWeeks, releasedItems: released.length, blocks }
 }

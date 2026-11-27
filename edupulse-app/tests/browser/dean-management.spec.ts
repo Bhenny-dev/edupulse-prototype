@@ -169,9 +169,9 @@ for (const role of ['dean', 'associate_dean']) test(`${role} edits loads and sca
 
 test('the course scan shows delivery by block and prepared items without any write', async ({ page }) => {
   const fixture = await deanManagementUI(page)
-  const records: any = fixture.records, future = new Date(Date.now() + 5 * 86400000).toISOString()
+  const records = fixture.records, future = new Date(Date.now() + 5 * 86400000).toISOString()
   const base = { course_id: 'c1', active: true, source_version: 'v1', content: { title: 'Item' } }
-  records.publications = [...(records.publications || []).filter((p: any) => p.course_id !== 'c1'),
+  records.publications = [...records.publications.filter(p => p.course_id !== 'c1'),
     { ...base, id: 'w1', type: 'material', week: 1, title: 'Orientation', delivery_mode: 'legacy' },
     { ...base, id: 'w2', type: 'assessment', week: 2, title: 'Week 2 quiz', delivery_mode: 'block_schedule' }]
   records.deliverySchedules = [{ course_id: 'c1', instructor_id: 'teacher-a', syllabus_id: 's1', block_section: 'BSIT-1A', revision: 1, updated_at: '', windows: [{ week: 2, opens_at: future, closes_at: null }] }]
@@ -186,6 +186,52 @@ test('the course scan shows delivery by block and prepared items without any wri
   // Riley, Casey and the irregular student Sam are enrolled in IT 102 BSIT-1A
   expect(cells.slice(0, 7)).toEqual(['BSIT-1A', '3', '1', '2', '1', '1', '0'])
   expect(cells[7]).not.toBe('None scheduled')
-  expect(fixture.commands.filter((c: any) => !['load.inspect'].includes(c.action))).toEqual([])
+  expect(fixture.commands).toEqual([])
 })
 
+for (const role of ['dean', 'associate_dean']) test(`${role} assigns and monitors courses from an instructor’s dashboard load`, async ({ page }) => {
+  const fixture = await deanManagementUI(page, role)
+  await page.goto('/#/dashboard')
+  const alex = page.getByRole('article', { name: 'Alex Sample Instructor', exact: true })
+  const morgan = page.getByRole('article', { name: 'Morgan Sample Instructor', exact: true })
+  await expect(alex).toContainText('2 released items')
+  await expect(alex).toContainText('Block weeks · 1 opened · 0 scheduled')
+  await expect(morgan).toContainText('No courses assigned for this term.')
+  const search = page.getByRole('searchbox', { name: 'Search instructor or course' })
+  await search.fill('IT 102')
+  await expect(morgan).toHaveCount(0)
+  await alex.getByRole('button', { name: 'View IT 102 syllabus and delivery' }).click()
+  const scan = page.getByRole('dialog', { name: 'Syllabus and teaching contents' })
+  await scan.getByRole('button', { name: 'View uploaded file' }).click()
+  await page.reload()
+  await expect(search).toHaveValue('IT 102')
+  await expect(scan.getByRole('img', { name: 'Page 1 of 1 of the uploaded file' })).toBeVisible()
+  expect(fixture.commands).toHaveLength(0)
+  const record = fixture.records.institutional!.find(row => row.kind === 'loads' && row.data.CourseCode === 'IT 102')!
+  record.data.InstructorID = 'teacher-b'
+  record.data.InstructorName = 'Morgan Sample Instructor'
+  await page.reload()
+  await expect(page.getByRole('dialog', { name: 'Course load unavailable' })).toBeVisible()
+  expect(fixture.scans.every(request => request.expected_instructor === 'teacher-a')).toBe(true)
+  await page.keyboard.press('Escape')
+  await search.fill('')
+  await morgan.getByRole('button', { name: 'Assign course to Morgan Sample Instructor' }).click()
+  await page.getByLabel('Course to assign').selectOption('IT 401')
+  const assignment = page.getByRole('dialog', { name: 'Load IT 401' })
+  await assignment.getByLabel('Time', { exact: true }).fill('12:00 PM')
+  await page.reload()
+  await expect(assignment.getByLabel('Instructor', { exact: true })).toHaveValue('Morgan Sample Instructor')
+  await expect(assignment.getByLabel('Instructor', { exact: true })).toHaveAttribute('readonly', '')
+  await expect(assignment.getByLabel('Time', { exact: true })).toHaveValue('')
+  expect(fixture.commands).toHaveLength(0)
+  await fillLoad(assignment)
+  await assignment.getByRole('button', { name: 'Load course', exact: true }).click()
+  await expect(morgan).toContainText('Capstone project')
+  expect(fixture.commands).toEqual([expect.objectContaining({ action: 'course-load.assign', course_code: 'IT 401', instructor_id: 'teacher-b' })])
+  await page.getByLabel('Load status').selectOption('missing')
+  await expect(morgan).toBeVisible()
+  await page.getByRole('button', { name: 'Syllabus & Delivery', exact: true }).click()
+  await page.reload()
+  await expect(page.getByRole('heading', { name: 'Syllabus and delivery overview' })).toBeVisible()
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true)
+})

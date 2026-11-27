@@ -796,3 +796,11 @@ Both instructor class tabs open the same active publication. The form uses the s
 The scoped instructor-assessment-key operation reads the exact version from the private key table. It rechecks ownership and delegates a verified System Admin support read to the selected instructor's ownership. It returns only ordered answer indexes and guides from the exact source version when available. The ordinary academic snapshot and student publication DTO still omit keys. The student answer-review operation retains its own submitted-attempt and active-retake guards.
 
 Student scores reuse authorized attempts and enrollment for the selected course and block. The latest current-version attempt supplies the displayed result. Pending, started and missing results remain distinct from marked zero. The shared marking form saves explicitly through the existing grade operation. Only the view and authorized attempt identifiers are eligible for restore. [Instructor manual](../system-manual/44-instructor-course-workspace/README.md#open-a-delivered-assessment-and-review-scores).
+
+## Instructor course load workspace
+
+The Dean and Program Coordinator dashboard combines authorized course-load records, the instructor directory and the academic projection for the selected term. The per-load syllabus lookup uses the bound teaching syllabus ID when present and the existing owner/course/term matching for legacy loads. Per-block delivery combines released publications with saved windows and term-calendar class meeting defaults. Each released week counts once per block.
+
+The dashboard uses the existing course-load assignment, update and inspection operations. Assignment and edit forms require explicit saves. The inspection passes both the load key and expected instructor and retains the existing read-only syllabus and content projection. View hints hold bounded record references, scoped to the authenticated account, support subject, role and term. Restoring a view verifies it against the current records before opening its authorized read. Program Coordinator learner-score access continues to be restricted by the existing projection.
+
+No migration is required. [Staff workflow and captures](../system-manual/36-dean-activity-records/README.md).

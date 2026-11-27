@@ -214,7 +214,7 @@ Settings → **AI & Knowledge** offers twelve browser model choices with downloa
 
 ## Dean activity navigation
 
-Dean uses **Dashboard**, **Course**, **Instructors** and **Students**, also under the phone menu. Summary cards share the dashboard component and open matching records or dialogs. **Course** links to combined oversight; syllabus review happens outside EduPulse; **Students** links to read-only Performance. The Program Coordinator retains Records/Course Loading/Monitor and its shared intake controls. See [Manual 36](../../system-manual/36-dean-activity-records/README.md).
+The Dean and Program Coordinator open **Dashboard** for instructor course loads. It also contains **Syllabus & Delivery** and **Alerts**. **Course** opens the catalog and class-list workspace. **Instructors** opens account and qualification records. [Staff course-load guide](../../system-manual/36-dean-activity-records/README.md)
 
 ## Conditional horizontal scrolling
 

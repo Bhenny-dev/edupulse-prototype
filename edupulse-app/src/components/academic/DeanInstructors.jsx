@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
+import { Link, useSearchParams } from 'react-router-dom'
 import { GraduationCap, Award, ClipboardCheck, UserX, UserPlus, Pencil, Pause, Play, Trash2, BookOpen } from 'lucide-react'
 import { useWorkspaceViewState } from '../../context/WorkspaceContext'
 import { Empty, CsvButton, Table } from './AcademicUI'
@@ -24,10 +25,19 @@ export default function DeanInstructors({ data:allData }) {
   const model = useMemo(() => deanRecords(data), [data])
   const directory = useMemo(() => deanDirectory(data, model), [data, model])
   const loads = useMemo(() => courseAssignments(data), [data])
-  const [search, setSearch] = useState(''), [status, setStatus] = useState('all')
+  const [params, setParams] = useSearchParams()
+  const search = (params.get('q') || '').slice(0, 160), status = params.get('status') || 'all'
+  const updateFilter = (name, value) => {
+    const next = new URLSearchParams(params)
+    if (value) next.set(name, value)
+    else next.delete(name)
+    setParams(next, { replace: name === 'q' })
+  }
+  const setStatus = value => updateFilter('status', value === 'all' ? '' : value)
   const [accountAction,setAccountAction]=useWorkspaceViewState(`dean-instructor-action:${term}`,null)
   const [accountMenu,setAccountMenu]=useWorkspaceViewState(`dean-instructor-menu:${term}`,null)
   const [inspect,setInspect]=useWorkspaceViewState(`dean-instructor-course:${term}`,null)
+  const inspectedLoad=loads.find(load=>load.key===inspect?.key&&load.instructorId===inspect?.instructor)
   const action = useDeanAction()
   const people = directory.instructors.map(person => ({ ...person, loads: loads.filter(load => load.instructorId === person.id), syllabi: assignedInstructorSyllabi(data,person.id) }))
   const shown = people.filter(person => (status === 'all' || person.status === status || (status === 'masters' && person.has_masters)) && `${person.name} ${person.email} ${person.specialization}`.toLowerCase().includes(search.trim().toLowerCase()))
@@ -38,7 +48,7 @@ export default function DeanInstructors({ data:allData }) {
   const setEditing=person=>setAccountAction(person==='new'?'add':person?`edit:${person.id}`:null)
   const setConfirm=()=>setAccountAction(null)
   const changeStatus = (person, next) => setAccountAction(`${next}:${person.id}`)
-  const actions = (person,place='card') => (person.loads.length>0 || directory.managed && writable) && <CoursewareActions label={`Instructor actions for ${person.name}`} disabled={Boolean(action.busy)} open={accountMenu===`${place}:${person.id}`} onOpenChange={next=>setAccountMenu((typeof next==='function'?next(accountMenu===`${place}:${person.id}`):next)?`${place}:${person.id}`:null)} actions={[...person.loads.map(load=>({label:`View ${load.code} syllabus and contents`,icon:BookOpen,onSelect:()=>setInspect(load.key)})),...(directory.managed&&writable?[
+  const actions = (person,place='card') => (person.loads.length>0 || directory.managed && writable) && <CoursewareActions label={`Instructor actions for ${person.name}`} disabled={Boolean(action.busy)} open={accountMenu===`${place}:${person.id}`} onOpenChange={next=>setAccountMenu((typeof next==='function'?next(accountMenu===`${place}:${person.id}`):next)?`${place}:${person.id}`:null)} actions={[...person.loads.map(load=>({label:`View ${load.code} syllabus and contents`,icon:BookOpen,onSelect:()=>setInspect({key:load.key,instructor:load.instructorId})})),...(directory.managed&&writable?[
     {label:'Edit instructor',icon:Pencil,onSelect:()=>setEditing(person)},
     person.status==='suspended'?{label:'Reactivate instructor',icon:Play,onSelect:()=>changeStatus(person,'active')}:{label:'Suspend instructor',icon:Pause,onSelect:()=>changeStatus(person,'suspended')},
     ...(person.status==='suspended'?[{label:'Remove instructor',icon:Trash2,onSelect:()=>changeStatus(person,'removed')}]:[])
@@ -48,23 +58,23 @@ export default function DeanInstructors({ data:allData }) {
     <DeanCards items={[
       { label: 'Instructors', value: people.filter(p => p.status === 'active').length, icon: GraduationCap, tone: 'purple', onClick: () => setStatus('active') },
       { label: 'With master’s degree', value: people.filter(p => p.has_masters).length, icon: Award, tone: 'green', onClick: () => setStatus('masters') },
-      { label: 'With course loads', value: people.filter(p => p.loads.length).length, icon: ClipboardCheck, tone: 'sky', to: '/records?tab=loads&show=loaded' },
+      { label: 'With course loads', value: people.filter(p => p.loads.length).length, icon: ClipboardCheck, tone: 'sky', to: `/dashboard?${new URLSearchParams({ term, loads: 'assigned' })}` },
       { label: 'Suspended', value: people.filter(p => p.status === 'suspended').length, icon: UserX, tone: 'red', onClick: () => setStatus('suspended') }]} />
     <DeanFeedback action={action} />
     {!directory.managed && writable && <p className="text-sm text-muted mb-16">{data.directoryError || 'Preview sample. Account changes need a signed-in Dean account.'}</p>}
     <div className="dean-toolbar">
-      <label className="academic-filter">Search instructors<input className="form-input" type="search" value={search} onChange={event => setSearch(event.target.value)} placeholder="Name, email or specialization" /></label>
+      <label className="academic-filter">Search instructors<input className="form-input" type="search" value={search} maxLength={160} onChange={event => updateFilter('q', event.target.value)} placeholder="Name, email or specialization" /></label>
       <label className="academic-filter">Show<select className="form-select" value={status} onChange={event => setStatus(event.target.value)}><option value="all">All instructors</option><option value="active">Active</option><option value="masters">With master’s degree</option><option value="suspended">Suspended</option></select></label>
       <div className="academic-actions"><CsvButton headers={['Name', 'Email', 'Employee ID', 'Master’s degree', 'Highest degree', 'Specialization', 'Course loads', 'Status']} rows={shown.map(p => [p.name, p.email, p.employee_id, p.has_masters === null ? 'Not recorded' : p.has_masters ? 'Yes' : 'No', p.degree, p.specialization, p.loads.length, p.status])} name="instructors" />
         {directory.managed && writable && <button className="btn btn-primary btn-sm" onClick={() => setEditing('new')}><UserPlus size={15} aria-hidden="true" /> Add instructor</button>}</div>
     </div>
     <Table label="Instructor accounts and course loads" headers={['Instructor','Qualifications','Specialization','Status','Course loads','Syllabi','Last sign-in','Actions']} rows={shown.map(person=>[
-      <div key={`name:${person.id}`}><strong>{person.name}</strong><div className="text-sm text-muted">{person.email||'Email not recorded'}</div></div>,<div key={`degree:${person.id}`}>{degreeLabel(person)}<div className="text-sm text-muted">Employee ID: {person.employee_id||'Not recorded'}</div></div>,person.specialization||'Not recorded',person.historical?'Historical teaching record':<StatusBadge key={person.id} status={person.status}/>,
+      <div key={`name:${person.id}`}><Link className="dean-link" to={`/dashboard?${new URLSearchParams({ term, instructor: person.id })}`} aria-label={`View instructor ${person.name}`}>{person.name}</Link><div className="text-sm text-muted">{person.email||'Email not recorded'}</div></div>,<div key={`degree:${person.id}`}>{degreeLabel(person)}<div className="text-sm text-muted">Employee ID: {person.employee_id||'Not recorded'}</div></div>,person.specialization||'Not recorded',person.historical?'Historical teaching record':<StatusBadge key={person.id} status={person.status}/>,
       person.loads.length?<RecordPopover key={`loads:${person.id}`} buttonLabel={`${person.loads.length} course load${person.loads.length===1?'':'s'}`} viewKey={`instructor-loads:${term}:${person.id}`} label={`View course loads for ${person.name}`} title={`Course loads - ${person.name}`}><Table label={`Course loads of ${person.name}`} headers={['Course','Title','Blocks','Units','Hours / week','Students']} rows={person.loads.map(load=>[load.code,load.title,load.blocks.join(', ')||'Not added',load.units||'Not recorded',load.computedHours||'Not recorded',load.sections.reduce((sum,section)=>sum+section.students.length,0)])}/></RecordPopover>:'No course loads',
       person.syllabi.length?<RecordPopover key={`syllabi:${person.id}`} buttonLabel={`${person.syllabi.length} ${person.syllabi.length===1?'syllabus':'syllabi'}`} viewKey={`instructor-syllabi:${term}:${person.id}`} label={`View syllabi for ${person.name}`} title={`Syllabi - ${person.name}`}><ActivityTable scores={scores} headers={['Course','Syllabus status','Released items','Assessment attempts','Material opens']} rows={person.syllabi.map(course=>{const activity=model.activity(new Set([course.id]));return [course.course_code,SYLLABUS_STATUS_META[syllabusState(course)]?.label||syllabusState(course),activity.publications,activity.submissions,activity.opens]})}/></RecordPopover>:0,
       person.historical?'Not applicable':signIn(person.last_sign_in_at),actions(person,'row')
     ])} empty={people.length?'No instructor matches this view.':'No instructor accounts yet. Add an instructor to begin course loading.'}/>
-    {inspect&&(loads.some(load=>load.key===inspect)?<DeanCourseInspection key={inspect} load={loads.find(load=>load.key===inspect)} records={data} students={directory.students} action={action} manage={directory.managed&&writable} onClose={()=>setInspect(null)}/>:<DeanDialog title="Course load unavailable" size="narrow" onClose={()=>setInspect(null)}><Empty>This course is no longer assigned to the instructor.</Empty></DeanDialog>)}
+    {inspect&&(inspectedLoad?<DeanCourseInspection key={inspectedLoad.key} load={inspectedLoad} records={data} students={directory.students} action={action} manage={directory.managed&&writable} onClose={()=>setInspect(null)}/>:<DeanDialog title="Course load unavailable" size="narrow" onClose={()=>setInspect(null)}><Empty>This course is no longer assigned to the instructor.</Empty></DeanDialog>)}
     {directory.managed&&writable&&accountAction&&accountAction!=='add'&&!target&&<DeanDialog title="Instructor unavailable" size="narrow" onClose={()=>setAccountAction(null)}><Empty>This instructor is no longer available. Choose a current instructor.</Empty></DeanDialog>}
     {writable && editing && <DeanAccountDialog role="instructor" account={editing === 'new' ? null : editing} action={action} onClose={() => setEditing(null)} />}
     {writable && confirm && <ConfirmDialog title={confirm.next === 'suspended' ? 'Suspend instructor' : confirm.next === 'active' ? 'Reactivate instructor' : 'Remove instructor'} confirmLabel={confirm.next === 'suspended' ? 'Suspend' : confirm.next === 'active' ? 'Reactivate' : 'Remove account'} danger={confirm.next !== 'active'} busy={action.busy}

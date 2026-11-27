@@ -10,8 +10,8 @@ Accounts see the same role dashboards as the preview personas: the [instructor](
 | --- | --- | --- |
 | Instructor | ![Instructor Dashboard](01-instructor-dashboard.png) | **Getting Started with EduPulse**; summary cards from the owner workspace (all zero in this fixture); **Quick actions**; **My Block Sections** BSIT-1A and BSIT-1B with one student each; **Score Snapshot** with 2 students, a 67% average and one learner below 75 (only the learner with marked attempts is averaged) and topic averages for IT 102; **Recent Activity**, the course syllabus stations and **Courseware Review Queue** showing their empty-state lines. |
 | Student | ![Student Dashboard](02-student-dashboard.png) | Summary cards: 1 enrolled course, 67% average score, 1 topic mastered, 1 pending activity. **Pulse Reminders** lists the unopened *Variables lesson*. **My Block** shows BSIT-1A with year level, size and adviser *Not recorded*. The IT 102 card shows its latest recorded score; **Learning Material Sources** has no published source; **My Score Trend** plots weeks 1–3; **Upcoming Activities** has no recorded deadline. |
-| Dean | ![Dean Dashboard](03-dean-dashboard.png) | One released, loaded and approved course; **Quick actions**; **Syllabus Stations**; **Delivery Progress (Active Courses)** with published materials and assessments for IT 102; **Faculty Overview** (*Synthetic instructor*, *On track*); **Recent Activity** with no recorded event; **Syllabus Status by Course**. |
-| Program Coordinator | ![Program Coordinator Dashboard](04-associate_dean-dashboard.png) | The same management dashboard under **Program Coordinator Dashboard**. The navigation has no **Performance** tab and the dashboard has no score panel. |
+| Dean | ![Dean Dashboard](03-dean-dashboard.png) | Instructors and their assigned courses, with syllabus status and block delivery. |
+| Program Coordinator | ![Program Coordinator Dashboard](04-associate_dean-dashboard.png) | Instructor load assignment and per-course delivery oversight within the role's academic scope. |
 
 ## Combined instructor monitoring
 
@@ -35,17 +35,16 @@ Dates constrain recorded events; student search/progress filters affect the list
 | View | Capture | Sections |
 | --- | --- | --- |
 | **Syllabus & Delivery** | ![Combined syllabus and delivery](13-monitor-syllabus-status.png) | One set of saved stations and released courseware charts, consistent filtered counters, a combined readiness/coverage table with CSV, course details and an optional released-title list. Distinct course instances remain separate; approval stays offline. |
-| **Student Oversight** | ![Student oversight](15-monitor-students.png) | Block/enrollment summary and **Confirmed class lists**, with CSV export and role scope. |
 | **Alerts** | ![Readiness alerts](16-monitor-alerts.png) | Actual inactive-syllabus, missing-roster or missing-publication gaps; no scheduled deadline is assumed. |
-| **Course loads** | ![Course loads](17-course-loading.png) | Dean read-only assignments, blocks, registered students and activity, with the shared clickable summary cards. |
-| **Instructors** | ![Instructor records](18-instructor-delivery.png) | Dean instructor cards and search; selecting a card opens saved course and activity details. |
+| **Course loads** | ![Course loads](17-course-loading.png) | Course catalog, instructor assignments, block counts, schedule openings and row actions. |
+| **Instructors** | ![Instructor records](18-instructor-delivery.png) | Instructor account directory with links to the selected instructor's Dashboard loads. |
 
 ## Dean records and Program Coordinator confirmed file intake
 
 | View | Capture | Behavior |
 | --- | --- | --- |
-| **Students** | ![Blocks](19-record-blocks.png) | Dean summary cards and year-grouped blocks. Select a block for its registered student dialog and complete CSV download. |
-| **Course records** | ![Courses](20-record-courses.png) | Read-only Dean catalog, instructor/student memberships and recorded activity. |
+| **Students** | ![Blocks](19-record-blocks.png) | Student list, term and directory filters, with links to class lists and Dean Performance. |
+| **Course records** | ![Courses](20-record-courses.png) | Course catalog, instructor assignments, class-list actions and course-load intake. |
 | CSV preview | ![Intake preview](21-course-intake-preview.png) | Expected headers, valid/rejected counts, first ten accepted rows and rejection reasons. **Confirm Import (1 records)** saves only the valid row. |
 | Saved intake | ![Saved intake](22-course-intake-saved.png) | Persistence receipt and **Shared academic records** table with CSV download. This fixture simulates the shared import command. |
 | **Course Loads** | ![Load intake](23-load-intake.png) | Separate load CSV preview/save panel and saved rows. |
@@ -128,7 +127,7 @@ The assessment radar retains its three-distinct-assessment minimum and leaves ma
 
 ## Dean course, instructor and student navigation
 
-Dean navigation is now **Dashboard**, **Course**, **Instructors** and **Students**. Its summaries share the clickable dashboard card component. Course records/loads/class lists are read-only; Students groups blocks by recorded year and opens downloadable student lists. Old Dean sections/loading addresses redirect to these pages. Screens 21-26, 39-40, 49 and 50 retain the Program Coordinator intake/proposal/guidance workflow under that role. Dean offline review and read-only Performance remain accessible. See [Manual 36](../../system-manual/36-dean-activity-records/README.md).
+Current Dean and Program Coordinator workflows are illustrated in [Manual 36](../../system-manual/36-dean-activity-records/README.md). The earlier intake, proposal and role-navigation captures above document past layouts.
 
 ## Combined instructor class monitoring
 

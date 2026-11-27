@@ -75,7 +75,7 @@ See: [Settings tabs](../../system-walkthrough/02-shared-interface/README.md#1014
 
 Pulse, the character at the lower right, is the AI assistant on every page. Click it to ask, draft, compare or find references ([manual 5](../05-ask-pulse/README.md), [6](../06-compare-and-references/README.md)); drag it onto any part of a page for help with exactly that part ([manual 7](../07-pulse-guidance/README.md)).
 
-Dean navigation is **Dashboard**, **Course**, **Instructors** and **Students**. The Program Coordinator retains **Records**, **Course Loading** and **Monitor**; students retain **Assessments**. [Manual 36](../36-dean-activity-records/README.md) covers the Dean's linked summaries and downloadable block lists. Mobile users find the same links under **Open menu**. Page tabs provide subviews without duplicate left navigation.
+Dean and Program Coordinator use **Dashboard** for instructor loads, **Course** for catalog and class lists, and **Instructors** for accounts. The Program Coordinator also has **Students** in the main menu. The Dean can open the same directory from **Course → Student directory**. Mobile users find the main links under **Open menu**. [Staff course-load guide](../36-dean-activity-records/README.md)
 
 The verified System Admin can now select an actual account after choosing a role. This does not replace the admin Google session or provide the selected person's credentials. See [account support](../23-account-support-and-pulse-context/README.md) for search, filters, support restrictions and returning to the admin console.
 

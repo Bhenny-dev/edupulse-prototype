@@ -1,8 +1,7 @@
 import { test, expect } from '@playwright/test'
 import { restorationUI } from '../role-restoration-fixture'
 
-// Each Dashboard shows only what no other page of the role shows (no quick actions, no repeated sections).
-const DASHBOARD_SECTION: Record<string, string> = { instructor: 'Home', student: 'Home', dean: 'Syllabus stations', associate_dean: 'Syllabus stations' }
+const DASHBOARD_SECTION: Record<string, string> = { instructor: 'Home', student: 'Home', dean: 'Instructor course loads', associate_dean: 'Instructor course loads' }
 for (const role of ['instructor', 'student', 'dean', 'associate_dean']) {
   test(`restored ${role} pages use account records and keep each authorized section reachable`, async ({ page }) => {
     test.setTimeout(90000)
@@ -17,7 +16,7 @@ for (const role of ['instructor', 'student', 'dean', 'associate_dean']) {
       await expect(page.getByRole('region', { name: 'Your classes' })).toContainText('IT 102')
       await expect(page.getByRole('heading', { name: 'Pending Assessments', exact: true })).toBeVisible()
     }
-    if (role === 'dean' || role === 'associate_dean') await expect(page.getByRole('cell', { name: 'Synthetic instructor', exact: true })).toBeVisible()
+    if (role === 'dean' || role === 'associate_dean') await expect(page.getByRole('article', { name: 'Synthetic instructor', exact: true })).toBeVisible()
     if (role === 'student' || role === 'dean') {
       await page.goto('/#/performance'); await expect(page.getByRole('img', { name: /^Assessment score radar:/ })).toBeVisible()
       await expect(page.locator('.recharts-radar-polygon')).toBeVisible()

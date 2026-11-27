@@ -1,75 +1,66 @@
 # 03 - Dean and Program Coordinator
 
-The Dean and Program Coordinator use separate accounts and permissions. Dean navigation is **Dashboard**, **Course**, **Instructors** and **Students**. Program Coordinator retains **Dashboard**, **Records**, **Course Loading** and **Monitor**. These images show preview samples; authenticated pages use authorized records without sample fallback. [Manual 36](../../system-manual/36-dean-activity-records/README.md) illustrates the current account interface.
+Both roles open **Dashboard** to assign courses and monitor instructors in the selected academic term. **Course** manages the catalog, schedules and class lists. **Instructors** manages accounts and qualifications. The Dean reaches **Students** from **Course → Student directory**. The Program Coordinator can also open **Students** from the main navigation. Screenshots use synthetic account records or bundled preview samples. [Step-by-step guide](../../system-manual/36-dean-activity-records/README.md)
 
 ## 1. Dean dashboard
 
-![Dean dashboard](01-dashboard.png)
+![Dean instructor course loads](01-dashboard.png)
 
-Summary cards link to course records, loads, approved syllabi and not-yet-routed syllabi. **View Course**, **Monitor Delivery** and **Ask Pulse** remain below. **Syllabus Stations**, **Delivery Progress (Active Courses)**, **Faculty Overview**, **Recent Activity** and **Syllabus Status by Course** remain. Offline review, CAO approval and EVP noting are unchanged. Preview numbers and names are sample data.
+**Instructor course loads** lists the instructors and their saved assignments. Each assigned course shows its blocks, syllabus status, outline weeks, released items and opened or scheduled block weeks. Use **Assign course** beside an active instructor, **Edit load** beside a course, or **View course** to inspect its syllabus and delivery.
 
 ## 2. Course loads
 
-![Dean course loads](02-course-loading-loaded-courses.png)
+![Course catalog and instructor loads](02-course-loading-loaded-courses.png)
 
-The old Course Loading address opens **Course → Course loads**, listing saved course/instructor assignments and recorded blocks, students, releases and submissions. Summary cards use the dashboard design and open matching records. Dean imports and loading-proposal forms no longer appear.
+**Course** lists catalog courses, their instructors and blocks, student counts and schedules. Its row Actions cover course assignment and class-list management. **Upload course load (Excel)** and **Upload class lists** open intake from the same page.
 
 ## 3. Instructors
 
-![Dean instructors](03-course-loading-instructors.png)
+![Instructor directory](03-course-loading-instructors.png)
 
-**Instructors** contains searchable cards. Selecting one opens the instructor's saved courses, syllabus statuses and recorded activity.
+**Instructors** shows qualifications, specialization, account status, course loads, syllabi and last sign-in. Select an instructor's name to return to their filtered Dashboard. The row menu contains account operations and authorized syllabus inspection.
 
-Current authenticated Course cards include a three-dot action menu and the top-right **Add Course** button. Instructor cards place editing and suspension/reactivation/removal inside the same menu pattern. Removal is available only after suspension. These controls apply equally to Dean and Program Coordinator, including an authorized Admin account view. Catalog actions preserve existing teaching files and learner records. The current flow is described in [Manual 46](../../system-manual/46-course-load-workspace/README.md); the older images above predate these controls. Broad screenshot publication remains owner-paused, and the targeted capture assertions cover both menus.
+## 4. Syllabus and delivery oversight
 
-## 4-7. Syllabus and delivery oversight
+![Syllabus and delivery overview](04-monitor-syllabus-status.png)
 
-Open **Course → Syllabus & Delivery** or **Monitor Delivery**. Oversight and alerts retain their functions without adding a fifth main navigation item.
+**Syllabus & Delivery** retains the term-wide charts, course filters and coverage table. Open **View course** on the instructor dashboard for the selected course's block delivery, roster, retained syllabus file and teaching contents. [Course delivery detail](../../system-manual/36-dean-activity-records/README.md#assign-and-review-courses-from-dashboard)
 
-| View | Capture | Content |
-| --- | --- | --- |
-| **Syllabus & Delivery** | ![Combined oversight](04-monitor-syllabus-status.png) | Syllabus-status and delivery sections share one view; stations and publication coverage remain distinct measures. |
-| **Student Oversight** | ![Student oversight](06-monitor-student-oversight.png) | Retained block, enrollment and class-list oversight. The main Students page provides a full directory with department, year and block filters. |
-| **Alerts** | ![Alerts](07-monitor-alerts.png) | Readiness and delivery gaps supported by available records. |
+## 7. Alerts
 
-## 8-10. Course records and blocks
+![Readiness and delivery alerts](07-monitor-alerts.png)
 
-| View | Capture | Content |
-| --- | --- | --- |
-| **Course records** | ![Course records](08-course-records.png) | Read-only course/instructor/student activity, summary links and CSV. |
-| **Students** | ![Blocks by year](09-students-by-year.png) | Unified directory: summary cards, search and department/year/block filters; choosing a department reveals section cards that filter the same table. CSV exports every filtered match. |
-| **Syllabi** | ![Course syllabi](10-course-syllabi.png) | Recorded status, outline week count and **View outline**. |
+The **Alerts** dashboard view lists course readiness gaps from the available records.
 
-Dean Course also retains **Student class lists**. File Import, Templates, History and block-edit controls are removed from Dean pages at the owner's request. Saved institutional records are retained. Old sections/loading links redirect to the new pages.
+## 8. Course records
+
+![Course records](08-course-records.png)
+
+The catalog groups each course by its saved assignments. Select **Schedule** when a load has recorded times. Course search and the load filter apply to the same table.
+
+## 9. Students
+
+![Student directory](09-students-by-year.png)
+
+**Students** lists students and their recorded year, block and status. Department, year and block filters narrow the list. The Dean view also shows recorded assessment and material activity in scope.
 
 ## 11. Pulse guidance
 
-![Pulse on Course records](11-pulse-on-course-loading.png)
+![Pulse on Course](11-pulse-on-course-loading.png)
 
-Page guidance explains Dean read-only activity records. Preview guidance identifies sample data. Program Coordinator guidance retains shared file-intake instructions.
+Selecting **Guide this page** in the Pulse options opens the current Course page as guidance context.
 
 ## 12. Program Coordinator dashboard
 
-![Program Coordinator dashboard](12-associate-dean-dashboard.png)
+![Program Coordinator instructor course loads](12-associate-dean-dashboard.png)
 
-The Program Coordinator retains Records/Course Loading/Monitor navigation, CSV confirmation, loading proposals, templates, history and block correction under existing permissions. The [account role guide](../09-restored-role-pages/README.md) shows those controls with synthetic records.
+The Program Coordinator follows the same assignment and course delivery workflow within their authorized records.
 
 ## 13. Performance access boundary
 
 ![Program Coordinator denied Performance](13-performance-access-denied.png)
 
-Program Coordinator direct Performance navigation returns to Dashboard, and Pulse reports it unavailable. Dean read-only Performance remains reachable through **Students → View student performance** and existing links. No Dean authoring, marking or electronic approval was added. See [ADR-001](../../backend-system/decisions/001-role-and-approval-boundaries.md) and the [combined oversight guide](../../system-manual/29-combined-oversight/README.md).
-
-## Assigned curriculum loads
-
-**Course loads** now includes curriculum units/year/period. Assessment counts explicitly identify student attempts; the instructor does not submit a syllabus for online approval. The course-record and syllabus images are refreshed using fictional Dean records. [Population guide](../../system-manual/38-curriculum-population/README.md).
-
-Dean record counts no longer append test suffixes. Assessment/access tables omit the Activity origin column. These display changes preserve stored scores, dates, grading, provenance and the Program Coordinator score boundary.
-
-
-### Assigned instructor details and class continuity
-
-The Instructor detail modal's teaching rows follow current Dean/Coordinator loads in the selected academic term. Repository ownership alone leaves these sections empty. Course → Edit switches a block's instructor while continuing its syllabus, content, delivery window and recorded student history independently. Course → Remove retains a package for a later same-class replacement. The original instructor's other blocks remain unchanged; the replacement's existing work is not overwritten. [Course loading guide](../../system-manual/46-course-load-workspace/README.md).
+Direct Performance navigation returns the Program Coordinator to **Dashboard**. The Dean can use **Students → View student performance** for authorized read-only learner results. [Role and approval boundaries](../../backend-system/decisions/001-role-and-approval-boundaries.md)
 
 ### Teaching-load PDF review and term records - 17 November 2026
 

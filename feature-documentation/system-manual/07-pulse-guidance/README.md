@@ -81,4 +81,4 @@ Pulse can answer from live authorized course, syllabus, roster and activity reco
 
 ## Assessment record labels
 
-Dean record guidance describes saved assessment attempts and material opens. It no longer instructs users to look for test-origin labels; audit metadata remains stored while score and access displays use neutral labels. See [the updated record views](../36-dean-activity-records/README.md).
+Staff guidance opens **Dashboard** for instructor assignment and delivery review and **Course** for the catalog and class lists. [Instructor course-load workflow](../36-dean-activity-records/README.md)

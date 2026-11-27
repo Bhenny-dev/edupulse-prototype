@@ -8,6 +8,8 @@ import AcademicSyncStatus from '../components/academic/AcademicSyncStatus'
 import SystemAdminDashboard from './SystemAdminDashboard'
 import InstructorHome from '../components/classroom/InstructorHome'
 import AcademicManagement from '../components/academic/AcademicManagement'
+import StaffCourseLoads from '../components/academic/StaffCourseLoads'
+import { useAcademicTabs } from '../components/academic/AcademicUI'
 import { accountManagementModel, accountStudentModel } from './dashboardModels'
 import { previewInstructorModel, previewStudentModel } from './dashboardPreview'
 import { deanPreview } from '../components/academic/deanPreview'
@@ -16,11 +18,11 @@ import { pulse as pulseBus } from '../components/pulse/pulseBus'
 import { SkeletonKPI, SkeletonTable } from '../components/ui/LoadingSkeleton'
 import '../components/academic/academic.css'
 import {
-  Users, AlertTriangle, CheckCircle, FileText, ArrowRight, BookOpen,
+  AlertTriangle, CheckCircle, FileText, ArrowRight, BookOpen,
   Target, Sparkles, Calendar, Download,
   ChevronRight, Activity, Rocket, X, Bot, ClipboardCheck, Bell,
 } from 'lucide-react'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 
 const ACTIVITY_STYLE = {
   published: [CheckCircle, 'var(--green-500)'], syllabus: [FileText, 'var(--sky-500)'], drafted: [Sparkles, 'var(--purple-500)'],
@@ -69,18 +71,20 @@ function RecentActivity({ items }) {
   </div>
 }
 
-// The Dean and Program Coordinator Dashboard is the oversight page: syllabus stations, delivery, alerts and
-// recent activity. Courses, instructors and students each have their own page, so none of them repeats here.
-// Preview personas read the sample Dean records through the same view.
-function StaffDashboard({ data, loaded, actions, status }) {
+const STAFF_VIEWS = [['loads', 'Instructor course loads'], ['overview', 'Syllabus & Delivery'], ['alerts', 'Alerts']]
+function StaffDashboard({ data, loaded, actions, status, term }) {
   const { user } = useAuth()
+  const { key, nav } = useAcademicTabs({ items: STAFF_VIEWS, label: 'Monitor views', fallback: 'loads' })
   return (
-    <div className="container academic-portal" data-pulse-zone="monitor" data-pulse-target="Dashboard">
-      <PageHeader title={`${user?.title} Dashboard`} subtitle="Syllabus status, courseware delivery, alerts and recent activity" actions={actions} />
+    <div className="container academic-portal" data-pulse-zone={key === 'loads' ? 'course-loading' : 'monitor'} data-pulse-target="Dashboard">
+      <PageHeader title={`${user?.title} Dashboard`} subtitle={user.authenticated ? 'Course loading and instructor oversight' : 'Preview sample records'} actions={actions} />
       {status}
       {loaded && <>
-        <AcademicManagement data={data} view="monitor" />
-        <div className="mt-24"><RecentActivity items={accountManagementModel(data).activity} /></div>
+        {nav}
+        {key === 'loads' ? <StaffCourseLoads data={data} {...term} canInspect={user.authenticated} /> : <>
+          <AcademicManagement data={data} view="monitor" monitorTab={key} />
+          <div className="mt-24"><RecentActivity items={accountManagementModel(data).activity} /></div>
+        </>}
       </>}
     </div>
   )
@@ -313,10 +317,11 @@ function AccountDashboard() {
   const role = user?.role
   // A Dean or Program Coordinator preview persona reads the sample Dean records, like its other pages.
   const preview = !user?.authenticated
-  const allData = preview ? deanPreview() : records.data
+  const previewData = useMemo(() => preview ? deanPreview() : null, [preview])
+  const allData = previewData || records.data
   const { error, loading } = records, loaded = records.loaded || preview
-  const {term}=useAcademicTerm()
-  const data=recordsForLoadTerm(allData,term)
+  const term = useAcademicTerm()
+  const data = useMemo(() => recordsForLoadTerm(allData, term.term), [allData, term.term])
   const actions = (
     <div className="academic-actions">
       <LoadTermFilter data={allData}/>{!preview && <AcademicSyncStatus />}
@@ -325,9 +330,9 @@ function AccountDashboard() {
   const status = <>
     {error && <div role="alert" className="connected-pulse-warning">{error}</div>}
     {loading && !loaded && <section className="academic-loading" aria-label="Loading academic records"><p role="status" className="text-sm text-muted mb-16">Loading authorized academic records…</p><div aria-hidden="true"><div className="kpi-grid mb-24">{Array.from({ length: 4 }, (_, index) => <SkeletonKPI key={index} />)}</div><SkeletonTable rows={4} cols={4} /></div></section>}
-    {loaded && !error && role !== 'instructor' && !data.courses.length && <div className="empty-state mb-24" role="status"><h2>No authorized academic records yet</h2><p>Instructors register confirmed class lists, activate an approved syllabus, review courseware and publish it. Students need a matching account email in the registered class list. Saved workspaces synchronize automatically.</p></div>}
+    {loaded && !error && role === 'student' && !data.courses.length && <div className="empty-state mb-24" role="status"><h2>No authorized academic records yet</h2><p>Instructors register confirmed class lists, activate an approved syllabus, review courseware and publish it. Students need a matching account email in the registered class list. Saved workspaces synchronize automatically.</p></div>}
   </>
-  if (role === 'dean' || role === 'associate_dean') return <StaffDashboard data={data} loaded={loaded} actions={actions} status={status} />
+  if (role === 'dean' || role === 'associate_dean') return <StaffDashboard data={data} loaded={loaded} actions={actions} status={status} term={term} />
   if (role === 'instructor') return <InstructorHome data={data} loaded={loaded} actions={actions} status={status} />
   return <StudentDashboard model={loaded ? accountStudentModel(data, user) : null} actions={actions} status={status} />
 }

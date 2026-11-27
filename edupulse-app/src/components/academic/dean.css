@@ -2,6 +2,8 @@
 .dean-toolbar { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px 16px; margin-bottom: 20px; }
 .dean-toolbar .academic-filter:first-child { flex: 1 1 260px; }
 .dean-toolbar .academic-actions { margin-left: auto; }
+.staff-catalog-description { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; }
+.staff-catalog-description p { margin: 0; }
 
 .student-directory-filters .academic-filter { min-width:0; flex:1 1 160px; }
 .student-directory-filters .academic-filter:nth-child(2) { flex-basis:250px; }
@@ -144,7 +146,8 @@
 @media(max-width:700px) { .academic-header-actions { width:100%; } .academic-header-actions .academic-filter { width:100%; } }
 
 .dean-load-details { display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr)); }
-.dean-load-details > p { grid-column:1/-1; }
+.dean-load-details > p, .dean-load-details > .staff-change-course { grid-column: 1 / -1; }
+.dean-load-details > .staff-change-course { justify-self: start; }
 /* Course cards on an instructor and the block sections of a course */
 .dean-load-cards { margin: 16px 0 24px; grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr)); }
 .dean-load-card { display: flex; flex-direction: row; align-items: flex-start; gap: 12px; text-align: left; cursor: pointer; font: inherit; color: inherit; }

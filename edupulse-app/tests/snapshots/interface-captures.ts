@@ -10,7 +10,7 @@ export function interfaceCaptures(mobile=false){
  test('interface: monitor subviews remain reachable without a sidebar',async({page})=>{
   await page.goto('/');await page.getByRole('button',{name:'Dean',exact:true}).click();await page.goto('/#/monitor')
   const directory='../feature-documentation/system-walkthrough/03-dean-and-associate-dean'
-  for(const [label,key,name] of [['Syllabus & Delivery','overview','04-monitor-syllabus-status'],['Student Oversight','students','06-monitor-student-oversight'],['Alerts','alerts','07-monitor-alerts']]){
+  for(const [label,key,name] of [['Syllabus & Delivery','overview','04-monitor-syllabus-status'],['Alerts','alerts','07-monitor-alerts']]){
    const button=page.getByRole('navigation',{name:'Monitor views'}).getByRole('button',{name:label,exact:true});await button.click();await expect(button).toHaveAttribute('aria-pressed','true');await expect(page).toHaveURL(new RegExp('tab='+key));await expect(page.locator('.app-sidebar')).toHaveCount(0)
    expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true)
    if(!mobile){await page.mouse.move(2,400);await page.waitForTimeout(1800);await page.screenshot({path:`${directory}/${name}.png`,animations:'disabled',fullPage:true})}

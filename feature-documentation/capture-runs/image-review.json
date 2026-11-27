@@ -5508,6 +5508,252 @@
       "sha256": "efa3af17eac7dc2d73e0277dd233c2d64b9fa85d805478dc3593b178519bb5cd",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-27T05:43:05.356800+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/12-interface-and-loading/09-mobile-monitor-tabs.png",
+      "sha256": "0ac190f7c8d6a99e91f0899d55e6577a08643407e274ea53f88bbd11939d6a6e",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T11:22:36.387Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/29-combined-oversight/associate_dean-overview.png",
+      "sha256": "84cfee0375cafc82b20496b4eb8a62e04211589970249f64c8b91dba63245db4",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T11:22:36.389Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/29-combined-oversight/dean-alerts.png",
+      "sha256": "a914860a8259f29966d4187dc4ba2d0528d56519c4ae241b11696c3eda308442",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T11:22:36.390Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/29-combined-oversight/dean-overview.png",
+      "sha256": "d2ef384ca96566acbd4a20f9c315bbe20e99c62fe71e653670f98d75a72a79b0",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T11:22:36.392Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/29-combined-oversight/mobile-associate_dean-overview.png",
+      "sha256": "a680e99d97c34c195542d3a8199e67e32bf0a9aec7f0d9a69013b75450fc703d",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T11:22:36.394Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/29-combined-oversight/mobile-dark-associate_dean-overview.png",
+      "sha256": "6d0614ac883b78e29bf19950e33f2ae538a2522b13deb8914004cb56146786c6",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T11:22:36.396Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/01-dashboard.png",
+      "sha256": "d33883009239eeead5cb83ce9a0e33a4ffcccbd87aaf441fbc325cac3403a12f",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T11:22:36.397Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/02-course-records.png",
+      "sha256": "361b46b71ba7d722b44c9e75813ed3703b16da4c8dca728f4dc6c373f9f2fe17",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T11:22:36.399Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/05-instructors.png",
+      "sha256": "b477cf4590f84c2139a5b38965588e15a28072dfd8c010bb2f827487406f8ee8",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T11:22:36.400Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/07-students-by-year.png",
+      "sha256": "81c56affe5cb3a71ef14fddfbffe4012e9b18ab778289efd18ac5d58bd74783b",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T11:22:36.402Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/10-all-students.png",
+      "sha256": "6a301ef0f61755c4815a5ac94896d534516f145576530a4dd662c375cdb67aef",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T11:22:36.404Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/mobile-02-course-records.png",
+      "sha256": "883c91392dc093c7d23c4e473252f2eb63213d6194b3b35bab76c9808716bb75",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T11:22:36.407Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/mobile-05-instructors.png",
+      "sha256": "f8011aa9511ee7efafc5333c6494b636947d870da60afd04984f3fb3b6709126",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T11:22:36.409Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/mobile-07-students-by-year.png",
+      "sha256": "e4c4abcc639b9d4caa3a100b108c13d09a88837b97c35fafababe46787009a13",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T11:22:36.412Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/mobile-10-all-students.png",
+      "sha256": "4d1800bce5602da8c6fd1a556ce9537dc4a621e8fb8a30641cea9ec651bb7347",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T11:22:36.414Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/03-dean-and-associate-dean/01-dashboard.png",
+      "sha256": "d33883009239eeead5cb83ce9a0e33a4ffcccbd87aaf441fbc325cac3403a12f",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T11:22:36.415Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/03-dean-and-associate-dean/02-course-loading-loaded-courses.png",
+      "sha256": "361b46b71ba7d722b44c9e75813ed3703b16da4c8dca728f4dc6c373f9f2fe17",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T11:22:36.417Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/03-dean-and-associate-dean/03-course-loading-instructors.png",
+      "sha256": "b477cf4590f84c2139a5b38965588e15a28072dfd8c010bb2f827487406f8ee8",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T11:22:36.418Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/03-dean-and-associate-dean/04-monitor-syllabus-status.png",
+      "sha256": "bc9dc0988f121044015d70807ddef1ec033bb0bd05d313a8089d061da7e99f8e",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T11:22:36.419Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/03-dean-and-associate-dean/07-monitor-alerts.png",
+      "sha256": "8deeb6e6a076721eaf80704279161961dbe1e6cfbd80319d4a6e845e888cd4be",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T11:22:36.421Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/03-dean-and-associate-dean/08-course-records.png",
+      "sha256": "361b46b71ba7d722b44c9e75813ed3703b16da4c8dca728f4dc6c373f9f2fe17",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T11:22:36.422Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/03-dean-and-associate-dean/09-students-by-year.png",
+      "sha256": "6a301ef0f61755c4815a5ac94896d534516f145576530a4dd662c375cdb67aef",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T11:22:36.423Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/03-dean-and-associate-dean/11-pulse-on-course-loading.png",
+      "sha256": "97a99c8d410fdbb5c73341851eca8a06d11764c65672dfd50ad811d7a1d9d0c6",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T11:22:36.424Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/03-dean-and-associate-dean/12-associate-dean-dashboard.png",
+      "sha256": "499665c87827172169b6886dde371ce6eb9526f5b4ab93b04888c670f76b662e",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T11:22:36.425Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/03-dean-and-associate-dean/13-performance-access-denied.png",
+      "sha256": "49e2aebd02da5230c233481a82a7d4f00aa3e525d77b1eb0cb203464d0bbc270",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T11:22:36.425Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/08-authenticated-records/06-associate-dean-oversight.png",
+      "sha256": "84cfee0375cafc82b20496b4eb8a62e04211589970249f64c8b91dba63245db4",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T11:22:36.427Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/03-dean-dashboard.png",
+      "sha256": "d33883009239eeead5cb83ce9a0e33a4ffcccbd87aaf441fbc325cac3403a12f",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T11:22:36.428Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/04-associate_dean-dashboard.png",
+      "sha256": "499665c87827172169b6886dde371ce6eb9526f5b4ab93b04888c670f76b662e",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T11:22:36.430Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/13-monitor-syllabus-status.png",
+      "sha256": "d2ef384ca96566acbd4a20f9c315bbe20e99c62fe71e653670f98d75a72a79b0",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T11:22:36.431Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/16-monitor-alerts.png",
+      "sha256": "a914860a8259f29966d4187dc4ba2d0528d56519c4ae241b11696c3eda308442",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T11:22:36.432Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/17-course-loading.png",
+      "sha256": "361b46b71ba7d722b44c9e75813ed3703b16da4c8dca728f4dc6c373f9f2fe17",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T11:22:36.433Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/18-instructor-delivery.png",
+      "sha256": "b477cf4590f84c2139a5b38965588e15a28072dfd8c010bb2f827487406f8ee8",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T11:22:36.434Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/19-record-blocks.png",
+      "sha256": "6a301ef0f61755c4815a5ac94896d534516f145576530a4dd662c375cdb67aef",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T11:22:36.436Z"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/20-record-courses.png",
+      "sha256": "361b46b71ba7d722b44c9e75813ed3703b16da4c8dca728f4dc6c373f9f2fe17",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T11:22:36.437Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/assign-course.png",
+      "sha256": "29dfe3d0972b898ff0370819f875692a3714a99548cb2ff502889364dfc0a6d8",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T11:22:36.438Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/coordinator-dashboard.png",
+      "sha256": "499665c87827172169b6886dde371ce6eb9526f5b4ab93b04888c670f76b662e",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T11:22:36.439Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/course-delivery.png",
+      "sha256": "a0a2987f405ca66684f2248ba9e50d08431d60d08354972478ce92fdfea33bd6",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T11:22:36.440Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/mobile-01-dashboard.png",
+      "sha256": "1b7a00a276f2d88a4284c944806af82582a498fc7f9c5d26db200c9f68bc1a24",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T11:22:36.442Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/mobile-assign-course.png",
+      "sha256": "ef053db6df7030323958acf32bac3c01bdf42b4a19a308f125e6d8c47bf7f24d",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T11:22:36.444Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/mobile-coordinator-dashboard.png",
+      "sha256": "f26f13cb5d01261d5217c7f63e8d1891bad32afec7919dbafdc925141a7e7c92",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T11:22:36.446Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/mobile-course-delivery.png",
+      "sha256": "4b6688eee7059de5c8d737ac1bfbc11d8fb5984ba29992e44cbb9584f06da57e",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T11:22:36.447Z"
     }
   ]
 }

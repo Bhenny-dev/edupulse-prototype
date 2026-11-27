@@ -84,18 +84,30 @@ const key = (value:unknown) => text(value).toUpperCase().replace(/[\s-]+/g,'')
 
 /** Repository ownership alone is not a teaching load. Management inspects assigned courses only. */
 export function assignedInstructorSyllabi(data:AcademicData,instructorId:string) {
-  const assigned=(data.institutional||[]).filter(r=>r.kind==='loads'&&r.data.InstructorID===instructorId&&!/^(inactive|suspended|withdrawn|deleted)$/i.test(r.data.Status||''))
-  const bound=new Set(assigned.map(r=>r.data.TeachingSyllabusID).filter(Boolean)),chosen=new Map<string,Course>()
-  const semester=(v:string)=>/^(1|first)/i.test(v)?'1':/^(2|second)/i.test(v)?'2':v.toLowerCase()
+  const assigned=syllabusLoadRecords(data,instructorId),chosen=new Map<string,Course>()
   for(const {data:load} of assigned){
-    const candidates=data.courses.filter(course=>course.syllabus_id?.startsWith('assignment:')!==true&&course.instructor_id===instructorId&&key(course.course_code)===key(load.CourseCode)
+    const course=matchLoadSyllabus(data,load,assigned)
+    if(course)chosen.set(course.id,course)
+  }
+  return [...chosen.values()]
+}
+
+const syllabusLoadRecords=(data:AcademicData,instructorId:string)=>(data.institutional||[]).filter(r=>r.kind==='loads'&&r.data.InstructorID===instructorId&&!/^(inactive|suspended|withdrawn|deleted)$/i.test(r.data.Status||''))
+
+function matchLoadSyllabus(data:AcademicData,load:Record<string,string>,assigned:ReturnType<typeof syllabusLoadRecords>) {
+  const bound=new Set(assigned.map(row=>row.data.TeachingSyllabusID).filter(Boolean))
+  const semester=(v:string)=>/^(1|first)/i.test(v)?'1':/^(2|second)/i.test(v)?'2':v.toLowerCase()
+  return data.courses.filter(course=>course.syllabus_id?.startsWith('assignment:')!==true&&course.instructor_id===load.InstructorID&&key(course.course_code)===key(load.CourseCode)
       &&(load.TeachingSyllabusID?course.syllabus_id===load.TeachingSyllabusID:!bound.has(course.syllabus_id||''))
       &&(!course.academic_year||!load.AcademicYear||course.academic_year===load.AcademicYear)
       &&(!course.semester||!load.Semester||semester(course.semester)===semester(load.Semester)))
-      .sort((a,b)=>Number(b.active)-Number(a.active)||String(b.updated_at||'').localeCompare(String(a.updated_at||'')))
-    if(candidates[0])chosen.set(candidates[0].id,candidates[0])
-  }
-  return [...chosen.values()]
+      .sort((a,b)=>Number(b.active)-Number(a.active)||String(b.updated_at||'').localeCompare(String(a.updated_at||'')))[0]
+}
+
+export function assignedLoadSyllabus(data:AcademicData,load:Pick<LoadRow,'key'|'instructorId'>) {
+  const assigned=syllabusLoadRecords(data,load.instructorId)
+  const record=assigned.find(row=>row.record_key===load.key)
+  return record ? matchLoadSyllabus(data,record.data,assigned) : undefined
 }
 
 export function loadRows(data:AcademicData,includeCourses=false):LoadRow[] {
@@ -120,7 +132,8 @@ export function courseAssignments(data:AcademicData){
 /** Block records first; blocks still only on the retained teaching-load rows follow (printed letter, or the next letter
  * free of other instructors' blocks in schedule order). Students come from the block's class list and enrollments. */
 function blockSections(data:AcademicData,parent:LoadRow,linked:LoadRow[],classes:LoadRow[]):BlockSection[]{
- const enrolled=(block:string)=>{const ids=new Set(data.courses.filter(c=>c.instructor_id===parent.instructorId&&key(c.course_code)===key(parent.code)).map(c=>c.id));return data.enrollments.filter(e=>!e.suspended&&ids.has(e.course_id)&&text(e.block_section).toUpperCase()===block.toUpperCase()).map(e=>({email:email(e.student_email),name:text(e.display_name)||email(e.student_email),id:text(e.student_ref)}))}
+ const syllabus=assignedLoadSyllabus(data,parent)
+ const enrolled=(block:string)=>data.enrollments.filter(e=>!e.suspended&&e.course_id===syllabus?.id&&text(e.block_section).toUpperCase()===block.toUpperCase()).map(e=>({email:email(e.student_email),name:text(e.display_name)||email(e.student_email),id:text(e.student_ref)}))
  const people=(roster:Record<string,unknown>[]|null|undefined,block:string)=>{const seen=new Map<string,{email:string;name:string;id:string}>();for(const s of [...(roster||[]).map(r=>({email:email(r.Email),name:text(r.Name)||email(r.Email),id:text(r.StudentID)})),...enrolled(block)])if(s.email&&!seen.has(s.email))seen.set(s.email,s);return [...seen.values()].sort((a,b)=>a.name.localeCompare(b.name))}
  const sections:BlockSection[]=linked.filter(row=>row.block).map(row=>{const slots=(row.schedules?.length?row.schedules:[{days:row.days,time:row.time,room:row.room}]).map(s=>({days:text(s.days),time:text(s.time),room:text(s.room)})).filter(s=>s.days||s.time||s.room);const students=people(row.roster,row.block);return {key:row.key,block:row.block,slots,students,listed:Boolean(row.roster?.length)||students.length>0,recorded:true}})
  const others=classes.filter(row=>row.instructorId!==parent.instructorId&&key(row.code)===key(parent.code)&&row.academicYear===parent.academicYear&&row.semester===parent.semester).map(row=>row.block)

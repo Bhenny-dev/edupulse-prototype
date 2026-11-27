@@ -49,7 +49,7 @@ const {default:monitorGuide}=await import(new URL('../src/agents/monitorAgent.js
 const {default:performanceGuide}=await import(new URL('../src/agents/performanceAgent.js',import.meta.url).href)
 test('account guidance distinguishes persisted records from preview and preserves role boundaries',()=>{
  const dean={role:'dean',authenticated:true},associate={role:'associate_dean',authenticated:true}
- assert.match(accountGreeting(recordsGuide,dean),/course and instructor activity/);assert.match(accountGreeting(recordsGuide,{role:'dean'}),/sample/)
+ assert.match(accountGreeting(recordsGuide,dean),/assign courses by instructor/);assert.match(accountGreeting(recordsGuide,{role:'dean'}),/sample/)
  const imported=prepareIntent(recordsGuide,recordsGuide.intents.find((i:any)=>i.key==='import'),associate);assert.match(imported.steps.at(-1).body,/saves shared records/)
  assert.equal(recordsGuide.intents.find((i:any)=>i.key==='import').roles.includes('dean'),true)
  const courses=prepareIntent(recordsGuide,recordsGuide.intents.find((i:any)=>i.key==='courses'),dean)

@@ -2,15 +2,14 @@ import {test,expect} from '@playwright/test'
 import {deanRecordsUI} from '../dean-records-fixture'
 import {readFile} from 'node:fs/promises'
 
-test('Dean navigation and dashboard summaries open the Course list, Course loads and Syllabus & Delivery views',async({page})=>{
+test('Dean dashboard links open the catalog and instructor directory',async({page})=>{
  await deanRecordsUI(page);await page.goto('/#/dashboard')
  const mobile=page.viewportSize()!.width<800
  if(mobile)await page.getByRole('button',{name:'Open menu',exact:true}).click()
- for(const label of ['Dashboard','Course','Instructors','Students'])await expect(page.getByRole('link',{name:label,exact:true}).first()).toBeVisible()
+ for(const label of ['Dashboard','Course','Instructors'])await expect(page.getByRole('link',{name:label,exact:true}).first()).toBeVisible()
  if(mobile)await page.getByRole('button',{name:'Close menu',exact:true}).click()
- // The Dashboard is the oversight page; course counts and the catalog live on the Course page only.
- for(const label of ['Released Courses','Courses Loaded','Approved Syllabi','Not Yet Routed for Approval'])await expect(page.getByRole('main').getByRole('link',{name:label,exact:true})).toHaveCount(0)
- await page.goto('/#/records')
+ await expect(page.getByRole('heading',{name:'Instructor course loads',exact:true})).toBeVisible()
+ await page.getByRole('link',{name:'Course catalog',exact:true}).click()
  await expect(page.getByRole('heading',{name:'Courses',level:2,exact:true})).toBeVisible()
  for(const title of ['Student class lists','Syllabi','Course records'])await expect(page.getByRole('button',{name:title,exact:true})).toHaveCount(0)
  for(const title of ['Course list','Course loads'])await expect(page.getByRole('button',{name:title,exact:true})).toHaveCount(0)
@@ -29,7 +28,7 @@ test('Program Coordinator opens the same Course, Instructors and Students pages 
  await expect(page.getByRole('heading',{name:'Courses',level:2,exact:true})).toBeVisible()
  await expect(page.getByLabel('Choose CSV for preview')).toHaveCount(0)
  await page.goto('/#/students');await expect(page).toHaveURL(/#\/students/);await expect(page.getByRole('heading',{name:'Student list',exact:true})).toBeVisible()
- await page.goto('/#/instructors');await expect(page).toHaveURL(/#\/instructors/);await expect(page.getByRole('button',{name:'View instructor Alex Sample Instructor',exact:true})).toBeVisible()
+ await page.goto('/#/instructors');await expect(page).toHaveURL(/#\/instructors/);await expect(page.getByRole('link',{name:'View instructor Alex Sample Instructor',exact:true})).toBeVisible()
  await page.goto('/#/course-loading');await expect(page).toHaveURL(/#\/records\?tab=loads/)
 })
 test('one student directory keeps year/block filters, complete CSV membership, reload and withdrawn access consistent',async({page})=>{
@@ -57,17 +56,17 @@ test('one student directory keeps year/block filters, complete CSV membership, r
  await page.reload();await expect(page.getByRole('dialog')).toHaveCount(0)
 })
 
-test('legacy Dean links resolve to the new hubs while Program Coordinator imports remain separate',async({page})=>{
+test('legacy Dean links resolve to the right workspace and instructor selection survives reload',async({page})=>{
  await deanRecordsUI(page)
  await page.goto('/#/course-loading?tab=instructors');await expect(page).toHaveURL(/#\/instructors$/)
- await page.getByRole('button',{name:'View instructor Alex Sample Instructor',exact:true}).click()
- await page.reload();await expect(page.getByRole('dialog',{name:'Instructor Alex Sample Instructor',exact:true})).toBeVisible()
- await page.keyboard.press('Escape')
+ await page.getByRole('link',{name:'View instructor Alex Sample Instructor',exact:true}).click()
+ await page.reload();await expect(page.getByRole('article',{name:'Alex Sample Instructor',exact:true})).toBeVisible()
+ await expect(page.getByRole('article',{name:'Morgan Sample Instructor',exact:true})).toHaveCount(0)
  await page.goto('/#/records?tab=sections');await expect(page).toHaveURL(/#\/students$/)
  await page.goto('/#/performance');await expect(page.getByRole('heading',{name:'Performance',exact:true})).toBeVisible()
 })
 
 test('Dean record totals keep their values without test suffixes',async({page})=>{
  const fixture=await deanRecordsUI(page);await page.goto('/#/records');await expect(page.getByRole('heading',{name:'Courses',level:2,exact:true})).toBeVisible();await expect(page.locator('.academic-portal')).not.toContainText(/pipeline test|\d+ test/i);expect(fixture.records.attempts.some(a=>a.is_test)).toBe(true)
- await page.goto('/#/instructors');await expect(page.getByRole('button',{name:'View instructor Alex Sample Instructor',exact:true})).toBeVisible();await expect(page.locator('.academic-portal')).not.toContainText(/pipeline test|\d+ test/i)
+ await page.goto('/#/instructors');await expect(page.getByRole('link',{name:'View instructor Alex Sample Instructor',exact:true})).toBeVisible();await expect(page.locator('.academic-portal')).not.toContainText(/pipeline test|\d+ test/i)
 })

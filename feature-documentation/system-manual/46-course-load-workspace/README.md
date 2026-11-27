@@ -2,9 +2,12 @@
 
 **Who:** Dean and Program Coordinator, including a verified Admin support view. **Where:** **Course**.
 
-Course list and Course loads are one workspace. Its summaries show Courses, Loaded courses, Not yet loaded and Instructor loads. Search and All/Loaded/Not yet loaded narrow the selected semester's course cards. Upload previews matches before confirmation. Old Course-list and Course-load URLs open this same page.
+The Course page combines the catalog and instructor loads in one table. **Search courses** and **All / Loaded / Not yet loaded** filter course records in the selected term. The Actions menu at the end of each row contains course edits, suspensions, load changes and class-list actions.
 
-**Add Course** has exactly three fields: **Course code**, **Course title** and **Units**. The selected **Academic term** supplies the semester and academic year automatically. No course year level or default-semester input is required. Year levels come from the registered students in instructor-confirmed class lists. Edit can rename the title or change units; the code stays fixed. Course cards retain their three-dot Edit/Suspend menu and offer Reactivate/Remove after suspension. Removal preserves the identity, original teaching files, assignments and learner history.
+**Add Course** takes **Course code**, **Course title** and **Units**. **Academic term** supplies the semester and academic year. Editing updates title and units. The code stays fixed. The menu offers **Reactivate** and **Remove** after suspension.
+
+In a Course row, choose **Actions → Add instructor** and complete the instructor and schedule fields. To start with the instructor selected, use **Dashboard → Instructor course loads → Assign course**. Existing loads can be edited from either page. The assignment becomes the instructor's course load. Use **Upload class lists** on Course or **Add block section** in the relevant load to manage class membership.
+**Academic term** supplies the semester and academic year automatically. No course year level or default-semester input is required. Year levels come from the registered students in instructor-confirmed class lists. Edit can rename the title or change units; the code stays fixed. Course cards retain their three-dot Edit/Suspend menu and offer Reactivate/Remove after suspension. Removal preserves the identity, original teaching files, assignments and learner history.
 
 Instructor cards use the same three-dot action menu for **Edit instructor**, **Suspend instructor**, and, after suspension, **Reactivate instructor** or **Remove instructor**. The instructor detail dialog also keeps these actions in a menu. Menu actions do not open the card detail at the same time. Arrow keys navigate, Escape closes the menu and returns focus, and menus stay within the viewport on desktop and phone. Reload restores only current authorized record references and action dialogs, never unsaved form values or mutations.
 
@@ -20,7 +23,7 @@ Select a card for its page modal, summaries and loaded instructors. **Add instru
 
 Reload restores the selected course, instructor scan and file/content reader after fresh authorization. Session view storage contains bounded record IDs only. Removed/reassigned loads and removed files/content are resolved again; the former response is not restored from storage. Close and Escape dismiss the top dialog and clear its saved reader reference. Switching roles/accounts keeps view references isolated. No assignment or learner command is replayed on reload.
 
-This supersedes the older two-tab Course screenshots in [Dean activity records](../36-dean-activity-records/README.md). Broad screenshot publication remains paused by the owner; the browser pipeline checks the merged page, course modal, role parity and read-only scans.
+See the [Instructor course loads guide](../36-dean-activity-records/README.md) for Dashboard, assignment, course delivery and directory screenshots.
 
 
 ## Continue a class with a replacement instructor

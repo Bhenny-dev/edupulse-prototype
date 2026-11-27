@@ -1,5 +1,5 @@
 import { LoadingStatus, Spinner } from '../ui/LoadingFeedback'
-import {useLocation,useNavigate,useSearchParams} from 'react-router-dom'
+import {Link,useLocation,useNavigate,useSearchParams} from 'react-router-dom'
 import { useEffect, useRef, useState } from 'react'
 import { useWorkspaceViewState } from '../../context/WorkspaceContext'
 import { useAuth } from '../../context/AuthContext'
@@ -25,7 +25,11 @@ import LoadTermFilter from './LoadTermFilter'
 import {loadTerm,recordsForLoadTerm} from '../../utils/loadTerms'
 import { deliveryState } from '../../utils/blockDelivery'
 
-const DEAN_HEADERS = { records: [BookOpen, 'var(--sky-500)', 'Courses, instructor loads and syllabus contents'], instructors: [GraduationCap, 'var(--purple-500)', 'Instructor accounts, qualifications and course loads'], students: [Users, 'var(--green-500)', 'Student accounts, blocks and learning progress'] }
+const DEAN_HEADERS = {
+  records: [BookOpen, 'var(--sky-500)', 'Manage the course catalog, load schedules and class lists for the selected term.'],
+  instructors: [GraduationCap, 'var(--purple-500)', 'Manage instructor accounts and qualifications. Select an instructor to open their course loads.'],
+  students: [Users, 'var(--green-500)', 'Manage student accounts, find block rosters and check class membership.'],
+}
 import './academic.css'
 
 const TITLES = { instructors:'Instructors', students:'Students', performance: 'Performance', monitoring: 'Student Monitoring', monitor: 'Academic Oversight', courses: 'Course Loading', records: 'Academic Records', courseware: 'Published Courseware', assessment: 'Assessments' }
@@ -149,7 +153,8 @@ export default function AcademicPortal({ view, classModal = false, onCloseClass 
     </PageModal>
   }
   return <div className={`container academic-portal${isStudent?' student-learning':''}`} aria-busy={loading || busy} data-pulse-target={title} data-pulse-zone={deanPage?'records':view === 'performance' ? 'performance' : view === 'courseware' ? 'courseware' : view === 'monitor' ? 'monitor' : view === 'records' ? 'records' : view === 'courses' ? 'course-loading' : view === 'monitoring' ? 'performance' : undefined}>
-    <div className="page-header"><div className={deanPage?'dean-page-title':undefined}>{deanPage&&<GlassIcon icon={DEAN_HEADERS[view][0]} color={DEAN_HEADERS[view][1]} size="lg"/>}<div><h1>{title}</h1><p className="text-sm text-muted">{preview?'Preview sample records':deanPage?DEAN_HEADERS[view][2]:isStudent?'Your courses, learning activities and personal results':'Account records · Instructor-confirmed EduSuite exports · No institutional grade computations'}</p></div></div><div className="academic-actions academic-header-actions">{(deanPage||isStudent)&&<LoadTermFilter data={allData}/>}{!preview&&<AcademicSyncStatus/>}{user?.role==='dean'&&view==='students'&&<a className="btn btn-secondary btn-sm" href="#/performance">View student performance</a>}</div></div>
+    <div className="page-header"><div className={deanPage?'dean-page-title':undefined}>{deanPage&&<GlassIcon icon={DEAN_HEADERS[view][0]} color={DEAN_HEADERS[view][1]} size="lg"/>}<div><h1>{title}</h1><p className="text-sm text-muted">{preview?'Preview sample records':deanPage?DEAN_HEADERS[view][2]:isStudent?'Your courses, learning activities and personal results':'Account records · Instructor-confirmed EduSuite exports · No institutional grade computations'}</p></div></div><div className="academic-actions academic-header-actions">{(deanPage||isStudent)&&<LoadTermFilter data={allData}/>}{!preview&&<AcademicSyncStatus/>}</div></div>
+    {deanPage&&view==='students'&&<div className="academic-actions mb-16"><Link className="btn btn-secondary btn-sm" to={`/records?${new URLSearchParams({ term })}`}>Course class lists</Link>{user.role==='dean'&&<Link className="btn btn-secondary btn-sm" to={`/performance?${new URLSearchParams({ term })}`}>View student performance</Link>}</div>}
     {!deanPage&&!isStudent&&<LoadTermFilter data={allData}/>}
     {((error && !selected) || loadError) && <div role="alert" className="connected-pulse-warning">{error || loadError}</div>}
     {loading && !loaded && <section className="academic-loading" aria-label="Loading academic records"><p role="status" className="text-sm text-muted mb-16">Loading authorized academic records…</p><div aria-hidden="true"><div className="kpi-grid mb-24">{Array.from({ length: user?.role === 'associate_dean' ? 3 : 4 }, (_, index) => <SkeletonKPI key={index} />)}</div><SkeletonTable rows={4} cols={4} /></div></section>}

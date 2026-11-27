@@ -127,10 +127,12 @@ function CourseEntry() {
   return <Courseware />
 }
 
-// Oversight (syllabus, delivery, alerts) is the Dean and Program Coordinator Dashboard; older /monitor links keep their tab.
+// Older Monitor links still open oversight on the staff Dashboard.
 function MonitorRedirect() {
   const { search } = useLocation()
-  return <Navigate to={`/dashboard${search}`} replace />
+  const query = new URLSearchParams(search)
+  if (query.get('tab') !== 'alerts') query.set('tab', 'overview')
+  return <Navigate to={`/dashboard?${query}`} replace />
 }
 
 export default function App() {
