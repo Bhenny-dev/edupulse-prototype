@@ -273,15 +273,16 @@ export default function CourseTopicWeeks({ syllabus, plan, data, course, onSched
 }
 
 function AdvancedReadingToggle({ checked, protectedVersion, disabled, save }) {
-  const [busy, setBusy] = useState(false), [error, setError] = useState('')
+  const [busy, setBusy] = useState(false), [error, setError] = useState(''), [value, setValue] = useState(checked)
+  useEffect(() => { if (!busy) setValue(checked) }, [checked, busy])
   const toggle = async event => {
     const enabled = event.target.checked
-    setBusy(true); setError('')
-    try { await save(enabled) } catch (failure) { setError(failure.message) }
+    setValue(enabled); setBusy(true); setError('')
+    try { await save(enabled) } catch (failure) { setValue(!enabled); setError(failure.message) }
     finally { setBusy(false) }
   }
   return <div className="reader-notice">
-    <label>{busy && <Spinner />}<input type="checkbox" checked={checked} disabled={disabled || busy || protectedVersion} onChange={toggle}/> Advanced reading</label>
+    <label>{busy && <Spinner />}<input type="checkbox" checked={value} disabled={disabled || busy || protectedVersion} onChange={toggle}/> Advanced reading</label>
     <p className="text-sm text-muted">{protectedVersion ? 'Prepare a draft revision to change this marker.' : 'Students can take a mock quiz from advanced reading once it is delivered. Scores stay separate from your assessments.'}</p>
     {error && <p role="alert">{error}</p>}
   </div>
