@@ -409,6 +409,12 @@ An empty class accepts its approved syllabus directly by drag/drop or file selec
 
 The owner requests **Stream** for final delivery and announcements, and **Teaching Materials & Assessments** for working weeks, reordering and courseware revision. The instructor's legacy Announcements tab opens Stream. Stream shows active publications and accepts announcements at class level or before or inside a week or topic. Student readership keeps its existing enrollment and block boundaries, with placed posts in the weekly list. Week removal is limited to empty teaching weeks to preserve saved work and earlier results. Exam slots remain fixed. The header **Syllabus** presents the original file and extracted outline. [Manual 44](../../system-manual/44-instructor-course-workspace/README.md).
 
+### 27 November 2026 — Teaching sequence and assessment sources
+
+The owner requires readings and worked examples to come before their concept checks, reflections and other assessments. Drafting, Stream and the student weekly list honor the saved teaching sequence and each assessment's covered material IDs. Legacy publications still need a materials-first fallback when the projected order is absent. Intentional cycles such as reading, concept check, next reading and next check are supported. A topic's overall assessment follows its teaching and practice sequence.
+
+An explicit AI topic assessment uses text from the covered teaching materials, including readable uploads attached through the material editor. The syllabus supplies topic, outcomes and format. When none of the covered teaching text can be read, generation stops before inference. Review the questions and scoring criteria before delivery. Check the sequence of existing publications and verify that correcting it does not invalidate published versions or recorded attempts. [Manual 44](../../system-manual/44-instructor-course-workspace/README.md#add-an-assessment-after-the-relevant-materials).
+
 
 ## Owner correction: minimal Class Code card, 25 November 2026
 

@@ -64,6 +64,18 @@ test('topic assessment coverage stops at the previous assessment and overall cov
   assert.deepEqual(topicEntries(ordered, 'unrelated', false), [])
 })
 
+test('legacy publication IDs never move a concept check or reflection ahead of its reading', () => {
+  const entries = [
+    { id: '0-reflection', type: 'assessment', content: { assessmentRole: 'reflection', coverage: { materialIds: ['reading'] } } },
+    { id: '1-check', type: 'assessment', content: { coverage: { materialIds: ['reading', 'example'] } } },
+    { id: '8-reading', type: 'material', workspace_item_id: 'reading', content: {} },
+    { id: '9-example', type: 'material', content: { courseItemId: 'example', teachingOrder: 3072 } },
+  ]
+  const sequence = topicEntries(entries, 'legacy', true)
+  assert.deepEqual(sequence.map(row => row.id), ['8-reading', '9-example', '1-check', '0-reflection'])
+  assert.equal(entries[0].id, '0-reflection')
+})
+
 test('topic pills use real current enrolled learner work, include a genuine zero and do not invent missing scores', () => {
   const data = records()
   data.enrollments = [{ course_id: 'course', block_section: 'A', student_email: 'learner@example.invalid' }, { course_id: 'course', student_email: 'suspended@example.invalid', suspended: true }]

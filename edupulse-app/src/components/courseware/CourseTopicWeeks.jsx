@@ -9,7 +9,7 @@ import TopicWorkPanel from '../classroom/TopicWorkPanel'
 import { useAuth } from '../../context/AuthContext'
 import AssessmentTrial from './AssessmentTrial'
 import { aggregateSections, isOutlineExam, weekSections } from '../../utils/outlineSections'
-import { weekTopics, topicEntries, topicProgress, moveTeachingWeek, assessmentCoverage, topicOverall } from '../../utils/instructorCourses'
+import { weekTopics, topicEntries, topicProgress, moveTeachingWeek, assessmentCoverage, topicOverall, isTeachingMaterial, teachingSequence } from '../../utils/instructorCourses'
 import ModalLayer from '../ui/ModalLayer'
 import PageModal from '../ui/PageModal'
 import { uploadTeachingFile } from '../../utils/teachingFiles'
@@ -211,10 +211,10 @@ export default function CourseTopicWeeks({ syllabus, data, course, onSchedule, r
   const attachBlocked=busy||workspace.loading||workspace.saving?'Wait for the current save to finish before saving the selected file.':workspace.error|| (workspace.conflict?'Resolve the workspace conflict in Settings before saving the attachment.':'')
   const renderEntry = (entry, topicItems, row, topic, index, overall = false) => {
     const covered = entry.content.coverage?.materialIds, expected = entry.type === 'assessment' ? assessmentCoverage(topicItems, entry.id, overall || Boolean(entry.content.overallAssessment)) : []
-    const stale = covered && jsonValue(covered) !== jsonValue(expected)
+    const stale = covered && (covered.some(id => !topicItems.some(item => item.id === id && isTeachingMaterial(item))) || expected.some(id => !covered.includes(id)))
     return <div className="instructor-sequence-item" key={entry.id}><div className="instructor-sequence-heading"><span className="badge badge-draft">{entry.type === 'assessment' ? 'Assessment' : entry.content.submissionOnly ? 'Submission bin' : 'Teaching material'}</span><strong>{entry.content.title || entry.title}</strong><span className="text-sm text-muted">{entry.status === 'published' ? 'Delivered' : entry.status === 'checked' ? 'Checked' : entry.status === 'hidden' ? 'Hidden' : 'Draft'}</span><ProgressPills data={data} entries={[entry]} /></div>
       {['checked', 'published'].includes(entry.status) && blockDelivery(entry) && <p className="text-sm text-muted instructor-block-delivery" aria-label={`Delivery of ${entry.content.title || entry.title} by block`}>{entry.status === 'published' ? 'Delivery: ' : 'Opens when delivered: '}{blockDelivery(entry)}</p>}
-      {entry.type === 'assessment' && <p className="text-sm text-muted">{overall || entry.content.overallAssessment ? 'Covers all topic teaching materials.' : `Covers ${(covered || expected).length} teaching material(s) since the previous assessment.`}{stale && ' Teaching materials changed; review this assessment’s coverage.'}</p>}
+      {entry.type === 'assessment' && <p className="text-sm text-muted">{overall || entry.content.overallAssessment ? 'Covers all topic teaching materials.' : `Covers ${plural((covered || expected).length, 'teaching material')}.`}{stale && ' Teaching materials changed. Review this assessment’s coverage.'}</p>}
       <div className="instructor-topic-actions"><button className="btn btn-secondary btn-sm" onClick={() => setReaderId(entry.id)}><Eye size={14} />Open</button>{!readOnly && entry.status === 'draft' && <button className="btn btn-secondary btn-sm" disabled={blocked} onClick={() => void check(entry)}><Check size={14} />Mark checked</button>}{!readOnly && entry.status === 'checked' && <button className="btn btn-primary btn-sm" disabled={blocked} onClick={() => setDeliveryId(entry.id)}>Deliver to students</button>}{!readOnly && ['published','hidden'].includes(entry.status) && <button aria-busy={Boolean(busy)} className="btn btn-secondary btn-sm" disabled={blocked} onClick={() => setRevisionId(entry.id)}>{busy && <Spinner />}Prepare draft revision</button>}{!readOnly && entry.status === 'published' && <button className="btn btn-ghost btn-sm" disabled={blocked} onClick={() => void hide(entry)}>Hide</button>}{!readOnly && entry.type !== 'assessment' && !entry.content.submissionOnly && topicItems[index + 1]?.type !== 'assessment' && <button className="btn btn-secondary btn-sm" disabled={blocked} onClick={() => add(row, topic, 'assessment', entry.id)}><ClipboardCheck size={14} />Add assessment after this material</button>}</div>
     </div>
   }
@@ -249,7 +249,7 @@ export default function CourseTopicWeeks({ syllabus, data, course, onSchedule, r
             <section className="instructor-course-form" aria-label={`Overall assessment for ${topic.title}`}><h3>Overall assessment</h3><p className="text-sm text-muted">{topic.assessments || 'Covers all teaching materials in this topic.'} {topic.assessmentTypes.join(' · ')}</p>{overall ? renderEntry(overall, items, row, topic, items.indexOf(overall), true) : !readOnly&&<button className="btn btn-secondary btn-sm" disabled={blocked || !materials.length} onClick={() => add(row, topic, 'assessment', undefined, true)}><Plus size={14} />Add overall assessment</button>}</section>
           </details>
         })}
-        {weekEntries.some(item => !assignedIds.has(item.id)) && <details className="instructor-topic"><summary><Files size={16} /><strong>Other saved content for this week</strong></summary>{weekEntries.filter(item => !assignedIds.has(item.id)).map(entry => <div className="instructor-sequence-item" key={entry.id}><strong>{entry.content.title || entry.title}</strong><button className="btn btn-secondary btn-sm" onClick={() => setReaderId(entry.id)}>Open saved content</button></div>)}</details>}
+        {weekEntries.some(item => !assignedIds.has(item.id)) && <details className="instructor-topic"><summary><Files size={16} /><strong>Other saved content for this week</strong></summary>{teachingSequence(weekEntries.filter(item => !assignedIds.has(item.id))).map(entry => <div className="instructor-sequence-item" key={entry.id}><strong>{entry.content.title || entry.title}</strong><button className="btn btn-secondary btn-sm" onClick={() => setReaderId(entry.id)}>Open saved content</button></div>)}</details>}
         </div>
       </section>
     })}

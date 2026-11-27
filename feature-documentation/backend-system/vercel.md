@@ -209,3 +209,7 @@ This presentation release needs no new migration, environment variable or provid
 ## Class Stream and announcement placement
 
 Apply migration `20261127021533_class_stream_announcement_placement.sql` to the linked EduPulse database before deploying the matching UI. It adds placement fields to the existing private announcement table and extends the existing RPC. Follow the shared production deployment procedure above. Validate Ready and the canonical production alias independently.
+
+## Teaching sequence and AI assessment grounding
+
+The teaching-sequence correction uses existing publication and private-file structures. The release updates the application and its generation contract and has no database migration. On the canonical alias, verify older publications with missing position metadata and the instructor's assessment-drafting form alongside the normal release checks.

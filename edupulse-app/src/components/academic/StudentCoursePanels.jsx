@@ -1,7 +1,7 @@
 import {Fragment,useEffect,useState} from 'react'
 import {useWorkspaceViewState} from '../../context/WorkspaceContext'
 import {isOutlineExam} from '../../utils/outlineSections'
-import {weekTopics} from '../../utils/instructorCourses'
+import {coversMaterial,teachingSequence,weekTopics} from '../../utils/instructorCourses'
 import ResourceLinks from './StudentResourceLinks'
 import {useLocation,useSearchParams} from 'react-router-dom'
 import {currentAttempts} from './academicData'
@@ -33,12 +33,12 @@ export default function StudentCoursePanels({course,data,onOpen,busy}){
  const tabs=[['announcements','Announcements'],['materials','Teaching Materials & Assessments'],['classlist','Class List'],['scores','Scores'],['outline','Syllabus / Course Outline']]
  const tab=tabs.some(([id])=>id===params.get('studentTab'))?params.get('studentTab'):'materials'
  const posts=(data.announcements||[]).filter(a=>a.course_id===course.id).sort((a,b)=>b.created_at.localeCompare(a.created_at))
- const items=data.publications.filter(p=>p.active&&p.course_id===course.id).sort((a,b)=>a.week-b.week||Number(a.content?.teachingOrder||0)-Number(b.content?.teachingOrder||0))
+ const items=data.publications.filter(p=>p.active&&p.course_id===course.id).sort((a,b)=>a.week-b.week)
  const now=recordsNow(data)
  const assessments=items.filter(item=>item.type==='assessment')
  const attempts=new Map(currentAttempts(data).map(attempt=>[attempt.publication_id,attempt]))
  const attemptFor=item=>attempts.get(item.id)
- const relatedMaterials=assessment=>items.filter(item=>item.type!=='assessment'&&assessment.content?.coverage?.materialIds?.includes(item.content?.courseItemId||item.id))
+ const relatedMaterials=assessment=>items.filter(item=>coversMaterial(assessment,item))
  const state=item=>{
   const attempt=attemptFor(item)
   if(attempt?.grading_status==='pending_review')return 'Pending Review'
@@ -169,26 +169,37 @@ export default function StudentCoursePanels({course,data,onOpen,busy}){
     <summary id={'week-'+week+'-heading'}>Week {week}</summary>
     {renderPosts(weekPosts,false)}
     {groups.map(group=>{
-     const materials=group.items.filter(p=>p.type!=='assessment')
-     const assessments=group.items.filter(p=>p.type==='assessment'&&matchesResource(p))
-     const parents=a=>materials.filter(m=>a.content?.coverage?.materialIds?.includes(m.content?.courseItemId||m.id))
+     const ordered=teachingSequence(group.items)
+     const materials=ordered.filter(p=>p.type!=='assessment')
+     const linkedByMaterial=new Map(), standalone=[]
+     let previousMaterial
+     for(const item of ordered){
+      if(item.type!=='assessment'){previousMaterial=item;continue}
+      if(!matchesResource(item))continue
+      const sources=materials.filter(material=>coversMaterial(item,material))
+      if(!sources.length||item.content?.overallAssessment||!previousMaterial){standalone.push(item);continue}
+      const linked=linkedByMaterial.get(previousMaterial.id)||[]
+      linked.push({assessment:item,sources})
+      linkedByMaterial.set(previousMaterial.id,linked)
+     }
      const key=week+':'+group.id
      return <Fragment key={key}>{showPosts&&renderPosts(group.posts,true,group.title)}<details className="student-subtopic" open={isExpanded(key)} onToggle={e=>{if(e.target===e.currentTarget)toggle(key,e.currentTarget.open)}}>
       <summary>{group.title}</summary>
       {showPosts&&renderPosts(group.posts,false,group.title)}
       {materials.map(m=>{
-       const linked=assessments.filter(a=>parents(a)[0]?.id===m.id)
+       const linked=linkedByMaterial.get(m.id)||[]
        const showMaterial=matchesResource(m)
        return (showMaterial||linked.length>0)&&<div key={m.id}>
-        {showMaterial?resource(m):<p className="student-parent-material">{m.title}</p>}
-        {linked.length>0&&<div className="student-related">{linked.map(a=><div key={a.id}>
-         {parents(a).length>1&&<p className="text-sm text-muted">Covers {parents(a).map(p=>p.title).join(', ')}</p>}
-         {resource(a)}
+        {showMaterial?resource(m):null}
+        {linked.length>0&&<div className="student-related">{linked.map(({assessment,sources})=><div key={assessment.id}>
+         {!showMaterial&&sources.length===1&&<p className="student-parent-material">{sources[0].title}</p>}
+         {(sources.length>1||showMaterial&&sources[0].id!==m.id)&&<p className="text-sm text-muted">Covers {sources.map(p=>p.title).join(', ')}</p>}
+         {resource(assessment)}
         </div>)}</div>}
        </div>
       })}
-      {assessments.some(a=>!parents(a).length)&&<section aria-label={'Week '+week+' standalone assessments'}>
-       <h3>Assessments</h3>{assessments.filter(a=>!parents(a).length).map(resource)}
+      {standalone.length>0&&<section aria-label={'Week '+week+' standalone assessments'}>
+       <h3>Assessments</h3>{standalone.map(resource)}
       </section>}
      </details></Fragment>
     })}

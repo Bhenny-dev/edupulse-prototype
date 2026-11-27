@@ -72,6 +72,65 @@ test('week move confirms release withdrawal, keeps chronological labels and neve
   expect(fixture.commands.filter(row => row.action === 'workspace')).toHaveLength(writes)
 })
 
+test('topic AI assessment reads the covered teaching file before drafting and never reruns on reload', async ({ page }) => {
+  const fixture = await instructorCourseUI(page)
+  const workspace = fixture.getWorkspace() as any
+  const file = { name: 'loop-notes.txt', path: 'owner/course/loop-notes.txt', mime: 'text/plain', size: 80 }
+  const teaching = 'In the supplied example, marker 99 ends the loop before the count changes.'
+  workspace.content.lesson.content = { ...workspace.content.lesson.content, readableTeaching: false, sections: [{ heading: 'File', body: 'Open the attached files.' }], attachments: [file] }
+  fixture.setWorkspace(workspace)
+  let readable = false, downloads = 0, generations = 0
+  await page.route('**/api/ai?action=teaching-files', async route => {
+    expect(route.request().postDataJSON()).toEqual({ operation: 'download', path: file.path })
+    downloads++
+    await route.fulfill({ json: { url: 'https://files.example.invalid/loop-notes.txt' } })
+  })
+  await page.route('https://files.example.invalid/loop-notes.txt', route => route.fulfill({ body: teaching, contentType: 'text/plain', headers: { 'access-control-allow-origin': '*' } }))
+  await page.route('**/api/ai?action=extract', route => route.fulfill({ json: { kind: 'text', text: readable ? teaching : '' } }))
+  await page.route('**/api/ai?action=courseware', async route => {
+    generations++
+    const request = route.request().postDataJSON()
+    expect(request).toMatchObject({ topicAssessment: true, stepKey: 'assessment' })
+    expect(request.generatedTeaching).toContain(teaching)
+    expect(request.generatedTeaching).not.toContain('Open the attached files.')
+    const { draftCoursewareStep } = await import('../../src/lib/rag/courseware')
+    const result = await draftCoursewareStep(request, AbortSignal.timeout(10000), {
+      provider: 'controlled teaching fixture',
+      search: async () => { throw new Error('Unexpected unrelated research') },
+      generate: async () => JSON.stringify({ assessment: { title: 'Source-based check', questions: [1, 2, 3].map(index => ({ text: `Trace ${index} stops when marker 99 appears.`, type: 'true_false', topic: 'Variables and named values', options: ['True', 'False'], correctIndex: 0, explanation: 'Marker 99 ends the loop before the count changes.' })) } }),
+    })
+    await route.fulfill({ json: result })
+  })
+
+  await page.goto(`/#/courseware?course=${fixture.syllabus.id}&tab=materials`)
+  const topic = page.locator('[data-topic="variables"]')
+  await topic.locator('summary').click()
+  await topic.getByRole('button', { name: 'Add overall assessment', exact: true }).click()
+  const form = page.getByRole('form', { name: 'Add overall assessment' })
+  await form.getByRole('combobox', { name: 'Add as' }).selectOption('generate')
+  await form.getByRole('button', { name: 'Generate draft' }).click()
+  await expect(form.getByRole('alert')).toContainText('Add readable teaching text or a readable teaching file')
+  expect(generations).toBe(0)
+  expect(downloads).toBe(1)
+  await page.reload()
+  await expect(form).toBeVisible({ timeout: 20000 })
+  expect(downloads).toBe(1)
+  readable = true
+  await form.getByRole('combobox', { name: 'Add as' }).selectOption('generate')
+  await form.getByRole('combobox', { name: 'Assessment type' }).selectOption('true_false')
+  await form.getByRole('button', { name: 'Generate draft' }).click()
+  const assessment = () => Object.values((fixture.getWorkspace() as { content: Record<string, { status: string; content: { overallAssessment?: boolean; coverage: { materialIds: string[] }; questions: { text: string }[] } }> }).content).find(item => item.content.overallAssessment)
+  await expect.poll(() => assessment()?.status, { timeout: 20000 }).toBe('draft')
+  const saved = assessment()!
+  expect(saved.content.coverage.materialIds).toEqual(['lesson'])
+  expect(saved.content.questions[0].text).toContain('marker 99')
+  expect(generations).toBe(1)
+  await page.reload()
+  await expect(page.getByRole('dialog', { name: /overall assessment/i })).toBeVisible()
+  expect(downloads).toBe(2)
+  expect(generations).toBe(1)
+})
+
 test('system citations restore after reload and open readonly material without an inference or academic mutation', async ({ page }) => {
   const fixture = await instructorCourseUI(page)
   await page.goto('/#/courseware')

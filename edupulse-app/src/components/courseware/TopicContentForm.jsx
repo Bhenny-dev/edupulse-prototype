@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Sparkles, Paperclip, Link as LinkIcon } from 'lucide-react'
 import { useWorkspace } from '../../context/WorkspaceContext'
 import { readReferenceFile } from '../../lib/aiClient'
-import { uploadTeachingFile } from '../../utils/teachingFiles'
+import { canReadTeachingFile, readAssessmentMaterials, uploadTeachingFile } from '../../utils/teachingFiles'
 import { generateWeekDraft } from '../../utils/aiCourseware'
 import { aggregateSections } from '../../utils/outlineSections'
 import { jsonValue } from '../../utils/jsonValue'
@@ -55,19 +55,22 @@ export default function TopicContentForm({ syllabus, week, topic, entries, type,
         const row = syllabus.courseOutline.find(item => item.week === week)
         const scopedTopic = { ...topic, ...(type === 'assessment' && format ? { assessmentTypes: [ASSESSMENT_FORMATS.find(item => item.id === format).label] } : {}) }
         const scopedSyllabus = { ...syllabus, courseOutline: syllabus.courseOutline.map(item => item.week === week ? aggregateSections(item, [scopedTopic]) : item) }
-        const teaching = covered.filter(item => item.content.readableTeaching !== false && !item.content.unreadAttachment).flatMap(item => (item.content.sections || []).map(section => `${section.heading}\n${section.body}`)).join('\n\n').slice(0, 18000)
-        if (type === 'assessment' && !teaching.trim()) throw new Error('Add readable teaching content before asking AI to generate its assessment.')
-        const result = await generateWeekDraft(scopedSyllabus, row.week, controller.current.signal, `${body.trim() || context}\n${type === 'assessment' ? `Generate ${format || 'a suitable assessment type with'} questions based on the supplied teaching materials, using the syllabus sources as context.` : 'Generate the teaching material from this topic and its teaching-learning activities.'}`, { skipTypes: type === 'assessment' ? ['material', 'activity'] : ['assessment', 'activity'], ...(teaching ? { generatedTeaching: teaching } : {}) })
+        const signal = controller.current.signal
+        const source = type === 'assessment' ? await readAssessmentMaterials(covered, signal) : null
+        if (source && !source.text.trim()) throw new Error('Add readable teaching text or a readable teaching file before generating this assessment.')
+        const result = await generateWeekDraft(scopedSyllabus, row.week, signal, `${body.trim() || context}\n${source ? 'Write questions whose answers can be supported by the supplied teaching materials.' : 'Generate the teaching material from this topic and its teaching-learning activities.'}`, { skipTypes: source ? ['material', 'activity'] : ['assessment', 'activity'], ...(source ? { topicAssessment: true, generatedTeaching: source.text } : {}) })
         controller.current.signal.throwIfAborted()
         const created = result.items.find(item => item.type === type)
         if (!created) throw new Error('The requested draft was not completed. Existing content was preserved.')
-        await persist({ ...created.content, title: heading }); return
+        const warning = source?.unavailable.length ? 'Some teaching attachments could not be read. Check that the draft can be answered from the readable materials.' : ''
+        const ai = warning ? { ...created.content.ai, warning: [created.content.ai?.warning, warning].filter(Boolean).join(' ') } : created.content.ai
+        await persist({ ...created.content, title: heading, ai }); return
       }
       const attachments = []
       let extracted = ''
       if (files.some(file => !file.size || file.size > 4_000_000)) throw new Error('Choose non-empty files up to 4 MB each.')
       for (const file of files) {
-        if (extracted.length < 18000 && /\.(pdf|docx|pptx|xlsx|html?|txt|md|csv)$/i.test(file.name)) {
+        if (extracted.length < 18000 && canReadTeachingFile(file.name)) {
           try { const source = (await readReferenceFile(file)).text.trim(); if (source) extracted = [extracted, source].filter(Boolean).join('\n\n').slice(0, 18000) } catch { /* The original file remains attachable; its unread bytes are never claimed as AI context. */ }
         }
         if (!uploaded.current.has(file)) uploaded.current.set(file, await uploadTeachingFile(syllabus.id, file))
@@ -98,6 +101,7 @@ export default function TopicContentForm({ syllabus, week, topic, entries, type,
     <h2>{type === 'submission' ? 'Add submission bin' : type === 'assessment' ? overall ? 'Overall topic assessment' : 'Add assessment' : 'Add teaching material'}</h2>
     <p className="text-sm text-muted">{context || 'Use this topic and the approved syllabus as your context.'}</p>
     {type === 'assessment' && <p>{overall ? 'Covers all' : 'Covers the materials since the previous assessment:'} {covered.map(item => item.content.title || item.title).join(' · ') || 'No teaching materials yet'}</p>}
+    {type === 'assessment' && mode === 'generate' && <p className="text-sm text-muted">AI uses readable text and uploaded files from these teaching materials to draft the questions and answers.</p>}
     <label>Title<input className="form-input" maxLength={240} value={title} disabled={busy} placeholder={topic.title} onChange={event => setTitle(event.target.value)} /></label>
     {type !== 'submission' && <label>Add as<select aria-label="Add as" className="form-input" value={mode} disabled={busy} onChange={event => setMode(event.target.value)}>{type === 'assessment' ? <option value="manual">Write assessment questions</option> : <><option value="document">Write teaching content</option><option value="file">Upload files</option><option value="link">Add a link</option></>}<option value="generate">Generate content with AI</option></select></label>}
     {type === 'assessment' && <label>Assessment type<select aria-label="Assessment type" className="form-input" value={format} disabled={busy} onChange={event => setFormat(event.target.value)}><option value="">{mode === 'generate' ? 'Choose automatically from the teaching content' : 'Multiple choice (default)'}</option>{ASSESSMENT_FORMATS.map(item => <option key={item.id} value={item.id}>{item.label}</option>)}</select></label>}

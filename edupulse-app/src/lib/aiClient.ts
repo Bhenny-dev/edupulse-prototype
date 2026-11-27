@@ -73,10 +73,10 @@ export async function extractDocument(file: File, signal?: AbortSignal) {
 export const sourceTypeFor = (kind: string) => kind === 'xlsx' ? 'csv' : ['pdf', 'docx', 'pptx', 'html', 'markdown', 'csv'].includes(kind) ? kind : 'text'
 export type ReferenceFile = { title: string; text: string; fileName: string; kind: string; sourceType: string; raw?: string; syllabus?: ReturnType<typeof import('../utils/syllabusParser.js').parseSyllabusText>; scannedPages?: number; ocr?: { confidence: number; low: boolean }; teachingLoad?: import('../utils/teachingLoad').TeachingLoadDocument }
 /** Chat attachments use the same sandboxed extraction as the knowledge library. */
-export async function readReferenceFile(file: File, onProgress: (message: string) => void = () => {}): Promise<ReferenceFile> {
+export async function readReferenceFile(file: File, onProgress: (message: string) => void = () => {}, signal?: AbortSignal): Promise<ReferenceFile> {
   // A picture has no document structure to extract: its text is read by OCR on this device and the picture is not uploaded.
   if (isImageFile(file)) return (await import('./imageReference')).readImageReference(file, onProgress)
-  const report = await extractDocument(file).catch(error => {
+  const report = await extractDocument(file, signal).catch(error => {
     // An image-only PDF has no server-extractable text. Continue into the bounded
     // local PDF/OCR reader; auth, rate, network and format errors still stop here.
     if (error instanceof ApiRequestError && error.status === 422 && error.code === 'NO_READABLE_TEXT' && (file.type === 'application/pdf' || /\.pdf$/i.test(file.name))) return { kind: 'pdf', text: '' }
@@ -210,11 +210,11 @@ export async function downloadRetainedSource(id:string) {
 export async function generateCoursewareParts(input:CourseInput,signal?:AbortSignal,types?:('material'|'activity'|'assessment')[],options:{completed?:import('./rag/courseware').StepResult[];onPart?:(results:import('./rag/courseware').StepResult[])=>Promise<void>;onProgress?:(completed:number,total:number,key:string)=>void}={}) {
   const [{coursewarePlan,COURSEWARE_PLAN_VERSION},{draftCoursewareStep,assembleCourseware}]=await Promise.all([import('./rag/coursewarePlan'),import('./rag/courseware')])
   const results:Awaited<ReturnType<typeof draftCoursewareStep>>[]=[...(options.completed||[])]
-  if(input.sections?.length&&!input.syllabusReferences?.length)throw new ApiRequestError('Add and retain a readable reference before generating this outline.',422,'SOURCE_REQUIRED')
   const plan=coursewarePlan(input).filter(part=>!types||types.includes(part.type))
+  if(!input.topicAssessment&&input.sections?.length&&!input.syllabusReferences?.length)throw new ApiRequestError('Add and retain a readable reference before generating this outline.',422,'SOURCE_REQUIRED')
   let failed:unknown
   let sourceWarning=''
-  if(input.syllabusReferences?.length&&plan.some(part=>!results.some(result=>result.step.key===part.key))){
+  if(!input.topicAssessment&&input.syllabusReferences?.length&&plan.some(part=>!results.some(result=>result.step.key===part.key))){
     options.onProgress?.(results.length,plan.length,'sources')
     try{const sources=await prepareSyllabusSources(input.syllabusReferences.map(ref=>({url:'',authors:'',year:'',publisher:'',...ref})),signal,false,true);if(typeof window!=='undefined')window.dispatchEvent(new CustomEvent('edupulse-sources-updated',{detail:{sources,sessionVersion:aiSessionVersion()}}));if(input.sections?.length&&!sources.some(source=>source.snapshot&&!source.metadataOnly))throw new ApiRequestError('Read or attach a usable reference before generating this outline. No reference contents were available.',422,'SOURCE_NOT_READY');if(sources.some(source=>!source.snapshot||source.metadataOnly))sourceWarning='Some syllabus references could not be read. Only actual retrieved passages can support citations.'}
     catch(error){signal?.throwIfAborted();if(input.sections?.length)throw error;sourceWarning='Syllabus source retention was unavailable. No unread book or linked-page contents are claimed.'}

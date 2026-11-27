@@ -10,7 +10,7 @@ import { useAuth } from '../../context/AuthContext'
 import { useAcademicRecords } from '../../context/AcademicContext'
 import { useWorkspace, useWorkspaceViewState } from '../../context/WorkspaceContext'
 import { isOutlineExam } from '../../utils/outlineSections'
-import { sameCourseCode, weekTopics } from '../../utils/instructorCourses'
+import { sameCourseCode, teachingSequence, weekTopics } from '../../utils/instructorCourses'
 import { sameTerm } from '../../utils/classroom'
 import { deliveryTimeLabel } from '../../utils/blockDelivery'
 import ClassCodesCard from './ClassCodes'
@@ -81,7 +81,6 @@ export default function ClassStream({ course, syllabus, data, readOnly = false, 
   const posts = classAnnouncements(data, course)
   const projected = data.courses.filter(row => row.active && (!syllabus || row.syllabus_id === syllabus.id))
   const publications = data.publications.filter(item => item.active && projected.some(row => row.id === item.course_id))
-    .sort((a, b) => Number(a.content?.teachingOrder || 0) - Number(b.content?.teachingOrder || 0) || a.id.localeCompare(b.id))
   const rows = [...(projected.find(row => row.outline?.length)?.outline || syllabus?.courseOutline || [])].sort((a, b) => a.week - b.week)
   const weeks = [...new Set([...rows.map(row => row.week), ...publications.map(item => item.week), ...posts.map(post => post.week).filter(Boolean)])].sort((a, b) => a - b)
   const [composer, setComposer] = useWorkspaceViewState(`${scope}:stream-composer`, null)
@@ -150,7 +149,7 @@ export default function ClassStream({ course, syllabus, data, readOnly = false, 
             <header className="class-stream-heading"><h2 id={`${heading}-week-${week}`}>Week {week}{row && isOutlineExam(row) ? ' · Examination' : ''}</h2>{announce(row)}</header>
             {weekPosts.filter(post => post.placement !== 'before').map(post => renderPost(post))}
             {topics.map(topic => {
-              const topicItems = items.filter(item => topicOf(item) === topic.id)
+              const topicItems = teachingSequence(items.filter(item => topicOf(item) === topic.id))
               const topicPosts = weekly.filter(post => post.topic_id === topic.id)
               if (readOnly && !topicItems.length && !topicPosts.length) return null
               return <div key={topic.id} className="class-stream-group">
@@ -162,7 +161,7 @@ export default function ClassStream({ course, syllabus, data, readOnly = false, 
                 </section>
               </div>
             })}
-            {items.filter(item => !topicIds.has(topicOf(item))).map(renderItem)}
+            {teachingSequence(items.filter(item => !topicIds.has(topicOf(item)))).map(renderItem)}
           </section>
         </div>
       })}

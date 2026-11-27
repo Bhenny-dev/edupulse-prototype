@@ -10,6 +10,8 @@ The current-term population follows the retained instructor loads: CIT students 
 
 Open **Home** and select a class. **Stream** shows delivered work, announcements and the compact **Class Code** card with its invitation popover. **Teaching Materials & Assessments** contains the editable weekly plan, drafts and delivery controls. **Class List** and **Scores** show the selected section's roster and results. Shared syllabi and planning copies remain on **Syllabus**. Saved class schedules appear in **Schedule**.
 
+Within each topic, the reading and worked example appear before the concept check and applied reflection.
+
 Students in open classes have recorded reading progress and graded work, with further materials, assessments and attempts available. Saved future opening dates remain authoritative; three existing individually enrolled learners retain their not-yet-open state. Some written responses remain awaiting instructor marking. Practice records remain separate from official assessment results. Public discussion stays within the enrolled block; private discussion stays between its student and instructor. The topic submission bins contain written work and accept subsequent authorized submissions under their normal rules.
 
 ![Student Home with delivered learning and recorded progress](student-home.png)

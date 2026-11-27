@@ -52,7 +52,8 @@ test('published topic coverage, canonical notices and provider links preserve co
  course.source_links=['https://drive.google.com/file/d/recorded-source/view']
  course.outline=[{week:1,contents:['Variables'],sections:[{id:'variables-topic',contents:['Variables topic'],ilos:'Use variables',activities:'Read and practice',assessments:'Quiz',assessmentTypes:[]}]}] as any
  material.content={...material.content,courseItemId:'material-a',courseTopicId:'variables-topic',links:[{title:'Reference document',url:'https://docs.google.com/document/d/authorized-resource/edit'}]}
- quiz.content={...quiz.content,courseTopicId:'variables-topic',coverage:{materialIds:['material-a']}}
+ quiz.content={...quiz.content,courseTopicId:'variables-topic',teachingOrder:-1,coverage:{materialIds:['material-a','material-b']}}
+ f.records.publications.push({...material,id:'material-b',title:'Variables worked example',content:{courseItemId:'material-b',courseTopicId:'variables-topic',teachingOrder:3000}})
  f.records.announcements=[{id:'notice-a',course_id:course.id,course_code:course.course_code,academic_year:'2026-2027',semester:'1st Semester',block:'BSIT-1A',week:1,title:'Class reading notice',body:'Read the published material before class.',attachments:[],created_at:'2026-11-20T01:00:00Z',updated_at:'2026-11-20T01:00:00Z'}]
  const notice=f.records.announcements[0]
  f.records.announcements.push({...notice,id:'notice-week',title:'Before week notice',placement:'before'},{...notice,id:'notice-topic',title:'Before topic notice',topic_id:'variables-topic',placement:'before'},{...notice,id:'notice-inside',title:'In topic notice',topic_id:'variables-topic',placement:'within'})
@@ -60,6 +61,7 @@ test('published topic coverage, canonical notices and provider links preserve co
  await page.goto(`/#/courseware?course=${course.id}`)
  const topic=page.locator('.student-subtopic').filter({has:page.locator('summary',{hasText:'Variables topic'})})
  await expect(topic.locator('.student-related')).toContainText('Variables quiz')
+ await expect(topic.locator('article:not(.student-announcement) h3')).toHaveText(['Variables lesson','Variables worked example','Variables quiz'])
  const resources=page.getByRole('region',{name:'Weekly teaching materials and assessments'})
  await expect(resources.locator('#announcement-notice-week + details.student-topic')).toHaveCount(1)
  await expect(resources.locator('#announcement-notice-topic + details.student-subtopic')).toHaveCount(1)
@@ -67,7 +69,7 @@ test('published topic coverage, canonical notices and provider links preserve co
  await resources.getByRole('combobox',{name:'Week',exact:true}).selectOption('1')
  await resources.getByLabel('Show resources').selectOption('assessment')
  await expect(topic.locator('.student-related')).toContainText('Variables quiz')
- await expect(topic.getByText('Variables lesson',{exact:true})).toBeVisible()
+ await expect(topic.getByText('Covers Variables lesson, Variables worked example',{exact:true})).toBeVisible()
  await expect(resources.getByRole('button',{name:'Open material',exact:true})).toHaveCount(0)
  await resources.getByLabel('Show resources').selectOption('all')
  await expect(topic.getByText('In topic notice',{exact:true})).toBeVisible()

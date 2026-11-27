@@ -68,3 +68,28 @@ test('written and true/false question formats are validated without inventing fo
   assert(courseOutput.safeParse({material:document,activity:document,assessment:{title:'Written test',questions:[question,question,question]}}).success)
   assert(!courseOutput.safeParse({material:document,activity:document,assessment:{title:'True/false test',questions:Array(3).fill({...question,type:'true_false',options:['True','False','Maybe']})}}).success)
 })
+
+test('a topic assessment requires teaching text and uses that text as its instructional evidence', async () => {
+  const topic = 'Loop termination'
+  const request = courseInput.parse({
+    ...input, topics: [topic], sections: [{ id: 'loops', ilos: 'Explain loop termination.', contents: [topic], activities: '', assessments: '', assessmentTypes: ['True or false'] }],
+    request: 'Use only the uploaded file.', plan: { ...input.plan, assessmentTypes: ['True or false'] }, stepKey: 'assessment', topicAssessment: true,
+  })
+  let writes = 0, searches = 0
+  const noSearch = async () => { searches++; return { evidence: [] } }
+  const deps = { provider: 'fixture', search: noSearch, webSearch: noSearch, sourceEvidence: noSearch, generate: async (system: string, prompt: string) => {
+    writes++
+    assert.match(system, /generatedTeaching as the only instructional evidence/)
+    const payload = JSON.parse(prompt)
+    assert.match(payload.generatedTeaching, /sentinel 99/)
+    assert.deepEqual(payload.retrievedReferences, [])
+    return JSON.stringify({ assessment: { title: 'Loop termination check', questions: Array.from({ length: 3 }, (_, index) => ({ type: 'true_false', text: `Trace ${index + 1} stops when the sentinel 99 appears.`, topic, options: ['True', 'False'], correctIndex: 0, explanation: 'The reading says the sentinel 99 ends the loop.' })) } })
+  } }
+  await assert.rejects(draftCoursewareStep(request, abort(), deps), { code: 'SOURCE_REQUIRED' })
+  assert.equal(writes, 0)
+  const result = await draftCoursewareStep({ ...request, generatedTeaching: 'Section from the uploaded teaching file. The sentinel 99 ends the loop.' }, abort(), deps)
+  assert.equal(result.status, 'draft')
+  assert.equal(result.content.assessment?.questions.length, 3)
+  assert.ok(writes > 0)
+  assert.equal(searches, 0)
+})

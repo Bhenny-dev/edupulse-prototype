@@ -4,6 +4,7 @@
 
 | Folder | Covers | Contents |
 | --- | --- | --- |
+| [27 November teaching sequence](versions/2026-11-27-teaching-sequence.md) | Material-first publication order and AI assessments grounded in covered teaching files | Instructor and student guides, backend contract and regression evidence |
 | [27 November class Stream](versions/2026-11-27-class-stream.md) | Delivered work, placed announcements and editable weekly teaching plans | Instructor and student guides, database contract and validation |
 | [18 November historical CIT loads](versions/2026-11-18-historical-cit-loads/README.md) | Approved previous-term assignments, inactive historical staff and semester-specific degrees | Live; 478 native, 18 integrated and four deployed browser checks passed |
 | [18 November unified Students](versions/2026-11-18-unified-students/README.md) | One all-department directory with section-card filters and complete filtered CSV | Live; 474 native, 40 local and 20 deployed browser checks passed |

@@ -69,10 +69,41 @@ export function approvedSyllabusForCourse<T extends { id: string; courseCode: st
   return syllabusForCourse(syllabi.filter(item => ['active', 'approved_uploaded'].includes(item.status) && item.approvedFile?.approvalAttested === true), course)
 }
 
-export type TeachingEntry = { id: string; type: string; week?: number; title?: string; position?: number; content: { title?: string; courseTopicId?: string; outlineSectionId?: string; overallAssessment?: boolean; submissionOnly?: boolean; teachingOrder?: number; coverage?: { materialIds: string[] }; ai?: { parts?: { sectionId?: string }[] } } }
-export const teachingOrder = (entry: TeachingEntry) => entry.position ?? entry.content.teachingOrder ?? (entry.type === 'assessment' ? 2048 : entry.type === 'activity' ? 1024 : 0)
+type SequenceItem = { id: string; type: string; position?: number; workspace_item_id?: string; content?: { courseItemId?: string; overallAssessment?: boolean; assessmentRole?: string; submissionOnly?: boolean; teachingOrder?: number; coverage?: { materialIds: string[] } } | null }
+export type TeachingEntry = SequenceItem & { week?: number; title?: string; content: NonNullable<SequenceItem['content']> & { title?: string; courseTopicId?: string; outlineSectionId?: string; ai?: { parts?: { sectionId?: string }[] } } }
+export const isTeachingMaterial = (item: SequenceItem) => item.type !== 'assessment' && !item.content?.submissionOnly
+export const teachingOrder = (entry: SequenceItem) => entry.position ?? entry.content?.teachingOrder ?? (entry.type === 'assessment' ? 2048 : entry.type === 'activity' ? 1024 : 0)
+export const coversMaterial = (assessment: SequenceItem, material: SequenceItem) => {
+  const ids = assessment.content?.coverage?.materialIds
+  return isTeachingMaterial(material) && Array.isArray(ids) && ids.some(id => id === material.id || id === material.workspace_item_id || id === material.content?.courseItemId)
+}
+
+/** Apply to one topic or to the unmatched items in one week. Keep saved teaching cycles and place each assessment after its available sources. */
+export function teachingSequence<T extends SequenceItem>(items: T[]): T[] {
+  const ordered = [...items].sort((a, b) => Number(Boolean(a.content?.overallAssessment)) - Number(Boolean(b.content?.overallAssessment)) ||
+    teachingOrder(a) - teachingOrder(b) || Number(a.type === 'assessment') - Number(b.type === 'assessment') ||
+    Number(a.content?.assessmentRole === 'reflection') - Number(b.content?.assessmentRole === 'reflection') || a.id.localeCompare(b.id))
+  const materials = ordered.filter(isTeachingMaterial), emitted = new Set<string>(), sequence: T[] = []
+  const append = (item: T) => {
+    if (emitted.has(item.id)) return
+    emitted.add(item.id)
+    sequence.push(item)
+  }
+  let hasTeaching = false
+  for (const item of ordered) {
+    if (item.type === 'assessment') {
+      const covered = materials.filter(material => coversMaterial(item, material))
+      for (const material of covered) append(material)
+      if (!hasTeaching && !covered.length && materials[0]) append(materials[0])
+      hasTeaching ||= materials.length > 0
+    }
+    hasTeaching ||= isTeachingMaterial(item)
+    append(item)
+  }
+  return sequence
+}
 export function topicEntries<T extends TeachingEntry>(entries: T[], topicId: string, soleTopic: boolean) {
-  return entries.filter(item => (item.content.courseTopicId || item.content.outlineSectionId || (soleTopic ? topicId : '')) === topicId || item.content.ai?.parts?.some(part => part.sectionId === topicId)).sort((a, b) => Number(Boolean(a.content.overallAssessment)) - Number(Boolean(b.content.overallAssessment)) || teachingOrder(a) - teachingOrder(b) || a.id.localeCompare(b.id))
+  return teachingSequence(entries.filter(item => (item.content.courseTopicId || item.content.outlineSectionId || (soleTopic ? topicId : '')) === topicId || item.content.ai?.parts?.some(part => part.sectionId === topicId)))
 }
 export const topicOverall = <T extends TeachingEntry>(entries: T[]) => entries.find(item => item.content.overallAssessment) || (entries.filter(item => item.type === 'assessment').length === 1 ? entries.find(item => item.type === 'assessment' && item.content.overallAssessment === undefined) : undefined)
 export function assessmentCoverage(entries: TeachingEntry[], assessmentId?: string, overall = false) {

@@ -20,7 +20,7 @@ The signed-in Instructor navigation is **Home**, **Schedule**, **Syllabus** and 
 
 ## Deliver and announce in Stream
 
-**Stream** lists saved publications by week and topic. **Open** displays the delivered teaching material, submission bin or assessment in a read-only reader. A scheduled item shows the opening from the selected block's saved schedule. Class announcements appear above the weeks.
+**Stream** lists saved publications by week and topic. Readings and worked examples come before the assessments that cover them. **Open** displays the delivered teaching material, submission bin or assessment in a read-only reader. A scheduled item shows the opening from the selected block's saved schedule. Class announcements appear above the weeks.
 
 ![Instructor Stream with a week announcement, a topic reminder and published work](16-stream.png)
 
@@ -102,11 +102,13 @@ The same reader layout is used for student course materials/assessments and prac
 
 ### Add an assessment after the relevant materials
 
-Use **Add assessment after this material** or **Add assessment** after one or more materials. A regular assessment covers the teaching materials since the preceding regular assessment. The form names that coverage and shows the extracted assessment label/instructions as context. The final **Overall assessment** section is kept last and covers every teaching material in the topic.
+Save the reading or worked example first. Then use **Add assessment after this material** or **Add assessment**. The form names the covered materials from the current teaching cycle and shows the syllabus's assessment instructions. **Add overall assessment** uses every teaching material in the topic and appears after its teaching and practice sequence.
 
 An extracted assessment type preselects **Assessment type**. When generating without a specified type, leave **Choose automatically from the teaching content** or explicitly select Multiple choice, True or false, Enumeration, Identification, Essay, Matching type, or the single combined **Follow-along / Step-by-step documentation guide or criteria**. Manual authoring uses **Multiple choice (default)** when no type is selected. **Write assessment questions** opens the question editor; complete the question text and required choices, then **Save Assessment**. An incomplete assessment remains unsaved. Written formats retain instructor marking; they do not acquire automatic official grades.
 
-**Generate content with AI** is optional. Assessment generation requires readable teaching content for its stated coverage and uses the approved topic and readable syllabus references. An attached file or URL without readable text cannot substitute for that context. Generated content starts in Draft; the model does not check or deliver it. If materials later change, review the displayed coverage warning before delivery.
+To use AI, choose **Generate content with AI** from **Add as**, review the covered material names, choose the assessment type and select **Generate draft**. The assessment uses readable text from those materials, including supported uploads attached to a material. To use a link, add readable teaching text or upload a readable copy. If the covered materials have no readable text, the form asks you to add a readable source before generation. Review the resulting **Draft**, including its answers and scoring criteria, before checking and delivering it.
+
+![Overall assessment form listing the covered lesson and AI source guidance](20-ai-assessment-sources.png)
 
 ### Check and deliver from the topic
 

@@ -1,0 +1,460 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-11-27T03-34-33-513Z-da0b4bed",
+  "startedAt": "2026-11-27T03:34:33.513Z",
+  "finishedAt": "2026-11-27T03:36:13.973Z",
+  "commitSha": "556a9bd2388fbb08fc45206b352beba667af0d74",
+  "sourceDigest": "f7fec6bd9d7f2442fb061b91e79085bc155db9f774f77b6fa5cddd616c8620c4",
+  "sourceDirty": true,
+  "captureBuildMode": "capture",
+  "builtAt": "2026-11-27T03:34:32.144Z",
+  "sourceUnchangedDuringRun": true,
+  "status": "passed",
+  "counts": {
+    "passed": 11,
+    "failed": 0,
+    "timedOut": 0,
+    "skipped": 0,
+    "interrupted": 0
+  },
+  "selection": {
+    "sceneFilter": null
+  },
+  "selectedSuites": [
+    "edupulse-app/tests/snapshots/academic-population.spec.ts",
+    "edupulse-app/tests/snapshots/approved-course.spec.ts",
+    "edupulse-app/tests/snapshots/class-stream.spec.ts",
+    "edupulse-app/tests/snapshots/instructor-course.spec.ts",
+    "edupulse-app/tests/snapshots/academic-population.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/approved-course.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/class-stream.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/instructor-course.mobile.spec.ts"
+  ],
+  "notSelectedSuites": [
+    "edupulse-app/tests/snapshots/account-support-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/account-support-reload-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/account-support-reload.spec.ts",
+    "edupulse-app/tests/snapshots/account-support.spec.ts",
+    "edupulse-app/tests/snapshots/approved-syllabus-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/approved-syllabus.spec.ts",
+    "edupulse-app/tests/snapshots/authenticated.spec.ts",
+    "edupulse-app/tests/snapshots/authored-weeks.spec.ts",
+    "edupulse-app/tests/snapshots/automatic-records.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/automatic-records.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/baseline-workflows.spec.ts",
+    "edupulse-app/tests/snapshots/bounded-loads-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/bounded-loads.spec.ts",
+    "edupulse-app/tests/snapshots/capture.spec.ts",
+    "edupulse-app/tests/snapshots/card-actions.spec.ts",
+    "edupulse-app/tests/snapshots/citation-repair.spec.ts",
+    "edupulse-app/tests/snapshots/class-code-popover.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/class-code-popover.spec.ts",
+    "edupulse-app/tests/snapshots/classroom-support.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/classroom-support.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/component-actions.spec.ts",
+    "edupulse-app/tests/snapshots/course-seed.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-formatting.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/courseware-unified.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-navigation.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/dashboard-readonly.spec.ts",
+    "edupulse-app/tests/snapshots/dean-records-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/dean-records.spec.ts",
+    "edupulse-app/tests/snapshots/editable-syllabus-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/editable-syllabus.spec.ts",
+    "edupulse-app/tests/snapshots/editor-layout.spec.ts",
+    "edupulse-app/tests/snapshots/flat-icons.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/flat-icons.spec.ts",
+    "edupulse-app/tests/snapshots/harness-delivery.spec.ts",
+    "edupulse-app/tests/snapshots/instructor-handover.spec.ts",
+    "edupulse-app/tests/snapshots/instructor-updates-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/instructor-updates.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/interface-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/load-field-edit-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/load-field-edit.spec.ts",
+    "edupulse-app/tests/snapshots/loading-audit.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/loading-audit.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/loading-feedback.spec.ts",
+    "edupulse-app/tests/snapshots/local-models-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/local-models.spec.ts",
+    "edupulse-app/tests/snapshots/login-icons-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/login-icons.spec.ts",
+    "edupulse-app/tests/snapshots/managed-classes.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/managed-classes.spec.ts",
+    "edupulse-app/tests/snapshots/manual.spec.ts",
+    "edupulse-app/tests/snapshots/monitoring-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/monitoring.spec.ts",
+    "edupulse-app/tests/snapshots/operator-steps.spec.ts",
+    "edupulse-app/tests/snapshots/outline-courseware.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/outline-courseware.spec.ts",
+    "edupulse-app/tests/snapshots/outline-progress-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/outline-progress.spec.ts",
+    "edupulse-app/tests/snapshots/outline-selector.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/outline-selector.spec.ts",
+    "edupulse-app/tests/snapshots/outline-sources-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/outline-sources.spec.ts",
+    "edupulse-app/tests/snapshots/oversight.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/oversight.spec.ts",
+    "edupulse-app/tests/snapshots/pipeline-progress-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pipeline-progress.spec.ts",
+    "edupulse-app/tests/snapshots/provider-connection.spec.ts",
+    "edupulse-app/tests/snapshots/public-pulse-search-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/public-pulse-search.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-conversation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-drafting.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-navigation.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-source.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/pulse-tools.spec.ts",
+    "edupulse-app/tests/snapshots/radar-progress-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/radar-progress.spec.ts",
+    "edupulse-app/tests/snapshots/reference-intake-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/reference-intake.spec.ts",
+    "edupulse-app/tests/snapshots/retained-catalog.spec.ts",
+    "edupulse-app/tests/snapshots/retained-sources-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/retained-sources.spec.ts",
+    "edupulse-app/tests/snapshots/role-monitoring.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/role-restoration.spec.ts",
+    "edupulse-app/tests/snapshots/second-admin-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/second-admin.spec.ts",
+    "edupulse-app/tests/snapshots/staff-registration-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/staff-registration.spec.ts",
+    "edupulse-app/tests/snapshots/student-directory.spec.ts",
+    "edupulse-app/tests/snapshots/student-learning-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/student-learning.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-no-loads.spec.ts",
+    "edupulse-app/tests/snapshots/syllabus-upload.spec.ts",
+    "edupulse-app/tests/snapshots/system-search-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/system-search.spec.ts",
+    "edupulse-app/tests/snapshots/targeted-outline-mobile.spec.ts",
+    "edupulse-app/tests/snapshots/targeted-outline.spec.ts",
+    "edupulse-app/tests/snapshots/teaching-load.spec.ts",
+    "edupulse-app/tests/snapshots/teaching-sets.spec.ts",
+    "edupulse-app/tests/snapshots/voice-quota.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/voice-quota.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/walkthrough.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-cache.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.mobile.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-office.spec.ts",
+    "edupulse-app/tests/snapshots/workspace-recovery.spec.ts"
+  ],
+  "fixtureCategory": "documentation-preview; task suites may use real local input (see individual guides)",
+  "deploymentOrigin": null,
+  "deploymentSha": null,
+  "productionCheckStatus": "not-run",
+  "tests": [
+    {
+      "suite": "edupulse-app/tests/snapshots/academic-population.spec.ts",
+      "title": "populated instructor workspace",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 8817,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/academic-population.spec.ts",
+      "title": "populated student workspace",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 4695,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/approved-course.spec.ts",
+      "title": "approved course outline without repository draft or repeated intake",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2153,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/class-stream.spec.ts",
+      "title": "instructor class Stream and announcement placement",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 2224,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/class-stream.spec.ts",
+      "title": "student sees posted announcements before weeks and inside topics",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1565,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/instructor-course.spec.ts",
+      "title": "assigned instructor dashboard and course topics with explicit content authoring and source navigation",
+      "project": "desktop",
+      "browser": "chromium",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 19077,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/academic-population.mobile.spec.ts",
+      "title": "populated instructor workspace on phone",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 14146,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/academic-population.mobile.spec.ts",
+      "title": "populated student workspace on phone",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 3211,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/approved-course.mobile.spec.ts",
+      "title": "approved course outline on a phone",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1774,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/class-stream.mobile.spec.ts",
+      "title": "instructor class Stream on a phone",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 1792,
+      "problems": []
+    },
+    {
+      "suite": "edupulse-app/tests/snapshots/instructor-course.mobile.spec.ts",
+      "title": "assigned instructor course topics on a phone",
+      "project": "mobile",
+      "browser": "chromium",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "fixtureCategory": "synthetic-academic-ui-transport-and-preview; no-hosted-authorization-proof",
+      "status": "passed",
+      "expectedStatus": "passed",
+      "durationMs": 3418,
+      "problems": []
+    }
+  ],
+  "images": [
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/12-placed-announcements.png",
+      "sha256": "7f23c02938e6a4e8d36b6321649a05df90159cda8aa38cc59efa97e7f750b6f2",
+      "bytes": 148931
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/03-weeks-topics.png",
+      "sha256": "dbbbc1c4d36aedeadff329735ea5d38e988286604cc40e9162021729180f4b49",
+      "bytes": 168129
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/04-material-form.png",
+      "sha256": "19889eec260dd16b2a20575e58a86324977ed4d798f8680a2db573c96ed87fd7",
+      "bytes": 62676
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/05-sources.png",
+      "sha256": "bc03750268171b20c58424dcad1434e02ce4865c7283fbefdde7a3b316abb74e",
+      "bytes": 33662
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/06-source-popover.png",
+      "sha256": "5a10341f36fe810a6d7a29e2ba6991b91b955498a2ff9ec7a77f4656a2e538ca",
+      "bytes": 41727
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/07-mobile-course.png",
+      "sha256": "41d54ada0cd193311a3873082cb5f028945458de05b458b5c421347a88fac9f8",
+      "bytes": 244160
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/08-block-sections.png",
+      "sha256": "9eeae73c7e55b438ff82f46ed66587640a034c23de67b7b5b6bf45009357f7f9",
+      "bytes": 178725
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/09-block-schedule.png",
+      "sha256": "e571563db3ff00923775aa5d8acc028344699844a5a0e9ba4d7ca0b150f92ae2",
+      "bytes": 189170
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/10-mobile-block-schedule.png",
+      "sha256": "6dd75cdffbdb1bff36fc16d1555b87a7d92a03b68dc9462bfc578bde546df861",
+      "bytes": 259681
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/11-page-reader.png",
+      "sha256": "a2a2848f0179b10ddaa0e098713559fb1c35df97e7469cb31626de2f1f1f7844",
+      "bytes": 67432
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/12-mobile-page-reader.png",
+      "sha256": "01b5fc3dcc8b42603fd916feeceb73788fa0e00745433dfaf994e63a94b389ce",
+      "bytes": 154999
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/14-approved-course-outline.png",
+      "sha256": "f0ce55c7574c91a6d8be47ecdbd004edd253c1359034fa482d3749813f56a9e4",
+      "bytes": 142560
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/15-approved-course-outline-phone.png",
+      "sha256": "53fe01e3d1e75b02e4f2a94e32068aaf62920744eece44bd40aa8adc2265fe95",
+      "bytes": 363154
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/16-stream.png",
+      "sha256": "ab17edd7110090e24662ae0646682570809f589e5ebb23bde1f56ce77619fb37",
+      "bytes": 204704
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/17-stream-phone.png",
+      "sha256": "f5a37113d146805833ff9f911c6b9ea324f962810ebc59201676169514a8cd30",
+      "bytes": 269963
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/18-announcement-placement.png",
+      "sha256": "ab97d56a05b8892dac3f9b08d207ee0e475dd1a371b34361bd1fc1bfe573b61d",
+      "bytes": 34714
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/19-add-teaching-week.png",
+      "sha256": "beb6f811d015368eac424b3373744afcc4a2ed4a0c1ede0d9aa9e3bf0b99d084",
+      "bytes": 32540
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/20-ai-assessment-sources.png",
+      "sha256": "049dc34d96d2748e88d2802bf11ed423300b0f7a9a6af7ac619d31dbe6b7a0a3",
+      "bytes": 72437
+    },
+    {
+      "path": "feature-documentation/system-manual/56-academic-population/instructor-home.png",
+      "sha256": "63cfda88554e3c41b9821c2eb58b9892d0c2a115c3918b2183d7ed5112c26922",
+      "bytes": 341165
+    },
+    {
+      "path": "feature-documentation/system-manual/56-academic-population/instructor-scores.png",
+      "sha256": "16cbb9b86ad27195ab11dcc0efc56bc361f3a69589fd5aa30e4bda559e81ff6b",
+      "bytes": 202336
+    },
+    {
+      "path": "feature-documentation/system-manual/56-academic-population/instructor-stream.png",
+      "sha256": "9236058c22e2bff6a624f418e4270926925d21910d70d4671da903272d0dd8b5",
+      "bytes": 212334
+    },
+    {
+      "path": "feature-documentation/system-manual/56-academic-population/phone-instructor-home.png",
+      "sha256": "e7f9630e66f7de0be0d5547ff99115ebe6cbc358316b4e3dafb57bbfd8ceee3e",
+      "bytes": 578966
+    },
+    {
+      "path": "feature-documentation/system-manual/56-academic-population/phone-instructor-scores.png",
+      "sha256": "582c3cbb5f14073481065e7eb6a4435c91589d04db2bbbd16ab26a89ee04c483",
+      "bytes": 347807
+    },
+    {
+      "path": "feature-documentation/system-manual/56-academic-population/phone-instructor-stream.png",
+      "sha256": "b70c51dd7788298c1eebb252d42c41713fcf75637ce191c0fd5a7220b2fd39d3",
+      "bytes": 384653
+    },
+    {
+      "path": "feature-documentation/system-manual/56-academic-population/phone-student-home.png",
+      "sha256": "9132fa0378051e172d2a39b95e7538489890232630cc58940c8255a2fcc7a453",
+      "bytes": 402003
+    },
+    {
+      "path": "feature-documentation/system-manual/56-academic-population/phone-student-scores.png",
+      "sha256": "c3b0b0750dde67cc2d863eaa7df450bfe18dc7a36d55664011d4fd4709f91709",
+      "bytes": 260628
+    },
+    {
+      "path": "feature-documentation/system-manual/56-academic-population/student-home.png",
+      "sha256": "9744ba3bba542f26b4c14009a1d4370377803f721781e6900df0f1d6b6a8777b",
+      "bytes": 324287
+    },
+    {
+      "path": "feature-documentation/system-manual/56-academic-population/student-scores.png",
+      "sha256": "7962a8cec5ec1811505ea311ee52914504827044d21ed1de2d57199fc355a544",
+      "bytes": 161759
+    }
+  ]
+}

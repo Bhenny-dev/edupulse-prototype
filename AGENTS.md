@@ -31,6 +31,10 @@ This requirement applies to existing features and every new feature. A deliberat
 
 Keep protected routes and academic/workspace startup gated until session and support-subject restoration settle. A temporary verification failure must preserve the URL and offer retry or explicit exit; revoked or changed permissions must not render the former subject. Reload restoration must never replay account-enter/leave commands, material opens, assessment start/responses/submission, publication, explicit saves or paid inference. Existing dirty-draft journal reconciliation and debounce saves retain their revision/conflict rules after authorization; navigation hints cannot issue saves. Preserve the later manual-refresh correction: focus, timers and reconnects must not involuntarily reload loaded pages. Include reload regression coverage and matching documentation/captures with affected features.
 
+## Teaching sequence and assessment sources
+
+Teaching materials precede the assessments that cover them in the drafting tab, instructor Stream and student weekly view. Keep intentional teaching and assessment cycles, and display the overall assessment last within its topic. Handle older publications that lack a saved order. AI topic assessments require readable text from their covered teaching materials, including uploads attached to those materials. Check both legacy order and the uploaded-file generation path when changing either feature. [ADR-002 teaching sequence and sources](feature-documentation/backend-system/decisions/002-feature-preservation-baseline.md#27-november-2026--teaching-sequence-and-assessment-sources).
+
 
 ## EduPulse production trigger after the Vercel transfer
 

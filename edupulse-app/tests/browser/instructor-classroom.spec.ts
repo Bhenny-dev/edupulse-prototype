@@ -213,7 +213,9 @@ test('Stream shows delivered content and places scoped posts around weeks and to
   const records = fixture.records as any
   const courseId = records.courses[0].id
   records.courses[0].outline = fixture.syllabus.courseOutline
-  records.publications.push({ id: 'delivered-check', course_id: courseId, week: 1, active: true, type: 'assessment', title: 'Delivered check', content: { courseTopicId: 'variables', questions: [{ text: 'Choose the variable.', options: ['count', '42'] }] } })
+  const coverage = { materialIds: ['lesson'] }
+  records.publications.push({ id: '1-check', course_id: courseId, week: 1, active: true, type: 'assessment', title: 'Delivered check', content: { courseTopicId: 'variables', coverage, questions: [{ text: 'Choose the variable.', options: ['count', '42'] }] } })
+  records.publications.push({ id: '0-reflection', course_id: courseId, week: 1, active: true, type: 'assessment', title: 'Applied reflection', content: { courseTopicId: 'variables', coverage, assessmentRole: 'reflection' } })
   records.publications.push({ id: 'hidden-check', course_id: courseId, week: 1, active: false, type: 'assessment', title: 'Hidden check', content: {} })
   records.announcements.push({ id: 'other-block', block: 'BSIT-1B', course_code: 'IT 102', academic_year: '2026-2027', semester: '1st Semester', title: 'Other block post', created_at: '2026-11-23T01:00:00Z' })
   await page.goto(`/#/courseware?course=${fixture.syllabus.id}&tab=announcements`)
@@ -221,6 +223,7 @@ test('Stream shows delivered content and places scoped posts around weeks and to
   const topic = week.getByRole('region', { name: 'Variables and named values' })
   await expect(topic.getByRole('button', { name: 'Open Variables lesson' })).toBeVisible()
   await expect(topic.getByRole('button', { name: 'Open Delivered check' })).toBeVisible()
+  await expect(topic.locator('.class-stream-item h4')).toHaveText(['Variables lesson', 'Delivered check', 'Applied reflection'])
   await expect(page.getByText(/^(Variable check|Hidden check|Other block post)$/)).toHaveCount(0)
   await expect(page.locator('[draggable="true"]')).toHaveCount(0)
   await topic.getByRole('button', { name: 'Open Delivered check' }).click()
@@ -229,6 +232,7 @@ test('Stream shows delivered content and places scoped posts around weeks and to
   await expect(reader).toContainText('Choose the variable.')
   await expect(reader.getByRole('button', { name: 'Prepare draft revision' })).toHaveCount(0)
   await reader.getByRole('button', { name: 'Close delivered content' }).click()
+  await expect(topic.locator('.class-stream-item h4')).toHaveText(['Variables lesson', 'Delivered check', 'Applied reflection'])
 
   await week.getByRole('button', { name: 'Announce for Week 1', exact: true }).click()
   let form = page.getByRole('form', { name: 'New announcement' })

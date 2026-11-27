@@ -562,3 +562,13 @@ Other instructors' workbook conflicts are documented; their assignments are not 
 | T23.3 | Add, edit, reorder and remove empty teaching weeks. Keep the reference outline in Syllabus and preserve delivered work, exam slots and history. | `instructor-classroom.spec.ts`, `instructor-courses.test.ts` and Manual 44 captures. | Complete |
 
 The published readings, assessments and saved schedules remain the delivery sources. Announcements stay anchored to the saved calendar week. A missing topic falls back to that week.
+
+## 27 November 2026 - Teaching sequence and assessment grounding (G24)
+
+| Task | Work | Acceptance | Stage |
+|---|---|---|---|
+| T24.1 | Keep covered materials ahead of their assessments across drafting, Stream and the student list. Use a deterministic fallback for older publications and preserve existing grades. | `instructor-courses.test.ts` and instructor/student browser cases reproduce assessments with earlier IDs and contradictory or missing order metadata. | Complete |
+| T24.2 | Read the covered teaching text and its saved uploads before an explicit AI topic assessment. Save a linked draft for review and prevent file reads or inference on reload. | `courseware-plan.test.ts` and desktop and phone `instructor-courses.spec.ts` verify source boundaries, saved uploads and draft persistence. | Complete |
+| T24.3 | Keep the owner-confirmed contract discoverable from coding-agent instructions, manual, walkthrough and capture scenes. | ADR-002, Manual 41 and Manual 44. Eleven capture cases pass with reviewed images. | Complete |
+
+The reported Capstone Project 2 sequence exposed that population workspace items had positions while their published DTOs lacked `teachingOrder`. The read-side correction covers existing releases and the producer now carries the same position into new releases.

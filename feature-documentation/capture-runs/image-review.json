@@ -5310,18 +5310,6 @@
       "captureRun": "2026-11-25T23-16-05-689Z-28da4af0"
     },
     {
-      "path": "feature-documentation/system-manual/41-student-learning/12-placed-announcements.png",
-      "sha256": "adb530a6ac7ccb37e5ebaed022dcb6253713d5865c858e227fbf024196dba27e",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-27T02:39:13.193450+00:00"
-    },
-    {
-      "path": "feature-documentation/system-manual/44-instructor-course-workspace/03-weeks-topics.png",
-      "sha256": "c0188807b763462bcf49207c65550dda9cd6eb0a21f869d9e23704454cd90528",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-27T02:39:13.193450+00:00"
-    },
-    {
       "path": "feature-documentation/system-manual/44-instructor-course-workspace/04-material-form.png",
       "sha256": "19889eec260dd16b2a20575e58a86324977ed4d798f8680a2db573c96ed87fd7",
       "reviewer": "Codex agent",
@@ -5396,12 +5384,6 @@
     {
       "path": "feature-documentation/system-manual/44-instructor-course-workspace/15-approved-course-outline-phone.png",
       "sha256": "53fe01e3d1e75b02e4f2a94e32068aaf62920744eece44bd40aa8adc2265fe95",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-27T02:39:13.193450+00:00"
-    },
-    {
-      "path": "feature-documentation/system-manual/44-instructor-course-workspace/16-stream.png",
-      "sha256": "1bf3b964a35a9558fc22bfb25970a76e33e8c7fc56196271780eea8cbe474771",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-27T02:39:13.193450+00:00"
     },
@@ -5508,12 +5490,6 @@
       "reviewedAt": "2026-11-27T02:39:13.193450+00:00"
     },
     {
-      "path": "feature-documentation/system-manual/56-academic-population/instructor-stream.png",
-      "sha256": "4b7d426eac5441721db11607c9bedaa05d65f01b210433530e4b6ee693d57496",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-27T02:39:13.193450+00:00"
-    },
-    {
       "path": "feature-documentation/system-manual/56-academic-population/phone-instructor-scores.png",
       "sha256": "582c3cbb5f14073481065e7eb6a4435c91589d04db2bbbd16ab26a89ee04c483",
       "reviewer": "Codex agent",
@@ -5530,6 +5506,36 @@
       "sha256": "9744ba3bba542f26b4c14009a1d4370377803f721781e6900df0f1d6b6a8777b",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-27T02:39:13.193450+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/12-placed-announcements.png",
+      "sha256": "7f23c02938e6a4e8d36b6321649a05df90159cda8aa38cc59efa97e7f750b6f2",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T03:37:06.588157+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/03-weeks-topics.png",
+      "sha256": "dbbbc1c4d36aedeadff329735ea5d38e988286604cc40e9162021729180f4b49",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T03:37:06.588157+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/16-stream.png",
+      "sha256": "ab17edd7110090e24662ae0646682570809f589e5ebb23bde1f56ce77619fb37",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T03:37:06.588157+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/20-ai-assessment-sources.png",
+      "sha256": "049dc34d96d2748e88d2802bf11ed423300b0f7a9a6af7ac619d31dbe6b7a0a3",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T03:37:06.588157+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/56-academic-population/instructor-stream.png",
+      "sha256": "9236058c22e2bff6a624f418e4270926925d21910d70d4671da903272d0dd8b5",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T03:37:06.588157+00:00"
     }
   ]
 }
