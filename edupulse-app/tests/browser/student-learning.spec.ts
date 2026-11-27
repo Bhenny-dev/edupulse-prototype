@@ -19,3 +19,18 @@ test('Admin student actions keep attribution without the removed header controls
 })
 
 test('course tabs and separate readers restore without replay and every question shares one view',async({page})=>{await courseContentDialogScene(page)})
+test('practice from a finished quiz lists only submitted quizzes, sends the quiz as its source and explains when none exist',async({page})=>{
+ const fixture=await studentLearningUI(page),quiz=fixture.store.records.publications.find((p:any)=>p.id===fixture.store.records.attempts[0].publication_id)!
+ expect(quiz.type).toBe('assessment')
+ await page.goto('/#/assessment');await expect(page.getByRole('heading',{name:'Practice Assessments',exact:true})).toBeVisible()
+ const picker=page.getByRole('combobox',{name:'Finished quiz',exact:true}),generate=page.getByRole('button',{name:'Generate practice on the same topics',exact:true})
+ await expect(generate).toBeDisabled()
+ await expect(picker.locator('option')).toHaveCount(2)
+ await picker.selectOption(quiz.id);await generate.click()
+ await expect(page.getByRole('button',{name:'Save practice attempt',exact:true})).toBeVisible()
+ expect(fixture.commands.find((c:any)=>c.operation==='generate')).toEqual({operation:'generate',source:'assessment',publication:quiz.id,version:quiz.source_version})
+ fixture.store.records.attempts.length=0
+ await page.reload({waitUntil:'domcontentloaded'});await page.getByRole('button',{name:'Close practice',exact:true}).click()
+ await expect(picker).toBeDisabled();await expect(generate).toBeDisabled()
+ await expect(page.getByText('Submit an instructor quiz first. It then appears here for practice.',{exact:true})).toBeVisible()
+})

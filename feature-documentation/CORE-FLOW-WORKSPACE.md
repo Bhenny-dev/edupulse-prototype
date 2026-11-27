@@ -221,7 +221,7 @@ typing dates; an instructor can still save other dates for a block.
 
 | Task | Work | Acceptance | Stage |
 |---|---|---|---|
-| T6.1 | Practice quiz from a finished quiz: new questions on the same topics, never the official items or the keys of open assessments | Test that no official item or key reaches the prompt or the result | Draft |
+| T6.1 | Practice quiz from a finished quiz: new questions on the same topics, never the official items or the keys of open assessments. Students pick a quiz they submitted (Practice Assessments, "Practice from a finished quiz"); the API (`practice` `generate` with `source:'assessment'`, `finishedQuizSource` in `server/domains/practice.ts`) writes from the teaching the quiz covers (`coverage.materialIds`, else its week and topic) that the student can still read, names the quiz's topic labels and refuses a draft that repeats an official question. Migration `20261127090000` adds `source_kind` and lets a submitted quiz seed practice after its block window closes; closed teaching stays closed | `practice-source.test.ts` (no item, option or key in the prompt; repeated item rejected; closed and uncovered teaching left out), `block-delivery.test.ts` (past-window quiz allowed only with your own attempt; a quiz is never reading), `student-learning.spec.ts` (submitted quizzes only, sent source, disabled with an explanation when none) | Tested |
 | T6.2 | Instructor marks materials as advanced reading; students take mock quizzes from them; the action explains itself and stays disabled when there are none | Browser spec | Draft |
 
 ### G7. Performance monitoring (R-I9, R-D4, R-D2)
@@ -573,6 +573,8 @@ The published readings, assessments and saved schedules remain the delivery sour
 
 The reported Capstone Project 2 sequence exposed that population workspace items had positions while their published DTOs lacked `teachingOrder`. The read-side correction covers existing releases and the producer now carries the same position into new releases.
 
+G24 release: `b368efa3` is Ready as `dpl_6Fi41iYy49i4j8ghHMsXXK8KMj3k` on `edupulse-prototype.vercel.app` (checked 27 November 2026; the site returns 200).
+
 ## 27 November 2026 - Shared instructor class plan (G25)
 
 | Task | Work | Acceptance | Stage |
@@ -581,3 +583,7 @@ The reported Capstone Project 2 sequence exposed that population workspace items
 | T25.2 | Synchronize publishing, hiding and revisions without showing stale delivery after a save. Keep the class and retry when delivery reads fail. | Instructor desktop and phone round-trip across both tabs, including reload and retry after a failed or interrupted delivery read. | Complete |
 
 The shared plan retains instructor-only workspace controls in **Teaching Materials & Assessments** and announcement and read-only delivery actions in **Stream**.
+
+## 27 November 2026 - G6 practice from finished quizzes
+
+T6.1 is Tested (see G6). Known unrelated failure: `student-learning.spec.ts:21` (course tabs) still expects table rows in "Personal assessment results", which `a9686aa7` regrouped into week lists with "Resume assessment"; it fails without this change too. T6.2 (advanced reading marker and mock quizzes) is next.

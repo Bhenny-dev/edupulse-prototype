@@ -64,7 +64,7 @@ test('block delivery persists with revision guards and enforces RLS, files, read
   const save=async()=>{const r=await db.query('SELECT public.edupulse_save_workspace($1,$2)',[revision,JSON.stringify(snapshot)]);revision++;return r}
   await as(0);await save();snapshot.content.legacy.status='published';await save()
   const legacyBefore=(await db.query('SELECT to_jsonb(p) value FROM public.edupulse_publications p')).rows
-  await db.exec('RESET ROLE');await db.exec(await readFile('supabase/migrations/20261115220621_block_week_delivery_schedule.sql','utf8'));await as(0)
+  await db.exec('RESET ROLE');await db.exec(await readFile('supabase/migrations/20261115220621_block_week_delivery_schedule.sql','utf8'));await db.exec(await readFile('supabase/migrations/20261127090000_practice_from_finished_quiz.sql','utf8'));await as(0)
   assert.deepEqual((await db.query("SELECT to_jsonb(p)-'delivery_mode' value FROM public.edupulse_publications p")).rows,legacyBefore,'DDL leaves all existing publications and versions intact')
   await save()
   snapshot.content.material.status='checked';snapshot.content.quiz.status='checked';await save()
@@ -113,6 +113,11 @@ test('block delivery persists with revision guards and enforces RLS, files, read
   await as(3)
   assert.equal((await list()).find(p=>p.id===quiz.id).content,null)
   assert.deepEqual((await db.query('SELECT to_jsonb(a) value FROM public.edupulse_attempts a')).rows,before,'closing does not alter scores or their versions')
+  const pastQuiz={operation:'create',publication:quiz.id,version:quiz.source_version,sourceKind:'assessment',title:'Quiz practice',questions:[0,1,2].map(i=>({text:'Apply the quiz topic '+i,options:['A','B','C','D'],correctIndex:i}))}
+  const quizSet=await rpc('edupulse_practice_action',pastQuiz);assert.equal(quizSet.source_kind,'assessment','a submitted quiz past its window can seed practice');assert.equal(quizSet.publication_id,quiz.id);assert.equal(quizSet.questions[0].correctIndex,undefined)
+  await assert.rejects(rpc('edupulse_practice_action',{...pastQuiz,sourceKind:'reading'}),{code:'42501'},'a quiz is never treated as reading')
+  await assert.rejects(rpc('edupulse_practice_action',{...pastQuiz,publication:material.id,version:material.source_version}),{code:'42501'},'reading is not a finished quiz')
+  await as(5);await assert.rejects(rpc('edupulse_practice_action',pastQuiz),{code:'42501'},'practice needs your own submitted attempt');await as(3)
   await assert.rejects(assess('submit',{session:session.id,responses:[0,0,1]}),{code:'42501'})
   await as(0);assert.equal((await db.query<{source_version:string}>('SELECT source_version FROM public.edupulse_publications WHERE id=$1',[quiz.id])).rows[0].source_version,quiz.source_version,'schedule changes never change the assessment hash')
   await rpc('edupulse_delivery_schedule',{...a,revision:2})

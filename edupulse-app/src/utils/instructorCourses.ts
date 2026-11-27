@@ -2,6 +2,7 @@ import type { AcademicData } from '../components/academic/academicData'
 import { currentAttempts } from '../components/academic/academicData'
 import { studentRecorded } from '../components/academic/monitoringModel'
 import { isOutlineExam, weekSections, type OutlineWeek } from './outlineSections'
+import { isTeachingMaterial, coversMaterial, type CoverageItem } from './teachingCoverage'
 
 export type ClassSlot = { days: string; time: string; room: string }
 export type InstructorCourse = { id: string; code: string; title: string; units: string; year: string; semester: string; academicYear: string; blocks: string[]; courseIds: string[]; syllabusId?:string;assignmentKey?:string; slots?: Record<string, ClassSlot[]> }
@@ -69,14 +70,10 @@ export function approvedSyllabusForCourse<T extends { id: string; courseCode: st
   return syllabusForCourse(syllabi.filter(item => ['active', 'approved_uploaded'].includes(item.status) && item.approvedFile?.approvalAttested === true), course)
 }
 
-type SequenceItem = { id: string; type: string; position?: number; workspace_item_id?: string; content?: { courseItemId?: string; overallAssessment?: boolean; assessmentRole?: string; submissionOnly?: boolean; teachingOrder?: number; coverage?: { materialIds: string[] } } | null }
+type SequenceItem = CoverageItem
 export type TeachingEntry = SequenceItem & { week?: number; title?: string; content: NonNullable<SequenceItem['content']> & { title?: string; courseTopicId?: string; outlineSectionId?: string; ai?: { parts?: { sectionId?: string }[] } } }
-export const isTeachingMaterial = (item: SequenceItem) => item.type !== 'assessment' && !item.content?.submissionOnly
+export { isTeachingMaterial, coversMaterial }
 export const teachingOrder = (entry: SequenceItem) => entry.position ?? entry.content?.teachingOrder ?? (entry.type === 'assessment' ? 2048 : entry.type === 'activity' ? 1024 : 0)
-export const coversMaterial = (assessment: SequenceItem, material: SequenceItem) => {
-  const ids = assessment.content?.coverage?.materialIds
-  return isTeachingMaterial(material) && Array.isArray(ids) && ids.some(id => id === material.id || id === material.workspace_item_id || id === material.content?.courseItemId)
-}
 
 /** Apply to one topic or to the unmatched items in one week. Keep saved teaching cycles and place each assessment after its available sources. */
 export function teachingSequence<T extends SequenceItem>(items: T[]): T[] {
