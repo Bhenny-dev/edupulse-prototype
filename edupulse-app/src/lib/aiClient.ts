@@ -211,13 +211,13 @@ export async function generateCoursewareParts(input:CourseInput,signal?:AbortSig
   const [{coursewarePlan,COURSEWARE_PLAN_VERSION},{draftCoursewareStep,assembleCourseware}]=await Promise.all([import('./rag/coursewarePlan'),import('./rag/courseware')])
   const results:Awaited<ReturnType<typeof draftCoursewareStep>>[]=[...(options.completed||[])]
   const plan=coursewarePlan(input).filter(part=>!types||types.includes(part.type))
-  if(!input.topicAssessment&&input.sections?.length&&!input.syllabusReferences?.length)throw new ApiRequestError('Add and retain a readable reference before generating this outline.',422,'SOURCE_REQUIRED')
+  if(!input.topicAssessment&&input.sections?.length&&!input.syllabusReferences?.length&&!input.allowLimitedSources)throw new ApiRequestError('Add and retain a readable reference before generating this outline.',422,'SOURCE_REQUIRED')
   let failed:unknown
   let sourceWarning=''
   if(!input.topicAssessment&&input.syllabusReferences?.length&&plan.some(part=>!results.some(result=>result.step.key===part.key))){
     options.onProgress?.(results.length,plan.length,'sources')
-    try{const sources=await prepareSyllabusSources(input.syllabusReferences.map(ref=>({url:'',authors:'',year:'',publisher:'',...ref})),signal,false,true);if(typeof window!=='undefined')window.dispatchEvent(new CustomEvent('edupulse-sources-updated',{detail:{sources,sessionVersion:aiSessionVersion()}}));if(input.sections?.length&&!sources.some(source=>source.snapshot&&!source.metadataOnly))throw new ApiRequestError('Read or attach a usable reference before generating this outline. No reference contents were available.',422,'SOURCE_NOT_READY');if(sources.some(source=>!source.snapshot||source.metadataOnly))sourceWarning='Some syllabus references could not be read. Only actual retrieved passages can support citations.'}
-    catch(error){signal?.throwIfAborted();if(input.sections?.length)throw error;sourceWarning='Syllabus source retention was unavailable. No unread book or linked-page contents are claimed.'}
+    try{const sources=await prepareSyllabusSources(input.syllabusReferences.map(ref=>({url:'',authors:'',year:'',publisher:'',...ref})),signal,false,true);if(typeof window!=='undefined')window.dispatchEvent(new CustomEvent('edupulse-sources-updated',{detail:{sources,sessionVersion:aiSessionVersion()}}));if(input.sections?.length&&!input.allowLimitedSources&&!sources.some(source=>source.snapshot&&!source.metadataOnly))throw new ApiRequestError('Read or attach a usable reference before generating this outline. No reference contents were available.',422,'SOURCE_NOT_READY');if(sources.some(source=>!source.snapshot||source.metadataOnly))sourceWarning='Some syllabus references could not be read. Only actual retrieved passages can support citations.'}
+    catch(error){signal?.throwIfAborted();if(input.sections?.length&&!input.allowLimitedSources)throw error;sourceWarning='Syllabus source retention was unavailable. No unread book or linked-page contents are claimed.'}
   }
   for(const part of plan) {
     signal?.throwIfAborted()

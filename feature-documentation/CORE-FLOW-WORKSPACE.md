@@ -246,7 +246,7 @@ typing dates; an instructor can still save other dates for a block.
 | Task | Work | Acceptance | Stage |
 |---|---|---|---|
 | T9.1 | Generation reads only the course's references and attached files (extracted, chunked, indexed); the web only when asked | Test of the retrieval scope | Draft |
-| T9.2 | Coverage check before generation names uncovered topics and offers "Attach more sources" and "Generate from what is available" | Browser spec | Draft |
+| T9.2 | Coverage check before generation names uncovered topics and offers "Attach more sources" and "Generate from what is available". When a topic has no readable reference (`SOURCE_REQUIRED`) or no matching saved passage (`SOURCE_NOT_READY`), the topic form now names the topic and the reason and offers both choices instead of a dead end (R-I6). "Attach more sources" closes the form at the course references; "Generate from what is available" retries with `allowLimitedSources` (contract, `aiClient.ts`, `courseware.ts`), and the draft carries a limited-sources warning and stays unpublished. The form's two checkboxes now sit beside their labels | `courseware.test.ts` (confirmed request drafts and warns; unconfirmed still refuses), `instructor-courses.spec.ts` (choice shown, no flag until asked, saved draft warns) on desktop and phone; rendered notice reviewed. Gate on the shared tree: 582 of 583 (the one failure is `academic-restoration.test.ts` account guidance, caused by Codex's uncommitted `guidance.js`), build passes. Not deployed while T7.4 is held | Tested |
 | T9.3 | "Where is this from?" opens the extracted text at the cited passage, highlighted, with the original file | Browser spec | Draft |
 | T9.4 | Unreachable cited sources: candidate links to open; on request the page text is extracted, cleaned and attached to that reference for review | Test with a fixed fetch | Draft |
 
@@ -610,7 +610,7 @@ Scan of this file, the 23 November supporting specification (`versions/supportin
 | T6.2 Advanced reading and mock quizzes | G6, R-S3 | Ready: `9f8930e6`, migration `20261127100000` applied, deployment `dpl_2sbFdxB4qbWuE7DVNNvk3FRzd4Mp` Ready | None |
 | T7.1 to T7.5 Performance monitoring and staff workspace | G7, R-I9, R-D1, R-D4, R-D2 | T7.1 to T7.3 Ready. T7.4 and T7.5 browser and unit acceptance passed. | Verify production Ready |
 | T8.1, T8.2 Instructor change continuity | G8, R-D3 | Tested: former-instructor revocation and syllabus copy asserted; Dean browser flow repaired | K4 timetable conflicts next |
-| T9.1 to T9.4 Source-grounded generation | G9, R-I6, R-C3 | Partial: retrieval, coverage warning and passage inspector exist | Verify each behaviour against its acceptance and fill gaps |
+| T9.1 to T9.4 Source-grounded generation | G9, R-I6, R-C3 | T9.2 Tested (insufficient sources is a choice); T9.1, T9.3, T9.4 to verify | Verify T9.1, T9.3, T9.4 |
 | T10.1 to T10.3 Large assessment generation | G10, R-I7 | Missing: generated assessments allow 3 to 5 questions; G24 grounds topic assessments in covered teaching | Batched generation of up to 50 or more validated items with duplicates removed |
 | T11.1 to T11.3 Pulse and official documents | G11, R-C4 | Partial: teaching-load files routed; class lists and syllabus files not | Route `.xls` class lists and syllabus PDFs from Pulse to the existing intakes |
 | T12.1, T12.2 End-to-end scenarios | G12 | Draft | One scenario test and the isolation database tests after G7 to G11 |

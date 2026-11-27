@@ -228,7 +228,8 @@ async function draftStepGraph(input: CourseInput, part:CoursewareStep, signal: A
     try{const result=await deps.sourceEvidence(syllabusReferences(input),focus,signal);retained=result.evidence;if(result.warning)warnings.push(result.warning)}
     catch(error){signal.throwIfAborted();if(error instanceof ApiError&&[401,403].includes(error.status))throw error;warnings.push('Retained syllabus sources were unavailable. No unread book or link contents are claimed.')}
   }
-  if(!topicAssessment&&input.sections?.length&&!syllabusOnly&&!retained.length)throw new ApiError(422,'SOURCE_NOT_READY','No matching retained reference passage was available for this section. Read or attach its source before generation.')
+  if(!topicAssessment&&input.sections?.length&&!syllabusOnly&&!retained.length&&input.allowLimitedSources)warnings.push('Drafted from the syllabus outline and the context available: no saved reference passage covered this topic, and the instructor chose to generate anyway. Check it against the course references before publishing.')
+  else if(!topicAssessment&&input.sections?.length&&!syllabusOnly&&!retained.length)throw new ApiError(422,'SOURCE_NOT_READY','No matching retained reference passage was available for this section. Read or attach its source before generation.')
   const graph = new StateGraph(state)
     .addNode('planner', () => {
       const started = performance.now()

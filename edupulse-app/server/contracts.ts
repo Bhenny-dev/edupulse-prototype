@@ -38,6 +38,8 @@ export const courseInput = z.object({
   sections:z.array(z.object({id:z.string().max(120),ilos:z.string().max(5000),contents:z.array(z.string().max(2000)).max(40),activities:z.string().max(5000),assessments:z.string().max(5000),assessmentTypes:z.array(z.string().max(300)).max(10)})).max(12).optional(),
   generatedTeaching:z.string().max(18000).optional(),
   topicAssessment:z.literal(true).optional(),
+  // R-I6: the instructor confirmed generating with insufficient source context; the draft carries a warning.
+  allowLimitedSources:z.literal(true).optional(),
   skipSteps:z.array(z.string().regex(/^(?:lesson-\d{1,2}|activity(?:-\d{1,2})?|assessment(?:-\d{1,2})?)$/)).max(64).optional(),
   syllabusReferences: z.array(z.object({kind:z.enum(['book','link']),title:z.string().min(1).max(500),url:z.string().max(2000).default(''),authors:z.string().max(1000).default(''),year:z.string().max(40).default(''),publisher:z.string().max(500).default(''),doi:z.string().max(300).optional(),isbn:z.string().max(80).optional()})).max(80).optional(),
   courseCode: z.string().trim().min(1).max(80), courseTitle: z.string().trim().min(1).max(200),

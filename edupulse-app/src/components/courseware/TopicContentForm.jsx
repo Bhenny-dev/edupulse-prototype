@@ -12,13 +12,15 @@ import { assessmentCoverage, topicEntries, weekTopics, teachingOrder, topicOvera
 import AssessmentEditor from './AssessmentEditor'
 import { LoadingStatus } from '../ui/LoadingFeedback'
 
-export default function TopicContentForm({ syllabus, week, topic, entries, type, afterId, overall = false, onSaved, onClose }) {
+export default function TopicContentForm({ syllabus, week, topic, entries, type, afterId, overall = false, onSaved, onClose, onAttachSources }) {
   const { commit } = useWorkspace(), [mode, setMode] = useState(type === 'assessment' ? 'manual' : 'document')
   const [title, setTitle] = useState(''), [body, setBody] = useState(''), [url, setUrl] = useState(''), [files, setFiles] = useState([])
   const [submissionBin, setSubmissionBin] = useState(type === 'submission'), [advancedReading, setAdvancedReading] = useState(false)
   const uploaded = useRef(new WeakMap())
   const [format, setFormat] = useState(requestedAssessmentFormat(topic.assessmentTypes.join('; ')) || '')
   const [busy, setBusy] = useState(false), [error, setError] = useState(''), [manual, setManual] = useState(null)
+  // R-I6: insufficient source context is a choice for the instructor, never a dead end.
+  const [limited, setLimited] = useState(''), allowLimited = useRef(false)
   const controller = useRef(null), mounted = useRef(true), locked = useRef(false)
   useEffect(() => { mounted.current = true; return () => { mounted.current = false; controller.current?.abort() } }, [])
   const regular = entries.filter(item => item !== topicOverall(entries))
@@ -58,7 +60,7 @@ export default function TopicContentForm({ syllabus, week, topic, entries, type,
         const signal = controller.current.signal
         const source = type === 'assessment' ? await readAssessmentMaterials(covered, signal) : null
         if (source && !source.text.trim()) throw new Error('Add readable teaching text or a readable teaching file before generating this assessment.')
-        const result = await generateWeekDraft(scopedSyllabus, row.week, signal, `${body.trim() || context}\n${source ? 'Write questions whose answers can be supported by the supplied teaching materials.' : 'Generate the teaching material from this topic and its teaching-learning activities.'}`, { skipTypes: source ? ['material', 'activity'] : ['assessment', 'activity'], ...(source ? { topicAssessment: true, generatedTeaching: source.text } : {}) })
+        const result = await generateWeekDraft(scopedSyllabus, row.week, signal, `${body.trim() || context}\n${source ? 'Write questions whose answers can be supported by the supplied teaching materials.' : 'Generate the teaching material from this topic and its teaching-learning activities.'}`, { ...(allowLimited.current ? { allowLimitedSources: true } : {}), skipTypes: source ? ['material', 'activity'] : ['assessment', 'activity'], ...(source ? { topicAssessment: true, generatedTeaching: source.text } : {}) })
         controller.current.signal.throwIfAborted()
         const created = result.items.find(item => item.type === type)
         if (!created) throw new Error('The requested draft was not completed. Existing content was preserved.')
@@ -92,8 +94,12 @@ export default function TopicContentForm({ syllabus, week, topic, entries, type,
         const options = manualFormat === 'true_false' ? ['True', 'False'] : writtenFormat(manualFormat) ? [] : ['A', 'B', 'C', 'D'].map(label => ({ label, text: '' }))
         setManual({ title: heading, description: [body.trim() || context, linkText].filter(Boolean).join('\n\n'), attachments, questions: Array.from({ length: 3 }, (_, index) => ({ id: `q${index + 1}`, text: '', type: questionType, responseFormat: manualFormat, options, correctIndex: writtenFormat(manualFormat) ? undefined : 0, explanation: '', topic: topic.title })), totalPoints: 3, timeLimit: 'No time limit specified' })
       }
-    } catch (failure) { if (mounted.current) setError(controller.current?.signal.aborted ? 'Generation stopped. Existing courseware was preserved.' : failure.message) }
-    finally { locked.current = false; if (mounted.current) setBusy(false) }
+    } catch (failure) {
+      if (!mounted.current) return
+      if (mode === 'generate' && !allowLimited.current && !controller.current?.signal.aborted && ['SOURCE_REQUIRED', 'SOURCE_NOT_READY'].includes(failure?.code)) setLimited(failure.message)
+      else setError(controller.current?.signal.aborted ? 'Generation stopped. Existing courseware was preserved.' : failure.message)
+    }
+    finally { locked.current = false; allowLimited.current = false; if (mounted.current) setBusy(false) }
   }
   if (manual) return <>
     {error && <p role="alert">{error}</p>}<AssessmentEditor content={manual} topics={topic.contents} onBack={() => setManual(null)} onSave={async questions => { try { await persist({ ...manual, questions, totalPoints: questions.length }) } catch (failure) { setError(failure.message); throw failure } }} /></>
@@ -106,14 +112,19 @@ export default function TopicContentForm({ syllabus, week, topic, entries, type,
     {type !== 'submission' && <label>Add as<select aria-label="Add as" className="form-input" value={mode} disabled={busy} onChange={event => setMode(event.target.value)}>{type === 'assessment' ? <option value="manual">Write assessment questions</option> : <><option value="document">Write teaching content</option><option value="file">Upload files</option><option value="link">Add a link</option></>}<option value="generate">Generate content with AI</option></select></label>}
     {type === 'assessment' && <label>Assessment type<select aria-label="Assessment type" className="form-input" value={format} disabled={busy} onChange={event => setFormat(event.target.value)}><option value="">{mode === 'generate' ? 'Choose automatically from the teaching content' : 'Multiple choice (default)'}</option>{ASSESSMENT_FORMATS.map(item => <option key={item.id} value={item.id}>{item.label}</option>)}</select></label>}
     <label>{mode === 'generate' ? 'Generation instructions' : type === 'assessment' ? 'Assessment instructions' : type === 'submission' ? 'Submission instructions' : 'Teaching content'}<textarea className="form-input" maxLength={mode === 'generate' ? 3500 : 16000} value={body} disabled={busy} onChange={event => setBody(event.target.value)} placeholder={context} /></label>
-    {type === 'material' && <label><input type="checkbox" checked={advancedReading} disabled={busy} onChange={event => setAdvancedReading(event.target.checked)}/> Advanced reading (students can take a mock quiz from it)</label>}
-    {type === 'assessment' && <label><input type="checkbox" checked={submissionBin} disabled={busy} onChange={event => setSubmissionBin(event.target.checked)}/> Include a submission bin</label>}
+    {type === 'material' && <label className="instructor-check"><input type="checkbox" checked={advancedReading} disabled={busy} onChange={event => setAdvancedReading(event.target.checked)}/> Advanced reading (students can take a mock quiz from it)</label>}
+    {type === 'assessment' && <label className="instructor-check"><input type="checkbox" checked={submissionBin} disabled={busy} onChange={event => setSubmissionBin(event.target.checked)}/> Include a submission bin</label>}
     {mode !== 'generate' && <><label><Paperclip size={14} />{type === 'assessment' ? 'Assessment files (optional)' : type === 'submission' ? 'Instructions files (optional)' : 'Teaching files'}<input type="file" multiple disabled={busy} onChange={event => {
       const picked = [...event.target.files]
       event.target.value = ''
       setFiles(previous => [...previous, ...picked])
     }} /><small>Up to 4 MB per file.</small></label>{files.length > 0 && <ul className="topic-work-files">{files.map((file, index) => <li key={index}><span>{file.name}</span><button type="button" className="btn btn-ghost btn-sm" disabled={busy} aria-label={'Remove ' + file.name} onClick={() => setFiles(previous => previous.filter((_, position) => position !== index))}>Remove</button></li>)}</ul>}{(mode === 'link' || type !== 'material') && <label><LinkIcon size={14} />Resource link<input className="form-input" type="url" value={url} disabled={busy} onChange={event => setUrl(event.target.value)} placeholder="https://" /></label>}</>}
     {mode === 'link' && <p className="text-sm text-muted">The link is available to students. Add its readable teaching text above or upload the matching source copy to use its contents in assessment generation.</p>}
+    {limited && !busy && <div className="reader-notice" role="alert" aria-label="Not enough source context">
+      <p><strong>Not enough source context for {topic.title}.</strong> {limited}</p>
+      <p className="text-sm text-muted">Attach or read a course reference that covers this topic, or generate from the syllabus outline and the context available. That draft is marked as having limited sources and stays unpublished until you review it.</p>
+      <div className="instructor-topic-actions"><button type="button" className="btn btn-secondary" onClick={() => (onAttachSources || onClose)()}>Attach more sources</button><button type="button" className="btn btn-primary" onClick={() => { allowLimited.current = true; setLimited(''); void save({ preventDefault() {} }) }}>Generate from what is available</button></div>
+    </div>}
     {error && <p role="alert">{error}</p>}{busy && <LoadingStatus label={mode === 'generate' ? 'Generating content...' : 'Saving teaching content...'} />}
     <div className="instructor-topic-actions"><button type="button" className="btn btn-secondary" onClick={() => { if (busy && mode === 'generate') controller.current?.abort(); else onClose() }}>{busy && mode === 'generate' ? 'Stop generation' : 'Cancel'}</button><button className="btn btn-primary" disabled={busy}>{mode === 'generate' && <Sparkles size={15} />}{mode === 'generate' ? 'Generate draft' : type === 'assessment' ? 'Write assessment questions' : type === 'submission' ? 'Save submission bin draft' : 'Save material draft'}</button></div>
   </form>

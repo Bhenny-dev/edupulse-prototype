@@ -34,6 +34,8 @@
 .instructor-stat-pill progress { height:5px; width:100%; accent-color:var(--sky-500); }
 .instructor-course-form { margin:12px 0; padding:16px; background:var(--white); border:1px solid var(--gray-200); border-radius:var(--radius-md); }
 .instructor-course-form label { display:flex; flex-direction:column; gap:6px; margin-bottom:14px; font-weight:600; }
+.instructor-course-form label.instructor-check { flex-direction:row; align-items:center; gap:8px; }
+.instructor-course-form label.instructor-check input { flex:none; width:auto; margin:0; }
 .instructor-course-form textarea { min-height:100px; resize:vertical; }
 .instructor-source-section { margin-top:24px; }
 @media(max-width:600px) { .instructor-course-card { padding:16px; }.instructor-week > header { padding:12px; }.instructor-topic { margin:8px; padding:12px; }.instructor-topic > summary { align-items:flex-start; }.instructor-course-form { padding:12px; } }

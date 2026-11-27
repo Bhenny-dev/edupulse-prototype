@@ -227,6 +227,11 @@ test('section assessments use their teaching output, retain separate formats and
  }}
  await assert.rejects(draftCoursewareAgents(input,signal(),{...deps,sourceEvidence:async()=>({evidence:[]})}),{code:'SOURCE_NOT_READY'})
  assert.equal(prompts.length,0)
+ // R-I6: once the instructor confirms, the same section drafts from the context available and says so.
+ const limited=await draftCoursewareAgents({...input,allowLimitedSources:true},signal(),{...deps,sourceEvidence:async()=>({evidence:[]})})
+ assert.ok(limited.content.assessments?.length,'a confirmed limited-sources request is not refused')
+ assert.match(String(limited.warning),/no saved reference passage covered this topic/)
+ prompts.length=0
  const result=await draftCoursewareAgents(input,signal(),deps)
  assert.deepEqual(result.content.assessments?.map(assessment=>assessment.outlineSectionId),['one','two'])
  const written=result.content.assessments?.[1]?.questions[0]

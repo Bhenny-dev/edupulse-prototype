@@ -199,3 +199,39 @@ test('advanced reading is marked when a material is created and switched on its 
   await expect(marker).not.toBeChecked()
   expect(fixture.forbidden).toEqual([])
 })
+
+test('insufficient sources is a choice: the form names the topic and generates from what is available only when asked', async ({ page }) => {
+  const fixture = await instructorCourseUI(page)
+  const requests: any[] = []
+  const body = Array.from({ length: 12 }, (_, n) => `Variables and named values keep data for later steps; trace ${n + 1} assigns a value, reads it and explains why the name makes the program easier to read.`).join(' ')
+  await page.route('**/api/ai?action=courseware', async route => {
+    const request = route.request().postDataJSON(); requests.push(request)
+    if (!request.allowLimitedSources) return route.fulfill({ status: 422, json: { error: { code: 'SOURCE_NOT_READY', message: 'No matching retained reference passage was available for this section. Read or attach its source before generation.' } } })
+    const { draftCoursewareStep } = await import('../../src/lib/rag/courseware')
+    const result = await draftCoursewareStep(request, AbortSignal.timeout(10000), {
+      provider: 'controlled limited-source fixture',
+      search: async () => ({ evidence: [] }),
+      sourceEvidence: async () => ({ evidence: [] }),
+      generate: async () => JSON.stringify({ material: { title: 'Variables and named values', sections: [{ heading: 'Variables and named values', body }, { heading: 'Practice', body }] } }),
+    })
+    await route.fulfill({ json: result })
+  })
+  await page.goto(`/#/courseware?course=${fixture.syllabus.id}&tab=materials`)
+  const topic = page.locator('[data-topic="variables"]')
+  await topic.locator('summary').click(); await expect(topic).toHaveAttribute('open', '', { timeout: 20000 })
+  await topic.getByRole('button', { name: 'Add teaching material', exact: true }).click()
+  const form = page.getByRole('form', { name: 'Add teaching material' })
+  await form.getByRole('combobox', { name: 'Add as' }).selectOption('generate')
+  await form.getByRole('button', { name: 'Generate draft' }).click()
+  const notice = form.getByRole('alert', { name: 'Not enough source context' })
+  await expect(notice).toContainText('Not enough source context for Variables and named values.')
+  await expect(notice.getByRole('button', { name: 'Attach more sources', exact: true })).toBeVisible()
+  expect(requests.every(request => !request.allowLimitedSources)).toBe(true)
+  const before = Object.keys((fixture.getWorkspace() as any).content).length
+  await notice.getByRole('button', { name: 'Generate from what is available', exact: true }).click()
+  await expect.poll(() => Object.keys((fixture.getWorkspace() as any).content).length).toBe(before + 1)
+  expect(requests.at(-1).allowLimitedSources).toBe(true)
+  const created = Object.values((fixture.getWorkspace() as any).content).find((item: any) => item.status === 'draft' && item.type === 'material' && item.content.ai) as any
+  expect(created.content.ai.warning).toContain('no saved reference passage covered this topic')
+  expect(fixture.forbidden).toEqual([])
+})
