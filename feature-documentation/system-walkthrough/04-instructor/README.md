@@ -234,3 +234,5 @@ Population preserves management-loaded subject and section counts; it does not e
 
 
 Pending dialog actions, reads and file operations use the shared themed spinner or skeleton. Failed requests retain the existing input and error/retry flow; reduced motion keeps labels visible without animation. [Current desktop and phone examples](../../system-manual/57-loading-audit/README.md).
+
+The instructor class opens **Stream** at the latest opened week for its block. Earlier weeks follow it. Upcoming dates remain in **Upcoming**. The working outline starts at the first week in **Teaching Materials & Assessments**. [Desktop and phone walkthrough](../../system-manual/44-instructor-course-workspace/README.md#deliver-and-announce-in-stream)

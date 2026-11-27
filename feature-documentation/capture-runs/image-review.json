@@ -5754,6 +5754,30 @@
       "sha256": "4b6688eee7059de5c8d737ac1bfbc11d8fb5984ba29992e44cbb9584f06da57e",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-27T11:22:36.447Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/16-stream.png",
+      "sha256": "d7b14090af89b49781254dd9f7d5d26b48694045701b4d8ed6ef4a03c0d01623",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T11:45:45.310Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/17-stream-phone.png",
+      "sha256": "17ba951935508af7faeda40b5a652a26b20599d1e1a4c652b6838fd607bc61ad",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T11:45:45.311Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/56-academic-population/instructor-stream.png",
+      "sha256": "860563c933690c0a2b4796adcad9e000f7040c83909b3595fee8b8a96aaddd5d",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T11:45:45.313Z"
+    },
+    {
+      "path": "feature-documentation/system-manual/56-academic-population/phone-instructor-stream.png",
+      "sha256": "3b38588c1be828a8550ed2291d972cfa8cc15f05d0bc31015677664da1ba1991",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T11:45:45.314Z"
     }
   ]
 }

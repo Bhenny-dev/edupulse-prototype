@@ -6,7 +6,7 @@ The approved-only course-outline correction selects an attested retained approve
 
 The [25 November classroom support correction](supabase.md#25-november-2026-classroom-support-parity) adds class codes, joins and announcements to the verified subject read and routes instructor support classroom controls through the audited gateway. The [validation record](../versions/2026-11-25-classroom-support.md) distinguishes local checks from production rollout.
 
-The instructor **Stream** uses active academic publications for the selected course, term and section. The teaching workspace remains the source of draft and checked content. Week edits use the revision-checked workspace save, with the extracted reference outline retained alongside the working plan. The announcement RPC persists week/topic placement for instructor, support and enrolled learner reads. [Class Stream database contract](supabase.md#class-stream-announcement-placement).
+The instructor **Stream** uses active academic publications for the selected course, term and section. It starts with the latest opened week using the saved window for the selected block or the term-calendar class meeting. Undated legacy classes prioritize weeks with released work or posted announcements. The working outline remains chronological. The teaching workspace remains the source of draft and checked content. Week edits use the revision-checked workspace save, with the extracted reference outline retained alongside the working plan. The announcement RPC persists week/topic placement for instructor, support and enrolled learner reads. [Class Stream database contract](supabase.md#class-stream-announcement-placement).
 
 ### Teaching sequence and AI topic assessments
 

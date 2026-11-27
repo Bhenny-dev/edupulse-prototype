@@ -443,3 +443,21 @@ test('a teaching draft takes a provider link that opens with its provider, and a
   await expect(attachments.getByRole('alert')).toContainText('complete link')
   expect(fixture.forbidden).toEqual([])
 })
+
+test('Stream opens on the latest teaching week for the selected block after reload', async ({ page }) => {
+  await page.clock.setFixedTime(new Date('2026-11-18T11:00:00+08:00'))
+  const fixture = await classroomUI(page)
+  const { records } = fixture
+  const material = records.publications[0]
+  records.publications.push({ ...material, id: 'week-two-reading', workspace_item_id: 'functions-reading', week: 2, title: 'Tracing a function call', content: { ...material.content, courseItemId: 'functions-reading', courseTopicId: undefined, title: 'Tracing a function call' } })
+  await page.goto(`/#/courseware?course=${fixture.syllabus.id}&tab=stream`)
+  const weekHeadings = page.locator('.class-stream-week > header > h2')
+  await expect(weekHeadings).toHaveText(['Week 2', 'Week 1', 'Week 3', 'Week 9 · Examination'])
+  await expect(page.getByRole('region', { name: 'Week 2', exact: true })).toContainText('Tracing a function call')
+  await page.reload()
+  await expect(weekHeadings.first()).toHaveText('Week 2')
+  await page.getByRole('button', { name: 'Teaching Materials & Assessments', exact: true }).click()
+  await expect(page.locator('.instructor-week-title').first()).toHaveText('Week 1')
+  expect(fixture.commands).toEqual([])
+  expect(fixture.sent).toEqual([])
+})

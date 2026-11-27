@@ -5,7 +5,7 @@ The owner requested persistent teaching and learning records across the active i
 The current-term population follows the retained instructor loads: CIT students receive courses appropriate to their recorded year; other departments are included only for explicitly loaded subjects. Existing individual cross-department memberships remain. Population fills only existing management-loaded sections, up to 35 registered students each. It never assigns catalog subjects or creates extra sections to seat more students. Unplaced memberships are reported for management review. Unrelated registered accounts are preserved and excluded. New outlines contain 18 weeks; retained original outlines keep their existing rows. Authored course files contain no fabricated institutional signatures. Existing uploaded syllabus files remain unchanged. The first five weeks include delivered content; later weeks include checked teaching work and editable final-week drafts, so instructors can continue the delivery workflow.
 
 ![Instructor Home with populated loaded subjects](instructor-home.png)
-![Instructor Stream with announcements, delivered work and the class code](instructor-stream.png)
+![Instructor Stream with the class code, a weekly announcement and Week 5 first](instructor-stream.png)
 ![Recorded assessment results by class section](instructor-scores.png)
 
 Open **Home** and select a class. **Stream** shows delivered work, announcements and the compact **Class Code** card with its invitation popover. **Teaching Materials & Assessments** contains the editable weekly plan, drafts and delivery controls. **Class List** and **Scores** show the selected section's roster and results. Shared syllabi and planning copies remain on **Syllabus**. Saved class schedules appear in **Schedule**.
@@ -22,7 +22,7 @@ New answers are scored by the backend, and written answers require instructor re
 The generated population history is recorded in private batch provenance, including its created row identifiers. It is included for the owner's interactive UI evaluation and is not evidence of independent human learning. Titles and user-facing indicators use ordinary course language. Passwords, account access restrictions and provider credentials are not replaced by the population.
 
 ![Instructor Home on a phone](phone-instructor-home.png)
-![Class Stream on a phone](phone-instructor-stream.png)
+![Class Stream on a phone with the latest delivered week first](phone-instructor-stream.png)
 ![Instructor class scores on a phone](phone-instructor-scores.png)
 ![Student Home on a phone](phone-student-home.png)
 ![Student results on a phone](phone-student-scores.png)

@@ -54,7 +54,7 @@ export async function academicPopulationScene(page:Page,role:string,shot:(name:s
  await expect(page.getByRole('region',{name:'Your classes'}).getByRole('button',{name:role==='instructor'?/^Open course /:/^Open /})).toHaveCount(role==='instructor'?6:3)
  await shot(`${role}-home`)
  if(role==='instructor'){
-  await page.goto('/#/dashboard?course=GE%201&block=BSIT-1A&tab=stream');await expect(page.getByRole('region',{name:'Class Code',exact:true})).toContainText('AB22QRS');await shot('instructor-stream')
+  await page.goto('/#/dashboard?course=GE%201&block=BSIT-1A&tab=stream');await expect(page.getByRole('region',{name:'Class Code',exact:true})).toContainText('AB22QRS');await expect(page.locator('.class-stream-week > header > h2').first()).toHaveText('Week 5');await shot('instructor-stream')
   await page.getByRole('button',{name:'Scores',exact:true}).click();await expect(page.getByText('Assessment score radar',{exact:true})).toBeVisible({timeout:20000});await shot('instructor-scores')
  }else{
   await page.getByRole('region',{name:'Your classes'}).getByRole('button',{name:/^Open GE 1 /}).click();await page.getByRole('button',{name:'Scores',exact:true}).click();await expect(page.getByRole('region',{name:'Personal assessment results'})).toBeVisible();await shot('student-scores')

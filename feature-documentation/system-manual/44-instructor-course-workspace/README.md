@@ -20,11 +20,11 @@ The signed-in Instructor navigation is **Home**, **Schedule**, **Syllabus** and 
 
 ## Deliver and announce in Stream
 
-**Stream** lists saved publications by week and topic. Readings and worked examples come before the assessments that cover them. **Open** displays a teaching material or submission bin in its reader. For an assessment it opens the assessment form, answer key and student scores. A scheduled item shows the opening from the selected block's saved schedule. Class announcements appear above the weeks.
+**Stream** starts with the latest week that has opened for the selected block. Earlier opened weeks follow in descending order, then upcoming weeks in opening order. When a class has no recorded schedule, weeks with released work or a posted announcement appear first. **Teaching Materials & Assessments** follows the syllabus from the first week. Readings and worked examples come before the assessments that cover them. **Open** displays a teaching material or submission bin in its reader. For an assessment it opens the assessment form, answer key and student scores. A scheduled item shows the opening from the selected block's saved schedule. Class announcements appear above the weeks.
 
-Both instructor tabs use the same class plan and item order. **Teaching Materials & Assessments** shows editable drafts and saved work. **Stream** shows the delivered items in their matching topics. Delivering a draft adds it to Stream after the delivery is confirmed. **Hide** or **Prepare draft revision** withdraws it from Stream. If the latest delivery cannot be verified, select **Retry** to read it again. If the connection dropped during the update, select **Retry** when you are back online.
+Both instructor tabs use the same class plan and item order within each week. **Teaching Materials & Assessments** shows editable drafts and saved work. **Stream** shows the delivered items in their matching topics. Delivering a draft adds it to Stream after the delivery is confirmed. **Hide** or **Prepare draft revision** withdraws it from Stream. If the latest delivery cannot be verified, select **Retry** to read it again. If the connection dropped during the update, select **Retry** when you are back online.
 
-![Instructor Stream with a week announcement, a topic reminder and published work](16-stream.png)
+![Instructor Stream showing Week 2 before Week 1](16-stream.png)
 
 ![The same teaching material and concept check in Teaching Materials & Assessments with authoring controls](21-shared-teaching-plan.png)
 
@@ -36,7 +36,7 @@ Both instructor tabs use the same class plan and item order. **Teaching Material
 
 Students see posts scoped to their membership in **Announcements** and see week- or topic-linked posts in place in **Teaching Materials & Assessments**. If a topic moves out of the posted week, its announcement appears at that week until the instructor updates its placement. Reload restores the authorized reader or composer location. A new announcement's unsaved text starts blank after reload, and posting requires selecting **Post**.
 
-![Instructor Stream on a phone](17-stream-phone.png)
+![Instructor Stream starting at Week 2 on a phone](17-stream-phone.png)
 
 ## Review the assigned courses and students
 

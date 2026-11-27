@@ -5,11 +5,13 @@ import { deliveredAssessmentUI } from '../delivered-assessment-fixture'
 
 const folder = '../feature-documentation/system-manual/44-instructor-course-workspace'
 export async function classStreamScene(page: Page, mobile = false) {
+  await page.clock.setFixedTime(new Date('2026-11-18T11:00:00+08:00'))
   if (!mobile) await page.setViewportSize({ width: 1440, height: 1100 })
   const fixture = await instructorCourseUI(page)
   const course = fixture.records.courses[0]
   course.outline = [{ week: 1, contents: ['Earlier projected topic'] }]
   const material = fixture.records.publications[0]
+  fixture.records.publications.push({ ...material, id: 'functions-delivered', week: 2, title: 'Tracing a function call', content: { ...material.content, courseItemId: 'functions-reading', courseTopicId: undefined, title: 'Tracing a function call' } })
   const coverage = { materialIds: ['lesson'] }
   const workspace = fixture.getWorkspace() as any
   const quiz = workspace.content.quiz
@@ -20,9 +22,12 @@ export async function classStreamScene(page: Page, mobile = false) {
   fixture.setWorkspace(workspace)
   fixture.records.publications.push({ ...material, id: '1-check', workspace_item_id: 'check', type: 'assessment', title: concept.title, content: { ...concept, courseTopicId: 'old-topic', teachingOrder: 2 } })
   fixture.records.publications.push({ ...material, id: '0-reflection', workspace_item_id: 'reflection', type: 'assessment', title: reflection.title, content: { ...reflection, courseTopicId: 'old-topic', teachingOrder: 1 } })
-  const post = { id: 'weekly-orientation', course_code: course.course_code, academic_year: '2026-2027', semester: '1st Semester', block: 'BSIT-1A', week: 1, placement: 'before' as const, title: 'Before the first class', body: 'Bring your notes for the worked example and concept check.', attachments: [], created_at: '2026-11-25T01:00:00Z', updated_at: '2026-11-25T01:00:00Z' }
+  const post = { id: 'weekly-orientation', course_code: course.course_code, academic_year: '2026-2027', semester: '1st Semester', block: 'BSIT-1A', week: 1, placement: 'before' as const, title: 'Before the first class', body: 'Bring your notes for the worked example and concept check.', attachments: [], created_at: '2026-11-06T01:00:00Z', updated_at: '2026-11-06T01:00:00Z' }
   fixture.records.announcements = [post, { ...post, id: 'variable-reminder', title: 'Worked example reminder', body: 'Trace the value after each assignment.', topic_id: 'variables', placement: 'within' }]
   await page.goto(`/#/courseware?course=${fixture.syllabus.id}&tab=stream`)
+  const latest = page.getByRole('region', { name: 'Week 2', exact: true })
+  await expect(page.locator('.class-stream-week > header > h2').first()).toHaveText('Week 2')
+  await expect(latest.getByRole('button', { name: 'Open Tracing a function call' })).toBeVisible()
   const week = page.getByRole('region', { name: 'Week 1', exact: true })
   const assessment = week.getByRole('button', { name: 'Open Assignment concept check' })
   await expect(assessment).toBeVisible()
@@ -30,7 +35,7 @@ export async function classStreamScene(page: Page, mobile = false) {
   const delivered = ['Variables lesson', 'Assignment concept check', 'Assignment reflection']
   await expect(week.getByRole('region', { name: 'Variables and named values' }).locator('.class-stream-item h4')).toHaveText(delivered)
   if (mobile) {
-    await week.scrollIntoViewIfNeeded()
+    await latest.scrollIntoViewIfNeeded()
     await page.screenshot({ path: `${folder}/17-stream-phone.png`, animations: 'disabled' })
   } else {
     await page.screenshot({ path: `${folder}/16-stream.png`, animations: 'disabled' })

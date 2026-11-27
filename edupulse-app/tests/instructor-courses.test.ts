@@ -5,6 +5,7 @@ import { contentGenerationRequest, navigationCorrection, sourceDestination } fro
 import { operatorInput, planValidatedTool } from '../src/agents/toolPlanner.js'
 import type { AcademicData } from '../src/components/academic/academicData.js'
 import { classTeachingPlan } from '../src/utils/classTeachingPlan.js'
+import { classStreamWeekOrder } from '../src/utils/classStreamOrder.js'
 
 const records = (): AcademicData => ({ courses: [{ id: 'course', course_code: 'IT 102', course_title: 'Programming', instructor_id: 'teacher', active: true }], publications: [], enrollments: [], accesses: [], attempts: [], institutional: [
   { kind: 'courses', record_key: 'IT 102', data: { CourseCode: 'IT 102', CourseTitle: 'Programming', Units: '3', YearLevel: '1' } },
@@ -138,4 +139,35 @@ test('uploaded course identity tolerates code whitespace without creating an una
  const loaded=instructorCourses(data,'teacher');assert.deepEqual(loaded[0].courseIds,['course'])
  assert.equal(syllabusForCourse([{id:'uploaded',courseCode:'IT102',status:'active'}],loaded[0])?.id,'uploaded')
  assert.equal(syllabusForCourse([{id:'wrong',courseCode:'IT103',status:'active'}],loaded[0]),undefined)
+})
+
+test('Stream prioritizes the latest opened block week, then upcoming dates and unplaced weeks', () => {
+  const data = records()
+  const now = Date.parse('2026-11-27T04:00:00Z')
+  const course = { block: 'A', semester: '1st Semester', academicYear: '2026-2027', slots: { A: [{ days: 'M', time: '8:00 AM - 10:00 AM' }] } }
+  const syllabus = { id: 'approved' }
+  const weeks = [1, 2, 3, 4, 5, 9].map(week => ({ week, entries: [] }))
+  data.institutional!.push({ kind: 'term_calendar', record_key: '1st Semester|2026-2027', data: { ClassesStart: '2026-11-02', Weeks: '18' } })
+  assert.deepEqual(classStreamWeekOrder({ weeks, posts: [], data, course, syllabus, now }), [4, 3, 2, 1, 5, 9])
+  data.deliverySchedules = [
+    { course_id: 'course', syllabus_id: syllabus.id, instructor_id: 'teacher', block_section: 'B', revision: 1, updated_at: '', windows: [{ week: 9, opens_at: '2026-11-01T00:00:00Z', closes_at: null }] },
+    { course_id: 'course', syllabus_id: syllabus.id, instructor_id: 'teacher', block_section: 'A', revision: 1, updated_at: '', windows: [
+      { week: 3, opens_at: '2026-11-20T00:00:00Z', closes_at: '2026-11-20T02:00:00Z' },
+      { week: 4, opens_at: '2026-12-01T00:00:00Z', closes_at: null },
+    ] },
+  ]
+  assert.deepEqual(classStreamWeekOrder({ weeks, posts: [{ week: 1 }], data, course, syllabus, now }), [3, 1, 4, 2, 5, 9])
+})
+
+test('Stream can prioritize released work when a legacy class has no calendar', () => {
+  const data = records()
+  const course = { block: 'A', semester: '1st Semester', academicYear: '2026-2027' }
+  const weeks = [
+    { week: 1, entries: [{ publication: {} }] },
+    { week: 2, entries: [{ publication: { release_at: '2026-11-21T00:00:00Z' } }] },
+    { week: 3, entries: [{ publication: { release_at: '2026-12-01T00:00:00Z' } }] },
+    { week: 4, entries: [{ publication: { delivery_mode: 'block_schedule' } }] },
+    { week: 9, entries: [] },
+  ]
+  assert.deepEqual(classStreamWeekOrder({ weeks, posts: [], data, course, syllabus: { id: 'approved' }, now: Date.parse('2026-11-27T04:00:00Z') }), [2, 1, 3, 4, 9])
 })

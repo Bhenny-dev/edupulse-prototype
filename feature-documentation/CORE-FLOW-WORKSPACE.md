@@ -581,9 +581,12 @@ G24 release: `b368efa3` is Ready as `dpl_6Fi41iYy49i4j8ghHMsXXK8KMj3k` on `edupu
 | Task | Work | Acceptance | Stage |
 |---|---|---|---|
 | T25.1 | Derive both instructor tabs from the same topics and workspace sequence. Use confirmed publications for Stream items and retain existing legacy publications. | Shared-plan unit test and instructor comparison with stale projection topic and order metadata. | Complete |
+| T25.2 | Start the instructor Stream at the latest opened teaching week for the selected block. Show earlier opened weeks next and upcoming weeks after them. Keep the shared plan and its topic and item sequence. | Tests cover saved openings, calendar defaults, legacy releases, classroom reload on desktop and phone, and chronological drafting. | Complete |
 | T25.2 | Synchronize publishing, hiding and revisions without showing stale delivery after a save. Keep the class and retry when delivery reads fail. | Instructor desktop and phone round-trip across both tabs, including reload and retry after a failed or interrupted delivery read. | Complete |
 
 The shared plan retains instructor-only workspace controls in **Teaching Materials & Assessments** and announcement and read-only delivery actions in **Stream**.
+
+27 November follow-up. Stream opens at the latest week that has opened for the block. Earlier weeks and future openings remain available in the feed. The desktop and phone captures and reload checks cover Week 2 opening above Week 1.
 
 ## 27 November 2026 - G6 practice from finished quizzes
 

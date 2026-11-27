@@ -15,6 +15,8 @@ import { sameTerm } from '../../utils/classroom'
 import { deliveryTimeLabel } from '../../utils/blockDelivery'
 import ClassCodesCard from './ClassCodes'
 import { classUpcoming } from './classWork'
+import { classStreamWeekOrder } from '../../utils/classStreamOrder'
+import { recordsNow } from '../academic/studentProgress'
 import { LinkCard, LinkForm } from './LinkAttachments'
 import './classroom.css'
 
@@ -74,13 +76,13 @@ function Upcoming({ course, syllabus, data }) {
   </section>
 }
 
-/** Saved class publications and announcements, in delivery order. */
+/** Saved class publications and announcements, with the latest opened teaching week first. */
 export default function ClassStream({ course, syllabus, plan, data, readOnly = false, highlight, onOpenMaterials }) {
   const { user } = useAuth(), records = useAcademicRecords(), heading = useId()
   const scope = `class:${course.id}:${course.block}`
   const posts = classAnnouncements(data, course)
   const { rows, weeks: plannedWeeks, hasDeliveries } = plan
-  const weeks = [...new Set([...plannedWeeks.map(week => week.week), ...posts.map(post => post.week).filter(Boolean)])].sort((a, b) => a - b)
+  const weeks = classStreamWeekOrder({ weeks: plannedWeeks, posts, data, course, syllabus, now: recordsNow(data) })
   const current = records.projectionCurrent
   const [composer, setComposer] = useWorkspaceViewState(`${scope}:stream-composer`, null)
   const [menu, setMenu] = useWorkspaceViewState(`${scope}:stream-menu`, null)

@@ -417,7 +417,7 @@ An explicit AI topic assessment uses text from the covered teaching materials, i
 
 ### 27 November 2026 — Instructor tab synchronization
 
-The owner requires Stream and Teaching Materials & Assessments to show the same class plan, with controls suited to each tab. Both share the current weeks, topics and item order. Stream displays the delivered subset with announcement controls and read-only readers. The drafting tab includes unpublished work and authoring controls. A published item follows the position of its matching saved teaching record. Existing publication-only records remain available as read-only work. Stream waits for the confirmed delivery read after a save. A failed read keeps the class and offers retry.
+The owner requires Stream and Teaching Materials & Assessments to show the same class plan, with controls suited to each tab. Both share the current weeks, topics and item order within a week. Stream starts with the latest opened teaching week for the selected block, followed by earlier opened weeks and then upcoming weeks. The working plan retains chronological order. The display reads existing schedules or publication records. Stream displays the delivered subset with announcement controls and read-only readers. The drafting tab includes unpublished work and authoring controls. A published item follows the position of its matching saved teaching record. Existing publication-only records remain available as read-only work. Stream waits for the confirmed delivery read after a save. A failed read keeps the class and offers retry.
 
 
 ## Owner correction: minimal Class Code card, 25 November 2026
