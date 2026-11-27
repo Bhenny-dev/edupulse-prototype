@@ -266,3 +266,29 @@ test('Find source for selection shows the cited passage highlighted and offers t
   expect(located).toEqual([{ operation: 'locate', ids: [retained], text: quote }])
   expect(fixture.forbidden).toEqual([])
 })
+
+test('an unreadable reference offers other pages and saves a chosen page under the same citation', async ({ page }) => {
+  const fixture = await instructorCourseUI(page)
+  const reference = { kind: 'online', title: 'Programming source', url: 'https://example.invalid/programming', authors: '', year: '', publisher: '' }
+  let attached: any = null
+  const calls: any[] = []
+  await page.route('**/api/ai?action=syllabus-sources', async route => {
+    const input = route.request().postDataJSON(); calls.push(input)
+    if (input.operation === 'candidates') return route.fulfill({ json: { candidates: [{ title: 'Programming notes', url: 'https://notes.example.edu/programming', snippet: 'Variables, assignment and tracing.' }, { title: 'Intro to programs', url: 'https://course.example.net/intro', snippet: '' }] } })
+    if (input.operation === 'attach-link') { attached = input; return route.fulfill({ json: { sources: [] } }) }
+    const snapshot = attached ? { id: '11111111-2222-4333-8444-555555555555', url: attached.url, reference, created_at: '2026-11-27T00:00:00Z', versions: 1, truncated: false, status: 'retained' } : undefined
+    return route.fulfill({ json: { sources: [{ key: 'programming', reference, status: attached ? 'retained' : 'unavailable', ...(snapshot ? { snapshot } : { message: 'The source could not be read.' }) }] } })
+  })
+  await page.goto(`/#/courseware?course=${fixture.syllabus.id}&tab=materials`)
+  await page.getByRole('button', { name: 'Source actions for Programming source', exact: true }).click()
+  await page.getByRole('menuitem', { name: 'Find other pages', exact: true }).click()
+  const region = page.getByRole('region', { name: 'Other pages for Programming source', exact: true })
+  await expect(region.getByRole('link', { name: 'Open' }).first()).toHaveAttribute('href', 'https://notes.example.edu/programming')
+  await expect(region.getByRole('listitem')).toHaveCount(2)
+  await region.getByRole('button', { name: 'Use this page' }).first().click()
+  await expect(region).toHaveCount(0)
+  expect(attached).toEqual({ operation: 'attach-link', reference: expect.objectContaining({ title: 'Programming source' }), url: 'https://notes.example.edu/programming' })
+  await expect(page.locator('.syllabus-source-list')).toContainText('Retained')
+  expect(calls.filter(call => call.operation === 'candidates')).toHaveLength(1)
+  expect(fixture.forbidden).toEqual([])
+})

@@ -12,6 +12,8 @@ import type {Evidence} from '../../src/lib/rag/types.js'
 import {sourceCommand,SOURCE_BYTES,SOURCE_TEXT,type SourceReference,type SourceSnapshot,type SourceStatus} from './contracts.js'
 import {latestSnapshotForUrl,listSnapshots,readSnapshot,removeSnapshot,saveSnapshot,sourceKey} from './store.js'
 import {catalogSourceUrl,downloadSource,sourceUrl} from './fetch.js'
+import {searchWeb} from '../external/web.js'
+import type {WebSearch} from '../../src/lib/rag/types.js'
 
 export async function sourceManifest(identity:Identity,refs:SourceReference[]):Promise<SourceStatus[]>{
  const rows=await listSnapshots(identity,refs.map(sourceKey))
@@ -39,7 +41,14 @@ export function extractedReference(extracted:Extracted,name:string,url=''):Sourc
  return {kind:url?'link':'book',title:field('title')||name.replace(/\.[^.]+$/,'').slice(0,500),authors:field('author',1000),year:field('year',40),publisher:field('publisher'),url,...(field('doi')?{doi:field('doi',300)}:{}),...(field('isbn')?{isbn:field('isbn',80)}:{})}
 }
 const metadataGaps=(reference:SourceReference)=>['authors','year','publisher'].filter(key=>!reference[key as keyof SourceReference])
-export async function executeSources(identity:Identity,body:unknown,signal:AbortSignal,download=downloadSource,discover=discoverReference){
+/** Candidate pages for a reference: public search results only (no Wikipedia, R-C3), never the unreadable link again. */
+export async function referenceCandidates(reference:SourceReference,signal:AbortSignal,search:WebSearch=(query,abort)=>searchWeb(query,abort)){
+ const query=[parseCitation(reference.title).title||reference.title,reference.authors].filter(Boolean).join(' ').slice(0,300)
+ const result=await search(query,signal),seen=new Set<string>(),original=reference.url.trim()
+ const candidates=result.evidence.filter(item=>item.url&&/^https?:\/\//i.test(item.url)&&item.url!==original&&!/(^|\.)wikipedia\.org$/i.test(new URL(item.url).hostname)&&!seen.has(item.url)&&seen.add(item.url)).slice(0,5).map(item=>({title:item.title.slice(0,300),url:item.url!,snippet:item.text.replace(/\s+/g,' ').trim().slice(0,280)}))
+ return {candidates,...(result.warning?{warning:result.warning}:{}),...(candidates.length?{}:{message:'No other public page was found for this reference. Attach a readable copy instead.'})}
+}
+export async function executeSources(identity:Identity,body:unknown,signal:AbortSignal,download=downloadSource,discover=discoverReference,search?:WebSearch){
  if(!['instructor','admin'].includes(identity.role))throw new ApiError(403,'FORBIDDEN','Only instructors and the system admin can manage retained teaching sources.')
  const command=sourceCommand.parse(body)
  if(command.operation==='index'){
@@ -84,6 +93,13 @@ export async function executeSources(identity:Identity,body:unknown,signal:Abort
  }
  if(command.operation==='evidence')return retainedSourceEvidence(identity,command.references,command.focus)
  if(command.operation==='list')return {sources:await sourceManifest(identity,command.references)}
+ if(command.operation==='candidates')return referenceCandidates(command.reference,signal,search)
+ if(command.operation==='attach-link'){
+  const response=await download(sourceUrl(command.url).href,signal,{allowCatalog:true})
+  if(response.metadataOnly)throw new ApiError(422,'SOURCE_METADATA_ONLY','That page is a catalog or search listing, not readable teaching text. Choose another page or attach a readable copy.')
+  await retain(identity,command.reference,response.bytes,`source.${fileExtension(response.mime)}`,response.url,signal)
+  return {sources:await sourceManifest(identity,[command.reference])}
+ }
  if(command.operation==='attach'){
   const bytes=decodeUpload(command.base64)
   await retain(identity,command.reference,bytes,command.name,'',signal)

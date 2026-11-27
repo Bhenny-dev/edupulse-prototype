@@ -12,6 +12,9 @@ export const sourceCommand=z.discriminatedUnion('operation',[
  z.object({operation:z.literal('evidence'),references:z.array(sourceReference).max(80),focus:z.string().min(1).max(1500)}).strict(),
  z.object({operation:z.literal('locate'),ids:z.array(z.string().uuid()).min(1).max(12),text:z.string().trim().min(3).max(2000)}).strict(),
  z.object({operation:z.literal('review'),id:z.string().uuid()}).strict(),
+ // T9.4: for a reference whose link cannot be read, suggest other pages, then retain a chosen page under the same reference for review.
+ z.object({operation:z.literal('candidates'),reference:sourceReference}).strict(),
+ z.object({operation:z.literal('attach-link'),reference:sourceReference,url:z.string().url().max(2000)}).strict(),
  z.object({operation:z.literal('open'),id:z.string().uuid()}).strict(),
  z.object({operation:z.literal('remove'),id:z.string().uuid()}).strict(),
 ])

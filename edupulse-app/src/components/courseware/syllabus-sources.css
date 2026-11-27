@@ -22,3 +22,7 @@
 .retained-source-dialog .modal-actions .btn{min-height:44px}
 @media(max-width:600px){.syllabus-source-list>li{flex-wrap:wrap}.syllabus-source-actions{margin-left:auto}.syllabus-source-actions button{min-height:44px}.syllabus-sources-toolbar .btn{min-height:44px}}
 @media(max-width:600px){.retained-source-dialog .modal-actions .btn:first-child{width:100%}}
+.syllabus-source-candidates { display:grid; gap:8px; margin-top:8px; padding:10px 12px; border:1px solid var(--gray-200); border-radius:var(--radius-md); background:var(--gray-50); }
+.syllabus-source-candidates ul { display:grid; gap:10px; margin:0; padding:0; list-style:none; }
+.syllabus-source-candidates li { display:grid; gap:4px; }
+.syllabus-source-candidate-actions { display:flex; flex-wrap:wrap; gap:8px; }
