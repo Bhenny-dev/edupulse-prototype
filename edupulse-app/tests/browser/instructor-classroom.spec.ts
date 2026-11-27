@@ -308,8 +308,10 @@ test('both class tabs share topic and delivery order through publishing, hiding,
   workspace.content.quiz.content.coverage = { materialIds: ['lesson', 'example'] }
   fixture.setWorkspace(workspace)
   let unavailable = false
-  await page.route('**/api/ai?action=academic', route => {
+  let holdDelivery: Promise<void> | undefined
+  await page.route('**/api/ai?action=academic', async route => {
     if (route.request().method() !== 'GET') return route.fallback()
+    await holdDelivery
     if (unavailable) return route.fulfill({ status: 503, json: { error: { message: 'The delivery read was interrupted.' } } })
     const saved = fixture.getWorkspace() as typeof workspace
     const publications = Object.entries(saved.content).reverse().flatMap(([id, item]: [string, any], index) =>
@@ -351,11 +353,23 @@ test('both class tabs share topic and delivery order through publishing, hiding,
   await expect(publishedRows).toHaveText(['Variables lesson', 'Second worked example'])
   await materials.click()
   const reading = topic.locator('.instructor-sequence-item').filter({ hasText: 'Variables lesson' })
+  let resumeDelivery: () => void = () => {}
+  holdDelivery = new Promise(resolve => { resumeDelivery = resolve })
   await reading.getByRole('button', { name: 'Prepare draft revision' }).click()
   await page.getByRole('dialog', { name: 'Prepare draft revision' }).getByRole('button', { name: 'Prepare draft revision' }).click()
   await page.getByRole('button', { name: 'Close course content' }).click()
   await expect(reading).toContainText('Draft')
   await stream.click()
+  await expect(page.getByText('Updating delivered course content...')).toBeVisible()
+  const retry = page.getByRole('button', { name: 'Retry', exact: true })
+  await page.context().setOffline(true)
+  await expect(retry).toBeDisabled()
+  holdDelivery = undefined
+  resumeDelivery()
+  await page.context().setOffline(false)
+  await expect(retry).toBeEnabled()
+  await expect(publishedRows).toHaveCount(0)
+  await retry.click()
   await expect(publishedRows).toHaveText(['Second worked example'])
   expect(fixture.forbidden).toEqual([])
 })

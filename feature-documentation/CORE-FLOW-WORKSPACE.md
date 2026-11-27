@@ -578,6 +578,6 @@ The reported Capstone Project 2 sequence exposed that population workspace items
 | Task | Work | Acceptance | Stage |
 |---|---|---|---|
 | T25.1 | Derive both instructor tabs from the same topics and workspace sequence. Use confirmed publications for Stream items and retain existing legacy publications. | Shared-plan unit test and instructor comparison with stale projection topic and order metadata. | Complete |
-| T25.2 | Synchronize publishing, hiding and revisions without showing stale delivery after a save. Keep the class and retry when delivery reads fail. | Instructor desktop and phone round-trip across both tabs, including reload and a failed delivery read. | Complete |
+| T25.2 | Synchronize publishing, hiding and revisions without showing stale delivery after a save. Keep the class and retry when delivery reads fail. | Instructor desktop and phone round-trip across both tabs, including reload and retry after a failed or interrupted delivery read. | Complete |
 
 The shared plan retains instructor-only workspace controls in **Teaching Materials & Assessments** and announcement and read-only delivery actions in **Stream**.

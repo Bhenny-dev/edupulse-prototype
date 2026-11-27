@@ -136,7 +136,7 @@ export default function ClassStream({ course, syllabus, plan, data, readOnly = f
       {data.classroomError && <p role="status" className="connected-pulse-warning">{data.classroomError}</p>}
       {!readOnly && <button type="button" className="class-composer-open" onClick={() => compose('new')}><span className="class-avatar" aria-hidden="true">{user?.name?.charAt(0)}</span><span>Announce something to your class</span></button>}
       {posts.filter(post => !post.week).map(post => renderPost(post))}
-      {!current && (records.error || !records.online
+      {!current && (records.error || !records.online || !records.loading
         ? <p className="text-sm">The latest delivery could not be verified. <button type="button" className="btn btn-secondary btn-sm" onClick={() => void records.load(true)} disabled={!records.online || records.loading}>Retry</button></p>
         : <LoadingStatus label="Updating delivered course content..." />)}
       {current && !hasDeliveries && <p className="text-sm text-muted">No teaching materials or assessments have been delivered for this class yet.</p>}

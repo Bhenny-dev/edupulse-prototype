@@ -22,7 +22,7 @@ The signed-in Instructor navigation is **Home**, **Schedule**, **Syllabus** and 
 
 **Stream** lists saved publications by week and topic. Readings and worked examples come before the assessments that cover them. **Open** displays the delivered teaching material, submission bin or assessment in a read-only reader. A scheduled item shows the opening from the selected block's saved schedule. Class announcements appear above the weeks.
 
-Both instructor tabs use the same class plan and item order. **Teaching Materials & Assessments** shows editable drafts and saved work. **Stream** shows the delivered items in their matching topics. Delivering a draft adds it to Stream after the delivery is confirmed. **Hide** or **Prepare draft revision** withdraws it from Stream. If the latest delivery cannot be verified, select **Retry** to read it again.
+Both instructor tabs use the same class plan and item order. **Teaching Materials & Assessments** shows editable drafts and saved work. **Stream** shows the delivered items in their matching topics. Delivering a draft adds it to Stream after the delivery is confirmed. **Hide** or **Prepare draft revision** withdraws it from Stream. If the latest delivery cannot be verified, select **Retry** to read it again. If the connection dropped during the update, select **Retry** when you are back online.
 
 ![Instructor Stream with a week announcement, a topic reminder and published work](16-stream.png)
 
