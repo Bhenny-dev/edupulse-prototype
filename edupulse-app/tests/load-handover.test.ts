@@ -81,6 +81,8 @@ test('a Dean block handover copies teaching independently, retains scores/access
   await as(3);await assert.rejects(dean({action:'load.update',key:key('BSIT-1A'),expected_instructor:ids[0],instructor_id:ids[1],block:'BSIT-1A',semester:'1st Semester'}),{code:'42501'})
   await as(0)
   const oldSnapshot=(await db.query<{data:any}>('SELECT data FROM public.edupulse_workspaces WHERE owner_id=$1',[ids[0]])).rows[0].data
+  assert.ok((await db.query("SELECT * FROM public.edupulse_enrollments WHERE block_section='BSIT-1A'")).rows.length>0,'before the handover the instructor reads the block roster')
+  assert.ok(oldSnapshot.syllabi.some((s:any)=>s.id==='s1'))
   await as(2)
   await dean({action:'load.update',key:key('BSIT-1A'),expected_instructor:ids[0],instructor_id:ids[1],block:'BSIT-1A',semester:'1st Semester'})
   await as(1)
@@ -101,6 +103,12 @@ test('a Dean block handover copies teaching independently, retains scores/access
   assert.equal(retained.length,1);assert.notEqual(retained[0].id,sourceId)
   assert.equal(Object.values(target.data.content).find((v:any)=>v.type==='material') && (Object.values(target.data.content).find((v:any)=>v.type==='material') as any).content.ai.sources[0].retained.id,retained[0].id)
   await assert.rejects(db.query('SELECT * FROM edupulse_private.teaching_handover_bundles'),{code:'42501'})
+  // R-D3 (G8): the former instructor keeps their syllabus copy but can no longer open the handed-over block.
+  await as(0)
+  assert.equal((await db.query("SELECT * FROM public.edupulse_enrollments WHERE block_section='BSIT-1A'")).rows.length,0,'the former instructor no longer reads the handed-over block roster')
+  assert.equal((await db.query('SELECT * FROM public.edupulse_attempts WHERE id=$1',[(transferred[0] as any).id])).rows.length,0,'the former instructor cannot read the transferred score')
+  const formerSyllabi=(await db.query<{data:any}>('SELECT data FROM public.edupulse_workspaces WHERE owner_id=$1',[ids[0]])).rows[0]?.data.syllabi||[]
+  assert.ok(formerSyllabi.some((s:any)=>s.id==='s1'),'the former instructor keeps their syllabus copy on their Syllabus page')
   await as(2)
   assert.equal((await db.query('SELECT name FROM storage.objects')).rows.length,1,'management can inspect the inherited original teaching file')
   const scan=await dean({action:'load.inspect',key:key('BSIT-1A'),expected_instructor:ids[1]})

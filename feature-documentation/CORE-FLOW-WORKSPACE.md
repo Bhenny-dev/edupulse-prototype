@@ -237,8 +237,8 @@ typing dates; an instructor can still save other dates for a block.
 
 | Task | Work | Acceptance | Stage |
 |---|---|---|---|
-| T8.1 | After a handover the new instructor sees the courseware and can add files; the former instructor cannot open the block; scores and access are unchanged | Browser spec over the handover fixture | Draft |
-| T8.2 | The former instructor keeps a read-only copy of their syllabus on the Syllabus page | Browser spec | Draft |
+| T8.1 | After a handover the new instructor sees the courseware and can add files; the former instructor cannot open the block; scores and access are unchanged. Proven in the database: the replacement reads the copied publications, the transferred score, access, schedules and the inherited private file; the former instructor reads the block roster before the handover and neither the roster nor the transferred score after it | `load-handover.test.ts` (new before/after assertions for the former instructor); `instructor-handover.spec.ts` covers the Dean's assignment and removal in the browser | Tested |
+| T8.2 | The former instructor keeps a read-only copy of their syllabus on the Syllabus page. R-D3 asks only that they keep a copy and cannot open the block, so the copy stays editable (locking it would also lock an instructor who still teaches another block of that course); the replacement gets an independent copy marked `handedOverFrom` | `load-handover.test.ts` (syllabus `s1` stays in the former instructor's workspace) | Tested |
 
 ### G9. Source-grounded material generation (R-I6, R-C3)
 
@@ -605,7 +605,7 @@ Scan of this file, the 23 November supporting specification (`versions/supportin
 | G1 to G5 | Goals | Ready: their migrations are listed remotely and the live `54518a5e` bundle serves their screens ("Upload class lists", "Start next allowed attempt"), checked by crawling the deployed chunks | Task rows set to Ready |
 | T6.2 Advanced reading and mock quizzes | G6, R-S3 | Ready: `9f8930e6`, migration `20261127100000` applied, deployment `dpl_2sbFdxB4qbWuE7DVNNvk3FRzd4Mp` Ready | None |
 | T7.1 to T7.4 Performance monitoring | G7, R-I9, R-D4, R-D2 | T7.1 to T7.3 Ready (`4fde00a8`, `dpl_3rKgLqUHodCac4WptEBLNYDu68Jm`); T7.4 Tested; Dean Performance placement is an owner decision | Release T7.4 |
-| T8.1, T8.2 Instructor change continuity | G8, R-D3 | Partial: database handover tested; `instructor-handover.spec.ts` rewritten for the course catalog actions and the Instructors table (passes for Dean and Program Coordinator on desktop and phone) | Add the new-instructor courseware and former-instructor syllabus checks |
+| T8.1, T8.2 Instructor change continuity | G8, R-D3 | Tested: former-instructor revocation and syllabus copy asserted; Dean browser flow repaired | K4 timetable conflicts next |
 | T9.1 to T9.4 Source-grounded generation | G9, R-I6, R-C3 | Partial: retrieval, coverage warning and passage inspector exist | Verify each behaviour against its acceptance and fill gaps |
 | T10.1 to T10.3 Large assessment generation | G10, R-I7 | Missing: generated assessments allow 3 to 5 questions; G24 grounds topic assessments in covered teaching | Batched generation of up to 50 or more validated items with duplicates removed |
 | T11.1 to T11.3 Pulse and official documents | G11, R-C4 | Partial: teaching-load files routed; class lists and syllabus files not | Route `.xls` class lists and syllabus PDFs from Pulse to the existing intakes |
