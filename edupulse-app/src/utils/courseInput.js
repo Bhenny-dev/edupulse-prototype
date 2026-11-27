@@ -1,5 +1,6 @@
 import {aggregateSections} from './outlineSections'
 import { allowsPublicResearch, planRequest } from '../lib/rag/plan'
+import { explicitWebRequest } from '../lib/systemChatPolicy'
 import { collectSyllabusReferences } from '../lib/rag/syllabusReferences'
 import { COURSEWARE_PLAN_VERSION } from '../lib/rag/coursewarePlan'
 
@@ -30,7 +31,8 @@ export function buildCourseInput(syllabus, weekNumber, request = '') {
   if ((row.contents?.length||0)>40) throw new Error(`Week ${weekNumber} exceeds the supported 40 outline topics. No topics were silently omitted.`)
   if (!row.ilos?.trim() || !row.contents?.length) throw new Error(`Week ${weekNumber} needs topics and measurable learning outcomes before generation.`)
   /** @type {'sources' | 'auto'} */
-  const research = Boolean(row.sections?.length) || !allowsPublicResearch(request) || planRequest({ message: request }).sourceOnly ? 'sources' : 'auto'
+  // T9.1/R-C3: official courseware reads the course's references and attached files; the public web only when the request asks for it.
+  const research = !row.sections?.length && explicitWebRequest(request) && allowsPublicResearch(request) && !planRequest({ message: request }).sourceOnly ? 'auto' : 'sources'
   return {
     planVersion:COURSEWARE_PLAN_VERSION,
     syllabusReferences: collectSyllabusReferences(syllabus, weekNumber),
