@@ -15,7 +15,7 @@ import { LoadingStatus } from '../ui/LoadingFeedback'
 export default function TopicContentForm({ syllabus, week, topic, entries, type, afterId, overall = false, onSaved, onClose }) {
   const { commit } = useWorkspace(), [mode, setMode] = useState(type === 'assessment' ? 'manual' : 'document')
   const [title, setTitle] = useState(''), [body, setBody] = useState(''), [url, setUrl] = useState(''), [files, setFiles] = useState([])
-  const [submissionBin, setSubmissionBin] = useState(type === 'submission')
+  const [submissionBin, setSubmissionBin] = useState(type === 'submission'), [advancedReading, setAdvancedReading] = useState(false)
   const uploaded = useRef(new WeakMap())
   const [format, setFormat] = useState(requestedAssessmentFormat(topic.assessmentTypes.join('; ')) || '')
   const [busy, setBusy] = useState(false), [error, setError] = useState(''), [manual, setManual] = useState(null)
@@ -39,7 +39,7 @@ export default function TopicContentForm({ syllabus, week, topic, entries, type,
       const weekItems = Object.entries(data.content).filter(([, item]) => item.syllabusId === syllabus.id && item.week === week && item.content && !item.generationCheckpoint).map(([itemId,item]) => ({ ...item, id: itemId }))
       const existing = topicEntries(weekItems, topic.id, weekTopics(current.courseOutline.find(row => row.week === week)).length === 1).map(item => ({ id: item.id, content: item.content, position: item.position }))
       if (jsonValue(existing) !== expected) throw new Error('Teaching content changed while this draft was being prepared. Reopen the topic and review its current materials.')
-      return { ...data, content: { ...data.content, [id]: { syllabusId: syllabus.id, week, position, type: type === 'submission' ? 'material' : type, status: 'draft', title: content.title, content: { ...content, ...(submissionBin ? { submissionBin: true } : {}), ...(type === 'submission' ? { submissionOnly: true } : {}), courseItemId: id, courseTopicId: topic.id, outlineSectionId: topic.id, teachingOrder: position, ...(type === 'assessment' ? { overallAssessment: overall, coverage: { materialIds: covered.map(item => item.id) } } : {}) }, createdAt: new Date().toISOString() } } }
+      return { ...data, content: { ...data.content, [id]: { syllabusId: syllabus.id, week, position, type: type === 'submission' ? 'material' : type, status: 'draft', title: content.title, content: { ...content, ...(submissionBin ? { submissionBin: true } : {}), ...(advancedReading && type === 'material' ? { advancedReading: true } : {}), ...(type === 'submission' ? { submissionOnly: true } : {}), courseItemId: id, courseTopicId: topic.id, outlineSectionId: topic.id, teachingOrder: position, ...(type === 'assessment' ? { overallAssessment: overall, coverage: { materialIds: covered.map(item => item.id) } } : {}) }, createdAt: new Date().toISOString() } } }
     })
     onSaved(id)
   }
@@ -106,6 +106,7 @@ export default function TopicContentForm({ syllabus, week, topic, entries, type,
     {type !== 'submission' && <label>Add as<select aria-label="Add as" className="form-input" value={mode} disabled={busy} onChange={event => setMode(event.target.value)}>{type === 'assessment' ? <option value="manual">Write assessment questions</option> : <><option value="document">Write teaching content</option><option value="file">Upload files</option><option value="link">Add a link</option></>}<option value="generate">Generate content with AI</option></select></label>}
     {type === 'assessment' && <label>Assessment type<select aria-label="Assessment type" className="form-input" value={format} disabled={busy} onChange={event => setFormat(event.target.value)}><option value="">{mode === 'generate' ? 'Choose automatically from the teaching content' : 'Multiple choice (default)'}</option>{ASSESSMENT_FORMATS.map(item => <option key={item.id} value={item.id}>{item.label}</option>)}</select></label>}
     <label>{mode === 'generate' ? 'Generation instructions' : type === 'assessment' ? 'Assessment instructions' : type === 'submission' ? 'Submission instructions' : 'Teaching content'}<textarea className="form-input" maxLength={mode === 'generate' ? 3500 : 16000} value={body} disabled={busy} onChange={event => setBody(event.target.value)} placeholder={context} /></label>
+    {type === 'material' && <label><input type="checkbox" checked={advancedReading} disabled={busy} onChange={event => setAdvancedReading(event.target.checked)}/> Advanced reading (students can take a mock quiz from it)</label>}
     {type === 'assessment' && <label><input type="checkbox" checked={submissionBin} disabled={busy} onChange={event => setSubmissionBin(event.target.checked)}/> Include a submission bin</label>}
     {mode !== 'generate' && <><label><Paperclip size={14} />{type === 'assessment' ? 'Assessment files (optional)' : type === 'submission' ? 'Instructions files (optional)' : 'Teaching files'}<input type="file" multiple disabled={busy} onChange={event => {
       const picked = [...event.target.files]

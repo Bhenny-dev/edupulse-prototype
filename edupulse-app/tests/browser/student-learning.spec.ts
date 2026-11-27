@@ -34,3 +34,17 @@ test('practice from a finished quiz lists only submitted quizzes, sends the quiz
  await expect(picker).toBeDisabled();await expect(generate).toBeDisabled()
  await expect(page.getByText('Submit an instructor quiz first. It then appears here for practice.',{exact:true})).toBeVisible()
 })
+test('mock quizzes list only reading marked as advanced, send that source and explain when none exist',async({page})=>{
+ const fixture=await studentLearningUI(page),readings=fixture.store.records.publications.filter((p:any)=>p.type!=='assessment'&&p.content)
+ expect(readings.length).toBeGreaterThan(0)
+ await page.goto('/#/assessment');await expect(page.getByRole('heading',{name:'Practice Assessments',exact:true})).toBeVisible()
+ const picker=page.getByRole('combobox',{name:'Advanced reading',exact:true}),generate=page.getByRole('button',{name:'Generate mock quiz',exact:true})
+ await expect(picker).toBeDisabled();await expect(generate).toBeDisabled()
+ await expect(page.getByText('Your instructors have not delivered reading marked as advanced yet. Mock quizzes appear here when they do.',{exact:true})).toBeVisible()
+ const marked=readings[0];marked.content={...marked.content,advancedReading:true}
+ await page.reload({waitUntil:'domcontentloaded'})
+ await expect(picker.locator('option')).toHaveCount(2)
+ await picker.selectOption(marked.id);await generate.click()
+ await expect(page.getByRole('button',{name:'Save practice attempt',exact:true})).toBeVisible()
+ expect(fixture.commands.find((c:any)=>c.operation==='generate')).toEqual({operation:'generate',source:'advanced',publication:marked.id,version:marked.source_version})
+})
