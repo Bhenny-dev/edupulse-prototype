@@ -138,7 +138,7 @@ for (const role of ['dean', 'associate_dean']) test(`${role} edits loads and sca
   const scan = page.getByRole('dialog', { name: 'Syllabus and teaching contents', exact: true })
   await expect(scan.getByRole('heading', { name: 'Extracted course outline' })).toBeVisible()
   await expect(scan.getByRole('cell', { name: 'Guided examples', exact: true })).toBeVisible()
-  await expect(scan.locator('.kpi-card .glass-icon')).toHaveCount(4)
+  await expect(scan.locator('.kpi-card .glass-icon')).toHaveCount(5)
   await scan.screenshot({ path: testInfo.outputPath('course-inspection.png') })
   await scan.getByRole('button', { name: 'View uploaded file' }).click()
   await expect(scan.getByRole('img', { name: 'Page 1 of 1 of the uploaded file' })).toBeVisible()
@@ -166,3 +166,26 @@ for (const role of ['dean', 'associate_dean']) test(`${role} edits loads and sca
   await expect(page.getByRole('dialog')).toHaveCount(0)
   await page.reload(); await expect(page.getByRole('dialog')).toHaveCount(0)
 })
+
+test('the course scan shows delivery by block and prepared items without any write', async ({ page }) => {
+  const fixture = await deanManagementUI(page)
+  const records: any = fixture.records, future = new Date(Date.now() + 5 * 86400000).toISOString()
+  const base = { course_id: 'c1', active: true, source_version: 'v1', content: { title: 'Item' } }
+  records.publications = [...(records.publications || []).filter((p: any) => p.course_id !== 'c1'),
+    { ...base, id: 'w1', type: 'material', week: 1, title: 'Orientation', delivery_mode: 'legacy' },
+    { ...base, id: 'w2', type: 'assessment', week: 2, title: 'Week 2 quiz', delivery_mode: 'block_schedule' }]
+  records.deliverySchedules = [{ course_id: 'c1', instructor_id: 'teacher-a', syllabus_id: 's1', block_section: 'BSIT-1A', revision: 1, updated_at: '', windows: [{ week: 2, opens_at: future, closes_at: null }] }]
+  await page.goto('/#/records')
+  await page.getByRole('button', { name: 'Course actions for IT 102 Alex Sample Instructor', exact: true }).click()
+  await page.getByRole('menuitem', { name: 'View syllabus and contents', exact: true }).click()
+  const scan = page.getByRole('dialog', { name: 'Syllabus and teaching contents', exact: true })
+  await expect(scan.getByRole('heading', { name: 'Extracted course outline' })).toBeVisible()
+  await expect(scan.locator('.kpi-card').filter({ hasText: 'Prepared, not delivered' })).toContainText('2')
+  const row = scan.getByRole('region', { name: 'IT 102 delivery by block', exact: true }).getByRole('row').filter({ hasText: 'BSIT-1A' })
+  const cells = (await row.getByRole('cell').allInnerTexts()).map(text => text.trim())
+  // Riley, Casey and the irregular student Sam are enrolled in IT 102 BSIT-1A
+  expect(cells.slice(0, 7)).toEqual(['BSIT-1A', '3', '1', '2', '1', '1', '0'])
+  expect(cells[7]).not.toBe('None scheduled')
+  expect(fixture.commands.filter((c: any) => !['load.inspect'].includes(c.action))).toEqual([])
+})
+

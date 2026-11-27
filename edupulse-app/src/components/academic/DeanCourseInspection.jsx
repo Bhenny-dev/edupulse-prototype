@@ -1,6 +1,6 @@
 import {Link} from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import { BookOpen, ClipboardCheck, Files, Send } from 'lucide-react'
+import { BookOpen, ClipboardCheck, Clock, Files, Send } from 'lucide-react'
 import { aiRequest } from '../../lib/aiClient'
 import { useWorkspaceViewState } from '../../context/WorkspaceContext'
 import { outlineSpans } from '../../utils/outlineSections'
@@ -13,13 +13,20 @@ import ReadOnlyAssessment from '../courseware/ReadOnlyAssessment'
 import { slotText, isIrregular } from './deanRecordModel'
 import DeanBlockSectionDialog from './DeanBlockSectionDialog'
 import TeachingLoadFacts from './TeachingLoadFacts'
+import { blockDelivery } from './deliveryOversight'
+import { deliveryTimeLabel } from '../../utils/blockDelivery'
 
 /** Each block section of the load with its schedule and class list; irregular students are marked. The retained
  * teaching-load source rows (pages, schedules, instructor-form totals) stay readable below the blocks. */
-function BlockSectionList({ load, students, onAdd }) {
+function BlockSectionList({ load, students, onAdd, records }) {
   const sections = load.sections || [], irregular = new Set(students.filter(isIrregular).map(s => String(s.email || '').toLowerCase()))
   const joined = new Set(sections.flatMap(s => s.students.map(p => p.email)).filter(email => irregular.has(email)))
   return <>
+    {records && sections.length > 0 && <>
+      <h3 className="dean-subhead mt-24">Delivery by block</h3>
+      <p className="text-sm text-muted mb-16">Weeks with released teaching or assessments. A week is delivered once the block's class window opens; scheduled weeks open later; weeks waiting on a block schedule are not yet scheduled. Read-only.</p>
+      <Table label={`${load.code} delivery by block`} headers={['Block', 'Students', 'Weeks planned', 'Weeks released', 'Delivered', 'Scheduled', 'Not scheduled', 'Next opening']} rows={blockDelivery(records, load.code, load.instructorId, sections.map(section => section.block)).map(row => [row.block, row.students, row.plannedWeeks, row.releasedWeeks, row.deliveredWeeks, row.scheduledWeeks, row.unscheduledWeeks, row.nextOpening ? deliveryTimeLabel(row.nextOpening) : 'None scheduled'])} />
+    </>}
     <div className="dean-toolbar mb-16 mt-24"><h3>Block sections and students</h3>{onAdd && <button className="btn btn-secondary" onClick={() => onAdd('')}>Add block section</button>}</div>
     <p className="text-sm text-muted mb-16">{sections.length} block section{sections.length === 1 ? '' : 's'} share this syllabus, each with its own schedule. {joined.size ? `${joined.size} irregular student${joined.size === 1 ? '' : 's'} joined this course.` : 'No irregular student has joined this course.'}</p>
     {sections.length ? <div className="dean-block-list">{sections.map(section => <section key={section.key} className="dean-block-section" aria-label={`${load.code} block ${section.block}`}>
@@ -32,11 +39,11 @@ function BlockSectionList({ load, students, onAdd }) {
 }
 
 /** An authorized course scan is a read: it never starts an attempt, records an open or saves a workspace. */
-export default function DeanCourseInspection({ load, onClose, students = [], action = null, manage = false }) {
+export default function DeanCourseInspection({ load, onClose, students = [], action = null, manage = false, records = null }) {
   const [snapshot, setSnapshot] = useState(null), [error, setError] = useState(''), [retry, setRetry] = useState(0)
   const [adding, setAdding] = useState(null)
   const [reader, setReader] = useWorkspaceViewState(`dean-course-reader:${load.key}`, null)
-  const blocks = <BlockSectionList load={load} students={students} onAdd={manage && action ? setAdding : null} />
+  const blocks = <BlockSectionList load={load} students={students} records={records} onAdd={manage && action ? setAdding : null} />
   useEffect(() => {
     const controller = new AbortController()
     aiRequest('academic', 'POST', { operation: 'dean', command: { action: 'load.inspect', key: load.key, expected_instructor: load.instructorId } }, controller.signal)
@@ -61,6 +68,7 @@ export default function DeanCourseInspection({ load, onClose, students = [], act
                     { label: 'Teaching materials', value: items.filter(entry => entry.type !== 'assessment').length, icon: Files },
                     { label: 'Assessments', value: items.filter(entry => entry.type === 'assessment').length, icon: ClipboardCheck },
                     { label: 'Published items', value: items.filter(entry => entry.status === 'published').length, icon: Send },
+                    { label: 'Prepared, not delivered', value: items.filter(entry => ['draft', 'checked'].includes(entry.status)).length, icon: Clock },
                   ]} />
                   <div className="dean-toolbar mb-16"><h3>Uploaded syllabus</h3>{syllabus.approvedFile ? <button className="btn btn-secondary" onClick={() => setReader('original')}>View uploaded file</button> : <p className="text-sm text-muted">No approved file uploaded yet.</p>}</div>
                   {blocks}
