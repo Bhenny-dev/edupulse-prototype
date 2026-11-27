@@ -52,3 +52,15 @@ export function materialRows(data:AcademicData) {
   return {student,results,sectionsRead:read,sectionsTotal:total,accessed:results.filter(r=>r.access).length,completed:results.filter(r=>r.complete).length,total:items.length,average:percent(read,total)}
  })
 }
+
+export type ItemResult = { index: number; text: string; topic: string; answered: number; correct: number; percent: number | null }
+/** Percent correct per question of one assessment (every question is one mark). Counts each student's latest marked, student-recorded attempt on the current version; attempts awaiting marking and Admin demonstrations are left out. */
+export function itemAnalysis(data: AcademicData, publication: Publication): ItemResult[] {
+  const questions = Array.isArray(publication.content?.questions) ? publication.content.questions as { text?: unknown; topic?: unknown }[] : []
+  const attempts = currentAttempts(data).filter(a => a.publication_id === publication.id && studentRecorded(a) && a.grading_status !== 'pending_review' && Array.isArray(a.question_scores))
+  return questions.map((question, index) => {
+    const scored = attempts.filter(a => typeof a.question_scores![index] === 'number')
+    const correct = scored.filter(a => a.question_scores![index] >= 1).length
+    return { index, text: typeof question?.text === 'string' && question.text.trim() ? question.text.trim() : `Question ${index + 1}`, topic: typeof question?.topic === 'string' ? question.topic : '', answered: scored.length, correct, percent: percent(correct, scored.length) }
+  })
+}

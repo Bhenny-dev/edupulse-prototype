@@ -8,6 +8,7 @@ import { assessmentSummary, currentAttempts, filterAcademic, learnerRows, percen
 import ModalLayer from '../ui/ModalLayer'
 import TopicMastery from './TopicMastery'
 import AttemptReview from './AttemptReview'
+import ItemAnalysis from './ItemAnalysis'
 import { useWorkspace } from '../../context/WorkspaceContext'
 import { useAcademicRecords } from '../../context/AcademicContext'
 
@@ -94,7 +95,7 @@ export default function AcademicPerformance({ data, role, monitoring = false }) 
     {(key === 'overview' || key === 'assessments') && <><ScoreCharts data={filtered} />{monitoring && <div className="academic-grid"><Panel title="Class average per assessment"><CoverageChart data={filtered} /></Panel><Panel title="Assessment submission rate"><CoverageChart data={filtered} completion /><p className="text-sm text-muted">Current-version attempts divided by the confirmed roster. This measures submission, not a pass rate.</p></Panel></div>}{!isStudent && <ScoreMatrix data={filtered} onStudent={setStudent} />}<Attempts data={filtered} isStudent={isStudent} /></>}
     {key === 'bytopic' && <><h2 className="mb-16">Topics and assessment coverage</h2><TopicMastery data={filtered} isStudent={isStudent} cutoff={threshold} onStudent={setStudent}/></>}
     {key === 'materials' && <MaterialAccess data={filtered} isStudent={isStudent} />}
-    {key === 'scores' && <>{!isStudent && <ScoreMatrix data={filtered} onStudent={setStudent} />}<Attempts data={filtered} isStudent={isStudent} /></>}
+    {key === 'scores' && <>{!isStudent && <ScoreMatrix data={filtered} onStudent={setStudent} />}{!isStudent && <ItemAnalysis data={filtered} />}<Attempts data={filtered} isStudent={isStudent} /></>}
     {role==='instructor' && (key==='scores'||key==='assessments') && <AttemptReview data={filtered}/>}
     {role==='instructor' && <AcademicReminders data={filtered}/>}
     {key === 'alerts' && <><Panel title="Score review threshold"><label className="academic-filter">Review scores below (%)<input className="form-input" type="number" min="0" max="100" value={threshold} onChange={event => setThreshold(Math.min(100, Math.max(0, Number(event.target.value))))} /></label><p className="text-sm text-muted mt-16">This is a local review filter, not a pass mark, official grade or automated risk classification.</p><Table headers={['Student', 'Assessment', 'Raw score']} rows={alerts.map(item => [item.student_email || 'Retained student account', filtered.publications.find(pub => pub.id === item.publication_id)?.title, `${item.score}/${item.max_score} (${percent(item.score, item.max_score)}%)`])} empty="No recorded current-version scores fall below this threshold." /></Panel><Panel title="Unanswered assessments"><Table headers={['Assessment', 'Current attempts', 'Roster size']} rows={summary.filter(item => item.attempts < item.expected).map(item => [item.title, item.attempts, item.expected])} empty="No unanswered assessment gaps in the available roster." /><p className="text-sm text-muted mt-16">No due dates are available. Unanswered does not mean overdue.</p></Panel></>}

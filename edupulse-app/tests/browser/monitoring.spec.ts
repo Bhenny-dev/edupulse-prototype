@@ -72,3 +72,35 @@ test('inactive and unreleased courses explain missing data and never manufacture
  await dialog.getByRole('button',{name:'Learning Material Access',exact:true}).click();await expect(dialog.getByRole('region',{name:'Course delivery status'})).toContainText('Course delivery is not active')
  expect(store.commands).toHaveLength(0)
 })
+test('item analysis lists every question of the chosen assessment with percent correct from marked answers',async({page})=>{
+ const store=monitoringStore();await monitoringUI(page,'instructor',store);const dialog=await open(page)
+ await dialog.getByRole('button',{name:'Assessment Scores',exact:true}).click()
+ const picker=dialog.getByRole('combobox',{name:'Item analysis assessment',exact:true});await expect(picker).toBeVisible()
+ const chosenId=await picker.inputValue(),chosen=store.records.publications.find((p:any)=>p.id===chosenId)!
+ const table=dialog.getByRole('region',{name:`Item analysis for ${chosen.title}`,exact:true})
+ const rows=table.getByRole('row').filter({hasText:/^Q\d/})
+ await expect(rows).toHaveCount((chosen.content as any).questions.length)
+ for(let i=0;i<await rows.count();i++){
+  const cells=(await rows.nth(i).getByRole('cell').allInnerTexts()).map(t=>t.trim())
+  const marked=Number(cells[3]),correct=Number(cells[4])
+  expect(correct).toBeLessThanOrEqual(marked)
+  expect(cells[5]).toContain(marked?`${Math.round(correct/marked*100)}%`:'No marked answers')
+ }
+ await expect(dialog).not.toContainText('correctIndex')
+})
+test('the Dean reads item analysis on Performance without any write',async({page})=>{
+ const store=monitoringStore();await monitoringUI(page,'dean',store)
+ const writes:string[]=[];page.on('request',r=>{if(r.method()!=='GET'&&/\/api\/ai\?action=(academic|workspace)/.test(r.url())&&!/"operation":"(read|list)"/.test(r.postData()||''))writes.push(r.url())})
+ await page.goto('/#/performance');await page.getByRole('button',{name:'Assessment Scores',exact:true}).click()
+ const picker=page.getByRole('combobox',{name:'Item analysis assessment',exact:true});await expect(picker).toBeVisible()
+ const chosenId=await picker.inputValue(),chosen=store.records.publications.find((p:any)=>p.id===chosenId)!
+ await expect(page.getByRole('region',{name:`Item analysis for ${chosen.title}`,exact:true}).getByRole('row').filter({hasText:/^Q\d/})).toHaveCount((chosen.content as any).questions.length)
+ expect(writes).toEqual([])
+})
+test('students never see class-wide item analysis on their Performance page',async({page})=>{
+ await monitoringUI(page,'student');await page.goto('/#/performance')
+ await page.getByRole('button',{name:'Assessment Scores',exact:true}).click()
+ await expect(page.getByRole('heading',{level:1}).first()).toBeVisible();await expect(page.getByRole('button',{name:'Assessment Scores',exact:true})).toBeVisible()
+ await expect(page.getByRole('combobox',{name:'Item analysis assessment',exact:true})).toHaveCount(0)
+ await expect(page.getByText('Item analysis',{exact:true})).toHaveCount(0)
+})

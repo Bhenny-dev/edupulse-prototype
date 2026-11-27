@@ -17,6 +17,9 @@ export function monitoringStore(){
  records.sessions=records.attempts.map((a,i)=>({id:`session-${i}`,publication_id:a.publication_id,source_version:String(a.source_version),student_email:a.student_email,student_id:a.student_id,started_at:a.submitted_at,attempt_no:1,is_test:false}))
  records.reading=[{publication_id:first.id,student_id:'synthetic-learner',student_email:'ui.fixture@example.invalid',source_version:monitoringVersion,sections_read:2,total_sections:2,updated_at:'2026-11-12T03:00:00Z',completed_at:'2026-11-12T03:00:00Z'},{publication_id:'d'.repeat(32),student_id:'synthetic-learner',student_email:'ui.fixture@example.invalid',source_version:monitoringVersion,sections_read:1,total_sections:2,updated_at:'2026-11-12T03:00:00Z'}]
  const workspace:any=structuredClone(baselineWorkspace);workspace.syllabi.push({...structuredClone(workspace.syllabi[0]),id:'network-syllabus',courseCode:'IT 202',courseTitle:'Networking'});workspace.content={};workspace.enrollmentOverrides=[]
+ // The instructor's course load: "Register selected students" confirms a class list against it (e3b3f481).
+ const course=records.courses[0]
+ records.institutional=[...(records.institutional||[]),{kind:'loads',record_key:'course:IT 102:'+monitoringOwner,data:{CourseCode:'IT 102',InstructorID:monitoringOwner,LoadType:'course',...(course.academic_year?{AcademicYear:course.academic_year}:{}),...(course.semester?{Semester:course.semester}:{})}}]
  return {records,workspace,revision:1,commands:[] as any[],failSave:false}
 }
 export async function monitoringUI(page:Page,role='instructor',store=monitoringStore()){
@@ -42,6 +45,15 @@ export async function monitoringUI(page:Page,role='instructor',store=monitoringS
     if(input.section>progress.sections_read)return route.fulfill({status:400,json:{error:{message:'Confirm preceding sections first',code:'READING_PROGRESS_FAILED'}}})
     progress.sections_read=Math.max(progress.sections_read,input.section+1);if(progress.sections_read===2)progress.completed_at='2026-11-12T03:00:00Z'
     return route.fulfill({json:progress})
+   }
+   if(role==='instructor'&&input.operation==='class-list'){
+    // Mirrors edupulse_register_class: append the block's registration and bump the workspace revision.
+    if(input.revision!==store.revision)return route.fulfill({status:409,json:{error:{code:'CLASS_LIST_FAILED',message:'The workspace changed. Refresh and retry.'}}})
+    const known:Record<string,{Name:string,YearLevel:string}>={'SYN-NEW':{Name:'New enrolled learner',YearLevel:'1'},'new@example.invalid':{Name:'New enrolled learner',YearLevel:'1'}}
+    const students=(input.students as {StudentID?:string,Email?:string}[]).map(s=>({StudentID:s.StudentID||'',Email:s.Email||'',...(known[s.StudentID||'']||known[s.Email||'']||{Name:s.Email||s.StudentID||'Student',YearLevel:''})}))
+    store.workspace.registrations=[...(store.workspace.registrations||[]),{id:`class-list-${store.revision}`,uploadedBy:monitoringOwner,courseCode:'IT 102',courseTitle:'Computer Programming 1',blockSection:String(input.block),status:'active',studentCount:students.length,students}]
+    store.revision++
+    return route.fulfill({json:{registered:students.length,revision:store.revision}})
    }
    throw new Error(`Unexpected monitoring business command: ${input.operation}`)
   }
