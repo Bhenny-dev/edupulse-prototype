@@ -1,4 +1,4 @@
-import { Spinner } from '../ui/LoadingFeedback'
+import { LoadingStatus, Spinner } from '../ui/LoadingFeedback'
 import { useEffect, useId, useState } from 'react'
 import { CalendarClock, ClipboardCheck, FileText, Megaphone, Pencil, Trash2, X } from 'lucide-react'
 import ModalLayer from '../ui/ModalLayer'
@@ -10,7 +10,7 @@ import { useAuth } from '../../context/AuthContext'
 import { useAcademicRecords } from '../../context/AcademicContext'
 import { useWorkspace, useWorkspaceViewState } from '../../context/WorkspaceContext'
 import { isOutlineExam } from '../../utils/outlineSections'
-import { sameCourseCode, teachingSequence, weekTopics } from '../../utils/instructorCourses'
+import { sameCourseCode, weekTopics } from '../../utils/instructorCourses'
 import { sameTerm } from '../../utils/classroom'
 import { deliveryTimeLabel } from '../../utils/blockDelivery'
 import ClassCodesCard from './ClassCodes'
@@ -75,20 +75,19 @@ function Upcoming({ course, syllabus, data }) {
 }
 
 /** Saved class publications and announcements, in delivery order. */
-export default function ClassStream({ course, syllabus, data, readOnly = false, highlight, onOpenMaterials }) {
+export default function ClassStream({ course, syllabus, plan, data, readOnly = false, highlight, onOpenMaterials }) {
   const { user } = useAuth(), records = useAcademicRecords(), heading = useId()
   const scope = `class:${course.id}:${course.block}`
   const posts = classAnnouncements(data, course)
-  const projected = data.courses.filter(row => row.active && (!syllabus || row.syllabus_id === syllabus.id))
-  const publications = data.publications.filter(item => item.active && projected.some(row => row.id === item.course_id))
-  const rows = [...(projected.find(row => row.outline?.length)?.outline || syllabus?.courseOutline || [])].sort((a, b) => a.week - b.week)
-  const weeks = [...new Set([...rows.map(row => row.week), ...publications.map(item => item.week), ...posts.map(post => post.week).filter(Boolean)])].sort((a, b) => a - b)
+  const { rows, weeks: plannedWeeks, hasDeliveries } = plan
+  const weeks = [...new Set([...plannedWeeks.map(week => week.week), ...posts.map(post => post.week).filter(Boolean)])].sort((a, b) => a - b)
+  const current = records.projectionCurrent
   const [composer, setComposer] = useWorkspaceViewState(`${scope}:stream-composer`, null)
   const [menu, setMenu] = useWorkspaceViewState(`${scope}:stream-menu`, null)
   const [removeId, setRemoveId] = useWorkspaceViewState(`${scope}:stream-delete`, null)
   const [readerId, setReaderId] = useWorkspaceViewState(`course:stream-${course.id}:${course.block}:reader`, null)
   const [busy, setBusy] = useState(false), [error, setError] = useState(''), [notice, setNotice] = useState('')
-  const readPublication = publications.find(item => item.id === readerId && item.content)
+  const readPublication = current && plannedWeeks.flatMap(week => week.entries).find(item => item.publication?.id === readerId && item.publication.content)?.publication
   const removing = !readOnly && posts.find(post => post.id === removeId)
   const position = /^new:(\d{1,2}):(.*)$/.exec(composer || '')
   const row = position && rows.find(row => row.week === Number(position[1]))
@@ -113,8 +112,10 @@ export default function ClassStream({ course, syllabus, data, readOnly = false, 
     {post.body && <p className="class-post-body">{post.body}</p>}
     {post.attachments?.length > 0 && <div className="class-links">{post.attachments.map((link, index) => <LinkCard key={link.url + index} link={link} />)}</div>}
   </article>
-  const renderItem = item => {
-    const window = data.deliverySchedules?.find(schedule => schedule.course_id === item.course_id && schedule.block_section === course.block)?.windows.find(window => window.week === item.week)
+  const renderItem = entry => {
+    const item = entry.publication
+    if (!current || !item) return null
+    const window = data.deliverySchedules?.find(schedule => schedule.course_id === item.course_id && schedule.block_section === course.block)?.windows.find(window => window.week === entry.week)
     const opens = item.delivery_mode === 'block_schedule' ? window?.opens_at : item.release_at
     return <article key={item.id} className="class-stream-item">
       {item.type === 'assessment' ? <ClipboardCheck size={18} aria-hidden="true" /> : <FileText size={18} aria-hidden="true" />}
@@ -135,12 +136,13 @@ export default function ClassStream({ course, syllabus, data, readOnly = false, 
       {data.classroomError && <p role="status" className="connected-pulse-warning">{data.classroomError}</p>}
       {!readOnly && <button type="button" className="class-composer-open" onClick={() => compose('new')}><span className="class-avatar" aria-hidden="true">{user?.name?.charAt(0)}</span><span>Announce something to your class</span></button>}
       {posts.filter(post => !post.week).map(post => renderPost(post))}
-      {!publications.length && <p className="text-sm text-muted">No teaching materials or assessments have been delivered for this class yet.</p>}
+      {!current && (records.error || !records.online
+        ? <p className="text-sm">The latest delivery could not be verified. <button type="button" className="btn btn-secondary btn-sm" onClick={() => void records.load(true)} disabled={!records.online || records.loading}>Retry</button></p>
+        : <LoadingStatus label="Updating delivered course content..." />)}
+      {current && !hasDeliveries && <p className="text-sm text-muted">No teaching materials or assessments have been delivered for this class yet.</p>}
       {weeks.map(week => {
-        const row = rows.find(row => row.week === week), topics = topicsFor(row)
-        const topicIds = new Set(topics.map(topic => topic.id))
-        const items = publications.filter(item => item.week === week)
-        const topicOf = item => item.content?.courseTopicId || item.content?.outlineSectionId
+        const { row, groups = [], other = [] } = plannedWeeks.find(plan => plan.week === week) || {}
+        const topicIds = new Set(groups.map(group => group.topic.id))
         const weekly = posts.filter(post => post.week === week)
         const weekPosts = weekly.filter(post => !topicIds.has(post.topic_id))
         return <div key={week} className="class-stream-group">
@@ -148,20 +150,19 @@ export default function ClassStream({ course, syllabus, data, readOnly = false, 
           <section className="class-stream-week" aria-labelledby={`${heading}-week-${week}`}>
             <header className="class-stream-heading"><h2 id={`${heading}-week-${week}`}>Week {week}{row && isOutlineExam(row) ? ' · Examination' : ''}</h2>{announce(row)}</header>
             {weekPosts.filter(post => post.placement !== 'before').map(post => renderPost(post))}
-            {topics.map(topic => {
-              const topicItems = teachingSequence(items.filter(item => topicOf(item) === topic.id))
+            {groups.map(({ topic, entries }) => {
               const topicPosts = weekly.filter(post => post.topic_id === topic.id)
-              if (readOnly && !topicItems.length && !topicPosts.length) return null
+              if (readOnly && !entries.some(item => item.publication) && !topicPosts.length) return null
               return <div key={topic.id} className="class-stream-group">
                 {topicPosts.filter(post => post.placement === 'before').map(post => renderPost(post, topic))}
                 <section className="class-stream-topic" aria-label={topic.title}>
                   <header className="class-stream-heading"><h3>{topic.title}</h3>{announce(row, topic)}</header>
                   {topicPosts.filter(post => post.placement !== 'before').map(post => renderPost(post, topic))}
-                  {topicItems.map(renderItem)}
+                  {entries.map(renderItem)}
                 </section>
               </div>
             })}
-            {teachingSequence(items.filter(item => !topicIds.has(topicOf(item)))).map(renderItem)}
+            {other.map(renderItem)}
           </section>
         </div>
       })}

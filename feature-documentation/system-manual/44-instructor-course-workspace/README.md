@@ -22,7 +22,11 @@ The signed-in Instructor navigation is **Home**, **Schedule**, **Syllabus** and 
 
 **Stream** lists saved publications by week and topic. Readings and worked examples come before the assessments that cover them. **Open** displays the delivered teaching material, submission bin or assessment in a read-only reader. A scheduled item shows the opening from the selected block's saved schedule. Class announcements appear above the weeks.
 
+Both instructor tabs use the same class plan and item order. **Teaching Materials & Assessments** shows editable drafts and saved work. **Stream** shows the delivered items in their matching topics. Delivering a draft adds it to Stream after the delivery is confirmed. **Hide** or **Prepare draft revision** withdraws it from Stream. If the latest delivery cannot be verified, select **Retry** to read it again.
+
 ![Instructor Stream with a week announcement, a topic reminder and published work](16-stream.png)
+
+![The same teaching material and concept check in Teaching Materials & Assessments with authoring controls](21-shared-teaching-plan.png)
 
 1. Choose **Announce something to your class** for a class announcement. To start from a specific week or topic, choose **Announce** beside its heading.
 2. For a weekly announcement, choose a **Week** and optionally a **Topic**. In **Placement**, choose whether the post appears before the heading or inside the selected week or topic.

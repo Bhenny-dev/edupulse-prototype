@@ -5520,12 +5520,6 @@
       "reviewedAt": "2026-11-27T03:37:06.588157+00:00"
     },
     {
-      "path": "feature-documentation/system-manual/44-instructor-course-workspace/16-stream.png",
-      "sha256": "ab17edd7110090e24662ae0646682570809f589e5ebb23bde1f56ce77619fb37",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-27T03:37:06.588157+00:00"
-    },
-    {
       "path": "feature-documentation/system-manual/44-instructor-course-workspace/20-ai-assessment-sources.png",
       "sha256": "049dc34d96d2748e88d2802bf11ed423300b0f7a9a6af7ac619d31dbe6b7a0a3",
       "reviewer": "Codex agent",
@@ -5536,6 +5530,18 @@
       "sha256": "9236058c22e2bff6a624f418e4270926925d21910d70d4671da903272d0dd8b5",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-27T03:37:06.588157+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/16-stream.png",
+      "sha256": "296c97a56f5d59f771f027937fb075ed425999700eb15ce3f722d5186f9f6b3d",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T04:08:09.036347+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/21-shared-teaching-plan.png",
+      "sha256": "698578ce6f969b510ba56396caf5290ec05d92c90b7058088043010cd806c90f",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T04:08:09.038068+00:00"
     }
   ]
 }

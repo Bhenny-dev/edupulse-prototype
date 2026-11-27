@@ -299,6 +299,67 @@ test('drafting tab creates, edits and removes empty weeks while keeping the appr
   await expect(page.getByRole('heading', { name: 'Week 4', exact: true })).toHaveCount(0)
 })
 
+test('both class tabs share topic and delivery order through publishing, hiding, revision and reload', async ({ page }) => {
+  const fixture = await instructorCourseUI(page)
+  const workspace = fixture.getWorkspace() as any
+  const records = fixture.records, course = records.courses[0]
+  course.outline = [{ week: 1, contents: ['Stale projected topic'] }]
+  workspace.content.example = { ...workspace.content.lesson, position: 1536, content: { ...workspace.content.lesson.content, courseItemId: 'example', title: 'Second worked example' } }
+  workspace.content.quiz.content.coverage = { materialIds: ['lesson', 'example'] }
+  fixture.setWorkspace(workspace)
+  let unavailable = false
+  await page.route('**/api/ai?action=academic', route => {
+    if (route.request().method() !== 'GET') return route.fallback()
+    if (unavailable) return route.fulfill({ status: 503, json: { error: { message: 'The delivery read was interrupted.' } } })
+    const saved = fixture.getWorkspace() as typeof workspace
+    const publications = Object.entries(saved.content).reverse().flatMap(([id, item]: [string, any], index) =>
+      item.status === 'published' ? [{ id: String(index).repeat(32), workspace_item_id: id, course_id: course.id, source_version: 'test', week: item.week, type: item.type, title: item.content.title, content: { ...item.content, courseTopicId: 'old-topic', teachingOrder: index }, active: true }] : [])
+    return route.fulfill({ json: { ...records, publications } })
+  })
+  await page.goto(`/#/courseware?course=${fixture.syllabus.id}&tab=materials`)
+  const tabs = page.getByRole('navigation', { name: 'Class sections' })
+  const materials = tabs.getByRole('button', { name: 'Teaching Materials & Assessments' })
+  const stream = tabs.getByRole('button', { name: 'Stream', exact: true })
+  const topic = page.locator('[data-topic="variables"]')
+  const editRows = topic.locator('.instructor-sequence-heading > strong')
+  const publishedRows = page.getByRole('region', { name: 'Variables and named values', exact: true }).locator('.class-stream-item h4')
+  await topic.locator('summary').click()
+  await expect(editRows).toHaveText(['Variables lesson', 'Second worked example', 'Variable check'])
+  await stream.click()
+  await expect(publishedRows).toHaveText(['Variables lesson', 'Second worked example'])
+  await expect(page.getByText('Stale projected topic', { exact: true })).toHaveCount(0)
+  await materials.click()
+  const assessment = topic.locator('.instructor-sequence-item').filter({ hasText: 'Variable check' })
+  await assessment.getByRole('button', { name: 'Mark checked' }).click()
+  await assessment.getByRole('button', { name: 'Deliver to students' }).click()
+  await page.getByRole('button', { name: 'Deliver checked content' }).click()
+  await expect(assessment).toContainText('Delivered')
+  await stream.click()
+  await expect(publishedRows).toHaveText(['Variables lesson', 'Second worked example', 'Variable check'])
+  await page.reload()
+  await expect(publishedRows).toHaveText(['Variables lesson', 'Second worked example', 'Variable check'], { timeout: 15000 })
+  await materials.click()
+  await expect(editRows).toHaveText(['Variables lesson', 'Second worked example', 'Variable check'])
+  unavailable = true
+  await assessment.getByRole('button', { name: 'Hide', exact: true }).click()
+  await expect(assessment).toContainText('Hidden')
+  await stream.click()
+  await page.getByText('The latest delivery could not be verified.', { exact: false }).waitFor()
+  await expect(page.getByRole('button', { name: 'Open Variable check' })).toHaveCount(0)
+  unavailable = false
+  await page.getByRole('button', { name: 'Retry', exact: true }).click()
+  await expect(publishedRows).toHaveText(['Variables lesson', 'Second worked example'])
+  await materials.click()
+  const reading = topic.locator('.instructor-sequence-item').filter({ hasText: 'Variables lesson' })
+  await reading.getByRole('button', { name: 'Prepare draft revision' }).click()
+  await page.getByRole('dialog', { name: 'Prepare draft revision' }).getByRole('button', { name: 'Prepare draft revision' }).click()
+  await page.getByRole('button', { name: 'Close course content' }).click()
+  await expect(reading).toContainText('Draft')
+  await stream.click()
+  await expect(publishedRows).toHaveText(['Second worked example'])
+  expect(fixture.forbidden).toEqual([])
+})
+
 test('Class List shows each block with its code; a code is replaced or turned off; the class closes back to Home', async ({ page }) => {
   const fixture = await classroomUI(page)
   await page.goto(`/#/courseware?course=${fixture.syllabus.id}&tab=class-list`)

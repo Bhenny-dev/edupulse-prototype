@@ -13,6 +13,7 @@
         "edupulse-app/src/components/courseware/CourseTopicWeeks.jsx",
         "edupulse-app/src/components/courseware/TeachingWeekEditor.jsx",
         "edupulse-app/src/components/classroom/ClassStream.jsx",
+        "edupulse-app/src/utils/classTeachingPlan.ts",
         "edupulse-app/src/components/courseware/CourseBlockSections.jsx",
         "edupulse-app/src/components/ui/PageModal.jsx",
         "edupulse-app/src/components/ui/page-modal.css",

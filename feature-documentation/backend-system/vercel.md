@@ -213,3 +213,5 @@ Apply migration `20261127021533_class_stream_announcement_placement.sql` to the 
 ## Teaching sequence and AI assessment grounding
 
 The teaching-sequence correction uses existing publication and private-file structures. The release updates the application and its generation contract and has no database migration. On the canonical alias, verify older publications with missing position metadata and the instructor's assessment-drafting form alongside the normal release checks.
+
+Both instructor tabs now read the same class plan. Verify the published order in both tabs, a confirmed delivery after saving and a failed read followed by retry. This synchronization uses the existing database projection.

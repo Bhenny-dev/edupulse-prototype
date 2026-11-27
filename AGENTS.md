@@ -35,6 +35,8 @@ Keep protected routes and academic/workspace startup gated until session and sup
 
 Teaching materials precede the assessments that cover them in the drafting tab, instructor Stream and student weekly view. Keep intentional teaching and assessment cycles, and display the overall assessment last within its topic. Handle older publications that lack a saved order. AI topic assessments require readable text from their covered teaching materials, including uploads attached to those materials. Check both legacy order and the uploaded-file generation path when changing either feature. [ADR-002 teaching sequence and sources](feature-documentation/backend-system/decisions/002-feature-preservation-baseline.md#27-november-2026--teaching-sequence-and-assessment-sources).
 
+The instructor's Stream and drafting tab use the same class plan for weeks, topics and sequence. Stream shows the confirmed delivered subset and reads the published content. Test both tabs after publishing, hiding, revising or moving existing work, including delayed delivery reads and reload.
+
 
 ## EduPulse production trigger after the Vercel transfer
 

@@ -572,3 +572,12 @@ The published readings, assessments and saved schedules remain the delivery sour
 | T24.3 | Keep the owner-confirmed contract discoverable from coding-agent instructions, manual, walkthrough and capture scenes. | ADR-002, Manual 41 and Manual 44. Eleven capture cases pass with reviewed images. | Complete |
 
 The reported Capstone Project 2 sequence exposed that population workspace items had positions while their published DTOs lacked `teachingOrder`. The read-side correction covers existing releases and the producer now carries the same position into new releases.
+
+## 27 November 2026 - Shared instructor class plan (G25)
+
+| Task | Work | Acceptance | Stage |
+|---|---|---|---|
+| T25.1 | Derive both instructor tabs from the same topics and workspace sequence. Use confirmed publications for Stream items and retain existing legacy publications. | Shared-plan unit test and instructor comparison with stale projection topic and order metadata. | Complete |
+| T25.2 | Synchronize publishing, hiding and revisions without showing stale delivery after a save. Keep the class and retry when delivery reads fail. | Instructor desktop and phone round-trip across both tabs, including reload and a failed delivery read. | Complete |
+
+The shared plan retains instructor-only workspace controls in **Teaching Materials & Assessments** and announcement and read-only delivery actions in **Stream**.

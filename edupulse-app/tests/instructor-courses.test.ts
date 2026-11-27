@@ -4,6 +4,7 @@ import { instructorCourses, instructorRecords, moveTeachingWeek, weekTopics, top
 import { contentGenerationRequest, navigationCorrection, sourceDestination } from '../src/lib/systemChatPolicy.js'
 import { operatorInput, planValidatedTool } from '../src/agents/toolPlanner.js'
 import type { AcademicData } from '../src/components/academic/academicData.js'
+import { classTeachingPlan } from '../src/utils/classTeachingPlan.js'
 
 const records = (): AcademicData => ({ courses: [{ id: 'course', course_code: 'IT 102', course_title: 'Programming', instructor_id: 'teacher', active: true }], publications: [], enrollments: [], accesses: [], attempts: [], institutional: [
   { kind: 'courses', record_key: 'IT 102', data: { CourseCode: 'IT 102', CourseTitle: 'Programming', Units: '3', YearLevel: '1' } },
@@ -74,6 +75,23 @@ test('legacy publication IDs never move a concept check or reflection ahead of i
   const sequence = topicEntries(entries, 'legacy', true)
   assert.deepEqual(sequence.map(row => row.id), ['8-reading', '9-example', '1-check', '0-reflection'])
   assert.equal(entries[0].id, '0-reflection')
+})
+
+test('instructor tabs share workspace topics and order, with only confirmed publications in Stream', () => {
+  const data = records(), syllabus = { id: 's', courseOutline: [{ week: 1, contents: ['Current topic'] }] }
+  data.courses[0] = { ...data.courses[0], syllabus_id: 's', outline: [{ week: 1, contents: ['Older title'] }] }
+  const item = (title: string, position: number, type = 'material', status = 'published') => ({ syllabusId: 's', week: 1, type, status, position, content: { title } })
+  const saved = { lesson: item('Reading', 1), example: item('Worked example', 2), quiz: item('Concept check', 3, 'assessment'), draft: item('Draft', 4, 'material', 'draft'), hidden: item('Hidden lesson', 5, 'material', 'hidden') }
+  data.publications = Object.entries(saved).map(([id, entry], index) => ({
+    id: String(9 - index), active: true, course_id: 'course', type: entry.type, title: entry.content.title, week: 1, source_version: '1',
+    workspace_item_id: id, content: { courseTopicId: 'obsolete-id', teachingOrder: 9 - index },
+  }))
+  const [{ groups }] = classTeachingPlan(syllabus, saved, data).weeks
+  const [group] = groups
+  assert.equal(group.topic.title, 'Current topic')
+  assert.deepEqual(group.entries.map(entry => entry.content.title), ['Reading', 'Worked example', 'Draft', 'Hidden lesson', 'Concept check'])
+  assert.deepEqual(group.entries.flatMap(entry => entry.publication?.title || []), ['Reading', 'Worked example', 'Concept check'])
+  assert.equal(classTeachingPlan(syllabus, saved, { ...data, publications: [] }).hasDeliveries, false)
 })
 
 test('topic pills use real current enrolled learner work, include a genuine zero and do not invent missing scores', () => {

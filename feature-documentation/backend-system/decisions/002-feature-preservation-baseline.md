@@ -415,6 +415,10 @@ The owner requires readings and worked examples to come before their concept che
 
 An explicit AI topic assessment uses text from the covered teaching materials, including readable uploads attached through the material editor. The syllabus supplies topic, outcomes and format. When none of the covered teaching text can be read, generation stops before inference. Review the questions and scoring criteria before delivery. Check the sequence of existing publications and verify that correcting it does not invalidate published versions or recorded attempts. [Manual 44](../../system-manual/44-instructor-course-workspace/README.md#add-an-assessment-after-the-relevant-materials).
 
+### 27 November 2026 — Instructor tab synchronization
+
+The owner requires Stream and Teaching Materials & Assessments to show the same class plan, with controls suited to each tab. Both share the current weeks, topics and item order. Stream displays the delivered subset with announcement controls and read-only readers. The drafting tab includes unpublished work and authoring controls. A published item follows the position of its matching saved teaching record. Existing publication-only records remain available as read-only work. Stream waits for the confirmed delivery read after a save. A failed read keeps the class and offers retry.
+
 
 ## Owner correction: minimal Class Code card, 25 November 2026
 

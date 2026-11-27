@@ -17,6 +17,9 @@ export function AcademicProvider({ children }) {
 
 function AcademicSession({ children, user,authLoading }) {
   const workspace = useWorkspace()
+  const workspaceVersion = `${workspace.mode}:${workspace.revision}`
+  const currentWorkspaceVersion = useRef(workspaceVersion)
+  currentWorkspaceVersion.current = workspaceVersion
   const role = user?.role, enabled = Boolean(!authLoading && user?.authenticated && role !== 'admin')
   const currentRole = useRef(role), alive = useRef(true), request = useRef(null), channel = useRef(null)
   currentRole.current = role
@@ -42,12 +45,13 @@ function AcademicSession({ children, user,authLoading }) {
         let version
         do {
           version = timing.current.invalidation
+          const projectionVersion = currentWorkspaceVersion.current
           // Confirmed workspace saves project records transactionally. Opening or
           // restoring a view must only read them, never replay a projection write.
           const records = await aiRequest('academic', 'GET', undefined, controller.signal)
           if (!valid()) return
           // A mutation arriving during a GET invalidates that response; read the newer projection.
-          if (version === timing.current.invalidation) {setSnapshot({ role, data: { ...Object.fromEntries(Object.keys(EMPTY_ACADEMIC).map(key => [key, Array.isArray(records[key]) ? records[key] : []])), homeBlock:role==='student'&&records.homeBlock&&typeof records.homeBlock.code==='string'?records.homeBlock:null,
+          if (version === timing.current.invalidation) {setSnapshot({ role, projectionVersion, data: { ...Object.fromEntries(Object.keys(EMPTY_ACADEMIC).map(key => [key, Array.isArray(records[key]) ? records[key] : []])), homeBlock:role==='student'&&records.homeBlock&&typeof records.homeBlock.code==='string'?records.homeBlock:null,
             // The server's clock, kept as an offset from this device's, so due dates and reminders do not depend on the device clock.
             clockOffset:Number.isFinite(Date.parse(records.serverNow))?Date.parse(records.serverNow)-Date.now():0,
             // Dean-only account directory (object) and its unavailable notice travel with the records.
@@ -111,7 +115,7 @@ function AcademicSession({ children, user,authLoading }) {
     return result
   }, [load, role])
   const sameView = snapshot.role === role
-  return <AcademicContext.Provider value={{ data: sameView ? snapshot.data : EMPTY_ACADEMIC, loading: sameView ? loading : enabled, loaded: sameView && snapshot.loaded, error: sameView ? error : '', online, refreshAvailable, load, command }}>{children}</AcademicContext.Provider>
+  return <AcademicContext.Provider value={{ data: sameView ? snapshot.data : EMPTY_ACADEMIC, loading: sameView ? loading : enabled, loaded: sameView && snapshot.loaded, projectionCurrent: sameView && snapshot.projectionVersion === workspaceVersion, error: sameView ? error : '', online, refreshAvailable, load, command }}>{children}</AcademicContext.Provider>
 }
 
 export function useAcademicRecords() {
