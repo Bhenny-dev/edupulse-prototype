@@ -15,6 +15,12 @@
 .instructor-week { border:1px solid var(--gray-200); border-radius:var(--radius-lg); background:var(--white); margin:16px 0; }
 .instructor-week > header { display:flex; align-items:center; flex-wrap:wrap; gap:10px; padding:16px; border-bottom:1px solid var(--gray-100); }
 .instructor-week > header h2 { flex:1; margin:0; font-size:1.1rem; }
+.instructor-week-edit-actions { display:flex; flex-wrap:wrap; gap:4px; padding:4px 12px; }
+.teaching-week-form,.teaching-week-form fieldset { display:grid; gap:12px; min-width:0; }
+.teaching-week-form fieldset { border:0; padding:0; margin:0; }
+.teaching-week-form .form-label { display:grid; gap:6px; margin:0; }
+.teaching-week-form .form-input { width:100%; min-width:0; }
+.teaching-week-form textarea { resize:vertical; }
 .instructor-week.is-drop-target { outline:2px dashed var(--sky-500); outline-offset:2px; }
 .instructor-topic { margin:12px; padding:16px; background:var(--gray-50); border:1px solid var(--gray-100); border-radius:var(--radius-md); min-width:0; }
 .instructor-topic > summary { display:flex; align-items:center; flex-wrap:wrap; gap:12px; cursor:pointer; list-style-position:inside; }

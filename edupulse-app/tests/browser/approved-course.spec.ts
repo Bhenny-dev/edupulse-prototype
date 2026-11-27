@@ -5,7 +5,7 @@ for (const status of ['active', 'approved_uploaded']) test(`course shows its ${s
   await page.reload()
   await expect(page.getByRole('heading', { name: /^Week 1/ })).toBeVisible()
   await expect(page.getByRole('heading', { name: 'Upload syllabi', exact: true })).toHaveCount(0)
-  await page.getByRole('button', { name: 'Announcements', exact: true }).click()
+  await page.getByRole('button', { name: 'Stream', exact: true }).click()
   await expect(page.getByRole('region', { name: 'Next step', exact: true })).toHaveCount(0)
   expect(fixture.commands).toEqual([])
   fixture.setWorkspace({ ...fixture.getWorkspace(), syllabi: [{ ...fixture.syllabus, status: 'drafted' }] })

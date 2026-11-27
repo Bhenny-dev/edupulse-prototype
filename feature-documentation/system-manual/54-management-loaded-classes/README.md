@@ -22,7 +22,7 @@ A browser reload never repeats automatic enrollment. An unfinished invitation st
 
 ## Upload the approved syllabus inside the class
 
-1. Open **Teaching Materials & Assessments**. When the class has no approved uploaded file, **Upload syllabi** provides a drop area and file picker. It stays inside the class and accepts one approved PDF or DOCX, up to 750 KB.
+1. Open **Teaching Materials & Assessments**, or choose **Upload approved syllabus** from **Stream**. When the class has no approved uploaded file, **Upload syllabi** provides a drop area and file picker. It stays inside the class and accepts one approved PDF or DOCX, up to 750 KB.
 2. Compare the extracted identity and outline against the original using **View syllabus**. The course code and any printed academic year/semester must match the loaded class. A mismatch reports an error and saves nothing. Reading/OCR does not verify signatures.
 3. Check the approved-copy acknowledgment, then choose **Use syllabus for course**. Only this action saves the retained original and approved teaching outline.
 4. After the save, the upload area disappears and the header's **Syllabus** button appears. It presents the retained uploaded file and extracted outline. **View uploaded file** and **Download** use that original. The course does not offer another upload that could overwrite it.

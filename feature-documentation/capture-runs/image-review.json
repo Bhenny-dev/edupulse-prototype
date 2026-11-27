@@ -5056,41 +5056,6 @@
       "captureRun": "2026-11-14T11-10-09-790Z-4a21af15"
     },
     {
-      "path": "feature-documentation/system-manual/44-instructor-course-workspace/03-weeks-topics.png",
-      "sha256": "b9523cc1dc4480ed87c1bbd44b2cdbdb058735da91864c3ab8a5272c4b21522e",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-14T11:11:09.119300+00:00",
-      "captureRun": "2026-11-14T11-10-09-790Z-4a21af15"
-    },
-    {
-      "path": "feature-documentation/system-manual/44-instructor-course-workspace/04-material-form.png",
-      "sha256": "0ee33136c77bd16c79c1042f010a3cf896a95292294ef108310dbda21c4af9e9",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-14T11:11:09.119597+00:00",
-      "captureRun": "2026-11-14T11-10-09-790Z-4a21af15"
-    },
-    {
-      "path": "feature-documentation/system-manual/44-instructor-course-workspace/05-sources.png",
-      "sha256": "f519c188ae4a9f8b65c685b58923d76c63bcca37be94a7059a05203f1c073bb4",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-14T11:11:09.120011+00:00",
-      "captureRun": "2026-11-14T11-10-09-790Z-4a21af15"
-    },
-    {
-      "path": "feature-documentation/system-manual/44-instructor-course-workspace/06-source-popover.png",
-      "sha256": "b22df763bd65302f304078e0a2828b03a7a601002199f8a5ac7b0e83642aa038",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-14T11:11:09.120722+00:00",
-      "captureRun": "2026-11-14T11-10-09-790Z-4a21af15"
-    },
-    {
-      "path": "feature-documentation/system-manual/44-instructor-course-workspace/07-mobile-course.png",
-      "sha256": "8f058e4ba51afffaf73d4c2090eee2c9fce53c2a77fdbfa09f7aaac50a0c356f",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-14T11:11:09.121340+00:00",
-      "captureRun": "2026-11-14T11-10-09-790Z-4a21af15"
-    },
-    {
       "path": "feature-documentation/system-manual/47-teaching-load-documents/01-extracted-load.png",
       "sha256": "544c2d2365b6a44e5acba0b295cc61c3464463bcfa8aca3134c807b35f5572c8",
       "reviewer": "Codex agent",
@@ -5119,38 +5084,6 @@
       "sha256": "0e06747dc6cde1869b2a110990f8252403f91c8ddd8224c695ceac654f8e24a5",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-18T08:42:06.621056+00:00"
-    },
-    {
-      "path": "feature-documentation/system-manual/44-instructor-course-workspace/12-admin-class-codes.png",
-      "sha256": "1e15b9acf27e034141ae21fa031f9c5c8ac6369e72ddadcf8aa233b6a4909b74",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-25T01:47:42.274236+00:00",
-      "method": "Opened with view_image; verified visible class code, Admin instructor context on desktop, wrapped actions, sidebar/feed separation and fictional sample data. This is not human approval.",
-      "captureRun": "2026-11-25T01-45-31-271Z-0b56cf1c"
-    },
-    {
-      "path": "feature-documentation/system-manual/44-instructor-course-workspace/13-admin-class-codes-phone.png",
-      "sha256": "1d27f6d8dd35b7e17bab7d0c72f232591eefd3afa021388539d5ff22f251a64e",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-25T01:47:42.274236+00:00",
-      "method": "Opened with view_image; verified visible class code, Admin instructor context on desktop, wrapped actions, sidebar/feed separation and fictional sample data. This is not human approval.",
-      "captureRun": "2026-11-25T01-45-31-271Z-0b56cf1c"
-    },
-    {
-      "path": "feature-documentation/system-manual/44-instructor-course-workspace/14-approved-course-outline.png",
-      "sha256": "73a52513f44761a85ed9c084c780e826cee2b7ddba430c7ba115a847c0a9868f",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-25T02:31:00.891656+00:00",
-      "method": "Opened with view_image; verified approved syllabus status, weekly outline, absence of upload/draft controls, responsive controls and fictional fixture data. This is not human approval.",
-      "captureRun": "2026-11-25T02-29-31-077Z-0a160317"
-    },
-    {
-      "path": "feature-documentation/system-manual/44-instructor-course-workspace/15-approved-course-outline-phone.png",
-      "sha256": "8ec16ac65e78514e87d38dbbdb2151ef1fa7edaf524e3465444664e710f65357",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-25T02:31:00.893841+00:00",
-      "method": "Opened with view_image; verified approved syllabus status, weekly outline, absence of upload/draft controls, responsive controls and fictional fixture data. This is not human approval.",
-      "captureRun": "2026-11-25T02-29-31-077Z-0a160317"
     },
     {
       "path": "feature-documentation/system-manual/53-flat-interface-icons/admin-dark.png",
@@ -5257,14 +5190,6 @@
       "captureRun": "2026-11-25T14-24-56-699Z-ddde75b7"
     },
     {
-      "path": "feature-documentation/system-manual/56-academic-population/instructor-scores.png",
-      "sha256": "1973c6a66015974a5ef3ae79d06ab5b46399358b353ced941930662f32e8914e",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-25T14:26:45.930485+00:00",
-      "method": "Opened each exact desktop/phone image with view_image; checked loaded class cards, compact code, scores/pending review and student-only results. Fictional UI transport; real-account correction verified separately.",
-      "captureRun": "2026-11-25T14-24-56-699Z-ddde75b7"
-    },
-    {
       "path": "feature-documentation/system-manual/56-academic-population/phone-instructor-announcements.png",
       "sha256": "dd4271360e1a31578368cf8c40bd2c6abd3bd9c7e44bdfa7983a7c10de9df090",
       "reviewer": "Codex agent",
@@ -5281,14 +5206,6 @@
       "captureRun": "2026-11-25T14-24-56-699Z-ddde75b7"
     },
     {
-      "path": "feature-documentation/system-manual/56-academic-population/phone-instructor-scores.png",
-      "sha256": "05d47c79f4fd67be4f8bca736fcf917fd8d3a0ffea78dc0b472c103cd15f950c",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-25T14:26:45.937296+00:00",
-      "method": "Opened each exact desktop/phone image with view_image; checked loaded class cards, compact code, scores/pending review and student-only results. Fictional UI transport; real-account correction verified separately.",
-      "captureRun": "2026-11-25T14-24-56-699Z-ddde75b7"
-    },
-    {
       "path": "feature-documentation/system-manual/56-academic-population/phone-student-home.png",
       "sha256": "9132fa0378051e172d2a39b95e7538489890232630cc58940c8255a2fcc7a453",
       "reviewer": "Codex agent",
@@ -5301,14 +5218,6 @@
       "sha256": "c3b0b0750dde67cc2d863eaa7df450bfe18dc7a36d55664011d4fd4709f91709",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-25T14:26:45.939922+00:00",
-      "method": "Opened each exact desktop/phone image with view_image; checked loaded class cards, compact code, scores/pending review and student-only results. Fictional UI transport; real-account correction verified separately.",
-      "captureRun": "2026-11-25T14-24-56-699Z-ddde75b7"
-    },
-    {
-      "path": "feature-documentation/system-manual/56-academic-population/student-home.png",
-      "sha256": "e1ba7d37a815350fcfbac4de65a528045a69bc2655d2be7a2fa8a36da2b2ea50",
-      "reviewer": "Codex agent",
-      "reviewedAt": "2026-11-25T14:26:45.941446+00:00",
       "method": "Opened each exact desktop/phone image with view_image; checked loaded class cards, compact code, scores/pending review and student-only results. Fictional UI transport; real-account correction verified separately.",
       "captureRun": "2026-11-25T14-24-56-699Z-ddde75b7"
     },
@@ -5399,6 +5308,228 @@
       "reviewedAt": "2026-11-25T22:55:50.898983+00:00",
       "method": "Opened each exact desktop/phone image with view_image; checked visible pending spinner, labels, retained fields and unclipped controls. Held synthetic requests, no hosted persistence claim.",
       "captureRun": "2026-11-25T23-16-05-689Z-28da4af0"
+    },
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/12-placed-announcements.png",
+      "sha256": "adb530a6ac7ccb37e5ebaed022dcb6253713d5865c858e227fbf024196dba27e",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T02:39:13.193450+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/03-weeks-topics.png",
+      "sha256": "c0188807b763462bcf49207c65550dda9cd6eb0a21f869d9e23704454cd90528",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T02:39:13.193450+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/04-material-form.png",
+      "sha256": "19889eec260dd16b2a20575e58a86324977ed4d798f8680a2db573c96ed87fd7",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T02:39:13.193450+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/05-sources.png",
+      "sha256": "bc03750268171b20c58424dcad1434e02ce4865c7283fbefdde7a3b316abb74e",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T02:39:13.193450+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/06-source-popover.png",
+      "sha256": "5a10341f36fe810a6d7a29e2ba6991b91b955498a2ff9ec7a77f4656a2e538ca",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T02:39:13.193450+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/07-mobile-course.png",
+      "sha256": "41d54ada0cd193311a3873082cb5f028945458de05b458b5c421347a88fac9f8",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T02:39:13.193450+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/08-block-sections.png",
+      "sha256": "9eeae73c7e55b438ff82f46ed66587640a034c23de67b7b5b6bf45009357f7f9",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T02:39:13.193450+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/09-block-schedule.png",
+      "sha256": "e571563db3ff00923775aa5d8acc028344699844a5a0e9ba4d7ca0b150f92ae2",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T02:39:13.193450+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/10-mobile-block-schedule.png",
+      "sha256": "6dd75cdffbdb1bff36fc16d1555b87a7d92a03b68dc9462bfc578bde546df861",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T02:39:13.193450+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/11-page-reader.png",
+      "sha256": "a2a2848f0179b10ddaa0e098713559fb1c35df97e7469cb31626de2f1f1f7844",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T02:39:13.193450+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/12-admin-class-codes.png",
+      "sha256": "297e453cee1cacff94a45b36a01840de43d44311abb8b0d4cde3fc1788a5102f",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T02:39:13.193450+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/12-mobile-page-reader.png",
+      "sha256": "01b5fc3dcc8b42603fd916feeceb73788fa0e00745433dfaf994e63a94b389ce",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T02:39:13.193450+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/13-admin-class-codes-phone.png",
+      "sha256": "69c663bba1b5630f8205c5234276680f4a33a3c1a745e41f735a669445a746f7",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T02:39:13.193450+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/14-approved-course-outline.png",
+      "sha256": "f0ce55c7574c91a6d8be47ecdbd004edd253c1359034fa482d3749813f56a9e4",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T02:39:13.193450+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/15-approved-course-outline-phone.png",
+      "sha256": "53fe01e3d1e75b02e4f2a94e32068aaf62920744eece44bd40aa8adc2265fe95",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T02:39:13.193450+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/16-stream.png",
+      "sha256": "1bf3b964a35a9558fc22bfb25970a76e33e8c7fc56196271780eea8cbe474771",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T02:39:13.193450+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/17-stream-phone.png",
+      "sha256": "f5a37113d146805833ff9f911c6b9ea324f962810ebc59201676169514a8cd30",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T02:39:13.193450+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/18-announcement-placement.png",
+      "sha256": "ab97d56a05b8892dac3f9b08d207ee0e475dd1a371b34361bd1fc1bfe573b61d",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T02:39:13.193450+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/19-add-teaching-week.png",
+      "sha256": "beb6f811d015368eac424b3373744afcc4a2ed4a0c1ede0d9aa9e3bf0b99d084",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T02:39:13.193450+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/54-management-loaded-classes/01-instructor-home.png",
+      "sha256": "5947ec9e9c360f46c3879f23b17d3890e543494bc3cb14f6523ea52637929cd7",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T02:39:13.193450+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/54-management-loaded-classes/02-empty-course-upload.png",
+      "sha256": "bab7079675ea7efda3f3e6a51b7456ab599cee9fb4558c8a198ec409e4ed2f84",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T02:39:13.193450+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/54-management-loaded-classes/03-approved-outline.png",
+      "sha256": "443820da7950a2ecdb9af454a97253d9abf8c320b1fdfad49fceee95c96c9653",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T02:39:13.193450+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/54-management-loaded-classes/04-original-syllabus.png",
+      "sha256": "d028f1aca447aab0a37313d8e48aa00a3f0e9d0ca9f27ec7307b7469ecf6495e",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T02:39:13.193450+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/54-management-loaded-classes/05-existing-class-list.png",
+      "sha256": "274dd26e858da3d6b285b20cbde8252e5e52a5c7a5406834e284782ccdf5dcdc",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T02:39:13.193450+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/54-management-loaded-classes/07-invitation-sign-in.png",
+      "sha256": "2944e1254bda8b9ff0f6ef65a3a571d062c2d908c8b1dbc8714c4393b05ac4fe",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T02:39:13.193450+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/54-management-loaded-classes/08-phone-upload.png",
+      "sha256": "208223d50114acfaf11a208006d0c1a26bd122048e231bdae8742a134c87ff52",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T02:39:13.193450+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/54-management-loaded-classes/09-phone-class-list.png",
+      "sha256": "c8c2f04579afb714d6ecd0af9be96f1fc7e7920cea0ee443271fab102f555903",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T02:39:13.193450+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/55-class-code-invitations/admin-popover.png",
+      "sha256": "48f2995ebf04849be8f82beaafac8b6af6b0af594f44aa98edf18f55d22ae21f",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T02:39:13.193450+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/55-class-code-invitations/dark-popover.png",
+      "sha256": "3ae096cb6cbfc089ddefa9eaa3b36352239a2d3ee782a9795a2fd91ce6d580bf",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T02:39:13.193450+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/55-class-code-invitations/instructor-popover.png",
+      "sha256": "35f551752b910829139c78c8e380fd963da077614f55f5a34e0c600c3d920656",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T02:39:13.193450+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/55-class-code-invitations/phone-card.png",
+      "sha256": "69c663bba1b5630f8205c5234276680f4a33a3c1a745e41f735a669445a746f7",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T02:39:13.193450+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/55-class-code-invitations/phone-popover.png",
+      "sha256": "0f8ca6ab3cb761159fa7355b79737fb321a66b0c0d9ee21c77a15ca5740fc85a",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T02:39:13.193450+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/56-academic-population/instructor-scores.png",
+      "sha256": "16cbb9b86ad27195ab11dcc0efc56bc361f3a69589fd5aa30e4bda559e81ff6b",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T02:39:13.193450+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/56-academic-population/instructor-stream.png",
+      "sha256": "4b7d426eac5441721db11607c9bedaa05d65f01b210433530e4b6ee693d57496",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T02:39:13.193450+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/56-academic-population/phone-instructor-scores.png",
+      "sha256": "582c3cbb5f14073481065e7eb6a4435c91589d04db2bbbd16ab26a89ee04c483",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T02:39:13.193450+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/56-academic-population/phone-instructor-stream.png",
+      "sha256": "b70c51dd7788298c1eebb252d42c41713fcf75637ce191c0fd5a7220b2fd39d3",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T02:39:13.193450+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/56-academic-population/student-home.png",
+      "sha256": "9744ba3bba542f26b4c14009a1d4370377803f721781e6900df0f1d6b6a8777b",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-27T02:39:13.193450+00:00"
     }
   ]
 }

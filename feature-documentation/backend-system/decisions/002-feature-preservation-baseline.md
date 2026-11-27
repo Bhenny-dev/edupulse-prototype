@@ -405,6 +405,10 @@ The owner removes instructor Create class and new-block creation: management loa
 
 An empty class accepts its approved syllabus directly by drag/drop or file selection in Teaching Materials & Assessments. It does not redirect intake to Syllabus. Once saved, hide that intake and show the header Syllabus button for the retained uploaded original and extracted outline. Draft authoring stays on Syllabus. This supersedes G16's empty-class redirect interpretation and G13's instructor-created classes. [Manual 54](../../system-manual/54-management-loaded-classes/README.md).
 
+### 27 November 2026 — Stream and weekly teaching plan
+
+The owner requests **Stream** for final delivery and announcements, and **Teaching Materials & Assessments** for working weeks, reordering and courseware revision. The instructor's legacy Announcements tab opens Stream. Stream shows active publications and accepts announcements at class level or before or inside a week or topic. Student readership keeps its existing enrollment and block boundaries, with placed posts in the weekly list. Week removal is limited to empty teaching weeks to preserve saved work and earlier results. Exam slots remain fixed. The header **Syllabus** presents the original file and extracted outline. [Manual 44](../../system-manual/44-instructor-course-workspace/README.md).
+
 
 ## Owner correction: minimal Class Code card, 25 November 2026
 

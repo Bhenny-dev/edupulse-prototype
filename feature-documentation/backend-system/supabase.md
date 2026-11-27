@@ -355,3 +355,10 @@ The workspace trigger collection migration materializes NEW/OLD syllabus and con
 ## Source-load correction, 25 November 2026
 
 No new schema migration is needed. `scripts/retire-seeded-class-sections.ts` is an explicit privileged maintenance tool, not a browser command. Start with an ignored current snapshot and retained pre-population baseline; review its dry plan, run `--check-transaction`, then `--apply` with an explicit instructor UUID. It refuses non-attributed extras, changed reviewed rows, missing confirmed sections and inactive management actors. Native continuity capture remains enabled; historical teaching and learning rows are retained. Private batch provenance stores the source SHA and selected/retained load keys. Independent snapshots verify untouched workspaces, other loads and restrictions. Re-running an applied correction requires fresh review rather than silently ignoring its receipt. [Evidence](../versions/2026-11-25-source-load-correction/validation/results.md).
+
+
+## Class Stream announcement placement
+
+Migration `20261127021533_class_stream_announcement_placement.sql` adds `topic_id` and `placement` to the private announcement table. Existing posts use `within` and keep their class or week placement. The announcement command accepts `before` or `within`. A topic target must match an active course outline for the authenticated instructor, term and selected week, with the assigned block's teaching syllabus where set. Class and membership reads carry both fields under existing permissions. The public wrapper and audited support gateway use the same authorization path.
+
+The teaching plan stays in `courseOutline`. The first week edit or move saves the pre-edit outline as `extractedCourseOutline` for the original syllabus reader. The workspace revision check covers both fields. Removed topic placements fall back to the saved calendar week. The migration preserves enrollments, publication timing, scores and learner attempts.

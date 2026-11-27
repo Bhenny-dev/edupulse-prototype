@@ -2,7 +2,7 @@
 
 The Dean or Program Coordinator's confirmed course load creates its class and unique code together. When a reviewed import supplies block sections, those sections are used. A manual load without a section receives its initial section automatically, starting at A or the next unused letter for that course and semester. This names a course section; it does not invent a student roster, official student home block or meeting schedule. Existing loaded courses missing this class/code are repaired by the migration.
 
-On **Announcements**, the **Class Code** card contains only the code and its enlarge icon. Multiple loaded sections show their own codes. There is no block-creation prompt, explanation paragraph, copy button or action menu in the card.
+On **Stream**, the **Class Code** card contains the selected section's code and its enlarge icon.
 
 ![Instructor Class Code card](instructor-card.png)
 

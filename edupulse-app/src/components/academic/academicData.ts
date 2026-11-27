@@ -13,7 +13,7 @@ export type AcademicData = { classSchedule?: ClassMeeting[]; scheduleError?: str
 export type ClassCode = { code: string; load_key: string; parent_key: string; course_code: string; block: string; academic_year: string; semester: string; created_at: string }
 /** Instructor: a student who joined with a code. Student: a class they joined, with its labels. */
 export type ClassJoin = { load_key: string; joined_at: string; student_email?: string; student_number?: string; course_code?: string; course_title?: string; block?: string; academic_year?: string; semester?: string; instructor_name?: string }
-export type Announcement = { id: string; course_code: string; academic_year: string; semester: string; block: string | null; week: number | null; title: string; body: string; attachments: { kind: 'link'; url: string; title: string; provider: string }[]; created_at: string; updated_at: string; course_id?: string }
+export type Announcement = { id: string; course_code: string; academic_year: string; semester: string; block: string | null; week: number | null; topic_id?: string | null; placement?: 'before' | 'within'; title: string; body: string; attachments: { kind: 'link'; url: string; title: string; provider: string }[]; created_at: string; updated_at: string; course_id?: string }
 export const percent = (score: number, total: number) => total > 0 ? Math.round(score / total * 100) : null
 export function currentAttempts(data: AcademicData) {
   const latest = new Map<string,Attempt>()

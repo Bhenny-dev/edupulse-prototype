@@ -103,6 +103,18 @@
 .class-code { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 1.125rem; font-weight: 700; letter-spacing: 0.12em; color: var(--sky-700); background: var(--sky-50); border: 1px solid var(--sky-100); border-radius: var(--radius-md); padding: 2px 8px; }
 .class-code-actions { display: inline-flex; align-items: center; gap: 4px; margin-left: auto; }
 .class-feed { display: grid; gap: 16px; min-width: 0; }
+.class-stream-group, .class-stream-week, .class-stream-topic { display: grid; gap: 12px; min-width: 0; }
+.class-stream-week { padding: 16px; border: 1px solid var(--gray-200); border-radius: var(--radius-xl); background: var(--white); }
+.class-stream-topic { padding: 12px; border: 1px solid var(--gray-200); border-radius: var(--radius-lg); }
+.class-stream-heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 4px 12px; }
+.class-stream-heading h2 { font-size: 1.125rem; }
+.class-stream-heading h3, .class-stream-item h4 { font-size: 1rem; }
+.class-stream-item { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 10px 0; border-top: 1px solid var(--gray-200); }
+.class-stream-item > div { flex: 1 1 180px; min-width: 0; overflow-wrap: anywhere; }
+.class-announcement-dialog .class-composer { border: 0; padding: 0; box-shadow: none; }
+.class-announcement-dialog .form-row { margin-bottom: 0; }
+.class-announcement-dialog .form-label { display: grid; gap: 6px; margin: 0; }
+.class-announcement-dialog .form-input { width: 100%; min-width: 0; }
 .class-composer-open { display: flex; align-items: center; gap: 12px; width: 100%; padding: 14px 16px; border: 1px solid var(--gray-200); border-radius: var(--radius-xl); background: var(--white); color: var(--gray-500); cursor: pointer; text-align: left; font: inherit; box-shadow: var(--shadow-3d); }
 .class-composer-open:hover { color: var(--sky-600); }
 .class-avatar { width: 36px; height: 36px; flex: 0 0 36px; border-radius: var(--radius-full); display: grid; place-items: center; font-weight: 700; color: white; background: linear-gradient(135deg, var(--sky-300), var(--sky-500)); }

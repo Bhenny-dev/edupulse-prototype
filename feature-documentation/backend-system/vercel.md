@@ -204,3 +204,8 @@ This release changes the maintenance population planner and preserves applicatio
 ## Loading feedback audit, 26 November 2026
 
 This presentation release needs no new migration, environment variable or provider credential. The linked migration push reports up to date. Deploy the reviewed remote-main archive with the shared commands above; inspect Ready and the canonical alias independently. Loading UI captures hold synthetic requests, so they do not prove hosted academic writes. [Validation](../versions/2026-11-26-loading-audit/validation/results.md).
+
+
+## Class Stream and announcement placement
+
+Apply migration `20261127021533_class_stream_announcement_placement.sql` to the linked EduPulse database before deploying the matching UI. It adds placement fields to the existing private announcement table and extends the existing RPC. Follow the shared production deployment procedure above. Validate Ready and the canonical production alias independently.

@@ -10,7 +10,9 @@ These screenshots use fictional student records, controlled provider/API respons
 
 ![Weekly teaching and assessment items in a selected course](02-delivered-course.png)
 
-Select a course card. The course header identifies its instructor. The **All**, **Teaching Materials** and **Assessments** tabs filter a single weekly list. **All** includes both materials and assessments. The selected tab restores from the URL. **Open material** and **Open assessment** open a separate page-sized dialog above the list. **Back to My Courses** returns to the cards. The selected authorized course restores after reload; course selection never records an open or starts an attempt.
+Select a course card. The class header identifies its instructor. **Teaching Materials & Assessments** groups published work by week and topic. Use **Week** and **Show resources** to filter it. Instructors can place announcements before or inside a week or topic. The **Announcements** tab lists all posts the student can see for this class. **Open material** and **Open assessment** open separate readers. **Close class and return to Home** returns to the cards. Reload restores the authorized class and tab.
+
+![Student class with an announcement before Week 1 and another inside its topic](12-placed-announcements.png)
 
 ![The material reader and section confirmations](03-material-reader.png)
 

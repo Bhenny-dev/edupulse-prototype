@@ -11,6 +11,8 @@
       "source": [
         "edupulse-app/src/components/courseware/Instructor*.jsx",
         "edupulse-app/src/components/courseware/CourseTopicWeeks.jsx",
+        "edupulse-app/src/components/courseware/TeachingWeekEditor.jsx",
+        "edupulse-app/src/components/classroom/ClassStream.jsx",
         "edupulse-app/src/components/courseware/CourseBlockSections.jsx",
         "edupulse-app/src/components/ui/PageModal.jsx",
         "edupulse-app/src/components/ui/page-modal.css",
@@ -27,7 +29,8 @@
         "edupulse-app/src/components/pulse/PulseSourceDialog.jsx",
         "edupulse-app/server/domains/teachingFiles.ts",
         "edupulse-app/tests/instructor-course-fixture.ts",
-        "edupulse-app/tests/snapshots/instructor-course*.spec.ts"
+        "edupulse-app/tests/snapshots/instructor-course*.spec.ts",
+        "edupulse-app/tests/snapshots/class-stream*"
       ],
       "docs": [
         "feature-documentation/system-manual/44-instructor-course-workspace",

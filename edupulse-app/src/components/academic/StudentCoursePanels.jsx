@@ -1,6 +1,7 @@
-import {useEffect,useState} from 'react'
+import {Fragment,useEffect,useState} from 'react'
 import {useWorkspaceViewState} from '../../context/WorkspaceContext'
-import {weekSections} from '../../utils/outlineSections'
+import {isOutlineExam} from '../../utils/outlineSections'
+import {weekTopics} from '../../utils/instructorCourses'
 import ResourceLinks from './StudentResourceLinks'
 import {useLocation,useSearchParams} from 'react-router-dom'
 import {currentAttempts} from './academicData'
@@ -14,13 +15,13 @@ import {Table} from './AcademicUI'
 import './student-classroom.css'
 
 const time=value=>value?new Date(value).toLocaleString('en-PH',{timeZone:'Asia/Manila'}):'No due date'
-function Announcement({post,instructor,onWeek}){
+function Announcement({post,instructor,onWeek,topic}){
  return <article className="student-resource student-announcement" tabIndex={-1} id={'announcement-'+post.id}>
   <h3>{post.title}</h3>
   <p className="text-sm text-muted">{instructor||'Course instructor'} / <time dateTime={post.created_at}>{time(post.created_at)}</time> (Philippine time)</p>
   {post.week&&<p className="text-sm">{onWeek
    ? <button type="button" className="btn btn-secondary" onClick={()=>onWeek(post.week)}>View Week {post.week}</button>
-   : 'Week '+post.week}</p>}
+   : (post.placement==='before'?'Before ':'')+(topic?topic+' · ':'')+'Week '+post.week}</p>}
   <p className="student-post">{post.body}</p>
   <ResourceLinks links={post.attachments}/>
  </article>
@@ -58,14 +59,17 @@ export default function StudentCoursePanels({course,data,onOpen,busy}){
   return <article key={item.id} className="student-resource"><span className="badge">{item.type==='assessment'?'Assessment':item.content?.submissionOnly?'Submission bin':'Teaching Material'}</span><h3>{item.title}</h3>{item.type==='assessment'?<p className="text-sm text-muted">{state(item)} · {item.content?.questions?.length??'Unspecified'} questions · {item.content?.totalPoints??item.content?.questions?.length??'Unspecified'} points · {time(item.due_at)}{item.due_at?' (Philippine time)':''}</p>:<p>{item.content?.description}</p>}{progress?.total>0&&<StudentProgressBar value={progress.read} total={progress.total} label={item.title+' reading progress'} text={progress.read+' of '+progress.total+' sections read'}/>}<ResourceLinks links={[...(item.content?.links||[]),...(item.content?.attachments||[]).filter(f=>f.url)]}/><TeachingAttachments attachments={(item.content?.attachments||[]).filter(f=>f.path)}/><button className="btn btn-secondary" disabled={busy} onClick={event=>onOpen(item,event.currentTarget)}>{item.type==='assessment'?(state(item)==='In progress'?'Resume assessment':attemptFor(item)?'Review assessment':'Open assessment'):item.content?.submissionOnly?'Open submission bin':'Open material'}</button>{!['legacy','open'].includes(deliveryState(item,now))&&<p className="text-sm text-muted">{deliveryState(item,now)==='scheduled'?'Scheduled for a later class':deliveryState(item,now)==='closed'?'Class delivery window closed':'Delivery schedule not yet available'}</p>}</article>
  }
  const weeks=[...new Set([...items.map(p=>p.week),...posts.filter(p=>p.week).map(p=>p.week)])].sort((a,b)=>a-b)
+ const topicsOf=week=>{
+  const row=course.outline?.find(r=>r.week===week)
+  return row&&!isOutlineExam(row)?weekTopics(row):[]
+ }
  const topicGroups=week=>{
-  const weekly=items.filter(p=>p.week===week),row=course.outline?.find(r=>r.week===week)
-  const sections=row?weekSections(row):[]
+  const weekly=items.filter(p=>p.week===week)
   const keyOf=p=>p.content?.courseTopicId||p.content?.outlineSectionId||''
-  const known=sections.filter(section=>weekly.some(p=>keyOf(p)===section.id))
-  const groups=known.map(section=>({id:section.id,title:section.contents.find(Boolean)?.split('\n')[0]||'Topic',items:weekly.filter(p=>keyOf(p)===section.id)}))
+  const known=topicsOf(week).filter(section=>weekly.some(p=>keyOf(p)===section.id)||posts.some(post=>post.week===week&&post.topic_id===section.id))
+  const groups=known.map(section=>({id:section.id,title:section.title,items:weekly.filter(p=>keyOf(p)===section.id),posts:posts.filter(post=>post.week===week&&post.topic_id===section.id)}))
   const remaining=weekly.filter(p=>!known.some(section=>section.id===keyOf(p)))
-  if(remaining.length)groups.push({id:'published',title:'Published content',items:remaining})
+  if(remaining.length)groups.push({id:'published',title:'Published content',items:remaining,posts:[]})
   return groups
  }
  const keys=weeks.flatMap(week=>[String(week),...topicGroups(week).map(group=>`${week}:${group.id}`)])
@@ -156,16 +160,22 @@ export default function StudentCoursePanels({course,data,onOpen,busy}){
    <button type="button" className="btn btn-secondary" onClick={()=>setVisibleTopics(false)} disabled={!matchingWeeks.length}>Collapse all topics</button>
   </div>}
   {matchingWeeks.map(week=>{
-   const groups=topicGroups(week).filter(group=>group.items.some(matchesResource))
-   return <details className="student-topic" key={week} open={isExpanded(String(week))} onToggle={e=>{if(e.target===e.currentTarget)toggle(String(week),e.currentTarget.open)}}>
+   const showPosts=['all','announcement'].includes(resourceFilter)
+   const groups=topicGroups(week).filter(group=>group.items.some(matchesResource)||showPosts&&group.posts.length)
+   const topicIds=new Set(topicsOf(week).map(topic=>topic.id))
+   const weekPosts=showPosts?posts.filter(post=>post.week===week&&!topicIds.has(post.topic_id)):[]
+   const renderPosts=(announcements,before,topic)=>announcements.filter(post=>(post.placement==='before')===before).map(post=><Announcement key={post.id} post={post} instructor={course.instructor_name} topic={topic}/>)
+   return <Fragment key={week}>{renderPosts(weekPosts,true)}<details className="student-topic" open={isExpanded(String(week))} onToggle={e=>{if(e.target===e.currentTarget)toggle(String(week),e.currentTarget.open)}}>
     <summary id={'week-'+week+'-heading'}>Week {week}</summary>
+    {renderPosts(weekPosts,false)}
     {groups.map(group=>{
      const materials=group.items.filter(p=>p.type!=='assessment')
      const assessments=group.items.filter(p=>p.type==='assessment'&&matchesResource(p))
      const parents=a=>materials.filter(m=>a.content?.coverage?.materialIds?.includes(m.content?.courseItemId||m.id))
      const key=week+':'+group.id
-     return <details className="student-subtopic" key={key} open={isExpanded(key)} onToggle={e=>{if(e.target===e.currentTarget)toggle(key,e.currentTarget.open)}}>
+     return <Fragment key={key}>{showPosts&&renderPosts(group.posts,true,group.title)}<details className="student-subtopic" open={isExpanded(key)} onToggle={e=>{if(e.target===e.currentTarget)toggle(key,e.currentTarget.open)}}>
       <summary>{group.title}</summary>
+      {showPosts&&renderPosts(group.posts,false,group.title)}
       {materials.map(m=>{
        const linked=assessments.filter(a=>parents(a)[0]?.id===m.id)
        const showMaterial=matchesResource(m)
@@ -180,10 +190,9 @@ export default function StudentCoursePanels({course,data,onOpen,busy}){
       {assessments.some(a=>!parents(a).length)&&<section aria-label={'Week '+week+' standalone assessments'}>
        <h3>Assessments</h3>{assessments.filter(a=>!parents(a).length).map(resource)}
       </section>}
-     </details>
+     </details></Fragment>
     })}
-    {['all','announcement'].includes(resourceFilter)&&posts.filter(p=>p.week===week).map(post=><Announcement key={post.id} post={post} instructor={course.instructor_name}/>)}
-   </details>
+   </details></Fragment>
   })}
   {!matchingWeeks.length&&<p role="status">{weeks.length?'No resources match these filters.':'No teaching materials or assessments have been published for this class.'}</p>}
  </section>}

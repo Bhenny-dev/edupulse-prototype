@@ -22,9 +22,9 @@ import ApprovedSyllabusIntake from '../syllabus/ApprovedSyllabusIntake'
 import './instructor-courses.css'
 import '../classroom/classroom.css'
 
-// The class space of one assigned course: Announcements, Teaching Materials & Assessments, Class List and Scores,
+// The class space of one assigned course: Stream, Teaching Materials & Assessments, Class List and Scores,
 // with Syllabus and Block sections as class actions. Home lists the classes; old ?view= links keep working.
-const TABS = [['announcements', 'Announcements'], ['materials', 'Teaching Materials & Assessments'], ['class-list', 'Class List'], ['scores', 'Scores']]
+const TABS = [['stream', 'Stream'], ['materials', 'Teaching Materials & Assessments'], ['class-list', 'Class List'], ['scores', 'Scores']]
 const MATERIAL_PARAMS = ['week', 'topic', 'item', 'publication', 'add', 'picker', 'moveFrom']
 
 /** The class as a page over Home (`/dashboard?course=`). `onClose` returns to Home. */
@@ -45,7 +45,7 @@ export default function InstructorCourses({ onClose }) {
   const ready = Boolean(syllabus)
   const schedules=selected?loadRows(records.data,true).filter(load=>load.instructorId===user.id&&sameCourseCode(load.code,selected.code)&&(load.loadType==='course'||selected.blocks.includes(load.block))&&load.academicYear===selected.academicYear&&load.semester===selected.semester&&(load.time||load.source||load.sourceRows?.length)):[]
   const rawView = params.get('view') || ''
-  const tab = params.get('tab'), section = rawView === 'blocks' ? 'blocks' : rawView === 'class-syllabus' ? 'class-syllabus' : TABS.some(([key]) => key === tab) ? tab : rawView === 'topics' || MATERIAL_PARAMS.some(key => params.has(key)) ? 'materials' : 'announcements'
+  const tab = params.get('tab'), section = rawView === 'blocks' ? 'blocks' : rawView === 'class-syllabus' ? 'class-syllabus' : tab === 'announcements' ? 'stream' : TABS.some(([key]) => key === tab) ? tab : rawView === 'topics' || MATERIAL_PARAMS.some(key => params.has(key)) ? 'materials' : 'stream'
   const own = selected ? { course: selected.id, ...(selected.block ? { block: selected.block } : {}) } : {}
   const go = next => { setError(''); setNotice(''); setParams({ ...own, term, ...(next === 'blocks' || next === 'class-syllabus' ? { view: next } : { tab: next }) }) }
   const scoped = instructorRecords(termData, selected ? [selected] : courses)
@@ -100,16 +100,16 @@ export default function InstructorCourses({ onClose }) {
       {!writable&&<p className="text-sm text-muted mb-16">This semester is view-only.</p>}
       {syllabus?.handedOverFrom?.instructorName&&<p className="text-sm text-muted mb-16">Continued from {syllabus.handedOverFrom.instructorName} for {selected.blocks.join(', ')}.</p>}
       <nav className="tabs class-tabs" aria-label="Class sections">{TABS.map(([key, label]) => <button type="button" key={key} className={`tab ${section === key ? 'active' : ''}`} aria-pressed={section === key} onClick={() => go(key)}>{label}</button>)}</nav>
-      {section === 'announcements' && <ClassStream course={selected} syllabus={syllabus} data={scoped} readOnly={!writable} highlight={params.get('announcement')} onOpenMaterials={() => go('materials')} />}
+      {section === 'stream' && <ClassStream key={selected.id + ':' + selected.block} course={selected} syllabus={syllabus} data={scoped} readOnly={!writable} highlight={params.get('announcement')} onOpenMaterials={() => go('materials')} />}
       {section === 'materials' && <>
         {!ready && (writable ? <ApprovedSyllabusIntake key={selected.id} courseCode={selected.code} onUse={useApproved} /> : <p>No approved syllabus is recorded for this class.</p>)}
-        {syllabus?.courseOutline?.length > 0 && !syllabus.suspended && <CourseTopicWeeks readOnly={!writable} syllabus={syllabus} data={scoped} course={selected} announcements={classAnnouncements(scoped, selected)} onOpenAnnouncement={id => setParams({ ...own, term, tab: 'announcements', announcement: id })} onSchedule={() => go('blocks')} />}
+        {syllabus?.courseOutline?.length > 0 && !syllabus.suspended && <CourseTopicWeeks readOnly={!writable} syllabus={syllabus} data={scoped} course={selected} announcements={classAnnouncements(scoped, selected)} onOpenAnnouncement={id => setParams({ ...own, term, tab: 'stream', announcement: id })} onSchedule={() => go('blocks')} />}
       </>}
       {section === 'class-syllabus' && (syllabus?.approvedFile ? <ClassSyllabus course={selected} syllabus={syllabus} onOpenMaterials={() => go('materials')} /> : <p>No uploaded syllabus is recorded. Open Teaching Materials &amp; Assessments to add the approved file.</p>)}
       {section === 'class-list' && <ClassPeople course={selected} data={scoped} readOnly={!writable} />}
       {section === 'scores' && <ClassScores course={selected} data={scoped} />}
       {section === 'blocks' && <>
-        <div className="class-section-heading"><h2>Block section</h2><button type="button" className="btn btn-ghost btn-sm" onClick={() => go('announcements')}>Back to Announcements</button></div>
+        <div className="class-section-heading"><h2>Block section</h2><button type="button" className="btn btn-ghost btn-sm" onClick={() => go('stream')}>Back to Stream</button></div>
         {schedules.length>0&&<section className="card mb-24"><div className="card-header"><h2>Teaching schedule and load</h2></div><div className="card-body">{schedules.map(load=><div key={load.key} className="mb-16"><strong>{load.block}</strong><TeachingLoadFacts load={load}/></div>)}<p className="text-sm text-muted">These are the reviewed load records. Set actual class dates and delivery times below.</p></div></section>}
         <CourseBlockSections course={selected} syllabus={syllabus} data={scoped} readOnly={!writable}/>
       </>}

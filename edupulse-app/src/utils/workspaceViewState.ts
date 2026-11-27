@@ -51,6 +51,7 @@ function valid(key:unknown,value:unknown):value is ViewValue {
   if(key==='class-location'||/^class:.+:scores-block$/.test(key))return value===null||id(value)
   if(/^class:.+:code-(?:display|menu)$/.test(key))return typeof value==='boolean'
   if(/^class:.+:code-confirm$/.test(key))return value===null||value==='regenerate'||value==='disable'
+  if(/^class:.+:stream-(?:composer|menu|delete)$/.test(key)||/^course:.+:week-editor$/.test(key))return value===null||id(value)
   if(/^course:.+:weeks-collapsed$/.test(key))return value instanceof Set&&value.size<=52&&[...value].every(item=>Number.isInteger(item)&&Number(item)>=1&&Number(item)<=52)
   if(/^course:.+:expanded$/.test(key))return value instanceof Set&&value.size<=52&&[...value].every(item=>Number.isInteger(item)&&Number(item)>=1&&Number(item)<=52)
   if(/^course:.+:topic-expanded$/.test(key))return value instanceof Set&&value.size<=200&&[...value].every(id)

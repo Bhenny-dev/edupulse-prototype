@@ -23,7 +23,8 @@ export default function ClassSyllabus({ course, syllabus, onOpenMaterials }) {
     <p>Upload the approved syllabus of {course.code} on the Syllabus page. It links to this class by its course code, and its outline is the reference for Teaching Materials and Assessments.</p>
     <div className="class-empty-actions"><Link className="btn btn-primary" to="/syllabus?tab=mine">Open Syllabus</Link></div>
   </section>
-  const file = syllabus.approvedFile, rows = outlineSpans(syllabus.courseOutline || [])
+  const file = syllabus.approvedFile, outline = syllabus.extractedCourseOutline || syllabus.courseOutline || []
+  const rows = outlineSpans(outline)
   const title = `${syllabus.courseCode} — ${syllabus.courseTitle}`
   return <div className="class-syllabus">
     <div className="class-section-heading"><h2>Syllabus</h2><Link className="btn btn-secondary btn-sm" to="/syllabus?tab=mine">Manage syllabi in Syllabus</Link></div>
@@ -33,7 +34,7 @@ export default function ClassSyllabus({ course, syllabus, onOpenMaterials }) {
         <div className="approved-intake-actions"><button type="button" className="btn btn-secondary btn-sm" onClick={() => setViewing(true)}><Eye size={15} aria-hidden="true" />View uploaded file</button><button type="button" className="btn btn-ghost btn-sm" onClick={() => downloadApprovedFile(file)}><Download size={15} aria-hidden="true" />Download</button></div></div>
         : <p className="text-sm text-muted">No uploaded file is retained for this syllabus. Its outline is shown below.</p>}
     </div></section>
-    <section className="card" aria-label="Extracted course outline"><div className="card-header"><h3>Extracted course outline <span className="text-muted">· {syllabus.courseOutline?.length || 0} {(syllabus.courseOutline?.length || 0) === 1 ? 'week' : 'weeks'}</span></h3></div><div className="card-body">
+    <section className="card" aria-label="Extracted course outline"><div className="card-header"><h3>Extracted course outline <span className="text-muted">· {outline.length} {outline.length === 1 ? 'week' : 'weeks'}</span></h3></div><div className="card-body">
       {rows.length ? <div className="approved-intake-table" tabIndex={0} role="region" aria-label="Course outline read from the uploaded syllabus"><table className="approved-outline-table"><thead><tr><th>Week</th><th>Learning outcomes</th><th>Contents</th><th>Teaching-Learning Activities</th><th>Assessments</th></tr></thead><tbody>
         {rows.map(({ label, exam, section: row }) => <tr key={`${label}-${row.id}`}><td>{label}{exam && <span className="text-sm text-muted"> Exam</span>}</td><td>{row.ilos || 'Not extracted'}</td><td><ul>{row.contents?.map((text, index) => <li key={index}>{text}</li>)}</ul></td><td>{row.activities}<ul>{row.teachingMaterials?.map((text, index) => <li key={index}>{text}</li>)}</ul></td><td>{row.assessments}<ul>{row.assessmentTypes?.map((text, index) => <li key={index}>{text}</li>)}</ul></td></tr>)}
       </tbody></table></div> : <p className="text-sm text-muted">No course outline was extracted from this syllabus.</p>}

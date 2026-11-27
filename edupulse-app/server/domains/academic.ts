@@ -80,7 +80,7 @@ const blockName = field(40).min(1).regex(/^[A-Za-z0-9][A-Za-z0-9 .()/_-]*$/, 'Us
 /** A provider link (Drive, Docs, Slides, Sheets, YouTube or any web page). The file itself stays with its provider. */
 export const linkAttachment = z.object({ url: z.string().trim().max(2000).url().refine(url => /^https?:\/\//i.test(url), 'Use a complete http or https link.'), title: field(200).optional(), provider: field(40).optional() })
 export const announcementCommand = z.discriminatedUnion('action', [
-  z.object({ action: z.literal('save'), id: z.string().uuid().optional(), course_code: field(40).min(1), academic_year: field(20).min(1), semester: field(40).min(1), block: blockName.optional(), week: z.number().int().min(1).max(52).optional(), title: z.string().trim().min(1, 'Give the announcement a title.').max(200), body: z.string().trim().max(5000).default(''), attachments: z.array(linkAttachment).max(10).default([]) }),
+  z.object({ action: z.literal('save'), id: z.string().uuid().optional(), course_code: field(40).min(1), academic_year: field(20).min(1), semester: field(40).min(1), block: blockName.optional(), week: z.number().int().min(1).max(52).optional(), topic_id: field(120).min(1).optional(), placement: z.enum(['within', 'before']).optional(), title: z.string().trim().min(1, 'Give the announcement a title.').max(200), body: z.string().trim().max(5000).default(''), attachments: z.array(linkAttachment).max(10).default([]) }),
   z.object({ action: z.literal('delete'), id: z.string().uuid() }),
 ])
 export const academicCommand = z.discriminatedUnion('operation', [

@@ -552,3 +552,13 @@ Other instructors' workbook conflicts are documented; their assignments are not 
 | T22.2 | Replace missing pending animation with the existing themed feedback. | Actual-request flags, reduced motion, retained input/error recovery, no replay or fake success; 574-test release gate, eight held-request desktop/phone cases and eight capture cases. | Complete |
 
 [Scan, validation and scope](versions/2026-11-26-loading-audit/README.md). Source-load mapping conflicts from G21 remain pending; this UI task does not change academic assignments.
+
+## 27 November 2026 - Class Stream and drafting tabs (G23)
+
+| Task | Work | Acceptance | Stage |
+|---|---|---|---|
+| T23.1 | Show active publications and scoped announcements in instructor Stream, with read-only readers and legacy links. Keep week reordering in the teaching tab. | `instructor-classroom.spec.ts` checks both viewports, legacy URL, draft exclusion and reader reload. | Complete |
+| T23.2 | Save placements before or inside weeks or topics, and show them in the student weekly list. | `class-codes.test.ts` verifies persistence and block scope. Instructor and student browser checks verify placement and reload. Manual 41 and 44 captures reviewed. | Complete |
+| T23.3 | Add, edit, reorder and remove empty teaching weeks. Keep the reference outline in Syllabus and preserve delivered work, exam slots and history. | `instructor-classroom.spec.ts`, `instructor-courses.test.ts` and Manual 44 captures. | Complete |
+
+The published readings, assessments and saved schedules remain the delivery sources. Announcements stay anchored to the saved calendar week. A missing topic falls back to that week.

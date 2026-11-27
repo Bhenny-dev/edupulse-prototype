@@ -6,7 +6,7 @@ test('Instructor class space has its four sections and Block section, including 
  await page.goto(`/#/courseware?course=${fixture.syllabus.id}&view=review`)
  await expect(page).toHaveURL(/view=blocks/)
  const tabs=page.getByRole('navigation',{name:'Class sections'})
- await expect(tabs.getByRole('button')).toHaveText(['Announcements','Teaching Materials & Assessments','Class List','Scores'])
+ await expect(tabs.getByRole('button')).toHaveText(['Stream','Teaching Materials & Assessments','Class List','Scores'])
  await expect(page.getByRole('button',{name:'Block section',exact:true})).toHaveAttribute('aria-pressed','true')
  await expect(page.getByRole('button',{name:'Schedule BSIT-1A'})).toBeVisible()
  await expect(page.getByText('15 items generated')).toHaveCount(0)

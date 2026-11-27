@@ -4,11 +4,11 @@
 
 ## Class codes and announcements in an Admin support view
 
-Open a loaded class from **Home**. **Announcements** shows **Class Code** and **Upcoming** beside the announcement feed on desktop. Cards and their controls wrap within that sidebar; on narrow screens the sidebar follows the feed. After an approved file is saved, the header shows **Syllabus** alongside **Block sections**, **Teaching Materials & Assessments**, **Class List** and **Scores** available.
+Open a loaded class from **Home**. **Stream** shows **Class Code** and **Upcoming** beside the delivered work and announcements on desktop. On a phone, the sidebar follows the feed. The class also has **Teaching Materials & Assessments**, **Class List** and **Scores**. The class header has **Block section** and shows **Syllabus** after an approved file is saved.
 
 A System Admin viewing a selected instructor sees the same active class codes as that instructor. The **Class Code** card shows only the code and an enlarge icon. Select it to open the code, QR and **Invitation link**, with **Copy code**, **Copy link** and the existing code-management menu inside the popover. Codes are generated when management loads the class; this card does not ask the instructor to create a block or a code. [Manual 55](../55-class-code-invitations/README.md) shows the current popover in both themes and on a phone.
 
-![Sample Admin instructor view: class code fits beside the announcement feed](12-admin-class-codes.png)
+![Sample Admin instructor view with the class code beside Stream](12-admin-class-codes.png)
 
 On a phone, scroll past the announcement feed to **Class Code**. The sample below shows the code and its controls contained within the card.
 
@@ -16,7 +16,23 @@ On a phone, scroll past the announcement feed to **Class Code**. The sample belo
 
 Reload restores the authorized class, selected tab, code display and pending code confirmation. It reads the latest active code and never repeats a replacement, code creation or announcement write. Codes themselves and unsaved announcement text are not navigation hints. These screenshots use fictional accounts and controlled UI responses; database tests separately check authorization and persistence.
 
-The signed-in Instructor navigation is **Home**, **Schedule**, **Syllabus** and **Student Monitoring**. **Home** opens the assigned class, which retains its approved syllabus and teaching outline. **Syllabus** is the separate repository for drafts, sharing and PDF building. Former Course URLs reopen the class; nested syllabus URLs redirect to the standalone repository with their tab/edit references. See [the syllabus repository guide](../45-syllabus-repository/README.md). Older task screenshots below predate Home; the class-code captures above show the current class view.
+The signed-in Instructor navigation is **Home**, **Schedule**, **Syllabus** and **Student Monitoring**. **Home** opens the assigned class. The standalone **Syllabus** repository holds syllabus drafts, shared copies and PDF building. Former Course URLs reopen the class and legacy Announcements links open **Stream**. [Syllabus repository guide](../45-syllabus-repository/README.md).
+
+## Deliver and announce in Stream
+
+**Stream** lists saved publications by week and topic. **Open** displays the delivered teaching material, submission bin or assessment in a read-only reader. A scheduled item shows the opening from the selected block's saved schedule. Class announcements appear above the weeks.
+
+![Instructor Stream with a week announcement, a topic reminder and published work](16-stream.png)
+
+1. Choose **Announce something to your class** for a class announcement. To start from a specific week or topic, choose **Announce** beside its heading.
+2. For a weekly announcement, choose a **Week** and optionally a **Topic**. In **Placement**, choose whether the post appears before the heading or inside the selected week or topic.
+3. Enter a **Title**, **Announcement** and any provider links, then select **Post**. Use the post menu to edit its placement or delete the post.
+
+![Announcement composer with Week 1, a topic and Before the topic selected](18-announcement-placement.png)
+
+Students see posts scoped to their membership in **Announcements** and see week- or topic-linked posts in place in **Teaching Materials & Assessments**. If a topic moves out of the posted week, its announcement appears at that week until the instructor updates its placement. Reload restores the authorized reader or composer location. A new announcement's unsaved text starts blank after reload, and posting requires selecting **Post**.
+
+![Instructor Stream on a phone](17-stream-phone.png)
 
 ## Review the assigned courses and students
 
@@ -49,7 +65,7 @@ The weekly controls retain **Expand all**, **Collapse all**, **Show**, move acti
 
 ## Work through weeks and topics
 
-**Weeks and topics** lists the approved outline chronologically. Open a topic to see its extracted **Contents**, **Learning outcomes**, **Teaching-learning activities**, teaching materials and assessments. A topic corresponds to the outline's saved scope section; a week may have several sections and the same section may cover multiple weeks. The complete extracted contents remain visible within that scope.
+**Teaching Materials & Assessments** starts from the approved outline and lists the current teaching plan chronologically. Open a topic to see its **Contents**, **Learning outcomes**, **Teaching-learning activities**, teaching materials and assessments. A topic corresponds to the outline's saved section. A week may have several sections, and a section can cover multiple weeks.
 
 ![A weekly topic with teaching materials, assessment coverage and progress pills](03-weeks-topics.png)
 
@@ -74,6 +90,10 @@ Choose **Add teaching material**. The extracted activity or topic text is shown 
 
 **Open** displays a page-sized reader with a padded course-content heading, week/type context and a persistent close button. The document scrolls beneath that header; long titles and controls wrap on a phone. The reader uses larger teaching text and one document action toolbar. **Edit**, **Print** and **Download PDF** remain where applicable; an uploaded PDF, Word, PowerPoint, image or supported text file still displays its original contents. Unsupported files remain downloadable attachments rather than invented extracted text.
 
+![Delivered teaching material opened from the teaching tab](11-page-reader.png)
+
+![Delivered material reader on a phone](12-mobile-page-reader.png)
+
 For an owned draft or checked material/assessment, **Attach file** opens the file chooser. Any file type up to 4 MB is supported. Choosing a file stages it locally; **Save attachment** uploads and saves it explicitly. A new attachment returns checked content to Draft for review while keeping its questions, teaching text, topic association and existing files. An instructor may also prepare private file-backed content before syllabus activation; approval and delivery remain separate required steps.
 
 Pending local edits do not disable the file chooser. If a current save or a workspace conflict prevents persistence, the selected file remains visible with an explanation. Resolve the existing save recovery in Settings before retrying. A failed download restores its own button; it does not lock other attachments. Published/hidden content remains protected: **Prepare draft revision** is available from its normal reader, then attachment/editing happens in that draft. Read-only citation previews do not offer that authoring action.
@@ -90,7 +110,7 @@ An extracted assessment type preselects **Assessment type**. When generating wit
 
 ### Check and deliver from the topic
 
-There are exactly two course tabs: **Weeks and topics** and **Block sections**. The former Review and deliver / Review drafts workspace is removed from the signed-in course. Former review links redirect to Block sections. Draft authoring and review stay in the extracted weekly topic sections, including prepared drafts awaiting approval.
+Choose **Block section** from the class header to manage its calendar. Former review links open **Block section**. Draft authoring, review and delivery are available inside topics in **Teaching Materials & Assessments**.
 
 Open and review an item, then **Mark checked**. **Deliver to students** opens a separate dialog. For assessments, **Assessment settings** retains allowed attempts and the time limit; changing these rules returns the item to Draft for checking again. **Deliver checked content** requires an active approved syllabus and a saved opening for that week in at least one currently assigned block. The server rechecks the current load, schedule and checked-before-publication rules. A block without a matching saved schedule cannot access a new scheduled publication.
 
@@ -103,11 +123,21 @@ Delivered or hidden content is read-only. **Prepare draft revision** explains wi
 3. In **Weekly class pattern**, choose the first outlined week's class date and required class start. For example, Friday 20 November 2026 at **07:30**. Add **10:00** as the close if desired, then choose **Fill weekly dates**. This fills one date every seven days by the actual week number; examination slots and gaps keep their chronological dates.
 4. Review the table and adjust individual dates for holidays or class changes. Every week needs a date and opening time. A closing time is optional and must follow the opening on the same day. Leaving it blank keeps that week's content available after opening.
 5. Choose **Save delivery schedule** explicitly. Filling the pattern or reloading does not save. A stale save reports a conflict and keeps the entered form available; close/reopen the block to read the current saved revision before retrying. Unsaved date edits are not restored after a reload.
-6. Return to **Weeks and topics** and deliver checked content. The saved per-block windows govern the newly delivered teaching materials and assessments for that week. Separate blocks can have different dates and times.
+6. Return to **Teaching Materials & Assessments** and deliver checked content. The saved per-block windows govern newly delivered teaching materials and assessments for that week. Separate blocks can have different dates and times.
+
+![Block section with class delivery scheduling and a link back to Stream](08-block-sections.png)
+
+![Saved weekly delivery settings](09-block-schedule.png)
+
+![Weekly class pattern on a phone](10-mobile-block-schedule.png)
 
 Students can see scheduled item titles and their own saved results outside a class window, but cannot read the locked teaching text, download its files, begin/submit an assessment or confirm reading. Availability is rechecked on an explicit open. Closing is exclusive: at 10:00 a 10:00 close has taken effect. The assessment's own duration/attempt rules still apply within the class window. A saved no-close window stays open after its start. Existing publications retain their previous delivery settings until explicitly revised/redelivered; saving a block calendar does not rewrite old content or scores.
 
 ### Move teaching weeks
+
+**Teaching Materials & Assessments** is the editing view. Select **Add teaching week**, choose an unused week, enter a **Topic title** and **Learning outcomes**, and choose **Save teaching week**. **Edit week** lets you update the title, outcomes and activities. An edited shared topic applies to its covered weeks. **Remove week** removes an empty teaching week after confirmation. Weeks with saved work and examination slots are protected. Open **Syllabus** in the class header to see the original uploaded file and extracted outline.
+
+![Add teaching week dialog](19-add-teaching-week.png)
 
 Drag a week by its handle, or use its labelled **Move week … up/down** buttons. Move the complete teaching scope rather than editing the week number. The displayed week slots stay chronological and examination weeks keep their scheduled slots. Topic IDs and their associated teaching content move together.
 

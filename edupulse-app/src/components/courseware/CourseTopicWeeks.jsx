@@ -1,14 +1,14 @@
 import { Spinner, LoadingStatus } from '../ui/LoadingFeedback'
 import { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { GripVertical, ArrowUp, ArrowDown, Plus, Eye, Check, ClipboardCheck, Files, ChevronDown, ChevronsDownUp, ChevronsUpDown, Megaphone } from 'lucide-react'
+import { GripVertical, ArrowUp, ArrowDown, Plus, Eye, Check, ClipboardCheck, Files, ChevronDown, ChevronsDownUp, ChevronsUpDown, Megaphone, Pencil, Trash2 } from 'lucide-react'
 import { useWorkspace, useWorkspaceViewState } from '../../context/WorkspaceContext'
 import { useAcademicRecords } from '../../context/AcademicContext'
 import { jsonValue } from '../../utils/jsonValue'
 import TopicWorkPanel from '../classroom/TopicWorkPanel'
 import { useAuth } from '../../context/AuthContext'
 import AssessmentTrial from './AssessmentTrial'
-import { isOutlineExam } from '../../utils/outlineSections'
+import { aggregateSections, isOutlineExam, weekSections } from '../../utils/outlineSections'
 import { weekTopics, topicEntries, topicProgress, moveTeachingWeek, assessmentCoverage, topicOverall } from '../../utils/instructorCourses'
 import ModalLayer from '../ui/ModalLayer'
 import PageModal from '../ui/PageModal'
@@ -18,6 +18,7 @@ import AssessmentEditor from './AssessmentEditor'
 import SyllabusSources from './SyllabusSources'
 import DeliverySettings from './DeliverySettings'
 import TopicContentForm from './TopicContentForm'
+import TeachingWeekEditor from './TeachingWeekEditor'
 import ReadOnlyAssessment from './ReadOnlyAssessment'
 import { termCalendar, weekMeetings, weekDeliveries, deliveryLine } from '../../utils/blockCalendar'
 
@@ -39,9 +40,15 @@ export default function CourseTopicWeeks({ syllabus, data, course, onSchedule, r
   const [revisionId, setRevisionId] = useWorkspaceViewState(`course:${syllabus.id}:revision`, null)
   // Weeks open by default; Collapse all keeps only their headings and counts.
   const [collapsedWeeks, setCollapsedWeeks] = useWorkspaceViewState(`course:${syllabus.id}:weeks-collapsed`, () => new Set())
-  const [weekFilter, setWeekFilter] = useState('')
+  const [weekEdit, setWeekEdit] = useWorkspaceViewState(`course:${syllabus.id}:${course?.block || ''}:week-editor`, null)
   const lock = useRef(false), uploadedFiles = useRef(new WeakMap())
   const rows = [...syllabus.courseOutline].sort((a, b) => a.week - b.week), teachingWeeks = rows.filter(row => !isOutlineExam(row))
+  const weekFilter = rows.some(row => String(row.week) === params.get('filterWeek')) ? params.get('filterWeek') : ''
+  const selectFilter = value => {
+    const query = new URLSearchParams(params)
+    if (value) query.set('filterWeek', value); else query.delete('filterWeek')
+    setParams(query, { replace: true })
+  }
   const entries = Object.entries(workspace.content).filter(([, item]) => item.syllabusId === syllabus.id && !item.generationCheckpoint && item.content).map(([id, item]) => ({ ...item, id }))
   const sourcePublication = data.publications.find(item => item.id === params.get('publication') && item.type !== 'assessment')
   const sourceMatches = sourcePublication && entries.filter(item => item.id === sourcePublication.content?.courseItemId || item.week === sourcePublication.week && item.type === sourcePublication.type && (item.content.title || item.title) === sourcePublication.title)
@@ -60,6 +67,8 @@ export default function CourseTopicWeeks({ syllabus, data, course, onSchedule, r
   const collapseAll = () => { setCollapsedWeeks(new Set(rows.map(row => row.week))); setExpanded(new Set()) }
   const editing = Boolean(selectedTopic && addType)
   const blocked = readOnly || busy || workspace.loading || workspace.saving || editing
+  const [weekMode, weekTarget] = (weekEdit || '').split(':')
+  const editedWeek = teachingWeeks.find(row => row.week === Number(weekTarget))
   const run = async task => {
     if (readOnly || lock.current) return
     lock.current = true; setBusy(true); setError('')
@@ -72,12 +81,44 @@ export default function CourseTopicWeeks({ syllabus, data, course, onSchedule, r
     if (overall) query.set('overall', '1'); else query.delete('overall')
     setParams(query)
   }
+  const updateOutline = async change => {
+    if (readOnly) throw new Error('This semester is view-only.')
+    await workspace.commit(value => {
+      const current = value.syllabi.find(item => item.id === syllabus.id)
+      if (!current || current.suspended || jsonValue(current.courseOutline) !== jsonValue(syllabus.courseOutline)) throw new Error('The outline changed. Reopen the course before editing the week.')
+      const courseOutline = change(current.courseOutline, value.content)
+      if (!courseOutline.some(row => !isOutlineExam(row) && row.ilos?.trim() && row.contents?.some(text => text.trim()))) throw new Error('Keep at least one teaching week with a topic and learning outcomes.')
+      return { ...value, syllabi: value.syllabi.map(item => item === current ? { ...current, extractedCourseOutline: current.extractedCourseOutline || current.courseOutline, courseOutline } : item) }
+    })
+    void academic.load(true)
+  }
+  const saveWeek = async (week, sections) => {
+    await updateOutline(outline => {
+      if (weekMode === 'add') {
+        if (outline.some(row => row.week === week) || !sections[0].contents.length || !sections[0].ilos) throw new Error('Choose an unused week and enter its topic and learning outcomes.')
+        return [...outline, aggregateSections({ week }, sections)].sort((a, b) => a.week - b.week)
+      }
+      const edited = new Map(sections.map(section => [section.id, section]))
+      return outline.map(row => isOutlineExam(row) || !weekSections(row).some(section => edited.has(section.id)) ? row
+        : aggregateSections(row, weekSections(row).map(section => edited.get(section.id) || section)))
+    })
+    setNotice(`Week ${week} saved.`)
+  }
+  const hasSavedContent = (content, week) => Object.values(content).some(item => item.syllabusId === syllabus.id && item.week === week)
+  const removeWeek = async week => {
+    await updateOutline((outline, content) => {
+      if (hasSavedContent(content, week)) throw new Error('This week contains saved teaching content and cannot be removed.')
+      return outline.filter(row => row.week !== week)
+    })
+    if (weekFilter === String(week)) selectFilter('')
+    setNotice(`Week ${week} removed.`)
+  }
   const applyMove = async (from, to) => run(async () => {
     await workspace.commit(value => {
       const current = value.syllabi.find(item => item.id === syllabus.id)
       if (!current || jsonValue(current.courseOutline) !== jsonValue(syllabus.courseOutline)) throw new Error('The outline changed. Reopen the course before moving a week.')
       const moved = moveTeachingWeek(current.courseOutline, value.content, syllabus.id, from, to)
-      return { ...value, content: moved.content, syllabi: value.syllabi.map(item => item.id === syllabus.id ? { ...item, courseOutline: moved.outline, lastUpdated: new Date().toISOString() } : item) }
+      return { ...value, content: moved.content, syllabi: value.syllabi.map(item => item.id === syllabus.id ? { ...item, extractedCourseOutline: item.extractedCourseOutline || item.courseOutline, courseOutline: moved.outline, lastUpdated: new Date().toISOString() } : item) }
     })
     const query = new URLSearchParams(params); query.delete('moveFrom'); query.delete('moveTo'); setParams(query)
     setNotice('Week moved. Week labels remain chronological. Changed materials are drafts for review before delivery.')
@@ -181,13 +222,19 @@ export default function CourseTopicWeeks({ syllabus, data, course, onSchedule, r
     {sourceReading && !reader && <p role="alert">The referenced teaching content is no longer available in this course.</p>}
     {busy && <LoadingStatus label="Updating teaching content..." />}{error && <p role="alert">{error}</p>}{notice && <p role="status">{notice}</p>}
     <div className="instructor-week-tools" role="group" aria-label="Show or hide weeks"><button type="button" className="btn btn-ghost btn-sm" onClick={expandAll}><ChevronsUpDown size={14} aria-hidden="true" />Expand all</button><button type="button" className="btn btn-ghost btn-sm" onClick={collapseAll}><ChevronsDownUp size={14} aria-hidden="true" />Collapse all</button>
-      <label className="instructor-week-filter">Show<select className="form-input" aria-label="Show week" value={weekFilter} onChange={event => setWeekFilter(event.target.value)}><option value="">All weeks</option>{rows.map(row => <option key={row.week} value={String(row.week)}>Week {row.week}</option>)}</select></label></div>
+      <label className="instructor-week-filter">Show<select className="form-input" aria-label="Show week" value={weekFilter} onChange={event => selectFilter(event.target.value)}><option value="">All weeks</option>{rows.map(row => <option key={row.week} value={String(row.week)}>Week {row.week}</option>)}</select></label>
+      {!readOnly && <button type="button" className="btn btn-primary btn-sm" disabled={blocked || rows.length >= 52} onClick={() => setWeekEdit('add')}><Plus size={14} aria-hidden="true" />Add teaching week</button>}
+    </div>
     {rows.filter(row => !weekFilter || String(row.week) === weekFilter).map(row => {
       const topics = weekTopics(row), weekEntries = entries.filter(item => item.week === row.week), index = teachingWeeks.findIndex(item => item.week === row.week), exam = isOutlineExam(row)
       const assignedIds = new Set(topics.flatMap(topic => topicEntries(weekEntries, topic.id, topics.length === 1).map(item => item.id)))
       const weekPosts = announcements.filter(post => post.week === row.week), collapsed = collapsedWeeks.has(row.week), panel = `week-panel-${syllabus.id}-${row.week}`
       return <section key={row.week} className={`instructor-week ${target === row.week ? 'is-drop-target' : ''}`} data-week={row.week} onDragOver={event => { if (!exam && dragging !== null && !blocked) { event.preventDefault(); setTarget(row.week) } }} onDragLeave={() => setTarget(null)} onDrop={event => { event.preventDefault(); const from = Number(event.dataTransfer.getData('text/edupulse-week')); setTarget(null); setDragging(null); if (!exam && from === dragging) requestMove(from, row.week) }}>
         <header>{!readOnly && !exam && <><button className="btn btn-ghost btn-sm" draggable={!blocked} aria-label={`Drag week ${row.week}`} disabled={blocked} onDragStart={event => { setDragging(row.week); event.dataTransfer.setData('text/edupulse-week', String(row.week)) }} onDragEnd={() => { setDragging(null); setTarget(null) }}><GripVertical size={16} /></button><button className="btn btn-ghost btn-sm" aria-label={`Move week ${row.week} up`} disabled={blocked || index === 0} onClick={() => requestMove(row.week, teachingWeeks[index - 1].week)}><ArrowUp size={15} /></button><button className="btn btn-ghost btn-sm" aria-label={`Move week ${row.week} down`} disabled={blocked || index === teachingWeeks.length - 1} onClick={() => requestMove(row.week, teachingWeeks[index + 1].week)}><ArrowDown size={15} /></button></>}<h2 className="instructor-week-title"><button type="button" className="instructor-week-toggle" aria-expanded={!collapsed} aria-controls={panel} onClick={() => toggleWeek(row.week)}><ChevronDown size={16} aria-hidden="true" />Week {row.week}{exam ? ' — Examination' : ''}</button></h2><span className="instructor-week-counts">{weekCounts(weekEntries, weekPosts)}</span><ProgressPills data={data} entries={weekEntries} /></header>
+        {!readOnly && !exam && <div className="instructor-week-edit-actions">
+          <button type="button" className="btn btn-ghost btn-sm" disabled={blocked} onClick={() => setWeekEdit(`edit:${row.week}`)} aria-label={`Edit Week ${row.week}`}><Pencil size={14} aria-hidden="true" />Edit week</button>
+          <button type="button" className="btn btn-ghost btn-sm" disabled={blocked || teachingWeeks.length <= 1 || hasSavedContent(workspace.content, row.week)} onClick={() => setWeekEdit(`remove:${row.week}`)} aria-label={`Remove Week ${row.week}`}><Trash2 size={14} aria-hidden="true" />Remove week</button>
+        </div>}
         <div id={panel} hidden={collapsed}>
         {weekPosts.length > 0 && <section className="instructor-week-announcements" aria-label={`Announcements for week ${row.week}`}><h3>Announcements</h3>{weekPosts.map(post => <button type="button" key={post.id} className="btn btn-ghost btn-sm" onClick={() => onOpenAnnouncement?.(post.id)}><Megaphone size={14} aria-hidden="true" />{post.title}{post.block ? ` (block ${post.block})` : ''}</button>)}</section>}
         {exam ? <p className="instructor-topic-context">{row.assessments}</p> : topics.map(topic => {
@@ -207,6 +254,7 @@ export default function CourseTopicWeeks({ syllabus, data, course, onSchedule, r
       </section>
     })}
     <section className="instructor-source-section"><SyllabusSources syllabus={syllabus} defaultOpen readOnly={readOnly}/></section>
+    {!readOnly && !editing && (weekMode === 'add' && rows.length < 52 || ['edit', 'remove'].includes(weekMode) && editedWeek) && <TeachingWeekEditor key={weekEdit} mode={weekMode} row={editedWeek} rows={rows} onClose={() => setWeekEdit(null)} onSave={saveWeek} onRemove={removeWeek} />}
     {!readOnly && editing && <PageModal title={addType === 'assessment' ? 'Add assessment' : addType === 'submission' ? 'Add submission bin' : 'Add teaching material'} closeLabel="Close content form" onClose={clearEditor}><TopicContentForm key={`${week.week}:${selectedTopic.id}:${addType}:${params.get('after')}:${params.get('overall')}`} syllabus={syllabus} week={week.week} topic={selectedTopic} entries={topicEntries(entries.filter(item => item.week === week.week), selectedTopic.id, weekTopics(week).length === 1)} type={addType} afterId={params.get('after')} overall={params.get('overall') === '1'} onClose={clearEditor} onSaved={id => { clearEditor(); setReaderId(id); void academic.load(true) }} /></PageModal>}
     {reader && <PageModal title={reader.content.title} subtitle={`Week ${reader.week} \u00b7 ${reader.type === 'assessment' ? 'Assessment' : 'Teaching material'}`} closeLabel="Close course content" onClose={closeReader} bodyClassName="reader-page-body">{readerPublication && !readOnly && !sourceReading && user?.authenticated && !user.supportSubject && <TopicWorkPanel key={readerPublication.id} publication={readerPublication} teacher/>}{error&&<p role="alert" className="reader-notice">{error}</p>}{['published','hidden'].includes(reader.status) && <div className="reader-notice"><p className="text-muted">This delivered version is protected. Prepare a draft revision before editing or attaching files.</p>{!sourceReading&&<button aria-busy={Boolean(busy)} className="btn btn-secondary" onClick={()=>{setReaderId(null);setRevisionId(reader.id)}}>{busy && <Spinner />}Prepare draft revision</button>}</div>}{reader.type === 'assessment' && !readOnly && !sourceReading && trialId !== reader.id && <div className="reader-notice"><button className="btn btn-secondary btn-sm" onClick={() => setTrialId(reader.id)}>Test attempt</button><span className="text-muted"> Answer this assessment as a student would. It is marked with your answer key and never saved.</span></div>}{reader.type === 'assessment' ? trialId === reader.id ? <AssessmentTrial key={reader.id} content={reader.content} onClose={() => setTrialId(null)} /> : sourceReading || ['published','hidden'].includes(reader.status) ? <ReadOnlyAssessment content={reader.content} /> : <AssessmentEditor onAttachFile={files=>attachFile(reader,files)} onSubmissionBinChange={enabled=>saveReader({...reader.content,submissionBin:enabled})} onAttachLink={link=>attachLink(reader,link)} attachBlocked={attachBlocked} key={reader.id} content={reader.content} topics={rows.find(row => row.week === reader.week)?.contents || []} onBack={closeReader} onSave={async questions => { if (!await run(() => saveReader({ ...reader.content, questions, totalPoints: questions.length }))) throw new Error('The current draft could not be saved.'); }} /> : <DocumentViewer embedded onAttachFile={!sourceReading&&!['published','hidden'].includes(reader.status)?files=>attachFile(reader,files):undefined} onAttachLink={!sourceReading&&!['published','hidden'].includes(reader.status)?link=>attachLink(reader,link):undefined} attachBlocked={attachBlocked} key={reader.id} content={{ ...reader.content, _storeId: reader.id }} readOnly={sourceReading || ['published','hidden'].includes(reader.status)} onBack={closeReader} onSave={async sections => { if (!await run(() => saveReader({ ...reader.content, sections, readableTeaching: sections.some(section => section.body?.trim()) }))) throw new Error('The current draft could not be saved.'); }} />}</PageModal>}
     {!readOnly && delivery && <ModalLayer onDismiss={() => setDeliveryId(null)}><section className="modal-content" role="dialog" aria-modal="true" aria-label="Deliver course content"><h2>Deliver {delivery.content.title}</h2><p className="text-sm text-muted">This week opens for each block at its saved class start. Blocks without a schedule will not receive access.</p>{!scheduled(delivery) && <p>Set an opening date and class start for this week in Block sections, or ask the Dean to record when classes start.</p>}<div className="instructor-topic-actions"><button className="btn btn-secondary" onClick={() => {setDeliveryId(null);onSchedule?.()}}>Open Block sections</button><button className="btn btn-primary" disabled={blocked || delivery.status !== 'checked' || !scheduled(delivery) || syllabus.status !== 'active'} onClick={() => void deliver(delivery)}>Deliver checked content</button></div>{delivery.type === 'assessment' && <DeliverySettings id={delivery.id} item={delivery} blockScheduling initiallyOpen onClose={() => { setDeliveryId(null); void academic.load(true) }} />}</section></ModalLayer>}

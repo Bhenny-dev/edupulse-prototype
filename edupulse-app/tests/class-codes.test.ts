@@ -12,7 +12,7 @@ async function classroomDatabase(blocks = ['A', 'B'], upgrade = true) {
   const fixture = await semesterDatabase()
   const maintenance = () => fixture.db.exec("RESET ROLE;SELECT set_config('request.jwt.claim.sub','',false),set_config('request.jwt.claims','{}',false)")
   await maintenance()
-  for (const name of ['20261118061807_historical_teaching_load_backfill', '20261118082233_instructor_load_details', '20261118090000_course_load_block_sections', '20261123120000_class_codes_and_announcements', '20261125010000_automatic_class_codes', '20261125013623_admin_classroom_support', '20261125030000_student_class_schedule', '20261125075102_management_loaded_classes', ...(upgrade ? ['20261125084915_automatic_loaded_class_codes','20261125111555_bounded_roster_projection','20261125112525_distinct_roster_scope_refresh','20261125122500_materialize_workspace_trigger_collections','20261125123200_bounded_workspace_save_timeout'] : [])]) await fixture.db.exec(await readFile(`supabase/migrations/${name}.sql`, 'utf8'))
+  for (const name of ['20261118061807_historical_teaching_load_backfill', '20261118082233_instructor_load_details', '20261118090000_course_load_block_sections', '20261123120000_class_codes_and_announcements', '20261125010000_automatic_class_codes', '20261125013623_admin_classroom_support', '20261125030000_student_class_schedule', '20261125075102_management_loaded_classes', ...(upgrade ? ['20261125084915_automatic_loaded_class_codes','20261125111555_bounded_roster_projection','20261125112525_distinct_roster_scope_refresh','20261125122500_materialize_workspace_trigger_collections','20261125123200_bounded_workspace_save_timeout','20261127021533_class_stream_announcement_placement'] : [])]) await fixture.db.exec(await readFile(`supabase/migrations/${name}.sql`, 'utf8'))
   const rpc = async (name: string, command?: object) => (await fixture.db.query<{ r: any }>(`SELECT public.${name}(${command ? '$1' : ''}) r`, command ? [JSON.stringify(command)] : [])).rows[0].r
   const records = async (where: string) => { await maintenance(); return (await fixture.db.query<{ record_key: string; data: Record<string, any> }>(`SELECT record_key,data FROM public.edupulse_institutional_records WHERE kind='loads' AND ${where} ORDER BY record_key`)).rows }
   await fixture.as(2)
@@ -288,6 +288,9 @@ test('announcements stay in the instructor’s assigned course and reach only en
     assert.equal(onlyB.block, 'B')
     const weekTwo = await post({ title: 'Week 2 reading', week: 2 })
     assert.equal(weekTwo.week, 2)
+    assert.equal(weekTwo.placement, 'within')
+    await assert.rejects(post({ placement: 'before' }), { code: '22023' })
+    await assert.rejects(post({ week: 2, topic_id: 'variables' }), { code: '22023' })
     await assert.rejects(post({ attachments: [{ url: 'javascript:alert(1)' }] }), { code: '22023' })
     await assert.rejects(post({ block: 'Z' }), { code: '22023' }, 'a block that is not the instructor’s is refused')
     await assert.rejects(post({ title: '' }), { code: '22023' })
@@ -304,10 +307,16 @@ test('announcements stay in the instructor’s assigned course and reach only en
     const approved = Buffer.from('%PDF-1.4\nApproved syllabus\n%%EOF')
     await as(0)
     await db.query('SELECT public.edupulse_save_workspace($1,$2)', [Number(saved.revision), JSON.stringify({ ...saved.data, syllabi: [{ id: 's-it101', courseCode: 'IT 101', courseTitle: 'Programming', status: 'active', courseInfo: { academicYear: '2026-2027', periodOffered: '1' },
-      approvedFile: { approvalAttested: true, name: 'approved.pdf', size: approved.length, sha256: createHash('sha256').update(approved).digest('hex'), base64: approved.toString('base64') } }] })])
+      approvedFile: { approvalAttested: true, name: 'approved.pdf', size: approved.length, sha256: createHash('sha256').update(approved).digest('hex'), base64: approved.toString('base64') },
+      courseOutline: [{ week: 2, ilos: 'Use variables', contents: ['Variables'], sections: [{ id: 'variables', ilos: 'Use variables', contents: ['Variables'] }] }] }] })])
+    await assert.rejects(post({ week: 1, topic_id: 'variables' }), { code: '22023' })
+    const scoped = await post({ id: onlyB.id, title: onlyB.title, block: 'B', week: 2, topic_id: 'variables', placement: 'before' })
+    assert.deepEqual([scoped.week, scoped.topic_id, scoped.placement], [2, 'variables', 'before'])
     const titles = async (i: number) => { await as(i); return (await rpc('edupulse_class_announcements')).map((item: any) => item.title).sort() }
     assert.deepEqual(await titles(3), ['Week 2 reading', 'Welcome to IT 101'])
     assert.deepEqual(await titles(5), ['Block B room change', 'Week 2 reading', 'Welcome to IT 101'])
+    const learnerPost = (await rpc('edupulse_class_announcements')).find((item: any) => item.id === scoped.id)
+    assert.deepEqual([learnerPost.week, learnerPost.topic_id, learnerPost.placement], [2, 'variables', 'before'])
     await as(3)
     const [first] = await rpc('edupulse_class_announcements')
     assert.ok(first.course_id, 'each announcement names the student’s course'); assert.equal('instructor_id' in first, false)
