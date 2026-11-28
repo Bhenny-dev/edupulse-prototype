@@ -31,7 +31,7 @@ export async function populatedAcademicUI(page:Page,role='instructor') {
    const content=structuredClone(value.content);if(content.questions)content.questions=content.questions.map(({correctIndex:_key,explanation:_why,...q}:any)=>q)
    records.publications.push({id:digest(id),course_id:cid,instructor_id:monitoringOwner,workspace_item_id:id,week:row.week,type:value.type,title:content.title,content,source_version:monitoringVersion,active:true,release_at:null,due_at:value.dueAt})
   }
-  const assessments=records.publications.filter((p:any)=>p.course_id===cid&&p.type==='assessment'&&p.content.assessmentRole!=='reflection'&&p.week!==3).slice(0,3)
+  const assessments=records.publications.filter((p:any)=>p.course_id===cid&&p.type==='assessment'&&p.title.endsWith(': concept check')&&p.week!==3).slice(0,3)
   const materials=records.publications.filter((p:any)=>p.course_id===cid&&p.type==='material').slice(0,3)
   const reflection=records.publications.find((p:any)=>p.course_id===cid&&p.content.assessmentRole==='reflection')
   students.forEach((student,n)=>{
@@ -43,7 +43,13 @@ export async function populatedAcademicUI(page:Page,role='instructor') {
  }
  const projection=()=>role==='student'?{...records,courses:records.courses,enrollments:records.enrollments.filter((e:any)=>e.student_email==='ui.fixture@example.invalid'),attempts:records.attempts.filter((a:any)=>a.student_email==='ui.fixture@example.invalid'),accesses:records.accesses.filter((a:any)=>a.student_email==='ui.fixture@example.invalid'),reading:records.reading.filter((a:any)=>a.student_email==='ui.fixture@example.invalid'),institutional:[],classCodes:[]}:records
  await academicUI(page,async()=>({json:projection()}),role,{full_name:role==='student'?'Lina Cruz':'Andrea Reyes'})
- await page.route('**/api/ai?action=academic',route=>{if(route.request().method()!=='GET'){writes.push(route.request().postDataJSON());return route.fulfill({status:500,json:{error:{message:'Capture does not perform academic commands.'}}})}return route.fulfill({json:projection()})})
+ await page.route('**/api/ai?action=academic',route=>{
+  if(route.request().method()==='GET')return route.fulfill({json:projection()})
+  const command=route.request().postDataJSON()
+  if(role==='student'&&command.operation==='feedback')return route.fulfill({json:{available:false,reason:'Only the submitted answers are available for this record.'}})
+  writes.push(command)
+  return route.fulfill({status:500,json:{error:{message:'Capture does not perform academic commands.'}}})
+ })
  await page.route('**/api/ai?action=workspace*',route=>route.fulfill({json:{mode:'cloud',revision:1,data:role==='student'?{syllabi:[],content:{},registrations:[]}:workspace}}))
  return {records,workspace,writes}
 }
@@ -57,8 +63,41 @@ export async function academicPopulationScene(page:Page,role:string,shot:(name:s
   await page.goto('/#/dashboard?course=GE%201&block=BSIT-1A&tab=stream');await expect(page.getByRole('region',{name:'Class Code',exact:true})).toContainText('AB22QRS');await expect(page.locator('.class-stream-week > header > h2').first()).toHaveText('Week 5');await shot('instructor-stream')
   await page.getByRole('button',{name:'Scores',exact:true}).click();await expect(page.getByText('Assessment score radar',{exact:true})).toBeVisible({timeout:20000});await shot('instructor-scores')
  }else{
-  await page.getByRole('region',{name:'Your classes'}).getByRole('button',{name:/^Open GE 1 /}).click();await page.getByRole('button',{name:'Scores',exact:true}).click();await expect(page.getByRole('region',{name:'Personal assessment results'})).toBeVisible();await shot('student-scores')
+  await page.getByRole('region',{name:'Your classes'}).getByRole('button',{name:/^Open GE 1 /}).click()
+  const tabs=page.getByRole('navigation',{name:'Student course sections'})
+  await expect(tabs.getByRole('button',{name:'Stream',exact:true})).toHaveAttribute('aria-pressed','true')
+  const weekly=page.getByRole('region',{name:'Weekly teaching materials and assessments'})
+  await weekly.getByRole('combobox',{name:'Week',exact:true}).selectOption('1')
+  await expect(weekly.getByRole('heading',{name:'True or false',exact:true})).toBeVisible()
+  await expect(weekly.getByRole('heading',{name:'Identification',exact:true})).toBeVisible()
+  await expect(weekly.getByRole('heading',{name:'Matching type',exact:true})).toBeVisible()
+  await shot('student-stream')
+  const firstMaterial = weekly.locator('[data-kind="material"]').first()
+  const firstAssessment = weekly.locator('[data-kind="assessment"]').first()
+  expect(await firstMaterial.evaluate((material,assessment)=>Boolean(material.compareDocumentPosition(assessment)&Node.DOCUMENT_POSITION_FOLLOWING),await firstAssessment.elementHandle())).toBe(true)
+  for(const [format,control] of [['True or false','input[type="radio"]'],['Identification','input[type="text"]'],['Matching type','textarea']] as const){
+   const card=weekly.locator('article[data-kind="assessment"]').filter({has:page.getByRole('heading',{name:format,exact:true})})
+   await card.getByRole('button',{name:'Open assessment',exact:true}).click()
+   const dialog=page.getByRole('dialog').filter({has:page.getByRole('navigation',{name:'Assessment sections'})})
+   await expect(dialog.getByRole('heading',{name:format,exact:true})).toBeVisible()
+   await expect(dialog.locator('.academic-question '+control).first()).toBeVisible()
+   if(format==='Matching type')await shot('student-matching')
+   await dialog.getByRole('button',{name:'Close assessment',exact:true}).click()
+  }
+  await tabs.getByRole('button',{name:'Performance',exact:true}).click()
+  const results=page.getByRole('region',{name:'Personal assessment results'})
+  await expect(results).toBeVisible()
+  await expect(page.getByRole('region',{name:'Teaching material access'}).getByText('Opened',{exact:true}).first()).toBeVisible()
+  await shot('student-scores')
+  await results.getByRole('button',{name:'Review attempt',exact:true}).first().click()
+  const dialog=page.getByRole('dialog').filter({has:page.getByRole('navigation',{name:'Assessment sections'})})
+  await expect(dialog.getByRole('button',{name:'Scores',exact:true})).toHaveAttribute('aria-pressed','true')
+  await expect(dialog.getByRole('region',{name:'Submitted answers'})).toContainText('checkable result')
+  await shot('student-assessment-scores')
+  await dialog.getByRole('button',{name:'Close assessment',exact:true}).click()
  }
- await page.reload();await expect(page.getByRole('button',{name:'Scores',exact:true})).toHaveAttribute('aria-pressed','true',{timeout:20000})
+ await page.reload()
+ const active=role==='student'?page.getByRole('navigation',{name:'Student course sections'}).getByRole('button',{name:'Performance',exact:true}):page.getByRole('button',{name:'Scores',exact:true})
+ await expect(active).toHaveAttribute('aria-pressed','true',{timeout:20000})
  expect(fixture.writes).toEqual([])
 }

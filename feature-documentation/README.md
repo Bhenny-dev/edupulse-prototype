@@ -4,6 +4,7 @@
 
 | Folder | Covers | Contents |
 | --- | --- | --- |
+| [28 November Student Stream and assessment formats](versions/2026-11-28-student-stream/README.md) | Unified Stream, course Performance, assessment Scores and Week 1 delivery | Student guides and validation |
 | [28 November Student Home class joining](versions/2026-11-28-student-join-class/README.md) | Visible class-code entry and student sign-in guidance for Admin support | Student manual, walkthrough and verification |
 | [28 November Admin management access](versions/2026-11-28-admin-management-access.md) | Verified Dean and Program Coordinator support with bounded academic reads | See verification |
 | [28 November scroll-based reading](versions/2026-11-28-scroll-reading/README.md) | Automatic student reading progress and staff monitoring | See verification |

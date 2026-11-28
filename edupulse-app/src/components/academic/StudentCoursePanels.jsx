@@ -6,7 +6,8 @@ import ResourceLinks from './StudentResourceLinks'
 import {useLocation,useSearchParams} from 'react-router-dom'
 import {currentAttempts} from './academicData'
 import {deliveryState} from '../../utils/blockDelivery'
-import {dueOf,itemProgress,pendingAssessments,recordsNow} from './studentProgress'
+import {dueOf,isDelivered,itemProgress,pendingAssessments,recordsNow} from './studentProgress'
+import { assessmentTitle } from '../../data/assessmentFormats'
 import StudentProgressBar from './StudentProgressBar'
 import StudentCourseScores from './StudentCourseScores'
 import StudentDueWork from './StudentDueWork'
@@ -15,13 +16,12 @@ import {Table} from './AcademicUI'
 import './student-classroom.css'
 
 const time=value=>value?new Date(value).toLocaleString('en-PH',{timeZone:'Asia/Manila'}):'No due date'
-function Announcement({post,instructor,onWeek,topic}){
- return <article className="student-resource student-announcement" tabIndex={-1} id={'announcement-'+post.id}>
+function Announcement({post,instructor,topic}){
+ return <article className="student-resource student-announcement" data-kind="announcement" tabIndex={-1} id={'announcement-'+post.id}>
+  <p className="student-resource-kind">Announcement</p>
   <h3>{post.title}</h3>
   <p className="text-sm text-muted">{instructor||'Course instructor'} / <time dateTime={post.created_at}>{time(post.created_at)}</time> (Philippine time)</p>
-  {post.week&&<p className="text-sm">{onWeek
-   ? <button type="button" className="btn btn-secondary" onClick={()=>onWeek(post.week)}>View Week {post.week}</button>
-   : (post.placement==='before'?'Before ':'')+(topic?topic+' · ':'')+'Week '+post.week}</p>}
+  {post.week&&<p className="text-sm">{(post.placement==='before'?'Before ':'')+(topic?topic+' · ':'')+'Week '+post.week}</p>}
   <p className="student-post">{post.body}</p>
   <ResourceLinks links={post.attachments}/>
  </article>
@@ -30,8 +30,9 @@ export default function StudentCoursePanels({course,data,onOpen,busy}){
  const {state:historyState}=useLocation()
  const [resourceFilter,setResourceFilter]=useState('all')
  const [params,setParams]=useSearchParams()
- const tabs=[['announcements','Announcements'],['materials','Teaching Materials & Assessments'],['classlist','Class List'],['scores','Scores'],['outline','Syllabus / Course Outline']]
- const tab=tabs.some(([id])=>id===params.get('studentTab'))?params.get('studentTab'):'materials'
+ const tabs=[['stream','Stream'],['classlist','Class List'],['performance','Performance'],['outline','Syllabus / Course Outline']]
+ const requestedTab=params.get('studentTab')
+ const tab=requestedTab==='scores'?'performance':tabs.some(([id])=>id===requestedTab)?requestedTab:'stream'
  const posts=(data.announcements||[]).filter(a=>a.course_id===course.id).sort((a,b)=>b.created_at.localeCompare(a.created_at))
  const items=data.publications.filter(p=>p.active&&p.course_id===course.id).sort((a,b)=>a.week-b.week)
  const now=recordsNow(data)
@@ -56,7 +57,9 @@ export default function StudentCoursePanels({course,data,onOpen,busy}){
  const kindOf=item=>item.type==='assessment'?'assessment':item.content?.submissionOnly?'submission':'material'
  const resource=item=>{
   const progress=kindOf(item)==='material'?itemProgress(data,item):null
-  return <article key={item.id} className="student-resource"><span className="badge">{item.type==='assessment'?'Assessment':item.content?.submissionOnly?'Submission bin':'Teaching Material'}</span><h3>{item.title}</h3>{item.type==='assessment'?<p className="text-sm text-muted">{state(item)} · {item.content?.questions?.length??'Unspecified'} questions · {item.content?.totalPoints??item.content?.questions?.length??'Unspecified'} points · {time(item.due_at)}{item.due_at?' (Philippine time)':''}</p>:<p>{item.content?.description}</p>}{progress?.total>0&&<StudentProgressBar value={progress.percent} total={100} label={item.title+' reading progress'} text={progress.done?'Done':`${progress.percent}% read`}/>}<ResourceLinks links={[...(item.content?.links||[]),...(item.content?.attachments||[]).filter(f=>f.url)]}/><TeachingAttachments attachments={(item.content?.attachments||[]).filter(f=>f.path)}/><button className="btn btn-secondary" disabled={busy} onClick={event=>onOpen(item,event.currentTarget)}>{item.type==='assessment'?(state(item)==='In progress'?'Resume assessment':attemptFor(item)?'Review assessment':'Open assessment'):item.content?.submissionOnly?'Open submission bin':'Open material'}</button>{!['legacy','open'].includes(deliveryState(item,now))&&<p className="text-sm text-muted">{deliveryState(item,now)==='scheduled'?'Scheduled for a later class':deliveryState(item,now)==='closed'?'Class delivery window closed':'Delivery schedule not yet available'}</p>}</article>
+  return <article key={item.id} className="student-resource" data-kind={kindOf(item)}>
+   {item.type==='assessment'?<><h3>{assessmentTitle(item.content?.questions)}</h3><p className="student-resource-subtitle">{item.title}</p></>:<><p className="student-resource-kind">{item.content?.submissionOnly?'Submission bin':'Teaching material'}</p><h3>{item.title}</h3></>}
+   {item.type==='assessment'?<p className="text-sm text-muted">{state(item)} · {item.content?.questions?.length??'Unspecified'} questions · {item.content?.totalPoints??item.content?.questions?.length??'Unspecified'} points · {time(item.due_at)}{item.due_at?' (Philippine time)':''}</p>:<p>{item.content?.description}</p>}{progress?.total>0&&<StudentProgressBar value={progress.percent} total={100} label={item.title+' reading progress'} text={progress.done?'Done':`${progress.percent}% read`}/>}<ResourceLinks links={[...(item.content?.links||[]),...(item.content?.attachments||[]).filter(f=>f.url)]}/><TeachingAttachments attachments={(item.content?.attachments||[]).filter(f=>f.path)}/><button className="btn btn-secondary" disabled={busy} data-student-open={item.id} onClick={event=>onOpen(item,event.currentTarget)}>{item.type==='assessment'?(state(item)==='In progress'?'Resume assessment':attemptFor(item)?'Review assessment':'Open assessment'):item.content?.submissionOnly?'Open submission bin':'Open material'}</button>{!['legacy','open'].includes(deliveryState(item,now))&&<p className="text-sm text-muted">{deliveryState(item,now)==='scheduled'?'Scheduled for a later class':deliveryState(item,now)==='closed'?'Class delivery window closed':'Delivery schedule not yet available'}</p>}</article>
  }
  const weeks=[...new Set([...items.map(p=>p.week),...posts.filter(p=>p.week).map(p=>p.week)])].sort((a,b)=>a-b)
  const topicsOf=week=>{
@@ -76,24 +79,31 @@ export default function StudentCoursePanels({course,data,onOpen,busy}){
  const [expanded,setExpanded]=useWorkspaceViewState(`course:student-${course.id}:topic-expanded`,null)
  const isExpanded=key=>expanded===null||expanded.has(key)
  const toggle=(key,open)=>setExpanded(previous=>{const next=new Set(previous??keys);if(next.has(key)===open)return previous;if(open)next.add(key);else next.delete(key);return next})
- const requestedWeek=tab==='materials'?Number(params.get('week')):0
+ const focusedPost=tab==='stream'?posts.find(post=>post.id===params.get('item')):null
+ const requestedWeek=tab==='stream'?Number(focusedPost?.week||params.get('week')):0
  const focusedWeek=weeks.includes(requestedWeek)?requestedWeek:0
  const matchingWeeks=weeks.filter(week=>(!focusedWeek||week===focusedWeek)&&
   (resourceFilter==='all'||(resourceFilter==='announcement'?posts.some(post=>post.week===week):items.some(item=>item.week===week&&kindOf(item)===resourceFilter))))
  const visibleKeys=keys.filter(key=>matchingWeeks.includes(Number(key.split(':')[0])))
  const matchesResource=item=>resourceFilter==='all'||kindOf(item)===resourceFilter
- const focusedPostId=tab==='announcements'?posts.find(p=>p.id===params.get('item'))?.id:null
+ const focusedPostId=focusedPost?.id
+ const focusedTopic=focusedPost?.topic_id
  useEffect(()=>{
   if(focusedPostId)document.getElementById(`announcement-${focusedPostId}`)?.focus()
   else if(focusedWeek&&historyState?.focusWeek!==false&&!params.has('item')&&!params.has('publication'))document.getElementById(`week-${focusedWeek}-heading`)?.focus()
- },[focusedPostId,focusedWeek,params,historyState?.focusWeek])
+ },[focusedPostId,focusedWeek,params,historyState?.focusWeek,expanded])
  useEffect(()=>{
-  if(focusedWeek)setExpanded(previous=>previous===null||previous.has(String(focusedWeek))?previous:new Set([...previous,String(focusedWeek)]))
- },[focusedWeek,setExpanded])
+  if(focusedWeek)setExpanded(previous=>{
+   const required=[String(focusedWeek),...(focusedTopic?[focusedWeek+':'+focusedTopic]:[])]
+   return previous===null||required.every(key=>previous.has(key))?previous:new Set([...previous,...required])
+  })
+  if(focusedPostId)setResourceFilter('all')
+ },[focusedWeek,focusedTopic,focusedPostId,setExpanded])
  const selectWeek=week=>{
   const next=new URLSearchParams(params)
   if(week)next.set('week',week)
   else next.delete('week')
+  next.delete('item')
   setParams(next,{replace:true,state:{...historyState,focusWeek:false}})
  }
  const setVisibleTopics=open=>setExpanded(previous=>{
@@ -101,15 +111,14 @@ export default function StudentCoursePanels({course,data,onOpen,busy}){
   for(const key of visibleKeys)open?next.add(key):next.delete(key)
   return next
  })
- const changeSection=(id,week)=>{
-  if(id===tab && !week)return
+ const changeSection=id=>{
+  if(id===tab)return
   const next=new URLSearchParams(params)
   next.set('studentTab',id)
   next.delete('item')
-  if(week)next.set('week',String(week))
-  else next.delete('week')
-  if(week)setResourceFilter('all')
-  setParams(next,{replace:true,state:{...historyState,focusWeek:Boolean(week)}})
+  next.delete('assessmentTab')
+  next.delete('week')
+  setParams(next,{replace:true,state:{...historyState,focusWeek:false}})
  }
  function moveSectionFocus(event){
   if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return
@@ -127,19 +136,14 @@ export default function StudentCoursePanels({course,data,onOpen,busy}){
    changeSection(id)
   }}>{label}</button>)}
  </nav>
- {tab==='announcements'&&<div className="student-class-stream">
+ {tab==='stream'&&<div className="student-class-stream">
+ <div>
+  {data.classroomError&&<p role="alert">{data.classroomError}</p>}
+  {['all','announcement'].includes(resourceFilter)&&!focusedWeek&&posts.some(post=>!post.week)&&
   <section aria-label="Class announcements">
-   <h2>Announcements</h2>
-   {data.classroomError&&<p role="alert">{data.classroomError}</p>}
-   {params.has('item')&&!focusedPostId&&!items.some(item=>item.id===params.get('item'))&&!data.classroomError&&<p role="alert">This announcement is unavailable in your class.</p>}
-   {posts.length?posts.map(post=><Announcement key={post.id} post={post} instructor={course.instructor_name} onWeek={week=>changeSection('materials',week)}/>):<p>No published announcements for this class.</p>}
-  </section>
-  <StudentDueWork title="Class assessments" work={pendingAssessments(data,now,course.id)} renderItem={item=><>
-   <button type="button" className="btn btn-secondary" disabled={busy} onClick={event=>onOpen(item,event.currentTarget)}>{item.title}</button>
-   <span className="text-sm text-muted">Week {item.week}</span>
-  </>}/>
- </div>}
- {tab==='materials'&&<section aria-label="Weekly teaching materials and assessments">
+   {posts.filter(post=>!post.week).map(post=><Announcement key={post.id} post={post} instructor={course.instructor_name}/>)}
+  </section>}
+ <section aria-label="Weekly teaching materials and assessments">
   {weeks.length>0&&<div className="student-topic-filters">
    <label className="form-label">Week
     <select className="form-select" value={focusedWeek||''} onChange={event=>selectWeek(event.target.value)}>
@@ -171,44 +175,32 @@ export default function StudentCoursePanels({course,data,onOpen,busy}){
     {groups.map(group=>{
      const ordered=teachingSequence(group.items)
      const materials=ordered.filter(p=>p.type!=='assessment')
-     const linkedByMaterial=new Map(), standalone=[]
-     let previousMaterial
-     for(const item of ordered){
-      if(item.type!=='assessment'){previousMaterial=item;continue}
-      if(!matchesResource(item))continue
-      const sources=materials.filter(material=>coversMaterial(item,material))
-      if(!sources.length||item.content?.overallAssessment||!previousMaterial){standalone.push(item);continue}
-      const linked=linkedByMaterial.get(previousMaterial.id)||[]
-      linked.push({assessment:item,sources})
-      linkedByMaterial.set(previousMaterial.id,linked)
-     }
      const key=week+':'+group.id
      return <Fragment key={key}>{showPosts&&renderPosts(group.posts,true,group.title)}<details className="student-subtopic" open={isExpanded(key)} onToggle={e=>{if(e.target===e.currentTarget)toggle(key,e.currentTarget.open)}}>
       <summary>{group.title}</summary>
       {showPosts&&renderPosts(group.posts,false,group.title)}
-      {materials.map(m=>{
-       const linked=linkedByMaterial.get(m.id)||[]
-       const showMaterial=matchesResource(m)
-       return (showMaterial||linked.length>0)&&<div key={m.id}>
-        {showMaterial?resource(m):null}
-        {linked.length>0&&<div className="student-related">{linked.map(({assessment,sources})=><div key={assessment.id}>
-         {!showMaterial&&sources.length===1&&<p className="student-parent-material">{sources[0].title}</p>}
-         {(sources.length>1||showMaterial&&sources[0].id!==m.id)&&<p className="text-sm text-muted">Covers {sources.map(p=>p.title).join(', ')}</p>}
-         {resource(assessment)}
-        </div>)}</div>}
+      {ordered.filter(matchesResource).map(item=>{
+       const sources=item.type==='assessment'?materials.filter(material=>coversMaterial(item,material)):[]
+       if(!sources.length||item.content?.overallAssessment)return resource(item)
+       return <div key={item.id} className="student-related">
+        <p className="text-sm text-muted">Covers {sources.map(source=>source.title).join(', ')}</p>
+        {resource(item)}
        </div>
       })}
-      {standalone.length>0&&<section aria-label={'Week '+week+' standalone assessments'}>
-       <h3>Assessments</h3>{standalone.map(resource)}
-      </section>}
      </details></Fragment>
     })}
    </details></Fragment>
   })}
-  {!matchingWeeks.length&&<p role="status">{weeks.length?'No resources match these filters.':'No teaching materials or assessments have been published for this class.'}</p>}
- </section>}
- {tab==='scores'&&<StudentCourseScores items={assessments} attemptFor={attemptFor} stateFor={state}
-  relatedMaterials={relatedMaterials} onOpen={onOpen} busy={busy}/>}
+  {!matchingWeeks.length&&!(resourceFilter==='announcement'&&posts.some(post=>!post.week)&&!focusedWeek)&&<p role="status">{weeks.length?'No resources match these filters.':'No weekly resources have been published for this class.'}</p>}
+ </section>
+ </div>
+  <StudentDueWork title="Class assessments" work={pendingAssessments(data,now,course.id)} renderItem={item=><>
+   <button type="button" className="btn btn-secondary" disabled={busy} data-student-open={item.id} onClick={event=>onOpen(item,event.currentTarget)}>{item.title}</button>
+   <span className="text-sm text-muted">Week {item.week}</span>
+  </>}/>
+ </div>}
+ {tab==='performance'&&<StudentCourseScores items={assessments} materials={items.filter(item=>kindOf(item)==='material'&&isDelivered(item,now))} data={data}
+  attemptFor={attemptFor} stateFor={state} relatedMaterials={relatedMaterials} onOpen={onOpen} busy={busy}/>}
  {tab==='classlist'&&<section><h2>Class List</h2><p>Instructor: {course.instructor_name||'Not recorded'}</p><Table label="Your class membership" headers={['Name','Section','Membership']} rows={data.enrollments.filter(e=>e.course_id===course.id).map(e=>[e.display_name||'Your membership',e.block_section||'Not recorded',e.suspended?'Suspended':'Active'])}/><p className="text-sm text-muted">Only membership information authorized for your account is shown. Classmate details are not shared by the student records service.</p></section>}
  {tab==='outline'&&<section><h2>Published Course Outline</h2>{course.active&&course.outline?.length?<Table label="Published outline" headers={['Week','Contents','Learning outcomes']} rows={course.outline.map(row=>[row.week,Array.isArray(row.contents)?row.contents.join('\n'):row.contents,row.ilos||'Not recorded'])}/>:<p>No approved course outline has been published for this class.</p>}
   {course.active&&course.source_links?.length>0&&<section aria-label="Recorded course sources">

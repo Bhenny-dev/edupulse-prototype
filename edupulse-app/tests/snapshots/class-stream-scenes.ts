@@ -33,7 +33,10 @@ export async function classStreamScene(page: Page, mobile = false) {
   await expect(assessment).toBeVisible()
   await expect(week.getByRole('article', { name: 'Worked example reminder' })).toBeVisible()
   const delivered = ['Variables lesson', 'Assignment concept check', 'Assignment reflection']
-  await expect(week.getByRole('region', { name: 'Variables and named values' }).locator('.class-stream-item h4')).toHaveText(delivered)
+  const streamItems = week.getByRole('region', { name: 'Variables and named values' }).locator('.class-stream-item')
+  await expect(streamItems.locator('h4')).toHaveText(['Variables lesson', 'True or false', 'True or false'])
+  await expect(streamItems.nth(1)).toContainText(delivered[1])
+  await expect(streamItems.nth(2)).toContainText(delivered[2])
   if (mobile) {
     await latest.scrollIntoViewIfNeeded()
     await page.screenshot({ path: `${folder}/17-stream-phone.png`, animations: 'disabled' })
@@ -67,7 +70,8 @@ export async function studentAnnouncementScene(page: Page) {
   await expect(page.locator('#announcement-orientation + details.student-topic')).toBeVisible()
   await expect(page.locator('.student-subtopic #announcement-variable-reminder')).toBeVisible()
   const topic = page.locator('.student-subtopic').filter({ has: page.locator('#announcement-variable-reminder') })
-  await expect(topic.locator('.student-resource:not(.student-announcement) h3')).toHaveText(['Variables lesson', 'Variables quiz'])
+  await expect(topic.locator('.student-resource:not(.student-announcement) h3')).toHaveText(['Variables lesson', 'Multiple choice'])
+  await expect(topic.locator('.student-resource-subtitle')).toHaveText('Variables quiz')
   await page.setViewportSize({ width: 1440, height: 1180 })
   await page.screenshot({ path: '../feature-documentation/system-manual/41-student-learning/12-placed-announcements.png', animations: 'disabled' })
 }

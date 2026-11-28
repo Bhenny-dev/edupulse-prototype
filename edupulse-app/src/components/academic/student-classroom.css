@@ -60,11 +60,11 @@
 
 .student-class-stream {
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(240px, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(235px, 290px);
   gap: 20px;
   align-items: start;
 }
-.student-class-stream > section {
+.student-class-stream > * {
   min-width: 0;
 }
 .student-class-stream .student-home-items .btn {
@@ -75,7 +75,7 @@
   outline: 2px solid var(--sky-500);
   scroll-margin-top: 110px;
 }
-@media (max-width: 760px) {
+@media (max-width: 900px) {
   .student-class-stream { grid-template-columns: minmax(0, 1fr); }
   .student-announcement:focus { scroll-margin-top: 168px; }
 }
@@ -139,3 +139,16 @@
 .student-join-dialog form { margin-top: 16px; }
 .student-join-dialog .form-label { display: grid; gap: 6px; }
 .student-join-dialog .form-input { width: 100%; min-width: 0; }
+
+.student-resource[data-kind] { border-inline-start-width: 4px; background: var(--white); }
+.student-resource[data-kind="material"] { border-inline-start-color: var(--sky-500); }
+.student-resource[data-kind="assessment"] { border-inline-start-color: var(--purple-500); }
+.student-resource[data-kind="announcement"] { border-inline-start-color: var(--amber-500); }
+.student-resource[data-kind="submission"] { border-inline-start-color: var(--green-500); }
+.student-resource-kind { font-size: .78rem; font-weight: 700; color: var(--gray-600); }
+.student-resource[data-kind] > h3 { margin: 4px 0; }
+.student-resource-subtitle { color: var(--gray-700); margin: 0 0 8px; }
+.student-resource-links .class-link-card,
+.student-resource .teaching-attachments { border-inline-start: 3px solid var(--green-500); }
+.student-assessment-reader > .page-modal-header { border-block-start: 4px solid var(--purple-500); }
+.student-course-scores .form-select, .student-topic-filters .form-select { display: block; }

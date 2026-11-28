@@ -24,6 +24,7 @@ import useAcademicTerm from './useAcademicTerm'
 import LoadTermFilter from './LoadTermFilter'
 import {loadTerm,recordsForLoadTerm} from '../../utils/loadTerms'
 import { deliveryState } from '../../utils/blockDelivery'
+import { assessmentTitle } from '../../data/assessmentFormats'
 
 const DEAN_HEADERS = {
   records: [BookOpen, 'var(--sky-500)', 'Manage the course catalog, load schedules and class lists for the selected term.'],
@@ -58,14 +59,30 @@ export default function AcademicPortal({ view, classModal = false, onCloseClass 
   const [readerId,setReaderId]=useWorkspaceViewState(`academic-reader:${view}`,null)
   const selected=data.publications.find(item=>item.active&&item.id===(pageParams.get('item')||(user?.role==='student'?null:readerId))&&(view!=='courseware'||user?.role!=='student'||item.course_id===pageParams.get('course')))||null
   const readerOpener=useRef(null)
+  const itemId=pageParams.get('item')
+  const linkedAnnouncement=isStudent&&data.announcements.some(post=>post.id===itemId&&post.course_id===pageParams.get('course'))
   const sourcePreview = data.publications.find(item => item.id === pageParams.get('publication') && item.active && item.type !== 'assessment' && item.course_id === pageParams.get('course') && item.content && (!isScheduledStudent(item) || deliveryState(item)==='open'))
   function isScheduledStudent(item){return user?.role==='student'&&item.delivery_mode==='block_schedule'}
   const closeSourcePreview = () => { const query = new URLSearchParams(pageParams); query.delete('publication'); setPageParams(query,{replace:classModal,state}) }
   const [answerDraft,setAnswerDraft]=useState(null), [busy, setBusy] = useState(false), [result, setResult] = useState(null), [error, setError] = useState('')
+  const selectAssessmentTab = tab => {
+    const next = new URLSearchParams(pageParams)
+    next.set('assessmentTab',tab)
+    setPageParams(next,{replace:true,state})
+  }
   useEffect(()=>{
     if(!classModal||selected||busy||!readerOpener.current)return
-    // A fast Back can close the reader while its opener is still disabled.
-    const frame=requestAnimationFrame(()=>readerOpener.current?.focus({preventScroll:true}))
+    const {element,id}=readerOpener.current
+    // The parent layer is hidden while a nested reader is in the modal stack.
+    // It may take another frame before the browser can focus its opener.
+    const deadline=performance.now()+400
+    let frame
+    const restore=()=>{
+      const opener=element.isConnected?element:document.querySelector(`[data-student-open="${CSS.escape(id)}"]`)
+      opener?.focus({preventScroll:true})
+      if(document.activeElement===document.body&&performance.now()<deadline)frame=requestAnimationFrame(restore)
+    }
+    frame=requestAnimationFrame(restore)
     return ()=>cancelAnimationFrame(frame)
   },[classModal,selected?.id,busy])
   const [startedSession,setSession]=useState(null)
@@ -99,27 +116,30 @@ export default function AcademicPortal({ view, classModal = false, onCloseClass 
     if (classModal && state?.itemEntry) return navigate(-1)
     const next = new URLSearchParams(pageParams)
     next.delete('item')
+    next.delete('assessmentTab')
     setPageParams(next,{replace:classModal,state})
   }
-  const showReader = id => {
+  const showReader = (id, assessmentTab) => {
     const previousItem = pageParams.get('item')
     if (previousItem === id) return
     if (!isStudent) setReaderId(id)
     const next = new URLSearchParams(pageParams)
     next.set('item',id)
+    if (assessmentTab) next.set('assessmentTab',assessmentTab)
+    else next.delete('assessmentTab')
     setPageParams(next,classModal ? {
       replace:Boolean(previousItem),
       state:{...state,itemEntry:!previousItem || Boolean(state?.itemEntry)},
     } : undefined)
   }
-  const open = async (item, opener) => {
+  const open = async (item, opener, assessmentTab) => {
     readingExit.current?.()
-    if (classModal && opener) readerOpener.current=opener
+    if (classModal && opener) readerOpener.current={element:opener,id:item.id}
     if(writable&&isScheduledStudent(item)){
       const current=await run({operation:'read-publication',publication:item.id,version:item.source_version})
       if(!current)return
       item=current
-      if(deliveryState(item)!=='open'||!item.content){showReader(item.id);setResult(null);setAnswerDraft(null);return}
+      if(deliveryState(item)!=='open'||!item.content){showReader(item.id,assessmentTab);setResult(null);setAnswerDraft(null);return}
     }
     if(isStudent&&item.type!=='assessment'){
       showReader(item.id);setResult(null);setAnswerDraft(null);
@@ -130,7 +150,7 @@ export default function AcademicPortal({ view, classModal = false, onCloseClass 
       }
       return
     }
-    showReader(item.id); setAnswerDraft(null); setResult(null)
+    showReader(item.id,assessmentTab); setAnswerDraft(null); setResult(null)
   }
   const startAssessment = async (retake = false) => {
     if (!learnerControls || selected?.type !== 'assessment') return
@@ -139,8 +159,33 @@ export default function AcademicPortal({ view, classModal = false, onCloseClass 
     setSession({ ...started, publication_id: selected.id, source_version: selected.source_version })
     setAnswerDraft(null)
     setResult(null)
+    selectAssessmentTab('questions')
   }
-  const reader = selected && <PageModal title={selected.title} subtitle={`${data.courses.find(course=>course.id===selected.course_id)?.course_code||'Course'} / Week ${selected.week} \u00b7 ${selected.type==='assessment'?'Assessment':selected.content?.submissionOnly?'Submission bin':'Teaching material'}`} closeLabel={selected.type==='assessment'?'Close assessment':'Close material'} onClose={closeReader} bodyClassName="reader-page-body" className={selected.type==='assessment'?'':'material-scroll-reader'}><div id="opened-publication">{error&&<p role="alert" className="connected-pulse-warning">{error}</p>}<OpenedPublication pageModal readingExit={readingExit} materialOpening={materialOpening} onStart={()=>startAssessment()} onRecheck={()=>open(selected)} onNext={open} key={`${selected.id}:${selected.source_version}:${session?.id || "reader"}`} selected={selected} data={data} isStudent={isStudent} canAttempt={learnerControls} adminTest={Boolean(user?.supportSubject&&adminTest)} answers={answers} setAnswers={setAnswers} result={result} session={session} busy={busy} onClose={closeReader} onRetake={()=>startAssessment(true)} onSubmit={() => {if(window.confirm('Submit this assessment? Check your responses before confirming.'))return run({ operation: 'respond', publication: selected.id, version: selected.source_version, session:session?.id, responses: selected.content.questions.map((_, index) => answers[index]) })}} />{isStudent&&user?.authenticated&&!user.supportSubject&&<TopicWorkPanel key={selected.id} publication={selected} readOnly={!writable}/>}</div></PageModal>
+  const submitAssessment = async () => {
+    if (!window.confirm('Submit this assessment? Check your responses before confirming.')) return
+    const saved = await run({operation:'respond', publication:selected.id, version:selected.source_version,
+      session:session?.id, responses:selected.content.questions.map((_, index) => answers[index])})
+    if (saved?.id) selectAssessmentTab('scores')
+  }
+  const assessment=selected?.type==='assessment'
+  const reader = selected && <PageModal
+    title={assessment?assessmentTitle(selected.content?.questions):selected.title}
+    label={assessment?selected.title:undefined}
+    subtitle={`${data.courses.find(course=>course.id===selected.course_id)?.course_code||'Course'} / Week ${selected.week} · ${assessment?selected.title:selected.content?.submissionOnly?'Submission bin':'Teaching material'}`}
+    closeLabel={assessment?'Close assessment':'Close material'} onClose={closeReader} bodyClassName="reader-page-body"
+    className={assessment?'student-assessment-reader':'material-scroll-reader'}>
+    <div id="opened-publication">
+      {error&&<p role="alert" className="connected-pulse-warning">{error}</p>}
+      <OpenedPublication pageModal readingExit={readingExit} materialOpening={materialOpening}
+        onStart={()=>startAssessment()} onRecheck={()=>open(selected)} onNext={open}
+        key={`${selected.id}:${selected.source_version}:${session?.id || 'reader'}`}
+        selected={selected} data={data} isStudent={isStudent} canAttempt={learnerControls}
+        adminTest={adminTest} answers={answers} setAnswers={setAnswers} result={result} session={session} busy={busy}
+        assessmentTab={pageParams.get('assessmentTab')||(pageParams.get('studentTab')==='scores'?'scores':null)} onAssessmentTab={selectAssessmentTab}
+        onClose={closeReader} onRetake={()=>startAssessment(true)} onSubmit={submitAssessment} />
+      {isStudent&&user?.authenticated&&!user.supportSubject&&<TopicWorkPanel key={selected.id} publication={selected} readOnly={!writable}/>}
+    </div>
+  </PageModal>
   const sourceReader = sourcePreview && <PageModal title={sourcePreview.title} label="Referenced teaching material" subtitle="Source preview" closeLabel="Close source material" onClose={closeSourcePreview} bodyClassName="reader-page-body"><DocumentViewer embedded readOnly isStudent content={sourcePreview.content} onBack={closeSourcePreview} /></PageModal>
   if (classModal) {
     const course = enrolledCourses(data).find(item => item.id === pageParams.get('course'))
@@ -151,7 +196,7 @@ export default function AcademicPortal({ view, classModal = false, onCloseClass 
         {loading && !loaded && <LoadingStatus label="Loading your class..." />}
         {course ? <StudentClassDetail selected={course} data={data} onOpen={open} busy={busy}/> : loaded && <p role="alert">This class is unavailable in the selected term or is no longer assigned to your account.</p>}
         {course && error && !selected && <p role="alert">{error}</p>}
-        {course && pageParams.has('item') && !selected && pageParams.get('studentTab') !== 'announcements' && <p role="alert">This item is unavailable in your class.</p>}
+        {course && loaded && itemId && !selected && !linkedAnnouncement && <p role="alert">This item is unavailable in your class.</p>}
         {course && reader}
         {course && pageParams.has('publication') && !sourcePreview && <p role="alert">This teaching source is unavailable in your class.</p>}
         {course && sourceReader}
@@ -170,7 +215,7 @@ export default function AcademicPortal({ view, classModal = false, onCloseClass 
       {view==='monitoring'&&user?.role==='instructor'?<InstructorMonitoring data={data} readOnly={!writable}/>:['performance', 'monitoring'].includes(view) && user?.role !== 'associate_dean' && <AcademicPerformance data={data} role={user?.role} monitoring={view === 'monitoring'} />}
       {deanPage?<DeanRecords data={allData} view={view}/>:['records', 'courses', 'monitor'].includes(view) && <AcademicManagement data={data} role={user?.role} view={view} />}
       {isStudent&&view==='assessment'&&writable?<StudentPractice data={data} onOpen={open} busy={busy} adminTest={adminTest}/>:['courseware', 'assessment'].includes(view) && <AcademicLibrary data={data} assessments={view === 'assessment'} onOpen={open} busy={busy} />}
-      {isStudent&&pageParams.has('item')&&!selected&&pageParams.get('studentTab')!=='announcements'&&<p role="alert">This item is unavailable in your class.</p>}
+      {isStudent&&loaded&&itemId&&!selected&&!linkedAnnouncement&&<p role="alert">This item is unavailable in your class.</p>}
       {reader}
     </>}
     {sourceReader}

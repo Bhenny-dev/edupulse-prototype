@@ -15,7 +15,12 @@ Within each topic, the reading and worked example appear before the concept chec
 Students in open classes have recorded reading progress and graded work, with further materials, assessments and attempts available. Saved future opening dates remain authoritative; three existing individually enrolled learners retain their not-yet-open state. Some written responses remain awaiting instructor marking. Practice records remain separate from official assessment results. Public discussion stays within the enrolled block; private discussion stays between its student and instructor. The topic submission bins contain written work and accept subsequent authorized submissions under their normal rules.
 
 ![Student Home with Join Class, enrolled course cards and recorded progress](student-home.png)
-![Student results from saved assessment records](student-scores.png)
+![Student Stream filtered to Week 1](student-stream.png)
+![Student Performance with marked scores and material access](student-scores.png)
+![Matching type assessment with a response box for each set of pairs](student-matching.png)
+![Scores inside a student assessment with submitted answers](student-assessment-scores.png)
+
+All current loaded courses have Week 1 assessments in multiple choice, true or false, enumeration, identification, essay, matching type and step-by-step documentation. They follow the Week 1 material they cover. Objective formats use radio choices. The remaining formats are marked by the instructor.
 
 New answers are scored by the backend, and written answers require instructor review. Delivering a checked item makes its publication available only to its enrolled students under the class opening schedule. Reload restores the selected authorized view and does not submit answers, enroll students or deliver content again. A real score of zero and missing or pending marks retain their normal meaning.
 

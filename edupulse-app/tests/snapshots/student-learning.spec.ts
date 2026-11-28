@@ -3,7 +3,15 @@ import {studentLearningScene,courseContentDialogScene} from '../student-learning
 test('student learning cards and repeatable practice',async({page})=>{test.setTimeout(90000);await studentLearningScene(page,async name=>{if(process.env.SNAPSHOT_SCENES&&!new RegExp(process.env.SNAPSHOT_SCENES).test(name))return;await page.screenshot({path:`../feature-documentation/system-manual/41-student-learning/${name}.png`,animations:'disabled',fullPage:!['03-material-reader','04-practice-questions'].includes(name),style:'.app-topbar{position:static !important}'})})})
 
 import {studentLearningUI} from '../student-learning-ui'
-test('Admin student view keeps learner actions without the removed panel',async({page})=>{test.setTimeout(60000);await studentLearningUI(page,true);await page.goto('/#/courseware');await page.getByRole('region',{name:'Your classes'}).getByRole('button',{name:/^Open IT 102 /}).click();await page.getByRole('button',{name:'Teaching Materials & Assessments',exact:true}).click();await expect(page.getByText('Arrays quiz',{exact:true})).toBeVisible();await expect(page.getByRole('button',{name:'Return to System Admin',exact:true})).toHaveCount(0);await page.addStyleTag({content:'.app-topbar{position:static !important}'});await page.screenshot({path:'../feature-documentation/system-manual/41-student-learning/09-admin-controls.png',animations:'disabled',fullPage:true,style:'.app-topbar{position:static !important}'})})
+test('Admin student view keeps learner actions without the removed panel',async({page})=>{
+ test.setTimeout(60000)
+ await studentLearningUI(page,true)
+ await page.goto('/#/courseware')
+ await page.getByRole('region',{name:'Your classes'}).getByRole('button',{name:/^Open IT 102 /}).click()
+ await expect(page.getByRole('region',{name:'Weekly teaching materials and assessments'}).getByText('Arrays quiz',{exact:true})).toBeVisible()
+ await expect(page.getByRole('button',{name:'Return to System Admin',exact:true})).toHaveCount(0)
+ await page.screenshot({path:'../feature-documentation/system-manual/41-student-learning/09-admin-controls.png',animations:'disabled',fullPage:true,style:'.app-topbar{position:static !important}'})
+})
 
 test('student course sections and all assessment questions in a separate dialog',async({page})=>{await courseContentDialogScene(page,async name=>{if(process.env.SNAPSHOT_SCENES&&!new RegExp(process.env.SNAPSHOT_SCENES).test(name))return;await page.screenshot({path:`../feature-documentation/system-manual/41-student-learning/${name}.png`,animations:'disabled',fullPage:name!=='12-all-assessment-questions'})})})
 

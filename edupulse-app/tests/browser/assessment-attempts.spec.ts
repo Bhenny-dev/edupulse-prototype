@@ -75,7 +75,7 @@ test('a student sees how many attempts there are, that the latest counts, and no
   await dialog.getByLabel('Question 2: C', { exact: true }).check()
   await dialog.getByRole('button', { name: 'Confirm and submit responses', exact: true }).click()
   await expect(page.getByRole('button',{name:'Open Pulse assistant',exact:true})).toBeVisible()
-  await expect(dialog.getByRole('status').filter({ hasText: 'Saved score: 1/2.' })).toContainText('Attempt 1 of 2. Your latest attempt is the one recorded.')
+  await expect(dialog.getByRole('status').filter({ hasText: 'Saved score: 1/2.' })).toContainText('Attempt 1 of 2. Your latest submitted attempt is shown.')
   // Immediately after the recorded submission: results, the correct answer and why (owner specification I3).
   const firstReview = dialog.getByRole('group', { name: 'Answer review for attempt 1', exact: true })
   await expect(firstReview.getByRole('listitem')).toHaveCount(2)

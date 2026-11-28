@@ -396,7 +396,7 @@ Owner request (23 November): a Classroom-style layout for instructors first, kee
 | T13.6 | Announcements (`classroom/ClassStream.jsx`): post, edit, delete; all block sections or one; optional week; up to 10 links. Students read those of their own enrolled block (`edupulse_class_announcements`), none while suspended | PGlite announcement test, instructor-classroom spec | Complete |
 | T13.7 | Class List per block: the existing roster (suspend, remove, add students) once the course exists, the confirmed class list before; the block's code and who joined with it. Scores per block with the existing assessment score view (EduPulse scores, not official grades) | instructor-classroom spec | Complete |
 | T13.8 | Provider links on drafts, link materials and announcements: recognized providers, Open with the provider, a privacy-enhanced YouTube player on request (CSP `frame-src` allows `www.youtube-nocookie.com`). The instructor handover copies file paths only, and the Dean's course inspection keeps links | `tests/classroom-utils.test.ts`, PGlite patch assertions, instructor-classroom spec | Complete |
-| T13.9 | Make **Join Class** visible on Student Home with or without classes. A student can look up and confirm an instructor’s code. Admin · Student provides enrollment guidance. Reload restores the dialog after verification and clears typed codes. | `tests/browser/student-classroom.spec.ts` covers own-account confirmation and verified support restoration. [Manual 54](system-manual/54-management-loaded-classes/README.md#join-with-an-instructors-class-code) captures the route. | Complete |
+| T13.9 | Make **Join Class** visible on Student Home with or without classes. A student can look up and confirm an instructor’s code. Admin · Student provides enrollment guidance. Reload restores the dialog after verification and clears typed codes. | `tests/browser/student-classroom.spec.ts` covers own-account confirmation and verified support restoration. Commit `a71bdb71` reached Ready on the production alias. | Ready |
 
 Not done, and why:
 - Google Drive Picker needs a Google Cloud project with an OAuth client ID, an API key, the `drive.file` scope and the College's approval. Until then instructors paste share links; nothing claims a Drive connection.
@@ -638,3 +638,12 @@ The staff Dashboard lists workloads per instructor and opens assignment, editing
 ## 28 November 2026 - Join Class on Student Home (G13)
 
 The owner’s empty and populated Student Home examples were both from Admin support. **Join Class** is now visible beside **Academic term**. Student accounts use the existing class-code command, and Admin support opens sign-in guidance. Browser coverage checks the first enrollment, restores an open support dialog after the same subject is verified, and checks that reload sends no join. [Release verification](versions/2026-11-28-student-join-class/validation/results.md).
+
+## 28 November 2026 · Student Stream and Week 1 assessment formats
+
+| Task | Work | Acceptance | Stage |
+| --- | --- | --- | --- |
+| T13.10 | Combine student announcements and weekly work in **Stream**. Show course summaries, assessments and material access in **Performance**. Move saved scores and answers into the assessment page. | Student classroom, assessment-attempt and populated workspace browser scenarios cover ordering, formats, legacy links and reload. The release gate and 14 documentation capture scenes passed. | Tested |
+| T13.11 | Deliver all seven Week 1 formats across current loads. Keep current publications, keys, attempts and schedule constraints. | Eight rehearsed and applied batches added 179 publications for 27 courses. The linked audit confirms all seven formats in each course and a second plan proposes zero inserts. | Complete |
+
+[Release verification](versions/2026-11-28-student-stream/validation/results.md).

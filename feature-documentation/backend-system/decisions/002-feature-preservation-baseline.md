@@ -439,6 +439,12 @@ Population may fill management-loaded classes but must not create new catalog as
 
 The owner requires delivered assessments in both instructor class tabs to open the interactive assessment form alongside the key and per-student scores for that assessment. Use the same question controls as the student. Keep multiple choice and true or false as objective answers and the five written formats as instructor-marked responses. A published key belongs to the exact version and is accessible to its owning instructor or the verified support subject. The student receives only authorized post-submission feedback. Preserve the distinction between missing, pending and zero, the selected block, prior scored versions, and explicit marking on reload.
 
+## 28 November 2026 · Student Stream and assessment scores
+
+Student classes combine announcements and weekly resources in **Stream**. **Performance** shows latest current-version assessment results and teaching material access in the selected course. The assessment’s **Scores** tab uses the recorded attempt and the existing answer-feedback rule. Under verified Admin support, the page reads submitted responses from the selected student projection. Reload restores the class and assessment tabs without starting or submitting an attempt. Legacy links for announcements, materials and scores continue to resolve.
+
+The Week 1 backfill adds format-specific publications grounded in existing seeded readings. It keeps prior assessment versions and records and uses the revision-checked checked-to-published workspace path. It does not create learner attempts. [Release verification](../../versions/2026-11-28-student-stream/validation/results.md).
+
 ### 27 November 2026 - Instructor-first management dashboard
 
 The Dean and Program Coordinator open their academic term's instructor course loads from Dashboard. Assign and edit loads from each instructor, and inspect the bound syllabus and delivery per assigned block. Class windows use the saved schedule or the term calendar and class meeting defaults. Institution-wide syllabus and delivery charts, alerts and recent activity live on the linked oversight tabs. Course handles catalog, schedules and class-list intake. Instructors remains the account directory and links each name to their workload. The Dean reaches the student directory from Course. The existing instructor handover, read-only inspection and learner-score boundaries apply to the new entry points. [Manual 36](../../system-manual/36-dean-activity-records/README.md).

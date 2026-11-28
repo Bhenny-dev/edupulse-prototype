@@ -18,6 +18,7 @@ import { classUpcoming } from './classWork'
 import { classStreamWeekOrder } from '../../utils/classStreamOrder'
 import { recordsNow } from '../academic/studentProgress'
 import { LinkCard, LinkForm } from './LinkAttachments'
+import { assessmentTitle } from '../../data/assessmentFormats'
 import './classroom.css'
 
 const when = value => new Date(value).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })
@@ -119,9 +120,11 @@ export default function ClassStream({ course, syllabus, plan, data, readOnly = f
     if (!current || !item) return null
     const window = data.deliverySchedules?.find(schedule => schedule.course_id === item.course_id && schedule.block_section === course.block)?.windows.find(window => window.week === entry.week)
     const opens = item.delivery_mode === 'block_schedule' ? window?.opens_at : item.release_at
-    return <article key={item.id} className="class-stream-item">
+    return <article key={item.id} className="class-stream-item" data-kind={item.type==='assessment'?'assessment':'material'}>
       {item.type === 'assessment' ? <ClipboardCheck size={18} aria-hidden="true" /> : <FileText size={18} aria-hidden="true" />}
-      <div><p className="text-sm text-muted">{itemKind(item)}</p><h4>{item.title}</h4>
+      <div>{item.type==='assessment'
+        ? <><h4>{assessmentTitle(item.content?.questions)}</h4><p>{item.title}</p></>
+        : <><p className="text-sm text-muted">{itemKind(item)}</p><h4>{item.title}</h4></>}
         {(opens || item.delivery_mode === 'block_schedule') && <p className="text-sm text-muted">{opens ? `Opens ${deliveryTimeLabel(opens)}` : 'Awaiting this block’s schedule'}</p>}
       </div>
       {item.content && <button type="button" className="btn btn-secondary btn-sm" aria-label={`Open ${item.title}`} onClick={() => setReaderId(item.id)}>Open</button>}
@@ -169,7 +172,9 @@ export default function ClassStream({ course, syllabus, plan, data, readOnly = f
         </div>
       })}
     </div>
-    {readPublication && <PageModal title={readPublication.title} subtitle={`Week ${readPublication.week} · ${itemKind(readPublication)}`} closeLabel="Close delivered content" onClose={() => setReaderId(null)} bodyClassName="reader-page-body">
+    {readPublication && <PageModal title={readPublication.type==='assessment'?assessmentTitle(readPublication.content.questions):readPublication.title}
+      label={readPublication.title} subtitle={`Week ${readPublication.week} · ${readPublication.type==='assessment'?readPublication.title:itemKind(readPublication)}`}
+      closeLabel="Close delivered content" onClose={() => setReaderId(null)} bodyClassName="reader-page-body" className={readPublication.type==='assessment'?'student-assessment-reader':''}>
       {readPublication.type === 'assessment' ? <DeliveredAssessment key={readPublication.id + ":" + readPublication.source_version} publication={readPublication} course={course} data={data} readOnly={readOnly} /> : <DocumentViewer key={readPublication.id} content={{ ...readPublication.content, title: readPublication.title }} embedded readOnly />}
     </PageModal>}
     {editing && <Composer key={composer} course={course} rows={rows} initial={editing} onCancel={() => setComposer(null)} onSaved={message => { setComposer(null); setNotice(message) }} />}

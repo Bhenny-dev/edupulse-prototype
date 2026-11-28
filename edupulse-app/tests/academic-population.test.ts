@@ -3,8 +3,32 @@ import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import { PGlite } from '@electric-sql/pglite'
 import { populationPlan } from '../scripts/lib/academic-population-plan.js'
-import { commonCourses } from '../scripts/lib/population-content.js'
+import { commonCourses, learningOutline, teachingItems } from '../scripts/lib/population-content.js'
+import { ASSESSMENT_FORMATS } from '../src/data/assessmentFormats.js'
 import { academicRows } from '../server/domains/academic.js'
+
+test('seed Week 1 has each assessment format after its published reading', () => {
+ const syllabus = {id:'mobile-sample',courseCode:'WMAD 302',courseTitle:'Mobile Systems and Technologies'}
+ const week = learningOutline(syllabus.courseCode,syllabus.courseTitle)[0]!
+ const items = Object.entries(teachingItems(syllabus,week,week.sections[0],'2026-11-28T00:00:00Z'))
+ const [materialId, material] = items.find(([,item])=>item.type==='material')!
+ const assessments = items.filter(([,item])=>item.type==='assessment')
+ const pure = new Set(assessments.flatMap(([,item])=>{
+  assert.ok('questions' in item.content && 'coverage' in item.content)
+  const questions = item.content.questions as {type:string;responseFormat?:string;options?:string[];correctIndex?:number}[]
+  assert.ok(questions.length >= 3)
+  for (const question of questions) {
+   if (question.type==='multiple_choice') assert.equal(question.options?.length,4)
+   if (question.type==='true_false') assert.deepEqual(question.options,['True','False'])
+   if (question.type==='short_answer') assert.equal(question.correctIndex,undefined)
+  }
+  assert.deepEqual(item.content.coverage.materialIds,[materialId])
+  assert.ok(item.position > material.position)
+  const formats = new Set(questions.map(question=>question.responseFormat||question.type))
+  return formats.size===1 ? [...formats] : []
+ }))
+ assert.deepEqual([...pure].sort(),ASSESSMENT_FORMATS.map(format=>format.id).sort())
+})
 
 test('populated academic reads retain records beyond the former 50,000-row cutoff and fail rather than return a partial prefix',async()=>{
  const rows=Array.from({length:51123},(_,id)=>({id}))

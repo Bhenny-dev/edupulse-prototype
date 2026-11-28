@@ -10,7 +10,7 @@ These screenshots use fictional student records, controlled provider/API respons
 
 ![Weekly teaching and assessment items in a selected course](02-delivered-course.png)
 
-Select a course card. The class header identifies its instructor. **Teaching Materials & Assessments** groups published work by week and topic. Read the teaching materials before opening their concept check or assessment. When an assessment covers several materials, its card follows those materials. Use **Week** and **Show resources** to filter the list. **Announcements** lists the class posts you can see. **Open material** and **Open assessment** open separate readers. **Close class and return to Home** returns to the cards. Reload restores the authorized class and tab.
+Select a course card. The class header identifies its instructor. **Stream** shows class-wide announcements and groups weekly announcements, teaching materials, assessments and submission bins by week and topic. Use **Week** and **Show resources** to filter the list. Read the teaching material before opening its assessment. Card labels and colored borders distinguish the resource types. The assessment format is the heading and its topic-specific name appears below it. **Open material** and **Open assessment** open separate page modals. **Close class and return to Home** returns to the cards.
 
 ![Student class with a week announcement, topic reminder, lesson and linked assessment](12-placed-announcements.png)
 
@@ -18,7 +18,7 @@ Select a course card. The class header identifies its instructor. **Teaching Mat
 
 Materials become readable in the separate dialog immediately while the explicit first-open record saves. Close using **Close material**, **Back**, or Escape to return to the same course/tab. A recording failure is shown without replacing the readable document with a pending screen. **Document** and **Presentation** remain available. Scroll through **Document** to update the reading bar. Close halfway to keep the percentage reached or close after reaching the end to mark the material **Done**. The course list shows the saved progress, which is also available when the reader reopens or reloads. A short document visible in full counts as done when closed.
 
-Instructor assessments display every question together in one scrollable dialog, with no numbered question navigator or Previous/Next question buttons. Duration, deadline, supported response formats, saved results, allowed retakes and instructor marking remain. Answer all questions, then use **Confirm and submit responses**. **Close assessment** or Escape returns to the list. Reload restores the authorized dialog and reads any existing server session without starting another attempt; unsaved answers do not restore. Written responses can remain **Awaiting marking**; missing marks cannot become zero. These are recorded raw scores, not institutional grades.
+The **Assessment** tab displays the questions in one scrollable page. Answer every question and select **Confirm and submit responses** to see **Scores**. **Scores** displays your saved raw score or **Score pending review**, your submitted answers, and any answer feedback available for the published version. From **Performance**, **Review attempt** opens that assessment on **Scores**. **Close assessment** or Escape returns to the class. Reload restores the authorized dialog and its selected tab. The server resumes an already started session, and unsaved responses are cleared.
 
 ## Practice Assessments
 
@@ -65,12 +65,14 @@ Select **Start assessment** to enable the answer controls. **Multiple choice** a
 
 ## Content filters and complete assessment view
 
-![Only teaching materials in the selected course](10-teaching-materials-tab.png)
-![Your Scores lists the selected class assessments by week](11-assessments-tab.png)
+![Stream with the selected course's weekly resources](10-teaching-materials-tab.png)
+![Performance with course assessment totals and material access](11-assessments-tab.png)
 ![All assessment questions together in a separate dialog](12-all-assessment-questions.png)
 ![Assessment dialog on a phone](13-phone-assessment-dialog.png)
 
 Each tab keeps the course and instructor context. Dialogs use the existing focus and Escape behavior, keep the background page in place, and scroll within the viewport. A long assessment remains one continuous question list. The server remains responsible for active enrollment, release dates, time limits, attempt limits and marks.
+
+**Performance** shows submitted and pending assessments, the total points from marked assessments, and teaching materials opened. **Teaching Material Access** lists each delivered material and its saved reading progress. **Assessments** lists results by week and can be filtered by **Assessment status**.
 
 ## Consistent summary cards
 

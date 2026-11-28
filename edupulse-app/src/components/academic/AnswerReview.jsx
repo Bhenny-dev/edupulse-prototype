@@ -9,6 +9,18 @@ const optionText = (question, index) => {
   return (typeof option === 'string' ? option : option?.text) || `Option ${index + 1}`
 }
 
+export function RecordedAnswers({attempt, questions}) {
+  if (!attempt.answers?.length) return <p className="mt-16">No submitted answers are available for this attempt.</p>
+  return <section aria-label="Submitted answers" className="mt-16">
+    <h3>Submitted answers</h3>
+    <ol className="academic-answer-list">{attempt.answers.map((answer,index)=><li key={index} className="academic-answer">
+      <p><strong>{questions[index]?.text || 'Question ' + (index + 1)}</strong></p>
+      <p className="assessment-recorded-answer">{(typeof answer==='number'?optionText(questions[index],answer):answer)||'No answer recorded'}</p>
+      {Number.isFinite(attempt.question_scores?.[index])&&<p>{attempt.question_scores[index]} points</p>}
+    </li>)}</ol>
+  </section>
+}
+
 /** The student's answer review for one recorded attempt (owner specification I3). The database releases the key only for
  *  the student's own submitted attempt and never while a later attempt is open, so this component only renders what it is given. */
 export default function AnswerReview({ attempt, questions }) {
@@ -34,6 +46,7 @@ export default function AnswerReview({ attempt, questions }) {
     {loading && <p role="status"><Spinner /> Loading your answers and the correct answers…</p>}
     {error && <p role="alert">{error} <button type="button" className="btn btn-ghost btn-sm" onClick={() => void load()}>Retry</button></p>}
     {review && !review.available && <p role="status">{review.reason}</p>}
+    {(error || review && !review.available) && <RecordedAnswers attempt={attempt} questions={questions}/>}
     {review?.available && <>
       {review.grading_status === 'pending_review' && <p className="text-sm text-muted">Written responses are awaiting your instructor’s marking, so the score above is not final.</p>}
       {!review.explanations && <p className="text-sm text-muted">Your instructor’s explanations are not available for this version; the correct answers are shown.</p>}

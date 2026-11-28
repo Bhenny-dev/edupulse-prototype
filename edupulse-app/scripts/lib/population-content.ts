@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto'
 import { createRequire } from 'node:module'
+import { ASSESSMENT_FORMATS } from '../../src/data/assessmentFormats.js'
 
 export const populationVersion = 'academic-population-2026-11-25-scoped'
 export const populationTerm = { academic_year: '2026-2027', semester: '1st Semester' }
@@ -59,6 +60,68 @@ export function learningOutline(code: string, title: string) {
  })
 }
 
+/** One independently reviewable assessment per format, grounded in the existing Week 1 reading. */
+export function weekOneAssessments(syllabusId: string, topicId: string, topic: string, materialId: string, sections: { heading: string; body: string }[], position: number, generatedAt: string) {
+ const principle = sections.find(section => section.heading === 'Core idea')?.body.trim()
+ const application = sections.find(section => section.heading === 'Worked application')?.body.trim()
+ if (!principle || !application) throw new Error('The Week 1 reading needs both its core idea and worked application.')
+ const prompts = {
+  multiple_choice: [
+   {text:'Which statement gives the core idea in the Week 1 reading?',options:['A practical task is complete as soon as the plan is written.',principle,'A successful example makes recorded evidence unnecessary.','A method is reliable whenever a group agrees with it.'],correctIndex:1,explanation:'The Core idea section gives this principle.'},
+   {text:'What makes the result in the worked application checkable?',options:['A conclusion without an observation.','The name of the service by itself.','A recorded observation that can be compared with the stated criterion.','An opinion collected before the procedure.'],correctIndex:2,explanation:'The Worked application asks for a criterion, a procedure and an observation.'},
+   {text:'Which final step keeps the application’s conclusion appropriately limited?',options:['Explain what the observation cannot establish.','Remove the original criterion.','Treat the first result as universal.','Record only the observations that agree.'],correctIndex:0,explanation:'The Worked application asks you to explain a limitation.'},
+  ],
+  true_false: [
+   {text:`The Week 1 reading gives the following principle: ${principle}`,options:['True','False'],correctIndex:0,explanation:'This statement appears in the Core idea section.'},
+   {text:'The worked application asks you to report success without comparing the observation with a criterion.',options:['True','False'],correctIndex:1,explanation:'The worked application explicitly asks for this comparison and a limitation.'},
+   {text:'Documenting the procedure and the observation helps someone else evaluate the result.',options:['True','False'],correctIndex:0,explanation:'The procedure and observation allow another reader to trace the result.'},
+  ],
+  enumeration: [
+   {text:'List the two things the Worked application asks you to state before carrying out the procedure.',explanation:'The need and a checkable criterion.'},
+   {text:'List the two things the Worked application asks you to record while testing your example.',explanation:'The procedure and the observation.'},
+   {text:'List the two actions the Worked application asks you to do when interpreting the result.',explanation:'Compare the result with the criterion and explain a limitation.'},
+  ],
+  identification: [
+   {text:'What term does the worked application use for the standard against which you compare the recorded result?',explanation:'Accept “criterion” or “checkable criterion”.'},
+   {text:'What term refers to what you actually noticed or measured when following the procedure?',explanation:'Accept “observation” or “recorded observation”.'},
+   {text:'What term does the worked application use for a restriction on what you can conclude?',explanation:'Accept “limitation”.'},
+  ],
+  essay: [
+   {text:`Explain how the core idea of ${topic} applies to the worked example.`,explanation:'Credit an accurate core idea and a specific application.'},
+   {text:'Explain what evidence would convince you the worked application met its criterion.',explanation:'Credit a checkable observation and a clear link to the criterion.'},
+   {text:'Explain one limitation of the result and a practical way you could investigate it.',explanation:'Credit a plausible limitation and a relevant follow-up.'},
+  ],
+  matching: [
+   {text:'Match terms to their roles.\n\n1. Criterion\n2. Observation\n3. Limitation\n\nA. A factor that restricts the conclusion\nB. The standard used to evaluate a result\nC. What actually happened during the application',explanation:'The expected pairs are 1–B, 2–C and 3–A.'},
+   {text:'Match the first steps to their outputs.\n\n1. State the need\n2. Set the criterion\n3. Record the procedure\n\nA. A sequence others can follow\nB. The problem the application should address\nC. A testable condition for success',explanation:'The expected pairs are 1–B, 2–C and 3–A.'},
+   {text:'Match the final steps to their outputs.\n\n1. Record\n2. Compare\n3. Qualify\n\nA. Explain a limit on the conclusion\nB. Note the observed result\nC. Check the observation against the criterion',explanation:'The expected pairs are 1–B, 2–C and 3–A.'},
+  ],
+  follow_along: [
+   {text:`Begin the worked application for ${topic}. Document the need and one checkable criterion.`,explanation:'Credit a specific need and a criterion that can be tested.'},
+   {text:'Carry out your procedure. Document the steps and record the observation.',explanation:'Credit a traceable sequence and a specific recorded observation.'},
+   {text:'Compare your observation with the criterion. Document your conclusion and one limitation.',explanation:'Credit a stated comparison and a supported limitation.'},
+  ],
+ }
+ const subtitles = {
+  multiple_choice:'reading concepts', true_false:'evaluate statements', enumeration:'evidence checklist',
+  identification:'terminology check', essay:'applied reflection', matching:'terms and roles', follow_along:'worked application record',
+ }
+ return ASSESSMENT_FORMATS.map(({id:format}, index) => {
+  const id = populationId(syllabusId, topicId, 'week-one-format', format)
+  const order = position + index + 1
+  const objective = format === 'multiple_choice' || format === 'true_false'
+  const questions = prompts[format].map((question, number) => ({
+   ...question, id: `q${number + 1}`, topic, courseTopicId: topicId,
+   ...(objective ? {type:format} : {type:'short_answer',responseFormat:format}),
+  }))
+  return {id,format,item:{syllabusId,week:1,type:'assessment',status:'checked',position:order,deliveryMode:'block_schedule',generatedAt,
+   provenance:{populationVersion,method:'owner-authorized-week-one-assessment-formats'},
+   content:{courseTopicId:topicId,courseItemId:id,teachingOrder:order,title:`${topic}: ${subtitles[format]}`,
+    coverage:{materialIds:[materialId]},assessmentPolicy:{maxAttempts:3,durationSeconds:0},questions},
+  }}
+ })
+}
+
 export function teachingItems(syllabus: any, row: any, section: any, now: string) {
  const topic=String(section.contents?.[0]||row.contents?.[0]||`${syllabus.courseTitle} applications`).slice(0,150), family=topicFamily(syllabus.courseCode,syllabus.courseTitle)
  const principle=descriptions[family]!, example=`Apply ${topic.toLowerCase()} to a campus ${family==='GE 6'?'exhibition':family==='GE ELEC-ES'?'resource-conservation project':'learning service'}. State its need and a checkable criterion. Record the procedure and observation, compare the result with the criterion and explain a limitation.`
@@ -73,10 +136,13 @@ export function teachingItems(syllabus: any, row: any, section: any, now: string
  ].map((q,index)=>({...q,id:`q${index+1}`,topic,courseTopicId:section.id}))
  const base={syllabusId:syllabus.id,week:row.week,status:row.week===18?'draft':'checked',deliveryMode:'block_schedule',generatedAt:now,provenance:{populationVersion,method:'owner-authorized-authored-content'}}
  const due=new Date(Date.parse(now)+(row.week===3?-1:Math.max(0,row.week-4)*7+7)*86400000).toISOString()
+ const material = {...base,type:'material',position:row.week*10000+100,content:{...common,teachingOrder:row.week*10000+100,title:`${topic}: reading and worked example`,advancedReading:true,submissionBin:true,sections:[{heading:'Learning outcome',body:section.ilos||row.ilos||'Integrate and explain the course topics.'},{heading:'Core idea',body:principle},{heading:'Worked application',body:example},{heading:'Check your understanding',body:'Explain the idea in your own words. Apply it elsewhere, identify contrary evidence, and compare your reasoning with the assessment feedback.'}]}}
+ const additional = row.week === 1 ? weekOneAssessments(syllabus.id,section.id,topic,materialId,material.content.sections,10300,now).filter(({format})=>format!=='essay') : []
  return {
-  [materialId]:{...base,type:'material',position:row.week*10000+100,content:{...common,teachingOrder:row.week*10000+100,title:`${topic}: reading and worked example`,advancedReading:true,submissionBin:true,sections:[{heading:'Learning outcome',body:section.ilos||row.ilos||'Integrate and explain the course topics.'},{heading:'Core idea',body:principle},{heading:'Worked application',body:example},{heading:'Check your understanding',body:'Explain the idea in your own words. Apply it elsewhere, identify contrary evidence, and compare your reasoning with the assessment feedback.'}]}},
+  [materialId]:material,
   [assessmentId]:{...base,type:'assessment',position:row.week*10000+200,dueAt:due,content:{...common,teachingOrder:row.week*10000+200,courseItemId:assessmentId,title:`${topic}: concept check`,overallAssessment:row.week===18,coverage:{materialIds:[materialId]},assessmentPolicy:{maxAttempts:3,durationSeconds:0},questions}},
   ...(row.week===1?{[populationId(syllabus.id,section.id,'reflection')]:{...base,type:'assessment',position:row.week*10000+300,dueAt:due,content:{...common,teachingOrder:row.week*10000+300,courseItemId:populationId(syllabus.id,section.id,'reflection'),title:`${topic}: applied reflection`,assessmentRole:'reflection',coverage:{materialIds:[materialId]},assessmentPolicy:{maxAttempts:3,durationSeconds:0},questions:['Explain the main idea in your own words.','Describe a relevant campus application.','State an observation that would help evaluate the application.','Explain one limitation of the proposed application.','Describe how you would improve the application after feedback.'].map((text,index)=>({id:`reflection-${index+1}`,type:'short_answer',responseFormat:'essay',text,topic,explanation:'Award credit for a relevant explanation connected to the stated topic and a checkable practical example.'}))}}}:{}),
+  ...Object.fromEntries(additional.map(({id,item})=>[id,item])),
  }
 }
 

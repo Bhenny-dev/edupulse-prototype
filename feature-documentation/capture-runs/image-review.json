@@ -5834,6 +5834,174 @@
       "sha256": "c9682e79f780ac9353ab9e1d60cf03a2f83d3c85b46cf1c7eb4c624f5ae94ef1",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-28T13:06:08+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/02-delivered-course.png",
+      "sha256": "ab1683654569a8440fe19ceb001f36a28fa1d2da13766e5c81f71e90bbbbe6e0",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-28T14:18:32+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/09-admin-controls.png",
+      "sha256": "b20cdd7cc5f9a1bd94ce4de50729cf3e4191a003afbde6aa0e771aaff188fe0d",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-28T14:18:32+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/10-teaching-materials-tab.png",
+      "sha256": "adebf266a79bcd1c820905f957f071aa120b79b859007d15d84b834cea0d77fc",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-28T14:18:32+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/11-assessments-tab.png",
+      "sha256": "01a945e56bf14e84220eb917c7d88c2b936ebde4804c154e2249a18bb0ef10a5",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-28T14:18:32+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/12-all-assessment-questions.png",
+      "sha256": "996f7abc4233d58626b76f1a43a8391ab4f3fe5ac1b806ad57f4b1849b9c183e",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-28T14:18:32+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/12-placed-announcements.png",
+      "sha256": "b72d22e294dbdc38511bb8186a6c3057dae170f35c82fbe168f14dce4c92017f",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-28T14:18:32+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/13-phone-assessment-dialog.png",
+      "sha256": "4df8312a512233b237511774cc2df44143425808f52423efadb6323af1273840",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-28T14:18:32+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/41-student-learning/14-matching-response-phone.png",
+      "sha256": "58128be5517c573fd4a66bd5e78837791fd4a5ae5cc3ed74882231444c6ae0a2",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-28T14:18:32+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/16-stream.png",
+      "sha256": "9198a86085fa7226445c113d0e76d68611107d21849ab124a0eda41ee266bb3c",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-28T14:18:32+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/17-stream-phone.png",
+      "sha256": "94bf9ff15183dff0f5287af64446e1d080db1a840b9ee2e7379f642eb0013235",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-28T14:18:32+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/22-delivered-assessment-form.png",
+      "sha256": "89e40647be0582bcdaa27ca166b16de0bc1db6437e71de45387b0959fc7bda0d",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-28T14:18:32+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/23-delivered-answer-key.png",
+      "sha256": "e70ea3bd9f4e6d2dc06d86fb677c524523d67138229b0c3c0a8ee9819a1df362",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-28T14:18:32+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/44-instructor-course-workspace/24-delivered-assessment-scores.png",
+      "sha256": "11a07205e46e54b49d6e3a1c372af82e6fb8b0a0034fafa27829f78f72197ae8",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-28T14:18:32+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/56-academic-population/instructor-scores.png",
+      "sha256": "cc331cedee4f45b44d8fdcb22d916cbeafefc3b5f5fbe9a29b4dc858c571b21a",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-28T14:18:32+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/56-academic-population/instructor-stream.png",
+      "sha256": "81708e5024cd43e53ea7c5f9df8e61da90b89637d1c86176fac118d448d04886",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-28T14:18:32+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/56-academic-population/phone-instructor-scores.png",
+      "sha256": "768e80c2b45f8bd458227d95839d0a75e5f60dfc33074d9eae519daddd9e9f4f",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-28T14:18:32+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/56-academic-population/phone-instructor-stream.png",
+      "sha256": "88a65c023b9b9b21df37acd96305b9bdb2c0b2e72b3ebc53f0c74f192bb7c229",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-28T14:18:32+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/56-academic-population/phone-student-assessment-scores.png",
+      "sha256": "9c06ffbb6fa2f985224b465a5b9c508d4e7a96b5299388f5fcd440cbb6062c0a",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-28T14:18:32+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/56-academic-population/phone-student-home.png",
+      "sha256": "48e85615f0f6b61739ae48045a2d7721228372cb6430aba9318ffa12c4bb7af7",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-28T14:18:32+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/56-academic-population/phone-student-matching.png",
+      "sha256": "ea85e05e3d1ba8ae3eb61536b61b1f796c920bda4b64288006f25b68e773d7e0",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-28T14:18:32+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/56-academic-population/phone-student-scores.png",
+      "sha256": "72149cb304854290d561036f98c116fb5c2edf47e2cd5f4d1078efd1768e078e",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-28T14:18:32+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/56-academic-population/phone-student-stream.png",
+      "sha256": "9cc0a7adb98334fd72a25187f6ebd307b871a0a16266858ab445d678de6a2d49",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-28T14:18:32+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/56-academic-population/student-assessment-scores.png",
+      "sha256": "b9ee7f08285a48f2cfee97e9ee996c8d699b45084b947da8301562d837f7c1c3",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-28T14:18:32+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/56-academic-population/student-home.png",
+      "sha256": "d5d16d41c714717cfc70578d4a6f308d265f498a334e523725847d549f693253",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-28T14:18:32+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/56-academic-population/student-matching.png",
+      "sha256": "3c41aad9dc72ee32fb557c6d633061697e794f9adf8b092440e05ddb7f1887d2",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-28T14:18:32+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/56-academic-population/student-scores.png",
+      "sha256": "195e663cd447c670aed79ecef47300a788c7732d6c1ee709316655f94f69d47a",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-28T14:18:32+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/56-academic-population/student-stream.png",
+      "sha256": "22d0568caeb53a15489da9c89e2666a56110d37632442817eaeab75d905da320",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-28T14:18:32+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/30-student-assessment-result.png",
+      "sha256": "aaa351b2a8caabd19dcfa2aef71f62496dbd1df49719bdc564a62862f2a0f299",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-28T14:18:32+00:00"
     }
   ]
 }

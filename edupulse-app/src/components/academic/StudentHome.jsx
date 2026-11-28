@@ -42,7 +42,7 @@ export default function StudentHome() {
   const closeClass = () => {
     if (state?.classEntry) return navigate(-1)
     const next = new URLSearchParams(params)
-    for (const key of ['course','studentTab','item','publication','week','join']) next.delete(key)
+    for (const key of ['course','studentTab','assessmentTab','item','publication','week','join']) next.delete(key)
     setParams(next,{replace:true})
   }
   const joining = !classOpen && params.get('join') === 'class'

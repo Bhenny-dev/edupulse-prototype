@@ -111,6 +111,10 @@
 .class-stream-heading h3, .class-stream-item h4 { font-size: 1rem; }
 .class-stream-item { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 10px 0; border-top: 1px solid var(--gray-200); }
 .class-stream-item > div { flex: 1 1 180px; min-width: 0; overflow-wrap: anywhere; }
+.class-stream-item[data-kind] { border-inline-start: 3px solid var(--sky-500); padding-inline-start: 10px; }
+.class-stream-item[data-kind="assessment"] { border-inline-start-color: var(--purple-500); }
+.class-stream .class-post { border-inline-start: 4px solid var(--amber-500); }
+.class-stream .class-link-card { border-inline-start: 3px solid var(--green-500); }
 .class-announcement-dialog .class-composer { border: 0; padding: 0; box-shadow: none; }
 .class-announcement-dialog .form-row { margin-bottom: 0; }
 .class-announcement-dialog .form-label { display: grid; gap: 6px; margin: 0; }

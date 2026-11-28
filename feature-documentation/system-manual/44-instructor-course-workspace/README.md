@@ -34,7 +34,7 @@ Both instructor tabs use the same class plan and item order within each week. **
 
 ![Announcement composer with Week 1, a topic and Before the topic selected](18-announcement-placement.png)
 
-Students see posts scoped to their membership in **Announcements** and see week- or topic-linked posts in place in **Teaching Materials & Assessments**. If a topic moves out of the posted week, its announcement appears at that week until the instructor updates its placement. Reload restores the authorized reader or composer location. A new announcement's unsaved text starts blank after reload, and posting requires selecting **Post**.
+Students see posts scoped to their membership in **Stream**, with week- or topic-linked posts in place. If a topic moves out of the posted week, its announcement appears at that week until the instructor updates its placement. Reload restores the authorized reader or composer location. A new announcement's unsaved text starts blank after reload, and posting requires selecting **Post**.
 
 ![Instructor Stream starting at Week 2 on a phone](17-stream-phone.png)
 
@@ -125,6 +125,8 @@ Delivered or hidden content keeps its published questions and teaching text prot
 ### Open a delivered assessment and review scores
 
 From **Stream** or **Teaching Materials & Assessments**, choose **Open** on a delivered assessment. **Assessment form** lets you try the same radio buttons and written response fields students use. Select **Check my answers** to check objective responses locally. Test responses and test scores stay in the form for that session.
+
+In **Stream**, delivered assessment headings show the question format and their assessment titles appear below. Material, assessment, announcement and attachment cards use distinct accents. Current loaded courses include all seven Week 1 formats after their teaching material.
 
 ![Instructor testing the delivered form with multiple choice and true or false selections](22-delivered-assessment-form.png)
 
