@@ -5,17 +5,24 @@ import { supportAction } from './support.js'
 
 const orderedKeys: Record<string, string[]> = { delivery_schedules: ['course_id','block_section'], enrollments: ['course_id','student_email','block_section'], material_access: ['publication_id','student_id'], material_progress:['publication_id','student_id','source_version'], institutional_records: ['kind','record_key'] }
 /** PostgREST caps individual responses. Never present a truncated roster/attempt list as complete statistics. */
-export async function academicRows(client: ReturnType<typeof userDb>, table: string) {
+async function collectAcademicRows(pageSize: number, readPage: (offset: number) => Promise<Record<string, unknown>[]>) {
   const rows: Record<string, unknown>[] = []
-  for (let offset = 0; offset < 250000; offset += 500) {
+  for (let offset = 0; offset < 250000; offset += pageSize) {
+    const page = await readPage(offset)
+    rows.push(...page)
+    if (page.length < pageSize) return rows
+  }
+  throw new ApiError(503, 'ACADEMIC_CAPACITY', 'These records exceed the current workspace capacity. Statistics were not silently truncated.')
+}
+
+export async function academicRows(client: ReturnType<typeof userDb>, table: string) {
+  return collectAcademicRows(500, async offset => {
     let query = client.from(`edupulse_${table}`).select('*')
     for (const key of orderedKeys[table] || ['id']) query = query.order(key)
     const { data, error } = await query.range(offset, offset + 499)
-    if (error) throw new ApiError(503, 'ACADEMIC_UNAVAILABLE', 'Academic records could not be loaded completely. Retry when connected; incomplete statistics are not shown.')
-    rows.push(...(data || []))
-    if (!data || data.length < 500) return rows
-  }
-  throw new ApiError(503, 'ACADEMIC_CAPACITY', 'These records exceed the current workspace capacity. Statistics were not silently truncated.')
+    if (error || !Array.isArray(data)) throw new ApiError(503, 'ACADEMIC_UNAVAILABLE', 'Academic records could not be loaded completely. Retry when connected; incomplete statistics are not shown.')
+    return data
+  })
 }
 
 const identifier = z.string().regex(/^[a-f0-9]{32}$/)
@@ -110,7 +117,10 @@ export const academicCommand = z.discriminatedUnion('operation', [
 export async function readAcademic(identity: Identity) {
   if (identity.role === 'guest') throw new ApiError(401, 'SIGN_IN_REQUIRED', 'Sign in to read academic records.')
   if (identity.local) return { mode: 'local', courses: [], enrollments: [], publications: [], attempts: [], accesses: [] }
-  if (identity.supportActor) {
+  const managementSupport = identity.supportActor && ['dean', 'associate_dean'].includes(identity.role)
+    ? (resource: string, offset = 0) => supportAction(identity, 'academic.read.page', { role: identity.role, resource, offset })
+    : null
+  if (identity.supportActor && !managementSupport) {
     const data=await supportAction(identity, 'academic.read')
     if(['dean','associate_dean','instructor'].includes(identity.role))data.enrollments=await academicStudentYears(userDb(identity),data.enrollments||[])
     data.serverNow=new Date().toISOString()
@@ -121,7 +131,13 @@ export async function readAcademic(identity: Identity) {
   if(assigned?.error||home?.error)throw new ApiError(503,'ACADEMIC_UNAVAILABLE','Assigned course loads could not be verified. Retry when connected.')
   const tables = ['courses', 'enrollments', ...(identity.role === 'student' ? [] : ['publications']), 'delivery_schedules', 'notices', 'academic_events', ...(['dean','associate_dean','admin','instructor'].includes(identity.role) ? ['institutional_records'] : []), ...(identity.role === 'associate_dean' ? [] : ['attempts', 'material_access','material_progress','assessment_sessions'])]
   const rows = await Promise.all(tables.map(async table => {
-    const data = await academicRows(client, table)
+    const data = managementSupport
+      ? await collectAcademicRows(table === 'publications' ? 100 : 500, async offset => {
+        const page = await managementSupport(table, offset)
+        if (!Array.isArray(page)) throw new ApiError(503, 'ACADEMIC_UNAVAILABLE', 'Academic records could not be loaded completely. Retry when connected.')
+        return page
+      })
+      : await academicRows(client, table)
     if (['notices','academic_events'].includes(table)) data.sort((a,b)=>String(b.created_at).localeCompare(String(a.created_at)))
     return [table==='delivery_schedules'?'deliverySchedules':table==='material_progress'?'reading':table==='assessment_sessions'?'sessions':table === 'material_access' ? 'accesses' : table === 'academic_events' ? 'events' : table === 'institutional_records' ? 'institutional' : table, data] as const
   }))
@@ -132,16 +148,31 @@ export async function readAcademic(identity: Identity) {
   }
   let faculty = []
   if (['dean','associate_dean','admin'].includes(identity.role)) {
-    const result = await client.rpc('edupulse_faculty')
-    if (result.error) throw new ApiError(503,'ACADEMIC_UNAVAILABLE','Shared faculty records need the baseline-workflow migration.')
-    faculty = result.data || []
+    if (managementSupport) {
+      const records = await managementSupport('faculty')
+      if (!Array.isArray(records)) throw new ApiError(503, 'ACADEMIC_UNAVAILABLE', 'Faculty records could not be loaded. Retry when connected.')
+      faculty = records
+    } else {
+      const result = await client.rpc('edupulse_faculty')
+      if (result.error) throw new ApiError(503,'ACADEMIC_UNAVAILABLE','Shared faculty records need the baseline-workflow migration.')
+      faculty = result.data || []
+    }
   }
   // The Dean directory is additive: an unavailable directory leaves the records readable.
   let directory: unknown, directoryError: string | undefined
   if (['dean', 'associate_dean', 'admin'].includes(identity.role)) {
-    const listed = await client.rpc('edupulse_dean_command', { command: { action: 'directory' } })
-    if (listed.error) directoryError = 'Instructor and student accounts could not be loaded. Retry when connected.'
-    else directory = listed.data
+    const unavailable = 'Instructor and student accounts could not be loaded. Retry when connected.'
+    if (managementSupport) {
+      try { directory = await managementSupport('directory') }
+      catch (failure) {
+        if (failure instanceof ApiError && failure.status === 403) throw failure
+        directoryError = unavailable
+      }
+    } else {
+      const listed = await client.rpc('edupulse_dean_command', { command: { action: 'directory' } })
+      if (listed.error) directoryError = unavailable
+      else directory = listed.data
+    }
   }
   // Class codes and announcements are additive: when they cannot be read, the academic records stay readable.
   let classroom: { classCodes: unknown[]; classJoins: unknown[]; announcements: unknown[]; classroomError?: string } = { classCodes: [], classJoins: [], announcements: [] }

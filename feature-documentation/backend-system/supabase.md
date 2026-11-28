@@ -366,3 +366,7 @@ The teaching plan stays in `courseOutline`. The first week edit or move saves th
 ## Scroll-based material reading
 
 Migration `20261128000000_automatic_material_reading_progress.sql` adds nullable `scroll_percent` to the existing versioned progress table and a student-scoped RPC. Older rows retain their section ratio. Concurrent or duplicate progress requests retain the greatest saved percentage and first completion timestamp. The public invoker routes to the checked private function and existing RLS controls reads. Load handover already copies the complete record, including scroll progress and activity attribution.
+
+## Admin management paging
+
+Migration `20261128102811_page_management_admin_support.sql` adds `academic.read.page` to the existing invoker support gateway. An explicit resource allowlist defines stable row order, and each call verifies the selected staff role before reading. The route uses the existing directory and faculty functions and retains the established scope of Dean-only activity records.

@@ -223,3 +223,7 @@ Apply migration 20261127090001_delivered_assessment_instructor_key.sql before de
 ## Scroll-based material reading
 
 Apply migration `20261128000000_automatic_material_reading_progress.sql` to the linked database before deploying the reader. Use the school-account remote-main archive command and verify the production alias after the deployment is Ready. [Release verification](../versions/2026-11-28-scroll-reading/validation/results.md).
+
+## Admin management paging
+
+Apply `20261128102811_page_management_admin_support.sql` before the matching app. The production API assembles bounded Supabase pages and streams the complete authorized response through the existing Node adapter. Check the verified Admin and selected management role on the canonical alias. [Release verification](../versions/2026-11-28-admin-management-access.md).

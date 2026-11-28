@@ -1,3 +1,4 @@
+import { managementSupportScene } from '../management-support-ui'
 import { test, expect } from '@playwright/test'
 import { accountSupportUI, supportAccounts } from '../account-support-fixture'
 
@@ -42,4 +43,8 @@ test('account lookup failure offers retry and an unavailable selection never cha
   await expect(page.locator('.support-view-banner')).toHaveCount(0)
   await picker.getByRole('button', { name: 'Close account selection' }).click()
   await expect(page.getByRole('heading', { name: 'System Admin', exact: true })).toBeVisible()
+})
+
+for (const role of ['dean', 'associate_dean'] as const) test('Admin management records load and reload for ' + role, async ({ page }) => {
+  await managementSupportScene(page, role)
 })

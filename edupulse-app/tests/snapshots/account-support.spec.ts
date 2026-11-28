@@ -1,3 +1,4 @@
+import { managementSupportScene } from '../management-support-ui'
 import { test, expect } from './fixtures'
 import { accountSupportUI } from '../account-support-fixture'
 const folder = '../feature-documentation/system-manual/23-account-support-and-pulse-context'
@@ -66,4 +67,11 @@ test('workspace navigation handoff keeps Tab and Escape within the office', asyn
   await office.screenshot({ path: `${folder}/09-office-keyboard-handoff.png`, animations: 'disabled' })
   await page.keyboard.press('Escape')
   await expect(office).toHaveCount(0)
+})
+
+for (const role of ['dean', 'associate_dean'] as const) test('Admin management records load and reload for ' + role, async ({ page }) => {
+  await managementSupportScene(page, role, async name => {
+    await page.mouse.move(0, 0)
+    await page.screenshot({path: '../feature-documentation/system-manual/36-dean-activity-records/' + name + '.png', animations: 'disabled'})
+  })
 })

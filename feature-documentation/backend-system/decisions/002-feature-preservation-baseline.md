@@ -446,3 +446,7 @@ The Dean and Program Coordinator open their academic term's instructor course lo
 ## 28 November 2026 · Scroll-based reading progress
 
 The owner replaces the student's reading confirmation buttons with passive scroll progress. Save the furthest position reached in the authorized Document view and mark completion when the reader reaches the bottom. Keep earlier reading progress and exact published versions. A reload may restore the authorized reader and saved progress without replaying an open or progress event. Apply block-window rules and preserve test provenance in the audited Admin demonstration path.
+
+## 28 November 2026 · System Admin role access
+
+The owner reconfirms the Admin's ability to enter supported academic role views and use approved actions even when the actor's own role differs from the selected academic role. This is a standing regression requirement. Preserve the verified Admin, scoped delegation, existing learner demonstration attribution and current role-specific data permissions. Temporary availability failures preserve the selected account and offer a retry. Required management records can load in bounded pages without dropping rows or bypassing the gateway.

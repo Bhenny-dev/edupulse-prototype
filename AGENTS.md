@@ -25,6 +25,12 @@ Work on the Dean / Program Coordinator -> Instructor -> Student flow follows [fe
 
 Backend improvements do not authorize removing or bypassing documented frontend features. Before changing a workflow, read its current manual, role walkthrough, backend decisions and requirements. [ADR-002](feature-documentation/backend-system/decisions/002-feature-preservation-baseline.md) records the owner-confirmed preservation baseline and later corrections. Missing backend operations are unfinished implementation, not permission to drop the interface. Compare every affected role and route, preserve actual authorized data boundaries, and record unresolved contradictions or gaps explicitly. A preview control, sample result or success toast is not evidence of a working persistent feature.
 
+## Preserve System Admin access
+
+A verified System Admin can switch into any available Dean, Program Coordinator, Instructor or Student account and use the supported workflows for that view. Do not make an approved Admin action fail because the actor's own role differs from the selected academic role. Keep direct Admin management actions enabled wherever approved. Use the audited, server-verified delegation path for selected-account actions and keep the current role and account scope enforced on every read and write. Keep labelled Admin demonstrations available for learner actions that support them.
+
+When a role-only guard, data-loading path or authorization check changes, test the ordinary role and the verified Admin path before release. Cover the selected account on initial load and reload, an actual permitted action across the relevant boundary, revoked or changed roles, and transient failure without a forced exit or replay. Test against production-sized data where the staff view aggregates school-wide records.
+
 ## Preserve the current view across reloads
 
 This requirement applies to existing features and every new feature. A deliberate browser reload must restore the current authorized route, tab, reader, modal or popover, including the role and selected person in a System Admin support view. Add opt-in navigation references to the shared view-state mechanism and verify them against freshly authorized records before rendering. Scope references to the actual account, support subject and role; do not cache authorization, provider credentials, account DTOs, command payloads or unsaved form content as view hints.

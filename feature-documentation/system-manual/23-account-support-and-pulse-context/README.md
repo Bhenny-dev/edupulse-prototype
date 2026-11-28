@@ -126,3 +126,7 @@ The owner authorized manipulation of the selected student view, then removed the
 ## Bottom support indicator removed - 15 November 2026
 
 The persistent Viewing bar and its Return to System Admin shortcut have been removed from all selected academic views. The existing account menu and Switch view chooser remain the navigation controls on desktop and phones. The full account name is available on the account button and in its menu. Fresh subject verification, Admin attribution, allowed commands, view hints and explicit verification-failure recovery are unchanged. Earlier screenshots showing the bottom bar predate this cleanup; documentation recapture remains paused by the owner.
+
+## Management records in an Admin view
+
+A verified Admin can use the Dean or Program Coordinator's approved management actions after selecting the account. When a records request fails temporarily, **Retry connection** keeps the current role and account selected. [Dean and Program Coordinator examples](../36-dean-activity-records/README.md#open-as-system-admin).

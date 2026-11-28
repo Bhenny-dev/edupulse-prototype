@@ -2,6 +2,15 @@
 
 **Who** Dean and Program Coordinator, including an authorized System Admin support view.
 
+## Open as System Admin
+
+From **Role coverage**, find **Dean** or **Program Coordinator**, choose **Open view**, then select an account. The dashboard heading and account menu identify the selected view. Desktop also shows the Admin role label. **Assign course** and the instructor's saved loads are available in this view. If academic records temporarily fail to load, select **Retry connection** to keep working in the same view. Reload restores the selected account and dashboard.
+
+| Screen | Desktop | Phone |
+| --- | --- | --- |
+| Admin in a Dean view | ![Admin Dean instructor loads](admin-dean-dashboard.png) | ![Admin Dean instructor loads on a phone](mobile-admin-dean-dashboard.png) |
+| Admin in a Program Coordinator view | ![Admin Program Coordinator instructor loads](admin-coordinator-dashboard.png) | ![Admin Program Coordinator instructor loads on a phone](mobile-admin-coordinator-dashboard.png) |
+
 ## Assign and review courses from Dashboard
 
 1. Open **Dashboard → Instructor course loads**. Select the **Academic term**. The summary counts instructors with loads, saved course loads, active syllabi and assigned class blocks for that term.

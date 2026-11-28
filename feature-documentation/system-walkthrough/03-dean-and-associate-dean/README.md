@@ -106,3 +106,7 @@ Dean and Program Coordinator page headings, summary tiles, student-section cards
 
 
 Pending dialog actions, reads and file operations use the shared themed spinner or skeleton. Failed requests retain the existing input and error/retry flow; reduced motion keeps labels visible without animation. [Current desktop and phone examples](../../system-manual/57-loading-audit/README.md).
+
+## System Admin support
+
+A verified Admin can open the instructor-centered Dashboard for a selected Dean or Program Coordinator. The role label identifies the active support view. Course assignment and inspection use the selected account and current term. [Desktop and phone examples](../../system-manual/36-dean-activity-records/README.md#open-as-system-admin).

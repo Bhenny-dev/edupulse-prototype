@@ -5,7 +5,7 @@ import { PGlite } from '@electric-sql/pglite'
 
 test('support gateway rechecks owner, adopts target RLS, restores claims, audits changes and never fabricates learner activity', async () => {
   const db = new PGlite()
-  const ids = [1,2,3,4,5].map(n => `${n}`.repeat(8)+'-1111-4111-8111-111111111111')
+  const ids = [1,2,3,4,5,7].map(n => `${n}`.repeat(8)+'-1111-4111-8111-111111111111')
   try {
     await db.exec(`CREATE ROLE anon; CREATE ROLE authenticated; CREATE ROLE service_role; CREATE SCHEMA auth;
       CREATE TABLE auth.users(id uuid PRIMARY KEY,email text,raw_app_meta_data jsonb DEFAULT '{}',raw_user_meta_data jsonb DEFAULT '{}',email_confirmed_at timestamptz DEFAULT now(),banned_until timestamptz,created_at timestamptz DEFAULT now(),last_sign_in_at timestamptz);
@@ -14,13 +14,13 @@ test('support gateway rechecks owner, adopts target RLS, restores claims, audits
       CREATE FUNCTION auth.uid() RETURNS uuid LANGUAGE sql STABLE AS $$ SELECT nullif(current_setting('request.jwt.claim.sub',true),'')::uuid $$;
       CREATE FUNCTION auth.jwt() RETURNS jsonb LANGUAGE sql STABLE AS $$ SELECT current_setting('request.jwt.claims',true)::jsonb $$;
       GRANT USAGE ON SCHEMA auth TO authenticated,anon;`)
-    for (let i=0;i<ids.length;i++) await db.query(`INSERT INTO auth.users(id,email,raw_app_meta_data,raw_user_meta_data) VALUES($1,$2,$3,$4)`, [ids[i],i===0?'riverabenlor461@gmail.com':`canary${i}@example.invalid`,JSON.stringify({role:['admin','instructor','student','student','associate_dean'][i]}),JSON.stringify({full_name:`Synthetic account ${i}`})])
+    for (let i=0;i<ids.length;i++) await db.query(`INSERT INTO auth.users(id,email,raw_app_meta_data,raw_user_meta_data) VALUES($1,$2,$3,$4)`, [ids[i],i===0?'riverabenlor461@gmail.com':`canary${i}@example.invalid`,JSON.stringify({role:['admin','instructor','student','student','associate_dean','dean'][i]}),JSON.stringify({full_name:`Synthetic account ${i}`})])
     await db.query(`INSERT INTO auth.identities VALUES($1,'google')`,[ids[0]])
     for (const file of ['20260915042129_persistent_workspace','20261004054136_system_admin_audit_roles','20261024064532_academic_projection','20261024071459_academic_record_labels','20261024073036_academic_lint_cleanup','20261024163740_pulse_conversations','20261024213422_pulse_history_privileges','20261028130000_baseline_workflows','20261028130100_assessment_workflows','20261028130200_delivery_notices','20261028130300_offline_review_requests','20261102074226_student_directory','20261107050829_safe_workspace_roster_refresh','20261107131810_instructor_roster_overrides','20261107141745_validate_course_membership_decisions','20261108055904_pulse_support_context','20261109221703_labelled_pipeline_activity']) await db.exec(await readFile(`supabase/migrations/${file}.sql`,'utf8'))
     for (const i of [2,3]) await db.query(`INSERT INTO public.edupulse_students(student_number,user_id,email,surname,first_name,full_name,year_level,department,program) VALUES($1,$2,$3,'Canary','Synthetic',$4,$5,'College of IT','BSIT')`, [`SYN-${i}`,ids[i],`canary${i}@example.invalid`,`Synthetic account ${i}`,i===2?1:2])
     const as = async (i:number) => {
       await db.exec('RESET ROLE')
-      await db.query(`SELECT set_config('request.jwt.claim.sub',$1,false),set_config('request.jwt.claims',$2,false)`, [ids[i],JSON.stringify({sub:ids[i],email:i===0?'riverabenlor461@gmail.com':`canary${i}@example.invalid`,app_metadata:{role:['admin','instructor','student','student','associate_dean'][i]}})])
+      await db.query(`SELECT set_config('request.jwt.claim.sub',$1,false),set_config('request.jwt.claims',$2,false)`, [ids[i],JSON.stringify({sub:ids[i],email:i===0?'riverabenlor461@gmail.com':`canary${i}@example.invalid`,app_metadata:{role:['admin','instructor','student','student','associate_dean','dean'][i]}})])
       await db.exec('SET ROLE authenticated')
     }
     const call = async (subject:string|null,operation:string,input:object={}) => (await db.query<{r:any}>(`SELECT public.edupulse_support_action($1,$2,$3) r`,[subject,operation,JSON.stringify(input)])).rows[0].r
@@ -110,6 +110,24 @@ test('support gateway rechecks owner, adopts target RLS, restores claims, audits
     await as(1);assert.equal((await db.query('SELECT * FROM public.edupulse_attempts')).rows.length,1);assert.equal((await db.query('SELECT * FROM public.edupulse_material_access')).rows.length,1,'actual student activity reaches instructor statistics')
     await assert.rejects(db.query('SELECT public.edupulse_authorize_pipeline_test($1,$2,$3)',[material.id,material.source_version,ids[2]]),{code:'22023'},'existing genuine opens cannot be relabelled')
     await as(0);assert.equal((await call(ids[4],'academic.read')).attempts.length,0,'program coordinator never gets scores')
+    await db.exec('RESET ROLE')
+    await db.exec(await readFile('supabase/migrations/20261128102811_page_management_admin_support.sql','utf8'))
+    await as(0)
+    const beforeManagement=await publicSnapshot()
+    const managementPage=(subject:string,role:string,resource:string,offset=0)=>call(subject,'academic.read.page',{role,resource,offset})
+    assert.equal((await managementPage(ids[5],'dean','courses')).length,1)
+    assert.equal((await managementPage(ids[5],'dean','attempts')).length,1)
+    assert.deepEqual(await managementPage(ids[5],'dean','courses',1),[],'offset follows the stable page order')
+    await assert.rejects(managementPage(ids[4],'associate_dean','attempts'),{code:'42501'})
+    await assert.rejects(managementPage(ids[4],'dean','courses'),{code:'42501'},'each page rechecks the selected role')
+    await assert.rejects(managementPage(ids[2],'student','courses'),{code:'42501'})
+    await assert.rejects(managementPage(ids[5],'dean','pulse_threads'),{code:'42501'},'nonacademic tables are outside the allowlist')
+    await assert.rejects(managementPage(ids[5],'dean','courses',250000),{code:'22023'})
+    assert.equal((await db.query<{uid:string}>('SELECT auth.uid() uid')).rows[0].uid,ids[0])
+    assert.deepEqual(await publicSnapshot(),beforeManagement,'paginated reads do not enter, leave, audit or mutate a record')
+    await as(1);await assert.rejects(managementPage(ids[5],'dean','courses'),{code:'42501'})
+    await as(0)
+
     const thread='aaaaaaaa-1111-4111-8111-111111111111'
     await db.query('INSERT INTO public.edupulse_pulse_threads(id,owner_id,title) VALUES($1,$2,$3)',[thread,ids[0],'Synthetic support conversation'])
     await db.query('INSERT INTO public.edupulse_agent_memory(owner_id,thread_id,subject_id,task,outcome,summary) VALUES($1,$2,$3,$4,$5,$6)',[ids[0],thread,ids[2],'answer','generated','Verified outcome and reference provenance'])

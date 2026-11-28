@@ -5720,6 +5720,30 @@
       "sha256": "b8f078945619eadbd41ea3b0a575aaaa25ef0c59ee913afc32b109ad363469ea",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-28T10:05:05.810341+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/admin-dean-dashboard.png",
+      "sha256": "a4b1407e611c84bda876723c27f7de6f9d29729cf0627b05ff6e1cefaa34ddef",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-28T10:35:57.832454+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/admin-coordinator-dashboard.png",
+      "sha256": "3ff47848bc08e71be2aff1bfa26b14020fab26d55ba5231b73a59407c7cafbd2",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-28T10:35:57.832454+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/mobile-admin-dean-dashboard.png",
+      "sha256": "c26b429b7ac52c6205cd948e20333b5c242aa5aaf40f671d27a72d02702fb06c",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-28T10:35:57.832454+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/36-dean-activity-records/mobile-admin-coordinator-dashboard.png",
+      "sha256": "69e3196544cc4a6252ddff91faa03f2a5c00d48b3d44842fc15e37493215c092",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-28T10:35:57.832454+00:00"
     }
   ]
 }

@@ -15,7 +15,7 @@ function transport(t:TestContext) {
   t.after(()=>{for(const name of names){if(previous[name]===undefined)delete process.env[name];else process.env[name]=previous[name]}})
   Object.assign(process.env,{SUPABASE_URL:'https://support-subject.example.invalid',SUPABASE_PUBLISHABLE_KEY:'sb_publishable_synthetic_only',AI_LOCAL_MODE:'false'})
   delete process.env.VERCEL
-  const state={role:'admin',email:'riverabenlor461@gmail.com',providers:['google'],rpcCode:'',authDenied:false}
+  const state={role:'admin',email:'riverabenlor461@gmail.com',providers:['google'],rpcCode:'',authDenied:false,targetRole:'student',middlePageFailure:false}
   const calls:{path:string;body?:unknown}[]=[]
   t.mock.method(globalThis,'fetch',async(value:RequestInfo|URL,init?:RequestInit)=>{
     const url=new URL(String(value))
@@ -30,9 +30,21 @@ function transport(t:TestContext) {
     assert.equal(url.pathname,'/rest/v1/rpc/edupulse_support_action','no business, audit, provider, or conversation writes are requested')
     assert.equal(init?.method,'POST','PostgREST RPC transport uses POST even for the read-only subject operation')
     const body=JSON.parse(String(init?.body));calls.push({path:url.pathname,body})
+    if(body.operation==='academic.read.page'){
+      assert.equal(body.subject,subjectId)
+      assert.equal(body.input.role,state.targetRole)
+      const {resource,offset}=body.input
+      if(resource==='directory')return Response.json({instructors:[{id:'synthetic-instructor'}],students:[]})
+      if(resource==='faculty')return Response.json([{id:'synthetic-instructor'}])
+      if(resource==='attempts'){
+        if(state.middlePageFailure&&offset===500)return Response.json({code:'57014',message:'canceling statement due to statement timeout'},{status:500})
+        return Response.json(Array.from({length:Math.min(500,1205-offset)},(_,id)=>({id:offset+id})))
+      }
+      return Response.json([])
+    }
     assert.deepEqual(body,{subject:subjectId,operation:'subject',input:{}})
     if(state.rpcCode)return Response.json({code:state.rpcCode,message:'Synthetic private database detail'},{status:state.rpcCode==='42501'?403:503})
-    return Response.json(subject)
+    return Response.json({...subject,role:state.targetRole})
   })
   const get=(id=subjectId,headers:Record<string,string>={})=>handleRequest(new Request(`http://localhost/api/ai?action=support&subject=${encodeURIComponent(id)}&operation=enter&role=admin`,{headers:{authorization:'Bearer synthetic-owner-token','X-EduPulse-Subject':otherSubject,...headers}}))
   return {state,calls,get}
@@ -98,4 +110,40 @@ test('the second assigned Google admin can resolve a subject, but a role or prov
   state.role='student';assert.equal((await get()).status,403)
   state.role='admin';state.providers=['email'];assert.equal((await get()).status,403)
   assert.equal(calls.filter(call=>call.path!=='/auth/v1/user').length,1)
+})
+
+
+test('verified Admin loads all Dean pages and can retry the same selected view after a page timeout',async t=>{
+  const {state,calls}=transport(t)
+  state.targetRole='dean'
+  const records=()=>handleRequest(new Request('http://localhost/api/ai?action=academic',{headers:{authorization:'Bearer synthetic-owner-token','X-EduPulse-Subject':subjectId}}))
+  state.middlePageFailure=true
+  let response=await records()
+  assert.equal(response.status,503)
+  const failed=await response.json()
+  assert.equal(failed.error.code,'ACADEMIC_UNAVAILABLE')
+  assert.match(failed.error.message,/selected Admin view/)
+  assert.equal(failed.attempts,undefined)
+  assert.doesNotMatch(JSON.stringify(failed),/statement timeout/)
+
+  state.middlePageFailure=false
+  calls.length=0
+  response=await records()
+  assert.equal(response.status,200)
+  const dean=await response.json()
+  assert.equal(dean.attempts.length,1205)
+  assert.equal(dean.attempts.at(-1).id,1204)
+  assert.equal(dean.directory.instructors.length,1)
+  assert.equal(dean.faculty.length,1)
+  const rpc=calls.flatMap(call=>call.body?[call.body as {operation:string;input:{resource?:string;offset?:number}}]:[])
+  assert.equal(rpc[0].operation,'subject','the selected account is verified before records load')
+  assert.deepEqual(rpc.filter(call=>call.input.resource==='attempts').map(call=>call.input.offset),[0,500,1000])
+  assert(rpc.slice(1).every(call=>call.operation==='academic.read.page'))
+
+  state.targetRole='associate_dean'
+  calls.length=0
+  response=await records()
+  assert.equal(response.status,200)
+  assert.deepEqual((await response.json()).attempts,[])
+  assert(!calls.some(call=>['attempts','material_access','material_progress','assessment_sessions'].includes((call.body as {input?:{resource?:string}})?.input?.resource||'')))
 })
