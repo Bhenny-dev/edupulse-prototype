@@ -20,7 +20,7 @@ import { useContentEditorTool } from '../../agents/useContentEditorTool'
  * Used for viewing materials and activities.
  */
 
-export default function DocumentViewer({ content, onBack, isStudent = false, readOnly = false, onSave, reading = null, embedded = false, onAttachFile, onAttachLink, attachBlocked }) {
+export default function DocumentViewer({ content, onBack, isStudent = false, readOnly = false, onSave, trackReading = false, embedded = false, onAttachFile, onAttachLink, attachBlocked }) {
   const { addToast } = useToast()
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState(null)
@@ -109,7 +109,7 @@ export default function DocumentViewer({ content, onBack, isStudent = false, rea
   const attachments = content.attachments || [], originals = attachments.filter(file => teachingFileKind(file) && !unreadable.includes(file.path))
   if (originals.length && !editing) return (
     <div className="document-viewer">
-      <OriginalDocument content={content} files={originals} others={attachments.filter(file => !originals.includes(file))} isStudent={isStudent} canEdit={!isStudent && !readOnly} onBack={onBack} onEdit={startEditing} onFail={markUnreadable} reading={reading} embedded={embedded} onAttachFile={onAttachFile} onAttachLink={onAttachLink} attachBlocked={attachBlocked} />
+      <OriginalDocument content={content} files={originals} others={attachments.filter(file => !originals.includes(file))} isStudent={isStudent} canEdit={!isStudent && !readOnly} onBack={onBack} onEdit={startEditing} onFail={markUnreadable} trackReading={trackReading} embedded={embedded} onAttachFile={onAttachFile} onAttachLink={onAttachLink} attachBlocked={attachBlocked} />
     </div>
   )
 
@@ -148,7 +148,7 @@ export default function DocumentViewer({ content, onBack, isStudent = false, rea
       </div>
 
       {/* A4 Document */}
-      <div className={`doc-viewer-page ${editing ? 'cw-wide-editor' : ''}`}>
+      <div className={`doc-viewer-page ${editing ? 'cw-wide-editor' : ''}`} data-reading-content={trackReading && (!unreadable.length || sections?.some(section => section.body?.trim())) ? '' : undefined}>
         {/* Header */}
         <div className="doc-viewer-header">
           <div className="doc-viewer-institution">King's College of the Philippines</div>
@@ -186,7 +186,6 @@ export default function DocumentViewer({ content, onBack, isStudent = false, rea
                 <h2 className="doc-viewer-heading">{section.heading}</h2>
               )}
               {renderBody(section.body, idx, editing)}
-              {reading&&!editing&&<button aria-busy={Boolean(reading.busy && idx === reading.read)} type="button" className="btn btn-secondary mt-16" disabled={reading.busy||idx!==reading.read} onClick={()=>reading.confirm(idx)}>{reading.busy && idx === reading.read && <Spinner />}{idx<reading.read?'Section confirmed':`Confirm section ${idx+1} read`}</button>}
             </div>
           ))}
           {editing && (

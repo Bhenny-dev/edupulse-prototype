@@ -620,7 +620,7 @@ Migration `20261111222305_instructor_monitoring_progress` adds course suspension
 
 `academic` POST accepts bounded `read-section` commands only for a signed-in student, with publication/version and section index. A private helper verifies released/current/enrolled material, an existing explicit open, and server-derived section bounds. Progress is row-locked, sequential and idempotent, keyed by publication/student/version. The public wrapper uses invoker rights; direct table writes are denied. Replacing content never promotes an old version's completion. Test provenance is derived from an explicit current-version grant. Legacy starts without a provenance label are not asserted to be genuine student activity.
 
-The existing owner-scoped academic read adds `reading` and `sessions`; Associate Dean receives neither. Support reads use selected-subject RLS; student support cannot write opens, assessment activity or section confirmations. Instructor/dean year enrichment remains bounded to visible membership emails. Reader reload/navigation never calls progress/open commands. This feature has no inference dependency or automatic email delivery.
+The owner-scoped academic read includes `reading` and `sessions` for authorized roles. Associate Dean receives neither. Support reads use selected-subject RLS. The separate audited demonstration path handles labelled Admin activity. Instructor and Dean year enrichment remains bounded to visible membership emails. Restoring a reader reads the saved progress and does not replay opens or writes.
 
 [Manual 37](../system-manual/37-instructor-monitoring/README.md) and [release validation](../versions/2026-11-12-instructor-monitoring/validation/results.md) distinguish controlled UI, local SQL and hosted rollback evidence.
 
@@ -804,3 +804,9 @@ The Dean and Program Coordinator dashboard combines authorized course-load recor
 The dashboard uses the existing course-load assignment, update and inspection operations. Assignment and edit forms require explicit saves. The inspection passes both the load key and expected instructor and retains the existing read-only syllabus and content projection. View hints hold bounded record references, scoped to the authenticated account, support subject, role and term. Restoring a view verifies it against the current records before opening its authorized read. Program Coordinator learner-score access continues to be restricted by the existing projection.
 
 No migration is required. [Staff workflow and captures](../system-manual/36-dean-activity-records/README.md).
+
+## Automatic reading progress
+
+The student's in-app Document view measures the furthest vertical position within the published document. The reader batches percentage updates while scrolling and flushes pending work on exit. It uses the existing authenticated academic POST with operation `reading-progress`. Initial mount and reload read the stored state. Presentation, class activity and external downloads do not contribute to the measurement.
+
+`edupulse_save_material_scroll` rechecks the active enrollment, release and delivery window, current source version and recorded open. The row is locked on update and progress only increases. Earlier section-based progress remains readable, and older clients can keep using the section RPC. Labelled Admin demonstration goes through the existing audited support path. Independent instructor monitoring excludes test activity and averages the saved percentages across readable materials. [Student reader steps](../system-manual/37-instructor-monitoring/README.md#record-actual-reading-progress).

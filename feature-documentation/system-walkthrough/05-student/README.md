@@ -23,7 +23,7 @@ Signed-in student accounts see this same dashboard filled from their own enrolle
 
 ![Authenticated course cards and instructor labels](../../system-manual/41-student-learning/01-course-cards.png)
 
-Authenticated students see enrollment summary cards and their own course cards, labelled with the handling instructor and recorded curriculum metadata. Selecting a card opens that course's delivered materials and assessments. Material reading is usable while its first-open recording saves. Pending subjects show assignment status without draft content. [Manual 41](../../system-manual/41-student-learning/README.md#open-an-enrolled-course) documents reading and reload.
+Authenticated students see enrollment summary cards and their own course cards, labelled with the handling instructor and recorded curriculum metadata. Selecting a card opens that course's delivered materials and assessments. Material reading is usable while its first-open recording saves. Scroll through **Document** to update the passive reading bar. The selected course shows the saved percentage, or **Done** after you reach the end. Pending subjects show assignment status without draft content. [Manual 41](../../system-manual/41-student-learning/README.md#open-an-enrolled-course) documents reading and reload.
 
 In the enrolled class, **Announcements** lists posts for the student. In **Teaching Materials & Assessments**, a weekly or topic announcement appears before or inside the selected section. Teaching materials appear before their associated assessments. Class delivery windows govern access to both. [Student class steps](../../system-manual/41-student-learning/README.md#open-an-enrolled-course).
 

@@ -442,3 +442,7 @@ The owner requires delivered assessments in both instructor class tabs to open t
 ### 27 November 2026 - Instructor-first management dashboard
 
 The Dean and Program Coordinator open their academic term's instructor course loads from Dashboard. Assign and edit loads from each instructor, and inspect the bound syllabus and delivery per assigned block. Class windows use the saved schedule or the term calendar and class meeting defaults. Institution-wide syllabus and delivery charts, alerts and recent activity live on the linked oversight tabs. Course handles catalog, schedules and class-list intake. Instructors remains the account directory and links each name to their workload. The Dean reaches the student directory from Course. The existing instructor handover, read-only inspection and learner-score boundaries apply to the new entry points. [Manual 36](../../system-manual/36-dean-activity-records/README.md).
+
+## 28 November 2026 · Scroll-based reading progress
+
+The owner replaces the student's reading confirmation buttons with passive scroll progress. Save the furthest position reached in the authorized Document view and mark completion when the reader reaches the bottom. Keep earlier reading progress and exact published versions. A reload may restore the authorized reader and saved progress without replaying an open or progress event. Apply block-window rules and preserve test provenance in the audited Admin demonstration path.

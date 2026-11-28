@@ -219,3 +219,7 @@ Both instructor tabs now read the same class plan. Verify the published order in
 ## Delivered assessment form, key and scores
 
 Apply migration 20261127090001_delivered_assessment_instructor_key.sql before deploying the matching application. It adds an authorized private answer-key lookup and retains the existing publication, attempt and grade structures. Verify the migration history, the Ready production alias and the browser flow. [Release validation](../versions/2026-11-27-delivered-assessments.md).
+
+## Scroll-based material reading
+
+Apply migration `20261128000000_automatic_material_reading_progress.sql` to the linked database before deploying the reader. Use the school-account remote-main archive command and verify the production alias after the deployment is Ready. [Release verification](../versions/2026-11-28-scroll-reading/validation/results.md).

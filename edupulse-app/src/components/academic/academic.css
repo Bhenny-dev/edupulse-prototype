@@ -109,3 +109,15 @@
 .academic-answer-status.correct { background: var(--green-100); color: var(--green-700); }
 .academic-answer-status.incorrect { background: var(--amber-100); color: var(--amber-700); }
 .academic-answer-status.awaiting_review { background: var(--sky-50); color: var(--sky-600); }
+
+.academic-reading-progress {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  margin-bottom: 16px;
+}
+.academic-reading-progress .monitoring-progress span { min-width: 5.5em; text-align: right; }

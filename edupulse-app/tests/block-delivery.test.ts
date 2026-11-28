@@ -35,7 +35,7 @@ test('block delivery persists with revision guards and enforces RLS, files, read
    GRANT USAGE ON SCHEMA auth TO authenticated,anon;`)
   for(let i=0;i<ids.length;i++)await db.query('INSERT INTO auth.users(id,email,raw_app_meta_data,raw_user_meta_data) VALUES($1,$2,$3,$4)',[ids[i],email(i),JSON.stringify({role:roles[i]}),JSON.stringify({full_name:`Schedule account ${i}`})])
   await db.query("INSERT INTO auth.identities VALUES($1,'google')",[ids[4]])
-  for(const file of ['20260915042129_persistent_workspace','20261004054136_system_admin_audit_roles','20261024064532_academic_projection','20261024071459_academic_record_labels','20261024073036_academic_lint_cleanup','20261024163740_pulse_conversations','20261024213422_pulse_history_privileges','20261028130000_baseline_workflows','20261028130100_assessment_workflows','20261028130200_delivery_notices','20261028130300_offline_review_requests','20261102074226_student_directory','20261107050829_safe_workspace_roster_refresh','20261107131810_instructor_roster_overrides','20261107141745_validate_course_membership_decisions','20261108055904_pulse_support_context','20261109221703_labelled_pipeline_activity','20261110033603_protect_learner_publication_metadata','20261111201348_instructor_syllabus_sharing','20261111222305_instructor_monitoring_progress','20261112025514_instructor_monitoring_session_policy','20261112035656_student_assigned_course_metadata','20261113052000_student_practice','20261113052500_practice_input_guards'])await db.exec(await readFile(`supabase/migrations/${file}.sql`,'utf8'))
+  for(const file of ['20260915042129_persistent_workspace','20261004054136_system_admin_audit_roles','20261024064532_academic_projection','20261024071459_academic_record_labels','20261024073036_academic_lint_cleanup','20261024163740_pulse_conversations','20261024213422_pulse_history_privileges','20261028130000_baseline_workflows','20261028130100_assessment_workflows','20261028130200_delivery_notices','20261028130300_offline_review_requests','20261102074226_student_directory','20261107050829_safe_workspace_roster_refresh','20261107131810_instructor_roster_overrides','20261107141745_validate_course_membership_decisions','20261108055904_pulse_support_context','20261109221703_labelled_pipeline_activity','20261110033603_protect_learner_publication_metadata','20261111201348_instructor_syllabus_sharing','20261111222305_instructor_monitoring_progress','20261112025514_instructor_monitoring_session_policy','20261112035656_student_assigned_course_metadata','20261113051000_admin_student_demonstration','20261113052000_student_practice','20261113052500_practice_input_guards'])await db.exec(await readFile(`supabase/migrations/${file}.sql`,'utf8'))
   await db.exec(`CREATE SCHEMA storage;
    CREATE TABLE storage.buckets(id text PRIMARY KEY,name text,public boolean,file_size_limit bigint);
    CREATE TABLE storage.objects(id uuid PRIMARY KEY DEFAULT gen_random_uuid(),bucket_id text REFERENCES storage.buckets(id),name text,UNIQUE(bucket_id,name));
@@ -64,7 +64,7 @@ test('block delivery persists with revision guards and enforces RLS, files, read
   const save=async()=>{const r=await db.query('SELECT public.edupulse_save_workspace($1,$2)',[revision,JSON.stringify(snapshot)]);revision++;return r}
   await as(0);await save();snapshot.content.legacy.status='published';await save()
   const legacyBefore=(await db.query('SELECT to_jsonb(p) value FROM public.edupulse_publications p')).rows
-  await db.exec('RESET ROLE');await db.exec(await readFile('supabase/migrations/20261115220621_block_week_delivery_schedule.sql','utf8'));await db.exec(await readFile('supabase/migrations/20261127090000_practice_from_finished_quiz.sql','utf8'));await db.exec(await readFile('supabase/migrations/20261127090001_delivered_assessment_instructor_key.sql','utf8'));await db.exec(await readFile('supabase/migrations/20261127100000_advanced_reading_mock_quiz.sql','utf8'));await as(0)
+  await db.exec('RESET ROLE');await db.exec(await readFile('supabase/migrations/20261115220621_block_week_delivery_schedule.sql','utf8'));await db.exec(await readFile('supabase/migrations/20261127090000_practice_from_finished_quiz.sql','utf8'));await db.exec(await readFile('supabase/migrations/20261127090001_delivered_assessment_instructor_key.sql','utf8'));await db.exec(await readFile('supabase/migrations/20261127100000_advanced_reading_mock_quiz.sql','utf8'));await db.exec(await readFile('supabase/migrations/20261128000000_automatic_material_reading_progress.sql','utf8'));await as(0)
   assert.deepEqual((await db.query("SELECT to_jsonb(p)-'delivery_mode' value FROM public.edupulse_publications p")).rows,legacyBefore,'DDL leaves all existing publications and versions intact')
   await save()
   snapshot.content.material.status='checked';snapshot.content.quiz.status='checked';await save()
@@ -107,7 +107,21 @@ test('block delivery persists with revision guards and enforces RLS, files, read
   await as(3)
   assert.equal((await db.query('SELECT * FROM public.edupulse_delivery_schedules')).rows.length,1)
   assert.equal((await list()).find(p=>p.id===material.id).delivery_state,'open')
+  const scroll=async(progress:number,version=material.source_version)=>
+   (await db.query<{value:{scroll_percent:number;sections_read:number;completed_at:string|null}}>('SELECT public.edupulse_save_material_scroll($1,$2,$3) value',[material.id,version,progress])).rows[0].value
+  await assert.rejects(scroll(50),{code:'42501'})
   await action('open')
+  await assert.rejects(scroll(101),{code:'22023'})
+  await assert.rejects(scroll(50,'obsolete'),{code:'42501'})
+  const halfway=await scroll(50)
+  assert.equal(halfway.scroll_percent,50)
+  assert.equal(halfway.sections_read,0)
+  assert.equal(halfway.completed_at,null)
+  assert.deepEqual(await scroll(25),halfway)
+  const finished=await scroll(100)
+  assert.equal(finished.scroll_percent,100)
+  assert.ok(finished.completed_at)
+  assert.deepEqual(await scroll(50),finished)
   await db.query('SELECT public.edupulse_read_material_section($1,$2,0)',[material.id,material.source_version])
   const session=await assess('start'),result=await assess('submit',{session:session.id,responses:[0,0,1]});assert.equal(result.score,2)
   const before=(await db.query('SELECT to_jsonb(a) value FROM public.edupulse_attempts a')).rows
@@ -116,11 +130,19 @@ test('block delivery persists with revision guards and enforces RLS, files, read
    assert.equal((await db.query('SELECT * FROM public.edupulse_publications')).rows.length,1,'only legacy content is directly readable')
    const locked=(await list()).find(p=>p.id===material.id);assert.equal(locked.delivery_state,state);assert.equal(locked.content,null)
    assert.equal((await db.query('SELECT * FROM storage.objects')).rows.length,0,'locked teaching bytes remain private')
-   await assert.rejects(action('open'),{code:'42501'});await assert.rejects(assess('start'),{code:'42501'})
+   await assert.rejects(scroll(50),{code:'42501'});await assert.rejects(action('open'),{code:'42501'});await assert.rejects(assess('start'),{code:'42501'})
    await assert.rejects(db.query('SELECT public.edupulse_read_material_section($1,$2,0)',[material.id,material.source_version]),{code:'42501'})
    await assert.rejects(rpc('edupulse_practice_action',{operation:'create',publication:material.id,version:material.source_version}),{code:'42501'})
   }
   await as(4)
+  const legacy=pubs.find(p=>p.title==='Legacy lesson')
+  const demonstration={publication:legacy.id,version:legacy.source_version,adminTest:true}
+  await support(5,'academic.command',{...demonstration,operation:'open'})
+  const testReading=await support(5,'academic.command',{...demonstration,operation:'reading-progress',percent:53})
+  assert.equal(testReading.scroll_percent,53)
+  assert.equal(testReading.is_test,true)
+  assert.equal(testReading.admin_actor_id,ids[4])
+  await assert.rejects(support(3,'academic.command',{publication:material.id,version:material.source_version,operation:'reading-progress',percent:10,adminTest:true}),{code:'22023'})
   const supportRead=await support(5,'academic.read');assert.equal(supportRead.publications.find((p:any)=>p.id===material.id).content,null)
   assert.equal((await support(5,'academic.command',{operation:'read-publication',publication:material.id,version:material.source_version}))[0].delivery_state,'scheduled')
   assert.equal((await support(0,'academic.command',{...a,revision:1,windows:weeklyDeliveryDates([1,2],day(-1),'07:30','10:00')})).revision,2)

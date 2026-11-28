@@ -10,7 +10,8 @@
 .doc-original-title { display: flex; flex-direction: column; min-width: 0; flex: 1 1 220px; }
 .doc-original-title strong { font-family: var(--font-heading), sans-serif; overflow-wrap: anywhere; }
 .doc-original-file h3 { margin: 0 0 8px; font-size: .9375rem; }
-.doc-original-confirm { display: flex; flex-wrap: wrap; gap: 8px; }
+.doc-original-files { display: grid; gap: 16px; }
+.retained-word-flow { display: block; min-height: 0; }
 @media (max-width: 767px) { .doc-original { padding: 0 12px; } }
 .slide-page { position: relative; }
 .slide-stage { position: absolute; left: 0; top: 0; transform-origin: 0 0; overflow: hidden; text-align: left; }

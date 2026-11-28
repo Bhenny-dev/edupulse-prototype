@@ -80,7 +80,7 @@ export default function AcademicPortal({ view, classModal = false, onCloseClass 
   useEffect(()=>{setAnswerDraft(previous=>previous?.scope===answerScope?previous:null)},[answerScope])
   const adminTest=user?.role==='student'&&Boolean(user?.supportSubject)
   const learnerControls=writable&&user?.role==='student'&&(!user?.supportSubject||adminTest)
-  const commandLock=useRef(false)
+  const commandLock=useRef(false), readingExit=useRef(null), materialOpening=useRef(null)
   const run = async command => {
     if(commandLock.current)return null
     commandLock.current=true
@@ -93,6 +93,7 @@ export default function AcademicPortal({ view, classModal = false, onCloseClass 
   useEffect(()=>{if(!unsaved)return;const warn=e=>{e.preventDefault();e.returnValue=''};window.addEventListener('beforeunload',warn);return()=>window.removeEventListener('beforeunload',warn)},[unsaved])
   const closeReader = () => {
     if (busy || (unsaved && !window.confirm('Leave this assessment? Your unsaved responses will be lost.'))) return
+    readingExit.current?.()
     setReaderId(null)
     setAnswerDraft(null)
     if (classModal && state?.itemEntry) return navigate(-1)
@@ -112,6 +113,7 @@ export default function AcademicPortal({ view, classModal = false, onCloseClass 
     } : undefined)
   }
   const open = async (item, opener) => {
+    readingExit.current?.()
     if (classModal && opener) readerOpener.current=opener
     if(writable&&isScheduledStudent(item)){
       const current=await run({operation:'read-publication',publication:item.id,version:item.source_version})
@@ -121,7 +123,11 @@ export default function AcademicPortal({ view, classModal = false, onCloseClass 
     }
     if(isStudent&&item.type!=='assessment'){
       showReader(item.id);setResult(null);setAnswerDraft(null);
-      if(learnerControls)void run({operation:'open',publication:item.id,version:item.source_version});
+      if(learnerControls){
+        const entry={publication:item.id,version:item.source_version,promise:run({operation:'open',publication:item.id,version:item.source_version})}
+        materialOpening.current=entry
+        void entry.promise.finally(()=>{if(materialOpening.current===entry)materialOpening.current=null})
+      }
       return
     }
     showReader(item.id); setAnswerDraft(null); setResult(null)
@@ -134,7 +140,7 @@ export default function AcademicPortal({ view, classModal = false, onCloseClass 
     setAnswerDraft(null)
     setResult(null)
   }
-  const reader = selected && <PageModal title={selected.title} subtitle={`${data.courses.find(course=>course.id===selected.course_id)?.course_code||'Course'} / Week ${selected.week} \u00b7 ${selected.type==='assessment'?'Assessment':selected.content?.submissionOnly?'Submission bin':'Teaching material'}`} closeLabel={selected.type==='assessment'?'Close assessment':'Close material'} onClose={closeReader} bodyClassName="reader-page-body"><div id="opened-publication">{error&&<p role="alert" className="connected-pulse-warning">{error}</p>}<OpenedPublication pageModal onStart={()=>startAssessment()} onRecheck={()=>open(selected)} onNext={open} key={`${selected.id}:${session?.id || "reader"}`} selected={selected} data={data} isStudent={isStudent} canAttempt={learnerControls} adminTest={Boolean(user?.supportSubject&&adminTest)} answers={answers} setAnswers={setAnswers} result={result} session={session} busy={busy} onClose={closeReader} onRetake={()=>startAssessment(true)} onSubmit={() => {if(window.confirm('Submit this assessment? Check your responses before confirming.'))return run({ operation: 'respond', publication: selected.id, version: selected.source_version, session:session?.id, responses: selected.content.questions.map((_, index) => answers[index]) })}} />{isStudent&&user?.authenticated&&!user.supportSubject&&<TopicWorkPanel key={selected.id} publication={selected} readOnly={!writable}/>}</div></PageModal>
+  const reader = selected && <PageModal title={selected.title} subtitle={`${data.courses.find(course=>course.id===selected.course_id)?.course_code||'Course'} / Week ${selected.week} \u00b7 ${selected.type==='assessment'?'Assessment':selected.content?.submissionOnly?'Submission bin':'Teaching material'}`} closeLabel={selected.type==='assessment'?'Close assessment':'Close material'} onClose={closeReader} bodyClassName="reader-page-body" className={selected.type==='assessment'?'':'material-scroll-reader'}><div id="opened-publication">{error&&<p role="alert" className="connected-pulse-warning">{error}</p>}<OpenedPublication pageModal readingExit={readingExit} materialOpening={materialOpening} onStart={()=>startAssessment()} onRecheck={()=>open(selected)} onNext={open} key={`${selected.id}:${selected.source_version}:${session?.id || "reader"}`} selected={selected} data={data} isStudent={isStudent} canAttempt={learnerControls} adminTest={Boolean(user?.supportSubject&&adminTest)} answers={answers} setAnswers={setAnswers} result={result} session={session} busy={busy} onClose={closeReader} onRetake={()=>startAssessment(true)} onSubmit={() => {if(window.confirm('Submit this assessment? Check your responses before confirming.'))return run({ operation: 'respond', publication: selected.id, version: selected.source_version, session:session?.id, responses: selected.content.questions.map((_, index) => answers[index]) })}} />{isStudent&&user?.authenticated&&!user.supportSubject&&<TopicWorkPanel key={selected.id} publication={selected} readOnly={!writable}/>}</div></PageModal>
   const sourceReader = sourcePreview && <PageModal title={sourcePreview.title} label="Referenced teaching material" subtitle="Source preview" closeLabel="Close source material" onClose={closeSourcePreview} bodyClassName="reader-page-body"><DocumentViewer embedded readOnly isStudent content={sourcePreview.content} onBack={closeSourcePreview} /></PageModal>
   if (classModal) {
     const course = enrolledCourses(data).find(item => item.id === pageParams.get('course'))

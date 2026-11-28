@@ -63,7 +63,7 @@ function copyStructure(from, into, doc) {
 const WORD_STYLE = 'body{font:15px/1.5 system-ui,sans-serif;color:#111827;margin:24px}table{border-collapse:collapse;width:100%;margin:12px 0}td,th{border:1px solid #9ca3af;padding:6px 8px;vertical-align:top;text-align:left}p{margin:0 0 8px}img{max-width:100%;height:auto}'
 
 /** A browser cannot open a Word file, so its own content is shown in a script-free frame. */
-export function WordPages({ bytes, onFail }) {
+export function WordPages({ bytes, onFail, flow = false }) {
   const [html, setHtml] = useState('')
   useEffect(() => {
     let cancelled = false
@@ -77,13 +77,31 @@ export function WordPages({ bytes, onFail }) {
     return () => { cancelled = true }
   }, [bytes, onFail])
   if (!html) return <LoadingStatus label="Opening the uploaded file..." />
-  return <iframe className="retained-word" title="Uploaded file" sandbox="" srcDoc={html} />
+  return flow ? <FlowWordPage html={html} /> : <iframe className="retained-word" title="Uploaded file" sandbox="" srcDoc={html} />
+}
+
+// The sanitized, script-free Word view can size to its contents so it scrolls with the reader.
+function FlowWordPage({ html }) {
+  const frame = useRef(null), observer = useRef(null)
+  const [height, setHeight] = useState(null)
+  useEffect(() => () => observer.current?.disconnect(), [])
+  const loaded = () => {
+    observer.current?.disconnect()
+    const body = frame.current?.contentDocument?.body
+    if (!body) return
+    const resize = () => setHeight(Math.ceil(body.getBoundingClientRect().bottom + 26))
+    resize()
+    observer.current = new ResizeObserver(resize)
+    observer.current.observe(body)
+  }
+  return <iframe ref={frame} className="retained-word retained-word-flow" title="Uploaded file" sandbox="allow-same-origin" srcDoc={html} onLoad={loaded}
+    style={{ height: height || 1 }} data-reading-loading={height ? undefined : ''} />
 }
 
 export function ImagePage({ bytes, type, name, onFail }) {
   const [url, setUrl] = useState('')
   useEffect(() => { const made = URL.createObjectURL(new Blob([bytes], { type })); setUrl(made); return () => URL.revokeObjectURL(made) }, [bytes, type])
-  return url ? <img className="retained-image" src={url} alt={name} onError={onFail} /> : null
+  return url ? <img className="retained-image" src={url} alt={name} onError={onFail} /> : <LoadingStatus label="Opening the uploaded file..." />
 }
 
 export function TextPage({ bytes }) {

@@ -14,7 +14,7 @@ export class ApiRequestError extends Error {
   constructor(message: string, public status: number, public code?: string) { super(message) }
 }
 
-type RequestOptions = { raw?: Blob; headers?: Record<string, string>; query?: Record<string, string> }
+type RequestOptions = { keepalive?: boolean; raw?: Blob; headers?: Record<string, string>; query?: Record<string, string> }
 // Generation is bounded by the server's own budget (110 s hosted, up to 10 minutes in the local app),
 // so the browser waits for the server's answer or its timeout error instead of giving up first.
 const LONG_ACTIONS = new Set(['chat', 'courseware', 'references', 'operator', 'provider-test'])
@@ -27,7 +27,7 @@ export async function aiRequest<T>(action: string, method = 'GET', body?: unknow
     throw new ApiRequestError('The connection was interrupted before the server confirmed the request. Check your connection and retry.', 0, 'NETWORK_ERROR')
   }
   const response = await fetch(`/api/ai?${new URLSearchParams({ ...options.query, action })}`, {
-    method,
+    method, keepalive: options.keepalive,
     headers: { ...(body ? { 'Content-Type': 'application/json' } : options.raw ? { 'Content-Type': 'application/octet-stream' } : {}), ...(requestToken ? { Authorization: `Bearer ${requestToken}` } : {}), ...(supportSubject ? { 'X-EduPulse-Subject': supportSubject } : {}), ...options.headers },
     ...(body ? { body: JSON.stringify(body) } : options.raw ? { body: options.raw } : {}), signal: abort,
   }).catch(transportError)

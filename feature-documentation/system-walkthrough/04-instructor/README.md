@@ -93,7 +93,7 @@ Each tab has its own summary cards. Assessment charts show the selected block's 
 
 ![Block material access](10-student-monitoring-material-access.png)
 
-Material charts show access radar, first-open history, class access and confirmed first-to-last-section completion, followed by student progress and the filtered roster. Popovers show each material's section progress. Completion requires explicit sequential confirmations in the student's Document reader; an open alone does not establish completion. The instructor's former Performance page is removed; its links redirect here. Student and Dean Performance remain.
+Material charts show access radar, first-open history, class access and reading completion, followed by student progress and the filtered roster. A student's material breakdown shows the saved percentage or **Done** for each readable document. The reading average gives each readable material equal weight. The instructor's former Performance page is removed; its links redirect here. Student and Dean Performance remain.
 
 The Students tab supports roster edits, directory/file registration, suspension/resumption and removal only after suspension. It changes this course's membership, not the authentication account or official directory profile. Account/assessment/reading history is retained. Course and nested student/roster dialogs restore from bounded references after fresh authorization, without replaying a write. See [Manual 37](../../system-manual/37-instructor-monitoring/README.md) for the complete task and phone captures.
 

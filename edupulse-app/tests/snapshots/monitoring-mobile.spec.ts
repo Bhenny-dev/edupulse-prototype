@@ -14,6 +14,6 @@ const shot=(page:Page)=>async(name:string,target:Page|Locator=page)=>{
  }
 }
 test('monitoring class discovery, scoped charts and membership dialogs',async({page})=>{await page.setViewportSize({width:390,height:1400});await monitoringScenes(page,shot(page))})
-test('student confirms sections in the full material reader',async({page})=>{await page.setViewportSize({width:390,height:1400});await monitoringReadingScene(page,shot(page))})
+test('student progress follows scroll in the material reader',async({page})=>{await page.setViewportSize({width:390,height:1400});await monitoringReadingScene(page,shot(page))})
 
 test('monitoring explains the unreleased course without invented results',async({page})=>{await page.setViewportSize({width:390,height:1400});await monitoringAvailabilityScenes(page,shot(page))})

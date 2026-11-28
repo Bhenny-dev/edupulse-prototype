@@ -91,6 +91,7 @@ export const academicCommand = z.discriminatedUnion('operation', [
   z.object({ operation: z.literal('read-publication'), publication: identifier, version: identifier }),
   z.object({ operation: z.literal('sync') }),
   z.object({ operation: z.literal('open'), publication: identifier, version: identifier, adminTest: z.boolean().optional() }),
+  z.object({operation:z.literal('reading-progress'),publication:identifier,version:identifier,adminTest:z.boolean().optional(),percent:z.number().int().min(1).max(100)}),
   z.object({operation:z.literal('read-section'),publication:identifier,version:identifier,adminTest:z.boolean().optional(),section:z.number().int().min(0).max(999)}),
   z.object({ operation: z.literal('submit'), publication: identifier, version: identifier, adminTest: z.boolean().optional(), responses: z.array(z.number().int().min(0).max(3)).min(3).max(5) }),
   z.object({ operation: z.literal('import'), kind: z.enum(['courses','loads','rosters']), rows: z.array(z.record(z.string().max(80),z.string().max(500))).min(1).max(1000), filename: z.string().min(1).max(255) }),
@@ -226,6 +227,12 @@ export async function executeAcademic(identity: Identity, input: z.infer<typeof 
     return data
   }
   if (identity.supportActor) return supportAction(identity, 'academic.command', input)
+  if(input.operation==='reading-progress'){
+    if(identity.role!=='student')throw new ApiError(403,'FORBIDDEN','Only students can save their own reading progress.')
+    const {data,error}=await userDb(identity).rpc('edupulse_save_material_scroll',{publication:input.publication,version:input.version,progress:input.percent})
+    if(error)throw new ApiError(error.code==='42501'?403:error.code==='22023'?400:503,'READING_PROGRESS_FAILED',error.code==='22023'?error.message:'Reading progress could not be saved.')
+    return data
+  }
   if(input.operation==='read-section'){
     if(identity.role!=='student')throw new ApiError(403,'FORBIDDEN','Only students can confirm their own reading progress.')
     const {data,error}=await userDb(identity).rpc('edupulse_read_material_section',{publication:input.publication,version:input.version,section:input.section})

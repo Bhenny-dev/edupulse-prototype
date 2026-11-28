@@ -18,8 +18,36 @@ export async function monitoringScenes(page:Page,shot:MonitoringShot=noop){
  await shot('10-material-completion',panel('Reading completion per material'));await shot('11-material-students',panel('Learning material access by student'))
  await dialog.getByRole('button',{name:'Synthetic learner',exact:true}).click();const material=page.getByRole('dialog',{name:'Student material progress',exact:true});await expect(material).toContainText('50%');await shot('07-material-breakdown',material)
 }
+export function scrollReadingStore(){
+ const store=monitoringStore()
+ store.records.reading=[]
+ const material=store.records.publications[0]
+ material.content={...material.content,sections: [{ heading: 'Tracing a variable', body: Array.from({length:32},(_,index)=>`Start with the value ${index + 1}. Trace the assignment from right to left. Write the new value and test your result against the next example.`).join('\n\n') }] }
+ return store
+}
+export async function scrollMaterial(page:Page,fraction:number){
+ await page.locator('.material-scroll-reader [data-reading-content]').evaluate(async (document,fraction)=>{
+  await document.ownerDocument.fonts.ready
+  const body=document.closest('.reader-page-body')!
+  const rect=document.getBoundingClientRect(), viewport=body.getBoundingClientRect()
+  const start=rect.top-viewport.top+body.scrollTop
+  const end=rect.bottom-viewport.top+body.scrollTop-body.clientHeight
+  body.scrollTop=fraction===0?0:Math.ceil(start+(end-start)*fraction)
+ },fraction)
+}
 export async function monitoringReadingScene(page:Page,shot:MonitoringShot=noop){
- const store=monitoringStore();store.records.reading=[];await monitoringUI(page,'student',store);await page.goto('/#/courseware');await page.getByRole('button',{name:/^Open course /}).first().click();await page.getByRole('button',{name:'Open material',exact:true}).first().click();await page.getByRole('button',{name:'Confirm section 1 read',exact:true}).click();await expect(page.getByRole('region',{name:'Your reading progress',exact:true})).toContainText('1/2');await shot('12-student-reading',page.getByRole('region',{name:'Opened courseware',exact:true}))
+ const store=scrollReadingStore()
+ await monitoringUI(page,'student',store)
+ await page.goto('/#/courseware')
+ await page.getByRole('region',{name:'Your classes'}).getByRole('button',{name:/^Open IT 102 /}).click()
+ await page.getByRole('button',{name:'Teaching Materials & Assessments',exact:true}).click()
+ await page.getByRole('button',{name:'Open material',exact:true}).first().click()
+ await scrollMaterial(page,0.5)
+ const reader=page.getByRole('dialog',{name:store.records.publications[0].title,exact:true})
+ await expect(reader.getByRole('progressbar',{name:'Reading progress',exact:true})).toHaveAttribute('value','50')
+ await expect.poll(()=>store.records.reading?.[0]?.scroll_percent).toBe(50)
+ await scrollMaterial(page,0)
+ await shot('12-student-reading',reader)
 }
 
 export async function monitoringAvailabilityScenes(page:Page,shot:MonitoringShot=noop){

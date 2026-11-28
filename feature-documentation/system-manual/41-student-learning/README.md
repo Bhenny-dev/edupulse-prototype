@@ -14,9 +14,9 @@ Select a course card. The class header identifies its instructor. **Teaching Mat
 
 ![Student class with a week announcement, topic reminder, lesson and linked assessment](12-placed-announcements.png)
 
-![The material reader and section confirmations](03-material-reader.png)
+![The material reader and automatic reading progress](03-material-reader.png)
 
-Materials become readable in the separate dialog immediately while the explicit first-open record saves. Close using **Close material**, **Back**, or Escape to return to the same course/tab. A recording failure is shown without replacing the readable document with a pending screen. **Document** and **Presentation** remain available. Confirm reading sections in order using their confirmation buttons; an open alone never marks a document finished. Reload restores the reader without replaying opens or confirmations.
+Materials become readable in the separate dialog immediately while the explicit first-open record saves. Close using **Close material**, **Back**, or Escape to return to the same course/tab. A recording failure is shown without replacing the readable document with a pending screen. **Document** and **Presentation** remain available. Scroll through **Document** to update the reading bar. Close halfway to keep the percentage reached or close after reaching the end to mark the material **Done**. The course list shows the saved progress, which is also available when the reader reopens or reloads. A short document visible in full counts as done when closed.
 
 Instructor assessments display every question together in one scrollable dialog, with no numbered question navigator or Previous/Next question buttons. Duration, deadline, supported response formats, saved results, allowed retakes and instructor marking remain. Answer all questions, then use **Confirm and submit responses**. **Close assessment** or Escape returns to the list. Reload restores the authorized dialog and reads any existing server session without starting another attempt; unsaved answers do not restore. Written responses can remain **Awaiting marking**; missing marks cannot become zero. These are recorded raw scores, not institutional grades.
 
@@ -49,7 +49,7 @@ The current administrative allocation caps Years 1-3 at ten subjects each. Year 
 
 ![Admin student course view before the bottom indicator was removed](09-admin-controls.png)
 
-Select a student through the verified Admin account picker. The selected student learning pages provide material, assessment and practice actions directly; there is no additional checkbox or yellow demonstration panel. New opens, section confirmations, assessment sessions/responses and practice attempts use the selected student's current enrollment and release rules, retain their test flag in storage and record the Admin actor, without a visible test badge. Real student work cannot be relabelled or replaced by a demonstration. Instructor attempt limits and marking still apply.
+Select a student through the verified Admin account picker. The selected student learning pages provide material, assessment and practice actions directly; there is no additional checkbox or yellow demonstration panel. New opens, reading progress, assessment sessions/responses and practice attempts use the selected student's current enrollment and release rules, retain their test flag in storage and record the Admin actor, without a visible test badge. Real student work cannot be relabelled or replaced by a demonstration. Instructor attempt limits and marking still apply.
 
 A reload restores the authorized course or reader without recreating an action. **Account menu > Switch view > System Admin** exits; the bottom support indicator and its return shortcut are removed. Ordinary students cannot enable an Admin delegation by posting a subject or actor ID; live Admin and selected-account verification remains on the database boundary.
 

@@ -1,6 +1,7 @@
 import {loadTerm} from '../../utils/loadTerms'
 import {courseMemberships, emailKey} from '../../utils/courseRoster'
-import {currentAttempts, filterAcademic, percent, type AcademicData, type Publication} from './academicData'
+import {materialHasReader} from './studentProgress'
+import {currentAttempts, filterAcademic, percent, readingPercent, type AcademicData, type Publication} from './academicData'
 
 export function monitoringCohorts(data:AcademicData, workspace:Parameters<typeof courseMemberships>[0], owner:string|number) {
  return data.courses.filter(course=>String(course.instructor_id)===String(owner)).flatMap(course=>{
@@ -41,15 +42,16 @@ export function assessmentRows(data:AcademicData) {
 export function materialState(data:AcademicData,item:Publication,email:string) {
  const access=data.accesses.find(a=>a.publication_id===item.id&&emailKey(a.student_email)===emailKey(email))
  const progress=(data.reading||[]).find(r=>r.publication_id===item.id&&String(r.source_version)===String(item.source_version)&&emailKey(r.student_email)===emailKey(email))
- const total=Array.isArray(item.content?.sections)?item.content.sections.length:0
- const read=progress?Math.min(progress.sections_read,total):0
- return {item,access,read,total,percent:total?Math.round(read/total*100):null,complete:total>0&&read===total,progress}
+ const reading=materialHasReader(item)||progress?readingPercent(progress):null
+ return {item,access,percent:reading,complete:reading===100,progress}
 }
 export function materialRows(data:AcademicData) {
  const items=released(data,'material')
  return data.enrollments.map(student=>{
-  const results=items.map(item=>materialState(data,item,student.student_email)),total=results.reduce((n,r)=>n+r.total,0),read=results.reduce((n,r)=>n+r.read,0)
-  return {student,results,sectionsRead:read,sectionsTotal:total,accessed:results.filter(r=>r.access).length,completed:results.filter(r=>r.complete).length,total:items.length,average:percent(read,total)}
+  const results=items.map(item=>materialState(data,item,student.student_email))
+  const readable=results.flatMap(r=>r.percent===null?[]:[r.percent])
+  const average=readable.length?Math.round(readable.reduce((total,reading)=>total+reading,0)/readable.length):null
+  return {student,results,accessed:results.filter(r=>r.access).length,completed:results.filter(r=>r.complete).length,total:items.length,average}
  })
 }
 

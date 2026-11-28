@@ -212,10 +212,12 @@ typing dates; an instructor can still save other dates for a block.
 
 | Task | Work | Acceptance | Stage |
 |---|---|---|---|
-| T5.1 | Course card progress bar: confirmed-read materials and answered assessments over delivered items (`src/components/academic/studentProgress.ts` `courseProgress`), with a text label such as "2 of 4 items done", also in the opened course | `tests/student-progress.test.ts`; `tests/browser/student-progress.spec.ts` | Ready |
-| T5.2 | Progress per material (sections confirmed read) and per week ("Week 1 · 2 item(s) · 1 of 2 done") inside the course | `tests/browser/student-progress.spec.ts` | Ready |
+| T5.1 | Course card progress bar: completed materials and answered assessments over delivered items (`src/components/academic/studentProgress.ts` `courseProgress`), with a text label such as "2 of 4 items done", also in the opened course | `tests/student-progress.test.ts`; `tests/browser/student-progress.spec.ts` | Ready |
+| T5.2 | The passive material bar tracks the furthest point reached in Document. Closing midway saves partial progress. Reaching the end marks the material Done and updates the course and week counts. | `tests/browser/monitoring.spec.ts` (partial progress, close, reopen, reload without replay, completion), `tests/block-delivery.test.ts` (monotonic, versioned and scoped persistence), desktop and phone captures in Manual 37 | Ready |
 | T5.3 | Reminder states in Asia/Manila days, on the server's clock (`serverNow` in the academic read, kept as `clockOffset`): blue (delivered, more than 3 days left or no due date), orange (3 days or less), red (due date missed), done; most urgent first on the dashboard and in notifications | Unit tests at the 3-day, due-moment and Manila-midnight boundaries; `tests/browser/student-progress.spec.ts` (a device 10 days behind the server) | Ready |
 | T5.4 | The student performance page shows access and scores per course and topic (already built: By Topic, Learning Materials and Assessment Scores views) | `tests/browser/role-restoration.spec.ts` (student pages) | Ready |
+
+- 2026-11-28: Replaced student reading confirmation buttons with passive scroll progress. The saved percentage follows the current published version and is reflected in class monitoring. Native SQL and reader reload checks cover the new path.
 
 ### G6. Practice and mock quizzes (R-S3)
 

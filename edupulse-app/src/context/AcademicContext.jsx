@@ -105,9 +105,9 @@ function AcademicSession({ children, user,authLoading }) {
       window.removeEventListener('edupulse-records-change', changed)
     }
   }, [enabled, load, user?.id])
-  const command = useCallback(async input => {
+  const command = useCallback(async (input, options) => {
     // Business commands are sent once. Only their authorized readback is automatic.
-    const result = await aiRequest('academic', 'POST', input)
+    const result = await aiRequest('academic', 'POST', input, undefined, options)
     if (alive.current && currentRole.current === role) {
       if(input.operation==='read-publication')setSnapshot(previous=>({...previous,data:{...previous.data,publications:previous.data.publications.map(item=>item.id===result.id&&item.source_version===result.source_version?result:item)}}))
       else if(input.operation!=='class-join'||input.action!=='lookup')await load(input.operation==='class-join')

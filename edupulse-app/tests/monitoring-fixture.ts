@@ -1,10 +1,11 @@
+import type { ReadingProgress } from '../src/components/academic/academicData'
 import type {Page} from '@playwright/test'
 import {academicUI} from './academic-ui-fixture'
 import {roleRecords} from './role-restoration-fixture'
 import {baselineWorkspace} from './baseline-fixture'
 export const monitoringOwner='fe67b9d2-719b-4b10-91cd-76031ab115fe',monitoringVersion='f'.repeat(32)
 export function monitoringStore(){
- const records=structuredClone(roleRecords)
+ const records=structuredClone(roleRecords) as typeof roleRecords & {reading?:ReadingProgress[]}
  records.courses[0].instructor_id=monitoringOwner
  records.courses.push({...records.courses[0],id:'c'.repeat(32),course_code:'IT 202',course_title:'Networking'})
  records.enrollments=[{...records.enrollments[0],year_level:1},{...records.enrollments[1],block_section:'BSIT-1A',year_level:1},{course_id:'a'.repeat(32),student_email:'outsider@example.invalid',display_name:'Different block learner',student_ref:'OTHER-1',block_section:'BSIT-1B',year_level:1},{course_id:'c'.repeat(32),student_email:'network@example.invalid',display_name:'Networking learner',student_ref:'NET-1',block_section:'BSIT-2A',year_level:2}]
@@ -38,12 +39,12 @@ export async function monitoringUI(page:Page,role='instructor',store=monitoringS
    store.commands.push(input)
    if(input.operation==='sync')return route.fulfill({json:{synced:true}})
    if(role==='student'&&input.operation==='open'){if(!store.records.accesses.some(a=>a.publication_id===input.publication&&a.student_email==='ui.fixture@example.invalid'))store.records.accesses.push({publication_id:input.publication,student_email:'ui.fixture@example.invalid',first_opened_at:'2026-11-12T03:00:00Z'});return route.fulfill({json:{opened:true}})}
-   if(role==='student'&&input.operation==='read-section'){
+   if(role==='student'&&input.operation==='reading-progress'){
     const item=store.records.publications.find(p=>p.id===input.publication&&p.source_version===input.version)!
-    let progress=store.records.reading!.find(r=>r.publication_id===item.id&&r.student_email==='ui.fixture@example.invalid')
-    if(!progress){progress={publication_id:item.id,source_version:monitoringVersion,student_email:'ui.fixture@example.invalid',sections_read:0,total_sections:2,updated_at:'2026-11-12T03:00:00Z'};store.records.reading!.push(progress)}
-    if(input.section>progress.sections_read)return route.fulfill({status:400,json:{error:{message:'Confirm preceding sections first',code:'READING_PROGRESS_FAILED'}}})
-    progress.sections_read=Math.max(progress.sections_read,input.section+1);if(progress.sections_read===2)progress.completed_at='2026-11-12T03:00:00Z'
+    const previous=store.records.reading!.find(r=>r.publication_id===item.id&&r.source_version===input.version)
+    const percent=Math.max(previous?.scroll_percent||0,input.percent)
+    const progress={publication_id:item.id,source_version:monitoringVersion,student_email:'ui.fixture@example.invalid',sections_read:Math.floor(percent/100),total_sections:1,scroll_percent:percent,updated_at:'2026-11-12T03:00:00Z',completed_at:percent===100?'2026-11-12T03:00:00Z':null}
+    store.records.reading=[...store.records.reading!.filter(r=>r!==previous),progress]
     return route.fulfill({json:progress})
    }
    if(role==='instructor'&&input.operation==='class-list'){

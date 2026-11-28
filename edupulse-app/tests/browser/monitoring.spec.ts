@@ -1,5 +1,6 @@
 import {test,expect,type Page} from '@playwright/test'
 import {monitoringUI,monitoringStore} from '../monitoring-fixture'
+import {scrollMaterial,scrollReadingStore} from '../monitoring-ui'
 
 test.describe.configure({timeout:60000})
 
@@ -16,10 +17,10 @@ test('monitoring combines year/course/block discovery and scoped scores with a r
  await page.reload();await expect(detail).toBeVisible();await expect(detail).toContainText('Arrays quiz');await detail.getByRole('button',{name:'Close student breakdown'}).click()
  await page.goto('/#/performance');await expect(page).toHaveURL(/student-monitoring/)
 })
-test('material charts and student popover use only this block and real section confirmations',async({page})=>{
+test('material charts and student popover use only this block and saved reading progress',async({page})=>{
  await monitoringUI(page);const dialog=await open(page);await dialog.getByRole('button',{name:'Learning Material Access',exact:true}).click()
  await expect.poll(()=>dialog.locator('.monitoring-modal-body').evaluate((element:any)=>element.scrollTop)).toBe(0)
- const row=dialog.getByRole('region',{name:'Block learning material progress',exact:true}).locator('tbody tr').first();await expect(row.locator('td').nth(2)).toContainText('1/3');await expect(row.getByRole('progressbar')).toHaveAttribute('value','3');await expect(row.getByRole('progressbar')).toHaveAttribute('max','6')
+ const row=dialog.getByRole('region',{name:'Block learning material progress',exact:true}).locator('tbody tr').first();await expect(row.locator('td').nth(2)).toContainText('1/3');await expect(row.getByRole('progressbar')).toHaveAttribute('value','50');await expect(row.getByRole('progressbar')).toHaveAttribute('max','100')
  for(const title of ['Learning material access radar','Material access history','Class access per material','Reading completion per material','Student reading progress'])await expect(dialog.getByRole('heading',{name:title,exact:true})).toBeVisible()
  await dialog.getByRole('button',{name:'Synthetic learner',exact:true}).click();const detail=page.getByRole('dialog',{name:'Student material progress',exact:true});await expect(detail).toContainText('Final reading average: 50%');await expect(detail.getByRole('progressbar')).toHaveCount(3)
  await page.reload();await expect(detail).toContainText('50%');await detail.getByRole('button',{name:'Close student breakdown'}).click();await expect(dialog).not.toContainText('Different block learner')
@@ -33,12 +34,41 @@ test('roster edits persist, failed saves stay visible, and removal requires prio
  await suspend.getByRole('button',{name:'Confirm suspension',exact:true}).click();await expect(suspend).toHaveCount(0);await dialog.getByRole('button',{name:'Actions for Edited learner',exact:true}).click();await expect(page.getByRole('menuitem',{name:'Remove',exact:true})).toBeEnabled();await page.getByRole('menuitem',{name:'Remove',exact:true}).click();await page.getByRole('button',{name:'Confirm removal',exact:true}).click();await expect(dialog.getByRole('region',{name:'Enrolled students table',exact:true})).not.toContainText('Edited learner')
  expect(store.records.attempts).toHaveLength(5)
 })
-test('students explicitly confirm reading in sequence, and reload never replays opens or progress',async({page})=>{
- const store=monitoringStore();store.records.reading=[];await monitoringUI(page,'student',store);await page.goto('/#/courseware');await page.getByRole('region',{name:'Your classes'}).getByRole('button',{name:/^Open IT 102 /}).click();await page.getByRole('button',{name:'Teaching Materials & Assessments',exact:true}).click();await page.getByRole('button',{name:'Open material',exact:true}).first().click()
- await expect(page.getByRole('button',{name:'Confirm section 2 read',exact:true})).toBeDisabled();await page.getByRole('button',{name:'Confirm section 1 read',exact:true}).click();await expect(page.getByRole('region',{name:'Your reading progress',exact:true})).toContainText('1/2')
- const count=store.commands.length;await page.reload();await expect(page.getByRole('region',{name:'Your reading progress',exact:true})).toContainText('1/2');expect(store.commands.filter(c=>['open','read-section'].includes(c.operation))).toHaveLength(2)
- await page.getByRole('button',{name:'Confirm section 2 read',exact:true}).click();await expect(page.getByRole('region',{name:'Your reading progress',exact:true})).toContainText('2/2');expect(store.commands.length).toBeGreaterThan(count)
+test('a single-section material saves halfway and completion on exit, and reload replays no writes',async({page})=>{
+ const store=scrollReadingStore()
+ await monitoringUI(page,'student',store)
+ await page.goto('/#/courseware')
+ await page.getByRole('region',{name:'Your classes'}).getByRole('button',{name:/^Open IT 102 /}).click()
+ await page.getByRole('button',{name:'Teaching Materials & Assessments',exact:true}).click()
+ const open=page.getByRole('button',{name:'Open material',exact:true}).first()
+ const title=store.records.publications[0].title
+ const dialog=page.getByRole('dialog',{name:title,exact:true})
+ const progress=dialog.getByRole('progressbar',{name:'Reading progress',exact:true})
+ const close=dialog.getByRole('button',{name:'Close material',exact:true})
+ const materialProgress=page.getByRole('progressbar',{name:title+' reading progress',exact:true})
+ await open.click()
+ await expect(progress).toHaveAttribute('value','0')
+ await expect(dialog.getByRole('button',{name:/confirm section/i})).toHaveCount(0)
+ await scrollMaterial(page,0.5)
+ await expect(progress).toHaveAttribute('value','50')
+ await close.click()
+ await expect(materialProgress).toHaveAttribute('value','50')
+ expect(store.records.reading?.[0]?.completed_at).toBeNull()
+ await open.click()
+ await expect(progress).toHaveAttribute('value','50')
+ const count=store.commands.length
+ await page.reload()
+ await expect(progress).toHaveAttribute('value','50')
+ await scrollMaterial(page,0.2)
+ await expect(progress).toHaveAttribute('value','50')
+ expect(store.commands).toHaveLength(count)
+ await scrollMaterial(page,1)
+ await expect(progress).toHaveAttribute('value','100')
+ await page.keyboard.press('Escape')
+ await expect(materialProgress).toHaveAttribute('value','100')
+ expect(store.records.reading?.[0]?.completed_at).toBeTruthy()
 })
+
 test('course modal fits desktop and narrow phones with keyboard exit and scoped reload',async({page})=>{
  await monitoringUI(page);const dialog=await open(page);await dialog.getByRole('button',{name:'Learning Material Access',exact:true}).click()
  for(const width of [320,768,1440]){await page.setViewportSize({width,height:900});await expect.poll(()=>page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);await expect(dialog).toBeVisible();expect(await dialog.locator('.monitoring-modal-body .card-header').evaluateAll(headers=>headers.every(header=>{const title=header.querySelector('h2'),button=header.querySelector('button');if(!title||!button)return true;const a=title.getBoundingClientRect(),b=button.getBoundingClientRect();return a.right<=b.left+1||a.bottom<=b.top+1||b.bottom<=a.top+1}))).toBe(true)}

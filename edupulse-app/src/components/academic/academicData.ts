@@ -4,7 +4,7 @@ export type Publication = { delivery_mode?:string; delivery_state?:string; deliv
 export type Enrollment = { course_id: string; student_email: string; display_name?: string; student_ref?: string; block_section?: string; year_level?:number|null; suspended?:boolean }
 export type Attempt = { is_test?: boolean; id?: string; publication_id: string; source_version: string | number; student_id?: string; student_email?: string; score: number; max_score: number; submitted_at: string; attempt_no?:number; grading_status?:string; answers?: (number|string)[]; question_scores?:number[]; topic_scores?:{topic:string; score:number; max_score:number}[]; appeal?:string }
 export type Access = { is_test?: boolean; publication_id: string; student_id?: string; student_email?: string; first_opened_at: string }
-export type ReadingProgress={publication_id:string;student_email?:string;student_id?:string;source_version:string;sections_read:number;total_sections:number;updated_at:string;completed_at?:string|null;is_test?:boolean}
+export type ReadingProgress={publication_id:string;student_email?:string;student_id?:string;source_version:string;sections_read:number;total_sections:number;scroll_percent?:number|null;updated_at:string;completed_at?:string|null;is_test?:boolean}
 export type AssessmentSession={is_test?:boolean|null;id:string;publication_id:string;student_email?:string;student_id?:string;source_version:string;started_at:string;attempt_no:number}
 export type ClassMeeting = { load_key: string; course_code: string; course_title: string; block: string; academic_year: string; semester: string; instructor_name?: string; slots: { days?: string; time?: string; room?: string }[] }
 export type AcademicData = { classSchedule?: ClassMeeting[]; scheduleError?: string; homeBlock?:{code:string;year_level:number;department:string;program:string;students:number}|null; deliverySchedules?:DeliverySchedule[]; assignedCourses?:{id:string;course_code:string;course_title:string;active:boolean;block_section:string;suspended:boolean;units:string|null;year_level:string|null;semester:string|null;academic_year?:string;instructor_name?:string}[]; courses: Course[]; publications: Publication[]; enrollments: Enrollment[]; attempts: Attempt[]; accesses: Access[]; reading?:ReadingProgress[];sessions?:AssessmentSession[]; institutional?:{kind:string; record_key:string; updated_at?:string; data:Record<string,string>}[]; faculty?:{id:string;name:string;email:string}[]; events?:{id:string;kind:string;title:string;detail:string;created_at:string}[]; notices?:{id:string;title:string;detail:string;path:string;read_at?:string;created_at:string}[]; directory?:{instructors?:unknown[];students?:unknown[];irregular?:Record<string,string>[]}; directoryError?:string; classCodes?:ClassCode[]; classJoins?:ClassJoin[]; announcements?:Announcement[]; classroomError?:string; serverNow?:string; clockOffset?:number }
@@ -14,6 +14,14 @@ export type ClassCode = { code: string; load_key: string; parent_key: string; co
 /** Instructor: a student who joined with a code. Student: a class they joined, with its labels. */
 export type ClassJoin = { load_key: string; joined_at: string; student_email?: string; student_number?: string; course_code?: string; course_title?: string; block?: string; academic_year?: string; semester?: string; instructor_name?: string }
 export type Announcement = { id: string; course_code: string; academic_year: string; semester: string; block: string | null; week: number | null; topic_id?: string | null; placement?: 'before' | 'within'; title: string; body: string; attachments: { kind: 'link'; url: string; title: string; provider: string }[]; created_at: string; updated_at: string; course_id?: string }
+export function readingPercent(row?: ReadingProgress): number {
+  if (!row) return 0
+  const historical = row.total_sections > 0 && row.sections_read >= row.total_sections
+    ? 100
+    : Math.min(99, percent(row.sections_read, row.total_sections) ?? 0)
+  return Math.max(historical, row.scroll_percent ?? 0)
+}
+
 export const percent = (score: number, total: number) => total > 0 ? Math.round(score / total * 100) : null
 export function currentAttempts(data: AcademicData) {
   const latest = new Map<string,Attempt>()

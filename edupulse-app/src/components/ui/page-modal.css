@@ -7,6 +7,7 @@
 .page-modal-header .modal-close { width:44px; height:44px; min-width:44px; }
 .page-modal-body { flex:1; min-height:0; min-width:0; overflow:auto; overscroll-behavior:contain; padding:24px; }
 .page-modal-footer { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:12px; flex-shrink:0; padding:16px 24px; border-top:1px solid var(--gray-200); }
+.material-scroll-reader .reader-page-body { overflow-anchor: none; }
 .page-modal-body.reader-page-body { padding:0; background:var(--gray-100); }
 .page-modal-body .academic-publication { margin:0; border:0; border-radius:0; box-shadow:none; }
 .page-modal-body .academic-question { min-width:0; overflow-wrap:anywhere; }

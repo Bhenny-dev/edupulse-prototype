@@ -30,7 +30,7 @@ function keyPointsToBody(points) {
   return points.map(p => `• ${p}`).join('\n')
 }
 
-export default function PresentationViewer({ content, onBack, isStudent = false, onSave, cacheKey = null, reading = null }) {
+export default function PresentationViewer({ content, onBack, isStudent = false, onSave, cacheKey = null }) {
   const [currentSlide, setCurrentSlide] = useWorkspaceViewState(cacheKey?`slide:${cacheKey}`:null,0)
   useEffect(()=>{if(currentSlide>(content?.sections?.length||0))setCurrentSlide(0)},[currentSlide,content?.sections?.length,setCurrentSlide])
   const [fullscreen, setFullscreen] = useState(false)
@@ -217,7 +217,6 @@ export default function PresentationViewer({ content, onBack, isStudent = false,
               <Plus size={12} /> Add Point
             </button>
           )}
-          {reading&&!isEdit&&<p className="text-sm">Reading confirmations are recorded in the full Document view, after reading each section.</p>}
           {points.length === 0 && !isEdit && (
             <p className="pres-slide-empty">No key points in this section.</p>
           )}

@@ -362,3 +362,7 @@ No new schema migration is needed. `scripts/retire-seeded-class-sections.ts` is 
 Migration `20261127021533_class_stream_announcement_placement.sql` adds `topic_id` and `placement` to the private announcement table. Existing posts use `within` and keep their class or week placement. The announcement command accepts `before` or `within`. A topic target must match an active course outline for the authenticated instructor, term and selected week, with the assigned block's teaching syllabus where set. Class and membership reads carry both fields under existing permissions. The public wrapper and audited support gateway use the same authorization path.
 
 The teaching plan stays in `courseOutline`. The first week edit or move saves the pre-edit outline as `extractedCourseOutline` for the original syllabus reader. The workspace revision check covers both fields. Removed topic placements fall back to the saved calendar week. The migration preserves enrollments, publication timing, scores and learner attempts.
+
+## Scroll-based material reading
+
+Migration `20261128000000_automatic_material_reading_progress.sql` adds nullable `scroll_percent` to the existing versioned progress table and a student-scoped RPC. Older rows retain their section ratio. Concurrent or duplicate progress requests retain the greatest saved percentage and first completion timestamp. The public invoker routes to the checked private function and existing RLS controls reads. Load handover already copies the complete record, including scroll progress and activity attribution.

@@ -49,22 +49,22 @@ The student table shows accessed/started assessments, submitted assessments, the
 
 ![Material access summaries and charts](06-material-overview.png)
 
-The tab includes material access radar, first-open history, class access per material and confirmed reading completion per material. The history graph counts saved first opens, not repeat visits. **Student reading progress** and the filtered table show accesses, completed materials and reading averages for enrolled block students only.
+The tab includes material access radar, first-open history, class access per material and reading completion per material. The history graph counts saved first opens, not repeat visits. **Student reading progress** and the filtered table show accesses, completed materials and reading averages for enrolled block students only.
 
-![Confirmed material completion](10-material-completion.png)
+![Reading completion per material](10-material-completion.png)
 ![Student material rows](11-material-students.png)
 
-Select a student for their course materials and per-material section progress bars. The final reading average is confirmed sections divided by all released readable sections. An open alone is not completion.
+Select a student to see their opened materials, reading percentages and completed materials. Each readable material contributes equally to the final reading average.
 
 ![Student material progress](07-material-breakdown.png)
 
 ## Record actual reading progress
 
-![Student section confirmations](12-student-reading.png)
+![The student reader showing 50 percent read](12-student-reading.png)
 
-In the student's full **Document** reader, read each section and choose **Confirm section N read** in order. A later section cannot skip earlier sections. The server derives section totals from the currently published content and verifies the student's current enrollment/version. Duplicate confirmations are idempotent. A newly published version starts its own progress record; prior progress remains historical. Presentation mode points to the full Document view for confirmation.
+Open a material and scroll through **Document**. The bar shows the furthest point you reached. Closing halfway saves partial progress. Reaching the end and closing marks the material **Done**. For a short document visible in full, closing records **Done**. The example shows **50% read** after scrolling halfway.
 
-The reader reports sections confirmed. This is the student's explicit reading acknowledgment, not a measurement of comprehension or time spent reading. A reload restores the reader and saved progress without recording another open or confirmation. Staff support previews cannot fabricate learner activity.
+Reopen or reload to see the saved percentage. A revised publication starts its own reading record. **Presentation** remains available and displays the progress saved through **Document**.
 
 ## Phone, keyboard and reload
 
@@ -84,11 +84,11 @@ Additional phone views retain the same scope and saved results:
 | Material summaries | ![Phone material summaries](mobile-06-material-overview.png) |
 | Edit roster membership | ![Phone roster edit](mobile-08-edit-membership.png) |
 | Confirm suspension | ![Phone suspension](mobile-09-suspend-membership.png) |
-| Confirmed completion chart | ![Phone completion chart](mobile-10-material-completion.png) |
+| Reading completion chart | ![Phone completion chart](mobile-10-material-completion.png) |
 | Student material rows | ![Phone material rows](mobile-11-material-students.png) |
-| Sequential student reader | ![Phone document confirmations](mobile-12-student-reading.png) |
+| Student reader | ![Phone reader showing 50 percent read](mobile-12-student-reading.png) |
 
-Phone component captures use the same 390-pixel width with a taller browser viewport to show complete charts, table rows and confirmation controls inside the actual scrolling dialog. Shorter devices scroll within that same layout.
+Phone component captures use the same 390-pixel width with a taller browser viewport to show complete charts, table rows and the reading indicator inside the actual scrolling dialog. Shorter devices scroll within that same layout.
 
 ## Bounded teaching assignments
 

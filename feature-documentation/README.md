@@ -4,6 +4,7 @@
 
 | Folder | Covers | Contents |
 | --- | --- | --- |
+| [28 November scroll-based reading](versions/2026-11-28-scroll-reading/README.md) | Automatic student reading progress and staff monitoring | See verification |
 | [27 November staff course loads](versions/2026-11-27-staff-course-loads.md) | Instructor-centered workload, syllabus and delivery for Dean and Program Coordinator | Staff manual, walkthrough, backend notes and validation |
 | [27 November teaching sequence](versions/2026-11-27-teaching-sequence.md) | Material-first publication order and AI assessments grounded in covered teaching files | Instructor and student guides, backend contract and regression evidence |
 | [27 November class Stream](versions/2026-11-27-class-stream.md) | Delivered work, placed announcements and editable weekly teaching plans | Instructor and student guides, database contract and validation |

@@ -1,10 +1,11 @@
 // Student progress and reminder states (core flow goal G5, requirements R-S2 and R-S6).
-// A student's records hold that student's own opens, reading confirmations and attempts.
+// A student's records hold that student's own opens, reading progress and attempts.
 // Days are read on the Asia/Manila calendar (UTC+8, no daylight saving), and "now" comes
 // from the server's clock when the records carry one, so a wrong device clock cannot move
 // a reminder from blue to orange or red.
 import { deliveryState, deliveryTimeLabel } from '../../utils/blockDelivery'
-import { percent, studentAttempt, type AcademicData, type Publication } from './academicData'
+import { teachingFileKind } from '../../utils/teachingFileKind'
+import { percent, readingPercent, studentAttempt, type AcademicData, type Publication } from './academicData'
 
 export type ReminderState = 'done' | 'blue' | 'orange' | 'red'
 export type ItemProgress = { id: string; week: number; kind: 'material' | 'assessment'; done: boolean; percent: number; read: number; total: number }
@@ -49,6 +50,16 @@ export const isDelivered = (item: Publication, now: number) =>
 const mine = (email?: string) => (row: { student_email?: string }) => !email || !row.student_email || row.student_email.toLowerCase() === email.toLowerCase()
 const opened = (data: AcademicData, item: Publication, email?: string) => data.accesses.some(entry => entry.publication_id === item.id && mine(email)(entry))
 
+export function materialHasReader(item: Publication) {
+  const content = item.content
+  if (!content || content.submissionOnly) return false
+  return Boolean(
+    Array.isArray(content.sections) && content.sections.length ||
+    [content.instructions, content.description].some(value => typeof value === 'string' && value.trim()) ||
+    Array.isArray(content.attachments) && content.attachments.some(file => file?.path && teachingFileKind(file))
+  )
+}
+
 export function itemProgress(data: AcademicData, item: Publication, email?: string): ItemProgress {
   const base = { id: item.id, week: item.week }
   if (item.type === 'assessment') {
@@ -57,11 +68,10 @@ export function itemProgress(data: AcademicData, item: Publication, email?: stri
   }
   const row = (data.reading || []).find(entry => entry.publication_id === item.id && String(entry.source_version) === String(item.source_version) && mine(email)(entry))
   const sections = item.content?.sections
-  const total = Array.isArray(sections) ? sections.length : row?.total_sections || 0
+  const total = materialHasReader(item) ? Math.max(1, Array.isArray(sections) ? sections.length : row?.total_sections || 0) : 0
   const read = Math.min(row?.sections_read || 0, total)
-  // A material with sections is finished when every section is confirmed; one without sections, once opened.
-  const seen = opened(data, item, email)
-  return { ...base, kind: 'material', done: total > 0 ? read === total : seen, percent: total > 0 ? Math.round(read / total * 100) : seen ? 100 : 0, read, total }
+  const progress = total > 0 || row ? readingPercent(row) : opened(data, item, email) ? 100 : 0
+  return { ...base, kind: 'material', done: progress === 100, percent: progress, read, total }
 }
 
 export function courseProgress(data: AcademicData, courseId: string, now: number, email?: string): CourseProgress {
