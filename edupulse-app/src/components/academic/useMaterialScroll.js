@@ -7,10 +7,14 @@ function position(scroller) {
   if (!content?.offsetHeight || content.querySelector('.loading-status, [data-reading-loading]')) return null
   if ([...content.querySelectorAll('img')].some(image => !image.complete)) return null
   const viewport = scroller.getBoundingClientRect(), bounds = content.getBoundingClientRect()
-  const top = Math.max(0, bounds.top - viewport.top + scroller.scrollTop)
-  const end = bounds.bottom - viewport.top + scroller.scrollTop - scroller.clientHeight
+  // Convert the animated dialog's visual bounds to the layout coordinates used by scrollTop.
+  const scale = viewport.height / scroller.offsetHeight
+  if (!scale) return null
   const current = scroller.scrollTop
-  if (current >= end - 1) return { percent: 100, fits: bounds.height <= scroller.clientHeight && bounds.top >= viewport.top - 1 }
+  const contentTop = (bounds.top - viewport.top) / scale
+  const top = Math.max(0, contentTop + current)
+  const end = (bounds.bottom - viewport.top) / scale + current - scroller.clientHeight
+  if (current >= end - 1) return { percent: 100, fits: content.offsetHeight <= scroller.clientHeight && contentTop >= -1 }
   return { percent: Math.min(99, Math.round(100 * Math.max(0, current - top) / Math.max(1, end - top))), fits: false }
 }
 

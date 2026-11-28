@@ -30,8 +30,9 @@ export async function scrollMaterial(page:Page,fraction:number){
   await document.ownerDocument.fonts.ready
   const body=document.closest('.reader-page-body')!
   const rect=document.getBoundingClientRect(), viewport=body.getBoundingClientRect()
-  const start=rect.top-viewport.top+body.scrollTop
-  const end=rect.bottom-viewport.top+body.scrollTop-body.clientHeight
+  const scale=viewport.height/(body as HTMLElement).offsetHeight
+  const start=(rect.top-viewport.top)/scale+body.scrollTop
+  const end=(rect.bottom-viewport.top)/scale+body.scrollTop-body.clientHeight
   body.scrollTop=fraction===0?0:Math.ceil(start+(end-start)*fraction)
  },fraction)
 }

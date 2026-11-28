@@ -62,7 +62,7 @@ Select a student to see their opened materials, reading percentages and complete
 
 ![The student reader showing 50 percent read](12-student-reading.png)
 
-Open a material and scroll through **Document**. The bar shows the furthest point you reached. Closing halfway saves partial progress. Reaching the end and closing marks the material **Done**. For a short document visible in full, closing records **Done**. The example shows **50% read** after scrolling halfway.
+Open a material and scroll through **Document**. The bar shows the furthest point you reached and keeps that percentage when you scroll back. Closing halfway saves partial progress. Reaching the end and closing marks the material **Done**. For a short document visible in full, closing records **Done**. The example shows **50% read** after scrolling halfway.
 
 Reopen or reload to see the saved percentage. A revised publication starts its own reading record. **Presentation** remains available and displays the progress saved through **Document**.
 
