@@ -14,7 +14,7 @@ Within each topic, the reading and worked example appear before the concept chec
 
 Students in open classes have recorded reading progress and graded work, with further materials, assessments and attempts available. Saved future opening dates remain authoritative; three existing individually enrolled learners retain their not-yet-open state. Some written responses remain awaiting instructor marking. Practice records remain separate from official assessment results. Public discussion stays within the enrolled block; private discussion stays between its student and instructor. The topic submission bins contain written work and accept subsequent authorized submissions under their normal rules.
 
-![Student Home with delivered learning and recorded progress](student-home.png)
+![Student Home with Join Class, enrolled course cards and recorded progress](student-home.png)
 ![Student results from saved assessment records](student-scores.png)
 
 New answers are scored by the backend, and written answers require instructor review. Delivering a checked item makes its publication available only to its enrolled students under the class opening schedule. Reload restores the selected authorized view and does not submit answers, enroll students or deliver content again. A real score of zero and missing or pending marks retain their normal meaning.
@@ -24,7 +24,7 @@ The generated population history is recorded in private batch provenance, includ
 ![Instructor Home on a phone](phone-instructor-home.png)
 ![Class Stream on a phone with the latest delivered week first](phone-instructor-stream.png)
 ![Instructor class scores on a phone](phone-instructor-scores.png)
-![Student Home on a phone](phone-student-home.png)
+![Student Home with Join Class on a phone](phone-student-home.png)
 ![Student results on a phone](phone-student-scores.png)
 
 These documentation images use fictional identities and controlled account transports with actual authored PDF bytes. They illustrate the populated interface while protecting real names and student records. They do not prove hosted sign-in, delivery or grading; the release validation records those checks separately.

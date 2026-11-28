@@ -5744,6 +5744,96 @@
       "sha256": "69e3196544cc4a6252ddff91faa03f2a5c00d48b3d44842fc15e37493215c092",
       "reviewer": "Codex agent",
       "reviewedAt": "2026-11-28T10:35:57.832454+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/03-selected-student-view.png",
+      "sha256": "b124d766420be919b7840314a1ddabf5edcef1bd0601ee7ccd73d63a381e5e62",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-28T13:06:08+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/23-account-support-and-pulse-context/20-student-join-guidance.png",
+      "sha256": "eede151cd18881a39baba2652159611391ea247194ce4792f9a3d57369bff2e7",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-28T13:06:08+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/33-pipeline-progress/09-student-dashboard.png",
+      "sha256": "6b3a50f0eada120257f3253398687b9303c61e8cba600ffe3f586e8d3935725c",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-28T13:06:08+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/54-management-loaded-classes/10-student-home-empty.png",
+      "sha256": "5c8ecedd6cbef88bcdecc7597897503714e3e153b2bba46f61228cc10372458d",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-28T13:06:08+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/54-management-loaded-classes/11-student-join-code.png",
+      "sha256": "24544e30434740bdab8dd62bf915b82d50a0be3350c17dc979c74ea09933ee42",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-28T13:06:08+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/56-academic-population/phone-student-home.png",
+      "sha256": "66c1dc44adbdc99b9e23128cd4a893cccbe12c1ef5367ae3f61ed85f03d918e4",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-28T13:06:08+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/56-academic-population/phone-student-scores.png",
+      "sha256": "c42ec2476cef0ada9fdb57458209f162ed62eae1dcdf33b0de1f5d7ead95c5a2",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-28T13:06:08+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/56-academic-population/student-home.png",
+      "sha256": "063d24f6bc3c28543fa8bf55ace3fa604ee746a985f2ae0062f4fc05e6259fec",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-28T13:06:08+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/57-loading-audit/phone-student-find.png",
+      "sha256": "12de529934837bdc0b97257f5e728b4fe732bf97899113571c3f2bdb7b7de96c",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-28T13:06:08+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/57-loading-audit/phone-student-join.png",
+      "sha256": "6f9276e8a2886115d3b9016fa35a99b7da22a806138fb4e20daf1fdf1780d396",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-28T13:06:08+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/57-loading-audit/student-find.png",
+      "sha256": "9c21e284ea944af8637b1745af47c82981d2b9e2b0e20d1cc84f39017ddc0edb",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-28T13:06:08+00:00"
+    },
+    {
+      "path": "feature-documentation/system-manual/57-loading-audit/student-join.png",
+      "sha256": "a19c4518b6fe4a17ff3b89594b48a43fd090147ac9f5e59ce798c0a85e5c8381",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-28T13:06:08+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/05-student/01-dashboard.png",
+      "sha256": "368c760d2f309cae50fc6b190376fd69e2ebfd5593d42f10a435487513c6104b",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-28T13:06:08+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/02-student-dashboard.png",
+      "sha256": "368c760d2f309cae50fc6b190376fd69e2ebfd5593d42f10a435487513c6104b",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-28T13:06:08+00:00"
+    },
+    {
+      "path": "feature-documentation/system-walkthrough/09-restored-role-pages/39-mobile-student-assignments.png",
+      "sha256": "c9682e79f780ac9353ab9e1d60cf03a2f83d3c85b46cf1c7eb4c624f5ae94ef1",
+      "reviewer": "Codex agent",
+      "reviewedAt": "2026-11-28T13:06:08+00:00"
     }
   ]
 }

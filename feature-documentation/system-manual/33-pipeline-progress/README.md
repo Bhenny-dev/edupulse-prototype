@@ -45,7 +45,7 @@ Reading completion now uses version-bound sequential confirmations in the full s
 ## Current attempt table and dashboards
 
 ![Assessment attempts without the Activity column](08-student-attempts.png)
-![Student dashboard without test notices](09-student-dashboard.png)
+![Student Home with Join Class and no test notices](09-student-dashboard.png)
 ![Instructor dashboard without test suffixes](10-instructor-dashboard.png)
 
 Recorded attempts retain course, assessment, raw score, submission date, current/earlier version and marking status. The redundant Activity column is omitted. Dashboards show the same saved values without test labels; underlying provenance remains in audit storage.

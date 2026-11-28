@@ -12,7 +12,21 @@ Open the class and choose **Class List**. **Add students** offers an official cl
 
 Share the active class code, or use **Copy invitation link**. The class card's three-dot menu also offers **Copy invitation link, block ?**. Copying issues no enrollment or code-creation command. A disabled code has no usable invitation until the instructor explicitly creates a new code for that existing class. Replacing a code invalidates its former links while preserving current students.
 
-Students can enter the code through Home's **Join Class**, review the class and confirm. Following the invitation link automatically joins the student's own verified account and opens the class, or Home if its teaching outline is not yet available. Signed-out students first sign in with their student email and password. Instructor accounts and Admin support views cannot use the student enrollment action.
+## Join with an instructor’s class code
+
+1. Sign in to your student account and select **Join Class** next to **Academic term** on **Home**. The button is available before and after you have classes.
+2. Enter the seven-character **Class code** from your instructor and select **Find class**.
+3. Review the course, instructor, section and term, then select **Confirm Join Class**. If the class is available, it opens. If it is awaiting release, Home shows the saved membership.
+
+![Student Home with Join Class and the empty-term prompt](10-student-home-empty.png)
+
+![Join Class dialog with the Class code field and Find class button](11-student-join-code.png)
+
+In **Admin · Student**, **Join Class** opens guidance directing students to their own accounts. Reloading restores an open dialog after account verification and clears any code typed in the student form.
+
+### Use an invitation link
+
+Following the invitation link automatically joins the student's own verified account and opens the class, or Home if its teaching outline is not yet available. Signed-out students first sign in with their student email and password.
 
 ![Invitation preserves the destination through student sign-in](07-invitation-sign-in.png)
 

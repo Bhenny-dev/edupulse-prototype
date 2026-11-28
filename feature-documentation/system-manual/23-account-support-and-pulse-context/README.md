@@ -14,7 +14,11 @@ Sign in as the verified System Admin. Open **Switch View** in the top bar, or **
 
 Choose a person's row to open their academic view. The top-bar account menu identifies the selected person and role. There is no bottom support indicator or return shortcut. To change views or return to the console, open **Account menu > Switch view** and select **System Admin** or another role. The admin's Google sign-in, AI provider connection, private conversations and knowledge library remain with the admin. Academic reads and permitted saves use the selected account's access rules and changes are attributed to the admin. Switching views discards responses belonging to the previous view and uses a separate pending-workspace cache.
 
-![Selected sample student before the bottom indicator was removed](03-selected-student-view.png)
+![Sample Admin · Student Home with Join Class](03-selected-student-view.png)
+
+On Student Home, **Join Class** explains that the student enters the instructor’s code from their own account. An open guidance dialog reappears when the selected account is verified again after reload.
+
+![Join Class guidance for the selected student's support view](20-student-join-guidance.png)
 
 Support views can inspect released materials and assessment questions, but do not record student access, start attempts, submit responses or appeal as the student. This preserves actual student activity in instructor statistics. The selected person's password and sign-in session are never shared or replaced. Account profile and credential editing requires returning to the admin account.
 

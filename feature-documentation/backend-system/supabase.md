@@ -336,6 +336,8 @@ Migration `20261125075102_management_loaded_classes.sql` removes implicit block 
 
 Invitation URLs contain only the active public class code in the SPA fragment. They use the existing authenticated `class-join` command; no new token, anonymous enrollment or provider operation is introduced. The browser waits for live session and academic reads, restricts automatic joins to an own student account and suppresses automatic enrollment on reload. No command payload is persisted as view state. Direct course intake uses the existing revision-checked workspace save and retained-file validation. [Manual 54](../system-manual/54-management-loaded-classes/README.md).
 
+On Home, **Join Class** issues `class-join` lookup and explicit confirmation from the student’s own verified session. In **Admin · Student**, the button opens guidance without issuing academic commands. The URL holds only the dialog reference, which renders after the account and selected subject are verified. Typed codes stay in the form for the current page load. This change requires no database migration.
+
 
 ## Atomic loaded classes and invitation codes, 25 November 2026
 

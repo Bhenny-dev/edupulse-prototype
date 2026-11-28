@@ -396,6 +396,7 @@ Owner request (23 November): a Classroom-style layout for instructors first, kee
 | T13.6 | Announcements (`classroom/ClassStream.jsx`): post, edit, delete; all block sections or one; optional week; up to 10 links. Students read those of their own enrolled block (`edupulse_class_announcements`), none while suspended | PGlite announcement test, instructor-classroom spec | Complete |
 | T13.7 | Class List per block: the existing roster (suspend, remove, add students) once the course exists, the confirmed class list before; the block's code and who joined with it. Scores per block with the existing assessment score view (EduPulse scores, not official grades) | instructor-classroom spec | Complete |
 | T13.8 | Provider links on drafts, link materials and announcements: recognized providers, Open with the provider, a privacy-enhanced YouTube player on request (CSP `frame-src` allows `www.youtube-nocookie.com`). The instructor handover copies file paths only, and the Dean's course inspection keeps links | `tests/classroom-utils.test.ts`, PGlite patch assertions, instructor-classroom spec | Complete |
+| T13.9 | Make **Join Class** visible on Student Home with or without classes. A student can look up and confirm an instructor’s code. Admin · Student provides enrollment guidance. Reload restores the dialog after verification and clears typed codes. | `tests/browser/student-classroom.spec.ts` covers own-account confirmation and verified support restoration. [Manual 54](system-manual/54-management-loaded-classes/README.md#join-with-an-instructors-class-code) captures the route. | Complete |
 
 Not done, and why:
 - Google Drive Picker needs a Google Cloud project with an OAuth client ID, an API key, the `drive.file` scope and the College's approval. Until then instructors paste share links; nothing claims a Drive connection.
@@ -633,3 +634,7 @@ Scan of this file, the 23 November supporting specification (`versions/supportin
 ## 27 November 2026 - Instructor course load workspace (G7)
 
 The staff Dashboard lists workloads per instructor and opens assignment, editing, syllabus and delivery for each load. The same delivery calculation serves the dashboard and the course scan, including calendar default openings. Course manages catalog records and class lists. Instructors links each account to its load view. The unit, browser and capture evidence is recorded in [the staff release record](versions/2026-11-27-staff-course-loads.md).
+
+## 28 November 2026 - Join Class on Student Home (G13)
+
+The owner’s empty and populated Student Home examples were both from Admin support. **Join Class** is now visible beside **Academic term**. Student accounts use the existing class-code command, and Admin support opens sign-in guidance. Browser coverage checks the first enrollment, restores an open support dialog after the same subject is verified, and checks that reload sends no join. [Release verification](versions/2026-11-28-student-join-class/validation/results.md).

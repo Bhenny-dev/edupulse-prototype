@@ -9,7 +9,7 @@ Accounts see the same role dashboards as the preview personas: the [instructor](
 | Role | Capture | Sections |
 | --- | --- | --- |
 | Instructor | ![Instructor Dashboard](01-instructor-dashboard.png) | **Getting Started with EduPulse**; summary cards from the owner workspace (all zero in this fixture); **Quick actions**; **My Block Sections** BSIT-1A and BSIT-1B with one student each; **Score Snapshot** with 2 students, a 67% average and one learner below 75 (only the learner with marked attempts is averaged) and topic averages for IT 102; **Recent Activity**, the course syllabus stations and **Courseware Review Queue** showing their empty-state lines. |
-| Student | ![Student Dashboard](02-student-dashboard.png) | Summary cards: 1 enrolled course, 67% average score, 1 topic mastered, 1 pending activity. **Pulse Reminders** lists the unopened *Variables lesson*. **My Block** shows BSIT-1A with year level, size and adviser *Not recorded*. The IT 102 card shows its latest recorded score; **Learning Material Sources** has no published source; **My Score Trend** plots weeks 1–3; **Upcoming Activities** has no recorded deadline. |
+| Student | ![Student Home](02-student-dashboard.png) | **Join Class** and the term selector above the course search and cards, including IT 104 awaiting instructor release. |
 | Dean | ![Dean Dashboard](03-dean-dashboard.png) | Instructors and their assigned courses, with syllabus status and block delivery. |
 | Program Coordinator | ![Program Coordinator Dashboard](04-associate_dean-dashboard.png) | Instructor load assignment and per-course delivery oversight within the role's academic scope. |
 
@@ -139,8 +139,8 @@ Topic, marking and reminder component crops use a taller desktop browser viewpor
 
 The course-week view includes curriculum units and the student's pending **Research Methods** assignment. Its release notice does not expose a draft or invent a publication. The synthetic student result and notice screens retain their existing controlled responses. Actual population counts are documented separately in [Manual 38](../../system-manual/38-curriculum-population/README.md).
 
-![Student assignments on a phone](39-mobile-student-assignments.png)
+![Join Class and assigned courses on Student Home on a phone](39-mobile-student-assignments.png)
 
-The student dashboard counts the same assigned courses as My Courses. Its pending card is labelled **Awaiting release**, with recorded curriculum units and no inferred score.
+On the phone, the term selector and **Join Class** appear above the course cards. **Research Methods** shows its curriculum units and the status **Awaiting instructor release**.
 
 The later syllabus-sharing correction removes Version History and Copy for next term. Existing history remains stored internally. Instructor selection, owned draft/approved adoption, and suspension before deletion are shown in [Manual 36](../../system-manual/36-instructor-syllabi/README.md).

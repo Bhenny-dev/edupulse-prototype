@@ -24,6 +24,6 @@ Reload restores the popover only after the current account, support subject, cou
 
 ![Class code, QR and link fit the phone popover](phone-popover.png)
 
-Students can still use **Join Class** and the code on Home, or follow the link/scan the QR. The invitation requires the student's own verified account, and prompts for sign-in when needed. Reload does not repeat enrollment. [Manual 54](../54-management-loaded-classes/README.md) describes that flow and existing-class roster additions.
+From their own account, students can select **Join Class** next to **Academic term** on **Home** and enter the code. They can also follow the link or scan the QR, which prompts for sign-in when needed. [Manual 54](../54-management-loaded-classes/README.md#join-with-an-instructors-class-code) shows the code field, confirmation steps and reload behavior.
 
 These captures use fictional accounts and codes with controlled UI transport. The local capture origin in the sample invitation becomes the actual EduPulse origin when used on the live site. Browser tests independently decode the rendered QR pixels in both themes on desktop and phone. Native database tests check persistence, automatic assignment, explicit import sections, atomic rollback on code failure, disable, handover and maintenance backfill.

@@ -128,3 +128,14 @@
   .student-score-row { grid-template-columns: minmax(0, 1fr); }
   .student-score-row .btn { justify-self: start; }
 }
+.student-home .page-header .academic-actions { align-items: flex-end; }
+.student-home .student-join-trigger { min-height: 44px; }
+.overlay-backdrop.page-modal-overlay > .page-modal.student-join-dialog {
+  width: min(520px, calc(100vw - 32px));
+  height: auto;
+  border-radius: var(--radius-lg);
+}
+.student-join-dialog > .page-modal-body > p:first-child { margin-bottom: 0; }
+.student-join-dialog form { margin-top: 16px; }
+.student-join-dialog .form-label { display: grid; gap: 6px; }
+.student-join-dialog .form-input { width: 100%; min-width: 0; }

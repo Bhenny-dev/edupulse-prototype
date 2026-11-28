@@ -2,22 +2,17 @@
 
 Delivered assessments use radio choices for multiple choice and true or false, a single-line identification answer, and labeled response fields for enumeration, matching, essay and step-by-step documentation. Objective answer feedback is available through the student's submitted attempt. Written scores appear after instructor review. [Student answer formats](../../system-manual/41-student-learning/README.md#enter-assessment-responses).
 
-Main tabs: **Dashboard**, **My Courses**, **Practice Assessments**, **Performance**. Students see only what is published to their block, and Pulse guides them without answering assessment items. Shown as the preview student Bhenny Benlor D. Rivera (BSIT-3A).
+Signed-in students use **Home**, **Schedule**, **Practice Assessments** and **Performance**. Students see only what is published to their block, and Pulse guides them without answering assessment items.
 
-The refreshed Performance captures explicitly display **Sample performance data · Preview only · Institutional grades remain in EduSuite.** The preview scores are examples. Signed-in students use the [authenticated records view](../08-authenticated-records/README.md) for their own saved attempts and enrolled publications. Empty accounts show **No authorized academic records yet**; these preview screenshots are separate evidence.
+The preview Performance captures display **Sample performance data · Preview only · Institutional grades remain in EduSuite.** Signed-in students see their own saved attempts and enrolled publications. [Authenticated records](../08-authenticated-records/README.md).
 
-## 1. Student dashboard
+## 1. Student Home
 
-![Student dashboard](01-dashboard.png)
+![Student Home with Join Class and course cards](01-dashboard.png)
 
-- **Summary cards:** enrolled courses, average score, topics mastered, pending activities.
-- **Pulse Reminders:** unopened materials and unanswered assessments, each with **Go**. The note states that Pulse never answers or reviews assessment items.
-- **My Block:** block, year level, size and adviser.
-- **Course cards:** each enrolled course with its latest recorded score and **Materials** / **Assessments** buttons.
-- **Learning Material Sources:** the approved syllabus and instructor-provided references behind each course's materials (*Instructor-verified*).
-- **My Score Trend** and **Upcoming Activities** with due dates.
+**Home** shows classes for the selected academic term. Search by course, instructor or section, and select a course card to open the class. **Pending Assessments** and **Recent Announcements** show upcoming work and class posts.
 
-Signed-in student accounts see this same dashboard filled from their own enrolled records: reminders list their unopened materials and unanswered assessments, course cards show the latest marked score (*No score yet* before the first) and the trend plots marked attempts. Unrecorded block details read *Not recorded* ([account capture](../09-restored-role-pages/README.md#role-dashboards)).
+Choose **Join Class** next to **Academic term** to enter the seven-character code from your instructor, including when Home has no classes. In **Admin · Student**, the same button opens instructions on using the student’s own account. [Join with a class code](../../system-manual/54-management-loaded-classes/README.md#join-with-an-instructors-class-code).
 
 ## 2. My Courses
 

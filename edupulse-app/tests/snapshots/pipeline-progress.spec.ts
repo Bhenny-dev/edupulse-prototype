@@ -14,5 +14,5 @@ for(const [role,path,name] of [['instructor','student-monitoring?course='+ 'a'.r
 })
 
 for(const [role,path,name] of [['student','performance?tab=scores','08-student-attempts'],['student','dashboard','09-student-dashboard'],['instructor','dashboard','10-instructor-dashboard']])test(`progress labels removed: ${name}`,async({page})=>{
- await pipelineProgressUI(page,role);await page.goto('/#/'+path);await expect(page.getByRole('heading',{name:path.startsWith('performance')?'Recorded assessment attempts':role==='student'?'Student Dashboard':'Instructor Dashboard',exact:true})).toBeVisible();await expect(page.getByText(/Pipeline test|labelled pipeline/i)).toHaveCount(0);await page.screenshot({path:`${dir}/${name}.png`,fullPage:true,animations:'disabled'})
+ await pipelineProgressUI(page,role);await page.goto('/#/'+path);await expect(page.getByRole('heading',{name:path.startsWith('performance')?'Recorded assessment attempts':role==='student'?'Home':'Instructor Dashboard',exact:true})).toBeVisible();if(name==='09-student-dashboard')await expect(page.getByRole('button',{name:'Join Class',exact:true})).toBeVisible();await expect(page.getByText(/Pipeline test|labelled pipeline/i)).toHaveCount(0);await page.screenshot({path:`${dir}/${name}.png`,fullPage:true,animations:'disabled'})
 })

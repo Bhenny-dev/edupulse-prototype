@@ -1,11 +1,44 @@
 import {test,expect,type Page} from '@playwright/test'
 import {baselineUI} from '../baseline-fixture'
+import {accountSupportUI, supportAccounts} from '../account-support-fixture'
 
 function trackCommands(page:Page){
  const commands:any[]=[]
  page.on('request',request=>{if(request.url().includes('/api/ai?action=academic')&&request.method()==='POST')commands.push(request.postDataJSON())})
  return commands
 }
+
+test('student support offers join guidance and restores it after verifying the same account', async ({page}) => {
+ const fixture = await accountSupportUI(page)
+ const student = supportAccounts[0]!
+ await page.goto('/#/dashboard')
+ await page.getByRole('button', {name: 'Open view', exact: true}).last().click()
+ const picker = page.getByRole('dialog', {name: 'Choose student account'})
+ await picker.getByRole('button', {name: 'View ' + student.name, exact: true}).click()
+ const empty = page.getByRole('region', {name: 'No classes in this term'})
+ await expect(empty).toContainText('Students can join with a class code')
+ const trigger = page.getByRole('button', {name: 'Join Class', exact: true})
+ await trigger.click()
+ const dialog = page.getByRole('dialog', {name: 'Join Class', exact: true})
+ await expect(dialog).toContainText('sign in to your own student account')
+ await expect(dialog.getByRole('textbox')).toHaveCount(0)
+ const release = fixture.holdResolve()
+ try {
+  await page.reload({waitUntil: 'domcontentloaded'})
+  await expect.poll(() => fixture.calls.some(call => call.action === 'support' && call.lookupSubject === student.id)).toBe(true)
+  await expect(dialog).toHaveCount(0)
+ } finally {
+  release()
+ }
+ await expect(dialog).toContainText('sign in to your own student account')
+ await expect(page.getByRole('button', {name: 'Account menu', exact: true})).toHaveAttribute('title', student.name)
+ await expect(dialog.getByRole('textbox')).toHaveCount(0)
+ await dialog.getByRole('button', {name: 'Close Join Class'}).click()
+ await expect(page).toHaveURL(/#\/dashboard$/)
+ await expect(trigger).toBeVisible()
+ expect(fixture.calls.filter(call => call.operation === 'class-join')).toHaveLength(0)
+ expect(fixture.calls.filter(call => call.operation === 'enter')).toHaveLength(1)
+})
 
 test('student Home opens its course and preserves weekly, score and outline tabs',async({page},info)=>{
  const commands=trackCommands(page);await baselineUI(page,'student');await page.goto('/#/dashboard');await expect(page.getByRole('heading',{name:'Home',exact:true})).toBeVisible({timeout:20000});await expect(page.getByRole('button',{name:'Join Class',exact:true})).toBeVisible();await expect(page.getByRole('button',{name:'Create Class',exact:true})).toHaveCount(0)
@@ -137,6 +170,7 @@ test('a newly joined class refreshes Home after explicit confirmation',async({pa
  })
  await page.goto('/#/dashboard')
  await expect(page.getByRole('heading',{name:'No classes in this term'})).toBeVisible({timeout:20000})
+ await expect(page.getByText('Have a code from your instructor? Select Join Class to enter it.')).toBeVisible()
  await page.getByRole('button',{name:'Join Class',exact:true}).click()
  const dialog=page.getByRole('dialog',{name:'Join Class',exact:true})
  await dialog.getByLabel('Class code',{exact:true}).fill('ABC2345')

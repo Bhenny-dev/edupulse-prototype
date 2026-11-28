@@ -2,6 +2,23 @@ import { test, expect } from './fixtures'
 import { managedClassUI, uploadInClass } from '../managed-classes-ui'
 import { baselineUI } from '../baseline-fixture'
 const folder='../feature-documentation/system-manual/54-management-loaded-classes'
+test('student Home offers the class code form before the first enrollment', async ({page}) => {
+ const {records} = await baselineUI(page, 'student')
+ records.courses = []
+ records.enrollments = []
+ records.publications = []
+ records.notices = []
+ await page.goto('/#/dashboard')
+ await expect(page.getByRole('region', {name: 'No classes in this term'})).toContainText('Have a code from your instructor?')
+ const join = page.getByRole('button', {name: 'Join Class', exact: true})
+ await expect(join).toBeVisible()
+ await page.mouse.move(0, 0)
+ await page.screenshot({path: `${folder}/10-student-home-empty.png`, animations: 'disabled'})
+ await join.click()
+ await expect(page.getByRole('dialog', {name: 'Join Class', exact: true}).getByLabel('Class code')).toBeVisible()
+ await page.screenshot({path: `${folder}/11-student-join-code.png`, animations: 'disabled'})
+})
+
 test('management-loaded Home and in-class approved syllabus intake',async({page})=>{
  await managedClassUI(page)
  await page.goto('/#/dashboard');await expect(page.locator('.instructor-course-card')).toHaveCount(2)

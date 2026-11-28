@@ -2,7 +2,7 @@
 
 Pending reads, file processing and explicit saves use the existing themed spinner, skeleton or progress indicator. A disabled button caused by missing input is not a loading state. Reduced motion keeps the status and labels visible while stopping animation.
 
-**Join Class** shows a spinner while **Finding class...** or **Joining class...**. Requests wait for the server response; a failed join keeps the code and offers another explicit attempt. Reload does not repeat the join.
+Student Home opens the **Join Class** dialog beside **Academic term**. The dialog shows a spinner while **Finding class...** or **Joining class...**. A failed join keeps the code for an explicit retry. Reload reopens the dialog with an empty code field.
 
 ![Student finding a class](student-find.png)
 ![Student joining a class](student-join.png)

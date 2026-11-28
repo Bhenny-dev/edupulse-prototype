@@ -1,4 +1,6 @@
+import { UserRoundPlus } from 'lucide-react'
 import { LoadingStatus } from '../ui/LoadingFeedback'
+import PageModal from '../ui/PageModal'
 import {lazy,Suspense,useEffect,useRef,useState} from 'react'
 import {Link,useLocation,useNavigate,useSearchParams} from 'react-router-dom'
 import {useAuth} from '../../context/AuthContext'
@@ -54,7 +56,7 @@ export default function StudentHome() {
   const [search,setSearch] = useState('')
   const data = recordsForLoadTerm(records.data,term)
   const courses = enrolledCourses(data)
-  const canJoin = !user?.supportSubject
+  const supportView = Boolean(user.supportSubject)
   const block = course => course.block_section || data.enrollments.find(row => row.course_id === course.id)?.block_section
   const waiting = data.classJoins.filter(join =>
     (term === 'all' || loadTerm(join.academic_year,join.semester) === term) &&
@@ -96,7 +98,9 @@ export default function StudentHome() {
       <div><h1>Home</h1><p>Your classes and upcoming work</p></div>
       <div className="academic-actions">
         <LoadTermFilter data={records.data}/>
-        {canJoin && <button className="btn btn-primary" onClick={() => setJoining(true)}>Join Class</button>}
+        <button type="button" className="btn btn-primary student-join-trigger" aria-haspopup="dialog" onClick={() => setJoining(true)}>
+          <UserRoundPlus size={18} aria-hidden="true" /> Join Class
+        </button>
       </div>
     </header>
     {(records.error || data.classroomError) && <div className="connected-pulse-warning" role="alert">
@@ -145,7 +149,7 @@ export default function StudentHome() {
           lines={[join.instructor_name,termLabel(join)]} chips={[join.block]} status="Joined. Waiting for course materials." />)}
       </section>
       {!courses.length && !waiting.length && !records.error && <EmptyClasses title="No classes in this term">
-        {canJoin ? 'Enter the class code shared by your instructor to join.' : 'No instructor-confirmed memberships are available.'}
+        {supportView ? 'Students can join with a class code from their own account.' : 'Have a code from your instructor? Select Join Class to enter it.'}
       </EmptyClasses>}
       <section className="card mt-24"><div className="card-body">
         <StudentDueWork work={pending} renderItem={item=><>
@@ -162,6 +166,10 @@ export default function StudentHome() {
       </div></section>
     </>}
     {classOpen && <Suspense fallback={<LoadingStatus className="class-opening-status" label="Opening class..." />}><ClassPortal view="courseware" classModal onCloseClass={closeClass}/></Suspense>}
-    {canJoin && joining && <JoinClassDialog onClose={() => setJoining(false)} onJoined={joined}/>}
+    {joining && (supportView
+      ? <PageModal title="Join Class" className="student-join-dialog" onClose={() => setJoining(false)}>
+          <p>To use an instructor’s class code, sign in to your own student account and select <strong>Join Class</strong> on Home.</p>
+        </PageModal>
+      : <JoinClassDialog onClose={() => setJoining(false)} onJoined={joined}/>)}
   </div>
 }
